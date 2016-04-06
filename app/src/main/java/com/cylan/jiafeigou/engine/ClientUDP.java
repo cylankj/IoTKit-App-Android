@@ -2,11 +2,11 @@ package com.cylan.jiafeigou.engine;
 
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 
-import com.cylan.publicApi.Constants;
-import cylan.log.DswLog;
 import com.cylan.jiafeigou.listener.UDPMessageListener;
 import com.cylan.jiafeigou.utils.ThreadPoolUtils;
+import com.cylan.publicApi.Constants;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -18,13 +18,16 @@ import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.TimeZone;
 
+import cylan.log.DswLog;
+
 public class ClientUDP implements Runnable {
     private static final String TAG = "UDP";
-    protected DatagramSocket ms;
-    public static final int PORT = 10008;
-    public static final int BINDADDR = 10009;
-    public static final String INETADDRESS = "255.255.255.255";
     protected boolean exit = false;
+    private static final int TIME_OUT = 3000;
+    public static final int PORT = 10008;
+    public static final int BINDING_PORT = 10009;
+    public static final String IN_ADDRESS = "255.255.255.255";
+    protected DatagramSocket datagramSocket;
     protected DatagramPacket datagramPacket;
 
     private ArrayList<UDPMessageListener> mObservers = new ArrayList<>();
@@ -48,14 +51,14 @@ public class ClientUDP implements Runnable {
 
     public void close() {
         exit = true;
-        if (ms != null) ms.close();
+        if (datagramSocket != null) datagramSocket.close();
     }
 
 
     private ClientUDP() throws InvalidParameterException {
         try {
-            ms = new MulticastSocket(BINDADDR);
-            ms.setSoTimeout(3000); // 3s
+            datagramSocket = new MulticastSocket(BINDING_PORT);
+            datagramSocket.setSoTimeout(TIME_OUT); // 3s
             new Thread(this).start();
         } catch (IOException e) {
             DswLog.ex(e.toString());
@@ -82,10 +85,12 @@ public class ClientUDP implements Runnable {
     public void run() {
         byte buf[] = new byte[4096];
         int flag = 0;
+        DswLog.ex("ClientUDP start time : " + System.currentTimeMillis());
         while (!exit) {
+            byte[] data = null;
             try {
                 datagramPacket = new DatagramPacket(buf, buf.length);
-                byte[] data = recv();
+                data = recv();
                 JFGCFG_HEADER jfgHeader = new JFGCFG_HEADER(data);
 
                 if (jfgHeader.mMagic != JFG_MSG_MAGIC) {
@@ -109,11 +114,14 @@ public class ClientUDP implements Runnable {
                     flag |= 0x20;
                 }
             } catch (Exception e) {
+                Log.d("TAG", "TAG: " + e.toString());
 //                DswLog.ex(e.toString());
             }
+            if (flag == 0)
+                continue;
+            DswLog.e("udp_action_flag: " + flag + "  size: " + (data == null ? "null" : data.length));
         }
-        DswLog.e("udp_action_flag: " + flag);
-        if (ms != null) ms.close();
+        if (datagramSocket != null) datagramSocket.close();
     }
 
     private Handler mUdpHandler = new Handler(new Handler.Callback() {
@@ -155,10 +163,10 @@ public class ClientUDP implements Runnable {
             public void run() {
                 try {
                     DatagramPacket packet = new DatagramPacket(data, data.length, address, port);
-                    ms.send(packet);
+                    datagramSocket.send(packet);
                     print(packet.getData(), "packet send--> ");
                 } catch (Exception e) {
-                    DswLog.d("packet send exception: " + e.toString());
+                    DswLog.e("packet send exception: " + e.toString());
                 }
             }
         });
@@ -166,7 +174,7 @@ public class ClientUDP implements Runnable {
 
 
     public byte[] recv() throws Exception {
-        ms.receive(datagramPacket);
+        datagramSocket.receive(datagramPacket);
         print(datagramPacket.getData(), "packet recv--> ");
         return datagramPacket.getData();
     }
@@ -1001,7 +1009,7 @@ public class ClientUDP implements Runnable {
         }
     }
 
-    private void print(byte[] data, String text) {
+    private void print(byte[] data, String text) throws Exception {
 
         JFGCFG_HEADER header = new JFGCFG_HEADER(data);
         if (header.mMagic == JFG_MSG_MAGIC) {
@@ -1153,7 +1161,7 @@ public class ClientUDP implements Runnable {
     public void sendFPing(String... params) {
         try {
             ClientUDP.JFG_F_PING jfgPing = ClientUDP.getInstance().new JFG_F_PING(params.length > 0 ? params[0] : "");
-            ClientUDP.getInstance().send(jfgPing.getBytes(), InetAddress.getByName(INETADDRESS), PORT);
+            ClientUDP.getInstance().send(jfgPing.getBytes(), InetAddress.getByName(IN_ADDRESS), PORT);
         } catch (Exception e) {
             DswLog.ex(e.toString());
         }
@@ -1162,7 +1170,7 @@ public class ClientUDP implements Runnable {
     public void sendFPlay(JFG_F_PONG pong, String randomPort) {
         try {
             ClientUDP.JFG_F_PLAY jfgfPlay = ClientUDP.getInstance().new JFG_F_PLAY(mCid, pong.mac, String.format("%s:8880", randomPort));
-            DswLog.d("udp send fplay ip-->" + pong.mIp + " port-->" + pong.mPort);
+            DswLog.e("udp send fplay ip-->" + pong.mIp + " port-->" + pong.mPort);
             ClientUDP.getInstance().send(jfgfPlay.getBytes(), InetAddress.getByName(pong.mIp), pong.mPort);
         } catch (Exception e) {
             DswLog.ex(e.toString());
@@ -1173,7 +1181,7 @@ public class ClientUDP implements Runnable {
     public void sendPing() {
         try {
             ClientUDP.JFG_PING jfgPing = ClientUDP.getInstance().new JFG_PING(mCid);
-            ClientUDP.getInstance().send(jfgPing.getBytes(), InetAddress.getByName(INETADDRESS), PORT);
+            ClientUDP.getInstance().send(jfgPing.getBytes(), InetAddress.getByName(IN_ADDRESS), PORT);
         } catch (Exception e) {
             DswLog.ex(e.toString());
         }
@@ -1182,7 +1190,7 @@ public class ClientUDP implements Runnable {
     public void sendServer(String ip, String port) {
         try {
             ClientUDP.JFG_SET_SERVER jmss = ClientUDP.getInstance().new JFG_SET_SERVER(mCid, ip, port, String.valueOf(Constants.WEB_PORT));
-            ClientUDP.getInstance().send(jmss.getBytes(), InetAddress.getByName(INETADDRESS), PORT);
+            ClientUDP.getInstance().send(jmss.getBytes(), InetAddress.getByName(IN_ADDRESS), PORT);
         } catch (Exception e) {
             DswLog.ex(e.toString());
         }
@@ -1195,7 +1203,7 @@ public class ClientUDP implements Runnable {
         Integer tz = mTimeZone.getRawOffset() / 1000;
         try {
             ClientUDP.JFG_SET_TIMEZONE jmss = ClientUDP.getInstance().new JFG_SET_TIMEZONE(mCid, tz);
-            ClientUDP.getInstance().send(jmss.getBytes(), InetAddress.getByName(INETADDRESS), PORT);
+            ClientUDP.getInstance().send(jmss.getBytes(), InetAddress.getByName(IN_ADDRESS), PORT);
         } catch (Exception e) {
             DswLog.ex(e.toString());
         }
@@ -1206,7 +1214,7 @@ public class ClientUDP implements Runnable {
         try {
             if (mCid.length() == 12 && mCid.startsWith("3")) {
                 ClientUDP.JFG_SET_LANGUAGE jmss = ClientUDP.getInstance().new JFG_SET_LANGUAGE(mCid, languagetype);
-                ClientUDP.getInstance().send(jmss.getBytes(), InetAddress.getByName(INETADDRESS), PORT);
+                ClientUDP.getInstance().send(jmss.getBytes(), InetAddress.getByName(IN_ADDRESS), PORT);
             }
         } catch (Exception e) {
             DswLog.ex(e.toString());
@@ -1217,7 +1225,7 @@ public class ClientUDP implements Runnable {
     public void sendUpgrade(String url) {
         try {
             ClientUDP.JFG_F_UPGARDE jfgPing = ClientUDP.getInstance().new JFG_F_UPGARDE(mCid, "", url);
-            ClientUDP.getInstance().send(jfgPing.getBytes(), InetAddress.getByName(INETADDRESS), PORT);
+            ClientUDP.getInstance().send(jfgPing.getBytes(), InetAddress.getByName(IN_ADDRESS), PORT);
         } catch (Exception e) {
             DswLog.ex(e.toString());
         }
@@ -1226,7 +1234,7 @@ public class ClientUDP implements Runnable {
     public void toSendWifi(short type, String ssid, String pwd, String account) {
         try {
             ClientUDP.JFG_SET_WIFI_REQ jfgSetWifiReq = ClientUDP.getInstance().new JFG_SET_WIFI_REQ(mCid, type, ssid, pwd, "");
-            ClientUDP.getInstance().send(jfgSetWifiReq.getBytes(), InetAddress.getByName(INETADDRESS), PORT);
+            ClientUDP.getInstance().send(jfgSetWifiReq.getBytes(), InetAddress.getByName(IN_ADDRESS), PORT);
         } catch (Exception e) {
             DswLog.ex(e.toString());
         }

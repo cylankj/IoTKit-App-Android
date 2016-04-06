@@ -22,10 +22,6 @@ import android.view.View.OnClickListener;
 import android.widget.ImageView;
 
 import com.cylan.jiafeigou.R;
-import com.cylan.publicApi.Constants;
-import cylan.log.DswLog;
-import com.cylan.publicApi.MsgpackMsg;
-import com.cylan.publicApi.NetUtils;
 import com.cylan.jiafeigou.activity.main.ActivityIsResumeManager;
 import com.cylan.jiafeigou.activity.video.AddCameraHelpActivity;
 import com.cylan.jiafeigou.base.BaseActivity;
@@ -50,6 +46,9 @@ import com.cylan.jiafeigou.utils.Utils;
 import com.cylan.jiafeigou.utils.WifiUtils;
 import com.cylan.jiafeigou.worker.ConfigWIfiWorker;
 import com.cylan.jiafeigou.worker.EnableWifiWorker;
+import com.cylan.publicApi.Constants;
+import com.cylan.publicApi.MsgpackMsg;
+import com.cylan.publicApi.NetUtils;
 import com.google.gson.Gson;
 
 import org.json.JSONArray;
@@ -61,6 +60,8 @@ import java.util.List;
 import java.util.TimeZone;
 import java.util.Timer;
 import java.util.TimerTask;
+
+import cylan.log.DswLog;
 
 public class AddVideoActivity extends BaseActivity implements OnClickListener, UDPMessageListener, SearchDeviceFragment.OnSearchDeviceListener, ChooseDeviceFragment.OnSelectDeviceListener, SubmitWifiInfoFragment.OnSubmitWifiInfoListener, BindResultFragment.OnCompleteButtonClickListener, UpgradeFragement.OnUpgradeButtonClickListener {
 
@@ -265,10 +266,22 @@ public class AddVideoActivity extends BaseActivity implements OnClickListener, U
             }
         });
     }
-
+    //先关,再开wifi,比较合适.
     protected void getWifiList() {
         isSearchWifiList = false;
-        wm.startScan();
+        wm.setWifiEnabled(false);
+        mHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                wm.setWifiEnabled(true);
+            }
+        }, 100);
+        mHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                wm.startScan();
+            }
+        }, 500);
         mHandler.sendEmptyMessageDelayed(MSG_SCAN_OVER_TIME, 25000);
     }
 
@@ -282,6 +295,7 @@ public class AddVideoActivity extends BaseActivity implements OnClickListener, U
             mProgressDialog.dismissDialog();
             mHandler.removeMessages(MSG_SCAN_OVER_TIME);
             showOpenPositionNotify();
+            isSearchWifiList = false;
             return;
         }
         List<MyScanResult> list = new ArrayList<>();
