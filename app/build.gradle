@@ -28,7 +28,7 @@ dependencies {
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:23.1.1'
     compile project(':jlib')
-    compile project(':WebRtc')
     compile project(':bugly')
     compile project(':mta')
+    compile project(':WebRtcAndroid')
 }

@@ -3,7 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/JFGAndroid.iml" filepath="$PROJECT_DIR$/JFGAndroid.iml" />
-      <module fileurl="file://$PROJECT_DIR$/../WebRtc/app/WebRtc.iml" filepath="$PROJECT_DIR$/../WebRtc/app/WebRtc.iml" />
+      <module fileurl="file://$PROJECT_DIR$/WebRtcAndroid/app/WebRtcAndroid.iml" filepath="$PROJECT_DIR$/WebRtcAndroid/app/WebRtcAndroid.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/bugly/bugly.iml" filepath="$PROJECT_DIR$/bugly/bugly.iml" />
       <module fileurl="file://$PROJECT_DIR$/jlib/jlib.iml" filepath="$PROJECT_DIR$/jlib/jlib.iml" />

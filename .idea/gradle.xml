@@ -9,21 +9,21 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/WebRtcAndroid/app" />
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/bugly" />
             <option value="$PROJECT_DIR$/jlib" />
             <option value="$PROJECT_DIR$/mta" />
-            <option value="$PROJECT_DIR$/../WebRtc/app" />
           </set>
         </option>
         <option name="myModules">
           <set>
             <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/WebRtcAndroid/app" />
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/bugly" />
             <option value="$PROJECT_DIR$/jlib" />
             <option value="$PROJECT_DIR$/mta" />
-            <option value="$PROJECT_DIR$/../WebRtc/app" />
           </set>
         </option>
       </GradleProjectSettings>
