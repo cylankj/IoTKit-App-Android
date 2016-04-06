@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/tips"
+            style="@style/comment_bottom_dialog_style"
+            android:background="@drawable/bg_bottom_dialog_top"
+            android:gravity="center"
+            android:text="@string/app_share"
+            android:textColor="@color/title_text_color"
+            android:textSize="@dimen/title_size" />
+
+        <com.cylan.jiafeigou.widget.MyGridView
+            android:id="@+id/gridview"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/title_magin"
+            android:layout_marginRight="@dimen/title_magin"
+            android:background="@drawable/bg_dialog_item1_default"
+            android:horizontalSpacing="8dip"
+            android:numColumns="3"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:scrollbars="none"
+            android:verticalSpacing="13dip" />
+
+        <TextView
+            android:id="@+id/btn_cancle"
+            style="@style/comment_bottom_dialog_style"
+            android:layout_marginBottom="@dimen/title_magin"
+            android:layout_marginTop="@dimen/title_magin"
+            android:background="@drawable/bg_dialog_cancle_selector"
+            android:gravity="center"
+            android:text="@string/CANCEL"
+            android:textColor="@color/cancle_text_color"
+            android:textSize="@dimen/login_btn_textsize" />
+    </LinearLayout>
+
+</RelativeLayout>

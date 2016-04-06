@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <ListView
+        android:id="@+id/msg_detail_list"
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@color/white"
+        android:cacheColorHint="@color/white"
+        android:divider="@color/setting_line_color"
+        android:dividerHeight="0.5dp"
+        android:listSelector="@android:color/transparent"
+        android:scrollbars="vertical" />
+
+    <LinearLayout
+        android:id="@+id/del_bar"
+        android:layout_width="fill_parent"
+        android:layout_height="50dp"
+        android:background="@drawable/bg_message_bottom_delete"
+        android:visibility="gone"
+        android:layout_gravity="center_vertical"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/del_all_msg"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_marginRight="35dp"
+            android:layout_height="wrap_content"
+            android:textSize="15sp"
+            android:gravity="center"
+            android:layout_marginLeft="36dp"
+            android:text="@string/SELECT_ALL"
+            android:singleLine="true"
+            android:textColor="@color/del_all_message_unenable"
+            android:background="@drawable/bg_message_del_all_unenable"
+            />
+
+        <Button
+            android:id="@+id/del"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_marginLeft="35dp"
+            android:layout_marginRight="36dp"
+            android:textSize="15sp"
+            android:textColor="@color/message_del_color"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:background="@drawable/bg_message_del_selector"
+            android:singleLine="true"
+            />
+
+    </LinearLayout>
+
+</LinearLayout>

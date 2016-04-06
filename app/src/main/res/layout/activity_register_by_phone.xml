@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/root"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/login_edit_maginr"
+        android:layout_marginRight="@dimen/login_edit_maginr"
+        android:layout_marginTop="30dp"
+        android:background="@drawable/bg_reg_by_phone"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15.5dp"
+            android:layout_marginRight="15dp"
+            android:text="+86"
+            android:textColor="#999999"
+            android:textSize="16sp" />
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="fill_parent"
+            android:background="@drawable/phone_devider" />
+
+        <com.cylan.jiafeigou.widget.EditDelText
+            android:id="@+id/input"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:hint="@string/PHONE_NUMBER"
+            android:inputType="number"
+            android:maxLength="11"
+            android:paddingLeft="10dp"
+            android:textColor="@color/text_color"
+            android:textColorHint="@color/hint_text_color"
+            android:textSize="@dimen/login_edit_size" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layout_code"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/login_edit_maginr"
+        android:layout_marginRight="@dimen/login_edit_maginr"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/edit_top"
+        android:gravity="center_vertical"
+        android:paddingLeft="@dimen/login_edit_magin">
+
+        <EditText
+            android:id="@+id/code"
+            style="@style/edittext"
+            android:layout_marginLeft="0dp"
+            android:layout_weight="1"
+            android:background="@null"
+            android:gravity="center_vertical"
+            android:hint="@string/ENTER_CODE"
+            android:inputType="number"
+            android:paddingLeft="0dp"
+            android:maxLength="6"
+            android:textColor="@color/text_color"
+            android:textColorHint="@color/hint_text_color"
+            android:textSize="@dimen/login_edit_size" />
+
+        <Button
+            android:id="@+id/get_code"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/login_btn_maginbottom"
+            android:background="@drawable/btn_getcode_selector"
+            android:text="@string/GET_CODE"
+            android:textColor="#3d3d3d"
+            android:textSize="@dimen/login_forget_size" />
+    </LinearLayout>
+
+    <EditText
+        android:id="@+id/pwd"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/login_edit_maginr"
+        android:layout_marginRight="@dimen/login_edit_maginr"
+        android:layout_marginTop="-2dp"
+        android:background="@drawable/edit_bottom"
+        android:gravity="center_vertical"
+        android:hint="@string/PASSWORD"
+        android:inputType="textPassword"
+        android:maxLength="12"
+        android:digits="@string/input_rule"
+        android:paddingLeft="@dimen/login_edit_magin"
+        android:textColor="@color/text_color"
+        android:textColorHint="@color/hint_text_color"
+        android:textSize="@dimen/login_edit_size" />
+
+    <Button
+        android:id="@+id/confirm"
+        style="@style/submit_button"
+        android:layout_width="fill_parent"
+        android:layout_gravity="center"
+        android:layout_marginLeft="@dimen/login_edit_maginr"
+        android:layout_marginRight="@dimen/login_edit_maginr"
+        android:layout_marginTop="@dimen/login_btn"
+        android:background="@drawable/btn_login_selector"
+        android:text="@string/OK"
+        android:textColor="#ffffff"
+        android:textSize="18sp" />
+
+    <LinearLayout
+        android:id="@+id/layout_agreement"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/login_edit_maginr"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingBottom="@dimen/login_edit_maginr"
+        android:paddingTop="@dimen/login_edit_maginr"
+        android:visibility="visible">
+
+        <CheckBox
+            android:id="@+id/isread"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:button="@drawable/cb_isread_selector"
+            android:checked="true" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/magin"
+            android:text="@string/AGREE"
+            android:textColor="@color/hint_text_color"
+            android:textSize="@dimen/aggre_size" />
+
+        <TextView
+            android:id="@+id/agreement"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:focusable="true"
+            android:gravity="center_vertical"
+            android:nextFocusDown="@+id/register_by_email"
+            android:paddingLeft="@dimen/magin"
+            android:paddingRight="@dimen/magin"
+            android:singleLine="true"
+            android:text="@string/TERM_OF_USE"
+            android:textColor="@color/newuser_text_color"
+            android:textSize="@dimen/aggre_size" />
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <TextView
+            android:id="@+id/register_by_email"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:focusable="true"
+            android:padding="25dp"
+            android:text="@string/EMAIL_SIGNUP"
+            android:textColor="@color/third_login_text_color"
+            android:textSize="15sp" />
+    </RelativeLayout>
+
+</LinearLayout>

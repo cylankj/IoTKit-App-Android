@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_editscenc"
+    android:gravity="bottom|top"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/code_magin"
+        android:background="@drawable/bg_config"
+        android:orientation="vertical">
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="0.5dp"
+            android:background="@color/setting_line_color" />
+
+        <LinearLayout
+            android:id="@+id/doorbell_devicename"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_setting_item_selector"
+            android:orientation="horizontal">
+
+
+            <TextView
+                style="@style/setting_text"
+                android:layout_width="wrap_content"
+                android:drawableLeft="@drawable/ico_doorbell_name"
+                android:text="@string/EQUIPMENT_NAME" />
+
+            <TextView
+                android:id="@+id/name"
+                style="@style/setting_text_value"
+                android:layout_weight="1"
+                android:drawablePadding="@dimen/login_edit_magin"
+                android:drawableRight="@drawable/setting_icon_arrow"
+                android:gravity="right"
+                android:visibility="visible" />
+
+        </LinearLayout>
+
+
+        <View
+            style="@style/setting_divider"
+            android:layout_marginLeft="55dp" />
+
+        <LinearLayout
+            android:id="@+id/doorbell_location_layout"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_setting_item_selector">
+
+            <TextView
+                style="@style/setting_text"
+                android:layout_width="wrap_content"
+                android:drawableLeft="@drawable/ico_doorbell_setting_loction"
+                android:text="@string/LOCATION_SETTING" />
+
+            <TextView
+                android:id="@+id/doorbell_location_value"
+                style="@style/setting_text_value"
+                android:layout_weight="1"
+                android:drawablePadding="@dimen/login_edit_magin"
+                android:drawableRight="@drawable/setting_icon_arrow"
+                android:gravity="right"
+                android:visibility="visible" />
+
+
+        </LinearLayout>
+
+        <View
+            style="@style/setting_divider"
+            android:layout_marginLeft="55dp" />
+
+        <LinearLayout
+            android:id="@+id/doorbell_deviceinfo"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_setting_item_selector"
+            android:orientation="horizontal">
+
+            <TextView
+                style="@style/setting_text"
+                android:layout_width="wrap_content"
+                android:drawableLeft="@drawable/ico_device_set"
+                android:text="@string/EQUIPMENT_INFO" />
+
+            <TextView
+                android:id="@+id/vision"
+                style="@style/setting_text_value"
+                android:layout_weight="1"
+                android:drawablePadding="@dimen/login_edit_magin"
+                android:drawableRight="@drawable/setting_icon_arrow"
+                android:gravity="right"
+                android:singleLine="true"
+                android:visibility="visible" />
+        </LinearLayout>
+
+        <View
+            style="@style/setting_divider"
+            android:layout_marginLeft="55dp" />
+
+        <LinearLayout
+            android:id="@+id/doorbell_wificonfiguration"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_setting_item_selector">
+
+            <TextView
+                style="@style/setting_text"
+                android:layout_width="wrap_content"
+                android:drawableLeft="@drawable/ico_video_wifi"
+                android:text="@string/WIFI" />
+
+            <TextView
+                android:id="@+id/wifiname"
+                style="@style/setting_text_value"
+                android:layout_weight="1"
+                android:drawablePadding="@dimen/login_edit_magin"
+                android:drawableRight="@drawable/setting_icon_arrow"
+                android:gravity="right"
+                android:visibility="visible" />
+
+        </LinearLayout>
+    </LinearLayout>
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/setting_line_color" />
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="0.5dp"
+        android:layout_marginTop="@dimen/code_magin"
+        android:background="@color/setting_line_color"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/doorbell_setting_voice_layout"
+        style="@style/setting_text"
+        android:layout_width="match_parent"
+        android:background="@drawable/bg_setting_item_selector"
+        android:drawableLeft="@drawable/ico_doorbell_device_voice"
+        android:drawableRight="@drawable/setting_icon_arrow"
+        android:gravity="center_vertical"
+        android:visibility="gone" />
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/setting_line_color"
+        android:visibility="gone" />
+
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="0.5dp"
+        android:layout_marginTop="@dimen/code_magin"
+        android:background="@color/setting_line_color" />
+
+    <TextView
+        android:id="@+id/doorbell_setting_nearshare"
+        style="@style/setting_text"
+        android:layout_width="fill_parent"
+        android:background="@drawable/bg_setting_item_selector"
+        android:drawableLeft="@drawable/ico_doorbell_nearshare"
+        android:drawableRight="@drawable/setting_icon_arrow"
+        android:text="@string/SHARE" />
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/setting_line_color" />
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="0.5dp"
+        android:layout_marginTop="@dimen/code_magin"
+        android:background="@color/setting_line_color" />
+
+    <TextView
+        android:id="@+id/doorbell_setting_clear_record"
+        style="@style/submit_button"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_setting_item_selector"
+        android:gravity="center"
+        android:text="@string/DOOR_CLEAR_REOCRD"
+        android:textColor="@color/clear_record_color"
+        android:textSize="17sp" />
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/setting_line_color" />
+
+    <Button
+        android:id="@+id/delete_device"
+        style="@style/submit_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/login_edit_maginr"
+        android:layout_marginRight="@dimen/login_edit_maginr"
+        android:layout_marginTop="@dimen/code_magin"
+        android:background="@drawable/btn_deldevice_selector"
+        android:text="@string/DELETE_CID"
+        android:textColor="@color/delete_device_color"
+        android:textSize="18sp"
+        android:visibility="visible" />
+
+</LinearLayout>
+

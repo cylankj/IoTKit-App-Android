@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/root"
+    style="@style/root">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/titlebar"
+        android:background="@drawable/bg_editscenc"
+        android:clickable="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="@dimen/code_magin">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/bg_config">
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_config_item_selector"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        style="@style/setting_text"
+                        android:layout_weight="1"
+                        android:gravity="center_vertical"
+                        android:paddingBottom="0dp"
+                        android:paddingTop="0dp"
+                        android:text="@string/PUSH_MSG"
+                        android:textSize="@dimen/area_code_size" />
+
+                    <ToggleButton
+                        android:id="@+id/toggle_ispush"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="@dimen/login_edit_magin"
+                        android:background="@drawable/checkbox_btn"
+                        android:checked="true"
+                        android:textOff=""
+                        android:textOn="" />
+                </LinearLayout>
+
+                <View
+                    android:id="@+id/devide"
+                    style="@style/setting_divider"
+                    android:layout_marginLeft="@dimen/login_edit_magin"
+                    android:visibility="gone" />
+
+                <LinearLayout
+                    android:id="@+id/layout_set_vioce"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <LinearLayout
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bg_config_item_selector"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            style="@style/setting_text"
+                            android:layout_weight="1"
+                            android:gravity="center_vertical"
+                            android:paddingBottom="0dp"
+                            android:paddingTop="0dp"
+                            android:text="@string/IN_APP_SOUND"
+                            android:textSize="@dimen/area_code_size" />
+
+                        <ToggleButton
+                            android:id="@+id/toggle_isopenvoice"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="@dimen/login_edit_magin"
+                            android:background="@drawable/checkbox_btn"
+                            android:checked="true"
+                            android:textOff=""
+                            android:textOn="" />
+                    </LinearLayout>
+
+                    <View
+                        style="@style/setting_divider"
+                        android:layout_marginLeft="@dimen/login_edit_magin" />
+
+                    <LinearLayout
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bg_config_item_selector"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            style="@style/setting_text"
+                            android:layout_weight="1"
+                            android:gravity="center_vertical"
+                            android:paddingBottom="0dp"
+                            android:paddingTop="0dp"
+                            android:text="@string/IN_APP_VIBRATE"
+                            android:textSize="@dimen/area_code_size" />
+
+                        <ToggleButton
+                            android:id="@+id/toggle_isopenvibrate"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="@dimen/login_edit_magin"
+                            android:background="@drawable/checkbox_btn"
+                            android:checked="true"
+                            android:textOff=""
+                            android:textOn="" />
+                    </LinearLayout>
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/code_magin"
+                android:background="@drawable/bg_config">
+
+                <TextView
+                    android:id="@+id/clear_cache"
+                    style="@style/setting_text"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_config_item_selector"
+                    android:drawableRight="@drawable/setting_icon_arrow"
+                    android:gravity="center_vertical"
+                    android:paddingBottom="0dp"
+                    android:paddingTop="0dp"
+                    android:text="@string/CLEAR_DATA"
+                    android:textSize="@dimen/area_code_size" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/bg_config"
+                android:layout_marginTop="@dimen/code_magin">
+
+                <RelativeLayout
+                    android:id="@+id/share"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_config_item_selector">
+
+                    <View
+                        android:layout_width="fill_parent"
+                        android:layout_height="0.5dp"
+                        android:background="@color/setting_line_color" />
+
+                    <TextView
+                        style="@style/setting_text"
+                        android:layout_width="match_parent"
+                        android:drawableRight="@drawable/setting_icon_arrow"
+                        android:text="@string/app_share" />
+
+                    <View
+                        style="@style/setting_divider"
+                        android:layout_alignParentBottom="true"
+                        android:layout_marginLeft="@dimen/login_edit_magin" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/about"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_config_item_selector">
+
+                    <TextView
+                        style="@style/setting_text"
+                        android:layout_width="wrap_content"
+                        android:text="@string/ABOUT" />
+
+                    <ImageView
+                        android:id="@+id/new_version_remind"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="40dip"
+                        android:background="@drawable/ico_msg_remind"
+                        android:visibility="gone" />
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="15dip"
+                        android:src="@drawable/setting_icon_arrow" />
+                </RelativeLayout>
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
+
+</RelativeLayout>

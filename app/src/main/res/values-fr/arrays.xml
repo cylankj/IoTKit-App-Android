@@ -1,0 +1,163 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<resources>
+
+    <string-array name="weeks">
+        <item>Tous Les Lundis</item>
+        <item>Tous Les Mardis</item>
+        <item>Tous Les Mercredis</item>
+        <item>Tous Les Jeudis</item>
+        <item>Tous Les Vendredis</item>
+        <item>Tous Les Samedis</item>
+        <item>Tous Les Dimanches</item>
+    </string-array>
+    <string-array name="xingqi">
+        <item>Dimanche</item>
+        <item>Lundi</item>
+        <item>Mardi</item>
+        <item>Mercredi</item>
+        <item>Jeudi</item>
+        <item>Vendredi</item>
+        <item>Samedi</item>
+    </string-array>
+    <string-array name="show_weeks">
+        <item>Lundi</item>
+        <item>Mardi</item>
+        <item>Mercredi</item>
+        <item>Jeudi</item>
+        <item>Vendredi</item>
+        <item>Samedi</item>
+        <item>Dimanche</item>
+    </string-array>
+    <string-array name="device_set_voice_name">
+        <item>Mute </item>
+        <item>Aboiement </item>
+        <item>Alarme </item>
+    </string-array>
+    <string-array name="modes">
+        <item>Normal</item>
+        <item>à La Maison</item>
+        <item>Dehors La Maison</item>
+    </string-array>
+    <string-array name="hours">
+        <item>00:00</item>
+        <item>01:00</item>
+        <item>02.00</item>
+        <item>03.00</item>
+        <item>04:00</item>
+        <item>05:00</item>
+        <item>06:00</item>
+        <item>07:00</item>
+        <item>08:00</item>
+        <item>09:00</item>
+        <item>10:00</item>
+        <item>11:00</item>
+        <item>12.00</item>
+        <item>13.00</item>
+        <item>14:00</item>
+        <item>15:00</item>
+        <item>16:00</item>
+        <item>17:00</item>
+        <item>18:00</item>
+        <item>19:00</item>
+        <item>20:00</item>
+        <item>21:00</item>
+        <item>22.00</item>
+        <item>23:00</item>
+    </string-array>
+    <string-array name="addvideo_title">
+        <item>Ajouter L’Appareil</item>
+        <item>Appareils à Proximité</item>
+        <item>Appareils à Proximité</item>
+        <item>Lier L’Appareil</item>
+        <item>Amélioration de l’équipement</item>
+    </string-array>
+    <string-array name="video_direction">
+        <item>Racite（Sens Direct）</item>
+        <item>Interversion（Rotation De 180°)</item>
+    </string-array>
+    <string-array name="error_msg">
+        <item>"Erreur De Base De Données"</item>
+        <item/>
+        <item>Erreur Inconnue</item>
+        <item>Heures Supplémentaires De Conversation </item>
+        <item>CID n’est pas exist</item>
+        <item>L’action d’appele n’exister pas</item>
+        <item>Le module d’appele n’exister pas</item>
+        <item>Erreur Des Paramètres</item>
+        <item>Erreur D\’Appel De Fonction</item>
+        <item>Votre appareil a été binding, ne peut pas le binding réitératif </item>
+        <item>CID n’est pas exist</item>
+        <item>Vous n\’êtes pas encore inscrit, inscrivez s\’il vous plaît</item>
+        <item>Le compte ou le mot de passe est incorrect, reentrez </item>
+        <item>RET_ELOGIN_VCODE_ERROR</item>
+        <item>Vous avez déjà inscrit, vous pouvez connecter directement </item>
+        <item>Le code de vérification a dépassé le délai, obtenez de nouveau</item>
+        <item>L’appareil n’est pas activé</item>
+        <item>Impossible de créer un paquet de compression</item>
+        <item>Impossible de compresser le document</item>
+        <item>Le document n’exister pas</item>
+        <item>Appels d\’interface de SMS échouent</item>
+        <item>CID a été épuisé</item>
+        <item>Vous n\’êtes pas connecté, connectez s\’il vous plaît</item>
+        <item>Le compte est anormal, reconnectez</item>
+        <item>ECHANGEPASS_SAME</item>
+        <item>Impossible de télécharger du document</item>
+        <item>Impossible de copier le document</item>
+        <item>Entrez le code de vérification correcte</item>
+        <item>Être en train de gérer le code à deux dimensions, patientez...</item>
+        <item>Le mot de passe original est incorrect, reentrez s\’il vous plaît</item>
+        <!--29-->
+        <item>Le compte que vous entrez n\’a pas été enregistré</item>
+        <!--30-->
+        <item>Le mot de passe original est même avec le nouveau mot de passe</item>
+        <item>Impossible de connecter, vous n\’êtes pas autorisé</item>
+        <item>Le bout de vidéo n’est pas en ligne</item>
+        <!--33-->
+        <item/>
+        <!--34-->
+        <item>CID ne correspond pas avec SN</item>
+        <item>Le compte n’est pas en ligne</item>
+        <item>Les réglages sont enregistrés, lorsque le bout de vidéo est en ligne, prenez effet automatiquement</item>
+        <item>Impossible de télécharger des document sur l\’OSS </item>
+        <!--38-->
+        <item>Le nom existe déjà, reentrez s\’il vous plaît</item>
+        <item>Pas De Données </item>
+        <item>L\’opération échoue</item>
+        <item>CID a été lié par d\’autres numéros de compte </item>
+        <item>CID n’est pas lie</item>
+        <!--43-->
+        <item>CID est déjà lie</item>
+        <!--44-->
+        <item>Cette scène a également des appareils qui ne dégager pas le lien, vous ne pouvez pas supprimer </item>
+        <!--45-->
+        <item>Cette scène est la dernière scène, ne peut pas être supprimée </item>
+        <!--46-->
+        <item>Nom de l’emplacement existe déjà</item>
+        <!--47-->
+        <item>Le réglage a réussi, prenez effet lorsque la scène est en mode normal</item>
+        <!--48-->
+        <item>Erreur de type de fichier d’analyse, téléchargez le paquet d’apk ou de bin </item>
+        <item>Erreur de numéro de version d’analyse, s\’il vous plaît téléchargez un paquet avec quatre numéros de version </item>
+        <item>Erreur de nom du domaine de fichier d’analyse, s\’il vous plaît téléchargez un paquet de nom de domaine correct</item>
+        <!--51-->
+        <item>L’envoi des emails échoue</item>
+        <item>Ce numéro de téléphone a été utilisé, essayez un autre</item>
+        <item>Cet email a été utilisé, essayez un autre</item>
+        <!--54-->
+        <item>Partager échoue, ce compte n’est pas inscrit </item>
+        <!--55-->
+        <item>Ce compte a été partagé</item>
+        <!--56-->
+        <item>CID n’a pas été lié,  a besoin d\’ouvrir ap</item>
+        <!--57-->
+        <item>Vous ne pouvez pas partager votre propre </item>
+        <!--58-->
+        <item>CID n’est pas lié reconnectez</item>
+    </string-array>
+
+    <string-array name="show_sensitive">
+        <item>Bas</item>
+        <item>Moyen</item>
+        <item>Haut</item>
+    </string-array>
+</resources>

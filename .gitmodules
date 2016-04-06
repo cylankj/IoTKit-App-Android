@@ -1,0 +1,3 @@
+[submodule "WebRtcAndroid"]
+		path = WebRtcAndroid
+		url = ssh://192.168.100.221:29418/WebRtcAndroid

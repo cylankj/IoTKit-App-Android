@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_adddevice"
+    android:clickable="true"
+    android:orientation="horizontal">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center">
+
+    <TextView
+        android:id="@+id/video"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="wrap_content"
+        android:clickable="false"
+        android:drawablePadding="10dp"
+        android:drawableTop="@drawable/btn_adddevice_video_selector"
+        android:gravity="center"
+        android:singleLine="true"
+        android:text="@string/DOG_CAMERA_NAME"
+        android:textColor="@color/add_device_text_color"
+        android:textSize="14sp"
+         />
+
+    <TextView
+        android:id="@+id/doorbell"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:singleLine="true"
+        android:layout_height="wrap_content"
+        android:clickable="false"
+        android:drawablePadding="10dp"
+        android:drawableTop="@drawable/btn_adddevice_doorbell_selector"
+        android:gravity="center"
+        android:text="@string/CALL_CAMERA_NAME"
+        android:textColor="@color/add_device_text_color"
+        android:textSize="14sp"
+         />
+
+    <TextView
+        android:id="@+id/efamily"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="wrap_content"
+        android:clickable="false"
+        android:drawablePadding="10dp"
+        android:drawableTop="@drawable/btn_adddevice_efamily_selector"
+        android:gravity="center"
+        android:text="@string/DOOR_MAGNET_NAME"
+        android:singleLine="true"
+        android:textColor="@color/add_device_text_color"
+        android:textSize="14sp"
+         />
+
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/btn_add"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="16dp"
+        android:layout_above="@id/view"
+        android:src="@drawable/btn_addvideo_selector" />
+
+    <View
+        android:id="@+id/view"
+        android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
+        android:layout_height="16dp" />
+</RelativeLayout>

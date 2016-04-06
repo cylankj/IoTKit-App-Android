@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_editscenc"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="0.5dp"
+            android:layout_marginTop="@dimen/code_magin"
+            android:background="@color/setting_line_color"
+            android:visibility="gone" />
+
+        <ListView
+            android:id="@+id/voice_list"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/bg_config"
+            android:divider="#e0e0e0"
+            android:dividerHeight="0.5dp"
+            android:paddingBottom="0.2dp"
+            android:paddingTop="0.2dp" />
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="0.5dp"
+            android:background="@color/setting_line_color"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/device_voice_info"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="15dp"
+            android:paddingTop="8dp"
+            android:text="@string/AUDIBLE_ALERT"
+            android:textColor="#6d6d72"
+            android:textSize="15sp"
+            android:visibility="gone" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layout_warm_voice"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/bg_addshare_default"
+        android:gravity="center_vertical"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
+            android:text="@string/REPEAT_PLAY"
+            android:textColor="#000000"
+            android:textSize="17sp" />
+
+        <TextView
+            android:id="@+id/warm_voice_length"
+            style="@style/setting_text_value"
+            android:drawablePadding="@dimen/login_edit_magin"
+            android:drawableRight="@drawable/setting_icon_arrow"
+            android:visibility="visible" />
+    </LinearLayout>
+
+</LinearLayout>

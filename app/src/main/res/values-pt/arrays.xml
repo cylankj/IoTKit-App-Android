@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources>
+
+    <string-array name="weeks">
+        <item>Segunda-feira</item>
+        <item>Terça-feira</item>
+        <item>Quarta-feira</item>
+        <item>Quinta-feira</item>
+        <item>Sexta-feira</item>
+        <item>Sábado</item>
+        <item>Domingo</item>
+    </string-array>
+    <string-array name="xingqi">
+        <item>Segunda-feira</item>
+        <item>Terça-feira</item>
+        <item>Quarta-feira</item>
+        <item>Quinta-feira</item>
+        <item>Sexta-feira</item>
+        <item>Sábado</item>
+        <item>Domingo</item>
+    </string-array>
+    <string-array name="show_weeks">
+        <item>Segunda-feira</item>
+        <item>Terça-feira</item>
+        <item>Quarta-feira</item>
+        <item>Quinta-feira</item>
+        <item>Sexta-feira</item>
+        <item>Sábado</item>
+        <item>Domingo</item>
+    </string-array>
+    <string-array name="device_set_voice_name">
+        <item>Mudo</item>
+        <item>Som bark</item>
+        <item>Sirens</item>
+    </string-array>
+    <string-array name="modes">
+        <item>Modo normal</item>
+        <item>A casa</item>
+        <item>Sair da casa</item>
+    </string-array>
+    <string-array name="hours">
+        <item>00:00</item>
+        <item>01:00</item>
+        <item>02.00</item>
+        <item>03.00</item>
+        <item>04:00</item>
+        <item>05:00</item>
+        <item>06:00</item>
+        <item>07:00</item>
+        <item>08:00</item>
+        <item>09:00</item>
+        <item>10:00</item>
+        <item>11:00</item>
+        <item>12.00</item>
+        <item>13.00</item>
+        <item>14:00</item>
+        <item>15:00</item>
+        <item>16:00</item>
+        <item>17:00</item>
+        <item>18:00</item>
+        <item>19:00</item>
+        <item>20:00</item>
+        <item>21:00</item>
+        <item>22.00</item>
+        <item>23:00</item>
+    </string-array>
+    <string-array name="addvideo_title">
+        <item>Adicionar dispositivo</item>
+        <item>Dispositivos próximos</item>
+        <item>Configure WiFi do dispositivo</item>
+        <item>Liga o dispositivo</item>
+        <item>atualização de equipamentos</item>
+    </string-array>
+    <string-array name="video_direction">
+        <item>Avançado (padrão)</item>
+        <item>Invertido (girado 180 °)</item>
+    </string-array>
+    <string-array name="error_msg">
+        <!-- -1 对应服务器返回的ret值 -->
+        <item>Erro no banco de dados</item>
+        <item/>
+        <item>Erro desconhecido</item>
+        <item>Diálogo timeout</item>
+        <item>Cid Não existe</item>
+        <item>A ação chamado não existe</item>
+        <item>O módulo chamado não existe</item>
+        <item>Erro de parâmetro</item>
+        <item>Erro de função chamada</item>
+        <item>O seu dispositivo já foi ligado, não pode repetir.</item>
+        <item>CID não existe</item>
+        <item>Você ainda não inscreve, por favor inscreve</item>
+        <item>conta ou senha de erro</item>
+        <item>Digite o código de verificação correto</item>
+        <item>Já inscreveu, você pode login directamente</item>
+        <item>Código expirou, por favor, readquirir</item>
+        <item>O dispositivo não está ativado</item>
+        <item>Falhou a criar pacote compactado</item>
+        <item>Falhou a comprimir documento</item>
+        <item>O documento não existe</item>
+        <item>Falhada chamada de interface de SMS</item>
+        <item>CID foi esgotado</item>
+        <item>Você ainda não login, por favor login primeiro</item>
+        <item>Conta anormal, por favor faça o login novamente</item>
+        <!--pass_sam 23 -->
+        <item>ECHANGEPASS_SAME</item>
+        <item>Falhou a carregar documento</item>
+        <item>Falhou a copiar documento</item>
+        <item>Digite o código de verificação correto</item>
+        <item>Está gerar o código bidimensional, por favor aguarde...</item>
+        <item>A original senha é incorreta, digite novamente</item>
+        <item>O número de telefone digitado não está registrado</item>
+        <item>Senha original é igual com a nova senha</item>
+        <item>Ligação não é possível, você não está autorizado</item>
+        <item>O lado de vídeo não está online</item>
+        <!--33-->
+        <item/>
+        <item>CID e SN não coincidem</item>
+        <item>A conta não está online</item>
+        <item>As definições são guardadas, entram em vigor automaticamente quando o lado de vídeo está online</item>
+        <item>Falhou a carregar arquivos para o OSS</item>
+        <item>Nome já existe, por favor digitar novamente</item>
+        <item>Sem dados agora</item>
+        <!--40-->
+        <item>EBUCKET_OPT</item>
+        <item>CID já foi ligado a outras contas</item>
+        <item>CID não foi ligado</item>
+        <item>CID já foi ligado</item>
+        <item>Ainda há dispositivos que não foi liberados neste cenário, não pode apagar.</item>
+        <item>Este cenário é último, não pode apagar.</item>
+        <item>Nome do local já existe</item>
+        <item>Configurar, para entrar em vigor quando a cena modo normal</item>
+        <item>Falhou a analisar o tipo de arquivo, faça upload o pacote de apk ou bin</item>
+        <item>Falhou a analisar o número de edição, faça upload o pacote com número de edição de quatro dígitos</item>
+        <item>Falhou a analisar o nome do domínio de arquivo, faça upload o pacote com nome correto</item>
+        <item>Falhou a enviar e-mail</item>
+        <item>Este número de telefone foi usado, tente a alterar！</item>
+        <item>Email foi usado, tente a alterar！</item>
+        <item>Essa conta não é registrado</item>
+        <item>Esta conta já foi compartilhada</item>
+        <item>CID não foi ligado，por favor reinicie AP</item>
+        <item>Não pode compartilhar ao seu próprio</item>
+        <item>CID não foi ligado，por favor login novamente</item>
+    </string-array>
+
+    <string-array name="show_sensitive">
+        <item>Baixo</item>
+        <item>Médio</item>
+        <item>Alto</item>
+    </string-array>
+
+</resources>

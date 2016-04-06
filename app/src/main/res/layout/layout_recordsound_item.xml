@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:custom="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#8e8e93"
+        android:textSize="13sp"
+        android:text="6月28日 12:29"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="25dp" />
+
+    <RelativeLayout
+        android:id="@+id/layout"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_below="@+id/time">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:text="已读"
+            android:layout_marginRight="6dp"
+            android:textSize="13sp"
+            android:textColor="#8e8e93"
+            android:layout_toLeftOf="@+id/sound_layout"
+            android:visibility="gone" />
+
+        <ImageView
+            android:layout_width="46dp"
+            android:layout_height="46dp"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@+id/sound_layout"
+            android:src="@drawable/ico_send_failed"
+            android:scaleType="center"
+            android:visibility="gone" />
+
+        <ProgressBar
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:indeterminate="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="13dp"
+            android:indeterminateBehavior="repeat"
+            android:layout_toLeftOf="@+id/sound_layout"
+            android:indeterminateDrawable="@anim/listview_loading"
+            android:visibility="gone" />
+
+        <LinearLayout
+            android:id="@+id/sound_layout"
+            android:layout_width="230dp"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="@drawable/bg_sound"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="10dp"
+            android:gravity="center_vertical">
+
+            <ImageView
+                android:id="@+id/play_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/btn_record_play_selector" />
+
+            <TextView
+                android:layout_gravity="center_vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:text="06:00"
+                android:textSize="13sp"
+                android:textColor="@color/white"
+                android:id="@+id/duration" />
+
+            <com.cylan.jiafeigou.widget.NumberProgressBar
+                custom:progress_text_visibility="invisible"
+                style="@style/NumberProgressBar_Default"
+                android:layout_gravity="center_vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                custom:progress="0"
+                android:id="@+id/progress"
+                android:layout_marginLeft="6dp" />
+        </LinearLayout>
+    </RelativeLayout>
+</RelativeLayout>

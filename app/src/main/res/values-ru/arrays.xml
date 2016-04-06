@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources>
+
+    <string-array name="weeks">
+        <item>Кажд. пн</item>
+        <item>Кажд. вт</item>
+        <item>Кажд. ср</item>
+        <item>Кажд. чт</item>
+        <item>Кажд. пт</item>
+        <item>Кажд. сб</item>
+        <item>Кажд. вскр</item>
+    </string-array>
+    <string-array name="xingqi">
+        <item>Вскр</item>
+        <item>Пн</item>
+        <item>Вт</item>
+        <item>Ср</item>
+        <item>Чт</item>
+        <item>Пт</item>
+        <item>Сб</item>
+    </string-array>
+    <string-array name="show_weeks">
+        <item>Кажд. пн</item>
+        <item>Кажд. вт</item>
+        <item>Кажд. ср</item>
+        <item>Кажд. чт</item>
+        <item>Кажд. пт</item>
+        <item>Кажд. сб</item>
+        <item>Кажд. вскр</item>
+    </string-array>
+    <string-array name="device_set_voice_name">
+        <item>Бесшумный режим</item>
+        <item>Звук лая</item>
+        <item>Оповещение</item>
+    </string-array>
+    <string-array name="modes">
+        <item>нормальный</item>
+        <item>вернуться</item>
+        <item>уходить</item>
+    </string-array>
+    <string-array name="hours">
+        <item>00:00</item>
+        <item>01:00</item>
+        <item>02.00</item>
+        <item>03.00</item>
+        <item>04:00</item>
+        <item>05:00</item>
+        <item>06:00</item>
+        <item>07:00</item>
+        <item>08:00</item>
+        <item>09:00</item>
+        <item>10:00</item>
+        <item>11:00</item>
+        <item>12.00</item>
+        <item>13.00</item>
+        <item>14:00</item>
+        <item>15:00</item>
+        <item>16:00</item>
+        <item>17:00</item>
+        <item>18:00</item>
+        <item>19:00</item>
+        <item>20:00</item>
+        <item>21:00</item>
+        <item>22.00</item>
+        <item>23:00</item>
+    </string-array>
+    <string-array name="addvideo_title">
+        <item>Добавить оборудование</item>
+        <item>Последнее использованное оборудование</item>
+        <item>Настройки WiFi</item>
+        <item>Отключить оборудование</item>
+        <item>обновление оборудования</item>
+    </string-array>
+    <string-array name="video_direction">
+        <item>По умолчанию</item>
+        <item>Перевернуть на 180°)</item>
+    </string-array>
+    <string-array name="error_msg">
+        <item>Error data</item>
+        <item />
+        <item>Error</item>
+        <item>Session timeout</item>
+        <item>CID not exist</item>
+        <item>Error action</item>
+        <item>Error model</item>
+        <item>Error param</item>
+        <item>Error invoke</item>
+        <!--8-->
+        <item>CID is already binded</item>
+        <item>CID not exist</item>
+        <item>не действующий аккуант</item>
+        <item>ошибка  счета  или  пароль</item>
+        <item>Неверный  код проверки</item>
+        <item>у данного Аккуана есть привязки</item>
+        <item>Неверный  код проверки</item>
+        <!--15-->
+        <item>CID unenable</item>
+        <item>Fail create ZIP</item>
+        <item>Fail create ZIP</item>
+        <item>File not exist</item>
+        <item>SMS send error</item>
+        <!--20-->
+        <item>CID exhausted</item>
+        <item>Войти с ошибки</item>
+        <item>Session timeout</item>
+        <item>Одинаково с старого пароля</item>
+        <item>Отправить провал</item>
+        <item>Fail copy file</item>
+        <item>Неверный  код проверки</item>
+        <!--27-->
+        <item>正在生成二维码，请等待...</item>
+        <!--28-->
+        <item>Старый пароль не верный</item>
+        <!--29-->
+        <item>Номер счета без регистрации</item>
+        <!--30-->
+        <item>В тот же пароль и новый пароль</item>
+        <!--31-->
+        <item>Permission denied</item>
+        <!--32-->
+        <item>Выключено с интернета</item>
+        <!--33-->
+        <item />
+        <item>CID and SN do not match</item>
+        <item>Account is not online</item>
+        <item>Успешно установлено</item>
+        <item>Войти с ошибки</item>
+        <item>имя  уже существует</item>
+        <item>Не ту содержания</item>
+        <!--40-->
+        <item>EBUCKET_OPT</item>
+        <item>CID is already binded by other</item>
+        <item>CID not binded</item>
+        <item>CID is already binded by self</item>
+        <item>Пожалуйста, сначала  удалить устройство</item>
+        <item>Невозможно удалить</item>
+        <item>Место Название уже существует</item>
+        <item>Успешно установлено</item>
+        <item>解析文件类型错误，请上传apk或bin包</item>
+        <item>解析版本号错误，请上传4位版本号的包</item>
+        <!--50-->
+        <item>解析文件域名错误，请上传正确的域名包</item>
+        <item>Почте провал</item>
+        <item>Почта уже используется</item>
+        <item>Телефон номер, которые уже используются</item>
+        <item>Поделиться неудачи, недействительным номер счета</item>
+        <item>Номер счета уже поделиться</item>
+        <item>Оборудование нет привязки</item>
+        <item>Not share for yourself</item>
+        <!--58-->
+        <item>cid is not binded, please relogin</item>
+    </string-array>
+
+    <string-array name="show_sensitive">
+        <item>Низкая</item>
+        <item>Средняя</item>
+        <item>Высокая</item>
+    </string-array>
+</resources>

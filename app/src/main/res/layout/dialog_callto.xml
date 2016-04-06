@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_horizontal"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:id="@+id/dialog_layout"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:gravity="center_horizontal"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/textinfo"
+            style="@style/comment_bottom_dialog_style"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_bottom_dialog_top"
+            android:gravity="center"
+            android:textColor="@color/title_text_color"
+            android:textSize="13sp" />
+
+        <Button
+            android:id="@+id/btn_call"
+            style="@style/comment_bottom_dialog_style"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_bottom_dialog_middle_selector"
+            android:text="@string/callto"
+            android:textColor="@color/cancle_text_color"
+            android:textSize="@dimen/login_btn_textsize" />
+
+        <Button
+            android:id="@+id/btn_copy"
+            style="@style/comment_bottom_dialog_style"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_dialog_item1_selector"
+            android:text="@string/copy"
+            android:textColor="@color/cancle_text_color"
+            android:textSize="@dimen/login_btn_textsize" />
+
+        <TextView
+            android:id="@+id/btn_cancel"
+            style="@style/comment_bottom_dialog_style"
+            android:layout_alignParentBottom="true"
+            android:layout_margin="@dimen/title_magin"
+            android:background="@drawable/bg_dialog_cancle_selector"
+            android:gravity="center"
+            android:text="@string/CANCEL"
+            android:textColor="@color/cancle_text_color"
+            android:textSize="@dimen/login_btn_textsize" />
+    </LinearLayout>
+
+</RelativeLayout>

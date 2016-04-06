@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/wifi_name"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_setting_item_selector"
+    android:drawablePadding="@dimen/list_item_padding"
+    android:drawableRight="@drawable/setting_icon_arrow"
+    android:gravity="center_vertical"
+    android:paddingLeft="@dimen/login_edit_magin"
+    android:paddingRight="@dimen/login_edit_magin"
+    android:textColor="@color/text_color"
+    android:textSize="@dimen/area_code_size" />

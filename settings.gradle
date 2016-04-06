@@ -1,1 +1,3 @@
-include ':app'
+include ':app', ':jlib', ':bugly', ':mta'
+include ':WebRtc'
+project(':WebRtc').projectDir = new File(settingsDir, '../WebRtc/app')

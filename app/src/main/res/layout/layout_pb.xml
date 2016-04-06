@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layout_pb"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="#ffffff"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:visibility="visible">
+
+    <ImageView
+        android:id="@+id/seach_pb"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="3"
+        android:scaleType="fitCenter"
+        android:src="@anim/sureing"
+        android:visibility="visible" />
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:gravity="center|top"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:text="@string/BLUE_BLINKING"
+        android:textColor="#333333"
+        android:textSize="@dimen/login_forget_size"
+        android:id="@+id/search_prompt" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:gravity="center|top">
+
+        <Button
+            android:id="@+id/btn_next"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/btn_search_device"
+            android:gravity="center"
+            android:text="@string/BLINKING"
+            android:textColor="@color/white"
+            android:textSize="@dimen/login_btn_textsize" />
+    </LinearLayout>
+
+
+</LinearLayout>

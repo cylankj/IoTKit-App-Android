@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<resources>
+    <string-array name="weeks">
+        <item>毎週月曜日</item>
+        <item>毎週火曜日</item>
+        <item>毎週水曜日</item>
+        <item>毎週木曜日</item>
+        <item>毎週金曜日</item>
+        <item>毎週土曜日</item>
+        <item>毎週日曜日</item>
+    </string-array>
+    <string-array name="xingqi">
+        <item>日曜日</item>
+        <item>月曜日</item>
+        <item>火曜日</item>
+        <item>水曜日</item>
+        <item>木曜日</item>
+        <item>金曜日</item>
+        <item>土曜日</item>
+    </string-array>
+    <string-array name="show_weeks">
+        <item>月曜日</item>
+        <item>火曜日</item>
+        <item>水曜日</item>
+        <item>木曜日</item>
+        <item>金曜日</item>
+        <item>土曜日</item>
+        <item>日曜日</item>
+    </string-array>
+    <string-array name="device_set_voice_name">
+        <item>静音</item>
+        <item>ワンワン声</item>
+        <item>警報声</item>
+    </string-array>
+    <string-array name="modes">
+        <item>正常モード</item>
+        <item>家に帰るモード</item>
+        <item>家を出るモード</item>
+    </string-array>
+    <string-array name="hours">
+        <item>00:00</item>
+        <item>01:00</item>
+        <item>02.00</item>
+        <item>03.00</item>
+        <item>04:00</item>
+        <item>05:00</item>
+        <item>06:00</item>
+        <item>07:00</item>
+        <item>08:00</item>
+        <item>09:00</item>
+        <item>10:00</item>
+        <item>11:00</item>
+        <item>12.00</item>
+        <item>13.00</item>
+        <item>14:00</item>
+        <item>15:00</item>
+        <item>16:00</item>
+        <item>17:00</item>
+        <item>18:00</item>
+        <item>19:00</item>
+        <item>20:00</item>
+        <item>21:00</item>
+        <item>22.00</item>
+        <item>23:00</item>
+    </string-array>
+    <string-array name="addvideo_title">
+        <item>設備添加</item>
+        <item>付近の設備</item>
+        <item>設備WiFiの配置</item>
+        <item>バインディング設備</item>
+        <item>ソフトウェアアップグレード</item>
+    </string-array>
+    <string-array name="video_direction">
+        <item>デフォルト（順方向）</item>
+        <item>倒置（旋転180 ）</item>
+    </string-array>
+    <string-array name="error_msg">
+        <item>"データベースミス"</item>
+        <item/>
+        <item>間違い</item>
+        <item>会话のタイムアウト</item>
+        <item>CID not exist</item>
+        <item>調整の動作が存在なし</item>
+        <item>調整の動作が存在なし</item>
+        <item>パラメーターミス</item>
+        <item>函数調整間違い</item>
+        <item>ご設備がバインディングされて、繰り返してバインディング不可</item>
+        <item>CIDが存在なし</item>
+        <item>ご登録いただきませんので、先に登録いただきたい</item>
+        <item>アカウントあるいはパスワードが間違うので、あらためて入力していただきたい</item>
+        <item>正しい検証コードを入力していただきたい</item>
+        <item>ご登録いただいたことがありますので、直接に登録していい</item>
+        <item>検証コードが期限切れたので、改めて取得していただきたい</item>
+        <item>設備がアクテイブされない</item>
+        <item>圧縮バッグを創建失敗</item>
+        <item>圧縮ファイル失敗</item>
+        <item>ファイルが存在なし</item>
+        <item>ボックスメールの継口の調整が失敗</item>
+        <item>CIDが使い済み</item>
+        <item>ご登録いただきませんので、先に登録いただきたい</item>
+        <item>アカウントが異常なので、あらためて登録していただきたい</item>
+        <item>ECHANGEPASS_SAME</item>
+        <item>ファイルアップロード失敗</item>
+        <item>ファイルコーピ失敗</item>
+        <item>正しい検証コードをご入力していただきたい</item>
+        <item>二次元コードを生成しているので、お待ちください</item>
+        <item>原パスワードが間違うので、あらためて入力していただきたい</item>
+        <item>ご入力したアカウントが登録されない</item>
+        <item>原始パスワードが新パスワードと同じである</item>
+        <item>連接できなくて、ご権限がない</item>
+        <item>ビデオ端がオフライン</item>
+        <item/>
+        <item>CIDとSNは合わない</item>
+        <item>アカウントがオフライン</item>
+        <item>設置が保存されて、ビデオ端がON　LINE場合に、自動に発効できる</item>
+        <item>OSSにファイルをアップロードして失敗</item>
+        <item>名称が存在するので、改めてご入力していただきたい</item>
+        <item>データがない</item>
+        <item>空間操作失敗</item>
+        <item>CIDがほかのアカウントよりバインディングされた</item>
+        <item>CIDがバインディングされない</item>
+        <item>CIDがバインディングされた</item>
+        <item>このシーンにバインディングを解除しない設備がありますので、削除できない</item>
+        <item>このシーンが最後なので、削除できない</item>
+        <item>位置の名前はすでに使用されています</item>
+        <item>設置が成功して、シーンが正常モードに発効できる</item>
+        <item>ファイルの類型を解析間違い、apkあるいはbinベースをごアップロードしてくだ</item>
+        <item>バッジョン号を解析間違い、四位バッジョン号のベースをごアップロードしてくだ</item>
+        <item>ファイルドメイン名を解析間違い、正しいドメイン名ベースをごアップロードしてください</item>
+        <item>メールを送付するのは失敗した</item>
+        <item>その携帯電話番号が使用されたので、もう一つ変えてみてください</item>
+        <item>メールアドレスが使用されたので、もう一つ変えてみてください</item>
+        <item>共用失敗、そのアカウントが登録されない</item>
+        <item>そのアカウントが共用された</item>
+        <item>cidがバインディングされないので、apを開く必要である</item>
+        <item>自分にご共用いただけない</item>
+        <item>犬がバインディングされないので、改めて登録してください</item>
+    </string-array>
+
+    <string-array name="show_sensitive">
+        <item>低</item>
+        <item>中</item>
+        <item>高</item>
+    </string-array>
+</resources>

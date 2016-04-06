@@ -1,0 +1,151 @@
+﻿<?xml version = "1.0" encoding = "UTF-8"?>
+<resources>
+
+    <string-array name="weeks">
+        <item>Lun</item>
+        <item>Mar</item>
+        <item>Mié</item>
+        <item>Jue</item>
+        <item>Vies</item>
+        <item>Sáb</item>
+        <item>Dom</item>
+    </string-array>
+    <string-array name="xingqi">
+        <item>Dom</item>
+        <item>Lun</item>
+        <item>Mar</item>
+        <item>Mié</item>
+        <item>Jue</item>
+        <item>Vies</item>
+        <item>Sáb</item>
+    </string-array>
+    <string-array name="show_weeks">
+        <item>Lun</item>
+        <item>Mar</item>
+        <item>Mié</item>
+        <item>Jue</item>
+        <item>Vies</item>
+        <item>Sáb</item>
+        <item>Dom</item>
+    </string-array>
+    <string-array name="device_set_voice_name">
+        <item>Mudo</item>
+        <item>Sonido de ladrido</item>
+        <item>Sonido de alarma</item>
+    </string-array>
+    <string-array name="modes">
+        <item>Normal</item>
+        <item>Regresar a casa</item>
+        <item>Salir de casa</item>
+    </string-array>
+    <string-array name="hours">
+        <item>00:00</item>
+        <item>01:00</item>
+        <item>02.00</item>
+        <item>03.00</item>
+        <item>04:00</item>
+        <item>05:00</item>
+        <item>06:00</item>
+        <item>07:00</item>
+        <item>08:00</item>
+        <item>09:00</item>
+        <item>10:00</item>
+        <item>11:00</item>
+        <item>12.00</item>
+        <item>13.00</item>
+        <item>14:00</item>
+        <item>15:00</item>
+        <item>16:00</item>
+        <item>17:00</item>
+        <item>18:00</item>
+        <item>19:00</item>
+        <item>20:00</item>
+        <item>21:00</item>
+        <item>22.00</item>
+        <item>23:00</item>
+    </string-array>
+    <string-array name="addvideo_title">
+        <item>Añadir Dispositivos</item>
+        <item>Dispositivos cercanos</item>
+        <item>Configuración de WIFI de los dispositivos</item>
+        <item>Dispositivo enlazado</item>
+        <item>mejoras de equipo</item>
+    </string-array>
+    <string-array name="video_direction">
+        <item>Adelante (predeterminado)</item>
+        <item>Invertido (girado 180 °)</item>
+    </string-array>
+    <string-array name="error_msg">
+        <!-- -1 对应服务器返回的ret值 -->
+        <item>Error de base de datos</item>
+        <item/>
+        <item>Error desconocido</item>
+        <item>Comunicación fuera de tiempo</item>
+        <item>Cid No existe</item>
+        <item>No existe este movimiento marcado</item>
+        <item>No existe este modulo marcado</item>
+        <item>Error de parámetro</item>
+        <item>Error de la función marcada</item>
+        <item>Su dispositivo ha sido enlazado, no se puede enlazar otra vez</item>
+        <item>CIDNo existe</item>
+        <item>Aún no ha inscribido, por favor, inscriba</item>
+        <item>Error de cuenta o contraseña</item>
+        <item>Introduza código de prueba correcto</item>
+        <item>Esta cuenta ha sido registrada</item>
+        <item>Código de prueba inválido, obténgalo de nuevo por favor</item>
+        <item>Dispositivo no activado</item>
+        <item>Establecimiento de paquete de archivo fracasado</item>
+        <item>No se puede comprimir el archivo</item>
+        <item>Documento no existe</item>
+        <item>Uso fracasado de interfaz de mensaje </item>
+        <item>CIDHa agotado </item>
+        <item>No ha iniciado, por favor, inicie primero</item>
+        <item>Cuenta anormal, inicie de nuevo por favor</item>
+        <!--pass_sam  23 -->
+        <item>ECHANGEPASS_SAME</item>
+        <item>Subida de documento fracasada</item>
+        <item>Copia de documento fracasada</item>
+        <item>Introduzca el código de prueba correcto</item>
+        <item>Está formando el código QR, espere por favor</item>
+        <item>Error de contraseña, introduzca de nuevo</item>
+        <item>El número de teléfono introducido no ha sido inscribido</item>
+        <item>La contraseña original es igual a la nueva</item>
+        <item>No se puede conectar, no está permitido</item>
+        <item>Puertode vídeos no está online</item>
+        <!--33-->
+        <item/>
+        <item>CID no concuerda con SN</item>
+        <item>La cuenta no está online</item>
+        <item>Ajustes guardados, entran en vigor cuando esté online el Puerto de vídeos</item>
+        <item>Subida de documento a OSS fracasada</item>
+        <item>El nombre ya existe, introduzca de nuevo por favor</item>.
+        <item>No existen datos</item>
+        <item>CIDHa sido enlazado con otra cuenta</item>
+        <!--40-->
+        <item>EBUCKET_OPT</item>
+        <item>CIDNo enlazado</item>
+        <item>CIDEnlazado</item>
+        <item>Hay dispositivos que no han sido eliminado del enlace bajo esta escenaria, no se puede borrar。</item>
+        .
+        <item>Esta escenaria es la última, no se puede borrar</item>
+        <item>Nombre de la ubicación ya existe</item>.
+        <item>Ajustes hechos, funcionará en modo normal.</item>
+        <item>Error del tipo del análisis del documento, por favor suba paquete de apk o bin</item>
+        <item>Ererror de versión del análisis, por favor suba el número del paquete de versión de 4 letras</item>
+        <item>Error del nombre de dominio del anñalisis del documento, suba el nombre correcto por favor</item>
+        <item>Envío de email fracasado</item>
+        <item>Este número de teléfono ha sido usado, cambie por otro</item>.
+        <item>Esta dirección de email ha sido usada, cambie por otro</item>
+        <item>Esta cuenta no ha sido registrada</item>
+        <item>Esta cuenta ha sido compartida</item>.
+        <item>CIDNo enlazado, por favor inicie de nuevo AP</item>
+        <item>No puede compartir consigo</item>.
+        <item>CIDNo enlazado, por favor inice de nuevo</item>
+    </string-array>
+
+    <string-array name="show_sensitive">
+        <item>Baja</item>
+        <item>Media</item>
+        <item>Alta</item>
+    </string-array>
+</resources>

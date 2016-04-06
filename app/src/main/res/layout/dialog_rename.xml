@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_edit_pwd"
+    android:focusableInTouchMode="true"
+    android:gravity="center"
+    android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="25dp"
+        android:gravity="center"
+        android:text="@string/ENTER_WIFI_PWD"
+        android:textColor="#2e2e2e"
+        android:textSize="17sp" />
+
+    <com.cylan.jiafeigou.widget.EditDelText
+        android:id="@+id/input"
+        style="@style/edittext"
+        android:layout_width="match_parent"
+        android:layout_marginBottom="35dp"
+        android:layout_marginLeft="27dip"
+        android:layout_marginRight="27dip"
+        android:layout_marginTop="25dp"
+        android:background="@drawable/bg_edittext"
+        android:maxLength="32"
+        android:singleLine="true"
+        android:textColor="#000000"
+        android:textSize="16sp" 
+        android:hint="@string/ENTER_WIFI_PWD"
+        />
+
+    <include layout="@layout/dialog_footer_btn" />
+
+</LinearLayout>

@@ -1,0 +1,34 @@
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion 23
+    buildToolsVersion "23.0.2"
+
+    defaultConfig {
+        minSdkVersion 15
+        targetSdkVersion 23
+        versionCode 1
+        versionName "1.0"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+
+        }
+        debug {
+            manifestPlaceholders = [BUGLY_APPID_VALUE: "J5DWTk0tvyDYhJVw"]
+            def version = getVersion()
+            manifestPlaceholders = [BUGLY_APP_VERSION: version]
+            manifestPlaceholders = [BUGLY_APP_CHANNEL: "official"]
+            manifestPlaceholders = [BUGLY_ENABLE_DEBUG: "true"]
+        }
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    testCompile 'junit:junit:4.12'
+    ///////////////////bugly////////////////////////////
+    compile 'com.tencent.bugly:crashreport:2.1'
+}

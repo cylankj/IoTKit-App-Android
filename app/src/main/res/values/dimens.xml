@@ -1,5 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <resources>
+
+    <dimen name="standard_padding">8dip</dimen>
+    <dimen name="half_padding">4dip</dimen>
+    <dimen name="dialog_btn_width">160dip</dimen>
+
+    <!-- list -->
+    <dimen name="list_divider_height">6dip</dimen>
+    <dimen name="list_icon_size">75dip</dimen>
+    <dimen name="list_state_size">24dip</dimen>
+    <dimen name="list_state_margin">8dip</dimen>
+    <dimen name="list_icon_using_size">40dip</dimen>
+    <dimen name="exception_thumb_size">99dip</dimen>
+    <dimen name="exception_thumb_padding">5dip</dimen>
+    <dimen name="contact_text_margin">3dip</dimen>
+    <dimen name="doorbell_handlebar_margin">20dip</dimen>
+    <dimen name="doorbell_online_time">10dip</dimen>
+
+    <!--editscenc -->
+    <dimen name="scenc_width_hight">65dip</dimen>
+
+
+    <!-- titlebar -->
+    <dimen name="title_height">48dp</dimen>
+    <dimen name="back_padding">15dp</dimen>
+    <dimen name="back_maginright">5dp</dimen>
+    <dimen name="right_paddingright">15dp</dimen>
+    <dimen name="title_textsize">18sp</dimen>
+    <!-- login -->
+    <dimen name="login_magintop">40dp</dimen>
+    <dimen name="login_username_magintop">44dp</dimen>
+    <dimen name="login_username_hight">100dp</dimen>
+    <dimen name="login_hight">200px</dimen>
+    <dimen name="login_edit_magin">15dp</dimen>
+    <dimen name="login_edit_maginr">15dp</dimen>
+    <dimen name="login_edit_size">18sp</dimen>
+    <dimen name="login_btn">30dp</dimen>
+    <dimen name="login_btn_textsize">18sp</dimen>
+    <dimen name="login_btn_textsize1">20sp</dimen>
+    <dimen name="login_btn_maginbottom">12dp</dimen>
+    <dimen name="login_forget_size">15sp</dimen>
+    <!-- forget pwd -->
+    <dimen name="forget_getcode_width">204px</dimen>
+    <dimen name="forget_getcode_hight">70px</dimen>
+    <!-- new user -->
+    <dimen name="magin_left">25dp</dimen>
+    <dimen name="area_code_size">17sp</dimen>
+    <dimen name="change_pwd_size">16sp</dimen>
+    <dimen name="username_size">18dp</dimen>
+    <dimen name="magin">6dp</dimen>
+    <dimen name="aggre_size">14sp</dimen>
+    <!-- code -->
+    <dimen name="code_magin">20dp</dimen>
+    <dimen name="code_size">16sp</dimen>
+    <!-- setting -->
+    <dimen name="title_magin">8dp</dimen>
+    <dimen name="title_size">13sp</dimen>
+
+    <!-- doorbell setting -->
+    <dimen name="doorbell_item_interval">8dp</dimen>
+    <!-- 修改昵称 -->
+    <dimen name="modify_nickname">23dp</dimen>
+    <!-- 修改绑定手机 -->
+    <dimen name="modify_bindphone">10dp</dimen>
+    <!-- 我的加菲狗 -->
+    <dimen name="home_mogin_top">66dp</dimen>
+    <dimen name="home_mogin_size">20sp</dimen>
+    <dimen name="home_mogin_top1">58sp</dimen>
+    <!-- home -->
+    <dimen name="home_list_magin">7dp</dimen>
+    <dimen name="home_list_edit_magin">11dp</dimen>
+
+    <!-- addvideo -->
+    <dimen name="btn_code_padding_left">13dp</dimen>
+    <dimen name="phone_top">127dp</dimen>
+    <dimen name="phone_magin_left">28dp</dimen>
+    <dimen name="ceter_magin_top">150dp</dimen>
+    <dimen name="cam_magin_top">115dp</dimen>
+    <!-- 视频播放界面 -->
+    <dimen name="bottom_text_size">13.5sp</dimen>
+    <dimen name="bottom_magin_left">58sp</dimen>
+    <dimen name="vodeo_magin_top">90dp</dimen>
+    <dimen name="top_title_text_size">18.5sp</dimen>
+    <dimen name="bottom_land_padding">8dp</dimen>
+    <dimen name="right_land_text_size">10sp</dimen>
+    <dimen name="right_land_magin">16dp</dimen>
+
+    <!-- timeline -->
+    <dimen name="timeline_tab_magin">23dp</dimen>
+    <dimen name="timeline_msg_magintop">8dp</dimen>
+    <dimen name="timeline_msg_maginright">17dp</dimen>
+    <dimen name="timeline_msg_line_maginleft">34dp</dimen>
+    <dimen name="timeline_pic_grid_magin">5.5dp</dimen>
+    <dimen name="timeline_no_pic">19sp</dimen>
+    <!-- andvideo -->
+    <dimen name="searchprogressbar_margintop">39dp</dimen>
+    <dimen name="list_item_padding">21dp</dimen>
+    <dimen name="list_item_maginleft">56dp</dimen>
+    <dimen name="slidingmenu_offset">55dp</dimen>
+    <dimen name="shadow_width">40dp</dimen>
+
+    <dimen name="spacing_medium">8dp</dimen>
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
+
+    <dimen name="efamily_bootom_bar_height">48dp</dimen>
+    <dimen name="efamily_bootom_content_height">158dp</dimen>
+
+    <dimen name="facetime_anim_top_margin">110dp</dimen>
 </resources>

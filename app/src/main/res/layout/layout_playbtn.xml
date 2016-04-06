@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_alignParentRight="true"
+    android:gravity="center" >
+
+    <TextView
+        android:id="@+id/timelength"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="30”"
+        android:textColor="#ff3d32"
+        android:textSize="14sp" />
+
+    <ImageView
+        android:id="@+id/time_ico"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="12dp"
+        android:src="@drawable/ico_unread" />
+
+</LinearLayout>

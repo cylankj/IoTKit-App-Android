@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources>
+
+    <!-- list -->
+    <dimen name="list_divider_height">1dip</dimen>
+    <dimen name="list_icon_size">50dip</dimen>
+    <dimen name="list_state_size">18dip</dimen>
+    <dimen name="list_state_margin">4dip</dimen>
+    <dimen name="exception_thumb_padding">3dip</dimen>
+
+    <dimen name="facetime_anim_top_margin">80dp</dimen>
+
+</resources>

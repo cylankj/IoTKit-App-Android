@@ -1,0 +1,40 @@
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion 23
+    buildToolsVersion "23.0.2"
+
+    defaultConfig {
+        minSdkVersion 15
+        targetSdkVersion 23
+        versionCode 1
+        versionName "1.0"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    lintOptions {
+        abortOnError false
+    }
+}
+
+dependencies {
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+    testCompile 'junit:junit:4.12'
+
+
+    compile files('src/main/jniLibs/afinal.jar')
+//    compile files('src/main/jniLibs/breakpad.jar') //use bugly instead
+    compile files('src/main/jniLibs/gson-2.2.4.jar')
+    compile files('src/main/jniLibs/msgpack-0.6.12-SNAPSHOT.jar')
+    compile files('src/main/jniLibs/nineoldandroids-2.4.0.jar')
+    compile files('src/main/jniLibs/open_sdk_r4066.jar')
+    compile files('src/main/jniLibs/oss-android-sdk-1.4.0.jar')
+    compile files('src/main/jniLibs/SLog-2.0.jar')
+    compile files('src/main/jniLibs/universal-image-loader-1.9.3.jar')
+    compile files('src/main/jniLibs/weibosdkcore.jar')
+    compile files('src/main/jniLibs/zxing.jar')
+}

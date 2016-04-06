@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/land_guide"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_bottom_dialog"
+    android:visibility="visible" >
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_toLeftOf="@+id/land_guide_arrow"
+        android:text="@string/GUIDE_INFO"
+        android:textColor="#ffffff"
+        android:textSize="14sp" />
+
+    <ImageView
+        android:id="@+id/land_guide_arrow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="55dp"
+        android:src="@drawable/land_guide_arrow" />
+
+    <ImageView
+        android:id="@+id/land_guide_finger"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/land_guide_arrow"
+        android:layout_alignLeft="@+id/land_guide_arrow"
+        android:src="@drawable/land_guide_finger" />
+
+</RelativeLayout>

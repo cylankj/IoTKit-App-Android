@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <com.cylan.jiafeigou.widget.RefreshListView
+        android:id="@+id/msg_list"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:background="@color/white"
+        android:divider="@color/setting_line_color"
+        android:dividerHeight="1dp"
+        android:focusable="true"
+        android:visibility="visible"/>
+
+    <LinearLayout
+        android:id="@+id/msg_info"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:background="@drawable/bg_editscenc"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/slidingmenu_offset"
+            android:src="@drawable/icon_no_msg" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="19dp"
+            android:text="@string/NO_MESSAGE"
+            android:textColor="#343434" />
+    </LinearLayout>
+
+</LinearLayout>

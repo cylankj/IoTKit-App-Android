@@ -1,20 +1,461 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.cylan.jiafeigou" >
+    package="com.cylan.jiafeigou"
+    android:versionCode="999"
+    android:versionName="888">
+
+    <uses-sdk
+        android:minSdkVersion="14"
+        android:targetSdkVersion="15" />
+
+    <supports-screens
+        android:anyDensity="true"
+        android:largeScreens="true"
+        android:normalScreens="true"
+        android:smallScreens="true"
+        android:xlargeScreens="true" />
+
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.RESTART_PACKAGES" />
+
+    <uses-feature android:name="android.hardware.camera" />
+    <uses-feature android:name="android.hardware.camera.autofocus" />
+
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+
+    <uses-feature android:name="android.hardware.microphone " />
+
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_LOGS" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+    <uses-feature android:name="android.hardware.wifi" />
+
+    <uses-permission android:name="android.permission.GET_TASKS" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_MULTICAST_STATE" />
+    <uses-permission android:name="android.permission.CALL_PHONE" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.RECEIVE_SMS" />
+    <uses-permission android:name="android.permission.READ_SMS" />
+    <uses-permission android:name="android.permission.PROCESS_OUTGOING_CALLS" />
+    <uses-permission android:name="android.permission.FLASHLIGHT" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.RECEIVE_USER_PRESENT" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
+
+    <uses-feature
+        android:name="android.hardware.location.gps"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.location"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.telephony"
+        android:required="false" />
 
     <application
-        android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:name="com.cylan.jiafeigou.base.MyApp"
+        android:configChanges="locale|orientation|keyboardHidden"
+        android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:supportsRtl="true"
-        android:theme="@style/AppTheme" >
-        <activity android:name=".MainActivity" >
+        android:largeHeap="true">
+        <activity
+            android:name="com.cylan.jiafeigou.activity.SplashActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/activity.welcome.theme"
+            android:configChanges="locale|orientation|keyboardHidden"
+            android:windowSoftInputMode="adjustPan|stateHidden">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name="com.cylan.jiafeigou.activity.SmartCall"
+            android:screenOrientation="portrait"
+            android:theme="@style/activity.welcome.theme"
+            android:configChanges="locale|orientation|keyboardHidden"
+            android:windowSoftInputMode="adjustPan|stateHidden">
+        </activity>
+        <activity
+            android:name="com.cylan.jiafeigou.activity.login.LoginActivity"
+            android:configChanges="locale|orientation|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Light.NoTitleBar"
+            android:windowSoftInputMode="adjustPan|stateHidden" />
+        <activity
+            android:name="com.cylan.jiafeigou.activity.login.RegisterByEmail"
+            android:configChanges="locale|orientation|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.NoTitlebar.custom.style"
+            android:windowSoftInputMode="adjustPan|stateHidden" />
+        <activity
+            android:name="com.cylan.jiafeigou.activity.login.RegisterByPhone"
+            android:configChanges="locale|orientation|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Light.NoTitleBar"
+            android:windowSoftInputMode="adjustPan|stateHidden" />
+        <activity
+            android:name="com.cylan.jiafeigou.activity.login.ForgetPwdActivity"
+            android:configChanges="locale|orientation|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Light.NoTitleBar"
+            android:windowSoftInputMode="adjustPan|stateHidden" />
+        <activity
+            android:name="com.cylan.jiafeigou.activity.video.CallOrConf"
+            android:configChanges="locale|orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait"
+            android:launchMode="singleTop"
+            android:theme="@android:style/Theme.NoTitleBar"
+            android:windowSoftInputMode="adjustPan|stateHidden" />
+        <activity
+            android:name="com.cylan.jiafeigou.activity.main.MyVideos"
+            android:configChanges="locale|orientation|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:launchMode="singleTop"
+            android:theme="@android:style/Theme.Light.NoTitleBar"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name="com.cylan.jiafeigou.activity.main.Feedback"
+            android:configChanges="locale|orientation|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme_SlideTop"
+            android:windowSoftInputMode="adjustPan|stateHidden" />
+        <activity
+            android:name="com.cylan.jiafeigou.activity.main.About"
+            android:configChanges="locale|orientation|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Light.NoTitleBar" />
+        <activity
+            android:name="com.cylan.jiafeigou.activity.main.ModifyBindphone"
+            android:configChanges="locale|orientation|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Light.NoTitleBar" />
+        <activity
+            android:name="com.cylan.jiafeigou.activity.video.addDevice.AddVideoActivity"
+            android:configChanges="locale|orientation|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Light.NoTitleBar" />
+        <activity
+            android:name="com.cylan.jiafeigou.activity.main.ModifyNickName"
+            android:configChanges="locale|orientation|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Light.NoTitleBar" />
+        <activity
+            android:name="com.cylan.jiafeigou.activity.main.ModifyPwd"
+            android:configChanges="locale|orientation|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Light.NoTitleBar" />
+        <activity
+            android:name="com.cylan.jiafeigou.activity.main.Setting"
+            android:configChanges="locale|orientation|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme_SlideTop" />
+        <activity
+            android:name="com.cylan.jiafeigou.activity.main.MyAccount"
+            android:configChanges="locale|orientation|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme_SlideTop" />
+        <activity
+            android:name="com.cylan.jiafeigou.activity.main.Help"
+            android:configChanges="locale|orientation|keyboardHidden"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.cylan.jiafeigou.activity.main.WebViewActivity"
+            android:configChanges="locale|orientation|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Light.NoTitleBar" />
+        <activity
+            android:name="com.cylan.jiafeigou.activity.video.setting.Alarm"
+            android:configChanges="locale|orientation|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.NoTitleBar"
+            android:windowSoftInputMode="adjustPan|stateHidden" />
+        <activity
+            android:name="com.cylan.jiafeigou.activity.video.setting.SetCameraWifi"
+            android:configChanges="locale|orientation|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Light.NoTitleBar"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name="com.cylan.jiafeigou.activity.main.SelectPicActivity"
+            android:configChanges="locale|orientation|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:theme="@style/func_dialog" />
+        <activity
+            android:name="com.cylan.jiafeigou.activity.main.SelectPicCropActivity"
+            android:configChanges="locale|orientation|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:theme="@style/func_dialog" />
+        <activity
+            android:name="com.cylan.jiafeigou.activity.main.EditSceneActivity"
+            android:configChanges="locale|orientation|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.NoTitleBar"
+            android:windowSoftInputMode="adjustPan|stateHidden" />
+        <activity
+            android:name="com.cylan.jiafeigou.activity.main.SetCoverActivity"
+            android:configChanges="locale|orientation|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.NoTitleBar"
+            android:windowSoftInputMode="adjustPan|stateHidden" />
+        <activity
+            android:name="com.cylan.jiafeigou.activity.message.MessageActivity"
+            android:configChanges="locale|orientation|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:launchMode="singleTop"
+            android:theme="@android:style/Theme.NoTitleBar"
+            android:windowSoftInputMode="adjustPan|stateHidden" />
+        <activity
+            android:name="com.cylan.jiafeigou.activity.message.MessageDetailActivity"
+            android:configChanges="locale|orientation|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.NoTitleBar"
+            android:windowSoftInputMode="adjustPan|stateHidden" />
+        <activity
+            android:name="com.cylan.jiafeigou.activity.message.MessagePicturesActivity"
+            android:configChanges="locale|orientation|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.NoTitleBar"
+            android:windowSoftInputMode="adjustPan|stateHidden" />
+        <activity
+            android:name="com.cylan.jiafeigou.activity.video.setting.DeviceVoiceActivity"
+            android:configChanges="locale|orientation|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme"
+            android:windowSoftInputMode="adjustPan|stateHidden" />
+        <activity
+            android:name="com.cylan.jiafeigou.activity.video.setting.DeviceSettingActivity"
+            android:configChanges="locale|orientation|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.NoTitleBar"
+            android:windowSoftInputMode="adjustPan|stateHidden" />
+        <activity
+            android:name="com.cylan.jiafeigou.activity.video.setting.DeviceState"
+            android:configChanges="locale|orientation|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.NoTitleBar"
+            android:windowSoftInputMode="adjustPan|stateHidden" />
+        <activity
+            android:name="com.cylan.jiafeigou.activity.video.setting.AutomaticVideoActivity"
+            android:configChanges="locale|orientation|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.NoTitleBar"
+            android:windowSoftInputMode="adjustPan|stateHidden" />
+        <activity
+            android:name="com.cylan.jiafeigou.activity.video.setting.AlarmDaysSelectActivity"
+            android:configChanges="locale|orientation|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.NoTitleBar"
+            android:windowSoftInputMode="adjustPan|stateHidden" />
+        <activity
+            android:name="com.cylan.jiafeigou.activity.video.HistoryVideoActivity"
+            android:configChanges="locale|orientation|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme"
+            android:windowSoftInputMode="adjustUnspecified|stateHidden" />
+        <activity
+            android:name="com.cylan.jiafeigou.activity.video.NearSharedActivity"
+            android:configChanges="locale|orientation|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.NoTitleBar"
+            android:windowSoftInputMode="adjustPan|stateHidden" />
+        <activity
+            android:name="com.cylan.jiafeigou.activity.video.setting.SafeProtectActivtiy"
+            android:configChanges="locale|orientation|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.NoTitleBar"
+            android:windowSoftInputMode="adjustPan|stateHidden" />
+        <activity
+            android:name="com.cylan.jiafeigou.activity.video.setting.TimeZoneActivity"
+            android:configChanges="locale|orientation|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.NoTitleBar"
+            android:windowSoftInputMode="adjustPan|stateHidden" />
+        <activity
+            android:name="com.cylan.jiafeigou.activity.video.AddCameraHelpActivity"
+            android:configChanges="locale|orientation|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.NoTitlebar.custom.style"
+            android:windowSoftInputMode="adjustPan|stateHidden" />
+        <activity
+            android:name="com.cylan.jiafeigou.activity.doorbell.DoorBellActivity"
+            android:configChanges="locale|orientation|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:launchMode="singleTop"
+            android:theme="@android:style/Theme.NoTitleBar"
+            android:windowSoftInputMode="adjustPan|stateHidden" />
+        <activity
+            android:name="com.cylan.jiafeigou.activity.doorbell.DoorBellCalledActivity"
+            android:configChanges="locale|orientation|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.NoTitleBar"
+            android:windowSoftInputMode="adjustPan|stateHidden" />
+        <activity
+            android:name="com.cylan.jiafeigou.activity.doorbell.detail.DoorBellDetailActivity"
+            android:configChanges="locale|orientation|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.NoTitleBar"
+            android:windowSoftInputMode="adjustPan|stateHidden" />
+        <activity
+            android:name="com.cylan.jiafeigou.activity.doorbell.detail.DoorBellDeviceInfoActivity"
+            android:configChanges="locale|orientation|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.NoTitleBar"
+            android:windowSoftInputMode="adjustPan|stateHidden" />
+        <activity
+            android:name="com.cylan.jiafeigou.activity.doorbell.addDoorbell.AddDoorBellActivity"
+            android:configChanges="locale|orientation|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Light.NoTitleBar"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name="com.cylan.jiafeigou.activity.doorbell.AddDoorBellHelpActivity"
+            android:configChanges="locale|orientation|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.NoTitlebar.custom.style"
+            android:windowSoftInputMode="adjustPan|stateHidden" />
+        <activity
+            android:name="com.cylan.jiafeigou.activity.doorbell.setwifi.SetDoorBellWifi"
+            android:configChanges="locale|orientation|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Light.NoTitleBar"
+            android:windowSoftInputMode="adjustPan|stateHidden" />
+        <activity
+            android:name="com.cylan.jiafeigou.activity.efamily.CaptureActivity"
+            android:configChanges="locale|orientation|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.NoTitlebar.custom.style"
+            android:windowSoftInputMode="adjustPan|stateHidden" />
+        <activity
+            android:name="com.cylan.jiafeigou.activity.efamily.EFamilySettingActivity"
+            android:configChanges="locale|orientation|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.NoTitleBar"
+            android:windowSoftInputMode="adjustPan|stateHidden" />
+        <activity
+            android:name="com.cylan.jiafeigou.activity.efamily.EfamilyDeviceState"
+            android:configChanges="locale|orientation|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.NoTitleBar"
+            android:windowSoftInputMode="adjustPan|stateHidden" />
+        <activity
+            android:name="com.cylan.jiafeigou.activity.efamily.EFamilySafeProtectActivity"
+            android:configChanges="locale|orientation|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.NoTitleBar"
+            android:windowSoftInputMode="adjustPan|stateHidden" />
+        <activity
+            android:name="com.cylan.jiafeigou.activity.video.AddHelpActivity"
+            android:configChanges="locale|orientation|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.NoTitleBar"
+            android:windowSoftInputMode="adjustPan|stateHidden" />
+        <activity
+            android:name="com.cylan.jiafeigou.activity.efamily.EFamilyAlarm"
+            android:configChanges="locale|orientation|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.NoTitleBar"
+            android:windowSoftInputMode="adjustPan|stateHidden" />
+        <activity
+            android:name="com.cylan.jiafeigou.activity.main.LogoutActivity"
+            android:configChanges="locale|orientation|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:theme="@style/func_dialog" />
+        <activity
+            android:name="com.tencent.tauth.AuthActivity"
+            android:launchMode="singleTask"
+            android:noHistory="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:scheme="tencent1103156296" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.tencent.connect.common.AssistActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+        <activity
+            android:name="com.cylan.jiafeigou.activity.efamily.facetime.FaceTimeActivity"
+            android:configChanges="locale|orientation|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
+            android:windowSoftInputMode="adjustPan|stateHidden" />
+        <activity
+            android:name="com.cylan.jiafeigou.activity.efamily.facetime.FaceTimeCallingActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen" />
+        <activity android:name="com.cylan.jiafeigou.activity.efamily.magnetic.MagneticActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.NoTitlebar.custom.style"
+            android:windowSoftInputMode="adjustPan|stateHidden" />
+        <activity android:name="com.cylan.jiafeigou.activity.efamily.magnetic.MagneticSetActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.NoTitlebar.custom.style"
+            android:windowSoftInputMode="adjustPan|stateHidden" />
+        <activity android:name="com.cylan.jiafeigou.activity.efamily.magnetic.MagneticDeviceInfoActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.NoTitlebar.custom.style"
+            android:windowSoftInputMode="adjustPan|stateHidden" />
+
+        <service android:name="com.cylan.jiafeigou.engine.MyService" />
+
+        <receiver android:name="com.cylan.jiafeigou.receiver.BootCompletedReceiver">
+            <intent-filter android:priority="0x7fffffff">
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+                <action android:name="android.intent.action.USER_PRESENT" />
+            </intent-filter>
+        </receiver>
+        <receiver android:name="com.cylan.jiafeigou.receiver.PhoneBroadcastReceiver">
+            <intent-filter android:priority="1000">
+                <action android:name="android.intent.action.NEW_OUTGOING_CALL" />
+                <action android:name="android.intent.action.PHONE_STATE" />
+            </intent-filter>
+        </receiver>
+
+        <activity android:name="com.cylan.jiafeigou.activity.video.setting.LocationActivity"
+            android:configChanges="locale|orientation|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.NoTitleBar"
+            />
+        <activity android:name="com.cylan.jiafeigou.activity.video.setting.SensitiveActivity"
+            android:configChanges="locale|orientation|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.NoTitleBar"
+            />
+        <activity android:name="com.cylan.jiafeigou.activity.video.setting.DirectionActivity"
+            android:configChanges="locale|orientation|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.NoTitleBar"
+            />
+        <activity
+            android:name="com.cylan.jiafeigou.activity.efamily.main.EfamilyMainActivity"
+            android:theme="@android:style/Theme.NoTitleBar"
+            android:configChanges="locale|orientation|keyboardHidden"
+            android:screenOrientation="portrait"
+            />
+        <activity
+            android:name="com.cylan.jiafeigou.activity.efamily.EfamilyRelatedBellActivity"
+            android:theme="@android:style/Theme.NoTitleBar"
+            android:configChanges="locale|orientation|keyboardHidden"
+            android:screenOrientation="portrait"
+            />
     </application>
 
 </manifest>

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/search_result"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="#ffffff"
+    android:orientation="vertical"
+    android:visibility="visible">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/back_padding"
+        android:layout_marginRight="@dimen/back_padding"
+        android:gravity="center_vertical"
+        android:paddingBottom="@dimen/modify_bindphone"
+        android:paddingTop="@dimen/code_magin"
+        android:text="@string/find_new_video"
+        android:textColor="@color/timeline_tab_unchecked"
+        android:textSize="@dimen/login_forget_size" />
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/setting_line_color" />
+
+    <ListView
+        android:id="@+id/search_result_listView"
+        style="@style/listview"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:divider="@color/setting_line_color"
+        android:dividerHeight="1dp"
+        android:listSelector="@null"
+        android:scrollbars="none" />
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/setting_line_color" />
+
+</LinearLayout>

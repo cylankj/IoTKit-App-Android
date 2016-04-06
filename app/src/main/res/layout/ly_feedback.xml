@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/root"
+    android:focusableInTouchMode="true"
+    android:orientation="vertical">
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="20dp"
+        android:background="@color/setting_line_color" />
+
+    <EditText
+        android:id="@+id/edit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@null"
+        android:gravity="left"
+        android:hint="@string/YOUR_FEEDBACK"
+        android:lineSpacingMultiplier="1.2"
+        android:maxLength="128"
+        android:minHeight="140dp"
+        android:paddingBottom="15dip"
+        android:paddingLeft="10dip"
+        android:paddingRight="10dip"
+        android:paddingTop="10dip"
+        android:textColor="#555"
+        android:textColorHint="@color/suggest_text_hint"
+        android:textSize="@dimen/code_size" />
+
+    <TextView
+        android:id="@+id/textlength"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="right"
+        android:textSize="@dimen/code_size"
+        android:paddingRight="15dp"
+        android:text="0/128"
+        android:textColor="@color/suggest_text_hint" />
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:background="@color/setting_line_color" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <CheckBox
+            android:id="@+id/submit_log"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/login_edit_maginr"
+            android:button="@drawable/cb_isread_selector"
+            android:checked="false"
+            android:gravity="center"
+            android:paddingLeft="@dimen/login_edit_maginr"
+            android:paddingRight="5dp"
+            android:paddingTop="10dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/SUBMIT_LOG"
+            android:textColor="@color/get_code_enable"
+            android:textSize="@dimen/aggre_size" />
+    </LinearLayout>
+
+</LinearLayout>

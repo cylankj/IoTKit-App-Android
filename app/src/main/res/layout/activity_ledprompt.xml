@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:gravity="center_horizontal"
+        android:text="@string/WIFI_HINT_LAGEL_0"
+        android:textColor="#07a1f1"
+        android:textSize="18sp" />
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:drawableLeft="@drawable/ico_blue_led_twinkle"
+        android:drawablePadding="10dp"
+        android:gravity="center_vertical"
+        android:paddingLeft="40dp"
+        android:paddingRight="40dp"
+        android:text="@string/LIGTH_LABEL_0_1"
+        android:textColor="#333333"
+        android:textSize="14sp" />
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:drawableLeft="@drawable/ico_blue_led_light"
+        android:drawablePadding="10dp"
+        android:gravity="center_vertical"
+        android:paddingLeft="40dp"
+        android:paddingRight="40dp"
+        android:text="@string/LIGTH_LABEL_0_2"
+        android:textColor="#333333"
+        android:textSize="14sp" />
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="0.5dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="15dp"
+        android:background="@color/setting_line_color" />
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:gravity="center_horizontal"
+        android:text="@string/WIFI_HINT_LAGEL_1"
+        android:textColor="#07a1f1"
+        android:textSize="18sp" />
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:drawableLeft="@drawable/ico_blue_led_twinkle"
+        android:drawablePadding="10dp"
+        android:gravity="center_vertical"
+        android:paddingLeft="40dp"
+        android:paddingRight="40dp"
+        android:text="@string/LIGTH_LABEL_1_1"
+        android:textColor="#333333"
+        android:textSize="14sp" />
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:drawableLeft="@drawable/ico_blue_led_light"
+        android:drawablePadding="10dp"
+        android:gravity="center_vertical"
+        android:paddingLeft="40dp"
+        android:paddingRight="40dp"
+        android:text="@string/LIGTH_LABEL_1_2"
+        android:textColor="#333333"
+        android:textSize="14sp" />
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="0.5dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="15dp"
+        android:background="@color/setting_line_color" />
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:gravity="center_horizontal"
+        android:text="@string/WIFI_HINT_LAGEL_2"
+        android:textColor="#07a1f1"
+        android:textSize="18sp" />
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:drawableLeft="@drawable/ico_blue_led_twinkle"
+        android:drawablePadding="10dp"
+        android:gravity="center_vertical"
+        android:paddingLeft="40dp"
+        android:paddingRight="40dp"
+        android:text="@string/LIGTH_LABEL_2_1"
+        android:textColor="#333333"
+        android:textSize="14sp" />
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:drawableLeft="@drawable/ico_blue_led_light"
+        android:drawablePadding="10dp"
+        android:gravity="center_vertical"
+        android:paddingLeft="40dp"
+        android:paddingRight="40dp"
+        android:text="@string/LIGTH_LABEL_2_2"
+        android:textColor="#333333"
+        android:textSize="14sp" />
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="0.5dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="15dp"
+        android:background="@color/setting_line_color" />
+
+    <Button
+        android:id="@+id/btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="17dp"
+        android:background="@drawable/btn_search_device"
+        android:gravity="center"
+        android:text="@string/I_KNOW"
+        android:textColor="@color/white"
+        android:textSize="@dimen/login_btn_textsize" />
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="18dp"
+        android:layout_marginTop="15dp"
+        android:gravity="center_horizontal"
+        android:text="@string/WIFI_HINT_LAGEL"
+        android:textColor="#c5c5c5"
+        android:textSize="14sp" />
+
+    </LinearLayout>
+
+</ScrollView>

@@ -1,0 +1,161 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<resources>
+    <string-array name="weeks">
+        <item>LUN</item>
+        <item>MAR</item>
+        <item>MER</item>
+        <item>GIO</item>
+        <item>VEN</item>
+        <item>SAB</item>
+        <item>DOM</item>
+    </string-array>
+    <string-array name="xingqi">
+        <item>Domenica</item>
+        <item>Lunedi</item>
+        <item>Martedi</item>
+        <item>Mercoledi</item>
+        <item>Giovedi</item>
+        <item>Venerdi</item>
+        <item>Sabato</item>  
+    </string-array>
+    <string-array name="show_weeks">
+        <item>Lun</item>
+        <item>Mar</item>
+        <item>Mer</item>
+        <item>Gio</item>
+        <item>Ven</item>
+        <item>Sab</item>
+        <item>Dom</item>
+    </string-array>
+    <string-array name="device_set_voice_name">
+        <item>Muto</item>
+        <item>Abbaio</item>
+        <item>Suono alarme</item>
+    </string-array>
+    <string-array name="modes">
+        <item>Standard</item>
+        <item>A casa</item>
+        <item>Fuori casa</item>
+    </string-array>
+    <string-array name="hours">
+        <item>00:00</item>
+        <item>01:00</item>
+        <item>02.00</item>
+        <item>03.00</item>
+        <item>04:00</item>
+        <item>05:00</item>
+        <item>06:00</item>
+        <item>07:00</item>
+        <item>08:00</item>
+        <item>09:00</item>
+        <item>10:00</item>
+        <item>11:00</item>
+        <item>12.00</item>
+        <item>13.00</item>
+        <item>14:00</item>
+        <item>15:00</item>
+        <item>16:00</item>
+        <item>17:00</item>
+        <item>18:00</item>
+        <item>19:00</item>
+        <item>20:00</item>
+        <item>21:00</item>
+        <item>22.00</item>
+        <item>23:00</item>
+    </string-array>
+    <string-array name="addvideo_title">
+        <item>Aggiungi Apparecchio</item>
+        <item>Trova dispositivo</item>
+        <item>Imposta WiFi</item>
+        <item>Aggiungere</item>
+        <item>Aggiornamento dispositivo</item>
+    </string-array>
+    <string-array name="video_direction">
+        <item>Normale</item>
+        <item>Inversione (ruota 180°)</item>
+    </string-array>
+    <string-array name="error_msg">
+        <item>数据库错误</item>
+        <item />
+        <item>错误</item>
+        <item>Session</item>
+        <item>CID non esiste</item>
+        <item>调用的动作不存在</item>
+        <item>调用的模块不存在</item>
+        <item>参数错误</item>
+        <item>函数调用错误</item>
+        <item>CID is already binded</item>
+        <item>CID non esiste</item>
+        <item>Questo conto non è registrato</item>
+        <item>Il tuo conto e/o la password inserita sono errati</item>
+        <item>Codice non valido</item>
+        <item>Questa email è già stata registrata</item>
+        <item>Codice non valido</item>
+        <item>CID unenable</item>
+        <item>创建压缩包失败</item>
+        <item>压缩文件失败</item>
+        <item>文件不存在</item>
+        <item>Failed to Send SMS</item>
+        <item>CID exhausted</item>
+        <item>Please login account</item>
+        <item>Abnormal account, please Sign in again</item>
+        <item>ECHANGEPASS_SAME</item>
+        <item>Caricare file non funziona</item>
+        <item>拷贝文件失败</item>
+        <item>Codice non valido</item>
+        <item>正在生成二维码，请等待...</item>
+        <item>La vecchia password non è valida</item>
+        <!--29-->
+        <item>This account is not registered</item>
+        <!--30-->
+        <item>The new password and old password are the same</item>
+        <item>无法连接，您没有权限</item>
+        <item>Device has been offline</item>
+        <!--33-->
+        <item />
+        <!--34-->
+        <item>CID is not match SN</item>
+        <item>Dispositivo non collegato</item>
+        <item>Impostazioni salvate, dispositivo efficace online</item>
+        <item>Caricamento fallito</item>
+        <!--38-->
+        <item>Nome esiste già</item>
+        <item>No data</item>
+        <item>空间操作失败</item>
+        <item>CID is already binded by other</item>
+        <item>CID not binded</item>
+        <!--43-->
+        <item>CID is already binded by self</item>
+        <!--44-->
+        <item>Eliminare dispositivo per favore</item>
+        <!--45-->
+        <item>Impossibile eliminare</item>
+        <!--46-->
+        <item>Il nome del luogo esiste già</item>
+        <!--47-->
+        <item>Memorizzato con successo</item>
+        <!--48-->
+        <item>解析文件类型错误，请上传apk或bin包</item>
+        <item>解析版本号错误，请上传4位版本号的包</item>
+        <item>解析文件域名错误，请上传正确的域名包</item>
+        <!--51-->
+        <item>Mail non inviata</item>
+        <item>Il cellulare è stato utilizzato</item>
+        <item>L’email è stata utilizzata</item>
+        <!--54-->
+        <item>Account non è stato registrato</item>
+        <!--55-->
+        <item>Questo conto è stato condiviso</item>
+        <!--56-->
+        <item>CID is not binded</item>
+        <!--57-->
+        <item>Non condividere</item>
+        <!--58-->
+        <item>CID is not binded, please relogin</item>
+    </string-array>
+    <string-array name="show_sensitive">
+        <item>Basso</item>
+        <item>Mezzo</item>
+        <item>Alto</item>
+    </string-array>
+</resources>

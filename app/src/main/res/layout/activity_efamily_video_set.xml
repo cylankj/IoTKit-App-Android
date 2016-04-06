@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_editscenc"
+    android:clickable="true">
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:id="@+id/devicename"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/code_magin"
+            android:background="@drawable/bg_setting_item_selector">
+
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="0.5dp"
+                android:background="@color/setting_line_color" />
+
+            <TextView
+                android:id="@+id/tv_device_name"
+                style="@style/setting_text"
+                android:drawableLeft="@drawable/ico_efamily_peizhi_name"
+                android:text="@string/EQUIPMENT_NAME" />
+
+            <TextView
+                android:layout_toEndOf="@+id/tv_device_name"
+                android:id="@+id/efamily_name"
+                style="@style/setting_text_value"
+                android:drawablePadding="@dimen/login_edit_magin"
+                android:drawableRight="@drawable/setting_icon_arrow"
+                android:gravity="right"
+                android:visibility="visible" />
+
+            <View
+                style="@style/setting_divider"
+                android:layout_marginLeft="55dp" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/position"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_setting_item_selector">
+
+            <TextView
+                style="@style/setting_text"
+                android:layout_width="match_parent"
+                android:drawableLeft="@drawable/ico_video_scene"
+                android:drawableRight="@drawable/setting_icon_arrow"
+                android:text="@string/LOCATION_SETTING" />
+
+            <TextView
+                android:id="@+id/positionname"
+                style="@style/setting_text_value"
+                android:drawablePadding="@dimen/login_edit_magin"
+                android:drawableRight="@drawable/setting_icon_arrow"
+                android:visibility="visible" />
+
+            <View
+                style="@style/setting_divider"
+                android:layout_marginLeft="55dp" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/devicemsg"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_setting_item_selector">
+
+            <TextView
+                style="@style/setting_text"
+                android:layout_width="match_parent"
+                android:drawableLeft="@drawable/ico_efamily_peizhi_msg"
+                android:drawableRight="@drawable/setting_icon_arrow"
+                android:text="@string/EQUIPMENT_INFO" />
+
+            <TextView
+                android:id="@+id/efamily_msg"
+                style="@style/setting_text_value"
+                android:drawablePadding="@dimen/login_edit_magin"
+                android:drawableRight="@drawable/setting_icon_arrow"
+                android:visibility="visible" />
+
+        </RelativeLayout>
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="0.5dp"
+            android:background="@color/setting_line_color" />
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="0.5dp"
+            android:layout_marginTop="@dimen/code_magin"
+            android:background="@color/setting_line_color" />
+
+        <TextView
+            android:id="@+id/efamily_setting_nearshare"
+            style="@style/setting_text"
+            android:layout_width="fill_parent"
+            android:background="@drawable/bg_setting_item_selector"
+            android:drawableLeft="@drawable/ico_doorbell_nearshare"
+            android:drawableRight="@drawable/setting_icon_arrow"
+            android:text="@string/SHARE" />
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="0.5dp"
+            android:background="@color/setting_line_color" />
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="0.5dp"
+            android:layout_marginTop="@dimen/code_magin"
+            android:background="@color/setting_line_color" />
+
+        <TextView
+            android:id="@+id/efamily_setting_related_bell"
+            style="@style/setting_text"
+            android:layout_width="fill_parent"
+            android:background="@drawable/bg_setting_item_selector"
+            android:drawableLeft="@drawable/icon_related_bell"
+            android:drawableRight="@drawable/setting_icon_arrow"
+            android:text="@string/EFAMILY_RELEVANCE_DOOR" />
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="0.5dp"
+            android:background="@color/setting_line_color" />
+
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="0.5dp"
+            android:layout_marginTop="@dimen/code_magin"
+            android:background="@color/setting_line_color" />
+
+        <TextView
+            android:id="@+id/efamily_setting_clear_record"
+            style="@style/submit_button"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_setting_item_selector"
+            android:gravity="center"
+            android:text="@string/EFAMILY_CLEAR_MSGLIST"
+            android:textColor="@color/clear_record_color"
+            android:textSize="17sp" />
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="0.5dp"
+            android:background="@color/setting_line_color" />
+
+        <Button
+            android:id="@+id/delete_device"
+            style="@style/submit_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/code_magin"
+            android:layout_marginLeft="@dimen/login_edit_maginr"
+            android:layout_marginRight="@dimen/login_edit_maginr"
+            android:layout_marginTop="@dimen/code_magin"
+            android:background="@drawable/btn_deldevice_selector"
+            android:text="@string/DELETE_CID"
+            android:textColor="@color/delete_device_color"
+            android:textSize="17sp"
+            android:visibility="visible" />
+
+    </LinearLayout>
+
+</ScrollView>

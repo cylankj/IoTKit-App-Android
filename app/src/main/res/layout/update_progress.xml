@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/dialog_notify"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_custom_dialog"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:paddingLeft="5dip"
+    android:paddingRight="5dip" >
+
+<!--    <TextView
+        android:id="@+id/title"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:gravity="center"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:text="@string/upgrade_tips"
+        android:textColor="#2e2e2e"
+        android:textSize="@dimen/area_code_size" />-->
+
+    <ProgressBar
+        android:id="@+id/update_progress"
+        style="@style/ProgressBar_Mini"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:maxHeight="20dip"
+        android:minHeight="20dip" />
+
+    <TextView
+        android:id="@+id/update_progress_text"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="right"
+        android:textColor="@color/blue" />
+
+    <Button
+        android:id="@+id/cancel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:background="@drawable/btn_cancle_selector"
+        android:text="@string/CANCEL"
+        android:textColor="#5c5c5c"
+        android:textSize="16sp" />
+
+</LinearLayout>

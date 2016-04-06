@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_editscenc"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/layout_time"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/code_magin"
+        android:orientation="vertical"
+        android:background="@drawable/bg_config">
+
+
+        <LinearLayout
+            android:id="@+id/layout_warmenable"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_config_item_selector"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                style="@style/setting_text"
+                android:layout_weight="1"
+                android:text="@string/SECURE_TYPE"
+                android:textSize="@dimen/area_code_size" />
+
+            <ToggleButton
+                android:id="@+id/toggle_safepro"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/login_edit_magin"
+                android:background="@drawable/checkbox_btn"
+                android:checked="false"
+                android:textOff=""
+                android:textOn="" />
+        </LinearLayout>
+
+        <View
+            style="@style/setting_divider"
+            android:layout_marginLeft="15dp" />
+
+        <LinearLayout
+            android:id="@+id/sensitivity"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_config_item_selector"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                style="@style/setting_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/SECURE_SENSITIVITY"
+                android:textSize="@dimen/area_code_size" />
+
+            <ImageView
+                android:id="@+id/sens_dot"
+                android:layout_width="10dp"
+                android:layout_height="10dp"
+                android:background="@drawable/ico_safe_reddot"
+                android:scaleType="fitXY"
+                android:layout_gravity="center_vertical"/>
+
+            <TextView
+                android:id="@+id/sens_value"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:drawablePadding="@dimen/login_edit_magin"
+                android:drawableRight="@drawable/setting_icon_arrow"
+                android:gravity="right"
+                android:paddingRight="15dip"
+                android:singleLine="true" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/safe_voiceandtime"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="visible">
+
+            <View
+                style="@style/setting_divider"
+                android:layout_marginLeft="15dp" />
+
+            <LinearLayout
+                android:id="@+id/device_voice"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_config_item_selector"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/setting_text"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/SOUNDS"
+                    android:textSize="@dimen/area_code_size" />
+
+                <TextView
+                    android:id="@+id/device_select_voice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawablePadding="@dimen/login_edit_magin"
+                    android:drawableRight="@drawable/setting_icon_arrow"
+                    android:paddingRight="15dip" />
+            </LinearLayout>
+
+            <View
+                style="@style/setting_divider"
+                android:layout_marginLeft="15dp" />
+
+            <LinearLayout
+                android:id="@+id/alarm"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_config_item_selector"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/setting_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/WARN_TIME"
+                    android:textSize="@dimen/area_code_size" />
+
+                <TextView
+                    android:id="@+id/device_time"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:drawablePadding="@dimen/login_edit_magin"
+                    android:drawableRight="@drawable/setting_icon_arrow"
+                    android:gravity="right"
+                    android:paddingRight="15dip"
+                    android:singleLine="true" />
+            </LinearLayout>
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="15dp"
+        android:paddingTop="8dp"
+        android:text="@string/TURN_ON_PROTECTION"
+        android:textColor="#6d6d72"
+        android:textSize="15sp" />
+
+</LinearLayout>

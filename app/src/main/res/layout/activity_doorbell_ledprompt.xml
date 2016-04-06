@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="55dp"
+        android:drawableLeft="@drawable/ico_red_led_light"
+        android:drawablePadding="10dp"
+        android:gravity="center_vertical"
+        android:paddingLeft="40dp"
+        android:paddingRight="40dp"
+        android:text="@string/LIGTH_DOOR_LABEL_0"
+        android:textColor="#333333"
+        android:textSize="14sp" />
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="22dp"
+        android:drawableLeft="@drawable/ico_red_led_bing"
+        android:drawablePadding="10dp"
+        android:gravity="center_vertical"
+        android:paddingLeft="40dp"
+        android:paddingRight="40dp"
+        android:text="@string/LIGTH_DOOR_LABEL_1"
+        android:textColor="#333333"
+        android:textSize="14sp" />
+
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="22dp"
+        android:drawableLeft="@drawable/ico_blue_led_twinkle"
+        android:drawablePadding="10dp"
+        android:gravity="center_vertical"
+        android:paddingLeft="40dp"
+        android:paddingRight="40dp"
+        android:text="@string/LIGTH_DOOR_LABEL_2"
+        android:textColor="#333333"
+        android:textSize="14sp" />
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="22dp"
+        android:drawableLeft="@drawable/ico_always_green"
+        android:drawablePadding="10dp"
+        android:gravity="center_vertical"
+        android:paddingLeft="40dp"
+        android:paddingRight="40dp"
+        android:text="@string/LIGTH_DOOR_LABEL_3"
+        android:textColor="#333333"
+        android:textSize="14sp" />
+
+    <Button
+        android:id="@+id/btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="55dp"
+        android:background="@drawable/btn_search_device"
+        android:gravity="center"
+        android:text="@string/I_KNOW"
+        android:textColor="@color/white"
+        android:textSize="@dimen/login_btn_textsize" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="22dp"
+        android:gravity="center"
+        android:text="@string/DOOR_HINT_LAGEL"
+        android:textColor="#c5c5c5"
+        android:textSize="17sp" />
+
+</LinearLayout>

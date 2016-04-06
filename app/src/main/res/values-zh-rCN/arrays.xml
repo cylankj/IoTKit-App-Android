@@ -1,0 +1,162 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<resources>
+
+    <string-array name="weeks">
+        <item>每周一</item>
+        <item>每周二</item>
+        <item>每周三</item>
+        <item>每周四</item>
+        <item>每周五</item>
+        <item>每周六</item>
+        <item>每周日</item>
+    </string-array>
+    <string-array name="xingqi">
+        <item>星期日</item>
+        <item>星期一</item>
+        <item>星期二</item>
+        <item>星期三</item>
+        <item>星期四</item>
+        <item>星期五</item>
+        <item>星期六</item>
+    </string-array>
+    <string-array name="show_weeks">
+        <item>周一</item>
+        <item>周二</item>
+        <item>周三</item>
+        <item>周四</item>
+        <item>周五</item>
+        <item>周六</item>
+        <item>周日</item>
+    </string-array>
+    <string-array name="device_set_voice_name">
+        <item>静音</item>
+        <item>汪汪声</item>
+        <item>警报声</item>
+    </string-array>
+    <string-array name="modes">
+        <item>正常模式</item>
+        <item>回家模式</item>
+        <item>离家模式</item>
+    </string-array>
+    <string-array name="hours">
+        <item>00:00</item>
+        <item>01:00</item>
+        <item>02.00</item>
+        <item>03.00</item>
+        <item>04:00</item>
+        <item>05:00</item>
+        <item>06:00</item>
+        <item>07:00</item>
+        <item>08:00</item>
+        <item>09:00</item>
+        <item>10:00</item>
+        <item>11:00</item>
+        <item>12.00</item>
+        <item>13.00</item>
+        <item>14:00</item>
+        <item>15:00</item>
+        <item>16:00</item>
+        <item>17:00</item>
+        <item>18:00</item>
+        <item>19:00</item>
+        <item>20:00</item>
+        <item>21:00</item>
+        <item>22.00</item>
+        <item>23:00</item>
+    </string-array>
+    <string-array name="addvideo_title">
+        <item>添加设备</item>
+        <item>附近的设备</item>
+        <item>配置设备WiFi</item>
+        <item>绑定设备</item>
+        <item>设备软件升级</item>
+    </string-array>
+    <string-array name="video_direction">
+        <item>默认（正向）</item>
+        <item>倒置（旋转180°）</item>
+    </string-array>
+    <string-array name="error_msg">
+        <item>"数据库错误"</item>
+        <item />
+        <item>错误</item>
+        <item>会话超时</item>
+        <item>CID不存在</item>
+        <item>调用的动作不存在</item>
+        <item>调用的模块不存在</item>
+        <item>参数错误</item>
+        <item>函数调用错误</item>
+        <item>设备已存在</item>
+        <item>CID不存在</item>
+        <item>此帐号尚未注册</item>
+        <item>帐号或密码错误，请重新输入</item>
+        <item>请输入正确的验证码</item>
+        <item>帐号已注册，可直接登录</item>
+        <item>验证码已过期，请重新获取</item>
+        <item>设备未激活</item>
+        <item>创建压缩包失败</item>
+        <item>压缩文件失败</item>
+        <item>文件不存在</item>
+        <item>短信接口调用失败</item>
+        <item>CID已用尽</item>
+        <item>请登录帐号</item>
+        <item>帐号异常，请重新登录</item>
+        <item>ECHANGEPASS_SAME</item>
+        <item>上传失败</item>
+        <item>拷贝文件失败</item>
+        <item>请输入正确的验证码</item>
+        <item>正在生成二维码，请等待...</item>
+        <item>原密码错误，请重新输入</item>
+        <!--29-->
+        <item>此帐号尚未注册</item>
+        <!--30-->
+        <item>原密码与新密码相同</item>
+        <item>无法连接，您没有权限</item>
+        <item>设备离线了</item>
+        <!--33-->
+        <item />
+        <!--34-->
+        <item>CID与SN不匹配</item>
+        <item>帐号不在线</item>
+        <item>设置已保存，设备在线时将会生效</item>
+        <item>上传文件到OSS失败</item>
+        <!--38-->
+        <item>名称已经存在</item>
+        <item>暂无数据</item>
+        <item>空间操作失败</item>
+        <item>CID已被其他帐号绑定</item>
+        <item>CID未被绑定</item>
+        <!--43-->
+        <item>CID已被绑定</item>
+        <!--44-->
+        <item>请先删除已绑定的设备</item>
+        <!--45-->
+        <item>此位置不能删除</item>
+        <!--46-->
+        <item>位置名称已被使用</item>
+        <!--47-->
+        <item>设置成功，正常模式时将会生效</item>
+        <!--48-->
+        <item>解析文件类型错误，请上传apk或bin包</item>
+        <item>解析版本号错误，请上传4位版本号的包</item>
+        <item>解析文件域名错误，请上传正确的域名包</item>
+        <!--51-->
+        <item>发送邮件失败</item>
+        <item>此手机号码已被使用</item>
+        <item>此邮箱帐号已被使用</item>
+        <!--54-->
+        <item>此帐号还没有注册</item>
+        <!--55-->
+        <item>已经分享给此帐号啦</item>
+        <!--56-->
+        <item>CID未被绑定，请重新添加</item>
+        <!--57-->
+        <item>您不能分享给自己</item>
+        <!--58-->
+        <item>CID未被绑定，请重新登录</item>
+    </string-array>
+    <string-array name="show_sensitive">
+        <item>低</item>
+        <item>中</item>
+        <item>高</item>
+    </string-array>
+</resources>

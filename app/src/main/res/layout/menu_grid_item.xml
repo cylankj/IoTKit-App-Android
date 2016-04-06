@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/root_layout"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content" >
+
+    <ImageView
+        android:id="@+id/pic"
+        android:layout_width="fill_parent"
+        android:layout_height="@dimen/y220"
+        android:scaleType="fitXY"
+        android:background="@drawable/bg_scene_home" />
+
+    <ImageView
+        android:id="@+id/item_check"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_margin="8dp"
+        android:src="@drawable/ico_scene_checked" />
+
+    <TextView
+        android:id="@+id/item_scene_name"
+        android:layout_width="fill_parent"
+        android:layout_height="@dimen/y40"
+        android:layout_alignParentBottom="true"
+        android:background="@android:color/white"
+        android:gravity="center_vertical"
+        android:paddingLeft="5dp"
+        android:singleLine="true"
+        android:text="我的客厅"
+        android:textColor="#6a6a6a"
+        android:textSize="12sp" />
+
+</RelativeLayout>

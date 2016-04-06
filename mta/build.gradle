@@ -1,0 +1,49 @@
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion 23
+    buildToolsVersion "23.0.2"
+
+    defaultConfig {
+        minSdkVersion 15
+        targetSdkVersion 23
+        versionCode 1
+        versionName "1.0"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+    testCompile 'junit:junit:4.12'
+    compile files('src/main/jniLibs/mta-sdk-1.6.2.jar')
+}
+
+if (project.hasProperty('oem')
+        && oem != 'cylan') {
+    android.defaultConfig.applicationId = 'com.cylan.jiafeigou.' + oem
+}
+
+android.libraryVariants.all { variant ->
+    variant.outputs.each { output ->
+        output.processManifest.doLast {
+            def manifestOutFile = output.processManifest.manifestOutputFile
+            def appkey
+            // cylan matappkey:Aqc1103156296  zhongxing matappkey:ATQ1JV694AKT
+            if (project.hasProperty('oem') && oem != 'cylan') {
+                appkey = "ATQ1JV694AKT"
+            } else {
+                appkey = "Aqc1103156296"
+            }
+
+            def newFileContents = manifestOutFile.getText('UTF-8').replace("MATAPPKEY", appkey)
+            manifestOutFile.write(newFileContents, 'UTF-8')
+
+        }
+    }
+}

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/root"
+    style="@style/root"
+    android:orientation="vertical" >
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="@dimen/code_magin"
+        android:background="@color/setting_line_color" />
+
+    <com.cylan.jiafeigou.widget.EditDelText
+        android:id="@+id/nowpwd"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_setting_item_default"
+        android:hint="@string/CURRENT_PWD"
+        android:inputType="textPassword"
+        android:digits="@string/input_rule"
+        android:maxLength="12"
+        android:paddingLeft="@dimen/login_edit_magin"
+        android:paddingRight="@dimen/modify_nickname"
+        android:textColorHint="@color/modify_pwd_hint"
+        android:textSize="@dimen/change_pwd_size" />
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:background="@color/setting_line_color" />
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="@dimen/code_magin"
+        android:background="@color/setting_line_color" />
+
+    <com.cylan.jiafeigou.widget.EditDelText
+        android:id="@+id/newpwd"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_setting_item_default"
+        android:hint="@string/NEW_PWD"
+        android:inputType="textPassword"
+        android:digits="@string/input_rule"
+        android:maxLength="12"
+        android:paddingLeft="@dimen/login_edit_magin"
+        android:paddingRight="@dimen/modify_nickname"
+        android:textColorHint="@color/modify_pwd_hint"
+        android:textSize="@dimen/change_pwd_size" />
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:background="@color/setting_line_color" />
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="@dimen/code_magin"
+        android:background="@color/setting_line_color" />
+
+    <com.cylan.jiafeigou.widget.EditDelText
+        android:id="@+id/confrim_newpwd"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_setting_item_default"
+        android:hint="@string/ENTER_PWD"
+        android:inputType="textPassword"
+        android:digits="@string/input_rule"
+        android:maxLength="12"
+        android:paddingLeft="@dimen/login_edit_magin"
+        android:paddingRight="@dimen/modify_nickname"
+        android:textColorHint="@color/modify_pwd_hint"
+        android:textSize="@dimen/change_pwd_size" />
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:background="@color/setting_line_color" />
+
+</LinearLayout>

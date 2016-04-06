@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:orientation="vertical">
+
+    <ImageView
+        android:id="@+id/toolsbar"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/efamily_bootom_bar_height"
+        android:scaleType="fitXY"
+        android:src="@drawable/bg_efamily_toolbar_down" />
+
+    <View
+        android:id="@+id/devider"
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="#f1f3f5" />
+
+    <LinearLayout
+        android:id="@+id/menu"
+        android:layout_width="match_parent"
+        android:layout_height="138dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/share_pic"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/efamily_menu_background"
+            android:drawablePadding="8dp"
+            android:drawableTop="@drawable/ico_efamily_menu_sharepic"
+            android:gravity="center"
+            android:paddingBottom="34dp"
+            android:paddingTop="31dp"
+            android:textColor="#BEBEBE"
+            android:text="@string/EFAMILY_MENU_PHOTO"
+            android:textSize="15sp" />
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="#f1f3f5" />
+
+        <TextView
+            android:id="@+id/word"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:textColor="#BEBEBE"
+            android:background="@drawable/efamily_menu_background"
+            android:drawablePadding="8dp"
+            android:drawableTop="@drawable/ico_efamily_menu_word"
+            android:gravity="center"
+            android:paddingBottom="34dp"
+            android:paddingTop="31dp"
+            android:text="@string/EFAMILY_MENU_VOICEMS"
+            android:textSize="15sp" />
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="#f1f3f5" />
+
+        <TextView
+            android:id="@+id/facetime"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/efamily_menu_background"
+            android:drawablePadding="8dp"
+            android:drawableTop="@drawable/ico_efamily_menu_facetime"
+            android:gravity="center"
+            android:paddingBottom="34dp"
+            android:textColor="#BEBEBE"
+            android:paddingTop="31dp"
+            android:text="@string/EFAMILY_MENU_VIDEOCALL"
+            android:textSize="15sp" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="#f1f3f5" />
+
+    <View
+        android:id="@+id/obligate_view"
+        android:layout_width="match_parent"
+        android:layout_height="19dp"
+        android:layout_marginTop="0.5dp"
+        android:background="#f9fbfc" />
+</LinearLayout>

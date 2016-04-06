@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/search_edit_pwd"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="#eff0f4"
+    android:orientation="vertical"
+    android:visibility="visible">
+
+    <View
+        android:id="@+id/search_delver1"
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="20dp"
+        android:background="@color/setting_line_color" />
+
+    <LinearLayout
+        android:id="@+id/device_name_layout"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_setting_item_default"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:paddingLeft="@dimen/login_edit_magin"
+            android:text="@string/EQUIPMENT_NAME_1"
+            android:textColorHint="@color/modify_pwd_hint"
+            android:textSize="@dimen/area_code_size" />
+
+        <com.cylan.jiafeigou.widget.EditDelText
+            android:id="@+id/device_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/bg_setting_item_default"
+            android:maxLength="12"
+            android:paddingLeft="@dimen/login_edit_magin"
+            android:paddingRight="@dimen/modify_nickname"
+            android:singleLine="true"
+            android:textColorHint="@color/modify_pwd_hint"
+            android:textSize="@dimen/area_code_size" />
+    </LinearLayout>
+
+    <View
+        android:id="@+id/search_delver2"
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:background="@color/setting_line_color" />
+
+    <TextView
+        android:id="@+id/search_desc"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/back_padding"
+        android:layout_marginRight="@dimen/back_padding"
+        android:gravity="center_vertical"
+        android:paddingBottom="@dimen/modify_bindphone"
+        android:paddingTop="@dimen/code_magin"
+        android:text="@string/CHOOSE_WIFI"
+        android:textColor="@color/timeline_tab_unchecked"
+        android:textSize="@dimen/login_forget_size" />
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:background="@color/setting_line_color" />
+
+    <LinearLayout
+        android:id="@+id/layout_wifi_name"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_setting_item_default"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:paddingLeft="@dimen/login_edit_magin"
+            android:text="@string/WIFI_NAME"
+            android:textColorHint="@color/modify_pwd_hint"
+            android:textSize="@dimen/area_code_size" />
+
+        <TextView
+            android:id="@+id/wifi_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:paddingLeft="@dimen/login_edit_magin"
+            android:textColorHint="@color/modify_pwd_hint"
+            android:textSize="@dimen/area_code_size" />
+
+        <ImageView
+            android:id="@+id/wifi_name_arrow"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:paddingLeft="@dimen/login_edit_magin"
+            android:paddingRight="@dimen/login_edit_magin"
+            android:src="@drawable/btn_wiflist_unexpand" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="0.5dp"
+        android:layout_marginLeft="15dp"
+        android:background="@color/setting_line_color" />
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_setting_item_default"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:paddingLeft="@dimen/login_edit_magin"
+            android:text="@string/WIFI_PWD_1"
+            android:textColorHint="@color/modify_pwd_hint"
+            android:textSize="@dimen/area_code_size" />
+
+        <com.cylan.jiafeigou.widget.EditDelText
+            android:id="@+id/wifi_pwd"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/bg_setting_item_default"
+            android:hint="@string/ENTER_WIFI_PWD"
+            android:paddingLeft="@dimen/login_edit_magin"
+            android:paddingRight="@dimen/modify_nickname"
+            android:singleLine="true"
+            android:textColorHint="@color/modify_pwd_hint"
+            android:textSize="@dimen/area_code_size" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:background="@color/setting_line_color" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="9dp"
+        android:text="@string/WIFI_SET_5GTIPS"
+        android:textColor="#6d6d72"
+        android:textSize="14sp" />
+
+    <Button
+        android:id="@+id/start"
+        style="@style/submit_button"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginLeft="@dimen/login_edit_magin"
+        android:layout_marginRight="@dimen/login_edit_magin"
+        android:layout_marginTop="@dimen/code_magin"
+        android:background="@drawable/btn_login_selector"
+        android:text="@string/NEXT"
+        android:textColor="@color/bottom_text_default"
+        android:textSize="@dimen/top_title_text_size" />
+
+</LinearLayout>

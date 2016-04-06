@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingLeft="35dp"
+    android:paddingRight="35dp"
+    android:background="#F0F2F5">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/magnetic_item_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/DOOR_TODAY"
+            android:paddingTop="26dp"
+            android:textColor="#333"
+            android:textSize="22sp"/>
+
+        <TextView
+            android:id="@+id/magnetic_item_month"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/CLEAR"
+            android:textSize="18sp"
+            android:textColor="#666"/>
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="25dp"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:gravity="center_horizontal"
+            android:layout_marginLeft="25dp">
+
+            <View
+                android:id="@+id/magnetic_view"
+                android:layout_width="1dp"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:background="#B0BEC4"/>
+
+            <ImageView
+                android:id="@+id/magnetic_item_statue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_door_close_big"
+                android:scaleType="centerCrop"/>
+
+            <View
+                android:id="@+id/magnetic_view1"
+                android:layout_width="1dp"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:background="#B0BEC4"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingTop="3dp"
+            android:paddingBottom="3dp"
+            android:orientation="horizontal"
+            android:layout_centerInParent="true">
+
+            <TextView
+                android:id="@+id/magnetic_item_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:typeface="sans"
+                android:textColor="#333"
+                android:textSize="19sp"
+                android:text="00:00:00"/>
+
+            <TextView
+                android:id="@+id/magnetic_item_open"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:typeface="sans"
+                android:textColor="#333"
+                android:textSize="19sp"
+                android:text="@string/CLEAR"/>
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</LinearLayout>

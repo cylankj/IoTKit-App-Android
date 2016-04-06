@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <ImageView
+        android:id="@+id/maxbiur_pic"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="fitXY" />
+
+    <ImageView
+        android:id="@+id/original_pic"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="fitXY"
+        android:visibility="visible" />
+
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/welcome_viewpager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:nextFocusDown="@+id/login" />
+
+    <ImageView
+        android:id="@+id/welcome_logo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="30dp"
+        android:src="@drawable/ico_welcome_logo" />
+
+    <LinearLayout
+        android:id="@+id/cusor_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/bottom_layout"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="18dp"
+        android:orientation="horizontal" />
+
+    <LinearLayout
+        android:id="@+id/bottom_layout"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/bg_welcome_bottomlayout"
+        android:gravity="center"
+        android:paddingBottom="20dp"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
+        android:paddingTop="20dp">
+
+        <Button
+            android:id="@+id/login"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="7.5dp"
+            android:layout_weight="1"
+            android:background="@drawable/btn_welcome_login_selector"
+            android:gravity="center"
+            android:nextFocusRight="@+id/register"
+            android:nextFocusUp="@+id/welcome_viewpager"
+            android:text="@string/LOGIN"
+            android:textColor="@color/result_text"
+            android:textSize="17sp" />
+
+        <Button
+            android:id="@+id/register"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="7.5dp"
+            android:layout_weight="1"
+            android:background="@drawable/btn_welcome_register_selector"
+            android:gravity="center"
+            android:nextFocusUp="@+id/welcome_viewpager"
+            android:text="@string/SIGN_UP"
+            android:textColor="#434343"
+            android:textSize="17sp" />
+    </LinearLayout>
+
+</RelativeLayout>

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_setting_item_selector"
+    android:gravity="center_vertical"
+    android:orientation="vertical"
+    android:paddingLeft="@dimen/back_padding" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal" >
+
+        <ProgressBar
+            android:id="@+id/loading"
+            style="@android:style/Widget.ProgressBar"
+            android:layout_width="24dip"
+            android:layout_height="24dip"
+            android:layout_centerVertical="true"
+            android:visibility="gone" />
+
+        <ImageView
+            android:id="@+id/is_selected"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ico_wifi_selected"
+            android:visibility="invisible" />
+
+        <TextView
+            android:id="@+id/wifi_name"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/login_edit_magin"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:text="Cylan_605"
+            android:textColor="@color/text_color"
+            android:textSize="@dimen/area_code_size" />
+
+        <ImageView
+            android:id="@+id/is_locked"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ico_wifi_locked"
+            android:visibility="invisible" />
+
+        <ImageView
+            android:id="@+id/wifi_state"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/modify_bindphone"
+            android:layout_marginRight="@dimen/modify_bindphone"
+            android:src="@drawable/ico_wifi1"
+            android:visibility="visible" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/login_edit_magin"
+            android:src="@drawable/ico_nextstep_arrow" />
+    </LinearLayout>
+
+</RelativeLayout>

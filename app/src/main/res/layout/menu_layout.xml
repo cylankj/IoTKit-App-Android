@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.cylan.jiafeigou.widget.slidingmenu.SlidingMenu xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/menu_layout"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/menu_shade"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:src="#000000" />
+
+    <ScrollView
+        android:id="@+id/menu_scrollview"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:fillViewport="false"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:orientation="vertical"
+            android:paddingTop="45dp">
+
+            <LinearLayout
+                android:id="@+id/scene_layout"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:id="@+id/scenc"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_menu_selector"
+                    android:focusable="true"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingBottom="10dp"
+                    android:paddingLeft="15dp"
+                    android:paddingRight="20dp"
+                    android:paddingTop="20dp">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ico_scenc" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:layout_weight="1"
+                        android:text="@string/SWITCH_LOCATIONS"
+                        android:textColor="@color/white"
+                        android:textSize="15sp" />
+
+                    <ImageView
+                        android:id="@+id/arrows"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/menu_unexpand_arrow" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="fill_parent"
+                    android:layout_height="0.5dp"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="20dp"
+                    android:background="@drawable/menu_devide_line" />
+            </LinearLayout>
+
+            <com.cylan.jiafeigou.widget.MyGridView
+                android:id="@+id/scene_grid"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginTop="11dp"
+                android:focusable="true"
+                android:horizontalSpacing="11dp"
+                android:listSelector="@android:color/transparent"
+                android:numColumns="2"
+                android:scrollbars="none"
+                android:verticalSpacing="11dp"
+                android:visibility="gone" />
+
+            <!--<TextView
+                android:id="@+id/experience"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_menu_selector"
+                android:drawableLeft="@drawable/ico_exp"
+                android:drawablePadding="10dp"
+                android:drawableRight="@drawable/menu_ico_next"
+                android:gravity="center_vertical"
+                android:paddingBottom="10dp"
+                android:paddingLeft="15dp"
+                android:paddingRight="20dp"
+                android:paddingTop="20dp"
+                android:text="@string/EXPERIENCE"
+                android:textColor="@color/white"
+                android:textSize="15sp" />
+
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="0.5dp"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="20dp"
+                android:background="@drawable/menu_devide_line" />-->
+
+            <TextView
+                android:id="@+id/account"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_menu_selector"
+                android:drawableLeft="@drawable/btn_account"
+                android:drawablePadding="10dp"
+                android:drawableRight="@drawable/menu_ico_next"
+                android:focusable="true"
+                android:gravity="center_vertical"
+                android:paddingBottom="10dp"
+                android:paddingLeft="15dp"
+                android:paddingRight="20dp"
+                android:paddingTop="20dp"
+                android:text="@string/ACCOUNT"
+                android:textColor="@color/white"
+                android:textSize="15sp" />
+
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="0.5dp"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="20dp"
+                android:background="@drawable/menu_devide_line" />
+
+            <TextView
+                android:id="@+id/setting"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_menu_selector"
+                android:drawableLeft="@drawable/ico_setting"
+                android:drawablePadding="10dp"
+                android:drawableRight="@drawable/menu_ico_next"
+                android:focusable="true"
+                android:gravity="center_vertical"
+                android:paddingBottom="10dp"
+                android:paddingLeft="15dp"
+                android:paddingRight="20dp"
+                android:paddingTop="20dp"
+                android:text="@string/SETTINGS"
+                android:textColor="@color/white"
+                android:textSize="15sp" />
+
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="0.5dp"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="20dp"
+                android:background="@drawable/menu_devide_line" />
+
+            <TextView
+                android:id="@+id/feedback"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_menu_selector"
+                android:drawableLeft="@drawable/ico_feedback"
+                android:drawablePadding="10dp"
+                android:drawableRight="@drawable/menu_ico_next"
+                android:focusable="true"
+                android:gravity="center_vertical"
+                android:paddingBottom="10dp"
+                android:paddingLeft="15dp"
+                android:paddingRight="20dp"
+                android:paddingTop="20dp"
+                android:text="@string/FEEDBACK"
+                android:textColor="@color/white"
+                android:textSize="15sp" />
+
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="0.5dp"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="20dp"
+                android:background="@drawable/menu_devide_line" />
+
+            <TextView
+                android:id="@+id/web_help"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_menu_selector"
+                android:drawableLeft="@drawable/ico_help"
+                android:drawablePadding="10dp"
+                android:drawableRight="@drawable/menu_ico_next"
+                android:focusable="true"
+                android:gravity="center_vertical"
+                android:paddingBottom="10dp"
+                android:paddingLeft="15dp"
+                android:paddingRight="20dp"
+                android:paddingTop="20dp"
+                android:text="@string/USE_HELP"
+                android:textColor="@color/white"
+                android:textSize="15sp" />
+
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="0.5dp"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="20dp"
+                android:background="@drawable/menu_devide_line" />
+        </LinearLayout>
+    </ScrollView>
+
+    <View
+        android:layout_width="7dp"
+        android:layout_height="fill_parent"
+        android:layout_alignParentRight="true"
+        android:background="@drawable/menu_yingyin" />
+
+</com.cylan.jiafeigou.widget.slidingmenu.SlidingMenu>

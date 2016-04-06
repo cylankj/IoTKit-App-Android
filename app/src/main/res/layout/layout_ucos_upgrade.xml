@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/img_complete"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="55dp" />
+
+    <ImageView
+        android:id="@+id/img_upgrade"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="55dp"
+        android:src="@drawable/pic_ucos_upgrade_rocket" />
+
+    <TextView
+        android:id="@+id/upgrade_des"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/img_upgrade"
+        android:layout_marginTop="20dp"
+        android:gravity="center"
+        android:textColor="#333333"
+        android:textSize="19sp" />
+
+    <Button
+        android:id="@+id/update_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/upgrade_des"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="45dp"
+        android:background="@drawable/btn_search_device"
+        android:gravity="center"
+        android:text="@string/UPDATING_BUTTON"
+        android:textColor="@color/white"
+        android:textSize="19sp" />
+</RelativeLayout>
