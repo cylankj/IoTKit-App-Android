@@ -32,4 +32,6 @@ dependencies {
     compile project(':mta')
     compile project(':WebRtcAndroid')
     compile project(':blockcanary')
+    compile project(':uil')
+    compile project(':dswlog')
 }

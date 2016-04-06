@@ -28,7 +28,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewDebug;
 
-import com.cylan.publicApi.DswLog;
+import cylan.log.DswLog;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;

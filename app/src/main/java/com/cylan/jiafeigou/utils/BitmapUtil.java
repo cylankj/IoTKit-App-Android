@@ -10,12 +10,12 @@ import android.graphics.PixelFormat;
 import android.graphics.drawable.Drawable;
 import android.widget.ImageView;
 
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.assist.ImageSize;
-import com.nostra13.universalimageloader.core.download.ImageDownloader;
-import com.nostra13.universalimageloader.core.imageaware.ImageViewAware;
-import com.nostra13.universalimageloader.utils.ImageSizeUtils;
-import com.nostra13.universalimageloader.utils.MemoryCacheUtils;
+import cylan.uil.core.ImageLoader;
+import cylan.uil.core.assist.ImageSize;
+import cylan.uil.core.download.ImageDownloader;
+import cylan.uil.core.imageaware.ImageViewAware;
+import cylan.uil.utils.ImageSizeUtils;
+import cylan.uil.utils.MemoryCacheUtils;
 
 import java.io.FileOutputStream;
 import java.io.OutputStream;

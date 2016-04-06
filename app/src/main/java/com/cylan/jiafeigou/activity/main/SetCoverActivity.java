@@ -14,7 +14,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
-import com.cylan.publicApi.DswLog;
+import cylan.log.DswLog;
 import com.cylan.jiafeigou.adapter.MyGridAdapter;
 import com.cylan.jiafeigou.base.BaseActivity;
 import com.cylan.jiafeigou.engine.ClientConstants;

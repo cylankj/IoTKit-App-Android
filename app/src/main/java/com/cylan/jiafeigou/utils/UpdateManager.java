@@ -20,10 +20,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.entity.Update;
 import com.cylan.publicApi.CheckUpdateUrl;
 import com.cylan.publicApi.Constants;
-import com.cylan.publicApi.DswLog;
-import com.cylan.jiafeigou.entity.Update;
 
 import net.tsz.afinal.FinalHttp;
 import net.tsz.afinal.http.AjaxCallBack;
@@ -31,6 +30,8 @@ import net.tsz.afinal.http.HttpHandler;
 
 import java.io.File;
 import java.text.DecimalFormat;
+
+import cylan.log.DswLog;
 
 public class UpdateManager {
 

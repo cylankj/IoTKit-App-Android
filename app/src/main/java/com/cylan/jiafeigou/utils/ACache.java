@@ -23,7 +23,7 @@ import android.graphics.PixelFormat;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 
-import com.cylan.publicApi.DswLog;
+import cylan.log.DswLog;
 
 import org.json.JSONArray;
 import org.json.JSONObject;

@@ -27,12 +27,11 @@ import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 
+import com.cylan.entity.ZipLog;
 import com.cylan.jiafeigou.base.MyApp;
 import com.cylan.publicApi.Constants;
-import com.cylan.publicApi.DswLog;
 import com.cylan.publicApi.JniPlay;
 import com.cylan.publicApi.ProcessUtils;
-import com.cylan.entity.ZipLog;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -72,6 +71,8 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import javax.security.auth.x500.X500Principal;
+
+import cylan.log.DswLog;
 
 public class Utils {
 

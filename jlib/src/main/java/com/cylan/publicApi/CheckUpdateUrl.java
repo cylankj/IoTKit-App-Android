@@ -1,5 +1,7 @@
 package com.cylan.publicApi;
 
+import cylan.log.DswLog;
+
 public class CheckUpdateUrl {
 
     public static final String IPAD = "iPad";

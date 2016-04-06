@@ -19,7 +19,7 @@ import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.publicApi.Constants;
-import com.cylan.publicApi.DswLog;
+import cylan.log.DswLog;
 import com.cylan.jiafeigou.activity.main.WebViewActivity;
 import com.cylan.jiafeigou.activity.video.CallOrConf;
 import com.cylan.jiafeigou.activity.video.HistoryVideoActivity;

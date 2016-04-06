@@ -6,7 +6,7 @@ import android.content.Intent;
 import android.telephony.SmsMessage;
 import android.util.Log;
 
-import com.cylan.publicApi.DswLog;
+import cylan.log.DswLog;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

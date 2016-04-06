@@ -8,7 +8,7 @@ import android.net.NetworkInfo;
 import android.os.Handler;
 import android.os.Message;
 
-import com.cylan.publicApi.DswLog;
+import cylan.log.DswLog;
 import com.cylan.publicApi.JniPlay;
 import com.cylan.jiafeigou.engine.ClientConstants;
 import com.cylan.jiafeigou.engine.MyService;

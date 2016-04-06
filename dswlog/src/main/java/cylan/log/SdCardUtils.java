@@ -1,4 +1,4 @@
-package com.cylan.utils;
+package cylan.log;
 
 import android.text.TextUtils;
 import android.util.Log;

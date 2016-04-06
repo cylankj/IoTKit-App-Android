@@ -12,14 +12,6 @@ import android.os.IBinder;
 import android.os.Message;
 
 import com.cylan.jiafeigou.R;
-import com.cylan.publicApi.CallMessageCallBack;
-import com.cylan.publicApi.Config;
-import com.cylan.publicApi.Constants;
-import com.cylan.publicApi.DswLog;
-import com.cylan.publicApi.Function;
-import com.cylan.publicApi.JniPlay;
-import com.cylan.publicApi.MsgpackMsg;
-import com.cylan.publicApi.NetUtils;
 import com.cylan.jiafeigou.activity.doorbell.DoorBellCalledActivity;
 import com.cylan.jiafeigou.activity.efamily.facetime.FaceTimeActivity;
 import com.cylan.jiafeigou.activity.efamily.facetime.FaceTimeCallingActivity;
@@ -54,8 +46,17 @@ import com.cylan.jiafeigou.utils.PathGetter;
 import com.cylan.jiafeigou.utils.PreferenceUtil;
 import com.cylan.jiafeigou.utils.ThreadPoolUtils;
 import com.cylan.jiafeigou.utils.Utils;
+import com.cylan.publicApi.CallMessageCallBack;
+import com.cylan.publicApi.Config;
+import com.cylan.publicApi.Constants;
+import com.cylan.publicApi.Function;
+import com.cylan.publicApi.JniPlay;
+import com.cylan.publicApi.MsgpackMsg;
+import com.cylan.publicApi.NetUtils;
 
 import java.util.ArrayList;
+
+import cylan.log.DswLog;
 
 public class MyService extends Service implements UDPMessageListener {
 

@@ -16,8 +16,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
-import com.cylan.publicApi.Constants;
-import com.cylan.publicApi.MsgpackMsg;
 import com.cylan.jiafeigou.activity.doorbell.detail.DoorBellDetailActivity;
 import com.cylan.jiafeigou.activity.message.MessageDelDialog;
 import com.cylan.jiafeigou.activity.message.MessagePicturesActivity;
@@ -44,11 +42,14 @@ import com.cylan.jiafeigou.utils.PreferenceUtil;
 import com.cylan.jiafeigou.utils.StringUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.widget.PullToZoomListView;
-import com.nostra13.universalimageloader.core.ImageLoader;
+import com.cylan.publicApi.Constants;
+import com.cylan.publicApi.MsgpackMsg;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+
+import cylan.uil.core.ImageLoader;
 
 public class DoorBellActivity extends RootActivity implements OnClickListener, AdapterView.OnItemLongClickListener, CheckDoorbellHeadPicListener, PullToZoomListView.OnScrollStateChangeListener {
 

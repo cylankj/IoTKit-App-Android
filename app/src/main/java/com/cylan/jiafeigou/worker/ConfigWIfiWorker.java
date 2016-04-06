@@ -5,7 +5,7 @@ import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
 import android.os.Handler;
 
-import com.cylan.publicApi.DswLog;
+import cylan.log.DswLog;
 import com.cylan.publicApi.Function;
 
 /**

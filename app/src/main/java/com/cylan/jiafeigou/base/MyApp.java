@@ -26,20 +26,20 @@ import com.cylan.jiafeigou.utils.PreferenceUtil;
 import com.cylan.jiafeigou.utils.StringUtils;
 import com.cylan.publicApi.Constants;
 import com.cylan.publicApi.CrashHandler;
-import com.cylan.publicApi.DswLog;
 import com.cylan.publicApi.JniPlay;
 import com.cylan.publicApi.MsgpackMsg;
 import com.cylan.utils.PackageUtils;
-import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
-import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
-import com.nostra13.universalimageloader.utils.L;
 import com.tencent.stat.StatService;
 
 import net.tsz.afinal.FinalBitmap;
 
+import cylan.log.DswLog;
 import cylan.mta.MtaManager;
+import cylan.uil.cache.disc.naming.Md5FileNameGenerator;
+import cylan.uil.core.ImageLoader;
+import cylan.uil.core.ImageLoaderConfiguration;
+import cylan.uil.core.assist.QueueProcessingType;
+import cylan.uil.utils.L;
 
 public class MyApp extends Application {
 
@@ -57,9 +57,9 @@ public class MyApp extends Application {
         instance = this;
         Bugly.init(this, BuildConfig.DEBUG, PackageUtils.getAppVersionName(this));
         CrashHandler.getInstance(null).init(getApplicationContext());
+        initDswLog();
         initBlockCanary();
         MtaManager.init(this, BuildConfig.DEBUG);
-        DswLog.debug = com.cylan.jiafeigou.BuildConfig.DEBUG;
         StatService.trackCustomEvent(this, "App onCreate", "");
         OEMConf.LoadConf(this);
         initServerConfig();
@@ -68,6 +68,11 @@ public class MyApp extends Application {
         JniPlay.SetHttpRoot(PathGetter.getUpgradePath());
         CallbackManager.getInstance().clearObserver();
         UnSendQueue.getInstance().clear();
+    }
+
+    private void initDswLog() {
+        DswLog.debug = com.cylan.jiafeigou.BuildConfig.DEBUG;
+        DswLog.setRootDir(Constants.ROOT_DIR);
     }
 
     private void initBlockCanary() {

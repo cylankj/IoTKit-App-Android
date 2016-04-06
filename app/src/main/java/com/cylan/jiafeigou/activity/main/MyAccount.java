@@ -16,7 +16,7 @@ import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.publicApi.Constants;
-import com.cylan.publicApi.DswLog;
+import cylan.log.DswLog;
 import com.cylan.publicApi.JniPlay;
 import com.cylan.publicApi.MsgpackMsg;
 import com.cylan.jiafeigou.base.BaseActivity;
@@ -39,8 +39,8 @@ import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.Utils;
 import com.cylan.jiafeigou.widget.CircleImageView;
 import com.google.gson.Gson;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
+import cylan.uil.core.DisplayImageOptions;
+import cylan.uil.core.ImageLoader;
 
 import org.json.JSONException;
 import org.json.JSONObject;

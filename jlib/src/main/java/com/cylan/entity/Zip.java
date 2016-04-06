@@ -1,7 +1,6 @@
 package com.cylan.entity;
 
 import com.cylan.publicApi.Constants;
-import com.cylan.publicApi.DswLog;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -12,6 +11,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
+
+import cylan.log.DswLog;
+
 
 public class Zip {
     private static String LOGFILENAME = android.os.Environment.getExternalStorageDirectory()

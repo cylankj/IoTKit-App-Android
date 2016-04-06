@@ -36,11 +36,12 @@ import com.cylan.jiafeigou.utils.PreferenceUtil;
 import com.cylan.jiafeigou.utils.Utils;
 import com.cylan.publicApi.Config;
 import com.cylan.publicApi.Constants;
-import com.cylan.publicApi.DswLog;
 import com.cylan.publicApi.JniPlay;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import cylan.log.DswLog;
 
 public class SmartCall extends Activity implements OnPageChangeListener, OnClickListener {
 

@@ -2,7 +2,7 @@ package com.cylan.jiafeigou.entity;
 
 import android.content.res.XmlResourceParser;
 
-import com.cylan.publicApi.DswLog;
+import cylan.log.DswLog;
 
 import org.xmlpull.v1.XmlPullParser;
 

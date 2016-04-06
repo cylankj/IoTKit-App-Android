@@ -7,7 +7,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
-import com.cylan.publicApi.DswLog;
+import cylan.log.DswLog;
 
 public class ProgressDialogUtil {
 

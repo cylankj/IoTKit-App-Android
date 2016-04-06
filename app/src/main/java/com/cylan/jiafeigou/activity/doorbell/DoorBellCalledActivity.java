@@ -66,12 +66,8 @@ import com.cylan.jiafeigou.widget.ViewDrag;
 import com.cylan.jiafeigou.worker.SaveShotPhotoRunnable;
 import com.cylan.jiafeigou.worker.SpeakerPhoneWorker;
 import com.cylan.publicApi.CallMessageCallBack;
-import com.cylan.publicApi.DswLog;
 import com.cylan.publicApi.JniPlay;
 import com.cylan.publicApi.MsgpackMsg;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.assist.FailReason;
-import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 import com.tencent.stat.StatService;
 
 import org.webrtc.videoengine.ViERenderer;
@@ -86,6 +82,11 @@ import java.util.Locale;
 import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
+
+import cylan.log.DswLog;
+import cylan.uil.core.ImageLoader;
+import cylan.uil.core.assist.FailReason;
+import cylan.uil.core.listener.ImageLoadingListener;
 
 public class DoorBellCalledActivity extends RootActivity implements OnClickListener,
         HeadsetPlugObserver.OnHeadsetPlugListener, ViewDrag.Drag2RightOrLeftListener, UDPMessageListener {

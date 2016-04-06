@@ -12,7 +12,7 @@ import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.publicApi.Constants;
-import com.cylan.publicApi.DswLog;
+import cylan.log.DswLog;
 import com.cylan.publicApi.MsgpackMsg;
 import com.cylan.jiafeigou.activity.doorbell.DoorBellActivity;
 import com.cylan.jiafeigou.activity.doorbell.setwifi.SetDoorBellWifi;

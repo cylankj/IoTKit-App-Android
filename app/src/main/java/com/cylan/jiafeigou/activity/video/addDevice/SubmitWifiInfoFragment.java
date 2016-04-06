@@ -19,9 +19,6 @@ import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
-import com.cylan.publicApi.DswLog;
-import com.cylan.publicApi.Function;
-import com.cylan.publicApi.NetUtils;
 import com.cylan.jiafeigou.activity.doorbell.setwifi.SetDoorBellWifi;
 import com.cylan.jiafeigou.base.MyApp;
 import com.cylan.jiafeigou.engine.ClientConstants;
@@ -30,11 +27,15 @@ import com.cylan.jiafeigou.utils.StringUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.Utils;
 import com.cylan.jiafeigou.widget.EditDelText;
+import com.cylan.publicApi.Function;
+import com.cylan.publicApi.NetUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import cylan.log.DswLog;
 
 /**
  * A simple {@link Fragment} subclass.

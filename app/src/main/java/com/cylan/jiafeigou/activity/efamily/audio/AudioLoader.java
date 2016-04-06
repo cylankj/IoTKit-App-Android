@@ -8,7 +8,7 @@ import android.os.Handler;
 import android.os.Message;
 
 import com.cylan.jiafeigou.R;
-import com.cylan.publicApi.DswLog;
+import cylan.log.DswLog;
 import com.cylan.jiafeigou.base.MyApp;
 import com.cylan.jiafeigou.entity.msg.EfamlMsg;
 import com.cylan.jiafeigou.utils.ThreadPoolUtils;

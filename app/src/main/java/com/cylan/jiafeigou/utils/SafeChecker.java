@@ -6,7 +6,7 @@ import android.content.pm.PackageManager;
 import android.content.pm.Signature;
 
 import com.cylan.jiafeigou.R;
-import com.cylan.publicApi.DswLog;
+import cylan.log.DswLog;
 
 import java.io.ByteArrayInputStream;
 import java.security.cert.CertificateException;

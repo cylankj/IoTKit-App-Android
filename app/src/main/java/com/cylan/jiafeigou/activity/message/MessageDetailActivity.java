@@ -40,7 +40,7 @@ import com.cylan.jiafeigou.utils.MyImageLoader;
 import com.cylan.jiafeigou.utils.NotifyDialog;
 import com.cylan.jiafeigou.utils.StringUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
-import com.nostra13.universalimageloader.core.ImageLoader;
+import cylan.uil.core.ImageLoader;
 
 import java.io.Serializable;
 import java.util.ArrayList;

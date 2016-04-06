@@ -8,7 +8,7 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.AssetManager;
 import android.os.Environment;
 
-import com.cylan.publicApi.DswLog;
+import cylan.log.DswLog;
 
 import java.io.File;
 import java.io.FileOutputStream;

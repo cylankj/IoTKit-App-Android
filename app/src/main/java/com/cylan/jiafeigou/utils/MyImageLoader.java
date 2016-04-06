@@ -5,9 +5,9 @@ import android.graphics.Bitmap;
 import android.widget.ImageView;
 
 import com.cylan.jiafeigou.R;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.download.ImageDownloader;
-import com.nostra13.universalimageloader.utils.MemoryCacheUtils;
+import cylan.uil.core.DisplayImageOptions;
+import cylan.uil.core.download.ImageDownloader;
+import cylan.uil.utils.MemoryCacheUtils;
 
 /**
  * Created by HeBin on 2015/6/18.
@@ -21,12 +21,12 @@ public class MyImageLoader {
                 .bitmapConfig(Bitmap.Config.RGB_565)
                 .build();
         String imageUrl = ImageDownloader.Scheme.FILE.wrap(mTitlebarUrl);
-        com.nostra13.universalimageloader.core.ImageLoader.getInstance().displayImage(imageUrl, img, options);
+        cylan.uil.core.ImageLoader.getInstance().displayImage(imageUrl, img, options);
     }
 
     public static void removeFromCache(String url) {
-        MemoryCacheUtils.removeFromCache(url, com.nostra13.universalimageloader.core.ImageLoader.getInstance().getMemoryCache());
-        com.nostra13.universalimageloader.core.ImageLoader.getInstance().getDiskCache().remove(url);
+        MemoryCacheUtils.removeFromCache(url, cylan.uil.core.ImageLoader.getInstance().getMemoryCache());
+        cylan.uil.core.ImageLoader.getInstance().getDiskCache().remove(url);
     }
 
     public static void loadImageFromNet(String url, ImageView img) {
@@ -36,7 +36,7 @@ public class MyImageLoader {
                 .cacheOnDisk(true)
                 .bitmapConfig(Bitmap.Config.RGB_565)
                 .build();
-        com.nostra13.universalimageloader.core.ImageLoader.getInstance().displayImage(url, img, options);
+        cylan.uil.core.ImageLoader.getInstance().displayImage(url, img, options);
 
     }
 
@@ -48,7 +48,7 @@ public class MyImageLoader {
                 .bitmapConfig(Bitmap.Config.RGB_565)
                 .showImageOnFail(R.drawable.image_load_failed)
                 .build();
-        com.nostra13.universalimageloader.core.ImageLoader.getInstance().displayImage(url, img, options);
+        cylan.uil.core.ImageLoader.getInstance().displayImage(url, img, options);
 
     }
 
@@ -57,7 +57,7 @@ public class MyImageLoader {
                 .cacheInMemory(true)
                 .bitmapConfig(Bitmap.Config.RGB_565)
                 .build();
-        com.nostra13.universalimageloader.core.ImageLoader.getInstance().displayImage(drawable, img, options);
+        cylan.uil.core.ImageLoader.getInstance().displayImage(drawable, img, options);
     }
 
     public static void loadWelcomeBitmap(int res, ImageView img) {

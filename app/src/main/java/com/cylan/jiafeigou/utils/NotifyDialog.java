@@ -9,9 +9,9 @@ import android.widget.LinearLayout.LayoutParams;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.base.MyApp;
 import com.cylan.publicApi.Constants;
 import com.cylan.publicApi.JniPlay;
-import com.cylan.jiafeigou.base.MyApp;
 
 public class NotifyDialog extends Dialog implements View.OnClickListener {
 

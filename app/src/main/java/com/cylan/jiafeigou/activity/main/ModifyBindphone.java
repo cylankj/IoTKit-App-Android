@@ -11,7 +11,7 @@ import android.widget.EditText;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.publicApi.Constants;
-import com.cylan.publicApi.DswLog;
+import cylan.log.DswLog;
 import com.cylan.publicApi.JniPlay;
 import com.cylan.publicApi.MsgpackMsg;
 import com.cylan.jiafeigou.base.BaseActivity;

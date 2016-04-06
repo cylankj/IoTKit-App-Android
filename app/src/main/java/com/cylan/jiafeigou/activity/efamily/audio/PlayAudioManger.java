@@ -4,7 +4,7 @@ import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.util.Log;
 
-import com.cylan.publicApi.DswLog;
+import cylan.log.DswLog;
 import com.cylan.jiafeigou.activity.efamily.main.PlayOrStopAudioLIstener;
 import com.cylan.jiafeigou.entity.WordsBean;
 

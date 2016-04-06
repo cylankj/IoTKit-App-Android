@@ -13,11 +13,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
-import com.cylan.publicApi.Constants;
-import com.cylan.publicApi.DswLog;
-import com.cylan.publicApi.Function;
-import com.cylan.publicApi.JniPlay;
-import com.cylan.publicApi.MsgpackMsg;
 import com.cylan.jiafeigou.activity.main.MyVideos;
 import com.cylan.jiafeigou.activity.main.WebViewActivity;
 import com.cylan.jiafeigou.base.MyApp;
@@ -32,6 +27,12 @@ import com.cylan.jiafeigou.utils.StringUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.Utils;
 import com.cylan.jiafeigou.widget.EditDelText;
+import com.cylan.publicApi.Constants;
+import com.cylan.publicApi.Function;
+import com.cylan.publicApi.JniPlay;
+import com.cylan.publicApi.MsgpackMsg;
+
+import cylan.log.DswLog;
 
 public class RegisterByEmail extends NotLoginBaseActivity implements OnClickListener {
 

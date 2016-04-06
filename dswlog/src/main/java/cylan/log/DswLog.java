@@ -1,12 +1,10 @@
-package com.cylan.publicApi;
+package cylan.log;
 
 import android.os.Environment;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.util.Log;
 import android.util.Printer;
-
-import com.cylan.utils.SdCardUtils;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -37,8 +35,11 @@ public class DswLog {
     public static Printer printer;
     private static final int SDCARD_LOG_FILE_SAVE_DAYS = 2;
     private static String LOG_FILENAME = "_DWSLog.txt";
+    private static String ROOT_DIR = "";
+    private static final String WS_LOG_FOLDER = "WSLog";
     private static String LOG_PATH_SDCARD_DIR = Environment
-            .getExternalStorageDirectory().getAbsolutePath() + File.separator + Constants.ROOT_DIR + Constants.WS_LOG_FOLDER;
+            .getExternalStorageDirectory().getAbsolutePath()
+            + File.separator + ROOT_DIR + File.separator + WS_LOG_FOLDER;
     private static String prefix = ""; //前缀，通常用于过滤使用。
 
     /**
@@ -81,11 +82,15 @@ public class DswLog {
         clock = System.currentTimeMillis();
     }
 
+    public static void setRootDir(String rootDir) {
+        ROOT_DIR = rootDir;
+    }
+
     private static boolean isPathValid() {
         final String externalPath = SdCardUtils.getExternalSdcardPath();
         LOG_PATH_SDCARD_DIR = externalPath
                 + File.separator
-                + Constants.ROOT_DIR
+                + ROOT_DIR
                 + File.separator
                 + "WSLog";
         File dir = new File(LOG_PATH_SDCARD_DIR);

@@ -15,7 +15,7 @@ import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.publicApi.Constants;
-import com.cylan.publicApi.DswLog;
+import cylan.log.DswLog;
 import com.cylan.publicApi.JniPlay;
 import com.cylan.publicApi.MsgpackMsg;
 import com.cylan.jiafeigou.base.BaseActivity;
@@ -34,9 +34,9 @@ import com.cylan.jiafeigou.utils.StringUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.widget.EditDelText;
 import com.google.gson.Gson;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.download.ImageDownloader;
+import cylan.uil.core.DisplayImageOptions;
+import cylan.uil.core.ImageLoader;
+import cylan.uil.core.download.ImageDownloader;
 import com.tencent.stat.StatService;
 
 import org.json.JSONException;

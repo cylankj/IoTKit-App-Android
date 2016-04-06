@@ -3,9 +3,6 @@ package com.cylan.jiafeigou.base;
 import android.app.Activity;
 import android.os.Bundle;
 
-import com.cylan.publicApi.CallMessageCallBack;
-import com.cylan.publicApi.DswLog;
-import com.cylan.publicApi.MsgpackMsg;
 import com.cylan.jiafeigou.engine.ClientConstants;
 import com.cylan.jiafeigou.engine.MyService;
 import com.cylan.jiafeigou.entity.msg.HttpResult;
@@ -15,11 +12,15 @@ import com.cylan.jiafeigou.utils.AppManager;
 import com.cylan.jiafeigou.utils.NotificationUtil;
 import com.cylan.jiafeigou.utils.ProgressDialogUtil;
 import com.cylan.jiafeigou.utils.SafeChecker;
+import com.cylan.publicApi.CallMessageCallBack;
+import com.cylan.publicApi.MsgpackMsg;
 import com.google.gson.Gson;
 
 import org.msgpack.MessagePack;
 
 import java.io.IOException;
+
+import cylan.log.DswLog;
 
 public class RootActivity extends Activity implements RequestCallback, ServerMessage {
 

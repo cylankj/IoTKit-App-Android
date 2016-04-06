@@ -23,7 +23,7 @@ import android.widget.ImageView;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.publicApi.Constants;
-import com.cylan.publicApi.DswLog;
+import cylan.log.DswLog;
 import com.cylan.publicApi.MsgpackMsg;
 import com.cylan.publicApi.NetUtils;
 import com.cylan.jiafeigou.activity.main.ActivityIsResumeManager;

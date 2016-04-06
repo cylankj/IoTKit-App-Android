@@ -7,8 +7,10 @@
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/blockcanary/blockcanary.iml" filepath="$PROJECT_DIR$/blockcanary/blockcanary.iml" />
       <module fileurl="file://$PROJECT_DIR$/bugly/bugly.iml" filepath="$PROJECT_DIR$/bugly/bugly.iml" />
+      <module fileurl="file://$PROJECT_DIR$/dswlog/dswlog.iml" filepath="$PROJECT_DIR$/dswlog/dswlog.iml" />
       <module fileurl="file://$PROJECT_DIR$/jlib/jlib.iml" filepath="$PROJECT_DIR$/jlib/jlib.iml" />
       <module fileurl="file://$PROJECT_DIR$/mta/mta.iml" filepath="$PROJECT_DIR$/mta/mta.iml" />
+      <module fileurl="file://$PROJECT_DIR$/uil/uil.iml" filepath="$PROJECT_DIR$/uil/uil.iml" />
     </modules>
   </component>
 </project>
