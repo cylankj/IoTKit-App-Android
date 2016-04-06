@@ -6,6 +6,8 @@ import android.os.HandlerThread;
 import android.util.Log;
 import android.util.Printer;
 
+import com.cylan.utils.SdCardUtils;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -33,10 +35,10 @@ public class DswLog {
      * 写日志的接口，用于将日志交给JNI写入
      */
     public static Printer printer;
-    private static int SDCARD_LOG_FILE_SAVE_DAYS = 2;
-    private static String LOGFILENAME = "_DWSLog.txt";
+    private static final int SDCARD_LOG_FILE_SAVE_DAYS = 2;
+    private static String LOG_FILENAME = "_DWSLog.txt";
     private static String LOG_PATH_SDCARD_DIR = Environment
-            .getExternalStorageDirectory().getAbsolutePath() + "/" + Constants.ROOT_DIR + "/WSLog/";
+            .getExternalStorageDirectory().getAbsolutePath() + File.separator + Constants.ROOT_DIR + Constants.WS_LOG_FOLDER;
     private static String prefix = ""; //前缀，通常用于过滤使用。
 
     /**
@@ -79,8 +81,14 @@ public class DswLog {
         clock = System.currentTimeMillis();
     }
 
-    private static boolean isPathValid(String path) {
-        File dir = new File(path);
+    private static boolean isPathValid() {
+        final String externalPath = SdCardUtils.getExternalSdcardPath();
+        LOG_PATH_SDCARD_DIR = externalPath
+                + File.separator
+                + Constants.ROOT_DIR
+                + File.separator
+                + "WSLog";
+        File dir = new File(LOG_PATH_SDCARD_DIR);
         if (!dir.exists()) {
             try {
                 dir.mkdirs();
@@ -94,12 +102,12 @@ public class DswLog {
     public static void delFileBefore() {
         File file = new File(LOG_PATH_SDCARD_DIR);
         if (!file.exists()) return;
-        String needDelFiel = logfile.format(getDateBefore());
+        String outDateFile = logfile.format(getDateBefore());
         File[] files = file.listFiles();
         if (files == null || files.length == 0) return;
 
         for (File f : files) {
-            if (f.getName().compareTo(needDelFiel + LOGFILENAME) <= 0)
+            if (f.getName().compareTo(outDateFile + LOG_FILENAME) <= 0)
                 f.delete();
         }
     }
@@ -108,9 +116,9 @@ public class DswLog {
      * 获取两天前的日期
      */
     private static Date getDateBefore() {
-        Date nowtime = new Date();
+        Date currentTime = new Date();
         Calendar now = Calendar.getInstance();
-        now.setTime(nowtime);
+        now.setTime(currentTime);
         now.set(Calendar.DATE, now.get(Calendar.DATE) - SDCARD_LOG_FILE_SAVE_DAYS);
         return now.getTime();
     }
@@ -138,11 +146,10 @@ public class DswLog {
      * 2015/03/17 tim
      */
     private static String generateTag(StackTraceElement caller) {
-        String tag = "";
         String callerClazzName = caller.getClassName();
         callerClazzName = callerClazzName.substring(callerClazzName.lastIndexOf(".") + 1);
-        tag = String.format(format, new Object[]{callerClazzName, caller.getMethodName(), Integer.valueOf(caller.getLineNumber())});
-        return getfianlTag(tag);
+        final String tag = String.format(format, new Object[]{callerClazzName, caller.getMethodName(), Integer.valueOf(caller.getLineNumber())});
+        return getFinalTag(tag);
     }
 
     public static void v(String msg) {
@@ -150,7 +157,7 @@ public class DswLog {
         if (debug) {
             Log.v(tag, msg);
         }
-        writeLogtoFile(tag, msg);
+        writeLog2File(tag, msg);
     }
 
     public static void d(String msg) {
@@ -158,7 +165,7 @@ public class DswLog {
         if (debug) {
             Log.d(tag, msg);
         }
-        writeLogtoFile(tag, msg);
+        writeLog2File(tag, msg);
     }
 
     public static void i(String msg) {
@@ -166,7 +173,7 @@ public class DswLog {
         if (debug) {
             Log.i(tag, msg);
         }
-        writeLogtoFile(tag, msg);
+        writeLog2File(tag, msg);
     }
 
     public static void w(String msg) {
@@ -174,7 +181,7 @@ public class DswLog {
         if (debug) {
             Log.w(tag, msg);
         }
-        writeLogtoFile(tag, msg);
+        writeLog2File(tag, msg);
     }
 
     public static void e(String msg) {
@@ -182,7 +189,7 @@ public class DswLog {
         if (debug) {
             Log.e(tag, msg);
         }
-        writeLogtoFile(tag, msg);
+        writeLog2File(tag, msg);
     }
 
     private static final String ExceptionPrefix = "Exception: ";
@@ -195,24 +202,20 @@ public class DswLog {
         if (debug) {
             Log.e(tag, msg);
         }
-        writeLogtoFile(tag, ExceptionPrefix + msg);
+        writeLog2File(tag, ExceptionPrefix + msg);
     }
 
-    private static void writeLogtoFile(final String tag, final String msg) {
+    private static void writeLog2File(final String tag, final String msg) {
         if (isWrite) {
             mHandler.post(new Runnable() {
 
                 @Override
                 public void run() {
-                    long nowtime = System.currentTimeMillis();
-                    String needWriteFiel = logfile.format(nowtime);
-                    String needWriteMessage = LogSdf.format(nowtime) + "  " + tag + " " + msg;
-                    isPathValid(LOG_PATH_SDCARD_DIR);
-                    File dir = new File(LOG_PATH_SDCARD_DIR);
-                    if (!dir.exists()) {
-                        dir.mkdirs();
-                    }
-                    File file = new File(dir, needWriteFiel + LOGFILENAME);
+                    long currentTime = System.currentTimeMillis();
+                    String needWriteFile = logfile.format(currentTime);
+                    String needWriteMessage = LogSdf.format(currentTime) + "  " + tag + " " + msg;
+                    isPathValid();
+                    File file = new File(LOG_PATH_SDCARD_DIR, needWriteFile + LOG_FILENAME);
                     try {
                         FileWriter filerWriter = new FileWriter(file, true);//
                         BufferedWriter bufWriter = new BufferedWriter(filerWriter);
@@ -223,9 +226,9 @@ public class DswLog {
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                    if (nowtime - clock > 3600000 * 3) {
+                    if (currentTime - clock > 3600000 * 3) {
                         //运行3个小时后去检查是否需要删除日志。提升效率。
-                        clock = nowtime;
+                        clock = currentTime;
                         delFileBefore();
                     }
                 }
@@ -244,7 +247,7 @@ public class DswLog {
      * @param tag
      * @return 前缀+TAG
      */
-    private static String getfianlTag(String tag) {
+    private static String getFinalTag(String tag) {
         return prefix + " " + tag;
     }
 

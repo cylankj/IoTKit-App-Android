@@ -12,7 +12,7 @@ import com.cylan.jiafeigou.adapter.MySelectItmAdapter;
 import com.cylan.jiafeigou.base.BaseActivity;
 import com.cylan.jiafeigou.engine.ClientConstants;
 import com.cylan.jiafeigou.entity.SelectItem;
-import com.cylan.utils.entity.AlarmInfo;
+import com.cylan.entity.AlarmInfo;
 
 public class AlarmDaysSelectActivity extends BaseActivity implements OnClickListener, OnItemClickListener {
 

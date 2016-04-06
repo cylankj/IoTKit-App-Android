@@ -1,4 +1,4 @@
-package com.cylan.utils.entity;
+package com.cylan.entity;
 
 import org.json.JSONException;
 import org.json.JSONObject;

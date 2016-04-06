@@ -1,6 +1,4 @@
-package com.cylan.utils.entity;
-
-import com.cylan.publicApi.Constants;
+package com.cylan.entity;
 
 import java.io.File;
 import java.io.FileInputStream;

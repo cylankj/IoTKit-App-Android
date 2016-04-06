@@ -11,6 +11,8 @@ import com.cylan.bugly.Bugly;
 import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.activity.SmartCall;
+import com.cylan.jiafeigou.block.BlockCanary;
+import com.cylan.jiafeigou.block.BlockCanaryContext;
 import com.cylan.jiafeigou.engine.CallbackManager;
 import com.cylan.jiafeigou.engine.MyService;
 import com.cylan.jiafeigou.engine.UnSendQueue;
@@ -23,6 +25,7 @@ import com.cylan.jiafeigou.utils.PathGetter;
 import com.cylan.jiafeigou.utils.PreferenceUtil;
 import com.cylan.jiafeigou.utils.StringUtils;
 import com.cylan.publicApi.Constants;
+import com.cylan.publicApi.CrashHandler;
 import com.cylan.publicApi.DswLog;
 import com.cylan.publicApi.JniPlay;
 import com.cylan.publicApi.MsgpackMsg;
@@ -53,6 +56,8 @@ public class MyApp extends Application {
         super.onCreate();
         instance = this;
         Bugly.init(this, BuildConfig.DEBUG, PackageUtils.getAppVersionName(this));
+        CrashHandler.getInstance(null).init(getApplicationContext());
+        initBlockCanary();
         MtaManager.init(this, BuildConfig.DEBUG);
         DswLog.debug = com.cylan.jiafeigou.BuildConfig.DEBUG;
         StatService.trackCustomEvent(this, "App onCreate", "");
@@ -63,6 +68,10 @@ public class MyApp extends Application {
         JniPlay.SetHttpRoot(PathGetter.getUpgradePath());
         CallbackManager.getInstance().clearObserver();
         UnSendQueue.getInstance().clear();
+    }
+
+    private void initBlockCanary() {
+        BlockCanary.install(this, new BlockCanaryContext()).start();
     }
 
     public static Application getContext() {

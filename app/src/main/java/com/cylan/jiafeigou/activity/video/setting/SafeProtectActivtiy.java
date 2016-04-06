@@ -37,7 +37,7 @@ import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.widget.wheel.OnWheelChangedListener;
 import com.cylan.jiafeigou.widget.wheel.WheelView;
 import com.cylan.jiafeigou.widget.wheel.adapters.MyWheelViewAdapter;
-import com.cylan.utils.entity.AlarmInfo;
+import com.cylan.entity.AlarmInfo;
 import com.tencent.stat.StatService;
 
 public class SafeProtectActivtiy extends BaseActivity implements OnClickListener, OnCheckedChangeListener, View.OnTouchListener {

@@ -1,4 +1,4 @@
-package com.cylan.utils.entity;
+package com.cylan.entity;
 
 import com.cylan.publicApi.Constants;
 import com.cylan.publicApi.DswLog;

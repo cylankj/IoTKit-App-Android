@@ -9,7 +9,7 @@ import android.os.Build;
 import android.os.Environment;
 import android.os.SystemClock;
 
-import com.cylan.utils.entity.Zip;
+import com.cylan.entity.Zip;
 
 import java.io.File;
 import java.io.FileOutputStream;

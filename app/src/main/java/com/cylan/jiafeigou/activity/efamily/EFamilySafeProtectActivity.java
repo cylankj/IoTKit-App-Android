@@ -26,7 +26,7 @@ import com.cylan.jiafeigou.entity.msg.req.MsgEfamilyGetAlarmReq;
 import com.cylan.jiafeigou.entity.msg.req.MsgEfamilySetAlarmReq;
 import com.cylan.jiafeigou.utils.CacheUtil;
 import com.cylan.jiafeigou.utils.ToastUtil;
-import com.cylan.utils.entity.AlarmInfo;
+import com.cylan.entity.AlarmInfo;
 
 import java.util.ArrayList;
 import java.util.List;

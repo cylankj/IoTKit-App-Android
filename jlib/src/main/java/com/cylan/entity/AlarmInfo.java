@@ -1,4 +1,4 @@
-package com.cylan.utils.entity;
+package com.cylan.entity;
 
 import android.os.Parcel;
 import android.os.Parcelable;

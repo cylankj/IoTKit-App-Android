@@ -32,7 +32,7 @@ import com.cylan.publicApi.Constants;
 import com.cylan.publicApi.DswLog;
 import com.cylan.publicApi.JniPlay;
 import com.cylan.publicApi.ProcessUtils;
-import com.cylan.utils.entity.ZipLog;
+import com.cylan.entity.ZipLog;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;

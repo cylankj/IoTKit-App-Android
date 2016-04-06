@@ -205,7 +205,7 @@ public class SmartCall extends Activity implements OnPageChangeListener, OnClick
                 break;
             case R.id.welcome_logo:
                 if (!Config.ADDR.equals(ClientConstants.YUN_ADDR)) {
-                    if (clickTimes == 9) {
+                    if (clickTimes == 5) {
                         showDialog();
                         return;
                     }

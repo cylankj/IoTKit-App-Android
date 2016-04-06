@@ -19,7 +19,7 @@ import com.cylan.jiafeigou.widget.wheel.OnWheelChangedListener;
 import com.cylan.jiafeigou.widget.wheel.OnWheelClickedListener;
 import com.cylan.jiafeigou.widget.wheel.WheelView;
 import com.cylan.jiafeigou.widget.wheel.adapters.MyNumercWheelAdapter;
-import com.cylan.utils.entity.AlarmInfo;
+import com.cylan.entity.AlarmInfo;
 
 public class Alarm extends BaseActivity implements View.OnClickListener {
 

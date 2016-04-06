@@ -20,7 +20,7 @@ import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.widget.wheel.OnWheelClickedListener;
 import com.cylan.jiafeigou.widget.wheel.WheelView;
 import com.cylan.jiafeigou.widget.wheel.adapters.NumericWheelAdapter;
-import com.cylan.utils.entity.AlarmInfo;
+import com.cylan.entity.AlarmInfo;
 
 public class EFamilyAlarm extends BaseActivity implements View.OnClickListener {
 
