@@ -21,3 +21,15 @@ allprojects {
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
+
+ext {
+    minSdkVersion = 15
+    compileSdkVersion = 23
+    targetSdkVersion = 23
+    buildToolsVersion = '23.0.2'
+
+
+    junit = 'junit:junit:4.12'
+    appcompat = 'com.android.support:appcompat-v7:23.1.1'
+    rxjava = 'io.reactivex:rxjava:1.1.1'
+}

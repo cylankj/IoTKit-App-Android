@@ -86,7 +86,7 @@ public class RootActivity extends Activity implements RequestCallback, ServerMes
 //                        MyApp.showForceNotifyDialog(this, getString(R.string.RET_ESESSION_NOT_EXIST));
 //                    }
 //                } else {
-                    handleMsgpackMsg(msg, (MsgpackMsg.MsgHeader) param);
+                handleMsgpackMsg(msg, (MsgpackMsg.MsgHeader) param);
 //                }
                 break;
 
