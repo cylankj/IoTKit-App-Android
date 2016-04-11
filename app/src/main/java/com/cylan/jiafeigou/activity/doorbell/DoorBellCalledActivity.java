@@ -48,7 +48,7 @@ import com.cylan.jiafeigou.entity.msg.rsp.MsgRelayMaskInfoRsp;
 import com.cylan.jiafeigou.listener.UDPMessageListener;
 import com.cylan.jiafeigou.receiver.DeviceConnectedReceiver;
 import com.cylan.jiafeigou.receiver.HeadsetPlugObserver;
-import com.cylan.jiafeigou.receiver.HomeWatcherReveiver;
+import com.cylan.jiafeigou.receiver.HomeWatcherReceiver;
 import com.cylan.jiafeigou.receiver.PhoneBroadcastReceiver;
 import com.cylan.jiafeigou.utils.AppManager;
 import com.cylan.jiafeigou.utils.BitmapUtil;
@@ -139,14 +139,14 @@ public class DoorBellCalledActivity extends RootActivity implements OnClickListe
      * called timer*
      */
     private Timer timer = null;
-    private int timelength;
+    private int timeLength;
     private SimpleDateFormat mSimpleTimeFormat = new SimpleDateFormat("mm:ss", Locale.getDefault());
     private MediaPlayer mPlayer;
     private Vibrator vibrator;
 
     private NotifyDialog mTryDialog;
     private IncomingPhoneReceiver inComingReceiver = null;
-    private HomeWatcherReveiver homeWatcherReveiver = null;
+    private HomeWatcherReceiver homeWatcherReceiver = null;
     private DeviceConnectedReceiver connectedReceiver = null;
 
     private PowerManager.WakeLock wakeLock;
@@ -422,6 +422,10 @@ public class DoorBellCalledActivity extends RootActivity implements OnClickListe
         DswLog.i(TAG + "--onPause--");
         unRegisterHomeKeyReciver();
         ClientUDP.getInstance().setLoop(false);
+
+        if (wakeLock != null && wakeLock.isHeld()) {
+            wakeLock.release();
+        }
     }
 
 
@@ -432,9 +436,6 @@ public class DoorBellCalledActivity extends RootActivity implements OnClickListe
             saveOpenSoundState = false;
             saveOpenTalkState = false;
 
-            if (wakeLock != null && wakeLock.isHeld()) {
-                wakeLock.release();
-            }
 
             stop();
 
@@ -482,7 +483,7 @@ public class DoorBellCalledActivity extends RootActivity implements OnClickListe
         mHandler.removeMessages(HANDLER_CREATECALL_OVERYTIME);
         mHandler.sendEmptyMessageDelayed(HANDLER_CREATECALL_OVERYTIME, 30000);
         mCalledTitle.setText(String.format(getString(R.string.doorbell_title), cidData.mName(), getString(R.string.DOOR_ANSWERING)));
-        timelength = 0;
+        timeLength = 0;
         if (isLan && mPong != null && isSupportLan(ClientConstants.SUPPORT_LAN_PLAY_BELL_VERSION, mPong.version)) {
             mManager = new LanCallOut(ClientUDP.getInstance(), mPong);
             isLan = false;
@@ -559,7 +560,7 @@ public class DoorBellCalledActivity extends RootActivity implements OnClickListe
                 }
                 timer = new Timer(true);
                 timer.schedule(new Ta(), 1000, 1000); // timeTask
-                mCalledTitle.setText(String.format(getString(R.string.doorbell_title), cidData.mName(), mSimpleTimeFormat.format(new Date(timelength * 1000))));
+                mCalledTitle.setText(String.format(getString(R.string.doorbell_title), cidData.mName(), mSimpleTimeFormat.format(new Date(timeLength * 1000))));
                 if (isConnected) {
                     if (isOpenTalk) {
                         return;
@@ -841,8 +842,8 @@ public class DoorBellCalledActivity extends RootActivity implements OnClickListe
             runOnUiThread(new Runnable() { // UI thread
                 @Override
                 public void run() {
-                    timelength++;
-                    mCalledTitle.setText(String.format(getString(R.string.doorbell_title), cidData.mName(), Utils.parse2Time(timelength)));
+                    timeLength++;
+                    mCalledTitle.setText(String.format(getString(R.string.doorbell_title), cidData.mName(), Utils.parse2Time(timeLength)));
                 }
             });
 
@@ -933,14 +934,14 @@ public class DoorBellCalledActivity extends RootActivity implements OnClickListe
     }
 
     private void registerHomeKeyReciver(Activity activity) {
-        homeWatcherReveiver = new HomeWatcherReveiver(activity);
+        homeWatcherReceiver = new HomeWatcherReceiver(activity);
         IntentFilter filter = new IntentFilter(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
-        registerReceiver(homeWatcherReveiver, filter);
+        registerReceiver(homeWatcherReceiver, filter);
     }
 
     private void unRegisterHomeKeyReciver() {
-        if (homeWatcherReveiver != null) {
-            unregisterReceiver(homeWatcherReveiver);
+        if (homeWatcherReceiver != null) {
+            unregisterReceiver(homeWatcherReceiver);
         }
     }
 

@@ -8,11 +8,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
-import com.cylan.publicApi.Constants;
-import com.cylan.jiafeigou.base.MyApp;
 import com.cylan.jiafeigou.engine.ClientConstants;
 import com.cylan.jiafeigou.entity.msg.MsgSceneData;
+import com.cylan.jiafeigou.utils.MyImageLoader;
 import com.cylan.jiafeigou.utils.PreferenceUtil;
+import com.cylan.publicApi.Constants;
 
 import java.util.List;
 
@@ -56,7 +56,8 @@ public class SceneAdapter extends BaseAdapter<MsgSceneData> {
             } else {
                 String url = "http://" + Constants.WEB_ADDR + ":" + Constants.WEB_PORT + "/index.php?sessid=" + PreferenceUtil.getSessionId(mContext)
                         + "&mod=client&act=get_scene_image&scene_id=" + bean.scene_id;
-                MyApp.getFinalBitmap().display(holder.pic, url);
+//                MyApp.getFinalBitmap().display(holder.pic, url);
+                MyImageLoader.loadImageFromNet(url, holder.pic);
             }
 
         }

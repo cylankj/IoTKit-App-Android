@@ -9,7 +9,7 @@ import android.util.Log;
 /**
  * Created by yangc on 2015/8/3.
  */
-public class HomeWatcherReveiver extends BroadcastReceiver {
+public class HomeWatcherReceiver extends BroadcastReceiver {
 
     private static final String LOG_TAG = "HomeReceiver";
     private static final String SYSTEM_DIALOG_REASON_KEY = "reason";
@@ -20,7 +20,7 @@ public class HomeWatcherReveiver extends BroadcastReceiver {
 
     private Activity activity;
 
-    public HomeWatcherReveiver(Activity activity) {
+    public HomeWatcherReceiver(Activity activity) {
         this.activity = activity;
     }
 

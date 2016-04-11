@@ -187,11 +187,11 @@
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Light.NoTitleBar"
             android:windowSoftInputMode="adjustPan" />
-        <activity
-            android:name="com.cylan.jiafeigou.activity.main.SelectPicActivity"
-            android:configChanges="locale|orientation|keyboardHidden"
-            android:screenOrientation="portrait"
-            android:theme="@style/func_dialog" />
+        <!--<activity-->
+            <!--android:name="com.cylan.jiafeigou.activity.main.SelectPicActivity"-->
+            <!--android:configChanges="locale|orientation|keyboardHidden"-->
+            <!--android:screenOrientation="portrait"-->
+            <!--android:theme="@style/func_dialog" />-->
         <activity
             android:name="com.cylan.jiafeigou.activity.main.SelectPicCropActivity"
             android:configChanges="locale|orientation|keyboardHidden"

@@ -43,7 +43,7 @@ public class WebViewActivity extends BaseActivity implements OnClickListener {
         WebSettings settings = mWebView.getSettings();
         settings.setLayoutAlgorithm(LayoutAlgorithm.NARROW_COLUMNS);
         settings.setLoadWithOverviewMode(true);
-        settings.setJavaScriptEnabled(true);
+        settings.setJavaScriptEnabled(false);
         mWebView.setWebViewClient(new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {

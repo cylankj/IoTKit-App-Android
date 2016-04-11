@@ -356,7 +356,6 @@ public class EditSceneActivity extends BaseActivity implements OnClickListener, 
                     "/index.php?sessid=" + PreferenceUtil.getSessionId(this)
                     + "&mod=client&act=get_scene_image&scene_id=" + mSceneInfo.scene_id;
             MyImageLoader.removeFromCache(url);
-            MyApp.getFinalBitmap().clearCache(url);
         }
 
     }

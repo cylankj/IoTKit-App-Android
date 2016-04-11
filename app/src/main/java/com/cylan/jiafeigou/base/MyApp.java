@@ -5,6 +5,7 @@ import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 import android.net.wifi.WifiInfo;
+import android.os.StrictMode;
 import android.view.View;
 
 import com.cylan.bugly.Bugly;
@@ -31,8 +32,6 @@ import com.cylan.publicApi.MsgpackMsg;
 import com.cylan.utils.PackageUtils;
 import com.tencent.stat.StatService;
 
-import net.tsz.afinal.FinalBitmap;
-
 import cylan.log.DswLog;
 import cylan.mta.MtaManager;
 import cylan.uil.cache.disc.naming.Md5FileNameGenerator;
@@ -43,7 +42,7 @@ import cylan.uil.utils.L;
 
 public class MyApp extends Application {
 
-    private static FinalBitmap mLoader;
+//    private static FinalBitmap mLoader;
 
     static {
         System.loadLibrary("media-engine-jni");
@@ -54,6 +53,7 @@ public class MyApp extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        debugDetect();
         instance = this;
         Bugly.init(this, BuildConfig.DEBUG, PackageUtils.getAppVersionName(this));
         CrashHandler.getInstance(null).init(getApplicationContext());
@@ -64,10 +64,19 @@ public class MyApp extends Application {
         OEMConf.LoadConf(this);
         initServerConfig();
         initImageLoaderConfig();
-        mLoader = initFinalBitmap();
+//        mLoader = initFinalBitmap();
         JniPlay.SetHttpRoot(PathGetter.getUpgradePath());
         CallbackManager.getInstance().clearObserver();
         UnSendQueue.getInstance().clear();
+    }
+
+    private void debugDetect() {
+        if (!BuildConfig.DEBUG)
+            return;
+        StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
+                .detectAll()
+                .penaltyDialog()
+                .build());
     }
 
     private void initDswLog() {
@@ -83,14 +92,14 @@ public class MyApp extends Application {
         return instance;
     }
 
-    private FinalBitmap initFinalBitmap() {
-        mLoader = FinalBitmap.create(this);
-        mLoader.configBitmapLoadThreadSize(5);
-        mLoader.configDiskCachePath(PathGetter.getImgPath());
-        mLoader.configMemoryCacheSize(5);
-        mLoader.configRecycleImmediately(true);
-        return mLoader;
-    }
+//    private FinalBitmap initFinalBitmap() {
+//        mLoader = FinalBitmap.create(this);
+//        mLoader.configBitmapLoadThreadSize(5);
+//        mLoader.configDiskCachePath(PathGetter.getImgPath());
+//        mLoader.configMemoryCacheSize(5);
+//        mLoader.configRecycleImmediately(true);
+//        return mLoader;
+//    }
 
     private void initImageLoaderConfig() {
         ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(this)
@@ -106,9 +115,9 @@ public class MyApp extends Application {
     }
 
 
-    public static FinalBitmap getFinalBitmap() {
-        return mLoader;
-    }
+//    public static FinalBitmap getFinalBitmap() {
+//        return mLoader;
+//    }
 
     public static boolean getIsLogin() {
         return MyService.getIsLogin();
@@ -231,7 +240,7 @@ public class MyApp extends Application {
     }
 
     public static void releaseMemory() {
-        mLoader.clearCache();
+//        mLoader.clearCache();
         ImageLoader.getInstance().clearMemoryCache();
 //        AppManager.getAppManager().finishAllActivity();     //////finish 所有activity产生类是闪退的现象，暂时屏蔽 by yangc
     }

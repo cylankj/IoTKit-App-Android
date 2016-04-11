@@ -39,7 +39,7 @@ public class Help extends BaseActivity {
                 }
         );
         WebView mWebView = (WebView) findViewById(R.id.view);
-        mWebView.getSettings().setJavaScriptEnabled(true);
+        mWebView.getSettings().setJavaScriptEnabled(false);
 
         String url = String.format("http://%1$s/help/%2$s.html", Constants.ADDR, Utils.getShortCountryName(this));
         mWebView.loadUrl(url);
