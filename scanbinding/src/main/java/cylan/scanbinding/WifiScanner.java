@@ -13,6 +13,8 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
+import cylan.scanbinding.presenter.Presenter;
+
 /**
  * Created by hunt on 16-4-6.
  */
