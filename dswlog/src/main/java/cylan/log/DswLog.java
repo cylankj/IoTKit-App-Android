@@ -3,15 +3,20 @@ package cylan.log;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.HandlerThread;
+import android.text.TextUtils;
 import android.util.Log;
 import android.util.Printer;
 
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
+import java.io.FilenameFilter;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 
@@ -76,10 +81,15 @@ public class DswLog {
     static long clock; // 用来记录一个时间，间隔去删除日志，不必每条消息都去遍历一遍，影响效率。
 
     static {
-        HandlerThread mHandlerThread = new HandlerThread("WSLog-thread");
-        mHandlerThread.start();
-        mHandler = new Handler(mHandlerThread.getLooper());
-        clock = System.currentTimeMillis();
+        try {
+            HandlerThread mHandlerThread = new HandlerThread("WSLog-thread");
+            mHandlerThread.start();
+            mHandler = new Handler(mHandlerThread.getLooper());
+            clock = System.currentTimeMillis();
+            //每次启动检查清理一下.
+            new Thread(new Cleaner(2, LOG_PATH_SDCARD_DIR)).start();
+        } catch (Exception e) {
+        }
     }
 
     public static void setRootDir(String rootDir) {
@@ -147,7 +157,7 @@ public class DswLog {
 
     /**
      * 添加Log打印时的TAG，设定的TAG不起效果，统一使用当前Log所在的类名、方法名，行数组成
-     * <p/>
+     * <p>
      * 2015/03/17 tim
      */
     private static String generateTag(StackTraceElement caller) {
@@ -256,5 +266,42 @@ public class DswLog {
         return prefix + " " + tag;
     }
 
+    private static class Cleaner implements Runnable {
+        private static final String TAG = "DWSLog";
+        private int maxDays;
+        private String folder;
+
+        public Cleaner(int maxDays, String folder) {
+            this.maxDays = maxDays;
+            this.folder = folder;
+        }
+
+        @Override
+        public void run() {
+            try {
+                String[] files = new File(folder).list(new FilenameFilter() {
+                    @Override
+                    public boolean accept(File dir, String filename) {
+                        if (TextUtils.isEmpty(filename))
+                            return false;
+                        return filename.contains(TAG);
+                    }
+                });
+                if (files.length <= maxDays)
+                    return;
+                List<String> list = Arrays.asList(files);
+                Collections.sort(list);
+                Collections.reverse(list);
+                final int count = list.size();
+                for (int i = count - 1; i >= maxDays - 1; i--) {
+                    File toRmFile = new File(folder + File.separator + list.get(i));
+                    if (toRmFile.isFile())
+                        toRmFile.delete();
+                }
+            } catch (Exception e) {
+                DswLog.ex("" + e);
+            }
+        }
+    }
 
 }
