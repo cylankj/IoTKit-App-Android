@@ -21,6 +21,10 @@ android {
         abortOnError false
     }
 
+    dexOptions {
+        jumboMode = true
+    }
+
 }
 
 dependencies {
