@@ -11,7 +11,6 @@
       <module fileurl="file://$PROJECT_DIR$/jlib/jlib.iml" filepath="$PROJECT_DIR$/jlib/jlib.iml" />
       <module fileurl="file://$PROJECT_DIR$/mta/mta.iml" filepath="$PROJECT_DIR$/mta/mta.iml" />
       <module fileurl="file://$PROJECT_DIR$/permissions/permissions.iml" filepath="$PROJECT_DIR$/permissions/permissions.iml" />
-      <module fileurl="file://$PROJECT_DIR$/permissions/permissions.iml" filepath="$PROJECT_DIR$/permissions/permissions.iml" />
       <module fileurl="file://$PROJECT_DIR$/scanbinding/scanbinding.iml" filepath="$PROJECT_DIR$/scanbinding/scanbinding.iml" />
       <module fileurl="file://$PROJECT_DIR$/uil/uil.iml" filepath="$PROJECT_DIR$/uil/uil.iml" />
     </modules>

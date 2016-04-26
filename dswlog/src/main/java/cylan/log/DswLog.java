@@ -157,7 +157,7 @@ public class DswLog {
 
     /**
      * 添加Log打印时的TAG，设定的TAG不起效果，统一使用当前Log所在的类名、方法名，行数组成
-     * <p>
+     * <p/>
      * 2015/03/17 tim
      */
     private static String generateTag(StackTraceElement caller) {
@@ -232,6 +232,7 @@ public class DswLog {
                     isPathValid();
                     File file = new File(LOG_PATH_SDCARD_DIR, needWriteFile + LOG_FILENAME);
                     try {
+                        if (!file.exists()) file.createNewFile();
                         FileWriter filerWriter = new FileWriter(file, true);//
                         BufferedWriter bufWriter = new BufferedWriter(filerWriter);
                         bufWriter.write(needWriteMessage);
