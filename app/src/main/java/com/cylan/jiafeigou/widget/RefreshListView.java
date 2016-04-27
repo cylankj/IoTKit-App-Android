@@ -24,7 +24,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
-import cylan.log.DswLog;
+import com.cylan.support.DswLog;
 
 @SuppressLint("NewApi")
 public class RefreshListView extends ListView implements OnScrollListener {

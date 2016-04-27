@@ -1,6 +1,6 @@
 package com.cylan.publicApi;
 
-import cylan.log.DswLog;
+import com.cylan.support.DswLog;
 
 public class CheckUpdateUrl {
 

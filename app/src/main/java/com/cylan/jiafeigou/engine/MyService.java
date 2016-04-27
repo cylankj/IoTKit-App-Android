@@ -56,7 +56,7 @@ import com.cylan.publicApi.NetUtils;
 
 import java.util.ArrayList;
 
-import cylan.log.DswLog;
+import com.cylan.support.DswLog;
 
 public class MyService extends Service implements UDPMessageListener {
 

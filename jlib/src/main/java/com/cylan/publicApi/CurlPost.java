@@ -3,7 +3,7 @@ package com.cylan.publicApi;
 import java.io.File;
 import java.io.FileOutputStream;
 
-import cylan.log.DswLog;
+import com.cylan.support.DswLog;
 
 public class CurlPost {
     public static final String DIR_NAME = "exception_picture";

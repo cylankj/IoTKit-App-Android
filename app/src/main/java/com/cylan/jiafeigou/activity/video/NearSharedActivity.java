@@ -26,7 +26,7 @@ import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.publicApi.Constants;
-import cylan.log.DswLog;
+import com.cylan.support.DswLog;
 import com.cylan.publicApi.MsgpackMsg;
 import com.cylan.jiafeigou.adapter.ShareAdapter;
 import com.cylan.jiafeigou.base.BaseActivity;

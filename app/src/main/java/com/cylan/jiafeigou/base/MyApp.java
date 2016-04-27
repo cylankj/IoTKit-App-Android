@@ -8,7 +8,6 @@ import android.net.wifi.WifiInfo;
 import android.os.StrictMode;
 import android.view.View;
 
-import com.cylan.bugly.Bugly;
 import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.activity.SmartCall;
@@ -29,16 +28,17 @@ import com.cylan.publicApi.Constants;
 import com.cylan.publicApi.CrashHandler;
 import com.cylan.publicApi.JniPlay;
 import com.cylan.publicApi.MsgpackMsg;
+import com.cylan.support.DswLog;
 import com.cylan.utils.PackageUtils;
 import com.tencent.stat.StatService;
 
-import cylan.log.DswLog;
-import cylan.mta.MtaManager;
-import cylan.uil.cache.disc.naming.Md5FileNameGenerator;
-import cylan.uil.core.ImageLoader;
-import cylan.uil.core.ImageLoaderConfiguration;
-import cylan.uil.core.assist.QueueProcessingType;
-import cylan.uil.utils.L;
+import support.stat.bugly.Bugly;
+import support.stat.mta.MtaManager;
+import support.uil.cache.disc.naming.Md5FileNameGenerator;
+import support.uil.core.ImageLoader;
+import support.uil.core.ImageLoaderConfiguration;
+import support.uil.core.assist.QueueProcessingType;
+import support.uil.utils.L;
 
 public class MyApp extends Application {
 

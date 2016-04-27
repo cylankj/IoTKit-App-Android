@@ -31,7 +31,7 @@ import net.tsz.afinal.http.HttpHandler;
 import java.io.File;
 import java.text.DecimalFormat;
 
-import cylan.log.DswLog;
+import com.cylan.support.DswLog;
 
 public class UpdateManager {
 

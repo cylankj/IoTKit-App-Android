@@ -29,7 +29,7 @@ import android.widget.Toast;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.utils.MyImageLoader;
 import com.cylan.publicApi.Constants;
-import cylan.log.DswLog;
+import com.cylan.support.DswLog;
 import com.cylan.publicApi.MsgpackMsg;
 import com.cylan.jiafeigou.activity.doorbell.DoorBellActivity;
 import com.cylan.jiafeigou.activity.doorbell.addDoorbell.AddDoorBellActivity;
@@ -93,7 +93,7 @@ import com.cylan.jiafeigou.widget.slidingmenu.SlidingMenu;
 import com.cylan.jiafeigou.worker.SaveMenuBackgroundRunnable;
 import com.cylan.jiafeigou.worker.SaveTitlebarRunnable;
 import com.cylan.jiafeigou.worker.UploadLogWorker;
-import cylan.uil.core.ImageLoader;
+import support.uil.core.ImageLoader;
 import com.tencent.stat.StatService;
 
 import org.json.JSONException;

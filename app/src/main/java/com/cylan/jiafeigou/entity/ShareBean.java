@@ -1,6 +1,6 @@
 package com.cylan.jiafeigou.entity;
 
-import cylan.log.DswLog;
+import com.cylan.support.DswLog;
 
 import org.json.JSONArray;
 import org.json.JSONException;

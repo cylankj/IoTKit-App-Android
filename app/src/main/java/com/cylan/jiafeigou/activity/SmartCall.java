@@ -41,7 +41,7 @@ import com.cylan.publicApi.JniPlay;
 import java.util.ArrayList;
 import java.util.List;
 
-import cylan.log.DswLog;
+import com.cylan.support.DswLog;
 
 public class SmartCall extends Activity implements OnPageChangeListener, OnClickListener {
 

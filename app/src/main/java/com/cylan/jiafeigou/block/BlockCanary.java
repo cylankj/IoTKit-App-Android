@@ -22,7 +22,7 @@ import android.os.Looper;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
-import cylan.blockcanary.BlockCanaryCore;
+import support.block.BlockCanaryCore;
 
 /**
  * Looper thread monitor.

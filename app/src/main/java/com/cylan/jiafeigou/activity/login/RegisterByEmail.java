@@ -32,7 +32,7 @@ import com.cylan.publicApi.Function;
 import com.cylan.publicApi.JniPlay;
 import com.cylan.publicApi.MsgpackMsg;
 
-import cylan.log.DswLog;
+import com.cylan.support.DswLog;
 
 public class RegisterByEmail extends NotLoginBaseActivity implements OnClickListener {
 

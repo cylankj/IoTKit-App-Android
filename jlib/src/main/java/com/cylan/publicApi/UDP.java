@@ -17,7 +17,7 @@ import java.nio.ByteBuffer;
 import java.security.InvalidParameterException;
 import java.util.Enumeration;
 
-import cylan.log.DswLog;
+import com.cylan.support.DswLog;
 
 public class UDP implements Runnable {
     private static final String TAG = "UDP";

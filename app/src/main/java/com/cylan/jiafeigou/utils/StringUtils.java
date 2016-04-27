@@ -11,7 +11,7 @@ import android.text.Html;
 import android.text.Spanned;
 import android.util.DisplayMetrics;
 
-import cylan.log.DswLog;
+import com.cylan.support.DswLog;
 
 import java.io.File;
 import java.io.FileNotFoundException;

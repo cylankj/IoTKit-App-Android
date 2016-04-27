@@ -18,7 +18,7 @@ import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.TimeZone;
 
-import cylan.log.DswLog;
+import com.cylan.support.DswLog;
 
 public class ClientUDP implements Runnable {
     private static final String TAG = "UDP";

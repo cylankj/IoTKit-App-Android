@@ -11,7 +11,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 import com.cylan.jiafeigou.R;
-import cylan.log.DswLog;
+import com.cylan.support.DswLog;
 import com.cylan.jiafeigou.activity.main.MyVideos;
 import com.cylan.jiafeigou.engine.MyService;
 import com.cylan.jiafeigou.utils.BitmapUtil;
@@ -20,7 +20,7 @@ import com.cylan.jiafeigou.utils.DensityUtil;
 import com.cylan.jiafeigou.utils.PreferenceUtil;
 import com.cylan.jiafeigou.utils.StringUtils;
 import com.cylan.jiafeigou.utils.Utils;
-import cylan.uil.core.ImageLoader;
+import support.uil.core.ImageLoader;
 
 /**
  * User: hope(hebin@cylan.com.cn)

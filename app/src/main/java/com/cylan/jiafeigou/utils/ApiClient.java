@@ -2,7 +2,7 @@ package com.cylan.jiafeigou.utils;
 
 import android.content.Context;
 
-import cylan.log.DswLog;
+import com.cylan.support.DswLog;
 import com.cylan.jiafeigou.entity.Update;
 
 import java.io.BufferedReader;

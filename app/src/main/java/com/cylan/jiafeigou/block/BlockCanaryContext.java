@@ -8,7 +8,7 @@ import com.cylan.publicApi.NetUtils;
 
 import java.io.File;
 
-import cylan.blockcanary.IBlockCanaryContext;
+import support.block.IBlockCanaryContext;
 
 /**
  * Created by hunt on 16-4-6.

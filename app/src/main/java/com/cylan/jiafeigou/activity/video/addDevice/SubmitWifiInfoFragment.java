@@ -35,7 +35,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import cylan.log.DswLog;
+import com.cylan.support.DswLog;
 
 /**
  * A simple {@link Fragment} subclass.

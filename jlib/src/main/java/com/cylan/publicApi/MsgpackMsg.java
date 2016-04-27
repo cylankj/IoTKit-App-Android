@@ -12,7 +12,7 @@ import org.msgpack.annotation.Message;
 
 import java.io.IOException;
 
-import cylan.log.DswLog;
+import com.cylan.support.DswLog;
 
 /**
  * Created by liuzhiping on 2015/3/23.

@@ -17,7 +17,7 @@ import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.cylan.jiafeigou.R;
-import cylan.log.DswLog;
+import com.cylan.support.DswLog;
 import com.cylan.jiafeigou.listener.SaveCompleteListener;
 import com.cylan.jiafeigou.utils.NotifyDialog;
 import com.cylan.jiafeigou.utils.PathGetter;

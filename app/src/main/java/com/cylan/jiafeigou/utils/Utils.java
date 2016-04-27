@@ -72,7 +72,7 @@ import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import javax.security.auth.x500.X500Principal;
 
-import cylan.log.DswLog;
+import com.cylan.support.DswLog;
 
 public class Utils {
 

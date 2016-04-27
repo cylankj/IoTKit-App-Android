@@ -13,7 +13,7 @@ import android.widget.ListView;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.publicApi.Constants;
-import cylan.log.DswLog;
+import com.cylan.support.DswLog;
 import com.cylan.publicApi.JniPlay;
 import com.cylan.publicApi.MsgpackMsg;
 import com.cylan.jiafeigou.activity.efamily.EFamilySettingActivity;
@@ -42,7 +42,7 @@ import com.cylan.jiafeigou.utils.PathGetter;
 import com.cylan.jiafeigou.utils.PreferenceUtil;
 import com.cylan.jiafeigou.utils.StringUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
-import cylan.uil.core.ImageLoader;
+import support.uil.core.ImageLoader;
 import com.tencent.stat.StatService;
 
 import org.json.JSONException;

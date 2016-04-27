@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-import cylan.log.DswLog;
+import com.cylan.support.DswLog;
 
 
 public class Zip {

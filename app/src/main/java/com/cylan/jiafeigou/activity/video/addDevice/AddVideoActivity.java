@@ -61,7 +61,7 @@ import java.util.TimeZone;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import cylan.log.DswLog;
+import com.cylan.support.DswLog;
 
 public class AddVideoActivity extends BaseActivity implements OnClickListener, UDPMessageListener, SearchDeviceFragment.OnSearchDeviceListener, ChooseDeviceFragment.OnSelectDeviceListener, SubmitWifiInfoFragment.OnSubmitWifiInfoListener, BindResultFragment.OnCompleteButtonClickListener, UpgradeFragement.OnUpgradeButtonClickListener {
 

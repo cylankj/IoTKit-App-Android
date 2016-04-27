@@ -7,7 +7,7 @@ import android.util.AttributeSet;
 import android.view.View;
 
 import com.cylan.jiafeigou.R;
-import cylan.log.DswLog;
+import com.cylan.support.DswLog;
 import com.cylan.jiafeigou.entity.msg.MsgTimeData;
 import com.cylan.jiafeigou.utils.DensityUtil;
 import com.cylan.jiafeigou.utils.StringUtils;

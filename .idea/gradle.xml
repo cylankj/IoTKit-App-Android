@@ -11,14 +11,8 @@
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/WebRtcAndroid/app" />
             <option value="$PROJECT_DIR$/app" />
-            <option value="$PROJECT_DIR$/blockcanary" />
-            <option value="$PROJECT_DIR$/bugly" />
-            <option value="$PROJECT_DIR$/dswlog" />
             <option value="$PROJECT_DIR$/jlib" />
-            <option value="$PROJECT_DIR$/mta" />
-            <option value="$PROJECT_DIR$/permissions" />
             <option value="$PROJECT_DIR$/scanbinding" />
-            <option value="$PROJECT_DIR$/uil" />
           </set>
         </option>
         <option name="myModules">
@@ -26,14 +20,8 @@
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/WebRtcAndroid/app" />
             <option value="$PROJECT_DIR$/app" />
-            <option value="$PROJECT_DIR$/blockcanary" />
-            <option value="$PROJECT_DIR$/bugly" />
-            <option value="$PROJECT_DIR$/dswlog" />
             <option value="$PROJECT_DIR$/jlib" />
-            <option value="$PROJECT_DIR$/mta" />
-            <option value="$PROJECT_DIR$/permissions" />
             <option value="$PROJECT_DIR$/scanbinding" />
-            <option value="$PROJECT_DIR$/uil" />
           </set>
         </option>
       </GradleProjectSettings>

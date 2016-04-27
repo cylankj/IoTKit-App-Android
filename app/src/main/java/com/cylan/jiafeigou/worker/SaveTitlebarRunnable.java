@@ -7,7 +7,7 @@ import com.cylan.jiafeigou.utils.BitmapUtil;
 import com.cylan.jiafeigou.utils.DensityUtil;
 import com.cylan.jiafeigou.utils.MyImageLoader;
 import com.cylan.jiafeigou.utils.PathGetter;
-import cylan.uil.core.download.ImageDownloader;
+import support.uil.core.download.ImageDownloader;
 
 public class SaveTitlebarRunnable implements Runnable {
 

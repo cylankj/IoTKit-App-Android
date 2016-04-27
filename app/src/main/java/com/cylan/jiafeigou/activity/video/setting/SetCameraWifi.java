@@ -29,7 +29,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
-import cylan.log.DswLog;
+import com.cylan.support.DswLog;
 import com.cylan.publicApi.Function;
 import com.cylan.jiafeigou.adapter.BaseAdapter;
 import com.cylan.jiafeigou.base.BaseActivity;

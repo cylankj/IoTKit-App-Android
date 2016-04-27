@@ -33,7 +33,7 @@ import android.widget.RelativeLayout;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.publicApi.Constants;
-import cylan.log.DswLog;
+import com.cylan.support.DswLog;
 import com.cylan.publicApi.MsgpackMsg;
 import com.cylan.jiafeigou.activity.efamily.zxing.BeepManager;
 import com.cylan.jiafeigou.activity.efamily.zxing.CameraManager;

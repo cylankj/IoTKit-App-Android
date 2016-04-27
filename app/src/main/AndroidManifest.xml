@@ -68,11 +68,19 @@
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:largeHeap="true">
+        <meta-data
+            android:name="TA_APPKEY"
+            android:value="MATAPPKEY" />
+        　　
+        <meta-data
+            android:name="InstallChannel"
+            android:value="play" />
+
         <activity
             android:name="com.cylan.jiafeigou.activity.SplashActivity"
+            android:configChanges="locale|orientation|keyboardHidden"
             android:screenOrientation="portrait"
             android:theme="@style/activity.welcome.theme"
-            android:configChanges="locale|orientation|keyboardHidden"
             android:windowSoftInputMode="adjustPan|stateHidden">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -82,11 +90,10 @@
         </activity>
         <activity
             android:name="com.cylan.jiafeigou.activity.SmartCall"
+            android:configChanges="locale|orientation|keyboardHidden"
             android:screenOrientation="portrait"
             android:theme="@style/activity.welcome.theme"
-            android:configChanges="locale|orientation|keyboardHidden"
-            android:windowSoftInputMode="adjustPan|stateHidden">
-        </activity>
+            android:windowSoftInputMode="adjustPan|stateHidden"></activity>
         <activity
             android:name="com.cylan.jiafeigou.activity.login.LoginActivity"
             android:configChanges="locale|orientation|keyboardHidden"
@@ -114,15 +121,15 @@
         <activity
             android:name="com.cylan.jiafeigou.activity.video.CallOrConf"
             android:configChanges="locale|orientation|keyboardHidden|screenSize"
-            android:screenOrientation="portrait"
             android:launchMode="singleTop"
+            android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar"
             android:windowSoftInputMode="adjustPan|stateHidden" />
         <activity
             android:name="com.cylan.jiafeigou.activity.main.MyVideos"
             android:configChanges="locale|orientation|keyboardHidden"
-            android:screenOrientation="portrait"
             android:launchMode="singleTop"
+            android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Light.NoTitleBar"
             android:windowSoftInputMode="adjustPan" />
         <activity
@@ -188,10 +195,10 @@
             android:theme="@android:style/Theme.Light.NoTitleBar"
             android:windowSoftInputMode="adjustPan" />
         <!--<activity-->
-            <!--android:name="com.cylan.jiafeigou.activity.main.SelectPicActivity"-->
-            <!--android:configChanges="locale|orientation|keyboardHidden"-->
-            <!--android:screenOrientation="portrait"-->
-            <!--android:theme="@style/func_dialog" />-->
+        <!--android:name="com.cylan.jiafeigou.activity.main.SelectPicActivity"-->
+        <!--android:configChanges="locale|orientation|keyboardHidden"-->
+        <!--android:screenOrientation="portrait"-->
+        <!--android:theme="@style/func_dialog" />-->
         <activity
             android:name="com.cylan.jiafeigou.activity.main.SelectPicCropActivity"
             android:configChanges="locale|orientation|keyboardHidden"
@@ -212,8 +219,8 @@
         <activity
             android:name="com.cylan.jiafeigou.activity.message.MessageActivity"
             android:configChanges="locale|orientation|keyboardHidden"
-            android:screenOrientation="portrait"
             android:launchMode="singleTop"
+            android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar"
             android:windowSoftInputMode="adjustPan|stateHidden" />
         <activity
@@ -291,8 +298,8 @@
         <activity
             android:name="com.cylan.jiafeigou.activity.doorbell.DoorBellActivity"
             android:configChanges="locale|orientation|keyboardHidden"
-            android:screenOrientation="portrait"
             android:launchMode="singleTop"
+            android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar"
             android:windowSoftInputMode="adjustPan|stateHidden" />
         <activity
@@ -400,15 +407,18 @@
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen" />
-        <activity android:name="com.cylan.jiafeigou.activity.efamily.magnetic.MagneticActivity"
+        <activity
+            android:name="com.cylan.jiafeigou.activity.efamily.magnetic.MagneticActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.NoTitlebar.custom.style"
             android:windowSoftInputMode="adjustPan|stateHidden" />
-        <activity android:name="com.cylan.jiafeigou.activity.efamily.magnetic.MagneticSetActivity"
+        <activity
+            android:name="com.cylan.jiafeigou.activity.efamily.magnetic.MagneticSetActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.NoTitlebar.custom.style"
             android:windowSoftInputMode="adjustPan|stateHidden" />
-        <activity android:name="com.cylan.jiafeigou.activity.efamily.magnetic.MagneticDeviceInfoActivity"
+        <activity
+            android:name="com.cylan.jiafeigou.activity.efamily.magnetic.MagneticDeviceInfoActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.NoTitlebar.custom.style"
             android:windowSoftInputMode="adjustPan|stateHidden" />
@@ -429,33 +439,31 @@
             </intent-filter>
         </receiver>
 
-        <activity android:name="com.cylan.jiafeigou.activity.video.setting.LocationActivity"
+        <activity
+            android:name="com.cylan.jiafeigou.activity.video.setting.LocationActivity"
             android:configChanges="locale|orientation|keyboardHidden"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.NoTitleBar"
-            />
-        <activity android:name="com.cylan.jiafeigou.activity.video.setting.SensitiveActivity"
+            android:theme="@android:style/Theme.NoTitleBar" />
+        <activity
+            android:name="com.cylan.jiafeigou.activity.video.setting.SensitiveActivity"
             android:configChanges="locale|orientation|keyboardHidden"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.NoTitleBar"
-            />
-        <activity android:name="com.cylan.jiafeigou.activity.video.setting.DirectionActivity"
+            android:theme="@android:style/Theme.NoTitleBar" />
+        <activity
+            android:name="com.cylan.jiafeigou.activity.video.setting.DirectionActivity"
             android:configChanges="locale|orientation|keyboardHidden"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.NoTitleBar"
-            />
+            android:theme="@android:style/Theme.NoTitleBar" />
         <activity
             android:name="com.cylan.jiafeigou.activity.efamily.main.EfamilyMainActivity"
-            android:theme="@android:style/Theme.NoTitleBar"
             android:configChanges="locale|orientation|keyboardHidden"
             android:screenOrientation="portrait"
-            />
+            android:theme="@android:style/Theme.NoTitleBar" />
         <activity
             android:name="com.cylan.jiafeigou.activity.efamily.EfamilyRelatedBellActivity"
-            android:theme="@android:style/Theme.NoTitleBar"
             android:configChanges="locale|orientation|keyboardHidden"
             android:screenOrientation="portrait"
-            />
+            android:theme="@android:style/Theme.NoTitleBar" />
     </application>
 
 </manifest>

@@ -15,7 +15,7 @@ import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
-import cylan.log.DswLog;
+import com.cylan.support.DswLog;
 import com.cylan.jiafeigou.activity.video.addDevice.SubmitWifiInfoFragment;
 import com.cylan.jiafeigou.entity.MyScanResult;
 import com.cylan.jiafeigou.utils.Utils;

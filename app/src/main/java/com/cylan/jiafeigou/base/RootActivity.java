@@ -20,7 +20,7 @@ import org.msgpack.MessagePack;
 
 import java.io.IOException;
 
-import cylan.log.DswLog;
+import com.cylan.support.DswLog;
 
 public class RootActivity extends Activity implements RequestCallback, ServerMessage {
 

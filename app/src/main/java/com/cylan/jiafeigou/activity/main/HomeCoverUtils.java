@@ -12,10 +12,10 @@ import android.widget.ImageView;
 import com.cylan.publicApi.Constants;
 import com.cylan.jiafeigou.utils.BitmapUtil;
 import com.cylan.jiafeigou.utils.PreferenceUtil;
-import cylan.uil.core.DisplayImageOptions;
-import cylan.uil.core.ImageLoader;
-import cylan.uil.core.assist.ImageSize;
-import cylan.uil.core.listener.SimpleImageLoadingListener;
+import support.uil.core.DisplayImageOptions;
+import support.uil.core.ImageLoader;
+import support.uil.core.assist.ImageSize;
+import support.uil.core.listener.SimpleImageLoadingListener;
 
 public class HomeCoverUtils {
 

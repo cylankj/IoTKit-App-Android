@@ -20,7 +20,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 
 import com.cylan.jiafeigou.R;
-import cylan.log.DswLog;
+import com.cylan.support.DswLog;
 import com.cylan.jiafeigou.activity.doorbell.AddDoorBellHelpActivity;
 import com.cylan.jiafeigou.activity.doorbell.addDoorbell.SearchDoorBellFragment;
 import com.cylan.jiafeigou.activity.video.addDevice.SearchDeviceFragment;

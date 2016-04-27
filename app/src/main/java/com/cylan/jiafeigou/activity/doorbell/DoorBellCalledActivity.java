@@ -83,10 +83,10 @@ import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import cylan.log.DswLog;
-import cylan.uil.core.ImageLoader;
-import cylan.uil.core.assist.FailReason;
-import cylan.uil.core.listener.ImageLoadingListener;
+import com.cylan.support.DswLog;
+import support.uil.core.ImageLoader;
+import support.uil.core.assist.FailReason;
+import support.uil.core.listener.ImageLoadingListener;
 
 public class DoorBellCalledActivity extends RootActivity implements OnClickListener,
         HeadsetPlugObserver.OnHeadsetPlugListener, ViewDrag.Drag2RightOrLeftListener, UDPMessageListener {

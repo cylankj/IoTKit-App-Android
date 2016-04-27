@@ -32,10 +32,26 @@ dependencies {
     testCompile rootProject.ext.junit
     compile rootProject.ext.appcompat
     compile project(':jlib')
-    compile project(':bugly')
-    compile project(':mta')
     compile project(':WebRtcAndroid')
-    compile project(':blockcanary')
-    compile project(':uil')
-    compile project(':dswlog')
+    compile files('src/main/jniLibs/mta-sdk-1.6.2.jar')
+    compile files('src/main/jniLibs/bugly_crash_release__2.1.jar')
+}
+
+android.applicationVariants.all { variant ->
+    variant.outputs.each { output ->
+        output.processManifest.doLast {
+            def manifestOutFile = output.processManifest.manifestOutputFile
+            def appkey
+            // cylan matappkey:Aqc1103156296  zhongxing matappkey:ATQ1JV694AKT
+            if (project.hasProperty('oem') && oem != 'cylan') {
+                appkey = "ATQ1JV694AKT"
+            } else {
+                appkey = "Aqc1103156296"
+            }
+
+            def newFileContents = manifestOutFile.getText('UTF-8').replace("MATAPPKEY", appkey)
+            manifestOutFile.write(newFileContents, 'UTF-8')
+
+        }
+    }
 }
