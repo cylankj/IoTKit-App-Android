@@ -26,7 +26,7 @@ android {
     }
 
 }
-
+apply plugin: 'com.neenbedankt.android-apt'
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile rootProject.ext.junit
@@ -35,7 +35,10 @@ dependencies {
     compile project(':WebRtcAndroid')
     compile files('src/main/jniLibs/mta-sdk-1.6.2.jar')
     compile files('src/main/jniLibs/bugly_crash_release__2.1.jar')
+    compile 'com.jakewharton:butterknife:8.0.1'
+    apt 'com.jakewharton:butterknife-compiler:8.0.1'
 }
+
 
 android.applicationVariants.all { variant ->
     variant.outputs.each { output ->
