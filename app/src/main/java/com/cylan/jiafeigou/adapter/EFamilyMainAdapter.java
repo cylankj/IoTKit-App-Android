@@ -196,7 +196,7 @@ public class EFamilyMainAdapter extends BaseAdapter<EfamlMsg> {
         CircleImageView headpic;
 
         public ViewHolder1(View itemView) {
-            time = (TextView) itemView.findViewById(R.id.time);
+            time = (TextView) itemView.findViewById(R.id.tvTime);
             name = (TextView) itemView.findViewById(R.id.name);
             answer = (TextView) itemView.findViewById(R.id.answer_view);
             missed = (TextView) itemView.findViewById(R.id.missed_view);
@@ -213,7 +213,7 @@ public class EFamilyMainAdapter extends BaseAdapter<EfamlMsg> {
 
 
         public ViewHolder2(View itemView) {
-            time = (TextView) itemView.findViewById(R.id.time);
+            time = (TextView) itemView.findViewById(R.id.tvTime);
             name = (TextView) itemView.findViewById(R.id.name);
             answer = (TextView) itemView.findViewById(R.id.answer_view);
             missed = (TextView) itemView.findViewById(R.id.missed_view);
@@ -233,7 +233,7 @@ public class EFamilyMainAdapter extends BaseAdapter<EfamlMsg> {
 
 
         public ViewHolder3(View itemView) {
-            time = (TextView) itemView.findViewById(R.id.time);
+            time = (TextView) itemView.findViewById(R.id.tvTime);
             length = (TextView) itemView.findViewById(R.id.length_view);
             sound = (ImageView) itemView.findViewById(R.id.sound_view);
             headpic = (CircleImageView) itemView.findViewById(R.id.headpic);

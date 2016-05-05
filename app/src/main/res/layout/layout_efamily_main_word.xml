@@ -12,7 +12,7 @@
         android:background="@drawable/bg_word">
 
         <ImageView
-            android:id="@+id/back"
+            android:id="@+id/imgvBack"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_centerVertical="true"

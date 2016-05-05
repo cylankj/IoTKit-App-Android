@@ -96,7 +96,7 @@ public class DoorBellAdapter extends BaseAdapter<CallListData> {
         public ViewHolder(View v) {
             date = (TextView) v.findViewById(R.id.date);
             pic = (CircleImageView) v.findViewById(R.id.headpic);
-            time = (TextView) v.findViewById(R.id.time);
+            time = (TextView) v.findViewById(R.id.tvTime);
             sub = (TextView) v.findViewById(R.id.sub);
             line1 = v.findViewById(R.id.line1);
             line2 = v.findViewById(R.id.line2);

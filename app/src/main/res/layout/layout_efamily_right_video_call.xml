@@ -7,7 +7,7 @@
     android:paddingTop="20dp">
 
     <TextView
-        android:id="@+id/time"
+        android:id="@+id/tvTime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
@@ -23,7 +23,7 @@
         android:layout_width="34.5dp"
         android:layout_height="34.5dp"
         android:layout_alignParentRight="true"
-        android:layout_below="@id/time"
+        android:layout_below="@id/tvTime"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         android:src="@drawable/ico_efamily_user_default" />
@@ -33,7 +33,7 @@
         android:id="@+id/answer_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/time"
+        android:layout_below="@+id/tvTime"
         android:layout_toLeftOf="@+id/headpic"
         android:background="@drawable/bg_efamily_right"
         android:drawableLeft="@drawable/ico_answer_call_right"
@@ -50,7 +50,7 @@
         android:id="@+id/missed_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/time"
+        android:layout_below="@+id/tvTime"
         android:layout_toLeftOf="@+id/headpic"
         android:background="@drawable/bg_efamily_right"
         android:drawableLeft="@drawable/ico_right_missed_call"

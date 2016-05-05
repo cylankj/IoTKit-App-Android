@@ -119,7 +119,7 @@ public class WordsAdapter extends BaseAdapter<WordsBean> {
 
 
         ViewHolder(View view) {
-            time = (TextView) view.findViewById(R.id.time);
+            time = (TextView) view.findViewById(R.id.tvTime);
             layout = (RelativeLayout) view.findViewById(R.id.layout);
             for (int i = 0; i < layout.getChildCount(); i++) {
                 if (!(layout.getChildAt(i) instanceof LinearLayout)) {

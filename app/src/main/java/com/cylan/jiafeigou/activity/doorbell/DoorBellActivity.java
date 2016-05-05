@@ -18,7 +18,6 @@ import android.widget.TextView;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.activity.doorbell.detail.DoorBellDetailActivity;
 import com.cylan.jiafeigou.activity.message.MessageDelDialog;
-import com.cylan.jiafeigou.activity.message.MessagePicturesActivity;
 import com.cylan.jiafeigou.activity.video.addDevice.AddVideoActivity;
 import com.cylan.jiafeigou.adapter.DoorBellAdapter;
 import com.cylan.jiafeigou.base.MyApp;
@@ -41,6 +40,7 @@ import com.cylan.jiafeigou.utils.NotifyDialog;
 import com.cylan.jiafeigou.utils.PreferenceUtil;
 import com.cylan.jiafeigou.utils.StringUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
+import com.cylan.jiafeigou.view.activity.ShowBigPicActivity;
 import com.cylan.jiafeigou.widget.PullToZoomListView;
 import com.cylan.publicApi.Constants;
 import com.cylan.publicApi.MsgpackMsg;
@@ -446,7 +446,7 @@ public class DoorBellActivity extends RootActivity implements OnClickListener, A
             list.add(mAdapter.getItem(pos).url);
             info.urllist = list;
             startActivity(
-                    new Intent(this, MessagePicturesActivity.class).putExtra(MessagePicturesActivity.TIME, info).putExtra("index", 0));
+                    new Intent(this, ShowBigPicActivity.class).putExtra(ShowBigPicActivity.TIME, info).putExtra("index", 0));
         }
     }
 

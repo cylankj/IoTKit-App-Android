@@ -87,7 +87,7 @@ public class Setting extends BaseActivity implements View.OnClickListener, OnChe
         setTitle(R.string.SETTINGS);
         setBackBtnOnClickListener(this);
 
-        mShare = findViewById(R.id.share);
+        mShare = findViewById(R.id.imgvShare);
         mAbout = findViewById(R.id.about);
 
         mIsPushBtn = (ToggleButton) findViewById(R.id.toggle_ispush);
@@ -136,7 +136,7 @@ public class Setting extends BaseActivity implements View.OnClickListener, OnChe
                 startActivity(new Intent(this, About.class));
                 break;
 
-            case R.id.share:
+            case R.id.imgvShare:
                 share();
 
                 break;

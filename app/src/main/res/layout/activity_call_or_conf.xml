@@ -9,7 +9,7 @@
         android:id="@+id/scrollview_holder_layout"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/titlebar"
+        android:layout_below="@+id/rLayoutTitleBar"
         android:gravity="center">
 
 
@@ -168,7 +168,7 @@
     </LinearLayout>
 
     <include
-        android:id="@+id/titlebar"
+        android:id="@+id/rLayoutTitleBar"
         layout="@layout/layout_titlebar" />
 
     <include
@@ -177,7 +177,7 @@
         android:layout_width="match_parent"
         android:layout_height="36dp"
         android:layout_alignParentTop="true"
-        android:layout_below="@+id/titlebar"
+        android:layout_below="@+id/rLayoutTitleBar"
         android:visibility="gone" />
 
 

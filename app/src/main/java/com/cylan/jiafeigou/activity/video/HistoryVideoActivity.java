@@ -322,7 +322,7 @@ public class HistoryVideoActivity extends BaseActivity implements OnClickListene
         mProgressTimeLyaout = (LinearLayout) findViewById(R.id.progress_time);
         mLinearLayout = (LinearLayout) findViewById(R.id.progress);
 
-        mTimeView = (TextView) findViewById(R.id.time);
+        mTimeView = (TextView) findViewById(R.id.tvTime);
         mTimeView.setOnClickListener(this);
 
         mSwitcher = (ViewSwitcher) findViewById(R.id.viewswitch);
@@ -402,7 +402,7 @@ public class HistoryVideoActivity extends BaseActivity implements OnClickListene
             case R.id.ico_back:
                 onBackPressed();
                 break;
-            case R.id.time:
+            case R.id.tvTime:
                 if (list != null) {
                     pickupTime();
                 }

@@ -109,7 +109,7 @@ public class ModifyNickName extends BaseActivity implements OnClickListener {
             isNick = true;
         }
         setBaseTitlebarVisbitly(false);
-        View view = findViewById(R.id.titlebar);
+        View view = findViewById(R.id.rLayoutTitleBar);
 
         view.findViewById(R.id.ico_back).setOnClickListener(this);
         ((TextView) view.findViewById(R.id.title)).setText(isNick ? R.string.ALIAS : R.string.CHANGE_EMAIL);

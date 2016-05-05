@@ -19,8 +19,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
-import com.cylan.publicApi.Constants;
-import com.cylan.publicApi.MsgpackMsg;
 import com.cylan.jiafeigou.adapter.MessageDetailAdapter;
 import com.cylan.jiafeigou.base.BaseActivity;
 import com.cylan.jiafeigou.base.MyApp;
@@ -40,11 +38,15 @@ import com.cylan.jiafeigou.utils.MyImageLoader;
 import com.cylan.jiafeigou.utils.NotifyDialog;
 import com.cylan.jiafeigou.utils.StringUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
-import support.uil.core.ImageLoader;
+import com.cylan.jiafeigou.view.activity.ShowBigPicActivity;
+import com.cylan.publicApi.Constants;
+import com.cylan.publicApi.MsgpackMsg;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+
+import support.uil.core.ImageLoader;
 
 public class MessageDetailActivity extends BaseActivity implements OnClickListener, OnScrollListener, MessageDetailAdapter.ClickdelWarmListener, MessageDetailAdapter.SelectChangeListener, AdapterView.OnItemClickListener {
 
@@ -405,7 +407,7 @@ public class MessageDetailActivity extends BaseActivity implements OnClickListen
     @Override
     public void delPic(int pos, int index) {
         startActivityForResult(
-                new Intent(this, MessagePicturesActivity.class).putExtra(MessagePicturesActivity.TIME, mAdapter.getItem(pos)).putExtra("index", index), DEL_PIC_MSG);
+                new Intent(this, ShowBigPicActivity.class).putExtra(ShowBigPicActivity.TIME, mAdapter.getItem(pos)).putExtra("index", index), DEL_PIC_MSG);
 
     }
 

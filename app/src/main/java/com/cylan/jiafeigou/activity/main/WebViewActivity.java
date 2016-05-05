@@ -28,7 +28,7 @@ public class WebViewActivity extends BaseActivity implements OnClickListener {
         setTitle(title);
         View view = findViewById(R.id.titlebar1);
         ((TextView) view.findViewById(R.id.title)).setText(title);
-        view.findViewById(R.id.back).setOnClickListener(this);
+        view.findViewById(R.id.imgvBack).setOnClickListener(this);
 
         if (PreferenceUtil.getIsLogout(WebViewActivity.this)) {
             view.setVisibility(View.VISIBLE);
@@ -59,7 +59,7 @@ public class WebViewActivity extends BaseActivity implements OnClickListener {
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.back:
+            case R.id.imgvBack:
                 finish();
                 break;
 

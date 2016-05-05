@@ -1,30 +1,18 @@
 package com.cylan.jiafeigou.activity.message;
 
-import android.app.Dialog;
-import android.content.ComponentName;
-import android.content.Context;
-import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
-import com.cylan.support.DswLog;
 import com.cylan.jiafeigou.adapter.MyPagerAdapter;
 import com.cylan.jiafeigou.base.BaseActivity;
 import com.cylan.jiafeigou.entity.msg.MsgData;
@@ -34,11 +22,9 @@ import com.cylan.jiafeigou.utils.PathGetter;
 import com.cylan.jiafeigou.utils.ThreadPoolUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.Utils;
-import com.cylan.jiafeigou.widget.MyGridView;
 import com.cylan.jiafeigou.widget.TouchImageView;
 import com.cylan.jiafeigou.worker.SaveShotPhotoRunnable;
 
-import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -54,7 +40,6 @@ public class MessagePicturesActivity extends BaseActivity implements OnClickList
     private TextView mCursorView;
     private TextView mTimeView;
     private ViewPager mViewPager;
-    private Dialog mShareDlg;
     private ImageView mDownLoadView;
     private ImageView mShareView;
     private List<View> views;
@@ -89,16 +74,16 @@ public class MessagePicturesActivity extends BaseActivity implements OnClickList
     }
 
     private void initView() {
-        mBackView = (ImageView) findViewById(R.id.back);
+        mBackView = (ImageView) findViewById(R.id.imgvBack);
         mBackView.setOnClickListener(this);
-        mCursorView = (TextView) findViewById(R.id.pic_cusor);
-        mTimeView = (TextView) findViewById(R.id.time);
-        mViewPager = (ViewPager) findViewById(R.id.viewpager);
+        mCursorView = (TextView) findViewById(R.id.tvCursor);
+        mTimeView = (TextView) findViewById(R.id.tvTime);
+        mViewPager = (ViewPager) findViewById(R.id.vpContent);
         mTimeView.setText(mSimpleDateFormat.format(new Date(info.time * 1000)));
         mCursorView.setText(mSimpleDateFormat.format(new Date(info.time * 1000)));
-        mDownLoadView = (ImageView) findViewById(R.id.download);
+        mDownLoadView = (ImageView) findViewById(R.id.imgvDownload);
         mDownLoadView.setOnClickListener(this);
-        mShareView = (ImageView) findViewById(R.id.share);
+        mShareView = (ImageView) findViewById(R.id.imgvShare);
         mShareView.setOnClickListener(this);
         mShareView.setEnabled(false);
         setBtnEnable(true);
@@ -137,17 +122,17 @@ public class MessagePicturesActivity extends BaseActivity implements OnClickList
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.back:
+            case R.id.imgvBack:
                 onBackPressed();
                 break;
-            case R.id.download:
+            case R.id.imgvDownload:
                 SimpleDateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");
                 Drawable mDrawable = ((TouchImageView) views.get(mViewPager.getCurrentItem())).getDrawable();
                 Bitmap mBitmap = BitmapUtil.drawableToBitmap(mDrawable);
                 String path = PathGetter.getJiaFeiGouPhotos() + df.format(new Date()) + ".png";
                 ThreadPoolUtils.execute(new SaveShotPhotoRunnable(mBitmap, path, mHandler, 0xff));
                 break;
-            case R.id.share:
+            case R.id.imgvShare:
                 break;
 
             default:
@@ -155,86 +140,6 @@ public class MessagePicturesActivity extends BaseActivity implements OnClickList
         }
 
     }
-
-
-    void share(String path) {
-        if (mShareDlg == null) {
-            mShareDlg = new Dialog(this, R.style.func_dialog);
-            View content = View.inflate(this, R.layout.dialog_app_share, null);
-            TextView cancel = (TextView) content.findViewById(R.id.btn_cancle);
-            cancel.setOnClickListener(new View.OnClickListener() {
-
-                @Override
-                public void onClick(View v) {
-                    mShareDlg.dismiss();
-                }
-            });
-            MyGridView gridView = (MyGridView) content.findViewById(R.id.gridview);
-            final Intent intent = new Intent(Intent.ACTION_SEND);
-            intent.setType("text/plain");
-            intent.setType("image/png");
-            intent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(new File(path)));
-            // intent.putExtra(Intent.EXTRA_TEXT,
-            // "最近我在用一款手机应用，名字叫加菲狗，这款应用配合一个摄像头可以随时随地看到家里的老人、宝宝和财物，非常好用！推荐你也试试哦~~~"
-            // + " http://yun.app8h.com/s?id=vau67n");
-            List<ResolveInfo> list = getPackageManager().queryIntentActivities(intent, 0);
-            final AppAdater appAdater = new AppAdater(this);
-            for (ResolveInfo info : list) {
-                appAdater.add(info);
-            }
-            gridView.setOnItemClickListener(new OnItemClickListener() {
-
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    ResolveInfo info = appAdater.getItem(position);
-                    intent.setComponent(new ComponentName(info.activityInfo.packageName, info.activityInfo.name));
-                    startActivity(intent);
-                }
-            });
-            gridView.setAdapter(appAdater);
-            mShareDlg.setContentView(content);
-            mShareDlg.setCanceledOnTouchOutside(true);
-        }
-        try {
-            mShareDlg.show();
-        } catch (Exception e) {
-            DswLog.ex(e.toString());
-        }
-    }
-
-    class ViewHolder {
-        ImageView icon;
-        TextView name;
-        ResolveInfo info;
-    }
-
-    class AppAdater extends ArrayAdapter<ResolveInfo> {
-
-        public AppAdater(Context context) {
-            super(context, 0);
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            ViewHolder vh;
-            if (null == convertView) {
-                convertView = View.inflate(getContext(), R.layout.item_app_share, null);
-                vh = new ViewHolder();
-                vh.icon = (ImageView) convertView.findViewById(R.id.icon);
-                vh.name = (TextView) convertView.findViewById(R.id.name);
-                convertView.setTag(vh);
-            } else {
-                vh = (ViewHolder) convertView.getTag();
-            }
-            ResolveInfo info = getItem(position);
-            PackageManager pm = getPackageManager();
-            vh.name.setText(info.loadLabel(pm));
-            vh.icon.setImageDrawable(info.loadIcon(pm));
-            return convertView;
-        }
-
-    }
-
 
     private void setBtnEnable(Boolean is) {
         mDownLoadView.setEnabled(is);

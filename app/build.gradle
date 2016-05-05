@@ -37,6 +37,7 @@ dependencies {
     compile files('src/main/jniLibs/bugly_crash_release__2.1.jar')
     compile 'com.jakewharton:butterknife:8.0.1'
     apt 'com.jakewharton:butterknife-compiler:8.0.1'
+    testCompile rootProject.ext.robolectric
 }
 
 

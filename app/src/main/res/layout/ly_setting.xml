@@ -6,7 +6,7 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/titlebar"
+        android:layout_below="@id/rLayoutTitleBar"
         android:background="@drawable/bg_editscenc"
         android:clickable="true">
 
@@ -150,7 +150,7 @@
                 android:layout_marginTop="@dimen/code_magin">
 
                 <RelativeLayout
-                    android:id="@+id/share"
+                    android:id="@+id/imgvShare"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/bg_config_item_selector">

@@ -117,7 +117,7 @@ public final class CaptureActivity extends RootActivity implements SurfaceHolder
         scanContainer = (RelativeLayout) findViewById(R.id.capture_container);
         scanCropView = (RelativeLayout) findViewById(R.id.capture_crop_view);
         scanLine = (ImageView) findViewById(R.id.capture_scan_line);
-        ImageView mBackView = (ImageView) findViewById(R.id.back);
+        ImageView mBackView = (ImageView) findViewById(R.id.imgvBack);
         mBackView.setOnClickListener(this);
         //inactivityTimer = new InactivityTimer(this);
         beepManager = new BeepManager(this);
@@ -378,7 +378,7 @@ public final class CaptureActivity extends RootActivity implements SurfaceHolder
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.back:
+            case R.id.imgvBack:
                 finish();
                 break;
         }

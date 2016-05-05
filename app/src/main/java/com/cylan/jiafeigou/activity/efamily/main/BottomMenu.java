@@ -104,7 +104,7 @@ public class BottomMenu extends RelativeLayout implements View.OnClickListener, 
         mStartView.setOnTouchListener(this);
         mToolsBarView = (ImageView) findViewById(R.id.toolsbar);
         mToolsBarView.setOnClickListener(this);
-        mBackView = (ImageView) findViewById(R.id.back);
+        mBackView = (ImageView) findViewById(R.id.imgvBack);
         mBackView.setOnClickListener(this);
         mWord = findViewById(R.id.word_pressed);
         mTopBar = findViewById(R.id.topbar);
@@ -174,7 +174,7 @@ public class BottomMenu extends RelativeLayout implements View.OnClickListener, 
             mWordLayout.setVisibility(View.VISIBLE);
             mWord.setVisibility(View.VISIBLE);
             StatService.trackCustomEvent(mContext, TAG, mContext.getString(R.string.EFAMILY_MENU_VOICEMS));
-        } else if (id == R.id.back) {
+        } else if (id == R.id.imgvBack) {
             mMainLayout.setVisibility(View.VISIBLE);
             findViewById(R.id.obligate_view).setVisibility(VISIBLE);
             mToolsBarView.setImageResource(R.drawable.bg_efamily_toolbar_down);

@@ -37,7 +37,7 @@ public class RenameDialog extends Dialog {
         edit = (EditDelText) view.findViewById(R.id.nickname);
         edit.setFilters(new InputFilter[]{new InputFilter.LengthFilter(12)});
         edit.setHint(R.string.EQUIPMENT_NAME);
-        View dialogtitlebar = view.findViewById(R.id.titlebar);
+        View dialogtitlebar = view.findViewById(R.id.rLayoutTitleBar);
         ((TextView) dialogtitlebar.findViewById(R.id.title)).setText(R.string.EQUIPMENT_NAME);
         edit.setText(content);
         confirm = dialogtitlebar.findViewById(R.id.right_btn);

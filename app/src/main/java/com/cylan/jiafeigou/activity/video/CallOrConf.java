@@ -246,7 +246,7 @@ public class CallOrConf extends RootActivity implements View.OnClickListener, He
         mFullScreenView = (ImageView) findViewById(R.id.fullscreen);
         RelativeLayout mSafeProView = (RelativeLayout) findViewById(R.id.safe_protect_layout);
         mHistoryVideo = (TextView) findViewById(R.id.history_video);
-        TextView mNearShareView = (TextView) findViewById(R.id.share);
+        TextView mNearShareView = (TextView) findViewById(R.id.imgvShare);
         mLandVoiceView = (ImageView) findViewById(R.id.ico_land_voice);
         mLandShotView = (ImageView) findViewById(R.id.ico_land_shot);
         ImageView mFullScreenView1 = (ImageView) findViewById(R.id.ico_land_fullscreen);
@@ -889,7 +889,7 @@ public class CallOrConf extends RootActivity implements View.OnClickListener, He
                 PreferenceUtil.setKeyFirstSafe(this, true);
                 startActivity(new Intent(CallOrConf.this, SafeProtectActivtiy.class).putExtra(ClientConstants.CIDINFO, mData));
                 break;
-            case R.id.share:
+            case R.id.imgvShare:
                 startActivity(new Intent(CallOrConf.this, NearSharedActivity.class).putExtra(ClientConstants.CIDINFO, mData));
                 break;
             case R.id.help:
@@ -1078,7 +1078,7 @@ public class CallOrConf extends RootActivity implements View.OnClickListener, He
     }
 
     private void setPortStyle() {
-        findViewById(R.id.titlebar).setVisibility(View.VISIBLE);
+        findViewById(R.id.rLayoutTitleBar).setVisibility(View.VISIBLE);
         mLandTitlebar.setVisibility(View.GONE);
         mBottom.setVisibility(View.VISIBLE);
         mLandBottomView.setVisibility(View.GONE);
@@ -1087,7 +1087,7 @@ public class CallOrConf extends RootActivity implements View.OnClickListener, He
     }
 
     private void setLandStyle() {
-        findViewById(R.id.titlebar).setVisibility(View.GONE);
+        findViewById(R.id.rLayoutTitleBar).setVisibility(View.GONE);
         mBottom.setVisibility(View.GONE);
         mLandTitlebar.setVisibility(View.VISIBLE);
         mLandBottomView.setVisibility(View.VISIBLE);
