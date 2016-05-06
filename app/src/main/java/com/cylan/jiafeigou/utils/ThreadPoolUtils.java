@@ -14,6 +14,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  *
  * @author edited by hunt 2015-02-10
  */
+@Deprecated
 public class ThreadPoolUtils {
 
     private ThreadPoolUtils() {
@@ -57,6 +58,7 @@ public class ThreadPoolUtils {
      *
      * @param runnable
      */
+    @Deprecated
     public static void execute(Runnable runnable) {
         threadPool.execute(runnable);
     }

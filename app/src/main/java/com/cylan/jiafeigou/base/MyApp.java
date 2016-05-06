@@ -15,25 +15,17 @@ import com.cylan.jiafeigou.block.BlockCanary;
 import com.cylan.jiafeigou.block.BlockCanaryContext;
 import com.cylan.jiafeigou.engine.CallbackManager;
 import com.cylan.jiafeigou.engine.MyService;
-import com.cylan.jiafeigou.engine.UnSendQueue;
 import com.cylan.jiafeigou.entity.msg.rsp.LoginRsp;
 import com.cylan.jiafeigou.utils.AppManager;
 import com.cylan.jiafeigou.utils.NotificationUtil;
 import com.cylan.jiafeigou.utils.NotifyDialog;
-import com.cylan.jiafeigou.utils.OEMConf;
-import com.cylan.jiafeigou.utils.PathGetter;
 import com.cylan.jiafeigou.utils.PreferenceUtil;
 import com.cylan.jiafeigou.utils.StringUtils;
 import com.cylan.publicApi.Constants;
-import com.cylan.publicApi.CrashHandler;
 import com.cylan.publicApi.JniPlay;
 import com.cylan.publicApi.MsgpackMsg;
 import com.cylan.support.DswLog;
-import com.cylan.utils.PackageUtils;
-import com.tencent.stat.StatService;
 
-import support.stat.bugly.Bugly;
-import support.stat.mta.MtaManager;
 import support.uil.cache.disc.naming.Md5FileNameGenerator;
 import support.uil.core.ImageLoader;
 import support.uil.core.ImageLoaderConfiguration;
@@ -44,29 +36,29 @@ public class MyApp extends Application {
 
 //    private static FinalBitmap mLoader;
 
-    static {
-        System.loadLibrary("media-engine-jni");
-    }
+//    static {
+//        System.loadLibrary("media-engine-jni");
+//    }
 
     private static Application instance = null;
 
     @Override
     public void onCreate() {
         super.onCreate();
-        debugDetect();
-        instance = this;
-        Bugly.init(this, BuildConfig.DEBUG, PackageUtils.getAppVersionName(this));
-        CrashHandler.getInstance(null).init(getApplicationContext());
-        initDswLog();
-        initBlockCanary();
-        MtaManager.init(this, BuildConfig.DEBUG);
-        StatService.trackCustomEvent(this, "App onCreate", "");
-        OEMConf.LoadConf(this);
-        initServerConfig();
-        initImageLoaderConfig();
-        JniPlay.SetHttpRoot(PathGetter.getUpgradePath());
-        CallbackManager.getInstance().clearObserver();
-        UnSendQueue.getInstance().clear();
+//        debugDetect();
+//        instance = this;
+//        Bugly.init(this, BuildConfig.DEBUG, PackageUtils.getAppVersionName(this));
+//        CrashHandler.getInstance(null).init(getApplicationContext());
+//        initDswLog();
+//        initBlockCanary();
+//        MtaManager.init(this, BuildConfig.DEBUG);
+//        StatService.trackCustomEvent(this, "App onCreate", "");
+//        OEMConf.LoadConf(this);
+//        initServerConfig();
+//        initImageLoaderConfig();
+//        JniPlay.SetHttpRoot(PathGetter.getUpgradePath());
+//        CallbackManager.getInstance().clearObserver();
+//        UnSendQueue.getInstance().clear();
     }
 
     private void debugDetect() {

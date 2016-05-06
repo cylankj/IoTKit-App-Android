@@ -27,6 +27,7 @@ import com.cylan.jiafeigou.R;
 import com.cylan.support.DswLog;
 
 @SuppressLint("NewApi")
+@Deprecated //by hunt 非常低效的一个控件.
 public class RefreshListView extends ListView implements OnScrollListener {
 
     private static final int REFRESH_DONE = -1;
@@ -68,33 +69,40 @@ public class RefreshListView extends ListView implements OnScrollListener {
     private boolean mRefreshEnabled = true;
     private boolean mOverTimeEnable = false;
 
+    @Deprecated //by hunt
     public void setRefreshEnabled(boolean enabled) {
         mRefreshEnabled = enabled;
     }
 
+    @Deprecated //by hunt
     public boolean getRefreshEnabled() {
         return mRefreshEnabled;
     }
 
+    @Deprecated //by hunt
     public void setOverTime(boolean enable) {
         mOverTimeEnable = enable;
     }
 
+    @Deprecated //by hunt
     public RefreshListView(Context context) {
         super(context);
         init(context);
     }
 
+    @Deprecated //by hunt
     public RefreshListView(Context context, AttributeSet attrs) {
         super(context, attrs);
         init(context);
     }
 
+    @Deprecated //by hunt
     public RefreshListView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         init(context);
     }
 
+    @Deprecated //by hunt
     @SuppressLint("NewApi")
     private void init(Context context) {
         mFlipAnimation = new RotateAnimation(0, -180, RotateAnimation.RELATIVE_TO_SELF, 0.5f, RotateAnimation.RELATIVE_TO_SELF, 0.5f);
@@ -182,6 +190,7 @@ public class RefreshListView extends ListView implements OnScrollListener {
         mOnScrollListener = l;
     }
 
+    @Deprecated //by hunt
     public void setOnRefreshListener(OnRefreshListener onRefreshListener) {
         mOnRefreshListener = onRefreshListener;
     }
@@ -229,6 +238,7 @@ public class RefreshListView extends ListView implements OnScrollListener {
         return super.onTouchEvent(event);
     }
 
+    @Deprecated //by hunt
     private void applyHeaderPadding(MotionEvent ev) {
         if (!flag) {
             return;
@@ -300,10 +310,11 @@ public class RefreshListView extends ListView implements OnScrollListener {
         child.measure(childWidthSpec, childHeightSpec);
     }
 
+    @Deprecated //by hunt
     public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
         if (mCurrentScrollState == SCROLL_STATE_TOUCH_SCROLL && mRefreshState != REFRESHING) {
             /*
-			 * if (firstVisibleItem == 0) {
+             * if (firstVisibleItem == 0) {
 			 * mRefreshViewImage.setVisibility(View.VISIBLE);
 			 * mRefreshViewLastUpdated.setVisibility(View.VISIBLE);
 			 * mRefreshViewText.setVisibility(View.VISIBLE); if
@@ -332,6 +343,7 @@ public class RefreshListView extends ListView implements OnScrollListener {
         }
     }
 
+    @Deprecated //by hunt
     public void onScrollStateChanged(AbsListView view, int scrollState) {
         mCurrentScrollState = scrollState;
 
@@ -344,6 +356,7 @@ public class RefreshListView extends ListView implements OnScrollListener {
         }
     }
 
+    @Deprecated //by hunt
     public void prepareForRefresh() {
         resetHeaderPadding();
 
@@ -357,6 +370,7 @@ public class RefreshListView extends ListView implements OnScrollListener {
         mRefreshState = REFRESHING;
     }
 
+    @Deprecated //by hunt
     public void onRefresh() {
         Log.d(TAG, "onRefresh");
         if (mOnRefreshListener != null) {
@@ -366,6 +380,7 @@ public class RefreshListView extends ListView implements OnScrollListener {
         prepareForRefresh();
     }
 
+    @Deprecated //by hunt
     public void onRefreshComplete() {
         Log.d(TAG, "onRefreshComplete");
         mHandler.removeMessages(MSG_OVERTIME);
@@ -388,6 +403,7 @@ public class RefreshListView extends ListView implements OnScrollListener {
 
     }
 
+    @Deprecated //by hunt
     public interface OnRefreshListener {
         void onRefresh();
     }
@@ -418,6 +434,7 @@ public class RefreshListView extends ListView implements OnScrollListener {
         }
     };
 
+    @Deprecated //by hunt
     public void setOverTimeViewVisibity(Boolean boo) {
         mOverTimeView.setVisibility(boo ? View.VISIBLE : View.GONE);
     }

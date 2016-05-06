@@ -25,6 +25,8 @@ dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile rootProject.ext.junit
     compile rootProject.ext.rxjava
+    compile rootProject.ext.ultra_ptr
+
     compile files('src/main/jniLibs/afinal.jar')
     compile files('src/main/jniLibs/gson-2.2.4.jar')
     compile files('src/main/jniLibs/msgpack-0.6.12-SNAPSHOT.jar')
@@ -34,4 +36,5 @@ dependencies {
     compile files('src/main/jniLibs/SLog-2.0.jar')
     compile files('src/main/jniLibs/weibosdkcore.jar')
     compile files('src/main/jniLibs/zxing.jar')
+
 }
