@@ -803,15 +803,17 @@ public class Utils {
         DswLog.e(GET_LOG_PRE + Build.DISPLAY);
         DswLog.e(GET_LOG_PRE + Build.MODEL);
         DswLog.e(GET_LOG_PRE + Build.VERSION.SDK_INT + " " + Build.VERSION.RELEASE);
-        ZipLog zipLog = new ZipLog(PathGetter.getRootPath());
-        ArrayList<File> list = new ArrayList<>();
-        zipLog.addFile(PathGetter.getWslogPath(), list); //DWSLog
-        zipLog.addFile(PathGetter.getSmartCallPath(), list); //SmartCall
-        zipLog.addFile(PathGetter.getBreakPadPath(), list);//breakpad
-        zipLog.addFile(PathGetter.getCrashPath(), list);//crash
-        zipLog.packZip(list);
+        ZipLog zipLog = new ZipLog.Builder()
+                .setZipName("mLogPakage.zip")
+                .setZipPath(PathGetter.getRootPath())
+                .addLogtextPath(PathGetter.getWslogPath()) //DWSLog
+                .addLogtextPath(PathGetter.getSmartCallPath()) //SmartCall
+                .addLogtextPath(PathGetter.getBreakPadPath()) //breakpad
+                .addLogtextPath(PathGetter.getCrashPath()) //crash
+                .build();
+
         JniPlay.HttpPostFile(Constants.WEB_ADDR, Constants.WEB_PORT,
-                url, zipLog.getZipDir());
+                url, zipLog.mCompAndGetZip());
         DswLog.e("Post log to server !");
     }
 
