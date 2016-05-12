@@ -407,7 +407,7 @@ public class ZipLog {
 
             File curFile = new File(dir.getAbsolutePath() + File.separator + filename);
 
-            if (status && fileSize_KB != DEFAULT && fileSize_MB > 0) {
+            if (status && fileSize_MB != DEFAULT && fileSize_MB > 0) {
                 long size_MB = curFile.length() / 1024 / 1024;
                 if (size_MB >= fileSize_MB) status = false;
             }
