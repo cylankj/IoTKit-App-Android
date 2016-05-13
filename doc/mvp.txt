@@ -55,8 +55,32 @@
        Presenter: public class SplashPresenterCompl implements SplashPresenter.Ops,SplashPresenter.RequiredOps {...}
        Model:      public class SplashModelCompl implements SplashModelOps {...}
 
+逻辑图:
+       以view初始缓存数据为例,参考https://raw.githubusercontent.com/DroidWorkerLYF/Translate/master/Model-View-Presenter%20(MVP)/1.png
 
+                    @2 执行方法                    @7实现接口
+                <--------          View             -------->
+                |                                                              |
+                |                                                              |
+       <ingterface>PresenterOps                <interface>ViewRequiredOps
+       实现View ->Presenter接口                   Presenter -> View
+        void initCache()                                  void cacheInited();
+                |                                                              |
+                |  @1实现接口                     @8回调方法    |
+                <-------                                -------->
 
+                                        Presenter
+
+                    @4执行方法                    @5实现接口
+                <-------                                 -------->
+                |                                                               |
+                |                                                               |
+        <interface>ModelOps                       <interface>PresenterRequiredOps
+        实现Presenter -> Model接口              实现Model -> Presenter接口
+        void initCacheda();                             void onCacheInited();
+                |                                                               |
+                |   @3实现接口                    @6回调方法     |
+                <--------           Model           -------->
 
 
 
