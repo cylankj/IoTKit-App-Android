@@ -16,7 +16,7 @@ import android.widget.TextView;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.entity.msg.MsgData;
 import com.cylan.jiafeigou.presenter.ShowPicPresenter;
-import com.cylan.jiafeigou.presenter.impl.ShowPicPresenterImpl;
+import com.cylan.jiafeigou.presenter.compl.ShowPicPresenterImpl;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.view.ShowBigPicView;
 import com.cylan.photoview.PhotoView;

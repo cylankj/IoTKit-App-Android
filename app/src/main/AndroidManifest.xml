@@ -78,7 +78,7 @@
             android:value="play" />
 
         <activity
-            android:name=".activity.SplashActivity"
+            android:name=".view.activity.SplashActivity"
             android:configChanges="locale|orientation|keyboardHidden"
             android:screenOrientation="portrait"
             android:theme="@style/activity.welcome.theme"
