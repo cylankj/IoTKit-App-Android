@@ -35,9 +35,10 @@ dependencies {
     compile project(':WebRtcAndroid')
     compile files('src/main/jniLibs/mta-sdk-1.6.2.jar')
     compile files('src/main/jniLibs/bugly_crash_release__2.1.jar')
-    compile 'com.jakewharton:butterknife:8.0.1'
     apt 'com.jakewharton:butterknife-compiler:8.0.1'
     testCompile rootProject.ext.robolectric
+    compile 'com.jakewharton:butterknife:8.0.1'
+    compile 'com.android.support:support-v4:23.3.0'
 }
 
 

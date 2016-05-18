@@ -17,6 +17,8 @@
     这样直观,一看就知道什么控件.
     驼峰式.
 
+*   变量初始值 String类型最好赋值`""`
+    
 *   Activity,Fragment类命名
     xxxActivity
     xxxFragment
