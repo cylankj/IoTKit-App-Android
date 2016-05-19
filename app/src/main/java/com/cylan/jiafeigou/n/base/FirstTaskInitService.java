@@ -26,6 +26,7 @@ public class FirstTaskInitService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
+
     }
 
 }

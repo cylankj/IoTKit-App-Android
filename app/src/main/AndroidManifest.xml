@@ -466,7 +466,16 @@
 
         <service
             android:name=".n.base.FirstTaskInitService"
-            android:exported="false"></service>
+            android:exported="false" />
+        <service
+            android:name=".n.engine.DataSourceService"
+            android:enabled="true"
+            android:exported="true" />
+        <service
+            android:name=".n.surpport.DaemonService"
+            android:enabled="true"
+            android:exported="true" />
+        <service android:name=".n.surpport.DaemonService$InnerAssistService" />
     </application>
 
 </manifest>

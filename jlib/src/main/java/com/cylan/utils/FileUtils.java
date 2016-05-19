@@ -731,6 +731,7 @@ public class FileUtils {
 
     }
 
+
     public static boolean deleteAbsoluteFile(String path) {
         if (TextUtils.isEmpty(path))
             return true;
