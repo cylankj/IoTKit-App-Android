@@ -806,7 +806,7 @@ public class Utils {
         ZipLog zipLog = new ZipLog.Builder()
                 .setZipName("mLogPakage.zip")
                 .setZipPath(PathGetter.getRootPath())
-                .addLogtextPath(PathGetter.getWslogPath()) //DWSLog
+                .addLogtextPath(PathGetter.getWSLogPath()) //DWSLog
                 .addLogtextPath(PathGetter.getSmartCallPath()) //SmartCall
                 .addLogtextPath(PathGetter.getBreakPadPath()) //breakpad
                 .addLogtextPath(PathGetter.getCrashPath()) //crash

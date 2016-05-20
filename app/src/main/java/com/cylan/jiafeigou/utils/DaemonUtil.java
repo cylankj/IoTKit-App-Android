@@ -37,7 +37,7 @@ public class DaemonUtil {
             new File(daemonPath).setExecutable(true);
             String packName = getAppPackageName(mContext);
             String processName = getCurProcessName(mContext) + ":push";
-            String logPath = PathGetter.getWslogPath();
+            String logPath = PathGetter.getWSLogPath();
             Process process = new ProcessBuilder()
                     .command(daemonPath, packName, processName, serviceName, isEnableLog ? "1" : "0", logPath).start();
         } catch (Exception e) {

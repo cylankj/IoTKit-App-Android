@@ -3,8 +3,8 @@ package com.cylan.jiafeigou.utils;
 import android.content.Context;
 import android.os.Environment;
 
-import com.cylan.publicApi.Constants;
 import com.cylan.jiafeigou.engine.ClientConstants;
+import com.cylan.publicApi.Constants;
 
 import java.io.File;
 
@@ -12,12 +12,12 @@ public class PathGetter {
 
 
     public static String getRootDirName() {
-        return "/" + Constants.ROOT_DIR + "/";
+        return File.separator + Constants.ROOT_DIR + File.separator;
     }
 
     public static String mkdirs(String dir) {
         File f = android.os.Environment.getExternalStorageDirectory();
-        String path = f.getAbsolutePath() + getRootDirName() + dir + "/";
+        String path = f.getAbsolutePath() + getRootDirName() + dir + File.separator;
         File cache = new File(path);
         if (!cache.exists()) {
             cache.mkdirs();
@@ -26,12 +26,12 @@ public class PathGetter {
     }
 
     public static String getDataPath(Context ctx) {
-        return Environment.getDataDirectory() + "/data/" + ctx.getPackageName();
+        return Environment.getDataDirectory() + File.separator + "data" + File.separator + ctx.getPackageName();
     }
 
 
     public static String mkDataDirs(Context ctx, String dir) {
-        String path = getDataPath(ctx) + "/" + dir + "/";
+        String path = getDataPath(ctx) + File.separator + dir + File.separator;
         File cache = new File(path);
         if (!cache.exists()) {
             cache.mkdirs();
@@ -44,15 +44,16 @@ public class PathGetter {
     }
 
     public static String getScreenShotPath() {
-        return mkdirs("ScreenShot");
+        return mkdirs("screenshot");
     }
 
+    @Deprecated
     public static String getBreakPadPath() {
-        return mkdirs("breakpad");
+        return mkdirs("break_pad");
     }
 
-    public static String getWslogPath() {
-        return mkdirs("wslog");
+    public static String getWSLogPath() {
+        return mkdirs("log");
     }
 
     public static String getCrashPath() {
@@ -60,7 +61,7 @@ public class PathGetter {
     }
 
     public static String getImgPath() {
-        return mkdirs("IMG");
+        return mkdirs("img");
     }
 
 
@@ -71,7 +72,7 @@ public class PathGetter {
 
     public static String getRootPath() {
         File f = android.os.Environment.getExternalStorageDirectory();
-        String path = f.getAbsolutePath() + getRootDirName() +"/";
+        String path = f.getAbsolutePath() + getRootDirName() + File.separator;
         File cache = new File(path);
         if (!cache.exists()) {
             cache.mkdirs();
@@ -96,7 +97,7 @@ public class PathGetter {
     }
 
     public static String getUpgradePath() {
-        return mkdirs("Upgrade");
+        return mkdirs("upgrade");
     }
 
     public static String getBgTitleBarPath(Context ctx) {
@@ -105,7 +106,7 @@ public class PathGetter {
 
 
     public static String getRecordAudioDirPath(Context ctx, String cid) {
-        String path = mkdirs("RecordAudio") + PreferenceUtil.getBindingPhone(ctx) + "/" + cid + "/";
+        String path = mkdirs("RecordAudio") + PreferenceUtil.getBindingPhone(ctx) + File.separator + cid + File.separator;
         Utils.isPathValid(path);
         return path;
     }
@@ -115,7 +116,6 @@ public class PathGetter {
     public static String getRecordAudioPath(Context ctx, String cid, String name) {
         return getRecordAudioDirPath(ctx, cid) + name;//FILE_SUFFIX
     }
-
 
 
 }
