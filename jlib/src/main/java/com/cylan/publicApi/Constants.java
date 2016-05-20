@@ -160,7 +160,6 @@ public class Constants {
      * 程序文件存放目录
      */
     public static final String ROOT_DIR = "Smarthome";
-    public static final String WS_LOG_FOLDER = "WSLog";
     public static final String BLOCK_FOLDER = "block";
 
     /**

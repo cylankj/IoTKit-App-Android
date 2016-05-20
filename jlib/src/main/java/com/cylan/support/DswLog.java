@@ -7,6 +7,8 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.util.Printer;
 
+import com.cylan.publicApi.Constants;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -29,7 +31,7 @@ public class DswLog {
     /**
      * 是否输出到控制台
      */
-    public static boolean debug = false;
+    public static boolean debug = com.cylan.BuildConfig.DEBUG;
     /**
      * 是否由本类输出到文件
      */
@@ -157,7 +159,7 @@ public class DswLog {
 
     /**
      * 添加Log打印时的TAG，设定的TAG不起效果，统一使用当前Log所在的类名、方法名，行数组成
-     * <p/>
+     * <p>
      * 2015/03/17 tim
      */
     private static String generateTag(StackTraceElement caller) {
@@ -221,6 +223,10 @@ public class DswLog {
     }
 
     private static void writeLog2File(final String tag, final String msg) {
+        if (!TextUtils.equals(Environment.getExternalStorageState(), Environment.MEDIA_MOUNTED)) {
+            Log.d("hunt", "hunt...unmounted");
+            return;
+        }
         if (isWrite) {
             mHandler.post(new Runnable() {
 
@@ -280,27 +286,31 @@ public class DswLog {
         @Override
         public void run() {
             try {
-                String[] files = new File(folder).list(new FilenameFilter() {
+                final String fileNameTag = "DWSLog.txt";
+                final String logDir = Environment.getExternalStorageDirectory().getAbsolutePath()
+                        + File.separator + Constants.ROOT_DIR + File.separator + "WSLog" + File.separator;
+                //files will be null if permission.WriteExternalStorage is not grant
+                String[] files = new File(logDir).list(new FilenameFilter() {
                     @Override
                     public boolean accept(File dir, String filename) {
-                        if (TextUtils.isEmpty(filename))
-                            return false;
-                        return filename.contains(TAG);
+                        return filename.contains(fileNameTag);
                     }
                 });
-                if (files.length <= maxDays)
+                if (files == null)
                     return;
                 List<String> list = Arrays.asList(files);
                 Collections.sort(list);
                 Collections.reverse(list);
                 final int count = list.size();
                 for (int i = count - 1; i >= maxDays - 1; i--) {
-                    File toRmFile = new File(folder + File.separator + list.get(i));
-                    if (toRmFile.isFile())
-                        toRmFile.delete();
+                    String filePath = logDir + list.get(i);
+                    File file = new File(filePath);
+                    if (file.isFile())
+                        file.delete();
                 }
+                Log.d("CleanLog", ": " + list);
             } catch (Exception e) {
-                DswLog.ex("" + e);
+                DswLog.ex("clean up: " + e);
             }
         }
     }
