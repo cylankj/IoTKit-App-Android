@@ -319,7 +319,7 @@ public class FileUtils {
 
     /**
      * get file name from path, not include suffix
-     * <p>
+     * <p/>
      * <pre>
      *      getFileNameWithoutExtension(null)               =   null
      *      getFileNameWithoutExtension("")                 =   ""
@@ -357,7 +357,7 @@ public class FileUtils {
 
     /**
      * get file name from path, include suffix
-     * <p>
+     * <p/>
      * <pre>
      *      getFileName(null)               =   null
      *      getFileName("")                 =   ""
@@ -387,7 +387,7 @@ public class FileUtils {
 
     /**
      * get folder name from path
-     * <p>
+     * <p/>
      * <pre>
      *      getFolderName(null)               =   null
      *      getFolderName("")                 =   ""
@@ -419,7 +419,7 @@ public class FileUtils {
 
     /**
      * get suffix of file from path
-     * <p>
+     * <p/>
      * <pre>
      *      getFileExtension(null)               =   ""
      *      getFileExtension("")                 =   ""
@@ -712,7 +712,7 @@ public class FileUtils {
      * @param fileSd     :sdcard path +file name
      * @param assetsPath
      */
-    public static void copyAssets2Sdcard(final Context context, final File fileSd, final String assetsPath) {
+    public static void copyAssetsFile(final Context context, final File fileSd, final String assetsPath) {
         InputStream is = null;
         FileOutputStream fos = null;
         try {
@@ -724,6 +724,7 @@ public class FileUtils {
                 fos.write(buffer, 0, read);
             }
         } catch (IOException e) {
+            Log.d("FileUtils", "e: " + e.toString());
         } finally {
             CloseUtils.close(fos);
             CloseUtils.close(is);
