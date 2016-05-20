@@ -1,8 +1,9 @@
-package com.cylan.jiafeigou.n.surpport;
+package com.cylan.jiafeigou.n.support;
 
 import android.app.IntentService;
 import android.app.Notification;
 import android.app.Service;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
@@ -27,7 +28,7 @@ public class DaemonService extends Service {
 
     /**
      * Creates an IntentService.  Invoked by your subclass's constructor.
-     * <p>
+     * <p/>
      * name Used to name the worker thread, important only for debugging.
      */
     public DaemonService() {
@@ -49,8 +50,12 @@ public class DaemonService extends Service {
             final String packageName = getPackageName();
             final String processName = ProcessUtils.myProcessName(this) + ":push";
             final String logPath = PathGetter.getWslogPath();
-            new ProcessBuilder()
-                    .command(daemonPath, packageName, processName, daemonServiceName, BuildConfig.DEBUG ? "1" : "0", logPath).start();
+            new ProcessBuilder().command(daemonPath,
+                    packageName,
+                    processName,
+                    daemonServiceName,
+                    BuildConfig.DEBUG ? "1" : "0", logPath)
+                    .start();
             Log.d(TAG, "daemonPath: " + daemonPath);
             Log.d(TAG, "packageName: " + packageName);
             Log.d(TAG, "processName: " + processName);
@@ -115,6 +120,13 @@ public class DaemonService extends Service {
         @Override
         protected void onHandleIntent(Intent intent) {
             startForeground(SERVICE_ID, sendEmptyNotification(this));
+        }
+    }
+
+    public static class BootCompletedReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
         }
     }
 
