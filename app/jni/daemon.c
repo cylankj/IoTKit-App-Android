@@ -16,7 +16,7 @@
 #define BUFFER_LENGTH 1024
 #define FLAG_FILE "daemon.lock"
 #define ROOT_PATH "/data/data/"
-#define SLEEP_INTERVEL 5  // every x seconds to check if process is running
+#define SLEEP_INTERVEL 10  // every x seconds to check if process is running
 #define VERSION "v100"
 
 int isProcessExist(char* processName);
@@ -124,7 +124,7 @@ int main(int argc, char** argv) {
       runProcess(packageName, serviceName);
     }
 
-    log2file("sleep for %d seconds...\n************************\n", SLEEP_INTERVEL);
+    log2file("sleep hunt for %d seconds...\n************************\n", SLEEP_INTERVEL);
     sleep(SLEEP_INTERVEL);
   }
 
