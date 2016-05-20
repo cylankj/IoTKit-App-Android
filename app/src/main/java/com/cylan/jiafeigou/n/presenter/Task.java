@@ -5,7 +5,9 @@ package com.cylan.jiafeigou.n.presenter;
  */
 public interface Task<T> {
 
-    void taskStart();
+    T taskStart();
 
-    void taskFinish(T task);
+    void taskFinish(T result);
+
+    void taskFailed(Throwable throwable);
 }
