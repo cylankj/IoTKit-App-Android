@@ -6,6 +6,7 @@ import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Build;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
@@ -27,8 +28,8 @@ public class DaemonService extends Service {
     public static final String KEY_DAEMON_NAME = "daemonName";
 
     /**
-     * Creates an IntentService.  Invoked by your subclass's constructor.
-     * <p/>
+     * Creates an Service.  Invoked by your subclass's constructor.
+     * <p>
      * name Used to name the worker thread, important only for debugging.
      */
     public DaemonService() {
@@ -37,19 +38,55 @@ public class DaemonService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
+        onHandleIntent();
+        registerBootComplete();
+    }
+
+    @Nullable
+    @Override
+    public IBinder onBind(Intent intent) {
+        return null;
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        if (!isServiceRunning()) {
+            startService(new Intent(this, DataSourceService.class));
+            try2startForeground();
+            DswLog.i("re start data service");
+        }
+        return START_STICKY;
+    }
+
+    private boolean isServiceRunning() {
+        return ProcessUtils.isServiceRunning(this, DataSourceService.class);
+    }
+
+    /**
+     * 注册启动监听广播
+     */
+    private void registerBootComplete() {
+        try {
+            BootCompletedReceiver receiver = new BootCompletedReceiver();
+            IntentFilter intentFilter = new IntentFilter(Intent.ACTION_BOOT_COMPLETED);
+            registerReceiver(receiver, intentFilter);
+            Log.d(TAG, "bootComplete");
+        } catch (Exception e) {
+            Log.d(TAG, "bootComplete: e: " + e.toString());
+        }
     }
 
     protected void onHandleIntent() {
         try {
             final String daemonServiceName = this.getClass().getName();
             final String filename = "daemon_c";
-            final String daemonPath = getFilesDir() + filename;
+            final String daemonPath = getFilesDir() + File.separator + filename;
             final File destFile = new File(daemonPath);
-            FileUtils.copyAssets2Sdcard(this, destFile, "daemon_c");
+            FileUtils.copyAssetsFile(this, destFile, "daemon_c");
             new File(daemonPath).setExecutable(true);
             final String packageName = getPackageName();
             final String processName = ProcessUtils.myProcessName(this) + ":push";
-            final String logPath = PathGetter.getWslogPath();
+            final String logPath = PathGetter.getWSLogPath();
             new ProcessBuilder().command(daemonPath,
                     packageName,
                     processName,
@@ -62,21 +99,8 @@ public class DaemonService extends Service {
             Log.d(TAG, "logPath: " + logPath);
         } catch (Exception e) {
             DswLog.ex(e.toString());
+            Log.d(TAG, "err: " + e.toString());
         }
-    }
-
-    @Nullable
-    @Override
-    public IBinder onBind(Intent intent) {
-        return null;
-    }
-
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-        startService(new Intent(this, DataSourceService.class));
-        try2startForeground();
-        onHandleIntent();
-        return super.onStartCommand(intent, flags, startId);
     }
 
     /**
@@ -126,7 +150,7 @@ public class DaemonService extends Service {
     public static class BootCompletedReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
-
+            context.startService(new Intent(context, DaemonService.class));
         }
     }
 
