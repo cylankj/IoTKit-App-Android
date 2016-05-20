@@ -9,7 +9,6 @@ import com.cylan.jiafeigou.MyTestRunner;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import static junit.framework.Assert.assertEquals;
@@ -36,7 +35,7 @@ public class ThreadPoolUtilsTest {
         System.out.println("tearDown");
     }
 
-    @Test
+//    @Test
     public void testRun() throws InterruptedException {
         final int count = 20000;
         HandlerThread mHandlerThread = new HandlerThread("worker-handler-thread");
@@ -57,7 +56,7 @@ public class ThreadPoolUtilsTest {
     private volatile boolean mDidSetup = false;
     private volatile int mLooperTid = -1;
 
-    @Test
+//    @Test
     public void testHandlerThread() throws Exception {
         HandlerThread th1 = new HandlerThread("HandlerThreadTest") {
             protected void onLooperPrepared() {
