@@ -87,7 +87,7 @@ public class TestPresenter extends AbstractPresenter {
                     }
                 });
 
-        wifiSubscription = reactiveNetwork.observeWifiAccessPoints(context)
+        wifiSubscription = reactiveNetwork.observeWifiAccessPoints(context, true)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<List<ScanResult>>() {

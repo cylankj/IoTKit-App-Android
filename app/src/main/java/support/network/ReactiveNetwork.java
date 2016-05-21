@@ -165,10 +165,11 @@ public class ReactiveNetwork {
      * Returns fresh list of Access Points
      * whenever WiFi signal strength changes.
      *
-     * @param context Context of the activity or an application
+     * @param context   Context of the activity or an application
+     * @param nullAgain if result is null, try to {@link WifiManager#startScan()} //added by hunt
      * @return RxJava Observable with list of WiFi scan results
      */
-    public Observable<List<ScanResult>> observeWifiAccessPoints(final Context context) {
+    public Observable<List<ScanResult>> observeWifiAccessPoints(final Context context, final boolean nullAgain) {
         final WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
         wifiManager.startScan(); // without starting scan, we may never receive any scan results
 
@@ -182,7 +183,9 @@ public class ReactiveNetwork {
                 final BroadcastReceiver receiver = new BroadcastReceiver() {
                     @Override
                     public void onReceive(Context context, Intent intent) {
-                        wifiManager.startScan(); // we need to start scan again to get fresh results ASAP
+                        if (wifiManager.getScanResults() == null && nullAgain)
+                            // we need to start scan again to get fresh results ASAP
+                            wifiManager.startScan();
                         subscriber.onNext(wifiManager.getScanResults());
                     }
                 };
