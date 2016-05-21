@@ -7,12 +7,14 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.n.presenter.TestPresenter;
+import com.cylan.jiafeigou.n.view.BaseView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import in.srain.cube.views.ptr.PtrClassicFrameLayout;
 
-public class HomeMineFragment extends Fragment {
+public class HomeMineFragment extends Fragment implements BaseView {
 
     @BindView(R.id.fLayout_main_content_holder)
     PtrClassicFrameLayout fLayoutMainContentHolder;
@@ -26,6 +28,7 @@ public class HomeMineFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         Bundle bundle;
         if (getArguments() != null) {
             bundle = getArguments();
@@ -42,7 +45,19 @@ public class HomeMineFragment extends Fragment {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        TestPresenter testPresenter = new TestPresenter(this);
+        testPresenter.start();
+    }
+
+    @Override
     public void onDetach() {
         super.onDetach();
+    }
+
+    @Override
+    public void initView() {
+
     }
 }

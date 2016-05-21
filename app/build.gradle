@@ -30,15 +30,16 @@ apply plugin: 'com.neenbedankt.android-apt'
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile rootProject.ext.junit
+    testCompile rootProject.ext.robolectric
     compile rootProject.ext.appcompat
+    compile rootProject.ext.butterknife
+    compile rootProject.ext.rxAndroid
+    apt rootProject.ext.apt
+    compile rootProject.ext.appSupport
     compile project(':jlib')
     compile project(':WebRtcAndroid')
     compile files('src/main/jniLibs/mta-sdk-1.6.2.jar')
     compile files('src/main/jniLibs/bugly_crash_release__2.1.jar')
-    apt 'com.jakewharton:butterknife-compiler:8.0.1'
-    testCompile rootProject.ext.robolectric
-    compile 'com.jakewharton:butterknife:8.0.1'
-    compile 'com.android.support:support-v4:23.3.0'
 }
 
 
