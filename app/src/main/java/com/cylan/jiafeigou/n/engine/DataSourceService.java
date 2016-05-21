@@ -9,8 +9,14 @@ import com.cylan.jiafeigou.utils.PathGetter;
 import com.cylan.publicApi.CallMessageCallBack;
 import com.cylan.publicApi.JniPlay;
 
+import support.stat.MtaManager;
+
 public class DataSourceService extends Service implements CallMessageCallBack {
     static final String TAG = "DataSourceService";
+
+    static {
+        System.loadLibrary("media-engine-jni");
+    }
 
     @Override
     public void onCreate() {
@@ -32,6 +38,7 @@ public class DataSourceService extends Service implements CallMessageCallBack {
     private void initNative() {
         final boolean init = JniPlay.NativeInit(this, false, PathGetter.getSmartCallPath());
         Log.d(TAG, "let's go initNative:" + init);
+        MtaManager.customEvent(this, "DataSourceService", "NativeInit");
     }
 
     @Override

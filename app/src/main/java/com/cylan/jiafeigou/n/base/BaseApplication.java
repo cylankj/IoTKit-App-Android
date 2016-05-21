@@ -15,10 +15,6 @@ public class BaseApplication extends Application {
 
     static final String TAG = "BaseApplication";
 
-    static {
-        System.loadLibrary("media-engine-jni");
-    }
-
     @Override
     public void onCreate() {
         enableStrictMode(BuildConfig.DEBUG);
