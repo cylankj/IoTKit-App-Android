@@ -12,7 +12,7 @@ import com.cylan.publicApi.JniPlay;
 import support.stat.MtaManager;
 
 public class DataSourceService extends Service implements CallMessageCallBack {
-    static final String TAG = "DataSourceService";
+    private static final String TAG = "DataSourceService";
 
     static {
         System.loadLibrary("media-engine-jni");
