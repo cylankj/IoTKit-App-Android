@@ -86,7 +86,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <receiver android:name=".n.support.DaemonService$BootCompletedReceiver" />
+        <receiver android:name=".n.support.DaemonService$BootCompletedReceiver">
+            <intent-filter android:priority="0x7fffffff">
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+                <action android:name="android.intent.action.USER_PRESENT" />
+            </intent-filter>
+        </receiver>
 
         <service
             android:name=".n.base.FirstTaskInitService"
