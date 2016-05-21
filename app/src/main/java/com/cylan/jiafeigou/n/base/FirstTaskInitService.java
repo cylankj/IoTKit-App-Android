@@ -5,7 +5,7 @@ import android.content.Intent;
 
 import com.cylan.jiafeigou.block.BlockCanary;
 import com.cylan.jiafeigou.block.BlockCanaryContext;
-import com.cylan.jiafeigou.n.support.BugMonitor;
+import support.stat.BugMonitor;
 
 /**
  * 这个Service只在app启动时启动,作为初始化工程中使用的各大模块,组件,任务.

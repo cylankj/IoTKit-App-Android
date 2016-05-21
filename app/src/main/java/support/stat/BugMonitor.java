@@ -1,4 +1,4 @@
-package com.cylan.jiafeigou.n.support;
+package support.stat;
 
 import android.content.Context;
 
@@ -18,5 +18,6 @@ public class BugMonitor {
         CrashReport.UserStrategy strategy = new CrashReport.UserStrategy(context);
         strategy.setAppChannel(BuildConfig.DEBUG ? "DEBUG" : "OFFICIAL_RELEASE");
         CrashReport.initCrashReport(context, "900026046", false, strategy);
+        com.tencent.bugly.Bugly.enable = BuildConfig.DEBUG;
     }
 }
