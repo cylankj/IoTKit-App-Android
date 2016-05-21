@@ -1,4 +1,4 @@
-package com.cylan.jiafeigou.n.view;
+package com.cylan.jiafeigou.n.view.splash;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;

@@ -26,6 +26,7 @@ dependencies {
     testCompile rootProject.ext.junit
     compile rootProject.ext.rxjava
     compile rootProject.ext.ultra_ptr
+    compile rootProject.ext.appSupport
 
     compile files('src/main/jniLibs/afinal.jar')
     compile files('src/main/jniLibs/gson-2.2.4.jar')

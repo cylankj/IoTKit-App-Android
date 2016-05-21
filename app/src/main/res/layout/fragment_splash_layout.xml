@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/transparent"
+    android:orientation="vertical">
+
+    <SurfaceView
+        android:id="@+id/capture_preview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <RelativeLayout
+        android:id="@+id/capture_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/capture_mask_top"
+            android:layout_width="match_parent"
+            android:layout_height="115dp"
+            android:layout_alignParentTop="true"
+            android:background="@drawable/shadow" />
+
+        <RelativeLayout
+            android:id="@+id/capture_crop_view"
+            android:layout_width="263dp"
+            android:layout_height="263dp"
+            android:layout_below="@id/capture_mask_top"
+            android:layout_centerHorizontal="true"
+            android:background="@drawable/scan_cid_frame">
+
+            <ImageView
+                android:id="@+id/capture_scan_line"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_marginBottom="5dp"
+                android:layout_marginTop="5dp"
+                android:src="@drawable/scan_cid_line" />
+
+            <LinearLayout
+                android:id="@+id/add_efamily_loading_ll"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:visibility="gone"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/add_efamily_loading"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:src="@drawable/capture_loading"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
+                    android:text="@string/LOADING"
+                    android:textColor="@color/white"
+                    android:textSize="14sp"/>
+            </LinearLayout>
+        </RelativeLayout>
+
+        <ImageView
+            android:id="@+id/capture_mask_bottom"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_below="@id/capture_crop_view"
+            android:background="@drawable/shadow" />
+
+        <ImageView
+            android:id="@+id/capture_mask_left"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_above="@id/capture_mask_bottom"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@id/capture_mask_top"
+            android:layout_toLeftOf="@id/capture_crop_view"
+            android:background="@drawable/shadow" />
+
+        <ImageView
+            android:id="@+id/capture_mask_right"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_above="@id/capture_mask_bottom"
+            android:layout_alignParentRight="true"
+            android:layout_below="@id/capture_mask_top"
+            android:layout_toRightOf="@id/capture_crop_view"
+            android:background="@drawable/shadow" />
+
+        <TextView
+            android:id="@+id/info"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/EFAMILY_QRCODE_BOTTOM_TEXT"
+            android:gravity="center_horizontal"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            android:layout_marginTop="25dp"
+            android:layout_below="@id/capture_crop_view" />
+    </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/imgvBack"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="15dp"
+        android:src="@drawable/btn_return_selector" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="15dp"
+        android:singleLine="true"
+        android:text="@string/DEVICES_TITLE"
+        android:textColor="@color/status_text"
+        android:textSize="@dimen/title_textsize" />
+
+
+</RelativeLayout>
