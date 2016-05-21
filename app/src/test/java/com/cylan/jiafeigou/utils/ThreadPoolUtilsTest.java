@@ -5,11 +5,8 @@ import android.os.HandlerThread;
 import android.os.Message;
 import android.os.Process;
 
-import com.cylan.jiafeigou.MyTestRunner;
-
 import org.junit.After;
 import org.junit.Before;
-import org.junit.runner.RunWith;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
@@ -21,7 +18,7 @@ import static org.junit.Assert.assertNotNull;
 /**
  * Created by hunt on 16-5-6.
  */
-@RunWith(MyTestRunner.class)
+//@RunWith(MyTestRunner.class)
 public class ThreadPoolUtilsTest {
     @Before
     public void setup() throws Exception {

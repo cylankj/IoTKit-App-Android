@@ -35,6 +35,7 @@ import rx.Observable;
 import rx.Scheduler;
 import rx.Subscriber;
 import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
@@ -46,7 +47,7 @@ import rx.subscriptions.Subscriptions;
  * with RxJava Observables. It can be easily used with RxAndroid.
  */
 public class ReactiveNetwork {
-    private static final String DEFAULT_PING_HOST = "www.google.com";
+    private static final String DEFAULT_PING_HOST = "www.bing.com";
     private static final int DEFAULT_PING_PORT = 80;
     private static final int DEFAULT_PING_INTERVAL_IN_MS = 2000;
     private static final int DEFAULT_PING_TIMEOUT_IN_MS = 2000;
@@ -82,7 +83,7 @@ public class ReactiveNetwork {
 
                 context.registerReceiver(receiver, filter);
 
-                subscriber.add(unsubscribeInUiThread(new Action0() {
+                subscriber.add(unSubscribeInUiThread(new Action0() {
                     @Override
                     public void call() {
                         context.unregisterReceiver(receiver);
@@ -188,7 +189,7 @@ public class ReactiveNetwork {
 
                 context.registerReceiver(receiver, filter);
 
-                subscriber.add(unsubscribeInUiThread(new Action0() {
+                subscriber.add(unSubscribeInUiThread(new Action0() {
                     @Override
                     public void call() {
                         context.unregisterReceiver(receiver);
@@ -242,7 +243,7 @@ public class ReactiveNetwork {
 
                 context.registerReceiver(receiver, filter);
 
-                subscriber.add(unsubscribeInUiThread(new Action0() {
+                subscriber.add(unSubscribeInUiThread(new Action0() {
                     @Override
                     public void call() {
                         context.unregisterReceiver(receiver);
@@ -252,7 +253,7 @@ public class ReactiveNetwork {
         }).defaultIfEmpty(0);
     }
 
-    private Subscription unsubscribeInUiThread(final Action0 unsubscribe) {
+    private Subscription unSubscribeInUiThread(final Action0 unsubscribe) {
         return Subscriptions.create(new Action0() {
 
             @Override

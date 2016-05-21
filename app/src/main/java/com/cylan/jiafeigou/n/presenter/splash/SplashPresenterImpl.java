@@ -18,5 +18,10 @@ class SplashPresenterImpl implements SplashPresenter {
     public void start() {
 
     }
+
+    @Override
+    public void stop() {
+
+    }
 }
 

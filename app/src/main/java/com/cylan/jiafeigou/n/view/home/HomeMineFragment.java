@@ -16,8 +16,10 @@ import in.srain.cube.views.ptr.PtrClassicFrameLayout;
 
 public class HomeMineFragment extends Fragment implements BaseView {
 
+    private static final String TAG = "HomeMineFragment";
     @BindView(R.id.fLayout_main_content_holder)
     PtrClassicFrameLayout fLayoutMainContentHolder;
+    TestPresenter testPresenter;
 
     public static HomeMineFragment newInstance(Bundle bundle) {
         HomeMineFragment fragment = new HomeMineFragment();
@@ -33,6 +35,7 @@ public class HomeMineFragment extends Fragment implements BaseView {
         if (getArguments() != null) {
             bundle = getArguments();
         }
+        testPresenter = new TestPresenter(this);
     }
 
     @Override
@@ -47,8 +50,15 @@ public class HomeMineFragment extends Fragment implements BaseView {
     @Override
     public void onResume() {
         super.onResume();
-        TestPresenter testPresenter = new TestPresenter(this);
+
         testPresenter.start();
+
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        testPresenter.stop();
     }
 
     @Override

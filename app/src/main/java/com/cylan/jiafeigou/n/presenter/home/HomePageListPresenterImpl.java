@@ -21,4 +21,9 @@ public class HomePageListPresenterImpl implements HomePageListPresenter {
     public void start() {
 
     }
+
+    @Override
+    public void stop() {
+
+    }
 }

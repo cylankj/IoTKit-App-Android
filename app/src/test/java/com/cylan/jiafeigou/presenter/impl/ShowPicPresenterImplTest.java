@@ -2,19 +2,17 @@ package com.cylan.jiafeigou.presenter.impl;
 
 import android.content.Context;
 
-import com.cylan.jiafeigou.MyTestRunner;
 import com.cylan.jiafeigou.view.ShowBigPicView;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.runner.RunWith;
 
 import static junit.framework.Assert.assertEquals;
 
 /**
  * Created by hunt on 16-5-5.
  */
-@RunWith(MyTestRunner.class)
+//@RunWith(MyTestRunner.class)
 public class ShowPicPresenterImplTest {
 
 
