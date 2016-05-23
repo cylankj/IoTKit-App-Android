@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.n.mvp.contract.splash.SplashContract;
 import com.cylan.viewindicator.CirclePageIndicator;
 
 import java.util.List;
@@ -21,7 +22,7 @@ import butterknife.ButterKnife;
 /**
  * Created by hunt on 16-5-14.
  */
-public class SplashFragment extends Fragment implements SplashView {
+public class SplashFragment extends Fragment implements SplashContract.View {
 
     @BindView(R.id.vp_splash_content)
     ViewPager vpSplashContent;

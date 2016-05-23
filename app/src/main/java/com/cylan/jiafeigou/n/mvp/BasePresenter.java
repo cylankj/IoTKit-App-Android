@@ -1,4 +1,4 @@
-package com.cylan.jiafeigou.n.presenter;
+package com.cylan.jiafeigou.n.mvp;
 
 /**
  * Created by hunt on 16-5-14.

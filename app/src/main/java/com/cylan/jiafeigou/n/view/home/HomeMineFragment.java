@@ -7,8 +7,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.n.presenter.TestPresenter;
-import com.cylan.jiafeigou.n.view.BaseView;
+import com.cylan.jiafeigou.n.engine.task.TestPresenter;
+import com.cylan.jiafeigou.n.mvp.BaseView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

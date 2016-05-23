@@ -1,4 +1,4 @@
-package com.cylan.jiafeigou.n.view;
+package com.cylan.jiafeigou.n.mvp;
 
 import android.content.Context;
 

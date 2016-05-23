@@ -1,11 +1,11 @@
-package com.cylan.jiafeigou.n.presenter;
+package com.cylan.jiafeigou.n.engine.task;
 
 import android.content.Context;
 import android.net.wifi.ScanResult;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.cylan.jiafeigou.n.view.BaseView;
+import com.cylan.jiafeigou.n.mvp.BaseView;
 
 import java.util.List;
 

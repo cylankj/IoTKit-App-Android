@@ -10,19 +10,17 @@ import android.widget.Button;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.base.NewBaseActivity;
-import com.cylan.jiafeigou.n.presenter.home.HomePageListPresenter;
-import com.cylan.jiafeigou.n.presenter.home.HomePageListPresenterImpl;
+import com.cylan.jiafeigou.n.mvp.contract.home.NewHomeActivityContract;
 import com.cylan.jiafeigou.n.view.home.HomeDiscoveryFragment;
 import com.cylan.jiafeigou.n.view.home.HomeMineFragment;
 import com.cylan.jiafeigou.n.view.home.HomePageListFragment;
-import com.cylan.jiafeigou.n.view.home.view.HomePageView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class NewHomeActivity extends NewBaseActivity implements
-        HomePageView, ViewPager.OnPageChangeListener {
+        NewHomeActivityContract.View, ViewPager.OnPageChangeListener {
 
 
     @BindView(R.id.vp_home_content)
@@ -37,14 +35,12 @@ public class NewHomeActivity extends NewBaseActivity implements
     private HomeViewAdapter viewAdapter;
     Button[] bottomBtn = new Button[3];
 
-    HomePageListPresenter homePageListPresenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_home);
         ButterKnife.bind(this);
-        homePageListPresenter = new HomePageListPresenterImpl(this);
     }
 
     @Override

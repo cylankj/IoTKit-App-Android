@@ -1,4 +1,6 @@
-package com.cylan.jiafeigou.n.presenter;
+package com.cylan.jiafeigou.n.engine.task;
+
+import com.cylan.jiafeigou.n.mvp.BasePresenter;
 
 import rx.Observable;
 import rx.Scheduler;
