@@ -10,7 +10,6 @@ import android.widget.Button;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.base.NewBaseActivity;
-import com.cylan.jiafeigou.n.mvp.contract.home.NewHomeActivityContract;
 import com.cylan.jiafeigou.n.view.home.HomeDiscoveryFragment;
 import com.cylan.jiafeigou.n.view.home.HomeMineFragment;
 import com.cylan.jiafeigou.n.view.home.HomePageListFragment;
@@ -20,9 +19,8 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class NewHomeActivity extends NewBaseActivity implements
-        NewHomeActivityContract.View, ViewPager.OnPageChangeListener {
+        ViewPager.OnPageChangeListener {
 
-    NewHomeActivityContract.Presenter presenter;
     @BindView(R.id.vp_home_content)
     ViewPager vpHomeContent;
     @BindView(R.id.btn_home_list)
@@ -41,6 +39,7 @@ public class NewHomeActivity extends NewBaseActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_home);
         ButterKnife.bind(this);
+        initBottomMenu();
     }
 
     private void initBottomMenu() {
@@ -92,10 +91,6 @@ public class NewHomeActivity extends NewBaseActivity implements
         Log.d("hunt", "state: " + state);
     }
 
-    @Override
-    public void setPresenter(NewHomeActivityContract.Presenter presenter) {
-        this.presenter = presenter;
-    }
 }
 
 /**
