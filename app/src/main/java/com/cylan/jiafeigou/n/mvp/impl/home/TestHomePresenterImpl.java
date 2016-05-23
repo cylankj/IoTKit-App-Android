@@ -14,6 +14,7 @@ public class TestHomePresenterImpl implements NewHomeActivityContract.Presenter 
 
     public TestHomePresenterImpl(NewHomeActivityContract.View view) {
         viewWeakReference = new WeakReference<>(view);
+        view.setPresenter(this);
     }
 
     @Override

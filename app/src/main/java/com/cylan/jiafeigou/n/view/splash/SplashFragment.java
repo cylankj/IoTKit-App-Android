@@ -71,7 +71,7 @@ public class SplashFragment extends Fragment implements SplashContract.View {
     }
 
     @Override
-    public void initView() {
+    public void setPresenter(SplashContract.Presenter presenter) {
 
     }
 

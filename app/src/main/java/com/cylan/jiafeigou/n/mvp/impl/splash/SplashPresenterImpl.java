@@ -14,6 +14,7 @@ class SplashPresenterImpl implements SplashContract.Presenter {
 
     public SplashPresenterImpl(SplashContract.View splashView) {
         this.splashView = new WeakReference<SplashContract.View>(splashView);
+        splashView.setPresenter(this);
     }
 
     @Override

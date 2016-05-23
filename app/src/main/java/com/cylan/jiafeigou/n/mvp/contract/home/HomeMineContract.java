@@ -1,4 +1,4 @@
-package com.cylan.jiafeigou.n.mvp.contract.splash;
+package com.cylan.jiafeigou.n.mvp.contract.home;
 
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
@@ -6,13 +6,11 @@ import com.cylan.jiafeigou.n.mvp.BaseView;
 /**
  * Created by hunt on 16-5-23.
  */
-public interface SplashContract {
-
+public interface HomeMineContract {
 
     interface View extends BaseView<Presenter> {
     }
 
-    interface Presenter extends BasePresenter {
-
+    public interface Presenter extends BasePresenter {
     }
 }

@@ -22,7 +22,7 @@ import butterknife.OnClick;
 public class NewHomeActivity extends NewBaseActivity implements
         NewHomeActivityContract.View, ViewPager.OnPageChangeListener {
 
-
+    NewHomeActivityContract.Presenter presenter;
     @BindView(R.id.vp_home_content)
     ViewPager vpHomeContent;
     @BindView(R.id.btn_home_list)
@@ -43,16 +43,12 @@ public class NewHomeActivity extends NewBaseActivity implements
         ButterKnife.bind(this);
     }
 
-    @Override
-    public void initView() {
+    private void initBottomMenu() {
         viewAdapter = new HomeViewAdapter(getSupportFragmentManager());
         vpHomeContent.setAdapter(viewAdapter);
         btnHomeList.setEnabled(false);
         vpHomeContent.addOnPageChangeListener(this);
         initBottomMenu();
-    }
-
-    private void initBottomMenu() {
         bottomBtn[0] = btnHomeList;
         bottomBtn[1] = btnHomeDiscover;
         bottomBtn[2] = btnHomeMine;
@@ -96,6 +92,10 @@ public class NewHomeActivity extends NewBaseActivity implements
         Log.d("hunt", "state: " + state);
     }
 
+    @Override
+    public void setPresenter(NewHomeActivityContract.Presenter presenter) {
+        this.presenter = presenter;
+    }
 }
 
 /**

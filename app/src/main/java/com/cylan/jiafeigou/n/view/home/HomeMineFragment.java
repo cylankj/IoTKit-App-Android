@@ -8,13 +8,13 @@ import android.view.ViewGroup;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.engine.task.TestPresenter;
-import com.cylan.jiafeigou.n.mvp.BaseView;
+import com.cylan.jiafeigou.n.mvp.contract.home.HomeMineContract;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import in.srain.cube.views.ptr.PtrClassicFrameLayout;
 
-public class HomeMineFragment extends Fragment implements BaseView {
+public class HomeMineFragment extends Fragment implements HomeMineContract.View {
 
     private static final String TAG = "HomeMineFragment";
     @BindView(R.id.fLayout_main_content_holder)
@@ -66,8 +66,9 @@ public class HomeMineFragment extends Fragment implements BaseView {
         super.onDetach();
     }
 
+
     @Override
-    public void initView() {
+    public void setPresenter(HomeMineContract.Presenter presenter) {
 
     }
 }
