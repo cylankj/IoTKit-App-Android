@@ -9,9 +9,17 @@ import com.cylan.jiafeigou.n.mvp.BaseView;
 public interface NewHomeActivityContract {
 
     interface View extends BaseView {
+        void sample();
 
+        void ok();
+
+        void onBackPress();
     }
 
     interface Presenter extends BasePresenter {
+        void loadTable();
+
+        void doSample();
+
     }
 }

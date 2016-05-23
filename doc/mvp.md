@@ -84,4 +84,24 @@
 
 
 
+```java
+//按照google官方教程,todo-mvp模板.建一个`XXXContract`类.接口,实现逻辑一目了然.
+public interface NewHomeActivityContract {
+
+    interface View extends BaseView {
+        void sample();
+
+        void ok();
+
+        void onBackPress();
+    }
+
+    interface Presenter extends BasePresenter {
+        void loadTable();
+
+        void doSample();
+
+    }
+}
+```
 
