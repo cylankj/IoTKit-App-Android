@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package support.sina;
+package com.cylan.jiafeigou.support.sina;
 
 /**
  * 该类定义了微博授权时所需要的参数。

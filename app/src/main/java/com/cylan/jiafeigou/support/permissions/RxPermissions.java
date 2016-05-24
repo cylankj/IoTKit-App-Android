@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-package support.permissions;
+package com.cylan.jiafeigou.support.permissions;
 
 import android.annotation.TargetApi;
 import android.app.Activity;

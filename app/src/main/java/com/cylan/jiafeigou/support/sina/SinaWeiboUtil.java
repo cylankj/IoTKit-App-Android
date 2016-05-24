@@ -1,4 +1,4 @@
-package support.sina;
+package com.cylan.jiafeigou.support.sina;
 
 import android.app.Activity;
 import android.content.Context;

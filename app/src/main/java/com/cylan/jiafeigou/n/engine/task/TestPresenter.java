@@ -6,6 +6,9 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.cylan.jiafeigou.n.mvp.BaseView;
+import com.cylan.jiafeigou.support.network.ConnectivityStatus;
+import com.cylan.jiafeigou.support.network.ReactiveNetwork;
+import com.cylan.jiafeigou.support.network.WifiSignalLevel;
 
 import java.util.List;
 
@@ -13,9 +16,6 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
-import support.network.ConnectivityStatus;
-import support.network.ReactiveNetwork;
-import support.network.WifiSignalLevel;
 
 /**
  * Created by hunt on 16-5-20.

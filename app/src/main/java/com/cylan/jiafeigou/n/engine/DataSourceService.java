@@ -5,11 +5,11 @@ import android.content.Intent;
 import android.os.IBinder;
 import android.util.Log;
 
+import com.cylan.jiafeigou.support.stat.MtaManager;
 import com.cylan.jiafeigou.utils.PathGetter;
 import com.cylan.publicApi.CallMessageCallBack;
 import com.cylan.publicApi.JniPlay;
 
-import support.stat.MtaManager;
 
 public class DataSourceService extends Service implements CallMessageCallBack {
     private static final String TAG = "DataSourceService";

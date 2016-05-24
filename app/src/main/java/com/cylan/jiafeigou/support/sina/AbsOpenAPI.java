@@ -1,4 +1,4 @@
-package support.sina;
+package com.cylan.jiafeigou.support.sina;
 
 /*
  * Copyright (C) 2010-2013 The SINA WEIBO Open Source Project
@@ -26,41 +26,41 @@ import com.sina.weibo.sdk.utils.LogUtil;
 
 /**
  * 微博 OpenAPI 的基类
- * 
+ *
  * @author SINA
  * @since 2013-11-05
  */
 public abstract class AbsOpenAPI {
-	private static final String TAG = AbsOpenAPI.class.getName();
+    private static final String TAG = AbsOpenAPI.class.getName();
 
-	protected static final String API_SERVER = "https://api.weibo.com/2";
-	protected static final String HTTPMETHOD_POST = "POST";
-	protected static final String HTTPMETHOD_GET = "GET";
-	protected static final String KEY_ACCESS_TOKEN = "access_token";
+    protected static final String API_SERVER = "https://api.weibo.com/2";
+    protected static final String HTTPMETHOD_POST = "POST";
+    protected static final String HTTPMETHOD_GET = "GET";
+    protected static final String KEY_ACCESS_TOKEN = "access_token";
 
-	protected Oauth2AccessToken mAccessToken;
+    protected Oauth2AccessToken mAccessToken;
 
-	public AbsOpenAPI(Oauth2AccessToken accessToken) {
-		mAccessToken = accessToken;
-	}
+    public AbsOpenAPI(Oauth2AccessToken accessToken) {
+        mAccessToken = accessToken;
+    }
 
-	protected void requestAsync(String url, WeiboParameters params, String httpMethod, RequestListener listener) {
-		if (null == mAccessToken || TextUtils.isEmpty(url) || null == params || TextUtils.isEmpty(httpMethod) || null == listener) {
-			LogUtil.e(TAG, "Argument error!");
-			return;
-		}
+    protected void requestAsync(String url, WeiboParameters params, String httpMethod, RequestListener listener) {
+        if (null == mAccessToken || TextUtils.isEmpty(url) || null == params || TextUtils.isEmpty(httpMethod) || null == listener) {
+            LogUtil.e(TAG, "Argument error!");
+            return;
+        }
 
-		params.put(KEY_ACCESS_TOKEN, mAccessToken.getToken());
-		AsyncWeiboRunner.requestAsync(url, params, httpMethod, listener);
-	}
+        params.put(KEY_ACCESS_TOKEN, mAccessToken.getToken());
+        AsyncWeiboRunner.requestAsync(url, params, httpMethod, listener);
+    }
 
-	protected String requestSync(String url, WeiboParameters params, String httpMethod) {
-		if (null == mAccessToken || TextUtils.isEmpty(url) || null == params || TextUtils.isEmpty(httpMethod)) {
-			LogUtil.e(TAG, "Argument error!");
-			return "";
-		}
+    protected String requestSync(String url, WeiboParameters params, String httpMethod) {
+        if (null == mAccessToken || TextUtils.isEmpty(url) || null == params || TextUtils.isEmpty(httpMethod)) {
+            LogUtil.e(TAG, "Argument error!");
+            return "";
+        }
 
-		params.put(KEY_ACCESS_TOKEN, mAccessToken.getToken());
-		return AsyncWeiboRunner.request(url, params, httpMethod);
-	}
+        params.put(KEY_ACCESS_TOKEN, mAccessToken.getToken());
+        return AsyncWeiboRunner.request(url, params, httpMethod);
+    }
 }

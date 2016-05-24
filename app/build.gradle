@@ -27,6 +27,8 @@ android {
 
 }
 apply plugin: 'com.neenbedankt.android-apt'
+
+
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile rootProject.ext.junit
@@ -35,8 +37,8 @@ dependencies {
     compile rootProject.ext.butterknife
     compile rootProject.ext.rxAndroid
     compile rootProject.ext.ultra_ptr
-    apt rootProject.ext.apt
     compile rootProject.ext.appSupport
+    apt rootProject.ext.apt
     compile project(':jlib')
     compile project(':WebRtcAndroid')
 }

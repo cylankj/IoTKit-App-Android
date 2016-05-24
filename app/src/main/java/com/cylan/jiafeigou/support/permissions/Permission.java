@@ -1,4 +1,4 @@
-package support.permissions;
+package com.cylan.jiafeigou.support.permissions;
 
 public class Permission {
     public final String name;

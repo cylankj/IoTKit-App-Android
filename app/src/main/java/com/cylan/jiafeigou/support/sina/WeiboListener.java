@@ -1,4 +1,4 @@
-package support.sina;
+package com.cylan.jiafeigou.support.sina;
 
 /**
  * 授权回调类

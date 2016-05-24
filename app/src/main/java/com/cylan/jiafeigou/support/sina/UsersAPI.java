@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package support.sina;
+package com.cylan.jiafeigou.support.sina;
 
 import android.util.SparseArray;
 
