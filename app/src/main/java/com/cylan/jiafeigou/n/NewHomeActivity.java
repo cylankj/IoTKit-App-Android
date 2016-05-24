@@ -47,7 +47,6 @@ public class NewHomeActivity extends NewBaseActivity implements
         vpHomeContent.setAdapter(viewAdapter);
         btnHomeList.setEnabled(false);
         vpHomeContent.addOnPageChangeListener(this);
-        initBottomMenu();
         bottomBtn[0] = btnHomeList;
         bottomBtn[1] = btnHomeDiscover;
         bottomBtn[2] = btnHomeMine;
