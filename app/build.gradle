@@ -38,6 +38,7 @@ dependencies {
     compile rootProject.ext.rxAndroid
     compile rootProject.ext.ultra_ptr
     compile rootProject.ext.appSupport
+    compile rootProject.ext.recyclerView
     apt rootProject.ext.apt
     compile project(':jlib')
     compile project(':WebRtcAndroid')

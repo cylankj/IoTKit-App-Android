@@ -10,9 +10,12 @@ import android.widget.Button;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.base.NewBaseActivity;
+import com.cylan.jiafeigou.n.mvp.contract.home.HomePageListContract;
+import com.cylan.jiafeigou.n.mvp.impl.home.HomePageListContractImpl;
 import com.cylan.jiafeigou.n.view.home.HomeDiscoveryFragment;
 import com.cylan.jiafeigou.n.view.home.HomeMineFragment;
 import com.cylan.jiafeigou.n.view.home.HomePageListFragment;
+import com.cylan.jiafeigou.widget.CustomViewPager;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -22,7 +25,7 @@ public class NewHomeActivity extends NewBaseActivity implements
         ViewPager.OnPageChangeListener {
 
     @BindView(R.id.vp_home_content)
-    ViewPager vpHomeContent;
+    CustomViewPager vpHomeContent;
     @BindView(R.id.btn_home_list)
     Button btnHomeList;
     @BindView(R.id.btn_home_discovery)
@@ -44,6 +47,7 @@ public class NewHomeActivity extends NewBaseActivity implements
 
     private void initBottomMenu() {
         viewAdapter = new HomeViewAdapter(getSupportFragmentManager());
+        vpHomeContent.setPagingEnabled(false);
         vpHomeContent.setAdapter(viewAdapter);
         btnHomeList.setEnabled(false);
         vpHomeContent.addOnPageChangeListener(this);
@@ -109,7 +113,9 @@ class HomeViewAdapter extends FragmentPagerAdapter {
     public Fragment getItem(int position) {
         switch (position) {
             case INDEX_0:
-                return HomePageListFragment.newInstance(new Bundle());
+                Fragment fragment = HomePageListFragment.newInstance(new Bundle());
+                new HomePageListContractImpl((HomePageListContract.View) fragment);
+                return fragment;
             case INDEX_1:
                 return HomeDiscoveryFragment.newInstance(new Bundle());
             case INDEX_2:
