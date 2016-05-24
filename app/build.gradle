@@ -39,6 +39,8 @@ dependencies {
     compile rootProject.ext.ultra_ptr
     compile rootProject.ext.appSupport
     apt rootProject.ext.apt
+    compile rootProject.ext.glide
+    compile rootProject.ext.glideSupport
     compile project(':jlib')
     compile project(':WebRtcAndroid')
 }
