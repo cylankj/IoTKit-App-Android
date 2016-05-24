@@ -27,15 +27,13 @@ dependencies {
     compile rootProject.ext.rxjava
     compile rootProject.ext.ultra_ptr
     compile rootProject.ext.appSupport
-
-    compile files('src/main/jniLibs/afinal.jar')
     compile files('src/main/jniLibs/gson-2.2.4.jar')
     compile files('src/main/jniLibs/msgpack-0.6.12-SNAPSHOT.jar')
     compile files('src/main/jniLibs/nineoldandroids-2.4.0.jar')
-    compile files('src/main/jniLibs/open_sdk_r4066.jar')
     compile files('src/main/jniLibs/oss-android-sdk-1.4.0.jar')
     compile files('src/main/jniLibs/SLog-2.0.jar')
     compile files('src/main/jniLibs/weibosdkcore.jar')
     compile files('src/main/jniLibs/zxing.jar')
-
+    compile files('src/main/jniLibs/bugly_crash_release__2.1.jar')
+    compile files('src/main/jniLibs/mta-android-stat-sdk-2.2.0.jar')
 }

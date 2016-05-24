@@ -6,7 +6,7 @@ import android.os.StrictMode;
 import android.util.Log;
 
 import com.cylan.BuildConfig;
-import com.cylan.jiafeigou.n.support.DaemonService;
+import com.cylan.jiafeigou.n.engine.DaemonService;
 
 /**
  * Created by hunt on 16-5-14.

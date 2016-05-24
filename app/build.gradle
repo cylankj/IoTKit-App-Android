@@ -39,8 +39,6 @@ dependencies {
     compile rootProject.ext.appSupport
     compile project(':jlib')
     compile project(':WebRtcAndroid')
-    compile files('src/main/jniLibs/mta-sdk-1.6.2.jar')
-    compile files('src/main/jniLibs/bugly_crash_release__2.1.jar')
 }
 
 

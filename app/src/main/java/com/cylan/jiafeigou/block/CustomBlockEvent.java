@@ -4,12 +4,12 @@ import android.content.Context;
 import android.os.Handler;
 
 import com.cylan.jiafeigou.BuildConfig;
+import com.cylan.jiafeigou.support.block.OnBlockEventInterceptor;
 import com.cylan.jiafeigou.utils.ToastUtil;
 
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
-import support.block.OnBlockEventInterceptor;
 
 /**
  * Created by hunt on 16-4-6.
@@ -18,7 +18,7 @@ public class CustomBlockEvent implements OnBlockEventInterceptor {
     private static final String TAG = "[DEBUG]: cost much time ";
     //需要对应的
     /**
-     * {@link support.block.log.Block#timeStart}的格式
+     * {@link com.cylan.jiafeigou.support.block.log.Block#timeStart}的格式
      */
     private static final SimpleDateFormat TIME_FORMATTER
             = new SimpleDateFormat("MM-dd HH:mm:ss.SSS", Locale.getDefault());
