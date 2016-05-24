@@ -37,6 +37,8 @@ dependencies {
     compile rootProject.ext.ultra_ptr
     apt rootProject.ext.apt
     compile rootProject.ext.appSupport
+    compile rootProject.ext.glide
+    compile rootProject.ext.glideSupport
     compile project(':jlib')
     compile project(':WebRtcAndroid')
     compile files('src/main/jniLibs/mta-sdk-1.6.2.jar')
