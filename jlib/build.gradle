@@ -36,4 +36,5 @@ dependencies {
     compile files('src/main/jniLibs/zxing.jar')
     compile files('src/main/jniLibs/bugly_crash_release__2.1.jar')
     compile files('src/main/jniLibs/mta-android-stat-sdk-2.2.0.jar')
+    compile files('src/main/jniLibs/mid-sdk-2.3.jar')
 }
