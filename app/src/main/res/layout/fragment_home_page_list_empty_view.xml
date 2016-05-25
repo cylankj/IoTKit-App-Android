@@ -1,0 +1,11 @@
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/no_video_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_centerHorizontal="true"
+    android:background="@color/white"
+    android:gravity="center_horizontal"
+    android:paddingTop="110dp"
+    android:text="@string/ADD_EQUIPMENT"
+    android:textColor="#909090"
+    android:textSize="@dimen/area_code_size" />

@@ -1,8 +1,11 @@
 package com.cylan.jiafeigou.n.view.home;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.annotation.UiThread;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,9 +13,12 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.n.model.BaseBean;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomePageListContract;
+import com.cylan.jiafeigou.n.view.adapter.HomePageListAdapter;
 import com.cylan.jiafeigou.utils.ToastUtil;
 
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
@@ -37,10 +43,12 @@ public class HomePageListFragment extends Fragment implements
     PtrClassicFrameLayout fLayoutMainContentHolder;
     @BindView(R.id.imgBtn_add_devices)
     ImageButton imgBtnAddDevices;
-
-    HomePageListContract.Presenter presenter;
     @BindView(R.id.rV_devices_list)
     RecyclerView rVDevicesList;//设备列表
+
+    HomePageListContract.Presenter presenter;
+
+    HomePageListAdapter homePageListAdapter;
     /**
      * 手动完成刷新,自动完成刷新 订阅者.
      */
@@ -68,6 +76,12 @@ public class HomePageListFragment extends Fragment implements
     }
 
     @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        homePageListAdapter = new HomePageListAdapter(getContext(), null, null);
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
@@ -81,6 +95,8 @@ public class HomePageListFragment extends Fragment implements
         super.onViewCreated(view, savedInstanceState);
         //添加Handler
         fLayoutMainContentHolder.setPtrHandler(this);
+        rVDevicesList.setLayoutManager(new LinearLayoutManager(getContext()));
+        rVDevicesList.setAdapter(homePageListAdapter);
     }
 
     @OnClick(R.id.imgBtn_add_devices)
@@ -91,6 +107,12 @@ public class HomePageListFragment extends Fragment implements
     @Override
     public void onStop() {
         super.onStop();
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        presenter.stop();
         unRegisterSubscription(refreshCompleteSubscription);
     }
 
@@ -100,15 +122,11 @@ public class HomePageListFragment extends Fragment implements
      * @param subscriptions
      */
     private void unRegisterSubscription(Subscription... subscriptions) {
-        for (Subscription subscription : subscriptions) {
-            if (subscription != null)
-                subscription.unsubscribe();
-        }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
+        if (subscriptions != null)
+            for (Subscription subscription : subscriptions) {
+                if (subscription != null)
+                    subscription.unsubscribe();
+            }
     }
 
     @Override
@@ -116,9 +134,18 @@ public class HomePageListFragment extends Fragment implements
         this.presenter = presenter;
     }
 
+    @UiThread
     @Override
-    public void onDeviceListRsp(Object object) {
-        unRegisterSubscription(refreshCompleteSubscription);
+    public void onDeviceListRsp(List<BaseBean> resultList) {
+        fLayoutMainContentHolder.refreshComplete();
+        if (resultList == null || resultList.size() == 0) {
+            homePageListAdapter.clear();
+            if (isResumed()) {
+                getActivity().findViewById(R.id.vs_empty_view).setVisibility(View.VISIBLE);
+            }
+            return;
+        }
+        homePageListAdapter.addAll(resultList);
     }
 
     @Override
@@ -141,6 +168,5 @@ public class HomePageListFragment extends Fragment implements
                     }
                 });
     }
-
 
 }

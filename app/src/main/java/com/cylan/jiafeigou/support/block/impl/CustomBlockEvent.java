@@ -1,4 +1,4 @@
-package com.cylan.jiafeigou.block;
+package com.cylan.jiafeigou.support.block.impl;
 
 import android.content.Context;
 import android.os.Handler;

@@ -38,4 +38,13 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
     </in.srain.cube.views.ptr.PtrClassicFrameLayout>
+
+    <ViewStub
+        android:id="@+id/vs_empty_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/rLayout_home_top"
+        android:layout="@layout/fragment_home_page_list_empty_view"
+        android:visibility="gone" />
+
 </RelativeLayout>

@@ -1,8 +1,22 @@
 package com.cylan.jiafeigou.n.mvp.impl.home;
 
+import android.support.annotation.Nullable;
+
+import com.cylan.jiafeigou.n.model.BaseBean;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomePageListContract;
+import com.cylan.jiafeigou.utils.RandomUtils;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import rx.Observable;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by hunt on 16-5-23.
@@ -11,6 +25,7 @@ public class HomePageListContractImpl implements HomePageListContract.Presenter 
 
     private WeakReference<HomePageListContract.View> viewWeakReference;
 
+    private Subscription onRefreshSubscription;
 
     public HomePageListContractImpl(HomePageListContract.View view) {
         viewWeakReference = new WeakReference<>(view);
@@ -24,11 +39,66 @@ public class HomePageListContractImpl implements HomePageListContract.Presenter 
 
     @Override
     public void stop() {
+        unRegisterSubscription(onRefreshSubscription);
+    }
 
+    @Nullable
+    private HomePageListContract.View getView() {
+        return viewWeakReference != null ? viewWeakReference.get() : null;
+    }
+
+    /**
+     * 反注册
+     *
+     * @param subscriptions
+     */
+    private void unRegisterSubscription(Subscription... subscriptions) {
+        if (subscriptions != null)
+            for (Subscription subscription : subscriptions) {
+                if (subscription != null)
+                    subscription.unsubscribe();
+            }
+    }
+
+    /**
+     * 计算过程.
+     *
+     * @return
+     */
+    private List<BaseBean> requestList() {
+        int count = RandomUtils.getRandom(20);
+        List<BaseBean> list = new ArrayList<>();
+        for (int i = 0; i < count; i++) {
+            BaseBean baseBean = new BaseBean();
+            baseBean.id = i;
+            list.add(baseBean);
+        }
+        return list;
     }
 
     @Override
     public void startRefresh() {
+        final int testDelay = RandomUtils.getRandom(3);
+        onRefreshSubscription = Observable.just("")
+                .subscribeOn(Schedulers.newThread())
+                .delay(testDelay * 1000L, TimeUnit.MILLISECONDS)
+                .map(new Func1<String, List<BaseBean>>() {
+                    @Override
+                    public List<BaseBean> call(String s) {
+                        return requestList();
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<List<BaseBean>>() {
+                    @Override
+                    public void call(List<BaseBean> list) {
+                        if (getView() != null) getView().onDeviceListRsp(list);
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
 
+                    }
+                });
     }
 }

@@ -1,4 +1,4 @@
-package com.cylan.jiafeigou.block;
+package com.cylan.jiafeigou.support.block.impl;
 
 /**
  * Created by hunt on 16-4-6.

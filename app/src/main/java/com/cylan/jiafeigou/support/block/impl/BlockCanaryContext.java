@@ -1,14 +1,13 @@
-package com.cylan.jiafeigou.block;
+package com.cylan.jiafeigou.support.block.impl;
 
 import android.content.Context;
 
 import com.cylan.jiafeigou.BuildConfig;
+import com.cylan.jiafeigou.support.block.IBlockCanaryContext;
 import com.cylan.publicApi.Constants;
 import com.cylan.publicApi.NetUtils;
 
 import java.io.File;
-
-import com.cylan.jiafeigou.support.block.IBlockCanaryContext;
 
 /**
  * Created by hunt on 16-4-6.
