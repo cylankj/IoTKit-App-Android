@@ -11,8 +11,9 @@ import android.widget.Button;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.base.NewBaseActivity;
-import com.cylan.jiafeigou.n.mvp.contract.home.HomePageListContract;
 import com.cylan.jiafeigou.n.mvp.contract.home.NewHomeActivityContract;
+import com.cylan.jiafeigou.n.mvp.impl.home.HomeDiscoveryPresenterImpl;
+import com.cylan.jiafeigou.n.mvp.impl.home.HomeMinePresenterImpl;
 import com.cylan.jiafeigou.n.mvp.impl.home.HomePageListContractImpl;
 import com.cylan.jiafeigou.n.mvp.impl.home.NewHomeActivityPresenterImpl;
 import com.cylan.jiafeigou.n.view.home.HomeDiscoveryFragment;
@@ -140,14 +141,20 @@ class HomeViewAdapter extends FragmentPagerAdapter {
     @Override
     public Fragment getItem(int position) {
         switch (position) {
-            case INDEX_0:
-                Fragment fragment = HomePageListFragment.newInstance(new Bundle());
-                new HomePageListContractImpl((HomePageListContract.View) fragment);
+            case INDEX_0: {
+                HomePageListFragment fragment = HomePageListFragment.newInstance(new Bundle());
+                new HomePageListContractImpl(fragment);
                 return fragment;
-            case INDEX_1:
+            }
+            case INDEX_1: {
+                HomeDiscoveryFragment fragment = HomeDiscoveryFragment.newInstance(new Bundle());
+                new HomeDiscoveryPresenterImpl(fragment);
                 return HomeDiscoveryFragment.newInstance(new Bundle());
+            }
             case INDEX_2:
-                return HomeMineFragment.newInstance(new Bundle());
+                HomeMineFragment fragment = HomeMineFragment.newInstance(new Bundle());
+                new HomeMinePresenterImpl(fragment);
+                return fragment;
         }
         return HomePageListFragment.newInstance(new Bundle());
     }
