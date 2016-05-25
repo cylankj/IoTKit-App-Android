@@ -1,6 +1,7 @@
 package com.cylan.jiafeigou.n;
 
 import android.os.Bundle;
+import android.support.annotation.UiThread;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -11,10 +12,13 @@ import android.widget.Button;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.base.NewBaseActivity;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomePageListContract;
+import com.cylan.jiafeigou.n.mvp.contract.home.NewHomeActivityContract;
 import com.cylan.jiafeigou.n.mvp.impl.home.HomePageListContractImpl;
+import com.cylan.jiafeigou.n.mvp.impl.home.NewHomeActivityPresenterImpl;
 import com.cylan.jiafeigou.n.view.home.HomeDiscoveryFragment;
 import com.cylan.jiafeigou.n.view.home.HomeMineFragment;
 import com.cylan.jiafeigou.n.view.home.HomePageListFragment;
+import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.widget.CustomViewPager;
 
 import butterknife.BindView;
@@ -22,7 +26,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class NewHomeActivity extends NewBaseActivity implements
-        ViewPager.OnPageChangeListener {
+        ViewPager.OnPageChangeListener, NewHomeActivityContract.View {
 
     @BindView(R.id.vp_home_content)
     CustomViewPager vpHomeContent;
@@ -43,14 +47,15 @@ public class NewHomeActivity extends NewBaseActivity implements
         setContentView(R.layout.activity_new_home);
         ButterKnife.bind(this);
         initBottomMenu();
+        new NewHomeActivityPresenterImpl(this);
     }
 
     private void initBottomMenu() {
         viewAdapter = new HomeViewAdapter(getSupportFragmentManager());
         vpHomeContent.setPagingEnabled(false);
         vpHomeContent.setAdapter(viewAdapter);
-        btnHomeList.setEnabled(false);
         vpHomeContent.addOnPageChangeListener(this);
+        btnHomeList.setEnabled(false);
         bottomBtn[0] = btnHomeList;
         bottomBtn[1] = btnHomeDiscover;
         bottomBtn[2] = btnHomeMine;
@@ -94,6 +99,29 @@ public class NewHomeActivity extends NewBaseActivity implements
         Log.d("hunt", "state: " + state);
     }
 
+    private static long time = 0;
+
+    @Override
+    public void onBackPressed() {
+        if (System.currentTimeMillis() - time < 1500) {
+            super.onBackPressed();
+        } else {
+            time = System.currentTimeMillis();
+            ToastUtil.showToast(this,
+                    String.format(getString(R.string.click_back_again_exit),
+                            getString(R.string.app_name)));
+        }
+    }
+
+
+    @UiThread
+    @Override
+    public void initView() {
+    }
+
+    @Override
+    public void setPresenter(NewHomeActivityContract.Presenter presenter) {
+    }
 }
 
 /**

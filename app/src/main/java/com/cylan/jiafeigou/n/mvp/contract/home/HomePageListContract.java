@@ -1,6 +1,6 @@
 package com.cylan.jiafeigou.n.mvp.contract.home;
 
-import com.cylan.jiafeigou.n.model.BaseBean;
+import com.cylan.jiafeigou.n.model.DeviceBean;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
 
@@ -13,12 +13,14 @@ public interface HomePageListContract {
 
     interface View extends BaseView<Presenter> {
 
+        void onDeviceListRsp(List<DeviceBean> resultList);
 
-        void onDeviceListRsp(List<BaseBean> resultList);
 
     }
 
     interface Presenter extends BasePresenter {
         void startRefresh();
+
+        void onDeleteItem(DeviceBean deviceBean);
     }
 }

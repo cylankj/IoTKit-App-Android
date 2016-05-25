@@ -13,11 +13,13 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.n.model.BaseBean;
+import com.cylan.jiafeigou.n.model.DeviceBean;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomePageListContract;
 import com.cylan.jiafeigou.n.view.adapter.HomePageListAdapter;
 import com.cylan.jiafeigou.utils.ToastUtil;
+import com.cylan.jiafeigou.widget.dialog.HomeMenuDialog;
 
+import java.lang.ref.WeakReference;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -35,7 +37,9 @@ import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 public class HomePageListFragment extends Fragment implements
-        HomePageListContract.View, PtrHandler {
+        HomePageListContract.View, PtrHandler,
+        HomePageListAdapter.DeviceItemClickListener,
+        HomePageListAdapter.DeviceItemLongClickListener {
 
 
     private static final int REFRESH_DELAY = 1500;
@@ -45,10 +49,11 @@ public class HomePageListFragment extends Fragment implements
     ImageButton imgBtnAddDevices;
     @BindView(R.id.rV_devices_list)
     RecyclerView rVDevicesList;//设备列表
+    //不是长时间需要,用软引用.
+    private WeakReference<HomeMenuDialog> homeMenuDialogWeakReference;
+    private HomePageListContract.Presenter presenter;
 
-    HomePageListContract.Presenter presenter;
-
-    HomePageListAdapter homePageListAdapter;
+    private HomePageListAdapter homePageListAdapter;
     /**
      * 手动完成刷新,自动完成刷新 订阅者.
      */
@@ -79,6 +84,8 @@ public class HomePageListFragment extends Fragment implements
     public void onAttach(Context context) {
         super.onAttach(context);
         homePageListAdapter = new HomePageListAdapter(getContext(), null, null);
+        homePageListAdapter.setDeviceItemClickListener(this);
+        homePageListAdapter.setDeviceItemLongClickListener(this);
     }
 
     @Override
@@ -136,7 +143,7 @@ public class HomePageListFragment extends Fragment implements
 
     @UiThread
     @Override
-    public void onDeviceListRsp(List<BaseBean> resultList) {
+    public void onDeviceListRsp(List<DeviceBean> resultList) {
         fLayoutMainContentHolder.refreshComplete();
         if (resultList == null || resultList.size() == 0) {
             homePageListAdapter.clear();
@@ -169,4 +176,36 @@ public class HomePageListFragment extends Fragment implements
                 });
     }
 
+    @Override
+    public void onClick(View v) {
+        final int position = v.getTag() == null ? 0 : (int) v.getTag();
+        ToastUtil.showToast(getContext(), "click: " + position);
+    }
+
+    @Override
+    public boolean onLongClick(View v) {
+        final int position = v.getTag() == null ? 0 : (int) v.getTag();
+        deleteItem(position);
+        return true;
+    }
+
+
+    private void deleteItem(final int position) {
+        if (homeMenuDialogWeakReference == null || homeMenuDialogWeakReference.get() == null) {
+            HomeMenuDialog dialog = new HomeMenuDialog(getActivity(),
+                    null,
+                    new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if (homePageListAdapter != null && homePageListAdapter.getCount() > position) {
+                                final DeviceBean bean = homePageListAdapter.getItem(position);
+                                homePageListAdapter.remove(position);
+                                presenter.onDeleteItem(bean);
+                            }
+                        }
+                    });
+            homeMenuDialogWeakReference = new WeakReference<>(dialog);
+        }
+        homeMenuDialogWeakReference.get().show();
+    }
 }

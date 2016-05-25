@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/tv_dialog_home_menu_cancel"
+        style="@style/comment_bottom_dialog_style"
+        android:layout_width="279dp"
+        android:gravity="center_vertical"
+        android:paddingLeft="38dp"
+        android:text="@string/CANCEL"
+        android:textSize="17sp" />
+
+    <View
+        android:layout_width="279dp"
+        android:layout_height="0.5dp"
+        android:background="@color/setting_line_color" />
+
+    <TextView
+        android:id="@+id/tv_dialog_home_menu_delete"
+        style="@style/comment_bottom_dialog_style"
+        android:layout_width="279dp"
+        android:gravity="center_vertical"
+        android:paddingLeft="38dp"
+        android:text="@string/DELETE"
+        android:textSize="17sp" />
+
+</LinearLayout>

@@ -526,7 +526,7 @@
   <string name="check_upgrade">Auf Updates prüfen</string>
   <string name="checking">Einen Moment bitte...</string>
   <string name="choose_connect_wifi">Wählen Sie WiFi</string>
-  <string name="click_back_again_exit">Drücken Sie erneut, das Programm zu verlassen</string>
+  <string name="click_back_again_exit">Drücken Sie erneut, das Programm zu verlassen %s</string>
   <string name="conn_ap_overtime">Das Gerät ist nicht verbunden</string>
   <string name="connect_by_hand">Schließen Sie "%s" Netzwerk, Passwort 11111111</string>
   <string name="connecting_ap">Wird geladen...</string>

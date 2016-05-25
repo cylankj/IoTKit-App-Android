@@ -1,8 +1,9 @@
 package com.cylan.jiafeigou.n.mvp.impl.home;
 
 import android.support.annotation.Nullable;
+import android.util.Log;
 
-import com.cylan.jiafeigou.n.model.BaseBean;
+import com.cylan.jiafeigou.n.model.DeviceBean;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomePageListContract;
 import com.cylan.jiafeigou.utils.RandomUtils;
 
@@ -65,11 +66,11 @@ public class HomePageListContractImpl implements HomePageListContract.Presenter 
      *
      * @return
      */
-    private List<BaseBean> requestList() {
+    private List<DeviceBean> requestList() {
         int count = RandomUtils.getRandom(20);
-        List<BaseBean> list = new ArrayList<>();
+        List<DeviceBean> list = new ArrayList<>();
         for (int i = 0; i < count; i++) {
-            BaseBean baseBean = new BaseBean();
+            DeviceBean baseBean = new DeviceBean();
             baseBean.id = i;
             list.add(baseBean);
         }
@@ -82,16 +83,16 @@ public class HomePageListContractImpl implements HomePageListContract.Presenter 
         onRefreshSubscription = Observable.just("")
                 .subscribeOn(Schedulers.newThread())
                 .delay(testDelay * 1000L, TimeUnit.MILLISECONDS)
-                .map(new Func1<String, List<BaseBean>>() {
+                .map(new Func1<String, List<DeviceBean>>() {
                     @Override
-                    public List<BaseBean> call(String s) {
+                    public List<DeviceBean> call(String s) {
                         return requestList();
                     }
                 })
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<List<BaseBean>>() {
+                .subscribe(new Action1<List<DeviceBean>>() {
                     @Override
-                    public void call(List<BaseBean> list) {
+                    public void call(List<DeviceBean> list) {
                         if (getView() != null) getView().onDeviceListRsp(list);
                     }
                 }, new Action1<Throwable>() {
@@ -100,5 +101,10 @@ public class HomePageListContractImpl implements HomePageListContract.Presenter 
 
                     }
                 });
+    }
+
+    @Override
+    public void onDeleteItem(DeviceBean deviceBean) {
+        Log.d("hunt", "hunt....delete item: " + deviceBean);
     }
 }
