@@ -22,13 +22,13 @@ import rx.schedulers.Schedulers;
 /**
  * Created by hunt on 16-5-23.
  */
-public class HomePageListContractImpl implements HomePageListContract.Presenter {
+public class HomePageListPresenterImpl implements HomePageListContract.Presenter {
 
     private WeakReference<HomePageListContract.View> viewWeakReference;
 
     private Subscription onRefreshSubscription;
 
-    public HomePageListContractImpl(HomePageListContract.View view) {
+    public HomePageListPresenterImpl(HomePageListContract.View view) {
         viewWeakReference = new WeakReference<>(view);
         view.setPresenter(this);
     }

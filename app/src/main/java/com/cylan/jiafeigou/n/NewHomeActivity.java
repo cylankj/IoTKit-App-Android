@@ -14,7 +14,7 @@ import com.cylan.jiafeigou.n.base.NewBaseActivity;
 import com.cylan.jiafeigou.n.mvp.contract.home.NewHomeActivityContract;
 import com.cylan.jiafeigou.n.mvp.impl.home.HomeDiscoveryPresenterImpl;
 import com.cylan.jiafeigou.n.mvp.impl.home.HomeMinePresenterImpl;
-import com.cylan.jiafeigou.n.mvp.impl.home.HomePageListContractImpl;
+import com.cylan.jiafeigou.n.mvp.impl.home.HomePageListPresenterImpl;
 import com.cylan.jiafeigou.n.mvp.impl.home.NewHomeActivityPresenterImpl;
 import com.cylan.jiafeigou.n.view.home.HomeDiscoveryFragment;
 import com.cylan.jiafeigou.n.view.home.HomeMineFragment;
@@ -143,7 +143,7 @@ class HomeViewAdapter extends FragmentPagerAdapter {
         switch (position) {
             case INDEX_0: {
                 HomePageListFragment fragment = HomePageListFragment.newInstance(new Bundle());
-                new HomePageListContractImpl(fragment);
+                new HomePageListPresenterImpl(fragment);
                 return fragment;
             }
             case INDEX_1: {

@@ -36,7 +36,8 @@ public class HomeMineFragment extends Fragment
     ImageView imgHomeMineSetting;
 
 
-    HomeMineContract.Presenter presenter;
+    private HomeMineContract.Presenter presenter;
+
     public static HomeMineFragment newInstance(Bundle bundle) {
         HomeMineFragment fragment = new HomeMineFragment();
         fragment.setArguments(bundle);
@@ -62,13 +63,21 @@ public class HomeMineFragment extends Fragment
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
+        presenter.start();
     }
 
     @Override
     public void onStop() {
         super.onStop();
+        presenter.stop();
     }
 
     @Override
@@ -113,6 +122,6 @@ public class HomeMineFragment extends Fragment
 
     @Override
     public void onPortraitUpdate(String url) {
-
+        tvMinePortrait.setText(url);
     }
 }

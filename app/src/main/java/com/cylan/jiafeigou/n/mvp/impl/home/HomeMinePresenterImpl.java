@@ -5,8 +5,13 @@ import android.support.annotation.Nullable;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeMineContract;
 
 import java.lang.ref.WeakReference;
+import java.util.concurrent.TimeUnit;
 
+import rx.Observable;
 import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by hunt on 16-5-23.
@@ -24,11 +29,30 @@ public class HomeMinePresenterImpl implements HomeMineContract.Presenter {
 
     @Override
     public void start() {
-
+        Observable.just(null)
+                .subscribeOn(Schedulers.io())
+                .delay(3000, TimeUnit.MILLISECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<Object>() {
+                    @Override
+                    public void call(Object o) {
+                        if (getView() != null)
+                            getView().onPortraitUpdate("zhe ye keyi");
+                    }
+                });
     }
 
     @Override
     public void stop() {
+        unSubscribe();
+    }
+
+    private void unSubscribe(Subscription... subscriptions) {
+        if (subscriptions != null)
+            for (Subscription subscription : subscriptions) {
+                if (subscription != null)
+                    subscription.unsubscribe();
+            }
     }
 
     @Nullable
