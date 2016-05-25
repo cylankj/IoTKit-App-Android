@@ -1,8 +1,10 @@
 package com.cylan.jiafeigou.n;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.UiThread;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -10,7 +12,6 @@ import android.util.Log;
 import android.widget.Button;
 
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.n.base.NewBaseActivity;
 import com.cylan.jiafeigou.n.mvp.contract.home.NewHomeActivityContract;
 import com.cylan.jiafeigou.n.mvp.impl.home.HomeDiscoveryPresenterImpl;
 import com.cylan.jiafeigou.n.mvp.impl.home.HomeMinePresenterImpl;
@@ -21,14 +22,16 @@ import com.cylan.jiafeigou.n.view.home.HomeMineFragment;
 import com.cylan.jiafeigou.n.view.home.HomePageListFragment;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.widget.CustomViewPager;
+import com.cylan.utils.ListUtils;
+
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class NewHomeActivity extends NewBaseActivity implements
+public class NewHomeActivity extends FragmentActivity implements
         ViewPager.OnPageChangeListener, NewHomeActivityContract.View {
-
     @BindView(R.id.vp_home_content)
     CustomViewPager vpHomeContent;
     @BindView(R.id.btn_home_list)
@@ -104,6 +107,10 @@ public class NewHomeActivity extends NewBaseActivity implements
 
     @Override
     public void onBackPressed() {
+        if (checkExtraChildFragment()) {
+            return;
+        } else if (checkExtraFragment())
+            return;
         if (System.currentTimeMillis() - time < 1500) {
             super.onBackPressed();
         } else {
@@ -114,6 +121,30 @@ public class NewHomeActivity extends NewBaseActivity implements
         }
     }
 
+    private boolean checkExtraChildFragment() {
+        FragmentManager fm = getSupportFragmentManager();
+        List<Fragment> list = fm.getFragments();
+        if (ListUtils.isEmpty(list))
+            return false;
+        for (Fragment frag : list) {
+            if (frag != null && frag.isVisible()) {
+                FragmentManager childFm = frag.getChildFragmentManager();
+                if (childFm != null && childFm.getBackStackEntryCount() > 0) {
+                    childFm.popBackStack();
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean checkExtraFragment() {
+        final int count = getSupportFragmentManager().getBackStackEntryCount();
+        if (count > 0) {
+            getSupportFragmentManager().popBackStack();
+            return true;
+        } else return false;
+    }
 
     @UiThread
     @Override
@@ -122,6 +153,11 @@ public class NewHomeActivity extends NewBaseActivity implements
 
     @Override
     public void setPresenter(NewHomeActivityContract.Presenter presenter) {
+    }
+
+    @Override
+    public Context getContext() {
+        return getApplicationContext();
     }
 }
 

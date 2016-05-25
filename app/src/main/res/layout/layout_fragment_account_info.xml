@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rLayout_account_info"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#eee000">
+
+    <RelativeLayout
+        android:id="@+id/rLayout_account_account_item"
+        android:layout_width="match_parent"
+        android:layout_height="80dp">
+
+        <TextView
+            android:id="@+id/tv_account_account_key"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="我的昵称" />
+
+        <TextView
+            android:id="@+id/tv_account_account_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:text="121122" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/rLayout_account_alias_item"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:layout_below="@+id/rLayout_account_account_item">
+
+        <TextView
+            android:id="@+id/tv_account_alias_key"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="我的昵称" />
+
+        <TextView
+            android:id="@+id/tv_account_alias_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:text="121122" />
+    </RelativeLayout>
+</RelativeLayout>

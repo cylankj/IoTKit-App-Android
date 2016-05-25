@@ -87,6 +87,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <receiver android:name=".n.engine.DaemonService$BootCompletedReceiver">
             <intent-filter android:priority="0x7fffffff">
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
@@ -107,6 +108,7 @@
             android:enabled="true"
             android:exported="true" />
         <service android:name=".n.engine.DaemonService$InnerAssistService" />
+
     </application>
 
 </manifest>
