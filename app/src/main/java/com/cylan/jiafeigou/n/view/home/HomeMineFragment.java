@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeMineContract;
+import com.cylan.jiafeigou.n.mvp.impl.setting.AccountInfoPresenterImpl;
 import com.cylan.jiafeigou.n.view.fragment.AccountInfoFragment;
 import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
@@ -95,8 +96,10 @@ public class HomeMineFragment extends Fragment
     @OnClick(R.id.tv_home_mine_portrait)
     public void onClickPortrait() {
         ToastUtil.showToast(getContext(), "推荐fragment");
+        AccountInfoFragment fragment = (AccountInfoFragment) AccountInfoFragment.getInstance();
         ActivityUtils.addFragmentToActivity(getActivity().getSupportFragmentManager(),
-                AccountInfoFragment.getInstance(), R.id.rLayout_new_home_container, 0);
+                fragment, R.id.rLayout_new_home_container, 0);
+        new AccountInfoPresenterImpl(fragment);
     }
 
     @OnClick(R.id.img_home_mine_dear_friend)
