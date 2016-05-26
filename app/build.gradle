@@ -45,6 +45,8 @@ dependencies {
     compile files('src/main/jniLibs/open_sdk_r5509_lite.jar')
     compile files('src/main/jniLibs/weibosdkcore.jar')
     compile files('src/main/jniLibs/mid-sdk-2.3.jar')
+    debugCompile files('src/main/jniLibs/jfg-debug-support.jar')
+    releaseCompile files('src/main/jniLibs/jfg-release-support.jar')
 }
 
 

@@ -12,7 +12,7 @@ public class DataSourceService extends Service {
     private static final String TAG = "DataSourceService";
 
     static {
-        System.loadLibrary("media-engine-jni");
+//        System.loadLibrary("media-engine-jni");
     }
 
     @Override
