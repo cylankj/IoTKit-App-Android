@@ -40,6 +40,8 @@ dependencies {
     compile rootProject.ext.appSupport
     compile rootProject.ext.recyclerView
     apt rootProject.ext.apt
+    compile rootProject.ext.glide
+    compile rootProject.ext.glideSupport
     compile project(':jlib')
     compile files('src/main/jniLibs/mta-android-stat-sdk-2.2.0.jar')
     compile files('src/main/jniLibs/open_sdk_r5509_lite.jar')
