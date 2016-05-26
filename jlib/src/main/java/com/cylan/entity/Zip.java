@@ -1,6 +1,6 @@
 package com.cylan.entity;
 
-import com.cylan.publicApi.Constants;
+import com.cylan.utils.Constants;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-import com.cylan.support.DswLog;
+import com.cylan.utils.DswLog;
 
 
 public class Zip {

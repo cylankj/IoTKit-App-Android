@@ -1,6 +1,6 @@
 package com.cylan.entity;
 
-import com.cylan.support.DswLog;
+import com.cylan.utils.DswLog;
 
 import java.io.File;
 import java.io.FileInputStream;

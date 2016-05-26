@@ -4,8 +4,8 @@ import android.content.Context;
 
 import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.support.block.IBlockCanaryContext;
-import com.cylan.publicApi.Constants;
-import com.cylan.publicApi.NetUtils;
+import com.cylan.utils.Constants;
+import com.cylan.utils.NetUtils;
 
 import java.io.File;
 

@@ -6,12 +6,9 @@ import android.os.IBinder;
 import android.util.Log;
 
 import com.cylan.jiafeigou.support.stat.MtaManager;
-import com.cylan.jiafeigou.utils.PathGetter;
-import com.cylan.publicApi.CallMessageCallBack;
-import com.cylan.publicApi.JniPlay;
 
 
-public class DataSourceService extends Service implements CallMessageCallBack {
+public class DataSourceService extends Service {
     private static final String TAG = "DataSourceService";
 
     static {
@@ -36,13 +33,8 @@ public class DataSourceService extends Service implements CallMessageCallBack {
     }
 
     private void initNative() {
-        final boolean init = JniPlay.NativeInit(this, false, PathGetter.getSmartCallPath());
-        Log.d(TAG, "let's go initNative:" + init);
+        Log.d(TAG, "let's go initNative:");
         MtaManager.customEvent(this, "DataSourceService", "NativeInit");
     }
 
-    @Override
-    public void handleMsg(int msgId, byte[] bytes) {
-
-    }
 }

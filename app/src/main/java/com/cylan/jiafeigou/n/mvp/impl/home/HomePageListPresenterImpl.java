@@ -5,7 +5,7 @@ import android.util.Log;
 
 import com.cylan.jiafeigou.n.model.DeviceBean;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomePageListContract;
-import com.cylan.jiafeigou.utils.RandomUtils;
+import com.cylan.utils.RandomUtils;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;

@@ -16,8 +16,8 @@ import android.util.Log;
 import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.utils.PathGetter;
-import com.cylan.publicApi.ProcessUtils;
-import com.cylan.support.DswLog;
+import com.cylan.utils.ProcessUtils;
+import com.cylan.utils.DswLog;
 import com.cylan.utils.FileUtils;
 
 import java.io.File;

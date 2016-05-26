@@ -14,7 +14,7 @@ import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.contract.setting.AccountInfoContract;
 import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
-import com.cylan.support.DswLog;
+import com.cylan.utils.DswLog;
 import com.cylan.utils.ListUtils;
 
 import java.util.List;
