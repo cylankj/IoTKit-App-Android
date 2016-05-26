@@ -2,7 +2,7 @@ package com.cylan.jiafeigou.utils;
 
 import android.content.Context;
 
-import com.cylan.utils.DswLog;
+import com.superlog.SLog;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -43,13 +43,13 @@ public class OEMConf {
 			Parser(new String(buffer, "UTF-8"));
 
 		} catch (IOException e) {
-			DswLog.ex(e.toString());
+			SLog.e(e.toString());
 		} finally {
 			if (is != null) {
 				try {
 					is.close();
 				} catch (IOException e) {
-					DswLog.ex(e.toString());
+					SLog.e(e.toString());
 				}
 			}
 		}

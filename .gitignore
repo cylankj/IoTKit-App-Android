@@ -1,5 +1,6 @@
 *.iml
 .gradle
+.idea/
 /local.properties
 /.idea/workspace.xml
 /.idea/libraries
@@ -9,5 +10,6 @@
 /gen
 /mapping.txt
 /bin
-
+/gradle
 /node_modules
+app/libs/armeabi-v7a/libjfgsdk.so

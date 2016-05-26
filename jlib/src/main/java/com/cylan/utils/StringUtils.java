@@ -10,6 +10,7 @@ import android.os.Environment;
 import android.text.Html;
 import android.text.Spanned;
 import android.util.DisplayMetrics;
+import android.util.Log;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -214,7 +215,7 @@ public class StringUtils {
         try {
             return Integer.parseInt(str.replace("+", ""));
         } catch (Exception e) {
-            DswLog.ex(e.toString());
+            Log.e("StringUtils",e.toString());
         }
         return defValue;
     }
@@ -340,7 +341,7 @@ public class StringUtils {
             stream = new FileOutputStream(Environment.getExternalStorageDirectory().getPath() + filename);
         } catch (FileNotFoundException e) {
             // TODO Auto-generated catch block
-            DswLog.ex(e.toString());
+            Log.e("StringUtils",e.toString());
         }
 
         return bmp.compress(format, quality, stream);
@@ -392,9 +393,9 @@ public class StringUtils {
                 out.close();
             }
         } catch (FileNotFoundException e) {
-            DswLog.ex(e.toString());
+            Log.e("StringUtils",e.toString());
         } catch (IOException e) {
-            DswLog.ex(e.toString());
+            Log.e("StringUtils",e.toString());
         }
         return file;
     }
@@ -434,7 +435,7 @@ public class StringUtils {
 
             return day2 - day1 == 1;
         } catch (NumberFormatException e) {
-            DswLog.ex(e.toString());
+            Log.e("StringUtils",e.toString());
             return false;
 
         }

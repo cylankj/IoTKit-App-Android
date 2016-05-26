@@ -24,6 +24,11 @@ android {
     dexOptions {
         jumboMode = true
     }
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['libs']
+        }
+    }
 
 }
 apply plugin: 'com.neenbedankt.android-apt'
@@ -43,10 +48,19 @@ dependencies {
     compile rootProject.ext.glide
     compile rootProject.ext.glideSupport
     compile project(':jlib')
-    compile files('src/main/jniLibs/mta-android-stat-sdk-2.2.0.jar')
-    compile files('src/main/jniLibs/open_sdk_r5509_lite.jar')
-    compile files('src/main/jniLibs/weibosdkcore.jar')
-    compile files('src/main/jniLibs/mid-sdk-2.3.jar')
+    compile files('libs/aliyun-oss-sdk-android-2.2.0.jar')
+    compile files('libs/bugly_crash_release__2.1.jar')
+    compile files('libs/gson-2.2.4.jar')
+    compile files('libs/JfgAndroidSDK-2.0.86.jar')
+    compile files('libs/mid-sdk-2.3.jar')
+    compile files('libs/mta-android-stat-sdk-2.2.0.jar')
+    compile files('libs/nineoldandroids-2.4.0.jar')
+    compile files('libs/okhttp-3.2.0.jar')
+    compile files('libs/okio-1.6.0.jar')
+    compile files('libs/open_sdk_r5509_lite.jar')
+    compile files('libs/SLog-2.0.jar')
+    compile files('libs/weibosdkcore.jar')
+    compile files('libs/zxing.jar')
 }
 
 

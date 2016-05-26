@@ -1,6 +1,8 @@
 package com.cylan.entity;
 
-import com.cylan.utils.DswLog;
+import android.util.Log;
+
+
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -338,7 +340,7 @@ public class ZipLog {
     public void write2Zip(File file, ZipOutputStream zipOutputSteam) throws Exception {
 
         if (!file.exists()) {
-            DswLog.i("ZipLog: this file is not exist and the path is " + file.getAbsolutePath());
+            Log.i("ZipLog","ZipLog: this file is not exist and the path is " + file.getAbsolutePath());
             //add the log source file is not exits
             return;
         }

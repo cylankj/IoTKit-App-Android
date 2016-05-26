@@ -6,19 +6,21 @@ import android.os.IBinder;
 import android.util.Log;
 
 import com.cylan.jiafeigou.support.stat.MtaManager;
+import com.cylan.sdkjni.JfgCmd;
 
 
 public class DataSourceService extends Service {
     private static final String TAG = "DataSourceService";
 
     static {
-        System.loadLibrary("media-engine-jni");
+        System.loadLibrary("jfgsdk");
     }
 
     @Override
     public void onCreate() {
         super.onCreate();
         initNative();
+        JfgCmd.getJfgCmd(this);
     }
 
     @Override

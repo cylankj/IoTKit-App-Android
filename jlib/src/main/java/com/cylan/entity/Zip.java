@@ -1,5 +1,7 @@
 package com.cylan.entity;
 
+import android.util.Log;
+
 import com.cylan.utils.Constants;
 
 import java.io.File;
@@ -12,7 +14,7 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-import com.cylan.utils.DswLog;
+
 
 
 public class Zip {
@@ -110,7 +112,7 @@ public class Zip {
         addFile(SMART_DIR_W_1, lists);
         addFile(String.format(BREAKPAD_DIR, fileDirName), lists);
         toZip(fileDirName, lists, LOGFILENAME);
-        DswLog.i("packZip fileDirName-->" + fileDirName);
+        log("packZip fileDirName-->" + fileDirName);
     }
 
     public static String packCrashZip(String fileDirName) {
@@ -120,7 +122,7 @@ public class Zip {
         addFile(String.format(CRASH_DIR, fileDirName), lists);
         boolean exists = addFile(String.format(BREAKPAD_DIR, fileDirName), lists);
         toZip(fileDirName, lists, CRASHFILENAME);
-        DswLog.i("packCrashZip fileDirName-->" + fileDirName);
+        log("packCrashZip fileDirName-->" + fileDirName);
         if (exists) {
             return SMARTCALL_CRASH;
         }
@@ -128,18 +130,22 @@ public class Zip {
     }
 
     public static String getZipDir(String fileName) {
-        DswLog.i("ZipDir-->" + String.format(LOGFILENAME, fileName));
+        log("ZipDir-->" + String.format(LOGFILENAME, fileName));
         return String.format(LOGFILENAME, fileName);
     }
 
     public static String getCrashZipDir(String fileName) {
-        DswLog.i("ZipDir-->" + String.format(CRASHFILENAME, fileName));
+        log("ZipDir-->" + String.format(CRASHFILENAME, fileName));
         return String.format(CRASHFILENAME, fileName);
     }
 
     public static boolean deleteCrashZip(String fileDirName) {
         File zip = new File(String.format(CRASHFILENAME, fileDirName));
         return zip.exists() && zip.delete();
+    }
+    
+    private static void log(String str){
+        Log.i("ZIP",str);
     }
 
     public static String getUrl(String sessid) {

@@ -14,8 +14,8 @@ import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.contract.setting.AccountInfoContract;
 import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
-import com.cylan.utils.DswLog;
 import com.cylan.utils.ListUtils;
+import com.superlog.SLog;
 
 import java.util.List;
 
@@ -70,7 +70,7 @@ public class AccountInfoFragment extends BaseFragment implements AccountInfoCont
     private void initChildFragmentStack() {
         FragmentManager fragmentManager = getChildFragmentManager();
         if (fragmentManager == null) {
-            DswLog.e("child fragmentManger is null");
+            SLog.e("child fragmentManger is null");
             return;
         }
         fragmentManager.addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
@@ -81,7 +81,7 @@ public class AccountInfoFragment extends BaseFragment implements AccountInfoCont
                 final int count = ListUtils.getSize(fragmentList);
                 if (count == 0) {
                     //其实这里,并不执行
-                    DswLog.e("fragmentList is null");
+                    SLog.e("fragmentList is null");
                     return;
                 }
                 Fragment fragment = fragmentList.get(count - 1);
