@@ -7,7 +7,6 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.IBinder;
 import android.os.Message;
-import android.util.Log;
 
 import com.cylan.entity.JfgEnum;
 import com.cylan.entity.jniCall.JFGAccount;
@@ -38,8 +37,6 @@ import com.superlog.LogLevel;
 import com.superlog.SLog;
 
 import java.util.ArrayList;
-
-import rx.android.plugins.RxAndroidPlugins;
 
 
 public class DataSourceService extends Service implements JniCallBack {
