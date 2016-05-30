@@ -15,8 +15,6 @@ public class SplashPresenterImpl implements SplashContract.PresenterOps, SplashC
     private WeakReference<SplashContract.ViewRequiredOps> mView;
     private ModelContract.SplashModelOps mModel;
 
-    private SplashContract.ViewRequiredOps curView;
-
     public SplashPresenterImpl(SplashContract.ViewRequiredOps splashView) {
         this.mView = new WeakReference<SplashContract.ViewRequiredOps>(splashView);
         this.mModel = new SplashModelImpl(this);
@@ -37,14 +35,14 @@ public class SplashPresenterImpl implements SplashContract.PresenterOps, SplashC
 
     @Override
     public void onTimeSplashed() {
-        curView = mView.get();
-        if (curView != null) curView.timeSplashed();
+        final SplashContract.ViewRequiredOps mViewRef = mView.get();
+        if (mViewRef != null) mViewRef.timeSplashed();
     }
 
     @Override
     public void onfinishDelayed() {
-        curView = mView.get();
-        if (curView != null) curView.finishDelayed();
+        final SplashContract.ViewRequiredOps mViewRef = mView.get();
+        if (mViewRef != null) mViewRef.finishDelayed();
     }
 }
 

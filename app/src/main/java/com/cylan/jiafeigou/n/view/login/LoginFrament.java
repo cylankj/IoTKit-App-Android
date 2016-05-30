@@ -1,4 +1,4 @@
-package com.cylan.jiafeigou.n.view.splash;
+package com.cylan.jiafeigou.n.view.login;
 
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -9,45 +9,26 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.n.mvp.contract.login.LoginContract;
+import com.cylan.jiafeigou.n.mvp.impl.login.LoginPresenterImpl;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * Created by chen on 5/26/16.
  */
-public class LoginFrament extends Fragment {
+public class LoginFrament extends Fragment implements LoginContract.ViewRequiredOps{
 
 
-    @BindView(R.id.loginTelNum)
-    EditText loginTelNum;
-    @BindView(R.id.layout_username)
-    LinearLayout layoutUsername;
-    @BindView(R.id.loginPass)
-    EditText loginPass;
-    @BindView(R.id.layout_password)
-    LinearLayout layoutPassword;
     @BindView(R.id.btnLogin)
     Button btnLogin;
-    @BindView(R.id.loginForgetpwd)
-    TextView loginForgetpwd;
-    @BindView(R.id.login_frame)
-    RelativeLayout loginFrame;
-    @BindView(R.id.the_third_login_app1)
-    TextView theThirdLoginApp1;
-    @BindView(R.id.line)
-    View line;
-    @BindView(R.id.the_third_login_app2)
-    TextView theThirdLoginApp2;
-    @BindView(R.id.third_login_app)
-    LinearLayout thirdLoginApp;
 
+    private LoginContract.PresenterOps mPresent;
+    private InfoLogin infoLogin;
     public static LoginFrament newInstance(Bundle bundle) {
         LoginFrament fragment = new LoginFrament();
         fragment.setArguments(bundle);
@@ -63,11 +44,23 @@ public class LoginFrament extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View mView = inflater.inflate(R.layout.fragment_login_layout, container, false);
         ButterKnife.bind(this, mView);
+
+        initView();
         return mView;
     }
 
+    private void initView() {
+        mPresent = new LoginPresenterImpl(this);
+    }
+
+    private void initData() {
+        infoLogin = new InfoLogin();
+    }
+
+
     @Override
     public void onResume() {
+        initData();
         super.onResume();
     }
 
@@ -103,4 +96,21 @@ public class LoginFrament extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
     }
+
+    @OnClick(R.id.btnLogin)
+    private void onLoginClick() {
+        infoLogin.Usename = "";
+        infoLogin.Passwd   = "";
+        mPresent.executeLogin(infoLogin);
+    }
+
+    @Override
+    public void LoginExecuted(String succeed) {
+        if (succeed.equals("succeed")) {
+            //login succeed
+        }else {
+            //show the reason of failed,and "succeed" carried the message
+        }
+    }
+
 }

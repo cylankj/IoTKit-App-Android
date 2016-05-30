@@ -16,9 +16,10 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.cylan.jiafeigou.R;
-
 import com.cylan.jiafeigou.n.mvp.contract.splash.SplashContract;
 import com.cylan.jiafeigou.n.mvp.impl.splash.SplashPresenterImpl;
+import com.cylan.jiafeigou.n.view.adapter.SimpleFregmentAdapter;
+import com.cylan.jiafeigou.n.view.login.LoginFrament;
 import com.cylan.jiafeigou.utils.ParamStatic;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.StateMaintainer;
@@ -56,7 +57,7 @@ public class WelcomePage extends FragmentActivity implements SplashContract.View
     private final String TAG_COMEIN = "isTheUserFirstLoginIn";
 
     private List<Fragment> listSplashFreg;
-    private SplashListAdapter mSplashListAdapter;
+    private SimpleFregmentAdapter mSplashListAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,7 +89,7 @@ public class WelcomePage extends FragmentActivity implements SplashContract.View
             listSplashFreg.add(SplashFragment.newInstance(null));
             listSplashFreg.add(SplashFragment.newInstance(null));
             listSplashFreg.add(LoginFrament.newInstance(null));
-            mSplashListAdapter = new SplashListAdapter(getSupportFragmentManager(), listSplashFreg);
+            mSplashListAdapter = new SimpleFregmentAdapter(getSupportFragmentManager(), listSplashFreg);
 
             vpWelcome.setAdapter(mSplashListAdapter);
             vpWelcome.addOnPageChangeListener(new PageChangeListen());
@@ -105,7 +106,7 @@ public class WelcomePage extends FragmentActivity implements SplashContract.View
                 listSplashFreg = new ArrayList<Fragment>();
                 listSplashFreg.add(LoginFrament.newInstance(null));
             }
-            mSplashListAdapter = new SplashListAdapter(getSupportFragmentManager(), listSplashFreg);
+            mSplashListAdapter = new SimpleFregmentAdapter(getSupportFragmentManager(), listSplashFreg);
             vpWelcome.setAdapter(mSplashListAdapter);
         }
     }
