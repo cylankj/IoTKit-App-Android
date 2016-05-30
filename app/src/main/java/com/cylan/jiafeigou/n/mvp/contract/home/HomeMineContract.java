@@ -1,5 +1,7 @@
 package com.cylan.jiafeigou.n.mvp.contract.home;
 
+import android.support.annotation.UiThread;
+
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
 
@@ -9,8 +11,14 @@ import com.cylan.jiafeigou.n.mvp.BaseView;
 public interface HomeMineContract {
 
     interface View extends BaseView<Presenter> {
+        /**
+         * @param url: 返回url,可以使用`glide`或者`uil`直接加载
+         */
+        @UiThread
+        void onPortraitUpdate(String url);
     }
 
-    public interface Presenter extends BasePresenter {
+    interface Presenter extends BasePresenter {
+        void requestLatestPortrait();
     }
 }

@@ -7,15 +7,17 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.n.mvp.contract.home.HomeDiscoveryContract;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import in.srain.cube.views.ptr.PtrClassicFrameLayout;
 
-public class HomeDiscoveryFragment extends Fragment {
+public class HomeDiscoveryFragment extends Fragment implements HomeDiscoveryContract.View {
 
     @BindView(R.id.fLayout_main_content_holder)
     PtrClassicFrameLayout fLayoutMainContentHolder;
+    HomeDiscoveryContract.Presenter presenter;
 
     public static HomeDiscoveryFragment newInstance(Bundle bundle) {
         HomeDiscoveryFragment fragment = new HomeDiscoveryFragment();
@@ -44,5 +46,10 @@ public class HomeDiscoveryFragment extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
+    }
+
+    @Override
+    public void setPresenter(HomeDiscoveryContract.Presenter presenter) {
+        this.presenter = presenter;
     }
 }

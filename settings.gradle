@@ -1,3 +1,1 @@
-include ':app', ':jlib', ':scanbinding'
-include ':WebRtcAndroid'
-project(':WebRtcAndroid').projectDir = new File(settingsDir, './WebRtcAndroid/app')
+include ':app', ':jlib'

@@ -3,8 +3,8 @@ package com.cylan.jiafeigou.n.base;
 import android.app.IntentService;
 import android.content.Intent;
 
-import com.cylan.jiafeigou.block.BlockCanary;
-import com.cylan.jiafeigou.block.BlockCanaryContext;
+import com.cylan.jiafeigou.support.block.impl.BlockCanary;
+import com.cylan.jiafeigou.support.block.impl.BlockCanaryContext;
 import com.cylan.jiafeigou.support.stat.BugMonitor;
 
 /**

@@ -3,7 +3,7 @@ package com.cylan.jiafeigou.utils;
 import android.content.Context;
 import android.os.Environment;
 
-import com.cylan.publicApi.Constants;
+import com.cylan.utils.Constants;
 
 import java.io.File;
 

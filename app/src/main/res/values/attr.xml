@@ -15,7 +15,7 @@
         <attr name="Bottom_Color" format="integer" />
         <!-- 圆形区域向里缩进的距离 -->
     </declare-styleable>
-    
+
     <declare-styleable name="SlidingMenu">
         <attr name="mode">
             <enum name="left" value="0" />
@@ -70,5 +70,12 @@
     <declare-styleable name="AudioAmplitudeView">
         <attr name="is_left" format="boolean" />
     </declare-styleable>
-
+    <declare-styleable name="DotThemes">
+        <attr name="position" format="integer" />
+        <attr name="ignore" format="boolean" />
+        <attr name="Dradius" format="dimension" />
+        <attr name="margin" format="dimension" />
+        <attr name="showDot" format="boolean" />
+        <attr name="tipDrawable" format="reference" />
+    </declare-styleable>
 </resources>

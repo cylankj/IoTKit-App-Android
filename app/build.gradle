@@ -24,6 +24,11 @@ android {
     dexOptions {
         jumboMode = true
     }
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['libs']
+        }
+    }
 
 }
 apply plugin: 'com.neenbedankt.android-apt'
@@ -38,13 +43,28 @@ dependencies {
     compile rootProject.ext.rxAndroid
     compile rootProject.ext.ultra_ptr
     compile rootProject.ext.appSupport
+    compile rootProject.ext.recyclerView
     apt rootProject.ext.apt
     compile rootProject.ext.glide
     compile rootProject.ext.glideSupport
     compile rootProject.ext.permis
     apt rootProject.ext.permisApt
     compile project(':jlib')
-    compile project(':WebRtcAndroid')
+    compile files('libs/aliyun-oss-sdk-android-2.2.0.jar')
+    compile files('libs/bugly_crash_release__2.1.jar')
+    compile files('libs/gson-2.2.4.jar')
+    compile files('libs/JfgAndroidSDK-2.0.90.jar')
+    compile files('libs/mid-sdk-2.3.jar')
+    compile files('libs/mta-android-stat-sdk-2.2.0.jar')
+    compile files('libs/nineoldandroids-2.4.0.jar')
+    compile files('libs/okhttp-3.2.0.jar')
+    compile files('libs/okio-1.6.0.jar')
+    compile files('libs/open_sdk_r5509_lite.jar')
+    compile files('libs/SLog-2.0.jar')
+    compile files('libs/weibosdkcore.jar')
+    compile files('libs/zxing.jar')
+    debugCompile files('src/main/jniLibs/jfg-debug-support.jar')
+    releaseCompile files('src/main/jniLibs/jfg-release-support.jar')
 }
 
 

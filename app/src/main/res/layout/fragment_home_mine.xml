@@ -1,15 +1,63 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:hunt="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="mine" />
 
-    <in.srain.cube.views.ptr.PtrClassicFrameLayout
-        android:id="@+id/fLayout_main_content_holder"
+    <RelativeLayout
+        android:id="@+id/rLayout_home_mine_top"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-</FrameLayout>
+        android:layout_height="@dimen/y374"
+        android:background="#000000">
+
+        <TextView
+            android:id="@+id/tv_home_mine_portrait"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:drawableTop="@drawable/ico_default_headpic"
+            android:gravity="center_horizontal"
+            android:text="用户昵称" />
+    </RelativeLayout>
+
+    <com.cylan.jiafeigou.widget.ImageViewTip
+        android:id="@+id/img_home_mine_msg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_margin="10dp"
+        android:background="@drawable/add_circle"
+        hunt:Dradius="10dp"
+        hunt:showDot="true" />
+
+
+    <ImageView
+        android:id="@+id/img_home_mine_dear_friend"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/rLayout_home_mine_top"
+        android:background="@drawable/ico_default_headpic" />
+
+    <ImageView
+        android:id="@+id/img_home_mine_share_device"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/rLayout_home_mine_top"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/ico_default_headpic" />
+
+    <ImageView
+        android:id="@+id/img_home_mine_help_feedback"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/rLayout_home_mine_top"
+        android:background="@drawable/ico_default_headpic" />
+
+    <ImageView
+        android:id="@+id/img_home_mine_setting"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/img_home_mine_dear_friend"
+        android:background="@drawable/ico_default_headpic" />
+</RelativeLayout>

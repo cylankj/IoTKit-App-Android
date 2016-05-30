@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.text.TextUtils;
 
-import com.cylan.support.DswLog;
 import com.sina.weibo.sdk.auth.WeiboAuth;
 import com.sina.weibo.sdk.auth.WeiboAuth.AuthInfo;
 import com.sina.weibo.sdk.auth.WeiboAuthListener;
@@ -13,6 +12,7 @@ import com.sina.weibo.sdk.auth.sso.SsoHandler;
 import com.sina.weibo.sdk.exception.WeiboException;
 import com.sina.weibo.sdk.net.RequestListener;
 import com.sina.weibo.sdk.utils.LogUtil;
+import com.superlog.SLog;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -98,7 +98,7 @@ public class SinaWeiboUtil {
                         AccessTokenKeeper.clear(mContext);
                     }
                 } catch (JSONException e) {
-                    DswLog.ex(e.toString());
+                    SLog.e(e.toString());
                 }
             }
         }

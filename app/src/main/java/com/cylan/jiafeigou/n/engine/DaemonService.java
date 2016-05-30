@@ -16,9 +16,9 @@ import android.util.Log;
 import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.utils.PathGetter;
-import com.cylan.publicApi.ProcessUtils;
-import com.cylan.support.DswLog;
 import com.cylan.utils.FileUtils;
+import com.cylan.utils.ProcessUtils;
+import com.superlog.SLog;
 
 import java.io.File;
 
@@ -52,7 +52,9 @@ public class DaemonService extends Service {
         if (!isServiceRunning()) {
             startService(new Intent(this, DataSourceService.class));
             try2startForeground();
-            DswLog.i("re start data service");
+            SLog.i("re start data service");
+
+
         }
         return START_STICKY;
     }
@@ -97,7 +99,6 @@ public class DaemonService extends Service {
             Log.d(TAG, "processName: " + processName);
             Log.d(TAG, "logPath: " + logPath);
         } catch (Exception e) {
-            DswLog.ex(e.toString());
             Log.d(TAG, "err: " + e.toString());
         }
     }

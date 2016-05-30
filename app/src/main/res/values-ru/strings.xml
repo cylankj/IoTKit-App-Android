@@ -526,7 +526,7 @@
   <string name="check_upgrade">Обновить версию</string>
   <string name="checking">Проверка...</string>
   <string name="choose_connect_wifi">Выбрать сеть</string>
-  <string name="click_back_again_exit">Нажмите ее еще раз для выхода из %</string>
+  <string name="click_back_again_exit">Нажмите ее еще раз для выхода из %s</string>
   <string name="conn_ap_overtime">Ошибка подключения</string>
   <string name="connect_by_hand">Пожалуйста, подключитесь к %s в настройках WLAN, пароль 11111111</string>
   <string name="connecting_ap">Подключение...</string>

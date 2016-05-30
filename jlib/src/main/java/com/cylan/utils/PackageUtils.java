@@ -21,28 +21,28 @@ import java.util.List;
  * PackageUtils
  * <ul>
  * <strong>Install package</strong>
- * <li>{@link com.cylan.utils.PackageUtils#installNormal(android.content.Context, String)}</li>
- * <li>{@link com.cylan.utils.PackageUtils#installSilent(android.content.Context, String)}</li>
- * <li>{@link com.cylan.utils.PackageUtils#install(android.content.Context, String)}</li>
+ * <li>{@link PackageUtils#installNormal(android.content.Context, String)}</li>
+ * <li>{@link PackageUtils#installSilent(android.content.Context, String)}</li>
+ * <li>{@link PackageUtils#install(android.content.Context, String)}</li>
  * </ul>
  * <ul>
  * <strong>Uninstall package</strong>
- * <li>{@link com.cylan.utils.PackageUtils#uninstallNormal(android.content.Context, String)}</li>
- * <li>{@link com.cylan.utils.PackageUtils#uninstallSilent(android.content.Context, String)}</li>
- * <li>{@link com.cylan.utils.PackageUtils#uninstall(android.content.Context, String)}</li>
+ * <li>{@link PackageUtils#uninstallNormal(android.content.Context, String)}</li>
+ * <li>{@link PackageUtils#uninstallSilent(android.content.Context, String)}</li>
+ * <li>{@link PackageUtils#uninstall(android.content.Context, String)}</li>
  * </ul>
  * <ul>
  * <strong>Is system application</strong>
- * <li>{@link com.cylan.utils.PackageUtils#isSystemApplication(android.content.Context)}</li>
- * <li>{@link com.cylan.utils.PackageUtils#isSystemApplication(android.content.Context, String)}</li>
- * <li>{@link com.cylan.utils.PackageUtils#isSystemApplication(android.content.pm.PackageManager, String)}</li>
+ * <li>{@link PackageUtils#isSystemApplication(android.content.Context)}</li>
+ * <li>{@link PackageUtils#isSystemApplication(android.content.Context, String)}</li>
+ * <li>{@link PackageUtils#isSystemApplication(android.content.pm.PackageManager, String)}</li>
  * </ul>
  * <ul>
  * <strong>Others</strong>
- * <li>{@link com.cylan.utils.PackageUtils#getInstallLocation()} get system install location</li>
- * <li>{@link com.cylan.utils.PackageUtils#isTopActivity(android.content.Context, String)} whether the app whost package's name is packageName is on the
+ * <li>{@link PackageUtils#getInstallLocation()} get system install location</li>
+ * <li>{@link PackageUtils#isTopActivity(android.content.Context, String)} whether the app whost package's name is packageName is on the
  * top of the stack</li>
- * <li>{@link com.cylan.utils.PackageUtils#startInstalledAppDetails(android.content.Context, String)} start InstalledAppDetails Activity</li>
+ * <li>{@link PackageUtils#startInstalledAppDetails(android.content.Context, String)} start InstalledAppDetails Activity</li>
  * </ul>
  *
  * @author <a href="http://www.trinea.cn" target="_blank">Trinea</a> 2013-5-15
@@ -107,8 +107,8 @@ public class PackageUtils {
      *
      * @param context
      * @param filePath file path of package
-     * @return {@link com.cylan.utils.PackageUtils#INSTALL_SUCCEEDED} means install success, other means failed. details see
-     * {@link com.cylan.utils.PackageUtils}.INSTALL_FAILED_*. same to {@link android.content.pm.PackageManager}.INSTALL_*
+     * @return {@link PackageUtils#INSTALL_SUCCEEDED} means install success, other means failed. details see
+     * {@link PackageUtils}.INSTALL_FAILED_*. same to {@link android.content.pm.PackageManager}.INSTALL_*
      * @see #installSilent(android.content.Context, String, String)
      */
     public static int installSilent(Context context, String filePath) {
@@ -127,8 +127,8 @@ public class PackageUtils {
      * @param context
      * @param filePath file path of package
      * @param pmParams pm install params
-     * @return {@link com.cylan.utils.PackageUtils#INSTALL_SUCCEEDED} means install success, other means failed. details see
-     * {@link com.cylan.utils.PackageUtils}.INSTALL_FAILED_*. same to {@link android.content.pm.PackageManager}.INSTALL_*
+     * @return {@link PackageUtils#INSTALL_SUCCEEDED} means install success, other means failed. details see
+     * {@link PackageUtils}.INSTALL_FAILED_*. same to {@link android.content.pm.PackageManager}.INSTALL_*
      */
     public static int installSilent(Context context, String filePath, String pmParams) {
         if (filePath == null || filePath.length() == 0) {

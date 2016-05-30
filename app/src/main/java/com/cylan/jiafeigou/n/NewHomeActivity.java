@@ -1,7 +1,10 @@
 package com.cylan.jiafeigou.n;
 
+import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.UiThread;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -9,20 +12,28 @@ import android.util.Log;
 import android.widget.Button;
 
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.n.base.NewBaseActivity;
+import com.cylan.jiafeigou.n.mvp.contract.home.NewHomeActivityContract;
+import com.cylan.jiafeigou.n.mvp.impl.home.HomeDiscoveryPresenterImpl;
+import com.cylan.jiafeigou.n.mvp.impl.home.HomeMinePresenterImpl;
+import com.cylan.jiafeigou.n.mvp.impl.home.HomePageListPresenterImpl;
+import com.cylan.jiafeigou.n.mvp.impl.home.NewHomeActivityPresenterImpl;
 import com.cylan.jiafeigou.n.view.home.HomeDiscoveryFragment;
 import com.cylan.jiafeigou.n.view.home.HomeMineFragment;
 import com.cylan.jiafeigou.n.view.home.HomePageListFragment;
+import com.cylan.jiafeigou.utils.ToastUtil;
+import com.cylan.jiafeigou.widget.CustomViewPager;
+import com.cylan.utils.ListUtils;
+
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class NewHomeActivity extends NewBaseActivity implements
-        ViewPager.OnPageChangeListener {
-
+public class NewHomeActivity extends FragmentActivity implements
+        ViewPager.OnPageChangeListener, NewHomeActivityContract.View {
     @BindView(R.id.vp_home_content)
-    ViewPager vpHomeContent;
+    CustomViewPager vpHomeContent;
     @BindView(R.id.btn_home_list)
     Button btnHomeList;
     @BindView(R.id.btn_home_discovery)
@@ -40,13 +51,15 @@ public class NewHomeActivity extends NewBaseActivity implements
         setContentView(R.layout.activity_new_home);
         ButterKnife.bind(this);
         initBottomMenu();
+        new NewHomeActivityPresenterImpl(this);
     }
 
     private void initBottomMenu() {
         viewAdapter = new HomeViewAdapter(getSupportFragmentManager());
+        vpHomeContent.setPagingEnabled(false);
         vpHomeContent.setAdapter(viewAdapter);
-        btnHomeList.setEnabled(false);
         vpHomeContent.addOnPageChangeListener(this);
+        btnHomeList.setEnabled(false);
         bottomBtn[0] = btnHomeList;
         bottomBtn[1] = btnHomeDiscover;
         bottomBtn[2] = btnHomeMine;
@@ -90,6 +103,62 @@ public class NewHomeActivity extends NewBaseActivity implements
         Log.d("hunt", "state: " + state);
     }
 
+    private static long time = 0;
+
+    @Override
+    public void onBackPressed() {
+        if (checkExtraChildFragment()) {
+            return;
+        } else if (checkExtraFragment())
+            return;
+        if (System.currentTimeMillis() - time < 1500) {
+            super.onBackPressed();
+        } else {
+            time = System.currentTimeMillis();
+            ToastUtil.showToast(this,
+                    String.format(getString(R.string.click_back_again_exit),
+                            getString(R.string.app_name)));
+        }
+    }
+
+    private boolean checkExtraChildFragment() {
+        FragmentManager fm = getSupportFragmentManager();
+        List<Fragment> list = fm.getFragments();
+        if (ListUtils.isEmpty(list))
+            return false;
+        for (Fragment frag : list) {
+            if (frag != null && frag.isVisible()) {
+                FragmentManager childFm = frag.getChildFragmentManager();
+                if (childFm != null && childFm.getBackStackEntryCount() > 0) {
+                    childFm.popBackStack();
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean checkExtraFragment() {
+        final int count = getSupportFragmentManager().getBackStackEntryCount();
+        if (count > 0) {
+            getSupportFragmentManager().popBackStack();
+            return true;
+        } else return false;
+    }
+
+    @UiThread
+    @Override
+    public void initView() {
+    }
+
+    @Override
+    public void setPresenter(NewHomeActivityContract.Presenter presenter) {
+    }
+
+    @Override
+    public Context getContext() {
+        return getApplicationContext();
+    }
 }
 
 /**
@@ -108,12 +177,20 @@ class HomeViewAdapter extends FragmentPagerAdapter {
     @Override
     public Fragment getItem(int position) {
         switch (position) {
-            case INDEX_0:
-                return HomePageListFragment.newInstance(new Bundle());
-            case INDEX_1:
+            case INDEX_0: {
+                HomePageListFragment fragment = HomePageListFragment.newInstance(new Bundle());
+                new HomePageListPresenterImpl(fragment);
+                return fragment;
+            }
+            case INDEX_1: {
+                HomeDiscoveryFragment fragment = HomeDiscoveryFragment.newInstance(new Bundle());
+                new HomeDiscoveryPresenterImpl(fragment);
                 return HomeDiscoveryFragment.newInstance(new Bundle());
+            }
             case INDEX_2:
-                return HomeMineFragment.newInstance(new Bundle());
+                HomeMineFragment fragment = HomeMineFragment.newInstance(new Bundle());
+                new HomeMinePresenterImpl(fragment);
+                return fragment;
         }
         return HomePageListFragment.newInstance(new Bundle());
     }
