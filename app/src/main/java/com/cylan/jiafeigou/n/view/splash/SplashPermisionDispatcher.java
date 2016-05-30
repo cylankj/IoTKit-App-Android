@@ -1,10 +1,9 @@
 package com.cylan.jiafeigou.n.view.splash;
 
 import android.support.v4.app.ActivityCompat;
-import android.util.Log;
 
 import com.cylan.jiafeigou.utils.ParamStatic;
-import com.cylan.support.DswLog;
+
 
 import java.lang.ref.WeakReference;
 
@@ -43,6 +42,7 @@ final class SplashPermisionDispatcher {
     public static void showWriteSdCardWithCheck(WelcomePage target) {
         if (PermissionUtils.hasSelfPermissions(target, ParamStatic.PERMISSION_SHOWMULTIS)) {
             //    target.showCamera();
+            target.showWriteSdCard();
         } else {
             if (PermissionUtils.shouldShowRequestPermissionRationale(target, ParamStatic.PERMISSION_SHOWMULTIS)) {
                 target.showRationaleForCamera(new ShowCameraPermissionRequest(target, ParamStatic.PERMISSION_SHOWMULTIS, ParamStatic.REQUEST_SHOWMULTIS));
