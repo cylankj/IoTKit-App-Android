@@ -1,6 +1,8 @@
 package com.cylan.jiafeigou.n.mvp.impl.splash;
 
 
+import com.cylan.jiafeigou.n.model.contract.ModelContract;
+import com.cylan.jiafeigou.n.model.impl.SplashModelImpl;
 import com.cylan.jiafeigou.n.mvp.contract.splash.SplashContract;
 
 import java.lang.ref.WeakReference;
@@ -8,23 +10,41 @@ import java.lang.ref.WeakReference;
 /**
  * Created by hunt on 16-5-14.
  */
-class SplashPresenterImpl implements SplashContract.Presenter {
+public class SplashPresenterImpl implements SplashContract.PresenterOps, SplashContract.PresenterRequiredOps {
 
-    WeakReference<SplashContract.View> splashView;
+    private WeakReference<SplashContract.ViewRequiredOps> mView;
+    private ModelContract.SplashModelOps mModel;
 
-    public SplashPresenterImpl(SplashContract.View splashView) {
-        this.splashView = new WeakReference<SplashContract.View>(splashView);
-        splashView.setPresenter(this);
+    private SplashContract.ViewRequiredOps curView;
+
+    public SplashPresenterImpl(SplashContract.ViewRequiredOps splashView) {
+        this.mView = new WeakReference<SplashContract.ViewRequiredOps>(splashView);
+        this.mModel = new SplashModelImpl(this);
+    }
+
+
+    @Override
+    public void splashTime() {
+        //闪屏时间
+        mModel.splashTimeda();
     }
 
     @Override
-    public void start() {
+    public void finishAppDelay() {
+        mModel.finishAppDalayda();
+    }
 
+
+    @Override
+    public void onTimeSplashed() {
+        curView = mView.get();
+        if (curView != null) curView.timeSplashed();
     }
 
     @Override
-    public void stop() {
-
+    public void onfinishDelayed() {
+        curView = mView.get();
+        if (curView != null) curView.finishDelayed();
     }
 }
 

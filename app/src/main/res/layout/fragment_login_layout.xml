@@ -3,7 +3,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-
     <RelativeLayout
         android:id="@+id/login_frame"
         android:layout_width="match_parent"
@@ -76,7 +75,7 @@
                 android:hint="@string/PASSWORD"
                 android:inputType="textPassword"
                 android:maxLength="12"
-                android:nextFocusDown="@+id/btnLogin"
+
                 android:paddingLeft="0dp"
                 android:textColor="@color/text_color"
                 android:textColorHint="@color/hint_text_color"
@@ -93,7 +92,7 @@
             android:layout_gravity="center"
             android:layout_marginTop="30dp"
             android:background="@drawable/btn_login_selector"
-            android:nextFocusDown="@+id/loginForgetpwd"
+
             android:text="@string/LOGIN"
             android:textSize="18sp" />
 
@@ -105,7 +104,7 @@
             android:layout_below="@id/btnLogin"
             android:focusable="true"
             android:gravity="right"
-            android:nextFocusDown="@+id/the_third_login_app1"
+
             android:paddingBottom="20dp"
             android:paddingLeft="15dp"
             android:paddingRight="15dp"
@@ -132,7 +131,7 @@
             android:drawablePadding="8dp"
             android:focusable="true"
             android:gravity="center"
-            android:nextFocusRight="@+id/the_third_login_app2"
+
             android:paddingBottom="5dp"
             android:paddingLeft="15dp"
             android:paddingRight="25dp"
@@ -163,5 +162,4 @@
             android:textColor="@color/third_login_text_color"
             android:textSize="15sp" />
     </LinearLayout>
-
 </RelativeLayout>

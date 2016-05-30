@@ -41,6 +41,8 @@ dependencies {
     apt rootProject.ext.apt
     compile rootProject.ext.glide
     compile rootProject.ext.glideSupport
+    compile rootProject.ext.permis
+    apt rootProject.ext.permisApt
     compile project(':jlib')
     compile project(':WebRtcAndroid')
 }

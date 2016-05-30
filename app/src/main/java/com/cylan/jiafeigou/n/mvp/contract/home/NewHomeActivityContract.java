@@ -6,9 +6,9 @@ import com.cylan.jiafeigou.n.mvp.BaseView;
 /**
  * Created by hunt on 16-5-23.
  */
-@Deprecated
+
 public interface NewHomeActivityContract {
-    @Deprecated
+
     interface View extends BaseView<Presenter> {
         void initView();
 
@@ -17,7 +17,7 @@ public interface NewHomeActivityContract {
         //void onBackPress();
     }
 
-    @Deprecated
+
     public interface Presenter extends BasePresenter {
         //void loadTable();
 

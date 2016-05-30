@@ -344,6 +344,7 @@
     </style>
 
     <style name="activity.welcome.theme" parent="@android:style/Theme.NoTitleBar">
+
         <item name="android:windowIsTranslucent">true</item>
     </style>
 
