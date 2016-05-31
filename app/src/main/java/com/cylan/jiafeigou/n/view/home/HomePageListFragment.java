@@ -208,4 +208,12 @@ public class HomePageListFragment extends Fragment implements
         }
         homeMenuDialogWeakReference.get().show();
     }
+
+    class ConnectResult {
+        int code;
+
+        public ConnectResult(int code) {
+            this.code = code;
+        }
+    }
 }

@@ -23,12 +23,16 @@ import com.cylan.jiafeigou.n.view.home.HomePageListFragment;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.widget.CustomViewPager;
 import com.cylan.utils.ListUtils;
+import com.superlog.SLog;
 
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import rx.Observable;
+import rx.Subscriber;
+import rx.subscriptions.CompositeSubscription;
 
 public class NewHomeActivity extends FragmentActivity implements
         ViewPager.OnPageChangeListener, NewHomeActivityContract.View {
@@ -44,6 +48,9 @@ public class NewHomeActivity extends FragmentActivity implements
     private HomeViewAdapter viewAdapter;
     Button[] bottomBtn = new Button[3];
 
+    CompositeSubscription _subscriptions;
+
+    Subscriber<String> subscriber;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +59,52 @@ public class NewHomeActivity extends FragmentActivity implements
         ButterKnife.bind(this);
         initBottomMenu();
         new NewHomeActivityPresenterImpl(this);
+        _subscriptions = new CompositeSubscription();
+        testRxAndroid();
     }
+
+    /**
+     * Dispatch onStart() to all fragments.  Ensure any created loaders are
+     * now started.
+     */
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+//        Observable<String> observable = Observable.create(new Observable.OnSubscribe<String>() {
+//            @Override
+//            public void call(Subscriber<? super String> subscriber) {
+//                subscriber.onNext("what the fuck?");
+//                subscriber.onCompleted();
+//            }
+//        });
+        Observable.just("test just").subscribe(subscriber);
+//        observable.subscribe(subscriber);
+
+    }
+
+
+    private void testRxAndroid() {
+        subscriber = new Subscriber<String>() {
+            @Override
+            public void onCompleted() {
+                SLog.e("onCompleted");
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(String s) {
+                SLog.e(s);
+            }
+        };
+
+
+    }
+
 
     private void initBottomMenu() {
         viewAdapter = new HomeViewAdapter(getSupportFragmentManager());
@@ -161,6 +213,7 @@ public class NewHomeActivity extends FragmentActivity implements
     }
 }
 
+
 /**
  * 主页的三个页面
  */
@@ -199,4 +252,6 @@ class HomeViewAdapter extends FragmentPagerAdapter {
     public int getCount() {
         return 3;
     }
+
+
 }

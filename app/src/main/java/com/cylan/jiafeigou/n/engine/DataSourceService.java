@@ -7,7 +7,6 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.IBinder;
 import android.os.Message;
-import android.util.Log;
 
 import com.cylan.entity.JfgEnum;
 import com.cylan.entity.jniCall.JFGAccount;
@@ -32,6 +31,9 @@ import com.cylan.entity.jniCall.JFGStatus;
 import com.cylan.entity.jniCall.RobotMsg;
 import com.cylan.interfaces.JniCallBack;
 import com.cylan.jiafeigou.BuildConfig;
+import com.cylan.jiafeigou.n.NewHomeActivity;
+import com.cylan.jiafeigou.n.view.home.HomePageListFragment;
+import com.cylan.jiafeigou.support.rxbus.RxBus;
 import com.cylan.jiafeigou.support.stat.MtaManager;
 import com.cylan.sdkjni.JfgCmd;
 import com.superlog.LogLevel;
@@ -39,7 +41,10 @@ import com.superlog.SLog;
 
 import java.util.ArrayList;
 
-import rx.android.plugins.RxAndroidPlugins;
+import rx.Observable;
+import rx.Subscriber;
+import rx.functions.Action1;
+import rx.functions.Func1;
 
 
 public class DataSourceService extends Service implements JniCallBack {
@@ -47,6 +52,7 @@ public class DataSourceService extends Service implements JniCallBack {
     private Handler workHandler;
     private String logPath;
     JfgCmd cmd;
+    RxBus rxBus;
 
     static {
         System.loadLibrary("jfgsdk");
@@ -56,6 +62,7 @@ public class DataSourceService extends Service implements JniCallBack {
     public void onCreate() {
         super.onCreate();
         initNative();
+        rxBus = RxBus.getInstance();
         cmd = JfgCmd.getJfgCmd(this);
         logPath = Environment.getExternalStorageDirectory().getPath() + "/JFG";
         initLogUtil(logPath);
@@ -126,7 +133,9 @@ public class DataSourceService extends Service implements JniCallBack {
 
     @Override
     public void OnReprotJfgDevices(JFGDevice[] jfgDevices) {
-
+        if (rxBus.hasObservers()) {
+            rxBus.send(jfgDevices);
+        }
     }
 
     @Override
@@ -137,6 +146,11 @@ public class DataSourceService extends Service implements JniCallBack {
     @Override
     public void OnServerConnected() {
         SLog.i("OnServerConnected");
+        workHandler.removeMessages(1);
+        if (rxBus.hasObservers()) {
+            rxBus.send("test");
+        }
+
 
     }
 
