@@ -18,8 +18,8 @@ import android.widget.Toast;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.contract.splash.SplashContract;
 import com.cylan.jiafeigou.n.mvp.impl.splash.SplashPresenterImpl;
-import com.cylan.jiafeigou.n.view.adapter.SimpleFregmentAdapter;
-import com.cylan.jiafeigou.n.view.login.LoginFrament;
+import com.cylan.jiafeigou.n.view.adapter.SimpleFragmentAdapter;
+import com.cylan.jiafeigou.n.view.login.LoginFragment;
 import com.cylan.jiafeigou.utils.ParamStatic;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.StateMaintainer;
@@ -41,7 +41,7 @@ import permissions.dispatcher.RuntimePermissions;
  * Created by chen on 5/24/16.
  */
 @RuntimePermissions
-public class WelcomePage extends FragmentActivity implements SplashContract.ViewRequiredOps {
+public class FragmentWelcomePage extends FragmentActivity implements SplashContract.ViewRequiredOps {
 
 
     @BindView(R.id.imgvWelcomeSplash)
@@ -50,14 +50,14 @@ public class WelcomePage extends FragmentActivity implements SplashContract.View
     ViewPager vpWelcome;
     @BindView(R.id.v_indicator)
     CirclePageIndicator vIndicator;
-    @BindView(R.id.rWelcomeRoot)
+    @BindView(R.id.rLayoutWelcomeRoot)
     RelativeLayout rWelcomeRoot;
 
     private SplashContract.PresenterOps mPresenter;
     private final String TAG_COMEIN = "isTheUserFirstLoginIn";
 
     private List<Fragment> listSplashFreg;
-    private SimpleFregmentAdapter mSplashListAdapter;
+    private SimpleFragmentAdapter mSplashListAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,11 +85,11 @@ public class WelcomePage extends FragmentActivity implements SplashContract.View
         setFIrstUseApp();
         if (listSplashFreg == null) {
             listSplashFreg = new ArrayList<Fragment>();
-            listSplashFreg.add(SplashFragment.newInstance(null));
-            listSplashFreg.add(SplashFragment.newInstance(null));
-            listSplashFreg.add(SplashFragment.newInstance(null));
-            listSplashFreg.add(LoginFrament.newInstance(null));
-            mSplashListAdapter = new SimpleFregmentAdapter(getSupportFragmentManager(), listSplashFreg);
+            listSplashFreg.add(FragmentSplash.newInstance(null));
+            listSplashFreg.add(FragmentSplash.newInstance(null));
+            listSplashFreg.add(FragmentSplash.newInstance(null));
+            listSplashFreg.add(LoginFragment.newInstance(null));
+            mSplashListAdapter = new SimpleFragmentAdapter(getSupportFragmentManager(), listSplashFreg);
 
             vpWelcome.setAdapter(mSplashListAdapter);
             vpWelcome.addOnPageChangeListener(new PageChangeListen());
@@ -104,16 +104,16 @@ public class WelcomePage extends FragmentActivity implements SplashContract.View
             //进入登陆页 login page
             if (listSplashFreg == null) {
                 listSplashFreg = new ArrayList<Fragment>();
-                listSplashFreg.add(LoginFrament.newInstance(null));
+                listSplashFreg.add(LoginFragment.newInstance(null));
             }
-            mSplashListAdapter = new SimpleFregmentAdapter(getSupportFragmentManager(), listSplashFreg);
+            mSplashListAdapter = new SimpleFragmentAdapter(getSupportFragmentManager(), listSplashFreg);
             vpWelcome.setAdapter(mSplashListAdapter);
         }
     }
 
     @Override
     public void timeSplashed() {
-        SplashPermisionDispatcher.showWriteSdCardWithCheck(this);
+        SplashPermissionDispatcher.showWriteSdCardWithCheck(this);
     }
 
     @Override
@@ -138,7 +138,7 @@ public class WelcomePage extends FragmentActivity implements SplashContract.View
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        SplashPermisionDispatcher.onRequestPermissionsResult(this,permissions, requestCode, grantResults);
+        SplashPermissionDispatcher.onRequestPermissionsResult(this,permissions, requestCode, grantResults);
     }
     @OnPermissionDenied(Manifest.permission.WRITE_EXTERNAL_STORAGE)
     public void onWriteSdCardDenied() {

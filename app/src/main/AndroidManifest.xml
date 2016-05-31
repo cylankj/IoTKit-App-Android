@@ -78,7 +78,7 @@
             android:value="play" />
 
         <activity
-            android:name=".n.view.splash.WelcomePage"
+            android:name=".n.view.splash.FragmentWelcomePage"
             android:configChanges="locale|orientation|keyboardHidden"
             android:screenOrientation="portrait"
 

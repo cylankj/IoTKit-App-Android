@@ -17,17 +17,17 @@ import static android.support.v4.app.ActivityCompat.requestPermissions;
  */
 
 
-final class SplashPermisionDispatcher {
+final class SplashPermissionDispatcher {
 /**
  * 所有提示语句暂用camera的
  * */
 
-    private static final String TAG = SplashPermisionDispatcher.class.getName();
+    private static final String TAG = SplashPermissionDispatcher.class.getName();
 
-    private SplashPermisionDispatcher() {
+    private SplashPermissionDispatcher() {
     }
 
-    public static void showCameraWithCheck(WelcomePage target,String[] permisions,int requestCode) {
+    public static void showCameraWithCheck(FragmentWelcomePage target, String[] permisions, int requestCode) {
         if (PermissionUtils.hasSelfPermissions(target, permisions)) {
             //    target.showCamera();
         } else {
@@ -39,7 +39,7 @@ final class SplashPermisionDispatcher {
         }
     }
 
-    public static void showWriteSdCardWithCheck(WelcomePage target) {
+    public static void showWriteSdCardWithCheck(FragmentWelcomePage target) {
         if (PermissionUtils.hasSelfPermissions(target, ParamStatic.PERMISSION_SHOWMULTIS)) {
             //    target.showCamera();
             target.showWriteSdCard();
@@ -55,7 +55,7 @@ final class SplashPermisionDispatcher {
     /**
      * 一次可以检测某一个或者检测所有需要的权限
      */
-    static void onRequestPermissionsResult(WelcomePage target, String[] permissions, int requestCode, int[] grantResults) {
+    static void onRequestPermissionsResult(FragmentWelcomePage target, String[] permissions, int requestCode, int[] grantResults) {
         switch (requestCode) {
             //一次检测照相机权限
             case ParamStatic.REQUEST_SHOWCAMERA:
@@ -107,26 +107,26 @@ final class SplashPermisionDispatcher {
     }
 
     private static class ShowCameraPermissionRequest implements PermissionRequest {
-        private final WeakReference<WelcomePage> weakTarget;
-        private String[] permision_Show;
-        private int requstCode;
+        private final WeakReference<FragmentWelcomePage> weakTarget;
+        private String[] permissionShow;
+        private int requestCode;
 
-        private ShowCameraPermissionRequest(WelcomePage target, String[] permision, int request) {
+        private ShowCameraPermissionRequest(FragmentWelcomePage target, String[] permision, int request) {
             this.weakTarget = new WeakReference<>(target);
-            this.permision_Show = permision;
-            this.requstCode = request;
+            this.permissionShow = permision;
+            this.requestCode = request;
         }
 
         @Override
         public void proceed() {
-            WelcomePage target = weakTarget.get();
+            FragmentWelcomePage target = weakTarget.get();
             if (target == null) return;
-            requestPermissions(target, permision_Show, requstCode);
+            requestPermissions(target, permissionShow, requestCode);
         }
 
         @Override
         public void cancel() {
-            WelcomePage target = weakTarget.get();
+            FragmentWelcomePage target = weakTarget.get();
             if (target == null) return;
             target.onCameraDenied();
         }

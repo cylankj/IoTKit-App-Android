@@ -282,4 +282,9 @@ public class DataSourceService extends Service implements JniCallBack {
     public void OnBindResult(int i) {
 
     }
+
+    @Override
+    public void OnReprotSmsPhone(String s) {
+
+    }
 }

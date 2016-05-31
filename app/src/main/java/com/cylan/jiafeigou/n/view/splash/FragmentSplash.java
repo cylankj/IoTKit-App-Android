@@ -3,7 +3,6 @@ package com.cylan.jiafeigou.n.view.splash;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,7 +10,7 @@ import android.view.ViewGroup;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.contract.splash.SplashContract;
-import com.cylan.jiafeigou.n.view.adapter.SimpleFregmentAdapter;
+import com.cylan.jiafeigou.n.view.adapter.SimpleFragmentAdapter;
 import com.cylan.viewindicator.CirclePageIndicator;
 
 import java.util.List;
@@ -22,7 +21,7 @@ import butterknife.ButterKnife;
 /**
  * Created by hunt on 16-5-14.
  */
-public class SplashFragment extends Fragment implements SplashContract.View {
+public class FragmentSplash extends Fragment implements SplashContract.View {
 
     @BindView(R.id.vp_splash_content)
     ViewPager vpSplashContent;
@@ -30,8 +29,8 @@ public class SplashFragment extends Fragment implements SplashContract.View {
     CirclePageIndicator vIndicator;
     private List<Fragment> fragmentList;
 
-    public static SplashFragment newInstance(Bundle bundle) {
-        SplashFragment fragment = new SplashFragment();
+    public static FragmentSplash newInstance(Bundle bundle) {
+        FragmentSplash fragment = new FragmentSplash();
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -60,7 +59,7 @@ public class SplashFragment extends Fragment implements SplashContract.View {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        vpSplashContent.setAdapter(new SimpleFregmentAdapter(getChildFragmentManager(), fragmentList));
+        vpSplashContent.setAdapter(new SimpleFragmentAdapter(getChildFragmentManager(), fragmentList));
         vIndicator.setViewPager(vpSplashContent);
         vIndicator.setOnPageChangeListener(new SimpleChangeListener() {
             @Override

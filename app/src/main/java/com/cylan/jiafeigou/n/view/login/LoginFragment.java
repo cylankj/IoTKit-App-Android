@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.n.model.BeanInfoLogin;
 import com.cylan.jiafeigou.n.mvp.contract.login.LoginContract;
 import com.cylan.jiafeigou.n.mvp.impl.login.LoginPresenterImpl;
 
@@ -21,16 +22,16 @@ import butterknife.OnClick;
 /**
  * Created by chen on 5/26/16.
  */
-public class LoginFrament extends Fragment implements LoginContract.ViewRequiredOps{
+public class LoginFragment extends Fragment implements LoginContract.ViewRequiredOps{
 
 
     @BindView(R.id.btnLogin)
     Button btnLogin;
 
     private LoginContract.PresenterOps mPresent;
-    private InfoLogin infoLogin;
-    public static LoginFrament newInstance(Bundle bundle) {
-        LoginFrament fragment = new LoginFrament();
+    private BeanInfoLogin infoLogin;
+    public static LoginFragment newInstance(Bundle bundle) {
+        LoginFragment fragment = new LoginFragment();
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -54,7 +55,7 @@ public class LoginFrament extends Fragment implements LoginContract.ViewRequired
     }
 
     private void initData() {
-        infoLogin = new InfoLogin();
+        infoLogin = new BeanInfoLogin();
     }
 
 
@@ -98,9 +99,9 @@ public class LoginFrament extends Fragment implements LoginContract.ViewRequired
     }
 
     @OnClick(R.id.btnLogin)
-    private void onLoginClick() {
-        infoLogin.Usename = "";
-        infoLogin.Passwd   = "";
+    public void onLoginClick() {
+        infoLogin.userName = "";
+        infoLogin.pwd = "";
         mPresent.executeLogin(infoLogin);
     }
 
