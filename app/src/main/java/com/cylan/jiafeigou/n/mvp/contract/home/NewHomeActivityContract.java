@@ -6,12 +6,22 @@ import com.cylan.jiafeigou.n.mvp.BaseView;
 /**
  * Created by hunt on 16-5-23.
  */
+
 public interface NewHomeActivityContract {
 
     interface View extends BaseView<Presenter> {
         void initView();
+
+        //void ok();
+
+        //void onBackPress();
     }
 
-    interface Presenter extends BasePresenter {
+
+    public interface Presenter extends BasePresenter {
+        //void loadTable();
+
+        //void doSample();
+
     }
 }

@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +11,7 @@ import android.view.ViewGroup;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.contract.splash.SplashContract;
+import com.cylan.jiafeigou.n.view.adapter.SimpleFregmentAdapter;
 import com.cylan.viewindicator.CirclePageIndicator;
 
 import java.util.List;
@@ -60,7 +60,7 @@ public class SplashFragment extends Fragment implements SplashContract.View {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        vpSplashContent.setAdapter(new SplashListAdapter(getChildFragmentManager(), fragmentList));
+        vpSplashContent.setAdapter(new SimpleFregmentAdapter(getChildFragmentManager(), fragmentList));
         vIndicator.setViewPager(vpSplashContent);
         vIndicator.setOnPageChangeListener(new SimpleChangeListener() {
             @Override
@@ -94,27 +94,5 @@ public class SplashFragment extends Fragment implements SplashContract.View {
     }
 }
 
-/**
- * 欢迎页面.
- */
-class SplashListAdapter extends FragmentPagerAdapter {
-    /**
-     * fragment集合
-     */
-    private List<Fragment> fragmentList;
 
-    public SplashListAdapter(FragmentManager fm, List<Fragment> fragmentList) {
-        super(fm);
-        this.fragmentList = fragmentList;
-    }
 
-    @Override
-    public Fragment getItem(int position) {
-        return fragmentList.get(position);
-    }
-
-    @Override
-    public int getCount() {
-        return fragmentList == null ? 0 : fragmentList.size();
-    }
-}

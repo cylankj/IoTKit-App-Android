@@ -47,6 +47,8 @@ dependencies {
     apt rootProject.ext.apt
     compile rootProject.ext.glide
     compile rootProject.ext.glideSupport
+    compile rootProject.ext.permis
+    apt rootProject.ext.permisApt
     compile project(':jlib')
     compile files('libs/aliyun-oss-sdk-android-2.2.0.jar')
     compile files('libs/bugly_crash_release__2.1.jar')
@@ -61,6 +63,8 @@ dependencies {
     compile files('libs/SLog-2.0.jar')
     compile files('libs/weibosdkcore.jar')
     compile files('libs/zxing.jar')
+    debugCompile files('src/main/jniLibs/jfg-debug-support.jar')
+    releaseCompile files('src/main/jniLibs/jfg-release-support.jar')
 }
 
 
