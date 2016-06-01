@@ -22,7 +22,6 @@ import com.cylan.jiafeigou.n.view.adapter.SimpleFragmentAdapter;
 import com.cylan.jiafeigou.n.view.login.LoginFragment;
 import com.cylan.jiafeigou.utils.ParamStatic;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
-import com.cylan.jiafeigou.utils.StateMaintainer;
 import com.cylan.viewindicator.CirclePageIndicator;
 
 import java.util.ArrayList;
@@ -64,7 +63,6 @@ public class FragmentWelcomePage extends FragmentActivity implements SplashContr
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_welcome_page);
         ButterKnife.bind(this);
-        StateMaintainer.getAppManager().addActivity(this);
         initData();
     }
 
@@ -82,7 +80,7 @@ public class FragmentWelcomePage extends FragmentActivity implements SplashContr
     }
 
     private void initGuidePage() {
-        setFIrstUseApp();
+        setFirstUseApp();
         if (listSplashFreg == null) {
             listSplashFreg = new ArrayList<Fragment>();
             listSplashFreg.add(FragmentSplash.newInstance(null));
@@ -98,7 +96,7 @@ public class FragmentWelcomePage extends FragmentActivity implements SplashContr
     }
 
     private void initLoginPage() {
-        if (isLonginIn()) {
+        if (isLoginIn()) {
             //进去主页 home page
         } else {
             //进入登陆页 login page
@@ -118,11 +116,11 @@ public class FragmentWelcomePage extends FragmentActivity implements SplashContr
 
     @Override
     public void finishDelayed() {
-        StateMaintainer.getAppManager().finishAllActivity();
+//        StateMaintainer.getAppManager().finishAllActivity();
     }
 
 
-    private boolean isLonginIn() {
+    private boolean isLoginIn() {
         return PreferencesUtils.getBoolean(this, ParamStatic.TAG_LOGING_STATUS, false);
     }
 
@@ -131,7 +129,7 @@ public class FragmentWelcomePage extends FragmentActivity implements SplashContr
         return true;
     }
 
-    private void setFIrstUseApp() {
+    private void setFirstUseApp() {
         PreferencesUtils.putBoolean(this, TAG_COMEIN, false);
     }
 

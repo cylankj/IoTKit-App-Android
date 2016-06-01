@@ -40,7 +40,7 @@ public class SplashPresenterImpl implements SplashContract.PresenterOps, SplashC
     }
 
     @Override
-    public void onfinishDelayed() {
+    public void onFinishDelayed() {
         final SplashContract.ViewRequiredOps mViewRef = mView.get();
         if (mViewRef != null) mViewRef.finishDelayed();
     }

@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.n.NewHomeActivity;
 import com.cylan.jiafeigou.n.model.BeanInfoLogin;
 import com.cylan.jiafeigou.n.mvp.contract.login.LoginContract;
 import com.cylan.jiafeigou.n.mvp.impl.login.LoginPresenterImpl;
@@ -22,7 +23,7 @@ import butterknife.OnClick;
 /**
  * Created by chen on 5/26/16.
  */
-public class LoginFragment extends Fragment implements LoginContract.ViewRequiredOps{
+public class LoginFragment extends Fragment implements LoginContract.ViewRequiredOps {
 
 
     @BindView(R.id.btnLogin)
@@ -30,6 +31,7 @@ public class LoginFragment extends Fragment implements LoginContract.ViewRequire
 
     private LoginContract.PresenterOps mPresent;
     private BeanInfoLogin infoLogin;
+
     public static LoginFragment newInstance(Bundle bundle) {
         LoginFragment fragment = new LoginFragment();
         fragment.setArguments(bundle);
@@ -103,13 +105,15 @@ public class LoginFragment extends Fragment implements LoginContract.ViewRequire
         infoLogin.userName = "";
         infoLogin.pwd = "";
         mPresent.executeLogin(infoLogin);
+        startActivity(new Intent(getActivity(), NewHomeActivity.class));
+        getActivity().finish();
     }
 
     @Override
     public void LoginExecuted(String succeed) {
         if (succeed.equals("succeed")) {
             //login succeed
-        }else {
+        } else {
             //show the reason of failed,and "succeed" carried the message
         }
     }

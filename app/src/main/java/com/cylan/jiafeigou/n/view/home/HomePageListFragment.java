@@ -18,6 +18,7 @@ import com.cylan.jiafeigou.n.mvp.contract.home.HomePageListContract;
 import com.cylan.jiafeigou.n.view.adapter.HomePageListAdapter;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.widget.dialog.HomeMenuDialog;
+import com.superlog.SLog;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
@@ -68,10 +69,18 @@ public class HomePageListFragment extends Fragment implements
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (savedInstanceState != null) {
+            SLog.d("save L:" + savedInstanceState);
+        }
         Bundle bundle;
         if (getArguments() != null) {
             bundle = getArguments();
         }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
     }
 
     @Override
