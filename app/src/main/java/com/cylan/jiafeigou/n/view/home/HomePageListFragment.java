@@ -1,23 +1,31 @@
 package com.cylan.jiafeigou.n.view.home;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.annotation.UiThread;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.model.DeviceBean;
+import com.cylan.jiafeigou.n.model.GreetBean;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomePageListContract;
 import com.cylan.jiafeigou.n.view.adapter.HomePageListAdapter;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.widget.dialog.HomeMenuDialog;
+import com.cylan.jiafeigou.widget.sticky.StickyHeaderBuilder;
+import com.cylan.jiafeigou.widget.wave.WaveHelper;
+import com.cylan.jiafeigou.widget.wave.WaveView;
 import com.superlog.SLog;
 
 import java.lang.ref.WeakReference;
@@ -27,10 +35,6 @@ import java.util.concurrent.TimeUnit;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import in.srain.cube.views.ptr.PtrClassicFrameLayout;
-import in.srain.cube.views.ptr.PtrDefaultHandler;
-import in.srain.cube.views.ptr.PtrFrameLayout;
-import in.srain.cube.views.ptr.PtrHandler;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -38,23 +42,31 @@ import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 public class HomePageListFragment extends Fragment implements
-        HomePageListContract.View, PtrHandler,
+        HomePageListContract.View, SwipeRefreshLayout.OnRefreshListener,
         HomePageListAdapter.DeviceItemClickListener,
         HomePageListAdapter.DeviceItemLongClickListener {
-
-
+    /**
+     * progress 位置
+     */
+    static int progressBarStartPosition;
     private static final int REFRESH_DELAY = 1500;
-    @BindView(R.id.fLayout_main_content_holder)
-    PtrClassicFrameLayout fLayoutMainContentHolder;
+    @BindView(R.id.srLayout_home_page_list_container)
+    SwipeRefreshLayout srLayoutMainContentHolder;
     @BindView(R.id.imgBtn_add_devices)
     ImageButton imgBtnAddDevices;
     @BindView(R.id.rV_devices_list)
     RecyclerView rVDevicesList;//设备列表
+    @BindView(R.id.vWaveAnimation)
+    WaveView vWaveAnimation;
+    @BindView(R.id.rLayout_home_top)
+    RelativeLayout rLayoutHomeTop;
     //不是长时间需要,用软引用.
     private WeakReference<HomeMenuDialog> homeMenuDialogWeakReference;
     private HomePageListContract.Presenter presenter;
 
     private HomePageListAdapter homePageListAdapter;
+
+    private WaveHelper waveHelper;
     /**
      * 手动完成刷新,自动完成刷新 订阅者.
      */
@@ -83,12 +95,18 @@ public class HomePageListFragment extends Fragment implements
         super.onSaveInstanceState(outState);
     }
 
+
     @Override
     public void onResume() {
         super.onResume();
+<<<<<<< 7841f34ebb5d9548d4d9b478bc5056be9684cb08
         if (presenter != null) {
             presenter.start();
         }
+=======
+        if (presenter != null) presenter.start();
+
+>>>>>>> 主页基本动画,框架搭好
     }
 
     @Override
@@ -112,9 +130,48 @@ public class HomePageListFragment extends Fragment implements
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         //添加Handler
-        fLayoutMainContentHolder.setPtrHandler(this);
+        srLayoutMainContentHolder.setOnRefreshListener(this);
+        initProgressBarPosition();
         rVDevicesList.setLayoutManager(new LinearLayoutManager(getContext()));
         rVDevicesList.setAdapter(homePageListAdapter);
+        StickyHeaderBuilder.stickTo(rVDevicesList)
+                .setHeader(R.id.rLayoutHomeHeaderContainer, (ViewGroup) getView())
+                .minHeightHeader(50)
+                .build();
+        initWaveAnimation();
+    }
+
+    /**
+     * 水波纹动画初始化
+     */
+    private void initWaveAnimation() {
+        if (waveHelper == null)
+            waveHelper = new WaveHelper(vWaveAnimation);
+        vWaveAnimation.post(new Runnable() {
+            @Override
+            public void run() {
+                waveHelper.start();
+            }
+        });
+    }
+
+    /**
+     * 初始化,progressBar的位置.
+     */
+    private void initProgressBarPosition() {
+        rVDevicesList.post(new Runnable() {
+            @Override
+            public void run() {
+                if (progressBarStartPosition == 0) {
+                    ImageView view = (ImageView) getView().findViewById(R.id.imgHomeTopBg);
+                    if (view != null) {
+                        Drawable drawable = view.getBackground();
+                        progressBarStartPosition = drawable.getIntrinsicHeight();
+                    }
+                }
+                srLayoutMainContentHolder.setProgressViewOffset(true, progressBarStartPosition, progressBarStartPosition + 100);
+            }
+        });
     }
 
     @OnClick(R.id.imgBtn_add_devices)
@@ -125,12 +182,14 @@ public class HomePageListFragment extends Fragment implements
     @Override
     public void onStop() {
         super.onStop();
+        if (waveHelper != null) waveHelper.start();
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        presenter.stop();
+        if (presenter != null) presenter.stop();
+        if (waveHelper != null) waveHelper.cancel();
         unRegisterSubscription(refreshCompleteSubscription);
     }
 
@@ -155,11 +214,11 @@ public class HomePageListFragment extends Fragment implements
     @UiThread
     @Override
     public void onDeviceListRsp(List<DeviceBean> resultList) {
-        fLayoutMainContentHolder.refreshComplete();
+        srLayoutMainContentHolder.setRefreshing(false);
         if (resultList == null || resultList.size() == 0) {
             homePageListAdapter.clear();
             if (isResumed()) {
-                getActivity().findViewById(R.id.vs_empty_view).setVisibility(View.VISIBLE);
+//                getActivity().findViewById(R.id.vs_empty_view).setVisibility(View.VISIBLE);
             }
             return;
         }
@@ -167,22 +226,24 @@ public class HomePageListFragment extends Fragment implements
     }
 
     @Override
-    public boolean checkCanDoRefresh(PtrFrameLayout frame, View content, View header) {
-        return PtrDefaultHandler.checkContentCanBePulledDown(frame, content, header);
+    public void onGreetUpdate(GreetBean greetBean) {
+
     }
 
+
     @Override
-    public void onRefreshBegin(final PtrFrameLayout frame) {
-        presenter.startRefresh();
+    public void onRefresh() {
+        if (presenter != null) presenter.startRefresh();
         //不使用post,因为会泄露
-        refreshCompleteSubscription = Observable.just(frame)
+        srLayoutMainContentHolder.setRefreshing(true);
+        refreshCompleteSubscription = Observable.just(srLayoutMainContentHolder)
                 .subscribeOn(Schedulers.newThread())
                 .delay(REFRESH_DELAY, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<PtrFrameLayout>() {
+                .subscribe(new Action1<SwipeRefreshLayout>() {
                     @Override
-                    public void call(PtrFrameLayout frame) {
-                        frame.refreshComplete();
+                    public void call(SwipeRefreshLayout swipeRefreshLayout) {
+                        swipeRefreshLayout.setRefreshing(false);
                     }
                 });
     }

@@ -1,10 +1,11 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <RelativeLayout
-        android:id="@+id/rLayout_home_top"
+    <android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/srLayout_home_page_list_container"
         android:layout_width="match_parent"
+<<<<<<< 7841f34ebb5d9548d4d9b478bc5056be9684cb08
         android:layout_height="@dimen/y374"
         android:background="#eee000">
 
@@ -32,19 +33,19 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/rLayout_home_top">
+=======
+        android:layout_height="wrap_content">
+>>>>>>> 主页基本动画,框架搭好
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rV_devices_list"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-    </in.srain.cube.views.ptr.PtrClassicFrameLayout>
+            android:layout_height="match_parent"
+            android:background="@color/white" />
 
-    <ViewStub
-        android:id="@+id/vs_empty_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@+id/rLayout_home_top"
-        android:layout="@layout/fragment_home_page_list_empty_view"
-        android:visibility="gone" />
 
-</RelativeLayout>
+    </android.support.v4.widget.SwipeRefreshLayout>
+
+    <include layout="@layout/fragment_home_page_list_header" />
+
+</FrameLayout>

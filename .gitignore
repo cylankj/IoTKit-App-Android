@@ -13,3 +13,4 @@
 /gradle
 /node_modules
 app/libs/armeabi-v7a/libjfgsdk.so
+/captures

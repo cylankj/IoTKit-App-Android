@@ -9,6 +9,26 @@
  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  See the License for the specific language governing permissions and
  limitations under the License.
+<<<<<<< 7841f34ebb5d9548d4d9b478bc5056be9684cb08
+=======
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+>>>>>>> 主页基本动画,框架搭好
 -->
 <resources>
 
@@ -51,7 +71,7 @@
 
     <!-- CallOrConf -->
     <color name="help">#0199fb</color>
-    
+
     <!-- 修改密码 -->
     <color name="modify_pwd_hint">#c7c7cd</color>
     <!-- 意见 -->
@@ -123,5 +143,14 @@
     <color name="efamily_bottom_text_color">#888888</color>
     <color name="efamily_bottom_text_red_color">#ff1744</color>
     <color name="setting_line_color">#c7c7c9</color>
+
+    <!--3.0.0-->
+
+    <color name="color_wave_front">#66f2f5f7</color>
+    <color name="color_333333">#333333</color>
+    <color name="color_777777">#777777</color>
+    <color name="color_adadad">#adadad</color>
+    <color name="color_e8e8e8">#e8e8e8</color>
+
 
 </resources>

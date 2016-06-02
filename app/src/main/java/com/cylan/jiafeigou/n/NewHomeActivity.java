@@ -11,10 +11,14 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
+<<<<<<< 7841f34ebb5d9548d4d9b478bc5056be9684cb08
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+=======
+import android.view.ViewGroup;
+>>>>>>> 主页基本动画,框架搭好
 import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -262,5 +266,13 @@ class HomeViewAdapter extends FragmentPagerAdapter {
         return 3;
     }
 
+<<<<<<< 7841f34ebb5d9548d4d9b478bc5056be9684cb08
 
+=======
+    @Override
+    public void destroyItem(ViewGroup container, int position, Object object) {
+        //super.destroyItem(container, position, object);
+        //复写这个韩函数,以免回收fragment.
+    }
+>>>>>>> 主页基本动画,框架搭好
 }

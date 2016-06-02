@@ -11,7 +11,7 @@
         android:text="discovery" />
 
     <in.srain.cube.views.ptr.PtrClassicFrameLayout
-        android:id="@+id/fLayout_main_content_holder"
+        android:id="@+id/srLayout_home_page_list_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/tv_home_discovery_title" />

@@ -15,7 +15,7 @@ import in.srain.cube.views.ptr.PtrClassicFrameLayout;
 
 public class HomeDiscoveryFragment extends Fragment implements HomeDiscoveryContract.View {
 
-    @BindView(R.id.fLayout_main_content_holder)
+    @BindView(R.id.srLayout_home_page_list_container)
     PtrClassicFrameLayout fLayoutMainContentHolder;
     HomeDiscoveryContract.Presenter presenter;
 

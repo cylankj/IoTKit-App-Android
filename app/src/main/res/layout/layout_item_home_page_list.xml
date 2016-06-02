@@ -1,41 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:hunt="http://schemas.android.com/apk/res-auto"
     android:id="@+id/rLayout_device_item"
     android:layout_width="match_parent"
-    android:layout_height="80dp"
-    android:background="#999eee">
+    android:layout_height="77dp"
+    android:background="@color/white">
 
 
-    <ImageView
+    <com.cylan.jiafeigou.widget.ImageViewTip
         android:id="@+id/img_device_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
+<<<<<<< 7841f34ebb5d9548d4d9b478bc5056be9684cb08
         android:background="@drawable/icon_mine_friend" />
+=======
+        android:layout_marginLeft="33dp"
+        android:background="@drawable/icon_home_camera_online"
+        hunt:Dradius="3dp"
+        hunt:borderColor="@color/white"
+        hunt:borderWidth="2dp"
+        hunt:enableBorder="true"
+        hunt:ignore="true"
+        hunt:showDot="true" />
+>>>>>>> 主页基本动画,框架搭好
 
     <View
         android:id="@+id/v_icon_base_line_bottom"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/img_device_icon" />
+        android:layout_height="1dp"
+        android:layout_centerInParent="true" />
 
     <TextView
         android:id="@+id/tv_device_alias"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_above="@+id/v_icon_base_line_bottom"
         android:layout_marginLeft="15dp"
-        android:layout_marginTop="15dp"
         android:layout_toRightOf="@+id/img_device_icon"
-        android:text="test" />
+        android:ellipsize="end"
+        android:lines="1"
+        android:maxLength="8"
+        android:maxLines="1"
+        android:text="中文"
+        android:textColor="@color/color_333333"
+        android:textSize="16sp" />
 
     <TextView
         android:id="@+id/tv_device_msg_count"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/v_icon_base_line_bottom"
+        android:layout_below="@+id/v_icon_base_line_bottom"
         android:layout_marginLeft="15dp"
+        android:layout_marginTop="5dp"
         android:layout_toRightOf="@+id/img_device_icon"
-        android:text="[25]有新的发现" />
+        android:ellipsize="end"
+        android:lines="1"
+        android:maxLength="8"
+        android:maxLines="1"
+        android:text="[25]有新的发现"
+        android:textColor="@color/color_777777"
+        android:textSize="14sp" />
 
     <TextView
         android:id="@+id/tv_device_msg_time"
@@ -44,13 +69,15 @@
         android:layout_alignParentRight="true"
         android:layout_marginRight="15dp"
         android:layout_marginTop="15dp"
-        android:text="19:20" />
+        android:textColor="@color/color_adadad"
+        android:textSize="10sp" />
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/v_icon_base_line_bottom"
+        android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
+        android:layout_marginBottom="14dp"
         android:layout_marginRight="10dp"
         android:orientation="horizontal">
 
@@ -59,21 +86,39 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="2dp"
+<<<<<<< 7841f34ebb5d9548d4d9b478bc5056be9684cb08
             android:background="@drawable/icon_mine_friend" />
+=======
+            android:background="@drawable/icon_home_net_2g" />
+>>>>>>> 主页基本动画,框架搭好
 
         <ImageView
             android:id="@+id/img_device_share"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="2dp"
+<<<<<<< 7841f34ebb5d9548d4d9b478bc5056be9684cb08
             android:background="@drawable/icon_mine_friend" />
+=======
+            android:background="@drawable/icon_home_net_2g" />
+>>>>>>> 主页基本动画,框架搭好
 
         <ImageView
             android:id="@+id/img_device_protection"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="2dp"
+<<<<<<< 7841f34ebb5d9548d4d9b478bc5056be9684cb08
             android:background="@drawable/icon_mine_friend" />
+=======
+            android:background="@drawable/icon_home_net_2g" />
+>>>>>>> 主页基本动画,框架搭好
     </LinearLayout>
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_alignLeft="@+id/img_device_icon"
+        android:layout_alignParentBottom="true"
+        android:background="@color/color_e8e8e8" />
 </RelativeLayout>

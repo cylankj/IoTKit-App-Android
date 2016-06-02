@@ -19,9 +19,15 @@ import java.util.Locale;
 
 public class HomePageListAdapter extends SuperAdapter<DeviceBean> {
 
+<<<<<<< 7841f34ebb5d9548d4d9b478bc5056be9684cb08
 //    final static int[] deviceIconOnlineRes = {R.drawable.ico_doorbell_online, R.drawable.ico_video_online, R.drawable.ico_efamily_online};
 //    final static int[] deviceIconOfflineRes = {R.drawable.ico_doorbell_offline, R.drawable.ico_video_offline, R.drawable.ico_efamily_offline};
     final static int[] msgContentRes = {R.string.receive_new_news, R.string.receive_new_news};
+=======
+    final static int[] deviceIconOnlineRes = {R.drawable.icon_home_db_online, R.drawable.icon_home_camera_online, R.drawable.icon_home_cloud_photo_online, R.drawable.icon_home_mag_online};
+    final static int[] deviceIconOfflineRes = {R.drawable.icon_home_db_offline, R.drawable.icon_home_camera_offline, R.drawable.icon_home_cloud_photo_offline, R.drawable.icon_home_mag_online};
+    final static int[] msgContentRes = {R.string.receive_new_news, R.string.receive_new_news, R.string.receive_new_news, R.string.receive_new_news};
+>>>>>>> 主页基本动画,框架搭好
     private DeviceItemClickListener deviceItemClickListener;
     private DeviceItemLongClickListener deviceItemLongClickListener;
 
@@ -55,7 +61,7 @@ public class HomePageListAdapter extends SuperAdapter<DeviceBean> {
      * @return
      */
     private int getDeviceType(int type) {
-        return type > 2 ? 2 : type;
+        return type > 3 ? 3 : type;
     }
 
     private String getMessageContent(DeviceBean bean) {
@@ -74,6 +80,7 @@ public class HomePageListAdapter extends SuperAdapter<DeviceBean> {
         final int share = bean.isShared;
         final int isProtected = bean.isProtectdMode;
         final int netState = bean.netType;
+
     }
 
 //    private void handleState(SuperViewHolder holder, DeviceBean bean) {
