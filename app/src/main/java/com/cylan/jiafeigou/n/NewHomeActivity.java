@@ -1,6 +1,8 @@
 package com.cylan.jiafeigou.n;
 
+import android.app.ActionBar;
 import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.UiThread;
 import android.support.v4.app.Fragment;
@@ -9,7 +11,13 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.contract.home.NewHomeActivityContract;
@@ -23,26 +31,35 @@ import com.cylan.jiafeigou.n.view.home.HomePageListFragment;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.widget.CustomViewPager;
 import com.cylan.utils.ListUtils;
+import com.readystatesoftware.systembartint.SystemBarTintManager;
+import com.superlog.SLog;
 
+import java.lang.reflect.Field;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import rx.Observable;
+import rx.Subscriber;
+import rx.subscriptions.CompositeSubscription;
 
 public class NewHomeActivity extends FragmentActivity implements
         ViewPager.OnPageChangeListener, NewHomeActivityContract.View {
     @BindView(R.id.vp_home_content)
     CustomViewPager vpHomeContent;
     @BindView(R.id.btn_home_list)
-    Button btnHomeList;
+    TextView btnHomeList;
     @BindView(R.id.btn_home_discovery)
-    Button btnHomeDiscover;
+    TextView btnHomeDiscover;
     @BindView(R.id.btn_home_mine)
-    Button btnHomeMine;
+    TextView btnHomeMine;
+
+//    @BindView(R.id.view_state_bar)
+//    View view;
 
     private HomeViewAdapter viewAdapter;
-    Button[] bottomBtn = new Button[3];
+    TextView[] bottomBtn = new TextView[3];
 
 
     @Override
@@ -50,9 +67,53 @@ public class NewHomeActivity extends FragmentActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_home);
         ButterKnife.bind(this);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            Window window = getWindow();
+            // Translucent status bar
+            int height = getStatusBarHeight(NewHomeActivity.this);
+//            SLog.e("height:" + height);
+//            ViewGroup.LayoutParams params = view.getLayoutParams();
+//            params.height = height;
+//            view.setLayoutParams(params);
+//            view.setVisibility(View.VISIBLE);
+//            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            SystemBarTintManager tintManager = new SystemBarTintManager(this);
+            // enable status bar tint
+            tintManager.setStatusBarTintEnabled(true);
+        }
         initBottomMenu();
         new NewHomeActivityPresenterImpl(this);
     }
+
+    /**
+     * Dispatch onStart() to all fragments.  Ensure any created loaders are
+     * now started.
+     */
+    @Override
+    protected void onStart() {
+        super.onStart();
+    }
+
+
+    //获取手机状态栏高度
+    public static int getStatusBarHeight(Context context) {
+        Class<?> c = null;
+        Object obj = null;
+        Field field = null;
+        int x = 0, statusBarHeight = 0;
+        try {
+            c = Class.forName("com.android.internal.R$dimen");
+            obj = c.newInstance();
+            field = c.getField("status_bar_height");
+            x = Integer.parseInt(field.get(obj).toString());
+            statusBarHeight = context.getResources().getDimensionPixelSize(x);
+        } catch (Exception e1) {
+            e1.printStackTrace();
+        }
+        return statusBarHeight;
+    }
+
 
     private void initBottomMenu() {
         viewAdapter = new HomeViewAdapter(getSupportFragmentManager());
@@ -161,6 +222,7 @@ public class NewHomeActivity extends FragmentActivity implements
     }
 }
 
+
 /**
  * 主页的三个页面
  */
@@ -199,4 +261,6 @@ class HomeViewAdapter extends FragmentPagerAdapter {
     public int getCount() {
         return 3;
     }
+
+
 }

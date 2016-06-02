@@ -31,6 +31,7 @@ import com.cylan.entity.jniCall.JFGStatus;
 import com.cylan.entity.jniCall.RobotMsg;
 import com.cylan.interfaces.JniCallBack;
 import com.cylan.jiafeigou.BuildConfig;
+import com.cylan.jiafeigou.support.rxbus.RxBus;
 import com.cylan.jiafeigou.support.stat.MtaManager;
 import com.cylan.sdkjni.JfgCmd;
 import com.superlog.LogLevel;
@@ -44,6 +45,7 @@ public class DataSourceService extends Service implements JniCallBack {
     private Handler workHandler;
     private String logPath;
     JfgCmd cmd;
+    RxBus rxBus;
 
     static {
         System.loadLibrary("jfgsdk");
@@ -53,6 +55,7 @@ public class DataSourceService extends Service implements JniCallBack {
     public void onCreate() {
         super.onCreate();
         initNative();
+        rxBus = RxBus.getInstance();
         cmd = JfgCmd.getJfgCmd(this);
         logPath = Environment.getExternalStorageDirectory().getPath() + "/JFG";
         initLogUtil(logPath);
@@ -123,7 +126,9 @@ public class DataSourceService extends Service implements JniCallBack {
 
     @Override
     public void OnReprotJfgDevices(JFGDevice[] jfgDevices) {
-
+        if (rxBus.hasObservers()) {
+            rxBus.send(jfgDevices);
+        }
     }
 
     @Override
@@ -134,6 +139,11 @@ public class DataSourceService extends Service implements JniCallBack {
     @Override
     public void OnServerConnected() {
         SLog.i("OnServerConnected");
+        workHandler.removeMessages(1);
+        if (rxBus.hasObservers()) {
+            rxBus.send("test");
+        }
+
 
     }
 

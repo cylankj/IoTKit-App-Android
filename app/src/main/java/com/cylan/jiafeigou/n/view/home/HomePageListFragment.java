@@ -86,7 +86,9 @@ public class HomePageListFragment extends Fragment implements
     @Override
     public void onResume() {
         super.onResume();
-        presenter.start();
+        if (presenter != null) {
+            presenter.start();
+        }
     }
 
     @Override
@@ -216,5 +218,13 @@ public class HomePageListFragment extends Fragment implements
             homeMenuDialogWeakReference = new WeakReference<>(dialog);
         }
         homeMenuDialogWeakReference.get().show();
+    }
+
+    class ConnectResult {
+        int code;
+
+        public ConnectResult(int code) {
+            this.code = code;
+        }
     }
 }

@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="#000000">
 
     <RelativeLayout
         android:id="@+id/login_frame"
@@ -17,7 +18,7 @@
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="30dp"
-            android:background="@drawable/edit_top"
+            android:background="@drawable/icon_mine_friend"
             android:gravity="center_vertical">
 
             <ImageView
@@ -25,10 +26,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="@dimen/login_edit_maginr"
-                android:src="@drawable/icon_username" />
+                android:src="@drawable/icon_mine_friend" />
 
             <EditText
-
                 android:id="@+id/loginTelNum"
                 style="@style/edittext"
                 android:layout_width="0dp"
@@ -53,7 +53,7 @@
             android:layout_below="@id/layout_username"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="-2dp"
-            android:background="@drawable/edit_bottom"
+            android:background="@drawable/icon_mine_friend"
             android:gravity="center_vertical">
 
             <ImageView
@@ -61,7 +61,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="@dimen/login_edit_maginr"
-                android:src="@drawable/icon_pwd" />
+                android:src="@drawable/icon_mine_friend" />
 
             <EditText
                 android:id="@+id/loginPass"
@@ -91,8 +91,6 @@
             android:layout_centerHorizontal="true"
             android:layout_gravity="center"
             android:layout_marginTop="30dp"
-            android:background="@drawable/btn_login_selector"
-
             android:text="@string/LOGIN"
             android:textSize="18sp" />
 
@@ -127,7 +125,7 @@
             android:id="@+id/the_third_login_app1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:drawableLeft="@drawable/ico_qq"
+            android:drawableLeft="@drawable/icon_mine_friend"
             android:drawablePadding="8dp"
             android:focusable="true"
             android:gravity="center"
@@ -144,13 +142,13 @@
             android:id="@+id/line"
             android:layout_width="1dp"
             android:layout_height="18dp"
-            android:background="@drawable/login_devide" />
+            android:background="@drawable/icon_mine_friend" />
 
         <TextView
             android:id="@+id/the_third_login_app2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:drawableLeft="@drawable/ico_weibo"
+            android:drawableLeft="@drawable/icon_mine_friend"
             android:drawablePadding="8dp"
             android:focusable="true"
             android:gravity="center"

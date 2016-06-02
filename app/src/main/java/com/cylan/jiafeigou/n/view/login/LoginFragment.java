@@ -47,7 +47,6 @@ public class LoginFragment extends Fragment implements LoginContract.ViewRequire
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View mView = inflater.inflate(R.layout.fragment_login_layout, container, false);
         ButterKnife.bind(this, mView);
-
         initView();
         return mView;
     }

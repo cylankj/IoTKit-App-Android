@@ -24,7 +24,7 @@
             android:layout_marginLeft="15dp"
             android:layout_marginRight="15dp"
             android:layout_marginTop="13dp"
-            android:background="@drawable/add_circle" />
+            android:background="@drawable/icon_mine_friend" />
     </RelativeLayout>
 
     <in.srain.cube.views.ptr.PtrClassicFrameLayout

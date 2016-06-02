@@ -19,7 +19,7 @@ import com.cylan.jiafeigou.R;
  */
 public class ImageViewTip extends ImageView {
 
-    private float mDotRadius = 5;
+    private float mDotRadius = 8;
     private boolean showDot = false;
     private Paint mPaint = new Paint();
     /**
@@ -47,7 +47,7 @@ public class ImageViewTip extends ImageView {
         setShowDot(show);
         boolean ignore = a.getBoolean(R.styleable.DotThemes_ignore, false);
         setIgnorePadding(ignore);
-        int position = a.getInteger(R.styleable.DotThemes_position, 2);
+        int position = a.getInteger(R.styleable.DotThemes_position,2);
         setPosition(position);
         a.recycle();
         init();

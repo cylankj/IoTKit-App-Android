@@ -27,7 +27,7 @@ final class SplashPermissionDispatcher {
     private SplashPermissionDispatcher() {
     }
 
-    public static void showCameraWithCheck(FragmentWelcomePage target, String[] permisions, int requestCode) {
+    public static void showCameraWithCheck(WelcomePageActivity target, String[] permisions, int requestCode) {
         if (PermissionUtils.hasSelfPermissions(target, permisions)) {
             //    target.showCamera();
         } else {
@@ -39,7 +39,7 @@ final class SplashPermissionDispatcher {
         }
     }
 
-    public static void showWriteSdCardWithCheck(FragmentWelcomePage target) {
+    public static void showWriteSdCardWithCheck(WelcomePageActivity target) {
         if (PermissionUtils.hasSelfPermissions(target, ParamStatic.PERMISSION_SHOWMULTIS)) {
             //    target.showCamera();
             target.showWriteSdCard();
@@ -55,7 +55,7 @@ final class SplashPermissionDispatcher {
     /**
      * 一次可以检测某一个或者检测所有需要的权限
      */
-    static void onRequestPermissionsResult(FragmentWelcomePage target, String[] permissions, int requestCode, int[] grantResults) {
+    static void onRequestPermissionsResult(WelcomePageActivity target, String[] permissions, int requestCode, int[] grantResults) {
         switch (requestCode) {
             //一次检测照相机权限
             case ParamStatic.REQUEST_SHOWCAMERA:
@@ -107,11 +107,11 @@ final class SplashPermissionDispatcher {
     }
 
     private static class ShowCameraPermissionRequest implements PermissionRequest {
-        private final WeakReference<FragmentWelcomePage> weakTarget;
+        private final WeakReference<WelcomePageActivity> weakTarget;
         private String[] permissionShow;
         private int requestCode;
 
-        private ShowCameraPermissionRequest(FragmentWelcomePage target, String[] permision, int request) {
+        private ShowCameraPermissionRequest(WelcomePageActivity target, String[] permision, int request) {
             this.weakTarget = new WeakReference<>(target);
             this.permissionShow = permision;
             this.requestCode = request;
@@ -119,14 +119,14 @@ final class SplashPermissionDispatcher {
 
         @Override
         public void proceed() {
-            FragmentWelcomePage target = weakTarget.get();
+            WelcomePageActivity target = weakTarget.get();
             if (target == null) return;
             requestPermissions(target, permissionShow, requestCode);
         }
 
         @Override
         public void cancel() {
-            FragmentWelcomePage target = weakTarget.get();
+            WelcomePageActivity target = weakTarget.get();
             if (target == null) return;
             target.onCameraDenied();
         }

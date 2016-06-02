@@ -21,7 +21,7 @@ public class ToastUtil {
 
     public static void showToast(Context cxt, String content, int gravity, int duration) {
         try {
-            TextView tv = (TextView) View.inflate(cxt, R.layout.toast_text, null);
+            TextView tv = (TextView) View.inflate(cxt, R.layout.layout_toast_text, null);
             final Toast toast = new Toast(cxt);
             toast.setGravity(gravity, 0, 0);
             toast.setDuration(duration);
@@ -34,13 +34,13 @@ public class ToastUtil {
 
     public static void showSuccessToast(Context cxt, String content) {
         try {
-            TextView tv = (TextView) View.inflate(cxt, R.layout.toast_text, null);
+            TextView tv = (TextView) View.inflate(cxt, R.layout.layout_toast_text, null);
             final Toast toast = new Toast(cxt.getApplicationContext());
             toast.setView(tv);
             toast.setGravity(Gravity.CENTER, 0, 0);
             toast.setDuration(Toast.LENGTH_SHORT);
             tv.setText(content);
-            tv.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_notify_result, 0, 0);
+//            tv.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_notify_result, 0, 0);
             toast.show();
         } catch (Exception e) {
         }
@@ -48,13 +48,13 @@ public class ToastUtil {
 
     public static void showFailToast(Context cxt, String content) {
         try {
-            TextView tv = (TextView) View.inflate(cxt, R.layout.toast_text, null);
+            TextView tv = (TextView) View.inflate(cxt, R.layout.layout_toast_text, null);
             final Toast toast = new Toast(cxt.getApplicationContext());
             toast.setView(tv);
             toast.setGravity(Gravity.CENTER, 0, 0);
             toast.setDuration(Toast.LENGTH_SHORT);
             tv.setText(content);
-            tv.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_fail_notify_result, 0, 0);
+//            tv.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_fail_notify_result, 0, 0);
             toast.show();
         } catch (Exception e) {
         }

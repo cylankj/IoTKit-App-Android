@@ -1,20 +1,27 @@
 package com.cylan.jiafeigou.n.view.home;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeMineContract;
 import com.cylan.jiafeigou.n.mvp.impl.setting.AccountInfoPresenterImpl;
 import com.cylan.jiafeigou.n.view.fragment.AccountInfoFragment;
+import com.cylan.jiafeigou.n.view.login.LoginFragment;
 import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.widget.ImageViewTip;
+import com.cylan.sdkjni.JfgCmd;
+import com.cylan.utils.FastBlurUtil;
+import com.superlog.SLog;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -29,14 +36,8 @@ public class HomeMineFragment extends Fragment
     TextView tvMinePortrait;
     @BindView(R.id.img_home_mine_msg)
     ImageViewTip imgHomeMineMsg;
-    @BindView(R.id.img_home_mine_dear_friend)
-    ImageView imgHomeMineDearFriend;
-    @BindView(R.id.img_home_mine_share_device)
-    ImageView imgHomeMineShareDevice;
-    @BindView(R.id.img_home_mine_help_feedback)
-    ImageView imgHomeMineHelpFeedback;
-    @BindView(R.id.img_home_mine_setting)
-    ImageView imgHomeMineSetting;
+    @BindView(R.id.rLayout_home_mine_top)
+    RelativeLayout rLayout;
 
 
     private HomeMineContract.Presenter presenter;
@@ -56,14 +57,25 @@ public class HomeMineFragment extends Fragment
         }
     }
 
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_home_mine, container, false);
         ButterKnife.bind(this, view);
+        testBlurBackground();
         return view;
     }
+
+    private void testBlurBackground() {
+        long time = System.currentTimeMillis();
+        Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.bg_mine_top_defult_background);
+        bm = FastBlurUtil.blur(bm, 8, 10);
+        rLayout.setBackground(new BitmapDrawable(getResources(), bm));
+        SLog.e("usetime:%d ms", System.currentTimeMillis() - time);
+    }
+
 
     @Override
     public void onStart() {
@@ -74,13 +86,17 @@ public class HomeMineFragment extends Fragment
     @Override
     public void onResume() {
         super.onResume();
-        presenter.start();
+        if (presenter != null) {
+            presenter.start();
+        }
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        presenter.stop();
+        if (presenter != null) {
+            presenter.stop();
+        }
     }
 
     @Override
@@ -90,11 +106,13 @@ public class HomeMineFragment extends Fragment
 
     @OnClick(R.id.img_home_mine_msg)
     public void onClickMsg() {
+        if (needStartLoginFragment()) return;
         ToastUtil.showToast(getContext(), "xiao xi");
     }
 
     @OnClick(R.id.tv_home_mine_portrait)
     public void onClickPortrait() {
+        if (needStartLoginFragment()) return;
         ToastUtil.showToast(getContext(), "推荐fragment");
         AccountInfoFragment fragment = (AccountInfoFragment) AccountInfoFragment.getInstance();
         ActivityUtils.addFragmentToActivity(getActivity().getSupportFragmentManager(),
@@ -102,24 +120,36 @@ public class HomeMineFragment extends Fragment
         new AccountInfoPresenterImpl(fragment);
     }
 
-    @OnClick(R.id.img_home_mine_dear_friend)
-    public void onClickFriends() {
-        ToastUtil.showToast(getContext(), "tou onClickFriends");
+    @OnClick(R.id.home_mine_item_friend)
+    public void onClickFriendItem(View view) {
+        if (needStartLoginFragment()) return;
+        SLog.i("It's Login,can do something!");
+        LoginFragment fragment = LoginFragment.newInstance(null);
+        ActivityUtils.addFragmentToActivity(getActivity().getSupportFragmentManager(),
+                fragment, R.id.rLayout_new_home_container);
     }
 
-    @OnClick(R.id.img_home_mine_share_device)
-    public void onClickShare() {
-        ToastUtil.showToast(getContext(), "tou onClickShare");
+    @OnClick(R.id.home_mine_item_share)
+    public void onClickShareItem(View view) {
+        if (needStartLoginFragment()) return;
+        SLog.i("It's Login,can do something!");
     }
 
-    @OnClick(R.id.img_home_mine_help_feedback)
-    public void onClickFeedback() {
-        ToastUtil.showToast(getContext(), "tou onClickFeeback");
+    @OnClick(R.id.home_mine_item_settings)
+    public void onClickSettingsItem(View view) {
+        if (needStartLoginFragment()) return;
+        SLog.i("It's Login,can do something!");
     }
 
-    @OnClick(R.id.img_home_mine_setting)
-    public void onClickSettings() {
-        ToastUtil.showToast(getContext(), "tou onClickSettings");
+    @OnClick(R.id.home_mine_item_help)
+    public void onClickHelpItem(View view) {
+        if (needStartLoginFragment()) return;
+        SLog.i("It's Login,can do something!");
+    }
+
+    @OnClick(R.id.rLayout_home_mine_top)
+    public void onClickblurPic(View view) {
+        if (needStartLoginFragment()) return;
     }
 
     @Override
@@ -130,5 +160,21 @@ public class HomeMineFragment extends Fragment
     @Override
     public void onPortraitUpdate(String url) {
         tvMinePortrait.setText(url);
+    }
+
+
+    private boolean needStartLoginFragment() {
+        if (!JfgCmd.getJfgCmd(getContext()).isLogined) {
+//            ToastUtil.showToast(getContext(), "Not login.....");
+//            SLog.i("Not login.....");
+//            LoginFrament fragment = LoginFrament.newInstance(null);
+//            FragmentManager manager = getFragmentManager();
+//            FragmentTransaction transaction = manager.beginTransaction();
+//            transaction.hide(this);
+//            transaction.add(R.id.rLayout_new_home_container, fragment, "login");
+//            transaction.commit();
+            return true;
+        }
+        return false;
     }
 }

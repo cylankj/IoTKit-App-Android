@@ -4,40 +4,63 @@
     android:id="@+id/rLayout_new_home_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     tools:context="com.cylan.jiafeigou.n.NewHomeActivity">
+
 
     <com.cylan.jiafeigou.widget.CustomViewPager
         android:id="@+id/vp_home_content"
+        android:fitsSystemWindows="true"
+        android:clipToPadding="true"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/lLayout_home_bottom_menu" />
 
-    <LinearLayout
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_above="@+id/lLayout_home_bottom_menu"
+        android:background="#e8e8e8" />
+
+    <RelativeLayout
         android:id="@+id/lLayout_home_bottom_menu"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:orientation="horizontal">
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp">
 
-        <Button
+        <TextView
             android:id="@+id/btn_home_list"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="list" />
+            android:layout_alignParentLeft="true"
+            android:drawableTop="@drawable/icon_bottom_cleve_dog"
+            android:gravity="center_horizontal"
+            android:text="加菲狗"
+            android:textColor="#353c41"
+            android:textSize="11sp" />
 
-        <Button
+        <TextView
             android:id="@+id/btn_home_discovery"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="discover" />
+            android:layout_centerHorizontal="true"
+            android:drawableTop="@drawable/icon_bottom_wondeful"
+            android:gravity="center_horizontal"
+            android:text="每日精彩"
+            android:textColor="#353c41"
+            android:textSize="11sp" />
 
-        <Button
+        <TextView
             android:id="@+id/btn_home_mine"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="mine" />
-    </LinearLayout>
+            android:layout_alignParentRight="true"
+            android:drawableTop="@drawable/icon_bottom_mine"
+            android:gravity="center_horizontal"
+            android:text="我的"
+            android:textColor="#353c41"
+            android:textSize="11sp" />
+    </RelativeLayout>
 </RelativeLayout>
