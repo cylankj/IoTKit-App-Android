@@ -12,6 +12,7 @@ public abstract class HeaderAnimator {
     private int mMinHeightHeader;
     private int mHeightHeader;
     private int mMaxHeaderTranslation;
+    protected ScrollRationListener scrollRationListener;
 
     public static float clamp(float value, float min, float max) {
         return Math.max(min, Math.min(value, max));
@@ -69,5 +70,13 @@ public abstract class HeaderAnimator {
 
     public int getMaxTranslation() {
         return mMaxHeaderTranslation;
+    }
+
+    public interface ScrollRationListener {
+        void onScroll(float ration);
+    }
+
+    public void setScrollRationListener(ScrollRationListener scrollRationListener) {
+        this.scrollRationListener = scrollRationListener;
     }
 }

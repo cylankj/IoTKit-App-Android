@@ -12,7 +12,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:layout_marginLeft="33dp"
+        android:layout_marginLeft="19dp"
         android:background="@drawable/icon_home_camera_online"
         hunt:Dradius="3dp"
         hunt:borderColor="@color/white"
@@ -103,7 +103,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_alignLeft="@+id/img_device_icon"
+        android:layout_alignLeft="@+id/tv_device_msg_count"
         android:layout_alignParentBottom="true"
         android:background="@color/color_e8e8e8" />
 </RelativeLayout>

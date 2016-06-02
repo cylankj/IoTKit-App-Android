@@ -6,7 +6,6 @@ import android.support.annotation.IdRes;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ScrollView;
 
 /**
  * Created by hunt on 16-6-1.
@@ -18,8 +17,8 @@ public abstract class StickyHeaderBuilder {
 
     protected View mHeader;
     protected int mMinHeight;
-    protected HeaderAnimator mAnimator;
     protected boolean mAllowTouchBehindHeader;
+    protected HeaderAnimator mAnimator;
 
     protected StickyHeaderBuilder(final Context context) {
         mContext = context;
@@ -29,18 +28,14 @@ public abstract class StickyHeaderBuilder {
 
     public abstract StickyHeader build();
 
-//    public static ListViewBuilder stickTo(final ListView listView) {
-//        return new ListViewBuilder(listView);
-//    }
-
-    public static RecyclerViewBuilder stickTo(final ViewGroup recyclerView) {
+    public static RecyclerViewBuilder stickTo(final ViewGroup recyclerView, HeaderAnimator.ScrollRationListener listener) {
         StickyHeaderUtils.checkRecyclerView(recyclerView);
-        return new RecyclerViewBuilder(recyclerView);
+        return new RecyclerViewBuilder(recyclerView, listener);
     }
 
-    public static ScrollViewBuilder stickTo(final ScrollView scrollView) {
-        return new ScrollViewBuilder(scrollView);
-    }
+//    public static ScrollViewBuilder stickTo(final ScrollView scrollView) {
+//        return new ScrollViewBuilder(scrollView);
+//    }
 
     public static TargetBuilder stickTo(final Context context) {
         return new TargetBuilder(context);
@@ -97,37 +92,16 @@ public abstract class StickyHeaderBuilder {
         return this;
     }
 
-//    public static class ListViewBuilder extends StickyHeaderBuilder {
-//
-//        private final ListView mListView;
-//
-//        protected ListViewBuilder(final ListView listView) {
-//            super(listView.getContext());
-//            mListView = listView;
-//        }
-//
-//        @Override
-//        public StickyHeaderListView build() {
-//
-//            //if the animator has not been set, the default one is used
-//            if (mAnimator == null) {
-//                mAnimator = new HeaderStikkyAnimator();
-//            }
-//
-//            final StikkyHeaderListView stikkyHeaderListView = new StikkyHeaderListView(mContext, mListView, mHeader, mMinHeight, mAnimator);
-//            stikkyHeaderListView.build(mAllowTouchBehindHeader);
-//
-//            return stikkyHeaderListView;
-//        }
-//    }
 
     public static class RecyclerViewBuilder extends StickyHeaderBuilder {
 
         private final RecyclerView mRecyclerView;
+        HeaderAnimator.ScrollRationListener scrollRationListener;
 
-        protected RecyclerViewBuilder(final ViewGroup mRecyclerView) {
+        protected RecyclerViewBuilder(final ViewGroup mRecyclerView, HeaderAnimator.ScrollRationListener listener) {
             super(mRecyclerView.getContext());
             this.mRecyclerView = (RecyclerView) mRecyclerView;
+            this.scrollRationListener = listener;
         }
 
         @Override
@@ -136,6 +110,7 @@ public abstract class StickyHeaderBuilder {
             //if the animator has not been set, the default one is used
             if (mAnimator == null) {
                 mAnimator = new HeaderStickyAnimator();
+                mAnimator.setScrollRationListener(this.scrollRationListener);
             }
 
             final StickyHeaderRecyclerView stickyHeaderRecyclerView = new StickyHeaderRecyclerView(mContext, mRecyclerView, mHeader, mMinHeight, mAnimator);
@@ -146,39 +121,41 @@ public abstract class StickyHeaderBuilder {
 
     }
 
-    public static class ScrollViewBuilder extends StickyHeaderBuilder {
-
-        private final ScrollView mScrollView;
-
-        protected ScrollViewBuilder(final ScrollView scrollView) {
-            super(scrollView.getContext());
-            this.mScrollView = scrollView;
-        }
-
-        @Override
-        public StickyHeaderScrollView build() {
-
-            //if the animator has not been set, the default one is used
-            if (mAnimator == null) {
-                mAnimator = new HeaderStickyAnimator();
-            }
-
-            final StickyHeaderScrollView stikkyHeaderScrollView = new StickyHeaderScrollView(mContext, mScrollView, mHeader, mMinHeight, mAnimator);
-
-            stikkyHeaderScrollView.build(mAllowTouchBehindHeader);
-
-            return stikkyHeaderScrollView;
-        }
-
-    }
+//    public static class ScrollViewBuilder extends StickyHeaderBuilder {
+//
+//        private final ScrollView mScrollView;
+//
+//        protected ScrollViewBuilder(final ScrollView scrollView) {
+//            super(scrollView.getContext());
+//            this.mScrollView = scrollView;
+//        }
+//
+//        @Override
+//        public StickyHeaderScrollView build() {
+//
+//            //if the animator has not been set, the default one is used
+//            if (mAnimator == null) {
+//                mAnimator = new HeaderStickyAnimator();
+//            }
+//
+//            final StickyHeaderScrollView stikkyHeaderScrollView = new StickyHeaderScrollView(mContext, mScrollView, mHeader, mMinHeight, mAnimator);
+//
+//            stikkyHeaderScrollView.build(mAllowTouchBehindHeader);
+//
+//            return stikkyHeaderScrollView;
+//        }
+//
+//    }
 
     public static class TargetBuilder extends StickyHeaderBuilder {
 
         private final Context mContext;
 
+
         protected TargetBuilder(final Context context) {
             super(context);
             mContext = context;
+
         }
 
         @Override

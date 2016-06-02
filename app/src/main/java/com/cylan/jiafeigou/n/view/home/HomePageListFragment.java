@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.model.DeviceBean;
@@ -23,6 +24,7 @@ import com.cylan.jiafeigou.n.mvp.contract.home.HomePageListContract;
 import com.cylan.jiafeigou.n.view.adapter.HomePageListAdapter;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.widget.dialog.HomeMenuDialog;
+import com.cylan.jiafeigou.widget.sticky.HeaderAnimator;
 import com.cylan.jiafeigou.widget.sticky.StickyHeaderBuilder;
 import com.cylan.jiafeigou.widget.wave.WaveHelper;
 import com.cylan.jiafeigou.widget.wave.WaveView;
@@ -60,12 +62,15 @@ public class HomePageListFragment extends Fragment implements
     WaveView vWaveAnimation;
     @BindView(R.id.rLayout_home_top)
     RelativeLayout rLayoutHomeTop;
+
+    @BindView(R.id.tvHeaderLastTitle)
+    TextView tvHeaderLastTitle;
     //不是长时间需要,用软引用.
     private WeakReference<HomeMenuDialog> homeMenuDialogWeakReference;
     private HomePageListContract.Presenter presenter;
 
     private HomePageListAdapter homePageListAdapter;
-
+    private SimpleScrollListener simpleScrollListener;
     private WaveHelper waveHelper;
     /**
      * 手动完成刷新,自动完成刷新 订阅者.
@@ -127,11 +132,17 @@ public class HomePageListFragment extends Fragment implements
         initProgressBarPosition();
         rVDevicesList.setLayoutManager(new LinearLayoutManager(getContext()));
         rVDevicesList.setAdapter(homePageListAdapter);
-        StickyHeaderBuilder.stickTo(rVDevicesList)
-                .setHeader(R.id.rLayoutHomeHeaderContainer, (ViewGroup) getView())
-                .minHeightHeader(50)
-                .build();
         initWaveAnimation();
+        initHeaderView();
+    }
+
+    private void initHeaderView() {
+        if (simpleScrollListener == null)
+            simpleScrollListener = new SimpleScrollListener(waveHelper, tvHeaderLastTitle);
+        StickyHeaderBuilder.stickTo(rVDevicesList, simpleScrollListener)
+                .setHeader(R.id.rLayoutHomeHeaderContainer, (ViewGroup) getView())
+                .minHeightHeaderDim(R.dimen.dimens_48dp)
+                .build();
     }
 
     /**
@@ -162,7 +173,7 @@ public class HomePageListFragment extends Fragment implements
                         progressBarStartPosition = drawable.getIntrinsicHeight();
                     }
                 }
-                srLayoutMainContentHolder.setProgressViewOffset(true, progressBarStartPosition, progressBarStartPosition + 100);
+                srLayoutMainContentHolder.setProgressViewOffset(false, progressBarStartPosition - 100, progressBarStartPosition + 100);
             }
         });
     }
@@ -272,5 +283,31 @@ public class HomePageListFragment extends Fragment implements
             homeMenuDialogWeakReference = new WeakReference<>(dialog);
         }
         homeMenuDialogWeakReference.get().show();
+    }
+
+    private static class SimpleScrollListener implements HeaderAnimator.ScrollRationListener {
+
+        private WeakReference<WaveHelper> weakReference;
+
+        private WeakReference<TextView> fadeTitleWeak;
+
+        public SimpleScrollListener(WaveHelper helper, TextView textView) {
+            weakReference = new WeakReference<>(helper);
+            fadeTitleWeak = new WeakReference<>(textView);
+        }
+
+        @Override
+        public void onScroll(float ration) {
+            if (fadeTitleWeak != null && fadeTitleWeak.get() != null) {
+                float alpha = (ration - 0.8f) / 0.2f;
+                if (ration < 0.8)
+                    alpha = 0;
+//                Log.d("hunt", "hunt: " + ration + " " + alpha);
+                fadeTitleWeak.get().setAlpha(alpha);
+            }
+            if (weakReference != null && weakReference.get() != null) {
+                weakReference.get().updateAmplitudeRatio(ration);
+            }
+        }
     }
 }
