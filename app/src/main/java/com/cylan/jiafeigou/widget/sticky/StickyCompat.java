@@ -9,7 +9,7 @@ import com.nineoldandroids.view.ViewHelper;
 
 public class StickyCompat {
 
-    interface StikkyCompatImpl {
+    interface StickyCompatImpl {
         float getTranslationX(View view);
 
         float getTranslationY(View view);
@@ -31,15 +31,15 @@ public class StickyCompat {
         float getAlpha(View view);
     }
 
-    private static StikkyCompatImpl IMPL;
+    private static StickyCompatImpl IMPL;
 
     static {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
             IMPL = new HCImpl();
-        } else if (StikkyHeaderUtils.hasNineOld()) {
+        } else if (StickyHeaderUtils.hasNineOld()) {
             IMPL = new NineOldImpl();
         } else {
-            throw new RuntimeException("StikkyHeader cannot be used on API < 11 without the NineOldAndroids library");
+            throw new RuntimeException("StickyHeader cannot be used on API < 11 without the NineOldAndroids library");
         }
     }
 
@@ -83,7 +83,7 @@ public class StickyCompat {
         return IMPL.getAlpha(view);
     }
 
-    private static class NineOldImpl implements StikkyCompatImpl {
+    private static class NineOldImpl implements StickyCompatImpl {
 
         @Override
         public float getTranslationX(View view) {
@@ -137,7 +137,7 @@ public class StickyCompat {
     }
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-    private static class HCImpl implements StikkyCompatImpl {
+    private static class HCImpl implements StickyCompatImpl {
 
         @Override
         public float getTranslationX(View view) {
