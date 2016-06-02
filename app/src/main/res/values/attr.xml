@@ -77,6 +77,13 @@
         <attr name="margin" format="dimension" />
         <attr name="showDot" format="boolean" />
         <attr name="tipDrawable" format="reference" />
+        <attr name="borderColor" format="color" />
+        <attr name="borderWidth" format="dimension" />
+        <attr name="enableBorder" format="boolean" />
+    </declare-styleable>
+    <declare-styleable name="WaveTheme">
+        <attr name="frontColor" format="color" />
+        <attr name="behindColor" format="color" />
     </declare-styleable>
     <declare-styleable name="HomeMineItemViewStyle">
         <attr name="leftDrawable" format="reference" />
