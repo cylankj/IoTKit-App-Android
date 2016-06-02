@@ -90,7 +90,9 @@
             </intent-filter>
         </activity>
         <!--<activity android:name=".n.view.splash.WelcomePage" />-->
-
+        <activity
+            android:name=".n.NewHomeActivity"
+            android:launchMode="singleTask" />
         <receiver android:name=".n.engine.DaemonService$BootCompletedReceiver">
             <intent-filter android:priority="0x7fffffff">
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
