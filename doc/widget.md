@@ -16,5 +16,9 @@
         <attr name="showDot" format="boolean" />
         <!--用图标代替红点.-->
         <attr name="tipDrawable" format="reference" />
+        <!--是否显示,边框背景-->
+        <attr name="enableBorder" format="boolean" />
+        <attr name="borderColor" format="color" />
+        <attr name="borderWidth" format="dimension" />
     </declare-styleable>
 ```

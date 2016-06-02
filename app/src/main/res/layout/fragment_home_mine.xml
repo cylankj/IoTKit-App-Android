@@ -31,7 +31,7 @@
             android:layout_marginRight="17dp"
             android:layout_marginTop="17dp">
 
-            <TextView
+            <ImageView
                 android:id="@+id/iv_home_mine_msg"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

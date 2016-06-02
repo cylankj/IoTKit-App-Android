@@ -3,7 +3,7 @@ package com.cylan.jiafeigou.n.mvp.impl.login;
 import com.cylan.jiafeigou.n.model.contract.ModelContract;
 import com.cylan.jiafeigou.n.model.impl.LoginModelImpl;
 import com.cylan.jiafeigou.n.mvp.contract.login.LoginContract;
-import com.cylan.jiafeigou.n.view.login.InfoLogin;
+import com.cylan.jiafeigou.n.model.BeanInfoLogin;
 
 import java.lang.ref.WeakReference;
 
@@ -23,7 +23,7 @@ public class LoginPresenterImpl implements LoginContract.PresenterOps,LoginContr
     }
 
     @Override
-    public void executeLogin(InfoLogin infoLogin) {
+    public void executeLogin(BeanInfoLogin infoLogin) {
         final LoginContract.ViewRequiredOps mViewRef = mView.get();
         if (mViewRef != null) {
             mViewRef.LoginExecuted(mModel.executeLoginda(infoLogin));

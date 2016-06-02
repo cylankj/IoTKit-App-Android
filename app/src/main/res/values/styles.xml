@@ -169,14 +169,14 @@
         <item name="android:adjustViewBounds">true</item>
     </style>
 
-    <style name="definition_text">
-        <item name="android:layout_width">0dip</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_weight">1</item>
-        <item name="android:textSize">13sp</item>
-        <item name="android:textColor">@color/definition_color</item>
-        <item name="android:gravity">center</item>
-    </style>
+    <!--<style name="definition_text">-->
+        <!--<item name="android:layout_width">0dip</item>-->
+        <!--<item name="android:layout_height">wrap_content</item>-->
+        <!--<item name="android:layout_weight">1</item>-->
+        <!--<item name="android:textSize">13sp</item>-->
+        <!--<item name="android:textColor">@color/definition_color</item>-->
+        <!--<item name="android:gravity">center</item>-->
+    <!--</style>-->
 
     <!--<style name="setting_item">-->
         <!--<item name="android:layout_width">match_parent</item>-->
@@ -246,18 +246,6 @@
         <item name="android:textColor">@color/hint_text_color</item>
     </style>
 
-    <style name="pop_text">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:textSize">16sp</item>
-        <item name="android:paddingLeft">14dip</item>
-        <item name="android:paddingRight">14dip</item>
-        <item name="android:paddingTop">8dip</item>
-        <item name="android:paddingBottom">8dip</item>
-        <item name="android:textColor">@color/definition_color</item>
-        <item name="android:gravity">center</item>
-        <item name="android:background">@drawable/more_item_sel</item>
-    </style>
 
     <style name="search_dialog" parent="@android:style/Theme.Dialog">
         <item name="android:windowIsFloating">true</item>
@@ -282,14 +270,14 @@
         <item name="android:windowNoTitle">true</item>
     </style>
 
-    <style name="comment_titlebar_text_style">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_centerVertical">true</item>
-        <item name="android:gravity">center_vertical|right</item>
-        <item name="android:textColor">@color/white</item>
-        <item name="android:textSize">@dimen/right_paddingright</item>
-    </style>
+    <!--<style name="comment_titlebar_text_style">-->
+        <!--<item name="android:layout_width">wrap_content</item>-->
+        <!--<item name="android:layout_height">wrap_content</item>-->
+        <!--<item name="android:layout_centerVertical">true</item>-->
+        <!--<item name="android:gravity">center_vertical|right</item>-->
+        <!--<item name="android:textColor">@color/white</item>-->
+        <!--<item name="android:textSize">@dimen/right_paddingright</item>-->
+    <!--</style>-->
 
     <style name="comment_bottom_dialog_style">
         <item name="android:layout_width">fill_parent</item>
@@ -333,15 +321,6 @@
         <item name="android:windowIsTranslucent">true</item>
     </style>
 
-    <style name="ProgressBar_Mini" parent="@android:style/Widget.ProgressBar.Horizontal">
-        <item name="android:maxHeight">50dip</item>
-        <item name="android:minHeight">8dip</item>
-        <item name="android:indeterminateOnly">false</item>
-        <item name="android:indeterminateDrawable">
-            @android:drawable/progress_indeterminate_horizontal
-        </item>
-        <item name="android:progressDrawable">@drawable/progress_horizontal</item>
-    </style>
 
     <style name="activity.welcome.theme" parent="@android:style/Theme.NoTitleBar">
 
@@ -351,17 +330,6 @@
     <style name="Theme_Dialog" parent="@android:style/Theme.Dialog">
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:windowNoTitle">true</item>
-    </style>
-
-    <style name="NumberProgressBar_Default">
-        <item name="Max">100</item>
-        <item name="progress">0</item>
-        <item name="progress_unreached_color">#CCCCCC</item>
-        <item name="progress_reached_color">@color/white</item>
-        <item name="progress_text_size">10sp</item>
-        <item name="progress_text_color">#3498DB</item>
-        <item name="progress_reached_bar_height">1.5dp</item>
-        <item name="progress_unreached_bar_height">0.75dp</item>
     </style>
 
     <style name="activity_top_in" parent="@android:style/Animation">

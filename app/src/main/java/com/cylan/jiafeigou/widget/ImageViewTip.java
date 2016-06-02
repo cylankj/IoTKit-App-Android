@@ -22,8 +22,18 @@ public class ImageViewTip extends ImageView {
     private float mDotRadius = 8;
     private boolean showDot = false;
     private Paint mPaint = new Paint();
+    private Paint borderPaint = new Paint(Color.WHITE);
+    private boolean enableBoarder = false;
+    private int borderColor = Color.WHITE;
+    private int borderWidth = 0;
     /**
      * 总共有8个位置,“米”各个角，左上角为0,顺时针增加。
+     */
+
+    /**
+     * 0-1-2
+     * 7---3
+     * 6-5-4
      */
     private int position = 7;
 
@@ -49,8 +59,35 @@ public class ImageViewTip extends ImageView {
         setIgnorePadding(ignore);
         int position = a.getInteger(R.styleable.DotThemes_position,2);
         setPosition(position);
+
+        int borderColor = a.getColor(R.styleable.DotThemes_borderColor, Color.WHITE);
+        setBorderColor(borderColor);
+
+        int borderWidth = a.getDimensionPixelSize(R.styleable.DotThemes_borderWidth, 0);
+        setBorderWidth(borderWidth);
+
+        boolean enableBorder = a.getBoolean(R.styleable.DotThemes_enableBorder, false);
+        enableBoarder(enableBorder);
         a.recycle();
         init();
+    }
+
+    public void enableBoarder(boolean enable) {
+        enableBoarder = enable;
+        invalidate();
+    }
+
+
+    public void setBorderColor(int color) {
+        borderColor = color;
+        borderPaint.setColor(color);
+        invalidate();
+    }
+
+    public void setBorderWidth(int borderWidth) {
+        this.borderWidth = borderWidth;
+        borderPaint.setStrokeWidth(borderWidth);
+        invalidate();
     }
 
     public void setShowDot(boolean showDot) {
@@ -74,6 +111,7 @@ public class ImageViewTip extends ImageView {
     private void init() {
         mPaint.setAntiAlias(true);
         mPaint.setColor(Color.RED);
+        borderPaint.setAntiAlias(true);
     }
 
     public void setIgnorePadding(boolean ignore) {
@@ -89,12 +127,12 @@ public class ImageViewTip extends ImageView {
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
-        x[0] = ignorePadding ? getDotRadius() + getPaddingLeft() : getDotRadius();
+        x[0] = (ignorePadding ? getPaddingLeft() : 0) + getDotRadius() + borderWidth;
         x[1] = getWidth() / 2;
-        x[2] = ignorePadding ? getWidth() - getDotRadius() - getPaddingRight() : getWidth() - getDotRadius();
-        y[0] = ignorePadding ? getDotRadius() + getPaddingTop() : getDotRadius();
+        x[2] = (ignorePadding ? getWidth() - getDotRadius() - getPaddingRight() : getWidth() - getDotRadius()) - borderWidth;
+        y[0] = (ignorePadding ? getDotRadius() + getPaddingTop() : getDotRadius()) + borderWidth;
         y[1] = getHeight() / 2;
-        y[2] = ignorePadding ? getHeight() - getDotRadius() - getPaddingBottom() : getHeight() - getDotRadius();
+        y[2] = (ignorePadding ? getHeight() - getDotRadius() - getPaddingBottom() : getHeight() - getDotRadius()) - borderWidth;
     }
 
     private float[] x = {0f, 0f, 0f};
@@ -114,6 +152,9 @@ public class ImageViewTip extends ImageView {
     @Override
     protected void onDraw(@NonNull Canvas canvas) {
         super.onDraw(canvas);
+        if (enableBoarder) {
+            canvas.drawCircle(getPoint(position).x, getPoint(position).y, getDotRadius() + borderWidth, borderPaint);
+        }
         if (isShowDot()) {
             canvas.drawCircle(getPoint(position).x, getPoint(position).y, getDotRadius(), mPaint);
         }

@@ -1,6 +1,6 @@
 package com.cylan.jiafeigou.n.mvp.contract.login;
 
-import com.cylan.jiafeigou.n.view.login.InfoLogin;
+import com.cylan.jiafeigou.n.model.BeanInfoLogin;
 
 /**
  * Created by chen on 5/30/16.
@@ -15,7 +15,7 @@ public interface LoginContract {
 
     interface PresenterOps {
 
-        void executeLogin(InfoLogin infoLogin);
+        void executeLogin(BeanInfoLogin infoLogin);
     }
 
     interface PresenterRequiredOps {

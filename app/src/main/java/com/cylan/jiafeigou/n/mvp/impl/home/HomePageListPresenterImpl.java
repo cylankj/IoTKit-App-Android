@@ -67,11 +67,14 @@ public class HomePageListPresenterImpl implements HomePageListContract.Presenter
      * @return
      */
     private List<DeviceBean> requestList() {
-        int count = RandomUtils.getRandom(20);
+        int count = 4;
         List<DeviceBean> list = new ArrayList<>();
         for (int i = 0; i < count; i++) {
             DeviceBean baseBean = new DeviceBean();
             baseBean.id = i;
+            baseBean.alias = "周四: " + i;
+            baseBean.msgTime = 15151;
+            baseBean.deviceType = RandomUtils.getRandom(4);
             list.add(baseBean);
         }
         return list;

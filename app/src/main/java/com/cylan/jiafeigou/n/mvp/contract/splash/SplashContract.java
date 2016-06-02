@@ -3,8 +3,6 @@ package com.cylan.jiafeigou.n.mvp.contract.splash;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
 
-import java.util.Objects;
-
 /**
  * Created by hunt on 16-5-23.
  */
@@ -31,6 +29,6 @@ public interface SplashContract {
     interface PresenterRequiredOps {
         void onTimeSplashed();
 
-        void onfinishDelayed();
+        void onFinishDelayed();
     }
 }

@@ -10,11 +10,11 @@
 
     <com.cylan.jiafeigou.widget.CustomViewPager
         android:id="@+id/vp_home_content"
-        android:fitsSystemWindows="true"
-        android:clipToPadding="true"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/lLayout_home_bottom_menu" />
+        android:layout_above="@+id/lLayout_home_bottom_menu"
+        android:clipToPadding="true"
+        android:fitsSystemWindows="true" />
 
     <View
         android:layout_width="match_parent"
@@ -26,17 +26,19 @@
         android:id="@+id/lLayout_home_bottom_menu"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp">
+        android:layout_alignParentBottom="true">
 
         <TextView
             android:id="@+id/btn_home_list"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
-            android:drawableTop="@drawable/icon_bottom_cleve_dog"
+            android:clickable="true"
+            android:drawableTop="@drawable/icon_bottom_clever_dog_selector"
+            android:focusableInTouchMode="true"
             android:gravity="center_horizontal"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
             android:text="加菲狗"
             android:textColor="#353c41"
             android:textSize="11sp" />
@@ -46,8 +48,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:drawableTop="@drawable/icon_bottom_wondeful"
+            android:drawableTop="@drawable/icon_bottom_wonderful_selector"
             android:gravity="center_horizontal"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
             android:text="每日精彩"
             android:textColor="#353c41"
             android:textSize="11sp" />
@@ -57,8 +61,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:drawableTop="@drawable/icon_bottom_mine"
+            android:drawableTop="@drawable/icon_bottom_mine_selector"
             android:gravity="center_horizontal"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
             android:text="我的"
             android:textColor="#353c41"
             android:textSize="11sp" />

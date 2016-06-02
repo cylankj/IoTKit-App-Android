@@ -1,34 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <resources>
 
-    <dimen name="standard_padding">8dip</dimen>
-    <dimen name="half_padding">4dip</dimen>
-    <dimen name="dialog_btn_width">160dip</dimen>
 
-    <!-- list -->
-    <dimen name="list_divider_height">6dip</dimen>
-    <dimen name="list_icon_size">75dip</dimen>
-    <dimen name="list_state_size">24dip</dimen>
-    <dimen name="list_state_margin">8dip</dimen>
-    <dimen name="list_icon_using_size">40dip</dimen>
-    <dimen name="exception_thumb_size">99dip</dimen>
-    <dimen name="exception_thumb_padding">5dip</dimen>
-    <dimen name="contact_text_margin">3dip</dimen>
-    <dimen name="doorbell_handlebar_margin">20dip</dimen>
-    <dimen name="doorbell_online_time">10dip</dimen>
-
-    <!--editscenc -->
-    <dimen name="scenc_width_hight">65dip</dimen>
-
-
-    <!-- titlebar -->
-    <dimen name="title_height">48dp</dimen>
-    <dimen name="back_padding">15dp</dimen>
-    <dimen name="back_maginright">5dp</dimen>
-    <dimen name="right_paddingright">15dp</dimen>
-    <dimen name="title_textsize">18sp</dimen>
-    <!-- login -->
-    <dimen name="login_magintop">40dp</dimen>
     <dimen name="login_username_magintop">44dp</dimen>
     <dimen name="login_username_hight">100dp</dimen>
     <dimen name="login_hight">200px</dimen>

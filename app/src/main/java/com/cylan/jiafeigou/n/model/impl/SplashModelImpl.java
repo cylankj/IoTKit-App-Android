@@ -36,7 +36,7 @@ public class SplashModelImpl implements ModelContract.SplashModelOps {
         mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                mPresenter.onfinishDelayed();
+                mPresenter.onFinishDelayed();
             }
         }, 1000);
     }

@@ -1,75 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
-    <declare-styleable name="CircleProgressBar">
-        <attr name="max" format="integer" />
-        <!-- 进度条最大值 -->
-        <attr name="fill" format="boolean" />
-        <!-- 是否填充圆形区域 -->
-        <attr name="Paint_Width" format="dimension" />
-        <!-- 画笔宽度，填充模式下无效，会被重置为0 -->
-        <attr name="Paint_Color" format="integer" />
-        <!-- 画笔颜色 -->
-        <attr name="Inside_Interval" format="dimension" />
-        <!-- 圆形区域向里缩进的距离 -->
-        <attr name="Bottom_Color" format="integer" />
-        <!-- 圆形区域向里缩进的距离 -->
-    </declare-styleable>
-
-    <declare-styleable name="SlidingMenu">
-        <attr name="mode">
-            <enum name="left" value="0" />
-            <enum name="right" value="1" />
-        </attr>
-        <attr name="viewAbove" format="reference" />
-        <attr name="viewBehind" format="reference" />
-        <attr name="behindOffset" format="dimension" />
-        <attr name="behindWidth" format="dimension" />
-        <attr name="behindScrollScale" format="float" />
-        <attr name="touchModeAbove">
-            <enum name="margin" value="0" />
-            <enum name="fullscreen" value="1" />
-            <enum name="none" value="2" />
-        </attr>
-        <attr name="touchModeBehind">
-            <enum name="margin" value="0" />
-            <enum name="fullscreen" value="1" />
-            <enum name="none" value="2" />
-        </attr>
-        <attr name="shadowDrawable" format="reference" />
-        <attr name="shadowWidth" format="dimension" />
-        <attr name="fadeEnabled" format="boolean" />
-        <attr name="fadeDegree" format="float" />
-        <attr name="selectorEnabled" format="boolean" />
-        <attr name="selectorDrawable" format="reference" />
-    </declare-styleable>
-    <declare-styleable name="CircleImageView">
-        <attr name="border_width" format="dimension" />
-        <attr name="border_color" format="color" />
-    </declare-styleable>
-
-    <declare-styleable name="NumberProgressBar">
-        <attr name="progress" format="integer" />
-        <attr name="Max" format="integer" />
-        <attr name="progress_unreached_color" format="color" />
-        <attr name="progress_reached_color" format="color" />
-        <attr name="progress_reached_bar_height" format="dimension" />
-        <attr name="progress_unreached_bar_height" format="dimension" />
-        <attr name="progress_text_size" format="dimension" />
-        <attr name="progress_text_color" format="color" />
-        <attr name="progress_text_offset" format="dimension" />
-        <attr name="progress_text_visibility" format="enum">
-            <enum name="visible" value="0" />
-            <enum name="invisible" value="1" />
-        </attr>
-    </declare-styleable>
-
-    <declare-styleable name="Themes">
-        <attr name="numberProgressBarStyle" format="reference" />
-    </declare-styleable>
-    <declare-styleable name="AudioAmplitudeView">
-        <attr name="is_left" format="boolean" />
-    </declare-styleable>
     <declare-styleable name="DotThemes">
         <attr name="position" format="integer" />
         <attr name="ignore" format="boolean" />
@@ -77,6 +7,13 @@
         <attr name="margin" format="dimension" />
         <attr name="showDot" format="boolean" />
         <attr name="tipDrawable" format="reference" />
+        <attr name="borderColor" format="color" />
+        <attr name="borderWidth" format="dimension" />
+        <attr name="enableBorder" format="boolean" />
+    </declare-styleable>
+    <declare-styleable name="WaveTheme">
+        <attr name="frontColor" format="color" />
+        <attr name="behindColor" format="color" />
     </declare-styleable>
     <declare-styleable name="HomeMineItemViewStyle">
         <attr name="leftDrawable" format="reference" />

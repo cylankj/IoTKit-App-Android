@@ -2,17 +2,12 @@ package com.cylan.jiafeigou.n.view.home;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Paint;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -20,13 +15,11 @@ import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeMineContract;
 import com.cylan.jiafeigou.n.mvp.impl.setting.AccountInfoPresenterImpl;
 import com.cylan.jiafeigou.n.view.fragment.AccountInfoFragment;
-import com.cylan.jiafeigou.n.view.login.LoginFrament;
+import com.cylan.jiafeigou.n.view.login.LoginFragment;
 import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.widget.ImageViewTip;
 import com.cylan.sdkjni.JfgCmd;
-import com.cylan.utils.ArrayUtils;
-import com.cylan.utils.BitmapUtil;
 import com.cylan.utils.FastBlurUtil;
 import com.readystatesoftware.viewbadger.BadgeView;
 import com.superlog.SLog;
@@ -138,9 +131,9 @@ public class HomeMineFragment extends Fragment
     public void onClickFriendItem(View view) {
         if (needStartLoginFragment()) return;
         SLog.i("It's Login,can do something!");
-        LoginFrament frament = LoginFrament.newInstance(null);
+        LoginFragment fragment = LoginFragment.newInstance(null);
         ActivityUtils.addFragmentToActivity(getActivity().getSupportFragmentManager(),
-                frament, R.id.rLayout_new_home_container);
+                fragment, R.id.rLayout_new_home_container);
     }
 
     @OnClick(R.id.home_mine_item_share)

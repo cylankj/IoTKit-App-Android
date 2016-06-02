@@ -1,50 +1,22 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <RelativeLayout
-        android:id="@+id/rLayout_home_top"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/y374"
-        android:background="#eee000">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:gravity="center_horizontal"
-            android:text="Hi xxx\n在这里开始美好的一天" />
-
-        <ImageButton
-            android:id="@+id/imgBtn_add_devices"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_marginBottom="13dp"
-            android:layout_marginLeft="15dp"
-            android:layout_marginRight="15dp"
-            android:layout_marginTop="13dp"
-            android:background="@drawable/icon_mine_friend" />
-    </RelativeLayout>
-
-    <in.srain.cube.views.ptr.PtrClassicFrameLayout
+    <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/fLayout_main_content_holder"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@+id/rLayout_home_top">
+        android:layout_height="wrap_content">
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rV_devices_list"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-    </in.srain.cube.views.ptr.PtrClassicFrameLayout>
+            android:layout_height="match_parent"
+            android:background="@color/white" />
 
-    <ViewStub
-        android:id="@+id/vs_empty_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@+id/rLayout_home_top"
-        android:layout="@layout/fragment_home_page_list_empty_view"
-        android:visibility="gone" />
 
-</RelativeLayout>
+    </android.support.v4.widget.SwipeRefreshLayout>
+
+    <include layout="@layout/fragment_home_page_list_header" />
+
+</FrameLayout>

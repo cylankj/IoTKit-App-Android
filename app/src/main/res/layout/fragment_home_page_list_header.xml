@@ -1,0 +1,56 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:hunt="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/rLayoutHomeHeaderContainer"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:id="@+id/rLayout_home_top"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/imgHomeTopBg"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_home_title_daytime" />
+
+        <TextView
+            android:id="@+id/tvHeaderNickName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:paddingBottom="10dp"
+            android:text="Hi xxx"
+            android:textSize="26sp" />
+
+        <TextView
+            android:id="@+id/tvHeaderPoet"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:paddingTop="50dp"
+            android:text="在这里开始美好的一天"
+            android:textSize="16sp" />
+
+        <ImageButton
+            android:id="@+id/imgBtn_add_devices"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginBottom="13dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginTop="13dp"
+            android:background="@drawable/btn_common_add" />
+
+    </RelativeLayout>
+
+
+    <com.cylan.jiafeigou.widget.wave.WaveView
+        android:id="@+id/vWaveAnimation"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignBottom="@+id/rLayout_home_top"
+        hunt:frontColor="@color/color_wave_front" />
+</RelativeLayout>
