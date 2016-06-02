@@ -11,10 +11,23 @@ android {
         versionCode 1
         versionName "1.0"
     }
+    //配置
+    if (file("/home/hunt/cylanWork/cylanKeyStore/cy.keystore").exists()) {
+        signingConfigs {
+            release {
+                storeFile file("/home/hunt/cylanWork/cylanKeyStore/cy.keystore")
+                storePassword '111111'
+                keyAlias 'cyalias.keystore'
+                keyPassword '111111'
+            }
+        }
+    }
+
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+//            signingConfig signingConfigs.release
         }
     }
     lintOptions {
@@ -68,6 +81,22 @@ dependencies {
     releaseCompile files('src/main/jniLibs/jfg-release-support.jar')
 }
 
+if (project.hasProperty('keystoreFile') &&
+        project.hasProperty('keystorePassword') &&
+        project.hasProperty('keystoreAliasPassword')) {
+    android.signingConfigs.release.storeFile = file(keystoreFile)
+    android.signingConfigs.release.storePassword = keystorePassword
+    android.signingConfigs.release.keyPassword = keystoreAliasPassword
+    android.signingConfigs.release.keyAlias = keystoreAlias
+} else {
+    android.buildTypes.release.signingConfig = null
+}
+
+
+if (project.hasProperty('oem')
+        && oem != 'cylan') {
+    android.defaultConfig.applicationId = 'com.cylan.jiafeigou.' + oem
+}
 
 android.applicationVariants.all { variant ->
     variant.outputs.each { output ->
