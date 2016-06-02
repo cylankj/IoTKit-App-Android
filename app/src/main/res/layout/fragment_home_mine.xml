@@ -8,60 +8,49 @@
     <RelativeLayout
         android:id="@+id/rLayout_home_mine_top"
         android:layout_width="match_parent"
-        android:layout_height="238dp">
+        android:layout_height="238dp"
+        android:background="@color/code_text_color">
 
-        <TextView
-            android:id="@+id/tv_home_mine_portrait"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#40000000" />
+
+
+        <ImageView
+            android:id="@+id/iv_home_mine_portrait"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="76dp"
-            android:drawablePadding="16dp"
-            android:drawableTop="@drawable/icon_mine_head_normal"
+            android:elevation="10dp"
+            android:src="@drawable/icon_mine_defult_head" />
+
+
+        <TextView
+            android:id="@+id/tv_home_mine_nick"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/iv_home_mine_portrait"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="16dp"
             android:gravity="center_horizontal"
             android:text="用户昵称"
             android:textColor="@color/white"
             android:textSize="19sp" />
 
 
-        <RelativeLayout
+        <ImageView
+            android:id="@+id/iv_mine_msg"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:layout_marginRight="17dp"
-            android:layout_marginTop="17dp">
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="20dp"
+            android:src="@drawable/icon_mine_message" />
 
-            <ImageView
-                android:id="@+id/iv_home_mine_msg"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:background="@drawable/icon_mine_message" />
-
-            <TextView
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_above="@+id/iv_home_mine_msg"
-                android:layout_centerInParent="true"
-                android:background="@drawable/icon_common_red_dot"
-                android:gravity="center"
-                android:text="1"
-                android:textColor="@color/white"
-                android:textSize="12sp" />
-        </RelativeLayout>
 
     </RelativeLayout>
-
-
-    <!--<com.cylan.jiafeigou.widget.ImageViewTip-->
-    <!--android:id="@+id/img_home_mine_msg"-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_alignParentRight="true"-->
-    <!--android:layout_marginRight="17dp"-->
-    <!--android:layout_marginTop="17dp"-->
-    <!--android:background="@drawable/icon_mine_message"-->
-    <!--tim:showDot="true" />-->
 
 
     <LinearLayout
@@ -121,6 +110,7 @@
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="#e8e8e8" />
+
     </LinearLayout>
 
 
