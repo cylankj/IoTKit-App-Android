@@ -1,6 +1,5 @@
 package com.cylan.jiafeigou.n;
 
-import android.app.ActionBar;
 import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
@@ -11,16 +10,8 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
-<<<<<<< 7841f34ebb5d9548d4d9b478bc5056be9684cb08
-import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.view.WindowManager;
-=======
-import android.view.ViewGroup;
->>>>>>> 主页基本动画,框架搭好
-import android.widget.Button;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
@@ -29,14 +20,13 @@ import com.cylan.jiafeigou.n.mvp.impl.home.HomeDiscoveryPresenterImpl;
 import com.cylan.jiafeigou.n.mvp.impl.home.HomeMinePresenterImpl;
 import com.cylan.jiafeigou.n.mvp.impl.home.HomePageListPresenterImpl;
 import com.cylan.jiafeigou.n.mvp.impl.home.NewHomeActivityPresenterImpl;
-import com.cylan.jiafeigou.n.view.home.HomeDiscoveryFragment;
+import com.cylan.jiafeigou.n.view.home.HomeWonderfulFragment;
 import com.cylan.jiafeigou.n.view.home.HomeMineFragment;
 import com.cylan.jiafeigou.n.view.home.HomePageListFragment;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.widget.CustomViewPager;
 import com.cylan.utils.ListUtils;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
-import com.superlog.SLog;
 
 import java.lang.reflect.Field;
 import java.util.List;
@@ -44,9 +34,6 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import rx.Observable;
-import rx.Subscriber;
-import rx.subscriptions.CompositeSubscription;
 
 public class NewHomeActivity extends FragmentActivity implements
         ViewPager.OnPageChangeListener, NewHomeActivityContract.View {
@@ -124,7 +111,7 @@ public class NewHomeActivity extends FragmentActivity implements
         vpHomeContent.setPagingEnabled(false);
         vpHomeContent.setAdapter(viewAdapter);
         vpHomeContent.addOnPageChangeListener(this);
-        btnHomeList.setEnabled(false);
+        btnHomeList.setActivated(true);
         bottomBtn[0] = btnHomeList;
         bottomBtn[1] = btnHomeDiscover;
         bottomBtn[2] = btnHomeMine;
@@ -133,18 +120,24 @@ public class NewHomeActivity extends FragmentActivity implements
 
     @OnClick(R.id.btn_home_list)
     public void onClickBtnList() {
+        if (vpHomeContent.getCurrentItem() == 0)
+            return;
         onPageSelected(0);
         vpHomeContent.setCurrentItem(0);
     }
 
     @OnClick(R.id.btn_home_discovery)
     public void onClickBtnDiscovery() {
+        if (vpHomeContent.getCurrentItem() == 1)
+            return;
         onPageSelected(1);
         vpHomeContent.setCurrentItem(1);
     }
 
     @OnClick(R.id.btn_home_mine)
     public void onClickBtnMine() {
+        if (vpHomeContent.getCurrentItem() == 2)
+            return;
         onPageSelected(2);
         vpHomeContent.setCurrentItem(2);
     }
@@ -158,8 +151,8 @@ public class NewHomeActivity extends FragmentActivity implements
     public void onPageSelected(int position) {
         for (int i = 0; i < HomeViewAdapter.TOTAL_COUNT; i++) {
             if (i == position)
-                bottomBtn[position].setEnabled(false);
-            else bottomBtn[i].setEnabled(true);
+                bottomBtn[position].setActivated(true);
+            else bottomBtn[i].setActivated(false);
         }
     }
 
@@ -249,9 +242,9 @@ class HomeViewAdapter extends FragmentPagerAdapter {
                 return fragment;
             }
             case INDEX_1: {
-                HomeDiscoveryFragment fragment = HomeDiscoveryFragment.newInstance(new Bundle());
+                HomeWonderfulFragment fragment = HomeWonderfulFragment.newInstance(new Bundle());
                 new HomeDiscoveryPresenterImpl(fragment);
-                return HomeDiscoveryFragment.newInstance(new Bundle());
+                return HomeWonderfulFragment.newInstance(new Bundle());
             }
             case INDEX_2:
                 HomeMineFragment fragment = HomeMineFragment.newInstance(new Bundle());
@@ -266,13 +259,9 @@ class HomeViewAdapter extends FragmentPagerAdapter {
         return 3;
     }
 
-<<<<<<< 7841f34ebb5d9548d4d9b478bc5056be9684cb08
-
-=======
     @Override
     public void destroyItem(ViewGroup container, int position, Object object) {
         //super.destroyItem(container, position, object);
         //复写这个韩函数,以免回收fragment.
     }
->>>>>>> 主页基本动画,框架搭好
 }

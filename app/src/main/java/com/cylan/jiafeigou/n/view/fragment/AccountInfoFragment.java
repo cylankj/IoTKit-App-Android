@@ -146,7 +146,7 @@ public class AccountInfoFragment extends BaseFragment implements AccountInfoCont
         @Override
         public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
             View view = inflater.inflate(R.layout.layout_fragment_account_info, container, false);
-            view.setBackgroundColor(getResources().getColor(R.color.back_color));
+//            view.setBackgroundColor(getResources().getColor(R.color.back_color));
             return view;
         }
 

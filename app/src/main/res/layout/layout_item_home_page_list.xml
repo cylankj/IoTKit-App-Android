@@ -12,9 +12,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-<<<<<<< 7841f34ebb5d9548d4d9b478bc5056be9684cb08
-        android:background="@drawable/icon_mine_friend" />
-=======
         android:layout_marginLeft="33dp"
         android:background="@drawable/icon_home_camera_online"
         hunt:Dradius="3dp"
@@ -23,7 +20,6 @@
         hunt:enableBorder="true"
         hunt:ignore="true"
         hunt:showDot="true" />
->>>>>>> 主页基本动画,框架搭好
 
     <View
         android:id="@+id/v_icon_base_line_bottom"
@@ -86,33 +82,22 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="2dp"
-<<<<<<< 7841f34ebb5d9548d4d9b478bc5056be9684cb08
-            android:background="@drawable/icon_mine_friend" />
-=======
             android:background="@drawable/icon_home_net_2g" />
->>>>>>> 主页基本动画,框架搭好
 
         <ImageView
             android:id="@+id/img_device_share"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="2dp"
-<<<<<<< 7841f34ebb5d9548d4d9b478bc5056be9684cb08
-            android:background="@drawable/icon_mine_friend" />
-=======
+
             android:background="@drawable/icon_home_net_2g" />
->>>>>>> 主页基本动画,框架搭好
 
         <ImageView
             android:id="@+id/img_device_protection"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="2dp"
-<<<<<<< 7841f34ebb5d9548d4d9b478bc5056be9684cb08
-            android:background="@drawable/icon_mine_friend" />
-=======
             android:background="@drawable/icon_home_net_2g" />
->>>>>>> 主页基本动画,框架搭好
     </LinearLayout>
 
     <View

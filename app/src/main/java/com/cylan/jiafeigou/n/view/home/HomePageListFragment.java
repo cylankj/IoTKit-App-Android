@@ -50,7 +50,7 @@ public class HomePageListFragment extends Fragment implements
      */
     static int progressBarStartPosition;
     private static final int REFRESH_DELAY = 1500;
-    @BindView(R.id.srLayout_home_page_list_container)
+    @BindView(R.id.fLayout_main_content_holder)
     SwipeRefreshLayout srLayoutMainContentHolder;
     @BindView(R.id.imgBtn_add_devices)
     ImageButton imgBtnAddDevices;
@@ -99,14 +99,7 @@ public class HomePageListFragment extends Fragment implements
     @Override
     public void onResume() {
         super.onResume();
-<<<<<<< 7841f34ebb5d9548d4d9b478bc5056be9684cb08
-        if (presenter != null) {
-            presenter.start();
-        }
-=======
         if (presenter != null) presenter.start();
-
->>>>>>> 主页基本动画,框架搭好
     }
 
     @Override
@@ -279,13 +272,5 @@ public class HomePageListFragment extends Fragment implements
             homeMenuDialogWeakReference = new WeakReference<>(dialog);
         }
         homeMenuDialogWeakReference.get().show();
-    }
-
-    class ConnectResult {
-        int code;
-
-        public ConnectResult(int code) {
-            this.code = code;
-        }
     }
 }

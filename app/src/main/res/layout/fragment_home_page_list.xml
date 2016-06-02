@@ -2,40 +2,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/srLayout_home_page_list_container"
-        android:layout_width="match_parent"
-<<<<<<< 7841f34ebb5d9548d4d9b478bc5056be9684cb08
-        android:layout_height="@dimen/y374"
-        android:background="#eee000">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:gravity="center_horizontal"
-            android:text="Hi xxx\n在这里开始美好的一天" />
-
-        <ImageButton
-            android:id="@+id/imgBtn_add_devices"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_marginBottom="13dp"
-            android:layout_marginLeft="15dp"
-            android:layout_marginRight="15dp"
-            android:layout_marginTop="13dp"
-            android:background="@drawable/icon_mine_friend" />
-    </RelativeLayout>
-
-    <in.srain.cube.views.ptr.PtrClassicFrameLayout
+    <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/fLayout_main_content_holder"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@+id/rLayout_home_top">
-=======
         android:layout_height="wrap_content">
->>>>>>> 主页基本动画,框架搭好
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rV_devices_list"
