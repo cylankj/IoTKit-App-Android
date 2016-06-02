@@ -1,24 +1,27 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tim="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/white">
 
 
     <RelativeLayout
         android:id="@+id/rLayout_home_mine_top"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/y374"
-        android:background="#888888">
+        android:layout_height="238dp">
 
         <TextView
             android:id="@+id/tv_home_mine_portrait"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:drawableTop="@drawable/ico_addvideo_cam"
-            android:textSize="16sp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="76dp"
+            android:drawablePadding="16dp"
+            android:drawableTop="@drawable/icon_mine_head_normal"
             android:gravity="center_horizontal"
-            android:text="用户昵称" />
+            android:text="用户昵称"
+            android:textColor="@color/white"
+            android:textSize="19sp" />
     </RelativeLayout>
 
     <com.cylan.jiafeigou.widget.ImageViewTip
@@ -26,8 +29,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:layout_margin="10dp"
-        android:background="@drawable/add_circle"
+        android:layout_marginRight="17dp"
+        android:layout_marginTop="17dp"
+        android:background="@drawable/icon_mine_message"
         tim:showDot="true" />
 
 
@@ -40,38 +44,54 @@
         <com.cylan.jiafeigou.widget.HomeMineItemView
             android:id="@+id/home_mine_item_friend"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/y4"
-            tim:leftDrawable="@drawable/ico_device_ac"
-            tim:rightDrawable="@drawable/ico_device_set"
+            android:layout_height="60dp"
+            tim:leftDrawable="@drawable/icon_mine_friend"
+            tim:rightDrawable="@drawable/icon_mine_arrow_next"
             tim:text="亲朋好友" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#e8e8e8" />
 
         <com.cylan.jiafeigou.widget.HomeMineItemView
             android:id="@+id/home_mine_item_share"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="4dp"
-            tim:leftDrawable="@drawable/ico_device_ac"
-            tim:rightDrawable="@drawable/ico_device_set"
+            android:layout_height="60dp"
+            tim:leftDrawable="@drawable/icon_mine_share"
+            tim:rightDrawable="@drawable/icon_mine_arrow_next"
             tim:text="分享设备" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#e8e8e8" />
 
         <com.cylan.jiafeigou.widget.HomeMineItemView
             android:id="@+id/home_mine_item_help"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="4dp"
-            tim:leftDrawable="@drawable/ico_device_ac"
-            tim:rightDrawable="@drawable/ico_device_set"
+            android:layout_height="60dp"
+            tim:leftDrawable="@drawable/icon_mine_hlep"
+            tim:rightDrawable="@drawable/icon_mine_arrow_next"
             tim:text="帮助与反馈" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#e8e8e8" />
 
         <com.cylan.jiafeigou.widget.HomeMineItemView
             android:id="@+id/home_mine_item_settings"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="4dp"
-            tim:leftDrawable="@drawable/ico_device_ac"
-            tim:rightDrawable="@drawable/ico_device_set"
+            android:layout_height="60dp"
+            tim:leftDrawable="@drawable/icon_mine_setting"
+            tim:rightDrawable="@drawable/icon_mine_arrow_next"
             tim:text="设置" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#e8e8e8" />
     </LinearLayout>
 
 

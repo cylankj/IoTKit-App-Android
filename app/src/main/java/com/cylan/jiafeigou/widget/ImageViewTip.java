@@ -19,7 +19,7 @@ import com.cylan.jiafeigou.R;
  */
 public class ImageViewTip extends ImageView {
 
-    private float mDotRadius = 5;
+    private float mDotRadius = 8;
     private boolean showDot = false;
     private Paint mPaint = new Paint();
     /**

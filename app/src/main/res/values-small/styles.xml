@@ -9,7 +9,7 @@
         <item name="android:textColorHint">#c2c2c2</item>
         <item name="android:textColor">#555555</item>
         <item name="android:paddingLeft">10dip</item>
-        <item name="android:background">@drawable/edittext_bg</item>
+        <item name="android:background">@drawable/icon_mine_hlep</item>
     </style>
 
     <style name="submit_button">
@@ -20,11 +20,11 @@
         <item name="android:gravity">center</item>
     </style>
 
-    <style name="setting_item">
-        <item name="android:layout_width">fill_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:background">@drawable/bg_setting_item_selector</item>
-    </style>
+    <!--<style name="setting_item">-->
+        <!--<item name="android:layout_width">fill_parent</item>-->
+        <!--<item name="android:layout_height">wrap_content</item>-->
+        <!--<item name="android:background">@drawable/bg_setting_item_selector</item>-->
+    <!--</style>-->
 
     <style name="dialog_button">
         <item name="android:layout_width">0dip</item>

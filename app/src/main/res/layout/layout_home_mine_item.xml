@@ -9,12 +9,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:drawableLeft="@drawable/addvideo_failed"
-        android:textSize="16sp"
-        android:drawablePadding="10dp"
+        android:drawableLeft="@drawable/icon_mine_friend"
+        android:textSize="15sp"
+        android:textColor="#333333"
+        android:drawablePadding="16dp"
         android:gravity="center_vertical"
-        android:paddingLeft="10dp"
-        android:text="我的朋友" />
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp" />
 
     <ImageView
         android:id="@+id/iv_home_mine_item_friend"
@@ -22,9 +24,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
-        android:layout_marginRight="5dp"
-        android:src="@drawable/addvideo_failed"
-        android:text="我的朋友" />
+        android:layout_marginRight="19dp"
+        android:src="@drawable/icon_mine_friend" />
 
 
 </RelativeLayout>

@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<selector xmlns:android="http://schemas.android.com/apk/res/android">
-
-    <item android:drawable="@drawable/bg_single_lognclick_item_enter" android:state_pressed="true"/>
-    <item android:drawable="@drawable/bg_single_lognclick_item_default"/>
-
-</selector>

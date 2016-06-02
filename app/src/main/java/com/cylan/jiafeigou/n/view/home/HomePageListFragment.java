@@ -77,7 +77,9 @@ public class HomePageListFragment extends Fragment implements
     @Override
     public void onResume() {
         super.onResume();
-        presenter.start();
+        if (presenter != null) {
+            presenter.start();
+        }
     }
 
     @Override

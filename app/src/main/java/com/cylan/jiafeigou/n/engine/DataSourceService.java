@@ -31,8 +31,6 @@ import com.cylan.entity.jniCall.JFGStatus;
 import com.cylan.entity.jniCall.RobotMsg;
 import com.cylan.interfaces.JniCallBack;
 import com.cylan.jiafeigou.BuildConfig;
-import com.cylan.jiafeigou.n.NewHomeActivity;
-import com.cylan.jiafeigou.n.view.home.HomePageListFragment;
 import com.cylan.jiafeigou.support.rxbus.RxBus;
 import com.cylan.jiafeigou.support.stat.MtaManager;
 import com.cylan.sdkjni.JfgCmd;
@@ -40,11 +38,6 @@ import com.superlog.LogLevel;
 import com.superlog.SLog;
 
 import java.util.ArrayList;
-
-import rx.Observable;
-import rx.Subscriber;
-import rx.functions.Action1;
-import rx.functions.Func1;
 
 
 public class DataSourceService extends Service implements JniCallBack {
@@ -297,6 +290,11 @@ public class DataSourceService extends Service implements JniCallBack {
 
     @Override
     public void OnBindResult(int i) {
+
+    }
+
+    @Override
+    public void OnReprotSmsPhone(String s) {
 
     }
 }

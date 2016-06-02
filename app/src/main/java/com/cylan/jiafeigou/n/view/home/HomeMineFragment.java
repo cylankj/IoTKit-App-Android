@@ -7,6 +7,8 @@ import android.graphics.Paint;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +20,7 @@ import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeMineContract;
 import com.cylan.jiafeigou.n.mvp.impl.setting.AccountInfoPresenterImpl;
 import com.cylan.jiafeigou.n.view.fragment.AccountInfoFragment;
+import com.cylan.jiafeigou.n.view.login.LoginFrament;
 import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.widget.ImageViewTip;
@@ -74,7 +77,7 @@ public class HomeMineFragment extends Fragment
 
     private void testBlurBackground() {
         long time = System.currentTimeMillis();
-        Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.home_cover2);
+        Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.bg_mine_top_defult_background);
         bm = FastBlurUtil.blur(bm, 8, 10);
         rLayout.setBackground(new BitmapDrawable(getResources(), bm));
         SLog.e("usetime:%d ms", System.currentTimeMillis() - time);
@@ -128,6 +131,9 @@ public class HomeMineFragment extends Fragment
     public void onClickFriendItem(View view) {
         if (needStartLoginFragment()) return;
         SLog.i("It's Login,can do something!");
+        LoginFrament frament = LoginFrament.newInstance(null);
+        ActivityUtils.addFragmentToActivity(getActivity().getSupportFragmentManager(),
+                frament, R.id.rLayout_new_home_container);
     }
 
     @OnClick(R.id.home_mine_item_share)
@@ -148,6 +154,10 @@ public class HomeMineFragment extends Fragment
         SLog.i("It's Login,can do something!");
     }
 
+    @OnClick(R.id.rLayout_home_mine_top)
+    public void onClickblurPic(View view) {
+        if (needStartLoginFragment()) return;
+    }
 
     @Override
     public void setPresenter(HomeMineContract.Presenter presenter) {
@@ -162,8 +172,14 @@ public class HomeMineFragment extends Fragment
 
     private boolean needStartLoginFragment() {
         if (!JfgCmd.getJfgCmd(getContext()).isLogined) {
-            ToastUtil.showToast(getContext(), "Not login.....");
-            SLog.i("Not login.....");
+//            ToastUtil.showToast(getContext(), "Not login.....");
+//            SLog.i("Not login.....");
+//            LoginFrament fragment = LoginFrament.newInstance(null);
+//            FragmentManager manager = getFragmentManager();
+//            FragmentTransaction transaction = manager.beginTransaction();
+//            transaction.hide(this);
+//            transaction.add(R.id.rLayout_new_home_container, fragment, "login");
+//            transaction.commit();
             return true;
         }
         return false;
