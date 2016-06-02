@@ -28,6 +28,7 @@ import com.cylan.sdkjni.JfgCmd;
 import com.cylan.utils.ArrayUtils;
 import com.cylan.utils.BitmapUtil;
 import com.cylan.utils.FastBlurUtil;
+import com.readystatesoftware.viewbadger.BadgeView;
 import com.superlog.SLog;
 
 import butterknife.BindView;
@@ -41,8 +42,9 @@ public class HomeMineFragment extends Fragment
 
     @BindView(R.id.tv_home_mine_portrait)
     TextView tvMinePortrait;
-    @BindView(R.id.img_home_mine_msg)
-    ImageViewTip imgHomeMineMsg;
+    @BindView(R.id.iv_home_mine_msg)
+    TextView ivMsg;
+
     @BindView(R.id.rLayout_home_mine_top)
     RelativeLayout rLayout;
 
@@ -71,6 +73,11 @@ public class HomeMineFragment extends Fragment
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_home_mine, container, false);
         ButterKnife.bind(this, view);
+//        BadgeView badgeView = new BadgeView(getContext(), ivMsg);
+//        badgeView.setText("2");
+//        badgeView.setTextSize(10);
+//        badgeView.setBadgePosition(BadgeView.POSITION_TOP_RIGHT);
+//        badgeView.show();
         testBlurBackground();
         return view;
     }
@@ -111,7 +118,7 @@ public class HomeMineFragment extends Fragment
         super.onDetach();
     }
 
-    @OnClick(R.id.img_home_mine_msg)
+    @OnClick(R.id.iv_home_mine_msg)
     public void onClickMsg() {
         if (needStartLoginFragment()) return;
         ToastUtil.showToast(getContext(), "xiao xi");

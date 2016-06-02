@@ -1,6 +1,5 @@
 package com.cylan.jiafeigou.n;
 
-import android.app.ActionBar;
 import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
@@ -11,12 +10,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
-import android.widget.Button;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
@@ -32,7 +25,6 @@ import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.widget.CustomViewPager;
 import com.cylan.utils.ListUtils;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
-import com.superlog.SLog;
 
 import java.lang.reflect.Field;
 import java.util.List;
@@ -40,9 +32,6 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import rx.Observable;
-import rx.Subscriber;
-import rx.subscriptions.CompositeSubscription;
 
 public class NewHomeActivity extends FragmentActivity implements
         ViewPager.OnPageChangeListener, NewHomeActivityContract.View {
@@ -69,7 +58,6 @@ public class NewHomeActivity extends FragmentActivity implements
         ButterKnife.bind(this);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            Window window = getWindow();
             // Translucent status bar
             int height = getStatusBarHeight(NewHomeActivity.this);
 //            SLog.e("height:" + height);

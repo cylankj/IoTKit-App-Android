@@ -22,17 +22,46 @@
             android:text="用户昵称"
             android:textColor="@color/white"
             android:textSize="19sp" />
+
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="17dp"
+            android:layout_marginTop="17dp">
+
+            <TextView
+                android:id="@+id/iv_home_mine_msg"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:background="@drawable/icon_mine_message" />
+
+            <TextView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_above="@+id/iv_home_mine_msg"
+                android:layout_centerInParent="true"
+                android:background="@drawable/icon_common_red_dot"
+                android:gravity="center"
+                android:text="1"
+                android:textColor="@color/white"
+                android:textSize="12sp" />
+        </RelativeLayout>
+
     </RelativeLayout>
 
-    <com.cylan.jiafeigou.widget.ImageViewTip
-        android:id="@+id/img_home_mine_msg"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_marginRight="17dp"
-        android:layout_marginTop="17dp"
-        android:background="@drawable/icon_mine_message"
-        tim:showDot="true" />
+
+    <!--<com.cylan.jiafeigou.widget.ImageViewTip-->
+    <!--android:id="@+id/img_home_mine_msg"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_alignParentRight="true"-->
+    <!--android:layout_marginRight="17dp"-->
+    <!--android:layout_marginTop="17dp"-->
+    <!--android:background="@drawable/icon_mine_message"-->
+    <!--tim:showDot="true" />-->
 
 
     <LinearLayout
