@@ -9,14 +9,10 @@ import android.view.ViewGroup;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeWonderfulContract;
 
-import butterknife.BindView;
 import butterknife.ButterKnife;
-import in.srain.cube.views.ptr.PtrClassicFrameLayout;
 
 public class HomeWonderfulFragment extends Fragment implements HomeWonderfulContract.View {
 
-    @BindView(R.id.srLayout_home_page_list_container)
-    PtrClassicFrameLayout fLayoutMainContentHolder;
     HomeWonderfulContract.Presenter presenter;
 
     public static HomeWonderfulFragment newInstance(Bundle bundle) {

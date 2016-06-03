@@ -11,13 +11,13 @@ import rx.Subscription;
 /**
  * Created by hunt on 16-5-23.
  */
-public class HomeDiscoveryPresenterImpl implements HomeWonderfulContract.Presenter {
+public class HomeWonderfulPresenterImpl implements HomeWonderfulContract.Presenter {
 
     private WeakReference<HomeWonderfulContract.View> viewWeakReference;
 
     private Subscription onRefreshSubscription;
 
-    public HomeDiscoveryPresenterImpl(HomeWonderfulContract.View view) {
+    public HomeWonderfulPresenterImpl(HomeWonderfulContract.View view) {
         viewWeakReference = new WeakReference<>(view);
         view.setPresenter(this);
     }

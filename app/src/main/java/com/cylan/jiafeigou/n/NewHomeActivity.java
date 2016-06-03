@@ -12,17 +12,17 @@ import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.widget.TextView;
+import android.widget.RadioGroup;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.contract.home.NewHomeActivityContract;
-import com.cylan.jiafeigou.n.mvp.impl.home.HomeDiscoveryPresenterImpl;
 import com.cylan.jiafeigou.n.mvp.impl.home.HomeMinePresenterImpl;
 import com.cylan.jiafeigou.n.mvp.impl.home.HomePageListPresenterImpl;
+import com.cylan.jiafeigou.n.mvp.impl.home.HomeWonderfulPresenterImpl;
 import com.cylan.jiafeigou.n.mvp.impl.home.NewHomeActivityPresenterImpl;
-import com.cylan.jiafeigou.n.view.home.HomeWonderfulFragment;
 import com.cylan.jiafeigou.n.view.home.HomeMineFragment;
 import com.cylan.jiafeigou.n.view.home.HomePageListFragment;
+import com.cylan.jiafeigou.n.view.home.HomeWonderfulFragment;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.widget.CustomViewPager;
 import com.cylan.utils.ListUtils;
@@ -33,25 +33,15 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 public class NewHomeActivity extends FragmentActivity implements
         ViewPager.OnPageChangeListener, NewHomeActivityContract.View {
     @BindView(R.id.vp_home_content)
     CustomViewPager vpHomeContent;
-    @BindView(R.id.btn_home_list)
-    TextView btnHomeList;
-    @BindView(R.id.btn_home_discovery)
-    TextView btnHomeDiscover;
-    @BindView(R.id.btn_home_mine)
-    TextView btnHomeMine;
-
-//    @BindView(R.id.view_state_bar)
-//    View view;
+    @BindView(R.id.rgLayout_home_bottom_menu)
+    RadioGroup rgLayoutHomeBottomMenu;
 
     private HomeViewAdapter viewAdapter;
-    TextView[] bottomBtn = new TextView[3];
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +64,7 @@ public class NewHomeActivity extends FragmentActivity implements
             tintManager.setStatusBarTintEnabled(true);
         }
         initBottomMenu();
+        initMainContentAdapter();
         new NewHomeActivityPresenterImpl(this);
     }
 
@@ -105,41 +96,30 @@ public class NewHomeActivity extends FragmentActivity implements
         return statusBarHeight;
     }
 
-
-    private void initBottomMenu() {
+    private void initMainContentAdapter() {
         viewAdapter = new HomeViewAdapter(getSupportFragmentManager());
         vpHomeContent.setPagingEnabled(false);
         vpHomeContent.setAdapter(viewAdapter);
         vpHomeContent.addOnPageChangeListener(this);
-        btnHomeList.setActivated(true);
-        bottomBtn[0] = btnHomeList;
-        bottomBtn[1] = btnHomeDiscover;
-        bottomBtn[2] = btnHomeMine;
     }
 
-
-    @OnClick(R.id.btn_home_list)
-    public void onClickBtnList() {
-        if (vpHomeContent.getCurrentItem() == 0)
-            return;
-        onPageSelected(0);
-        vpHomeContent.setCurrentItem(0);
-    }
-
-    @OnClick(R.id.btn_home_discovery)
-    public void onClickBtnDiscovery() {
-        if (vpHomeContent.getCurrentItem() == 1)
-            return;
-        onPageSelected(1);
-        vpHomeContent.setCurrentItem(1);
-    }
-
-    @OnClick(R.id.btn_home_mine)
-    public void onClickBtnMine() {
-        if (vpHomeContent.getCurrentItem() == 2)
-            return;
-        onPageSelected(2);
-        vpHomeContent.setCurrentItem(2);
+    private void initBottomMenu() {
+        rgLayoutHomeBottomMenu.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                switch (checkedId) {
+                    case R.id.btn_home_list:
+                        vpHomeContent.setCurrentItem(0);
+                        break;
+                    case R.id.btn_home_wonderful:
+                        vpHomeContent.setCurrentItem(1);
+                        break;
+                    case R.id.btn_home_mine:
+                        vpHomeContent.setCurrentItem(2);
+                        break;
+                }
+            }
+        });
     }
 
     @Override
@@ -149,11 +129,6 @@ public class NewHomeActivity extends FragmentActivity implements
 
     @Override
     public void onPageSelected(int position) {
-        for (int i = 0; i < HomeViewAdapter.TOTAL_COUNT; i++) {
-            if (i == position)
-                bottomBtn[position].setActivated(true);
-            else bottomBtn[i].setActivated(false);
-        }
     }
 
     @Override
@@ -243,7 +218,7 @@ class HomeViewAdapter extends FragmentPagerAdapter {
             }
             case INDEX_1: {
                 HomeWonderfulFragment fragment = HomeWonderfulFragment.newInstance(new Bundle());
-                new HomeDiscoveryPresenterImpl(fragment);
+                new HomeWonderfulPresenterImpl(fragment);
                 return HomeWonderfulFragment.newInstance(new Bundle());
             }
             case INDEX_2:
