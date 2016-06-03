@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
+    android:layout_height="60dp">
 
 
     <TextView
@@ -12,6 +12,7 @@
         android:drawableLeft="@drawable/icon_mine_friend"
         android:textSize="15sp"
         android:textColor="#333333"
+        android:layout_gravity="center_vertical"
         android:drawablePadding="16dp"
         android:gravity="center_vertical"
         android:layout_marginLeft="15dp"
@@ -28,4 +29,4 @@
         android:src="@drawable/icon_mine_friend" />
 
 
-</RelativeLayout>
+</merge>

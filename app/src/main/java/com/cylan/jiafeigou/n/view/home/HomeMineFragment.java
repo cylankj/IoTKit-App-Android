@@ -79,9 +79,9 @@ public class HomeMineFragment extends Fragment
         View view = inflater.inflate(R.layout.fragment_home_mine, container, false);
         ButterKnife.bind(this, view);
         BadgeView badgeView = new BadgeView(getContext(), ivMsg);
+        badgeView.setBadgePosition(BadgeView.POSITION_BOTTOM_LEFT);
         badgeView.setTextSize(10);
         badgeView.setText("10");
-        badgeView.setBadgePosition(BadgeView.POSITION_BOTTOM_LEFT);
         badgeView.show();
 //        testBlurBackground(R.drawable.bg_mine_top_defult_background);
         return view;
