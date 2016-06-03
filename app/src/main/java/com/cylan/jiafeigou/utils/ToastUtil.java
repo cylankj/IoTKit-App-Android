@@ -1,6 +1,7 @@
 package com.cylan.jiafeigou.utils;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.TextView;
@@ -29,6 +30,7 @@ public class ToastUtil {
             toast.setView(tv);
             toast.show();
         } catch (Exception e) {
+            Log.d("hunt", "err: " + e);
         }
     }
 

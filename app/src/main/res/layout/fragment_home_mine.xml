@@ -53,13 +53,10 @@
 
     </RelativeLayout>
 
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@+id/rLayout_home_mine_top">
 
         <LinearLayout
             android:layout_width="match_parent"
+            android:layout_below="@+id/rLayout_home_mine_top"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
@@ -71,10 +68,6 @@
                 tim:rightDrawable="@drawable/icon_mine_arrow_next"
                 tim:text="亲朋好友" />
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="#e8e8e8" />
 
             <com.cylan.jiafeigou.widget.HomeMineItemView
                 android:id="@+id/home_mine_item_share"
@@ -84,10 +77,6 @@
                 tim:rightDrawable="@drawable/icon_mine_arrow_next"
                 tim:text="分享设备" />
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="#e8e8e8" />
 
             <com.cylan.jiafeigou.widget.HomeMineItemView
                 android:id="@+id/home_mine_item_help"
@@ -97,10 +86,6 @@
                 tim:rightDrawable="@drawable/icon_mine_arrow_next"
                 tim:text="帮助与反馈" />
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="#e8e8e8" />
 
             <com.cylan.jiafeigou.widget.HomeMineItemView
                 android:id="@+id/home_mine_item_settings"
@@ -110,12 +95,6 @@
                 tim:rightDrawable="@drawable/icon_mine_arrow_next"
                 tim:text="设置" />
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="#e8e8e8" />
-
         </LinearLayout>
-    </ScrollView>
 
 </RelativeLayout>

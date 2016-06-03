@@ -40,8 +40,19 @@
 -keep class com.cylan.crash.** { *; }
 -dontwarn org.msgpack.**
 -dontwarn com.alibaba.sdk.android.oss.**
--dontwarn com.tencent.bugly.**
--keep public class com.tencent.bugly.**{*;}
+-dontwarn okio.**
+-dontwarn javax.annotation.**
+
+#######################bugly#########################################
+-keep public class * extends android.app.Service
+-keep public class * extends android.content.BroadcastReceiver
+-keep class com.tencent.android.tpush.**  {* ;}
+-keep class com.tencent.mid.**  {* ;}
+###mta##
+-keep class com.tencent.stat.**  {* ;}
+################################################################
+
+
 -keep class com.taobao.securityjni.**{*;}
 -keep class com.taobao.wireless.security.**{*;}
 -keep class com.ut.secbody.**{*;}
@@ -74,10 +85,34 @@
   public static final android.os.Parcelable$Creator *;
 }
 
--keep class com.cylan.smartcall.engine.MyService {
-    void handleMsg(int,byte[]);
-}
-
 -keepclassmembers class **.R$* {
     public static <fields>;
 }
+-keep class rx.schedulers.Schedulers {
+    public static <methods>;
+}
+-keep class rx.schedulers.ImmediateScheduler {
+    public <methods>;
+}
+-keep class rx.schedulers.TestScheduler {
+    public <methods>;
+}
+-keep class rx.schedulers.Schedulers {
+    public static ** test();
+}
+-keepclassmembers class rx.internal.util.unsafe.*ArrayQueue*Field* {
+    long producerIndex;
+    long consumerIndex;
+}
+-keepclassmembers class rx.internal.util.unsafe.BaseLinkedQueueProducerNodeRef {
+    rx.internal.util.atomic.LinkedQueueNode producerNode;
+}
+-keepclassmembers class rx.internal.util.unsafe.BaseLinkedQueueConsumerNodeRef {
+    rx.internal.util.atomic.LinkedQueueNode consumerNode;
+}
+
+
+-dontwarn fi.foyt.foursquare.**
+
+-dontnote libcore.icu.ICU
+-dontnote sun.misc.Unsafe
