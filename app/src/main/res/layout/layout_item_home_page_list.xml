@@ -17,7 +17,7 @@
         android:background="@drawable/icon_home_camera_online"
         hunt:Dradius="3dp"
         hunt:borderColor="@color/white"
-        hunt:borderWidth="2dp"
+        hunt:borderWidth="1dp"
         hunt:enableBorder="true"
         hunt:ignore="true"
         hunt:showDot="true" />
@@ -73,8 +73,9 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
-        android:layout_marginBottom="14dp"
+        android:layout_below="@+id/v_icon_base_line_bottom"
         android:layout_marginRight="10dp"
+        android:layout_marginTop="7dp"
         android:orientation="horizontal">
 
         <ImageView

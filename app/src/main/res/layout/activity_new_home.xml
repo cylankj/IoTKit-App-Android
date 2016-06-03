@@ -41,7 +41,8 @@
             android:drawableTop="@drawable/icon_bottom_clever_dog_selector"
             android:gravity="center"
             android:text="加菲狗"
-            android:textColor="@color/home_bottom_menu_text_color_selector" />
+            android:textColor="@color/home_bottom_menu_text_color_selector"
+            android:textSize="11sp" />
 
         <RadioButton
             android:id="@+id/btn_home_wonderful"

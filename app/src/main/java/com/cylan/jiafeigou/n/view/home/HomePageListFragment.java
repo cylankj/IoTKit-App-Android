@@ -173,6 +173,7 @@ public class HomePageListFragment extends Fragment implements
                         progressBarStartPosition = drawable.getIntrinsicHeight();
                     }
                 }
+                srLayoutMainContentHolder.setColorSchemeColors(R.color.color_36bdff);
                 srLayoutMainContentHolder.setProgressViewOffset(false, progressBarStartPosition - 100, progressBarStartPosition + 100);
             }
         });
