@@ -29,7 +29,7 @@ public class HomeMinePresenterImpl implements HomeMineContract.Presenter {
 
     @Override
     public void start() {
-        Observable.just(null)
+        onRefreshSubscription= Observable.just(null)
                 .subscribeOn(Schedulers.io())
                 .delay(3000, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
@@ -44,7 +44,7 @@ public class HomeMinePresenterImpl implements HomeMineContract.Presenter {
 
     @Override
     public void stop() {
-        unSubscribe();
+        unSubscribe(onRefreshSubscription);
     }
 
     private void unSubscribe(Subscription... subscriptions) {

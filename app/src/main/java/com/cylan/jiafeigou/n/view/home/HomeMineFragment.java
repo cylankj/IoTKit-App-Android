@@ -83,7 +83,6 @@ public class HomeMineFragment extends Fragment
         badgeView.setTextSize(10);
         badgeView.setText("10");
         badgeView.show();
-//        testBlurBackground(R.drawable.bg_mine_top_defult_background);
         return view;
     }
 
@@ -106,7 +105,6 @@ public class HomeMineFragment extends Fragment
     @Override
     public void onStart() {
         super.onStart();
-        Glide.get(getContext()).getBitmapPool().get(160, 160, Bitmap.Config.ARGB_8888);
     }
 
     @Override
@@ -130,29 +128,25 @@ public class HomeMineFragment extends Fragment
         super.onDetach();
     }
 
-//    @OnClick(R.id.iv_home_mine_msg)
-//    public void onClickMsg() {
-//        if (needStartLoginFragment()) return;
-//        ToastUtil.showToast(getContext(), "xiao xi");
-//    }
+
 
     @OnClick(R.id.iv_home_mine_portrait)
     public void onClickPortrait() {
         if (needStartLoginFragment()) return;
         ToastUtil.showToast(getContext(), "推荐fragment");
-        AccountInfoFragment fragment = (AccountInfoFragment) AccountInfoFragment.getInstance();
-        ActivityUtils.addFragmentToActivity(getActivity().getSupportFragmentManager(),
-                fragment, R.id.rLayout_new_home_container, 0);
-        new AccountInfoPresenterImpl(fragment);
+//        AccountInfoFragment fragment = (AccountInfoFragment) AccountInfoFragment.getInstance();
+//        ActivityUtils.addFragmentToActivity(getActivity().getSupportFragmentManager(),
+//                fragment, R.id.rLayout_new_home_container, 0);
+//        new AccountInfoPresenterImpl(fragment);
     }
 
     @OnClick(R.id.home_mine_item_friend)
     public void onClickFriendItem(View view) {
         if (needStartLoginFragment()) return;
         SLog.i("It's Login,can do something!");
-        LoginFragment fragment = LoginFragment.newInstance(null);
-        ActivityUtils.addFragmentToActivity(getActivity().getSupportFragmentManager(),
-                fragment, R.id.rLayout_new_home_container);
+//        LoginFragment fragment = LoginFragment.newInstance(null);
+//        ActivityUtils.addFragmentToActivity(getActivity().getSupportFragmentManager(),
+//                fragment, R.id.rLayout_new_home_container);
     }
 
     @OnClick(R.id.home_mine_item_share)
@@ -192,15 +186,15 @@ public class HomeMineFragment extends Fragment
 
 
     private boolean needStartLoginFragment() {
-        if (!JfgCmd.getJfgCmd(getContext()).isLogined) {
+        if (JfgCmd.getJfgCmd(getContext()).isLogined) {
             ToastUtil.showToast(getContext(), "Not login.....");
-            SLog.i("Not login.....");
+//            SLog.i("Not login.....");
             LoginFragment fragment = LoginFragment.newInstance(null);
-            FragmentManager manager = getFragmentManager();
-            FragmentTransaction transaction = manager.beginTransaction();
+            FragmentTransaction transaction = getFragmentManager().beginTransaction();
             transaction.hide(this);
             transaction.add(R.id.rLayout_new_home_container, fragment, "login");
             transaction.commit();
+//            ActivityUtils.addFragmentToActivity(getChildFragmentManager(),fragment,R.id.rLayout_new_home_container,0);
             return true;
         }
         return false;

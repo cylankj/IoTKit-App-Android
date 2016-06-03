@@ -43,6 +43,7 @@ public class LoginFragment extends Fragment implements LoginContract.ViewRequire
         super.onCreate(savedInstanceState);
     }
 
+
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View mView = inflater.inflate(R.layout.fragment_login_layout, container, false);
