@@ -10,6 +10,11 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
+        ndk {
+            // 设置支持的SO库架构
+            abiFilters 'armeabi-v7a' //, 'x86', 'armeabi-v7a', 'x86_64', 'arm64-v8a'
+        }
+
     }
     //配置
     if (file("/home/hunt/cylanWork/cylanKeyStore/cy.keystore").exists()) {
@@ -33,7 +38,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
         }
-        debug{
+        debug {
             minifyEnabled false
         }
     }
@@ -68,10 +73,10 @@ dependencies {
     compile rootProject.ext.glide
     compile rootProject.ext.glideSupport
     compile rootProject.ext.permis
+    compile rootProject.ext.systembartint
     apt rootProject.ext.permisApt
     compile project(':jlib')
     compile files('libs/aliyun-oss-sdk-android-2.2.0.jar')
-    compile files('libs/bugly_crash_release__2.1.jar')
     compile files('libs/gson-2.2.4.jar')
     compile files('libs/JfgAndroidSDK-2.0.92.jar')
     compile files('libs/mid-sdk-2.3.jar')
@@ -83,10 +88,13 @@ dependencies {
     compile files('libs/SLog-2.0.jar')
     compile files('libs/weibosdkcore.jar')
     compile files('libs/zxing.jar')
-    compile 'com.readystatesoftware.systembartint:systembartint:1.0.3'
     debugCompile files('src/main/jniLibs/jfg-debug-support.jar')
     releaseCompile files('src/main/jniLibs/jfg-release-support.jar')
     compile files('libs/android-viewbadger.jar')
+    //其中latest.release指代最新版本号，也可以指定明确的版本号，例如2.1.5
+    apt rootProject.ext.buglySdk
+    //其中latest.release指代最新版本号，也可以指定明确的版本号，例如2.2.0
+    apt rootProject.ext.buglyNdk
 }
 
 if (project.hasProperty('keystoreFile') &&

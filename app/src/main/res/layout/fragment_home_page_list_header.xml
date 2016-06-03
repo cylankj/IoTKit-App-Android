@@ -23,6 +23,7 @@
             android:layout_centerInParent="true"
             android:paddingBottom="10dp"
             android:text="Hi xxx"
+            android:textColor="@android:color/white"
             android:textSize="26sp" />
 
         <TextView
@@ -32,6 +33,7 @@
             android:layout_centerInParent="true"
             android:paddingTop="50dp"
             android:text="在这里开始美好的一天"
+            android:textColor="@android:color/white"
             android:textSize="16sp" />
 
     </RelativeLayout>
@@ -52,5 +54,6 @@
         android:alpha="0"
         android:gravity="center"
         android:text="加菲狗"
+        android:textColor="@android:color/white"
         android:textSize="20sp" />
 </RelativeLayout>
