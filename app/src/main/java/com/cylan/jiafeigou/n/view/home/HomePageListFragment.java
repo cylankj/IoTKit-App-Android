@@ -12,9 +12,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
@@ -60,8 +59,6 @@ public class HomePageListFragment extends Fragment implements
     RecyclerView rVDevicesList;//设备列表
     @BindView(R.id.vWaveAnimation)
     WaveView vWaveAnimation;
-    @BindView(R.id.rLayout_home_top)
-    RelativeLayout rLayoutHomeTop;
 
     @BindView(R.id.tvHeaderLastTitle)
     TextView tvHeaderLastTitle;
@@ -140,7 +137,7 @@ public class HomePageListFragment extends Fragment implements
         if (simpleScrollListener == null)
             simpleScrollListener = new SimpleScrollListener(waveHelper, tvHeaderLastTitle);
         StickyHeaderBuilder.stickTo(rVDevicesList, simpleScrollListener)
-                .setHeader(R.id.rLayoutHomeHeaderContainer, (ViewGroup) getView())
+                .setHeader(R.id.fLayoutHomeHeaderContainer, (ViewGroup) getView())
                 .minHeightHeaderDim(R.dimen.dimens_48dp)
                 .build();
     }
@@ -167,7 +164,7 @@ public class HomePageListFragment extends Fragment implements
             @Override
             public void run() {
                 if (progressBarStartPosition == 0) {
-                    ImageView view = (ImageView) getView().findViewById(R.id.imgHomeTopBg);
+                    FrameLayout view = (FrameLayout) getView().findViewById(R.id.fLayout_home_top);
                     if (view != null) {
                         Drawable drawable = view.getBackground();
                         progressBarStartPosition = drawable.getIntrinsicHeight();

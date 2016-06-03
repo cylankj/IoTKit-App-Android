@@ -21,10 +21,11 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_above="@+id/rgLayout_home_bottom_menu"
-        android:background="#e8e8e8" />
+        android:background="@color/color_d2d2d2" />
 
 
     <RadioGroup
+        android:background="@color/color_f9f9f9"
         android:id="@+id/rgLayout_home_bottom_menu"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
