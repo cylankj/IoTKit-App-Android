@@ -9,22 +9,24 @@
         android:id="@+id/rLayout_home_mine_top"
         android:layout_width="match_parent"
         android:layout_height="238dp"
-        android:background="@color/code_text_color">
+        android:background="@drawable/bg_mine_top_defult_background">
 
-        <ImageView
+        <View
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="#40000000" />
 
 
-        <ImageView
+        <com.cylan.jiafeigou.widget.roundedimageview.RoundedImageView
             android:id="@+id/iv_home_mine_portrait"
             android:layout_width="80dp"
             android:layout_height="80dp"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="76dp"
-            android:elevation="10dp"
-            android:src="@drawable/icon_mine_defult_head" />
+            android:src="@drawable/icon_mine_head_normal"
+            tim:riv_border_color="#03ffffff"
+            tim:riv_border_width="4dp"
+            tim:riv_oval="true" />
 
 
         <TextView

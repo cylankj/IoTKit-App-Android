@@ -5,6 +5,8 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +22,8 @@ import com.cylan.jiafeigou.n.view.fragment.AccountInfoFragment;
 import com.cylan.jiafeigou.n.view.login.LoginFragment;
 import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
+import com.cylan.jiafeigou.widget.roundedimageview.RoundedImageView;
+import com.cylan.sdkjni.JfgCmd;
 import com.cylan.utils.BitmapUtil;
 import com.cylan.utils.FastBlurUtil;
 import com.readystatesoftware.viewbadger.BadgeView;
@@ -35,7 +39,7 @@ public class HomeMineFragment extends Fragment
     private static final String TAG = "HomeMineFragment";
 
     @BindView(R.id.iv_home_mine_portrait)
-    ImageView ivMinePortrait;
+    RoundedImageView ivMinePortrait;
 
     @BindView(R.id.tv_home_mine_nick)
     TextView tvNick;
@@ -54,6 +58,9 @@ public class HomeMineFragment extends Fragment
         fragment.setArguments(bundle);
         return fragment;
     }
+
+
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -76,7 +83,7 @@ public class HomeMineFragment extends Fragment
         badgeView.setText("10");
         badgeView.setBadgePosition(BadgeView.POSITION_BOTTOM_LEFT);
         badgeView.show();
-        testBlurBackground(R.drawable.bg_mine_top_defult_background);
+//        testBlurBackground(R.drawable.bg_mine_top_defult_background);
         return view;
     }
 
@@ -91,7 +98,6 @@ public class HomeMineFragment extends Fragment
         Bitmap b = BitmapUtil.zoomBitmap(bm, 160, 160);
         ivMinePortrait.setImageDrawable(new BitmapDrawable(getResources(), b));
         b = FastBlurUtil.blur(b, 20, 2);
-//        rLayout.setBackground(new BitmapDrawable(getResources(), bm));
         rLayout.setBackgroundDrawable(new BitmapDrawable(getResources(), b));
         SLog.e("usetime:%d ms", System.currentTimeMillis() - time);
     }
@@ -186,17 +192,17 @@ public class HomeMineFragment extends Fragment
 
 
     private boolean needStartLoginFragment() {
-//        if (!JfgCmd.getJfgCmd(getContext()).isLogined) {
-//            ToastUtil.showToast(getContext(), "Not login.....");
-//            SLog.i("Not login.....");
-//            LoginFrament fragment = LoginFrament.newInstance(null);
-//            FragmentManager manager = getFragmentManager();
-//            FragmentTransaction transaction = manager.beginTransaction();
-//            transaction.hide(this);
-//            transaction.add(R.id.rLayout_new_home_container, fragment, "login");
-//            transaction.commit();
-//            return true;
-//        }
+        if (!JfgCmd.getJfgCmd(getContext()).isLogined) {
+            ToastUtil.showToast(getContext(), "Not login.....");
+            SLog.i("Not login.....");
+            LoginFragment fragment = LoginFragment.newInstance(null);
+            FragmentManager manager = getFragmentManager();
+            FragmentTransaction transaction = manager.beginTransaction();
+            transaction.hide(this);
+            transaction.add(R.id.rLayout_new_home_container, fragment, "login");
+            transaction.commit();
+            return true;
+        }
         return false;
     }
 }
