@@ -7,6 +7,7 @@ public class HeaderStickyAnimator extends BaseStickyHeaderAnimator {
     private float mBoundedTranslatedRatio;
     private boolean hasAnimatorBundles = false;
 
+
     @Override
     protected void onAnimatorReady() {
         super.onAnimatorReady();
@@ -30,10 +31,14 @@ public class HeaderStickyAnimator extends BaseStickyHeaderAnimator {
         if (hasAnimatorBundles) {
             mAnimatorBuilder.animateOnScroll(mBoundedTranslatedRatio, StickyCompat.getTranslationY(getHeader()));
         }
-
+        if (scrollRationListener != null)
+            scrollRationListener.onScroll(mBoundedTranslatedRatio);
     }
+
+
 
     public float getBoundedTranslatedRatio() {
         return mBoundedTranslatedRatio;
     }
+
 }

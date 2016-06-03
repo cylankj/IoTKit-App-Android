@@ -253,11 +253,11 @@ public class WaveView extends View {
         wavePaint.setColor(mFrontWaveColor);
         final int wave2Shift = (int) (mDefaultWaveLength / 4);
         for (int beginX = 0; beginX < endX; beginX++) {
-            canvas.drawLine(beginX, ((float) 4 / 5) * waveY[(beginX + wave2Shift) % endX], beginX, endY, wavePaint);
+            canvas.drawLine(beginX, ((float) 9 / 10) * waveY[(beginX + wave2Shift) % endX], beginX, endY, wavePaint);
         }
         final int wave3Shift = (int) (mDefaultWaveLength / 2 * 3);
         for (int beginX = 0; beginX < endX; beginX++) {
-            canvas.drawLine(beginX, waveY[(beginX + wave3Shift) % endX], beginX, endY, wavePaint);
+            canvas.drawLine(beginX, ((float) 3 / 4) * waveY[(beginX + wave3Shift) % endX], beginX, endY, wavePaint);
         }
 
         // use the bitamp to create the shader

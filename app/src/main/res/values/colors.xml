@@ -126,11 +126,13 @@
 
     <!--3.0.0-->
 
-    <color name="color_wave_front">#66f2f5f7</color>
+    <color name="color_wave_front">#33FFFFFF</color>
     <color name="color_333333">#333333</color>
     <color name="color_777777">#777777</color>
     <color name="color_adadad">#adadad</color>
     <color name="color_e8e8e8">#e8e8e8</color>
+    <color name="color_353c41">#353c41</color>
+    <color name="color_929292">#929292</color>
 
 
 </resources>

@@ -19,4 +19,16 @@
 
     <include layout="@layout/fragment_home_page_list_header" />
 
+    <ImageButton
+        android:id="@+id/imgBtn_add_devices"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_gravity="right"
+        android:layout_marginBottom="13dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginTop="13dp"
+        android:background="@drawable/btn_common_add" />
+
 </FrameLayout>

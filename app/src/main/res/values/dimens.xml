@@ -82,4 +82,9 @@
     <dimen name="efamily_bootom_content_height">158dp</dimen>
 
     <dimen name="facetime_anim_top_margin">110dp</dimen>
+
+
+    <dimen name="dimens_48dp">48dp</dimen>
+
+
 </resources>

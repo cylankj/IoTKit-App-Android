@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
+
     <RelativeLayout
         android:id="@+id/rLayout_home_top"
         android:layout_width="match_parent"
@@ -33,17 +34,6 @@
             android:text="在这里开始美好的一天"
             android:textSize="16sp" />
 
-        <ImageButton
-            android:id="@+id/imgBtn_add_devices"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_marginBottom="13dp"
-            android:layout_marginLeft="15dp"
-            android:layout_marginRight="15dp"
-            android:layout_marginTop="13dp"
-            android:background="@drawable/btn_common_add" />
-
     </RelativeLayout>
 
 
@@ -53,4 +43,14 @@
         android:layout_height="match_parent"
         android:layout_alignBottom="@+id/rLayout_home_top"
         hunt:frontColor="@color/color_wave_front" />
+
+    <TextView
+        android:id="@+id/tvHeaderLastTitle"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dimens_48dp"
+        android:layout_alignBottom="@+id/rLayout_home_top"
+        android:alpha="0"
+        android:gravity="center"
+        android:text="加菲狗"
+        android:textSize="20sp" />
 </RelativeLayout>

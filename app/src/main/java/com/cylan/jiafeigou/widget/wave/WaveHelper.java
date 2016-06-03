@@ -4,13 +4,16 @@ import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
-import android.view.animation.DecelerateInterpolator;
+import android.support.annotation.UiThread;
 import android.view.animation.LinearInterpolator;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class WaveHelper {
+    private final static float AMPLITUDE_RATIO_MAX = 0.05f;
+    private final static float AMPLITUDE_RATIO_MIN = 0.001f;
+    private final static float WATER_LEVEL_MAX = 0.01f;
     private WaveView mWaveView;
 
     private AnimatorSet mAnimatorSet;
@@ -27,6 +30,18 @@ public class WaveHelper {
         }
     }
 
+    /**
+     * @param amplitudeRatio: [0.1,1]
+     */
+    @UiThread
+    public void updateAmplitudeRatio(final float amplitudeRatio) {
+        //最高0.08,最低0.0001
+        if (amplitudeRatio < 0 || amplitudeRatio > 1)
+            return;
+
+        mWaveView.setAmplitudeRatio((AMPLITUDE_RATIO_MAX - AMPLITUDE_RATIO_MIN) * (1.0f - amplitudeRatio));
+    }
+
     private void initAnimation() {
         List<Animator> animators = new ArrayList<>();
 
@@ -41,11 +56,14 @@ public class WaveHelper {
 
         // vertical animation.
         // water level increases from 0 to center of WaveView
-        ObjectAnimator waterLevelAnim = ObjectAnimator.ofFloat(
-                mWaveView, "waterLevelRatio", 0.01f, 0.08f);
-        waterLevelAnim.setDuration(15000);
-        waterLevelAnim.setInterpolator(new DecelerateInterpolator());
-        animators.add(waterLevelAnim);
+        mWaveView.setWaterLevelRatio(WATER_LEVEL_MAX);
+        //最高0.08,最低0.0001
+        mWaveView.setAmplitudeRatio(AMPLITUDE_RATIO_MAX);
+//        ObjectAnimator waterLevelAnim = ObjectAnimator.ofFloat(
+//                mWaveView, "waterLevelRatio", 0.01f, 0.08f);
+//        waterLevelAnim.setDuration(15000);
+//        waterLevelAnim.setInterpolator(new DecelerateInterpolator());
+//        animators.add(waterLevelAnim);
 
         // amplitude animation.
         // wave grows big then grows small, repeatedly
