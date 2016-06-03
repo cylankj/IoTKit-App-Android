@@ -21,8 +21,8 @@ public class HomePageListAdapter extends SuperAdapter<DeviceBean> {
 
     //    final static int[] deviceIconOnlineRes = {R.drawable.ico_doorbell_online, R.drawable.ico_video_online, R.drawable.ico_efamily_online};
 //    final static int[] deviceIconOfflineRes = {R.drawable.ico_doorbell_offline, R.drawable.ico_video_offline, R.drawable.ico_efamily_offline};
-    final static int[] deviceIconOnlineRes = {R.drawable.icon_home_db_online, R.drawable.icon_home_camera_online, R.drawable.icon_home_cloud_photo_online, R.drawable.icon_home_mag_online};
-    final static int[] deviceIconOfflineRes = {R.drawable.icon_home_db_offline, R.drawable.icon_home_camera_offline, R.drawable.icon_home_cloud_photo_offline, R.drawable.icon_home_mag_online};
+    final static int[] deviceIconOnlineRes = {R.drawable.icon_home_db_online, R.drawable.icon_home_camera_online, R.drawable.icon_home_album_online, R.drawable.icon_home_mag_online};
+    final static int[] deviceIconOfflineRes = {R.drawable.icon_home_db_offline, R.drawable.icon_home_camera_offline, R.drawable.icon_home_album_offline, R.drawable.icon_home_mag_online};
     final static int[] msgContentRes = {R.string.receive_new_news, R.string.receive_new_news, R.string.receive_new_news, R.string.receive_new_news};
     private DeviceItemClickListener deviceItemClickListener;
     private DeviceItemLongClickListener deviceItemLongClickListener;
@@ -84,18 +84,18 @@ public class HomePageListAdapter extends SuperAdapter<DeviceBean> {
         final int deviceType = bean.deviceType;
         int iconRes = onLineState != 0 ? deviceIconOnlineRes[getDeviceType(deviceType)]
                 : deviceIconOfflineRes[getDeviceType(deviceType)];
-        int fontColor = onLineState != 0 ? R.color.blue : R.color.red_color;
+//        int fontColor = onLineState != 0 ? R.color.blue : R.color.red_color;
         //昵称
         holder.setText(R.id.tv_device_alias, TextUtils.isEmpty(bean.alias) ? bean.cid : bean.alias);
-        holder.setTextColor(R.id.tv_device_alias, fontColor);
+//        holder.setTextColor(R.id.tv_device_alias, fontColor);
         //图标
         holder.setBackgroundResource(R.id.img_device_icon, iconRes);
         //消息数
         holder.setText(R.id.tv_device_msg_count, getMessageContent(bean));
-        holder.setTextColor(R.id.tv_device_msg_count, fontColor);
+//        holder.setTextColor(R.id.tv_device_msg_count, fontColor);
         //时间
         holder.setText(R.id.tv_device_msg_time, getTime(bean));
-        holder.setTextColor(R.id.tv_device_msg_time, fontColor);
+//        holder.setTextColor(R.id.tv_device_msg_time, fontColor);
         //右下角状态
         setItemState(holder, bean);
     }

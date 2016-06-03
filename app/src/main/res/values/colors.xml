@@ -129,9 +129,9 @@
     <color name="color_wave_front">#33FFFFFF</color>
     <color name="color_333333">#333333</color>
     <color name="color_777777">#777777</color>
-    <color name="color_adadad">#adadad</color>
-    <color name="color_e8e8e8">#e8e8e8</color>
-    <color name="color_353c41">#353c41</color>
+    <color name="color_adadad">#ADADAD</color>
+    <color name="color_e8e8e8">#E8E8E8</color>
+    <color name="color_353c41">#353C41</color>
     <color name="color_929292">#929292</color>
 
 

@@ -38,7 +38,6 @@
         android:lines="1"
         android:maxLength="8"
         android:maxLines="1"
-        android:text="中文"
         android:textColor="@color/color_333333"
         android:textSize="16sp" />
 
@@ -54,11 +53,11 @@
         android:lines="1"
         android:maxLength="8"
         android:maxLines="1"
-        android:text="[25]有新的发现"
         android:textColor="@color/color_777777"
         android:textSize="14sp" />
 
     <TextView
+        android:layout_above="@+id/v_icon_base_line_bottom"
         android:id="@+id/tv_device_msg_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
