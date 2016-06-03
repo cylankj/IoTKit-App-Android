@@ -34,32 +34,23 @@
 -keep public class * extends android.app.backup.BackupAgentHelper
 -keep public class * extends android.preference.Preference
 -keep public class com.android.vending.licensing.ILicensingService
--keep class com.cylan.smartcall.entity.** {*;}
 -keep class org.msgpack.** { *; }
 -keep class org.webrtc.** { *; }
--keep class com.cylan.crash.** { *; }
 -dontwarn org.msgpack.**
--dontwarn com.alibaba.sdk.android.oss.**
 -dontwarn okio.**
 -dontwarn javax.annotation.**
 
 #######################bugly#########################################
 -keep public class * extends android.app.Service
 -keep public class * extends android.content.BroadcastReceiver
+-keep public class com.tencent.bugly.**{*;}
 -keep class com.tencent.android.tpush.**  {* ;}
 -keep class com.tencent.mid.**  {* ;}
 ###mta##
 -keep class com.tencent.stat.**  {* ;}
 ################################################################
 
-
--keep class com.taobao.securityjni.**{*;}
--keep class com.taobao.wireless.security.**{*;}
--keep class com.ut.secbody.**{*;}
--keep class com.taobao.dp.**{*;}
--keep class com.alibaba.wireless.security.**{*;}
-
-
+-keepattributes InnerClasses
 -keepclasseswithmembernames class * {
     native <methods>;
 }
@@ -111,8 +102,39 @@
     rx.internal.util.atomic.LinkedQueueNode consumerNode;
 }
 
-
--dontwarn fi.foyt.foursquare.**
-
 -dontnote libcore.icu.ICU
--dontnote sun.misc.Unsafe
+##---------------Begin: proguard configuration for Gson  ----------
+# Gson uses generic type information stored in a class file when working with fields. Proguard
+# removes such information by default, so configure it to keep all of it.
+-keepattributes Signature
+
+# Gson specific classes
+-keep class sun.misc.Unsafe { *; }
+#-keep class com.google.gson.stream.** { *; }
+
+# Application classes that will be serialized/deserialized over Gson
+# -keep class mypersonalclass.data.model.** { *; }
+
+##  okhttp3   ####start
+# OkHttp
+-keepattributes Signature
+-keepattributes *Annotation*
+-keep class com.squareup.okhttp3.** { *; }
+-keep interface com.squareup.okhttp3.** { *; }
+-dontwarn com.squareup.okhttp3.**
+##  okhttp3  ####end
+
+
+########################Rxjava###############################################
+-dontwarn sun.misc.**
+-keepclassmembers class rx.internal.util.unsafe.*ArrayQueue*Field* {
+   long producerIndex;
+   long consumerIndex;
+}
+-keepclassmembers class rx.internal.util.unsafe.BaseLinkedQueueProducerNodeRef {
+    rx.internal.util.atomic.LinkedQueueNode producerNode;
+}
+-keepclassmembers class rx.internal.util.unsafe.BaseLinkedQueueConsumerNodeRef {
+    rx.internal.util.atomic.LinkedQueueNode consumerNode;
+}
+########################Rxjava###############################################
