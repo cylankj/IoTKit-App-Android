@@ -3,21 +3,21 @@
     <style name="AppTheme" parent="android:Theme.Light" />
 
     <!--<style name="root">-->
-        <!--<item name="android:id">@id/root</item>-->
-        <!--<item name="android:layout_width">match_parent</item>-->
-        <!--<item name="android:layout_height">match_parent</item>-->
+    <!--<item name="android:id">@id/root</item>-->
+    <!--<item name="android:layout_width">match_parent</item>-->
+    <!--<item name="android:layout_height">match_parent</item>-->
     <!--</style>-->
 
 
     <!--<style name="logo_about">-->
-        <!--<item name="android:layout_width">wrap_content</item>-->
-        <!--<item name="android:layout_height">wrap_content</item>-->
-        <!--<item name="android:adjustViewBounds">true</item>-->
-        <!--<item name="android:layout_gravity">center</item>-->
-        <!--<item name="android:scaleType">centerInside</item>-->
-        <!--<item name="android:src">@drawable/login_logo</item>-->
-        <!--<item name="android:layout_marginTop">37dip</item>-->
-        <!--<item name="android:layout_marginBottom">28dip</item>-->
+    <!--<item name="android:layout_width">wrap_content</item>-->
+    <!--<item name="android:layout_height">wrap_content</item>-->
+    <!--<item name="android:adjustViewBounds">true</item>-->
+    <!--<item name="android:layout_gravity">center</item>-->
+    <!--<item name="android:scaleType">centerInside</item>-->
+    <!--<item name="android:src">@drawable/login_logo</item>-->
+    <!--<item name="android:layout_marginTop">37dip</item>-->
+    <!--<item name="android:layout_marginBottom">28dip</item>-->
     <!--</style>-->
 
     <style name="login_main_frame">
@@ -32,23 +32,23 @@
     </style>
 
     <!--<style name="title_text">-->
-        <!--<item name="android:layout_width">match_parent</item>-->
-        <!--<item name="android:layout_height">45dip</item>-->
-        <!--<item name="android:textSize">18sp</item>-->
-        <!--<item name="android:textColor">#555</item>-->
-        <!--&lt;!&ndash;<item name="android:gravity">center</item>&ndash;&gt;-->
-        <!--<item name="android:singleLine">true</item>-->
-        <!--<item name="android:background">@drawable/title_bar_bg</item>-->
+    <!--<item name="android:layout_width">match_parent</item>-->
+    <!--<item name="android:layout_height">45dip</item>-->
+    <!--<item name="android:textSize">18sp</item>-->
+    <!--<item name="android:textColor">#555</item>-->
+    <!--&lt;!&ndash;<item name="android:gravity">center</item>&ndash;&gt;-->
+    <!--<item name="android:singleLine">true</item>-->
+    <!--<item name="android:background">@drawable/title_bar_bg</item>-->
     <!--</style>-->
 
     <!--<style name="edittext">-->
-        <!--<item name="android:layout_width">wrap_content</item>-->
-        <!--<item name="android:layout_height">56dip</item>-->
-        <!--<item name="android:textSize">15sp</item>-->
-        <!--<item name="android:textColorHint">#c2c2c2</item>-->
-        <!--<item name="android:textColor">#555555</item>-->
-        <!--<item name="android:paddingLeft">10dip</item>-->
-        <!--<item name="android:background">@drawable/edittext_bg</item>-->
+    <!--<item name="android:layout_width">wrap_content</item>-->
+    <!--<item name="android:layout_height">56dip</item>-->
+    <!--<item name="android:textSize">15sp</item>-->
+    <!--<item name="android:textColorHint">#c2c2c2</item>-->
+    <!--<item name="android:textColor">#555555</item>-->
+    <!--<item name="android:paddingLeft">10dip</item>-->
+    <!--<item name="android:background">@drawable/edittext_bg</item>-->
     <!--</style>-->
 
     <style name="submit_button">
@@ -170,20 +170,20 @@
     </style>
 
     <!--<style name="definition_text">-->
-        <!--<item name="android:layout_width">0dip</item>-->
-        <!--<item name="android:layout_height">wrap_content</item>-->
-        <!--<item name="android:layout_weight">1</item>-->
-        <!--<item name="android:textSize">13sp</item>-->
-        <!--<item name="android:textColor">@color/definition_color</item>-->
-        <!--<item name="android:gravity">center</item>-->
+    <!--<item name="android:layout_width">0dip</item>-->
+    <!--<item name="android:layout_height">wrap_content</item>-->
+    <!--<item name="android:layout_weight">1</item>-->
+    <!--<item name="android:textSize">13sp</item>-->
+    <!--<item name="android:textColor">@color/definition_color</item>-->
+    <!--<item name="android:gravity">center</item>-->
     <!--</style>-->
 
     <!--<style name="setting_item">-->
-        <!--<item name="android:layout_width">match_parent</item>-->
-        <!--<item name="android:layout_height">46dp</item>-->
-        <!--<item name="android:layout_marginLeft">5dp</item>-->
-        <!--<item name="android:layout_marginRight">5dp</item>-->
-        <!--<item name="android:background">@drawable/setting_item_sel</item>-->
+    <!--<item name="android:layout_width">match_parent</item>-->
+    <!--<item name="android:layout_height">46dp</item>-->
+    <!--<item name="android:layout_marginLeft">5dp</item>-->
+    <!--<item name="android:layout_marginRight">5dp</item>-->
+    <!--<item name="android:background">@drawable/setting_item_sel</item>-->
     <!--</style>-->
 
     <style name="setting_text">
@@ -271,12 +271,12 @@
     </style>
 
     <!--<style name="comment_titlebar_text_style">-->
-        <!--<item name="android:layout_width">wrap_content</item>-->
-        <!--<item name="android:layout_height">wrap_content</item>-->
-        <!--<item name="android:layout_centerVertical">true</item>-->
-        <!--<item name="android:gravity">center_vertical|right</item>-->
-        <!--<item name="android:textColor">@color/white</item>-->
-        <!--<item name="android:textSize">@dimen/right_paddingright</item>-->
+    <!--<item name="android:layout_width">wrap_content</item>-->
+    <!--<item name="android:layout_height">wrap_content</item>-->
+    <!--<item name="android:layout_centerVertical">true</item>-->
+    <!--<item name="android:gravity">center_vertical|right</item>-->
+    <!--<item name="android:textColor">@color/white</item>-->
+    <!--<item name="android:textSize">@dimen/right_paddingright</item>-->
     <!--</style>-->
 
     <style name="comment_bottom_dialog_style">
@@ -341,6 +341,6 @@
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowContentOverlay">@null</item>
         <item name="android:windowIsTranslucent">true</item>
-
     </style>
+
 </resources>
