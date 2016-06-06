@@ -1,11 +1,10 @@
 package com.cylan.jiafeigou.n;
 
 import android.content.Context;
-import android.os.Build;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.UiThread;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -27,13 +26,12 @@ import com.cylan.jiafeigou.widget.CustomViewPager;
 import com.cylan.jiafeigou.widget.SystemBarTintManager;
 import com.cylan.utils.ListUtils;
 
-import java.lang.reflect.Field;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class NewHomeActivity extends FragmentActivity implements
+public class NewHomeActivity extends BaseFullScreenFragmentActivity implements
         ViewPager.OnPageChangeListener, NewHomeActivityContract.View {
     @BindView(R.id.vp_home_content)
     CustomViewPager vpHomeContent;
@@ -47,14 +45,16 @@ public class NewHomeActivity extends FragmentActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_home);
         ButterKnife.bind(this);
-
-
         SystemBarTintManager tintManager = new SystemBarTintManager(this);
         tintManager.setStatusBarTintEnabled(true);
-
         initBottomMenu();
         initMainContentAdapter();
         new NewHomeActivityPresenterImpl(this);
+    }
+
+    @Override
+    protected int getStatusBarTintColor() {
+        return Color.RED;
     }
 
     /**
@@ -66,24 +66,6 @@ public class NewHomeActivity extends FragmentActivity implements
         super.onStart();
     }
 
-
-    //获取手机状态栏高度
-    public static int getStatusBarHeight(Context context) {
-        Class<?> c = null;
-        Object obj = null;
-        Field field = null;
-        int x = 0, statusBarHeight = 0;
-        try {
-            c = Class.forName("com.android.internal.R$dimen");
-            obj = c.newInstance();
-            field = c.getField("status_bar_height");
-            x = Integer.parseInt(field.get(obj).toString());
-            statusBarHeight = context.getResources().getDimensionPixelSize(x);
-        } catch (Exception e1) {
-            e1.printStackTrace();
-        }
-        return statusBarHeight;
-    }
 
     private void initMainContentAdapter() {
         viewAdapter = new HomeViewAdapter(getSupportFragmentManager());

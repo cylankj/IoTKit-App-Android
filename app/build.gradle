@@ -16,17 +16,6 @@ android {
         }
 
     }
-    //配置
-    if (file("/home/hunt/cylanWork/cylanKeyStore/cy.keystore").exists()) {
-        signingConfigs {
-            release {
-                storeFile file("/home/hunt/cylanWork/cylanKeyStore/cy.keystore")
-                storePassword '111111'
-                keyAlias 'cyalias.keystore'
-                keyPassword '111111'
-            }
-        }
-    }
     signingConfigs {
         release
     }
@@ -91,9 +80,9 @@ dependencies {
     debugCompile files('src/main/jniLibs/jfg-debug-support.jar')
     releaseCompile files('src/main/jniLibs/jfg-release-support.jar')
     //其中latest.release指代最新版本号，也可以指定明确的版本号，例如2.1.5
-    apt rootProject.ext.buglySdk
+    compile rootProject.ext.buglySdk
     //其中latest.release指代最新版本号，也可以指定明确的版本号，例如2.2.0
-    apt rootProject.ext.buglyNdk
+    compile rootProject.ext.buglyNdk
 }
 
 if (project.hasProperty('keystoreFile') &&

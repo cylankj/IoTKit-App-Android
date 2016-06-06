@@ -1,26 +1,29 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:hunt="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/rLayoutHomeHeaderContainer"
+    android:id="@+id/fLayoutHomeHeaderContainer"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
 
-    <RelativeLayout
-        android:id="@+id/rLayout_home_top"
+    <FrameLayout
+        android:id="@+id/fLayout_home_top"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_home_title_daytime">
 
-        <ImageView
-            android:id="@+id/imgHomeTopBg"
+        <com.cylan.jiafeigou.widget.wave.WaveView
+            android:id="@+id/vWaveAnimation"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/bg_home_title_daytime" />
+            android:layout_height="200dp"
+            android:layout_gravity="bottom"
+            hunt:frontColor="@color/color_wave_front" />
 
         <TextView
             android:id="@+id/tvHeaderNickName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
+            android:layout_gravity="center"
+            android:gravity="center"
             android:paddingBottom="10dp"
             android:text="Hi xxx"
             android:textColor="@android:color/white"
@@ -30,30 +33,24 @@
             android:id="@+id/tvHeaderPoet"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
+            android:layout_gravity="center"
+            android:gravity="center"
             android:paddingTop="50dp"
             android:text="在这里开始美好的一天"
             android:textColor="@android:color/white"
             android:textSize="16sp" />
 
-    </RelativeLayout>
+        <TextView
+            android:id="@+id/tvHeaderLastTitle"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dimens_48dp"
+            android:layout_gravity="bottom|center_horizontal"
+            android:alpha="0"
+            android:gravity="center"
+            android:text="加菲狗"
+            android:textColor="@android:color/white"
+            android:textSize="20sp" />
+    </FrameLayout>
 
 
-    <com.cylan.jiafeigou.widget.wave.WaveView
-        android:id="@+id/vWaveAnimation"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_alignBottom="@+id/rLayout_home_top"
-        hunt:frontColor="@color/color_wave_front" />
-
-    <TextView
-        android:id="@+id/tvHeaderLastTitle"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/dimens_48dp"
-        android:layout_alignBottom="@+id/rLayout_home_top"
-        android:alpha="0"
-        android:gravity="center"
-        android:text="加菲狗"
-        android:textColor="@android:color/white"
-        android:textSize="20sp" />
-</RelativeLayout>
+</FrameLayout>

@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.view.View;
@@ -16,6 +15,7 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
 import com.cylan.jiafeigou.n.mvp.contract.splash.SplashContract;
 import com.cylan.jiafeigou.n.mvp.impl.splash.SplashPresenterImpl;
 import com.cylan.jiafeigou.n.view.adapter.SimpleFragmentAdapter;
@@ -40,7 +40,7 @@ import permissions.dispatcher.RuntimePermissions;
  * Created by chen on 5/24/16.
  */
 @RuntimePermissions
-public class WelcomePageActivity extends FragmentActivity implements SplashContract.ViewRequiredOps {
+public class WelcomePageActivity extends BaseFullScreenFragmentActivity implements SplashContract.ViewRequiredOps {
 
 
     @BindView(R.id.imgvWelcomeSplash)

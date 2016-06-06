@@ -136,5 +136,9 @@
     <color name="color_36bdff">#36BDFF</color>
     <color name="color_red">#FF0000</color>
     <color name="color_white">#FFFFFF</color>
+    <color name="color_d2d2d2">#D2D2D2</color>
+    <color name="color_f9f9f9">#F9F9F9</color>
+
+
 
 </resources>

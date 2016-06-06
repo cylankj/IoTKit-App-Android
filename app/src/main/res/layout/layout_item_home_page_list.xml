@@ -54,6 +54,7 @@
         android:lines="1"
         android:maxLength="8"
         android:maxLines="1"
+        android:text="[20]ffafafafaf"
         android:textColor="@color/color_777777"
         android:textSize="14sp" />
 
@@ -71,11 +72,9 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
+        android:layout_above="@+id/v_stander"
         android:layout_alignParentRight="true"
-        android:layout_below="@+id/v_icon_base_line_bottom"
         android:layout_marginRight="10dp"
-        android:layout_marginTop="7dp"
         android:orientation="horizontal">
 
         <ImageView
@@ -98,8 +97,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="2dp"
-            android:background="@drawable/icon_home_net_2g" />
+            android:background="@drawable/icon_home_net_wifi" />
     </LinearLayout>
+
+    <View
+        android:id="@+id/v_stander"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@+id/tv_device_msg_count" />
 
     <View
         android:layout_width="match_parent"

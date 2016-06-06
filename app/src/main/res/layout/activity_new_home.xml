@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/color_white"
-    android:orientation="vertical"
+    android:clipToPadding="false"
+    android:fitsSystemWindows="true"
     tools:context="com.cylan.jiafeigou.n.NewHomeActivity">
 
 
@@ -21,7 +22,7 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_above="@+id/rgLayout_home_bottom_menu"
-        android:background="#e8e8e8" />
+        android:background="@color/color_d2d2d2" />
 
 
     <RadioGroup
@@ -29,6 +30,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
+        android:background="@color/color_f9f9f9"
         android:orientation="horizontal">
 
         <RadioButton
