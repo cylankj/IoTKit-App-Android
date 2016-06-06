@@ -38,11 +38,11 @@ public class HomeMineFragment extends Fragment
 
     private static final String TAG = "HomeMineFragment";
 
-    @BindView(R.id.iv_home_mine_portrait)
-    RoundedImageView ivMinePortrait;
+//    @BindView(R.id.iv_home_mine_portrait)
+//    RoundedImageView ivMinePortrait;
 
-    @BindView(R.id.tv_home_mine_nick)
-    TextView tvNick;
+//    @BindView(R.id.tv_home_mine_nick)
+//    TextView tvNick;
 
     @BindView(R.id.iv_mine_msg)
     ImageView ivMsg;
@@ -95,7 +95,7 @@ public class HomeMineFragment extends Fragment
         long time = System.currentTimeMillis();
         Bitmap bm = BitmapFactory.decodeResource(getResources(), resId);
         Bitmap b = BitmapUtil.zoomBitmap(bm, 160, 160);
-        ivMinePortrait.setImageDrawable(new BitmapDrawable(getResources(), b));
+//        ivMinePortrait.setImageDrawable(new BitmapDrawable(getResources(), b));
         b = FastBlurUtil.blur(b, 20, 2);
         rLayout.setBackgroundDrawable(new BitmapDrawable(getResources(), b));
         SLog.e("usetime:%d ms", System.currentTimeMillis() - time);
@@ -130,15 +130,15 @@ public class HomeMineFragment extends Fragment
 
 
 
-    @OnClick(R.id.iv_home_mine_portrait)
-    public void onClickPortrait() {
-        if (needStartLoginFragment()) return;
-        ToastUtil.showToast(getContext(), "推荐fragment");
+//    @OnClick(R.id.iv_home_mine_portrait)
+//    public void onClickPortrait() {
+//        if (needStartLoginFragment()) return;
+//        ToastUtil.showToast(getContext(), "推荐fragment");
 //        AccountInfoFragment fragment = (AccountInfoFragment) AccountInfoFragment.getInstance();
 //        ActivityUtils.addFragmentToActivity(getActivity().getSupportFragmentManager(),
 //                fragment, R.id.rLayout_new_home_container, 0);
 //        new AccountInfoPresenterImpl(fragment);
-    }
+//    }
 
     @OnClick(R.id.home_mine_item_friend)
     public void onClickFriendItem(View view) {
@@ -179,7 +179,7 @@ public class HomeMineFragment extends Fragment
 
     @Override
     public void onPortraitUpdate(String url) {
-        tvNick.setText(url);
+//        tvNick.setText(url);
         testBlurBackground(R.drawable.clouds);
 
     }
