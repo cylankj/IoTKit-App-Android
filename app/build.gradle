@@ -90,7 +90,6 @@ dependencies {
     compile files('libs/zxing.jar')
     debugCompile files('src/main/jniLibs/jfg-debug-support.jar')
     releaseCompile files('src/main/jniLibs/jfg-release-support.jar')
-    compile files('libs/android-viewbadger.jar')
     //其中latest.release指代最新版本号，也可以指定明确的版本号，例如2.1.5
     apt rootProject.ext.buglySdk
     //其中latest.release指代最新版本号，也可以指定明确的版本号，例如2.2.0

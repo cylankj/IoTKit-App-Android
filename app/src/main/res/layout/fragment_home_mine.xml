@@ -2,7 +2,7 @@
     xmlns:tim="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white">
+    android:background="@color/color_white">
 
 
     <RelativeLayout
@@ -18,16 +18,16 @@
 
 
         <com.cylan.jiafeigou.widget.roundedimageview.RoundedImageView
-        android:id="@+id/iv_home_mine_portrait"
-        android:layout_width="72dp"
-        android:layout_height="72dp"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="76dp"
-        android:src="@drawable/icon_mine_head_normal"
-        tim:riv_border_color="#03ffffff"
-        tim:riv_border_width="4dp"
-        android:elevation="10dp"
-        tim:riv_oval="true" />
+            android:id="@+id/iv_home_mine_portrait"
+            android:layout_width="86dp"
+            android:layout_height="86dp"
+            android:layout_centerInParent="true"
+            android:layout_marginTop="76dp"
+            android:elevation="10dp"
+            android:src="@drawable/icon_mine_head_normal"
+            tim:riv_border_color="#03ffffff"
+            tim:riv_border_width="4dp"
+            tim:riv_oval="true" />
 
 
         <TextView
@@ -39,7 +39,7 @@
             android:layout_marginTop="16dp"
             android:gravity="center_horizontal"
             android:text="用户昵称"
-            android:textColor="@color/white"
+            android:textColor="@color/color_white"
             android:textSize="19sp" />
 
 
@@ -51,6 +51,19 @@
             android:layout_marginRight="20dp"
             android:layout_marginTop="20dp"
             android:src="@drawable/icon_mine_message" />
+
+        <TextView
+            android:id="@+id/tv_home_mine_msg_count"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_alignLeft="@id/iv_mine_msg"
+            android:layout_alignTop="@id/iv_mine_msg"
+            android:layout_marginLeft="10dp"
+            android:background="@drawable/shape_mine_msg_count_oval"
+            android:gravity="center"
+            android:text="77"
+            android:textColor="@android:color/white"
+            android:textSize="9sp" />
 
     </RelativeLayout>
 

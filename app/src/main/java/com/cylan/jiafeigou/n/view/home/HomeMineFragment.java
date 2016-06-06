@@ -5,7 +5,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,7 +13,6 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeMineContract;
 import com.cylan.jiafeigou.n.mvp.impl.setting.AccountInfoPresenterImpl;
@@ -22,11 +20,9 @@ import com.cylan.jiafeigou.n.view.fragment.AccountInfoFragment;
 import com.cylan.jiafeigou.n.view.login.LoginFragment;
 import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
-import com.cylan.jiafeigou.widget.roundedimageview.RoundedImageView;
 import com.cylan.sdkjni.JfgCmd;
 import com.cylan.utils.BitmapUtil;
 import com.cylan.utils.FastBlurUtil;
-import com.readystatesoftware.viewbadger.BadgeView;
 import com.superlog.SLog;
 
 import butterknife.BindView;
@@ -49,6 +45,9 @@ public class HomeMineFragment extends Fragment
 
     @BindView(R.id.rLayout_home_mine_top)
     RelativeLayout rLayout;
+
+    @BindView(R.id.tv_home_mine_msg_count)
+    TextView tvUnReadMsgCount;
 
 
     private HomeMineContract.Presenter presenter;
@@ -76,11 +75,6 @@ public class HomeMineFragment extends Fragment
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_home_mine, container, false);
         ButterKnife.bind(this, view);
-        BadgeView badgeView = new BadgeView(getContext(), ivMsg);
-        badgeView.setBadgePosition(BadgeView.POSITION_BOTTOM_LEFT);
-        badgeView.setTextSize(10);
-        badgeView.setText("10");
-        badgeView.show();
         return view;
     }
 
@@ -178,7 +172,13 @@ public class HomeMineFragment extends Fragment
     public void onPortraitUpdate(String url) {
 //        tvNick.setText(url);
         testBlurBackground(R.drawable.clouds);
-
+        tvUnReadMsgCount.post(new Runnable() {
+            @Override
+            public void run() {
+                tvUnReadMsgCount.setText("99+");
+                tvUnReadMsgCount.setBackgroundResource(R.drawable.shape_mine_msg_count_rectangle);
+            }
+        });
     }
 
 

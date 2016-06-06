@@ -16,7 +16,7 @@
         android:layout_marginLeft="19dp"
         android:background="@drawable/icon_home_camera_online"
         hunt:Dradius="3dp"
-        hunt:borderColor="@color/white"
+        hunt:borderColor="@color/color_white"
         hunt:borderWidth="1dp"
         hunt:enableBorder="true"
         hunt:ignore="true"
