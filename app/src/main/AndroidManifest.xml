@@ -6,7 +6,7 @@
 
     <uses-sdk
         android:minSdkVersion="14"
-        android:targetSdkVersion="21" />
+        android:targetSdkVersion="22" />
 
     <supports-screens
         android:anyDensity="true"
@@ -78,7 +78,7 @@
             android:value="play" />
 
         <activity
-            android:name=".n.NewHomeActivity"
+            android:name=".n.view.splash.WelcomePageActivity"
             android:configChanges="locale|orientation|keyboardHidden"
             android:screenOrientation="portrait"
 
@@ -91,7 +91,7 @@
         </activity>
         <!--<activity android:name=".n.view.splash.WelcomePage" />-->
         <activity
-            android:name=".n.view.splash.WelcomePageActivity"
+            android:name=".n.NewHomeActivity"
             android:launchMode="singleTask"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <receiver android:name=".n.engine.DaemonService$BootCompletedReceiver">

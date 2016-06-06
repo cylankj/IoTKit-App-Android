@@ -24,8 +24,8 @@ import com.cylan.jiafeigou.n.view.home.HomePageListFragment;
 import com.cylan.jiafeigou.n.view.home.HomeWonderfulFragment;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.widget.CustomViewPager;
+import com.cylan.jiafeigou.widget.SystemBarTintManager;
 import com.cylan.utils.ListUtils;
-import com.readystatesoftware.systembartint.SystemBarTintManager;
 
 import java.lang.reflect.Field;
 import java.util.List;
@@ -48,19 +48,10 @@ public class NewHomeActivity extends FragmentActivity implements
         setContentView(R.layout.activity_new_home);
         ButterKnife.bind(this);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            // Translucent status bar
-            int height = getStatusBarHeight(NewHomeActivity.this);
-//            SLog.e("height:" + height);
-//            ViewGroup.LayoutParams params = view.getLayoutParams();
-//            params.height = height;
-//            view.setLayoutParams(params);
-//            view.setVisibility(View.VISIBLE);
-//            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            SystemBarTintManager tintManager = new SystemBarTintManager(this);
-            // enable status bar tint
-            tintManager.setStatusBarTintEnabled(true);
-        }
+
+        SystemBarTintManager tintManager = new SystemBarTintManager(this);
+        tintManager.setStatusBarTintEnabled(true);
+
         initBottomMenu();
         initMainContentAdapter();
         new NewHomeActivityPresenterImpl(this);
