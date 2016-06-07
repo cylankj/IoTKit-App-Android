@@ -5,11 +5,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/color_white"
-    android:clipToPadding="false"
-    android:fitsSystemWindows="true"
     tools:context="com.cylan.jiafeigou.n.NewHomeActivity">
 
-
+    <!--android:clipToPadding="true"-->
+    <!--android:fitsSystemWindows="true"-->
     <com.cylan.jiafeigou.widget.CustomViewPager
         android:id="@+id/vp_home_content"
         android:layout_width="match_parent"

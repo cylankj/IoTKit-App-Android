@@ -16,15 +16,10 @@
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textSize">@dimen/login_btn_textsize</item>
-        <item name="android:textColor">@color/result_text</item>
+        <item name="android:textColor">@color/color_white</item>
         <item name="android:gravity">center</item>
     </style>
 
-    <!--<style name="setting_item">-->
-        <!--<item name="android:layout_width">fill_parent</item>-->
-        <!--<item name="android:layout_height">wrap_content</item>-->
-        <!--<item name="android:background">@drawable/bg_setting_item_selector</item>-->
-    <!--</style>-->
 
     <style name="dialog_button">
         <item name="android:layout_width">0dip</item>

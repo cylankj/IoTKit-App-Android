@@ -43,8 +43,7 @@
                 android:inputType="textEmailAddress"
                 android:maxLength="40"
                 android:paddingLeft="0dp"
-                android:textColor="@color/text_color"
-                android:textColorHint="@color/hint_text_color"
+                android:textColor="@color/color_balck"
                 android:textSize="@dimen/login_edit_size" />
         </LinearLayout>
 
@@ -77,16 +76,13 @@
                 android:hint="@string/PASSWORD"
                 android:inputType="textPassword"
                 android:maxLength="12"
-
                 android:paddingLeft="0dp"
-                android:textColor="@color/text_color"
-                android:textColorHint="@color/hint_text_color"
+                android:textColor="@color/color_balck"
                 android:textSize="@dimen/login_edit_size" />
         </LinearLayout>
 
         <Button
             android:id="@+id/btnLogin"
-            style="@style/submit_button"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/layout_password"
@@ -104,13 +100,11 @@
             android:layout_below="@id/btnLogin"
             android:focusable="true"
             android:gravity="right"
-
             android:paddingBottom="20dp"
             android:paddingLeft="15dp"
             android:paddingRight="15dp"
             android:paddingTop="20dp"
             android:text="@string/FORGOT_PWD_1"
-            android:textColor="@color/newuser_text_color"
             android:textSize="@dimen/login_forget_size" />
     </RelativeLayout>
 
@@ -137,7 +131,6 @@
             android:paddingRight="25dp"
             android:paddingTop="5dp"
             android:text="@string/LOGIN_QQ"
-            android:textColor="@color/third_login_text_color"
             android:textSize="15sp" />
 
         <View
@@ -159,7 +152,6 @@
             android:paddingRight="15dp"
             android:paddingTop="5dp"
             android:text="@string/LOGIN_WEIBO"
-            android:textColor="@color/third_login_text_color"
             android:textSize="15sp" />
     </LinearLayout>
 </RelativeLayout>

@@ -10,6 +10,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.RadioGroup;
 
 import com.cylan.jiafeigou.R;
@@ -45,8 +46,10 @@ public class NewHomeActivity extends BaseFullScreenFragmentActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_home);
         ButterKnife.bind(this);
-        SystemBarTintManager tintManager = new SystemBarTintManager(this);
-        tintManager.setStatusBarTintEnabled(true);
+//        SystemBarTintManager tintManager = new SystemBarTintManager(this);
+//        tintManager.setStatusBarTintEnabled(true);
+//        getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        setTranslucent(this);
         initBottomMenu();
         initMainContentAdapter();
         new NewHomeActivityPresenterImpl(this);
