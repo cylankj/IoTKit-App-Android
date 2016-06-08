@@ -2,7 +2,7 @@
     android:id="@+id/rLayout_vedio_item_wonder"
     android:layout_width="match_parent"
     android:layout_height="280dp"
-    android:background="@color/white"
+    android:background="@color/color_white"
     android:clickable="true">
 
     <ImageView
