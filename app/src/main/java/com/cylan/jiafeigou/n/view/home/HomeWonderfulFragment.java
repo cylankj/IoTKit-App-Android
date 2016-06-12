@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.model.MediaBean;
@@ -67,6 +68,8 @@ public class HomeWonderfulFragment extends Fragment implements
     WonderfulTitleHead tvDateItemHeadWonder;
     @BindView(R.id.imgWonderfulTopBg)
     ImageView imgWonderfulTopBg;
+    @BindView(R.id.tv_title_head_wonder)
+    TextView tvTitleHeadWonder;
 
     /**
      * progress 位置
@@ -145,7 +148,7 @@ public class HomeWonderfulFragment extends Fragment implements
     }
 
     private void initSomeViewMargin() {
-        ViewUtils.setViewMarginStatusBar(rlTopHeadWonder);
+        ViewUtils.setViewMarginStatusBar(tvTitleHeadWonder);
     }
 
     private void initView() {
