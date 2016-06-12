@@ -1,6 +1,8 @@
 package com.cylan.jiafeigou.n.view.home;
 
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -20,6 +22,7 @@ import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.model.MediaBean;
+import com.cylan.jiafeigou.n.model.impl.HomeWonderfulModelImpl;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeWonderfulContract;
 import com.cylan.jiafeigou.n.view.adapter.HomeWondereAdapter;
 import com.cylan.jiafeigou.utils.ParamStatic;
@@ -72,20 +75,20 @@ public class HomeWonderfulFragment extends Fragment implements
     TextView tvTitleHeadWonder;
 
     /**
+     * 手动完成刷新,自动完成刷新 订阅者.
+     */
+    private Subscription refreshCompleteSubscription;
+    /**
      * progress 位置
      */
     private int progressBarStartPosition;
     //不是长时间需要,用软引用.
     private WeakReference<HomeMenuDialog> homeMenuDialogWeakReference;
     private HomeWonderfulContract.Presenter presenter;
-
+    private HomeWonderfulModelImpl homeWonderfulModelImpl;
     private HomeWondereAdapter homeWondereAdapter;
     private SimpleScrollListener simpleScrollListener;
     public boolean isShowTimeLine;
-    /**
-     * 手动完成刷新,自动完成刷新 订阅者.
-     */
-    private Subscription refreshCompleteSubscription;
 
     public static HomeWonderfulFragment newInstance(Bundle bundle) {
         HomeWonderfulFragment fragment = new HomeWonderfulFragment();
@@ -145,6 +148,26 @@ public class HomeWonderfulFragment extends Fragment implements
         initHeaderView();
 
         initSomeViewMargin();
+
+    }
+
+    @Override
+    public void onStart() {
+        getContext().registerReceiver(homeWonderfulModelImpl, new IntentFilter(Intent.ACTION_TIME_TICK));
+        super.onStart();
+    }
+
+    @Override
+    public void onStop() {
+        getContext().unregisterReceiver(homeWonderfulModelImpl);
+        super.onStop();
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        if (presenter != null) presenter.stop();
+        unRegisterSubscription(refreshCompleteSubscription);
     }
 
     private void initSomeViewMargin() {
@@ -189,19 +212,6 @@ public class HomeWonderfulFragment extends Fragment implements
         });
     }
 
-
-    @Override
-    public void onStop() {
-        super.onStop();
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        if (presenter != null) presenter.stop();
-        unRegisterSubscription(refreshCompleteSubscription);
-    }
-
     /**
      * 反注册
      *
@@ -232,6 +242,16 @@ public class HomeWonderfulFragment extends Fragment implements
             return;
         }
         homeWondereAdapter.addAll(resultList);
+    }
+
+    @Override
+    public void onHeadBackgroundChang(int daytime) {
+        imgWonderfulTopBg.setBackgroundResource(daytime == 1 ? R.drawable.bg_head_daytime_wonderful : R.drawable.bg_head_night_wonderful);
+    }
+
+    @Override
+    public void onGetBroadcastReceiver(HomeWonderfulModelImpl homeWonderfulModelImpl) {
+        this.homeWonderfulModelImpl = homeWonderfulModelImpl;
     }
 
     @Override
@@ -297,12 +317,12 @@ public class HomeWonderfulFragment extends Fragment implements
     }
 
     private void showTimeLine() {
-
+        //do something presenter.xxx
         isShowTimeLine = true;
-
     }
 
     private void hideTimeLine() {
+        //do something presenter.xxx
         isShowTimeLine = false;
     }
 
@@ -338,7 +358,6 @@ public class HomeWonderfulFragment extends Fragment implements
                 mTitleBackgroundRef.getChildAt(0).setAlpha(1 - alpha);
                 fadeTopHeadCover.get().setAlpha(alpha);
             }
-
         }
     }
 }

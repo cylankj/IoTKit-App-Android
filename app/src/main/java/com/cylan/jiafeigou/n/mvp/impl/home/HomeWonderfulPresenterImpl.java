@@ -4,11 +4,14 @@ package com.cylan.jiafeigou.n.mvp.impl.home;
 import android.support.annotation.Nullable;
 
 import com.cylan.jiafeigou.n.model.MediaBean;
+import com.cylan.jiafeigou.n.model.contract.ModelContract;
+import com.cylan.jiafeigou.n.model.impl.HomeWonderfulModelImpl;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeWonderfulContract;
 import com.cylan.utils.RandomUtils;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -22,20 +25,28 @@ import rx.schedulers.Schedulers;
 /**
  * Created by hunt on 16-5-23.
  */
-public class HomeWonderfulPresenterImpl implements HomeWonderfulContract.Presenter {
+public class HomeWonderfulPresenterImpl implements HomeWonderfulContract.Presenter, HomeWonderfulContract.PresenterRequiredOps {
 
+    private static final String TAG = HomeWonderfulPresenterImpl.class.getName();
     private WeakReference<HomeWonderfulContract.View> viewWeakReference;
-
+    private ModelContract.HomeWonderfulOps mModel;
+    private HomeWonderfulModelImpl homeWonderfulModelImpl;
     private Subscription onRefreshSubscription;
+    private long curTime = 0;
+    private int curHour;
 
     public HomeWonderfulPresenterImpl(HomeWonderfulContract.View view) {
         viewWeakReference = new WeakReference<>(view);
         view.setPresenter(this);
+
+        homeWonderfulModelImpl = new HomeWonderfulModelImpl(this);
+        this.mModel = homeWonderfulModelImpl;
+        view.onGetBroadcastReceiver(homeWonderfulModelImpl);
     }
 
     @Override
     public void start() {
-
+        mModel.setHeadBackground();
     }
 
     @Override
@@ -110,5 +121,9 @@ public class HomeWonderfulPresenterImpl implements HomeWonderfulContract.Present
     }
 
 
+    @Override
+    public void changeHeadBackground(int daytime) {
+        if (getView() != null) getView().onHeadBackgroundChang(daytime);
+    }
 }
 
