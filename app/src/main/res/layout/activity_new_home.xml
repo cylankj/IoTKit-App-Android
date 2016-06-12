@@ -5,8 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/color_white"
-    android:clipToPadding="false"
-    android:fitsSystemWindows="true"
     tools:context="com.cylan.jiafeigou.n.NewHomeActivity">
 
 
@@ -14,9 +12,7 @@
         android:id="@+id/vp_home_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/rgLayout_home_bottom_menu"
-        android:clipToPadding="true"
-        android:fitsSystemWindows="true" />
+        android:layout_above="@+id/rgLayout_home_bottom_menu" />
 
     <View
         android:layout_width="match_parent"
@@ -26,6 +22,7 @@
 
 
     <RadioGroup
+        android:layout_marginBottom="11dp"
         android:id="@+id/rgLayout_home_bottom_menu"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

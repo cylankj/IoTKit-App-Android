@@ -1,7 +1,6 @@
 package com.cylan.jiafeigou.n;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.UiThread;
 import android.support.v4.app.Fragment;
@@ -50,11 +49,6 @@ public class NewHomeActivity extends BaseFullScreenFragmentActivity implements
         initBottomMenu();
         initMainContentAdapter();
         new NewHomeActivityPresenterImpl(this);
-    }
-
-    @Override
-    protected int getStatusBarTintColor() {
-        return Color.RED;
     }
 
     /**

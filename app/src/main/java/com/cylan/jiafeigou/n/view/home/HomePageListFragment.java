@@ -22,6 +22,7 @@ import com.cylan.jiafeigou.n.model.GreetBean;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomePageListContract;
 import com.cylan.jiafeigou.n.view.adapter.HomePageListAdapter;
 import com.cylan.jiafeigou.utils.ToastUtil;
+import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.dialog.HomeMenuDialog;
 import com.cylan.jiafeigou.widget.sticky.HeaderAnimator;
 import com.cylan.jiafeigou.widget.sticky.StickyHeaderBuilder;
@@ -131,6 +132,11 @@ public class HomePageListFragment extends Fragment implements
         rVDevicesList.setAdapter(homePageListAdapter);
         initWaveAnimation();
         initHeaderView();
+        initSomeViewMargin();
+    }
+
+    private void initSomeViewMargin() {
+        ViewUtils.setViewMarginStatusBar(getView().findViewById(R.id.imgBtn_add_devices));
     }
 
     private void initHeaderView() {
@@ -138,7 +144,8 @@ public class HomePageListFragment extends Fragment implements
             simpleScrollListener = new SimpleScrollListener(waveHelper, tvHeaderLastTitle);
         StickyHeaderBuilder.stickTo(rVDevicesList, simpleScrollListener)
                 .setHeader(R.id.fLayoutHomeHeaderContainer, (ViewGroup) getView())
-                .minHeightHeaderDim(R.dimen.dimens_48dp)
+                .minHeightHeader((int) (getResources().getDimension(R.dimen.dimens_48dp)
+                        + ViewUtils.getCompatStatusBarHeight(getContext())))
                 .build();
     }
 
