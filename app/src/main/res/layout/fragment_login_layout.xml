@@ -35,14 +35,12 @@
 
             <EditText
                 android:id="@+id/et_login_username"
-                style="@style/login_common_cursor"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                style="@style/login_model_common_edittext_style"
                 android:layout_centerInParent="true"
                 android:gravity="center"
                 android:hint="请输入手机号/邮箱"
-                android:paddingLeft="20dp"
-                android:paddingRight="20dp" />
+                android:paddingLeft="30dp"
+                android:paddingRight="30dp" />
 
             <ImageView
                 android:id="@+id/iv_login_clear_username"
@@ -65,25 +63,23 @@
 
             <EditText
                 android:id="@+id/et_login_pwd"
-                style="@style/login_common_cursor"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                style="@style/login_model_common_edittext_style"
                 android:layout_centerInParent="true"
                 android:gravity="center"
                 android:hint="请输入密码"
                 android:inputType="textPassword"
-                android:paddingRight="10dp" />
+                android:paddingLeft="30dp"
+                android:paddingRight="30dp" />
 
             <ImageView
                 android:id="@+id/iv_login_clear_pwd"
                 style="@style/clear_edittext_style"
                 android:layout_centerVertical="true"
                 android:layout_marginRight="9dp"
-                android:layout_toLeftOf="@+id/togbtn_show_pwd" />
-
-
-            <ToggleButton
-                android:id="@+id/togbtn_show_pwd"
+                android:layout_toLeftOf="@+id/cb_show_pwd" />
+            
+            <CheckBox
+                android:id="@+id/cb_show_pwd"
                 style="@style/show_pwd_style"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true" />
@@ -95,14 +91,12 @@
             android:layout_height="1dp"
             android:background="@color/color_f2f2f2" />
 
-        <Button
-            android:id="@+id/btn_login_commit"
+        <TextView
+            android:id="@+id/tv_model_commit"
             style="@style/login_model_commit_style"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="37dp"
-            android:text="登录" />
+            android:text="登陆" />
 
         <TextView
             android:id="@+id/tv_login_forget_pwd"

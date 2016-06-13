@@ -44,11 +44,15 @@
         <item name="android:layout_height">wrap_content</item>
     </style>
 
-    <style name="login_common_cursor" parent="text_base_singleLine">
+    <style name="login_model_common_edittext_style" parent="text_base_singleLine">
         <item name="android:textCursorDrawable">@drawable/bg_common_cursor</item>
         <item name="android:background">@null</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
         <item name="android:textColor">@color/color_666666</item>
         <item name="android:textColorHint">@color/color_cecece</item>
+        <item name="android:paddingBottom">5dp</item>
+        <item name="android:paddingTop">5dp</item>
         <item name="android:textSize">15sp</item>
     </style>
 
@@ -56,24 +60,25 @@
         <item name="android:background">@drawable/btn_common_login_commit_selector</item>
         <item name="android:enabled">false</item>
         <item name="android:textColor">@color/color_d8d8d8</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
         <item name="android:textSize">17sp</item>
     </style>
 
     <style name="clear_edittext_style">
         <item name="android:visibility">gone</item>
-        <item name="android:padding">3dp</item>
-        <item name="android:layout_width">20dp</item>
-        <item name="android:layout_height">20dp</item>
+        <item name="android:padding">5dp</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
         <item name="android:background">@drawable/btn_login_clear_text</item>
     </style>
 
     <style name="show_pwd_style">
-        <item name="android:padding">3dp</item>
-        <item name="android:textOn">""</item>
-        <item name="android:textOff">""</item>
+        <item name="android:padding">5dp</item>
         <item name="android:checked">false</item>
-        <item name="android:layout_width">30dp</item>
-        <item name="android:layout_height">30dp</item>
+        <item name="android:button">@null</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
         <item name="android:background">@drawable/icon_common_show_pwd_selector</item>
     </style>
 

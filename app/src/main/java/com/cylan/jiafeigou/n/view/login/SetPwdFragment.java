@@ -3,22 +3,19 @@ package com.cylan.jiafeigou.n.view.login;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.text.InputFilter;
 import android.text.Spanned;
 import android.text.TextUtils;
-import android.text.method.HideReturnsTransformationMethod;
-import android.text.method.PasswordTransformationMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
 import android.widget.TextView;
-import android.widget.ToggleButton;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.NewHomeActivity;
@@ -47,10 +44,10 @@ public class SetPwdFragment extends LoginModelFragment {
     EditText etLoginPwd;
     @BindView(R.id.iv_login_clear_pwd)
     ImageView ivLoginClearPwd;
-    @BindView(R.id.togbtn_show_pwd)
-    ToggleButton togbtnShowPwd;
-    @BindView(R.id.btn_register_commit)
-    Button btnRegisterCommit;
+    @BindView(R.id.cb_show_pwd)
+    CheckBox cbShowPwd;
+    @BindView(R.id.tv_model_commit)
+    TextView tvCommit;
     @BindView(R.id.lLayout_register_input)
     LinearLayout lLayoutRegisterInput;
 
@@ -99,7 +96,7 @@ public class SetPwdFragment extends LoginModelFragment {
     @OnTextChanged(R.id.et_login_pwd)
     public void onUserNameChange(CharSequence s, int start, int before, int count) {
         boolean flag = TextUtils.isEmpty(s);
-        setViewEnableStyle(btnRegisterCommit, !flag);
+        setViewEnableStyle(tvCommit, !flag);
         ivLoginClearPwd.setVisibility(flag ? View.GONE : View.VISIBLE);
     }
 
@@ -124,7 +121,7 @@ public class SetPwdFragment extends LoginModelFragment {
     }
 
 
-    @OnClick(R.id.btn_register_commit)
+    @OnClick(R.id.tv_model_commit)
     public void registerCommit(View view) {
         String pwd = etLoginPwd.getText().toString().trim();
         if (TextUtils.isEmpty(pwd) || pwd.length() < 6) {
@@ -141,7 +138,7 @@ public class SetPwdFragment extends LoginModelFragment {
      * @param buttonView
      * @param isChecked
      */
-    @OnCheckedChanged(R.id.togbtn_show_pwd)
+    @OnCheckedChanged(R.id.cb_show_pwd)
     public void onShowPwd(CompoundButton buttonView, boolean isChecked) {
         showPwd(etLoginPwd, isChecked);
         etLoginPwd.setSelection(etLoginPwd.length());

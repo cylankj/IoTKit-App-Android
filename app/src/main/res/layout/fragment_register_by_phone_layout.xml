@@ -35,7 +35,7 @@
 
             <EditText
                 android:id="@+id/et_register_username"
-                style="@style/login_common_cursor"
+                style="@style/login_model_common_edittext_style"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
@@ -74,7 +74,7 @@
 
                 <EditText
                     android:id="@+id/et_register_code"
-                    style="@style/login_common_cursor"
+                    style="@style/login_model_common_edittext_style"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
@@ -105,11 +105,9 @@
         </LinearLayout>
 
 
-        <Button
-            android:id="@+id/btn_register_commit"
+        <TextView
+            android:id="@+id/tv_model_commit"
             style="@style/login_model_commit_style"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="37dp"
             android:text="获取验证码" />

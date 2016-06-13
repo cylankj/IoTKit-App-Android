@@ -9,14 +9,13 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.ToggleButton;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.NewHomeActivity;
@@ -49,10 +48,10 @@ public class LoginFragment extends LoginModelFragment {
     EditText etLoginPwd;
     @BindView(R.id.iv_login_clear_pwd)
     ImageView ivLoginClearPwd;
-    @BindView(R.id.togbtn_show_pwd)
-    ToggleButton togbtnShowPwd;
-    @BindView(R.id.btn_login_commit)
-    Button btnLoginCommit;
+    @BindView(R.id.cb_show_pwd)
+    CheckBox rbShowPwd;
+    @BindView(R.id.tv_model_commit)
+    TextView tvCommit;
     @BindView(R.id.lLayout_login_input)
     LinearLayout lLayoutLoginInput;
     @BindView(R.id.view_third_party_center)
@@ -87,7 +86,7 @@ public class LoginFragment extends LoginModelFragment {
      * @param buttonView
      * @param isChecked
      */
-    @OnCheckedChanged(R.id.togbtn_show_pwd)
+    @OnCheckedChanged(R.id.cb_show_pwd)
     public void onShowPwd(CompoundButton buttonView, boolean isChecked) {
         showPwd(etLoginPwd, isChecked);
         etLoginPwd.setSelection(etLoginPwd.length());
@@ -112,9 +111,9 @@ public class LoginFragment extends LoginModelFragment {
         boolean flag = TextUtils.isEmpty(s);
         ivLoginClearPwd.setVisibility(flag ? View.GONE : View.VISIBLE);
         if (flag) {
-            setViewEnableStyle(btnLoginCommit, false);
+            setViewEnableStyle(tvCommit, false);
         } else if (!TextUtils.isEmpty(etLoginUsername.getText().toString())) {
-            setViewEnableStyle(btnLoginCommit, true);
+            setViewEnableStyle(tvCommit, true);
         }
 
     }
@@ -134,9 +133,9 @@ public class LoginFragment extends LoginModelFragment {
         boolean flag = TextUtils.isEmpty(s);
         ivLoginClearUsername.setVisibility(flag ? View.GONE : View.VISIBLE);
         if (flag) {
-            setViewEnableStyle(btnLoginCommit, false);
+            setViewEnableStyle(tvCommit, false);
         } else if (!TextUtils.isEmpty(etLoginPwd.getText().toString())) {
-            setViewEnableStyle(btnLoginCommit, true);
+            setViewEnableStyle(tvCommit, true);
         }
     }
 
@@ -152,7 +151,7 @@ public class LoginFragment extends LoginModelFragment {
     }
 
 
-    @OnClick(R.id.btn_login_commit)
+    @OnClick(R.id.tv_model_commit)
     public void loginCommit(View view) {
         if (getActivity() != null) {
             getContext().startActivity(new Intent(getContext(), NewHomeActivity.class));

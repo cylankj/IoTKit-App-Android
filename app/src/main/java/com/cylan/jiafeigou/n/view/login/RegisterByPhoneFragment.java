@@ -49,8 +49,8 @@ public class RegisterByPhoneFragment extends LoginModelFragment {
     TextView tvRegisterReciprocalTime;
     @BindView(R.id.lLayout_input_code)
     LinearLayout lLayoutInputCode;
-    @BindView(R.id.btn_register_commit)
-    Button btnRegisterCommit;
+    @BindView(R.id.tv_model_commit)
+    TextView tvCommit;
     @BindView(R.id.tv_register_user_agreement)
     TextView tvRegisterUserAgreement;
     @BindView(R.id.lLayout_register_input)
@@ -100,14 +100,14 @@ public class RegisterByPhoneFragment extends LoginModelFragment {
     }
 
 
-    @OnClick(R.id.btn_register_commit)
+    @OnClick(R.id.tv_model_commit)
     public void regCommit(View view) {
         //如果是手机号，要显示验证码
         if (!isVerifyTime) {
             isVerifyTime = true;
             lLayoutInputCode.setVisibility(View.VISIBLE);
-            btnRegisterCommit.setText("继续");
-            setViewEnableStyle(btnRegisterCommit, false);
+            tvCommit.setText("继续");
+            setViewEnableStyle(tvCommit, false);
         } else {
             SetPwdFragment fragment = SetPwdFragment.newInstance(null);
             ActivityUtils.addFragmentToActivity(getChildFragmentManager(), fragment, R.id.rLayout_register);
@@ -133,14 +133,14 @@ public class RegisterByPhoneFragment extends LoginModelFragment {
     @OnTextChanged(R.id.et_register_username)
     public void onUserNameChange(CharSequence s, int start, int before, int count) {
         boolean flag = TextUtils.isEmpty(s);
-        setViewEnableStyle(btnRegisterCommit, !flag);
+        setViewEnableStyle(tvCommit, !flag);
         ivRegisterClearUsername.setVisibility(flag ? View.GONE : View.VISIBLE);
     }
 
     @OnTextChanged(R.id.et_register_code)
     public void onCodeChange(CharSequence s, int start, int before, int count) {
         boolean flag = TextUtils.isEmpty(s);
-        setViewEnableStyle(btnRegisterCommit, !flag);
+        setViewEnableStyle(tvCommit, !flag);
     }
 
     @OnClick(R.id.iv_register_clear_username)

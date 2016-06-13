@@ -43,8 +43,8 @@ public class RegisterByMailFragment extends LoginModelFragment {
     EditText etRegisterUsername;
     @BindView(R.id.iv_register_clear_username)
     ImageView ivRegisterClearUsername;
-    @BindView(R.id.btn_register_commit)
-    Button btnRegisterCommit;
+    @BindView(R.id.tv_model_commit)
+    TextView tvCommit;
     @BindView(R.id.tv_register_user_agreement)
     TextView tvRegisterUserAgreement;
     @BindView(R.id.lLayout_register_input)
@@ -98,7 +98,7 @@ public class RegisterByMailFragment extends LoginModelFragment {
     }
 
 
-    @OnClick(R.id.btn_register_commit)
+    @OnClick(R.id.tv_model_commit)
     public void regCommit(View view) {
         SetPwdFragment fragment = SetPwdFragment.newInstance(null);
         ActivityUtils.addFragmentToActivity(getChildFragmentManager(), fragment, R.id.rLayout_register);
@@ -123,7 +123,7 @@ public class RegisterByMailFragment extends LoginModelFragment {
     @OnTextChanged(R.id.et_register_username)
     public void onUserNameChange(CharSequence s, int start, int before, int count) {
         boolean flag = TextUtils.isEmpty(s);
-        setViewEnableStyle(btnRegisterCommit, !flag);
+        setViewEnableStyle(tvCommit, !flag);
         ivRegisterClearUsername.setVisibility(flag ? View.GONE : View.VISIBLE);
     }
 
