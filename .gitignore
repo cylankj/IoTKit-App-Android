@@ -15,3 +15,11 @@
 /node_modules
 app/libs/armeabi-v7a/libjfgsdk.so
 /captures
+*.hprof
+将删除 java_pid18089.hprof
+将删除 java_pid20333.hprof
+将删除 java_pid2922.hprof
+将删除 java_pid31747.hprof
+将删除 java_pid6699.hprof
+将删除 java_pid7208.hprof
+将删除 java_pid7965.hprof

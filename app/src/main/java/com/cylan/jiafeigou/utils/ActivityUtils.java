@@ -45,10 +45,10 @@ public class ActivityUtils {
                                              @NonNull Fragment fragment, int frameId, int id) {
         fragmentManager
                 .beginTransaction()
-                .setCustomAnimations(R.anim.slide_in_right,
+                .setCustomAnimations(R.anim.slide_down_in,
                         R.anim.slide_out_left,
                         R.anim.slide_in_left,
-                        R.anim.slide_out_right)
+                        R.anim.slide_out_left)
                 .add(frameId, fragment)
                 .addToBackStack("")
                 .commit();

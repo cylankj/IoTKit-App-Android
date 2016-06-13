@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rLayout_befor_login"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/color_white"
+    android:clickable="true">
+
+    <Button
+        android:id="@+id/btn_unlogin_use"
+        style="@style/text_base_singleLine"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="40dp"
+        android:background="@drawable/btn_login_commit"
+        android:text="随便看看"
+        android:textColor="@color/color_7c7c7c"
+        android:textSize="16sp" />
+
+
+    <Button
+        android:id="@+id/btn_login_use"
+        style="@style/text_base_singleLine"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/btn_unlogin_use"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="40dp"
+        android:background="@drawable/btn_login_commit"
+        android:text="登 陆"
+        android:textColor="@color/color_7c7c7c"
+        android:textSize="16sp" />
+
+
+</RelativeLayout>

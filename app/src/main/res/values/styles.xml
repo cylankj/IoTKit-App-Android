@@ -3,7 +3,6 @@
     <style name="AppTheme" parent="android:Theme.Light" />
 
 
-
     <style name="dialog" parent="@android:style/Theme.Dialog">
         <item name="android:windowIsFloating">true</item>
         <item name="android:windowNoTitle">true</item>
@@ -18,6 +17,7 @@
         <item name="android:singleLine">true</item>
         <item name="android:gravity">center</item>
     </style>
+
     <style name="comment_bottom_dialog_style">
         <item name="android:layout_width">fill_parent</item>
         <item name="android:layout_height">wrap_content</item>
@@ -36,4 +36,33 @@
         <item name="android:windowIsTranslucent">true</item>
     </style>
 
+    <style name="third_party_login_style" parent="text_base_singleLine">
+        <item name="android:textSize">13sp</item>
+        <item name="android:textColor">@color/color_7c7c7c</item>
+        <item name="android:drawablePadding">9dp</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="login_common_cursor" parent="text_base_singleLine">
+        <item name="android:textCursorDrawable">@drawable/bg_common_cursor</item>
+        <item name="android:background">@null</item>
+        <item name="android:textColor">@color/color_666666</item>
+        <item name="android:textColorHint">@color/color_cecece</item>
+        <item name="android:textSize">15sp</item>
+    </style>
+
+    <style name="clear_edittext_style">
+        <item name="android:visibility">gone</item>
+        <item name="android:layout_width">20dp</item>
+        <item name="android:layout_height">20dp</item>
+        <item name="android:src">@drawable/btn_login_clear_text</item>
+    </style>
+
+    <style name="login_model_commit_style" parent="text_base_singleLine">
+        <item name="android:background">@drawable/btn_common_unclick</item>
+        <item name="android:enabled">false</item>
+        <item name="android:textColor">@color/color_d8d8d8</item>
+        <item name="android:textSize">17sp</item>
+    </style>
 </resources>

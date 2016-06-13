@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/color_white"
+    android:clickable="true">
+
+    <include
+        android:id="@+id/rLayout_set_pwd_top"
+        layout="@layout/layout_login_top_item"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginTop="33dp" />
+
+    <LinearLayout
+        android:id="@+id/lLayout_register_input"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/rLayout_set_pwd_top"
+        android:layout_centerHorizontal="true"
+        android:layout_marginLeft="19dp"
+        android:layout_marginRight="19dp"
+        android:layout_marginTop="44dp"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginTop="29dp"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/et_login_pwd"
+                style="@style/login_common_cursor"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:gravity="center"
+                android:hint="请输入6~12密码"
+                android:inputType="textPassword"
+                android:paddingRight="10dp" />
+
+            <ImageView
+                android:id="@+id/iv_login_clear_pwd"
+                style="@style/clear_edittext_style"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="9dp"
+                android:layout_toLeftOf="@+id/togbtn_show_pwd" />
+
+
+            <ToggleButton
+                android:id="@+id/togbtn_show_pwd"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:background="@drawable/icon_common_show_pwd_selector"
+                android:checked="false"
+                android:textOff=""
+                android:textOn="" />
+
+        </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/color_f2f2f2" />
+
+        <Button
+            android:id="@+id/btn_register_commit"
+            style="@style/login_model_commit_style"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="37dp"
+            android:text="完成" />
+
+    </LinearLayout>
+
+</RelativeLayout>

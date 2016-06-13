@@ -7,13 +7,21 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.ColorInt;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.view.MotionEvent;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.utils.ToastUtil;
+import com.cylan.utils.ListUtils;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
+
+import java.util.List;
 
 /**
  * Created by cylan-hunt on 16-6-6.
@@ -62,7 +70,7 @@ public class BaseFullScreenFragmentActivity extends FragmentActivity {
      *
      * @param activity 需要设置的activity
      */
-    public  void setTranslucent(Activity activity) {
+    public void setTranslucent(Activity activity) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             // 设置状态栏透明
             activity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
@@ -72,4 +80,49 @@ public class BaseFullScreenFragmentActivity extends FragmentActivity {
             rootView.setClipToPadding(true);
         }
     }
+
+    private static long time = 0;
+
+    @Override
+    public void onBackPressed() {
+        if (checkExtraChildFragment()) {
+            return;
+        } else if (checkExtraFragment())
+            return;
+        if (System.currentTimeMillis() - time < 1500) {
+            super.onBackPressed();
+        } else {
+            time = System.currentTimeMillis();
+            ToastUtil.showToast(this,
+                    String.format(getString(R.string.click_back_again_exit),
+                            getString(R.string.app_name)));
+        }
+    }
+
+    private boolean checkExtraChildFragment() {
+        FragmentManager fm = getSupportFragmentManager();
+        List<Fragment> list = fm.getFragments();
+        if (ListUtils.isEmpty(list))
+            return false;
+        for (Fragment frag : list) {
+            if (frag != null && frag.isVisible()) {
+                FragmentManager childFm = frag.getChildFragmentManager();
+                if (childFm != null && childFm.getBackStackEntryCount() > 0) {
+                    childFm.popBackStack();
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean checkExtraFragment() {
+        final int count = getSupportFragmentManager().getBackStackEntryCount();
+        if (count > 0) {
+            getSupportFragmentManager().popBackStack();
+            return true;
+        } else return false;
+    }
+
+
 }
