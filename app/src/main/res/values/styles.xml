@@ -1,6 +1,6 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <style name="AppTheme" parent="android:Theme.Light" />
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar" />
 
 
     <style name="dialog" parent="@android:style/Theme.Dialog">
@@ -52,17 +52,39 @@
         <item name="android:textSize">15sp</item>
     </style>
 
-    <style name="clear_edittext_style">
-        <item name="android:visibility">gone</item>
-        <item name="android:layout_width">20dp</item>
-        <item name="android:layout_height">20dp</item>
-        <item name="android:src">@drawable/btn_login_clear_text</item>
-    </style>
-
     <style name="login_model_commit_style" parent="text_base_singleLine">
-        <item name="android:background">@drawable/btn_common_unclick</item>
+        <item name="android:background">@drawable/btn_common_login_commit_selector</item>
         <item name="android:enabled">false</item>
         <item name="android:textColor">@color/color_d8d8d8</item>
         <item name="android:textSize">17sp</item>
     </style>
+
+    <style name="clear_edittext_style">
+        <item name="android:visibility">gone</item>
+        <item name="android:padding">3dp</item>
+        <item name="android:layout_width">20dp</item>
+        <item name="android:layout_height">20dp</item>
+        <item name="android:background">@drawable/btn_login_clear_text</item>
+    </style>
+
+    <style name="show_pwd_style">
+        <item name="android:padding">3dp</item>
+        <item name="android:textOn">""</item>
+        <item name="android:textOff">""</item>
+        <item name="android:checked">false</item>
+        <item name="android:layout_width">30dp</item>
+        <item name="android:layout_height">30dp</item>
+        <item name="android:background">@drawable/icon_common_show_pwd_selector</item>
+    </style>
+
+    <style name="home_bottom_radio_style">
+        <item name="android:layout_weight">1</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:button">@null</item>
+        <item name="android:textSize">11sp</item>
+        <item name="android:gravity">center_horizontal</item>
+        <item name="android:textColor">@color/home_bottom_menu_text_color_selector</item>
+    </style>
+
 </resources>

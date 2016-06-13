@@ -10,16 +10,13 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
-import android.view.MotionEvent;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.utils.ListUtils;
-import com.readystatesoftware.systembartint.SystemBarTintManager;
 
 import java.util.List;
 
@@ -32,6 +29,7 @@ public class BaseFullScreenFragmentActivity extends FragmentActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
 //        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
 //            setTranslucentStatus(true);
 //            SystemBarTintManager tintManager = new SystemBarTintManager(this);

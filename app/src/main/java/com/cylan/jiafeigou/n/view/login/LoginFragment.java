@@ -6,8 +6,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
-import android.text.method.HideReturnsTransformationMethod;
-import android.text.method.PasswordTransformationMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,8 +22,6 @@ import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.NewHomeActivity;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.superlog.SLog;
-
-import java.util.TimeZone;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -82,7 +78,6 @@ public class LoginFragment extends LoginModelFragment {
         ButterKnife.bind(this, view);
         addOnTouchListener(view);
         initView();
-        addListener();
         return view;
     }
 
@@ -96,11 +91,6 @@ public class LoginFragment extends LoginModelFragment {
     public void onShowPwd(CompoundButton buttonView, boolean isChecked) {
         showPwd(etLoginPwd, isChecked);
         etLoginPwd.setSelection(etLoginPwd.length());
-    }
-
-
-    private void addListener() {
-
     }
 
 
@@ -123,7 +113,7 @@ public class LoginFragment extends LoginModelFragment {
         ivLoginClearPwd.setVisibility(flag ? View.GONE : View.VISIBLE);
         if (flag) {
             setViewEnableStyle(btnLoginCommit, false);
-        } else if (!TextUtils.isEmpty(etLoginPwd.getText().toString())) {
+        } else if (!TextUtils.isEmpty(etLoginUsername.getText().toString())) {
             setViewEnableStyle(btnLoginCommit, true);
         }
 

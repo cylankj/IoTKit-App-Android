@@ -21,7 +21,6 @@ import com.cylan.jiafeigou.n.NewHomeActivity;
 import com.cylan.jiafeigou.n.mvp.contract.splash.SplashContract;
 import com.cylan.jiafeigou.n.mvp.impl.splash.SplashPresenterImpl;
 import com.cylan.jiafeigou.n.view.adapter.SimpleFragmentAdapter;
-import com.cylan.jiafeigou.n.view.login.LoginFragment;
 import com.cylan.jiafeigou.utils.ParamStatic;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.viewindicator.CirclePageIndicator;

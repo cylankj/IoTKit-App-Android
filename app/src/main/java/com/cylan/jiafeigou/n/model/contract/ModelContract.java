@@ -15,4 +15,9 @@ public interface ModelContract {
     interface LoginModelOps {
         String executeLoginda(BeanInfoLogin infoLogin);
     }
+
+    interface HomeWonderfulOps {
+
+        void setHeadBackground();
+    }
 }

@@ -1,0 +1,77 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rLayoutHomeWonderfulHeaderContainer"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:id="@+id/rl_top_head_wonder"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/imgWonderfulTopBg"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_head_daytime_wonderful" />
+
+        <TextView
+            android:id="@+id/tv_title_head_wonder"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="18dp"
+            android:text="每日精彩"
+            android:textColor="@color/color_white"
+            android:textSize="22sp" />
+
+        <TextView
+            android:id="@+id/tv_sec_title_head_wonder"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_title_head_wonder"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="8dp"
+            android:text="在这里,发现最美的一天"
+            android:textColor="@color/color_white"
+            android:textSize="15sp" />
+    </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/img_cover"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignBottom="@id/rl_top_head_wonder"
+        android:alpha="0"
+        android:background="@color/color_0ba8cf" />
+
+    <FrameLayout
+        android:id="@+id/fLayout_date_head_wonder"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/rl_top_head_wonder"
+        android:layout_below="@id/tv_sec_title_head_wonder"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="5dp"
+        android:layout_marginTop="25dp"
+        android:descendantFocusability="blocksDescendants">
+
+        <FrameLayout
+            android:id="@+id/fl_date_bg_head_wonder"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="@drawable/btn_date_head_wondeful_selector" />
+
+        <com.cylan.jiafeigou.widget.textview.WonderfulTitleHead
+            android:id="@+id/tv_date_item_head_wonder"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:drawablePadding="5dp"
+            android:drawableRight="@drawable/icon_date_downtag_wonderful"
+            android:gravity="center"
+            android:text="2016.05.02"
+            android:textColor="@color/color_788291"
+            android:textSize="14sp" />
+    </FrameLayout>
+</RelativeLayout>

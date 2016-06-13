@@ -31,9 +31,8 @@ public class LoginModelFragment extends Fragment {
     public void setViewEnableStyle(TextView view, boolean enable) {
         if (enable == view.isEnabled()) return;
         view.setEnabled(enable);
-        view.setBackground(getResources().getDrawable(enable ? R.drawable.btn_login_commit :
-                R.drawable.btn_common_unclick));
-        view.setTextColor(getResources().getColor(enable ? R.color.color_4b9fd5 : R.color.color_d8d8d8));
+        view.setTextColor(getResources().getColor(enable ?
+                R.color.color_4b9fd5 : R.color.color_d8d8d8));
     }
 
 

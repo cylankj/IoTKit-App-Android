@@ -81,6 +81,9 @@ public class SetPwdFragment extends LoginModelFragment {
     public void exitCurrentPage(View view) {
         SLog.e("exitCurrentPage ....... ");
         getActivity().finish();
+//
+//        LoginModelFragment fragment = (LoginModelFragment) getFragmentManager().findFragmentByTag("register");
+//        getFragmentManager().beginTransaction().show(fragment).hide(this).commit();
     }
 
 
@@ -95,26 +98,11 @@ public class SetPwdFragment extends LoginModelFragment {
 
     @OnTextChanged(R.id.et_login_pwd)
     public void onUserNameChange(CharSequence s, int start, int before, int count) {
-        if (TextUtils.isEmpty(s)) {
-            ivLoginClearPwd.setVisibility(View.GONE);
-            setBtnRegCommitStyle(false);
-        } else {
-            ivLoginClearPwd.setVisibility(View.VISIBLE);
-            setBtnRegCommitStyle(true);
-        }
+        boolean flag = TextUtils.isEmpty(s);
+        setViewEnableStyle(btnRegisterCommit, !flag);
+        ivLoginClearPwd.setVisibility(flag ? View.GONE : View.VISIBLE);
     }
 
-
-    /**
-     * 设置按钮的状态
-     *
-     * @param enable
-     */
-    private void setBtnRegCommitStyle(boolean enable) {
-        btnRegisterCommit.setEnabled(enable);
-        btnRegisterCommit.setTextColor(getActivity().
-                getResources().getColor(enable ? R.color.color_4b9fd5 : R.color.color_balck));
-    }
 
     private void setEditTextState() {
         etLoginPwd.setFilters(new InputFilter[]{new InputFilter() {

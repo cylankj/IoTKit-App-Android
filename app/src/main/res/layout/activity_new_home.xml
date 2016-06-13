@@ -7,15 +7,11 @@
     android:background="@color/color_white"
     tools:context="com.cylan.jiafeigou.n.NewHomeActivity">
 
-    <!--android:clipToPadding="true"-->
-    <!--android:fitsSystemWindows="true"-->
     <com.cylan.jiafeigou.widget.CustomViewPager
         android:id="@+id/vp_home_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/rgLayout_home_bottom_menu"
-        android:clipToPadding="true"
-        android:fitsSystemWindows="true" />
+        android:layout_above="@+id/rgLayout_home_bottom_menu" />
 
     <View
         android:layout_width="match_parent"
@@ -29,47 +25,31 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
+        android:layout_centerVertical="true"
         android:background="@color/color_f9f9f9"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:paddingBottom="11dp">
 
         <RadioButton
             android:id="@+id/btn_home_list"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:button="@null"
+            style="@style/home_bottom_radio_style"
             android:checked="true"
             android:drawableTop="@drawable/icon_bottom_clever_dog_selector"
-            android:gravity="center"
-            android:text="加菲狗"
-            android:textColor="@color/home_bottom_menu_text_color_selector"
-            android:textSize="11sp" />
+            android:text="加菲狗" />
 
         <RadioButton
             android:id="@+id/btn_home_wonderful"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            style="@style/home_bottom_radio_style"
             android:layout_centerHorizontal="true"
-            android:layout_weight="1"
-            android:button="@null"
             android:drawableTop="@drawable/icon_bottom_wonderful_selector"
-            android:gravity="center_horizontal"
-            android:text="每日精彩"
-            android:textColor="@color/home_bottom_menu_text_color_selector"
-            android:textSize="11sp" />
+            android:text="每日精彩" />
 
         <RadioButton
             android:id="@+id/btn_home_mine"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            style="@style/home_bottom_radio_style"
             android:layout_alignParentRight="true"
-            android:layout_weight="1"
-            android:button="@null"
             android:drawableTop="@drawable/icon_bottom_mine_selector"
-            android:gravity="center_horizontal"
-            android:text="我的"
-            android:textColor="@color/home_bottom_menu_text_color_selector"
-            android:textSize="11sp" />
+            android:text="我的" />
     </RadioGroup>
 
 </RelativeLayout>

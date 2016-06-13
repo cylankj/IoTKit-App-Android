@@ -17,7 +17,6 @@ import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeMineContract;
 import com.cylan.jiafeigou.n.mvp.impl.setting.AccountInfoPresenterImpl;
 import com.cylan.jiafeigou.n.view.fragment.AccountInfoFragment;
-import com.cylan.jiafeigou.n.view.login.LoginFragment;
 import com.cylan.jiafeigou.n.view.login.LoginModelActivity;
 import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
@@ -33,7 +32,6 @@ import butterknife.OnClick;
 public class HomeMineFragment extends Fragment
         implements HomeMineContract.View {
 
-    private static final String TAG = "HomeMineFragment";
 
     @BindView(R.id.iv_home_mine_portrait)
     ImageView ivMinePortrait;

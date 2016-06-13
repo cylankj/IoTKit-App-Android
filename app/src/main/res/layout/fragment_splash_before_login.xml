@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="40dp"
-        android:background="@drawable/btn_login_commit"
+        android:background="@drawable/btn_common_login_commit_normal"
         android:text="随便看看"
         android:textColor="@color/color_7c7c7c"
         android:textSize="16sp" />
@@ -27,7 +27,7 @@
         android:layout_below="@+id/btn_unlogin_use"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="40dp"
-        android:background="@drawable/btn_login_commit"
+        android:background="@drawable/btn_common_login_commit_normal"
         android:text="登 陆"
         android:textColor="@color/color_7c7c7c"
         android:textSize="16sp" />

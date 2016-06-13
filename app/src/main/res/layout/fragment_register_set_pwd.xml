@@ -52,14 +52,9 @@
 
             <ToggleButton
                 android:id="@+id/togbtn_show_pwd"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
+                style="@style/show_pwd_style"
                 android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:background="@drawable/icon_common_show_pwd_selector"
-                android:checked="false"
-                android:textOff=""
-                android:textOn="" />
+                android:layout_centerVertical="true" />
 
         </RelativeLayout>
 

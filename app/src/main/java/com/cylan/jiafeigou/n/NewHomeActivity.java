@@ -1,7 +1,6 @@
 package com.cylan.jiafeigou.n;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.UiThread;
 import android.support.v4.app.Fragment;
@@ -53,11 +52,6 @@ public class NewHomeActivity extends BaseFullScreenFragmentActivity implements
         initBottomMenu();
         initMainContentAdapter();
         new NewHomeActivityPresenterImpl(this);
-    }
-
-    @Override
-    protected int getStatusBarTintColor() {
-        return Color.RED;
     }
 
     /**
@@ -154,7 +148,7 @@ class HomeViewAdapter extends FragmentPagerAdapter {
             case INDEX_1: {
                 HomeWonderfulFragment fragment = HomeWonderfulFragment.newInstance(new Bundle());
                 new HomeWonderfulPresenterImpl(fragment);
-                return HomeWonderfulFragment.newInstance(new Bundle());
+                return fragment;
             }
             case INDEX_2:
                 HomeMineFragment fragment = HomeMineFragment.newInstance(new Bundle());

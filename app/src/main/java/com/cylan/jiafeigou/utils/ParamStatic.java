@@ -68,4 +68,5 @@ public class ParamStatic {
             "android.permission.RECORD_AUDIO"
     };
 
+    public static final int WONDELFUL_REFRESH_DELAY = 2500;
 }
