@@ -92,7 +92,6 @@
             android:name=".n.NewHomeActivity"
             android:launchMode="singleTask"
             android:theme="@style/AppTheme" />
-
         <activity android:name=".n.view.login.LoginModelActivity" />
 
         <receiver android:name=".n.engine.DaemonService$BootCompletedReceiver">
@@ -115,7 +114,6 @@
             android:enabled="true"
             android:exported="true" />
         <service android:name=".n.engine.DaemonService$InnerAssistService" />
-
     </application>
 
 </manifest>

@@ -21,6 +21,7 @@ public class LoginModelActivity extends BaseFullScreenFragmentActivity {
         showLoginFragment();
     }
 
+
     private void showLoginFragment() {
         TestFragment fragment = TestFragment.newInstance(null,"");
         getSupportFragmentManager().beginTransaction().

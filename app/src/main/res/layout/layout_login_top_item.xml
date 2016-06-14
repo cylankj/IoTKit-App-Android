@@ -21,16 +21,16 @@
         android:textSize="22sp" />
 
     <TextView
-        android:paddingTop="10dp"
-        android:paddingBottom="10dp"
-        android:paddingLeft="10dp"
         android:id="@+id/tv_login_top_right"
         style="@style/text_base_singleLine"
         android:layout_width="wrap_content"
-        android:text="登陆"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
+        android:paddingBottom="10dp"
+        android:paddingLeft="10dp"
+        android:paddingTop="10dp"
+        android:text="登陆"
         android:textColor="@color/color_4b9fd5"
         android:textSize="14sp" />
 

@@ -84,6 +84,7 @@ dependencies {
     //其中latest.release指代最新版本号，也可以指定明确的版本号，例如2.2.0
     compile rootProject.ext.buglyNdk
     compile 'com.android.support:support-v4:23.4.0'
+    compile 'com.google.android.gms:play-services:9.0.0'
 }
 
 if (project.hasProperty('keystoreFile') &&
