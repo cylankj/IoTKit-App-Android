@@ -246,7 +246,7 @@ public class HomeWonderfulFragment extends Fragment implements
 
     @Override
     public void onHeadBackgroundChang(int daytime) {
-        imgWonderfulTopBg.setBackgroundResource(daytime == 1 ? R.drawable.bg_head_daytime_wonderful : R.drawable.bg_head_night_wonderful);
+        imgWonderfulTopBg.setBackgroundResource(daytime == 0 ? R.drawable.bg_head_daytime_wonderful : R.drawable.bg_head_night_wonderful);
     }
 
     @Override
