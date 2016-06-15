@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/rLayout_register"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/color_white"
@@ -10,31 +9,31 @@
         android:id="@+id/lLayout_register_input"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/rLayout_set_pwd_top"
         android:layout_centerHorizontal="true"
         android:layout_marginLeft="19dp"
         android:layout_marginRight="19dp"
         android:layout_marginTop="44dp"
         android:orientation="vertical">
 
-
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="40dp"
+            android:layout_marginTop="29dp"
             android:orientation="horizontal">
 
-
             <EditText
-                android:id="@+id/et_register_username"
+                android:id="@+id/et_forget_username"
                 style="@style/login_model_common_edittext_style"
                 android:layout_centerInParent="true"
-                android:hint="请输入邮箱地址"
-                android:inputType="textEmailAddress" />
+                android:hint="请输入手机号/邮箱" />
 
             <ImageView
-                android:id="@+id/iv_register_clear_username"
+                android:id="@+id/iv_forget_clear_username"
                 style="@style/clear_edittext_style"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true" />
+
 
         </RelativeLayout>
 
@@ -50,30 +49,6 @@
             android:layout_marginTop="37dp"
             android:text="继续" />
 
-
-        <TextView
-            android:id="@+id/tv_register_user_agreement"
-            style="@style/text_base_singleLine"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="30dp"
-            android:text="点击按钮，表示你同意《用户使用协议》"
-            android:textColor="@color/color_999999"
-            android:textSize="12sp" />
-
     </LinearLayout>
-
-
-    <TextView
-        android:id="@+id/tv_register_switch"
-        style="@style/text_base_singleLine"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="34dp"
-        android:text="手机号注册"
-        android:textColor="@color/color_7c7c7c"
-        android:textSize="13sp" />
-
 
 </RelativeLayout>

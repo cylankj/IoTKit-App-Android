@@ -4,6 +4,8 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.InputFilter;
+import android.text.Spanned;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
 import android.view.LayoutInflater;
@@ -83,5 +85,26 @@ public class LoginModelFragment extends Fragment {
                 HideReturnsTransformationMethod.getInstance()
                 : PasswordTransformationMethod.getInstance());
     }
+
+    /**
+     * 限制输入字符数
+     *
+     * @param editText 输入的控件
+     * @param count    字符数
+     */
+    public void editTextLimitMaxInput(EditText editText, final int count) {
+
+        editText.setFilters(new InputFilter[]{new InputFilter() {
+
+            @Override
+
+            public CharSequence filter(CharSequence source, int start, int end,
+                                       Spanned dest, int dstart, int dend) {
+                return dest.toString().length() >= count ? "" : source;
+            }
+
+        }});
+    }
+
 
 }

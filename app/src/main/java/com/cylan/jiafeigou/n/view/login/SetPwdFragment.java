@@ -34,12 +34,6 @@ import butterknife.OnTextChanged;
 
 public class SetPwdFragment extends LoginModelFragment {
 
-    @BindView(R.id.iv_login_top_left)
-    ImageView ivLoginTopLeft;
-    @BindView(R.id.tv_login_top_center)
-    TextView tvLoginTopCenter;
-    @BindView(R.id.tv_login_top_right)
-    TextView tvLoginTopRight;
     @BindView(R.id.et_login_pwd)
     EditText etLoginPwd;
     @BindView(R.id.iv_login_clear_pwd)
@@ -58,7 +52,7 @@ public class SetPwdFragment extends LoginModelFragment {
         ButterKnife.bind(this, view);
         initView(view);
         addOnTouchListener(view);
-//        setEditTextState();
+        editTextLimitMaxInput(etLoginPwd, 12);
         return view;
     }
 
@@ -70,17 +64,7 @@ public class SetPwdFragment extends LoginModelFragment {
     }
 
     private void initView(View view) {
-        tvLoginTopCenter.setText("设置密码");
-    }
 
-
-    @OnClick(R.id.iv_login_top_left)
-    public void exitCurrentPage(View view) {
-        SLog.e("exitCurrentPage ....... ");
-        getActivity().finish();
-//
-//        LoginModelFragment fragment = (LoginModelFragment) getFragmentManager().findFragmentByTag("register");
-//        getFragmentManager().beginTransaction().show(fragment).hide(this).commit();
     }
 
 
@@ -98,20 +82,6 @@ public class SetPwdFragment extends LoginModelFragment {
         boolean flag = TextUtils.isEmpty(s);
         setViewEnableStyle(tvCommit, !flag);
         ivLoginClearPwd.setVisibility(flag ? View.GONE : View.VISIBLE);
-    }
-
-
-    private void setEditTextState() {
-        etLoginPwd.setFilters(new InputFilter[]{new InputFilter() {
-
-            @Override
-
-            public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
-                return source.length() < 12 ? dest.subSequence(dstart, dend) : source;
-            }
-
-        }});
-
     }
 
 

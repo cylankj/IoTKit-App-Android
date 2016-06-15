@@ -6,20 +6,10 @@
     android:background="@color/color_white"
     android:clickable="true">
 
-    <include
-        android:id="@+id/rLayout_register_top"
-        layout="@layout/layout_login_top_item"
-        android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:layout_marginLeft="15dp"
-        android:layout_marginRight="15dp"
-        android:layout_marginTop="33dp" />
-
     <LinearLayout
         android:id="@+id/lLayout_register_input"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/rLayout_register_top"
         android:layout_centerHorizontal="true"
         android:layout_marginLeft="19dp"
         android:layout_marginRight="19dp"
@@ -36,14 +26,9 @@
             <EditText
                 android:id="@+id/et_register_username"
                 style="@style/login_model_common_edittext_style"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
-                android:gravity="center"
                 android:hint="请输入手机号"
-                android:inputType="phone"
-                android:paddingLeft="20dp"
-                android:paddingRight="20dp" />
+                android:inputType="phone" />
 
             <ImageView
                 android:id="@+id/iv_register_clear_username"
@@ -75,20 +60,13 @@
                 <EditText
                     android:id="@+id/et_register_code"
                     style="@style/login_model_common_edittext_style"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
-                    android:gravity="center"
                     android:hint="请输入验证码"
-                    android:inputType="number"
-                    android:paddingLeft="20dp"
-                    android:paddingRight="20dp" />
+                    android:inputType="number" />
 
                 <TextView
                     android:id="@+id/tv_register_reciprocal_time"
                     style="@style/text_base_singleLine"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
                     android:layout_marginRight="10dp"
@@ -116,8 +94,6 @@
         <TextView
             android:id="@+id/tv_register_user_agreement"
             style="@style/text_base_singleLine"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="30dp"
             android:text="点击按钮，表示你同意《用户使用协议》"
@@ -130,8 +106,6 @@
     <TextView
         android:id="@+id/tv_register_switch"
         style="@style/text_base_singleLine"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="34dp"

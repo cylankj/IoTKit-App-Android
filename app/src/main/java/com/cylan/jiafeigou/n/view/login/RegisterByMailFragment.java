@@ -32,13 +32,6 @@ import butterknife.OnTextChanged;
 
 public class RegisterByMailFragment extends LoginModelFragment {
 
-
-    @BindView(R.id.iv_login_top_left)
-    ImageView ivLoginTopLeft;
-    @BindView(R.id.tv_login_top_center)
-    TextView tvLoginTopCenter;
-    @BindView(R.id.tv_login_top_right)
-    TextView tvLoginTopRight;
     @BindView(R.id.et_register_username)
     EditText etRegisterUsername;
     @BindView(R.id.iv_register_clear_username)
@@ -68,6 +61,7 @@ public class RegisterByMailFragment extends LoginModelFragment {
         View view = inflater.inflate(R.layout.fragment_register_by_mail_layout, container, false);
         ButterKnife.bind(this, view);
         initView(view);
+        editTextLimitMaxInput(etRegisterUsername, 60);
         return view;
     }
 
@@ -79,22 +73,6 @@ public class RegisterByMailFragment extends LoginModelFragment {
             isChina = false;
             tvRegisterSwitch.setVisibility(View.GONE);
         }
-        tvLoginTopRight.setText("登录");
-        tvLoginTopCenter.setText("注册");
-    }
-
-
-    @OnClick(R.id.tv_login_top_right)
-    public void login(View view) {
-        LoginFragment fragment = (LoginFragment) getFragmentManager().findFragmentByTag("login");
-        FragmentTransaction ft = getFragmentManager().beginTransaction();
-        if (fragment == null) {
-            fragment = LoginFragment.newInstance(null);
-            ft.add(R.id.fLayout_login_model_container, fragment, "login");
-        } else {
-            ft.hide(this).show(fragment);
-        }
-        ft.commit();
     }
 
 
@@ -104,12 +82,6 @@ public class RegisterByMailFragment extends LoginModelFragment {
         ActivityUtils.addFragmentToActivity(getChildFragmentManager(), fragment, R.id.rLayout_register);
     }
 
-
-    @OnClick(R.id.iv_login_top_left)
-    public void exitCurrentPage(View view) {
-        SLog.e("exitCurrentPage ....... ");
-        getActivity().finish();
-    }
 
     /***
      * 账号变化
@@ -141,8 +113,7 @@ public class RegisterByMailFragment extends LoginModelFragment {
     @OnClick(R.id.tv_register_switch)
     public void switchRegisterType(View view) {
         RegisterByPhoneFragment fragment = RegisterByPhoneFragment.newInstance(null);
-        getFragmentManager().beginTransaction().replace(R.id.fLayout_login_model_container, fragment, "register").commit();
-
+        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fLayout_login_container, fragment, "register").commit();
     }
 
 }

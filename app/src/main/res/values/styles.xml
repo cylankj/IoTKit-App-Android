@@ -16,6 +16,8 @@
     <style name="text_base_singleLine">
         <item name="android:singleLine">true</item>
         <item name="android:gravity">center</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
     </style>
 
     <style name="comment_bottom_dialog_style">
@@ -47,12 +49,12 @@
     <style name="login_model_common_edittext_style" parent="text_base_singleLine">
         <item name="android:textCursorDrawable">@drawable/bg_common_cursor</item>
         <item name="android:background">@null</item>
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
         <item name="android:textColor">@color/color_666666</item>
         <item name="android:textColorHint">@color/color_cecece</item>
         <item name="android:paddingBottom">5dp</item>
         <item name="android:paddingTop">5dp</item>
+        <item name="android:paddingLeft">50dp</item>
+        <item name="android:paddingRight">50dp</item>
         <item name="android:textSize">15sp</item>
     </style>
 
@@ -60,8 +62,6 @@
         <item name="android:background">@drawable/btn_common_login_commit_selector</item>
         <item name="android:enabled">false</item>
         <item name="android:textColor">@color/color_d8d8d8</item>
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
         <item name="android:textSize">17sp</item>
     </style>
 

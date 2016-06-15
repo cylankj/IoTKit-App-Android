@@ -6,14 +6,6 @@
     android:background="@color/color_white"
     android:clickable="true">
 
-    <include
-        android:id="@+id/rLayout_login_top"
-        layout="@layout/layout_login_top_item"
-        android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:layout_marginLeft="15dp"
-        android:layout_marginRight="15dp"
-        android:layout_marginTop="33dp" />
 
     <LinearLayout
         android:id="@+id/lLayout_login_input"
@@ -37,10 +29,7 @@
                 android:id="@+id/et_login_username"
                 style="@style/login_model_common_edittext_style"
                 android:layout_centerInParent="true"
-                android:gravity="center"
-                android:hint="请输入手机号/邮箱"
-                android:paddingLeft="30dp"
-                android:paddingRight="30dp" />
+                android:hint="请输入手机号/邮箱" />
 
             <ImageView
                 android:id="@+id/iv_login_clear_username"
@@ -65,11 +54,8 @@
                 android:id="@+id/et_login_pwd"
                 style="@style/login_model_common_edittext_style"
                 android:layout_centerInParent="true"
-                android:gravity="center"
                 android:hint="请输入密码"
-                android:inputType="textPassword"
-                android:paddingLeft="30dp"
-                android:paddingRight="30dp" />
+                android:inputType="textPassword" />
 
             <ImageView
                 android:id="@+id/iv_login_clear_pwd"
@@ -77,7 +63,7 @@
                 android:layout_centerVertical="true"
                 android:layout_marginRight="9dp"
                 android:layout_toLeftOf="@+id/cb_show_pwd" />
-            
+
             <CheckBox
                 android:id="@+id/cb_show_pwd"
                 style="@style/show_pwd_style"
@@ -101,8 +87,6 @@
         <TextView
             android:id="@+id/tv_login_forget_pwd"
             style="@style/text_base_singleLine"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="30dp"
             android:text="忘记密码？"

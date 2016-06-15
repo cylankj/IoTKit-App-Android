@@ -30,13 +30,6 @@ public class BaseFullScreenFragmentActivity extends FragmentActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-//            setTranslucentStatus(true);
-//            SystemBarTintManager tintManager = new SystemBarTintManager(this);
-//            tintManager.setStatusBarTintColor(getStatusBarTintColor());
-//            // enable status bar tint
-//            tintManager.setStatusBarTintEnabled(true);
-//        }
 
     }
 

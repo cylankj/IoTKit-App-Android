@@ -2,6 +2,9 @@ package com.cylan.jiafeigou.n.engine;
 
 import android.app.Service;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -109,6 +112,7 @@ public class DataSourceService extends Service implements JniCallBack {
                         workHandler.sendEmptyMessage(1);
                         break;
                     case 1:
+//                        getApplicationContext().getPackageManager().get
                         cmd.connectServer(JfgEnum.ServerAddr.YF);
 
                         break;
@@ -117,6 +121,16 @@ public class DataSourceService extends Service implements JniCallBack {
                 return true;
             }
         });
+    }
+
+
+    void test() {
+        try {
+            ApplicationInfo ai = getPackageManager().getApplicationInfo(getPackageName(), PackageManager.GET_META_DATA);
+//            ai.metaData.get
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

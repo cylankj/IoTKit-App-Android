@@ -34,12 +34,12 @@ import butterknife.OnTextChanged;
 public class LoginFragment extends LoginModelFragment {
 
 
-    @BindView(R.id.iv_login_top_left)
-    ImageView ivCloseNav;
-    @BindView(R.id.tv_login_top_right)
-    TextView tvRegUser;
-    @BindView(R.id.rLayout_login_top)
-    RelativeLayout rLayoutLoginTop;
+//    @BindView(R.id.iv_login_top_left)
+//    ImageView ivCloseNav;
+//    @BindView(R.id.tv_login_top_right)
+//    TextView tvRegUser;
+//    @BindView(R.id.rLayout_login_top)
+//    RelativeLayout rLayoutLoginTop;
     @BindView(R.id.et_login_username)
     EditText etLoginUsername;
     @BindView(R.id.iv_login_clear_username)
@@ -60,8 +60,13 @@ public class LoginFragment extends LoginModelFragment {
     RelativeLayout rLayoutLoginThirdParty;
     @BindView(R.id.rLayout_login)
     RelativeLayout rLayoutLogin;
-    @BindView(R.id.tv_login_top_center)
-    TextView tvLoginTopCenter;
+//    @BindView(R.id.tv_login_top_center)
+//    TextView tvLoginTopCenter;
+    @BindView(R.id.tv_login_forget_pwd)
+    TextView tvLoginForgetPwd;
+
+
+
 
     public static LoginFragment newInstance(Bundle bundle) {
         LoginFragment fragment = new LoginFragment();
@@ -77,6 +82,8 @@ public class LoginFragment extends LoginModelFragment {
         ButterKnife.bind(this, view);
         addOnTouchListener(view);
         initView();
+        editTextLimitMaxInput(etLoginPwd, 12);
+        editTextLimitMaxInput(etLoginUsername, 60);
         return view;
     }
 
@@ -94,8 +101,8 @@ public class LoginFragment extends LoginModelFragment {
 
 
     private void initView() {
-        tvRegUser.setText("注册");
-        tvLoginTopCenter.setText("登录");
+//        tvRegUser.setText("注册");
+//        tvLoginTopCenter.setText("登录");
     }
 
     /**
@@ -162,32 +169,38 @@ public class LoginFragment extends LoginModelFragment {
     @OnClick(R.id.tv_login_forget_pwd)
     public void forgetPwd(View view) {
         //忘记密码
-        ToastUtil.showToast(getContext(), "forget pwd!");
-    }
-
-    @OnClick(R.id.tv_login_top_right)
-    public void regUser(View view) {
+        ForgetPwdFragment fragment = (ForgetPwdFragment) getFragmentManager().findFragmentByTag("forget");
         FragmentTransaction ft = getFragmentManager().beginTransaction();
-        Fragment fragment = getFragmentManager().findFragmentByTag("register");
-        if (fragment != null) {
-            ft.hide(this).show(fragment).commit();
-            return;
+        if (fragment == null) {
+            fragment = ForgetPwdFragment.newInstance(null);
+            ft.add(R.id.fLayout_login_model_container, fragment, "forget");
         }
-        String timezone = getTimeZone();
-        SLog.i(timezone);
-        if (TextUtils.equals(timezone, "GMT+08:00")) {
-            fragment = RegisterByPhoneFragment.newInstance(null);
-        } else {
-            fragment = RegisterByMailFragment.newInstance(null);
-        }
-        ft.add(R.id.fLayout_login_model_container, fragment, "register").commit();
+        ft.hide(this).show(fragment).commit();
     }
 
-    @OnClick(R.id.iv_login_top_left)
-    public void exitCurrentPage(View view) {
-        //退出当前页面
-        getActivity().finish();
-    }
+//    @OnClick(R.id.tv_login_top_right)
+//    public void regUser(View view) {
+//        FragmentTransaction ft = getFragmentManager().beginTransaction();
+//        Fragment fragment = getFragmentManager().findFragmentByTag("register");
+//        if (fragment != null) {
+//            ft.hide(this).show(fragment).commit();
+//            return;
+//        }
+//        String timezone = getTimeZone();
+//        SLog.i(timezone);
+//        if (TextUtils.equals(timezone, "GMT+08:00")) {
+//            fragment = RegisterByPhoneFragment.newInstance(null);
+//        } else {
+//            fragment = RegisterByMailFragment.newInstance(null);
+//        }
+//        ft.add(R.id.fLayout_login_model_container, fragment, "register").commit();
+//    }
+
+//    @OnClick(R.id.iv_login_top_left)
+//    public void exitCurrentPage(View view) {
+//        //退出当前页面
+//        getActivity().finish();
+//    }
 
 
 }

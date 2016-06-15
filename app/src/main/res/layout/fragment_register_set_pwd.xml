@@ -5,14 +5,6 @@
     android:background="@color/color_white"
     android:clickable="true">
 
-    <include
-        android:id="@+id/rLayout_set_pwd_top"
-        layout="@layout/layout_login_top_item"
-        android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:layout_marginLeft="15dp"
-        android:layout_marginRight="15dp"
-        android:layout_marginTop="33dp" />
 
     <LinearLayout
         android:id="@+id/lLayout_register_input"
@@ -34,13 +26,9 @@
             <EditText
                 android:id="@+id/et_login_pwd"
                 style="@style/login_model_common_edittext_style"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
-                android:gravity="center"
                 android:hint="请输入6~12密码"
-                android:inputType="textPassword"
-                android:paddingRight="10dp" />
+                android:inputType="textPassword" />
 
             <ImageView
                 android:id="@+id/iv_login_clear_pwd"
