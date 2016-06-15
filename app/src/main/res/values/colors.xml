@@ -12,117 +12,117 @@
 -->
 <resources>
 
-    <color name="contents_text">#ff000000</color>
-    <color name="encode_view">#ffffffff</color>
-    <color name="possible_result_points">#c0ffbd21</color>
+    <color name="contents_text">#FF000000</color>
+    <color name="encode_view">#FFFFFFFF</color>
+    <color name="possible_result_points">#C0FFBD21</color>
     <!-- Android standard ICS color -->
-    <color name="result_minor_text">#ffc0c0c0</color>
-    <color name="result_points">#c099cc00</color>
+    <color name="result_minor_text">#FFC0C0C0</color>
+    <color name="result_points">#C099CC00</color>
     <!-- Android standard ICS color -->
-    <color name="result_text">#ffffffff</color>
-    <color name="result_view">#b0000000</color>
-    <color name="status_text">#ffffffff</color>
+    <color name="result_text">#FFFFFFFF</color>
+    <color name="result_view">#B0000000</color>
+    <color name="status_text">#FFFFFFFF</color>
     <color name="transparent">#00000000</color>
-    <color name="viewfinder_laser">#ffcc0000</color>
+    <color name="viewfinder_laser">#FFCC0000</color>
     <!-- Android standard ICS color -->
     <color name="viewfinder_mask">#60000000</color>
-    <color name="viewfinder_frame">#ff000000</color>
+    <color name="viewfinder_frame">#FF000000</color>
     <color name="intput_text">#555555</color>
 
-    <color name="enable_share">#cceefc</color>
-    <color name="normal_text">#adadad</color>
+    <color name="enable_share">#CCEEFC</color>
+    <color name="normal_text">#ADADAD</color>
     <color name="blue">#00B5EB</color>
-    <color name="battery_blue">#ff00b7ec</color>
+    <color name="battery_blue">#FF00B7EC</color>
     <!-- 登录界面提示文字颜色 -->
     <color name="hint_text_color">#999999</color>
     <color name="text_color">#000000</color>
     <!-- 忘记密码 -->
-    <color name="get_code_enable">#01adf0</color>
-    <color name="get_code_unenable">#01adf0</color>
+    <color name="get_code_enable">#01ADF0</color>
+    <color name="get_code_unenable">#01ADF0</color>
 
     <!-- 验证码 -->
-    <color name="code_text_color">#5f646e</color>
+    <color name="code_text_color">#5F646E</color>
     <color name="agreeement_title_color">#333333</color>
 
     <!-- setting -->
-    <color name="title_text_color">#8c8c8c</color>
-    <color name="cancle_text_color">#007aff</color>
-    <color name="logout_textcolor">#fd472b</color>
+    <color name="title_text_color">#8C8C8C</color>
+    <color name="cancle_text_color">#007AFF</color>
+    <color name="logout_textcolor">#FD472B</color>
 
     <!-- CallOrConf -->
-    <color name="help">#0199fb</color>
+    <color name="help">#0199FB</color>
 
     <!-- 修改密码 -->
-    <color name="modify_pwd_hint">#c7c7cd</color>
+    <color name="modify_pwd_hint">#C7C7CD</color>
     <!-- 意见 -->
-    <color name="suggest_text_hint">#c7c7cd</color>
+    <color name="suggest_text_hint">#C7C7CD</color>
     <!-- 首页 距离 -->
-    <color name="home_text_color">#3e3e3e</color>
+    <color name="home_text_color">#3E3E3E</color>
     <color name="home_setting_color">#626262</color>
     <!-- 扫描二维码 -->
-    <color name="scan_code_msg">#9d9d9d</color>
+    <color name="scan_code_msg">#9D9D9D</color>
     <!-- 播放视频界面 -->
     <color name="bottom_text_enter">#515151</color>
-    <color name="bottom_text_default">#ffffff</color>
-    <color name="top_title_text_color">#bebebe</color>
-    <color name="history_unenable">#bbbcbe</color>
+    <color name="bottom_text_default">#FFFFFF</color>
+    <color name="top_title_text_color">#BEBEBE</color>
+    <color name="history_unenable">#BBBCBE</color>
     <!-- 时光轴 -->
-    <color name="timeline_tab_checked">#01adf0</color>
-    <color name="timeline_tab_unchecked">#5f646e</color>
+    <color name="timeline_tab_checked">#01ADF0</color>
+    <color name="timeline_tab_unchecked">#5F646E</color>
     <color name="timeline_msg_title_textcolor">#010101</color>
-    <color name="timeline_msg_title_time_textcolor">#a6a8a9</color>
+    <color name="timeline_msg_title_time_textcolor">#A6A8A9</color>
     <color name="timeline_msg_content_textcolor">#797979</color>
-    <color name="timeline_msg_ydzc_textcolor">#f04c62</color>
+    <color name="timeline_msg_ydzc_textcolor">#F04C62</color>
     <!-- 配置 -->
-    <color name="peizhi_dialog_enter">#b6cee9</color>
-    <color name="peizhi_dialog_default">#007aff</color>
+    <color name="peizhi_dialog_enter">#B6CEE9</color>
+    <color name="peizhi_dialog_default">#007AFF</color>
     <!-- home item textcolor -->
-    <color name="home_item_textcolor">#5c5c5c</color>
+    <color name="home_item_textcolor">#5C5C5C</color>
     <!-- seekcolor -->
     <color name="no_video">#323232</color>
     <color name="has_video">#7A7D7F</color>
-    <color name="half_transparent">#aa000000</color>
-    <color name="delete_color">#ff3d32</color>
-    <color name="save_color">#01acf1</color>
-    <color name="titlebar_color">#888c8f</color>
-    <color name="red_color">#ff3d32</color>
-    <color name="clear_record">#01acf1</color>
-    <color name="history_video_days_checked_color">#01acf1</color>
+    <color name="half_transparent">#AA000000</color>
+    <color name="delete_color">#FF3D32</color>
+    <color name="save_color">#01ACF1</color>
+    <color name="titlebar_color">#888C8F</color>
+    <color name="red_color">#FF3D32</color>
+    <color name="clear_record">#01ACF1</color>
+    <color name="history_video_days_checked_color">#01ACF1</color>
     <color name="history_video_days_unchecked_color">#666666</color>
-    <color name="history_video_hours_color">#aaaaaa</color>
-    <color name="history_video_lan">#60c4ec</color>
+    <color name="history_video_hours_color">#AAAAAA</color>
+    <color name="history_video_lan">#60C4EC</color>
     <color name="msg_detail_content">#797979</color>
-    <color name="msg_detail_webview_color">#e6e6e6</color>
-    <color name="progress_bg">#e5e6e7</color>
-    <color name="mycount_not_set">#ff3d32</color>
-    <color name="adddevice_enter">#3b3b3b</color>
+    <color name="msg_detail_webview_color">#E6E6E6</color>
+    <color name="progress_bg">#E5E6E7</color>
+    <color name="mycount_not_set">#FF3D32</color>
+    <color name="adddevice_enter">#3B3B3B</color>
     <color name="adddevice_default">#545454</color>
-    <color name="doorbell_unenable">#3b3f43</color>
+    <color name="doorbell_unenable">#3b3F43</color>
     <color name="message_historyvideo">#808080</color>
-    <color name="del_message_unenable">#a6a6a6</color>
-    <color name="del_all_message_unenable">#01acf1</color>
+    <color name="del_message_unenable">#A6A6A6</color>
+    <color name="del_all_message_unenable">#01ACF1</color>
     <!-- Efaimly -->
-    <color name="efamily_msg_default">#7d7c7c</color>
+    <color name="efamily_msg_default">#7D7C7C</color>
     <color name="efamiy_msg_press">#575757</color>
-    <color name="list_open">#e57373</color>
-    <color name="list_close">#66bb6a</color>
+    <color name="list_open">#E57373</color>
+    <color name="list_close">#66BB6A</color>
     <!--air quality-->
-    <color name="air_color_default">#a3a3a3</color>
-    <color name="air_color_green">#00c859</color>
-    <color name="air_color_yellow">#fdd835</color>
-    <color name="air_color_orange">#ff9800</color>
-    <color name="air_color_red">#ff4957</color>
-    <color name="air_color_purple">#976fde</color>
-    <color name="air_color_brown">#a60000</color>
+    <color name="air_color_default">#A3A3A3</color>
+    <color name="air_color_green">#00C859</color>
+    <color name="air_color_yellow">#FDD835</color>
+    <color name="air_color_orange">#FF9800</color>
+    <color name="air_color_red">#FF4957</color>
+    <color name="air_color_purple">#976FDE</color>
+    <color name="air_color_brown">#A60000</color>
     <!--doorbell-->
     <color name="doorbell_no_calllog">#343434</color>
     <!--wheel-->
-    <color name="current_wheel_color">#3984ed</color>
-    <color name="default_wheel_color">#a6a6a6</color>
+    <color name="current_wheel_color">#3984ED</color>
+    <color name="default_wheel_color">#A6A6A6</color>
 
     <color name="efamily_bottom_text_color">#888888</color>
-    <color name="efamily_bottom_text_red_color">#ff1744</color>
-    <color name="setting_line_color">#c7c7c9</color>
+    <color name="efamily_bottom_text_red_color">#FF1744</color>
+    <color name="setting_line_color">#C7C7C9</color>
 
     <!--3.0.0-->
 
@@ -141,11 +141,11 @@
     <color name="color_f9f9f9">#F9F9F9</color>
 
 
-    <color name="color_0ba8cf">#0ba8cf</color>
-    <color name="color_f6f9fa">#f6f9fa</color>
+    <color name="color_0ba8cf">#0BA8CF</color>
+    <color name="color_f6f9fa">#F6F9FA</color>
     <color name="color_888888">#888888</color>
     <color name="color_788291">#788291</color>
-    <color name="color_4b9fd5">#4b9fd5</color>
+    <color name="color_4b9fd5">#4B9FD5</color>
     <color name="color_909090">#909090</color>
     <color name="color_666666">#666666</color>
 
