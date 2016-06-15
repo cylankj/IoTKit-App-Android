@@ -37,7 +37,7 @@ public class HomeMinePresenterImpl implements HomeMineContract.Presenter {
                     @Override
                     public void call(Object o) {
                         if (getView() != null)
-                            getView().onPortraitUpdate("zhe ye keyi");
+                            getView().onPortraitUpdate("zhe ye ke yi");
                     }
                 });
     }

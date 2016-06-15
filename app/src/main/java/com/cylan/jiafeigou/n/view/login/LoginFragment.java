@@ -1,36 +1,65 @@
 package com.cylan.jiafeigou.n.view.login;
 
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.NewHomeActivity;
-import com.cylan.jiafeigou.n.model.BeanInfoLogin;
-import com.cylan.jiafeigou.n.mvp.contract.login.LoginContract;
-import com.cylan.jiafeigou.n.mvp.impl.login.LoginPresenterImpl;
+import com.cylan.jiafeigou.utils.ToastUtil;
+import com.superlog.SLog;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
+import butterknife.OnTextChanged;
 
 /**
  * Created by chen on 5/26/16.
  */
-public class LoginFragment extends Fragment implements LoginContract.ViewRequiredOps {
+public class LoginFragment extends LoginModelFragment {
 
 
-    @BindView(R.id.btnLogin)
-    Button btnLogin;
+    @BindView(R.id.et_login_username)
+    EditText etLoginUsername;
+    @BindView(R.id.iv_login_clear_username)
+    ImageView ivLoginClearUsername;
+    @BindView(R.id.et_login_pwd)
+    EditText etLoginPwd;
+    @BindView(R.id.iv_login_clear_pwd)
+    ImageView ivLoginClearPwd;
+    @BindView(R.id.cb_show_pwd)
+    CheckBox rbShowPwd;
+    @BindView(R.id.tv_model_commit)
+    TextView tvCommit;
+    @BindView(R.id.lLayout_login_input)
+    LinearLayout lLayoutLoginInput;
+    @BindView(R.id.view_third_party_center)
+    View viewThirdPartyCenter;
+    @BindView(R.id.rLayout_login_third_party)
+    RelativeLayout rLayoutLoginThirdParty;
+    @BindView(R.id.rLayout_login)
+    RelativeLayout rLayoutLogin;
 
-    private LoginContract.PresenterOps mPresent;
-    private BeanInfoLogin infoLogin;
+    @BindView(R.id.tv_login_forget_pwd)
+    TextView tvLoginForgetPwd;
+
+
+
 
     public static LoginFragment newInstance(Bundle bundle) {
         LoginFragment fragment = new LoginFragment();
@@ -38,84 +67,110 @@ public class LoginFragment extends Fragment implements LoginContract.ViewRequire
         return fragment;
     }
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
 
-
+    @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View mView = inflater.inflate(R.layout.fragment_login_layout, container, false);
-        ButterKnife.bind(this, mView);
+        View view = inflater.inflate(R.layout.fragment_login_layout, container, false);
+        ButterKnife.bind(this, view);
+        addOnTouchListener(view);
         initView();
-        return mView;
+        editTextLimitMaxInput(etLoginPwd, 12);
+        editTextLimitMaxInput(etLoginUsername, 60);
+        return view;
     }
+
+    /**
+     * 明文/密文 密码
+     *
+     * @param buttonView
+     * @param isChecked
+     */
+    @OnCheckedChanged(R.id.cb_show_pwd)
+    public void onShowPwd(CompoundButton buttonView, boolean isChecked) {
+        showPwd(etLoginPwd, isChecked);
+        etLoginPwd.setSelection(etLoginPwd.length());
+    }
+
 
     private void initView() {
-        mPresent = new LoginPresenterImpl(this);
+//        tvRegUser.setText("注册");
+//        tvLoginTopCenter.setText("登录");
     }
 
-    private void initData() {
-        infoLogin = new BeanInfoLogin();
-    }
+    /**
+     * 密码变化
+     *
+     * @param s
+     * @param start
+     * @param before
+     * @param count
+     */
+    @OnTextChanged(R.id.et_login_pwd)
+    public void onPwdChange(CharSequence s, int start, int before, int count) {
+        boolean flag = TextUtils.isEmpty(s);
+        ivLoginClearPwd.setVisibility(flag ? View.GONE : View.VISIBLE);
+        if (flag) {
+            setViewEnableStyle(tvCommit, false);
+        } else if (!TextUtils.isEmpty(etLoginUsername.getText().toString())) {
+            setViewEnableStyle(tvCommit, true);
+        }
 
-
-    @Override
-    public void onResume() {
-        initData();
-        super.onResume();
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-    }
-
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
     }
 
 
-    @Override
-    public void startActivityForResult(Intent intent, int requestCode) {
-        super.startActivityForResult(intent, requestCode);
-    }
+    /***
+     * 账号变化
+     *
+     * @param s
+     * @param start
+     * @param before
+     * @param count
+     */
 
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-    }
-
-
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-    }
-
-    @OnClick(R.id.btnLogin)
-    public void onLoginClick() {
-        infoLogin.userName = "";
-        infoLogin.pwd = "";
-        mPresent.executeLogin(infoLogin);
-        startActivity(new Intent(getActivity(), NewHomeActivity.class));
-        getActivity().finish();
-    }
-
-    @Override
-    public void LoginExecuted(String succeed) {
-        if (succeed.equals("succeed")) {
-            //login succeed
-        } else {
-            //show the reason of failed,and "succeed" carried the message
+    @OnTextChanged(R.id.et_login_username)
+    public void onUserNameChange(CharSequence s, int start, int before, int count) {
+        boolean flag = TextUtils.isEmpty(s);
+        ivLoginClearUsername.setVisibility(flag ? View.GONE : View.VISIBLE);
+        if (flag) {
+            setViewEnableStyle(tvCommit, false);
+        } else if (!TextUtils.isEmpty(etLoginPwd.getText().toString())) {
+            setViewEnableStyle(tvCommit, true);
         }
     }
+
+
+    @OnClick(R.id.iv_login_clear_pwd)
+    public void clearPwd(View view) {
+        etLoginPwd.getText().clear();
+    }
+
+    @OnClick(R.id.iv_login_clear_username)
+    public void clearUserName(View view) {
+        etLoginUsername.getText().clear();
+    }
+
+
+    @OnClick(R.id.tv_model_commit)
+    public void loginCommit(View view) {
+        if (getActivity() != null) {
+            getContext().startActivity(new Intent(getContext(), NewHomeActivity.class));
+            getActivity().finish();
+        }
+    }
+
+    @OnClick(R.id.tv_login_forget_pwd)
+    public void forgetPwd(View view) {
+        //忘记密码
+        ForgetPwdFragment fragment = (ForgetPwdFragment) getFragmentManager().findFragmentByTag("forget");
+        FragmentTransaction ft =getActivity().getSupportFragmentManager().beginTransaction();
+        if (fragment == null) {
+            fragment = ForgetPwdFragment.newInstance(null);
+            ft.add(R.id.fLayout_login_container, fragment, "forget");
+        }
+        ft.hide(this).show(fragment).commit();
+    }
+
+
 
 }
