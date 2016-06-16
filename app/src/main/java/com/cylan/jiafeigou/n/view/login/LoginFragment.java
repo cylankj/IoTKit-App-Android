@@ -72,7 +72,7 @@ public class LoginFragment extends LoginModelFragment implements LoginContract.V
     TextView tvXlLoginCommit;
 
     private final int LOGIN_QQ_TYPE = 1;
-    private final int LOGIN_XL_TYOE = 2;
+    private final int LOGIN_XL_TYPE = 2;
 
     private LoginContract.PresenterOps mPresenter;
     private BeanInfoLogin beanInfoLogin;
@@ -187,7 +187,7 @@ public class LoginFragment extends LoginModelFragment implements LoginContract.V
                 mPresenter.thirdLogin(getActivity(), LOGIN_QQ_TYPE);
                 break;
             case R.id.tv_xlLogin_commit:
-                mPresenter.thirdLogin(getActivity(), LOGIN_XL_TYOE);
+                mPresenter.thirdLogin(getActivity(), LOGIN_XL_TYPE);
                 break;
         }
     }
@@ -269,6 +269,7 @@ public class LoginFragment extends LoginModelFragment implements LoginContract.V
     public void LoginExecuted(String msg) {
         if (!msg.equals("success") ) {
             ToastUtil.showFailToast(getContext(), msg);
+            return;
         }
         getContext().startActivity(new Intent(getContext(), NewHomeActivity.class));
         getActivity().finish();
