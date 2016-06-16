@@ -3,7 +3,6 @@ package com.cylan.jiafeigou.n.view.login;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -19,8 +18,20 @@ import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.NewHomeActivity;
+import com.cylan.jiafeigou.n.model.BeanInfoLogin;
+import com.cylan.jiafeigou.n.mvp.contract.login.LoginContract;
+import com.cylan.jiafeigou.n.mvp.impl.login.LoginPresenterImpl;
+import com.cylan.jiafeigou.support.sina.SinaWeiboUtil;
+import com.cylan.jiafeigou.support.tencent.TencentLoginUtils;
+import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.superlog.SLog;
+import com.tencent.connect.common.Constants;
+import com.tencent.tauth.IUiListener;
+import com.tencent.tauth.UiError;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -31,8 +42,7 @@ import butterknife.OnTextChanged;
 /**
  * Created by chen on 5/26/16.
  */
-public class LoginFragment extends LoginModelFragment {
-
+public class LoginFragment extends LoginModelFragment implements LoginContract.ViewRequiredOps {
 
     @BindView(R.id.et_login_username)
     EditText etLoginUsername;
@@ -54,12 +64,18 @@ public class LoginFragment extends LoginModelFragment {
     RelativeLayout rLayoutLoginThirdParty;
     @BindView(R.id.rLayout_login)
     RelativeLayout rLayoutLogin;
-
     @BindView(R.id.tv_login_forget_pwd)
     TextView tvLoginForgetPwd;
+    @BindView(R.id.tv_qqLogin_commit)
+    TextView tvQqLoginCommit;
+    @BindView(R.id.tv_xlLogin_commit)
+    TextView tvXlLoginCommit;
 
+    private final int LOGIN_QQ_TYPE = 1;
+    private final int LOGIN_XL_TYOE = 2;
 
-
+    private LoginContract.PresenterOps mPresenter;
+    private BeanInfoLogin beanInfoLogin;
 
     public static LoginFragment newInstance(Bundle bundle) {
         LoginFragment fragment = new LoginFragment();
@@ -78,6 +94,12 @@ public class LoginFragment extends LoginModelFragment {
         editTextLimitMaxInput(etLoginPwd, 12);
         editTextLimitMaxInput(etLoginUsername, 60);
         return view;
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        mPresenter = new LoginPresenterImpl(this);
     }
 
     /**
@@ -139,38 +161,120 @@ public class LoginFragment extends LoginModelFragment {
         }
     }
 
-
-    @OnClick(R.id.iv_login_clear_pwd)
-    public void clearPwd(View view) {
-        etLoginPwd.getText().clear();
-    }
-
-    @OnClick(R.id.iv_login_clear_username)
-    public void clearUserName(View view) {
-        etLoginUsername.getText().clear();
-    }
-
-
-    @OnClick(R.id.tv_model_commit)
-    public void loginCommit(View view) {
-        if (getActivity() != null) {
-            getContext().startActivity(new Intent(getContext(), NewHomeActivity.class));
-            getActivity().finish();
+    @OnClick({
+            R.id.tv_qqLogin_commit,
+            R.id.tv_xlLogin_commit,
+            R.id.iv_login_clear_pwd,
+            R.id.iv_login_clear_username,
+            R.id.tv_model_commit,
+            R.id.tv_login_forget_pwd
+    })
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.iv_login_clear_pwd:
+                etLoginPwd.getText().clear();
+                break;
+            case R.id.iv_login_clear_username:
+                etLoginUsername.getText().clear();
+                break;
+            case R.id.tv_login_forget_pwd:
+                forgetPwd(null);
+                break;
+            case R.id.tv_model_commit:
+                loginNormal();
+                break;
+            case R.id.tv_qqLogin_commit:
+                mPresenter.thirdLogin(getActivity(), LOGIN_QQ_TYPE);
+                break;
+            case R.id.tv_xlLogin_commit:
+                mPresenter.thirdLogin(getActivity(), LOGIN_XL_TYOE);
+                break;
         }
     }
 
-    @OnClick(R.id.tv_login_forget_pwd)
-    public void forgetPwd(View view) {
+    private void loginNormal() {
+        beanInfoLogin = new BeanInfoLogin();
+        beanInfoLogin.userName = "TianChao";
+        beanInfoLogin.pwd = "hello world";
+
+        mPresenter.executeLogin(getActivity(), beanInfoLogin);
+    }
+
+    private void forgetPwd(View view) {
         //忘记密码
         ForgetPwdFragment fragment = (ForgetPwdFragment) getFragmentManager().findFragmentByTag("forget");
-        FragmentTransaction ft =getActivity().getSupportFragmentManager().beginTransaction();
+        FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
         if (fragment == null) {
             fragment = ForgetPwdFragment.newInstance(null);
-            ft.add(R.id.fLayout_login_container, fragment, "forget");
+            ft.replace(R.id.fLayout_login_container, fragment, "forget");
         }
         ft.hide(this).show(fragment).commit();
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        //在某些低端机上调用登录后，由于内存紧张导致APP被系统回收，登录成功后无法成功回传数据
+        if (requestCode == Constants.REQUEST_API) {
+            if (resultCode == Constants.REQUEST_LOGIN) {
+                TencentLoginUtils curTencent = mPresenter.getTencentObj();
+                if (curTencent != null)
+                    curTencent.getMyTencent().handleLoginData(data, new BaseUiListener());
+            }
+        } else {
+            SinaWeiboUtil curSina = mPresenter.getSinaObj();
+            if (curSina != null && curSina.getMySsoHandler() != null)
+                curSina.getMySsoHandler().authorizeCallBack(requestCode, resultCode, data);
+        }
 
+        super.onActivityResult(requestCode, resultCode, data);
+    }
 
+    private class BaseUiListener implements IUiListener {
+
+        @Override
+        public void onComplete(Object response) {
+            if (null == response) {
+                showFailedError("获取qq信息失败");
+                return;
+            }
+            JSONObject jsonResponse = (JSONObject) response;
+            if (null != jsonResponse && jsonResponse.length() == 0) {
+                showFailedError("获取qq信息失败");
+                return;
+            }
+
+            String alias = "";
+            try {
+                if (jsonResponse.has("nickname"))
+                    alias = jsonResponse.getString("nickname");
+                PreferencesUtils.setThirDswLoginPicUrl(getContext(), jsonResponse.getString("figureurl_qq_1"));
+            } catch (JSONException e) {
+                SLog.e(e.toString());
+            }
+            LoginExecuted("success");
+        }
+
+        @Override
+        public void onError(UiError uiError) {
+
+        }
+
+        @Override
+        public void onCancel() {
+
+        }
+    }
+
+    @Override
+    public void LoginExecuted(String msg) {
+        if (!msg.equals("success") ) {
+            ToastUtil.showFailToast(getContext(), msg);
+        }
+        getContext().startActivity(new Intent(getContext(), NewHomeActivity.class));
+        getActivity().finish();
+    }
+
+    public void showFailedError(String error) {
+        ToastUtil.showFailToast(getContext(), error);
+    }
 }

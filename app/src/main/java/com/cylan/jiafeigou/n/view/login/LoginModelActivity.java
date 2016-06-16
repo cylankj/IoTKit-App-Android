@@ -23,12 +23,10 @@ public class LoginModelActivity extends BaseFullScreenFragmentActivity {
         showLoginFragment();
     }
 
-
-
     private void showLoginFragment() {
         LoginModel1Fragment fragment = LoginModel1Fragment.newInstance(null);
         getSupportFragmentManager().beginTransaction().
-                add(R.id.fLayout_login_model_container, fragment).commit();
+                replace(R.id.fLayout_login_model_container, fragment).commit();
     }
 
     private static long time = 0;

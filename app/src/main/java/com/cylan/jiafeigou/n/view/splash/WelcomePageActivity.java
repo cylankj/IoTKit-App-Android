@@ -21,7 +21,7 @@ import com.cylan.jiafeigou.n.NewHomeActivity;
 import com.cylan.jiafeigou.n.mvp.contract.splash.SplashContract;
 import com.cylan.jiafeigou.n.mvp.impl.splash.SplashPresenterImpl;
 import com.cylan.jiafeigou.n.view.adapter.SimpleFragmentAdapter;
-import com.cylan.jiafeigou.utils.ParamStatic;
+import com.cylan.jiafeigou.utils.UiHelper;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.viewindicator.CirclePageIndicator;
 
@@ -124,12 +124,12 @@ public class WelcomePageActivity extends BaseFullScreenFragmentActivity implemen
 
 
     private boolean isLoginIn() {
-        return PreferencesUtils.getBoolean(this, ParamStatic.TAG_LOGING_STATUS, false);
+        return PreferencesUtils.getBoolean(this, UiHelper.TAG_LOGING_STATUS, false);
     }
 
     private boolean isFirstUseApp() {
-        // return PreferencesUtils.getBoolean(this, TAG_COMEIN, true);
-        return true;
+         return PreferencesUtils.getBoolean(this, TAG_COMEIN, true);
+       // return true;
     }
 
     private void setFirstUseApp() {

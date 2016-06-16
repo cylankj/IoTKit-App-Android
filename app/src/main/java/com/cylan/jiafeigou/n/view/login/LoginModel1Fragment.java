@@ -12,6 +12,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
+import com.superlog.SLog;
+
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -99,13 +102,21 @@ public class LoginModel1Fragment extends Fragment {
         getChildFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right)
                 .replace(R.id.fLayout_login_container, fragment, "login").commit();
-
     }
 
     private void showRegisterFragment() {
         flag = false;
         tvTopCenter.setText("注册");
         tvTopRight.setText("登录");
+        //点击注册后 检测 国内外用户
+        if (beTianChao()) {
+            phoneRegisterFragment();
+        } else {
+            emailRegisterFragment();
+        }
+    }
+
+    private void phoneRegisterFragment() {
         RegisterByPhoneFragment fragment = (RegisterByPhoneFragment) getChildFragmentManager().findFragmentByTag("register");
         if (fragment == null) {
             fragment = RegisterByPhoneFragment.newInstance(null);
@@ -115,5 +126,20 @@ public class LoginModel1Fragment extends Fragment {
                 .replace(R.id.fLayout_login_container, fragment, "register").commit();
     }
 
+    private void emailRegisterFragment() {
+        RegisterByMailFragment fragment = (RegisterByMailFragment) getChildFragmentManager().findFragmentByTag("register");
+        if (fragment == null) {
+            fragment = RegisterByMailFragment.newInstance(null);
+        }
+        getChildFragmentManager().beginTransaction()
+                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
+                .replace(R.id.fLayout_login_container, fragment, "register").commit();
+    }
+
+    private boolean beTianChao() {
+        // 方法A：地区（中国）或时区（中国或东八区）
+        // 方法B：语言（简体中文） 选此方法
+        return getResources().getConfiguration().locale.getLanguage().equals("zh");
+    }
 
 }
