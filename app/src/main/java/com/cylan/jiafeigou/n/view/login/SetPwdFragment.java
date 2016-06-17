@@ -1,8 +1,12 @@
 package com.cylan.jiafeigou.n.view.login;
 
+import android.app.DialogFragment;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
+import android.text.Html;
 import android.text.InputFilter;
 import android.text.Spanned;
 import android.text.TextUtils;
@@ -80,7 +84,11 @@ public class SetPwdFragment extends LoginModelFragment {
     @OnTextChanged(R.id.et_login_pwd)
     public void onUserNameChange(CharSequence s, int start, int before, int count) {
         boolean flag = TextUtils.isEmpty(s);
-        setViewEnableStyle(tvCommit, !flag);
+        if (flag && s.length() <= 5) {
+            setViewEnableStyle(tvCommit, false);
+        } else {
+            setViewEnableStyle(tvCommit, true);
+        }
         ivLoginClearPwd.setVisibility(flag ? View.GONE : View.VISIBLE);
     }
 
@@ -113,5 +121,31 @@ public class SetPwdFragment extends LoginModelFragment {
         showPwd(etLoginPwd, isChecked);
         etLoginPwd.setSelection(etLoginPwd.length());
     }
+
+
+    @Override
+    public void onAttach(Context context) {
+        initParentFragmentView();
+        super.onAttach(context);
+    }
+
+    private void initParentFragmentView() {
+        LoginModel1Fragment fragment = (LoginModel1Fragment) getActivity().getSupportFragmentManager().getFragments().get(0);
+        fragment.tvTopRight.setVisibility(View.GONE);
+        fragment.tvTopCenter.setText("设置密码");
+        fragment.ivTopLeft.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ToastUtil.showToast(getActivity(), "退出");
+            }
+        });
+
+    }
+
+    private void showDialog() {
+//        AlertDialog.Builder builder = new AlertDialog.Builder(getContext()).setCancelable(true)
+//                .setTitle()
+    }
+
 
 }

@@ -29,12 +29,6 @@ import butterknife.OnTextChanged;
 public class FindPwdByPhoneFragment extends LoginModelFragment {
 
 
-    @BindView(R.id.iv_login_top_left)
-    ImageView ivLoginTopLeft;
-    @BindView(R.id.tv_login_top_center)
-    TextView tvLoginTopCenter;
-    @BindView(R.id.tv_login_top_right)
-    TextView tvLoginTopRight;
     @BindView(R.id.et_register_username)
     EditText etRegisterUsername;
     @BindView(R.id.iv_register_clear_username)
@@ -84,7 +78,6 @@ public class FindPwdByPhoneFragment extends LoginModelFragment {
 
 
     private void initView(View view) {
-        tvLoginTopCenter.setText("忘记密码");
         tvRegisterSwitch.setVisibility(View.GONE);
         //设置手机号
         etRegisterUsername.setText("13800138000");
@@ -93,18 +86,18 @@ public class FindPwdByPhoneFragment extends LoginModelFragment {
     }
 
 
-    @OnClick(R.id.iv_login_top_left)
-    public void exit(View view) {
-        ForgetPwdFragment fragment = (ForgetPwdFragment) getFragmentManager().findFragmentByTag("forget");
-        FragmentTransaction ft = getFragmentManager().beginTransaction();
-        if (fragment == null) {
-            fragment = ForgetPwdFragment.newInstance(null);
-            ft.add(R.id.fLayout_login_model_container, fragment, "forget");
-        } else {
-            ft.hide(this).show(fragment);
-        }
-        ft.commit();
-    }
+//    @OnClick(R.id.iv_login_top_left)
+//    public void exit(View view) {
+//        ForgetPwdFragment fragment = (ForgetPwdFragment) getFragmentManager().findFragmentByTag("forget");
+//        FragmentTransaction ft = getFragmentManager().beginTransaction();
+//        if (fragment == null) {
+//            fragment = ForgetPwdFragment.newInstance(null);
+//            ft.add(R.id.fLayout_login_model_container, fragment, "forget");
+//        } else {
+//            ft.hide(this).show(fragment);
+//        }
+//        ft.commit();
+//    }
 
 
     @OnClick(R.id.tv_model_commit)
@@ -163,18 +156,18 @@ public class FindPwdByPhoneFragment extends LoginModelFragment {
     @OnClick(R.id.tv_register_reciprocal_time)
     public void reGetPhoneVerifyCode(View view) {
         //
-        tvRegisterSwitch.post(new Runnable() {
-            @Override
-            public void run() {
-                tvRegisterReciprocalTime.setTextColor(getResources().getColor(R.color.color_999999));
-                for (int i = 0; i < 89; i++) {
-                    tvRegisterReciprocalTime.setText(i + "s");
-
-                }
-                tvRegisterReciprocalTime.setTextColor(getResources().getColor(R.color.color_4b9fd5));
-                tvRegisterReciprocalTime.setText("重新获取");
-            }
-        });
+//        tvRegisterSwitch.post(new Runnable() {
+//            @Override
+//            public void run() {
+//                tvRegisterReciprocalTime.setTextColor(getResources().getColor(R.color.color_999999));
+//                for (int i = 0; i < 89; i++) {
+//                    tvRegisterReciprocalTime.setText(i + "s");
+//
+//                }
+//                tvRegisterReciprocalTime.setTextColor(getResources().getColor(R.color.color_4b9fd5));
+//                tvRegisterReciprocalTime.setText("重新获取");
+//            }
+//        });
     }
 
 

@@ -78,7 +78,7 @@
             android:value="play" />
 
         <activity
-            android:name=".n.view.splash.WelcomePageActivity"
+            android:name=".n.view.login.LoginModelActivity"
             android:configChanges="locale|orientation|keyboardHidden"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan|stateHidden">
@@ -88,11 +88,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".n.NewHomeActivity"
             android:launchMode="singleTask"
             android:theme="@style/AppTheme" />
-        <activity android:name=".n.view.login.LoginModelActivity" />
+        <!--<activity android:name=".n.view.login.LoginModelActivity" />-->
 
         <receiver android:name=".n.engine.DaemonService$BootCompletedReceiver">
             <intent-filter android:priority="0x7fffffff">
