@@ -76,12 +76,28 @@
             android:layout_height="1dp"
             android:background="@color/color_f2f2f2" />
 
-        <TextView
-            android:id="@+id/tv_model_commit"
-            style="@style/login_model_commit_style"
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="37dp"
-            android:text="登录" />
+            android:layout_marginTop="37dp">
+
+            <TextView
+                android:id="@+id/tv_model_commit"
+                style="@style/login_model_commit_style"
+                android:layout_gravity="center_horizontal"
+                android:text="登录" />
+
+            <ProgressBar
+                android:id="@+id/pb_login_loading"
+                style="@style/progress_circle_login_style"
+                android:padding="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:visibility="gone" />
+        </FrameLayout>
 
 
         <TextView

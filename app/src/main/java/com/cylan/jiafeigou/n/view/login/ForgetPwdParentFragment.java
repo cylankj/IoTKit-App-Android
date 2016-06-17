@@ -1,11 +1,8 @@
 package com.cylan.jiafeigou.n.view.login;
 
-import android.animation.ObjectAnimator;
-import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -29,7 +26,7 @@ import butterknife.OnTextChanged;
  * Created by lxh on 16-6-14.
  */
 
-public class ForgetPwdFragment extends LoginModelFragment {
+public class ForgetPwdParentFragment extends LoginBaseFragment {
 
 
     @BindView(R.id.et_forget_username)
@@ -51,8 +48,8 @@ public class ForgetPwdFragment extends LoginModelFragment {
         return view;
     }
 
-    public static ForgetPwdFragment newInstance(Bundle bundle) {
-        ForgetPwdFragment fragment = new ForgetPwdFragment();
+    public static ForgetPwdParentFragment newInstance(Bundle bundle) {
+        ForgetPwdParentFragment fragment = new ForgetPwdParentFragment();
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -73,12 +70,12 @@ public class ForgetPwdFragment extends LoginModelFragment {
     private void next() {
         String account = etForgetUsername.getText().toString();
         FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-        LoginModelFragment fragment;
+        LoginBaseFragment fragment;
         //做判断
         if (account.length() > 1) {
-            fragment = FindPwdByPhoneFragment.newInstance(null);
+            fragment = FindPwdByPhoneParentFragment.newInstance(null);
         } else {
-            fragment = LoginFragment.newInstance(null);
+            fragment = LoginParentFragment.newInstance(null);
         }
 
         ft.add(R.id.fLayout_login_container, fragment).commit();
@@ -112,7 +109,7 @@ public class ForgetPwdFragment extends LoginModelFragment {
     }
 
     private void initParentFragmentView() {
-        LoginModel1Fragment fragment = (LoginModel1Fragment) getActivity().getSupportFragmentManager().getFragments().get(0);
+        LoginModelParentFragment fragment = (LoginModelParentFragment) getActivity().getSupportFragmentManager().getFragments().get(0);
         fragment.tvTopCenter.setText("忘记密码");
         fragment.tvTopRight.setVisibility(View.GONE);
     }

@@ -10,9 +10,7 @@ import android.view.ViewGroup;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.NewHomeActivity;
-import com.cylan.jiafeigou.n.view.login.LoginFragment;
 import com.cylan.jiafeigou.n.view.login.LoginModelActivity;
-import com.cylan.jiafeigou.utils.ActivityUtils;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;

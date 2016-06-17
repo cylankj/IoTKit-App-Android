@@ -13,12 +13,6 @@
         <item name="android:windowFrame">@null</item>
     </style>
 
-    <style name="text_base_singleLine">
-        <item name="android:singleLine">true</item>
-        <item name="android:gravity">center</item>
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-    </style>
 
     <style name="comment_bottom_dialog_style">
         <item name="android:layout_width">fill_parent</item>
@@ -38,6 +32,15 @@
         <item name="android:windowIsTranslucent">true</item>
     </style>
 
+    <!--单行内容居中的文本样式-->
+    <style name="text_base_singleLine">
+        <item name="android:singleLine">true</item>
+        <item name="android:gravity">center</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <!--第三方登陆-->
     <style name="third_party_login_style" parent="text_base_singleLine">
         <item name="android:textSize">13sp</item>
         <item name="android:textColor">@color/color_7c7c7c</item>
@@ -45,7 +48,7 @@
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
     </style>
-
+    <!--登陆模块输入框-->
     <style name="login_model_common_edittext_style" parent="text_base_singleLine">
         <item name="android:textCursorDrawable">@drawable/bg_common_cursor</item>
         <item name="android:background">@null</item>
@@ -58,6 +61,7 @@
         <item name="android:textSize">15sp</item>
     </style>
 
+    <!--登陆模块的确认按钮-->
     <style name="login_model_commit_style" parent="text_base_singleLine">
         <item name="android:background">@drawable/btn_common_login_commit_selector</item>
         <item name="android:enabled">false</item>
@@ -65,6 +69,7 @@
         <item name="android:textSize">17sp</item>
     </style>
 
+    <!--清空输入框-->
     <style name="clear_edittext_style">
         <item name="android:visibility">gone</item>
         <item name="android:padding">5dp</item>
@@ -73,6 +78,7 @@
         <item name="android:background">@drawable/btn_login_clear_text</item>
     </style>
 
+    <!--显示密码-->
     <style name="show_pwd_style">
         <item name="android:padding">5dp</item>
         <item name="android:checked">false</item>
@@ -82,6 +88,7 @@
         <item name="android:background">@drawable/icon_common_show_pwd_selector</item>
     </style>
 
+    <!--主页底部按钮状态-->
     <style name="home_bottom_radio_style">
         <item name="android:layout_weight">1</item>
         <item name="android:layout_width">wrap_content</item>
@@ -90,6 +97,15 @@
         <item name="android:textSize">11sp</item>
         <item name="android:gravity">center_horizontal</item>
         <item name="android:textColor">@color/home_bottom_menu_text_color_selector</item>
+    </style>
+
+    <!-- 圆形的进度条 -->
+    <style name="progress_circle_login_style">
+        <item name="android:indeterminateDrawable">@drawable/progressbar_login_loading</item>
+        <item name="android:minWidth">40dp</item>
+        <item name="android:minHeight">40dp</item>
+        <item name="android:maxWidth">76dp</item>
+        <item name="android:maxHeight">76dp</item>
     </style>
 
 

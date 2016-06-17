@@ -3,13 +3,10 @@ package com.cylan.jiafeigou.n.view.login;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -19,9 +16,6 @@ import android.widget.TextView;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.AnimatorUtils;
-import com.superlog.SLog;
-
-import java.util.TimeZone;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -32,7 +26,7 @@ import butterknife.OnTextChanged;
  * Created by lxh on 16-6-8.
  */
 
-public class RegisterByMailFragment extends LoginModelFragment {
+public class RegisterByMailParentFragment extends LoginBaseFragment {
 
     @BindView(R.id.et_register_username)
     EditText etRegisterUsername;
@@ -50,8 +44,8 @@ public class RegisterByMailFragment extends LoginModelFragment {
     RelativeLayout rLayoutRegister;
     private boolean isChina = true;
 
-    public static RegisterByMailFragment newInstance(Bundle bundle) {
-        RegisterByMailFragment fragment = new RegisterByMailFragment();
+    public static RegisterByMailParentFragment newInstance(Bundle bundle) {
+        RegisterByMailParentFragment fragment = new RegisterByMailParentFragment();
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -92,7 +86,7 @@ public class RegisterByMailFragment extends LoginModelFragment {
 
 
     private void initParentFragmentView() {
-        LoginModel1Fragment fragment = (LoginModel1Fragment) getActivity().getSupportFragmentManager().getFragments().get(0);
+        LoginModelParentFragment fragment = (LoginModelParentFragment) getActivity().getSupportFragmentManager().getFragments().get(0);
         fragment.tvTopCenter.setText("注册");
         fragment.tvTopRight.setText("登录");
         fragment.tvTopRight.setOnClickListener(new View.OnClickListener() {
@@ -105,10 +99,10 @@ public class RegisterByMailFragment extends LoginModelFragment {
 
 
     private void showLoginFragment() {
-        LoginFragment fragment = (LoginFragment) getFragmentManager()
+        LoginParentFragment fragment = (LoginParentFragment) getFragmentManager()
                 .findFragmentByTag("login");
         if (fragment == null) {
-            fragment = LoginFragment.newInstance(null);
+            fragment = LoginParentFragment.newInstance(null);
         }
         getActivity().getSupportFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right)
@@ -119,7 +113,7 @@ public class RegisterByMailFragment extends LoginModelFragment {
 
     @OnClick(R.id.tv_model_commit)
     public void regCommit(View view) {
-        SetPwdFragment fragment = SetPwdFragment.newInstance(null);
+        SetPwdParentFragment fragment = SetPwdParentFragment.newInstance(null);
         ActivityUtils.addFragmentToActivity(getChildFragmentManager(), fragment, R.id.rLayout_register);
     }
 
@@ -153,7 +147,7 @@ public class RegisterByMailFragment extends LoginModelFragment {
      */
     @OnClick(R.id.tv_register_switch)
     public void switchRegisterType(View view) {
-        RegisterByPhoneFragment fragment = RegisterByPhoneFragment.newInstance(null);
+        RegisterByPhoneParentFragment fragment = RegisterByPhoneParentFragment.newInstance(null);
         getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fLayout_login_container, fragment, "register").commit();
     }
 

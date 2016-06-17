@@ -4,25 +4,19 @@ import android.content.Context;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.AnimatorUtils;
 import com.superlog.SLog;
-
-import java.util.TimeZone;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -33,7 +27,7 @@ import butterknife.OnTextChanged;
  * Created by lxh on 16-6-8.
  */
 
-public class RegisterByPhoneFragment extends LoginModelFragment {
+public class RegisterByPhoneParentFragment extends LoginBaseFragment {
 
 
     @BindView(R.id.et_register_username)
@@ -58,8 +52,8 @@ public class RegisterByPhoneFragment extends LoginModelFragment {
 
     private boolean isVerifyTime = false; //验证码有效时间内
 
-    public static RegisterByPhoneFragment newInstance(Bundle bundle) {
-        RegisterByPhoneFragment fragment = new RegisterByPhoneFragment();
+    public static RegisterByPhoneParentFragment newInstance(Bundle bundle) {
+        RegisterByPhoneParentFragment fragment = new RegisterByPhoneParentFragment();
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -95,7 +89,7 @@ public class RegisterByPhoneFragment extends LoginModelFragment {
             tvCommit.setText("继续");
             setViewEnableStyle(tvCommit, false);
         } else {
-            SetPwdFragment fragment = SetPwdFragment.newInstance(null);
+            SetPwdParentFragment fragment = SetPwdParentFragment.newInstance(null);
             ActivityUtils.addFragmentToActivity(getChildFragmentManager(), fragment, R.id.rLayout_register);
             timer.cancel();
         }
@@ -137,7 +131,7 @@ public class RegisterByPhoneFragment extends LoginModelFragment {
      */
     @OnClick(R.id.tv_register_switch)
     public void switchRegisterType(View view) {
-        RegisterByMailFragment fragment = RegisterByMailFragment.newInstance(null);
+        RegisterByMailParentFragment fragment = RegisterByMailParentFragment.newInstance(null);
         getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fLayout_login_container, fragment, "register").commit();
     }
 
@@ -160,7 +154,7 @@ public class RegisterByPhoneFragment extends LoginModelFragment {
     }
 
     private void initParentFragmentView() {
-        LoginModel1Fragment fragment = (LoginModel1Fragment) getActivity()
+        LoginModelParentFragment fragment = (LoginModelParentFragment) getActivity()
                 .getSupportFragmentManager().getFragments().get(0);
         fragment.tvTopCenter.setText("注册");
         fragment.tvTopRight.setText("登录");
@@ -174,10 +168,10 @@ public class RegisterByPhoneFragment extends LoginModelFragment {
 
 
     private void showLoginFragment() {
-        LoginFragment fragment = (LoginFragment) getFragmentManager()
+        LoginParentFragment fragment = (LoginParentFragment) getFragmentManager()
                 .findFragmentByTag("login");
         if (fragment == null) {
-            fragment = LoginFragment.newInstance(null);
+            fragment = LoginParentFragment.newInstance(null);
         }
         getActivity().getSupportFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right)

@@ -1,17 +1,13 @@
 package com.cylan.jiafeigou.n.view.login;
 
 import android.content.Context;
-import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.InputFilter;
 import android.text.Spanned;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
-import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -21,11 +17,10 @@ import com.cylan.jiafeigou.R;
 import java.util.TimeZone;
 
 /**
- * 登陆模块通用Fragment
- * Created by lxh on 16-6-13.
+ * Created by lxh on 16-6-17.
  */
+public class LoginBaseFragment extends Fragment {
 
-public class LoginModelFragment extends Fragment {
 
 
     /**
@@ -117,6 +112,4 @@ public class LoginModelFragment extends Fragment {
 
         }});
     }
-
-
 }

@@ -2,7 +2,6 @@ package com.cylan.jiafeigou.n.view.login;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,8 +13,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.utils.ActivityUtils;
-import com.superlog.SLog;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -26,7 +23,7 @@ import butterknife.OnTextChanged;
  * Created by lxh on 16-6-8.
  */
 
-public class FindPwdByPhoneFragment extends LoginModelFragment {
+public class FindPwdByPhoneParentFragment extends LoginBaseFragment {
 
 
     @BindView(R.id.et_register_username)
@@ -52,8 +49,8 @@ public class FindPwdByPhoneFragment extends LoginModelFragment {
 
     private boolean isVerifyTime = false; //验证码有效时间内
 
-    public static FindPwdByPhoneFragment newInstance(Bundle bundle) {
-        FindPwdByPhoneFragment fragment = new FindPwdByPhoneFragment();
+    public static FindPwdByPhoneParentFragment newInstance(Bundle bundle) {
+        FindPwdByPhoneParentFragment fragment = new FindPwdByPhoneParentFragment();
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -86,23 +83,11 @@ public class FindPwdByPhoneFragment extends LoginModelFragment {
     }
 
 
-//    @OnClick(R.id.iv_login_top_left)
-//    public void exit(View view) {
-//        ForgetPwdFragment fragment = (ForgetPwdFragment) getFragmentManager().findFragmentByTag("forget");
-//        FragmentTransaction ft = getFragmentManager().beginTransaction();
-//        if (fragment == null) {
-//            fragment = ForgetPwdFragment.newInstance(null);
-//            ft.add(R.id.fLayout_login_model_container, fragment, "forget");
-//        } else {
-//            ft.hide(this).show(fragment);
-//        }
-//        ft.commit();
-//    }
 
 
     @OnClick(R.id.tv_model_commit)
     public void regCommit(View view) {
-//        SetPwdFragment fragment = SetPwdFragment.newInstance(null);
+//        SetPwdParentFragment fragment = SetPwdParentFragment.newInstance(null);
 //        ActivityUtils.addFragmentToActivity(getChildFragmentManager(), fragment, R.id.rLayout_register);
 //        新密码（设置密码页？）
     }
@@ -155,19 +140,7 @@ public class FindPwdByPhoneFragment extends LoginModelFragment {
      */
     @OnClick(R.id.tv_register_reciprocal_time)
     public void reGetPhoneVerifyCode(View view) {
-        //
-//        tvRegisterSwitch.post(new Runnable() {
-//            @Override
-//            public void run() {
-//                tvRegisterReciprocalTime.setTextColor(getResources().getColor(R.color.color_999999));
-//                for (int i = 0; i < 89; i++) {
-//                    tvRegisterReciprocalTime.setText(i + "s");
-//
-//                }
-//                tvRegisterReciprocalTime.setTextColor(getResources().getColor(R.color.color_4b9fd5));
-//                tvRegisterReciprocalTime.setText("重新获取");
-//            }
-//        });
+
     }
 
 

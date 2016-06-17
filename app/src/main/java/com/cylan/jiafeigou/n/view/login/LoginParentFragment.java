@@ -15,6 +15,7 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -28,9 +29,6 @@ import com.cylan.jiafeigou.support.tencent.TencentLoginUtils;
 import com.cylan.jiafeigou.utils.AnimatorUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
-import com.nineoldandroids.animation.Animator;
-import com.nineoldandroids.animation.AnimatorSet;
-import com.nineoldandroids.animation.ObjectAnimator;
 import com.superlog.SLog;
 import com.tencent.connect.common.Constants;
 import com.tencent.tauth.IUiListener;
@@ -48,46 +46,57 @@ import butterknife.OnTextChanged;
 /**
  * Created by chen on 5/26/16.
  */
-public class LoginFragment extends LoginModelFragment implements LoginContract.ViewRequiredOps {
+public class LoginParentFragment extends LoginBaseFragment implements LoginContract.ViewRequiredOps {
 
     @BindView(R.id.et_login_username)
     EditText etLoginUsername;
+
     @BindView(R.id.iv_login_clear_username)
     ImageView ivLoginClearUsername;
+
     @BindView(R.id.et_login_pwd)
     EditText etLoginPwd;
+
     @BindView(R.id.iv_login_clear_pwd)
     ImageView ivLoginClearPwd;
+
     @BindView(R.id.cb_show_pwd)
     CheckBox rbShowPwd;
+
     @BindView(R.id.tv_model_commit)
     TextView tvCommit;
+
     @BindView(R.id.lLayout_login_input)
     LinearLayout lLayoutLoginInput;
+
     @BindView(R.id.rLayout_login_third_party)
     RelativeLayout rLayoutLoginThirdParty;
+
     @BindView(R.id.rLayout_login)
     RelativeLayout rLayoutLogin;
 
     @BindView(R.id.tv_qqLogin_commit)
     TextView tvQqLoginCommit;
+
     @BindView(R.id.tv_xlLogin_commit)
     TextView tvXlLoginCommit;
+
+    @BindView(R.id.tv_login_forget_pwd)
+    TextView tvForgetPwd;
+
+    @BindView(R.id.pb_login_loading)
+    ProgressBar pbLoginLoading;
+
+    private LoginContract.PresenterOps mPresenter;
+    private BeanInfoLogin beanInfoLogin;
 
 
     private final int LOGIN_QQ_TYPE = 1;
     private final int LOGIN_XL_TYPE = 2;
 
 
-    @BindView(R.id.tv_login_forget_pwd)
-    TextView tvForgetPwd;
-
-    private LoginContract.PresenterOps mPresenter;
-    private BeanInfoLogin beanInfoLogin;
-
-
-    public static LoginFragment newInstance(Bundle bundle) {
-        LoginFragment fragment = new LoginFragment();
+    public static LoginParentFragment newInstance(Bundle bundle) {
+        LoginParentFragment fragment = new LoginParentFragment();
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -215,23 +224,24 @@ public class LoginFragment extends LoginModelFragment implements LoginContract.V
         beanInfoLogin = new BeanInfoLogin();
         beanInfoLogin.userName = "TianChao";
         beanInfoLogin.pwd = "hello world";
-        view.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                AnimatorUtils.ViewScaleCenter(tvCommit, true, 300, 0);
-                AnimatorUtils.ViewScaleCenter(tvForgetPwd, true, 300, 0);
-                AnimatorUtils.viewTranslationY(rLayoutLoginThirdParty, true, 100, 1000, 0, -30, 500);
-            }
-        }, 2000);
+//        view.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                AnimatorUtils.ViewScaleCenter(tvCommit, true, 300, 0);
+//                AnimatorUtils.ViewScaleCenter(tvForgetPwd, true, 300, 0);
+//                AnimatorUtils.viewTranslationY(rLayoutLoginThirdParty, true, 100, 1000, 0, -30, 500);
+//            }
+//        }, 2000);
+        pbLoginLoading.setVisibility(View.VISIBLE);
         mPresenter.executeLogin(getActivity(), beanInfoLogin);
     }
 
     private void forgetPwd(View view) {
         //忘记密码
-        ForgetPwdFragment fragment = (ForgetPwdFragment) getFragmentManager().findFragmentByTag("forget");
+        ForgetPwdParentFragment fragment = (ForgetPwdParentFragment) getFragmentManager().findFragmentByTag("forget");
         FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
         if (fragment == null) {
-            fragment = ForgetPwdFragment.newInstance(null);
+            fragment = ForgetPwdParentFragment.newInstance(null);
             ft.replace(R.id.fLayout_login_container, fragment, "forget");
         }
         ft.hide(this).show(fragment).commit();
@@ -263,7 +273,7 @@ public class LoginFragment extends LoginModelFragment implements LoginContract.V
     }
 
     private void initParentFragmentView() {
-        LoginModel1Fragment fragment = (LoginModel1Fragment) getActivity()
+        LoginModelParentFragment fragment = (LoginModelParentFragment) getActivity()
                 .getSupportFragmentManager().getFragments().get(0);
         fragment.tvTopRight.setText("注册");
         fragment.tvTopCenter.setText("登录");
@@ -284,11 +294,11 @@ public class LoginFragment extends LoginModelFragment implements LoginContract.V
         fragment = getFragmentManager().findFragmentByTag("register");
         if (inChina()) {
             if (fragment == null) {
-                fragment = RegisterByPhoneFragment.newInstance(null);
+                fragment = RegisterByPhoneParentFragment.newInstance(null);
             }
         } else {
             if (fragment == null) {
-                fragment = RegisterByMailFragment.newInstance(null);
+                fragment = RegisterByMailParentFragment.newInstance(null);
             }
         }
         getActivity().getSupportFragmentManager().beginTransaction()
