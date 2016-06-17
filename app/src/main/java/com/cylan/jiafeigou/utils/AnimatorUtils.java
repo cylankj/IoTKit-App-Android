@@ -1,11 +1,14 @@
 package com.cylan.jiafeigou.utils;
 
 import android.view.View;
+import android.view.animation.AnticipateOvershootInterpolator;
 import android.view.animation.BounceInterpolator;
+import android.view.animation.OvershootInterpolator;
 
 import com.nineoldandroids.animation.Animator;
 import com.nineoldandroids.animation.AnimatorSet;
 import com.nineoldandroids.animation.ObjectAnimator;
+import com.superlog.SLog;
 
 /**
  * Created by lxh on 16-6-16.
@@ -27,7 +30,8 @@ public class AnimatorUtils {
         ObjectAnimator an;
         if (isShow) {
             an = ObjectAnimator.ofFloat(view, "translationY", start, offset, end);
-            an.setInterpolator(new BounceInterpolator());
+//            an.setInterpolator(new BounceInterpolator());
+            an.setInterpolator(new AnticipateOvershootInterpolator());
         } else {
             an = ObjectAnimator.ofFloat(view, "translationY", start, end);
         }
@@ -75,17 +79,18 @@ public class AnimatorUtils {
     public static void ViewScaleCenter(View view, boolean isShow, int duration, int delay) {
         AnimatorSet set = new AnimatorSet();
         if (isShow) {
-            set.playTogether(ObjectAnimator.ofFloat(view, "scaleX", 1),
-                    ObjectAnimator.ofFloat(view, "scaleY", 1),
-                    ObjectAnimator.ofFloat(view, "alpha", 1f));
+            SLog.e("ViewScaleCenter");
+            set.playTogether(ObjectAnimator.ofFloat(view, "scaleX", 0f, 1f),
+                    ObjectAnimator.ofFloat(view, "scaleY", 0f, 1f),
+                    ObjectAnimator.ofFloat(view, "alpha", 0f, 1f));
         } else {
-            set.playTogether(ObjectAnimator.ofFloat(view, "scaleX", 0),
-                    ObjectAnimator.ofFloat(view, "scaleY", 0),
-                    ObjectAnimator.ofFloat(view, "alpha", 0f));
+            SLog.e("ViewScaleCenter------------ fasle ");
+            set.playTogether(ObjectAnimator.ofFloat(view, "scaleX", 1f, 0f),
+                    ObjectAnimator.ofFloat(view, "scaleY", 1f, 0f),
+                    ObjectAnimator.ofFloat(view, "alpha", 1f, 0f));
         }
-        if (delay > 0) {
-            set.setStartDelay(delay);
-        }
+        SLog.e("delay: " + delay);
+        set.setStartDelay(delay);
         set.addListener(new showViewListener(view, isShow));
         set.setDuration(duration).start();
     }

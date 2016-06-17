@@ -61,6 +61,13 @@ public class LoginModelParentFragment extends LoginBaseFragment {
         }
     }
 
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        SLog.w("parent :" + getFragmentManager().getFragments().size());
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -103,9 +110,6 @@ public class LoginModelParentFragment extends LoginBaseFragment {
         SLog.e("onAttach Context");
 
     }
-
-
-
 
 
 }

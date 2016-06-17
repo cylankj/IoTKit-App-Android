@@ -22,6 +22,10 @@ import java.util.TimeZone;
 public class LoginBaseFragment extends Fragment {
 
 
+    @Override
+    public String toString() {
+        return this.getClass().getSimpleName();
+    }
 
     /**
      * 设置按钮的状态

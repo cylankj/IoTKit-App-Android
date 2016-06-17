@@ -37,6 +37,8 @@ import com.tencent.tauth.UiError;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.List;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnCheckedChanged;
@@ -111,7 +113,75 @@ public class LoginParentFragment extends LoginBaseFragment implements LoginContr
         initView();
         editTextLimitMaxInput(etLoginPwd, 12);
         editTextLimitMaxInput(etLoginUsername, 60);
+        SLog.e("onCreateView");
         return view;
+    }
+
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        SLog.e("onCreate");
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        SLog.e("onActivityCreated");
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        List<Fragment> list = getFragmentManager().getFragments();
+        SLog.e("onStart : list size " + list.size());
+        for (Fragment f : list) {
+            SLog.e(f.toString());
+
+        }
+        boolean first = false;
+        if (getArguments() != null) {
+            first = this.getArguments().getBoolean("first", false);
+        }
+        final boolean flag = first;
+        lLayoutLoginInput.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                showAllLayout(flag);
+            }
+        }, flag ? 500 : 10);
+
+
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        SLog.e("onPause");
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        SLog.e("onStop");
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        SLog.e("onDestroyView");
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        SLog.e("onDestroy");
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        SLog.e("onDetach");
     }
 
     @Override
@@ -148,10 +218,10 @@ public class LoginParentFragment extends LoginBaseFragment implements LoginContr
      */
     @OnTextChanged(R.id.et_login_pwd)
     public void onPwdChange(CharSequence s, int start, int before, int count) {
-        if (true) {
-            setViewEnableStyle(tvCommit, true);
-            return;
-        }
+//        if (true) {
+//            setViewEnableStyle(tvCommit, true);
+//            return;
+//        }
         boolean flag = TextUtils.isEmpty(s);
         ivLoginClearPwd.setVisibility(flag ? View.GONE : View.VISIBLE);
         if (flag || s.length() < 6) {
@@ -174,10 +244,10 @@ public class LoginParentFragment extends LoginBaseFragment implements LoginContr
 
     @OnTextChanged(R.id.et_login_username)
     public void onUserNameChange(CharSequence s, int start, int before, int count) {
-        if (true) {
-            setViewEnableStyle(tvCommit, true);
-            return;
-        }
+//        if (true) {
+//            setViewEnableStyle(tvCommit, true);
+//            return;
+//        }
         boolean flag = TextUtils.isEmpty(s);
         ivLoginClearUsername.setVisibility(flag ? View.GONE : View.VISIBLE);
         String pwd = etLoginPwd.getText().toString().trim();
@@ -224,14 +294,6 @@ public class LoginParentFragment extends LoginBaseFragment implements LoginContr
         beanInfoLogin = new BeanInfoLogin();
         beanInfoLogin.userName = "TianChao";
         beanInfoLogin.pwd = "hello world";
-//        view.postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                AnimatorUtils.ViewScaleCenter(tvCommit, true, 300, 0);
-//                AnimatorUtils.ViewScaleCenter(tvForgetPwd, true, 300, 0);
-//                AnimatorUtils.viewTranslationY(rLayoutLoginThirdParty, true, 100, 1000, 0, -30, 500);
-//            }
-//        }, 2000);
         pbLoginLoading.setVisibility(View.VISIBLE);
         mPresenter.executeLogin(getActivity(), beanInfoLogin);
     }
@@ -257,19 +319,7 @@ public class LoginParentFragment extends LoginBaseFragment implements LoginContr
     @Override
     public void onResume() {
         super.onResume();
-        boolean first = false;
-        if (getArguments() != null) {
-            first = this.getArguments().getBoolean("first", false);
-        }
-        final boolean flag = first;
-        lLayoutLoginInput.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                showAllLayout(flag);
-            }
-        }, flag ? 500 : 10);
-
-
+        SLog.e("onResume");
     }
 
     private void initParentFragmentView() {
@@ -378,9 +428,26 @@ public class LoginParentFragment extends LoginBaseFragment implements LoginContr
     }
 
     @Override
+    public void onHiddenChanged(boolean hidden) {
+        SLog.e("onHiddenChanged" + hidden);
+        super.onHiddenChanged(hidden);
+    }
+
+    @Override
     public void LoginExecuted(String msg) {
         if (!msg.equals("success")) {
             ToastUtil.showFailToast(getContext(), msg);
+//            AnimatorUtils.ViewScaleCenter(tvCommit, true, 300, 3000);
+//            AnimatorUtils.ViewScaleCenter(tvForgetPwd, true, 300, 3000);
+            AnimatorUtils.viewTranslationY(rLayoutLoginThirdParty, true, 3000, 1000, 0, -30, 500);
+            pbLoginLoading.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    AnimatorUtils.ViewScaleCenter(tvCommit, true, 300, 0);
+                    AnimatorUtils.ViewScaleCenter(tvForgetPwd, true, 300, 0);
+                    pbLoginLoading.setVisibility(View.GONE);
+                }
+            }, 3000);
             return;
         }
         getContext().startActivity(new Intent(getContext(), NewHomeActivity.class));

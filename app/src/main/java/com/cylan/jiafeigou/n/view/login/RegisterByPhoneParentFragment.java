@@ -150,6 +150,7 @@ public class RegisterByPhoneParentFragment extends LoginBaseFragment {
     @Override
     public void onAttach(Context context) {
         initParentFragmentView();
+        SLog.e("onAttach");
         super.onAttach(context);
     }
 
@@ -171,12 +172,19 @@ public class RegisterByPhoneParentFragment extends LoginBaseFragment {
         LoginParentFragment fragment = (LoginParentFragment) getFragmentManager()
                 .findFragmentByTag("login");
         if (fragment == null) {
+            SLog.e("showLoginFragment == null");
             fragment = LoginParentFragment.newInstance(null);
         }
         getActivity().getSupportFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right)
                 .replace(R.id.fLayout_login_container, fragment, "login").commit();
 
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        SLog.e("onDetach");
     }
 
     boolean reget = false; //不能重新获取
