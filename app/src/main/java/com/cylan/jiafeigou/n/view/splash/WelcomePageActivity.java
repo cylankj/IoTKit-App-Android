@@ -2,6 +2,7 @@ package com.cylan.jiafeigou.n.view.splash;
 
 import android.Manifest;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
@@ -16,11 +17,11 @@ import android.widget.Toast;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
+import com.cylan.jiafeigou.n.NewHomeActivity;
 import com.cylan.jiafeigou.n.mvp.contract.splash.SplashContract;
 import com.cylan.jiafeigou.n.mvp.impl.splash.SplashPresenterImpl;
 import com.cylan.jiafeigou.n.view.adapter.SimpleFragmentAdapter;
-import com.cylan.jiafeigou.n.view.login.LoginFragment;
-import com.cylan.jiafeigou.utils.ParamStatic;
+import com.cylan.jiafeigou.utils.UiHelper;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.viewindicator.CirclePageIndicator;
 
@@ -86,7 +87,7 @@ public class WelcomePageActivity extends BaseFullScreenFragmentActivity implemen
             listSplashFreg.add(FragmentSplash.newInstance(null));
             listSplashFreg.add(FragmentSplash.newInstance(null));
             listSplashFreg.add(FragmentSplash.newInstance(null));
-            listSplashFreg.add(LoginFragment.newInstance(null));
+            listSplashFreg.add(BeforeLoginFragment.newInstance(null));
             mSplashListAdapter = new SimpleFragmentAdapter(getSupportFragmentManager(), listSplashFreg);
 
             vpWelcome.setAdapter(mSplashListAdapter);
@@ -98,11 +99,13 @@ public class WelcomePageActivity extends BaseFullScreenFragmentActivity implemen
     private void initLoginPage() {
         if (isLoginIn()) {
             //进去主页 home page
+            startActivity(new Intent(this, NewHomeActivity.class));
+            finish();
         } else {
             //进入登陆页 login page
             if (listSplashFreg == null) {
                 listSplashFreg = new ArrayList<Fragment>();
-                listSplashFreg.add(LoginFragment.newInstance(null));
+                listSplashFreg.add(BeforeLoginFragment.newInstance(null));
             }
             mSplashListAdapter = new SimpleFragmentAdapter(getSupportFragmentManager(), listSplashFreg);
             vpWelcome.setAdapter(mSplashListAdapter);
@@ -121,12 +124,12 @@ public class WelcomePageActivity extends BaseFullScreenFragmentActivity implemen
 
 
     private boolean isLoginIn() {
-        return PreferencesUtils.getBoolean(this, ParamStatic.TAG_LOGING_STATUS, false);
+        return PreferencesUtils.getBoolean(this, UiHelper.TAG_LOGING_STATUS, false);
     }
 
     private boolean isFirstUseApp() {
-        // return PreferencesUtils.getBoolean(this, TAG_COMEIN, true);
-        return true;
+         return PreferencesUtils.getBoolean(this, TAG_COMEIN, true);
+       // return true;
     }
 
     private void setFirstUseApp() {
@@ -136,8 +139,9 @@ public class WelcomePageActivity extends BaseFullScreenFragmentActivity implemen
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        SplashPermissionDispatcher.onRequestPermissionsResult(this,permissions, requestCode, grantResults);
+        SplashPermissionDispatcher.onRequestPermissionsResult(this, permissions, requestCode, grantResults);
     }
+
     @OnPermissionDenied(Manifest.permission.WRITE_EXTERNAL_STORAGE)
     public void onWriteSdCardDenied() {
         Toast.makeText(this, "请你开启SD卡读写权限,应用才能正常工作", Toast.LENGTH_SHORT).show();
@@ -203,7 +207,7 @@ public class WelcomePageActivity extends BaseFullScreenFragmentActivity implemen
                 .show();
     }
 
-    private  class PageChangeListen implements ViewPager.OnPageChangeListener {
+    private class PageChangeListen implements ViewPager.OnPageChangeListener {
 
         @Override
         public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {

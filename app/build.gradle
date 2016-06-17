@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'com.neenbedankt.android-apt'
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
@@ -10,6 +11,7 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
+        multiDexEnabled true
         ndk {
             // 设置支持的SO库架构
             abiFilters 'armeabi-v7a' //, 'x86', 'armeabi-v7a', 'x86_64', 'arm64-v8a'
@@ -37,6 +39,8 @@ android {
 
     dexOptions {
         jumboMode = true
+        javaMaxHeapSize "4g"
+        incremental true
     }
     sourceSets {
         main {
@@ -45,12 +49,10 @@ android {
     }
 
 }
-apply plugin: 'com.neenbedankt.android-apt'
 
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    testCompile rootProject.ext.junit
     testCompile rootProject.ext.robolectric
     compile rootProject.ext.appcompat
     compile rootProject.ext.butterknife
@@ -59,8 +61,6 @@ dependencies {
     compile rootProject.ext.appSupport
     compile rootProject.ext.recyclerView
     apt rootProject.ext.apt
-    compile rootProject.ext.glide
-    compile rootProject.ext.glideSupport
     compile rootProject.ext.permis
     compile rootProject.ext.systembartint
     apt rootProject.ext.permisApt

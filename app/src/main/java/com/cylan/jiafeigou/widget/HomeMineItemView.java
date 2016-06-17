@@ -38,10 +38,8 @@ public class HomeMineItemView extends RelativeLayout {
         TypedArray array = getContext().obtainStyledAttributes(attrs, R.styleable.HomeMineItemViewStyle, defStyleAttr, 0);
         Drawable leftDrawable = array.getDrawable(R.styleable.HomeMineItemViewStyle_leftDrawable);
         Drawable rightDrawable = array.getDrawable(R.styleable.HomeMineItemViewStyle_rightDrawable);
-//        int textSize = array.getDimensionPixelSize(R.styleable.HomeMineItemViewStyle_textSize, 16);
         String str = array.getString(R.styleable.HomeMineItemViewStyle_text);
         tv.setText(str);
-//        tv.setTextSize(textSize);
         tv.setCompoundDrawablesWithIntrinsicBounds(leftDrawable, null, null, null);
         iv.setImageDrawable(rightDrawable);
         array.recycle();

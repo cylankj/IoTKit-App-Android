@@ -1,11 +1,10 @@
 package com.cylan.jiafeigou.n.view.home;
 
-import android.annotation.TargetApi;
-import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.annotation.UiThread;
@@ -23,12 +22,16 @@ import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.model.MediaBean;
+import com.cylan.jiafeigou.n.model.impl.HomeWonderfulModelImpl;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeWonderfulContract;
 import com.cylan.jiafeigou.n.view.adapter.HomeWondereAdapter;
+import com.cylan.jiafeigou.utils.UiHelper;
 import com.cylan.jiafeigou.utils.ToastUtil;
+import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.dialog.HomeMenuDialog;
 import com.cylan.jiafeigou.widget.sticky.HeaderAnimator;
 import com.cylan.jiafeigou.widget.sticky.StickyHeaderBuilder;
+import com.cylan.jiafeigou.widget.textview.WonderfulTitleHead;
 import com.superlog.SLog;
 
 import java.lang.ref.WeakReference;
@@ -50,12 +53,6 @@ public class HomeWonderfulFragment extends Fragment implements
         HomeWondereAdapter.DeviceItemLongClickListener {
 
 
-    /**
-     * progress 位置
-     */
-    private int progressBarStartPosition;
-    private static final int REFRESH_DELAY = 1500;
-
     @BindView(R.id.fl_date_bg_head_wonder)
     FrameLayout flDateBgHeadWonder;
     @BindView(R.id.rV_wonderful_list)
@@ -71,20 +68,27 @@ public class HomeWonderfulFragment extends Fragment implements
     @BindView(R.id.img_cover)
     ImageView imgCover;
     @BindView(R.id.tv_date_item_head_wonder)
-    TextView tvDateItemHeadWonder;
-
-
-    //不是长时间需要,用软引用.
-    private WeakReference<HomeMenuDialog> homeMenuDialogWeakReference;
-    private HomeWonderfulContract.Presenter presenter;
-
-    private HomeWondereAdapter homeWondereAdapter;
-    private SimpleScrollListener simpleScrollListener;
+    WonderfulTitleHead tvDateItemHeadWonder;
+    @BindView(R.id.imgWonderfulTopBg)
+    ImageView imgWonderfulTopBg;
+    @BindView(R.id.tv_title_head_wonder)
+    TextView tvTitleHeadWonder;
 
     /**
      * 手动完成刷新,自动完成刷新 订阅者.
      */
     private Subscription refreshCompleteSubscription;
+    /**
+     * progress 位置
+     */
+    private int progressBarStartPosition;
+    //不是长时间需要,用软引用.
+    private WeakReference<HomeMenuDialog> homeMenuDialogWeakReference;
+    private HomeWonderfulContract.Presenter presenter;
+    private HomeWonderfulModelImpl homeWonderfulModelImpl;
+    private HomeWondereAdapter homeWondereAdapter;
+    private SimpleScrollListener simpleScrollListener;
+    public boolean isShowTimeLine;
 
     public static HomeWonderfulFragment newInstance(Bundle bundle) {
         HomeWonderfulFragment fragment = new HomeWonderfulFragment();
@@ -142,9 +146,34 @@ public class HomeWonderfulFragment extends Fragment implements
         initProgressBarPosition();
 
         initHeaderView();
+
+        initSomeViewMargin();
+
     }
 
-    @TargetApi(Build.VERSION_CODES.M)
+    @Override
+    public void onStart() {
+        getContext().registerReceiver(homeWonderfulModelImpl, new IntentFilter(Intent.ACTION_TIME_TICK));
+        super.onStart();
+    }
+
+    @Override
+    public void onStop() {
+        getContext().unregisterReceiver(homeWonderfulModelImpl);
+        super.onStop();
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        if (presenter != null) presenter.stop();
+        unRegisterSubscription(refreshCompleteSubscription);
+    }
+
+    private void initSomeViewMargin() {
+        ViewUtils.setViewMarginStatusBar(tvTitleHeadWonder);
+    }
+
     private void initView() {
         //添加Handler
         srLayoutMainContentHolder.setOnRefreshListener(this);
@@ -160,7 +189,8 @@ public class HomeWonderfulFragment extends Fragment implements
             simpleScrollListener = new SimpleScrollListener(imgCover, fLayoutDateHeadWonder);
         StickyHeaderBuilder.stickTo(rVDevicesList, simpleScrollListener)
                 .setHeader(R.id.rLayoutHomeWonderfulHeaderContainer, (ViewGroup) getView())
-                .minHeightHeaderDim(R.dimen.dimens_48dp)
+                .minHeightHeader((int) (getResources().getDimension(R.dimen.dimens_48dp)
+                        + ViewUtils.getCompatStatusBarHeight(getContext())))
                 .build();
     }
 
@@ -173,30 +203,13 @@ public class HomeWonderfulFragment extends Fragment implements
             @Override
             public void run() {
                 if (progressBarStartPosition == 0) {
-                    ImageView view = (ImageView) getView().findViewById(R.id.imgWonderfulTopBg);
-                    if (view != null) {
-                        Drawable drawable = view.getBackground();
-                        progressBarStartPosition = drawable.getIntrinsicHeight();
-                    }
+                    Drawable drawable = imgWonderfulTopBg.getBackground();
+                    progressBarStartPosition = drawable.getIntrinsicHeight();
                 }
                 srLayoutMainContentHolder.setColorSchemeColors(R.color.color_36bdff);
                 srLayoutMainContentHolder.setProgressViewOffset(false, progressBarStartPosition - 100, progressBarStartPosition + 100);
             }
         });
-    }
-
-
-    @Override
-    public void onStop() {
-        super.onStop();
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        if (presenter != null) presenter.stop();
-
-        unRegisterSubscription(refreshCompleteSubscription);
     }
 
     /**
@@ -232,13 +245,23 @@ public class HomeWonderfulFragment extends Fragment implements
     }
 
     @Override
+    public void onHeadBackgroundChang(int daytime) {
+        imgWonderfulTopBg.setBackgroundResource(daytime == 0 ? R.drawable.bg_head_daytime_wonderful : R.drawable.bg_head_night_wonderful);
+    }
+
+    @Override
+    public void onGetBroadcastReceiver(HomeWonderfulModelImpl homeWonderfulModelImpl) {
+        this.homeWonderfulModelImpl = homeWonderfulModelImpl;
+    }
+
+    @Override
     public void onRefresh() {
         if (presenter != null) presenter.startRefresh();
         //不使用post,因为会泄露
         srLayoutMainContentHolder.setRefreshing(true);
         refreshCompleteSubscription = Observable.just(srLayoutMainContentHolder)
                 .subscribeOn(Schedulers.newThread())
-                .delay(REFRESH_DELAY, TimeUnit.MILLISECONDS)
+                .delay(UiHelper.WONDELFUL_REFRESH_DELAY, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<SwipeRefreshLayout>() {
                     @Override
@@ -289,19 +312,17 @@ public class HomeWonderfulFragment extends Fragment implements
         } else {
             showTimeLine();
         }
+        tvDateItemHeadWonder.setTimeLineShow(isShowTimeLine);
+        tvDateItemHeadWonder.setBackgroundToRight();
     }
 
-    boolean isShowTimeLine;
-
     private void showTimeLine() {
-
-        tvDateItemHeadWonder.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.icon_date_uptag_wonderful, 0);
+        //do something presenter.xxx
         isShowTimeLine = true;
     }
 
     private void hideTimeLine() {
-
-        tvDateItemHeadWonder.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.icon_date_downtag_wonderful, 0);
+        //do something presenter.xxx
         isShowTimeLine = false;
     }
 
@@ -310,7 +331,7 @@ public class HomeWonderfulFragment extends Fragment implements
 
         private WeakReference<ImageView> fadeTopHeadCover;
         private final FrameLayout mTitleBackgroundRef;
-        private TextView tvDateColor;
+        private WonderfulTitleHead tvDateColor;
 
         public SimpleScrollListener(ImageView relativeLayout, FrameLayout frameLayout) {
             fadeTopHeadCover = new WeakReference<ImageView>(relativeLayout);
@@ -322,19 +343,21 @@ public class HomeWonderfulFragment extends Fragment implements
 
             if (fadeTopHeadCover != null && fadeTopHeadCover.get() != null && mTitleBackgroundRef != null) {
                 if (tvDateColor == null)
-                    tvDateColor = (TextView) mTitleBackgroundRef.getChildAt(1);
+                    tvDateColor = (WonderfulTitleHead) mTitleBackgroundRef.getChildAt(1);
 
                 float alpha = (ration - 0.8f) / 0.2f;
                 if (ration < 0.8) {
                     alpha = 0;
                     tvDateColor.setTextColor(Color.rgb(78, 82, 91));
+                    tvDateColor.setTitleHeadIsTop(false);
                 } else {
                     tvDateColor.setTextColor(Color.WHITE);
+                    tvDateColor.setTitleHeadIsTop(true);
                 }
+                tvDateColor.setBackgroundToRight();
                 mTitleBackgroundRef.getChildAt(0).setAlpha(1 - alpha);
                 fadeTopHeadCover.get().setAlpha(alpha);
             }
-
         }
     }
 }

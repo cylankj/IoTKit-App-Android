@@ -8,7 +8,7 @@
     <RelativeLayout
         android:id="@+id/rLayout_home_mine_top"
         android:layout_width="match_parent"
-        android:layout_height="238dp"
+        android:layout_height="213dp"
         android:background="@drawable/bg_mine_top_defult_background">
 
         <View
@@ -22,8 +22,6 @@
             android:layout_width="86dp"
             android:layout_height="86dp"
             android:layout_centerInParent="true"
-            android:layout_marginTop="76dp"
-            android:elevation="10dp"
             android:src="@drawable/icon_mine_head_normal"
             tim:riv_border_color="#03ffffff"
             tim:riv_border_width="4dp"
@@ -36,8 +34,8 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/iv_home_mine_portrait"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="16dp"
-            android:gravity="center_horizontal"
+            android:layout_marginTop="13dp"
+            style="@style/text_base_singleLine"
             android:text="用户昵称"
             android:textColor="@color/color_white"
             android:textSize="19sp" />
@@ -48,19 +46,19 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:layout_marginRight="20dp"
-            android:layout_marginTop="20dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="16dp"
             android:src="@drawable/icon_mine_message" />
 
         <TextView
             android:id="@+id/tv_home_mine_msg_count"
+            style="@style/text_base_singleLine"
             android:layout_width="16dp"
             android:layout_height="16dp"
             android:layout_alignLeft="@id/iv_mine_msg"
             android:layout_alignTop="@id/iv_mine_msg"
             android:layout_marginLeft="10dp"
             android:background="@drawable/shape_mine_msg_count_oval"
-            android:gravity="center"
             android:text="77"
             android:textColor="@android:color/white"
             android:textSize="9sp" />

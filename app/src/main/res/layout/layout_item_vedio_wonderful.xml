@@ -32,26 +32,40 @@
         android:textColor="@color/color_666666"
         android:textSize="13sp" />
 
-    <ImageView
-        android:id="@+id/iv_src_item_wonder"
+
+    <FrameLayout
+        android:id="@+id/fl_src_item_wonder"
         android:layout_width="310dp"
         android:layout_height="173dp"
         android:layout_below="@id/tv_title_item_wonder"
         android:layout_marginLeft="13dp"
-        android:layout_marginRight="14dp"
+        android:layout_marginStart="13dp"
         android:layout_marginTop="14dp"
-        android:layout_toRightOf="@id/iv_longline"
-        android:scaleType="fitXY"
-        android:src="@drawable/bg_home_title_daytime" />
+        android:layout_toEndOf="@id/iv_longline"
+        android:layout_toRightOf="@id/iv_longline">
+
+        <ImageView
+            android:id="@+id/iv_src_item_wonder"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitXY"
+            android:src="@drawable/bg_home_title_daytime" />
+
+        <ImageView
+            android:id="@+id/iv_src_vedio_wonder_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:src="@drawable/iv_src_vedio_wonder_icon" />
+    </FrameLayout>
 
 
     <RelativeLayout
         android:layout_width="wrap_content"
-        android:layout_height="26dp"
-        android:layout_below="@id/iv_src_item_wonder"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/fl_src_item_wonder"
         android:layout_marginBottom="25dp"
         android:layout_marginLeft="30dp"
-        android:layout_marginRight="22dp"
         android:layout_marginTop="12dp"
         android:layout_toRightOf="@id/iv_longline">
 
@@ -91,20 +105,18 @@
             android:id="@+id/tv_share_item_wonder"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:src="@drawable/tv_share_item_wonderful_selector"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginLeft="252dp"
+            android:layout_marginStart="252dp"
+            android:drawableLeft="@drawable/icon_share_item_wonderful_selector"
+            android:drawablePadding="4dp"
+            android:drawableStart="@drawable/icon_share_item_wonderful_selector"
+            android:gravity="center"
             android:text="分享"
             android:textColor="@color/color_909090"
             android:textSize="11sp" />
 
-        <ImageButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="4dp"
-            android:layout_toLeftOf="@id/tv_share_item_wonder"
-            android:background="@drawable/icon_share_item_wonderful_selector" />
     </RelativeLayout>
 
     <ImageView

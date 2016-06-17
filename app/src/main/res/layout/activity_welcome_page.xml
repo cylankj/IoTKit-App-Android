@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:hunt="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/rLayoutWelcomeRoot"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/rLayoutWelcomeRoot"
     android:orientation="vertical">
 
     <ImageView
@@ -15,19 +15,17 @@
 
     <android.support.v4.view.ViewPager
         android:id="@+id/vpWelcome"
-
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-         />
+        android:layout_height="match_parent" />
 
     <com.cylan.viewindicator.CirclePageIndicator
         android:id="@+id/v_indicator"
-        hunt:fillColor="#000eee"
-        hunt:radius="5dp"
-        hunt:strokeColor="#ffffff"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="10dp" />
+        android:layout_marginBottom="10dp"
+        hunt:fillColor="#000eee"
+        hunt:radius="5dp"
+        hunt:strokeColor="#ffffff" />
 </RelativeLayout>

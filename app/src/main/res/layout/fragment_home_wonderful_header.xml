@@ -30,7 +30,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/tv_title_head_wonder"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="18dp"
+            android:layout_marginTop="8dp"
             android:text="在这里,发现最美的一天"
             android:textColor="@color/color_white"
             android:textSize="15sp" />
@@ -62,7 +62,7 @@
             android:layout_gravity="center"
             android:background="@drawable/btn_date_head_wondeful_selector" />
 
-        <TextView
+        <com.cylan.jiafeigou.widget.textview.WonderfulTitleHead
             android:id="@+id/tv_date_item_head_wonder"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

@@ -9,6 +9,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.RadioGroup;
 
 import com.cylan.jiafeigou.R;
@@ -98,48 +99,9 @@ public class NewHomeActivity extends BaseFullScreenFragmentActivity implements
         Log.d("hunt", "state: " + state);
     }
 
-    private static long time = 0;
 
-    @Override
-    public void onBackPressed() {
-        if (checkExtraChildFragment()) {
-            return;
-        } else if (checkExtraFragment())
-            return;
-        if (System.currentTimeMillis() - time < 1500) {
-            super.onBackPressed();
-        } else {
-            time = System.currentTimeMillis();
-            ToastUtil.showToast(this,
-                    String.format(getString(R.string.click_back_again_exit),
-                            getString(R.string.app_name)));
-        }
-    }
 
-    private boolean checkExtraChildFragment() {
-        FragmentManager fm = getSupportFragmentManager();
-        List<Fragment> list = fm.getFragments();
-        if (ListUtils.isEmpty(list))
-            return false;
-        for (Fragment frag : list) {
-            if (frag != null && frag.isVisible()) {
-                FragmentManager childFm = frag.getChildFragmentManager();
-                if (childFm != null && childFm.getBackStackEntryCount() > 0) {
-                    childFm.popBackStack();
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
 
-    private boolean checkExtraFragment() {
-        final int count = getSupportFragmentManager().getBackStackEntryCount();
-        if (count > 0) {
-            getSupportFragmentManager().popBackStack();
-            return true;
-        } else return false;
-    }
 
     @UiThread
     @Override

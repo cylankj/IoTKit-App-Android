@@ -1,11 +1,11 @@
 package com.cylan.jiafeigou.n.view.home;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +17,7 @@ import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeMineContract;
 import com.cylan.jiafeigou.n.mvp.impl.setting.AccountInfoPresenterImpl;
 import com.cylan.jiafeigou.n.view.fragment.AccountInfoFragment;
-import com.cylan.jiafeigou.n.view.login.LoginFragment;
+import com.cylan.jiafeigou.n.view.login.LoginModelActivity;
 import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.sdkjni.JfgCmd;
@@ -32,7 +32,6 @@ import butterknife.OnClick;
 public class HomeMineFragment extends Fragment
         implements HomeMineContract.View {
 
-    private static final String TAG = "HomeMineFragment";
 
     @BindView(R.id.iv_home_mine_portrait)
     ImageView ivMinePortrait;
@@ -135,9 +134,6 @@ public class HomeMineFragment extends Fragment
     public void onClickFriendItem(View view) {
         if (needStartLoginFragment()) return;
         SLog.i("It's Login,can do something!");
-//        LoginFragment fragment = LoginFragment.newInstance(null);
-//        ActivityUtils.addFragmentToActivity(getActivity().getSupportFragmentManager(),
-//                fragment, R.id.rLayout_new_home_container);
     }
 
     @OnClick(R.id.home_mine_item_share)
@@ -170,28 +166,22 @@ public class HomeMineFragment extends Fragment
 
     @Override
     public void onPortraitUpdate(String url) {
-//        tvNick.setText(url);
-        testBlurBackground(R.drawable.clouds);
-        tvUnReadMsgCount.post(new Runnable() {
-            @Override
-            public void run() {
-                tvUnReadMsgCount.setText("99+");
-                tvUnReadMsgCount.setBackgroundResource(R.drawable.shape_mine_msg_count_rectangle);
-            }
-        });
+        if (getActivity() != null) {
+            testBlurBackground(R.drawable.clouds);
+            tvUnReadMsgCount.post(new Runnable() {
+                @Override
+                public void run() {
+                    tvUnReadMsgCount.setText("99+");
+                    tvUnReadMsgCount.setBackgroundResource(R.drawable.shape_mine_msg_count_rectangle);
+                }
+            });
+        }
     }
 
 
     private boolean needStartLoginFragment() {
-        if (JfgCmd.getJfgCmd(getContext()).isLogined) {
-            ToastUtil.showToast(getContext(), "Not login.....");
-//            SLog.i("Not login.....");
-            LoginFragment fragment = LoginFragment.newInstance(null);
-            FragmentTransaction transaction = getFragmentManager().beginTransaction();
-            transaction.hide(this);
-            transaction.add(R.id.rLayout_new_home_container, fragment, "login");
-            transaction.commit();
-//            ActivityUtils.addFragmentToActivity(getChildFragmentManager(),fragment,R.id.rLayout_new_home_container,0);
+        if (!JfgCmd.getJfgCmd(getContext()).isLogined) {
+            getActivity().startActivity(new Intent(getContext(), LoginModelActivity.class));
             return true;
         }
         return false;
