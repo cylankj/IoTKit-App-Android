@@ -1,9 +1,13 @@
 package com.cylan.jiafeigou.utils;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+
 /**
  * Created by chen on 5/25/16.
  */
-public class ParamStatic {
+public class UiHelper {
 
 
     public static String TAG_LOGING_STATUS = "the cout has logined";
@@ -69,4 +73,18 @@ public class ParamStatic {
     };
 
     public static final int WONDELFUL_REFRESH_DELAY = 2500;
+
+
+    public static boolean isNetworkConnected(Context context) {
+        if (context != null) {
+            ConnectivityManager mConnectivityManager = (ConnectivityManager) context
+                    .getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo mNetworkInfo = mConnectivityManager
+                    .getActiveNetworkInfo();
+            if (mNetworkInfo != null) {
+                return mNetworkInfo.isAvailable();
+            }
+        }
+        return false;
+    }
 }

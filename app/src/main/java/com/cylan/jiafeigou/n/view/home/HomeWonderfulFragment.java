@@ -25,7 +25,7 @@ import com.cylan.jiafeigou.n.model.MediaBean;
 import com.cylan.jiafeigou.n.model.impl.HomeWonderfulModelImpl;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeWonderfulContract;
 import com.cylan.jiafeigou.n.view.adapter.HomeWondereAdapter;
-import com.cylan.jiafeigou.utils.ParamStatic;
+import com.cylan.jiafeigou.utils.UiHelper;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.dialog.HomeMenuDialog;
@@ -261,7 +261,7 @@ public class HomeWonderfulFragment extends Fragment implements
         srLayoutMainContentHolder.setRefreshing(true);
         refreshCompleteSubscription = Observable.just(srLayoutMainContentHolder)
                 .subscribeOn(Schedulers.newThread())
-                .delay(ParamStatic.WONDELFUL_REFRESH_DELAY, TimeUnit.MILLISECONDS)
+                .delay(UiHelper.WONDELFUL_REFRESH_DELAY, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<SwipeRefreshLayout>() {
                     @Override

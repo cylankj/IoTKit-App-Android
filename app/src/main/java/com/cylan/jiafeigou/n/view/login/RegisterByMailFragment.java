@@ -1,5 +1,6 @@
 package com.cylan.jiafeigou.n.view.login;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -17,6 +18,7 @@ import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.utils.ActivityUtils;
+import com.cylan.jiafeigou.utils.AnimatorUtils;
 import com.superlog.SLog;
 
 import java.util.TimeZone;
@@ -67,12 +69,51 @@ public class RegisterByMailFragment extends LoginModelFragment {
 
 
     private void initView(View view) {
-        String timezone = getTimeZone();
-        SLog.i(timezone);
-        if (!TextUtils.equals(timezone, "GMT+08:00")) {
+        if (!inChina()) {
             isChina = false;
             tvRegisterSwitch.setVisibility(View.GONE);
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (isChina) {
+            AnimatorUtils.viewTranslationX(tvRegisterSwitch, true, 0, 800, 0, -30, 500);
+        }
+        AnimatorUtils.viewTranslationX(lLayoutRegisterInput, true, 0, 800, 0, -30, 500);
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        initParentFragmentView();
+        super.onAttach(context);
+    }
+
+
+    private void initParentFragmentView() {
+        LoginModel1Fragment fragment = (LoginModel1Fragment) getActivity().getSupportFragmentManager().getFragments().get(0);
+        fragment.tvTopCenter.setText("注册");
+        fragment.tvTopRight.setText("登录");
+        fragment.tvTopRight.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showLoginFragment();
+            }
+        });
+    }
+
+
+    private void showLoginFragment() {
+        LoginFragment fragment = (LoginFragment) getFragmentManager()
+                .findFragmentByTag("login");
+        if (fragment == null) {
+            fragment = LoginFragment.newInstance(null);
+        }
+        getActivity().getSupportFragmentManager().beginTransaction()
+                .setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right)
+                .replace(R.id.fLayout_login_container, fragment, "login").commit();
+
     }
 
 

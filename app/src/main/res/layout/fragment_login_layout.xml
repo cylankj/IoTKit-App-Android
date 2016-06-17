@@ -81,7 +81,7 @@
             style="@style/login_model_commit_style"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="37dp"
-            android:text="登陆" />
+            android:text="登录" />
 
 
         <TextView
@@ -110,6 +110,7 @@
             android:background="@color/color_9e9e9e" />
 
         <TextView
+            android:id="@+id/tv_qqLogin_commit"
             style="@style/third_party_login_style"
             android:layout_marginRight="24dp"
             android:layout_toLeftOf="@+id/view_third_party_center"
@@ -117,6 +118,7 @@
             android:text="QQ登录" />
 
         <TextView
+            android:id="@+id/tv_xlLogin_commit"
             style="@style/third_party_login_style"
             android:layout_marginLeft="24dp"
             android:layout_toRightOf="@+id/view_third_party_center"

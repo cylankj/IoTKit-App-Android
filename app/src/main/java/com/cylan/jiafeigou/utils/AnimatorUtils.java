@@ -4,6 +4,7 @@ import android.view.View;
 import android.view.animation.BounceInterpolator;
 
 import com.nineoldandroids.animation.Animator;
+import com.nineoldandroids.animation.AnimatorSet;
 import com.nineoldandroids.animation.ObjectAnimator;
 
 /**
@@ -62,6 +63,31 @@ public class AnimatorUtils {
             an.setStartDelay(delay);
         }
         an.setDuration(duration).start();
+    }
+
+
+    /**
+     * 以中心为原点缩放view
+     *
+     * @param view
+     * @param isShow
+     */
+    public static void ViewScaleCenter(View view, boolean isShow, int duration, int delay) {
+        AnimatorSet set = new AnimatorSet();
+        if (isShow) {
+            set.playTogether(ObjectAnimator.ofFloat(view, "scaleX", 1),
+                    ObjectAnimator.ofFloat(view, "scaleY", 1),
+                    ObjectAnimator.ofFloat(view, "alpha", 1f));
+        } else {
+            set.playTogether(ObjectAnimator.ofFloat(view, "scaleX", 0),
+                    ObjectAnimator.ofFloat(view, "scaleY", 0),
+                    ObjectAnimator.ofFloat(view, "alpha", 0f));
+        }
+        if (delay > 0) {
+            set.setStartDelay(delay);
+        }
+        set.addListener(new showViewListener(view, isShow));
+        set.setDuration(duration).start();
     }
 
 

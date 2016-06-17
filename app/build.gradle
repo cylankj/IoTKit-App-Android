@@ -26,7 +26,7 @@ android {
         release {
             shrinkResources true
             minifyEnabled true
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+//            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
         }
         debug {
@@ -53,7 +53,6 @@ android {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-//    testCompile rootProject.ext.junit
     testCompile rootProject.ext.robolectric
     compile rootProject.ext.appcompat
     compile rootProject.ext.butterknife
@@ -62,12 +61,9 @@ dependencies {
     compile rootProject.ext.appSupport
     compile rootProject.ext.recyclerView
     apt rootProject.ext.apt
-//    compile rootProject.ext.glide
-//    compile rootProject.ext.glideSupport
     compile rootProject.ext.permis
     compile rootProject.ext.systembartint
     apt rootProject.ext.permisApt
-
     compile project(':jlib')
     compile files('libs/aliyun-oss-sdk-android-2.2.0.jar')
     compile files('libs/gson-2.2.4.jar')
@@ -83,13 +79,10 @@ dependencies {
     compile files('libs/zxing.jar')
     debugCompile files('src/main/jniLibs/jfg-debug-support.jar')
     releaseCompile files('src/main/jniLibs/jfg-release-support.jar')
-
     //其中latest.release指代最新版本号，也可以指定明确的版本号，例如2.1.5
     compile rootProject.ext.buglySdk
     //其中latest.release指代最新版本号，也可以指定明确的版本号，例如2.2.0
     compile rootProject.ext.buglyNdk
-
-//    compile 'com.google.android.gms:play-services:9.0.0'
 }
 
 if (project.hasProperty('keystoreFile') &&

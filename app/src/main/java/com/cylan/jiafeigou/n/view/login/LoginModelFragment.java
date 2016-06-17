@@ -53,6 +53,18 @@ public class LoginModelFragment extends Fragment {
 
 
     /**
+     * 是否在中国
+     *
+     * @return
+     */
+    public boolean inChina() {
+        // 方法A：地区（中国）或时区（中国或东八区）
+        // 方法B：语言（简体中文） 选此方法
+        return getResources().getConfiguration().locale.getLanguage().equals("zh");
+    }
+
+
+    /**
      * 用来点击空白处隐藏键盘
      *
      * @param view

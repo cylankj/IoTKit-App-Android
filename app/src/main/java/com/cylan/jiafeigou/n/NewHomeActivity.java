@@ -23,7 +23,6 @@ import com.cylan.jiafeigou.n.view.home.HomePageListFragment;
 import com.cylan.jiafeigou.n.view.home.HomeWonderfulFragment;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.widget.CustomViewPager;
-import com.cylan.jiafeigou.widget.SystemBarTintManager;
 import com.cylan.utils.ListUtils;
 
 import java.util.List;
@@ -45,10 +44,6 @@ public class NewHomeActivity extends BaseFullScreenFragmentActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_home);
         ButterKnife.bind(this);
-//        SystemBarTintManager tintManager = new SystemBarTintManager(this);
-//        tintManager.setStatusBarTintEnabled(true);
-//        getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-        setTranslucent(this);
         initBottomMenu();
         initMainContentAdapter();
         new NewHomeActivityPresenterImpl(this);

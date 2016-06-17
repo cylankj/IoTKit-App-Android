@@ -30,7 +30,10 @@ import android.content.SharedPreferences;
  */
 public class PreferencesUtils {
 
-    public static String PREFERENCE_NAME = "CleverDog" + PreferencesUtils.class.getName();
+    public static final String PREFERENCE_NAME = "CleverDog" + PreferencesUtils.class.getName();
+
+    // 第三方登录的头像uri
+    private static final String KEY_THIRDswLogIN_PICURL = "key_thirDswLogin_picurl";
 
     /**
      * put string preferences
@@ -242,6 +245,8 @@ public class PreferencesUtils {
         return settings.getBoolean(key, defaultValue);
     }
 
-
+    public static void setThirDswLoginPicUrl(Context ctx, String str) {
+        ctx.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE).edit().putString(KEY_THIRDswLogIN_PICURL, str).commit();
+    }
 }
 

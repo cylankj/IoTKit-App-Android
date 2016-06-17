@@ -160,7 +160,8 @@ public class RegisterByPhoneFragment extends LoginModelFragment {
     }
 
     private void initParentFragmentView() {
-        LoginModel1Fragment fragment = (LoginModel1Fragment) getActivity().getSupportFragmentManager().getFragments().get(0);
+        LoginModel1Fragment fragment = (LoginModel1Fragment) getActivity()
+                .getSupportFragmentManager().getFragments().get(0);
         fragment.tvTopCenter.setText("注册");
         fragment.tvTopRight.setText("登录");
         fragment.tvTopRight.setOnClickListener(new View.OnClickListener() {

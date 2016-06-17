@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -76,7 +75,6 @@ public class LoginModel1Fragment extends LoginModelFragment {
         getChildFragmentManager().beginTransaction().
                 setCustomAnimations(R.anim.slide_down_in, R.anim.slide_down_out)
                 .add(R.id.fLayout_login_container, fragment, "login").commit();
-
         super.onResume();
     }
 
@@ -89,11 +87,36 @@ public class LoginModel1Fragment extends LoginModelFragment {
         }
     }
 
+
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         SLog.e("onAttach Context");
+
     }
+
+
+    private void phoneRegisterFragment() {
+        RegisterByPhoneFragment fragment = (RegisterByPhoneFragment) getChildFragmentManager().findFragmentByTag("register");
+        if (fragment == null) {
+            fragment = RegisterByPhoneFragment.newInstance(null);
+        }
+        getChildFragmentManager().beginTransaction()
+                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
+                .replace(R.id.fLayout_login_container, fragment, "register").commit();
+
+    }
+
+    private void emailRegisterFragment() {
+        RegisterByMailFragment fragment = (RegisterByMailFragment) getChildFragmentManager().findFragmentByTag("register");
+        if (fragment == null) {
+            fragment = RegisterByMailFragment.newInstance(null);
+        }
+        getChildFragmentManager().beginTransaction()
+                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
+                .replace(R.id.fLayout_login_container, fragment, "register").commit();
+    }
+
 
 
 }
