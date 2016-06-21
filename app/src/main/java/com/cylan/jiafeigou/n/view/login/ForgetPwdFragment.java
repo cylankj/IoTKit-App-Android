@@ -26,7 +26,7 @@ import butterknife.OnTextChanged;
  * Created by lxh on 16-6-14.
  */
 
-public class ForgetPwdParentFragment extends LoginBaseFragment {
+public class ForgetPwdFragment extends LoginBaseFragment {
 
 
     @BindView(R.id.et_forget_username)
@@ -44,12 +44,11 @@ public class ForgetPwdParentFragment extends LoginBaseFragment {
         View view = inflater.inflate(R.layout.fragment_forget_pwd, container, false);
         ButterKnife.bind(this, view);
         initView(view);
-        editTextLimitMaxInput(etForgetUsername, 60);
         return view;
     }
 
-    public static ForgetPwdParentFragment newInstance(Bundle bundle) {
-        ForgetPwdParentFragment fragment = new ForgetPwdParentFragment();
+    public static ForgetPwdFragment newInstance(Bundle bundle) {
+        ForgetPwdFragment fragment = new ForgetPwdFragment();
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -73,9 +72,12 @@ public class ForgetPwdParentFragment extends LoginBaseFragment {
         LoginBaseFragment fragment;
         //做判断
         if (account.length() > 1) {
-            fragment = FindPwdByPhoneParentFragment.newInstance(null);
+            fragment = FindPwdByPhoneFragment.newInstance(null);
+            Bundle bundle = new Bundle();
+            bundle.putString("phone", account);
+            fragment.setArguments(bundle);
         } else {
-            fragment = LoginParentFragment.newInstance(null);
+            fragment = LoginFragment.newInstance(null);
         }
 
         ft.add(R.id.fLayout_login_container, fragment).commit();
@@ -109,7 +111,7 @@ public class ForgetPwdParentFragment extends LoginBaseFragment {
     }
 
     private void initParentFragmentView() {
-        LoginModelParentFragment fragment = (LoginModelParentFragment) getActivity().getSupportFragmentManager().getFragments().get(0);
+        LoginModelFragment fragment = (LoginModelFragment) getActivity().getSupportFragmentManager().getFragments().get(0);
         fragment.tvTopCenter.setText("忘记密码");
         fragment.tvTopRight.setVisibility(View.GONE);
     }

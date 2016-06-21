@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,6 +21,7 @@ import com.cylan.jiafeigou.n.view.fragment.AccountInfoFragment;
 import com.cylan.jiafeigou.n.view.login.LoginModelActivity;
 import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
+import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.sdkjni.JfgCmd;
 import com.cylan.utils.BitmapUtil;
 import com.cylan.utils.FastBlurUtil;
@@ -74,7 +76,14 @@ public class HomeMineFragment extends Fragment
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_home_mine, container, false);
         ButterKnife.bind(this, view);
+
         return view;
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        ViewUtils.setViewMarginStatusBar(ivMsg);
     }
 
     /**
@@ -139,19 +148,16 @@ public class HomeMineFragment extends Fragment
     @OnClick(R.id.home_mine_item_share)
     public void onClickShareItem(View view) {
         if (needStartLoginFragment()) return;
-        SLog.i("It's Login,can do something!");
     }
 
     @OnClick(R.id.home_mine_item_settings)
     public void onClickSettingsItem(View view) {
         if (needStartLoginFragment()) return;
-        SLog.i("It's Login,can do something!");
     }
 
     @OnClick(R.id.home_mine_item_help)
     public void onClickHelpItem(View view) {
         if (needStartLoginFragment()) return;
-        SLog.i("It's Login,can do something!");
     }
 
     @OnClick(R.id.rLayout_home_mine_top)

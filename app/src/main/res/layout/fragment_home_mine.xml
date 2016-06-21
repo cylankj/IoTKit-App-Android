@@ -8,7 +8,7 @@
     <RelativeLayout
         android:id="@+id/rLayout_home_mine_top"
         android:layout_width="match_parent"
-        android:layout_height="213dp"
+        android:layout_height="238dp"
         android:background="@drawable/bg_mine_top_defult_background">
 
         <View
@@ -16,26 +16,34 @@
             android:layout_height="match_parent"
             android:background="#40000000" />
 
-
-        <com.cylan.jiafeigou.widget.roundedimageview.RoundedImageView
-            android:id="@+id/iv_home_mine_portrait"
-            android:layout_width="86dp"
-            android:layout_height="86dp"
+        <com.cylan.jiafeigou.widget.wave.ShadowLayout
+            android:id="@+id/shadowlayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:src="@drawable/icon_mine_head_normal"
-            tim:riv_border_color="#03ffffff"
-            tim:riv_border_width="4dp"
-            tim:riv_oval="true" />
+            android:layout_marginTop="16dp"
+            tim:sl_cornerRadius="56dp"
+            tim:sl_dx="0dp"
+            tim:sl_dy="2dp"
+            tim:sl_shadowColor="#88000000"
+            tim:sl_shadowRadius="2dp">
 
+            <com.cylan.jiafeigou.widget.roundedimageview.RoundedImageView
+                android:id="@+id/iv_home_mine_portrait"
+                android:layout_width="76dp"
+                android:layout_height="76dp"
+                android:src="@drawable/icon_mine_head_normal"
+                tim:riv_oval="true" />
+        </com.cylan.jiafeigou.widget.wave.ShadowLayout>
 
         <TextView
             android:id="@+id/tv_home_mine_nick"
+            style="@style/text_base_singleLine"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/iv_home_mine_portrait"
+            android:layout_below="@+id/shadowlayout"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="13dp"
-            style="@style/text_base_singleLine"
             android:text="用户昵称"
             android:textColor="@color/color_white"
             android:textSize="19sp" />
@@ -47,7 +55,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_marginRight="10dp"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="13dp"
             android:src="@drawable/icon_mine_message" />
 
         <TextView

@@ -27,6 +27,7 @@
                 android:id="@+id/et_register_username"
                 style="@style/login_model_common_edittext_style"
                 android:layout_centerInParent="true"
+                android:maxLength="60"
                 android:hint="请输入邮箱地址"
                 android:inputType="textEmailAddress" />
 

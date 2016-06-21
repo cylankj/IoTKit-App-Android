@@ -26,7 +26,7 @@ import butterknife.OnTextChanged;
  * Created by lxh on 16-6-8.
  */
 
-public class RegisterByMailParentFragment extends LoginBaseFragment {
+public class RegisterByMailFragment extends LoginBaseFragment {
 
     @BindView(R.id.et_register_username)
     EditText etRegisterUsername;
@@ -44,8 +44,8 @@ public class RegisterByMailParentFragment extends LoginBaseFragment {
     RelativeLayout rLayoutRegister;
     private boolean isChina = true;
 
-    public static RegisterByMailParentFragment newInstance(Bundle bundle) {
-        RegisterByMailParentFragment fragment = new RegisterByMailParentFragment();
+    public static RegisterByMailFragment newInstance(Bundle bundle) {
+        RegisterByMailFragment fragment = new RegisterByMailFragment();
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -57,7 +57,7 @@ public class RegisterByMailParentFragment extends LoginBaseFragment {
         View view = inflater.inflate(R.layout.fragment_register_by_mail_layout, container, false);
         ButterKnife.bind(this, view);
         initView(view);
-        editTextLimitMaxInput(etRegisterUsername, 60);
+//        editTextLimitMaxInput(etRegisterUsername, 60);
         return view;
     }
 
@@ -73,9 +73,9 @@ public class RegisterByMailParentFragment extends LoginBaseFragment {
     public void onResume() {
         super.onResume();
         if (isChina) {
-            AnimatorUtils.viewTranslationX(tvRegisterSwitch, true, 0, 800, 0, -30, 500);
+            AnimatorUtils.viewTranslationX(tvRegisterSwitch, true, 0, 800, 0,  500);
         }
-        AnimatorUtils.viewTranslationX(lLayoutRegisterInput, true, 0, 800, 0, -30, 500);
+        AnimatorUtils.viewTranslationX(lLayoutRegisterInput, true, 0, 800, 0, 500);
     }
 
     @Override
@@ -86,7 +86,7 @@ public class RegisterByMailParentFragment extends LoginBaseFragment {
 
 
     private void initParentFragmentView() {
-        LoginModelParentFragment fragment = (LoginModelParentFragment) getActivity().getSupportFragmentManager().getFragments().get(0);
+        LoginModelFragment fragment = (LoginModelFragment) getActivity().getSupportFragmentManager().getFragments().get(0);
         fragment.tvTopCenter.setText("注册");
         fragment.tvTopRight.setText("登录");
         fragment.tvTopRight.setOnClickListener(new View.OnClickListener() {
@@ -99,10 +99,10 @@ public class RegisterByMailParentFragment extends LoginBaseFragment {
 
 
     private void showLoginFragment() {
-        LoginParentFragment fragment = (LoginParentFragment) getFragmentManager()
+        LoginFragment fragment = (LoginFragment) getFragmentManager()
                 .findFragmentByTag("login");
         if (fragment == null) {
-            fragment = LoginParentFragment.newInstance(null);
+            fragment = LoginFragment.newInstance(null);
         }
         getActivity().getSupportFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right)
@@ -113,7 +113,7 @@ public class RegisterByMailParentFragment extends LoginBaseFragment {
 
     @OnClick(R.id.tv_model_commit)
     public void regCommit(View view) {
-        SetPwdParentFragment fragment = SetPwdParentFragment.newInstance(null);
+        SetPwdFragment fragment = SetPwdFragment.newInstance(null);
         ActivityUtils.addFragmentToActivity(getChildFragmentManager(), fragment, R.id.rLayout_register);
     }
 
@@ -147,7 +147,7 @@ public class RegisterByMailParentFragment extends LoginBaseFragment {
      */
     @OnClick(R.id.tv_register_switch)
     public void switchRegisterType(View view) {
-        RegisterByPhoneParentFragment fragment = RegisterByPhoneParentFragment.newInstance(null);
+        RegisterByPhoneFragment fragment = RegisterByPhoneFragment.newInstance(null);
         getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fLayout_login_container, fragment, "register").commit();
     }
 

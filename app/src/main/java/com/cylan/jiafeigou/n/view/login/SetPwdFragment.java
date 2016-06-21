@@ -29,7 +29,7 @@ import butterknife.OnTextChanged;
  * Created by lxh on 16-6-8.
  */
 
-public class SetPwdParentFragment extends LoginBaseFragment {
+public class SetPwdFragment extends LoginBaseFragment {
 
     @BindView(R.id.et_login_pwd)
     EditText etLoginPwd;
@@ -49,13 +49,13 @@ public class SetPwdParentFragment extends LoginBaseFragment {
         ButterKnife.bind(this, view);
         initView(view);
         addOnTouchListener(view);
-        editTextLimitMaxInput(etLoginPwd, 12);
+//        editTextLimitMaxInput(etLoginPwd, 12);
         return view;
     }
 
 
-    public static SetPwdParentFragment newInstance(Bundle bundle) {
-        SetPwdParentFragment fragment = new SetPwdParentFragment();
+    public static SetPwdFragment newInstance(Bundle bundle) {
+        SetPwdFragment fragment = new SetPwdFragment();
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -123,7 +123,7 @@ public class SetPwdParentFragment extends LoginBaseFragment {
     }
 
     private void initParentFragmentView() {
-        LoginModelParentFragment fragment = (LoginModelParentFragment) getActivity()
+        LoginModelFragment fragment = (LoginModelFragment) getActivity()
                 .getSupportFragmentManager().getFragments().get(0);
         fragment.tvTopRight.setVisibility(View.GONE);
         fragment.tvTopCenter.setText("设置密码");

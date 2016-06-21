@@ -97,23 +97,23 @@ public class LoginBaseFragment extends Fragment {
                 : PasswordTransformationMethod.getInstance());
     }
 
-    /**
-     * 限制输入字符数
-     *
-     * @param editText 输入的控件
-     * @param count    字符数
-     */
-    public void editTextLimitMaxInput(EditText editText, final int count) {
-
-        editText.setFilters(new InputFilter[]{new InputFilter() {
-
-            @Override
-
-            public CharSequence filter(CharSequence source, int start, int end,
-                                       Spanned dest, int dstart, int dend) {
-                return dest.toString().length() >= count ? "" : source;
-            }
-
-        }});
-    }
+//    /**
+//     * 限制输入字符数
+//     *
+//     * @param editText 输入的控件
+//     * @param count    字符数
+//     */
+//    public void editTextLimitMaxInput(EditText editText, final int count) {
+//
+//        editText.setFilters(new InputFilter[]{new InputFilter() {
+//
+//            @Override
+//
+//            public CharSequence filter(CharSequence source, int start, int end,
+//                                       Spanned dest, int dstart, int dend) {
+//                return dest.toString().length() >= count ? "" : source;
+//            }
+//
+//        }});
+//    }
 }

@@ -171,7 +171,7 @@ public class HomePageListFragment extends Fragment implements
             @Override
             public void run() {
                 if (progressBarStartPosition == 0) {
-                    FrameLayout view = (FrameLayout) getView().findViewById(R.id.fLayout_home_top);
+                    FrameLayout view = (FrameLayout) getView().findViewById(R.id.fLayoutHomeHeaderContainer);
                     if (view != null) {
                         Drawable drawable = view.getBackground();
                         progressBarStartPosition = drawable.getIntrinsicHeight();

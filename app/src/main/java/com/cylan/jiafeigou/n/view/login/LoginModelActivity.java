@@ -24,7 +24,7 @@ public class LoginModelActivity extends BaseFullScreenFragmentActivity {
 
 
     private void showLoginFragment() {
-        LoginModelParentFragment fragment = LoginModelParentFragment.newInstance(null);
+        LoginModelFragment fragment = LoginModelFragment.newInstance(null);
         getSupportFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_down_in, R.anim.slide_down_out).
                 add(R.id.fLayout_login_model_container, fragment).commit();

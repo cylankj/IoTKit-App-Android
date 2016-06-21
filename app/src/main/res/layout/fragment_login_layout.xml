@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tim="http://schemas.android.com/apk/res-auto"
     android:id="@+id/rLayout_login"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -28,7 +29,8 @@
                 android:id="@+id/et_login_username"
                 style="@style/login_model_common_edittext_style"
                 android:layout_centerInParent="true"
-                android:hint="请输入手机号/邮箱" />
+                android:hint="请输入手机号/邮箱"
+                android:maxLength="60" />
 
             <ImageView
                 android:id="@+id/iv_login_clear_username"
@@ -54,7 +56,8 @@
                 style="@style/login_model_common_edittext_style"
                 android:layout_centerInParent="true"
                 android:hint="请输入密码"
-                android:inputType="textPassword" />
+                android:inputType="textPassword"
+                android:maxLength="12" />
 
             <ImageView
                 android:id="@+id/iv_login_clear_pwd"
@@ -77,27 +80,17 @@
             android:background="@color/color_f2f2f2" />
 
 
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+        <com.cylan.jiafeigou.widget.LoginButton
+            android:id="@+id/lb_login_commint"
+            android:layout_width="173dp"
+            android:layout_height="42dp"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="37dp">
-
-            <TextView
-                android:id="@+id/tv_model_commit"
-                style="@style/login_model_commit_style"
-                android:layout_gravity="center_horizontal"
-                android:text="登录" />
-
-            <ProgressBar
-                android:id="@+id/pb_login_loading"
-                style="@style/progress_circle_login_style"
-                android:padding="10dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:visibility="gone" />
-        </FrameLayout>
+            android:layout_marginTop="37dp"
+            android:gravity="center"
+            android:maxLines="1"
+            android:text="登录"
+            android:textSize="17sp"
+            tim:lb_stroke_color="@color/color_d8d8d8" />
 
 
         <TextView

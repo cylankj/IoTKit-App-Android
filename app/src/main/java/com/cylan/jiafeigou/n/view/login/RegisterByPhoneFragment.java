@@ -16,6 +16,7 @@ import android.widget.TextView;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.AnimatorUtils;
+import com.cylan.jiafeigou.utils.ColorPhrase;
 import com.superlog.SLog;
 
 import butterknife.BindView;
@@ -27,7 +28,7 @@ import butterknife.OnTextChanged;
  * Created by lxh on 16-6-8.
  */
 
-public class RegisterByPhoneParentFragment extends LoginBaseFragment {
+public class RegisterByPhoneFragment extends LoginBaseFragment {
 
 
     @BindView(R.id.et_register_username)
@@ -52,8 +53,8 @@ public class RegisterByPhoneParentFragment extends LoginBaseFragment {
 
     private boolean isVerifyTime = false; //验证码有效时间内
 
-    public static RegisterByPhoneParentFragment newInstance(Bundle bundle) {
-        RegisterByPhoneParentFragment fragment = new RegisterByPhoneParentFragment();
+    public static RegisterByPhoneFragment newInstance(Bundle bundle) {
+        RegisterByPhoneFragment fragment = new RegisterByPhoneFragment();
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -62,8 +63,8 @@ public class RegisterByPhoneParentFragment extends LoginBaseFragment {
     @Override
     public void onResume() {
         super.onResume();
-        AnimatorUtils.viewTranslationX(tvRegisterSwitch, true, 0, 800, 0, -30, 500);
-        AnimatorUtils.viewTranslationX(lLayoutRegisterInput, true, 0, 800, 0, -30, 500);
+        AnimatorUtils.viewTranslationX(tvRegisterSwitch, true, 0, 800, 0, 500);
+        AnimatorUtils.viewTranslationX(lLayoutRegisterInput, true, 0, 800, 0, 500);
     }
 
     @Nullable
@@ -71,9 +72,8 @@ public class RegisterByPhoneParentFragment extends LoginBaseFragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_register_by_phone_layout, container, false);
         ButterKnife.bind(this, view);
+        initView();
         addOnTouchListener(view);
-        editTextLimitMaxInput(etRegisterUsername, 11);
-        editTextLimitMaxInput(etRegisterCode, 6);
         return view;
     }
 
@@ -85,14 +85,28 @@ public class RegisterByPhoneParentFragment extends LoginBaseFragment {
             isVerifyTime = true;
             lLayoutInputCode.setVisibility(View.VISIBLE);
             tvRegisterUserAgreement.setVisibility(View.GONE);
-            timer.start();
+            getCode();
             tvCommit.setText("继续");
             setViewEnableStyle(tvCommit, false);
         } else {
-            SetPwdParentFragment fragment = SetPwdParentFragment.newInstance(null);
+            SetPwdFragment fragment = SetPwdFragment.newInstance(null);
             ActivityUtils.addFragmentToActivity(getChildFragmentManager(), fragment, R.id.rLayout_register);
-            timer.cancel();
         }
+    }
+
+
+    private void initView() {
+        String str = tvRegisterUserAgreement.getText().toString();
+        CharSequence chars = ColorPhrase.from(str).withSeparator("{}").innerColor(getResources().getColor(R.color.color_4b9fd5))
+                .outerColor(getResources().getColor(R.color.color_999999)).format();
+        tvRegisterReciprocalTime.setText(chars);
+    }
+
+
+    private void getCode() {
+        tvRegisterReciprocalTime.setTextColor(getResources().getColor(R.color.color_d8d8d8)); //改为灰色
+        tvRegisterReciprocalTime.setEnabled(false);
+        timer.start();
     }
 
 
@@ -131,7 +145,7 @@ public class RegisterByPhoneParentFragment extends LoginBaseFragment {
      */
     @OnClick(R.id.tv_register_switch)
     public void switchRegisterType(View view) {
-        RegisterByMailParentFragment fragment = RegisterByMailParentFragment.newInstance(null);
+        RegisterByMailFragment fragment = RegisterByMailFragment.newInstance(null);
         getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fLayout_login_container, fragment, "register").commit();
     }
 
@@ -142,20 +156,20 @@ public class RegisterByPhoneParentFragment extends LoginBaseFragment {
      */
     @OnClick(R.id.tv_register_reciprocal_time)
     public void reGetPhoneVerifyCode(View view) {
-        timer.start();
-        reget = false;
+        if (tvRegisterReciprocalTime.isEnabled()) {
+            getCode();
+        }
     }
 
 
     @Override
     public void onAttach(Context context) {
         initParentFragmentView();
-        SLog.e("onAttach");
         super.onAttach(context);
     }
 
     private void initParentFragmentView() {
-        LoginModelParentFragment fragment = (LoginModelParentFragment) getActivity()
+        LoginModelFragment fragment = (LoginModelFragment) getActivity()
                 .getSupportFragmentManager().getFragments().get(0);
         fragment.tvTopCenter.setText("注册");
         fragment.tvTopRight.setText("登录");
@@ -169,11 +183,10 @@ public class RegisterByPhoneParentFragment extends LoginBaseFragment {
 
 
     private void showLoginFragment() {
-        LoginParentFragment fragment = (LoginParentFragment) getFragmentManager()
+        LoginFragment fragment = (LoginFragment) getFragmentManager()
                 .findFragmentByTag("login");
         if (fragment == null) {
-            SLog.e("showLoginFragment == null");
-            fragment = LoginParentFragment.newInstance(null);
+            fragment = LoginFragment.newInstance(null);
         }
         getActivity().getSupportFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right)
@@ -184,12 +197,11 @@ public class RegisterByPhoneParentFragment extends LoginBaseFragment {
     @Override
     public void onDetach() {
         super.onDetach();
-        SLog.e("onDetach");
+        timer.cancel();
     }
 
-    boolean reget = false; //不能重新获取
 
-    CountDownTimer timer = new CountDownTimer(5 * 1000, 1000) {
+    CountDownTimer timer = new CountDownTimer(90 * 1000, 1000) {
         @Override
         public void onTick(long millisUntilFinished) {
             tvRegisterReciprocalTime.setText(millisUntilFinished / 1000 + "S");
@@ -198,9 +210,9 @@ public class RegisterByPhoneParentFragment extends LoginBaseFragment {
 
         @Override
         public void onFinish() {
-//            tvRegisterReciprocalTime.setTextColor(); //改为蓝色
+            tvRegisterReciprocalTime.setTextColor(getResources().getColor(R.color.color_4b9fd5)); //改为蓝色
             tvRegisterReciprocalTime.setText("重新获取");
-            reget = true; //可以重新获取
+            tvRegisterReciprocalTime.setEnabled(true);
         }
     };
 }

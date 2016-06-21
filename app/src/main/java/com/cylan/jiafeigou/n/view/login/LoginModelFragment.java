@@ -4,24 +4,18 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.text.InputFilter;
-import android.text.Spanned;
-import android.text.method.HideReturnsTransformationMethod;
-import android.text.method.PasswordTransformationMethod;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.utils.ViewUtils;
 import com.superlog.SLog;
 
-import java.util.TimeZone;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -30,7 +24,7 @@ import butterknife.OnClick;
 /**
  *
  */
-public class LoginModelParentFragment extends LoginBaseFragment {
+public class LoginModelFragment extends LoginBaseFragment {
 
     @BindView(R.id.iv_login_top_left)
     public ImageView ivTopLeft;
@@ -41,14 +35,17 @@ public class LoginModelParentFragment extends LoginBaseFragment {
     @BindView(R.id.fLayout_login_container)
     FrameLayout fLayoutLoginContainer;
 
+    @BindView(R.id.rLayout_login_top)
+    View topView;
 
-    public LoginModelParentFragment() {
+
+    public LoginModelFragment() {
         // Required empty public constructor
     }
 
 
-    public static LoginModelParentFragment newInstance(Bundle bundle) {
-        LoginModelParentFragment fragment = new LoginModelParentFragment();
+    public static LoginModelFragment newInstance(Bundle bundle) {
+        LoginModelFragment fragment = new LoginModelFragment();
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -65,7 +62,13 @@ public class LoginModelParentFragment extends LoginBaseFragment {
     @Override
     public void onStart() {
         super.onStart();
-        SLog.w("parent :" + getFragmentManager().getFragments().size());
+        List<Fragment> list = getFragmentManager().getFragments();
+        showLoginFragment();
+        for (Fragment f : list) {
+            if (f != null) {
+                SLog.w(f.toString());
+            }
+        }
     }
 
     @Override
@@ -80,19 +83,25 @@ public class LoginModelParentFragment extends LoginBaseFragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        ViewUtils.setViewMarginStatusBar(topView);
     }
 
     @Override
     public void onResume() {
-        Fragment fragment = LoginParentFragment.newInstance(null);
+        super.onResume();
+    }
+
+
+    private void showLoginFragment() {
         Bundle bundle = new Bundle();
         bundle.putBoolean("first", true);
+        Fragment fragment = LoginFragment.newInstance(null);
         fragment.setArguments(bundle);
         getChildFragmentManager().beginTransaction().
                 setCustomAnimations(R.anim.slide_down_in, R.anim.slide_down_out)
                 .add(R.id.fLayout_login_container, fragment, "login").commit();
-        super.onResume();
     }
+
 
     @OnClick({R.id.iv_login_top_left})
     public void onClick(View view) {
@@ -107,7 +116,6 @@ public class LoginModelParentFragment extends LoginBaseFragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        SLog.e("onAttach Context");
 
     }
 

@@ -34,7 +34,7 @@
 
     <!--单行内容居中的文本样式-->
     <style name="text_base_singleLine">
-        <item name="android:singleLine">true</item>
+        <item name="android:maxLines">1</item>
         <item name="android:gravity">center</item>
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
@@ -108,5 +108,18 @@
         <item name="android:maxHeight">76dp</item>
     </style>
 
+
+    <declare-styleable name="ShadowLayout">
+        <attr name="sl_cornerRadius" format="dimension" />
+        <attr name="sl_shadowRadius" format="dimension" />
+        <attr name="sl_shadowColor" format="color" />
+        <attr name="sl_dx" format="dimension" />
+        <attr name="sl_dy" format="dimension" />
+    </declare-styleable>
+
+
+    <declare-styleable name="LoginButton">
+        <attr name="lb_stroke_color" format="color" />
+    </declare-styleable>
 
 </resources>

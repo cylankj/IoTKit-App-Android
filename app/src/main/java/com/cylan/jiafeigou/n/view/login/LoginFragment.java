@@ -29,6 +29,7 @@ import com.cylan.jiafeigou.support.tencent.TencentLoginUtils;
 import com.cylan.jiafeigou.utils.AnimatorUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
+import com.cylan.jiafeigou.widget.LoginButton;
 import com.superlog.SLog;
 import com.tencent.connect.common.Constants;
 import com.tencent.tauth.IUiListener;
@@ -48,7 +49,7 @@ import butterknife.OnTextChanged;
 /**
  * Created by chen on 5/26/16.
  */
-public class LoginParentFragment extends LoginBaseFragment implements LoginContract.ViewRequiredOps {
+public class LoginFragment extends LoginBaseFragment implements LoginContract.ViewRequiredOps {
 
     @BindView(R.id.et_login_username)
     EditText etLoginUsername;
@@ -65,8 +66,6 @@ public class LoginParentFragment extends LoginBaseFragment implements LoginContr
     @BindView(R.id.cb_show_pwd)
     CheckBox rbShowPwd;
 
-    @BindView(R.id.tv_model_commit)
-    TextView tvCommit;
 
     @BindView(R.id.lLayout_login_input)
     LinearLayout lLayoutLoginInput;
@@ -86,8 +85,9 @@ public class LoginParentFragment extends LoginBaseFragment implements LoginContr
     @BindView(R.id.tv_login_forget_pwd)
     TextView tvForgetPwd;
 
-    @BindView(R.id.pb_login_loading)
-    ProgressBar pbLoginLoading;
+    @BindView(R.id.lb_login_commint)
+    LoginButton lbLogin;
+
 
     private LoginContract.PresenterOps mPresenter;
     private BeanInfoLogin beanInfoLogin;
@@ -97,8 +97,8 @@ public class LoginParentFragment extends LoginBaseFragment implements LoginContr
     private final int LOGIN_XL_TYPE = 2;
 
 
-    public static LoginParentFragment newInstance(Bundle bundle) {
-        LoginParentFragment fragment = new LoginParentFragment();
+    public static LoginFragment newInstance(Bundle bundle) {
+        LoginFragment fragment = new LoginFragment();
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -111,34 +111,13 @@ public class LoginParentFragment extends LoginBaseFragment implements LoginContr
         ButterKnife.bind(this, view);
         addOnTouchListener(view);
         initView();
-        editTextLimitMaxInput(etLoginPwd, 12);
-        editTextLimitMaxInput(etLoginUsername, 60);
-        SLog.e("onCreateView");
-        return view;
-    }
-
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        SLog.e("onCreate");
-    }
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        SLog.e("onActivityCreated");
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
         List<Fragment> list = getFragmentManager().getFragments();
-        SLog.e("onStart : list size " + list.size());
         for (Fragment f : list) {
-            SLog.e(f.toString());
-
+            if (f != null) {
+                SLog.e(f.toString());
+            }
         }
+
         boolean first = false;
         if (getArguments() != null) {
             first = this.getArguments().getBoolean("first", false);
@@ -150,45 +129,16 @@ public class LoginParentFragment extends LoginBaseFragment implements LoginContr
                 showAllLayout(flag);
             }
         }, flag ? 500 : 10);
-
-
+        return view;
     }
 
-    @Override
-    public void onPause() {
-        super.onPause();
-        SLog.e("onPause");
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        SLog.e("onStop");
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        SLog.e("onDestroyView");
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        SLog.e("onDestroy");
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        SLog.e("onDetach");
-    }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mPresenter = new LoginPresenterImpl(this);
     }
+
 
     /**
      * 明文/密文 密码
@@ -206,6 +156,7 @@ public class LoginParentFragment extends LoginBaseFragment implements LoginContr
     private void initView() {
         lLayoutLoginInput.setVisibility(View.INVISIBLE);
         rLayoutLoginThirdParty.setVisibility(View.INVISIBLE);
+        setViewEnableStyle(lbLogin, false);
     }
 
     /**
@@ -218,16 +169,13 @@ public class LoginParentFragment extends LoginBaseFragment implements LoginContr
      */
     @OnTextChanged(R.id.et_login_pwd)
     public void onPwdChange(CharSequence s, int start, int before, int count) {
-//        if (true) {
-//            setViewEnableStyle(tvCommit, true);
-//            return;
-//        }
+
         boolean flag = TextUtils.isEmpty(s);
         ivLoginClearPwd.setVisibility(flag ? View.GONE : View.VISIBLE);
         if (flag || s.length() < 6) {
-            setViewEnableStyle(tvCommit, false);
+            setViewEnableStyle(lbLogin, false);
         } else if (!TextUtils.isEmpty(etLoginUsername.getText().toString())) {
-            setViewEnableStyle(tvCommit, true);
+            setViewEnableStyle(lbLogin, true);
         }
 
     }
@@ -244,17 +192,13 @@ public class LoginParentFragment extends LoginBaseFragment implements LoginContr
 
     @OnTextChanged(R.id.et_login_username)
     public void onUserNameChange(CharSequence s, int start, int before, int count) {
-//        if (true) {
-//            setViewEnableStyle(tvCommit, true);
-//            return;
-//        }
         boolean flag = TextUtils.isEmpty(s);
         ivLoginClearUsername.setVisibility(flag ? View.GONE : View.VISIBLE);
         String pwd = etLoginPwd.getText().toString().trim();
         if (flag) {
-            setViewEnableStyle(tvCommit, false);
+            setViewEnableStyle(lbLogin, false);
         } else if (!TextUtils.isEmpty(pwd) && pwd.length() >= 6) {
-            setViewEnableStyle(tvCommit, true);
+            setViewEnableStyle(lbLogin, true);
         }
     }
 
@@ -286,24 +230,29 @@ public class LoginParentFragment extends LoginBaseFragment implements LoginContr
     }
 
 
-    @OnClick(R.id.tv_model_commit)
-    public void loginCommit(View view) {
-        AnimatorUtils.ViewScaleCenter(tvCommit, false, 300, 0);
-        AnimatorUtils.ViewScaleCenter(tvForgetPwd, false, 300, 0);
-        AnimatorUtils.viewTranslationY(rLayoutLoginThirdParty, false, 100, 0, 1000, 0, 500);
-        beanInfoLogin = new BeanInfoLogin();
-        beanInfoLogin.userName = "TianChao";
-        beanInfoLogin.pwd = "hello world";
-        pbLoginLoading.setVisibility(View.VISIBLE);
-        mPresenter.executeLogin(getActivity(), beanInfoLogin);
+
+    boolean startLogin = false;
+
+    @OnClick(R.id.lb_login_commint)
+    public void login(View view) {
+        if (!startLogin) {
+            lbLogin.viewZoomSmall();
+            AnimatorUtils.viewAlpha(tvForgetPwd, false, 300, 0);
+            AnimatorUtils.viewTranslationY(rLayoutLoginThirdParty, false, 100, 0, 800, 500);
+        } else {
+            lbLogin.viewZoomBig();
+            AnimatorUtils.viewAlpha(tvForgetPwd, true, 300, 0);
+            AnimatorUtils.viewTranslationY(rLayoutLoginThirdParty, true, 100, 800, 0, 500);
+        }
+        startLogin = !startLogin;
     }
 
     private void forgetPwd(View view) {
         //忘记密码
-        ForgetPwdParentFragment fragment = (ForgetPwdParentFragment) getFragmentManager().findFragmentByTag("forget");
+        ForgetPwdFragment fragment = (ForgetPwdFragment) getFragmentManager().findFragmentByTag("forget");
         FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
         if (fragment == null) {
-            fragment = ForgetPwdParentFragment.newInstance(null);
+            fragment = ForgetPwdFragment.newInstance(null);
             ft.replace(R.id.fLayout_login_container, fragment, "forget");
         }
         ft.hide(this).show(fragment).commit();
@@ -316,14 +265,8 @@ public class LoginParentFragment extends LoginBaseFragment implements LoginContr
     }
 
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        SLog.e("onResume");
-    }
-
     private void initParentFragmentView() {
-        LoginModelParentFragment fragment = (LoginModelParentFragment) getActivity()
+        LoginModelFragment fragment = (LoginModelFragment) getActivity()
                 .getSupportFragmentManager().getFragments().get(0);
         fragment.tvTopRight.setText("注册");
         fragment.tvTopCenter.setText("登录");
@@ -344,11 +287,11 @@ public class LoginParentFragment extends LoginBaseFragment implements LoginContr
         fragment = getFragmentManager().findFragmentByTag("register");
         if (inChina()) {
             if (fragment == null) {
-                fragment = RegisterByPhoneParentFragment.newInstance(null);
+                fragment = RegisterByPhoneFragment.newInstance(null);
             }
         } else {
             if (fragment == null) {
-                fragment = RegisterByMailParentFragment.newInstance(null);
+                fragment = RegisterByMailFragment.newInstance(null);
             }
         }
         getActivity().getSupportFragmentManager().beginTransaction()
@@ -359,15 +302,14 @@ public class LoginParentFragment extends LoginBaseFragment implements LoginContr
 
 
     private void showAllLayout(boolean orientation) {
-//        ViewGroup parent = (ViewGroup) lLayoutLoginInput.getParent();
-//        int distance = parent.getHeight() - lLayoutLoginInput.getTop();
-//        showInputLayout(true);
+        ViewGroup parent = (ViewGroup) lLayoutLoginInput.getParent();
+        int distance = parent.getHeight() - lLayoutLoginInput.getTop();
         if (orientation) {
-            AnimatorUtils.viewTranslationY(rLayoutLoginThirdParty, true, 100, 1000, 0, -30, 500);
-            AnimatorUtils.viewTranslationY(lLayoutLoginInput, true, 0, 1000, 0, -30, 500);
+            AnimatorUtils.viewTranslationY(lLayoutLoginInput, true, 0, 800, 0, 600);
+            AnimatorUtils.viewTranslationY(rLayoutLoginThirdParty, true, 200, 800, 0, 600);
         } else {
-            AnimatorUtils.viewTranslationX(rLayoutLoginThirdParty, true, 100, -800, 0, 30, 500);
-            AnimatorUtils.viewTranslationX(lLayoutLoginInput, true, 0, -800, 0, 30, 500);
+            AnimatorUtils.viewTranslationX(lLayoutLoginInput, true, 0, -800, 0, 500);
+            AnimatorUtils.viewTranslationX(rLayoutLoginThirdParty, true, 100, -800, 0, 500);
         }
     }
 
@@ -429,7 +371,7 @@ public class LoginParentFragment extends LoginBaseFragment implements LoginContr
 
     @Override
     public void onHiddenChanged(boolean hidden) {
-        SLog.e("onHiddenChanged" + hidden);
+        SLog.i("onHiddenChanged" + hidden);
         super.onHiddenChanged(hidden);
     }
 
@@ -437,17 +379,6 @@ public class LoginParentFragment extends LoginBaseFragment implements LoginContr
     public void LoginExecuted(String msg) {
         if (!msg.equals("success")) {
             ToastUtil.showFailToast(getContext(), msg);
-//            AnimatorUtils.ViewScaleCenter(tvCommit, true, 300, 3000);
-//            AnimatorUtils.ViewScaleCenter(tvForgetPwd, true, 300, 3000);
-            AnimatorUtils.viewTranslationY(rLayoutLoginThirdParty, true, 3000, 1000, 0, -30, 500);
-            pbLoginLoading.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    AnimatorUtils.ViewScaleCenter(tvCommit, true, 300, 0);
-                    AnimatorUtils.ViewScaleCenter(tvForgetPwd, true, 300, 0);
-                    pbLoginLoading.setVisibility(View.GONE);
-                }
-            }, 3000);
             return;
         }
         getContext().startActivity(new Intent(getContext(), NewHomeActivity.class));

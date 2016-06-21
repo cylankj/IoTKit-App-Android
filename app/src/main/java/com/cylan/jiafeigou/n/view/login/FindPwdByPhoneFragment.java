@@ -1,6 +1,7 @@
 package com.cylan.jiafeigou.n.view.login;
 
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -13,6 +14,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
+import com.superlog.SLog;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -23,7 +25,7 @@ import butterknife.OnTextChanged;
  * Created by lxh on 16-6-8.
  */
 
-public class FindPwdByPhoneParentFragment extends LoginBaseFragment {
+public class FindPwdByPhoneFragment extends LoginBaseFragment {
 
 
     @BindView(R.id.et_register_username)
@@ -49,8 +51,8 @@ public class FindPwdByPhoneParentFragment extends LoginBaseFragment {
 
     private boolean isVerifyTime = false; //验证码有效时间内
 
-    public static FindPwdByPhoneParentFragment newInstance(Bundle bundle) {
-        FindPwdByPhoneParentFragment fragment = new FindPwdByPhoneParentFragment();
+    public static FindPwdByPhoneFragment newInstance(Bundle bundle) {
+        FindPwdByPhoneFragment fragment = new FindPwdByPhoneFragment();
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -68,8 +70,8 @@ public class FindPwdByPhoneParentFragment extends LoginBaseFragment {
         ButterKnife.bind(this, view);
         addOnTouchListener(view);
         initView(view);
-        editTextLimitMaxInput(etRegisterUsername, 11);
-        editTextLimitMaxInput(etRegisterCode, 6);
+//        editTextLimitMaxInput(etRegisterUsername, 11);
+//        editTextLimitMaxInput(etRegisterCode, 6);
         return view;
     }
 
@@ -77,17 +79,19 @@ public class FindPwdByPhoneParentFragment extends LoginBaseFragment {
     private void initView(View view) {
         tvRegisterSwitch.setVisibility(View.GONE);
         //设置手机号
-        etRegisterUsername.setText("13800138000");
+        if (getArguments() != null) {
+            String phone = getArguments().getString("phone");
+            etRegisterUsername.setText(phone);
+        }
         lLayoutInputCode.setVisibility(View.VISIBLE);
         tvCommit.setText("继续");
+        timer.start();
     }
-
-
 
 
     @OnClick(R.id.tv_model_commit)
     public void regCommit(View view) {
-//        SetPwdParentFragment fragment = SetPwdParentFragment.newInstance(null);
+//        SetPwdFragment fragment = SetPwdFragment.newInstance(null);
 //        ActivityUtils.addFragmentToActivity(getChildFragmentManager(), fragment, R.id.rLayout_register);
 //        新密码（设置密码页？）
     }
@@ -140,8 +144,35 @@ public class FindPwdByPhoneParentFragment extends LoginBaseFragment {
      */
     @OnClick(R.id.tv_register_reciprocal_time)
     public void reGetPhoneVerifyCode(View view) {
-
+        if (tvRegisterReciprocalTime.isEnabled()) {
+            tvRegisterReciprocalTime.setEnabled(false);
+            tvRegisterReciprocalTime.setTextColor(getResources().getColor(R.color.color_d8d8d8)); //
+            timer.start();
+        }
     }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        SLog.e("onDetach");
+        timer.cancel();
+    }
+
+
+    CountDownTimer timer = new CountDownTimer(90 * 1000, 1000) {
+        @Override
+        public void onTick(long millisUntilFinished) {
+            tvRegisterReciprocalTime.setText(millisUntilFinished / 1000 + "S");
+            SLog.i("millisUntilFinished:" + millisUntilFinished / 1000);
+        }
+
+        @Override
+        public void onFinish() {
+            tvRegisterReciprocalTime.setTextColor(getResources().getColor(R.color.color_4b9fd5)); //改为蓝色
+            tvRegisterReciprocalTime.setText("重新获取");
+            tvRegisterReciprocalTime.setEnabled(true);
+        }
+    };
 
 
 }

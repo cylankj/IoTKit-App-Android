@@ -28,7 +28,7 @@
         android:layout_centerVertical="true"
         android:background="@color/color_f9f9f9"
         android:orientation="horizontal"
-        android:paddingBottom="11dp">
+        android:paddingBottom="9dp">
 
         <RadioButton
             android:id="@+id/btn_home_list"
