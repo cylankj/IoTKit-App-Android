@@ -32,4 +32,16 @@ public class BaseApplication extends Application {
                 + File.separator + "debug");
         options.enableStrictMode();
     }
+
+    @Override
+    public void onTrimMemory(int level) {
+        super.onTrimMemory(level);
+        Log.d(TAG, "onTrimMemory: " + level);
+    }
+
+    @Override
+    public void onLowMemory() {
+        super.onLowMemory();
+        Log.d(TAG, "onLowMemory: ");
+    }
 }

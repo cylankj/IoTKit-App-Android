@@ -2,7 +2,6 @@ package com.cylan.jiafeigou.n.engine;
 
 import android.app.Service;
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.os.Environment;
@@ -34,6 +33,7 @@ import com.cylan.entity.jniCall.JFGStatus;
 import com.cylan.entity.jniCall.RobotMsg;
 import com.cylan.interfaces.JniCallBack;
 import com.cylan.jiafeigou.BuildConfig;
+import com.cylan.jiafeigou.n.model.LoginAccountBean;
 import com.cylan.jiafeigou.support.rxbus.RxBus;
 import com.cylan.jiafeigou.support.stat.MtaManager;
 import com.cylan.sdkjni.JfgCmd;
@@ -91,7 +91,7 @@ public class DataSourceService extends Service implements JniCallBack {
     private void initLogUtil(String path) {
         SLog.init("JFG")//自定义
                 .setLogDir(path) //保存到此目录下
-                .setWriteToFile(true)//写入到文件
+                .setWriteToFile(false)//写入到文件
                 .setDebug(BuildConfig.DEBUG)//调试模式
                 .setLogLevel(LogLevel.INFO);//写入级别,info 以下不写入文件
     }
@@ -113,8 +113,8 @@ public class DataSourceService extends Service implements JniCallBack {
                         break;
                     case 1:
 //                        getApplicationContext().getPackageManager().get
+                        workHandler.removeMessages(1);
                         cmd.connectServer(JfgEnum.ServerAddr.YF);
-
                         break;
 
                 }
@@ -157,7 +157,6 @@ public class DataSourceService extends Service implements JniCallBack {
         if (rxBus.hasObservers()) {
             rxBus.send("test");
         }
-
 
     }
 
@@ -204,7 +203,12 @@ public class DataSourceService extends Service implements JniCallBack {
 
     @Override
     public void OnLoginResult(int i, String s) {
-
+        if (rxBus.hasObservers()) {
+            LoginAccountBean login = new LoginAccountBean();
+            login.session = s;
+            login.ret = i;
+            rxBus.send(login);
+        }
     }
 
     @Override

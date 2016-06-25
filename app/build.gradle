@@ -67,7 +67,6 @@ dependencies {
     compile project(':jlib')
     compile files('libs/aliyun-oss-sdk-android-2.2.0.jar')
     compile files('libs/gson-2.2.4.jar')
-    compile files('libs/JfgAndroidSDK-2.0.92.jar')
     compile files('libs/mid-sdk-2.3.jar')
     compile files('libs/mta-android-stat-sdk-2.2.0.jar')
     compile files('libs/nineoldandroids-2.4.0.jar')
@@ -83,6 +82,8 @@ dependencies {
     compile rootProject.ext.buglySdk
     //其中latest.release指代最新版本号，也可以指定明确的版本号，例如2.2.0
     compile rootProject.ext.buglyNdk
+    compile files('libs/JfgAndroidSDK-2.0.94-sources.jar')
+    compile files('libs/JfgAndroidSDK-2.0.94.jar')
 }
 
 if (project.hasProperty('keystoreFile') &&

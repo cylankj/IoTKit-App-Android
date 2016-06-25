@@ -3,6 +3,7 @@ package com.cylan.jiafeigou.n.view.login;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -15,28 +16,18 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.NewHomeActivity;
-import com.cylan.jiafeigou.n.model.BeanInfoLogin;
-import com.cylan.jiafeigou.n.mvp.contract.login.LoginContract;
-import com.cylan.jiafeigou.n.mvp.impl.login.LoginPresenterImpl;
-import com.cylan.jiafeigou.support.sina.SinaWeiboUtil;
-import com.cylan.jiafeigou.support.tencent.TencentLoginUtils;
+import com.cylan.jiafeigou.n.model.LoginAccountBean;
+import com.cylan.jiafeigou.n.mvp.contract.login.LoginModelContract;
 import com.cylan.jiafeigou.utils.AnimatorUtils;
-import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.widget.LoginButton;
 import com.superlog.SLog;
 import com.tencent.connect.common.Constants;
-import com.tencent.tauth.IUiListener;
-import com.tencent.tauth.UiError;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.List;
 
@@ -47,9 +38,9 @@ import butterknife.OnClick;
 import butterknife.OnTextChanged;
 
 /**
- * Created by chen on 5/26/16.
+ * 登陆主界面
  */
-public class LoginFragment extends LoginBaseFragment implements LoginContract.ViewRequiredOps {
+public class LoginFragment extends LoginBaseFragment implements LoginModelContract.LoginView {
 
     @BindView(R.id.et_login_username)
     EditText etLoginUsername;
@@ -89,13 +80,16 @@ public class LoginFragment extends LoginBaseFragment implements LoginContract.Vi
     LoginButton lbLogin;
 
 
-    private LoginContract.PresenterOps mPresenter;
-    private BeanInfoLogin beanInfoLogin;
+    /**
+     * 倒计时，用作超时统计
+     */
+    CountDownTimer timer;
+
+    // 开始登录的时间
+    long begin;
 
 
-    private final int LOGIN_QQ_TYPE = 1;
-    private final int LOGIN_XL_TYPE = 2;
-
+    private LoginModelContract.LoginPresenter loginPresenter;
 
     public static LoginFragment newInstance(Bundle bundle) {
         LoginFragment fragment = new LoginFragment();
@@ -111,34 +105,63 @@ public class LoginFragment extends LoginBaseFragment implements LoginContract.Vi
         ButterKnife.bind(this, view);
         addOnTouchListener(view);
         initView();
-        List<Fragment> list = getFragmentManager().getFragments();
-        for (Fragment f : list) {
-            if (f != null) {
-                SLog.e(f.toString());
-            }
-        }
+        printFragment();
+        showLayout();
+        return view;
+    }
 
+    /**
+     * 显示当前的布局
+     */
+    private void showLayout() {
         boolean first = false;
         if (getArguments() != null) {
             first = this.getArguments().getBoolean("first", false);
         }
-        final boolean flag = first;
+        final boolean flag = first;  //判断动画的表现方式
         lLayoutLoginInput.postDelayed(new Runnable() {
             @Override
             public void run() {
                 showAllLayout(flag);
             }
         }, flag ? 500 : 10);
-        return view;
+    }
+
+    /**
+     * 动画的表现方式
+     *
+     * @param orientation ture 为垂直方向展现动画，false为水平方向展现动画
+     */
+    private void showAllLayout(boolean orientation) {
+        ViewGroup parent = (ViewGroup) lLayoutLoginInput.getParent();
+        int distance = parent.getHeight() - lLayoutLoginInput.getTop();
+        if (orientation) {
+            AnimatorUtils.viewTranslationY(lLayoutLoginInput, true, 0, 800, 0, 600);
+            AnimatorUtils.viewTranslationY(rLayoutLoginThirdParty, true, 200, 800, 0, 600);
+        } else {
+            AnimatorUtils.viewTranslationX(lLayoutLoginInput, true, 0, -800, 0, 500);
+            AnimatorUtils.viewTranslationX(rLayoutLoginThirdParty, true, 100, -800, 0, 500);
+        }
+    }
+
+
+    private void printFragment() {
+        List<Fragment> list = getFragmentManager().getFragments();
+        for (Fragment f : list) {
+            if (f != null) {
+                SLog.e(f.toString());
+            }
+        }
     }
 
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        mPresenter = new LoginPresenterImpl(this);
+    public void onStart() {
+        super.onStart();
+        if (loginPresenter != null) {
+            loginPresenter.start();
+        }
     }
-
 
     /**
      * 明文/密文 密码
@@ -152,11 +175,24 @@ public class LoginFragment extends LoginBaseFragment implements LoginContract.Vi
         etLoginPwd.setSelection(etLoginPwd.length());
     }
 
-
+    /**
+     * 初始化view
+     */
     private void initView() {
         lLayoutLoginInput.setVisibility(View.INVISIBLE);
         rLayoutLoginThirdParty.setVisibility(View.INVISIBLE);
         setViewEnableStyle(lbLogin, false);
+        timer = new CountDownTimer(30 * 1000, 1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+
+            }
+
+            @Override
+            public void onFinish() {
+                resetView();
+            }
+        };
     }
 
     /**
@@ -218,36 +254,38 @@ public class LoginFragment extends LoginBaseFragment implements LoginContract.Vi
                 etLoginUsername.getText().clear();
                 break;
             case R.id.tv_login_forget_pwd:
-                forgetPwd(null);
+                forgetPwd();
                 break;
             case R.id.tv_qqLogin_commit:
-                mPresenter.thirdLogin(getActivity(), LOGIN_QQ_TYPE);
+                loginPresenter.getQQAuthorize();
                 break;
             case R.id.tv_xlLogin_commit:
-                mPresenter.thirdLogin(getActivity(), LOGIN_XL_TYPE);
+                loginPresenter.getSinaAuthorize();
                 break;
         }
     }
 
-
-
-    boolean startLogin = false;
 
     @OnClick(R.id.lb_login_commint)
     public void login(View view) {
-        if (!startLogin) {
-            lbLogin.viewZoomSmall();
-            AnimatorUtils.viewAlpha(tvForgetPwd, false, 300, 0);
-            AnimatorUtils.viewTranslationY(rLayoutLoginThirdParty, false, 100, 0, 800, 500);
-        } else {
-            lbLogin.viewZoomBig();
-            AnimatorUtils.viewAlpha(tvForgetPwd, true, 300, 0);
-            AnimatorUtils.viewTranslationY(rLayoutLoginThirdParty, true, 100, 800, 0, 500);
+        lbLogin.viewZoomSmall();
+        AnimatorUtils.viewAlpha(tvForgetPwd, false, 300, 0);
+        AnimatorUtils.viewTranslationY(rLayoutLoginThirdParty, false, 100, 0, 800, 500);
+        timer.start();  //开始倒计时
+        begin = System.currentTimeMillis(); // 记时，用于计算登陆成功后的耗时，如果太快的话，要做相应的延时，一遍动画执行一圈。
+        LoginAccountBean login = new LoginAccountBean();
+        login.userName = etLoginUsername.getText().toString().trim();
+        login.pwd = etLoginPwd.getText().toString().trim();
+        if (loginPresenter != null) {
+            loginPresenter.executeLogin(login);
         }
-        startLogin = !startLogin;
     }
 
-    private void forgetPwd(View view) {
+
+    /**
+     * 忘记密码
+     */
+    private void forgetPwd() {
         //忘记密码
         ForgetPwdFragment fragment = (ForgetPwdFragment) getFragmentManager().findFragmentByTag("forget");
         FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
@@ -301,91 +339,76 @@ public class LoginFragment extends LoginBaseFragment implements LoginContract.Vi
     }
 
 
-    private void showAllLayout(boolean orientation) {
-        ViewGroup parent = (ViewGroup) lLayoutLoginInput.getParent();
-        int distance = parent.getHeight() - lLayoutLoginInput.getTop();
-        if (orientation) {
-            AnimatorUtils.viewTranslationY(lLayoutLoginInput, true, 0, 800, 0, 600);
-            AnimatorUtils.viewTranslationY(rLayoutLoginThirdParty, true, 200, 800, 0, 600);
-        } else {
-            AnimatorUtils.viewTranslationX(lLayoutLoginInput, true, 0, -800, 0, 500);
-            AnimatorUtils.viewTranslationX(rLayoutLoginThirdParty, true, 100, -800, 0, 500);
-        }
-    }
-
-
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         //在某些低端机上调用登录后，由于内存紧张导致APP被系统回收，登录成功后无法成功回传数据
         if (requestCode == Constants.REQUEST_API) {
             if (resultCode == Constants.REQUEST_LOGIN) {
-                TencentLoginUtils curTencent = mPresenter.getTencentObj();
-                if (curTencent != null)
-                    curTencent.getMyTencent().handleLoginData(data, new BaseUiListener());
+//                TencentLoginUtils curTencent = mPresenter.getTencentObj();
+//                if (curTencent != null)
+//                    curTencent.getMyTencent().handleLoginData(data, new BaseUiListener());
             }
         } else {
-            SinaWeiboUtil curSina = mPresenter.getSinaObj();
-            if (curSina != null && curSina.getMySsoHandler() != null)
-                curSina.getMySsoHandler().authorizeCallBack(requestCode, resultCode, data);
+//            SinaWeiboUtil curSina = mPresenter.getSinaObj();
+//            if (curSina != null && curSina.getMySsoHandler() != null)
+//                curSina.getMySsoHandler().authorizeCallBack(requestCode, resultCode, data);
         }
 
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-    private class BaseUiListener implements IUiListener {
 
-
-        @Override
-        public void onComplete(Object response) {
-            if (null == response) {
-                showFailedError("获取qq信息失败");
-                return;
-            }
-            JSONObject jsonResponse = (JSONObject) response;
-            if (null != jsonResponse && jsonResponse.length() == 0) {
-                showFailedError("获取qq信息失败");
-                return;
-            }
-
-            String alias = "";
-            try {
-                if (jsonResponse.has("nickname"))
-                    alias = jsonResponse.getString("nickname");
-                PreferencesUtils.setThirDswLoginPicUrl(getContext(), jsonResponse.getString("figureurl_qq_1"));
-            } catch (JSONException e) {
-                SLog.e(e.toString());
-            }
-            LoginExecuted("success");
-        }
-
-        @Override
-        public void onError(UiError uiError) {
-
-        }
-
-        @Override
-        public void onCancel() {
-
-        }
-
+    @Override
+    public void onStop() {
+        super.onStop();
+        loginPresenter.stop();
     }
 
     @Override
-    public void onHiddenChanged(boolean hidden) {
-        SLog.i("onHiddenChanged" + hidden);
-        super.onHiddenChanged(hidden);
+    public void loginResult(final LoginAccountBean login) {
+        int delay = 0;
+        timer.cancel(); // 有结果返回了，不需要超时设置
+        if (System.currentTimeMillis() - begin < 1200) {
+            delay = 800;  //留有足够的时间展示动画
+        }
+        lbLogin.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (login != null && login.ret == 0) {
+                    getContext().startActivity(new Intent(getContext(), NewHomeActivity.class));
+                    getActivity().finish();
+                } else {
+                    resetView();
+                }
+            }
+        }, delay);
+
+    }
+
+    /**
+     * 登录超时，或者失败后动画复位
+     */
+    private void resetView() {
+        lbLogin.viewZoomBig();
+        AnimatorUtils.viewAlpha(tvForgetPwd, true, 300, 0);
+        AnimatorUtils.viewTranslationY(rLayoutLoginThirdParty, true, 100, 800, 0, 200);
+    }
+
+
+    @Override
+    public void setPresenter(LoginModelContract.LoginPresenter presenter) {
+        loginPresenter = presenter;
+        SLog.e("setPresenter");
     }
 
     @Override
-    public void LoginExecuted(String msg) {
-        if (!msg.equals("success")) {
-            ToastUtil.showFailToast(getContext(), msg);
-            return;
-        }
-        getContext().startActivity(new Intent(getContext(), NewHomeActivity.class));
-        getActivity().finish();
+    public void onQQAuthorizeResult(int ret) {
+        //授权成功后，直接登录，不需要回调过来
+        ToastUtil.showToast(getContext(), "授权" + (ret == 2 ? "失败" : "取消"));
     }
 
-    public void showFailedError(String error) {
-        ToastUtil.showFailToast(getContext(), error);
+    @Override
+    public void onSinaAuthorizeResult(int ret) {
+        //授权成功后，直接登录，不需要回调过来
+        ToastUtil.showToast(getContext(), "授权" + (ret == 2 ? "失败" : "取消"));
     }
 }

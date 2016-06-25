@@ -14,6 +14,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.n.mvp.contract.login.LoginModelContract;
+import com.cylan.jiafeigou.n.presenter.LoginPresenterImpl;
 import com.superlog.SLog;
 
 import butterknife.BindView;
@@ -79,6 +81,7 @@ public class ForgetPwdFragment extends LoginBaseFragment {
         } else {
             fragment = LoginFragment.newInstance(null);
         }
+        new LoginPresenterImpl((LoginModelContract.LoginView) fragment);
 
         ft.add(R.id.fLayout_login_container, fragment).commit();
     }

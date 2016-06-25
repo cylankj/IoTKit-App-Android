@@ -73,14 +73,11 @@
 
     </RelativeLayout>
 
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/rLayout_home_mine_top">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_below="@+id/rLayout_home_mine_top"
             android:orientation="vertical">
 
             <com.cylan.jiafeigou.widget.HomeMineItemView
@@ -118,5 +115,5 @@
                 tim:rightDrawable="@drawable/icon_mine_arrow_next"
                 tim:text="设置" />
         </LinearLayout>
-    </ScrollView>
+
 </RelativeLayout>

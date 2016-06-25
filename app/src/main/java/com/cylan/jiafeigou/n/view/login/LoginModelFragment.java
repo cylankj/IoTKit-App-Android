@@ -12,6 +12,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.n.mvp.contract.login.LoginModelContract;
+import com.cylan.jiafeigou.n.presenter.LoginPresenterImpl;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.superlog.SLog;
 
@@ -97,6 +99,7 @@ public class LoginModelFragment extends LoginBaseFragment {
         bundle.putBoolean("first", true);
         Fragment fragment = LoginFragment.newInstance(null);
         fragment.setArguments(bundle);
+        new LoginPresenterImpl((LoginModelContract.LoginView) fragment);
         getChildFragmentManager().beginTransaction().
                 setCustomAnimations(R.anim.slide_down_in, R.anim.slide_down_out)
                 .add(R.id.fLayout_login_container, fragment, "login").commit();
@@ -116,7 +119,6 @@ public class LoginModelFragment extends LoginBaseFragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-
     }
 
 

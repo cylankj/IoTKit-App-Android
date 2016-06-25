@@ -47,6 +47,7 @@ public class BeforeLoginFragment extends Fragment {
     public void loginUse(View view) {
         //start login loginModelActivity
         getContext().startActivity(new Intent(getContext(), LoginModelActivity.class));
+        getActivity().finish();
     }
 
 
