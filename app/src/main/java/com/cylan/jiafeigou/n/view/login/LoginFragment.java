@@ -21,7 +21,7 @@ import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.NewHomeActivity;
-import com.cylan.jiafeigou.n.model.LoginAccountBean;
+import com.cylan.jiafeigou.n.mvp.model.LoginAccountBean;
 import com.cylan.jiafeigou.n.mvp.contract.login.LoginModelContract;
 import com.cylan.jiafeigou.utils.AnimatorUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
@@ -122,7 +122,7 @@ public class LoginFragment extends LoginBaseFragment implements LoginModelContra
         lLayoutLoginInput.postDelayed(new Runnable() {
             @Override
             public void run() {
-                showAllLayout(flag);
+                showAllLayout(true);
             }
         }, flag ? 500 : 10);
     }
@@ -298,7 +298,7 @@ public class LoginFragment extends LoginBaseFragment implements LoginModelContra
 
     @Override
     public void onAttach(Context context) {
-        initParentFragmentView();
+//        initParentFragmentView();
         super.onAttach(context);
     }
 

@@ -12,7 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.n.presenter.LoginPresenterImpl;
+import com.cylan.jiafeigou.n.mvp.presenter.LoginPresenterImpl;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.superlog.SLog;
 

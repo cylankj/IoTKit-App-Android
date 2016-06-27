@@ -1,8 +1,8 @@
 package com.cylan.jiafeigou.n.mvp.impl.splash;
 
 
-import com.cylan.jiafeigou.n.model.contract.ModelContract;
-import com.cylan.jiafeigou.n.model.impl.SplashModelImpl;
+import com.cylan.jiafeigou.n.mvp.model.contract.ModelContract;
+import com.cylan.jiafeigou.n.mvp.model.impl.SplashModelImpl;
 import com.cylan.jiafeigou.n.mvp.contract.splash.SplashContract;
 
 import java.lang.ref.WeakReference;

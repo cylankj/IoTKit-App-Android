@@ -4,7 +4,7 @@ import android.content.Context;
 import android.view.View;
 
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.n.model.MediaBean;
+import com.cylan.jiafeigou.n.mvp.model.MediaBean;
 import com.cylan.superadapter.IMulItemViewType;
 import com.cylan.superadapter.SuperAdapter;
 import com.cylan.superadapter.internal.SuperViewHolder;

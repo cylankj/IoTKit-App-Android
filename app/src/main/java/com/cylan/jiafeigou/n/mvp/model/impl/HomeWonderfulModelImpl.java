@@ -1,11 +1,10 @@
-package com.cylan.jiafeigou.n.model.impl;
+package com.cylan.jiafeigou.n.mvp.model.impl;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.provider.Settings;
 
-import com.cylan.jiafeigou.n.model.contract.ModelContract;
+import com.cylan.jiafeigou.n.mvp.model.contract.ModelContract;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeWonderfulContract;
 
 import java.util.Calendar;

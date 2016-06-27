@@ -1,7 +1,7 @@
 package com.cylan.jiafeigou.n.mvp.contract.home;
 
-import com.cylan.jiafeigou.n.model.MediaBean;
-import com.cylan.jiafeigou.n.model.impl.HomeWonderfulModelImpl;
+import com.cylan.jiafeigou.n.mvp.model.MediaBean;
+import com.cylan.jiafeigou.n.mvp.model.impl.HomeWonderfulModelImpl;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
 

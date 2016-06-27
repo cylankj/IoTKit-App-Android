@@ -1,4 +1,4 @@
-package com.cylan.jiafeigou.n.model;
+package com.cylan.jiafeigou.n.mvp.model;
 
 import java.util.Locale;
 

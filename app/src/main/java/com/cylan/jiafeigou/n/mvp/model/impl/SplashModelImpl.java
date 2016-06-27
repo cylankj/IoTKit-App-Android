@@ -1,8 +1,8 @@
-package com.cylan.jiafeigou.n.model.impl;
+package com.cylan.jiafeigou.n.mvp.model.impl;
 
 import android.os.Handler;
 
-import com.cylan.jiafeigou.n.model.contract.ModelContract;
+import com.cylan.jiafeigou.n.mvp.model.contract.ModelContract;
 import com.cylan.jiafeigou.n.mvp.contract.splash.SplashContract;
 
 /**

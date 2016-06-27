@@ -2,8 +2,8 @@ package com.cylan.jiafeigou.n.mvp.contract.home;
 
 import android.support.annotation.UiThread;
 
-import com.cylan.jiafeigou.n.model.DeviceBean;
-import com.cylan.jiafeigou.n.model.GreetBean;
+import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
+import com.cylan.jiafeigou.n.mvp.model.GreetBean;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
 

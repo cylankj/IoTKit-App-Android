@@ -3,15 +3,14 @@ package com.cylan.jiafeigou.n.mvp.impl.home;
 
 import android.support.annotation.Nullable;
 
-import com.cylan.jiafeigou.n.model.MediaBean;
-import com.cylan.jiafeigou.n.model.contract.ModelContract;
-import com.cylan.jiafeigou.n.model.impl.HomeWonderfulModelImpl;
+import com.cylan.jiafeigou.n.mvp.model.MediaBean;
+import com.cylan.jiafeigou.n.mvp.model.contract.ModelContract;
+import com.cylan.jiafeigou.n.mvp.model.impl.HomeWonderfulModelImpl;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeWonderfulContract;
 import com.cylan.utils.RandomUtils;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 

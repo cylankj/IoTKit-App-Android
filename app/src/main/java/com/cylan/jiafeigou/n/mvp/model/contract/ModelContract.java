@@ -1,8 +1,8 @@
-package com.cylan.jiafeigou.n.model.contract;
+package com.cylan.jiafeigou.n.mvp.model.contract;
 
 import android.app.Activity;
 
-import com.cylan.jiafeigou.n.model.LoginAccountBean;
+import com.cylan.jiafeigou.n.mvp.model.LoginAccountBean;
 import com.cylan.jiafeigou.support.sina.SinaWeiboUtil;
 import com.cylan.jiafeigou.support.tencent.TencentLoginUtils;
 

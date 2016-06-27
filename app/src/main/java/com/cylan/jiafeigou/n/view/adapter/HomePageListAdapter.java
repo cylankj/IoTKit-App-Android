@@ -5,7 +5,7 @@ import android.text.TextUtils;
 import android.view.View;
 
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.n.model.DeviceBean;
+import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
 import com.cylan.superadapter.IMulItemViewType;
 import com.cylan.superadapter.SuperAdapter;
 import com.cylan.superadapter.internal.SuperViewHolder;

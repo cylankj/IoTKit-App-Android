@@ -33,7 +33,7 @@ import com.cylan.entity.jniCall.JFGStatus;
 import com.cylan.entity.jniCall.RobotMsg;
 import com.cylan.interfaces.JniCallBack;
 import com.cylan.jiafeigou.BuildConfig;
-import com.cylan.jiafeigou.n.model.LoginAccountBean;
+import com.cylan.jiafeigou.n.mvp.model.LoginAccountBean;
 import com.cylan.jiafeigou.support.rxbus.RxBus;
 import com.cylan.jiafeigou.support.stat.MtaManager;
 import com.cylan.sdkjni.JfgCmd;

@@ -1,4 +1,4 @@
-package com.cylan.jiafeigou.n.model;
+package com.cylan.jiafeigou.n.mvp.model;
 
 /**
  * Created by chen on 6/6/16.

@@ -1,4 +1,4 @@
-package com.cylan.jiafeigou.n.model;
+package com.cylan.jiafeigou.n.mvp.model;
 
 /**
  * Created by hunt on 16-5-14.

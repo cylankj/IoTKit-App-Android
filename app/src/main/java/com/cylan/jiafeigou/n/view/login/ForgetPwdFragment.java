@@ -15,7 +15,7 @@ import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.contract.login.LoginModelContract;
-import com.cylan.jiafeigou.n.presenter.LoginPresenterImpl;
+import com.cylan.jiafeigou.n.mvp.presenter.LoginPresenterImpl;
 import com.superlog.SLog;
 
 import butterknife.BindView;

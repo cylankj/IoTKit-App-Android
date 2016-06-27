@@ -1,11 +1,11 @@
-package com.cylan.jiafeigou.n.presenter;
+package com.cylan.jiafeigou.n.mvp.presenter;
 
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.text.TextUtils;
 
-import com.cylan.jiafeigou.n.model.LoginAccountBean;
+import com.cylan.jiafeigou.n.mvp.model.LoginAccountBean;
 import com.cylan.jiafeigou.n.mvp.contract.login.LoginModelContract;
 import com.cylan.jiafeigou.n.view.login.LoginFragment;
 import com.cylan.jiafeigou.support.rxbus.RxBus;

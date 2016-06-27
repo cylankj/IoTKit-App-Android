@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.NewHomeActivity;
-import com.cylan.jiafeigou.n.view.login.LoginModelActivity;
+import com.cylan.jiafeigou.n.view.login_ex.LoginContainerFragment;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -36,19 +36,30 @@ public class BeforeLoginFragment extends Fragment {
         return fragment;
     }
 
-    @OnClick(R.id.btn_unlogin_use)
-    public void unLoginUse(View view) {
+    @OnClick(R.id.btn_look_around)
+    public void toLookAround(View view) {
         //start home activity
+        disableView(R.id.btn_look_around, R.id.btn_to_login);
         getContext().startActivity(new Intent(getContext(), NewHomeActivity.class));
         getActivity().finish();
     }
 
-    @OnClick(R.id.btn_login_use)
-    public void loginUse(View view) {
+    @OnClick(R.id.btn_to_login)
+    public void toLogin(View view) {
         //start login loginModelActivity
-        getContext().startActivity(new Intent(getContext(), LoginModelActivity.class));
-        getActivity().finish();
+        disableView(R.id.btn_look_around, R.id.btn_to_login);
+        getChildFragmentManager()
+                .beginTransaction()
+                .setCustomAnimations(R.anim.slide_up_in, R.anim.slide_down_out)
+                .replace(R.id.rLayout_before_login, LoginContainerFragment.newInstance(""))
+                .commit();
     }
 
-
+    private void disableView(int... id) {
+        if (id != null && getView() != null)
+            for (int i : id) {
+                View v = getView().findViewById(i);
+                if (v != null) v.setVisibility(View.GONE);
+            }
+    }
 }

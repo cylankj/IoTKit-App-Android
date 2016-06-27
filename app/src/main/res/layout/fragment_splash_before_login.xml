@@ -1,17 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/rLayout_befor_login"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rLayout_before_login"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_marginTop="10dp"
     android:background="@color/color_white"
-    android:clickable="true">
+    android:orientation="vertical">
 
     <Button
-        android:id="@+id/btn_unlogin_use"
+        android:id="@+id/btn_look_around"
         style="@style/text_base_singleLine"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
+        android:layout_gravity="center_horizontal"
         android:layout_marginTop="80dp"
         android:background="@drawable/btn_common_login_commit_normal"
         android:text="随便看看"
@@ -20,17 +21,15 @@
 
 
     <Button
-        android:id="@+id/btn_login_use"
+        android:id="@+id/btn_to_login"
         style="@style/text_base_singleLine"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/btn_unlogin_use"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="40dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="170dp"
         android:background="@drawable/btn_common_login_commit_normal"
         android:text="登 陆"
         android:textColor="@color/color_7c7c7c"
         android:textSize="16sp" />
 
-
-</RelativeLayout>
+</FrameLayout>
