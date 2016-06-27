@@ -8,9 +8,7 @@
         layout="@layout/layout_login_top_item"
         android:layout_width="match_parent"
         android:layout_height="48dp"
-        android:layout_marginLeft="15dp"
-        android:layout_marginRight="15dp"
-        android:layout_marginTop="33dp" />
+        android:layout_marginTop="25dp" />
 
     <FrameLayout
         android:id="@+id/fLayout_login_container"

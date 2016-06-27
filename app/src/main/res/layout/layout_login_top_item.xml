@@ -1,33 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="48dp"
     android:background="@color/color_white">
 
     <ImageView
         android:id="@+id/iv_login_top_left"
-        style="@style/text_base_singleLine"
-        android:layout_centerVertical="true"
-        android:padding="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="start|center_vertical"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
         android:src="@drawable/btn_login_nav_close" />
 
     <TextView
         android:id="@+id/tv_login_top_center"
         style="@style/text_base_singleLine"
-        android:layout_centerInParent="true"
+        android:layout_gravity="center"
+        android:text="登陆"
         android:textColor="@color/color_444444"
         android:textSize="22sp" />
 
     <TextView
         android:id="@+id/tv_login_top_right"
-        style="@style/text_base_singleLine"
-        android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"
-        android:paddingBottom="10dp"
-        android:paddingLeft="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="end|center_vertical"
+        android:gravity="center"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
         android:text="注册"
-        android:paddingTop="10dp"
         android:textColor="@color/color_4b9fd5"
         android:textSize="14sp" />
 
-</RelativeLayout>
+</FrameLayout>

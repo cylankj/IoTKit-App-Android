@@ -360,7 +360,7 @@ public class LoginFragment extends LoginBaseFragment implements LoginModelContra
     @Override
     public void onStop() {
         super.onStop();
-        loginPresenter.stop();
+        if (loginPresenter != null) loginPresenter.stop();
     }
 
     @Override

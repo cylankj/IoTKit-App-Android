@@ -12,7 +12,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.n.mvp.contract.login.LoginModelContract;
 import com.cylan.jiafeigou.n.presenter.LoginPresenterImpl;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.superlog.SLog;
@@ -65,7 +64,7 @@ public class LoginModelFragment extends LoginBaseFragment {
     public void onStart() {
         super.onStart();
         List<Fragment> list = getFragmentManager().getFragments();
-        showLoginFragment();
+
         for (Fragment f : list) {
             if (f != null) {
                 SLog.w(f.toString());
@@ -86,6 +85,7 @@ public class LoginModelFragment extends LoginBaseFragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         ViewUtils.setViewMarginStatusBar(topView);
+        showLoginFragment();
     }
 
     @Override
@@ -97,9 +97,9 @@ public class LoginModelFragment extends LoginBaseFragment {
     private void showLoginFragment() {
         Bundle bundle = new Bundle();
         bundle.putBoolean("first", true);
-        Fragment fragment = LoginFragment.newInstance(null);
+        LoginFragment fragment = LoginFragment.newInstance(null);
         fragment.setArguments(bundle);
-        new LoginPresenterImpl((LoginModelContract.LoginView) fragment);
+        new LoginPresenterImpl(fragment);
         getChildFragmentManager().beginTransaction().
                 setCustomAnimations(R.anim.slide_down_in, R.anim.slide_down_out)
                 .add(R.id.fLayout_login_container, fragment, "login").commit();
