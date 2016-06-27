@@ -40,6 +40,11 @@
 -dontwarn okio.**
 -dontwarn javax.annotation.**
 
+-keep public class java.nio.ByteBuffer
+-keep public class * extends java.nio.ByteBuffer
+-keep  class java.nio.** { *; }
+-dontwarn java.nio.**
+
 #######################bugly#########################################
 -keep public class * extends android.app.Service
 -keep public class * extends android.content.BroadcastReceiver
