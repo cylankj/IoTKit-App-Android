@@ -159,7 +159,9 @@ public class HomeWonderfulFragment extends Fragment implements
 
     @Override
     public void onStop() {
-        getContext().unregisterReceiver(homeWonderfulModelImpl);
+        if (homeWonderfulModelImpl != null) {
+            getContext().unregisterReceiver(homeWonderfulModelImpl);
+        }
         super.onStop();
     }
 

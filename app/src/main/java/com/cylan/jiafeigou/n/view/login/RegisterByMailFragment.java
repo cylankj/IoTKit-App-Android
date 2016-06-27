@@ -1,14 +1,12 @@
 package com.cylan.jiafeigou.n.view.login;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -17,9 +15,7 @@ import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.utils.ActivityUtils;
-import com.superlog.SLog;
-
-import java.util.TimeZone;
+import com.cylan.jiafeigou.utils.AnimatorUtils;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -30,7 +26,7 @@ import butterknife.OnTextChanged;
  * Created by lxh on 16-6-8.
  */
 
-public class RegisterByMailFragment extends LoginModelFragment {
+public class RegisterByMailFragment extends LoginBaseFragment {
 
     @BindView(R.id.et_register_username)
     EditText etRegisterUsername;
@@ -61,18 +57,57 @@ public class RegisterByMailFragment extends LoginModelFragment {
         View view = inflater.inflate(R.layout.fragment_register_by_mail_layout, container, false);
         ButterKnife.bind(this, view);
         initView(view);
-        editTextLimitMaxInput(etRegisterUsername, 60);
+//        editTextLimitMaxInput(etRegisterUsername, 60);
         return view;
     }
 
 
     private void initView(View view) {
-        String timezone = getTimeZone();
-        SLog.i(timezone);
-        if (!TextUtils.equals(timezone, "GMT+08:00")) {
+        if (!inChina()) {
             isChina = false;
             tvRegisterSwitch.setVisibility(View.GONE);
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (isChina) {
+            AnimatorUtils.viewTranslationX(tvRegisterSwitch, true, 0, 800, 0,  500);
+        }
+        AnimatorUtils.viewTranslationX(lLayoutRegisterInput, true, 0, 800, 0, 500);
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        initParentFragmentView();
+        super.onAttach(context);
+    }
+
+
+    private void initParentFragmentView() {
+        LoginModelFragment fragment = (LoginModelFragment) getActivity().getSupportFragmentManager().getFragments().get(0);
+        fragment.tvTopCenter.setText("注册");
+        fragment.tvTopRight.setText("登录");
+        fragment.tvTopRight.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showLoginFragment();
+            }
+        });
+    }
+
+
+    private void showLoginFragment() {
+        LoginFragment fragment = (LoginFragment) getFragmentManager()
+                .findFragmentByTag("login");
+        if (fragment == null) {
+            fragment = LoginFragment.newInstance(null);
+        }
+        getActivity().getSupportFragmentManager().beginTransaction()
+                .setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right)
+                .replace(R.id.fLayout_login_container, fragment, "login").commit();
+
     }
 
 

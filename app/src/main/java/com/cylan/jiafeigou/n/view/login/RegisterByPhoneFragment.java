@@ -1,25 +1,23 @@
 package com.cylan.jiafeigou.n.view.login;
 
+import android.content.Context;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.utils.ActivityUtils;
+import com.cylan.jiafeigou.utils.AnimatorUtils;
+import com.cylan.jiafeigou.utils.ColorPhrase;
 import com.superlog.SLog;
-
-import java.util.TimeZone;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -30,7 +28,7 @@ import butterknife.OnTextChanged;
  * Created by lxh on 16-6-8.
  */
 
-public class RegisterByPhoneFragment extends LoginModelFragment {
+public class RegisterByPhoneFragment extends LoginBaseFragment {
 
 
     @BindView(R.id.et_register_username)
@@ -62,30 +60,22 @@ public class RegisterByPhoneFragment extends LoginModelFragment {
     }
 
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        AnimatorUtils.viewTranslationX(tvRegisterSwitch, true, 0, 800, 0, 500);
+        AnimatorUtils.viewTranslationX(lLayoutRegisterInput, true, 0, 800, 0, 500);
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_register_by_phone_layout, container, false);
         ButterKnife.bind(this, view);
+        initView();
         addOnTouchListener(view);
-        editTextLimitMaxInput(etRegisterUsername, 11);
-        editTextLimitMaxInput(etRegisterCode, 6);
         return view;
     }
-
-
-//    @OnClick(R.id.tv_login_top_right)
-//    public void login(View view) {
-//        LoginFragment fragment = (LoginFragment) getFragmentManager().findFragmentByTag("login");
-//        FragmentTransaction ft = getFragmentManager().beginTransaction();
-//        if (fragment == null) {
-//            fragment = LoginFragment.newInstance(null);
-//            ft.add(R.id.fLayout_login_model_container, fragment, "login");
-//        } else {
-//            ft.hide(this).show(fragment);
-//        }
-//        ft.commit();
-//    }
 
 
     @OnClick(R.id.tv_model_commit)
@@ -94,12 +84,29 @@ public class RegisterByPhoneFragment extends LoginModelFragment {
         if (!isVerifyTime) {
             isVerifyTime = true;
             lLayoutInputCode.setVisibility(View.VISIBLE);
+            tvRegisterUserAgreement.setVisibility(View.GONE);
+            getCode();
             tvCommit.setText("继续");
             setViewEnableStyle(tvCommit, false);
         } else {
             SetPwdFragment fragment = SetPwdFragment.newInstance(null);
             ActivityUtils.addFragmentToActivity(getChildFragmentManager(), fragment, R.id.rLayout_register);
         }
+    }
+
+
+    private void initView() {
+        String str = tvRegisterUserAgreement.getText().toString();
+        CharSequence chars = ColorPhrase.from(str).withSeparator("{}").innerColor(getResources().getColor(R.color.color_4b9fd5))
+                .outerColor(getResources().getColor(R.color.color_999999)).format();
+        tvRegisterReciprocalTime.setText(chars);
+    }
+
+
+    private void getCode() {
+        tvRegisterReciprocalTime.setTextColor(getResources().getColor(R.color.color_d8d8d8)); //改为灰色
+        tvRegisterReciprocalTime.setEnabled(false);
+        timer.start();
     }
 
 
@@ -149,20 +156,63 @@ public class RegisterByPhoneFragment extends LoginModelFragment {
      */
     @OnClick(R.id.tv_register_reciprocal_time)
     public void reGetPhoneVerifyCode(View view) {
-        //
-        tvRegisterSwitch.post(new Runnable() {
-            @Override
-            public void run() {
-                tvRegisterReciprocalTime.setTextColor(getResources().getColor(R.color.color_999999));
-                for (int i = 0; i < 89; i++) {
-                    tvRegisterReciprocalTime.setText(i + "s");
+        if (tvRegisterReciprocalTime.isEnabled()) {
+            getCode();
+        }
+    }
 
-                }
-                tvRegisterReciprocalTime.setTextColor(getResources().getColor(R.color.color_4b9fd5));
-                tvRegisterReciprocalTime.setText("重新获取");
+
+    @Override
+    public void onAttach(Context context) {
+        initParentFragmentView();
+        super.onAttach(context);
+    }
+
+    private void initParentFragmentView() {
+        LoginModelFragment fragment = (LoginModelFragment) getActivity()
+                .getSupportFragmentManager().getFragments().get(0);
+        fragment.tvTopCenter.setText("注册");
+        fragment.tvTopRight.setText("登录");
+        fragment.tvTopRight.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showLoginFragment();
             }
         });
     }
 
 
+    private void showLoginFragment() {
+        LoginFragment fragment = (LoginFragment) getFragmentManager()
+                .findFragmentByTag("login");
+        if (fragment == null) {
+            fragment = LoginFragment.newInstance(null);
+        }
+        getActivity().getSupportFragmentManager().beginTransaction()
+                .setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right)
+                .replace(R.id.fLayout_login_container, fragment, "login").commit();
+
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        timer.cancel();
+    }
+
+
+    CountDownTimer timer = new CountDownTimer(90 * 1000, 1000) {
+        @Override
+        public void onTick(long millisUntilFinished) {
+            tvRegisterReciprocalTime.setText(millisUntilFinished / 1000 + "S");
+            SLog.i("millisUntilFinished:" + millisUntilFinished / 1000);
+        }
+
+        @Override
+        public void onFinish() {
+            tvRegisterReciprocalTime.setTextColor(getResources().getColor(R.color.color_4b9fd5)); //改为蓝色
+            tvRegisterReciprocalTime.setText("重新获取");
+            tvRegisterReciprocalTime.setEnabled(true);
+        }
+    };
 }

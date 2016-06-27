@@ -87,4 +87,8 @@
     <dimen name="dimens_48dp">48dp</dimen>
 
 
+
+    <dimen name="default_corner_radius">4dp</dimen>
+    <dimen name="default_shadow_radius">4dp</dimen>
+
 </resources>

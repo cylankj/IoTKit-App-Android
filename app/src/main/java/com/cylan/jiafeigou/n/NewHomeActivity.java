@@ -143,6 +143,7 @@ class HomeViewAdapter extends FragmentPagerAdapter {
             case INDEX_1: {
                 HomeWonderfulFragment fragment = HomeWonderfulFragment.newInstance(new Bundle());
                 new HomeWonderfulPresenterImpl(fragment);
+
                 return fragment;
             }
             case INDEX_2:

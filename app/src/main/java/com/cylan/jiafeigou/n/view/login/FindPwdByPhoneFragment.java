@@ -1,8 +1,8 @@
 package com.cylan.jiafeigou.n.view.login;
 
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.support.annotation.Nullable;
-import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,7 +14,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.superlog.SLog;
 
 import butterknife.BindView;
@@ -26,15 +25,9 @@ import butterknife.OnTextChanged;
  * Created by lxh on 16-6-8.
  */
 
-public class FindPwdByPhoneFragment extends LoginModelFragment {
+public class FindPwdByPhoneFragment extends LoginBaseFragment {
 
 
-    @BindView(R.id.iv_login_top_left)
-    ImageView ivLoginTopLeft;
-    @BindView(R.id.tv_login_top_center)
-    TextView tvLoginTopCenter;
-    @BindView(R.id.tv_login_top_right)
-    TextView tvLoginTopRight;
     @BindView(R.id.et_register_username)
     EditText etRegisterUsername;
     @BindView(R.id.iv_register_clear_username)
@@ -77,33 +70,22 @@ public class FindPwdByPhoneFragment extends LoginModelFragment {
         ButterKnife.bind(this, view);
         addOnTouchListener(view);
         initView(view);
-        editTextLimitMaxInput(etRegisterUsername, 11);
-        editTextLimitMaxInput(etRegisterCode, 6);
+//        editTextLimitMaxInput(etRegisterUsername, 11);
+//        editTextLimitMaxInput(etRegisterCode, 6);
         return view;
     }
 
 
     private void initView(View view) {
-        tvLoginTopCenter.setText("忘记密码");
         tvRegisterSwitch.setVisibility(View.GONE);
         //设置手机号
-        etRegisterUsername.setText("13800138000");
+        if (getArguments() != null) {
+            String phone = getArguments().getString("phone");
+            etRegisterUsername.setText(phone);
+        }
         lLayoutInputCode.setVisibility(View.VISIBLE);
         tvCommit.setText("继续");
-    }
-
-
-    @OnClick(R.id.iv_login_top_left)
-    public void exit(View view) {
-        ForgetPwdFragment fragment = (ForgetPwdFragment) getFragmentManager().findFragmentByTag("forget");
-        FragmentTransaction ft = getFragmentManager().beginTransaction();
-        if (fragment == null) {
-            fragment = ForgetPwdFragment.newInstance(null);
-            ft.add(R.id.fLayout_login_model_container, fragment, "forget");
-        } else {
-            ft.hide(this).show(fragment);
-        }
-        ft.commit();
+        timer.start();
     }
 
 
@@ -162,20 +144,35 @@ public class FindPwdByPhoneFragment extends LoginModelFragment {
      */
     @OnClick(R.id.tv_register_reciprocal_time)
     public void reGetPhoneVerifyCode(View view) {
-        //
-        tvRegisterSwitch.post(new Runnable() {
-            @Override
-            public void run() {
-                tvRegisterReciprocalTime.setTextColor(getResources().getColor(R.color.color_999999));
-                for (int i = 0; i < 89; i++) {
-                    tvRegisterReciprocalTime.setText(i + "s");
-
-                }
-                tvRegisterReciprocalTime.setTextColor(getResources().getColor(R.color.color_4b9fd5));
-                tvRegisterReciprocalTime.setText("重新获取");
-            }
-        });
+        if (tvRegisterReciprocalTime.isEnabled()) {
+            tvRegisterReciprocalTime.setEnabled(false);
+            tvRegisterReciprocalTime.setTextColor(getResources().getColor(R.color.color_d8d8d8)); //
+            timer.start();
+        }
     }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        SLog.e("onDetach");
+        timer.cancel();
+    }
+
+
+    CountDownTimer timer = new CountDownTimer(90 * 1000, 1000) {
+        @Override
+        public void onTick(long millisUntilFinished) {
+            tvRegisterReciprocalTime.setText(millisUntilFinished / 1000 + "S");
+            SLog.i("millisUntilFinished:" + millisUntilFinished / 1000);
+        }
+
+        @Override
+        public void onFinish() {
+            tvRegisterReciprocalTime.setTextColor(getResources().getColor(R.color.color_4b9fd5)); //改为蓝色
+            tvRegisterReciprocalTime.setText("重新获取");
+            tvRegisterReciprocalTime.setEnabled(true);
+        }
+    };
 
 
 }

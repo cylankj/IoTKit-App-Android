@@ -1,10 +1,9 @@
 package com.cylan.jiafeigou.n.view.login;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.text.InputFilter;
-import android.text.Spanned;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,13 +13,11 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RadioButton;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.NewHomeActivity;
 import com.cylan.jiafeigou.utils.ToastUtil;
-import com.superlog.SLog;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -32,7 +29,7 @@ import butterknife.OnTextChanged;
  * Created by lxh on 16-6-8.
  */
 
-public class SetPwdFragment extends LoginModelFragment {
+public class SetPwdFragment extends LoginBaseFragment {
 
     @BindView(R.id.et_login_pwd)
     EditText etLoginPwd;
@@ -52,7 +49,7 @@ public class SetPwdFragment extends LoginModelFragment {
         ButterKnife.bind(this, view);
         initView(view);
         addOnTouchListener(view);
-        editTextLimitMaxInput(etLoginPwd, 12);
+//        editTextLimitMaxInput(etLoginPwd, 12);
         return view;
     }
 
@@ -80,7 +77,11 @@ public class SetPwdFragment extends LoginModelFragment {
     @OnTextChanged(R.id.et_login_pwd)
     public void onUserNameChange(CharSequence s, int start, int before, int count) {
         boolean flag = TextUtils.isEmpty(s);
-        setViewEnableStyle(tvCommit, !flag);
+        if (flag && s.length() <= 5) {
+            setViewEnableStyle(tvCommit, false);
+        } else {
+            setViewEnableStyle(tvCommit, true);
+        }
         ivLoginClearPwd.setVisibility(flag ? View.GONE : View.VISIBLE);
     }
 
@@ -113,5 +114,32 @@ public class SetPwdFragment extends LoginModelFragment {
         showPwd(etLoginPwd, isChecked);
         etLoginPwd.setSelection(etLoginPwd.length());
     }
+
+
+    @Override
+    public void onAttach(Context context) {
+        initParentFragmentView();
+        super.onAttach(context);
+    }
+
+    private void initParentFragmentView() {
+        LoginModelFragment fragment = (LoginModelFragment) getActivity()
+                .getSupportFragmentManager().getFragments().get(0);
+        fragment.tvTopRight.setVisibility(View.GONE);
+        fragment.tvTopCenter.setText("设置密码");
+        fragment.ivTopLeft.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ToastUtil.showToast(getActivity(), "退出");
+            }
+        });
+
+    }
+
+    private void showDialog() {
+//        AlertDialog.Builder builder = new AlertDialog.Builder(getContext()).setCancelable(true)
+//                .setTitle()
+    }
+
 
 }

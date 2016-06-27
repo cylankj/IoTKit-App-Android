@@ -2,7 +2,7 @@ package com.cylan.jiafeigou.n.model.contract;
 
 import android.app.Activity;
 
-import com.cylan.jiafeigou.n.model.BeanInfoLogin;
+import com.cylan.jiafeigou.n.model.LoginAccountBean;
 import com.cylan.jiafeigou.support.sina.SinaWeiboUtil;
 import com.cylan.jiafeigou.support.tencent.TencentLoginUtils;
 
@@ -17,7 +17,7 @@ public interface ModelContract {
      }
 
     interface LoginModelOps {
-        String executeLoginda(BeanInfoLogin infoLogin);
+        String executeLoginda(LoginAccountBean infoLogin);
 
         void LoginType(Activity activity,int type, OnLoginListener onLoginListener);
 

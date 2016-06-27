@@ -26,6 +26,7 @@
             <EditText
                 android:id="@+id/et_register_username"
                 style="@style/login_model_common_edittext_style"
+                android:maxLength="11"
                 android:layout_centerInParent="true"
                 android:hint="请输入手机号"
                 android:inputType="phone" />
@@ -60,6 +61,7 @@
                 <EditText
                     android:id="@+id/et_register_code"
                     style="@style/login_model_common_edittext_style"
+                    android:maxLength="6"
                     android:layout_centerInParent="true"
                     android:hint="请输入验证码"
                     android:inputType="number" />

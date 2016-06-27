@@ -1,5 +1,6 @@
 package com.cylan.jiafeigou.n.view.login;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentTransaction;
@@ -13,6 +14,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.n.mvp.contract.login.LoginModelContract;
+import com.cylan.jiafeigou.n.presenter.LoginPresenterImpl;
+import com.superlog.SLog;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -24,7 +28,7 @@ import butterknife.OnTextChanged;
  * Created by lxh on 16-6-14.
  */
 
-public class ForgetPwdFragment extends LoginModelFragment {
+public class ForgetPwdFragment extends LoginBaseFragment {
 
 
     @BindView(R.id.et_forget_username)
@@ -42,7 +46,6 @@ public class ForgetPwdFragment extends LoginModelFragment {
         View view = inflater.inflate(R.layout.fragment_forget_pwd, container, false);
         ButterKnife.bind(this, view);
         initView(view);
-        editTextLimitMaxInput(etForgetUsername, 60);
         return view;
     }
 
@@ -64,20 +67,21 @@ public class ForgetPwdFragment extends LoginModelFragment {
     }
 
 
-
-
-
     //判读是手机号还是邮箱
     private void next() {
         String account = etForgetUsername.getText().toString();
-        FragmentTransaction ft =getActivity().getSupportFragmentManager().beginTransaction();
-        LoginModelFragment fragment;
+        FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+        LoginBaseFragment fragment;
         //做判断
         if (account.length() > 1) {
             fragment = FindPwdByPhoneFragment.newInstance(null);
+            Bundle bundle = new Bundle();
+            bundle.putString("phone", account);
+            fragment.setArguments(bundle);
         } else {
             fragment = LoginFragment.newInstance(null);
         }
+        new LoginPresenterImpl((LoginModelContract.LoginView) fragment);
 
         ft.add(R.id.fLayout_login_container, fragment).commit();
     }
@@ -89,5 +93,31 @@ public class ForgetPwdFragment extends LoginModelFragment {
         setViewEnableStyle(tvModelCommit, !flag);
         ivForgetClearUsername.setVisibility(flag ? View.GONE : View.VISIBLE);
     }
+
+
+    @OnClick(R.id.tv_model_commit)
+    public void forgetPwdCommit(View v) {
+        next();
+//        float curTranslationY = v.getTranslationY();
+//        ObjectAnimator animator = ObjectAnimator.ofFloat(v, "translationY", curTranslationY + 20f);
+//        animator.setDuration(1000);
+//        animator.start();
+//        next();
+    }
+
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        initParentFragmentView();
+        SLog.e("onAttach Context");
+    }
+
+    private void initParentFragmentView() {
+        LoginModelFragment fragment = (LoginModelFragment) getActivity().getSupportFragmentManager().getFragments().get(0);
+        fragment.tvTopCenter.setText("忘记密码");
+        fragment.tvTopRight.setVisibility(View.GONE);
+    }
+
 
 }

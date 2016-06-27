@@ -4,106 +4,121 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.text.InputFilter;
-import android.text.Spanned;
-import android.text.method.HideReturnsTransformationMethod;
-import android.text.method.PasswordTransformationMethod;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.EditText;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.n.mvp.contract.login.LoginModelContract;
+import com.cylan.jiafeigou.n.presenter.LoginPresenterImpl;
+import com.cylan.jiafeigou.utils.ViewUtils;
+import com.superlog.SLog;
 
-import java.util.TimeZone;
+import java.util.List;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
- * 登陆模块通用Fragment
- * Created by lxh on 16-6-13.
+ *
  */
+public class LoginModelFragment extends LoginBaseFragment {
 
-public class LoginModelFragment extends Fragment {
+    @BindView(R.id.iv_login_top_left)
+    public ImageView ivTopLeft;
+    @BindView(R.id.tv_login_top_center)
+    public TextView tvTopCenter;
+    @BindView(R.id.tv_login_top_right)
+    public TextView tvTopRight;
+    @BindView(R.id.fLayout_login_container)
+    FrameLayout fLayoutLoginContainer;
+
+    @BindView(R.id.rLayout_login_top)
+    View topView;
 
 
-    /**
-     * 设置按钮的状态
-     *
-     * @param enable 是否可以点击
-     * @param view   控件，可以是textview,btn 之类
-     */
-    public void setViewEnableStyle(TextView view, boolean enable) {
-        if (enable == view.isEnabled()) return;
-        view.setEnabled(enable);
-        view.setTextColor(getResources().getColor(enable ?
-                R.color.color_4b9fd5 : R.color.color_d8d8d8));
+    public LoginModelFragment() {
+        // Required empty public constructor
     }
 
 
-    /**
-     * 获取时区
-     *
-     * @return
-     */
-    public String getTimeZone() {
-        return TimeZone.getDefault().getDisplayName(false, TimeZone.SHORT);
+    public static LoginModelFragment newInstance(Bundle bundle) {
+        LoginModelFragment fragment = new LoginModelFragment();
+        fragment.setArguments(bundle);
+        return fragment;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            ///
+        }
     }
 
 
-    /**
-     * 用来点击空白处隐藏键盘
-     *
-     * @param view
-     */
-    public void addOnTouchListener(View view) {
-        view.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                InputMethodManager manager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-                if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    if (getActivity().getCurrentFocus() != null && getActivity().getCurrentFocus().getWindowToken() != null) {
-                        manager.hideSoftInputFromWindow(
-                                getActivity().getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
-                    }
-                }
-                return false;
+    @Override
+    public void onStart() {
+        super.onStart();
+        List<Fragment> list = getFragmentManager().getFragments();
+        showLoginFragment();
+        for (Fragment f : list) {
+            if (f != null) {
+                SLog.w(f.toString());
             }
-        });
+        }
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_login_model, container, false);
+        ButterKnife.bind(this, view);
+        addOnTouchListener(view);
+        return view;
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        ViewUtils.setViewMarginStatusBar(topView);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
     }
 
 
-    /**
-     * 显示密码
-     *
-     * @param et
-     * @param isShow
-     */
-    public void showPwd(EditText et, boolean isShow) {
-        et.setTransformationMethod(isShow ?
-                HideReturnsTransformationMethod.getInstance()
-                : PasswordTransformationMethod.getInstance());
+    private void showLoginFragment() {
+        Bundle bundle = new Bundle();
+        bundle.putBoolean("first", true);
+        Fragment fragment = LoginFragment.newInstance(null);
+        fragment.setArguments(bundle);
+        new LoginPresenterImpl((LoginModelContract.LoginView) fragment);
+        getChildFragmentManager().beginTransaction().
+                setCustomAnimations(R.anim.slide_down_in, R.anim.slide_down_out)
+                .add(R.id.fLayout_login_container, fragment, "login").commit();
     }
 
-    /**
-     * 限制输入字符数
-     *
-     * @param editText 输入的控件
-     * @param count    字符数
-     */
-    public void editTextLimitMaxInput(EditText editText, final int count) {
 
-        editText.setFilters(new InputFilter[]{new InputFilter() {
+    @OnClick({R.id.iv_login_top_left})
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.iv_login_top_left:
+                getActivity().finish();
+                break;
+        }
+    }
 
-            @Override
 
-            public CharSequence filter(CharSequence source, int start, int end,
-                                       Spanned dest, int dstart, int dend) {
-                return dest.toString().length() >= count ? "" : source;
-            }
-
-        }});
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
     }
 
 

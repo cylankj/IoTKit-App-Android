@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.cylan.jiafeigou.R;
 
 /**
+ * home mine 界面的item 组合view
  * Created by lxh on 16-5-30.
  */
 

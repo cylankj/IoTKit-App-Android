@@ -23,6 +23,7 @@
 
             <EditText
                 android:id="@+id/et_forget_username"
+                android:maxLength="60"
                 style="@style/login_model_common_edittext_style"
                 android:layout_centerInParent="true"
                 android:hint="请输入手机号/邮箱" />

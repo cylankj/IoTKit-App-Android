@@ -1,7 +1,5 @@
 package com.cylan.jiafeigou.n.view.login;
 
-import android.content.pm.ActivityInfo;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 
@@ -23,13 +21,18 @@ public class LoginModelActivity extends BaseFullScreenFragmentActivity {
         showLoginFragment();
     }
 
+
+
     private void showLoginFragment() {
-        LoginModel1Fragment fragment = LoginModel1Fragment.newInstance(null);
-        getSupportFragmentManager().beginTransaction().
-                replace(R.id.fLayout_login_model_container, fragment).commit();
+        LoginModelFragment fragment = LoginModelFragment.newInstance(null);
+        getSupportFragmentManager().beginTransaction()
+                .setCustomAnimations(R.anim.slide_down_in, R.anim.slide_down_out).
+                add(R.id.fLayout_login_model_container, fragment).commit();
+
     }
 
     private static long time = 0;
+
 
     @Override
     public void onBackPressed() {
