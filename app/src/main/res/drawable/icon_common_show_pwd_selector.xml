@@ -4,4 +4,5 @@
 
     <item android:drawable="@drawable/icon_common_pwd_show" android:state_checked="true" />
     <item android:drawable="@drawable/icon_common_pwd_hide" android:state_checked="false" />
+    <item android:drawable="@drawable/icon_common_pwd_hide" android:state_active="false" />
 </selector>

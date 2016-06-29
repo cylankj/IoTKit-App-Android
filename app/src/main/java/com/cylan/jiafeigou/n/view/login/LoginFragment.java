@@ -3,31 +3,32 @@ package com.cylan.jiafeigou.n.view.login;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.NewHomeActivity;
-import com.cylan.jiafeigou.n.mvp.model.LoginAccountBean;
 import com.cylan.jiafeigou.n.mvp.contract.login.LoginModelContract;
+import com.cylan.jiafeigou.n.mvp.impl.ForgetPwdPresenterImpl;
+import com.cylan.jiafeigou.n.mvp.model.LoginAccountBean;
 import com.cylan.jiafeigou.utils.AnimatorUtils;
+import com.cylan.jiafeigou.utils.IMEUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.widget.LoginButton;
+import com.cylan.utils.RandomUtils;
 import com.superlog.SLog;
-import com.tencent.connect.common.Constants;
 
 import java.util.List;
 
@@ -35,13 +36,17 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
+import butterknife.OnFocusChange;
 import butterknife.OnTextChanged;
+
+import static com.cylan.jiafeigou.n.view.login_ex.LoginContainerFragment.KEY_ACTIVITY_FRAGMENT_CONTAINER_ID;
 
 /**
  * 登陆主界面
  */
 public class LoginFragment extends LoginBaseFragment implements LoginModelContract.LoginView {
-
+    private static final String TAG = "LoginFragment";
+    public static final String KEY_TEMP_ACCOUNT = "temp_account";
     @BindView(R.id.et_login_username)
     EditText etLoginUsername;
 
@@ -58,8 +63,8 @@ public class LoginFragment extends LoginBaseFragment implements LoginModelContra
     CheckBox rbShowPwd;
 
 
-    @BindView(R.id.lLayout_login_input)
-    LinearLayout lLayoutLoginInput;
+    @BindView(R.id.Layout_login_box)
+    RelativeLayout rLayoutLoginInput;
 
     @BindView(R.id.rLayout_login_third_party)
     RelativeLayout rLayoutLoginThirdParty;
@@ -76,17 +81,8 @@ public class LoginFragment extends LoginBaseFragment implements LoginModelContra
     @BindView(R.id.tv_login_forget_pwd)
     TextView tvForgetPwd;
 
-    @BindView(R.id.lb_login_commint)
+    @BindView(R.id.lb_login_commit)
     LoginButton lbLogin;
-
-
-    /**
-     * 倒计时，用作超时统计
-     */
-    CountDownTimer timer;
-
-    // 开始登录的时间
-    long begin;
 
 
     private LoginModelContract.LoginPresenter loginPresenter;
@@ -110,38 +106,54 @@ public class LoginFragment extends LoginBaseFragment implements LoginModelContra
         return view;
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (loginPresenter != null) {
+            loginPresenter.start();
+        }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (loginPresenter != null) loginPresenter.stop();
+    }
+
+    @Override
+    public Animation onCreateAnimation(int transit, boolean enter, int nextAnim) {
+        return super.onCreateAnimation(transit, enter, nextAnim);
+    }
+
+    @OnFocusChange(R.id.et_login_username)
+    public void onUserNameLoseFocus(View view, boolean focus) {
+        Log.d(TAG, "onUserNameLoseFocus: " + focus);
+        final boolean visibility = !TextUtils.isEmpty(etLoginUsername.getText()) && focus;
+        ivLoginClearUsername.setVisibility(visibility ? View.VISIBLE : View.INVISIBLE);
+    }
+
+    @OnFocusChange(R.id.et_login_pwd)
+    public void onPwdLoseFocus(View view, boolean focus) {
+        Log.d(TAG, "onPwdLoseFocus: " + focus);
+        final boolean visibility = !TextUtils.isEmpty(etLoginPwd.getText()) && focus;
+        ivLoginClearPwd.setVisibility(visibility ? View.VISIBLE : View.INVISIBLE);
+    }
+
     /**
      * 显示当前的布局
      */
     private void showLayout() {
-        boolean first = false;
-        if (getArguments() != null) {
-            first = this.getArguments().getBoolean("first", false);
-        }
-        final boolean flag = first;  //判断动画的表现方式
-        lLayoutLoginInput.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                showAllLayout(true);
-            }
-        }, flag ? 500 : 10);
+        showAllLayout(false);
     }
 
     /**
      * 动画的表现方式
      *
-     * @param orientation ture 为垂直方向展现动画，false为水平方向展现动画
+     * @param orientation true 为垂直方向展现动画，false为水平方向展现动画
      */
     private void showAllLayout(boolean orientation) {
-        ViewGroup parent = (ViewGroup) lLayoutLoginInput.getParent();
-        int distance = parent.getHeight() - lLayoutLoginInput.getTop();
-        if (orientation) {
-            AnimatorUtils.viewTranslationY(lLayoutLoginInput, true, 0, 800, 0, 600);
-            AnimatorUtils.viewTranslationY(rLayoutLoginThirdParty, true, 200, 800, 0, 600);
-        } else {
-            AnimatorUtils.viewTranslationX(lLayoutLoginInput, true, 0, -800, 0, 500);
-            AnimatorUtils.viewTranslationX(rLayoutLoginThirdParty, true, 100, -800, 0, 500);
-        }
+        AnimatorUtils.onSimpleBounceUpIn(rLayoutLoginInput, 1000, 20);
+        AnimatorUtils.onSimpleBounceUpIn(rLayoutLoginThirdParty, 200, 400);
     }
 
 
@@ -155,12 +167,11 @@ public class LoginFragment extends LoginBaseFragment implements LoginModelContra
     }
 
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        if (loginPresenter != null) {
-            loginPresenter.start();
-        }
+    /**
+     * 初始化view
+     */
+    private void initView() {
+        setViewEnableStyle(lbLogin, false);
     }
 
     /**
@@ -175,25 +186,6 @@ public class LoginFragment extends LoginBaseFragment implements LoginModelContra
         etLoginPwd.setSelection(etLoginPwd.length());
     }
 
-    /**
-     * 初始化view
-     */
-    private void initView() {
-        lLayoutLoginInput.setVisibility(View.INVISIBLE);
-        rLayoutLoginThirdParty.setVisibility(View.INVISIBLE);
-        setViewEnableStyle(lbLogin, false);
-        timer = new CountDownTimer(30 * 1000, 1000) {
-            @Override
-            public void onTick(long millisUntilFinished) {
-
-            }
-
-            @Override
-            public void onFinish() {
-                resetView();
-            }
-        };
-    }
 
     /**
      * 密码变化
@@ -205,17 +197,14 @@ public class LoginFragment extends LoginBaseFragment implements LoginModelContra
      */
     @OnTextChanged(R.id.et_login_pwd)
     public void onPwdChange(CharSequence s, int start, int before, int count) {
-
         boolean flag = TextUtils.isEmpty(s);
-        ivLoginClearPwd.setVisibility(flag ? View.GONE : View.VISIBLE);
+        ivLoginClearPwd.setVisibility(flag ? View.INVISIBLE : View.VISIBLE);
         if (flag || s.length() < 6) {
             setViewEnableStyle(lbLogin, false);
         } else if (!TextUtils.isEmpty(etLoginUsername.getText().toString())) {
             setViewEnableStyle(lbLogin, true);
         }
-
     }
-
 
     /***
      * 账号变化
@@ -257,22 +246,33 @@ public class LoginFragment extends LoginBaseFragment implements LoginModelContra
                 forgetPwd();
                 break;
             case R.id.tv_qqLogin_commit:
-                loginPresenter.getQQAuthorize();
+                loginPresenter.getQQAuthorize(getActivity());
                 break;
             case R.id.tv_xlLogin_commit:
-                loginPresenter.getSinaAuthorize();
+                loginPresenter.getSinaAuthorize(getActivity());
                 break;
         }
     }
 
+    /**
+     * 清除焦点。
+     */
+    private void enableEditTextCursor(boolean enable) {
+        if (isResumed() && getActivity() != null) {
+            etLoginPwd.setFocusable(enable);
+            etLoginPwd.setFocusableInTouchMode(enable);
+            etLoginUsername.setFocusable(enable);
+            etLoginUsername.setFocusableInTouchMode(enable);
+        }
+    }
 
-    @OnClick(R.id.lb_login_commint)
+    @OnClick(R.id.lb_login_commit)
     public void login(View view) {
+        IMEUtils.hide(getActivity());
+        enableEditTextCursor(false);
         lbLogin.viewZoomSmall();
         AnimatorUtils.viewAlpha(tvForgetPwd, false, 300, 0);
         AnimatorUtils.viewTranslationY(rLayoutLoginThirdParty, false, 100, 0, 800, 500);
-        timer.start();  //开始倒计时
-        begin = System.currentTimeMillis(); // 记时，用于计算登陆成功后的耗时，如果太快的话，要做相应的延时，一遍动画执行一圈。
         LoginAccountBean login = new LoginAccountBean();
         login.userName = etLoginUsername.getText().toString().trim();
         login.pwd = etLoginPwd.getText().toString().trim();
@@ -287,18 +287,26 @@ public class LoginFragment extends LoginBaseFragment implements LoginModelContra
      */
     private void forgetPwd() {
         //忘记密码
-        ForgetPwdFragment fragment = (ForgetPwdFragment) getFragmentManager().findFragmentByTag("forget");
-        FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-        if (fragment == null) {
-            fragment = ForgetPwdFragment.newInstance(null);
-            ft.replace(R.id.fLayout_login_container, fragment, "forget");
+        if (getActivity() != null) {
+            Bundle bundle = getArguments();
+            final int containerId = bundle.getInt(KEY_ACTIVITY_FRAGMENT_CONTAINER_ID);
+            final String tempAccount = etLoginUsername.getText().toString().trim();
+            bundle.putInt(ForgetPwdFragment.ACCEPT_TYPE, RandomUtils.getRandom(2));
+            bundle.putString(KEY_TEMP_ACCOUNT, tempAccount);
+            ForgetPwdFragment forgetPwdFragment = ForgetPwdFragment.newInstance(bundle);
+            new ForgetPwdPresenterImpl(forgetPwdFragment);
+            getActivity().getSupportFragmentManager()
+                    .beginTransaction()
+                    .setCustomAnimations(R.anim.slide_right_in, R.anim.slide_out_left
+                            , R.anim.slide_out_right, R.anim.slide_out_right)
+                    .add(containerId, forgetPwdFragment, "forgetPwd")
+                    .addToBackStack("forgetPwd")
+                    .commit();
         }
-        ft.hide(this).show(fragment).commit();
     }
 
     @Override
     public void onAttach(Context context) {
-//        initParentFragmentView();
         super.onAttach(context);
     }
 
@@ -339,55 +347,21 @@ public class LoginFragment extends LoginBaseFragment implements LoginModelContra
     }
 
 
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        //在某些低端机上调用登录后，由于内存紧张导致APP被系统回收，登录成功后无法成功回传数据
-        if (requestCode == Constants.REQUEST_API) {
-            if (resultCode == Constants.REQUEST_LOGIN) {
-//                TencentLoginUtils curTencent = mPresenter.getTencentObj();
-//                if (curTencent != null)
-//                    curTencent.getMyTencent().handleLoginData(data, new BaseUiListener());
-            }
-        } else {
-//            SinaWeiboUtil curSina = mPresenter.getSinaObj();
-//            if (curSina != null && curSina.getMySsoHandler() != null)
-//                curSina.getMySsoHandler().authorizeCallBack(requestCode, resultCode, data);
-        }
-
-        super.onActivityResult(requestCode, resultCode, data);
-    }
-
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        if (loginPresenter != null) loginPresenter.stop();
-    }
-
     @Override
     public void loginResult(final LoginAccountBean login) {
-        int delay = 0;
-        timer.cancel(); // 有结果返回了，不需要超时设置
-        if (System.currentTimeMillis() - begin < 1200) {
-            delay = 800;  //留有足够的时间展示动画
+        if (login != null && login.ret == 0) {
+            getContext().startActivity(new Intent(getContext(), NewHomeActivity.class));
+            getActivity().finish();
+        } else {
+            resetView();
         }
-        lbLogin.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if (login != null && login.ret == 0) {
-                    getContext().startActivity(new Intent(getContext(), NewHomeActivity.class));
-                    getActivity().finish();
-                } else {
-                    resetView();
-                }
-            }
-        }, delay);
-
     }
 
     /**
      * 登录超时，或者失败后动画复位
      */
     private void resetView() {
+        enableEditTextCursor(true);
         lbLogin.viewZoomBig();
         AnimatorUtils.viewAlpha(tvForgetPwd, true, 300, 0);
         AnimatorUtils.viewTranslationY(rLayoutLoginThirdParty, true, 100, 800, 0, 200);

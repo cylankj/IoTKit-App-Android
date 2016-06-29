@@ -7,9 +7,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.RadioGroup;
 
 import com.cylan.jiafeigou.R;
@@ -21,17 +19,13 @@ import com.cylan.jiafeigou.n.mvp.impl.home.NewHomeActivityPresenterImpl;
 import com.cylan.jiafeigou.n.view.home.HomeMineFragment;
 import com.cylan.jiafeigou.n.view.home.HomePageListFragment;
 import com.cylan.jiafeigou.n.view.home.HomeWonderfulFragment;
-import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.widget.CustomViewPager;
-import com.cylan.utils.ListUtils;
-
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class NewHomeActivity extends BaseFullScreenFragmentActivity implements
-        ViewPager.OnPageChangeListener, NewHomeActivityContract.View {
+        NewHomeActivityContract.View {
     @BindView(R.id.vp_home_content)
     CustomViewPager vpHomeContent;
     @BindView(R.id.rgLayout_home_bottom_menu)
@@ -61,9 +55,16 @@ public class NewHomeActivity extends BaseFullScreenFragmentActivity implements
 
     private void initMainContentAdapter() {
         viewAdapter = new HomeViewAdapter(getSupportFragmentManager());
-        vpHomeContent.setPagingEnabled(false);
+        vpHomeContent.setPagingEnabled(true);
         vpHomeContent.setAdapter(viewAdapter);
-        vpHomeContent.addOnPageChangeListener(this);
+        vpHomeContent.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+            @Override
+            public void onPageSelected(int position) {
+                final int id = position == 0 ? R.id.btn_home_list
+                        : (position == 1 ? R.id.btn_home_wonderful : R.id.btn_home_mine);
+                rgLayoutHomeBottomMenu.check(id);
+            }
+        });
     }
 
     private void initBottomMenu() {
@@ -84,24 +85,6 @@ public class NewHomeActivity extends BaseFullScreenFragmentActivity implements
             }
         });
     }
-
-    @Override
-    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-        //实现逻辑
-    }
-
-    @Override
-    public void onPageSelected(int position) {
-    }
-
-    @Override
-    public void onPageScrollStateChanged(int state) {
-        Log.d("hunt", "state: " + state);
-    }
-
-
-
-
 
     @UiThread
     @Override

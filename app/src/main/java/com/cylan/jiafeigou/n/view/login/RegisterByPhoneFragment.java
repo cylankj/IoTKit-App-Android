@@ -41,7 +41,7 @@ public class RegisterByPhoneFragment extends LoginBaseFragment {
     TextView tvRegisterReciprocalTime;
     @BindView(R.id.lLayout_input_code)
     LinearLayout lLayoutInputCode;
-    @BindView(R.id.tv_model_commit)
+    @BindView(R.id.tv_forget_pwd_submit)
     TextView tvCommit;
     @BindView(R.id.tv_register_user_agreement)
     TextView tvRegisterUserAgreement;
@@ -78,7 +78,7 @@ public class RegisterByPhoneFragment extends LoginBaseFragment {
     }
 
 
-    @OnClick(R.id.tv_model_commit)
+    @OnClick(R.id.tv_forget_pwd_submit)
     public void regCommit(View view) {
         //如果是手机号，要显示验证码
         if (!isVerifyTime) {

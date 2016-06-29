@@ -1,9 +1,11 @@
 package com.cylan.jiafeigou.n.view.splash;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +16,8 @@ import com.cylan.jiafeigou.n.view.login_ex.LoginContainerFragment;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+
+import static com.cylan.jiafeigou.n.view.login_ex.LoginContainerFragment.KEY_ACTIVITY_FRAGMENT_CONTAINER_ID;
 
 /**
  * 登陆之前的界面，可以选择登陆，或者随便看看
@@ -38,21 +42,36 @@ public class BeforeLoginFragment extends Fragment {
 
     @OnClick(R.id.btn_look_around)
     public void toLookAround(View view) {
-        //start home activity
-        disableView(R.id.btn_look_around, R.id.btn_to_login);
+        clearChildren();
         getContext().startActivity(new Intent(getContext(), NewHomeActivity.class));
         getActivity().finish();
     }
 
     @OnClick(R.id.btn_to_login)
     public void toLogin(View view) {
-        //start login loginModelActivity
-        disableView(R.id.btn_look_around, R.id.btn_to_login);
-        getChildFragmentManager()
+        clearChildren();
+        Bundle bundle = new Bundle();
+        bundle.putInt(KEY_ACTIVITY_FRAGMENT_CONTAINER_ID, R.id.rLayoutWelcomeRoot);
+        getFragmentManager()
                 .beginTransaction()
-                .setCustomAnimations(R.anim.slide_up_in, R.anim.slide_down_out)
-                .replace(R.id.rLayout_before_login, LoginContainerFragment.newInstance(""))
+                .setCustomAnimations(R.anim.slide_up_in, R.anim.slide_down_out
+                        , R.anim.slide_out_left, R.anim.slide_out_left)
+                .add(R.id.rLayoutWelcomeRoot, LoginContainerFragment.newInstance(bundle))
                 .commit();
+    }
+
+    /**
+     * 清空所有多余的View，会有一个白色的窗口期。
+     */
+    private void clearChildren() {
+        Activity activity = getActivity();
+        if (activity != null && (activity instanceof AppCompatActivity)) {
+            ViewGroup v = (ViewGroup) activity.getWindow().getDecorView().findViewById(android.R.id.content);
+            ViewGroup group = (ViewGroup) v.findViewById(R.id.rLayoutWelcomeRoot);
+            if (group != null) {
+                group.removeAllViews();
+            }
+        }
     }
 
     private void disableView(int... id) {

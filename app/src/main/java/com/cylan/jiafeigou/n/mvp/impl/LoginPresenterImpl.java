@@ -1,13 +1,12 @@
-package com.cylan.jiafeigou.n.mvp.presenter;
+package com.cylan.jiafeigou.n.mvp.impl;
 
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.text.TextUtils;
 
-import com.cylan.jiafeigou.n.mvp.model.LoginAccountBean;
 import com.cylan.jiafeigou.n.mvp.contract.login.LoginModelContract;
-import com.cylan.jiafeigou.n.view.login.LoginFragment;
+import com.cylan.jiafeigou.n.mvp.model.LoginAccountBean;
 import com.cylan.jiafeigou.support.rxbus.RxBus;
 import com.cylan.jiafeigou.support.sina.AccessTokenKeeper;
 import com.cylan.jiafeigou.support.sina.SinaWeiboUtil;
@@ -27,7 +26,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.lang.ref.WeakReference;
+import java.util.concurrent.TimeUnit;
 
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.subscriptions.CompositeSubscription;
 
@@ -39,14 +40,12 @@ public class LoginPresenterImpl implements LoginModelContract.LoginPresenter {
     private WeakReference<LoginModelContract.LoginView> viewWeakReference;
     private JfgCmd cmd;
     Context ctx;
-    Activity activity;
     CompositeSubscription subscription;
 
     public LoginPresenterImpl(LoginModelContract.LoginView view) {
         this.viewWeakReference = new WeakReference<>(view);
         view.setPresenter(this);
         ctx = view.getContext();
-        activity = ((LoginFragment) view).getActivity();
     }
 
     @Override
@@ -66,7 +65,10 @@ public class LoginPresenterImpl implements LoginModelContract.LoginPresenter {
         cmd = JfgCmd.getCmd();
         subscription = new CompositeSubscription();
         subscription.add(
-                RxBus.getInstance().toObservable()
+                RxBus.getInstance()
+                        .toObservable()
+                        .delay(3000, TimeUnit.MILLISECONDS)
+                        .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(new Action1<Object>() {
                             @Override
                             public void call(Object o) {
@@ -94,13 +96,13 @@ public class LoginPresenterImpl implements LoginModelContract.LoginPresenter {
 
 
     @Override
-    public void getQQAuthorize() {
+    public void getQQAuthorize(Activity activity) {
         TencentLoginUtils qqUtils = new TencentLoginUtils(activity);
         qqUtils.login(activity, new QQAuthorizeListener());
     }
 
     @Override
-    public void getSinaAuthorize() {
+    public void getSinaAuthorize(Activity activity) {
         SinaWeiboUtil sinaUtil = new SinaWeiboUtil(activity);
         sinaUtil.login(activity, new SinaAuthorizeListener());
     }

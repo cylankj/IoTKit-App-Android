@@ -18,6 +18,7 @@ package com.cylan.jiafeigou.utils;
 
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 
@@ -54,5 +55,13 @@ public class ActivityUtils {
                 .commit();
     }
 
+    public static void justPop(FragmentActivity activity) {
+        if (activity != null && activity.getSupportFragmentManager() != null) {
+            final int count = activity.getSupportFragmentManager().getBackStackEntryCount();
+            if (count > 0) {
+                activity.getSupportFragmentManager().popBackStack();
+            }
+        }
+    }
 
 }

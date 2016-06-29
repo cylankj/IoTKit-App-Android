@@ -32,7 +32,7 @@ public class RegisterByMailFragment extends LoginBaseFragment {
     EditText etRegisterUsername;
     @BindView(R.id.iv_register_clear_username)
     ImageView ivRegisterClearUsername;
-    @BindView(R.id.tv_model_commit)
+    @BindView(R.id.tv_forget_pwd_submit)
     TextView tvCommit;
     @BindView(R.id.tv_register_user_agreement)
     TextView tvRegisterUserAgreement;
@@ -57,7 +57,6 @@ public class RegisterByMailFragment extends LoginBaseFragment {
         View view = inflater.inflate(R.layout.fragment_register_by_mail_layout, container, false);
         ButterKnife.bind(this, view);
         initView(view);
-//        editTextLimitMaxInput(etRegisterUsername, 60);
         return view;
     }
 
@@ -111,7 +110,7 @@ public class RegisterByMailFragment extends LoginBaseFragment {
     }
 
 
-    @OnClick(R.id.tv_model_commit)
+    @OnClick(R.id.tv_forget_pwd_submit)
     public void regCommit(View view) {
         SetPwdFragment fragment = SetPwdFragment.newInstance(null);
         ActivityUtils.addFragmentToActivity(getChildFragmentManager(), fragment, R.id.rLayout_register);

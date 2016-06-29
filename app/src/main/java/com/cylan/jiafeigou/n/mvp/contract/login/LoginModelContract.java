@@ -1,8 +1,10 @@
 package com.cylan.jiafeigou.n.mvp.contract.login;
 
-import com.cylan.jiafeigou.n.mvp.model.LoginAccountBean;
+import android.app.Activity;
+
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
+import com.cylan.jiafeigou.n.mvp.model.LoginAccountBean;
 
 /**
  * Created by lxh on 16-6-24.
@@ -61,12 +63,12 @@ public interface LoginModelContract {
         /**
          * 获取QQ的授权
          */
-        void getQQAuthorize();
+        void getQQAuthorize(Activity activity);
 
         /**
          * 获取新浪微博的授权
          */
-        void getSinaAuthorize();
+        void getSinaAuthorize(Activity activity);
     }
 
 

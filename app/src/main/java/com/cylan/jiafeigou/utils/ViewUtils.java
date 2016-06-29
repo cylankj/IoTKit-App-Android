@@ -3,9 +3,12 @@ package com.cylan.jiafeigou.utils;
 import android.content.Context;
 import android.content.res.Resources;
 import android.os.Build;
+import android.text.method.HideReturnsTransformationMethod;
+import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 
 /**
  * Created by cylan-hunt on 16-6-12.
@@ -51,4 +54,16 @@ public class ViewUtils {
         final int height = getCompatStatusBarHeight(v.getContext());
         setMargins(v, 0, height, 0, 0);
     }
+
+    public static void showPwd(EditText text, boolean show) {
+        text.setTransformationMethod(show ?
+                HideReturnsTransformationMethod.getInstance()
+                : PasswordTransformationMethod.getInstance());
+    }
+
+    public static void enableEditTextCursor(EditText editText, boolean enable) {
+        editText.setFocusable(enable);
+        editText.setFocusableInTouchMode(enable);
+    }
 }
+

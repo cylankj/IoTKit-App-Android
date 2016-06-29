@@ -37,7 +37,7 @@ public class SetPwdFragment extends LoginBaseFragment {
     ImageView ivLoginClearPwd;
     @BindView(R.id.cb_show_pwd)
     CheckBox cbShowPwd;
-    @BindView(R.id.tv_model_commit)
+    @BindView(R.id.tv_forget_pwd_submit)
     TextView tvCommit;
     @BindView(R.id.lLayout_register_input)
     LinearLayout lLayoutRegisterInput;
@@ -92,7 +92,7 @@ public class SetPwdFragment extends LoginBaseFragment {
     }
 
 
-    @OnClick(R.id.tv_model_commit)
+    @OnClick(R.id.tv_forget_pwd_submit)
     public void registerCommit(View view) {
         String pwd = etLoginPwd.getText().toString().trim();
         if (TextUtils.isEmpty(pwd) || pwd.length() < 6) {

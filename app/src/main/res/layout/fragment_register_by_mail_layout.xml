@@ -45,7 +45,7 @@
             android:background="@color/color_f2f2f2" />
 
         <TextView
-            android:id="@+id/tv_model_commit"
+            android:id="@+id/tv_forget_pwd_submit"
             style="@style/login_model_commit_style"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="37dp"

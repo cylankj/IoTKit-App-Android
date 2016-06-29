@@ -5,50 +5,130 @@
     android:background="@color/color_white"
     android:clickable="true">
 
-    <LinearLayout
-        android:id="@+id/lLayout_register_input"
+    <include
+        android:id="@+id/rLayout_login_top"
+        layout="@layout/layout_login_top_item"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_marginLeft="19dp"
-        android:layout_marginRight="19dp"
-        android:layout_marginTop="44dp"
-        android:orientation="vertical">
+        android:layout_height="48dp"
+        android:layout_marginTop="60dp" />
 
-        <RelativeLayout
+    <FrameLayout
+        android:id="@+id/fLayout_forget_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/rLayout_login_top">
+
+        <LinearLayout
+            android:id="@+id/lLayout_register_input"
             android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:layout_marginTop="29dp"
-            android:orientation="horizontal">
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="19dp"
+            android:layout_marginRight="19dp"
+            android:layout_marginTop="44dp"
+            android:animateLayoutChanges="true"
+            android:orientation="vertical">
 
-            <EditText
-                android:id="@+id/et_forget_username"
-                android:maxLength="60"
-                style="@style/login_model_common_edittext_style"
-                android:layout_centerInParent="true"
-                android:hint="请输入手机号/邮箱" />
-
-            <ImageView
-                android:id="@+id/iv_forget_clear_username"
-                style="@style/clear_edittext_style"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true" />
+            <FrameLayout
+                android:id="@+id/fLayout_account_input_box"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginTop="30dp">
 
 
-        </RelativeLayout>
+                <EditText
+                    android:id="@+id/et_forget_username"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginTop="5dp"
+                    android:background="@null"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
+                    android:gravity="center"
+                    android:hint="请输入手机号/邮箱"
+                    android:maxLength="60"
+                    android:paddingLeft="40dp"
+                    android:paddingRight="40dp"
+                    android:textColor="@color/color_666666"
+                    android:textColorHint="@color/color_cecece"
+                    android:textCursorDrawable="@drawable/bg_common_cursor"
+                    android:textSize="15sp" />
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/color_f2f2f2" />
+                <ImageView
+                    android:id="@+id/iv_forget_clear_username"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="end"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="19dp"
+                    android:src="@drawable/btn_login_clear_text"
+                    android:visibility="gone" />
 
-        <TextView
-            android:id="@+id/tv_model_commit"
-            style="@style/login_model_commit_style"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="37dp"
-            android:text="继续" />
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_gravity="bottom"
+                    android:background="@color/color_f2f2f2" />
+            </FrameLayout>
 
-    </LinearLayout>
+            <FrameLayout
+                android:id="@+id/fLayout_verification_code_input_box"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginTop="30dp"
+                android:visibility="gone">
 
+
+                <EditText
+                    android:id="@+id/et_verification_input"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginTop="5dp"
+                    android:background="@null"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
+                    android:gravity="center"
+                    android:hint="请输入验证码"
+                    android:maxLength="60"
+                    android:numeric="integer"
+                    android:paddingLeft="40dp"
+                    android:paddingRight="40dp"
+                    android:textColor="@color/color_666666"
+                    android:textColorHint="@color/color_cecece"
+                    android:textCursorDrawable="@drawable/bg_common_cursor"
+                    android:textSize="15sp" />
+
+
+                <TextView
+                    android:id="@+id/tv_meter_get_code"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="end"
+                    android:enabled="false"
+                    android:gravity="center"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:textColor="@color/common_btn_color_state" />
+
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_gravity="bottom"
+                    android:background="@color/color_f2f2f2" />
+            </FrameLayout>
+
+
+            <TextView
+                android:id="@+id/tv_forget_pwd_submit"
+                style="@style/login_model_commit_style"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="37dp"
+                android:text="继续" />
+
+        </LinearLayout>
+    </FrameLayout>
 </RelativeLayout>

@@ -1,15 +1,12 @@
 package com.cylan.jiafeigou.utils;
 
 import android.view.View;
-import android.view.animation.AnticipateInterpolator;
-import android.view.animation.AnticipateOvershootInterpolator;
-import android.view.animation.BounceInterpolator;
+import android.view.animation.DecelerateInterpolator;
 import android.view.animation.OvershootInterpolator;
 
 import com.nineoldandroids.animation.Animator;
 import com.nineoldandroids.animation.AnimatorSet;
 import com.nineoldandroids.animation.ObjectAnimator;
-import com.superlog.SLog;
 
 /**
  * Created by lxh on 16-6-16.
@@ -151,5 +148,15 @@ public class AnimatorUtils {
         }
     }
 
+    public static void onSimpleBounceUpIn(View target, final long duration, final long delay) {
+        target.setTranslationY(800);
+        AnimatorSet set = new AnimatorSet();
+        set.playTogether(ObjectAnimator.ofFloat(target, "translationY", 800, -30.0F, 0.0F));
+//                ObjectAnimator.ofFloat(target, "alpha", 0.0F, 1.0F, 1.0F, 1.0F));
+        set.setDuration(duration);
+        set.setStartDelay(delay);
+        set.setInterpolator(new DecelerateInterpolator());
+        set.start();
+    }
 
 }
