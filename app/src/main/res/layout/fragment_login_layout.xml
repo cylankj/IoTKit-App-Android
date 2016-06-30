@@ -96,26 +96,26 @@
                 android:layout_gravity="end|center_vertical"
                 android:orientation="horizontal">
 
-                <CheckBox
-                    android:id="@+id/cb_show_pwd"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:background="@drawable/icon_common_show_pwd_selector"
-                    android:button="@null"
-                    android:checked="false"
-                    android:paddingLeft="15dp"
-                    android:paddingRight="7dp" />
-
                 <ImageView
                     android:id="@+id/iv_login_clear_pwd"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_gravity="center_vertical"
-                    android:paddingLeft="7dp"
-                    android:paddingRight="19dp"
+                    android:paddingLeft="15dp"
+                    android:paddingRight="7dp"
                     android:src="@drawable/btn_login_clear_text"
                     android:visibility="invisible" />
+
+                <CheckBox
+                    android:id="@+id/cb_show_pwd"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginRight="19dp"
+                    android:background="@drawable/icon_common_show_pwd_selector"
+                    android:button="@null"
+                    android:checked="false"
+                    android:paddingLeft="7dp" />
 
 
             </LinearLayout>
@@ -135,7 +135,7 @@
         <com.cylan.jiafeigou.widget.LoginButton
             android:id="@+id/lb_login_commit"
             android:layout_width="173dp"
-            android:layout_height="42dp"
+            android:layout_height="50dp"
             android:layout_below="@+id/rLayout_pwd_input_box"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="37dp"

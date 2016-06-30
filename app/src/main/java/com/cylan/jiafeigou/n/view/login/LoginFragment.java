@@ -18,6 +18,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.NewHomeActivity;
 import com.cylan.jiafeigou.n.mvp.contract.login.LoginModelContract;
@@ -104,6 +105,15 @@ public class LoginFragment extends LoginBaseFragment implements LoginModelContra
         printFragment();
         showLayout();
         return view;
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        if (BuildConfig.DEBUG) {
+            etLoginUsername.setText("hongdongsheng@cylan.com.cn");
+            etLoginPwd.setText("1234567");
+        }
     }
 
     @Override

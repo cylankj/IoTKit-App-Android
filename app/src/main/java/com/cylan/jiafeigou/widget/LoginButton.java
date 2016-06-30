@@ -5,6 +5,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -14,6 +15,8 @@ import android.graphics.Path;
 import android.graphics.RectF;
 import android.os.Build;
 import android.util.AttributeSet;
+import android.util.DisplayMetrics;
+import android.util.TypedValue;
 import android.view.ViewGroup;
 import android.view.animation.LinearInterpolator;
 import android.widget.TextView;
@@ -45,33 +48,43 @@ public class LoginButton extends TextView {
     private boolean hasRotate = false;
 
     int strokeColor;
-    int strokeWidth;
+
+    private PaintFlagsDrawFilter paintFlagsDrawFilter;
+
+    private RectF rectFL = new RectF();
 
     public LoginButton(Context context) {
-        super(context);
-        init(context, null, 0);
+        this(context, null);
     }
 
     public LoginButton(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        init(context, attrs, 0);
+        this(context, attrs, 0);
     }
 
     public LoginButton(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        init(context, attrs, defStyleAttr);
+        init(attrs, defStyleAttr);
     }
 
+    private float outerCircleRadius = 5;
+    private float innerCircleRadius = 3;
+    private float strokeWidth = 1;
 
-    private void init(Context context, AttributeSet attrs, int defStyleAttr) {
+    private void init(AttributeSet attrs, int defStyleAttr) {
         if (attrs == null) {
             strokeColor = Color.BLACK;
-            strokeWidth = 5;
+            strokeWidth = convertToPx(strokeWidth, getResources());
         } else {
-            TypedArray array = getContext().obtainStyledAttributes(attrs, R.styleable.LoginButton, defStyleAttr, 0);
-            strokeColor = array.getColor(R.styleable.LoginButton_lb_stroke_color, Color.BLACK);
-            strokeWidth = 5;  //
+            TypedArray array = null;
+            try {
+                array = getContext().obtainStyledAttributes(attrs, R.styleable.LoginButton, defStyleAttr, 0);
+                strokeColor = array.getColor(R.styleable.LoginButton_lb_stroke_color, Color.BLACK);
+                strokeWidth = convertToPx(strokeWidth, getResources());
+            } finally {
+                if (array != null) array.recycle();
+            }
         }
+
         paint = new Paint();
         paint.setStyle(Paint.Style.STROKE);
         paint.setStrokeWidth(strokeWidth);
@@ -79,6 +92,14 @@ public class LoginButton extends TextView {
         paint.setAntiAlias(true);
         path = new Path();
         text = getText().toString();
+        paintFlagsDrawFilter = new PaintFlagsDrawFilter(0, Paint.ANTI_ALIAS_FLAG | Paint.FILTER_BITMAP_FLAG);
+        outerCircleRadius = convertToPx(outerCircleRadius, getResources());
+        innerCircleRadius = convertToPx(innerCircleRadius, getResources());
+    }
+
+    public static float convertToPx(float dp, Resources resources) {
+        DisplayMetrics dm = resources.getDisplayMetrics();
+        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, dm);
     }
 
     @Override
@@ -89,8 +110,8 @@ public class LoginButton extends TextView {
             srcH = h;
             isInit = true;
         }
-        viewW = w - strokeWidth * 2;
-        viewH = h - strokeWidth * 2;
+        viewW = w;
+        viewH = h;
         paint.setTextSize(viewH / 3);
     }
 
@@ -99,27 +120,40 @@ public class LoginButton extends TextView {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         canvas.rotate(degrees, canvas.getWidth() / 2, canvas.getHeight() / 2);
-        canvas.setDrawFilter(new PaintFlagsDrawFilter(0, Paint.ANTI_ALIAS_FLAG | Paint.FILTER_BITMAP_FLAG));
+        canvas.setDrawFilter(paintFlagsDrawFilter);
         if (viewH > viewW) {
-            return;
+            viewW = viewH;
+//            return;
         }
-        path.reset();
-        path.moveTo(viewH / 2 + strokeWidth, strokeWidth);
-        path.lineTo(viewW - viewH / 2 + strokeWidth, strokeWidth);
-        path.arcTo(new RectF(viewW - viewH + strokeWidth, strokeWidth, viewW + strokeWidth, viewH + strokeWidth), -90, 180, false);
-        path.lineTo(viewH / 2 + strokeWidth, viewH + strokeWidth);
-        path.arcTo(new RectF(strokeWidth, strokeWidth, viewH + strokeWidth, viewH + strokeWidth), 90, 180, false);
-        path.close();
-        paint.setStyle(Paint.Style.STROKE);
-        canvas.drawPath(path, paint);
+        if (viewH != viewW) {
+            path.reset();
+            path.moveTo(viewH / 2 + strokeWidth / 2, outerCircleRadius);
+            path.lineTo(viewW - viewH / 2 + outerCircleRadius / 2, outerCircleRadius);
+            rectFL.left = viewW - viewH;
+            rectFL.top = outerCircleRadius;
+            rectFL.right = viewW - outerCircleRadius / 2 - strokeWidth / 2;
+            rectFL.bottom = viewH - outerCircleRadius;
+            path.arcTo(rectFL, -90, 180, false);
+            path.lineTo(viewH / 2, viewH - outerCircleRadius);
+            rectFL.left = outerCircleRadius;
+            rectFL.top = outerCircleRadius;
+            rectFL.right = viewH;
+            rectFL.bottom = viewH - outerCircleRadius;
+            path.arcTo(rectFL, 90, 180, false);
+            path.close();
+            paint.setStyle(Paint.Style.STROKE);
+            canvas.drawPath(path, paint);
+        }
         if (viewH == viewW) {
             canvas.save();
+            paint.setStyle(Paint.Style.STROKE);
+            canvas.drawCircle(viewH / 2, viewW / 2, viewH / 2 - outerCircleRadius, paint);
             canvas.rotate(30, canvas.getWidth() / 2, canvas.getHeight() / 2);
             paint.setStyle(Paint.Style.FILL);
             paint.setColor(Color.WHITE);
-            canvas.drawCircle(viewH / 2, strokeWidth, 25, paint); //圆点外圆白底
+            canvas.drawCircle(viewH / 2, outerCircleRadius, outerCircleRadius, paint); //圆点外圆白底
             paint.setColor(strokeColor);
-            canvas.drawCircle(viewH / 2, strokeWidth, 10, paint);//圆点内圆
+            canvas.drawCircle(viewH / 2, outerCircleRadius, innerCircleRadius, paint);//圆点内圆
             canvas.restore();
         }
     }
@@ -136,9 +170,12 @@ public class LoginButton extends TextView {
         valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
-                int currW = ((Integer) animation.getAnimatedValue()).intValue();
+                int currW = (int) animation.getAnimatedValue();
+                if (currW < viewH) {
+                    currW = viewH;
+                }
                 ViewGroup.LayoutParams params = getLayoutParams();
-                params.width = currW + 10;
+                params.width = currW;
                 setLayoutParams(params);
             }
         });
@@ -166,7 +203,7 @@ public class LoginButton extends TextView {
         valueAnimator2.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
-                degrees = ((Integer) animation.getAnimatedValue()).intValue();
+                degrees = (int) animation.getAnimatedValue();
                 invalidate();
             }
         });
@@ -189,13 +226,13 @@ public class LoginButton extends TextView {
         if (viewW != viewH) {
             return;
         }
-        valueAnimator3 = ValueAnimator.ofInt(viewW, srcW - 10);
+        valueAnimator3 = ValueAnimator.ofFloat(viewW, srcW - strokeWidth);
         valueAnimator3.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
-                int currW = ((Integer) animation.getAnimatedValue()).intValue();
+                float currW = (float) animation.getAnimatedValue();
                 ViewGroup.LayoutParams params = getLayoutParams();
-                params.width = currW + 10;
+                params.width = (int) (currW + strokeWidth);
                 setLayoutParams(params);
             }
         });
