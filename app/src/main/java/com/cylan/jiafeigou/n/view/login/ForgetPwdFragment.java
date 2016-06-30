@@ -291,7 +291,8 @@ public class ForgetPwdFragment extends Fragment implements ForgetPwdContract.For
                 Bundle bundle = getArguments();
                 bundle.putString(KEY_ACCOUNT_TO_SEND_EMAIL, account);
                 getChildFragmentManager().beginTransaction()
-                        .setCustomAnimations(R.anim.slide_right_in, R.anim.slide_out_left)
+                        .setCustomAnimations(R.anim.slide_right_in, R.anim.slide_out_right
+                                , R.anim.slide_out_right, R.anim.slide_out_right)
                         .replace(R.id.fLayout_forget_container,
                                 ForgetPwdByEmailFragment.newInstance(getArguments()),
                                 "mailFragment")
@@ -301,7 +302,8 @@ public class ForgetPwdFragment extends Fragment implements ForgetPwdContract.For
                 //show timer
                 ResetPwdFragment fragment = ResetPwdFragment.newInstance(getArguments());
                 getChildFragmentManager().beginTransaction()
-                        .setCustomAnimations(R.anim.slide_right_in, R.anim.slide_out_left)
+                        .setCustomAnimations(R.anim.slide_right_in, R.anim.slide_out_right
+                                , R.anim.slide_out_right, R.anim.slide_out_right)
                         .replace(R.id.fLayout_forget_container,
                                 fragment,
                                 "rstPwdFragment")

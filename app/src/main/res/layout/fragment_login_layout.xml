@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tim="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/rLayout_login"
+    android:id="@+id/fLayout_login"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_marginTop="10dp"
@@ -161,10 +161,10 @@
     <!--</LinearLayout>-->
 
     <RelativeLayout
+        android:layout_gravity="bottom|center_horizontal"
         android:id="@+id/rLayout_login_third_party"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
         android:layout_marginBottom="24dp"
         android:orientation="horizontal">
 
@@ -196,4 +196,4 @@
     </RelativeLayout>
 
 
-</RelativeLayout>
+</FrameLayout>

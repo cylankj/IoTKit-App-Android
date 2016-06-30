@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -51,12 +50,12 @@ public class BeforeLoginFragment extends Fragment {
     public void toLogin(View view) {
         clearChildren();
         Bundle bundle = new Bundle();
-        bundle.putInt(KEY_ACTIVITY_FRAGMENT_CONTAINER_ID, R.id.rLayoutWelcomeRoot);
+        bundle.putInt(KEY_ACTIVITY_FRAGMENT_CONTAINER_ID, android.R.id.content);
         getFragmentManager()
                 .beginTransaction()
                 .setCustomAnimations(R.anim.slide_up_in, R.anim.slide_down_out
                         , R.anim.slide_out_left, R.anim.slide_out_left)
-                .add(R.id.rLayoutWelcomeRoot, LoginContainerFragment.newInstance(bundle))
+                .add(android.R.id.content, LoginContainerFragment.newInstance(bundle))
                 .commit();
     }
 
@@ -65,9 +64,9 @@ public class BeforeLoginFragment extends Fragment {
      */
     private void clearChildren() {
         Activity activity = getActivity();
-        if (activity != null && (activity instanceof AppCompatActivity)) {
+        if (activity != null) {
             ViewGroup v = (ViewGroup) activity.getWindow().getDecorView().findViewById(android.R.id.content);
-            ViewGroup group = (ViewGroup) v.findViewById(R.id.rLayoutWelcomeRoot);
+            ViewGroup group = (ViewGroup) v.findViewById(android.R.id.content);
             if (group != null) {
                 group.removeAllViews();
             }

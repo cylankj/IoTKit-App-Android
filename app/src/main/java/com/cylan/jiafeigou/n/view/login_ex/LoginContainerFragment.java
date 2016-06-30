@@ -3,15 +3,21 @@ package com.cylan.jiafeigou.n.view.login_ex;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.impl.LoginPresenterImpl;
 import com.cylan.jiafeigou.n.view.login.LoginFragment;
+import com.cylan.jiafeigou.n.view.splash.WelcomePageActivity;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -21,6 +27,10 @@ import butterknife.ButterKnife;
 public class LoginContainerFragment extends Fragment {
 
     public static final String KEY_ACTIVITY_FRAGMENT_CONTAINER_ID = "activityFragmentContainerId";
+    @BindView(R.id.iv_login_top_left)
+    ImageView ivLoginTopLeft;
+    @BindView(R.id.tv_login_top_right)
+    TextView tvLoginTopRight;
 
 
     public LoginContainerFragment() {
@@ -55,14 +65,35 @@ public class LoginContainerFragment extends Fragment {
         LoginFragment fragment = LoginFragment.newInstance(getArguments());
         getChildFragmentManager()
                 .beginTransaction()
-                .setCustomAnimations(R.anim.slide_up_in, R.anim.slide_down_out)
+                .setCustomAnimations(R.anim.slide_up_in, R.anim.slide_down_out
+                        , R.anim.slide_in_left, R.anim.slide_out_right)
                 .add(R.id.fLayout_login_container, fragment)
+                .addToBackStack("LogInFragment")
                 .commit();
         new LoginPresenterImpl(fragment);
         return view;
     }
 
-    public interface UpdateTitleListener {
-        void update(View.OnClickListener listenerX, CharSequence charCenter, CharSequence charRight, View.OnClickListener listenerRight);
+    @OnClick({R.id.iv_login_top_left, R.id.tv_login_top_right})
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.iv_login_top_left:
+                if (getActivity() != null && getActivity() instanceof WelcomePageActivity) {
+                    getActivity().finish();
+                }
+                break;
+            case R.id.tv_login_top_right:
+                final String content = tvLoginTopRight.getText().toString();
+                if (TextUtils.equals(content, getString(R.string.item_register))) {
+                    //register
+                } else if (TextUtils.equals(content, getString(R.string.SignIn))) {
+
+                }
+                break;
+        }
+    }
+
+    private void update() {
+
     }
 }

@@ -56,7 +56,7 @@
   <string name="NO_SDCARD">Manca la carta Micro SD</string>
   <string name="PHONE_EMAIL">E-mail</string>
   <string name="PASSWORD">Password</string>
-  <string name="LOGIN">Accedere</string>
+  <string name="SignIn">Accedere</string>
   <string name="FORGOT_PWD">Password dimenticata</string>
   <string name="FORGOT_PWD_1">Dimenticata?</string>
   <string name="SIGN_UP">Inscriviti</string>

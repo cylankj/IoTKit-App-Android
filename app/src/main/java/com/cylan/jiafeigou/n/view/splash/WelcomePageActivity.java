@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
@@ -21,8 +22,8 @@ import com.cylan.jiafeigou.n.NewHomeActivity;
 import com.cylan.jiafeigou.n.mvp.contract.splash.SplashContract;
 import com.cylan.jiafeigou.n.mvp.impl.splash.SplashPresenterImpl;
 import com.cylan.jiafeigou.n.view.adapter.SimpleFragmentAdapter;
-import com.cylan.jiafeigou.utils.UiHelper;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
+import com.cylan.jiafeigou.utils.UiHelper;
 import com.cylan.viewindicator.CirclePageIndicator;
 
 import java.util.ArrayList;
@@ -50,8 +51,7 @@ public class WelcomePageActivity extends BaseFullScreenFragmentActivity implemen
     ViewPager vpWelcome;
     @BindView(R.id.v_indicator)
     CirclePageIndicator vIndicator;
-    @BindView(R.id.rLayoutWelcomeRoot)
-    RelativeLayout rWelcomeRoot;
+    @Nullable
 
     private SplashContract.PresenterOps mPresenter;
     private final String TAG_COMEIN = "isTheUserFirstLoginIn";
@@ -128,8 +128,8 @@ public class WelcomePageActivity extends BaseFullScreenFragmentActivity implemen
     }
 
     private boolean isFirstUseApp() {
-         return PreferencesUtils.getBoolean(this, TAG_COMEIN, true);
-       // return true;
+        return PreferencesUtils.getBoolean(this, TAG_COMEIN, true);
+        // return true;
     }
 
     private void setFirstUseApp() {

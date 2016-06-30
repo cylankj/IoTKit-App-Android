@@ -14,6 +14,7 @@ import android.view.animation.Animation;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -70,8 +71,8 @@ public class LoginFragment extends LoginBaseFragment implements LoginModelContra
     @BindView(R.id.rLayout_login_third_party)
     RelativeLayout rLayoutLoginThirdParty;
 
-    @BindView(R.id.rLayout_login)
-    RelativeLayout rLayoutLogin;
+    @BindView(R.id.fLayout_login)
+    FrameLayout fLayoutLogin;
 
     @BindView(R.id.tv_qqLogin_commit)
     TextView tvQqLoginCommit;

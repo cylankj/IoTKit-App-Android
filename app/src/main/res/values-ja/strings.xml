@@ -56,7 +56,7 @@
   <string name="NO_SDCARD">Micro SDカードが検出できません</string>
   <string name="PHONE_EMAIL">メールアドレス</string>
   <string name="PASSWORD">パスワード</string>
-  <string name="LOGIN">ログイン</string>
+  <string name="SignIn">ログイン</string>
   <string name="FORGOT_PWD">パスワード忘れ</string>
   <string name="FORGOT_PWD_1">パスワード忘れ？</string>
   <string name="SIGN_UP">ユーザー登録</string>
