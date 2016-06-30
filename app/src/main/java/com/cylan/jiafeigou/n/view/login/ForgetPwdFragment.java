@@ -19,6 +19,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.mvp.contract.login.ForgetPwdContract;
 import com.cylan.jiafeigou.n.mvp.impl.RstPwdPresenterImpl;
 import com.cylan.jiafeigou.n.mvp.model.RequestResetPwdBean;
@@ -29,7 +30,6 @@ import com.cylan.jiafeigou.utils.IMEUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;
 
 import java.util.List;
-import java.util.regex.Pattern;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -44,8 +44,6 @@ import butterknife.OnTextChanged;
 
 public class ForgetPwdFragment extends Fragment implements ForgetPwdContract.ForgetPwdView {
 
-    public static final String KEY_ACCOUNT_TO_SEND_EMAIL = "key_to_send_email";
-    public static final String ACCEPT_TYPE = "accept_type";
 
     @BindView(R.id.et_forget_username)
     EditText etForgetUsername;
@@ -66,9 +64,7 @@ public class ForgetPwdFragment extends Fragment implements ForgetPwdContract.For
      */
     private int acceptType = 0;
     private ForgetPwdContract.ForgetPwdPresenter presenter;
-    private static final int TYPE_INVALID = -1;
-    private static final int TYPE_PHONE = 0;
-    private static final int TYPE_EMAIL = 1;
+
 
     private CountDownTimer countDownTimer;
 
@@ -76,7 +72,7 @@ public class ForgetPwdFragment extends Fragment implements ForgetPwdContract.For
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Bundle bundle = getArguments();
-        acceptType = bundle.getInt(ACCEPT_TYPE);
+        acceptType = bundle.getInt(JConstant.KEY_LOCALE);
         List<Fragment> fragmentList = getActivity().getSupportFragmentManager().getFragments();
         Log.d("", "" + fragmentList);
         initCountDownTimer();
@@ -154,20 +150,19 @@ public class ForgetPwdFragment extends Fragment implements ForgetPwdContract.For
         }
     }
 
-    private final static Pattern PHONE_REG = Pattern.compile("^1[3|4|5|7|8]\\d{9}$");
 
     private int checkInputType() {
         final String account = etForgetUsername.getText().toString();
         final boolean isEmail = Patterns.EMAIL_ADDRESS.matcher(account).find();
         if (isEmail) {
             Toast.makeText(getActivity(), "请输入有效账号", Toast.LENGTH_SHORT).show();
-            return TYPE_EMAIL;
+            return JConstant.TYPE_EMAIL;
         } else {
-            final boolean isPhone = PHONE_REG.matcher(account).find();
+            final boolean isPhone = JConstant.PHONE_REG.matcher(account).find();
             if (isPhone) {
-                return TYPE_PHONE;
+                return JConstant.TYPE_PHONE;
             }
-            return TYPE_INVALID;
+            return JConstant.TYPE_INVALID;
         }
     }
 
@@ -202,11 +197,11 @@ public class ForgetPwdFragment extends Fragment implements ForgetPwdContract.For
     private void next() {
         final int type = checkInputType();
         switch (type) {
-            case TYPE_INVALID:
+            case JConstant.TYPE_INVALID:
                 Toast.makeText(getActivity(), "不合法", Toast.LENGTH_SHORT).show();
                 enableEditTextCursor(true);
                 return;
-            case TYPE_PHONE:
+            case JConstant.TYPE_PHONE:
                 if (fLayoutVerificationCodeInputBox.getVisibility() == View.GONE) {
                     start2HandleVerificationCode();
                 } else {
@@ -225,7 +220,7 @@ public class ForgetPwdFragment extends Fragment implements ForgetPwdContract.For
                     }
                 }
                 break;
-            case TYPE_EMAIL:
+            case JConstant.TYPE_EMAIL:
                 if (presenter != null)
                     presenter.executeSubmitAccount(etForgetUsername.getText().toString().trim());
                 break;
@@ -246,7 +241,7 @@ public class ForgetPwdFragment extends Fragment implements ForgetPwdContract.For
     public void userNameChange(CharSequence s, int start, int before, int count) {
         final boolean flag = TextUtils.isEmpty(s);
         ivForgetClearUsername.setVisibility(flag ? View.GONE : View.VISIBLE);
-        boolean codeValid = checkInputType() != TYPE_INVALID;
+        boolean codeValid = checkInputType() != JConstant.TYPE_INVALID;
         tvForgetPwdSubmit.setEnabled(!flag && codeValid);
     }
 
@@ -274,9 +269,9 @@ public class ForgetPwdFragment extends Fragment implements ForgetPwdContract.For
         if (ret == -1)
             return;
         TextView view = (TextView) getView().findViewById(R.id.tv_login_top_center);
-        if (ret == 1)
+        if (ret == JConstant.TYPE_EMAIL)
             view.setText(getString(R.string.EMAIL));
-        else if (ret == 2) {
+        else if (ret == JConstant.TYPE_PHONE) {
             view.setText("新密码");
         }
     }
@@ -289,7 +284,7 @@ public class ForgetPwdFragment extends Fragment implements ForgetPwdContract.For
             case ForgetPwdContract.AUTHORIZE_MAIL:
                 final String account = etForgetUsername.getText().toString().trim();
                 Bundle bundle = getArguments();
-                bundle.putString(KEY_ACCOUNT_TO_SEND_EMAIL, account);
+                bundle.putString(JConstant.KEY_ACCOUNT_TO_SEND, account);
                 getChildFragmentManager().beginTransaction()
                         .setCustomAnimations(R.anim.slide_right_in, R.anim.slide_out_right
                                 , R.anim.slide_out_right, R.anim.slide_out_right)

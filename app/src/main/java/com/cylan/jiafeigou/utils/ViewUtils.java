@@ -65,5 +65,7 @@ public class ViewUtils {
         editText.setFocusable(enable);
         editText.setFocusableInTouchMode(enable);
     }
+
+
 }
 

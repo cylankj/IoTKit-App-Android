@@ -1,0 +1,27 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    android:orientation="vertical"
+    android:paddingLeft="10dp"
+    android:paddingRight="10dp"
+    tools:context="com.cylan.jiafeigou.n.view.login_ex.SetupPwdFragment">
+
+    <Space
+        android:layout_width="1dp"
+        android:layout_height="60dp" />
+
+    <include
+        android:id="@+id/rLayout_login_top"
+        layout="@layout/layout_login_top_item" />
+
+    <include layout="@layout/simple_input_box" />
+
+    <TextView
+        android:id="@+id/tv_register_pwd_submit"
+        style="@style/login_model_commit_style"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="37dp"
+        android:text="继续" />
+</LinearLayout>

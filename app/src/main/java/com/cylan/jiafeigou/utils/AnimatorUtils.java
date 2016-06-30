@@ -159,4 +159,14 @@ public class AnimatorUtils {
         set.start();
     }
 
+    public static void onSimpleTangle(final long duration, final long delay, View target) {
+        AnimatorSet set = new AnimatorSet();
+        set.playTogether(ObjectAnimator.ofFloat(target, "scaleY", 1.0F, 1.1F, 1.0F),
+                ObjectAnimator.ofFloat(target, "scaleX", 1.0F, 1.1F, 1.0F));
+        set.setDuration(duration);
+        set.setInterpolator(new OvershootInterpolator());
+        set.setStartDelay(delay);
+        set.start();
+    }
+
 }

@@ -26,7 +26,7 @@ import butterknife.OnClick;
  */
 public class LoginContainerFragment extends Fragment {
 
-    public static final String KEY_ACTIVITY_FRAGMENT_CONTAINER_ID = "activityFragmentContainerId";
+
     @BindView(R.id.iv_login_top_left)
     ImageView ivLoginTopLeft;
     @BindView(R.id.tv_login_top_right)

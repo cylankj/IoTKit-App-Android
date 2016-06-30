@@ -7,18 +7,16 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.utils.ActivityUtils;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-import static com.cylan.jiafeigou.n.view.login.ForgetPwdFragment.KEY_ACCOUNT_TO_SEND_EMAIL;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -66,7 +64,7 @@ public class ForgetPwdByEmailFragment extends Fragment {
 
     private String getContent() {
         return String.format(getString(R.string.send_email_tip_content),
-                getArguments().getString(KEY_ACCOUNT_TO_SEND_EMAIL));
+                getArguments().getString(JConstant.KEY_ACCOUNT_TO_SEND));
     }
 
 

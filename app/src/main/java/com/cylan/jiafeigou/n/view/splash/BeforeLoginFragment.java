@@ -10,13 +10,14 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.NewHomeActivity;
-import com.cylan.jiafeigou.n.view.login_ex.LoginContainerFragment;
+import com.cylan.jiafeigou.n.mvp.impl.LoginPresenterImpl;
+import com.cylan.jiafeigou.n.view.login.LoginFragment;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-import static com.cylan.jiafeigou.n.view.login_ex.LoginContainerFragment.KEY_ACTIVITY_FRAGMENT_CONTAINER_ID;
 
 /**
  * 登陆之前的界面，可以选择登陆，或者随便看看
@@ -50,13 +51,22 @@ public class BeforeLoginFragment extends Fragment {
     public void toLogin(View view) {
         clearChildren();
         Bundle bundle = new Bundle();
-        bundle.putInt(KEY_ACTIVITY_FRAGMENT_CONTAINER_ID, android.R.id.content);
+        bundle.putInt(JConstant.KEY_ACTIVITY_FRAGMENT_CONTAINER_ID, android.R.id.content);
+//        getFragmentManager()
+//                .beginTransaction()
+//                .setCustomAnimations(R.anim.slide_up_in, R.anim.slide_down_out
+//                        , R.anim.slide_out_left, R.anim.slide_out_left)
+//                .add(android.R.id.content, LoginContainerFragment.newInstance(bundle))
+//                .commit();
+        LoginFragment fragment = LoginFragment.newInstance(bundle);
         getFragmentManager()
                 .beginTransaction()
                 .setCustomAnimations(R.anim.slide_up_in, R.anim.slide_down_out
-                        , R.anim.slide_out_left, R.anim.slide_out_left)
-                .add(android.R.id.content, LoginContainerFragment.newInstance(bundle))
+                        , R.anim.slide_in_left, R.anim.slide_out_right)
+                .add(android.R.id.content, fragment)
+                .addToBackStack("LogInFragment")
                 .commit();
+        new LoginPresenterImpl(fragment);
     }
 
     /**

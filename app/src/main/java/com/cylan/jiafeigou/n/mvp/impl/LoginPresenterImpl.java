@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.widget.Toast;
 
 import com.cylan.jiafeigou.n.mvp.contract.login.LoginModelContract;
 import com.cylan.jiafeigou.n.mvp.model.LoginAccountBean;
@@ -105,6 +106,11 @@ public class LoginPresenterImpl implements LoginModelContract.LoginPresenter {
     public void getSinaAuthorize(Activity activity) {
         SinaWeiboUtil sinaUtil = new SinaWeiboUtil(activity);
         sinaUtil.login(activity, new SinaAuthorizeListener());
+    }
+
+    @Override
+    public void registerByPhone(String phone, String verificationCode) {
+        SLog.d("just send phone ");
     }
 
     /**
