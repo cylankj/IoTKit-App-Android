@@ -16,10 +16,10 @@ public interface ForgetPwdContract {
     /**
      * 账号未注册
      */
-    int AUTHORIZE_RET_FAILED = 0;
+    int THIS_ACCOUNT_NOT_REGISTERED = 0;
 
 
-    interface ForgetPwdView extends BaseView<ForgetPwdPresenter> {
+    interface View extends BaseView<Presenter> {
 
         /**
          * 登陆结果
@@ -28,9 +28,10 @@ public interface ForgetPwdContract {
          */
         void submitResult(RequestResetPwdBean bean);
 
+
     }
 
-    interface ForgetPwdPresenter extends BasePresenter {
+    interface Presenter extends BasePresenter {
         /**
          * 账号
          *

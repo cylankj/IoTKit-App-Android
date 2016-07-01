@@ -4,7 +4,6 @@ import com.cylan.jiafeigou.n.mvp.contract.login.RstPwdContract;
 
 import org.msgpack.annotation.NotNullable;
 
-import java.lang.ref.WeakReference;
 import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
@@ -17,19 +16,13 @@ import rx.schedulers.Schedulers;
 /**
  * Created by cylan-hunt on 16-6-29.
  */
-public class RstPwdPresenterImpl implements RstPwdContract.RstPwdPresenter {
-
-    WeakReference<RstPwdContract.RstPwdView> weakReference;
+public class PresenterImpl extends AbstractPresenter<RstPwdContract.View> implements RstPwdContract.Presenter {
 
     Subscription subscription;
 
-    public RstPwdPresenterImpl(RstPwdContract.RstPwdView view) {
-        weakReference = new WeakReference<>(view);
+    public PresenterImpl(RstPwdContract.View view) {
+        super(view);
         view.setPresenter(this);
-    }
-
-    public RstPwdContract.RstPwdView getView() {
-        return weakReference.get();
     }
 
     @Override

@@ -74,6 +74,16 @@ public class FragmentSplash extends Fragment implements SplashContract.View {
 
     }
 
+    @Override
+    public void timeSplashed() {
+
+    }
+
+    @Override
+    public void finishDelayed() {
+
+    }
+
 
     private static class SimpleChangeListener implements ViewPager.OnPageChangeListener {
         @Override

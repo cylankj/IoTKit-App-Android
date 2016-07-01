@@ -3,6 +3,8 @@ package com.cylan.jiafeigou.n.mvp.impl.home;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import com.cylan.jiafeigou.n.mvp.contract.home.HomeMineContract;
+import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomePageListContract;
 import com.cylan.utils.RandomUtils;
@@ -22,14 +24,13 @@ import rx.schedulers.Schedulers;
 /**
  * Created by hunt on 16-5-23.
  */
-public class HomePageListPresenterImpl implements HomePageListContract.Presenter {
+public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListContract.View> implements HomePageListContract.Presenter {
 
-    private WeakReference<HomePageListContract.View> viewWeakReference;
 
     private Subscription onRefreshSubscription;
 
     public HomePageListPresenterImpl(HomePageListContract.View view) {
-        viewWeakReference = new WeakReference<>(view);
+        super(view);
         view.setPresenter(this);
     }
 
@@ -43,10 +44,6 @@ public class HomePageListPresenterImpl implements HomePageListContract.Presenter
         unRegisterSubscription(onRefreshSubscription);
     }
 
-    @Nullable
-    private HomePageListContract.View getView() {
-        return viewWeakReference != null ? viewWeakReference.get() : null;
-    }
 
     /**
      * 反注册

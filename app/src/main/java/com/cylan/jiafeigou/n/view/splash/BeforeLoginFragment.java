@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,7 +23,7 @@ import butterknife.OnClick;
  * Created by lxh on 16-6-12.
  */
 
-public class BeforeLoginFragment extends Fragment {
+public class BeforeLoginFragment extends android.support.v4.app.Fragment {
 
     @Nullable
     @Override

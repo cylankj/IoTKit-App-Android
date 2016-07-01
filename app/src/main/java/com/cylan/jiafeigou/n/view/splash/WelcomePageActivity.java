@@ -1,6 +1,7 @@
 package com.cylan.jiafeigou.n.view.splash;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,7 +11,6 @@ import android.support.annotation.StringRes;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
-import android.view.View;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -41,7 +41,7 @@ import permissions.dispatcher.RuntimePermissions;
  * Created by chen on 5/24/16.
  */
 @RuntimePermissions
-public class WelcomePageActivity extends BaseFullScreenFragmentActivity implements SplashContract.ViewRequiredOps {
+public class WelcomePageActivity extends BaseFullScreenFragmentActivity implements SplashContract.View {
 
 
     @BindView(R.id.imgvWelcomeSplash)
@@ -156,7 +156,7 @@ public class WelcomePageActivity extends BaseFullScreenFragmentActivity implemen
         } else {
             initLoginPage();
         }
-        imgvWelcomeSplash.setVisibility(View.GONE);
+        imgvWelcomeSplash.setVisibility(android.view.View.GONE);
         imgvWelcomeSplash.startAnimation(AnimationUtils.loadAnimation(this, R.anim.push_up_out));
     }
 
@@ -206,6 +206,16 @@ public class WelcomePageActivity extends BaseFullScreenFragmentActivity implemen
                 .show();
     }
 
+    @Override
+    public void setPresenter(SplashContract.Presenter presenter) {
+
+    }
+
+    @Override
+    public Context getContext() {
+        return null;
+    }
+
     private class PageChangeListen implements ViewPager.OnPageChangeListener {
 
         @Override
@@ -216,9 +226,9 @@ public class WelcomePageActivity extends BaseFullScreenFragmentActivity implemen
         @Override
         public void onPageSelected(int position) {
             if (position > 2)
-                vIndicator.setVisibility(View.GONE);
+                vIndicator.setVisibility(android.view.View.GONE);
             else
-                vIndicator.setVisibility(View.VISIBLE);
+                vIndicator.setVisibility(android.view.View.VISIBLE);
         }
 
         @Override

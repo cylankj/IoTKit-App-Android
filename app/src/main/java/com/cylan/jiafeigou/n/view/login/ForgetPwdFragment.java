@@ -4,24 +4,24 @@ import android.content.Context;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.Patterns;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ViewSwitcher;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.mvp.contract.login.ForgetPwdContract;
-import com.cylan.jiafeigou.n.mvp.impl.RstPwdPresenterImpl;
+import com.cylan.jiafeigou.n.mvp.impl.PresenterImpl;
 import com.cylan.jiafeigou.n.mvp.model.RequestResetPwdBean;
 import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.IMEUtils;
@@ -40,7 +40,7 @@ import butterknife.OnTextChanged;
  * Created by lxh on 16-6-14.
  */
 
-public class ForgetPwdFragment extends Fragment implements ForgetPwdContract.ForgetPwdView {
+public class ForgetPwdFragment extends android.support.v4.app.Fragment implements ForgetPwdContract.View {
 
 
     @BindView(R.id.et_forget_username)
@@ -57,11 +57,26 @@ public class ForgetPwdFragment extends Fragment implements ForgetPwdContract.For
     TextView tvMeterGetCode;
     @BindView(R.id.fLayout_verification_code_input_box)
     FrameLayout fLayoutVerificationCodeInputBox;
+    @BindView(R.id.et_rst_pwd_input)
+    EditText etRstPwdInput;
+    @BindView(R.id.cb_show_pwd)
+    CheckBox cbShowPwd;
+    @BindView(R.id.iv_rst_clear_pwd)
+    ImageView ivRstClearPwd;
+    @BindView(R.id.rLayout_rst_pwd_input_box)
+    FrameLayout rLayoutRstPwdInputBox;
+    @BindView(R.id.tv_rst_pwd_submit)
+    TextView tvRstPwdSubmit;
+    @BindView(R.id.vs_set_account_pwd)
+    ViewSwitcher vsSetAccountPwd;
+
+    @BindView(R.id.tv_login_top_center)
+    TextView tvLoginTopCenter;
     /**
      * {0}请输入手机号/邮箱 {1}请输入邮箱
      */
     private int acceptType = 0;
-    private ForgetPwdContract.ForgetPwdPresenter presenter;
+    private ForgetPwdContract.Presenter presenter;
 
 
     private CountDownTimer countDownTimer;
@@ -71,7 +86,7 @@ public class ForgetPwdFragment extends Fragment implements ForgetPwdContract.For
         super.onCreate(savedInstanceState);
         Bundle bundle = getArguments();
         acceptType = bundle.getInt(JConstant.KEY_LOCALE);
-        List<Fragment> fragmentList = getActivity().getSupportFragmentManager().getFragments();
+        List<android.support.v4.app.Fragment> fragmentList = getActivity().getSupportFragmentManager().getFragments();
         Log.d("", "" + fragmentList);
         initCountDownTimer();
     }
@@ -95,14 +110,14 @@ public class ForgetPwdFragment extends Fragment implements ForgetPwdContract.For
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_forget_pwd, container, false);
+    public android.view.View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        android.view.View view = inflater.inflate(R.layout.fragment_forget_pwd, container, false);
         ButterKnife.bind(this, view);
         return view;
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated(android.view.View view, @Nullable Bundle savedInstanceState) {
         initTitleBar();
         initView(view);
     }
@@ -118,14 +133,14 @@ public class ForgetPwdFragment extends Fragment implements ForgetPwdContract.For
 
     private void initTitleBar() {
         FrameLayout layout = (FrameLayout) getView().findViewById(R.id.rLayout_login_top);
-        layout.findViewById(R.id.tv_login_top_right).setVisibility(View.GONE);
+        layout.findViewById(R.id.tv_login_top_right).setVisibility(android.view.View.GONE);
         TextView tvTitle = (TextView) layout.findViewById(R.id.tv_login_top_center);
         tvTitle.setText("忘记密码");
         ImageView imgBackHandle = (ImageView) layout.findViewById(R.id.iv_login_top_left);
         imgBackHandle.setImageResource(R.drawable.btn_nav_back);
-        imgBackHandle.setOnClickListener(new View.OnClickListener() {
+        imgBackHandle.setOnClickListener(new android.view.View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(android.view.View v) {
                 ActivityUtils.justPop(getActivity());
             }
         });
@@ -138,7 +153,7 @@ public class ForgetPwdFragment extends Fragment implements ForgetPwdContract.For
     }
 
 
-    private void initView(View view) {
+    private void initView(android.view.View view) {
         if (acceptType == 1) {
             etForgetUsername.setHint("please input email address");
         }
@@ -150,10 +165,9 @@ public class ForgetPwdFragment extends Fragment implements ForgetPwdContract.For
 
 
     private int checkInputType() {
-        final String account = etForgetUsername.getText().toString();
+        final String account = ViewUtils.getTextViewContent(etForgetUsername);
         final boolean isEmail = Patterns.EMAIL_ADDRESS.matcher(account).find();
         if (isEmail) {
-            Toast.makeText(getActivity(), "请输入有效账号", Toast.LENGTH_SHORT).show();
             return JConstant.TYPE_EMAIL;
         } else {
             final boolean isPhone = JConstant.PHONE_REG.matcher(account).find();
@@ -169,17 +183,17 @@ public class ForgetPwdFragment extends Fragment implements ForgetPwdContract.For
         countDownTimer.start();
         tvMeterGetCode.setEnabled(false);
         if (presenter != null)
-            presenter.executeSubmitAccount(etForgetUsername.getText().toString().trim());
+            presenter.executeSubmitAccount(ViewUtils.getTextViewContent(etForgetUsername));
     }
 
     @OnClick(R.id.iv_forget_clear_username)
-    public void clearUsername(View view) {
-        etForgetUsername.getText().clear();
+    public void clearUsername(android.view.View view) {
+        etForgetUsername.setText("");
     }
 
     @OnFocusChange(R.id.et_forget_username)
-    public void onEtFocusChange(View view, boolean focused) {
-        ivForgetClearUsername.setVisibility(focused ? View.VISIBLE : View.INVISIBLE);
+    public void onEtFocusChange(android.view.View view, boolean focused) {
+        ivForgetClearUsername.setVisibility(focused ? android.view.View.VISIBLE : android.view.View.INVISIBLE);
     }
 
     /**
@@ -187,7 +201,7 @@ public class ForgetPwdFragment extends Fragment implements ForgetPwdContract.For
      * android:animateLayoutChanges="true",就有transition的效果。
      */
     private void start2HandleVerificationCode() {
-        fLayoutVerificationCodeInputBox.setVisibility(View.VISIBLE);
+        fLayoutVerificationCodeInputBox.setVisibility(android.view.View.VISIBLE);
         countDownTimer.start();
     }
 
@@ -200,10 +214,14 @@ public class ForgetPwdFragment extends Fragment implements ForgetPwdContract.For
                 enableEditTextCursor(true);
                 return;
             case JConstant.TYPE_PHONE:
-                if (fLayoutVerificationCodeInputBox.getVisibility() == View.GONE) {
+                if (fLayoutVerificationCodeInputBox.getVisibility() == android.view.View.GONE) {
+                    tvLoginTopCenter.setText("忘记密码(手机)");
                     start2HandleVerificationCode();
+                    if (presenter != null) {
+                        presenter.executeSubmitAccount(ViewUtils.getTextViewContent(etForgetUsername));
+                    }
                 } else {
-                    final String code = etVerificationInput.getText().toString();
+                    final String code = ViewUtils.getTextViewContent(etVerificationInput);
                     if (!TextUtils.isEmpty(code) && code.length() != 6) {
                         Toast.makeText(getActivity(), "验证码有错", Toast.LENGTH_SHORT).show();
                         return;
@@ -214,13 +232,15 @@ public class ForgetPwdFragment extends Fragment implements ForgetPwdContract.For
                         Toast.makeText(getActivity(), "已发送", Toast.LENGTH_SHORT).show();
                         getArguments().putString(LoginFragment.KEY_TEMP_ACCOUNT, etForgetUsername.getText().toString());
                         countDownTimer.onFinish();
-                        presenter.submitPhoneNumAndCode(etForgetUsername.getText().toString(), etVerificationInput.getText().toString());
+                        presenter.submitPhoneNumAndCode(etForgetUsername.getText().toString(), ViewUtils.getTextViewContent(etVerificationInput));
                     }
                 }
                 break;
             case JConstant.TYPE_EMAIL:
+                Toast.makeText(getActivity(), "已发送", Toast.LENGTH_SHORT).show();
+                tvLoginTopCenter.setText("忘记密码(邮箱)");
                 if (presenter != null)
-                    presenter.executeSubmitAccount(etForgetUsername.getText().toString().trim());
+                    presenter.executeSubmitAccount(ViewUtils.getTextViewContent(etForgetUsername));
                 break;
         }
         IMEUtils.hide(getActivity());
@@ -238,7 +258,7 @@ public class ForgetPwdFragment extends Fragment implements ForgetPwdContract.For
     @OnTextChanged(R.id.et_forget_username)
     public void userNameChange(CharSequence s, int start, int before, int count) {
         final boolean flag = TextUtils.isEmpty(s);
-        ivForgetClearUsername.setVisibility(flag ? View.GONE : View.VISIBLE);
+        ivForgetClearUsername.setVisibility(flag ? android.view.View.GONE : android.view.View.VISIBLE);
         boolean codeValid = checkInputType() != JConstant.TYPE_INVALID;
         tvForgetPwdSubmit.setEnabled(!flag && codeValid);
     }
@@ -251,7 +271,7 @@ public class ForgetPwdFragment extends Fragment implements ForgetPwdContract.For
     }
 
     @OnClick(R.id.tv_forget_pwd_submit)
-    public void forgetPwdCommit(View v) {
+    public void forgetPwdCommit(android.view.View v) {
         enableEditTextCursor(false);
         next();
     }
@@ -266,30 +286,59 @@ public class ForgetPwdFragment extends Fragment implements ForgetPwdContract.For
     private void initTitle(final int ret) {
         if (ret == -1)
             return;
-        TextView view = (TextView) getView().findViewById(R.id.tv_login_top_center);
         if (ret == JConstant.TYPE_EMAIL)
-            view.setText(getString(R.string.EMAIL));
+            tvLoginTopCenter.setText(getString(R.string.EMAIL));
         else if (ret == JConstant.TYPE_PHONE) {
-            view.setText("新密码");
+            tvLoginTopCenter.setText("新密码");
         }
+    }
+
+    private void prepareMailView() {
+        android.view.View view = vsSetAccountPwd.findViewById(R.id.layout_to_be_update);
+        if (view != null) {
+            vsSetAccountPwd.removeView(view);
+        }
+        android.view.View mailView = LayoutInflater.from(getContext()).inflate(R.layout.fragment_forget_pwd_by_email, null);
+        if (mailView == null) {
+            return;
+        }
+        final String content = String.format(getString(R.string.send_email_tip_content),
+                ViewUtils.getTextViewContent(etForgetUsername));
+        ((TextView) mailView.findViewById(R.id.tv_send_email_content)).setText(content);
+        android.view.View btn = mailView.findViewById(R.id.tv_email_confirm);
+        btn.setEnabled(true);
+        btn.setOnClickListener(new android.view.View.OnClickListener() {
+            @Override
+            public void onClick(android.view.View v) {
+                Toast.makeText(getActivity(), "yes?", Toast.LENGTH_SHORT).show();
+                getActivity().getSupportFragmentManager().popBackStack();
+            }
+        });
+        vsSetAccountPwd.addView(mailView);
+        vsSetAccountPwd.setInAnimation(getContext(), R.anim.slide_in_right_overshoot);
+        vsSetAccountPwd.setOutAnimation(getContext(), R.anim.slide_out_left);
+        vsSetAccountPwd.showNext();
     }
 
     @Override
     public void submitResult(RequestResetPwdBean bean) {
         final int ret = bean == null ? -1 : bean.ret;
-        initTitle(ret);
         switch (ret) {
+            case ForgetPwdContract.THIS_ACCOUNT_NOT_REGISTERED:
+                Toast.makeText(getContext(), "账号未注册", Toast.LENGTH_SHORT).show();
+                break;
             case ForgetPwdContract.AUTHORIZE_MAIL:
-                final String account = etForgetUsername.getText().toString().trim();
-                Bundle bundle = getArguments();
-                bundle.putString(JConstant.KEY_ACCOUNT_TO_SEND, account);
-                getChildFragmentManager().beginTransaction()
-                        .setCustomAnimations(R.anim.slide_right_in, R.anim.slide_out_right
-                                , R.anim.slide_out_right, R.anim.slide_out_right)
-                        .replace(R.id.fLayout_forget_container,
-                                ForgetPwdByEmailFragment.newInstance(getArguments()),
-                                "mailFragment")
-                        .commit();
+                prepareMailView();
+//                final String account = etForgetUsername.getText().toString().trim();
+//                Bundle bundle = getArguments();
+//                bundle.putString(JConstant.KEY_ACCOUNT_TO_SEND, account);
+//                getChildFragmentManager().beginTransaction()
+//                        .setCustomAnimations(R.anim.slide_right_in, R.anim.slide_out_right
+//                                , R.anim.slide_out_right, R.anim.slide_out_right)
+//                        .replace(R.id.fLayout_forget_container,
+//                                ForgetPwdByEmailFragment.newInstance(getArguments()),
+//                                "mailFragment")
+//                        .commit();
                 break;
             case ForgetPwdContract.AUTHORIZE_PHONE:
                 //show timer
@@ -301,13 +350,13 @@ public class ForgetPwdFragment extends Fragment implements ForgetPwdContract.For
                                 fragment,
                                 "rstPwdFragment")
                         .commit();
-                new RstPwdPresenterImpl(fragment);
+                new PresenterImpl(fragment);
                 break;
         }
     }
 
     @Override
-    public void setPresenter(ForgetPwdContract.ForgetPwdPresenter presenter) {
+    public void setPresenter(ForgetPwdContract.Presenter presenter) {
         this.presenter = presenter;
     }
 }

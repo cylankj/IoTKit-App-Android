@@ -5,12 +5,10 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
@@ -32,7 +30,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class HomeMineFragment extends Fragment
+public class HomeMineFragment extends android.support.v4.app.Fragment
         implements HomeMineContract.View {
 
 
@@ -186,7 +184,7 @@ public class HomeMineFragment extends Fragment
     }
 
     @OnClick({R.id.home_mine_item_friend, R.id.home_mine_item_share,
-             R.id.home_mine_item_help, R.id.home_mine_item_settings})
+            R.id.home_mine_item_help, R.id.home_mine_item_settings})
     public void onButterKnifeClick(View view) {
         switch (view.getId()) {
             case R.id.home_mine_item_friend:

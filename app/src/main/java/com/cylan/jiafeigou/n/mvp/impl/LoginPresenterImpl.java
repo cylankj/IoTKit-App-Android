@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.widget.Toast;
 
 import com.cylan.jiafeigou.n.mvp.contract.login.LoginModelContract;
 import com.cylan.jiafeigou.n.mvp.model.LoginAccountBean;
@@ -26,7 +25,6 @@ import com.tencent.tauth.UiError;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.lang.ref.WeakReference;
 import java.util.concurrent.TimeUnit;
 
 import rx.android.schedulers.AndroidSchedulers;
@@ -36,15 +34,14 @@ import rx.subscriptions.CompositeSubscription;
 /**
  * Created by lxh on 16-6-24.
  */
-public class LoginPresenterImpl implements LoginModelContract.LoginPresenter {
+public class LoginPresenterImpl extends AbstractPresenter<LoginModelContract.View> implements LoginModelContract.Presenter {
 
-    private WeakReference<LoginModelContract.LoginView> viewWeakReference;
     private JfgCmd cmd;
     Context ctx;
     CompositeSubscription subscription;
 
-    public LoginPresenterImpl(LoginModelContract.LoginView view) {
-        this.viewWeakReference = new WeakReference<>(view);
+    public LoginPresenterImpl(LoginModelContract.View view) {
+        super(view);
         view.setPresenter(this);
         ctx = view.getContext();
     }
@@ -89,10 +86,6 @@ public class LoginPresenterImpl implements LoginModelContract.LoginPresenter {
                 subscription.unsubscribe();
             }
         }
-    }
-
-    private LoginModelContract.LoginView getView() {
-        return viewWeakReference.get();
     }
 
 

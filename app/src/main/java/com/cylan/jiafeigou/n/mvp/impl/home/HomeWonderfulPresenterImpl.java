@@ -3,13 +3,13 @@ package com.cylan.jiafeigou.n.mvp.impl.home;
 
 import android.support.annotation.Nullable;
 
+import com.cylan.jiafeigou.n.mvp.contract.home.HomeWonderfulContract;
+import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.n.mvp.model.MediaBean;
 import com.cylan.jiafeigou.n.mvp.model.contract.ModelContract;
 import com.cylan.jiafeigou.n.mvp.model.impl.HomeWonderfulModelImpl;
-import com.cylan.jiafeigou.n.mvp.contract.home.HomeWonderfulContract;
 import com.cylan.utils.RandomUtils;
 
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -24,10 +24,9 @@ import rx.schedulers.Schedulers;
 /**
  * Created by hunt on 16-5-23.
  */
-public class HomeWonderfulPresenterImpl implements HomeWonderfulContract.Presenter, HomeWonderfulContract.PresenterRequiredOps {
+public class HomeWonderfulPresenterImpl extends AbstractPresenter<HomeWonderfulContract.View> implements HomeWonderfulContract.Presenter, HomeWonderfulContract.PresenterRequiredOps {
 
     private static final String TAG = HomeWonderfulPresenterImpl.class.getName();
-    private WeakReference<HomeWonderfulContract.View> viewWeakReference;
     private ModelContract.HomeWonderfulOps mModel;
     private HomeWonderfulModelImpl homeWonderfulModelImpl;
     private Subscription onRefreshSubscription;
@@ -35,7 +34,7 @@ public class HomeWonderfulPresenterImpl implements HomeWonderfulContract.Present
     private int curHour;
 
     public HomeWonderfulPresenterImpl(HomeWonderfulContract.View view) {
-        viewWeakReference = new WeakReference<>(view);
+        super(view);
         view.setPresenter(this);
 
         homeWonderfulModelImpl = new HomeWonderfulModelImpl(this);
@@ -53,10 +52,6 @@ public class HomeWonderfulPresenterImpl implements HomeWonderfulContract.Present
         unRegisterSubscription(onRefreshSubscription);
     }
 
-    @Nullable
-    private HomeWonderfulContract.View getView() {
-        return viewWeakReference != null ? viewWeakReference.get() : null;
-    }
 
     /**
      * 反注册

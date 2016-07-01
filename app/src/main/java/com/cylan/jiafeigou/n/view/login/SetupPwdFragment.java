@@ -3,10 +3,8 @@ package com.cylan.jiafeigou.n.view.login;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.CheckBox;
@@ -21,7 +19,6 @@ import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.mvp.contract.login.SetupPwdContract;
 import com.cylan.jiafeigou.n.mvp.model.RequestResetPwdBean;
-import com.cylan.jiafeigou.n.view.splash.WelcomePageActivity;
 import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.superlog.SLog;
@@ -37,7 +34,7 @@ import butterknife.OnTextChanged;
  * Use the {@link SetupPwdFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class SetupPwdFragment extends Fragment implements SetupPwdContract.SetupPwdView {
+public class SetupPwdFragment extends android.support.v4.app.Fragment implements SetupPwdContract.View {
 
     @BindView(R.id.tv_register_pwd_submit)
     TextView tvRegisterPwdSubmit;
@@ -49,7 +46,7 @@ public class SetupPwdFragment extends Fragment implements SetupPwdContract.Setup
     EditText etInputBox;
     @BindView(R.id.iv_login_top_left)
     ImageView ivLoginTopLeft;
-    private SetupPwdContract.SetupPwdPresenter pwdPresenter;
+    private SetupPwdContract.Presenter pwdPresenter;
 
     public SetupPwdFragment() {
         // Required empty public constructor
@@ -76,16 +73,16 @@ public class SetupPwdFragment extends Fragment implements SetupPwdContract.Setup
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public android.view.View onCreateView(LayoutInflater inflater, ViewGroup container,
+                                          Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_setup_pwd, container, false);
+        android.view.View view = inflater.inflate(R.layout.fragment_setup_pwd, container, false);
         ButterKnife.bind(this, view);
         return view;
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated(android.view.View view, @Nullable Bundle savedInstanceState) {
         setupInputBox();
         initTitleBar();
         setupButton();
@@ -97,13 +94,13 @@ public class SetupPwdFragment extends Fragment implements SetupPwdContract.Setup
 
     private void initTitleBar() {
         FrameLayout layout = (FrameLayout) getView().findViewById(R.id.rLayout_login_top);
-        layout.findViewById(R.id.tv_login_top_right).setVisibility(View.GONE);
+        layout.findViewById(R.id.tv_login_top_right).setVisibility(android.view.View.GONE);
         TextView tvTitle = (TextView) layout.findViewById(R.id.tv_login_top_center);
         tvTitle.setText("密码");
         ivLoginTopLeft.setImageResource(R.drawable.btn_nav_back);
-        ivLoginTopLeft.setOnClickListener(new View.OnClickListener() {
+        ivLoginTopLeft.setOnClickListener(new android.view.View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(android.view.View v) {
                 ActivityUtils.justPop(getActivity());
             }
         });
@@ -120,7 +117,7 @@ public class SetupPwdFragment extends Fragment implements SetupPwdContract.Setup
         final boolean validPws = !TextUtils.isEmpty(s)
                 && s.length() >= JConstant.PWD_LEN_MIN
                 && s.length() <= JConstant.PWD_LEN_MAX;
-        ivInputBoxClear.setVisibility(validPws ? View.VISIBLE : View.GONE);
+        ivInputBoxClear.setVisibility(validPws ? android.view.View.VISIBLE : android.view.View.GONE);
         tvRegisterPwdSubmit.setEnabled(validPws);
     }
 
@@ -132,7 +129,7 @@ public class SetupPwdFragment extends Fragment implements SetupPwdContract.Setup
 
     @OnClick({R.id.iv_input_box_clear, R.id.cb_show_input_box,
             R.id.tv_register_pwd_submit})
-    public void onClick(View view) {
+    public void onClick(android.view.View view) {
         switch (view.getId()) {
             case R.id.iv_input_box_clear:
                 etInputBox.setText("");
@@ -155,21 +152,26 @@ public class SetupPwdFragment extends Fragment implements SetupPwdContract.Setup
         }
     }
 
-    @Override
-    public void submitResult(RequestResetPwdBean bean) {
-        if (bean.ret == 0) {
-//            ivLoginTopLeft.performClick();
-            Toast.makeText(getActivity(), "注册成功", Toast.LENGTH_SHORT).show();
-            if (getActivity() != null && (getActivity() instanceof WelcomePageActivity)) {
-                getActivity().finish();
-            } else {
+//    @Override
+//    public void submitResult(RequestResetPwdBean bean) {
+//        if (bean.ret == 0) {
+////            ivLoginTopLeft.performClick();
+//            Toast.makeText(getActivity(), "注册成功", Toast.LENGTH_SHORT).show();
+//            if (getActivity() != null && (getActivity() instanceof WelcomePageActivity)) {
+//                getActivity().finish();
+//            } else {
+//
+//            }
+//        }
+//    }
 
-            }
-        }
+    @Override
+    public void setPresenter(SetupPwdContract.Presenter presenter) {
+        this.pwdPresenter = presenter;
     }
 
     @Override
-    public void setPresenter(SetupPwdContract.SetupPwdPresenter presenter) {
-        this.pwdPresenter = presenter;
+    public void submitResult(RequestResetPwdBean bean) {
+
     }
 }

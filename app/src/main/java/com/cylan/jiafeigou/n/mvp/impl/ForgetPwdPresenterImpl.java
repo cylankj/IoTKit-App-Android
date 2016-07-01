@@ -1,14 +1,15 @@
 package com.cylan.jiafeigou.n.mvp.impl;
 
+import android.text.TextUtils;
 import android.util.Log;
 
+import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.mvp.contract.login.ForgetPwdContract;
 import com.cylan.jiafeigou.n.mvp.model.RequestResetPwdBean;
 import com.cylan.utils.RandomUtils;
 
 import org.msgpack.annotation.NotNullable;
 
-import java.lang.ref.WeakReference;
 import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
@@ -20,21 +21,15 @@ import rx.functions.Func1;
 /**
  * Created by cylan-hunt on 16-6-29.
  */
-public class ForgetPwdPresenterImpl implements ForgetPwdContract.ForgetPwdPresenter {
+public class ForgetPwdPresenterImpl extends AbstractPresenter<ForgetPwdContract.View> implements ForgetPwdContract.Presenter {
 
-    WeakReference<ForgetPwdContract.ForgetPwdView> forgetPwdViewWeakReference;
     Subscription subscription;
 
-    public ForgetPwdPresenterImpl(ForgetPwdContract.ForgetPwdView view) {
-        this.forgetPwdViewWeakReference = new WeakReference<>(view);
+    public ForgetPwdPresenterImpl(ForgetPwdContract.View view) {
+        super(view);
         view.setPresenter(this);
     }
 
-    ForgetPwdContract.ForgetPwdView getView() {
-        if (forgetPwdViewWeakReference != null)
-            return forgetPwdViewWeakReference.get();
-        return null;
-    }
 
     @Override
     public void executeSubmitAccount(@NotNullable String account) {
@@ -43,14 +38,15 @@ public class ForgetPwdPresenterImpl implements ForgetPwdContract.ForgetPwdPresen
                 .map(new Func1<String, String>() {
                     @Override
                     public String call(String s) {
-                        return null;
+                        return s;
                     }
                 })
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<String>() {
                     @Override
                     public void call(String s) {
-                        doStuff();
+                        if (getView().getContext() != null)
+                            doStuff(TextUtils.isDigitsOnly(s) ? JConstant.TYPE_PHONE : JConstant.TYPE_EMAIL);
                     }
                 });
     }
@@ -62,20 +58,22 @@ public class ForgetPwdPresenterImpl implements ForgetPwdContract.ForgetPwdPresen
                 .map(new Func1<String, String>() {
                     @Override
                     public String call(String s) {
-                        return null;
+                        return s;
                     }
                 })
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<String>() {
                     @Override
                     public void call(String s) {
-                        doStuff();
+                        if (getView().getContext() != null)
+                            doStuff(JConstant.TYPE_PHONE);
                     }
                 });
     }
 
-    private void doStuff() {
+    private void doStuff(final int type) {
         RequestResetPwdBean bean = testResult();
+        bean.ret = type;
         if (getView() != null) {
             getView().submitResult(bean);
         } else {
@@ -86,22 +84,13 @@ public class ForgetPwdPresenterImpl implements ForgetPwdContract.ForgetPwdPresen
     private RequestResetPwdBean testResult() {
         RequestResetPwdBean bean = new RequestResetPwdBean();
         bean.ret = RandomUtils.getRandom(4);
-            bean.ret = 2;
+        bean.ret = 1;
         if (bean.ret == 1) {
 
         } else if (bean.ret == 2) {
 
         }
         return bean;
-    }
-
-    private void unSubscribe(Subscription... subscriptions) {
-        if (subscriptions != null) {
-            for (Subscription subscription : subscriptions) {
-                if (subscription != null && subscription.isUnsubscribed())
-                    subscription.unsubscribe();
-            }
-        }
     }
 
     @Override

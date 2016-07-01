@@ -2,7 +2,6 @@ package com.cylan.jiafeigou.n.view.login;
 
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,9 +26,9 @@ import butterknife.OnClick;
 import butterknife.OnTextChanged;
 
 /**
- * A simple {@link Fragment} subclass.
+ * A simple {@link android.support.v4.app.Fragment} subclass.
  */
-public class ResetPwdFragment extends Fragment implements RstPwdContract.RstPwdView {
+public class ResetPwdFragment extends android.support.v4.app.Fragment implements RstPwdContract.View {
 
 
     @BindView(R.id.cb_show_pwd)
@@ -41,7 +40,7 @@ public class ResetPwdFragment extends Fragment implements RstPwdContract.RstPwdV
     @BindView(R.id.et_rst_pwd_input)
     EditText etRstPwdInput;
 
-    private RstPwdContract.RstPwdPresenter presenter;
+    private RstPwdContract.Presenter presenter;
 
     public ResetPwdFragment() {
         // Required empty public constructor
@@ -54,10 +53,10 @@ public class ResetPwdFragment extends Fragment implements RstPwdContract.RstPwdV
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public android.view.View onCreateView(LayoutInflater inflater, ViewGroup container,
+                                          Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_reset_pwd, container, false);
+        android.view.View view = inflater.inflate(R.layout.fragment_reset_pwd, container, false);
         ButterKnife.bind(this, view);
         return view;
     }
@@ -73,7 +72,7 @@ public class ResetPwdFragment extends Fragment implements RstPwdContract.RstPwdV
     @OnTextChanged(R.id.et_rst_pwd_input)
     public void onPwdChange(CharSequence s, int start, int before, int count) {
         boolean flag = TextUtils.isEmpty(s);
-        ivRstClearPwd.setVisibility(flag ? View.INVISIBLE : View.VISIBLE);
+        ivRstClearPwd.setVisibility(flag ? android.view.View.INVISIBLE : android.view.View.VISIBLE);
         final boolean submitEnable = !flag && s.length() >= 6;
         tvRstPwdSubmit.setEnabled(submitEnable);
     }
@@ -87,7 +86,7 @@ public class ResetPwdFragment extends Fragment implements RstPwdContract.RstPwdV
 
 
     @OnClick({R.id.tv_rst_pwd_submit, R.id.iv_rst_clear_pwd})
-    public void onClick(View view) {
+    public void onClick(android.view.View view) {
         switch (view.getId()) {
             case R.id.tv_rst_pwd_submit:
                 if (isResumed() && getActivity() != null) {
@@ -126,7 +125,7 @@ public class ResetPwdFragment extends Fragment implements RstPwdContract.RstPwdV
     }
 
     @Override
-    public void setPresenter(RstPwdContract.RstPwdPresenter presenter) {
+    public void setPresenter(RstPwdContract.Presenter presenter) {
         this.presenter = presenter;
     }
 }

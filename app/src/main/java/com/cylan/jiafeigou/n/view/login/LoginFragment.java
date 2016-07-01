@@ -4,14 +4,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.Patterns;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
-import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.inputmethod.EditorInfo;
@@ -56,8 +53,8 @@ import butterknife.OnTextChanged;
 /**
  * 登陆主界面
  */
-public class LoginFragment extends Fragment implements LoginModelContract.LoginView {
-    private static final String TAG = "LoginFragment";
+public class LoginFragment extends android.support.v4.app.Fragment implements LoginModelContract.View {
+    private static final String TAG = "Fragment";
     public static final String KEY_TEMP_ACCOUNT = "temp_account";
     @BindView(R.id.et_login_username)
     EditText etLoginUsername;
@@ -104,7 +101,7 @@ public class LoginFragment extends Fragment implements LoginModelContract.LoginV
     @BindView(R.id.rLayout_pwd_input_box)
     FrameLayout rLayoutPwdInputBox;
     @BindView(R.id.view_third_party_center)
-    View viewThirdPartyCenter;
+    android.view.View viewThirdPartyCenter;
     @BindView(R.id.et_register_input_box)
     EditText etRegisterInputBox;
     @BindView(R.id.iv_register_username_clear)
@@ -122,7 +119,7 @@ public class LoginFragment extends Fragment implements LoginModelContract.LoginV
 
     private VerificationCodeLogic verificationCodeLogic;
     private int registerWay = JConstant.REGISTER_BY_PHONE;
-    private LoginModelContract.LoginPresenter loginPresenter;
+    private LoginModelContract.Presenter presenter;
 
     public static LoginFragment newInstance(Bundle bundle) {
         LoginFragment fragment = new LoginFragment();
@@ -133,8 +130,8 @@ public class LoginFragment extends Fragment implements LoginModelContract.LoginV
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_login_layout, container, false);
+    public android.view.View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        android.view.View view = inflater.inflate(R.layout.fragment_login_layout, container, false);
         ButterKnife.bind(this, view);
         addOnTouchListener(view);
         printFragment();
@@ -147,10 +144,10 @@ public class LoginFragment extends Fragment implements LoginModelContract.LoginV
      *
      * @param view
      */
-    public void addOnTouchListener(View view) {
-        view.setOnTouchListener(new View.OnTouchListener() {
+    public void addOnTouchListener(android.view.View view) {
+        view.setOnTouchListener(new android.view.View.OnTouchListener() {
             @Override
-            public boolean onTouch(View v, MotionEvent event) {
+            public boolean onTouch(android.view.View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
                     IMEUtils.hide(getActivity());
                 }
@@ -160,13 +157,13 @@ public class LoginFragment extends Fragment implements LoginModelContract.LoginV
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated(android.view.View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         if (BuildConfig.DEBUG) {
             etLoginUsername.setText("hongdongsheng@cylan.com.cn");
             etLoginPwd.setText("1234567");
-            ivLoginClearPwd.setVisibility(View.GONE);
-            ivLoginClearUsername.setVisibility(View.GONE);
+            ivLoginClearPwd.setVisibility(android.view.View.GONE);
+            ivLoginClearUsername.setVisibility(android.view.View.GONE);
         }
         decideRegisterWay();
         initView();
@@ -175,15 +172,15 @@ public class LoginFragment extends Fragment implements LoginModelContract.LoginV
     @Override
     public void onStart() {
         super.onStart();
-        if (loginPresenter != null) {
-            loginPresenter.start();
+        if (presenter != null) {
+            presenter.start();
         }
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        if (loginPresenter != null) loginPresenter.stop();
+        if (presenter != null) presenter.stop();
 //        if (verificationCodeLogic != null) verificationCodeLogic.stop();
     }
 
@@ -200,7 +197,7 @@ public class LoginFragment extends Fragment implements LoginModelContract.LoginV
         registerWay = bundle.getInt(JConstant.KEY_LOCALE);
         if (registerWay == JConstant.LOCALE_CN) {
             //中国大陆
-            tvRegisterWayContent.setVisibility(View.VISIBLE);
+            tvRegisterWayContent.setVisibility(android.view.View.VISIBLE);
             tvRegisterSubmit.setText(getString(R.string.item_get_verification_code));
         } else {
             //只显示邮箱注册
@@ -211,17 +208,17 @@ public class LoginFragment extends Fragment implements LoginModelContract.LoginV
     }
 
     @OnFocusChange(R.id.et_login_username)
-    public void onUserNameLoseFocus(View view, boolean focus) {
+    public void onUserNameLoseFocus(android.view.View view, boolean focus) {
         Log.d(TAG, "onUserNameLoseFocus: " + focus);
         final boolean visibility = !TextUtils.isEmpty(etLoginUsername.getText()) && focus;
-        ivLoginClearUsername.setVisibility(visibility ? View.VISIBLE : View.INVISIBLE);
+        ivLoginClearUsername.setVisibility(visibility ? android.view.View.VISIBLE : android.view.View.INVISIBLE);
     }
 
     @OnFocusChange(R.id.et_login_pwd)
-    public void onPwdLoseFocus(View view, boolean focus) {
+    public void onPwdLoseFocus(android.view.View view, boolean focus) {
         Log.d(TAG, "onPwdLoseFocus: " + focus);
         final boolean visibility = !TextUtils.isEmpty(etLoginPwd.getText()) && focus;
-        ivLoginClearPwd.setVisibility(visibility ? View.VISIBLE : View.INVISIBLE);
+        ivLoginClearPwd.setVisibility(visibility ? android.view.View.VISIBLE : android.view.View.INVISIBLE);
     }
 
     /**
@@ -243,8 +240,8 @@ public class LoginFragment extends Fragment implements LoginModelContract.LoginV
 
 
     private void printFragment() {
-        List<Fragment> list = getFragmentManager().getFragments();
-        for (Fragment f : list) {
+        List<android.support.v4.app.Fragment> list = getFragmentManager().getFragments();
+        for (android.support.v4.app.Fragment f : list) {
             if (f != null) {
                 SLog.e(f.toString());
             }
@@ -256,21 +253,21 @@ public class LoginFragment extends Fragment implements LoginModelContract.LoginV
      * 初始化view
      */
     private void initView() {
-        //You need to add the following line for this solution to work; thanks skayred
-        if (getView() != null) {
-            getView().setFocusableInTouchMode(true);
-            getView().requestFocus();
-            getView().setOnKeyListener(new View.OnKeyListener() {
-                @Override
-                public boolean onKey(View v, int keyCode, KeyEvent event) {
-                    if (keyCode == KeyEvent.KEYCODE_BACK) {
-                        if (getActivity() != null && getActivity() instanceof WelcomePageActivity)
-                            getActivity().finish();
-                    }
-                    return false;
-                }
-            });
-        }
+//        //You need to add the following line for this solution to work; thanks skayred
+//        if (getView() != null) {
+//            getView().setFocusableInTouchMode(true);
+//            getView().requestFocus();
+//            getView().setOnKeyListener(new View.OnKeyListener() {
+//                @Override
+//                public boolean onKey(View v, int keyCode, KeyEvent event) {
+//                    if (keyCode == KeyEvent.KEYCODE_BACK) {
+//                        if (getActivity() != null && getActivity() instanceof WelcomePageActivity)
+//                            getActivity().finish();
+//                    }
+//                    return false;
+//                }
+//            });
+//        }
     }
 
     /**
@@ -297,7 +294,7 @@ public class LoginFragment extends Fragment implements LoginModelContract.LoginV
     @OnTextChanged(R.id.et_login_pwd)
     public void onPwdChange(CharSequence s, int start, int before, int count) {
         boolean flag = TextUtils.isEmpty(s);
-        ivLoginClearPwd.setVisibility(flag ? View.INVISIBLE : View.VISIBLE);
+        ivLoginClearPwd.setVisibility(flag ? android.view.View.INVISIBLE : android.view.View.VISIBLE);
         if (flag || s.length() < 6) {
             lbLogin.setEnabled(false);
         } else if (!TextUtils.isEmpty(ViewUtils.getTextViewContent(etLoginUsername))) {
@@ -317,7 +314,7 @@ public class LoginFragment extends Fragment implements LoginModelContract.LoginV
     @OnTextChanged(R.id.et_login_username)
     public void onUserNameChange(CharSequence s, int start, int before, int count) {
         boolean flag = TextUtils.isEmpty(s);
-        ivLoginClearUsername.setVisibility(flag ? View.GONE : View.VISIBLE);
+        ivLoginClearUsername.setVisibility(flag ? android.view.View.GONE : android.view.View.VISIBLE);
         final String pwd = ViewUtils.getTextViewContent(etLoginPwd);
         if (flag) {
             lbLogin.setEnabled(false);
@@ -335,7 +332,7 @@ public class LoginFragment extends Fragment implements LoginModelContract.LoginV
             R.id.iv_login_top_left,
             R.id.tv_login_top_right
     })
-    public void onClick(View view) {
+    public void onClick(android.view.View view) {
         switch (view.getId()) {
             case R.id.iv_login_clear_pwd:
                 etLoginPwd.getText().clear();
@@ -347,10 +344,10 @@ public class LoginFragment extends Fragment implements LoginModelContract.LoginV
                 forgetPwd();
                 break;
             case R.id.tv_qqLogin_commit:
-                loginPresenter.getQQAuthorize(getActivity());
+                presenter.getQQAuthorize(getActivity());
                 break;
             case R.id.tv_xlLogin_commit:
-                loginPresenter.getSinaAuthorize(getActivity());
+                presenter.getSinaAuthorize(getActivity());
                 break;
             case R.id.iv_login_top_left:
                 if (getActivity() != null && getActivity() instanceof WelcomePageActivity) {
@@ -398,7 +395,7 @@ public class LoginFragment extends Fragment implements LoginModelContract.LoginV
     }
 
     @OnClick(R.id.lb_login_commit)
-    public void login(View view) {
+    public void login(android.view.View view) {
         IMEUtils.hide(getActivity());
         enableEditTextCursor(false);
         lbLogin.viewZoomSmall();
@@ -407,8 +404,8 @@ public class LoginFragment extends Fragment implements LoginModelContract.LoginV
         LoginAccountBean login = new LoginAccountBean();
         login.userName = ViewUtils.getTextViewContent(etLoginUsername);
         login.pwd = ViewUtils.getTextViewContent(etLoginPwd);
-        if (loginPresenter != null) {
-            loginPresenter.executeLogin(login);
+        if (presenter != null) {
+            presenter.executeLogin(login);
         }
     }
 
@@ -458,8 +455,8 @@ public class LoginFragment extends Fragment implements LoginModelContract.LoginV
 
 
     @Override
-    public void setPresenter(LoginModelContract.LoginPresenter presenter) {
-        loginPresenter = presenter;
+    public void setPresenter(LoginModelContract.Presenter presenter) {
+        this.presenter = presenter;
         SLog.e("setPresenter");
     }
 
@@ -483,7 +480,7 @@ public class LoginFragment extends Fragment implements LoginModelContract.LoginV
         } else {
             result = Patterns.EMAIL_ADDRESS.matcher(s).find();
         }
-        ivRegisterUserNameClear.setVisibility(!TextUtils.isEmpty(s) ? View.VISIBLE : View.GONE);
+        ivRegisterUserNameClear.setVisibility(!TextUtils.isEmpty(s) ? android.view.View.VISIBLE : android.view.View.GONE);
         tvRegisterSubmit.setEnabled(result);
     }
 
@@ -533,7 +530,7 @@ public class LoginFragment extends Fragment implements LoginModelContract.LoginV
      * @param show
      */
     private void handleVerificationCodeBox(boolean show) {
-        fLayoutVerificationCodeInputBox.setVisibility(show ? View.VISIBLE : View.GONE);
+        fLayoutVerificationCodeInputBox.setVisibility(show ? android.view.View.VISIBLE : android.view.View.GONE);
     }
 
     /**
@@ -570,8 +567,8 @@ public class LoginFragment extends Fragment implements LoginModelContract.LoginV
             verificationCodeLogic.start();
             Toast.makeText(getActivity(), "获取验证码", Toast.LENGTH_SHORT).show();
             //获取验证码
-            if (loginPresenter != null)
-                loginPresenter.
+            if (presenter != null)
+                presenter.
                         registerByPhone(ViewUtils.getTextViewContent(etRegisterInputBox),
                                 ViewUtils.getTextViewContent(etVerificationInput));
             //显示验证码输入框
@@ -622,7 +619,7 @@ public class LoginFragment extends Fragment implements LoginModelContract.LoginV
             R.id.tv_register_submit,
             R.id.tv_register_way_content,
             R.id.iv_register_username_clear})
-    public void onClickRegister(View view) {
+    public void onClickRegister(android.view.View view) {
         switch (view.getId()) {
             case R.id.tv_meter_get_code:
                 break;
@@ -656,9 +653,9 @@ public class LoginFragment extends Fragment implements LoginModelContract.LoginV
         public VerificationCodeLogic(TextView textView) {
             this.viewWeakReference = new WeakReference<>(textView);
             initTimer();
-            textView.setOnClickListener(new View.OnClickListener() {
+            textView.setOnClickListener(new android.view.View.OnClickListener() {
                 @Override
-                public void onClick(View v) {
+                public void onClick(android.view.View v) {
                     if (timer != null)
                         timer.start();
                 }

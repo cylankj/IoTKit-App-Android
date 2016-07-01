@@ -16,11 +16,11 @@ import rx.schedulers.Schedulers;
 /**
  * Created by cylan-hunt on 16-6-30.
  */
-public class SetupPwdPresenterImpl extends AbstractPresenter<SetupPwdContract.SetupPwdView> implements SetupPwdContract.SetupPwdPresenter {
+public class SetupPwdPresenterImpl extends AbstractPresenter<SetupPwdContract.View> implements SetupPwdContract.Presenter {
 
     Subscription subscription;
 
-    public SetupPwdPresenterImpl(SetupPwdContract.SetupPwdView view) {
+    public SetupPwdPresenterImpl(SetupPwdContract.View view) {
         super(view);
         view.setPresenter(this);
     }

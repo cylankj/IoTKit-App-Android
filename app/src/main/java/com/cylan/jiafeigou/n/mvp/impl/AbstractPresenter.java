@@ -22,7 +22,7 @@ public abstract class AbstractPresenter<T> {
     protected void unSubscribe(Subscription... subscriptions) {
         if (subscriptions != null) {
             for (Subscription subscription : subscriptions) {
-                if (subscription != null && subscription.isUnsubscribed())
+                if (subscription != null && !subscription.isUnsubscribed())
                     subscription.unsubscribe();
             }
         }

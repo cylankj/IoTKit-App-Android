@@ -27,7 +27,7 @@ public interface LoginModelContract {
     static final int AUTHORIZE_SUCCESSFUL = 0;
 
 
-    interface LoginView extends BaseView<LoginPresenter> {
+    interface View extends BaseView<Presenter> {
 
         /**
          * 登陆结果
@@ -52,7 +52,7 @@ public interface LoginModelContract {
         void onSinaAuthorizeResult(int ret);
     }
 
-    interface LoginPresenter extends BasePresenter {
+    interface Presenter extends BasePresenter {
         /**
          * 执行登陆
          *
