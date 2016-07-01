@@ -577,9 +577,11 @@
 
     <string name="send_email_tip_content">系统已经发送邮件到\n%s\n请点击邮件的链接重置密码</string>
 
+    <string name="item_user_name_input_rules">0123456789abcdefghigklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ@.</string>
     <string name="item_register">注册</string>
     <string name="item_confirm">确认</string>
     <string name="item_input_phone_num">请输入手机号</string>
+    <string name="item_input_phone_or_email">请输入手机号/邮箱</string>
     <string name="item_input_email">请输入邮箱</string>
     <string name="item_carry_on">继续</string>
     <string name="item_get_verification_code">获取验证码</string>
