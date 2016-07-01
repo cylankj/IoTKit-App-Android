@@ -13,7 +13,6 @@ import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.cylan.jiafeigou.R;
@@ -53,7 +52,7 @@ public class WelcomePageActivity extends BaseFullScreenFragmentActivity implemen
     CirclePageIndicator vIndicator;
     @Nullable
 
-    private SplashContract.PresenterOps mPresenter;
+    private SplashContract.Presenter mPresenter;
     private final String TAG_COMEIN = "isTheUserFirstLoginIn";
 
     private List<Fragment> listSplashFreg;
@@ -145,7 +144,7 @@ public class WelcomePageActivity extends BaseFullScreenFragmentActivity implemen
     @OnPermissionDenied(Manifest.permission.WRITE_EXTERNAL_STORAGE)
     public void onWriteSdCardDenied() {
         Toast.makeText(this, "请你开启SD卡读写权限,应用才能正常工作", Toast.LENGTH_SHORT).show();
-        mPresenter.finishAppDelay();
+        if (mPresenter != null) mPresenter.finishAppDelay();
     }
 
     @NeedsPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)

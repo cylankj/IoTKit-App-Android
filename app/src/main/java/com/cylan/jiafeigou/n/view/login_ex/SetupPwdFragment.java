@@ -21,6 +21,7 @@ import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.mvp.contract.login.SetupPwdContract;
 import com.cylan.jiafeigou.n.mvp.model.RequestResetPwdBean;
+import com.cylan.jiafeigou.n.view.splash.WelcomePageActivity;
 import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.superlog.SLog;
@@ -159,8 +160,10 @@ public class SetupPwdFragment extends Fragment implements SetupPwdContract.Setup
         if (bean.ret == 0) {
 //            ivLoginTopLeft.performClick();
             Toast.makeText(getActivity(), "注册成功", Toast.LENGTH_SHORT).show();
-            if (getActivity() != null) {
+            if (getActivity() != null && (getActivity() instanceof WelcomePageActivity)) {
                 getActivity().finish();
+            } else {
+
             }
         }
     }

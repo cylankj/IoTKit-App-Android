@@ -33,7 +33,7 @@
                 android:gravity="center"
                 android:hint="@string/item_input_phone_num"
                 android:inputType="phone"
-                android:maxLength="60"
+                android:maxLength="11"
                 android:paddingLeft="40dp"
                 android:paddingRight="40dp"
                 android:textColor="@color/color_666666"
@@ -78,8 +78,8 @@
                 android:focusableInTouchMode="true"
                 android:gravity="center"
                 android:hint="@string/item_input_verification_code"
-                android:inputType="phone"
-                android:maxLength="60"
+                android:inputType="numberDecimal"
+                android:maxLength="6"
                 android:paddingLeft="40dp"
                 android:paddingRight="40dp"
                 android:textColor="@color/color_666666"
@@ -115,12 +115,28 @@
             android:layout_marginTop="37dp"
             android:text="继续" />
 
-        <TextView
+
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
+            android:layout_gravity="center_horizontal"
             android:layout_marginTop="37dp"
-            android:text="点击按钮,表示你已同意《用户使用协议》" />
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="点击按钮,表示你已同意" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:autoLink="web"
+                android:text="@string/item_user_license_agreements" />
+        </LinearLayout>
+
 
     </LinearLayout>
 

@@ -3,12 +3,14 @@ package com.cylan.jiafeigou.utils;
 import android.content.Context;
 import android.content.res.Resources;
 import android.os.Build;
+import android.text.InputFilter;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.TextView;
 
 /**
  * Created by cylan-hunt on 16-6-12.
@@ -61,11 +63,29 @@ public class ViewUtils {
                 : PasswordTransformationMethod.getInstance());
     }
 
+    /**
+     * 重新获取焦点，显示游标。
+     *
+     * @param editText
+     * @param enable
+     */
     public static void enableEditTextCursor(EditText editText, boolean enable) {
         editText.setFocusable(enable);
         editText.setFocusableInTouchMode(enable);
     }
 
+    public static void setTextViewMaxFilter(final TextView textView, final int maxLen) {
+        InputFilter[] filterArray = new InputFilter[1];
+        filterArray[0] = new InputFilter.LengthFilter(maxLen);
+        textView.setFilters(filterArray);
+    }
 
+    public static String getTextViewContent(TextView textView) {
+        if (textView != null) {
+            final CharSequence text = textView.getText();
+            return text != null ? text.toString().trim() : "";
+        }
+        return "";
+    }
 }
 

@@ -10,7 +10,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
-import android.support.v7.app.AppCompatActivity;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
@@ -26,7 +25,7 @@ import java.util.List;
  * Created by cylan-hunt on 16-6-6.
  */
 
-public class BaseFullScreenFragmentActivity extends FragmentActivity {
+public class BaseFullScreenFragmentActivity extends FragmentActivity implements FragmentManager.OnBackStackChangedListener {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -35,6 +34,7 @@ public class BaseFullScreenFragmentActivity extends FragmentActivity {
             SystemBarTintManager tintManager = new SystemBarTintManager(this);
             tintManager.setStatusBarTintEnabled(true);
         }
+        getSupportFragmentManager().addOnBackStackChangedListener(this);
     }
 
     /**
@@ -60,7 +60,7 @@ public class BaseFullScreenFragmentActivity extends FragmentActivity {
 
     /**
      * 使状态栏透明
-     * <p>
+     * <p/>
      * 适用于图片作为背景的界面,此时需要图片填充到状态栏
      *
      * @param activity 需要设置的activity
@@ -120,4 +120,8 @@ public class BaseFullScreenFragmentActivity extends FragmentActivity {
     }
 
 
+    @Override
+    public void onBackStackChanged() {
+
+    }
 }

@@ -9,19 +9,13 @@ import com.cylan.jiafeigou.n.mvp.BaseView;
 public interface SplashContract {
 
 
-    interface View extends BaseView<Presenter> {
-    }
-
-    interface Presenter extends BasePresenter {
-
-    }
 
     interface ViewRequiredOps {
         void  timeSplashed();
 
         void finishDelayed();
     }
-    interface PresenterOps {
+    interface Presenter {
         void splashTime();
 
         void finishAppDelay();

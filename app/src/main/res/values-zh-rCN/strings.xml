@@ -586,5 +586,6 @@
     <string name="item_input_verification_code">请输入验证码</string>
     <string name="item_reget_verification_code">重新发送</string>
     <string name="item_verification_code_is_outdate">验证码已过期</string>
+    <string name="item_user_license_agreements"><a href="http://www.cylan.com.cn/">《用户使用协议》</a></string>
 
 </resources>

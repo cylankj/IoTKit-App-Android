@@ -148,6 +148,10 @@ public class LoginFragment extends LoginBaseFragment implements LoginModelContra
         if (BuildConfig.DEBUG) {
             etLoginUsername.setText("hongdongsheng@cylan.com.cn");
             etLoginPwd.setText("1234567");
+            ivLoginClearPwd.setVisibility(View.GONE);
+            ivLoginClearUsername.setVisibility(View.GONE);
+//            ViewUtils.enableEditTextCursor(etLoginUsername,false);
+//            ViewUtils.enableEditTextCursor(etLoginPwd,false);
         }
         decideRegisterWay();
     }
@@ -266,7 +270,7 @@ public class LoginFragment extends LoginBaseFragment implements LoginModelContra
         ivLoginClearPwd.setVisibility(flag ? View.INVISIBLE : View.VISIBLE);
         if (flag || s.length() < 6) {
             setViewEnableStyle(lbLogin, false);
-        } else if (!TextUtils.isEmpty(etLoginUsername.getText().toString())) {
+        } else if (!TextUtils.isEmpty(ViewUtils.getTextViewContent(etLoginUsername))) {
             setViewEnableStyle(lbLogin, true);
         }
     }
@@ -284,7 +288,7 @@ public class LoginFragment extends LoginBaseFragment implements LoginModelContra
     public void onUserNameChange(CharSequence s, int start, int before, int count) {
         boolean flag = TextUtils.isEmpty(s);
         ivLoginClearUsername.setVisibility(flag ? View.GONE : View.VISIBLE);
-        String pwd = etLoginPwd.getText().toString().trim();
+        final String pwd = ViewUtils.getTextViewContent(etLoginPwd);
         if (flag) {
             setViewEnableStyle(lbLogin, false);
         } else if (!TextUtils.isEmpty(pwd) && pwd.length() >= 6) {
@@ -356,10 +360,8 @@ public class LoginFragment extends LoginBaseFragment implements LoginModelContra
      */
     private void enableEditTextCursor(boolean enable) {
         if (isResumed() && getActivity() != null) {
-            etLoginPwd.setFocusable(enable);
-            etLoginPwd.setFocusableInTouchMode(enable);
-            etLoginUsername.setFocusable(enable);
-            etLoginUsername.setFocusableInTouchMode(enable);
+            ViewUtils.enableEditTextCursor(etLoginPwd, enable);
+            ViewUtils.enableEditTextCursor(etLoginUsername, enable);
         }
     }
 
@@ -371,8 +373,8 @@ public class LoginFragment extends LoginBaseFragment implements LoginModelContra
         AnimatorUtils.viewAlpha(tvForgetPwd, false, 300, 0);
         AnimatorUtils.viewTranslationY(rLayoutLoginThirdParty, false, 100, 0, 800, 500);
         LoginAccountBean login = new LoginAccountBean();
-        login.userName = etLoginUsername.getText().toString().trim();
-        login.pwd = etLoginPwd.getText().toString().trim();
+        login.userName = ViewUtils.getTextViewContent(etLoginUsername);
+        login.pwd = ViewUtils.getTextViewContent(etLoginPwd);
         if (loginPresenter != null) {
             loginPresenter.executeLogin(login);
         }
@@ -387,7 +389,7 @@ public class LoginFragment extends LoginBaseFragment implements LoginModelContra
         if (getActivity() != null) {
             Bundle bundle = getArguments();
             final int containerId = bundle.getInt(JConstant.KEY_ACTIVITY_FRAGMENT_CONTAINER_ID);
-            final String tempAccount = etLoginUsername.getText().toString().trim();
+            final String tempAccount = ViewUtils.getTextViewContent(etLoginUsername);
             bundle.putInt(JConstant.KEY_LOCALE, RandomUtils.getRandom(2));
             bundle.putString(KEY_TEMP_ACCOUNT, tempAccount);
             ForgetPwdFragment forgetPwdFragment = ForgetPwdFragment.newInstance(bundle);
@@ -462,8 +464,8 @@ public class LoginFragment extends LoginBaseFragment implements LoginModelContra
      * 在跳转之前，做一些清理工作
      */
     private void clearSomeThing() {
-        if (verificationCodeLogic != null)
-            verificationCodeLogic.stop();
+//        if (verificationCodeLogic != null)
+//            verificationCodeLogic.stop();
 
     }
 
@@ -478,9 +480,9 @@ public class LoginFragment extends LoginBaseFragment implements LoginModelContra
         Bundle bundle = getArguments();
         if (getActivity() != null && bundle != null) {
             final int containerId = bundle.getInt(JConstant.KEY_ACTIVITY_FRAGMENT_CONTAINER_ID);
-            bundle.putString(JConstant.KEY_ACCOUNT_TO_SEND, etRegisterInputBox.getText().toString().trim());
-            bundle.putString(JConstant.KEY_PWD_TO_SEND, etRegisterInputBox.getText().toString().trim());
-            bundle.putString(JConstant.KEY_VCODE_TO_SEND, etVerificationInput.getText().toString().trim());
+            bundle.putString(JConstant.KEY_ACCOUNT_TO_SEND, ViewUtils.getTextViewContent(etRegisterInputBox));
+            bundle.putString(JConstant.KEY_PWD_TO_SEND, ViewUtils.getTextViewContent(etRegisterInputBox));
+            bundle.putString(JConstant.KEY_VCODE_TO_SEND, ViewUtils.getTextViewContent(etVerificationInput));
             SetupPwdFragment fragment = SetupPwdFragment.newInstance(bundle);
             getActivity().getSupportFragmentManager()
                     .beginTransaction()
@@ -494,20 +496,29 @@ public class LoginFragment extends LoginBaseFragment implements LoginModelContra
     }
 
     /**
+     * 验证码输入框
+     *
+     * @param show
+     */
+    private void handleVerificationCodeBox(boolean show) {
+        fLayoutVerificationCodeInputBox.setVisibility(show ? View.VISIBLE : View.GONE);
+    }
+
+    /**
      * 注册块，确认按钮逻辑。
      */
     private void handleRegisterConfirm() {
         if (registerWay == JConstant.REGISTER_BY_PHONE) {
-            final int codeLen = etVerificationInput.getText().toString().length();
+            final int codeLen = ViewUtils.getTextViewContent(etVerificationInput).length();
             if (fLayoutVerificationCodeInputBox.isShown()) {
-                boolean validPhoneNum = JConstant.PHONE_REG.matcher(etRegisterInputBox.getText().toString()).find();
+                boolean validPhoneNum = JConstant.PHONE_REG.matcher(ViewUtils.getTextViewContent(etRegisterInputBox)).find();
                 if (!validPhoneNum) {
                     Toast.makeText(getActivity(), "invalid phoneNum", Toast.LENGTH_SHORT).show();
                     return;
                 }
                 boolean validCode = codeLen == JConstant.VALID_VERIFICATION_CODE_LEN;
                 //显示重新发送，表示无效验证码
-                boolean aliveCode = TextUtils.equals(tvMeterGetCode.getText(),
+                boolean aliveCode = TextUtils.equals(ViewUtils.getTextViewContent(tvMeterGetCode),
                         getString(R.string.item_reget_verification_code));
                 if (validCode && aliveCode) {
                     Toast.makeText(getActivity(), getString(R.string.item_verification_code_is_outdate), Toast.LENGTH_SHORT).show();
@@ -529,13 +540,14 @@ public class LoginFragment extends LoginBaseFragment implements LoginModelContra
             //获取验证码
             if (loginPresenter != null)
                 loginPresenter.
-                        registerByPhone(etRegisterInputBox.getText().toString().trim(),
-                                etVerificationInput.getText().toString().trim());
+                        registerByPhone(ViewUtils.getTextViewContent(etRegisterInputBox),
+                                ViewUtils.getTextViewContent(etVerificationInput));
             //显示验证码输入框
-            fLayoutVerificationCodeInputBox.setVisibility(View.VISIBLE);
+            handleVerificationCodeBox(true);
+
             tvRegisterSubmit.setText(getString(R.string.item_carry_on));
         } else {
-            final boolean isValidEmail = Patterns.EMAIL_ADDRESS.matcher(etRegisterInputBox.getText().toString()).find();
+            final boolean isValidEmail = Patterns.EMAIL_ADDRESS.matcher(ViewUtils.getTextViewContent(etRegisterInputBox)).find();
             if (!isValidEmail) {
                 Toast.makeText(getActivity(), "请输入有效的邮箱", Toast.LENGTH_SHORT).show();
                 return;
@@ -550,16 +562,17 @@ public class LoginFragment extends LoginBaseFragment implements LoginModelContra
             etRegisterInputBox.setText("");
             etRegisterInputBox.setHint(getString(R.string.item_input_email));
             etRegisterInputBox.setInputType(EditorInfo.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
+            //设置长度
+            ViewUtils.setTextViewMaxFilter(etRegisterInputBox, 60);
             registerWay = JConstant.REGISTER_BY_EMAIL;
             tvRegisterSubmit.setText(getString(R.string.item_carry_on));
-            if (fLayoutVerificationCodeInputBox.getVisibility() == View.VISIBLE) {
-                fLayoutVerificationCodeInputBox.setVisibility(View.GONE);
-            }
+            handleVerificationCodeBox(false);
         } else if (registerWay == JConstant.REGISTER_BY_EMAIL) {
             tvRegisterWayContent.setText(getString(R.string.EMAIL_SIGNUP));
             etRegisterInputBox.setText("");
             etRegisterInputBox.setHint(getString(R.string.item_input_phone_num));
             etRegisterInputBox.setInputType(EditorInfo.TYPE_CLASS_PHONE);
+            ViewUtils.setTextViewMaxFilter(etRegisterInputBox, 11);
             registerWay = JConstant.REGISTER_BY_PHONE;
             tvRegisterSubmit.setText(getString(R.string.item_get_verification_code));
         }
@@ -592,6 +605,13 @@ public class LoginFragment extends LoginBaseFragment implements LoginModelContra
                 etRegisterInputBox.setText("");
                 break;
         }
+    }
+
+    /**
+     * 管理着注册方式的切换与输入
+     */
+    private static class RegisterWay {
+
     }
 
     /**
@@ -638,6 +658,7 @@ public class LoginFragment extends LoginBaseFragment implements LoginModelContra
                         return;
                     final String content = millisUntilFinished / 1000 + "s";
                     viewWeakReference.get().setText(content);
+                    viewWeakReference.get().setEnabled(false);
                 }
 
                 @Override

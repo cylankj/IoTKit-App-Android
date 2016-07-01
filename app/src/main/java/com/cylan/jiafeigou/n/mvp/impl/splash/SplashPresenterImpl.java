@@ -10,7 +10,7 @@ import java.lang.ref.WeakReference;
 /**
  * Created by hunt on 16-5-14.
  */
-public class SplashPresenterImpl implements SplashContract.PresenterOps, SplashContract.PresenterRequiredOps {
+public class SplashPresenterImpl implements SplashContract.Presenter, SplashContract.PresenterRequiredOps {
 
     private WeakReference<SplashContract.ViewRequiredOps> mView;
     private ModelContract.SplashModelOps mModel;
