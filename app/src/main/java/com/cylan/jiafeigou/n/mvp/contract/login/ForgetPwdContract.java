@@ -11,13 +11,6 @@ import org.msgpack.annotation.NotNullable;
  */
 public interface ForgetPwdContract {
 
-    int AUTHORIZE_PHONE = 2;
-    int AUTHORIZE_MAIL = 1;
-    /**
-     * 账号未注册
-     */
-    int THIS_ACCOUNT_NOT_REGISTERED = 0;
-
 
     interface View extends BaseView<Presenter> {
 
@@ -38,6 +31,8 @@ public interface ForgetPwdContract {
          * @param account
          */
         void executeSubmitAccount(@NotNullable String account);
+
+        void submitForVerificationCode(final String account);
 
         void submitPhoneNumAndCode(final String account, final String code);
 

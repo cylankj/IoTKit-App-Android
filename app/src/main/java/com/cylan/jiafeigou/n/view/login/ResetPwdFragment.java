@@ -15,7 +15,6 @@ import android.widget.Toast;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.contract.login.RstPwdContract;
-import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.superlog.SLog;
 
@@ -33,11 +32,11 @@ public class ResetPwdFragment extends android.support.v4.app.Fragment implements
 
     @BindView(R.id.cb_show_pwd)
     CheckBox cbShowPwd;
-    @BindView(R.id.iv_rst_clear_pwd)
+    @BindView(R.id.iv_new_clear_pwd)
     ImageView ivRstClearPwd;
-    @BindView(R.id.tv_rst_pwd_submit)
+    @BindView(R.id.tv_new_pwd_submit)
     TextView tvRstPwdSubmit;
-    @BindView(R.id.et_rst_pwd_input)
+    @BindView(R.id.et_new_pwd_input)
     EditText etRstPwdInput;
 
     private RstPwdContract.Presenter presenter;
@@ -56,7 +55,7 @@ public class ResetPwdFragment extends android.support.v4.app.Fragment implements
     public android.view.View onCreateView(LayoutInflater inflater, ViewGroup container,
                                           Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        android.view.View view = inflater.inflate(R.layout.fragment_reset_pwd, container, false);
+        android.view.View view = inflater.inflate(R.layout.fragment_set_new_pwd, container, false);
         ButterKnife.bind(this, view);
         return view;
     }
@@ -69,7 +68,7 @@ public class ResetPwdFragment extends android.support.v4.app.Fragment implements
      * @param before
      * @param count
      */
-    @OnTextChanged(R.id.et_rst_pwd_input)
+    @OnTextChanged(R.id.et_new_pwd_input)
     public void onPwdChange(CharSequence s, int start, int before, int count) {
         boolean flag = TextUtils.isEmpty(s);
         ivRstClearPwd.setVisibility(flag ? android.view.View.INVISIBLE : android.view.View.VISIBLE);
@@ -85,10 +84,10 @@ public class ResetPwdFragment extends android.support.v4.app.Fragment implements
     }
 
 
-    @OnClick({R.id.tv_rst_pwd_submit, R.id.iv_rst_clear_pwd})
+    @OnClick({R.id.tv_new_pwd_submit, R.id.iv_new_clear_pwd})
     public void onClick(android.view.View view) {
         switch (view.getId()) {
-            case R.id.tv_rst_pwd_submit:
+            case R.id.tv_new_pwd_submit:
                 if (isResumed() && getActivity() != null) {
                     ViewUtils.enableEditTextCursor(etRstPwdInput, false);
                 }
@@ -106,7 +105,7 @@ public class ResetPwdFragment extends android.support.v4.app.Fragment implements
 
                 }
                 break;
-            case R.id.iv_rst_clear_pwd:
+            case R.id.iv_new_clear_pwd:
                 etRstPwdInput.setText("");
                 break;
         }
@@ -117,7 +116,9 @@ public class ResetPwdFragment extends android.support.v4.app.Fragment implements
     public void submitResult(int ret) {
         if (ret == 1) {
             Toast.makeText(getActivity(), "修改密码成功", Toast.LENGTH_SHORT).show();
-            ActivityUtils.justPop(getActivity());
+//            ActivityUtils.justPop(getActivity());
+            Toast.makeText(getActivity(), "yes?", Toast.LENGTH_SHORT).show();
+            getActivity().getSupportFragmentManager().popBackStack();
         } else if (ret == 0) {
             Toast.makeText(getActivity(), "密码修改失败", Toast.LENGTH_SHORT).show();
             ViewUtils.enableEditTextCursor(etRstPwdInput, true);

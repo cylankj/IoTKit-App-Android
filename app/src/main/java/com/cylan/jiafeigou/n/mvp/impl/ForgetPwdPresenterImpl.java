@@ -7,6 +7,7 @@ import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.mvp.contract.login.ForgetPwdContract;
 import com.cylan.jiafeigou.n.mvp.model.RequestResetPwdBean;
 import com.cylan.utils.RandomUtils;
+import com.superlog.SLog;
 
 import org.msgpack.annotation.NotNullable;
 
@@ -49,6 +50,11 @@ public class ForgetPwdPresenterImpl extends AbstractPresenter<ForgetPwdContract.
                             doStuff(TextUtils.isDigitsOnly(s) ? JConstant.TYPE_PHONE : JConstant.TYPE_EMAIL);
                     }
                 });
+    }
+
+    @Override
+    public void submitForVerificationCode(String account) {
+        SLog.d("no thing happened");
     }
 
     @Override

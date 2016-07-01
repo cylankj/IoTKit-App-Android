@@ -40,6 +40,8 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_gravity="end"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
             android:src="@drawable/btn_login_clear_text"
@@ -49,6 +51,8 @@
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_gravity="bottom"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
             android:background="@color/color_f2f2f2" />
     </FrameLayout>
 
@@ -95,17 +99,18 @@
                 android:paddingLeft="15dp"
                 android:paddingRight="7dp"
                 android:src="@drawable/btn_login_clear_text"
-                android:visibility="invisible" />
+                android:visibility="gone" />
 
             <CheckBox
                 android:id="@+id/cb_show_pwd"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
+                android:layout_marginLeft="7dp"
+                android:layout_marginRight="10dp"
                 android:background="@drawable/icon_common_show_pwd_selector"
                 android:button="@null"
-                android:checked="false"
-                android:paddingLeft="7dp" />
+                android:checked="false" />
 
 
         </LinearLayout>
@@ -115,6 +120,8 @@
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_gravity="bottom"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
             android:background="@color/color_f2f2f2" />
 
     </FrameLayout>

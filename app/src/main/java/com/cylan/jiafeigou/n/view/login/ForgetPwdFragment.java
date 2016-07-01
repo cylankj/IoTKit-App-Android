@@ -4,12 +4,15 @@ import android.content.Context;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.Patterns;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -21,7 +24,6 @@ import android.widget.ViewSwitcher;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.mvp.contract.login.ForgetPwdContract;
-import com.cylan.jiafeigou.n.mvp.impl.PresenterImpl;
 import com.cylan.jiafeigou.n.mvp.model.RequestResetPwdBean;
 import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.IMEUtils;
@@ -31,6 +33,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
 import butterknife.OnFocusChange;
 import butterknife.OnTextChanged;
@@ -40,7 +43,7 @@ import butterknife.OnTextChanged;
  * Created by lxh on 16-6-14.
  */
 
-public class ForgetPwdFragment extends android.support.v4.app.Fragment implements ForgetPwdContract.View {
+public class ForgetPwdFragment extends Fragment implements ForgetPwdContract.View {
 
 
     @BindView(R.id.et_forget_username)
@@ -57,21 +60,29 @@ public class ForgetPwdFragment extends android.support.v4.app.Fragment implement
     TextView tvMeterGetCode;
     @BindView(R.id.fLayout_verification_code_input_box)
     FrameLayout fLayoutVerificationCodeInputBox;
-    @BindView(R.id.et_rst_pwd_input)
-    EditText etRstPwdInput;
+
+    @Nullable
+    @BindView(R.id.et_new_pwd_input)
+    EditText etNewPwdInput;
+    @Nullable
+    @BindView(R.id.iv_new_clear_pwd)
+    ImageView ivNewClearPwd;
+    @Nullable
+    @BindView(R.id.tv_new_pwd_submit)
+    TextView tvNewPwdSubmit;
+    @Nullable
+    @BindView(R.id.rLayout_new_pwd_input_box)
+    FrameLayout rLayoutRstPwdInputBox;
+
+    @Nullable
     @BindView(R.id.cb_show_pwd)
     CheckBox cbShowPwd;
-    @BindView(R.id.iv_rst_clear_pwd)
-    ImageView ivRstClearPwd;
-    @BindView(R.id.rLayout_rst_pwd_input_box)
-    FrameLayout rLayoutRstPwdInputBox;
-    @BindView(R.id.tv_rst_pwd_submit)
-    TextView tvRstPwdSubmit;
     @BindView(R.id.vs_set_account_pwd)
     ViewSwitcher vsSetAccountPwd;
 
     @BindView(R.id.tv_login_top_center)
     TextView tvLoginTopCenter;
+
     /**
      * {0}请输入手机号/邮箱 {1}请输入邮箱
      */
@@ -86,7 +97,7 @@ public class ForgetPwdFragment extends android.support.v4.app.Fragment implement
         super.onCreate(savedInstanceState);
         Bundle bundle = getArguments();
         acceptType = bundle.getInt(JConstant.KEY_LOCALE);
-        List<android.support.v4.app.Fragment> fragmentList = getActivity().getSupportFragmentManager().getFragments();
+        List<Fragment> fragmentList = getActivity().getSupportFragmentManager().getFragments();
         Log.d("", "" + fragmentList);
         initCountDownTimer();
     }
@@ -110,14 +121,14 @@ public class ForgetPwdFragment extends android.support.v4.app.Fragment implement
 
     @Nullable
     @Override
-    public android.view.View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        android.view.View view = inflater.inflate(R.layout.fragment_forget_pwd, container, false);
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_forget_pwd, container, false);
         ButterKnife.bind(this, view);
         return view;
     }
 
     @Override
-    public void onViewCreated(android.view.View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         initTitleBar();
         initView(view);
     }
@@ -133,14 +144,14 @@ public class ForgetPwdFragment extends android.support.v4.app.Fragment implement
 
     private void initTitleBar() {
         FrameLayout layout = (FrameLayout) getView().findViewById(R.id.rLayout_login_top);
-        layout.findViewById(R.id.tv_login_top_right).setVisibility(android.view.View.GONE);
+        layout.findViewById(R.id.tv_login_top_right).setVisibility(View.GONE);
         TextView tvTitle = (TextView) layout.findViewById(R.id.tv_login_top_center);
         tvTitle.setText("忘记密码");
         ImageView imgBackHandle = (ImageView) layout.findViewById(R.id.iv_login_top_left);
         imgBackHandle.setImageResource(R.drawable.btn_nav_back);
-        imgBackHandle.setOnClickListener(new android.view.View.OnClickListener() {
+        imgBackHandle.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(android.view.View v) {
+            public void onClick(View v) {
                 ActivityUtils.justPop(getActivity());
             }
         });
@@ -153,13 +164,14 @@ public class ForgetPwdFragment extends android.support.v4.app.Fragment implement
     }
 
 
-    private void initView(android.view.View view) {
+    private void initView(View view) {
         if (acceptType == 1) {
             etForgetUsername.setHint("please input email address");
         }
         Bundle bundle = getArguments();
         if (bundle != null && !TextUtils.isEmpty(bundle.getString(LoginFragment.KEY_TEMP_ACCOUNT))) {
             etForgetUsername.setText(bundle.getString(LoginFragment.KEY_TEMP_ACCOUNT));
+            ivForgetClearUsername.setVisibility(View.GONE);
         }
     }
 
@@ -182,18 +194,19 @@ public class ForgetPwdFragment extends android.support.v4.app.Fragment implement
     public void reGetVerificationCode() {
         countDownTimer.start();
         tvMeterGetCode.setEnabled(false);
+        Toast.makeText(getActivity(), "已发送", Toast.LENGTH_SHORT).show();
         if (presenter != null)
             presenter.executeSubmitAccount(ViewUtils.getTextViewContent(etForgetUsername));
     }
 
     @OnClick(R.id.iv_forget_clear_username)
-    public void clearUsername(android.view.View view) {
+    public void clearUsername(View view) {
         etForgetUsername.setText("");
     }
 
     @OnFocusChange(R.id.et_forget_username)
-    public void onEtFocusChange(android.view.View view, boolean focused) {
-        ivForgetClearUsername.setVisibility(focused ? android.view.View.VISIBLE : android.view.View.INVISIBLE);
+    public void onEtFocusChange(View view, boolean focused) {
+        ivForgetClearUsername.setVisibility(focused ? View.VISIBLE : View.INVISIBLE);
     }
 
     /**
@@ -201,7 +214,7 @@ public class ForgetPwdFragment extends android.support.v4.app.Fragment implement
      * android:animateLayoutChanges="true",就有transition的效果。
      */
     private void start2HandleVerificationCode() {
-        fLayoutVerificationCodeInputBox.setVisibility(android.view.View.VISIBLE);
+        fLayoutVerificationCodeInputBox.setVisibility(View.VISIBLE);
         countDownTimer.start();
     }
 
@@ -214,11 +227,11 @@ public class ForgetPwdFragment extends android.support.v4.app.Fragment implement
                 enableEditTextCursor(true);
                 return;
             case JConstant.TYPE_PHONE:
-                if (fLayoutVerificationCodeInputBox.getVisibility() == android.view.View.GONE) {
+                if (fLayoutVerificationCodeInputBox.getVisibility() == View.GONE) {
                     tvLoginTopCenter.setText("忘记密码(手机)");
                     start2HandleVerificationCode();
                     if (presenter != null) {
-                        presenter.executeSubmitAccount(ViewUtils.getTextViewContent(etForgetUsername));
+                        presenter.submitForVerificationCode(ViewUtils.getTextViewContent(etForgetUsername));
                     }
                 } else {
                     final String code = ViewUtils.getTextViewContent(etVerificationInput);
@@ -226,17 +239,27 @@ public class ForgetPwdFragment extends android.support.v4.app.Fragment implement
                         Toast.makeText(getActivity(), "验证码有错", Toast.LENGTH_SHORT).show();
                         return;
                     }
-                    if (TextUtils.isEmpty(etForgetUsername.getText())) {
-                        Toast.makeText(getActivity(), "手机号码为空", Toast.LENGTH_SHORT).show();
-                    } else {
-                        Toast.makeText(getActivity(), "已发送", Toast.LENGTH_SHORT).show();
-                        getArguments().putString(LoginFragment.KEY_TEMP_ACCOUNT, etForgetUsername.getText().toString());
-                        countDownTimer.onFinish();
-                        presenter.submitPhoneNumAndCode(etForgetUsername.getText().toString(), ViewUtils.getTextViewContent(etVerificationInput));
+                    if (!JConstant.PHONE_REG.matcher(etForgetUsername.getText()).find()) {
+                        Toast.makeText(getActivity(), "手机号码有错", Toast.LENGTH_SHORT).show();
+                        return;
                     }
+                    //验证码过期
+                    if (!TextUtils.isEmpty(code) && code.length() == 6
+                            && JConstant.PHONE_REG.matcher(etForgetUsername.getText()).find()) {
+                        if (TextUtils.equals(getString(R.string.item_reget_verification_code),
+                                ViewUtils.getTextViewContent(tvMeterGetCode))) {
+                            Toast.makeText(getActivity(), "验证码已过期", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+                    }
+                    Toast.makeText(getActivity(), "已发送", Toast.LENGTH_SHORT).show();
+                    getArguments().putString(LoginFragment.KEY_TEMP_ACCOUNT, etForgetUsername.getText().toString());
+                    if (presenter != null)
+                        presenter.submitPhoneNumAndCode(etForgetUsername.getText().toString(), ViewUtils.getTextViewContent(etVerificationInput));
                 }
                 break;
             case JConstant.TYPE_EMAIL:
+                enableEditTextCursor(false);
                 Toast.makeText(getActivity(), "已发送", Toast.LENGTH_SHORT).show();
                 tvLoginTopCenter.setText("忘记密码(邮箱)");
                 if (presenter != null)
@@ -258,7 +281,7 @@ public class ForgetPwdFragment extends android.support.v4.app.Fragment implement
     @OnTextChanged(R.id.et_forget_username)
     public void userNameChange(CharSequence s, int start, int before, int count) {
         final boolean flag = TextUtils.isEmpty(s);
-        ivForgetClearUsername.setVisibility(flag ? android.view.View.GONE : android.view.View.VISIBLE);
+        ivForgetClearUsername.setVisibility(flag ? View.GONE : View.VISIBLE);
         boolean codeValid = checkInputType() != JConstant.TYPE_INVALID;
         tvForgetPwdSubmit.setEnabled(!flag && codeValid);
     }
@@ -271,8 +294,8 @@ public class ForgetPwdFragment extends android.support.v4.app.Fragment implement
     }
 
     @OnClick(R.id.tv_forget_pwd_submit)
-    public void forgetPwdCommit(android.view.View v) {
-        enableEditTextCursor(false);
+    public void forgetPwdCommit(View v) {
+
         next();
     }
 
@@ -293,30 +316,50 @@ public class ForgetPwdFragment extends android.support.v4.app.Fragment implement
         }
     }
 
+    /**
+     * 提交邮箱,修改密码，服务端响应之后的view
+     */
     private void prepareMailView() {
-        android.view.View view = vsSetAccountPwd.findViewById(R.id.layout_to_be_update);
+        View view = vsSetAccountPwd.findViewById(R.id.layout_to_be_update);
         if (view != null) {
             vsSetAccountPwd.removeView(view);
         }
-        android.view.View mailView = LayoutInflater.from(getContext()).inflate(R.layout.fragment_forget_pwd_by_email, null);
+        View mailView = LayoutInflater.from(getContext())
+                .inflate(R.layout.fragment_forget_pwd_by_email, null);
         if (mailView == null) {
             return;
         }
         final String content = String.format(getString(R.string.send_email_tip_content),
                 ViewUtils.getTextViewContent(etForgetUsername));
         ((TextView) mailView.findViewById(R.id.tv_send_email_content)).setText(content);
-        android.view.View btn = mailView.findViewById(R.id.tv_email_confirm);
+        View btn = mailView.findViewById(R.id.tv_email_confirm);
         btn.setEnabled(true);
-        btn.setOnClickListener(new android.view.View.OnClickListener() {
+        btn.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(android.view.View v) {
+            public void onClick(View v) {
                 Toast.makeText(getActivity(), "yes?", Toast.LENGTH_SHORT).show();
                 getActivity().getSupportFragmentManager().popBackStack();
             }
         });
         vsSetAccountPwd.addView(mailView);
-        vsSetAccountPwd.setInAnimation(getContext(), R.anim.slide_in_right_overshoot);
-        vsSetAccountPwd.setOutAnimation(getContext(), R.anim.slide_out_left);
+        vsSetAccountPwd.showNext();
+    }
+
+    /**
+     * 设置新手机账号的密码。
+     */
+    private void preparePhoneView() {
+//        View view = vsSetAccountPwd.findViewById(R.id.layout_to_be_update);
+//        if (view != null) {
+//            vsSetAccountPwd.removeView(view);
+//        }
+//        View phoneNewPwdView = LayoutInflater.from(getContext())
+//                .inflate(R.layout.fragment_set_new_pwd, null);
+//        if (phoneNewPwdView == null) {
+//            return;
+//        }
+        initTitle(JConstant.TYPE_PHONE);
+//        vsSetAccountPwd.addView(phoneNewPwdView);
         vsSetAccountPwd.showNext();
     }
 
@@ -324,33 +367,14 @@ public class ForgetPwdFragment extends android.support.v4.app.Fragment implement
     public void submitResult(RequestResetPwdBean bean) {
         final int ret = bean == null ? -1 : bean.ret;
         switch (ret) {
-            case ForgetPwdContract.THIS_ACCOUNT_NOT_REGISTERED:
+            case JConstant.THIS_ACCOUNT_NOT_REGISTERED:
                 Toast.makeText(getContext(), "账号未注册", Toast.LENGTH_SHORT).show();
                 break;
-            case ForgetPwdContract.AUTHORIZE_MAIL:
+            case JConstant.AUTHORIZE_MAIL:
                 prepareMailView();
-//                final String account = etForgetUsername.getText().toString().trim();
-//                Bundle bundle = getArguments();
-//                bundle.putString(JConstant.KEY_ACCOUNT_TO_SEND, account);
-//                getChildFragmentManager().beginTransaction()
-//                        .setCustomAnimations(R.anim.slide_right_in, R.anim.slide_out_right
-//                                , R.anim.slide_out_right, R.anim.slide_out_right)
-//                        .replace(R.id.fLayout_forget_container,
-//                                ForgetPwdByEmailFragment.newInstance(getArguments()),
-//                                "mailFragment")
-//                        .commit();
                 break;
-            case ForgetPwdContract.AUTHORIZE_PHONE:
-                //show timer
-                ResetPwdFragment fragment = ResetPwdFragment.newInstance(getArguments());
-                getChildFragmentManager().beginTransaction()
-                        .setCustomAnimations(R.anim.slide_right_in, R.anim.slide_out_right
-                                , R.anim.slide_out_right, R.anim.slide_out_right)
-                        .replace(R.id.fLayout_forget_container,
-                                fragment,
-                                "rstPwdFragment")
-                        .commit();
-                new PresenterImpl(fragment);
+            case JConstant.AUTHORIZE_PHONE:
+                preparePhoneView();
                 break;
         }
     }
@@ -358,5 +382,38 @@ public class ForgetPwdFragment extends android.support.v4.app.Fragment implement
     @Override
     public void setPresenter(ForgetPwdContract.Presenter presenter) {
         this.presenter = presenter;
+    }
+
+    //    lazy load 的view
+    @Nullable
+    @OnTextChanged(R.id.et_new_pwd_input)
+    public void newPwdInputBoxChanged(CharSequence s, final int before, final int count, final int len) {
+        final boolean empty = TextUtils.isEmpty(s);
+        final boolean isNewPswValid = !empty
+                && s.length() >= JConstant.PWD_LEN_MIN
+                && s.length() <= JConstant.PWD_LEN_MAX;
+        if (tvNewPwdSubmit != null) tvNewPwdSubmit.setEnabled(isNewPswValid);
+        if (ivNewClearPwd != null) {
+            ivNewClearPwd.setVisibility(empty ? View.GONE : View.VISIBLE);
+        }
+    }
+
+    @OnCheckedChanged(R.id.cb_new_pwd_show)
+    public void onNewPwdCheckBoxState(CompoundButton view, boolean isChecked) {
+        ViewUtils.showPwd(etNewPwdInput, isChecked);
+        if (etNewPwdInput != null) etNewPwdInput.setSelection(etNewPwdInput.length());
+    }
+
+    @OnClick({R.id.iv_new_clear_pwd, R.id.tv_new_pwd_submit})
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.iv_new_clear_pwd:
+                if (etNewPwdInput != null) etNewPwdInput.setText("");
+                break;
+            case R.id.tv_new_pwd_submit:
+                Toast.makeText(getActivity(), "yes?", Toast.LENGTH_SHORT).show();
+                getActivity().getSupportFragmentManager().popBackStack();
+                break;
+        }
     }
 }

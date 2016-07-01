@@ -160,7 +160,7 @@ public class LoginFragment extends android.support.v4.app.Fragment implements Lo
     public void onViewCreated(android.view.View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         if (BuildConfig.DEBUG) {
-            etLoginUsername.setText("hongdongsheng@cylan.com.cn");
+            etLoginUsername.setText("18576670453");
             etLoginPwd.setText("1234567");
             ivLoginClearPwd.setVisibility(android.view.View.GONE);
             ivLoginClearUsername.setVisibility(android.view.View.GONE);
