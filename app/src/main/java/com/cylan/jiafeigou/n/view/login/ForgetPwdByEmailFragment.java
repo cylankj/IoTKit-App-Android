@@ -1,4 +1,4 @@
-package com.cylan.jiafeigou.n.view.login_ex;
+package com.cylan.jiafeigou.n.view.login;
 
 
 import android.os.Bundle;

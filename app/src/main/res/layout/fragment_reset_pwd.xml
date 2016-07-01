@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:background="@color/color_white"
     android:orientation="vertical"
-    tools:context="com.cylan.jiafeigou.n.view.login_ex.ResetPwdFragment">
+    tools:context=".n.view.login.ResetPwdFragment">
 
     <FrameLayout
         android:id="@+id/rLayout_rst_pwd_input_box"

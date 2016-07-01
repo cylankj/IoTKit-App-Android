@@ -52,18 +52,13 @@ public class BeforeLoginFragment extends Fragment {
         clearChildren();
         Bundle bundle = new Bundle();
         bundle.putInt(JConstant.KEY_ACTIVITY_FRAGMENT_CONTAINER_ID, android.R.id.content);
-//        getFragmentManager()
-//                .beginTransaction()
-//                .setCustomAnimations(R.anim.slide_up_in, R.anim.slide_down_out
-//                        , R.anim.slide_out_left, R.anim.slide_out_left)
-//                .add(android.R.id.content, LoginContainerFragment.newInstance(bundle))
-//                .commit();
+        bundle.putInt(JConstant.KEY_FRAGMENT_ACTION_1, 1);
         LoginFragment fragment = LoginFragment.newInstance(bundle);
         getFragmentManager()
                 .beginTransaction()
                 .setCustomAnimations(R.anim.slide_up_in, R.anim.slide_down_out
                         , R.anim.slide_in_left, R.anim.slide_out_right)
-                .add(android.R.id.content, fragment)
+                .replace(android.R.id.content, fragment)
                 .addToBackStack("LogInFragment")
                 .commit();
         new LoginPresenterImpl(fragment);
@@ -83,11 +78,4 @@ public class BeforeLoginFragment extends Fragment {
         }
     }
 
-    private void disableView(int... id) {
-        if (id != null && getView() != null)
-            for (int i : id) {
-                View v = getView().findViewById(i);
-                if (v != null) v.setVisibility(View.GONE);
-            }
-    }
 }

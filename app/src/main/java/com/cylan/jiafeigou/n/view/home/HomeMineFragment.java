@@ -1,6 +1,5 @@
 package com.cylan.jiafeigou.n.view.home;
 
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
@@ -10,19 +9,19 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeMineContract;
-import com.cylan.jiafeigou.n.mvp.impl.setting.AccountInfoPresenterImpl;
-import com.cylan.jiafeigou.n.view.fragment.AccountInfoFragment;
-import com.cylan.jiafeigou.n.view.login.LoginModelActivity;
+import com.cylan.jiafeigou.n.mvp.impl.LoginPresenterImpl;
+import com.cylan.jiafeigou.n.view.login.LoginFragment;
 import com.cylan.jiafeigou.utils.ActivityUtils;
-import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.HomeMineItemView;
+import com.cylan.jiafeigou.widget.MsgTextView;
 import com.cylan.jiafeigou.widget.roundedimageview.RoundedImageView;
 import com.cylan.sdkjni.JfgCmd;
 import com.cylan.utils.BitmapUtil;
@@ -34,7 +33,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class HomeMineFragment extends Fragment
-        implements HomeMineContract.View, View.OnClickListener {
+        implements HomeMineContract.View {
 
 
     @BindView(R.id.iv_home_mine_portrait)
@@ -43,12 +42,12 @@ public class HomeMineFragment extends Fragment
     @BindView(R.id.tv_home_mine_nick)
     TextView tvHomeMineNick;
 
-    @BindView(R.id.iv_mine_msg)
-    ImageView ivMineMsg;
+    @BindView(R.id.rLayout_msg_box)
+    FrameLayout fLayoutMsgBox;
     @BindView(R.id.tv_home_mine_msg_count)
-    TextView tvHomeMineMsgCount;
+    MsgTextView tvHomeMineMsgCount;
     @BindView(R.id.rLayout_home_mine_top)
-    RelativeLayout rLayoutHomeMineTop;
+    FrameLayout rLayoutHomeMineTop;
     @BindView(R.id.home_mine_item_friend)
     HomeMineItemView homeMineItemFriend;
     @BindView(R.id.home_mine_item_share)
@@ -71,14 +70,13 @@ public class HomeMineFragment extends Fragment
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home_mine, container, false);
         ButterKnife.bind(this, view);
-        setLinstener();
         return view;
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        ViewUtils.setViewMarginStatusBar(ivMineMsg);
+        ViewUtils.setViewMarginStatusBar(fLayoutMsgBox);
     }
 
     /**
@@ -125,12 +123,8 @@ public class HomeMineFragment extends Fragment
 
 
     public void portrait() {
-        if (needStartLoginFragment()) return;
-        ToastUtil.showToast(getContext(), "推荐fragment");
-        AccountInfoFragment fragment = (AccountInfoFragment) AccountInfoFragment.getInstance();
-        ActivityUtils.addFragmentToActivity(getActivity().getSupportFragmentManager(),
-                fragment, R.id.rLayout_new_home_container, 0);
-        new AccountInfoPresenterImpl(fragment);
+        if (needStartLoginFragment())
+            return;
     }
 
     public void friendItem(View view) {
@@ -171,7 +165,6 @@ public class HomeMineFragment extends Fragment
                 @Override
                 public void run() {
                     tvHomeMineMsgCount.setText("99+");
-                    tvHomeMineMsgCount.setBackgroundResource(R.drawable.shape_mine_msg_count_rectangle);
                 }
             });
         }
@@ -180,60 +173,21 @@ public class HomeMineFragment extends Fragment
 
     private boolean needStartLoginFragment() {
         if (!JfgCmd.getJfgCmd(getContext()).isLogined) {
-            getActivity().startActivity(new Intent(getContext(), LoginModelActivity.class));
+            Bundle bundle = new Bundle();
+            bundle.putInt(JConstant.KEY_ACTIVITY_FRAGMENT_CONTAINER_ID, android.R.id.content);
+            bundle.putInt(JConstant.KEY_FRAGMENT_ACTION_1, 1);
+            LoginFragment fragment = LoginFragment.newInstance(bundle);
+            new LoginPresenterImpl(fragment);
+            ActivityUtils.addFragmentToActivity(getActivity().getSupportFragmentManager(),
+                    fragment, android.R.id.content, 0);
             return true;
         }
         return false;
     }
 
-    @OnClick({R.id.iv_home_mine_portrait, R.id.tv_home_mine_nick,
-            R.id.iv_mine_msg, R.id.tv_home_mine_msg_count, R.id.rLayout_home_mine_top})
-    public void onButterknifeClick(View view) {
-        switch (view.getId()) {
-            case R.id.iv_home_mine_portrait:
-                portrait();
-                break;
-            case R.id.tv_home_mine_nick:
-                SLog.e("tv_home_mine_nick");
-                break;
-            case R.id.iv_mine_msg:
-                SLog.e("iv_mine_msg");
-                break;
-            case R.id.tv_home_mine_msg_count:
-                SLog.e("tv_home_mine_msg_count");
-                break;
-            case R.id.rLayout_home_mine_top:
-                SLog.e("rLayout_home_mine_top");
-                break;
-//            case R.id.home_mine_item_friend:
-//                SLog.e("home_mine_item_friend");
-//                friendItem(view);
-//                break;
-//            case R.id.home_mine_item_share:
-//                SLog.e("home_mine_item_share");
-//                shareItem(view);
-//                break;
-//            case R.id.home_mine_item_help:
-//                SLog.e("home_mine_item_help");
-//                helpItem(view);
-//                break;
-//            case R.id.home_mine_item_settings:
-//                SLog.e("home_mine_item_settings");
-//                settingsItem(view);
-//                break;
-        }
-    }
-
-
-    private void setLinstener() {
-        homeMineItemFriend.setOnClickListener(this);
-        homeMineItemHelp.setOnClickListener(this);
-        homeMineItemSettings.setOnClickListener(this);
-        homeMineItemShare.setOnClickListener(this);
-    }
-
-    @Override
-    public void onClick(View view) {
+    @OnClick({R.id.home_mine_item_friend, R.id.home_mine_item_share,
+             R.id.home_mine_item_help, R.id.home_mine_item_settings})
+    public void onButterKnifeClick(View view) {
         switch (view.getId()) {
             case R.id.home_mine_item_friend:
                 SLog.e("home_mine_item_friend");
@@ -253,4 +207,6 @@ public class HomeMineFragment extends Fragment
                 break;
         }
     }
+
+
 }

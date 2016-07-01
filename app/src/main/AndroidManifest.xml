@@ -77,7 +77,6 @@
             android:name="InstallChannel"
             android:value="play" />
 
-        <activity android:name=".n.view.login.LoginModelActivity" />
         <activity
             android:name=".n.view.splash.WelcomePageActivity"
             android:configChanges="locale|orientation|keyboardHidden"

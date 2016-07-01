@@ -33,5 +33,9 @@ public class JConstant {
      * verification code
      */
     public static final String KEY_VCODE_TO_SEND = "key_to_send_pwd";
+    /**
+     * fragment与宿主activity之间的切换关系，{1:finishActivity,2:just popFragment}
+     */
+    public static final String KEY_FRAGMENT_ACTION_1 = "key_fragment_activity_0";
 
 }

@@ -8,7 +8,9 @@ import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.Patterns;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
@@ -31,7 +33,6 @@ import com.cylan.jiafeigou.n.mvp.contract.login.LoginModelContract;
 import com.cylan.jiafeigou.n.mvp.impl.ForgetPwdPresenterImpl;
 import com.cylan.jiafeigou.n.mvp.impl.SetupPwdPresenterImpl;
 import com.cylan.jiafeigou.n.mvp.model.LoginAccountBean;
-import com.cylan.jiafeigou.n.view.login_ex.SetupPwdFragment;
 import com.cylan.jiafeigou.n.view.splash.WelcomePageActivity;
 import com.cylan.jiafeigou.utils.AnimatorUtils;
 import com.cylan.jiafeigou.utils.IMEUtils;
@@ -55,7 +56,7 @@ import butterknife.OnTextChanged;
 /**
  * 登陆主界面
  */
-public class LoginFragment extends LoginBaseFragment implements LoginModelContract.LoginView {
+public class LoginFragment extends Fragment implements LoginModelContract.LoginView {
     private static final String TAG = "LoginFragment";
     public static final String KEY_TEMP_ACCOUNT = "temp_account";
     @BindView(R.id.et_login_username)
@@ -136,10 +137,26 @@ public class LoginFragment extends LoginBaseFragment implements LoginModelContra
         View view = inflater.inflate(R.layout.fragment_login_layout, container, false);
         ButterKnife.bind(this, view);
         addOnTouchListener(view);
-        initView();
         printFragment();
         showLayout();
         return view;
+    }
+
+    /**
+     * 用来点击空白处隐藏键盘
+     *
+     * @param view
+     */
+    public void addOnTouchListener(View view) {
+        view.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    IMEUtils.hide(getActivity());
+                }
+                return false;
+            }
+        });
     }
 
     @Override
@@ -150,10 +167,9 @@ public class LoginFragment extends LoginBaseFragment implements LoginModelContra
             etLoginPwd.setText("1234567");
             ivLoginClearPwd.setVisibility(View.GONE);
             ivLoginClearUsername.setVisibility(View.GONE);
-//            ViewUtils.enableEditTextCursor(etLoginUsername,false);
-//            ViewUtils.enableEditTextCursor(etLoginPwd,false);
         }
         decideRegisterWay();
+        initView();
     }
 
     @Override
@@ -240,7 +256,21 @@ public class LoginFragment extends LoginBaseFragment implements LoginModelContra
      * 初始化view
      */
     private void initView() {
-        setViewEnableStyle(lbLogin, false);
+        //You need to add the following line for this solution to work; thanks skayred
+        if (getView() != null) {
+            getView().setFocusableInTouchMode(true);
+            getView().requestFocus();
+            getView().setOnKeyListener(new View.OnKeyListener() {
+                @Override
+                public boolean onKey(View v, int keyCode, KeyEvent event) {
+                    if (keyCode == KeyEvent.KEYCODE_BACK) {
+                        if (getActivity() != null && getActivity() instanceof WelcomePageActivity)
+                            getActivity().finish();
+                    }
+                    return false;
+                }
+            });
+        }
     }
 
     /**
@@ -269,9 +299,9 @@ public class LoginFragment extends LoginBaseFragment implements LoginModelContra
         boolean flag = TextUtils.isEmpty(s);
         ivLoginClearPwd.setVisibility(flag ? View.INVISIBLE : View.VISIBLE);
         if (flag || s.length() < 6) {
-            setViewEnableStyle(lbLogin, false);
+            lbLogin.setEnabled(false);
         } else if (!TextUtils.isEmpty(ViewUtils.getTextViewContent(etLoginUsername))) {
-            setViewEnableStyle(lbLogin, true);
+            lbLogin.setEnabled(true);
         }
     }
 
@@ -290,9 +320,9 @@ public class LoginFragment extends LoginBaseFragment implements LoginModelContra
         ivLoginClearUsername.setVisibility(flag ? View.GONE : View.VISIBLE);
         final String pwd = ViewUtils.getTextViewContent(etLoginPwd);
         if (flag) {
-            setViewEnableStyle(lbLogin, false);
+            lbLogin.setEnabled(false);
         } else if (!TextUtils.isEmpty(pwd) && pwd.length() >= 6) {
-            setViewEnableStyle(lbLogin, true);
+            lbLogin.setEnabled(true);
         }
     }
 
@@ -325,6 +355,8 @@ public class LoginFragment extends LoginBaseFragment implements LoginModelContra
             case R.id.iv_login_top_left:
                 if (getActivity() != null && getActivity() instanceof WelcomePageActivity) {
                     getActivity().finish();
+                } else if (getActivity() != null && getActivity() instanceof NewHomeActivity) {
+                    getActivity().onBackPressed();
                 }
                 break;
             case R.id.tv_login_top_right:
@@ -672,4 +704,6 @@ public class LoginFragment extends LoginBaseFragment implements LoginModelContra
             };
         }
     }
+
+
 }

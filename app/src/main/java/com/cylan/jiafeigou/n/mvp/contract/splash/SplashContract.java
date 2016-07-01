@@ -9,6 +9,9 @@ import com.cylan.jiafeigou.n.mvp.BaseView;
 public interface SplashContract {
 
 
+    interface View extends BaseView<Presenter> {
+    }
+
 
     interface ViewRequiredOps {
         void  timeSplashed();

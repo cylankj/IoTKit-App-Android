@@ -27,8 +27,6 @@ public class HomeMineItemView extends RelativeLayout {
 
     public HomeMineItemView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
-
-
     }
 
     public HomeMineItemView(Context context, AttributeSet attrs, int defStyleAttr) {

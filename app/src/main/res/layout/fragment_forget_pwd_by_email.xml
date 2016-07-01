@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:background="@android:color/white"
     android:clickable="true"
-    tools:context="com.cylan.jiafeigou.n.view.login_ex.ForgetPwdByEmailFragment">
+    tools:context=".n.view.login.ForgetPwdByEmailFragment">
 
     <TextView
         android:id="@+id/tv_send_email_content"

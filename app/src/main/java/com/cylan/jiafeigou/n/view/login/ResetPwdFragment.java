@@ -1,4 +1,4 @@
-package com.cylan.jiafeigou.n.view.login_ex;
+package com.cylan.jiafeigou.n.view.login;
 
 
 import android.os.Bundle;
@@ -16,7 +16,6 @@ import android.widget.Toast;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.contract.login.RstPwdContract;
-import com.cylan.jiafeigou.n.view.login.LoginFragment;
 import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.superlog.SLog;

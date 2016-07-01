@@ -23,8 +23,6 @@ import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.mvp.contract.login.ForgetPwdContract;
 import com.cylan.jiafeigou.n.mvp.impl.RstPwdPresenterImpl;
 import com.cylan.jiafeigou.n.mvp.model.RequestResetPwdBean;
-import com.cylan.jiafeigou.n.view.login_ex.ForgetPwdByEmailFragment;
-import com.cylan.jiafeigou.n.view.login_ex.ResetPwdFragment;
 import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.IMEUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;

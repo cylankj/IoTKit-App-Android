@@ -6,7 +6,7 @@
     android:orientation="vertical"
     android:paddingLeft="10dp"
     android:paddingRight="10dp"
-    tools:context="com.cylan.jiafeigou.n.view.login_ex.SetupPwdFragment">
+    tools:context=".n.view.login.SetupPwdFragment">
 
     <Space
         android:layout_width="1dp"
