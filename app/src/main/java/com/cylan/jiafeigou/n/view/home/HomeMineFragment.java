@@ -26,13 +26,15 @@ import com.cylan.utils.BitmapUtil;
 import com.cylan.utils.FastBlurUtil;
 import com.superlog.SLog;
 
+import java.lang.ref.WeakReference;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class HomeMineFragment extends android.support.v4.app.Fragment
         implements HomeMineContract.View {
-
+    private WeakReference<LoginPresenterImpl> weakReference;
 
     @BindView(R.id.iv_home_mine_portrait)
     RoundedImageView ivHomeMinePortrait;
@@ -175,7 +177,9 @@ public class HomeMineFragment extends android.support.v4.app.Fragment
             bundle.putInt(JConstant.KEY_ACTIVITY_FRAGMENT_CONTAINER_ID, android.R.id.content);
             bundle.putInt(JConstant.KEY_FRAGMENT_ACTION_1, 1);
             LoginFragment fragment = LoginFragment.newInstance(bundle);
-            new LoginPresenterImpl(fragment);
+            if (weakReference != null && weakReference.get() != null) {
+                fragment.setPresenter(weakReference.get());
+            } else weakReference = new WeakReference<>(new LoginPresenterImpl(fragment));
             ActivityUtils.addFragmentToActivity(getActivity().getSupportFragmentManager(),
                     fragment, android.R.id.content, 0);
             return true;
