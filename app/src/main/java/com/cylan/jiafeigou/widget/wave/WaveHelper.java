@@ -25,7 +25,7 @@ public class WaveHelper {
 
     public void start() {
         mWaveView.setShowWave(true);
-        if (mAnimatorSet != null) {
+        if (mAnimatorSet != null && !mAnimatorSet.isRunning()) {
             mAnimatorSet.start();
         }
     }
@@ -81,7 +81,7 @@ public class WaveHelper {
 
     public void cancel() {
         if (mAnimatorSet != null) {
-//            mAnimatorSet.cancel();
+            mAnimatorSet.cancel();
             mAnimatorSet.end();
         }
     }

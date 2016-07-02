@@ -102,6 +102,7 @@ public class HomePageListFragment extends Fragment implements
     @Override
     public void onResume() {
         super.onResume();
+        initWaveAnimation();
         if (presenter != null) presenter.start();
     }
 
@@ -130,7 +131,7 @@ public class HomePageListFragment extends Fragment implements
         initProgressBarPosition();
         rVDevicesList.setLayoutManager(new LinearLayoutManager(getContext()));
         rVDevicesList.setAdapter(homePageListAdapter);
-        initWaveAnimation();
+
         initHeaderView();
         initSomeViewMargin();
     }
@@ -191,7 +192,7 @@ public class HomePageListFragment extends Fragment implements
     @Override
     public void onStop() {
         super.onStop();
-        if (waveHelper != null) waveHelper.start();
+        if (waveHelper != null) waveHelper.cancel();
     }
 
     @Override
