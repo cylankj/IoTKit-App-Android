@@ -40,7 +40,6 @@ import com.cylan.utils.RandomUtils;
 import com.superlog.SLog;
 
 import java.lang.ref.WeakReference;
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -134,7 +133,6 @@ public class LoginFragment extends android.support.v4.app.Fragment implements Lo
         android.view.View view = inflater.inflate(R.layout.fragment_login_layout, container, false);
         ButterKnife.bind(this, view);
         addOnTouchListener(view);
-        printFragment();
         showLayout();
         return view;
     }
@@ -237,16 +235,6 @@ public class LoginFragment extends android.support.v4.app.Fragment implements Lo
     private void showAllLayout(boolean orientation) {
         AnimatorUtils.onSimpleBounceUpIn(vsLayoutSwitcher, 1000, 20);
         AnimatorUtils.onSimpleBounceUpIn(rLayoutLoginThirdParty, 200, 400);
-    }
-
-
-    private void printFragment() {
-        List<android.support.v4.app.Fragment> list = getFragmentManager().getFragments();
-        for (android.support.v4.app.Fragment f : list) {
-            if (f != null) {
-                SLog.e(f.toString());
-            }
-        }
     }
 
 
