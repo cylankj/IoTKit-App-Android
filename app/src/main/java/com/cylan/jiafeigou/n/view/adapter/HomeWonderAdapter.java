@@ -16,15 +16,15 @@ import java.util.List;
  */
 
 
-public class HomeWondereAdapter extends SuperAdapter<MediaBean> {
+public class HomeWonderAdapter extends SuperAdapter<MediaBean> {
 
 
     private DeviceItemClickListener deviceItemClickListener;
     private DeviceItemLongClickListener deviceItemLongClickListener;
 
 
-    public HomeWondereAdapter(Context context, List<MediaBean> items,
-                              IMulItemViewType<MediaBean> mulItemViewType) {
+    public HomeWonderAdapter(Context context, List<MediaBean> items,
+                             IMulItemViewType<MediaBean> mulItemViewType) {
         super(context, items, mulItemViewType);
 
     }
