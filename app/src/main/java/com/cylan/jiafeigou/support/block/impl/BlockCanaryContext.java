@@ -102,7 +102,7 @@ public class BlockCanaryContext implements IBlockCanaryContext {
      * @return threshold in mills
      */
     public int getConfigBlockThreshold() {
-        return 600;
+        return 500;
     }
 
     /**
