@@ -181,6 +181,7 @@ public class LoginFragment extends android.support.v4.app.Fragment implements Lo
     public void onStop() {
         super.onStop();
         if (presenter != null) presenter.stop();
+        if (lbLogin != null) lbLogin.cancelAnim();
 //        if (verificationCodeLogic != null) verificationCodeLogic.stop();
     }
 
