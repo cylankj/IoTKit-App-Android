@@ -2,8 +2,10 @@ package com.cylan.jiafeigou.n.view.splash;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,14 +43,19 @@ public class BeforeLoginFragment extends android.support.v4.app.Fragment {
 
     @OnClick(R.id.btn_look_around)
     public void toLookAround(View view) {
-        clearChildren();
-        getContext().startActivity(new Intent(getContext(), NewHomeActivity.class));
+//        clearChildren();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            getActivity().startActivity(new Intent(getActivity(), NewHomeActivity.class),
+                    ActivityOptionsCompat.makeCustomAnimation(getContext(), R.anim.activity_fade_in, R.anim.alpha_out).toBundle());
+        } else {
+            getActivity().startActivity(new Intent(getActivity(), NewHomeActivity.class));
+        }
         getActivity().finish();
     }
 
     @OnClick(R.id.btn_to_login)
     public void toLogin(View view) {
-        clearChildren();
+//        clearChildren();
         Bundle bundle = new Bundle();
         bundle.putInt(JConstant.KEY_ACTIVITY_FRAGMENT_CONTAINER_ID, android.R.id.content);
         bundle.putInt(JConstant.KEY_FRAGMENT_ACTION_1, 1);

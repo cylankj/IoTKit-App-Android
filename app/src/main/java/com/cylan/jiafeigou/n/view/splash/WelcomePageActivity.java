@@ -4,10 +4,12 @@ import android.Manifest;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
@@ -98,7 +100,12 @@ public class WelcomePageActivity extends BaseFullScreenFragmentActivity implemen
     private void initLoginPage() {
         if (isLoginIn()) {
             //进去主页 home page
-            startActivity(new Intent(this, NewHomeActivity.class));
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                startActivity(new Intent(this, NewHomeActivity.class),
+                        ActivityOptionsCompat.makeCustomAnimation(this, R.anim.alpha_in, R.anim.alpha_out).toBundle());
+            } else {
+                startActivity(new Intent(this, NewHomeActivity.class));
+            }
             finish();
         } else {
             //进入登陆页 login page
