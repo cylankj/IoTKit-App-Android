@@ -35,6 +35,7 @@ import butterknife.OnClick;
 public class HomeMineFragment extends android.support.v4.app.Fragment
         implements HomeMineContract.View {
     private WeakReference<LoginPresenterImpl> weakReference;
+    private WeakReference<LoginFragment> loginFragmentWeakReference;
 
     @BindView(R.id.iv_home_mine_portrait)
     RoundedImageView ivHomeMinePortrait;
@@ -176,7 +177,13 @@ public class HomeMineFragment extends android.support.v4.app.Fragment
             Bundle bundle = new Bundle();
             bundle.putInt(JConstant.KEY_ACTIVITY_FRAGMENT_CONTAINER_ID, android.R.id.content);
             bundle.putInt(JConstant.KEY_FRAGMENT_ACTION_1, 1);
-            LoginFragment fragment = LoginFragment.newInstance(bundle);
+            LoginFragment fragment = null;
+            if (loginFragmentWeakReference != null && loginFragmentWeakReference.get() != null) {
+                fragment = loginFragmentWeakReference.get();
+            } else {
+                fragment = LoginFragment.newInstance(bundle);
+                loginFragmentWeakReference = new WeakReference<>(fragment);
+            }
             if (weakReference != null && weakReference.get() != null) {
                 fragment.setPresenter(weakReference.get());
             } else weakReference = new WeakReference<>(new LoginPresenterImpl(fragment));
