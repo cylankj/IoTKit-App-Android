@@ -84,7 +84,10 @@ dependencies {
     compile rootProject.ext.buglyNdk
     compile files('libs/JfgAndroidSDK-2.0.94-sources.jar')
     compile files('libs/JfgAndroidSDK-2.0.94.jar')
-    compile 'com.android.support:support-v4:23.4.0'
+
+    debugCompile rootProject.ext.leakcanaryAndroid
+    releaseCompile rootProject.ext.leakcanaryAndroidNoOp
+    testCompile rootProject.ext.leakcanaryAndroidNoOp
 }
 
 if (project.hasProperty('keystoreFile') &&

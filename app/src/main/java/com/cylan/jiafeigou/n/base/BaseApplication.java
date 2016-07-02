@@ -7,6 +7,7 @@ import android.util.Log;
 
 import com.cylan.jiafeigou.n.engine.DaemonService;
 import com.cylan.jiafeigou.support.DebugOptionsImpl;
+import com.squareup.leakcanary.LeakCanary;
 
 import java.io.File;
 
@@ -22,6 +23,7 @@ public class BaseApplication extends Application {
         super.onCreate();
 //        enableDebugOptions();
         Log.d(TAG, "application onCreate");
+        LeakCanary.install(this);
         startService(new Intent(this, DaemonService.class));
         startService(new Intent(this, FirstTaskInitService.class));
     }
