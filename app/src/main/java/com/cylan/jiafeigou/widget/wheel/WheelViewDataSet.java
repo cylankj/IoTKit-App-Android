@@ -9,7 +9,7 @@ import java.util.Map;
  * Created by cylan-hunt on 16-6-22.
  */
 
-public class DataSource {
+public class WheelViewDataSet {
     /**
      * 短，无数据。
      */

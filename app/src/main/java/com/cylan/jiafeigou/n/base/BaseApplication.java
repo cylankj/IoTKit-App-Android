@@ -21,8 +21,7 @@ public class BaseApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-//        enableDebugOptions();
-        Log.d(TAG, "application onCreate");
+        enableDebugOptions();
         LeakCanary.install(this);
         startService(new Intent(this, DaemonService.class));
         startService(new Intent(this, FirstTaskInitService.class));

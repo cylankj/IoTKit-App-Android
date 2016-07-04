@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/fLayout_login_title_bar"
+    android:layout_width="match_parent"
+    android:layout_height="48dp"
+    android:background="@color/color_white">
+
+    <ImageView
+        android:id="@+id/iv_login_top_left"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="start|center_vertical"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
+        android:src="@drawable/btn_login_nav_close" />
+
+    <TextView
+        android:id="@+id/tv_login_top_center"
+        style="@style/text_base_singleLine"
+        android:layout_gravity="center"
+        android:text="登录"
+        android:textColor="@color/color_444444"
+        android:textSize="22sp" />
+
+    <TextView
+        android:id="@+id/tv_login_top_right"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="end|center_vertical"
+        android:gravity="center"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
+        android:text="注册"
+        android:textColor="@color/color_4b9fd5"
+        android:textSize="14sp" />
+
+</FrameLayout>
