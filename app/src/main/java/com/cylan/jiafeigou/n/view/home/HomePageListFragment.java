@@ -141,8 +141,11 @@ public class HomePageListFragment extends Fragment implements
     }
 
     private void initHeaderView() {
-        if (simpleScrollListener == null)
+        if (simpleScrollListener == null) {
+            if (waveHelper == null)
+                waveHelper = new WaveHelper(vWaveAnimation);
             simpleScrollListener = new SimpleScrollListener(waveHelper, tvHeaderLastTitle);
+        }
         StickyHeaderBuilder.stickTo(rVDevicesList, simpleScrollListener)
                 .setHeader(R.id.fLayoutHomeHeaderContainer, (ViewGroup) getView())
                 .minHeightHeader((int) (getResources().getDimension(R.dimen.dimens_48dp)
