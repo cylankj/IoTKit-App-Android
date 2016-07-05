@@ -2,6 +2,7 @@ package com.cylan.jiafeigou.widget;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -37,8 +38,10 @@ public class HomeMineItemView extends RelativeLayout {
         TypedArray array = getContext().obtainStyledAttributes(attrs, R.styleable.HomeMineItemViewStyle, defStyleAttr, 0);
         Drawable leftDrawable = array.getDrawable(R.styleable.HomeMineItemViewStyle_leftDrawable);
         Drawable rightDrawable = array.getDrawable(R.styleable.HomeMineItemViewStyle_rightDrawable);
+        final int textColor = array.getColor(R.styleable.HomeMineItemViewStyle_textColor, Color.WHITE);
         String str = array.getString(R.styleable.HomeMineItemViewStyle_text);
         tv.setText(str);
+        tv.setTextColor(textColor);
         tv.setCompoundDrawablesWithIntrinsicBounds(leftDrawable, null, null, null);
         iv.setImageDrawable(rightDrawable);
         array.recycle();

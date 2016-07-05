@@ -19,6 +19,7 @@
         <attr name="leftDrawable" format="reference" />
         <attr name="rightDrawable" format="reference" />
         <attr name="textSize" format="dimension" />
+        <attr name="textColor" format="color|integer" />
         <attr name="text" format="string" />
     </declare-styleable>
     <declare-styleable name="FateLineViewStyle">

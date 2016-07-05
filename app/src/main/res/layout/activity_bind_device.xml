@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:hunt="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/color_f4f4f4"
+    android:orientation="vertical"
+    tools:context="com.cylan.jiafeigou.n.view.activity.BindDeviceActivity">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/color_0ba8cf">
+
+        <FrameLayout
+            android:id="@+id/fLayout_top_bar_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/imgV_top_bar_left"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="15dp"
+                android:src="@drawable/btn_login_nav_close" />
+
+            <TextView
+                android:id="@+id/imgV_top_bar_center"
+                style="@style/text_base_singleLine"
+                android:layout_gravity="center"
+                android:text="添加设备"
+                android:textColor="@color/color_white"
+                android:textSize="16sp" />
+        </FrameLayout>
+    </FrameLayout>
+
+    <com.cylan.jiafeigou.widget.HomeMineItemView
+        android:id="@+id/v_to_scan_qrcode"
+        android:layout_width="match_parent"
+        android:layout_height="67dp"
+        android:background="@color/color_white"
+        hunt:leftDrawable="@drawable/ico_scan_qrcode"
+        hunt:rightDrawable="@drawable/icon_mine_arrow_next"
+        hunt:text="扫一扫添加"
+        hunt:textColor="@color/color_383838"
+        hunt:textSize="16sp" />
+
+    <com.cylan.jiafeigou.widget.HomeMineItemView
+        android:id="@+id/v_to_bind_camera"
+        android:layout_width="match_parent"
+        android:layout_height="67dp"
+        android:layout_marginTop="25dp"
+        android:background="@color/color_white"
+        hunt:leftDrawable="@drawable/icon_home_camera_online"
+        hunt:rightDrawable="@drawable/icon_mine_arrow_next"
+        hunt:text="智能摄像头"
+        hunt:textColor="@color/color_383838"
+        hunt:textSize="16sp" />
+
+    <com.cylan.jiafeigou.widget.HomeMineItemView
+        android:id="@+id/v_to_bind_doorbell"
+        android:layout_width="match_parent"
+        android:layout_height="67dp"
+        android:background="@color/color_white"
+        hunt:leftDrawable="@drawable/icon_home_doorbell_online"
+        hunt:rightDrawable="@drawable/icon_mine_arrow_next"
+        hunt:text="智能门铃"
+        hunt:textColor="@color/color_383838"
+        hunt:textSize="16sp" />
+
+    <com.cylan.jiafeigou.widget.HomeMineItemView
+        android:id="@+id/v_to_bind_cloud_album"
+        android:layout_width="match_parent"
+        android:layout_height="67dp"
+        android:background="@color/color_white"
+        hunt:leftDrawable="@drawable/icon_home_album_online"
+        hunt:rightDrawable="@drawable/icon_mine_arrow_next"
+        hunt:text="云相框"
+        hunt:textColor="@color/color_383838"
+        hunt:textSize="16sp" />
+
+
+</LinearLayout>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="60dp"
+    android:layout_height="match_parent"
     android:background="?attr/selectableItemBackground">
 
 
@@ -13,7 +13,6 @@
         android:layout_gravity="center_vertical"
         android:layout_marginBottom="16dp"
         android:layout_marginLeft="15dp"
-        android:layout_marginTop="16dp"
         android:drawableLeft="@drawable/icon_mine_friend"
         android:drawablePadding="16dp"
         android:gravity="center_vertical"
@@ -36,4 +35,4 @@
         android:background="@color/color_f2f2f2" />
 
 
-</RelativeLayout>
+</merge>

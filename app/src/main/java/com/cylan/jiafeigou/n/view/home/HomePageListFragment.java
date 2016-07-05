@@ -1,10 +1,13 @@
 package com.cylan.jiafeigou.n.view.home;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.annotation.UiThread;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -17,9 +20,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.n.NewHomeActivity;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomePageListContract;
 import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
 import com.cylan.jiafeigou.n.mvp.model.GreetBean;
+import com.cylan.jiafeigou.n.view.activity.BindDeviceActivity;
 import com.cylan.jiafeigou.n.view.adapter.HomePageListAdapter;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
@@ -189,7 +194,13 @@ public class HomePageListFragment extends Fragment implements
 
     @OnClick(R.id.imgV_add_devices)
     void onClickAddDevice() {
-        ToastUtil.showToast(getContext(), "add devices");
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            getActivity().startActivity(new Intent(getActivity(), BindDeviceActivity.class),
+                    ActivityOptionsCompat.makeCustomAnimation(getContext(),
+                            R.anim.slide_in_right, R.anim.slide_out_left).toBundle());
+        } else {
+            getActivity().startActivity(new Intent(getActivity(), BindDeviceActivity.class));
+        }
     }
 
     @Override

@@ -94,7 +94,7 @@ public class BaseFullScreenFragmentActivity extends FragmentActivity implements 
         }
     }
 
-    private boolean checkExtraChildFragment() {
+    protected boolean checkExtraChildFragment() {
         FragmentManager fm = getSupportFragmentManager();
         List<Fragment> list = fm.getFragments();
         if (ListUtils.isEmpty(list))
@@ -111,7 +111,7 @@ public class BaseFullScreenFragmentActivity extends FragmentActivity implements 
         return false;
     }
 
-    private boolean checkExtraFragment() {
+    protected boolean checkExtraFragment() {
         final int count = getSupportFragmentManager().getBackStackEntryCount();
         if (count > 0) {
             getSupportFragmentManager().popBackStack();
