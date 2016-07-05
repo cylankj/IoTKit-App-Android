@@ -1,7 +1,5 @@
 package com.cylan.jiafeigou.utils;
 
-import java.util.Stack;
-
 import android.annotation.TargetApi;
 import android.app.Fragment;
 import android.content.Context;
@@ -12,6 +10,8 @@ import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 import android.view.View;
+
+import java.util.Stack;
 
 /**
  * A fluent API for formatting Strings. Canonical usage:
@@ -28,7 +28,7 @@ import android.view.View;
  * </ul>
  * The constructor parses the original pattern into a doubly-linked list of {@link Token}s.
  * These tokens do not modify the original pattern, thus preserving any spans.
- * <p>
+ * <p/>
  * The {@link #format()} method iterates over the tokens, replacing and coloring the text as it iterates. The
  * doubly-linked list allows each token to ask its predecessor for the expanded length.
  */

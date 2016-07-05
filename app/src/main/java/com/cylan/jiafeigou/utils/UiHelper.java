@@ -14,7 +14,7 @@ public class UiHelper {
 
     /**
      * 相关权限
-     * */
+     */
     //摄像头 照相机
     public static final int REQUEST_SHOWCAMERA = 0;
     public static final String[] PERMISSION_SHOWCAMERA = new String[]{

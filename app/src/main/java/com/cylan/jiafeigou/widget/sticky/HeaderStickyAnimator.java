@@ -36,7 +36,6 @@ public class HeaderStickyAnimator extends BaseStickyHeaderAnimator {
     }
 
 
-
     public float getBoundedTranslatedRatio() {
         return mBoundedTranslatedRatio;
     }

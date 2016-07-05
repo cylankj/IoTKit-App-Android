@@ -27,7 +27,6 @@ import com.cylan.jiafeigou.n.view.adapter.SimpleFragmentAdapter;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.UiHelper;
 import com.cylan.viewindicator.CirclePageIndicator;
-import com.superlog.SLog;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -163,7 +162,7 @@ public class WelcomePageActivity extends BaseFullScreenFragmentActivity
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        SplashPermissionDispatcher.onRequestPermissionsResult(this, permissions, requestCode, grantResults);
+//        SplashPermissionDispatcher.onRequestPermissionsResult(this, permissions, requestCode, grantResults);
     }
 
     @OnPermissionDenied(Manifest.permission.WRITE_EXTERNAL_STORAGE)

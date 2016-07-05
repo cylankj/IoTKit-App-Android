@@ -35,7 +35,7 @@ public class WonderfulTitleHead extends TextView {
 
     public void setBackgroundToRight() {
         if (titleHeadIsTop) {
-            setCompoundDrawablesWithIntrinsicBounds(0, 0, timeLineShow? R.drawable.icon_white_date_uptag_wonderful : R.drawable.icon_white_date_downtag_wonderful, 0);
+            setCompoundDrawablesWithIntrinsicBounds(0, 0, timeLineShow ? R.drawable.icon_white_date_uptag_wonderful : R.drawable.icon_white_date_downtag_wonderful, 0);
         } else {
             setCompoundDrawablesWithIntrinsicBounds(0, 0, timeLineShow ? R.drawable.icon_date_uptag_wonderful : R.drawable.icon_date_downtag_wonderful, 0);
         }

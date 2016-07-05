@@ -20,9 +20,9 @@ import com.cylan.jiafeigou.support.stat.BugMonitor;
 public class FirstTaskInitService extends IntentService {
     /**
      * Creates an IntentService.  Invoked by your subclass's constructor.
-     * <p>
+     * <p/>
      * Used to name the worker thread, important only for debugging.
-     * <p>
+     * <p/>
      */
     public FirstTaskInitService() {
         super("TaskInitService");

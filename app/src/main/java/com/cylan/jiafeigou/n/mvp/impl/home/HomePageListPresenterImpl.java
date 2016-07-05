@@ -1,15 +1,12 @@
 package com.cylan.jiafeigou.n.mvp.impl.home;
 
-import android.support.annotation.Nullable;
 import android.util.Log;
 
-import com.cylan.jiafeigou.n.mvp.contract.home.HomeMineContract;
+import com.cylan.jiafeigou.n.mvp.contract.home.HomePageListContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
-import com.cylan.jiafeigou.n.mvp.contract.home.HomePageListContract;
 import com.cylan.utils.RandomUtils;
 
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;

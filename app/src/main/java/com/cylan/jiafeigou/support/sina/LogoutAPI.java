@@ -17,8 +17,8 @@
 package com.cylan.jiafeigou.support.sina;
 
 import com.sina.weibo.sdk.auth.Oauth2AccessToken;
-import com.sina.weibo.sdk.net.WeiboParameters;
 import com.sina.weibo.sdk.net.RequestListener;
+import com.sina.weibo.sdk.net.WeiboParameters;
 
 /**
  * 该类提供了授权回收接口，帮助开发者主动取消用户的授权。

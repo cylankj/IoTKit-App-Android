@@ -28,7 +28,7 @@ public class DaemonService extends Service {
 
     /**
      * Creates an Service.  Invoked by your subclass's constructor.
-     * <p>
+     * <p/>
      * name Used to name the worker thread, important only for debugging.
      */
     public DaemonService() {

@@ -47,7 +47,6 @@ public class JConstant {
     public static final String KEY_FRAGMENT_ACTION_1 = "key_fragment_activity_0";
 
 
-
     public static final String KEY_FRESH = "is_you_fresh";
 
 }

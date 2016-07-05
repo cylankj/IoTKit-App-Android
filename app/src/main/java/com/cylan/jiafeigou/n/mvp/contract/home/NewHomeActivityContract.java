@@ -18,7 +18,7 @@ public interface NewHomeActivityContract {
     }
 
 
-     interface Presenter extends BasePresenter {
+    interface Presenter extends BasePresenter {
         //void loadTable();
 
         //void doSample();

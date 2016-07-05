@@ -9,11 +9,11 @@ import com.tencent.tauth.Tencent;
 
 public class TencentLoginUtils {
 
-    public  Tencent mTencent;
+    public Tencent mTencent;
 
     private static final String SCOPE = "get_simple_userinfo,add_t,get_user_info";//
 
-    public TencentLoginUtils(Context ctx ) {
+    public TencentLoginUtils(Context ctx) {
         if (mTencent == null) {
             mTencent = Tencent.createInstance(ctx.getString(R.string.tencent_app_id), ctx);
         }

@@ -57,7 +57,7 @@ public class ImageViewTip extends ImageView {
         setShowDot(show);
         boolean ignore = a.getBoolean(R.styleable.DotThemes_ignore, false);
         setIgnorePadding(ignore);
-        int position = a.getInteger(R.styleable.DotThemes_position,2);
+        int position = a.getInteger(R.styleable.DotThemes_position, 2);
         setPosition(position);
 
         int borderColor = a.getColor(R.styleable.DotThemes_borderColor, Color.WHITE);
