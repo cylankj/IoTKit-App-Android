@@ -585,4 +585,6 @@
     <string name="item_register">register</string>
 
     <string name="input_new_pwd">Please Input password</string>
+    <!--别删-->
+    <string name="item_just_for_test">05</string>
 </resources>

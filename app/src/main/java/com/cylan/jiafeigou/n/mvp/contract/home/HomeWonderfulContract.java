@@ -1,9 +1,9 @@
 package com.cylan.jiafeigou.n.mvp.contract.home;
 
-import com.cylan.jiafeigou.n.mvp.model.MediaBean;
-import com.cylan.jiafeigou.n.mvp.model.impl.HomeWonderfulModelImpl;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
+import com.cylan.jiafeigou.n.mvp.model.MediaBean;
+import com.cylan.jiafeigou.widget.wheel.WheelViewDataSet;
 
 import java.util.List;
 
@@ -17,15 +17,12 @@ public interface HomeWonderfulContract {
 
         void onHeadBackgroundChang(int daytime);
 
-        void onGetBroadcastReceiver(HomeWonderfulModelImpl homeWonderfulModelImpl);
+        void timeLineDataUpdate(WheelViewDataSet wheelViewDataSet);
+
     }
 
     interface Presenter extends BasePresenter {
         void startRefresh();
     }
 
-    interface PresenterRequiredOps {
-
-        void changeHeadBackground(int daytime);
-    }
 }

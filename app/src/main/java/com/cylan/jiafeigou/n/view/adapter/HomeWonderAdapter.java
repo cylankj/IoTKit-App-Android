@@ -19,8 +19,8 @@ import java.util.List;
 public class HomeWonderAdapter extends SuperAdapter<MediaBean> {
 
 
-    private DeviceItemClickListener deviceItemClickListener;
-    private DeviceItemLongClickListener deviceItemLongClickListener;
+    private WonderfulItemClickListener deviceItemClickListener;
+    private WonderfulItemLongClickListener deviceItemLongClickListener;
 
 
     public HomeWonderAdapter(Context context, List<MediaBean> items,
@@ -29,45 +29,39 @@ public class HomeWonderAdapter extends SuperAdapter<MediaBean> {
 
     }
 
-    public void setDeviceItemClickListener(DeviceItemClickListener deviceItemClickListener) {
+    public void setWonderfulItemClickListener(WonderfulItemClickListener deviceItemClickListener) {
         this.deviceItemClickListener = deviceItemClickListener;
     }
 
-    public void setDeviceItemLongClickListener(DeviceItemLongClickListener deviceItemLongClickListener) {
+    public void setWonderfulItemLongClickListener(WonderfulItemLongClickListener deviceItemLongClickListener) {
         this.deviceItemLongClickListener = deviceItemLongClickListener;
     }
 
     @Override
     public void onBind(SuperViewHolder holder, int viewType, int layoutPosition, MediaBean item) {
 
-        int layoutId;
-        if (viewType == 0) {
-            layoutId = R.id.rLayout_picture_item_wonder;
-        }else {
-            layoutId = R.id.rLayout_vedio_item_wonder;
-        }
+        int layoutId = R.id.rLayout_wonderful_item_wonder;
         final View view = holder.getView(layoutId);
         if (view != null) {
             view.setTag(layoutPosition);
         }
-        holder.setOnClickListener(layoutId, deviceItemClickListener);
+        holder.setOnClickListener(R.id.rLayout_wonderful_item_wonder, deviceItemClickListener);
         holder.setOnLongClickListener(layoutId, deviceItemLongClickListener);
         handleState(holder, item);
     }
-
 
 
     private void handleState(SuperViewHolder holder, MediaBean bean) {
 
 
         //时间
-        holder.setText(R.id.tv_title_item_wonder, bean.curTime);
+        holder.setText(R.id.tv_wonderful_item_date, bean.timeInStr);
 
         //图标
         holder.setBackgroundResource(R.id.iv_src_item_wonder, R.drawable.bg_home_title_daytime);
 
         //来自摄像头
-        holder.setText(R.id.tv_devicename_item_wonder,bean.srcFrom);
+        holder.setText(R.id.tv_devicename_item_wonder, bean.srcUrl);
     }
 
     @Override
@@ -85,16 +79,18 @@ public class HomeWonderAdapter extends SuperAdapter<MediaBean> {
 
             @Override
             public int getLayoutId(int viewType) {
-                return viewType==0?R.layout.layout_item_picture_wonderful:R.layout.layout_item_vedio_wonderful;
+                return viewType == 0 ?
+                        R.layout.layout_item_vedio_wonderful :
+                        R.layout.layout_item_picture_wonderful;
             }
         };
     }
 
-    public interface DeviceItemClickListener extends View.OnClickListener {
+    public interface WonderfulItemClickListener extends View.OnClickListener {
 
     }
 
-    public interface DeviceItemLongClickListener extends View.OnLongClickListener {
+    public interface WonderfulItemLongClickListener extends View.OnLongClickListener {
 
     }
 }

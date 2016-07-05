@@ -1,8 +1,6 @@
 package com.cylan.jiafeigou.n.view.home;
 
 import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -21,36 +19,33 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.n.mvp.model.MediaBean;
-import com.cylan.jiafeigou.n.mvp.model.impl.HomeWonderfulModelImpl;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeWonderfulContract;
-import com.cylan.jiafeigou.n.view.adapter.HomeWondereAdapter;
-import com.cylan.jiafeigou.utils.UiHelper;
+import com.cylan.jiafeigou.n.mvp.model.MediaBean;
+import com.cylan.jiafeigou.n.view.adapter.HomeWonderAdapter;
+import com.cylan.jiafeigou.utils.AnimatorUtils;
+import com.cylan.jiafeigou.utils.TimeUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.dialog.HomeMenuDialog;
 import com.cylan.jiafeigou.widget.sticky.HeaderAnimator;
 import com.cylan.jiafeigou.widget.sticky.StickyHeaderBuilder;
 import com.cylan.jiafeigou.widget.textview.WonderfulTitleHead;
+import com.cylan.jiafeigou.widget.wheel.WheelView;
+import com.cylan.jiafeigou.widget.wheel.WheelViewDataSet;
+import com.cylan.utils.ListUtils;
 import com.superlog.SLog;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import rx.Observable;
-import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
-import rx.schedulers.Schedulers;
 
 public class HomeWonderfulFragment extends Fragment implements
         HomeWonderfulContract.View, SwipeRefreshLayout.OnRefreshListener,
-        HomeWondereAdapter.DeviceItemClickListener,
-        HomeWondereAdapter.DeviceItemLongClickListener {
+        HomeWonderAdapter.WonderfulItemClickListener,
+        HomeWonderAdapter.WonderfulItemLongClickListener, WheelView.OnItemChangedListener {
 
 
     @BindView(R.id.fl_date_bg_head_wonder)
@@ -73,11 +68,7 @@ public class HomeWonderfulFragment extends Fragment implements
     ImageView imgWonderfulTopBg;
     @BindView(R.id.tv_title_head_wonder)
     TextView tvTitleHeadWonder;
-
-    /**
-     * 手动完成刷新,自动完成刷新 订阅者.
-     */
-    private Subscription refreshCompleteSubscription;
+    WeakReference<WheelView> wheelViewWeakReference;
     /**
      * progress 位置
      */
@@ -85,8 +76,7 @@ public class HomeWonderfulFragment extends Fragment implements
     //不是长时间需要,用软引用.
     private WeakReference<HomeMenuDialog> homeMenuDialogWeakReference;
     private HomeWonderfulContract.Presenter presenter;
-    private HomeWonderfulModelImpl homeWonderfulModelImpl;
-    private HomeWondereAdapter homeWondereAdapter;
+    private HomeWonderAdapter homeWonderAdapter;
     private SimpleScrollListener simpleScrollListener;
     public boolean isShowTimeLine;
 
@@ -101,10 +91,6 @@ public class HomeWonderfulFragment extends Fragment implements
         super.onCreate(savedInstanceState);
         if (savedInstanceState != null) {
             SLog.d("save L:" + savedInstanceState);
-        }
-        Bundle bundle;
-        if (getArguments() != null) {
-            bundle = getArguments();
         }
     }
 
@@ -123,9 +109,9 @@ public class HomeWonderfulFragment extends Fragment implements
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        homeWondereAdapter = new HomeWondereAdapter(getContext(), null, null);
-        homeWondereAdapter.setDeviceItemClickListener(this);
-        homeWondereAdapter.setDeviceItemLongClickListener(this);
+        homeWonderAdapter = new HomeWonderAdapter(getContext(), null, null);
+        homeWonderAdapter.setWonderfulItemClickListener(this);
+        homeWonderAdapter.setWonderfulItemLongClickListener(this);
     }
 
     @Override
@@ -153,15 +139,11 @@ public class HomeWonderfulFragment extends Fragment implements
 
     @Override
     public void onStart() {
-        getContext().registerReceiver(homeWonderfulModelImpl, new IntentFilter(Intent.ACTION_TIME_TICK));
         super.onStart();
     }
 
     @Override
     public void onStop() {
-        if (homeWonderfulModelImpl != null) {
-            getContext().unregisterReceiver(homeWonderfulModelImpl);
-        }
         super.onStop();
     }
 
@@ -169,7 +151,6 @@ public class HomeWonderfulFragment extends Fragment implements
     public void onDetach() {
         super.onDetach();
         if (presenter != null) presenter.stop();
-        unRegisterSubscription(refreshCompleteSubscription);
     }
 
     private void initSomeViewMargin() {
@@ -181,7 +162,7 @@ public class HomeWonderfulFragment extends Fragment implements
         srLayoutMainContentHolder.setOnRefreshListener(this);
 
         rVDevicesList.setLayoutManager(new LinearLayoutManager(getContext()));
-        rVDevicesList.setAdapter(homeWondereAdapter);
+        rVDevicesList.setAdapter(homeWonderAdapter);
 
     }
 
@@ -190,7 +171,8 @@ public class HomeWonderfulFragment extends Fragment implements
         if (simpleScrollListener == null)
             simpleScrollListener = new SimpleScrollListener(imgCover, fLayoutDateHeadWonder);
         StickyHeaderBuilder.stickTo(rVDevicesList, simpleScrollListener)
-                .setHeader(R.id.rLayoutHomeWonderfulHeaderContainer, (ViewGroup) getView())
+                .setHeader(R.id.rLayoutHomeWonderfulHeaderContainer,
+                        (ViewGroup) getView())
                 .minHeightHeader((int) (getResources().getDimension(R.dimen.dimens_48dp)
                         + ViewUtils.getCompatStatusBarHeight(getContext())))
                 .build();
@@ -214,19 +196,6 @@ public class HomeWonderfulFragment extends Fragment implements
         });
     }
 
-    /**
-     * 反注册
-     *
-     * @param subscriptions
-     */
-    private void unRegisterSubscription(Subscription... subscriptions) {
-        if (subscriptions != null)
-            for (Subscription subscription : subscriptions) {
-                if (subscription != null)
-                    subscription.unsubscribe();
-            }
-    }
-
     @Override
     public void setPresenter(HomeWonderfulContract.Presenter presenter) {
         this.presenter = presenter;
@@ -237,13 +206,10 @@ public class HomeWonderfulFragment extends Fragment implements
     public void onDeviceListRsp(List<MediaBean> resultList) {
         srLayoutMainContentHolder.setRefreshing(false);
         if (resultList == null || resultList.size() == 0) {
-            homeWondereAdapter.clear();
-            if (isResumed()) {
-//                getActivity().findViewById(R.id.vs_empty_view).setVisibility(View.VISIBLE);
-            }
+            homeWonderAdapter.clear();
             return;
         }
-        homeWondereAdapter.addAll(resultList);
+        homeWonderAdapter.addAll(resultList);
     }
 
     @Override
@@ -252,8 +218,12 @@ public class HomeWonderfulFragment extends Fragment implements
     }
 
     @Override
-    public void onGetBroadcastReceiver(HomeWonderfulModelImpl homeWonderfulModelImpl) {
-        this.homeWonderfulModelImpl = homeWonderfulModelImpl;
+    public void timeLineDataUpdate(WheelViewDataSet wheelViewDataSet) {
+        View view = getWheelView();
+        if (view == null)
+            return;
+        ((WheelView) view).setDataSet(wheelViewDataSet);
+        ((WheelView) view).setOnItemChangedListener(this);
     }
 
     @Override
@@ -261,16 +231,6 @@ public class HomeWonderfulFragment extends Fragment implements
         if (presenter != null) presenter.startRefresh();
         //不使用post,因为会泄露
         srLayoutMainContentHolder.setRefreshing(true);
-        refreshCompleteSubscription = Observable.just(srLayoutMainContentHolder)
-                .subscribeOn(Schedulers.newThread())
-                .delay(UiHelper.WONDELFUL_REFRESH_DELAY, TimeUnit.MILLISECONDS)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<SwipeRefreshLayout>() {
-                    @Override
-                    public void call(SwipeRefreshLayout swipeRefreshLayout) {
-                        swipeRefreshLayout.setRefreshing(false);
-                    }
-                });
     }
 
     @Override
@@ -294,9 +254,9 @@ public class HomeWonderfulFragment extends Fragment implements
                     new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            if (homeWondereAdapter != null && homeWondereAdapter.getCount() > position) {
-                                final MediaBean bean = homeWondereAdapter.getItem(position);
-                                homeWondereAdapter.remove(position);
+                            if (homeWonderAdapter != null && homeWonderAdapter.getCount() > position) {
+                                final MediaBean bean = homeWonderAdapter.getItem(position);
+                                homeWonderAdapter.remove(position);
                                 //              presenter.onDeleteItem(bean);
                             }
                         }
@@ -308,6 +268,20 @@ public class HomeWonderfulFragment extends Fragment implements
 
     @OnClick(R.id.fLayout_date_head_wonder)
     public void onClick() {
+        View view = getWheelViewContainer();
+        if (view != null && !ListUtils.isEmpty(homeWonderAdapter.getList())) {
+            AnimatorUtils.slide(view);
+            if (wheelViewWeakReference == null || wheelViewWeakReference.get() == null) {
+                WheelView wheelView = (WheelView) view.findViewById(R.id.wv_wonderful_timeline);
+                wheelViewWeakReference = new WeakReference<>(wheelView);
+                wheelView.setOnItemChangedListener(this);
+                TextView textView = (TextView) getActivity().findViewById(R.id.tv_time_line_pop);
+                WheelViewDataSet dataSet = wheelView.getWheelViewDataSet();
+                if (dataSet != null && dataSet.dataSet != null) {
+                    textView.setText(TimeUtils.getDateStyle_0(dataSet.dataSet[dataSet.dataSet.length - 1]));
+                }
+            }
+        } else return;
         //显示时间轴
         if (isShowTimeLine) {
             hideTimeLine();
@@ -316,6 +290,30 @@ public class HomeWonderfulFragment extends Fragment implements
         }
         tvDateItemHeadWonder.setTimeLineShow(isShowTimeLine);
         tvDateItemHeadWonder.setBackgroundToRight();
+    }
+
+    /**
+     * 整个{@link WheelView}的父viewGroup
+     *
+     * @return
+     */
+    private RelativeLayout getWheelViewContainer() {
+        if (getActivity() != null) {
+            return (RelativeLayout) getActivity().findViewById(R.id.fLayout_wonderful_timeline);
+        }
+        return null;
+    }
+
+    /**
+     * {@link WheelView}
+     *
+     * @return
+     */
+    private WheelView getWheelView() {
+        if (getActivity() != null) {
+            return (WheelView) getActivity().findViewById(R.id.wv_wonderful_timeline);
+        }
+        return null;
     }
 
     private void showTimeLine() {
@@ -328,6 +326,15 @@ public class HomeWonderfulFragment extends Fragment implements
         isShowTimeLine = false;
     }
 
+    @Override
+    public void onItemChanged(int position, long timeInLong, String dateInStr) {
+        SLog.d("date: " + TimeUtils.getDateStyle_0(timeInLong));
+        if (getActivity() == null)
+            return;
+        TextView textView = (TextView) getActivity().findViewById(R.id.tv_time_line_pop);
+        if (textView != null) textView.setText(TimeUtils.getDateStyle_0(timeInLong));
+    }
+
 
     private static class SimpleScrollListener implements HeaderAnimator.ScrollRationListener {
 
@@ -336,7 +343,7 @@ public class HomeWonderfulFragment extends Fragment implements
         private WonderfulTitleHead tvDateColor;
 
         public SimpleScrollListener(ImageView relativeLayout, FrameLayout frameLayout) {
-            fadeTopHeadCover = new WeakReference<ImageView>(relativeLayout);
+            fadeTopHeadCover = new WeakReference<>(relativeLayout);
             mTitleBackgroundRef = new WeakReference<>(frameLayout).get();
         }
 

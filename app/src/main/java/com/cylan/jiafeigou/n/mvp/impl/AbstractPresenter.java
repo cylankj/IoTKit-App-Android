@@ -3,6 +3,7 @@ package com.cylan.jiafeigou.n.mvp.impl;
 import java.lang.ref.WeakReference;
 
 import rx.Subscription;
+import rx.functions.Action1;
 
 /**
  * 一个基本模型的Presenter

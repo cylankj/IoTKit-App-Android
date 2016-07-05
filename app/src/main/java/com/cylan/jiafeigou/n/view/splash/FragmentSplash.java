@@ -3,43 +3,26 @@ package com.cylan.jiafeigou.n.view.splash;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.n.mvp.contract.splash.SplashContract;
-import com.cylan.jiafeigou.n.view.adapter.SimpleFragmentAdapter;
-import com.cylan.viewindicator.CirclePageIndicator;
 
-import java.util.List;
-
-import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
  * Created by hunt on 16-5-14.
  */
-public class FragmentSplash extends Fragment implements SplashContract.View {
+public class FragmentSplash extends Fragment {
 
-    @BindView(R.id.vp_splash_content)
-    ViewPager vpSplashContent;
-    @BindView(R.id.v_indicator)
-    CirclePageIndicator vIndicator;
-    private List<Fragment> fragmentList;
-
-    public static FragmentSplash newInstance(Bundle bundle) {
+    public static FragmentSplash newInstance(final int index) {
         FragmentSplash fragment = new FragmentSplash();
+        Bundle bundle = new Bundle();
+        bundle.putInt("key", index);
         fragment.setArguments(bundle);
         return fragment;
-    }
-
-    /**
-     * @param fragments : 提供接口,填充fragment.
-     */
-    public void setSubFragments(List<Fragment> fragments) {
-        this.fragmentList = fragments;
     }
 
     @Override
@@ -59,48 +42,13 @@ public class FragmentSplash extends Fragment implements SplashContract.View {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        vpSplashContent.setAdapter(new SimpleFragmentAdapter(getChildFragmentManager(), fragmentList));
-        vIndicator.setViewPager(vpSplashContent);
-        vIndicator.setOnPageChangeListener(new SimpleChangeListener() {
-            @Override
-            public void onPageSelected(int position) {
-
-            }
-        });
+        Bundle bundle = getArguments();
+        final int index = bundle == null ? 0 : bundle.getInt("key");
+        TextView textView = (TextView) view.findViewById(R.id.tv_splash);
+        textView.setText(index + "");
+        textView.setTextSize(50);
     }
 
-    @Override
-    public void setPresenter(SplashContract.Presenter presenter) {
-
-    }
-
-    @Override
-    public void timeSplashed() {
-
-    }
-
-    @Override
-    public void finishDelayed() {
-
-    }
-
-
-    private static class SimpleChangeListener implements ViewPager.OnPageChangeListener {
-        @Override
-        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-        }
-
-        @Override
-        public void onPageSelected(int position) {
-
-        }
-
-        @Override
-        public void onPageScrollStateChanged(int state) {
-
-        }
-    }
 }
 
 

@@ -1,130 +1,118 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/rLayout_vedio_item_wonder"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:hunt="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="280dp"
+    android:layout_height="225dp"
     android:background="@color/color_white"
-    android:clickable="true">
+    android:clickable="true"
+    android:orientation="horizontal"
+    android:paddingLeft="10dp"
+    android:paddingRight="10dp">
 
-    <ImageView
-        android:id="@+id/iv_longline"
+    <com.cylan.jiafeigou.widget.FateLineView
+        android:id="@+id/fl_time_line"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_marginLeft="22dp"
-        android:src="@drawable/bg_longline_wonderful" />
+        android:paddingLeft="2dp"
+        android:paddingRight="2dp"
+        hunt:dashLineColor="@color/color_e8e8e8"
+        hunt:dashLineWidth="2dp"
+        hunt:innerCircleColor="@color/color_e8e8e8"
+        hunt:innerCircleRadius="6dp"
+        hunt:innerCircleStrokeWidth="4dp"
+        hunt:outerCircleColor="@color/color_white"
+        hunt:outerCircleRadius="10dp"
+        hunt:outerCircleY="10dp" />
 
-    <ImageView
-        android:id="@+id/iv_circle"
-        android:layout_width="20dp"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@id/iv_longline"
-        android:layout_marginLeft="-10dp"
-        android:layout_marginTop="19dp"
-        android:src="@drawable/bg_circle_item_wonderful" />
+    <RelativeLayout
+        android:id="@+id/rLayout_wonderful_item_wonder"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="4dp"
+        android:layout_marginTop="5dp"
+        android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/tv_title_item_wonder"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@id/iv_circle"
-        android:layout_alignTop="@id/iv_circle"
-        android:layout_marginLeft="25dp"
-        android:text="Hi~"
-        android:textColor="@color/color_666666"
-        android:textSize="13sp" />
-
-
-    <FrameLayout
-        android:id="@+id/fl_src_item_wonder"
-        android:layout_width="310dp"
-        android:layout_height="173dp"
-        android:layout_below="@id/tv_title_item_wonder"
-        android:layout_marginLeft="13dp"
-        android:layout_marginStart="13dp"
-        android:layout_marginTop="14dp"
-        android:layout_toEndOf="@id/iv_longline"
-        android:layout_toRightOf="@id/iv_longline">
+        <TextView
+            android:id="@+id/tv_wonderful_item_date"
+            android:layout_width="wrap_content"
+            android:layout_height="26dp"
+            android:gravity="center"
+            android:text="Hi~"
+            android:textColor="@color/color_666666"
+            android:textSize="13sp" />
 
         <ImageView
             android:id="@+id/iv_src_item_wonder"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/fLayout_item_bottom"
+            android:layout_below="@+id/tv_wonderful_item_date"
             android:scaleType="fitXY"
-            android:src="@drawable/bg_home_title_daytime" />
-
-        <ImageView
-            android:id="@+id/iv_src_vedio_wonder_icon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:src="@drawable/iv_src_vedio_wonder_icon" />
-    </FrameLayout>
+            android:src="@drawable/ic_launcher" />
 
 
-    <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/fl_src_item_wonder"
-        android:layout_marginBottom="25dp"
-        android:layout_marginLeft="30dp"
-        android:layout_marginTop="12dp"
-        android:layout_toRightOf="@id/iv_longline">
+        <FrameLayout
+            android:id="@+id/fLayout_item_bottom"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_alignParentBottom="true"
+            android:layout_gravity="bottom">
 
-        <TextView
-            android:id="@+id/tv_delet_item_wonder"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
-            android:text="删除"
-            android:textColor="@color/color_4b9fd5"
-            android:textSize="11sp" />
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_vertical"
+                android:orientation="horizontal">
 
-        <ImageView
-            android:id="@+id/iv_gapline"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="11dp"
-            android:layout_marginRight="11dp"
-            android:layout_toRightOf="@id/tv_delet_item_wonder"
-            android:background="#e8e8e8"
-            android:src="@drawable/bg_gap_line_wonderful" />
 
-        <TextView
-            android:id="@+id/tv_devicename_item_wonder"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_toRightOf="@id/iv_gapline"
-            android:maxLength="8"
-            android:text="摄像头水电费三点多"
-            android:textColor="@color/color_909090"
-            android:textSize="11sp" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical"
+                    android:padding="10dp"
+                    android:text="删除"
+                    android:textColor="@color/color_4b9fd5"
+                    android:textSize="11sp" />
 
-        <TextView
-            android:id="@+id/tv_share_item_wonder"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_marginLeft="252dp"
-            android:layout_marginStart="252dp"
-            android:drawableLeft="@drawable/icon_share_item_wonderful_selector"
-            android:drawablePadding="4dp"
-            android:drawableStart="@drawable/icon_share_item_wonderful_selector"
-            android:gravity="center"
-            android:text="分享"
-            android:textColor="@color/color_909090"
-            android:textSize="11sp" />
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="10dp"
+                    android:layout_gravity="center_vertical"
+                    android:background="@color/color_e8e8e8" />
 
+                <TextView
+                    android:id="@+id/tv_devicename_item_wonder"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical"
+                    android:maxLength="8"
+                    android:padding="10dp"
+                    android:text="摄像头水电费三点多"
+                    android:textColor="@color/color_909090"
+                    android:textSize="11sp" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tv_share_item_wonder"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end|center_vertical"
+                android:layout_marginLeft="252dp"
+                android:layout_marginStart="252dp"
+                android:drawableLeft="@drawable/icon_share_item_wonderful_selector"
+                android:drawablePadding="4dp"
+                android:drawableStart="@drawable/icon_share_item_wonderful_selector"
+                android:gravity="center"
+                android:text="分享"
+                android:textColor="@color/color_909090"
+                android:textSize="11sp" />
+
+        </FrameLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_alignParentBottom="true"
+            android:layout_gravity="bottom"
+            android:background="@color/color_e8e8e8" />
     </RelativeLayout>
-
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="2dp"
-        android:layout_marginLeft="13dp"
-        android:layout_toRightOf="@id/iv_longline"
-        android:background="@color/color_e8e8e8" />
-</RelativeLayout>
+</LinearLayout>

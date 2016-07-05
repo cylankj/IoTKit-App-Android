@@ -6,7 +6,10 @@ import java.util.regex.Pattern;
  * Created by cylan-hunt on 16-6-30.
  */
 public class JConstant {
-
+    /**
+     * {@link com.cylan.jiafeigou.n.NewHomeActivity}底部menu对应的FrameLayout的id。用来存放每日精彩的时间控件
+     */
+    public static final String KEY_NEW_HOME_ACTIVITY_BOTTOM_MENU_CONTAINER_ID = "new_home_menu_id";
     public static final int AUTHORIZE_PHONE = 0;
     public static final int AUTHORIZE_MAIL = 1;
     public static final int THIS_ACCOUNT_NOT_REGISTERED = -1;
@@ -42,5 +45,9 @@ public class JConstant {
      * fragment与宿主activity之间的切换关系，{1:finishActivity,2:just popFragment}
      */
     public static final String KEY_FRAGMENT_ACTION_1 = "key_fragment_activity_0";
+
+
+
+    public static final String KEY_FRESH = "is_you_fresh";
 
 }

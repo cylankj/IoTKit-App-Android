@@ -21,7 +21,20 @@
         <attr name="textSize" format="dimension" />
         <attr name="text" format="string" />
     </declare-styleable>
-
+    <declare-styleable name="FateLineViewStyle">
+        <attr name="dashLineWidth" format="integer|dimension" />
+        <attr name="dashLineColor" format="color|reference" />
+        <attr name="outerCircleColor" format="color|reference" />
+        <attr name="innerCircleColor" format="color|reference" />
+        <attr name="outerCircleRadius" format="integer|dimension" />
+        <attr name="innerCircleRadius" format="integer|dimension" />
+        <attr name="innerCircleStrokeWidth" format="float|dimension" />
+        <attr name="outerCircleY" format="float|dimension" />
+    </declare-styleable>
+    <declare-styleable name="WheelViewStyle">
+        <attr name="shortLineHeight" format="float|dimension" />
+        <attr name="longLineHeight" format="float|dimension" />
+    </declare-styleable>
     <declare-styleable name="RoundedImageViewStyle">
         <attr name="riv_corner_radius" format="dimension" />
         <attr name="riv_corner_radius_top_left" format="dimension" />

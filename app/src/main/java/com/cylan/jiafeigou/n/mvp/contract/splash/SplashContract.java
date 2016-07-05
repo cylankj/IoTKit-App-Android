@@ -10,21 +10,15 @@ public interface SplashContract {
 
 
     interface View extends BaseView<Presenter> {
-        void timeSplashed();
+        void splashOver();
 
         void finishDelayed();
     }
 
 
     interface Presenter extends BasePresenter {
-        void splashTime();
 
         void finishAppDelay();
     }
 
-    interface PresenterRequiredOps {
-        void onTimeSplashed();
-
-        void onFinishDelayed();
-    }
 }

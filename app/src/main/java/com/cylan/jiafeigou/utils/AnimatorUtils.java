@@ -1,6 +1,7 @@
 package com.cylan.jiafeigou.utils;
 
 import android.view.View;
+import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.OvershootInterpolator;
 
@@ -38,6 +39,53 @@ public class AnimatorUtils {
         an.setDuration(duration).start();
     }
 
+    public static void slide(final View target) {
+        int height = target.getHeight();
+        if (height == 0) height = 300;
+        final float start = target.isShown() ? 0.0f : height;
+        final float end = target.isShown() ? height : 0.0f;
+        final boolean shouldGone = target.isShown();
+        AnimatorSet set = new AnimatorSet();
+        set.playTogether(ObjectAnimator.ofFloat(target, "translationY", start, end));
+        set.setDuration(200);
+        set.setInterpolator(new AccelerateInterpolator());
+        set.addListener(new SimpleAnimationListener() {
+            @Override
+            public void onAnimationStart(Animator animator) {
+                if (!target.isShown())
+                    target.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animator) {
+                if (shouldGone)
+                    target.setVisibility(View.GONE);
+            }
+        });
+        set.start();
+    }
+
+    private static class SimpleAnimationListener implements Animator.AnimatorListener {
+        @Override
+        public void onAnimationStart(Animator animator) {
+
+        }
+
+        @Override
+        public void onAnimationEnd(Animator animator) {
+
+        }
+
+        @Override
+        public void onAnimationCancel(Animator animator) {
+
+        }
+
+        @Override
+        public void onAnimationRepeat(Animator animator) {
+
+        }
+    }
 
     /**
      * view 的水平移动动画

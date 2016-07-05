@@ -13,19 +13,19 @@ public class WheelViewDataSet {
     /**
      * 短，无数据。
      */
-    static final int TYPE_SHORT_INVALID = 0;
+    public static final int TYPE_SHORT_INVALID = 0;
     /**
      * 短，有数据。
      */
-    static final int TYPE_SHORT_VALID = 1;
+    public static final int TYPE_SHORT_VALID = 1;
     /**
      * 长，无数据。
      */
-    static final int TYPE_LONG_INVALID = 2;
+    public static final int TYPE_LONG_INVALID = 2;
     /**
      * 长，有数据。
      */
-    static final int TYPE_LONG_VALID = 3;
+    public static final int TYPE_LONG_VALID = 3;
 
     public long[] dataSet;
 
@@ -36,7 +36,7 @@ public class WheelViewDataSet {
      * position
      * dateInStr
      */
-    public Map<String, String> dateInStr = new HashMap<>();
+    public Map<Integer, String> dateInStr = new HashMap<>();
     /**
      * 只保存{0,1}， 0：无数据，1:有数据
      */

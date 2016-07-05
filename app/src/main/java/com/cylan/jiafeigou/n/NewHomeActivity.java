@@ -9,8 +9,10 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.ViewGroup;
 import android.widget.RadioGroup;
+import android.widget.Toast;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.mvp.contract.home.NewHomeActivityContract;
 import com.cylan.jiafeigou.n.mvp.impl.home.HomeMinePresenterImpl;
 import com.cylan.jiafeigou.n.mvp.impl.home.HomePageListPresenterImpl;
@@ -121,17 +123,26 @@ class HomeViewAdapter extends FragmentPagerAdapter {
             case INDEX_0: {
                 HomePageListFragment fragment = HomePageListFragment.newInstance(new Bundle());
                 new HomePageListPresenterImpl(fragment);
+                if (fragment != null && fragment.getContext() != null)
+                    Toast.makeText(fragment.getContext(), "重新new了。。。1", Toast.LENGTH_SHORT).show();
                 return fragment;
             }
             case INDEX_1: {
-                HomeWonderfulFragment fragment = HomeWonderfulFragment.newInstance(new Bundle());
+                final int bottomMenuContainerId = R.id.fLayout_new_home_bottom_menu;
+                Bundle bundle = new Bundle();
+                bundle.putInt(JConstant.KEY_NEW_HOME_ACTIVITY_BOTTOM_MENU_CONTAINER_ID,
+                        bottomMenuContainerId);
+                HomeWonderfulFragment fragment = HomeWonderfulFragment.newInstance(bundle);
                 new HomeWonderfulPresenterImpl(fragment);
-
+                if (fragment != null && fragment.getContext() != null)
+                    Toast.makeText(fragment.getContext(), "重新new了。。。2", Toast.LENGTH_SHORT).show();
                 return fragment;
             }
             case INDEX_2:
                 HomeMineFragment fragment = HomeMineFragment.newInstance(new Bundle());
                 new HomeMinePresenterImpl(fragment);
+                if (fragment != null && fragment.getContext() != null)
+                    Toast.makeText(fragment.getContext(), "重新new了。。。3", Toast.LENGTH_SHORT).show();
                 return fragment;
         }
         return HomePageListFragment.newInstance(new Bundle());

@@ -2,6 +2,7 @@ package com.cylan.jiafeigou.widget.wheel;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -17,6 +18,10 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Scroller;
 
+import com.cylan.jiafeigou.R;
+
+import java.util.Arrays;
+
 
 /**
  * Created by cylan-com.cylan.jiafeigou.widget on 16-6-18.
@@ -29,7 +34,7 @@ public class WheelView extends View {
      */
     private Paint dataPaint = new Paint();
     private Paint textPaint = new Paint();
-    private DataSource dataSource;
+    private WheelViewDataSet wheelViewDataSet;
     private TouchHandler touchHandler;
     private Scroller scroller;
     private static final int MAX_COUNT = 40;
@@ -37,13 +42,16 @@ public class WheelView extends View {
     private int colorDataGray = Color.parseColor("#dedede");
     private float intervalDistance;
     private float offsetLeft = 0;
-    private float offsetTop = 0;
     private float itemWidth = 3;
     private float shouldScrollX = 0;
     private int dataCount = 0;
     private int textSize = 13;
     private Rect textHeightRect = new Rect();
-    private int longBarTop = 0;
+    private float shortLineHeight = 25;
+    private float longLineHeight = 50;
+
+
+    private int currentPosition = 0;
     /**
      * Indicates that the pager is in an idle, settled state. The current page
      * is fully in view and no animation is in progress.
@@ -72,22 +80,26 @@ public class WheelView extends View {
 
     public WheelView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        TypedArray
+                at = context.obtainStyledAttributes(attrs, R.styleable.WheelViewStyle);
+        shortLineHeight = at.getDimension(R.styleable.WheelViewStyle_shortLineHeight, shortLineHeight);
+        longLineHeight = at.getDimension(R.styleable.WheelViewStyle_longLineHeight, longLineHeight);
+        at.recycle();
         init();
     }
 
     private void init() {
-
         dataPaint.setAntiAlias(true);
         textPaint.setAntiAlias(true);
         textPaint.setColor(colorDataGray);
         textSize = convertToPx(textSize, getResources());
         textPaint.setTextSize(textSize);
-        textPaint.getTextBounds("15", 0, 2, textHeightRect);
-        dataSource = new DataSource();
+        final String testString = getContext().getString(R.string.item_just_for_test);
+        textPaint.getTextBounds(testString, 0, testString.length(), textHeightRect);
+        wheelViewDataSet = new WheelViewDataSet();
         itemWidth = convertToPx((int) itemWidth, getResources());
         touchHandler = new TouchHandler(this);
         scroller = new Scroller(getContext());
-        offsetTop = convertToPx(5, getResources());
     }
 
     public static int convertToPx(int dp, Resources resources) {
@@ -100,10 +112,11 @@ public class WheelView extends View {
      *
      * @param dataSet
      */
-    public void setDataSet(DataSource dataSet) {
-        this.dataSource = dataSet;
+    public void setDataSet(WheelViewDataSet dataSet) {
+        this.wheelViewDataSet = dataSet;
         dataCount = dataSet.dataSet.length;
-        dataSource.dataStartXSet = new float[dataCount];
+        wheelViewDataSet.dataStartXSet = new float[dataCount];
+        currentPosition = dataCount - 1;
         updateOffset();
         invalidate();
     }
@@ -126,19 +139,19 @@ public class WheelView extends View {
     }
 
     /**
-     * 这一天的数据类型：4种，可参考 {@link DataSource}
+     * 这一天的数据类型：4种，可参考 {@link WheelViewDataSet}
      *
      * @param position
      * @return
      */
     private int getItemType(final int position) {
-        if (position < 0)
+        if (position < 0 || position > dataCount - 1)
             return 0;
-        for (int i = 0; i < dataCount; i++) {
-            if (position == i)
-                return dataSource.dataTypeSet[i];
-        }
-        return 0;
+//        for (int i = 0; i < dataCount; i++) {
+//            if (position == i)
+        return wheelViewDataSet.dataTypeSet[position];
+//        }
+//        return 0;
     }
 
     /**
@@ -147,16 +160,16 @@ public class WheelView extends View {
      * @param type
      * @return
      */
-    private int getItemHeightByType(final int type) {
+    private float getItemHeightByType(final int type) {
         switch (type) {
-            case DataSource.TYPE_SHORT_INVALID:
-            case DataSource.TYPE_SHORT_VALID:
-                return getMeasuredHeight() / 5;
-            case DataSource.TYPE_LONG_INVALID:
-            case DataSource.TYPE_LONG_VALID:
-                return longBarTop;
+            case WheelViewDataSet.TYPE_SHORT_INVALID:
+            case WheelViewDataSet.TYPE_SHORT_VALID:
+                return shortLineHeight;
+            case WheelViewDataSet.TYPE_LONG_INVALID:
+            case WheelViewDataSet.TYPE_LONG_VALID:
+                return longLineHeight;
         }
-        return getTop();
+        return shortLineHeight;
     }
 
     /**
@@ -167,36 +180,59 @@ public class WheelView extends View {
      */
     private int getItemColorByType(final int type) {
         switch (type) {
-            case DataSource.TYPE_SHORT_INVALID:
-            case DataSource.TYPE_LONG_INVALID:
+            case WheelViewDataSet.TYPE_SHORT_INVALID:
+            case WheelViewDataSet.TYPE_LONG_INVALID:
                 return colorDataGray;
-            case DataSource.TYPE_SHORT_VALID:
-            case DataSource.TYPE_LONG_VALID:
+            case WheelViewDataSet.TYPE_SHORT_VALID:
+            case WheelViewDataSet.TYPE_LONG_VALID:
                 return colorDataBlue;
         }
         return Color.GRAY;
     }
 
+    public void setCurrentItemTime(long currentItemTime) {
+        if (wheelViewDataSet == null || wheelViewDataSet.dataSet == null)
+            return;
+        final int prePosition = currentPosition;
+        currentPosition = Arrays.binarySearch(wheelViewDataSet.dataSet, currentItemTime);
+        if (currentPosition == prePosition)
+            return;
+        if (currentPosition < 0 || currentPosition > wheelViewDataSet.dataSet.length - 1) {
+            currentPosition = 0;
+            return;
+        }
+        final int factor = currentPosition - prePosition > 0 ? 1 : -1;
+        final int x = (int) (wheelViewDataSet.dataStartXSet[prePosition]
+                - wheelViewDataSet.dataStartXSet[currentPosition]);
+        scroller.forceFinished(true);
+        scroller.startScroll(getScrollX(), 0, factor * Math.abs(x), 0);
+        invalidate();
+    }
+
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        canvas.save();
+        final int count = canvas.save();
         final float markerRight = getMeasuredWidth() / 2 + itemWidth / 2;
         for (int i = 0; i < dataCount; i++) {
             final float endX = markerRight -
                     (dataCount - 1 - i) * (intervalDistance + itemWidth)
                     + offsetLeft;
             final float startX = endX - itemWidth;
-            dataSource.dataStartXSet[i] = startX;
+            wheelViewDataSet.dataStartXSet[i] = startX;
             final int itemType = getItemType(i);
-            if (itemType == DataSource.TYPE_LONG_INVALID || itemType == DataSource.TYPE_LONG_VALID)
+            if (itemType == WheelViewDataSet.TYPE_LONG_INVALID
+                    || itemType == WheelViewDataSet.TYPE_LONG_VALID)
                 drawText(canvas, i);
             final float height = getItemHeightByType(itemType);
             final int color = getItemColorByType(itemType);
             dataPaint.setColor(color);
-            canvas.drawRect(startX, (float) getBottom() - height, endX, (float) getBottom(), dataPaint);
+            canvas.drawRect(startX,
+                    (float) getMeasuredHeight() - height,
+                    endX,
+                    (float) getMeasuredHeight(), dataPaint);
         }
-        canvas.restore();
+        canvas.restoreToCount(count);
     }
 
     /**
@@ -208,19 +244,21 @@ public class WheelView extends View {
     private void drawText(final Canvas canvas, final int position) {
         if (position < 0 || position > dataCount - 1)
             return;
-        final String date = dataSource.dateInStr.get(position + "");
+        final String date = wheelViewDataSet.dateInStr.get(position);
         if (TextUtils.isEmpty(date))
             return;
-        textPaint.getTextBounds(date, 0, date.length() - 1, textHeightRect);
-        final int itemCenter = (int) dataSource.dataStartXSet[position] + ((int) itemWidth >> 1);
-        canvas.drawText(date, itemCenter - ((int) textHeightRect.width() >> 1) - 10, textHeightRect.height(), textPaint);
+        if (textHeightRect.height() == 0)
+            textPaint.getTextBounds(date, 0, date.length(), textHeightRect);
+        final int itemCenter = (int) wheelViewDataSet.dataStartXSet[position] + ((int) itemWidth >> 1);
+        canvas.drawText(date,
+                itemCenter - (textHeightRect.width() >> 1) - 10,
+                textHeightRect.height(), textPaint);
     }
 
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
         intervalDistance = (getMeasuredWidth() - MAX_COUNT * itemWidth) / MAX_COUNT;
-        longBarTop = getMeasuredHeight() * 2 / 3;
         textHeightRect.bottom = getMeasuredHeight() / 3;
     }
 
@@ -258,33 +296,33 @@ public class WheelView extends View {
         float[] returnValue = new float[2];
         if (scrollX > 0) {
             for (int i = dataCount - 1; i >= 0; i--) {
-                if (dataSource.dataTypeSet[i] == DataSource.TYPE_SHORT_VALID || dataSource.dataTypeSet[i] == DataSource.TYPE_LONG_VALID) {
+                if (wheelViewDataSet.dataTypeSet[i] == WheelViewDataSet.TYPE_SHORT_VALID || wheelViewDataSet.dataTypeSet[i] == WheelViewDataSet.TYPE_LONG_VALID) {
                     returnValue[0] = i;
                     returnValue[1] =
-                            -Math.abs(Math.abs(dataSource.dataStartXSet[i]
-                                    - dataSource.dataStartXSet[dataCount - 1]));
+                            -Math.abs(Math.abs(wheelViewDataSet.dataStartXSet[i]
+                                    - wheelViewDataSet.dataStartXSet[dataCount - 1]));
                     return returnValue;
                 }
             }
         }
-        if (markLabelStartX <= dataSource.dataStartXSet[0]) {
+        if (markLabelStartX <= wheelViewDataSet.dataStartXSet[0]) {
             for (int i = 0; i < dataCount; i++) {
-                if (dataSource.dataTypeSet[i] == DataSource.TYPE_SHORT_VALID || dataSource.dataTypeSet[i] == DataSource.TYPE_LONG_VALID) {
+                if (wheelViewDataSet.dataTypeSet[i] == WheelViewDataSet.TYPE_SHORT_VALID || wheelViewDataSet.dataTypeSet[i] == WheelViewDataSet.TYPE_LONG_VALID) {
                     returnValue[0] = i;
                     returnValue[1] =
-                            -Math.abs(dataSource.dataStartXSet[i]
-                                    - dataSource.dataStartXSet[dataCount - 1]);
+                            -Math.abs(wheelViewDataSet.dataStartXSet[i]
+                                    - wheelViewDataSet.dataStartXSet[dataCount - 1]);
                     return returnValue;
                 }
             }
         }
         for (int i = 1; i < dataCount; i++) {
-            if (dataSource.dataStartXSet[i] > markLabelStartX
-                    && dataSource.dataStartXSet[i - 1] <= markLabelStartX) {
+            if (wheelViewDataSet.dataStartXSet[i] > markLabelStartX
+                    && wheelViewDataSet.dataStartXSet[i - 1] <= markLabelStartX) {
                 int leftPos = -1;
                 for (int left = i - 1; left >= 0; left--) {
-                    if (dataSource.dataTypeSet[left] == DataSource.TYPE_SHORT_VALID
-                            || dataSource.dataTypeSet[left] == DataSource.TYPE_LONG_VALID) {
+                    if (wheelViewDataSet.dataTypeSet[left] == WheelViewDataSet.TYPE_SHORT_VALID
+                            || wheelViewDataSet.dataTypeSet[left] == WheelViewDataSet.TYPE_LONG_VALID) {
                         leftPos = left;
                         break;
                     }
@@ -294,8 +332,8 @@ public class WheelView extends View {
                 }
                 int rightPos = -1;
                 for (int right = i; right < dataCount; right++) {
-                    if (dataSource.dataTypeSet[right] == DataSource.TYPE_SHORT_VALID
-                            || dataSource.dataTypeSet[right] == DataSource.TYPE_LONG_VALID) {
+                    if (wheelViewDataSet.dataTypeSet[right] == WheelViewDataSet.TYPE_SHORT_VALID
+                            || wheelViewDataSet.dataTypeSet[right] == WheelViewDataSet.TYPE_LONG_VALID) {
                         rightPos = right;
                         break;
                     }
@@ -303,18 +341,18 @@ public class WheelView extends View {
                 if (rightPos == -1) {
                     throw new IllegalArgumentException("数据出错，");
                 }
-                final float deltaLeft = Math.abs(Math.abs(dataSource.dataStartXSet[leftPos]
-                        - dataSource.dataStartXSet[dataCount - 1])
+                final float deltaLeft = Math.abs(Math.abs(wheelViewDataSet.dataStartXSet[leftPos]
+                        - wheelViewDataSet.dataStartXSet[dataCount - 1])
                         - Math.abs(scrollX));
                 final float deltaRight = Math.abs(
-                        Math.abs(scrollX) - Math.abs(dataSource.dataStartXSet[dataCount - 1]
-                                - dataSource.dataStartXSet[rightPos]));
+                        Math.abs(scrollX) - Math.abs(wheelViewDataSet.dataStartXSet[dataCount - 1]
+                                - wheelViewDataSet.dataStartXSet[rightPos]));
                 if (direction == 0) {
                     //left
                     returnValue[0] = rightPos;
                     returnValue[1] =
-                            -Math.abs(dataSource.dataStartXSet[dataCount - 1]
-                                    - dataSource.dataStartXSet[rightPos]);
+                            -Math.abs(wheelViewDataSet.dataStartXSet[dataCount - 1]
+                                    - wheelViewDataSet.dataStartXSet[rightPos]);
                     return returnValue;
                 } else if (direction == 1) {
                     returnValue[0] = leftPos;
@@ -325,8 +363,8 @@ public class WheelView extends View {
                 if (deltaLeft >= deltaRight) {
                     returnValue[0] = rightPos;
                     returnValue[1] =
-                            -Math.abs(dataSource.dataStartXSet[dataCount - 1]
-                                    - dataSource.dataStartXSet[rightPos]);
+                            -Math.abs(wheelViewDataSet.dataStartXSet[dataCount - 1]
+                                    - wheelViewDataSet.dataStartXSet[rightPos]);
                     return returnValue;
                 } else {
                     returnValue[0] = leftPos;
@@ -343,6 +381,8 @@ public class WheelView extends View {
      * 自动修正位置
      */
     public void autoSettle(final String tag, final int direction) {
+        if (wheelViewDataSet == null || wheelViewDataSet.dataSet == null)
+            return;
         float[] data =
                 computeAutoScrollDistanceX(direction);
         shouldScrollX = data[1];
@@ -351,8 +391,11 @@ public class WheelView extends View {
         scroller.startScroll(getScrollX(), 0, (int) shouldScrollX - scrollX, 0);
         Log.d(TAG, "autoSettle....." + scrollX + "  .. " + position);
         postInvalidate();
-        if (onItemChangedListener != null)
-            onItemChangedListener.onItemChanged(position, dataSource.dateInStr.get("" + position));
+
+        if (onItemChangedListener != null) {
+            currentPosition = position;
+            onItemChangedListener.onItemChanged(position, wheelViewDataSet.dataSet[position], wheelViewDataSet.dateInStr.get(position));
+        }
     }
 
     public boolean onTouchEvent(MotionEvent event) {
@@ -367,6 +410,10 @@ public class WheelView extends View {
             Log.d(TAG, "computeScroll");
         }
         super.computeScroll();
+    }
+
+    public WheelViewDataSet getWheelViewDataSet() {
+        return wheelViewDataSet;
     }
 
     /**
@@ -410,7 +457,7 @@ public class WheelView extends View {
     }
 
     public interface OnItemChangedListener {
-        void onItemChanged(final int position, final String dateInStr);
+        void onItemChanged(final int position, final long timeInLong, final String dateInStr);
     }
 
 }

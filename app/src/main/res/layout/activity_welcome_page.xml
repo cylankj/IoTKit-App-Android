@@ -3,14 +3,8 @@
     xmlns:hunt="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:animateLayoutChanges="true">
 
-    <ImageView
-        android:id="@+id/imgvWelcomeSplash"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scaleType="centerInside"
-        android:src="@drawable/splash" />
 
     <android.support.v4.view.ViewPager
         android:id="@+id/vpWelcome"
@@ -26,4 +20,26 @@
         hunt:fillColor="#000eee"
         hunt:radius="5dp"
         hunt:strokeColor="#ffffff" />
+
+    <FrameLayout
+        android:id="@+id/fLayout_splash"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="200dp"
+            android:src="@drawable/ic_launcher" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center_horizontal"
+            android:layout_marginBottom="20dp"
+            android:gravity="center"
+            android:text="Copyright @ 2005-2016 Cylan.All Rights Reserved"
+            android:textSize="9sp" />
+    </FrameLayout>
 </merge>

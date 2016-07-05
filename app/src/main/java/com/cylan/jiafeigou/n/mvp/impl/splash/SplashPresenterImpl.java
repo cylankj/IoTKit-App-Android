@@ -3,54 +3,50 @@ package com.cylan.jiafeigou.n.mvp.impl.splash;
 
 import com.cylan.jiafeigou.n.mvp.contract.splash.SplashContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
-import com.cylan.jiafeigou.n.mvp.model.contract.ModelContract;
-import com.cylan.jiafeigou.n.mvp.model.impl.SplashModelImpl;
+
+import java.util.concurrent.TimeUnit;
+
+import rx.Observable;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by hunt on 16-5-14.
  */
-public class SplashPresenterImpl extends AbstractPresenter<SplashContract.View> implements SplashContract.Presenter, SplashContract.PresenterRequiredOps {
-
-    private ModelContract.SplashModelOps mModel;
+public class SplashPresenterImpl extends AbstractPresenter<SplashContract.View>
+        implements SplashContract.Presenter {
+    Subscription splashSubscription;
 
     public SplashPresenterImpl(SplashContract.View splashView) {
         super(splashView);
-        this.mModel = new SplashModelImpl(this);
+        splashView.setPresenter(this);
     }
 
-
-    @Override
-    public void splashTime() {
-        //闪屏时间
-        mModel.splashTimeda();
-    }
 
     @Override
     public void finishAppDelay() {
-        mModel.finishAppDalayda();
     }
 
-
-    @Override
-    public void onTimeSplashed() {
-        final SplashContract.View mViewRef = getView();
-        if (mViewRef != null) mViewRef.timeSplashed();
-    }
-
-    @Override
-    public void onFinishDelayed() {
-        final SplashContract.View mViewRef = getView();
-        if (mViewRef != null) mViewRef.finishDelayed();
-    }
 
     @Override
     public void start() {
-
+        splashSubscription = Observable.just(null)
+                .subscribeOn(Schedulers.newThread())
+                .delay(1000, TimeUnit.MILLISECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<Object>() {
+                    @Override
+                    public void call(Object o) {
+                        getView().splashOver();
+                    }
+                });
     }
 
     @Override
     public void stop() {
-
+        unSubscribe(splashSubscription);
     }
 }
 

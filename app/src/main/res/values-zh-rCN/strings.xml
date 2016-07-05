@@ -577,6 +577,10 @@
 
     <string name="send_email_tip_content">系统已经发送邮件到\n%s\n请点击邮件的链接重置密码</string>
 
+
+    <string name="item_jf_dog">加菲狗</string>
+    <string name="item_wonder">每日精彩</string>
+    <string name="item_mine">我的</string>
     <string name="item_user_name_input_rules">0123456789abcdefghigklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ@.</string>
     <string name="item_register">注册</string>
     <string name="item_confirm">确认</string>
@@ -590,4 +594,5 @@
     <string name="item_verification_code_is_outdate">验证码已过期</string>
     <string name="item_user_license_agreements"><a href="http://www.cylan.com.cn/">《用户使用协议》</a></string>
 
+    <string name="item_just_for_test">05月</string>
 </resources>

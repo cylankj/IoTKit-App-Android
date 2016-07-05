@@ -13,11 +13,12 @@ import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
-import android.view.animation.AnimationUtils;
-import android.widget.ImageView;
+import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
 import com.cylan.jiafeigou.n.NewHomeActivity;
 import com.cylan.jiafeigou.n.mvp.contract.splash.SplashContract;
@@ -26,6 +27,7 @@ import com.cylan.jiafeigou.n.view.adapter.SimpleFragmentAdapter;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.UiHelper;
 import com.cylan.viewindicator.CirclePageIndicator;
+import com.superlog.SLog;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,21 +45,22 @@ import permissions.dispatcher.RuntimePermissions;
  * Created by chen on 5/24/16.
  */
 @RuntimePermissions
-public class WelcomePageActivity extends BaseFullScreenFragmentActivity implements SplashContract.View {
+public class WelcomePageActivity extends BaseFullScreenFragmentActivity
+        implements SplashContract.View {
 
 
-    @BindView(R.id.imgvWelcomeSplash)
-    ImageView imgvWelcomeSplash;
+    @BindView(R.id.fLayout_splash)
+    FrameLayout fLayoutSplash;
     @BindView(R.id.vpWelcome)
     ViewPager vpWelcome;
     @BindView(R.id.v_indicator)
     CirclePageIndicator vIndicator;
     @Nullable
 
-    private SplashContract.Presenter mPresenter;
-    private final String TAG_COMEIN = "isTheUserFirstLoginIn";
+    private SplashContract.Presenter presenter;
 
-    private List<Fragment> listSplashFreg;
+
+    private List<Fragment> splashFragments;
     private SimpleFragmentAdapter mSplashListAdapter;
 
     @Override
@@ -68,31 +71,28 @@ public class WelcomePageActivity extends BaseFullScreenFragmentActivity implemen
         initData();
     }
 
-
     @Override
-    protected void onDestroy() {
-        //do something
-        super.onDestroy();
+    protected void onStop() {
+        super.onStop();
+        if (presenter != null) presenter.stop();
     }
 
-
     private void initData() {
-        mPresenter = new SplashPresenterImpl(this);
-        mPresenter.splashTime();
+        presenter = new SplashPresenterImpl(this);
+        presenter.start();
     }
 
     private void initGuidePage() {
-        setFirstUseApp();
-        if (listSplashFreg == null) {
-            listSplashFreg = new ArrayList<Fragment>();
-            listSplashFreg.add(FragmentSplash.newInstance(null));
-            listSplashFreg.add(FragmentSplash.newInstance(null));
-            listSplashFreg.add(FragmentSplash.newInstance(null));
-            listSplashFreg.add(BeforeLoginFragment.newInstance(null));
-            mSplashListAdapter = new SimpleFragmentAdapter(getSupportFragmentManager(), listSplashFreg);
 
+        if (splashFragments == null) {
+            splashFragments = new ArrayList<>();
+            splashFragments.add(FragmentSplash.newInstance(0));
+            splashFragments.add(FragmentSplash.newInstance(1));
+            splashFragments.add(FragmentSplash.newInstance(2));
+            splashFragments.add(BeforeLoginFragment.newInstance(null));
+            mSplashListAdapter = new SimpleFragmentAdapter(getSupportFragmentManager(), splashFragments);
             vpWelcome.setAdapter(mSplashListAdapter);
-            vpWelcome.addOnPageChangeListener(new PageChangeListen());
+            vpWelcome.addOnPageChangeListener(new PageChangeListener());
             vIndicator.setViewPager(vpWelcome);
         }
     }
@@ -109,18 +109,31 @@ public class WelcomePageActivity extends BaseFullScreenFragmentActivity implemen
             finish();
         } else {
             //进入登陆页 login page
-            if (listSplashFreg == null) {
-                listSplashFreg = new ArrayList<Fragment>();
-                listSplashFreg.add(BeforeLoginFragment.newInstance(null));
+            if (splashFragments == null) {
+                splashFragments = new ArrayList<Fragment>();
+                splashFragments.add(BeforeLoginFragment.newInstance(null));
             }
-            mSplashListAdapter = new SimpleFragmentAdapter(getSupportFragmentManager(), listSplashFreg);
+            mSplashListAdapter = new SimpleFragmentAdapter(getSupportFragmentManager(), splashFragments);
             vpWelcome.setAdapter(mSplashListAdapter);
         }
     }
 
+//    @Override
+//    public void timeSplashed() {
+//        SplashPermissionDispatcher.showWriteSdCardWithCheck(this);
+//    }
+
     @Override
-    public void timeSplashed() {
-        SplashPermissionDispatcher.showWriteSdCardWithCheck(this);
+    public void splashOver() {
+        fLayoutSplash.setVisibility(View.GONE);
+        //do you business;
+        if (isFirstUseApp()) {
+            //第一次打开app
+            setFirstUseApp();
+            initGuidePage();
+        } else {
+            initLoginPage();
+        }
     }
 
     @Override
@@ -133,13 +146,18 @@ public class WelcomePageActivity extends BaseFullScreenFragmentActivity implemen
         return PreferencesUtils.getBoolean(this, UiHelper.TAG_LOGING_STATUS, false);
     }
 
+    /**
+     * check is the app is fresh
+     *
+     * @return
+     */
     private boolean isFirstUseApp() {
-        return PreferencesUtils.getBoolean(this, TAG_COMEIN, true);
+        return PreferencesUtils.getBoolean(this, JConstant.KEY_FRESH, true);
         // return true;
     }
 
     private void setFirstUseApp() {
-        PreferencesUtils.putBoolean(this, TAG_COMEIN, false);
+        PreferencesUtils.putBoolean(this, JConstant.KEY_FRESH, false);
     }
 
     @Override
@@ -150,21 +168,15 @@ public class WelcomePageActivity extends BaseFullScreenFragmentActivity implemen
 
     @OnPermissionDenied(Manifest.permission.WRITE_EXTERNAL_STORAGE)
     public void onWriteSdCardDenied() {
+        // NOTE: Perform action that requires the permission.
+        // If this is run by PermissionsDispatcher, the permission will have been granted
         Toast.makeText(this, "请你开启SD卡读写权限,应用才能正常工作", Toast.LENGTH_SHORT).show();
-        if (mPresenter != null) mPresenter.finishAppDelay();
+        if (presenter != null) presenter.finishAppDelay();
     }
 
     @NeedsPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
     public void showWriteSdCard() {
-        //do you business;
-        if (isFirstUseApp()) {
-            //第一次打开app
-            initGuidePage();
-        } else {
-            initLoginPage();
-        }
-        imgvWelcomeSplash.setVisibility(android.view.View.GONE);
-        imgvWelcomeSplash.startAnimation(AnimationUtils.loadAnimation(this, R.anim.push_up_out));
+
     }
 
 
@@ -215,7 +227,7 @@ public class WelcomePageActivity extends BaseFullScreenFragmentActivity implemen
 
     @Override
     public void setPresenter(SplashContract.Presenter presenter) {
-
+        this.presenter = presenter;
     }
 
     @Override
@@ -223,11 +235,12 @@ public class WelcomePageActivity extends BaseFullScreenFragmentActivity implemen
         return null;
     }
 
-    private class PageChangeListen implements ViewPager.OnPageChangeListener {
+    private class PageChangeListener implements ViewPager.OnPageChangeListener {
 
         @Override
         public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
+            if (position == 2)
+                vIndicator.setAlpha(1.0f - positionOffset);
         }
 
         @Override

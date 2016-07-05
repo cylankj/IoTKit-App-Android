@@ -12,7 +12,6 @@ import com.cylan.jiafeigou.support.sina.AccessTokenKeeper;
 import com.cylan.jiafeigou.support.sina.SinaWeiboUtil;
 import com.cylan.jiafeigou.support.sina.UsersAPI;
 import com.cylan.jiafeigou.support.tencent.TencentLoginUtils;
-import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.sdkjni.JfgCmd;
 import com.sina.weibo.sdk.auth.Oauth2AccessToken;
 import com.sina.weibo.sdk.auth.WeiboAuthListener;
@@ -125,7 +124,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginModelContract.Vie
                 if (jsonResponse.has("nickname")) {
                     alias = jsonResponse.getString("nickname");
                 }
-                PreferencesUtils.setThirDswLoginPicUrl(ctx, jsonResponse.getString("figureurl_qq_1"));
+//                PreferencesUtils.setThirDswLoginPicUrl(ctx, jsonResponse.getString("figureurl_qq_1"));
                 cmd.openLogin(alias, "", "QQ", ""); // 接口没测
             } catch (JSONException e) {
                 SLog.e(e.toString());
@@ -195,7 +194,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginModelContract.Vie
             try {
                 if (!TextUtils.isEmpty(response)) {
                     String strId = new JSONObject(response).getString("idstr");
-                    PreferencesUtils.setThirDswLoginPicUrl(ctx, new JSONObject(response).getString("profile_image_url"));
+//                    PreferencesUtils.setThirDswLoginPicUrl(ctx, new JSONObject(response).getString("profile_image_url"));
                     cmd.openLogin(strId, "", "SINA", ""); // 接口没测
                 }
             } catch (JSONException e) {

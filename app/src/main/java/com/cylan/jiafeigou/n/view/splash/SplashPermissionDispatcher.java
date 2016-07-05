@@ -4,7 +4,6 @@ import android.support.v4.app.ActivityCompat;
 
 import com.cylan.jiafeigou.utils.UiHelper;
 
-
 import java.lang.ref.WeakReference;
 
 import permissions.dispatcher.PermissionRequest;
@@ -18,11 +17,10 @@ import static android.support.v4.app.ActivityCompat.requestPermissions;
 
 
 final class SplashPermissionDispatcher {
-/**
- * 所有提示语句暂用camera的
- * */
+    /**
+     * 所有提示语句暂用camera的
+     */
 
-    private static final String TAG = SplashPermissionDispatcher.class.getName();
 
     private SplashPermissionDispatcher() {
     }
@@ -97,7 +95,7 @@ final class SplashPermissionDispatcher {
                 if (!PermissionUtils.hasSelfPermissions(target, UiHelper.PERMISSION_SHOWWRITE_STORAGE)) {
                     //没有读写权限
                     target.onWriteSdCardDenied();
-                }else {
+                } else {
                     target.showWriteSdCard();
                 }
                 break;
