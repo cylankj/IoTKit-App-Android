@@ -3,6 +3,7 @@ package com.cylan.jiafeigou.n.view.home;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -161,7 +162,9 @@ public class HomeMineFragment extends android.support.v4.app.Fragment
     @Override
     public void onPortraitUpdate(String url) {
         if (getActivity() != null) {
-            testBlurBackground(R.drawable.clouds);
+//            testBlurBackground(R.drawable.clouds);
+            ivHomeMinePortrait.setImageDrawable(getResources().getDrawable(R.drawable.clouds));
+            if (presenter != null) presenter.portraitBlur(R.drawable.clouds);
             tvHomeMineMsgCount.post(new Runnable() {
                 @Override
                 public void run() {
@@ -169,6 +172,13 @@ public class HomeMineFragment extends android.support.v4.app.Fragment
                 }
             });
         }
+    }
+
+    @Override
+    public void onBlur(Drawable drawable) {
+        long time = System.currentTimeMillis();
+        rLayoutHomeMineTop.setBackgroundDrawable(drawable);
+        SLog.e("usetime:%d ms", System.currentTimeMillis() - time);
     }
 
 

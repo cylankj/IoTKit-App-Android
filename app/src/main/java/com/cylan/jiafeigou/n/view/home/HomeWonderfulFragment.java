@@ -363,7 +363,7 @@ public class HomeWonderfulFragment extends Fragment implements
                     tvDateColor.setTextColor(Color.WHITE);
                     tvDateColor.setTitleHeadIsTop(true);
                 }
-                tvDateColor.setBackgroundToRight();
+//                tvDateColor.setBackgroundToRight();
                 mTitleBackgroundRef.getChildAt(0).setAlpha(1 - alpha);
                 fadeTopHeadCover.get().setAlpha(alpha);
             }

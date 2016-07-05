@@ -1,5 +1,7 @@
 package com.cylan.jiafeigou.n.mvp.contract.home;
 
+import android.graphics.drawable.Drawable;
+import android.support.annotation.DrawableRes;
 import android.support.annotation.UiThread;
 
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
@@ -16,9 +18,13 @@ public interface HomeMineContract {
          */
         @UiThread
         void onPortraitUpdate(String url);
+
+        void onBlur(Drawable drawable);
     }
 
     interface Presenter extends BasePresenter {
         void requestLatestPortrait();
+
+        void portraitBlur(@DrawableRes int id);
     }
 }

@@ -38,22 +38,9 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
 
     @Override
     public void stop() {
-        unRegisterSubscription(onRefreshSubscription);
+        unSubscribe(onRefreshSubscription);
     }
 
-
-    /**
-     * 反注册
-     *
-     * @param subscriptions
-     */
-    private void unRegisterSubscription(Subscription... subscriptions) {
-        if (subscriptions != null)
-            for (Subscription subscription : subscriptions) {
-                if (subscription != null)
-                    subscription.unsubscribe();
-            }
-    }
 
     /**
      * 计算过程.

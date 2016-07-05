@@ -103,6 +103,8 @@
             </intent-filter>
         </activity>
         <activity
+            android:configChanges="locale|orientation|keyboardHidden"
+            android:screenOrientation="portrait"
             android:name=".n.NewHomeActivity"
             android:launchMode="singleTask"
             android:theme="@style/AppTheme" />
