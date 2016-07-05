@@ -54,7 +54,7 @@ public class HomePageListFragment extends Fragment implements
     private static final int REFRESH_DELAY = 1500;
     @BindView(R.id.fLayout_main_content_holder)
     SwipeRefreshLayout srLayoutMainContentHolder;
-    @BindView(R.id.imgBtn_add_devices)
+    @BindView(R.id.imgV_add_devices)
     ImageButton imgBtnAddDevices;
     @BindView(R.id.rV_devices_list)
     RecyclerView rVDevicesList;//设备列表
@@ -137,7 +137,7 @@ public class HomePageListFragment extends Fragment implements
     }
 
     private void initSomeViewMargin() {
-        ViewUtils.setViewMarginStatusBar(getView().findViewById(R.id.imgBtn_add_devices));
+        ViewUtils.setViewMarginStatusBar(getView().findViewById(R.id.imgV_add_devices));
     }
 
     private void initHeaderView() {
@@ -184,7 +184,7 @@ public class HomePageListFragment extends Fragment implements
         });
     }
 
-    @OnClick(R.id.imgBtn_add_devices)
+    @OnClick(R.id.imgV_add_devices)
     void onClickAddDevice() {
         ToastUtil.showToast(getContext(), "add devices");
     }
