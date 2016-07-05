@@ -252,7 +252,7 @@ public class WheelView extends View {
         final int itemCenter = (int) wheelViewDataSet.dataStartXSet[position] + ((int) itemWidth >> 1);
         canvas.drawText(date,
                 itemCenter - (textHeightRect.width() >> 1) - 10,
-                textHeightRect.height(), textPaint);
+                -textHeightRect.top, textPaint);
     }
 
     @Override
