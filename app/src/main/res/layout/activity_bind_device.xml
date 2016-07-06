@@ -22,8 +22,9 @@
                 android:id="@+id/imgV_top_bar_left"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:background="?attr/selectableItemBackgroundBorderless"
                 android:padding="15dp"
-                android:src="@drawable/btn_login_nav_close" />
+                android:src="@drawable/ic_nav_back_arrow" />
 
             <TextView
                 android:id="@+id/imgV_top_bar_center"

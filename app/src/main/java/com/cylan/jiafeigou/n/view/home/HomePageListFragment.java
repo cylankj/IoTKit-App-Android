@@ -20,12 +20,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.n.NewHomeActivity;
+import com.cylan.jiafeigou.n.misc.RxEvent;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomePageListContract;
 import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
 import com.cylan.jiafeigou.n.mvp.model.GreetBean;
 import com.cylan.jiafeigou.n.view.activity.BindDeviceActivity;
 import com.cylan.jiafeigou.n.view.adapter.HomePageListAdapter;
+import com.cylan.jiafeigou.support.rxbus.RxBus;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.dialog.HomeMenuDialog;
@@ -33,6 +34,7 @@ import com.cylan.jiafeigou.widget.sticky.HeaderAnimator;
 import com.cylan.jiafeigou.widget.sticky.StickyHeaderBuilder;
 import com.cylan.jiafeigou.widget.wave.WaveHelper;
 import com.cylan.jiafeigou.widget.wave.WaveView;
+import com.cylan.sdkjni.JfgCmd;
 import com.superlog.SLog;
 
 import java.lang.ref.WeakReference;
@@ -194,6 +196,11 @@ public class HomePageListFragment extends Fragment implements
 
     @OnClick(R.id.imgV_add_devices)
     void onClickAddDevice() {
+//        if (!JfgCmd.getJfgCmd(getContext()).isLogined) {
+//            if (RxBus.getInstance().hasObservers())
+//                RxBus.getInstance().send(new RxEvent.NeedLoginEvent(null));
+//            return;
+//        }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             getActivity().startActivity(new Intent(getActivity(), BindDeviceActivity.class),
                     ActivityOptionsCompat.makeCustomAnimation(getContext(),

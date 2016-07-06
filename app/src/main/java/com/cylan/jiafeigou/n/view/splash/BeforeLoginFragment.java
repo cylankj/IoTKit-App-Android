@@ -11,10 +11,10 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.NewHomeActivity;
-import com.cylan.jiafeigou.n.mvp.impl.LoginPresenterImpl;
-import com.cylan.jiafeigou.n.view.login.LoginFragment;
+import com.cylan.jiafeigou.n.misc.RxEvent;
+import com.cylan.jiafeigou.support.rxbus.RxBus;
+import com.cylan.jiafeigou.utils.ViewUtils;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -43,6 +43,8 @@ public class BeforeLoginFragment extends android.support.v4.app.Fragment {
 
     @OnClick(R.id.btn_look_around)
     public void toLookAround(View view) {
+        if (getView() != null)
+            ViewUtils.deBounceClick(getView().findViewById(R.id.btn_look_around));
 //        clearChildren();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             getActivity().startActivity(new Intent(getActivity(), NewHomeActivity.class),
@@ -55,19 +57,9 @@ public class BeforeLoginFragment extends android.support.v4.app.Fragment {
 
     @OnClick(R.id.btn_to_login)
     public void toLogin(View view) {
-//        clearChildren();
-        Bundle bundle = new Bundle();
-        bundle.putInt(JConstant.KEY_ACTIVITY_FRAGMENT_CONTAINER_ID, android.R.id.content);
-        bundle.putInt(JConstant.KEY_FRAGMENT_ACTION_1, 1);
-        LoginFragment fragment = LoginFragment.newInstance(bundle);
-        getFragmentManager()
-                .beginTransaction()
-                .setCustomAnimations(R.anim.slide_up_in, R.anim.slide_down_out
-                        , R.anim.slide_in_left, R.anim.slide_out_right)
-                .replace(android.R.id.content, fragment)
-                .addToBackStack("LogInFragment")
-                .commit();
-        new LoginPresenterImpl(fragment);
+        if (getView() != null)
+            ViewUtils.deBounceClick(getView().findViewById(R.id.btn_to_login));
+        RxBus.getInstance().send(new RxEvent.NeedLoginEvent(null));
     }
 
     /**

@@ -80,7 +80,7 @@ public class ForgetPwdFragment extends Fragment implements ForgetPwdContract.Vie
     @BindView(R.id.vs_set_account_pwd)
     ViewSwitcher vsSetAccountPwd;
 
-    @BindView(R.id.tv_login_top_center)
+    @BindView(R.id.tv_top_bar_center)
     TextView tvLoginTopCenter;
 
     /**
@@ -144,10 +144,10 @@ public class ForgetPwdFragment extends Fragment implements ForgetPwdContract.Vie
 
     private void initTitleBar() {
         FrameLayout layout = (FrameLayout) getView().findViewById(R.id.rLayout_login_top);
-        layout.findViewById(R.id.tv_login_top_right).setVisibility(View.GONE);
-        TextView tvTitle = (TextView) layout.findViewById(R.id.tv_login_top_center);
+        layout.findViewById(R.id.tv_top_bar_right).setVisibility(View.GONE);
+        TextView tvTitle = (TextView) layout.findViewById(R.id.tv_top_bar_center);
         tvTitle.setText("忘记密码");
-        ImageView imgBackHandle = (ImageView) layout.findViewById(R.id.iv_login_top_left);
+        ImageView imgBackHandle = (ImageView) layout.findViewById(R.id.iv_top_bar_left);
         imgBackHandle.setImageResource(R.drawable.btn_nav_back);
         imgBackHandle.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -1,0 +1,177 @@
+package com.cylan.jiafeigou.n.view.bind;
+
+
+import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.misc.anim.FlipAnimation;
+import com.cylan.jiafeigou.n.view.BaseTitleFragment;
+import com.cylan.jiafeigou.utils.AnimatorUtils;
+import com.nineoldandroids.animation.Animator;
+import com.nineoldandroids.animation.AnimatorSet;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
+/**
+ * A simple {@link Fragment} subclass.
+ * Use the {@link BindDoorBellFragment#newInstance} factory method to
+ * create an instance of this fragment.
+ */
+public class BindDoorBellFragment extends BaseTitleFragment {
+
+
+    @BindView(R.id.fLayout_flip_before)
+    FrameLayout fLayoutFlipBefore;
+    @BindView(R.id.imgV_wifi_light_flash)
+    ImageView imgVWifiLightFlash;
+    @BindView(R.id.fLayout_flip_after)
+    FrameLayout fLayoutFlipAfter;
+    @BindView(R.id.fLayout_flip_layout)
+    FrameLayout fLayoutFlipLayout;
+    @BindView(R.id.imgV_hand_left)
+    ImageView imgVHandLeft;
+    @BindView(R.id.imgV_hand_right)
+    ImageView imgVHandRight;
+    @BindView(R.id.tv_bind_doorbell_tip)
+    TextView tvBindDoorbellTip;
+    @BindView(R.id.imgV_wifi_light_red_dot_left)
+    ImageView imgVWifiLightRedDotLeft;
+    @BindView(R.id.imgV_wifi_light_red_dot_right)
+    ImageView imgVWifiLightRedDotRight;
+
+    public BindDoorBellFragment() {
+        // Required empty public constructor
+    }
+
+    /**
+     * Use this factory method to create a new instance of
+     * this fragment using the provided parameters.
+     *
+     * @param bundle Parameter 2.
+     * @return A new instance of fragment BindCameraFragment.
+     */
+    // TODO: Rename and change types and number of parameters
+    public static BindDoorBellFragment newInstance(Bundle bundle) {
+        BindDoorBellFragment fragment = new BindDoorBellFragment();
+        fragment.setArguments(bundle);
+        return fragment;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+        }
+    }
+
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        // TODO: inflate a fragment view
+        View rootView = super.onCreateView(inflater, container, savedInstanceState);
+        ButterKnife.bind(this, rootView);
+        return rootView;
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        updateNavBackIcon(R.drawable.btn_nav_back);
+//        initAnimation();
+        if (getView() != null) getView().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                initBeforeFlipAnimation();
+            }
+        }, 500);
+    }
+
+    @Override
+    protected int getSubContentViewId() {
+        return R.layout.fragment_bind_doorbell;
+    }
+
+    AnimatorSet setHandLeft;
+    AnimatorSet setHandRight;
+    AnimatorSet setRedDotLeft;
+    AnimatorSet setRedDotRight;
+
+    private void initBeforeFlipAnimation() {
+        setHandLeft = AnimatorUtils.onHand2Left(imgVHandLeft, new AnimatorUtils.SimpleAnimationListener() {
+            @Override
+            public void onAnimationStart(Animator animator) {
+                imgVHandLeft.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animator) {
+                setRedDotLeft.start();
+                imgVHandLeft.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        imgVHandLeft.setVisibility(View.INVISIBLE);
+                    }
+                }, 500);
+            }
+        });
+        setHandRight = AnimatorUtils.onHand2Right(imgVHandRight, new AnimatorUtils.SimpleAnimationListener() {
+            @Override
+            public void onAnimationStart(Animator animator) {
+                imgVHandRight.setVisibility(View.VISIBLE);
+                imgVWifiLightRedDotLeft.setVisibility(View.INVISIBLE);
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animator) {
+                setRedDotRight.start();
+                imgVHandRight.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        imgVHandRight.setVisibility(View.INVISIBLE);
+                    }
+                }, 500);
+            }
+        });
+        setRedDotLeft = AnimatorUtils.scale(imgVWifiLightRedDotLeft, new AnimatorUtils.SimpleAnimationListener() {
+            @Override
+            public void onAnimationStart(Animator animator) {
+                imgVWifiLightRedDotLeft.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animator) {
+                setHandRight.start();
+            }
+        });
+        setRedDotRight = AnimatorUtils.scale(imgVWifiLightRedDotRight, new AnimatorUtils.SimpleAnimationListener() {
+
+            @Override
+            public void onAnimationStart(Animator animator) {
+                imgVWifiLightRedDotRight.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animator) {
+                initAnimation();
+            }
+        });
+        setHandLeft.start();
+    }
+
+    FlipAnimation flipAnimation;
+
+    private void initAnimation() {
+        flipAnimation = new FlipAnimation(fLayoutFlipBefore, fLayoutFlipAfter);
+        fLayoutFlipLayout.startAnimation(flipAnimation);
+    }
+
+}

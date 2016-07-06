@@ -1,0 +1,125 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/color_white"
+    tools:context="com.cylan.jiafeigou.n.view.bind.BindCameraFragment">
+
+    <include layout="@layout/layout_top_bar_item" />
+
+    <FrameLayout
+        android:id="@+id/fLayout_bind_device_list_fragment_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/fLayout_top_bar"
+        android:background="@color/color_white" />
+
+    <TextView
+        android:id="@+id/tv_main_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/fLayout_top_bar"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="30dp"
+        android:gravity="center"
+        android:text="重新开机，长按WiFi键"
+        android:textColor="@color/color_333333"
+        android:textSize="26sp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_main_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="15dp"
+        android:gravity="center"
+        android:text="等待红灯常亮"
+        android:textColor="@color/color_333333"
+        android:textSize="16sp" />
+
+    <FrameLayout
+        android:id="@+id/fLayout_flip_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true">
+
+        <FrameLayout
+            android:id="@+id/fLayout_flip_before"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="40dp"
+            android:background="@drawable/ico_bind_doorbell_anim_0">
+
+            <ImageView
+                android:id="@+id/imgV_wifi_light_red_dot_left"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:src="@drawable/image_red_dot"
+                android:visibility="invisible" />
+
+            <ImageView
+                android:id="@+id/imgV_wifi_light_red_dot_right"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical|end"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:src="@drawable/image_red_dot"
+                android:visibility="invisible" />
+
+            <ImageView
+                android:id="@+id/imgV_hand_left"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal|bottom"
+                android:layout_marginBottom="40dp"
+                android:src="@drawable/image_hand"
+                android:visibility="invisible" />
+
+            <ImageView
+                android:id="@+id/imgV_hand_right"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal|bottom"
+                android:layout_marginBottom="40dp"
+                android:src="@drawable/image_hand"
+                android:visibility="invisible" />
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/fLayout_flip_after"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:background="@drawable/ico_bind_doorbell_anim_1"
+            android:visibility="gone">
+
+            <ImageView
+                android:id="@+id/imgV_wifi_light_flash"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal|bottom"
+                android:layout_marginBottom="40dp"
+                android:src="@drawable/doorbell_wifi_light_flash" />
+        </FrameLayout>
+    </FrameLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_alignTop="@+id/tv_bind_doorbell_tip"
+        android:background="@color/color_d8d8d8" />
+
+    <TextView
+        android:id="@+id/tv_bind_doorbell_tip"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
+        android:gravity="center"
+        android:text="红灯已常亮"
+        android:textColor="@color/color_4b9fd5"
+        android:textSize="16sp" />
+</RelativeLayout>

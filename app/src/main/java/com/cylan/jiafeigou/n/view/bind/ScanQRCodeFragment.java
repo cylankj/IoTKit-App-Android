@@ -35,8 +35,8 @@ public class ScanQRCodeFragment extends BaseTitleFragment {
     }
 
     @Override
-    protected View getSubContentView(LayoutInflater inflater) {
-        return inflater.inflate(R.layout.fragment_scan_qrcode, null, false);
+    protected int getSubContentViewId() {
+        return R.layout.fragment_scan_qrcode;
     }
 
 

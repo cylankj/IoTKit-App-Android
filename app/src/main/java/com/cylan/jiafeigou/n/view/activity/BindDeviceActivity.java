@@ -9,7 +9,9 @@ import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
+import com.cylan.jiafeigou.n.mvp.impl.bind.BindDevicePresenterImpl;
 import com.cylan.jiafeigou.n.view.bind.BindCameraFragment;
+import com.cylan.jiafeigou.n.view.bind.BindDoorBellFragment;
 import com.cylan.jiafeigou.n.view.bind.ScanQRCodeFragment;
 import com.cylan.jiafeigou.utils.ViewUtils;
 
@@ -64,6 +66,7 @@ public class BindDeviceActivity extends BaseFullScreenFragmentActivity {
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.v_to_scan_qrcode: {
+                ViewUtils.deBounceClick(findViewById(R.id.v_to_scan_qrcode));
                 Bundle bundle = new Bundle();
                 ScanQRCodeFragment fragment = ScanQRCodeFragment.newInstance(bundle);
                 getSupportFragmentManager()
@@ -71,11 +74,12 @@ public class BindDeviceActivity extends BaseFullScreenFragmentActivity {
                         .setCustomAnimations(R.anim.slide_up_in, R.anim.slide_down_out
                                 , R.anim.slide_in_left, R.anim.slide_out_right)
                         .replace(android.R.id.content, fragment)
-                        .addToBackStack("LogInFragment")
+                        .addToBackStack("ScanQRCodeFragment")
                         .commit();
                 break;
             }
             case R.id.v_to_bind_camera: {
+                ViewUtils.deBounceClick(findViewById(R.id.v_to_bind_camera));
                 Bundle bundle = new Bundle();
                 BindCameraFragment fragment = BindCameraFragment.newInstance(bundle);
                 getSupportFragmentManager()
@@ -83,12 +87,24 @@ public class BindDeviceActivity extends BaseFullScreenFragmentActivity {
                         .setCustomAnimations(R.anim.slide_up_in, R.anim.slide_down_out
                                 , R.anim.slide_in_left, R.anim.slide_out_right)
                         .replace(android.R.id.content, fragment)
-                        .addToBackStack("LogInFragment")
+                        .addToBackStack("BindCameraFragment")
+                        .commit();
+                new BindDevicePresenterImpl(fragment);
+                break;
+            }
+            case R.id.v_to_bind_doorbell: {
+                ViewUtils.deBounceClick(findViewById(R.id.v_to_bind_doorbell));
+                Bundle bundle = new Bundle();
+                BindDoorBellFragment fragment = BindDoorBellFragment.newInstance(bundle);
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .setCustomAnimations(R.anim.slide_up_in, R.anim.slide_down_out
+                                , R.anim.slide_in_left, R.anim.slide_out_right)
+                        .replace(android.R.id.content, fragment)
+                        .addToBackStack("BindDoorBellFragment")
                         .commit();
                 break;
             }
-            case R.id.v_to_bind_doorbell:
-                break;
             case R.id.v_to_bind_cloud_album:
                 break;
         }

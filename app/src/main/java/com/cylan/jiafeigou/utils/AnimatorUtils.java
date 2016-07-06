@@ -1,13 +1,19 @@
 package com.cylan.jiafeigou.utils;
 
+import android.graphics.drawable.AnimationDrawable;
+import android.graphics.drawable.Drawable;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.OvershootInterpolator;
+import android.widget.ImageView;
 
+import com.cylan.jiafeigou.R;
 import com.nineoldandroids.animation.Animator;
 import com.nineoldandroids.animation.AnimatorSet;
 import com.nineoldandroids.animation.ObjectAnimator;
+import com.nineoldandroids.animation.ValueAnimator;
 
 /**
  * Created by lxh on 16-6-16.
@@ -65,7 +71,7 @@ public class AnimatorUtils {
         set.start();
     }
 
-    private static class SimpleAnimationListener implements Animator.AnimatorListener {
+    public static class SimpleAnimationListener implements Animator.AnimatorListener {
         @Override
         public void onAnimationStart(Animator animator) {
 
@@ -124,11 +130,11 @@ public class AnimatorUtils {
     public static void viewScaleCenter(View view, boolean isShow, int duration, int delay) {
         AnimatorSet set = new AnimatorSet();
         if (isShow) {
-            set.playTogether(ObjectAnimator.ofFloat(view, "scaleX", 0f, 1f),
+            set.playTogether(ObjectAnimator.ofFloat(view, "scale", 0f, 1f),
                     ObjectAnimator.ofFloat(view, "scaleY", 0f, 1f),
                     ObjectAnimator.ofFloat(view, "alpha", 0f, 1f));
         } else {
-            set.playTogether(ObjectAnimator.ofFloat(view, "scaleX", 1f, 0f),
+            set.playTogether(ObjectAnimator.ofFloat(view, "scale", 1f, 0f),
                     ObjectAnimator.ofFloat(view, "scaleY", 1f, 0f),
                     ObjectAnimator.ofFloat(view, "alpha", 1f, 0f));
         }
@@ -210,11 +216,90 @@ public class AnimatorUtils {
     public static void onSimpleTangle(final long duration, final long delay, View target) {
         AnimatorSet set = new AnimatorSet();
         set.playTogether(ObjectAnimator.ofFloat(target, "scaleY", 1.0F, 1.1F, 1.0F),
-                ObjectAnimator.ofFloat(target, "scaleX", 1.0F, 1.1F, 1.0F));
+                ObjectAnimator.ofFloat(target, "scale", 1.0F, 1.1F, 1.0F));
         set.setDuration(duration);
         set.setInterpolator(new OvershootInterpolator());
         set.setStartDelay(delay);
         set.start();
     }
 
+
+    public static AnimationDrawable onWiFiLightFlash(ImageView target) {
+        target.setBackgroundResource(R.drawable.camera_wifi_light_flash);
+        Drawable drawable = target.getBackground();
+        if (drawable instanceof AnimationDrawable) {
+            return ((AnimationDrawable) drawable);
+        }
+        return null;
+    }
+
+    public static Animator slideInRight(View target) {
+        int right = 200;
+        ObjectAnimator animator = ObjectAnimator.ofFloat(target, "translationX", right, 0);
+        animator.setDuration(400);
+        animator.setInterpolator(new DecelerateInterpolator());
+        animator.setRepeatMode(ValueAnimator.INFINITE);
+        return animator;
+    }
+
+
+    public static Animator onHandMoveAndFlash(final View hand, final View redot,
+                                              final ImageView flash) {
+
+        Animator slideIn = slideInRight(hand);
+        slideIn.setStartDelay(1000);
+        slideIn.setDuration(500);
+        slideIn.addListener(new SimpleAnimationListener() {
+            @Override
+            public void onAnimationStart(Animator animator) {
+                hand.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animator) {
+                redot.setVisibility(View.VISIBLE);
+                AnimationDrawable dAnim = onWiFiLightFlash(flash);
+                if (dAnim != null) dAnim.start();
+            }
+        });
+        return slideIn;
+    }
+
+    public static AnimatorSet scale(View target, Animator.AnimatorListener animatorListener) {
+        AnimatorSet set = new AnimatorSet();
+        set.playTogether(ObjectAnimator.ofFloat(target, "scale", 0.9f, 1.1f, 1.0f),
+                ObjectAnimator.ofFloat(target, "scaleY", 0.9f, 1.1f, 1.0f),
+                ObjectAnimator.ofFloat(target, "alpha", 0f, 1f));
+        set.setDuration(300);
+        set.addListener(animatorListener);
+        return set;
+    }
+
+    public static AnimatorSet onHand2Left(final View hand, Animator.AnimatorListener animatorListener) {
+        AnimatorSet setLeft = new AnimatorSet();
+        final int endX0 = -(((ViewGroup) hand.getParent()).getWidth() / 2 - hand.getWidth() / 2) + 10;
+        final int endY = -(((ViewGroup) hand.getParent()).getHeight() / 4 - hand.getHeight() / 2) - 10;
+        Animator translateX0 = ObjectAnimator.ofFloat(hand, "translationX", 0, endX0);
+        Animator translateY0 = ObjectAnimator.ofFloat(hand, "translationY", 0, endY);
+        Animator alpha = ObjectAnimator.ofFloat(hand, "alpha", 0.0f, 1.0f);
+        setLeft.playTogether(translateX0, translateY0, alpha);
+        setLeft.setInterpolator(new DecelerateInterpolator());
+        setLeft.setDuration(800);
+        setLeft.addListener(animatorListener);
+        return setLeft;
+    }
+
+    public static AnimatorSet onHand2Right(final View hand, Animator.AnimatorListener animatorListener) {
+        final AnimatorSet setRight = new AnimatorSet();
+        final int endX1 = ((ViewGroup) hand.getParent()).getWidth() / 2 - hand.getWidth() + 10;
+        final int endY = -(((ViewGroup) hand.getParent()).getHeight() / 4 - hand.getHeight() / 2) - 10;
+        Animator alpha = ObjectAnimator.ofFloat(hand, "alpha", 0.0f, 1.0f);
+        Animator translateX1 = ObjectAnimator.ofFloat(hand, "translationX", 0, endX1);
+        Animator translateY1 = ObjectAnimator.ofFloat(hand, "translationY", 0, endY);
+        setRight.playTogether(translateX1, translateY1, alpha);
+        setRight.setInterpolator(new DecelerateInterpolator());
+        setRight.setDuration(800);
+        setRight.addListener(animatorListener);
+        return setRight;
+    }
 }

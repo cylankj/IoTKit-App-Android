@@ -91,11 +91,11 @@ public class LoginFragment extends android.support.v4.app.Fragment implements Lo
 
     @BindView(R.id.lb_login_commit)
     LoginButton lbLogin;
-    @BindView(R.id.iv_login_top_left)
+    @BindView(R.id.iv_top_bar_left)
     ImageView ivLoginTopLeft;
-    @BindView(R.id.tv_login_top_center)
+    @BindView(R.id.tv_top_bar_center)
     TextView tvLoginTopCenter;
-    @BindView(R.id.tv_login_top_right)
+    @BindView(R.id.tv_top_bar_right)
     TextView tvLoginTopRight;
     @BindView(R.id.rLayout_pwd_input_box)
     FrameLayout rLayoutPwdInputBox;
@@ -318,8 +318,8 @@ public class LoginFragment extends android.support.v4.app.Fragment implements Lo
             R.id.iv_login_clear_pwd,
             R.id.iv_login_clear_username,
             R.id.tv_login_forget_pwd,
-            R.id.iv_login_top_left,
-            R.id.tv_login_top_right
+            R.id.iv_top_bar_left,
+            R.id.tv_top_bar_right
     })
     public void onClick(android.view.View view) {
         switch (view.getId()) {
@@ -338,14 +338,14 @@ public class LoginFragment extends android.support.v4.app.Fragment implements Lo
             case R.id.tv_xlLogin_commit:
                 presenter.getSinaAuthorize(getActivity());
                 break;
-            case R.id.iv_login_top_left:
+            case R.id.iv_top_bar_left:
                 if (getActivity() != null && getActivity() instanceof WelcomePageActivity) {
                     getActivity().finish();
                 } else if (getActivity() != null && getActivity() instanceof NewHomeActivity) {
                     getActivity().onBackPressed();
                 }
                 break;
-            case R.id.tv_login_top_right:
+            case R.id.tv_top_bar_right:
                 switchBox();
                 break;
         }

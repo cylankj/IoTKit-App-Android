@@ -18,6 +18,7 @@ import com.cylan.jiafeigou.n.mvp.impl.home.HomeMinePresenterImpl;
 import com.cylan.jiafeigou.n.mvp.impl.home.HomePageListPresenterImpl;
 import com.cylan.jiafeigou.n.mvp.impl.home.HomeWonderfulPresenterImpl;
 import com.cylan.jiafeigou.n.mvp.impl.home.NewHomeActivityPresenterImpl;
+import com.cylan.jiafeigou.n.view.activity.NeedLoginActivity;
 import com.cylan.jiafeigou.n.view.home.HomeMineFragment;
 import com.cylan.jiafeigou.n.view.home.HomePageListFragment;
 import com.cylan.jiafeigou.n.view.home.HomeWonderfulFragment;
@@ -26,7 +27,7 @@ import com.cylan.jiafeigou.widget.CustomViewPager;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class NewHomeActivity extends BaseFullScreenFragmentActivity implements
+public class NewHomeActivity extends NeedLoginActivity implements
         NewHomeActivityContract.View {
     @BindView(R.id.vp_home_content)
     CustomViewPager vpHomeContent;

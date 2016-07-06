@@ -87,5 +87,18 @@ public class ViewUtils {
         }
         return "";
     }
+
+    public static void deBounceClick(final View view) {
+        if (view == null)
+            return;
+        view.setEnabled(false);
+        view.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (view != null)
+                    view.setEnabled(true);
+            }
+        }, 1000);
+    }
 }
 

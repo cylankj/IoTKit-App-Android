@@ -44,7 +44,7 @@ public class SetupPwdFragment extends android.support.v4.app.Fragment implements
     CheckBox cbShowInputBox;
     @BindView(R.id.et_input_box)
     EditText etInputBox;
-    @BindView(R.id.iv_login_top_left)
+    @BindView(R.id.iv_top_bar_left)
     ImageView ivLoginTopLeft;
     private SetupPwdContract.Presenter pwdPresenter;
 
@@ -94,8 +94,8 @@ public class SetupPwdFragment extends android.support.v4.app.Fragment implements
 
     private void initTitleBar() {
         FrameLayout layout = (FrameLayout) getView().findViewById(R.id.rLayout_login_top);
-        layout.findViewById(R.id.tv_login_top_right).setVisibility(android.view.View.GONE);
-        TextView tvTitle = (TextView) layout.findViewById(R.id.tv_login_top_center);
+        layout.findViewById(R.id.tv_top_bar_right).setVisibility(android.view.View.GONE);
+        TextView tvTitle = (TextView) layout.findViewById(R.id.tv_top_bar_center);
         tvTitle.setText("密码");
         ivLoginTopLeft.setImageResource(R.drawable.btn_nav_back);
         ivLoginTopLeft.setOnClickListener(new android.view.View.OnClickListener() {
