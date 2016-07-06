@@ -1,7 +1,9 @@
 package com.cylan.jiafeigou.n.view.bind;
 
 
+import android.net.wifi.ScanResult;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -10,24 +12,32 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.anim.FlipAnimation;
+import com.cylan.jiafeigou.n.mvp.contract.bind.BindDeviceContract;
 import com.cylan.jiafeigou.n.view.BaseTitleFragment;
 import com.cylan.jiafeigou.utils.AnimatorUtils;
+import com.cylan.utils.ListUtils;
 import com.nineoldandroids.animation.Animator;
 import com.nineoldandroids.animation.AnimatorSet;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link BindDoorBellFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class BindDoorBellFragment extends BaseTitleFragment {
-
+public class BindDoorBellFragment extends BaseTitleFragment implements BindDeviceContract.View {
+    public static final String KEY_SUB_FRAGMENT_ID = "sub_key_id";
+    public static final String KEY_DEVICE_LIST = "key_device_list";
 
     @BindView(R.id.fLayout_flip_before)
     FrameLayout fLayoutFlipBefore;
@@ -47,6 +57,8 @@ public class BindDoorBellFragment extends BaseTitleFragment {
     ImageView imgVWifiLightRedDotLeft;
     @BindView(R.id.imgV_wifi_light_red_dot_right)
     ImageView imgVWifiLightRedDotRight;
+
+    private BindDeviceContract.Presenter presenter;
 
     public BindDoorBellFragment() {
         // Required empty public constructor
@@ -174,4 +186,44 @@ public class BindDoorBellFragment extends BaseTitleFragment {
         fLayoutFlipLayout.startAnimation(flipAnimation);
     }
 
+    @Override
+    public void onDevicesRsp(List<ScanResult> resultList) {
+        final int count = ListUtils.getSize(resultList);
+        if (count == 0) {
+            Toast.makeText(getContext(), "没发现设备", Toast.LENGTH_SHORT).show();
+            return;
+        }
+//        Bundle bundle = new Bundle();
+//        bundle.putInt(KEY_SUB_FRAGMENT_ID, R.id.fLayout_bind_device_list_fragment_container);
+//        bundle.putParcelableArrayList(KEY_DEVICE_LIST, (ArrayList<? extends Parcelable>) resultList);
+//        BindDeviceListFragment fragment = BindDeviceListFragment.newInstance(bundle);
+//        getChildFragmentManager()
+//                .beginTransaction()
+//                .setCustomAnimations(R.anim.slide_right_in, R.anim.slide_out_left
+//                        , R.anim.slide_out_right, R.anim.slide_out_right)
+//                .add(R.id.fLayout_bind_device_list_fragment_container, fragment, "BindDeviceListFragment")
+////                .addToBackStack("BindDeviceListFragment")
+//                .commit();
+        Bundle bundle = new Bundle();
+        bundle.putInt(KEY_SUB_FRAGMENT_ID, R.id.fLayout_bind_device_list_fragment_container);
+        bundle.putParcelableArrayList(KEY_DEVICE_LIST, (ArrayList<? extends Parcelable>) resultList);
+        BindDeviceListFragment fragment = BindDeviceListFragment.newInstance(bundle);
+        fragment.setFragmentManager(getChildFragmentManager());
+        getChildFragmentManager()
+                .beginTransaction()
+                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right)
+                .add(R.id.fLayout_bind_device_list_fragment_container, fragment, "BindDeviceListFragment")
+                .commit();
+    }
+
+    @Override
+    public void setPresenter(BindDeviceContract.Presenter presenter) {
+        this.presenter = presenter;
+    }
+
+    @OnClick(R.id.tv_bind_doorbell_tip)
+    public void onClick() {
+        Toast.makeText(getContext(), "startScan", Toast.LENGTH_SHORT).show();
+        if(presenter!=null)presenter.scanDevices();
+    }
 }

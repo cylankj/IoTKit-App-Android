@@ -7,12 +7,6 @@
 
     <include layout="@layout/layout_top_bar_item" />
 
-    <FrameLayout
-        android:id="@+id/fLayout_bind_device_list_fragment_container"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@+id/fLayout_top_bar"
-        android:background="@color/color_white" />
 
     <TextView
         android:id="@+id/tv_main_content"
@@ -122,4 +116,10 @@
         android:text="红灯已常亮"
         android:textColor="@color/color_4b9fd5"
         android:textSize="16sp" />
+
+    <FrameLayout
+        android:id="@+id/fLayout_bind_device_list_fragment_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/fLayout_top_bar" />
 </RelativeLayout>

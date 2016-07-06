@@ -85,7 +85,7 @@ public class BindDeviceActivity extends BaseFullScreenFragmentActivity {
                 getSupportFragmentManager()
                         .beginTransaction()
                         .setCustomAnimations(R.anim.slide_up_in, R.anim.slide_down_out
-                                , R.anim.slide_in_left, R.anim.slide_out_right)
+                                ,0, R.anim.slide_out_right)
                         .replace(android.R.id.content, fragment)
                         .addToBackStack("BindCameraFragment")
                         .commit();
@@ -103,6 +103,7 @@ public class BindDeviceActivity extends BaseFullScreenFragmentActivity {
                         .replace(android.R.id.content, fragment)
                         .addToBackStack("BindDoorBellFragment")
                         .commit();
+                new BindDevicePresenterImpl(fragment);
                 break;
             }
             case R.id.v_to_bind_cloud_album:

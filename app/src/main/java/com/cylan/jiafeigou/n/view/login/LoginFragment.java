@@ -9,6 +9,7 @@ import android.util.Log;
 import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
+import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.inputmethod.EditorInfo;
@@ -242,6 +243,8 @@ public class LoginFragment extends android.support.v4.app.Fragment implements Lo
      * 初始化view
      */
     private void initView() {
+        if (getView() != null)
+            getView().findViewById(R.id.tv_top_bar_right).setVisibility(View.VISIBLE);
 //        //You need to add the following line for this solution to work; thanks skayred
 //        if (getView() != null) {
 //            getView().setFocusableInTouchMode(true);
