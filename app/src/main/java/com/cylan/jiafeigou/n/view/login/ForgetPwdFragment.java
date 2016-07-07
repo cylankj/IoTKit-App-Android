@@ -228,7 +228,7 @@ public class ForgetPwdFragment extends Fragment implements ForgetPwdContract.Vie
                 return;
             case JConstant.TYPE_PHONE:
                 if (fLayoutVerificationCodeInputBox.getVisibility() == View.GONE) {
-                    tvLoginTopCenter.setText("忘记密码(手机)");
+//                    tvLoginTopCenter.setText("忘记密码(手机)");
                     start2HandleVerificationCode();
                     if (presenter != null) {
                         presenter.submitForVerificationCode(ViewUtils.getTextViewContent(etForgetUsername));
@@ -261,7 +261,7 @@ public class ForgetPwdFragment extends Fragment implements ForgetPwdContract.Vie
             case JConstant.TYPE_EMAIL:
                 enableEditTextCursor(false);
                 Toast.makeText(getActivity(), "已发送", Toast.LENGTH_SHORT).show();
-                tvLoginTopCenter.setText("忘记密码(邮箱)");
+//                tvLoginTopCenter.setText("忘记密码(邮箱)");
                 if (presenter != null)
                     presenter.executeSubmitAccount(ViewUtils.getTextViewContent(etForgetUsername));
                 break;
