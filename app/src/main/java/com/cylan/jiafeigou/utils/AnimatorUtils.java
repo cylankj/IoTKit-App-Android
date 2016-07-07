@@ -257,8 +257,15 @@ public class AnimatorUtils {
             @Override
             public void onAnimationEnd(Animator animator) {
                 redot.setVisibility(View.VISIBLE);
-                AnimationDrawable dAnim = onWiFiLightFlash(flash);
-                if (dAnim != null) dAnim.start();
+                redot.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        //可能会内存泄露
+                        AnimationDrawable dAnim = onWiFiLightFlash(flash);
+                        if (dAnim != null) dAnim.start();
+                    }
+                }, 1000);
+
             }
         });
         return slideIn;
@@ -283,7 +290,7 @@ public class AnimatorUtils {
         Animator alpha = ObjectAnimator.ofFloat(hand, "alpha", 0.0f, 1.0f);
         setLeft.playTogether(translateX0, translateY0, alpha);
         setLeft.setInterpolator(new DecelerateInterpolator());
-        setLeft.setDuration(800);
+        setLeft.setDuration(1000);
         setLeft.addListener(animatorListener);
         return setLeft;
     }
@@ -297,7 +304,7 @@ public class AnimatorUtils {
         Animator translateY1 = ObjectAnimator.ofFloat(hand, "translationY", 0, endY);
         setRight.playTogether(translateX1, translateY1, alpha);
         setRight.setInterpolator(new DecelerateInterpolator());
-        setRight.setDuration(800);
+        setRight.setDuration(1000);
         setRight.addListener(animatorListener);
         return setRight;
     }

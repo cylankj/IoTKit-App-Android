@@ -150,7 +150,7 @@ public class BindDoorBellFragment extends BaseTitleFragment implements BindDevic
                     public void run() {
                         imgVHandRight.setVisibility(View.INVISIBLE);
                     }
-                }, 500);
+                }, 1000);
             }
         });
         setRedDotLeft = AnimatorUtils.scale(imgVWifiLightRedDotLeft, new AnimatorUtils.SimpleAnimationListener() {
@@ -184,6 +184,7 @@ public class BindDoorBellFragment extends BaseTitleFragment implements BindDevic
     private void initAnimation() {
         flipAnimation = new FlipAnimation(fLayoutFlipBefore, fLayoutFlipAfter);
         fLayoutFlipLayout.startAnimation(flipAnimation);
+        flipAnimation.setStartOffset(1000);
     }
 
     @Override
