@@ -16,6 +16,8 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.view.animation.LinearInterpolator;
 
+import com.cylan.utils.DensityUtil;
+
 
 public class ViewFinderView extends View implements IViewFinder {
     private static final String TAG = "ViewFinderView";
@@ -68,11 +70,11 @@ public class ViewFinderView extends View implements IViewFinder {
     /**
      * 底部线条颜色
      */
-    private int effectStartColor = Color.parseColor("#ff49b8FF");
+    private int effectStartColor = Color.parseColor("#aa49b8FF");
     private int effectEndColor = Color.WHITE;
     private float lineWidth = 5;
     private int linePositionY = 0;
-    private int animationDuration = 2500;
+    private int animationDuration = 3000;
 
     //////////////////////////////////////////////////
     public ViewFinderView(Context context) {
@@ -102,7 +104,7 @@ public class ViewFinderView extends View implements IViewFinder {
         mHintPaint.setAntiAlias(true);
         mHintPaint.setColor(mDefaultBorderColor);
         mHintPaint.setColor(Color.WHITE);
-        mHintPaint.setTextSize(30);
+        mHintPaint.setTextSize(DensityUtil.dip2px(getContext(), 16));
 
         mBorderLineLength = mDefaultBorderLineLength;
 
@@ -161,16 +163,23 @@ public class ViewFinderView extends View implements IViewFinder {
     private void drawLaser(Canvas canvas) {
 //        if (linePositionY < mFramingRect.top || linePositionY > mFramingRect.bottom)
 //            return;
-        canvas.translate(mFramingRect.left, mFramingRect.top);
+        if (linePositionY == 0)
+            return;
+        int maxHeight = mFramingRect.height() / 2;
+        int top = 0;
+        if (linePositionY >= maxHeight) {
+            top = linePositionY - maxHeight;
+        }
+        canvas.translate(mFramingRect.left, mFramingRect.top + top);
         canvas.drawRect(0,
                 0,
                 mFramingRect.width(),
-                linePositionY,
+                linePositionY - top,
                 linearGradientPaint);
         canvas.drawRect(0,
-                linePositionY,
+                linePositionY - top,
                 mFramingRect.width(),
-                linePositionY + lineWidth, linePaint);
+                linePositionY + lineWidth - top, linePaint);
     }
 
     public void drawViewFinderMask(Canvas canvas) {
@@ -241,11 +250,11 @@ public class ViewFinderView extends View implements IViewFinder {
      * 生成线性半透明
      */
     private void createShader() {
-        Bitmap bitmap = Bitmap.createBitmap(mFramingRect.width(), mFramingRect.height(),
+        Bitmap bitmap = Bitmap.createBitmap(mFramingRect.width(), mFramingRect.height() / 2,
                 Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(bitmap);
         LinearGradient linearGradient = new LinearGradient(mFramingRect.width() / 2,
-                mFramingRect.height(),
+                mFramingRect.height() / 2,
                 mFramingRect.width() / 2,
                 0,
                 effectStartColor,
@@ -284,13 +293,13 @@ public class ViewFinderView extends View implements IViewFinder {
     }
 
     private void prepareLaserAnimation() {
-        post(new Runnable() {
+        postDelayed(new Runnable() {
             @Override
             public void run() {
                 createShader();
                 startAnimation();
             }
-        });
+        }, 1000);
     }
 
 
