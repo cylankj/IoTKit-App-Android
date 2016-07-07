@@ -25,12 +25,15 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
 import android.graphics.Shader;
+import android.provider.Settings;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 
 import com.cylan.jiafeigou.R;
 
 public class WaveView extends View {
+    private static final String TAG = "WaveView";
     /**
      * +------------------------+
      * |<--wave length->        |______
@@ -222,6 +225,7 @@ public class WaveView extends View {
      * Create the shader with default waves which repeat horizontally, and clamp vertically
      */
     private void createShader() {
+        final long time = System.currentTimeMillis();
         mDefaultAngularFrequency = 2.0f * Math.PI / DEFAULT_WAVE_LENGTH_RATIO / getWidth();
         mDefaultAmplitude = getHeight() * DEFAULT_AMPLITUDE_RATIO;
         mDefaultWaterLevel = getHeight() * DEFAULT_WATER_LEVEL_RATIO;
@@ -263,6 +267,7 @@ public class WaveView extends View {
         // use the bitamp to create the shader
         mWaveShader = new BitmapShader(bitmap, Shader.TileMode.REPEAT, Shader.TileMode.CLAMP);
         mViewPaint.setShader(mWaveShader);
+        Log.d(TAG, "createShader end: " + (System.currentTimeMillis() - time));
     }
 
     @Override

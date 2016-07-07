@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class WaveHelper {
-    private final static float AMPLITUDE_RATIO_MAX = 0.05f;
+    private final static float AMPLITUDE_RATIO_MAX = 0.07f;
     private final static float AMPLITUDE_RATIO_MIN = 0.001f;
     private final static float WATER_LEVEL_MAX = 0.01f;
     private WaveView mWaveView;
