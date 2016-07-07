@@ -23,7 +23,7 @@ public abstract class BaseTitleFragment extends Fragment {
 
 
     @BindView(R.id.tv_top_bar_center)
-    TextView tvLoginTopCenter;
+    public TextView tvLoginTopCenter;
     @BindView(R.id.iv_top_bar_left)
     ImageView ivTopBarLeft;
     @BindView(R.id.tv_top_bar_right)

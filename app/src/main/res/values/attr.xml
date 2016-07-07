@@ -36,6 +36,9 @@
         <attr name="shortLineHeight" format="float|dimension" />
         <attr name="longLineHeight" format="float|dimension" />
     </declare-styleable>
+    <declare-styleable name="ZXingScannerViewStyle">
+        <attr name="hint" format="reference|string" />
+    </declare-styleable>
     <declare-styleable name="RoundedImageViewStyle">
         <attr name="riv_corner_radius" format="dimension" />
         <attr name="riv_corner_radius_top_left" format="dimension" />

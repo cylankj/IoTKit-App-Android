@@ -12,7 +12,7 @@ import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
 import com.cylan.jiafeigou.n.mvp.impl.bind.BindDevicePresenterImpl;
 import com.cylan.jiafeigou.n.view.bind.BindCameraFragment;
 import com.cylan.jiafeigou.n.view.bind.BindDoorBellFragment;
-import com.cylan.jiafeigou.n.view.bind.ScanQRCodeFragment;
+import com.cylan.jiafeigou.n.view.bind.BindScanFragment;
 import com.cylan.jiafeigou.utils.ViewUtils;
 
 import butterknife.BindView;
@@ -43,10 +43,7 @@ public class BindDeviceActivity extends BaseFullScreenFragmentActivity {
 
     @OnClick(R.id.imgV_top_bar_left)
     public void onClose() {
-        finish();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-        }
+        onBackPressed();
     }
 
     @Override
@@ -58,7 +55,7 @@ public class BindDeviceActivity extends BaseFullScreenFragmentActivity {
 
         finish();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+            overridePendingTransition(R.anim.slide_in_left_without_interpolator, R.anim.slide_out_right_without_interpolator);
         }
     }
 
@@ -68,13 +65,13 @@ public class BindDeviceActivity extends BaseFullScreenFragmentActivity {
             case R.id.v_to_scan_qrcode: {
                 ViewUtils.deBounceClick(findViewById(R.id.v_to_scan_qrcode));
                 Bundle bundle = new Bundle();
-                ScanQRCodeFragment fragment = ScanQRCodeFragment.newInstance(bundle);
+                BindScanFragment fragment = BindScanFragment.newInstance(bundle);
                 getSupportFragmentManager()
                         .beginTransaction()
                         .setCustomAnimations(R.anim.slide_up_in, R.anim.slide_down_out
                                 , R.anim.slide_in_left, R.anim.slide_out_right)
                         .replace(android.R.id.content, fragment)
-                        .addToBackStack("ScanQRCodeFragment")
+                        .addToBackStack("BindScanFragment")
                         .commit();
                 break;
             }
@@ -85,7 +82,7 @@ public class BindDeviceActivity extends BaseFullScreenFragmentActivity {
                 getSupportFragmentManager()
                         .beginTransaction()
                         .setCustomAnimations(R.anim.slide_up_in, R.anim.slide_down_out
-                                ,0, R.anim.slide_out_right)
+                                , 0, R.anim.slide_out_right)
                         .replace(android.R.id.content, fragment)
                         .addToBackStack("BindCameraFragment")
                         .commit();
@@ -107,6 +104,16 @@ public class BindDeviceActivity extends BaseFullScreenFragmentActivity {
                 break;
             }
             case R.id.v_to_bind_cloud_album:
+                ViewUtils.deBounceClick(findViewById(R.id.v_to_bind_cloud_album));
+                Bundle bundle = new Bundle();
+                BindScanFragment fragment = BindScanFragment.newInstance(bundle);
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .setCustomAnimations(R.anim.slide_up_in, R.anim.slide_down_out
+                                , R.anim.slide_in_left, R.anim.slide_out_right)
+                        .replace(android.R.id.content, fragment)
+                        .addToBackStack("BindScanFragment")
+                        .commit();
                 break;
         }
     }
