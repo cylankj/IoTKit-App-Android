@@ -5,6 +5,7 @@ import android.net.wifi.ScanResult;
 import com.cylan.jiafeigou.n.mvp.contract.bind.BindDeviceContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.support.network.ReactiveNetwork;
+import com.cylan.utils.ListUtils;
 import com.superlog.SLog;
 
 import java.util.ArrayList;
@@ -31,7 +32,7 @@ public class BindDevicePresenterImpl extends AbstractPresenter<BindDeviceContrac
     @Override
     public void scanDevices() {
         if (getView() != null && getView().getContext() != null)
-            subscription = new ReactiveNetwork().observeWifiAccessPoints(getView().getContext(), false)
+            subscription = new ReactiveNetwork().observeWifiAccessPoints(getView().getContext().getApplicationContext(), false)
                     .subscribeOn(Schedulers.io())
                     .map(new Func1<List<ScanResult>, List<ScanResult>>() {
                         @Override
@@ -52,7 +53,7 @@ public class BindDevicePresenterImpl extends AbstractPresenter<BindDeviceContrac
                     .subscribe(new Action1<List<ScanResult>>() {
                         @Override
                         public void call(List<ScanResult> resultList) {
-                            if (resultList != null && getView() != null) {
+                            if (!ListUtils.isEmpty(resultList) && getView() != null) {
                                 getView().onDevicesRsp(resultList);
                             } else {
                                 SLog.e("some thing wrong");

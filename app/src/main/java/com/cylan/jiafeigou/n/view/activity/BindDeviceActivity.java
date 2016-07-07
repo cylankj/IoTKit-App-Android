@@ -10,6 +10,7 @@ import android.widget.TextView;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
 import com.cylan.jiafeigou.n.mvp.impl.bind.BindDevicePresenterImpl;
+import com.cylan.jiafeigou.n.mvp.impl.bind.ScanContractImpl;
 import com.cylan.jiafeigou.n.view.bind.BindCameraFragment;
 import com.cylan.jiafeigou.n.view.bind.BindDoorBellFragment;
 import com.cylan.jiafeigou.n.view.bind.BindScanFragment;
@@ -38,7 +39,7 @@ public class BindDeviceActivity extends BaseFullScreenFragmentActivity {
     }
 
     private void initTopBar() {
-        ViewUtils.setViewMarginStatusBar(fLayoutTopBarContainer);
+        ViewUtils.setViewPaddingStatusBar(fLayoutTopBarContainer);
     }
 
     @OnClick(R.id.imgV_top_bar_left)
@@ -68,11 +69,12 @@ public class BindDeviceActivity extends BaseFullScreenFragmentActivity {
                 BindScanFragment fragment = BindScanFragment.newInstance(bundle);
                 getSupportFragmentManager()
                         .beginTransaction()
-                        .setCustomAnimations(R.anim.slide_up_in, R.anim.slide_down_out
+                        .setCustomAnimations(0, R.anim.slide_down_out
                                 , R.anim.slide_in_left, R.anim.slide_out_right)
                         .replace(android.R.id.content, fragment)
                         .addToBackStack("BindScanFragment")
                         .commit();
+                new ScanContractImpl(fragment);
                 break;
             }
             case R.id.v_to_bind_camera: {
@@ -109,11 +111,12 @@ public class BindDeviceActivity extends BaseFullScreenFragmentActivity {
                 BindScanFragment fragment = BindScanFragment.newInstance(bundle);
                 getSupportFragmentManager()
                         .beginTransaction()
-                        .setCustomAnimations(R.anim.slide_up_in, R.anim.slide_down_out
+                        .setCustomAnimations(0, R.anim.slide_down_out
                                 , R.anim.slide_in_left, R.anim.slide_out_right)
                         .replace(android.R.id.content, fragment)
                         .addToBackStack("BindScanFragment")
                         .commit();
+                new ScanContractImpl(fragment);
                 break;
         }
     }

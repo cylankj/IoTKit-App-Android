@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/color_white"
+    android:clickable="true"
     tools:context="com.cylan.jiafeigou.n.view.bind.BindCameraFragment">
 
     <include layout="@layout/layout_top_bar_item" />
@@ -32,6 +33,7 @@
         android:textSize="16sp" />
 
     <FrameLayout
+        android:layout_marginTop="40dp"
         android:id="@+id/fLayout_flip_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -41,7 +43,6 @@
             android:id="@+id/fLayout_flip_before"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="40dp"
             android:background="@drawable/ico_bind_doorbell_anim_0">
 
             <ImageView
@@ -87,7 +88,6 @@
             android:id="@+id/fLayout_flip_after"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
             android:background="@drawable/ico_bind_doorbell_anim_1"
             android:visibility="gone">
 

@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/color_white"
+    android:clickable="true"
     tools:context="com.cylan.jiafeigou.n.view.bind.BindCameraFragment">
 
     <include layout="@layout/layout_top_bar_item" />
