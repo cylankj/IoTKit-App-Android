@@ -61,7 +61,7 @@ public class ViewUtils {
 
     public static void setViewPaddingStatusBar(View v) {
         final int height = getCompatStatusBarHeight(v.getContext());
-        v.setPadding(0, v.getPaddingTop() + height, 0, 0);
+        v.setPadding(v.getPaddingLeft(), v.getPaddingTop() + height, v.getPaddingRight(), v.getPaddingBottom());
     }
 
     public static void showPwd(EditText text, boolean show) {
