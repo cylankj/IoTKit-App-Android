@@ -17,6 +17,9 @@ import android.widget.TextView;
  */
 
 public class ViewUtils {
+
+    private static int height;
+
     // A method to find height of the status bar
     public static int getStatusBarHeight(Context context) {
         int result = 0;
@@ -29,12 +32,11 @@ public class ViewUtils {
     }
 
     public static int getCompatStatusBarHeight(Context context) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            final int height = getStatusBarHeight(context);
-            Log.d("hunt", "hunt height: " + height);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT && height == 0) {
+            height = getStatusBarHeight(context);
             return height;
 //            return getStatusBarHeight(context);
-        } else return 0;
+        } else return height;
     }
 
     /**
@@ -55,6 +57,11 @@ public class ViewUtils {
     public static void setViewMarginStatusBar(View v) {
         final int height = getCompatStatusBarHeight(v.getContext());
         setMargins(v, 0, height, 0, 0);
+    }
+
+    public static void setViewPaddingStatusBar(View v) {
+        final int height = getCompatStatusBarHeight(v.getContext());
+        v.setPadding(0, v.getPaddingTop() + height, 0, 0);
     }
 
     public static void showPwd(EditText text, boolean show) {
