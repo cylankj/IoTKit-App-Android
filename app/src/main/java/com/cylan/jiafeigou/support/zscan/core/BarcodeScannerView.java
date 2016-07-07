@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.graphics.Rect;
 import android.hardware.Camera;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -85,15 +86,19 @@ public abstract class BarcodeScannerView extends FrameLayout implements Camera.P
     }
 
     public void stopCamera() {
-        if (mCamera != null) {
-            mPreview.stopCameraPreview();
-            mPreview.setCamera(null, null);
-            mCamera.release();
-            mCamera = null;
-        }
-        if (mCameraHandlerThread != null) {
-            mCameraHandlerThread.quit();
-            mCameraHandlerThread = null;
+        try {
+            if (mCamera != null) {
+                mPreview.stopCameraPreview();
+                mPreview.setCamera(null, null);
+                mCamera.release();
+                mCamera = null;
+            }
+            if (mCameraHandlerThread != null) {
+                mCameraHandlerThread.quit();
+                mCameraHandlerThread = null;
+            }
+        } catch (Exception e) {
+            Log.w("BarcodeScannerView", "close failed: " + e.toString());
         }
     }
 
