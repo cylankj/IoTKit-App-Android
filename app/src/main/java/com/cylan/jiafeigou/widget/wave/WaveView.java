@@ -227,7 +227,7 @@ public class WaveView extends View {
         mDefaultWaterLevel = getHeight() * DEFAULT_WATER_LEVEL_RATIO;
         mDefaultWaveLength = getWidth();
 
-        Bitmap bitmap = Bitmap.createBitmap(getWidth(), getHeight(), Bitmap.Config.ARGB_8888);
+        Bitmap bitmap = Bitmap.createBitmap(getWidth(), getHeight(), Bitmap.Config.ARGB_4444);
         Canvas canvas = new Canvas(bitmap);
 
         Paint wavePaint = new Paint();

@@ -66,4 +66,11 @@
             <enum name="mirror" value="2" />
         </attr>
     </declare-styleable>
+    <!--add by hunt -->
+    <declare-styleable name="ScanEffectViewStyle">
+        <attr name="effectStartColor" format="reference|color" />
+        <attr name="effectEndColor" format="reference|color" />
+        <attr name="laserWidth" format="integer|dimension" />
+        <attr name="duration" format="integer|reference" />
+    </declare-styleable>
 </resources>

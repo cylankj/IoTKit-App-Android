@@ -1,14 +1,20 @@
 package com.cylan.jiafeigou.support.zscan.core;
 
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.res.Configuration;
+import android.graphics.Bitmap;
+import android.graphics.BitmapShader;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.LinearGradient;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
+import android.graphics.Shader;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.animation.LinearInterpolator;
 
 
 public class ViewFinderView extends View implements IViewFinder {
@@ -37,7 +43,7 @@ public class ViewFinderView extends View implements IViewFinder {
     private static final long ANIMATION_DELAY = 80l;
 
     private final int mDefaultLaserColor = Color.BLACK;
-    private final int mDefaultMaskColor = Color.parseColor("#60000000");
+    private final int mDefaultMaskColor = Color.parseColor("#80000000");
     private final int mDefaultBorderColor = Color.WHITE;
     private final int mDefaultBorderStrokeWidth = 6;
     private final int mDefaultBorderLineLength = 4;
@@ -45,12 +51,30 @@ public class ViewFinderView extends View implements IViewFinder {
     //add by hunt
     private String mHint = "";
 
-    protected Paint mLaserPaint;
+    //    protected Paint mLaserPaint;
     protected Paint mFinderMaskPaint;
     protected Paint mBorderPaint;
     protected Paint mHintPaint;
     protected int mBorderLineLength;
+//////////////////////////////////////////////////
+    /**
+     * 改变线条高度的动画
+     */
+    private ValueAnimator laserAnimation;
 
+    //    private Rect laserRect = new Rect();
+    private Paint linearGradientPaint = new Paint();
+    private Paint linePaint = new Paint();
+    /**
+     * 底部线条颜色
+     */
+    private int effectStartColor = Color.parseColor("#ff49b8FF");
+    private int effectEndColor = Color.WHITE;
+    private float lineWidth = 5;
+    private int linePositionY = 0;
+    private int animationDuration = 2500;
+
+    //////////////////////////////////////////////////
     public ViewFinderView(Context context) {
         super(context);
         init();
@@ -62,10 +86,6 @@ public class ViewFinderView extends View implements IViewFinder {
     }
 
     private void init() {
-        //set up laser paint
-        mLaserPaint = new Paint();
-        mLaserPaint.setColor(mDefaultLaserColor);
-        mLaserPaint.setStyle(Paint.Style.FILL);
 
         //finder mask paint
         mFinderMaskPaint = new Paint();
@@ -87,11 +107,11 @@ public class ViewFinderView extends View implements IViewFinder {
         mBorderLineLength = mDefaultBorderLineLength;
 
         mTextRect = new Rect();
+
+        linePaint.setColor(effectStartColor);
+        linePaint.setAntiAlias(true);
     }
 
-    public void setLaserColor(int laserColor) {
-        mLaserPaint.setColor(laserColor);
-    }
 
     public void setMaskColor(int maskColor) {
         mFinderMaskPaint.setColor(maskColor);
@@ -134,8 +154,23 @@ public class ViewFinderView extends View implements IViewFinder {
 
         drawViewFinderMask(canvas);
         drawViewFinderBorder(canvas);
-//        drawLaser(canvas);
         drawHint(canvas);
+        drawLaser(canvas);
+    }
+
+    private void drawLaser(Canvas canvas) {
+//        if (linePositionY < mFramingRect.top || linePositionY > mFramingRect.bottom)
+//            return;
+        canvas.translate(mFramingRect.left, mFramingRect.top);
+        canvas.drawRect(0,
+                0,
+                mFramingRect.width(),
+                linePositionY,
+                linearGradientPaint);
+        canvas.drawRect(0,
+                linePositionY,
+                mFramingRect.width(),
+                linePositionY + lineWidth, linePaint);
     }
 
     public void drawViewFinderMask(Canvas canvas) {
@@ -191,20 +226,6 @@ public class ViewFinderView extends View implements IViewFinder {
                 mFramingRect.bottom + mDefaultBorderStrokeWidth / 2, mBorderPaint);
     }
 
-    public void drawLaser(Canvas canvas) {
-        // Draw a red "laser scanner" line through the middle to show decoding is active
-        mLaserPaint.setAlpha(SCANNER_ALPHA[scannerAlpha]);
-        scannerAlpha = (scannerAlpha + 1) % SCANNER_ALPHA.length;
-        int middle = mFramingRect.height() / 2 + mFramingRect.top;
-        canvas.drawRect(mFramingRect.left + 2, middle - 1, mFramingRect.right - 1, middle + 2, mLaserPaint);
-
-        postInvalidateDelayed(ANIMATION_DELAY,
-                mFramingRect.left - POINT_SIZE,
-                mFramingRect.top - POINT_SIZE,
-                mFramingRect.right + POINT_SIZE,
-                mFramingRect.bottom + POINT_SIZE);
-    }
-
     public void drawHint(Canvas canvas) {
         mHintPaint.getTextBounds(mHint, 0, mHint.length(), mTextRect);
         final int l = getMeasuredWidth() / 2 - mTextRect.width() / 2;
@@ -214,6 +235,30 @@ public class ViewFinderView extends View implements IViewFinder {
     @Override
     protected void onSizeChanged(int xNew, int yNew, int xOld, int yOld) {
         updateFramingRect();
+    }
+
+    /**
+     * 生成线性半透明
+     */
+    private void createShader() {
+        Bitmap bitmap = Bitmap.createBitmap(mFramingRect.width(), mFramingRect.height(),
+                Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        LinearGradient linearGradient = new LinearGradient(mFramingRect.width() / 2,
+                mFramingRect.height(),
+                mFramingRect.width() / 2,
+                0,
+                effectStartColor,
+                Color.TRANSPARENT,
+                Shader.TileMode.CLAMP);
+        Paint paint = new Paint();
+        paint.setShader(linearGradient);
+        canvas.drawRect(0, 0,
+                mFramingRect.width(),
+                mFramingRect.height(), paint);
+        // use the bitmap to create the shader
+        BitmapShader bitmapShader = new BitmapShader(bitmap, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
+        linearGradientPaint.setShader(bitmapShader);
     }
 
     public synchronized void updateFramingRect() {
@@ -235,6 +280,24 @@ public class ViewFinderView extends View implements IViewFinder {
         int leftOffset = (viewResolution.x - width) / 2;
         int topOffset = (viewResolution.y - height) / 2 - 20;
         mFramingRect = new Rect(leftOffset, topOffset, leftOffset + width, topOffset + height);
+        prepareLaserAnimation();
+    }
+
+    private void prepareLaserAnimation() {
+        post(new Runnable() {
+            @Override
+            public void run() {
+                createShader();
+                startAnimation();
+            }
+        });
+    }
+
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        stopAnimation();
     }
 
     private static int findDesiredDimensionInRange(float ratio, int resolution, int hardMin, int hardMax) {
@@ -246,5 +309,37 @@ public class ViewFinderView extends View implements IViewFinder {
             return hardMax;
         }
         return dim;
+    }
+
+    /**
+     * 开始动画
+     */
+    public void startAnimation() {
+        if (laserAnimation == null)
+            laserAnimation = ValueAnimator.ofInt(0,
+                    mFramingRect.height());
+        if (laserAnimation.isRunning())
+            return;
+        laserAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                if (animation != null && (animation.getAnimatedValue() instanceof Integer)) {
+                    linePositionY = (int) animation.getAnimatedValue();
+                    invalidate();
+                }
+            }
+        });
+        laserAnimation.setDuration(animationDuration);
+        laserAnimation.setInterpolator(new LinearInterpolator());
+        laserAnimation.setRepeatCount(ValueAnimator.INFINITE);
+        laserAnimation.start();
+    }
+
+    /**
+     * 停止动画
+     */
+    public void stopAnimation() {
+        if (laserAnimation != null && laserAnimation.isRunning())
+            laserAnimation.cancel();
     }
 }
