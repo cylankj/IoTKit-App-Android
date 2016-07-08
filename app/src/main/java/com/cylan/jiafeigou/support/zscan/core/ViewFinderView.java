@@ -70,7 +70,7 @@ public class ViewFinderView extends View implements IViewFinder {
     /**
      * 底部线条颜色
      */
-    private int effectStartColor = Color.parseColor("#aa49b8FF");
+    private int effectStartColor = Color.parseColor("#b849b8FF");
     private int effectEndColor = Color.WHITE;
     private float lineWidth = 5;
     private int linePositionY = 0;
@@ -110,7 +110,7 @@ public class ViewFinderView extends View implements IViewFinder {
 
         mTextRect = new Rect();
 
-        linePaint.setColor(effectStartColor);
+        linePaint.setColor(Color.parseColor("#ff49b8FF"));
         linePaint.setAntiAlias(true);
     }
 

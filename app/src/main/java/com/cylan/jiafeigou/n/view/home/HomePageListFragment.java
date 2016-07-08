@@ -144,7 +144,7 @@ public class HomePageListFragment extends Fragment implements
     }
 
     private void initSomeViewMargin() {
-        ViewUtils.setViewMarginStatusBar(getView().findViewById(R.id.imgV_add_devices));
+        ViewUtils.setViewPaddingStatusBar(getView().findViewById(R.id.imgV_add_devices));
     }
 
     private void initHeaderView() {

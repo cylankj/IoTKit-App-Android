@@ -71,6 +71,12 @@ public class WelcomePageActivity extends NeedLoginActivity
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        if (presenter != null) presenter.start();
+    }
+
+    @Override
     protected void onStop() {
         super.onStop();
         if (presenter != null) presenter.stop();
@@ -78,7 +84,7 @@ public class WelcomePageActivity extends NeedLoginActivity
 
     private void initData() {
         presenter = new SplashPresenterImpl(this);
-        presenter.start();
+
     }
 
     private void initGuidePage() {

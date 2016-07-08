@@ -1,15 +1,16 @@
 package com.cylan.jiafeigou.n.mvp.impl.bind;
 
 import android.net.wifi.ScanResult;
+import android.text.TextUtils;
 
 import com.cylan.jiafeigou.n.mvp.contract.bind.BindDeviceContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.support.network.ReactiveNetwork;
-import com.cylan.utils.ListUtils;
 import com.superlog.SLog;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -30,41 +31,65 @@ public class BindDevicePresenterImpl extends AbstractPresenter<BindDeviceContrac
     }
 
     @Override
-    public void scanDevices() {
-        if (getView() != null && getView().getContext() != null)
-            subscription = new ReactiveNetwork().observeWifiAccessPoints(getView().getContext().getApplicationContext(), false)
-                    .subscribeOn(Schedulers.io())
-                    .map(new Func1<List<ScanResult>, List<ScanResult>>() {
-                        @Override
-                        public List<ScanResult> call(List<ScanResult> resultList) {
-                            if (resultList == null) {
-                                return null;
-                            }
-                            List<ScanResult> newList = new ArrayList<>();
-                            for (ScanResult scanResult : resultList) {
-                                if (scanResult.SSID != null && scanResult.SSID.contains("DOG-")) {
-                                    newList.add(scanResult);
-                                }
-                            }
-                            return newList;
+    public void scanDevices(final String... filters) {
+        if (getView() == null || getView().getContext() == null)
+            return;
+        if (subscription != null && !subscription.isUnsubscribed())
+            subscription.unsubscribe();
+        subscription = new ReactiveNetwork()
+                .observeWifiAccessPoints(getView().getContext().getApplicationContext(),
+                        false)
+                .subscribeOn(Schedulers.io())
+                .map(new Func1<List<ScanResult>, Result>() {
+                    @Override
+                    public Result call(List<ScanResult> resultList) {
+                        if (resultList == null) {
+                            return null;
                         }
-                    })
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Action1<List<ScanResult>>() {
-                        @Override
-                        public void call(List<ScanResult> resultList) {
-                            if (!ListUtils.isEmpty(resultList) && getView() != null) {
-                                getView().onDevicesRsp(resultList);
-                            } else {
-                                SLog.e("some thing wrong");
+                        Result result = new Result();
+                        result.state = resultList.size() == 0 ? BindDeviceContract.STATE_NO_RESULT : BindDeviceContract.STATE_HAS_RESULT;
+                        if (result.state == BindDeviceContract.STATE_NO_RESULT) {
+                            return result;
+                        }
+                        List<ScanResult> newList = new ArrayList<>();
+                        for (ScanResult scanResult : resultList) {
+                            if (!TextUtils.isEmpty(scanResult.SSID)) {
+                                newList.add(scanResult);
                             }
                         }
-                    }, new Action1<Throwable>() {
-                        @Override
-                        public void call(Throwable throwable) {
-                            SLog.e("good: " + throwable.getLocalizedMessage());
+                        //没有设备
+                        if (newList.size() == 0)
+                            result.state = BindDeviceContract.STATE_NO_JFG_DEVICE;
+                        result.resultList = newList;
+                        return result;
+                    }
+                })
+                .debounce(2000, TimeUnit.MILLISECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<Result>() {
+                    @Override
+                    public void call(Result result) {
+                        checkNull();
+                        //没有wifi列表
+                        if (result == null
+                                || result.state == BindDeviceContract.STATE_NO_RESULT) {
+                            getView().onNoListError();
+                            return;
                         }
-                    });
+                        //有wifi列表，但没有狗设备
+                        if (result.state == BindDeviceContract.STATE_NO_JFG_DEVICE) {
+                            getView().onNoJFGDevices();
+                            return;
+                        }
+                        //有设备了
+                        getView().onDevicesRsp(result.resultList);
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        SLog.e("good: " + throwable.getLocalizedMessage());
+                    }
+                });
     }
 
     @Override
@@ -74,6 +99,12 @@ public class BindDevicePresenterImpl extends AbstractPresenter<BindDeviceContrac
 
     @Override
     public void stop() {
+        unSubscribe(subscription);
+    }
 
+    private static class Result {
+
+        List<ScanResult> resultList;
+        int state;
     }
 }

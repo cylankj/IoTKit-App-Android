@@ -15,7 +15,7 @@
         android:layout_centerVertical="true"
         android:layout_marginLeft="19dp"
         android:background="@drawable/icon_home_camera_online"
-        hunt:Dradius="3dp"
+        hunt:Dradius="4dp"
         hunt:borderColor="@color/color_white"
         hunt:borderWidth="1dp"
         hunt:enableBorder="true"

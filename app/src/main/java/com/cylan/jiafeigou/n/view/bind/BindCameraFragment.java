@@ -2,10 +2,13 @@ package com.cylan.jiafeigou.n.view.bind;
 
 
 import android.net.wifi.ScanResult;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,9 +19,11 @@ import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.contract.bind.BindDeviceContract;
 import com.cylan.jiafeigou.n.view.BaseTitleFragment;
 import com.cylan.jiafeigou.utils.AnimatorUtils;
+import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.utils.ListUtils;
 import com.nineoldandroids.animation.Animator;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -67,6 +72,7 @@ public class BindCameraFragment extends BaseTitleFragment implements BindDeviceC
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
         }
+        initDeviceListFragment();
     }
 
 
@@ -98,6 +104,12 @@ public class BindCameraFragment extends BaseTitleFragment implements BindDeviceC
     }
 
     @Override
+    public void onStop() {
+        super.onStop();
+        if (presenter != null) presenter.stop();
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // TODO: inflate a fragment view
         View rootView = super.onCreateView(inflater, container, savedInstanceState);
@@ -107,8 +119,17 @@ public class BindCameraFragment extends BaseTitleFragment implements BindDeviceC
 
     @OnClick(R.id.tv_bind_camera_tip)
     public void onClick() {
+        if (getView() != null)
+            ViewUtils.deBounceClick(getView().findViewById(R.id.tv_bind_camera_tip));
         Toast.makeText(getContext(), "startScan", Toast.LENGTH_SHORT).show();
         if (presenter != null) presenter.scanDevices();
+    }
+
+    WeakReference<BindDeviceListFragment> listFragmentWeakReference;
+
+    private void initDeviceListFragment() {
+        if (listFragmentWeakReference == null || listFragmentWeakReference.get() == null)
+            listFragmentWeakReference = new WeakReference<>(BindDeviceListFragment.newInstance(getArguments()));
     }
 
     @Override
@@ -118,16 +139,47 @@ public class BindCameraFragment extends BaseTitleFragment implements BindDeviceC
             Toast.makeText(getContext(), "没发现设备", Toast.LENGTH_SHORT).show();
             return;
         }
-        Bundle bundle = new Bundle();
+        initDeviceListFragment();
+
+        if (listFragmentWeakReference.get().isResumed()) {
+            listFragmentWeakReference.get().updateList((ArrayList<ScanResult>) resultList);
+            Log.d("simple", "what the hell.....");
+            return;
+        }
+        Bundle bundle = getArguments();
+        if (bundle == null) {
+            bundle = new Bundle();
+        }
+        Log.d("simple", "what the hell");
         bundle.putInt(KEY_SUB_FRAGMENT_ID, R.id.fLayout_bind_device_list_fragment_container);
         bundle.putParcelableArrayList(KEY_DEVICE_LIST, (ArrayList<? extends Parcelable>) resultList);
-        BindDeviceListFragment fragment = BindDeviceListFragment.newInstance(bundle);
-        fragment.setFragmentManager(getChildFragmentManager());
-        getChildFragmentManager()
+        getActivity().getSupportFragmentManager()
                 .beginTransaction()
-                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right)
-                .add(R.id.fLayout_bind_device_list_fragment_container, fragment, "BindDeviceListFragment")
+                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left
+                        , R.anim.slide_out_left, R.anim.slide_out_left)
+                .replace(R.id.fLayout_bind_device_fragment_container_id, listFragmentWeakReference.get(), "BindDeviceListFragment")
+//                .addToBackStack("BindDeviceListFragment")
                 .commit();
+        cancelAnimation();
+    }
+
+    private void cancelAnimation() {
+        if (animator != null && animator.isRunning())
+            animator.cancel();
+    }
+
+    @Override
+    public void onNoListError() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            Toast.makeText(getContext(), "请启用定位服务", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(getContext(), "没有wifi列表", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void onNoJFGDevices() {
+        Toast.makeText(getContext(), "找不到设备啊", Toast.LENGTH_SHORT).show();
     }
 
     @Override

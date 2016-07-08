@@ -84,9 +84,9 @@ public class BindDeviceActivity extends BaseFullScreenFragmentActivity {
                 getSupportFragmentManager()
                         .beginTransaction()
                         .setCustomAnimations(R.anim.slide_up_in, R.anim.slide_down_out
-                                , 0, R.anim.slide_out_right)
-                        .replace(android.R.id.content, fragment)
-                        .addToBackStack("BindCameraFragment")
+                                , R.anim.slide_out_left, R.anim.slide_out_left)
+                        .add(R.id.fLayout_bind_device_fragment_container_id, fragment)
+//                        .addToBackStack("BindCameraFragment")
                         .commit();
                 new BindDevicePresenterImpl(fragment);
                 break;

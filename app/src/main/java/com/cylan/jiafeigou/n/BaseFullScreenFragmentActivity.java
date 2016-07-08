@@ -58,7 +58,8 @@ public class BaseFullScreenFragmentActivity extends FragmentActivity implements 
             if (frag != null && frag.isVisible()) {
                 FragmentManager childFm = frag.getChildFragmentManager();
                 if (childFm != null && childFm.getBackStackEntryCount() > 0) {
-                    childFm.popBackStack();
+//                    childFm.popBackStack();
+                    childFm.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
                     return true;
                 }
             }

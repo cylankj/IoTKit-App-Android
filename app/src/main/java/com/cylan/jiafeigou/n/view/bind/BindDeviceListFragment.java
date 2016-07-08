@@ -15,7 +15,6 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.n.view.adapter.ConfigApFragment;
 import com.cylan.jiafeigou.n.view.adapter.ToBindDeviceListAdapter;
 
 import java.util.ArrayList;
@@ -34,7 +33,6 @@ public class BindDeviceListFragment extends Fragment implements ToBindDeviceList
     RecyclerView rvToBindDeviceList;
     ToBindDeviceListAdapter toBindDeviceListAdapter;
 
-    private FragmentManager fragmentManager;
 
     public BindDeviceListFragment() {
         // Required empty public constructor
@@ -90,25 +88,38 @@ public class BindDeviceListFragment extends Fragment implements ToBindDeviceList
     }
 
     @Override
+    public void onPause() {
+        super.onPause();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+    }
+
+    public void updateList(ArrayList<ScanResult> resultArrayList) {
+        toBindDeviceListAdapter.clear();
+        toBindDeviceListAdapter.addAll(resultArrayList);
+    }
+
+    @Override
     public void onClick(View v) {
         Object o = v.getTag();
         if (o != null && o instanceof ScanResult) {
             Bundle bundle = getArguments();
             if (bundle == null)
                 bundle = new Bundle();
-            final int id = bundle.getInt(BindCameraFragment.KEY_SUB_FRAGMENT_ID);
             ConfigApFragment fragment = ConfigApFragment.newInstance(bundle);
-            FragmentManager fm = fragmentManager != null ? fragmentManager : getChildFragmentManager();
-            fm.beginTransaction()
-                    .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right)
-                    .add(id, fragment, "ConfigApFragment")
+            getActivity().getSupportFragmentManager()
+                    .beginTransaction()
+                    .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
+                            , R.anim.slide_in_left, R.anim.slide_out_right)
+                    .replace(R.id.fLayout_bind_device_fragment_container_id, fragment, "ConfigApFragment")
+//                    .addToBackStack("ConfigApFragment")
                     .commit();
         } else {
             Toast.makeText(getContext(), "null", Toast.LENGTH_SHORT).show();
         }
     }
 
-    public void setFragmentManager(FragmentManager fragmentManager) {
-        this.fragmentManager = fragmentManager;
-    }
 }

@@ -20,6 +20,7 @@ import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.mvp.contract.login.SetupPwdContract;
 import com.cylan.jiafeigou.n.mvp.model.RequestResetPwdBean;
 import com.cylan.jiafeigou.utils.ActivityUtils;
+import com.cylan.jiafeigou.utils.IMEUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.superlog.SLog;
 
@@ -147,6 +148,7 @@ public class SetupPwdFragment extends android.support.v4.app.Fragment implements
                 final String code = bundle.getString(JConstant.KEY_VCODE_TO_SEND);
                 if (pwdPresenter != null)
                     pwdPresenter.submitAccountInfo(account, pwd, code);
+                IMEUtils.hide(getActivity());
                 Toast.makeText(getActivity(), "注册中。。。", Toast.LENGTH_SHORT).show();
                 break;
         }

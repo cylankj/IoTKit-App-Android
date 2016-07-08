@@ -25,6 +25,7 @@ import android.net.NetworkInfo;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
 import android.os.Looper;
+import android.util.Log;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;

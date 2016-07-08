@@ -1,5 +1,7 @@
 package com.cylan.jiafeigou.n.mvp.impl;
 
+import com.cylan.jiafeigou.BuildConfig;
+
 import java.lang.ref.WeakReference;
 
 import rx.Subscription;
@@ -9,6 +11,8 @@ import rx.Subscription;
  * Created by cylan-hunt on 16-6-30.
  */
 public abstract class AbstractPresenter<T> {
+
+    protected final String TAG = this.getClass().getSimpleName();
     WeakReference<T> weakReference;
 
     public AbstractPresenter(T t) {
@@ -26,6 +30,11 @@ public abstract class AbstractPresenter<T> {
                     subscription.unsubscribe();
             }
         }
+    }
+
+    protected void checkNull() {
+        if (getView() == null && BuildConfig.DEBUG)
+            throw new NullPointerException("view is null");
     }
 
 }

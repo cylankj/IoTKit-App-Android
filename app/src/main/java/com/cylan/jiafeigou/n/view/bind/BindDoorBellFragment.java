@@ -2,6 +2,7 @@ package com.cylan.jiafeigou.n.view.bind;
 
 
 import android.net.wifi.ScanResult;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
@@ -209,12 +210,25 @@ public class BindDoorBellFragment extends BaseTitleFragment implements BindDevic
         bundle.putInt(KEY_SUB_FRAGMENT_ID, R.id.fLayout_bind_device_list_fragment_container);
         bundle.putParcelableArrayList(KEY_DEVICE_LIST, (ArrayList<? extends Parcelable>) resultList);
         BindDeviceListFragment fragment = BindDeviceListFragment.newInstance(bundle);
-        fragment.setFragmentManager(getChildFragmentManager());
         getChildFragmentManager()
                 .beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right)
                 .add(R.id.fLayout_bind_device_list_fragment_container, fragment, "BindDeviceListFragment")
                 .commit();
+    }
+
+    @Override
+    public void onNoListError() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            Toast.makeText(getContext(), "请你打开定位", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(getContext(), "没有wifi列表", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void onNoJFGDevices() {
+        Toast.makeText(getContext(), "找不到设备啊", Toast.LENGTH_SHORT).show();
     }
 
     @Override

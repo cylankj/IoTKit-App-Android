@@ -69,7 +69,7 @@ public class LoginFragment extends android.support.v4.app.Fragment implements Lo
     ImageView ivLoginClearPwd;
 
     @BindView(R.id.cb_show_pwd)
-    CheckBox rbShowPwd;
+    CheckBox cbShowPwd;
 
 
     @BindView(R.id.vsLayout_login_box)
@@ -389,7 +389,6 @@ public class LoginFragment extends android.support.v4.app.Fragment implements Lo
     @OnClick(R.id.lb_login_commit)
     public void login(android.view.View view) {
         IMEUtils.hide(getActivity());
-        enableEditTextCursor(false);
         lbLogin.viewZoomSmall();
         AnimatorUtils.viewAlpha(tvForgetPwd, false, 300, 0);
         AnimatorUtils.viewTranslationY(rLayoutLoginThirdParty, false, 100, 0, 800, 500);
@@ -399,8 +398,19 @@ public class LoginFragment extends android.support.v4.app.Fragment implements Lo
         if (presenter != null) {
             presenter.executeLogin(login);
         }
+        enableEditTextCursor(false);
+        enableOtherBtn(false);
     }
 
+    /**
+     * 直到登陆状态返回
+     *
+     * @param enable
+     */
+    private void enableOtherBtn(boolean enable) {
+        tvLoginTopRight.setEnabled(enable);
+        cbShowPwd.setEnabled(enable);
+    }
 
     /**
      * 忘记密码
@@ -440,6 +450,7 @@ public class LoginFragment extends android.support.v4.app.Fragment implements Lo
      */
     private void resetView() {
         enableEditTextCursor(true);
+        enableOtherBtn(true);
         lbLogin.viewZoomBig();
         AnimatorUtils.viewAlpha(tvForgetPwd, true, 300, 0);
         AnimatorUtils.viewTranslationY(rLayoutLoginThirdParty, true, 100, 800, 0, 200);
