@@ -5,8 +5,10 @@ import android.content.Intent;
 import android.os.Environment;
 import android.util.Log;
 
+import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.engine.DaemonService;
 import com.cylan.jiafeigou.support.DebugOptionsImpl;
+import com.cylan.utils.Constants;
 import com.squareup.leakcanary.LeakCanary;
 
 import java.io.File;
@@ -30,7 +32,7 @@ public class BaseApplication extends Application {
     private void enableDebugOptions() {
         DebugOptionsImpl options = new DebugOptionsImpl("test");
         options.enableCrashHandler(this, Environment.getExternalStorageDirectory().getAbsolutePath()
-                + File.separator + "debug");
+                + File.separator + Constants.ROOT_DIR + File.separator + "debug");
         options.enableStrictMode();
     }
 
