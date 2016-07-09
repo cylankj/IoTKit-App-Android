@@ -12,6 +12,7 @@ import com.cylan.jiafeigou.support.rxbus.RxBus;
 import com.cylan.jiafeigou.utils.ActivityUtils;
 
 import java.lang.ref.WeakReference;
+import java.util.concurrent.TimeUnit;
 
 import rx.functions.Action1;
 import rx.subscriptions.CompositeSubscription;
@@ -42,6 +43,7 @@ public class NeedLoginActivity extends BaseFullScreenFragmentActivity {
         _subscriptions = new CompositeSubscription();
         _subscriptions
                 .add(RxBus.getInstance().toObservable()
+                        .debounce(2000, TimeUnit.MILLISECONDS)//2s内只发生一次
                         .subscribe(new Action1<Object>() {
                             @Override
                             public void call(Object event) {
