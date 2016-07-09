@@ -6,15 +6,19 @@
     android:orientation="vertical"
     tools:context="com.cylan.jiafeigou.n.view.bind.BindDeviceListFragment">
 
+    <include layout="@layout/layout_top_bar_item" />
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="48dp"
+        android:layout_marginTop="20dp"
         android:gravity="center"
         android:text="选取设备"
         android:textColor="@color/color_black"
         android:textSize="22sp" />
 
     <android.support.v7.widget.RecyclerView
+        android:layout_marginTop="44dp"
         android:id="@+id/rv_to_bind_device_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

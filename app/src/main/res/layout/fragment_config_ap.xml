@@ -7,9 +7,12 @@
     android:orientation="vertical"
     tools:context=".n.view.bind.ConfigApFragment">
 
+    <include layout="@layout/layout_top_bar_item" />
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="48dp"
+        android:layout_marginTop="20dp"
         android:gravity="center"
         android:text="选择设备要连接的WiFi"
         android:textColor="@color/color_333333"

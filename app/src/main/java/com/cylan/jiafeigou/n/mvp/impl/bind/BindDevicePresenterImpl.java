@@ -69,7 +69,9 @@ public class BindDevicePresenterImpl extends AbstractPresenter<BindDeviceContrac
                 .subscribe(new Action1<Result>() {
                     @Override
                     public void call(Result result) {
-                        checkNull();
+                        if (getView() == null) {
+                            return;
+                        }
                         //没有wifi列表
                         if (result == null
                                 || result.state == BindDeviceContract.STATE_NO_RESULT) {
@@ -82,12 +84,13 @@ public class BindDevicePresenterImpl extends AbstractPresenter<BindDeviceContrac
                             return;
                         }
                         //有设备了
-                        getView().onDevicesRsp(result.resultList);
+                        if (getView() != null)
+                            getView().onDevicesRsp(result.resultList);
                     }
                 }, new Action1<Throwable>() {
                     @Override
                     public void call(Throwable throwable) {
-                        SLog.e("good: " + throwable.getLocalizedMessage());
+                        SLog.e("good: " + throwable.toString());
                     }
                 });
     }

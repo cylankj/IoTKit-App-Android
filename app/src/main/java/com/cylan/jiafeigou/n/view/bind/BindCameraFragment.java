@@ -79,7 +79,7 @@ public class BindCameraFragment extends BaseTitleFragment implements BindDeviceC
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        updateNavBackIcon(R.drawable.btn_nav_back);
+//        updateNavBackIcon(R.drawable.btn_nav_back);
         initAnimation();
     }
 
@@ -155,10 +155,10 @@ public class BindCameraFragment extends BaseTitleFragment implements BindDeviceC
         bundle.putParcelableArrayList(KEY_DEVICE_LIST, (ArrayList<? extends Parcelable>) resultList);
         getActivity().getSupportFragmentManager()
                 .beginTransaction()
-                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left
-                        , R.anim.slide_out_left, R.anim.slide_out_left)
-                .replace(R.id.fLayout_bind_device_fragment_container_id, listFragmentWeakReference.get(), "BindDeviceListFragment")
-//                .addToBackStack("BindDeviceListFragment")
+                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
+                        , R.anim.slide_in_left, R.anim.slide_out_right)
+                .add(android.R.id.content, listFragmentWeakReference.get(), "BindDeviceListFragment")
+                .addToBackStack("BindDeviceListFragment")
                 .commit();
         cancelAnimation();
     }

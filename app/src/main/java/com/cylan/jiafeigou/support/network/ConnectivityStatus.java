@@ -18,15 +18,17 @@ package com.cylan.jiafeigou.support.network;
 import rx.functions.Func1;
 
 public enum ConnectivityStatus {
-    UNKNOWN("unknown"),
-    WIFI_CONNECTED("connected to WiFi network"),
-    MOBILE_CONNECTED("connected to mobile network"),
-    OFFLINE("offline");
+    UNKNOWN("unknown", -2),
+    OFFLINE("offline", -1),
+    MOBILE_CONNECTED("connected to mobile network", 0),
+    WIFI_CONNECTED("connected to WiFi network", 1);
 
     public final String description;
+    public final int state;
 
-    ConnectivityStatus(final String description) {
+    ConnectivityStatus(final String description, int state) {
         this.description = description;
+        this.state = state;
     }
 
     /**

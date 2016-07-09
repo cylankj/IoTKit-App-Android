@@ -47,6 +47,7 @@ public abstract class BaseTitleFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         initTitleBarAction();
+        updateNavBackIcon(R.drawable.btn_nav_back);
     }
 
     protected abstract int getSubContentViewId();
@@ -59,11 +60,11 @@ public abstract class BaseTitleFragment extends Fragment {
         tvLoginTopCenter.setVisibility(View.GONE);
     }
 
-    @OnClick({R.id.iv_top_bar_left, R.id.tv_top_bar_center})
-    public void onClick(View view) {
+    @OnClick(R.id.iv_top_bar_left)
+    public void onTitleBarAction(View view) {
         switch (view.getId()) {
             case R.id.iv_top_bar_left:
-                getActivity().getSupportFragmentManager().popBackStack();
+                getActivity().onBackPressed();
                 break;
         }
     }

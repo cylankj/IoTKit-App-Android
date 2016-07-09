@@ -6,15 +6,17 @@ import android.net.wifi.ScanResult;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.n.mvp.impl.bind.ConfigApPresenterImpl;
+import com.cylan.jiafeigou.n.view.BaseTitleFragment;
 import com.cylan.jiafeigou.n.view.adapter.ToBindDeviceListAdapter;
 
 import java.util.ArrayList;
@@ -27,11 +29,13 @@ import butterknife.ButterKnife;
  * Use the {@link BindDeviceListFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class BindDeviceListFragment extends Fragment implements ToBindDeviceListAdapter.ItemClickListener {
+public class BindDeviceListFragment extends BaseTitleFragment implements ToBindDeviceListAdapter.ItemClickListener {
 
     @BindView(R.id.rv_to_bind_device_list)
     RecyclerView rvToBindDeviceList;
     ToBindDeviceListAdapter toBindDeviceListAdapter;
+    @BindView(R.id.fLayout_top_bar)
+    FrameLayout fLayoutTopBar;
 
 
     public BindDeviceListFragment() {
@@ -55,7 +59,6 @@ public class BindDeviceListFragment extends Fragment implements ToBindDeviceList
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
     }
 
     @Override
@@ -65,16 +68,16 @@ public class BindDeviceListFragment extends Fragment implements ToBindDeviceList
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_bind_device_list, container, false);
-        ButterKnife.bind(this, view);
-        return view;
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        // TODO: inflate a fragment view
+        View rootView = super.onCreateView(inflater, container, savedInstanceState);
+        ButterKnife.bind(this, rootView);
+        return rootView;
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         Bundle bundle = getArguments();
         if (bundle == null) {
             return;
@@ -85,6 +88,11 @@ public class BindDeviceListFragment extends Fragment implements ToBindDeviceList
         toBindDeviceListAdapter.addAll(results);
         toBindDeviceListAdapter.setOnItemClickListener(this);
         rvToBindDeviceList.setAdapter(toBindDeviceListAdapter);
+    }
+
+    @Override
+    protected int getSubContentViewId() {
+        return R.layout.fragment_bind_device_list;
     }
 
     @Override
@@ -114,9 +122,10 @@ public class BindDeviceListFragment extends Fragment implements ToBindDeviceList
                     .beginTransaction()
                     .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                             , R.anim.slide_in_left, R.anim.slide_out_right)
-                    .replace(R.id.fLayout_bind_device_fragment_container_id, fragment, "ConfigApFragment")
-//                    .addToBackStack("ConfigApFragment")
+                    .add(android.R.id.content, fragment, "ConfigApFragment")
+                    .addToBackStack("ConfigApFragment")
                     .commit();
+            new ConfigApPresenterImpl(fragment);
         } else {
             Toast.makeText(getContext(), "null", Toast.LENGTH_SHORT).show();
         }

@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +25,7 @@ import com.cylan.utils.ListUtils;
 import com.nineoldandroids.animation.Animator;
 import com.nineoldandroids.animation.AnimatorSet;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -98,8 +100,6 @@ public class BindDoorBellFragment extends BaseTitleFragment implements BindDevic
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        updateNavBackIcon(R.drawable.btn_nav_back);
-//        initAnimation();
         if (getView() != null) getView().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -188,6 +188,13 @@ public class BindDoorBellFragment extends BaseTitleFragment implements BindDevic
         flipAnimation.setStartOffset(1000);
     }
 
+    WeakReference<BindDeviceListFragment> listFragmentWeakReference;
+
+    private void initDeviceListFragment() {
+        if (listFragmentWeakReference == null || listFragmentWeakReference.get() == null)
+            listFragmentWeakReference = new WeakReference<>(BindDeviceListFragment.newInstance(getArguments()));
+    }
+
     @Override
     public void onDevicesRsp(List<ScanResult> resultList) {
         final int count = ListUtils.getSize(resultList);
@@ -195,26 +202,39 @@ public class BindDoorBellFragment extends BaseTitleFragment implements BindDevic
             Toast.makeText(getContext(), "没发现设备", Toast.LENGTH_SHORT).show();
             return;
         }
-//        Bundle bundle = new Bundle();
-//        bundle.putInt(KEY_SUB_FRAGMENT_ID, R.id.fLayout_bind_device_list_fragment_container);
-//        bundle.putParcelableArrayList(KEY_DEVICE_LIST, (ArrayList<? extends Parcelable>) resultList);
-//        BindDeviceListFragment fragment = BindDeviceListFragment.newInstance(bundle);
-//        getChildFragmentManager()
-//                .beginTransaction()
-//                .setCustomAnimations(R.anim.slide_right_in, R.anim.slide_out_left
-//                        , R.anim.slide_out_right, R.anim.slide_out_right)
-//                .add(R.id.fLayout_bind_device_list_fragment_container, fragment, "BindDeviceListFragment")
-////                .addToBackStack("BindDeviceListFragment")
-//                .commit();
-        Bundle bundle = new Bundle();
+        initDeviceListFragment();
+
+        if (listFragmentWeakReference.get().isResumed()) {
+            listFragmentWeakReference.get().updateList((ArrayList<ScanResult>) resultList);
+            Log.d("simple", "what the hell.....");
+            return;
+        }
+        Bundle bundle = getArguments();
+        if (bundle == null) {
+            bundle = new Bundle();
+        }
+        Log.d("simple", "what the hell");
         bundle.putInt(KEY_SUB_FRAGMENT_ID, R.id.fLayout_bind_device_list_fragment_container);
         bundle.putParcelableArrayList(KEY_DEVICE_LIST, (ArrayList<? extends Parcelable>) resultList);
-        BindDeviceListFragment fragment = BindDeviceListFragment.newInstance(bundle);
-        getChildFragmentManager()
+        getActivity().getSupportFragmentManager()
                 .beginTransaction()
-                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right)
-                .add(R.id.fLayout_bind_device_list_fragment_container, fragment, "BindDeviceListFragment")
+                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
+                        , R.anim.slide_in_left, R.anim.slide_out_right)
+                .add(android.R.id.content, listFragmentWeakReference.get(), "BindDeviceListFragment")
+                .addToBackStack("BindDeviceListFragment")
                 .commit();
+        cancelAnimation();
+    }
+
+    private void cancelAnimation() {
+        if (setHandLeft != null && setHandLeft.isRunning())
+            setHandLeft.cancel();
+        if (setHandRight != null && setHandRight.isRunning())
+            setHandRight.cancel();
+        if (setRedDotLeft != null && setRedDotLeft.isRunning())
+            setRedDotLeft.cancel();
+        if (setRedDotRight != null && setRedDotRight.isRunning())
+            setRedDotRight.cancel();
     }
 
     @Override
@@ -239,6 +259,6 @@ public class BindDoorBellFragment extends BaseTitleFragment implements BindDevic
     @OnClick(R.id.tv_bind_doorbell_tip)
     public void onClick() {
         Toast.makeText(getContext(), "startScan", Toast.LENGTH_SHORT).show();
-        if(presenter!=null)presenter.scanDevices();
+        if (presenter != null) presenter.scanDevices();
     }
 }

@@ -51,4 +51,7 @@ public class JConstant {
 
     public static final String KEY_FRESH = "is_you_fresh";
 
+
+    public static int ConfigApState = 0;
+
 }
