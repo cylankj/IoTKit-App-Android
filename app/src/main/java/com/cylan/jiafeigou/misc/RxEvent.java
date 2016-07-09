@@ -1,4 +1,4 @@
-package com.cylan.jiafeigou.n.misc;
+package com.cylan.jiafeigou.misc;
 
 import android.os.Bundle;
 

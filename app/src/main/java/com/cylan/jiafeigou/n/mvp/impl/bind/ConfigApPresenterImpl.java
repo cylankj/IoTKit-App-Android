@@ -5,6 +5,8 @@ import android.net.wifi.ScanResult;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.cylan.jiafeigou.cache.SimpleCache;
+import com.cylan.jiafeigou.misc.ScanResultListFilter;
 import com.cylan.jiafeigou.n.mvp.contract.bind.ConfigApContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.support.network.ConnectivityStatus;
@@ -26,12 +28,14 @@ import rx.schedulers.Schedulers;
  */
 public class ConfigApPresenterImpl extends AbstractPresenter<ConfigApContract.View> implements ConfigApContract.Presenter {
 
-    private Subscription connecttivitySubscription;
+    private Subscription connectivitySubscription;
     private Subscription accessPointsSubscription;
+    private ScanResultListFilter scanResultListFilter;
 
     public ConfigApPresenterImpl(ConfigApContract.View view) {
         super(view);
         view.setPresenter(this);
+        scanResultListFilter = new ScanResultListFilter();
     }
 
     /**
@@ -43,19 +47,12 @@ public class ConfigApPresenterImpl extends AbstractPresenter<ConfigApContract.Vi
         return new ReactiveNetwork()
                 .observeWifiAccessPoints(getView().getContext().getApplicationContext(), false)
                 .subscribeOn(Schedulers.io())
-                .debounce(3000, TimeUnit.MILLISECONDS)
+                .debounce(500, TimeUnit.MILLISECONDS)
                 .flatMap(new Func1<List<ScanResult>, Observable<List<ScanResult>>>() {
                     @Override
                     public Observable<List<ScanResult>> call(List<ScanResult> resultList) {
-                        List<ScanResult> newList = new ArrayList<>();
-                        for (ScanResult scanResult : resultList) {
-                            final String SsId = scanResult.SSID;
-                            if (TextUtils.isEmpty(SsId)
-                                    || TextUtils.equals(SsId, "<unknown ssid>")
-                                    || TextUtils.equals(SsId, "0x"))
-                                continue;
-                            newList.add(scanResult);
-                        }
+                        List<ScanResult> newList = new ArrayList<>(scanResultListFilter.extractPretty(resultList));
+                        SimpleCache.getInstance().setWeakScanResult(newList);
                         return Observable.just(newList);
                     }
                 })
@@ -63,7 +60,9 @@ public class ConfigApPresenterImpl extends AbstractPresenter<ConfigApContract.Vi
                 .subscribe(new Action1<List<ScanResult>>() {
                     @Override
                     public void call(List<ScanResult> resultList) {
-                        if (resultList == null || resultList.size() == 0)
+                        if (resultList == null
+                                || resultList.size() == 0
+                                || getView() == null)
                             return;
                         getView().onWiFiResult(resultList);
                     }
@@ -94,11 +93,11 @@ public class ConfigApPresenterImpl extends AbstractPresenter<ConfigApContract.Vi
 
     @Override
     public void registerWiFiBroadcast(Context context) {
-        if (connecttivitySubscription != null && !connecttivitySubscription.isUnsubscribed())
-            connecttivitySubscription.unsubscribe();
-        connecttivitySubscription = connectivitySubscription();
-        if (connecttivitySubscription != null && !connecttivitySubscription.isUnsubscribed())
-            connecttivitySubscription.unsubscribe();
+        if (connectivitySubscription != null && !connectivitySubscription.isUnsubscribed())
+            connectivitySubscription.unsubscribe();
+        connectivitySubscription = connectivitySubscription();
+        if (accessPointsSubscription != null && !connectivitySubscription.isUnsubscribed())
+            accessPointsSubscription.unsubscribe();
         accessPointsSubscription = accessPointsSubscription();
     }
 
@@ -109,6 +108,6 @@ public class ConfigApPresenterImpl extends AbstractPresenter<ConfigApContract.Vi
 
     @Override
     public void stop() {
-        unSubscribe(connecttivitySubscription, accessPointsSubscription);
+        unSubscribe(connectivitySubscription, accessPointsSubscription);
     }
 }

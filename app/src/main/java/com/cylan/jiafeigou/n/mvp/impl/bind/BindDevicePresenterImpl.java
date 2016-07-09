@@ -1,8 +1,9 @@
 package com.cylan.jiafeigou.n.mvp.impl.bind;
 
 import android.net.wifi.ScanResult;
-import android.text.TextUtils;
 
+import com.cylan.jiafeigou.cache.SimpleCache;
+import com.cylan.jiafeigou.misc.ScanResultListFilter;
 import com.cylan.jiafeigou.n.mvp.contract.bind.BindDeviceContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.support.network.ReactiveNetwork;
@@ -25,10 +26,14 @@ public class BindDevicePresenterImpl extends AbstractPresenter<BindDeviceContrac
 
     private Subscription subscription;
 
+    private ScanResultListFilter scanResultListFilter;
+
     public BindDevicePresenterImpl(BindDeviceContract.View view) {
         super(view);
         view.setPresenter(this);
+        scanResultListFilter = new ScanResultListFilter();
     }
+
 
     @Override
     public void scanDevices(final String... filters) {
@@ -40,31 +45,26 @@ public class BindDevicePresenterImpl extends AbstractPresenter<BindDeviceContrac
                 .observeWifiAccessPoints(getView().getContext().getApplicationContext(),
                         false)
                 .subscribeOn(Schedulers.io())
+                .debounce(500, TimeUnit.MILLISECONDS)
                 .map(new Func1<List<ScanResult>, Result>() {
                     @Override
                     public Result call(List<ScanResult> resultList) {
-                        if (resultList == null) {
-                            return null;
-                        }
+                        resultList = new ArrayList<>(scanResultListFilter.extractPretty(resultList));
+                        SimpleCache.getInstance().setWeakScanResult(resultList);
                         Result result = new Result();
-                        result.state = resultList.size() == 0 ? BindDeviceContract.STATE_NO_RESULT : BindDeviceContract.STATE_HAS_RESULT;
-                        if (result.state == BindDeviceContract.STATE_NO_RESULT) {
+                        result.errState = resultList.size() == 0 ? BindDeviceContract.STATE_NO_RESULT : BindDeviceContract.STATE_HAS_RESULT;
+                        if (result.errState == BindDeviceContract.STATE_NO_RESULT) {
                             return result;
                         }
-                        List<ScanResult> newList = new ArrayList<>();
-                        for (ScanResult scanResult : resultList) {
-                            if (!TextUtils.isEmpty(scanResult.SSID)) {
-                                newList.add(scanResult);
-                            }
-                        }
+                        List<ScanResult> newList = new ArrayList<>(scanResultListFilter.extractJFG(resultList, filters));
+                        newList = resultList;
                         //没有设备
                         if (newList.size() == 0)
-                            result.state = BindDeviceContract.STATE_NO_JFG_DEVICE;
-                        result.resultList = newList;
+                            result.errState = BindDeviceContract.STATE_NO_JFG_DEVICE;
+                        result.jfgList = newList;
                         return result;
                     }
                 })
-                .debounce(2000, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<Result>() {
                     @Override
@@ -74,18 +74,18 @@ public class BindDevicePresenterImpl extends AbstractPresenter<BindDeviceContrac
                         }
                         //没有wifi列表
                         if (result == null
-                                || result.state == BindDeviceContract.STATE_NO_RESULT) {
+                                || result.errState == BindDeviceContract.STATE_NO_RESULT) {
                             getView().onNoListError();
                             return;
                         }
                         //有wifi列表，但没有狗设备
-                        if (result.state == BindDeviceContract.STATE_NO_JFG_DEVICE) {
+                        if (result.errState == BindDeviceContract.STATE_NO_JFG_DEVICE) {
                             getView().onNoJFGDevices();
                             return;
                         }
                         //有设备了
                         if (getView() != null)
-                            getView().onDevicesRsp(result.resultList);
+                            getView().onDevicesRsp(result.jfgList);
                     }
                 }, new Action1<Throwable>() {
                     @Override
@@ -107,7 +107,7 @@ public class BindDevicePresenterImpl extends AbstractPresenter<BindDeviceContrac
 
     private static class Result {
 
-        List<ScanResult> resultList;
-        int state;
+        List<ScanResult> jfgList;
+        int errState;
     }
 }

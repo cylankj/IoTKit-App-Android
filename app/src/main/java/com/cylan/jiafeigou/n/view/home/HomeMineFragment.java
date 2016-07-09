@@ -10,7 +10,7 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.n.misc.RxEvent;
+import com.cylan.jiafeigou.misc.RxEvent;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeMineContract;
 import com.cylan.jiafeigou.support.rxbus.RxBus;
 import com.cylan.jiafeigou.utils.ViewUtils;
@@ -166,7 +166,8 @@ public class HomeMineFragment extends android.support.v4.app.Fragment
     }
 
     @OnClick({R.id.home_mine_item_friend, R.id.home_mine_item_share,
-            R.id.home_mine_item_help, R.id.home_mine_item_settings})
+            R.id.home_mine_item_help, R.id.home_mine_item_settings,
+            R.id.shadow_layout})
     public void onButterKnifeClick(View view) {
         switch (view.getId()) {
             case R.id.home_mine_item_friend:
@@ -192,6 +193,12 @@ public class HomeMineFragment extends android.support.v4.app.Fragment
                     ViewUtils.deBounceClick(getView().findViewById(R.id.home_mine_item_settings));
                 SLog.e("home_mine_item_settings");
                 settingsItem(view);
+                break;
+            case R.id.shadow_layout:
+                if (getView() != null)
+                    ViewUtils.deBounceClick(getView().findViewById(R.id.shadow_layout));
+                SLog.e("home_mine_item_settings");
+                portrait();
                 break;
         }
     }

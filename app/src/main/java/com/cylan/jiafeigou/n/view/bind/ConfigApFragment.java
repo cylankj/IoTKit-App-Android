@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +19,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.cache.SimpleCache;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.mvp.contract.bind.ConfigApContract;
 import com.cylan.jiafeigou.n.view.BaseTitleFragment;
@@ -38,7 +40,7 @@ import butterknife.OnTextChanged;
  * Use the {@link ConfigApFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ConfigApFragment extends BaseTitleFragment implements ConfigApContract.View {
+public class ConfigApFragment extends BaseTitleFragment implements ConfigApContract.View, WiFiListDialogFragment.ClickCallBack {
 
     @BindView(R.id.iv_wifi_clear_pwd)
     ImageView ivWifiClearPwd;
@@ -57,6 +59,8 @@ public class ConfigApFragment extends BaseTitleFragment implements ConfigApContr
     @BindView(R.id.rLayout_wifi_pwd_input_box)
     FrameLayout rLayoutWifiPwdInputBox;
 
+
+    List<ScanResult> cacheList;
     private ConfigApContract.Presenter presenter;
 
     public ConfigApFragment() {
@@ -95,6 +99,11 @@ public class ConfigApFragment extends BaseTitleFragment implements ConfigApContr
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        WeakReference<List<ScanResult>> weakReference = SimpleCache.getInstance().getWeakScanResult();
+        cacheList = weakReference == null ? null : weakReference.get();
+        if (cacheList != null && cacheList.size() > 0) {
+            tvConfigApName.setText(cacheList.get(0).SSID);
+        }
     }
 
     @Override
@@ -162,9 +171,12 @@ public class ConfigApFragment extends BaseTitleFragment implements ConfigApContr
                     ViewUtils.deBounceClick(getView().findViewById(R.id.tv_config_ap_name));
                 initFragment();
                 fiListDialogFragment = fragmentWeakReference.get();
-                if (fiListDialogFragment != null && fiListDialogFragment.isResumed())
-                    return;
+                fiListDialogFragment.setClickCallBack(this);
+                fiListDialogFragment.updateList(cacheList);
                 fiListDialogFragment.show(getActivity().getSupportFragmentManager(), "WiFiListDialogFragment");
+                if (presenter != null) {
+                    presenter.registerWiFiBroadcast(getContext().getApplicationContext());
+                }
                 break;
         }
     }
@@ -187,6 +199,10 @@ public class ConfigApFragment extends BaseTitleFragment implements ConfigApContr
         if (count == 0) {
             return;
         }
+        cacheList = resultList;
+        if (fiListDialogFragment != null)
+            fiListDialogFragment.updateList(cacheList);
+        Log.d("what", "what............");
         Toast.makeText(getContext(), "list: " + resultList.size(), Toast.LENGTH_SHORT).show();
         tvConfigApName.setText(resultList.get(0).SSID);
     }
@@ -194,5 +210,12 @@ public class ConfigApFragment extends BaseTitleFragment implements ConfigApContr
     @Override
     public void setPresenter(ConfigApContract.Presenter presenter) {
         this.presenter = presenter;
+    }
+
+    @Override
+    public void onDismiss(ScanResult scanResult) {
+        if (isResumed()) {
+            tvConfigApName.setText(scanResult.SSID);
+        }
     }
 }

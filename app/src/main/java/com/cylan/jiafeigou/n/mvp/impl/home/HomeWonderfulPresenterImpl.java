@@ -1,7 +1,7 @@
 package com.cylan.jiafeigou.n.mvp.impl.home;
 
 
-import com.cylan.jiafeigou.n.misc.TimeLineAssemble;
+import com.cylan.jiafeigou.misc.TimeLineAssembler;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeWonderfulContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.n.mvp.model.MediaBean;
@@ -110,7 +110,7 @@ public class HomeWonderfulPresenterImpl extends AbstractPresenter<HomeWonderfulC
      * @return
      */
     private WheelViewDataSet assembleTimeLineData(List<MediaBean> list) {
-        TimeLineAssemble timeLineAssemble = new TimeLineAssemble();
+        TimeLineAssembler timeLineAssemble = new TimeLineAssembler();
         timeLineAssemble.setMediaBeanLinkedList(new LinkedList<>(list));
         return timeLineAssemble.generateDataSet();
     }

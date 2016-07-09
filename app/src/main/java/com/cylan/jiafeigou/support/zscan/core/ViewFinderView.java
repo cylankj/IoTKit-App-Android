@@ -16,7 +16,7 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.view.animation.LinearInterpolator;
 
-import com.cylan.utils.DensityUtil;
+import com.cylan.utils.DensityUtils;
 
 
 public class ViewFinderView extends View implements IViewFinder {
@@ -104,7 +104,7 @@ public class ViewFinderView extends View implements IViewFinder {
         mHintPaint.setAntiAlias(true);
         mHintPaint.setColor(mDefaultBorderColor);
         mHintPaint.setColor(Color.WHITE);
-        mHintPaint.setTextSize(DensityUtil.dip2px(getContext(), 16));
+        mHintPaint.setTextSize(DensityUtils.dip2px(16));
 
         mBorderLineLength = mDefaultBorderLineLength;
 

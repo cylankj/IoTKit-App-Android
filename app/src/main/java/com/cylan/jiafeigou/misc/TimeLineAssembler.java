@@ -1,4 +1,4 @@
-package com.cylan.jiafeigou.n.misc;
+package com.cylan.jiafeigou.misc;
 
 import com.cylan.jiafeigou.n.mvp.model.MediaBean;
 import com.cylan.jiafeigou.widget.wheel.WheelViewDataSet;
@@ -16,10 +16,10 @@ import java.util.Locale;
 /**
  * Created by cylan-hunt on 16-7-4.
  */
-public class TimeLineAssemble {
+public class TimeLineAssembler {
 
 
-    public TimeLineAssemble() {
+    public TimeLineAssembler() {
 
     }
 

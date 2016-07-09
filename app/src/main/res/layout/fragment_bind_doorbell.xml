@@ -34,12 +34,12 @@
         android:textSize="16sp" />
 
     <FrameLayout
-        android:layout_below="@+id/tv_bind_wait_msg"
-        android:layout_marginTop="40dp"
         android:id="@+id/fLayout_flip_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true">
+        android:layout_below="@+id/tv_bind_wait_msg"
+        android:layout_centerInParent="true"
+        android:layout_marginTop="40dp">
 
         <FrameLayout
             android:id="@+id/fLayout_flip_before"
@@ -114,6 +114,7 @@
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_alignParentBottom="true"
+        android:background="?attr/selectableItemBackground"
         android:gravity="center"
         android:text="红灯已常亮"
         android:textColor="@color/color_4b9fd5"
