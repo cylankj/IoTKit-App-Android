@@ -62,16 +62,24 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
     public void portraitBlur(@DrawableRes int id) {
         onBlurSubscribtion = Observable.just(id)
                 .subscribeOn(Schedulers.computation())
-                .map(new Func1<Integer, Drawable>() {
+                .map(new Func1<Integer, Bitmap>() {
                     @Override
-                    public Drawable call(Integer integer) {
-                        if (getView() == null)
+                    public Bitmap call(Integer integer) {
+                        if (getView() == null) {
                             return null;
+                        }
                         Bitmap bm = BitmapFactory.decodeResource(getView().getContext().getResources(),
                                 integer);
                         Bitmap b = BitmapUtil.zoomBitmap(bm, 160, 160);
-                        b = FastBlurUtil.blur(b, 20, 2);
-                        return new BitmapDrawable(getView().getContext().getResources(), b);
+                        return FastBlurUtil.blur(b, 20, 2);
+                    }
+                })
+                .map(new Func1<Bitmap, Drawable>() {
+                    @Override
+                    public Drawable call(Bitmap bitmap) {
+                        if (getView() == null)
+                            return null;
+                        return new BitmapDrawable(getView().getContext().getResources(), bitmap);
                     }
                 })
                 .observeOn(AndroidSchedulers.mainThread())

@@ -43,7 +43,7 @@ public class NeedLoginActivity extends BaseFullScreenFragmentActivity {
         _subscriptions = new CompositeSubscription();
         _subscriptions
                 .add(RxBus.getInstance().toObservable()
-                        .debounce(2000, TimeUnit.MILLISECONDS)//2s内只发生一次
+//                        .debounce(2000, TimeUnit.MILLISECONDS)//2s内只发生一次
                         .subscribe(new Action1<Object>() {
                             @Override
                             public void call(Object event) {
@@ -69,6 +69,8 @@ public class NeedLoginActivity extends BaseFullScreenFragmentActivity {
         if (loginPresenterWeakReference != null && loginPresenterWeakReference.get() != null) {
             fragment.setPresenter(loginPresenterWeakReference.get());
         } else loginPresenterWeakReference = new WeakReference<>(new LoginPresenterImpl(fragment));
+        if (getSupportFragmentManager().findFragmentByTag(fragment.getClass().getSimpleName()) != null)
+            return;
         ActivityUtils.addFragmentToActivity(getSupportFragmentManager(),
                 fragment, android.R.id.content, 0);
     }

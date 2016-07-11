@@ -24,6 +24,7 @@ import com.cylan.jiafeigou.n.mvp.contract.splash.SplashContract;
 import com.cylan.jiafeigou.n.mvp.impl.splash.SplashPresenterImpl;
 import com.cylan.jiafeigou.n.view.activity.NeedLoginActivity;
 import com.cylan.jiafeigou.n.view.adapter.SimpleFragmentAdapter;
+import com.cylan.jiafeigou.utils.IMEUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.UiHelper;
 import com.cylan.viewindicator.CirclePageIndicator;
@@ -65,6 +66,7 @@ public class WelcomePageActivity extends NeedLoginActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        IMEUtils.fixFocusedViewLeak(getApplication());
         setContentView(R.layout.activity_welcome_page);
         ButterKnife.bind(this);
         initData();

@@ -47,7 +47,7 @@ public class ConfigApPresenterImpl extends AbstractPresenter<ConfigApContract.Vi
         return new ReactiveNetwork()
                 .observeWifiAccessPoints(getView().getContext().getApplicationContext(), false)
                 .subscribeOn(Schedulers.io())
-                .debounce(500, TimeUnit.MILLISECONDS)
+                .debounce(200, TimeUnit.MILLISECONDS)
                 .flatMap(new Func1<List<ScanResult>, Observable<List<ScanResult>>>() {
                     @Override
                     public Observable<List<ScanResult>> call(List<ScanResult> resultList) {

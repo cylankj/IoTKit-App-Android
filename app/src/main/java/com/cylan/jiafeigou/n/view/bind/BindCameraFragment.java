@@ -146,6 +146,8 @@ public class BindCameraFragment extends BaseTitleFragment implements BindDeviceC
             Log.d("simple", "what the hell.....");
             return;
         }
+        if (getActivity().getSupportFragmentManager().findFragmentByTag("BindDeviceListFragment") != null)
+            return;
         Bundle bundle = getArguments();
         if (bundle == null) {
             bundle = new Bundle();

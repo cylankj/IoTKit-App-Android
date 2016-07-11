@@ -1,6 +1,7 @@
 package com.cylan.jiafeigou.n.base;
 
 import android.app.Application;
+import android.content.ComponentCallbacks2;
 import android.content.Intent;
 import android.os.Environment;
 import android.util.Log;
@@ -39,7 +40,12 @@ public class BaseApplication extends Application {
     @Override
     public void onTrimMemory(int level) {
         super.onTrimMemory(level);
-        Log.d(TAG, "onTrimMemory: " + level);
+        switch (level) {
+            case ComponentCallbacks2.TRIM_MEMORY_UI_HIDDEN:
+                //should release some resource
+                Log.d(TAG, "onTrimMemory: " + level);
+                break;
+        }
     }
 
     @Override
