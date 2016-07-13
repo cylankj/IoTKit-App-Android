@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cylan.viewindicator;
+package com.cylan.jiafeigou.widget.indicator;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -33,7 +33,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
 
-import com.cylan.R;
+import com.cylan.jiafeigou.R;
 
 import static android.graphics.Paint.ANTI_ALIAS_FLAG;
 import static android.widget.LinearLayout.HORIZONTAL;

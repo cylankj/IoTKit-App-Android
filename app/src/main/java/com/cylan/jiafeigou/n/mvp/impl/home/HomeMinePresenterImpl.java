@@ -77,7 +77,9 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
                 .map(new Func1<Bitmap, Drawable>() {
                     @Override
                     public Drawable call(Bitmap bitmap) {
-                        if (getView() == null)
+                        if (getView() == null
+                                || getView().getContext() == null
+                                || getView().getContext().getResources() == null)
                             return null;
                         return new BitmapDrawable(getView().getContext().getResources(), bitmap);
                     }

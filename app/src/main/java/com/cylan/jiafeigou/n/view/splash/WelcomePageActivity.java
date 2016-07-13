@@ -27,7 +27,7 @@ import com.cylan.jiafeigou.n.view.adapter.SimpleFragmentAdapter;
 import com.cylan.jiafeigou.utils.IMEUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.UiHelper;
-import com.cylan.viewindicator.CirclePageIndicator;
+import com.cylan.jiafeigou.widget.indicator.CirclePageIndicator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -117,7 +117,7 @@ public class WelcomePageActivity extends NeedLoginActivity
         } else {
             //进入登陆页 login page
             if (splashFragments == null) {
-                splashFragments = new ArrayList<Fragment>();
+                splashFragments = new ArrayList<>();
                 splashFragments.add(BeforeLoginFragment.newInstance(null));
             }
             mSplashListAdapter = new SimpleFragmentAdapter(getSupportFragmentManager(), splashFragments);

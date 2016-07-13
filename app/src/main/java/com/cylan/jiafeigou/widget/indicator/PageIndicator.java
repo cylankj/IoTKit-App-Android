@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package com.cylan.viewindicator;
+package com.cylan.jiafeigou.widget.indicator;
 
 import android.support.v4.view.ViewPager;
 

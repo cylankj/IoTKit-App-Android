@@ -20,10 +20,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomePageListContract;
 import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
 import com.cylan.jiafeigou.n.mvp.model.GreetBean;
 import com.cylan.jiafeigou.n.view.activity.BindDeviceActivity;
+import com.cylan.jiafeigou.n.view.activity.CameraLiveActivity;
 import com.cylan.jiafeigou.n.view.adapter.HomePageListAdapter;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
@@ -279,7 +281,14 @@ public class HomePageListFragment extends Fragment implements
     @Override
     public void onClick(View v) {
         final int position = v.getTag() == null ? 0 : (int) v.getTag();
-        ToastUtil.showToast(getContext(), "click: " + position);
+        if (position < 0 || position > homePageListAdapter.getCount() - 1)
+            return;
+        DeviceBean bean = homePageListAdapter.getItem(position);
+        if (bean != null) {
+            if (bean.deviceType == JConstant.JFG_DEVICE_CAMERA) {
+                startActivity(new Intent(getActivity(), CameraLiveActivity.class));
+            }
+        }
     }
 
     @Override

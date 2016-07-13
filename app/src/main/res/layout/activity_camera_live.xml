@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.cylan.jiafeigou.n.view.activity.CameraLiveActivity">
+
+    <RelativeLayout
+        android:id="@+id/rLayout_camera_live_top_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/color_0ba8cf">
+
+        <ImageView
+            android:id="@+id/imgV_nav_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:padding="15dp"
+            android:src="@drawable/ic_nav_back_arrow" />
+
+        <com.cylan.jiafeigou.widget.indicator.PagerSlidingTabStrip
+            android:id="@+id/v_indicator"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:layout_toRightOf="@+id/imgV_nav_back"
+            app:pstsTabPaddingLeftRight="14dip" />
+
+        <ImageView
+            android:id="@+id/imgV_camera_title_top_setting"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:padding="14dp"
+            android:src="@drawable/icon_setting" />
+    </RelativeLayout>
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/vp_camera_live"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+</LinearLayout>

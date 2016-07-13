@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    <com.cylan.viewindicator.CirclePageIndicator
+    <com.cylan.jiafeigou.widget.indicator.CirclePageIndicator
         android:id="@+id/v_indicator"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"

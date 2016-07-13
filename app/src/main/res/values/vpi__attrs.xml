@@ -126,4 +126,5 @@
         <!-- View background -->
         <attr name="android:background"/>
     </declare-styleable>
+
 </resources>

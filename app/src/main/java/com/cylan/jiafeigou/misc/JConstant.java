@@ -19,6 +19,10 @@ public class JConstant {
     public static final int TYPE_EMAIL = 1;
     public final static Pattern PHONE_REG = Pattern.compile("^1[3|4|5|7|8]\\d{9}$");
 
+    public static final int JFG_DEVICE_BELL = 0;
+    public static final int JFG_DEVICE_CAMERA = 1;
+    public static final int JFG_DEVICE_ALBUM = 2;
+    public static final int JFG_DEVICE_MAG = 3;
 
     public static final Pattern JFG_DEVICE_REG = Pattern.compile("DOG-\\d{6}");
     public static final int VALID_VERIFICATION_CODE_LEN = 6;

@@ -58,5 +58,5 @@
     <color name="color_black">#FF000000</color>
 
 
-
+    <color name="background_tab_pressed">#6633B5E5</color>
 </resources>
