@@ -1,0 +1,107 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:animateLayoutChanges="true"
+    android:background="@color/color_white"
+    android:orientation="vertical"
+    tools:context="com.cylan.jiafeigou.n.view.cam.CamMessageListFragment">
+
+    <FrameLayout
+        android:id="@+id/rLayout_cam_message_list_top"
+        android:layout_width="match_parent"
+        android:layout_height="42dp">
+
+        <TextView
+            android:gravity="center_vertical"
+            android:id="@+id/tv_cam_message_list_date"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:drawablePadding="10dp"
+            android:drawableRight="@drawable/icon_date_downtag_wonderful"
+            android:text="2015-06-12" />
+
+        <TextView
+            android:id="@+id/tv_cam_message_list_edit"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="end|center_vertical"
+            android:gravity="center_vertical"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
+            android:text="@string/EDIT_THEME"
+            android:textColor="@color/common_btn_color_state" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_gravity="bottom"
+            android:background="@color/color_d2d2d2" />
+    </FrameLayout>
+
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/srLayout_cam_list_refresh"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/fLayout_cam_message_list_timeline"
+        android:layout_below="@+id/rLayout_cam_message_list_top">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_cam_message_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </android.support.v4.widget.SwipeRefreshLayout>
+
+    <RelativeLayout
+        android:id="@+id/fLayout_cam_message_list_timeline"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:layout_alignParentBottom="true"
+        android:visibility="gone">
+
+
+        <TextView
+            android:id="@+id/tv_time_line_pop"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:background="@drawable/time_line_pop"
+            android:gravity="center"
+            android:textColor="@android:color/white"
+            android:textSize="11sp" />
+
+
+        <RelativeLayout
+            android:id="@+id/rLayout_time_line_hot"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/tv_time_line_pop"
+            android:layout_marginTop="5dp"
+            android:background="@color/color_f6f9fa">
+
+            <View
+                android:id="@+id/v_simple_38line"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/color_d2d2d2" />
+
+
+            <com.cylan.jiafeigou.widget.wheel.WheelView
+                android:id="@+id/wv_wonderful_timeline"
+                android:layout_width="match_parent"
+                android:layout_height="55dp"
+                android:layout_alignParentBottom="true"
+                android:layout_below="@+id/v_simple_38line"
+                android:layout_marginTop="5dp" />
+
+            <View
+                android:layout_width="3dp"
+                android:layout_height="35dp"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:background="@color/color_36bdff" />
+
+        </RelativeLayout>
+    </RelativeLayout>
+</RelativeLayout>
