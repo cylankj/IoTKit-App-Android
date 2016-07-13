@@ -3,11 +3,11 @@
     android:id="@+id/rLayout_device_item"
     android:layout_width="match_parent"
     android:layout_height="54dp"
-    android:background="?attr/selectableItemBackground"
+    style="@style/ripple_background"
     android:clickable="true">
 
     <TextView
-        android:background="?attr/selectableItemBackground"
+        style="@style/ripple_background"
         android:id="@+id/tv_ap_list_item"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

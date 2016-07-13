@@ -28,7 +28,7 @@
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
         android:layout_marginTop="3dp"
-        android:background="?attr/selectableItemBackgroundBorderless"
+        style="@style/ripple_background"
         android:clickable="true"
         android:padding="10dp"
         android:src="@drawable/btn_common_add" />

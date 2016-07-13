@@ -16,7 +16,7 @@
         <item>Mercoledi</item>
         <item>Giovedi</item>
         <item>Venerdi</item>
-        <item>Sabato</item>  
+        <item>Sabato</item>
     </string-array>
     <string-array name="show_weeks">
         <item>Lun</item>

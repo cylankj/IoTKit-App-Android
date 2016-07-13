@@ -114,7 +114,7 @@
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_alignParentBottom="true"
-        android:background="?attr/selectableItemBackground"
+        style="@style/ripple_background"
         android:gravity="center"
         android:text="红灯已常亮"
         android:textColor="@color/color_4b9fd5"

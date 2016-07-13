@@ -2,9 +2,9 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:hunt="http://schemas.android.com/apk/res-auto"
     android:id="@+id/rLayout_device_item"
+    style="@style/ripple_background"
     android:layout_width="match_parent"
     android:layout_height="77dp"
-    android:background="?attr/selectableItemBackground"
     android:clickable="true">
 
 

@@ -77,7 +77,7 @@
     </string-array>
     <string-array name="error_msg">
         <item>"Erreur De Base De Données"</item>
-        <item/>
+        <item />
         <item>Erreur Inconnue</item>
         <item>Heures Supplémentaires De Conversation </item>
         <item>CID n’est pas exist</item>
@@ -113,7 +113,7 @@
         <item>Impossible de connecter, vous n\’êtes pas autorisé</item>
         <item>Le bout de vidéo n’est pas en ligne</item>
         <!--33-->
-        <item/>
+        <item />
         <!--34-->
         <item>CID ne correspond pas avec SN</item>
         <item>Le compte n’est pas en ligne</item>

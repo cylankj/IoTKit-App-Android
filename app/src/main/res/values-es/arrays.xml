@@ -78,7 +78,7 @@
     <string-array name="error_msg">
         <!-- -1 对应服务器返回的ret值 -->
         <item>Error de base de datos</item>
-        <item/>
+        <item />
         <item>Error desconocido</item>
         <item>Comunicación fuera de tiempo</item>
         <item>Cid No existe</item>
@@ -113,7 +113,7 @@
         <item>No se puede conectar, no está permitido</item>
         <item>Puertode vídeos no está online</item>
         <!--33-->
-        <item/>
+        <item />
         <item>CID no concuerda con SN</item>
         <item>La cuenta no está online</item>
         <item>Ajustes guardados, entran en vigor cuando esté online el Puerto de vídeos</item>

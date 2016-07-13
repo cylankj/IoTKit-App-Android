@@ -81,8 +81,8 @@
         android:background="@color/color_d8d8d8" />
 
     <TextView
-        android:background="?attr/selectableItemBackground"
         android:id="@+id/tv_bind_camera_tip"
+        style="@style/ripple_background"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_alignParentBottom="true"

@@ -99,15 +99,6 @@
         <item name="android:textColor">@color/home_bottom_menu_text_color_selector</item>
     </style>
 
-    <!-- 圆形的进度条 -->
-    <style name="progress_circle_login_style">
-        <item name="android:indeterminateDrawable">@drawable/progressbar_login_loading</item>
-        <item name="android:minWidth">40dp</item>
-        <item name="android:minHeight">40dp</item>
-        <item name="android:maxWidth">76dp</item>
-        <item name="android:maxHeight">76dp</item>
-    </style>
-
 
     <declare-styleable name="ShadowLayout">
         <attr name="sl_cornerRadius" format="dimension" />
@@ -135,5 +126,9 @@
         <item name="android:windowNoTitle">true</item>
         <!--背景透明-->
         <item name="android:windowBackground">@android:color/transparent</item>
+    </style>
+
+    <style name="ripple_background">
+        <item name="android:background">@null</item>
     </style>
 </resources>

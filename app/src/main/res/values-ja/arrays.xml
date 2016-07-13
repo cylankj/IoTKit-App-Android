@@ -76,7 +76,7 @@
     </string-array>
     <string-array name="error_msg">
         <item>"データベースミス"</item>
-        <item/>
+        <item />
         <item>間違い</item>
         <item>会话のタイムアウト</item>
         <item>CID not exist</item>
@@ -109,7 +109,7 @@
         <item>原始パスワードが新パスワードと同じである</item>
         <item>連接できなくて、ご権限がない</item>
         <item>ビデオ端がオフライン</item>
-        <item/>
+        <item />
         <item>CIDとSNは合わない</item>
         <item>アカウントがオフライン</item>
         <item>設置が保存されて、ビデオ端がON　LINE場合に、自動に発効できる</item>

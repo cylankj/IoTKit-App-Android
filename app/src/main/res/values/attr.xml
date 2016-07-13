@@ -87,4 +87,10 @@
         <attr name="pstsShouldExpand" format="boolean" />
         <attr name="pstsTextAllCaps" format="boolean" />
     </declare-styleable>
+
+    <declare-styleable name="SimpleProgressStyle">
+        <attr name="progress_stroke_width" format="dimension" />
+        <attr name="progress_stroke_color" format="reference|color" />
+        <attr name="progress_point_radius" format="dimension" />
+    </declare-styleable>
 </resources>

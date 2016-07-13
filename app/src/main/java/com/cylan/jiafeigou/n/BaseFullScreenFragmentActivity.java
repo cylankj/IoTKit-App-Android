@@ -6,9 +6,9 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
+import android.widget.Toast;
 
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.widget.SystemBarTintManager;
 import com.cylan.utils.ListUtils;
 
@@ -43,9 +43,8 @@ public class BaseFullScreenFragmentActivity extends FragmentActivity implements 
             super.onBackPressed();
         } else {
             time = System.currentTimeMillis();
-            ToastUtil.showToast(this,
-                    String.format(getString(R.string.click_back_again_exit),
-                            getString(R.string.app_name)));
+            Toast.makeText(getApplicationContext(), String.format(getString(R.string.click_back_again_exit),
+                    getString(R.string.app_name)), Toast.LENGTH_SHORT).show();
         }
     }
 

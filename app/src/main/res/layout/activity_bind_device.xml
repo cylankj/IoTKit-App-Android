@@ -27,7 +27,7 @@
                     android:id="@+id/imgV_top_bar_left"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="?attr/selectableItemBackgroundBorderless"
+                    style="@style/ripple_background"
                     android:padding="15dp"
                     android:src="@drawable/ic_nav_back_arrow" />
 
@@ -91,8 +91,9 @@
             hunt:textColor="@color/color_383838"
             hunt:textSize="16sp" />
     </LinearLayout>
-<FrameLayout
-    android:id="@+id/fLayout_bind_device_fragment_container_id"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"/>
+
+    <FrameLayout
+        android:id="@+id/fLayout_bind_device_fragment_container_id"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 </FrameLayout>

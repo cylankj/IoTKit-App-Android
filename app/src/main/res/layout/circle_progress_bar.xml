@@ -1,0 +1,7 @@
+<com.cylan.jiafeigou.widget.SimpleProgressBar xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:hunt="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/progress_bar"
+    android:layout_width="50dp"
+    android:layout_height="50dp"
+    android:padding="10dp"
+    hunt:progress_point_radius="3dp" />

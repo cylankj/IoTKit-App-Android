@@ -51,7 +51,6 @@
     <color name="color_383838">#383838</color>
 
 
-
     <!--纯色-->
     <color name="color_white">#FFFFFFFF</color>
     <color name="color_red">#FFFF0000</color>
@@ -59,4 +58,5 @@
 
 
     <color name="background_tab_pressed">#6633B5E5</color>
+    <color name="color_cam_live_handle_bar_background">#33000000</color>
 </resources>

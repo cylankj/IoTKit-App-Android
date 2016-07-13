@@ -14,5 +14,8 @@
         <item name="android:windowTranslucentStatus">true</item>
     </style>
 
+    <style name="ripple_background">
+        <item name="android:background">?attr/selectableItemBackgroundBorderless</item>
+    </style>
 
 </resources>

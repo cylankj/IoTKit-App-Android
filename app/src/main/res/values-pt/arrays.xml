@@ -78,7 +78,7 @@
     <string-array name="error_msg">
         <!-- -1 对应服务器返回的ret值 -->
         <item>Erro no banco de dados</item>
-        <item/>
+        <item />
         <item>Erro desconhecido</item>
         <item>Diálogo timeout</item>
         <item>Cid Não existe</item>
@@ -113,7 +113,7 @@
         <item>Ligação não é possível, você não está autorizado</item>
         <item>O lado de vídeo não está online</item>
         <!--33-->
-        <item/>
+        <item />
         <item>CID e SN não coincidem</item>
         <item>A conta não está online</item>
         <item>As definições são guardadas, entram em vigor automaticamente quando o lado de vídeo está online</item>
@@ -147,8 +147,6 @@
         <item>Médio</item>
         <item>Alto</item>
     </string-array>
-
-
 
 
 </resources>
