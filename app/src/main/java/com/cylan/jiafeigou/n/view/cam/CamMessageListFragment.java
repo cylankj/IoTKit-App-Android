@@ -17,8 +17,8 @@ import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamMessageListContract;
 import com.cylan.jiafeigou.n.mvp.model.CamMessageBean;
 import com.cylan.jiafeigou.n.view.adapter.CamMessageListAdapter;
-import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.wheel.WheelView;
+import com.superlog.SLog;
 
 import java.util.ArrayList;
 
@@ -47,7 +47,10 @@ public class CamMessageListFragment extends Fragment
     WheelView wvWonderfulTimeline;
     @BindView(R.id.fLayout_cam_message_list_timeline)
     RelativeLayout fLayoutCamMessageListTimeline;
-
+    /**
+     * 列表第一条可见item的position,用户刷新timeLine控件的位置。
+     */
+    private int currentPosition = 0;
     private CamMessageListContract.Presenter presenter;
     private CamMessageListAdapter camMessageListAdapter;
 
@@ -84,6 +87,28 @@ public class CamMessageListFragment extends Fragment
         camMessageListAdapter = new CamMessageListAdapter(getContext(), null, null);
         rvCamMessageList.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false));
         rvCamMessageList.setAdapter(camMessageListAdapter);
+        rvCamMessageList.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                SLog.d("newState: " + newState);
+            }
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                final int fPos = ((LinearLayoutManager) recyclerView.getLayoutManager()).findFirstVisibleItemPosition();
+                setCurrentPosition(fPos);
+            }
+        });
+    }
+
+
+
+    private void setCurrentPosition(int position) {
+        if (currentPosition == position)
+            return;
+        currentPosition = position;
+        SLog.d("fPos: " + position);
     }
 
     @OnClick({R.id.tv_cam_message_list_date, R.id.tv_cam_message_list_edit})

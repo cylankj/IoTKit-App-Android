@@ -44,13 +44,13 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
         setContentView(R.layout.activity_camera_live);
         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
         ButterKnife.bind(this);
+        initTopBar();
+        initAdapter();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        initTopBar();
-        initAdapter();
     }
 
     private void initAdapter() {
