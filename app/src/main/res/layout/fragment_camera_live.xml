@@ -1,12 +1,14 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context="com.cylan.jiafeigou.n.view.cam.CameraLiveFragment">
 
     <FrameLayout
+        android:id="@+id/fLayout_cam_live_view"
         android:layout_width="match_parent"
-        android:layout_height="350dp"
+        android:layout_height="10dp"
         android:background="@drawable/bg_head_daytime_wonderful">
 
         <FrameLayout
@@ -18,15 +20,15 @@
 
         <include layout="@layout/v_stub_progress" />
 
-        <include layout="@layout/cam_live_float_handle_bar" />
+        <include layout="@layout/cam_live_port_handle_bar" />
 
     </FrameLayout>
 
     <FrameLayout
+        android:id="@+id/fLayout_cam_live_menu"
         android:layout_width="match_parent"
-        android:layout_height="100dp"
+        android:layout_height="match_parent"
         android:layout_gravity="bottom"
-        android:layout_marginBottom="70dp"
         android:paddingLeft="30dp"
         android:paddingRight="30dp">
 
@@ -41,10 +43,10 @@
 
         <ImageView
             android:id="@+id/imgV_cam_trigger_recorder"
+            style="@style/ripple_background"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            style="@style/ripple_background"
             android:padding="10dp"
             android:src="@drawable/icon_record" />
 
@@ -53,8 +55,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end|center_vertical"
-            style="@style/ripple_background"
+            android:background="?attr/selectableItemBackgroundBorderless"
             android:padding="20dp"
             android:src="@drawable/icon_capture_selector" />
     </FrameLayout>
-</FrameLayout>
+</LinearLayout>

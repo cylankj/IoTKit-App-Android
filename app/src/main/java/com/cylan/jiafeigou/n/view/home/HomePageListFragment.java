@@ -27,7 +27,6 @@ import com.cylan.jiafeigou.n.mvp.model.GreetBean;
 import com.cylan.jiafeigou.n.view.activity.BindDeviceActivity;
 import com.cylan.jiafeigou.n.view.activity.CameraLiveActivity;
 import com.cylan.jiafeigou.n.view.adapter.HomePageListAdapter;
-import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.dialog.HomeMenuDialog;
 import com.cylan.jiafeigou.widget.sticky.HeaderAnimator;
@@ -238,6 +237,7 @@ public class HomePageListFragment extends Fragment implements
 
     @Override
     public void setPresenter(HomePageListContract.Presenter presenter) {
+        SLog.e("ffff: " + (presenter == null));
         this.presenter = presenter;
     }
 

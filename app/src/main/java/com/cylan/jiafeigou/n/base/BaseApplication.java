@@ -26,7 +26,7 @@ public class BaseApplication extends Application {
         super.onCreate();
         enableDebugOptions();
         LeakCanary.install(this);
-        startService(new Intent(this, DaemonService.class));
+//        startService(new Intent(this, DaemonService.class));
         startService(new Intent(this, FirstTaskInitService.class));
     }
 

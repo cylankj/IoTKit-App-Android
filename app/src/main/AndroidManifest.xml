@@ -141,9 +141,10 @@
             android:windowSoftInputMode="adjustPan|stateHidden" />
         <activity
             android:name=".n.view.activity.CameraLiveActivity"
-            android:configChanges="locale|orientation|keyboardHidden"
+            android:configChanges="locale|orientation|keyboardHidden|navigation|screenSize"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
+            android:theme="@style/CamActivityTheme"
             android:windowSoftInputMode="adjustPan|stateHidden" />
     </application>
 

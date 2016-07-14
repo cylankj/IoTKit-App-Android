@@ -15,9 +15,9 @@
 
         <ImageView
             android:id="@+id/imgV_nav_back"
+            style="@style/ripple_background"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            style="@style/ripple_background"
             android:padding="15dp"
             android:src="@drawable/ic_nav_back_arrow" />
 
@@ -37,7 +37,7 @@
             android:src="@drawable/icon_setting" />
     </RelativeLayout>
 
-    <android.support.v4.view.ViewPager
+    <com.cylan.jiafeigou.widget.CustomViewPager
         android:id="@+id/vp_camera_live"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

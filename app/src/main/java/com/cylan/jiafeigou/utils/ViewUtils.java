@@ -6,7 +6,6 @@ import android.os.Build;
 import android.text.InputFilter;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -106,6 +105,20 @@ public class ViewUtils {
                     view.setEnabled(true);
             }
         }, 1000);
+    }
+
+    public static void updateViewHeight(View view, float ratio) {
+        final int width = Resources.getSystem().getDisplayMetrics().widthPixels;
+        ViewGroup.LayoutParams lp = view.getLayoutParams();
+        lp.height = (int) (width * ratio);
+        view.setLayoutParams(lp);
+    }
+
+    public static void updateViewMatchScreenHeight(View view) {
+        final int height = Resources.getSystem().getDisplayMetrics().heightPixels;
+        ViewGroup.LayoutParams lp = view.getLayoutParams();
+        lp.height = height;
+        view.setLayoutParams(lp);
     }
 }
 
