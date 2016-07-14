@@ -20,16 +20,22 @@ import java.util.List;
 
 public class BaseFullScreenFragmentActivity extends FragmentActivity implements FragmentManager.OnBackStackChangedListener {
 
+    SystemBarTintManager tintManager;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT && Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            SystemBarTintManager tintManager = new SystemBarTintManager(this);
-            tintManager.setStatusBarTintEnabled(true);
+            tintManager = new SystemBarTintManager(this);
+            setSystemBarTintEnable(true);
         }
         getSupportFragmentManager().addOnBackStackChangedListener(this);
     }
 
+    protected void setSystemBarTintEnable(boolean enable) {
+        if (tintManager != null)
+            tintManager.setStatusBarTintEnabled(enable);
+    }
 
     private static long time = 0;
 

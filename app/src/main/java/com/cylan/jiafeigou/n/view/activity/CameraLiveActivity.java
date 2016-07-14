@@ -43,7 +43,7 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
     CustomViewPager vpCameraLive;
     @BindView(R.id.imgV_camera_title_top_setting)
     ImageView imgVCameraTitleTopSetting;
-    private WeakReference<SystemUiHider> systemUiHidderWeakReference;
+    private WeakReference<SystemUiHider> systemUiHiderWeakReference;
     private SimpleListener simpleListener = new SimpleListener();
 
     @Override
@@ -108,12 +108,14 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
         getWindow().setAttributes(attrs);
         checkSystemHider();
         if (port) {
-            systemUiHidderWeakReference.get().setSupportAutoHide(false);
-            systemUiHidderWeakReference.get().show();
+            systemUiHiderWeakReference.get().setSupportAutoHide(false);
+            systemUiHiderWeakReference.get().show();
         } else {
-            systemUiHidderWeakReference.get().setSupportAutoHide(true);
-            systemUiHidderWeakReference.get().delayedHide(1000);
+            systemUiHiderWeakReference.get().setSupportAutoHide(true);
+            systemUiHiderWeakReference.get().delayedHide(1000);
         }
+        //状态栏的背景色
+        setSystemBarTintEnable(port);
     }
 
     private void initAdapter() {
@@ -128,9 +130,9 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
     }
 
     private void checkSystemHider() {
-        if (systemUiHidderWeakReference == null
-                || systemUiHidderWeakReference.get() == null) {
-            systemUiHidderWeakReference = new WeakReference<>(new SystemUiHider(getWindow().getDecorView(), true));
+        if (systemUiHiderWeakReference == null
+                || systemUiHiderWeakReference.get() == null) {
+            systemUiHiderWeakReference = new WeakReference<>(new SystemUiHider(getWindow().getDecorView(), true));
         }
     }
 

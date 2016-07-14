@@ -2,6 +2,7 @@ package com.cylan.jiafeigou.support.block.impl;
 
 import android.content.Context;
 import android.os.Handler;
+import android.widget.Toast;
 
 import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.support.block.OnBlockEventInterceptor;
@@ -38,8 +39,8 @@ public class CustomBlockEvent implements OnBlockEventInterceptor {
 //                    }
 //                    final String content =
 //                            String.format(TAG, (System.currentTimeMillis() - tmpTime));
-                    ToastUtil.showFailToast(BlockCanaryContext.get().getContext()
-                            , TAG);
+                    Toast.makeText(BlockCanaryContext.get().getContext()
+                            , TAG, Toast.LENGTH_SHORT).show();
                 }
             });
     }
