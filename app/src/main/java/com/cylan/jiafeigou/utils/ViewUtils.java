@@ -1,5 +1,6 @@
 package com.cylan.jiafeigou.utils;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
 import android.os.Build;
@@ -119,6 +120,11 @@ public class ViewUtils {
         ViewGroup.LayoutParams lp = view.getLayoutParams();
         lp.height = height;
         view.setLayoutParams(lp);
+    }
+
+
+    public static void setRequestedOrientation(Activity activity, int orientation) {
+        activity.setRequestedOrientation(orientation);
     }
 }
 

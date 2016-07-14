@@ -39,7 +39,12 @@ public class LiveBottomBarAnimDelegate {
 
     public LiveBottomBarAnimDelegate(View view) {
         weakReference = new WeakReference<>(view);
-        initAnimation();
+        view.post(new Runnable() {
+            @Override
+            public void run() {
+                initAnimation();
+            }
+        });
     }
 
     Handler handler = new Handler(new Handler.Callback() {
@@ -56,8 +61,8 @@ public class LiveBottomBarAnimDelegate {
         if (weakReference == null || weakReference.get() == null)
             return;
         if (animatorShow == null) {
-            animatorShow = ObjectAnimator.ofFloat(weakReference.get(), "scaleY", 0.0f, 1.0f);
-            animatorShow.setDuration(600);
+            animatorShow = ObjectAnimator.ofFloat(weakReference.get(), "translationY", weakReference.get().getHeight(), 0.0f);
+            animatorShow.setDuration(250);
             animatorShow.setInterpolator(new AccelerateInterpolator());
             animatorShow.addListener(new AnimatorUtils.SimpleAnimationListener() {
                 @Override
@@ -73,8 +78,8 @@ public class LiveBottomBarAnimDelegate {
             });
         }
         if (animatorHide == null) {
-            animatorHide = ObjectAnimator.ofFloat(weakReference.get(), "scaleY", 1.0f, 0.0f);
-            animatorHide.setDuration(600);
+            animatorHide = ObjectAnimator.ofFloat(weakReference.get(), "translationY", 0.0f, weakReference.get().getHeight());
+            animatorHide.setDuration(250);
             animatorHide.setInterpolator(new LinearInterpolator());
             animatorHide.addListener(new AnimatorUtils.SimpleAnimationListener() {
                 @Override
@@ -101,11 +106,11 @@ public class LiveBottomBarAnimDelegate {
     }
 
     private void show() {
-        animatorShow.start();
+        if (animatorShow != null && !animatorShow.isRunning()) animatorShow.start();
     }
 
     private void hide() {
-        animatorHide.start();
+        if (animatorHide != null && !animatorHide.isRunning()) animatorHide.start();
     }
 
     public void startAnimation(boolean auto) {

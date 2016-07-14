@@ -13,8 +13,10 @@ import android.view.ViewStub;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.n.view.misc.LandLiveBarAnimDelegate;
 import com.cylan.jiafeigou.n.view.misc.LiveBottomBarAnimDelegate;
 import com.cylan.jiafeigou.utils.ViewUtils;
 
@@ -27,7 +29,7 @@ import butterknife.OnClick;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class CameraLiveFragment extends Fragment {
+public class CameraLiveFragment extends Fragment implements CamLandLiveAction {
 
 
     @BindView(R.id.fLayout_live_view_container)
@@ -57,9 +59,10 @@ public class CameraLiveFragment extends Fragment {
     @BindView(R.id.fLayout_cam_live_menu)
     FrameLayout fLayoutCamLiveMenu;
 
+    WeakReference<View> fLayoutLandScapeViewHolderRef;
     private WeakReference<LiveBottomBarAnimDelegate> liveBottomBarAnimDelegateWeakReference;
-
-
+    private WeakReference<LandLiveLayerViewAction> landLiveLayerViewActionWeakReference;
+    CamLandLiveLayerInterface camLandLiveLayerInterface;
 
     public CameraLiveFragment() {
         // Required empty public constructor
@@ -88,6 +91,13 @@ public class CameraLiveFragment extends Fragment {
     }
 
     @Override
+    public void onPause() {
+        super.onPause();
+        if (camLandLiveLayerInterface != null)
+            camLandLiveLayerInterface.destroy();
+    }
+
+    @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
@@ -95,11 +105,53 @@ public class CameraLiveFragment extends Fragment {
             fLayoutLiveBottomHandleBar.setVisibility(View.GONE);
             fLayoutCamLiveMenu.setVisibility(View.GONE);
             ViewUtils.updateViewMatchScreenHeight(fLayoutCamLiveView);
+            showLandLayerView(true);
         } else if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
             // 加入竖屏要处理的代码
             fLayoutCamLiveMenu.setVisibility(View.VISIBLE);
             fLayoutLiveBottomHandleBar.setVisibility(View.VISIBLE);
             ViewUtils.updateViewHeight(fLayoutCamLiveView, 0.75f);
+            showLandLayerView(false);
+        }
+    }
+
+    private void showLandLayerView(boolean show) {
+        if (show) {
+            initLandView();
+            if (fLayoutLandScapeViewHolderRef != null && fLayoutLandScapeViewHolderRef.get() != null)
+                fLayoutLandScapeViewHolderRef.get().setVisibility(View.VISIBLE);
+        } else {
+            if (fLayoutLandScapeViewHolderRef != null && fLayoutLandScapeViewHolderRef.get() != null)
+                fLayoutLandScapeViewHolderRef.get().setVisibility(View.GONE);
+        }
+        if (show) {
+            initLandLiveLayerViewAction();
+        }
+    }
+
+    private void initLandLiveLayerViewAction() {
+        if (landLiveLayerViewActionWeakReference == null
+                || landLiveLayerViewActionWeakReference.get() == null) {
+            camLandLiveLayerInterface = new LandLiveLayerViewAction(fLayoutLandScapeViewHolderRef.get(), new CamLandLiveLayerViewBundle());
+            landLiveLayerViewActionWeakReference =
+                    new WeakReference<>((LandLiveLayerViewAction) camLandLiveLayerInterface);
+            landLiveLayerViewActionWeakReference.get().setCamLandLiveAction(this);
+        }
+    }
+
+    /**
+     * 初始化 Layer层view，横屏全屏时候，需要在上层
+     */
+    private void initLandView() {
+        if (fLayoutLandScapeViewHolderRef == null || fLayoutLandScapeViewHolderRef.get() == null) {
+            View view = LayoutInflater.from(getContext()).inflate(R.layout.fragment_camera_live_land_top_layer, null);
+            if (view != null) {
+                fLayoutLandScapeViewHolderRef = new WeakReference<>(view);
+            }
+        }
+        View view = fLayoutLiveViewContainer.findViewById(R.id.fLayout_cam_live_land_layer);
+        if (view == null) {
+            fLayoutLiveViewContainer.addView(fLayoutLandScapeViewHolderRef.get());
         }
     }
 
@@ -118,17 +170,16 @@ public class CameraLiveFragment extends Fragment {
             case R.id.imgV_cam_trigger_capture:
                 break;
             case R.id.imgV_cam_zoom_to_full_screen:
-                getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+                ViewUtils.setRequestedOrientation(getActivity(), ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
                 break;
             case R.id.tv_cam_show_timeline:
+
                 break;
             case R.id.fLayout_cam_live_view:
                 animateBottomBar(false);
                 break;
         }
     }
-
-
 
     /**
      * 检查
@@ -144,4 +195,222 @@ public class CameraLiveFragment extends Fragment {
                 .startAnimation(auto);
     }
 
+    @Override
+    public void onLandPlay(int state) {
+        Toast.makeText(getContext(), "play: ", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onLandBack() {
+        Toast.makeText(getContext(), "onBack: ", Toast.LENGTH_SHORT).show();
+        ViewUtils.setRequestedOrientation(getActivity(), ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+    }
+
+    @Override
+    public void onLandSwitchSpeaker(int state) {
+        Toast.makeText(getContext(), "onSwitchSpeaker: ", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onLandSwitchRecorder(int state) {
+        Toast.makeText(getContext(), "onSwitchRecorder: ", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onLandCapture() {
+        Toast.makeText(getContext(), "onCapture: ", Toast.LENGTH_SHORT).show();
+    }
+
+
+    private static class LandLiveLayerViewAction implements CamLandLiveLayerInterface {
+        WeakReference<View> viewWeakReference;
+        CamLandLiveLayerViewBundle bundle;
+        ImageView imgvPlay;
+        View imgvSpeaker;
+        View imgvRecorder;
+        View imgvCapture;
+        TextView tvNavBack;
+        LandLiveBarAnimDelegate landLiveBarAnimDelegate;
+        CamLandLiveAction camLandLiveAction;
+
+        /**
+         * updateBundle
+         *
+         * @param bundle
+         */
+        public void setBundle(CamLandLiveLayerViewBundle bundle) {
+            this.bundle = bundle;
+            setup();
+        }
+
+        public void setCamLandLiveAction(CamLandLiveAction camLandLiveAction) {
+            this.camLandLiveAction = camLandLiveAction;
+        }
+
+        private static final int[] playId = {R.drawable.icon_landscape_play,
+                R.drawable.icon_landscape_pause};
+
+        public LandLiveLayerViewAction(View view,
+                                       CamLandLiveLayerViewBundle bundle) {
+            this.viewWeakReference = new WeakReference<>(view);
+            this.bundle = bundle;
+            setup();
+            landLiveBarAnimDelegate = new LandLiveBarAnimDelegate(view.findViewById(R.id.fLayout_cam_live_land_top_bar),
+                    view.findViewById(R.id.rLayout_cam_live_land_bottom_bar));
+            landLiveBarAnimDelegate.startAnimation(true);
+        }
+
+        private void setup() {
+            tvNavBack = (TextView) viewWeakReference.get().findViewById(R.id.imgV_cam_live_land_nav_back);
+
+            tvNavBack.setText(bundle.title);
+            tvNavBack.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (camLandLiveAction != null) camLandLiveAction.onLandBack();
+                }
+            });
+
+            viewWeakReference.get().findViewById(R.id.fLayout_cam_live_land_layer)
+                    .setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            landLiveBarAnimDelegate.startAnimation(false);
+                        }
+                    });
+            imgvPlay = (ImageView) viewWeakReference.get().findViewById(R.id.imgV_cam_live_land_play);
+            imgvPlay.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (camLandLiveAction != null)
+                        camLandLiveAction.onLandPlay(imgvSpeaker.getTag() == null ? 0 : 1);
+                }
+            });
+            //speaker
+            imgvSpeaker = viewWeakReference.get().findViewById(R.id.imgV_cam_switch_speaker);
+            imgvSpeaker.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (camLandLiveAction != null)
+                        camLandLiveAction.onLandSwitchSpeaker(imgvSpeaker.getTag() == null ? 0 : 1);
+                }
+            });
+            imgvRecorder = viewWeakReference.get().findViewById(R.id.imgV_cam_trigger_recorder);
+            imgvRecorder.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (camLandLiveAction != null)
+                        camLandLiveAction.onLandSwitchSpeaker(imgvRecorder.getTag() == null ? 0 : 1);
+                }
+            });
+            imgvCapture = viewWeakReference.get().findViewById(R.id.imgV_cam_trigger_capture);
+            imgvCapture.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (camLandLiveAction != null)
+                        camLandLiveAction.onLandSwitchSpeaker(imgvCapture.getTag() == null ? 0 : 1);
+                }
+            });
+        }
+
+
+        @Override
+        public void updateLandPlayBtn(int state) {
+            if (imgvPlay != null && (state == 0 || state == 1)) {
+                imgvPlay.setImageResource(playId[state]);
+            }
+        }
+
+        @Override
+        public void updateLandSpeaker(int state) {
+            if (imgvSpeaker != null) {
+                imgvSpeaker.setEnabled(state != -1);
+                if (state == -1) {
+                    return;
+                }
+                //set drawable
+            }
+        }
+
+        @Override
+        public void updateLandRecorder(int state) {
+            if (imgvRecorder != null) {
+                imgvRecorder.setEnabled(state != -1);
+                if (state == -1) {
+                    return;
+                }
+                //set drawable
+            }
+        }
+
+        @Override
+        public void updateLandCapture(int state) {
+            if (imgvCapture != null) {
+                imgvCapture.setEnabled(state != -1);
+            }
+        }
+
+        @Override
+        public void updateLandTitle(String content) {
+            if (tvNavBack != null && content != null)
+                tvNavBack.setText(content);
+        }
+
+        @Override
+        public void destroy() {
+            if (landLiveBarAnimDelegate != null)
+                landLiveBarAnimDelegate.destroy();
+        }
+    }
+
+
+    private static class CamLandLiveLayerViewBundle {
+
+        public String title;
+        /**
+         * -1： disable  1:open speaker  0: close speaker
+         */
+        public int speakerState;
+        /**
+         * -1： disable  1:open recorder 0: close recorder
+         */
+        public int recorderState;
+        /**
+         * -1： disable  1:enable
+         */
+        public int captureState;
+    }
+}
+
+
+interface CamLandLiveLayerInterface {
+    /**
+     * 0：pause 1:playing
+     *
+     * @param state
+     */
+    void updateLandPlayBtn(int state);
+
+    void updateLandSpeaker(int state);
+
+    void updateLandRecorder(int state);
+
+    void updateLandCapture(int state);
+
+    void updateLandTitle(String content);
+
+    void destroy();
+}
+
+interface CamLandLiveAction {
+
+    void onLandPlay(int state);
+
+    void onLandBack();
+
+    void onLandSwitchSpeaker(int state);
+
+    void onLandSwitchRecorder(int state);
+
+    void onLandCapture();
 }
