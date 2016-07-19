@@ -22,7 +22,7 @@ public class HomeMenuDialog extends Dialog {
     public HomeMenuDialog(Context context,
                           final View.OnClickListener cancelListener,
                           final View.OnClickListener confirmListener) {
-        super(context, R.style.dialog);
+        super(context, R.style.l_style_dialog);
         setCanceledOnTouchOutside(false);
         View view = View.inflate(context, R.layout.dialog_home_menu, null);
         view.findViewById(R.id.tv_dialog_home_menu_cancel)

@@ -133,8 +133,9 @@ public class WiFiListDialogFragment extends DialogFragment implements ToBindDevi
         layoutHeightAnimation.addListener(new AnimatorUtils.SimpleAnimationListener() {
             @Override
             public void onAnimationEnd(Animator animator) {
-                getDialog().getWindow()
-                        .setLayout(maxWidth, currentHeight);
+                if (getDialog() != null && getDialog().getWindow() != null)
+                    getDialog().getWindow()
+                            .setLayout(maxWidth, currentHeight);
             }
         });
         layoutHeightAnimation.start();

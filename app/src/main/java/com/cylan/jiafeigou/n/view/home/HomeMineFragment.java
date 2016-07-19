@@ -136,7 +136,7 @@ public class HomeMineFragment extends android.support.v4.app.Fragment
     public void onPortraitUpdate(String url) {
         if (getActivity() != null) {
 //            testBlurBackground(R.drawable.clouds);
-            ivHomeMinePortrait.setImageDrawable(getResources().getDrawable(R.drawable.clouds));
+            ivHomeMinePortrait.setImageResource(R.drawable.clouds);
             if (presenter != null) presenter.portraitBlur(R.drawable.clouds);
             tvHomeMineMsgCount.post(new Runnable() {
                 @Override
