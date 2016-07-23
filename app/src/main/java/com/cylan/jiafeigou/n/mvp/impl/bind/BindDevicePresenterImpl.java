@@ -45,7 +45,7 @@ public class BindDevicePresenterImpl extends AbstractPresenter<BindDeviceContrac
                 .observeWifiAccessPoints(getView().getContext().getApplicationContext(),
                         false)
                 .subscribeOn(Schedulers.io())
-                .debounce(200, TimeUnit.MILLISECONDS)
+                .throttleFirst(1000, TimeUnit.MILLISECONDS)
                 .map(new Func1<List<ScanResult>, Result>() {
                     @Override
                     public Result call(List<ScanResult> resultList) {
