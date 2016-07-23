@@ -43,7 +43,7 @@ public class NeedLoginActivity extends BaseFullScreenFragmentActivity {
         _subscriptions = new CompositeSubscription();
         _subscriptions
                 .add(RxBus.getInstance().toObservable()
-                        .throttleFirst(2000, TimeUnit.MILLISECONDS)//2s内只发生一次
+                        .throttleFirst(1000, TimeUnit.MILLISECONDS)//2s内只发生一次
                         .subscribe(new Action1<Object>() {
                             @Override
                             public void call(Object event) {
