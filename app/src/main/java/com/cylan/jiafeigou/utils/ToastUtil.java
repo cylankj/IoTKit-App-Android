@@ -62,4 +62,9 @@ public class ToastUtil {
         }
     }
 
+    //表示设置成功的时候，显示的吐司
+    public static void showSetSuccessToast(Context cxt, String content){
+
+    }
+
 }
