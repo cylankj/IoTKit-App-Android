@@ -1,16 +1,14 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:hunt="http://schemas.android.com/apk/res-auto"
     android:id="@+id/fLayoutHomeHeaderContainer"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/bg_home_title_daytime">
 
-    <com.cylan.jiafeigou.widget.wave.WaveView
+    <com.cylan.jiafeigou.widget.wave.SuperWaveView
         android:id="@+id/vWaveAnimation"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:layout_gravity="bottom"
-        hunt:frontColor="@color/color_wave_front" />
+        android:layout_height="100dp"
+        android:layout_gravity="bottom" />
 
     <TextView
         android:id="@+id/tvHeaderNickName"

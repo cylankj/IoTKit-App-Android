@@ -35,7 +35,7 @@ import rx.subscriptions.CompositeSubscription;
  */
 public class LoginPresenterImpl extends AbstractPresenter<LoginModelContract.View> implements LoginModelContract.Presenter {
 
-    private JfgCmd cmd;
+//    private JfgCmd cmd;
     Context ctx;
     CompositeSubscription subscription;
 
@@ -49,9 +49,9 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginModelContract.Vie
     public void executeLogin(LoginAccountBean login) {
         if (login != null) {
             if (!TextUtils.isEmpty(login.session)) {
-                cmd.reLogin(login.session);
+//                cmd.reLogin(login.session);
             } else {
-                cmd.login(login.userName, login.pwd, "");
+//                cmd.login(login.userName, login.pwd, "");
             }
         }
     }
@@ -59,7 +59,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginModelContract.Vie
 
     @Override
     public void start() {
-        cmd = JfgCmd.getCmd();
+//        cmd = JfgCmd.getCmd();
         subscription = new CompositeSubscription();
         subscription.add(
                 RxBus.getInstance()
@@ -125,7 +125,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginModelContract.Vie
                     alias = jsonResponse.getString("nickname");
                 }
 //                PreferencesUtils.setThirDswLoginPicUrl(ctx, jsonResponse.getString("figureurl_qq_1"));
-                cmd.openLogin(alias, "", "QQ", ""); // 接口没测
+//                cmd.openLogin(alias, "", "QQ", ""); // 接口没测
             } catch (JSONException e) {
                 SLog.e(e.toString());
             }
@@ -195,7 +195,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginModelContract.Vie
                 if (!TextUtils.isEmpty(response)) {
                     String strId = new JSONObject(response).getString("idstr");
 //                    PreferencesUtils.setThirDswLoginPicUrl(ctx, new JSONObject(response).getString("profile_image_url"));
-                    cmd.openLogin(strId, "", "SINA", ""); // 接口没测
+//                    cmd.openLogin(strId, "", "SINA", ""); // 接口没测
                 }
             } catch (JSONException e) {
                 SLog.e(e.toString());

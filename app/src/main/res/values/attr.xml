@@ -15,6 +15,10 @@
         <attr name="frontColor" format="color" />
         <attr name="behindColor" format="color" />
     </declare-styleable>
+    <declare-styleable name="SuperWaveTheme">
+        <attr name="waveColor" format="color|reference" />
+        <attr name="waveCount" format="integer" />
+    </declare-styleable>
     <declare-styleable name="HomeMineItemViewStyle">
         <attr name="leftDrawable" format="reference" />
         <attr name="rightDrawable" format="reference" />

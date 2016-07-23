@@ -31,6 +31,7 @@ import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.dialog.HomeMenuDialog;
 import com.cylan.jiafeigou.widget.sticky.HeaderAnimator;
 import com.cylan.jiafeigou.widget.sticky.StickyHeaderBuilder;
+import com.cylan.jiafeigou.widget.wave.SuperWaveView;
 import com.cylan.jiafeigou.widget.wave.WaveHelper;
 import com.cylan.jiafeigou.widget.wave.WaveView;
 import com.superlog.SLog;
@@ -64,7 +65,7 @@ public class HomePageListFragment extends Fragment implements
     @BindView(R.id.rV_devices_list)
     RecyclerView rVDevicesList;//设备列表
     @BindView(R.id.vWaveAnimation)
-    WaveView vWaveAnimation;
+    SuperWaveView vWaveAnimation;
 
     @BindView(R.id.tvHeaderLastTitle)
     TextView tvHeaderLastTitle;
@@ -74,7 +75,7 @@ public class HomePageListFragment extends Fragment implements
 
     private HomePageListAdapter homePageListAdapter;
     private SimpleScrollListener simpleScrollListener;
-    private WaveHelper waveHelper;
+//    private WaveHelper waveHelper;
     /**
      * 手动完成刷新,自动完成刷新 订阅者.
      */
@@ -147,9 +148,7 @@ public class HomePageListFragment extends Fragment implements
 
     private void initHeaderView() {
         if (simpleScrollListener == null) {
-            if (waveHelper == null)
-                waveHelper = new WaveHelper(vWaveAnimation);
-            simpleScrollListener = new SimpleScrollListener(waveHelper, tvHeaderLastTitle);
+            simpleScrollListener = new SimpleScrollListener(vWaveAnimation, tvHeaderLastTitle);
         }
         StickyHeaderBuilder.stickTo(rVDevicesList, simpleScrollListener)
                 .setHeader(R.id.fLayoutHomeHeaderContainer, (ViewGroup) getView())
@@ -162,14 +161,12 @@ public class HomePageListFragment extends Fragment implements
      * 水波纹动画初始化
      */
     private void initWaveAnimation() {
-        if (waveHelper == null)
-            waveHelper = new WaveHelper(vWaveAnimation);
-        vWaveAnimation.post(new Runnable() {
+        vWaveAnimation.postDelayed(new Runnable() {
             @Override
             public void run() {
-                waveHelper.start();
+                vWaveAnimation.startAnimation();
             }
-        });
+        }, 500);
     }
 
     /**
@@ -211,14 +208,14 @@ public class HomePageListFragment extends Fragment implements
     @Override
     public void onStop() {
         super.onStop();
-        if (waveHelper != null) waveHelper.cancel();
+        if (vWaveAnimation != null) vWaveAnimation.stopAnimation();
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
         if (presenter != null) presenter.stop();
-        if (waveHelper != null) waveHelper.cancel();
+//        if (waveHelper != null) waveHelper.cancel();
         unRegisterSubscription(refreshCompleteSubscription);
     }
 
@@ -320,26 +317,26 @@ public class HomePageListFragment extends Fragment implements
 
     private static class SimpleScrollListener implements HeaderAnimator.ScrollRationListener {
 
-        private WeakReference<WaveHelper> weakReference;
+        private WeakReference<SuperWaveView> weakReference;
 
         private WeakReference<TextView> fadeTitleWeak;
 
-        public SimpleScrollListener(WaveHelper helper, TextView textView) {
-            weakReference = new WeakReference<>(helper);
+        public SimpleScrollListener(SuperWaveView superWaveView, TextView textView) {
+            weakReference = new WeakReference<>(superWaveView);
             fadeTitleWeak = new WeakReference<>(textView);
         }
 
         @Override
-        public void onScroll(float ration) {
+        public void onScroll(float ratio) {
             if (fadeTitleWeak != null && fadeTitleWeak.get() != null) {
-                float alpha = (ration - 0.8f) / 0.2f;
-                if (ration < 0.8)
+                float alpha = (ratio - 0.8f) / 0.2f;
+                if (ratio < 0.8)
                     alpha = 0;
 //                Log.d("hunt", "hunt: " + ration + " " + alpha);
                 fadeTitleWeak.get().setAlpha(alpha);
             }
             if (weakReference != null && weakReference.get() != null) {
-                weakReference.get().updateAmplitudeRatio(ration);
+                weakReference.get().setAmplitudeRatio(1.0f - ratio);
             }
         }
     }
