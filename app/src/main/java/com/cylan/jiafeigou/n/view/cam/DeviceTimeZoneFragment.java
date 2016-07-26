@@ -3,6 +3,7 @@ package com.cylan.jiafeigou.n.view.cam;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -20,6 +21,7 @@ import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
@@ -75,7 +77,7 @@ public class DeviceTimeZoneFragment extends Fragment{
     private DetailAdapter mDetailAdapter;
     private List<String> mCityList;
     private boolean adapterState = false;
-    private TextView mNoResult;
+    private RelativeLayout mNoResult;
 
     public void setListener(OnTimezoneChangeListener mListener) {
         this.mTimezoneListener = mListener;
@@ -120,13 +122,25 @@ public class DeviceTimeZoneFragment extends Fragment{
         mIvBack = (ImageView) view.findViewById(R.id.iv_information_back);
         mIvSearch = (ImageView) view.findViewById(R.id.iv_information_timezone_search);
         mDetail = (ListView) view.findViewById(R.id.lv_information_timezone_detail);
-        mNoResult = (TextView) view.findViewById(R.id.tv_information_timezone_noresult);
+        mNoResult = (RelativeLayout) view.findViewById(R.id.tv_information_timezone_noresult);
         mIvBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 getFragmentManager().popBackStack();
+                InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(),0);
             }
         });
+        mTvText.setVisibility(View.VISIBLE);
+        mEtFind.setVisibility(View.INVISIBLE);
+        mDetailAdapter = new DetailAdapter();
+        mDetail.setAdapter(mDetailAdapter);
+        initListener();
+        initEtListener();
+        return view;
+    }
+
+    private void initEtListener() {
         /**
          * 强制让editText开启软键盘
          */
@@ -159,11 +173,7 @@ public class DeviceTimeZoneFragment extends Fragment{
                 //改变text之后，遍历一下数组。看看是否有内容包含了输入项
                 etText = mEtFind.getText().toString();
                 mSelectedCity.clear();
-                if(TextUtils.isEmpty(etText)){
-                    //当输入的为空时，还是显示原来的listView的内容
-                    adapterState = false;
-                    setRefreshData(mNoSearchCity);
-                }else if(!TextUtils.isEmpty(etText) && mSelectedCity!=null){
+                if(etText!=null && mSelectedCity!=null){
                     for (String str:mCity){
                         if(str.contains(etText)){
                             //如果包含就把包含的每个丢进新建的数组中去
@@ -173,20 +183,21 @@ public class DeviceTimeZoneFragment extends Fragment{
                     //把该集合返回给listView让其刷新
                     adapterState = true;
                     setRefreshData(mSelectedCity);
-                }
-
-                if(!TextUtils.isEmpty(etText) && mSelectedCity==null){
-                    mDetail.setVisibility(View.INVISIBLE);
+                    mDetail.setVisibility(View.VISIBLE);
+                    mNoResult.setVisibility(View.GONE);
+                }else if(etText!=null && mSelectedCity==null){
+                    //TODO 显示不出，判断条件没有错误
+                    mDetail.setVisibility(View.GONE);
                     mNoResult.setVisibility(View.VISIBLE);
+                }else if(etText==null && mSelectedCity==null){
+                    //当输入的为空时，还是显示原来的listView的内容
+                    adapterState = false;
+                    setRefreshData(mNoSearchCity);
+                    mDetail.setVisibility(View.VISIBLE);
+                    mNoResult.setVisibility(View.GONE);
                 }
             }
         });
-        mTvText.setVisibility(View.VISIBLE);
-        mEtFind.setVisibility(View.INVISIBLE);
-        mDetailAdapter = new DetailAdapter();
-        mDetail.setAdapter(mDetailAdapter);
-        initListener();
-        return view;
     }
 
 
@@ -203,7 +214,6 @@ public class DeviceTimeZoneFragment extends Fragment{
      * 用来显示listView的方法
      */
     private void initListener() {
-        Log.d(TAG,"1111");
         mDetail.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, final View view, int position, long id) {
@@ -233,7 +243,6 @@ public class DeviceTimeZoneFragment extends Fragment{
                     }
                 });
                 builder.show();
-                Log.d(TAG,"222");
             }
         });
     }

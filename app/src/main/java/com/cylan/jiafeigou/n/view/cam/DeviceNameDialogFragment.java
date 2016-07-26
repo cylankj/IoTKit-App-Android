@@ -9,6 +9,14 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.Editable;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.SpannedString;
+import android.text.TextWatcher;
+import android.text.style.AbsoluteSizeSpan;
+import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +24,7 @@ import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cylan.jiafeigou.R;
@@ -31,12 +40,14 @@ import butterknife.OnClick;
  */
 public class DeviceNameDialogFragment extends DialogFragment {
 
+    private static final String TAG = "DeviceNameDialogFragment";
     private EditText mEtEditName;
     private Button mBtnEnsure;
     private Button mBtnCancel;
     private String mEditName;
 
     protected OnDataChangeListener mListener;
+    private TextView mShowState;
 
     public void setListener(OnDataChangeListener mListener) {
         this.mListener = mListener;
@@ -69,6 +80,7 @@ public class DeviceNameDialogFragment extends DialogFragment {
     public void onResume() {
         super.onResume();
         getDialog().getWindow();
+        mEtEditName.setText("");
     }
 
 
@@ -80,11 +92,63 @@ public class DeviceNameDialogFragment extends DialogFragment {
         View view = inflater.inflate(R.layout.fragment_edit_name,container);
         mBtnEnsure = (Button) view.findViewById(R.id.btn_information_ensure);
         mBtnCancel = (Button) view.findViewById(R.id.btn_information_cancel);
-        //设置光标位置在最后边
+        mShowState = (TextView) view.findViewById(R.id.tv_information_show_state);
         mEtEditName = (EditText) view.findViewById(R.id.et_information_edit_name);
+        mEtEditName.setText("客厅摄像头");
+
+        mBtnEnsure.setFocusable(false);
+        mBtnEnsure.setEnabled(false);
+        mBtnEnsure.setClickable(false);
+        mBtnEnsure.setBackgroundColor(Color.parseColor("#cecece"));
         //用过butterKnife来找ID
         ButterKnife.bind(this,view);
         return view;
+    }
+
+    /**
+     * 用来监听editText的各种情况
+     */
+    private void initListener() {
+
+        mEtEditName.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                //当输入不为空，并且与原来输入不一致时的时候，按钮颜色变回原来，并且可以点击
+                mEditName = mEtEditName.getText().toString();
+                if(mEditName.equals("")){
+                    mBtnEnsure.setFocusable(false);
+                    mBtnEnsure.setEnabled(false);
+                    mBtnEnsure.setClickable(false);
+                    mBtnEnsure.setBackgroundColor(Color.parseColor("#cecece"));
+                    mShowState.setVisibility(View.VISIBLE);
+                    mShowState.setText("名称不能为空");
+                }else if(mEditName!=null){
+                    mBtnEnsure.setFocusable(true);
+                    mBtnEnsure.setEnabled(true);
+                    mBtnEnsure.setClickable(true);
+                    mBtnEnsure.setBackgroundColor(Color.parseColor("#C5E6FC"));
+                    mShowState.setVisibility(View.INVISIBLE);
+                }
+            }
+        });
+
+
+        mEtEditName.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                return (event.getKeyCode()==KeyEvent.KEYCODE_ENTER);
+            }
+        });
     }
 
     @OnClick({R.id.et_information_edit_name,R.id.btn_information_ensure,R.id.btn_information_cancel})
@@ -92,6 +156,7 @@ public class DeviceNameDialogFragment extends DialogFragment {
         switch (view.getId()){
             //点击editText做相应的逻辑
             case R.id.et_information_edit_name:
+                initListener();
                 break;
             //点击取消按钮做相应的逻辑
             case R.id.btn_information_cancel:
@@ -105,13 +170,13 @@ public class DeviceNameDialogFragment extends DialogFragment {
                     if(mListener!=null){
                         mListener.dataChangeListener(mEditName);
                     }
+                    mEtEditName.setText(mEditName);
                     hideKeyboard(view);
-                //TODO 确认之前，要判断用户是否输入了字符串，如果没有输入不允许确认
-                //TODO 用户没有改变设备名称，确认按钮会变成灰色，当用户改变了之后，确认按钮才可以点击
                     dismiss();
                 break;
         }
     }
+
 
 
     /**
@@ -123,16 +188,6 @@ public class DeviceNameDialogFragment extends DialogFragment {
         edit.putString("editName", mEditName);
         edit.commit();
     }
-
-/*    *//**
-     *  设置hint的变化
-     *//*
-    private void setHintText() {
-        SpannableString ss = new SpannableString(mEditName);//定义hint的值
-        AbsoluteSizeSpan ass = new AbsoluteSizeSpan(14,true);//设置字体大小 true表示单位是sp
-        ss.setSpan(ass, 0, ss.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        mEtEditName.setHint(new SpannedString(ss));
-    }*/
 
     /**
      *
