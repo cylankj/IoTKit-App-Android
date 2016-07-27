@@ -35,6 +35,7 @@ public class SimpleProgressBar
 
     private RectF circleRect = new RectF();
 
+    private boolean run = true;
 
     public SimpleProgressBar(Context context) {
         this(context, null);
@@ -88,12 +89,26 @@ public class SimpleProgressBar
         final float y = getMeasuredHeight() / 2 - circleRadius * (float) Math.sin((pointAngle + 180.0f) * Math.PI / 180);
         canvas.drawCircle(x, y, pointRadius, pointPaint);
         canvas.restoreToCount(count);
-        post(this);
+        if (run)
+            post(this);
     }
 
     @Override
     public void run() {
         degree += 5;
         invalidate();
+    }
+
+    @Override
+    protected void onVisibilityChanged(View changedView, int visibility) {
+        if (visibility == VISIBLE) {
+            run = true;
+            invalidate();
+        }
+        super.onVisibilityChanged(changedView, visibility);
+    }
+
+    public void dismiss() {
+        run = false;
     }
 }

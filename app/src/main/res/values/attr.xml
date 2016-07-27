@@ -40,6 +40,15 @@
         <attr name="shortLineHeight" format="float|dimension" />
         <attr name="longLineHeight" format="float|dimension" />
     </declare-styleable>
+    <declare-styleable name="SWheelViewStyle">
+        <attr name="sw_shortLineHeight" format="float|dimension" />
+        <attr name="sw_longLineHeight" format="float|dimension" />
+        <attr name="sw_lineIntervalWidth" format="float|dimension" />
+        <attr name="sw_lineWidth" format="float|dimension" />
+        <attr name="sw_dateTextSize" format="integer" />
+        <attr name="sw_markerColor" format="color|reference" />
+        <!--<attr name="markerLineHeight" format="float|dimension" />-->
+    </declare-styleable>
     <declare-styleable name="ZXingScannerViewStyle">
         <attr name="hint" format="reference|string" />
     </declare-styleable>

@@ -1,0 +1,31 @@
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:hunt="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.cylan.jiafeigou.n.view.cam.CameraLiveFragment">
+
+    <TextView
+        android:id="@+id/tv_cam_live_land_date_pop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:background="@drawable/corner_date_pop"
+        android:gravity="center"
+        android:paddingBottom="5dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:paddingTop="5dp"
+        android:text="历史| 5/16 12:30"
+        android:textColor="@color/color_white"
+        android:textSize="11sp" />
+
+    <com.cylan.jiafeigou.widget.wheel.SuperWheel
+        android:id="@+id/sw_cam_live_wheel"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="bottom"
+        android:layout_marginTop="30dp"
+        hunt:sw_markerColor="@color/color_4b9fd5" />
+
+</merge>

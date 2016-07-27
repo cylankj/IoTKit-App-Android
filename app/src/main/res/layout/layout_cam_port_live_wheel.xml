@@ -1,0 +1,25 @@
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:hunt="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.cylan.jiafeigou.n.view.cam.CameraLiveFragment">
+
+
+    <com.cylan.jiafeigou.widget.wheel.SuperWheel
+        android:id="@+id/sw_cam_live_wheel"
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:layout_gravity="bottom"
+        android:visibility="invisible"
+        hunt:sw_markerColor="@color/color_4b9fd5" />
+
+    <com.cylan.jiafeigou.widget.SimpleProgressBar
+        android:id="@+id/pb_loading_history"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_gravity="center"
+        android:padding="10dp"
+        hunt:progress_point_radius="3dp" />
+
+</merge>

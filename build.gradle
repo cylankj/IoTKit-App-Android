@@ -25,7 +25,8 @@ task clean(type: Delete) {
 }
 
 ext {
-    minSdkVersion = 14
+    //update by hunt 2016-07-27 ordered by lzp
+    minSdkVersion = 19
     compileSdkVersion = 23
     targetSdkVersion = 23
     buildToolsVersion = '23.0.3'

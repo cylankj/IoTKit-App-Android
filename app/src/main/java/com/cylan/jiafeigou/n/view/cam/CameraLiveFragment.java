@@ -60,6 +60,8 @@ public class CameraLiveFragment extends Fragment implements CamLandLiveAction {
     FrameLayout fLayoutCamLiveMenu;
 
     WeakReference<View> fLayoutLandScapeViewHolderRef;
+    @BindView(R.id.sw_cam_port_wheel)
+    CamLivePortWheel swCamPortWheel;
     private WeakReference<LiveBottomBarAnimDelegate> liveBottomBarAnimDelegateWeakReference;
     private WeakReference<LandLiveLayerViewAction> landLiveLayerViewActionWeakReference;
     CamLandLiveLayerInterface camLandLiveLayerInterface;
@@ -196,6 +198,11 @@ public class CameraLiveFragment extends Fragment implements CamLandLiveAction {
     }
 
     @Override
+    public void onLive() {
+
+    }
+
+    @Override
     public void onLandPlay(int state) {
         Toast.makeText(getContext(), "play: ", Toast.LENGTH_SHORT).show();
     }
@@ -222,16 +229,16 @@ public class CameraLiveFragment extends Fragment implements CamLandLiveAction {
     }
 
 
-    private static class LandLiveLayerViewAction implements CamLandLiveLayerInterface {
+    private static class LandLiveLayerViewAction implements CamLandLiveLayerInterface,
+            CamLiveLandWheel.WheelUpdateListener,
+            CamLiveLandTopBar.TopBarAction {
         WeakReference<View> viewWeakReference;
         CamLandLiveLayerViewBundle bundle;
         ImageView imgvPlay;
-        View imgvSpeaker;
-        View imgvRecorder;
-        View imgvCapture;
-        TextView tvNavBack;
         LandLiveBarAnimDelegate landLiveBarAnimDelegate;
         CamLandLiveAction camLandLiveAction;
+        CamLiveLandWheel camLiveLandWheel;
+        CamLiveLandTopBar camLiveLandTopBar;
 
         /**
          * updateBundle
@@ -261,16 +268,6 @@ public class CameraLiveFragment extends Fragment implements CamLandLiveAction {
         }
 
         private void setup() {
-            tvNavBack = (TextView) viewWeakReference.get().findViewById(R.id.imgV_cam_live_land_nav_back);
-
-            tvNavBack.setText(bundle.title);
-            tvNavBack.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (camLandLiveAction != null) camLandLiveAction.onLandBack();
-                }
-            });
-
             viewWeakReference.get().findViewById(R.id.fLayout_cam_live_land_layer)
                     .setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -282,35 +279,12 @@ public class CameraLiveFragment extends Fragment implements CamLandLiveAction {
             imgvPlay.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (camLandLiveAction != null)
-                        camLandLiveAction.onLandPlay(imgvSpeaker.getTag() == null ? 0 : 1);
                 }
             });
-            //speaker
-            imgvSpeaker = viewWeakReference.get().findViewById(R.id.imgV_cam_switch_speaker);
-            imgvSpeaker.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (camLandLiveAction != null)
-                        camLandLiveAction.onLandSwitchSpeaker(imgvSpeaker.getTag() == null ? 0 : 1);
-                }
-            });
-            imgvRecorder = viewWeakReference.get().findViewById(R.id.imgV_cam_trigger_recorder);
-            imgvRecorder.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (camLandLiveAction != null)
-                        camLandLiveAction.onLandSwitchSpeaker(imgvRecorder.getTag() == null ? 0 : 1);
-                }
-            });
-            imgvCapture = viewWeakReference.get().findViewById(R.id.imgV_cam_trigger_capture);
-            imgvCapture.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (camLandLiveAction != null)
-                        camLandLiveAction.onLandSwitchSpeaker(imgvCapture.getTag() == null ? 0 : 1);
-                }
-            });
+            camLiveLandWheel = (CamLiveLandWheel) viewWeakReference.get().findViewById(R.id.cv_cam_land_live_wheel);
+            camLiveLandWheel.setWheelUpdateListener(this);
+            camLiveLandTopBar = (CamLiveLandTopBar) viewWeakReference.get().findViewById(R.id.fLayout_cam_live_land_top_bar);
+            camLiveLandTopBar.setTopBarAction(this);
         }
 
 
@@ -321,50 +295,40 @@ public class CameraLiveFragment extends Fragment implements CamLandLiveAction {
             }
         }
 
-        @Override
-        public void updateLandSpeaker(int state) {
-            if (imgvSpeaker != null) {
-                imgvSpeaker.setEnabled(state != -1);
-                if (state == -1) {
-                    return;
-                }
-                //set drawable
-            }
-        }
-
-        @Override
-        public void updateLandRecorder(int state) {
-            if (imgvRecorder != null) {
-                imgvRecorder.setEnabled(state != -1);
-                if (state == -1) {
-                    return;
-                }
-                //set drawable
-            }
-        }
-
-        @Override
-        public void updateLandCapture(int state) {
-            if (imgvCapture != null) {
-                imgvCapture.setEnabled(state != -1);
-            }
-        }
-
-        @Override
-        public void updateLandTitle(String content) {
-            if (tvNavBack != null && content != null)
-                tvNavBack.setText(content);
-        }
 
         @Override
         public void destroy() {
             if (landLiveBarAnimDelegate != null)
                 landLiveBarAnimDelegate.destroy();
         }
+
+        @Override
+        public void onSettleFinish() {
+        }
+
+        @Override
+        public void onBack() {
+            if (camLandLiveAction != null) camLandLiveAction.onLandBack();
+        }
+
+        @Override
+        public void onSwitchSpeaker() {
+            if (camLandLiveAction != null) camLandLiveAction.onLandSwitchSpeaker(0);
+        }
+
+        @Override
+        public void onTriggerRecorder() {
+            if (camLandLiveAction != null) camLandLiveAction.onLandSwitchRecorder(0);
+        }
+
+        @Override
+        public void onTriggerCapture() {
+            if (camLandLiveAction != null) camLandLiveAction.onLandCapture();
+        }
     }
 
 
-    private static class CamLandLiveLayerViewBundle {
+    public static class CamLandLiveLayerViewBundle {
 
         public String title;
         /**
@@ -391,18 +355,13 @@ interface CamLandLiveLayerInterface {
      */
     void updateLandPlayBtn(int state);
 
-    void updateLandSpeaker(int state);
-
-    void updateLandRecorder(int state);
-
-    void updateLandCapture(int state);
-
-    void updateLandTitle(String content);
-
     void destroy();
 }
 
 interface CamLandLiveAction {
+
+    void onLive();
+
 
     void onLandPlay(int state);
 
@@ -413,4 +372,5 @@ interface CamLandLiveAction {
     void onLandSwitchRecorder(int state);
 
     void onLandCapture();
+
 }
