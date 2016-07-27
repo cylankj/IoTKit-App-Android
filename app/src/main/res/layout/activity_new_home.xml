@@ -100,12 +100,12 @@
                 android:layout_below="@+id/v_simple_38line"
                 android:layout_marginTop="5dp" />
 
-            <View
-                android:layout_width="3dp"
-                android:layout_height="35dp"
-                android:layout_alignParentBottom="true"
-                android:layout_centerHorizontal="true"
-                android:background="@color/color_36bdff" />
+            <!--<View-->
+            <!--android:layout_width="3dp"-->
+            <!--android:layout_height="35dp"-->
+            <!--android:layout_alignParentBottom="true"-->
+            <!--android:layout_centerHorizontal="true"-->
+            <!--android:background="@color/color_36bdff" />-->
 
         </RelativeLayout>
     </RelativeLayout>

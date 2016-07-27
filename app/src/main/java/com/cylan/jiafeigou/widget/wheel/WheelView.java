@@ -34,6 +34,7 @@ public class WheelView extends View {
      */
     private Paint dataPaint = new Paint();
     private Paint textPaint = new Paint();
+    private Paint markerPaint = new Paint();
     private WheelViewDataSet wheelViewDataSet;
     private TouchHandler touchHandler;
     private Scroller scroller;
@@ -50,6 +51,7 @@ public class WheelView extends View {
     private float shortLineHeight = 25;
     private float longLineHeight = 50;
 
+    private final int markerHeight;
 
     private int currentPosition = 0;
     /**
@@ -86,12 +88,14 @@ public class WheelView extends View {
         longLineHeight = at.getDimension(R.styleable.WheelViewStyle_longLineHeight, longLineHeight);
         at.recycle();
         init();
+        markerHeight = convertToPx(40, getResources());
     }
 
     private void init() {
         dataPaint.setAntiAlias(true);
         textPaint.setAntiAlias(true);
         textPaint.setColor(colorDataGray);
+
         textSize = convertToPx(textSize, getResources());
         textPaint.setTextSize(textSize);
         final String testString = getContext().getString(R.string.item_just_for_test);
@@ -100,6 +104,11 @@ public class WheelView extends View {
         itemWidth = convertToPx((int) itemWidth, getResources());
         touchHandler = new TouchHandler(this);
         scroller = new Scroller(getContext());
+
+        markerPaint.setAntiAlias(true);
+        markerPaint.setStyle(Paint.Style.STROKE);
+        markerPaint.setStrokeWidth(itemWidth);
+        markerPaint.setColor(colorDataBlue);
     }
 
     public static int convertToPx(int dp, Resources resources) {
@@ -232,7 +241,17 @@ public class WheelView extends View {
                     endX,
                     (float) getMeasuredHeight(), dataPaint);
         }
+        drawMarker(canvas);
         canvas.restoreToCount(count);
+    }
+
+
+    private void drawMarker(Canvas canvas) {
+        canvas.drawLine(getMarkerLeft(), getHeight() - markerHeight, getMarkerLeft(), getHeight(), markerPaint);
+    }
+
+    private int getMarkerLeft() {
+        return (getMeasuredWidth() >> 1) + getScrollX();
     }
 
     /**
