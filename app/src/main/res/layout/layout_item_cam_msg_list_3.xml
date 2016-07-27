@@ -9,7 +9,7 @@
     android:paddingRight="10dp">
 
     <com.cylan.jiafeigou.widget.FateLineView
-        android:id="@+id/fl_time_line"
+        android:id="@+id/fl_wonderful_item_time_line"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:paddingLeft="2dp"

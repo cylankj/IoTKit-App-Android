@@ -39,17 +39,27 @@ public class HomeWonderAdapter extends SuperAdapter<MediaBean> {
 
     @Override
     public void onBind(SuperViewHolder holder, int viewType, int layoutPosition, MediaBean item) {
-
-        int layoutId = R.id.rLayout_wonderful_item_wonder;
-        final View view = holder.getView(layoutId);
-        if (view != null) {
-            view.setTag(layoutPosition);
-        }
-        holder.setOnClickListener(R.id.rLayout_wonderful_item_wonder, deviceItemClickListener);
-        holder.setOnLongClickListener(layoutId, deviceItemLongClickListener);
+        initClickListener(holder, viewType, layoutPosition);
         handleState(holder, item);
     }
 
+    private void initClickListener(SuperViewHolder holder, final int viewType, final int layoutPosition) {
+        setupPosition2View(holder, R.id.rLayout_wonderful_item_wonder, layoutPosition);
+        setupPosition2View(holder, R.id.tv_wonderful_item_share, layoutPosition);
+        setupPosition2View(holder, R.id.tv_wonderful_item_delete, layoutPosition);
+
+        holder.setOnClickListener(R.id.rLayout_wonderful_item_wonder, deviceItemClickListener);
+        holder.setOnClickListener(R.id.tv_wonderful_item_share, deviceItemClickListener);
+        holder.setOnClickListener(R.id.tv_wonderful_item_delete, deviceItemClickListener);
+        holder.setOnLongClickListener(R.id.rLayout_wonderful_item_wonder, deviceItemLongClickListener);
+    }
+
+    private void setupPosition2View(SuperViewHolder holder, final int viewId, final int position) {
+        final View view = holder.getView(viewId);
+        if (view != null) {
+            view.setTag(position);
+        }
+    }
 
     private void handleState(SuperViewHolder holder, MediaBean bean) {
 
@@ -58,10 +68,10 @@ public class HomeWonderAdapter extends SuperAdapter<MediaBean> {
         holder.setText(R.id.tv_wonderful_item_date, bean.timeInStr);
 
         //图标
-        holder.setBackgroundResource(R.id.iv_src_item_wonder, R.drawable.bg_home_title_daytime);
+        holder.setBackgroundResource(R.id.iv_wonderful_item_content, R.drawable.bg_home_title_daytime);
 
         //来自摄像头
-        holder.setText(R.id.tv_devicename_item_wonder, bean.srcUrl);
+        holder.setText(R.id.tv_wonderful_item_device_name, bean.srcUrl);
     }
 
     @Override
@@ -93,4 +103,10 @@ public class HomeWonderAdapter extends SuperAdapter<MediaBean> {
     public interface WonderfulItemLongClickListener extends View.OnLongClickListener {
 
     }
+
+//    public interface WonderfulItemShareListener extends View.OnClickListener {
+//    }
+//
+//    public interface WonderfulItemDeleteListener extends View.OnClickListener {
+//    }
 }

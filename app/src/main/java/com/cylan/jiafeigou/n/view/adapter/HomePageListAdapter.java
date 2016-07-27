@@ -74,7 +74,7 @@ public class HomePageListAdapter extends SuperAdapter<DeviceBean> {
 
     private void setItemState(SuperViewHolder holder, DeviceBean bean) {
         final int share = bean.isShared;
-        final int isProtected = bean.isProtectdMode;
+        final int isProtected = bean.isProtectedMode;
         final int netState = bean.netType;
 
     }

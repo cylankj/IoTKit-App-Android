@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.JConstant;
@@ -28,12 +29,10 @@ import com.cylan.jiafeigou.n.view.activity.BindDeviceActivity;
 import com.cylan.jiafeigou.n.view.activity.CameraLiveActivity;
 import com.cylan.jiafeigou.n.view.adapter.HomePageListAdapter;
 import com.cylan.jiafeigou.utils.ViewUtils;
-import com.cylan.jiafeigou.widget.dialog.HomeMenuDialog;
+import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
 import com.cylan.jiafeigou.widget.sticky.HeaderAnimator;
 import com.cylan.jiafeigou.widget.sticky.StickyHeaderBuilder;
 import com.cylan.jiafeigou.widget.wave.SuperWaveView;
-import com.cylan.jiafeigou.widget.wave.WaveHelper;
-import com.cylan.jiafeigou.widget.wave.WaveView;
 import com.superlog.SLog;
 
 import java.lang.ref.WeakReference;
@@ -52,6 +51,7 @@ import rx.schedulers.Schedulers;
 public class HomePageListFragment extends Fragment implements
         HomePageListContract.View, SwipeRefreshLayout.OnRefreshListener,
         HomePageListAdapter.DeviceItemClickListener,
+        SimpleDialogFragment.SimpleDialogAction,
         HomePageListAdapter.DeviceItemLongClickListener {
     /**
      * progress 位置
@@ -70,7 +70,7 @@ public class HomePageListFragment extends Fragment implements
     @BindView(R.id.tvHeaderLastTitle)
     TextView tvHeaderLastTitle;
     //不是长时间需要,用软引用.
-    private WeakReference<HomeMenuDialog> homeMenuDialogWeakReference;
+    WeakReference<SimpleDialogFragment> simpleDialogFragmentWeakReference;
     private HomePageListContract.Presenter presenter;
 
     private HomePageListAdapter homePageListAdapter;
@@ -140,6 +140,14 @@ public class HomePageListFragment extends Fragment implements
 
         initHeaderView();
         initSomeViewMargin();
+        initSimpleDialog();
+    }
+
+    private void initSimpleDialog() {
+        if (simpleDialogFragmentWeakReference == null || simpleDialogFragmentWeakReference.get() == null) {
+            simpleDialogFragmentWeakReference = new WeakReference<>(SimpleDialogFragment.newInstance(null));
+            simpleDialogFragmentWeakReference.get().setAction(this);
+        }
     }
 
     private void initSomeViewMargin() {
@@ -297,22 +305,23 @@ public class HomePageListFragment extends Fragment implements
 
 
     private void deleteItem(final int position) {
-        if (homeMenuDialogWeakReference == null || homeMenuDialogWeakReference.get() == null) {
-            HomeMenuDialog dialog = new HomeMenuDialog(getActivity(),
-                    null,
-                    new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            if (homePageListAdapter != null && homePageListAdapter.getCount() > position) {
-                                final DeviceBean bean = homePageListAdapter.getItem(position);
-                                homePageListAdapter.remove(position);
-                                presenter.onDeleteItem(bean);
-                            }
-                        }
-                    });
-            homeMenuDialogWeakReference = new WeakReference<>(dialog);
+        initSimpleDialog();
+        SimpleDialogFragment fragment = simpleDialogFragmentWeakReference.get();
+        fragment.setValue(position);
+        fragment.show(getActivity().getSupportFragmentManager(), "ShareDialogFragment");
+    }
+
+    @Override
+    public void onDialogAction(int id, Object value) {
+        if (id == SimpleDialogFragment.ACTION_NEGATIVE)
+            return;
+        if (value == null || !(value instanceof Integer)) {
+            Toast.makeText(getContext(), "null: ", Toast.LENGTH_SHORT).show();
+            return;
         }
-        homeMenuDialogWeakReference.get().show();
+        homePageListAdapter.remove((Integer) value);
+        Toast.makeText(getContext(), "id: " + id + " value:" + value, Toast.LENGTH_SHORT).show();
+
     }
 
     private static class SimpleScrollListener implements HeaderAnimator.ScrollRationListener {

@@ -9,7 +9,7 @@
     android:paddingRight="10dp">
 
     <com.cylan.jiafeigou.widget.FateLineView
-        android:id="@+id/fl_time_line"
+        android:id="@+id/fl_wonderful_item_time_line"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:paddingLeft="2dp"
@@ -41,17 +41,17 @@
             android:textSize="13sp" />
 
         <ImageView
-            android:id="@+id/iv_src_item_wonder"
+            android:id="@+id/iv_wonderful_item_content"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_above="@+id/fLayout_item_bottom"
+            android:layout_above="@+id/fLayout_wonderful_item_bottom"
             android:layout_below="@+id/tv_wonderful_item_date"
             android:scaleType="fitXY"
             android:src="@drawable/ic_launcher" />
 
 
         <FrameLayout
-            android:id="@+id/fLayout_item_bottom"
+            android:id="@+id/fLayout_wonderful_item_bottom"
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:layout_alignParentBottom="true"
@@ -65,6 +65,7 @@
 
 
                 <TextView
+                    android:id="@+id/tv_wonderful_item_delete"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:gravity="center_vertical"
@@ -80,7 +81,7 @@
                     android:background="@color/color_e8e8e8" />
 
                 <TextView
-                    android:id="@+id/tv_devicename_item_wonder"
+                    android:id="@+id/tv_wonderful_item_device_name"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:gravity="center_vertical"
@@ -92,7 +93,7 @@
             </LinearLayout>
 
             <TextView
-                android:id="@+id/tv_share_item_wonder"
+                android:id="@+id/tv_wonderful_item_share"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end|center_vertical"

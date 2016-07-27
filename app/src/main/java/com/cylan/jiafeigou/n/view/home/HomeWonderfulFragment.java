@@ -10,7 +10,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +17,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeWonderfulContract;
@@ -25,9 +25,8 @@ import com.cylan.jiafeigou.n.mvp.model.MediaBean;
 import com.cylan.jiafeigou.n.view.adapter.HomeWonderAdapter;
 import com.cylan.jiafeigou.utils.AnimatorUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
-import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
-import com.cylan.jiafeigou.widget.dialog.HomeMenuDialog;
+import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
 import com.cylan.jiafeigou.widget.sticky.HeaderAnimator;
 import com.cylan.jiafeigou.widget.sticky.StickyHeaderBuilder;
 import com.cylan.jiafeigou.widget.textview.WonderfulTitleHead;
@@ -46,7 +45,10 @@ import butterknife.OnClick;
 public class HomeWonderfulFragment extends Fragment implements
         HomeWonderfulContract.View, SwipeRefreshLayout.OnRefreshListener,
         HomeWonderAdapter.WonderfulItemClickListener,
-        HomeWonderAdapter.WonderfulItemLongClickListener, WheelView.OnItemChangedListener {
+        HomeWonderAdapter.WonderfulItemLongClickListener,
+        ShareDialogFragment.ShareToListener,
+        SimpleDialogFragment.SimpleDialogAction,
+        WheelView.OnItemChangedListener {
 
 
     @BindView(R.id.fl_date_bg_head_wonder)
@@ -70,12 +72,14 @@ public class HomeWonderfulFragment extends Fragment implements
     @BindView(R.id.tv_title_head_wonder)
     TextView tvTitleHeadWonder;
     WeakReference<WheelView> wheelViewWeakReference;
+    WeakReference<ShareDialogFragment> shareDialogFragmentWeakReference;
+    WeakReference<SimpleDialogFragment> simpleDialogFragmentWeakReference;
     /**
      * progress 位置
      */
     private int progressBarStartPosition;
     //不是长时间需要,用软引用.
-    private WeakReference<HomeMenuDialog> homeMenuDialogWeakReference;
+//    private WeakReference<HomeMenuDialog> homeMenuDialogWeakReference;
     private HomeWonderfulContract.Presenter presenter;
     private HomeWonderAdapter homeWonderAdapter;
     private SimpleScrollListener simpleScrollListener;
@@ -136,12 +140,36 @@ public class HomeWonderfulFragment extends Fragment implements
 
         initSomeViewMargin();
 
+        initShareDialog();
+
+        initDeleteDialog();
+    }
+
+    private void initDeleteDialog() {
+        if (simpleDialogFragmentWeakReference == null || simpleDialogFragmentWeakReference.get() == null) {
+            simpleDialogFragmentWeakReference = new WeakReference<>(SimpleDialogFragment.newInstance(null));
+            simpleDialogFragmentWeakReference.get().setAction(this);
+        }
+    }
+
+    private void initShareDialog() {
+        if (shareDialogFragmentWeakReference == null || shareDialogFragmentWeakReference.get() == null) {
+            shareDialogFragmentWeakReference = new WeakReference<>(ShareDialogFragment.newInstance(null));
+            shareDialogFragmentWeakReference.get().setShareToListener(this);
+        }
     }
 
     @Override
     public void onStart() {
         super.onStart();
     }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        dismissShareDialog();
+    }
+
 
     @Override
     public void onStop() {
@@ -152,6 +180,15 @@ public class HomeWonderfulFragment extends Fragment implements
     public void onDetach() {
         super.onDetach();
         if (presenter != null) presenter.stop();
+    }
+
+    private void dismissShareDialog() {
+        if (getActivity() != null && getActivity().getSupportFragmentManager() != null) {
+            Fragment fragment = getActivity().getSupportFragmentManager().findFragmentByTag("ShareDialogFragment");
+            if (fragment != null && fragment instanceof ShareDialogFragment) {
+                ((ShareDialogFragment) fragment).dismiss();
+            }
+        }
     }
 
     private void initSomeViewMargin() {
@@ -234,10 +271,24 @@ public class HomeWonderfulFragment extends Fragment implements
         srLayoutMainContentHolder.setRefreshing(true);
     }
 
+
     @Override
     public void onClick(View v) {
         final int position = v.getTag() == null ? 0 : (int) v.getTag();
-        ToastUtil.showToast(getContext(), "click: " + position);
+        switch (v.getId()) {
+            case R.id.rLayout_wonderful_item_wonder:
+                Toast.makeText(getContext(), "click: " + position, Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.tv_wonderful_item_share:
+                initShareDialog();
+                ShareDialogFragment fragment = shareDialogFragmentWeakReference.get();
+                fragment.setArguments(new Bundle());
+                fragment.show(getActivity().getSupportFragmentManager(), "ShareDialogFragment");
+                break;
+            case R.id.tv_wonderful_item_delete:
+                Toast.makeText(getContext(), "delete: " + position, Toast.LENGTH_SHORT).show();
+                break;
+        }
     }
 
     @Override
@@ -249,22 +300,26 @@ public class HomeWonderfulFragment extends Fragment implements
 
 
     private void deleteItem(final int position) {
-        if (homeMenuDialogWeakReference == null || homeMenuDialogWeakReference.get() == null) {
-            HomeMenuDialog dialog = new HomeMenuDialog(getActivity(),
-                    null,
-                    new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            if (homeWonderAdapter != null && homeWonderAdapter.getCount() > position) {
-                                final MediaBean bean = homeWonderAdapter.getItem(position);
-                                homeWonderAdapter.remove(position);
-                                //              presenter.onDeleteItem(bean);
-                            }
-                        }
-                    });
-            homeMenuDialogWeakReference = new WeakReference<>(dialog);
-        }
-        homeMenuDialogWeakReference.get().show();
+        initDeleteDialog();
+        SimpleDialogFragment fragment = simpleDialogFragmentWeakReference.get();
+        fragment.setValue(position);
+        fragment.show(getActivity().getSupportFragmentManager(), "ShareDialogFragment");
+//        if (homeMenuDialogWeakReference == null || homeMenuDialogWeakReference.get() == null) {
+//            HomeMenuDialog dialog = new HomeMenuDialog(getActivity(),
+//                    null,
+//                    new View.OnClickListener() {
+//                        @Override
+//                        public void onClick(View v) {
+//                            if (homeWonderAdapter != null && homeWonderAdapter.getCount() > position) {
+//                                final MediaBean bean = homeWonderAdapter.getItem(position);
+//                                homeWonderAdapter.remove(position);
+//                                //              presenter.onDeleteItem(bean);
+//                            }
+//                        }
+//                    });
+//            homeMenuDialogWeakReference = new WeakReference<>(dialog);
+//        }
+//        homeMenuDialogWeakReference.get().show();
     }
 
     @OnClick(R.id.fLayout_date_head_wonder)
@@ -334,6 +389,23 @@ public class HomeWonderfulFragment extends Fragment implements
             return;
         TextView textView = (TextView) getActivity().findViewById(R.id.tv_time_line_pop);
         if (textView != null) textView.setText(TimeUtils.getDateStyle_0(timeInLong));
+    }
+
+    @Override
+    public void share(int id) {
+        Toast.makeText(getContext(), "share to: " + id, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onDialogAction(int id, Object value) {
+        if (id == SimpleDialogFragment.ACTION_NEGATIVE)
+            return;
+        if (value == null || !(value instanceof Integer)) {
+            Toast.makeText(getContext(), "null: ", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        homeWonderAdapter.remove((Integer) value);
+        Toast.makeText(getContext(), "id: " + id + " value:" + value, Toast.LENGTH_SHORT).show();
     }
 
 

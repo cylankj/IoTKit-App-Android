@@ -11,7 +11,7 @@ public class DeviceBean {
     public int netType = -1;
     public int msgCount = 0;
     public int battery;
-    public int isProtectdMode = 0;
+    public int isProtectedMode = 0;
     public int isShared;
     public int msgTime;
     public String cid = "";
