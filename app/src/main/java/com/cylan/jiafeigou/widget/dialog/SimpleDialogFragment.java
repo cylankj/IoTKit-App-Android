@@ -77,6 +77,10 @@ public class SimpleDialogFragment extends BaseDialog {
         this.action = action;
     }
 
+    public void setupTitle(CharSequence charSequence) {
+        tvDialogTitle.setText(charSequence);
+    }
+
     private SimpleDialogAction action;
 
     public interface SimpleDialogAction {

@@ -1,7 +1,5 @@
 package com.cylan.jiafeigou.n.view.activity;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
@@ -19,12 +17,15 @@ import com.cylan.jiafeigou.n.view.bind.BindCameraFragment;
 import com.cylan.jiafeigou.n.view.bind.BindDoorBellFragment;
 import com.cylan.jiafeigou.n.view.bind.BindScanFragment;
 import com.cylan.jiafeigou.utils.ViewUtils;
+import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
+
+import java.lang.ref.WeakReference;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class BindDeviceActivity extends BaseFullScreenFragmentActivity {
+public class BindDeviceActivity extends BaseFullScreenFragmentActivity implements SimpleDialogFragment.SimpleDialogAction {
 
     @BindView(R.id.imgV_top_bar_left)
     ImageView imgVTopBarLeft;
@@ -32,6 +33,7 @@ public class BindDeviceActivity extends BaseFullScreenFragmentActivity {
     TextView tvTopBarCenter;
     @BindView(R.id.fLayout_top_bar_container)
     FrameLayout fLayoutTopBarContainer;
+    private WeakReference<SimpleDialogFragment> simpleDialogFragmentWeakReference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,13 +61,22 @@ public class BindDeviceActivity extends BaseFullScreenFragmentActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        if (alertDialog != null && alertDialog.isShowing())
-            alertDialog.dismiss();
+
     }
 
     @Override
     protected void onStop() {
         super.onStop();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (simpleDialogFragmentWeakReference != null
+                && simpleDialogFragmentWeakReference.get() != null
+                && simpleDialogFragmentWeakReference.get().isResumed()) {
+            simpleDialogFragmentWeakReference.get().dismiss();
+        }
     }
 
     @Override
@@ -85,23 +96,21 @@ public class BindDeviceActivity extends BaseFullScreenFragmentActivity {
         }
     }
 
-    private AlertDialog alertDialog;
 
     private boolean shouldNotifyBackForeword() {
         if (JConstant.ConfigApState == 0)
             return false;
-        if (alertDialog != null && alertDialog.isShowing())
-            return true;
-        alertDialog = new AlertDialog.Builder(this).setTitle("退出绑定?")
-                .setNegativeButton("退出", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        popAllStack();
-                    }
+        if (simpleDialogFragmentWeakReference == null || simpleDialogFragmentWeakReference.get() == null) {
+            simpleDialogFragmentWeakReference = new WeakReference<>(SimpleDialogFragment.newInstance(new Bundle()));
+            simpleDialogFragmentWeakReference.get().setAction(this);
+        }
 
-                })
-                .create();
-        alertDialog.show();
+        SimpleDialogFragment fragment = simpleDialogFragmentWeakReference.get();
+
+        if (fragment == null || fragment.isResumed())
+            return true;
+        fragment.setupTitle(getString(R.string.title_to_dismiss_bind));
+        fragment.show(getSupportFragmentManager(), "SimpleDialogFragment");
         return true;
     }
 
@@ -113,6 +122,13 @@ public class BindDeviceActivity extends BaseFullScreenFragmentActivity {
             pop = true;
         }
         return pop;
+    }
+
+    @Override
+    public void onDialogAction(int id, Object value) {
+        if (id == SimpleDialogFragment.ACTION_NEGATIVE)
+            return;
+        popAllStack();
     }
 
     @OnClick({R.id.v_to_scan_qrcode, R.id.v_to_bind_camera, R.id.v_to_bind_doorbell, R.id.v_to_bind_cloud_album})

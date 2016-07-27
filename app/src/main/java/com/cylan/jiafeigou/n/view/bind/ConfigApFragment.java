@@ -126,11 +126,21 @@ public class ConfigApFragment extends BaseTitleFragment implements ConfigApContr
         JConstant.ConfigApState = 0;
         if (presenter != null)
             presenter.stop();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
         if (fragmentWeakReference != null
                 && fragmentWeakReference.get() != null
                 && fragmentWeakReference.get().isResumed()) {
             fragmentWeakReference.get().dismiss();
         }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
     }
 
     @Override

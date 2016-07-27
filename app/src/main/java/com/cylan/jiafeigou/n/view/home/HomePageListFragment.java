@@ -75,7 +75,6 @@ public class HomePageListFragment extends Fragment implements
 
     private HomePageListAdapter homePageListAdapter;
     private SimpleScrollListener simpleScrollListener;
-//    private WaveHelper waveHelper;
     /**
      * 手动完成刷新,自动完成刷新 订阅者.
      */
@@ -321,7 +320,6 @@ public class HomePageListFragment extends Fragment implements
         }
         homePageListAdapter.remove((Integer) value);
         Toast.makeText(getContext(), "id: " + id + " value:" + value, Toast.LENGTH_SHORT).show();
-
     }
 
     private static class SimpleScrollListener implements HeaderAnimator.ScrollRationListener {

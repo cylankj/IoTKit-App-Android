@@ -595,4 +595,5 @@
     <string name="item_user_license_agreements"><a href="http://www.cylan.com.cn/">《用户使用协议》</a></string>
 
     <string name="item_just_for_test">05月</string>
+    <string name="title_to_dismiss_bind">确定退出?</string>
 </resources>

@@ -167,7 +167,6 @@ public class HomeWonderfulFragment extends Fragment implements
     @Override
     public void onPause() {
         super.onPause();
-        dismissShareDialog();
     }
 
 
@@ -180,6 +179,7 @@ public class HomeWonderfulFragment extends Fragment implements
     public void onDetach() {
         super.onDetach();
         if (presenter != null) presenter.stop();
+        dismissShareDialog();
     }
 
     private void dismissShareDialog() {
