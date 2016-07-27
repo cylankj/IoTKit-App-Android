@@ -12,7 +12,7 @@
         android:layout_marginTop="20dp"
         android:gravity="center"
         android:text="您是否确定删除?"
-        android:textColor="@color/color_black"
+        android:textColor="@color/color_979797"
         android:textSize="16sp" />
 
     <LinearLayout

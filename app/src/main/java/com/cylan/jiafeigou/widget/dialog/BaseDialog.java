@@ -26,10 +26,19 @@ public class BaseDialog extends DialogFragment {
         minHeight = (int) (DensityUtils.getScreenHeight() * MIN_HEIGHT);
     }
 
+    protected int getCustomHeight() {
+        return 0;
+    }
+
+    protected int getCustomWidth() {
+        return 0;
+    }
+
     @Override
     public void onResume() {
         super.onResume();
         getDialog().getWindow()
-                .setLayout(maxWidth, minHeight);
+                .setLayout(getCustomWidth() == 0 ? maxWidth : getCustomWidth(),
+                        getCustomHeight() == 0 ? minHeight : getCustomHeight());
     }
 }

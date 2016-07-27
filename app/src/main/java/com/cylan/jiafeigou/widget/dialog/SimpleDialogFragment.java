@@ -1,6 +1,7 @@
 package com.cylan.jiafeigou.widget.dialog;
 
 
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -35,6 +36,11 @@ public class SimpleDialogFragment extends BaseDialog {
         SimpleDialogFragment fragment = new SimpleDialogFragment();
         fragment.setArguments(bundle);
         return fragment;
+    }
+
+    @Override
+    protected int getCustomHeight() {
+        return (int) (Resources.getSystem().getDisplayMetrics().density * 119 + 0.5f);
     }
 
     public SimpleDialogFragment() {
