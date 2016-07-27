@@ -18,6 +18,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Scroller;
 
+import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.R;
 
 import java.util.Arrays;
@@ -28,6 +29,8 @@ import java.util.Arrays;
  */
 
 public class WheelView extends View {
+
+    private final static boolean DEBUG = BuildConfig.DEBUG;
     final static String TAG = "WheelView:";
     /**
      * marker painter
@@ -53,7 +56,6 @@ public class WheelView extends View {
 
     private final int markerHeight;
 
-    private int currentPosition = 0;
     /**
      * Indicates that the pager is in an idle, settled state. The current page
      * is fully in view and no animation is in progress.
@@ -125,7 +127,6 @@ public class WheelView extends View {
         this.wheelViewDataSet = dataSet;
         dataCount = dataSet.dataSet.length;
         wheelViewDataSet.dataStartXSet = new float[dataCount];
-        currentPosition = dataCount - 1;
         updateOffset();
         invalidate();
     }
@@ -139,7 +140,8 @@ public class WheelView extends View {
         if (halfWidth > dataWidth) {
         } else {
         }
-        Log.d(TAG, "offsetX: " + offsetLeft);
+        if (DEBUG)
+            Log.d(TAG, "offsetX: " + offsetLeft);
     }
 
     @Override
@@ -202,19 +204,12 @@ public class WheelView extends View {
     public void setCurrentItemTime(long currentItemTime) {
         if (wheelViewDataSet == null || wheelViewDataSet.dataSet == null)
             return;
-        final int prePosition = currentPosition;
-        currentPosition = Arrays.binarySearch(wheelViewDataSet.dataSet, currentItemTime);
-        if (currentPosition == prePosition)
-            return;
+        final int currentPosition = Arrays.binarySearch(wheelViewDataSet.dataSet, currentItemTime);
         if (currentPosition < 0 || currentPosition > wheelViewDataSet.dataSet.length - 1) {
-            currentPosition = 0;
             return;
         }
-        final int factor = currentPosition - prePosition > 0 ? 1 : -1;
-        final int x = (int) (wheelViewDataSet.dataStartXSet[prePosition]
-                - wheelViewDataSet.dataStartXSet[currentPosition]);
-        scroller.forceFinished(true);
-        scroller.startScroll(getScrollX(), 0, factor * Math.abs(x), 0);
+        final int x = (int) (-(wheelViewDataSet.dataStartXSet[dataCount - 1] - wheelViewDataSet.dataStartXSet[currentPosition]) - getScrollX());
+        scrollBy(x, 0);
         invalidate();
     }
 
@@ -309,6 +304,7 @@ public class WheelView extends View {
      */
     private float[] computeAutoScrollDistanceX(final int direction) {
         final int scrollX = getScrollX();
+        if (DEBUG)
         Log.d(TAG, "scrollXXXX: " + scrollX);
         final float delta = getMeasuredWidth() / 2 - itemWidth / 2;
         final float markLabelStartX = delta + scrollX;
@@ -408,11 +404,11 @@ public class WheelView extends View {
         int position = (int) data[0];
         final int scrollX = getScrollX();
         scroller.startScroll(getScrollX(), 0, (int) shouldScrollX - scrollX, 0);
+        if (DEBUG)
         Log.d(TAG, "autoSettle....." + scrollX + "  .. " + position);
         postInvalidate();
 
         if (onItemChangedListener != null) {
-            currentPosition = position;
             onItemChangedListener.onItemChanged(position, wheelViewDataSet.dataSet[position], wheelViewDataSet.dateInStr.get(position));
         }
     }
@@ -426,6 +422,7 @@ public class WheelView extends View {
         if (scroller.computeScrollOffset()) {
             scrollTo(scroller.getCurrX(), scroller.getCurrY());
             invalidate();
+            if (DEBUG)
             Log.d(TAG, "computeScroll");
         }
         super.computeScroll();

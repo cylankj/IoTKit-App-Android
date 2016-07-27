@@ -8,12 +8,14 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.ViewConfiguration;
 
+import com.cylan.jiafeigou.BuildConfig;
+
 /**
  * Created by cylan-hunt on 16-6-18.
  */
 
 public class TouchHandler extends GestureDetector.SimpleOnGestureListener {
-
+    private final static boolean DEBUG = BuildConfig.DEBUG;
     private int scrollState = WheelView.SCROLL_STATE_IDLE;
     private Context context;
     private WheelView wheelView;
@@ -86,7 +88,8 @@ public class TouchHandler extends GestureDetector.SimpleOnGestureListener {
                     mLastMotionX = dx > 0 ? mInitialMotionX + mTouchSlop :
                             mInitialMotionX - mTouchSlop;
                     moveDirection = dx > 0 ? 1 : 0;
-                    Log.d(WheelView.TAG, "moveeeeeee:   " + (dx > 0));
+                    if (DEBUG)
+                        Log.d(WheelView.TAG, "moveeeeeee:   " + (dx > 0));
                 }
                 break;
         }
@@ -101,7 +104,8 @@ public class TouchHandler extends GestureDetector.SimpleOnGestureListener {
                 distanceX = distanceX - mTouchSlop;
             } else distanceX = distanceX + mTouchSlop;
         }
-        Log.d(WheelView.TAG, "onScroll...: " + distanceX);
+        if (DEBUG)
+            Log.d(WheelView.TAG, "onScroll...: " + distanceX);
         wheelView.scrollBy((int) distanceX, 0);
         updateScrollStateIfRequired(WheelView.SCROLL_STATE_DRAGGING);
         return true;
@@ -109,7 +113,6 @@ public class TouchHandler extends GestureDetector.SimpleOnGestureListener {
 
     @Override
     public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-//        Log.d(TAG, "onFling: " + velocityX);
         updateScrollStateIfRequired(WheelView.SCROLL_STATE_SETTLING);
         return true;
     }
@@ -117,9 +120,11 @@ public class TouchHandler extends GestureDetector.SimpleOnGestureListener {
 
     private void updateScrollStateIfRequired(int newState) {
         if (newState == WheelView.SCROLL_STATE_IDLE) {
-            Log.d(WheelView.TAG, "updateScrollStateIfRequired: " + newState);
-            Log.d(WheelView.TAG, "left: " + wheelView.getLeft());
-            Log.d(WheelView.TAG, "scrollX: " + wheelView.getScrollX());
+            if (DEBUG) {
+                Log.d(WheelView.TAG, "updateScrollStateIfRequired: " + newState);
+                Log.d(WheelView.TAG, "left: " + wheelView.getLeft());
+                Log.d(WheelView.TAG, "scrollX: " + wheelView.getScrollX());
+            }
             wheelView.autoSettle("SCROLL_STATE_IDLE", moveDirection);
         }
     }
