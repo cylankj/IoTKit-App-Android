@@ -163,7 +163,7 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
      */
     @OnClick(R.id.imgV_camera_title_top_setting)
     public void onClickSetting() {
-        loadFragment(R.id.fLayout_information_message, fragmentFacilityInformation);
+        loadFragment(android.R.id.content, fragmentFacilityInformation);
     }
 
     /**

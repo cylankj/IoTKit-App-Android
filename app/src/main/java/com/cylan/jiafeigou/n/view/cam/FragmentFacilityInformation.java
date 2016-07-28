@@ -1,6 +1,5 @@
 package com.cylan.jiafeigou.n.view.cam;
 
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -19,10 +18,10 @@ import com.cylan.jiafeigou.utils.PreferencesUtils;
  * 创建时间   2016/7/12 17:53
  * 用来控制摄像头模块下的设备信息，点击设备名称和设备时区时进行切换
  */
-public class FragmentFacilityInformation extends Fragment{
+public class FragmentFacilityInformation extends Fragment {
 
 
-    public static final String KEY_TITLE="key_title";
+    public static final String KEY_TITLE = "key_title";
     //实例化fragment对象
     private ImageView mInformationBack;
     private LinearLayout mInformationName;
@@ -52,7 +51,7 @@ public class FragmentFacilityInformation extends Fragment{
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_facility_information,null);
+        View view = inflater.inflate(R.layout.fragment_facility_information, null);
         mInformationBack = (ImageView) view.findViewById(R.id.iv_information_back);
         mInformationName = (LinearLayout) view.findViewById(R.id.lLayout_information_facility_name);
         mInformationTimeZone = (LinearLayout) view.findViewById(R.id.lLayout_information_facility_timezone);
@@ -73,7 +72,7 @@ public class FragmentFacilityInformation extends Fragment{
             public void onClick(View v) {
                 nameDialogFragment.show(getActivity().getFragmentManager(),
                         "DeviceNameDialogFragment");
-                if(getActivity()!=null&&getActivity().getFragmentManager()!=null){
+                if (getActivity() != null && getActivity().getFragmentManager() != null) {
                     nameDialogFragment.setListener(new DeviceNameDialogFragment.OnDataChangeListener() {
                         @Override
                         public void dataChangeListener(String content) {
@@ -87,16 +86,17 @@ public class FragmentFacilityInformation extends Fragment{
         mInformationTimeZone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getFragmentManager().beginTransaction()
+                getActivity().getSupportFragmentManager()
+                        .beginTransaction()
                         .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                                 , R.anim.slide_in_left, R.anim.slide_out_right)
-                        .add(R.id.fLayout_information_message,deviceTimeZoneFragment,"DeviceTimeZoneFragment")
+                        .add(android.R.id.content, deviceTimeZoneFragment, "DeviceTimeZoneFragment")
                         .addToBackStack("FragmentFacilityInformation")
                         .commit();
                 /**
                  * 接口回调，得到相应的text，并且赋值给当前fragment
                  */
-                if(getActivity()!=null && getActivity().getFragmentManager()!=null) {
+                if (getActivity() != null && getActivity().getFragmentManager() != null) {
                     deviceTimeZoneFragment.setListener(new DeviceTimeZoneFragment.OnTimezoneChangeListener() {
                         @Override
                         public void timezoneChangeListener(String content) {
@@ -111,9 +111,9 @@ public class FragmentFacilityInformation extends Fragment{
 
     public void onStart() {
         super.onStart();
-        String editName = PreferencesUtils.getString(getActivity(),"editName","客厅摄像头");
+        String editName = PreferencesUtils.getString(getActivity(), "editName", "客厅摄像头");
         mTvName.setText(editName);
-        String detailText = PreferencesUtils.getString(getActivity(),"detailText","北京/中国");
+        String detailText = PreferencesUtils.getString(getActivity(), "detailText", "北京/中国");
         mTvTimezone.setText(detailText);
     }
 }
