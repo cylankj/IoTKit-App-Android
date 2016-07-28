@@ -1,6 +1,5 @@
 package com.cylan.jiafeigou.n.view.activity;
 
-import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
@@ -20,6 +19,7 @@ import com.cylan.jiafeigou.n.mvp.impl.cam.CamLivePresenterImpl;
 import com.cylan.jiafeigou.n.mvp.impl.cam.CamMessageListPresenterImpl;
 import com.cylan.jiafeigou.n.view.cam.CamMessageListFragment;
 import com.cylan.jiafeigou.n.view.cam.CameraLiveFragment;
+import com.cylan.jiafeigou.n.view.cam.FragmentFacilityInformation;
 import com.cylan.jiafeigou.n.view.misc.SystemUiHider;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.CustomViewPager;
@@ -46,11 +46,14 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
     ImageView imgVCameraTitleTopSetting;
     private WeakReference<SystemUiHider> systemUiHiderWeakReference;
     private SimpleListener simpleListener = new SimpleListener();
+    private FragmentFacilityInformation fragmentFacilityInformation;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_camera_live);
+        fragmentFacilityInformation = FragmentFacilityInformation.newInstance(new Bundle());
         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
         ButterKnife.bind(this);
         initTopBar();
@@ -139,10 +142,11 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
 
     @Override
     public void onBackPressed() {
-        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
+        if (checkExtraChildFragment()) {
             return;
-        }
+        } else if (checkExtraFragment())
+            return;
         finish();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             overridePendingTransition(R.anim.slide_in_left_without_interpolator, R.anim.slide_out_right_without_interpolator);
@@ -154,8 +158,25 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
         onBackPressed();
     }
 
+    /**
+     * 当点击右上角的螺母按钮时，跳转到设备信息页面
+     */
     @OnClick(R.id.imgV_camera_title_top_setting)
     public void onClickSetting() {
+        loadFragment(R.id.fLayout_information_message, fragmentFacilityInformation);
+    }
+
+    /**
+     * 用来加载fragment的方法。
+     */
+    private void loadFragment(int id, FragmentFacilityInformation fragment) {
+        getSupportFragmentManager().beginTransaction()
+                //如果需要动画，可以把动画添加进来
+                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
+                        , R.anim.slide_in_left, R.anim.slide_out_right)
+                .add(id, fragment, "FragmentFacilityInformation")
+                .addToBackStack("FragmentFacilityInformation")
+                .commit();
     }
 
 

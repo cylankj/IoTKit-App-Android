@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:clickable="true"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_marginTop="25dp"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:background="#0BA8CF">
+        <ImageView
+            android:id="@+id/iv_mag_information_back"
+            android:layout_centerVertical="true"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:padding="15dp"
+            android:src="@drawable/ic_nav_back_arrow"/>
+
+        <EditText
+            android:id="@+id/et_mag_information_timezone_find"
+            android:background="@null"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="48dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="搜索"
+            android:textColor="#B9DFED"
+            android:textColorHint="#B9DFED"
+            android:textSize="18sp"/>
+
+        <TextView
+            android:id="@+id/tv_mag_information_timezone_text"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="48dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="时区"
+            android:textSize="18sp"
+            android:textColor="#FFFFFF"/>
+
+
+        <ImageView
+            android:layout_alignParentRight="true"
+            android:visibility="visible"
+            android:id="@+id/iv_mag_information_timezone_search"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:padding="15dp"
+            android:src="@drawable/icon_search"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/color_white">
+        <ListView
+            android:background="@color/color_white"
+            android:visibility="visible"
+            android:focusable="true"
+            android:clickable="true"
+            android:scrollbars="none"
+            android:layout_margin="10dp"
+            android:id="@+id/lv_mag_information_timezone_detail"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+        </ListView>
+        <TextView
+            android:visibility="gone"
+            android:id="@+id/tv_mag_information_timezone_noresult"
+            android:layout_marginTop="90dp"
+            android:layout_centerHorizontal="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="无结果"
+            android:textSize="15sp"
+            android:textColor="#666666"/>
+    </RelativeLayout>
+</LinearLayout>
