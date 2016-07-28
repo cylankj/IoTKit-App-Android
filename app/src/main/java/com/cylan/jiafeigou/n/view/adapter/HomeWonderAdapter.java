@@ -1,6 +1,7 @@
 package com.cylan.jiafeigou.n.view.adapter;
 
 import android.content.Context;
+import android.support.v4.view.ViewCompat;
 import android.view.View;
 
 import com.cylan.jiafeigou.R;
@@ -47,7 +48,8 @@ public class HomeWonderAdapter extends SuperAdapter<MediaBean> {
         setupPosition2View(holder, R.id.rLayout_wonderful_item_wonder, layoutPosition);
         setupPosition2View(holder, R.id.tv_wonderful_item_share, layoutPosition);
         setupPosition2View(holder, R.id.tv_wonderful_item_delete, layoutPosition);
-
+        ViewCompat.setTransitionName(holder.getView(R.id.rLayout_wonderful_item_wonder),
+                String.valueOf(layoutPosition) + "_image");
         holder.setOnClickListener(R.id.rLayout_wonderful_item_wonder, deviceItemClickListener);
         holder.setOnClickListener(R.id.tv_wonderful_item_share, deviceItemClickListener);
         holder.setOnClickListener(R.id.tv_wonderful_item_delete, deviceItemClickListener);

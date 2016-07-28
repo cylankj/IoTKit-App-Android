@@ -137,7 +137,6 @@ public class HomePageListFragment extends Fragment implements
         initProgressBarPosition();
         rVDevicesList.setLayoutManager(new LinearLayoutManager(getContext()));
         rVDevicesList.setAdapter(homePageListAdapter);
-
         initHeaderView();
         initSomeViewMargin();
         initSimpleDialog();
