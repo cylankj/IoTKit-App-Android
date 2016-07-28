@@ -1,7 +1,8 @@
-package com.cylan.jiafeigou.n.view.cam;
+package com.cylan.jiafeigou.n.view.mag;
 
 import android.app.DialogFragment;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -29,7 +30,7 @@ import butterknife.OnClick;
  * 创建时间   2016/7/13 17:30
  * 描述：在点击设备名称之后，弹出的fragment对话框
  */
-public class DeviceNameDialogFragment extends DialogFragment {
+public class MagDeviceNameDialogFragment extends DialogFragment {
 
     private static final String TAG = "DeviceNameDialogFragment";
     private EditText mEtEditName;
@@ -37,23 +38,23 @@ public class DeviceNameDialogFragment extends DialogFragment {
     private Button mBtnCancel;
     private String mEditName;
 
-    protected OnDataChangeListener mListener;
+    protected OnMagDataChangeListener mListener;
     private TextView mShowState;
 
-    public void setListener(OnDataChangeListener mListener) {
+    public void setListener(OnMagDataChangeListener mListener) {
         this.mListener = mListener;
     }
 
     /**
      * 接口回调，用来刷新UI
      */
-    public interface OnDataChangeListener{
-        void dataChangeListener(String content);
+    public interface OnMagDataChangeListener{
+        void magDataChangeListener(String content);
     }
 
 
-    public static DeviceNameDialogFragment newInstance(Bundle bundle) {
-        DeviceNameDialogFragment fragment = new DeviceNameDialogFragment();
+    public static MagDeviceNameDialogFragment newInstance(Bundle bundle) {
+        MagDeviceNameDialogFragment fragment = new MagDeviceNameDialogFragment();
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -80,11 +81,10 @@ public class DeviceNameDialogFragment extends DialogFragment {
         mShowState = (TextView) view.findViewById(R.id.tv_information_show_state);
         mEtEditName = (EditText) view.findViewById(R.id.et_information_edit_name);
 
-
-        String ininName = PreferencesUtils.getString(getActivity(),"editName","客厅摄像头");
-        mEtEditName.setText(ininName);
+        String editName = PreferencesUtils.getString(getActivity(),"magEditName","客厅摄像头");
+        mEtEditName.setText(editName);
         mEtEditName.setTextColor(Color.parseColor("#666666"));
-        mEtEditName.setSelection(ininName.length());
+        mEtEditName.setSelection(editName.length());
 
         mBtnEnsure.setFocusable(false);
         mBtnEnsure.setEnabled(false);
@@ -156,13 +156,12 @@ public class DeviceNameDialogFragment extends DialogFragment {
             //点击确认按钮做相应的逻辑
             case R.id.btn_information_ensure:
                     saveEditName();
-                    String editName = PreferencesUtils.getString(getActivity(),"editName","客厅摄像头");
+                    String editName = PreferencesUtils.getString(getActivity(),"magEditName","客厅摄像头");
                     mEtEditName.setTextColor(Color.parseColor("#666666"));
                     mEtEditName.setText(editName);
                     if(mListener!=null){
-                        mListener.dataChangeListener(mEditName);
+                        mListener.magDataChangeListener(mEditName);
                     }
-                    //点击确认按钮之后，把软键盘进行隐藏
                     hideKeyboard(view);
                     dismiss();
                 break;
@@ -178,12 +177,11 @@ public class DeviceNameDialogFragment extends DialogFragment {
         inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(),0);
     }
 
+
     /**
      * 保存用户输入的设备名称
      */
     private void saveEditName() {
-        //TODO DeBug 调式模式下才可以使用pre
-        PreferencesUtils.putString(getActivity(),"editName",mEditName);
+        PreferencesUtils.putString(getActivity(),"magEditName",mEditName);
     }
-
 }

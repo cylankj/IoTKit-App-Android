@@ -5,20 +5,19 @@
               android:layout_height="match_parent">
 
     <TextView
-        android:id="@+id/tv_information_name"
+        android:id="@+id/tv_mag_information_name"
         android:layout_marginTop="24dp"
         android:layout_marginLeft="26dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="设备名称"
         android:textSize="16sp"
-        android:textColor="@color/color_black"/>
+        android:textColor="#000"/>
 
     <EditText
-        style="@style/AppTheme"
         android:text="客厅摄像头"
         android:textColor="#666"
-        android:id="@+id/et_information_edit_name"
+        android:id="@+id/et_mag_information_edit_name"
         android:layout_marginBottom="24dp"
         android:layout_marginRight="24dp"
         android:layout_marginLeft="24dp"
@@ -29,7 +28,7 @@
         android:maxLength="12"/>
     <TextView
         android:visibility="invisible"
-        android:id="@+id/tv_information_show_state"
+        android:id="@+id/tv_mag_information_show_state"
         android:layout_marginTop="37dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -49,7 +48,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
         <Button
-            android:id="@+id/btn_information_ensure"
+            android:id="@+id/btn_mag_information_ensure"
             android:layout_width="58dp"
             android:layout_height="36dp"
             android:text="确认"
@@ -57,7 +56,7 @@
             android:textColor="#4B9FD5"
             android:background="#C5E6FC"/>
         <Button
-            android:id="@+id/btn_information_cancel"
+            android:id="@+id/btn_mag_information_cancel"
             android:layout_width="58dp"
             android:layout_height="36dp"
             android:text="取消"

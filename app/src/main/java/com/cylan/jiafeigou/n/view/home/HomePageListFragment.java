@@ -26,6 +26,7 @@ import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
 import com.cylan.jiafeigou.n.mvp.model.GreetBean;
 import com.cylan.jiafeigou.n.view.activity.BindDeviceActivity;
 import com.cylan.jiafeigou.n.view.activity.CameraLiveActivity;
+import com.cylan.jiafeigou.n.view.activity.MagLiveActivity;
 import com.cylan.jiafeigou.n.view.adapter.HomePageListAdapter;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
@@ -287,6 +288,8 @@ public class HomePageListFragment extends Fragment implements
         if (bean != null) {
             if (bean.deviceType == JConstant.JFG_DEVICE_CAMERA) {
                 startActivity(new Intent(getActivity(), CameraLiveActivity.class));
+            }else if(bean.deviceType == JConstant.JFG_DEVICE_MAG){
+                startActivity(new Intent(getActivity(), MagLiveActivity.class));
             }
         }
     }

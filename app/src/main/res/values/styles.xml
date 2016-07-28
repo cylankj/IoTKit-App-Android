@@ -1,6 +1,10 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar" />
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorAccent">@color/color_4b9fd5</item>
+        <item name="colorControlNormal">@color/color_4b9fd5</item>
+        <item name="colorControlActivated">@color/color_4b9fd5</item>
+    </style>
 
 
     <style name="dialog" parent="@android:style/Theme.Dialog">
@@ -145,12 +149,4 @@
         <item name="android:layout_marginRight">16dp</item>
     </style>
 
-    <style name="AppThemeEditText" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="colorAccent">#4B9FD5</item>
-        <!-- AppCompatEditText默认状态状态设置底线颜色 -->
-        <item name="colorControlNormal">#4B9FD5</item>
-        <!-- AppCompatEditText选择的底线颜色 -->
-        <item name="colorControlActivated">#4B9FD5</item>
-
-    </style>
 </resources>

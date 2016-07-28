@@ -1,4 +1,4 @@
-package com.cylan.jiafeigou.n.view.cam;
+package com.cylan.jiafeigou.n.view.mag;
 
 import android.content.Context;
 import android.content.DialogInterface;
@@ -24,8 +24,6 @@ import android.widget.TextView;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.utils.IMEUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
-import com.cylan.superadapter.SuperAdapter;
-import com.cylan.superadapter.internal.SuperViewHolder;
 import com.cylan.utils.ListUtils;
 
 import java.util.ArrayList;
@@ -42,7 +40,7 @@ import java.util.List;
  * 更新时间   $Date$
  * 更新描述   ${TODO}
  */
-public class DeviceTimeZoneFragment extends Fragment {
+public class MagDeviceTimeZoneFragment extends Fragment {
 
     public static final String TAG = "DeviceTimeZoneFragment";
 
@@ -75,27 +73,27 @@ public class DeviceTimeZoneFragment extends Fragment {
     private String mDetailText;
 
 
-    protected OnTimezoneChangeListener mTimezoneListener;
+    protected OnMagTimezoneChangeListener mTimezoneListener;
     private DetailAdapter mDetailAdapter;
     private List<String> mCityList;
     private boolean adapterState = false;
     private TextView mNoResult;
 
-    public void setListener(OnTimezoneChangeListener mListener) {
+    public void setListener(OnMagTimezoneChangeListener mListener) {
         this.mTimezoneListener = mListener;
     }
 
     /**
      * 接口回调，用来刷新UI
      */
-    public interface OnTimezoneChangeListener{
-        void timezoneChangeListener(String content);
+    public interface OnMagTimezoneChangeListener{
+        void magTimezoneChangeListener(String content);
     }
 
-    public DeviceTimeZoneFragment(){}
+    public MagDeviceTimeZoneFragment(){}
 
-    public static DeviceTimeZoneFragment newInstance(Bundle bundle) {
-        DeviceTimeZoneFragment fragment = new DeviceTimeZoneFragment();
+    public static MagDeviceTimeZoneFragment newInstance(Bundle bundle) {
+        MagDeviceTimeZoneFragment fragment = new MagDeviceTimeZoneFragment();
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -199,14 +197,7 @@ public class DeviceTimeZoneFragment extends Fragment {
     }
 
 
-    /**
-     * 当editText更新的时候，重新setAdapter
-     */
-    private void setRefreshData(List<String> data) {
-        mDetailAdapter.notifyDataSetInvalidated();
-        mCityList = data;
-        mDetail.setAdapter(mDetailAdapter);
-    }
+
 
     /**
      * 用来显示listView的方法
@@ -228,7 +219,7 @@ public class DeviceTimeZoneFragment extends Fragment {
                     public void onClick(DialogInterface dialog, int which) {
                         saveEditName();
                         if(mTimezoneListener!=null){
-                            mTimezoneListener.timezoneChangeListener(mDetailText);
+                            mTimezoneListener.magTimezoneChangeListener(mDetailText);
                         }
                         hideKeyboard(view);
                         getFragmentManager().popBackStack();
@@ -255,11 +246,21 @@ public class DeviceTimeZoneFragment extends Fragment {
     }
 
 
+
+    /**
+     * 当editText更新的时候，重新setAdapter
+     */
+    private void setRefreshData(List<String> data) {
+        mDetailAdapter.notifyDataSetInvalidated();
+        mCityList = data;
+        mDetail.setAdapter(mDetailAdapter);
+    }
+
     /**
      * 保存用户输入的设备名称
      */
     private void saveEditName() {
-        PreferencesUtils.putString(getActivity(),"detailText",mDetailText);
+        PreferencesUtils.putString(getActivity(),"magDetailText",mDetailText);
     }
 
 

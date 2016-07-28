@@ -6,14 +6,12 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
 import com.cylan.jiafeigou.n.view.cam.CameraLiveFragment;
-import com.cylan.jiafeigou.n.view.cam.DeviceTimeZoneFragment;
 import com.cylan.jiafeigou.n.view.cam.FragmentFacilityInformation;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.indicator.PagerSlidingTabStrip;
@@ -91,7 +89,9 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
         loadFragment(R.id.fLayout_information_message, fragmentFacilityInformation);
     }
 
-    //用来加载fragment的方法。
+    /**
+     * 用来加载fragment的方法。
+     */
     private void loadFragment(int id,FragmentFacilityInformation fragment) {
         getSupportFragmentManager().beginTransaction()
                 //如果需要动画，可以把动画添加进来

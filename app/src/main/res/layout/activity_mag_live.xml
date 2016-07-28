@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:clickable="true"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+    <FrameLayout
+        android:id="@+id/fLayout_msg_information"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <!-- 标题栏部分 -->
+            <RelativeLayout
+                android:id="@+id/rLayout_mag_live_top_bar"
+                android:layout_width="match_parent"
+                android:layout_height="181dp"
+                android:background="#66bb6a">
+
+            <ImageView
+                android:id="@+id/imgV_msg_title_top_back"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:padding="15dp"
+                android:src="@drawable/icon_arrow_back" />
+
+            <TextView
+                android:layout_marginTop="10dp"
+                android:layout_toRightOf="@id/imgV_msg_title_top_back"
+                android:layout_marginLeft="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="门磁"
+                android:textSize="18sp"
+                android:textColor="@color/color_white"/>
+
+            <ImageView
+                android:id="@+id/imgV_msg_title_top_door"
+                android:layout_marginTop="62dp"
+                android:layout_marginBottom="12dp"
+                android:layout_centerHorizontal="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/icon_close"/>
+
+
+            <ImageView
+                android:id="@+id/imgV_msg_title_top_setting"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:padding="15dp"
+                android:src="@drawable/icon_setting" />
+            </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <!-- 放置 那一天的日期 -->
+            <LinearLayout
+                android:layout_width="117dp"
+                android:layout_height="match_parent">
+
+            </LinearLayout>
+
+            <!-- 放置时间线 -->
+            <com.cylan.jiafeigou.widget.FateLineView
+                android:id="@+id/mag_fateline"
+                android:layout_marginTop="21dp"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"/>
+
+            <!-- 放置右侧列表 -->
+            <ListView
+                android:layout_marginTop="18dp"
+                android:layout_marginLeft="11dp"
+                android:id="@+id/lv_mag_state"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+            </ListView>
+        </LinearLayout>
+
+    </FrameLayout>
+
+</LinearLayout>

@@ -12,6 +12,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.utils.PreferencesUtils;
 
 /**
  * 创建者     谢坤
@@ -72,12 +73,14 @@ public class FragmentFacilityInformation extends Fragment{
             public void onClick(View v) {
                 nameDialogFragment.show(getActivity().getFragmentManager(),
                         "DeviceNameDialogFragment");
-                nameDialogFragment.setListener(new DeviceNameDialogFragment.OnDataChangeListener() {
-                    @Override
-                    public void dataChangeListener(String content) {
-                        mTvName.setText(content);
-                    }
-                });
+                if(getActivity()!=null&&getActivity().getFragmentManager()!=null){
+                    nameDialogFragment.setListener(new DeviceNameDialogFragment.OnDataChangeListener() {
+                        @Override
+                        public void dataChangeListener(String content) {
+                            mTvName.setText(content);
+                        }
+                    });
+                }
             }
         });
 
@@ -93,12 +96,14 @@ public class FragmentFacilityInformation extends Fragment{
                 /**
                  * 接口回调，得到相应的text，并且赋值给当前fragment
                  */
-                deviceTimeZoneFragment.setListener(new DeviceTimeZoneFragment.OnTimezoneChangeListener() {
-                    @Override
-                    public void timezoneChangeListener(String content) {
-                        mTvTimezone.setText(content);
-                    }
-                });
+                if(getActivity()!=null && getActivity().getFragmentManager()!=null) {
+                    deviceTimeZoneFragment.setListener(new DeviceTimeZoneFragment.OnTimezoneChangeListener() {
+                        @Override
+                        public void timezoneChangeListener(String content) {
+                            mTvTimezone.setText(content);
+                        }
+                    });
+                }
             }
         });
         return view;
@@ -106,11 +111,9 @@ public class FragmentFacilityInformation extends Fragment{
 
     public void onStart() {
         super.onStart();
-        SharedPreferences preferences = getActivity().getSharedPreferences("config",0);
-        String editName = preferences.getString("editName", "客厅摄像头");
+        String editName = PreferencesUtils.getString(getActivity(),"editName","客厅摄像头");
         mTvName.setText(editName);
-        SharedPreferences sp = getActivity().getSharedPreferences("config",1);
-        String detailText = sp.getString("detailText", "北京/中国");
+        String detailText = PreferencesUtils.getString(getActivity(),"detailText","北京/中国");
         mTvTimezone.setText(detailText);
     }
 }
