@@ -64,6 +64,7 @@ public class STouchHandler extends GestureDetector.SimpleOnGestureListener {
 
         // Always take care of the touch gesture being complete.
         if (mask == MotionEvent.ACTION_CANCEL || mask == MotionEvent.ACTION_UP) {
+            superWheel.getParent().requestDisallowInterceptTouchEvent(false);
             // Release the drag.
             mActivePointerId = INVALID_POINTER;
             if (scrollState != SuperWheel.SCROLL_STATE_SETTLING) {
@@ -76,6 +77,7 @@ public class STouchHandler extends GestureDetector.SimpleOnGestureListener {
         }
         switch (mask) {
             case MotionEvent.ACTION_DOWN:
+                superWheel.getParent().requestDisallowInterceptTouchEvent(true);
                 isActionUp = false;
                 if (!scroller.isFinished())
                     scroller.abortAnimation();

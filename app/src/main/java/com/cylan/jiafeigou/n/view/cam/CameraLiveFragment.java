@@ -6,6 +6,7 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,9 +17,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.n.mvp.contract.cam.CamLiveContract;
 import com.cylan.jiafeigou.n.view.misc.LandLiveBarAnimDelegate;
 import com.cylan.jiafeigou.n.view.misc.LiveBottomBarAnimDelegate;
 import com.cylan.jiafeigou.utils.ViewUtils;
+import com.cylan.jiafeigou.widget.wheel.SDataStack;
 
 import java.lang.ref.WeakReference;
 
@@ -29,7 +32,8 @@ import butterknife.OnClick;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class CameraLiveFragment extends Fragment implements CamLandLiveAction {
+public class CameraLiveFragment extends Fragment implements CamLandLiveAction,
+        CamLiveContract.View {
 
 
     @BindView(R.id.fLayout_live_view_container)
@@ -63,8 +67,11 @@ public class CameraLiveFragment extends Fragment implements CamLandLiveAction {
     @BindView(R.id.sw_cam_port_wheel)
     CamLivePortWheel swCamPortWheel;
     private WeakReference<LiveBottomBarAnimDelegate> liveBottomBarAnimDelegateWeakReference;
-    private WeakReference<LandLiveLayerViewAction> landLiveLayerViewActionWeakReference;
+    private WeakReference<CamLandLiveLayerInterface> landLiveLayerViewActionWeakReference;
     CamLandLiveLayerInterface camLandLiveLayerInterface;
+
+
+    CamLiveContract.Presenter presenter;
 
     public CameraLiveFragment() {
         // Required empty public constructor
@@ -100,6 +107,17 @@ public class CameraLiveFragment extends Fragment implements CamLandLiveAction {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        swCamPortWheel.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                presenter.fetchHistoryData();
+            }
+        }, 3000);
+    }
+
+    @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
@@ -132,13 +150,15 @@ public class CameraLiveFragment extends Fragment implements CamLandLiveAction {
     }
 
     private void initLandLiveLayerViewAction() {
+        final long time = System.currentTimeMillis();
         if (landLiveLayerViewActionWeakReference == null
                 || landLiveLayerViewActionWeakReference.get() == null) {
             camLandLiveLayerInterface = new LandLiveLayerViewAction(fLayoutLandScapeViewHolderRef.get(), new CamLandLiveLayerViewBundle());
             landLiveLayerViewActionWeakReference =
-                    new WeakReference<>((LandLiveLayerViewAction) camLandLiveLayerInterface);
+                    new WeakReference<>(camLandLiveLayerInterface);
             landLiveLayerViewActionWeakReference.get().setCamLandLiveAction(this);
         }
+        Log.d("performance", "initLandLiveLayerViewAction performance: " + (System.currentTimeMillis() - time));
     }
 
     /**
@@ -228,6 +248,24 @@ public class CameraLiveFragment extends Fragment implements CamLandLiveAction {
         Toast.makeText(getContext(), "onCapture: ", Toast.LENGTH_SHORT).show();
     }
 
+    @Override
+    public void onHistoryDataRsp(SDataStack dataStack) {
+        swCamPortWheel.loading(false);
+        swCamPortWheel.setupHistoryData(dataStack);
+        setCamLandLiveHistory(dataStack);
+    }
+
+    private void setCamLandLiveHistory(SDataStack dataStack) {
+        if (fLayoutLandScapeViewHolderRef == null)
+            return;
+        landLiveLayerViewActionWeakReference.get().setupHistoryTimeSet(dataStack);
+    }
+
+    @Override
+    public void setPresenter(CamLiveContract.Presenter presenter) {
+        this.presenter = presenter;
+    }
+
 
     private static class LandLiveLayerViewAction implements CamLandLiveLayerInterface,
             CamLiveLandWheel.WheelUpdateListener,
@@ -295,6 +333,12 @@ public class CameraLiveFragment extends Fragment implements CamLandLiveAction {
             }
         }
 
+        @Override
+        public void setupHistoryTimeSet(SDataStack dataStack) {
+            if (camLiveLandWheel != null)
+                camLiveLandWheel.setupHistoryData(dataStack);
+        }
+
 
         @Override
         public void destroy() {
@@ -354,6 +398,10 @@ interface CamLandLiveLayerInterface {
      * @param state
      */
     void updateLandPlayBtn(int state);
+
+    void setCamLandLiveAction(CamLandLiveAction action);
+
+    void setupHistoryTimeSet(SDataStack timeSet);
 
     void destroy();
 }

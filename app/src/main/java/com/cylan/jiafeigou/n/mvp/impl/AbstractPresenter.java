@@ -17,6 +17,7 @@ public abstract class AbstractPresenter<T> {
 
     public AbstractPresenter(T t) {
         weakReference = new WeakReference<>(t);
+
     }
 
     public T getView() {

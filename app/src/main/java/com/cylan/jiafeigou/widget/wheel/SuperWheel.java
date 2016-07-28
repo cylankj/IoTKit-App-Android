@@ -84,7 +84,7 @@ public class SuperWheel extends View {
         float longLineHeight = at.getDimension(R.styleable.SWheelViewStyle_sw_longLineHeight, 25);
         float lineInterval = at.getDimension(R.styleable.SWheelViewStyle_sw_lineIntervalWidth, 10);
         float lineWidth = at.getDimension(R.styleable.SWheelViewStyle_sw_lineWidth, 2.5f);
-        int textSize = at.getDimensionPixelSize(R.styleable.SWheelViewStyle_sw_dateTextSize, 10);
+        int textSize = at.getDimensionPixelSize(R.styleable.SWheelViewStyle_sw_dateTextSize, 11);
         int markerColor = at.getColor(R.styleable.SWheelViewStyle_sw_markerColor, Color.BLUE);
         at.recycle();
         lineIntervalPx = dp2px(lineInterval);
@@ -101,16 +101,17 @@ public class SuperWheel extends View {
 
 
         naturalDateLinePaint.setAntiAlias(true);
-        naturalDateLinePaint.setColor(Color.GRAY);
+        naturalDateLinePaint.setColor(0xFFDEDEDE);
         naturalDateLinePaint.setStrokeWidth(defaultLineWidth);
 
         dataMaskPaint.setAntiAlias(true);
-        dataMaskPaint.setColor(0x44eee000);
+        dataMaskPaint.setColor(0xCCE1F0FF);
         initDateText();
     }
 
     private void initDateText() {
         naturalDateTextPaint.setAntiAlias(true);
+        naturalDateTextPaint.setColor(0xFFAAAAAA);
         naturalDateTextPaint.setTextSize(dateTextSize);
         textRect = new Rect();
         naturalDateTextPaint.getTextBounds(DATE_IN_NORMAL, 0, DATE_IN_NORMAL.length(), textRect);
@@ -152,7 +153,7 @@ public class SuperWheel extends View {
                     (dataStack.naturalDateSet.get(dataCount - 1) -
                             dataStack.recordTimeSet[i]) / 1000.0f / secondPx);
         }
-        dataStack.recordTimePositionSet[0] = dataStack.naturalDateSetPosition[0];
+//        dataStack.recordTimePositionSet[0] = dataStack.naturalDateSetPosition[0];
     }
 
     /**
@@ -175,6 +176,7 @@ public class SuperWheel extends View {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+
         return checkData() && touchHandler.onTouchEvent(event);
     }
 

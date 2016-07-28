@@ -26,6 +26,6 @@
         android:layout_height="match_parent"
         android:layout_gravity="bottom"
         android:layout_marginTop="30dp"
-        hunt:sw_markerColor="@color/color_4b9fd5" />
+        hunt:sw_markerColor="@color/color_36BDFF" />
 
 </merge>

@@ -16,6 +16,7 @@ import android.widget.RelativeLayout;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
+import com.cylan.jiafeigou.n.mvp.impl.cam.CamLivePresenterImpl;
 import com.cylan.jiafeigou.n.mvp.impl.cam.CamMessageListPresenterImpl;
 import com.cylan.jiafeigou.n.view.cam.CamMessageListFragment;
 import com.cylan.jiafeigou.n.view.cam.CameraLiveFragment;
@@ -187,7 +188,9 @@ class SimpleAdapterPager extends FragmentPagerAdapter {
         Bundle bundle = new Bundle();
         bundle.putInt("what", position);
         if (position == 0) {
-            return CameraLiveFragment.newInstance(bundle);
+            CameraLiveFragment fragment = CameraLiveFragment.newInstance(bundle);
+            new CamLivePresenterImpl(fragment);
+            return fragment;
         } else {
             CamMessageListFragment fragment = CamMessageListFragment.newInstance(new Bundle());
             new CamMessageListPresenterImpl(fragment);

@@ -5,14 +5,39 @@
     android:layout_height="match_parent"
     tools:context="com.cylan.jiafeigou.n.view.cam.CameraLiveFragment">
 
-
-    <com.cylan.jiafeigou.widget.wheel.SuperWheel
-        android:id="@+id/sw_cam_live_wheel"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="52dp"
-        android:layout_gravity="bottom"
-        android:visibility="invisible"
-        hunt:sw_markerColor="@color/color_4b9fd5" />
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+
+
+        <com.cylan.jiafeigou.widget.wheel.SuperWheel
+            android:id="@+id/sw_cam_live_wheel"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:layout_gravity="bottom"
+            android:visibility="visible"
+            hunt:sw_markerColor="@color/color_36BDFF" />
+
+        <View
+            android:id="@+id/v_flag"
+            android:layout_width="3dp"
+            android:layout_height="match_parent"
+            android:layout_toStartOf="@+id/tv_cam_live_port_live"
+            android:background="@drawable/little_shape_horizontal" />
+
+        <TextView
+            android:background="@color/color_white"
+            android:id="@+id/tv_cam_live_port_live"
+            android:layout_width="wrap_content"
+            android:layout_height="52dp"
+            android:layout_alignParentRight="true"
+            android:gravity="center"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:text="直播"
+            android:textColor="@color/color_4b9fd5" />
+    </RelativeLayout>
 
     <com.cylan.jiafeigou.widget.SimpleProgressBar
         android:id="@+id/pb_loading_history"
@@ -20,6 +45,13 @@
         android:layout_height="50dp"
         android:layout_gravity="center"
         android:padding="10dp"
-        hunt:progress_point_radius="3dp" />
+        hunt:progress_point_radius="3dp"
+        hunt:progress_stroke_color="@color/color_cecece" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_gravity="bottom"
+        android:background="@color/color_e8e8e8" />
 
 </merge>

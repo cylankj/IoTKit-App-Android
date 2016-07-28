@@ -29,7 +29,7 @@ public class SimpleProgressBar
     /**
      *
      */
-    private static final int swipeDegree = 320;
+    private static final int swipeDegree = 300;
     private Paint circlePaint = new Paint();
     private Paint pointPaint = new Paint();
 
@@ -84,9 +84,11 @@ public class SimpleProgressBar
     protected void onDraw(Canvas canvas) {
         final int count = canvas.save();
         canvas.drawArc(circleRect, degree, swipeDegree, false, circlePaint);
-        final float pointAngle = Math.abs(degree - (360 - swipeDegree) + (360 - swipeDegree) / 2);
-        final float x = getMeasuredWidth() / 2 + circleRadius * (float) Math.cos(pointAngle * Math.PI / 180);
-        final float y = getMeasuredHeight() / 2 - circleRadius * (float) Math.sin((pointAngle + 180.0f) * Math.PI / 180);
+        final float pointAngle = degree - (360 - swipeDegree) / 2;
+        final float x = getMeasuredWidth() / 2
+                + circleRadius * (float) Math.cos(pointAngle * Math.PI / 180);
+        final float y = getMeasuredHeight() / 2
+                - circleRadius * (float) Math.sin((pointAngle + 180.0f) * Math.PI / 180);
         canvas.drawCircle(x, y, pointRadius, pointPaint);
         canvas.restoreToCount(count);
         if (run)
