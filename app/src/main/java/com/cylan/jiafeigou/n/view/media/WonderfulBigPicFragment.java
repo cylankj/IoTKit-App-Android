@@ -2,10 +2,12 @@ package com.cylan.jiafeigou.n.view.media;
 
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.photoview.PhotoView;
@@ -21,7 +23,7 @@ import butterknife.ButterKnife;
 public class WonderfulBigPicFragment extends Fragment {
 
     @BindView(R.id.imgV_show_pic)
-    PhotoView imgVShowPic;
+    ImageView imgVShowPic;
 
     public WonderfulBigPicFragment() {
         // Required empty public constructor
@@ -55,4 +57,8 @@ public class WonderfulBigPicFragment extends Fragment {
         return view;
     }
 
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        imgVShowPic.setImageResource(R.drawable.ic_launcher);
+    }
 }

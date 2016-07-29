@@ -47,7 +47,8 @@
             android:layout_above="@+id/fLayout_wonderful_item_bottom"
             android:layout_below="@+id/tv_wonderful_item_date"
             android:scaleType="fitXY"
-            android:src="@drawable/ic_launcher" />
+            android:src="@drawable/ic_launcher"
+            android:transitionName="picDetailsFragment" />
 
 
         <FrameLayout
