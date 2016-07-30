@@ -1,10 +1,244 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:hunt="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
+    android:background="@color/color_f9f9f9"
+    android:orientation="vertical"
     tools:context="com.cylan.jiafeigou.n.view.activity.CamSettingActivity">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
-</RelativeLayout>
+        <FrameLayout
+            android:id="@+id/fLayout_top_bar_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/color_0ba8cf">
+
+            <TextView
+                android:id="@+id/imgV_top_bar_center"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+                android:drawableLeft="@drawable/ic_nav_back_arrow"
+                android:drawablePadding="15dp"
+                android:padding="15dp"
+                android:text="功能设置"
+                android:textColor="@color/color_white"
+                android:textSize="16sp" />
+        </FrameLayout>
+    </LinearLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingTop="10dp"
+            android:scrollbars="none">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp">
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="设备"
+                    android:textColor="@color/color_4b9fd5"
+                    android:textSize="15sp" />
+
+                <com.cylan.jiafeigou.widget.SettingItemView0
+                    android:id="@+id/sv_setting_device_detail"
+                    android:layout_width="match_parent"
+                    android:layout_height="72dp"
+                    hunt:sv_image_src="@drawable/icon_setting_information"
+                    hunt:sv_sub_title="设备详情"
+                    hunt:sv_title="设备详情" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="网络"
+                    android:textColor="@color/color_4b9fd5"
+                    android:textSize="15sp" />
+
+                <com.cylan.jiafeigou.widget.SettingItemView0
+                    android:id="@+id/sv_setting_device_wifi"
+                    android:layout_width="match_parent"
+                    android:layout_height="72dp"
+                    hunt:sv_image_src="@drawable/icon_setting_wifi"
+                    hunt:sv_sub_title="cylan608"
+                    hunt:sv_title="WiFi配置" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/color_e8e8e8" />
+
+                <com.cylan.jiafeigou.widget.SettingItemView1
+                    android:id="@+id/sv_setting_device_mobile_network"
+                    android:layout_width="match_parent"
+                    android:layout_height="54dp"
+                    hunt:sv_image_src="@drawable/icon_setting_3g"
+                    hunt:sv_title="3G/4G网络" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="功能设置"
+                    android:textColor="@color/color_4b9fd5"
+                    android:textSize="15sp" />
+
+                <com.cylan.jiafeigou.widget.SettingItemView0
+                    android:id="@+id/sv_setting_device_protection"
+                    android:layout_width="match_parent"
+                    android:layout_height="72dp"
+                    hunt:sv_image_src="@drawable/icon_setting_safe"
+                    hunt:sv_sub_title="000d0d0d"
+                    hunt:sv_title="安全防护" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/color_e8e8e8" />
+
+                <com.cylan.jiafeigou.widget.SettingItemView0
+                    android:id="@+id/sv_setting_device_auto_record"
+                    android:layout_width="match_parent"
+                    android:layout_height="72dp"
+                    hunt:sv_image_src="@drawable/icon_setting_videotape"
+                    hunt:sv_sub_title="000d0d0d"
+                    hunt:sv_title="自动录像" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/color_e8e8e8" />
+
+                <com.cylan.jiafeigou.widget.SettingItemView0
+                    android:id="@+id/sv_setting_device_delay_capture"
+                    android:layout_width="match_parent"
+                    android:layout_height="72dp"
+                    hunt:sv_image_src="@drawable/icon_setting_filming"
+                    hunt:sv_sub_title="即将开始"
+                    hunt:sv_title="延时摄影" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/color_e8e8e8" />
+
+                <com.cylan.jiafeigou.widget.SettingItemView0
+                    android:id="@+id/sv_setting_device_standby_mode"
+                    android:layout_width="match_parent"
+                    android:layout_height="72dp"
+                    hunt:sv_image_src="@drawable/icon_setting_standby"
+                    hunt:sv_sub_title="000d0d0d"
+                    hunt:sv_title="待机" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/color_e8e8e8" />
+
+                <com.cylan.jiafeigou.widget.SettingItemView1
+                    android:id="@+id/sv_setting_device_indicator"
+                    android:layout_width="match_parent"
+                    android:layout_height="54dp"
+                    hunt:sv_image_src="@drawable/icon_setting_3g"
+                    hunt:sv_title="设备指示灯" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/color_e8e8e8" />
+
+                <com.cylan.jiafeigou.widget.SettingItemView1
+                    android:id="@+id/sv_setting_device_rotate"
+                    android:layout_width="match_parent"
+                    android:layout_height="54dp"
+                    hunt:sv_image_src="@drawable/icon_setting_rotate_pic"
+                    hunt:sv_title="画面翻转" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/color_e8e8e8" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="72dp"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:id="@+id/imgv_setting_item_electricity_icon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:src="@drawable/icon_setting_electricity" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginStart="10dp"
+                        android:layout_toRightOf="@+id/imgv_setting_item_electricity_icon"
+                        android:layout_toStartOf="@+id/tb_setting_item_switch_110v"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="支持110V市电"
+                            android:textColor="@color/color_black"
+                            android:textSize="16sp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="3dp"
+                            android:text="fadfadfafafadfadfdafda"
+                            android:textColor="@color/color_8C8C8C"
+                            android:textSize="13sp" />
+                    </LinearLayout>
+
+                    <ToggleButton
+                        android:id="@+id/tb_setting_item_switch_110v"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true" />
+                </RelativeLayout>
+
+                <TextView
+                    android:id="@+id/tv_setting_unbind"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:layout_marginBottom="20dp"
+                    android:layout_marginTop="50dp"
+                    android:background="@color/color_f2f2f2"
+                    android:gravity="center"
+                    android:text="解除绑定"
+                    android:textColor="@color/color_FF3D32"
+                    android:textSize="16sp" />
+            </LinearLayout>
+        </ScrollView>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="10dp"
+            android:background="@drawable/little_shape" />
+
+    </FrameLayout>
+
+</LinearLayout>

@@ -96,7 +96,7 @@ public class WheelView extends View {
     private void init() {
         dataPaint.setAntiAlias(true);
         textPaint.setAntiAlias(true);
-        textPaint.setColor(colorDataGray);
+        textPaint.setColor(Color.parseColor("#888888"));
 
         textSize = convertToPx(textSize, getResources());
         textPaint.setTextSize(textSize);
@@ -305,7 +305,7 @@ public class WheelView extends View {
     private float[] computeAutoScrollDistanceX(final int direction) {
         final int scrollX = getScrollX();
         if (DEBUG)
-        Log.d(TAG, "scrollXXXX: " + scrollX);
+            Log.d(TAG, "scrollXXXX: " + scrollX);
         final float delta = getMeasuredWidth() / 2 - itemWidth / 2;
         final float markLabelStartX = delta + scrollX;
         float[] returnValue = new float[2];
@@ -405,7 +405,7 @@ public class WheelView extends View {
         final int scrollX = getScrollX();
         scroller.startScroll(getScrollX(), 0, (int) shouldScrollX - scrollX, 0);
         if (DEBUG)
-        Log.d(TAG, "autoSettle....." + scrollX + "  .. " + position);
+            Log.d(TAG, "autoSettle....." + scrollX + "  .. " + position);
         postInvalidate();
 
         if (onItemChangedListener != null) {
@@ -423,7 +423,7 @@ public class WheelView extends View {
             scrollTo(scroller.getCurrX(), scroller.getCurrY());
             invalidate();
             if (DEBUG)
-            Log.d(TAG, "computeScroll");
+                Log.d(TAG, "computeScroll");
         }
         super.computeScroll();
     }

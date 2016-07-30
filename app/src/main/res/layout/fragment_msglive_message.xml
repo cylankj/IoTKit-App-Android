@@ -64,7 +64,7 @@
                 android:layout_toLeftOf="@id/tv_information_facility_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/setting_icon_information"/>
+                android:src="@drawable/icon_setting_information"/>
 
                 <LinearLayout
                     android:layout_marginLeft="10dp"

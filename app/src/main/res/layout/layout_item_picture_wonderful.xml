@@ -96,7 +96,7 @@
             <TextView
                 android:id="@+id/tv_wonderful_item_share"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_gravity="end|center_vertical"
                 android:layout_marginLeft="252dp"
                 android:layout_marginStart="252dp"
