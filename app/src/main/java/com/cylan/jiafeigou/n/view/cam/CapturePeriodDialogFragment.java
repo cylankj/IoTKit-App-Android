@@ -8,12 +8,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.CheckBox;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.widget.dialog.BaseDialog;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
+import butterknife.OnCheckedChanged;
 
 /**
  * 自动录像周期设置
@@ -23,9 +25,27 @@ import butterknife.OnClick;
  */
 public class CapturePeriodDialogFragment extends BaseDialog {
 
+
+    @BindView(R.id.cb_capture_mon)
+    CheckBox cbCaptureMon;
+    @BindView(R.id.cb_capture_tue)
+    CheckBox cbCaptureTue;
+    @BindView(R.id.cb_capture_wed)
+    CheckBox cbCaptureWed;
+    @BindView(R.id.cb_capture_thur)
+    CheckBox cbCaptureThur;
+    @BindView(R.id.cb_capture_fri)
+    CheckBox cbCaptureFri;
+    @BindView(R.id.cb_capture_sat)
+    CheckBox cbCaptureSat;
+    @BindView(R.id.cb_capture_sun)
+    CheckBox cbCaptureSun;
+
     public CapturePeriodDialogFragment() {
         // Required empty public constructor
     }
+
+    private int checkedSerial;
 
     /**
      * Use this factory method to create a new instance of
@@ -49,23 +69,52 @@ public class CapturePeriodDialogFragment extends BaseDialog {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_set_sensitivity, container, false);
+        View view = inflater.inflate(R.layout.layout_dialog_capture_period, container, false);
         ButterKnife.bind(this, view);
         return view;
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        initView();
+    }
+
+    private void initView() {
 
     }
+
+    @OnCheckedChanged(R.id.cb_capture_mon)
+    public void onCheckBoxMon(boolean checked) {
+    }
+
+    @OnCheckedChanged(R.id.cb_capture_tue)
+    public void onCheckBoxTue(boolean checked) {
+    }
+
+    @OnCheckedChanged(R.id.cb_capture_wed)
+    public void onCheckBoxWed(boolean checked) {
+    }
+
+    @OnCheckedChanged(R.id.cb_capture_thur)
+    public void onCheckBoxThur(boolean checked) {
+    }
+
+    @OnCheckedChanged(R.id.cb_capture_fri)
+    public void onCheckBoxFri(boolean checked) {
+    }
+
+    @OnCheckedChanged(R.id.cb_capture_sat)
+    public void onCheckBoxSat(boolean checked) {
+    }
+
+    @OnCheckedChanged(R.id.cb_capture_sun)
+    public void onCheckBoxSun(boolean checked) {
+    }
+
 
     @Override
     protected int getCustomHeight() {
         return WindowManager.LayoutParams.WRAP_CONTENT;
     }
 
-    @OnClick(R.id.tv_cancel)
-    public void onClick() {
-        dismiss();
-    }
 }
