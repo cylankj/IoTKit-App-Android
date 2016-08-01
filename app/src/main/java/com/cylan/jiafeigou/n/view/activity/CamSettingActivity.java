@@ -6,7 +6,6 @@ import android.support.v4.app.Fragment;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
-import android.widget.ToggleButton;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
@@ -16,6 +15,7 @@ import com.cylan.jiafeigou.n.view.cam.SafeProtectionFragment;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.SettingItemView0;
 import com.cylan.jiafeigou.widget.SettingItemView1;
+import com.kyleduo.switchbutton.SwitchButton;
 
 import java.lang.ref.WeakReference;
 
@@ -47,8 +47,8 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity {
     SettingItemView1 svSettingDeviceIndicator;
     @BindView(R.id.sv_setting_device_rotate)
     SettingItemView1 svSettingDeviceRotate;
-    @BindView(R.id.tb_setting_item_switch_110v)
-    ToggleButton tbSettingItemSwitch110v;
+    @BindView(R.id.sbtn_setting_item_switch_110v)
+    SwitchButton tbSettingItemSwitch110v;
     @BindView(R.id.tv_setting_unbind)
     TextView tvSettingUnbind;
 
@@ -93,7 +93,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity {
     @OnClick({R.id.sv_setting_device_detail,
             R.id.sv_setting_device_indicator,
             R.id.sv_setting_device_rotate,
-            R.id.tb_setting_item_switch_110v,
+            R.id.sbtn_setting_item_switch_110v,
             R.id.tv_setting_unbind,
             R.id.sv_setting_device_standby_mode,
             R.id.sv_setting_device_protection})
@@ -107,7 +107,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity {
                 break;
             case R.id.sv_setting_device_rotate:
                 break;
-            case R.id.tb_setting_item_switch_110v:
+            case R.id.sbtn_setting_item_switch_110v:
                 break;
             case R.id.tv_setting_unbind:
                 break;

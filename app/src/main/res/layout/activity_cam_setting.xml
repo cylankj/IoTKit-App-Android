@@ -193,7 +193,7 @@
                         android:layout_centerVertical="true"
                         android:layout_marginStart="10dp"
                         android:layout_toRightOf="@+id/imgv_setting_item_electricity_icon"
-                        android:layout_toStartOf="@+id/tb_setting_item_switch_110v"
+                        android:layout_toStartOf="@+id/sbtn_setting_item_switch_110v"
                         android:orientation="vertical">
 
                         <TextView
@@ -212,12 +212,16 @@
                             android:textSize="13sp" />
                     </LinearLayout>
 
-                    <ToggleButton
-                        android:id="@+id/tb_setting_item_switch_110v"
+                    <com.kyleduo.switchbutton.SwitchButton
+                        android:id="@+id/sbtn_setting_item_switch_110v"
+                        style="@style/SwitchButtonStyleMD"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
-                        android:layout_centerVertical="true" />
+                        android:layout_centerVertical="true"
+                        android:layout_gravity="end|center_vertical"
+                        android:checked="true"
+                        android:gravity="end" />
                 </RelativeLayout>
 
                 <TextView
