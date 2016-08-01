@@ -70,7 +70,7 @@
                     android:id="@+id/tv_information_facility_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="6dp"
+                    android:layout_marginTop="3dp"
                     android:text="客厅摄像头"
                     android:textColor="#8C8C8C"
                     android:textSize="13sp" />
@@ -79,7 +79,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="1dip"
                     android:layout_marginTop="10dp"
-                    android:background="#F2F2F2" />
+                    android:background="@color/color_f2f2f2" />
             </LinearLayout>
 
 
@@ -103,7 +103,7 @@
                     android:id="@+id/tv_information_facility_time_zone"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="6dp"
+                    android:layout_marginTop="3dp"
                     android:text="北京/中国"
                     android:textColor="#8C8C8C"
                     android:textSize="13sp" />
@@ -112,7 +112,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="1dip"
                     android:layout_marginTop="10dp"
-                    android:background="#F2F2F2" />
+                    android:background="@color/color_f2f2f2" />
             </LinearLayout>
 
             <TextView
@@ -143,7 +143,7 @@
                     android:id="@+id/tv_information_facility_card_state"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="6dp"
+                    android:layout_marginTop="3dp"
                     android:text="读写失败"
                     android:textColor="#8C8C8C"
                     android:textSize="13sp" />
@@ -152,7 +152,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="1dip"
                     android:layout_marginTop="10dp"
-                    android:background="#F2F2F2" />
+                    android:background="@color/color_f2f2f2" />
             </LinearLayout>
 
             <!-- “网络”相关模块 -->
@@ -184,7 +184,7 @@
                     android:id="@+id/tv_information_facility_net"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="6dp"
+                    android:layout_marginTop="3dp"
                     android:text="中国联通"
                     android:textColor="#8C8C8C"
                     android:textSize="13sp" />
@@ -193,7 +193,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="1dip"
                     android:layout_marginTop="10dp"
-                    android:background="#F2F2F2" />
+                    android:background="@color/color_f2f2f2" />
             </LinearLayout>
 
             <!-- Wi-Fi -->
@@ -215,7 +215,7 @@
                     android:id="@+id/tv_information_facility_wifi_state"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="6dp"
+                    android:layout_marginTop="3dp"
                     android:text="未启用"
                     android:textColor="#8C8C8C"
                     android:textSize="13sp" />
@@ -224,7 +224,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="1dip"
                     android:layout_marginTop="10dp"
-                    android:background="#F2F2F2" />
+                    android:background="@color/color_f2f2f2" />
             </LinearLayout>
 
             <!-- "信息"模块 -->
@@ -256,7 +256,7 @@
                     android:id="@+id/tv_information_facility_cid_number"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="6dp"
+                    android:layout_marginTop="3dp"
                     android:text="16位的字符串，设备首次激活时生成"
                     android:textColor="#8C8C8C"
                     android:textSize="13sp" />
@@ -265,7 +265,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="1dip"
                     android:layout_marginTop="10dp"
-                    android:background="#F2F2F2" />
+                    android:background="@color/color_f2f2f2" />
             </LinearLayout>
 
             <!-- MAC -->
@@ -286,7 +286,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="6dp"
+                    android:layout_marginTop="3dp"
                     android:text="WiFi芯片写死的"
                     android:textColor="#8C8C8C"
                     android:textSize="13sp" />
@@ -295,7 +295,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="1dip"
                     android:layout_marginTop="10dp"
-                    android:background="#F2F2F2" />
+                    android:background="@color/color_f2f2f2" />
             </LinearLayout>
 
             <!-- 系统版本 -->
@@ -316,7 +316,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="6dp"
+                    android:layout_marginTop="3dp"
                     android:text="JFG1.2"
                     android:textColor="#8C8C8C"
                     android:textSize="13sp" />
@@ -325,7 +325,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="1dip"
                     android:layout_marginTop="10dp"
-                    android:background="#F2F2F2" />
+                    android:background="@color/color_f2f2f2" />
             </LinearLayout>
 
             <!-- 软件版本 -->
@@ -346,7 +346,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="6dp"
+                    android:layout_marginTop="3dp"
                     android:text="2.4.6.696"
                     android:textColor="#8C8C8C"
                     android:textSize="13sp" />
@@ -355,7 +355,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="1dip"
                     android:layout_marginTop="10dp"
-                    android:background="#F2F2F2" />
+                    android:background="@color/color_f2f2f2" />
             </LinearLayout>
 
             <!-- 电池电量 -->
@@ -377,7 +377,7 @@
                     android:id="@+id/tv_information_facility_battery_leve"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="6dp"
+                    android:layout_marginTop="3dp"
                     android:text="充电中 67%"
                     android:textColor="#8C8C8C"
                     android:textSize="13sp" />
@@ -386,7 +386,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="1dip"
                     android:layout_marginTop="10dp"
-                    android:background="#F2F2F2" />
+                    android:background="@color/color_f2f2f2" />
             </LinearLayout>
 
             <!-- 储存空间 -->
@@ -408,7 +408,7 @@
                     android:id="@+id/tv_information_facility_storage"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="6dp"
+                    android:layout_marginTop="3dp"
                     android:text="1.5GB可用"
                     android:textColor="#8C8C8C"
                     android:textSize="13sp" />
@@ -417,7 +417,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="1dip"
                     android:layout_marginTop="10dp"
-                    android:background="#F2F2F2" />
+                    android:background="@color/color_f2f2f2" />
             </LinearLayout>
         </LinearLayout>
     </ScrollView>

@@ -1,19 +1,17 @@
 package com.cylan.jiafeigou.n.view.mag;
 
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.n.view.mag.MagLiveInformationFragment;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
-import com.cylan.jiafeigou.utils.ToastUtil;
-import com.cylan.jiafeigou.widget.SwitchButton;
+import com.kyleduo.switchbutton.SwitchButton;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -34,8 +32,10 @@ public class MagLiveFragment extends Fragment {
     @BindView(R.id.tv_information_facility_name)
     TextView mFacilityName;
 
+
     private MagLiveInformationFragment magLiveInformationFragment;
     private SwitchButton mSwBtn;
+    /*private boolean isSwitch;*/
 
     public static MagLiveFragment newInstance(Bundle bundle) {
         MagLiveFragment fragment = new MagLiveFragment();
@@ -43,10 +43,6 @@ public class MagLiveFragment extends Fragment {
         return fragment;
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -54,44 +50,46 @@ public class MagLiveFragment extends Fragment {
         magLiveInformationFragment = MagLiveInformationFragment.newInstance(new Bundle());
     }
 
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_msglive_message,null);
+        View view = inflater.inflate(R.layout.fragment_msglive_message, null);
+        ButterKnife.bind(this, view);
         mSwBtn = (SwitchButton) view.findViewById(R.id.btn_switch);
-        mSwBtn.setOnStateChangedListener(new SwitchButton.OnStateChangedListener() {
+        mSwBtn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onStateChanged(boolean state) {
-                if(true == state) {
-                    ToastUtil.showToast(getActivity(),"开关已经打开");
-                }
-                else {
-                    ToastUtil.showToast(getActivity(),"开关已经关闭");
-                }
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
             }
         });
-        ButterKnife.bind(this,view);
         return view;
     }
-
 
     /**
      * 点击回退到原来的activity
      */
     @OnClick(R.id.iv_msglive_back)
-    public void onMessageBack(){
+    public void onMessageBack() {
         getActivity().onBackPressed();
+    }
+
+    /**
+     * 对switchButton所属的整个条目进行监听，点击之后。让switchButton进行滑动
+     */
+    @OnClick(R.id.rLayout_mag_live)
+    public void onRelativeLayoutClick() {
+
     }
 
     /**
      * 点击进入设备信息的设置页面
      */
     @OnClick(R.id.lLayout_information_facility_name)
-    public void onFacilityMessage(){
+    public void onFacilityMessage() {
         getFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                         , R.anim.slide_in_left, R.anim.slide_out_right)
-                .add(R.id.fLayout_msg_information,magLiveInformationFragment,"MagLiveFragment")
+                .add(R.id.fLayout_msg_information, magLiveInformationFragment, "MagLiveFragment")
                 .addToBackStack("MagLiveFragment")
                 .commit();
 
@@ -110,7 +108,7 @@ public class MagLiveFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        String editName = PreferencesUtils.getString(getActivity(),"magEditName","客厅摄像头");
+        String editName = PreferencesUtils.getString(getActivity(), "magEditName", "客厅摄像头");
         mFacilityName.setText(editName);
     }
 }
