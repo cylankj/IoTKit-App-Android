@@ -27,7 +27,7 @@ public class BaseDialog extends DialogFragment {
     }
 
     protected int getCustomHeight() {
-        return 0;
+        return minHeight;
     }
 
     protected int getCustomWidth() {

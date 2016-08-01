@@ -46,7 +46,7 @@ ext {
     systembartint = 'com.readystatesoftware.systembartint:systembartint:1.0.3'
     buglySdk = 'com.tencent.bugly:crashreport:2.1.5'
     buglyNdk = 'com.tencent.bugly:nativecrashreport:2.2.0'
-
+    switchButton = 'com.kyleduo.switchbutton:library:1.4.1'
     leakcanaryAndroid = 'com.squareup.leakcanary:leakcanary-android:1.4-beta2'
     leakcanaryAndroidNoOp = 'com.squareup.leakcanary:leakcanary-android-no-op:1.4-beta2'
 }

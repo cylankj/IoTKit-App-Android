@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -72,6 +73,8 @@ public class HomePageListFragment extends Fragment implements
     TextView tvHeaderLastTitle;
     //不是长时间需要,用软引用.
     WeakReference<SimpleDialogFragment> simpleDialogFragmentWeakReference;
+    @BindView(R.id.lLayout_home_greet)
+    LinearLayout lLayoutHomeGreet;
     private HomePageListContract.Presenter presenter;
 
     private HomePageListAdapter homePageListAdapter;
@@ -137,7 +140,6 @@ public class HomePageListFragment extends Fragment implements
         initProgressBarPosition();
         rVDevicesList.setLayoutManager(new LinearLayoutManager(getContext()));
         rVDevicesList.setAdapter(homePageListAdapter);
-
         initHeaderView();
         initSomeViewMargin();
         initSimpleDialog();
@@ -151,7 +153,8 @@ public class HomePageListFragment extends Fragment implements
     }
 
     private void initSomeViewMargin() {
-        ViewUtils.setViewPaddingStatusBar(getView().findViewById(R.id.imgV_add_devices));
+        ViewUtils.setViewMarginStatusBar(imgBtnAddDevices);
+        ViewUtils.setViewMarginStatusBar(lLayoutHomeGreet);
     }
 
     private void initHeaderView() {
@@ -292,7 +295,7 @@ public class HomePageListFragment extends Fragment implements
         if (bean != null) {
             if (bean.deviceType == JConstant.JFG_DEVICE_CAMERA) {
                 startActivity(new Intent(getActivity(), CameraLiveActivity.class));
-            }else if(bean.deviceType == JConstant.JFG_DEVICE_MAG){
+            } else if (bean.deviceType == JConstant.JFG_DEVICE_MAG) {
                 startActivity(new Intent(getActivity(), MagLiveActivity.class));
             }
         }

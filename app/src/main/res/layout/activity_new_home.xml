@@ -34,21 +34,21 @@
                 style="@style/home_bottom_radio_style"
                 android:checked="true"
                 android:drawableTop="@drawable/icon_bottom_clever_dog_selector"
-                android:paddingBottom="7dp"
+                android:paddingBottom="3dp"
                 android:text="@string/item_jf_dog" />
 
             <RadioButton
                 android:id="@+id/btn_home_wonderful"
                 style="@style/home_bottom_radio_style"
                 android:drawableTop="@drawable/icon_bottom_wonderful_selector"
-                android:paddingBottom="7dp"
+                android:paddingBottom="3dp"
                 android:text="@string/item_wonder" />
 
             <RadioButton
                 android:id="@+id/btn_home_mine"
                 style="@style/home_bottom_radio_style"
                 android:drawableTop="@drawable/icon_bottom_mine_selector"
-                android:paddingBottom="7dp"
+                android:paddingBottom="3dp"
                 android:text="@string/item_mine" />
         </RadioGroup>
 
@@ -67,6 +67,7 @@
 
 
         <TextView
+            android:text="2016-09-07"
             android:id="@+id/tv_time_line_pop"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

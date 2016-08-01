@@ -10,6 +10,8 @@ import com.cylan.superadapter.IMulItemViewType;
 import com.cylan.superadapter.SuperAdapter;
 import com.cylan.superadapter.internal.SuperViewHolder;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -19,13 +21,16 @@ import java.util.Locale;
 
 public class HomePageListAdapter extends SuperAdapter<DeviceBean> {
 
-    //    final static int[] deviceIconOnlineRes = {R.drawable.ico_doorbell_online, R.drawable.ico_video_online, R.drawable.ico_efamily_online};
-//    final static int[] deviceIconOfflineRes = {R.drawable.ico_doorbell_offline, R.drawable.ico_video_offline, R.drawable.ico_efamily_offline};
     final static int[] deviceIconOnlineRes = {R.drawable.icon_home_doorbell_online, R.drawable.icon_home_camera_online, R.drawable.icon_home_album_online, R.drawable.icon_home_magnetic_online};
     final static int[] deviceIconOfflineRes = {R.drawable.icon_home_doorbell_offline, R.drawable.icon_home_camera_offline, R.drawable.icon_home_album_offline, R.drawable.icon_home_magnetic_offline};
     final static int[] msgContentRes = {R.string.receive_new_news, R.string.receive_new_news, R.string.receive_new_news, R.string.receive_new_news};
     private DeviceItemClickListener deviceItemClickListener;
     private DeviceItemLongClickListener deviceItemLongClickListener;
+
+    private static final SimpleDateFormat format_0 = new SimpleDateFormat("HH:mm", Locale.getDefault());
+    private static final SimpleDateFormat format_1 = new SimpleDateFormat("yy/M/d", Locale.getDefault());
+
+    private static final Date date = new Date();
 
     public HomePageListAdapter(Context context, List<DeviceBean> items, IMulItemViewType<DeviceBean> mulItemViewType) {
         super(context, items, mulItemViewType);
@@ -61,15 +66,23 @@ public class HomePageListAdapter extends SuperAdapter<DeviceBean> {
     }
 
     private String getMessageContent(DeviceBean bean) {
-        String content = "";
         final int deviceType = bean.deviceType;
         final int msgCount = bean.msgCount;
         return String.format(Locale.getDefault(),
                 getContext().getString(msgContentRes[deviceType]), msgCount);
     }
 
-    private String getTime(DeviceBean bean) {
-        return "" + bean.msgCount;
+    private String convertTime(DeviceBean bean) {
+        final long timeInterval = System.currentTimeMillis() - bean.msgTime;
+        if (timeInterval <= 5 * 60 * 1000) {
+            return getContext().getString(R.string.JUST_NOW);
+        } else if (timeInterval <= 24 * 60 * 1000) {
+            date.setTime(bean.msgTime);
+            return format_0.format(date);
+        } else {
+            date.setTime(bean.msgTime);
+            return format_1.format(date);
+        }
     }
 
     private void setItemState(SuperViewHolder holder, DeviceBean bean) {
@@ -94,7 +107,7 @@ public class HomePageListAdapter extends SuperAdapter<DeviceBean> {
         holder.setText(R.id.tv_device_msg_count, getMessageContent(bean));
 //        holder.setTextColor(R.id.tv_device_msg_count, fontColor);
         //时间
-        holder.setText(R.id.tv_device_msg_time, getTime(bean));
+        holder.setText(R.id.tv_device_msg_time, convertTime(bean));
 //        holder.setTextColor(R.id.tv_device_msg_time, fontColor);
         //右下角状态
         setItemState(holder, bean);
