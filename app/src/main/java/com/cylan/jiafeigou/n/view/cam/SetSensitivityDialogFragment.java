@@ -8,10 +8,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.widget.dialog.BaseDialog;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -21,6 +25,17 @@ import butterknife.OnClick;
  * create an instance of this fragment.
  */
 public class SetSensitivityDialogFragment extends BaseDialog {
+
+    @BindView(R.id.rbtn_sensitivity_high)
+    RadioButton rbtnSensitivityHigh;
+    @BindView(R.id.rbtn_sensitivity_middle)
+    RadioButton rbtnSensitivityMiddle;
+    @BindView(R.id.rbtn_sensitivity_low)
+    RadioButton rbtnSensitivityLow;
+    @BindView(R.id.rg_sensitivity)
+    RadioGroup rgSensitivity;
+    @BindView(R.id.tv_cancel)
+    TextView tvCancel;
 
     public SetSensitivityDialogFragment() {
         // Required empty public constructor
@@ -55,7 +70,23 @@ public class SetSensitivityDialogFragment extends BaseDialog {
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        initButton();
+    }
 
+    private void initButton() {
+        rgSensitivity.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                switch (checkedId) {
+                    case R.id.rbtn_sensitivity_high:
+                        break;
+                    case R.id.rbtn_sensitivity_middle:
+                        break;
+                    case R.id.rbtn_sensitivity_low:
+                        break;
+                }
+            }
+        });
     }
 
     @Override

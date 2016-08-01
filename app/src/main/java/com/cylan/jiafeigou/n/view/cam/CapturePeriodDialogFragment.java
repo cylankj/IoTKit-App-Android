@@ -85,6 +85,7 @@ public class CapturePeriodDialogFragment extends BaseDialog {
 
     @OnCheckedChanged(R.id.cb_capture_mon)
     public void onCheckBoxMon(boolean checked) {
+//        checkedSerial|=
     }
 
     @OnCheckedChanged(R.id.cb_capture_tue)

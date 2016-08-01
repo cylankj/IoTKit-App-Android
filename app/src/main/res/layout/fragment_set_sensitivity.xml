@@ -21,32 +21,30 @@
 
         <RadioGroup
             android:id="@+id/rg_sensitivity"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
             android:layout_marginTop="12dp">
 
             <RadioButton
                 android:id="@+id/rbtn_sensitivity_high"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_height="54dp"
                 android:text="高"
                 android:textColor="@color/color_black"
                 android:textSize="14sp" />
 
             <RadioButton
                 android:id="@+id/rbtn_sensitivity_middle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_height="54dp"
                 android:text="中"
                 android:textColor="@color/color_black"
                 android:textSize="14sp" />
 
             <RadioButton
                 android:id="@+id/rbtn_sensitivity_low"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_height="54dp"
                 android:text="低"
                 android:textColor="@color/color_black"
                 android:textSize="14sp" />

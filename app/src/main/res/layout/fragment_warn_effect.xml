@@ -13,62 +13,82 @@
         android:layout_height="10dp"
         android:background="@drawable/little_shape" />
 
-    <RadioGroup
-        android:id="@+id/rg_warn_effect"
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <RadioButton
-            android:id="@+id/rb_warn_effect_silence"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="54dp"
-            android:button="@null"
-            android:drawableRight="@android:drawable/btn_radio"
-            android:paddingLeft="24dp"
-            android:paddingRight="24dp"
-            android:text="静音" />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
+            android:layout_height="wrap_content"
             android:layout_marginLeft="24dp"
             android:layout_marginRight="24dp"
-            android:background="@color/color_e8e8e8" />
+            android:orientation="vertical">
 
-        <RadioButton
-            android:id="@+id/rb_warn_effect_dog_"
-            android:layout_width="match_parent"
-            android:layout_height="54dp"
-            android:button="@null"
-            android:drawableRight="@android:drawable/btn_radio"
-            android:paddingLeft="24dp"
-            android:paddingRight="24dp"
-            android:text="汪汪声" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="54dp"
+                android:gravity="center_vertical"
+                android:text="静音"
+                android:textColor="@color/color_black"
+                android:textSize="16sp" />
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginLeft="24dp"
-            android:layout_marginRight="24dp"
-            android:background="@color/color_e8e8e8" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/color_e8e8e8" />
 
-        <RadioButton
-            android:id="@+id/rb_warn_effect_waring"
-            android:layout_width="match_parent"
-            android:layout_height="54dp"
-            android:button="@null"
-            android:drawableRight="@android:drawable/btn_radio"
-            android:paddingLeft="24dp"
-            android:paddingRight="24dp"
-            android:text="警报声" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="54dp"
+                android:gravity="center_vertical"
+                android:text="汪汪声"
+                android:textColor="@color/color_black"
+                android:textSize="16sp" />
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginLeft="24dp"
-            android:layout_marginRight="24dp"
-            android:background="@color/color_e8e8e8" />
-    </RadioGroup>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/color_e8e8e8" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="54dp"
+                android:gravity="center_vertical"
+                android:text="警报声"
+                android:textColor="@color/color_black"
+                android:textSize="16sp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/color_e8e8e8" />
+        </LinearLayout>
+
+        <RadioGroup
+            android:id="@+id/rg_warn_effect"
+            android:layout_width="54dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end">
+
+            <RadioButton
+                android:id="@+id/rb_warn_effect_silence"
+                android:layout_width="match_parent"
+                android:layout_height="54dp" />
+
+            <RadioButton
+                android:id="@+id/rb_warn_effect_dog_"
+                android:layout_width="match_parent"
+                android:layout_height="54dp" />
+
+
+            <RadioButton
+                android:id="@+id/rb_warn_effect_waring"
+                android:layout_width="match_parent"
+                android:layout_height="54dp" />
+
+        </RadioGroup>
+    </FrameLayout>
+
 
     <LinearLayout
         android:id="@+id/lLayout_warn_repeat_mode"
