@@ -292,7 +292,7 @@ public class HomePageListFragment extends Fragment implements
         if (bean != null) {
             if (bean.deviceType == JConstant.JFG_DEVICE_CAMERA) {
                 startActivity(new Intent(getActivity(), CameraLiveActivity.class));
-            }else if(bean.deviceType == JConstant.JFG_DEVICE_MAG){
+            } else if (bean.deviceType == JConstant.JFG_DEVICE_MAG) {
                 startActivity(new Intent(getActivity(), MagLiveActivity.class));
             }
         }

@@ -62,8 +62,8 @@ public class BarcodeFormat {
     }
 
     public static BarcodeFormat getFormatById(int id) {
-        for(BarcodeFormat format : ALL_FORMATS) {
-            if(format.getId() == id) {
+        for (BarcodeFormat format : ALL_FORMATS) {
+            if (format.getId() == id) {
                 return format;
             }
         }

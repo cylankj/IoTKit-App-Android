@@ -1,18 +1,22 @@
 package com.cylan.jiafeigou.n.view.activity;
 
+import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
 import com.cylan.jiafeigou.n.view.mag.MagLiveFragment;
 import com.cylan.jiafeigou.utils.ViewUtils;
+import com.cylan.jiafeigou.widget.FateLineView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,8 +51,7 @@ public class MagLiveActivity extends BaseFullScreenFragmentActivity {
     @BindView(R.id.lv_mag_state)
     ListView lvMagState;
     private MagLiveFragment magLiveFragment;
-    private SimpleAdapter simpleAdapter;
-    private List<String> timeList;
+    private List<String> list;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,23 +61,27 @@ public class MagLiveActivity extends BaseFullScreenFragmentActivity {
         magLiveFragment = MagLiveFragment.newInstance(new Bundle());
         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
         ButterKnife.bind(this);
+
+        lvMagState.setDivider(null);
+        lvMagState.setDividerHeight(0);
+        //用来存放，所需要的bean对象
         initTopBar();
         initView();
-        timeList = new ArrayList<>();
         initData();
     }
 
     private void initData() {
-        //模拟数据添加到listView
-        for (int i=0; i<=20; i++){
-
+        if(list==null){
+            list = new ArrayList<>();
         }
     }
 
+
     private void initView() {
-        simpleAdapter = new SimpleAdapter();
-        lvMagState.setAdapter(simpleAdapter);
+        SimpleAdapter adapter = new SimpleAdapter();
+        lvMagState.setAdapter(adapter);
     }
+
 
     @Override
     protected void onResume() {
@@ -98,7 +105,7 @@ public class MagLiveActivity extends BaseFullScreenFragmentActivity {
     }
 
     @OnClick(R.id.imgV_msg_title_top_back)
-    public void onBack(){
+    public void onBack() {
         onBackPressed();
     }
 
@@ -107,18 +114,18 @@ public class MagLiveActivity extends BaseFullScreenFragmentActivity {
      * 当点击右上角的螺母按钮时，跳转到设备设置页面
      */
     @OnClick(R.id.imgV_msg_title_top_setting)
-    public void onClickSetting(){
+    public void onClickSetting() {
         loadFragment(R.id.fLayout_msg_information, magLiveFragment);
     }
 
     /**
      * 用来加载fragment的方法。
      */
-    private void loadFragment(int id,MagLiveFragment fragment) {
+    private void loadFragment(int id, MagLiveFragment fragment) {
         getSupportFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                         , R.anim.slide_in_left, R.anim.slide_out_right)
-                .add(id,fragment,"MsgLiveInformationFragment")
+                .add(id, fragment, "MsgLiveInformationFragment")
                 .addToBackStack("MagLiveActivity")
                 .commit();
     }
@@ -127,12 +134,26 @@ public class MagLiveActivity extends BaseFullScreenFragmentActivity {
 
         @Override
         public int getCount() {
-            return 0;
+            return 20;
         }
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-            return null;
+            ViewHolder holder;
+            if(convertView==null){
+                holder = new ViewHolder();
+//                convertView = View.inflate(getApplicationContext(),R.layout.activity_mag_live_item,null);
+                convertView = LayoutInflater.from(getApplicationContext()).inflate(R.layout.activity_mag_live_item,parent,false);
+                        View.inflate(getApplicationContext(),R.layout.activity_mag_live_item,null);
+                holder.mTvDay = (TextView) convertView.findViewById(R.id.tv_mag_live_day);
+                holder.mTvTime = (TextView) convertView.findViewById(R.id.tv_mag_live_time);
+                holder.mFlv = (FateLineView) convertView.findViewById(R.id.flv_mag_live);
+                convertView.setTag(holder);
+            }else {
+                holder = (ViewHolder) convertView.getTag();
+            }
+
+            return convertView;
         }
 
         @Override
@@ -144,5 +165,10 @@ public class MagLiveActivity extends BaseFullScreenFragmentActivity {
         public long getItemId(int position) {
             return 0;
         }
+    }
+
+    class ViewHolder{
+        TextView mTvDay,mTvTime;
+        FateLineView mFlv;
     }
 }

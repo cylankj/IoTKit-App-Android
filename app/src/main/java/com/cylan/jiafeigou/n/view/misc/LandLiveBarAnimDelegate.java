@@ -4,7 +4,6 @@ package com.cylan.jiafeigou.n.view.misc;
  * Created by cylan-hunt on 16-7-13.
  */
 
-import android.content.res.Resources;
 import android.os.Handler;
 import android.os.Message;
 import android.view.View;
@@ -130,7 +129,7 @@ public class LandLiveBarAnimDelegate {
                 "translationY",
                 weakReferenceBottom.get().getHeight(),
                 0
-                );
+        );
         AnimatorSet set = new AnimatorSet();
         set.playTogether(alpha, animator);
         set.setDuration(250);

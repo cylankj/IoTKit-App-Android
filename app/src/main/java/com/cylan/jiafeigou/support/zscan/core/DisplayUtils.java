@@ -20,18 +20,17 @@ public class DisplayUtils {
         return screenResolution;
     }
 
-    public static int getScreenOrientation(Context context)
-    {
+    public static int getScreenOrientation(Context context) {
         WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         Display display = wm.getDefaultDisplay();
 
         int orientation = Configuration.ORIENTATION_UNDEFINED;
-        if(display.getWidth()==display.getHeight()){
+        if (display.getWidth() == display.getHeight()) {
             orientation = Configuration.ORIENTATION_SQUARE;
-        } else{
-            if(display.getWidth() < display.getHeight()){
+        } else {
+            if (display.getWidth() < display.getHeight()) {
                 orientation = Configuration.ORIENTATION_PORTRAIT;
-            }else {
+            } else {
                 orientation = Configuration.ORIENTATION_LANDSCAPE;
             }
         }

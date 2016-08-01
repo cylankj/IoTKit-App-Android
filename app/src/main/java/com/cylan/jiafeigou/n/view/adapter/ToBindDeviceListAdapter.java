@@ -3,7 +3,6 @@ package com.cylan.jiafeigou.n.view.adapter;
 import android.content.Context;
 import android.net.wifi.ScanResult;
 import android.view.View;
-import android.widget.AdapterView;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.superadapter.SuperAdapter;

@@ -2,7 +2,6 @@ package com.cylan.jiafeigou.n.mvp.impl.bind;
 
 import android.content.Context;
 import android.net.wifi.ScanResult;
-import android.text.TextUtils;
 import android.util.Log;
 
 import com.cylan.jiafeigou.cache.SimpleCache;

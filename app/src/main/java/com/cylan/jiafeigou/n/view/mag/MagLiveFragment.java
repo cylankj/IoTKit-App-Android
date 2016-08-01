@@ -11,7 +11,7 @@ import android.widget.Toast;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
-import com.cylan.jiafeigou.widget.SwitchButton;
+import com.cylan.jiafeigou.utils.ToastUtil;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -35,7 +35,7 @@ public class MagLiveFragment extends Fragment {
 
     private MagLiveInformationFragment magLiveInformationFragment;
     private SwitchButton mSwBtn;
-    /*private boolean isSwitch;*/
+    private boolean isSwitch;
 
     public static MagLiveFragment newInstance(Bundle bundle) {
         MagLiveFragment fragment = new MagLiveFragment();
@@ -54,19 +54,18 @@ public class MagLiveFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_msglive_message,null);
-        ButterKnife.bind(this,view);
+        View view = inflater.inflate(R.layout.fragment_msglive_message, null);
+        ButterKnife.bind(this, view);
         mSwBtn = (SwitchButton) view.findViewById(R.id.btn_switch);
-        mSwBtn.setOnStateChangedListener(new SwitchButton.OnStateChangedListener(){
+        mSwBtn.setOnStateChangedListener(new SwitchButton.OnStateChangedListener() {
             @Override
             public void onStateChanged(boolean state) {
-                if(true == state) {
-                    Toast.makeText(getActivity(), "开关已打开"+state, Toast.LENGTH_SHORT).show();
-                    /*isSwitch = true;*/
-                }
-                else {
-                    Toast.makeText(getActivity(), "开关已关闭"+state, Toast.LENGTH_SHORT).show();
-                    /*isSwitch = false;*/
+                if (true == state) {
+                    Toast.makeText(getActivity(), "开关已打开" + state, Toast.LENGTH_SHORT).show();
+                    isSwitch = true;
+                } else {
+                    Toast.makeText(getActivity(), "开关已关闭" + state, Toast.LENGTH_SHORT).show();
+                    isSwitch = false;
                 }
             }
         });
@@ -77,7 +76,7 @@ public class MagLiveFragment extends Fragment {
      * 点击回退到原来的activity
      */
     @OnClick(R.id.iv_msglive_back)
-    public void onMessageBack(){
+    public void onMessageBack() {
         getActivity().onBackPressed();
     }
 
@@ -85,19 +84,20 @@ public class MagLiveFragment extends Fragment {
      * 对switchButton所属的整个条目进行监听，点击之后。让switchButton进行滑动
      */
     @OnClick(R.id.rLayout_mag_live)
-    public void onRelativeLayoutClick(){
-
+    public void onRelativeLayoutClick() {
+        ToastUtil.showToast(getActivity(),"点击了");
+        mSwBtn.setToggle(isSwitch);
     }
 
     /**
      * 点击进入设备信息的设置页面
      */
     @OnClick(R.id.lLayout_information_facility_name)
-    public void onFacilityMessage(){
+    public void onFacilityMessage() {
         getFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                         , R.anim.slide_in_left, R.anim.slide_out_right)
-                .add(R.id.fLayout_msg_information,magLiveInformationFragment,"MagLiveFragment")
+                .add(R.id.fLayout_msg_information, magLiveInformationFragment, "MagLiveFragment")
                 .addToBackStack("MagLiveFragment")
                 .commit();
 
@@ -116,7 +116,7 @@ public class MagLiveFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        String editName = PreferencesUtils.getString(getActivity(),"magEditName","客厅摄像头");
+        String editName = PreferencesUtils.getString(getActivity(), "magEditName", "客厅摄像头");
         mFacilityName.setText(editName);
     }
 }

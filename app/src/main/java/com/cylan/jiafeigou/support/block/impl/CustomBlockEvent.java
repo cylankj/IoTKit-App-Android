@@ -6,7 +6,6 @@ import android.widget.Toast;
 
 import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.support.block.OnBlockEventInterceptor;
-import com.cylan.jiafeigou.utils.ToastUtil;
 
 import java.text.SimpleDateFormat;
 import java.util.Locale;

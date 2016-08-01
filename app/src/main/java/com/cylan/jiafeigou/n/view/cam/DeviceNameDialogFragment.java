@@ -19,7 +19,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.utils.IMEUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 
 import butterknife.ButterKnife;
@@ -49,7 +48,7 @@ public class DeviceNameDialogFragment extends DialogFragment {
     /**
      * 接口回调，用来刷新UI
      */
-    public interface OnDataChangeListener{
+    public interface OnDataChangeListener {
         void dataChangeListener(String content);
     }
 
@@ -77,14 +76,14 @@ public class DeviceNameDialogFragment extends DialogFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         getDialog().requestWindowFeature(Window.FEATURE_NO_TITLE);
 
-        View view = inflater.inflate(R.layout.fragment_edit_name,container);
+        View view = inflater.inflate(R.layout.fragment_edit_name, container);
         mBtnEnsure = (Button) view.findViewById(R.id.btn_information_ensure);
         mBtnCancel = (Button) view.findViewById(R.id.btn_information_cancel);
         mShowState = (TextView) view.findViewById(R.id.tv_information_show_state);
         mEtEditName = (EditText) view.findViewById(R.id.et_information_edit_name);
 
 
-        ininName = PreferencesUtils.getString(getActivity(),"editName","客厅摄像头");
+        ininName = PreferencesUtils.getString(getActivity(), "editName", "客厅摄像头");
         mEtEditName.setText(ininName);
         mEtEditName.setTextColor(Color.parseColor("#666666"));
         mEtEditName.setSelection(ininName.length());
@@ -94,7 +93,7 @@ public class DeviceNameDialogFragment extends DialogFragment {
         mBtnEnsure.setClickable(false);
         mBtnEnsure.setBackgroundColor(Color.parseColor("#cecece"));
         //用过butterKnife来找ID
-        ButterKnife.bind(this,view);
+        ButterKnife.bind(this, view);
         return view;
     }
 
@@ -121,8 +120,8 @@ public class DeviceNameDialogFragment extends DialogFragment {
                 mBtnEnsure.setFocusable(!isEmpty);
                 mBtnEnsure.setEnabled(!isEmpty);
                 mBtnEnsure.setClickable(!isEmpty);
-                mBtnEnsure.setBackgroundColor(isEmpty?getResources().getColor(R.color.color_cecece):getResources().getColor(R.color.color_c5e6fc));
-                mShowState.setVisibility(!isEmpty?View.GONE:View.VISIBLE);
+                mBtnEnsure.setBackgroundColor(isEmpty ? getResources().getColor(R.color.color_cecece) : getResources().getColor(R.color.color_c5e6fc));
+                mShowState.setVisibility(!isEmpty ? View.GONE : View.VISIBLE);
                 mShowState.setText("名称不能为空");
                 /*mEditName = mEtEditName.getText().toString();
                 if(mEditName.equals("")){
@@ -146,14 +145,14 @@ public class DeviceNameDialogFragment extends DialogFragment {
         mEtEditName.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                return (event.getKeyCode()==KeyEvent.KEYCODE_ENTER);
+                return (event.getKeyCode() == KeyEvent.KEYCODE_ENTER);
             }
         });
     }
 
-    @OnClick({R.id.et_information_edit_name,R.id.btn_information_ensure,R.id.btn_information_cancel})
-    public void OnClick(View view){
-        switch (view.getId()){
+    @OnClick({R.id.et_information_edit_name, R.id.btn_information_ensure, R.id.btn_information_cancel})
+    public void OnClick(View view) {
+        switch (view.getId()) {
             //点击editText做相应的逻辑
             case R.id.et_information_edit_name:
                 initListener();
@@ -165,28 +164,27 @@ public class DeviceNameDialogFragment extends DialogFragment {
                 break;
             //点击确认按钮做相应的逻辑
             case R.id.btn_information_ensure:
-                    mEditName = mEtEditName.getText().toString();
-                    PreferencesUtils.putString(getActivity(),"editName", mEditName);
-                    String editName = PreferencesUtils.getString(getActivity(),"editName","客厅摄像头");
-                    mEtEditName.setTextColor(Color.parseColor("#666666"));
-                    mEtEditName.setText(editName);
-                    if(mListener!=null){
-                        mListener.dataChangeListener(mEditName);
-                    }
-                    //点击确认按钮之后，把软键盘进行隐藏
-                    hideKeyboard(view);
-                    dismiss();
+                mEditName = mEtEditName.getText().toString();
+                PreferencesUtils.putString(getActivity(), "editName", mEditName);
+                String editName = PreferencesUtils.getString(getActivity(), "editName", "客厅摄像头");
+                mEtEditName.setTextColor(Color.parseColor("#666666"));
+                mEtEditName.setText(editName);
+                if (mListener != null) {
+                    mListener.dataChangeListener(mEditName);
+                }
+                //点击确认按钮之后，把软键盘进行隐藏
+                hideKeyboard(view);
+                dismiss();
                 break;
         }
     }
 
     /**
-     *
      * 点击确认按钮之后，把软键盘进行隐藏
      */
     private void hideKeyboard(View view) {
         InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-        inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(),0);
+        inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 
 /*    *//**

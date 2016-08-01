@@ -25,7 +25,6 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
 import android.graphics.Shader;
-import android.provider.Settings;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;

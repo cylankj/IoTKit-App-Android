@@ -6,8 +6,6 @@ import android.content.Intent;
 import android.os.Environment;
 import android.util.Log;
 
-import com.cylan.jiafeigou.misc.JConstant;
-import com.cylan.jiafeigou.n.engine.DaemonService;
 import com.cylan.jiafeigou.support.DebugOptionsImpl;
 import com.cylan.utils.Constants;
 import com.squareup.leakcanary.LeakCanary;
