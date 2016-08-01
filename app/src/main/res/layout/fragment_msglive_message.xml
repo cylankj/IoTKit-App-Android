@@ -98,6 +98,7 @@
     </LinearLayout>
 
     <RelativeLayout
+        android:id="@+id/rLayout_mag_live"
         android:layout_width="match_parent"
         android:layout_height="54dp">
         <ImageView
@@ -120,17 +121,13 @@
             android:text="开/关时通知我"/>
 
         <!-- 开关的切换 -->
-        <RelativeLayout
-            android:layout_marginRight="26dp"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
             <com.cylan.jiafeigou.widget.SwitchButton
+                android:layout_marginRight="26dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
                 android:id="@+id/btn_switch"
                 android:layout_width="35dp"
-                android:layout_height="35dp"/>
-        </RelativeLayout>
+                android:layout_height="50dp"/>
 
     </RelativeLayout>
     <View

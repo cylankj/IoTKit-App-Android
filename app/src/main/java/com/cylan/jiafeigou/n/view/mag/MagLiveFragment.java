@@ -1,6 +1,5 @@
 package com.cylan.jiafeigou.n.view.mag;
 
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -8,11 +7,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.n.view.mag.MagLiveInformationFragment;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
-import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.widget.SwitchButton;
 
 import butterknife.BindView;
@@ -34,8 +32,10 @@ public class MagLiveFragment extends Fragment {
     @BindView(R.id.tv_information_facility_name)
     TextView mFacilityName;
 
+
     private MagLiveInformationFragment magLiveInformationFragment;
     private SwitchButton mSwBtn;
+    /*private boolean isSwitch;*/
 
     public static MagLiveFragment newInstance(Bundle bundle) {
         MagLiveFragment fragment = new MagLiveFragment();
@@ -43,10 +43,6 @@ public class MagLiveFragment extends Fragment {
         return fragment;
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -54,26 +50,28 @@ public class MagLiveFragment extends Fragment {
         magLiveInformationFragment = MagLiveInformationFragment.newInstance(new Bundle());
     }
 
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_msglive_message,null);
+        ButterKnife.bind(this,view);
         mSwBtn = (SwitchButton) view.findViewById(R.id.btn_switch);
-        mSwBtn.setOnStateChangedListener(new SwitchButton.OnStateChangedListener() {
+        mSwBtn.setOnStateChangedListener(new SwitchButton.OnStateChangedListener(){
             @Override
             public void onStateChanged(boolean state) {
                 if(true == state) {
-                    ToastUtil.showToast(getActivity(),"开关已经打开");
+                    Toast.makeText(getActivity(), "开关已打开"+state, Toast.LENGTH_SHORT).show();
+                    /*isSwitch = true;*/
                 }
                 else {
-                    ToastUtil.showToast(getActivity(),"开关已经关闭");
+                    Toast.makeText(getActivity(), "开关已关闭"+state, Toast.LENGTH_SHORT).show();
+                    /*isSwitch = false;*/
                 }
             }
         });
-        ButterKnife.bind(this,view);
         return view;
     }
-
 
     /**
      * 点击回退到原来的activity
@@ -81,6 +79,14 @@ public class MagLiveFragment extends Fragment {
     @OnClick(R.id.iv_msglive_back)
     public void onMessageBack(){
         getActivity().onBackPressed();
+    }
+
+    /**
+     * 对switchButton所属的整个条目进行监听，点击之后。让switchButton进行滑动
+     */
+    @OnClick(R.id.rLayout_mag_live)
+    public void onRelativeLayoutClick(){
+
     }
 
     /**

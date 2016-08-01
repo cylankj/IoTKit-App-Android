@@ -109,11 +109,18 @@ public class MagDeviceTimeZoneFragment extends Fragment {
             mNoSearchCity.addAll(Arrays.asList(mCity));
         return mNoSearchCity;
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mEtFind.getText().clear();
+    }
+
     @Override
     public void onStop() {
         super.onStop();
-        setRefreshData(mNoSearchCity);
-        mEtFind.setText("");
+//        setRefreshData(mNoSearchCity);
+//        mEtFind.setText("");
         adapterState = false;
     }
 
@@ -130,7 +137,7 @@ public class MagDeviceTimeZoneFragment extends Fragment {
         mIvBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getFragmentManager().popBackStack();
+                getActivity().getSupportFragmentManager().popBackStack();
                 hideKeyboard(v);
             }
         });

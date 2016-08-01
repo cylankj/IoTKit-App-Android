@@ -2,6 +2,8 @@ package com.cylan.jiafeigou.n.view.cam;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -117,7 +119,11 @@ public class DeviceTimeZoneFragment extends Fragment {
         mEtFind = (EditText) view.findViewById(R.id.et_information_timezone_find);
         mIvBack = (ImageView) view.findViewById(R.id.iv_information_back);
         mIvSearch = (ImageView) view.findViewById(R.id.iv_information_timezone_search);
+
         mDetail = (ListView) view.findViewById(R.id.lv_information_timezone_detail);
+        mDetail.setDivider(new ColorDrawable(getResources().getColor(R.color.color_f2f2f2)));
+        mDetail.setDividerHeight(2);
+
         mNoResult = (TextView) view.findViewById(R.id.tv_information_timezone_noresult);
         mIvBack.setOnClickListener(new View.OnClickListener() {
             @Override

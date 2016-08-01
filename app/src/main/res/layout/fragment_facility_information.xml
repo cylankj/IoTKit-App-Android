@@ -66,7 +66,7 @@
 
             <TextView
                 android:id="@+id/tv_information_facility_name"
-                android:layout_marginTop="6dp"
+                android:layout_marginTop="3dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="客厅摄像头"
@@ -77,7 +77,7 @@
                 android:layout_marginTop="10dp"
                 android:layout_width="match_parent"
                 android:layout_height="1dip"
-                android:background="#F2F2F2"/>
+                android:background="@color/color_f2f2f2"/>
         </LinearLayout>
 
 
@@ -99,7 +99,7 @@
 
             <TextView
                 android:id="@+id/tv_information_facility_time_zone"
-                android:layout_marginTop="6dp"
+                android:layout_marginTop="3dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="北京/中国"
@@ -109,7 +109,7 @@
                 android:layout_marginTop="10dp"
                 android:layout_width="match_parent"
                 android:layout_height="1dip"
-                android:background="#F2F2F2" />
+                android:background="@color/color_f2f2f2" />
         </LinearLayout>
 
         <TextView
@@ -138,7 +138,7 @@
 
             <TextView
                 android:id="@+id/tv_information_facility_card_state"
-                android:layout_marginTop="6dp"
+                android:layout_marginTop="3dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="读写失败"
@@ -149,7 +149,7 @@
                 android:layout_marginTop="10dp"
                 android:layout_width="match_parent"
                 android:layout_height="1dip"
-                android:background="#F2F2F2" />
+                android:background="@color/color_f2f2f2" />
         </LinearLayout>
 
     <!-- “网络”相关模块 -->
@@ -179,7 +179,7 @@
 
             <TextView
                 android:id="@+id/tv_information_facility_net"
-                android:layout_marginTop="6dp"
+                android:layout_marginTop="3dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="中国联通"
@@ -190,7 +190,7 @@
                 android:layout_marginTop="10dp"
                 android:layout_width="match_parent"
                 android:layout_height="1dip"
-                android:background="#F2F2F2" />
+                android:background="@color/color_f2f2f2" />
         </LinearLayout>
 
         <!-- Wi-Fi -->
@@ -210,7 +210,7 @@
 
             <TextView
                 android:id="@+id/tv_information_facility_wifi_state"
-                android:layout_marginTop="6dp"
+                android:layout_marginTop="3dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="未启用"
@@ -220,7 +220,7 @@
                 android:layout_marginTop="10dp"
                 android:layout_width="match_parent"
                 android:layout_height="1dip"
-                android:background="#F2F2F2" />
+                android:background="@color/color_f2f2f2" />
         </LinearLayout>
 
 <!-- "信息"模块 -->
@@ -250,7 +250,7 @@
 
             <TextView
                 android:id="@+id/tv_information_facility_cid_number"
-                android:layout_marginTop="6dp"
+                android:layout_marginTop="3dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="16位的字符串，设备首次激活时生成"
@@ -261,7 +261,7 @@
                 android:layout_marginTop="10dp"
                 android:layout_width="match_parent"
                 android:layout_height="1dip"
-                android:background="#F2F2F2" />
+                android:background="@color/color_f2f2f2" />
         </LinearLayout>
 
         <!-- MAC -->
@@ -280,7 +280,7 @@
                 android:textSize="16sp"/>
 
             <TextView
-                android:layout_marginTop="6dp"
+                android:layout_marginTop="3dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="WiFi芯片写死的"
@@ -290,7 +290,7 @@
                 android:layout_marginTop="10dp"
                 android:layout_width="match_parent"
                 android:layout_height="1dip"
-                android:background="#F2F2F2" />
+                android:background="@color/color_f2f2f2" />
         </LinearLayout>
 
         <!-- 系统版本 -->
@@ -309,7 +309,7 @@
                 android:textSize="16sp"/>
 
             <TextView
-                android:layout_marginTop="6dp"
+                android:layout_marginTop="3dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="JFG1.2"
@@ -319,7 +319,7 @@
                 android:layout_marginTop="10dp"
                 android:layout_width="match_parent"
                 android:layout_height="1dip"
-                android:background="#F2F2F2" />
+                android:background="@color/color_f2f2f2" />
         </LinearLayout>
 
         <!-- 软件版本 -->
@@ -338,7 +338,7 @@
                 android:textSize="16sp"/>
 
             <TextView
-                android:layout_marginTop="6dp"
+                android:layout_marginTop="3dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="2.4.6.696"
@@ -348,7 +348,7 @@
                 android:layout_marginTop="10dp"
                 android:layout_width="match_parent"
                 android:layout_height="1dip"
-                android:background="#F2F2F2" />
+                android:background="@color/color_f2f2f2" />
         </LinearLayout>
 
         <!-- 电池电量 -->
@@ -368,7 +368,7 @@
 
             <TextView
                 android:id="@+id/tv_information_facility_battery_leve"
-                android:layout_marginTop="6dp"
+                android:layout_marginTop="3dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="充电中 67%"
@@ -378,7 +378,7 @@
                 android:layout_marginTop="10dp"
                 android:layout_width="match_parent"
                 android:layout_height="1dip"
-                android:background="#F2F2F2" />
+                android:background="@color/color_f2f2f2"/>
         </LinearLayout>
 
         <!-- 储存空间 -->
@@ -398,7 +398,7 @@
 
             <TextView
                 android:id="@+id/tv_information_facility_storage"
-                android:layout_marginTop="6dp"
+                android:layout_marginTop="3dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="1.5GB可用"
@@ -408,7 +408,7 @@
                 android:layout_marginTop="10dp"
                 android:layout_width="match_parent"
                 android:layout_height="1dip"
-                android:background="#F2F2F2" />
+                android:background="@color/color_f2f2f2" />
         </LinearLayout>
         </LinearLayout>
     </ScrollView>

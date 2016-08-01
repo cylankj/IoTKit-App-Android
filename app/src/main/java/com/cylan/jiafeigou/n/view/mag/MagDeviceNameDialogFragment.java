@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -40,6 +41,7 @@ public class MagDeviceNameDialogFragment extends DialogFragment {
 
     protected OnMagDataChangeListener mListener;
     private TextView mShowState;
+    private String editName;
 
     public void setListener(OnMagDataChangeListener mListener) {
         this.mListener = mListener;
@@ -67,6 +69,7 @@ public class MagDeviceNameDialogFragment extends DialogFragment {
     @Override
     public void onResume() {
         super.onResume();
+        mEtEditName.setSelection(editName.length());
     }
 
 
@@ -81,7 +84,7 @@ public class MagDeviceNameDialogFragment extends DialogFragment {
         mShowState = (TextView) view.findViewById(R.id.tv_information_show_state);
         mEtEditName = (EditText) view.findViewById(R.id.et_information_edit_name);
 
-        String editName = PreferencesUtils.getString(getActivity(),"magEditName","客厅摄像头");
+        editName = PreferencesUtils.getString(getActivity(),"magEditName","客厅摄像头");
         mEtEditName.setText(editName);
         mEtEditName.setTextColor(Color.parseColor("#666666"));
         mEtEditName.setSelection(editName.length());
@@ -114,7 +117,14 @@ public class MagDeviceNameDialogFragment extends DialogFragment {
             @Override
             public void afterTextChanged(Editable s) {
                 //当输入不为空，并且与原来输入不一致时的时候，按钮颜色变回原来，并且可以点击
-                mEditName = mEtEditName.getText().toString();
+                final boolean isEmpty = TextUtils.isEmpty(s);
+                mBtnEnsure.setFocusable(!isEmpty);
+                mBtnEnsure.setEnabled(!isEmpty);
+                mBtnEnsure.setClickable(!isEmpty);
+                mBtnEnsure.setBackgroundColor(isEmpty?getResources().getColor(R.color.color_cecece):getResources().getColor(R.color.color_c5e6fc));
+                mShowState.setVisibility(!isEmpty?View.GONE:View.VISIBLE);
+                mShowState.setText("名称不能为空");
+                /*mEditName = mEtEditName.getText().toString();
                 if(mEditName.equals("")){
                     mBtnEnsure.setFocusable(false);
                     mBtnEnsure.setEnabled(false);
@@ -128,7 +138,7 @@ public class MagDeviceNameDialogFragment extends DialogFragment {
                     mBtnEnsure.setClickable(true);
                     mBtnEnsure.setBackgroundColor(Color.parseColor("#C5E6FC"));
                     mShowState.setVisibility(View.INVISIBLE);
-                }
+                }*/
             }
         });
 
@@ -155,7 +165,8 @@ public class MagDeviceNameDialogFragment extends DialogFragment {
                 break;
             //点击确认按钮做相应的逻辑
             case R.id.btn_information_ensure:
-                    saveEditName();
+                    mEditName = mEtEditName.getText().toString();
+                    PreferencesUtils.putString(getActivity(),"magEditName", mEditName);
                     String editName = PreferencesUtils.getString(getActivity(),"magEditName","客厅摄像头");
                     mEtEditName.setTextColor(Color.parseColor("#666666"));
                     mEtEditName.setText(editName);
@@ -178,10 +189,10 @@ public class MagDeviceNameDialogFragment extends DialogFragment {
     }
 
 
-    /**
+/*    *//**
      * 保存用户输入的设备名称
-     */
+     *//*
     private void saveEditName() {
         PreferencesUtils.putString(getActivity(),"magEditName",mEditName);
-    }
+    }*/
 }

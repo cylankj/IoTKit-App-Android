@@ -72,14 +72,12 @@ public class FragmentFacilityInformation extends Fragment {
             public void onClick(View v) {
                 nameDialogFragment.show(getActivity().getFragmentManager(),
                         "DeviceNameDialogFragment");
-                if (getActivity() != null && getActivity().getFragmentManager() != null) {
                     nameDialogFragment.setListener(new DeviceNameDialogFragment.OnDataChangeListener() {
                         @Override
                         public void dataChangeListener(String content) {
                             mTvName.setText(content);
                         }
                     });
-                }
             }
         });
 
@@ -96,14 +94,12 @@ public class FragmentFacilityInformation extends Fragment {
                 /**
                  * 接口回调，得到相应的text，并且赋值给当前fragment
                  */
-                if (getActivity() != null && getActivity().getFragmentManager() != null) {
                     deviceTimeZoneFragment.setListener(new DeviceTimeZoneFragment.OnTimezoneChangeListener() {
                         @Override
                         public void timezoneChangeListener(String content) {
                             mTvTimezone.setText(content);
                         }
                     });
-                }
             }
         });
         return view;
