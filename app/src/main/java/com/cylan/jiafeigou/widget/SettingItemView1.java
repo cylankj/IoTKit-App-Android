@@ -8,7 +8,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
-import android.widget.ToggleButton;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.utils.ViewUtils;
@@ -22,7 +21,7 @@ public class SettingItemView1 extends FrameLayout {
      * 主标题
      */
     TextView tvTitle;
-    ToggleButton toggleButton;
+    com.kyleduo.switchbutton.SwitchButton switchButton;
 
     public SettingItemView1(Context context) {
         this(context, null);
