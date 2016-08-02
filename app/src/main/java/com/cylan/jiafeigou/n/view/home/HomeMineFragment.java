@@ -150,7 +150,7 @@ public class HomeMineFragment extends android.support.v4.app.Fragment
     @Override
     public void onBlur(Drawable drawable) {
         long time = System.currentTimeMillis();
-        rLayoutHomeMineTop.setBackgroundDrawable(drawable);
+        rLayoutHomeMineTop.setBackground(drawable);
         SLog.e("usetime:%d ms", System.currentTimeMillis() - time);
     }
 

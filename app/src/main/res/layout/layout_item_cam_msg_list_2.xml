@@ -18,7 +18,7 @@
         hunt:dashLineWidth="2dp"
         hunt:innerCircleColor="@color/color_e8e8e8"
         hunt:innerCircleRadius="6dp"
-        hunt:innerCircleStrokeWidth="4dp"
+        hunt:outerCircleStrokeWidth="4dp"
         hunt:outerCircleColor="@color/color_white"
         hunt:outerCircleRadius="10dp"
         hunt:outerCircleY="10dp" />

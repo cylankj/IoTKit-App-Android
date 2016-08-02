@@ -4,7 +4,6 @@
     android:id="@+id/rLayout_new_home_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/color_white"
     tools:context="com.cylan.jiafeigou.n.NewHomeActivity">
 
     <com.cylan.jiafeigou.widget.CustomViewPager
@@ -15,6 +14,7 @@
 
 
     <FrameLayout
+        android:background="@color/color_f9f9f9"
         android:id="@+id/fLayout_new_home_bottom_menu"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -26,7 +26,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:background="@color/color_f9f9f9"
+            android:layout_marginTop="1dp"
             android:orientation="horizontal">
 
             <RadioButton
@@ -67,13 +67,13 @@
 
 
         <TextView
-            android:text="2016-09-07"
             android:id="@+id/tv_time_line_pop"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:background="@drawable/time_line_pop"
             android:gravity="center"
+            android:text="2016-09-07"
             android:textColor="@android:color/white"
             android:textSize="11sp" />
 

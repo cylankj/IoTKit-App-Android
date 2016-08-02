@@ -33,7 +33,7 @@
         <attr name="innerCircleColor" format="color|reference" />
         <attr name="outerCircleRadius" format="integer|dimension" />
         <attr name="innerCircleRadius" format="integer|dimension" />
-        <attr name="innerCircleStrokeWidth" format="float|dimension" />
+        <attr name="outerCircleStrokeWidth" format="float|dimension" />
         <attr name="outerCircleY" format="float|dimension" />
     </declare-styleable>
     <declare-styleable name="WheelViewStyle">
