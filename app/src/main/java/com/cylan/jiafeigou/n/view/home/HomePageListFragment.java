@@ -12,6 +12,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -75,10 +77,16 @@ public class HomePageListFragment extends Fragment implements
     WeakReference<SimpleDialogFragment> simpleDialogFragmentWeakReference;
     @BindView(R.id.lLayout_home_greet)
     LinearLayout lLayoutHomeGreet;
+    @BindView(R.id.fLayoutHomeHeaderContainer)
+    FrameLayout fLayoutHomeHeaderContainer;
+    @BindView(R.id.fLayout_home_page_container)
+    FrameLayout fLayoutHomePageContainer;
     private HomePageListContract.Presenter presenter;
 
     private HomePageListAdapter homePageListAdapter;
     private SimpleScrollListener simpleScrollListener;
+
+    private EmptyViewState emptyViewState;
     /**
      * 手动完成刷新,自动完成刷新 订阅者.
      */
@@ -121,6 +129,7 @@ public class HomePageListFragment extends Fragment implements
         homePageListAdapter = new HomePageListAdapter(getContext(), null, null);
         homePageListAdapter.setDeviceItemClickListener(this);
         homePageListAdapter.setDeviceItemLongClickListener(this);
+        initEmptyViewState(context);
     }
 
     @Override
@@ -143,6 +152,20 @@ public class HomePageListFragment extends Fragment implements
         initHeaderView();
         initSomeViewMargin();
         initSimpleDialog();
+        fLayoutHomePageContainer.post(new Runnable() {
+            @Override
+            public void run() {
+                emptyViewState.setEmptyViewState(fLayoutHomePageContainer);
+                EmptyViewState.headerBottom = fLayoutHomeHeaderContainer.getBottom();
+                emptyViewState.determineEmptyViewState(homePageListAdapter.getCount());
+            }
+        });
+    }
+
+    private void initEmptyViewState(Context context) {
+        if (emptyViewState == null)
+            emptyViewState = new EmptyViewState();
+        emptyViewState.initEmptyView(context);
     }
 
     private void initSimpleDialog() {
@@ -188,7 +211,7 @@ public class HomePageListFragment extends Fragment implements
             @Override
             public void run() {
                 if (progressBarStartPosition == 0) {
-                    FrameLayout view = (FrameLayout) getView().findViewById(R.id.fLayoutHomeHeaderContainer);
+                    FrameLayout view = fLayoutHomeHeaderContainer;
                     if (view != null) {
                         Drawable drawable = view.getBackground();
                         progressBarStartPosition = drawable.getIntrinsicHeight();
@@ -261,6 +284,7 @@ public class HomePageListFragment extends Fragment implements
             return;
         }
         homePageListAdapter.addAll(resultList);
+        emptyViewState.determineEmptyViewState(homePageListAdapter.getCount());
     }
 
     @Override
@@ -324,8 +348,92 @@ public class HomePageListFragment extends Fragment implements
             Toast.makeText(getContext(), "null: ", Toast.LENGTH_SHORT).show();
             return;
         }
-        homePageListAdapter.remove((Integer) value);
+        final int position = (int) value;
         Toast.makeText(getContext(), "id: " + id + " value:" + value, Toast.LENGTH_SHORT).show();
+        homePageListAdapter.remove((Integer) value);
+        //刷新需要剩下的item
+        homePageListAdapter.notifyItemRangeChanged(position, homePageListAdapter.getItemCount());
+        emptyViewState.determineEmptyViewState(homePageListAdapter.getCount());
+    }
+
+    private static class EmptyViewState {
+        private WeakReference<View> emptyListView;
+        private WeakReference<ViewGroup> viewContainerWeak;
+
+        public static int headerBottom;
+
+        public void setEmptyViewState(ViewGroup viewContainer) {
+            viewContainerWeak = new WeakReference<>(viewContainer);
+        }
+
+        /**
+         * 空列表，empty提示
+         */
+        private void initEmptyView(Context context) {
+            if (emptyListView == null || emptyListView.get() == null) {
+                View view = LayoutInflater.from(context)
+                        .inflate(R.layout.layout_home_page_list_empty_view, null);
+                if (view != null) {
+                    emptyListView = new WeakReference<>(view);
+                } else {
+                    Log.d("god", "god: view is null");
+                }
+            }
+        }
+
+        /**
+         * 显示emptyView
+         */
+        private void showEmptyView() {
+            if (viewContainerWeak == null || viewContainerWeak.get() == null)
+                return;
+            //尝试查找
+            View view = viewContainerWeak.get()
+                    .findViewById(R.id.lLayout_home_page_list_empty_view);
+            if (view != null) {
+                if (view.isShown())
+                    return;
+                view.setVisibility(View.VISIBLE);
+                return;
+            }
+            //初始化
+            if (emptyListView == null || emptyListView.get() == null) {
+                initEmptyView(viewContainerWeak.get().getContext());
+            }
+            viewContainerWeak.get().post(new Runnable() {
+                @Override
+                public void run() {
+                    final int bottom = headerBottom;
+                    Log.d("initEmptyView", "initEmptyView: " + bottom);
+                    FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+                            ViewGroup.LayoutParams.WRAP_CONTENT);
+                    lp.gravity = Gravity.CENTER_HORIZONTAL;
+                    lp.topMargin = ViewUtils.dp2px(80)
+                            + bottom;
+//                            + ViewUtils.getStatusBarHeight(viewContainerWeak.get().getContext());
+                    viewContainerWeak.get().addView(emptyListView.get(), 0, lp);
+                }
+            });
+        }
+
+        /**
+         * 隐藏emptyView
+         */
+        private void hideEmptyView() {
+            if (viewContainerWeak == null || viewContainerWeak.get() == null)
+                return;
+            View view = viewContainerWeak.get().findViewById(R.id.lLayout_home_page_list_empty_view);
+            if (view != null && view.isShown()) {
+                viewContainerWeak.get().removeView(view);
+            }
+        }
+
+
+        public void determineEmptyViewState(final int count) {
+            if (count == 0) {
+                showEmptyView();
+            } else hideEmptyView();
+        }
     }
 
     private static class SimpleScrollListener implements HeaderAnimator.ScrollRationListener {
