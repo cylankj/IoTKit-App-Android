@@ -3,17 +3,15 @@ package com.cylan.jiafeigou.n.view.home;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.annotation.UiThread;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.transition.Fade;
-import android.transition.TransitionInflater;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,6 +27,8 @@ import com.cylan.jiafeigou.n.mvp.contract.home.HomeWonderfulContract;
 import com.cylan.jiafeigou.n.mvp.model.MediaBean;
 import com.cylan.jiafeigou.n.view.adapter.HomeWonderAdapter;
 import com.cylan.jiafeigou.n.view.media.WonderfulBigPicFragment;
+import com.cylan.jiafeigou.n.view.misc.HomeEmptyView;
+import com.cylan.jiafeigou.n.view.misc.IEmptyView;
 import com.cylan.jiafeigou.utils.AnimatorUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;
@@ -77,6 +77,9 @@ public class HomeWonderfulFragment extends Fragment implements
     ImageView imgWonderfulTopBg;
     @BindView(R.id.tv_title_head_wonder)
     TextView tvTitleHeadWonder;
+    @BindView(R.id.fLayout_wonderful_container)
+    FrameLayout fLayoutWonderfulContainer;
+
     WeakReference<WheelView> wheelViewWeakReference;
     WeakReference<ShareDialogFragment> shareDialogFragmentWeakReference;
     WeakReference<SimpleDialogFragment> simpleDialogFragmentWeakReference;
@@ -90,6 +93,7 @@ public class HomeWonderfulFragment extends Fragment implements
     private HomeWonderAdapter homeWonderAdapter;
     private SimpleScrollListener simpleScrollListener;
     public boolean isShowTimeLine;
+    private EmptyViewState emptyViewState;
 
     public static HomeWonderfulFragment newInstance(Bundle bundle) {
         HomeWonderfulFragment fragment = new HomeWonderfulFragment();
@@ -123,6 +127,13 @@ public class HomeWonderfulFragment extends Fragment implements
         homeWonderAdapter = new HomeWonderAdapter(getContext(), null, null);
         homeWonderAdapter.setWonderfulItemClickListener(this);
         homeWonderAdapter.setWonderfulItemLongClickListener(this);
+        initEmptyViewState(context);
+    }
+
+    private void initEmptyViewState(Context context) {
+        if (emptyViewState == null)
+            emptyViewState = new EmptyViewState(context, R.layout.layout_wonderful_list_empty_view);
+
     }
 
     @Override
@@ -149,6 +160,14 @@ public class HomeWonderfulFragment extends Fragment implements
         initShareDialog();
 
         initDeleteDialog();
+
+        srLayoutMainContentHolder.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                emptyViewState.setEmptyViewState(fLayoutWonderfulContainer, rLayoutHomeHeaderContainer.getBottom());
+                emptyViewState.determineEmptyViewState(homeWonderAdapter.getCount());
+            }
+        }, 20);
     }
 
     private void initDeleteDialog() {
@@ -254,6 +273,7 @@ public class HomeWonderfulFragment extends Fragment implements
             return;
         }
         homeWonderAdapter.addAll(resultList);
+        emptyViewState.determineEmptyViewState(homeWonderAdapter.getCount());
     }
 
     @Override
@@ -422,6 +442,27 @@ public class HomeWonderfulFragment extends Fragment implements
         Toast.makeText(getContext(), "id: " + id + " value:" + value, Toast.LENGTH_SHORT).show();
     }
 
+    private static class EmptyViewState {
+        private IEmptyView homePageEmptyView;
+
+        public EmptyViewState(Context context, final int layoutId) {
+            homePageEmptyView = new HomeEmptyView(context, layoutId);
+        }
+
+
+        public void setEmptyViewState(ViewGroup viewContainer, final int bottom) {
+            FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT);
+            lp.gravity = Gravity.CENTER_HORIZONTAL;
+            lp.topMargin = ViewUtils.dp2px(80)
+                    + bottom;
+            homePageEmptyView.addView(viewContainer, lp);
+        }
+
+        public void determineEmptyViewState(final int count) {
+            homePageEmptyView.show(count == 0);
+        }
+    }
 
     private static class SimpleScrollListener implements HeaderAnimator.ScrollRationListener {
 

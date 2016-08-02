@@ -12,7 +12,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,7 +31,7 @@ import com.cylan.jiafeigou.n.view.activity.BindDeviceActivity;
 import com.cylan.jiafeigou.n.view.activity.CameraLiveActivity;
 import com.cylan.jiafeigou.n.view.activity.MagLiveActivity;
 import com.cylan.jiafeigou.n.view.adapter.HomePageListAdapter;
-import com.cylan.jiafeigou.n.view.misc.HomePageEmptyView;
+import com.cylan.jiafeigou.n.view.misc.HomeEmptyView;
 import com.cylan.jiafeigou.n.view.misc.IEmptyView;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
@@ -157,8 +156,7 @@ public class HomePageListFragment extends Fragment implements
         fLayoutHomePageContainer.postDelayed(new Runnable() {
             @Override
             public void run() {
-                emptyViewState.headerBottom = fLayoutHomeHeaderContainer.getBottom();
-                emptyViewState.setEmptyViewState(fLayoutHomePageContainer);
+                emptyViewState.setEmptyViewState(fLayoutHomePageContainer, fLayoutHomeHeaderContainer.getBottom());
                 emptyViewState.determineEmptyViewState(homePageListAdapter.getCount());
             }
         }, 20);
@@ -361,17 +359,16 @@ public class HomePageListFragment extends Fragment implements
         private IEmptyView homePageEmptyView;
 
         public EmptyViewState(Context context, final int layoutId) {
-            homePageEmptyView = new HomePageEmptyView(context, layoutId);
+            homePageEmptyView = new HomeEmptyView(context, layoutId);
         }
 
-        public int headerBottom;
 
-        public void setEmptyViewState(ViewGroup viewContainer) {
+        public void setEmptyViewState(ViewGroup viewContainer, final int bottom) {
             FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
                     ViewGroup.LayoutParams.WRAP_CONTENT);
             lp.gravity = Gravity.CENTER_HORIZONTAL;
             lp.topMargin = ViewUtils.dp2px(80)
-                    + headerBottom;
+                    + bottom;
             homePageEmptyView.addView(viewContainer, lp);
         }
 

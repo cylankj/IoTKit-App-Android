@@ -12,11 +12,11 @@ import com.nineoldandroids.animation.ObjectAnimator;
 /**
  * Created by cylan-hunt on 16-8-2.
  */
-public class HomePageEmptyView extends EmptyView {
+public class HomeEmptyView extends EmptyView {
 
     private View view;
 
-    public HomePageEmptyView(Context context, int layoutId) {
+    public HomeEmptyView(Context context, int layoutId) {
         super(context, layoutId);
         view = reInit();
         initAnimator();
