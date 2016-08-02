@@ -32,6 +32,8 @@ import com.cylan.jiafeigou.n.view.activity.BindDeviceActivity;
 import com.cylan.jiafeigou.n.view.activity.CameraLiveActivity;
 import com.cylan.jiafeigou.n.view.activity.MagLiveActivity;
 import com.cylan.jiafeigou.n.view.adapter.HomePageListAdapter;
+import com.cylan.jiafeigou.n.view.misc.HomePageEmptyView;
+import com.cylan.jiafeigou.n.view.misc.IEmptyView;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
 import com.cylan.jiafeigou.widget.sticky.HeaderAnimator;
@@ -152,20 +154,19 @@ public class HomePageListFragment extends Fragment implements
         initHeaderView();
         initSomeViewMargin();
         initSimpleDialog();
-        fLayoutHomePageContainer.post(new Runnable() {
+        fLayoutHomePageContainer.postDelayed(new Runnable() {
             @Override
             public void run() {
+                emptyViewState.headerBottom = fLayoutHomeHeaderContainer.getBottom();
                 emptyViewState.setEmptyViewState(fLayoutHomePageContainer);
-                EmptyViewState.headerBottom = fLayoutHomeHeaderContainer.getBottom();
                 emptyViewState.determineEmptyViewState(homePageListAdapter.getCount());
             }
-        });
+        }, 20);
     }
 
     private void initEmptyViewState(Context context) {
         if (emptyViewState == null)
-            emptyViewState = new EmptyViewState();
-        emptyViewState.initEmptyView(context);
+            emptyViewState = new EmptyViewState(context, R.layout.layout_home_page_list_empty_view);
     }
 
     private void initSimpleDialog() {
@@ -357,82 +358,25 @@ public class HomePageListFragment extends Fragment implements
     }
 
     private static class EmptyViewState {
-        private WeakReference<View> emptyListView;
-        private WeakReference<ViewGroup> viewContainerWeak;
+        private IEmptyView homePageEmptyView;
 
-        public static int headerBottom;
+        public EmptyViewState(Context context, final int layoutId) {
+            homePageEmptyView = new HomePageEmptyView(context, layoutId);
+        }
+
+        public int headerBottom;
 
         public void setEmptyViewState(ViewGroup viewContainer) {
-            viewContainerWeak = new WeakReference<>(viewContainer);
+            FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT);
+            lp.gravity = Gravity.CENTER_HORIZONTAL;
+            lp.topMargin = ViewUtils.dp2px(80)
+                    + headerBottom;
+            homePageEmptyView.addView(viewContainer, lp);
         }
-
-        /**
-         * 空列表，empty提示
-         */
-        private void initEmptyView(Context context) {
-            if (emptyListView == null || emptyListView.get() == null) {
-                View view = LayoutInflater.from(context)
-                        .inflate(R.layout.layout_home_page_list_empty_view, null);
-                if (view != null) {
-                    emptyListView = new WeakReference<>(view);
-                } else {
-                    Log.d("god", "god: view is null");
-                }
-            }
-        }
-
-        /**
-         * 显示emptyView
-         */
-        private void showEmptyView() {
-            if (viewContainerWeak == null || viewContainerWeak.get() == null)
-                return;
-            //尝试查找
-            View view = viewContainerWeak.get()
-                    .findViewById(R.id.lLayout_home_page_list_empty_view);
-            if (view != null) {
-                if (view.isShown())
-                    return;
-                view.setVisibility(View.VISIBLE);
-                return;
-            }
-            //初始化
-            if (emptyListView == null || emptyListView.get() == null) {
-                initEmptyView(viewContainerWeak.get().getContext());
-            }
-            viewContainerWeak.get().post(new Runnable() {
-                @Override
-                public void run() {
-                    final int bottom = headerBottom;
-                    Log.d("initEmptyView", "initEmptyView: " + bottom);
-                    FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
-                            ViewGroup.LayoutParams.WRAP_CONTENT);
-                    lp.gravity = Gravity.CENTER_HORIZONTAL;
-                    lp.topMargin = ViewUtils.dp2px(80)
-                            + bottom;
-//                            + ViewUtils.getStatusBarHeight(viewContainerWeak.get().getContext());
-                    viewContainerWeak.get().addView(emptyListView.get(), 0, lp);
-                }
-            });
-        }
-
-        /**
-         * 隐藏emptyView
-         */
-        private void hideEmptyView() {
-            if (viewContainerWeak == null || viewContainerWeak.get() == null)
-                return;
-            View view = viewContainerWeak.get().findViewById(R.id.lLayout_home_page_list_empty_view);
-            if (view != null && view.isShown()) {
-                viewContainerWeak.get().removeView(view);
-            }
-        }
-
 
         public void determineEmptyViewState(final int count) {
-            if (count == 0) {
-                showEmptyView();
-            } else hideEmptyView();
+            homePageEmptyView.show(count == 0);
         }
     }
 
