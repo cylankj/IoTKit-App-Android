@@ -24,6 +24,8 @@ import android.widget.Toast;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.misc.JFGRules;
+import com.cylan.jiafeigou.misc.RxEvent;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomePageListContract;
 import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
 import com.cylan.jiafeigou.n.mvp.model.GreetBean;
@@ -33,11 +35,13 @@ import com.cylan.jiafeigou.n.view.activity.MagLiveActivity;
 import com.cylan.jiafeigou.n.view.adapter.HomePageListAdapter;
 import com.cylan.jiafeigou.n.view.misc.HomeEmptyView;
 import com.cylan.jiafeigou.n.view.misc.IEmptyView;
+import com.cylan.jiafeigou.support.rxbus.RxBus;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
 import com.cylan.jiafeigou.widget.sticky.HeaderAnimator;
 import com.cylan.jiafeigou.widget.sticky.StickyHeaderBuilder;
 import com.cylan.jiafeigou.widget.wave.SuperWaveView;
+import com.cylan.utils.RandomUtils;
 import com.superlog.SLog;
 
 import java.lang.ref.WeakReference;
@@ -82,6 +86,10 @@ public class HomePageListFragment extends Fragment implements
     FrameLayout fLayoutHomeHeaderContainer;
     @BindView(R.id.fLayout_home_page_container)
     FrameLayout fLayoutHomePageContainer;
+    @BindView(R.id.tvHeaderNickName)
+    TextView tvHeaderNickName;
+    @BindView(R.id.tvHeaderPoet)
+    TextView tvHeaderPoet;
     private HomePageListContract.Presenter presenter;
 
     private HomePageListAdapter homePageListAdapter;
@@ -121,12 +129,18 @@ public class HomePageListFragment extends Fragment implements
     public void onResume() {
         super.onResume();
         initWaveAnimation();
-        if (presenter != null) presenter.start();
+        onTimeTick(JFGRules.getTimeRule());
+        if (presenter != null)
+            presenter.fetchGreet();
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+        if (presenter != null) {
+            presenter.start();
+            presenter.registerWorker();
+        }
         homePageListAdapter = new HomePageListAdapter(getContext(), null, null);
         homePageListAdapter.setDeviceItemClickListener(this);
         homePageListAdapter.setDeviceItemLongClickListener(this);
@@ -229,6 +243,11 @@ public class HomePageListFragment extends Fragment implements
 //                RxBus.getInstance().send(new RxEvent.NeedLoginEvent(null));
 //            return;
 //        }
+        if (RandomUtils.getRandom(2) == JFGRules.LOGOUT) {
+            if (RxBus.getInstance().hasObservers())
+                RxBus.getInstance().send(new RxEvent.NeedLoginEvent(null));
+            return;
+        }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             getActivity().startActivity(new Intent(getActivity(), BindDeviceActivity.class),
                     ActivityOptionsCompat.makeCustomAnimation(getContext(),
@@ -241,15 +260,20 @@ public class HomePageListFragment extends Fragment implements
     @Override
     public void onStop() {
         super.onStop();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
         if (vWaveAnimation != null) vWaveAnimation.stopAnimation();
+        if (presenter != null) presenter.stop();
+//        if (waveHelper != null) waveHelper.cancel();
+        unRegisterSubscription(refreshCompleteSubscription);
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        if (presenter != null) presenter.stop();
-//        if (waveHelper != null) waveHelper.cancel();
-        unRegisterSubscription(refreshCompleteSubscription);
     }
 
     /**
@@ -288,13 +312,37 @@ public class HomePageListFragment extends Fragment implements
 
     @Override
     public void onGreetUpdate(GreetBean greetBean) {
+        tvHeaderNickName.setText(String.format(getString(R.string.home_nick_name),
+                greetBean.nickName));
+        tvHeaderPoet.setText(greetBean.poet);
+    }
 
+    @SuppressWarnings("deprecation")
+    @Override
+    public void onTimeTick(final int dayTime) {
+        //需要优化
+        int drawableId = dayTime == JFGRules.RULE_DAY_TIME
+                ? R.drawable.bg_home_title_daytime : R.drawable.bg_home_title_night;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            fLayoutHomeHeaderContainer.setBackground(getResources().getDrawable(drawableId, null));
+        } else {
+            fLayoutHomeHeaderContainer.setBackground(getResources().getDrawable(drawableId));
+        }
+    }
+
+    @Override
+    public void onLoginState(int state) {
+        if (state == JFGRules.LOGIN) {
+        } else if (state == JFGRules.LOGOUT) {
+            srLayoutMainContentHolder.setRefreshing(false);
+            Toast.makeText(getContext(), "还没登陆", Toast.LENGTH_SHORT).show();
+        }
     }
 
 
     @Override
     public void onRefresh() {
-        if (presenter != null) presenter.startRefresh();
+        if (presenter != null) presenter.fetchDeviceList();
         //不使用post,因为会泄露
         srLayoutMainContentHolder.setRefreshing(true);
         refreshCompleteSubscription = Observable.just(srLayoutMainContentHolder)

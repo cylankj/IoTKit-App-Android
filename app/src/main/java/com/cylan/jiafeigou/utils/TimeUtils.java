@@ -1,7 +1,7 @@
 package com.cylan.jiafeigou.utils;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
@@ -10,26 +10,7 @@ import java.util.Locale;
  */
 public class TimeUtils {
 
-    public static SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMdd", Locale.getDefault());
     public static SimpleDateFormat simpleDateFormat_1 = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-
-    /**
-     * 获取某一天的零点时间戳。
-     *
-     * @param timeInMilli
-     * @return
-     */
-    public static long getDayMiddleNight(final long timeInMilli) {
-        try {
-            final String d = simpleDateFormat.format(timeInMilli);
-            System.out.println(d);
-            Date date = simpleDateFormat.parse(d);
-            return date.getTime();
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        return -1;
-    }
 
     public static String getDateStyle_0(final long time) {
         return simpleDateFormat_1.format(new Date(time));
@@ -37,4 +18,18 @@ public class TimeUtils {
 //    public static void main(String[] args) {
 //        System.out.println(getDayMiddleNight(System.currentTimeMillis()));
 //    }
+
+
+    /**
+     * 获取当天0点时间戳
+     *
+     * @return
+     */
+    public static long getTodayStartTime() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        return calendar.getTimeInMillis();
+    }
 }

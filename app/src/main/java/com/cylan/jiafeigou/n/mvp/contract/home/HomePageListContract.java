@@ -24,13 +24,28 @@ public interface HomePageListContract {
          */
         @UiThread
         void onGreetUpdate(GreetBean greetBean);
+
+        /**
+         * @param dayTime：0白天 1黑夜
+         */
+        void onTimeTick(int dayTime);
+
+        /**
+         * @param state login:{@link com.cylan.jiafeigou.misc.JFGRules#LOGIN}
+         *              logout :{@link com.cylan.jiafeigou.misc.JFGRules#LOGOUT}
+         */
+        void onLoginState(int state);
     }
 
     interface Presenter extends BasePresenter {
-        void startRefresh();
+        void fetchGreet();
 
-        void onDeleteItem(DeviceBean deviceBean);
+        void fetchDeviceList();
 
+        void deleteItem(DeviceBean deviceBean);
 
+        void registerWorker();
+
+        void unRegisterWorker();
     }
 }
