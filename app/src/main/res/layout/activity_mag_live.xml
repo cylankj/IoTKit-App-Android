@@ -58,7 +58,6 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
             <ListView
-                android:paddingTop="10dp"
                 android:background="@color/color_white"
                 android:overScrollMode="never"
                 android:scrollbars="none"

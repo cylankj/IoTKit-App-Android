@@ -2,6 +2,7 @@ package com.cylan.jiafeigou.n.view.mag;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -22,6 +23,7 @@ import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
+import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.utils.ListUtils;
 
 import java.util.ArrayList;
@@ -42,7 +44,7 @@ public class MagDeviceTimeZoneFragment extends Fragment {
 
     public static final String TAG = "DeviceTimeZoneFragment";
 
-    String[] mCity = {"马朱罗", "中途岛", "檀香山", "安克雷奇", "洛杉矶/美国太平洋",
+    final static String[] mCity = {"马朱罗", "中途岛", "檀香山", "安克雷奇", "洛杉矶/美国太平洋",
             "提华纳/美国太平洋", "凤凰城美国山区", "奇瓦瓦", "丹佛/美国山区", "哥斯达黎加/美国中部",
             "芝加哥/美国中部", "墨西哥城/美国中部", "里贾纳/美国中部", "波哥大/哥伦比亚",
             "纽约/美国东部", "加拉加斯/委内瑞拉", "巴巴多斯/大西洋", "马瑙斯/亚马逊", "圣地亚哥",
@@ -131,7 +133,11 @@ public class MagDeviceTimeZoneFragment extends Fragment {
         mEtFind = (EditText) view.findViewById(R.id.et_information_timezone_find);
         mIvBack = (ImageView) view.findViewById(R.id.iv_information_back);
         mIvSearch = (ImageView) view.findViewById(R.id.iv_information_timezone_search);
+
         mDetail = (ListView) view.findViewById(R.id.lv_information_timezone_detail);
+        mDetail.setDivider(new ColorDrawable(getResources().getColor(R.color.color_f2f2f2)));
+        mDetail.setDividerHeight(2);
+
         mNoResult = (TextView) view.findViewById(R.id.tv_information_timezone_noresult);
         mIvBack.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -164,10 +170,10 @@ public class MagDeviceTimeZoneFragment extends Fragment {
         mIvSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mTvText.setVisibility(View.INVISIBLE);
-                mEtFind.setVisibility(View.VISIBLE);
                 InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
                 inputMethodManager.showSoftInput(mEtFind, InputMethodManager.SHOW_FORCED);
+                mTvText.setVisibility(View.INVISIBLE);
+                mEtFind.setVisibility(View.VISIBLE);
             }
         });
 

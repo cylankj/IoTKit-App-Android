@@ -7,7 +7,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
@@ -34,8 +33,6 @@ public class MagLiveFragment extends Fragment {
 
 
     private MagLiveInformationFragment magLiveInformationFragment;
-    private SwitchButton mSwBtn;
-    private boolean isSwitch;
 
     public static MagLiveFragment newInstance(Bundle bundle) {
         MagLiveFragment fragment = new MagLiveFragment();
@@ -56,19 +53,6 @@ public class MagLiveFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_msglive_message, null);
         ButterKnife.bind(this, view);
-        mSwBtn = (SwitchButton) view.findViewById(R.id.btn_switch);
-        mSwBtn.setOnStateChangedListener(new SwitchButton.OnStateChangedListener() {
-            @Override
-            public void onStateChanged(boolean state) {
-                if (true == state) {
-                    Toast.makeText(getActivity(), "开关已打开" + state, Toast.LENGTH_SHORT).show();
-                    isSwitch = true;
-                } else {
-                    Toast.makeText(getActivity(), "开关已关闭" + state, Toast.LENGTH_SHORT).show();
-                    isSwitch = false;
-                }
-            }
-        });
         return view;
     }
 
@@ -86,7 +70,6 @@ public class MagLiveFragment extends Fragment {
     @OnClick(R.id.rLayout_mag_live)
     public void onRelativeLayoutClick() {
         ToastUtil.showToast(getActivity(),"点击了");
-        mSwBtn.setToggle(isSwitch);
     }
 
     /**

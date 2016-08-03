@@ -100,7 +100,7 @@
                 android:layout_height="35dp"
                 android:layout_alignParentBottom="true"
                 android:layout_centerHorizontal="true"
-                android:background="@color/color_36bdff" />
+                android:background="@color/color_36BDFF" />
 
         </RelativeLayout>
     </RelativeLayout>
