@@ -25,13 +25,13 @@ import android.widget.ViewSwitcher;
 
 import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.SmartcallActivity;
 import com.cylan.jiafeigou.misc.JConstant;
-import com.cylan.jiafeigou.n.NewHomeActivity;
+import com.cylan.jiafeigou.NewHomeActivity;
 import com.cylan.jiafeigou.n.mvp.contract.login.LoginModelContract;
 import com.cylan.jiafeigou.n.mvp.impl.ForgetPwdPresenterImpl;
 import com.cylan.jiafeigou.n.mvp.impl.SetupPwdPresenterImpl;
 import com.cylan.jiafeigou.n.mvp.model.LoginAccountBean;
-import com.cylan.jiafeigou.n.view.splash.WelcomePageActivity;
 import com.cylan.jiafeigou.utils.AnimatorUtils;
 import com.cylan.jiafeigou.utils.IMEUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
@@ -245,21 +245,6 @@ public class LoginFragment extends android.support.v4.app.Fragment implements Lo
     private void initView() {
         if (getView() != null)
             getView().findViewById(R.id.tv_top_bar_right).setVisibility(View.VISIBLE);
-//        //You need to add the following line for this solution to work; thanks skayred
-//        if (getView() != null) {
-//            getView().setFocusableInTouchMode(true);
-//            getView().requestFocus();
-//            getView().setOnKeyListener(new View.OnKeyListener() {
-//                @Override
-//                public boolean onKey(View v, int keyCode, KeyEvent event) {
-//                    if (keyCode == KeyEvent.KEYCODE_BACK) {
-//                        if (getActivity() != null && getActivity() instanceof WelcomePageActivity)
-//                            getActivity().finish();
-//                    }
-//                    return false;
-//                }
-//            });
-//        }
     }
 
     /**
@@ -342,7 +327,7 @@ public class LoginFragment extends android.support.v4.app.Fragment implements Lo
                 presenter.getSinaAuthorize(getActivity());
                 break;
             case R.id.iv_top_bar_left:
-                if (getActivity() != null && getActivity() instanceof WelcomePageActivity) {
+                if (getActivity() != null && getActivity() instanceof SmartcallActivity) {
                     getActivity().finish();
                 } else if (getActivity() != null && getActivity() instanceof NewHomeActivity) {
                     getActivity().onBackPressed();

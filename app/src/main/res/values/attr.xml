@@ -109,6 +109,7 @@
     <declare-styleable name="SettingItemViewStyle">
         <attr name="sv_title" format="string|reference" />
         <attr name="sv_sub_title" format="string|reference" />
+        <attr name="sv_sub_title_max_len" format="integer" />
         <attr name="sv_image_src" format="reference" />
     </declare-styleable>
 </resources>

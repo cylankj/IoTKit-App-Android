@@ -11,7 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.n.NewHomeActivity;
+import com.cylan.jiafeigou.NewHomeActivity;
 import com.cylan.jiafeigou.misc.RxEvent;
 import com.cylan.jiafeigou.support.rxbus.RxBus;
 import com.cylan.jiafeigou.utils.ViewUtils;

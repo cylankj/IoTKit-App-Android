@@ -85,4 +85,22 @@ public class BaseFullScreenFragmentActivity extends FragmentActivity implements 
     public void onBackStackChanged() {
 
     }
+
+    protected boolean popAllFragmentStack() {
+        FragmentManager fm = getSupportFragmentManager();
+        boolean pop = false;
+        for (int i = 0; i < fm.getBackStackEntryCount(); ++i) {
+            fm.popBackStack();
+            pop = true;
+        }
+        return pop;
+    }
+
+
+    protected void finishExt() {
+        finish();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            overridePendingTransition(R.anim.slide_in_left_without_interpolator, R.anim.slide_out_right_without_interpolator);
+        }
+    }
 }

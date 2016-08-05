@@ -1,5 +1,7 @@
 package com.cylan.jiafeigou.misc;
 
+import com.cylan.jiafeigou.NewHomeActivity;
+
 import java.util.regex.Pattern;
 
 /**
@@ -7,7 +9,7 @@ import java.util.regex.Pattern;
  */
 public class JConstant {
     /**
-     * {@link com.cylan.jiafeigou.n.NewHomeActivity}底部menu对应的FrameLayout的id。用来存放每日精彩的时间控件
+     * {@link NewHomeActivity}底部menu对应的FrameLayout的id。用来存放每日精彩的时间控件
      */
     public static final String KEY_NEW_HOME_ACTIVITY_BOTTOM_MENU_CONTAINER_ID = "new_home_menu_id";
     public static final int AUTHORIZE_PHONE = 0;
@@ -57,5 +59,19 @@ public class JConstant {
 
 
     public static int ConfigApState = 0;
+
+
+    public static final int REQ_CODE_ACTIVITY = 1;
+    public static final int RESULT_CODE_FINISH = 1;
+    public static final int RESULT_CODE_REMOVE_ITEM = 2;
+
+    public static final String KEY_REMOVE_DEVICE = "rm_device";
+    public static final String KEY_REMOVE_ITEM_CID = "key_remove_cid";
+    public static final String KEY_ACTIVITY_RESULT_CODE = "key_result_code";
+
+    /**
+     * 主页的item传递给各个Activity的key.
+     */
+    public static final String KEY_DEVICE_ITEM_BUNDLE = "key_bundle_item";
 
 }

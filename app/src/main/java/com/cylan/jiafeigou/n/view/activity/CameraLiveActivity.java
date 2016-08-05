@@ -90,6 +90,11 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
         super.onResume();
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+    }
+
     /**
      * 处理statusBar和NavigationBar
      *
@@ -146,10 +151,7 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
             return;
         } else if (checkExtraFragment())
             return;
-        finish();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            overridePendingTransition(R.anim.slide_in_left_without_interpolator, R.anim.slide_out_right_without_interpolator);
-        }
+        finishExt();
     }
 
     @OnClick(R.id.imgV_nav_back)

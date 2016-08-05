@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:hunt="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/color_white"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <FrameLayout
+            android:id="@+id/fLayout_top_bar_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/color_0ba8cf">
+
+            <TextView
+                android:id="@+id/imgV_top_bar_center"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+                android:drawableLeft="@drawable/ic_nav_back_arrow"
+                android:drawablePadding="15dp"
+                android:padding="15dp"
+                android:text="功能设置"
+                android:textColor="@color/color_white"
+                android:textSize="16sp" />
+        </FrameLayout>
+    </LinearLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="10dp"
+            android:background="@drawable/little_shape" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginTop="10dp"
+                android:text="设备"
+                android:textColor="@color/color_4b9fd5"
+                android:textSize="15sp" />
+
+            <com.cylan.jiafeigou.widget.SettingItemView2
+                android:id="@+id/tv_bell_detail"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp"
+                hunt:sv_image_src="@drawable/icon_setting_3g"
+                hunt:sv_sub_title="3G/4G网络"
+                hunt:sv_sub_title_max_len="12"
+                hunt:sv_title="设备详情" />
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginTop="10dp"
+                android:text="网络"
+                android:textColor="@color/color_4b9fd5"
+                android:textSize="15sp" />
+
+            <com.cylan.jiafeigou.widget.SettingItemView2
+                android:id="@+id/tv_bell_wifi"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp"
+                hunt:sv_image_src="@drawable/icon_setting_wifi"
+                hunt:sv_sub_title="608"
+                hunt:sv_title="WiFi配置" />
+
+            <TextView
+                android:id="@+id/tv_setting_clear_"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:gravity="center_vertical"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp"
+                android:text="清空呼叫记录"
+                android:textColor="@color/color_black"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/tv_setting_unbind"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginTop="10dp"
+                android:background="@color/color_f2f2f2"
+                android:gravity="center"
+                android:text="删除设备"
+                android:textColor="@color/color_FF3D32"
+                android:textSize="16sp" />
+        </LinearLayout>
+    </FrameLayout>
+</LinearLayout>
