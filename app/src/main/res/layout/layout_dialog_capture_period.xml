@@ -1,0 +1,120 @@
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:context=".n.view.cam.SetSensitivityDialogFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="24dp"
+            android:text="重复"
+            android:textColor="@color/color_black"
+            android:textSize="16sp" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="16dp"
+            android:orientation="horizontal">
+
+            <CheckBox
+                android:id="@+id/cb_capture_mon"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_margin="5dp"
+                android:background="@drawable/week_pick_selector"
+                android:button="@null"
+                android:checked="false"
+                android:gravity="center"
+                android:text="一"
+                android:textColor="@color/week_pick_button_color_state"
+                android:textSize="15sp" />
+
+            <CheckBox
+                android:id="@+id/cb_capture_tue"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_margin="5dp"
+                android:background="@drawable/week_pick_selector"
+                android:button="@null"
+                android:checked="false"
+                android:gravity="center"
+                android:text="二"
+                android:textColor="@color/week_pick_button_color_state"
+                android:textSize="15sp" />
+
+            <CheckBox
+                android:id="@+id/cb_capture_wed"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_margin="5dp"
+                android:background="@drawable/week_pick_selector"
+                android:button="@null"
+                android:checked="false"
+                android:gravity="center"
+                android:text="三"
+                android:textColor="@color/week_pick_button_color_state"
+                android:textSize="15sp" />
+
+            <CheckBox
+                android:id="@+id/cb_capture_thur"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_margin="5dp"
+                android:background="@drawable/week_pick_selector"
+                android:button="@null"
+                android:checked="false"
+                android:gravity="center"
+                android:text="四"
+                android:textColor="@color/week_pick_button_color_state"
+                android:textSize="15sp" />
+
+            <CheckBox
+                android:id="@+id/cb_capture_fri"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_margin="5dp"
+                android:background="@drawable/week_pick_selector"
+                android:button="@null"
+                android:checked="false"
+                android:gravity="center"
+                android:text="五"
+                android:textColor="@color/week_pick_button_color_state"
+                android:textSize="15sp" />
+
+            <CheckBox
+                android:id="@+id/cb_capture_sat"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_margin="5dp"
+                android:background="@drawable/week_pick_selector"
+                android:button="@null"
+                android:checked="false"
+                android:gravity="center"
+                android:text="六"
+                android:textColor="@color/week_pick_button_color_state"
+                android:textSize="15sp" />
+
+            <CheckBox
+                android:id="@+id/cb_capture_sun"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_margin="5dp"
+                android:background="@drawable/week_pick_selector"
+                android:button="@null"
+                android:checked="false"
+                android:gravity="center"
+                android:text="日"
+                android:textColor="@color/week_pick_button_color_state"
+                android:textSize="15sp" />
+        </LinearLayout>
+    </LinearLayout>
+</android.support.v7.widget.CardView>

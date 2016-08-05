@@ -3,6 +3,7 @@ package com.cylan.jiafeigou.utils;
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.text.InputFilter;
 import android.text.method.HideReturnsTransformationMethod;
@@ -125,6 +126,38 @@ public class ViewUtils {
 
     public static void setRequestedOrientation(Activity activity, int orientation) {
         activity.setRequestedOrientation(orientation);
+    }
+
+    /**
+     * @param tv
+     * @param resId     :-1 means null
+     * @param dimension left(0) top(1) right(2) bottom(3)
+     */
+    public static void setDrawablePadding(TextView tv, int resId, int dimension) {
+        if (dimension < 0 || dimension > 3)
+            throw new IllegalArgumentException("wow ,not so good");
+        Drawable[] dimen = {null, null, null, null};
+        Drawable d = resId == -1 ? null : tv.getContext().getResources().getDrawable(resId);
+        if (d != null)
+            d.setBounds(0, 0, d.getMinimumWidth(), d.getMinimumHeight());
+        //right
+        dimen[dimension] = d;
+        tv.setCompoundDrawables(dimen[0], dimen[1], dimen[2], dimen[3]);
+    }
+
+    /**
+     * @param tv
+     * @param drawable  :-1 means null
+     * @param dimension left(0) top(1) right(2) bottom(3)
+     */
+    public static void setDrawablePadding(TextView tv, Drawable drawable, int dimension) {
+        if (dimension < 0 || dimension > 3)
+            throw new IllegalArgumentException("wow ,not so good");
+        Drawable[] dimen = {null, null, null, null};
+        if (drawable != null)
+            drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
+        dimen[dimension] = drawable;
+        tv.setCompoundDrawables(dimen[0], dimen[1], dimen[2], dimen[3]);
     }
 }
 

@@ -20,4 +20,24 @@
     </style>
 
     <style name="CamActivityTheme" parent="AppTheme" />
+
+    <!--普通样式-->
+    <style name="SwitchButtonNormal">
+        <item name="kswThumbDrawable">@drawable/switch_btn_thumb_selector</item>
+        <item name="kswBackDrawable">@drawable/switch_btn_back_drawable</item>
+        <item name="kswBackColor">@color/ksw_md_back_color</item>
+        <item name="kswBackMeasureRatio">2.05</item>
+        <item name="kswThumbMarginLeft">-6dp</item>
+        <item name="kswThumbMarginTop">-4dp</item>
+        <item name="kswThumbMarginRight">-6dp</item>
+        <item name="kswThumbMarginBottom">-4dp</item>
+    </style>
+
+    <style name="SwitchButtonStyleMD" parent="SwitchButtonNormal">
+        <item name="android:paddingLeft">10dp</item>
+        <item name="android:paddingTop">4dp</item>
+        <item name="android:paddingBottom">4dp</item>
+        <!--L click style-->
+        <item name="android:background">?attr/selectableItemBackgroundBorderless</item>
+    </style>
 </resources>

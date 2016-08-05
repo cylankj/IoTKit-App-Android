@@ -96,7 +96,7 @@ public class WheelView extends View {
     private void init() {
         dataPaint.setAntiAlias(true);
         textPaint.setAntiAlias(true);
-        textPaint.setColor(colorDataGray);
+        textPaint.setColor(Color.parseColor("#888888"));
 
         textSize = convertToPx(textSize, getResources());
         textPaint.setTextSize(textSize);

@@ -23,7 +23,6 @@ import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
-import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.utils.ListUtils;
 
 import java.util.ArrayList;
@@ -170,10 +169,10 @@ public class MagDeviceTimeZoneFragment extends Fragment {
         mIvSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-                inputMethodManager.showSoftInput(mEtFind, InputMethodManager.SHOW_FORCED);
                 mTvText.setVisibility(View.INVISIBLE);
                 mEtFind.setVisibility(View.VISIBLE);
+                InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                inputMethodManager.showSoftInput(mEtFind, InputMethodManager.SHOW_FORCED);
             }
         });
 

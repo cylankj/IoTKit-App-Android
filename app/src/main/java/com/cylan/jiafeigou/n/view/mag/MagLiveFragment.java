@@ -6,11 +6,12 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
-import com.cylan.jiafeigou.utils.ToastUtil;
+import com.kyleduo.switchbutton.SwitchButton;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -53,6 +54,12 @@ public class MagLiveFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_msglive_message, null);
         ButterKnife.bind(this, view);
+        mSwBtn = (SwitchButton) view.findViewById(R.id.btn_switch);
+        mSwBtn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+            }
+        });
         return view;
     }
 
@@ -69,7 +76,7 @@ public class MagLiveFragment extends Fragment {
      */
     @OnClick(R.id.rLayout_mag_live)
     public void onRelativeLayoutClick() {
-        ToastUtil.showToast(getActivity(),"点击了");
+
     }
 
     /**

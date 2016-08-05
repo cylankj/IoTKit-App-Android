@@ -241,8 +241,8 @@ public class SuperWheel extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         if (checkData()) {
-            drawNaturalDateSet(canvas);
             drawRecordMask(canvas);
+            drawNaturalDateSet(canvas);
         }
         canvas.drawLine(getMarkerLeft(),
                 0,

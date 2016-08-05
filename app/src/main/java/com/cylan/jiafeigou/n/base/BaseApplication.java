@@ -25,7 +25,16 @@ public class BaseApplication extends Application {
         enableDebugOptions();
         LeakCanary.install(this);
 //        startService(new Intent(this, DaemonService.class));
-        startService(new Intent(this, FirstTaskInitService.class));
+        init();
+    }
+
+    private void init() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                startService(new Intent(getApplicationContext(), FirstTaskInitService.class));
+            }
+        }).start();
     }
 
     private void enableDebugOptions() {

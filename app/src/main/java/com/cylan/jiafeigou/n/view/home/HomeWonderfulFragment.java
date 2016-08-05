@@ -3,13 +3,17 @@ package com.cylan.jiafeigou.n.view.home;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.annotation.UiThread;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.transition.Fade;
+import android.transition.TransitionInflater;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,9 +24,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.misc.transition.DetailsTransition;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeWonderfulContract;
 import com.cylan.jiafeigou.n.mvp.model.MediaBean;
 import com.cylan.jiafeigou.n.view.adapter.HomeWonderAdapter;
+import com.cylan.jiafeigou.n.view.media.WonderfulBigPicFragment;
 import com.cylan.jiafeigou.utils.AnimatorUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;
@@ -276,8 +282,32 @@ public class HomeWonderfulFragment extends Fragment implements
     public void onClick(View v) {
         final int position = v.getTag() == null ? 0 : (int) v.getTag();
         switch (v.getId()) {
-            case R.id.rLayout_wonderful_item_wonder:
-                Toast.makeText(getContext(), "click: " + position, Toast.LENGTH_SHORT).show();
+            case R.id.iv_wonderful_item_content:
+                WonderfulBigPicFragment picDetailsFragment = WonderfulBigPicFragment.newInstance(null);
+
+//                // Note that we need the API version check here because the actual transition classes (e.g. Fade)
+//                // are not in the support library and are only available in API 21+. The methods we are calling on the Fragment
+//                // ARE available in the support library (though they don't do anything on API < 21)
+//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+//                    picDetailsFragment.setSharedElementEnterTransition(new DetailsTransition());
+////                    picDetailsFragment.setEnterTransition(new Fade());
+//                    picDetailsFragment.setSharedElementReturnTransition(new DetailsTransition());
+//                    setSharedElementReturnTransition(new Fade());
+//                    setExitTransition(new Fade());
+//                }
+
+
+                setExitTransition(new Fade());
+                picDetailsFragment.setEnterTransition(new Fade());
+                picDetailsFragment.setSharedElementEnterTransition(new DetailsTransition());
+                picDetailsFragment.setSharedElementReturnTransition(new DetailsTransition());
+
+                getFragmentManager()
+                        .beginTransaction()
+                        .addSharedElement(v, "picDetailsFragment")
+                        .replace(R.id.fLayout_wonderful_container, picDetailsFragment)
+                        .addToBackStack("picDetailsFragment")
+                        .commit();
                 break;
             case R.id.tv_wonderful_item_share:
                 initShareDialog();
@@ -304,22 +334,6 @@ public class HomeWonderfulFragment extends Fragment implements
         SimpleDialogFragment fragment = simpleDialogFragmentWeakReference.get();
         fragment.setValue(position);
         fragment.show(getActivity().getSupportFragmentManager(), "ShareDialogFragment");
-//        if (homeMenuDialogWeakReference == null || homeMenuDialogWeakReference.get() == null) {
-//            HomeMenuDialog dialog = new HomeMenuDialog(getActivity(),
-//                    null,
-//                    new View.OnClickListener() {
-//                        @Override
-//                        public void onClick(View v) {
-//                            if (homeWonderAdapter != null && homeWonderAdapter.getCount() > position) {
-//                                final MediaBean bean = homeWonderAdapter.getItem(position);
-//                                homeWonderAdapter.remove(position);
-//                                //              presenter.onDeleteItem(bean);
-//                            }
-//                        }
-//                    });
-//            homeMenuDialogWeakReference = new WeakReference<>(dialog);
-//        }
-//        homeMenuDialogWeakReference.get().show();
     }
 
     @OnClick(R.id.fLayout_date_head_wonder)

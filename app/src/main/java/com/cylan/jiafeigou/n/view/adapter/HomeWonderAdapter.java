@@ -1,6 +1,8 @@
 package com.cylan.jiafeigou.n.view.adapter;
 
 import android.content.Context;
+import android.support.v4.view.ViewCompat;
+import android.util.Patterns;
 import android.view.View;
 
 import com.cylan.jiafeigou.R;
@@ -10,6 +12,8 @@ import com.cylan.superadapter.SuperAdapter;
 import com.cylan.superadapter.internal.SuperViewHolder;
 
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by chen on 6/6/16.
@@ -44,11 +48,12 @@ public class HomeWonderAdapter extends SuperAdapter<MediaBean> {
     }
 
     private void initClickListener(SuperViewHolder holder, final int viewType, final int layoutPosition) {
-        setupPosition2View(holder, R.id.rLayout_wonderful_item_wonder, layoutPosition);
+        setupPosition2View(holder, R.id.iv_wonderful_item_content, layoutPosition);
         setupPosition2View(holder, R.id.tv_wonderful_item_share, layoutPosition);
         setupPosition2View(holder, R.id.tv_wonderful_item_delete, layoutPosition);
-
-        holder.setOnClickListener(R.id.rLayout_wonderful_item_wonder, deviceItemClickListener);
+        ViewCompat.setTransitionName(holder.getView(R.id.iv_wonderful_item_content),
+                String.valueOf(layoutPosition) + "_image");
+        holder.setOnClickListener(R.id.iv_wonderful_item_content, deviceItemClickListener);
         holder.setOnClickListener(R.id.tv_wonderful_item_share, deviceItemClickListener);
         holder.setOnClickListener(R.id.tv_wonderful_item_delete, deviceItemClickListener);
         holder.setOnLongClickListener(R.id.rLayout_wonderful_item_wonder, deviceItemLongClickListener);
@@ -90,7 +95,7 @@ public class HomeWonderAdapter extends SuperAdapter<MediaBean> {
             @Override
             public int getLayoutId(int viewType) {
                 return viewType == 0 ?
-                        R.layout.layout_item_vedio_wonderful :
+                        R.layout.layout_item_picture_wonderful :
                         R.layout.layout_item_picture_wonderful;
             }
         };
