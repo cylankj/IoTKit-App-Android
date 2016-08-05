@@ -115,8 +115,8 @@ public class DoorBellActivity extends BaseFullScreenFragmentActivity
         if (fragmentWeakReference == null || fragmentWeakReference.get() == null) {
             fragmentWeakReference = new WeakReference<>(BellSettingFragment.newInstance(new Bundle()));
         }
-        Bundle bundle = getIntent().getExtras();
-        if (bundle != null && bundle.containsKey(JConstant.KEY_DEVICE_ITEM_BUNDLE)) {
+        Bundle bundle = getIntent().getBundleExtra(JConstant.KEY_DEVICE_ITEM_BUNDLE);
+        if (bundle != null) {
             fragmentWeakReference.get().setArguments(bundle);
         } else {
             AppLogger.d("item bundle not found");
@@ -151,7 +151,7 @@ public class DoorBellActivity extends BaseFullScreenFragmentActivity
             final int resultCode = result.bundle.getInt(JConstant.KEY_ACTIVITY_RESULT_CODE);
             switch (resultCode) {
                 case JConstant.RESULT_CODE_REMOVE_ITEM:
-                    activityResultPresenter.setActivityResult(result);
+//                    activityResultPresenter.setActivityResult(result);
 //                    popAllFragmentStack();
                     finishExt();
                     break;

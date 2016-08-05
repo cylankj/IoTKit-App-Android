@@ -375,13 +375,15 @@ public class HomePageListFragment extends Fragment implements
             return;
         DeviceBean bean = homePageListAdapter.getItem(position);
         if (bean != null) {
+            Bundle bundle = new Bundle();
+            bundle.putParcelable(JConstant.KEY_DEVICE_ITEM_BUNDLE, bean);
             if (bean.deviceType == JConstant.JFG_DEVICE_CAMERA) {
-                startActivity(new Intent(getActivity(), CameraLiveActivity.class));
+                startActivity(new Intent(getActivity(), CameraLiveActivity.class)
+                        .putExtra(JConstant.KEY_DEVICE_ITEM_BUNDLE, bundle));
             } else if (bean.deviceType == JConstant.JFG_DEVICE_MAG) {
-                startActivity(new Intent(getActivity(), MagLiveActivity.class));
+                startActivity(new Intent(getActivity(), MagLiveActivity.class)
+                        .putExtra(JConstant.KEY_DEVICE_ITEM_BUNDLE, bundle));
             } else if (bean.deviceType == JConstant.JFG_DEVICE_BELL) {
-                Bundle bundle = new Bundle();
-                bundle.putParcelable(JConstant.KEY_DEVICE_ITEM_BUNDLE, bean);
                 startActivity(new Intent(getActivity(), DoorBellActivity.class)
                         .putExtra(JConstant.KEY_DEVICE_ITEM_BUNDLE, bundle));
             }

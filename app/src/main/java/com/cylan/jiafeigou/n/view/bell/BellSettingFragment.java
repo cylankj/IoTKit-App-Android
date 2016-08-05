@@ -1,6 +1,7 @@
 package com.cylan.jiafeigou.n.view.bell;
 
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -15,6 +16,7 @@ import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.RxEvent;
 import com.cylan.jiafeigou.n.mvp.contract.bell.BellSettingContract;
 import com.cylan.jiafeigou.n.mvp.model.BellInfoBean;
+import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
 import com.cylan.jiafeigou.utils.AppLogger;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.SettingItemView2;
@@ -140,12 +142,18 @@ public class BellSettingFragment extends Fragment
                     AppLogger.d("bundle is null");
                     return;
                 }
+                Object o = bundle.getParcelable(JConstant.KEY_DEVICE_ITEM_BUNDLE);
+                if (o != null) {
+                    bundle.putParcelable(JConstant.KEY_DEVICE_ITEM_BUNDLE, (Parcelable) o);
+                }
+                if (o instanceof DeviceBean) {
+                    AppLogger.d("yes get it");
+                }
                 bundle.putInt(JConstant.KEY_ACTIVITY_RESULT_CODE, JConstant.RESULT_CODE_REMOVE_ITEM);
                 bundle.putString(JConstant.KEY_REMOVE_DEVICE, JConstant.KEY_REMOVE_DEVICE);
                 RxEvent.ActivityResult result = new RxEvent.ActivityResult();
                 result.bundle = bundle;
                 if (presenter != null) presenter.sendActivityResult(result);
-//                getActivity().getSupportFragmentManager().popBackStack();
                 break;
         }
 
