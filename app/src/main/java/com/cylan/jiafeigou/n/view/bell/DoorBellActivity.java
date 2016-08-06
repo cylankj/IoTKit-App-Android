@@ -1,6 +1,7 @@
 package com.cylan.jiafeigou.n.view.bell;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -14,6 +15,7 @@ import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.RxEvent;
 import com.cylan.jiafeigou.misc.SpacesItemDecoration;
 import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
+import com.cylan.jiafeigou.n.engine.SimpleHelperIntentService;
 import com.cylan.jiafeigou.n.mvp.contract.ActivityResultContract;
 import com.cylan.jiafeigou.n.mvp.contract.bell.DoorBellHomeContract;
 import com.cylan.jiafeigou.n.mvp.impl.ActivityResultPresenterImpl;
@@ -22,6 +24,7 @@ import com.cylan.jiafeigou.n.mvp.impl.bell.DBellHomePresenterImpl;
 import com.cylan.jiafeigou.n.mvp.model.BellCallRecordBean;
 import com.cylan.jiafeigou.n.view.adapter.BellCallRecordListAdapter;
 import com.cylan.jiafeigou.utils.AppLogger;
+import com.cylan.jiafeigou.utils.SuperSpUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;
 
 import java.lang.ref.WeakReference;
@@ -68,6 +71,7 @@ public class DoorBellActivity extends BaseFullScreenFragmentActivity
         if (presenter == null)
             presenter = new DBellHomePresenterImpl(this);
         presenter.start();
+        startService(new Intent(getApplicationContext(), SimpleHelperIntentService.class));
     }
 
     @Override
@@ -109,7 +113,8 @@ public class DoorBellActivity extends BaseFullScreenFragmentActivity
         ViewUtils.setViewMarginStatusBar(fLayoutTopBarContainer);
     }
 
-    @OnClick({R.id.tv_top_bar_left, R.id.imgv_toolbar_right})
+    @OnClick({R.id.tv_top_bar_left, R.id.imgv_toolbar_right,
+            R.id.btn_start_calling})
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.imgv_toolbar_right:
@@ -127,6 +132,9 @@ public class DoorBellActivity extends BaseFullScreenFragmentActivity
                 break;
             case R.id.tv_top_bar_left:
                 onBackPressed();
+                break;
+            case R.id.btn_start_calling:
+                startActivity(new Intent(this, BellCallActivity.class));
                 break;
         }
     }

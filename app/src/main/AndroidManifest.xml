@@ -167,13 +167,26 @@
             android:screenOrientation="portrait"
             android:theme="@style/CamActivityTheme"
             android:windowSoftInputMode="adjustPan|stateHidden" />
-        <!--<activity-->
-            <!--android:name=".n.view.bell.BellSettingActivity"-->
-            <!--android:configChanges="locale|orientation|keyboardHidden"-->
-            <!--android:launchMode="singleTask"-->
-            <!--android:screenOrientation="portrait"-->
-            <!--android:theme="@style/CamActivityTheme"-->
-            <!--android:windowSoftInputMode="adjustPan|stateHidden" />-->
+        <!-- <activity -->
+        <!-- android:name=".n.view.bell.BellSettingActivity" -->
+        <!-- android:configChanges="locale|orientation|keyboardHidden" -->
+        <!-- android:launchMode="singleTask" -->
+        <!-- android:screenOrientation="portrait" -->
+        <!-- android:theme="@style/CamActivityTheme" -->
+        <!-- android:windowSoftInputMode="adjustPan|stateHidden" /> -->
+        <activity
+            android:name=".n.view.bell.BellCallActivity"
+            android:configChanges="locale|orientation|keyboardHidden"
+            android:launchMode="singleTask"
+            android:process=":bell_call"
+            android:screenOrientation="portrait"
+            android:theme="@style/CamActivityTheme"
+            android:windowSoftInputMode="adjustPan|stateHidden" />
+
+        <service
+            android:name=".n.engine.SimpleHelperIntentService"
+            android:exported="false"
+            android:process=":bell_call" />
     </application>
 
 </manifest>

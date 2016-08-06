@@ -45,13 +45,21 @@ public class BaseFullScreenFragmentActivity extends FragmentActivity implements 
             return;
         } else if (checkExtraFragment())
             return;
-        if (System.currentTimeMillis() - time < 1500) {
-            super.onBackPressed();
+        if (theLastActivity()) {
+            if (System.currentTimeMillis() - time < 1500) {
+                super.onBackPressed();
+            } else {
+                time = System.currentTimeMillis();
+                Toast.makeText(getApplicationContext(), String.format(getString(R.string.click_back_again_exit),
+                        getString(R.string.app_name)), Toast.LENGTH_SHORT).show();
+            }
         } else {
-            time = System.currentTimeMillis();
-            Toast.makeText(getApplicationContext(), String.format(getString(R.string.click_back_again_exit),
-                    getString(R.string.app_name)), Toast.LENGTH_SHORT).show();
+            super.onBackPressed();
         }
+    }
+
+    protected boolean theLastActivity() {
+        return true;
     }
 
     protected boolean checkExtraChildFragment() {

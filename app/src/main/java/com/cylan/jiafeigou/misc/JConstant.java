@@ -74,4 +74,14 @@ public class JConstant {
      */
     public static final String KEY_DEVICE_ITEM_BUNDLE = "key_bundle_item";
 
+
+    /**
+     * 保存了 {@link com.cylan.jiafeigou.n.view.bell.BellCallActivity}的进程id
+     */
+    public static String KEY_BELL_CALL_PROCESS_ID = "key_bell_call_process_id";
+
+    public static String KEY_BELL_CALL_PROCESS_IS_FOREGROUND = "key_is_foreground";
+
+    public static final int INVALID_PROCESS = -1;
+
 }

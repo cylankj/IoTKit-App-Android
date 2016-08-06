@@ -11,6 +11,13 @@
         android:layout_height="wrap_content"
         android:background="@drawable/bg_bell_home_online">
 
+        <Button
+            android:id="@+id/btn_start_calling"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:layout_gravity="bottom|center_horizontal"
+            android:text="查看" />
+
         <FrameLayout
             android:id="@+id/fLayout_top_bar_container"
             android:layout_width="match_parent"
@@ -38,10 +45,10 @@
     </FrameLayout>
 
     <FrameLayout
-        android:background="@color/color_F8F8F8"
         android:id="@+id/fLayout_bell_list_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@color/color_F8F8F8">
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rv_bell_list"
