@@ -136,7 +136,10 @@
     <style name="ripple_background">
         <item name="android:background">@null</item>
     </style>
-
+    <style name="ripple_background_borderless">
+        <!--<item name="android:background">?attr/selectableItemBackgroundBorderless</item>-->
+        <item name="android:background">@null</item>
+    </style>
 
     <style name="CamActivityTheme" parent="AppTheme" />
     <!-- 设备信息item样式 -->
