@@ -36,4 +36,16 @@
                 android:src="@drawable/icon_setting" />
         </FrameLayout>
     </FrameLayout>
+
+    <FrameLayout
+        android:background="@color/color_F8F8F8"
+        android:id="@+id/fLayout_bell_list_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_bell_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </FrameLayout>
 </LinearLayout>

@@ -1,7 +1,10 @@
 package com.cylan.jiafeigou.n.view.bell;
 
 import android.content.Context;
+import android.graphics.Rect;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
@@ -9,6 +12,7 @@ import android.widget.TextView;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.RxEvent;
+import com.cylan.jiafeigou.misc.SpacesItemDecoration;
 import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
 import com.cylan.jiafeigou.n.mvp.contract.ActivityResultContract;
 import com.cylan.jiafeigou.n.mvp.contract.bell.DoorBellHomeContract;
@@ -16,6 +20,7 @@ import com.cylan.jiafeigou.n.mvp.impl.ActivityResultPresenterImpl;
 import com.cylan.jiafeigou.n.mvp.impl.bell.BellSettingPresenterImpl;
 import com.cylan.jiafeigou.n.mvp.impl.bell.DBellHomePresenterImpl;
 import com.cylan.jiafeigou.n.mvp.model.BellCallRecordBean;
+import com.cylan.jiafeigou.n.view.adapter.BellCallRecordListAdapter;
 import com.cylan.jiafeigou.utils.AppLogger;
 import com.cylan.jiafeigou.utils.ViewUtils;
 
@@ -35,9 +40,15 @@ public class DoorBellActivity extends BaseFullScreenFragmentActivity
     TextView imgVTopBarCenter;
     @BindView(R.id.fLayout_top_bar_container)
     FrameLayout fLayoutTopBarContainer;
+    @BindView(R.id.rv_bell_list)
+    RecyclerView rvBellList;
+    @BindView(R.id.fLayout_bell_list_container)
+    FrameLayout fLayoutBellListContainer;
     private DoorBellHomeContract.Presenter presenter;
     private ActivityResultContract.Presenter activityResultPresenter;
     private WeakReference<BellSettingFragment> fragmentWeakReference;
+
+    private BellCallRecordListAdapter bellCallRecordListAdapter;
 
     @Override
 
@@ -45,6 +56,7 @@ public class DoorBellActivity extends BaseFullScreenFragmentActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_door_bell);
         ButterKnife.bind(this);
+        initAdapter();
         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
         initToolbar();
         initSomething();
@@ -76,6 +88,14 @@ public class DoorBellActivity extends BaseFullScreenFragmentActivity
         super.onDestroy();
         if (activityResultPresenter != null)
             activityResultPresenter.stop();
+    }
+
+    private void initAdapter() {
+        bellCallRecordListAdapter = new BellCallRecordListAdapter(getApplicationContext(),
+                null, R.layout.layout_bell_call_list_item);
+        rvBellList.setAdapter(bellCallRecordListAdapter);
+        rvBellList.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+        rvBellList.addItemDecoration(new SpacesItemDecoration(new Rect(ViewUtils.dp2px(10), ViewUtils.dp2px(15), 0, 0)));
     }
 
     private void initSomething() {
@@ -140,7 +160,7 @@ public class DoorBellActivity extends BaseFullScreenFragmentActivity
 
     @Override
     public void onRecordsListRsp(ArrayList<BellCallRecordBean> beanArrayList) {
-
+        bellCallRecordListAdapter.addAll(beanArrayList);
     }
 
     @Override

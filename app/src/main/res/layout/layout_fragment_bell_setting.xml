@@ -99,6 +99,7 @@
 
             <TextView
                 android:id="@+id/tv_setting_unbind"
+                style="@style/ripple_background"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
                 android:layout_marginLeft="20dp"
