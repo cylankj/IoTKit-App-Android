@@ -50,23 +50,23 @@ public class ImageViewTip extends ImageView {
 
     public ImageViewTip(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.DotThemes, defStyle, 0);
-        float radius = a.getDimensionPixelSize(R.styleable.DotThemes_Dradius, 5);
+        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.ImageViewTipsTheme, defStyle, 0);
+        float radius = a.getDimensionPixelSize(R.styleable.ImageViewTipsTheme_t_radius, 5);
         setDotRadius(radius);
-        boolean show = a.getBoolean(R.styleable.DotThemes_showDot, false);
+        boolean show = a.getBoolean(R.styleable.ImageViewTipsTheme_t_showDot, false);
         setShowDot(show);
-        boolean ignore = a.getBoolean(R.styleable.DotThemes_ignore, false);
+        boolean ignore = a.getBoolean(R.styleable.ImageViewTipsTheme_t_ignore, false);
         setIgnorePadding(ignore);
-        int position = a.getInteger(R.styleable.DotThemes_position, 2);
+        int position = a.getInteger(R.styleable.ImageViewTipsTheme_t_position, 2);
         setPosition(position);
 
-        int borderColor = a.getColor(R.styleable.DotThemes_borderColor, Color.WHITE);
+        int borderColor = a.getColor(R.styleable.ImageViewTipsTheme_t_borderColor, Color.WHITE);
         setBorderColor(borderColor);
 
-        int borderWidth = a.getDimensionPixelSize(R.styleable.DotThemes_borderWidth, 0);
+        int borderWidth = a.getDimensionPixelSize(R.styleable.ImageViewTipsTheme_t_borderWidth, 0);
         setBorderWidth(borderWidth);
 
-        boolean enableBorder = a.getBoolean(R.styleable.DotThemes_enableBorder, false);
+        boolean enableBorder = a.getBoolean(R.styleable.ImageViewTipsTheme_t_enableBorder, false);
         enableBoarder(enableBorder);
         a.recycle();
         init();

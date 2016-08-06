@@ -164,8 +164,12 @@ public class SuperWaveView extends View {
     public void setAmplitudeRatio(float amplitudeRatio) {
         if (this.amplitudeRatio != amplitudeRatio) {
             this.amplitudeRatio = amplitudeRatio;
-            postInvalidate();
+            invalidate();
         }
+    }
+
+    public float getAmplitudeRatio() {
+        return amplitudeRatio;
     }
 
     private void drawShader(Canvas canvas, final int index) {

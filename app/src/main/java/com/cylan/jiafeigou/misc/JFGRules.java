@@ -7,6 +7,8 @@ import com.cylan.jiafeigou.utils.TimeUtils;
  */
 public class JFGRules {
 
+    public static final int NETSTE_SCROLL_COUNT = 4;
+
     public static final int LOGIN = 1;
     public static final int LOGOUT = 0;
     public static final int RULE_DAY_TIME = 0;

@@ -16,7 +16,7 @@
 
     <style name="ripple_background">
         <!--<item name="android:background">?attr/selectableItemBackgroundBorderless</item>-->
-        <item name="android:background">?attr/selectableItemBackground</item>
+        <item name="android:background">?attr/selectableItemBackgroundBorderless</item>
     </style>
 
     <style name="CamActivityTheme" parent="AppTheme" />

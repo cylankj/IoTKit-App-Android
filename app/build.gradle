@@ -89,6 +89,7 @@ dependencies {
     compile files('src/main/jniLibs/zbar.jar')
     //add by hunt 2016-08-01
     compile rootProject.ext.switchButton
+    compile rootProject.ext.appDesige
 }
 
 if (project.hasProperty('keystoreFile') &&

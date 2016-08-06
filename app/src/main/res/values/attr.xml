@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <declare-styleable name="DotThemes">
-        <attr name="position" format="integer" />
-        <attr name="ignore" format="boolean" />
-        <attr name="Dradius" format="dimension" />
-        <attr name="margin" format="dimension" />
-        <attr name="showDot" format="boolean" />
-        <attr name="tipDrawable" format="reference" />
-        <attr name="borderColor" format="color" />
-        <attr name="borderWidth" format="dimension" />
-        <attr name="enableBorder" format="boolean" />
+    <declare-styleable name="ImageViewTipsTheme">
+        <attr name="t_position" format="integer" />
+        <attr name="t_ignore" format="boolean" />
+        <attr name="t_radius" format="dimension" />
+        <attr name="t_margin" format="dimension" />
+        <attr name="t_showDot" format="boolean" />
+        <attr name="t_Drawable" format="reference" />
+        <attr name="t_borderColor" format="color" />
+        <attr name="t_borderWidth" format="dimension" />
+        <attr name="t_enableBorder" format="boolean" />
     </declare-styleable>
     <declare-styleable name="WaveTheme">
         <attr name="frontColor" format="color" />

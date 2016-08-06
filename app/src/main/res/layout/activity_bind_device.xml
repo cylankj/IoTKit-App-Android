@@ -25,9 +25,9 @@
 
                 <ImageView
                     android:id="@+id/imgV_top_bar_left"
+                    style="@style/ripple_background"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    style="@style/ripple_background"
                     android:padding="15dp"
                     android:src="@drawable/ic_nav_back_arrow" />
 
