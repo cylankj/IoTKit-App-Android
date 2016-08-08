@@ -16,6 +16,11 @@ public interface DoorBellHomeContract {
 
         void onLoginState(int state);
 
+        /**
+         * 电量提醒
+         */
+        void onBellBatteryDrainOut();
+
         void onRecordsListRsp(ArrayList<BellCallRecordBean> beanArrayList);
 
     }

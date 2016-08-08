@@ -37,7 +37,7 @@ import com.cylan.jiafeigou.n.view.activity.BindDeviceActivity;
 import com.cylan.jiafeigou.n.view.activity.CameraLiveActivity;
 import com.cylan.jiafeigou.n.view.activity.MagLiveActivity;
 import com.cylan.jiafeigou.n.view.adapter.HomePageListAdapter;
-import com.cylan.jiafeigou.n.view.bell.DoorBellActivity;
+import com.cylan.jiafeigou.n.view.bell.DoorBellHomeActivity;
 import com.cylan.jiafeigou.n.view.misc.HomeEmptyView;
 import com.cylan.jiafeigou.n.view.misc.IEmptyView;
 import com.cylan.jiafeigou.support.rxbus.RxBus;
@@ -382,7 +382,7 @@ public class HomePageListFragmentExt extends Fragment implements
                 startActivity(new Intent(getActivity(), MagLiveActivity.class)
                         .putExtra(JConstant.KEY_DEVICE_ITEM_BUNDLE, bundle));
             } else if (bean.deviceType == JConstant.JFG_DEVICE_BELL) {
-                startActivity(new Intent(getActivity(), DoorBellActivity.class)
+                startActivity(new Intent(getActivity(), DoorBellHomeActivity.class)
                         .putExtra(JConstant.KEY_DEVICE_ITEM_BUNDLE, bundle));
             }
         }

@@ -23,8 +23,8 @@ import com.cylan.jiafeigou.n.mvp.impl.bell.BellSettingPresenterImpl;
 import com.cylan.jiafeigou.n.mvp.impl.bell.DBellHomePresenterImpl;
 import com.cylan.jiafeigou.n.mvp.model.BellCallRecordBean;
 import com.cylan.jiafeigou.n.view.adapter.BellCallRecordListAdapter;
+import com.cylan.jiafeigou.utils.AnimatorUtils;
 import com.cylan.jiafeigou.utils.AppLogger;
-import com.cylan.jiafeigou.utils.SuperSpUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;
 
 import java.lang.ref.WeakReference;
@@ -34,11 +34,13 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class DoorBellActivity extends BaseFullScreenFragmentActivity
+public class DoorBellHomeActivity extends BaseFullScreenFragmentActivity
         implements DoorBellHomeContract.View,
+        BellCallRecordListAdapter.SimpleLongClickListener,
+        BellCallRecordListAdapter.SimpleClickListener,
         ActivityResultContract.View {
 
-    private static final String tag = "DoorBellActivity";
+    private static final String tag = "DoorBellHomeActivity";
     @BindView(R.id.tv_top_bar_left)
     TextView imgVTopBarCenter;
     @BindView(R.id.fLayout_top_bar_container)
@@ -47,10 +49,18 @@ public class DoorBellActivity extends BaseFullScreenFragmentActivity
     RecyclerView rvBellList;
     @BindView(R.id.fLayout_bell_list_container)
     FrameLayout fLayoutBellListContainer;
+    @BindView(R.id.tv_bell_home_list_cancel)
+    TextView tvBellHomeListCancel;
+    @BindView(R.id.tv_bell_home_list_select_all)
+    TextView tvBellHomeListSelectAll;
+    @BindView(R.id.tv_bell_home_list_delete)
+    TextView tvBellHomeListDelete;
+    @BindView(R.id.fLayout_bell_home_list_edition)
+    FrameLayout fLayoutBellHomeListEdition;
     private DoorBellHomeContract.Presenter presenter;
     private ActivityResultContract.Presenter activityResultPresenter;
     private WeakReference<BellSettingFragment> fragmentWeakReference;
-
+    private WeakReference<LBatteryWarnDialog> lBatteryWarnDialog;
     private BellCallRecordListAdapter bellCallRecordListAdapter;
 
     @Override
@@ -97,6 +107,8 @@ public class DoorBellActivity extends BaseFullScreenFragmentActivity
     private void initAdapter() {
         bellCallRecordListAdapter = new BellCallRecordListAdapter(getApplicationContext(),
                 null, R.layout.layout_bell_call_list_item);
+        bellCallRecordListAdapter.setSimpleClickListener(this);
+        bellCallRecordListAdapter.setSimpleLongClickListener(this);
         rvBellList.setAdapter(bellCallRecordListAdapter);
         rvBellList.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         rvBellList.addItemDecoration(new SpacesItemDecoration(new Rect(ViewUtils.dp2px(10), ViewUtils.dp2px(15), 0, 0)));
@@ -115,7 +127,7 @@ public class DoorBellActivity extends BaseFullScreenFragmentActivity
 
     @OnClick({R.id.tv_top_bar_left, R.id.imgv_toolbar_right,
             R.id.btn_start_calling})
-    public void onClick(View v) {
+    public void onElementClick(View v) {
         switch (v.getId()) {
             case R.id.imgv_toolbar_right:
                 ViewUtils.deBounceClick(v);
@@ -157,13 +169,45 @@ public class DoorBellActivity extends BaseFullScreenFragmentActivity
             return;
         } else if (checkExtraFragment())
             return;
+        if (reverseEditionMode())
+            return;
         finishExt();
+    }
+
+    /**
+     * 反转编辑模式
+     *
+     * @return
+     */
+    private boolean reverseEditionMode() {
+        if (bellCallRecordListAdapter.getMode() == 1) {
+            bellCallRecordListAdapter.setMode(0);
+            final int lPos = ((LinearLayoutManager) rvBellList.getLayoutManager())
+                    .findLastVisibleItemPosition();
+            bellCallRecordListAdapter.reverseEdition(true, lPos);
+            showEditBar(false);
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public void onLoginState(int state) {
     }
 
 
     @Override
-    public void onLoginState(int state) {
+    public void onBellBatteryDrainOut() {
+        initBatteryDialog();
+        LBatteryWarnDialog dialog = lBatteryWarnDialog.get();
+        if (dialog.isResumed())
+            return;
+        dialog.show(getSupportFragmentManager(), "lBattery");
+    }
 
+    private void initBatteryDialog() {
+        if (lBatteryWarnDialog == null || lBatteryWarnDialog.get() == null)
+            lBatteryWarnDialog = new WeakReference<>(LBatteryWarnDialog.newInstance(null));
     }
 
     @Override
@@ -195,5 +239,79 @@ public class DoorBellActivity extends BaseFullScreenFragmentActivity
     @Override
     public Context getContext() {
         return getApplicationContext();
+    }
+
+    @Override
+    public boolean onLongClick(View v) {
+        Object o = v.getTag();
+        if (o == null || !(o instanceof Integer)) {
+            AppLogger.d("v tag is null");
+            return false;
+        }
+        final int position = (int) v.getTag();
+        if (position < 0 || position >= bellCallRecordListAdapter.getCount()) {
+            AppLogger.d("position is invalid");
+            return false;
+        }
+        //toggle edit mode
+        if (bellCallRecordListAdapter.getMode() == 0) {
+            AppLogger.d("enter edition mode");
+            bellCallRecordListAdapter.setMode(1);
+            reverseItemSelectedState(position);
+            showEditBar(true);
+        }
+        return true;
+    }
+
+    private void showEditBar(boolean show) {
+        AnimatorUtils.slide(fLayoutBellHomeListEdition);
+    }
+
+    @Override
+    public void onClick(View v) {
+        Object o = v.getTag();
+        if (o == null || !(o instanceof Integer)) {
+            AppLogger.d("v tag is null");
+            return;
+        }
+        final int position = (int) v.getTag();
+        if (position < 0 || position >= bellCallRecordListAdapter.getCount()) {
+            AppLogger.d("position is invalid");
+            return;
+        }
+        //
+        if (bellCallRecordListAdapter.getMode() == 0) {
+            AppLogger.d("normal mode");
+            return;
+        }
+        reverseItemSelectedState(position);
+    }
+
+    private void reverseItemSelectedState(int position) {
+        BellCallRecordBean bean = bellCallRecordListAdapter.getItem(position);
+        if (bean == null) {
+            AppLogger.d("bean is null");
+            return;
+        }
+        bean.selected = !bean.selected;
+        bellCallRecordListAdapter.notifyItemChanged(position);
+    }
+
+    @OnClick({R.id.tv_bell_home_list_cancel, R.id.tv_bell_home_list_select_all, R.id.tv_bell_home_list_delete})
+    public void onEditBarClick(View view) {
+        final int lPos = ((LinearLayoutManager) rvBellList.getLayoutManager())
+                .findLastVisibleItemPosition();
+        switch (view.getId()) {
+            case R.id.tv_bell_home_list_cancel:
+                bellCallRecordListAdapter.reverseEdition(true, lPos);
+                bellCallRecordListAdapter.setMode(0);
+                showEditBar(false);
+                break;
+            case R.id.tv_bell_home_list_select_all:
+                bellCallRecordListAdapter.selectAll(lPos);
+                break;
+            case R.id.tv_bell_home_list_delete:
+                break;
+        }
     }
 }

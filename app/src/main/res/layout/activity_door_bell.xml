@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.cylan.jiafeigou.n.view.bell.DoorBellActivity">
+    tools:context=".n.view.bell.DoorBellHomeActivity">
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -54,5 +54,43 @@
             android:id="@+id/rv_bell_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
+
+        <FrameLayout
+            android:id="@+id/fLayout_bell_home_list_edition"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:layout_gravity="bottom"
+            android:orientation="horizontal"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/tv_bell_home_list_cancel"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:paddingLeft="30dp"
+                android:paddingRight="30dp"
+                android:text="取消" />
+
+            <TextView
+                android:id="@+id/tv_bell_home_list_select_all"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:paddingLeft="30dp"
+                android:paddingRight="30dp"
+                android:text="全选" />
+
+            <TextView
+                android:id="@+id/tv_bell_home_list_delete"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="end"
+                android:gravity="center"
+                android:paddingLeft="30dp"
+                android:paddingRight="30dp"
+                android:text="删除" />
+        </FrameLayout>
     </FrameLayout>
 </LinearLayout>

@@ -161,7 +161,7 @@
             android:theme="@style/CamActivityTheme"
             android:windowSoftInputMode="adjustPan|stateHidden" />
         <activity
-            android:name=".n.view.bell.DoorBellActivity"
+            android:name=".n.view.bell.DoorBellHomeActivity"
             android:configChanges="locale|orientation|keyboardHidden"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"

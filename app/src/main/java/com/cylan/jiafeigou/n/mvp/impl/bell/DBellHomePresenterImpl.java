@@ -46,6 +46,7 @@ public class DBellHomePresenterImpl extends AbstractPresenter<DoorBellHomeContra
     public void start() {
         compositeSubscription.add(onBellCallListSubscription());
         compositeSubscription.add(onLogStateSubscription());
+        compositeSubscription.add(onBellBatterState());
         getView().onLoginState(RandomUtils.getRandom(1));
     }
 
@@ -103,13 +104,33 @@ public class DBellHomePresenterImpl extends AbstractPresenter<DoorBellHomeContra
      */
     private Subscription onLogStateSubscription() {
         return RxBus.getInstance().toObservable()
-
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<Object>() {
                     @Override
                     public void call(Object o) {
                         if (o != null && o instanceof RxEvent.LoginRsp) {
                             if (getView() != null) getView().onLoginState(JFGRules.LOGIN);
+                        }
+                    }
+                });
+    }
+
+    private Subscription onBellBatterState() {
+        return Observable.just(null)
+                .subscribeOn(Schedulers.io())
+                .delay(RandomUtils.getRandom(3) * 1000L + 100, TimeUnit.MICROSECONDS)
+                .map(new Func1<Object, Boolean>() {
+                    @Override
+                    public Boolean call(Object o) {
+                        return RandomUtils.getRandom(10) % 2 == 0;
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<Boolean>() {
+                    @Override
+                    public void call(Boolean bool) {
+                        if (getView() != null && bool != null && bool) {
+                            getView().onBellBatteryDrainOut();
                         }
                     }
                 });

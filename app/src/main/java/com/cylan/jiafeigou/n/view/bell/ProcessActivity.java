@@ -2,7 +2,6 @@ package com.cylan.jiafeigou.n.view.bell;
 
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
-import com.cylan.jiafeigou.utils.AppLogger;
 import com.cylan.jiafeigou.utils.SuperSpUtils;
 
 /**

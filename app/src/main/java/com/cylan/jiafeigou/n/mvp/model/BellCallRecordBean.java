@@ -10,6 +10,11 @@ public class BellCallRecordBean implements Comparable<BellCallRecordBean> {
     public long timeInLong;
     public int answerState;
 
+    /**
+     * 1：选中  0：默认
+     */
+    public boolean selected;
+
     @Override
     public int compareTo(BellCallRecordBean another) {
         return (int) (timeInLong - another.timeInLong);

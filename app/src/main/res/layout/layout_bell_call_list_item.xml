@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/cv_bell_call_item"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
 
@@ -45,15 +46,30 @@
 
 
         <TextView
-            android:drawablePadding="10dp"
             android:id="@+id/tv_bell_list_item_answer_state"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="22dp"
             android:drawableLeft="@drawable/icon_bell_answer"
+            android:drawablePadding="10dp"
             android:text="已通话"
             android:textColor="@color/color_CBCFD0"
             android:textSize="13sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/imgv_bell_call_item_cover"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/card_view_alpha_cover"
+        android:visibility="gone">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:padding="10dp"
+            android:src="@drawable/icon_check" />
     </LinearLayout>
 </android.support.v7.widget.CardView>

@@ -574,7 +574,7 @@
     <string name="TIME">Time</string>
     <string name="USER_HELP">FAQ</string>
     <string name="doorbell_title">%1$s(%2$s)</string>
-    <string name="input_rule">0123456789abcdefghigklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!&lt;&gt;~@\'\"#$%^&amp;*()_-+=/*;:\|,.?/</string>
+    <string name="input_rule">0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!&lt;&gt;~@\'\"#$%^&amp;*()_-+=/*;:\|,.?/</string>
     <string name="permission_camera_denied">Camera permission was denied. Please consider granting it in order to access the camera!</string>
     <string name="permission_camera_never_askagain">Camera permission was denied with never ask again</string>
     <string name="permission_camera_rationale">Camera permission is needed to show the camera preview.</string>
@@ -589,6 +589,4 @@
     <string name="item_just_for_test">05</string>
     <string name="item_device_standby_explanation">说明</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
