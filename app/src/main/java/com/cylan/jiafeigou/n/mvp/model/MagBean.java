@@ -9,7 +9,7 @@ public class MagBean {
 
     public long magTime;
 
-    public String magDate;
+    public String magDate="";
 
     public boolean isOpen;
 
@@ -23,7 +23,7 @@ public class MagBean {
         return magTime;
     }
 
-    public void setMagData(String magDate){
+    public void setMagDate(String magDate){
         this.magDate = magDate;
     }
 

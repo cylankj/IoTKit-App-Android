@@ -82,6 +82,7 @@ public class SuperViewHolder extends RecyclerView.ViewHolder implements ChainSet
         return this;
     }
 
+
     @Override
     public SuperViewHolder setImageResource(int viewId, int imgResId) {
         ImageView view = getView(viewId);
@@ -239,4 +240,5 @@ public class SuperViewHolder extends RecyclerView.ViewHolder implements ChainSet
         getView(viewId).setOnTouchListener(listener);
         return this;
     }
+
 }

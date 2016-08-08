@@ -54,12 +54,6 @@ public class MagLiveFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_msglive_message, null);
         ButterKnife.bind(this, view);
-        mSwBtn = (SwitchButton) view.findViewById(R.id.btn_switch);
-        mSwBtn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-            }
-        });
         return view;
     }
 

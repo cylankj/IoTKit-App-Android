@@ -1,23 +1,18 @@
 package com.cylan.jiafeigou.n.view.activity;
 
-import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.BaseAdapter;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
 import com.cylan.jiafeigou.n.mvp.model.MagBean;
+import com.cylan.jiafeigou.n.view.adapter.MagActivityAdapter;
 import com.cylan.jiafeigou.n.view.mag.MagLiveFragment;
 import com.cylan.jiafeigou.utils.ViewUtils;
-import com.cylan.jiafeigou.widget.FateLineView;
 import com.cylan.utils.RandomUtils;
 
 import java.text.SimpleDateFormat;
@@ -40,11 +35,7 @@ import butterknife.OnClick;
  */
 public class MagLiveActivity extends BaseFullScreenFragmentActivity {
 
-    private static final int TYPE_COUNT = 2;
 
-    private static final int TYPE_VISIBLE = 0;//正常显示类型
-
-    private static final int TYPE_INVISIBLE = 1;//不显示类型
 
     private int currentType;//当前item类型
 
@@ -60,10 +51,11 @@ public class MagLiveActivity extends BaseFullScreenFragmentActivity {
     @BindView(R.id.rLayout_mag_live_top_bar)
     RelativeLayout rLayoutMsgLiveTopBar;
 
-    @BindView(R.id.lv_mag_state)
-    ListView lvMagState;
+    @BindView(R.id.rv_mag_state)
+    RecyclerView RvMagState;
     private MagLiveFragment magLiveFragment;
     private List<MagBean> magList;
+    private LinearLayoutManager layoutManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,8 +66,6 @@ public class MagLiveActivity extends BaseFullScreenFragmentActivity {
         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
         ButterKnife.bind(this);
 
-        lvMagState.setDivider(null);
-        lvMagState.setDividerHeight(0);
         //用来存放，所需要的bean对象
         initTopBar();
         initData();
@@ -89,15 +79,12 @@ public class MagLiveActivity extends BaseFullScreenFragmentActivity {
             MagBean magBean = new MagBean();
             magBean.setIsOpen(i%2==0?false:true);
             if(i==0){
-                magBean.setMagData("今天");
                 magBean.setVisibleType(0);
             }else if(i==5){
                 magBean.setVisibleType(1);
             }else if(i==6){
-                magBean.setMagData(getDate()+"月");
                 magBean.setVisibleType(0);
             }else {
-                magBean.setMagData("");
                 magBean.setVisibleType(0);
             }
             magBean.setMagTime(System.currentTimeMillis() - RandomUtils.getRandom(24 * 3600));
@@ -107,6 +94,7 @@ public class MagLiveActivity extends BaseFullScreenFragmentActivity {
 
     /**
      * 获得当前日期的方法
+     * @param
      */
     public String getDate(){
         SimpleDateFormat sdf=new SimpleDateFormat("dd/M");
@@ -115,25 +103,15 @@ public class MagLiveActivity extends BaseFullScreenFragmentActivity {
     }
 
     /**
-     * long类型转换为时间值类型
+     * 初始化recycleView视图
      */
-    public static String longToDate(long lo){
-        Date date = new Date(lo);
-        SimpleDateFormat sd = new SimpleDateFormat("HH:mm:ss");
-        return sd.format(date);
-    }
-
-
     private void initView() {
-        SimpleAdapter adapter = new SimpleAdapter();
-        lvMagState.setAdapter(adapter);
+        LinearLayoutManager layoutManager =  new LinearLayoutManager(getApplicationContext(),LinearLayoutManager.VERTICAL,false);
+        RvMagState.setLayoutManager(layoutManager);
+        MagActivityAdapter adapter = new MagActivityAdapter(getApplication(),magList,null);
+        RvMagState.setAdapter(adapter);
     }
 
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-    }
 
     private void initTopBar() {
         ViewUtils.setViewPaddingStatusBar(rLayoutMsgLiveTopBar);
@@ -156,7 +134,6 @@ public class MagLiveActivity extends BaseFullScreenFragmentActivity {
         onBackPressed();
     }
 
-
     /**
      * 当点击右上角的螺母按钮时，跳转到设备设置页面
      */
@@ -177,100 +154,118 @@ public class MagLiveActivity extends BaseFullScreenFragmentActivity {
                 .commit();
     }
 
-    public class SimpleAdapter extends BaseAdapter {
+    /*class SimpleAdapter extends SuperAdapter<MagBean>{
 
+        public TextView mTvDay;
+        public TextView mTvTime;
+        public FateLineView mFlv;
+        public FateLineView mFlvInvisible;
+
+        public SimpleAdapter(Context context, List<MagBean> items, int layoutResId) {
+            super(context, items, layoutResId);
+        }
+
+        *//**
+         * 绑定视图
+         * @param parent
+         * @param viewType
+         * @return
+         *//*
+       *//* @Override
+        public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            if(viewType==TYPE_VISIBLE){
+                View view = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.activity_mag_live_item,parent,false);
+                return new ViewHolder(view);
+            }else if(viewType==TYPE_INVISIBLE){
+                View lineView = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.activity_mag_live_item_invisible,parent,false);
+                return new ViewLineHolder(lineView);
+            }
+            return null;
+        }
+
+        *//**//**
+         * 绑定数据
+         * @param holder
+         * @param position
+         *//**//*
         @Override
-        public int getCount() {
+        public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+            if(holder instanceof ViewHolder){
+                //每条的第一个设置内外圈颜色
+                if (position == 0) {
+                    mFlv.setOuterCircleColor(R.color.color_bae3bc);
+                    mFlv.setTag("toGreen");
+                }
+                //把数据插入其中
+                mTvDay.setText(magList.get(position).magDate);
+                if (magList.get(position).isOpen == true) {
+                    mTvTime.setText(longToDate(magList.get(position).magTime) + " " + "打开");
+                } else {
+                    mTvTime.setText(longToDate(magList.get(position).magTime) + " " + "关闭");
+                }
+            }else if(holder instanceof ViewLineHolder){
+
+            }
+        }*//*
+
+        *//**
+         * 数据的总大小
+         * @return
+        @Override
+        public int getItemCount() {
             return magList.size();
         }
 
+        *//**//**
+         * 数据的类型
+         * @param
+         * @return
+         *//**//*
         @Override
         public int getItemViewType(int position) {
-
             if (0 == magList.get(position).getVisibleType()) {
-                    return TYPE_VISIBLE;//正常显示类型
+                return TYPE_VISIBLE;//正常显示类型
             } else if (1 == magList.get(position).getVisibleType()) {
-                    return TYPE_INVISIBLE;//不显示类型
+                return TYPE_INVISIBLE;//不显示类型
             } else {
-                    return 100;
+                return 100;
+            }
+        }*//*
+
+        @Override
+        public void onBind(SuperViewHolder holder, int viewType, int layoutPosition, MagBean item) {
+            if(viewType == TYPE_VISIBLE){
+
+            }else if(viewType == TYPE_INVISIBLE){
+
             }
         }
 
-        @Override
-        public int getViewTypeCount() {
-            return TYPE_COUNT;
-        }
+        *//**
+         * 正常显示的holder
+         *//*
+        public class ViewHolder extends RecyclerView.ViewHolder{
 
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-
-            currentType = getItemViewType(position);
-            if(currentType == TYPE_VISIBLE) {
-                ViewHolder holder;
-                if (convertView == null) {
-                    holder = new ViewHolder();
-                    convertView = LayoutInflater.from(getApplicationContext()).inflate(R.layout.activity_mag_live_item, parent, false);
-                    View.inflate(getApplicationContext(), R.layout.activity_mag_live_item, null);
-                    holder.mTvDay = (TextView) convertView.findViewById(R.id.tv_mag_live_day);
-                    holder.mTvTime = (TextView) convertView.findViewById(R.id.tv_mag_live_time);
-                    holder.mFlv = (FateLineView) convertView.findViewById(R.id.flv_mag_live);
-                    convertView.setTag(holder);
-                    holder.mFlv.setTag("toGreen");
-                } else {
-                    holder = (ViewHolder) convertView.getTag();
-                    holder.mFlv.setTag("toGreen");
-                }
-
-                //每条的第一个设置内外圈颜色
-                if (position == 0) {
-                        holder.mFlv.setOuterCircleColor(R.color.color_bae3bc);
-                        holder.mFlv.setTag("toGreen");
-                }
-                //把数据插入其中
-                holder.mTvDay.setText(magList.get(position).magDate);
-                if (magList.get(position).isOpen == true) {
-                    holder.mTvTime.setText(longToDate(magList.get(position).magTime) + " " + "打开");
-                } else {
-                    holder.mTvTime.setText(longToDate(magList.get(position).magTime) + " " + "关闭");
-                }
-            }else if(currentType == TYPE_INVISIBLE){
-                viewVisibleHolder visibleHolder;
-                if(convertView==null){
-                    visibleHolder = new viewVisibleHolder();
-                    convertView = LayoutInflater.from(getApplicationContext()).inflate(R.layout.activity_mag_live_item_invisible, parent, false);
-                    View.inflate(getApplicationContext(), R.layout.activity_mag_live_item_invisible, null);
-                    visibleHolder.mFlv = (FateLineView) convertView.findViewById(R.id.flv_mag_live_invisible);
-                    convertView.setTag(visibleHolder);
-                }else {
-                    visibleHolder = (viewVisibleHolder) convertView.getTag();
-                }
+            public ViewHolder(View itemView) {
+                super(itemView);
+                mTvDay = (TextView) itemView.findViewById(R.id.tv_mag_live_day);
+                mTvTime =  (TextView) itemView.findViewById(R.id.tv_mag_live_time);
+                mFlv = (FateLineView) itemView.findViewById(R.id.flv_mag_live);
             }
-            return convertView;
         }
 
-        @Override
-        public Object getItem(int position) {
-            return magList.get(position);
+        *//**
+         * 只显示一条虚线的holder
+         *//*
+        public class ViewLineHolder extends RecyclerView.ViewHolder{
+
+            public ViewLineHolder(View itemView) {
+                super(itemView);
+                mFlvInvisible = (FateLineView) itemView.findViewById(R.id.flv_mag_live_invisible);
+            }
         }
+    }*/
 
-        @Override
-        public long getItemId(int position) {
-            return position;
-        }
-    }
-
-    /**
-     * 正常显示的viewHodler
-     */
-    class ViewHolder{
-        TextView mTvDay,mTvTime;
-        FateLineView mFlv;
-    }
-
-    /**
-     * 只显示一条直线的viewHolder
-     */
-    class viewVisibleHolder{
-        FateLineView mFlv;
-    }
 }
