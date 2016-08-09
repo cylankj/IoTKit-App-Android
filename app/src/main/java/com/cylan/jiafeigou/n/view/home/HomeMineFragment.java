@@ -3,6 +3,7 @@ package com.cylan.jiafeigou.n.view.home;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +13,10 @@ import android.widget.TextView;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.RxEvent;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeMineContract;
+import com.cylan.jiafeigou.n.view.mine.HomeMineHelpFragment;
+import com.cylan.jiafeigou.n.view.mine.HomeMinePersonalInformationFragment;
 import com.cylan.jiafeigou.support.rxbus.RxBus;
+import com.cylan.jiafeigou.utils.ContinuityClickUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.HomeMineItemView;
 import com.cylan.jiafeigou.widget.MsgTextView;
@@ -23,6 +27,7 @@ import com.superlog.SLog;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.internal.Utils;
 
 public class HomeMineFragment extends android.support.v4.app.Fragment
         implements HomeMineContract.View {
@@ -47,6 +52,8 @@ public class HomeMineFragment extends android.support.v4.app.Fragment
     @BindView(R.id.home_mine_item_settings)
     HomeMineItemView homeMineItemSettings;
     private HomeMineContract.Presenter presenter;
+    private HomeMineHelpFragment mineHelpFragment;
+    private HomeMinePersonalInformationFragment personalInformationFragment;
 
     public static HomeMineFragment newInstance(Bundle bundle) {
         HomeMineFragment fragment = new HomeMineFragment();
@@ -54,6 +61,12 @@ public class HomeMineFragment extends android.support.v4.app.Fragment
         return fragment;
     }
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mineHelpFragment =  HomeMineHelpFragment.newInstance(new Bundle());
+        personalInformationFragment = HomeMinePersonalInformationFragment.newInstance(new Bundle());
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -119,6 +132,12 @@ public class HomeMineFragment extends android.support.v4.app.Fragment
 
     public void helpItem(View view) {
         if (needStartLoginFragment()) return;
+        /*getFragmentManager().beginTransaction()
+                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
+                        , R.anim.slide_in_left, R.anim.slide_out_right)
+                .add(android.R.id.content,mineHelpFragment,"mineHelpFragment")
+                .addToBackStack("mineHelpFragment")
+                .commit();*/
         SLog.i("It's Login,can do something!");
     }
 
@@ -183,10 +202,20 @@ public class HomeMineFragment extends android.support.v4.app.Fragment
                 shareItem(view);
                 break;
             case R.id.home_mine_item_help:
-                if (getView() != null)
+                /*if (getView() != null)
                     ViewUtils.deBounceClick(getView().findViewById(R.id.home_mine_item_help));
-                SLog.e("home_mine_item_help");
-                helpItem(view);
+                SLog.e("home_mine_item_help");*/
+            /*    helpItem(view);*/
+                if (ContinuityClickUtils.isFastDoubleClick()) {
+                    return;
+                }
+                getFragmentManager().beginTransaction()
+                        .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
+                                , R.anim.slide_in_left, R.anim.slide_out_right)
+                        .add(android.R.id.content,mineHelpFragment,"mineHelpFragment")
+                        .addToBackStack("mineHelpFragment")
+                        .commit();
+
                 break;
             case R.id.home_mine_item_settings:
                 if (getView() != null)
@@ -195,10 +224,16 @@ public class HomeMineFragment extends android.support.v4.app.Fragment
                 settingsItem(view);
                 break;
             case R.id.shadow_layout:
-                if (getView() != null)
+                /*if (getView() != null)
                     ViewUtils.deBounceClick(getView().findViewById(R.id.shadow_layout));
                 SLog.e("home_mine_item_settings");
-                portrait();
+                portrait();*/
+                getFragmentManager().beginTransaction()
+                        .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
+                                , R.anim.slide_in_left, R.anim.slide_out_right)
+                        .add(android.R.id.content,personalInformationFragment,"personalInformationFragment")
+                        .addToBackStack("personalInformationFragment")
+                        .commit();
                 break;
         }
     }

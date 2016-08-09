@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:clickable="true"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="@color/color_white">
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="73dp"
+        android:background="#0BA8CF">
+        <ImageView
+            android:layout_alignParentBottom="true"
+            android:id="@+id/iv_home_mine_suggestion"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="15dp"
+            android:src="@drawable/ic_nav_back_arrow"/>
+
+        <TextView
+            android:layout_marginBottom="12dp"
+            android:layout_alignParentBottom="true"
+            android:layout_marginLeft="48dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="帮助与反馈"
+            android:textSize="18sp"
+            android:textColor="@color/color_white"/>
+    </RelativeLayout>
+
+</LinearLayout>
