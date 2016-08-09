@@ -60,6 +60,16 @@ public class ViewUtils {
         setMargins(v, 0, height, 0, 0);
     }
 
+    /**
+     * 不在需要marginStatusBar的高度
+     *
+     * @param v
+     */
+    public static void clearViewMarginStatusBar(View v) {
+        final int height = getCompatStatusBarHeight(v.getContext());
+        setMargins(v, 0, -height, 0, 0);
+    }
+
     public static void setViewPaddingStatusBar(View v) {
         final int height = getCompatStatusBarHeight(v.getContext());
         v.setPadding(v.getPaddingLeft(), v.getPaddingTop() + height, v.getPaddingRight(), v.getPaddingBottom());

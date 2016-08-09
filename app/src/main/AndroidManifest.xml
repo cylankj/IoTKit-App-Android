@@ -176,7 +176,7 @@
         <!-- android:windowSoftInputMode="adjustPan|stateHidden" /> -->
         <activity
             android:name=".n.view.bell.BellLiveActivity"
-            android:configChanges="locale|orientation|keyboardHidden"
+            android:configChanges="locale|orientation|keyboardHidden|navigation|screenSize"
             android:launchMode="singleTask"
             android:process=":bell_call"
             android:screenOrientation="portrait"
