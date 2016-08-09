@@ -118,7 +118,7 @@ public class DBellHomePresenterImpl extends AbstractPresenter<DoorBellHomeContra
     private Subscription onBellBatterState() {
         return Observable.just(null)
                 .subscribeOn(Schedulers.io())
-                .delay(RandomUtils.getRandom(3) * 1000L + 100, TimeUnit.MICROSECONDS)
+                .delay(RandomUtils.getRandom(3) * 1000L + 2200L, TimeUnit.MILLISECONDS)
                 .map(new Func1<Object, Boolean>() {
                     @Override
                     public Boolean call(Object o) {

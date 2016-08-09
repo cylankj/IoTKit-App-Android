@@ -68,10 +68,10 @@ public class CameraLiveFragment extends Fragment implements CamLandLiveAction,
     CamLivePortWheel swCamPortWheel;
     private WeakReference<LiveBottomBarAnimDelegate> liveBottomBarAnimDelegateWeakReference;
     private WeakReference<CamLandLiveLayerInterface> landLiveLayerViewActionWeakReference;
-    CamLandLiveLayerInterface camLandLiveLayerInterface;
+    private CamLandLiveLayerInterface camLandLiveLayerInterface;
 
 
-    CamLiveContract.Presenter presenter;
+    private CamLiveContract.Presenter presenter;
 
     public CameraLiveFragment() {
         // Required empty public constructor

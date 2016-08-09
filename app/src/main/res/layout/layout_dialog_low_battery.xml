@@ -43,6 +43,7 @@
             android:background="@color/color_E1E1E1" />
 
         <TextView
+            android:id="@+id/tv_low_battery_dismiss"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
             android:layout_width="match_parent"

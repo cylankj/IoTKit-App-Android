@@ -1,6 +1,7 @@
 package com.cylan.jiafeigou.misc;
 
 import com.cylan.jiafeigou.NewHomeActivity;
+import com.cylan.jiafeigou.n.view.bell.BellLiveActivity;
 
 import java.util.regex.Pattern;
 
@@ -76,7 +77,7 @@ public class JConstant {
 
 
     /**
-     * 保存了 {@link com.cylan.jiafeigou.n.view.bell.BellCallActivity}的进程id
+     * 保存了 {@link BellLiveActivity}的进程id
      */
     public static String KEY_BELL_CALL_PROCESS_ID = "key_bell_call_process_id";
 

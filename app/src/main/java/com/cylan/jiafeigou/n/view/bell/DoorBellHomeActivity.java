@@ -68,9 +68,9 @@ public class DoorBellHomeActivity extends BaseFullScreenFragmentActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_door_bell);
+        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
         ButterKnife.bind(this);
         initAdapter();
-        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
         initToolbar();
         initSomething();
     }
@@ -95,6 +95,10 @@ public class DoorBellHomeActivity extends BaseFullScreenFragmentActivity
         super.onStop();
         if (presenter != null)
             presenter.stop();
+        if (lBatteryWarnDialog != null
+                && lBatteryWarnDialog.get() != null
+                && lBatteryWarnDialog.get().isResumed())
+            lBatteryWarnDialog.get().dismiss();
     }
 
     @Override
@@ -146,7 +150,9 @@ public class DoorBellHomeActivity extends BaseFullScreenFragmentActivity
                 onBackPressed();
                 break;
             case R.id.btn_start_calling:
-                startActivity(new Intent(this, BellCallActivity.class));
+                Intent intent = new Intent(this, BellLiveActivity.class);
+                intent.putExtra("text", "nihao");
+                startActivity(intent);
                 break;
         }
     }

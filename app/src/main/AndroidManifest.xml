@@ -175,7 +175,7 @@
         <!-- android:theme="@style/CamActivityTheme" -->
         <!-- android:windowSoftInputMode="adjustPan|stateHidden" /> -->
         <activity
-            android:name=".n.view.bell.BellCallActivity"
+            android:name=".n.view.bell.BellLiveActivity"
             android:configChanges="locale|orientation|keyboardHidden"
             android:launchMode="singleTask"
             android:process=":bell_call"
@@ -183,6 +183,7 @@
             android:theme="@style/CamActivityTheme"
             android:windowSoftInputMode="adjustPan|stateHidden" />
 
+        <!--一个空的service，辅助启动bell_call进程。-->
         <service
             android:name=".n.engine.SimpleHelperIntentService"
             android:exported="false"

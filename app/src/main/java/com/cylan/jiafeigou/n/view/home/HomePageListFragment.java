@@ -375,6 +375,7 @@ public class HomePageListFragment extends Fragment implements
             return;
         DeviceBean bean = homePageListAdapter.getItem(position);
         if (bean != null) {
+            srLayoutMainContentHolder.setRefreshing(false);
             Bundle bundle = new Bundle();
             bundle.putParcelable(JConstant.KEY_DEVICE_ITEM_BUNDLE, bean);
             if (bean.deviceType == JConstant.JFG_DEVICE_CAMERA) {

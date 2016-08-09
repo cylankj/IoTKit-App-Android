@@ -55,6 +55,8 @@ public class BellCallRecordListAdapter extends SuperAdapter<BellCallRecordBean> 
     public synchronized void selectAll(final int lastVisiblePosition) {
         for (int i = 0; i < getCount(); i++) {
             BellCallRecordBean bean = getItem(i);
+            if (bean.selected)
+                continue;
             bean.selected = true;
             if (i <= lastVisiblePosition)
                 notifyItemChanged(i);

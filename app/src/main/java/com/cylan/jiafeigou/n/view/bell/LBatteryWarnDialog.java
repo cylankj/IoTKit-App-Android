@@ -78,7 +78,7 @@ public class LBatteryWarnDialog extends BaseDialog {
         return WindowManager.LayoutParams.WRAP_CONTENT;
     }
 
-    @OnClick(R.id.tv_low_battery_content)
+    @OnClick(R.id.tv_low_battery_dismiss)
     public void onClick() {
         dismiss();
     }
