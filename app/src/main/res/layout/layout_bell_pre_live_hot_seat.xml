@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.cylan.jiafeigou.widget.bell.DragLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:hunt="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/dLayout_bell_hot_seat"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    hunt:ll_big_outer_radius="10dp">
+
+
+    <com.cylan.jiafeigou.widget.bell.LLView
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:layout_gravity="center_vertical"
+        hunt:ll_big_inner_radius="5dp"
+        hunt:ll_big_outer_radius="10dp"
+        hunt:ll_small_interval="10dp"
+        hunt:ll_small_radius="3dp" />
+
+    <com.cylan.jiafeigou.widget.bell.LLView
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:layout_gravity="center_vertical|end"
+        hunt:ll_big_inner_radius="5dp"
+        hunt:ll_big_outer_radius="10dp"
+        hunt:ll_reverse="true"
+        hunt:ll_small_interval="10dp"
+        hunt:ll_small_radius="3dp" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:src="@drawable/icon_bell_ringing" />
+</com.cylan.jiafeigou.widget.bell.DragLayout>

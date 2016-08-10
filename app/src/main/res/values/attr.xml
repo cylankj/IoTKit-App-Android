@@ -112,4 +112,22 @@
         <attr name="sv_sub_title_max_len" format="integer" />
         <attr name="sv_image_src" format="reference" />
     </declare-styleable>
+
+    <declare-styleable name="LLViewStyle">
+        <attr name="ll_small_radius" format="dimension" />
+        <attr name="ll_big_outer_radius" format="dimension" />
+        <attr name="ll_small_interval" format="dimension" />
+        <attr name="ll_big_inner_radius" format="dimension" />
+        <attr name="ll_small_color" format="reference|color" />
+        <attr name="ll_big_outer_color" format="reference|color" />
+        <attr name="ll_big_inner_color" format="reference|color" />
+        <attr name="ll_reverse" format="boolean" />
+    </declare-styleable>
+    <declare-styleable name="LSViewStyle">
+        <attr name="ls_min_radius" format="dimension" />
+        <attr name="ls_max_radius" format="dimension" />
+        <attr name="ls_inner_color" format="reference|color" />
+        <attr name="ls_outer_color" format="reference|color" />
+    </declare-styleable>
+
 </resources>

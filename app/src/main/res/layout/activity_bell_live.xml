@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:hunt="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -38,9 +39,47 @@
             android:src="@drawable/icon_live_zoom_full_screen" />
     </FrameLayout>
 
+
     <FrameLayout
-        android:id="@+id/fLayout_bell_live_hot"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
+        <include layout="@layout/layout_bell_pre_live_hot_seat" />
+
+        <include layout="@layout/layout_bell_after_live_hot_seat" />
+
     </FrameLayout>
+
+    <com.cylan.jiafeigou.widget.bell.DragLayout
+        android:id="@+id/dLayout_bell_hot_seat"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        hunt:ll_big_outer_radius="10dp">
+
+
+        <com.cylan.jiafeigou.widget.bell.LLView
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:layout_gravity="center_vertical"
+            hunt:ll_big_inner_radius="5dp"
+            hunt:ll_big_outer_radius="10dp"
+            hunt:ll_small_interval="10dp"
+            hunt:ll_small_radius="3dp" />
+
+        <com.cylan.jiafeigou.widget.bell.LLView
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:layout_gravity="center_vertical|end"
+            hunt:ll_big_inner_radius="5dp"
+            hunt:ll_big_outer_radius="10dp"
+            hunt:ll_reverse="true"
+            hunt:ll_small_interval="10dp"
+            hunt:ll_small_radius="3dp" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_launcher" />
+    </com.cylan.jiafeigou.widget.bell.DragLayout>
 </LinearLayout>

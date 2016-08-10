@@ -6,6 +6,7 @@ import com.cylan.jiafeigou.n.mvp.contract.bell.DoorBellHomeContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.n.mvp.model.BellCallRecordBean;
 import com.cylan.jiafeigou.support.rxbus.RxBus;
+import com.cylan.jiafeigou.utils.AppLogger;
 import com.cylan.jiafeigou.utils.TimeUtils;
 import com.cylan.utils.RandomUtils;
 
@@ -68,6 +69,11 @@ public class DBellHomePresenterImpl extends AbstractPresenter<DoorBellHomeContra
                             getView().onRecordsListRsp(bellInfoBeen);
                         }
                     }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        AppLogger.e("what the err: " + throwable.getLocalizedMessage());
+                    }
                 });
     }
 
@@ -77,7 +83,7 @@ public class DBellHomePresenterImpl extends AbstractPresenter<DoorBellHomeContra
     private static final SimpleDateFormat getSimpleDateFormat
             = new SimpleDateFormat("MM月dd日", Locale.getDefault());
 
-    private ArrayList<BellCallRecordBean> testList() {
+    private synchronized ArrayList<BellCallRecordBean> testList() {
         ArrayList<BellCallRecordBean> list = new ArrayList<>(50);
         final int count = 50;
         for (int i = 0; i < count; i++) {
