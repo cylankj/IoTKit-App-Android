@@ -42,6 +42,11 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
     }
 
 
+    final String[] arrayBell = {"智能门铃", "大门口的门铃", "中南海的门铃"};
+    final String[] arrayCam = {"天眼", "哈勃摄像头", "天安门监视"};
+    final String[] arrayAlbum = {"云相册", "云相册", "云相册"};
+    final String[] arrayMag = {"隔壁的门磁", "哈哈哈家的抽屉", "哈哈哈家的抽屉"};
+
     /**
      * 计算过程.
      *
@@ -49,16 +54,32 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
      */
     private List<DeviceBean> requestList() {
         int count = 4;
+
         List<DeviceBean> list = new ArrayList<>();
         for (int i = 0; i < count; i++) {
             DeviceBean baseBean = new DeviceBean();
             baseBean.id = i;
-            baseBean.alias = "周四: " + i;
-            baseBean.msgTime = 15151;
-            baseBean.deviceType = RandomUtils.getRandom(4);
+            baseBean.alias = getAlias(i);
+            baseBean.msgTime = System.currentTimeMillis()
+                    - RandomUtils.getRandom(10) * 24 * 60 * 1000L//天
+                    - RandomUtils.getRandom(24) * 60 * 60 * 1000L//小时
+                    - RandomUtils.getRandom(60) * 60 * 1000L;//分钟
+            baseBean.deviceType = i;
             list.add(baseBean);
         }
         return list;
+    }
+
+    private String getAlias(final int type) {
+        if (type == 0)
+            return arrayBell[RandomUtils.getRandom(4)];
+        if (type == 1)
+            return arrayCam[RandomUtils.getRandom(4)];
+        if (type == 2)
+            return arrayAlbum[RandomUtils.getRandom(4)];
+        if (type == 3)
+            return arrayMag[RandomUtils.getRandom(4)];
+        return "";
     }
 
     @Override

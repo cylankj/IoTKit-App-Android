@@ -87,6 +87,8 @@ dependencies {
     releaseCompile rootProject.ext.leakcanaryAndroidNoOp
     testCompile rootProject.ext.leakcanaryAndroidNoOp
     compile files('src/main/jniLibs/zbar.jar')
+    //add by hunt 2016-08-01
+    compile rootProject.ext.switchButton
 }
 
 if (project.hasProperty('keystoreFile') &&

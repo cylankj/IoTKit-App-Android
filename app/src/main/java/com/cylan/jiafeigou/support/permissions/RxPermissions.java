@@ -68,7 +68,7 @@ public class RxPermissions {
     /**
      * Map emitted items from the source observable into {@code true} if permissions in parameters
      * are granted, or {@code false} if not.
-     * <p>
+     * <p/>
      * If one or several permissions have never been requested, invoke the related framework method
      * to ask the user if he allows the permissions.
      */
@@ -104,7 +104,7 @@ public class RxPermissions {
     /**
      * Map emitted items from the source observable into {@link Permission} objects for each
      * permissions in parameters.
-     * <p>
+     * <p/>
      * If one or several permissions have never been requested, invoke the related framework method
      * to ask the user if he allows the permissions.
      */
@@ -207,13 +207,13 @@ public class RxPermissions {
     /**
      * Invokes Activity.shouldShowRequestPermissionRationale and wraps
      * the returned value in an observable.
-     * <p>
+     * <p/>
      * In case of multiple permissions, only emits true if
      * Activity.shouldShowRequestPermissionRationale returned true for
      * all revoked permissions.
-     * <p>
+     * <p/>
      * You shouldn't call this method is all permissions haven been granted.
-     * <p>
+     * <p/>
      * For SDK &lt; 23, the observable will always emit false.
      */
     public Observable<Boolean> shouldShowRequestPermissionRationale(final Activity activity,
@@ -245,7 +245,7 @@ public class RxPermissions {
 
     /**
      * Returns true if the permission is already granted.
-     * <p>
+     * <p/>
      * Always true if SDK &lt; 23.
      */
     public boolean isGranted(String permission) {
@@ -254,7 +254,7 @@ public class RxPermissions {
 
     /**
      * Returns true if the permission has been revoked by a policy.
-     * <p>
+     * <p/>
      * Always false if SDK &lt; 23.
      */
     public boolean isRevoked(String permission) {

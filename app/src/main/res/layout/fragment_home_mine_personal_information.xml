@@ -12,8 +12,9 @@
         android:layout_height="73dp"
         android:background="@color/color_0ba8cf">
         <ImageView
+            android:clickable="true"
             android:layout_alignParentBottom="true"
-            android:id="@+id/iv_home_mine_suggestion"
+            android:id="@+id/iv_home_mine_personal_back"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="15dp"
@@ -57,7 +58,7 @@
         <View
             android:layout_marginRight="20dp"
             android:layout_marginLeft="20dp"
-            android:layout_marginTop="14dp"
+            android:layout_marginTop="12dp"
             android:layout_width="match_parent"
             android:layout_height="1dip"
             android:background="@color/color_f2f2f2"/>
@@ -102,12 +103,12 @@
         android:layout_height="72dp">
 
         <TextView
-            android:paddingTop="17dp"
+            android:paddingTop="15dp"
             android:layout_marginLeft="20dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="昵称"
-            android:textColor="#8C8C8C"
+            android:textColor="@color/color_8c8c8c"
             android:textSize="12sp"/>
 
         <TextView
@@ -122,7 +123,7 @@
         <View
             android:layout_marginRight="20dp"
             android:layout_marginLeft="20dp"
-            android:layout_marginTop="12dp"
+            android:layout_marginTop="10dp"
             android:layout_width="match_parent"
             android:layout_height="1dip"
             android:background="@color/color_f2f2f2"/>
@@ -136,12 +137,12 @@
         android:layout_height="72dp">
 
         <TextView
-            android:paddingTop="17dp"
+            android:paddingTop="15dp"
             android:layout_marginLeft="20dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="邮箱"
-            android:textColor="#8C8C8C"
+            android:textColor="@color/color_8c8c8c"
             android:textSize="12sp"/>
 
         <TextView
@@ -156,7 +157,7 @@
         <View
             android:layout_marginRight="20dp"
             android:layout_marginLeft="20dp"
-            android:layout_marginTop="12dp"
+            android:layout_marginTop="10dp"
             android:layout_width="match_parent"
             android:layout_height="1dip"
             android:background="@color/color_f2f2f2"/>
@@ -170,7 +171,7 @@
         android:layout_height="72dp">
 
         <TextView
-            android:paddingTop="17dp"
+            android:paddingTop="15dp"
             android:layout_marginLeft="20dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -190,7 +191,7 @@
         <View
             android:layout_marginRight="20dp"
             android:layout_marginLeft="20dp"
-            android:layout_marginTop="12dp"
+            android:layout_marginTop="10dp"
             android:layout_width="match_parent"
             android:layout_height="1dip"
             android:background="@color/color_f2f2f2"/>
@@ -198,12 +199,27 @@
     </LinearLayout>
 
     <TextView
-        android:paddingTop="17dp"
+        android:paddingTop="15dp"
         android:layout_marginLeft="20dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="修改密码"
         android:textSize="16sp"
         android:textColor="@color/color_333333"/>
+
+    <TextView
+        android:clickable="true"
+        android:id="@+id/btn_home_mine_personal_information"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginBottom="20dp"
+        android:layout_marginTop="30dp"
+        android:background="@drawable/home_mine_personal_information_selector"
+        android:gravity="center"
+        android:text="退出登录"
+        android:textColor="@color/color_ff3b30"
+        android:textSize="16sp" />
 
 </LinearLayout>

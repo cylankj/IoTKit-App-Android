@@ -1,7 +1,6 @@
 package com.cylan.jiafeigou.n.mvp.contract.bind;
 
 import android.content.Context;
-import android.net.NetworkInfo;
 import android.net.wifi.ScanResult;
 
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
@@ -20,7 +19,7 @@ public interface ConfigApContract {
         /**
          * wifi状态变化
          *
-         * @param state  -2:unknown,-1:offline 0:mobile 1:wifi
+         * @param state -2:unknown,-1:offline 0:mobile 1:wifi
          */
         void onWifiStateChanged(int state);
 

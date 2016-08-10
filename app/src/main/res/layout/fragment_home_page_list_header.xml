@@ -10,27 +10,34 @@
         android:layout_height="100dp"
         android:layout_gravity="bottom" />
 
-    <TextView
-        android:id="@+id/tvHeaderNickName"
+    <LinearLayout
+        android:id="@+id/lLayout_home_greet"
+        android:layout_marginTop="61dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:gravity="center"
-        android:paddingBottom="10dp"
-        android:text="Hi xxx"
-        android:textColor="@android:color/white"
-        android:textSize="26sp" />
+        android:layout_gravity="center_horizontal"
+        android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/tvHeaderPoet"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:gravity="center"
-        android:paddingTop="50dp"
-        android:text="在这里开始美好的一天"
-        android:textColor="@android:color/white"
-        android:textSize="16sp" />
+        <TextView
+            android:id="@+id/tvHeaderNickName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="Hi xxx"
+            android:textColor="@android:color/white"
+            android:textSize="26sp" />
+
+        <TextView
+            android:id="@+id/tvHeaderPoet"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="在这里开始美好的一天"
+            android:textColor="@android:color/white"
+            android:textSize="16sp" />
+    </LinearLayout>
 
     <TextView
         android:id="@+id/tvHeaderLastTitle"

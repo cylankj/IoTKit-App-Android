@@ -53,32 +53,18 @@
             </RelativeLayout>
 
         <LinearLayout
+            android:layout_marginTop="181dp"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="horizontal">
-
-            <!-- 放置 那一天的日期 -->
-            <LinearLayout
-                android:layout_width="117dp"
+            android:orientation="vertical">
+            <android.support.v7.widget.RecyclerView
+                android:background="@color/color_white"
+                android:overScrollMode="never"
+                android:scrollbars="none"
+                android:id="@+id/rv_mag_state"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent">
-
-            </LinearLayout>
-
-            <!-- 放置时间线 -->
-            <com.cylan.jiafeigou.widget.FateLineView
-                android:id="@+id/mag_fateline"
-                android:layout_marginTop="21dp"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"/>
-
-            <!-- 放置右侧列表 -->
-            <ListView
-                android:layout_marginTop="18dp"
-                android:layout_marginLeft="11dp"
-                android:id="@+id/lv_mag_state"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-            </ListView>
+            </android.support.v7.widget.RecyclerView>
         </LinearLayout>
 
     </FrameLayout>

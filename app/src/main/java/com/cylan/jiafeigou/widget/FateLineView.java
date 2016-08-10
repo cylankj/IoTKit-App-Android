@@ -30,6 +30,7 @@ public class FateLineView extends View {
     private Paint dashLinePaint;
     private Paint circlePaint;
 
+    private boolean centerVertical;
     Path dashPath = new Path();
 
     public FateLineView(Context context) {
@@ -51,8 +52,9 @@ public class FateLineView extends View {
         this.innerCircleRadius = at.getDimension(R.styleable.FateLineViewStyle_innerCircleRadius, innerCircleRadius);
         this.outerCircleRadius = at.getDimension(R.styleable.FateLineViewStyle_outerCircleRadius, outerCircleRadius);
         this.innerCircleStrokeWidth = at.getDimension(R.styleable.FateLineViewStyle_innerCircleStrokeWidth, innerCircleStrokeWidth);
-        this.outerCircleY = at.getDimension(R.styleable.FateLineViewStyle_outerCircleY, outerCircleY);
+        this.outerCircleY = at.getDimension(R.styleable.FateLineViewStyle_outerCircleY, -1);
         at.recycle();
+        centerVertical = outerCircleY == -1;
 //        innerCircleRadius = dip2px(getContext(), innerCircleRadius);
 //        dashLineWidth = dip2px(getContext(), dashLineWidth);
 //        outerCircleRadius = dip2px(getContext(), outerCircleRadius);
@@ -131,7 +133,7 @@ public class FateLineView extends View {
 //        super.onDraw(canvas);
         int rectTop = getPaddingTop();
         int rectBottom = getMeasuredHeight() - getPaddingBottom();
-        float circleTop = outerCircleY + outerCircleRadius;
+        float circleTop = centerVertical?getMeasuredHeight()/2:outerCircleY+outerCircleRadius;
         final int count = canvas.save();
         //虚线
         dashPath.moveTo(getMeasuredWidth() / 2, rectTop);

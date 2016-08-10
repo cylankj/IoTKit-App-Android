@@ -1,0 +1,62 @@
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:context=".n.view.cam.SetSensitivityDialogFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:text="灵敏度"
+            android:textColor="@color/color_black"
+            android:textSize="16sp" />
+
+        <RadioGroup
+            android:id="@+id/rg_sensitivity"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp">
+
+            <RadioButton
+                android:id="@+id/rbtn_sensitivity_high"
+                android:layout_width="wrap_content"
+                android:layout_height="54dp"
+                android:text="高"
+                android:textColor="@color/color_black"
+                android:textSize="14sp" />
+
+            <RadioButton
+                android:id="@+id/rbtn_sensitivity_middle"
+                android:layout_width="wrap_content"
+                android:layout_height="54dp"
+                android:text="中"
+                android:textColor="@color/color_black"
+                android:textSize="14sp" />
+
+            <RadioButton
+                android:id="@+id/rbtn_sensitivity_low"
+                android:layout_width="wrap_content"
+                android:layout_height="54dp"
+                android:text="低"
+                android:textColor="@color/color_black"
+                android:textSize="14sp" />
+        </RadioGroup>
+
+        <TextView
+            android:id="@+id/tv_cancel"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:gravity="end|center_vertical"
+            android:text="取消"
+            android:textColor="@color/color_4b9fd5"
+            android:textSize="14sp" />
+    </LinearLayout>
+</android.support.v7.widget.CardView>

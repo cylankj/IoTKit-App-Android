@@ -42,6 +42,7 @@ public interface IViewFinder {
     /**
      * set something below the scan rect
      * add by hunt
+     *
      * @param content
      */
     void setupHint(String content);

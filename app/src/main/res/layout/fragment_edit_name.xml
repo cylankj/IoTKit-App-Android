@@ -7,7 +7,7 @@
     <TextView
         android:id="@+id/tv_information_name"
         android:layout_marginTop="24dp"
-        android:layout_marginLeft="26dp"
+        android:layout_marginLeft="24dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="设备名称"
@@ -15,18 +15,25 @@
         android:textColor="@color/color_black"/>
 
     <EditText
-        style="@style/AppTheme"
         android:text="客厅摄像头"
         android:textColor="#666"
         android:id="@+id/et_information_edit_name"
-        android:layout_marginBottom="24dp"
+        android:layout_marginBottom="7dp"
         android:layout_marginRight="24dp"
         android:layout_marginLeft="24dp"
         android:layout_marginTop="52dp"
         android:layout_width="232dp"
         android:layout_height="wrap_content"
         android:textSize="14sp"
+        android:background="@null"
         android:maxLength="12"/>
+
+    <View
+        android:layout_marginLeft="24dp"
+        android:layout_below="@id/et_information_edit_name"
+        android:layout_width="232dp"
+        android:layout_height="1dp"
+        android:background="@color/color_4b9fd5" />
     <TextView
         android:visibility="invisible"
         android:id="@+id/tv_information_show_state"

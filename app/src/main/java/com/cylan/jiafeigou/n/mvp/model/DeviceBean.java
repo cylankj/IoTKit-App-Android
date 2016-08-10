@@ -13,7 +13,7 @@ public class DeviceBean {
     public int battery;
     public int isProtectedMode = 0;
     public int isShared;
-    public int msgTime;
+    public long msgTime;
     public String cid = "";
     public String alias = "";
 }

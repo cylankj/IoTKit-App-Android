@@ -55,7 +55,7 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
 
     @Override
     public void surfaceChanged(SurfaceHolder surfaceHolder, int i, int i2, int i3) {
-        if(surfaceHolder.getSurface() == null) {
+        if (surfaceHolder.getSurface() == null) {
             return;
         }
 //        stopCameraPreview();
@@ -69,7 +69,7 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
     }
 
     public void showCameraPreview() {
-        if(mCamera != null) {
+        if (mCamera != null) {
             try {
                 getHolder().addCallback(this);
                 mPreviewing = true;
@@ -78,7 +78,7 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
                 mCamera.setDisplayOrientation(getDisplayOrientation());
                 mCamera.setOneShotPreviewCallback(mPreviewCallback);
                 mCamera.startPreview();
-                if(mAutoFocus) {
+                if (mAutoFocus) {
                     if (mSurfaceCreated) { // check if surface created before using autofocus
                         safeAutoFocus();
                     } else {
@@ -102,14 +102,14 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
     }
 
     public void stopCameraPreview() {
-        if(mCamera != null) {
+        if (mCamera != null) {
             try {
                 mPreviewing = false;
                 getHolder().removeCallback(this);
                 mCamera.cancelAutoFocus();
                 mCamera.setOneShotPreviewCallback(null);
                 mCamera.stopPreview();
-            } catch(Exception e) {
+            } catch (Exception e) {
                 Log.e(TAG, e.toString(), e);
             }
         }
@@ -164,10 +164,18 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         int rotation = display.getRotation();
         int degrees = 0;
         switch (rotation) {
-            case Surface.ROTATION_0: degrees = 0; break;
-            case Surface.ROTATION_90: degrees = 90; break;
-            case Surface.ROTATION_180: degrees = 180; break;
-            case Surface.ROTATION_270: degrees = 270; break;
+            case Surface.ROTATION_0:
+                degrees = 0;
+                break;
+            case Surface.ROTATION_90:
+                degrees = 90;
+                break;
+            case Surface.ROTATION_180:
+                degrees = 180;
+                break;
+            case Surface.ROTATION_270:
+                degrees = 270;
+                break;
         }
 
         int result;
@@ -181,7 +189,7 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
     }
 
     private Camera.Size getOptimalPreviewSize() {
-        if(mCamera == null) {
+        if (mCamera == null) {
             return null;
         }
 
@@ -227,12 +235,12 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
     }
 
     public void setAutoFocus(boolean state) {
-        if(mCamera != null && mPreviewing) {
-            if(state == mAutoFocus) {
+        if (mCamera != null && mPreviewing) {
+            if (state == mAutoFocus) {
                 return;
             }
             mAutoFocus = state;
-            if(mAutoFocus) {
+            if (mAutoFocus) {
                 if (mSurfaceCreated) { // check if surface created before using autofocus
                     Log.v(TAG, "Starting autofocus");
                     safeAutoFocus();
@@ -248,7 +256,7 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
 
     private Runnable doAutoFocus = new Runnable() {
         public void run() {
-            if(mCamera != null && mPreviewing && mAutoFocus && mSurfaceCreated) {
+            if (mCamera != null && mPreviewing && mAutoFocus && mSurfaceCreated) {
                 safeAutoFocus();
             }
         }

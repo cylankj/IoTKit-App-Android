@@ -12,7 +12,6 @@ import com.cylan.jiafeigou.support.sina.AccessTokenKeeper;
 import com.cylan.jiafeigou.support.sina.SinaWeiboUtil;
 import com.cylan.jiafeigou.support.sina.UsersAPI;
 import com.cylan.jiafeigou.support.tencent.TencentLoginUtils;
-import com.cylan.sdkjni.JfgCmd;
 import com.sina.weibo.sdk.auth.Oauth2AccessToken;
 import com.sina.weibo.sdk.auth.WeiboAuthListener;
 import com.sina.weibo.sdk.exception.WeiboException;
@@ -35,7 +34,7 @@ import rx.subscriptions.CompositeSubscription;
  */
 public class LoginPresenterImpl extends AbstractPresenter<LoginModelContract.View> implements LoginModelContract.Presenter {
 
-//    private JfgCmd cmd;
+    //    private JfgCmd cmd;
     Context ctx;
     CompositeSubscription subscription;
 

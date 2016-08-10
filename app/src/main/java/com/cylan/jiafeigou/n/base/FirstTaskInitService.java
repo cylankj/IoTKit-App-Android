@@ -34,6 +34,7 @@ public class FirstTaskInitService extends IntentService {
         BlockCanary.install(this, new BlockCanaryContext()).start();
         //bugLy
         BugMonitor.init(this);
+
     }
 
 }

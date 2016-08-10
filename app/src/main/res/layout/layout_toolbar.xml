@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <FrameLayout
+        android:id="@+id/fLayout_top_bar_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/color_0ba8cf">
+
+        <TextView
+            android:id="@+id/imgV_top_bar_center"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:drawableLeft="@drawable/ic_nav_back_arrow"
+            android:drawablePadding="15dp"
+            android:padding="15dp"
+            android:text="待机"
+            android:textColor="@color/color_white"
+            android:textSize="16sp" />
+    </FrameLayout>
+</LinearLayout>

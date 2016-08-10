@@ -9,6 +9,10 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.utils.ToastUtil;
+
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * 创建者     谢坤
@@ -36,8 +40,20 @@ public class HomeMinePersonalInformationFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home_mine_personal_information,container,false);
+        ButterKnife.bind(this,view);
         return view;
     }
 
+    @OnClick({R.id.iv_home_mine_personal_back,R.id.btn_home_mine_personal_information})
+    public void onClick(View view){
+        switch (view.getId()){
+            case R.id.iv_home_mine_personal_back:
+                getFragmentManager().popBackStack();
+              break;
+            case R.id.btn_home_mine_personal_information:
+                ToastUtil.showToast(getActivity(),"1111");
+                break;
+        }
+    }
 
 }

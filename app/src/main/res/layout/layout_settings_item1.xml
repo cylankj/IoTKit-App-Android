@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/tv_settings_item_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:drawablePadding="10dp"
+        android:gravity="center"
+        android:text="设备信息"
+        android:textColor="@color/color_black"
+        android:textSize="16sp" />
+
+    <com.kyleduo.switchbutton.SwitchButton
+        android:id="@+id/btn_item_switch"
+        style="@style/SwitchButtonStyleMD"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|center_vertical"
+        android:checked="true"
+        android:gravity="end" />
+</merge>

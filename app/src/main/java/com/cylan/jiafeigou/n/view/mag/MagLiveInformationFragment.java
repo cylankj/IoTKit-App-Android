@@ -1,6 +1,5 @@
 package com.cylan.jiafeigou.n.view.mag;
 
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -12,8 +11,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.n.view.mag.MagDeviceNameDialogFragment;
-import com.cylan.jiafeigou.n.view.mag.MagDeviceTimeZoneFragment;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 
 /**
@@ -21,10 +18,10 @@ import com.cylan.jiafeigou.utils.PreferencesUtils;
  * 创建时间   2016/7/12 17:53
  * 用来控制摄像头模块下的设备信息，点击设备名称和设备时区时进行切换
  */
-public class MagLiveInformationFragment extends Fragment{
+public class MagLiveInformationFragment extends Fragment {
 
 
-    public static final String KEY_TITLE="key_title";
+    public static final String KEY_TITLE = "key_title";
     //实例化fragment对象
     private ImageView mMsgInformationBack;
     private LinearLayout mMsgInformationName;
@@ -40,7 +37,7 @@ public class MagLiveInformationFragment extends Fragment{
         this.mListener = mListener;
     }
 
-    public interface OnMagLiveDataChangeListener{
+    public interface OnMagLiveDataChangeListener {
         void magLiveDataChange(String content);
     }
 
@@ -64,7 +61,7 @@ public class MagLiveInformationFragment extends Fragment{
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_mag_facility_information,null);
+        View view = inflater.inflate(R.layout.fragment_mag_facility_information, null);
         mMsgInformationBack = (ImageView) view.findViewById(R.id.iv_mag_information_back);
         mMsgInformationName = (LinearLayout) view.findViewById(R.id.lLayout_mag_information_facility_name);
         mMsgInformationTimeZone = (LinearLayout) view.findViewById(R.id.lLayout_mag_information_facility_timezone);
@@ -85,7 +82,7 @@ public class MagLiveInformationFragment extends Fragment{
             public void onClick(View v) {
                 magDeviceNameDialogFragment.show(getActivity().getFragmentManager(),
                         "MsgDeviceNameDialogFragment");
-                if(getActivity()!=null&&getActivity().getFragmentManager()!=null) {
+                if (getActivity() != null && getActivity().getFragmentManager() != null) {
                     magDeviceNameDialogFragment.setListener(new MagDeviceNameDialogFragment.OnMagDataChangeListener() {
                         @Override
                         public void magDataChangeListener(String content) {
@@ -102,13 +99,13 @@ public class MagLiveInformationFragment extends Fragment{
                 getFragmentManager().beginTransaction()
                         .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                                 , R.anim.slide_in_left, R.anim.slide_out_right)
-                        .add(R.id.fLayout_msg_information,magDeviceTimeZoneFragment,"MagDeviceTimeZoneFragment")
+                        .add(R.id.fLayout_msg_information, magDeviceTimeZoneFragment, "MagDeviceTimeZoneFragment")
                         .addToBackStack("MagLiveInformationFragment")
                         .commit();
                 /**
                  * 接口回调，得到相应的text，并且赋值给当前fragment
                  */
-                if(getActivity()!=null&&getActivity().getFragmentManager()!=null) {
+                if (getActivity() != null && getActivity().getFragmentManager() != null) {
                     magDeviceTimeZoneFragment.setListener(new MagDeviceTimeZoneFragment.OnMagTimezoneChangeListener() {
                         @Override
                         public void magTimezoneChangeListener(String content) {
@@ -124,16 +121,16 @@ public class MagLiveInformationFragment extends Fragment{
     @Override
     public void onPause() {
         super.onPause();
-        if(mListener!=null){
+        if (mListener != null) {
             mListener.magLiveDataChange(mMsgTvName.getText().toString());
         }
     }
 
     public void onStart() {
         super.onStart();
-        String editName = PreferencesUtils.getString(getActivity(),"magEditName","客厅摄像头");
+        String editName = PreferencesUtils.getString(getActivity(), "magEditName", "客厅摄像头");
         mMsgTvName.setText(editName);
-        String detailText = PreferencesUtils.getString(getActivity(),"magDetailText","北京/中国");
+        String detailText = PreferencesUtils.getString(getActivity(), "magDetailText", "北京/中国");
         mMsgTvTimezone.setText(detailText);
     }
 }

@@ -103,7 +103,6 @@ public class CamMessageListFragment extends Fragment
     }
 
 
-
     private void setCurrentPosition(int position) {
         if (currentPosition == position)
             return;
