@@ -9,7 +9,7 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="73dp"
+        android:layout_height="72dp"
         android:background="@color/color_0ba8cf">
         <ImageView
             android:clickable="true"
@@ -31,14 +31,13 @@
             android:textColor="@color/color_white"/>
     </RelativeLayout>
 
-    <LinearLayout
-        android:background="@color/color_fdc0c0"
-        android:orientation="vertical"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="72dp">
 
         <TextView
-            android:paddingTop="17dp"
+            android:id="@+id/tv_my_id"
+            android:paddingTop="15dp"
             android:layout_marginLeft="20dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -47,6 +46,7 @@
             android:textSize="12sp"/>
 
         <TextView
+            android:layout_below="@id/tv_my_id"
             android:paddingTop="8dp"
             android:layout_marginLeft="20dp"
             android:layout_width="wrap_content"
@@ -56,14 +56,14 @@
             android:textSize="16sp"/>
 
         <View
+            android:layout_alignParentBottom="true"
             android:layout_marginRight="20dp"
             android:layout_marginLeft="20dp"
-            android:layout_marginTop="12dp"
             android:layout_width="match_parent"
             android:layout_height="1dip"
             android:background="@color/color_f2f2f2"/>
 
-    </LinearLayout>
+    </RelativeLayout>
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -97,12 +97,12 @@
     </RelativeLayout>
 
 
-    <LinearLayout
-        android:orientation="vertical"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="72dp">
 
         <TextView
+            android:id="@+id/tv_like_name"
             android:paddingTop="15dp"
             android:layout_marginLeft="20dp"
             android:layout_width="wrap_content"
@@ -112,6 +112,7 @@
             android:textSize="12sp"/>
 
         <TextView
+            android:layout_below="@id/tv_like_name"
             android:paddingTop="8dp"
             android:layout_marginLeft="20dp"
             android:layout_width="wrap_content"
@@ -121,22 +122,23 @@
             android:textSize="16sp"/>
 
         <View
+            android:layout_alignParentBottom="true"
             android:layout_marginRight="20dp"
             android:layout_marginLeft="20dp"
-            android:layout_marginTop="10dp"
             android:layout_width="match_parent"
             android:layout_height="1dip"
             android:background="@color/color_f2f2f2"/>
 
-    </LinearLayout>
+    </RelativeLayout>
 
 
-    <LinearLayout
-        android:orientation="vertical"
+    <RelativeLayout
+        android:id="@+id/lLayout_home_mine_personal_mailbox"
         android:layout_width="match_parent"
         android:layout_height="72dp">
 
         <TextView
+            android:id="@+id/tv_my_message"
             android:paddingTop="15dp"
             android:layout_marginLeft="20dp"
             android:layout_width="wrap_content"
@@ -146,6 +148,8 @@
             android:textSize="12sp"/>
 
         <TextView
+            android:layout_below="@id/tv_my_message"
+            android:id="@+id/tv_home_mine_personal_mailbox"
             android:paddingTop="8dp"
             android:layout_marginLeft="20dp"
             android:layout_width="wrap_content"
@@ -155,22 +159,22 @@
             android:textSize="16sp"/>
 
         <View
+            android:layout_alignParentBottom="true"
             android:layout_marginRight="20dp"
             android:layout_marginLeft="20dp"
-            android:layout_marginTop="10dp"
             android:layout_width="match_parent"
             android:layout_height="1dip"
             android:background="@color/color_f2f2f2"/>
 
-    </LinearLayout>
+    </RelativeLayout>
 
 
-    <LinearLayout
-        android:orientation="vertical"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="72dp">
 
         <TextView
+            android:id="@+id/tv_my_number"
             android:paddingTop="15dp"
             android:layout_marginLeft="20dp"
             android:layout_width="wrap_content"
@@ -180,6 +184,7 @@
             android:textSize="12sp"/>
 
         <TextView
+            android:layout_below="@id/tv_my_number"
             android:paddingTop="8dp"
             android:layout_marginLeft="20dp"
             android:layout_width="wrap_content"
@@ -189,37 +194,59 @@
             android:textSize="16sp"/>
 
         <View
+            android:layout_alignParentBottom="true"
             android:layout_marginRight="20dp"
             android:layout_marginLeft="20dp"
-            android:layout_marginTop="10dp"
             android:layout_width="match_parent"
             android:layout_height="1dip"
             android:background="@color/color_f2f2f2"/>
 
-    </LinearLayout>
+    </RelativeLayout>
 
-    <TextView
-        android:paddingTop="15dp"
-        android:layout_marginLeft="20dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="修改密码"
-        android:textSize="16sp"
-        android:textColor="@color/color_333333"/>
-
-    <TextView
-        android:clickable="true"
-        android:id="@+id/btn_home_mine_personal_information"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:layout_marginBottom="20dp"
-        android:layout_marginTop="30dp"
-        android:background="@drawable/home_mine_personal_information_selector"
-        android:gravity="center"
-        android:text="退出登录"
-        android:textColor="@color/color_ff3b30"
-        android:textSize="16sp" />
+        android:layout_height="54dp">
+
+        <TextView
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="20dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="修改密码"
+            android:textSize="16sp"
+            android:textColor="@color/color_333333"/>
+
+        <View
+            android:layout_alignParentBottom="true"
+            android:layout_marginRight="20dp"
+            android:layout_marginLeft="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="1dip"
+            android:background="@color/color_f2f2f2"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:clickable="true"
+        android:layout_width="match_parent"
+        android:layout_height="54dp">
+
+        <TextView
+            android:layout_centerInParent="true"
+            android:id="@+id/btn_home_mine_personal_information"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="退出登录"
+            android:textColor="@color/color_ff3b30"
+            android:textSize="16sp" />
+
+        <View
+            android:layout_alignParentBottom="true"
+            android:layout_marginRight="20dp"
+            android:layout_marginLeft="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="1dip"
+            android:background="@color/color_f2f2f2"/>
+
+    </RelativeLayout>
 
 </LinearLayout>

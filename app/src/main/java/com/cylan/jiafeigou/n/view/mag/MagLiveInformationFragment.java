@@ -105,14 +105,12 @@ public class MagLiveInformationFragment extends Fragment {
                 /**
                  * 接口回调，得到相应的text，并且赋值给当前fragment
                  */
-                if (getActivity() != null && getActivity().getFragmentManager() != null) {
                     magDeviceTimeZoneFragment.setListener(new MagDeviceTimeZoneFragment.OnMagTimezoneChangeListener() {
                         @Override
                         public void magTimezoneChangeListener(String content) {
                             mMsgTvTimezone.setText(content);
                         }
                     });
-                }
             }
         });
         return view;

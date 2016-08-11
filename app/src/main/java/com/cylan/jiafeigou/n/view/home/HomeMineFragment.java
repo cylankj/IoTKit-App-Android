@@ -186,7 +186,7 @@ public class HomeMineFragment extends android.support.v4.app.Fragment
 
     @OnClick({R.id.home_mine_item_friend, R.id.home_mine_item_share,
             R.id.home_mine_item_help, R.id.home_mine_item_settings,
-            R.id.shadow_layout})
+            R.id.shadow_layout,R.id.tv_home_mine_nick})
     public void onButterKnifeClick(View view) {
         switch (view.getId()) {
             case R.id.home_mine_item_friend:
@@ -224,10 +224,12 @@ public class HomeMineFragment extends android.support.v4.app.Fragment
                 settingsItem(view);
                 break;
             case R.id.shadow_layout:
-                /*if (getView() != null)
+                if (getView() != null)
                     ViewUtils.deBounceClick(getView().findViewById(R.id.shadow_layout));
                 SLog.e("home_mine_item_settings");
-                portrait();*/
+                portrait();
+                break;
+            case R.id.tv_home_mine_nick:
                 getFragmentManager().beginTransaction()
                         .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                                 , R.anim.slide_in_left, R.anim.slide_out_right)

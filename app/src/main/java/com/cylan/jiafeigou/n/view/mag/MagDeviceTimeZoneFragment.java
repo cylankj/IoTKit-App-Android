@@ -10,6 +10,7 @@ import android.support.v7.app.AlertDialog;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,7 +42,7 @@ import java.util.List;
  */
 public class MagDeviceTimeZoneFragment extends Fragment {
 
-    public static final String TAG = "DeviceTimeZoneFragment";
+    public static final String TAG = "MagDeviceTimeZoneFragment";
 
     final static String[] mCity = {"马朱罗", "中途岛", "檀香山", "安克雷奇", "洛杉矶/美国太平洋",
             "提华纳/美国太平洋", "凤凰城美国山区", "奇瓦瓦", "丹佛/美国山区", "哥斯达黎加/美国中部",
@@ -110,19 +111,6 @@ public class MagDeviceTimeZoneFragment extends Fragment {
         return mNoSearchCity;
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        mEtFind.getText().clear();
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-//        setRefreshData(mNoSearchCity);
-//        mEtFind.setText("");
-        adapterState = false;
-    }
 
     @Nullable
     @Override
@@ -152,6 +140,20 @@ public class MagDeviceTimeZoneFragment extends Fragment {
         initListener();
         initEtListener();
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mEtFind.getText().clear();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+//        setRefreshData(mNoSearchCity);
+//        mEtFind.setText("");
+        adapterState = false;
     }
 
     @Override
@@ -207,6 +209,14 @@ public class MagDeviceTimeZoneFragment extends Fragment {
         });
     }
 
+    /**
+     * 当editText更新的时候，重新setAdapter
+     */
+    private void setRefreshData(List<String> data) {
+        mDetailAdapter.notifyDataSetInvalidated();
+        mCityList = data;
+        mDetail.setAdapter(mDetailAdapter);
+    }
 
     /**
      * 用来显示listView的方法
@@ -253,15 +263,6 @@ public class MagDeviceTimeZoneFragment extends Fragment {
         inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 
-
-    /**
-     * 当editText更新的时候，重新setAdapter
-     */
-    private void setRefreshData(List<String> data) {
-        mDetailAdapter.notifyDataSetInvalidated();
-        mCityList = data;
-        mDetail.setAdapter(mDetailAdapter);
-    }
 
     /**
      * 保存用户输入的设备名称

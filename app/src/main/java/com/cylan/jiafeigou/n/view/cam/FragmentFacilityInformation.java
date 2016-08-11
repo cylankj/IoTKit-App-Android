@@ -63,7 +63,6 @@ public class FragmentFacilityInformation extends Fragment {
             @Override
             public void onClick(View v) {
                 getActivity().onBackPressed();
-
             }
         });
 

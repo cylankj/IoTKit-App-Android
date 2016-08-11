@@ -19,7 +19,7 @@
             android:src="@drawable/ic_nav_back_arrow"/>
 
         <EditText
-            android:textCursorDrawable="@null"
+            android:focusable="true"
             android:id="@+id/et_information_timezone_find"
             android:background="@null"
             android:layout_centerVertical="true"
