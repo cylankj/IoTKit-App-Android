@@ -145,7 +145,7 @@ public class LLView extends View {
         final int size = MeasureSpec.getSize(spec);
         switch (mode) {
             case MeasureSpec.EXACTLY:
-                return isH ? size : computeWidth();
+                return isH ? size : computeWidth(size);
             case MeasureSpec.AT_MOST://wrap_content
                 return isH ? (int) (bORadius * 2 + getPaddingBottom() + getPaddingTop())
                         : (int) (getPaddingLeft() + getPaddingRight()
@@ -159,11 +159,9 @@ public class LLView extends View {
         }
     }
 
-    private int computeWidth() {
-        final int width = getMeasuredWidth() == 0 ? (int) (bORadius * 2)
-                : getMeasuredWidth();
+    private int computeWidth(final int size) {
         return (int) (getPaddingLeft() + getPaddingRight()
-                + width
+                + size
                 + sRadius * maxCount * 2
                 + (maxCount - 1) * itemInterval);
     }
