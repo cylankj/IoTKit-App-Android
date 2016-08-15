@@ -103,7 +103,7 @@ public class SystemUiHider {
      * Schedules a call to hide() in [delay] milliseconds, canceling any
      * previously scheduled calls.
      */
-    public void delayedHide(int delayMillis) {
+    public void delayedHide(long delayMillis) {
         mHideHandler.removeCallbacks(mHideRunnable);
         mHideHandler.postDelayed(mHideRunnable, delayMillis);
     }

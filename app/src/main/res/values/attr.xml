@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <declare-styleable name="DotThemes">
-        <attr name="position" format="integer" />
-        <attr name="ignore" format="boolean" />
-        <attr name="Dradius" format="dimension" />
-        <attr name="margin" format="dimension" />
-        <attr name="showDot" format="boolean" />
-        <attr name="tipDrawable" format="reference" />
-        <attr name="borderColor" format="color" />
-        <attr name="borderWidth" format="dimension" />
-        <attr name="enableBorder" format="boolean" />
+    <declare-styleable name="ImageViewTipsTheme">
+        <attr name="t_position" format="integer" />
+        <attr name="t_ignore" format="boolean" />
+        <attr name="t_radius" format="dimension" />
+        <attr name="t_margin" format="dimension" />
+        <attr name="t_showDot" format="boolean" />
+        <attr name="t_Drawable" format="reference" />
+        <attr name="t_borderColor" format="color" />
+        <attr name="t_borderWidth" format="dimension" />
+        <attr name="t_enableBorder" format="boolean" />
     </declare-styleable>
     <declare-styleable name="WaveTheme">
         <attr name="frontColor" format="color" />
@@ -109,6 +109,25 @@
     <declare-styleable name="SettingItemViewStyle">
         <attr name="sv_title" format="string|reference" />
         <attr name="sv_sub_title" format="string|reference" />
+        <attr name="sv_sub_title_max_len" format="integer" />
         <attr name="sv_image_src" format="reference" />
     </declare-styleable>
+
+    <declare-styleable name="LLViewStyle">
+        <attr name="ll_small_radius" format="dimension" />
+        <attr name="ll_big_outer_radius" format="dimension" />
+        <attr name="ll_small_interval" format="dimension" />
+        <attr name="ll_big_inner_radius" format="dimension" />
+        <attr name="ll_small_color" format="reference|color" />
+        <attr name="ll_big_outer_color" format="reference|color" />
+        <attr name="ll_big_inner_color" format="reference|color" />
+        <attr name="ll_reverse" format="boolean" />
+    </declare-styleable>
+    <declare-styleable name="LSViewStyle">
+        <attr name="ls_min_radius" format="dimension" />
+        <attr name="ls_max_radius" format="dimension" />
+        <attr name="ls_inner_color" format="reference|color" />
+        <attr name="ls_outer_color" format="reference|color" />
+    </declare-styleable>
+
 </resources>

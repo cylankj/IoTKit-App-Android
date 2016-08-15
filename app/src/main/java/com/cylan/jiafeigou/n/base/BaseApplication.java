@@ -6,7 +6,10 @@ import android.content.Intent;
 import android.os.Environment;
 import android.util.Log;
 
+import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.support.DebugOptionsImpl;
+import com.cylan.jiafeigou.utils.AppLogger;
+import com.cylan.jiafeigou.utils.SuperSpUtils;
 import com.cylan.utils.Constants;
 import com.squareup.leakcanary.LeakCanary;
 
@@ -51,7 +54,22 @@ public class BaseApplication extends Application {
             case ComponentCallbacks2.TRIM_MEMORY_UI_HIDDEN:
                 //should release some resource
                 Log.d(TAG, "onTrimMemory: " + level);
+                shouldKillBellCallProcess();
                 break;
+        }
+    }
+
+    /**
+     * 进入后台，应该杀掉呼叫页面的进程
+     */
+    private void shouldKillBellCallProcess() {
+        final int processId = SuperSpUtils.getInstance(getApplicationContext())
+                .getAppPreferences().getInt(JConstant.KEY_BELL_CALL_PROCESS_ID, JConstant.INVALID_PROCESS);
+        final int isForeground = SuperSpUtils.getInstance(getApplicationContext())
+                .getAppPreferences().getInt(JConstant.KEY_BELL_CALL_PROCESS_IS_FOREGROUND, 0);
+        if (processId != JConstant.INVALID_PROCESS && isForeground == 0) {
+            AppLogger.d("kill processId: " + processId);
+            android.os.Process.killProcess(processId);
         }
     }
 

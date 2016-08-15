@@ -107,6 +107,7 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
             DeviceBean baseBean = new DeviceBean();
             baseBean.id = i;
             baseBean.alias = getAlias(i);
+            baseBean.cid = "700000" + i;
             baseBean.msgTime = System.currentTimeMillis()
                     - RandomUtils.getRandom(10) * 24 * 60 * 1000L//天
                     - RandomUtils.getRandom(24) * 60 * 60 * 1000L//小时

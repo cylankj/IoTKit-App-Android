@@ -19,6 +19,11 @@
         <item name="android:background">?attr/selectableItemBackground</item>
     </style>
 
+    <style name="ripple_background_borderless">
+        <!--<item name="android:background">?attr/selectableItemBackgroundBorderless</item>-->
+        <item name="android:background">?attr/selectableItemBackground</item>
+    </style>
+
     <style name="CamActivityTheme" parent="AppTheme" />
 
     <!--普通样式-->

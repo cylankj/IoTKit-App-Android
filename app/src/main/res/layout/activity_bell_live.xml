@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:hunt="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".n.view.bell.BellLiveActivity">
+
+    <FrameLayout
+        android:id="@+id/fLayout_bell_live_holder"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/color_4b9fd5">
+
+        <TextView
+            android:id="@+id/tv_bell_live_flow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_margin="15dp"
+            android:background="@drawable/live_flow_transparent_bg"
+            android:gravity="center"
+            android:paddingBottom="5dp"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:paddingTop="5dp"
+            android:text="295kb/s"
+            android:textColor="@color/color_white"
+            android:textSize="13sp" />
+
+        <ImageView
+            android:id="@+id/imgv_bell_live_switch_to_land"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:layout_margin="10dp"
+            android:padding="10dp"
+            android:src="@drawable/icon_live_zoom_full_screen" />
+    </FrameLayout>
+
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <include layout="@layout/layout_bell_pre_live_hot_seat" />
+
+        <include layout="@layout/layout_bell_after_live_hot_seat" />
+
+    </FrameLayout>
+
+    <com.cylan.jiafeigou.widget.bell.DragLayout
+        android:id="@+id/dLayout_bell_hot_seat"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        hunt:ll_big_outer_radius="10dp">
+
+
+        <com.cylan.jiafeigou.widget.bell.LLView
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:layout_gravity="center_vertical"
+            hunt:ll_big_inner_radius="5dp"
+            hunt:ll_big_outer_radius="10dp"
+            hunt:ll_small_interval="10dp"
+            hunt:ll_small_radius="3dp" />
+
+        <com.cylan.jiafeigou.widget.bell.LLView
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:layout_gravity="center_vertical|end"
+            hunt:ll_big_inner_radius="5dp"
+            hunt:ll_big_outer_radius="10dp"
+            hunt:ll_reverse="true"
+            hunt:ll_small_interval="10dp"
+            hunt:ll_small_radius="3dp" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_launcher" />
+    </com.cylan.jiafeigou.widget.bell.DragLayout>
+</LinearLayout>

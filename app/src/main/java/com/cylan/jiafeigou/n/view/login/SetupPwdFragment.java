@@ -154,18 +154,6 @@ public class SetupPwdFragment extends android.support.v4.app.Fragment implements
         }
     }
 
-//    @Override
-//    public void submitResult(RequestResetPwdBean bean) {
-//        if (bean.ret == 0) {
-////            ivLoginTopLeft.performClick();
-//            Toast.makeText(getActivity(), "注册成功", Toast.LENGTH_SHORT).show();
-//            if (getActivity() != null && (getActivity() instanceof WelcomePageActivity)) {
-//                getActivity().finish();
-//            } else {
-//
-//            }
-//        }
-//    }
 
     @Override
     public void setPresenter(SetupPwdContract.Presenter presenter) {

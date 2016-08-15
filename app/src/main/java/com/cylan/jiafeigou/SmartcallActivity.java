@@ -1,4 +1,4 @@
-package com.cylan.jiafeigou.n.view.splash;
+package com.cylan.jiafeigou;
 
 import android.Manifest;
 import android.content.Context;
@@ -17,13 +17,13 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
-import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.JConstant;
-import com.cylan.jiafeigou.n.NewHomeActivity;
 import com.cylan.jiafeigou.n.mvp.contract.splash.SplashContract;
 import com.cylan.jiafeigou.n.mvp.impl.splash.SplashPresenterImpl;
 import com.cylan.jiafeigou.n.view.activity.NeedLoginActivity;
 import com.cylan.jiafeigou.n.view.adapter.SimpleFragmentAdapter;
+import com.cylan.jiafeigou.n.view.splash.BeforeLoginFragment;
+import com.cylan.jiafeigou.n.view.splash.FragmentSplash;
 import com.cylan.jiafeigou.utils.IMEUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.UiHelper;
@@ -45,7 +45,7 @@ import permissions.dispatcher.RuntimePermissions;
  * Created by chen on 5/24/16.
  */
 @RuntimePermissions
-public class WelcomePageActivity extends NeedLoginActivity
+public class SmartcallActivity extends NeedLoginActivity
         implements SplashContract.View {
 
 
@@ -195,18 +195,18 @@ public class WelcomePageActivity extends NeedLoginActivity
     }
 
     @OnNeverAskAgain(Manifest.permission.CAMERA)
-    void onCameraNeverAskAgain() {
+    public void onCameraNeverAskAgain() {
         Toast.makeText(this, R.string.permission_camera_never_askagain, Toast.LENGTH_SHORT).show();
     }
 
     @NeedsPermission(Manifest.permission.CAMERA)
-    void showCamera() {
+    public void showCamera() {
         // NOTE: Perform action that requires the permission. If this is run by PermissionCheckerUitls, the permission will have been granted
         //do you business
     }
 
     @OnShowRationale(Manifest.permission.CAMERA)
-    void showRationaleForCamera(PermissionRequest request) {
+    public void showRationaleForCamera(PermissionRequest request) {
         // NOTE: Show a rationale to explain why the permission is needed, e.g. with a dialog.
         // Call proceed() or cancel() on the provided PermissionRequest to continue or abort
         showRationaleDialog(R.string.permission_camera_rationale, request);

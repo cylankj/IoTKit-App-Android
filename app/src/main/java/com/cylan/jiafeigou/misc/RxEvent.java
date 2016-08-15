@@ -25,4 +25,8 @@ public class RxEvent {
     public static class LoginRsp {
 
     }
+
+    public static class ActivityResult {
+        public Bundle bundle;
+    }
 }

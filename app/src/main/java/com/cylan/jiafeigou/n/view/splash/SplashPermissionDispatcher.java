@@ -2,6 +2,7 @@ package com.cylan.jiafeigou.n.view.splash;
 
 import android.support.v4.app.ActivityCompat;
 
+import com.cylan.jiafeigou.SmartcallActivity;
 import com.cylan.jiafeigou.utils.UiHelper;
 
 import java.lang.ref.WeakReference;
@@ -25,7 +26,7 @@ final class SplashPermissionDispatcher {
     private SplashPermissionDispatcher() {
     }
 
-    public static void showCameraWithCheck(WelcomePageActivity target, String[] permisions, int requestCode) {
+    public static void showCameraWithCheck(SmartcallActivity target, String[] permisions, int requestCode) {
         if (PermissionUtils.hasSelfPermissions(target, permisions)) {
             //    target.showCamera();
         } else {
@@ -37,7 +38,7 @@ final class SplashPermissionDispatcher {
         }
     }
 
-    public static void showWriteSdCardWithCheck(WelcomePageActivity target) {
+    public static void showWriteSdCardWithCheck(SmartcallActivity target) {
         if (PermissionUtils.hasSelfPermissions(target, UiHelper.PERMISSION_SHOWMULTIS)) {
             //    target.showCamera();
             target.showWriteSdCard();
@@ -53,7 +54,7 @@ final class SplashPermissionDispatcher {
     /**
      * 一次可以检测某一个或者检测所有需要的权限
      */
-    static void onRequestPermissionsResult(WelcomePageActivity target, String[] permissions, int requestCode, int[] grantResults) {
+    static void onRequestPermissionsResult(SmartcallActivity target, String[] permissions, int requestCode, int[] grantResults) {
         switch (requestCode) {
             //一次检测照相机权限
             case UiHelper.REQUEST_SHOWCAMERA:
@@ -105,11 +106,11 @@ final class SplashPermissionDispatcher {
     }
 
     private static class ShowCameraPermissionRequest implements PermissionRequest {
-        private final WeakReference<WelcomePageActivity> weakTarget;
+        private final WeakReference<SmartcallActivity> weakTarget;
         private String[] permissionShow;
         private int requestCode;
 
-        private ShowCameraPermissionRequest(WelcomePageActivity target, String[] permision, int request) {
+        private ShowCameraPermissionRequest(SmartcallActivity target, String[] permision, int request) {
             this.weakTarget = new WeakReference<>(target);
             this.permissionShow = permision;
             this.requestCode = request;
@@ -117,14 +118,14 @@ final class SplashPermissionDispatcher {
 
         @Override
         public void proceed() {
-            WelcomePageActivity target = weakTarget.get();
+            SmartcallActivity target = weakTarget.get();
             if (target == null) return;
             requestPermissions(target, permissionShow, requestCode);
         }
 
         @Override
         public void cancel() {
-            WelcomePageActivity target = weakTarget.get();
+            SmartcallActivity target = weakTarget.get();
             if (target == null) return;
             target.onCameraDenied();
         }

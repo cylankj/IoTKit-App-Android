@@ -26,6 +26,10 @@ public class BaseDialog extends DialogFragment {
         minHeight = (int) (DensityUtils.getScreenHeight() * MIN_HEIGHT);
     }
 
+    /**
+     * @return {@link android.view.WindowManager.LayoutParams#WRAP_CONTENT},{@link android.view.WindowManager.LayoutParams#MATCH_PARENT},
+     * 或者一个具体的数字
+     */
     protected int getCustomHeight() {
         return minHeight;
     }

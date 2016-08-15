@@ -1,4 +1,4 @@
-package com.cylan.jiafeigou.n;
+package com.cylan.jiafeigou;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -11,7 +11,6 @@ import android.view.ViewGroup;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
-import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.mvp.contract.home.NewHomeActivityContract;
 import com.cylan.jiafeigou.n.mvp.impl.home.HomeMinePresenterImpl;
@@ -20,7 +19,7 @@ import com.cylan.jiafeigou.n.mvp.impl.home.HomeWonderfulPresenterImpl;
 import com.cylan.jiafeigou.n.mvp.impl.home.NewHomeActivityPresenterImpl;
 import com.cylan.jiafeigou.n.view.activity.NeedLoginActivity;
 import com.cylan.jiafeigou.n.view.home.HomeMineFragment;
-import com.cylan.jiafeigou.n.view.home.HomePageListFragment;
+import com.cylan.jiafeigou.n.view.home.HomePageListFragmentExt;
 import com.cylan.jiafeigou.n.view.home.HomeWonderfulFragment;
 import com.cylan.jiafeigou.widget.CustomViewPager;
 
@@ -122,7 +121,7 @@ class HomeViewAdapter extends FragmentPagerAdapter {
     public Fragment getItem(int position) {
         switch (position) {
             case INDEX_0: {
-                HomePageListFragment fragment = HomePageListFragment.newInstance(new Bundle());
+                HomePageListFragmentExt fragment = HomePageListFragmentExt.newInstance(new Bundle());
                 new HomePageListPresenterImpl(fragment);
                 if (fragment != null && fragment.getContext() != null)
                     Toast.makeText(fragment.getContext(), "重新new了。。。1", Toast.LENGTH_SHORT).show();
@@ -146,7 +145,7 @@ class HomeViewAdapter extends FragmentPagerAdapter {
                     Toast.makeText(fragment.getContext(), "重新new了。。。3", Toast.LENGTH_SHORT).show();
                 return fragment;
         }
-        return HomePageListFragment.newInstance(new Bundle());
+        return HomePageListFragmentExt.newInstance(new Bundle());
     }
 
     @Override

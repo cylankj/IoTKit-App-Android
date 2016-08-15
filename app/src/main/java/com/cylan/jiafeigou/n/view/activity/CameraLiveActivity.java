@@ -1,8 +1,8 @@
 package com.cylan.jiafeigou.n.view.activity;
 
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
@@ -11,7 +11,6 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
@@ -21,13 +20,10 @@ import com.cylan.jiafeigou.n.mvp.impl.cam.CamLivePresenterImpl;
 import com.cylan.jiafeigou.n.mvp.impl.cam.CamMessageListPresenterImpl;
 import com.cylan.jiafeigou.n.view.cam.CamMessageListFragment;
 import com.cylan.jiafeigou.n.view.cam.CameraLiveFragment;
-import com.cylan.jiafeigou.n.view.misc.SystemUiHider;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.CustomViewPager;
 import com.cylan.jiafeigou.widget.indicator.PagerSlidingTabStrip;
 import com.superlog.SLog;
-
-import java.lang.ref.WeakReference;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -45,7 +41,7 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
     CustomViewPager vpCameraLive;
     @BindView(R.id.imgV_camera_title_top_setting)
     ImageView imgVCameraTitleTopSetting;
-    private WeakReference<SystemUiHider> systemUiHiderWeakReference;
+
     private SimplePageListener simpleListener = new SimplePageListener();
 
 
@@ -78,7 +74,7 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
         getWindow().getDecorView().post(new Runnable() {
             @Override
             public void run() {
-                handleSystemBar(!isLandScape);
+                handleSystemBar(!isLandScape, 1000);
                 rLayoutCameraLiveTopBar.setVisibility(isLandScape ? View.GONE : View.VISIBLE);
                 vpCameraLive.setPagingEnabled(!isLandScape);
             }
@@ -90,36 +86,11 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
         super.onResume();
     }
 
-    /**
-     * 处理statusBar和NavigationBar
-     *
-     * @param port
-     */
-    private void handleSystemBar(boolean port) {
-        WindowManager.LayoutParams attrs = getWindow().getAttributes();
-        if (port) {
-            attrs.flags ^= WindowManager.LayoutParams.FLAG_FULLSCREEN;
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                attrs.flags ^= WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION;
-            }
-        } else {
-            attrs.flags |= WindowManager.LayoutParams.FLAG_FULLSCREEN;
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                attrs.flags |= WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION;
-            }
-        }
-        getWindow().setAttributes(attrs);
-        checkSystemHider();
-        if (port) {
-            systemUiHiderWeakReference.get().setSupportAutoHide(false);
-            systemUiHiderWeakReference.get().show();
-        } else {
-            systemUiHiderWeakReference.get().setSupportAutoHide(true);
-            systemUiHiderWeakReference.get().delayedHide(1000);
-        }
-        //状态栏的背景色
-        setSystemBarTintEnable(port);
+    @Override
+    protected void onStop() {
+        super.onStop();
     }
+
 
     private void initAdapter() {
         SimpleAdapterPager simpleAdapterPager = new SimpleAdapterPager(getSupportFragmentManager());
@@ -132,24 +103,20 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
         ViewUtils.setViewPaddingStatusBar(rLayoutCameraLiveTopBar);
     }
 
-    private void checkSystemHider() {
-        if (systemUiHiderWeakReference == null
-                || systemUiHiderWeakReference.get() == null) {
-            systemUiHiderWeakReference = new WeakReference<>(new SystemUiHider(getWindow().getDecorView(), true));
-        }
-    }
 
     @Override
     public void onBackPressed() {
-
         if (checkExtraChildFragment()) {
             return;
         } else if (checkExtraFragment())
             return;
-        finish();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            overridePendingTransition(R.anim.slide_in_left_without_interpolator, R.anim.slide_out_right_without_interpolator);
+        if (this.getResources().getConfiguration().orientation
+                == Configuration.ORIENTATION_LANDSCAPE) {
+            ViewUtils.setRequestedOrientation(this,
+                    ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+            return;
         }
+        finishExt();
     }
 
     @OnClick(R.id.imgV_nav_back)

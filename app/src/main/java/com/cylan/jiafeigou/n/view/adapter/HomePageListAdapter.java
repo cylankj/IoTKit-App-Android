@@ -11,6 +11,7 @@ import com.cylan.superadapter.SuperAdapter;
 import com.cylan.superadapter.internal.SuperViewHolder;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -83,6 +84,24 @@ public class HomePageListAdapter extends SuperAdapter<DeviceBean> {
             date.setTime(bean.msgTime);
             return format_1.format(date);
         }
+    }
+
+    /**
+     * 通过cid查找index
+     *
+     * @param cid
+     * @return
+     */
+    public DeviceBean findTarget(final String cid) {
+        if (getCount() == 0 || TextUtils.isEmpty(cid))
+            return null;
+        ArrayList<DeviceBean> arrayList = new ArrayList<>(getList());
+        for (DeviceBean bean : arrayList) {
+            if (TextUtils.equals(bean.cid, cid)) {
+                return bean;
+            }
+        }
+        return null;
     }
 
     private void setItemState(SuperViewHolder holder, DeviceBean bean) {

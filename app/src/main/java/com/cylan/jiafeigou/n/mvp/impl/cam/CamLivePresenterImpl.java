@@ -40,7 +40,8 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                 .subscribe(new Action1<SDataStack>() {
                     @Override
                     public void call(SDataStack dataStack) {
-                        getView().onHistoryDataRsp(dataStack);
+                        if (getView() != null)
+                            getView().onHistoryDataRsp(dataStack);
                     }
                 });
     }

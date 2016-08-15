@@ -4,6 +4,7 @@ import android.net.wifi.ScanResult;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -11,7 +12,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.view.adapter.ToBindDeviceListAdapter;
@@ -32,8 +32,8 @@ public class WiFiListDialogFragment extends DialogFragment implements ToBindDevi
 
     @BindView(R.id.rv_wifi_list)
     RecyclerView rvWifiList;
-    @BindView(R.id.lLayout_dialog_wifi_list)
-    LinearLayout lLayoutDialogWifiList;
+    @BindView(R.id.cLayout_dialog_wifi_list)
+    CardView lLayoutDialogWifiList;
     private int currentHeight;
     private int maxHeight = 0;
     private int maxWidth;

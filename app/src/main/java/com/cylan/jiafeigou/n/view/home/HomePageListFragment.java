@@ -26,16 +26,20 @@ import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.RxEvent;
+import com.cylan.jiafeigou.n.mvp.contract.ActivityResultContract;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomePageListContract;
+import com.cylan.jiafeigou.n.mvp.impl.ActivityResultPresenterImpl;
 import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
 import com.cylan.jiafeigou.n.mvp.model.GreetBean;
 import com.cylan.jiafeigou.n.view.activity.BindDeviceActivity;
 import com.cylan.jiafeigou.n.view.activity.CameraLiveActivity;
 import com.cylan.jiafeigou.n.view.activity.MagLiveActivity;
 import com.cylan.jiafeigou.n.view.adapter.HomePageListAdapter;
+import com.cylan.jiafeigou.n.view.bell.DoorBellHomeActivity;
 import com.cylan.jiafeigou.n.view.misc.HomeEmptyView;
 import com.cylan.jiafeigou.n.view.misc.IEmptyView;
 import com.cylan.jiafeigou.support.rxbus.RxBus;
+import com.cylan.jiafeigou.utils.AppLogger;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
 import com.cylan.jiafeigou.widget.sticky.HeaderAnimator;
@@ -43,6 +47,8 @@ import com.cylan.jiafeigou.widget.sticky.StickyHeaderBuilder;
 import com.cylan.jiafeigou.widget.wave.SuperWaveView;
 import com.cylan.utils.RandomUtils;
 import com.superlog.SLog;
+
+import org.msgpack.annotation.NotNullable;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
@@ -60,6 +66,7 @@ import rx.schedulers.Schedulers;
 public class HomePageListFragment extends Fragment implements
         HomePageListContract.View, SwipeRefreshLayout.OnRefreshListener,
         HomePageListAdapter.DeviceItemClickListener,
+        ActivityResultContract.View,
         SimpleDialogFragment.SimpleDialogAction,
         HomePageListAdapter.DeviceItemLongClickListener {
     /**
@@ -92,6 +99,7 @@ public class HomePageListFragment extends Fragment implements
     TextView tvHeaderPoet;
     private HomePageListContract.Presenter presenter;
 
+    private ActivityResultContract.Presenter activityResultPresenter;
     private HomePageListAdapter homePageListAdapter;
     private SimpleScrollListener simpleScrollListener;
 
@@ -145,6 +153,9 @@ public class HomePageListFragment extends Fragment implements
         homePageListAdapter.setDeviceItemClickListener(this);
         homePageListAdapter.setDeviceItemLongClickListener(this);
         initEmptyViewState(context);
+        //需要优化.
+        activityResultPresenter = new ActivityResultPresenterImpl(this);
+        activityResultPresenter.start();
     }
 
     @Override
@@ -364,10 +375,18 @@ public class HomePageListFragment extends Fragment implements
             return;
         DeviceBean bean = homePageListAdapter.getItem(position);
         if (bean != null) {
+            srLayoutMainContentHolder.setRefreshing(false);
+            Bundle bundle = new Bundle();
+            bundle.putParcelable(JConstant.KEY_DEVICE_ITEM_BUNDLE, bean);
             if (bean.deviceType == JConstant.JFG_DEVICE_CAMERA) {
-                startActivity(new Intent(getActivity(), CameraLiveActivity.class));
+                startActivity(new Intent(getActivity(), CameraLiveActivity.class)
+                        .putExtra(JConstant.KEY_DEVICE_ITEM_BUNDLE, bundle));
             } else if (bean.deviceType == JConstant.JFG_DEVICE_MAG) {
-                startActivity(new Intent(getActivity(), MagLiveActivity.class));
+                startActivity(new Intent(getActivity(), MagLiveActivity.class)
+                        .putExtra(JConstant.KEY_DEVICE_ITEM_BUNDLE, bundle));
+            } else if (bean.deviceType == JConstant.JFG_DEVICE_BELL) {
+                startActivity(new Intent(getActivity(), DoorBellHomeActivity.class)
+                        .putExtra(JConstant.KEY_DEVICE_ITEM_BUNDLE, bundle));
             }
         }
     }
@@ -379,7 +398,7 @@ public class HomePageListFragment extends Fragment implements
         return true;
     }
 
-
+    //删除一个Item
     private void deleteItem(final int position) {
         initSimpleDialog();
         SimpleDialogFragment fragment = simpleDialogFragmentWeakReference.get();
@@ -401,6 +420,33 @@ public class HomePageListFragment extends Fragment implements
         //刷新需要剩下的item
         homePageListAdapter.notifyItemRangeChanged(position, homePageListAdapter.getItemCount());
         emptyViewState.determineEmptyViewState(homePageListAdapter.getCount());
+    }
+
+    @Override
+    public void onActivityResult(@NotNullable RxEvent.ActivityResult result) {
+        //这段逻辑 违背MVP，稍后需要修改。
+        AppLogger.d("this slice is illegal");
+        final Bundle bundle = result.bundle;
+        if (bundle == null) {
+            AppLogger.d("bundle is null");
+            return;
+        }
+        if (!bundle.containsKey(JConstant.KEY_REMOVE_DEVICE)) {
+            AppLogger.d("not the removing");
+            return;
+        }
+        Object o = bundle.getParcelable(JConstant.KEY_DEVICE_ITEM_BUNDLE);
+        if (o != null && o instanceof DeviceBean) {
+            final String cid = ((DeviceBean) o).cid;
+            DeviceBean bean = homePageListAdapter.findTarget(cid);
+            if (bean == null) {
+                AppLogger.d("bean is null cid: " + cid);
+                return;
+            }
+            homePageListAdapter.remove(bean);
+        } else {
+            AppLogger.d("woo,bundle is not the type");
+        }
     }
 
     private static class EmptyViewState {

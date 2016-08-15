@@ -1,8 +1,6 @@
 package com.cylan.jiafeigou.n.view.activity;
 
-import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.FragmentManager;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -83,17 +81,14 @@ public class BindDeviceActivity extends BaseFullScreenFragmentActivity implement
     public void onBackPressed() {
         if (shouldNotifyBackForeword())
             return;
-        if (popAllStack())
+        if (popAllFragmentStack())
             return;
 //        if (checkExtraChildFragment()) {
 //            return;
 //        } else if (checkExtraFragment())
 //            return;
 
-        finish();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            overridePendingTransition(R.anim.slide_in_left_without_interpolator, R.anim.slide_out_right_without_interpolator);
-        }
+        finishExt();
     }
 
 
@@ -114,21 +109,11 @@ public class BindDeviceActivity extends BaseFullScreenFragmentActivity implement
         return true;
     }
 
-    private boolean popAllStack() {
-        FragmentManager fm = getSupportFragmentManager();
-        boolean pop = false;
-        for (int i = 0; i < fm.getBackStackEntryCount(); ++i) {
-            fm.popBackStack();
-            pop = true;
-        }
-        return pop;
-    }
-
     @Override
     public void onDialogAction(int id, Object value) {
         if (id == SimpleDialogFragment.ACTION_NEGATIVE)
             return;
-        popAllStack();
+        popAllFragmentStack();
     }
 
     @OnClick({R.id.v_to_scan_qrcode, R.id.v_to_bind_camera, R.id.v_to_bind_doorbell, R.id.v_to_bind_cloud_album})

@@ -89,6 +89,9 @@ dependencies {
     compile files('src/main/jniLibs/zbar.jar')
     //add by hunt 2016-08-01
     compile rootProject.ext.switchButton
+    compile rootProject.ext.appDesige
+    //多进程文件共享方案
+    compile rootProject.ext.multiProcessSp
 }
 
 if (project.hasProperty('keystoreFile') &&
