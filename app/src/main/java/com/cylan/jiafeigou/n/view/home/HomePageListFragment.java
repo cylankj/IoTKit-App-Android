@@ -63,6 +63,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
+@Deprecated
 public class HomePageListFragment extends Fragment implements
         HomePageListContract.View, SwipeRefreshLayout.OnRefreshListener,
         HomePageListAdapter.DeviceItemClickListener,
