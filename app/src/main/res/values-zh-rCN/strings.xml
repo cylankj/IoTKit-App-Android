@@ -596,6 +596,6 @@
 
     <string name="item_just_for_test">05月</string>
     <string name="title_to_dismiss_bind">确定退出?</string>
-
+    <string name="home_nick_name">Hi，%s</string>
     <string name="item_device_standby_explanation">开启待机，设备将进入休眠状态，查看直播、历时录像、安全防护及报警、自动录像、延时摄影等功能将无法使用</string>
 </resources>

@@ -47,25 +47,25 @@ public class HomeMinePersonalInformationFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_home_mine_personal_information,container,false);
-        ButterKnife.bind(this,view);
+        View view = inflater.inflate(R.layout.fragment_home_mine_personal_information, container, false);
+        ButterKnife.bind(this, view);
         return view;
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        String mailBoxText = PreferencesUtils.getString(getActivity(),"邮箱","未设置");
+        String mailBoxText = PreferencesUtils.getString(getActivity(), "邮箱", "未设置");
         mTvMailBox.setText(mailBoxText);
     }
 
-    @OnClick({R.id.iv_home_mine_personal_back,R.id.btn_home_mine_personal_information,R.id.lLayout_home_mine_personal_mailbox})
-    public void onClick(View view){
-        switch (view.getId()){
+    @OnClick({R.id.iv_home_mine_personal_back, R.id.btn_home_mine_personal_information, R.id.lLayout_home_mine_personal_mailbox})
+    public void onClick(View view) {
+        switch (view.getId()) {
             //点击回退到Mine的fragment
             case R.id.iv_home_mine_personal_back:
                 getFragmentManager().popBackStack();
-              break;
+                break;
             //点击退出做相应的逻辑
             case R.id.btn_home_mine_personal_information:
                 break;
@@ -74,10 +74,10 @@ public class HomeMinePersonalInformationFragment extends Fragment {
                 getFragmentManager().beginTransaction()
                         .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                                 , R.anim.slide_in_left, R.anim.slide_out_right)
-                        .add(android.R.id.content,mailBoxFragment,"mailBoxFragment")
+                        .add(android.R.id.content, mailBoxFragment, "mailBoxFragment")
                         .addToBackStack("personalInformationFragment")
                         .commit();
-                if(getActivity()!=null&&getActivity().getFragmentManager()!=null) {
+                if (getActivity() != null && getActivity().getFragmentManager() != null) {
                     mailBoxFragment.setListener(new HomeMinePersonalInformationMailBoxFragment.OnBindMailBoxListener() {
                         @Override
                         public void mailBoxChange(String content) {

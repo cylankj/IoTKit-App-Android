@@ -1,4 +1,5 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/fLayout_home_page_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -11,8 +12,7 @@
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rV_devices_list"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/color_white" />
+            android:layout_height="match_parent" />
 
 
     </android.support.v4.widget.SwipeRefreshLayout>
@@ -21,6 +21,7 @@
 
     <ImageView
         android:id="@+id/imgV_add_devices"
+        style="@style/ripple_background"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="right"
@@ -28,7 +29,6 @@
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
         android:layout_marginTop="9dp"
-        style="@style/ripple_background"
         android:clickable="true"
         android:padding="10dp"
         android:src="@drawable/btn_common_add" />

@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.utils.ViewUtils;
+import com.kyleduo.switchbutton.SwitchButton;
 
 /**
  * Created by cylan-hunt on 16-7-29.
@@ -36,6 +37,7 @@ public class SettingItemView1 extends FrameLayout {
         TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.SettingItemViewStyle);
         View view = LayoutInflater.from(getContext()).inflate(R.layout.layout_settings_item1, this, true);
         tvTitle = (TextView) view.findViewById(R.id.tv_settings_item_title);
+        switchButton = (SwitchButton) view.findViewById(R.id.btn_item_switch);
         final String title = ta.getString(R.styleable.SettingItemViewStyle_sv_title);
         final Drawable srcId = ta.getDrawable(R.styleable.SettingItemViewStyle_sv_image_src);
         ViewUtils.setDrawablePadding(tvTitle, srcId, 0);
@@ -43,4 +45,11 @@ public class SettingItemView1 extends FrameLayout {
         ta.recycle();
     }
 
+    public void setTvTitle(CharSequence charSequence) {
+        tvTitle.setText(charSequence);
+    }
+
+    public void setSwitchButtonState(boolean checked) {
+        switchButton.setChecked(checked);
+    }
 }

@@ -159,5 +159,9 @@ public class ViewUtils {
         dimen[dimension] = drawable;
         tv.setCompoundDrawables(dimen[0], dimen[1], dimen[2], dimen[3]);
     }
+
+    public static int dp2px(float dp) {
+        return (int) (Resources.getSystem().getDisplayMetrics().density * dp + 0.5f);
+    }
 }
 

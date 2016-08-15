@@ -6,8 +6,8 @@
         </shape>
     </item>
     <!--<item android:state_pressed="true">-->
-        <!--<shape android:shape="oval">-->
-            <!--<solid android:color="@color/color_36BDFF" />-->
-        <!--</shape>-->
+    <!--<shape android:shape="oval">-->
+    <!--<solid android:color="@color/color_36BDFF" />-->
+    <!--</shape>-->
     <!--</item>-->
 </selector>

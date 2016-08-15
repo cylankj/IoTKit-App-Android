@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:hunt="http://schemas.android.com/apk/res-auto"
-              android:clickable="true"
-              android:orientation="vertical"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:background="@color/color_white">
+    xmlns:hunt="http://schemas.android.com/apk/res-auto"
+    android:clickable="true"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/color_white">
 
 
     <RelativeLayout
@@ -13,6 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="73dp"
         android:background="#0BA8CF">
+
         <TextView
             android:layout_marginTop="26dp"
             android:textColor="@color/color_white"
@@ -20,7 +21,7 @@
             android:id="@+id/tv_mine_help_back"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:padding="15dp"/>
+            android:padding="15dp" />
 
 
         <TextView
@@ -32,7 +33,7 @@
             android:layout_height="wrap_content"
             android:text="帮助与反馈"
             android:textSize="18sp"
-            android:textColor="@color/color_white"/>
+            android:textColor="@color/color_white" />
 
 
         <TextView
@@ -44,7 +45,7 @@
             android:id="@+id/tv_mine_help_suggestion"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:padding="15dp"/>
+            android:padding="15dp" />
     </RelativeLayout>
 
     <TextView
@@ -55,53 +56,53 @@
         android:textSize="18sp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="热门问题"/>
+        android:text="热门问题" />
 
-        <com.cylan.jiafeigou.widget.HomeMineItemView
-            android:clickable="true"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            hunt:rightDrawable="@drawable/icon_mine_arrow_next"
-            hunt:text="设备离线，或连接中"
-            hunt:textColor="@color/color_333333"
-            hunt:textSize="16sp"/>
+    <com.cylan.jiafeigou.widget.HomeMineItemView
+        android:clickable="true"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        hunt:rightDrawable="@drawable/icon_mine_arrow_next"
+        hunt:text="设备离线，或连接中"
+        hunt:textColor="@color/color_333333"
+        hunt:textSize="16sp" />
 
 
-        <com.cylan.jiafeigou.widget.HomeMineItemView
-            android:clickable="true"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            hunt:rightDrawable="@drawable/icon_mine_arrow_next"
-            hunt:text="添加设备，提示“找不到设备”"
-            hunt:textColor="@color/color_333333"
-            hunt:textSize="16sp"/>
+    <com.cylan.jiafeigou.widget.HomeMineItemView
+        android:clickable="true"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        hunt:rightDrawable="@drawable/icon_mine_arrow_next"
+        hunt:text="添加设备，提示“找不到设备”"
+        hunt:textColor="@color/color_333333"
+        hunt:textSize="16sp" />
 
-        <com.cylan.jiafeigou.widget.HomeMineItemView
-            android:clickable="true"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            hunt:rightDrawable="@drawable/icon_mine_arrow_next"
-            hunt:text="Android系统：连接设备的WiFi和密码是什么"
-            hunt:textColor="@color/color_333333"
-            hunt:textSize="16sp"/>
+    <com.cylan.jiafeigou.widget.HomeMineItemView
+        android:clickable="true"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        hunt:rightDrawable="@drawable/icon_mine_arrow_next"
+        hunt:text="Android系统：连接设备的WiFi和密码是什么"
+        hunt:textColor="@color/color_333333"
+        hunt:textSize="16sp" />
 
-        <com.cylan.jiafeigou.widget.HomeMineItemView
-            android:clickable="true"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            hunt:rightDrawable="@drawable/icon_mine_arrow_next"
-            hunt:text="一个设备可以在多个客户端上使用吗"
-            hunt:textColor="@color/color_333333"
-            hunt:textSize="16sp"/>
+    <com.cylan.jiafeigou.widget.HomeMineItemView
+        android:clickable="true"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        hunt:rightDrawable="@drawable/icon_mine_arrow_next"
+        hunt:text="一个设备可以在多个客户端上使用吗"
+        hunt:textColor="@color/color_333333"
+        hunt:textSize="16sp" />
 
-        <com.cylan.jiafeigou.widget.HomeMineItemView
-            android:clickable="true"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            hunt:rightDrawable="@drawable/icon_mine_arrow_next"
-            hunt:text="查看直播，宽带最低需要多少"
-            hunt:textColor="@color/color_333333"
-            hunt:textSize="16sp"/>
+    <com.cylan.jiafeigou.widget.HomeMineItemView
+        android:clickable="true"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        hunt:rightDrawable="@drawable/icon_mine_arrow_next"
+        hunt:text="查看直播，宽带最低需要多少"
+        hunt:textColor="@color/color_333333"
+        hunt:textSize="16sp" />
 
 
 </LinearLayout>

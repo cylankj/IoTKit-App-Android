@@ -100,7 +100,7 @@
                     android:textSize="15sp" />
 
                 <com.cylan.jiafeigou.widget.SettingItemView0
-                    android:id="@+id/sv_setting_device_protection"
+                    android:id="@+id/sv_setting_safe_protection"
                     android:layout_width="match_parent"
                     android:layout_height="72dp"
                     hunt:sv_image_src="@drawable/icon_setting_safe"
@@ -164,7 +164,7 @@
                     android:background="@color/color_e8e8e8" />
 
                 <com.cylan.jiafeigou.widget.SettingItemView1
-                    android:id="@+id/sv_setting_device_rotate"
+                    android:id="@+id/sv_setting_device_rotatable"
                     android:layout_width="match_parent"
                     android:layout_height="54dp"
                     hunt:sv_image_src="@drawable/icon_setting_rotate_pic"

@@ -14,4 +14,15 @@ public class RxEvent {
             this.bundle = bundle;
         }
     }
+
+    /**
+     * 系统TimeTick广播
+     */
+    public static class TimeTickEvent {
+
+    }
+
+    public static class LoginRsp {
+
+    }
 }

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="vertical"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent">
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <TextView
         android:id="@+id/tv_information_name"
@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:text="设备名称"
         android:textSize="16sp"
-        android:textColor="@color/color_black"/>
+        android:textColor="@color/color_black" />
 
     <EditText
         android:text="客厅摄像头"
@@ -26,7 +26,7 @@
         android:layout_height="wrap_content"
         android:textSize="14sp"
         android:background="@null"
-        android:maxLength="12"/>
+        android:maxLength="12" />
 
     <View
         android:layout_marginLeft="24dp"
@@ -34,6 +34,7 @@
         android:layout_width="232dp"
         android:layout_height="1dp"
         android:background="@color/color_4b9fd5" />
+
     <TextView
         android:visibility="invisible"
         android:id="@+id/tv_information_show_state"
@@ -45,7 +46,7 @@
         android:textColor="#F26B6B"
         android:layout_alignTop="@+id/et_information_edit_name"
         android:layout_alignLeft="@+id/tv_information_name"
-        android:layout_alignStart="@+id/tv_information_name"/>
+        android:layout_alignStart="@+id/tv_information_name" />
 
     <LinearLayout
         android:layout_marginLeft="141dp"
@@ -55,6 +56,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
+
         <Button
             android:id="@+id/btn_information_ensure"
             android:layout_width="58dp"
@@ -62,7 +64,8 @@
             android:text="确认"
             android:textSize="14sp"
             android:textColor="#4B9FD5"
-            android:background="#C5E6FC"/>
+            android:background="#C5E6FC" />
+
         <Button
             android:id="@+id/btn_information_cancel"
             android:layout_width="58dp"
@@ -70,7 +73,7 @@
             android:text="取消"
             android:textSize="14sp"
             android:textColor="#4B9FD5"
-            android:background="#C5E6FC"/>
+            android:background="#C5E6FC" />
     </LinearLayout>
 
 </RelativeLayout>

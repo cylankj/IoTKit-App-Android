@@ -3,7 +3,6 @@ package com.cylan.jiafeigou.n.view.home;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,7 +26,6 @@ import com.superlog.SLog;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import butterknife.internal.Utils;
 
 public class HomeMineFragment extends android.support.v4.app.Fragment
         implements HomeMineContract.View {
@@ -64,7 +62,7 @@ public class HomeMineFragment extends android.support.v4.app.Fragment
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mineHelpFragment =  HomeMineHelpFragment.newInstance(new Bundle());
+        mineHelpFragment = HomeMineHelpFragment.newInstance(new Bundle());
         personalInformationFragment = HomeMinePersonalInformationFragment.newInstance(new Bundle());
     }
 
@@ -169,7 +167,7 @@ public class HomeMineFragment extends android.support.v4.app.Fragment
     @Override
     public void onBlur(Drawable drawable) {
         long time = System.currentTimeMillis();
-        rLayoutHomeMineTop.setBackgroundDrawable(drawable);
+        rLayoutHomeMineTop.setBackground(drawable);
         SLog.e("usetime:%d ms", System.currentTimeMillis() - time);
     }
 
@@ -186,7 +184,7 @@ public class HomeMineFragment extends android.support.v4.app.Fragment
 
     @OnClick({R.id.home_mine_item_friend, R.id.home_mine_item_share,
             R.id.home_mine_item_help, R.id.home_mine_item_settings,
-            R.id.shadow_layout,R.id.tv_home_mine_nick})
+            R.id.shadow_layout, R.id.tv_home_mine_nick})
     public void onButterKnifeClick(View view) {
         switch (view.getId()) {
             case R.id.home_mine_item_friend:
@@ -212,7 +210,7 @@ public class HomeMineFragment extends android.support.v4.app.Fragment
                 getFragmentManager().beginTransaction()
                         .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                                 , R.anim.slide_in_left, R.anim.slide_out_right)
-                        .add(android.R.id.content,mineHelpFragment,"mineHelpFragment")
+                        .add(android.R.id.content, mineHelpFragment, "mineHelpFragment")
                         .addToBackStack("mineHelpFragment")
                         .commit();
 
@@ -233,7 +231,7 @@ public class HomeMineFragment extends android.support.v4.app.Fragment
                 getFragmentManager().beginTransaction()
                         .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                                 , R.anim.slide_in_left, R.anim.slide_out_right)
-                        .add(android.R.id.content,personalInformationFragment,"personalInformationFragment")
+                        .add(android.R.id.content, personalInformationFragment, "personalInformationFragment")
                         .addToBackStack("personalInformationFragment")
                         .commit();
                 break;

@@ -2,15 +2,12 @@ package com.cylan.jiafeigou.n.view.mine;
 
 
 import android.app.Activity;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
-import android.text.InputType;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,7 +19,6 @@ import android.widget.TextView;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.utils.IMEUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
-import com.cylan.jiafeigou.utils.ToastUtil;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -59,7 +55,7 @@ public class HomeMinePersonalInformationMailBoxFragment extends Fragment {
 
     private OnBindMailBoxListener onBindMailBoxListener;
 
-    public interface OnBindMailBoxListener{
+    public interface OnBindMailBoxListener {
         void mailBoxChange(String content);
     }
 
@@ -82,7 +78,7 @@ public class HomeMinePersonalInformationMailBoxFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        String mailBoxText = PreferencesUtils.getString(getActivity(),"邮箱");
+        String mailBoxText = PreferencesUtils.getString(getActivity(), "邮箱");
         mETMailBox.setText(mailBoxText);
         mIvMailBoxBindDisable.setVisibility(View.VISIBLE);
         mIvMailBoxBind.setVisibility(View.GONE);
@@ -94,8 +90,8 @@ public class HomeMinePersonalInformationMailBoxFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_mine_personal_information_mailbox,container,false);
-        ButterKnife.bind(this,view);
+        View view = inflater.inflate(R.layout.fragment_mine_personal_information_mailbox, container, false);
+        ButterKnife.bind(this, view);
         initListener();
         return view;
     }
@@ -126,10 +122,10 @@ public class HomeMinePersonalInformationMailBoxFragment extends Fragment {
             @Override
             public void afterTextChanged(Editable s) {
                 boolean isEmpty = TextUtils.isEmpty(s);
-                mIvMailBox.setVisibility(isEmpty?View.GONE:View.VISIBLE);
-                mIvMailBoxBind.setVisibility(isEmpty?View.GONE:View.VISIBLE);
-                mIvMailBoxBindDisable.setVisibility(isEmpty?View.VISIBLE:View.GONE);
-                mViewMailBox.setBackgroundColor(isEmpty?getResources().getColor(R.color.color_f2f2f2):getResources().getColor(R.color.color_36bdff));
+                mIvMailBox.setVisibility(isEmpty ? View.GONE : View.VISIBLE);
+                mIvMailBoxBind.setVisibility(isEmpty ? View.GONE : View.VISIBLE);
+                mIvMailBoxBindDisable.setVisibility(isEmpty ? View.VISIBLE : View.GONE);
+                mViewMailBox.setBackgroundColor(isEmpty ? getResources().getColor(R.color.color_f2f2f2) : getResources().getColor(R.color.color_36bdff));
                 mIvMailBoxBindDisable.setClickable(false);
                 mIvMailBoxBindDisable.setEnabled(false);
                 mIvMailBoxBind.setClickable(true);
@@ -149,9 +145,9 @@ public class HomeMinePersonalInformationMailBoxFragment extends Fragment {
     }
 
 
-    @OnClick({R.id.iv_mine_personal_mailbox_back,R.id.iv_mine_personal_mailbox_bind})
-    public void onClick(View v){
-        switch (v.getId()){
+    @OnClick({R.id.iv_mine_personal_mailbox_back, R.id.iv_mine_personal_mailbox_bind})
+    public void onClick(View v) {
+        switch (v.getId()) {
             //返回上一个fragment
             case R.id.iv_mine_personal_mailbox_back:
                 IMEUtils.hide((Activity) getContext());
@@ -159,14 +155,14 @@ public class HomeMinePersonalInformationMailBoxFragment extends Fragment {
                 break;
             //绑定邮箱
             case R.id.iv_mine_personal_mailbox_bind:
-                mailBox =  mETMailBox.getText().toString();
-                if(TextUtils.isEmpty(mailBox)){
+                mailBox = mETMailBox.getText().toString();
+                if (TextUtils.isEmpty(mailBox)) {
                     return;
-                }else {
-                    if(onBindMailBoxListener!=null){
+                } else {
+                    if (onBindMailBoxListener != null) {
                         onBindMailBoxListener.mailBoxChange(mailBox);
-                        PreferencesUtils.putString(getActivity(),"邮箱",mailBox);
-                        String mailBoxText = PreferencesUtils.getString(getActivity(),"邮箱");
+                        PreferencesUtils.putString(getActivity(), "邮箱", mailBox);
+                        String mailBoxText = PreferencesUtils.getString(getActivity(), "邮箱");
                         mETMailBox.setText(mailBoxText);
                         IMEUtils.hide((Activity) getContext());
                         getFragmentManager().popBackStack();

@@ -24,7 +24,7 @@ public class FateLineView extends View {
     private int outerCircleColor = Color.WHITE;
     private int innerCircleColor = Color.BLACK;
     private float innerCircleRadius = 5;
-    private float innerCircleStrokeWidth = 4;
+    private float outerCircleStrokeWidth = 4;
     private float outerCircleRadius = 10;
     private float outerCircleY = 20.0f;
     private Paint dashLinePaint;
@@ -51,8 +51,9 @@ public class FateLineView extends View {
         this.dashLineWidth = at.getDimension(R.styleable.FateLineViewStyle_dashLineWidth, dashLineWidth);
         this.innerCircleRadius = at.getDimension(R.styleable.FateLineViewStyle_innerCircleRadius, innerCircleRadius);
         this.outerCircleRadius = at.getDimension(R.styleable.FateLineViewStyle_outerCircleRadius, outerCircleRadius);
-        this.innerCircleStrokeWidth = at.getDimension(R.styleable.FateLineViewStyle_innerCircleStrokeWidth, innerCircleStrokeWidth);
         this.outerCircleY = at.getDimension(R.styleable.FateLineViewStyle_outerCircleY, -1);
+        this.outerCircleStrokeWidth = at.getDimension(R.styleable.FateLineViewStyle_outerCircleStrokeWidth, outerCircleStrokeWidth);
+        this.outerCircleY = at.getDimension(R.styleable.FateLineViewStyle_outerCircleY, outerCircleY);
         at.recycle();
         centerVertical = outerCircleY == -1;
 //        innerCircleRadius = dip2px(getContext(), innerCircleRadius);
@@ -133,26 +134,26 @@ public class FateLineView extends View {
 //        super.onDraw(canvas);
         int rectTop = getPaddingTop();
         int rectBottom = getMeasuredHeight() - getPaddingBottom();
-        float circleTop = centerVertical?getMeasuredHeight()/2:outerCircleY+outerCircleRadius;
+        float circleTop = centerVertical ? getMeasuredHeight() / 2 : outerCircleY + outerCircleRadius;
         final int count = canvas.save();
         //虚线
         dashPath.moveTo(getMeasuredWidth() / 2, rectTop);
         dashPath.lineTo(getMeasuredWidth() / 2, rectBottom);
         canvas.drawPath(dashPath, dashLinePaint);
-        //内圆
-        circlePaint.setStyle(Paint.Style.FILL);
+        //外圆
+        circlePaint.setStyle(Paint.Style.STROKE);
+        circlePaint.setStrokeWidth(outerCircleStrokeWidth);
         circlePaint.setColor(outerCircleColor);
         canvas.drawCircle(getMeasuredWidth() / 2,
                 circleTop,
-                outerCircleRadius,
+                innerCircleRadius + outerCircleStrokeWidth / 2 - 0.5f,
                 circlePaint);
-        //外圆
-        circlePaint.setStyle(Paint.Style.STROKE);
-        circlePaint.setStrokeWidth(innerCircleStrokeWidth);
+        //内圆
+        circlePaint.setStyle(Paint.Style.FILL);
         circlePaint.setColor(innerCircleColor);
         canvas.drawCircle(getMeasuredWidth() / 2,
                 circleTop,
-                innerCircleRadius,
+                innerCircleRadius + 0.5f,
                 circlePaint);
 
         canvas.restoreToCount(count);

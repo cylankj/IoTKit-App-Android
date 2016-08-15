@@ -12,6 +12,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +24,8 @@ import android.widget.Toast;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.misc.JFGRules;
+import com.cylan.jiafeigou.misc.RxEvent;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomePageListContract;
 import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
 import com.cylan.jiafeigou.n.mvp.model.GreetBean;
@@ -30,11 +33,15 @@ import com.cylan.jiafeigou.n.view.activity.BindDeviceActivity;
 import com.cylan.jiafeigou.n.view.activity.CameraLiveActivity;
 import com.cylan.jiafeigou.n.view.activity.MagLiveActivity;
 import com.cylan.jiafeigou.n.view.adapter.HomePageListAdapter;
+import com.cylan.jiafeigou.n.view.misc.HomeEmptyView;
+import com.cylan.jiafeigou.n.view.misc.IEmptyView;
+import com.cylan.jiafeigou.support.rxbus.RxBus;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
 import com.cylan.jiafeigou.widget.sticky.HeaderAnimator;
 import com.cylan.jiafeigou.widget.sticky.StickyHeaderBuilder;
 import com.cylan.jiafeigou.widget.wave.SuperWaveView;
+import com.cylan.utils.RandomUtils;
 import com.superlog.SLog;
 
 import java.lang.ref.WeakReference;
@@ -75,10 +82,20 @@ public class HomePageListFragment extends Fragment implements
     WeakReference<SimpleDialogFragment> simpleDialogFragmentWeakReference;
     @BindView(R.id.lLayout_home_greet)
     LinearLayout lLayoutHomeGreet;
+    @BindView(R.id.fLayoutHomeHeaderContainer)
+    FrameLayout fLayoutHomeHeaderContainer;
+    @BindView(R.id.fLayout_home_page_container)
+    FrameLayout fLayoutHomePageContainer;
+    @BindView(R.id.tvHeaderNickName)
+    TextView tvHeaderNickName;
+    @BindView(R.id.tvHeaderPoet)
+    TextView tvHeaderPoet;
     private HomePageListContract.Presenter presenter;
 
     private HomePageListAdapter homePageListAdapter;
     private SimpleScrollListener simpleScrollListener;
+
+    private EmptyViewState emptyViewState;
     /**
      * 手动完成刷新,自动完成刷新 订阅者.
      */
@@ -112,15 +129,22 @@ public class HomePageListFragment extends Fragment implements
     public void onResume() {
         super.onResume();
         initWaveAnimation();
-        if (presenter != null) presenter.start();
+        onTimeTick(JFGRules.getTimeRule());
+        if (presenter != null)
+            presenter.fetchGreet();
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+        if (presenter != null) {
+            presenter.start();
+            presenter.registerWorker();
+        }
         homePageListAdapter = new HomePageListAdapter(getContext(), null, null);
         homePageListAdapter.setDeviceItemClickListener(this);
         homePageListAdapter.setDeviceItemLongClickListener(this);
+        initEmptyViewState(context);
     }
 
     @Override
@@ -143,6 +167,18 @@ public class HomePageListFragment extends Fragment implements
         initHeaderView();
         initSomeViewMargin();
         initSimpleDialog();
+        fLayoutHomePageContainer.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                emptyViewState.setEmptyViewState(fLayoutHomePageContainer, fLayoutHomeHeaderContainer.getBottom());
+                emptyViewState.determineEmptyViewState(homePageListAdapter.getCount());
+            }
+        }, 20);
+    }
+
+    private void initEmptyViewState(Context context) {
+        if (emptyViewState == null)
+            emptyViewState = new EmptyViewState(context, R.layout.layout_home_page_list_empty_view);
     }
 
     private void initSimpleDialog() {
@@ -188,7 +224,7 @@ public class HomePageListFragment extends Fragment implements
             @Override
             public void run() {
                 if (progressBarStartPosition == 0) {
-                    FrameLayout view = (FrameLayout) getView().findViewById(R.id.fLayoutHomeHeaderContainer);
+                    FrameLayout view = fLayoutHomeHeaderContainer;
                     if (view != null) {
                         Drawable drawable = view.getBackground();
                         progressBarStartPosition = drawable.getIntrinsicHeight();
@@ -207,6 +243,11 @@ public class HomePageListFragment extends Fragment implements
 //                RxBus.getInstance().send(new RxEvent.NeedLoginEvent(null));
 //            return;
 //        }
+        if (RandomUtils.getRandom(2) == JFGRules.LOGOUT) {
+            if (RxBus.getInstance().hasObservers())
+                RxBus.getInstance().send(new RxEvent.NeedLoginEvent(null));
+            return;
+        }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             getActivity().startActivity(new Intent(getActivity(), BindDeviceActivity.class),
                     ActivityOptionsCompat.makeCustomAnimation(getContext(),
@@ -219,15 +260,20 @@ public class HomePageListFragment extends Fragment implements
     @Override
     public void onStop() {
         super.onStop();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
         if (vWaveAnimation != null) vWaveAnimation.stopAnimation();
+        if (presenter != null) presenter.stop();
+//        if (waveHelper != null) waveHelper.cancel();
+        unRegisterSubscription(refreshCompleteSubscription);
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        if (presenter != null) presenter.stop();
-//        if (waveHelper != null) waveHelper.cancel();
-        unRegisterSubscription(refreshCompleteSubscription);
     }
 
     /**
@@ -261,17 +307,42 @@ public class HomePageListFragment extends Fragment implements
             return;
         }
         homePageListAdapter.addAll(resultList);
+        emptyViewState.determineEmptyViewState(homePageListAdapter.getCount());
     }
 
     @Override
     public void onGreetUpdate(GreetBean greetBean) {
+        tvHeaderNickName.setText(String.format(getString(R.string.home_nick_name),
+                greetBean.nickName));
+        tvHeaderPoet.setText(greetBean.poet);
+    }
 
+    @SuppressWarnings("deprecation")
+    @Override
+    public void onTimeTick(final int dayTime) {
+        //需要优化
+        int drawableId = dayTime == JFGRules.RULE_DAY_TIME
+                ? R.drawable.bg_home_title_daytime : R.drawable.bg_home_title_night;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            fLayoutHomeHeaderContainer.setBackground(getResources().getDrawable(drawableId, null));
+        } else {
+            fLayoutHomeHeaderContainer.setBackground(getResources().getDrawable(drawableId));
+        }
+    }
+
+    @Override
+    public void onLoginState(int state) {
+        if (state == JFGRules.LOGIN) {
+        } else if (state == JFGRules.LOGOUT) {
+            srLayoutMainContentHolder.setRefreshing(false);
+            Toast.makeText(getContext(), "还没登陆", Toast.LENGTH_SHORT).show();
+        }
     }
 
 
     @Override
     public void onRefresh() {
-        if (presenter != null) presenter.startRefresh();
+        if (presenter != null) presenter.fetchDeviceList();
         //不使用post,因为会泄露
         srLayoutMainContentHolder.setRefreshing(true);
         refreshCompleteSubscription = Observable.just(srLayoutMainContentHolder)
@@ -324,8 +395,34 @@ public class HomePageListFragment extends Fragment implements
             Toast.makeText(getContext(), "null: ", Toast.LENGTH_SHORT).show();
             return;
         }
-        homePageListAdapter.remove((Integer) value);
+        final int position = (int) value;
         Toast.makeText(getContext(), "id: " + id + " value:" + value, Toast.LENGTH_SHORT).show();
+        homePageListAdapter.remove((Integer) value);
+        //刷新需要剩下的item
+        homePageListAdapter.notifyItemRangeChanged(position, homePageListAdapter.getItemCount());
+        emptyViewState.determineEmptyViewState(homePageListAdapter.getCount());
+    }
+
+    private static class EmptyViewState {
+        private IEmptyView homePageEmptyView;
+
+        public EmptyViewState(Context context, final int layoutId) {
+            homePageEmptyView = new HomeEmptyView(context, layoutId);
+        }
+
+
+        public void setEmptyViewState(ViewGroup viewContainer, final int bottom) {
+            FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT);
+            lp.gravity = Gravity.CENTER_HORIZONTAL;
+            lp.topMargin = ViewUtils.dp2px(80)
+                    + bottom;
+            homePageEmptyView.addView(viewContainer, lp);
+        }
+
+        public void determineEmptyViewState(final int count) {
+            homePageEmptyView.show(count == 0);
+        }
     }
 
     private static class SimpleScrollListener implements HeaderAnimator.ScrollRationListener {

@@ -1,22 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:hunt="http://schemas.android.com/apk/res-auto"
-              android:orientation="horizontal"
-              android:layout_width="match_parent"
-              android:layout_height="48dp">
+    xmlns:hunt="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="48dp">
 
 
-        <com.cylan.jiafeigou.widget.FateLineView
-            android:layout_marginLeft="129dp"
-            android:id="@+id/flv_mag_live_invisible"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            hunt:dashLineColor="@color/color_e8e8e8"
-            hunt:dashLineWidth="2dp"
-            hunt:innerCircleColor="@color/color_e8e8e8"
-            hunt:innerCircleRadius="0dp"
-            hunt:innerCircleStrokeWidth="4dp"
-            hunt:outerCircleRadius="0dp"
-            />
+    <com.cylan.jiafeigou.widget.FateLineView
+        android:layout_marginLeft="129dp"
+        android:id="@+id/flv_mag_live_invisible"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        hunt:dashLineColor="@color/color_e8e8e8"
+        hunt:dashLineWidth="2dp"
+        hunt:innerCircleColor="@color/color_e8e8e8"
+        hunt:innerCircleRadius="0dp"
+        hunt:outerCircleRadius="0dp" />
 
 </LinearLayout>

@@ -1,48 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:hunt="http://schemas.android.com/apk/res-auto"
-              android:orientation="horizontal"
-              android:layout_width="match_parent"
-              android:layout_height="48dp">
+    xmlns:hunt="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="48dp"
+    android:orientation="horizontal">
 
     <LinearLayout
-        android:orientation="horizontal"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
 
 
         <TextView
-            android:gravity="center_vertical|end"
-            android:layout_gravity="center_vertical"
             android:id="@+id/tv_mag_live_day"
             android:layout_width="117dp"
             android:layout_height="match_parent"
+            android:layout_gravity="center_vertical"
+            android:gravity="center_vertical|end"
             android:text="今天"
-            android:textSize="17sp"
-            android:textColor="@color/color_333333"/>
+            android:textColor="@color/color_333333"
+            android:textSize="17sp" />
 
         <com.cylan.jiafeigou.widget.FateLineView
-            android:layout_marginLeft="12dp"
             android:id="@+id/flv_mag_live"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:layout_marginLeft="12dp"
             hunt:dashLineColor="@color/color_e8e8e8"
             hunt:dashLineWidth="2dp"
             hunt:innerCircleColor="@color/color_e8e8e8"
             hunt:innerCircleRadius="6dp"
-            hunt:innerCircleStrokeWidth="4dp"
-            hunt:outerCircleRadius="10dp"
-            />
+            hunt:outerCircleRadius="10dp" />
     </LinearLayout>
 
     <TextView
-        android:layout_marginLeft="11dp"
-        android:gravity="center_vertical"
         android:id="@+id/tv_mag_live_time"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginLeft="11dp"
+        android:gravity="center_vertical"
         android:text="15:05:20 打开"
-        android:textSize="17sp"
-        android:textColor="@color/color_333333"/>
+        android:textColor="@color/color_333333"
+        android:textSize="17sp" />
 
 </LinearLayout>

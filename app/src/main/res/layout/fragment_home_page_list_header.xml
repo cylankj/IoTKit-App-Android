@@ -12,10 +12,10 @@
 
     <LinearLayout
         android:id="@+id/lLayout_home_greet"
-        android:layout_marginTop="61dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
+        android:layout_marginTop="61dp"
         android:orientation="vertical">
 
         <TextView
@@ -23,7 +23,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:ellipsize="end"
             android:gravity="center"
+            android:lines="1"
+            android:maxLength="8"
+            android:singleLine="true"
             android:text="Hi xxx"
             android:textColor="@android:color/white"
             android:textSize="26sp" />

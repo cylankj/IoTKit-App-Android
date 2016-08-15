@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                style="@style/information_item"
-                android:layout_width="match_parent"
-                android:layout_height="72dp"
-                android:orientation="vertical"
-                android:background="@color/color_white">
+    style="@style/information_item"
+    android:layout_width="match_parent"
+    android:layout_height="72dp"
+    android:orientation="vertical"
+    android:background="@color/color_white">
 
     <TextView
         android:id="@+id/tv_timezone_item"
@@ -13,11 +13,11 @@
         android:layout_height="wrap_content"
         android:text="MAC"
         android:textColor="#000000"
-        android:textSize="16sp"/>
+        android:textSize="16sp" />
 
     <View
         android:layout_marginTop="10dp"
         android:layout_width="match_parent"
         android:layout_height="1dip"
-        android:background="#F3F3F3"/>
+        android:background="#F3F3F3" />
 </LinearLayout>

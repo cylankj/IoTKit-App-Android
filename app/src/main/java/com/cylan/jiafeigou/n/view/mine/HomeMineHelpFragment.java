@@ -52,14 +52,14 @@ public class HomeMineHelpFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_mine_help,container,false);
+        View view = inflater.inflate(R.layout.fragment_mine_help, container, false);
         ButterKnife.bind(this, view);
         return view;
     }
 
-    @OnClick({R.id.tv_mine_help_back,R.id.tv_mine_help_suggestion})
-    public void onClick(View view){
-        switch (view.getId()){
+    @OnClick({R.id.tv_mine_help_back, R.id.tv_mine_help_suggestion})
+    public void onClick(View view) {
+        switch (view.getId()) {
             //点击退回home_mine的fragment
             case R.id.tv_mine_help_back:
                 getFragmentManager().popBackStack();
@@ -69,7 +69,7 @@ public class HomeMineHelpFragment extends Fragment {
                 getFragmentManager().beginTransaction()
                         .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                                 , R.anim.slide_in_left, R.anim.slide_out_right)
-                        .add(android.R.id.content,homeMineHelpSuggestionFragment,"homeMineHelpSuggestionFragment")
+                        .add(android.R.id.content, homeMineHelpSuggestionFragment, "homeMineHelpSuggestionFragment")
                         .addToBackStack("mineHelpFragment")
                         .commit();
                 break;
