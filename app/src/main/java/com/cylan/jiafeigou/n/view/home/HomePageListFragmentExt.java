@@ -441,7 +441,11 @@ public class HomePageListFragmentExt extends Fragment implements
                 AppLogger.d("bean is null cid: " + cid);
                 return;
             }
+            final int position = homePageListAdapter.getList().indexOf(bean);
             homePageListAdapter.remove(bean);
+            if (position >= homePageListAdapter.getCount())
+                return;
+            homePageListAdapter.notifyItemRangeChanged(position, homePageListAdapter.getItemCount());
         } else {
             AppLogger.d("woo,bundle is not the type");
         }
@@ -486,7 +490,7 @@ public class HomePageListFragmentExt extends Fragment implements
                     ViewGroup.LayoutParams.WRAP_CONTENT);
             lp.gravity = Gravity.CENTER_HORIZONTAL;
             lp.topMargin = ViewUtils.dp2px(80)
-                    ;
+            ;
             homePageEmptyView.addView(viewContainer, lp);
         }
 
