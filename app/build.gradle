@@ -92,6 +92,8 @@ dependencies {
     compile rootProject.ext.appDesige
     //多进程文件共享方案
     compile rootProject.ext.multiProcessSp
+    //glide
+    compile rootProject.ext.glide
 }
 
 if (project.hasProperty('keystoreFile') &&
