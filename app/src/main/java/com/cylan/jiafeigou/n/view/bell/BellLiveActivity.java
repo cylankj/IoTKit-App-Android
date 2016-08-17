@@ -56,7 +56,7 @@ public class BellLiveActivity extends ProcessActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bell_live);
-        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+
         ButterKnife.bind(this);
         initPresenter();
         initView();

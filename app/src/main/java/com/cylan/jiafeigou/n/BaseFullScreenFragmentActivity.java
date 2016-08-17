@@ -29,10 +29,15 @@ public class BaseFullScreenFragmentActivity extends FragmentActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        overridePendingTransition(getOverridePendingTransition()[0], getOverridePendingTransition()[1]);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT && Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             tintManager = new SystemBarTintManager(this);
             setSystemBarTintEnable(true);
         }
+    }
+
+    protected int[] getOverridePendingTransition() {
+        return new int[]{R.anim.slide_in_right, R.anim.slide_out_left};
     }
 
     /**
