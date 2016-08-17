@@ -400,7 +400,6 @@ public class HomePageListFragmentExt extends Fragment implements
 
     @Override
     public boolean onLongClick(View v) {
-        homePageListAdapter.notifyItemRangeChanged();
         final int position = ViewUtils.getParentAdapterPosition(rVDevicesList, v, R.id.rLayout_device_item);
         if (position < 0 || position > homePageListAdapter.getCount()) {
             AppLogger.d("woo,position is invalid: " + position);
