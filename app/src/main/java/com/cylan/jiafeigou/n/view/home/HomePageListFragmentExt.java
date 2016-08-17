@@ -368,7 +368,17 @@ public class HomePageListFragmentExt extends Fragment implements
 
     @Override
     public void onClick(View v) {
-        final int position = v.getTag() == null ? 0 : (int) v.getTag();
+        final int position = ViewUtils.getParentAdapterPosition(rVDevicesList,
+                v,
+                R.id.rLayout_device_item);
+        if (position < 0 || position > homePageListAdapter.getCount()) {
+            AppLogger.d("woo,position is invalid: " + position);
+            return;
+        }
+        if (position < 0 || position > homePageListAdapter.getCount()) {
+            AppLogger.d("woo,position is invalid: " + position);
+            return;
+        }
         if (position < 0 || position > homePageListAdapter.getCount() - 1)
             return;
         DeviceBean bean = homePageListAdapter.getItem(position);
@@ -390,7 +400,12 @@ public class HomePageListFragmentExt extends Fragment implements
 
     @Override
     public boolean onLongClick(View v) {
-        final int position = v.getTag() == null ? 0 : (int) v.getTag();
+        homePageListAdapter.notifyItemRangeChanged();
+        final int position = ViewUtils.getParentAdapterPosition(rVDevicesList, v, R.id.rLayout_device_item);
+        if (position < 0 || position > homePageListAdapter.getCount()) {
+            AppLogger.d("woo,position is invalid: " + position);
+            return false;
+        }
         deleteItem(position);
         return true;
     }
@@ -411,11 +426,9 @@ public class HomePageListFragmentExt extends Fragment implements
             Toast.makeText(getContext(), "null: ", Toast.LENGTH_SHORT).show();
             return;
         }
-        final int position = (int) value;
         Toast.makeText(getContext(), "id: " + id + " value:" + value, Toast.LENGTH_SHORT).show();
         homePageListAdapter.remove((Integer) value);
         //刷新需要剩下的item
-        homePageListAdapter.notifyItemRangeChanged(position, homePageListAdapter.getItemCount());
         emptyViewState.determineEmptyViewState(homePageListAdapter.getCount());
         srLayoutMainContentHolder.setNestedScrollingEnabled(homePageListAdapter.getCount() > JFGRules.NETSTE_SCROLL_COUNT);
     }

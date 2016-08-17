@@ -45,22 +45,12 @@ public class HomeWonderAdapter extends SuperAdapter<MediaBean> {
     }
 
     private void initClickListener(SuperViewHolder holder, final int viewType, final int layoutPosition) {
-        setupPosition2View(holder, R.id.iv_wonderful_item_content, layoutPosition);
-        setupPosition2View(holder, R.id.tv_wonderful_item_share, layoutPosition);
-        setupPosition2View(holder, R.id.tv_wonderful_item_delete, layoutPosition);
         ViewCompat.setTransitionName(holder.getView(R.id.iv_wonderful_item_content),
                 String.valueOf(layoutPosition) + "_image");
         holder.setOnClickListener(R.id.iv_wonderful_item_content, deviceItemClickListener);
         holder.setOnClickListener(R.id.tv_wonderful_item_share, deviceItemClickListener);
         holder.setOnClickListener(R.id.tv_wonderful_item_delete, deviceItemClickListener);
         holder.setOnLongClickListener(R.id.rLayout_wonderful_item_wonder, deviceItemLongClickListener);
-    }
-
-    private void setupPosition2View(SuperViewHolder holder, final int viewId, final int position) {
-        final View view = holder.getView(viewId);
-        if (view != null) {
-            view.setTag(position);
-        }
     }
 
     private void handleState(SuperViewHolder holder, MediaBean bean) {
@@ -105,10 +95,4 @@ public class HomeWonderAdapter extends SuperAdapter<MediaBean> {
     public interface WonderfulItemLongClickListener extends View.OnLongClickListener {
 
     }
-
-//    public interface WonderfulItemShareListener extends View.OnClickListener {
-//    }
-//
-//    public interface WonderfulItemDeleteListener extends View.OnClickListener {
-//    }
 }

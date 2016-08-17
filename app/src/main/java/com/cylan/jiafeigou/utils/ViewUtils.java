@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.support.v7.widget.RecyclerView;
 import android.text.InputFilter;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
@@ -172,6 +173,23 @@ public class ViewUtils {
 
     public static int dp2px(float dp) {
         return (int) (Resources.getSystem().getDisplayMetrics().density * dp + 0.5f);
+    }
+
+    /**
+     * recyclerView的item中的某一个view,获取其最外层的viewParent，也就是item对应的layout在adapter中的position
+     *
+     * @param recyclerView
+     * @param view
+     * @return
+     */
+    public static int getParentAdapterPosition(RecyclerView recyclerView, View view, int parentId) {
+        if (view.getId() == parentId)
+            return recyclerView.getChildAdapterPosition(view);
+        View viewGroup = (View) view.getParent();
+        if (viewGroup != null && viewGroup.getId() == parentId) {
+            return recyclerView.getChildAdapterPosition(viewGroup);
+        }
+        return getParentAdapterPosition(recyclerView, viewGroup, parentId);
     }
 }
 
