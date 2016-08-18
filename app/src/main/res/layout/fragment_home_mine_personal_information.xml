@@ -66,6 +66,7 @@
     </RelativeLayout>
 
     <RelativeLayout
+        android:id="@+id/rLayout_home_mine_personal_pic"
         android:layout_width="match_parent"
         android:layout_height="72dp">
 

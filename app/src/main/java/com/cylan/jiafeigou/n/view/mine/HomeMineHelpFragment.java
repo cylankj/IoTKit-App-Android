@@ -1,11 +1,15 @@
 package com.cylan.jiafeigou.n.view.mine;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebView;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -29,11 +33,16 @@ public class HomeMineHelpFragment extends Fragment {
     @BindView(R.id.rLayout_mine_help_top_bar)
     RelativeLayout rLayoutTopBar;
 
-    @BindView(R.id.tv_mine_help_back)
-    TextView mTvHelpBack;
 
     @BindView(R.id.tv_mine_help_suggestion)
     TextView mTvHelpSuggestion;
+
+    @BindView(R.id.wv_mine_help)
+    WebView mWvHelp;
+
+    @BindView(R.id.pb_mine_help)
+    ProgressBar mPbHelp;
+
     private HomeMineHelpSuggestionFragment homeMineHelpSuggestionFragment;
 
     public static HomeMineHelpFragment newInstance(Bundle bundle) {
@@ -54,14 +63,63 @@ public class HomeMineHelpFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_mine_help,container,false);
         ButterKnife.bind(this, view);
+        new ProgressTask().execute();
         return view;
     }
 
-    @OnClick({R.id.tv_mine_help_back,R.id.tv_mine_help_suggestion})
+    class ProgressTask extends AsyncTask<Void,Integer,Void>{
+
+
+        @Override
+        protected void onPostExecute(Void result) {
+            mPbHelp.setVisibility(View.GONE);
+            showWebView();
+        }
+        @Override
+        protected void onPreExecute() {
+            mPbHelp.setVisibility(View.VISIBLE);
+            mPbHelp.setProgress(0); // 进度条复位
+        }
+
+        @Override
+        protected void onProgressUpdate(Integer... values) {
+            super.onProgressUpdate(values);
+            mPbHelp.setProgress(values[0]);
+        }
+
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            for (int i = 0; i <= 200; i++) {
+                publishProgress(i); // 将会调用onProgressUpdate方法
+                try {
+                    Thread.sleep(20);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            return null;
+        }
+    }
+
+    /**
+     * 当进度条加载完成的时候显示该webView
+     */
+    private void showWebView() {
+        mWvHelp.getSettings().setJavaScriptEnabled(true);
+        mWvHelp.getSettings().setSavePassword(false);
+        mWvHelp.removeJavascriptInterface("searchBoxJavaBridge_");
+        mWvHelp.removeJavascriptInterface("accessibilityTraversal");
+        mWvHelp.removeJavascriptInterface("accessibility");
+        String url = String.format("http://test.jfgou.com/help/zh-rCN.html",null);
+        mWvHelp.loadUrl(url);
+    }
+
+    @OnClick({R.id.iv_home_mine_help_back,R.id.tv_mine_help_suggestion})
     public void onClick(View view){
         switch (view.getId()){
             //点击退回home_mine的fragment
-            case R.id.tv_mine_help_back:
+            case R.id.iv_home_mine_help_back:
                 getFragmentManager().popBackStack();
                 break;
             //点击进入意见反馈的页面

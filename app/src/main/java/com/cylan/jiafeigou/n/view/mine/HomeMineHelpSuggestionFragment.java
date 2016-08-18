@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
@@ -25,6 +26,7 @@ import butterknife.OnClick;
  * 更新描述   ${TODO}
  */
 public class HomeMineHelpSuggestionFragment extends Fragment {
+
 
 
     public static HomeMineHelpSuggestionFragment newInstance(Bundle bundle) {
@@ -49,8 +51,15 @@ public class HomeMineHelpSuggestionFragment extends Fragment {
         return view;
     }
 
-    @OnClick(R.id.iv_home_mine_suggestion)
+    @OnClick({R.id.iv_home_mine_suggestion_back,R.id.tv_mine_help_suggestion_clear})
     public void onClick(){
-        getFragmentManager().popBackStack();
+        switch (getId()){
+            case R.id.tv_mine_help_suggestion_clear:
+                //TODO  点击清空进行集合的清空
+                break;
+            case R.id.iv_home_mine_suggestion_back:
+                getFragmentManager().popBackStack();
+                break;
+        }
     }
 }

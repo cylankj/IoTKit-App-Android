@@ -35,13 +35,9 @@ public class MagActivityAdapter extends SuperAdapter<MagBean> {
 
     private static final int TYPE_INVISIBLE = 1;//不显示类型
 
-    private List<MagBean> list;
-    private Context context;
     public MagActivityAdapter(Context context, List<MagBean> items,
                              IMulItemViewType<MagBean> mulItemViewType) {
         super(context, items, mulItemViewType);
-        this.list = items;
-        this.context = context;
     }
 
     @Override
