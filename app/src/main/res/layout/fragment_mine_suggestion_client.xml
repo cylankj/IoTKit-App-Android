@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/tv_mine_suggestion_client_time"
+        android:textColor="@color/color_adadad"
+        android:textSize="13sp"
+        android:layout_centerHorizontal="true"
+        android:text="2016/04/01 12:00"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <ImageView
+        android:id="@+id/iv_mine_suggestion_client"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="22dp"
+        android:src="@drawable/img_head"
+        android:layout_width="40dp"
+        android:layout_height="40dp"/>
+
+    <TextView
+        android:layout_toLeftOf="@id/iv_mine_suggestion_client"
+        android:id="@+id/tv_mine_suggestion_client_speak"
+        android:layout_marginRight="58dp"
+        android:layout_alignParentRight="true"
+        android:background="@drawable/pic_container_blue"
+        android:textColor="@color/color_white"
+        android:textSize="14sp"
+        android:paddingLeft="12dp"
+        android:paddingBottom="10dp"
+        android:paddingTop="10dp"
+        android:text="希望你们会做视频下载功能，非常实用呢"
+        android:layout_marginTop="30dp"
+        android:layout_width="230dp"
+        android:layout_height="wrap_content"/>
+
+</RelativeLayout>

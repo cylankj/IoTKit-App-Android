@@ -93,7 +93,7 @@ public class HomeMineHelpFragment extends Fragment {
             for (int i = 0; i <= 200; i++) {
                 publishProgress(i); // 将会调用onProgressUpdate方法
                 try {
-                    Thread.sleep(20);
+                    Thread.sleep(15);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }

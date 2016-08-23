@@ -101,7 +101,7 @@ public class CamDeviceTimeZoneAdapter extends SuperAdapter<TimeZoneBean> {
 
             @Override
             public int getItemViewType(int position, TimeZoneBean timeZoneBean) {
-                return timeZoneBean.visibleType; //0.正常显示 ，1.
+                return timeZoneBean.visibleType; //0.正常显示
             }
 
 
