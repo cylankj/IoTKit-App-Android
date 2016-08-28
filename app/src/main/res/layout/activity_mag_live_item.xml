@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:hunt="http://schemas.android.com/apk/res-auto"
-              android:orientation="horizontal"
-              android:layout_width="match_parent"
-              android:layout_height="48dp">
+    xmlns:hunt="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="48dp">
 
     <LinearLayout
         android:orientation="horizontal"
@@ -19,7 +19,7 @@
             android:layout_height="match_parent"
             android:text="今天"
             android:textSize="17sp"
-            android:textColor="@color/color_333333"/>
+            android:textColor="@color/color_333333" />
 
         <com.cylan.jiafeigou.widget.FateLineView
             android:layout_marginLeft="12dp"
@@ -31,8 +31,7 @@
             hunt:innerCircleColor="@color/color_e8e8e8"
             hunt:innerCircleRadius="6dp"
             hunt:innerCircleStrokeWidth="4dp"
-            hunt:outerCircleRadius="10dp"
-            />
+            hunt:outerCircleRadius="10dp" />
     </LinearLayout>
 
     <TextView
@@ -43,6 +42,6 @@
         android:layout_height="match_parent"
         android:text="15:05:20 打开"
         android:textSize="17sp"
-        android:textColor="@color/color_333333"/>
+        android:textColor="@color/color_333333" />
 
 </LinearLayout>

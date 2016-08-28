@@ -1,15 +1,10 @@
 package com.cylan.jiafeigou.n.view.adapter;
 
 import android.content.Context;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
 import android.view.View;
 
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.n.mvp.model.MagBean;
 import com.cylan.jiafeigou.n.mvp.model.MineHelpSuggestionBean;
-import com.cylan.jiafeigou.n.mvp.model.TimeZoneBean;
-import com.cylan.jiafeigou.widget.FateLineView;
 import com.cylan.superadapter.IMulItemViewType;
 import com.cylan.superadapter.SuperAdapter;
 import com.cylan.superadapter.internal.SuperViewHolder;
@@ -36,19 +31,19 @@ public class HomeMineHelpSuggestionAdapter extends SuperAdapter<MineHelpSuggesti
     private static final int TYPE_Client = 1;//客户端类型
 
     public HomeMineHelpSuggestionAdapter(Context context,
-                                    List<MineHelpSuggestionBean> items,
-                                    IMulItemViewType<MineHelpSuggestionBean> mulItemViewType) {
-        super(context,items,mulItemViewType);
+                                         List<MineHelpSuggestionBean> items,
+                                         IMulItemViewType<MineHelpSuggestionBean> mulItemViewType) {
+        super(context, items, mulItemViewType);
     }
 
     @Override
     public void onBind(SuperViewHolder holder, int viewType, int layoutPosition, MineHelpSuggestionBean item) {
-        if(viewType==TYPE_SERVER){
+        if (viewType == TYPE_SERVER) {
             initServer(holder, layoutPosition);
-            handleServerState(holder,layoutPosition, item);
-        }else if(viewType==TYPE_Client){
+            handleServerState(holder, layoutPosition, item);
+        } else if (viewType == TYPE_Client) {
             initClient(holder, layoutPosition);
-            handleClientState(holder,layoutPosition, item);
+            handleClientState(holder, layoutPosition, item);
         }
     }
 
@@ -73,17 +68,17 @@ public class HomeMineHelpSuggestionAdapter extends SuperAdapter<MineHelpSuggesti
 
 
     private void handleServerState(SuperViewHolder holder, int layoutPosition, MineHelpSuggestionBean bean) {
-        if(layoutPosition!=0){
-            holder.itemView.setPadding(0,34,0,10);
-        }else {
-            holder.itemView.setPadding(0,20,0,0);
+        if (layoutPosition != 0) {
+            holder.itemView.setPadding(0, 34, 0, 10);
+        } else {
+            holder.itemView.setPadding(0, 20, 0, 0);
         }
 
-        if(bean.isShowTime){
+        if (bean.isShowTime) {
             holder.setText(R.id.tv_mine_suggestion_server_time, getNowDate(bean.getDate()));
             holder.setBackgroundResource(R.id.iv_mine_suggestion_server, bean.getIcon());
             holder.setText(R.id.tv_mine_suggestion_server_speak, bean.getText());
-        }else {
+        } else {
             holder.setVisibility(R.id.tv_mine_suggestion_server_time, View.GONE);
             holder.setBackgroundResource(R.id.iv_mine_suggestion_server, bean.getIcon());
             holder.setText(R.id.tv_mine_suggestion_server_speak, bean.getText());
@@ -91,20 +86,20 @@ public class HomeMineHelpSuggestionAdapter extends SuperAdapter<MineHelpSuggesti
     }
 
     private void handleClientState(SuperViewHolder holder, int layoutPosition, MineHelpSuggestionBean bean) {
-        if(layoutPosition!=0){
-            holder.itemView.setPadding(0,34,0,10);
-        }else {
-            holder.itemView.setPadding(0,20,0,0);
+        if (layoutPosition != 0) {
+            holder.itemView.setPadding(0, 34, 0, 10);
+        } else {
+            holder.itemView.setPadding(0, 20, 0, 0);
         }
 
-        if(bean.isShowTime){
-            holder.setText(R.id.tv_mine_suggestion_client_time,getNowDate(bean.getDate()));
-            holder.setBackgroundResource(R.id.iv_mine_suggestion_client,bean.getIcon());
-            holder.setText(R.id.tv_mine_suggestion_client_speak,bean.getText());
-        }else {
-            holder.setVisibility(R.id.tv_mine_suggestion_client_time,View.GONE);
-            holder.setBackgroundResource(R.id.iv_mine_suggestion_client,bean.getIcon());
-            holder.setText(R.id.tv_mine_suggestion_client_speak,bean.getText());
+        if (bean.isShowTime) {
+            holder.setText(R.id.tv_mine_suggestion_client_time, getNowDate(bean.getDate()));
+            holder.setBackgroundResource(R.id.iv_mine_suggestion_client, bean.getIcon());
+            holder.setText(R.id.tv_mine_suggestion_client_speak, bean.getText());
+        } else {
+            holder.setVisibility(R.id.tv_mine_suggestion_client_time, View.GONE);
+            holder.setBackgroundResource(R.id.iv_mine_suggestion_client, bean.getIcon());
+            holder.setText(R.id.tv_mine_suggestion_client_speak, bean.getText());
         }
     }
 
@@ -133,11 +128,12 @@ public class HomeMineHelpSuggestionAdapter extends SuperAdapter<MineHelpSuggesti
 
     /**
      * 获得当前日期的方法
+     *
      * @param magDate
      */
-    public String getNowDate(String magDate){
-        SimpleDateFormat sdf=new SimpleDateFormat("yyyy/MM/dd HH:mm");
-        String nowDate=sdf.format(new Date());
+    public String getNowDate(String magDate) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm");
+        String nowDate = sdf.format(new Date());
         return nowDate;
     }
 }

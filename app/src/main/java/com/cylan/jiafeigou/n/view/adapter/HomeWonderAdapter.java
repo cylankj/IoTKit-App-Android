@@ -2,7 +2,6 @@ package com.cylan.jiafeigou.n.view.adapter;
 
 import android.content.Context;
 import android.support.v4.view.ViewCompat;
-import android.util.Patterns;
 import android.view.View;
 
 import com.cylan.jiafeigou.R;
@@ -12,8 +11,6 @@ import com.cylan.superadapter.SuperAdapter;
 import com.cylan.superadapter.internal.SuperViewHolder;
 
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Created by chen on 6/6/16.

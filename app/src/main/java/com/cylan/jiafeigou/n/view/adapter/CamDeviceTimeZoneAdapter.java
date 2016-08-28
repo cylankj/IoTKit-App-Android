@@ -1,13 +1,10 @@
 package com.cylan.jiafeigou.n.view.adapter;
 
 import android.content.Context;
-import android.support.v4.app.FragmentActivity;
 import android.view.View;
 
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.n.mvp.model.MagBean;
 import com.cylan.jiafeigou.n.mvp.model.TimeZoneBean;
-import com.cylan.jiafeigou.widget.FateLineView;
 import com.cylan.superadapter.IMulItemViewType;
 import com.cylan.superadapter.SuperAdapter;
 import com.cylan.superadapter.internal.SuperViewHolder;
@@ -34,7 +31,7 @@ public class CamDeviceTimeZoneAdapter extends SuperAdapter<TimeZoneBean> {
     public CamDeviceTimeZoneAdapter(Context context,
                                     List<TimeZoneBean> items,
                                     IMulItemViewType<TimeZoneBean> mulItemViewType) {
-        super(context,items,mulItemViewType);
+        super(context, items, mulItemViewType);
     }
 
     /**
@@ -42,30 +39,30 @@ public class CamDeviceTimeZoneAdapter extends SuperAdapter<TimeZoneBean> {
      */
     private OnRecyclerViewListener onRecyclerViewListener;
 
-    public interface OnRecyclerViewListener{ //回调点击
-        void onItemClick(View view,int position);
+    public interface OnRecyclerViewListener { //回调点击
+        void onItemClick(View view, int position);
     }
 
-    public void setOnRecyclerViewListener(OnRecyclerViewListener mOnItemClickListener){
+    public void setOnRecyclerViewListener(OnRecyclerViewListener mOnItemClickListener) {
         this.onRecyclerViewListener = mOnItemClickListener;
     }
 
     @Override
     public void onBind(final SuperViewHolder holder, int viewType, int layoutPosition, TimeZoneBean item) {
-        if(viewType == TYPE_VISIBLE){
+        if (viewType == TYPE_VISIBLE) {
             initVisible(holder, layoutPosition);
-            handleVisibleState(holder,layoutPosition, item);
-            if(onRecyclerViewListener!=null){
+            handleVisibleState(holder, layoutPosition, item);
+            if (onRecyclerViewListener != null) {
                 holder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         int pos = holder.getLayoutPosition();
-                        onRecyclerViewListener.onItemClick(holder.itemView,pos);
+                        onRecyclerViewListener.onItemClick(holder.itemView, pos);
                     }
                 });
             }
-        }else if(viewType == TYPE_INVISIBLE){
-            initInvisible(holder,layoutPosition);
+        } else if (viewType == TYPE_INVISIBLE) {
+            initInvisible(holder, layoutPosition);
         }
     }
 
@@ -87,7 +84,7 @@ public class CamDeviceTimeZoneAdapter extends SuperAdapter<TimeZoneBean> {
 
 
     private void handleVisibleState(SuperViewHolder holder, int layoutPosition, TimeZoneBean bean) {
-        holder.setText(R.id.tv_timezone_item,bean.getName());
+        holder.setText(R.id.tv_timezone_item, bean.getName());
     }
 
     @Override
@@ -108,7 +105,7 @@ public class CamDeviceTimeZoneAdapter extends SuperAdapter<TimeZoneBean> {
             @Override
             public int getLayoutId(int viewType) {
                 return viewType == TYPE_VISIBLE ?
-                        R.layout.fragment_edit_timezone_item:
+                        R.layout.fragment_edit_timezone_item :
                         R.layout.fragment_edit_timezone_none;
             }
         };

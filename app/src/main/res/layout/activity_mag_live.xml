@@ -1,19 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="vertical"
-              android:clickable="true"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent">
+    android:orientation="vertical"
+    android:clickable="true"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
     <FrameLayout
         android:id="@+id/fLayout_msg_information"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
         <!-- 标题栏部分 -->
-            <RelativeLayout
-                android:id="@+id/rLayout_mag_live_top_bar"
-                android:layout_width="match_parent"
-                android:layout_height="181dp"
-                android:background="#66bb6a">
+        <RelativeLayout
+            android:id="@+id/rLayout_mag_live_top_bar"
+            android:layout_width="match_parent"
+            android:layout_height="181dp"
+            android:background="#66bb6a">
 
             <ImageView
                 android:id="@+id/imgV_msg_title_top_back"
@@ -31,7 +32,7 @@
                 android:layout_height="wrap_content"
                 android:text="门磁"
                 android:textSize="18sp"
-                android:textColor="@color/color_white"/>
+                android:textColor="@color/color_white" />
 
             <ImageView
                 android:id="@+id/imgV_msg_title_top_door"
@@ -40,7 +41,7 @@
                 android:layout_centerHorizontal="true"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/icon_close"/>
+                android:src="@drawable/icon_close" />
 
 
             <ImageView
@@ -50,21 +51,21 @@
                 android:layout_alignParentRight="true"
                 android:padding="15dp"
                 android:src="@drawable/icon_setting" />
-            </RelativeLayout>
+        </RelativeLayout>
 
         <LinearLayout
             android:layout_marginTop="181dp"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
+
             <android.support.v7.widget.RecyclerView
                 android:background="@color/color_white"
                 android:overScrollMode="never"
                 android:scrollbars="none"
                 android:id="@+id/rv_mag_state"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
-            </android.support.v7.widget.RecyclerView>
+                android:layout_height="match_parent"></android.support.v7.widget.RecyclerView>
         </LinearLayout>
 
     </FrameLayout>

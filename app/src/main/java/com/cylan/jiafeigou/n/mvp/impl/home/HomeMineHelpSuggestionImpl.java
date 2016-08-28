@@ -3,7 +3,6 @@ package com.cylan.jiafeigou.n.mvp.impl.home;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeMineHelpSuggestionContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
-import com.cylan.jiafeigou.n.mvp.model.CamMessageBean;
 import com.cylan.jiafeigou.n.mvp.model.MineHelpSuggestionBean;
 
 import java.util.ArrayList;

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:clickable="true"
-              android:orientation="vertical"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:background="@color/color_white">
+    android:clickable="true"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/color_white">
 
 
     <RelativeLayout
@@ -12,6 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="73dp"
         android:background="#0BA8CF">
+
         <ImageView
             android:clickable="true"
             android:layout_alignParentBottom="true"
@@ -19,7 +20,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="15dp"
-            android:src="@drawable/ic_nav_back_arrow"/>
+            android:src="@drawable/ic_nav_back_arrow" />
 
 
         <TextView
@@ -30,7 +31,7 @@
             android:layout_height="wrap_content"
             android:text="帮助与反馈"
             android:textSize="18sp"
-            android:textColor="@color/color_white"/>
+            android:textColor="@color/color_white" />
 
 
         <TextView
@@ -43,7 +44,7 @@
             android:id="@+id/tv_mine_help_suggestion"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="15dp"/>
+            android:padding="15dp" />
     </RelativeLayout>
 
     <ProgressBar
@@ -54,7 +55,7 @@
         android:max="200"
         android:progress="30"
         android:layout_width="match_parent"
-        android:layout_height="3dp"/>
+        android:layout_height="3dp" />
 
     <WebView
         android:visibility="visible"

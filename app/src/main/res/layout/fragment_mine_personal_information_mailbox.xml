@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:clickable="true"
-              android:orientation="vertical"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:background="@color/color_white">
+    android:clickable="true"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/color_white">
 
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="73dp"
         android:background="@color/color_0ba8cf">
+
         <ImageView
             android:id="@+id/iv_mine_personal_mailbox_back"
             android:clickable="true"
@@ -18,7 +19,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="15dp"
-            android:src="@drawable/ic_nav_back_arrow"/>
+            android:src="@drawable/ic_nav_back_arrow" />
 
         <TextView
             android:layout_marginBottom="12dp"
@@ -28,7 +29,7 @@
             android:layout_height="wrap_content"
             android:text="绑定邮箱"
             android:textSize="18sp"
-            android:textColor="@color/color_white"/>
+            android:textColor="@color/color_white" />
 
         <ImageView
             android:visibility="visible"
@@ -40,7 +41,7 @@
             android:clickable="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/icon_finish"/>
+            android:src="@drawable/icon_finish" />
 
         <ImageView
             android:visibility="gone"
@@ -52,7 +53,7 @@
             android:clickable="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/icon_finish_disable"/>
+            android:src="@drawable/icon_finish_disable" />
     </RelativeLayout>
 
     <RelativeLayout
@@ -70,7 +71,7 @@
             android:layout_marginRight="20dp"
             android:layout_marginLeft="20dp"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content" />
 
         <View
             android:id="@+id/view_mine_personal_information_mailbox"
@@ -90,7 +91,7 @@
             android:layout_alignParentRight="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/btn_login_clear_text"/>
+            android:src="@drawable/btn_login_clear_text" />
 
     </RelativeLayout>
 

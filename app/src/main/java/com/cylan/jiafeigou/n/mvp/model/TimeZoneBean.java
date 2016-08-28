@@ -15,35 +15,27 @@ public class TimeZoneBean {
     private String name;
     public int visibleType;
 
-    public void setGmt(String gmt){
+    public void setGmt(String gmt) {
         this.gmt = gmt;
     }
 
-    public String getGmt(){
+    public String getGmt() {
         return gmt;
     }
 
-    public void setId(String id){
+    public void setId(String id) {
         this.id = id;
     }
 
-    public String getId(){
+    public String getId() {
         return id;
     }
 
-    public void setVisibleType(int visibleType){
-        this.visibleType = visibleType;
-    }
-
-    public int getVisibleType(){
-        return visibleType;
-    }
-
-    public void setName(String name){
+    public void setName(String name) {
         this.name = name;
     }
 
-    public String getName(){
+    public String getName() {
         return name;
     }
 }

@@ -133,7 +133,7 @@ public class FateLineView extends View {
 //        super.onDraw(canvas);
         int rectTop = getPaddingTop();
         int rectBottom = getMeasuredHeight() - getPaddingBottom();
-        float circleTop = centerVertical?getMeasuredHeight()/2:outerCircleY+outerCircleRadius;
+        float circleTop = centerVertical ? getMeasuredHeight() / 2 : outerCircleY + outerCircleRadius;
         final int count = canvas.save();
         //虚线
         dashPath.moveTo(getMeasuredWidth() / 2, rectTop);

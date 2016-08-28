@@ -15,9 +15,10 @@ public class ContinuityClickUtils {
      * 防止用户连续的点击操作所造成的程序崩溃退出
      */
     private static long lastClickTime;
+
     public static boolean isFastDoubleClick() {
         long time = System.currentTimeMillis();
-        if ( time - lastClickTime < 2000) {
+        if (time - lastClickTime < 2000) {
             return true;
         }
         lastClickTime = time;

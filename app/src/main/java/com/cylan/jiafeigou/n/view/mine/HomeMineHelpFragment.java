@@ -8,7 +8,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -61,13 +60,13 @@ public class HomeMineHelpFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_mine_help,container,false);
+        View view = inflater.inflate(R.layout.fragment_mine_help, container, false);
         ButterKnife.bind(this, view);
         new ProgressTask().execute();
         return view;
     }
 
-    class ProgressTask extends AsyncTask<Void,Integer,Void>{
+    class ProgressTask extends AsyncTask<Void, Integer, Void> {
 
 
         @Override
@@ -75,6 +74,7 @@ public class HomeMineHelpFragment extends Fragment {
             mPbHelp.setVisibility(View.GONE);
             showWebView();
         }
+
         @Override
         protected void onPreExecute() {
             mPbHelp.setVisibility(View.VISIBLE);
@@ -111,13 +111,12 @@ public class HomeMineHelpFragment extends Fragment {
         mWvHelp.removeJavascriptInterface("searchBoxJavaBridge_");
         mWvHelp.removeJavascriptInterface("accessibilityTraversal");
         mWvHelp.removeJavascriptInterface("accessibility");
-        String url = String.format("http://test.jfgou.com/help/zh-rCN.html",null);
-        mWvHelp.loadUrl(url);
+        mWvHelp.loadUrl("http://test.jfgou.com/help/zh-rCN.html");
     }
 
-    @OnClick({R.id.iv_home_mine_help_back,R.id.tv_mine_help_suggestion})
-    public void onClick(View view){
-        switch (view.getId()){
+    @OnClick({R.id.iv_home_mine_help_back, R.id.tv_mine_help_suggestion})
+    public void onClick(View view) {
+        switch (view.getId()) {
             //点击退回home_mine的fragment
             case R.id.iv_home_mine_help_back:
                 getFragmentManager().popBackStack();
@@ -127,7 +126,7 @@ public class HomeMineHelpFragment extends Fragment {
                 getFragmentManager().beginTransaction()
                         .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                                 , R.anim.slide_in_left, R.anim.slide_out_right)
-                        .add(android.R.id.content,homeMineHelpSuggestionFragment,"homeMineHelpSuggestionFragment")
+                        .add(android.R.id.content, homeMineHelpSuggestionFragment, "homeMineHelpSuggestionFragment")
                         .addToBackStack("mineHelpFragment")
                         .commit();
                 break;

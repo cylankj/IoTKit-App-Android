@@ -20,43 +20,43 @@ public class MineHelpSuggestionBean {
     public boolean isShowTime;
     public ArrayList<String> urlList;
 
-    public void setIsShowTime(boolean isShowTime){
+    public void setIsShowTime(boolean isShowTime) {
         this.isShowTime = isShowTime;
     }
 
-    public boolean getIsShowTime(){
+    public boolean getIsShowTime() {
         return isShowTime;
     }
 
-    public void setType(int type){
+    public void setType(int type) {
         this.type = type;
     }
 
-    public int getType(){
+    public int getType() {
         return type;
     }
 
-    public void setIcon(int icon){
+    public void setIcon(int icon) {
         this.icon = icon;
     }
 
-    public int getIcon(){
+    public int getIcon() {
         return icon;
     }
 
-    public void setText(String text){
+    public void setText(String text) {
         this.text = text;
     }
 
-    public String getText(){
+    public String getText() {
         return text;
     }
 
-    public void setDate(String date){
+    public void setDate(String date) {
         this.date = date;
     }
 
-    public String getDate(){
+    public String getDate() {
         return date;
     }
 }

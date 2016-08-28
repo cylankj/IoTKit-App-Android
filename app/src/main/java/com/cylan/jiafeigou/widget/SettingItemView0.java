@@ -11,7 +11,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.utils.ViewUtils;
 
 /**
  * Created by cylan-hunt on 16-7-29.

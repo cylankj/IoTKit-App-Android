@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@color/color_white"
-                android:clickable="true"
-                android:orientation="vertical">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/color_white"
+    android:clickable="true"
+    android:orientation="vertical">
 
     <RelativeLayout
         android:id="@+id/rl_home_mine_suggestion"
@@ -19,7 +19,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:padding="15dp"
-            android:src="@drawable/ic_nav_back_arrow"/>
+            android:src="@drawable/ic_nav_back_arrow" />
 
         <TextView
             android:layout_width="match_parent"
@@ -29,7 +29,7 @@
             android:layout_marginLeft="48dp"
             android:text="帮助与反馈"
             android:textColor="@color/color_white"
-            android:textSize="18sp"/>
+            android:textSize="18sp" />
 
         <TextView
             android:id="@+id/tv_mine_help_suggestion_clear"
@@ -41,7 +41,7 @@
             android:padding="15dp"
             android:text="清空"
             android:textColor="@color/color_white"
-            android:textSize="14sp"/>
+            android:textSize="14sp" />
     </RelativeLayout>
 
 
@@ -56,8 +56,7 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@color/color_e1e1e1">
-        </View>
+            android:background="@color/color_e1e1e1"></View>
 
         <EditText
             android:id="@+id/et_home_mine_suggestion"
@@ -70,7 +69,7 @@
             android:maxLength="128"
             android:paddingLeft="10dp"
             android:textColorHint="@color/color_cecece"
-            android:textSize="13sp"/>
+            android:textSize="13sp" />
 
         <TextView
             android:id="@+id/tv_home_mine_suggestion"
@@ -84,7 +83,7 @@
             android:contextClickable="true"
             android:text="发送"
             android:textColor="@color/color_4b9fd5"
-            android:textSize="15sp"/>
+            android:textSize="15sp" />
     </RelativeLayout>
 
     <android.support.v7.widget.RecyclerView
@@ -94,8 +93,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:overScrollMode="never"
-        android:scrollbars="none">
-    </android.support.v7.widget.RecyclerView>
+        android:scrollbars="none"></android.support.v7.widget.RecyclerView>
 
 
 </RelativeLayout>

@@ -12,7 +12,6 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.n.mvp.contract.home.HomeMineHelpSuggestionContract;
 import com.cylan.jiafeigou.n.mvp.model.MineHelpSuggestionBean;
 import com.cylan.jiafeigou.n.view.adapter.HomeMineHelpSuggestionAdapter;
 import com.cylan.jiafeigou.utils.ToastUtil;
@@ -123,14 +122,14 @@ public class HomeMineHelpSuggestionFragment extends Fragment {
                 suggestion = mEtSuggestion.getText().toString();
                 if (suggestion.length() >= 10) {
                     nowTime = System.currentTimeMillis();
-                    if(nowTime-afterTime>300000){
+                    if (nowTime - afterTime > 300000) {
                         //大于300000 表示可以进行自动回复了
                         addClientItem();
                         addAutoReply();
                         suggestionAdapter = new HomeMineHelpSuggestionAdapter(getContext(), suggestionList, null);
                         mRvMineSuggestion.setAdapter(suggestionAdapter);
                         mEtSuggestion.setText("");
-                    }else {
+                    } else {
                         //表示用户在5分钟之内连续进行反馈，不自动回复
                         addClientItem();
                         suggestionAdapter = new HomeMineHelpSuggestionAdapter(getContext(), suggestionList, null);
@@ -141,7 +140,7 @@ public class HomeMineHelpSuggestionFragment extends Fragment {
                 } else {
                     ToastUtil.showToast(getActivity(), "输入内容不能小于10个字符");
                 }
-                mRvMineSuggestion.scrollToPosition(suggestionList.size()-1);
+                mRvMineSuggestion.scrollToPosition(suggestionList.size() - 1);
                 break;
         }
     }
@@ -150,14 +149,14 @@ public class HomeMineHelpSuggestionFragment extends Fragment {
      * 用户点击发送符合条件之后，显示该条目
      */
     private void addClientItem() {
-        if(nowTime-afterTime>300000){
+        if (nowTime - afterTime > 300000) {
             MineHelpSuggestionBean suggestionBean = new MineHelpSuggestionBean();
             suggestionBean.setIcon(R.drawable.img_head);
             suggestionBean.setType(1);
             suggestionBean.setText(suggestion);
             suggestionBean.setIsShowTime(true);
             suggestionList.add(suggestionBean);
-        }else {
+        } else {
             MineHelpSuggestionBean suggestionBean = new MineHelpSuggestionBean();
             suggestionBean.setIcon(R.drawable.img_head);
             suggestionBean.setType(1);
@@ -184,8 +183,8 @@ public class HomeMineHelpSuggestionFragment extends Fragment {
     /**
      * 服务端主动推送给客户的消息
      */
-    private void addServerItem(){
-        if(nowTime-afterTime>300000){
+    private void addServerItem() {
+        if (nowTime - afterTime > 300000) {
             MineHelpSuggestionBean autoReplyBean = new MineHelpSuggestionBean();
             autoReplyBean.setIcon(R.drawable.pic_head);
             autoReplyBean.setType(0);
@@ -193,7 +192,7 @@ public class HomeMineHelpSuggestionFragment extends Fragment {
             autoReplyBean.setDate("");
             autoReplyBean.setIsShowTime(true);
             suggestionList.add(autoReplyBean);
-        }else {
+        } else {
             MineHelpSuggestionBean autoReplyBean = new MineHelpSuggestionBean();
             autoReplyBean.setIcon(R.drawable.pic_head);
             autoReplyBean.setType(0);

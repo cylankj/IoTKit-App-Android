@@ -1,9 +1,7 @@
 package com.cylan.jiafeigou.n.view.adapter;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.View;
-import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.model.MagBean;
@@ -11,7 +9,6 @@ import com.cylan.jiafeigou.widget.FateLineView;
 import com.cylan.superadapter.IMulItemViewType;
 import com.cylan.superadapter.SuperAdapter;
 import com.cylan.superadapter.internal.SuperViewHolder;
-import com.superlog.SLog;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -36,17 +33,17 @@ public class MagActivityAdapter extends SuperAdapter<MagBean> {
     private static final int TYPE_INVISIBLE = 1;//不显示类型
 
     public MagActivityAdapter(Context context, List<MagBean> items,
-                             IMulItemViewType<MagBean> mulItemViewType) {
+                              IMulItemViewType<MagBean> mulItemViewType) {
         super(context, items, mulItemViewType);
     }
 
     @Override
     public void onBind(SuperViewHolder holder, int viewType, int layoutPosition, MagBean item) {
-        if(viewType == TYPE_VISIBLE){
+        if (viewType == TYPE_VISIBLE) {
             initVisible(holder, layoutPosition);
-            handleVisibleState(holder,layoutPosition, item);
-        }else if(viewType == TYPE_INVISIBLE){
-            initInvisible(holder,layoutPosition);
+            handleVisibleState(holder, layoutPosition, item);
+        } else if (viewType == TYPE_INVISIBLE) {
+            initInvisible(holder, layoutPosition);
         }
     }
 
@@ -71,22 +68,22 @@ public class MagActivityAdapter extends SuperAdapter<MagBean> {
     private void handleVisibleState(SuperViewHolder holder, int layoutPosition, MagBean bean) {
         //每条的第一个设置内外圈颜色
         if (layoutPosition == 0) {
-            FateLineView view =(FateLineView) holder.getView(R.id.flv_mag_live);
+            FateLineView view = (FateLineView) holder.getView(R.id.flv_mag_live);
             view.setOuterCircleColor(R.color.color_red);
         }
         //把数据插入其中
-        if(layoutPosition == 0){
-            holder.setText(R.id.tv_mag_live_day,"今天");
-        }else if(layoutPosition == 6){
-            holder.setText(R.id.tv_mag_live_day,getDate(bean.magDate)+"月");
-        }else {
-            holder.setText(R.id.tv_mag_live_day,"");
+        if (layoutPosition == 0) {
+            holder.setText(R.id.tv_mag_live_day, "今天");
+        } else if (layoutPosition == 6) {
+            holder.setText(R.id.tv_mag_live_day, getDate(bean.magDate) + "月");
+        } else {
+            holder.setText(R.id.tv_mag_live_day, "");
         }
 
         if (bean.isOpen) {
-            holder.setText(R.id.tv_mag_live_time,longToDate(bean.magTime)+" "+"打开");
+            holder.setText(R.id.tv_mag_live_time, longToDate(bean.magTime) + " " + "打开");
         } else {
-            holder.setText(R.id.tv_mag_live_time,longToDate(bean.magTime)+" "+"关闭");
+            holder.setText(R.id.tv_mag_live_time, longToDate(bean.magTime) + " " + "关闭");
         }
     }
 
@@ -116,18 +113,19 @@ public class MagActivityAdapter extends SuperAdapter<MagBean> {
 
     /**
      * 获得当前日期的方法
+     *
      * @param magDate
      */
-    public String getDate(String magDate){
-        SimpleDateFormat sdf=new SimpleDateFormat("dd/M");
-        String nowDate=sdf.format(new Date());
+    public String getDate(String magDate) {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/M");
+        String nowDate = sdf.format(new Date());
         return nowDate;
     }
 
     /**
      * long类型转换为时间值类型
      */
-    public String longToDate(long lo){
+    public String longToDate(long lo) {
         Date date = new Date(lo);
         SimpleDateFormat sd = new SimpleDateFormat("HH:mm:ss");
         return sd.format(date);

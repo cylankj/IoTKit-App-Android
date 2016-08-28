@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="match_parent"
-              android:orientation="vertical"
-                android:layout_height="54dp"
-                android:background="@color/color_white">
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:layout_height="54dp"
+    android:background="@color/color_white">
 
     <TextView
         android:layout_marginTop="18dp"
@@ -12,15 +12,12 @@
         android:layout_height="wrap_content"
         android:text="中国/香港"
         android:textColor="#000000"
-        android:textSize="16sp"
-        />
+        android:textSize="16sp" />
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@color/color_f2f2f2"
-        android:layout_gravity="bottom"
-        >
-    </View>
+        android:layout_gravity="bottom"/>
 
 </FrameLayout>

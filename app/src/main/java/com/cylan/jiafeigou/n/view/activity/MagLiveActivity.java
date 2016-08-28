@@ -36,7 +36,6 @@ import butterknife.OnClick;
 public class MagLiveActivity extends BaseFullScreenFragmentActivity {
 
 
-
     private int currentType;//当前item类型
 
     @BindView(R.id.imgV_msg_title_top_back)
@@ -75,16 +74,16 @@ public class MagLiveActivity extends BaseFullScreenFragmentActivity {
     private void initData() {
         magList = new ArrayList<>();
 
-        for (int i=0;i<=10;i++){
+        for (int i = 0; i <= 10; i++) {
             MagBean magBean = new MagBean();
-            magBean.setIsOpen(i%2==0?false:true);
-            if(i==0){
+            magBean.setIsOpen(i % 2 == 0 ? false : true);
+            if (i == 0) {
                 magBean.setVisibleType(0);
-            }else if(i==5){
+            } else if (i == 5) {
                 magBean.setVisibleType(1);
-            }else if(i==6){
+            } else if (i == 6) {
                 magBean.setVisibleType(0);
-            }else {
+            } else {
                 magBean.setVisibleType(0);
             }
             magBean.setMagTime(System.currentTimeMillis() - RandomUtils.getRandom(24 * 3600));
@@ -94,11 +93,12 @@ public class MagLiveActivity extends BaseFullScreenFragmentActivity {
 
     /**
      * 获得当前日期的方法
+     *
      * @param
      */
-    public String getDate(){
-        SimpleDateFormat sdf=new SimpleDateFormat("dd/M");
-        String nowDate=sdf.format(new Date());
+    public String getDate() {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/M");
+        String nowDate = sdf.format(new Date());
         return nowDate;
     }
 
@@ -106,9 +106,9 @@ public class MagLiveActivity extends BaseFullScreenFragmentActivity {
      * 初始化recycleView视图
      */
     private void initView() {
-        LinearLayoutManager layoutManager =  new LinearLayoutManager(getApplicationContext(),LinearLayoutManager.VERTICAL,false);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false);
         RvMagState.setLayoutManager(layoutManager);
-        MagActivityAdapter adapter = new MagActivityAdapter(getApplication(),magList,null);
+        MagActivityAdapter adapter = new MagActivityAdapter(getApplication(), magList, null);
         RvMagState.setAdapter(adapter);
     }
 
