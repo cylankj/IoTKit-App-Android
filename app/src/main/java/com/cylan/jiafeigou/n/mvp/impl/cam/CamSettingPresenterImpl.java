@@ -22,6 +22,11 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
 
     private CamInfoBean camInfoBean;
 
+    /**
+     * 从主页传过来
+     */
+    private String cid;
+
     public CamSettingPresenterImpl(CamSettingContract.View view) {
         super(view);
         view.setPresenter(this);
@@ -38,7 +43,7 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
     }
 
     @Override
-    public void fetchCamInfo() {
+    public void fetchCamInfo(String cid) {
         subscription = Observable.just(null)
                 .subscribeOn(Schedulers.newThread())
                 .map(new Func1<Object, CamInfoBean>() {

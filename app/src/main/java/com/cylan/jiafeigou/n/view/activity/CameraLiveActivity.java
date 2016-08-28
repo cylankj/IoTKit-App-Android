@@ -15,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
 import com.cylan.jiafeigou.n.mvp.impl.cam.CamLivePresenterImpl;
 import com.cylan.jiafeigou.n.mvp.impl.cam.CamMessageListPresenterImpl;
@@ -129,7 +130,9 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
      */
     @OnClick(R.id.imgV_camera_title_top_setting)
     public void onClickSetting() {
-        startActivity(new Intent(this, CamSettingActivity.class),
+        Intent intent = new Intent(this, CamSettingActivity.class);
+        intent.putExtra(JConstant.KEY_DEVICE_ITEM_BUNDLE, getIntent().getBundleExtra(JConstant.KEY_DEVICE_ITEM_BUNDLE));
+        startActivity(intent,
                 ActivityOptionsCompat.makeCustomAnimation(getApplicationContext(),
                         R.anim.slide_in_right, R.anim.slide_out_left).toBundle());
     }

@@ -17,7 +17,8 @@ public interface CamSettingContract {
     }
 
     interface Presenter extends BasePresenter {
-        void fetchCamInfo();
+
+        void fetchCamInfo(final String cid);
 
         CamInfoBean getCamInfoBean();
 
