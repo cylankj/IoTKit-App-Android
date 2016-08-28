@@ -30,6 +30,7 @@ import com.cylan.jiafeigou.n.view.media.WonderfulBigPicFragment;
 import com.cylan.jiafeigou.n.view.misc.HomeEmptyView;
 import com.cylan.jiafeigou.n.view.misc.IEmptyView;
 import com.cylan.jiafeigou.utils.AnimatorUtils;
+import com.cylan.jiafeigou.utils.AppLogger;
 import com.cylan.jiafeigou.utils.TimeUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
@@ -297,10 +298,13 @@ public class HomeWonderfulFragment extends Fragment implements
         srLayoutMainContentHolder.setRefreshing(true);
     }
 
-
     @Override
     public void onClick(View v) {
-        final int position = v.getTag() == null ? 0 : (int) v.getTag();
+        final int position = ViewUtils.getParentAdapterPosition(rVDevicesList, v, R.id.lLayout_item_wonderful);
+        if (position < 0 || position > homeWonderAdapter.getCount()) {
+            AppLogger.d("woo,position is invalid: " + position);
+            return;
+        }
         switch (v.getId()) {
             case R.id.iv_wonderful_item_content:
                 WonderfulBigPicFragment picDetailsFragment = WonderfulBigPicFragment.newInstance(null);
@@ -343,7 +347,11 @@ public class HomeWonderfulFragment extends Fragment implements
 
     @Override
     public boolean onLongClick(View v) {
-        final int position = v.getTag() == null ? 0 : (int) v.getTag();
+        final int position = ViewUtils.getParentAdapterPosition(rVDevicesList, v, R.id.lLayout_item_wonderful);
+        if (position < 0 || position > homeWonderAdapter.getCount()) {
+            AppLogger.d("woo,position is invalid: " + position);
+            return false;
+        }
         deleteItem(position);
         return true;
     }

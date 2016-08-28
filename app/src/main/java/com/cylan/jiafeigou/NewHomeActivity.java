@@ -54,6 +54,9 @@ public class NewHomeActivity extends NeedLoginActivity implements
         super.onStart();
     }
 
+    protected int[] getOverridePendingTransition() {
+        return new int[]{R.anim.alpha_in, R.anim.alpha_out};
+    }
 
     private void initMainContentAdapter() {
         viewAdapter = new HomeViewAdapter(getSupportFragmentManager());

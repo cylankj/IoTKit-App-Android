@@ -62,7 +62,7 @@ public class MagLiveActivity extends BaseFullScreenFragmentActivity {
         setContentView(R.layout.activity_mag_live);
         //实例化msgLiveFragment
         magLiveFragment = MagLiveFragment.newInstance(new Bundle());
-        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+//        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
         ButterKnife.bind(this);
 
         //用来存放，所需要的bean对象
@@ -123,10 +123,7 @@ public class MagLiveActivity extends BaseFullScreenFragmentActivity {
             return;
         } else if (checkExtraFragment())
             return;
-        finish();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            overridePendingTransition(R.anim.slide_in_left_without_interpolator, R.anim.slide_out_right_without_interpolator);
-        }
+        finishExt();
     }
 
     @OnClick(R.id.imgV_msg_title_top_back)

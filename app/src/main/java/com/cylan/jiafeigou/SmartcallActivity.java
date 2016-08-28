@@ -84,6 +84,10 @@ public class SmartcallActivity extends NeedLoginActivity
         if (presenter != null) presenter.stop();
     }
 
+    protected int[] getOverridePendingTransition() {
+        return new int[]{R.anim.alpha_in, R.anim.alpha_out};
+    }
+
     private void initData() {
         presenter = new SplashPresenterImpl(this);
 

@@ -1,6 +1,8 @@
 package com.cylan.jiafeigou.n.view.bind;
 
 
+import android.graphics.drawable.AnimationDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.wifi.ScanResult;
 import android.os.Build;
 import android.os.Bundle;
@@ -11,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -186,6 +189,15 @@ public class BindDoorBellFragment extends BaseTitleFragment implements BindDevic
         flipAnimation = new FlipAnimation(fLayoutFlipBefore, fLayoutFlipAfter);
         fLayoutFlipLayout.startAnimation(flipAnimation);
         flipAnimation.setStartOffset(1000);
+        flipAnimation.setAnimationListener(new FlipAnimation.SimpleAnimationListener() {
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                Drawable drawable = imgVWifiLightFlash.getDrawable();
+                if (drawable != null && drawable instanceof AnimationDrawable) {
+                    ((AnimationDrawable) drawable).start();
+                }
+            }
+        });
     }
 
     WeakReference<BindDeviceListFragment> listFragmentWeakReference;
