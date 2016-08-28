@@ -139,7 +139,7 @@ public class MagLiveActivity extends BaseFullScreenFragmentActivity {
      */
     @OnClick(R.id.imgV_msg_title_top_setting)
     public void onClickSetting() {
-        loadFragment(R.id.fLayout_msg_information, magLiveFragment);
+        loadFragment(R.id.lLayout_msg_information, magLiveFragment);
     }
 
     /**

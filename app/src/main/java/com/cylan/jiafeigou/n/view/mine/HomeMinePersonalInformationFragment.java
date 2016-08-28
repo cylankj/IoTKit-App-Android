@@ -1,9 +1,13 @@
 package com.cylan.jiafeigou.n.view.mine;
 
 
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,6 +31,8 @@ import butterknife.OnClick;
  */
 public class HomeMinePersonalInformationFragment extends Fragment {
 
+    //拉取出照相机时，产生的状态码
+    private static final int ALBUM_OK = 0;
     @BindView(R.id.tv_home_mine_personal_mailbox)
     TextView mTvMailBox;
 
@@ -59,7 +65,8 @@ public class HomeMinePersonalInformationFragment extends Fragment {
         mTvMailBox.setText(mailBoxText);
     }
 
-    @OnClick({R.id.iv_home_mine_personal_back, R.id.btn_home_mine_personal_information, R.id.lLayout_home_mine_personal_mailbox})
+    @OnClick({R.id.iv_home_mine_personal_back, R.id.btn_home_mine_personal_information,
+            R.id.lLayout_home_mine_personal_mailbox, R.id.rLayout_home_mine_personal_pic})
     public void onClick(View view) {
         switch (view.getId()) {
             //点击回退到Mine的fragment
@@ -86,7 +93,47 @@ public class HomeMinePersonalInformationFragment extends Fragment {
                     });
                 }
                 break;
+            case R.id.rLayout_home_mine_personal_pic:
+                initDialog();
+                break;
         }
     }
 
+
+    /**
+     * 点击相册的时候，弹窗提醒。判断是进入本地相册还是直接拍照
+     */
+    private void initDialog() {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle("更换头像");
+        builder.setNegativeButton("从相册中选择", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                choicePicFromAlbum();
+            }
+        });
+        builder.setPositiveButton("拍照", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+        builder.show();
+    }
+
+    /**
+     * 从相册获取图片
+     */
+    private void choicePicFromAlbum() {
+        // 来自相册
+        Intent albumIntent = new Intent(Intent.ACTION_PICK, null);
+        /**
+         * 下面这句话，与其它方式写是一样的效果，如果：
+         * intent.setData(MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+         * intent.setType(""image/*");设置数据类型
+         * 要限制上传到服务器的图片类型时可以直接写如："image/jpeg 、 image/png等的类型"
+         */
+        albumIntent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
+        startActivityForResult(albumIntent, ALBUM_OK);
+    }
 }

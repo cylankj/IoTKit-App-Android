@@ -79,7 +79,7 @@ public class MagLiveFragment extends Fragment {
         getFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                         , R.anim.slide_in_left, R.anim.slide_out_right)
-                .add(R.id.fLayout_msg_information, magLiveInformationFragment, "MagLiveFragment")
+                .add(R.id.lLayout_msg_information, magLiveInformationFragment, "MagLiveFragment")
                 .addToBackStack("MagLiveFragment")
                 .commit();
 

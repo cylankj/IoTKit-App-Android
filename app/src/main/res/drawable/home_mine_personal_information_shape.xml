@@ -5,4 +5,10 @@
         android:width="1dip"
         android:color="#c7c7c9" />
     <corners android:radius="4dp" />
+    <solid android:color="@color/color_white" />
+    <stroke
+        android:width="1dp"
+        android:color="@color/color_e1e1e1" />
+    <corners android:radius="4dp" />
+    <padding android:left="10dp" />
 </shape>

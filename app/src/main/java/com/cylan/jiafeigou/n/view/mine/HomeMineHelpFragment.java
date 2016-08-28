@@ -6,6 +6,8 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -29,11 +31,16 @@ public class HomeMineHelpFragment extends Fragment {
     @BindView(R.id.rLayout_mine_help_top_bar)
     RelativeLayout rLayoutTopBar;
 
-    @BindView(R.id.tv_mine_help_back)
-    TextView mTvHelpBack;
 
     @BindView(R.id.tv_mine_help_suggestion)
     TextView mTvHelpSuggestion;
+
+    @BindView(R.id.wv_mine_help)
+    WebView mWvHelp;
+
+    @BindView(R.id.pb_mine_help)
+    ProgressBar mPbHelp;
+
     private HomeMineHelpSuggestionFragment homeMineHelpSuggestionFragment;
 
     public static HomeMineHelpFragment newInstance(Bundle bundle) {
@@ -57,11 +64,24 @@ public class HomeMineHelpFragment extends Fragment {
         return view;
     }
 
-    @OnClick({R.id.tv_mine_help_back, R.id.tv_mine_help_suggestion})
+
+    /**
+     * 当进度条加载完成的时候显示该webView
+     */
+    private void showWebView() {
+        mWvHelp.getSettings().setJavaScriptEnabled(true);
+        mWvHelp.getSettings().setSavePassword(false);
+        mWvHelp.removeJavascriptInterface("searchBoxJavaBridge_");
+        mWvHelp.removeJavascriptInterface("accessibilityTraversal");
+        mWvHelp.removeJavascriptInterface("accessibility");
+        mWvHelp.loadUrl("http://test.jfgou.com/help/zh-rCN.html");
+    }
+
+    @OnClick({R.id.iv_home_mine_help_back, R.id.tv_mine_help_suggestion})
     public void onClick(View view) {
         switch (view.getId()) {
             //点击退回home_mine的fragment
-            case R.id.tv_mine_help_back:
+            case R.id.iv_home_mine_help_back:
                 getFragmentManager().popBackStack();
                 break;
             //点击进入意见反馈的页面

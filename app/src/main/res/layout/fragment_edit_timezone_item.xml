@@ -1,18 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="54dp"
-    android:orientation="vertical"
-    android:background="@color/color_white">
+    android:background="@color/color_white"
+    android:orientation="vertical">
 
     <TextView
-        android:layout_marginBottom="19dp"
         android:id="@+id/tv_timezone_item"
-        android:layout_marginTop="19dp"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="MAC"
+        android:layout_marginTop="18dp"
+        android:text="中国/香港"
         android:textColor="#000000"
         android:textSize="16sp" />
 
-</LinearLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_gravity="bottom"
+        android:background="@color/color_f2f2f2" />
+
+</FrameLayout>
