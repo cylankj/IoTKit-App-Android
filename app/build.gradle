@@ -50,7 +50,6 @@ android {
 
 }
 
-
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile rootProject.ext.robolectric
@@ -81,8 +80,6 @@ dependencies {
     compile rootProject.ext.buglySdk
     //其中latest.release指代最新版本号，也可以指定明确的版本号，例如2.2.0
     compile rootProject.ext.buglyNdk
-    compile files('libs/JfgAndroidSDK-2.0.94-sources.jar')
-    compile files('libs/JfgAndroidSDK-2.0.94.jar')
     debugCompile rootProject.ext.leakcanaryAndroid
     releaseCompile rootProject.ext.leakcanaryAndroidNoOp
     testCompile rootProject.ext.leakcanaryAndroidNoOp
@@ -92,6 +89,8 @@ dependencies {
     compile rootProject.ext.appDesige
     //多进程文件共享方案
     compile rootProject.ext.multiProcessSp
+    compile files('libs/msgpack-0.6.12-SNAPSHOT.jar')
+    compile files('libs/JfgAndroidSDK-3.0.111.jar')
 }
 
 if (project.hasProperty('keystoreFile') &&
