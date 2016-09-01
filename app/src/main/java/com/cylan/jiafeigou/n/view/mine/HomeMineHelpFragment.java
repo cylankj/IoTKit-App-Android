@@ -1,5 +1,6 @@
 package com.cylan.jiafeigou.n.view.mine;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -42,6 +43,7 @@ public class HomeMineHelpFragment extends Fragment {
     ProgressBar mPbHelp;
 
     private HomeMineHelpSuggestionFragment homeMineHelpSuggestionFragment;
+    private SuggestionChatFragment suggestionChatFragment;
 
     public static HomeMineHelpFragment newInstance(Bundle bundle) {
         HomeMineHelpFragment fragment = new HomeMineHelpFragment();
@@ -52,7 +54,8 @@ public class HomeMineHelpFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        homeMineHelpSuggestionFragment = HomeMineHelpSuggestionFragment.newInstance(new Bundle());
+        //homeMineHelpSuggestionFragment = HomeMineHelpSuggestionFragment.newInstance(new Bundle());
+        suggestionChatFragment = new SuggestionChatFragment();
     }
 
 
@@ -86,12 +89,14 @@ public class HomeMineHelpFragment extends Fragment {
                 break;
             //点击进入意见反馈的页面
             case R.id.tv_mine_help_suggestion:
-                getFragmentManager().beginTransaction()
+                /*getFragmentManager().beginTransaction()
                         .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                                 , R.anim.slide_in_left, R.anim.slide_out_right)
-                        .add(android.R.id.content, homeMineHelpSuggestionFragment, "homeMineHelpSuggestionFragment")
+                        .add(android.R.id.content, suggestionChatFragment, "suggestionChatFragment")
                         .addToBackStack("mineHelpFragment")
-                        .commit();
+                        .commit();*/
+                Intent intent = new Intent(getActivity(),SuggestionChatContainerActivity.class);
+                startActivity(intent);
                 break;
         }
     }

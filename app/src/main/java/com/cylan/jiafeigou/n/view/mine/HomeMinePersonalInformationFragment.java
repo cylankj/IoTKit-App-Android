@@ -14,6 +14,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.n.mvp.contract.mine.MinePersionalInformationContract;
+import com.cylan.jiafeigou.n.mvp.impl.mine.MinePersionalInformationPresenterImpl;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 
 import butterknife.BindView;
@@ -29,7 +31,7 @@ import butterknife.OnClick;
  * 更新时间   $Date$
  * 更新描述   ${TODO}
  */
-public class HomeMinePersonalInformationFragment extends Fragment {
+public class HomeMinePersonalInformationFragment extends Fragment implements MinePersionalInformationContract.View {
 
     //拉取出照相机时，产生的状态码
     private static final int ALBUM_OK = 0;
@@ -37,6 +39,7 @@ public class HomeMinePersonalInformationFragment extends Fragment {
     TextView mTvMailBox;
 
     private HomeMinePersonalInformationMailBoxFragment mailBoxFragment;
+    private MinePersionalInformationContract.Presenter presenter;
 
     public static HomeMinePersonalInformationFragment newInstance(Bundle bundle) {
         HomeMinePersonalInformationFragment fragment = new HomeMinePersonalInformationFragment();
@@ -55,7 +58,12 @@ public class HomeMinePersonalInformationFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home_mine_personal_information, container, false);
         ButterKnife.bind(this, view);
+        initPresenter();
         return view;
+    }
+
+    private void initPresenter() {
+        presenter = new MinePersionalInformationPresenterImpl(this,getContext());
     }
 
     @Override
@@ -75,23 +83,12 @@ public class HomeMinePersonalInformationFragment extends Fragment {
                 break;
             //点击退出做相应的逻辑
             case R.id.btn_home_mine_personal_information:
+                getFragmentManager().popBackStack();
+                //TODO 信息数据的保存
                 break;
             //点击邮箱跳转到相应的页面
             case R.id.lLayout_home_mine_personal_mailbox:
-                getFragmentManager().beginTransaction()
-                        .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
-                                , R.anim.slide_in_left, R.anim.slide_out_right)
-                        .add(android.R.id.content, mailBoxFragment, "mailBoxFragment")
-                        .addToBackStack("personalInformationFragment")
-                        .commit();
-                if (getActivity() != null && getActivity().getFragmentManager() != null) {
-                    mailBoxFragment.setListener(new HomeMinePersonalInformationMailBoxFragment.OnBindMailBoxListener() {
-                        @Override
-                        public void mailBoxChange(String content) {
-                            mTvMailBox.setText(content);
-                        }
-                    });
-                }
+                presenter.bindPersonEmail();
                 break;
             case R.id.rLayout_home_mine_personal_pic:
                 initDialog();
@@ -135,5 +132,32 @@ public class HomeMinePersonalInformationFragment extends Fragment {
          */
         albumIntent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
         startActivityForResult(albumIntent, ALBUM_OK);
+    }
+
+    @Override
+    public void initPersionalInfomation() {
+
+    }
+
+    @Override
+    public void jump2SetEmailFragment() {
+        getFragmentManager().beginTransaction()
+                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
+                        , R.anim.slide_in_left, R.anim.slide_out_right)
+                .add(android.R.id.content, mailBoxFragment, "mailBoxFragment")
+                .addToBackStack("personalInformationFragment")
+                .commit();
+        if (getActivity() != null && getActivity().getFragmentManager() != null) {
+            mailBoxFragment.setListener(new HomeMinePersonalInformationMailBoxFragment.OnBindMailBoxListener() {
+                @Override
+                public void mailBoxChange(String content) {
+                    mTvMailBox.setText(content);
+                }
+            });
+        }
+    }
+
+    @Override
+    public void setPresenter(MinePersionalInformationContract.Presenter presenter) {
     }
 }

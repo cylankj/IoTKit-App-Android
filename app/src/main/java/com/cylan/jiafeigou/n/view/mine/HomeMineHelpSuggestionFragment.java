@@ -1,20 +1,27 @@
 package com.cylan.jiafeigou.n.view.mine;
 
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.n.mvp.contract.home.HomeMineHelpSuggestionContract;
+import com.cylan.jiafeigou.n.mvp.impl.home.HomeMineHelpSuggestionImpl;
 import com.cylan.jiafeigou.n.mvp.model.MineHelpSuggestionBean;
 import com.cylan.jiafeigou.n.view.adapter.HomeMineHelpSuggestionAdapter;
 import com.cylan.jiafeigou.utils.ToastUtil;
+import com.sina.weibo.sdk.utils.LogUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +39,7 @@ import butterknife.OnClick;
  * 更新时间   $Date$
  * 更新描述   ${TODO}
  */
-public class HomeMineHelpSuggestionFragment extends Fragment {
+public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMineHelpSuggestionContract.View{
 
     @BindView(R.id.rv_home_mine_suggestion)
     RecyclerView mRvMineSuggestion;
@@ -44,9 +51,13 @@ public class HomeMineHelpSuggestionFragment extends Fragment {
     private List<MineHelpSuggestionBean> suggestionList;
     private HomeMineHelpSuggestionAdapter suggestionAdapter;
     private String suggestion;
+
+    private HomeMineHelpSuggestionContract.Presenter presenter;
+
     //当前点击的时间和上次点击的时间
     private long afterTime;
     private long nowTime;
+    private String TAG = "HomeMineHelpSuggestionFragment";
 
     public static HomeMineHelpSuggestionFragment newInstance(Bundle bundle) {
         HomeMineHelpSuggestionFragment fragment = new HomeMineHelpSuggestionFragment();
@@ -120,6 +131,10 @@ public class HomeMineHelpSuggestionFragment extends Fragment {
         switch (v.getId()) {
             case R.id.tv_mine_help_suggestion_clear:
                 //TODO  点击清空进行集合的清空
+                /***********add begin**********/
+                //弹出对话框
+                showDialog();
+                /***********add end**********/
                 break;
             case R.id.iv_home_mine_suggestion_back:
                 getFragmentManager().popBackStack();
@@ -146,10 +161,32 @@ public class HomeMineHelpSuggestionFragment extends Fragment {
                 } else {
                     ToastUtil.showToast(getActivity(), "输入内容不能小于10个字符");
                 }
-                mRvMineSuggestion.scrollToPosition(suggestionList.size() - 1);
+                mRvMineSuggestion.scrollToPosition(suggestionList.size() - 1);      //滚动到集合最后一条显示；
                 break;
         }
     }
+
+    /**
+     * 弹出对话框
+     */
+    private void showDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getView().getContext());
+        builder.setTitle("清空消息？")
+                .setPositiveButton("清空", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        suggestionAdapter.removeAll(suggestionList);
+                        ToastUtil.showToast(getView().getContext(),"消息已清空");
+                    }
+                })
+                .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                }).show();
+    }
+
 
     /**
      * 用户点击发送符合条件之后，显示该条目
@@ -209,4 +246,20 @@ public class HomeMineHelpSuggestionFragment extends Fragment {
         }
     }
 
+
+
+    @Override
+    public void onTalkList(ArrayList<MineHelpSuggestionBean> beanOfArrayList) {
+
+    }
+
+    @Override
+    public void onClearAllTalk() {
+
+    }
+
+    @Override
+    public void setPresenter(HomeMineHelpSuggestionContract.Presenter presenter) {
+        this.presenter = presenter;
+    }
 }
