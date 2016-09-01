@@ -11,12 +11,14 @@ import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MinePersionalInformationContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MinePersionalInformationPresenterImpl;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
+import com.cylan.jiafeigou.utils.ToastUtil;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -37,8 +39,11 @@ public class HomeMinePersonalInformationFragment extends Fragment implements Min
     private static final int ALBUM_OK = 0;
     @BindView(R.id.tv_home_mine_personal_mailbox)
     TextView mTvMailBox;
+    @BindView(R.id.RLayout_home_mine_personal_phone)
+    RelativeLayout mRlayout_setPersonPhone;
 
     private HomeMinePersonalInformationMailBoxFragment mailBoxFragment;
+    private MineBindPhoneFragment bindPhoneFragment;
     private MinePersionalInformationContract.Presenter presenter;
 
     public static HomeMinePersonalInformationFragment newInstance(Bundle bundle) {
@@ -51,6 +56,7 @@ public class HomeMinePersonalInformationFragment extends Fragment implements Min
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mailBoxFragment = HomeMinePersonalInformationMailBoxFragment.newInstance(new Bundle());
+        bindPhoneFragment = MineBindPhoneFragment.newInstance(new Bundle());
     }
 
     @Nullable
@@ -74,7 +80,7 @@ public class HomeMinePersonalInformationFragment extends Fragment implements Min
     }
 
     @OnClick({R.id.iv_home_mine_personal_back, R.id.btn_home_mine_personal_information,
-            R.id.lLayout_home_mine_personal_mailbox, R.id.rLayout_home_mine_personal_pic})
+            R.id.lLayout_home_mine_personal_mailbox, R.id.rLayout_home_mine_personal_pic, R.id.RLayout_home_mine_personal_phone})
     public void onClick(View view) {
         switch (view.getId()) {
             //点击回退到Mine的fragment
@@ -90,11 +96,18 @@ public class HomeMinePersonalInformationFragment extends Fragment implements Min
             case R.id.lLayout_home_mine_personal_mailbox:
                 presenter.bindPersonEmail();
                 break;
-            case R.id.rLayout_home_mine_personal_pic:
+
+            case R.id.rLayout_home_mine_personal_pic:           //更换头像
                 initDialog();
+                break;
+
+            case R.id.RLayout_home_mine_personal_phone:         //跳转到设置手机号界面
+                jump2SetPhoneFragment();
                 break;
         }
     }
+
+
 
 
     /**
@@ -155,6 +168,16 @@ public class HomeMinePersonalInformationFragment extends Fragment implements Min
                 }
             });
         }
+    }
+
+    private void jump2SetPhoneFragment() {
+        getFragmentManager().beginTransaction()
+                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
+                        , R.anim.slide_in_left, R.anim.slide_out_right)
+                .add(android.R.id.content, bindPhoneFragment, "bindPhoneFragment")
+                .addToBackStack("personalInformationFragment")
+                .commit();
+
     }
 
     @Override

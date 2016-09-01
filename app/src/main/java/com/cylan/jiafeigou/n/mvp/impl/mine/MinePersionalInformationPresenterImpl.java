@@ -31,8 +31,6 @@ public class MinePersionalInformationPresenterImpl extends AbstractPresenter<Min
     public void setPersonName() {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
 
-        builder.setView(R.layout.minepersoninfomation_setname);
-
         builder.show();
     }
 
