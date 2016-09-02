@@ -14,12 +14,14 @@ public interface MinePersionalInformationContract {
         void initPersionalInfomation();             //初始化显示个人信息
 
         void jump2SetEmailFragment();
+
+        void showChooseImageDialog();
+
+
     }
 
 
     interface Presenter extends BasePresenter{
-
-        void pickPersonImageHead();        //更改头像
 
         void setPersonName();              //更改昵称
 
@@ -28,6 +30,8 @@ public interface MinePersionalInformationContract {
         void bindPersonPhone();           //绑定手机
 
         void changePassword();            //更改密码
+
+        void initGrallery();              //grallery框架初始化
     }
 
 }

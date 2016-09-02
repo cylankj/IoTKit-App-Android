@@ -85,4 +85,6 @@ public class JConstant {
 
     public static final int INVALID_PROCESS = -1;
 
+    public static String USER_IMAGE_HEAD_URL = "";          //用户头像
+
 }

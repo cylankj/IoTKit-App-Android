@@ -92,6 +92,10 @@ dependencies {
     compile rootProject.ext.appDesige
     //多进程文件共享方案
     compile rootProject.ext.multiProcessSp
+
+    //头像更改选择框架
+    compile 'cn.finalteam:galleryfinal:1.4.8.7'
+    compile 'com.github.bumptech.glide:glide:3.6.1'
 }
 
 if (project.hasProperty('keystoreFile') &&

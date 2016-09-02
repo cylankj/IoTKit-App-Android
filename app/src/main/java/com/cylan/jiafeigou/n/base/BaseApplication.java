@@ -2,11 +2,13 @@ package com.cylan.jiafeigou.n.base;
 
 import android.app.Application;
 import android.content.ComponentCallbacks2;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Environment;
 import android.util.Log;
 
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.n.mvp.impl.mine.GlideImageLoaderPresenterImpl;
 import com.cylan.jiafeigou.support.DebugOptionsImpl;
 import com.cylan.jiafeigou.utils.AppLogger;
 import com.cylan.jiafeigou.utils.SuperSpUtils;
@@ -15,13 +17,18 @@ import com.squareup.leakcanary.LeakCanary;
 
 import java.io.File;
 
+import cn.finalteam.galleryfinal.CoreConfig;
+import cn.finalteam.galleryfinal.FunctionConfig;
+import cn.finalteam.galleryfinal.GalleryFinal;
+import cn.finalteam.galleryfinal.ImageLoader;
+import cn.finalteam.galleryfinal.ThemeConfig;
+
 /**
  * Created by hunt on 16-5-14.
  */
 public class BaseApplication extends Application {
 
     private static final String TAG = "BaseApplication";
-
     @Override
     public void onCreate() {
         super.onCreate();
@@ -29,6 +36,7 @@ public class BaseApplication extends Application {
         LeakCanary.install(this);
 //        startService(new Intent(this, DaemonService.class));
         init();
+
     }
 
     private void init() {
@@ -78,4 +86,5 @@ public class BaseApplication extends Application {
         super.onLowMemory();
         Log.d(TAG, "onLowMemory: ");
     }
+
 }

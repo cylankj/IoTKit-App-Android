@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:hunt="http://schemas.android.com/apk/res-auto"
     android:id="@+id/ll_container"
     android:clickable="true"
     android:orientation="vertical"
@@ -81,12 +82,14 @@
             android:textSize="16sp"
             android:textColor="@color/color_333333" />
 
-        <ImageView
+        <com.cylan.jiafeigou.widget.roundedimageview.RoundedImageView
+            android:id="@+id/user_ImageHead"
             android:layout_centerVertical="true"
             android:layout_marginRight="20dp"
             android:layout_alignParentRight="true"
             android:layout_width="49dp"
             android:layout_height="49dp"
+            hunt:riv_oval="true"
             android:src="@drawable/ic_launcher" />
 
         <View
