@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
+    android:background="@color/color_white"
     android:layout_height="match_parent">
     <RelativeLayout
         android:layout_width="match_parent"
@@ -44,7 +45,7 @@
 
         <com.kyleduo.switchbutton.SwitchButton
             android:layout_alignParentRight="true"
-            android:id="@+id/btn_item_switch"
+            android:id="@+id/btn_item_switch_accessMes"
             style="@style/SwitchButtonStyleMD"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -76,6 +77,17 @@
             android:textSize="16sp"
             android:textColor="@color/color_black" />
 
+        <com.kyleduo.switchbutton.SwitchButton
+            android:layout_alignParentRight="true"
+            android:id="@+id/btn_item_switch_voide"
+            style="@style/SwitchButtonStyleMD"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:paddingRight="26dp"
+            android:checked="true"
+            />
+
         <View
             android:layout_alignParentBottom="true"
             android:layout_marginRight="20dp"
@@ -98,6 +110,17 @@
             android:text="震动"
             android:textSize="16sp"
             android:textColor="@color/color_black" />
+
+        <com.kyleduo.switchbutton.SwitchButton
+            android:layout_alignParentRight="true"
+            android:id="@+id/btn_item_switch_shape"
+            style="@style/SwitchButtonStyleMD"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:paddingRight="26dp"
+            android:checked="true"
+            />
 
         <View
             android:layout_alignParentBottom="true"

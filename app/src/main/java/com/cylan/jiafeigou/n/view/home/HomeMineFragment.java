@@ -13,6 +13,7 @@ import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.RxEvent;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeMineContract;
+import com.cylan.jiafeigou.n.mvp.contract.home.HomeSettingContract;
 import com.cylan.jiafeigou.n.view.mine.HomeMineHelpFragment;
 import com.cylan.jiafeigou.n.view.mine.HomeMinePersonalInformationFragment;
 import com.cylan.jiafeigou.support.rxbus.RxBus;
@@ -54,6 +55,8 @@ public class HomeMineFragment extends android.support.v4.app.Fragment
     private HomeMineContract.Presenter presenter;
     private HomeMineHelpFragment mineHelpFragment;
     private HomeMinePersonalInformationFragment personalInformationFragment;
+    private HomeSettingFragment homeSettingFragment;
+    private HomeMineMessageFragment homeMineMessageFragment;
 
     public static HomeMineFragment newInstance(Bundle bundle) {
         HomeMineFragment fragment = new HomeMineFragment();
@@ -66,6 +69,8 @@ public class HomeMineFragment extends android.support.v4.app.Fragment
         super.onCreate(savedInstanceState);
         mineHelpFragment = HomeMineHelpFragment.newInstance(new Bundle());
         personalInformationFragment = HomeMinePersonalInformationFragment.newInstance(new Bundle());
+        homeSettingFragment = HomeSettingFragment.newInstance();
+        homeMineMessageFragment = HomeMineMessageFragment.newInstance();
     }
 
     @Override
@@ -125,8 +130,15 @@ public class HomeMineFragment extends android.support.v4.app.Fragment
     }
 
     public void settingsItem(View view) {
-        if (needStartLoginFragment()) return;
-        SLog.i("It's Login,can do something!");
+        //if (needStartLoginFragment()) return;
+        //SLog.i("It's Login,can do something!");
+        getFragmentManager().beginTransaction()
+                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
+                        , R.anim.slide_in_left, R.anim.slide_out_right)
+                .add(android.R.id.content,homeSettingFragment,"homeSettingFragment")
+                .addToBackStack("mineHelpFragment")
+                .commit();
+
     }
 
     public void helpItem(View view) {
@@ -191,7 +203,7 @@ public class HomeMineFragment extends android.support.v4.app.Fragment
 
     @OnClick({R.id.home_mine_item_friend, R.id.home_mine_item_share,
             R.id.home_mine_item_help, R.id.home_mine_item_settings,
-            R.id.shadow_layout, R.id.tv_home_mine_nick})
+            R.id.shadow_layout, R.id.tv_home_mine_nick,R.id.rLayout_msg_box})
     public void onButterKnifeClick(View view) {
         switch (view.getId()) {
             case R.id.home_mine_item_friend:
@@ -239,6 +251,15 @@ public class HomeMineFragment extends android.support.v4.app.Fragment
                         .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                                 , R.anim.slide_in_left, R.anim.slide_out_right)
                         .add(android.R.id.content, personalInformationFragment, "personalInformationFragment")
+                        .addToBackStack("personalInformationFragment")
+                        .commit();
+                break;
+
+            case R.id.rLayout_msg_box:
+                getFragmentManager().beginTransaction()
+                        .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
+                                , R.anim.slide_in_left, R.anim.slide_out_right)
+                        .add(android.R.id.content, homeMineMessageFragment, "homeMineMessageFragment")
                         .addToBackStack("personalInformationFragment")
                         .commit();
                 break;

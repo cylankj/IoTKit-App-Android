@@ -10,6 +10,8 @@ public class SuggestionChatInfoBean {
     public String content;
     public int type;
     public String time;
+    public int icon;
+    public String name;
 
     public SuggestionChatInfoBean(String content, int type, String time) {
         this.content = content;
@@ -39,6 +41,22 @@ public class SuggestionChatInfoBean {
 
     public void setTime(String time) {
         this.time = time;
+    }
+
+    public int getIcon() {
+        return icon;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setIcon(int icon) {
+        this.icon = icon;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
 }
