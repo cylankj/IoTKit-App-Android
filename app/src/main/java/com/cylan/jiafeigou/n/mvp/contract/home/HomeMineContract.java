@@ -3,6 +3,7 @@ package com.cylan.jiafeigou.n.mvp.contract.home;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.UiThread;
+import android.widget.ImageView;
 
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
@@ -20,11 +21,17 @@ public interface HomeMineContract {
         void onPortraitUpdate(String url);
 
         void onBlur(Drawable drawable);
+
+        void setUserImageHead(Drawable drawable);
     }
 
     interface Presenter extends BasePresenter {
+
         void requestLatestPortrait();
 
         void portraitBlur(@DrawableRes int id);
+
+        void portraitUpdateByUrl(String url);
+
     }
 }

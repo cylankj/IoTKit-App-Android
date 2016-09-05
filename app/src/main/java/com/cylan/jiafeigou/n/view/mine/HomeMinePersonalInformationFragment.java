@@ -1,18 +1,23 @@
 package com.cylan.jiafeigou.n.view.mine;
 
 
-import android.content.DialogInterface;
+import android.Manifest;
+import android.app.Activity;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -21,16 +26,13 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.JConstant;
-import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MinePersionalInformationContract;
-import com.cylan.jiafeigou.n.mvp.contract.mine.MineUserInfoLookBigHeadContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MinePersionalInformationPresenterImpl;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.widget.roundedimageview.RoundedImageView;
-import com.cylan.utils.StringUtils;
+import com.sina.weibo.sdk.utils.LogUtil;
 
-import java.io.File;
 import java.util.List;
 
 import butterknife.BindView;
@@ -60,10 +62,16 @@ public class HomeMinePersonalInformationFragment extends Fragment implements Min
     RelativeLayout mRlayout_setPersonPhone;
     @BindView(R.id.user_ImageHead)
     RoundedImageView userImageHead;
+    @BindView(R.id.tv_user_name)
+    TextView tvUserName;
+    @BindView(R.id.rLayout_home_mine_personal_name)
+    RelativeLayout rLayoutHomeMinePersonalName;
+
 
     private HomeMinePersonalInformationMailBoxFragment mailBoxFragment;
     private MineBindPhoneFragment bindPhoneFragment;
     private MineUserInfoLookBigHeadFragment bigHeadFragment;
+    private MineSetUserNameFragment setUserNameFragment;
     private MinePersionalInformationContract.Presenter presenter;
     private AlertDialog alertDialog;
 
@@ -79,6 +87,7 @@ public class HomeMinePersonalInformationFragment extends Fragment implements Min
         mailBoxFragment = HomeMinePersonalInformationMailBoxFragment.newInstance(new Bundle());
         bigHeadFragment = MineUserInfoLookBigHeadFragment.newInstance();
         bindPhoneFragment = MineBindPhoneFragment.newInstance(new Bundle());
+        setUserNameFragment = MineSetUserNameFragment.newInstance();
     }
 
     @Nullable
@@ -100,10 +109,14 @@ public class HomeMinePersonalInformationFragment extends Fragment implements Min
         super.onStart();
         String mailBoxText = PreferencesUtils.getString(getActivity(), "邮箱", "未设置");
         mTvMailBox.setText(mailBoxText);
+
+        //昵称回显
+        tvUserName.setText(PreferencesUtils.getString(getActivity(),"username","未设置"));
     }
 
     @OnClick({R.id.iv_home_mine_personal_back, R.id.btn_home_mine_personal_information,
-            R.id.lLayout_home_mine_personal_mailbox, R.id.rLayout_home_mine_personal_pic, R.id.RLayout_home_mine_personal_phone,R.id.user_ImageHead})
+            R.id.lLayout_home_mine_personal_mailbox, R.id.rLayout_home_mine_personal_pic,
+            R.id.RLayout_home_mine_personal_phone, R.id.user_ImageHead, R.id.rLayout_home_mine_personal_name})
     public void onClick(View view) {
         switch (view.getId()) {
             //点击回退到Mine的fragment
@@ -132,6 +145,30 @@ public class HomeMinePersonalInformationFragment extends Fragment implements Min
             case R.id.user_ImageHead:                           //点击查看大头像
                 lookBigImageHead();
                 break;
+
+            case R.id.rLayout_home_mine_personal_name:          //更改昵称
+                jump2SetUserNameFragment();
+                break;
+        }
+    }
+
+    /**
+     * 跳转到修改昵称界面
+     */
+    private void jump2SetUserNameFragment() {
+        getFragmentManager().beginTransaction()
+                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
+                        , R.anim.slide_in_left, R.anim.slide_out_right)
+                .add(android.R.id.content, setUserNameFragment, "setUserNameFragment")
+                .addToBackStack("personalInformationFragment")
+                .commit();
+        if (getActivity() != null && getActivity().getFragmentManager() != null) {
+            setUserNameFragment.setOnSetUsernameListener(new MineSetUserNameFragment.OnSetUsernameListener() {
+                @Override
+                public void userNameChange(String name) {
+                    tvUserName.setText(name);
+                }
+            });
         }
     }
 
@@ -150,18 +187,19 @@ public class HomeMinePersonalInformationFragment extends Fragment implements Min
     @Override
     public void initPersionalInfomation() {
         //头像的回显
-        Glide.with(getContext()).load(PreferencesUtils.getString(getContext(),JConstant.USER_IMAGE_HEAD_URL,""))
+        Glide.with(getContext()).load(PreferencesUtils.getString(getContext(), JConstant.USER_IMAGE_HEAD_URL, ""))
                 .asBitmap().centerCrop()
                 .error(R.drawable.ic_launcher)
                 .into(new BitmapImageViewTarget(userImageHead) {
-            @Override
-            protected void setResource(Bitmap resource) {
-                RoundedBitmapDrawable circularBitmapDrawable =
-                        RoundedBitmapDrawableFactory.create(getContext().getResources(), resource);
-                circularBitmapDrawable.setCircular(true);
-                userImageHead.setImageDrawable(circularBitmapDrawable);
-            }
-        });
+                    @Override
+                    protected void setResource(Bitmap resource) {
+                        RoundedBitmapDrawable circularBitmapDrawable =
+                                RoundedBitmapDrawableFactory.create(getContext().getResources(), resource);
+                        circularBitmapDrawable.setCircular(true);
+                        userImageHead.setImageDrawable(circularBitmapDrawable);
+                    }
+                });
+
     }
 
     @Override
@@ -186,11 +224,24 @@ public class HomeMinePersonalInformationFragment extends Fragment implements Min
     public void showChooseImageDialog() {
         final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
-        View view = View.inflate(getContext(),R.layout.layout_dialog_pick_imagehead,null);
+        View view = View.inflate(getContext(), R.layout.layout_dialog_pick_imagehead, null);
         view.findViewById(R.id.tv_pick_from_canmera).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                GalleryFinal.openCamera(REQUEST_CODE_CAMERA, MinePersionalInformationPresenterImpl.functionConfig, mOnHanlderResultCallback);
+
+                if (Build.VERSION.SDK_INT >= 23) {
+                    int checkCallPhonePermission = ContextCompat.checkSelfPermission(getContext(), Manifest.permission.CAMERA);
+                    if (checkCallPhonePermission != PackageManager.PERMISSION_GRANTED) {
+                        ActivityCompat.requestPermissions((Activity) getContext(), new String[]{Manifest.permission.CAMERA}, 1);
+                        return;
+                    } else {
+                        GalleryFinal.openCamera(REQUEST_CODE_CAMERA, MinePersionalInformationPresenterImpl.functionConfig, mOnHanlderResultCallback);
+                    }
+
+                } else {
+                    GalleryFinal.openCamera(REQUEST_CODE_CAMERA, MinePersionalInformationPresenterImpl.functionConfig, mOnHanlderResultCallback);
+                }
+
             }
         });
 
@@ -219,7 +270,6 @@ public class HomeMinePersonalInformationFragment extends Fragment implements Min
                 .add(android.R.id.content, bindPhoneFragment, "bindPhoneFragment")
                 .addToBackStack("personalInformationFragment")
                 .commit();
-
     }
 
     @Override
@@ -234,7 +284,7 @@ public class HomeMinePersonalInformationFragment extends Fragment implements Min
         public void onHanlderSuccess(int reqeustCode, List<PhotoInfo> resultList) {
             if (resultList != null) {
                 alertDialog.dismiss();
-                PreferencesUtils.putString(getContext(), JConstant.USER_IMAGE_HEAD_URL,resultList.get(0).getPhotoPath());
+                PreferencesUtils.putString(getContext(), JConstant.USER_IMAGE_HEAD_URL, resultList.get(0).getPhotoPath());
 
                 Glide.with(getContext()).load(resultList.get(0).getPhotoPath()).asBitmap().centerCrop().into(new BitmapImageViewTarget(userImageHead) {
                     @Override
@@ -254,5 +304,20 @@ public class HomeMinePersonalInformationFragment extends Fragment implements Min
         }
     };
 
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case 1:
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    GalleryFinal.openCamera(REQUEST_CODE_CAMERA, MinePersionalInformationPresenterImpl.functionConfig, mOnHanlderResultCallback);
+                } else {
+                    ToastUtil.showFailToast(getContext(), "相机未授权");
+                }
+                break;
+            default:
+                super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
+    }
 
 }

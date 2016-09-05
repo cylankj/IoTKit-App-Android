@@ -1,8 +1,10 @@
 package com.cylan.jiafeigou.n.view.mine;
 
+import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.SystemClock;
@@ -47,9 +49,12 @@ public class SuggestionChatFragment extends Fragment implements SuggestionChatCo
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+
         View view =inflater.inflate(R.layout.fragment_home_mine_suggestion,container,false);
 
         initView(view);
+
+        initTitlebar();
 
         initPresenter();
 
@@ -60,6 +65,19 @@ public class SuggestionChatFragment extends Fragment implements SuggestionChatCo
         keyboardListener();
 
         return view;
+    }
+
+    private void initTitlebar() {
+        if (Build.VERSION.SDK_INT >= 21) {
+            View decorView =getActivity().getWindow().getDecorView();
+            int option = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                    | View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
+            decorView.setSystemUiVisibility(option);
+            //getActivity().getWindow().setStatusBarColor(Color.TRANSPARENT);
+        }
+        // ActionBar actionBar =getActivity().getSupportActionBar();
+        // actionBar.hide();
+
     }
 
     private void initPresenter() {

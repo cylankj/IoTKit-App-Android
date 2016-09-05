@@ -5,17 +5,18 @@ import com.cylan.jiafeigou.n.mvp.BaseView;
 
 /**
  * 作者：zsl
- * 创建时间：2016/9/1
+ * 创建时间：2016/9/2
  * 描述：
  */
-public interface MinePersionalInfomationBindPhoneContract {
+public interface MinePersionalInfomationSetNameContract {
 
     interface View extends BaseView<Presenter>{
-        void initToolbarTitle();
+        String getEditName();
+        void setTitleBarName();
     }
 
     interface Presenter extends BasePresenter{
-
+        void saveName();
+        boolean isEditEmpty(String string);
     }
-
 }

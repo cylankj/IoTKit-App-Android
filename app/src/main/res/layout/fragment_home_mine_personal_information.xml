@@ -104,6 +104,7 @@
 
 
     <RelativeLayout
+        android:id="@+id/rLayout_home_mine_personal_name"
         android:layout_width="match_parent"
         android:layout_height="72dp">
 
@@ -118,6 +119,7 @@
             android:textSize="12sp" />
 
         <TextView
+            android:id="@+id/tv_user_name"
             android:layout_below="@id/tv_like_name"
             android:paddingTop="8dp"
             android:layout_marginLeft="20dp"

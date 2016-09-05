@@ -1,17 +1,17 @@
-package com.cylan.jiafeigou.n.mvp.contract.mine;
+package com.cylan.jiafeigou.n.mvp.contract.home;
 
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
 
 /**
  * 作者：zsl
- * 创建时间：2016/9/1
+ * 创建时间：2016/9/5
  * 描述：
  */
-public interface MinePersionalInfomationBindPhoneContract {
+public interface HomeSettingContract {
 
     interface View extends BaseView<Presenter>{
-        void initToolbarTitle();
+
     }
 
     interface Presenter extends BasePresenter{

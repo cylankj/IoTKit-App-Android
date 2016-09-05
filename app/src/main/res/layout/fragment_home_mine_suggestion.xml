@@ -3,12 +3,13 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
     android:background="@color/color_white"
     >
     <RelativeLayout
         android:id="@+id/rl_home_mine_suggestion"
         android:layout_width="match_parent"
-        android:layout_height="73dp"
+        android:layout_height="53dp"
         android:background="#0BA8CF">
 
         <ImageView
@@ -42,55 +43,56 @@
             android:textSize="14sp" />
     </RelativeLayout>
 
-        <RelativeLayout
-            android:id="@+id/rl_home_mine_suggestion_bottom"
+    <RelativeLayout
+        android:id="@+id/rl_home_mine_suggestion_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="54dp"
+        android:layout_alignParentBottom="true"
+        android:background="@color/color_f0f0f0"
+        android:clickable="true">
+
+        <View
             android:layout_width="match_parent"
-            android:layout_height="54dp"
-            android:layout_alignParentBottom="true"
-            android:background="@color/color_f0f0f0"
-            android:clickable="true">
+            android:layout_height="1dp"
+            android:background="@color/color_e1e1e1"></View>
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/color_e1e1e1"></View>
+        <EditText
+            android:id="@+id/et_home_mine_suggestion"
+            android:layout_width="288dp"
+            android:layout_height="32dp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="15dp"
+            android:background="@drawable/home_mine_suggestion_shape"
+            android:hint="请详细描述您遇到的问题、意见或建议"
+            android:maxLength="128"
+            android:paddingLeft="10dp"
+            android:textColorHint="@color/color_cecece"
+            android:textSize="13sp" />
 
-            <EditText
-                android:id="@+id/et_home_mine_suggestion"
-                android:layout_width="288dp"
-                android:layout_height="32dp"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="15dp"
-                android:background="@drawable/home_mine_suggestion_shape"
-                android:hint="请详细描述您遇到的问题、意见或建议"
-                android:maxLength="128"
-                android:paddingLeft="10dp"
-                android:textColorHint="@color/color_cecece"
-                android:textSize="13sp" />
-
-            <TextView
-                android:id="@+id/tv_home_mine_suggestion"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:layout_marginRight="15dp"
-                android:layout_marginTop="19dp"
-                android:clickable="true"
-                android:contextClickable="true"
-                android:text="发送"
-                android:textColor="@color/color_4b9fd5"
-                android:textSize="18sp" />
-        </RelativeLayout>
-
-        <android.support.v7.widget.RecyclerView
-            android:paddingBottom="5dp"
-            android:id="@+id/rv_home_mine_suggestion"
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/tv_home_mine_suggestion"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_above="@+id/rl_home_mine_suggestion_bottom"
-            android:layout_below="@+id/rl_home_mine_suggestion"
-            android:overScrollMode="never"
-            android:scrollbars="none" />
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="15dp"
+            android:layout_marginTop="19dp"
+            android:clickable="true"
+            android:contextClickable="true"
+            android:text="发送"
+            android:textColor="@color/color_4b9fd5"
+            android:textSize="18sp" />
+    </RelativeLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:paddingBottom="5dp"
+        android:id="@+id/rv_home_mine_suggestion"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_above="@+id/rl_home_mine_suggestion_bottom"
+        android:layout_below="@+id/rl_home_mine_suggestion"
+        android:overScrollMode="never"
+        android:scrollbars="none" />
 
 </RelativeLayout>

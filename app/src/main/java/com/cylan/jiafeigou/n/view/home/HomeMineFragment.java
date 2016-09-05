@@ -10,12 +10,14 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.RxEvent;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeMineContract;
 import com.cylan.jiafeigou.n.view.mine.HomeMineHelpFragment;
 import com.cylan.jiafeigou.n.view.mine.HomeMinePersonalInformationFragment;
 import com.cylan.jiafeigou.support.rxbus.RxBus;
 import com.cylan.jiafeigou.utils.ContinuityClickUtils;
+import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.HomeMineItemView;
 import com.cylan.jiafeigou.widget.MsgTextView;
@@ -79,7 +81,6 @@ public class HomeMineFragment extends android.support.v4.app.Fragment
         super.onViewCreated(view, savedInstanceState);
         ViewUtils.setViewMarginStatusBar(fLayoutMsgBox);
     }
-
 
     @Override
     public void onStart() {
@@ -155,6 +156,7 @@ public class HomeMineFragment extends android.support.v4.app.Fragment
 //            testBlurBackground(R.drawable.clouds);
             ivHomeMinePortrait.setImageResource(R.drawable.clouds);
             if (presenter != null) presenter.portraitBlur(R.drawable.clouds);
+            //presenter.portraitUpdateByUrl(url);
             tvHomeMineMsgCount.post(new Runnable() {
                 @Override
                 public void run() {
@@ -169,6 +171,11 @@ public class HomeMineFragment extends android.support.v4.app.Fragment
         long time = System.currentTimeMillis();
         rLayoutHomeMineTop.setBackground(drawable);
         SLog.e("usetime:%d ms", System.currentTimeMillis() - time);
+    }
+
+    @Override
+    public void setUserImageHead(Drawable drawable) {
+        ivHomeMinePortrait.setImageDrawable(drawable);
     }
 
 
