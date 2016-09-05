@@ -90,6 +90,8 @@ dependencies {
     compile rootProject.ext.multiProcessSp
     compile files('libs/msgpack-0.6.12-SNAPSHOT.jar')
     compile files('libs/JfgAndroidSDK-3.0.111.jar')
+    //glide
+    compile rootProject.ext.glide
 }
 
 if (project.hasProperty('keystoreFile') &&
