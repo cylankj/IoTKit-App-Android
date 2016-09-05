@@ -1,4 +1,4 @@
-package com.cylan.jiafeigou.utils;
+package com.cylan.jiafeigou.support.log;
 
 /**
  * Created by cylan on 2015/1/19.
@@ -10,6 +10,24 @@ package com.cylan.jiafeigou.utils;
  * <p/>
  * User: modified by hunt
  * Date: 15-01-04
+ * <p/>
+ * User: modified by hunt
+ * Date: 15-01-04
+ * <p/>
+ * User: modified by hunt
+ * Date: 15-01-04
+ * <p/>
+ * User: modified by hunt
+ * Date: 15-01-04
+ * <p/>
+ * User: modified by hunt
+ * Date: 15-01-04
+ * <p/>
+ * User: modified by hunt
+ * Date: 15-01-04
+ * <p/>
+ * User: modified by hunt
+ * Date: 15-01-04
  */
 
 /**
@@ -18,7 +36,7 @@ package com.cylan.jiafeigou.utils;
  */
 
 
-import com.cylan.BuildConfig;
+import java.util.UnknownFormatConversionException;
 
 /**
  * Wrapper API for sending log output.
@@ -154,13 +172,18 @@ public class AppLogger {
             android.util.Log.e(TAG, buildMessage(msg), thr);
     }
 
+    public static void e(String message, Object... args) {
+        if (DEBUG)
+            android.util.Log.e(TAG, buildMessage(message, args));
+    }
+
     /**
      * Building Message
      *
      * @param msg The message you would like logged.
      * @return Message String
      */
-    protected static String buildMessage(String msg) {
+    protected static String buildMessage(String msg, Object... args) {
         StackTraceElement caller = new Throwable().fillInStackTrace()
                 .getStackTrace()[2];
         builder.setLength(0);
@@ -170,8 +193,12 @@ public class AppLogger {
                 .append(tagL)
                 .append(caller.getLineNumber())
                 .append(tagRight)
-                .append(msg)
+                .append(createMessage(msg, args))
                 .toString();
+    }
+
+    private static String createMessage(String message, Object... args) throws UnknownFormatConversionException {
+        return args.length == 0 ? message : String.format(message, args);
     }
 }
 
