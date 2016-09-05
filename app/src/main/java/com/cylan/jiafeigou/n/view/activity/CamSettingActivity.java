@@ -19,7 +19,7 @@ import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
 import com.cylan.jiafeigou.n.view.cam.DeviceStandbyFragment;
 import com.cylan.jiafeigou.n.view.cam.FragmentFacilityInformation;
 import com.cylan.jiafeigou.n.view.cam.SafeProtectionFragment;
-import com.cylan.jiafeigou.utils.AppLogger;
+import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.SettingItemView0;
 import com.cylan.jiafeigou.widget.SettingItemView1;

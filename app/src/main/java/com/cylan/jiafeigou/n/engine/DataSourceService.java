@@ -2,53 +2,38 @@ package com.cylan.jiafeigou.n.engine;
 
 import android.app.Service;
 import android.content.Intent;
-import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageManager;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.IBinder;
 import android.os.Message;
 
-import com.cylan.entity.JfgEnum;
 import com.cylan.entity.jniCall.JFGAccount;
-import com.cylan.entity.jniCall.JFGCameraSettings;
-import com.cylan.entity.jniCall.JFGDelMsg;
+import com.cylan.entity.jniCall.JFGDPMsg;
+import com.cylan.entity.jniCall.JFGDPMsgCount;
+import com.cylan.entity.jniCall.JFGDPMsgRet;
 import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.entity.jniCall.JFGDoorBellCaller;
-import com.cylan.entity.jniCall.JFGDoorSensorSettings;
+import com.cylan.entity.jniCall.JFGFriendAccount;
+import com.cylan.entity.jniCall.JFGFriendRequest;
 import com.cylan.entity.jniCall.JFGHistoryVideo;
 import com.cylan.entity.jniCall.JFGHistoryVideoErrorInfo;
-import com.cylan.entity.jniCall.JFGMessage;
 import com.cylan.entity.jniCall.JFGMessageInfo;
 import com.cylan.entity.jniCall.JFGMsgHttpResult;
-import com.cylan.entity.jniCall.JFGMsgTransportFail;
-import com.cylan.entity.jniCall.JFGMsgTransportReady;
-import com.cylan.entity.jniCall.JFGMsgVideoRecvCall;
-import com.cylan.entity.jniCall.JFGMsgVideoRecvDisconn;
+import com.cylan.entity.jniCall.JFGMsgVideoDisconn;
 import com.cylan.entity.jniCall.JFGMsgVideoResolution;
 import com.cylan.entity.jniCall.JFGMsgVideoRtcp;
 import com.cylan.entity.jniCall.JFGServerCfg;
-import com.cylan.entity.jniCall.JFGStatus;
 import com.cylan.entity.jniCall.RobotMsg;
-import com.cylan.interfaces.JniCallBack;
-import com.cylan.jiafeigou.BuildConfig;
-import com.cylan.jiafeigou.n.mvp.model.LoginAccountBean;
-import com.cylan.jiafeigou.support.rxbus.RxBus;
+import com.cylan.entity.jniCall.RobotoGetDataRsp;
+import com.cylan.jfgapp.interfases.AppCallBack;
+import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.stat.MtaManager;
-import com.cylan.sdkjni.JfgCmd;
-import com.superlog.LogLevel;
-import com.superlog.SLog;
 
 import java.util.ArrayList;
 
 
-public class DataSourceService extends Service implements JniCallBack {
-    private HandlerThread workThread;
+public class DataSourceService extends Service implements AppCallBack {
     private Handler workHandler;
-    private String logPath;
-    JfgCmd cmd;
-    RxBus rxBus;
 
     static {
         System.loadLibrary("jfgsdk");
@@ -57,11 +42,7 @@ public class DataSourceService extends Service implements JniCallBack {
     @Override
     public void onCreate() {
         super.onCreate();
-        initNative();
-        rxBus = RxBus.getInstance();
-        cmd = JfgCmd.getJfgCmd(this);
-        logPath = Environment.getExternalStorageDirectory().getPath() + "/JFG";
-        initLogUtil(logPath);
+        initLogUtil();
         initHandler();
         workHandler.sendEmptyMessageDelayed(0, 1000);
     }
@@ -78,43 +59,32 @@ public class DataSourceService extends Service implements JniCallBack {
     }
 
     private void initNative() {
-        SLog.d("let's go initNative:");
+        AppLogger.d("let's go initNative:");
         MtaManager.customEvent(this, "DataSourceService", "NativeInit");
     }
 
 
     /**
      * 初始化日志
-     *
-     * @param path
      */
-    private void initLogUtil(String path) {
-        SLog.init("JFG")//自定义
-                .setLogDir(path) //保存到此目录下
-                .setWriteToFile(false)//写入到文件
-                .setDebug(BuildConfig.DEBUG)//调试模式
-                .setLogLevel(LogLevel.INFO);//写入级别,info 以下不写入文件
+    private void initLogUtil() {
+
     }
 
 
     private void initHandler() {
-        workThread = new HandlerThread("work");
+        HandlerThread workThread = new HandlerThread("work");
         workThread.start();
-        SLog.i("start workThread !");
-
+        AppLogger.i("start workThread !");
         workHandler = new Handler(workThread.getLooper(), new Handler.Callback() {
             @Override
             public boolean handleMessage(Message msg) {
                 switch (msg.what) {
                     case 0:
                         //init jni
-                        boolean initResult = cmd.initJni(logPath, true, DataSourceService.this);
                         workHandler.sendEmptyMessage(1);
                         break;
                     case 1:
-//                        getApplicationContext().getPackageManager().get
-                        workHandler.removeMessages(1);
-                        cmd.connectServer(JfgEnum.ServerAddr.YF);
                         break;
 
                 }
@@ -124,91 +94,14 @@ public class DataSourceService extends Service implements JniCallBack {
     }
 
 
-    void test() {
-        try {
-            ApplicationInfo ai = getPackageManager().getApplicationInfo(getPackageName(), PackageManager.GET_META_DATA);
-//            ai.metaData.get
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-        }
-    }
-
     @Override
     public void OnLocalMessage(String s, int i, byte[] bytes) {
 
     }
 
     @Override
-    public void OnReprotJfgDevices(JFGDevice[] jfgDevices) {
-        if (rxBus.hasObservers()) {
-            rxBus.send(jfgDevices);
-        }
-    }
+    public void OnReportJfgDevices(JFGDevice[] jfgDevices) {
 
-    @Override
-    public void OnUpdateDevStatus(JFGStatus jfgStatus) {
-
-    }
-
-    @Override
-    public void OnServerConnected() {
-        SLog.i("OnServerConnected");
-        workHandler.removeMessages(1);
-        if (rxBus.hasObservers()) {
-            rxBus.send("test");
-        }
-
-    }
-
-    @Override
-    public void OnServerDisconnected() {
-        SLog.i("OnServerDisconnected");
-        workHandler.sendEmptyMessageDelayed(1, 3000); //re connect server
-    }
-
-    @Override
-    public void OnRecvCall(JFGMsgVideoRecvCall jfgMsgVideoRecvCall) {
-
-    }
-
-    @Override
-    public void OnRecvDisconnect(JFGMsgVideoRecvDisconn jfgMsgVideoRecvDisconn) {
-
-    }
-
-    @Override
-    public void OnTransportReady(JFGMsgTransportReady jfgMsgTransportReady) {
-
-    }
-
-    @Override
-    public void OnTransportFail(JFGMsgTransportFail jfgMsgTransportFail) {
-
-    }
-
-    @Override
-    public void OnNotifyResolution(JFGMsgVideoResolution jfgMsgVideoResolution) {
-
-    }
-
-    @Override
-    public void OnNotifyRTCP(JFGMsgVideoRtcp jfgMsgVideoRtcp) {
-
-    }
-
-    @Override
-    public void OnHttpDone(JFGMsgHttpResult jfgMsgHttpResult) {
-
-    }
-
-    @Override
-    public void OnLoginResult(int i, String s) {
-        if (rxBus.hasObservers()) {
-            LoginAccountBean login = new LoginAccountBean();
-            login.session = s;
-            login.ret = i;
-            rxBus.send(login);
-        }
     }
 
     @Override
@@ -217,32 +110,7 @@ public class DataSourceService extends Service implements JniCallBack {
     }
 
     @Override
-    public void OnUpdateCameraSettings(JFGCameraSettings jfgCameraSettings) {
-
-    }
-
-    @Override
-    public void OnUpdateDoorSensorSettings(JFGDoorSensorSettings jfgDoorSensorSettings) {
-
-    }
-
-    @Override
     public void OnUpdateHistoryVideoList(JFGHistoryVideo jfgHistoryVideo) {
-
-    }
-
-    @Override
-    public void OnServerConfig(JFGServerCfg jfgServerCfg) {
-
-    }
-
-    @Override
-    public void OnUpdateMessage(ArrayList<JFGMessage> arrayList) {
-
-    }
-
-    @Override
-    public void OnUpdateMessageInfoByCid(ArrayList<JFGMessageInfo> arrayList) {
 
     }
 
@@ -257,42 +125,32 @@ public class DataSourceService extends Service implements JniCallBack {
     }
 
     @Override
-    public void OnUpdateDelMsg(JFGDelMsg jfgDelMsg) {
-
-    }
-
-    @Override
-    public void OnDoorBellCall(JFGDoorBellCaller jfgDoorBellCaller) {
-
-    }
-
-    @Override
-    public void OnUpdateCallerInfos(ArrayList<JFGDoorBellCaller> arrayList) {
-
-    }
-
-    @Override
-    public void OnError(int i) {
-
-    }
-
-    @Override
-    public void OnUpdateDelCallerInfo() {
-
-    }
-
-    @Override
-    public void OnOtherClientAnswerCall() {
-
-    }
-
-    @Override
-    public void OnMustReLogin() {
+    public void OnServerConfig(JFGServerCfg jfgServerCfg) {
 
     }
 
     @Override
     public void OnLogoutByServer(int i) {
+
+    }
+
+    @Override
+    public void OnVideoDisconnect(JFGMsgVideoDisconn jfgMsgVideoDisconn) {
+
+    }
+
+    @Override
+    public void OnVideoNotifyResolution(JFGMsgVideoResolution jfgMsgVideoResolution) {
+
+    }
+
+    @Override
+    public void OnVideoNotifyRTCP(JFGMsgVideoRtcp jfgMsgVideoRtcp) {
+
+    }
+
+    @Override
+    public void OnHttpDone(JFGMsgHttpResult jfgMsgHttpResult) {
 
     }
 
@@ -307,12 +165,77 @@ public class DataSourceService extends Service implements JniCallBack {
     }
 
     @Override
-    public void OnBindResult(int i) {
+    public void OnRobotGetDataRsp(RobotoGetDataRsp robotoGetDataRsp) {
 
     }
 
     @Override
-    public void OnReprotSmsPhone(String s) {
+    public void OnRobotSetDataRsp(long l, ArrayList<JFGDPMsgRet> arrayList) {
+
+    }
+
+    @Override
+    public void OnRobotGetDataTimeout(long l) {
+
+    }
+
+    @Override
+    public ArrayList<JFGDPMsg> OnQuerySavedDatapoint(String s, ArrayList<JFGDPMsg> arrayList) {
+        return null;
+    }
+
+    @Override
+    public void OnlineStatus(boolean b) {
+
+    }
+
+    @Override
+    public void OnResult(int i, int i1) {
+
+    }
+
+    @Override
+    public void OnDoorBellCall(JFGDoorBellCaller jfgDoorBellCaller) {
+
+    }
+
+    @Override
+    public void OnOtherClientAnswerCall() {
+
+    }
+
+    @Override
+    public void OnRobotCountDataRsp(long l, ArrayList<JFGDPMsgCount> arrayList) {
+
+    }
+
+    @Override
+    public void OnRobotDelDataRsp(long l, int i) {
+
+    }
+
+    @Override
+    public void OnRobotSyncData(boolean b, String s, ArrayList<JFGDPMsg> arrayList) {
+
+    }
+
+    @Override
+    public void OnSendSMSResult(int i, String s) {
+
+    }
+
+    @Override
+    public void OnGetFriendListRsp(int i, ArrayList<JFGFriendAccount> arrayList) {
+
+    }
+
+    @Override
+    public void OnGetFriendRequestListRsp(int i, ArrayList<JFGFriendRequest> arrayList) {
+
+    }
+
+    @Override
+    public void OnGetFriendInfoRsp(int i, JFGFriendAccount jfgFriendAccount) {
 
     }
 }

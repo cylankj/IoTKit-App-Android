@@ -10,7 +10,7 @@ import android.view.WindowManager;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.utils.AppLogger;
+import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.widget.dialog.BaseDialog;
 
 import java.util.Locale;

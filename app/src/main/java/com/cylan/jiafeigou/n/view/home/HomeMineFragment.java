@@ -15,13 +15,13 @@ import com.cylan.jiafeigou.n.mvp.contract.home.HomeMineContract;
 import com.cylan.jiafeigou.n.view.mine.HomeMineHelpFragment;
 import com.cylan.jiafeigou.n.view.mine.HomeMinePersonalInformationFragment;
 import com.cylan.jiafeigou.support.rxbus.RxBus;
+import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContinuityClickUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.HomeMineItemView;
 import com.cylan.jiafeigou.widget.MsgTextView;
 import com.cylan.jiafeigou.widget.roundedimageview.RoundedImageView;
-import com.cylan.sdkjni.JfgCmd;
-import com.superlog.SLog;
+;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -115,17 +115,17 @@ public class HomeMineFragment extends android.support.v4.app.Fragment
 
     public void friendItem(View view) {
         if (needStartLoginFragment()) return;
-        SLog.i("It's Login,can do something!");
+        AppLogger.i("It's Login,can do something!");
     }
 
     public void shareItem(View view) {
         if (needStartLoginFragment()) return;
-        SLog.i("It's Login,can do something!");
+        AppLogger.i("It's Login,can do something!");
     }
 
     public void settingsItem(View view) {
         if (needStartLoginFragment()) return;
-        SLog.i("It's Login,can do something!");
+        AppLogger.i("It's Login,can do something!");
     }
 
     public void helpItem(View view) {
@@ -136,12 +136,12 @@ public class HomeMineFragment extends android.support.v4.app.Fragment
                 .add(android.R.id.content,mineHelpFragment,"mineHelpFragment")
                 .addToBackStack("mineHelpFragment")
                 .commit();*/
-        SLog.i("It's Login,can do something!");
+        AppLogger.i("It's Login,can do something!");
     }
 
     public void blurPic(View view) {
         if (needStartLoginFragment()) return;
-        SLog.i("It's Login,can do something!");
+        AppLogger.i("It's Login,can do something!");
     }
 
     @Override
@@ -168,15 +168,13 @@ public class HomeMineFragment extends android.support.v4.app.Fragment
     public void onBlur(Drawable drawable) {
         long time = System.currentTimeMillis();
         rLayoutHomeMineTop.setBackground(drawable);
-        SLog.e("usetime:%d ms", System.currentTimeMillis() - time);
+        AppLogger.e("usetime:%d ms", System.currentTimeMillis() - time);
     }
 
 
     private boolean needStartLoginFragment() {
-        if (!JfgCmd.getJfgCmd(getContext()).isLogined) {
-            if (RxBus.getInstance().hasObservers()) {
-                RxBus.getInstance().send(new RxEvent.NeedLoginEvent(null));
-            }
+        if (RxBus.getInstance().hasObservers()) {
+            RxBus.getInstance().send(new RxEvent.NeedLoginEvent(null));
             return true;
         }
         return false;
@@ -188,7 +186,7 @@ public class HomeMineFragment extends android.support.v4.app.Fragment
     public void onButterKnifeClick(View view) {
         switch (view.getId()) {
             case R.id.home_mine_item_friend:
-                SLog.e("home_mine_item_friend");
+                AppLogger.e("home_mine_item_friend");
                 if (getView() != null)
                     ViewUtils.deBounceClick(getView().findViewById(R.id.home_mine_item_friend));
                 friendItem(view);
@@ -196,13 +194,13 @@ public class HomeMineFragment extends android.support.v4.app.Fragment
             case R.id.home_mine_item_share:
                 if (getView() != null)
                     ViewUtils.deBounceClick(getView().findViewById(R.id.home_mine_item_share));
-                SLog.e("home_mine_item_share");
+                AppLogger.e("home_mine_item_share");
                 shareItem(view);
                 break;
             case R.id.home_mine_item_help:
                 /*if (getView() != null)
                     ViewUtils.deBounceClick(getView().findViewById(R.id.home_mine_item_help));
-                SLog.e("home_mine_item_help");*/
+                AppLogger.e("home_mine_item_help");*/
             /*    helpItem(view);*/
                 if (ContinuityClickUtils.isFastDoubleClick()) {
                     return;
@@ -218,13 +216,13 @@ public class HomeMineFragment extends android.support.v4.app.Fragment
             case R.id.home_mine_item_settings:
                 if (getView() != null)
                     ViewUtils.deBounceClick(getView().findViewById(R.id.home_mine_item_settings));
-                SLog.e("home_mine_item_settings");
+                AppLogger.e("home_mine_item_settings");
                 settingsItem(view);
                 break;
             case R.id.shadow_layout:
                 if (getView() != null)
                     ViewUtils.deBounceClick(getView().findViewById(R.id.shadow_layout));
-                SLog.e("home_mine_item_settings");
+                AppLogger.e("home_mine_item_settings");
                 portrait();
                 break;
             case R.id.tv_home_mine_nick:

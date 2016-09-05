@@ -2,7 +2,6 @@ package com.cylan.jiafeigou.support.log;
 
 
 import android.os.Environment;
-import android.os.Process;
 import android.util.Log;
 
 import java.io.File;
@@ -15,11 +14,16 @@ public class NLoggerConfigurator {
     private int logLevel = Log.VERBOSE;
     private String messagePattern = "yyyy-mm-dd HH:mm:ss.SSS ";
     private String logCatPattern = "%m%n";
-    private String filePath = Environment.getExternalStorageDirectory().getAbsolutePath()
+    /**
+     * 文件目录
+     */
+    private String moduleDirPath = Environment.getExternalStorageDirectory().getAbsolutePath()
             + File.separator
-            + "Logger"
-            + File.separator
-            + Process.myPid() + ".txt";
+            + "Logger";
+    /**
+     * 文件名字
+     */
+    private String moduleName;
     private int maxBackupSize = 2;
     private long maxFileSize = 512 * 1024;
     private boolean immediateFlush = true;
@@ -40,8 +44,12 @@ public class NLoggerConfigurator {
         return logCatPattern;
     }
 
-    public String getFilePath() {
-        return filePath;
+    public String getModuleName() {
+        return moduleName;
+    }
+
+    public String getModuleDirPath() {
+        return moduleDirPath;
     }
 
     public int getMaxBackupSize() {
@@ -88,6 +96,11 @@ public class NLoggerConfigurator {
             return this;
         }
 
+        public Builder setModuleName(String moduleName) {
+            this.configurator.moduleName = moduleName;
+            return this;
+        }
+
         public Builder setFilePattern(String filePattern) {
             configurator.messagePattern = filePattern;
             return this;
@@ -98,8 +111,8 @@ public class NLoggerConfigurator {
             return this;
         }
 
-        public Builder setFilePath(String filePath) {
-            configurator.filePath = filePath;
+        public Builder setModuleDirPath(String dirPath) {
+            configurator.moduleDirPath = dirPath;
             return this;
         }
 

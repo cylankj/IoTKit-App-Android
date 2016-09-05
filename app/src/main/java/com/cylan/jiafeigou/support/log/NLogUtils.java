@@ -25,7 +25,7 @@ public class NLogUtils {
      * @return
      * @throws RuntimeException if an error occurs while operator FileOutputStream
      */
-    public static boolean copyFile(String sourceFilePath, String destFilePath) {
+    public static synchronized boolean copyFile(String sourceFilePath, String destFilePath) {
         InputStream inputStream = null;
         try {
             if (isFileExist(sourceFilePath))
@@ -122,13 +122,11 @@ public class NLogUtils {
         } catch (IOException e) {
             throw new RuntimeException("IOException occurred. ", e);
         } finally {
-            if (o != null) {
-                try {
-                    o.close();
-                    stream.close();
-                } catch (IOException e) {
-                    throw new RuntimeException("IOException occurred. ", e);
-                }
+            try {
+                if (o != null) o.close();
+                if (stream != null) stream.close();
+            } catch (IOException e) {
+                throw new RuntimeException("IOException occurred. ", e);
             }
         }
     }
@@ -216,7 +214,7 @@ public class NLogUtils {
             return true;
         }
         if (file.isFile()) {
-            return file.delete();
+            return deleteFileSafely(file);
         }
         if (!file.isDirectory()) {
             return false;
@@ -226,11 +224,27 @@ public class NLogUtils {
             for (int i = 0; i < files.length; i++) {
                 File f = files[i];
                 if (f.isFile()) {
-                    boolean is = f.delete();
+                    boolean is = deleteFileSafely(f);
                 } else if (f.isDirectory()) {
                     deleteFile(f.getAbsolutePath());
                 }
             }
-        return file.delete();
+        return deleteFileSafely(file);
+    }
+
+    /**
+     * 安全删除文件.
+     *
+     * @param file
+     * @return
+     */
+    private static boolean deleteFileSafely(File file) {
+        if (file != null) {
+            String tmpPath = file.getAbsolutePath() + System.currentTimeMillis();
+            File tmp = new File(tmpPath);
+            boolean result = file.renameTo(tmp);
+            return result && tmp.delete();
+        }
+        return false;
     }
 }

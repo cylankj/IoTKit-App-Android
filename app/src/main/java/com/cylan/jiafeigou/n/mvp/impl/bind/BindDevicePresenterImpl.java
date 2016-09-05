@@ -7,7 +7,7 @@ import com.cylan.jiafeigou.misc.ScanResultListFilter;
 import com.cylan.jiafeigou.n.mvp.contract.bind.BindDeviceContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.support.network.ReactiveNetwork;
-import com.superlog.SLog;
+import com.cylan.jiafeigou.support.log.AppLogger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +18,8 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
+
+;
 
 /**
  * Created by cylan-hunt on 16-7-6.
@@ -90,7 +92,7 @@ public class BindDevicePresenterImpl extends AbstractPresenter<BindDeviceContrac
                 }, new Action1<Throwable>() {
                     @Override
                     public void call(Throwable throwable) {
-                        SLog.e("good: " + throwable.toString());
+                        AppLogger.e("good: " + throwable.toString());
                     }
                 });
     }

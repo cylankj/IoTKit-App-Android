@@ -48,7 +48,6 @@ import permissions.dispatcher.RuntimePermissions;
 public class SmartcallActivity extends NeedLoginActivity
         implements SplashContract.View {
 
-
     @BindView(R.id.fLayout_splash)
     FrameLayout fLayoutSplash;
     @BindView(R.id.vpWelcome)
@@ -69,6 +68,7 @@ public class SmartcallActivity extends NeedLoginActivity
         IMEUtils.fixFocusedViewLeak(getApplication());
         setContentView(R.layout.activity_welcome_page);
         ButterKnife.bind(this);
+        SmartcallActivityPermissionsDispatcher.showWriteSdCardWithCheck(this);
         initData();
     }
 
@@ -94,7 +94,6 @@ public class SmartcallActivity extends NeedLoginActivity
     }
 
     private void initGuidePage() {
-
         if (splashFragments == null) {
             splashFragments = new ArrayList<>();
             splashFragments.add(FragmentSplash.newInstance(0));

@@ -8,7 +8,7 @@ import android.util.Log;
 
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.support.DebugOptionsImpl;
-import com.cylan.jiafeigou.utils.AppLogger;
+import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.SuperSpUtils;
 import com.cylan.utils.Constants;
 import com.squareup.leakcanary.LeakCanary;

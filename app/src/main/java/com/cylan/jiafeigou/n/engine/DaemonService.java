@@ -15,12 +15,14 @@ import android.util.Log;
 
 import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.PathGetter;
 import com.cylan.utils.FileUtils;
 import com.cylan.utils.ProcessUtils;
-import com.superlog.SLog;
 
 import java.io.File;
+
+;
 
 public class DaemonService extends Service {
     private static final String TAG = DaemonService.class.getSimpleName();
@@ -52,9 +54,7 @@ public class DaemonService extends Service {
         if (!isServiceRunning()) {
             startService(new Intent(this, DataSourceService.class));
             try2startForeground();
-            SLog.i("re start data service");
-
-
+            AppLogger.i("re start data service");
         }
         return START_STICKY;
     }
@@ -87,7 +87,7 @@ public class DaemonService extends Service {
             new File(daemonPath).setExecutable(true);
             final String packageName = getPackageName();
             final String processName = ProcessUtils.myProcessName(this) + ":push";
-            final String logPath = PathGetter.getWSLogPath();
+            final String logPath = PathGetter.getWAppLoggerPath();
             new ProcessBuilder().command(daemonPath,
                     packageName,
                     processName,

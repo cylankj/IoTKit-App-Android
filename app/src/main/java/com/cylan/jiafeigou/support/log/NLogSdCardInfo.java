@@ -28,9 +28,9 @@ public class NLogSdCardInfo {
     public NLogSdCardInfo(String path) {
         this.path = path;
         this.sf = getStatFs();
-        long blockSize = sf.getBlockSizeLong(); // 区块大小 。
-        long count = sf.getBlockCountLong(); // 总块数
-        long freeCount = sf.getAvailableBlocksLong(); //空余块数。
+        long blockSize = sf.getBlockCount(); // 区块大小 。
+        long count = sf.getBlockCount(); // 总块数
+        long freeCount = sf.getAvailableBlocks(); //空余块数。
         totalSize = blockSize * count;
         freeSize = blockSize * freeCount;
         this.usedSize = totalSize - freeSize;

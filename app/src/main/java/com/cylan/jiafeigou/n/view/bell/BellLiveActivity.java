@@ -14,7 +14,7 @@ import android.widget.TextView;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.contract.bell.BellLiveContract;
 import com.cylan.jiafeigou.n.mvp.impl.bell.BellLivePresenterImpl;
-import com.cylan.jiafeigou.utils.AppLogger;
+import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.bell.DragLayout;
 

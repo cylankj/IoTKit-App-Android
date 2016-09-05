@@ -1,8 +1,8 @@
 package com.cylan.jiafeigou.misc;
 
 import com.cylan.jiafeigou.n.mvp.model.MediaBean;
+import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.widget.wheel.WheelViewDataSet;
-import com.superlog.SLog;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -12,6 +12,8 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
+
+;
 
 /**
  * Created by cylan-hunt on 16-7-4.
@@ -32,18 +34,18 @@ public class TimeLineAssembler {
         WheelViewDataSet dataSet = new WheelViewDataSet();
         Middle middle = expandRawList();
         if (middle == null) {
-            SLog.d("god ,data is empty");
+            AppLogger.d("god ,data is empty");
             return null;
         }
         if (middle.timeInLongList == null || middle.timeInStrList == null || middle.typeList == null) {
-            SLog.d("god ,data is empty again");
+            AppLogger.d("god ,data is empty again");
             return null;
         }
         final int count_0 = middle.timeInLongList.size();
         final int count_1 = middle.timeInStrList.size();
         final int count_2 = middle.typeList.size();
         if (count_0 != count_1 || count_0 != count_2) {
-            SLog.d("god ,data is empty again again");
+            AppLogger.d("god ,data is empty again again");
         }
 
         dataSet.dataSet = new long[count_0];
@@ -54,7 +56,7 @@ public class TimeLineAssembler {
             dataSet.dateInStr.put(i, middle.timeInStrList.get(i));
             dataSet.dataSet[i] = middle.timeInLongList.get(i);
             dataSet.dataTypeSet[i] = middle.typeList.get(i);
-            SLog.d("set: i:" + i + " type:" + dataSet.dataTypeSet[i]);
+            AppLogger.d("set: i:" + i + " type:" + dataSet.dataTypeSet[i]);
         }
 
 

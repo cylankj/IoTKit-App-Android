@@ -39,14 +39,14 @@ import com.cylan.jiafeigou.n.view.bell.DoorBellHomeActivity;
 import com.cylan.jiafeigou.n.view.misc.HomeEmptyView;
 import com.cylan.jiafeigou.n.view.misc.IEmptyView;
 import com.cylan.jiafeigou.support.rxbus.RxBus;
-import com.cylan.jiafeigou.utils.AppLogger;
+import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
 import com.cylan.jiafeigou.widget.sticky.HeaderAnimator;
 import com.cylan.jiafeigou.widget.sticky.StickyHeaderBuilder;
 import com.cylan.jiafeigou.widget.wave.SuperWaveView;
 import com.cylan.utils.RandomUtils;
-import com.superlog.SLog;
+;
 
 import org.msgpack.annotation.NotNullable;
 
@@ -120,7 +120,7 @@ public class HomePageListFragment extends Fragment implements
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (savedInstanceState != null) {
-            SLog.d("save L:" + savedInstanceState);
+            AppLogger.d("save L:" + savedInstanceState);
         }
         Bundle bundle;
         if (getArguments() != null) {
@@ -303,7 +303,7 @@ public class HomePageListFragment extends Fragment implements
 
     @Override
     public void setPresenter(HomePageListContract.Presenter presenter) {
-        SLog.e("ffff: " + (presenter == null));
+        AppLogger.e("ffff: " + (presenter == null));
         this.presenter = presenter;
     }
 

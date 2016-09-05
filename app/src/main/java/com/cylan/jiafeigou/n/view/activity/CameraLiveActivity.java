@@ -21,14 +21,16 @@ import com.cylan.jiafeigou.n.mvp.impl.cam.CamLivePresenterImpl;
 import com.cylan.jiafeigou.n.mvp.impl.cam.CamMessageListPresenterImpl;
 import com.cylan.jiafeigou.n.view.cam.CamMessageListFragment;
 import com.cylan.jiafeigou.n.view.cam.CameraLiveFragment;
+import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.CustomViewPager;
 import com.cylan.jiafeigou.widget.indicator.PagerSlidingTabStrip;
-import com.superlog.SLog;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+
+;
 
 public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
 
@@ -59,13 +61,13 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        SLog.d("onSaveInstanceState");
+        AppLogger.d("onSaveInstanceState");
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        SLog.d("onRestoreInstanceState");
+        AppLogger.d("onRestoreInstanceState");
     }
 
     @Override

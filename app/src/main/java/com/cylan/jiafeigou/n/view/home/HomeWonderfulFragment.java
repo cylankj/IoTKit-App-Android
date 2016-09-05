@@ -30,7 +30,7 @@ import com.cylan.jiafeigou.n.view.media.WonderfulBigPicFragment;
 import com.cylan.jiafeigou.n.view.misc.HomeEmptyView;
 import com.cylan.jiafeigou.n.view.misc.IEmptyView;
 import com.cylan.jiafeigou.utils.AnimatorUtils;
-import com.cylan.jiafeigou.utils.AppLogger;
+import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.TimeUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
@@ -40,7 +40,7 @@ import com.cylan.jiafeigou.widget.textview.WonderfulTitleHead;
 import com.cylan.jiafeigou.widget.wheel.WheelView;
 import com.cylan.jiafeigou.widget.wheel.WheelViewDataSet;
 import com.cylan.utils.ListUtils;
-import com.superlog.SLog;
+;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
@@ -106,7 +106,7 @@ public class HomeWonderfulFragment extends Fragment implements
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (savedInstanceState != null) {
-            SLog.d("save L:" + savedInstanceState);
+            AppLogger.d("save L:" + savedInstanceState);
         }
     }
 
@@ -426,7 +426,7 @@ public class HomeWonderfulFragment extends Fragment implements
 
     @Override
     public void onItemChanged(int position, long timeInLong, String dateInStr) {
-        SLog.d("date: " + TimeUtils.getDateStyle_0(timeInLong));
+        AppLogger.d("date: " + TimeUtils.getDateStyle_0(timeInLong));
         if (getActivity() == null)
             return;
         TextView textView = (TextView) getActivity().findViewById(R.id.tv_time_line_pop);

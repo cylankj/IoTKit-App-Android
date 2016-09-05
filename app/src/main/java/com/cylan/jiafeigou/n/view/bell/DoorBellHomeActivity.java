@@ -24,7 +24,7 @@ import com.cylan.jiafeigou.n.mvp.impl.bell.DBellHomePresenterImpl;
 import com.cylan.jiafeigou.n.mvp.model.BellCallRecordBean;
 import com.cylan.jiafeigou.n.view.adapter.BellCallRecordListAdapter;
 import com.cylan.jiafeigou.utils.AnimatorUtils;
-import com.cylan.jiafeigou.utils.AppLogger;
+import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ViewUtils;
 
 import java.lang.ref.WeakReference;

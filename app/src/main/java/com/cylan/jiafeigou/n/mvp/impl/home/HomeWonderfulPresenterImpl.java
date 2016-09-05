@@ -5,10 +5,10 @@ import com.cylan.jiafeigou.misc.TimeLineAssembler;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeWonderfulContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.n.mvp.model.MediaBean;
+import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.widget.wheel.WheelViewDataSet;
 import com.cylan.utils.RandomUtils;
 import com.google.gson.Gson;
-import com.superlog.SLog;
 
 import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
@@ -27,6 +27,8 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
+
+;
 
 /**
  * Created by hunt on 16-5-23.
@@ -71,7 +73,7 @@ public class HomeWonderfulPresenterImpl extends AbstractPresenter<HomeWonderfulC
             baseBean.mediaType = RandomUtils.getRandom(4);
             list.add(baseBean);
         }
-        SLog.d("rawList: " + (new Gson().toJson(list)));
+        AppLogger.d("rawList: " + (new Gson().toJson(list)));
         return list;
     }
 

@@ -7,5 +7,5 @@ import java.io.IOException;
  */
 public interface IWriter {
 
-    void write(final String message) throws IOException;
+    void write(final String message) throws IOException, Exception;
 }

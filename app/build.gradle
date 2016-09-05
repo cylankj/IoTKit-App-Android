@@ -71,7 +71,6 @@ dependencies {
     compile files('libs/okhttp-3.2.0.jar')
     compile files('libs/okio-1.6.0.jar')
     compile files('libs/open_sdk_r5509_lite.jar')
-    compile files('libs/SLog-2.0.jar')
     compile files('libs/weibosdkcore.jar')
     compile files('libs/zxing.jar')
     debugCompile files('src/main/jniLibs/jfg-debug-support.jar')

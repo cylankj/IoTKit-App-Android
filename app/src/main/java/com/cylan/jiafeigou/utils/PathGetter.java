@@ -39,7 +39,7 @@ public class PathGetter {
     }
 
 
-    public static String getWSLogPath() {
+    public static String getWAppLoggerPath() {
         return mkdirs("log");
     }
 

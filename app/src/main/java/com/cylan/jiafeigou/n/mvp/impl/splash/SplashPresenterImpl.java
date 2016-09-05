@@ -3,6 +3,7 @@ package com.cylan.jiafeigou.n.mvp.impl.splash;
 
 import com.cylan.jiafeigou.n.mvp.contract.splash.SplashContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
+import com.cylan.jiafeigou.support.log.AppLogger;
 
 import java.util.concurrent.TimeUnit;
 
@@ -27,6 +28,8 @@ public class SplashPresenterImpl extends AbstractPresenter<SplashContract.View>
 
     @Override
     public void finishAppDelay() {
+        AppLogger.w("deny sdcard permission");
+        System.exit(0);
     }
 
 
