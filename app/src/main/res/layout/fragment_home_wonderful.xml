@@ -10,6 +10,7 @@
         android:layout_height="wrap_content">
 
         <android.support.v7.widget.RecyclerView
+            android:background="@color/color_white"
             android:id="@+id/rV_wonderful_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent">

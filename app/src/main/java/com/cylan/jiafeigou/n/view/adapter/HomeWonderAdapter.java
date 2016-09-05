@@ -3,7 +3,10 @@ package com.cylan.jiafeigou.n.view.adapter;
 import android.content.Context;
 import android.support.v4.view.ViewCompat;
 import android.view.View;
+import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.model.MediaBean;
 import com.cylan.superadapter.IMulItemViewType;
@@ -60,10 +63,15 @@ public class HomeWonderAdapter extends SuperAdapter<MediaBean> {
         holder.setText(R.id.tv_wonderful_item_date, bean.timeInStr);
 
         //图标
-        holder.setBackgroundResource(R.id.iv_wonderful_item_content, R.drawable.bg_home_title_daytime);
-
+//        holder.setBackgroundResource(R.id.iv_wonderful_item_content, R.drawable.bg_home_title_daytime);
+        Glide.with(getContext())
+                .load(bean.srcUrl)
+                .placeholder(R.drawable.ic_launcher)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .centerCrop()
+                .into((ImageView) holder.getView(R.id.iv_wonderful_item_content));
         //来自摄像头
-        holder.setText(R.id.tv_wonderful_item_device_name, bean.srcUrl);
+        holder.setText(R.id.tv_wonderful_item_device_name, bean.deviceName);
     }
 
     @Override

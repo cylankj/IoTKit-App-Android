@@ -3,6 +3,7 @@ package com.cylan.jiafeigou.n.view.home;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.annotation.UiThread;
@@ -22,6 +23,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.transition.DetailsTransition;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeWonderfulContract;
 import com.cylan.jiafeigou.n.mvp.model.MediaBean;
@@ -29,8 +31,8 @@ import com.cylan.jiafeigou.n.view.adapter.HomeWonderAdapter;
 import com.cylan.jiafeigou.n.view.media.WonderfulBigPicFragment;
 import com.cylan.jiafeigou.n.view.misc.HomeEmptyView;
 import com.cylan.jiafeigou.n.view.misc.IEmptyView;
-import com.cylan.jiafeigou.utils.AnimatorUtils;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.AnimatorUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
@@ -40,7 +42,6 @@ import com.cylan.jiafeigou.widget.textview.WonderfulTitleHead;
 import com.cylan.jiafeigou.widget.wheel.WheelView;
 import com.cylan.jiafeigou.widget.wheel.WheelViewDataSet;
 import com.cylan.utils.ListUtils;
-;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
@@ -48,6 +49,8 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+
+;
 
 public class HomeWonderfulFragment extends Fragment implements
         HomeWonderfulContract.View, SwipeRefreshLayout.OnRefreshListener,
@@ -134,7 +137,6 @@ public class HomeWonderfulFragment extends Fragment implements
     private void initEmptyViewState(Context context) {
         if (emptyViewState == null)
             emptyViewState = new EmptyViewState(context, R.layout.layout_wonderful_list_empty_view);
-
     }
 
     @Override
@@ -289,6 +291,19 @@ public class HomeWonderfulFragment extends Fragment implements
             return;
         ((WheelView) view).setDataSet(wheelViewDataSet);
         ((WheelView) view).setOnItemChangedListener(this);
+    }
+
+    @SuppressWarnings("deprecation")
+    @Override
+    public void onTimeTick(int dayTime) {
+        //需要优化
+        int drawableId = dayTime == JFGRules.RULE_DAY_TIME
+                ? R.drawable.bg_head_daytime_wonderful : R.drawable.bg_head_night_wonderful;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            imgWonderfulTopBg.setBackground(getResources().getDrawable(drawableId, null));
+        } else {
+            imgWonderfulTopBg.setBackground(getResources().getDrawable(drawableId));
+        }
     }
 
     @Override

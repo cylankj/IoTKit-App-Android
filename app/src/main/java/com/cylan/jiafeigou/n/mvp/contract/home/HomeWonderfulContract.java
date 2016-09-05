@@ -19,6 +19,10 @@ public interface HomeWonderfulContract {
 
         void timeLineDataUpdate(WheelViewDataSet wheelViewDataSet);
 
+        /**
+         * @param dayTime：0白天 1黑夜
+         */
+        void onTimeTick(int dayTime);
     }
 
     interface Presenter extends BasePresenter {
