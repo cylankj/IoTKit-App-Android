@@ -29,6 +29,7 @@ public class SplashPresenterImpl extends AbstractPresenter<SplashContract.View>
     @Override
     public void finishAppDelay() {
         AppLogger.w("deny sdcard permission");
+        android.os.Process.killProcess(android.os.Process.myPid());
         System.exit(0);
     }
 

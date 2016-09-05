@@ -24,6 +24,7 @@ import com.cylan.jiafeigou.n.view.activity.NeedLoginActivity;
 import com.cylan.jiafeigou.n.view.adapter.SimpleFragmentAdapter;
 import com.cylan.jiafeigou.n.view.splash.BeforeLoginFragment;
 import com.cylan.jiafeigou.n.view.splash.FragmentSplash;
+import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.IMEUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.UiHelper;
@@ -68,13 +69,13 @@ public class SmartcallActivity extends NeedLoginActivity
         IMEUtils.fixFocusedViewLeak(getApplication());
         setContentView(R.layout.activity_welcome_page);
         ButterKnife.bind(this);
-        SmartcallActivityPermissionsDispatcher.showWriteSdCardWithCheck(this);
         initData();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        SmartcallActivityPermissionsDispatcher.showWriteSdCardWithCheck(this);
         if (presenter != null) presenter.start();
     }
 
@@ -128,11 +129,6 @@ public class SmartcallActivity extends NeedLoginActivity
         }
     }
 
-//    @Override
-//    public void timeSplashed() {
-//        SplashPermissionDispatcher.showWriteSdCardWithCheck(this);
-//    }
-
     @Override
     public void splashOver() {
         fLayoutSplash.setVisibility(View.GONE);
@@ -173,7 +169,7 @@ public class SmartcallActivity extends NeedLoginActivity
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-//        SplashPermissionDispatcher.onRequestPermissionsResult(this, permissions, requestCode, grantResults);
+        SmartcallActivityPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
     }
 
     @OnPermissionDenied(Manifest.permission.WRITE_EXTERNAL_STORAGE)
@@ -186,7 +182,7 @@ public class SmartcallActivity extends NeedLoginActivity
 
     @NeedsPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
     public void showWriteSdCard() {
-
+        AppLogger.d(JConstant.LOG_TAG.PERMISSION + "show");
     }
 
 

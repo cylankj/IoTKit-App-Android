@@ -85,4 +85,8 @@ public class JConstant {
 
     public static final int INVALID_PROCESS = -1;
 
+    public static class LOG_TAG {
+        public static final String PERMISSION = "permission";
+    }
+
 }
