@@ -16,6 +16,7 @@ import com.cylan.jiafeigou.n.mvp.contract.home.HomeMineContract;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeSettingContract;
 import com.cylan.jiafeigou.n.view.mine.HomeMineHelpFragment;
 import com.cylan.jiafeigou.n.view.mine.HomeMinePersonalInformationFragment;
+import com.cylan.jiafeigou.n.view.mine.MineShareDeviceFragment;
 import com.cylan.jiafeigou.support.rxbus.RxBus;
 import com.cylan.jiafeigou.utils.ContinuityClickUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
@@ -57,6 +58,7 @@ public class HomeMineFragment extends android.support.v4.app.Fragment
     private HomeMinePersonalInformationFragment personalInformationFragment;
     private HomeSettingFragment homeSettingFragment;
     private HomeMineMessageFragment homeMineMessageFragment;
+    private MineShareDeviceFragment mineShareDeviceFragment;
 
     public static HomeMineFragment newInstance(Bundle bundle) {
         HomeMineFragment fragment = new HomeMineFragment();
@@ -71,6 +73,7 @@ public class HomeMineFragment extends android.support.v4.app.Fragment
         personalInformationFragment = HomeMinePersonalInformationFragment.newInstance(new Bundle());
         homeSettingFragment = HomeSettingFragment.newInstance();
         homeMineMessageFragment = HomeMineMessageFragment.newInstance();
+        mineShareDeviceFragment = MineShareDeviceFragment.newInstance();
     }
 
     @Override
@@ -125,8 +128,14 @@ public class HomeMineFragment extends android.support.v4.app.Fragment
     }
 
     public void shareItem(View view) {
-        if (needStartLoginFragment()) return;
-        SLog.i("It's Login,can do something!");
+        //if (needStartLoginFragment()) return;
+        //SLog.i("It's Login,can do something!");
+        getFragmentManager().beginTransaction()
+                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
+                        , R.anim.slide_in_left, R.anim.slide_out_right)
+                .add(android.R.id.content,mineShareDeviceFragment,"mineShareDeviceFragment")
+                .addToBackStack("mineHelpFragment")
+                .commit();
     }
 
     public void settingsItem(View view) {

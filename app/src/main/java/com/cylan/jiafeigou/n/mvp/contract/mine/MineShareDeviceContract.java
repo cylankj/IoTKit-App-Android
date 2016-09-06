@@ -12,6 +12,8 @@ public interface MineShareDeviceContract {
 
     interface View extends BaseView<Presenter>{
 
+        void showShareDialog();
+
     }
 
     interface Presenter extends BasePresenter{
