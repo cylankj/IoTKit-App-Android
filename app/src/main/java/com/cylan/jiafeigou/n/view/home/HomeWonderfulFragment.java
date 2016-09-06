@@ -28,7 +28,7 @@ import com.cylan.jiafeigou.misc.transition.DetailsTransition;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeWonderfulContract;
 import com.cylan.jiafeigou.n.mvp.model.MediaBean;
 import com.cylan.jiafeigou.n.view.adapter.HomeWonderfulAdapter;
-import com.cylan.jiafeigou.n.view.media.WonderfulBigPicFragment;
+import com.cylan.jiafeigou.n.view.media.BigPicFragment;
 import com.cylan.jiafeigou.n.view.misc.HomeEmptyView;
 import com.cylan.jiafeigou.n.view.misc.IEmptyView;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -322,7 +322,7 @@ public class HomeWonderfulFragment extends Fragment implements
         }
         switch (v.getId()) {
             case R.id.iv_wonderful_item_content:
-                WonderfulBigPicFragment picDetailsFragment = WonderfulBigPicFragment.newInstance(null);
+                BigPicFragment picDetailsFragment = BigPicFragment.newInstance(null);
 
 //                // Note that we need the API version check here because the actual transition classes (e.g. Fade)
 //                // are not in the support library and are only available in API 21+. The methods we are calling on the Fragment

@@ -95,7 +95,7 @@ public class HomeWonderfulPresenterImpl extends AbstractPresenter<HomeWonderfulC
             baseBean.time = time;
             baseBean.timeInStr = getDate(time);
             baseBean.deviceName = "南湖";
-            baseBean.mediaType = RandomUtils.getRandom(1);
+            baseBean.mediaType = RandomUtils.getRandom(2);
             if (baseBean.mediaType == MediaBean.TYPE_PIC)
                 baseBean.srcUrl = pics[RandomUtils.getRandom(pics.length)];
             else {
@@ -302,7 +302,6 @@ public class HomeWonderfulPresenterImpl extends AbstractPresenter<HomeWonderfulC
             "http://r1.ykimg.com/material/0A03/201609/0905/119766/1300.swf?jsStart=&jsEnd=execHtmlEndCMDfortaobao&url=http://val.atm.youku.com/c?id=9612",
             "http://yf.cylan.com.cn:82/Garfield/1045020208160b9706425470.mp4",
             Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "1045020208160b9706425470.mp4",
-            Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "Smarthome" + File.separator + "146828399c73fb168c227b39.mp4",
             Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "Smarthome" + File.separator + "2052787320ae200c438272b8.mp4",
             Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "Smarthome" + File.separator + "1096863_70ea6a0d88b18de8de580ccd5812c606.mp4"
     };

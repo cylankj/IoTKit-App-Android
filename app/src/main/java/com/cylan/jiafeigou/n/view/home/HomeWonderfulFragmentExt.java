@@ -35,7 +35,7 @@ import com.cylan.jiafeigou.misc.transition.DetailsTransition;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeWonderfulContract;
 import com.cylan.jiafeigou.n.mvp.model.MediaBean;
 import com.cylan.jiafeigou.n.view.adapter.HomeWonderfulAdapter;
-import com.cylan.jiafeigou.n.view.media.WonderfulBigPicFragment;
+import com.cylan.jiafeigou.n.view.media.BigPicFragment;
 import com.cylan.jiafeigou.n.view.misc.HomeEmptyView;
 import com.cylan.jiafeigou.n.view.misc.IEmptyView;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -140,6 +140,7 @@ public class HomeWonderfulFragmentExt extends Fragment implements
         homeWonderAdapter = new HomeWonderfulAdapter(getContext(), null, null);
         homeWonderAdapter.setWonderfulItemClickListener(this);
         homeWonderAdapter.setWonderfulItemLongClickListener(this);
+        homeWonderAdapter.setLoadMediaListener(this);
         initEmptyViewState(context);
     }
 
@@ -312,29 +313,24 @@ public class HomeWonderfulFragmentExt extends Fragment implements
         }
         switch (v.getId()) {
             case R.id.iv_wonderful_item_content:
-                WonderfulBigPicFragment picDetailsFragment = WonderfulBigPicFragment.newInstance(null);
-
-//                // Note that we need the API version check here because the actual transition classes (e.g. Fade)
-//                // are not in the support library and are only available in API 21+. The methods we are calling on the Fragment
-//                // ARE available in the support library (though they don't do anything on API < 21)
-//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-//                    picDetailsFragment.setSharedElementEnterTransition(new DetailsTransition());
-////                    picDetailsFragment.setEnterTransition(new Fade());
-//                    picDetailsFragment.setSharedElementReturnTransition(new DetailsTransition());
-//                    setSharedElementReturnTransition(new Fade());
-//                    setExitTransition(new Fade());
-//                }
-
-
-                setExitTransition(new Fade());
-                picDetailsFragment.setEnterTransition(new Fade());
-                picDetailsFragment.setSharedElementEnterTransition(new DetailsTransition());
-                picDetailsFragment.setSharedElementReturnTransition(new DetailsTransition());
-
+                Bundle bundle = new Bundle();
+                bundle.putString("test", homeWonderAdapter.getItem(position).srcUrl);
+                BigPicFragment picDetailsFragment =
+                        BigPicFragment.newInstance(bundle);
+                // Note that we need the API version check here because the actual transition classes (e.g. Fade)
+                // are not in the support library and are only available in API 21+. The methods we are calling on the Fragment
+                // ARE available in the support library (though they don't do anything on API < 21)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    picDetailsFragment.setSharedElementEnterTransition(new DetailsTransition());
+                    picDetailsFragment.setSharedElementReturnTransition(new Fade());
+                    picDetailsFragment.setEnterTransition(new Fade());
+                    setSharedElementReturnTransition(new Fade());
+                    setExitTransition(new DetailsTransition());
+                }
                 getFragmentManager()
                         .beginTransaction()
                         .addSharedElement(v, "picDetailsFragment")
-                        .replace(R.id.fLayout_wonderful_container, picDetailsFragment)
+                        .replace(android.R.id.content, picDetailsFragment)
                         .addToBackStack("picDetailsFragment")
                         .commit();
                 break;
@@ -463,7 +459,6 @@ public class HomeWonderfulFragmentExt extends Fragment implements
                 / appbar.getTotalScrollRange();
         final float alpha = 1.0f - ratio;
         if (imgWonderfulTitleCover.getAlpha() != alpha) {
-//            AppLogger.d("verticalOffset: " + " " + verticalOffset + "   " + alpha);
             imgWonderfulTitleCover.setAlpha(alpha);
         }
     }
@@ -493,6 +488,9 @@ public class HomeWonderfulFragmentExt extends Fragment implements
         }
     }
 
+    /**
+     * 空列表的placeholder
+     */
     private static class EmptyViewState {
         private IEmptyView homePageEmptyView;
 
@@ -506,7 +504,6 @@ public class HomeWonderfulFragmentExt extends Fragment implements
                     ViewGroup.LayoutParams.WRAP_CONTENT);
             lp.gravity = Gravity.CENTER_HORIZONTAL;
             lp.topMargin = bottom;
-//                    + bottom;
             homePageEmptyView.addView(viewContainer, lp);
         }
 
@@ -515,39 +512,4 @@ public class HomeWonderfulFragmentExt extends Fragment implements
         }
     }
 
-//    private static class SimpleScrollListener implements HeaderAnimator.ScrollRationListener {
-//
-//        private WeakReference<ImageView> fadeTopHeadCover;
-//        private final FrameLayout mTitleBackgroundRef;
-//        private WonderfulTitleHead tvDateColor;
-//
-//        public SimpleScrollListener(ImageView relativeLayout, FrameLayout frameLayout) {
-//            fadeTopHeadCover = new WeakReference<>(relativeLayout);
-//            mTitleBackgroundRef = new WeakReference<>(frameLayout).get();
-//        }
-//
-//
-//        @Override
-//        public void onScroll(float ration) {
-//
-//            if (fadeTopHeadCover != null && fadeTopHeadCover.get() != null && mTitleBackgroundRef != null) {
-//                if (tvDateColor == null)
-//                    tvDateColor = (WonderfulTitleHead) mTitleBackgroundRef.getChildAt(1);
-//
-//                float alpha = (ration - 0.8f) / 0.2f;
-//                if (ration < 0.8) {
-//                    alpha = 0;
-//                    tvDateColor.setTextColor(Color.rgb(78, 82, 91));
-//                    tvDateColor.setTitleHeadIsTop(false);
-//                } else {
-//                    tvDateColor.setTextColor(Color.WHITE);
-//                    tvDateColor.setTitleHeadIsTop(true);
-//                }
-//                if (alpha < 0.99f)
-//                    tvDateColor.setBackgroundToRight();
-//                mTitleBackgroundRef.getChildAt(0).setAlpha(1 - alpha);
-//                fadeTopHeadCover.get().setAlpha(alpha);
-//            }
-//        }
-//    }
 }

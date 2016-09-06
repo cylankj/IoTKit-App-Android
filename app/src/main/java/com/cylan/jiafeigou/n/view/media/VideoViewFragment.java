@@ -9,6 +9,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.cylan.jiafeigou.R;
 
 import butterknife.BindView;
@@ -16,15 +18,15 @@ import butterknife.ButterKnife;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link WonderfulBigPicFragment#newInstance} factory method to
+ * Use the {@link VideoViewFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class WonderfulBigPicFragment extends Fragment {
+public class VideoViewFragment extends Fragment {
 
     @BindView(R.id.imgV_show_pic)
     ImageView imgVShowPic;
 
-    public WonderfulBigPicFragment() {
+    public VideoViewFragment() {
         // Required empty public constructor
     }
 
@@ -33,11 +35,11 @@ public class WonderfulBigPicFragment extends Fragment {
      * this fragment using the provided parameters.
      *
      * @param bundle Parameter 1.
-     * @return A new instance of fragment WonderfulBigPicFragment.
+     * @return A new instance of fragment BigPicFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static WonderfulBigPicFragment newInstance(Bundle bundle) {
-        WonderfulBigPicFragment fragment = new WonderfulBigPicFragment();
+    public static VideoViewFragment newInstance(Bundle bundle) {
+        VideoViewFragment fragment = new VideoViewFragment();
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -58,6 +60,5 @@ public class WonderfulBigPicFragment extends Fragment {
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        imgVShowPic.setImageResource(R.drawable.ic_launcher);
     }
 }
