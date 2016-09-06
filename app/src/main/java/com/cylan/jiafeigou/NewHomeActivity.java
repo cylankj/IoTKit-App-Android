@@ -21,6 +21,7 @@ import com.cylan.jiafeigou.n.view.activity.NeedLoginActivity;
 import com.cylan.jiafeigou.n.view.home.HomeMineFragment;
 import com.cylan.jiafeigou.n.view.home.HomePageListFragmentExt;
 import com.cylan.jiafeigou.n.view.home.HomeWonderfulFragment;
+import com.cylan.jiafeigou.n.view.home.HomeWonderfulFragmentExt;
 import com.cylan.jiafeigou.widget.CustomViewPager;
 
 import butterknife.BindView;
@@ -135,7 +136,7 @@ class HomeViewAdapter extends FragmentPagerAdapter {
                 Bundle bundle = new Bundle();
                 bundle.putInt(JConstant.KEY_NEW_HOME_ACTIVITY_BOTTOM_MENU_CONTAINER_ID,
                         bottomMenuContainerId);
-                HomeWonderfulFragment fragment = HomeWonderfulFragment.newInstance(bundle);
+                HomeWonderfulFragmentExt fragment = HomeWonderfulFragmentExt.newInstance(bundle);
                 new HomeWonderfulPresenterImpl(fragment);
                 if (fragment != null && fragment.getContext() != null)
                     Toast.makeText(fragment.getContext(), "重新new了。。。2", Toast.LENGTH_SHORT).show();

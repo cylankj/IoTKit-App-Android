@@ -7,6 +7,9 @@ import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.model.MediaBean;
 import com.cylan.superadapter.IMulItemViewType;
@@ -20,15 +23,15 @@ import java.util.List;
  */
 
 
-public class HomeWonderAdapter extends SuperAdapter<MediaBean> {
+public class HomeWonderfulAdapter extends SuperAdapter<MediaBean> {
 
 
     private WonderfulItemClickListener deviceItemClickListener;
     private WonderfulItemLongClickListener deviceItemLongClickListener;
 
 
-    public HomeWonderAdapter(Context context, List<MediaBean> items,
-                             IMulItemViewType<MediaBean> mulItemViewType) {
+    public HomeWonderfulAdapter(Context context, List<MediaBean> items,
+                                IMulItemViewType<MediaBean> mulItemViewType) {
         super(context, items, mulItemViewType);
 
     }
@@ -66,9 +69,8 @@ public class HomeWonderAdapter extends SuperAdapter<MediaBean> {
 //        holder.setBackgroundResource(R.id.iv_wonderful_item_content, R.drawable.bg_home_title_daytime);
         Glide.with(getContext())
                 .load(bean.srcUrl)
-                .placeholder(R.drawable.ic_launcher)
+                .placeholder(R.drawable.wonderful_pic_place_holder)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .centerCrop()
                 .into((ImageView) holder.getView(R.id.iv_wonderful_item_content));
         //来自摄像头
         holder.setText(R.id.tv_wonderful_item_device_name, bean.deviceName);

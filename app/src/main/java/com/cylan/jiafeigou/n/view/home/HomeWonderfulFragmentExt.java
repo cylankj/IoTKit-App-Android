@@ -1,16 +1,17 @@
 package com.cylan.jiafeigou.n.view.home;
 
 import android.content.Context;
-import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.annotation.UiThread;
+import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.transition.Fade;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -36,8 +37,6 @@ import com.cylan.jiafeigou.utils.AnimatorUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
-import com.cylan.jiafeigou.widget.sticky.HeaderAnimator;
-import com.cylan.jiafeigou.widget.sticky.StickyHeaderBuilder;
 import com.cylan.jiafeigou.widget.textview.WonderfulTitleHead;
 import com.cylan.jiafeigou.widget.wheel.WheelView;
 import com.cylan.jiafeigou.widget.wheel.WheelViewDataSet;
@@ -50,15 +49,16 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+;
 
-@Deprecated
-public class HomeWonderfulFragment extends Fragment implements
+public class HomeWonderfulFragmentExt extends Fragment implements
         HomeWonderfulContract.View, SwipeRefreshLayout.OnRefreshListener,
         HomeWonderfulAdapter.WonderfulItemClickListener,
         HomeWonderfulAdapter.WonderfulItemLongClickListener,
         ShareDialogFragment.ShareToListener,
         SimpleDialogFragment.SimpleDialogAction,
-        WheelView.OnItemChangedListener {
+        WheelView.OnItemChangedListener
+        , AppBarLayout.OnOffsetChangedListener {
 
 
     @BindView(R.id.fl_date_bg_head_wonder)
@@ -68,39 +68,41 @@ public class HomeWonderfulFragment extends Fragment implements
     @BindView(R.id.fLayout_main_content_holder)
     SwipeRefreshLayout srLayoutMainContentHolder;
     @BindView(R.id.fLayoutHomeWonderfulHeaderContainer)
-    RelativeLayout rLayoutHomeHeaderContainer;
+    FrameLayout fLayoutHomeHeaderContainer;
     @BindView(R.id.fLayout_date_head_wonder)
     FrameLayout fLayoutDateHeadWonder;
     @BindView(R.id.rl_top_head_wonder)
     RelativeLayout rlTopHeadWonder;
     @BindView(R.id.img_wonderful_title_cover)
-    ImageView imgCover;
+    ImageView imgWonderfulTitleCover;
     @BindView(R.id.tv_date_item_head_wonder)
     WonderfulTitleHead tvDateItemHeadWonder;
     @BindView(R.id.imgWonderfulTopBg)
     ImageView imgWonderfulTopBg;
     @BindView(R.id.tv_title_head_wonder)
     TextView tvTitleHeadWonder;
-    @BindView(R.id.fLayout_wonderful_container)
-    FrameLayout fLayoutWonderfulContainer;
+    @BindView(R.id.fLayout_empty_view_container)
+    FrameLayout fLayoutWonderfulEmptyContainer;
 
     WeakReference<WheelView> wheelViewWeakReference;
     WeakReference<ShareDialogFragment> shareDialogFragmentWeakReference;
     WeakReference<SimpleDialogFragment> simpleDialogFragmentWeakReference;
-    /**
-     * progress 位置
-     */
-    private int progressBarStartPosition;
-    //不是长时间需要,用软引用.
-//    private WeakReference<HomeMenuDialog> homeMenuDialogWeakReference;
-    private HomeWonderfulContract.Presenter presenter;
-    private HomeWonderfulAdapter homeWonderAdapter;
-    private SimpleScrollListener simpleScrollListener;
-    public boolean isShowTimeLine;
-    private EmptyViewState emptyViewState;
+    @BindView(R.id.tv_sec_title_head_wonder)
+    TextView tvSecTitleHeadWonder;
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
+    @BindView(R.id.collapsing_toolbar)
+    CollapsingToolbarLayout collapsingToolbar;
+    @BindView(R.id.appbar)
+    AppBarLayout appbar;
 
-    public static HomeWonderfulFragment newInstance(Bundle bundle) {
-        HomeWonderfulFragment fragment = new HomeWonderfulFragment();
+    private EmptyViewState emptyViewState;
+    private HomeWonderfulAdapter homeWonderAdapter;
+    private HomeWonderfulContract.Presenter presenter;
+    public boolean isShowTimeLine;
+
+    public static HomeWonderfulFragmentExt newInstance(Bundle bundle) {
+        HomeWonderfulFragmentExt fragment = new HomeWonderfulFragmentExt();
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -143,7 +145,7 @@ public class HomeWonderfulFragment extends Fragment implements
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_home_wonderful, container, false);
+        View view = inflater.inflate(R.layout.fragment_home_wonderful_ext, container, false);
         ButterKnife.bind(this, view);
         return view;
     }
@@ -151,7 +153,8 @@ public class HomeWonderfulFragment extends Fragment implements
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
+        appbar.addOnOffsetChangedListener(this);
+        srLayoutMainContentHolder.setNestedScrollingEnabled(false);
         initView();
 
         initProgressBarPosition();
@@ -160,14 +163,11 @@ public class HomeWonderfulFragment extends Fragment implements
 
         initSomeViewMargin();
 
-        initShareDialog();
-
-        initDeleteDialog();
-
         srLayoutMainContentHolder.postDelayed(new Runnable() {
             @Override
             public void run() {
-                emptyViewState.setEmptyViewState(fLayoutWonderfulContainer, rLayoutHomeHeaderContainer.getBottom());
+                emptyViewState.setEmptyViewState(fLayoutWonderfulEmptyContainer,
+                        fLayoutHomeHeaderContainer.getBottom());
                 emptyViewState.determineEmptyViewState(homeWonderAdapter.getCount());
             }
         }, 20);
@@ -221,6 +221,7 @@ public class HomeWonderfulFragment extends Fragment implements
 
     private void initSomeViewMargin() {
         ViewUtils.setViewMarginStatusBar(tvTitleHeadWonder);
+        ViewUtils.setViewMarginStatusBar(toolbar);
     }
 
     private void initView() {
@@ -233,15 +234,6 @@ public class HomeWonderfulFragment extends Fragment implements
     }
 
     private void initHeaderView() {
-
-        if (simpleScrollListener == null)
-            simpleScrollListener = new SimpleScrollListener(imgCover, fLayoutDateHeadWonder);
-        StickyHeaderBuilder.stickTo(rVDevicesList, simpleScrollListener)
-                .setHeader(R.id.fLayoutHomeWonderfulHeaderContainer,
-                        (ViewGroup) getView())
-                .minHeightHeader((int) (getResources().getDimension(R.dimen.dimens_48dp)
-                        + ViewUtils.getCompatStatusBarHeight(getContext())))
-                .build();
     }
 
 
@@ -249,17 +241,7 @@ public class HomeWonderfulFragment extends Fragment implements
      * 初始化,progressBar的位置.
      */
     private void initProgressBarPosition() {
-        rVDevicesList.post(new Runnable() {
-            @Override
-            public void run() {
-                if (progressBarStartPosition == 0) {
-                    Drawable drawable = imgWonderfulTopBg.getBackground();
-                    progressBarStartPosition = drawable.getIntrinsicHeight();
-                }
-                srLayoutMainContentHolder.setColorSchemeColors(R.color.color_36bdff);
-                srLayoutMainContentHolder.setProgressViewOffset(false, progressBarStartPosition - 100, progressBarStartPosition + 100);
-            }
-        });
+        srLayoutMainContentHolder.setColorSchemeColors(R.color.color_36bdff);
     }
 
     @Override
@@ -277,6 +259,7 @@ public class HomeWonderfulFragment extends Fragment implements
         }
         homeWonderAdapter.addAll(resultList);
         emptyViewState.determineEmptyViewState(homeWonderAdapter.getCount());
+        srLayoutMainContentHolder.setNestedScrollingEnabled(homeWonderAdapter.getCount() > 2);
     }
 
     @Override
@@ -355,6 +338,7 @@ public class HomeWonderfulFragment extends Fragment implements
                 fragment.show(getActivity().getSupportFragmentManager(), "ShareDialogFragment");
                 break;
             case R.id.tv_wonderful_item_delete:
+                initDeleteDialog();
                 Toast.makeText(getContext(), "delete: " + position, Toast.LENGTH_SHORT).show();
                 break;
         }
@@ -450,6 +434,7 @@ public class HomeWonderfulFragment extends Fragment implements
 
     @Override
     public void share(int id) {
+        initShareDialog();
         Toast.makeText(getContext(), "share to: " + id, Toast.LENGTH_SHORT).show();
     }
 
@@ -465,6 +450,17 @@ public class HomeWonderfulFragment extends Fragment implements
         Toast.makeText(getContext(), "id: " + id + " value:" + value, Toast.LENGTH_SHORT).show();
     }
 
+    @Override
+    public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+        final float ratio = (appbar.getTotalScrollRange() + verticalOffset) * 1.0f
+                / appbar.getTotalScrollRange();
+        final float alpha = 1.0f - ratio;
+        if (imgWonderfulTitleCover.getAlpha() != alpha) {
+//            AppLogger.d("verticalOffset: " + " " + verticalOffset + "   " + alpha);
+            imgWonderfulTitleCover.setAlpha(alpha);
+        }
+    }
+
     private static class EmptyViewState {
         private IEmptyView homePageEmptyView;
 
@@ -477,8 +473,8 @@ public class HomeWonderfulFragment extends Fragment implements
             FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
                     ViewGroup.LayoutParams.WRAP_CONTENT);
             lp.gravity = Gravity.CENTER_HORIZONTAL;
-            lp.topMargin = ViewUtils.dp2px(80)
-                    + bottom;
+            lp.topMargin = bottom;
+//                    + bottom;
             homePageEmptyView.addView(viewContainer, lp);
         }
 
@@ -487,39 +483,39 @@ public class HomeWonderfulFragment extends Fragment implements
         }
     }
 
-    private static class SimpleScrollListener implements HeaderAnimator.ScrollRationListener {
-
-        private WeakReference<ImageView> fadeTopHeadCover;
-        private final FrameLayout mTitleBackgroundRef;
-        private WonderfulTitleHead tvDateColor;
-
-        public SimpleScrollListener(ImageView relativeLayout, FrameLayout frameLayout) {
-            fadeTopHeadCover = new WeakReference<>(relativeLayout);
-            mTitleBackgroundRef = new WeakReference<>(frameLayout).get();
-        }
-
-
-        @Override
-        public void onScroll(float ration) {
-
-            if (fadeTopHeadCover != null && fadeTopHeadCover.get() != null && mTitleBackgroundRef != null) {
-                if (tvDateColor == null)
-                    tvDateColor = (WonderfulTitleHead) mTitleBackgroundRef.getChildAt(1);
-
-                float alpha = (ration - 0.8f) / 0.2f;
-                if (ration < 0.8) {
-                    alpha = 0;
-                    tvDateColor.setTextColor(Color.rgb(78, 82, 91));
-                    tvDateColor.setTitleHeadIsTop(false);
-                } else {
-                    tvDateColor.setTextColor(Color.WHITE);
-                    tvDateColor.setTitleHeadIsTop(true);
-                }
-                if (alpha < 0.99f)
-                    tvDateColor.setBackgroundToRight();
-                mTitleBackgroundRef.getChildAt(0).setAlpha(1 - alpha);
-                fadeTopHeadCover.get().setAlpha(alpha);
-            }
-        }
-    }
+//    private static class SimpleScrollListener implements HeaderAnimator.ScrollRationListener {
+//
+//        private WeakReference<ImageView> fadeTopHeadCover;
+//        private final FrameLayout mTitleBackgroundRef;
+//        private WonderfulTitleHead tvDateColor;
+//
+//        public SimpleScrollListener(ImageView relativeLayout, FrameLayout frameLayout) {
+//            fadeTopHeadCover = new WeakReference<>(relativeLayout);
+//            mTitleBackgroundRef = new WeakReference<>(frameLayout).get();
+//        }
+//
+//
+//        @Override
+//        public void onScroll(float ration) {
+//
+//            if (fadeTopHeadCover != null && fadeTopHeadCover.get() != null && mTitleBackgroundRef != null) {
+//                if (tvDateColor == null)
+//                    tvDateColor = (WonderfulTitleHead) mTitleBackgroundRef.getChildAt(1);
+//
+//                float alpha = (ration - 0.8f) / 0.2f;
+//                if (ration < 0.8) {
+//                    alpha = 0;
+//                    tvDateColor.setTextColor(Color.rgb(78, 82, 91));
+//                    tvDateColor.setTitleHeadIsTop(false);
+//                } else {
+//                    tvDateColor.setTextColor(Color.WHITE);
+//                    tvDateColor.setTitleHeadIsTop(true);
+//                }
+//                if (alpha < 0.99f)
+//                    tvDateColor.setBackgroundToRight();
+//                mTitleBackgroundRef.getChildAt(0).setAlpha(1 - alpha);
+//                fadeTopHeadCover.get().setAlpha(alpha);
+//            }
+//        }
+//    }
 }

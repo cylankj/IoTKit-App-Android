@@ -191,7 +191,7 @@ public class HomeWonderfulPresenterImpl extends AbstractPresenter<HomeWonderfulC
                 .subscribe(new Action1<List<MediaBean>>() {
                     @Override
                     public void call(List<MediaBean> list) {
-                        if (getView() != null) getView().onDeviceListRsp(list);
+                        if (getView() != null) getView().onMediaListRsp(list);
 
                     }
                 }, new Action1<Throwable>() {

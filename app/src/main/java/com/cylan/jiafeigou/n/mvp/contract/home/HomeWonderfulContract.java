@@ -13,7 +13,8 @@ import java.util.List;
 public interface HomeWonderfulContract {
 
     interface View extends BaseView<Presenter> {
-        void onDeviceListRsp(List<MediaBean> list);
+
+        void onMediaListRsp(List<MediaBean> list);
 
         void onHeadBackgroundChang(int daytime);
 

@@ -79,6 +79,7 @@
     <color name="color_white">#FFFFFFFF</color>
     <color name="color_red">#FFFF0000</color>
     <color name="color_black">#FF000000</color>
+    <color name="color_E8EAEC">#E8EAEC</color>
 
 
     <color name="background_tab_pressed">#6633B5E5</color>
