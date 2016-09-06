@@ -23,6 +23,12 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DecodeFormat;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool;
+import com.bumptech.glide.load.resource.bitmap.FileDescriptorBitmapDecoder;
+import com.bumptech.glide.load.resource.bitmap.VideoBitmapDecoder;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.transition.DetailsTransition;
@@ -57,8 +63,9 @@ public class HomeWonderfulFragmentExt extends Fragment implements
         HomeWonderfulAdapter.WonderfulItemLongClickListener,
         ShareDialogFragment.ShareToListener,
         SimpleDialogFragment.SimpleDialogAction,
-        WheelView.OnItemChangedListener
-        , AppBarLayout.OnOffsetChangedListener {
+        WheelView.OnItemChangedListener,
+        AppBarLayout.OnOffsetChangedListener,
+        HomeWonderfulAdapter.LoadMediaListener {
 
 
     @BindView(R.id.fl_date_bg_head_wonder)
@@ -458,6 +465,31 @@ public class HomeWonderfulFragmentExt extends Fragment implements
         if (imgWonderfulTitleCover.getAlpha() != alpha) {
 //            AppLogger.d("verticalOffset: " + " " + verticalOffset + "   " + alpha);
             imgWonderfulTitleCover.setAlpha(alpha);
+        }
+    }
+
+    @Override
+    public void loadMedia(int mediaType, String srcUrl, ImageView imageView) {
+        //图标
+        if (mediaType == MediaBean.TYPE_PIC) {
+            Glide.with(this)
+                    .load(srcUrl)
+                    .placeholder(R.drawable.wonderful_pic_place_holder)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .into(imageView);
+        } else {
+            BitmapPool bitmapPool = Glide.get(getContext()).getBitmapPool();
+            FileDescriptorBitmapDecoder decoder = new FileDescriptorBitmapDecoder(
+                    new VideoBitmapDecoder(6000000),
+                    bitmapPool,
+                    DecodeFormat.PREFER_RGB_565);
+            Glide.with(this)
+                    .load(srcUrl)
+                    .asBitmap()
+                    .placeholder(R.drawable.wonderful_pic_place_holder)
+                    .videoDecoder(decoder)
+                    .into(imageView);
+            AppLogger.d("load url: " + srcUrl);
         }
     }
 

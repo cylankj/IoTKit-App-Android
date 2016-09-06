@@ -5,11 +5,6 @@ import android.support.v4.view.ViewCompat;
 import android.view.View;
 import android.widget.ImageView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
-import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.target.Target;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.model.MediaBean;
 import com.cylan.superadapter.IMulItemViewType;
@@ -29,6 +24,7 @@ public class HomeWonderfulAdapter extends SuperAdapter<MediaBean> {
     private WonderfulItemClickListener deviceItemClickListener;
     private WonderfulItemLongClickListener deviceItemLongClickListener;
 
+    private LoadMediaListener loadMediaListener;
 
     public HomeWonderfulAdapter(Context context, List<MediaBean> items,
                                 IMulItemViewType<MediaBean> mulItemViewType) {
@@ -42,6 +38,10 @@ public class HomeWonderfulAdapter extends SuperAdapter<MediaBean> {
 
     public void setWonderfulItemLongClickListener(WonderfulItemLongClickListener deviceItemLongClickListener) {
         this.deviceItemLongClickListener = deviceItemLongClickListener;
+    }
+
+    public void setLoadMediaListener(LoadMediaListener loadMediaListener) {
+        this.loadMediaListener = loadMediaListener;
     }
 
     @Override
@@ -65,13 +65,8 @@ public class HomeWonderfulAdapter extends SuperAdapter<MediaBean> {
         //时间
         holder.setText(R.id.tv_wonderful_item_date, bean.timeInStr);
 
-        //图标
-//        holder.setBackgroundResource(R.id.iv_wonderful_item_content, R.drawable.bg_home_title_daytime);
-        Glide.with(getContext())
-                .load(bean.srcUrl)
-                .placeholder(R.drawable.wonderful_pic_place_holder)
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .into((ImageView) holder.getView(R.id.iv_wonderful_item_content));
+        if (loadMediaListener != null)
+            loadMediaListener.loadMedia(bean.mediaType, bean.srcUrl, (ImageView) holder.getView(R.id.iv_wonderful_item_content));
         //来自摄像头
         holder.setText(R.id.tv_wonderful_item_device_name, bean.deviceName);
     }
@@ -91,9 +86,9 @@ public class HomeWonderfulAdapter extends SuperAdapter<MediaBean> {
 
             @Override
             public int getLayoutId(int viewType) {
-                return viewType == 0 ?
+                return viewType % 2 == 0 ?
                         R.layout.layout_item_picture_wonderful :
-                        R.layout.layout_item_picture_wonderful;
+                        R.layout.layout_item_vedio_wonderful;
             }
         };
     }
@@ -104,5 +99,9 @@ public class HomeWonderfulAdapter extends SuperAdapter<MediaBean> {
 
     public interface WonderfulItemLongClickListener extends View.OnLongClickListener {
 
+    }
+
+    public interface LoadMediaListener {
+        void loadMedia(int type, String url, ImageView imageView);
     }
 }

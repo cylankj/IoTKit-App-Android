@@ -40,16 +40,26 @@
             android:textColor="@color/color_666666"
             android:textSize="13sp" />
 
-        <ImageView
-            android:id="@+id/iv_wonderful_item_content"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:layout_above="@+id/fLayout_wonderful_item_bottom"
-            android:layout_below="@+id/tv_wonderful_item_date"
-            android:scaleType="fitXY"
-            android:src="@drawable/ic_launcher"
-            android:transitionName="picDetailsFragment" />
+            android:layout_below="@+id/tv_wonderful_item_date">
 
+            <ImageView
+                android:id="@+id/iv_wonderful_item_content"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="fitXY"
+                android:src="@drawable/ic_launcher"
+                android:transitionName="picDetailsFragment" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:src="@drawable/btn_video_stop" />
+        </FrameLayout>
 
         <FrameLayout
             android:id="@+id/fLayout_wonderful_item_bottom"

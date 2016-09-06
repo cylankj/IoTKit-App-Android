@@ -5,6 +5,9 @@ package com.cylan.jiafeigou.n.mvp.model;
  */
 public class MediaBean implements Comparable<MediaBean> {
 
+
+    public static final int TYPE_PIC = 0;
+    public static final int TYPE_VIDEO = 1;
     public long time;
     public int mediaType;
     public String srcUrl;

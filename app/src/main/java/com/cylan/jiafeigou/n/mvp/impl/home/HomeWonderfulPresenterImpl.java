@@ -1,6 +1,8 @@
 package com.cylan.jiafeigou.n.mvp.impl.home;
 
 
+import android.os.Environment;
+
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.RxEvent;
 import com.cylan.jiafeigou.misc.TimeLineAssembler;
@@ -13,6 +15,7 @@ import com.cylan.jiafeigou.widget.wheel.WheelViewDataSet;
 import com.cylan.utils.RandomUtils;
 import com.google.gson.Gson;
 
+import java.io.File;
 import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -92,12 +95,12 @@ public class HomeWonderfulPresenterImpl extends AbstractPresenter<HomeWonderfulC
             baseBean.time = time;
             baseBean.timeInStr = getDate(time);
             baseBean.deviceName = "南湖";
-            baseBean.mediaType = RandomUtils.getRandom(4);
-            baseBean.srcUrl = pics[RandomUtils.getRandom(pics.length)];
-//            final int picsCount = RandomUtils.getRandom(3);
-//            baseBean.srcUrlList = new ArrayList<>(picsCount);
-//            for (int j = 0; j < picsCount; j++)
-//                baseBean.srcUrlList.add(pics[RandomUtils.getRandom(pics.length)]);
+            baseBean.mediaType = RandomUtils.getRandom(1);
+            if (baseBean.mediaType == MediaBean.TYPE_PIC)
+                baseBean.srcUrl = pics[RandomUtils.getRandom(pics.length)];
+            else {
+                baseBean.srcUrl = videos[RandomUtils.getRandom(videos.length)];
+            }
             list.add(baseBean);
         }
         AppLogger.d("rawList: " + (new Gson().toJson(list)));
@@ -291,8 +294,17 @@ public class HomeWonderfulPresenterImpl extends AbstractPresenter<HomeWonderfulC
             "http://..",
             "http://..",
             "http://..",
-            "http://.."
+            "http://..",
+            Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "Smarthome" + File.separator + "21564772.jpg"
     };
 
+    public static final String videos[] = {
+            "http://r1.ykimg.com/material/0A03/201609/0905/119766/1300.swf?jsStart=&jsEnd=execHtmlEndCMDfortaobao&url=http://val.atm.youku.com/c?id=9612",
+            "http://yf.cylan.com.cn:82/Garfield/1045020208160b9706425470.mp4",
+            Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "1045020208160b9706425470.mp4",
+            Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "Smarthome" + File.separator + "146828399c73fb168c227b39.mp4",
+            Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "Smarthome" + File.separator + "2052787320ae200c438272b8.mp4",
+            Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "Smarthome" + File.separator + "1096863_70ea6a0d88b18de8de580ccd5812c606.mp4"
+    };
 }
 
