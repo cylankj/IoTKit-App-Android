@@ -57,7 +57,6 @@ public class SuggestionPresenterImp implements SuggestionChatContant.Presenter {
         list.clear();
     }
 
-
     @Override
     public void start() {
 

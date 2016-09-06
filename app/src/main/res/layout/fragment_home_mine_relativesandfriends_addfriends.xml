@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:background="@color/color_white"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:id="@+id/rl_home_mine_relativesandfriends"
+        android:layout_width="match_parent"
+        android:layout_height="73dp"
+        android:background="#0BA8CF">
+
+        <ImageView
+            android:id="@+id/iv_home_mine_relativesandfriends_add_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:padding="15dp"
+            android:clickable="true"
+            android:src="@drawable/ic_nav_back_arrow" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="12dp"
+            android:layout_marginLeft="48dp"
+            android:text="添加亲友"
+            android:textColor="@color/color_white"
+            android:textSize="18sp" />
+    </RelativeLayout>
+
+    <EditText
+        android:id="@+id/et_friend_phonenumber"
+        android:layout_marginTop="8dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:hint="对方账号"
+        android:textSize="16sp"
+        android:inputType="phone"
+        android:textColorHint="@color/color_cecece"
+        android:layout_width="match_parent"
+        android:layout_height="54dp" />
+
+    <TextView
+        android:id="@+id/tv_scan_add"
+        android:layout_marginLeft="20dp"
+        android:gravity="center_vertical"
+        android:text="扫一扫添加"
+        android:drawableLeft="@drawable/ico_scan_qrcode"
+        android:drawablePadding="15dp"
+        android:layout_width="match_parent"
+        android:layout_height="67dp" />
+
+    <TextView
+        android:id="@+id/tv_add_from_contract"
+        android:layout_marginLeft="20dp"
+        android:gravity="center_vertical"
+        android:text="从通讯录选取"
+        android:drawableLeft="@drawable/ico_scan_qrcode"
+        android:drawablePadding="15dp"
+        android:layout_width="match_parent"
+        android:layout_height="67dp" />
+
+</LinearLayout>

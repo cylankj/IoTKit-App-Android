@@ -13,6 +13,12 @@ public class SuggestionChatInfoBean {
     public int icon;
     public String name;
 
+    public void setShowAcceptButton(boolean showAcceptButton) {
+        isShowAcceptButton = showAcceptButton;
+    }
+
+    public boolean isShowAcceptButton;
+
     public SuggestionChatInfoBean(String content, int type, String time) {
         this.content = content;
         this.type = type;
