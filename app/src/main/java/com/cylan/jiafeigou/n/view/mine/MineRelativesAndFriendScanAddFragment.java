@@ -1,35 +1,45 @@
 package com.cylan.jiafeigou.n.view.mine;
 
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.Point;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineRelativesAndFriendScanAddContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineRelativesAndFriendScanAddPresenterImp;
 import com.cylan.jiafeigou.support.zscan.ZXingScannerView;
-import com.cylan.jiafeigou.utils.PermissionChecker;
-import com.cylan.jiafeigou.utils.ToastUtil;
+import com.google.zxing.Result;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import rx.Observable;
+import rx.functions.Action1;
+import rx.schedulers.Schedulers;
 
 /**
  * 作者：zsl
  * 创建时间：2016/9/6
  * 描述：
  */
-public class MineRelativesAndFriendScanAddFragment extends Fragment implements MineRelativesAndFriendScanAddContract.View {
+public class MineRelativesAndFriendScanAddFragment extends Fragment implements ZXingScannerView.ResultHandler, MineRelativesAndFriendScanAddContract.View {
 
     @BindView(R.id.iv_home_mine_relativesandfriends_scan_add_back)
     ImageView ivHomeMineRelativesandfriendsScanAddBack;
     @BindView(R.id.zxV_scan_add_relativesandfriend)
     ZXingScannerView zxVScanAddRelativesandfriend;
+    @BindView(R.id.iv_erweima)
+    ImageView ivErweima;
     private MineRelativesAndFriendScanAddContract.Presenter presenter;
 
     public static MineRelativesAndFriendScanAddFragment newInstance() {
@@ -39,7 +49,7 @@ public class MineRelativesAndFriendScanAddFragment extends Fragment implements M
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        presenter = new MineRelativesAndFriendScanAddPresenterImp();
+        presenter = new MineRelativesAndFriendScanAddPresenterImp(this);
     }
 
     @Nullable
@@ -47,26 +57,77 @@ public class MineRelativesAndFriendScanAddFragment extends Fragment implements M
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_mine_relativesandfriend_scan_add, container, false);
         ButterKnife.bind(this, view);
-        initZXScan();
+        showErWeiMa(presenter.encodeAsBitmap("1234",presenter.getDimession()));
         return view;
-    }
-
-    private void initZXScan() {
-        zxVScanAddRelativesandfriend.startCamera();
     }
 
     @Override
     public void setPresenter(MineRelativesAndFriendScanAddContract.Presenter presenter) {
-
+        this.presenter = presenter;
     }
 
     @OnClick(R.id.iv_home_mine_relativesandfriends_scan_add_back)
     public void onClick(View view) {
-        switch (view.getId()){
+        switch (view.getId()) {
             case R.id.iv_home_mine_relativesandfriends_scan_add_back:
                 getFragmentManager().popBackStack();
                 break;
         }
 
     }
+
+    @Override
+    public void onStartScan() {
+        zxVScanAddRelativesandfriend.startCamera();
+    }
+
+    @Override
+    public void showErWeiMa(Bitmap bitmap) {
+        ivErweima.setImageBitmap(bitmap);
+    }
+
+    @Override
+    public void handleResult(Result rawResult) {
+        Toast.makeText(getActivity(), "Contents = " + rawResult.getText() +
+                ", Format = " + rawResult.getBarcodeFormat().name(), Toast.LENGTH_SHORT).show();
+        // Note:
+        // * Wait 2 seconds to resume the preview.
+        // * On older devices continuously stopping and resuming camera preview can result in freezing the app.
+        // * I don't know why this is the case but I don't have the time to figure out.
+        if (getView() != null)
+            getView().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    zxVScanAddRelativesandfriend.resumeCameraPreview(MineRelativesAndFriendScanAddFragment.this);
+                }
+            }, 2000);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        zxVScanAddRelativesandfriend.setResultHandler(MineRelativesAndFriendScanAddFragment.this);
+        if (presenter != null)
+            presenter.start();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        Observable.just(null)
+                .subscribeOn(Schedulers.io())
+                .subscribe(new Action1<Object>() {
+                    @Override
+                    public void call(Object o) {
+                        zxVScanAddRelativesandfriend.stopCamera();
+                    }
+                });
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (presenter != null) presenter.stop();
+    }
+
 }

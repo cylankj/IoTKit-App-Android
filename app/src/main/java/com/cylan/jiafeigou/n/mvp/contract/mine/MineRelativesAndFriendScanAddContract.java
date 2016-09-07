@@ -1,5 +1,7 @@
 package com.cylan.jiafeigou.n.mvp.contract.mine;
 
+import android.graphics.Bitmap;
+
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
 
@@ -11,10 +13,13 @@ import com.cylan.jiafeigou.n.mvp.BaseView;
 public interface MineRelativesAndFriendScanAddContract {
 
     interface View extends BaseView<Presenter>{
-
+        void onStartScan();
+        void showErWeiMa(Bitmap bitmap);
     }
 
     interface Presenter extends BasePresenter{
+        Bitmap encodeAsBitmap(String contents, int dimension);      //生成二维码
+        int getDimession();
     }
 
 }

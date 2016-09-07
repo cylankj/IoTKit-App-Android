@@ -1,9 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:hunt="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:background="@color/color_white"
+    android:clickable="true"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    tools:context="com.cylan.jiafeigou.n.view.mine.MineRelativesAndFriendScanAddFragment">
 
     <RelativeLayout
         android:id="@+id/rl_home_mine_relativesandfriends_scan_add"
@@ -35,15 +39,22 @@
         android:layout_marginTop="20dp"
         android:layout_gravity="center_horizontal"
         android:id="@+id/zxV_scan_add_relativesandfriend"
-        android:layout_width="250dp"
-        android:layout_height="250dp"
+        android:layout_width="350dp"
+        android:layout_height="350dp"
+        hunt:hint="将对方二维码放入框内，即可完成扫描"
         />
-    <TextView
-        android:layout_marginTop="10dp"
+
+    <ImageView
         android:layout_gravity="center_horizontal"
-        android:text="将对方二维码放入框内，即可完成扫描"
-        android:textSize="16sp"
-        android:textColor="@color/color_333333"
+        android:layout_marginTop="10dp"
+        android:src="@drawable/ic_launcher"
+        android:id="@+id/iv_erweima"
+        android:layout_width="100dp"
+        android:layout_height="100dp" />
+
+    <TextView
+        android:layout_gravity="center_horizontal"
+        android:text="我的二维码"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
