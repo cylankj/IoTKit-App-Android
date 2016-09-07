@@ -1,22 +1,29 @@
 package com.cylan.jiafeigou.n.view.home;
 
+import android.annotation.TargetApi;
+import android.app.ActivityOptions;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.annotation.UiThread;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.transition.Fade;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -30,12 +37,14 @@ import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool;
 import com.bumptech.glide.load.resource.bitmap.FileDescriptorBitmapDecoder;
 import com.bumptech.glide.load.resource.bitmap.VideoBitmapDecoder;
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
-import com.cylan.jiafeigou.misc.transition.DetailsTransition;
+import com.cylan.jiafeigou.misc.OnActivityReenterListener;
+import com.cylan.jiafeigou.misc.SharedElementCallBackListener;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeWonderfulContract;
 import com.cylan.jiafeigou.n.mvp.model.MediaBean;
+import com.cylan.jiafeigou.n.view.activity.MediaActivity;
 import com.cylan.jiafeigou.n.view.adapter.HomeWonderfulAdapter;
-import com.cylan.jiafeigou.n.view.media.BigPicFragment;
 import com.cylan.jiafeigou.n.view.misc.HomeEmptyView;
 import com.cylan.jiafeigou.n.view.misc.IEmptyView;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -46,17 +55,20 @@ import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
 import com.cylan.jiafeigou.widget.textview.WonderfulTitleHead;
 import com.cylan.jiafeigou.widget.wheel.WheelView;
 import com.cylan.jiafeigou.widget.wheel.WheelViewDataSet;
+import com.cylan.superadapter.internal.SuperViewHolder;
 import com.cylan.utils.ListUtils;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-;
 
+@TargetApi(Build.VERSION_CODES.LOLLIPOP)
 public class HomeWonderfulFragmentExt extends Fragment implements
         HomeWonderfulContract.View, SwipeRefreshLayout.OnRefreshListener,
         HomeWonderfulAdapter.WonderfulItemClickListener,
@@ -65,7 +77,9 @@ public class HomeWonderfulFragmentExt extends Fragment implements
         SimpleDialogFragment.SimpleDialogAction,
         WheelView.OnItemChangedListener,
         AppBarLayout.OnOffsetChangedListener,
-        HomeWonderfulAdapter.LoadMediaListener {
+        HomeWonderfulAdapter.LoadMediaListener,
+        SharedElementCallBackListener,
+        OnActivityReenterListener {
 
 
     @BindView(R.id.fl_date_bg_head_wonder)
@@ -295,6 +309,7 @@ public class HomeWonderfulFragmentExt extends Fragment implements
         } else {
             imgWonderfulTopBg.setBackground(getResources().getDrawable(drawableId));
         }
+        AppLogger.d("onTimeTick: " + dayTime);
     }
 
     @Override
@@ -313,26 +328,13 @@ public class HomeWonderfulFragmentExt extends Fragment implements
         }
         switch (v.getId()) {
             case R.id.iv_wonderful_item_content:
-                Bundle bundle = new Bundle();
-                bundle.putString("test", homeWonderAdapter.getItem(position).srcUrl);
-                BigPicFragment picDetailsFragment =
-                        BigPicFragment.newInstance(bundle);
-                // Note that we need the API version check here because the actual transition classes (e.g. Fade)
-                // are not in the support library and are only available in API 21+. The methods we are calling on the Fragment
-                // ARE available in the support library (though they don't do anything on API < 21)
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    picDetailsFragment.setSharedElementEnterTransition(new DetailsTransition());
-                    picDetailsFragment.setSharedElementReturnTransition(new Fade());
-                    picDetailsFragment.setEnterTransition(new Fade());
-                    setSharedElementReturnTransition(new Fade());
-                    setExitTransition(new DetailsTransition());
-                }
-                getFragmentManager()
-                        .beginTransaction()
-                        .addSharedElement(v, "picDetailsFragment")
-                        .replace(android.R.id.content, picDetailsFragment)
-                        .addToBackStack("picDetailsFragment")
-                        .commit();
+                Intent intent = new Intent(getActivity(), MediaActivity.class);
+                // Pass data object in the bundle and populate details activity.
+                intent.putParcelableArrayListExtra(JConstant.KEY_SHARED_ELEMENT_LIST, (ArrayList<? extends Parcelable>) homeWonderAdapter.getList());
+                intent.putExtra(JConstant.KEY_SHARED_ELEMENT_POSITION, position);
+                getActivity().startActivity(intent,
+                        ActivityOptions.makeSceneTransitionAnimation(getActivity(),
+                                v, ViewCompat.getTransitionName(v)).toBundle());
                 break;
             case R.id.tv_wonderful_item_share:
                 initShareDialog();
@@ -475,7 +477,7 @@ public class HomeWonderfulFragmentExt extends Fragment implements
         } else {
             BitmapPool bitmapPool = Glide.get(getContext()).getBitmapPool();
             FileDescriptorBitmapDecoder decoder = new FileDescriptorBitmapDecoder(
-                    new VideoBitmapDecoder(6000000),
+                    new VideoBitmapDecoder(1000000),
                     bitmapPool,
                     DecodeFormat.PREFER_RGB_565);
             Glide.with(this)
@@ -487,6 +489,68 @@ public class HomeWonderfulFragmentExt extends Fragment implements
             AppLogger.d("load url: " + srcUrl);
         }
     }
+
+    @Override
+    public void onSharedElementCallBack(List<String> names, Map<String, View> sharedElements) {
+        if (mTmpReenterState != null) {
+            int startingPosition = mTmpReenterState.getInt(JConstant.EXTRA_STARTING_ALBUM_POSITION);
+            int currentPosition = mTmpReenterState.getInt(JConstant.EXTRA_CURRENT_ALBUM_POSITION);
+            if (startingPosition != currentPosition) {
+                // If startingPosition != currentPosition the user must have swiped to a
+                // different page in the DetailsActivity. We must update the shared element
+                // so that the correct one falls into place.
+                String newTransitionName = currentPosition + JConstant.KEY_SHARED_ELEMENT_TRANSITION_NAME_POSTFIX;
+                SuperViewHolder holder = (SuperViewHolder) rVDevicesList.findViewHolderForAdapterPosition(currentPosition);
+                holder.getView(R.id.iv_wonderful_item_content);
+                View newSharedElement = holder.getView(R.id.iv_wonderful_item_content);
+                AppLogger.d("transition newTransitionName: " + newTransitionName);
+                AppLogger.d("transition newSharedElement: " + newSharedElement);
+                if (newSharedElement != null) {
+                    names.clear();
+                    names.add(newTransitionName);
+                    sharedElements.clear();
+                    sharedElements.put(newTransitionName, newSharedElement);
+                }
+            }
+
+            mTmpReenterState = null;
+        } else {
+            // If mTmpReenterState is null, then the activity is exiting.
+//            View navigationBar = findViewById(android.R.id.navigationBarBackground);
+//            View statusBar = findViewById(android.R.id.statusBarBackground);
+//            if (navigationBar != null) {
+//                names.add(navigationBar.getTransitionName());
+//                sharedElements.put(navigationBar.getTransitionName(), navigationBar);
+//            }
+//            if (statusBar != null) {
+//                names.add(statusBar.getTransitionName());
+//                sharedElements.put(statusBar.getTransitionName(), statusBar);
+//            }
+        }
+    }
+
+    @Override
+    public void onActivityReenter(int requestCode, Intent data) {
+        AppLogger.d("transition onActivityReenter");
+        mTmpReenterState = new Bundle(data.getExtras());
+        int startingPosition = mTmpReenterState.getInt(JConstant.EXTRA_STARTING_ALBUM_POSITION);
+        int currentPosition = mTmpReenterState.getInt(JConstant.EXTRA_CURRENT_ALBUM_POSITION);
+        if (startingPosition != currentPosition) {
+            rVDevicesList.scrollToPosition(currentPosition);
+        }
+        getActivity().postponeEnterTransition();
+        rVDevicesList.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+            @Override
+            public boolean onPreDraw() {
+                rVDevicesList.getViewTreeObserver().removeOnPreDrawListener(this);
+                rVDevicesList.requestLayout();
+                getActivity().startPostponedEnterTransition();
+                return true;
+            }
+        });
+    }
+
+    private Bundle mTmpReenterState;
 
     /**
      * 空列表的placeholder

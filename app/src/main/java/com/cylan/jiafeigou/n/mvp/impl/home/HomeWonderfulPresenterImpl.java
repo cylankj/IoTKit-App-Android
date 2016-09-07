@@ -58,6 +58,7 @@ public class HomeWonderfulPresenterImpl extends AbstractPresenter<HomeWonderfulC
         //注册1
         _timeTickSubscriptions
                 .add(RxBus.getInstance().toObservable()
+                        .take(1)
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(new Action1<Object>() {
                             @Override
@@ -95,7 +96,7 @@ public class HomeWonderfulPresenterImpl extends AbstractPresenter<HomeWonderfulC
             baseBean.time = time;
             baseBean.timeInStr = getDate(time);
             baseBean.deviceName = "南湖";
-            baseBean.mediaType = RandomUtils.getRandom(2);
+            baseBean.mediaType = MediaBean.TYPE_PIC;
             if (baseBean.mediaType == MediaBean.TYPE_PIC)
                 baseBean.srcUrl = pics[RandomUtils.getRandom(pics.length)];
             else {

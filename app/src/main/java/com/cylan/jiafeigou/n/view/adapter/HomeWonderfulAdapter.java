@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.mvp.model.MediaBean;
 import com.cylan.superadapter.IMulItemViewType;
 import com.cylan.superadapter.SuperAdapter;
@@ -52,7 +53,7 @@ public class HomeWonderfulAdapter extends SuperAdapter<MediaBean> {
 
     private void initClickListener(SuperViewHolder holder, final int viewType, final int layoutPosition) {
         ViewCompat.setTransitionName(holder.getView(R.id.iv_wonderful_item_content),
-                String.valueOf(layoutPosition) + "_image");
+                String.valueOf(layoutPosition) + JConstant.KEY_SHARED_ELEMENT_TRANSITION_NAME_POSTFIX);
         holder.setOnClickListener(R.id.iv_wonderful_item_content, deviceItemClickListener);
         holder.setOnClickListener(R.id.tv_wonderful_item_share, deviceItemClickListener);
         holder.setOnClickListener(R.id.tv_wonderful_item_delete, deviceItemClickListener);
@@ -66,7 +67,9 @@ public class HomeWonderfulAdapter extends SuperAdapter<MediaBean> {
         holder.setText(R.id.tv_wonderful_item_date, bean.timeInStr);
 
         if (loadMediaListener != null)
-            loadMediaListener.loadMedia(bean.mediaType, bean.srcUrl, (ImageView) holder.getView(R.id.iv_wonderful_item_content));
+            loadMediaListener.loadMedia(bean.mediaType,
+                    bean.srcUrl,
+                    (ImageView) holder.getView(R.id.iv_wonderful_item_content));
         //来自摄像头
         holder.setText(R.id.tv_wonderful_item_device_name, bean.deviceName);
     }
