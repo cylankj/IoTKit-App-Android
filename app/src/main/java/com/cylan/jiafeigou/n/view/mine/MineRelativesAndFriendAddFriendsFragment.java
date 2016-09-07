@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineRelativesAndFriendsAddFriendContract;
+import com.cylan.jiafeigou.n.view.bind.BindScanFragment;
 import com.cylan.jiafeigou.utils.ToastUtil;
 
 import butterknife.BindView;
@@ -35,6 +36,9 @@ public class MineRelativesAndFriendAddFriendsFragment extends Fragment implement
     @BindView(R.id.tv_add_from_contract)
     TextView tvAddFromContract;
 
+    private MineRelativesAndFriendScanAddFragment scanAddFragment;
+    private MineRelativeAndFriendAddFromContactFragment addFromContactFragment;
+
     public static MineRelativesAndFriendAddFriendsFragment newInstance() {
         return new MineRelativesAndFriendAddFriendsFragment();
     }
@@ -42,6 +46,13 @@ public class MineRelativesAndFriendAddFriendsFragment extends Fragment implement
     @Override
     public void setPresenter(MineRelativesAndFriendsAddFriendContract.Presenter presenter) {
 
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        scanAddFragment = MineRelativesAndFriendScanAddFragment.newInstance();
+        addFromContactFragment = MineRelativeAndFriendAddFromContactFragment.newInstance();
     }
 
     @Nullable
@@ -60,11 +71,21 @@ public class MineRelativesAndFriendAddFriendsFragment extends Fragment implement
                 break;
 
             case R.id.tv_scan_add:                                      //扫一扫添加
-                ToastUtil.showToast(getContext(),"扫一扫添加...");
+                getFragmentManager().beginTransaction()
+                        .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
+                                , R.anim.slide_in_left, R.anim.slide_out_right)
+                        .add(android.R.id.content, scanAddFragment, "scanAddFragment")
+                        .addToBackStack("mineHelpFragment")
+                        .commit();
                 break;
 
             case R.id.tv_add_from_contract:                             //从通讯录添加
-                ToastUtil.showToast(getContext(),"从通讯录添加...");
+                getFragmentManager().beginTransaction()
+                        .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
+                                , R.anim.slide_in_left, R.anim.slide_out_right)
+                        .add(android.R.id.content, addFromContactFragment, "addFromContactFragment")
+                        .addToBackStack("mineHelpFragment")
+                        .commit();
                 break;
         }
     }

@@ -8,6 +8,9 @@ import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.model.SuggestionChatInfoBean;
+import com.cylan.jiafeigou.utils.ToastUtil;
+import com.cylan.superadapter.OnItemClickListener;
+import com.sina.weibo.sdk.utils.LogUtil;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -19,17 +22,25 @@ public class RelativesAndFriendsAdapter extends RecyclerView.Adapter<RelativesAn
     public RelativesAndFriendsAdapter(ArrayList<SuggestionChatInfoBean> messages){
         this.messages = messages;
     }
+
+    private ItemClickListener itemClickListener;
+
+    public interface ItemClickListener {
+        void onClick(View view, int position);
+    }
+
+    public void setItemClickListener(ItemClickListener itemClickListener) {
+        this.itemClickListener = itemClickListener;
+    }
+
     @Override
     public RequestAndFriends onCreateViewHolder(ViewGroup parent, int viewType) {
 
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.fragment_mine_relativesandfriends_request_add_items,parent,false);
-
         return new RequestAndFriends(view);
     }
-    //发送消息  0  接收receive  1
-
     @Override
-    public void onBindViewHolder(RequestAndFriends holder, int position) {
+    public void onBindViewHolder(final RequestAndFriends holder, final int position) {
         SuggestionChatInfoBean message = messages.get(position);
         //处理消息显示
         holder.tv_username.setText(message.getName());
@@ -41,8 +52,15 @@ public class RelativesAndFriendsAdapter extends RecyclerView.Adapter<RelativesAn
             holder.tv_accept_request.setVisibility(View.INVISIBLE);
             holder.line.setVisibility(View.VISIBLE);
         }
-
-        //TODO
+        //条目点击事件
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(itemClickListener != null){
+                    itemClickListener.onClick(holder.itemView,position);
+                }
+            }
+        });
     }
 
     @Override
@@ -65,7 +83,6 @@ public class RelativesAndFriendsAdapter extends RecyclerView.Adapter<RelativesAn
             line = itemView.findViewById(R.id.view_line);
         }
     }
-
     public ArrayList<SuggestionChatInfoBean> getList(){
         return messages;
     }

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:clickable="true"
+    android:background="@color/color_white"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:id="@+id/rl_home_mine_relativesandfriends_scan_add"
+        android:layout_width="match_parent"
+        android:layout_height="73dp"
+        android:background="#0BA8CF">
+
+        <ImageView
+            android:id="@+id/iv_home_mine_relativesandfriends_add_from_contact_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:padding="15dp"
+            android:clickable="true"
+            android:src="@drawable/ic_nav_back_arrow" />
+
+        <EditText
+            android:id="@+id/et_add_phone_number"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="12dp"
+            android:layout_marginLeft="48dp"
+            android:hint="搜索"
+            android:inputType="number"
+            android:textColorHint="#60ffffff"
+            android:background="@null"
+            android:textSize="18sp" />
+
+    </RelativeLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rcy_contact_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+    </android.support.v7.widget.RecyclerView>
+
+</LinearLayout>

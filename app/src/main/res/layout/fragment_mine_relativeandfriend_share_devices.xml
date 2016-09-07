@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:background="@color/color_white"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="73dp"
+        android:background="@color/color_0ba8cf">
+
+        <ImageView
+            android:id="@+id/iv_mine_friends_share_devices_back"
+            android:clickable="true"
+            android:layout_alignParentBottom="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="15dp"
+            android:src="@drawable/ic_nav_back_arrow" />
+
+        <TextView
+            android:id="@+id/tv_share_to"
+            android:layout_marginBottom="12dp"
+            android:layout_alignParentBottom="true"
+            android:layout_marginLeft="48dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="分享设备给多多"
+            android:textSize="18sp"
+            android:textColor="@color/color_white" />
+
+        <ImageView
+            android:visibility="visible"
+            android:id="@+id/iv_mine_friends_share_devices_ok"
+            android:layout_marginBottom="2dp"
+            android:padding="15dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:clickable="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/icon_finish" />
+
+        <ImageView
+            android:visibility="gone"
+            android:id="@+id/iv_mine_personal_mailbox_bind_disable"
+            android:layout_marginBottom="2dp"
+            android:padding="15dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:clickable="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/icon_finish_disable" />
+    </RelativeLayout>
+
+    <TextView
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="19dp"
+        android:layout_marginBottom="8dp"
+        android:text="选择分享设备"
+        android:textSize="14sp"
+        android:textColor="@color/color_4b9fd5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <RelativeLayout
+        android:layout_marginLeft="15dp"
+        android:layout_width="match_parent"
+        android:layout_height="67dp">
+
+        <ImageView
+            android:layout_centerVertical="true"
+            android:id="@+id/iv_smartcamera"
+            android:src="@drawable/icon_home_camera_online"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <RelativeLayout
+            android:gravity="center_vertical"
+            android:layout_toRightOf="@id/iv_smartcamera"
+            android:paddingLeft="15dp"
+            android:layout_width="match_parent"
+            android:layout_height="67dp"
+            >
+            <TextView
+                android:id="@+id/tv_smartcamera"
+                android:textSize="16sp"
+                android:textColor="@color/color_333333"
+                android:text="智能摄像头"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:paddingTop="8dp"
+                android:layout_below="@id/tv_smartcamera"
+                android:textSize="12sp"
+                android:textColor="@color/color_8c8c8c"
+                android:text="3/5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </RelativeLayout>
+        <View
+            android:layout_marginLeft="48dp"
+            android:layout_alignParentBottom="true"
+            android:background="@color/color_f2f2f2"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"/>
+
+        <TextView
+            android:id="@+id/tv_share_smartcamera"
+            android:layout_marginRight="15dp"
+            android:gravity="center"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:background="@drawable/bg_screenshot"
+            android:text="分享"
+            android:textSize="13sp"
+            android:textColor="@color/color_4b9fd5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_marginLeft="15dp"
+        android:layout_width="match_parent"
+        android:layout_height="67dp">
+
+        <ImageView
+            android:layout_centerVertical="true"
+            android:id="@+id/iv_smartbell"
+            android:src="@drawable/icon_home_doorbell_online"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <RelativeLayout
+            android:gravity="center_vertical"
+            android:layout_toRightOf="@id/iv_smartbell"
+            android:paddingLeft="15dp"
+            android:layout_width="match_parent"
+            android:layout_height="67dp"
+            >
+            <TextView
+                android:id="@+id/tv_smartbell"
+                android:textSize="16sp"
+                android:textColor="@color/color_333333"
+                android:text="智能门铃"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:paddingTop="8dp"
+                android:layout_below="@id/tv_smartbell"
+                android:textSize="12sp"
+                android:textColor="@color/color_8c8c8c"
+                android:text="3/5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </RelativeLayout>
+        <View
+            android:layout_marginLeft="48dp"
+            android:layout_alignParentBottom="true"
+            android:background="@color/color_f2f2f2"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"/>
+
+        <TextView
+            android:id="@+id/tv_share_smartbell"
+            android:layout_marginRight="15dp"
+            android:gravity="center"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:background="@drawable/bg_screenshot"
+            android:text="分享"
+            android:textSize="13sp"
+            android:textColor="@color/color_4b9fd5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+    </RelativeLayout>
+
+
+    <RelativeLayout
+        android:layout_marginLeft="15dp"
+        android:layout_width="match_parent"
+        android:layout_height="67dp">
+
+        <ImageView
+            android:layout_centerVertical="true"
+            android:id="@+id/iv_smartcloud"
+            android:src="@drawable/icon_home_album_online"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <RelativeLayout
+            android:gravity="center_vertical"
+            android:layout_toRightOf="@id/iv_smartcloud"
+            android:paddingLeft="15dp"
+            android:layout_width="match_parent"
+            android:layout_height="67dp"
+            >
+            <TextView
+                android:id="@+id/tv_smartcloud"
+                android:textSize="16sp"
+                android:textColor="@color/color_333333"
+                android:text="云相框"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:paddingTop="8dp"
+                android:layout_below="@id/tv_smartcloud"
+                android:textSize="12sp"
+                android:textColor="@color/color_8c8c8c"
+                android:text="5/5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </RelativeLayout>
+        <View
+            android:layout_marginLeft="48dp"
+            android:layout_alignParentBottom="true"
+            android:background="@color/color_f2f2f2"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"/>
+
+        <TextView
+            android:id="@+id/tv_share_smartcloud"
+            android:layout_marginRight="15dp"
+            android:gravity="center"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:background="@drawable/bg_screenshot"
+            android:text="分享"
+            android:textSize="13sp"
+            android:textColor="@color/color_4b9fd5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+    </RelativeLayout>
+
+
+</LinearLayout>

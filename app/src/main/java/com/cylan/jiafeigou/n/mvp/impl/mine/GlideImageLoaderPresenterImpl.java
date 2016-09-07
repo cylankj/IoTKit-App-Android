@@ -12,11 +12,7 @@ import com.cylan.jiafeigou.R;
 
 import cn.finalteam.galleryfinal.widget.GFImageView;
 
-/**
- * Desction:
- * Author:pengjianbo
- * Date:15/12/1 下午10:28
- */
+
 public class GlideImageLoaderPresenterImpl implements cn.finalteam.galleryfinal.ImageLoader {
 
     @Override
