@@ -9,6 +9,7 @@ import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.transition.Transition;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,6 +34,8 @@ public class VideoDetailsFragment extends PicDetailsFragment {
 
     @BindView(R.id.vv_play_video)
     VideoView vvPlayVideo;
+
+    private boolean isEntering = true;
 
     public static VideoDetailsFragment newInstance(int position, int startingPosition, final String url) {
         Bundle args = new Bundle();
@@ -76,20 +79,65 @@ public class VideoDetailsFragment extends PicDetailsFragment {
                 .asBitmap()
                 .placeholder(R.drawable.wonderful_pic_place_holder)
                 .videoDecoder(decoder)
-                .listener(new RequestListener<String, Bitmap>() {
-                    @Override
-                    public boolean onException(Exception e, String model, Target<Bitmap> target, boolean isFirstResource) {
-                        startPostponedEnterTransition();
-                        return false;
-                    }
-
-                    @Override
-                    public boolean onResourceReady(Bitmap resource, String model, Target<Bitmap> target, boolean isFromMemoryCache, boolean isFirstResource) {
-                        startPostponedEnterTransition();
-                        return false;
-                    }
-                })
+                .listener(requestListener)
                 .into(imageView);
+        if (mStartingPosition == mAlbumPosition && isEntering) {
+            //两个position相等，表示处于当前页面，其他情况属于预加载过程
+            getActivity().getWindow().getSharedElementEnterTransition().addListener(new TransitionListenerAdapter() {
+                @Override
+                public void onTransitionEnd(Transition transition) {
+                    AppLogger.d("video transition is end: ");
+                }
+            });
+        }
         AppLogger.d("load url: " + mediaUrl);
+    }
+
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        isEntering = false;
+    }
+
+    private RequestListener<String, Bitmap> requestListener = new RequestListener<String, Bitmap>() {
+        @Override
+        public boolean onException(Exception e, String model, Target<Bitmap> target, boolean isFirstResource) {
+            startPostponedEnterTransition();
+            return false;
+        }
+
+        @Override
+        public boolean onResourceReady(Bitmap resource, String model, Target<Bitmap> target, boolean isFromMemoryCache, boolean isFirstResource) {
+            startPostponedEnterTransition();
+            return false;
+        }
+    };
+
+    class TransitionListenerAdapter implements Transition.TransitionListener {
+        @Override
+        public void onTransitionStart(Transition transition) {
+
+        }
+
+        @Override
+        public void onTransitionEnd(Transition transition) {
+
+        }
+
+        @Override
+        public void onTransitionCancel(Transition transition) {
+
+        }
+
+        @Override
+        public void onTransitionPause(Transition transition) {
+
+        }
+
+        @Override
+        public void onTransitionResume(Transition transition) {
+
+        }
     }
 }
