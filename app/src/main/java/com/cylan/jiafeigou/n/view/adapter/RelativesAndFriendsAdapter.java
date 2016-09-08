@@ -70,10 +70,10 @@ public class RelativesAndFriendsAdapter extends RecyclerView.Adapter<RelativesAn
 
     class RequestAndFriends extends RecyclerView.ViewHolder{
 
-        private final TextView tv_username;
-        private final TextView tv_add_message;
-        private final TextView tv_accept_request;
-        private final View line;
+        public final TextView tv_username;
+        public final TextView tv_add_message;
+        public final TextView tv_accept_request;
+        public final View line;
 
         public RequestAndFriends(View itemView) {
             super(itemView);

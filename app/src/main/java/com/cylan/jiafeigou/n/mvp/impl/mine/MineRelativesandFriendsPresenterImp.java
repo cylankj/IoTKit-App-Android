@@ -32,7 +32,9 @@ public class MineRelativesandFriendsPresenterImp implements MineRelativesFriends
 
     @Override
     public ArrayList<SuggestionChatInfoBean> initAddRequestData() {
-        list = new ArrayList<SuggestionChatInfoBean>();
+        if(list == null){
+            list = new ArrayList<SuggestionChatInfoBean>();
+        }
         SuggestionChatInfoBean emMessage = new SuggestionChatInfoBean("我是小小姨",1,System.currentTimeMillis()+"");
         emMessage.setName("乔帮主");
         emMessage.setShowAcceptButton(true);

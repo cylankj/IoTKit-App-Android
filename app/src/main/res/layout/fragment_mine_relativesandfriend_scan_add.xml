@@ -36,21 +36,30 @@
     </RelativeLayout>
 
     <com.cylan.jiafeigou.support.zscan.ZXingScannerView
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="30dp"
         android:layout_gravity="center_horizontal"
         android:id="@+id/zxV_scan_add_relativesandfriend"
         android:layout_width="350dp"
         android:layout_height="350dp"
-        hunt:hint="将对方二维码放入框内，即可完成扫描"
+        hunt:hint=""
         />
+
+    <TextView
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="20dp"
+        android:textColor="@color/color_333333"
+        android:textSize="16sp"
+        android:text="将对方二维码放入框内，即可完成扫描"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 
     <ImageView
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="50dp"
         android:src="@drawable/ic_launcher"
         android:id="@+id/iv_erweima"
-        android:layout_width="100dp"
-        android:layout_height="100dp" />
+        android:layout_width="150dp"
+        android:layout_height="150dp" />
 
     <TextView
         android:layout_gravity="center_horizontal"

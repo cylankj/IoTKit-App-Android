@@ -20,6 +20,7 @@ public interface MineRelativesAndFriendScanAddContract {
     interface Presenter extends BasePresenter{
         Bitmap encodeAsBitmap(String contents, int dimension);      //生成二维码
         int getDimession();
+
     }
 
 }

@@ -14,8 +14,11 @@ import android.widget.TextView;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineRelativesFriendsContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineRelativesandFriendsPresenterImp;
+import com.cylan.jiafeigou.n.mvp.model.SuggestionChatInfoBean;
 import com.cylan.jiafeigou.n.view.adapter.RelativesAndFriendsAdapter;
 import com.cylan.jiafeigou.utils.ToastUtil;
+
+import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -46,6 +49,9 @@ public class MineRelativesandFriendsFragment extends Fragment implements MineRel
     private RelativesAndFriendsAdapter relativesAndFriendsAddAdapter;
     private RelativesAndFriendsAdapter relativesAndFriendsListAdapter;
 
+    private ArrayList<SuggestionChatInfoBean> requestAddList;
+    private ArrayList<SuggestionChatInfoBean> relativesAndFriendList;
+
     public static MineRelativesandFriendsFragment newInstance() {
         return new MineRelativesandFriendsFragment();
     }
@@ -63,10 +69,19 @@ public class MineRelativesandFriendsFragment extends Fragment implements MineRel
         View view = inflater.inflate(R.layout.fragment_home_mine_relativesandfriends, container, false);
         ButterKnife.bind(this, view);
         initPresenter();
+        initData();
         showAddRequestList();
         showRelativesAndFriendsList();
         initListener();
         return view;
+    }
+
+    private void initData() {
+        requestAddList = new ArrayList<>();
+        relativesAndFriendList = new ArrayList<>();
+        ToastUtil.showToast(getContext(),"添加成功");
+        requestAddList.addAll(presenter.initAddRequestData());
+        relativesAndFriendList.addAll(presenter.initRelativatesAndFriendsData());
     }
 
     private void initListener() {
@@ -81,6 +96,16 @@ public class MineRelativesandFriendsFragment extends Fragment implements MineRel
                         .commit();
             }
         });
+
+        relativesAndFriendsAddAdapter.setItemClickListener(new RelativesAndFriendsAdapter.ItemClickListener() {
+            @Override
+            public void onClick(View view, int position) {
+                requestAddList.get(position).setShowAcceptButton(false);
+                requestAddList.remove(position);
+                relativesAndFriendsAddAdapter.notifyDataSetChanged();
+            }
+        });
+
     }
 
     private void initPresenter() {
@@ -115,14 +140,14 @@ public class MineRelativesandFriendsFragment extends Fragment implements MineRel
     @Override
     public void showAddRequestList() {
         recyclerviewRequestAdd.setLayoutManager(new LinearLayoutManager(getContext()));
-        relativesAndFriendsAddAdapter = new RelativesAndFriendsAdapter(presenter.initAddRequestData());
+        relativesAndFriendsAddAdapter = new RelativesAndFriendsAdapter(requestAddList);
         recyclerviewRequestAdd.setAdapter(relativesAndFriendsAddAdapter);
     }
 
     @Override
     public void showRelativesAndFriendsList() {
         recyclerviewRelativesandfriendsList.setLayoutManager(new LinearLayoutManager(getContext()));
-        relativesAndFriendsListAdapter = new RelativesAndFriendsAdapter(presenter.initRelativatesAndFriendsData());
+        relativesAndFriendsListAdapter = new RelativesAndFriendsAdapter(relativesAndFriendList);
         recyclerviewRelativesandfriendsList.setAdapter(relativesAndFriendsListAdapter);
     }
 

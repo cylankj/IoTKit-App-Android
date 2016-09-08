@@ -38,6 +38,7 @@ public class MineRelativesAndFriendAddFriendsFragment extends Fragment implement
 
     private MineRelativesAndFriendScanAddFragment scanAddFragment;
     private MineRelativeAndFriendAddFromContactFragment addFromContactFragment;
+    private MineRelativeAndFriendAddByNumFragment addByNumFragment;
 
     public static MineRelativesAndFriendAddFriendsFragment newInstance() {
         return new MineRelativesAndFriendAddFriendsFragment();
@@ -53,6 +54,7 @@ public class MineRelativesAndFriendAddFriendsFragment extends Fragment implement
         super.onCreate(savedInstanceState);
         scanAddFragment = MineRelativesAndFriendScanAddFragment.newInstance();
         addFromContactFragment = MineRelativeAndFriendAddFromContactFragment.newInstance();
+        addByNumFragment = MineRelativeAndFriendAddByNumFragment.newInstance();
     }
 
     @Nullable
@@ -63,7 +65,7 @@ public class MineRelativesAndFriendAddFriendsFragment extends Fragment implement
         return view;
     }
 
-    @OnClick({R.id.iv_home_mine_relativesandfriends_add_back, R.id.tv_scan_add, R.id.tv_add_from_contract})
+    @OnClick({R.id.iv_home_mine_relativesandfriends_add_back, R.id.tv_scan_add, R.id.tv_add_from_contract,R.id.et_friend_phonenumber})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.iv_home_mine_relativesandfriends_add_back:        //返回
@@ -84,6 +86,15 @@ public class MineRelativesAndFriendAddFriendsFragment extends Fragment implement
                         .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                                 , R.anim.slide_in_left, R.anim.slide_out_right)
                         .add(android.R.id.content, addFromContactFragment, "addFromContactFragment")
+                        .addToBackStack("mineHelpFragment")
+                        .commit();
+                break;
+
+            case R.id.et_friend_phonenumber:                            //根据对方账号添加
+                getFragmentManager().beginTransaction()
+                        .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
+                                , R.anim.slide_in_left, R.anim.slide_out_right)
+                        .add(android.R.id.content, addByNumFragment, "addByNumFragment")
                         .addToBackStack("mineHelpFragment")
                         .commit();
                 break;

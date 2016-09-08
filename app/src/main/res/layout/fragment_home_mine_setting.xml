@@ -1,190 +1,219 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
     android:background="@color/color_white"
-    android:layout_height="match_parent">
-    <RelativeLayout
+    android:layout_height="match_parent">>
+
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="73dp"
-        android:background="@color/color_0ba8cf">
-
-        <ImageView
-            android:id="@+id/iv_home_setting_back"
-            android:clickable="true"
-            android:layout_alignParentBottom="true"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="15dp"
-            android:src="@drawable/ic_nav_back_arrow" />
-
-        <TextView
-            android:layout_marginBottom="12dp"
-            android:layout_alignParentBottom="true"
-            android:layout_marginLeft="48dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="设置"
-            android:textSize="18sp"
-            android:textColor="@color/color_white" />
-
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:id="@+id/rLayout_home_setting_accessMes"
-        android:layout_width="match_parent"
-        android:layout_height="54dp">
-
-        <TextView
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="20dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="接收消息通知"
-            android:textSize="16sp"
-            android:textColor="@color/color_black" />
-
-        <com.kyleduo.switchbutton.SwitchButton
-            android:layout_alignParentRight="true"
-            android:id="@+id/btn_item_switch_accessMes"
-            style="@style/SwitchButtonStyleMD"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:paddingRight="26dp"
-            android:checked="true"
-            />
-
-        <View
-            android:layout_alignParentBottom="true"
-            android:layout_marginRight="20dp"
-            android:layout_marginLeft="20dp"
+        android:layout_height="match_parent">
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="1dip"
-            android:background="@color/color_f2f2f2" />
+            android:layout_height="73dp"
+            android:background="@color/color_0ba8cf">
 
-    </RelativeLayout>
+            <ImageView
+                android:id="@+id/iv_home_setting_back"
+                android:clickable="true"
+                android:layout_alignParentBottom="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="15dp"
+                android:src="@drawable/ic_nav_back_arrow" />
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="54dp">
+            <TextView
+                android:layout_marginBottom="12dp"
+                android:layout_alignParentBottom="true"
+                android:layout_marginLeft="48dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="设置"
+                android:textSize="18sp"
+                android:textColor="@color/color_white" />
 
-        <TextView
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="20dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="声音"
-            android:textSize="16sp"
-            android:textColor="@color/color_black" />
+        </RelativeLayout>
 
-        <com.kyleduo.switchbutton.SwitchButton
-            android:layout_alignParentRight="true"
-            android:id="@+id/btn_item_switch_voide"
-            style="@style/SwitchButtonStyleMD"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:paddingRight="26dp"
-            android:checked="true"
-            />
-
-        <View
-            android:layout_alignParentBottom="true"
-            android:layout_marginRight="20dp"
-            android:layout_marginLeft="20dp"
+        <RelativeLayout
+            android:id="@+id/rLayout_home_setting_accessMes"
             android:layout_width="match_parent"
-            android:layout_height="1dip"
-            android:background="@color/color_f2f2f2" />
+            android:layout_height="54dp">
 
-    </RelativeLayout>
+            <TextView
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="20dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="接收消息通知"
+                android:textSize="16sp"
+                android:textColor="@color/color_black" />
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="54dp">
+            <com.kyleduo.switchbutton.SwitchButton
+                android:layout_alignParentRight="true"
+                android:id="@+id/btn_item_switch_accessMes"
+                style="@style/SwitchButtonStyleMD"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:paddingRight="26dp"
+                android:checked="true"
+                />
 
-        <TextView
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="20dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="震动"
-            android:textSize="16sp"
-            android:textColor="@color/color_black" />
+            <View
+                android:layout_alignParentBottom="true"
+                android:layout_marginRight="20dp"
+                android:layout_marginLeft="20dp"
+                android:layout_width="match_parent"
+                android:layout_height="1dip"
+                android:background="@color/color_f2f2f2" />
 
-        <com.kyleduo.switchbutton.SwitchButton
-            android:layout_alignParentRight="true"
-            android:id="@+id/btn_item_switch_shape"
-            style="@style/SwitchButtonStyleMD"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:paddingRight="26dp"
-            android:checked="true"
-            />
+        </RelativeLayout>
 
-        <View
-            android:layout_alignParentBottom="true"
-            android:layout_marginRight="20dp"
-            android:layout_marginLeft="20dp"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="1dip"
-            android:background="@color/color_f2f2f2" />
+            android:layout_height="54dp">
 
-    </RelativeLayout>
+            <TextView
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="20dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="声音"
+                android:textSize="16sp"
+                android:textColor="@color/color_black" />
 
-    <RelativeLayout
-        android:id="@+id/rl_home_setting_clear"
-        android:layout_width="match_parent"
-        android:layout_height="70dp">
+            <com.kyleduo.switchbutton.SwitchButton
+                android:layout_alignParentRight="true"
+                android:id="@+id/btn_item_switch_voide"
+                style="@style/SwitchButtonStyleMD"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:paddingRight="26dp"
+                android:checked="true"
+                />
 
-        <LinearLayout
-            android:layout_centerVertical="true"
-            android:orientation="vertical"
+            <View
+                android:layout_alignParentBottom="true"
+                android:layout_marginRight="20dp"
+                android:layout_marginLeft="20dp"
+                android:layout_width="match_parent"
+                android:layout_height="1dip"
+                android:background="@color/color_f2f2f2" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-        <TextView
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="20dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="清空消息缓存"
-            android:textSize="16sp"
-            android:textColor="@color/color_black" />
+            android:layout_height="54dp">
 
-        <TextView
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="20dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="2.3M"
-            android:textSize="13sp"
-            android:textColor="@color/color_8c8c8c" />
-        </LinearLayout>
+            <TextView
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="20dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="震动"
+                android:textSize="16sp"
+                android:textColor="@color/color_black" />
 
-        <View
-            android:layout_alignParentBottom="true"
-            android:layout_marginRight="20dp"
-            android:layout_marginLeft="20dp"
+            <com.kyleduo.switchbutton.SwitchButton
+                android:layout_alignParentRight="true"
+                android:id="@+id/btn_item_switch_shape"
+                style="@style/SwitchButtonStyleMD"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:paddingRight="26dp"
+                android:checked="true"
+                />
+
+            <View
+                android:layout_alignParentBottom="true"
+                android:layout_marginRight="20dp"
+                android:layout_marginLeft="20dp"
+                android:layout_width="match_parent"
+                android:layout_height="1dip"
+                android:background="@color/color_f2f2f2" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/rl_home_setting_clear"
             android:layout_width="match_parent"
-            android:layout_height="1dip"
-            android:background="@color/color_f2f2f2" />
+            android:layout_height="70dp">
 
-    </RelativeLayout>
+            <LinearLayout
+                android:layout_centerVertical="true"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+            <TextView
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="20dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="清空消息缓存"
+                android:textSize="16sp"
+                android:textColor="@color/color_black" />
 
-    <RelativeLayout
-        android:id="@+id/rl_home_setting_about"
-        android:layout_width="match_parent"
-        android:layout_height="54dp">
+            <FrameLayout
+                android:layout_centerVertical="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
 
-        <TextView
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="20dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="关于"
-            android:textSize="16sp"
-            android:textColor="@color/color_black" />
+                <ProgressBar
+                    android:visibility="gone"
+                    android:layout_marginLeft="20dp"
+                    android:id="@+id/progressbar_load_cache_size"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp" />
 
-    </RelativeLayout>
+                <TextView
+                    android:id="@+id/tv_cache_size"
+                    android:layout_marginLeft="20dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="2.3M"
+                    android:textSize="13sp"
+                    android:textColor="@color/color_8c8c8c" />
 
-</LinearLayout>
+            </FrameLayout>
+
+            </LinearLayout>
+
+            <View
+                android:layout_alignParentBottom="true"
+                android:layout_marginRight="20dp"
+                android:layout_marginLeft="20dp"
+                android:layout_width="match_parent"
+                android:layout_height="1dip"
+                android:background="@color/color_f2f2f2" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/rl_home_setting_about"
+            android:layout_width="match_parent"
+            android:layout_height="54dp">
+
+            <TextView
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="20dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="关于"
+                android:textSize="16sp"
+                android:textColor="@color/color_black" />
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+    <ProgressBar
+        android:visibility="invisible"
+        android:layout_gravity="center"
+        android:id="@+id/progressbar_clearing_cache"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+</FrameLayout>
