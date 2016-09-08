@@ -8,7 +8,7 @@
     tools:context=".n.view.media.BigPicFragment">
 
     <FrameLayout
-        android:id="@+id/fLayout_big_pic_title"
+        android:id="@+id/fLayout_details_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">

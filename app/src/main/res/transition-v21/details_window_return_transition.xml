@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <transitionSet xmlns:android="http://schemas.android.com/apk/res/android"
-    android:transitionOrdering="together"
-    android:duration="500">
+    android:duration="500"
+    android:transitionOrdering="together">
     <fade>
         <targets>
             <target android:excludeId="@android:id/statusBarBackground" />
@@ -10,12 +10,12 @@
     </fade>
     <slide android:slideEdge="top">
         <targets>
-            <target android:targetId="@id/details_header_container" />
+            <target android:targetId="@id/fLayout_details_title" />
         </targets>
     </slide>
     <slide android:slideEdge="bottom">
         <targets>
-            <target android:targetId="@id/details_text_container" />
+            <target android:targetId="@id/fLayout_details_action_bar" />
         </targets>
     </slide>
 </transitionSet>

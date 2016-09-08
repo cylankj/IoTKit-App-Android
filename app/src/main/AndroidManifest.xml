@@ -194,7 +194,6 @@
             android:name=".n.view.activity.MediaActivity"
             android:configChanges="locale|orientation|keyboardHidden|navigation|screenSize"
             android:launchMode="singleTask"
-            android:process=":bell_call"
             android:screenOrientation="portrait"
             android:theme="@style/MediaActivityTransition"
             android:windowSoftInputMode="adjustPan|stateHidden" />

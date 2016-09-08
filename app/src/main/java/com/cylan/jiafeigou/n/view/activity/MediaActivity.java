@@ -13,17 +13,24 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.misc.HackyViewPager;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.mvp.model.MediaBean;
-import com.cylan.jiafeigou.n.view.media.DetailsFragment;
+import com.cylan.jiafeigou.n.view.media.PicDetailsFragment;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.ViewUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 @TargetApi(Build.VERSION_CODES.LOLLIPOP)
 public class MediaActivity extends FragmentActivity {
@@ -33,26 +40,40 @@ public class MediaActivity extends FragmentActivity {
     private int mStartingPosition;
     private int mCurrentPosition;
     private boolean mIsReturning;
-
-    private DetailsFragment mCurrentDetailsFragment;
+    @BindView(R.id.tv_big_pic_close)
+    ImageView tvBigPicClose;
+    @BindView(R.id.tv_big_pic_title)
+    TextView tvBigPicTitle;
+    @BindView(R.id.fLayout_details_title)
+    FrameLayout fLayoutDetailsTitle;
+    @BindView(R.id.imgV_big_pic_download)
+    ImageView imgVBigPicDownload;
+    @BindView(R.id.imgV_big_pic_share)
+    ImageView imgVBigPicShare;
+    @BindView(R.id.imgV_big_pic_collect)
+    ImageView imgVBigPicCollect;
+    @BindView(R.id.fLayout_details_action_bar)
+    FrameLayout fLayoutDetailsActionBar;
+    private PicDetailsFragment mCurrentDetailsFragment;
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_media);
+        ButterKnife.bind(this);
         postponeEnterTransition();
         setEnterSharedElementCallback(mCallback);
-
-        mStartingPosition = getIntent().getIntExtra(JConstant.KEY_SHARED_ELEMENT_POSITION, 0);
+        ViewUtils.setViewMarginStatusBar(fLayoutDetailsTitle);
+        mStartingPosition = getIntent().getIntExtra(JConstant.KEY_SHARED_ELEMENT_STARTED_POSITION, 0);
         if (savedInstanceState == null) {
             mCurrentPosition = mStartingPosition;
         } else {
             mCurrentPosition = savedInstanceState.getInt(STATE_CURRENT_PAGE_POSITION);
         }
-
         ArrayList<MediaBean> list = getIntent().getParcelableArrayListExtra(JConstant.KEY_SHARED_ELEMENT_LIST);
-        ViewPager pager = (ViewPager) findViewById(R.id.pager);
+        //this adapter fix 'java.lang.IllegalArgumentException: pointerIndex out of range'
+        HackyViewPager pager = (HackyViewPager) findViewById(R.id.pager);
         pager.setAdapter(new DetailsFragmentPagerAdapter(getSupportFragmentManager(), list));
         pager.setCurrentItem(mCurrentPosition);
         pager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
@@ -61,16 +82,22 @@ public class MediaActivity extends FragmentActivity {
                 mCurrentPosition = position;
             }
         });
+        AppLogger.d("MediaActivity:onCreate");
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        ViewUtils.removeActivityFromTransitionManager(this);
     }
 
     private final SharedElementCallback mCallback = new SharedElementCallback() {
         @Override
         public void onMapSharedElements(List<String> names, Map<String, View> sharedElements) {
-            AppLogger.d("transition:mIsReturning " + mIsReturning);
-            AppLogger.d("transition:mStartingPosition " + mStartingPosition);
-            AppLogger.d("transition:mCurrentPosition " + mCurrentPosition);
             if (mIsReturning) {
                 ImageView sharedElement = mCurrentDetailsFragment.getAlbumImage();
+                AppLogger.d("transition:mStartingPosition " + mStartingPosition);
+                AppLogger.d("transition:mCurrentPosition " + mCurrentPosition);
                 if (sharedElement == null) {
                     // If shared element is null, then it has been scrolled off screen and
                     // no longer visible. In this case we cancel the shared element transition by
@@ -108,7 +135,6 @@ public class MediaActivity extends FragmentActivity {
         super.finishAfterTransition();
     }
 
-
     private class DetailsFragmentPagerAdapter extends FragmentStatePagerAdapter {
         ArrayList<MediaBean> list;
 
@@ -119,11 +145,9 @@ public class MediaActivity extends FragmentActivity {
 
         @Override
         public Fragment getItem(int position) {
-            Bundle bundle = new Bundle();
-            bundle.putString(DetailsFragment.KEY_MEDIA_URL, list.get(position).srcUrl);
 //            if (list.get(position).mediaType == MediaBean.TYPE_PIC) {
-            return DetailsFragment.newInstance(position,
-                    position,
+            return PicDetailsFragment.newInstance(position,
+                    mStartingPosition,
                     list.get(position).srcUrl);
 //            } else {
 //                return null;
@@ -134,12 +158,14 @@ public class MediaActivity extends FragmentActivity {
         public void setPrimaryItem(ViewGroup container, int position, Object object) {
             super.setPrimaryItem(container, position, object);
             //this item
-            mCurrentDetailsFragment = (DetailsFragment) object;
+            mCurrentDetailsFragment = (PicDetailsFragment) object;
+            AppLogger.d("transition: setPrimaryItem: " + position);
         }
 
         @Override
         public int getCount() {
             return list == null ? 0 : list.size();
         }
+
     }
 }

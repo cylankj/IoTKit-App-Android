@@ -11,8 +11,6 @@ import android.support.annotation.Nullable;
 import android.support.annotation.UiThread;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -145,6 +143,7 @@ public class HomeWonderfulFragmentExt extends Fragment implements
     @Override
     public void onResume() {
         super.onResume();
+        onTimeTick(JFGRules.getTimeRule());
         if (presenter != null) presenter.start();
     }
 
@@ -331,10 +330,11 @@ public class HomeWonderfulFragmentExt extends Fragment implements
                 Intent intent = new Intent(getActivity(), MediaActivity.class);
                 // Pass data object in the bundle and populate details activity.
                 intent.putParcelableArrayListExtra(JConstant.KEY_SHARED_ELEMENT_LIST, (ArrayList<? extends Parcelable>) homeWonderAdapter.getList());
-                intent.putExtra(JConstant.KEY_SHARED_ELEMENT_POSITION, position);
+                intent.putExtra(JConstant.KEY_SHARED_ELEMENT_STARTED_POSITION, position);
                 getActivity().startActivity(intent,
                         ActivityOptions.makeSceneTransitionAnimation(getActivity(),
-                                v, ViewCompat.getTransitionName(v)).toBundle());
+                                v, v.getTransitionName()).toBundle());
+                AppLogger.d("transition:getName " + ViewCompat.getTransitionName(v));
                 break;
             case R.id.tv_wonderful_item_share:
                 initShareDialog();
@@ -536,7 +536,8 @@ public class HomeWonderfulFragmentExt extends Fragment implements
         int startingPosition = mTmpReenterState.getInt(JConstant.EXTRA_STARTING_ALBUM_POSITION);
         int currentPosition = mTmpReenterState.getInt(JConstant.EXTRA_CURRENT_ALBUM_POSITION);
         if (startingPosition != currentPosition) {
-            rVDevicesList.scrollToPosition(currentPosition);
+//            rVDevicesList.scrollToPosition(currentPosition);
+            ((LinearLayoutManager) rVDevicesList.getLayoutManager()).scrollToPositionWithOffset(currentPosition, 0);
         }
         getActivity().postponeEnterTransition();
         rVDevicesList.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {

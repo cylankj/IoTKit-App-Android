@@ -37,7 +37,7 @@ public class BigPicFragment extends Fragment {
     ImageView tvBigPicClose;
     @BindView(R.id.tv_big_pic_title)
     TextView tvBigPicTitle;
-    @BindView(R.id.fLayout_big_pic_title)
+    @BindView(R.id.fLayout_details_title)
     FrameLayout fLayoutBigPicTitle;
     @BindView(R.id.imgV_big_pic_download)
     ImageView imgVBigPicDownload;

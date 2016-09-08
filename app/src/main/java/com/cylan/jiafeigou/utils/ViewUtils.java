@@ -9,10 +9,17 @@ import android.support.v7.widget.RecyclerView;
 import android.text.InputFilter;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
+import android.transition.Transition;
+import android.transition.TransitionManager;
+import android.util.ArrayMap;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import java.lang.ref.WeakReference;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
 
 /**
  * Created by cylan-hunt on 16-6-12.
@@ -190,6 +197,32 @@ public class ViewUtils {
             return recyclerView.getChildAdapterPosition(viewGroup);
         }
         return getParentAdapterPosition(recyclerView, viewGroup, parentId);
+    }
+    public static void removeActivityFromTransitionManager(Activity activity) {
+        if (Build.VERSION.SDK_INT < 21) {
+            return;
+        }
+        Class transitionManagerClass = TransitionManager.class;
+        try {
+            Field runningTransitionsField = transitionManagerClass.getDeclaredField("sRunningTransitions");
+            runningTransitionsField.setAccessible(true);
+            //noinspection unchecked
+            ThreadLocal<WeakReference<ArrayMap<ViewGroup, ArrayList<Transition>>>> runningTransitions
+                    = (ThreadLocal<WeakReference<ArrayMap<ViewGroup, ArrayList<Transition>>>>)
+                    runningTransitionsField.get(transitionManagerClass);
+            if (runningTransitions.get() == null || runningTransitions.get().get() == null) {
+                return;
+            }
+            ArrayMap map = runningTransitions.get().get();
+            View decorView = activity.getWindow().getDecorView();
+            if (map.containsKey(decorView)) {
+                map.remove(decorView);
+            }
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
     }
 }
 
