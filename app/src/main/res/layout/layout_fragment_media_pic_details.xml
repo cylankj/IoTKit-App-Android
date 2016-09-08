@@ -3,12 +3,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_gravity="center"
-    android:scaleType="fitCenter"
     tools:ignore="ContentDescription">
 
     <com.cylan.photoview.PhotoView
-        android:scaleType="fitCenter"
         android:id="@+id/details_album_image"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:scaleType="fitCenter" />
 </FrameLayout>

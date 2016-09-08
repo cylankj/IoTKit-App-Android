@@ -34,13 +34,13 @@ import butterknife.ButterKnife;
 public class PicDetailsFragment extends Fragment {
 
     public static final String KEY_MEDIA_URL = "key_media_url";
-    private static final String ARG_ALBUM_IMAGE_POSITION = "arg_album_image_position";
-    private static final String ARG_STARTING_ALBUM_IMAGE_POSITION = "arg_starting_album_image_position";
+    public static final String ARG_ALBUM_IMAGE_POSITION = "arg_album_image_position";
+    public static final String ARG_STARTING_ALBUM_IMAGE_POSITION = "arg_starting_album_image_position";
     @BindView(R.id.details_album_image)
     PhotoView detailsAlbumImage;
 
-    private int mStartingPosition;
-    private int mAlbumPosition;
+    protected int mStartingPosition;
+    protected int mAlbumPosition;
 
     public static PicDetailsFragment newInstance(int position, int startingPosition, final String url) {
         Bundle args = new Bundle();
@@ -62,23 +62,30 @@ public class PicDetailsFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, final Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.layout_fragment_media_details, container, false);
+        View rootView = inflater.inflate(R.layout.layout_fragment_media_pic_details, container, false);
         ButterKnife.bind(this, rootView);
-        ViewCompat.setTransitionName(detailsAlbumImage,
-                mAlbumPosition + JConstant.KEY_SHARED_ELEMENT_TRANSITION_NAME_POSTFIX);
         return rootView;
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         //设置transition名字，这个名字需要对应前一个scene的ImageView的transitionName,
+        ViewCompat.setTransitionName(detailsAlbumImage,
+                mAlbumPosition + JConstant.KEY_SHARED_ELEMENT_TRANSITION_NAME_POSTFIX);
         final String albumImageUrl = getArguments().getString(KEY_MEDIA_URL);
+        loadMedia(detailsAlbumImage, albumImageUrl);
+    }
+
+    /**
+     * 加载资源
+     */
+    protected void loadMedia(final ImageView imageView, final String mediaUrl) {
         Glide.with(this)
-                .load(albumImageUrl)
+                .load(mediaUrl)
                 .listener(requestListener)
                 .placeholder(R.drawable.wonderful_pic_place_holder)
                 .fitCenter()
-                .into(detailsAlbumImage);
+                .into(imageView);
     }
 
     @Override
@@ -87,7 +94,7 @@ public class PicDetailsFragment extends Fragment {
         AppLogger.d("onDestroyView: " + mAlbumPosition);
     }
 
-    private void startPostponedEnterTransition() {
+    protected void startPostponedEnterTransition() {
         if (mAlbumPosition == mStartingPosition) {
             AppLogger.d("transition: startPostponedEnterTransition: " + mAlbumPosition + "\n" +
                     detailsAlbumImage.getTransitionName());

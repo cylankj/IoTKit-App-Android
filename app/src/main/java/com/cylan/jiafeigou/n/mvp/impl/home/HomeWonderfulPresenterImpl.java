@@ -96,7 +96,7 @@ public class HomeWonderfulPresenterImpl extends AbstractPresenter<HomeWonderfulC
             baseBean.time = time;
             baseBean.timeInStr = getDate(time);
             baseBean.deviceName = "南湖";
-            baseBean.mediaType = MediaBean.TYPE_PIC;
+            baseBean.mediaType = RandomUtils.getRandom(2);
             if (baseBean.mediaType == MediaBean.TYPE_PIC)
                 baseBean.srcUrl = pics[RandomUtils.getRandom(pics.length)];
             else {

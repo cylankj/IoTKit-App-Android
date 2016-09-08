@@ -22,7 +22,9 @@ import com.cylan.jiafeigou.misc.HackyViewPager;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.mvp.model.MediaBean;
 import com.cylan.jiafeigou.n.view.media.PicDetailsFragment;
+import com.cylan.jiafeigou.n.view.media.VideoDetailsFragment;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.TimeUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;
 
 import java.util.ArrayList;
@@ -31,6 +33,7 @@ import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 @TargetApi(Build.VERSION_CODES.LOLLIPOP)
 public class MediaActivity extends FragmentActivity {
@@ -56,6 +59,8 @@ public class MediaActivity extends FragmentActivity {
     FrameLayout fLayoutDetailsActionBar;
     private PicDetailsFragment mCurrentDetailsFragment;
 
+    private ArrayList<MediaBean> beanArrayList;
+
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,14 +77,19 @@ public class MediaActivity extends FragmentActivity {
             mCurrentPosition = savedInstanceState.getInt(STATE_CURRENT_PAGE_POSITION);
         }
         ArrayList<MediaBean> list = getIntent().getParcelableArrayListExtra(JConstant.KEY_SHARED_ELEMENT_LIST);
+        beanArrayList = list;
         //this adapter fix 'java.lang.IllegalArgumentException: pointerIndex out of range'
         HackyViewPager pager = (HackyViewPager) findViewById(R.id.pager);
         pager.setAdapter(new DetailsFragmentPagerAdapter(getSupportFragmentManager(), list));
         pager.setCurrentItem(mCurrentPosition);
+        //刷新当前时间
+        updateTitle(mCurrentPosition);
         pager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
             @Override
             public void onPageSelected(int position) {
                 mCurrentPosition = position;
+                updateActionBar(position);
+                updateTitle(position);
             }
         });
         AppLogger.d("MediaActivity:onCreate");
@@ -89,6 +99,25 @@ public class MediaActivity extends FragmentActivity {
     protected void onDestroy() {
         super.onDestroy();
         ViewUtils.removeActivityFromTransitionManager(this);
+    }
+
+    /**
+     * 刷新图片头部日期
+     *
+     * @param index
+     */
+    private void updateTitle(final int index) {
+        if (beanArrayList != null && index < beanArrayList.size()) {
+            final int mediaType = beanArrayList.get(index).mediaType;
+            final long time = beanArrayList.get(index).time;
+            if (mediaType == MediaBean.TYPE_PIC)
+                tvBigPicTitle.setText(TimeUtils.getMediaPicTimeInString(time));
+            else tvBigPicTitle.setText(TimeUtils.getMediaVideoTimeInString(time));
+        }
+    }
+
+    private void updateActionBar(final int index) {
+
     }
 
     private final SharedElementCallback mCallback = new SharedElementCallback() {
@@ -135,6 +164,24 @@ public class MediaActivity extends FragmentActivity {
         super.finishAfterTransition();
     }
 
+    @OnClick({R.id.tv_big_pic_close,
+            R.id.imgV_big_pic_download,
+            R.id.imgV_big_pic_share,
+            R.id.imgV_big_pic_collect})
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.tv_big_pic_close:
+                onBackPressed();
+                break;
+            case R.id.imgV_big_pic_download:
+                break;
+            case R.id.imgV_big_pic_share:
+                break;
+            case R.id.imgV_big_pic_collect:
+                break;
+        }
+    }
+
     private class DetailsFragmentPagerAdapter extends FragmentStatePagerAdapter {
         ArrayList<MediaBean> list;
 
@@ -145,20 +192,23 @@ public class MediaActivity extends FragmentActivity {
 
         @Override
         public Fragment getItem(int position) {
-//            if (list.get(position).mediaType == MediaBean.TYPE_PIC) {
-            return PicDetailsFragment.newInstance(position,
-                    mStartingPosition,
-                    list.get(position).srcUrl);
-//            } else {
-//                return null;
-//            }
+            if (list.get(position).mediaType == MediaBean.TYPE_PIC) {
+                return PicDetailsFragment.newInstance(position,
+                        mStartingPosition,
+                        list.get(position).srcUrl);
+            } else {
+                return VideoDetailsFragment.newInstance(position,
+                        mStartingPosition,
+                        list.get(position).srcUrl);
+            }
         }
 
         @Override
         public void setPrimaryItem(ViewGroup container, int position, Object object) {
             super.setPrimaryItem(container, position, object);
             //this item
-            mCurrentDetailsFragment = (PicDetailsFragment) object;
+            if (object instanceof PicDetailsFragment)
+                mCurrentDetailsFragment = (PicDetailsFragment) object;
             AppLogger.d("transition: setPrimaryItem: " + position);
         }
 

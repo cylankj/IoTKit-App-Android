@@ -12,7 +12,6 @@ import android.view.ViewGroup;
 import android.widget.VideoView;
 
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.support.log.AppLogger;
 
 import butterknife.BindView;
@@ -25,6 +24,7 @@ import butterknife.ButterKnife;
  */
 public class VideoViewFragment extends Fragment {
 
+    public static final String KEY_VIDEO_URL = "key_video_url";
     @BindView(R.id.vv_play_video)
     VideoView vvPlayVideo;
 
@@ -36,12 +36,14 @@ public class VideoViewFragment extends Fragment {
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param bundle Parameter 1.
+     * @param url Parameter 1.
      * @return A new instance of fragment BigPicFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static VideoViewFragment newInstance(Bundle bundle) {
+    public static VideoViewFragment newInstance(String url) {
         VideoViewFragment fragment = new VideoViewFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString(KEY_VIDEO_URL, url);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -62,7 +64,7 @@ public class VideoViewFragment extends Fragment {
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        Uri uri = Uri.parse(getArguments().getString(JConstant.KEY_SHARED_ELEMENT_LIST));
+        Uri uri = Uri.parse(getArguments().getString(KEY_VIDEO_URL));
         vvPlayVideo.setVideoURI(uri);
         vvPlayVideo.start();
         vvPlayVideo.setOnErrorListener(new MediaPlayer.OnErrorListener() {
