@@ -15,18 +15,19 @@ import android.util.Log;
 
 import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.PathGetter;
 import com.cylan.utils.FileUtils;
+import com.cylan.utils.HandlerThreadUtils;
 import com.cylan.utils.ProcessUtils;
 
 import java.io.File;
 
-;
 
 public class DaemonService extends Service {
+
     private static final String TAG = DaemonService.class.getSimpleName();
-    public static final String KEY_DAEMON_NAME = "daemonName";
 
     /**
      * Creates an Service.  Invoked by your subclass's constructor.
@@ -39,7 +40,7 @@ public class DaemonService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        onHandleIntent();
+        CopyDaemonFile();
         registerBootComplete();
     }
 
@@ -54,7 +55,7 @@ public class DaemonService extends Service {
         if (!isServiceRunning()) {
             startService(new Intent(this, DataSourceService.class));
             try2startForeground();
-            AppLogger.i("re start data service");
+            AppLogger.i(TAG + "re start data service");
         }
         return START_STICKY;
     }
@@ -77,6 +78,19 @@ public class DaemonService extends Service {
         }
     }
 
+    /**
+     * a simple
+     */
+    private void CopyDaemonFile() {
+        HandlerThreadUtils.post(new Runnable() {
+            @Override
+            public void run() {
+                AppLogger.d("CopyDaemonFile");
+                onHandleIntent();
+            }
+        });
+    }
+
     protected void onHandleIntent() {
         try {
             final String daemonServiceName = this.getClass().getName();
@@ -84,10 +98,10 @@ public class DaemonService extends Service {
             final String daemonPath = getFilesDir() + File.separator + filename;
             final File destFile = new File(daemonPath);
             FileUtils.copyAssetsFile(this, destFile, "daemon_c");
-            new File(daemonPath).setExecutable(true);
+            boolean set = new File(daemonPath).setExecutable(true);
             final String packageName = getPackageName();
             final String processName = ProcessUtils.myProcessName(this) + ":push";
-            final String logPath = PathGetter.getWAppLoggerPath();
+            final String logPath = PathGetter.createPath(JConstant.DAEMON_DIR);
             new ProcessBuilder().command(daemonPath,
                     packageName,
                     processName,

@@ -33,6 +33,7 @@ import java.util.ArrayList;
 
 
 public class DataSourceService extends Service implements AppCallBack {
+
     private Handler workHandler;
 
     static {
@@ -49,8 +50,7 @@ public class DataSourceService extends Service implements AppCallBack {
 
     @Override
     public IBinder onBind(Intent intent) {
-        // TODO: Return the communication channel to the service.
-        throw new UnsupportedOperationException("Not yet implemented");
+        return null;
     }
 
     @Override
@@ -86,7 +86,6 @@ public class DataSourceService extends Service implements AppCallBack {
                         break;
                     case 1:
                         break;
-
                 }
                 return true;
             }

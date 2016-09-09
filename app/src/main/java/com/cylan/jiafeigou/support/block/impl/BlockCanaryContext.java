@@ -3,8 +3,8 @@ package com.cylan.jiafeigou.support.block.impl;
 import android.content.Context;
 
 import com.cylan.jiafeigou.BuildConfig;
+import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.support.block.IBlockCanaryContext;
-import com.cylan.utils.Constants;
 import com.cylan.utils.NetUtils;
 
 import java.io.File;
@@ -121,8 +121,7 @@ public class BlockCanaryContext implements IBlockCanaryContext {
      */
     @Override
     public String getLogPath() {
-        return Constants.ROOT_DIR
-                + File.separator + Constants.BLOCK_FOLDER;
+        return JConstant.BLOCK_LOG_PATH;
     }
 
     /**
