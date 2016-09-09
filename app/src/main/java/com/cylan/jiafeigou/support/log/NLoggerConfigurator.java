@@ -1,10 +1,7 @@
 package com.cylan.jiafeigou.support.log;
 
 
-import android.os.Environment;
 import android.util.Log;
-
-import java.io.File;
 
 /**
  * Created by cylan-hunt on 16-8-17.
@@ -14,16 +11,16 @@ public class NLoggerConfigurator {
     private int logLevel = Log.VERBOSE;
     private String messagePattern = "yyyy-mm-dd HH:mm:ss.SSS ";
     private String logCatPattern = "%m%n";
-    /**
-     * 文件目录
-     */
-    private String moduleDirPath = Environment.getExternalStorageDirectory().getAbsolutePath()
-            + File.separator
-            + "Logger";
+//    /**
+//     * 文件目录
+//     */
+//    private String moduleDirPath = Environment.getExternalStorageDirectory().getAbsolutePath()
+//            + File.separator
+//            + "Logger";
     /**
      * 文件名字
      */
-    private String moduleName;
+    private String filePath;
     private int maxBackupSize = 2;
     private long maxFileSize = 512 * 1024;
     private boolean immediateFlush = true;
@@ -44,13 +41,13 @@ public class NLoggerConfigurator {
         return logCatPattern;
     }
 
-    public String getModuleName() {
-        return moduleName;
+    public String getFilePath() {
+        return filePath;
     }
 
-    public String getModuleDirPath() {
-        return moduleDirPath;
-    }
+//    public String getModuleDirPath() {
+//        return moduleDirPath;
+//    }
 
     public int getMaxBackupSize() {
         return maxBackupSize;
@@ -96,8 +93,8 @@ public class NLoggerConfigurator {
             return this;
         }
 
-        public Builder setModuleName(String moduleName) {
-            this.configurator.moduleName = moduleName;
+        public Builder setFilePath(String filePath) {
+            this.configurator.filePath = filePath;
             return this;
         }
 
@@ -111,10 +108,10 @@ public class NLoggerConfigurator {
             return this;
         }
 
-        public Builder setModuleDirPath(String dirPath) {
-            configurator.moduleDirPath = dirPath;
-            return this;
-        }
+//        public Builder setModuleDirPath(String dirPath) {
+//            configurator.moduleDirPath = dirPath;
+//            return this;
+//        }
 
         public Builder setMaxBackupSize(int maxBackupSize) {
             configurator.maxBackupSize = maxBackupSize;

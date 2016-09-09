@@ -14,16 +14,16 @@ public class NLoggerManager {
         if (filePath == null || filePath.length() == 0)
             return null;
         NLoggerConfigurator configurator = new NLoggerConfigurator.Builder()
-                .setModuleDirPath(filePath)
+                .setFilePath(filePath)
                 .build();
         return getLogger(configurator);
     }
 
     public static NLogger getLogger(NLoggerConfigurator configurator) throws IOException {
-        NLogger logger = loggerMap.get(configurator.getModuleDirPath());
+        NLogger logger = loggerMap.get(configurator.getFilePath());
         if (logger == null) {
             logger = new NLogger(configurator);
-            loggerMap.put(configurator.getModuleDirPath(), logger);
+            loggerMap.put(configurator.getFilePath(), logger);
         }
         return logger;
     }

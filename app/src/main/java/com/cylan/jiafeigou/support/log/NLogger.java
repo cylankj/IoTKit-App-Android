@@ -44,10 +44,9 @@ public class NLogger implements IWriter {
     }
 
     private boolean resetFileWriter() throws IOException {
-        file = new File(this.configurator.getModuleDirPath(),
-                this.configurator.getModuleName());
+        file = new File(this.configurator.getFilePath());
         close();
-        File fileDir = new File(this.configurator.getModuleDirPath());
+        File fileDir = new File(file.getParentFile().getAbsolutePath());
         boolean mkdirResult = fileDir.mkdirs();
         boolean createFile = file.createNewFile();
         fileWriter = new FileWriter(file, true);//
@@ -126,7 +125,7 @@ public class NLogger implements IWriter {
     }
 
     private String getModuleFilePath() {
-        return configurator.getModuleDirPath() + File.separator + configurator.getModuleName();
+        return configurator.getFilePath();
     }
 
     private static class ThreadSafeDateFormat {

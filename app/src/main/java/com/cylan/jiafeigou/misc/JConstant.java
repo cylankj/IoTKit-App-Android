@@ -107,5 +107,6 @@ public class JConstant {
     public static final String BLOCK_LOG_PATH = ROOT_DIR + File.separator + "block";
     public static final String CRASH_PATH = ROOT_DIR + File.separator + "crash";
     public static final String DAEMON_DIR = ROOT_DIR + File.separator + "daemon";
+    public static final String LOG_PATH = ROOT_DIR + File.separator + "log";
 
 }
