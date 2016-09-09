@@ -61,8 +61,11 @@ public class BlockCanaryCore {
                             .flushString();
                     LogWriter.saveLooperLog(block.toString());
 
-                    if (getContext().isNeedDisplay() && mOnBlockEventInterceptor != null) {
-                        mOnBlockEventInterceptor.onBlockEvent(getContext().getContext(), block.timeStart);
+                    if (mOnBlockEventInterceptor != null) {
+                        mOnBlockEventInterceptor.onBlockEvent(getContext().getContext(),
+                                block.timeStart,
+                                block.toString(),
+                                getContext().isNeedDisplay());
                     }
                 }
             }

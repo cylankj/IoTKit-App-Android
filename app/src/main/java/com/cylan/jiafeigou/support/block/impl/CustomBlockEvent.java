@@ -4,8 +4,8 @@ import android.content.Context;
 import android.os.Handler;
 import android.widget.Toast;
 
-import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.support.block.OnBlockEventInterceptor;
+import com.cylan.jiafeigou.support.stat.MtaManager;
 
 import java.text.SimpleDateFormat;
 import java.util.Locale;
@@ -24,23 +24,17 @@ public class CustomBlockEvent implements OnBlockEventInterceptor {
             = new SimpleDateFormat("MM-dd HH:mm:ss.SSS", Locale.getDefault());
 
     @Override
-    public void onBlockEvent(Context context, final String timeStart) {
-        if (BuildConfig.DEBUG)
+    public void onBlockEvent(Context context, final String timeStart, String blockContent, boolean needDisplay) {
+        if (needDisplay) {
             new Handler().post(new Runnable() {
                 @Override
                 public void run() {
-//                    long tmpTime = 0L;
-//                    try {
-//                        Date date = TIME_FORMATTER.parse(timeStart);
-//                        tmpTime = date.getTime();
-//                    } catch (ParseException e) {
-//                        Log.w("CustomBlockEvent", "ParseException");
-//                    }
-//                    final String content =
-//                            String.format(TAG, (System.currentTimeMillis() - tmpTime));
                     Toast.makeText(BlockCanaryContext.get().getContext()
                             , TAG, Toast.LENGTH_SHORT).show();
                 }
             });
+        } else {
+            MtaManager.customEvent(context, "blockContent", blockContent);
+        }
     }
 }
