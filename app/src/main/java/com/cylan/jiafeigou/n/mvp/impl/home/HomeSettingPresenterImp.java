@@ -5,8 +5,10 @@ import android.os.Environment;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeSettingContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
+import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.sina.weibo.sdk.utils.LogUtil;
 
 import java.io.File;
@@ -29,6 +31,7 @@ public class HomeSettingPresenterImp extends AbstractPresenter<HomeSettingContra
 
     private Subscription calculateSubscription;
     private Subscription clearCacheSubscription;
+    private boolean isChick;
 
     public HomeSettingPresenterImp(HomeSettingContract.View view) {
         super(view);
@@ -100,6 +103,22 @@ public class HomeSettingPresenterImp extends AbstractPresenter<HomeSettingContra
                         getView().setCacheSize(size);
                     }
                 });
+    }
+
+    @Override
+    public boolean getNegation() {
+        isChick = !isChick;
+        return isChick;
+    }
+
+    @Override
+    public void savaSwitchState(boolean isChick,String key) {
+        PreferencesUtils.putBoolean(getView().getContext(),key,isChick);
+    }
+
+    @Override
+    public boolean getSwitchState(String key) {
+        return PreferencesUtils.getBoolean(getView().getContext(),key,false);
     }
 
     @Override

@@ -12,9 +12,13 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeSettingContract;
 import com.cylan.jiafeigou.n.mvp.impl.home.HomeSettingPresenterImp;
 import com.cylan.jiafeigou.utils.ToastUtil;
+import com.kyleduo.switchbutton.SwitchButton;
+
+import java.text.BreakIterator;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -40,6 +44,12 @@ public class HomeSettingFragment extends Fragment implements HomeSettingContract
     TextView tvCacheSize;
     @BindView(R.id.progressbar_clearing_cache)
     ProgressBar progressbarClearingCache;
+    @BindView(R.id.btn_item_switch_accessMes)
+    SwitchButton btnItemSwitchAccessMes;
+    @BindView(R.id.btn_item_switch_voide)
+    SwitchButton btnItemSwitchVoide;
+    @BindView(R.id.btn_item_switch_shake)
+    SwitchButton btnItemSwitchShake;
 
     private HomeSettingContract.Presenter presenter;
 
@@ -75,7 +85,8 @@ public class HomeSettingFragment extends Fragment implements HomeSettingContract
         this.presenter = presenter;
     }
 
-    @OnClick({R.id.iv_home_setting_back, R.id.rl_home_setting_about, R.id.rl_home_setting_clear})
+    @OnClick({R.id.iv_home_setting_back, R.id.rl_home_setting_about, R.id.rl_home_setting_clear,
+            R.id.btn_item_switch_accessMes, R.id.btn_item_switch_voide, R.id.btn_item_switch_shake})
     public void onClick(View view) {
 
         switch (view.getId()) {
@@ -93,6 +104,18 @@ public class HomeSettingFragment extends Fragment implements HomeSettingContract
 
             case R.id.rl_home_setting_clear:
                 presenter.clearCache();
+                break;
+
+            case R.id.btn_item_switch_accessMes:
+                presenter.savaSwitchState(switchAcceptMesg(), JConstant.RECEIVE_MESSAGE_NOTIFICATION);
+                break;
+
+            case R.id.btn_item_switch_voide:
+                presenter.savaSwitchState(switchVoice(), JConstant.OPEN_VOICE);
+                break;
+
+            case R.id.btn_item_switch_shake:
+                presenter.savaSwitchState(switchShake(), JConstant.OPEN_SHAKE);
                 break;
         }
 
@@ -126,19 +149,47 @@ public class HomeSettingFragment extends Fragment implements HomeSettingContract
     @Override
     public void clearFinish() {
         tvCacheSize.setText("0.0MB");
-        ToastUtil.showToast(getContext(),"清理成功");
+        ToastUtil.showToast(getContext(), "清理成功");
     }
 
     @Override
     public void clearNoCache() {
-        ToastUtil.showToast(getContext(),"暂无缓存");
+        ToastUtil.showToast(getContext(), "暂无缓存");
+    }
+
+    @Override
+    public boolean switchAcceptMesg() {
+        return presenter.getNegation();
+    }
+
+    @Override
+    public boolean switchVoice() {
+        return presenter.getNegation();
+    }
+
+    @Override
+    public boolean switchShake() {
+        return presenter.getNegation();
+    }
+
+    @Override
+    public void initSwitchState() {
+        btnItemSwitchAccessMes.setChecked(presenter.getSwitchState(JConstant.RECEIVE_MESSAGE_NOTIFICATION));
+        btnItemSwitchVoide.setChecked(presenter.getSwitchState(JConstant.OPEN_VOICE));
+        btnItemSwitchShake.setChecked(presenter.getSwitchState(JConstant.OPEN_SHAKE));
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        if(presenter != null){
+        if (presenter != null) {
             presenter.stop();
         }
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        initSwitchState();
     }
 }

@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
@@ -35,9 +36,19 @@ public class MineShareDeviceFragment extends Fragment implements MineShareDevice
     TextView tvShareSmartcloud;
     @BindView(R.id.tv_share_smartbell)
     TextView tvShareSmartbell;
+    @BindView(R.id.rl_mine_share_smartcamera)
+    RelativeLayout rlMineShareSmartcamera;
+
+    private MineDevicesShareManagerFragment mineDevicesShareManagerFragment;
 
     public static MineShareDeviceFragment newInstance() {
         return new MineShareDeviceFragment();
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mineDevicesShareManagerFragment = MineDevicesShareManagerFragment.newInstance();
     }
 
     @Nullable
@@ -50,7 +61,7 @@ public class MineShareDeviceFragment extends Fragment implements MineShareDevice
     }
 
     @OnClick({R.id.iv_home_mine_sharedevices_back, R.id.tv_share_smartcamera, R.id.tv_share_smartcamera1,
-            R.id.tv_share_smartcloud,R.id.tv_share_smartbell})
+            R.id.tv_share_smartcloud, R.id.tv_share_smartbell,R.id.rl_mine_share_smartcamera})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.iv_home_mine_sharedevices_back:
@@ -70,6 +81,15 @@ public class MineShareDeviceFragment extends Fragment implements MineShareDevice
 
             case R.id.tv_share_smartbell:            //门铃分享
                 showShareDialog();
+                break;
+
+            case R.id.rl_mine_share_smartcamera:
+                getFragmentManager().beginTransaction()
+                        .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
+                                , R.anim.slide_in_left, R.anim.slide_out_right)
+                        .add(android.R.id.content,mineDevicesShareManagerFragment,"mineDevicesShareManagerFragment")
+                        .addToBackStack("mineHelpFragment")
+                        .commit();
                 break;
 
         }

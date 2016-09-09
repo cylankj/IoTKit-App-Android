@@ -20,11 +20,18 @@ public interface HomeSettingContract {
         void hideClearingCacheProgress();
         void clearFinish();
         void clearNoCache();
+        boolean switchAcceptMesg();
+        boolean switchVoice();
+        boolean switchShake();
+        void initSwitchState();
     }
 
     interface Presenter extends BasePresenter{
         void clearCache();
         void calculateCacheSize();
+        boolean getNegation();
+        void savaSwitchState(boolean isChick,String key);
+        boolean getSwitchState(String key);
     }
 
 }

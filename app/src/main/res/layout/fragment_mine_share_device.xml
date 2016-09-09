@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:background="@color/color_white"
     android:layout_height="match_parent">
+
     <RelativeLayout
         android:id="@+id/rl_home_mine_suggestion"
         android:layout_width="match_parent"
@@ -32,6 +33,7 @@
     </RelativeLayout>
 
     <RelativeLayout
+        android:id="@+id/rl_mine_share_smartcamera"
         android:layout_marginLeft="15dp"
         android:layout_width="match_parent"
         android:layout_height="67dp">

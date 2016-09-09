@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineRelativeAndFriendAddFromContactContract;
 import com.cylan.jiafeigou.n.mvp.model.SuggestionChatInfoBean;
@@ -32,10 +33,10 @@ public class MineRelativeAndFriendAddFromContactPresenterImp implements MineRela
             .parse("content://com.android.contacts/raw_contacts");
     static Uri dataUri = Uri.parse("content://com.android.contacts/data");
 
-
     private MineRelativeAndFriendAddFromContactContract.View view;
     private Subscription contactSubscriber;
     private ArrayList<SuggestionChatInfoBean> list;
+    private ArrayList<SuggestionChatInfoBean> filterDateList = new ArrayList<SuggestionChatInfoBean>();
 
     public MineRelativeAndFriendAddFromContactPresenterImp(MineRelativeAndFriendAddFromContactContract.View view) {
         this.view = view;
@@ -48,7 +49,9 @@ public class MineRelativeAndFriendAddFromContactPresenterImp implements MineRela
 
     @Override
     public void stop() {
-
+        if(contactSubscriber != null){
+            contactSubscriber.unsubscribe();
+        }
     }
 
     @Override
@@ -77,37 +80,29 @@ public class MineRelativeAndFriendAddFromContactPresenterImp implements MineRela
     @NonNull
     public ArrayList<SuggestionChatInfoBean> getAllContactList() {
         ArrayList<SuggestionChatInfoBean> list = new ArrayList<SuggestionChatInfoBean>();
+        Cursor cursor = null;
+        Uri uri = ContactsContract.CommonDataKinds.Phone.CONTENT_URI;
+        // 这里是获取联系人表的电话里的信息  包括：名字，名字拼音，联系人id,电话号码；
+        // 然后在根据"sort-key"排序
+        cursor = view.getContext().getContentResolver().query(
+                uri,
+                new String[] { "display_name", "sort_key", "contact_id",
+                        "data1" }, null, null, "sort_key");
 
-        ContentResolver resolver = view.getContext().getContentResolver();
-        Cursor contact_cursor = resolver.query(contactsUri,
-                new String[] { "contact_id" }, null, null, null);
-        while (contact_cursor.moveToNext()) {
-            // 获取到raw_contacts表中的contact_id
-            String contact_id = contact_cursor.getString(0);
-            if (contact_id != null) {
+        if (cursor.moveToFirst()) {
+            do {
                 SuggestionChatInfoBean contact = new SuggestionChatInfoBean("",1,"");
-
-                Cursor data_cursor = resolver.query(dataUri, new String[] {
-                                "data1", "mimetype" }, "raw_contact_id=?",
-                        new String[] { contact_id }, null);
-                while (data_cursor.moveToNext()) {
-                    // 获取到data表中的"data1",mimetypes表中的"mimetype"
-                    String data1 = data_cursor.getString(0);
-                    String mimetypes = data_cursor.getString(1);
-
-                    // 根据mimetypes判断data1所属的数据类型
-                    if ("vnd.android.cursor.item/phone_v2".equals(mimetypes)) {
-                        contact.setContent(data1);
-                    }
-                    if ("vnd.android.cursor.item/name".equals(mimetypes)) {
-                        contact.setName(data1);
-                    }
-                }
-                data_cursor.close();
-                list.add(contact);
-            }
+                String contact_phone = cursor
+                        .getString(cursor
+                                .getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+                String name = cursor.getString(0);
+                contact.setContent(contact_phone);
+                contact.setName(name);
+                if (name != null)
+                    list.add(contact);
+            } while (cursor.moveToNext());
         }
-        contact_cursor.close();
+        cursor.close();
         return list;
     }
 
@@ -115,4 +110,24 @@ public class MineRelativeAndFriendAddFromContactPresenterImp implements MineRela
     public void addContactItem(SuggestionChatInfoBean bean) {
 
     }
+
+    @Override
+    public void filterPhoneData(String filterStr) {
+
+        if (TextUtils.isEmpty(filterStr)) {
+            filterDateList = getAllContactList();
+        } else {
+            filterDateList.clear();
+            for (SuggestionChatInfoBean s : getAllContactList()) {
+                String phone = s.getContent();
+                String name = s.getName();
+                if (phone.replace(" ","").contains(filterStr) || name.contains(filterStr)) {
+                    filterDateList.add(s);
+                }
+            }
+        }
+        view.setRcyAdapter(filterDateList);
+        view.InitItemClickListener();
+    }
+
 }

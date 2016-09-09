@@ -21,6 +21,7 @@ public interface MineRelativeAndFriendAddFromContactContract {
     interface Presenter extends BasePresenter{
         void initContactData();
         void addContactItem(SuggestionChatInfoBean bean);
+        void filterPhoneData(String filterStr);
     }
 
 }

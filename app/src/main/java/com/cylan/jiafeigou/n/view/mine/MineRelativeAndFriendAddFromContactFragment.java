@@ -5,6 +5,8 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,12 +18,14 @@ import com.cylan.jiafeigou.n.mvp.contract.mine.MineRelativeAndFriendAddFromConta
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineRelativeAndFriendAddFromContactPresenterImp;
 import com.cylan.jiafeigou.n.mvp.model.SuggestionChatInfoBean;
 import com.cylan.jiafeigou.n.view.adapter.RelativeAndFriendAddFromContactAdapter;
+import com.cylan.jiafeigou.utils.ToastUtil;
 
 import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.OnTextChanged;
 
 /**
  * 作者：zsl
@@ -39,7 +43,6 @@ public class MineRelativeAndFriendAddFromContactFragment extends Fragment implem
 
     private MineRelativeAndFriendAddFromContactContract.Presenter presenter;
     private RelativeAndFriendAddFromContactAdapter relativeAndFriendAddFromContactAdapter;
-
     private MineAddFromContactFragment mineAddFromContactFragment;
 
     @Override
@@ -59,7 +62,24 @@ public class MineRelativeAndFriendAddFromContactFragment extends Fragment implem
         ButterKnife.bind(this, view);
         initPresenter();
         presenter.initContactData();
+        initEditTextListenter();
         return view;
+    }
+
+    private void initEditTextListenter() {
+       etAddPhoneNumber.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+            @Override
+            public void afterTextChanged(Editable s) {
+                presenter.filterPhoneData(s.toString());
+            }
+        });
+
     }
 
     private void initPresenter() {
@@ -92,6 +112,7 @@ public class MineRelativeAndFriendAddFromContactFragment extends Fragment implem
         relativeAndFriendAddFromContactAdapter.setOnContactItemClickListener(new RelativeAndFriendAddFromContactAdapter.onContactItemClickListener() {
             @Override
             public void onClick(View view, int position) {
+                ToastUtil.showToast(getContext(),relativeAndFriendAddFromContactAdapter.getAdapterList().get(position).getName());
                 getFragmentManager().beginTransaction()
                         .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                                 , R.anim.slide_in_left, R.anim.slide_out_right)
@@ -102,4 +123,25 @@ public class MineRelativeAndFriendAddFromContactFragment extends Fragment implem
         });
     }
 
+
+    /*@OnTextChanged(value = R.id.et_add_phone_number, callback = OnTextChanged.Callback.BEFORE_TEXT_CHANGED)
+    void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+    }
+    @OnTextChanged(value = R.id.et_add_phone_number, callback = OnTextChanged.Callback.TEXT_CHANGED)
+    void onTextChanged(CharSequence s, int start, int before, int count) {
+        presenter.filterPhoneData(s.toString());
+    }
+    @OnTextChanged(value = R.id.et_add_phone_number, callback = OnTextChanged.Callback.AFTER_TEXT_CHANGED)
+    void afterTextChanged(Editable s) {
+
+    }*/
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if(presenter != null){
+            presenter.stop();
+        }
+    }
 }

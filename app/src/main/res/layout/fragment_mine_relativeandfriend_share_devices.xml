@@ -66,6 +66,7 @@
         android:layout_height="wrap_content" />
 
     <RelativeLayout
+        android:id="@+id/rl_share_smartcamera"
         android:layout_marginLeft="15dp"
         android:layout_width="match_parent"
         android:layout_height="67dp">

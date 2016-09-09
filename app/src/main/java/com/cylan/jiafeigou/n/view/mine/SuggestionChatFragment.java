@@ -22,6 +22,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -45,6 +46,7 @@ public class SuggestionChatFragment extends Fragment implements SuggestionChatCo
     private TextView te_send;
     private SuggestionChatAdapter chatAdapter;
     private TextView tv_clear;
+    private ImageView iv_back;
 
     @Nullable
     @Override
@@ -89,6 +91,7 @@ public class SuggestionChatFragment extends Fragment implements SuggestionChatCo
         et_content = (EditText) view.findViewById(R.id.et_home_mine_suggestion);
         tv_clear = (TextView) view.findViewById(R.id.tv_mine_help_suggestion_clear);
         recyclerView = (RecyclerView) view.findViewById(R.id.rv_home_mine_suggestion);
+        iv_back = (ImageView) view.findViewById(R.id.iv_home_mine_suggestion_back);
 
     }
 
@@ -96,6 +99,7 @@ public class SuggestionChatFragment extends Fragment implements SuggestionChatCo
         te_send.setOnClickListener(this);
         tv_clear.setOnClickListener(this);
         et_content.setOnEditorActionListener(this);
+        iv_back.setOnClickListener(this);
     }
 
     @Override
@@ -113,7 +117,6 @@ public class SuggestionChatFragment extends Fragment implements SuggestionChatCo
 
     @Override
     public String getTime() {
-
         return System.currentTimeMillis()+"";
     }
 
@@ -217,6 +220,10 @@ public class SuggestionChatFragment extends Fragment implements SuggestionChatCo
 
             case R.id.tv_mine_help_suggestion_clear:
                 showDialog();
+                break;
+
+            case R.id.iv_home_mine_suggestion_back:
+                getFragmentManager().popBackStack();
                 break;
         }
     }

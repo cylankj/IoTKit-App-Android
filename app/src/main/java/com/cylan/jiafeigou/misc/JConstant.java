@@ -85,6 +85,10 @@ public class JConstant {
 
     public static final int INVALID_PROCESS = -1;
 
-    public static String USER_IMAGE_HEAD_URL = "";          //用户头像
+    public static String USER_IMAGE_HEAD_URL = "";                  //用户头像
+
+    public static String RECEIVE_MESSAGE_NOTIFICATION = "receive_message_notification";      //接收消息通知
+    public static String OPEN_VOICE = "open_voice";                       //开启声音提示
+    public static String OPEN_SHAKE = "open_shake";                       //开启震动提示
 
 }

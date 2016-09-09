@@ -79,7 +79,6 @@ public class MineRelativesandFriendsFragment extends Fragment implements MineRel
     private void initData() {
         requestAddList = new ArrayList<>();
         relativesAndFriendList = new ArrayList<>();
-        ToastUtil.showToast(getContext(),"添加成功");
         requestAddList.addAll(presenter.initAddRequestData());
         relativesAndFriendList.addAll(presenter.initRelativatesAndFriendsData());
     }

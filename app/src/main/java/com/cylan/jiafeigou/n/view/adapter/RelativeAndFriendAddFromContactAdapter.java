@@ -81,4 +81,8 @@ public class RelativeAndFriendAddFromContactAdapter extends RecyclerView.Adapter
             tv_contactadd = (TextView) itemView.findViewById(R.id.tv_contactadd);
         }
     }
+
+    public ArrayList<SuggestionChatInfoBean> getAdapterList(){
+        return messages;
+    }
 }

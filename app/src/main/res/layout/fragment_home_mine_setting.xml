@@ -118,7 +118,7 @@
 
             <com.kyleduo.switchbutton.SwitchButton
                 android:layout_alignParentRight="true"
-                android:id="@+id/btn_item_switch_shape"
+                android:id="@+id/btn_item_switch_shake"
                 style="@style/SwitchButtonStyleMD"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
