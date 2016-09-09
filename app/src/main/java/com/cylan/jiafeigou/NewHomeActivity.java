@@ -18,7 +18,6 @@ import android.widget.Toast;
 
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.OnActivityReenterListener;
-import com.cylan.jiafeigou.misc.RxEvent;
 import com.cylan.jiafeigou.misc.SharedElementCallBackListener;
 import com.cylan.jiafeigou.n.mvp.contract.home.NewHomeActivityContract;
 import com.cylan.jiafeigou.n.mvp.impl.home.HomeMinePresenterImpl;
@@ -29,7 +28,6 @@ import com.cylan.jiafeigou.n.view.activity.NeedLoginActivity;
 import com.cylan.jiafeigou.n.view.home.HomeMineFragment;
 import com.cylan.jiafeigou.n.view.home.HomePageListFragmentExt;
 import com.cylan.jiafeigou.n.view.home.HomeWonderfulFragmentExt;
-import com.cylan.jiafeigou.support.rxbus.RxBus;
 import com.cylan.jiafeigou.widget.CustomViewPager;
 
 import java.util.List;
@@ -90,13 +88,19 @@ public class NewHomeActivity extends NeedLoginActivity implements
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 switch (checkedId) {
                     case R.id.btn_home_list:
-                        vpHomeContent.setCurrentItem(0);
+                        if (vpHomeContent.getCurrentItem() != 0 && vpHomeContent.getCurrentItem() != 0) {
+                            vpHomeContent.setCurrentItem(0);
+                        }
                         break;
                     case R.id.btn_home_wonderful:
-                        vpHomeContent.setCurrentItem(1);
+                        if (vpHomeContent.getCurrentItem() != 1 && vpHomeContent.getCurrentItem() != 1) {
+                            vpHomeContent.setCurrentItem(1);
+                        }
                         break;
                     case R.id.btn_home_mine:
-                        vpHomeContent.setCurrentItem(2);
+                        if (vpHomeContent.getCurrentItem() != 2 && vpHomeContent.getCurrentItem() != 2) {
+                            vpHomeContent.setCurrentItem(2);
+                        }
                         break;
                 }
             }
