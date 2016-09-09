@@ -35,6 +35,11 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+
+/**
+ * https://plus.google.com/+AlexLockwood/posts/RPtwZ5nNebb
+ * 存在Transition问题。
+ */
 @TargetApi(Build.VERSION_CODES.LOLLIPOP)
 public class MediaActivity extends FragmentActivity {
 
