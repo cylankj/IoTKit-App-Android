@@ -102,7 +102,7 @@ public class BlockCanaryContext implements IBlockCanaryContext {
      * @return threshold in mills
      */
     public int getConfigBlockThreshold() {
-        return 700;
+        return 400;
     }
 
     /**
@@ -121,7 +121,8 @@ public class BlockCanaryContext implements IBlockCanaryContext {
      */
     @Override
     public String getLogPath() {
-        return JConstant.BLOCK_LOG_PATH;
+        return "/Smarthome/block";
+//        return JConstant.BLOCK_LOG_PATH;
     }
 
     /**
@@ -169,5 +170,10 @@ public class BlockCanaryContext implements IBlockCanaryContext {
     @Override
     public int getConfigDumpIntervalMillis() {
         return getConfigBlockThreshold();
+    }
+
+    @Override
+    public String getPackageName() {
+        return getContext().getPackageName();
     }
 }

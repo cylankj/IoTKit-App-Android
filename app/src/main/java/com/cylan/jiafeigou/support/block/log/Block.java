@@ -83,6 +83,11 @@ public final class Block {
     public ArrayList<String> threadStackEntries = new ArrayList<String>();
     public File logFile;
 
+    /**
+     * 过滤特定的字符串
+     */
+    public String contentFilter = "";
+
     private StringBuilder basicSb = new StringBuilder();
     private StringBuilder cpuSb = new StringBuilder();
     private StringBuilder timeSb = new StringBuilder();
@@ -246,6 +251,11 @@ public final class Block {
         return this;
     }
 
+    public Block setContentFilter(String contentFilter) {
+        this.contentFilter = contentFilter;
+        return this;
+    }
+
     public Block setMainThreadTimeCost(long realTimeStart, long realTimeEnd, long threadTimeStart, long threadTimeEnd) {
         timeCost = realTimeEnd - realTimeStart;
         threadTimeCost = threadTimeEnd - threadTimeStart;
@@ -280,12 +290,24 @@ public final class Block {
         if (threadStackEntries != null && !threadStackEntries.isEmpty()) {
             StringBuilder temp = new StringBuilder();
             for (String s : threadStackEntries) {
-                temp.append(s);
+                temp.append(getTargetContent(s));
                 temp.append(separator);
             }
             stackSb.append(KEY_STACK).append(KV).append(temp.toString()).append(separator);
         }
         return this;
+    }
+
+    private String getTargetContent(String s) {
+        if (s == null || s.isEmpty())
+            return s;
+        String[] content = s.split("\r");
+        for (String t : content) {
+            if (!t.contains(contentFilter))
+                continue;
+            return t;
+        }
+        return s;
     }
 
     public String getBasicString() {

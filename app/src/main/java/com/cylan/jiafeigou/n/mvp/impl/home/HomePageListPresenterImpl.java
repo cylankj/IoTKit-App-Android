@@ -48,6 +48,7 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
         //注册1
         _timeTickSubscriptions
                 .add(RxBus.getInstance().toObservable()
+                        .throttleFirst(1000, TimeUnit.MILLISECONDS)
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(new Action1<Object>() {
                             @Override

@@ -11,6 +11,8 @@ import com.cylan.jiafeigou.support.DebugOptionsImpl;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.PathGetter;
 import com.cylan.jiafeigou.utils.SuperSpUtils;
+import com.cylan.utils.HandlerThreadUtils;
+import com.squareup.leakcanary.LeakCanary;
 
 /**
  * Created by hunt on 16-5-14.
@@ -24,6 +26,16 @@ public class BaseApplication extends Application {
         super.onCreate();
         enableDebugOptions();
         startService(new Intent(this, DaemonService.class));
+        initLeakCanary();
+    }
+
+    private void initLeakCanary() {
+        HandlerThreadUtils.post(new Runnable() {
+            @Override
+            public void run() {
+                LeakCanary.install(BaseApplication.this);
+            }
+        });
     }
 
     private void enableDebugOptions() {

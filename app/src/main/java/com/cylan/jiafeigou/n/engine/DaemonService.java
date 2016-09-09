@@ -16,7 +16,11 @@ import android.util.Log;
 import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.support.block.impl.BlockCanary;
+import com.cylan.jiafeigou.support.block.impl.BlockCanaryContext;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.support.stat.BugMonitor;
+import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.PathGetter;
 import com.cylan.utils.FileUtils;
 import com.cylan.utils.HandlerThreadUtils;
@@ -40,8 +44,44 @@ public class DaemonService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        CopyDaemonFile();
+        initDaemonFile();
+        initBlockCanary();
+        initBugMonitor();
         registerBootComplete();
+    }
+
+    /**
+     * a simple
+     */
+    private void initDaemonFile() {
+        HandlerThreadUtils.post(new Runnable() {
+            @Override
+            public void run() {
+                AppLogger.d("CopyDaemonFile");
+                onHandleIntent();
+            }
+        });
+    }
+
+    private void initBlockCanary() {
+        HandlerThreadUtils.post(new Runnable() {
+            @Override
+            public void run() {
+                AppLogger.d("initBlockCanary");
+                //BlockCanary
+                BlockCanary.install(ContextUtils.getContext(), new BlockCanaryContext()).start();
+            }
+        });
+    }
+
+    private void initBugMonitor() {
+        HandlerThreadUtils.post(new Runnable() {
+            @Override
+            public void run() {
+                //bugLy
+                BugMonitor.init(ContextUtils.getContext());
+            }
+        });
     }
 
     @Nullable
@@ -78,18 +118,6 @@ public class DaemonService extends Service {
         }
     }
 
-    /**
-     * a simple
-     */
-    private void CopyDaemonFile() {
-        HandlerThreadUtils.post(new Runnable() {
-            @Override
-            public void run() {
-                AppLogger.d("CopyDaemonFile");
-                onHandleIntent();
-            }
-        });
-    }
 
     protected void onHandleIntent() {
         try {
@@ -102,12 +130,14 @@ public class DaemonService extends Service {
             final String packageName = getPackageName();
             final String processName = ProcessUtils.myProcessName(this) + ":push";
             final String logPath = PathGetter.createPath(JConstant.DAEMON_DIR);
-            new ProcessBuilder().command(daemonPath,
+            Process process = new ProcessBuilder().command(daemonPath,
                     packageName,
                     processName,
                     daemonServiceName,
-                    BuildConfig.DEBUG ? "1" : "0", logPath)
+                    "1",
+                    logPath)
                     .start();
+            Log.d(TAG, "daemonServiceName: " + daemonServiceName);
             Log.d(TAG, "daemonPath: " + daemonPath);
             Log.d(TAG, "packageName: " + packageName);
             Log.d(TAG, "processName: " + processName);

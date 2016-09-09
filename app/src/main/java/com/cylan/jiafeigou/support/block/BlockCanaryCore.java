@@ -57,6 +57,7 @@ public class BlockCanaryCore {
                             .setCpuBusyFlag(cpuSampler.isCpuBusy(realTimeStart, realTimeEnd))
                             .setRecentCpuRate(cpuSampler.getCpuRateInfo())
                             .setThreadStackEntries(threadStackEntries)
+                            .setContentFilter(getContext().getPackageName())
                             .flushString();
                     LogWriter.saveLooperLog(block.toString());
 

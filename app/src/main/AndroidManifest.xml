@@ -122,9 +122,6 @@
         </receiver>
 
         <service
-            android:name=".n.base.FirstTaskInitService"
-            android:exported="false" />
-        <service
             android:name=".n.engine.DataSourceService"
             android:enabled="true"
             android:exported="true" />

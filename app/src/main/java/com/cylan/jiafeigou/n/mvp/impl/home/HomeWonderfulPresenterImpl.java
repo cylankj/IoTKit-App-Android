@@ -58,7 +58,7 @@ public class HomeWonderfulPresenterImpl extends AbstractPresenter<HomeWonderfulC
         //注册1
         _timeTickSubscriptions
                 .add(RxBus.getInstance().toObservable()
-                        .take(1)
+                        .throttleFirst(1000, TimeUnit.MILLISECONDS)
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(new Action1<Object>() {
                             @Override
