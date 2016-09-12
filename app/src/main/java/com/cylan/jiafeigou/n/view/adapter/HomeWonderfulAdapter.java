@@ -53,7 +53,7 @@ public class HomeWonderfulAdapter extends SuperAdapter<MediaBean> {
 
     private void initClickListener(SuperViewHolder holder, final int viewType, final int layoutPosition) {
         ViewCompat.setTransitionName(holder.getView(R.id.iv_wonderful_item_content),
-                String.valueOf(layoutPosition) + JConstant.KEY_SHARED_ELEMENT_TRANSITION_NAME_POSTFIX);
+                String.valueOf(layoutPosition) + JConstant.KEY_SHARED_ELEMENT_TRANSITION_NAME_SUFFIX);
         holder.setOnClickListener(R.id.iv_wonderful_item_content, deviceItemClickListener);
         holder.setOnClickListener(R.id.tv_wonderful_item_share, deviceItemClickListener);
         holder.setOnClickListener(R.id.tv_wonderful_item_delete, deviceItemClickListener);

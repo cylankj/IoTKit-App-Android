@@ -71,7 +71,7 @@ public class PicDetailsFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         //设置transition名字，这个名字需要对应前一个scene的ImageView的transitionName,
         ViewCompat.setTransitionName(detailsAlbumImage,
-                mAlbumPosition + JConstant.KEY_SHARED_ELEMENT_TRANSITION_NAME_POSTFIX);
+                mAlbumPosition + JConstant.KEY_SHARED_ELEMENT_TRANSITION_NAME_SUFFIX);
         final String albumImageUrl = getArguments().getString(KEY_MEDIA_URL);
         loadMedia(detailsAlbumImage, albumImageUrl);
     }

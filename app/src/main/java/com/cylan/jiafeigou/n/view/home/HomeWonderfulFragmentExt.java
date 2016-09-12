@@ -499,7 +499,7 @@ public class HomeWonderfulFragmentExt extends Fragment implements
                 // If startingPosition != currentPosition the user must have swiped to a
                 // different page in the DetailsActivity. We must update the shared element
                 // so that the correct one falls into place.
-                String newTransitionName = currentPosition + JConstant.KEY_SHARED_ELEMENT_TRANSITION_NAME_POSTFIX;
+                String newTransitionName = currentPosition + JConstant.KEY_SHARED_ELEMENT_TRANSITION_NAME_SUFFIX;
                 SuperViewHolder holder = (SuperViewHolder) rVDevicesList.findViewHolderForAdapterPosition(currentPosition);
                 holder.getView(R.id.iv_wonderful_item_content);
                 View newSharedElement = holder.getView(R.id.iv_wonderful_item_content);

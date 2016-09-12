@@ -37,13 +37,13 @@ public class DataSourceService extends Service implements AppCallBack {
 
     static {
         System.loadLibrary("jfgsdk");
+        System.loadLibrary("sqlcipher");
     }
 
     @Override
     public void onCreate() {
         super.onCreate();
         initNative();
-        initLogUtil();
     }
 
     @Override
@@ -60,18 +60,10 @@ public class DataSourceService extends Service implements AppCallBack {
         try {
             JfgAppCmd.initJfgAppCmd(this, this, JConstant.LOG_PATH);
         } catch (PackageManager.NameNotFoundException e) {
-
+            AppLogger.d("let's go err:" + e.getLocalizedMessage());
         }
         AppLogger.d("let's go initNative:");
         MtaManager.customEvent(this, "DataSourceService", "NativeInit");
-    }
-
-
-    /**
-     * 初始化日志
-     */
-    private void initLogUtil() {
-
     }
 
 

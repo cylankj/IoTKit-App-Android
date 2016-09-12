@@ -70,12 +70,23 @@
         android:label="@string/app_name"
         android:largeHeap="true"
         android:theme="@style/AppTheme">
+
         <meta-data
             android:name="TA_APPKEY"
-            android:value="MATAPPKEY" />
+            android:value="${MAT_VALUE}" />
+        <!--server address-->
         <meta-data
-            android:name="InstallChannel"
-            android:value="play" />
+            android:name="CallOfDuty"
+            android:value="${NICELY_VALUE}" />
+
+        <!-- your vid getString must "\ " -->
+        <meta-data
+            android:name="vid"
+            android:value="\ 00A0" />
+        <!-- your vkey -->
+        <meta-data
+            android:name="vkey"
+            android:value="qpqNCZvkcNca3KsfD6b0gm6S4ncsRVYa" />
 
         <activity
             android:name=".SmartcallActivity"

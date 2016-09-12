@@ -1,7 +1,53 @@
 apply plugin: 'com.android.application'
 apply plugin: 'com.neenbedankt.android-apt'
 
+
+def releaseTime() {
+    return new Date().format("yyyyMMddHHmm")
+}
+
+def getPackageName() {
+    return "JiafeigouPlayer"
+}
+//腾讯mtakey
+def getMtaAppKey(String variantName) {
+    if (variantName.equals("zhongxing"))
+        return "ATQ1JV694AKT"
+    return "Aqc1103156296"
+}
+//从version.properties中读取versionName
+def getCustomVersionName() {
+    Properties properties = new Properties()
+    File localProperties = project.rootProject.file('version.properties')
+    if (localProperties.exists())
+        properties.load(localProperties.newDataInputStream())
+    return properties.getProperty('versionName')
+}
+
+//从version.properties中读取versionCode
+def int getCustomVersionCode() {
+    Properties properties = new Properties()
+    File localProperties = project.rootProject.file('version.properties')
+    if (localProperties.exists())
+        properties.load(localProperties.newDataInputStream())
+    def versionCode = properties.getProperty('versionCode').toInteger()
+    return versionCode
+}
+
+def boolean getReleaseCondition(String variantName) {
+    return variantName.equals("_yunRelease") || variantName.equals("_zhongxingRelease")
+}
+
+def getVariantShortName(String name) {
+    return name.replace("Release", "").replace("_", "-").replace("Debug", "")
+}
+
 android {
+
+    def vCode = getCustomVersionCode()
+    def vName = getCustomVersionName()
+
+
     compileSdkVersion rootProject.ext.compileSdkVersion
     buildToolsVersion rootProject.ext.buildToolsVersion
 
@@ -9,7 +55,7 @@ android {
         applicationId "com.cylan.jiafeigou"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
+        customVersionCode
         versionName "1.0"
         multiDexEnabled true
         ndk {
@@ -18,29 +64,15 @@ android {
         }
 
     }
-    signingConfigs {
-        release {}
-    }
 
-    buildTypes {
-        release {
-            shrinkResources true
-            minifyEnabled true
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.release
-        }
-        debug {
-            minifyEnabled false
-        }
-    }
     lintOptions {
         abortOnError false
     }
 
     dexOptions {
         jumboMode = true
-        javaMaxHeapSize "4g"
         incremental true
+        javaMaxHeapSize "4g"
     }
     sourceSets {
         main {
@@ -48,6 +80,91 @@ android {
         }
     }
 
+
+    signingConfigs {
+        debug {
+        }
+        release {
+            Properties properties = new Properties()
+            File localProperties = project.rootProject.file('local.properties')
+            if (localProperties.exists())
+                properties.load(localProperties.newDataInputStream())
+            def store_file = properties.getProperty('store_file')
+            def store_pwd = properties.getProperty('store_pwd')
+            def store_alias = properties.getProperty('store_alias')
+            def store_alias_pwd = properties.getProperty('store_alias_pwd')
+            storeFile file(store_file)
+            storePassword store_pwd
+            keyAlias store_alias
+            keyPassword store_alias_pwd
+        }
+    }
+    buildTypes {
+        release {
+            shrinkResources true
+            minifyEnabled true
+            zipAlignEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
+
+            applicationVariants.all { variant ->
+                variant.outputs.each { output ->
+                    def outputFile = output.outputFile
+                    if (outputFile != null && outputFile.name.endsWith('.apk')) {
+                        def shortName = getVariantShortName(variant.name)
+                        def fileName = "${getPackageName()}" +
+                                "-${vName}" +
+                                ".${vCode}" +
+                                "-${releaseTime()}" +
+                                "-" +
+                                shortName
+                        //需要release包的variant
+                        boolean condition = getReleaseCondition(variant.name)
+                        if (outputFile.name.contains("release") && condition) {
+                            fileName = fileName +
+                                    "-release.apk"
+                        } else if (outputFile.name.contains("debug")) {
+                            fileName = fileName +
+                                    "-debug.apk"
+                        }
+                        output.outputFile = new File(outputFile.parent, fileName)
+                    }
+                }
+            }
+        }
+        debug {
+            minifyEnabled false
+        }
+    }
+
+    productFlavors {
+
+        _test {
+            applicationIdSuffix ".debug"
+            manifestPlaceholders = [NICELY_VALUE: "test.jfgou.com:446", MAT_VALUE: getMtaAppKey("test")]
+        }
+        _test1 {
+            applicationIdSuffix ".debug"
+            manifestPlaceholders = [NICELY_VALUE: "test1.jfgou.com:446", MAT_VALUE: getMtaAppKey("test1")]
+        }
+        _yun {
+            applicationIdSuffix ".debug"
+            manifestPlaceholders = [NICELY_VALUE: "yun.jfgou.com:446", MAT_VALUE: getMtaAppKey("yun")]
+        }
+        _yun1 {
+            applicationIdSuffix ".debug"
+            manifestPlaceholders = [NICELY_VALUE: "yun1.jfgou.com:446", MAT_VALUE: getMtaAppKey("yun1")]
+        }
+        _yf {
+            applicationIdSuffix ".debug"
+            manifestPlaceholders = [NICELY_VALUE: "yf.jfgou.com:446", MAT_VALUE: getMtaAppKey("yf")]
+        }
+        //中性包
+        _zhongxing {
+            applicationIdSuffix ".zhongxing"
+            manifestPlaceholders = [NICELY_VALUE: "yun.jfgou.com:446", MAT_VALUE: getMtaAppKey("zhongxing")]
+        }
+    }
 }
 
 dependencies {
@@ -91,47 +208,11 @@ dependencies {
     //glide
     compile rootProject.ext.glide
 
-    compile(name:'JfgAndroidSDK-3.0.114', ext:'aar')
+    compile(name: 'JfgAndroidSDK-3.0.114', ext: 'aar')
 }
 
-repositories{
-    flatDir{
+repositories {
+    flatDir {
         dirs 'libs'
-    }
-}
-
-if (project.hasProperty('keystoreFile') &&
-        project.hasProperty('keystorePassword') &&
-        project.hasProperty('keystoreAliasPassword')) {
-    android.signingConfigs.release.storeFile = file(keystoreFile)
-    android.signingConfigs.release.storePassword = keystorePassword
-    android.signingConfigs.release.keyPassword = keystoreAliasPassword
-    android.signingConfigs.release.keyAlias = keystoreAlias
-} else {
-    android.buildTypes.release.signingConfig = null
-}
-
-
-if (project.hasProperty('oem')
-        && oem != 'cylan') {
-    android.defaultConfig.applicationId = 'com.cylan.jiafeigou.' + oem
-}
-
-android.applicationVariants.all { variant ->
-    variant.outputs.each { output ->
-        output.processManifest.doLast {
-            def manifestOutFile = output.processManifest.manifestOutputFile
-            def appkey
-            // cylan matappkey:Aqc1103156296  zhongxing matappkey:ATQ1JV694AKT
-            if (project.hasProperty('oem') && oem != 'cylan') {
-                appkey = "ATQ1JV694AKT"
-            } else {
-                appkey = "Aqc1103156296"
-            }
-
-            def newFileContents = manifestOutFile.getText('UTF-8').replace("MATAPPKEY", appkey)
-            manifestOutFile.write(newFileContents, 'UTF-8')
-
-        }
     }
 }
