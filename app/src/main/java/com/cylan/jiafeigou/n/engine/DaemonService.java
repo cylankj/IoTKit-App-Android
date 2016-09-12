@@ -13,7 +13,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
-import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.support.block.impl.BlockCanary;
@@ -129,14 +128,14 @@ public class DaemonService extends Service {
             boolean set = new File(daemonPath).setExecutable(true);
             final String packageName = getPackageName();
             final String processName = ProcessUtils.myProcessName(this) + ":push";
-            final String logPath = PathGetter.createPath(JConstant.DAEMON_DIR);
-            Process process = new ProcessBuilder().command(daemonPath,
+            final String logPath = PathGetter.createPath(JConstant.DAEMON_DIR) + File.separator + "daemon.txt";
+            ProcessBuilder process = new ProcessBuilder().command(daemonPath,
                     packageName,
                     processName,
                     daemonServiceName,
                     "1",
-                    logPath)
-                    .start();
+                    logPath);
+            process.start();
             Log.d(TAG, "daemonServiceName: " + daemonServiceName);
             Log.d(TAG, "daemonPath: " + daemonPath);
             Log.d(TAG, "packageName: " + packageName);

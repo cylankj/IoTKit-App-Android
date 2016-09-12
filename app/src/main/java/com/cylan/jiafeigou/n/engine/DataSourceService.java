@@ -2,10 +2,8 @@ package com.cylan.jiafeigou.n.engine;
 
 import android.app.Service;
 import android.content.Intent;
-import android.os.Handler;
-import android.os.HandlerThread;
+import android.content.pm.PackageManager;
 import android.os.IBinder;
-import android.os.Message;
 
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.entity.jniCall.JFGDPMsg;
@@ -23,9 +21,12 @@ import com.cylan.entity.jniCall.JFGMsgVideoDisconn;
 import com.cylan.entity.jniCall.JFGMsgVideoResolution;
 import com.cylan.entity.jniCall.JFGMsgVideoRtcp;
 import com.cylan.entity.jniCall.JFGServerCfg;
+import com.cylan.entity.jniCall.JFGShareListInfo;
 import com.cylan.entity.jniCall.RobotMsg;
 import com.cylan.entity.jniCall.RobotoGetDataRsp;
 import com.cylan.jfgapp.interfases.AppCallBack;
+import com.cylan.jfgapp.jni.JfgAppCmd;
+import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.stat.MtaManager;
 
@@ -34,8 +35,6 @@ import java.util.ArrayList;
 
 public class DataSourceService extends Service implements AppCallBack {
 
-    private Handler workHandler;
-
     static {
         System.loadLibrary("jfgsdk");
     }
@@ -43,9 +42,8 @@ public class DataSourceService extends Service implements AppCallBack {
     @Override
     public void onCreate() {
         super.onCreate();
+        initNative();
         initLogUtil();
-        initHandler();
-        workHandler.sendEmptyMessageDelayed(0, 1000);
     }
 
     @Override
@@ -59,6 +57,11 @@ public class DataSourceService extends Service implements AppCallBack {
     }
 
     private void initNative() {
+        try {
+            JfgAppCmd.initJfgAppCmd(this, this, JConstant.LOG_PATH);
+        } catch (PackageManager.NameNotFoundException e) {
+
+        }
         AppLogger.d("let's go initNative:");
         MtaManager.customEvent(this, "DataSourceService", "NativeInit");
     }
@@ -69,27 +72,6 @@ public class DataSourceService extends Service implements AppCallBack {
      */
     private void initLogUtil() {
 
-    }
-
-
-    private void initHandler() {
-        HandlerThread workThread = new HandlerThread("work");
-        workThread.start();
-        AppLogger.i("start workThread !");
-        workHandler = new Handler(workThread.getLooper(), new Handler.Callback() {
-            @Override
-            public boolean handleMessage(Message msg) {
-                switch (msg.what) {
-                    case 0:
-                        //init jni
-                        workHandler.sendEmptyMessage(1);
-                        break;
-                    case 1:
-                        break;
-                }
-                return true;
-            }
-        });
     }
 
 
@@ -204,12 +186,12 @@ public class DataSourceService extends Service implements AppCallBack {
     }
 
     @Override
-    public void OnRobotCountDataRsp(long l, ArrayList<JFGDPMsgCount> arrayList) {
+    public void OnRobotCountDataRsp(long l, String s, ArrayList<JFGDPMsgCount> arrayList) {
 
     }
 
     @Override
-    public void OnRobotDelDataRsp(long l, int i) {
+    public void OnRobotDelDataRsp(long l, String s, int i) {
 
     }
 
@@ -235,6 +217,41 @@ public class DataSourceService extends Service implements AppCallBack {
 
     @Override
     public void OnGetFriendInfoRsp(int i, JFGFriendAccount jfgFriendAccount) {
+
+    }
+
+    @Override
+    public void OnCheckFriendAccountRsp(int i, String s, String s1, boolean b) {
+
+    }
+
+    @Override
+    public void OnShareDeviceRsp(int i, String s, String s1) {
+
+    }
+
+    @Override
+    public void OnUnShareDeviceRsp(int i, String s, String s1) {
+
+    }
+
+    @Override
+    public void OnGetShareListRsp(int i, ArrayList<JFGShareListInfo> arrayList) {
+
+    }
+
+    @Override
+    public void OnGetUnShareListByCidRsp(int i, ArrayList<JFGFriendAccount> arrayList) {
+
+    }
+
+    @Override
+    public void OnUpdateNTP(long l) {
+
+    }
+
+    @Override
+    public void OnEfamilyMsg(byte[] bytes) {
 
     }
 }

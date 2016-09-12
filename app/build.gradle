@@ -88,10 +88,16 @@ dependencies {
     compile rootProject.ext.appDesige
     //多进程文件共享方案
     compile rootProject.ext.multiProcessSp
-    compile files('libs/msgpack-0.6.12-SNAPSHOT.jar')
-    compile files('libs/JfgAndroidSDK-3.0.111.jar')
     //glide
     compile rootProject.ext.glide
+
+    compile(name:'JfgAndroidSDK-3.0.114', ext:'aar')
+}
+
+repositories{
+    flatDir{
+        dirs 'libs'
+    }
 }
 
 if (project.hasProperty('keystoreFile') &&
