@@ -86,7 +86,7 @@
             android:layout_alignParentRight="true"
             android:layout_width="49dp"
             android:layout_height="49dp"
-            android:src="@drawable/ic_launcher" />
+            android:src="@mipmap/ic_launcher" />
 
         <View
             android:layout_alignParentBottom="true"

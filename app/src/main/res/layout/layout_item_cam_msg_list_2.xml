@@ -53,7 +53,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:scaleType="fitXY"
-                android:src="@drawable/ic_launcher" />
+                android:src="@mipmap/ic_launcher" />
 
             <Space
                 android:layout_width="5dp"
@@ -65,7 +65,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:scaleType="fitXY"
-                android:src="@drawable/ic_launcher" />
+                android:src="@mipmap/ic_launcher" />
         </LinearLayout>
 
 

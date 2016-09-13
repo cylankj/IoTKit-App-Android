@@ -42,8 +42,20 @@ def getVariantShortName(String name) {
     return name.replace("Release", "").replace("_", "-").replace("Debug", "")
 }
 
-android {
+//目前只有中性release版，包名
+def getPackageSuffix(String variantName) {
+    if (variantName.contains("zhongxing"))
+        return "zhongxing"
+    return ""
+}
 
+//通过taskName来判断是否执行该task
+def boolean getTaskEnableFlag(String taskName) {
+
+}
+
+android {
+    println("hunt...start")
     def vCode = getCustomVersionCode()
     def vName = getCustomVersionName()
 
@@ -83,6 +95,7 @@ android {
 
     signingConfigs {
         debug {
+
         }
         release {
             Properties properties = new Properties()
@@ -100,6 +113,10 @@ android {
         }
     }
     buildTypes {
+        debug {
+            minifyEnabled false
+            applicationIdSuffix ".debug"
+        }
         release {
             shrinkResources true
             minifyEnabled true
@@ -108,6 +125,8 @@ android {
             signingConfig signingConfigs.release
 
             applicationVariants.all { variant ->
+                //调整包名
+                applicationIdSuffix = getPackageSuffix(variant.name)
                 variant.outputs.each { output ->
                     def outputFile = output.outputFile
                     if (outputFile != null && outputFile.name.endsWith('.apk')) {
@@ -116,7 +135,6 @@ android {
                                 "-${vName}" +
                                 ".${vCode}" +
                                 "-${releaseTime()}" +
-                                "-" +
                                 shortName
                         //需要release包的variant
                         boolean condition = getReleaseCondition(variant.name)
@@ -132,38 +150,45 @@ android {
                 }
             }
         }
-        debug {
-            minifyEnabled false
-        }
+        println("hunt...end")
     }
 
     productFlavors {
 
         _test {
-            applicationIdSuffix ".debug"
-            manifestPlaceholders = [NICELY_VALUE: "test.jfgou.com:446", MAT_VALUE: getMtaAppKey("test")]
+            manifestPlaceholders = [NICELY_VALUE: "test.jfgou.com:446",
+                                    MAT_VALUE   : getMtaAppKey("test")]
         }
         _test1 {
-            applicationIdSuffix ".debug"
-            manifestPlaceholders = [NICELY_VALUE: "test1.jfgou.com:446", MAT_VALUE: getMtaAppKey("test1")]
+            manifestPlaceholders = [NICELY_VALUE: "test1.jfgou.com:446",
+                                    MAT_VALUE   : getMtaAppKey("test1")]
         }
         _yun {
-            applicationIdSuffix ".debug"
-            manifestPlaceholders = [NICELY_VALUE: "yun.jfgou.com:446", MAT_VALUE: getMtaAppKey("yun")]
+            manifestPlaceholders = [NICELY_VALUE: "yun.jfgou.com:446",
+                                    MAT_VALUE   : getMtaAppKey("yun")]
         }
         _yun1 {
-            applicationIdSuffix ".debug"
-            manifestPlaceholders = [NICELY_VALUE: "yun1.jfgou.com:446", MAT_VALUE: getMtaAppKey("yun1")]
+            manifestPlaceholders = [NICELY_VALUE: "yun1.jfgou.com:446",
+                                    MAT_VALUE   : getMtaAppKey("yun1")]
         }
         _yf {
-            applicationIdSuffix ".debug"
-            manifestPlaceholders = [NICELY_VALUE: "yf.jfgou.com:446", MAT_VALUE: getMtaAppKey("yf")]
+            manifestPlaceholders = [NICELY_VALUE: "yf.jfgou.com:446",
+                                    MAT_VALUE   : getMtaAppKey("yf")]
         }
         //中性包
         _zhongxing {
             applicationIdSuffix ".zhongxing"
-            manifestPlaceholders = [NICELY_VALUE: "yun.jfgou.com:446", MAT_VALUE: getMtaAppKey("zhongxing")]
+            manifestPlaceholders = [NICELY_VALUE: "yun.jfgou.com:446",
+                                    MAT_VALUE   : getMtaAppKey("zhongxing")]
         }
+    }
+}
+
+//配置task开关
+tasks.whenTaskAdded { task ->
+
+    if (task.name.contains("zhongxing")) {
+        task.enabled = false
     }
 }
 

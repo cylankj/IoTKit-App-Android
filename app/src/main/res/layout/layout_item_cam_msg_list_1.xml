@@ -47,7 +47,7 @@
             android:layout_above="@+id/fLayout_cam_message_item_bottom"
             android:layout_below="@+id/tv_cam_message_item_date"
             android:scaleType="fitXY"
-            android:src="@drawable/ic_launcher" />
+            android:src="@mipmap/ic_launcher" />
 
 
         <FrameLayout

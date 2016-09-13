@@ -25,6 +25,8 @@ import com.cylan.utils.FileUtils;
 import com.cylan.utils.HandlerThreadUtils;
 import com.cylan.utils.ProcessUtils;
 
+import org.msgpack.annotation.NotNullable;
+
 import java.io.File;
 
 
@@ -163,7 +165,7 @@ public class DaemonService extends Service {
 
     private static Notification sendEmptyNotification(Context context) {
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context)
-                .setSmallIcon(R.drawable.ic_launcher);
+                .setSmallIcon(R.mipmap.ic_launcher);
         mBuilder.setWhen(System.currentTimeMillis());
         mBuilder.setAutoCancel(false);
         return mBuilder.build();
