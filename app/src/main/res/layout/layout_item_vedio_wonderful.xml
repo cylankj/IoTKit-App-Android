@@ -16,13 +16,12 @@
         android:paddingRight="2dp"
         hunt:dashLineColor="@color/color_e8e8e8"
         hunt:dashLineWidth="2dp"
-        hunt:innerCircleColor="@color/color_e8e8e8"
+        hunt:innerCircleColor="@color/color_white"
         hunt:innerCircleRadius="6dp"
-        hunt:outerCircleColor="@color/color_white"
+        hunt:outerCircleColor="@color/color_e8e8e8"
         hunt:outerCircleRadius="10dp"
         hunt:outerCircleStrokeWidth="4dp"
         hunt:outerCircleY="10dp" />
-
     <RelativeLayout
         android:id="@+id/rLayout_wonderful_item_wonder"
         android:layout_width="match_parent"

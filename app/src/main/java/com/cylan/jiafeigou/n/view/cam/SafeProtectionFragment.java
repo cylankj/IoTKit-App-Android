@@ -12,6 +12,7 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ViewUtils;
 
 import java.lang.ref.WeakReference;
@@ -148,6 +149,11 @@ public class SafeProtectionFragment extends Fragment {
      * 用来加载fragment的方法。
      */
     private void loadFragment(int id, Fragment fragment) {
+        Fragment f = getActivity().getSupportFragmentManager().findFragmentByTag(fragment.getClass().getSimpleName());
+        if (f != null) {
+            AppLogger.d("fragment is already added: " + f.getClass().getSimpleName());
+            return;
+        }
         getActivity().getSupportFragmentManager().beginTransaction()
                 //如果需要动画，可以把动画添加进来
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right

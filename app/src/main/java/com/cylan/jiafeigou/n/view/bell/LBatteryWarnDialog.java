@@ -43,6 +43,7 @@ public class LBatteryWarnDialog extends BaseDialog {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setCancelable(false);
     }
 
     @Override
@@ -78,8 +79,9 @@ public class LBatteryWarnDialog extends BaseDialog {
         return WindowManager.LayoutParams.WRAP_CONTENT;
     }
 
-    @OnClick(R.id.tv_low_battery_dismiss)
-    public void onClick() {
+    @OnClick({R.id.tv_low_battery_dismiss, R.id.imgv_close_dialog})
+    public void onClick(View view) {
         dismiss();
     }
+
 }

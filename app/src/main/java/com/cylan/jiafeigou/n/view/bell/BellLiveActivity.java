@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.contract.bell.BellLiveContract;
@@ -25,7 +26,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class BellLiveActivity extends ProcessActivity
-        implements DragLayout.OnDragReleaseListener
+        implements DragLayout.OnDragReleaseListener, View.OnClickListener
         , BellLiveContract.View {
 
     @BindView(R.id.fLayout_bell_live_holder)
@@ -156,6 +157,12 @@ public class BellLiveActivity extends ProcessActivity
                     .inflate(R.layout.layout_bell_live_land_layer, null);
             if (view != null) {
                 fLayoutLandHolderRef = new WeakReference<>(view);
+                view.findViewById(R.id.imgv_bell_live_land_capture)
+                        .setOnClickListener(this);
+                view.findViewById(R.id.imgv_bell_live_land_hangup)
+                        .setOnClickListener(this);
+                view.findViewById(R.id.imgv_bell_live_land_mic)
+                        .setOnClickListener(this);
             }
         }
         View v = fLayoutBellLiveHolder.findViewById(R.id.fLayout_bell_live_land_layer);
@@ -211,6 +218,14 @@ public class BellLiveActivity extends ProcessActivity
                 initLandView();
                 ViewUtils.setRequestedOrientation(this,
                         ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+                break;
+            case R.id.imgv_bell_live_land_mic:
+                break;
+            case R.id.imgv_bell_live_land_capture:
+                break;
+            case R.id.imgv_bell_live_land_hangup:
+                Toast.makeText(getContext(), "hangup", Toast.LENGTH_SHORT).show();
+                finishExt();
                 break;
         }
     }

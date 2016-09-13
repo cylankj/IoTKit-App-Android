@@ -40,8 +40,9 @@
             android:background="@color/color_EFEFEF" />
 
         <com.cylan.jiafeigou.widget.ImageViewTip
-            android:layout_width="76dp"
-            android:layout_height="76dp"
+            android:id="@+id/imgv_bell_call_item_thumbnail"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="17dp"
             android:src="@drawable/icon_home_doorbell_online" />

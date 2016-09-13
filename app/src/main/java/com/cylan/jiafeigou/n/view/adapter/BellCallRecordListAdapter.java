@@ -2,10 +2,13 @@ package com.cylan.jiafeigou.n.view.adapter;
 
 import android.content.Context;
 import android.view.View;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.model.BellCallRecordBean;
+import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.superadapter.SuperAdapter;
 import com.cylan.superadapter.internal.SuperViewHolder;
@@ -17,17 +20,22 @@ import java.util.List;
  */
 public class BellCallRecordListAdapter extends SuperAdapter<BellCallRecordBean> {
 
+    private final Object object = new Object();
     /**
      * 正常模式，编辑模式
      */
     private int mode = 0;
 
     public BellCallRecordListAdapter(Context context, List<BellCallRecordBean> items,
-                                     final int layoutId) {
+                                     final int layoutId, LoadImageListener loadImageListener) {
         super(context, items, layoutId);
+        this.loadImageListener = loadImageListener;
     }
 
-    public synchronized void setMode(int mode) {
+    private LoadImageListener loadImageListener;
+
+
+    public void setMode(int mode) {
         this.mode = mode;
     }
 
@@ -38,11 +46,29 @@ public class BellCallRecordListAdapter extends SuperAdapter<BellCallRecordBean> 
     /**
      * @param lastVisiblePosition
      */
-    public synchronized void reverseEdition(final boolean selected, final int lastVisiblePosition) {
-        for (int i = 0; i < getCount(); i++) {
-            BellCallRecordBean bean = getItem(i);
-            if (bean.selected == selected) {
-                bean.selected = !selected;
+    public void reverseEdition(final boolean selected, final int lastVisiblePosition) {
+        synchronized (object) {
+            for (int i = 0; i < getCount(); i++) {
+                BellCallRecordBean bean = getItem(i);
+                if (bean.selected == selected) {
+                    bean.selected = !selected;
+                    if (i <= lastVisiblePosition)
+                        notifyItemChanged(i);
+                }
+            }
+        }
+    }
+
+    /**
+     * @param lastVisiblePosition
+     */
+    public void selectAll(final int lastVisiblePosition) {
+        synchronized (object) {
+            for (int i = 0; i < getCount(); i++) {
+                BellCallRecordBean bean = getItem(i);
+                if (bean.selected)
+                    continue;
+                bean.selected = true;
                 if (i <= lastVisiblePosition)
                     notifyItemChanged(i);
             }
@@ -52,28 +78,39 @@ public class BellCallRecordListAdapter extends SuperAdapter<BellCallRecordBean> 
     /**
      * @param lastVisiblePosition
      */
-    public synchronized void selectAll(final int lastVisiblePosition) {
-        for (int i = 0; i < getCount(); i++) {
-            BellCallRecordBean bean = getItem(i);
-            if (bean.selected)
-                continue;
-            bean.selected = true;
-            if (i <= lastVisiblePosition)
-                notifyItemChanged(i);
+    public void selectNone(final int lastVisiblePosition) {
+        synchronized (object) {
+            for (int i = 0; i < getCount(); i++) {
+                BellCallRecordBean bean = getItem(i);
+                if (!bean.selected)
+                    continue;
+                bean.selected = false;
+                if (i <= lastVisiblePosition)
+                    notifyItemChanged(i);
+            }
         }
     }
 
-    /**
-     * @param lastVisiblePosition
-     */
-    public synchronized void selectNone(final int lastVisiblePosition) {
-        for (int i = 0; i < getCount(); i++) {
-            BellCallRecordBean bean = getItem(i);
-            if (!bean.selected)
-                continue;
-            bean.selected = false;
-            if (i <= lastVisiblePosition)
-                notifyItemChanged(i);
+    public void remove() {
+        synchronized (object) {
+            for (int i = getCount() - 1; i >= 0; i--) {
+                BellCallRecordBean bean = getItem(i);
+                if (!bean.selected)
+                    continue;
+                remove(i);
+            }
+        }
+    }
+
+    public void reverseItemSelectedState(final int position) {
+        synchronized (object) {
+            BellCallRecordBean bean = getItem(position);
+            if (bean == null) {
+                AppLogger.d("bean is null");
+                return;
+            }
+            bean.selected = !bean.selected;
+            notifyItemChanged(position);
         }
     }
 
@@ -83,7 +120,6 @@ public class BellCallRecordListAdapter extends SuperAdapter<BellCallRecordBean> 
         holder.setText(R.id.tv_bell_list_item_date, item.date);
         holder.setText(R.id.tv_bell_list_item_time, item.timeStr);
         setAnswerState(item.answerState, (TextView) holder.getView(R.id.tv_bell_list_item_answer_state));
-        holder.setTag(R.id.cv_bell_call_item, layoutPosition);
         if (simpleLongClickListener != null) {
             holder.setOnLongClickListener(R.id.cv_bell_call_item, simpleLongClickListener);
         }
@@ -91,9 +127,14 @@ public class BellCallRecordListAdapter extends SuperAdapter<BellCallRecordBean> 
             holder.setOnClickListener(R.id.cv_bell_call_item, simpleClickListener);
         }
         setSelectState(holder, item);
+        if (loadImageListener != null)
+            loadImageListener.loadMedia(item.url, (ImageView) holder.getView(R.id.imgv_bell_call_item_thumbnail));
     }
 
     private void setSelectState(SuperViewHolder holder, BellCallRecordBean item) {
+        FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) holder.getView(R.id.imgv_bell_call_item_cover).getLayoutParams();
+        lp.width = holder.getView(R.id.cv_bell_call_item).getMeasuredWidth();
+        lp.height = holder.getView(R.id.cv_bell_call_item).getMeasuredHeight();
         holder.setVisibility(R.id.imgv_bell_call_item_cover, item.selected ? View.VISIBLE : View.GONE);
     }
 
@@ -118,5 +159,9 @@ public class BellCallRecordListAdapter extends SuperAdapter<BellCallRecordBean> 
     }
 
     public interface SimpleClickListener extends View.OnClickListener {
+    }
+
+    public interface LoadImageListener {
+        void loadMedia(String url, ImageView imageView);
     }
 }

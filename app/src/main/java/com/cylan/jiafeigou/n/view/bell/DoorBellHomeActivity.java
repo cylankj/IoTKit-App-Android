@@ -2,15 +2,23 @@ package com.cylan.jiafeigou.n.view.bell;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.RxEvent;
@@ -42,6 +50,8 @@ public class DoorBellHomeActivity extends BaseFullScreenFragmentActivity
         BellCallRecordListAdapter.SimpleLongClickListener,
         BellCallRecordListAdapter.SimpleClickListener,
         BellTopBackgroundView.ActionInterface,
+        BellCallRecordListAdapter.LoadImageListener,
+        ViewTreeObserver.OnGlobalLayoutListener,
         ActivityResultContract.View {
 
     private static final String tag = "DoorBellHomeActivity";
@@ -117,12 +127,13 @@ public class DoorBellHomeActivity extends BaseFullScreenFragmentActivity
 
     private void initAdapter() {
         bellCallRecordListAdapter = new BellCallRecordListAdapter(getApplicationContext(),
-                null, R.layout.layout_bell_call_list_item);
+                null, R.layout.layout_bell_call_list_item, this);
         bellCallRecordListAdapter.setSimpleClickListener(this);
         bellCallRecordListAdapter.setSimpleLongClickListener(this);
         rvBellList.setAdapter(bellCallRecordListAdapter);
         rvBellList.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         rvBellList.addItemDecoration(new SpacesItemDecoration(new Rect(ViewUtils.dp2px(10), ViewUtils.dp2px(15), 0, 0)));
+        rvBellList.getViewTreeObserver().addOnGlobalLayoutListener(this);
     }
 
     private void initSomething() {
@@ -260,12 +271,7 @@ public class DoorBellHomeActivity extends BaseFullScreenFragmentActivity
 
     @Override
     public boolean onLongClick(View v) {
-        Object o = v.getTag();
-        if (o == null || !(o instanceof Integer)) {
-            AppLogger.d("v tag is null");
-            return false;
-        }
-        final int position = (int) v.getTag();
+        final int position = ViewUtils.getParentAdapterPosition(rvBellList, v, R.id.cv_bell_call_item);
         if (position < 0 || position >= bellCallRecordListAdapter.getCount()) {
             AppLogger.d("position is invalid");
             return false;
@@ -274,7 +280,7 @@ public class DoorBellHomeActivity extends BaseFullScreenFragmentActivity
         if (bellCallRecordListAdapter.getMode() == 0) {
             AppLogger.d("enter edition mode");
             bellCallRecordListAdapter.setMode(1);
-            reverseItemSelectedState(position);
+            bellCallRecordListAdapter.reverseItemSelectedState(position);
             showEditBar(true);
         }
         return true;
@@ -286,12 +292,7 @@ public class DoorBellHomeActivity extends BaseFullScreenFragmentActivity
 
     @Override
     public void onClick(View v) {
-        Object o = v.getTag();
-        if (o == null || !(o instanceof Integer)) {
-            AppLogger.d("v tag is null");
-            return;
-        }
-        final int position = (int) v.getTag();
+        final int position = ViewUtils.getParentAdapterPosition(rvBellList, v, R.id.cv_bell_call_item);
         if (position < 0 || position >= bellCallRecordListAdapter.getCount()) {
             AppLogger.d("position is invalid");
             return;
@@ -301,17 +302,7 @@ public class DoorBellHomeActivity extends BaseFullScreenFragmentActivity
             AppLogger.d("normal mode");
             return;
         }
-        reverseItemSelectedState(position);
-    }
-
-    private void reverseItemSelectedState(int position) {
-        BellCallRecordBean bean = bellCallRecordListAdapter.getItem(position);
-        if (bean == null) {
-            AppLogger.d("bean is null");
-            return;
-        }
-        bean.selected = !bean.selected;
-        bellCallRecordListAdapter.notifyItemChanged(position);
+        bellCallRecordListAdapter.reverseItemSelectedState(position);
     }
 
     @OnClick({R.id.tv_bell_home_list_cancel, R.id.tv_bell_home_list_select_all, R.id.tv_bell_home_list_delete})
@@ -334,6 +325,7 @@ public class DoorBellHomeActivity extends BaseFullScreenFragmentActivity
                 }
                 break;
             case R.id.tv_bell_home_list_delete:
+                bellCallRecordListAdapter.remove();
                 break;
         }
     }
@@ -343,5 +335,28 @@ public class DoorBellHomeActivity extends BaseFullScreenFragmentActivity
         Intent intent = new Intent(this, BellLiveActivity.class);
         intent.putExtra("text", "nihao");
         startActivity(intent);
+    }
+
+    @Override
+    public void loadMedia(String url, final ImageView imageView) {
+        Glide.with(this)
+                .load(url)
+                .asBitmap()
+                .placeholder(R.drawable.icon_bell_call_place_holder)
+                .centerCrop()
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .into(new BitmapImageViewTarget(imageView) {
+                    @Override
+                    protected void setResource(Bitmap resource) {
+                        RoundedBitmapDrawable circularBitmapDrawable =
+                                RoundedBitmapDrawableFactory.create(getContext().getResources(), resource);
+                        circularBitmapDrawable.setCircular(true);
+                        imageView.setImageDrawable(circularBitmapDrawable);
+                    }
+                });
+    }
+
+    @Override
+    public void onGlobalLayout() {
     }
 }

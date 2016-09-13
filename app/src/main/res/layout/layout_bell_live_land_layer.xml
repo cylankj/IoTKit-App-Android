@@ -25,12 +25,14 @@
         android:orientation="vertical">
 
         <ImageView
+            android:id="@+id/imgv_bell_live_land_capture"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="10dp"
             android:src="@drawable/btn_bell_land_capture" />
 
         <ImageView
+            android:id="@+id/imgv_bell_live_land_hangup"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -38,6 +40,7 @@
             android:src="@drawable/btn_bell_land_hang_up" />
 
         <ImageView
+            android:id="@+id/imgv_bell_live_land_mic"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"

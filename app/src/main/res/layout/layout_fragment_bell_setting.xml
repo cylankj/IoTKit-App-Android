@@ -60,7 +60,7 @@
                 android:layout_height="52dp"
                 android:paddingLeft="20dp"
                 android:paddingRight="20dp"
-                hunt:sv_image_src="@drawable/icon_setting_3g"
+                hunt:sv_image_src="@drawable/icon_setting_information"
                 hunt:sv_sub_title="3G/4G网络"
                 hunt:sv_sub_title_max_len="12"
                 hunt:sv_title="设备详情" />
@@ -99,13 +99,11 @@
 
             <TextView
                 android:id="@+id/tv_setting_unbind"
-                style="@style/ripple_background"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="20dp"
                 android:layout_marginTop="10dp"
-                android:background="@color/color_f2f2f2"
                 android:gravity="center"
                 android:text="删除设备"
                 android:textColor="@color/color_FF3D32"

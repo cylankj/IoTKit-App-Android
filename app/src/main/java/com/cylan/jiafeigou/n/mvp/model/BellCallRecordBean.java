@@ -17,6 +17,8 @@ public class BellCallRecordBean implements Comparable<BellCallRecordBean> {
 
     @Override
     public int compareTo(BellCallRecordBean another) {
-        return (int) (timeInLong - another.timeInLong);
+        if (another.timeInLong != this.timeInLong) {
+            return (int) (this.timeInLong - another.timeInLong);
+        } else return (int) (another.timeInLong - this.timeInLong);
     }
 }
