@@ -25,7 +25,7 @@
                 android:id="@+id/tv_top_bar_left"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:drawableLeft="@drawable/ic_nav_back_arrow"
+                android:drawableLeft="@drawable/icon_nav_back_white"
                 android:drawablePadding="15dp"
                 android:padding="15dp"
                 android:text="智能门铃"

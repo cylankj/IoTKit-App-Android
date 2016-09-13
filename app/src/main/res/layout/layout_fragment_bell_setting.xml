@@ -21,7 +21,7 @@
                 android:id="@+id/imgV_top_bar_center"
                 android:layout_width="wrap_content"
                 android:layout_height="48dp"
-                android:drawableLeft="@drawable/ic_nav_back_arrow"
+                android:drawableLeft="@drawable/icon_nav_back_gray"
                 android:drawablePadding="15dp"
                 android:padding="15dp"
                 android:text="功能设置"

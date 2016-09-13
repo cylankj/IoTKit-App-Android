@@ -100,7 +100,7 @@ public class SetupPwdFragment extends android.support.v4.app.Fragment implements
         layout.findViewById(R.id.tv_top_bar_right).setVisibility(android.view.View.GONE);
         TextView tvTitle = (TextView) layout.findViewById(R.id.tv_top_bar_center);
         tvTitle.setText("密码");
-        ivLoginTopLeft.setImageResource(R.drawable.btn_nav_back);
+        ivLoginTopLeft.setImageResource(R.drawable.icon_nav_back_white);
         ivLoginTopLeft.setOnClickListener(new android.view.View.OnClickListener() {
             @Override
             public void onClick(android.view.View v) {

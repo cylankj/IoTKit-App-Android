@@ -148,7 +148,7 @@ public class ForgetPwdFragment extends Fragment implements ForgetPwdContract.Vie
         TextView tvTitle = (TextView) layout.findViewById(R.id.tv_top_bar_center);
         tvTitle.setText("忘记密码");
         ImageView imgBackHandle = (ImageView) layout.findViewById(R.id.iv_top_bar_left);
-        imgBackHandle.setImageResource(R.drawable.btn_nav_back);
+        imgBackHandle.setImageResource(R.drawable.icon_nav_back_white);
         imgBackHandle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

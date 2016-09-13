@@ -78,7 +78,6 @@ public class BindCameraFragment extends BaseTitleFragment implements BindDeviceC
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-//        updateNavBackIcon(R.drawable.btn_nav_back);
         initAnimation();
     }
 
