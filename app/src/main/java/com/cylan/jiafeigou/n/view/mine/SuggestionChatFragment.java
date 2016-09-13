@@ -75,9 +75,9 @@ public class SuggestionChatFragment extends Fragment implements SuggestionChatCo
             int option = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
                     | View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
             decorView.setSystemUiVisibility(option);
-            //getActivity().getWindow().setStatusBarColor(Color.TRANSPARENT);
+            getActivity().getWindow().setStatusBarColor(Color.TRANSPARENT);
         }
-        // ActionBar actionBar =getActivity().getSupportActionBar();
+         //ActionBar actionBar =getActivity().getSupportActionBar();
         // actionBar.hide();
 
     }
@@ -241,7 +241,6 @@ public class SuggestionChatFragment extends Fragment implements SuggestionChatCo
     @Override
     public void onDestroy() {
         super.onDestroy();
-        getActivity().finish();
+        //getActivity().finish();
     }
-
 }

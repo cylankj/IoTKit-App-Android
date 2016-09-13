@@ -9,7 +9,7 @@
     <RelativeLayout
         android:id="@+id/rl_home_mine_suggestion"
         android:layout_width="match_parent"
-        android:layout_height="53dp"
+        android:layout_height="73dp"
         android:background="#0BA8CF">
 
         <ImageView

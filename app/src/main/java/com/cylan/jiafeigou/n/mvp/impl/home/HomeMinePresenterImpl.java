@@ -5,6 +5,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.DrawableRes;
+import android.text.TextUtils;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
@@ -16,6 +17,8 @@ import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.utils.BitmapUtil;
 import com.cylan.utils.FastBlurUtil;
+
+import org.w3c.dom.Text;
 
 import java.util.concurrent.TimeUnit;
 
@@ -30,6 +33,10 @@ import rx.schedulers.Schedulers;
  * Created by hunt on 16-5-23.
  */
 public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.View> implements HomeMineContract.Presenter {
+
+    public static int  PHONE_LOGIN = 1;                     //手机登录
+    public static int  EMAIL_LOGIN = 2;                     //邮箱登录
+    public static int  THIRD_PART_LOGIN = 3;                //第三方登录
 
     private Subscription onRefreshSubscription;
     private Subscription onBlurSubscribtion;
@@ -143,5 +150,19 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
                         getView().setUserImageHead(drawable);
                     }
                 });
+    }
+
+    @Override
+    public boolean checkIsLogin(String userID) {
+        if(TextUtils.isEmpty(userID)){
+            return false;
+        }else {
+            return true;
+        }
+    }
+
+    @Override
+    public int whichLoginMethd() {
+        return 0;
     }
 }

@@ -33,5 +33,9 @@ public interface HomeMineContract {
 
         void portraitUpdateByUrl(String url);
 
+        boolean checkIsLogin(String userID);
+
+        int whichLoginMethd();
+
     }
 }

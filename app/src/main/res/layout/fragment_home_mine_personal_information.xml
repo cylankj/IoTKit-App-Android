@@ -49,12 +49,14 @@
             android:textSize="12sp" />
 
         <TextView
+            android:id="@+id/tv_user_account"
             android:layout_below="@id/tv_my_id"
             android:paddingTop="8dp"
             android:layout_marginLeft="20dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="15856562525"
+            android:singleLine="true"
             android:textColor="@color/color_333333"
             android:textSize="16sp" />
 

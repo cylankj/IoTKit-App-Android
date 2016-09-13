@@ -2,6 +2,7 @@ package com.cylan.jiafeigou.n.mvp.contract.mine;
 
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
+import com.cylan.jiafeigou.n.mvp.model.UserInfoBean;
 
 /**
  * 作者：zsl
@@ -11,10 +12,12 @@ import com.cylan.jiafeigou.n.mvp.BaseView;
 public interface MineRelativeAndFriendAddByNumContract {
 
     interface View extends BaseView<Presenter>{
-
+        String getInputNum();
+        void showFindResult(UserInfoBean bean);
+        void showFindLoad();
     }
 
     interface Presenter extends BasePresenter{
-
+        void findUserFromServer(String number);
     }
 }

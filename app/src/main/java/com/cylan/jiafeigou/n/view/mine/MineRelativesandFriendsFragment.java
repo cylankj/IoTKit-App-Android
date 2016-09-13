@@ -8,7 +8,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
@@ -16,7 +18,6 @@ import com.cylan.jiafeigou.n.mvp.contract.mine.MineRelativesFriendsContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineRelativesandFriendsPresenterImp;
 import com.cylan.jiafeigou.n.mvp.model.SuggestionChatInfoBean;
 import com.cylan.jiafeigou.n.view.adapter.RelativesAndFriendsAdapter;
-import com.cylan.jiafeigou.utils.ToastUtil;
 
 import java.util.ArrayList;
 
@@ -40,6 +41,12 @@ public class MineRelativesandFriendsFragment extends Fragment implements MineRel
     RecyclerView recyclerviewRelativesandfriendsList;
     @BindView(R.id.tv_home_mine_relativesandfriends_add)
     TextView tvHomeMineRelativesandfriendsAdd;
+    @BindView(R.id.ll_relative_and_friend)
+    LinearLayout llRelativeAndFriend;
+    @BindView(R.id.ll_relative_and_friend_none)
+    LinearLayout llRelativeAndFriendNone;
+    @BindView(R.id.btn_add_relative_and_friend)
+    Button btnAddRelativeAndFriend;
 
     private MineRelativesFriendsContract.Presenter presenter;
 
@@ -70,9 +77,6 @@ public class MineRelativesandFriendsFragment extends Fragment implements MineRel
         ButterKnife.bind(this, view);
         initPresenter();
         initData();
-        showAddRequestList();
-        showRelativesAndFriendsList();
-        initListener();
         return view;
     }
 
@@ -81,6 +85,18 @@ public class MineRelativesandFriendsFragment extends Fragment implements MineRel
         relativesAndFriendList = new ArrayList<>();
         requestAddList.addAll(presenter.initAddRequestData());
         relativesAndFriendList.addAll(presenter.initRelativatesAndFriendsData());
+
+        if(presenter.initRelativatesAndFriendsData().size() == 0){
+            llRelativeAndFriend.setVisibility(View.GONE);
+            llRelativeAndFriendNone.setVisibility(View.VISIBLE);
+        }else {
+            llRelativeAndFriend.setVisibility(View.VISIBLE);
+            llRelativeAndFriendNone.setVisibility(View.GONE);
+            showAddRequestList();
+            showRelativesAndFriendsList();
+            initListener();
+        }
+
     }
 
     private void initListener() {
@@ -116,7 +132,7 @@ public class MineRelativesandFriendsFragment extends Fragment implements MineRel
 
     }
 
-    @OnClick({R.id.iv_home_mine_relativesandfriends_back,R.id.tv_home_mine_relativesandfriends_add})
+    @OnClick({R.id.iv_home_mine_relativesandfriends_back, R.id.tv_home_mine_relativesandfriends_add,R.id.btn_add_relative_and_friend})
     public void onClick(View view) {
 
         switch (view.getId()) {
@@ -125,6 +141,15 @@ public class MineRelativesandFriendsFragment extends Fragment implements MineRel
                 break;
 
             case R.id.tv_home_mine_relativesandfriends_add:
+                getFragmentManager().beginTransaction()
+                        .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
+                                , R.anim.slide_in_left, R.anim.slide_out_right)
+                        .add(android.R.id.content, friendsFragment, "friendsFragment")
+                        .addToBackStack("mineHelpFragment")
+                        .commit();
+                break;
+
+            case R.id.btn_add_relative_and_friend:              //亲友为空，跳转到亲友列表
                 getFragmentManager().beginTransaction()
                         .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                                 , R.anim.slide_in_left, R.anim.slide_out_right)

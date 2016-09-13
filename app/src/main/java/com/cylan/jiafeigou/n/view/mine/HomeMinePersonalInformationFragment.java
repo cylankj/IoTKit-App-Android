@@ -3,6 +3,7 @@ package com.cylan.jiafeigou.n.view.mine;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.os.Build;
@@ -28,10 +29,10 @@ import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MinePersionalInformationContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MinePersionalInformationPresenterImpl;
+import com.cylan.jiafeigou.n.mvp.model.UserInfoBean;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.widget.roundedimageview.RoundedImageView;
-import com.sina.weibo.sdk.utils.LogUtil;
 
 import java.util.List;
 
@@ -66,6 +67,10 @@ public class HomeMinePersonalInformationFragment extends Fragment implements Min
     TextView tvUserName;
     @BindView(R.id.rLayout_home_mine_personal_name)
     RelativeLayout rLayoutHomeMinePersonalName;
+    @BindView(R.id.tv_user_account)
+    TextView tvUserAccount;
+    @BindView(R.id.tv_home_mine_personal_phone)
+    TextView tvHomeMinePersonalPhone;
 
 
     private HomeMinePersonalInformationMailBoxFragment mailBoxFragment;
@@ -96,7 +101,7 @@ public class HomeMinePersonalInformationFragment extends Fragment implements Min
         View view = inflater.inflate(R.layout.fragment_home_mine_personal_information, container, false);
         ButterKnife.bind(this, view);
         initPresenter();
-        initPersionalInfomation();
+        initPersionalInfomation(new UserInfoBean());
         return view;
     }
 
@@ -111,7 +116,9 @@ public class HomeMinePersonalInformationFragment extends Fragment implements Min
         mTvMailBox.setText(mailBoxText);
 
         //昵称回显
-        tvUserName.setText(PreferencesUtils.getString(getActivity(),"username","未设置"));
+        tvUserName.setText(PreferencesUtils.getString(getActivity(), "username", "未设置"));
+
+        //presenter.getUserInfomation(url);              //初始化显示用户信息
     }
 
     @OnClick({R.id.iv_home_mine_personal_back, R.id.btn_home_mine_personal_information,
@@ -125,7 +132,7 @@ public class HomeMinePersonalInformationFragment extends Fragment implements Min
                 break;
             //点击退出做相应的逻辑
             case R.id.btn_home_mine_personal_information:
-                getFragmentManager().popBackStack();
+                showLogOutDialog();
                 //TODO 信息数据的保存
                 break;
             //点击邮箱跳转到相应的页面
@@ -185,7 +192,7 @@ public class HomeMinePersonalInformationFragment extends Fragment implements Min
     }
 
     @Override
-    public void initPersionalInfomation() {
+    public void initPersionalInfomation(UserInfoBean bean) {
         //头像的回显
         Glide.with(getContext()).load(PreferencesUtils.getString(getContext(), JConstant.USER_IMAGE_HEAD_URL, ""))
                 .asBitmap().centerCrop()
@@ -199,6 +206,12 @@ public class HomeMinePersonalInformationFragment extends Fragment implements Min
                         userImageHead.setImageDrawable(circularBitmapDrawable);
                     }
                 });
+
+        //tvUserAccount.setText(bean.getAccount());
+        //tvUserName.setText(bean.getName());
+        //mTvMailBox.setText(bean.getEmail());
+        //tvHomeMinePersonalPhone.setText(bean.getPhone());
+
 
     }
 
@@ -304,7 +317,6 @@ public class HomeMinePersonalInformationFragment extends Fragment implements Min
         }
     };
 
-
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         switch (requestCode) {
@@ -318,6 +330,25 @@ public class HomeMinePersonalInformationFragment extends Fragment implements Min
             default:
                 super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
+    }
+
+    @Override
+    public void showLogOutDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle("退出不会删除账号信息，你可以再次登录");
+        builder.setPositiveButton("退出登录", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                getFragmentManager().popBackStack();
+                dialog.dismiss();
+            }
+        });
+        builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        }).show();
     }
 
 }

@@ -7,6 +7,7 @@ import android.widget.Toast;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MinePersionalInformationContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
+import com.cylan.jiafeigou.n.mvp.model.UserInfoBean;
 
 import java.util.List;
 
@@ -16,6 +17,12 @@ import cn.finalteam.galleryfinal.GalleryFinal;
 import cn.finalteam.galleryfinal.ImageLoader;
 import cn.finalteam.galleryfinal.ThemeConfig;
 import cn.finalteam.galleryfinal.model.PhotoInfo;
+import rx.Observable;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 /**
  * 作者：zsl
@@ -26,6 +33,7 @@ public class MinePersionalInformationPresenterImpl extends AbstractPresenter<Min
 
     private Context context;
     public static FunctionConfig functionConfig;
+    private Subscription getUserInfoSubscription;
 
     public MinePersionalInformationPresenterImpl(MinePersionalInformationContract.View view,Context context) {
         super(view);
@@ -78,12 +86,33 @@ public class MinePersionalInformationPresenterImpl extends AbstractPresenter<Min
     }
 
     @Override
+    public void getUserInfomation(String url) {
+        getUserInfoSubscription = Observable.just(url)
+                .map(new Func1<String, UserInfoBean>() {
+                    @Override
+                    public UserInfoBean call(String s) {
+                        return null;
+                    }
+                })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<UserInfoBean>() {
+                    @Override
+                    public void call(UserInfoBean userInfoBean) {
+                        getView().initPersionalInfomation(userInfoBean);
+                    }
+                });
+    }
+
+    @Override
     public void start() {
 
     }
 
     @Override
     public void stop() {
-
+        if (getUserInfoSubscription != null){
+            getUserInfoSubscription.unsubscribe();
+        }
     }
 }

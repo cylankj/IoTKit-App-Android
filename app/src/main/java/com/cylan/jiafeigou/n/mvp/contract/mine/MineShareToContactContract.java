@@ -5,19 +5,17 @@ import com.cylan.jiafeigou.n.mvp.BaseView;
 
 /**
  * 作者：zsl
- * 创建时间：2016/9/7
+ * 创建时间：2016/9/13
  * 描述：
  */
-public interface MineAddFromContactContract {
+public interface MineShareToContactContract {
 
     interface View extends BaseView<Presenter>{
-        void initEditText();
-        String getSendMesg();
-        void showResultDialog();
+
     }
 
     interface Presenter extends BasePresenter{
-        void sendRequest(String mesg);
+
     }
 
 }

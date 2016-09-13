@@ -54,6 +54,9 @@ public class HomeMineFragment extends android.support.v4.app.Fragment
     HomeMineItemView homeMineItemHelp;
     @BindView(R.id.home_mine_item_settings)
     HomeMineItemView homeMineItemSettings;
+
+
+
     private HomeMineContract.Presenter presenter;
     private HomeMineHelpFragment mineHelpFragment;
     private HomeMinePersonalInformationFragment personalInformationFragment;
@@ -61,6 +64,7 @@ public class HomeMineFragment extends android.support.v4.app.Fragment
     private HomeMineMessageFragment homeMineMessageFragment;
     private MineShareDeviceFragment mineShareDeviceFragment;
     private MineRelativesandFriendsFragment mineRelativesandFriendsFragment;
+
 
     public static HomeMineFragment newInstance(Bundle bundle) {
         HomeMineFragment fragment = new HomeMineFragment();
@@ -138,7 +142,7 @@ public class HomeMineFragment extends android.support.v4.app.Fragment
     }
 
     public void shareItem(View view) {
-        //if (needStartLoginFragment()) return;
+         //if (needStartLoginFragment()) return;
         //SLog.i("It's Login,can do something!");
         getFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right

@@ -105,7 +105,8 @@
             android:name=".NewHomeActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme" />
+            android:windowSoftInputMode="adjustResize"
+            android:theme="@style/AppTheme"/>
 
         <activity
             android:name="com.tencent.connect.common.AssistActivity"
@@ -192,6 +193,7 @@
         <!--容纳意见反馈的Activity-->
         <activity android:name=".n.view.mine.SuggestionChatContainerActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            android:windowSoftInputMode="adjustResize"
             >
         </activity>
     </application>

@@ -40,6 +40,9 @@ public class MineShareDeviceFragment extends Fragment implements MineShareDevice
     RelativeLayout rlMineShareSmartcamera;
 
     private MineDevicesShareManagerFragment mineDevicesShareManagerFragment;
+    private MineShareToRelativeAndFriendFragment shareToRelativeAndFriendFragment;
+    private MineShareToContactFragment mineShareToContactFragment;
+    private AlertDialog alertDialog;
 
     public static MineShareDeviceFragment newInstance() {
         return new MineShareDeviceFragment();
@@ -49,6 +52,8 @@ public class MineShareDeviceFragment extends Fragment implements MineShareDevice
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mineDevicesShareManagerFragment = MineDevicesShareManagerFragment.newInstance();
+        shareToRelativeAndFriendFragment = MineShareToRelativeAndFriendFragment.newInstance();
+        mineShareToContactFragment = MineShareToContactFragment.newInstance();
     }
 
     @Nullable
@@ -97,27 +102,39 @@ public class MineShareDeviceFragment extends Fragment implements MineShareDevice
 
     @Override
     public void setPresenter(MineShareDeviceContract.Presenter presenter) {
-
     }
 
     @Override
     public void showShareDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         View view = View.inflate(getContext(), R.layout.fragment_home_mine_share_devices_dialog, null);
         view.findViewById(R.id.tv_share_to_friends).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ToastUtil.showToast(getContext(), "分享给亲友...");
+                getFragmentManager().beginTransaction()
+                        .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
+                                , R.anim.slide_in_left, R.anim.slide_out_right)
+                        .add(android.R.id.content,shareToRelativeAndFriendFragment,"shareToRelativeAndFriendFragment")
+                        .addToBackStack("mineHelpFragment")
+                        .commit();
+                alertDialog.dismiss();
             }
         });
         view.findViewById(R.id.tv_share_to_contract).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ToastUtil.showToast(getContext(), "分享给通讯录...");
+                getFragmentManager().beginTransaction()
+                        .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
+                                , R.anim.slide_in_left, R.anim.slide_out_right)
+                        .add(android.R.id.content,mineShareToContactFragment,"mineShareToContactFragment")
+                        .addToBackStack("mineHelpFragment")
+                        .commit();
+                alertDialog.dismiss();
             }
         });
         builder.setView(view);
-        builder.show();
+        alertDialog = builder.create();
+        alertDialog.show();
     }
 
 }

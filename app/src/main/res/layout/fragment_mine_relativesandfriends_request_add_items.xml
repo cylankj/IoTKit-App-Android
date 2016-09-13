@@ -37,6 +37,7 @@
                 android:textSize="12sp"
                 android:textColor="@color/color_8c8c8c"
                 android:text="我是小姨"
+                android:singleLine="true"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
         </RelativeLayout>

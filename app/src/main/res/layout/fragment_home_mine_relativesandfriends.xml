@@ -43,36 +43,86 @@
             android:textSize="14sp" />
     </RelativeLayout>
 
-    <!--添加请求-->
-    <TextView
-        android:layout_marginTop="19dp"
-        android:layout_marginLeft="15dp"
-        android:textColor="@color/color_4b9fd5"
-        android:text="添加请求"
-        android:textSize="14sp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recyclerview_request_add"
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-    </android.support.v7.widget.RecyclerView>
 
-    <!--亲友列表-->
-    <TextView
-        android:layout_marginTop="19dp"
-        android:layout_marginLeft="15dp"
-        android:textColor="@color/color_4b9fd5"
-        android:text="亲友列表"
-        android:textSize="14sp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        <LinearLayout
+            android:id="@+id/ll_relative_and_friend"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <!--添加请求-->
+            <TextView
+                android:layout_marginTop="19dp"
+                android:layout_marginLeft="15dp"
+                android:textColor="@color/color_4b9fd5"
+                android:text="添加请求"
+                android:textSize="14sp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recyclerview_relativesandfriends_list"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-    </android.support.v7.widget.RecyclerView>
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recyclerview_request_add"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+            </android.support.v7.widget.RecyclerView>
+
+            <!--亲友列表-->
+            <TextView
+                android:layout_marginTop="19dp"
+                android:layout_marginLeft="15dp"
+                android:textColor="@color/color_4b9fd5"
+                android:text="亲友列表"
+                android:textSize="14sp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recyclerview_relativesandfriends_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+            </android.support.v7.widget.RecyclerView>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_relative_and_friend_none"
+            android:visibility="gone"
+            android:layout_marginTop="50dp"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:layout_gravity="center_horizontal"
+                android:src="@drawable/ic_launcher"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:text="无论离得多远，挂念从未中断"
+                android:textSize="16sp"
+                android:layout_marginTop="30dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <TextView
+                android:text="马上添加亲友，彼此就在身边"
+                android:textSize="16sp"
+                android:layout_gravity="center_horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <Button
+                android:id="@+id/btn_add_relative_and_friend"
+                android:layout_marginTop="30dp"
+                android:layout_gravity="center_horizontal"
+                android:text="添加亲友"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
+    </FrameLayout>
 
 </LinearLayout>

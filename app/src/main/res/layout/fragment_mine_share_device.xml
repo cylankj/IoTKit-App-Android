@@ -210,7 +210,6 @@
     </RelativeLayout>
 
 
-
     <RelativeLayout
         android:layout_marginLeft="15dp"
         android:layout_width="match_parent"

@@ -67,7 +67,6 @@ public class HomeMineHelpFragment extends Fragment {
         return view;
     }
 
-
     /**
      * 当进度条加载完成的时候显示该webView
      */
@@ -89,14 +88,14 @@ public class HomeMineHelpFragment extends Fragment {
                 break;
             //点击进入意见反馈的页面
             case R.id.tv_mine_help_suggestion:
-                /*getFragmentManager().beginTransaction()
+                getFragmentManager().beginTransaction()
                         .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                                 , R.anim.slide_in_left, R.anim.slide_out_right)
                         .add(android.R.id.content, suggestionChatFragment, "suggestionChatFragment")
                         .addToBackStack("mineHelpFragment")
-                        .commit();*/
-                Intent intent = new Intent(getActivity(),SuggestionChatContainerActivity.class);
-                startActivity(intent);
+                        .commit();
+                //Intent intent = new Intent(getActivity(),SuggestionChatContainerActivity.class);
+                //startActivity(intent);
                 break;
         }
     }
