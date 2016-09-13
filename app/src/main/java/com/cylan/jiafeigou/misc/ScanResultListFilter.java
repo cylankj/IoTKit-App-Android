@@ -39,7 +39,7 @@ public class ScanResultListFilter {
         List<ScanResult> scanResultList = new ArrayList<>();
         if (resultList == null)
             return scanResultList;
-        List<String> filterList = filters == null ? new ArrayList<String>() : Arrays.asList(filters);
+        List<String> filterList = Arrays.asList(filters);
         for (ScanResult result : resultList) {
             if (filterList.contains(result.SSID)) {
                 scanResultList.add(result);

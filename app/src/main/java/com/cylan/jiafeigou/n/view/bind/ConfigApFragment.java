@@ -22,6 +22,7 @@ import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.cache.SimpleCache;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.mvp.contract.bind.ConfigApContract;
+import com.cylan.jiafeigou.n.mvp.model.BeanWifiList;
 import com.cylan.jiafeigou.n.view.BaseTitleFragment;
 import com.cylan.jiafeigou.utils.NullCheckerUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;
@@ -103,6 +104,7 @@ public class ConfigApFragment extends BaseTitleFragment implements ConfigApContr
         cacheList = weakReference == null ? null : weakReference.get();
         if (cacheList != null && cacheList.size() > 0) {
             tvConfigApName.setText(cacheList.get(0).SSID);
+            tvConfigApName.setTag(new BeanWifiList(cacheList.get(0)));
         }
     }
 
@@ -182,7 +184,7 @@ public class ConfigApFragment extends BaseTitleFragment implements ConfigApContr
                 initFragment();
                 fiListDialogFragment = fragmentWeakReference.get();
                 fiListDialogFragment.setClickCallBack(this);
-                fiListDialogFragment.updateList(cacheList);
+                fiListDialogFragment.updateList(cacheList, tvConfigApName.getTag());
                 fiListDialogFragment.show(getActivity().getSupportFragmentManager(), "WiFiListDialogFragment");
                 if (presenter != null) {
                     presenter.registerWiFiBroadcast(getContext().getApplicationContext());
@@ -211,10 +213,14 @@ public class ConfigApFragment extends BaseTitleFragment implements ConfigApContr
         }
         cacheList = resultList;
         if (fiListDialogFragment != null)
-            fiListDialogFragment.updateList(cacheList);
-        Log.d("what", "what............");
+            fiListDialogFragment.updateList(cacheList, tvConfigApName.getTag());
+//        Log.d("what", "what............");
         Toast.makeText(getContext(), "list: " + resultList.size(), Toast.LENGTH_SHORT).show();
-        tvConfigApName.setText(resultList.get(0).SSID);
+        Object object = tvConfigApName.getTag();
+        if (object == null) {
+            tvConfigApName.setTag(new BeanWifiList(resultList.get(0)));
+            tvConfigApName.setText(resultList.get(0).SSID);
+        }
     }
 
     @Override
@@ -225,6 +231,7 @@ public class ConfigApFragment extends BaseTitleFragment implements ConfigApContr
     @Override
     public void onDismiss(ScanResult scanResult) {
         if (isResumed()) {
+            tvConfigApName.setTag(new BeanWifiList(scanResult));
             tvConfigApName.setText(scanResult.SSID);
         }
     }

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/lLayout_device_item"
+    style="@style/ripple_background"
+    android:layout_width="match_parent"
+    android:layout_height="54dp"
+    android:clickable="true">
+
+    <RadioButton
+        android:id="@+id/rbtn_item_check"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_marginEnd="24dp"
+        android:layout_marginStart="12dp"
+        android:clickable="false" />
+
+    <TextView
+        android:id="@+id/tv_item_ssid"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_vertical"
+        android:gravity="center_vertical"
+        android:paddingLeft="48dp"
+        android:paddingRight="48dp"
+        android:textColor="@color/color_666666"
+        android:textSize="16sp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_gravity="bottom"
+        android:background="@color/color_e8e8e8" />
+</FrameLayout>

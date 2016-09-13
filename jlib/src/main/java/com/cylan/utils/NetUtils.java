@@ -3,6 +3,7 @@ package com.cylan.utils;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
@@ -328,4 +329,23 @@ public class NetUtils {
         }
         return string;
     }
+
+    public static int getSecurity(ScanResult result) {
+        if (result == null)
+            return SECURITY_UNKNOWN;
+        if (result.capabilities.contains("WEP")) {
+            return SECURITY_WEP;
+        } else if (result.capabilities.contains("PSK")) {
+            return SECURITY_PSK;
+        } else if (result.capabilities.contains("EAP")) {
+            return SECURITY_EAP;
+        }
+        return SECURITY_NONE;
+    }
+
+    public static final int SECURITY_UNKNOWN = -1;
+    public static final int SECURITY_NONE = 0;
+    static final int SECURITY_WEP = 1;
+    static final int SECURITY_PSK = 2;
+    static final int SECURITY_EAP = 3;
 }
