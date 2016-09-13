@@ -20,17 +20,25 @@
 
     <TextView
         android:id="@+id/tv_config_ap_name"
+        style="@style/ripple_background"
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
         android:layout_marginTop="55dp"
-        style="@style/ripple_background"
-        android:drawableRight="@drawable/icon_date_downtag_wonderful"
+        android:drawableRight="@drawable/ico_drop_down"
         android:gravity="center"
         android:text="xxxxxx"
-        android:textColor="@color/color_666666"
-        android:textSize="22sp" />
+        android:textColor="@color/color_333333"
+        android:textSize="15sp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_gravity="bottom"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:background="@color/color_f2f2f2" />
 
     <FrameLayout
         android:id="@+id/rLayout_wifi_pwd_input_box"

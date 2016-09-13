@@ -166,8 +166,8 @@ public class BellLiveActivity extends ProcessActivity
 
     @Override
     public void onRelease(int side) {
-        AppLogger.d("pick up? " + (side == 0));
-        if (side == 1) {
+        AppLogger.d("pick up? " + (side == 1));
+        if (side == 0) {
             presenter.onDismiss();
             finishExt();
             return;

@@ -18,6 +18,7 @@
     <string name="SEND">发送</string>
     <string name="DELETE">删除</string>
     <string name="SELECT_ALL">全选</string>
+    <string name="SELECT_NONE">全不选</string>
     <string name="OPEN">开启</string>
     <string name="ALTER">修改</string>
     <string name="NEXT">下一步</string>
@@ -599,6 +600,7 @@
     <string name="home_nick_name">Hi，%s</string>
     <string name="item_device_standby_explanation">开启待机，设备将进入休眠状态，查看直播、历时录像、安全防护及报警、自动录像、延时摄影等功能将无法使用</string>
 
+    <string name="item_bad_net_work">当前网络不可用</string>
     <!--//门铃低电量提示-->
     <string name="s_bell_low_battery_content">建议使用5V/1A的充电器；充电过程中\n指示灯%s常亮，充满电后会自动熄灭</string>
     <string name="item_green">绿色</string>

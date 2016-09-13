@@ -55,7 +55,6 @@ def boolean getTaskEnableFlag(String taskName) {
 }
 
 android {
-    println("hunt...start")
     def vCode = getCustomVersionCode()
     def vName = getCustomVersionName()
 
@@ -150,7 +149,6 @@ android {
                 }
             }
         }
-        println("hunt...end")
     }
 
     productFlavors {

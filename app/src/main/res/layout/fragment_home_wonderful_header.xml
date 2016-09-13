@@ -12,7 +12,7 @@
             android:id="@+id/imgWonderfulTopBg"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/bg_head_daytime_wonderful" />
+            android:background="@drawable/bg_wonderful_daytime" />
 
         <TextView
             android:id="@+id/tv_title_head_wonder"

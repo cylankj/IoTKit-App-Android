@@ -63,6 +63,20 @@ public class BellCallRecordListAdapter extends SuperAdapter<BellCallRecordBean> 
         }
     }
 
+    /**
+     * @param lastVisiblePosition
+     */
+    public synchronized void selectNone(final int lastVisiblePosition) {
+        for (int i = 0; i < getCount(); i++) {
+            BellCallRecordBean bean = getItem(i);
+            if (!bean.selected)
+                continue;
+            bean.selected = false;
+            if (i <= lastVisiblePosition)
+                notifyItemChanged(i);
+        }
+    }
+
     @Override
     public void onBind(SuperViewHolder holder, int viewType,
                        final int layoutPosition, BellCallRecordBean item) {

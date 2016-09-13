@@ -6,6 +6,7 @@ import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
@@ -23,9 +24,11 @@ import com.cylan.jiafeigou.n.mvp.impl.bell.BellSettingPresenterImpl;
 import com.cylan.jiafeigou.n.mvp.impl.bell.DBellHomePresenterImpl;
 import com.cylan.jiafeigou.n.mvp.model.BellCallRecordBean;
 import com.cylan.jiafeigou.n.view.adapter.BellCallRecordListAdapter;
-import com.cylan.jiafeigou.utils.AnimatorUtils;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.AnimatorUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;
+import com.cylan.jiafeigou.widget.BellTopBackgroundView;
+import com.cylan.utils.RandomUtils;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -38,6 +41,7 @@ public class DoorBellHomeActivity extends BaseFullScreenFragmentActivity
         implements DoorBellHomeContract.View,
         BellCallRecordListAdapter.SimpleLongClickListener,
         BellCallRecordListAdapter.SimpleClickListener,
+        BellTopBackgroundView.ActionInterface,
         ActivityResultContract.View {
 
     private static final String tag = "DoorBellHomeActivity";
@@ -57,6 +61,8 @@ public class DoorBellHomeActivity extends BaseFullScreenFragmentActivity
     TextView tvBellHomeListDelete;
     @BindView(R.id.fLayout_bell_home_list_edition)
     FrameLayout fLayoutBellHomeListEdition;
+    @BindView(R.id.cv_bell_home_background)
+    BellTopBackgroundView cvBellHomeBackground;
     private DoorBellHomeContract.Presenter presenter;
     private ActivityResultContract.Presenter activityResultPresenter;
     private WeakReference<BellSettingFragment> fragmentWeakReference;
@@ -73,6 +79,7 @@ public class DoorBellHomeActivity extends BaseFullScreenFragmentActivity
         initAdapter();
         initToolbar();
         initSomething();
+        initTopBackground();
     }
 
     @Override
@@ -129,8 +136,12 @@ public class DoorBellHomeActivity extends BaseFullScreenFragmentActivity
         ViewUtils.setViewMarginStatusBar(fLayoutTopBarContainer);
     }
 
-    @OnClick({R.id.tv_top_bar_left, R.id.imgv_toolbar_right,
-            R.id.btn_start_calling})
+    private void initTopBackground() {
+        cvBellHomeBackground.setState(RandomUtils.getRandom(3));
+        cvBellHomeBackground.setActionInterface(this);
+    }
+
+    @OnClick({R.id.tv_top_bar_left, R.id.imgv_toolbar_right})
     public void onElementClick(View v) {
         switch (v.getId()) {
             case R.id.imgv_toolbar_right:
@@ -149,11 +160,11 @@ public class DoorBellHomeActivity extends BaseFullScreenFragmentActivity
             case R.id.tv_top_bar_left:
                 onBackPressed();
                 break;
-            case R.id.btn_start_calling:
-                Intent intent = new Intent(this, BellLiveActivity.class);
-                intent.putExtra("text", "nihao");
-                startActivity(intent);
-                break;
+//            case R.id.btn_start_calling:
+//                Intent intent = new Intent(this, BellLiveActivity.class);
+//                intent.putExtra("text", "nihao");
+//                startActivity(intent);
+//                break;
         }
     }
 
@@ -314,10 +325,23 @@ public class DoorBellHomeActivity extends BaseFullScreenFragmentActivity
                 showEditBar(false);
                 break;
             case R.id.tv_bell_home_list_select_all:
-                bellCallRecordListAdapter.selectAll(lPos);
+                if (TextUtils.equals(tvBellHomeListSelectAll.getText(), getString(R.string.SELECT_ALL))) {
+                    bellCallRecordListAdapter.selectAll(lPos);
+                    tvBellHomeListSelectAll.setText(getString(R.string.SELECT_NONE));
+                } else {
+                    bellCallRecordListAdapter.selectNone(lPos);
+                    tvBellHomeListSelectAll.setText(getString(R.string.SELECT_ALL));
+                }
                 break;
             case R.id.tv_bell_home_list_delete:
                 break;
         }
+    }
+
+    @Override
+    public void onMakeCall() {
+        Intent intent = new Intent(this, BellLiveActivity.class);
+        intent.putExtra("text", "nihao");
+        startActivity(intent);
     }
 }

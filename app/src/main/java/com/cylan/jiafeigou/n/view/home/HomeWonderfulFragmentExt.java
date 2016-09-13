@@ -285,7 +285,7 @@ public class HomeWonderfulFragmentExt extends Fragment implements
 
     @Override
     public void onHeadBackgroundChang(int daytime) {
-        imgWonderfulTopBg.setBackgroundResource(daytime == 0 ? R.drawable.bg_head_daytime_wonderful : R.drawable.bg_head_night_wonderful);
+        imgWonderfulTopBg.setBackgroundResource(daytime == 0 ? R.drawable.bg_wonderful_daytime : R.drawable.bg_wonderful_night);
     }
 
     @Override
@@ -302,7 +302,7 @@ public class HomeWonderfulFragmentExt extends Fragment implements
     public void onTimeTick(int dayTime) {
         //需要优化
         int drawableId = dayTime == JFGRules.RULE_DAY_TIME
-                ? R.drawable.bg_head_daytime_wonderful : R.drawable.bg_head_night_wonderful;
+                ? R.drawable.bg_wonderful_daytime : R.drawable.bg_wonderful_night;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             imgWonderfulTopBg.setBackground(getResources().getDrawable(drawableId, null));
         } else {

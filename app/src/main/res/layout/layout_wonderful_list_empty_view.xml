@@ -10,7 +10,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:src="@drawable/icon_no_devices" />
+        android:src="@drawable/icon_no_wonder" />
 
     <TextView
         android:id="@+id/tv_empty_layout_content"
