@@ -65,10 +65,9 @@ public class RelativeAndFriendAddFromContactAdapter extends RecyclerView.Adapter
                 }
             }
         });
-
     }
 
-    class AddContactHolder extends  RecyclerView.ViewHolder{
+    public class AddContactHolder extends  RecyclerView.ViewHolder{
 
         private final TextView tv_contactname;
         private final TextView tv_contactphone;

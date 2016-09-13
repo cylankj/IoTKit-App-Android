@@ -96,7 +96,6 @@ public class MineShareDeviceFragment extends Fragment implements MineShareDevice
                         .addToBackStack("mineHelpFragment")
                         .commit();
                 break;
-
         }
     }
 

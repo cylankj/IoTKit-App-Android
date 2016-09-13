@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:clickable="true"
+    android:layout_width="match_parent"
+    android:layout_height="67dp">
+
+    <LinearLayout
+        android:layout_marginLeft="15dp"
+        android:orientation="vertical"
+        android:layout_centerVertical="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/tv_contactname"
+            android:text="小妹"
+            android:textSize="16sp"
+            android:textColor="@color/color_33333"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/tv_contactphone"
+            android:layout_marginTop="8dp"
+            android:text="138384393"
+            android:textSize="12sp"
+            android:textColor="@color/color_8c8c8c"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_contactshare"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="15dp"
+        android:gravity="center"
+        android:layout_alignParentRight="true"
+        android:text="分享"
+        android:clickable="true"
+        android:background="@drawable/bg_screenshot"
+        android:textSize="13sp"
+        android:textColor="@color/color_4b9fd5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+</RelativeLayout>

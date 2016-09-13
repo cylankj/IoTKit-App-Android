@@ -23,6 +23,8 @@ public interface HomeMineContract {
         void onBlur(Drawable drawable);
 
         void setUserImageHead(Drawable drawable);
+
+        void initName();
     }
 
     interface Presenter extends BasePresenter {
@@ -37,5 +39,6 @@ public interface HomeMineContract {
 
         int whichLoginMethd();
 
+        String createRandomName();
     }
 }

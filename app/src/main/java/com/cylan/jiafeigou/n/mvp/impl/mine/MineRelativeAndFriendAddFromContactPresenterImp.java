@@ -29,10 +29,6 @@ import rx.schedulers.Schedulers;
  */
 public class MineRelativeAndFriendAddFromContactPresenterImp implements MineRelativeAndFriendAddFromContactContract.Presenter {
 
-    static Uri contactsUri = Uri
-            .parse("content://com.android.contacts/raw_contacts");
-    static Uri dataUri = Uri.parse("content://com.android.contacts/data");
-
     private MineRelativeAndFriendAddFromContactContract.View view;
     private Subscription contactSubscriber;
     private ArrayList<SuggestionChatInfoBean> list;

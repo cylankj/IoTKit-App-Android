@@ -20,6 +20,7 @@ import com.cylan.utils.FastBlurUtil;
 
 import org.w3c.dom.Text;
 
+import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
@@ -164,5 +165,37 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
     @Override
     public int whichLoginMethd() {
         return 0;
+    }
+
+    @Override
+    public String createRandomName() {
+        String[] firtPart = {"a","b","c","d","e","f","g","h","i","j","k","l"
+                            ,"m","n","o","p","q","r","s","t","u","v","w","x","y","z"};
+        Random random = new Random();
+        int randNum1 = random.nextInt(10);
+        int randNum2 = random.nextInt(10);
+
+        if(randNum1 == randNum2){
+            randNum2 /= 2;
+        }
+
+        int randNum3 = random.nextInt(10);
+        if((randNum1 == randNum3)|| (randNum2 == randNum3)){
+            randNum3 /= 2;
+        }
+
+        int a = random.nextInt(26);
+        int b = random.nextInt(26);
+        if(b == a){
+            b /= 2;
+        }
+        int c = random.nextInt(26);
+        if((a==c) || (b==c)){
+            c /= 2;
+        }
+
+        String result = firtPart[a]+firtPart[b]+firtPart[c]
+                +randNum1+randNum2+randNum3;
+        return result;
     }
 }

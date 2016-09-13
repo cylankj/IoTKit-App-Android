@@ -3,6 +3,7 @@ package com.cylan.jiafeigou.n.view.home;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,7 +33,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class HomeMineFragment extends android.support.v4.app.Fragment
+public class HomeMineFragment extends Fragment
         implements HomeMineContract.View {
     @BindView(R.id.iv_home_mine_portrait)
     RoundedImageView ivHomeMinePortrait;
@@ -54,8 +55,6 @@ public class HomeMineFragment extends android.support.v4.app.Fragment
     HomeMineItemView homeMineItemHelp;
     @BindView(R.id.home_mine_item_settings)
     HomeMineItemView homeMineItemSettings;
-
-
 
     private HomeMineContract.Presenter presenter;
     private HomeMineHelpFragment mineHelpFragment;
@@ -100,6 +99,7 @@ public class HomeMineFragment extends android.support.v4.app.Fragment
     @Override
     public void onStart() {
         super.onStart();
+        initName();
     }
 
     @Override
@@ -213,6 +213,11 @@ public class HomeMineFragment extends android.support.v4.app.Fragment
         ivHomeMinePortrait.setImageDrawable(drawable);
     }
 
+    @Override
+    public void initName() {
+        tvHomeMineNick.setText(presenter.createRandomName());
+    }
+
 
     private boolean needStartLoginFragment() {
         if (!JfgCmd.getJfgCmd(getContext()).isLogined) {
@@ -288,6 +293,5 @@ public class HomeMineFragment extends android.support.v4.app.Fragment
                 break;
         }
     }
-
 
 }
