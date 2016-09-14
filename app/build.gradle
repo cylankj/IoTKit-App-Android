@@ -140,11 +140,13 @@ android {
                         if (outputFile.name.contains("release") && condition) {
                             fileName = fileName +
                                     "-release.apk"
+                            output.outputFile = new File(outputFile.parent, fileName)
                         } else if (outputFile.name.contains("debug")) {
                             fileName = fileName +
                                     "-debug.apk"
+                            output.outputFile = new File(outputFile.parent, fileName)
                         }
-                        output.outputFile = new File(outputFile.parent, fileName)
+                        println("hunt...name: " + outputFile.name)
                     }
                 }
             }
@@ -179,14 +181,6 @@ android {
             manifestPlaceholders = [NICELY_VALUE: "yun.jfgou.com:446",
                                     MAT_VALUE   : getMtaAppKey("zhongxing")]
         }
-    }
-}
-
-//配置task开关
-tasks.whenTaskAdded { task ->
-
-    if (task.name.contains("zhongxing")) {
-        task.enabled = false
     }
 }
 
@@ -238,5 +232,44 @@ dependencies {
 repositories {
     flatDir {
         dirs 'libs'
+    }
+}
+
+def int getBuildFlag(String flag) {
+    Properties properties = new Properties()
+    File localProperties = project.rootProject.file('build.properties')
+    def int buildFlag = 0
+    if (localProperties.exists()) {
+        properties.load(localProperties.newDataInputStream())
+        buildFlag = properties.getProperty(flag).toInteger()
+    }
+    return buildFlag
+}
+
+//配置task开关
+tasks.whenTaskAdded { task ->
+    if (task.name.contains("_zhongxing") && getBuildFlag("zhongxing") == 0) {
+        task.enabled = false
+    }
+    if (task.name.contains("_test") && !task.name.contains("_test1") && getBuildFlag("test") == 0) {
+        task.enabled = false
+    }
+    if (task.name.contains("_test1") && getBuildFlag("test1") == 0) {
+        task.enabled = false
+    }
+    if (task.name.contains("_yf") && getBuildFlag("yf") == 0) {
+        task.enabled = false
+    }
+    if (task.name.contains("_yun1") && getBuildFlag("yun1") == 0) {
+        task.enabled = false
+    }
+    if (task.name.contains("_yun") && !task.name.contains("_yun1") && getBuildFlag("yun1") == 0) {
+        task.enabled = false
+    }
+    if (task.name.contains("lint")) {
+        task.enabled = false
+    }
+    if (task.name.contains("Unit")) {
+        task.enabled = false
     }
 }
