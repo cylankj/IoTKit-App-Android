@@ -108,5 +108,10 @@ public class JConstant {
     public static final String CRASH_PATH = ROOT_DIR + File.separator + "crash";
     public static final String DAEMON_DIR = ROOT_DIR + File.separator + "daemon";
     public static final String LOG_PATH = ROOT_DIR + File.separator + "log";
+    public static final String USER_IMAGE_HEAD_URL = "";                  //用户头像
+
+    public static final String RECEIVE_MESSAGE_NOTIFICATION = "receive_message_notification";      //接收消息通知
+    public static final String OPEN_VOICE = "open_voice";                       //开启声音提示
+    public static final String OPEN_SHAKE = "open_shake";                       //开启震动提示
 
 }

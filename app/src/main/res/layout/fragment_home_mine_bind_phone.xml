@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/color_white"
+    android:clickable="true"
+    android:orientation="vertical">
+
+    <include
+        android:id="@+id/rLayout_login_top"
+        layout="@layout/layout_top_bar_item"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginTop="60dp" />
+
+        <FrameLayout
+            android:id="@+id/fLayout_forget_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:id="@+id/lLayout_register_input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="44dp"
+                android:animateLayoutChanges="true"
+                android:orientation="vertical">
+
+                <FrameLayout
+                    android:id="@+id/fLayout_account_input_box"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:layout_marginTop="30dp">
+
+
+                    <EditText
+                        android:id="@+id/et_input_userphone"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:layout_marginBottom="5dp"
+                        android:layout_marginTop="5dp"
+                        android:background="@null"
+                        android:focusable="true"
+                        android:focusableInTouchMode="true"
+                        android:gravity="center"
+                        android:inputType="phone"
+                        android:hint="请输入手机号"
+                        android:maxLength="60"
+                        android:textColor="@color/color_666666"
+                        android:textColorHint="@color/color_cecece"
+                        android:textCursorDrawable="@drawable/bg_common_cursor"
+                        android:textSize="15sp" />
+
+                    <ImageView
+                        android:id="@+id/iv_forget_clear_username"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="end"
+                        android:src="@drawable/btn_login_clear_text"
+                        android:visibility="gone" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_gravity="bottom"
+                        android:background="@color/color_f2f2f2" />
+                </FrameLayout>
+
+                <FrameLayout
+                    android:id="@+id/fLayout_verification_code_input_box"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:layout_marginTop="30dp"
+                    android:visibility="gone">
+
+
+                    <EditText
+                        android:id="@+id/et_verification_input"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:layout_marginBottom="5dp"
+                        android:layout_marginTop="5dp"
+                        android:background="@null"
+                        android:focusable="true"
+                        android:focusableInTouchMode="true"
+                        android:gravity="center"
+                        android:hint="@string/item_input_phone_num"
+                        android:inputType="numberDecimal"
+                        android:maxLength="6"
+                        android:paddingLeft="40dp"
+                        android:paddingRight="40dp"
+                        android:textColor="@color/color_666666"
+                        android:textColorHint="@color/color_cecece"
+                        android:textCursorDrawable="@drawable/bg_common_cursor"
+                        android:textSize="15sp" />
+
+
+                    <TextView
+                        android:id="@+id/tv_meter_get_code"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="end"
+                        android:enabled="false"
+                        android:gravity="center"
+                        android:paddingLeft="10dp"
+                        android:paddingRight="10dp"
+                        android:textColor="@color/common_btn_color_state" />
+
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_gravity="bottom"
+                        android:background="@color/color_f2f2f2" />
+                </FrameLayout>
+
+
+                <TextView
+                    android:enabled="true"
+                    style="@style/login_model_commit_style"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="37dp"
+                    android:text="获取验证码"
+                    android:id="@+id/tv_get_checkNumber" />
+            </LinearLayout>
+        </FrameLayout>
+
+
+
+</LinearLayout>

@@ -12,6 +12,7 @@
         android:layout_gravity="start|center_vertical"
         android:paddingLeft="15dp"
         android:paddingRight="15dp"
+        android:clickable="true"
         android:src="@drawable/btn_login_nav_close" />
 
     <TextView

@@ -15,9 +15,13 @@ public interface HomeMineHelpSuggestionContract {
 
     interface View extends BaseView<Presenter> {
         void onTalkList(ArrayList<MineHelpSuggestionBean> beanOfArrayList);
+
+        void onClearAllTalk();             //清空所有会话
     }
 
     interface Presenter extends BasePresenter {
         void addItemOfList();
+
+        void onClearAllTalk();
     }
 }

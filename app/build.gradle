@@ -152,7 +152,7 @@ android {
     }
 
     productFlavors {
-
+//
         _test {
             manifestPlaceholders = [NICELY_VALUE: "test.jfgou.com:446",
                                     MAT_VALUE   : getMtaAppKey("test")]
@@ -230,7 +230,8 @@ dependencies {
     compile rootProject.ext.multiProcessSp
     //glide
     compile rootProject.ext.glide
-
+    //头像更改选择框架
+    compile rootProject.ext.galleryFinal
     compile(name: 'JfgAndroidSDK-3.0.114', ext: 'aar')
 }
 

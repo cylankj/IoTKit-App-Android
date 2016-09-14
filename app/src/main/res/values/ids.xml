@@ -26,4 +26,7 @@
 
     <item name="selected_view" type="id" />
 
+    <!--头像选择-->
+    <item name="adapter_item_tag_key" type="id"/>
+
 </resources>

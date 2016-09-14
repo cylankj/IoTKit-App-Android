@@ -75,4 +75,5 @@ public class BaseApplication extends Application {
         super.onLowMemory();
         Log.d(TAG, "onLowMemory: ");
     }
+
 }

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:background="@color/color_white"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="73dp"
+        android:background="@color/color_0ba8cf">
+
+        <ImageView
+            android:id="@+id/iv_home_mine_share_devices_manager_back"
+            android:clickable="true"
+            android:layout_alignParentBottom="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="15dp"
+            android:src="@drawable/icon_nav_back_white" />
+
+        <TextView
+            android:id="@+id/tv_home_mine_share_devices_name"
+            android:layout_marginBottom="12dp"
+            android:layout_alignParentBottom="true"
+            android:layout_marginLeft="48dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="设备名称"
+            android:textSize="18sp"
+            android:textColor="@color/color_white" />
+
+    </RelativeLayout>
+
+    <TextView
+        android:layout_marginTop="19dp"
+        android:layout_marginLeft="15dp"
+        android:text="已分享亲友"
+        android:textSize="13sp"
+        android:textColor="@color/color_4b9fd5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <android.support.v7.widget.RecyclerView
+        android:layout_marginTop="8dp"
+        android:id="@+id/recycler_had_share_relatives_and_friend"
+        android:layout_width="match_parent"
+        android:layout_weight="1"
+        android:layout_height="0dp">
+    </android.support.v7.widget.RecyclerView>
+
+</LinearLayout>

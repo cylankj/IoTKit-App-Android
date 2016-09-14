@@ -3,6 +3,7 @@ package com.cylan.jiafeigou.n.view.home;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,20 +15,23 @@ import com.cylan.jiafeigou.misc.RxEvent;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeMineContract;
 import com.cylan.jiafeigou.n.view.mine.HomeMineHelpFragment;
 import com.cylan.jiafeigou.n.view.mine.HomeMinePersonalInformationFragment;
-import com.cylan.jiafeigou.support.rxbus.RxBus;
+import com.cylan.jiafeigou.n.view.mine.MineRelativesandFriendsFragment;
+import com.cylan.jiafeigou.n.view.mine.MineShareDeviceFragment;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.support.rxbus.RxBus;
 import com.cylan.jiafeigou.utils.ContinuityClickUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.HomeMineItemView;
 import com.cylan.jiafeigou.widget.MsgTextView;
 import com.cylan.jiafeigou.widget.roundedimageview.RoundedImageView;
-;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class HomeMineFragment extends android.support.v4.app.Fragment
+;
+
+public class HomeMineFragment extends Fragment
         implements HomeMineContract.View {
     @BindView(R.id.iv_home_mine_portrait)
     RoundedImageView ivHomeMinePortrait;
@@ -49,9 +53,15 @@ public class HomeMineFragment extends android.support.v4.app.Fragment
     HomeMineItemView homeMineItemHelp;
     @BindView(R.id.home_mine_item_settings)
     HomeMineItemView homeMineItemSettings;
+
     private HomeMineContract.Presenter presenter;
     private HomeMineHelpFragment mineHelpFragment;
     private HomeMinePersonalInformationFragment personalInformationFragment;
+    private HomeSettingFragment homeSettingFragment;
+    private HomeMineMessageFragment homeMineMessageFragment;
+    private MineShareDeviceFragment mineShareDeviceFragment;
+    private MineRelativesandFriendsFragment mineRelativesandFriendsFragment;
+
 
     public static HomeMineFragment newInstance(Bundle bundle) {
         HomeMineFragment fragment = new HomeMineFragment();
@@ -64,6 +74,10 @@ public class HomeMineFragment extends android.support.v4.app.Fragment
         super.onCreate(savedInstanceState);
         mineHelpFragment = HomeMineHelpFragment.newInstance(new Bundle());
         personalInformationFragment = HomeMinePersonalInformationFragment.newInstance(new Bundle());
+        homeSettingFragment = HomeSettingFragment.newInstance();
+        homeMineMessageFragment = HomeMineMessageFragment.newInstance();
+        mineShareDeviceFragment = MineShareDeviceFragment.newInstance();
+        mineRelativesandFriendsFragment = MineRelativesandFriendsFragment.newInstance();
     }
 
     @Override
@@ -80,10 +94,10 @@ public class HomeMineFragment extends android.support.v4.app.Fragment
         ViewUtils.setViewMarginStatusBar(fLayoutMsgBox);
     }
 
-
     @Override
     public void onStart() {
         super.onStart();
+        initName();
     }
 
     @Override
@@ -118,15 +132,47 @@ public class HomeMineFragment extends android.support.v4.app.Fragment
         AppLogger.i("It's Login,can do something!");
     }
 
-    public void shareItem(View view) {
-        if (needStartLoginFragment()) return;
-        AppLogger.i("It's Login,can do something!");
-    }
+//    public void shareItem(View view) {
+//        if (needStartLoginFragment()) return;
+//        AppLogger.i("It's Login,can do something!");
+//    }
 
     public void settingsItem(View view) {
         if (needStartLoginFragment()) return;
         AppLogger.i("It's Login,can do something!");
+        //if (needStartLoginFragment()) return;
+        //SLog.i("It's Login,can do something!");
+
+        getFragmentManager().beginTransaction()
+                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
+                        , R.anim.slide_in_left, R.anim.slide_out_right)
+                .add(android.R.id.content, mineRelativesandFriendsFragment,
+                        "mineRelativesandFriendsFragment")
+                .addToBackStack("mineHelpFragment")
+                .commit();
     }
+
+    public void shareItem(View view) {
+        //if (needStartLoginFragment()) return;
+        //SLog.i("It's Login,can do something!");
+        getFragmentManager().beginTransaction()
+                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
+                        , R.anim.slide_in_left, R.anim.slide_out_right)
+                .add(android.R.id.content, mineShareDeviceFragment, "mineShareDeviceFragment")
+                .addToBackStack("mineHelpFragment")
+                .commit();
+    }
+
+//    public void settingsItem(View view) {
+//        //if (needStartLoginFragment()) return;
+//        //SLog.i("It's Login,can do something!");
+//        getFragmentManager().beginTransaction()
+//                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
+//                        , R.anim.slide_in_left, R.anim.slide_out_right)
+//                .add(android.R.id.content, homeSettingFragment, "homeSettingFragment")
+//                .addToBackStack("mineHelpFragment")
+//                .commit();
+//    }
 
     public void helpItem(View view) {
         if (needStartLoginFragment()) return;
@@ -155,6 +201,7 @@ public class HomeMineFragment extends android.support.v4.app.Fragment
 //            testBlurBackground(R.drawable.clouds);
             ivHomeMinePortrait.setImageResource(R.drawable.clouds);
             if (presenter != null) presenter.portraitBlur(R.drawable.clouds);
+            //presenter.portraitUpdateByUrl(url);
             tvHomeMineMsgCount.post(new Runnable() {
                 @Override
                 public void run() {
@@ -171,6 +218,16 @@ public class HomeMineFragment extends android.support.v4.app.Fragment
         AppLogger.e("usetime:%d ms", System.currentTimeMillis() - time);
     }
 
+    @Override
+    public void setUserImageHead(Drawable drawable) {
+        ivHomeMinePortrait.setImageDrawable(drawable);
+    }
+
+    @Override
+    public void initName() {
+        tvHomeMineNick.setText(presenter.createRandomName());
+    }
+
 
     private boolean needStartLoginFragment() {
         if (RxBus.getInstance().hasObservers()) {
@@ -182,7 +239,7 @@ public class HomeMineFragment extends android.support.v4.app.Fragment
 
     @OnClick({R.id.home_mine_item_friend, R.id.home_mine_item_share,
             R.id.home_mine_item_help, R.id.home_mine_item_settings,
-            R.id.shadow_layout, R.id.tv_home_mine_nick})
+            R.id.shadow_layout, R.id.tv_home_mine_nick, R.id.rLayout_msg_box})
     public void onButterKnifeClick(View view) {
         switch (view.getId()) {
             case R.id.home_mine_item_friend:
@@ -233,8 +290,16 @@ public class HomeMineFragment extends android.support.v4.app.Fragment
                         .addToBackStack("personalInformationFragment")
                         .commit();
                 break;
+
+            case R.id.rLayout_msg_box:
+                getFragmentManager().beginTransaction()
+                        .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
+                                , R.anim.slide_in_left, R.anim.slide_out_right)
+                        .add(android.R.id.content, homeMineMessageFragment, "homeMineMessageFragment")
+                        .addToBackStack("personalInformationFragment")
+                        .commit();
+                break;
         }
     }
-
 
 }

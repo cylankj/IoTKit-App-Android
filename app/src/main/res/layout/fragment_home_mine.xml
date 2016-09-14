@@ -55,6 +55,7 @@
         </LinearLayout>
 
         <FrameLayout
+            android:clickable="true"
             android:id="@+id/rLayout_msg_box"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

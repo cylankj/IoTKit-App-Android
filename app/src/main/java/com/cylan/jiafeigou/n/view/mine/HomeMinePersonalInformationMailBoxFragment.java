@@ -2,9 +2,11 @@ package com.cylan.jiafeigou.n.view.mine;
 
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -17,8 +19,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.n.mvp.contract.mine.MinePersonalInformationBindMailContract;
+import com.cylan.jiafeigou.n.mvp.impl.mine.MinePersonalInformationBineMailPresenterImp;
 import com.cylan.jiafeigou.utils.IMEUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
+import com.cylan.jiafeigou.utils.ToastUtil;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -33,7 +38,7 @@ import butterknife.OnClick;
  * 更新时间   $Date$
  * 更新描述   ${TODO}
  */
-public class HomeMinePersonalInformationMailBoxFragment extends Fragment {
+public class HomeMinePersonalInformationMailBoxFragment extends Fragment implements MinePersonalInformationBindMailContract.View {
 
     private static final String TAG = "HomeMinePersonalInformationMailBoxFragment";
     @BindView(R.id.iv_mine_personal_information_mailbox)
@@ -52,8 +57,26 @@ public class HomeMinePersonalInformationMailBoxFragment extends Fragment {
     ImageView mIvMailBoxBindDisable;
 
     private String mailBox;
+    private MinePersonalInformationBindMailContract.Presenter presenter;
 
     private OnBindMailBoxListener onBindMailBoxListener;
+
+    @Override
+    public void setPresenter(MinePersonalInformationBindMailContract.Presenter presenter) {
+
+    }
+
+    @Override
+    public void showMailHasBindDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setMessage("该邮箱已经被绑定")
+                .setPositiveButton("我知道了", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                }).show();
+    }
 
     public interface OnBindMailBoxListener {
         void mailBoxChange(String content);
@@ -62,7 +85,6 @@ public class HomeMinePersonalInformationMailBoxFragment extends Fragment {
     public void setListener(OnBindMailBoxListener mListener) {
         this.onBindMailBoxListener = mListener;
     }
-
 
     public static HomeMinePersonalInformationMailBoxFragment newInstance(Bundle bundle) {
         HomeMinePersonalInformationMailBoxFragment fragment = new HomeMinePersonalInformationMailBoxFragment();
@@ -92,8 +114,13 @@ public class HomeMinePersonalInformationMailBoxFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_mine_personal_information_mailbox, container, false);
         ButterKnife.bind(this, view);
+        initPresenter();
         initListener();
         return view;
+    }
+
+    private void initPresenter() {
+        presenter = new MinePersonalInformationBineMailPresenterImp(this);
     }
 
     /**
@@ -144,7 +171,6 @@ public class HomeMinePersonalInformationMailBoxFragment extends Fragment {
         });
     }
 
-
     @OnClick({R.id.iv_mine_personal_mailbox_back, R.id.iv_mine_personal_mailbox_bind})
     public void onClick(View v) {
         switch (v.getId()) {
@@ -158,7 +184,14 @@ public class HomeMinePersonalInformationMailBoxFragment extends Fragment {
                 mailBox = mETMailBox.getText().toString();
                 if (TextUtils.isEmpty(mailBox)) {
                     return;
+                } else if (!presenter.checkEmail(mailBox)) {
+                    ToastUtil.showToast(getContext(), "请输入有效邮箱");
+                    return;
+                } else if (presenter.checkEmailIsBinded(mailBox)) {
+                    showMailHasBindDialog();
+                    return;
                 } else {
+                    //二。通过手机号登录，点击确定2s后对出界面 TODO
                     if (onBindMailBoxListener != null) {
                         onBindMailBoxListener.mailBoxChange(mailBox);
                         PreferencesUtils.putString(getActivity(), "邮箱", mailBox);
@@ -167,6 +200,12 @@ public class HomeMinePersonalInformationMailBoxFragment extends Fragment {
                         IMEUtils.hide((Activity) getContext());
                         getFragmentManager().popBackStack();
                     }
+
+                    /*
+                     一。第三方登录，点击确定跳转到设置密码页面
+                     TODO
+                    */
+
                 }
                 break;
         }

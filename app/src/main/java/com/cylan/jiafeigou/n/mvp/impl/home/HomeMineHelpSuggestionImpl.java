@@ -1,5 +1,7 @@
 package com.cylan.jiafeigou.n.mvp.impl.home;
 
+import android.content.Context;
+
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeMineHelpSuggestionContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
@@ -27,14 +29,17 @@ public class HomeMineHelpSuggestionImpl extends AbstractPresenter<HomeMineHelpSu
         implements HomeMineHelpSuggestionContract.Presenter {
 
     Subscription subscription;
+    private ArrayList<MineHelpSuggestionBean> list;
+    private Context context;
 
-    private HomeMineHelpSuggestionImpl(HomeMineHelpSuggestionContract.View view) {
+    private HomeMineHelpSuggestionImpl(HomeMineHelpSuggestionContract.View view, Context context) {
         super(view);
+        this.context = context;
         view.setPresenter(this);
     }
 
     private ArrayList<MineHelpSuggestionBean> testData() {
-        ArrayList<MineHelpSuggestionBean> list = new ArrayList<>();
+        list = new ArrayList<>();
         String server = "亲爱的用户,客户端将于2016年4月1日23:00至00:00进行系统维护升级," +
                 "期间对设备正常使用将会造成一定影响,对您造成的不便之处敬请谅解。再次感谢您对加菲狗的支持！";
         String client = "希望你们会做视频下载功能，非常实用呢。";
@@ -87,5 +92,12 @@ public class HomeMineHelpSuggestionImpl extends AbstractPresenter<HomeMineHelpSu
     @Override
     public void addItemOfList() {
 
+    }
+
+    /**
+     * 清空所有会话
+     */
+    @Override
+    public void onClearAllTalk() {
     }
 }

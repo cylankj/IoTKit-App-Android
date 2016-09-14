@@ -20,11 +20,24 @@ public interface HomeMineContract {
         void onPortraitUpdate(String url);
 
         void onBlur(Drawable drawable);
+
+        void setUserImageHead(Drawable drawable);
+
+        void initName();
     }
 
     interface Presenter extends BasePresenter {
+
         void requestLatestPortrait();
 
         void portraitBlur(@DrawableRes int id);
+
+        void portraitUpdateByUrl(String url);
+
+        boolean checkIsLogin(String userID);
+
+        int whichLoginMethd();
+
+        String createRandomName();
     }
 }

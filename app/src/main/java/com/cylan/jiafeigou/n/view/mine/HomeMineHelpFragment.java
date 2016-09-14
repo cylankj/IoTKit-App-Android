@@ -42,6 +42,7 @@ public class HomeMineHelpFragment extends Fragment {
     ProgressBar mPbHelp;
 
     private HomeMineHelpSuggestionFragment homeMineHelpSuggestionFragment;
+    private SuggestionChatFragment suggestionChatFragment;
 
     public static HomeMineHelpFragment newInstance(Bundle bundle) {
         HomeMineHelpFragment fragment = new HomeMineHelpFragment();
@@ -52,7 +53,8 @@ public class HomeMineHelpFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        homeMineHelpSuggestionFragment = HomeMineHelpSuggestionFragment.newInstance(new Bundle());
+        //homeMineHelpSuggestionFragment = HomeMineHelpSuggestionFragment.newInstance(new Bundle());
+        suggestionChatFragment = new SuggestionChatFragment();
     }
 
 
@@ -63,7 +65,6 @@ public class HomeMineHelpFragment extends Fragment {
         ButterKnife.bind(this, view);
         return view;
     }
-
 
     /**
      * 当进度条加载完成的时候显示该webView
@@ -89,9 +90,11 @@ public class HomeMineHelpFragment extends Fragment {
                 getFragmentManager().beginTransaction()
                         .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                                 , R.anim.slide_in_left, R.anim.slide_out_right)
-                        .add(android.R.id.content, homeMineHelpSuggestionFragment, "homeMineHelpSuggestionFragment")
+                        .add(android.R.id.content, suggestionChatFragment, "suggestionChatFragment")
                         .addToBackStack("mineHelpFragment")
                         .commit();
+                //Intent intent = new Intent(getActivity(),SuggestionChatContainerActivity.class);
+                //startActivity(intent);
                 break;
         }
     }
