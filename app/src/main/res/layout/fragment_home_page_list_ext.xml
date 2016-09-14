@@ -3,7 +3,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appbar"
         android:layout_width="match_parent"
@@ -11,6 +10,7 @@
         android:theme="@style/AppTheme.PopupOverlay">
 
         <android.support.design.widget.CollapsingToolbarLayout
+            android:background="#eee000"
             android:id="@+id/collapsing_toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -32,6 +32,17 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
+                    <TextView
+                        android:id="@+id/tvHeaderLastTitle"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/dimens_48dp"
+                        android:layout_gravity="bottom|center_horizontal"
+                        android:gravity="center"
+                        android:alpha="0"
+                        android:text="@string/app_name"
+                        android:textColor="@android:color/white"
+                        android:textSize="20sp" />
+
                     <ImageView
                         android:id="@+id/imgV_add_devices"
                         style="@style/ripple_background_borderless"
@@ -44,7 +55,6 @@
                         android:src="@drawable/btn_common_add" />
                 </FrameLayout>
             </android.support.v7.widget.Toolbar>
-
 
         </android.support.design.widget.CollapsingToolbarLayout>
 

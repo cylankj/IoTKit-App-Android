@@ -115,6 +115,12 @@ public class HomeWonderfulFragmentExt extends Fragment implements
     @BindView(R.id.appbar)
     AppBarLayout appbar;
 
+    /**
+     * 加载更多
+     */
+    private boolean endlessLoading = true;
+
+
     private EmptyViewState emptyViewState;
     private HomeWonderfulAdapter homeWonderAdapter;
     private HomeWonderfulContract.Presenter presenter;
@@ -245,13 +251,34 @@ public class HomeWonderfulFragmentExt extends Fragment implements
         ViewUtils.setViewMarginStatusBar(toolbar);
     }
 
+
     private void initView() {
         //添加Handler
         srLayoutMainContentHolder.setOnRefreshListener(this);
-
-        rVDevicesList.setLayoutManager(new LinearLayoutManager(getContext()));
+        final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+        rVDevicesList.setLayoutManager(linearLayoutManager);
         rVDevicesList.setAdapter(homeWonderAdapter);
+        rVDevicesList.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            int pastVisiblesItems, visibleItemCount, totalItemCount;
 
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                if (dy > 0) { //check for scroll down
+                    visibleItemCount = linearLayoutManager.getChildCount();
+                    totalItemCount = linearLayoutManager.getItemCount();
+                    pastVisiblesItems = linearLayoutManager.findFirstVisibleItemPosition();
+                    if (endlessLoading) {
+                        if ((visibleItemCount + pastVisiblesItems) >= totalItemCount) {
+                            endlessLoading = false;
+                            if (presenter != null)
+                                presenter.startRefresh();
+                            AppLogger.v("Last Item Wow !");
+                            //Do pagination.. i.e. fetch new data
+                        }
+                    }
+                }
+            }
+        });
     }
 
     private void initHeaderView() {
@@ -273,6 +300,7 @@ public class HomeWonderfulFragmentExt extends Fragment implements
     @UiThread
     @Override
     public void onMediaListRsp(List<MediaBean> resultList) {
+        endlessLoading = true;
         srLayoutMainContentHolder.setRefreshing(false);
         if (resultList == null || resultList.size() == 0) {
             homeWonderAdapter.clear();

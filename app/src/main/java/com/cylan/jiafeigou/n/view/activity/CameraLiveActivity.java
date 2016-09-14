@@ -30,7 +30,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-;
 
 public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
 

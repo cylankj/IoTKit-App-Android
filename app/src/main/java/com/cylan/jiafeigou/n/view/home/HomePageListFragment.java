@@ -90,7 +90,7 @@ public class HomePageListFragment extends Fragment implements
     WeakReference<SimpleDialogFragment> simpleDialogFragmentWeakReference;
     @BindView(R.id.lLayout_home_greet)
     LinearLayout lLayoutHomeGreet;
-    @BindView(R.id.fLayoutHomeHeaderContainer)
+    @BindView(R.id.fLayout_home_page_list_header_container)
     FrameLayout fLayoutHomeHeaderContainer;
     @BindView(R.id.fLayout_home_page_container)
     FrameLayout fLayoutHomePageContainer;
@@ -210,7 +210,7 @@ public class HomePageListFragment extends Fragment implements
             simpleScrollListener = new SimpleScrollListener(vWaveAnimation, tvHeaderLastTitle);
         }
         StickyHeaderBuilder.stickTo(rVDevicesList, simpleScrollListener)
-                .setHeader(R.id.fLayoutHomeHeaderContainer, (ViewGroup) getView())
+                .setHeader(R.id.fLayout_home_page_list_header_container, (ViewGroup) getView())
                 .minHeightHeader((int) (getResources().getDimension(R.dimen.dimens_48dp)
                         + ViewUtils.getCompatStatusBarHeight(getContext())))
                 .build();

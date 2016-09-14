@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.annotation.UiThread;
 import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -88,7 +87,7 @@ public class HomePageListFragmentExt extends Fragment implements
     WeakReference<SimpleDialogFragment> simpleDialogFragmentWeakReference;
     @BindView(R.id.lLayout_home_greet)
     LinearLayout lLayoutHomeGreet;
-    @BindView(R.id.fLayoutHomeHeaderContainer)
+    @BindView(R.id.fLayout_home_page_list_header_container)
     FrameLayout fLayoutHomeHeaderContainer;
     @BindView(R.id.tvHeaderNickName)
     TextView tvHeaderNickName;
@@ -98,10 +97,12 @@ public class HomePageListFragmentExt extends Fragment implements
     Toolbar toolbar;
     @BindView(R.id.appbar)
     AppBarLayout appbar;
-    @BindView(R.id.collapsing_toolbar)
-    CollapsingToolbarLayout collapsingToolbar;
+    //    @BindView(R.id.collapsing_toolbar)
+//    CollapsingToolbarLayout collapsingToolbar;
     @BindView(R.id.fLayout_empty_view_container)
     FrameLayout fLayoutEmptyViewContainer;
+    @BindView(R.id.img_home_page_header_bg)
+    ImageView imgHomePageHeaderBg;
     private HomePageListContract.Presenter presenter;
 
     private ActivityResultContract.Presenter activityResultPresenter;
@@ -192,7 +193,7 @@ public class HomePageListFragmentExt extends Fragment implements
         srLayoutMainContentHolder.post(new Runnable() {
             @Override
             public void run() {
-                emptyViewState.setEmptyViewState(fLayoutEmptyViewContainer, fLayoutHomeHeaderContainer.getBottom());
+                emptyViewState.setEmptyViewState(fLayoutEmptyViewContainer, 0);
                 emptyViewState.determineEmptyViewState(homePageListAdapter.getCount());
             }
         });
@@ -333,9 +334,9 @@ public class HomePageListFragmentExt extends Fragment implements
         int drawableId = dayTime == JFGRules.RULE_DAY_TIME
                 ? R.drawable.bg_home_title_daytime : R.drawable.bg_home_title_night;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            fLayoutHomeHeaderContainer.setBackground(getResources().getDrawable(drawableId, null));
+            imgHomePageHeaderBg.setBackground(getResources().getDrawable(drawableId, null));
         } else {
-            fLayoutHomeHeaderContainer.setBackground(getResources().getDrawable(drawableId));
+            imgHomePageHeaderBg.setBackground(getResources().getDrawable(drawableId));
         }
     }
 
@@ -497,8 +498,7 @@ public class HomePageListFragmentExt extends Fragment implements
             FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
                     ViewGroup.LayoutParams.WRAP_CONTENT);
             lp.gravity = Gravity.CENTER_HORIZONTAL;
-            lp.topMargin = ViewUtils.dp2px(80)
-            ;
+            lp.topMargin = ViewUtils.dp2px(80);
             homePageEmptyView.addView(viewContainer, lp);
         }
 

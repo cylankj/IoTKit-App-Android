@@ -37,7 +37,6 @@ public class BindDeviceActivity extends BaseFullScreenFragmentActivity implement
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bind_device);
-//        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
         ButterKnife.bind(this);
         initTopBar();
     }

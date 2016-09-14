@@ -1,7 +1,7 @@
 package com.cylan.jiafeigou.n.view.activity;
 
-import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.widget.ImageView;
@@ -12,6 +12,7 @@ import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
 import com.cylan.jiafeigou.n.mvp.model.MagBean;
 import com.cylan.jiafeigou.n.view.adapter.MagActivityAdapter;
 import com.cylan.jiafeigou.n.view.mag.MagLiveFragment;
+import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.utils.RandomUtils;
 
@@ -54,7 +55,6 @@ public class MagLiveActivity extends BaseFullScreenFragmentActivity {
     RecyclerView RvMagState;
     private MagLiveFragment magLiveFragment;
     private List<MagBean> magList;
-    private LinearLayoutManager layoutManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,9 +62,7 @@ public class MagLiveActivity extends BaseFullScreenFragmentActivity {
         setContentView(R.layout.activity_mag_live);
         //实例化msgLiveFragment
         magLiveFragment = MagLiveFragment.newInstance(new Bundle());
-//        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
         ButterKnife.bind(this);
-
         //用来存放，所需要的bean对象
         initTopBar();
         initData();
@@ -143,6 +141,11 @@ public class MagLiveActivity extends BaseFullScreenFragmentActivity {
      * 用来加载fragment的方法。
      */
     private void loadFragment(int id, MagLiveFragment fragment) {
+        Fragment f = getSupportFragmentManager().findFragmentByTag("MsgLiveInformationFragment");
+        if (f != null) {
+            AppLogger.d("fragment is not null");
+            return;
+        }
         getSupportFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                         , R.anim.slide_in_left, R.anim.slide_out_right)
