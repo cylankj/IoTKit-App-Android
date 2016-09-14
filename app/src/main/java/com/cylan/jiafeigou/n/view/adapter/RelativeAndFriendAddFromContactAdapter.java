@@ -8,8 +8,6 @@ import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.model.SuggestionChatInfoBean;
-import com.cylan.jiafeigou.utils.ToastUtil;
-import com.sina.weibo.sdk.utils.LogUtil;
 
 import java.util.ArrayList;
 
@@ -21,32 +19,35 @@ import java.util.ArrayList;
 public class RelativeAndFriendAddFromContactAdapter extends RecyclerView.Adapter<RelativeAndFriendAddFromContactAdapter.AddContactHolder> {
 
     private ArrayList<SuggestionChatInfoBean> messages;
-    public RelativeAndFriendAddFromContactAdapter(ArrayList<SuggestionChatInfoBean> messages){
+
+    public RelativeAndFriendAddFromContactAdapter(ArrayList<SuggestionChatInfoBean> messages) {
         this.messages = messages;
     }
 
     private onContactItemClickListener listener;
 
-    public interface onContactItemClickListener{
-        void onClick(View view,int position);
-    };
+    public interface onContactItemClickListener {
+        void onClick(View view, int position);
+    }
+
+    ;
 
 
-    public void setOnContactItemClickListener(onContactItemClickListener listener){
+    public void setOnContactItemClickListener(onContactItemClickListener listener) {
         this.listener = listener;
     }
 
     @Override
     public AddContactHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.fragment_mine_relativeandfriend_add_from_contact_item,parent,false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.fragment_mine_relativeandfriend_add_from_contact_item, parent, false);
         return new AddContactHolder(view);
     }
 
     @Override
     public int getItemCount() {
-        if (messages != null){
+        if (messages != null) {
             return messages.size();
-        }else {
+        } else {
             return 0;
         }
     }
@@ -60,14 +61,14 @@ public class RelativeAndFriendAddFromContactAdapter extends RecyclerView.Adapter
         holder.tv_contactadd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(listener != null){
-                    listener.onClick(holder.itemView,position);
+                if (listener != null) {
+                    listener.onClick(holder.itemView, position);
                 }
             }
         });
     }
 
-    public class AddContactHolder extends  RecyclerView.ViewHolder{
+    public class AddContactHolder extends RecyclerView.ViewHolder {
 
         private final TextView tv_contactname;
         private final TextView tv_contactphone;
@@ -81,7 +82,7 @@ public class RelativeAndFriendAddFromContactAdapter extends RecyclerView.Adapter
         }
     }
 
-    public ArrayList<SuggestionChatInfoBean> getAdapterList(){
+    public ArrayList<SuggestionChatInfoBean> getAdapterList() {
         return messages;
     }
 }

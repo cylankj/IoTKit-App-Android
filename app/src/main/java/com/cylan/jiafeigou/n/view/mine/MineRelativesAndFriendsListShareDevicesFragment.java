@@ -32,7 +32,6 @@ public class MineRelativesAndFriendsListShareDevicesFragment extends Fragment im
     RelativeLayout rlShareSmartcamera;
 
 
-
     public static MineRelativesAndFriendsListShareDevicesFragment newInstance() {
         return new MineRelativesAndFriendsListShareDevicesFragment();
     }
@@ -56,7 +55,7 @@ public class MineRelativesAndFriendsListShareDevicesFragment extends Fragment im
 
     }
 
-    @OnClick({R.id.iv_mine_friends_share_devices_back, R.id.iv_mine_friends_share_devices_ok,R.id.rl_share_smartcamera})
+    @OnClick({R.id.iv_mine_friends_share_devices_back, R.id.iv_mine_friends_share_devices_ok, R.id.rl_share_smartcamera})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.iv_mine_friends_share_devices_back:

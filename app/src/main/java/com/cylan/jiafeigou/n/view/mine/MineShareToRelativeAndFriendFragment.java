@@ -3,7 +3,6 @@ package com.cylan.jiafeigou.n.view.mine;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -61,7 +60,7 @@ public class MineShareToRelativeAndFriendFragment extends Fragment implements Mi
 
             case R.id.tv_mine_share_to_relative_friend_true:
                 //TODO 确定分享
-                ToastUtil.showToast(getContext(),"分享成功");
+                ToastUtil.showToast(getContext(), "分享成功");
                 break;
         }
     }

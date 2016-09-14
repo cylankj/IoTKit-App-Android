@@ -1,9 +1,6 @@
 package com.cylan.jiafeigou.n.mvp.impl.home;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.widget.Toast;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeMineHelpSuggestionContract;
@@ -35,7 +32,7 @@ public class HomeMineHelpSuggestionImpl extends AbstractPresenter<HomeMineHelpSu
     private ArrayList<MineHelpSuggestionBean> list;
     private Context context;
 
-    private HomeMineHelpSuggestionImpl(HomeMineHelpSuggestionContract.View view,Context context) {
+    private HomeMineHelpSuggestionImpl(HomeMineHelpSuggestionContract.View view, Context context) {
         super(view);
         this.context = context;
         view.setPresenter(this);

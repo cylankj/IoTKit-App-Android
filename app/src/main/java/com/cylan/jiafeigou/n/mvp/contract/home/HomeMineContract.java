@@ -3,7 +3,6 @@ package com.cylan.jiafeigou.n.mvp.contract.home;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.UiThread;
-import android.widget.ImageView;
 
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;

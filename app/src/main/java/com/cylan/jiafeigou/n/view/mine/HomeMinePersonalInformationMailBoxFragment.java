@@ -184,10 +184,10 @@ public class HomeMinePersonalInformationMailBoxFragment extends Fragment impleme
                 mailBox = mETMailBox.getText().toString();
                 if (TextUtils.isEmpty(mailBox)) {
                     return;
-                } else if(!presenter.checkEmail(mailBox)){
-                    ToastUtil.showToast(getContext(),"请输入有效邮箱");
+                } else if (!presenter.checkEmail(mailBox)) {
+                    ToastUtil.showToast(getContext(), "请输入有效邮箱");
                     return;
-                } else if(presenter.checkEmailIsBinded(mailBox)){
+                } else if (presenter.checkEmailIsBinded(mailBox)) {
                     showMailHasBindDialog();
                     return;
                 } else {

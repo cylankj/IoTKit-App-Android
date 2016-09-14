@@ -11,17 +11,14 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.RxEvent;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeMineContract;
-import com.cylan.jiafeigou.n.mvp.contract.home.HomeSettingContract;
 import com.cylan.jiafeigou.n.view.mine.HomeMineHelpFragment;
 import com.cylan.jiafeigou.n.view.mine.HomeMinePersonalInformationFragment;
 import com.cylan.jiafeigou.n.view.mine.MineRelativesandFriendsFragment;
 import com.cylan.jiafeigou.n.view.mine.MineShareDeviceFragment;
 import com.cylan.jiafeigou.support.rxbus.RxBus;
 import com.cylan.jiafeigou.utils.ContinuityClickUtils;
-import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.HomeMineItemView;
 import com.cylan.jiafeigou.widget.MsgTextView;
@@ -136,18 +133,18 @@ public class HomeMineFragment extends Fragment
         getFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                         , R.anim.slide_in_left, R.anim.slide_out_right)
-                .add(android.R.id.content,mineRelativesandFriendsFragment,"mineRelativesandFriendsFragment")
+                .add(android.R.id.content, mineRelativesandFriendsFragment, "mineRelativesandFriendsFragment")
                 .addToBackStack("mineHelpFragment")
                 .commit();
     }
 
     public void shareItem(View view) {
-         //if (needStartLoginFragment()) return;
+        //if (needStartLoginFragment()) return;
         //SLog.i("It's Login,can do something!");
         getFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                         , R.anim.slide_in_left, R.anim.slide_out_right)
-                .add(android.R.id.content,mineShareDeviceFragment,"mineShareDeviceFragment")
+                .add(android.R.id.content, mineShareDeviceFragment, "mineShareDeviceFragment")
                 .addToBackStack("mineHelpFragment")
                 .commit();
     }
@@ -158,7 +155,7 @@ public class HomeMineFragment extends Fragment
         getFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                         , R.anim.slide_in_left, R.anim.slide_out_right)
-                .add(android.R.id.content,homeSettingFragment,"homeSettingFragment")
+                .add(android.R.id.content, homeSettingFragment, "homeSettingFragment")
                 .addToBackStack("mineHelpFragment")
                 .commit();
 
@@ -231,7 +228,7 @@ public class HomeMineFragment extends Fragment
 
     @OnClick({R.id.home_mine_item_friend, R.id.home_mine_item_share,
             R.id.home_mine_item_help, R.id.home_mine_item_settings,
-            R.id.shadow_layout, R.id.tv_home_mine_nick,R.id.rLayout_msg_box})
+            R.id.shadow_layout, R.id.tv_home_mine_nick, R.id.rLayout_msg_box})
     public void onButterKnifeClick(View view) {
         switch (view.getId()) {
             case R.id.home_mine_item_friend:

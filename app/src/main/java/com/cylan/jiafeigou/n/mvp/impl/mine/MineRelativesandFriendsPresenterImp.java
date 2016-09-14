@@ -1,7 +1,6 @@
 package com.cylan.jiafeigou.n.mvp.impl.mine;
 
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineRelativesFriendsContract;
-import com.cylan.jiafeigou.n.mvp.contract.mine.MineUserInfoLookBigHeadContract;
 import com.cylan.jiafeigou.n.mvp.model.SuggestionChatInfoBean;
 
 import java.util.ArrayList;
@@ -32,10 +31,10 @@ public class MineRelativesandFriendsPresenterImp implements MineRelativesFriends
 
     @Override
     public ArrayList<SuggestionChatInfoBean> initAddRequestData() {
-        if(list == null){
+        if (list == null) {
             list = new ArrayList<SuggestionChatInfoBean>();
         }
-        SuggestionChatInfoBean emMessage = new SuggestionChatInfoBean("我是小小姨",1,System.currentTimeMillis()+"");
+        SuggestionChatInfoBean emMessage = new SuggestionChatInfoBean("我是小小姨", 1, System.currentTimeMillis() + "");
         emMessage.setName("乔帮主");
         emMessage.setShowAcceptButton(true);
         list.add(emMessage);
@@ -45,9 +44,9 @@ public class MineRelativesandFriendsPresenterImp implements MineRelativesFriends
     @Override
     public ArrayList<SuggestionChatInfoBean> initRelativatesAndFriendsData() {
         ArrayList list = new ArrayList<SuggestionChatInfoBean>();
-        for (int i = 0;i < 9;i++){
-            SuggestionChatInfoBean emMessage = new SuggestionChatInfoBean("1388383843"+i,1,System.currentTimeMillis()+"");
-            emMessage.setName("阿三"+i);
+        for (int i = 0; i < 9; i++) {
+            SuggestionChatInfoBean emMessage = new SuggestionChatInfoBean("1388383843" + i, 1, System.currentTimeMillis() + "");
+            emMessage.setName("阿三" + i);
             list.add(emMessage);
         }
         return list;

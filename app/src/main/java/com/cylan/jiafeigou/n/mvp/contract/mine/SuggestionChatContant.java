@@ -15,12 +15,19 @@ public interface SuggestionChatContant {
 
     interface View extends BaseView<Presenter> {
         void showChatList();
+
         String getEditContent();
+
         String getTime();
+
         void clearEdit();
+
         void keyboardListener();
+
         boolean editLessShowDialog();
+
         void notifyChatList();
+
         void showDialog();
     }
 
@@ -29,9 +36,13 @@ public interface SuggestionChatContant {
 
         //模拟服务器数据
         SuggestionChatInfoBean testServerData(long times);
+
         void addChatItem(SuggestionChatInfoBean emMessage);
+
         SuggestionChatInfoBean makeEMMessageBean(String content, int type, String time);
+
         void showToast();
+
         void clearChatList(ArrayList<SuggestionChatInfoBean> list);
     }
 

@@ -3,7 +3,6 @@ package com.cylan.jiafeigou.n.mvp.impl.mine;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineRelativeAndFriendAddByNumContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.n.mvp.model.UserInfoBean;
-import com.cylan.jiafeigou.utils.NullCheckerUtils;
 
 import rx.Observable;
 import rx.Subscription;
@@ -18,7 +17,7 @@ import rx.schedulers.Schedulers;
  * 描述：
  */
 public class MineRelativeAndFriendAddByNumPresenterImp extends AbstractPresenter<MineRelativeAndFriendAddByNumContract.View>
-        implements MineRelativeAndFriendAddByNumContract.Presenter  {
+        implements MineRelativeAndFriendAddByNumContract.Presenter {
 
     private Subscription findUserFromServerSub;
 
@@ -34,14 +33,14 @@ public class MineRelativeAndFriendAddByNumPresenterImp extends AbstractPresenter
 
     @Override
     public void stop() {
-        if(findUserFromServerSub != null){
+        if (findUserFromServerSub != null) {
             findUserFromServerSub.unsubscribe();
         }
     }
 
     @Override
     public void findUserFromServer(String number) {
-        if(number == null){
+        if (number == null) {
             return;
         }
         findUserFromServerSub = Observable.just(number)

@@ -86,10 +86,10 @@ public class MineRelativesandFriendsFragment extends Fragment implements MineRel
         requestAddList.addAll(presenter.initAddRequestData());
         relativesAndFriendList.addAll(presenter.initRelativatesAndFriendsData());
 
-        if(presenter.initRelativatesAndFriendsData().size() == 0){
+        if (presenter.initRelativatesAndFriendsData().size() == 0) {
             llRelativeAndFriend.setVisibility(View.GONE);
             llRelativeAndFriendNone.setVisibility(View.VISIBLE);
-        }else {
+        } else {
             llRelativeAndFriend.setVisibility(View.VISIBLE);
             llRelativeAndFriendNone.setVisibility(View.GONE);
             showAddRequestList();
@@ -132,7 +132,7 @@ public class MineRelativesandFriendsFragment extends Fragment implements MineRel
 
     }
 
-    @OnClick({R.id.iv_home_mine_relativesandfriends_back, R.id.tv_home_mine_relativesandfriends_add,R.id.btn_add_relative_and_friend})
+    @OnClick({R.id.iv_home_mine_relativesandfriends_back, R.id.tv_home_mine_relativesandfriends_add, R.id.btn_add_relative_and_friend})
     public void onClick(View view) {
 
         switch (view.getId()) {

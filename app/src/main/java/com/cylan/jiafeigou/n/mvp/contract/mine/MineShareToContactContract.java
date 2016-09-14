@@ -13,12 +13,13 @@ import java.util.ArrayList;
  */
 public interface MineShareToContactContract {
 
-    interface View extends BaseView<Presenter>{
+    interface View extends BaseView<Presenter> {
         void setAdapter(ArrayList<SuggestionChatInfoBean> list);
+
         void setItemCheckListener();
     }
 
-    interface Presenter extends BasePresenter{
+    interface Presenter extends BasePresenter {
         void initContactData();
     }
 

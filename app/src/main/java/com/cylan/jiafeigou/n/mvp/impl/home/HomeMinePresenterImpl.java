@@ -10,15 +10,12 @@ import android.text.TextUtils;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
-import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeMineContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.utils.BitmapUtil;
 import com.cylan.utils.FastBlurUtil;
-
-import org.w3c.dom.Text;
 
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
@@ -35,9 +32,9 @@ import rx.schedulers.Schedulers;
  */
 public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.View> implements HomeMineContract.Presenter {
 
-    public static int  PHONE_LOGIN = 1;                     //手机登录
-    public static int  EMAIL_LOGIN = 2;                     //邮箱登录
-    public static int  THIRD_PART_LOGIN = 3;                //第三方登录
+    public static int PHONE_LOGIN = 1;                     //手机登录
+    public static int EMAIL_LOGIN = 2;                     //邮箱登录
+    public static int THIRD_PART_LOGIN = 3;                //第三方登录
 
     private Subscription onRefreshSubscription;
     private Subscription onBlurSubscribtion;
@@ -58,7 +55,7 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
                     @Override
                     public void call(Object o) {
                         if (getView() != null)
-                            getView().onPortraitUpdate(PreferencesUtils.getString(getView().getContext(), JConstant.USER_IMAGE_HEAD_URL,""));
+                            getView().onPortraitUpdate(PreferencesUtils.getString(getView().getContext(), JConstant.USER_IMAGE_HEAD_URL, ""));
                     }
                 });
     }
@@ -131,7 +128,7 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
                                 bit[0] = BitmapUtil.zoomBitmap(bit[0], 160, 160);
                             }
                         });
-                            return FastBlurUtil.blur(bit[0], 20, 2);
+                        return FastBlurUtil.blur(bit[0], 20, 2);
                     }
                 })
                 .map(new Func1<Bitmap, Drawable>() {
@@ -155,9 +152,9 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
 
     @Override
     public boolean checkIsLogin(String userID) {
-        if(TextUtils.isEmpty(userID)){
+        if (TextUtils.isEmpty(userID)) {
             return false;
-        }else {
+        } else {
             return true;
         }
     }
@@ -169,33 +166,33 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
 
     @Override
     public String createRandomName() {
-        String[] firtPart = {"a","b","c","d","e","f","g","h","i","j","k","l"
-                            ,"m","n","o","p","q","r","s","t","u","v","w","x","y","z"};
+        String[] firtPart = {"a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l"
+                , "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"};
         Random random = new Random();
         int randNum1 = random.nextInt(10);
         int randNum2 = random.nextInt(10);
 
-        if(randNum1 == randNum2){
+        if (randNum1 == randNum2) {
             randNum2 /= 2;
         }
 
         int randNum3 = random.nextInt(10);
-        if((randNum1 == randNum3)|| (randNum2 == randNum3)){
+        if ((randNum1 == randNum3) || (randNum2 == randNum3)) {
             randNum3 /= 2;
         }
 
         int a = random.nextInt(26);
         int b = random.nextInt(26);
-        if(b == a){
+        if (b == a) {
             b /= 2;
         }
         int c = random.nextInt(26);
-        if((a==c) || (b==c)){
+        if ((a == c) || (b == c)) {
             c /= 2;
         }
 
-        String result = firtPart[a]+firtPart[b]+firtPart[c]
-                +randNum1+randNum2+randNum3;
+        String result = firtPart[a] + firtPart[b] + firtPart[c]
+                + randNum1 + randNum2 + randNum3;
         return result;
     }
 }

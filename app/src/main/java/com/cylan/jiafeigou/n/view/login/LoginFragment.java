@@ -24,10 +24,10 @@ import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
 import com.cylan.jiafeigou.BuildConfig;
+import com.cylan.jiafeigou.NewHomeActivity;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.SmartcallActivity;
 import com.cylan.jiafeigou.misc.JConstant;
-import com.cylan.jiafeigou.NewHomeActivity;
 import com.cylan.jiafeigou.n.mvp.contract.login.LoginModelContract;
 import com.cylan.jiafeigou.n.mvp.impl.ForgetPwdPresenterImpl;
 import com.cylan.jiafeigou.n.mvp.impl.SetupPwdPresenterImpl;

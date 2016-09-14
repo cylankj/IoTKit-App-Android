@@ -2,21 +2,16 @@ package com.cylan.jiafeigou.n.mvp.impl.mine;
 
 import android.app.AlertDialog;
 import android.content.Context;
-import android.widget.Toast;
 
-import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MinePersionalInformationContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.n.mvp.model.UserInfoBean;
-
-import java.util.List;
 
 import cn.finalteam.galleryfinal.CoreConfig;
 import cn.finalteam.galleryfinal.FunctionConfig;
 import cn.finalteam.galleryfinal.GalleryFinal;
 import cn.finalteam.galleryfinal.ImageLoader;
 import cn.finalteam.galleryfinal.ThemeConfig;
-import cn.finalteam.galleryfinal.model.PhotoInfo;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -35,7 +30,7 @@ public class MinePersionalInformationPresenterImpl extends AbstractPresenter<Min
     public static FunctionConfig functionConfig;
     private Subscription getUserInfoSubscription;
 
-    public MinePersionalInformationPresenterImpl(MinePersionalInformationContract.View view,Context context) {
+    public MinePersionalInformationPresenterImpl(MinePersionalInformationContract.View view, Context context) {
         super(view);
         view.setPresenter(this);
         this.context = context;
@@ -111,7 +106,7 @@ public class MinePersionalInformationPresenterImpl extends AbstractPresenter<Min
 
     @Override
     public void stop() {
-        if (getUserInfoSubscription != null){
+        if (getUserInfoSubscription != null) {
             getUserInfoSubscription.unsubscribe();
         }
     }

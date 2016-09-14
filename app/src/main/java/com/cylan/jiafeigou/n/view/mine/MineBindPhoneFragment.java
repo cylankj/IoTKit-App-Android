@@ -59,9 +59,9 @@ public class MineBindPhoneFragment extends Fragment implements MinePersionalInfo
 
     }
 
-    @OnClick({R.id.tv_get_checkNumber,R.id.iv_top_bar_left})
+    @OnClick({R.id.tv_get_checkNumber, R.id.iv_top_bar_left})
     public void onClick(View view) {
-        switch (view.getId()){
+        switch (view.getId()) {
             case R.id.tv_get_checkNumber:
                 ToastUtil.showToast(getContext(), "获取验证码中。。。");
                 break;

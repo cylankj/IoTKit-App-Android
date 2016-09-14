@@ -5,14 +5,11 @@ import android.os.Environment;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeSettingContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
-import com.sina.weibo.sdk.utils.LogUtil;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.text.DecimalFormat;
 
 import rx.Observable;
@@ -46,7 +43,7 @@ public class HomeSettingPresenterImp extends AbstractPresenter<HomeSettingContra
                 .map(new Func1<Object, Object>() {
                     @Override
                     public Object call(Object o) {
-                        File directory = getCacheDirectory(getView().getContext(),"");
+                        File directory = getCacheDirectory(getView().getContext(), "");
                         if (directory != null && directory.exists() && directory.isDirectory()) {
                             for (File item : directory.listFiles()) {
                                 item.delete();
@@ -60,10 +57,10 @@ public class HomeSettingPresenterImp extends AbstractPresenter<HomeSettingContra
                     @Override
                     public void call(Object o) {
                         getView().hideClearingCacheProgress();
-                        File directory = getCacheDirectory(getView().getContext(),"");
-                        if(directory.getTotalSpace() == directory.getFreeSpace()){
+                        File directory = getCacheDirectory(getView().getContext(), "");
+                        if (directory.getTotalSpace() == directory.getFreeSpace()) {
                             getView().clearNoCache();
-                        }else {
+                        } else {
                             getView().clearFinish();
                         }
                     }
@@ -82,14 +79,14 @@ public class HomeSettingPresenterImp extends AbstractPresenter<HomeSettingContra
 
                         getView().showLoadCacheSizeProgress();
                         long cacheSize = 0l;
-                        File directory = getCacheDirectory(getView().getContext(),"");
-                        if(directory.exists()){
+                        File directory = getCacheDirectory(getView().getContext(), "");
+                        if (directory.exists()) {
                             try {
                                 cacheSize = getFolderSize(directory);
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
-                        }else {
+                        } else {
                             cacheSize = 0l;
                         }
                         return FormetFileSize(cacheSize);
@@ -112,13 +109,13 @@ public class HomeSettingPresenterImp extends AbstractPresenter<HomeSettingContra
     }
 
     @Override
-    public void savaSwitchState(boolean isChick,String key) {
-        PreferencesUtils.putBoolean(getView().getContext(),key,isChick);
+    public void savaSwitchState(boolean isChick, String key) {
+        PreferencesUtils.putBoolean(getView().getContext(), key, isChick);
     }
 
     @Override
     public boolean getSwitchState(String key) {
-        return PreferencesUtils.getBoolean(getView().getContext(),key,false);
+        return PreferencesUtils.getBoolean(getView().getContext(), key, false);
     }
 
     @Override
@@ -128,23 +125,24 @@ public class HomeSettingPresenterImp extends AbstractPresenter<HomeSettingContra
 
     @Override
     public void stop() {
-        if(calculateSubscription != null){
+        if (calculateSubscription != null) {
             calculateSubscription.unsubscribe();
         }
-        if(clearCacheSubscription != null){
+        if (clearCacheSubscription != null) {
             clearCacheSubscription.unsubscribe();
         }
     }
 
     /**
      * desc:转换文件的大小
+     *
      * @param fileS
      * @return
      */
     public String FormetFileSize(long fileS) {
         DecimalFormat df = new DecimalFormat("#.00");
         String fileSizeString = "";
-        if(fileS == 0){
+        if (fileS == 0) {
             fileSizeString = "0.0MB";
         } else if (fileS < 1024) {
             fileSizeString = df.format((double) fileS) + "B";
@@ -160,21 +158,22 @@ public class HomeSettingPresenterImp extends AbstractPresenter<HomeSettingContra
 
     /**
      * desc：获取应用专属缓存目录
+     *
      * @param context 上下文
-     * @param type 文件夹类型 可以为空，为空则返回API得到的一级目录
+     * @param type    文件夹类型 可以为空，为空则返回API得到的一级目录
      * @return 缓存文件夹 如果没有SD卡或SD卡有问题则返回内存缓存目录，否则优先返回SD卡缓存目录
      */
     public static File getCacheDirectory(Context context, String type) {
-        File appCacheDir = getInternalCacheDirectory(context,type);
-        if (appCacheDir == null){
-            appCacheDir = getExternalCacheDirectory(context,type);
+        File appCacheDir = getInternalCacheDirectory(context, type);
+        if (appCacheDir == null) {
+            appCacheDir = getExternalCacheDirectory(context, type);
         }
 
-        if (appCacheDir == null){
-            Log.e("getCacheDirectory","getCacheDirectory fail ,the reason is mobile phone unknown exception !");
-        }else {
-            if (!appCacheDir.exists()&&!appCacheDir.mkdirs()){
-                Log.e("getCacheDirectory","getCacheDirectory fail ,the reason is make directory fail !");
+        if (appCacheDir == null) {
+            Log.e("getCacheDirectory", "getCacheDirectory fail ,the reason is mobile phone unknown exception !");
+        } else {
+            if (!appCacheDir.exists() && !appCacheDir.mkdirs()) {
+                Log.e("getCacheDirectory", "getCacheDirectory fail ,the reason is make directory fail !");
             }
         }
         return appCacheDir;
@@ -182,58 +181,61 @@ public class HomeSettingPresenterImp extends AbstractPresenter<HomeSettingContra
 
     /**
      * desc:获取到外部缓存路径
+     *
      * @param context
      * @param type
      * @return
      */
-    public static File getExternalCacheDirectory(Context context,String type) {
+    public static File getExternalCacheDirectory(Context context, String type) {
         File appCacheDir = null;
-        if( Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
-            if (TextUtils.isEmpty(type)){
+        if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
+            if (TextUtils.isEmpty(type)) {
                 appCacheDir = context.getExternalCacheDir();
-            }else {
+            } else {
                 appCacheDir = context.getExternalFilesDir(type);
             }
 
-            if (appCacheDir == null){// 有些手机需要通过自定义目录
-                appCacheDir = new File(Environment.getExternalStorageDirectory(),"Android/data/"+context.getPackageName()+"/cache/"+type);
+            if (appCacheDir == null) {// 有些手机需要通过自定义目录
+                appCacheDir = new File(Environment.getExternalStorageDirectory(), "Android/data/" + context.getPackageName() + "/cache/" + type);
             }
 
-            if (appCacheDir == null){
-                Log.e("getExternalDirectory","getExternalDirectory fail ,the reason is sdCard unknown exception !");
-            }else {
-                if (!appCacheDir.exists()&&!appCacheDir.mkdirs()){
-                    Log.e("getExternalDirectory","getExternalDirectory fail ,the reason is make directory fail !");
+            if (appCacheDir == null) {
+                Log.e("getExternalDirectory", "getExternalDirectory fail ,the reason is sdCard unknown exception !");
+            } else {
+                if (!appCacheDir.exists() && !appCacheDir.mkdirs()) {
+                    Log.e("getExternalDirectory", "getExternalDirectory fail ,the reason is make directory fail !");
                 }
             }
-        }else {
-            Log.e("getExternalDirectory","getExternalDirectory fail ,the reason is sdCard nonexistence or sdCard mount fail !");
+        } else {
+            Log.e("getExternalDirectory", "getExternalDirectory fail ,the reason is sdCard nonexistence or sdCard mount fail !");
         }
         return appCacheDir;
     }
 
     /**
      * desc:获取到内存缓存路径
+     *
      * @param context
      * @param type
      * @return
      */
-    public static File getInternalCacheDirectory(Context context,String type) {
+    public static File getInternalCacheDirectory(Context context, String type) {
         File appCacheDir = null;
-        if (TextUtils.isEmpty(type)){
+        if (TextUtils.isEmpty(type)) {
             appCacheDir = context.getCacheDir();// /data/data/app_package_name/cache
-        }else {
-            appCacheDir = new File(context.getFilesDir(),type);// /data/data/app_package_name/files/type
+        } else {
+            appCacheDir = new File(context.getFilesDir(), type);// /data/data/app_package_name/files/type
         }
 
-        if (!appCacheDir.exists()&&!appCacheDir.mkdirs()){
-            Log.e("getInternalDirectory","getInternalDirectory fail ,the reason is make directory fail !");
+        if (!appCacheDir.exists() && !appCacheDir.mkdirs()) {
+            Log.e("getInternalDirectory", "getInternalDirectory fail ,the reason is make directory fail !");
         }
         return appCacheDir;
     }
 
     /**
      * desc:计算缓存的大小
+     *
      * @param file
      * @return
      * @throws Exception

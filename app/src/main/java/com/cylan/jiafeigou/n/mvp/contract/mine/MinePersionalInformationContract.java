@@ -11,7 +11,7 @@ import com.cylan.jiafeigou.n.mvp.model.UserInfoBean;
  */
 public interface MinePersionalInformationContract {
 
-    interface View extends BaseView<Presenter>{
+    interface View extends BaseView<Presenter> {
         void initPersionalInfomation(UserInfoBean bean);        //初始化显示个人信息
 
         void jump2SetEmailFragment();
@@ -23,7 +23,7 @@ public interface MinePersionalInformationContract {
     }
 
 
-    interface Presenter extends BasePresenter{
+    interface Presenter extends BasePresenter {
 
         void setPersonName();                   //更改昵称
 

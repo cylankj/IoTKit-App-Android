@@ -10,6 +10,9 @@ package com.cylan.jiafeigou.utils;
  * <p/>
  * User: modified by hunt
  * Date: 15-01-04
+ * <p/>
+ * User: modified by hunt
+ * Date: 15-01-04
  */
 
 /**
@@ -17,8 +20,6 @@ package com.cylan.jiafeigou.utils;
  * Date: 15-01-04
  */
 
-
-import com.cylan.BuildConfig;
 
 /**
  * Wrapper API for sending log output.

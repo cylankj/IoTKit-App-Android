@@ -18,8 +18,6 @@ import com.cylan.jiafeigou.n.mvp.impl.home.HomeSettingPresenterImp;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.kyleduo.switchbutton.SwitchButton;
 
-import java.text.BreakIterator;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;

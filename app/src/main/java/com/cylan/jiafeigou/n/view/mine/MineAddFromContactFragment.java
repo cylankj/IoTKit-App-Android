@@ -15,8 +15,6 @@ import com.cylan.jiafeigou.n.mvp.contract.mine.MineAddFromContactContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineAddFromContactPresenterImp;
 import com.cylan.jiafeigou.utils.ToastUtil;
 
-import org.w3c.dom.Text;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -69,16 +67,16 @@ public class MineAddFromContactFragment extends Fragment implements MineAddFromC
     @Override
     public String getSendMesg() {
         String mesg = etMineAddContactMesg.getText().toString();
-        if(TextUtils.isEmpty(mesg)){
+        if (TextUtils.isEmpty(mesg)) {
             return "我是多多";
-        }else {
+        } else {
             return mesg;
         }
     }
 
     @Override
     public void showResultDialog() {
-        ToastUtil.showToast(getContext(),"发送请求成功");
+        ToastUtil.showToast(getContext(), "发送请求成功");
     }
 
     @Override
@@ -87,9 +85,9 @@ public class MineAddFromContactFragment extends Fragment implements MineAddFromC
         initEditText();
     }
 
-    @OnClick({R.id.iv_mine_add_from_contact_send,R.id.iv_mine_add_from_contact_back})
+    @OnClick({R.id.iv_mine_add_from_contact_send, R.id.iv_mine_add_from_contact_back})
     public void onClick(View view) {
-        switch (view.getId()){
+        switch (view.getId()) {
             case R.id.iv_mine_add_from_contact_send:
                 presenter.sendRequest(getSendMesg());
                 getFragmentManager().popBackStack();
@@ -103,7 +101,7 @@ public class MineAddFromContactFragment extends Fragment implements MineAddFromC
     @Override
     public void onStop() {
         super.onStop();
-        if(presenter != null){
+        if (presenter != null) {
             presenter.stop();
         }
     }

@@ -11,13 +11,15 @@ import com.cylan.jiafeigou.n.mvp.model.UserInfoBean;
  */
 public interface MineRelativeAndFriendAddByNumContract {
 
-    interface View extends BaseView<Presenter>{
+    interface View extends BaseView<Presenter> {
         String getInputNum();
+
         void showFindResult(UserInfoBean bean);
+
         void showFindLoad();
     }
 
-    interface Presenter extends BasePresenter{
+    interface Presenter extends BasePresenter {
         void findUserFromServer(String number);
     }
 }

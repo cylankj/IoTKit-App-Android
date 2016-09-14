@@ -486,7 +486,7 @@ public class HomePageListFragmentExt extends Fragment implements
                     ViewGroup.LayoutParams.WRAP_CONTENT);
             lp.gravity = Gravity.CENTER_HORIZONTAL;
             lp.topMargin = ViewUtils.dp2px(80)
-                    ;
+            ;
             homePageEmptyView.addView(viewContainer, lp);
         }
 

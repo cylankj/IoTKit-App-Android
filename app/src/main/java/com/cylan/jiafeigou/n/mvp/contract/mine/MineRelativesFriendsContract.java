@@ -13,14 +13,17 @@ import java.util.ArrayList;
  */
 public interface MineRelativesFriendsContract {
 
-    interface View extends BaseView<Presenter>{
+    interface View extends BaseView<Presenter> {
         void showAddRequestList();
+
         void showRelativesAndFriendsList();
     }
 
-    interface Presenter extends BasePresenter{
+    interface Presenter extends BasePresenter {
         ArrayList<SuggestionChatInfoBean> initAddRequestData();
+
         ArrayList<SuggestionChatInfoBean> initRelativatesAndFriendsData();
+
         void addItems(SuggestionChatInfoBean bean);
     }
 

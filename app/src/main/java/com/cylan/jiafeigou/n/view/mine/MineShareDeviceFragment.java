@@ -13,7 +13,6 @@ import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineShareDeviceContract;
-import com.cylan.jiafeigou.utils.ToastUtil;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -66,7 +65,7 @@ public class MineShareDeviceFragment extends Fragment implements MineShareDevice
     }
 
     @OnClick({R.id.iv_home_mine_sharedevices_back, R.id.tv_share_smartcamera, R.id.tv_share_smartcamera1,
-            R.id.tv_share_smartcloud, R.id.tv_share_smartbell,R.id.rl_mine_share_smartcamera})
+            R.id.tv_share_smartcloud, R.id.tv_share_smartbell, R.id.rl_mine_share_smartcamera})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.iv_home_mine_sharedevices_back:
@@ -92,7 +91,7 @@ public class MineShareDeviceFragment extends Fragment implements MineShareDevice
                 getFragmentManager().beginTransaction()
                         .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                                 , R.anim.slide_in_left, R.anim.slide_out_right)
-                        .add(android.R.id.content,mineDevicesShareManagerFragment,"mineDevicesShareManagerFragment")
+                        .add(android.R.id.content, mineDevicesShareManagerFragment, "mineDevicesShareManagerFragment")
                         .addToBackStack("mineHelpFragment")
                         .commit();
                 break;
@@ -113,7 +112,7 @@ public class MineShareDeviceFragment extends Fragment implements MineShareDevice
                 getFragmentManager().beginTransaction()
                         .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                                 , R.anim.slide_in_left, R.anim.slide_out_right)
-                        .add(android.R.id.content,shareToRelativeAndFriendFragment,"shareToRelativeAndFriendFragment")
+                        .add(android.R.id.content, shareToRelativeAndFriendFragment, "shareToRelativeAndFriendFragment")
                         .addToBackStack("mineHelpFragment")
                         .commit();
                 alertDialog.dismiss();
@@ -125,7 +124,7 @@ public class MineShareDeviceFragment extends Fragment implements MineShareDevice
                 getFragmentManager().beginTransaction()
                         .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                                 , R.anim.slide_in_left, R.anim.slide_out_right)
-                        .add(android.R.id.content,mineShareToContactFragment,"mineShareToContactFragment")
+                        .add(android.R.id.content, mineShareToContactFragment, "mineShareToContactFragment")
                         .addToBackStack("mineHelpFragment")
                         .commit();
                 alertDialog.dismiss();

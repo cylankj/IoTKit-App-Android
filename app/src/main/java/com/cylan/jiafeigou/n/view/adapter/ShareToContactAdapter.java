@@ -20,23 +20,23 @@ public class ShareToContactAdapter extends RecyclerView.Adapter<ShareToContactAd
 
     private ArrayList<SuggestionChatInfoBean> data;
 
-    public ShareToContactAdapter(ArrayList<SuggestionChatInfoBean> data){
+    public ShareToContactAdapter(ArrayList<SuggestionChatInfoBean> data) {
         this.data = data;
     }
 
     private onShareLisenter lisenter;
 
     public interface onShareLisenter {
-        void isChecked(View view,int position);
+        void isChecked(View view, int position);
     }
 
-    public void setOnShareLisenter(onShareLisenter lisenter){
+    public void setOnShareLisenter(onShareLisenter lisenter) {
         this.lisenter = lisenter;
     }
 
     @Override
     public ShareToContactHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.fragment_share_to_contact_item,parent,false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.fragment_share_to_contact_item, parent, false);
         return new ShareToContactHolder(view);
     }
 
@@ -48,8 +48,8 @@ public class ShareToContactAdapter extends RecyclerView.Adapter<ShareToContactAd
         holder.tv_contactshare.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(lisenter != null){
-                    lisenter.isChecked(holder.itemView,position);
+                if (lisenter != null) {
+                    lisenter.isChecked(holder.itemView, position);
                 }
             }
         });
@@ -57,14 +57,14 @@ public class ShareToContactAdapter extends RecyclerView.Adapter<ShareToContactAd
 
     @Override
     public int getItemCount() {
-        if(data == null){
+        if (data == null) {
             return 0;
-        }else {
+        } else {
             return data.size();
         }
     }
 
-    public class ShareToContactHolder extends RecyclerView.ViewHolder{
+    public class ShareToContactHolder extends RecyclerView.ViewHolder {
 
         private final TextView tv_contactname;
         private final TextView tv_contactphone;
@@ -81,9 +81,10 @@ public class ShareToContactAdapter extends RecyclerView.Adapter<ShareToContactAd
 
     /**
      * desc:获取适配器的list
+     *
      * @return
      */
-    public ArrayList<SuggestionChatInfoBean> getRcyList(){
+    public ArrayList<SuggestionChatInfoBean> getRcyList() {
         return data;
     }
 }
