@@ -5,11 +5,12 @@
         <attr name="t_ignore" format="boolean" />
         <attr name="t_radius" format="dimension" />
         <attr name="t_margin" format="dimension" />
-        <attr name="t_showDot" format="boolean" />
-        <attr name="t_Drawable" format="reference" />
-        <attr name="t_borderColor" format="color" />
-        <attr name="t_borderWidth" format="dimension" />
-        <attr name="t_enableBorder" format="boolean" />
+        <attr name="t_show_point" format="boolean" />
+        <attr name="t_point_color" format="color" />
+        <attr name="t_drawable" format="reference" />
+        <attr name="t_border_color" format="color" />
+        <attr name="t_border_width" format="dimension" />
+        <attr name="t_enable_border" format="boolean" />
     </declare-styleable>
     <declare-styleable name="WaveTheme">
         <attr name="frontColor" format="color" />
