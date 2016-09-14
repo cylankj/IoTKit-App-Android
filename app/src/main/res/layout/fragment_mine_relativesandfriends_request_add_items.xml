@@ -11,9 +11,9 @@
         <com.cylan.jiafeigou.widget.roundedimageview.RoundedImageView
             android:layout_centerVertical="true"
             android:id="@+id/iv_userhead"
-            android:src="@drawable/pic_head"
-            android:layout_width="43dp"
-            android:layout_height="43dp" />
+            android:src="@drawable/img_me_list_head"
+            android:layout_width="50dp"
+            android:layout_height="50dp" />
 
         <RelativeLayout
             android:gravity="center_vertical"

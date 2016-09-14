@@ -37,7 +37,7 @@
                     android:id="@+id/iv_home_mine_portrait"
                     android:layout_width="76dp"
                     android:layout_height="76dp"
-                    android:src="@drawable/icon_mine_head_normal"
+                    android:src="@drawable/pic_head_normal240px"
                     hunt:riv_oval="true" />
             </com.cylan.jiafeigou.widget.wave.ShadowLayout>
 
@@ -92,33 +92,30 @@
             android:layout_width="match_parent"
             android:layout_height="60dp"
             hunt:leftDrawable="@drawable/icon_mine_friend"
-            hunt:rightDrawable="@drawable/icon_mine_arrow_next"
+            hunt:rightDrawable="@drawable/list_icon_next"
             hunt:text="亲朋好友"
             hunt:textColor="@color/color_333333"
             hunt:textSize="16sp" />
-
 
         <com.cylan.jiafeigou.widget.HomeMineItemView
             android:id="@+id/home_mine_item_share"
             android:layout_width="match_parent"
             android:layout_height="60dp"
             hunt:leftDrawable="@drawable/icon_mine_share"
-            hunt:rightDrawable="@drawable/icon_mine_arrow_next"
+            hunt:rightDrawable="@drawable/list_icon_next"
             hunt:text="分享设备"
             hunt:textColor="@color/color_333333"
             hunt:textSize="16sp" />
-
 
         <com.cylan.jiafeigou.widget.HomeMineItemView
             android:id="@+id/home_mine_item_help"
             android:layout_width="match_parent"
             android:layout_height="60dp"
             hunt:leftDrawable="@drawable/icon_mine_hlep"
-            hunt:rightDrawable="@drawable/icon_mine_arrow_next"
+            hunt:rightDrawable="@drawable/list_icon_next"
             hunt:text="帮助与反馈"
             hunt:textColor="@color/color_333333"
             hunt:textSize="16sp" />
-
 
         <com.cylan.jiafeigou.widget.HomeMineItemView
             android:id="@+id/home_mine_item_settings"
@@ -126,7 +123,7 @@
             android:layout_height="60dp"
             android:clickable="true"
             hunt:leftDrawable="@drawable/icon_mine_setting"
-            hunt:rightDrawable="@drawable/icon_mine_arrow_next"
+            hunt:rightDrawable="@drawable/list_icon_next"
             hunt:text="设置"
             hunt:textColor="@color/color_333333"
             hunt:textSize="16sp" />
