@@ -6,6 +6,7 @@
     android:fitsSystemWindows="true"
     android:background="@color/color_white"
     >
+
     <RelativeLayout
         android:id="@+id/rl_home_mine_suggestion"
         android:layout_width="match_parent"
@@ -42,6 +43,22 @@
             android:textColor="@color/color_white"
             android:textSize="14sp" />
     </RelativeLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    </ScrollView>
+
+    <android.support.v7.widget.RecyclerView
+        android:paddingBottom="5dp"
+        android:id="@+id/rv_home_mine_suggestion"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_above="@+id/rl_home_mine_suggestion_bottom"
+        android:layout_below="@+id/rl_home_mine_suggestion"
+        android:overScrollMode="never"
+        android:scrollbars="none" />
 
     <RelativeLayout
         android:id="@+id/rl_home_mine_suggestion_bottom"
@@ -83,16 +100,5 @@
             android:textColor="@color/color_4b9fd5"
             android:textSize="18sp" />
     </RelativeLayout>
-
-    <android.support.v7.widget.RecyclerView
-        android:paddingBottom="5dp"
-        android:id="@+id/rv_home_mine_suggestion"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:layout_above="@+id/rl_home_mine_suggestion_bottom"
-        android:layout_below="@+id/rl_home_mine_suggestion"
-        android:overScrollMode="never"
-        android:scrollbars="none" />
 
 </RelativeLayout>
