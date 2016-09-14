@@ -1,7 +1,8 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/fLayoutHomeWonderfulHeaderContainer"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:fitsSystemWindows="true">
 
     <RelativeLayout
         android:id="@+id/rl_top_head_wonder"
@@ -46,8 +47,8 @@
     <FrameLayout
         android:id="@+id/fLayout_date_head_wonder"
         android:layout_width="wrap_content"
-        android:layout_gravity="center_horizontal|bottom"
         android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal|bottom"
         android:layout_marginBottom="5dp"
         android:layout_marginTop="25dp"
         android:descendantFocusability="blocksDescendants">

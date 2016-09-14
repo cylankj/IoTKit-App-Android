@@ -10,7 +10,6 @@
         android:theme="@style/AppTheme.PopupOverlay">
 
         <android.support.design.widget.CollapsingToolbarLayout
-            android:background="#eee000"
             android:id="@+id/collapsing_toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
