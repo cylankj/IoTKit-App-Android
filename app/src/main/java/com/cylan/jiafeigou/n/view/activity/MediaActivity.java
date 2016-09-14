@@ -117,7 +117,8 @@ public class MediaActivity extends FragmentActivity {
             final long time = beanArrayList.get(index).time;
             if (mediaType == MediaBean.TYPE_PIC)
                 tvBigPicTitle.setText(TimeUtils.getMediaPicTimeInString(time));
-            else tvBigPicTitle.setText(TimeUtils.getMediaVideoTimeInString(time));
+            else if (mediaType == MediaBean.TYPE_VIDEO)
+                tvBigPicTitle.setText(TimeUtils.getMediaVideoTimeInString(time));
         }
     }
 
@@ -201,10 +202,12 @@ public class MediaActivity extends FragmentActivity {
                 return PicDetailsFragment.newInstance(position,
                         mStartingPosition,
                         list.get(position).srcUrl);
-            } else {
+            } else if (list.get(position).mediaType == MediaBean.TYPE_VIDEO) {
                 return VideoDetailsFragment.newInstance(position,
                         mStartingPosition,
                         list.get(position).srcUrl);
+            } else {
+                return null;
             }
         }
 

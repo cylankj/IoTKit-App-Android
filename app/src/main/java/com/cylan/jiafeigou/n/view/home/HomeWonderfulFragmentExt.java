@@ -306,9 +306,22 @@ public class HomeWonderfulFragmentExt extends Fragment implements
             homeWonderAdapter.clear();
             return;
         }
+        handleFootView();
         homeWonderAdapter.addAll(resultList);
+        addFootView();
         emptyViewState.determineEmptyViewState(homeWonderAdapter.getCount());
         srLayoutMainContentHolder.setNestedScrollingEnabled(homeWonderAdapter.getCount() > 2);
+    }
+
+    private void handleFootView() {
+        final int itemCount = homeWonderAdapter.getItemCount();
+        if (itemCount > 0 && homeWonderAdapter.getItem(itemCount - 1).mediaType == MediaBean.TYPE_LOAD) {
+            homeWonderAdapter.remove(itemCount - 1);
+        }
+    }
+
+    private void addFootView() {
+        homeWonderAdapter.add(MediaBean.getEmptyLoadTypeBean());
     }
 
     @Override
@@ -502,7 +515,7 @@ public class HomeWonderfulFragmentExt extends Fragment implements
                     .placeholder(R.drawable.wonderful_pic_place_holder)
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .into(imageView);
-        } else {
+        } else if (mediaType == MediaBean.TYPE_VIDEO) {
             BitmapPool bitmapPool = Glide.get(getContext()).getBitmapPool();
             FileDescriptorBitmapDecoder decoder = new FileDescriptorBitmapDecoder(
                     new VideoBitmapDecoder(1000000),

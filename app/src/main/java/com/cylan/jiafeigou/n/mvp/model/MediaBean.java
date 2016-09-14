@@ -11,6 +11,7 @@ public class MediaBean implements Comparable<MediaBean>, Parcelable {
 
     public static final int TYPE_PIC = 0;
     public static final int TYPE_VIDEO = 1;
+    public static final int TYPE_LOAD = 2;
     public long time;
     public int mediaType;
     public String srcUrl;
@@ -85,6 +86,15 @@ public class MediaBean implements Comparable<MediaBean>, Parcelable {
                 ", deviceName='" + deviceName + '\'' +
                 ", timeInStr='" + timeInStr + '\'' +
                 '}' + "\n";
+    }
+
+    private static MediaBean loadBean = new MediaBean();
+
+    public static MediaBean getEmptyLoadTypeBean() {
+        if (loadBean == null)
+            loadBean = new MediaBean();
+        loadBean.mediaType = TYPE_LOAD;
+        return loadBean;
     }
 }
 

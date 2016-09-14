@@ -47,11 +47,13 @@ public class HomeWonderfulAdapter extends SuperAdapter<MediaBean> {
 
     @Override
     public void onBind(SuperViewHolder holder, int viewType, int layoutPosition, MediaBean item) {
-        initClickListener(holder, viewType, layoutPosition);
-        handleState(holder, item);
+        if (viewType != MediaBean.TYPE_LOAD) {
+            initClickListener(holder, layoutPosition);
+            handleState(holder, item);
+        }
     }
 
-    private void initClickListener(SuperViewHolder holder, final int viewType, final int layoutPosition) {
+    private void initClickListener(SuperViewHolder holder, final int layoutPosition) {
         ViewCompat.setTransitionName(holder.getView(R.id.iv_wonderful_item_content),
                 String.valueOf(layoutPosition) + JConstant.KEY_SHARED_ELEMENT_TRANSITION_NAME_SUFFIX);
         holder.setOnClickListener(R.id.iv_wonderful_item_content, deviceItemClickListener);
@@ -79,7 +81,7 @@ public class HomeWonderfulAdapter extends SuperAdapter<MediaBean> {
         return new IMulItemViewType<MediaBean>() {
             @Override
             public int getViewTypeCount() {
-                return 2;
+                return 3;
             }
 
             @Override
@@ -89,9 +91,9 @@ public class HomeWonderfulAdapter extends SuperAdapter<MediaBean> {
 
             @Override
             public int getLayoutId(int viewType) {
-                return viewType % 2 == 0 ?
-                        R.layout.layout_item_picture_wonderful :
-                        R.layout.layout_item_vedio_wonderful;
+                return viewType == MediaBean.TYPE_PIC ?
+                        R.layout.layout_item_picture_wonderful : (viewType == MediaBean.TYPE_VIDEO ?
+                        R.layout.layout_item_vedio_wonderful : R.layout.layout_item_loading_wonderful);
             }
         };
     }
