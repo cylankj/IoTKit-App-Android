@@ -9,8 +9,11 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeMagLiveContract;
+import com.cylan.jiafeigou.n.mvp.impl.home.HomeMagLivePresenterImp;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
+import com.kyleduo.switchbutton.SwitchButton;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -26,12 +29,26 @@ import butterknife.OnClick;
  * 更新时间   $Date$
  * 更新描述   ${TODO}
  */
-public class MagLiveFragment extends Fragment implements HomeMagLiveContract.View{
+public class MagLiveFragment extends Fragment implements HomeMagLiveContract.View {
 
     @BindView(R.id.tv_information_facility_name)
     TextView mFacilityName;
+    @BindView(R.id.btn_switch)
+    SwitchButton btnSwitch;
+    @BindView(R.id.tv_clear_mag_open_record)
+    TextView tvClearMagOpenRecord;
 
     private MagLiveInformationFragment magLiveInformationFragment;
+    private HomeMagLiveContract.Presenter presenter;
+    private OnClearDoorOpenRecordLisenter listener;
+
+    public interface OnClearDoorOpenRecordLisenter{
+        void onClear();
+    }
+
+    public void setOnClearDoorOpenRecord(OnClearDoorOpenRecordLisenter listener){
+        this.listener = listener;
+    }
 
     public static MagLiveFragment newInstance(Bundle bundle) {
         MagLiveFragment fragment = new MagLiveFragment();
@@ -52,7 +69,13 @@ public class MagLiveFragment extends Fragment implements HomeMagLiveContract.Vie
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_msglive_message, null);
         ButterKnife.bind(this, view);
+        initPresenter();
+        initMagDoorStateNotify();
         return view;
+    }
+
+    private void initPresenter() {
+        presenter = new HomeMagLivePresenterImp(this);
     }
 
     /**
@@ -106,4 +129,31 @@ public class MagLiveFragment extends Fragment implements HomeMagLiveContract.Vie
     public void setPresenter(HomeMagLiveContract.Presenter presenter) {
 
     }
+
+    @OnClick({R.id.btn_switch,R.id.tv_clear_mag_open_record})
+    public void onClick(View view) {
+        switch (view.getId()){
+            case R.id.btn_switch:
+                presenter.savaSwitchState(openDoorNotify(), JConstant.OPEN_DOOR_NOTIFI);
+                break;
+            case R.id.tv_clear_mag_open_record:
+                if (listener != null){
+                    listener.onClear();
+                }
+                break;
+        }
+
+    }
+
+    @Override
+    public boolean openDoorNotify() {
+        return presenter.getNegation();
+    }
+
+    @Override
+    public void initMagDoorStateNotify() {
+        btnSwitch.setChecked(presenter.getSwitchState(JConstant.OPEN_DOOR_NOTIFI));
+    }
+
+
 }

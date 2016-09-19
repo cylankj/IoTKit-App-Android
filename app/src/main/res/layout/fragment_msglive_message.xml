@@ -132,8 +132,9 @@
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:id="@+id/btn_switch"
-                android:layout_width="35dp"
-                android:layout_height="50dp" />
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="false" />
 
         </RelativeLayout>
 
@@ -144,13 +145,13 @@
             android:background="#F2F2F2" />
 
         <TextView
-            android:id="@+id/tv_home_"
+            android:id="@+id/tv_clear_mag_open_record"
             android:layout_marginTop="20dp"
             style="@style/information_item"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="清空开关记录"
             android:textSize="16sp"
-            android:textColor="#000000" />
+            android:textColor="@color/color_4b9fd5" />
     </LinearLayout>
 </LinearLayout>
