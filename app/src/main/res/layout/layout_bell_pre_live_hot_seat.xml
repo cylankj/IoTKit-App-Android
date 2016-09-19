@@ -11,8 +11,11 @@
         android:layout_width="wrap_content"
         android:layout_height="50dp"
         android:layout_gravity="center_vertical"
+        hunt:ll_big_inner_color="@color/color_FF1744"
         hunt:ll_big_inner_radius="5dp"
+        hunt:ll_big_outer_color="@color/color_33FF1744"
         hunt:ll_big_outer_radius="10dp"
+        hunt:ll_small_color="@color/color_33FF1744"
         hunt:ll_small_interval="10dp"
         hunt:ll_small_radius="3dp" />
 
@@ -20,9 +23,12 @@
         android:layout_width="wrap_content"
         android:layout_height="50dp"
         android:layout_gravity="center_vertical|end"
+        hunt:ll_big_inner_color="@color/color_41B56A"
         hunt:ll_big_inner_radius="5dp"
+        hunt:ll_big_outer_color="@color/color_3341B56A"
         hunt:ll_big_outer_radius="10dp"
         hunt:ll_reverse="true"
+        hunt:ll_small_color="@color/color_3341B56A"
         hunt:ll_small_interval="10dp"
         hunt:ll_small_radius="3dp" />
 

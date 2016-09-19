@@ -14,7 +14,6 @@ import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineShareToContactContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineShareToContactPresenterImp;
 import com.cylan.jiafeigou.n.mvp.model.SuggestionChatInfoBean;
-import com.cylan.jiafeigou.n.view.adapter.RelativeAndFriendAddFromContactAdapter;
 import com.cylan.jiafeigou.n.view.adapter.ShareToContactAdapter;
 import com.cylan.jiafeigou.utils.ToastUtil;
 
@@ -73,7 +72,7 @@ public class MineShareToContactFragment extends Fragment implements MineShareToC
                 break;
 
             case R.id.iv_mine_share_to_contact_search:
-                ToastUtil.showToast(getContext(),"正在搜索...");
+                ToastUtil.showToast(getContext(), "正在搜索...");
                 break;
         }
     }
@@ -90,7 +89,7 @@ public class MineShareToContactFragment extends Fragment implements MineShareToC
         shareToContactAdapter.setOnShareLisenter(new ShareToContactAdapter.onShareLisenter() {
             @Override
             public void isChecked(View view, int position) {
-                ToastUtil.showToast(getContext(),shareToContactAdapter.getRcyList().get(position).getName());
+                ToastUtil.showToast(getContext(), shareToContactAdapter.getRcyList().get(position).getName());
             }
         });
     }
@@ -98,7 +97,7 @@ public class MineShareToContactFragment extends Fragment implements MineShareToC
     @Override
     public void onStop() {
         super.onStop();
-        if(presenter != null){
+        if (presenter != null) {
             presenter.stop();
         }
     }

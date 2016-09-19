@@ -8,20 +8,16 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeMineHelpSuggestionContract;
-import com.cylan.jiafeigou.n.mvp.impl.home.HomeMineHelpSuggestionImpl;
 import com.cylan.jiafeigou.n.mvp.model.MineHelpSuggestionBean;
 import com.cylan.jiafeigou.n.view.adapter.HomeMineHelpSuggestionAdapter;
 import com.cylan.jiafeigou.utils.ToastUtil;
-import com.sina.weibo.sdk.utils.LogUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,7 +35,7 @@ import butterknife.OnClick;
  * 更新时间   $Date$
  * 更新描述   ${TODO}
  */
-public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMineHelpSuggestionContract.View{
+public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMineHelpSuggestionContract.View {
 
     @BindView(R.id.rv_home_mine_suggestion)
     RecyclerView mRvMineSuggestion;
@@ -176,7 +172,7 @@ public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMine
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         suggestionAdapter.removeAll(suggestionList);
-                        ToastUtil.showToast(getView().getContext(),"消息已清空");
+                        ToastUtil.showToast(getView().getContext(), "消息已清空");
                     }
                 })
                 .setNegativeButton("取消", new DialogInterface.OnClickListener() {
@@ -245,7 +241,6 @@ public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMine
             suggestionList.add(autoReplyBean);
         }
     }
-
 
 
     @Override

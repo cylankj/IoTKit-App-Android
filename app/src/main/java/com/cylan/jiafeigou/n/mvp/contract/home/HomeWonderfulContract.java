@@ -13,12 +13,17 @@ import java.util.List;
 public interface HomeWonderfulContract {
 
     interface View extends BaseView<Presenter> {
-        void onDeviceListRsp(List<MediaBean> list);
+
+        void onMediaListRsp(List<MediaBean> list);
 
         void onHeadBackgroundChang(int daytime);
 
         void timeLineDataUpdate(WheelViewDataSet wheelViewDataSet);
 
+        /**
+         * @param dayTime：0白天 1黑夜
+         */
+        void onTimeTick(int dayTime);
     }
 
     interface Presenter extends BasePresenter {

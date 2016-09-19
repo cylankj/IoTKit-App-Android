@@ -8,8 +8,6 @@ import android.view.WindowManager;
 
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineRelativesAndFriendScanAddContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
-import com.cylan.jiafeigou.support.permissions.Permission;
-import com.cylan.jiafeigou.utils.PermissionChecker;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.EncodeHintType;
 import com.google.zxing.MultiFormatWriter;
@@ -60,7 +58,7 @@ public class MineRelativesAndFriendScanAddPresenterImp extends AbstractPresenter
     }
 
     @Override
-    public Bitmap encodeAsBitmap(String contents, int dimension){
+    public Bitmap encodeAsBitmap(String contents, int dimension) {
 
         String contentsToEncode = contents;
         if (contentsToEncode == null) {

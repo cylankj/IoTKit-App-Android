@@ -27,8 +27,8 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.JConstant;
-import com.cylan.jiafeigou.n.mvp.contract.mine.MinePersionalInformationContract;
-import com.cylan.jiafeigou.n.mvp.impl.mine.MinePersionalInformationPresenterImpl;
+import com.cylan.jiafeigou.n.mvp.contract.mine.MinePersonalInformationContract;
+import com.cylan.jiafeigou.n.mvp.impl.mine.MinePersonalInformationPresenterImpl;
 import com.cylan.jiafeigou.n.mvp.model.UserInfoBean;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
@@ -51,7 +51,7 @@ import cn.finalteam.galleryfinal.model.PhotoInfo;
  * 更新时间   $Date$
  * 更新描述   ${TODO}
  */
-public class HomeMinePersonalInformationFragment extends Fragment implements MinePersionalInformationContract.View {
+public class HomeMinePersonalInformationFragment extends Fragment implements MinePersonalInformationContract.View {
 
     //拉取出照相机时，产生的状态码
     private final int REQUEST_CODE_CAMERA = 1000;
@@ -77,7 +77,7 @@ public class HomeMinePersonalInformationFragment extends Fragment implements Min
     private MineBindPhoneFragment bindPhoneFragment;
     private MineUserInfoLookBigHeadFragment bigHeadFragment;
     private MineSetUserNameFragment setUserNameFragment;
-    private MinePersionalInformationContract.Presenter presenter;
+    private MinePersonalInformationContract.Presenter presenter;
     private AlertDialog alertDialog;
 
     public static HomeMinePersonalInformationFragment newInstance(Bundle bundle) {
@@ -101,12 +101,12 @@ public class HomeMinePersonalInformationFragment extends Fragment implements Min
         View view = inflater.inflate(R.layout.fragment_home_mine_personal_information, container, false);
         ButterKnife.bind(this, view);
         initPresenter();
-        initPersionalInfomation(new UserInfoBean());
+        initPersonalInformation(new UserInfoBean());
         return view;
     }
 
     private void initPresenter() {
-        presenter = new MinePersionalInformationPresenterImpl(this, getContext());
+        presenter = new MinePersonalInformationPresenterImpl(this, getContext());
     }
 
     @Override
@@ -141,7 +141,7 @@ public class HomeMinePersonalInformationFragment extends Fragment implements Min
                 break;
 
             case R.id.rLayout_home_mine_personal_pic:           //更换头像
-                presenter.initGrallery();
+                presenter.initGallery();
                 showChooseImageDialog();
                 break;
 
@@ -192,11 +192,11 @@ public class HomeMinePersonalInformationFragment extends Fragment implements Min
     }
 
     @Override
-    public void initPersionalInfomation(UserInfoBean bean) {
+    public void initPersonalInformation(UserInfoBean bean) {
         //头像的回显
         Glide.with(getContext()).load(PreferencesUtils.getString(getContext(), JConstant.USER_IMAGE_HEAD_URL, ""))
                 .asBitmap().centerCrop()
-                .error(R.drawable.ic_launcher)
+                .error(R.mipmap.ic_launcher)
                 .into(new BitmapImageViewTarget(userImageHead) {
                     @Override
                     protected void setResource(Bitmap resource) {
@@ -248,11 +248,11 @@ public class HomeMinePersonalInformationFragment extends Fragment implements Min
                         ActivityCompat.requestPermissions((Activity) getContext(), new String[]{Manifest.permission.CAMERA}, 1);
                         return;
                     } else {
-                        GalleryFinal.openCamera(REQUEST_CODE_CAMERA, MinePersionalInformationPresenterImpl.functionConfig, mOnHanlderResultCallback);
+                        GalleryFinal.openCamera(REQUEST_CODE_CAMERA, MinePersonalInformationPresenterImpl.functionConfig, mOnHanlderResultCallback);
                     }
 
                 } else {
-                    GalleryFinal.openCamera(REQUEST_CODE_CAMERA, MinePersionalInformationPresenterImpl.functionConfig, mOnHanlderResultCallback);
+                    GalleryFinal.openCamera(REQUEST_CODE_CAMERA, MinePersonalInformationPresenterImpl.functionConfig, mOnHanlderResultCallback);
                 }
 
             }
@@ -261,7 +261,7 @@ public class HomeMinePersonalInformationFragment extends Fragment implements Min
         view.findViewById(R.id.tv_pick_from_grallery).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                GalleryFinal.openGallerySingle(REQUEST_CODE_GALLERY, MinePersionalInformationPresenterImpl.functionConfig, mOnHanlderResultCallback);
+                GalleryFinal.openGallerySingle(REQUEST_CODE_GALLERY, MinePersonalInformationPresenterImpl.functionConfig, mOnHanlderResultCallback);
             }
         });
 
@@ -286,7 +286,7 @@ public class HomeMinePersonalInformationFragment extends Fragment implements Min
     }
 
     @Override
-    public void setPresenter(MinePersionalInformationContract.Presenter presenter) {
+    public void setPresenter(MinePersonalInformationContract.Presenter presenter) {
     }
 
     /**
@@ -322,7 +322,7 @@ public class HomeMinePersonalInformationFragment extends Fragment implements Min
         switch (requestCode) {
             case 1:
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    GalleryFinal.openCamera(REQUEST_CODE_CAMERA, MinePersionalInformationPresenterImpl.functionConfig, mOnHanlderResultCallback);
+                    GalleryFinal.openCamera(REQUEST_CODE_CAMERA, MinePersonalInformationPresenterImpl.functionConfig, mOnHanlderResultCallback);
                 } else {
                     ToastUtil.showFailToast(getContext(), "相机未授权");
                 }

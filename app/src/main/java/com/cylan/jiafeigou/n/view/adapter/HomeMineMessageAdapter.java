@@ -16,27 +16,30 @@ import java.util.Date;
 
 public class HomeMineMessageAdapter extends RecyclerView.Adapter<HomeMineMessageAdapter.ChatViewHolder> {
     private ArrayList<SuggestionChatInfoBean> messages;
-    public HomeMineMessageAdapter(ArrayList<SuggestionChatInfoBean> messages){
+
+    public HomeMineMessageAdapter(ArrayList<SuggestionChatInfoBean> messages) {
         this.messages = messages;
     }
+
     @Override
     public ChatViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view;
-        if(viewType==0){
+        if (viewType == 0) {
             //发送的消息布局
-            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.fragment_home_mine_message_items,parent,false);
-        }else {
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.fragment_home_mine_message_items, parent, false);
+        } else {
             //接收的消息布局
-            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.fragment_home_mine_message_items,parent,false);
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.fragment_home_mine_message_items, parent, false);
         }
         return new ChatViewHolder(view);
     }
+
     //发送消息  0  接收receive  1
     @Override
     public int getItemViewType(int position) {
-        if(messages.get(position).getType() == 0){
+        if (messages.get(position).getType() == 0) {
             return 0;
-        }else {
+        } else {
             return 1;
         }
     }
@@ -45,10 +48,10 @@ public class HomeMineMessageAdapter extends RecyclerView.Adapter<HomeMineMessage
     public void onBindViewHolder(ChatViewHolder holder, int position) {
         SuggestionChatInfoBean message = messages.get(position);
         //处理消息时间
-       holder.chat_item_time.setText(parseTime(message.getTime()));
-        if(position==0||compareTime(messages.get(position-1).getTime(),messages.get(position).getTime())){
+        holder.chat_item_time.setText(parseTime(message.getTime()));
+        if (position == 0 || compareTime(messages.get(position - 1).getTime(), messages.get(position).getTime())) {
             holder.chat_item_time.setVisibility(View.VISIBLE);
-        }else {
+        } else {
             holder.chat_item_time.setVisibility(View.GONE);
         }
         //处理消息显示
@@ -63,7 +66,7 @@ public class HomeMineMessageAdapter extends RecyclerView.Adapter<HomeMineMessage
         return messages.size();
     }
 
-    class ChatViewHolder extends RecyclerView.ViewHolder{
+    class ChatViewHolder extends RecyclerView.ViewHolder {
 
         private final TextView chat_item_time;
         private final TextView chat_item_msg;
@@ -75,11 +78,11 @@ public class HomeMineMessageAdapter extends RecyclerView.Adapter<HomeMineMessage
         }
     }
 
-    public ArrayList<SuggestionChatInfoBean> getList(){
+    public ArrayList<SuggestionChatInfoBean> getList() {
         return messages;
     }
 
-    public String parseTime(String times){
+    public String parseTime(String times) {
         long timem = Long.parseLong(times);
         Date time = new Date(timem);
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -87,9 +90,9 @@ public class HomeMineMessageAdapter extends RecyclerView.Adapter<HomeMineMessage
         return dateString;
     }
 
-    public boolean compareTime(String preStrTime,String nowStrTime){
+    public boolean compareTime(String preStrTime, String nowStrTime) {
         long preTime = Long.parseLong(preStrTime);
         long nowTime = Long.parseLong(nowStrTime);
-        return (nowTime - preTime >= 20000)? true:false;
+        return (nowTime - preTime >= 20000) ? true : false;
     }
 }

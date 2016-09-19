@@ -1,6 +1,5 @@
 package com.cylan.jiafeigou.n.mvp.impl.mine;
 
-import android.content.ContentResolver;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.ContactsContract;
@@ -9,13 +8,10 @@ import android.text.TextUtils;
 
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineRelativeAndFriendAddFromContactContract;
 import com.cylan.jiafeigou.n.mvp.model.SuggestionChatInfoBean;
-import com.cylan.jiafeigou.utils.ToastUtil;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import rx.Observable;
-import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
@@ -45,7 +41,7 @@ public class MineRelativeAndFriendAddFromContactPresenterImp implements MineRela
 
     @Override
     public void stop() {
-        if(contactSubscriber != null){
+        if (contactSubscriber != null) {
             contactSubscriber.unsubscribe();
         }
     }
@@ -57,7 +53,7 @@ public class MineRelativeAndFriendAddFromContactPresenterImp implements MineRela
 
         contactSubscriber = Observable.just(null)
                 .subscribeOn(Schedulers.newThread())
-                .map(new Func1<Object,ArrayList<SuggestionChatInfoBean>>() {
+                .map(new Func1<Object, ArrayList<SuggestionChatInfoBean>>() {
                     @Override
                     public ArrayList call(Object o) {
                         return getAllContactList();
@@ -82,12 +78,12 @@ public class MineRelativeAndFriendAddFromContactPresenterImp implements MineRela
         // 然后在根据"sort-key"排序
         cursor = view.getContext().getContentResolver().query(
                 uri,
-                new String[] { "display_name", "sort_key", "contact_id",
-                        "data1" }, null, null, "sort_key");
+                new String[]{"display_name", "sort_key", "contact_id",
+                        "data1"}, null, null, "sort_key");
 
         if (cursor.moveToFirst()) {
             do {
-                SuggestionChatInfoBean contact = new SuggestionChatInfoBean("",1,"");
+                SuggestionChatInfoBean contact = new SuggestionChatInfoBean("", 1, "");
                 String contact_phone = cursor
                         .getString(cursor
                                 .getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
@@ -117,7 +113,7 @@ public class MineRelativeAndFriendAddFromContactPresenterImp implements MineRela
             for (SuggestionChatInfoBean s : getAllContactList()) {
                 String phone = s.getContent();
                 String name = s.getName();
-                if (phone.replace(" ","").contains(filterStr) || name.contains(filterStr)) {
+                if (phone.replace(" ", "").contains(filterStr) || name.contains(filterStr)) {
                     filterDateList.add(s);
                 }
             }

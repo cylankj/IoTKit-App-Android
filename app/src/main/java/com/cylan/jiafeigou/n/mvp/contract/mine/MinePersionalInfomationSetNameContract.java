@@ -10,13 +10,15 @@ import com.cylan.jiafeigou.n.mvp.BaseView;
  */
 public interface MinePersionalInfomationSetNameContract {
 
-    interface View extends BaseView<Presenter>{
+    interface View extends BaseView<Presenter> {
         String getEditName();
+
         void setTitleBarName();
     }
 
-    interface Presenter extends BasePresenter{
+    interface Presenter extends BasePresenter {
         void saveName();
+
         boolean isEditEmpty(String string);
     }
 }

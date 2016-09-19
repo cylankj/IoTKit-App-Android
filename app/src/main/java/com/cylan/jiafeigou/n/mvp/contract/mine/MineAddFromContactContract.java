@@ -10,13 +10,15 @@ import com.cylan.jiafeigou.n.mvp.BaseView;
  */
 public interface MineAddFromContactContract {
 
-    interface View extends BaseView<Presenter>{
+    interface View extends BaseView<Presenter> {
         void initEditText();
+
         String getSendMesg();
+
         void showResultDialog();
     }
 
-    interface Presenter extends BasePresenter{
+    interface Presenter extends BasePresenter {
         void sendRequest(String mesg);
     }
 

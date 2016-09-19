@@ -30,7 +30,7 @@
             android:layout_alignParentBottom="true"
             android:clickable="true"
             android:padding="15dp"
-            android:src="@drawable/ic_nav_back_arrow" />
+            android:src="@drawable/icon_nav_back_gray" />
 
 
         <TextView

@@ -67,15 +67,26 @@
     <application
         android:name=".n.base.BaseApplication"
         android:configChanges="locale|orientation|keyboardHidden"
-        android:icon="@drawable/ic_launcher"
+        android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
-        <meta-data
+
+       <!-- <meta-data
             android:name="TA_APPKEY"
-            android:value="MATAPPKEY" />
+            android:value="${MAT_VALUE}" />
+        &lt;!&ndash;server address&ndash;&gt;
         <meta-data
-            android:name="InstallChannel"
-            android:value="play" />
+            android:name="CallOfDuty"
+            android:value="${NICELY_VALUE}" />
+
+        &lt;!&ndash; your vid getString must "\ " &ndash;&gt;
+        <meta-data
+            android:name="vid"
+            android:value="\ 00A0" />
+        &lt;!&ndash; your vkey &ndash;&gt;
+        <meta-data
+            android:name="vkey"
+            android:value="qpqNCZvkcNca3KsfD6b0gm6S4ncsRVYa" />-->
 
         <activity
             android:name=".SmartcallActivity"
@@ -105,8 +116,8 @@
             android:name=".NewHomeActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize"
-            android:theme="@style/AppTheme"/>
+            android:theme="@style/CamActivityTheme"
+            android:windowSoftInputMode="adjustResize" />
 
         <activity
             android:name="com.tencent.connect.common.AssistActivity"
@@ -121,9 +132,6 @@
             </intent-filter>
         </receiver>
 
-        <service
-            android:name=".n.base.FirstTaskInitService"
-            android:exported="false" />
         <service
             android:name=".n.engine.DataSourceService"
             android:enabled="true"
@@ -184,18 +192,24 @@
             android:theme="@style/CamActivityTheme"
             android:windowSoftInputMode="adjustPan|stateHidden" />
 
-        <!--一个空的service，辅助启动bell_call进程。-->
+        <!-- 一个空的service，辅助启动bell_call进程。 -->
         <service
             android:name=".n.engine.SimpleHelperIntentService"
             android:exported="false"
             android:process=":bell_call" />
 
+        <activity
+            android:name=".n.view.activity.MediaActivity"
+            android:configChanges="locale|orientation|keyboardHidden|navigation|screenSize"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:theme="@style/MediaActivityTransition"
+            android:windowSoftInputMode="adjustPan|stateHidden" />
         <!--容纳意见反馈的Activity-->
-        <activity android:name=".n.view.mine.SuggestionChatContainerActivity"
+        <activity
+            android:name=".n.view.mine.SuggestionChatContainerActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"
-            android:windowSoftInputMode="adjustResize"
-            >
-        </activity>
+            android:windowSoftInputMode="adjustResize" />
     </application>
 
 </manifest>

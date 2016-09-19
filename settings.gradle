@@ -1,1 +1,1 @@
-include ':app', ':jlib', ':recycleviewdemo'
+include ':app', ':jlib'

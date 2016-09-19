@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ViewSwitcher xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/vs_bell_home_top"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".n.view.bell.DoorBellHomeActivity">
+
+    <FrameLayout
+        android:id="@+id/fLayout_bell_top_pre"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_bell_home_online">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center|bottom"
+            android:layout_marginBottom="24dp"
+            android:src="@drawable/bell_home_online_icon" />
+
+        <TextView
+            android:id="@+id/tv_start_calling"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center_horizontal"
+            android:background="@drawable/btn_bell_make_call_selector"
+            android:gravity="center"
+            android:text="查看"
+            android:textColor="@color/color_788291"
+            android:textSize="14sp" />
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/fLayout_bell_top_next"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_bell_home_offline">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:drawablePadding="12dp"
+            android:drawableTop="@drawable/bg_bell_home_offline_icon"
+            android:text="@string/item_bad_net_work"
+            android:textColor="@color/color_white"
+            android:textSize="14sp" />
+    </FrameLayout>
+</ViewSwitcher>

@@ -1,19 +1,10 @@
 package com.cylan.jiafeigou.n.mvp.impl.mine;
 
-import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MinePersonalInformationBindMailContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
-import com.cylan.jiafeigou.widget.sticky.AnimatorBuilder;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import rx.Observable;
-import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
-import rx.functions.Func1;
-import rx.schedulers.Schedulers;
 
 /**
  * 作者：zsl

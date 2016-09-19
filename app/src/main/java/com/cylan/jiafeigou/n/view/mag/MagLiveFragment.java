@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.n.mvp.contract.home.HomeMagLiveContract;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 
 import butterknife.BindView;
@@ -25,11 +26,10 @@ import butterknife.OnClick;
  * 更新时间   $Date$
  * 更新描述   ${TODO}
  */
-public class MagLiveFragment extends Fragment {
+public class MagLiveFragment extends Fragment implements HomeMagLiveContract.View{
 
     @BindView(R.id.tv_information_facility_name)
     TextView mFacilityName;
-
 
     private MagLiveInformationFragment magLiveInformationFragment;
 
@@ -74,12 +74,12 @@ public class MagLiveFragment extends Fragment {
     /**
      * 点击进入设备信息的设置页面
      */
-    @OnClick(R.id.lLayout_information_facility_name)
+    @OnClick(R.id.lLayout_home_mag_information)
     public void onFacilityMessage() {
         getFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                         , R.anim.slide_in_left, R.anim.slide_out_right)
-                .add(R.id.lLayout_msg_information, magLiveInformationFragment, "MagLiveFragment")
+                .add(android.R.id.content, magLiveInformationFragment, "magLiveInformationFragment")
                 .addToBackStack("MagLiveFragment")
                 .commit();
 
@@ -100,5 +100,10 @@ public class MagLiveFragment extends Fragment {
         super.onStart();
         String editName = PreferencesUtils.getString(getActivity(), "magEditName", "客厅摄像头");
         mFacilityName.setText(editName);
+    }
+
+    @Override
+    public void setPresenter(HomeMagLiveContract.Presenter presenter) {
+
     }
 }

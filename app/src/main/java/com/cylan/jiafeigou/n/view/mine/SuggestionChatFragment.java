@@ -1,6 +1,5 @@
 package com.cylan.jiafeigou.n.view.mine;
 
-import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -18,19 +17,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
-import android.view.Window;
-import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.contract.mine.SuggestionChatContant;
 import com.cylan.jiafeigou.n.mvp.impl.mine.SuggestionPresenterImp;
 import com.cylan.jiafeigou.n.view.adapter.SuggestionChatAdapter;
-import com.sina.weibo.sdk.utils.LogUtil;
 
 
 /**
@@ -38,7 +33,7 @@ import com.sina.weibo.sdk.utils.LogUtil;
  * 创建时间：2016/8/30
  * 描述：
  */
-public class SuggestionChatFragment extends Fragment implements SuggestionChatContant.View, View.OnClickListener,TextView.OnEditorActionListener {
+public class SuggestionChatFragment extends Fragment implements SuggestionChatContant.View, View.OnClickListener, TextView.OnEditorActionListener {
 
     private EditText et_content;
     private RecyclerView recyclerView;
@@ -52,7 +47,7 @@ public class SuggestionChatFragment extends Fragment implements SuggestionChatCo
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        View view =inflater.inflate(R.layout.fragment_home_mine_suggestion,container,false);
+        View view = inflater.inflate(R.layout.fragment_home_mine_suggestion, container, false);
 
         initView(view);
 
@@ -71,19 +66,19 @@ public class SuggestionChatFragment extends Fragment implements SuggestionChatCo
 
     private void initTitlebar() {
         if (Build.VERSION.SDK_INT >= 21) {
-            View decorView =getActivity().getWindow().getDecorView();
+            View decorView = getActivity().getWindow().getDecorView();
             int option = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
                     | View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
             decorView.setSystemUiVisibility(option);
             getActivity().getWindow().setStatusBarColor(Color.TRANSPARENT);
         }
-         //ActionBar actionBar =getActivity().getSupportActionBar();
+        //ActionBar actionBar =getActivity().getSupportActionBar();
         // actionBar.hide();
 
     }
 
     private void initPresenter() {
-        presenter = new SuggestionPresenterImp(this,getContext());
+        presenter = new SuggestionPresenterImp(this, getContext());
     }
 
     private void initView(View view) {
@@ -117,7 +112,7 @@ public class SuggestionChatFragment extends Fragment implements SuggestionChatCo
 
     @Override
     public String getTime() {
-        return System.currentTimeMillis()+"";
+        return System.currentTimeMillis() + "";
     }
 
     @Override
@@ -138,7 +133,7 @@ public class SuggestionChatFragment extends Fragment implements SuggestionChatCo
                         //移除监听
                         recyclerView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
                         //列表滑动到最后一条
-                        recyclerView.scrollToPosition(chatAdapter.getList().size()-1);
+                        recyclerView.scrollToPosition(chatAdapter.getList().size() - 1);
                     }
                 });
             }
@@ -151,7 +146,7 @@ public class SuggestionChatFragment extends Fragment implements SuggestionChatCo
                     @Override
                     public void onGlobalLayout() {
                         recyclerView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                        recyclerView.scrollToPosition(chatAdapter.getList().size()-1);
+                        recyclerView.scrollToPosition(chatAdapter.getList().size() - 1);
                         et_content.setEnabled(true);
                     }
                 });
@@ -162,7 +157,7 @@ public class SuggestionChatFragment extends Fragment implements SuggestionChatCo
     @Override
     public boolean editLessShowDialog() {
         String content = et_content.getText().toString().trim();
-        if(content.length() < 10){
+        if (content.length() < 10) {
             presenter.showToast();
             return true;
         }
@@ -198,22 +193,22 @@ public class SuggestionChatFragment extends Fragment implements SuggestionChatCo
     @Override
     public void onResume() {
         super.onResume();
-        Log.d("",""+getActivity());
+        Log.d("", "" + getActivity());
     }
 
     @Override
     public void onClick(View v) {
 
-        switch (v.getId()){
+        switch (v.getId()) {
 
             case R.id.tv_home_mine_suggestion:
-                if(editLessShowDialog()){
+                if (editLessShowDialog()) {
                     return;
                 }
-                presenter.addChatItem(presenter.makeEMMessageBean(getEditContent(),0,getTime()));
+                presenter.addChatItem(presenter.makeEMMessageBean(getEditContent(), 0, getTime()));
                 presenter.addChatItem(presenter.testServerData(SystemClock.currentThreadTimeMillis()));
                 chatAdapter.notifyDataSetChanged();
-                recyclerView.scrollToPosition(chatAdapter.getList().size()-1);
+                recyclerView.scrollToPosition(chatAdapter.getList().size() - 1);
                 clearEdit();
                 //hideKeyBoard();
                 break;

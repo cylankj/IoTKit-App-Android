@@ -1,5 +1,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:hunt="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/lLayout_item_wonderful"
     android:layout_width="match_parent"
     android:layout_height="225dp"
     android:clickable="true"
@@ -15,13 +16,12 @@
         android:paddingRight="2dp"
         hunt:dashLineColor="@color/color_e8e8e8"
         hunt:dashLineWidth="2dp"
-        hunt:innerCircleColor="@color/color_e8e8e8"
+        hunt:innerCircleColor="@color/color_white"
         hunt:innerCircleRadius="6dp"
-        hunt:outerCircleStrokeWidth="4dp"
-        hunt:outerCircleColor="@color/color_white"
+        hunt:outerCircleColor="@color/color_e8e8e8"
         hunt:outerCircleRadius="10dp"
+        hunt:outerCircleStrokeWidth="4dp"
         hunt:outerCircleY="10dp" />
-
     <RelativeLayout
         android:id="@+id/rLayout_wonderful_item_wonder"
         android:layout_width="match_parent"
@@ -39,16 +39,26 @@
             android:textColor="@color/color_666666"
             android:textSize="13sp" />
 
-        <ImageView
-            android:transitionName="picDetailsFragment"
-            android:id="@+id/iv_wonderful_item_content"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:layout_above="@+id/fLayout_wonderful_item_bottom"
-            android:layout_below="@+id/tv_wonderful_item_date"
-            android:scaleType="fitXY"
-            android:src="@drawable/ic_launcher" />
+            android:layout_below="@+id/tv_wonderful_item_date">
 
+            <ImageView
+                android:id="@+id/iv_wonderful_item_content"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="fitXY"
+                android:src="@mipmap/ic_launcher"
+                android:transitionName="picDetailsFragment" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:src="@drawable/btn_video_stop" />
+        </FrameLayout>
 
         <FrameLayout
             android:id="@+id/fLayout_wonderful_item_bottom"

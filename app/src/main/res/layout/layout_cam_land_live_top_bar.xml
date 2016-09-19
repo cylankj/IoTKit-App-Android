@@ -8,7 +8,7 @@
         android:id="@+id/imgV_cam_live_land_nav_back"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:drawableLeft="@drawable/ic_nav_back_arrow"
+        android:drawableLeft="@drawable/icon_nav_back_gray"
         android:drawablePadding="15dp"
         android:padding="15dp"
         android:textColor="@color/color_white"

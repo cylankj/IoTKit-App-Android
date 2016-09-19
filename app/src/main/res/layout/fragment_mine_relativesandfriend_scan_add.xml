@@ -22,7 +22,7 @@
             android:layout_alignParentBottom="true"
             android:padding="15dp"
             android:clickable="true"
-            android:src="@drawable/ic_nav_back_arrow" />
+            android:src="@drawable/icon_nav_back_white" />
 
         <TextView
             android:layout_width="match_parent"
@@ -56,7 +56,7 @@
     <ImageView
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="50dp"
-        android:src="@drawable/ic_launcher"
+        android:src="@mipmap/ic_launcher"
         android:id="@+id/iv_erweima"
         android:layout_width="150dp"
         android:layout_height="150dp" />

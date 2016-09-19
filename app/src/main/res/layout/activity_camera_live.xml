@@ -25,7 +25,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="15dp"
-            android:src="@drawable/ic_nav_back_arrow" />
+            android:src="@drawable/icon_nav_back_white" />
 
         <com.cylan.jiafeigou.widget.indicator.PagerSlidingTabStrip
             android:id="@+id/v_indicator"

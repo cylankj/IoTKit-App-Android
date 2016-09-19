@@ -3,7 +3,6 @@ package com.cylan.jiafeigou.n.view.mine;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -43,7 +42,7 @@ public class MineUserInfoLookBigHeadFragment extends Fragment implements MineUse
     private MineUserInfoLookBigHeadContract.Presenter presenter;
 
 
-    public static MineUserInfoLookBigHeadFragment newInstance(){
+    public static MineUserInfoLookBigHeadFragment newInstance() {
         return new MineUserInfoLookBigHeadFragment();
     }
 
@@ -60,9 +59,9 @@ public class MineUserInfoLookBigHeadFragment extends Fragment implements MineUse
     private void loadBigImage() {
 
         Glide.with(getContext())
-                .load(PreferencesUtils.getString(getContext(), JConstant.USER_IMAGE_HEAD_URL,""))
+                .load(PreferencesUtils.getString(getContext(), JConstant.USER_IMAGE_HEAD_URL, ""))
                 .asBitmap()
-                .error(R.drawable.ic_launcher)
+                .error(R.mipmap.ic_launcher)
                 .centerCrop()
                 .into(new BitmapImageViewTarget(ivUserinfoBigImage) {
 
@@ -84,7 +83,7 @@ public class MineUserInfoLookBigHeadFragment extends Fragment implements MineUse
                         super.onLoadFailed(e, errorDrawable);
                         hideLoadImageProgress();
                         loadResult = false;
-                        ToastUtil.showFailToast(getContext(),"加载失败，点击重试");
+                        ToastUtil.showFailToast(getContext(), "加载失败，点击重试");
                     }
 
                 });
@@ -96,9 +95,9 @@ public class MineUserInfoLookBigHeadFragment extends Fragment implements MineUse
 
     @OnClick(R.id.iv_userinfo_big_image)
     public void onClick() {
-        if(loadResult){
+        if (loadResult) {
             getFragmentManager().popBackStack();
-        }else {
+        } else {
             loadBigImage();
         }
     }

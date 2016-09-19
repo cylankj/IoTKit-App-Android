@@ -2,6 +2,7 @@ package com.cylan.jiafeigou.n.mvp.impl;
 
 import com.cylan.jiafeigou.BuildConfig;
 
+import java.lang.ref.SoftReference;
 import java.lang.ref.WeakReference;
 
 import rx.Subscription;
@@ -13,11 +14,10 @@ import rx.Subscription;
 public abstract class AbstractPresenter<T> {
 
     protected final String TAG = this.getClass().getSimpleName();
-    WeakReference<T> weakReference;
+    protected SoftReference<T> weakReference;
 
     public AbstractPresenter(T t) {
-        weakReference = new WeakReference<>(t);
-
+        weakReference = new SoftReference<>(t);
     }
 
     public T getView() {

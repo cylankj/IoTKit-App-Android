@@ -40,7 +40,7 @@ public class MineShareToContactPresenterImp extends AbstractPresenter<MineShareT
 
     @Override
     public void stop() {
-        if(shareToContactSub != null){
+        if (shareToContactSub != null) {
             shareToContactSub.unsubscribe();
         }
     }
@@ -60,8 +60,8 @@ public class MineShareToContactPresenterImp extends AbstractPresenter<MineShareT
                 .subscribe(new Action1<ArrayList<SuggestionChatInfoBean>>() {
                     @Override
                     public void call(ArrayList<SuggestionChatInfoBean> list) {
-                            getView().setAdapter(list);
-                            getView().setItemCheckListener();
+                        getView().setAdapter(list);
+                        getView().setItemCheckListener();
                     }
                 });
     }
@@ -75,12 +75,12 @@ public class MineShareToContactPresenterImp extends AbstractPresenter<MineShareT
         // 然后在根据"sort-key"排序
         cursor = getView().getContext().getContentResolver().query(
                 uri,
-                new String[] { "display_name", "sort_key", "contact_id",
-                        "data1" }, null, null, "sort_key");
+                new String[]{"display_name", "sort_key", "contact_id",
+                        "data1"}, null, null, "sort_key");
 
         if (cursor.moveToFirst()) {
             do {
-                SuggestionChatInfoBean contact = new SuggestionChatInfoBean("",1,"");
+                SuggestionChatInfoBean contact = new SuggestionChatInfoBean("", 1, "");
                 String contact_phone = cursor
                         .getString(cursor
                                 .getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));

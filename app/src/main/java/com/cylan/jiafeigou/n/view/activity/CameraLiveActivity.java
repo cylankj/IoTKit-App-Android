@@ -15,19 +15,21 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
 import com.cylan.jiafeigou.n.mvp.impl.cam.CamLivePresenterImpl;
 import com.cylan.jiafeigou.n.mvp.impl.cam.CamMessageListPresenterImpl;
 import com.cylan.jiafeigou.n.view.cam.CamMessageListFragment;
 import com.cylan.jiafeigou.n.view.cam.CameraLiveFragment;
+import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.CustomViewPager;
 import com.cylan.jiafeigou.widget.indicator.PagerSlidingTabStrip;
-import com.superlog.SLog;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+
 
 public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
 
@@ -49,7 +51,7 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_camera_live);
-        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+//        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
         ButterKnife.bind(this);
         initTopBar();
         initAdapter();
@@ -58,13 +60,13 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        SLog.d("onSaveInstanceState");
+        AppLogger.d("onSaveInstanceState");
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        SLog.d("onRestoreInstanceState");
+        AppLogger.d("onRestoreInstanceState");
     }
 
     @Override
@@ -129,7 +131,9 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
      */
     @OnClick(R.id.imgV_camera_title_top_setting)
     public void onClickSetting() {
-        startActivity(new Intent(this, CamSettingActivity.class),
+        Intent intent = new Intent(this, CamSettingActivity.class);
+        intent.putExtra(JConstant.KEY_DEVICE_ITEM_BUNDLE, getIntent().getBundleExtra(JConstant.KEY_DEVICE_ITEM_BUNDLE));
+        startActivity(intent,
                 ActivityOptionsCompat.makeCustomAnimation(getApplicationContext(),
                         R.anim.slide_in_right, R.anim.slide_out_left).toBundle());
     }

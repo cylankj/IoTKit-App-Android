@@ -25,7 +25,6 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import butterknife.OnTextChanged;
 
 /**
  * 作者：zsl
@@ -67,13 +66,15 @@ public class MineRelativeAndFriendAddFromContactFragment extends Fragment implem
     }
 
     private void initEditTextListenter() {
-       etAddPhoneNumber.addTextChangedListener(new TextWatcher() {
+        etAddPhoneNumber.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             }
+
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
             }
+
             @Override
             public void afterTextChanged(Editable s) {
                 presenter.filterPhoneData(s.toString());
@@ -112,11 +113,11 @@ public class MineRelativeAndFriendAddFromContactFragment extends Fragment implem
         relativeAndFriendAddFromContactAdapter.setOnContactItemClickListener(new RelativeAndFriendAddFromContactAdapter.onContactItemClickListener() {
             @Override
             public void onClick(View view, int position) {
-                ToastUtil.showToast(getContext(),relativeAndFriendAddFromContactAdapter.getAdapterList().get(position).getName());
+                ToastUtil.showToast(getContext(), relativeAndFriendAddFromContactAdapter.getAdapterList().get(position).getName());
                 getFragmentManager().beginTransaction()
                         .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                                 , R.anim.slide_in_left, R.anim.slide_out_right)
-                        .add(android.R.id.content,mineAddFromContactFragment,"mineAddFromContactFragment")
+                        .add(android.R.id.content, mineAddFromContactFragment, "mineAddFromContactFragment")
                         .addToBackStack("mineHelpFragment")
                         .commit();
             }
@@ -140,7 +141,7 @@ public class MineRelativeAndFriendAddFromContactFragment extends Fragment implem
     @Override
     public void onStop() {
         super.onStop();
-        if(presenter != null){
+        if (presenter != null) {
             presenter.stop();
         }
     }

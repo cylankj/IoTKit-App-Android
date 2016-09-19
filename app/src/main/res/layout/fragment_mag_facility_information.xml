@@ -18,7 +18,7 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:padding="15dp"
-            android:src="@drawable/ic_nav_back_arrow" />
+            android:src="@drawable/icon_nav_back_gray" />
 
         <TextView
             android:layout_centerVertical="true"

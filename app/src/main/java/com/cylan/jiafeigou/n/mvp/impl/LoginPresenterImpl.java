@@ -12,11 +12,12 @@ import com.cylan.jiafeigou.support.sina.AccessTokenKeeper;
 import com.cylan.jiafeigou.support.sina.SinaWeiboUtil;
 import com.cylan.jiafeigou.support.sina.UsersAPI;
 import com.cylan.jiafeigou.support.tencent.TencentLoginUtils;
+import com.cylan.jiafeigou.support.log.AppLogger;
 import com.sina.weibo.sdk.auth.Oauth2AccessToken;
 import com.sina.weibo.sdk.auth.WeiboAuthListener;
 import com.sina.weibo.sdk.exception.WeiboException;
 import com.sina.weibo.sdk.net.RequestListener;
-import com.superlog.SLog;
+;
 import com.tencent.tauth.IUiListener;
 import com.tencent.tauth.UiError;
 
@@ -101,7 +102,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginModelContract.Vie
 
     @Override
     public void registerByPhone(String phone, String verificationCode) {
-        SLog.d("just send phone ");
+        AppLogger.d("just send phone ");
     }
 
     /**
@@ -126,7 +127,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginModelContract.Vie
 //                PreferencesUtils.setThirDswLoginPicUrl(ctx, jsonResponse.getString("figureurl_qq_1"));
 //                cmd.openLogin(alias, "", "QQ", ""); // 接口没测
             } catch (JSONException e) {
-                SLog.e(e.toString());
+                AppLogger.e(e.toString());
             }
 
 
@@ -137,7 +138,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginModelContract.Vie
             if (getView() != null) {
                 getView().onQQAuthorizeResult(LoginModelContract.AUTHORIZE_ERROR);
             }
-            SLog.e("errorCode: %d ,error: %s", uiError.errorCode, uiError.errorMessage);
+            AppLogger.e("errorCode: %d ,error: %s", uiError.errorCode, uiError.errorMessage);
         }
 
         @Override
@@ -171,7 +172,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginModelContract.Vie
             if (getView() != null) {
                 getView().onSinaAuthorizeResult(LoginModelContract.AUTHORIZE_ERROR);
             }
-            SLog.e(e.toString());
+            AppLogger.e(e.toString());
         }
 
         @Override
@@ -197,7 +198,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginModelContract.Vie
 //                    cmd.openLogin(strId, "", "SINA", ""); // 接口没测
                 }
             } catch (JSONException e) {
-                SLog.e(e.toString());
+                AppLogger.e(e.toString());
             }
 
         }
@@ -207,7 +208,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginModelContract.Vie
             if (getView() != null) {
                 getView().onSinaAuthorizeResult(LoginModelContract.AUTHORIZE_CANCLE);
             }
-            SLog.e(e.toString());
+            AppLogger.e(e.toString());
         }
     };
 

@@ -47,7 +47,7 @@ public abstract class BaseTitleFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         initTitleBarAction();
-        updateNavBackIcon(R.drawable.btn_nav_back);
+        updateNavBackIcon(R.drawable.icon_nav_back_gray);
     }
 
     protected abstract int getSubContentViewId();

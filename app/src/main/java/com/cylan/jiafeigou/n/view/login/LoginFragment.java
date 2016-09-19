@@ -24,21 +24,21 @@ import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
 import com.cylan.jiafeigou.BuildConfig;
+import com.cylan.jiafeigou.NewHomeActivity;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.SmartcallActivity;
 import com.cylan.jiafeigou.misc.JConstant;
-import com.cylan.jiafeigou.NewHomeActivity;
 import com.cylan.jiafeigou.n.mvp.contract.login.LoginModelContract;
 import com.cylan.jiafeigou.n.mvp.impl.ForgetPwdPresenterImpl;
 import com.cylan.jiafeigou.n.mvp.impl.SetupPwdPresenterImpl;
 import com.cylan.jiafeigou.n.mvp.model.LoginAccountBean;
 import com.cylan.jiafeigou.utils.AnimatorUtils;
+import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.IMEUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.LoginButton;
 import com.cylan.utils.RandomUtils;
-import com.superlog.SLog;
 
 import java.lang.ref.WeakReference;
 
@@ -48,6 +48,8 @@ import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
 import butterknife.OnFocusChange;
 import butterknife.OnTextChanged;
+
+;
 
 
 /**
@@ -445,7 +447,7 @@ public class LoginFragment extends android.support.v4.app.Fragment implements Lo
     @Override
     public void setPresenter(LoginModelContract.Presenter presenter) {
         this.presenter = presenter;
-        SLog.e("setPresenter");
+        AppLogger.e("setPresenter");
     }
 
     @Override

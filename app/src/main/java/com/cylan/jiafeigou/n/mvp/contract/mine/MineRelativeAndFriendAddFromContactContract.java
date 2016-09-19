@@ -13,14 +13,17 @@ import java.util.ArrayList;
  */
 public interface MineRelativeAndFriendAddFromContactContract {
 
-    interface View extends BaseView<Presenter>{
+    interface View extends BaseView<Presenter> {
         void setRcyAdapter(ArrayList<SuggestionChatInfoBean> list);
+
         void InitItemClickListener();
     }
 
-    interface Presenter extends BasePresenter{
+    interface Presenter extends BasePresenter {
         void initContactData();
+
         void addContactItem(SuggestionChatInfoBean bean);
+
         void filterPhoneData(String filterStr);
     }
 

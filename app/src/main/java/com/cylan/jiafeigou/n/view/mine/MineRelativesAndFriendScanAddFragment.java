@@ -1,16 +1,12 @@
 package com.cylan.jiafeigou.n.view.mine;
 
-import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.Point;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -58,7 +54,7 @@ public class MineRelativesAndFriendScanAddFragment extends Fragment implements Z
         View view = inflater.inflate(R.layout.fragment_mine_relativesandfriend_scan_add, container, false);
         ButterKnife.bind(this, view);
         initView();
-        showErWeiMa(presenter.encodeAsBitmap("1234",presenter.getDimession()));
+        showErWeiMa(presenter.encodeAsBitmap("1234", presenter.getDimession()));
         return view;
     }
 
@@ -67,13 +63,13 @@ public class MineRelativesAndFriendScanAddFragment extends Fragment implements Z
         int screenHeight = getActivity().getWindowManager().getDefaultDisplay().getHeight();
 
         ViewGroup.LayoutParams scanlayoutParams = zxVScanAddRelativesandfriend.getLayoutParams();
-        scanlayoutParams.height = (int) (screenHeight*0.41+0.5);
-        scanlayoutParams.width = (int) (screenWidth*0.72+0.5);
+        scanlayoutParams.height = (int) (screenHeight * 0.41 + 0.5);
+        scanlayoutParams.width = (int) (screenWidth * 0.72 + 0.5);
         zxVScanAddRelativesandfriend.setLayoutParams(scanlayoutParams);
 
         ViewGroup.LayoutParams erWeimalayoutParams = ivErweima.getLayoutParams();
-        erWeimalayoutParams.height = (int) (screenHeight*0.135+0.5);
-        erWeimalayoutParams.width = (int) (screenWidth*0.24+0.5);
+        erWeimalayoutParams.height = (int) (screenHeight * 0.135 + 0.5);
+        erWeimalayoutParams.width = (int) (screenWidth * 0.24 + 0.5);
         ivErweima.setLayoutParams(erWeimalayoutParams);
     }
 

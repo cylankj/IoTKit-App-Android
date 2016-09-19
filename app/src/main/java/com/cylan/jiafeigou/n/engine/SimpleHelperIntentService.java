@@ -4,7 +4,7 @@ import android.app.IntentService;
 import android.content.Intent;
 
 import com.cylan.jiafeigou.n.view.bell.BellLiveActivity;
-import com.cylan.jiafeigou.utils.AppLogger;
+import com.cylan.jiafeigou.support.log.AppLogger;
 
 /**
  * 一个空的service,不添加任何逻辑。它和{@link BellLiveActivity}属于

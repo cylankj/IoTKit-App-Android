@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/color_f9f9f9"
+    android:background="@color/color_white"
     android:orientation="vertical"
     tools:context="com.cylan.jiafeigou.n.view.activity.CamSettingActivity">
 
@@ -23,7 +23,7 @@
                 android:id="@+id/imgV_top_bar_center"
                 android:layout_width="wrap_content"
                 android:layout_height="48dp"
-                android:drawableLeft="@drawable/ic_nav_back_arrow"
+                android:drawableLeft="@drawable/icon_nav_back_gray"
                 android:drawablePadding="15dp"
                 android:padding="15dp"
                 android:text="功能设置"
@@ -193,7 +193,6 @@
                         android:layout_centerVertical="true"
                         android:layout_marginStart="10dp"
                         android:layout_toRightOf="@+id/imgv_setting_item_electricity_icon"
-                        android:layout_toStartOf="@+id/sbtn_setting_item_switch_110v"
                         android:orientation="vertical">
 
                         <TextView

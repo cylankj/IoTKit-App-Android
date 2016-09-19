@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:id="@+id/cv_bell_call_item"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    card_view:cardBackgroundColor="@android:color/white">
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -38,8 +40,9 @@
             android:background="@color/color_EFEFEF" />
 
         <com.cylan.jiafeigou.widget.ImageViewTip
-            android:layout_width="76dp"
-            android:layout_height="76dp"
+            android:id="@+id/imgv_bell_call_item_thumbnail"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="17dp"
             android:src="@drawable/icon_home_doorbell_online" />
@@ -58,12 +61,11 @@
             android:textSize="13sp" />
     </LinearLayout>
 
-    <LinearLayout
+    <FrameLayout
         android:id="@+id/imgv_bell_call_item_cover"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/card_view_alpha_cover"
-        android:visibility="gone">
+        android:background="@drawable/card_view_alpha_cover">
 
         <ImageView
             android:layout_width="wrap_content"
@@ -71,5 +73,5 @@
             android:layout_gravity="end"
             android:padding="10dp"
             android:src="@drawable/icon_check" />
-    </LinearLayout>
+    </FrameLayout>
 </android.support.v7.widget.CardView>

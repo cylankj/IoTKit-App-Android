@@ -2,7 +2,7 @@ package com.cylan.jiafeigou.n.mvp.impl;
 
 import com.cylan.jiafeigou.n.mvp.contract.login.SetupPwdContract;
 import com.cylan.jiafeigou.n.mvp.model.RequestResetPwdBean;
-import com.superlog.SLog;
+import com.cylan.jiafeigou.support.log.AppLogger;
 
 import java.util.concurrent.TimeUnit;
 
@@ -12,6 +12,8 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
+
+;
 
 /**
  * Created by cylan-hunt on 16-6-30.
@@ -47,7 +49,7 @@ public class SetupPwdPresenterImpl extends AbstractPresenter<SetupPwdContract.Vi
                 }, new Action1<Throwable>() {
                     @Override
                     public void call(Throwable throwable) {
-                        SLog.e("god..." + throwable.getLocalizedMessage());
+                        AppLogger.e("god..." + throwable.getLocalizedMessage());
                     }
                 });
     }

@@ -10,13 +10,13 @@ import com.cylan.jiafeigou.n.mvp.BaseView;
  */
 public interface HomeSettingAboutContract {
 
-    interface View extends BaseView<Presenter>{
+    interface View extends BaseView<Presenter> {
 
         String getHotPhone();
 
     }
 
-    interface Presenter extends BasePresenter{
+    interface Presenter extends BasePresenter {
         void callHotPhone(String phone);
     }
 

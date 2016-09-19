@@ -17,14 +17,16 @@ import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamMessageListContract;
 import com.cylan.jiafeigou.n.mvp.model.CamMessageBean;
 import com.cylan.jiafeigou.n.view.adapter.CamMessageListAdapter;
+import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.widget.wheel.WheelView;
-import com.superlog.SLog;
 
 import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+
+;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -90,7 +92,7 @@ public class CamMessageListFragment extends Fragment
         rvCamMessageList.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                SLog.d("newState: " + newState);
+                AppLogger.d("newState: " + newState);
             }
 
             @Override
@@ -107,7 +109,7 @@ public class CamMessageListFragment extends Fragment
         if (currentPosition == position)
             return;
         currentPosition = position;
-        SLog.d("fPos: " + position);
+        AppLogger.d("fPos: " + position);
     }
 
     @OnClick({R.id.tv_cam_message_list_date, R.id.tv_cam_message_list_edit})

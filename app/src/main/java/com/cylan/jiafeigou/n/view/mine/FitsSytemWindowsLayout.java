@@ -53,7 +53,7 @@ public class FitsSytemWindowsLayout extends RelativeLayout {
         int offset = oldSpec - newSpec;
         if (offset > 100) {
             softKeyBoardStateListener.onSoftKeyBoardStateChange(true);
-        } else if (offset <0) {
+        } else if (offset < 0) {
             softKeyBoardStateListener.onSoftKeyBoardStateChange(false);
         }
     }

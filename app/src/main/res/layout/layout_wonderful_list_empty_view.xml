@@ -10,7 +10,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:src="@drawable/icon_no_devices" />
+        android:src="@drawable/icon_no_message" />
 
     <TextView
         android:id="@+id/tv_empty_layout_content"
@@ -18,17 +18,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="20dp"
-        android:text="还没有设备哦"
-        android:textColor="@color/color_33333"
+        android:text="暂无消息"
+        android:textColor="@color/color_888888"
         android:textSize="16sp" />
 
-    <TextView
-        android:id="@+id/tv_empty_layout_sub_content"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="13dp"
-        android:text="快点点击右上角 “+” 添加设备吧"
-        android:textColor="@color/color_888888"
-        android:textSize="14sp" />
 </LinearLayout>

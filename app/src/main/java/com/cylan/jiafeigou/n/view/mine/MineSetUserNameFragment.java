@@ -89,10 +89,10 @@ public class MineSetUserNameFragment extends Fragment implements MinePersionalIn
 
     }
 
-    @OnClick({R.id.tv_save_username,R.id.iv_top_bar_left})
+    @OnClick({R.id.tv_save_username, R.id.iv_top_bar_left})
     public void onClick(View view) {
 
-        switch (view.getId()){
+        switch (view.getId()) {
             case R.id.tv_save_username:
                 if (presenter.isEditEmpty(getEditName())) {
                     ToastUtil.showToast(getContext(), "昵称不能为空");

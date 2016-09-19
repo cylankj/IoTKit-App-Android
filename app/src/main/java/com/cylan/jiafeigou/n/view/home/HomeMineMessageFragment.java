@@ -17,7 +17,6 @@ import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeMineMessageContract;
 import com.cylan.jiafeigou.n.mvp.impl.home.HomeMineMessagePresenterImp;
 import com.cylan.jiafeigou.n.view.adapter.HomeMineMessageAdapter;
-import com.cylan.jiafeigou.n.view.adapter.SuggestionChatAdapter;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

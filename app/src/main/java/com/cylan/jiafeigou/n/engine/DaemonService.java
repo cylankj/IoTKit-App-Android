@@ -13,18 +13,26 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
-import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.support.block.impl.BlockCanary;
+import com.cylan.jiafeigou.support.block.impl.BlockCanaryContext;
+import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.support.stat.BugMonitor;
+import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.PathGetter;
 import com.cylan.utils.FileUtils;
+import com.cylan.utils.HandlerThreadUtils;
 import com.cylan.utils.ProcessUtils;
-import com.superlog.SLog;
+
+import org.msgpack.annotation.NotNullable;
 
 import java.io.File;
 
+
 public class DaemonService extends Service {
+
     private static final String TAG = DaemonService.class.getSimpleName();
-    public static final String KEY_DAEMON_NAME = "daemonName";
 
     /**
      * Creates an Service.  Invoked by your subclass's constructor.
@@ -37,8 +45,44 @@ public class DaemonService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        onHandleIntent();
+        initDaemonFile();
+        initBlockCanary();
+        initBugMonitor();
         registerBootComplete();
+    }
+
+    /**
+     * a simple
+     */
+    private void initDaemonFile() {
+        HandlerThreadUtils.post(new Runnable() {
+            @Override
+            public void run() {
+                AppLogger.d("CopyDaemonFile");
+                onHandleIntent();
+            }
+        });
+    }
+
+    private void initBlockCanary() {
+        HandlerThreadUtils.post(new Runnable() {
+            @Override
+            public void run() {
+                AppLogger.d("initBlockCanary");
+                //BlockCanary
+                BlockCanary.install(ContextUtils.getContext(), new BlockCanaryContext()).start();
+            }
+        });
+    }
+
+    private void initBugMonitor() {
+        HandlerThreadUtils.post(new Runnable() {
+            @Override
+            public void run() {
+                //bugLy
+                BugMonitor.init(ContextUtils.getContext());
+            }
+        });
     }
 
     @Nullable
@@ -52,9 +96,7 @@ public class DaemonService extends Service {
         if (!isServiceRunning()) {
             startService(new Intent(this, DataSourceService.class));
             try2startForeground();
-            SLog.i("re start data service");
-
-
+            AppLogger.i(TAG + "re start data service");
         }
         return START_STICKY;
     }
@@ -77,6 +119,7 @@ public class DaemonService extends Service {
         }
     }
 
+
     protected void onHandleIntent() {
         try {
             final String daemonServiceName = this.getClass().getName();
@@ -84,16 +127,18 @@ public class DaemonService extends Service {
             final String daemonPath = getFilesDir() + File.separator + filename;
             final File destFile = new File(daemonPath);
             FileUtils.copyAssetsFile(this, destFile, "daemon_c");
-            new File(daemonPath).setExecutable(true);
+            boolean set = new File(daemonPath).setExecutable(true);
             final String packageName = getPackageName();
             final String processName = ProcessUtils.myProcessName(this) + ":push";
-            final String logPath = PathGetter.getWSLogPath();
-            new ProcessBuilder().command(daemonPath,
+            final String logPath = PathGetter.createPath(JConstant.DAEMON_DIR) + File.separator + "daemon.txt";
+            ProcessBuilder process = new ProcessBuilder().command(daemonPath,
                     packageName,
                     processName,
                     daemonServiceName,
-                    BuildConfig.DEBUG ? "1" : "0", logPath)
-                    .start();
+                    "1",
+                    logPath);
+            process.start();
+            Log.d(TAG, "daemonServiceName: " + daemonServiceName);
             Log.d(TAG, "daemonPath: " + daemonPath);
             Log.d(TAG, "packageName: " + packageName);
             Log.d(TAG, "processName: " + processName);
@@ -120,7 +165,7 @@ public class DaemonService extends Service {
 
     private static Notification sendEmptyNotification(Context context) {
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context)
-                .setSmallIcon(R.drawable.ic_launcher);
+                .setSmallIcon(R.mipmap.ic_launcher);
         mBuilder.setWhen(System.currentTimeMillis());
         mBuilder.setAutoCancel(false);
         return mBuilder.build();

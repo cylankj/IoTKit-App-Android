@@ -3,6 +3,7 @@ package com.cylan.jiafeigou.n.view.home;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.annotation.UiThread;
@@ -22,13 +23,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.transition.DetailsTransition;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeWonderfulContract;
 import com.cylan.jiafeigou.n.mvp.model.MediaBean;
-import com.cylan.jiafeigou.n.view.adapter.HomeWonderAdapter;
-import com.cylan.jiafeigou.n.view.media.WonderfulBigPicFragment;
+import com.cylan.jiafeigou.n.view.adapter.HomeWonderfulAdapter;
+import com.cylan.jiafeigou.n.view.media.BigPicFragment;
 import com.cylan.jiafeigou.n.view.misc.HomeEmptyView;
 import com.cylan.jiafeigou.n.view.misc.IEmptyView;
+import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.AnimatorUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;
@@ -39,7 +42,6 @@ import com.cylan.jiafeigou.widget.textview.WonderfulTitleHead;
 import com.cylan.jiafeigou.widget.wheel.WheelView;
 import com.cylan.jiafeigou.widget.wheel.WheelViewDataSet;
 import com.cylan.utils.ListUtils;
-import com.superlog.SLog;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
@@ -48,10 +50,12 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+
+@Deprecated
 public class HomeWonderfulFragment extends Fragment implements
         HomeWonderfulContract.View, SwipeRefreshLayout.OnRefreshListener,
-        HomeWonderAdapter.WonderfulItemClickListener,
-        HomeWonderAdapter.WonderfulItemLongClickListener,
+        HomeWonderfulAdapter.WonderfulItemClickListener,
+        HomeWonderfulAdapter.WonderfulItemLongClickListener,
         ShareDialogFragment.ShareToListener,
         SimpleDialogFragment.SimpleDialogAction,
         WheelView.OnItemChangedListener {
@@ -63,13 +67,13 @@ public class HomeWonderfulFragment extends Fragment implements
     RecyclerView rVDevicesList;
     @BindView(R.id.fLayout_main_content_holder)
     SwipeRefreshLayout srLayoutMainContentHolder;
-    @BindView(R.id.rLayoutHomeWonderfulHeaderContainer)
+    @BindView(R.id.fLayoutHomeWonderfulHeaderContainer)
     RelativeLayout rLayoutHomeHeaderContainer;
     @BindView(R.id.fLayout_date_head_wonder)
     FrameLayout fLayoutDateHeadWonder;
     @BindView(R.id.rl_top_head_wonder)
     RelativeLayout rlTopHeadWonder;
-    @BindView(R.id.img_cover)
+    @BindView(R.id.img_wonderful_title_cover)
     ImageView imgCover;
     @BindView(R.id.tv_date_item_head_wonder)
     WonderfulTitleHead tvDateItemHeadWonder;
@@ -90,7 +94,7 @@ public class HomeWonderfulFragment extends Fragment implements
     //不是长时间需要,用软引用.
 //    private WeakReference<HomeMenuDialog> homeMenuDialogWeakReference;
     private HomeWonderfulContract.Presenter presenter;
-    private HomeWonderAdapter homeWonderAdapter;
+    private HomeWonderfulAdapter homeWonderAdapter;
     private SimpleScrollListener simpleScrollListener;
     public boolean isShowTimeLine;
     private EmptyViewState emptyViewState;
@@ -105,7 +109,7 @@ public class HomeWonderfulFragment extends Fragment implements
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (savedInstanceState != null) {
-            SLog.d("save L:" + savedInstanceState);
+            AppLogger.d("save L:" + savedInstanceState);
         }
     }
 
@@ -124,7 +128,7 @@ public class HomeWonderfulFragment extends Fragment implements
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        homeWonderAdapter = new HomeWonderAdapter(getContext(), null, null);
+        homeWonderAdapter = new HomeWonderfulAdapter(getContext(), null, null);
         homeWonderAdapter.setWonderfulItemClickListener(this);
         homeWonderAdapter.setWonderfulItemLongClickListener(this);
         initEmptyViewState(context);
@@ -133,7 +137,6 @@ public class HomeWonderfulFragment extends Fragment implements
     private void initEmptyViewState(Context context) {
         if (emptyViewState == null)
             emptyViewState = new EmptyViewState(context, R.layout.layout_wonderful_list_empty_view);
-
     }
 
     @Override
@@ -234,7 +237,7 @@ public class HomeWonderfulFragment extends Fragment implements
         if (simpleScrollListener == null)
             simpleScrollListener = new SimpleScrollListener(imgCover, fLayoutDateHeadWonder);
         StickyHeaderBuilder.stickTo(rVDevicesList, simpleScrollListener)
-                .setHeader(R.id.rLayoutHomeWonderfulHeaderContainer,
+                .setHeader(R.id.fLayoutHomeWonderfulHeaderContainer,
                         (ViewGroup) getView())
                 .minHeightHeader((int) (getResources().getDimension(R.dimen.dimens_48dp)
                         + ViewUtils.getCompatStatusBarHeight(getContext())))
@@ -266,7 +269,7 @@ public class HomeWonderfulFragment extends Fragment implements
 
     @UiThread
     @Override
-    public void onDeviceListRsp(List<MediaBean> resultList) {
+    public void onMediaListRsp(List<MediaBean> resultList) {
         srLayoutMainContentHolder.setRefreshing(false);
         if (resultList == null || resultList.size() == 0) {
             homeWonderAdapter.clear();
@@ -278,7 +281,7 @@ public class HomeWonderfulFragment extends Fragment implements
 
     @Override
     public void onHeadBackgroundChang(int daytime) {
-        imgWonderfulTopBg.setBackgroundResource(daytime == 0 ? R.drawable.bg_head_daytime_wonderful : R.drawable.bg_head_night_wonderful);
+        imgWonderfulTopBg.setBackgroundResource(daytime == 0 ? R.drawable.bg_wonderful_daytime : R.drawable.bg_wonderful_night);
     }
 
     @Override
@@ -290,6 +293,19 @@ public class HomeWonderfulFragment extends Fragment implements
         ((WheelView) view).setOnItemChangedListener(this);
     }
 
+    @SuppressWarnings("deprecation")
+    @Override
+    public void onTimeTick(int dayTime) {
+        //需要优化
+        int drawableId = dayTime == JFGRules.RULE_DAY_TIME
+                ? R.drawable.bg_wonderful_daytime : R.drawable.bg_wonderful_night;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            imgWonderfulTopBg.setBackground(getResources().getDrawable(drawableId, null));
+        } else {
+            imgWonderfulTopBg.setBackground(getResources().getDrawable(drawableId));
+        }
+    }
+
     @Override
     public void onRefresh() {
         if (presenter != null) presenter.startRefresh();
@@ -297,13 +313,16 @@ public class HomeWonderfulFragment extends Fragment implements
         srLayoutMainContentHolder.setRefreshing(true);
     }
 
-
     @Override
     public void onClick(View v) {
-        final int position = v.getTag() == null ? 0 : (int) v.getTag();
+        final int position = ViewUtils.getParentAdapterPosition(rVDevicesList, v, R.id.lLayout_item_wonderful);
+        if (position < 0 || position > homeWonderAdapter.getCount()) {
+            AppLogger.d("woo,position is invalid: " + position);
+            return;
+        }
         switch (v.getId()) {
             case R.id.iv_wonderful_item_content:
-                WonderfulBigPicFragment picDetailsFragment = WonderfulBigPicFragment.newInstance(null);
+                BigPicFragment picDetailsFragment = BigPicFragment.newInstance(null);
 
 //                // Note that we need the API version check here because the actual transition classes (e.g. Fade)
 //                // are not in the support library and are only available in API 21+. The methods we are calling on the Fragment
@@ -343,7 +362,11 @@ public class HomeWonderfulFragment extends Fragment implements
 
     @Override
     public boolean onLongClick(View v) {
-        final int position = v.getTag() == null ? 0 : (int) v.getTag();
+        final int position = ViewUtils.getParentAdapterPosition(rVDevicesList, v, R.id.lLayout_item_wonderful);
+        if (position < 0 || position > homeWonderAdapter.getCount()) {
+            AppLogger.d("woo,position is invalid: " + position);
+            return false;
+        }
         deleteItem(position);
         return true;
     }
@@ -418,7 +441,7 @@ public class HomeWonderfulFragment extends Fragment implements
 
     @Override
     public void onItemChanged(int position, long timeInLong, String dateInStr) {
-        SLog.d("date: " + TimeUtils.getDateStyle_0(timeInLong));
+        AppLogger.d("date: " + TimeUtils.getDateStyle_0(timeInLong));
         if (getActivity() == null)
             return;
         TextView textView = (TextView) getActivity().findViewById(R.id.tv_time_line_pop);

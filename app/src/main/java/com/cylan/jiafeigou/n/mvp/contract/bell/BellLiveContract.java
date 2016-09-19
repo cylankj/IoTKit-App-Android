@@ -2,7 +2,6 @@ package com.cylan.jiafeigou.n.mvp.contract.bell;
 
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
-import com.cylan.jiafeigou.n.mvp.model.BellInfoBean;
 
 /**
  * Created by cylan-hunt on 16-6-29.

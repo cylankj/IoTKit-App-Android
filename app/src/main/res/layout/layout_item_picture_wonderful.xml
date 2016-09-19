@@ -1,7 +1,9 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:hunt="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/lLayout_item_wonderful"
     android:layout_width="match_parent"
     android:layout_height="225dp"
+
     android:clickable="true"
     android:orientation="horizontal"
     android:paddingLeft="10dp"
@@ -17,9 +19,9 @@
         hunt:dashLineWidth="2dp"
         hunt:innerCircleColor="@color/color_white"
         hunt:innerCircleRadius="6dp"
-        hunt:outerCircleStrokeWidth="4dp"
         hunt:outerCircleColor="@color/color_e8e8e8"
         hunt:outerCircleRadius="10dp"
+        hunt:outerCircleStrokeWidth="4dp"
         hunt:outerCircleY="10dp" />
 
     <RelativeLayout
@@ -45,8 +47,8 @@
             android:layout_height="wrap_content"
             android:layout_above="@+id/fLayout_wonderful_item_bottom"
             android:layout_below="@+id/tv_wonderful_item_date"
+            android:minWidth="200dp"
             android:scaleType="fitXY"
-            android:src="@drawable/ic_launcher"
             android:transitionName="picDetailsFragment" />
 
 
@@ -94,11 +96,10 @@
 
             <TextView
                 android:id="@+id/tv_wonderful_item_share"
+                style="@style/ripple_background_borderless"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_gravity="end|center_vertical"
-                android:layout_marginLeft="252dp"
-                android:layout_marginStart="252dp"
                 android:drawableLeft="@drawable/icon_share_item_wonderful_selector"
                 android:drawablePadding="4dp"
                 android:drawableStart="@drawable/icon_share_item_wonderful_selector"

@@ -19,7 +19,7 @@
             android:layout_alignParentBottom="true"
             android:padding="15dp"
             android:clickable="true"
-            android:src="@drawable/ic_nav_back_arrow" />
+            android:src="@drawable/icon_nav_back_white" />
 
         <EditText
             android:id="@+id/et_add_by_number"

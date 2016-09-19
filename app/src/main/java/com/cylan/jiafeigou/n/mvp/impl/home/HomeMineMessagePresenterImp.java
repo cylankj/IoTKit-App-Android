@@ -1,7 +1,5 @@
 package com.cylan.jiafeigou.n.mvp.impl.home;
 
-import android.content.Context;
-
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeMineMessageContract;
 import com.cylan.jiafeigou.n.mvp.model.SuggestionChatInfoBean;
 
@@ -26,7 +24,7 @@ public class HomeMineMessagePresenterImp implements HomeMineMessageContract.Pres
 
         list = new ArrayList<SuggestionChatInfoBean>();
 
-        SuggestionChatInfoBean emMessage = new SuggestionChatInfoBean("亲爱的用户,客户端将进行系统维护升级,期间对设备正常使用将会造成一定影响，对您造成的不便之处敬请谅解。再次感谢您对加菲狗的支持！",1,System.currentTimeMillis()+"");
+        SuggestionChatInfoBean emMessage = new SuggestionChatInfoBean("亲爱的用户,客户端将进行系统维护升级,期间对设备正常使用将会造成一定影响，对您造成的不便之处敬请谅解。再次感谢您对加菲狗的支持！", 1, System.currentTimeMillis() + "");
 
         list.add(emMessage);
 

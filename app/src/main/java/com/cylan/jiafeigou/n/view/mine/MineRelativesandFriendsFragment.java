@@ -45,8 +45,7 @@ public class MineRelativesandFriendsFragment extends Fragment implements MineRel
     LinearLayout llRelativeAndFriend;
     @BindView(R.id.ll_relative_and_friend_none)
     LinearLayout llRelativeAndFriendNone;
-    @BindView(R.id.btn_add_relative_and_friend)
-    Button btnAddRelativeAndFriend;
+
 
     private MineRelativesFriendsContract.Presenter presenter;
 
@@ -66,8 +65,8 @@ public class MineRelativesandFriendsFragment extends Fragment implements MineRel
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        friendsFragment = MineRelativesAndFriendAddFriendsFragment.newInstance();
-        shareDevicesFragment = MineRelativesAndFriendsListShareDevicesFragment.newInstance();
+        //friendsFragment = MineRelativesAndFriendAddFriendsFragment.newInstance();
+        //shareDevicesFragment = MineRelativesAndFriendsListShareDevicesFragment.newInstance();
     }
 
     @Nullable
@@ -86,10 +85,10 @@ public class MineRelativesandFriendsFragment extends Fragment implements MineRel
         requestAddList.addAll(presenter.initAddRequestData());
         relativesAndFriendList.addAll(presenter.initRelativatesAndFriendsData());
 
-        if(presenter.initRelativatesAndFriendsData().size() == 0){
+        if (presenter.initRelativatesAndFriendsData().size() == 0) {
             llRelativeAndFriend.setVisibility(View.GONE);
             llRelativeAndFriendNone.setVisibility(View.VISIBLE);
-        }else {
+        } else {
             llRelativeAndFriend.setVisibility(View.VISIBLE);
             llRelativeAndFriendNone.setVisibility(View.GONE);
             showAddRequestList();
@@ -132,7 +131,7 @@ public class MineRelativesandFriendsFragment extends Fragment implements MineRel
 
     }
 
-    @OnClick({R.id.iv_home_mine_relativesandfriends_back, R.id.tv_home_mine_relativesandfriends_add,R.id.btn_add_relative_and_friend})
+    @OnClick({R.id.iv_home_mine_relativesandfriends_back, R.id.tv_home_mine_relativesandfriends_add})
     public void onClick(View view) {
 
         switch (view.getId()) {
@@ -149,14 +148,6 @@ public class MineRelativesandFriendsFragment extends Fragment implements MineRel
                         .commit();
                 break;
 
-            case R.id.btn_add_relative_and_friend:              //亲友为空，跳转到亲友列表
-                getFragmentManager().beginTransaction()
-                        .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
-                                , R.anim.slide_in_left, R.anim.slide_out_right)
-                        .add(android.R.id.content, friendsFragment, "friendsFragment")
-                        .addToBackStack("mineHelpFragment")
-                        .commit();
-                break;
         }
 
     }

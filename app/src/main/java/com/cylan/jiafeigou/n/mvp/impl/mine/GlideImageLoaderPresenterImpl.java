@@ -33,7 +33,7 @@ public class GlideImageLoaderPresenterImpl implements cn.finalteam.galleryfinal.
 
                     @Override
                     public void setRequest(Request request) {
-                        imageView.setTag(R.id.adapter_item_tag_key,request);
+                        imageView.setTag(R.id.adapter_item_tag_key, request);
                     }
 
                     @Override
@@ -42,6 +42,7 @@ public class GlideImageLoaderPresenterImpl implements cn.finalteam.galleryfinal.
                     }
                 });
     }
+
     @Override
     public void clearMemoryCache() {
     }

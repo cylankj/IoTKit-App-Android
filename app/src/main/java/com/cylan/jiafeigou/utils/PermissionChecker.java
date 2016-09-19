@@ -11,7 +11,7 @@ import android.net.Uri;
 import android.provider.ContactsContract;
 import android.text.TextUtils;
 
-import com.superlog.SLog;
+;import com.cylan.jiafeigou.support.log.AppLogger;
 
 
 /**
@@ -30,7 +30,7 @@ public class PermissionChecker {
 //    }
     public static boolean isAudioRecordPermissionGrant() {
         int bufferSize = AudioRecord.getMinBufferSize(8000, AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT);
-        SLog.i("PermissionChecker get bufferSize:" + bufferSize);
+        AppLogger.i("PermissionChecker get bufferSize:" + bufferSize);
         AudioRecord audioRecord = new AudioRecord(MediaRecorder.AudioSource.MIC,
                 8000, AudioFormat.CHANNEL_IN_MONO,
                 AudioFormat.ENCODING_PCM_16BIT, bufferSize);
@@ -42,7 +42,7 @@ public class PermissionChecker {
             else recordState = 0;
         } catch (Exception e) {
             recordState = -1;
-            SLog.e("recordState: " + e.toString());
+            AppLogger.e("recordState: " + e.toString());
         } finally {
             audioRecord.release();
             return recordState == 0;

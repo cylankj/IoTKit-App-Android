@@ -20,15 +20,17 @@ import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.mvp.contract.login.SetupPwdContract;
 import com.cylan.jiafeigou.n.mvp.model.RequestResetPwdBean;
 import com.cylan.jiafeigou.utils.ActivityUtils;
+import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.IMEUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;
-import com.superlog.SLog;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
 import butterknife.OnTextChanged;
+
+;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -98,7 +100,7 @@ public class SetupPwdFragment extends android.support.v4.app.Fragment implements
         layout.findViewById(R.id.tv_top_bar_right).setVisibility(android.view.View.GONE);
         TextView tvTitle = (TextView) layout.findViewById(R.id.tv_top_bar_center);
         tvTitle.setText("密码");
-        ivLoginTopLeft.setImageResource(R.drawable.btn_nav_back);
+        ivLoginTopLeft.setImageResource(R.drawable.icon_nav_back_white);
         ivLoginTopLeft.setOnClickListener(new android.view.View.OnClickListener() {
             @Override
             public void onClick(android.view.View v) {
@@ -140,7 +142,7 @@ public class SetupPwdFragment extends android.support.v4.app.Fragment implements
             case R.id.tv_register_pwd_submit:
                 Bundle bundle = getArguments();
                 if (bundle == null) {
-                    SLog.e("bundle is null");
+                    AppLogger.e("bundle is null");
                     return;
                 }
                 final String account = bundle.getString(JConstant.KEY_ACCOUNT_TO_SEND);

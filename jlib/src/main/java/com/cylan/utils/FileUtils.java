@@ -723,6 +723,7 @@ public class FileUtils {
             while ((read = is.read(buffer)) != -1) {
                 fos.write(buffer, 0, read);
             }
+            Log.d("FileUtils", "good: ");
         } catch (IOException e) {
             Log.d("FileUtils", "e: " + e.toString());
         } finally {

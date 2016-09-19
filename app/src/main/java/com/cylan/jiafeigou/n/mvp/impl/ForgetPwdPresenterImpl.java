@@ -6,8 +6,8 @@ import android.util.Log;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.mvp.contract.login.ForgetPwdContract;
 import com.cylan.jiafeigou.n.mvp.model.RequestResetPwdBean;
+import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.utils.RandomUtils;
-import com.superlog.SLog;
 
 import org.msgpack.annotation.NotNullable;
 
@@ -18,6 +18,8 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
+
+;
 
 /**
  * Created by cylan-hunt on 16-6-29.
@@ -54,7 +56,7 @@ public class ForgetPwdPresenterImpl extends AbstractPresenter<ForgetPwdContract.
 
     @Override
     public void submitForVerificationCode(String account) {
-        SLog.d("no thing happened");
+        AppLogger.d("no thing happened");
     }
 
     @Override

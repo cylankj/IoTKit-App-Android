@@ -12,13 +12,15 @@ import com.cylan.jiafeigou.n.mvp.BaseView;
  */
 public interface MineRelativesAndFriendScanAddContract {
 
-    interface View extends BaseView<Presenter>{
+    interface View extends BaseView<Presenter> {
         void onStartScan();
+
         void showErWeiMa(Bitmap bitmap);
     }
 
-    interface Presenter extends BasePresenter{
+    interface Presenter extends BasePresenter {
         Bitmap encodeAsBitmap(String contents, int dimension);      //生成二维码
+
         int getDimession();
 
     }

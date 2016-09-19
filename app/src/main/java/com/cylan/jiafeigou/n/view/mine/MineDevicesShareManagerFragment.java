@@ -49,7 +49,7 @@ public class MineDevicesShareManagerFragment extends Fragment implements MineDev
 
     @OnClick(R.id.iv_home_mine_share_devices_manager_back)
     public void onClick(View view) {
-        switch (view.getId()){
+        switch (view.getId()) {
             case R.id.iv_home_mine_share_devices_manager_back:
                 getFragmentManager().popBackStack();
                 break;

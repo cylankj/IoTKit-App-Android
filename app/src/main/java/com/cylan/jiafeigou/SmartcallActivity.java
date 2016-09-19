@@ -24,8 +24,10 @@ import com.cylan.jiafeigou.n.view.activity.NeedLoginActivity;
 import com.cylan.jiafeigou.n.view.adapter.SimpleFragmentAdapter;
 import com.cylan.jiafeigou.n.view.splash.BeforeLoginFragment;
 import com.cylan.jiafeigou.n.view.splash.FragmentSplash;
+import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.IMEUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
+import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.UiHelper;
 import com.cylan.jiafeigou.widget.indicator.CirclePageIndicator;
 
@@ -47,7 +49,6 @@ import permissions.dispatcher.RuntimePermissions;
 @RuntimePermissions
 public class SmartcallActivity extends NeedLoginActivity
         implements SplashContract.View {
-
 
     @BindView(R.id.fLayout_splash)
     FrameLayout fLayoutSplash;
@@ -75,6 +76,7 @@ public class SmartcallActivity extends NeedLoginActivity
     @Override
     protected void onResume() {
         super.onResume();
+        SmartcallActivityPermissionsDispatcher.showWriteSdCardWithCheck(this);
         if (presenter != null) presenter.start();
     }
 
@@ -82,6 +84,11 @@ public class SmartcallActivity extends NeedLoginActivity
     protected void onStop() {
         super.onStop();
         if (presenter != null) presenter.stop();
+
+    }
+
+    protected int[] getOverridePendingTransition() {
+        return new int[]{R.anim.alpha_in, R.anim.alpha_out};
     }
 
     private void initData() {
@@ -90,7 +97,6 @@ public class SmartcallActivity extends NeedLoginActivity
     }
 
     private void initGuidePage() {
-
         if (splashFragments == null) {
             splashFragments = new ArrayList<>();
             splashFragments.add(FragmentSplash.newInstance(0));
@@ -124,11 +130,6 @@ public class SmartcallActivity extends NeedLoginActivity
             vpWelcome.setAdapter(mSplashListAdapter);
         }
     }
-
-//    @Override
-//    public void timeSplashed() {
-//        SplashPermissionDispatcher.showWriteSdCardWithCheck(this);
-//    }
 
     @Override
     public void splashOver() {
@@ -170,7 +171,7 @@ public class SmartcallActivity extends NeedLoginActivity
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-//        SplashPermissionDispatcher.onRequestPermissionsResult(this, permissions, requestCode, grantResults);
+        SmartcallActivityPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
     }
 
     @OnPermissionDenied(Manifest.permission.WRITE_EXTERNAL_STORAGE)
@@ -183,7 +184,7 @@ public class SmartcallActivity extends NeedLoginActivity
 
     @NeedsPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
     public void showWriteSdCard() {
-
+        AppLogger.d(JConstant.LOG_TAG.PERMISSION + "show");
     }
 
 

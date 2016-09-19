@@ -18,7 +18,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="15dp"
-            android:src="@drawable/ic_nav_back_arrow" />
+            android:src="@drawable/icon_nav_back_white" />
 
         <TextView
             android:layout_marginBottom="12dp"
@@ -42,7 +42,7 @@
             android:id="@+id/iv_logon"
             android:layout_marginTop="56dp"
             android:layout_centerHorizontal="true"
-            android:src="@drawable/img_logo"
+            android:src="@mipmap/ic_launcher"
             android:layout_width="60dp"
             android:layout_height="60dp" />
 

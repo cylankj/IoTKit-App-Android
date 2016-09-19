@@ -108,7 +108,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:layout_marginLeft="7dp"
-                android:layout_marginRight="10dp"
+                android:layout_marginRight="20dp"
                 android:background="@drawable/icon_common_show_pwd_selector"
                 android:button="@null"
                 android:checked="false" />

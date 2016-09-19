@@ -31,7 +31,7 @@ public class MineAddFromContactPresenterImp extends AbstractPresenter<MineAddFro
 
     @Override
     public void stop() {
-        if(sendRequestSub != null){
+        if (sendRequestSub != null) {
             sendRequestSub.unsubscribe();
         }
     }

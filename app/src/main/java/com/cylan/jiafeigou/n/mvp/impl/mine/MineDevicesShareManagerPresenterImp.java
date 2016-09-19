@@ -9,7 +9,7 @@ import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
  * 描述：
  */
 public class MineDevicesShareManagerPresenterImp extends AbstractPresenter<MineDevicesShareManagerContract.View>
-        implements MineDevicesShareManagerContract.Presenter{
+        implements MineDevicesShareManagerContract.Presenter {
 
     public MineDevicesShareManagerPresenterImp(MineDevicesShareManagerContract.View view) {
         super(view);

@@ -14,8 +14,9 @@ public interface MinePersonalInformationBindMailContract {
         void showMailHasBindDialog();                   //显示邮箱已经绑定
     }
 
-    interface Presenter extends BasePresenter{
+    interface Presenter extends BasePresenter {
         boolean checkEmail(String email);               //检查邮箱的合法性
+
         boolean checkEmailIsBinded(String email);       //检验邮箱是否已经绑定过
     }
 }

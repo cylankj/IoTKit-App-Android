@@ -12,8 +12,6 @@ import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineRelativesAndFriendsAddFriendContract;
-import com.cylan.jiafeigou.n.view.bind.BindScanFragment;
-import com.cylan.jiafeigou.utils.ToastUtil;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -65,7 +63,7 @@ public class MineRelativesAndFriendAddFriendsFragment extends Fragment implement
         return view;
     }
 
-    @OnClick({R.id.iv_home_mine_relativesandfriends_add_back, R.id.tv_scan_add, R.id.tv_add_from_contract,R.id.et_friend_phonenumber})
+    @OnClick({R.id.iv_home_mine_relativesandfriends_add_back, R.id.tv_scan_add, R.id.tv_add_from_contract, R.id.et_friend_phonenumber})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.iv_home_mine_relativesandfriends_add_back:        //返回

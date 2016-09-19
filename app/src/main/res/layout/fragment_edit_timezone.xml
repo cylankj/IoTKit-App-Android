@@ -17,7 +17,7 @@
             android:layout_height="match_parent"
             android:layout_centerVertical="true"
             android:padding="15dp"
-            android:src="@drawable/ic_nav_back_arrow" />
+            android:src="@drawable/icon_nav_back_gray" />
 
         <EditText
             android:id="@+id/et_information_timezone_find"

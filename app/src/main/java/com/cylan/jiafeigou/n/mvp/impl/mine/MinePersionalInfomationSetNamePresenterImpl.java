@@ -19,7 +19,7 @@ public class MinePersionalInfomationSetNamePresenterImpl implements MinePersiona
     @Override
     public boolean isEditEmpty(String string) {
 
-        return TextUtils.isEmpty(string) ? true:false;
+        return TextUtils.isEmpty(string) ? true : false;
     }
 
     @Override

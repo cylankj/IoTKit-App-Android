@@ -45,4 +45,6 @@ public interface IBlockCanaryContext {
     String getStackFoldPrefix();
 
     int getConfigDumpIntervalMillis();
+
+    String getPackageName();
 }

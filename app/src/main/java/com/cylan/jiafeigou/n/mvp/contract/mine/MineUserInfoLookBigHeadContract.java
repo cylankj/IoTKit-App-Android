@@ -12,14 +12,17 @@ import com.cylan.jiafeigou.n.mvp.BaseView;
  */
 public interface MineUserInfoLookBigHeadContract {
 
-    interface View extends BaseView<Presenter>{
+    interface View extends BaseView<Presenter> {
         void showLoadImageProgress();
+
         void hideLoadImageProgress();
+
         void loadImageSuccess();
+
         void loadImageFail();
     }
 
-    interface Presenter extends BasePresenter{
+    interface Presenter extends BasePresenter {
         void loadImage(ImageView view);
     }
 

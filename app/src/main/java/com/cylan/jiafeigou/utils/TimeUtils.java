@@ -32,4 +32,16 @@ public class TimeUtils {
         calendar.set(Calendar.SECOND, 0);
         return calendar.getTimeInMillis();
     }
+
+    private static final SimpleDateFormat getSimpleDateFormat_1 = new SimpleDateFormat("yyyy.MM.dd HH:mm", Locale.getDefault());
+
+    public static String getMediaPicTimeInString(final long time) {
+        return getSimpleDateFormat_1.format(new Date(time));
+    }
+
+    private static final SimpleDateFormat getSimpleDateFormatVideo = new SimpleDateFormat("MM.dd-HH:mm", Locale.getDefault());
+
+    public static String getMediaVideoTimeInString(final long time) {
+        return getSimpleDateFormatVideo.format(new Date(time));
+    }
 }

@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.annotation.UiThread;
 import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -40,13 +39,12 @@ import com.cylan.jiafeigou.n.view.adapter.HomePageListAdapter;
 import com.cylan.jiafeigou.n.view.bell.DoorBellHomeActivity;
 import com.cylan.jiafeigou.n.view.misc.HomeEmptyView;
 import com.cylan.jiafeigou.n.view.misc.IEmptyView;
+import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.rxbus.RxBus;
-import com.cylan.jiafeigou.utils.AppLogger;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
 import com.cylan.jiafeigou.widget.wave.SuperWaveView;
 import com.cylan.utils.RandomUtils;
-import com.superlog.SLog;
 
 import org.msgpack.annotation.NotNullable;
 
@@ -62,6 +60,8 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
+
+
 
 public class HomePageListFragmentExt extends Fragment implements
         AppBarLayout.OnOffsetChangedListener,
@@ -87,7 +87,7 @@ public class HomePageListFragmentExt extends Fragment implements
     WeakReference<SimpleDialogFragment> simpleDialogFragmentWeakReference;
     @BindView(R.id.lLayout_home_greet)
     LinearLayout lLayoutHomeGreet;
-    @BindView(R.id.fLayoutHomeHeaderContainer)
+    @BindView(R.id.fLayout_home_page_list_header_container)
     FrameLayout fLayoutHomeHeaderContainer;
     @BindView(R.id.tvHeaderNickName)
     TextView tvHeaderNickName;
@@ -97,10 +97,12 @@ public class HomePageListFragmentExt extends Fragment implements
     Toolbar toolbar;
     @BindView(R.id.appbar)
     AppBarLayout appbar;
-    @BindView(R.id.collapsing_toolbar)
-    CollapsingToolbarLayout collapsingToolbar;
+    //    @BindView(R.id.collapsing_toolbar)
+//    CollapsingToolbarLayout collapsingToolbar;
     @BindView(R.id.fLayout_empty_view_container)
     FrameLayout fLayoutEmptyViewContainer;
+    @BindView(R.id.img_home_page_header_bg)
+    ImageView imgHomePageHeaderBg;
     private HomePageListContract.Presenter presenter;
 
     private ActivityResultContract.Presenter activityResultPresenter;
@@ -122,7 +124,7 @@ public class HomePageListFragmentExt extends Fragment implements
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (savedInstanceState != null) {
-            SLog.d("save L:" + savedInstanceState);
+            AppLogger.d("save L:" + savedInstanceState);
         }
     }
 
@@ -176,7 +178,6 @@ public class HomePageListFragmentExt extends Fragment implements
         initProgressBarColor();
         initListAdapter();
         initSomeViewMargin();
-        initSimpleDialog();
         addEmptyView();
     }
 
@@ -192,7 +193,7 @@ public class HomePageListFragmentExt extends Fragment implements
         srLayoutMainContentHolder.post(new Runnable() {
             @Override
             public void run() {
-                emptyViewState.setEmptyViewState(fLayoutEmptyViewContainer, fLayoutHomeHeaderContainer.getBottom());
+                emptyViewState.setEmptyViewState(fLayoutEmptyViewContainer, 0);
                 emptyViewState.determineEmptyViewState(homePageListAdapter.getCount());
             }
         });
@@ -299,7 +300,7 @@ public class HomePageListFragmentExt extends Fragment implements
 
     @Override
     public void setPresenter(HomePageListContract.Presenter presenter) {
-        SLog.e("ffff: " + (presenter == null));
+        AppLogger.e("ffff: " + (presenter == null));
         this.presenter = presenter;
     }
 
@@ -333,9 +334,9 @@ public class HomePageListFragmentExt extends Fragment implements
         int drawableId = dayTime == JFGRules.RULE_DAY_TIME
                 ? R.drawable.bg_home_title_daytime : R.drawable.bg_home_title_night;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            fLayoutHomeHeaderContainer.setBackground(getResources().getDrawable(drawableId, null));
+            imgHomePageHeaderBg.setBackground(getResources().getDrawable(drawableId, null));
         } else {
-            fLayoutHomeHeaderContainer.setBackground(getResources().getDrawable(drawableId));
+            imgHomePageHeaderBg.setBackground(getResources().getDrawable(drawableId));
         }
     }
 
@@ -368,7 +369,17 @@ public class HomePageListFragmentExt extends Fragment implements
 
     @Override
     public void onClick(View v) {
-        final int position = v.getTag() == null ? 0 : (int) v.getTag();
+        final int position = ViewUtils.getParentAdapterPosition(rVDevicesList,
+                v,
+                R.id.rLayout_device_item);
+        if (position < 0 || position > homePageListAdapter.getCount()) {
+            AppLogger.d("woo,position is invalid: " + position);
+            return;
+        }
+        if (position < 0 || position > homePageListAdapter.getCount()) {
+            AppLogger.d("woo,position is invalid: " + position);
+            return;
+        }
         if (position < 0 || position > homePageListAdapter.getCount() - 1)
             return;
         DeviceBean bean = homePageListAdapter.getItem(position);
@@ -390,7 +401,11 @@ public class HomePageListFragmentExt extends Fragment implements
 
     @Override
     public boolean onLongClick(View v) {
-        final int position = v.getTag() == null ? 0 : (int) v.getTag();
+        final int position = ViewUtils.getParentAdapterPosition(rVDevicesList, v, R.id.rLayout_device_item);
+        if (position < 0 || position > homePageListAdapter.getCount()) {
+            AppLogger.d("woo,position is invalid: " + position);
+            return false;
+        }
         deleteItem(position);
         return true;
     }
@@ -411,11 +426,9 @@ public class HomePageListFragmentExt extends Fragment implements
             Toast.makeText(getContext(), "null: ", Toast.LENGTH_SHORT).show();
             return;
         }
-        final int position = (int) value;
         Toast.makeText(getContext(), "id: " + id + " value:" + value, Toast.LENGTH_SHORT).show();
         homePageListAdapter.remove((Integer) value);
         //刷新需要剩下的item
-        homePageListAdapter.notifyItemRangeChanged(position, homePageListAdapter.getItemCount());
         emptyViewState.determineEmptyViewState(homePageListAdapter.getCount());
         srLayoutMainContentHolder.setNestedScrollingEnabled(homePageListAdapter.getCount() > JFGRules.NETSTE_SCROLL_COUNT);
     }
@@ -485,8 +498,7 @@ public class HomePageListFragmentExt extends Fragment implements
             FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
                     ViewGroup.LayoutParams.WRAP_CONTENT);
             lp.gravity = Gravity.CENTER_HORIZONTAL;
-            lp.topMargin = ViewUtils.dp2px(80)
-                    ;
+            lp.topMargin = ViewUtils.dp2px(80);
             homePageEmptyView.addView(viewContainer, lp);
         }
 

@@ -87,18 +87,18 @@ public class HomeSettingAboutFragment extends Fragment implements HomeSettingAbo
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
 
-       switch (requestCode){
-           case MY_PERMISSIONS_REQUEST_CALL_PHONE:
-               //如果请求被取消，那么 result 数组将为空
-               if (grantResults.length > 0
-                       && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                   // 已经获取对应权限
-                   getContext().startActivity(intent);
-               } else {
-                   // 未获取到授权
-                   ToastUtil.showToast(getContext(),"权限未授予");
-               }
-               break;
-       }
+        switch (requestCode) {
+            case MY_PERMISSIONS_REQUEST_CALL_PHONE:
+                //如果请求被取消，那么 result 数组将为空
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // 已经获取对应权限
+                    getContext().startActivity(intent);
+                } else {
+                    // 未获取到授权
+                    ToastUtil.showToast(getContext(), "权限未授予");
+                }
+                break;
+        }
     }
 }

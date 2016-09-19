@@ -47,10 +47,6 @@ public class HomePageListAdapter extends SuperAdapter<DeviceBean> {
 
     @Override
     public void onBind(SuperViewHolder holder, int viewType, int layoutPosition, DeviceBean item) {
-        View view = holder.getView(R.id.rLayout_device_item);
-        if (view != null) {
-            view.setTag(layoutPosition);
-        }
         holder.setOnClickListener(R.id.rLayout_device_item, deviceItemClickListener);
         holder.setOnLongClickListener(R.id.rLayout_device_item, deviceItemLongClickListener);
         handleState(holder, item);

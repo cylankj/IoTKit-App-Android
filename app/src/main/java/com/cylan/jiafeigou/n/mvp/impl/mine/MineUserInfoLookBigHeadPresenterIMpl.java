@@ -3,16 +3,11 @@ package com.cylan.jiafeigou.n.mvp.impl.mine;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
-import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
-import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineUserInfoLookBigHeadContract;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
@@ -36,13 +31,13 @@ public class MineUserInfoLookBigHeadPresenterIMpl implements MineUserInfoLookBig
     public void loadImage(ImageView imageView) {
 
         Glide.with(view.getContext())
-                .load(PreferencesUtils.getString(view.getContext(),JConstant.USER_IMAGE_HEAD_URL,""))
+                .load(PreferencesUtils.getString(view.getContext(), JConstant.USER_IMAGE_HEAD_URL, ""))
                 .asBitmap()
                 .centerCrop()
                 .into(new BitmapImageViewTarget(imageView) {
                     @Override
                     public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-                         super.onResourceReady(resource, glideAnimation);
+                        super.onResourceReady(resource, glideAnimation);
 
                     }
 

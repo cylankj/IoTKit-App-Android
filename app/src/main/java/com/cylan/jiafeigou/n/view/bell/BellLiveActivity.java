@@ -10,11 +10,12 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.contract.bell.BellLiveContract;
 import com.cylan.jiafeigou.n.mvp.impl.bell.BellLivePresenterImpl;
-import com.cylan.jiafeigou.utils.AppLogger;
+import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.bell.DragLayout;
 
@@ -25,7 +26,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class BellLiveActivity extends ProcessActivity
-        implements DragLayout.OnDragReleaseListener
+        implements DragLayout.OnDragReleaseListener, View.OnClickListener
         , BellLiveContract.View {
 
     @BindView(R.id.fLayout_bell_live_holder)
@@ -56,7 +57,7 @@ public class BellLiveActivity extends ProcessActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bell_live);
-        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+
         ButterKnife.bind(this);
         initPresenter();
         initView();
@@ -156,6 +157,12 @@ public class BellLiveActivity extends ProcessActivity
                     .inflate(R.layout.layout_bell_live_land_layer, null);
             if (view != null) {
                 fLayoutLandHolderRef = new WeakReference<>(view);
+                view.findViewById(R.id.imgv_bell_live_land_capture)
+                        .setOnClickListener(this);
+                view.findViewById(R.id.imgv_bell_live_land_hangup)
+                        .setOnClickListener(this);
+                view.findViewById(R.id.imgv_bell_live_land_mic)
+                        .setOnClickListener(this);
             }
         }
         View v = fLayoutBellLiveHolder.findViewById(R.id.fLayout_bell_live_land_layer);
@@ -166,8 +173,8 @@ public class BellLiveActivity extends ProcessActivity
 
     @Override
     public void onRelease(int side) {
-        AppLogger.d("pick up? " + (side == 0));
-        if (side == 1) {
+        AppLogger.d("pick up? " + (side == 1));
+        if (side == 0) {
             presenter.onDismiss();
             finishExt();
             return;
@@ -211,6 +218,14 @@ public class BellLiveActivity extends ProcessActivity
                 initLandView();
                 ViewUtils.setRequestedOrientation(this,
                         ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+                break;
+            case R.id.imgv_bell_live_land_mic:
+                break;
+            case R.id.imgv_bell_live_land_capture:
+                break;
+            case R.id.imgv_bell_live_land_hangup:
+                Toast.makeText(getContext(), "hangup", Toast.LENGTH_SHORT).show();
+                finishExt();
                 break;
         }
     }

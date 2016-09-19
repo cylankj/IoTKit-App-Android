@@ -3,19 +3,23 @@ package com.cylan.jiafeigou.n.view.activity;
 import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamSettingContract;
 import com.cylan.jiafeigou.n.mvp.impl.cam.CamSettingPresenterImpl;
 import com.cylan.jiafeigou.n.mvp.model.CamInfoBean;
+import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
 import com.cylan.jiafeigou.n.view.cam.DeviceStandbyFragment;
 import com.cylan.jiafeigou.n.view.cam.FragmentFacilityInformation;
 import com.cylan.jiafeigou.n.view.cam.SafeProtectionFragment;
+import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.SettingItemView0;
 import com.cylan.jiafeigou.widget.SettingItemView1;
@@ -69,15 +73,26 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity
         setContentView(R.layout.activity_cam_setting);
         ButterKnife.bind(this);
         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-        presenter = new CamSettingPresenterImpl(this);
-        presenter.fetchCamInfo();
         initTopBar();
+        presenter = new CamSettingPresenterImpl(this);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Bundle bundle = getIntent().getBundleExtra(JConstant.KEY_DEVICE_ITEM_BUNDLE);
+        Parcelable p = bundle.getParcelable(JConstant.KEY_DEVICE_ITEM_BUNDLE);
+        if (p != null && p instanceof DeviceBean) {
+            if (presenter != null)
+                presenter.fetchCamInfo(((DeviceBean) p).cid);
+        } else {
+            AppLogger.d("o is null");
+        }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-
     }
 
     private void initTopBar() {

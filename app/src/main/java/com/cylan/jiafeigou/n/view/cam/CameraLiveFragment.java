@@ -112,7 +112,8 @@ public class CameraLiveFragment extends Fragment implements CamLandLiveAction,
         swCamPortWheel.postDelayed(new Runnable() {
             @Override
             public void run() {
-                presenter.fetchHistoryData();
+                if (presenter != null)
+                    presenter.fetchHistoryData();
             }
         }, 3000);
     }
