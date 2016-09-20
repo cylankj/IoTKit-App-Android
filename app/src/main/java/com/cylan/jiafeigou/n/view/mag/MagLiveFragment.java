@@ -10,8 +10,8 @@ import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.JConstant;
-import com.cylan.jiafeigou.n.mvp.contract.home.HomeMagLiveContract;
-import com.cylan.jiafeigou.n.mvp.impl.home.HomeMagLivePresenterImp;
+import com.cylan.jiafeigou.n.mvp.contract.mag.HomeMagLiveContract;
+import com.cylan.jiafeigou.n.mvp.impl.mag.HomeMagLivePresenterImp;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.kyleduo.switchbutton.SwitchButton;
 

@@ -65,8 +65,8 @@ public class MineRelativesandFriendsFragment extends Fragment implements MineRel
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //friendsFragment = MineRelativesAndFriendAddFriendsFragment.newInstance();
-        //shareDevicesFragment = MineRelativesAndFriendsListShareDevicesFragment.newInstance();
+        friendsFragment = MineRelativesAndFriendAddFriendsFragment.newInstance();
+        shareDevicesFragment = MineRelativesAndFriendsListShareDevicesFragment.newInstance();
     }
 
     @Nullable

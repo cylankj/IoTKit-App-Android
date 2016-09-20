@@ -71,12 +71,16 @@ public class HomeMinePersonalInformationFragment extends Fragment implements Min
     TextView tvUserAccount;
     @BindView(R.id.tv_home_mine_personal_phone)
     TextView tvHomeMinePersonalPhone;
+    @BindView(R.id.rl_change_password)
+    RelativeLayout rlChangePassword;
 
 
     private HomeMinePersonalInformationMailBoxFragment mailBoxFragment;
     private MineBindPhoneFragment bindPhoneFragment;
     private MineUserInfoLookBigHeadFragment bigHeadFragment;
     private MineSetUserNameFragment setUserNameFragment;
+    private MinePersionlInfoSetPassWordFragment setPassWordFragment;
+
     private MinePersonalInformationContract.Presenter presenter;
     private AlertDialog alertDialog;
 
@@ -93,6 +97,7 @@ public class HomeMinePersonalInformationFragment extends Fragment implements Min
         bigHeadFragment = MineUserInfoLookBigHeadFragment.newInstance();
         bindPhoneFragment = MineBindPhoneFragment.newInstance(new Bundle());
         setUserNameFragment = MineSetUserNameFragment.newInstance();
+        setPassWordFragment = MinePersionlInfoSetPassWordFragment.newInstance();
     }
 
     @Nullable
@@ -123,7 +128,8 @@ public class HomeMinePersonalInformationFragment extends Fragment implements Min
 
     @OnClick({R.id.iv_home_mine_personal_back, R.id.btn_home_mine_personal_information,
             R.id.lLayout_home_mine_personal_mailbox, R.id.rLayout_home_mine_personal_pic,
-            R.id.RLayout_home_mine_personal_phone, R.id.user_ImageHead, R.id.rLayout_home_mine_personal_name})
+            R.id.RLayout_home_mine_personal_phone, R.id.user_ImageHead,
+            R.id.rLayout_home_mine_personal_name,R.id.rl_change_password})
     public void onClick(View view) {
         switch (view.getId()) {
             //点击回退到Mine的fragment
@@ -156,7 +162,23 @@ public class HomeMinePersonalInformationFragment extends Fragment implements Min
             case R.id.rLayout_home_mine_personal_name:          //更改昵称
                 jump2SetUserNameFragment();
                 break;
+
+            case R.id.rl_change_password:                       //修改密码
+                jump2ChangePasswordFragment();
+                break;
         }
+    }
+
+    /**
+     * 修改密码的界面
+     */
+    private void jump2ChangePasswordFragment() {
+        getFragmentManager().beginTransaction()
+                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
+                        , R.anim.slide_in_left, R.anim.slide_out_right)
+                .add(android.R.id.content, setPassWordFragment, "setPassWordFragment")
+                .addToBackStack("personalInformationFragment")
+                .commit();
     }
 
     /**

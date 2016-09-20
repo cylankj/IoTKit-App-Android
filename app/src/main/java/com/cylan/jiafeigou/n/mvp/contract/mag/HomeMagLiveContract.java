@@ -1,4 +1,4 @@
-package com.cylan.jiafeigou.n.mvp.contract.home;
+package com.cylan.jiafeigou.n.mvp.contract.mag;
 
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;

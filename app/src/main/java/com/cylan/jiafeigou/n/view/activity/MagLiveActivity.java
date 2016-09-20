@@ -79,7 +79,7 @@ public class MagLiveActivity extends BaseFullScreenFragmentActivity {
         magLiveFragment.setOnClearDoorOpenRecord(new MagLiveFragment.OnClearDoorOpenRecordLisenter() {
             @Override
             public void onClear() {
-                ToastUtil.showToast(MagLiveActivity.this,"清空了啊 啊啊啊");
+                ToastUtil.showToast(MagLiveActivity.this,"清空了啊啊啊啊");
                 if(magList != null && magList.size() != 0){
                     magList.clear();
                     adapter.notifyDataSetHasChanged();
@@ -105,7 +105,9 @@ public class MagLiveActivity extends BaseFullScreenFragmentActivity {
     }
 
     private void initData() {
-        magList = new ArrayList<>();
+        if(magList == null){
+            magList = new ArrayList<>();
+        }
 
         for (int i = 0; i <= 10; i++) {
             MagBean magBean = new MagBean();

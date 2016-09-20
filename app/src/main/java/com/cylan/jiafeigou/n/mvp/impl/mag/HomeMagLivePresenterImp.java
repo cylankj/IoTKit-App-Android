@@ -1,6 +1,6 @@
-package com.cylan.jiafeigou.n.mvp.impl.home;
+package com.cylan.jiafeigou.n.mvp.impl.mag;
 
-import com.cylan.jiafeigou.n.mvp.contract.home.HomeMagLiveContract;
+import com.cylan.jiafeigou.n.mvp.contract.mag.HomeMagLiveContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 
