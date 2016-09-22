@@ -1,3 +1,4 @@
+/*
 apply plugin: 'com.android.application'
 apply plugin: 'com.neenbedankt.android-apt'
 
@@ -211,6 +212,12 @@ android {
     }
 }
 
+repositories {
+    flatDir {
+        dirs 'libs'
+    }
+}
+
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile rootProject.ext.robolectric
@@ -251,6 +258,10 @@ dependencies {
     compile rootProject.ext.multiProcessSp
     //glide
     compile rootProject.ext.glide
+    //头像更改选择框架
+    compile rootProject.ext.galleryFinal
+    compile(name: 'JfgAndroidSDK-3.0.114', ext: 'aar')
+
     //头像更改选择框架
     compile rootProject.ext.galleryFinal
     compile(name: 'JfgAndroidSDK-3.0.114', ext: 'aar')

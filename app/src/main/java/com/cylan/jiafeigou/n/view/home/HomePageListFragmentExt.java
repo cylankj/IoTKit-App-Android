@@ -61,7 +61,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
-;
+
 
 public class HomePageListFragmentExt extends Fragment implements
         AppBarLayout.OnOffsetChangedListener,

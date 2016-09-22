@@ -17,9 +17,6 @@ public interface MineUserInfoLookBigHeadContract {
 
         void hideLoadImageProgress();
 
-        void loadImageSuccess();
-
-        void loadImageFail();
     }
 
     interface Presenter extends BasePresenter {

@@ -1,5 +1,6 @@
 package com.cylan.jiafeigou.n.view.home;
 
+import android.annotation.TargetApi;
 import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
@@ -65,6 +66,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 
+@TargetApi(Build.VERSION_CODES.LOLLIPOP)
 public class HomeWonderfulFragmentExt extends Fragment implements
         HomeWonderfulContract.View, SwipeRefreshLayout.OnRefreshListener,
         HomeWonderfulAdapter.WonderfulItemClickListener,
@@ -370,13 +372,9 @@ public class HomeWonderfulFragmentExt extends Fragment implements
                 // Pass data object in the bundle and populate details activity.
                 intent.putParcelableArrayListExtra(JConstant.KEY_SHARED_ELEMENT_LIST, (ArrayList<? extends Parcelable>) homeWonderAdapter.getList());
                 intent.putExtra(JConstant.KEY_SHARED_ELEMENT_STARTED_POSITION, position);
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    getActivity().startActivity(intent,
-                            ActivityOptions.makeSceneTransitionAnimation(getActivity(),
-                                    v, v.getTransitionName()).toBundle());
-                } else {
-                    startActivity(intent);
-                }
+                getActivity().startActivity(intent,
+                        ActivityOptions.makeSceneTransitionAnimation(getActivity(),
+                                v, v.getTransitionName()).toBundle());
                 AppLogger.d("transition:getName " + ViewCompat.getTransitionName(v));
                 break;
             case R.id.tv_wonderful_item_share:
@@ -582,17 +580,13 @@ public class HomeWonderfulFragmentExt extends Fragment implements
 //            rVDevicesList.scrollToPosition(currentPosition);
             ((LinearLayoutManager) rVDevicesList.getLayoutManager()).scrollToPositionWithOffset(currentPosition, 0);
         }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            getActivity().postponeEnterTransition();
-        }
+        getActivity().postponeEnterTransition();
         rVDevicesList.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
             @Override
             public boolean onPreDraw() {
                 rVDevicesList.getViewTreeObserver().removeOnPreDrawListener(this);
                 rVDevicesList.requestLayout();
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    getActivity().startPostponedEnterTransition();
-                }
+                getActivity().startPostponedEnterTransition();
                 return true;
             }
         });

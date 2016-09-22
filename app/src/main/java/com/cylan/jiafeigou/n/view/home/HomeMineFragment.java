@@ -141,13 +141,32 @@ public class HomeMineFragment extends Fragment
         if (needStartLoginFragment()) return;
         AppLogger.i("It's Login,can do something!");
         //if (needStartLoginFragment()) return;
-        //SLog.i("It's Login,can do something!");
-
+        //AppLogger.i("It's Login,can do something!");
         getFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                         , R.anim.slide_in_left, R.anim.slide_out_right)
                 .add(android.R.id.content, mineRelativesandFriendsFragment,
                         "mineRelativesandFriendsFragment")
+                .addToBackStack("mineHelpFragment")
+                .commit();
+    }
+
+//    public void shareItem(View view) {
+//        if (needStartLoginFragment()) return;
+//        AppLogger.i("It's Login,can do something!");
+//    }
+
+    public void settingsItem(View view) {
+        //if (needStartLoginFragment()) return;
+        //AppLogger.i("It's Login,can do something!");
+        //if (needStartLoginFragment()) return;
+        //SLog.i("It's Login,can do something!");
+
+        getFragmentManager().beginTransaction()
+                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
+                        , R.anim.slide_in_left, R.anim.slide_out_right)
+                .add(android.R.id.content, homeSettingFragment,
+                        "homeSettingFragment")
                 .addToBackStack("mineHelpFragment")
                 .commit();
     }
@@ -161,8 +180,6 @@ public class HomeMineFragment extends Fragment
                 .add(android.R.id.content, mineShareDeviceFragment, "mineShareDeviceFragment")
                 .addToBackStack("mineHelpFragment")
                 .commit();
-    }
-
 //    public void settingsItem(View view) {
 //        //if (needStartLoginFragment()) return;
 //        //SLog.i("It's Login,can do something!");
@@ -243,9 +260,9 @@ public class HomeMineFragment extends Fragment
     public void onButterKnifeClick(View view) {
         switch (view.getId()) {
             case R.id.home_mine_item_friend:
-                AppLogger.e("home_mine_item_friend");
                 if (getView() != null)
                     ViewUtils.deBounceClick(getView().findViewById(R.id.home_mine_item_friend));
+                AppLogger.e("home_mine_item_friend");
                 friendItem(view);
                 break;
             case R.id.home_mine_item_share:

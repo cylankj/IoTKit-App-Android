@@ -11,8 +11,11 @@ import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
 import com.cylan.jiafeigou.n.mvp.model.MagBean;
 import com.cylan.jiafeigou.n.view.adapter.MagActivityAdapter;
+import com.cylan.jiafeigou.n.view.home.HomeSettingAboutFragment;
 import com.cylan.jiafeigou.n.view.mag.MagLiveFragment;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.ColorPhrase;
+import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.utils.RandomUtils;
 
@@ -55,6 +58,7 @@ public class MagLiveActivity extends BaseFullScreenFragmentActivity {
     RecyclerView RvMagState;
     private MagLiveFragment magLiveFragment;
     private List<MagBean> magList;
+    private MagActivityAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,10 +71,43 @@ public class MagLiveActivity extends BaseFullScreenFragmentActivity {
         initTopBar();
         initData();
         initView();
+        initDoorState(true);
+        initMagLiveFragmentLisenter();
+    }
+
+    private void initMagLiveFragmentLisenter() {
+        magLiveFragment.setOnClearDoorOpenRecord(new MagLiveFragment.OnClearDoorOpenRecordLisenter() {
+            @Override
+            public void onClear() {
+                ToastUtil.showToast(MagLiveActivity.this,"清空了啊啊啊啊");
+                if(magList != null && magList.size() != 0){
+                    magList.clear();
+                    adapter.notifyDataSetHasChanged();
+                }else {
+                    ToastUtil.showToast(MagLiveActivity.this,"没有记录");
+                }
+            }
+        });
+    }
+
+    /**
+     * 初始化门的状态
+     * @param isOpen
+     */
+    private void initDoorState(boolean isOpen) {
+        if(isOpen){
+            imgVTopDoor.setImageDrawable(getResources().getDrawable(R.drawable.iocn_open));
+            rLayoutMsgLiveTopBar.setBackgroundColor(getResources().getColor(R.color.color_f28080));
+        }else {
+            imgVTopDoor.setImageDrawable(getResources().getDrawable(R.drawable.icon_close));
+            rLayoutMsgLiveTopBar.setBackgroundColor(getResources().getColor(R.color.color_66bb6a));
+        }
     }
 
     private void initData() {
-        magList = new ArrayList<>();
+        if(magList == null){
+            magList = new ArrayList<>();
+        }
 
         for (int i = 0; i <= 10; i++) {
             MagBean magBean = new MagBean();
@@ -106,7 +143,7 @@ public class MagLiveActivity extends BaseFullScreenFragmentActivity {
     private void initView() {
         LinearLayoutManager layoutManager = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false);
         RvMagState.setLayoutManager(layoutManager);
-        MagActivityAdapter adapter = new MagActivityAdapter(getApplication(), magList, null);
+        adapter = new MagActivityAdapter(getApplication(), magList, null);
         RvMagState.setAdapter(adapter);
     }
 
@@ -134,7 +171,7 @@ public class MagLiveActivity extends BaseFullScreenFragmentActivity {
      */
     @OnClick(R.id.imgV_msg_title_top_setting)
     public void onClickSetting() {
-        loadFragment(R.id.lLayout_msg_information, magLiveFragment);
+        loadFragment(android.R.id.content, magLiveFragment);
     }
 
     /**

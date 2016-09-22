@@ -20,13 +20,22 @@ public class RelativesAndFriendsAdapter extends RecyclerView.Adapter<RelativesAn
     }
 
     private ItemClickListener itemClickListener;
+    private ItemLongClickLisenter itemLongClickLisenter;
 
     public interface ItemClickListener {
         void onClick(View view, int position);
     }
 
+    public interface ItemLongClickLisenter{
+        void onLongClick(View view, int position);
+    }
+
     public void setItemClickListener(ItemClickListener itemClickListener) {
         this.itemClickListener = itemClickListener;
+    }
+
+    public void setItemLongClickLisenter(ItemLongClickLisenter longClickLisenter){
+        this.itemLongClickLisenter = longClickLisenter;
     }
 
     @Override
@@ -42,13 +51,6 @@ public class RelativesAndFriendsAdapter extends RecyclerView.Adapter<RelativesAn
         //处理消息显示
         holder.tv_username.setText(message.getName());
         holder.tv_add_message.setText(message.getContent());
-        if (message.isShowAcceptButton) {
-            holder.tv_accept_request.setVisibility(View.VISIBLE);
-            holder.line.setVisibility(View.INVISIBLE);
-        } else {
-            holder.tv_accept_request.setVisibility(View.INVISIBLE);
-            holder.line.setVisibility(View.VISIBLE);
-        }
         //条目点击事件
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -56,6 +58,17 @@ public class RelativesAndFriendsAdapter extends RecyclerView.Adapter<RelativesAn
                 if (itemClickListener != null) {
                     itemClickListener.onClick(holder.itemView, position);
                 }
+            }
+        });
+
+        //条目长按删除
+        holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                if(itemLongClickLisenter != null){
+                    itemLongClickLisenter.onLongClick(holder.itemView,position);
+                }
+                return true;
             }
         });
     }
@@ -69,14 +82,12 @@ public class RelativesAndFriendsAdapter extends RecyclerView.Adapter<RelativesAn
 
         public final TextView tv_username;
         public final TextView tv_add_message;
-        public final TextView tv_accept_request;
         public final View line;
 
         public RequestAndFriends(View itemView) {
             super(itemView);
             tv_username = (TextView) itemView.findViewById(R.id.tv_username);
             tv_add_message = (TextView) itemView.findViewById(R.id.tv_add_message);
-            tv_accept_request = (TextView) itemView.findViewById(R.id.tv_accept_request);
             line = itemView.findViewById(R.id.view_line);
         }
     }

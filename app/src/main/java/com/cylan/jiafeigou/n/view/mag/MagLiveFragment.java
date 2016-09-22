@@ -9,7 +9,11 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.n.mvp.contract.mag.HomeMagLiveContract;
+import com.cylan.jiafeigou.n.mvp.impl.mag.HomeMagLivePresenterImp;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
+import com.kyleduo.switchbutton.SwitchButton;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -25,13 +29,26 @@ import butterknife.OnClick;
  * 更新时间   $Date$
  * 更新描述   ${TODO}
  */
-public class MagLiveFragment extends Fragment {
+public class MagLiveFragment extends Fragment implements HomeMagLiveContract.View {
 
     @BindView(R.id.tv_information_facility_name)
     TextView mFacilityName;
-
+    @BindView(R.id.btn_switch)
+    SwitchButton btnSwitch;
+    @BindView(R.id.tv_clear_mag_open_record)
+    TextView tvClearMagOpenRecord;
 
     private MagLiveInformationFragment magLiveInformationFragment;
+    private HomeMagLiveContract.Presenter presenter;
+    private OnClearDoorOpenRecordLisenter listener;
+
+    public interface OnClearDoorOpenRecordLisenter{
+        void onClear();
+    }
+
+    public void setOnClearDoorOpenRecord(OnClearDoorOpenRecordLisenter listener){
+        this.listener = listener;
+    }
 
     public static MagLiveFragment newInstance(Bundle bundle) {
         MagLiveFragment fragment = new MagLiveFragment();
@@ -52,7 +69,13 @@ public class MagLiveFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_msglive_message, null);
         ButterKnife.bind(this, view);
+        initPresenter();
+        initMagDoorStateNotify();
         return view;
+    }
+
+    private void initPresenter() {
+        presenter = new HomeMagLivePresenterImp(this);
     }
 
     /**
@@ -74,12 +97,12 @@ public class MagLiveFragment extends Fragment {
     /**
      * 点击进入设备信息的设置页面
      */
-    @OnClick(R.id.lLayout_information_facility_name)
+    @OnClick(R.id.lLayout_home_mag_information)
     public void onFacilityMessage() {
         getFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                         , R.anim.slide_in_left, R.anim.slide_out_right)
-                .add(R.id.lLayout_msg_information, magLiveInformationFragment, "MagLiveFragment")
+                .add(android.R.id.content, magLiveInformationFragment, "magLiveInformationFragment")
                 .addToBackStack("MagLiveFragment")
                 .commit();
 
@@ -101,4 +124,36 @@ public class MagLiveFragment extends Fragment {
         String editName = PreferencesUtils.getString(getActivity(), "magEditName", "客厅摄像头");
         mFacilityName.setText(editName);
     }
+
+    @Override
+    public void setPresenter(HomeMagLiveContract.Presenter presenter) {
+
+    }
+
+    @OnClick({R.id.btn_switch,R.id.tv_clear_mag_open_record})
+    public void onClick(View view) {
+        switch (view.getId()){
+            case R.id.btn_switch:
+                presenter.savaSwitchState(openDoorNotify(), JConstant.OPEN_DOOR_NOTIFI);
+                break;
+            case R.id.tv_clear_mag_open_record:
+                if (listener != null){
+                    listener.onClear();
+                }
+                break;
+        }
+
+    }
+
+    @Override
+    public boolean openDoorNotify() {
+        return presenter.getNegation();
+    }
+
+    @Override
+    public void initMagDoorStateNotify() {
+        btnSwitch.setChecked(presenter.getSwitchState(JConstant.OPEN_DOOR_NOTIFI));
+    }
+
+
 }

@@ -47,6 +47,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:padding="15dp"
+            android:clickable="true"
             android:src="@drawable/icon_setting" />
     </RelativeLayout>
 

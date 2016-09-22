@@ -25,8 +25,8 @@ public class BaseApplication extends Application {
     public void onCreate() {
         super.onCreate();
         enableDebugOptions();
-        startService(new Intent(this, DaemonService.class));
-        initLeakCanary();
+//       startService(new Intent(this, DaemonService.class));
+//        initLeakCanary();
     }
 
     private void initLeakCanary() {
@@ -41,7 +41,7 @@ public class BaseApplication extends Application {
     private void enableDebugOptions() {
         DebugOptionsImpl options = new DebugOptionsImpl("test");
         options.enableCrashHandler(this, PathGetter.createPath(JConstant.CRASH_PATH));
-        options.enableStrictMode();
+        //options.enableStrictMode();
     }
 
     @Override

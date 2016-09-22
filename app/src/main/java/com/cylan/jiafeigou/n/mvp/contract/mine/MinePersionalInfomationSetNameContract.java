@@ -12,8 +12,6 @@ public interface MinePersionalInfomationSetNameContract {
 
     interface View extends BaseView<Presenter> {
         String getEditName();
-
-        void setTitleBarName();
     }
 
     interface Presenter extends BasePresenter {

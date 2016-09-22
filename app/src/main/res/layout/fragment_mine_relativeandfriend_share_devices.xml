@@ -109,16 +109,13 @@
             android:layout_width="match_parent"
             android:layout_height="1dp"/>
 
-        <TextView
-            android:id="@+id/tv_share_smartcamera"
+        <ImageView
+            android:id="@+id/iv_share_smartcamera"
             android:layout_marginRight="15dp"
             android:gravity="center"
+            android:src="@drawable/icon_selected"
             android:layout_centerVertical="true"
             android:layout_alignParentRight="true"
-            android:background="@drawable/bg_screenshot"
-            android:text="分享"
-            android:textSize="13sp"
-            android:textColor="@color/color_4b9fd5"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
@@ -167,16 +164,13 @@
             android:layout_width="match_parent"
             android:layout_height="1dp"/>
 
-        <TextView
-            android:id="@+id/tv_share_smartbell"
+        <ImageView
+            android:id="@+id/iv_share_smartbell"
             android:layout_marginRight="15dp"
             android:gravity="center"
+            android:src="@drawable/icon_not_selected"
             android:layout_centerVertical="true"
             android:layout_alignParentRight="true"
-            android:background="@drawable/bg_screenshot"
-            android:text="分享"
-            android:textSize="13sp"
-            android:textColor="@color/color_4b9fd5"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
@@ -226,20 +220,16 @@
             android:layout_width="match_parent"
             android:layout_height="1dp"/>
 
-        <TextView
-            android:id="@+id/tv_share_smartcloud"
+        <ImageView
+            android:id="@+id/iv_share_smartcloud"
             android:layout_marginRight="15dp"
             android:gravity="center"
+            android:src="@drawable/icon_not_selected"
             android:layout_centerVertical="true"
             android:layout_alignParentRight="true"
-            android:background="@drawable/bg_screenshot"
-            android:text="分享"
-            android:textSize="13sp"
-            android:textColor="@color/color_4b9fd5"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
     </RelativeLayout>
-
 
 </LinearLayout>

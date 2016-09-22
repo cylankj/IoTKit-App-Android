@@ -82,6 +82,5 @@
             android:textColor="#666666"
             android:textSize="15sp"
             android:visibility="gone" />
-        android:layout_height="wrap_content" />
     </RelativeLayout>
 </LinearLayout>

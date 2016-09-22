@@ -72,6 +72,7 @@
                     android:layout_marginTop="6dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:singleLine="true"
                     android:text="客厅摄像头"
                     android:textColor="#8C8C8C"
                     android:textSize="13sp" />
@@ -127,6 +128,7 @@
 
             <!-- “储存”相关模块 -->
             <LinearLayout
+                android:id="@+id/ll_information_facility_card_state"
                 style="@style/information_item"
                 android:layout_width="match_parent"
                 android:layout_height="72dp"
