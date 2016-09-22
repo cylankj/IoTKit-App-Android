@@ -36,7 +36,6 @@ import java.util.Map;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-@TargetApi(Build.VERSION_CODES.LOLLIPOP)
 public class NewHomeActivity extends NeedLoginActivity implements
         NewHomeActivityContract.View {
     @BindView(R.id.vp_home_content)
@@ -49,7 +48,10 @@ public class NewHomeActivity extends NeedLoginActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_home);
         ButterKnife.bind(this);
-        setExitSharedElementCallback(mCallback);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            initSharedElementCallback();
+            setExitSharedElementCallback(mCallback);
+        }
         initBottomMenu();
         initMainContentAdapter();
         new NewHomeActivityPresenterImpl(this);
@@ -128,13 +130,18 @@ public class NewHomeActivity extends NeedLoginActivity implements
             onActivityReenterListener.onActivityReenter(requestCode, data);
     }
 
-    private final SharedElementCallback mCallback = new SharedElementCallback() {
-        @Override
-        public void onMapSharedElements(List<String> names, Map<String, View> sharedElements) {
-            if (sharedElementCallBackListener != null)
-                sharedElementCallBackListener.onSharedElementCallBack(names, sharedElements);
-        }
-    };
+    private SharedElementCallback mCallback;
+
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    private void initSharedElementCallback() {
+        mCallback = new SharedElementCallback() {
+            @Override
+            public void onMapSharedElements(List<String> names, Map<String, View> sharedElements) {
+                if (sharedElementCallBackListener != null)
+                    sharedElementCallBackListener.onSharedElementCallBack(names, sharedElements);
+            }
+        };
+    }
 
     private SharedElementCallBackListener sharedElementCallBackListener;
     private OnActivityReenterListener onActivityReenterListener;

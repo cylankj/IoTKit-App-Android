@@ -30,7 +30,7 @@ import com.cylan.photoview.PhotoView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-@TargetApi(Build.VERSION_CODES.LOLLIPOP)
+//@TargetApi(Build.VERSION_CODES.LOLLIPOP)
 public class PicDetailsFragment extends Fragment {
 
     public static final String KEY_MEDIA_URL = "key_media_url";
@@ -96,8 +96,10 @@ public class PicDetailsFragment extends Fragment {
 
     protected void startPostponedEnterTransition() {
         if (mAlbumPosition == mStartingPosition) {
-            AppLogger.d("transition: startPostponedEnterTransition: " + mAlbumPosition + "\n" +
-                    detailsAlbumImage.getTransitionName());
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                AppLogger.d("transition: startPostponedEnterTransition: " + mAlbumPosition + "\n" +
+                        detailsAlbumImage.getTransitionName());
+            }
             detailsAlbumImage.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
                 @TargetApi(Build.VERSION_CODES.LOLLIPOP)
                 @Override

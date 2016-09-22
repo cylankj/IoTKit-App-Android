@@ -99,22 +99,48 @@ android {
         release {
             Properties properties = new Properties()
             File localProperties = project.rootProject.file('local.properties')
-            if (localProperties.exists())
+            if (localProperties.exists()) {
                 properties.load(localProperties.newDataInputStream())
-            def store_file = properties.getProperty('store_file')
-            def store_pwd = properties.getProperty('store_pwd')
-            def store_alias = properties.getProperty('store_alias')
-            def store_alias_pwd = properties.getProperty('store_alias_pwd')
-            storeFile file(store_file)
-            storePassword store_pwd
-            keyAlias store_alias
-            keyPassword store_alias_pwd
+                def store_file = properties.getProperty('store_file')
+                def store_pwd = properties.getProperty('store_pwd')
+                def store_alias = properties.getProperty('store_alias')
+                def store_alias_pwd = properties.getProperty('store_alias_pwd')
+                if (properties.hasProperty("store_file"))
+                    storeFile file(store_file)
+                if (properties.hasProperty("store_pwd"))
+                    storePassword store_pwd
+                if (properties.hasProperty("store_alias"))
+                    keyAlias store_alias
+                if (properties.hasProperty("store_alias_pwd"))
+                    keyPassword store_alias_pwd
+            }
         }
     }
     buildTypes {
         debug {
             minifyEnabled false
             applicationIdSuffix ".debug"
+            applicationVariants.all { variant ->
+                //调整包名
+                applicationIdSuffix = getPackageSuffix(variant.name)
+                variant.outputs.each { output ->
+                    def outputFile = output.outputFile
+                    if (outputFile != null && outputFile.name.endsWith('.apk')) {
+                        def shortName = getVariantShortName(variant.name)
+                        def fileName = "${getPackageName()}" +
+                                "-${vName}" +
+                                ".${vCode}" +
+                                "-${releaseTime()}" +
+                                shortName
+                        if (outputFile.name.contains("debug")) {
+                            fileName = fileName +
+                                    "-debug.apk"
+                            output.outputFile = new File(outputFile.parent, fileName)
+                        }
+                        println("hunt...name: " + outputFile.name)
+                    }
+                }
+            }
         }
         release {
             shrinkResources true
@@ -141,11 +167,12 @@ android {
                             fileName = fileName +
                                     "-release.apk"
                             output.outputFile = new File(outputFile.parent, fileName)
-                        } else if (outputFile.name.contains("debug")) {
-                            fileName = fileName +
-                                    "-debug.apk"
-                            output.outputFile = new File(outputFile.parent, fileName)
                         }
+//                        else if (outputFile.name.contains("debug")) {
+//                            fileName = fileName +
+//                                    "-debug.apk"
+//                            output.outputFile = new File(outputFile.parent, fileName)
+//                        }
                         println("hunt...name: " + outputFile.name)
                     }
                 }

@@ -27,11 +27,6 @@ public class WonderfulTitleHead extends TextView {
         super(context, attrs, defStyleAttr);
     }
 
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    public WonderfulTitleHead(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        super(context, attrs, defStyleAttr, defStyleRes);
-    }
-
 
     public void setBackgroundToRight() {
         if (titleHeadIsTop) {

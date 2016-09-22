@@ -602,6 +602,7 @@
 
     <string name="item_bad_net_work">当前网络不可用</string>
     <string name="item_select_wifi">请选择网络</string>
+    <string name="item_loading">加载中&#8230;</string>
     <!--//门铃低电量提示-->
     <string name="s_bell_low_battery_content">建议使用5V/1A的充电器；充电过程中\n指示灯%s常亮，充满电后会自动熄灭</string>
     <string name="item_green">绿色</string>
