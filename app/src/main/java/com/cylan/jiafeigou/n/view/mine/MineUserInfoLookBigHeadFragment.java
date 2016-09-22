@@ -112,15 +112,6 @@ public class MineUserInfoLookBigHeadFragment extends Fragment implements MineUse
         progressBar.setVisibility(View.INVISIBLE);
     }
 
-    @Override
-    public void loadImageSuccess() {
-
-    }
-
-    @Override
-    public void loadImageFail() {
-
-    }
 
     @Override
     public void setPresenter(MineUserInfoLookBigHeadContract.Presenter presenter) {

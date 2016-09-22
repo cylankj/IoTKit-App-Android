@@ -3,12 +3,14 @@ package com.cylan.jiafeigou.n.view.mine;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MinePersionalInfomationSetNameContract;
@@ -27,17 +29,17 @@ import butterknife.OnClick;
  */
 public class MineSetUserNameFragment extends Fragment implements MinePersionalInfomationSetNameContract.View {
 
-    @BindView(R.id.tv_top_bar_center)
-    TextView tvTopBarCenter;
-    @BindView(R.id.et_input_username)
-    EditText etInputUsername;
-    @BindView(R.id.tv_save_username)
-    TextView tvSaveUsername;
-    @BindView(R.id.iv_top_bar_left)
-    ImageView ivTopBarLeft;
-
+    @BindView(R.id.iv_top_bar_left_back)
+    ImageView ivTopBarLeftBack;
+    @BindView(R.id.iv_mine_personal_setname_bind)
+    ImageView ivMinePersonalSetnameBind;
+    @BindView(R.id.et_mine_personal_information_new_name)
+    EditText etMinePersonalInformationNewName;
+    @BindView(R.id.view_mine_personal_information_new_name_line)
+    View viewMinePersonalInformationNewNameLine;
+    @BindView(R.id.iv_mine_personal_information_new_name_clear)
+    ImageView ivMinePersonalInformationNewNameClear;
     private MinePersionalInfomationSetNameContract.Presenter presenter;
-
 
     private OnSetUsernameListener listener;
 
@@ -61,13 +63,40 @@ public class MineSetUserNameFragment extends Fragment implements MinePersionalIn
         View view = inflater.inflate(R.layout.fragment_home_mine__set_name, container, false);
         ButterKnife.bind(this, view);
         initPresenter();
-        setTitleBarName();
         initEditText();
+        initEditListener();
         return view;
     }
 
+    private void initEditListener() {
+        etMinePersonalInformationNewName.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                boolean isEmpty = TextUtils.isEmpty(getEditName());
+                if(isEmpty){
+                    ivMinePersonalSetnameBind.setImageDrawable(getResources().getDrawable(R.drawable.icon_finish_disable));
+                    ivMinePersonalSetnameBind.setEnabled(false);
+                }else {
+                    ivMinePersonalSetnameBind.setImageDrawable(getResources().getDrawable(R.drawable.icon_finish));
+                    ivMinePersonalSetnameBind.setEnabled(true);
+                }
+
+            }
+        });
+    }
+
     private void initEditText() {
-        etInputUsername.setText(PreferencesUtils.getString(getActivity(), "username", ""));
+        etMinePersonalInformationNewName.setText(PreferencesUtils.getString(getActivity(), "username", ""));
     }
 
     private void initPresenter() {
@@ -76,12 +105,7 @@ public class MineSetUserNameFragment extends Fragment implements MinePersionalIn
 
     @Override
     public String getEditName() {
-        return etInputUsername.getText().toString().trim();
-    }
-
-    @Override
-    public void setTitleBarName() {
-        tvTopBarCenter.setText("修改昵称");
+        return etMinePersonalInformationNewName.getText().toString().trim();
     }
 
     @Override
@@ -89,25 +113,40 @@ public class MineSetUserNameFragment extends Fragment implements MinePersionalIn
 
     }
 
-    @OnClick({R.id.tv_save_username, R.id.iv_top_bar_left})
+    @OnClick({R.id.iv_top_bar_left_back, R.id.iv_mine_personal_setname_bind, R.id.iv_mine_personal_information_new_name_clear})
     public void onClick(View view) {
-
         switch (view.getId()) {
-            case R.id.tv_save_username:
+            case R.id.iv_top_bar_left_back:
+                getFragmentManager().popBackStack();
+                break;
+            case R.id.iv_mine_personal_setname_bind:
                 if (presenter.isEditEmpty(getEditName())) {
                     ToastUtil.showToast(getContext(), "昵称不能为空");
                     return;
                 } else {
                     PreferencesUtils.putString(getActivity(), getEditName(), "username");
                     ToastUtil.showToast(getContext(), "保存成功");
-                    listener.userNameChange(getEditName());
+                    if (listener != null) {
+                        listener.userNameChange(getEditName());
+                    }
                     getFragmentManager().popBackStack();
                 }
                 break;
-
-            case R.id.iv_top_bar_left:
-                getFragmentManager().popBackStack();
+            case R.id.iv_mine_personal_information_new_name_clear:
+                etMinePersonalInformationNewName.setText("");
                 break;
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if(TextUtils.isEmpty(getEditName())){
+            ivMinePersonalSetnameBind.setImageDrawable(getResources().getDrawable(R.drawable.icon_finish_disable));
+            ivMinePersonalSetnameBind.setEnabled(false);
+        }else {
+            ivMinePersonalSetnameBind.setImageDrawable(getResources().getDrawable(R.drawable.icon_finish));
+            ivMinePersonalSetnameBind.setEnabled(true);
         }
     }
 }

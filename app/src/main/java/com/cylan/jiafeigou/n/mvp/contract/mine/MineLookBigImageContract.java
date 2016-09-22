@@ -5,18 +5,16 @@ import com.cylan.jiafeigou.n.mvp.BaseView;
 
 /**
  * 作者：zsl
- * 创建时间：2016/9/2
+ * 创建时间：2016/9/21
  * 描述：
  */
-public interface MinePersionalInfomationSetNameContract {
+public interface MineLookBigImageContract {
 
     interface View extends BaseView<Presenter> {
-        String getEditName();
+
     }
 
-    interface Presenter extends BasePresenter {
-        void saveName();
+    interface Presenter extends BasePresenter{
 
-        boolean isEditEmpty(String string);
     }
 }
