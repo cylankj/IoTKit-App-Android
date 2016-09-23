@@ -27,7 +27,6 @@ import com.cylan.jiafeigou.n.view.splash.FragmentSplash;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.IMEUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
-import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.UiHelper;
 import com.cylan.jiafeigou.widget.indicator.CirclePageIndicator;
 
@@ -85,10 +84,6 @@ public class SmartcallActivity extends NeedLoginActivity
         super.onStop();
         if (presenter != null) presenter.stop();
 
-    }
-
-    protected int[] getOverridePendingTransition() {
-        return new int[]{R.anim.alpha_in, R.anim.alpha_out};
     }
 
     protected int[] getOverridePendingTransition() {

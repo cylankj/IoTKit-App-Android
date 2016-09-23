@@ -4,7 +4,6 @@ package com.cylan.jiafeigou.n.view.media;
  * Created by cylan-hunt on 16-9-7.
  */
 
-import android.annotation.TargetApi;
 import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
@@ -29,7 +28,6 @@ import com.cylan.jiafeigou.support.log.AppLogger;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-@TargetApi(Build.VERSION_CODES.LOLLIPOP)
 public class VideoDetailsFragment extends PicDetailsFragment {
 
     @BindView(R.id.vv_play_video)
@@ -83,12 +81,14 @@ public class VideoDetailsFragment extends PicDetailsFragment {
                 .into(imageView);
         if (mStartingPosition == mAlbumPosition && isEntering) {
             //两个position相等，表示处于当前页面，其他情况属于预加载过程
-            getActivity().getWindow().getSharedElementEnterTransition().addListener(new TransitionListenerAdapter() {
-                @Override
-                public void onTransitionEnd(Transition transition) {
-                    AppLogger.d("video transition is end: ");
-                }
-            });
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                getActivity().getWindow().getSharedElementEnterTransition().addListener(new TransitionListenerAdapter() {
+                    @Override
+                    public void onTransitionEnd(Transition transition) {
+                        AppLogger.d("video transition is end: ");
+                    }
+                });
+            }
         }
         AppLogger.d("load url: " + mediaUrl);
     }

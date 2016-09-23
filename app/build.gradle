@@ -1,4 +1,3 @@
-/*
 apply plugin: 'com.android.application'
 apply plugin: 'com.neenbedankt.android-apt'
 
@@ -103,17 +102,15 @@ android {
             if (localProperties.exists()) {
                 properties.load(localProperties.newDataInputStream())
                 def store_file = properties.getProperty('store_file')
-                def store_pwd = properties.getProperty('store_pwd')
-                def store_alias = properties.getProperty('store_alias')
-                def store_alias_pwd = properties.getProperty('store_alias_pwd')
-                if (properties.hasProperty("store_file"))
-                    storeFile file(store_file)
-                if (properties.hasProperty("store_pwd"))
-                    storePassword store_pwd
-                if (properties.hasProperty("store_alias"))
-                    keyAlias store_alias
-                if (properties.hasProperty("store_alias_pwd"))
-                    keyPassword store_alias_pwd
+                if (store_file != null) {
+                    def store_pwd = properties.getProperty('store_pwd')
+                    def store_alias = properties.getProperty('store_alias')
+                    def store_alias_pwd = properties.getProperty('store_alias_pwd')
+                    storeFile = file(store_file)
+                    storePassword = store_pwd
+                    keyAlias = store_alias
+                    keyPassword = store_alias_pwd
+                }
             }
         }
     }
@@ -169,11 +166,6 @@ android {
                                     "-release.apk"
                             output.outputFile = new File(outputFile.parent, fileName)
                         }
-//                        else if (outputFile.name.contains("debug")) {
-//                            fileName = fileName +
-//                                    "-debug.apk"
-//                            output.outputFile = new File(outputFile.parent, fileName)
-//                        }
                         println("hunt...name: " + outputFile.name)
                     }
                 }
