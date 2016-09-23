@@ -38,8 +38,18 @@ public class MineRelativeAndFriendAddReqDetailFragment extends Fragment implemen
     @BindView(R.id.tv_add_as_relative_and_friend)
     TextView tvAddAsRelativeAndFriend;
 
+    private MineLookBigImageFragment lookBigImageFragment;
+
     public static MineRelativeAndFriendAddReqDetailFragment newInstance() {
         return new MineRelativeAndFriendAddReqDetailFragment();
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Bundle bundle = new Bundle();
+        bundle.putInt("imageUrl",R.drawable.icon_mine_defult_head);
+        lookBigImageFragment = MineLookBigImageFragment.newInstance(bundle);
     }
 
     @Nullable
@@ -62,11 +72,25 @@ public class MineRelativeAndFriendAddReqDetailFragment extends Fragment implemen
                 getFragmentManager().popBackStack();
                 break;
             case R.id.iv_detail_user_head:                      //查看大头像
-
+                jump2LookBigImage();
                 break;
             case R.id.tv_add_as_relative_and_friend:            //添加为亲友
                 ToastUtil.showToast(getContext(),"添加成功");
                 break;
         }
     }
+
+    /**
+     * desc:查看大头像
+     */
+    private void jump2LookBigImage() {
+        getFragmentManager().beginTransaction()
+                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
+                        , R.anim.slide_in_left, R.anim.slide_out_right)
+                .add(android.R.id.content, lookBigImageFragment, "lookBigImageFragment")
+                .addToBackStack("mineHelpFragment")
+                .commit();
+    }
+
+
 }

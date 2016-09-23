@@ -11,7 +11,9 @@ import com.cylan.jiafeigou.n.mvp.BaseView;
 public interface MineLookBigImageContract {
 
     interface View extends BaseView<Presenter> {
+        void showLoadImageProgress();
 
+        void hideLoadImageProgress();
     }
 
     interface Presenter extends BasePresenter{

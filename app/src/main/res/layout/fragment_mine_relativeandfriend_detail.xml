@@ -36,6 +36,7 @@
         </RelativeLayout>
 
         <ImageView
+            android:clickable="true"
             android:id="@+id/iv_detail_user_head"
             android:layout_marginTop="42dp"
             android:layout_gravity="center_horizontal"

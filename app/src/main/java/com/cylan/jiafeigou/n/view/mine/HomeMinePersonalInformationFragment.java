@@ -94,7 +94,7 @@ public class HomeMinePersonalInformationFragment extends Fragment implements Min
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mailBoxFragment = HomeMinePersonalInformationMailBoxFragment.newInstance(new Bundle());
-        bigHeadFragment = MineUserInfoLookBigHeadFragment.newInstance();
+        bigHeadFragment = MineUserInfoLookBigHeadFragment.newInstance(new Bundle());
         bindPhoneFragment = MineBindPhoneFragment.newInstance(new Bundle());
         setUserNameFragment = MineSetUserNameFragment.newInstance();
         setPassWordFragment = MinePersionlInfoSetPassWordFragment.newInstance();

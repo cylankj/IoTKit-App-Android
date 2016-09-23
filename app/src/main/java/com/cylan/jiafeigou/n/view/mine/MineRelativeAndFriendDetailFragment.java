@@ -79,7 +79,7 @@ public class MineRelativeAndFriendDetailFragment extends Fragment implements Min
                 getFragmentManager().popBackStack();
                 break;
             case R.id.rl_change_name:
-
+                jump2SetRemarkNameFragment();
                 break;
             case R.id.rl_delete_relativeandfriend:
 
@@ -88,6 +88,18 @@ public class MineRelativeAndFriendDetailFragment extends Fragment implements Min
                 jump2ShareDeviceFragment();
                 break;
         }
+    }
+
+    /**
+     * desc:跳转到备注名称的界面；
+     */
+    private void jump2SetRemarkNameFragment() {
+        getFragmentManager().beginTransaction()
+                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
+                        , R.anim.slide_in_left, R.anim.slide_out_right)
+                .add(android.R.id.content, mineShareDeviceFragment, "mineShareDeviceFragment")
+                .addToBackStack("mineHelpFragment")
+                .commit();
     }
 
     private void jump2ShareDeviceFragment() {
