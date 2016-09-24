@@ -42,6 +42,16 @@ def getVariantShortName(String name) {
     return name.replace("Release", "").replace("_", "-").replace("Debug", "")
 }
 
+def boolean hasSignKey() {
+    Properties properties = new Properties()
+    File localProperties = project.rootProject.file('local.properties')
+    if (localProperties.exists()) {
+        properties.load(localProperties.newDataInputStream())
+        def store_file = properties.getProperty('store_file')
+        return store_file != null
+    }
+    return false
+}
 //目前只有中性release版，包名
 def getPackageSuffix(String variantName) {
     if (variantName.contains("zhongxing"))
@@ -49,10 +59,6 @@ def getPackageSuffix(String variantName) {
     return ""
 }
 
-//通过taskName来判断是否执行该task
-def boolean getTaskEnableFlag(String taskName) {
-
-}
 
 android {
     def vCode = getCustomVersionCode()
@@ -145,7 +151,9 @@ android {
             minifyEnabled true
             zipAlignEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.release
+            if (hasSignKey())
+                signingConfig signingConfigs.release
+            else signingConfig signingConfigs.debug
 
             applicationVariants.all { variant ->
                 //调整包名
@@ -166,7 +174,7 @@ android {
                                     "-release.apk"
                             output.outputFile = new File(outputFile.parent, fileName)
                         }
-                        println("hunt...name: " + outputFile.name)
+
                     }
                 }
             }
