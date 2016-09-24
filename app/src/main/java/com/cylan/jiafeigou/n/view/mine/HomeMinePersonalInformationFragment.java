@@ -80,7 +80,6 @@ public class HomeMinePersonalInformationFragment extends Fragment implements Min
     private MineUserInfoLookBigHeadFragment bigHeadFragment;
     private MineSetUserNameFragment setUserNameFragment;
     private MinePersionlInfoSetPassWordFragment setPassWordFragment;
-
     private MinePersonalInformationContract.Presenter presenter;
     private AlertDialog alertDialog;
 

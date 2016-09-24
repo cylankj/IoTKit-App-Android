@@ -27,7 +27,6 @@ import com.cylan.jiafeigou.n.view.splash.FragmentSplash;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.IMEUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
-import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.UiHelper;
 import com.cylan.jiafeigou.widget.indicator.CirclePageIndicator;
 

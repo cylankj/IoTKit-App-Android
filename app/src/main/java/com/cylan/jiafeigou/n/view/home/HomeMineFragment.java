@@ -169,7 +169,6 @@ public class HomeMineFragment extends Fragment
                 .addToBackStack("mineHelpFragment")
                 .commit();
     }
-
 //    public void settingsItem(View view) {
 //        //if (needStartLoginFragment()) return;
 //        //SLog.i("It's Login,can do something!");

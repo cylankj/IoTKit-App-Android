@@ -70,7 +70,8 @@ public class MineRelativesandFriendsFragment extends Fragment implements MineRel
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         friendsFragment = MineRelativesAndFriendAddFriendsFragment.newInstance();
-        relativeAndFrienDetialFragment = MineRelativeAndFriendDetailFragment.newInstance();
+
+
         addReqDetailFragment = MineRelativeAndFriendAddReqDetailFragment.newInstance();
     }
 
@@ -107,6 +108,12 @@ public class MineRelativesandFriendsFragment extends Fragment implements MineRel
         relativesAndFriendsListAdapter.setItemClickListener(new RelativesAndFriendsAdapter.ItemClickListener() {
             @Override
             public void onClick(View view, int position) {
+
+                Bundle bundle = new Bundle();
+                bundle.putInt("position",position);
+                if(relativeAndFrienDetialFragment == null){
+                    relativeAndFrienDetialFragment = MineRelativeAndFriendDetailFragment.newInstance(bundle);
+                }
                 getFragmentManager().beginTransaction()
                         .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                                 , R.anim.slide_in_left, R.anim.slide_out_right)
@@ -141,6 +148,17 @@ public class MineRelativesandFriendsFragment extends Fragment implements MineRel
                         .commit();
             }
         });
+
+        if(relativeAndFrienDetialFragment != null){
+            relativeAndFrienDetialFragment.setOnDeleteClickLisenter(new MineRelativeAndFriendDetailFragment.OnDeleteClickLisenter() {
+                @Override
+                public void onDelete(int position) {
+                    relativesAndFriendsListAdapter.getList().remove(position);
+                    relativesAndFriendsListAdapter.notifyDataSetChanged();
+                }
+            });
+        }
+
     }
 
     private void showLongClickDialog(View view, final int position) {

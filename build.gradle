@@ -29,7 +29,7 @@ ext {
     minSdkVersion = 19
     compileSdkVersion = 23
     targetSdkVersion = 23
-    buildToolsVersion = '23.0.2'
+    buildToolsVersion = '23.0.3'
     robolectric = 'org.robolectric:robolectric:3.0'
     appcompat = 'com.android.support:appcompat-v7:23.1.1'
     appSupport = 'com.android.support:support-v4:23.1.0'

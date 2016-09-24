@@ -11,10 +11,10 @@ import com.cylan.jiafeigou.n.mvp.BaseView;
 public interface MineSetRemarkNameContract {
 
     interface View extends BaseView<Presenter>{
-
+        String getEditName();
     }
 
     interface Presenter extends BasePresenter{
-
+        boolean isEditEmpty(String string);
     }
 }

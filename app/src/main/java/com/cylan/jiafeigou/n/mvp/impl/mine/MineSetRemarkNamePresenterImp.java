@@ -1,5 +1,7 @@
 package com.cylan.jiafeigou.n.mvp.impl.mine;
 
+import android.text.TextUtils;
+
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineSetRemarkNameContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 
@@ -22,5 +24,10 @@ public class MineSetRemarkNamePresenterImp extends AbstractPresenter<MineSetRema
     @Override
     public void stop() {
 
+    }
+
+    @Override
+    public boolean isEditEmpty(String string) {
+        return TextUtils.isEmpty(string) ? true : false;
     }
 }

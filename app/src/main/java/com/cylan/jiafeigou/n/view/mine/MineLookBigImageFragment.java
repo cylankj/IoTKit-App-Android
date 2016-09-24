@@ -39,7 +39,7 @@ public class MineLookBigImageFragment extends Fragment implements MineLookBigIma
     ProgressBar progressLoading;
 
     private boolean loadResult = false;
-    private int imageUrl;
+    private String imageUrl;
 
     public static MineLookBigImageFragment newInstance(Bundle bundle) {
         MineLookBigImageFragment fragment =  new MineLookBigImageFragment();
@@ -51,7 +51,7 @@ public class MineLookBigImageFragment extends Fragment implements MineLookBigIma
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Bundle arguments = getArguments();
-        imageUrl = arguments.getInt("imageUrl");
+        imageUrl = arguments.getString("imageUrl");
     }
 
     @Nullable
@@ -116,9 +116,9 @@ public class MineLookBigImageFragment extends Fragment implements MineLookBigIma
      */
     private void loadImage() {
         Glide.with(getContext())
-                .load("")
+                .load(imageUrl)
                 .asBitmap()
-                .error(imageUrl)
+                .error(R.drawable.icon_mine_defult_head)
                 .centerCrop()
                 .into(new BitmapImageViewTarget(ivLookBigImage) {
 

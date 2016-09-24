@@ -79,13 +79,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
-            <EditText
-                android:id="@+id/et_add_request_mesg"
+            <TextViewv
+                android:id="@+id/tv_add_request_mesg"
                 android:layout_marginTop="6dp"
                 android:layout_marginLeft="15dp"
                 android:layout_below="@id/tv_mesg"
                 android:background="@null"
-                android:hint="输入消息内容"
+                android:text="我是多多"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 

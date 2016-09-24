@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineRelativeAndFriendAddReqDetailContract;
 import com.cylan.jiafeigou.utils.ToastUtil;
+import com.cylan.jiafeigou.utils.ViewUtils;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -33,8 +34,8 @@ public class MineRelativeAndFriendAddReqDetailFragment extends Fragment implemen
     TextView tvRelativeAndFriendName;
     @BindView(R.id.tv_relative_and_friend_like_name)
     TextView tvRelativeAndFriendLikeName;
-    @BindView(R.id.et_add_request_mesg)
-    EditText etAddRequestMesg;
+    @BindView(R.id.tv_add_request_mesg)
+    TextView tvAddRequestMesg;
     @BindView(R.id.tv_add_as_relative_and_friend)
     TextView tvAddAsRelativeAndFriend;
 
@@ -48,7 +49,7 @@ public class MineRelativeAndFriendAddReqDetailFragment extends Fragment implemen
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Bundle bundle = new Bundle();
-        bundle.putInt("imageUrl",R.drawable.icon_mine_defult_head);
+        bundle.putString("imageUrl","");
         lookBigImageFragment = MineLookBigImageFragment.newInstance(bundle);
     }
 
@@ -57,7 +58,20 @@ public class MineRelativeAndFriendAddReqDetailFragment extends Fragment implemen
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_relative_and_friend_add_req_detail, container, false);
         ButterKnife.bind(this, view);
+        initMegHight();
         return view;
+    }
+
+    /**
+     * desc：设定验证信息的行高
+     */
+    private void initMegHight() {
+        int lineCount = tvAddRequestMesg.getLineCount();
+        if (lineCount == 2){
+            ViewGroup.LayoutParams layoutParams = tvAddRequestMesg.getLayoutParams();
+            layoutParams.height = ViewUtils.dp2px(72);
+            tvAddRequestMesg.setLayoutParams(layoutParams);
+        }
     }
 
     @Override

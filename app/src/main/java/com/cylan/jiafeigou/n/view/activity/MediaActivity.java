@@ -40,7 +40,6 @@ import butterknife.OnClick;
  * https://plus.google.com/+AlexLockwood/posts/RPtwZ5nNebb
  * 存在Transition问题。
  */
-@TargetApi(Build.VERSION_CODES.LOLLIPOP)
 public class MediaActivity extends FragmentActivity {
 
     private static final String STATE_CURRENT_PAGE_POSITION = "state_current_page_position";
@@ -66,14 +65,18 @@ public class MediaActivity extends FragmentActivity {
 
     private ArrayList<MediaBean> beanArrayList;
 
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    //    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_media);
         ButterKnife.bind(this);
-        postponeEnterTransition();
-        setEnterSharedElementCallback(mCallback);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            postponeEnterTransition();
+            initSharedElementCallback();
+            setEnterSharedElementCallback(mCallback);
+        }
         ViewUtils.setViewMarginStatusBar(fLayoutDetailsTitle);
         mStartingPosition = getIntent().getIntExtra(JConstant.KEY_SHARED_ELEMENT_STARTED_POSITION, 0);
         if (savedInstanceState == null) {
@@ -126,33 +129,39 @@ public class MediaActivity extends FragmentActivity {
 
     }
 
-    private final SharedElementCallback mCallback = new SharedElementCallback() {
-        @Override
-        public void onMapSharedElements(List<String> names, Map<String, View> sharedElements) {
-            if (mIsReturning) {
-                ImageView sharedElement = mCurrentDetailsFragment.getAlbumImage();
-                AppLogger.d("transition:mStartingPosition " + mStartingPosition);
-                AppLogger.d("transition:mCurrentPosition " + mCurrentPosition);
-                if (sharedElement == null) {
-                    // If shared element is null, then it has been scrolled off screen and
-                    // no longer visible. In this case we cancel the shared element transition by
-                    // removing the shared element from the shared elements map.
-                    names.clear();
-                    sharedElements.clear();
-                } else if (mStartingPosition != mCurrentPosition) {
-                    // If the user has swiped to a different ViewPager page, then we need to
-                    // remove the old shared element and replace it with the new shared element
-                    // that should be transitioned instead.
-                    final String transitionName = sharedElement.getTransitionName();
-                    AppLogger.d("transition:transitionName " + transitionName);
-                    names.clear();
-                    names.add(transitionName);
-                    sharedElements.clear();
-                    sharedElements.put(transitionName, sharedElement);
+    private SharedElementCallback mCallback;
+
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    private void initSharedElementCallback() {
+        mCallback = new SharedElementCallback() {
+            @Override
+            public void onMapSharedElements(List<String> names, Map<String, View> sharedElements) {
+                if (mIsReturning) {
+                    ImageView sharedElement = mCurrentDetailsFragment.getAlbumImage();
+                    AppLogger.d("transition:mStartingPosition " + mStartingPosition);
+                    AppLogger.d("transition:mCurrentPosition " + mCurrentPosition);
+                    if (sharedElement == null) {
+                        // If shared element is null, then it has been scrolled off screen and
+                        // no longer visible. In this case we cancel the shared element transition by
+                        // removing the shared element from the shared elements map.
+                        names.clear();
+                        sharedElements.clear();
+                    } else if (mStartingPosition != mCurrentPosition) {
+                        // If the user has swiped to a different ViewPager page, then we need to
+                        // remove the old shared element and replace it with the new shared element
+                        // that should be transitioned instead.
+                        final String transitionName = sharedElement.getTransitionName();
+                        AppLogger.d("transition:transitionName " + transitionName);
+                        names.clear();
+                        names.add(transitionName);
+                        sharedElements.clear();
+                        sharedElements.put(transitionName, sharedElement);
+                    }
                 }
             }
-        }
-    };
+        };
+    }
+
 
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {

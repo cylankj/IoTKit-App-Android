@@ -115,7 +115,6 @@ public class LoginButton extends TextView {
         paint.setTextSize(viewH / 3);
     }
 
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);

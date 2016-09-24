@@ -1,8 +1,10 @@
 package com.cylan.jiafeigou.n.view.mine;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +15,7 @@ import android.widget.TextView;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineRelativeAndFriendDetailContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineRelativeAndFriendDetailPresenterImp;
+import com.cylan.jiafeigou.utils.ToastUtil;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -42,16 +45,36 @@ public class MineRelativeAndFriendDetailFragment extends Fragment implements Min
     TextView tvShareDevice;
 
     private MineRelativesAndFriendsListShareDevicesFragment mineShareDeviceFragment;
+    private MineSetRemarkNameFragment mineSetRemarkNameFragment;
+    private MineLookBigImageFragment mineLookBigImageFragment;
+
     private MineRelativeAndFriendDetailContract.Presenter presenter;
 
-    public static MineRelativeAndFriendDetailFragment newInstance() {
-        return new MineRelativeAndFriendDetailFragment();
+    public OnDeleteClickLisenter lisenter;
+
+    public interface OnDeleteClickLisenter{
+        void onDelete(int position);
+    }
+
+    public void setOnDeleteClickLisenter(OnDeleteClickLisenter lisenter){
+        this.lisenter = lisenter;
+    }
+
+    public static MineRelativeAndFriendDetailFragment newInstance(Bundle bundle) {
+        MineRelativeAndFriendDetailFragment fragment = new MineRelativeAndFriendDetailFragment();
+        fragment.setArguments(bundle);
+        return fragment;
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mineShareDeviceFragment = MineRelativesAndFriendsListShareDevicesFragment.newInstance();
+        mineSetRemarkNameFragment = MineSetRemarkNameFragment.newInstance(new Bundle());
+
+        Bundle bundle = new Bundle();
+        bundle.putString("imageUrl","");
+        mineLookBigImageFragment = MineLookBigImageFragment.newInstance(bundle);
     }
 
     @Nullable
@@ -60,7 +83,17 @@ public class MineRelativeAndFriendDetailFragment extends Fragment implements Min
         View view = inflater.inflate(R.layout.fragment_mine_relativeandfriend_detail, container, false);
         ButterKnife.bind(this, view);
         initPresenter();
+        initListener();
         return view;
+    }
+
+    private void initListener() {
+        mineSetRemarkNameFragment.setOnSetRemarkNameListener(new MineSetRemarkNameFragment.OnSetRemarkNameListener() {
+            @Override
+            public void remarkNameChange(String name) {
+                tvRelativeAndFriendName.setText(name);
+            }
+        });
     }
 
     private void initPresenter() {
@@ -72,7 +105,8 @@ public class MineRelativeAndFriendDetailFragment extends Fragment implements Min
 
     }
 
-    @OnClick({R.id.iv_top_bar_left_back, R.id.rl_change_name, R.id.rl_delete_relativeandfriend, R.id.tv_share_device})
+    @OnClick({R.id.iv_top_bar_left_back, R.id.rl_change_name, R.id.rl_delete_relativeandfriend,
+            R.id.tv_share_device,R.id.iv_detail_user_head})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.iv_top_bar_left_back:
@@ -82,12 +116,51 @@ public class MineRelativeAndFriendDetailFragment extends Fragment implements Min
                 jump2SetRemarkNameFragment();
                 break;
             case R.id.rl_delete_relativeandfriend:
-
+                showDeleteDialog();
                 break;
             case R.id.tv_share_device:
                 jump2ShareDeviceFragment();
                 break;
+            case R.id.iv_detail_user_head:
+                jump2LookBigImageFragment();
+                break;
         }
+    }
+
+    private void showDeleteDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle("是否删除亲友");
+        builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                if(lisenter != null){
+                    Bundle arguments = getArguments();
+                    int position = arguments.getInt("position");
+                    lisenter.onDelete(position);
+                    ToastUtil.showToast(getContext(),"删除成功");
+                }
+                getFragmentManager().popBackStack();
+            }
+        });
+        builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        }).show();
+    }
+
+    /**
+     * desc:查看大头像
+     */
+    private void jump2LookBigImageFragment() {
+        getFragmentManager().beginTransaction()
+                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
+                        , R.anim.slide_in_left, R.anim.slide_out_right)
+                .add(android.R.id.content, mineLookBigImageFragment, "mineLookBigImageFragment")
+                .addToBackStack("mineHelpFragment")
+                .commit();
     }
 
     /**
@@ -97,7 +170,7 @@ public class MineRelativeAndFriendDetailFragment extends Fragment implements Min
         getFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                         , R.anim.slide_in_left, R.anim.slide_out_right)
-                .add(android.R.id.content, mineShareDeviceFragment, "mineShareDeviceFragment")
+                .add(android.R.id.content, mineSetRemarkNameFragment, "mineSetRemarkNameFragment")
                 .addToBackStack("mineHelpFragment")
                 .commit();
     }
