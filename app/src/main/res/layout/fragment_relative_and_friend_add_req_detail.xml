@@ -79,13 +79,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
-            <TextViewv
+            <TextView
                 android:id="@+id/tv_add_request_mesg"
                 android:layout_marginTop="6dp"
                 android:layout_marginLeft="15dp"
                 android:layout_below="@id/tv_mesg"
                 android:background="@null"
                 android:text="我是多多"
+                android:clickable="false"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 

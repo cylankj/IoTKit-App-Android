@@ -70,8 +70,6 @@ public class MineRelativesandFriendsFragment extends Fragment implements MineRel
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         friendsFragment = MineRelativesAndFriendAddFriendsFragment.newInstance();
-
-
         addReqDetailFragment = MineRelativeAndFriendAddReqDetailFragment.newInstance();
     }
 
@@ -111,9 +109,7 @@ public class MineRelativesandFriendsFragment extends Fragment implements MineRel
 
                 Bundle bundle = new Bundle();
                 bundle.putInt("position",position);
-                if(relativeAndFrienDetialFragment == null){
-                    relativeAndFrienDetialFragment = MineRelativeAndFriendDetailFragment.newInstance(bundle);
-                }
+                relativeAndFrienDetialFragment = MineRelativeAndFriendDetailFragment.newInstance(bundle);
                 getFragmentManager().beginTransaction()
                         .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                                 , R.anim.slide_in_left, R.anim.slide_out_right)
