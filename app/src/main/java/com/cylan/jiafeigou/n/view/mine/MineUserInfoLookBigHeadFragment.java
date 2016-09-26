@@ -41,9 +41,10 @@ public class MineUserInfoLookBigHeadFragment extends Fragment implements MineUse
 
     private MineUserInfoLookBigHeadContract.Presenter presenter;
 
-
-    public static MineUserInfoLookBigHeadFragment newInstance() {
-        return new MineUserInfoLookBigHeadFragment();
+    public static MineUserInfoLookBigHeadFragment newInstance(Bundle bundle) {
+        MineUserInfoLookBigHeadFragment fragment = new MineUserInfoLookBigHeadFragment();
+        fragment.setArguments(bundle);
+        return fragment;
     }
 
     @Nullable

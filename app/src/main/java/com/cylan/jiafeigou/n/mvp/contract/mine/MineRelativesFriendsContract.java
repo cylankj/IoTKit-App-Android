@@ -19,13 +19,11 @@ public interface MineRelativesFriendsContract {
 
     interface View extends BaseView<Presenter> {
         void showAddRequestList();
-
         void showRelativesAndFriendsList();
     }
 
     interface Presenter extends BasePresenter {
         ArrayList<SuggestionChatInfoBean> initAddRequestData();
-
         ArrayList<SuggestionChatInfoBean> initRelativatesAndFriendsData();
         void addItems(SuggestionChatInfoBean bean, ArrayList<SuggestionChatInfoBean> list, RecyclerView.Adapter adapter);
         boolean checkAddRequestOutTime(SuggestionChatInfoBean bean);        //检测添加请求是否超时

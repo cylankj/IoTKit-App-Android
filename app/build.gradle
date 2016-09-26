@@ -159,7 +159,6 @@ android {
             if (hasSignKey())
                 signingConfig signingConfigs.release
             else signingConfig signingConfigs.debug
-
             applicationVariants.all { variant ->
                 //调整包名
                 applicationIdSuffix = getPackageSuffix(variant.name)
@@ -289,47 +288,38 @@ dependencies {
     compile(name: 'JfgAndroidSDK-3.0.114', ext: 'aar')
 }
 
-repositories {
-    flatDir {
-        dirs 'libs'
-    }
+if (project.hasProperty('keystoreFile') &&
+        project.hasProperty('keystorePassword') &&
+        project.hasProperty('keystoreAliasPassword')) {
+    android.signingConfigs.release.storeFile = file(keystoreFile)
+    android.signingConfigs.release.storePassword = keystorePassword
+    android.signingConfigs.release.keyPassword = keystoreAliasPassword
+    android.signingConfigs.release.keyAlias = keystoreAlias
+} else {
+    android.buildTypes.release.signingConfig = null
 }
 
-def int getBuildFlag(String flag) {
-    Properties properties = new Properties()
-    File localProperties = project.rootProject.file('build.properties')
-    def int buildFlag = 0
-    if (localProperties.exists()) {
-        properties.load(localProperties.newDataInputStream())
-        buildFlag = properties.getProperty(flag).toInteger()
-    }
-    return buildFlag
+
+if (project.hasProperty('oem')
+        && oem != 'cylan') {
+    android.defaultConfig.applicationId = 'com.cylan.jiafeigou.' + oem
 }
 
-//配置task开关
-tasks.whenTaskAdded { task ->
-    if (task.name.contains("_zhongxing") && getBuildFlag("zhongxing") == 0) {
-        task.enabled = false
-    }
-    if (task.name.contains("_test") && !task.name.contains("_test1") && getBuildFlag("test") == 0) {
-        task.enabled = false
-    }
-    if (task.name.contains("_test1") && getBuildFlag("test1") == 0) {
-        task.enabled = false
-    }
-    if (task.name.contains("_yf") && getBuildFlag("yf") == 0) {
-        task.enabled = false
-    }
-    if (task.name.contains("_yun1") && getBuildFlag("yun1") == 0) {
-        task.enabled = false
-    }
-    if (task.name.contains("_yun") && !task.name.contains("_yun1") && getBuildFlag("yun1") == 0) {
-        task.enabled = false
-    }
-    if (task.name.contains("lint")) {
-        task.enabled = false
-    }
-    if (task.name.contains("Unit")) {
-        task.enabled = false
+android.applicationVariants.all { variant ->
+    variant.outputs.each { output ->
+        output.processManifest.doLast {
+            def manifestOutFile = output.processManifest.manifestOutputFile
+            def appkey
+            // cylan matappkey:Aqc1103156296  zhongxing matappkey:ATQ1JV694AKT
+            if (project.hasProperty('oem') && oem != 'cylan') {
+                appkey = "ATQ1JV694AKT"
+            } else {
+                appkey = "Aqc1103156296"
+            }
+
+            def newFileContents = manifestOutFile.getText('UTF-8').replace("MATAPPKEY", appkey)
+            manifestOutFile.write(newFileContents, 'UTF-8')
+
+        }
     }
 }

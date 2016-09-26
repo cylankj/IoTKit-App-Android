@@ -113,11 +113,13 @@ public class MineSetUserNameFragment extends Fragment implements MinePersionalIn
 
     }
 
-    @OnClick({R.id.tv_save_username, R.id.iv_top_bar_left})
+    @OnClick({R.id.iv_top_bar_left_back, R.id.iv_mine_personal_setname_bind, R.id.iv_mine_personal_information_new_name_clear})
     public void onClick(View view) {
-
         switch (view.getId()) {
-            case R.id.tv_save_username:
+            case R.id.iv_top_bar_left_back:
+                getFragmentManager().popBackStack();
+                break;
+            case R.id.iv_mine_personal_setname_bind:
                 if (presenter.isEditEmpty(getEditName())) {
                     ToastUtil.showToast(getContext(), "昵称不能为空");
                     return;

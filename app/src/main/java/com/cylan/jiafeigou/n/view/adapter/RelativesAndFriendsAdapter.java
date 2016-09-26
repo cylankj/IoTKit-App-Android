@@ -41,7 +41,7 @@ public class RelativesAndFriendsAdapter extends RecyclerView.Adapter<RelativesAn
     @Override
     public RequestAndFriends onCreateViewHolder(ViewGroup parent, int viewType) {
 
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.fragment_mine_relativesandfriends_request_add_items, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.fragment_mine_relativesandfriends_list_items, parent, false);
         return new RequestAndFriends(view);
     }
 

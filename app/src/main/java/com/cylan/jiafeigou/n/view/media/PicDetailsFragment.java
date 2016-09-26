@@ -103,7 +103,7 @@ public class PicDetailsFragment extends Fragment {
                 public boolean onPreDraw() {
                     detailsAlbumImage.getViewTreeObserver().removeOnPreDrawListener(this);
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        getActivity().startPostponedEnterTransition();
+                    getActivity().startPostponedEnterTransition();
                     }
                     return true;
                 }

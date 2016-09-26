@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="@drawable/bg_call_in"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:id="@+id/ll_top_layout"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/iv_call_user_image_head"
+            android:layout_marginTop="54dp"
+            android:layout_gravity="center_horizontal"
+            android:src="@drawable/pic_head"
+            android:layout_width="168dp"
+            android:layout_height="168dp" />
+
+        <TextView
+            android:textColor="#4f697d"
+            android:layout_marginTop="22dp"
+            android:layout_gravity="center_horizontal"
+            android:text="智能中控"
+            android:textSize="30sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="3dp"
+            android:textSize="16sp"
+            android:text="呼叫中"
+            android:textColor="#4f697d"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="102dp"
+        android:layout_alignParentBottom="true"
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:drawableTop="@drawable/btn_hulue"
+            android:textColor="#5a6a7d"
+            android:textSize="14sp"
+            android:text="忽略"
+            android:drawablePadding="4dp"
+            android:gravity="center_horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:layout_marginLeft="96dp"
+            android:drawableTop="@drawable/btn_listen"
+            android:textColor="#5a6a7d"
+            android:textSize="14sp"
+            android:text="接听"
+            android:drawablePadding="4dp"
+            android:gravity="center_horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+</RelativeLayout>

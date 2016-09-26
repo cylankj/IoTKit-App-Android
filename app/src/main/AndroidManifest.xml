@@ -187,6 +187,14 @@
             android:name=".n.view.bell.BellLiveActivity"
             android:configChanges="locale|orientation|keyboardHidden|navigation|screenSize"
             android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:theme="@style/CamActivityTheme"
+            android:windowSoftInputMode="adjustPan|stateHidden" />
+
+        <activity
+            android:name=".n.view.activity.CloudLiveActivity"
+            android:configChanges="locale|orientation|keyboardHidden|navigation|screenSize"
+            android:launchMode="singleTask"
             android:process=":bell_call"
             android:screenOrientation="portrait"
             android:theme="@style/CamActivityTheme"
