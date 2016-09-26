@@ -226,13 +226,11 @@ dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
 
     //////////////test///////////////////////
-//    testCompile rootProject.ext.testRobolectric
-//    testCompile rootProject.ext.testAssertj
-//    testCompile rootProject.ext.testJunit4
-//    testCompile rootProject.ext.annotation
-//    testCompile rootProject.ext.testMockio
-    testCompile 'junit:junit:4.12'
-    testCompile 'org.robolectric:robolectric:3.0'
+    testCompile rootProject.ext.testRobolectric
+    testCompile rootProject.ext.testAssertj
+    testCompile rootProject.ext.testJunit4
+    testCompile rootProject.ext.annotation
+    testCompile rootProject.ext.testMockio
 //    androidTestCompile(rootProject.ext.testEspresso, {
 //        exclude group: 'com.android.support', module: 'support-annotations'
 //    })

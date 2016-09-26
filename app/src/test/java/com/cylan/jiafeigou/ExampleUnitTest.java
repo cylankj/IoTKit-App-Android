@@ -9,6 +9,8 @@ import static org.junit.Assert.*;
 /**
  * To work on unit tests, switch the Test Artifact in the Build Variants view.
  */
+//gradle build tools 2.2.0暂时不满足，单元测试。
+//<component name="ProjectRootManager" version="2" languageLevel="JDK_1_7" default="true" assert-keyword="true" jdk-15="true" project-jdk-name="1.7" project-jdk-type="JavaSDK">/
 @RunWith(MyTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = 21)
 public class ExampleUnitTest {
