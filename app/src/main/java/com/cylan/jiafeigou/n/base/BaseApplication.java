@@ -25,8 +25,8 @@ public class BaseApplication extends Application {
     public void onCreate() {
         super.onCreate();
         enableDebugOptions();
-//       startService(new Intent(this, DaemonService.class));
-//        initLeakCanary();
+        startService(new Intent(this, DaemonService.class));
+        initLeakCanary();
     }
 
     private void initLeakCanary() {

@@ -186,35 +186,35 @@ android {
         }
     }
 
-    productFlavors {
-//
-        _test {
-            manifestPlaceholders = [NICELY_VALUE: "test.jfgou.com:446",
-                                    MAT_VALUE   : getMtaAppKey("test")]
-        }
-        _test1 {
-            manifestPlaceholders = [NICELY_VALUE: "test1.jfgou.com:446",
-                                    MAT_VALUE   : getMtaAppKey("test1")]
-        }
-        _yun {
-            manifestPlaceholders = [NICELY_VALUE: "yun.jfgou.com:446",
-                                    MAT_VALUE   : getMtaAppKey("yun")]
-        }
-        _yun1 {
-            manifestPlaceholders = [NICELY_VALUE: "yun1.jfgou.com:446",
-                                    MAT_VALUE   : getMtaAppKey("yun1")]
-        }
-        _yf {
-            manifestPlaceholders = [NICELY_VALUE: "yf.jfgou.com:446",
-                                    MAT_VALUE   : getMtaAppKey("yf")]
-        }
-        //中性包
-        _zhongxing {
-            applicationIdSuffix ".zhongxing"
-            manifestPlaceholders = [NICELY_VALUE: "yun.jfgou.com:446",
-                                    MAT_VALUE   : getMtaAppKey("zhongxing")]
-        }
-    }
+//    productFlavors {
+////
+//        _test {
+//            manifestPlaceholders = [NICELY_VALUE: "test.jfgou.com:446",
+//                                    MAT_VALUE   : getMtaAppKey("test")]
+//        }
+//        _test1 {
+//            manifestPlaceholders = [NICELY_VALUE: "test1.jfgou.com:446",
+//                                    MAT_VALUE   : getMtaAppKey("test1")]
+//        }
+//        _yun {
+//            manifestPlaceholders = [NICELY_VALUE: "yun.jfgou.com:446",
+//                                    MAT_VALUE   : getMtaAppKey("yun")]
+//        }
+//        _yun1 {
+//            manifestPlaceholders = [NICELY_VALUE: "yun1.jfgou.com:446",
+//                                    MAT_VALUE   : getMtaAppKey("yun1")]
+//        }
+//        _yf {
+//            manifestPlaceholders = [NICELY_VALUE: "yf.jfgou.com:446",
+//                                    MAT_VALUE   : getMtaAppKey("yf")]
+//        }
+//        //中性包
+//        _zhongxing {
+//            applicationIdSuffix ".zhongxing"
+//            manifestPlaceholders = [NICELY_VALUE: "yun.jfgou.com:446",
+//                                    MAT_VALUE   : getMtaAppKey("zhongxing")]
+//        }
+//    }
 }
 
 repositories {
@@ -227,11 +227,13 @@ dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
 
     //////////////test///////////////////////
-    testCompile rootProject.ext.testRobolectric
-    testCompile rootProject.ext.testAssertj
-    testCompile rootProject.ext.testJunit4
-    testCompile rootProject.ext.annotation
-    testCompile rootProject.ext.testMockio
+//    testCompile rootProject.ext.testRobolectric
+//    testCompile rootProject.ext.testAssertj
+//    testCompile rootProject.ext.testJunit4
+//    testCompile rootProject.ext.annotation
+//    testCompile rootProject.ext.testMockio
+    testCompile 'junit:junit:4.12'
+    testCompile 'org.robolectric:robolectric:3.0'
 //    androidTestCompile(rootProject.ext.testEspresso, {
 //        exclude group: 'com.android.support', module: 'support-annotations'
 //    })

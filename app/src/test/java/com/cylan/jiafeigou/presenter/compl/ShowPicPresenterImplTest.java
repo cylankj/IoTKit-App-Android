@@ -1,12 +1,16 @@
 package com.cylan.jiafeigou.presenter.compl;
 
+import com.cylan.jiafeigou.MyTestRunner;
+
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
 /**
  * Created by hunt on 16-5-5.
  */
-//@RunWith(MyTestRunner.class)
+@RunWith(MyTestRunner.class)
 public class ShowPicPresenterImplTest {
 
 
@@ -21,7 +25,7 @@ public class ShowPicPresenterImplTest {
         System.out.println("tearDown");
     }
 
-    //    @Test
-    public void testfindMatch() {
+    @Test
+    public void testFindMatch() {
     }
 }
