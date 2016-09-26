@@ -72,9 +72,12 @@ android {
         applicationId "com.cylan.jiafeigou"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
+        manifestPlaceholders = [NICELY_VALUE: "test.jfgou.com:446",
+                                MAT_VALUE   : getMtaAppKey("test")]
         customVersionCode
         versionName "1.0"
         multiDexEnabled true
+//        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         ndk {
             // 设置支持的SO库架构
             abiFilters 'armeabi-v7a', 'x86'//, 'armeabi-v7a', 'x86_64', 'arm64-v8a'
@@ -88,7 +91,7 @@ android {
 
     dexOptions {
         jumboMode = true
-        incremental true
+//        incremental true
         javaMaxHeapSize "4g"
     }
     sourceSets {
@@ -96,7 +99,9 @@ android {
             jniLibs.srcDirs = ['libs']
         }
     }
-
+    testOptions {
+        unitTests.returnDefaultValues = true
+    }
 
     signingConfigs {
         debug {
@@ -220,14 +225,32 @@ repositories {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    testCompile rootProject.ext.robolectric
+
+    //////////////test///////////////////////
+    testCompile rootProject.ext.testRobolectric
+    testCompile rootProject.ext.testAssertj
+    testCompile rootProject.ext.testJunit4
+    testCompile rootProject.ext.annotation
+    testCompile rootProject.ext.testMockio
+//    androidTestCompile(rootProject.ext.testEspresso, {
+//        exclude group: 'com.android.support', module: 'support-annotations'
+//    })
+
+    /////////////////android///////////////////////
     compile rootProject.ext.appcompat
-    compile rootProject.ext.butterknife
-    compile rootProject.ext.rxAndroid
     compile rootProject.ext.appSupport
     compile rootProject.ext.recyclerView
-    apt rootProject.ext.apt
+    compile rootProject.ext.appDesign
+    compile rootProject.ext.appCardview
+    /////////////////android///////////////////////
+
+
+    compile rootProject.ext.butterknife
+    apt rootProject.ext.butterknifeApt
+
+    compile rootProject.ext.rxAndroid
     compile rootProject.ext.permis
+
     compile rootProject.ext.systembartint
     apt rootProject.ext.permisApt
     compile project(':jlib')
@@ -243,25 +266,22 @@ dependencies {
     compile files('libs/zxing.jar')
     debugCompile files('src/main/jniLibs/jfg-debug-support.jar')
     releaseCompile files('src/main/jniLibs/jfg-release-support.jar')
+
     //其中latest.release指代最新版本号，也可以指定明确的版本号，例如2.1.5
     compile rootProject.ext.buglySdk
     //其中latest.release指代最新版本号，也可以指定明确的版本号，例如2.2.0
     compile rootProject.ext.buglyNdk
+
     debugCompile rootProject.ext.leakcanaryAndroid
     releaseCompile rootProject.ext.leakcanaryAndroidNoOp
     testCompile rootProject.ext.leakcanaryAndroidNoOp
     compile files('src/main/jniLibs/zbar.jar')
     //add by hunt 2016-08-01
     compile rootProject.ext.switchButton
-    compile rootProject.ext.appDesige
     //多进程文件共享方案
     compile rootProject.ext.multiProcessSp
     //glide
     compile rootProject.ext.glide
-    //头像更改选择框架
-    compile rootProject.ext.galleryFinal
-    compile(name: 'JfgAndroidSDK-3.0.114', ext: 'aar')
-
     //头像更改选择框架
     compile rootProject.ext.galleryFinal
     compile(name: 'JfgAndroidSDK-3.0.114', ext: 'aar')
