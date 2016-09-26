@@ -46,6 +46,7 @@
         android:layout_height="wrap_content">
 
         <TextView
+            android:id="@+id/tv_ignore_call"
             android:drawableTop="@drawable/btn_hulue"
             android:textColor="#5a6a7d"
             android:textSize="14sp"
@@ -56,6 +57,7 @@
             android:layout_height="wrap_content" />
 
         <TextView
+            android:id="@+id/tv_accept_call"
             android:layout_marginLeft="96dp"
             android:drawableTop="@drawable/btn_listen"
             android:textColor="#5a6a7d"
