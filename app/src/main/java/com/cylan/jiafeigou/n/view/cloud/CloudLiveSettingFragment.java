@@ -36,10 +36,18 @@ public class CloudLiveSettingFragment extends Fragment implements CloudLiveSetti
     @BindView(R.id.tv_setting_unbind)
     TextView tvSettingUnbind;
 
+    private CloudLiveDeviceInfoFragment cloudLiveDeviceInfoFragment;
+
     public static CloudLiveSettingFragment newInstance(Bundle bundle) {
         CloudLiveSettingFragment fragment = new CloudLiveSettingFragment();
         fragment.setArguments(bundle);
         return fragment;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        cloudLiveDeviceInfoFragment = CloudLiveDeviceInfoFragment.newInstance(new Bundle());
     }
 
     @Nullable
@@ -65,7 +73,27 @@ public class CloudLiveSettingFragment extends Fragment implements CloudLiveSetti
         ViewUtils.setViewPaddingStatusBar(fLayoutTopBarContainer);
     }
 
-    @OnClick(R.id.tv_setting_clear_)
-    public void onClick() {
+    @OnClick({R.id.tv_setting_clear_,R.id.tv_bell_detail, R.id.tv_bell_detail2})
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.tv_setting_clear_:
+
+                break;
+            case R.id.tv_bell_detail:
+
+                break;
+            case R.id.tv_bell_detail2:
+                jump2DeviceInfoFragment();
+                break;
+        }
+    }
+
+    private void jump2DeviceInfoFragment() {
+        getFragmentManager().beginTransaction()
+                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
+                        , R.anim.slide_in_left, R.anim.slide_out_right)
+                .add(android.R.id.content, cloudLiveDeviceInfoFragment, "cloudLiveDeviceInfoFragment")
+                .addToBackStack("cloudVideoChatConettionFragment")
+                .commit();
     }
 }

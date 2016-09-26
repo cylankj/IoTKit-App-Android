@@ -106,4 +106,13 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
                 .addToBackStack("CloudVideoChatConnetionFragment")
                 .commit();
     }
+
+    @Override
+    public void onBackPressed() {
+        if (checkExtraChildFragment()) {
+            return;
+        } else if (checkExtraFragment())
+            return;
+        finishExt();
+    }
 }
