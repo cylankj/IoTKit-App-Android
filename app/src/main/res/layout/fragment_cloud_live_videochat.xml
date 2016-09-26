@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="@color/color_white"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <VideoView
+        android:id="@+id/vv_chatvideo_from"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="20dp"
+            android:textColor="@color/color_white"
+            android:textSize="18sp"
+            android:text="02:22"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <ImageView
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="26dp"
+            android:layout_alignParentBottom="true"
+            android:src="@drawable/btn_hulue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:background="@color/color_white"
+            android:layout_marginBottom="6dp"
+            android:layout_marginRight="6dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_width="88dp"
+            android:layout_height="134dp">
+
+            <VideoView
+                android:layout_width="87dp"
+                android:layout_height="133dp" />
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</FrameLayout>
