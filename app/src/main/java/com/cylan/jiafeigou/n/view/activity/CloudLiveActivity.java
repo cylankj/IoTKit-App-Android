@@ -12,6 +12,7 @@ import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
 import com.cylan.jiafeigou.n.mvp.contract.cloud.CloudLiveContract;
 import com.cylan.jiafeigou.n.view.cloud.CloudLiveSettingFragment;
 import com.cylan.jiafeigou.n.view.cloud.CloudVideoChatConnetionFragment;
+import com.cylan.jiafeigou.utils.ViewUtils;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -66,12 +67,15 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
                 finish();
                 break;
             case R.id.imgV_cloud_live_top_setting:                      //设置界面
+                ViewUtils.deBounceClick(findViewById(R.id.imgV_cloud_live_top_setting));
                 jump2SettingFragment();
                 break;
             case R.id.iv_cloud_share_pic:                               //分享图片
+                ViewUtils.deBounceClick(findViewById(R.id.iv_cloud_share_pic));
                 jump2SharePicFragment();
                 break;
             case R.id.iv_cloud_videochat:                               //视频通话
+                ViewUtils.deBounceClick(findViewById(R.id.iv_cloud_videochat));
                 jump2VideoChatFragment();
                 break;
             case R.id.iv_cloud_talk:                                    //语音留言
