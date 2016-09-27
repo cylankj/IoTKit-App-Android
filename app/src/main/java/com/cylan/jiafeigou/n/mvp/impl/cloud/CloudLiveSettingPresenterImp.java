@@ -16,11 +16,19 @@ public class CloudLiveSettingPresenterImp extends AbstractPresenter<CloudLiveSet
 
     @Override
     public void start() {
-
+        if(getView() != null){
+            getView().initSomeViewVisible(isHasBeenShareUser());
+        }
     }
 
     @Override
     public void stop() {
 
+    }
+
+    @Override
+    public boolean isHasBeenShareUser() {
+        //TODO 查询用户的设备是否有绑定改云相框
+        return false;
     }
 }
