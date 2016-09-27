@@ -12,7 +12,9 @@ import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.contract.cloud.CloudVideoChatConettionContract;
+import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ToastUtil;
+import com.cylan.jiafeigou.utils.ViewUtils;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -71,6 +73,9 @@ public class CloudVideoChatConnetionFragment extends Fragment implements CloudVi
                 ToastUtil.showToast(getContext(),"正在通话中。。。");
                 break;
             case R.id.tv_accept_call:
+                if (getView() != null)
+                    ViewUtils.deBounceClick(getView().findViewById(R.id.tv_accept_call));
+                AppLogger.e("tv_accept_call");
                 jump2VideoChatOkFragment();
                 break;
         }

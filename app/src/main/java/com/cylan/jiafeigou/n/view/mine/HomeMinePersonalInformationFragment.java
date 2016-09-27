@@ -30,8 +30,10 @@ import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MinePersonalInformationContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MinePersonalInformationPresenterImpl;
 import com.cylan.jiafeigou.n.mvp.model.UserInfoBean;
+import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
+import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.roundedimageview.RoundedImageView;
 
 import java.util.List;
@@ -151,19 +153,31 @@ public class HomeMinePersonalInformationFragment extends Fragment implements Min
                 break;
 
             case R.id.RLayout_home_mine_personal_phone:         //跳转到设置手机号界面
-                jump2SetPhoneFragment();
+                if (getView() != null)
+                    ViewUtils.deBounceClick(getView().findViewById(R.id.RLayout_home_mine_personal_phone));
+                    AppLogger.e("RLayout_home_mine_personal_phone");
+                    jump2SetPhoneFragment();
                 break;
 
             case R.id.user_ImageHead:                           //点击查看大头像
-                lookBigImageHead();
+                if (getView() != null)
+                    ViewUtils.deBounceClick(getView().findViewById(R.id.user_ImageHead));
+                    AppLogger.e("user_ImageHead");
+                    lookBigImageHead();
                 break;
 
             case R.id.rLayout_home_mine_personal_name:          //更改昵称
-                jump2SetUserNameFragment();
+                if (getView() != null)
+                    ViewUtils.deBounceClick(getView().findViewById(R.id.rLayout_home_mine_personal_name));
+                    AppLogger.e("rLayout_home_mine_personal_name");
+                    jump2SetUserNameFragment();
                 break;
 
             case R.id.rl_change_password:                       //修改密码
-                jump2ChangePasswordFragment();
+                if (getView() != null)
+                    ViewUtils.deBounceClick(getView().findViewById(R.id.rl_change_password));
+                    AppLogger.e("rl_change_password");
+                    jump2ChangePasswordFragment();
                 break;
         }
     }

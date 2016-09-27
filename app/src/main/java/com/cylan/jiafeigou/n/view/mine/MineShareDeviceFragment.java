@@ -13,6 +13,8 @@ import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineShareDeviceContract;
+import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.ViewUtils;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -88,11 +90,14 @@ public class MineShareDeviceFragment extends Fragment implements MineShareDevice
                 break;
 
             case R.id.rl_mine_share_smartcamera:
-                getFragmentManager().beginTransaction()
+                if (getView() != null)
+                    ViewUtils.deBounceClick(getView().findViewById(R.id.rl_mine_share_smartcamera));
+                    AppLogger.e("mine_share_smartcamera");
+                    getFragmentManager().beginTransaction()
                         .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                                 , R.anim.slide_in_left, R.anim.slide_out_right)
                         .add(android.R.id.content, mineDevicesShareManagerFragment, "mineDevicesShareManagerFragment")
-                        .addToBackStack("mineHelpFragment")
+                        .addToBackStack("mineShareDeviceFragment")
                         .commit();
                 break;
         }
@@ -109,25 +114,31 @@ public class MineShareDeviceFragment extends Fragment implements MineShareDevice
         view.findViewById(R.id.tv_share_to_friends).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getFragmentManager().beginTransaction()
-                        .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
-                                , R.anim.slide_in_left, R.anim.slide_out_right)
-                        .add(android.R.id.content, shareToRelativeAndFriendFragment, "shareToRelativeAndFriendFragment")
-                        .addToBackStack("mineHelpFragment")
-                        .commit();
-                alertDialog.dismiss();
+                if (getView() != null)
+                    ViewUtils.deBounceClick(getView().findViewById(R.id.tv_share_to_friends));
+                    AppLogger.e("tv_share_to_friends");
+                    getFragmentManager().beginTransaction()
+                            .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
+                                    , R.anim.slide_in_left, R.anim.slide_out_right)
+                            .add(android.R.id.content, shareToRelativeAndFriendFragment, "shareToRelativeAndFriendFragment")
+                            .addToBackStack("mineShareDeviceFragment")
+                            .commit();
+                    alertDialog.dismiss();
             }
         });
         view.findViewById(R.id.tv_share_to_contract).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getFragmentManager().beginTransaction()
-                        .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
-                                , R.anim.slide_in_left, R.anim.slide_out_right)
-                        .add(android.R.id.content, mineShareToContactFragment, "mineShareToContactFragment")
-                        .addToBackStack("mineHelpFragment")
-                        .commit();
-                alertDialog.dismiss();
+                if (getView() != null)
+                    ViewUtils.deBounceClick(getView().findViewById(R.id.tv_share_to_contract));
+                    AppLogger.e("tv_share_to_contract");
+                    getFragmentManager().beginTransaction()
+                            .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
+                                    , R.anim.slide_in_left, R.anim.slide_out_right)
+                            .add(android.R.id.content, mineShareToContactFragment, "mineShareToContactFragment")
+                            .addToBackStack("mineShareDeviceFragment")
+                            .commit();
+                    alertDialog.dismiss();
             }
         });
         builder.setView(view);

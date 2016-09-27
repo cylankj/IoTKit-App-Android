@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.contract.cloud.CloudLiveSettingContract;
+import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.SettingItemView2;
 
@@ -83,6 +84,9 @@ public class CloudLiveSettingFragment extends Fragment implements CloudLiveSetti
 
                 break;
             case R.id.tv_bell_detail2:
+                if (getView() != null)
+                    ViewUtils.deBounceClick(getView().findViewById(R.id.tv_bell_detail2));
+                AppLogger.e("tv_bell_detail2");
                 jump2DeviceInfoFragment();
                 break;
         }

@@ -15,7 +15,9 @@ import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeSettingContract;
 import com.cylan.jiafeigou.n.mvp.impl.home.HomeSettingPresenterImp;
+import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ToastUtil;
+import com.cylan.jiafeigou.utils.ViewUtils;
 import com.kyleduo.switchbutton.SwitchButton;
 
 import butterknife.BindView;
@@ -92,12 +94,15 @@ public class HomeSettingFragment extends Fragment implements HomeSettingContract
                 getFragmentManager().popBackStack();
                 break;
             case R.id.rl_home_setting_about:
-                getFragmentManager().beginTransaction()
-                        .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
-                                , R.anim.slide_in_left, R.anim.slide_out_right)
-                        .add(android.R.id.content, homeSettingAboutFragment, "homeSettingAboutFragment")
-                        .addToBackStack("mineHelpFragment")
-                        .commit();
+                if (getView() != null)
+                    ViewUtils.deBounceClick(getView().findViewById(R.id.rl_home_setting_about));
+                    AppLogger.e("rl_home_setting_about");
+                    getFragmentManager().beginTransaction()
+                            .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
+                                    , R.anim.slide_in_left, R.anim.slide_out_right)
+                            .add(android.R.id.content, homeSettingAboutFragment, "homeSettingAboutFragment")
+                            .addToBackStack("mineHelpFragment")
+                            .commit();
                 break;
 
             case R.id.rl_home_setting_clear:
