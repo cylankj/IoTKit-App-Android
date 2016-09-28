@@ -88,8 +88,7 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
                 jump2VideoChatFragment();
                 break;
             case R.id.iv_cloud_talk:                                    //语音留言
-                ToastUtil.showToast(getContext(),"语音留言。。。");
-                presenter.showVoiceTalkDialog();
+                presenter.showVoiceTalkDialog(CloudLiveActivity.this);
                 break;
         }
     }
@@ -129,5 +128,13 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
         } else if (checkExtraFragment())
             return;
         finishExt();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if(presenter != null){
+            presenter.stop();
+        }
     }
 }
