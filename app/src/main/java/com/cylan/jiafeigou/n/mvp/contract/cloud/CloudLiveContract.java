@@ -15,6 +15,6 @@ public interface CloudLiveContract {
     }
 
     interface Presenter extends BasePresenter{
-
+        void showVoiceTalkDialog();
     }
 }
