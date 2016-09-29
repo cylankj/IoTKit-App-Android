@@ -1,25 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:hunt="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:animateLayoutChanges="true">
 
 
-    <android.support.v4.view.ViewPager
-        android:id="@+id/vpWelcome"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+    <!--<android.support.v4.view.ViewPager-->
+    <!--android:id="@+id/vpWelcome"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent" />-->
 
-    <com.cylan.jiafeigou.widget.indicator.CirclePageIndicator
-        android:id="@+id/v_indicator"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|center_horizontal"
-        android:layout_marginBottom="10dp"
-        hunt:fillColor="#000eee"
-        hunt:radius="5dp"
-        hunt:strokeColor="#ffffff" />
+    <!--<com.cylan.jiafeigou.widget.indicator.CirclePageIndicator-->
+    <!--android:id="@+id/v_indicator"-->
+    <!--android:layout_width="fill_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_gravity="bottom|center_horizontal"-->
+    <!--android:layout_marginBottom="10dp"-->
+    <!--hunt:fillColor="#000eee"-->
+    <!--hunt:radius="5dp"-->
+    <!--hunt:strokeColor="#ffffff" />-->
 
     <FrameLayout
         android:id="@+id/fLayout_splash"
