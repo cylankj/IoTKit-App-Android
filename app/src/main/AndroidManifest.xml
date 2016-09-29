@@ -82,11 +82,11 @@
         <!-- your vid getString must "\ " -->
         <meta-data
             android:name="vid"
-            android:value="\ 00A0" />
+            android:value="\ 0H79" />
         <!-- your vkey -->
         <meta-data
             android:name="vkey"
-            android:value="qpqNCZvkcNca3KsfD6b0gm6S4ncsRVYa" />
+            android:value="mqDHVBKutUcKvMMwDjYjvNv1Wy8Ll4HC" />
 
         <activity
             android:name=".SmartcallActivity"

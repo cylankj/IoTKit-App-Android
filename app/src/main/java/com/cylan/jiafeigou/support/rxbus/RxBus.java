@@ -9,7 +9,7 @@ import rx.subjects.Subject;
  * Created by hunt on 16-5-26.
  */
 
-public class RxBus {
+public class RxBus implements IEventBus {
 
     private RxBus() {
     }
@@ -29,6 +29,7 @@ public class RxBus {
     // then it must be made thread-safe like this instead
     private final static Subject<Object, Object> _bus = new SerializedSubject<>(PublishSubject.create());
 
+    @Override
     public void send(Object o) {
         _bus.onNext(o);
     }
@@ -37,6 +38,7 @@ public class RxBus {
         return _bus;
     }
 
+    @Override
     public boolean hasObservers() {
         return _bus.hasObservers();
     }

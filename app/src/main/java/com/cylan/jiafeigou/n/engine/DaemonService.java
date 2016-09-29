@@ -45,7 +45,7 @@ public class DaemonService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        initDaemonFile();
+//        initDaemonFile();
         initBlockCanary();
         initBugMonitor();
         registerBootComplete();

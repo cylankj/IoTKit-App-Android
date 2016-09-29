@@ -11,6 +11,7 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.cache.JCache;
 import com.cylan.jiafeigou.misc.RxEvent;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeMineContract;
 import com.cylan.jiafeigou.n.view.mine.HomeMineHelpFragment;
@@ -128,8 +129,8 @@ public class HomeMineFragment extends Fragment
     }
 
     public void friendItem(View view) {
-        //if (needStartLoginFragment()) return;
-        //AppLogger.i("It's Login,can do something!");
+        if (!JCache.isOnline)
+            return;
         getFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                         , R.anim.slide_in_left, R.anim.slide_out_right)
@@ -139,17 +140,10 @@ public class HomeMineFragment extends Fragment
                 .commit();
     }
 
-//    public void shareItem(View view) {
-//        if (needStartLoginFragment()) return;
-//        AppLogger.i("It's Login,can do something!");
-//    }
 
     public void settingsItem(View view) {
-        //if (needStartLoginFragment()) return;
-        //AppLogger.i("It's Login,can do something!");
-        //if (needStartLoginFragment()) return;
-        //SLog.i("It's Login,can do something!");
-
+        if (!JCache.isOnline)
+            return;
         getFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                         , R.anim.slide_in_left, R.anim.slide_out_right)
@@ -160,35 +154,14 @@ public class HomeMineFragment extends Fragment
     }
 
     public void shareItem(View view) {
-        //if (needStartLoginFragment()) return;
-        //SLog.i("It's Login,can do something!");
+        if (!JCache.isOnline)
+            return;
         getFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                         , R.anim.slide_in_left, R.anim.slide_out_right)
                 .add(android.R.id.content, mineShareDeviceFragment, "mineShareDeviceFragment")
                 .addToBackStack("mineHelpFragment")
                 .commit();
-    }
-//    public void settingsItem(View view) {
-//        //if (needStartLoginFragment()) return;
-//        //SLog.i("It's Login,can do something!");
-//        getFragmentManager().beginTransaction()
-//                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
-//                        , R.anim.slide_in_left, R.anim.slide_out_right)
-//                .add(android.R.id.content, homeSettingFragment, "homeSettingFragment")
-//                .addToBackStack("mineHelpFragment")
-//                .commit();
-//    }
-
-    public void helpItem(View view) {
-        if (needStartLoginFragment()) return;
-        /*getFragmentManager().beginTransaction()
-                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
-                        , R.anim.slide_in_left, R.anim.slide_out_right)
-                .add(android.R.id.content,mineHelpFragment,"mineHelpFragment")
-                .addToBackStack("mineHelpFragment")
-                .commit();*/
-        AppLogger.i("It's Login,can do something!");
     }
 
     public void blurPic(View view) {

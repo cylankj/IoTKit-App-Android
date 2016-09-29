@@ -83,7 +83,6 @@ public class SmartcallActivity extends NeedLoginActivity
     protected void onStop() {
         super.onStop();
         if (presenter != null) presenter.stop();
-
     }
 
     protected int[] getOverridePendingTransition() {
