@@ -12,6 +12,8 @@ import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineRelativesAndFriendsAddFriendContract;
+import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.ViewUtils;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -71,31 +73,52 @@ public class MineRelativesAndFriendAddFriendsFragment extends Fragment implement
                 break;
 
             case R.id.tv_scan_add:                                      //扫一扫添加
-                getFragmentManager().beginTransaction()
-                        .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
-                                , R.anim.slide_in_left, R.anim.slide_out_right)
-                        .add(android.R.id.content, scanAddFragment, "scanAddFragment")
-                        .addToBackStack("mineHelpFragment")
-                        .commit();
+                if (getView() != null)
+                    ViewUtils.deBounceClick(getView().findViewById(R.id.tv_scan_add));
+                    AppLogger.e("tv_scan_add");
+                    jump2ScanAddFragment();
                 break;
 
             case R.id.tv_add_from_contract:                             //从通讯录添加
-                getFragmentManager().beginTransaction()
-                        .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
-                                , R.anim.slide_in_left, R.anim.slide_out_right)
-                        .add(android.R.id.content, addFromContactFragment, "addFromContactFragment")
-                        .addToBackStack("mineHelpFragment")
-                        .commit();
+                if (getView() != null)
+                    ViewUtils.deBounceClick(getView().findViewById(R.id.tv_add_from_contract));
+                    AppLogger.e("tv_add_from_contract");
+                    jump2AddFromContactFragment();
                 break;
 
             case R.id.et_friend_phonenumber:                            //根据对方账号添加
-                getFragmentManager().beginTransaction()
-                        .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
-                                , R.anim.slide_in_left, R.anim.slide_out_right)
-                        .add(android.R.id.content, addByNumFragment, "addByNumFragment")
-                        .addToBackStack("mineHelpFragment")
-                        .commit();
+                if (getView() != null)
+                    ViewUtils.deBounceClick(getView().findViewById(R.id.et_friend_phonenumber));
+                AppLogger.e("et_friend_phonenumber");
+                jump2AddByNumberFragment();
                 break;
         }
+    }
+
+    private void jump2AddByNumberFragment() {
+        getFragmentManager().beginTransaction()
+                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
+                        , R.anim.slide_in_left, R.anim.slide_out_right)
+                .add(android.R.id.content, addByNumFragment, "addByNumFragment")
+                .addToBackStack("mineHelpFragment")
+                .commit();
+    }
+
+    private void jump2AddFromContactFragment() {
+        getFragmentManager().beginTransaction()
+                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
+                        , R.anim.slide_in_left, R.anim.slide_out_right)
+                .add(android.R.id.content, addFromContactFragment, "addFromContactFragment")
+                .addToBackStack("mineHelpFragment")
+                .commit();
+    }
+
+    private void jump2ScanAddFragment() {
+        getFragmentManager().beginTransaction()
+                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
+                        , R.anim.slide_in_left, R.anim.slide_out_right)
+                .add(android.R.id.content, scanAddFragment, "scanAddFragment")
+                .addToBackStack("mineHelpFragment")
+                .commit();
     }
 }

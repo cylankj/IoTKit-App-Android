@@ -1,5 +1,7 @@
 package com.cylan.jiafeigou.n.mvp.contract.cloud;
 
+import android.content.Context;
+
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
 
@@ -15,6 +17,7 @@ public interface CloudLiveContract {
     }
 
     interface Presenter extends BasePresenter{
-
+        void showVoiceTalkDialog(Context context);
+        void startRecord();
     }
 }

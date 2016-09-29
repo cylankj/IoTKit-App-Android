@@ -10,8 +10,11 @@ import android.widget.ImageView;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
 import com.cylan.jiafeigou.n.mvp.contract.cloud.CloudLiveContract;
+import com.cylan.jiafeigou.n.mvp.impl.cloud.CloudLivePresenterImp;
 import com.cylan.jiafeigou.n.view.cloud.CloudLiveSettingFragment;
 import com.cylan.jiafeigou.n.view.cloud.CloudVideoChatConnetionFragment;
+import com.cylan.jiafeigou.utils.ToastUtil;
+import com.cylan.jiafeigou.utils.ViewUtils;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -37,12 +40,19 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
     @BindView(R.id.iv_cloud_talk)
     ImageView ivCloudTalk;
 
+    private CloudLiveContract.Presenter presenter;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cloud_live);
         ButterKnife.bind(this);
         initFragment();
+        initPresenter();
+    }
+
+    private void initPresenter() {
+        presenter = new CloudLivePresenterImp(this);
     }
 
     private void initFragment() {
@@ -66,15 +76,20 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
                 finish();
                 break;
             case R.id.imgV_cloud_live_top_setting:                      //设置界面
+                ViewUtils.deBounceClick(findViewById(R.id.imgV_cloud_live_top_setting));
                 jump2SettingFragment();
                 break;
             case R.id.iv_cloud_share_pic:                               //分享图片
+                ViewUtils.deBounceClick(findViewById(R.id.iv_cloud_share_pic));
                 jump2SharePicFragment();
                 break;
             case R.id.iv_cloud_videochat:                               //视频通话
+                ViewUtils.deBounceClick(findViewById(R.id.iv_cloud_videochat));
                 jump2VideoChatFragment();
                 break;
             case R.id.iv_cloud_talk:                                    //语音留言
+                ToastUtil.showToast(this,"zhizh9hzhhzh");
+                presenter.showVoiceTalkDialog(CloudLiveActivity.this);
                 break;
         }
     }
@@ -105,5 +120,22 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
                 .replace(android.R.id.content, fragment)
                 .addToBackStack("CloudVideoChatConnetionFragment")
                 .commit();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (checkExtraChildFragment()) {
+            return;
+        } else if (checkExtraFragment())
+            return;
+        finishExt();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if(presenter != null){
+            presenter.stop();
+        }
     }
 }

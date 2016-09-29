@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineRelativeAndFriendAddReqDetailContract;
+import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 
@@ -86,7 +87,10 @@ public class MineRelativeAndFriendAddReqDetailFragment extends Fragment implemen
                 getFragmentManager().popBackStack();
                 break;
             case R.id.iv_detail_user_head:                      //查看大头像
-                jump2LookBigImage();
+                if (getView() != null)
+                    ViewUtils.deBounceClick(getView().findViewById(R.id.iv_detail_user_head));
+                    AppLogger.e("iv_detail_user_head");
+                    jump2LookBigImage();
                 break;
             case R.id.tv_add_as_relative_and_friend:            //添加为亲友
                 ToastUtil.showToast(getContext(),"添加成功");

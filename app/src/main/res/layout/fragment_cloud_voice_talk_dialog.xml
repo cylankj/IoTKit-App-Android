@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:background="@color/color_white"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:background="@color/color_white"
+        android:layout_width="match_parent"
+        android:layout_height="46dp">
+
+        <ImageView
+            android:layout_marginLeft="15dp"
+            android:id="@+id/iv_cancle"
+            android:layout_centerVertical="true"
+            android:src="@drawable/login_btn_close"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:layout_centerInParent="true"
+            android:textSize="15sp"
+            android:textColor="#f26b6b"
+            android:text="松手，取消发送"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+    </RelativeLayout>
+
+    <View
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:background="#f26b6b"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"/>
+    
+    <RelativeLayout
+        android:background="#f9fbfc"
+        android:layout_width="match_parent"
+        android:layout_height="158dp">
+
+        <ImageView
+            android:id="@+id/iv_voice_delete"
+            android:layout_centerInParent="true"
+            android:src="@drawable/icon_delete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <com.cylan.jiafeigou.widget.CloudLiveVoiceTalkView
+            android:id="@+id/voidTalkView_left"
+            android:layout_marginRight="24dp"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@id/iv_voice_delete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            />
+
+        <com.cylan.jiafeigou.widget.CloudLiveVoiceTalkView
+            android:id="@+id/voidTalkView_right"
+            android:layout_marginLeft="24dp"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@id/iv_voice_delete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            />
+
+    </RelativeLayout>
+
+</LinearLayout>

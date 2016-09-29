@@ -15,7 +15,9 @@ import android.widget.TextView;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineRelativeAndFriendDetailContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineRelativeAndFriendDetailPresenterImp;
+import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ToastUtil;
+import com.cylan.jiafeigou.utils.ViewUtils;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -113,16 +115,28 @@ public class MineRelativeAndFriendDetailFragment extends Fragment implements Min
                 getFragmentManager().popBackStack();
                 break;
             case R.id.rl_change_name:
-                jump2SetRemarkNameFragment();
+                if (getView() != null)
+                    ViewUtils.deBounceClick(getView().findViewById(R.id.rl_change_name));
+                    AppLogger.e("rl_change_name");
+                    jump2SetRemarkNameFragment();
                 break;
             case R.id.rl_delete_relativeandfriend:
-                showDeleteDialog();
+                if (getView() != null)
+                    ViewUtils.deBounceClick(getView().findViewById(R.id.rl_delete_relativeandfriend));
+                    AppLogger.e("rl_delete_relativeandfriend");
+                    showDeleteDialog();
                 break;
             case R.id.tv_share_device:
-                jump2ShareDeviceFragment();
+                if (getView() != null)
+                    ViewUtils.deBounceClick(getView().findViewById(R.id.tv_share_device));
+                    AppLogger.e("tv_share_device");
+                    jump2ShareDeviceFragment();
                 break;
             case R.id.iv_detail_user_head:
-                jump2LookBigImageFragment();
+                if (getView() != null)
+                    ViewUtils.deBounceClick(getView().findViewById(R.id.iv_detail_user_head));
+                    AppLogger.e("iv_detail_user_head");
+                    jump2LookBigImageFragment();
                 break;
         }
     }

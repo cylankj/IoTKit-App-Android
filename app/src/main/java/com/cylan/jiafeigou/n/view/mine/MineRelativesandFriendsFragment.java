@@ -20,7 +20,9 @@ import com.cylan.jiafeigou.n.mvp.impl.mine.MineRelativesandFriendsPresenterImp;
 import com.cylan.jiafeigou.n.mvp.model.SuggestionChatInfoBean;
 import com.cylan.jiafeigou.n.view.adapter.AddRelativesAndFriendsAdapter;
 import com.cylan.jiafeigou.n.view.adapter.RelativesAndFriendsAdapter;
+import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ToastUtil;
+import com.cylan.jiafeigou.utils.ViewUtils;
 
 import java.util.ArrayList;
 
@@ -136,12 +138,10 @@ public class MineRelativesandFriendsFragment extends Fragment implements MineRel
         relativesAndFriendsAddAdapter.setItemOutOfBtnClickListener(new AddRelativesAndFriendsAdapter.ItemOutOfBtnClickListener() {
             @Override
             public void onOutBtnClick(View view, int position) {
-                getFragmentManager().beginTransaction()
-                        .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
-                                , R.anim.slide_in_left, R.anim.slide_out_right)
-                        .add(android.R.id.content, addReqDetailFragment, "addReqDetailFragment")
-                        .addToBackStack("mineHelpFragment")
-                        .commit();
+                if (getView() != null)
+                    ViewUtils.deBounceClick(view);
+                    AppLogger.e("add_request_detail_fragment");
+                    jump2AddReqDetailFragment();
             }
         });
 
@@ -155,6 +155,15 @@ public class MineRelativesandFriendsFragment extends Fragment implements MineRel
             });
         }
 
+    }
+
+    private void jump2AddReqDetailFragment() {
+        getFragmentManager().beginTransaction()
+                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
+                        , R.anim.slide_in_left, R.anim.slide_out_right)
+                .add(android.R.id.content, addReqDetailFragment, "addReqDetailFragment")
+                .addToBackStack("mineHelpFragment")
+                .commit();
     }
 
     private void showLongClickDialog(View view, final int position) {
@@ -191,16 +200,23 @@ public class MineRelativesandFriendsFragment extends Fragment implements MineRel
                 break;
 
             case R.id.tv_home_mine_relativesandfriends_add:
-                getFragmentManager().beginTransaction()
-                        .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
-                                , R.anim.slide_in_left, R.anim.slide_out_right)
-                        .add(android.R.id.content, friendsFragment, "friendsFragment")
-                        .addToBackStack("mineHelpFragment")
-                        .commit();
+                if (getView() != null)
+                    ViewUtils.deBounceClick(getView().findViewById(R.id.tv_home_mine_relativesandfriends_add));
+                    AppLogger.e("tv_home_mine_relativesandfriends_add");
+                    jump2AddReAndFriendFragment();
                 break;
 
         }
 
+    }
+
+    private void jump2AddReAndFriendFragment() {
+        getFragmentManager().beginTransaction()
+                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
+                        , R.anim.slide_in_left, R.anim.slide_out_right)
+                .add(android.R.id.content, friendsFragment, "friendsFragment")
+                .addToBackStack("mineHelpFragment")
+                .commit();
     }
 
     @Override

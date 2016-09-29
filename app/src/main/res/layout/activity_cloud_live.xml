@@ -7,10 +7,11 @@
     <RelativeLayout
         android:id="@+id/rLayout_cloud_live_top_bar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="73dp"
         android:background="@color/color_0ba8cf">
 
         <ImageView
+            android:layout_alignParentBottom="true"
             android:id="@+id/imgV_nav_back"
             style="@style/ripple_background"
             android:layout_width="wrap_content"
@@ -19,7 +20,8 @@
             android:src="@drawable/icon_nav_back_white" />
 
         <TextView
-            android:layout_centerVertical="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="12dp"
             android:textSize="18sp"
             android:textColor="@color/color_white"
             android:layout_toRightOf="@id/imgV_nav_back"
@@ -28,6 +30,7 @@
             android:layout_height="wrap_content" />
 
         <ImageView
+            android:layout_alignParentBottom="true"
             android:id="@+id/imgV_cloud_live_top_setting"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
