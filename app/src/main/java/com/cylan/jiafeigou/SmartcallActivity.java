@@ -11,7 +11,6 @@ import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.app.AlertDialog;
-import android.util.Log;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
@@ -46,6 +45,7 @@ public class SmartcallActivity extends NeedLoginActivity
     FrameLayout fLayoutSplash;
     @Nullable
     private SplashContract.Presenter presenter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,6 +60,7 @@ public class SmartcallActivity extends NeedLoginActivity
     protected void onStart() {
         super.onStart();
         SmartcallActivityPermissionsDispatcher.showWriteSdCardWithCheck(this);
+        SmartcallActivityPermissionsDispatcher.showReadPhoneStateWithCheck(this);
     }
 
     @Override
@@ -192,6 +193,10 @@ public class SmartcallActivity extends NeedLoginActivity
         showRationaleDialog(R.string.permission_camera_rationale, request);
     }
 
+    @NeedsPermission(Manifest.permission.READ_PHONE_STATE)
+    public void showReadPhoneState() {
+
+    }
 
     private void showRationaleDialog(@StringRes int messageResId, final PermissionRequest request) {
         new AlertDialog.Builder(this)
@@ -219,7 +224,7 @@ public class SmartcallActivity extends NeedLoginActivity
 
     @Override
     public Context getContext() {
-        return null;
+        return getApplicationContext();
     }
 
 }
