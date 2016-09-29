@@ -65,11 +65,6 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
         ButterKnife.bind(this);
         initFragment();
         initPresenter();
-        initSomeView();
-    }
-
-    private void initSomeView() {
-        tv_show_mesg.setText("按下留言");
     }
 
     private void initPresenter() {
@@ -109,7 +104,6 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
                 jump2VideoChatFragment();
                 break;
             case R.id.iv_cloud_talk:                                    //语音留言
-                ToastUtil.showToast(this,"zhizh9996hzhhzh");
                 showVoiceTalkDialog(CloudLiveActivity.this);
                 break;
         }
@@ -176,6 +170,8 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
         left_voice = (CloudLiveVoiceTalkView) dialogView.findViewById(R.id.voidTalkView_left);
         right_voice = (CloudLiveVoiceTalkView) dialogView.findViewById(R.id.voidTalkView_right);
         tv_show_mesg = (TextView) dialogView.findViewById(R.id.tv_show_mesg);
+        tv_show_mesg.setText("按下留言");
+
         iv_voice_delete = (ImageView) dialogView.findViewById(R.id.iv_voice_delete);
         iv_voice_delete.setOnTouchListener(new View.OnTouchListener() {
             @Override
