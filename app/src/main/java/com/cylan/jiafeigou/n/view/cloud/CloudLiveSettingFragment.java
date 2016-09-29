@@ -44,6 +44,7 @@ public class CloudLiveSettingFragment extends Fragment implements CloudLiveSetti
     TextView tvDoorBell;
 
     private CloudLiveDeviceInfoFragment cloudLiveDeviceInfoFragment;
+    private CloudCorrelationDoorBellFragment cloudCorrelationDoorBellFragment;
     private CloudLiveSettingContract.Presenter presenter;
 
     public static CloudLiveSettingFragment newInstance(Bundle bundle) {
@@ -56,6 +57,7 @@ public class CloudLiveSettingFragment extends Fragment implements CloudLiveSetti
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         cloudLiveDeviceInfoFragment = CloudLiveDeviceInfoFragment.newInstance(new Bundle());
+        cloudCorrelationDoorBellFragment = CloudCorrelationDoorBellFragment.newInstance(new Bundle());
     }
 
     @Nullable
@@ -106,9 +108,21 @@ public class CloudLiveSettingFragment extends Fragment implements CloudLiveSetti
                     jump2DeviceInfoFragment();
                 break;
             case R.id.tv_bell_detail2:
-
+                if (getView() != null)
+                    ViewUtils.deBounceClick(getView().findViewById(R.id.tv_bell_detail2));
+                AppLogger.e("tv_bell_detail2");
+                jump2CorrelationDoorBellFragment();
                 break;
         }
+    }
+
+    private void jump2CorrelationDoorBellFragment() {
+        getFragmentManager().beginTransaction()
+                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
+                        , R.anim.slide_in_left, R.anim.slide_out_right)
+                .add(android.R.id.content, cloudCorrelationDoorBellFragment, "cloudCorrelationDoorBellFragment")
+                .addToBackStack("cloudVideoChatConettionFragment")
+                .commit();
     }
 
     private void jump2DeviceInfoFragment() {
