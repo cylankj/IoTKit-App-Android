@@ -280,7 +280,8 @@ public class DoorBellHomeActivity extends BaseFullScreenFragmentActivity
         if (bellCallRecordListAdapter.getMode() == 0) {
             AppLogger.d("enter edition mode");
             bellCallRecordListAdapter.setMode(1);
-            bellCallRecordListAdapter.reverseItemSelectedState(position);
+//            bellCallRecordListAdapter.reverseItemSelectedState(position);
+            tvBellHomeListSelectAll.setText(getString(R.string.SELECT_ALL));
             showEditBar(true);
         }
         return true;
@@ -358,5 +359,12 @@ public class DoorBellHomeActivity extends BaseFullScreenFragmentActivity
 
     @Override
     public void onGlobalLayout() {
+        if (bellCallRecordListAdapter != null && bellCallRecordListAdapter.getCount() > 0) {
+            int w = rvBellList.getLayoutManager().getChildAt(0).getMeasuredWidth();
+            int h = rvBellList.getLayoutManager().getChildAt(0).getMeasuredHeight();
+            bellCallRecordListAdapter.setItemHeight(h);
+            bellCallRecordListAdapter.setItemWidth(w);
+            rvBellList.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+        }
     }
 }

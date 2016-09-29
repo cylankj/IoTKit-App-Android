@@ -329,14 +329,14 @@ public class HomePageListFragmentExt extends Fragment implements
         //需要优化
         int drawableId = dayTime == JFGRules.RULE_DAY_TIME
                 ? R.drawable.bg_home_title_daytime : R.drawable.bg_home_title_night;
-        Glide.with(this)
-                .load(drawableId)
-                .into(imgHomePageHeaderBg);
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-//            imgHomePageHeaderBg.setBackground(getResources().getDrawable(drawableId, null));
-//        } else {
-//            imgHomePageHeaderBg.setBackground(getResources().getDrawable(drawableId));
-//        }
+//        Glide.with(this)
+//                .load(drawableId)
+//                .into(imgHomePageHeaderBg);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            imgHomePageHeaderBg.setBackground(getResources().getDrawable(drawableId, null));
+        } else {
+            imgHomePageHeaderBg.setBackground(getResources().getDrawable(drawableId));
+        }
     }
 
     @Override

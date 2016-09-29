@@ -57,10 +57,10 @@ public class LBatteryWarnDialog extends BaseDialog {
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        highLight();
+        hightLight();
     }
 
-    private void highLight() {
+    private void hightLight() {
         final String needHighLight = getString(R.string.item_green);
         final int len = needHighLight.length();
         final String tmpContent = getString(R.string.s_bell_low_battery_content);

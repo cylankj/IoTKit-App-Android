@@ -1,6 +1,7 @@
 package com.cylan.jiafeigou.n.view.adapter;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -26,6 +27,9 @@ public class BellCallRecordListAdapter extends SuperAdapter<BellCallRecordBean> 
      */
     private int mode = 0;
 
+    private int itemWidth;
+    private int itemHeight;
+
     public BellCallRecordListAdapter(Context context, List<BellCallRecordBean> items,
                                      final int layoutId, LoadImageListener loadImageListener) {
         super(context, items, layoutId);
@@ -41,6 +45,14 @@ public class BellCallRecordListAdapter extends SuperAdapter<BellCallRecordBean> 
 
     public int getMode() {
         return mode;
+    }
+
+    public void setItemWidth(int itemWidth) {
+        this.itemWidth = itemWidth;
+    }
+
+    public void setItemHeight(int itemHeight) {
+        this.itemHeight = itemHeight;
     }
 
     /**
@@ -133,8 +145,8 @@ public class BellCallRecordListAdapter extends SuperAdapter<BellCallRecordBean> 
 
     private void setSelectState(SuperViewHolder holder, BellCallRecordBean item) {
         FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) holder.getView(R.id.imgv_bell_call_item_cover).getLayoutParams();
-        lp.width = holder.getView(R.id.cv_bell_call_item).getMeasuredWidth();
-        lp.height = holder.getView(R.id.cv_bell_call_item).getMeasuredHeight();
+        lp.width = itemWidth;
+        lp.height = itemHeight;
         holder.setVisibility(R.id.imgv_bell_call_item_cover, item.selected ? View.VISIBLE : View.GONE);
     }
 

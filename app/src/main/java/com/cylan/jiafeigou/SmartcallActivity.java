@@ -44,17 +44,8 @@ public class SmartcallActivity extends NeedLoginActivity
 
     @BindView(R.id.fLayout_splash)
     FrameLayout fLayoutSplash;
-    //    @BindView(R.id.vpWelcome)
-//    ViewPager vpWelcome;
-    //    @BindView(R.id.v_indicator)
-//    CirclePageIndicator vIndicator;
     @Nullable
     private SplashContract.Presenter presenter;
-
-
-//    private List<Fragment> splashFragments;
-//    private SimpleFragmentAdapter mSplashListAdapter;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -123,14 +114,11 @@ public class SmartcallActivity extends NeedLoginActivity
     @Override
     public void splashOver() {
         //do your business;
-        Log.d("splashOver", "splashOver");
         if (isFirstUseApp()) {
-            Log.d("splashOver", "setFirstUseApp");
             //第一次打开app
             setFirstUseApp();
             initGuidePage();
         } else {
-            Log.d("splashOver", "initLoginPage");
             initLoginPage();
         }
     }
@@ -233,27 +221,5 @@ public class SmartcallActivity extends NeedLoginActivity
     public Context getContext() {
         return null;
     }
-
-//    private class PageChangeListener implements ViewPager.OnPageChangeListener {
-//
-//        @Override
-//        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-//            if (position == 2)
-//                vIndicator.setAlpha(1.0f - positionOffset);
-//        }
-//
-//        @Override
-//        public void onPageSelected(int position) {
-//            if (position > 2)
-//                vIndicator.setVisibility(android.view.View.GONE);
-//            else
-//                vIndicator.setVisibility(android.view.View.VISIBLE);
-//        }
-//
-//        @Override
-//        public void onPageScrollStateChanged(int state) {
-//
-//        }
-//    }
 
 }
