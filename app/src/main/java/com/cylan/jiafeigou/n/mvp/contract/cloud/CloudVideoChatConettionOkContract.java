@@ -11,10 +11,13 @@ import com.cylan.jiafeigou.n.mvp.BaseView;
 public interface CloudVideoChatConettionOkContract {
 
     interface View extends BaseView<Presenter>{
-
+        void showLoadingView();
+        void hideLoadingView();
+        void setLoadingText(String text);
+        void showLoadResult();
     }
 
     interface Presenter extends BasePresenter{
-
+        void loadVideo();
     }
 }

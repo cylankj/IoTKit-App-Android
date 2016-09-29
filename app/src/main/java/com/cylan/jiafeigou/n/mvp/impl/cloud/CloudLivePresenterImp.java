@@ -38,15 +38,10 @@ import rx.schedulers.Schedulers;
  */
 public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.View> implements CloudLiveContract.Presenter {
 
-    private ImageView iv_voice_delete;
-    private CloudLiveVoiceTalkView left_voice;
-    private CloudLiveVoiceTalkView right_voice;
     private int val1;
     private int val2;
     private Subscription talkSub;
-    private boolean flag = false;
     private int BASE = 600;
-    private int SPACE = 200;// 间隔取样时间
 
     private MediaRecorder mMediaRecorder;
     public static final int MAX_LENGTH = 1000 * 60 * 10;// 最大录音时长;
@@ -77,7 +72,7 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
 
     @Override
     public void startTalk() {
-        talkSub = Observable.interval(500,300,TimeUnit.MILLISECONDS)
+        talkSub = Observable.interval(500,200,TimeUnit.MILLISECONDS)
                 .subscribeOn(Schedulers.newThread())
                 .map(new Func1<Long, Double>() {
                     @Override

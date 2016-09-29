@@ -2,7 +2,9 @@ package com.cylan.jiafeigou.n.view.activity;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
@@ -15,6 +17,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
 import com.cylan.jiafeigou.n.mvp.contract.cloud.CloudLiveContract;
 import com.cylan.jiafeigou.n.mvp.impl.cloud.CloudLivePresenterImp;
@@ -55,7 +58,6 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
     private TextView tv_show_mesg;
 
     private CloudLiveContract.Presenter presenter;
-    private boolean flag = false;
 
 
     @Override
@@ -63,6 +65,7 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cloud_live);
         ButterKnife.bind(this);
+        getIntentData();
         initFragment();
         initPresenter();
     }
@@ -212,5 +215,10 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
         right_voice.change_Status(true);
         left_voice.reFreshUpView(leftVal,rightVal);
         right_voice.reFreshUpView(leftVal,rightVal);
+    }
+
+    public void getIntentData() {
+        Bundle bundleExtra = getIntent().getExtras();
+        Parcelable parcelable = bundleExtra.getParcelable(JConstant.KEY_DEVICE_ITEM_BUNDLE);
     }
 }
