@@ -170,6 +170,7 @@ public class LoginFragment extends android.support.v4.app.Fragment implements Lo
         }
         decideRegisterWay();
         initView();
+        showRegisterPage();
     }
 
     @Override
@@ -191,6 +192,16 @@ public class LoginFragment extends android.support.v4.app.Fragment implements Lo
     @Override
     public Animation onCreateAnimation(int transit, boolean enter, int nextAnim) {
         return super.onCreateAnimation(transit, enter, nextAnim);
+    }
+
+    /**
+     * 不同的入口，在beforeLogin页面点击注册，进入主页页面；否则默认。
+     */
+    private void showRegisterPage() {
+        Bundle bundle = getArguments();
+        if (bundle != null && bundle.containsKey(RxEvent.NeedLoginEvent.KEY)) {
+            switchBox();
+        }
     }
 
     /**

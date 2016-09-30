@@ -62,6 +62,15 @@ public class BeforeLoginFragment extends android.support.v4.app.Fragment {
         RxBus.getInstance().send(new RxEvent.NeedLoginEvent(null));
     }
 
+    @OnClick(R.id.btn_to_register)
+    public void toRegister(View view) {
+        if (getView() != null)
+            ViewUtils.deBounceClick(getView().findViewById(R.id.btn_to_login));
+        Bundle bundle = new Bundle();
+        bundle.putString(RxEvent.NeedLoginEvent.KEY, RxEvent.NeedLoginEvent.KEY);
+        RxBus.getInstance().send(new RxEvent.NeedLoginEvent(bundle));
+    }
+
     /**
      * 清空所有多余的View，会有一个白色的窗口期。
      */
