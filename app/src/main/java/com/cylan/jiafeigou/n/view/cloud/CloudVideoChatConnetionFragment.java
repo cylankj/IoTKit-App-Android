@@ -70,7 +70,7 @@ public class CloudVideoChatConnetionFragment extends Fragment implements CloudVi
             case R.id.iv_call_user_image_head:
                 break;
             case R.id.tv_ignore_call:
-                ToastUtil.showToast(getContext(),"正在通话中。。。");
+                ToastUtil.showToast(getContext(),"取消连接请求。。。");
                 break;
             case R.id.tv_accept_call:
                 if (getView() != null)

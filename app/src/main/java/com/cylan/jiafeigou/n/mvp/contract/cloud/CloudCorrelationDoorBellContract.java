@@ -5,19 +5,17 @@ import com.cylan.jiafeigou.n.mvp.BaseView;
 
 /**
  * 作者：zsl
- * 创建时间：2016/9/26
+ * 创建时间：2016/9/29
  * 描述：
  */
-public interface CloudVideoChatConettionOkContract {
+public interface CloudCorrelationDoorBellContract {
 
     interface View extends BaseView<Presenter>{
-        void showLoadingView();
-        void hideLoadingView();
-        void setLoadingText(String text);
-        void showLoadResult();
+
     }
 
     interface Presenter extends BasePresenter{
-        void loadVideo();
+
     }
+
 }
