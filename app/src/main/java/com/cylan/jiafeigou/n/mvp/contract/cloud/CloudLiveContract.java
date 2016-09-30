@@ -15,6 +15,7 @@ public interface CloudLiveContract {
     interface View extends BaseView<Presenter> {
         void showVoiceTalkDialog(Context context);
         void refreshView(int leftVal,int rightVal);
+        void initRecycleView();
     }
 
     interface Presenter extends BasePresenter{
