@@ -6,7 +6,7 @@ import android.util.Log;
  * Created by hunt on 16-4-22.
  */
 public class L {
-    public static final String TAG = "MainActivity";
+    public static final String TAG = "DownloadManagerPro";
     public static boolean enable = true;
 
     public static void e(String msg) {

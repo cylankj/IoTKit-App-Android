@@ -56,9 +56,8 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_gravity="center_horizontal"
-        android:layout_marginBottom="20dp"
-        android:layout_marginTop="24dp"
         android:clickable="true"
+        android:padding="24dp"
         android:text="随便看看"
         android:textColor="@color/color_7c7c7c"
         android:textSize="13sp" />

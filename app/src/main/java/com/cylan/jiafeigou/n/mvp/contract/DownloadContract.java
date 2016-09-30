@@ -1,5 +1,7 @@
 package com.cylan.jiafeigou.n.mvp.contract;
 
+import android.os.Parcelable;
+
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
 
@@ -17,13 +19,15 @@ public interface DownloadContract {
 
         void onDownloadFinish();
 
-        void onDownloading(int count, int totalCount);
+        void onDownloading(double percent, long downloadedLength);
 
         void onDownloadErr(int reason);
     }
 
 
     interface Presenter extends BasePresenter {
+
+        void startDownload(Parcelable parcelable);
 
         void stopDownload();
     }

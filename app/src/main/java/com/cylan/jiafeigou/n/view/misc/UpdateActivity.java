@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.Window;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.n.engine.DownloadService;
 import com.cylan.jiafeigou.n.mvp.contract.DownloadContract;
 import com.cylan.jiafeigou.n.mvp.impl.DownloadContractPresenterImpl;
 
@@ -29,12 +30,14 @@ public class UpdateActivity extends FragmentActivity
                         finish();
                         if (presenter != null)
                             presenter.stopDownload();
+                        if (presenter != null)
+                            presenter.stop();
                         Process.killProcess(Process.myPid());
                     }
                 });
         updateDialog();
         presenter = new DownloadContractPresenterImpl(this);
-        presenter.start();
+        presenter.startDownload(getIntent().getParcelableExtra(DownloadService.KEY_PARCELABLE));
     }
 
     private void updateDialog() {
@@ -60,7 +63,7 @@ public class UpdateActivity extends FragmentActivity
     }
 
     @Override
-    public void onDownloading(int count, int totalCount) {
+    public void onDownloading(double percent, long downloadedLength) {
 
     }
 

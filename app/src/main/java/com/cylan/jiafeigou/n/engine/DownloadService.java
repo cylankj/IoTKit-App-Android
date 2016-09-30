@@ -2,7 +2,9 @@ package com.cylan.jiafeigou.n.engine;
 
 import android.app.Service;
 import android.content.Intent;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.Message;
 import android.os.Parcelable;
 import android.os.RemoteCallbackList;
 import android.os.RemoteException;
@@ -23,18 +25,19 @@ import com.cylan.jiafeigou.support.log.AppLogger;
 public class DownloadService extends Service implements DownloadManagerListener {
 
     public static final String KEY_PARCELABLE = "key_parcel";
-    private final static String url = "http://le-apk.wdjcdn.com/7/24/1703183cbee0b57a38079d004d72f247.apk";
     private DownloadManagerPro.TaskBuilder taskBuilder;
-
+    private final Object lock = new Object();
     //callback 集合
     private RemoteCallbackList<IRemoteServiceCallback> iRemoteServiceCallBackList = new RemoteCallbackList<>();
 
     private IRemoteService.Stub mBinder = new IRemoteService.Stub() {
         public void registerCallback(IRemoteServiceCallback cb) {
+            Log.d("DownloadService", "registerCallback:" + cb);
             if (cb != null) iRemoteServiceCallBackList.register(cb);
         }
 
         public void unregisterCallback(IRemoteServiceCallback cb) {
+            Log.d("DownloadService", "unregisterCallback:" + cb);
             if (cb != null) iRemoteServiceCallBackList.unregister(cb);
         }
     };
@@ -43,38 +46,53 @@ public class DownloadService extends Service implements DownloadManagerListener 
     }
 
     @Override
+    public void onCreate() {
+        super.onCreate();
+    }
+
+    @Override
     public IBinder onBind(Intent intent) {
         // TODO: Return the communication channel to the service.
+        Parcelable parcelable = intent.getParcelableExtra(KEY_PARCELABLE);
+        if (parcelable != null && parcelable instanceof UpdateFileBean) {
+            UpdateFileBean bean = (UpdateFileBean) parcelable;
+            initSomething(bean);
+        }
+        AppLogger.d("DownloadService: " + parcelable + " " + Thread.currentThread());
         return mBinder;
     }
+
+    @Override
+    public boolean onUnbind(Intent intent) {
+        return super.onUnbind(intent);
+    }
+
 
     @Override
     public void onTaskRemoved(Intent rootIntent) {
         Log.d("DownloadService", "DownloadService: " + rootIntent);
     }
 
-    @Override
-    public void onCreate() {
-        super.onCreate();
-    }
-
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-        Parcelable parcelable = intent.getParcelableExtra("KEY_PARCELABLE");
-        if (parcelable != null && parcelable instanceof UpdateFileBean) {
-            UpdateFileBean bean = (UpdateFileBean) parcelable;
-            initSomething(bean);
-            AppLogger.d("DownloadService: " + bean.toString());
-        }
-        AppLogger.d("DownloadService: " + parcelable);
-        return super.onStartCommand(intent, flags, startId);
-    }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
         iRemoteServiceCallBackList.kill();
     }
+
+    private static final int MSG_START_DOWNLOAD = 1;
+    private Handler handler = new Handler(new Handler.Callback() {
+        @Override
+        public boolean handleMessage(Message msg) {
+            switch (msg.what) {
+                case MSG_START_DOWNLOAD:
+                    Log.d(this.getClass().getSimpleName(), "handler: " + msg.arg1);
+                    DownloadManagerPro.getInstance().startDownload(msg.arg1);
+                    break;
+            }
+            return true;
+        }
+    });
 
     private void initSomething(final UpdateFileBean bean) {
         new Thread(new Runnable() {
@@ -84,7 +102,7 @@ public class DownloadService extends Service implements DownloadManagerListener 
                         .setContext(getApplicationContext());
                 DownloadManagerPro.getInstance().init(config);
                 taskBuilder = new DownloadManagerPro.TaskBuilder();
-                taskBuilder.setUrl(url)
+                taskBuilder.setUrl(bean.url)
                         .setMaxChunks(4)
                         .setSaveName(bean.fileName)
                         .setOverwrite(true)
@@ -92,105 +110,129 @@ public class DownloadService extends Service implements DownloadManagerListener 
                         .setDownloadManagerListener(DownloadService.this)
                         .setAllowNetType(NetConfig.TYPE_ALL);
                 int token = DownloadManagerPro.getInstance().initTask(taskBuilder);
-                DownloadManagerPro.getInstance().startDownload(token);
+                handler.sendMessageDelayed(handler.obtainMessage(MSG_START_DOWNLOAD, token, 0), 1000);
             }
         }).start();
     }
 
     @Override
     public void onDownloadStarted(long taskId) {
-        final int count = iRemoteServiceCallBackList.getRegisteredCallbackCount();
-        for (int i = 0; i < count; i++)
-            try {
-                iRemoteServiceCallBackList.getBroadcastItem(i).onDownloadStarted(taskId);
-            } catch (RemoteException e) {
-                e.printStackTrace();
-            }
-        Log.d(this.getClass().getSimpleName(), "onDownloadStarted: " + taskId);
+        synchronized (lock) {
+            final int count = iRemoteServiceCallBackList.beginBroadcast();
+            for (int i = 0; i < count; i++)
+                try {
+                    iRemoteServiceCallBackList.getBroadcastItem(i).onDownloadStarted(taskId);
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
+            iRemoteServiceCallBackList.finishBroadcast();
+            Log.d(this.getClass().getSimpleName(), "onDownloadStarted: " + taskId);
+        }
     }
 
     @Override
     public void onDownloadPaused(long taskId) {
-        final int count = iRemoteServiceCallBackList.getRegisteredCallbackCount();
-        for (int i = 0; i < count; i++)
-            try {
-                iRemoteServiceCallBackList.getBroadcastItem(i).onDownloadPaused(taskId);
-            } catch (RemoteException e) {
-                e.printStackTrace();
-            }
-        Log.d(this.getClass().getSimpleName(), "onDownloadPaused: " + taskId);
+        synchronized (lock) {
+            final int count = iRemoteServiceCallBackList.beginBroadcast();
+            for (int i = 0; i < count; i++)
+                try {
+                    iRemoteServiceCallBackList.getBroadcastItem(i).onDownloadPaused(taskId);
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
+            iRemoteServiceCallBackList.finishBroadcast();
+            Log.d(this.getClass().getSimpleName(), "onDownloadPaused: " + taskId);
+        }
     }
 
     @Override
     public void onDownloadProcess(long taskId, final double percent, long downloadedLength) {
-        final int count = iRemoteServiceCallBackList.getRegisteredCallbackCount();
-        for (int i = 0; i < count; i++)
-            try {
-                iRemoteServiceCallBackList.getBroadcastItem(i).onDownloadProcess(taskId, percent, downloadedLength);
-            } catch (RemoteException e) {
-                e.printStackTrace();
-            }
-        Log.d(this.getClass().getSimpleName(), "onDownloadProcess: " + taskId + " percent: " + percent);
+        synchronized (lock) {
+            final int count = iRemoteServiceCallBackList.beginBroadcast();
+            for (int i = 0; i < count; i++)
+                try {
+                    iRemoteServiceCallBackList.getBroadcastItem(i).onDownloadProcess(taskId, percent, downloadedLength);
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
+            iRemoteServiceCallBackList.finishBroadcast();
+            Log.d(this.getClass().getSimpleName(), "onDownloadProcess: " + taskId + " percent: " + percent);
+        }
     }
 
     @Override
     public void onDownloadFinished(long taskId) {
-        final int count = iRemoteServiceCallBackList.getRegisteredCallbackCount();
-        for (int i = 0; i < count; i++)
-            try {
-                iRemoteServiceCallBackList.getBroadcastItem(i).onDownloadFinished(taskId);
-            } catch (RemoteException e) {
-                e.printStackTrace();
-            }
-        Log.d(this.getClass().getSimpleName(), "onDownloadFinished: " + taskId);
+        synchronized (lock) {
+            final int count = iRemoteServiceCallBackList.beginBroadcast();
+            for (int i = 0; i < count; i++)
+                try {
+                    iRemoteServiceCallBackList.getBroadcastItem(i).onDownloadFinished(taskId);
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
+            iRemoteServiceCallBackList.finishBroadcast();
+            Log.d(this.getClass().getSimpleName(), "onDownloadFinished: " + taskId);
+        }
     }
 
     @Override
     public void onDownloadRebuildStart(long taskId) {
-        final int count = iRemoteServiceCallBackList.getRegisteredCallbackCount();
-        for (int i = 0; i < count; i++)
-            try {
-                iRemoteServiceCallBackList.getBroadcastItem(i).onDownloadRebuildStart(taskId);
-            } catch (RemoteException e) {
-                e.printStackTrace();
-            }
-        Log.d(this.getClass().getSimpleName(), "onDownloadRebuildStart: " + taskId);
+        synchronized (lock) {
+            final int count = iRemoteServiceCallBackList.beginBroadcast();
+            for (int i = 0; i < count; i++)
+                try {
+                    iRemoteServiceCallBackList.getBroadcastItem(i).onDownloadRebuildStart(taskId);
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
+            iRemoteServiceCallBackList.finishBroadcast();
+            Log.d(this.getClass().getSimpleName(), "onDownloadRebuildStart: " + taskId);
+        }
     }
 
     @Override
     public void onDownloadRebuildFinished(long taskId) {
-        final int count = iRemoteServiceCallBackList.getRegisteredCallbackCount();
-        for (int i = 0; i < count; i++)
-            try {
-                iRemoteServiceCallBackList.getBroadcastItem(i).onDownloadRebuildFinished(taskId);
-            } catch (RemoteException e) {
-                e.printStackTrace();
-            }
-        Log.d(this.getClass().getSimpleName(), "onDownloadRebuildFinished: " + taskId);
+        synchronized (lock) {
+            final int count = iRemoteServiceCallBackList.beginBroadcast();
+            for (int i = 0; i < count; i++)
+                try {
+                    iRemoteServiceCallBackList.getBroadcastItem(i).onDownloadRebuildFinished(taskId);
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
+            iRemoteServiceCallBackList.finishBroadcast();
+            Log.d(this.getClass().getSimpleName(), "onDownloadRebuildFinished: " + taskId);
+        }
     }
 
     @Override
     public void onDownloadCompleted(long taskId) {
-        final int count = iRemoteServiceCallBackList.getRegisteredCallbackCount();
-        for (int i = 0; i < count; i++)
-            try {
-                iRemoteServiceCallBackList.getBroadcastItem(i).onDownloadCompleted(taskId);
-            } catch (RemoteException e) {
-                e.printStackTrace();
-            }
-        Log.d(this.getClass().getSimpleName(), "onDownloadCompleted: " + taskId);
+        synchronized (lock) {
+            final int count = iRemoteServiceCallBackList.beginBroadcast();
+            for (int i = 0; i < count; i++)
+                try {
+                    iRemoteServiceCallBackList.getBroadcastItem(i).onDownloadCompleted(taskId);
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
+            iRemoteServiceCallBackList.finishBroadcast();
+            Log.d(this.getClass().getSimpleName(), "onDownloadCompleted: " + taskId);
+        }
     }
 
     @Override
     public void onFailedReason(long taskId, FailReason reason) {
-        final int count = iRemoteServiceCallBackList.getRegisteredCallbackCount();
-        for (int i = 0; i < count; i++)
-            try {
-                iRemoteServiceCallBackList.getBroadcastItem(i).onFailedReason(taskId, 0);
-            } catch (RemoteException e) {
-                e.printStackTrace();
-            }
-        Log.d(this.getClass().getSimpleName(), "taskId: " + taskId + " onFailedReason: " + reason.toString());
+        synchronized (lock) {
+            final int count = iRemoteServiceCallBackList.beginBroadcast();
+            for (int i = 0; i < count; i++)
+                try {
+                    iRemoteServiceCallBackList.getBroadcastItem(i).onFailedReason(taskId, 0);
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
+            iRemoteServiceCallBackList.finishBroadcast();
+            Log.d(this.getClass().getSimpleName(), "taskId: " + taskId + " onFailedReason: " + reason.toString());
+        }
     }
 
 }
