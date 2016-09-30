@@ -123,7 +123,7 @@
         <item name="android:windowExitAnimation">@anim/alpha_out</item>
     </style>
 
-    <style name="l_style_dialog" parent="@android:style/Theme.Dialog">
+    <style name="l_style_dialog" parent="@android:style/Theme.Holo.Light.Dialog">
         <item name="android:windowFrame">@null</item>
         <!--边框-->
         <item name="android:windowIsFloating">true</item>

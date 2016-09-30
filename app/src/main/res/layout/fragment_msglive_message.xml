@@ -19,7 +19,7 @@
             android:id="@+id/iv_msglive_back"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/icon_nav_back_gray" />
+            android:src="@drawable/icon_nav_back_white" />
 
         <TextView
             android:layout_centerVertical="true"
