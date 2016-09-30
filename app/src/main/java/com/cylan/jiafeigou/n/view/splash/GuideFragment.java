@@ -22,8 +22,8 @@ public class GuideFragment extends Fragment implements GreatDragView.ViewDisappe
 
     @BindView(R.id.v_great_drag)
     GreatDragView vGreatDrag;
-    @BindView(R.id.v_guide_indicator)
-    GuideIndicatorLayout vGuideIndicator;
+//    @BindView(R.id.v_guide_indicator)
+//    GuideIndicatorLayout vGuideIndicator;
 
     public static GuideFragment newInstance() {
         return new GuideFragment();
@@ -51,7 +51,7 @@ public class GuideFragment extends Fragment implements GreatDragView.ViewDisappe
 
     @Override
     public void onViewDisappear(View view, int index) {
-        vGuideIndicator.setFocusedIndex(index);
+//        vGuideIndicator.setFocusedIndex(index);
         Log.d("vGuideIndicator", "vGuideIndicator: " + index);
         if (index == 3) {
             //进入登陆页 login page
