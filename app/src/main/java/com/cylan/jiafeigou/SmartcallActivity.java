@@ -11,6 +11,7 @@ import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.app.AlertDialog;
+import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
@@ -54,6 +55,22 @@ public class SmartcallActivity extends NeedLoginActivity
         ButterKnife.bind(this);
         initPresenter();
         if (presenter != null) presenter.start();
+        fullScreen(true);
+    }
+
+    /**
+     * 进入全屏模式
+     *
+     * @param full
+     */
+    private void fullScreen(boolean full) {
+        WindowManager.LayoutParams attrs = getWindow().getAttributes();
+        if (full) {
+            attrs.flags |= WindowManager.LayoutParams.FLAG_FULLSCREEN;
+        } else {
+            attrs.flags &= ~WindowManager.LayoutParams.FLAG_FULLSCREEN;
+        }
+        getWindow().setAttributes(attrs);
     }
 
     @Override
@@ -114,6 +131,7 @@ public class SmartcallActivity extends NeedLoginActivity
 
     @Override
     public void splashOver() {
+        fullScreen(false);
         //do your business;
         if (isFirstUseApp()) {
             //第一次打开app
