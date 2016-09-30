@@ -783,4 +783,49 @@ public class FileUtils {
         return folders;
     }
 
+    public static FileInputStream getInputStream(String folder, String fileName) {
+        FileInputStream fileIn = null;
+        try {
+            fileIn = new FileInputStream(
+                    address(folder, fileName));
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        return fileIn;
+    }
+
+    public static String address(String folder, String file) {
+        return folder + "/" + file;
+    }
+
+    public static void delete(String folder, String fileName) {
+        File file = new File(
+                address(folder, fileName));
+        file.delete();
+    }
+
+    public static long size(String folder, String fileName) {
+        File file = new File(
+                address(folder, fileName));
+        return file.length();
+    }
+
+    public static File create(String folder, String fileName) {
+        File ffolder = new File(folder);
+        if (!ffolder.exists()) {
+            boolean mk = ffolder.mkdir();
+        }
+
+        File file = new File(
+                address(folder, fileName));
+        try {
+            file.createNewFile();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return file;
+    }
 }

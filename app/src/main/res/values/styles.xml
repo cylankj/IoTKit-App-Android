@@ -190,4 +190,13 @@
         <item name="android:scrollHorizontally">true</item>
     </style>
 
+    <style name="dialog_activity_style" parent="@android:style/Theme.Holo.Light.Dialog">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowTitleBackgroundStyle">@android:color/transparent</item>
+        <!--<item name="windowActionBar">false</item> -->
+        <item name="android:windowSoftInputMode">stateAlwaysHidden</item>
+        <item name="android:windowActionModeOverlay">true</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="windowNoTitle">true</item>
+    </style>
 </resources>

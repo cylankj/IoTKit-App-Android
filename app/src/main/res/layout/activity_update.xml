@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/lLayout_update_dialog"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <ProgressBar
+        android:id="@+id/update_progress"
+        style="@style/progressBar_style"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:maxHeight="20dip"
+        android:minHeight="20dip" />
+
+    <TextView
+        android:id="@+id/update_progress_text"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="right"
+        android:textColor="#00B5EB" />
+
+    <Button
+        android:id="@+id/btn_update_cancel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:text="@string/CANCEL"
+        android:textColor="#5c5c5c"
+        android:textSize="16sp" />
+
+</LinearLayout>
