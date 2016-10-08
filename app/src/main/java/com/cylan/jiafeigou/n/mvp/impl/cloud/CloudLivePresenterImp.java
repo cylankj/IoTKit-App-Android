@@ -15,11 +15,14 @@ import android.widget.ImageView;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.contract.cloud.CloudLiveContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
+import com.cylan.jiafeigou.n.mvp.model.CloudLiveMesgBean;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.widget.CloudLiveVoiceTalkView;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
@@ -152,5 +155,23 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
             return true;
         else
             return false;
+    }
+
+    @Override
+    public List<CloudLiveMesgBean> getMesgData() {
+        return new ArrayList<>();
+    }
+
+    /**
+     * desc:添加一个数据
+     */
+    @Override
+    public void addMesgItem(CloudLiveMesgBean bean) {
+        getView().refreshRecycleView(bean);
+    }
+
+    @Override
+    public CloudLiveMesgBean creatMesgBean(String voiceLength, String userIconUrl) {
+        return new CloudLiveMesgBean(voiceLength,userIconUrl);
     }
 }

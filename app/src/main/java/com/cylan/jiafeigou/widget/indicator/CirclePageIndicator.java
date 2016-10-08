@@ -259,7 +259,7 @@ public class CirclePageIndicator extends View implements PageIndicator {
                 canvas.drawCircle(dX, dY, pageFillRadius, mPaintPageFill);
             }
 
-            // Only paint stroke if a stroke width was non-zero
+            // Only paint stroke if activity_cloud_live_mesg_video_talk_item stroke width was non-zero
             if (pageFillRadius != mRadius) {
 //                canvas.drawCircle(dX, dY, mRadius / 1.5f, mPaintStroke);
                 canvas.drawCircle(dX, dY, mRadius, mPaintStroke);

@@ -32,7 +32,7 @@ public class AnimatorBuilder {
 
     public AnimatorBuilder applyScale(View viewToScale, Rect finalRect, Interpolator interpolator) {
         if (viewToScale == null) {
-            throw new IllegalArgumentException("You passed a null view");
+            throw new IllegalArgumentException("You passed activity_cloud_live_mesg_video_talk_item null view");
         }
 
         Rect from = buildViewRect(viewToScale);
@@ -48,7 +48,7 @@ public class AnimatorBuilder {
 
     public AnimatorBuilder applyScale(View viewToScale, float scaleX, float scaleY, Interpolator interpolator) {
         if (viewToScale == null) {
-            throw new IllegalArgumentException("You passed a null view");
+            throw new IllegalArgumentException("You passed activity_cloud_live_mesg_video_talk_item null view");
         }
 
         boolean hasScaleAnimation = hasAnimation(viewToScale, AnimatorBundle.TypeAnimation.SCALEX, AnimatorBundle.TypeAnimation.SCALEXY);
@@ -87,7 +87,7 @@ public class AnimatorBuilder {
      */
     public AnimatorBuilder applyTranslation(View viewToTranslate, Point finalPoint, Interpolator interpolator) {
         if (viewToTranslate == null) {
-            throw new IllegalArgumentException("You passed a null view");
+            throw new IllegalArgumentException("You passed activity_cloud_live_mesg_video_talk_item null view");
         }
 
         final Point from = buildPointView(viewToTranslate);
@@ -103,7 +103,7 @@ public class AnimatorBuilder {
 
     public AnimatorBuilder applyTranslation(View viewToTranslate, float translateX, float translateY, Interpolator interpolator) {
         if (viewToTranslate == null) {
-            throw new IllegalArgumentException("You passed a null view");
+            throw new IllegalArgumentException("You passed activity_cloud_live_mesg_video_talk_item null view");
         }
 
         float startTranslationX = StickyCompat.getTranslationX(viewToTranslate);
@@ -125,7 +125,7 @@ public class AnimatorBuilder {
 
     public AnimatorBuilder applyFade(View viewToFade, float fade, Interpolator interpolator) {
         if (viewToFade == null) {
-            throw new IllegalArgumentException("You passed a null view");
+            throw new IllegalArgumentException("You passed activity_cloud_live_mesg_video_talk_item null view");
         }
 
         float startAlpha = StickyCompat.getAlpha(viewToFade);
@@ -140,12 +140,12 @@ public class AnimatorBuilder {
 
     /**
      * @param viewToParallax
-     * @param velocityParallax the velocity to apply to the view in order to show the parallax effect. choose a velocity between 0 and 1 for better results
+     * @param velocityParallax the velocity to apply to the view in order to show the parallax effect. choose activity_cloud_live_mesg_video_talk_item velocity between 0 and 1 for better results
      * @return
      */
     public AnimatorBuilder applyVerticalParallax(View viewToParallax, float velocityParallax) {
         if (viewToParallax == null) {
-            throw new IllegalArgumentException("You passed a null view");
+            throw new IllegalArgumentException("You passed activity_cloud_live_mesg_video_talk_item null view");
         }
 
         addAnimator(AnimatorBundle.create(AnimatorBundle.TypeAnimation.PARALLAX, viewToParallax, null, 0f, -velocityParallax));
@@ -162,7 +162,7 @@ public class AnimatorBuilder {
     }
 
     /**
-     * called after a new scale or translation animation has been added
+     * called after activity_cloud_live_mesg_video_talk_item new scale or translation animation has been added
      */
     private void adjustTranslation(View viewAnimated) {
         AnimatorBundle animatorScaleX = null;

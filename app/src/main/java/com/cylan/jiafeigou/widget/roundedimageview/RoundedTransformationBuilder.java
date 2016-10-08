@@ -3,7 +3,7 @@
 //*
 //* Licensed under the Apache License, Version 2.0 (the "License");
 //* you may not use this file except in compliance with the License.
-//* You may obtain a copy of the License at
+//* You may obtain activity_cloud_live_mesg_video_talk_item copy of the License at
 //*
 //*      http://www.apache.org/licenses/LICENSE-2.0
 //*
@@ -65,7 +65,7 @@
 //  }
 //
 //  /**
-//   * Set corner radius for a specific corner in px.
+//   * Set corner radius for activity_cloud_live_mesg_video_talk_item specific corner in px.
 //   *
 //   * @param corner the corner to set.
 //   * @param radius the radius in px.
@@ -88,7 +88,7 @@
 //  }
 //
 //  /**
-//   * Set corner radius for a specific corner in density independent pixels.
+//   * Set corner radius for activity_cloud_live_mesg_video_talk_item specific corner in density independent pixels.
 //   *
 //   * @param corner the corner to set
 //   * @param radius the radius in density independent pixels.
@@ -133,7 +133,7 @@
 //  }
 //
 //  /**
-//   * Set the border color as a {@link ColorStateList}.
+//   * Set the border color as activity_cloud_live_mesg_video_talk_item {@link ColorStateList}.
 //   *
 //   * @param colors the {@link ColorStateList} to set.
 //   * @return the builder for chaining.
@@ -155,7 +155,7 @@
 //  }
 //
 //  /**
-//   * Creates a {@link Transformation} for use with picasso.
+//   * Creates activity_cloud_live_mesg_video_talk_item {@link Transformation} for use with picasso.
 //   *
 //   * @return the {@link Transformation}
 //   */

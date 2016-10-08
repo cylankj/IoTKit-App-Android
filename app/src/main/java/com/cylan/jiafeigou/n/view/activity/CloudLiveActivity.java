@@ -22,11 +22,16 @@ import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
 import com.cylan.jiafeigou.n.mvp.contract.cloud.CloudLiveContract;
 import com.cylan.jiafeigou.n.mvp.impl.cloud.CloudLivePresenterImp;
+import com.cylan.jiafeigou.n.mvp.model.CloudLiveMesgBean;
+import com.cylan.jiafeigou.n.view.adapter.CloudLiveMesgAdapter;
 import com.cylan.jiafeigou.n.view.cloud.CloudLiveSettingFragment;
 import com.cylan.jiafeigou.n.view.cloud.CloudVideoChatConnetionFragment;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.CloudLiveVoiceTalkView;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -58,8 +63,11 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
     private CloudLiveVoiceTalkView right_voice;
     private TextView tv_show_mesg;
 
-    private CloudLiveContract.Presenter presenter;
 
+    private List<CloudLiveMesgBean> cloudMesgList;
+
+    private CloudLiveContract.Presenter presenter;
+    private CloudLiveMesgAdapter cloudLiveMesgAdapter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -69,6 +77,22 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
         getIntentData();
         initFragment();
         initPresenter();
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        initMesgData();
+        initRecycleView();
+    }
+
+    /**
+     * desc:初始化要显示的数据
+     */
+    private void initMesgData() {
+        cloudMesgList = new ArrayList<>();
+        cloudMesgList.addAll(presenter.getMesgData());
     }
 
     private void initPresenter() {
@@ -139,6 +163,15 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
                 .replace(android.R.id.content, fragment)
                 .addToBackStack("CloudVideoChatConnetionFragment")
                 .commit();
+
+        fragment.setOnIgnoreClickListener(new CloudVideoChatConnetionFragment.OnIgnoreClickListener() {
+            @Override
+            public void onIgnore() {
+                CloudLiveMesgBean bean = new CloudLiveMesgBean("","");
+                bean.setItemType(1);
+                presenter.addMesgItem(bean);
+            }
+        });
     }
 
     @Override
@@ -198,6 +231,7 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
                     }
                     case MotionEvent.ACTION_UP:{
                         tv_show_mesg.setText("按下留言");
+                        presenter.addMesgItem(presenter.creatMesgBean("99''","wwww"));
                         presenter.stopRecord();
                         return true;
                     }
@@ -221,7 +255,14 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
     @Override
     public void initRecycleView() {
         rcyCloudMesgList.setLayoutManager(new LinearLayoutManager(this));
+        cloudLiveMesgAdapter = new CloudLiveMesgAdapter(cloudMesgList);
+        rcyCloudMesgList.setAdapter(cloudLiveMesgAdapter);
+    }
 
+    @Override
+    public void refreshRecycleView(CloudLiveMesgBean bean) {
+        cloudMesgList.add(bean);
+        cloudLiveMesgAdapter.notifyDataSetChanged();
     }
 
     public void getIntentData() {

@@ -52,7 +52,7 @@ public class DaemonService extends Service {
     }
 
     /**
-     * a simple
+     * activity_cloud_live_mesg_video_talk_item simple
      */
     private void initDaemonFile() {
         HandlerThreadUtils.post(new Runnable() {

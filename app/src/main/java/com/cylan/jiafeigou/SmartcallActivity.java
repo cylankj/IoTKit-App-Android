@@ -189,7 +189,7 @@ public class SmartcallActivity extends NeedLoginActivity
 
     @OnPermissionDenied(Manifest.permission.CAMERA)
     public void onCameraDenied() {
-        // NOTE: Deal with a denied permission, e.g. by showing specific UI
+        // NOTE: Deal with activity_cloud_live_mesg_video_talk_item denied permission, e.g. by showing specific UI
         // or disabling certain functionality
         Toast.makeText(this, R.string.permission_camera_denied, Toast.LENGTH_SHORT).show();
     }
@@ -207,7 +207,7 @@ public class SmartcallActivity extends NeedLoginActivity
 
     @OnShowRationale(Manifest.permission.CAMERA)
     public void showRationaleForCamera(PermissionRequest request) {
-        // NOTE: Show a rationale to explain why the permission is needed, e.g. with a dialog.
+        // NOTE: Show activity_cloud_live_mesg_video_talk_item rationale to explain why the permission is needed, e.g. with activity_cloud_live_mesg_video_talk_item dialog.
         // Call proceed() or cancel() on the provided PermissionRequest to continue or abort
         showRationaleDialog(R.string.permission_camera_rationale, request);
     }

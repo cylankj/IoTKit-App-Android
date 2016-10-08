@@ -37,7 +37,7 @@ public class NLogUtils {
     }
 
     /**
-     * Indicates if this file represents a file on the underlying file system.
+     * Indicates if this file represents activity_cloud_live_mesg_video_talk_item file on the underlying file system.
      *
      * @param filePath
      * @return
@@ -58,10 +58,10 @@ public class NLogUtils {
      * isBlank(null) = true;
      * isBlank(&quot;&quot;) = true;
      * isBlank(&quot;  &quot;) = true;
-     * isBlank(&quot;a&quot;) = false;
-     * isBlank(&quot;a &quot;) = false;
-     * isBlank(&quot; a&quot;) = false;
-     * isBlank(&quot;a b&quot;) = false;
+     * isBlank(&quot;activity_cloud_live_mesg_video_talk_item&quot;) = false;
+     * isBlank(&quot;activity_cloud_live_mesg_video_talk_item &quot;) = false;
+     * isBlank(&quot; activity_cloud_live_mesg_video_talk_item&quot;) = false;
+     * isBlank(&quot;activity_cloud_live_mesg_video_talk_item b&quot;) = false;
      * </pre>
      *
      * @param str
@@ -167,16 +167,16 @@ public class NLogUtils {
      *      getFolderName(null)               =   null
      *      getFolderName("")                 =   ""
      *      getFolderName("   ")              =   ""
-     *      getFolderName("a.mp3")            =   ""
-     *      getFolderName("a.b.rmvb")         =   ""
+     *      getFolderName("activity_cloud_live_mesg_video_talk_item.mp3")            =   ""
+     *      getFolderName("activity_cloud_live_mesg_video_talk_item.b.rmvb")         =   ""
      *      getFolderName("abc")              =   ""
      *      getFolderName("c:\\")              =   "c:"
-     *      getFolderName("c:\\a")             =   "c:"
-     *      getFolderName("c:\\a.b")           =   "c:"
-     *      getFolderName("c:a.txt\\a")        =   "c:a.txt"
-     *      getFolderName("c:a\\b\\c\\d.txt")    =   "c:a\\b\\c"
+     *      getFolderName("c:\\activity_cloud_live_mesg_video_talk_item")             =   "c:"
+     *      getFolderName("c:\\activity_cloud_live_mesg_video_talk_item.b")           =   "c:"
+     *      getFolderName("c:activity_cloud_live_mesg_video_talk_item.txt\\activity_cloud_live_mesg_video_talk_item")        =   "c:activity_cloud_live_mesg_video_talk_item.txt"
+     *      getFolderName("c:activity_cloud_live_mesg_video_talk_item\\b\\c\\d.txt")    =   "c:activity_cloud_live_mesg_video_talk_item\\b\\c"
      *      getFolderName("/home/admin")      =   "/home"
-     *      getFolderName("/home/admin/a.txt/b.mp3")  =   "/home/admin/a.txt"
+     *      getFolderName("/home/admin/activity_cloud_live_mesg_video_talk_item.txt/b.mp3")  =   "/home/admin/activity_cloud_live_mesg_video_talk_item.txt"
      * </pre>
      *
      * @param filePath

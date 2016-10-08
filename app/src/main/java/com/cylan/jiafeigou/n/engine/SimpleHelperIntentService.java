@@ -25,7 +25,7 @@ public class SimpleHelperIntentService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        AppLogger.d("i am a road man");
+        AppLogger.d("i am activity_cloud_live_mesg_video_talk_item road man");
     }
 
 

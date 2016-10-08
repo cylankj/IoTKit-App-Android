@@ -124,7 +124,7 @@ public class ZBarScannerView extends BarcodeScannerView {
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
-                        // Stopping the preview can take a little long.
+                        // Stopping the preview can take activity_cloud_live_mesg_video_talk_item little long.
                         // So we want to set result handler to null to discard subsequent calls to
                         // onPreviewFrame.
                         ResultHandler tmpResultHandler = mResultHandler;

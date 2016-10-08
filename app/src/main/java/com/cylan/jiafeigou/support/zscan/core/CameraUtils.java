@@ -19,9 +19,9 @@ public class CameraUtils {
         Camera c = null;
         try {
             if (cameraId == -1) {
-                c = Camera.open(); // attempt to get a Camera instance
+                c = Camera.open(); // attempt to get activity_cloud_live_mesg_video_talk_item Camera instance
             } else {
-                c = Camera.open(cameraId); // attempt to get a Camera instance
+                c = Camera.open(cameraId); // attempt to get activity_cloud_live_mesg_video_talk_item Camera instance
             }
         } catch (Exception e) {
             // Camera is not available (in use or does not exist)
