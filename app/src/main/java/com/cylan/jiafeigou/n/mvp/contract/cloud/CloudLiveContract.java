@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
+import com.cylan.jiafeigou.n.mvp.model.CloudLiveBaseBean;
 import com.cylan.jiafeigou.n.mvp.model.CloudLiveMesgBean;
 
 import java.util.List;
@@ -19,7 +20,7 @@ public interface CloudLiveContract {
         void showVoiceTalkDialog(Context context);
         void refreshView(int leftVal,int rightVal);
         void initRecycleView();
-        void refreshRecycleView(CloudLiveMesgBean bean);
+        void refreshRecycleView(CloudLiveBaseBean bean);
     }
 
     interface Presenter extends BasePresenter{
@@ -28,7 +29,7 @@ public interface CloudLiveContract {
         void stopRecord();
         boolean checkSDCard();
         List<CloudLiveMesgBean> getMesgData();
-        void addMesgItem(CloudLiveMesgBean bean);
-        CloudLiveMesgBean creatMesgBean(String voiceLength,String userIconUrl);
+        void addMesgItem(CloudLiveBaseBean bean);
+        CloudLiveBaseBean creatMesgBean();
     }
 }

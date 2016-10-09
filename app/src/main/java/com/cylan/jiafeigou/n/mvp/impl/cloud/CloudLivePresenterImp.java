@@ -15,6 +15,7 @@ import android.widget.ImageView;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.contract.cloud.CloudLiveContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
+import com.cylan.jiafeigou.n.mvp.model.CloudLiveBaseBean;
 import com.cylan.jiafeigou.n.mvp.model.CloudLiveMesgBean;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.widget.CloudLiveVoiceTalkView;
@@ -166,12 +167,12 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
      * desc:添加一个数据
      */
     @Override
-    public void addMesgItem(CloudLiveMesgBean bean) {
+    public void addMesgItem(CloudLiveBaseBean bean) {
         getView().refreshRecycleView(bean);
     }
 
     @Override
-    public CloudLiveMesgBean creatMesgBean(String voiceLength, String userIconUrl) {
-        return new CloudLiveMesgBean(voiceLength,userIconUrl);
+    public CloudLiveBaseBean creatMesgBean() {
+        return new CloudLiveBaseBean();
     }
 }

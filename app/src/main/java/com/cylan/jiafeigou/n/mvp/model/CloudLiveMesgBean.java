@@ -20,5 +20,4 @@ public class CloudLiveMesgBean {
         this.userIcon = userIcon;
     }
 
-
 }
