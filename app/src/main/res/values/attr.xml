@@ -145,4 +145,10 @@
         </item>
         <item name="android:progressDrawable">@drawable/progress_horizontal</item>
     </style>
+
+    <declare-styleable name="msg_box_style">
+        <attr name="mb_circleColor" format="reference|color" />
+        <attr name="mb_textSize" format="reference|dimension" />
+        <attr name="mb_textColor" format="reference|color" />
+    </declare-styleable>
 </resources>

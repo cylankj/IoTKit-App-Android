@@ -23,7 +23,7 @@ import com.cylan.jiafeigou.support.rxbus.RxBus;
 import com.cylan.jiafeigou.utils.ContinuityClickUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.HomeMineItemView;
-import com.cylan.jiafeigou.widget.MsgTextView;
+import com.cylan.jiafeigou.widget.MsgBoxView;
 import com.cylan.jiafeigou.widget.roundedimageview.RoundedImageView;
 
 import butterknife.BindView;
@@ -40,10 +40,9 @@ public class HomeMineFragment extends Fragment
     @BindView(R.id.tv_home_mine_nick)
     TextView tvHomeMineNick;
 
-    @BindView(R.id.rLayout_msg_box)
-    FrameLayout fLayoutMsgBox;
+    //    FrameLayout fLayoutMsgBox;
     @BindView(R.id.tv_home_mine_msg_count)
-    MsgTextView tvHomeMineMsgCount;
+    MsgBoxView tvHomeMineMsgCount;
     @BindView(R.id.rLayout_home_mine_top)
     FrameLayout rLayoutHomeMineTop;
     @BindView(R.id.home_mine_item_friend)
@@ -92,7 +91,7 @@ public class HomeMineFragment extends Fragment
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        ViewUtils.setViewMarginStatusBar(fLayoutMsgBox);
+        ViewUtils.setViewMarginStatusBar(tvHomeMineMsgCount);
     }
 
     @Override
@@ -177,10 +176,8 @@ public class HomeMineFragment extends Fragment
     @Override
     public void onPortraitUpdate(String url) {
         if (getActivity() != null) {
-//            testBlurBackground(R.drawable.clouds);
             ivHomeMinePortrait.setImageResource(R.drawable.clouds);
             if (presenter != null) presenter.portraitBlur(R.drawable.clouds);
-            //presenter.portraitUpdateByUrl(url);
             tvHomeMineMsgCount.post(new Runnable() {
                 @Override
                 public void run() {
@@ -194,7 +191,7 @@ public class HomeMineFragment extends Fragment
     public void onBlur(Drawable drawable) {
         long time = System.currentTimeMillis();
         rLayoutHomeMineTop.setBackground(drawable);
-        AppLogger.e("usetime:%d ms", System.currentTimeMillis() - time);
+        AppLogger.e("use time:%d ms", System.currentTimeMillis() - time);
     }
 
     @Override
@@ -218,7 +215,7 @@ public class HomeMineFragment extends Fragment
 
     @OnClick({R.id.home_mine_item_friend, R.id.home_mine_item_share,
             R.id.home_mine_item_help, R.id.home_mine_item_settings,
-            R.id.shadow_layout, R.id.tv_home_mine_nick, R.id.rLayout_msg_box})
+            R.id.shadow_layout, R.id.tv_home_mine_nick})
     public void onButterKnifeClick(View view) {
         switch (view.getId()) {
             case R.id.home_mine_item_friend:
@@ -270,7 +267,7 @@ public class HomeMineFragment extends Fragment
                         .commit();
                 break;
 
-            case R.id.rLayout_msg_box:
+            case R.id.tv_home_mine_msg_count:
                 getFragmentManager().beginTransaction()
                         .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                                 , R.anim.slide_in_left, R.anim.slide_out_right)
