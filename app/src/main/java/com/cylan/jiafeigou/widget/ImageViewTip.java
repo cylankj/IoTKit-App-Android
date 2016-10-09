@@ -164,6 +164,8 @@ public class ImageViewTip extends ImageView {
     @Override
     protected void onDraw(@NonNull Canvas canvas) {
         super.onDraw(canvas);
+        if (!isShowDot())
+            return;
         if (enableBorder) {
             if (!this.isRoundImage)
                 canvas.drawCircle(getPoint(position).x, getPoint(position).y, getDotRadius() + borderWidth, borderPaint);
@@ -171,12 +173,10 @@ public class ImageViewTip extends ImageView {
                 canvas.drawCircle(getRoundPos(position).x, getRoundPos(position).y, getDotRadius() + borderWidth, borderPaint);
             }
         }
-        if (isShowDot()) {
-            if (!this.isRoundImage)
-                canvas.drawCircle(getPoint(position).x, getPoint(position).y, getDotRadius(), mPointPaint);
-            else {
-                canvas.drawCircle(getRoundPos(position).x, getRoundPos(position).y, getDotRadius(), mPointPaint);
-            }
+        if (!this.isRoundImage)
+            canvas.drawCircle(getPoint(position).x, getPoint(position).y, getDotRadius(), mPointPaint);
+        else {
+            canvas.drawCircle(getRoundPos(position).x, getRoundPos(position).y, getDotRadius(), mPointPaint);
         }
     }
 
