@@ -11,6 +11,7 @@
         <attr name="t_border_color" format="color" />
         <attr name="t_border_width" format="dimension" />
         <attr name="t_enable_border" format="boolean" />
+        <attr name="t_round_image" format="boolean" />
     </declare-styleable>
     <declare-styleable name="WaveTheme">
         <attr name="frontColor" format="color" />

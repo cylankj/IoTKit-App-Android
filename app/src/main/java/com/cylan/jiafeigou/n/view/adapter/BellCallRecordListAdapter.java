@@ -140,7 +140,7 @@ public class BellCallRecordListAdapter extends SuperAdapter<BellCallRecordBean> 
         }
         setSelectState(holder, item);
         if (loadImageListener != null)
-            loadImageListener.loadMedia(item.url, (ImageView) holder.getView(R.id.imgv_bell_call_item_thumbnail));
+            loadImageListener.loadMedia(item, (ImageView) holder.getView(R.id.imgv_bell_call_item_thumbnail));
     }
 
     private void setSelectState(SuperViewHolder holder, BellCallRecordBean item) {
@@ -174,6 +174,6 @@ public class BellCallRecordListAdapter extends SuperAdapter<BellCallRecordBean> 
     }
 
     public interface LoadImageListener {
-        void loadMedia(String url, ImageView imageView);
+        void loadMedia(BellCallRecordBean item, ImageView imageView);
     }
 }

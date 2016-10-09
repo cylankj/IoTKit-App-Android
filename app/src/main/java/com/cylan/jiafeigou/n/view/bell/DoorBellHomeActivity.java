@@ -36,6 +36,7 @@ import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.AnimatorUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.BellTopBackgroundView;
+import com.cylan.jiafeigou.widget.ImageViewTip;
 import com.cylan.utils.RandomUtils;
 
 import java.lang.ref.WeakReference;
@@ -339,9 +340,9 @@ public class DoorBellHomeActivity extends BaseFullScreenFragmentActivity
     }
 
     @Override
-    public void loadMedia(String url, final ImageView imageView) {
+    public void loadMedia(final BellCallRecordBean item, final ImageView imageView) {
         Glide.with(this)
-                .load(url)
+                .load(item.url)
                 .asBitmap()
                 .placeholder(R.drawable.icon_bell_call_place_holder)
                 .centerCrop()
@@ -352,7 +353,10 @@ public class DoorBellHomeActivity extends BaseFullScreenFragmentActivity
                         RoundedBitmapDrawable circularBitmapDrawable =
                                 RoundedBitmapDrawableFactory.create(getContext().getResources(), resource);
                         circularBitmapDrawable.setCircular(true);
-                        imageView.setImageDrawable(circularBitmapDrawable);
+                        if (imageView instanceof ImageViewTip) {
+                            //顺便实现了红点。
+                            ((ImageViewTip) imageView).setImageDrawable(circularBitmapDrawable, item.answerState == 0);
+                        }
                     }
                 });
     }
