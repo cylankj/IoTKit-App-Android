@@ -5,6 +5,8 @@ package com.cylan.jiafeigou.n.mvp.model;
  * modify by lxh on 6/25/16
  */
 public class LoginAccountBean {
+
+
     public String userName;
 
     public String pwd;
@@ -13,6 +15,18 @@ public class LoginAccountBean {
     /**
      * 登陆后的结果，0为成功，
      */
-    public int ret; //
+    public int code; //
 
+    public int event;
+
+    @Override
+    public String toString() {
+        return "LoginAccountBean{" +
+                "userName='" + userName + '\'' +
+                ", pwd='" + pwd + '\'' +
+                ", session='" + session + '\'' +
+                ", code=" + code +
+                ", event=" + event +
+                '}';
+    }
 }

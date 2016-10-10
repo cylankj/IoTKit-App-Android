@@ -11,23 +11,27 @@ import com.cylan.entity.jniCall.JFGDPMsgCount;
 import com.cylan.entity.jniCall.JFGDPMsgRet;
 import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.entity.jniCall.JFGDoorBellCaller;
+import com.cylan.entity.jniCall.JFGFeedbackInfo;
 import com.cylan.entity.jniCall.JFGFriendAccount;
 import com.cylan.entity.jniCall.JFGFriendRequest;
 import com.cylan.entity.jniCall.JFGHistoryVideo;
 import com.cylan.entity.jniCall.JFGHistoryVideoErrorInfo;
-import com.cylan.entity.jniCall.JFGMessageInfo;
 import com.cylan.entity.jniCall.JFGMsgHttpResult;
 import com.cylan.entity.jniCall.JFGMsgVideoDisconn;
 import com.cylan.entity.jniCall.JFGMsgVideoResolution;
 import com.cylan.entity.jniCall.JFGMsgVideoRtcp;
+import com.cylan.entity.jniCall.JFGResult;
 import com.cylan.entity.jniCall.JFGServerCfg;
 import com.cylan.entity.jniCall.JFGShareListInfo;
 import com.cylan.entity.jniCall.RobotMsg;
 import com.cylan.entity.jniCall.RobotoGetDataRsp;
 import com.cylan.jfgapp.interfases.AppCallBack;
 import com.cylan.jfgapp.jni.JfgAppCmd;
+import com.cylan.jiafeigou.cache.JCache;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.support.rxbus.IEventBus;
+import com.cylan.jiafeigou.support.rxbus.RxBus;
 import com.cylan.jiafeigou.support.stat.MtaManager;
 
 import java.util.ArrayList;
@@ -40,9 +44,12 @@ public class DataSourceService extends Service implements AppCallBack {
         System.loadLibrary("sqlcipher");
     }
 
+    private IEventBus eventBus;
+
     @Override
     public void onCreate() {
         super.onCreate();
+        eventBus = RxBus.getInstance();
         initNative();
     }
 
@@ -57,99 +64,101 @@ public class DataSourceService extends Service implements AppCallBack {
     }
 
     private void initNative() {
-        try {
-            JfgAppCmd.initJfgAppCmd(this, this, JConstant.LOG_PATH);
-        } catch (PackageManager.NameNotFoundException e) {
-            AppLogger.d("let's go err:" + e.getLocalizedMessage());
-        }
-        AppLogger.d("let's go initNative:");
-        MtaManager.customEvent(this, "DataSourceService", "NativeInit");
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    JfgAppCmd.initJfgAppCmd(getApplicationContext(), DataSourceService.this,
+                            JConstant.LOG_PATH);
+                } catch (PackageManager.NameNotFoundException e) {
+                    AppLogger.d("let's go err:" + e.getLocalizedMessage());
+                }
+                AppLogger.d("let's go initNative:");
+                MtaManager.customEvent(getApplicationContext(), "DataSourceService", "NativeInit");
+            }
+        }).start();
     }
 
 
     @Override
     public void OnLocalMessage(String s, int i, byte[] bytes) {
-
+        AppLogger.d("OnLocalMessage :");
     }
 
     @Override
     public void OnReportJfgDevices(JFGDevice[] jfgDevices) {
-
+        AppLogger.d("OnLocalMessage :");
     }
 
     @Override
     public void OnUpdateAccount(JFGAccount jfgAccount) {
-
+        AppLogger.d("OnLocalMessage :");
     }
 
     @Override
     public void OnUpdateHistoryVideoList(JFGHistoryVideo jfgHistoryVideo) {
-
+        AppLogger.d("OnLocalMessage :");
     }
 
     @Override
     public void OnUpdateHistoryErrorCode(JFGHistoryVideoErrorInfo jfgHistoryVideoErrorInfo) {
-
+        AppLogger.d("OnLocalMessage :");
     }
 
-    @Override
-    public void OnServerPushMessage(JFGMessageInfo jfgMessageInfo) {
-
-    }
 
     @Override
     public void OnServerConfig(JFGServerCfg jfgServerCfg) {
-
+        AppLogger.d("OnLocalMessage :");
     }
 
     @Override
     public void OnLogoutByServer(int i) {
-
+        AppLogger.d("OnLocalMessage :");
     }
 
     @Override
     public void OnVideoDisconnect(JFGMsgVideoDisconn jfgMsgVideoDisconn) {
-
+        AppLogger.d("OnLocalMessage :");
     }
 
     @Override
     public void OnVideoNotifyResolution(JFGMsgVideoResolution jfgMsgVideoResolution) {
-
+        AppLogger.d("OnLocalMessage :");
     }
 
     @Override
     public void OnVideoNotifyRTCP(JFGMsgVideoRtcp jfgMsgVideoRtcp) {
-
+        AppLogger.d("OnLocalMessage :");
     }
 
     @Override
     public void OnHttpDone(JFGMsgHttpResult jfgMsgHttpResult) {
-
+        AppLogger.d("OnLocalMessage :");
     }
 
     @Override
     public void OnRobotTransmitMsg(RobotMsg robotMsg) {
-
+        AppLogger.d("OnLocalMessage :");
     }
 
     @Override
     public void OnRobotMsgAck(int i) {
-
+        AppLogger.d("OnLocalMessage :");
     }
 
     @Override
     public void OnRobotGetDataRsp(RobotoGetDataRsp robotoGetDataRsp) {
-
+        AppLogger.d("OnLocalMessage :");
     }
 
     @Override
     public void OnRobotSetDataRsp(long l, ArrayList<JFGDPMsgRet> arrayList) {
-
+        AppLogger.d("OnLocalMessage :");
     }
 
     @Override
     public void OnRobotGetDataTimeout(long l) {
-
+        AppLogger.d("OnLocalMessage :");
     }
 
     @Override
@@ -159,91 +168,107 @@ public class DataSourceService extends Service implements AppCallBack {
 
     @Override
     public void OnlineStatus(boolean b) {
-
+        AppLogger.d("OnlineStatus :");
+        JCache.isOnline = b;
     }
 
     @Override
-    public void OnResult(int i, int i1) {
-
+    public void OnResult(JFGResult jfgResult) {
+        eventBus.send(jfgResult);
     }
 
     @Override
     public void OnDoorBellCall(JFGDoorBellCaller jfgDoorBellCaller) {
-
+        AppLogger.d("OnLocalMessage :");
     }
 
     @Override
     public void OnOtherClientAnswerCall() {
-
+        AppLogger.d("OnLocalMessage :");
     }
 
     @Override
     public void OnRobotCountDataRsp(long l, String s, ArrayList<JFGDPMsgCount> arrayList) {
-
+        AppLogger.d("OnLocalMessage :");
     }
 
     @Override
     public void OnRobotDelDataRsp(long l, String s, int i) {
-
+        AppLogger.d("OnLocalMessage :");
     }
 
     @Override
     public void OnRobotSyncData(boolean b, String s, ArrayList<JFGDPMsg> arrayList) {
-
+        AppLogger.d("OnLocalMessage :");
     }
 
     @Override
     public void OnSendSMSResult(int i, String s) {
-
+        AppLogger.d("OnLocalMessage :");
     }
 
     @Override
     public void OnGetFriendListRsp(int i, ArrayList<JFGFriendAccount> arrayList) {
-
+        AppLogger.d("OnLocalMessage :");
     }
 
     @Override
     public void OnGetFriendRequestListRsp(int i, ArrayList<JFGFriendRequest> arrayList) {
-
+        AppLogger.d("OnLocalMessage :");
     }
 
     @Override
     public void OnGetFriendInfoRsp(int i, JFGFriendAccount jfgFriendAccount) {
-
+        AppLogger.d("OnLocalMessage :");
     }
 
     @Override
     public void OnCheckFriendAccountRsp(int i, String s, String s1, boolean b) {
-
+        AppLogger.d("OnLocalMessage :");
     }
 
     @Override
     public void OnShareDeviceRsp(int i, String s, String s1) {
-
+        AppLogger.d("OnShareDeviceRsp :");
     }
 
     @Override
     public void OnUnShareDeviceRsp(int i, String s, String s1) {
-
+        AppLogger.d("OnUnShareDeviceRsp :");
     }
 
     @Override
     public void OnGetShareListRsp(int i, ArrayList<JFGShareListInfo> arrayList) {
-
+        AppLogger.d("OnGetShareListRsp :");
     }
 
     @Override
     public void OnGetUnShareListByCidRsp(int i, ArrayList<JFGFriendAccount> arrayList) {
-
+        AppLogger.d("OnGetUnShareListByCidRsp :");
     }
 
     @Override
     public void OnUpdateNTP(long l) {
-
+        AppLogger.d("OnUpdateNTP :");
     }
 
     @Override
     public void OnEfamilyMsg(byte[] bytes) {
+        AppLogger.d("OnEfamilyMsg :");
+    }
 
+    @Override
+    public void OnForgetPassByEmailRsp(int i, String s) {
+        AppLogger.d("OnForgetPassByEmailRsp :");
+    }
+
+    @Override
+    public void OnGetAliasByCidRsp(int i, String s) {
+        AppLogger.d("OnGetAliasByCidRsp :");
+    }
+
+    @Override
+    public void OnGetFeedbackRsp(int i, ArrayList<JFGFeedbackInfo> arrayList) {
+        AppLogger.d("OnGetFeedbackRsp :");
     }
 }

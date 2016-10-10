@@ -1,8 +1,7 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/fLayoutHomeWonderfulHeaderContainer"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:fitsSystemWindows="true">
+    android:layout_height="wrap_content">
 
     <RelativeLayout
         android:id="@+id/rl_top_head_wonder"

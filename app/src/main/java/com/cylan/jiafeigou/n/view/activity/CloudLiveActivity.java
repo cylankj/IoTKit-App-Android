@@ -34,7 +34,6 @@ import com.cylan.jiafeigou.n.view.cloud.ViewTypeMapCache;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.CloudLiveVoiceTalkView;
-import com.lidroid.xutils.DbUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -72,7 +71,6 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
     private CloudLiveContract.Presenter presenter;
     private List<CloudLiveBaseBean> mData;
     private CloudLiveMesgListAdapter cloudLiveMesgAdapter;
-    private DbUtils db;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

@@ -10,10 +10,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.support.v4.app.ActivityOptionsCompat;
-import android.support.v4.app.Fragment;
-import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
-import android.view.View;
+import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
@@ -21,17 +19,12 @@ import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.mvp.contract.splash.SplashContract;
 import com.cylan.jiafeigou.n.mvp.impl.splash.SplashPresenterImpl;
 import com.cylan.jiafeigou.n.view.activity.NeedLoginActivity;
-import com.cylan.jiafeigou.n.view.adapter.SimpleFragmentAdapter;
 import com.cylan.jiafeigou.n.view.splash.BeforeLoginFragment;
-import com.cylan.jiafeigou.n.view.splash.FragmentSplash;
+import com.cylan.jiafeigou.n.view.splash.GuideFragment;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.IMEUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.UiHelper;
-import com.cylan.jiafeigou.widget.indicator.CirclePageIndicator;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -51,17 +44,8 @@ public class SmartcallActivity extends NeedLoginActivity
 
     @BindView(R.id.fLayout_splash)
     FrameLayout fLayoutSplash;
-    @BindView(R.id.vpWelcome)
-    ViewPager vpWelcome;
-    @BindView(R.id.v_indicator)
-    CirclePageIndicator vIndicator;
     @Nullable
-
     private SplashContract.Presenter presenter;
-
-
-    private List<Fragment> splashFragments;
-    private SimpleFragmentAdapter mSplashListAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,46 +53,64 @@ public class SmartcallActivity extends NeedLoginActivity
         IMEUtils.fixFocusedViewLeak(getApplication());
         setContentView(R.layout.activity_welcome_page);
         ButterKnife.bind(this);
-        initData();
+        initPresenter();
+        if (presenter != null) presenter.start();
+        fullScreen(true);
+    }
+
+    /**
+     * 进入全屏模式
+     *
+     * @param full
+     */
+    private void fullScreen(boolean full) {
+        WindowManager.LayoutParams attrs = getWindow().getAttributes();
+        if (full) {
+            attrs.flags |= WindowManager.LayoutParams.FLAG_FULLSCREEN;
+        } else {
+            attrs.flags &= ~WindowManager.LayoutParams.FLAG_FULLSCREEN;
+        }
+        getWindow().setAttributes(attrs);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        SmartcallActivityPermissionsDispatcher.showWriteSdCardWithCheck(this);
+        SmartcallActivityPermissionsDispatcher.showReadPhoneStateWithCheck(this);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        SmartcallActivityPermissionsDispatcher.showWriteSdCardWithCheck(this);
-        if (presenter != null) presenter.start();
     }
 
     @Override
     protected void onStop() {
         super.onStop();
         if (presenter != null) presenter.stop();
-
     }
 
     protected int[] getOverridePendingTransition() {
         return new int[]{R.anim.alpha_in, R.anim.alpha_out};
     }
 
-    private void initData() {
+    private void initPresenter() {
         presenter = new SplashPresenterImpl(this);
-
     }
 
+    /**
+     * 引导页
+     */
     private void initGuidePage() {
-        if (splashFragments == null) {
-            splashFragments = new ArrayList<>();
-            splashFragments.add(FragmentSplash.newInstance(0));
-            splashFragments.add(FragmentSplash.newInstance(1));
-            splashFragments.add(FragmentSplash.newInstance(2));
-            splashFragments.add(BeforeLoginFragment.newInstance(null));
-            mSplashListAdapter = new SimpleFragmentAdapter(getSupportFragmentManager(), splashFragments);
-            vpWelcome.setAdapter(mSplashListAdapter);
-            vpWelcome.addOnPageChangeListener(new PageChangeListener());
-            vIndicator.setViewPager(vpWelcome);
-        }
+        getSupportFragmentManager().beginTransaction()
+                .add(android.R.id.content, GuideFragment.newInstance())
+                .commit();
     }
 
+    /**
+     * pre-登陆
+     */
     private void initLoginPage() {
         if (isLoginIn()) {
             //进去主页 home page
@@ -121,19 +123,16 @@ public class SmartcallActivity extends NeedLoginActivity
             finish();
         } else {
             //进入登陆页 login page
-            if (splashFragments == null) {
-                splashFragments = new ArrayList<>();
-                splashFragments.add(BeforeLoginFragment.newInstance(null));
-            }
-            mSplashListAdapter = new SimpleFragmentAdapter(getSupportFragmentManager(), splashFragments);
-            vpWelcome.setAdapter(mSplashListAdapter);
+            getSupportFragmentManager().beginTransaction()
+                    .add(android.R.id.content, BeforeLoginFragment.newInstance(null))
+                    .commitAllowingStateLoss();
         }
     }
 
     @Override
     public void splashOver() {
-        fLayoutSplash.setVisibility(View.GONE);
-        //do you business;
+        fullScreen(false);
+        //do your business;
         if (isFirstUseApp()) {
             //第一次打开app
             setFirstUseApp();
@@ -212,6 +211,10 @@ public class SmartcallActivity extends NeedLoginActivity
         showRationaleDialog(R.string.permission_camera_rationale, request);
     }
 
+    @NeedsPermission(Manifest.permission.READ_PHONE_STATE)
+    public void showReadPhoneState() {
+
+    }
 
     private void showRationaleDialog(@StringRes int messageResId, final PermissionRequest request) {
         new AlertDialog.Builder(this)
@@ -239,29 +242,7 @@ public class SmartcallActivity extends NeedLoginActivity
 
     @Override
     public Context getContext() {
-        return null;
-    }
-
-    private class PageChangeListener implements ViewPager.OnPageChangeListener {
-
-        @Override
-        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-            if (position == 2)
-                vIndicator.setAlpha(1.0f - positionOffset);
-        }
-
-        @Override
-        public void onPageSelected(int position) {
-            if (position > 2)
-                vIndicator.setVisibility(android.view.View.GONE);
-            else
-                vIndicator.setVisibility(android.view.View.VISIBLE);
-        }
-
-        @Override
-        public void onPageScrollStateChanged(int state) {
-
-        }
+        return getApplicationContext();
     }
 
 }

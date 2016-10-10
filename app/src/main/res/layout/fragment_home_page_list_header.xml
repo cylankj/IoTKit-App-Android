@@ -1,8 +1,7 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/fLayout_home_page_list_header_container"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:fitsSystemWindows="true">
+    android:layout_height="wrap_content">
 
     <ImageView
         android:id="@+id/img_home_page_header_bg"

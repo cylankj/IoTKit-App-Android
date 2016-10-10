@@ -23,7 +23,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.cache.JCache;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.RxEvent;
@@ -45,7 +47,6 @@ import com.cylan.jiafeigou.support.rxbus.RxBus;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
 import com.cylan.jiafeigou.widget.wave.SuperWaveView;
-import com.cylan.utils.RandomUtils;
 
 import org.msgpack.annotation.NotNullable;
 
@@ -61,7 +62,6 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
-
 
 
 public class HomePageListFragmentExt extends Fragment implements
@@ -249,16 +249,11 @@ public class HomePageListFragmentExt extends Fragment implements
 
     @OnClick(R.id.imgV_add_devices)
     void onClickAddDevice() {
-//        if (!JfgCmd.getJfgCmd(getContext()).isLogined) {
+//        if (!JCache.isOnline) {
 //            if (RxBus.getInstance().hasObservers())
 //                RxBus.getInstance().send(new RxEvent.NeedLoginEvent(null));
 //            return;
 //        }
-        if (RandomUtils.getRandom(2) == JFGRules.LOGOUT) {
-            if (RxBus.getInstance().hasObservers())
-                RxBus.getInstance().send(new RxEvent.NeedLoginEvent(null));
-            return;
-        }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             getActivity().startActivity(new Intent(getActivity(), BindDeviceActivity.class),
                     ActivityOptionsCompat.makeCustomAnimation(getContext(),
@@ -314,6 +309,7 @@ public class HomePageListFragmentExt extends Fragment implements
             if (isResumed()) {
 //                getActivity().findViewById(R.id.vs_empty_view).setVisibility(View.VISIBLE);
             }
+            srLayoutMainContentHolder.setNestedScrollingEnabled(false);
             return;
         }
         homePageListAdapter.addAll(resultList);
@@ -334,6 +330,9 @@ public class HomePageListFragmentExt extends Fragment implements
         //需要优化
         int drawableId = dayTime == JFGRules.RULE_DAY_TIME
                 ? R.drawable.bg_home_title_daytime : R.drawable.bg_home_title_night;
+//        Glide.with(this)
+//                .load(drawableId)
+//                .into(imgHomePageHeaderBg);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             imgHomePageHeaderBg.setBackground(getResources().getDrawable(drawableId, null));
         } else {
@@ -396,7 +395,7 @@ public class HomePageListFragmentExt extends Fragment implements
             } else if (bean.deviceType == JConstant.JFG_DEVICE_BELL) {
                 startActivity(new Intent(getActivity(), DoorBellHomeActivity.class)
                         .putExtra(JConstant.KEY_DEVICE_ITEM_BUNDLE, bundle));
-            }else if (bean.deviceType == JConstant.JFG_DEVICE_ALBUM) {
+            } else if (bean.deviceType == JConstant.JFG_DEVICE_ALBUM) {
                 startActivity(new Intent(getActivity(), CloudLiveActivity.class)
                         .putExtra(JConstant.KEY_DEVICE_ITEM_BUNDLE, bundle));
             }

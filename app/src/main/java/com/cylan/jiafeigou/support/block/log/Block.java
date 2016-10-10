@@ -113,8 +113,8 @@ public final class Block {
 
         if (block.imei == null || block.imei.length() == 0) {
             try {
-                TelephonyManager mTManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
-                block.imei = mTManager.getDeviceId();
+//                TelephonyManager mTManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+//                block.imei = mTManager.getDeviceId();
             } catch (Exception e) {
                 Log.e(TAG, NEW_INSTANCE, e);
                 block.imei = EMPTY_IMEI;

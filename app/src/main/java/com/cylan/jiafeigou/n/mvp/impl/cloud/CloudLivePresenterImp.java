@@ -7,8 +7,11 @@ import com.cylan.jiafeigou.n.mvp.contract.cloud.CloudLiveContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.n.mvp.model.CloudLiveBaseBean;
 import com.cylan.jiafeigou.n.mvp.model.CloudLiveBaseDbBean;
-import com.lidroid.xutils.DbUtils;
-import com.lidroid.xutils.exception.DbException;
+
+import com.cylan.jiafeigou.support.db.DbManager;
+import com.cylan.jiafeigou.support.db.DbManagerImpl;
+import com.cylan.jiafeigou.support.db.ex.DbException;
+
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -19,7 +22,9 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
 import java.util.List;
+
 import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
@@ -47,13 +52,12 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
     private long startTime;
     private long endTime;
 
-    private String output_Path= Environment.getExternalStorageDirectory().getAbsolutePath()
-            + File.separator+"luyin.3gp";
+    private String output_Path = Environment.getExternalStorageDirectory().getAbsolutePath()
+            + File.separator + "luyin.3gp";
 
     private static final String DB_NAME ="cloud_live_db";
 
-    private DbUtils base_db;
-
+    private DbManager base_db;
 
     public CloudLivePresenterImp(CloudLiveContract.View view) {
         super(view);
@@ -67,14 +71,14 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
 
     @Override
     public void stop() {
-        if (talkSub != null){
+        if (talkSub != null) {
             talkSub.unsubscribe();
         }
     }
 
     @Override
     public void startTalk() {
-        talkSub = Observable.interval(500,200,TimeUnit.MILLISECONDS)
+        talkSub = Observable.interval(500, 200, TimeUnit.MILLISECONDS)
                 .subscribeOn(Schedulers.newThread())
                 .map(new Func1<Long, Double>() {
                     @Override
@@ -87,10 +91,10 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
                     @Override
                     public void call(Double value) {
                         int val = updateMicStatus();
-                        val1=val+12;
-                        val2=val;
-                        if(getView() != null)
-                        getView().refreshView(val1,val2);
+                        val1 = val + 12;
+                        val2 = val;
+                        if (getView() != null)
+                            getView().refreshView(val1, val2);
                     }
                 });
     }
@@ -98,10 +102,10 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
     @Override
     public String startRecord() {
 
-        if (mMediaRecorder != null){
+        if (mMediaRecorder != null) {
             mMediaRecorder.stop();
             mMediaRecorder.release();
-            mMediaRecorder=null;
+            mMediaRecorder = null;
         }
 
         try {
@@ -131,11 +135,11 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
     private int updateMicStatus() {
         int voiceVal = 0;
         if (mMediaRecorder != null) {
-            double ratio = (double)mMediaRecorder.getMaxAmplitude()/BASE;
+            double ratio = (double) mMediaRecorder.getMaxAmplitude() / BASE;
             double db = 0;// 分贝
             if (ratio > 1)
                 db = 20 * Math.log10(ratio);
-             voiceVal = (int) db;
+            voiceVal = (int) db;
         }
         return voiceVal;
     }
@@ -164,8 +168,8 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
      */
     @Override
     public void addMesgItem(CloudLiveBaseBean bean) {
-        if(getView() != null)
-        getView().refreshRecycleView(bean);
+        if (getView() != null)
+            getView().refreshRecycleView(bean);
     }
 
     @Override
@@ -176,11 +180,11 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
     @Override
     public String getLeaveMesgLength() {
         String timeLength = "";
-        long time = (endTime - startTime)/1000;
-        if(time / 60 == 0){
-            timeLength = time+"''";
-        }else {
-            timeLength = time/60 + "'"+time%60+"''";
+        long time = (endTime - startTime) / 1000;
+        if (time / 60 == 0) {
+            timeLength = time + "''";
+        } else {
+            timeLength = time / 60 + "'" + time % 60 + "''";
         }
         return timeLength;
     }
@@ -198,19 +202,15 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
      * desc:创建数据库
      */
     @Override
+
     public void createDB() {
-        DbUtils.DaoConfig config = new DbUtils.DaoConfig(getView().getContext());
+        DbManager.DaoConfig config = new DbManager.DaoConfig();
         config.setDbName(DB_NAME); //db名
         config.setDbVersion(1);  //db版本
         config.setDbUpgradeListener(new MyDbLisenter());
-        base_db = DbUtils.create(config);
-        base_db.configAllowTransaction(true);    //开启事物
+        config.setAllowTransaction(true);
+        base_db = DbManagerImpl.getInstance(config);
 
-        try {
-            base_db.createTableIfNotExist(CloudLiveBaseDbBean.class); //创建一个表
-        } catch (DbException e) {
-            e.printStackTrace();
-        }
     }
 
     @Override
@@ -271,15 +271,15 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
         return allData;
     }
 
-    public class MyDbLisenter implements DbUtils.DbUpgradeListener{
+    public class MyDbLisenter implements DbManager.DbUpgradeListener {
 
         @Override
-        public void onUpgrade(DbUtils dbUtils, int oldVersion, int newVersion) {
+        public void onUpgrade(DbManager DbManager, int oldVersion, int newVersion) {
             try {
                 if (oldVersion == 1 && newVersion == 2) {
-                    String sql = "ALTER TABLE " + dbUtils.getDaoConfig().getDbName()
+                    String sql = "ALTER TABLE " + DbManager.getDaoConfig().getDbName()
                             + " ADD COLUMN TEMP TEXT";
-                    dbUtils.execNonQuery(sql);
+                    DbManager.execNonQuery(sql);
                 }
             } catch (DbException e) {
                 e.printStackTrace();

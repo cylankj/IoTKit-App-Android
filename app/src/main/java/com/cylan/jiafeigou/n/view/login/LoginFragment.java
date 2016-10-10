@@ -23,17 +23,19 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
+import com.cylan.constants.JfgConstants;
 import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.NewHomeActivity;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.SmartcallActivity;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.misc.RxEvent;
 import com.cylan.jiafeigou.n.mvp.contract.login.LoginModelContract;
 import com.cylan.jiafeigou.n.mvp.impl.ForgetPwdPresenterImpl;
 import com.cylan.jiafeigou.n.mvp.impl.SetupPwdPresenterImpl;
 import com.cylan.jiafeigou.n.mvp.model.LoginAccountBean;
-import com.cylan.jiafeigou.utils.AnimatorUtils;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.AnimatorUtils;
 import com.cylan.jiafeigou.utils.IMEUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
@@ -168,6 +170,7 @@ public class LoginFragment extends android.support.v4.app.Fragment implements Lo
         }
         decideRegisterWay();
         initView();
+        showRegisterPage();
     }
 
     @Override
@@ -189,6 +192,16 @@ public class LoginFragment extends android.support.v4.app.Fragment implements Lo
     @Override
     public Animation onCreateAnimation(int transit, boolean enter, int nextAnim) {
         return super.onCreateAnimation(transit, enter, nextAnim);
+    }
+
+    /**
+     * 不同的入口，在beforeLogin页面点击注册，进入主页页面；否则默认。
+     */
+    private void showRegisterPage() {
+        Bundle bundle = getArguments();
+        if (bundle != null && bundle.containsKey(RxEvent.NeedLoginEvent.KEY)) {
+            switchBox();
+        }
     }
 
     /**
@@ -424,9 +437,13 @@ public class LoginFragment extends android.support.v4.app.Fragment implements Lo
 
     @Override
     public void loginResult(final LoginAccountBean login) {
-        if (login != null && login.ret == 0) {
-            getContext().startActivity(new Intent(getContext(), NewHomeActivity.class));
-            getActivity().finish();
+        if (login != null && login.event == RxEvent.ResultEvent.JFG_RESULT_LOGIN) {
+            if (login.code == JfgConstants.RESULT_OK) {
+                getContext().startActivity(new Intent(getContext(), NewHomeActivity.class));
+                getActivity().finish();
+            } else {
+                resetView();
+            }
         } else {
             resetView();
         }

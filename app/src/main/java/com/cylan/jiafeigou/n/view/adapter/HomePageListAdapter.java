@@ -22,9 +22,9 @@ import java.util.Locale;
 
 public class HomePageListAdapter extends SuperAdapter<DeviceBean> {
 
-    final static int[] deviceIconOnlineRes = {R.drawable.icon_home_doorbell_online, R.drawable.icon_home_camera_online, R.drawable.icon_home_album_online, R.drawable.icon_home_magnetic_online};
-    final static int[] deviceIconOfflineRes = {R.drawable.icon_home_doorbell_offline, R.drawable.icon_home_camera_offline, R.drawable.icon_home_album_offline, R.drawable.icon_home_magnetic_offline};
-    final static int[] msgContentRes = {R.string.receive_new_news, R.string.receive_new_news, R.string.receive_new_news, R.string.receive_new_news};
+    private final static int[] deviceIconOnlineRes = {R.drawable.icon_home_doorbell_online, R.drawable.icon_home_camera_online, R.drawable.icon_home_album_online, R.drawable.icon_home_magnetic_online};
+    private final static int[] deviceIconOfflineRes = {R.drawable.icon_home_doorbell_offline, R.drawable.icon_home_camera_offline, R.drawable.icon_home_album_offline, R.drawable.icon_home_magnetic_offline};
+    private final static int[] msgContentRes = {R.string.receive_new_news, R.string.receive_new_news, R.string.receive_new_news, R.string.receive_new_news};
     private DeviceItemClickListener deviceItemClickListener;
     private DeviceItemLongClickListener deviceItemLongClickListener;
 

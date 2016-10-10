@@ -5,19 +5,20 @@ import android.content.Context;
 import android.os.Bundle;
 import android.text.TextUtils;
 
+import com.cylan.entity.jniCall.JFGResult;
+import com.cylan.jfgapp.jni.JfgAppCmd;
 import com.cylan.jiafeigou.n.mvp.contract.login.LoginModelContract;
 import com.cylan.jiafeigou.n.mvp.model.LoginAccountBean;
+import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.rxbus.RxBus;
 import com.cylan.jiafeigou.support.sina.AccessTokenKeeper;
 import com.cylan.jiafeigou.support.sina.SinaWeiboUtil;
 import com.cylan.jiafeigou.support.sina.UsersAPI;
 import com.cylan.jiafeigou.support.tencent.TencentLoginUtils;
-import com.cylan.jiafeigou.support.log.AppLogger;
 import com.sina.weibo.sdk.auth.Oauth2AccessToken;
 import com.sina.weibo.sdk.auth.WeiboAuthListener;
 import com.sina.weibo.sdk.exception.WeiboException;
 import com.sina.weibo.sdk.net.RequestListener;
-;
 import com.tencent.tauth.IUiListener;
 import com.tencent.tauth.UiError;
 
@@ -28,19 +29,23 @@ import java.util.concurrent.TimeUnit;
 
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
+import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
+
+;
 
 /**
  * Created by lxh on 16-6-24.
  */
 public class LoginPresenterImpl extends AbstractPresenter<LoginModelContract.View> implements LoginModelContract.Presenter {
 
-    //    private JfgCmd cmd;
-    Context ctx;
-    CompositeSubscription subscription;
+    private JfgAppCmd cmd;
+    private Context ctx;
+    private CompositeSubscription subscription;
 
     public LoginPresenterImpl(LoginModelContract.View view) {
         super(view);
+        cmd = JfgAppCmd.getInstance();
         view.setPresenter(this);
         ctx = view.getContext();
     }
@@ -48,34 +53,41 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginModelContract.Vie
     @Override
     public void executeLogin(LoginAccountBean login) {
         if (login != null) {
-            if (!TextUtils.isEmpty(login.session)) {
-//                cmd.reLogin(login.session);
-            } else {
-//                cmd.login(login.userName, login.pwd, "");
-            }
+            rx.Observable.just(login)
+                    .subscribeOn(Schedulers.newThread())
+                    .subscribe(new Action1<LoginAccountBean>() {
+                        @Override
+                        public void call(LoginAccountBean o) {
+                            cmd.login(o.userName, o.pwd);
+                        }
+                    }, new Action1<Throwable>() {
+                        @Override
+                        public void call(Throwable throwable) {
+                            AppLogger.e("executeLogin: " + throwable.getLocalizedMessage());
+                        }
+                    });
         }
     }
 
-
     @Override
     public void start() {
-//        cmd = JfgCmd.getCmd();
         subscription = new CompositeSubscription();
-        subscription.add(
-                RxBus.getInstance()
-                        .toObservable()
-                        .delay(3000, TimeUnit.MILLISECONDS)
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new Action1<Object>() {
-                            @Override
-                            public void call(Object o) {
-                                if (o instanceof LoginAccountBean) {
-                                    getView().loginResult((LoginAccountBean) o);
-                                }
-                            }
-                        })
-        );
-
+        subscription.add(RxBus.getInstance()
+                .toObservable()
+                .delay(1000, TimeUnit.MILLISECONDS)//set a delay
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<Object>() {
+                    @Override
+                    public void call(Object o) {
+                        if (o instanceof JFGResult) {
+                            LoginAccountBean bean = new LoginAccountBean();
+                            bean.code = ((JFGResult) o).code;
+                            bean.event = ((JFGResult) o).event;
+                            AppLogger.d("LoginAccountBean: " + bean.toString());
+                            getView().loginResult(bean);
+                        }
+                    }
+                }));
     }
 
     @Override

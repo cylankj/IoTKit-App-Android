@@ -66,6 +66,7 @@ public class NeedLoginActivity extends BaseFullScreenFragmentActivity {
             fragment = LoginFragment.newInstance(extra);
             loginFragmentWeakReference = new WeakReference<>(fragment);
         }
+        fragment.setArguments(extra);
         if (loginPresenterWeakReference != null && loginPresenterWeakReference.get() != null) {
             fragment.setPresenter(loginPresenterWeakReference.get());
         } else loginPresenterWeakReference = new WeakReference<>(new LoginPresenterImpl(fragment));

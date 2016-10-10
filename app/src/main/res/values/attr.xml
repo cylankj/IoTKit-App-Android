@@ -11,6 +11,7 @@
         <attr name="t_border_color" format="color" />
         <attr name="t_border_width" format="dimension" />
         <attr name="t_enable_border" format="boolean" />
+        <attr name="t_round_image" format="boolean" />
     </declare-styleable>
     <declare-styleable name="WaveTheme">
         <attr name="frontColor" format="color" />
@@ -130,5 +131,25 @@
         <attr name="ls_inner_color" format="reference|color" />
         <attr name="ls_outer_color" format="reference|color" />
     </declare-styleable>
+    <declare-styleable name="guide_indicator_style">
+        <attr name="g_normal_color" format="reference|color" />
+        <attr name="g_focused_color" format="reference|color" />
+        <attr name="g_circle_radius" format="reference|dimension" />
+    </declare-styleable>
 
+    <style name="progressBar_style" parent="@android:style/Widget.ProgressBar.Horizontal">
+        <item name="android:maxHeight">50dip</item>
+        <item name="android:minHeight">8dip</item>
+        <item name="android:indeterminateOnly">false</item>
+        <item name="android:indeterminateDrawable">
+            @android:drawable/progress_indeterminate_horizontal
+        </item>
+        <item name="android:progressDrawable">@drawable/progress_horizontal</item>
+    </style>
+
+    <declare-styleable name="msg_box_style">
+        <attr name="mb_circleColor" format="reference|color" />
+        <attr name="mb_textSize" format="reference|dimension" />
+        <attr name="mb_textColor" format="reference|color" />
+    </declare-styleable>
 </resources>

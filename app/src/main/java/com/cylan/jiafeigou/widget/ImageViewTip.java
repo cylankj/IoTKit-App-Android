@@ -6,6 +6,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PointF;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.widget.ImageView;
@@ -28,6 +29,10 @@ public class ImageViewTip extends ImageView {
     private int pointColor = Color.BLACK;
     private int borderWidth = 0;
     /**
+     * 圆形image,bitmap
+     */
+    private boolean isRoundImage = false;
+    /**
      * 总共有8个位置,“米”各个角，左上角为0,顺时针增加。
      */
 
@@ -36,7 +41,7 @@ public class ImageViewTip extends ImageView {
      * 7---3
      * 6-5-4
      */
-    private int position = 7;
+    private int position = 0;
 
     private boolean ignorePadding = false;
 
@@ -71,6 +76,7 @@ public class ImageViewTip extends ImageView {
 
         this.enableBorder = a.getBoolean(R.styleable.ImageViewTipsTheme_t_enable_border, false);
 //        enableBoarder(enableBorder);
+        this.isRoundImage = a.getBoolean(R.styleable.ImageViewTipsTheme_t_round_image, false);
         a.recycle();
         init();
     }
@@ -158,11 +164,60 @@ public class ImageViewTip extends ImageView {
     @Override
     protected void onDraw(@NonNull Canvas canvas) {
         super.onDraw(canvas);
+        if (!isShowDot())
+            return;
         if (enableBorder) {
-            canvas.drawCircle(getPoint(position).x, getPoint(position).y, getDotRadius() + borderWidth, borderPaint);
+            if (!this.isRoundImage)
+                canvas.drawCircle(getPoint(position).x, getPoint(position).y, getDotRadius() + borderWidth, borderPaint);
+            else {
+                canvas.drawCircle(getRoundPos(position).x, getRoundPos(position).y, getDotRadius() + borderWidth, borderPaint);
+            }
         }
-        if (isShowDot()) {
+        if (!this.isRoundImage)
             canvas.drawCircle(getPoint(position).x, getPoint(position).y, getDotRadius(), mPointPaint);
+        else {
+            canvas.drawCircle(getRoundPos(position).x, getRoundPos(position).y, getDotRadius(), mPointPaint);
         }
+    }
+
+    /**
+     * 只有0,2,4,6才有效
+     *
+     * @param position
+     * @return
+     */
+    private PointF getRoundPos(int position) {
+        PointF rectF = new PointF();
+        if (position == 1 || position == 3 || position == 5 || position == 7)
+            return rectF;
+        final float tmp = (float) (getWidth() / 2 - getWidth() / 2 * Math.cos(Math.PI / 4));
+        if (position == 0) {
+            rectF.x = x[pos[position][0]] + tmp - getDotRadius() - borderWidth;
+            rectF.y = y[pos[position][1]] + tmp - getDotRadius() - borderWidth;
+        }
+        if (position == 2) {
+            rectF.x = x[pos[position][0]] - tmp + getDotRadius() + borderWidth;
+            rectF.y = y[pos[position][1]] + tmp - getDotRadius() - borderWidth;
+        }
+        if (position == 4) {
+            rectF.x = x[pos[position][0]] - tmp + getDotRadius() + borderWidth;
+            rectF.y = y[pos[position][1]] - tmp + getDotRadius() + borderWidth;
+        }
+        if (position == 6) {
+            rectF.x = x[pos[position][0]] + tmp - getDotRadius() - borderWidth;
+            rectF.y = y[pos[position][1]] - tmp + getDotRadius() + borderWidth;
+        }
+        return rectF;
+    }
+
+    /**
+     * 方法重载，
+     *
+     * @param drawable
+     * @param showDot
+     */
+    public void setImageDrawable(Drawable drawable, boolean showDot) {
+        super.setImageDrawable(drawable);
+        this.showDot = showDot;
     }
 }

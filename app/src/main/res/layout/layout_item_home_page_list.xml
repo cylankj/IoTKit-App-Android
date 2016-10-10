@@ -19,7 +19,7 @@
         hunt:t_border_width="1dp"
         hunt:t_enable_border="true"
         hunt:t_ignore="true"
-        hunt:t_point_color="@color/color_F43531"
+        hunt:t_point_color="@color/color_red_dot_f43531"
         hunt:t_radius="4dp"
         hunt:t_show_point="true" />
 

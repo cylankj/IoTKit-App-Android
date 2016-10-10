@@ -53,4 +53,19 @@
         <!--L click style-->
         <item name="android:background">?attr/selectableItemBackgroundBorderless</item>
     </style>
+
+    <!--java.lang.IllegalArgumentException: AppCompat does not support the current theme features: {
+     windowActionBar: false, windowActionBarOverlay: false,
+      android:windowIsFloating: false,
+       windowActionModeOverlay: true,
+       windowNoTitle: false }-->
+    <style name="dialog_activity_style" parent="@android:style/Theme.Holo.Light.Dialog">
+        <item name="android:windowNoTitle">true</item>
+        <!--<item name="android:windowTitleBackgroundStyle">@android:color/transparent</item>-->
+        <!--<item name="windowActionBar">false</item> -->
+        <item name="android:windowSoftInputMode">stateAlwaysHidden</item>
+        <!--<item name="android:windowActionModeOverlay">true</item>-->
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="windowNoTitle">true</item>
+    </style>
 </resources>

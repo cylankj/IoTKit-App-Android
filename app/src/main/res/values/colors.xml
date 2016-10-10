@@ -85,8 +85,10 @@
     <color name="color_33FF1744">#33FF1744</color>
     <color name="color_FF1744">#FF1744</color>
     <color name="color_41B56A">#41B56A</color>
-    <color name="color_F43531">#F43531</color>
+    <color name="color_red_dot_f43531">#F43531</color>
     <color name="color_3341B56A">#3341B56A</color>
+    <color name="color_5e97df">#5e97df</color>
+    <color name="color_84bcfb">#84bcfb</color>
 
 
     <color name="background_tab_pressed">#6633B5E5</color>

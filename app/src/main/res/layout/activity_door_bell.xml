@@ -8,12 +8,11 @@
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/bg_bell_home_online">
+        android:layout_height="wrap_content">
 
         <com.cylan.jiafeigou.widget.BellTopBackgroundView
             android:id="@+id/cv_bell_home_background"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
         <FrameLayout

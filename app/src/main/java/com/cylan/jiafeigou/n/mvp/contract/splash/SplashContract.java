@@ -10,6 +10,9 @@ public interface SplashContract {
 
 
     interface View extends BaseView<Presenter> {
+        /**
+         * 闪屏结束
+         */
         void splashOver();
 
         void finishDelayed();
