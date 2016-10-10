@@ -309,6 +309,7 @@ public class HomePageListFragmentExt extends Fragment implements
             if (isResumed()) {
 //                getActivity().findViewById(R.id.vs_empty_view).setVisibility(View.VISIBLE);
             }
+            srLayoutMainContentHolder.setNestedScrollingEnabled(false);
             return;
         }
         homePageListAdapter.addAll(resultList);
