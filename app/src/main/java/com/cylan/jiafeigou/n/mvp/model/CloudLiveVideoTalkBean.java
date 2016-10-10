@@ -14,5 +14,26 @@ public class CloudLiveVideoTalkBean {
         this.videoLength = videoLength;
     }
 
+
+
+    public boolean isHasConnet() {
+        return hasConnet;
+    }
+
+    public void setHasConnet(boolean hasConnet) {
+        this.hasConnet = hasConnet;
+    }
+
+    public String getVideoTime() {
+        return videoTime;
+    }
+
+    public void setVideoTime(String videoTime) {
+        this.videoTime = videoTime;
+    }
+
+    public String videoTime;
+    public boolean hasConnet;
     public String videoLength;
+
 }

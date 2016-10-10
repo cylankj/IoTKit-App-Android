@@ -67,9 +67,6 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
     private CloudLiveVoiceTalkView right_voice;
     private TextView tv_show_mesg;
 
-
-    private List<CloudLiveMesgBean> cloudMesgList;
-
     private CloudLiveContract.Presenter presenter;
     private List<CloudLiveBaseBean> mData;
     private CloudLiveMesgListAdapter cloudLiveMesgAdapter;
@@ -82,22 +79,12 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
         getIntentData();
         initFragment();
         initPresenter();
-
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        //initMesgData();
         initRecycleView();
-    }
-
-    /**
-     * desc:初始化要显示的数据
-     */
-    private void initMesgData() {
-        cloudMesgList = new ArrayList<>();
-        cloudMesgList.addAll(presenter.getMesgData());
     }
 
     private void initPresenter() {
@@ -176,6 +163,8 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
                 newBean.setType(1);
                 CloudLiveVideoTalkBean newLeaveBean = new CloudLiveVideoTalkBean();
                 newLeaveBean.setVideoLength("通话时长30''");
+                newLeaveBean.setHasConnet(false);
+                newLeaveBean.setVideoTime(presenter.parseTime(System.currentTimeMillis()+""));
                 newBean.setData(newLeaveBean);
                 presenter.addMesgItem(newBean);
                 //TODO 获取通话时长
@@ -220,6 +209,9 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
 
         iv_voice_delete = (ImageView) dialogView.findViewById(R.id.iv_voice_delete);
         iv_voice_delete.setOnTouchListener(new View.OnTouchListener() {
+
+            private String leaveMesgUrl;                        //录音的地址
+
             @Override
             public boolean onTouch(View v, MotionEvent event) {
 
@@ -231,7 +223,7 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
                             return false;
                         }
                         tv_show_mesg.setText("松开发送");
-                        presenter.startRecord();
+                        leaveMesgUrl = presenter.startRecord();
                         presenter.startTalk();
                         return true;
                     }
@@ -239,21 +231,23 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
                         return true;
                     }
                     case MotionEvent.ACTION_UP:{
-                        //TODO 获取到留言时间
-                        tv_show_mesg.setText("按下留言ovo");
+                        tv_show_mesg.setText("按下留言");
+                        presenter.stopRecord();
+                        ToastUtil.showToast(getContext(),leaveMesgUrl);
                         CloudLiveBaseBean newBean = presenter.creatMesgBean();
                         newBean.setType(0);
                         CloudLiveLeaveMesBean newLeaveBean = new CloudLiveLeaveMesBean();
-                        newLeaveBean.setLeaveMesgLength("99''");
+                        newLeaveBean.setLeaveMesgLength(presenter.getLeaveMesgLength());
+                        newLeaveBean.setLeaveMesgUrl(leaveMesgUrl);
+                        newLeaveBean.setRead(false);
+                        newLeaveBean.setLeveMesgTime(presenter.parseTime(System.currentTimeMillis()+""));
                         newBean.setData(newLeaveBean);
                         presenter.addMesgItem(newBean);
-                        presenter.stopRecord();
                         return true;
                     }
                     default:
                         return false;
                 }
-
             }
         });
         dialog.show();

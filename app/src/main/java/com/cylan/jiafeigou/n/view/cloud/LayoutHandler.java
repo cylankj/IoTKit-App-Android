@@ -1,6 +1,7 @@
 package com.cylan.jiafeigou.n.view.cloud;
 
 import android.util.Log;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
@@ -35,8 +36,6 @@ public class LayoutHandler {
 
     public void handleLayout(SuperViewHolder holder, int viewType, int layoutPosition, CloudLiveBaseBean items) {
         Object o = items.data;
-        Log.d("LayoutHandler", "LayoutHandler: " + layoutPosition + " cache:" + o);
-
         LinearLayout.LayoutParams item = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT);
         if(layoutPosition != 0){
             item.setMargins(0, ViewUtils.dp2px(30),0,0);
@@ -47,15 +46,26 @@ public class LayoutHandler {
         }
 
         switch (viewType){
-            case 0:
+            case LEAVE_MESG_TYPE:
                 CloudLiveLeaveMesBean cc = (CloudLiveLeaveMesBean) o;
                 holder.setText(R.id.tv_voice_length,cc.getLeaveMesgLength());
-                LogUtil.d("iiiiiiiiiiiiii",cc.getLeaveMesgLength());
+                holder.setText(R.id.tv_time,cc.getLeveMesgTime());
+                if(cc.isRead()){
+                    holder.setVisibility(R.id.tv_is_read, View.VISIBLE);
+                }else {
+                    holder.setVisibility(R.id.tv_is_read, View.INVISIBLE);
+                }
                 break;
 
-            case 1:
+            case VIDEO_TALK_TYPE:
                 CloudLiveVideoTalkBean videoBean = (CloudLiveVideoTalkBean) o;
-                holder.setText(R.id.tv_voideo_talk_length,"未接听，点击回拨");
+                holder.setText(R.id.tv_time,videoBean.getVideoTime());
+
+                if (videoBean.isHasConnet()){
+                    holder.setText(R.id.tv_voideo_talk_length,videoBean.getVideoLength());
+                }else {
+                    holder.setText(R.id.tv_voideo_talk_length,"未接听，点击回拨");
+                }
                 break;
         }
 

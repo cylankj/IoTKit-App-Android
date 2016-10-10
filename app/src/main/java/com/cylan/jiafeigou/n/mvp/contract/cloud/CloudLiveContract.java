@@ -6,6 +6,7 @@ import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
 import com.cylan.jiafeigou.n.mvp.model.CloudLiveBaseBean;
 import com.cylan.jiafeigou.n.mvp.model.CloudLiveMesgBean;
+import com.lidroid.xutils.DbUtils;
 
 import java.util.List;
 
@@ -24,12 +25,14 @@ public interface CloudLiveContract {
     }
 
     interface Presenter extends BasePresenter{
-        void startRecord();
+        String startRecord();
         void startTalk();
         void stopRecord();
         boolean checkSDCard();
-        List<CloudLiveMesgBean> getMesgData();
         void addMesgItem(CloudLiveBaseBean bean);
         CloudLiveBaseBean creatMesgBean();
+        String getLeaveMesgLength();
+        String parseTime(String times);
+        DbUtils createBaseDB();
     }
 }

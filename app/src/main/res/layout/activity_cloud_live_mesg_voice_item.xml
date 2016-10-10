@@ -51,6 +51,7 @@
         </LinearLayout>
 
         <TextView
+            android:id="@+id/tv_is_read"
             android:layout_marginRight="10dp"
             android:layout_toLeftOf="@id/ll_voice_container"
             android:layout_centerVertical="true"

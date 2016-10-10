@@ -23,7 +23,25 @@ public class CloudLiveLeaveMesBean {
         isRead = read;
     }
 
-    public String leaveMesgLength;
+    public String getLeaveMesgUrl() {
+        return leaveMesgUrl;
+    }
+
+    public void setLeaveMesgUrl(String leaveMesgUrl) {
+        this.leaveMesgUrl = leaveMesgUrl;
+    }
+
+    public String getLeveMesgTime() {
+        return leveMesgTime;
+    }
+
+    public void setLeveMesgTime(String leveMesgTime) {
+        this.leveMesgTime = leveMesgTime;
+    }
+
+    public String leaveMesgUrl;
     public boolean isRead;
+    public String leaveMesgLength;
+    public String leveMesgTime;
 
 }
