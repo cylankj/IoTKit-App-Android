@@ -5,9 +5,11 @@ import android.content.Context;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
 import com.cylan.jiafeigou.n.mvp.model.CloudLiveBaseBean;
+import com.cylan.jiafeigou.n.mvp.model.CloudLiveBaseDbBean;
 import com.cylan.jiafeigou.n.mvp.model.CloudLiveMesgBean;
 import com.lidroid.xutils.DbUtils;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -33,6 +35,10 @@ public interface CloudLiveContract {
         CloudLiveBaseBean creatMesgBean();
         String getLeaveMesgLength();
         String parseTime(String times);
-        DbUtils createBaseDB();
+        void createDB();
+        byte[] getSerializedObject(Serializable s);
+        Object readSerializedObject(byte[] in);
+        void saveIntoDb(CloudLiveBaseDbBean bean);
+        List<CloudLiveBaseDbBean> findFromAllDb();
     }
 }

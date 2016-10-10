@@ -22,6 +22,7 @@ import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
 import com.cylan.jiafeigou.n.mvp.contract.cloud.CloudLiveContract;
 import com.cylan.jiafeigou.n.mvp.impl.cloud.CloudLivePresenterImp;
 import com.cylan.jiafeigou.n.mvp.model.CloudLiveBaseBean;
+import com.cylan.jiafeigou.n.mvp.model.CloudLiveBaseDbBean;
 import com.cylan.jiafeigou.n.mvp.model.CloudLiveLeaveMesBean;
 import com.cylan.jiafeigou.n.mvp.model.CloudLiveMesgBean;
 import com.cylan.jiafeigou.n.mvp.model.CloudLiveVideoTalkBean;
@@ -33,6 +34,7 @@ import com.cylan.jiafeigou.n.view.cloud.ViewTypeMapCache;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.CloudLiveVoiceTalkView;
+import com.lidroid.xutils.DbUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -70,6 +72,7 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
     private CloudLiveContract.Presenter presenter;
     private List<CloudLiveBaseBean> mData;
     private CloudLiveMesgListAdapter cloudLiveMesgAdapter;
+    private DbUtils db;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -79,6 +82,11 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
         getIntentData();
         initFragment();
         initPresenter();
+        initDataBase();
+    }
+
+    private void initDataBase() {
+        presenter.createDB();
     }
 
     @Override
@@ -167,6 +175,13 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
                 newLeaveBean.setVideoTime(presenter.parseTime(System.currentTimeMillis()+""));
                 newBean.setData(newLeaveBean);
                 presenter.addMesgItem(newBean);
+
+                //添加到数据库
+                CloudLiveBaseDbBean dbBean = new CloudLiveBaseDbBean();
+                dbBean.setType(1);
+                dbBean.setData(presenter.getSerializedObject(newLeaveBean));
+                presenter.saveIntoDb(dbBean);
+
                 //TODO 获取通话时长
             }
         });
@@ -231,7 +246,7 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
                         return true;
                     }
                     case MotionEvent.ACTION_UP:{
-                        tv_show_mesg.setText("按下留言");
+                        tv_show_mesg.setText("按下留言kok");
                         presenter.stopRecord();
                         ToastUtil.showToast(getContext(),leaveMesgUrl);
                         CloudLiveBaseBean newBean = presenter.creatMesgBean();
@@ -243,6 +258,12 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
                         newLeaveBean.setLeveMesgTime(presenter.parseTime(System.currentTimeMillis()+""));
                         newBean.setData(newLeaveBean);
                         presenter.addMesgItem(newBean);
+
+                        //保存到数据库
+                        CloudLiveBaseDbBean dbBean = new CloudLiveBaseDbBean();
+                        dbBean.setType(0);
+                        dbBean.setData(presenter.getSerializedObject(newLeaveBean));
+                        presenter.saveIntoDb(dbBean);
                         return true;
                     }
                     default:
@@ -284,12 +305,13 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
     private List<CloudLiveBaseBean> creatList() {
 
         List<CloudLiveBaseBean> list = new ArrayList<>();
-        CloudLiveBaseBean bean = new CloudLiveBaseBean();
-        bean.setType(0);
-        CloudLiveLeaveMesBean bb = new CloudLiveLeaveMesBean();
-        bb.setLeaveMesgLength("77''");
-        bean.setData(bb);
-        list.add(bean);
+        List<CloudLiveBaseDbBean> fromAllDb = presenter.findFromAllDb();
+        for(CloudLiveBaseDbBean dBbean:fromAllDb){
+            CloudLiveBaseBean newBean = new CloudLiveBaseBean();
+            newBean.setType(dBbean.getType());
+            newBean.setData(presenter.readSerializedObject(dBbean.getData()));
+            list.add(newBean);
+        }
         //TODO 网络获取消息记录
         return list;
     }

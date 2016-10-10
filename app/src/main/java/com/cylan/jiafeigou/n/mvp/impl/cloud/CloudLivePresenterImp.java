@@ -1,44 +1,31 @@
 package com.cylan.jiafeigou.n.mvp.impl.cloud;
 
-import android.app.Dialog;
-import android.content.Context;
 import android.media.MediaRecorder;
 import android.os.Environment;
-import android.os.Handler;
-import android.view.Gravity;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
-import android.widget.ImageView;
 
-import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.contract.cloud.CloudLiveContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.n.mvp.model.CloudLiveBaseBean;
-import com.cylan.jiafeigou.n.mvp.model.CloudLiveLeaveMesBean;
-import com.cylan.jiafeigou.n.mvp.model.CloudLiveMesgBean;
-import com.cylan.jiafeigou.n.mvp.model.CloudLiveVideoTalkBean;
-import com.cylan.jiafeigou.utils.ToastUtil;
-import com.cylan.jiafeigou.widget.CloudLiveVoiceTalkView;
+import com.cylan.jiafeigou.n.mvp.model.CloudLiveBaseDbBean;
 import com.lidroid.xutils.DbUtils;
 import com.lidroid.xutils.exception.DbException;
-import com.sina.weibo.sdk.utils.LogUtil;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
-import rx.functions.Func0;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
@@ -63,15 +50,10 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
     private String output_Path= Environment.getExternalStorageDirectory().getAbsolutePath()
             + File.separator+"luyin.3gp";
 
-
-    private static final String BASE_DB ="base_db";
-    private static final String LEAVE_MESG_DB ="leave_mesg_db";
-    private static final String VIDEO_TALK_DB ="video_talk_db";
-
+    private static final String DB_NAME ="cloud_live_db";
 
     private DbUtils base_db;
-    private DbUtils leave_mesg_db;
-    private DbUtils video_talk_db;
+
 
     public CloudLivePresenterImp(CloudLiveContract.View view) {
         super(view);
@@ -216,37 +198,77 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
      * desc:创建数据库
      */
     @Override
-    public DbUtils createBaseDB() {
+    public void createDB() {
         DbUtils.DaoConfig config = new DbUtils.DaoConfig(getView().getContext());
-        config.setDbName(BASE_DB); //db名
+        config.setDbName(DB_NAME); //db名
         config.setDbVersion(1);  //db版本
         config.setDbUpgradeListener(new MyDbLisenter());
         base_db = DbUtils.create(config);
         base_db.configAllowTransaction(true);    //开启事物
 
-        DbUtils.DaoConfig leave_db_config = new DbUtils.DaoConfig(getView().getContext());
-        leave_db_config.setDbName(LEAVE_MESG_DB);
-        leave_db_config.setDbVersion(1);
-        leave_db_config.setDbUpgradeListener(new MyDbLisenter());
-        leave_mesg_db = DbUtils.create(leave_db_config);
-        leave_mesg_db.configAllowTransaction(true);
-
-        DbUtils.DaoConfig video_talk_db_config = new DbUtils.DaoConfig(getView().getContext());
-        video_talk_db_config.setDbName(LEAVE_MESG_DB);
-        video_talk_db_config.setDbVersion(1);
-        video_talk_db_config.setDbUpgradeListener(new MyDbLisenter());
-        video_talk_db = DbUtils.create(video_talk_db_config);
-        video_talk_db.configAllowTransaction(true);
-
         try {
-            base_db.createTableIfNotExist(CloudLiveBaseBean.class); //创建一个表
-            leave_mesg_db.createTableIfNotExist(CloudLiveLeaveMesBean.class);
-            video_talk_db.createTableIfNotExist(CloudLiveVideoTalkBean.class);
+            base_db.createTableIfNotExist(CloudLiveBaseDbBean.class); //创建一个表
         } catch (DbException e) {
             e.printStackTrace();
         }
+    }
 
-        return base_db;
+    @Override
+    public byte[] getSerializedObject(Serializable s) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ObjectOutputStream oos = null;
+        try {
+            oos = new ObjectOutputStream(baos);
+            oos.writeObject(s);
+        } catch (IOException e) {
+            return null;
+        } finally {
+            try {
+                oos.close();
+            } catch (IOException e) {
+            }
+        }
+        byte[] result = baos.toByteArray();
+        return result;
+    }
+
+    @Override
+    public Object readSerializedObject(byte[] in) {
+        Object result = null;
+        ByteArrayInputStream bais = new ByteArrayInputStream(in);
+        ObjectInputStream ois = null;
+        try {
+            ois = new ObjectInputStream(bais);
+            result = ois.readObject();
+        } catch (Exception e) {
+            result = null;
+        } finally {
+            try {
+                ois.close();
+            } catch (Throwable e) {
+            }
+        }
+        return result;
+    }
+
+    @Override
+    public void saveIntoDb(CloudLiveBaseDbBean bean) {
+        try {
+            base_db.save(bean);
+        } catch (DbException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public List<CloudLiveBaseDbBean> findFromAllDb() {
+        List<CloudLiveBaseDbBean> allData = null;
+        try {
+            allData = base_db.findAll(CloudLiveBaseDbBean.class);
+        } catch (DbException e) {
+            e.printStackTrace();
+        }
+        return allData;
     }
 
     public class MyDbLisenter implements DbUtils.DbUpgradeListener{
