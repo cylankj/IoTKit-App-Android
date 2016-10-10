@@ -69,7 +69,7 @@ android {
     buildToolsVersion rootProject.ext.buildToolsVersion
 
     defaultConfig {
-        applicationId "com.cylan.jiafeigou"
+        applicationId "com.cylan.jiafeigou.debug"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         manifestPlaceholders = [NICELY_VALUE: "test.jfgou.com:446",
@@ -108,113 +108,124 @@ android {
         debug {
 
         }
+//        release {
+//            Properties properties = new Properties()
+//            File localProperties = project.rootProject.file('local.properties')
+//            if (localProperties.exists()) {
+//                properties.load(localProperties.newDataInputStream())
+//                def store_file = properties.getProperty('store_file')
+//                if (store_file != null) {
+//                    def store_pwd = properties.getProperty('store_pwd')
+//                    def store_alias = properties.getProperty('store_alias')
+//                    def store_alias_pwd = properties.getProperty('store_alias_pwd')
+//                    storeFile file(store_file)
+//                    storePassword store_pwd
+//                    keyAlias store_alias
+//                    keyPassword store_alias_pwd
+//                }
+//            }
+//        }
+    }
+    buildTypes {
+        debug {
+            minifyEnabled false
+            applicationIdSuffix ".debug"
+            versionNameSuffix "-debug"
+            minifyEnabled false
+            zipAlignEnabled false
+            shrinkResources false
+            signingConfig signingConfigs.debug
+
+            applicationVariants.all { variant ->
+                //调整包名
+                applicationIdSuffix = getPackageSuffix(variant.name)
+                variant.outputs.each { output ->
+                    def outputFile = output.outputFile
+                    if (outputFile != null && outputFile.name.endsWith('.apk')) {
+                        def shortName = getVariantShortName(variant.name)
+                        def fileName = "${getPackageName()}" +
+                                "-${vName}" +
+                                ".${vCode}" +
+                                "-${releaseTime()}" +
+                                shortName
+                        if (outputFile.name.contains("debug")) {
+                            fileName = fileName +
+                                    "-debug.apk"
+                            output.outputFile = new File(outputFile.parent, fileName)
+                        }
+                        println("hunt...name: " + outputFile.name)
+                    }
+                }
+            }
+        }
         release {
-            Properties properties = new Properties()
-            File localProperties = project.rootProject.file('local.properties')
-            if (localProperties.exists()) {
-                properties.load(localProperties.newDataInputStream())
-                def store_file = properties.getProperty('store_file')
-                if (store_file != null) {
-                    def store_pwd = properties.getProperty('store_pwd')
-                    def store_alias = properties.getProperty('store_alias')
-                    def store_alias_pwd = properties.getProperty('store_alias_pwd')
-                    storeFile file(store_file)
-                    storePassword store_pwd
-                    keyAlias store_alias
-                    keyPassword store_alias_pwd
+            if (hasSignKey()) {
+                shrinkResources true
+                minifyEnabled true
+                zipAlignEnabled true
+                proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+                signingConfig signingConfigs.release
+                applicationVariants.all { variant ->
+                    //调整包名
+                    applicationIdSuffix = getPackageSuffix(variant.name)
+                    variant.outputs.each { output ->
+                        def outputFile = output.outputFile
+                        if (outputFile != null && outputFile.name.endsWith('.apk')) {
+                            def shortName = getVariantShortName(variant.name)
+                            def fileName = "${getPackageName()}" +
+                                    "-${vName}" +
+                                    ".${vCode}" +
+                                    "-${releaseTime()}" +
+                                    shortName
+                            //需要release包的variant
+//                        boolean condition = getReleaseCondition(variant.name)
+                            if (outputFile.name.contains("release")) {
+                                fileName = fileName +
+                                        "-release.apk"
+                                output.outputFile = new File(outputFile.parent, fileName)
+                            }
+
+                        }
+                    }
                 }
             }
         }
     }
-    buildTypes {
-//        debug {
-//            minifyEnabled false
-//            applicationIdSuffix ".debug"
-//            applicationVariants.all { variant ->
-//                //调整包名
-//                applicationIdSuffix = getPackageSuffix(variant.name)
-//                variant.outputs.each { output ->
-//                    def outputFile = output.outputFile
-//                    if (outputFile != null && outputFile.name.endsWith('.apk')) {
-//                        def shortName = getVariantShortName(variant.name)
-//                        def fileName = "${getPackageName()}" +
-//                                "-${vName}" +
-//                                ".${vCode}" +
-//                                "-${releaseTime()}" +
-//                                shortName
-//                        if (outputFile.name.contains("debug")) {
-//                            fileName = fileName +
-//                                    "-debug.apk"
-//                            output.outputFile = new File(outputFile.parent, fileName)
-//                        }
-//                        println("hunt...name: " + outputFile.name)
-//                    }
-//                }
-//            }
-//        }
-//        release {
-//            shrinkResources true
-//            minifyEnabled true
-//            zipAlignEnabled true
-//            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-//            if (hasSignKey())
-//                signingConfig signingConfigs.release
-//            else signingConfig signingConfigs.debug
-//            applicationVariants.all { variant ->
-//                //调整包名
-//                applicationIdSuffix = getPackageSuffix(variant.name)
-//                variant.outputs.each { output ->
-//                    def outputFile = output.outputFile
-//                    if (outputFile != null && outputFile.name.endsWith('.apk')) {
-//                        def shortName = getVariantShortName(variant.name)
-//                        def fileName = "${getPackageName()}" +
-//                                "-${vName}" +
-//                                ".${vCode}" +
-//                                "-${releaseTime()}" +
-//                                shortName
-//                        //需要release包的variant
-//                        boolean condition = getReleaseCondition(variant.name)
-//                        if (outputFile.name.contains("release") && condition) {
-//                            fileName = fileName +
-//                                    "-release.apk"
-//                            output.outputFile = new File(outputFile.parent, fileName)
-//                        }
-//
-//                    }
-//                }
-//            }
-//        }
-    }
 
-//    productFlavors {
-////
-//        _test {
-//            manifestPlaceholders = [NICELY_VALUE: "test.jfgou.com:446",
-//                                    MAT_VALUE   : getMtaAppKey("test")]
-//        }
-//        _test1 {
-//            manifestPlaceholders = [NICELY_VALUE: "test1.jfgou.com:446",
-//                                    MAT_VALUE   : getMtaAppKey("test1")]
-//        }
-//        _yun {
-//            manifestPlaceholders = [NICELY_VALUE: "yun.jfgou.com:446",
-//                                    MAT_VALUE   : getMtaAppKey("yun")]
-//        }
-//        _yun1 {
-//            manifestPlaceholders = [NICELY_VALUE: "yun1.jfgou.com:446",
-//                                    MAT_VALUE   : getMtaAppKey("yun1")]
-//        }
-//        _yf {
-//            manifestPlaceholders = [NICELY_VALUE: "yf.jfgou.com:446",
-//                                    MAT_VALUE   : getMtaAppKey("yf")]
-//        }
-//        //中性包
-//        _zhongxing {
-//            applicationIdSuffix ".zhongxing"
-//            manifestPlaceholders = [NICELY_VALUE: "yun.jfgou.com:446",
-//                                    MAT_VALUE   : getMtaAppKey("zhongxing")]
-//        }
-//    }
+
+    productFlavors {
+        _test {
+            manifestPlaceholders = [NICELY_VALUE: "test.jfgou.com:446",
+                                    MAT_VALUE   : getMtaAppKey("test")]
+        }
+        _test1 {
+            manifestPlaceholders = [NICELY_VALUE: "test1.jfgou.com:446",
+                                    MAT_VALUE   : getMtaAppKey("test1")]
+        }
+        _yun {
+            manifestPlaceholders = [NICELY_VALUE: "yun.jfgou.com:446",
+                                    MAT_VALUE   : getMtaAppKey("yun")]
+        }
+        _yun1 {
+            manifestPlaceholders = [NICELY_VALUE: "yun1.jfgou.com:446",
+                                    MAT_VALUE   : getMtaAppKey("yun1")]
+        }
+        _yf {
+            manifestPlaceholders = [NICELY_VALUE: "yf.jfgou.com:446",
+                                    MAT_VALUE   : getMtaAppKey("yf")]
+        }
+        //中性包
+        _zhongxing {
+            applicationIdSuffix ".zhongxing"
+            manifestPlaceholders = [NICELY_VALUE: "yun.jfgou.com:446",
+                                    MAT_VALUE   : getMtaAppKey("zhongxing")]
+        }
+    }
+}
+
+
+def generateApk(File file, String tag) {
+
 }
 
 repositories {
@@ -232,9 +243,6 @@ dependencies {
     testCompile rootProject.ext.testJunit4
     testCompile rootProject.ext.annotation
     testCompile rootProject.ext.testMockio
-//    androidTestCompile(rootProject.ext.testEspresso, {
-//        exclude group: 'com.android.support', module: 'support-annotations'
-//    })
 
     /////////////////android///////////////////////
     compile rootProject.ext.appcompat
@@ -274,7 +282,7 @@ dependencies {
 
     debugCompile rootProject.ext.leakcanaryAndroid
     releaseCompile rootProject.ext.leakcanaryAndroidNoOp
-    testCompile rootProject.ext.leakcanaryAndroidNoOp
+//    testCompile rootProject.ext.leakcanaryAndroidNoOp
     compile files('src/main/jniLibs/zbar.jar')
     //add by hunt 2016-08-01
     compile rootProject.ext.switchButton
