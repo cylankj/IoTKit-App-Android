@@ -22,7 +22,7 @@ public class FlipAnimation extends Animation {
     private boolean forward = true;
 
     /**
-     * Creates a 3D flip animation between two views.
+     * Creates activity_cloud_live_mesg_video_talk_item 3D flip animation between two views.
      *
      * @param fromView First view in the transition.
      * @param toView   Second view in the transition.

@@ -36,8 +36,8 @@ public class SystemUiHider {
 
     private static final long AUTO_HIDE_DELAY = 3000L;
     /**
-     * Some older devices needs a small delay between UI widget updates
-     * and a change of the status and navigation bar.
+     * Some older devices needs activity_cloud_live_mesg_video_talk_item small delay between UI widget updates
+     * and activity_cloud_live_mesg_video_talk_item change of the status and navigation bar.
      */
     private static final int UI_ANIMATION_DELAY = 300;
 
@@ -81,7 +81,7 @@ public class SystemUiHider {
     public void hide() {
         // Hide UI first
         mVisible = false;
-        // Schedule a runnable to remove the status and navigation bar after a delay
+        // Schedule activity_cloud_live_mesg_video_talk_item runnable to remove the status and navigation bar after activity_cloud_live_mesg_video_talk_item delay
         mHideHandler.postDelayed(mHidePart2Runnable, UI_ANIMATION_DELAY);
     }
 
@@ -93,14 +93,14 @@ public class SystemUiHider {
         weakReference.get().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
                 | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
         mVisible = true;
-        // Schedule a runnable to display UI elements after a delay
+        // Schedule activity_cloud_live_mesg_video_talk_item runnable to display UI elements after activity_cloud_live_mesg_video_talk_item delay
         mHideHandler.removeCallbacks(mHidePart2Runnable);
         if (supportAutoHide)
             mHideHandler.postDelayed(mHidePart2Runnable, AUTO_HIDE_DELAY);
     }
 
     /**
-     * Schedules a call to hide() in [delay] milliseconds, canceling any
+     * Schedules activity_cloud_live_mesg_video_talk_item call to hide() in [delay] milliseconds, canceling any
      * previously scheduled calls.
      */
     public void delayedHide(long delayMillis) {

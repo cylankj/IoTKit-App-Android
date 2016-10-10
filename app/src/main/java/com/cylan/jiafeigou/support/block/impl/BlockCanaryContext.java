@@ -15,7 +15,7 @@ import java.io.File;
 /*
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * You may obtain activity_cloud_live_mesg_video_talk_item copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
  *
@@ -27,7 +27,7 @@ import java.io.File;
  */
 
 /**
- * You should provide a real implementation of this class to use BlockCanary,
+ * You should provide activity_cloud_live_mesg_video_talk_item real implementation of this class to use BlockCanary,
  * which provides runtime environment to library (including configuration
  * and app-related log like uid and network environment)
  *
@@ -96,7 +96,7 @@ public class BlockCanaryContext implements IBlockCanaryContext {
     }
 
     /**
-     * Config block threshold (in millis), dispatch over this duration is regarded as a BLOCK. You may set it
+     * Config block threshold (in millis), dispatch over this duration is regarded as activity_cloud_live_mesg_video_talk_item BLOCK. You may set it
      * from performance of device.
      *
      * @return threshold in mills

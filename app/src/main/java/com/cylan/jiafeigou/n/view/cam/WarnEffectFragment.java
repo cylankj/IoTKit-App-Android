@@ -49,7 +49,7 @@ public class WarnEffectFragment extends Fragment {
     }
 
     /**
-     * Use this factory method to create a new instance of
+     * Use this factory method to create activity_cloud_live_mesg_video_talk_item new instance of
      * this fragment using the provided parameters.
      *
      * @param args Parameter 1.

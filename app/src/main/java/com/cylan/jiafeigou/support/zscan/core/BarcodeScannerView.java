@@ -52,8 +52,8 @@ public abstract class BarcodeScannerView extends FrameLayout implements Camera.P
     protected abstract String getHint();
 
     /**
-     * <p>Method that creates view that represents visual appearance of a barcode scanner</p>
-     * <p>Override it to provide your own view for visual appearance of a barcode scanner</p>
+     * <p>Method that creates view that represents visual appearance of activity_cloud_live_mesg_video_talk_item barcode scanner</p>
+     * <p>Override it to provide your own view for visual appearance of activity_cloud_live_mesg_video_talk_item barcode scanner</p>
      *
      * @param context {@link Context}
      * @return {@link View} that implements {@link ViewFinderView}

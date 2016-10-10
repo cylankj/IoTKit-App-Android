@@ -147,7 +147,7 @@ public class MediaActivity extends FragmentActivity {
                         names.clear();
                         sharedElements.clear();
                     } else if (mStartingPosition != mCurrentPosition) {
-                        // If the user has swiped to a different ViewPager page, then we need to
+                        // If the user has swiped to activity_cloud_live_mesg_video_talk_item different ViewPager page, then we need to
                         // remove the old shared element and replace it with the new shared element
                         // that should be transitioned instead.
                         final String transitionName = sharedElement.getTransitionName();

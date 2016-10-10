@@ -1,7 +1,7 @@
 /**
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * You may obtain activity_cloud_live_mesg_video_talk_item copy of the License at
  * <p/>
  * http://www.apache.org/licenses/LICENSE-2.0
  * <p/>
@@ -169,25 +169,25 @@ public class RxPermissions {
         List<Observable<Permission>> list = new ArrayList<>(permissions.length);
         List<String> unrequestedPermissions = new ArrayList<>();
 
-        // In case of multiple permissions, we create a observable for each of them.
-        // At the end, the observables are combined to have a unique response.
+        // In case of multiple permissions, we create activity_cloud_live_mesg_video_talk_item observable for each of them.
+        // At the end, the observables are combined to have activity_cloud_live_mesg_video_talk_item unique response.
         for (String permission : permissions) {
             log("Requesting permission " + permission);
             if (isGranted(permission)) {
                 // Already granted, or not Android M
-                // Return a granted Permission object.
+                // Return activity_cloud_live_mesg_video_talk_item granted Permission object.
                 list.add(Observable.just(new Permission(permission, true)));
                 continue;
             }
 
             if (isRevoked(permission)) {
-                // Revoked by a policy, return a denied Permission object.
+                // Revoked by activity_cloud_live_mesg_video_talk_item policy, return activity_cloud_live_mesg_video_talk_item denied Permission object.
                 list.add(Observable.just(new Permission(permission, false)));
                 continue;
             }
 
             PublishSubject<Permission> subject = mSubjects.get(permission);
-            // Create a new subject if not exists
+            // Create activity_cloud_live_mesg_video_talk_item new subject if not exists
             if (subject == null) {
                 unrequestedPermissions.add(permission);
                 subject = PublishSubject.create();
@@ -253,7 +253,7 @@ public class RxPermissions {
     }
 
     /**
-     * Returns true if the permission has been revoked by a policy.
+     * Returns true if the permission has been revoked by activity_cloud_live_mesg_video_talk_item policy.
      * <p/>
      * Always false if SDK &lt; 23.
      */

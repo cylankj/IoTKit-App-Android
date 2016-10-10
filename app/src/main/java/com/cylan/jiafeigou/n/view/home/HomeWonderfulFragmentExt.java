@@ -539,7 +539,7 @@ public class HomeWonderfulFragmentExt extends Fragment implements
             int startingPosition = mTmpReenterState.getInt(JConstant.EXTRA_STARTING_ALBUM_POSITION);
             int currentPosition = mTmpReenterState.getInt(JConstant.EXTRA_CURRENT_ALBUM_POSITION);
             if (startingPosition != currentPosition) {
-                // If startingPosition != currentPosition the user must have swiped to a
+                // If startingPosition != currentPosition the user must have swiped to activity_cloud_live_mesg_video_talk_item
                 // different page in the DetailsActivity. We must update the shared element
                 // so that the correct one falls into place.
                 String newTransitionName = currentPosition + JConstant.KEY_SHARED_ELEMENT_TRANSITION_NAME_SUFFIX;

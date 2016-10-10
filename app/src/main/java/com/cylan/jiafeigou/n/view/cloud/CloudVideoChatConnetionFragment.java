@@ -38,6 +38,16 @@ public class CloudVideoChatConnetionFragment extends Fragment implements CloudVi
 
     private CloudVideoChatConettionOkFragment cloudVideoChatConettionOkFragment;
 
+    private OnIgnoreClickListener igNoreListener;
+
+    public interface OnIgnoreClickListener{
+        void onIgnore();
+    }
+
+    public void setOnIgnoreClickListener(OnIgnoreClickListener igNoreListener){
+        this.igNoreListener = igNoreListener;
+    }
+
     public static CloudVideoChatConnetionFragment newInstance(Bundle bundle) {
         CloudVideoChatConnetionFragment fragment = new CloudVideoChatConnetionFragment();
         fragment.setArguments(bundle);
@@ -70,7 +80,10 @@ public class CloudVideoChatConnetionFragment extends Fragment implements CloudVi
             case R.id.iv_call_user_image_head:
                 break;
             case R.id.tv_ignore_call:
-                ToastUtil.showToast(getContext(),"取消连接请求。。。");
+                if (igNoreListener != null){
+                    igNoreListener.onIgnore();
+                }
+                getFragmentManager().popBackStack();
                 break;
             case R.id.tv_accept_call:
                 if (getView() != null)

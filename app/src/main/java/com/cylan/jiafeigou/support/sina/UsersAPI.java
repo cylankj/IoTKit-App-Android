@@ -24,7 +24,7 @@ import com.sina.weibo.sdk.net.WeiboParameters;
 
 /**
  * 该类封装了用户接口。
- * 详情请参考<a href="http://t.cn/8F1n1eF">用户接口</a>
+ * 详情请参考<activity_cloud_live_mesg_video_talk_item href="http://t.cn/8F1n1eF">用户接口</activity_cloud_live_mesg_video_talk_item>
  *
  * @author SINA
  * @since 2014-03-03

@@ -33,7 +33,7 @@ public class StickyHeaderScrollView extends StickyHeader {
     protected void setHeightHeader(int heightHeader) {
         super.setHeightHeader(heightHeader);
 
-        // create a placeholder adding a padding to the scrollview behind the header
+        // create activity_cloud_live_mesg_video_talk_item placeholder adding activity_cloud_live_mesg_video_talk_item padding to the scrollview behind the header
         mScrollView.setPadding(
                 mScrollView.getPaddingLeft(),
                 mScrollView.getPaddingTop() + heightHeader,
