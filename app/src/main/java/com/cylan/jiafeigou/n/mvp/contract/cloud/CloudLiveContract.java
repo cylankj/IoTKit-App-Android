@@ -5,10 +5,7 @@ import android.content.Context;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
 import com.cylan.jiafeigou.n.mvp.model.CloudLiveBaseBean;
-import com.cylan.jiafeigou.n.mvp.model.CloudLiveMesgBean;
-import com.lidroid.xutils.DbUtils;
-
-import java.util.List;
+import com.cylan.jiafeigou.support.db.DbManager;
 
 /**
  * 作者：zsl
@@ -19,20 +16,31 @@ public interface CloudLiveContract {
 
     interface View extends BaseView<Presenter> {
         void showVoiceTalkDialog(Context context);
-        void refreshView(int leftVal,int rightVal);
+
+        void refreshView(int leftVal, int rightVal);
+
         void initRecycleView();
+
         void refreshRecycleView(CloudLiveBaseBean bean);
     }
 
-    interface Presenter extends BasePresenter{
+    interface Presenter extends BasePresenter {
         String startRecord();
+
         void startTalk();
+
         void stopRecord();
+
         boolean checkSDCard();
+
         void addMesgItem(CloudLiveBaseBean bean);
+
         CloudLiveBaseBean creatMesgBean();
+
         String getLeaveMesgLength();
+
         String parseTime(String times);
-        DbUtils createBaseDB();
+
+        DbManager createBaseDB();
     }
 }

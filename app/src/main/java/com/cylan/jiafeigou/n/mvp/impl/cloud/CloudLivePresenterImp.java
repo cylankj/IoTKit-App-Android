@@ -1,44 +1,25 @@
 package com.cylan.jiafeigou.n.mvp.impl.cloud;
 
-import android.app.Dialog;
-import android.content.Context;
 import android.media.MediaRecorder;
 import android.os.Environment;
-import android.os.Handler;
-import android.view.Gravity;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
-import android.widget.ImageView;
 
-import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.contract.cloud.CloudLiveContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.n.mvp.model.CloudLiveBaseBean;
-import com.cylan.jiafeigou.n.mvp.model.CloudLiveLeaveMesBean;
-import com.cylan.jiafeigou.n.mvp.model.CloudLiveMesgBean;
-import com.cylan.jiafeigou.n.mvp.model.CloudLiveVideoTalkBean;
-import com.cylan.jiafeigou.utils.ToastUtil;
-import com.cylan.jiafeigou.widget.CloudLiveVoiceTalkView;
-import com.lidroid.xutils.DbUtils;
-import com.lidroid.xutils.exception.DbException;
-import com.sina.weibo.sdk.utils.LogUtil;
+import com.cylan.jiafeigou.support.db.DbManager;
+import com.cylan.jiafeigou.support.db.DbManagerImpl;
+import com.cylan.jiafeigou.support.db.ex.DbException;
 
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
-import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
-import rx.functions.Func0;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
@@ -60,18 +41,18 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
     private long startTime;
     private long endTime;
 
-    private String output_Path= Environment.getExternalStorageDirectory().getAbsolutePath()
-            + File.separator+"luyin.3gp";
+    private String output_Path = Environment.getExternalStorageDirectory().getAbsolutePath()
+            + File.separator + "luyin.3gp";
 
 
-    private static final String BASE_DB ="base_db";
-    private static final String LEAVE_MESG_DB ="leave_mesg_db";
-    private static final String VIDEO_TALK_DB ="video_talk_db";
+    private static final String BASE_DB = "base_db";
+    private static final String LEAVE_MESG_DB = "leave_mesg_db";
+    private static final String VIDEO_TALK_DB = "video_talk_db";
 
 
-    private DbUtils base_db;
-    private DbUtils leave_mesg_db;
-    private DbUtils video_talk_db;
+    private DbManager base_db;
+    private DbManager leave_mesg_db;
+    private DbManager video_talk_db;
 
     public CloudLivePresenterImp(CloudLiveContract.View view) {
         super(view);
@@ -85,14 +66,14 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
 
     @Override
     public void stop() {
-        if (talkSub != null){
+        if (talkSub != null) {
             talkSub.unsubscribe();
         }
     }
 
     @Override
     public void startTalk() {
-        talkSub = Observable.interval(500,200,TimeUnit.MILLISECONDS)
+        talkSub = Observable.interval(500, 200, TimeUnit.MILLISECONDS)
                 .subscribeOn(Schedulers.newThread())
                 .map(new Func1<Long, Double>() {
                     @Override
@@ -105,10 +86,10 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
                     @Override
                     public void call(Double value) {
                         int val = updateMicStatus();
-                        val1=val+12;
-                        val2=val;
-                        if(getView() != null)
-                        getView().refreshView(val1,val2);
+                        val1 = val + 12;
+                        val2 = val;
+                        if (getView() != null)
+                            getView().refreshView(val1, val2);
                     }
                 });
     }
@@ -116,10 +97,10 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
     @Override
     public String startRecord() {
 
-        if (mMediaRecorder != null){
+        if (mMediaRecorder != null) {
             mMediaRecorder.stop();
             mMediaRecorder.release();
-            mMediaRecorder=null;
+            mMediaRecorder = null;
         }
 
         try {
@@ -149,11 +130,11 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
     private int updateMicStatus() {
         int voiceVal = 0;
         if (mMediaRecorder != null) {
-            double ratio = (double)mMediaRecorder.getMaxAmplitude()/BASE;
+            double ratio = (double) mMediaRecorder.getMaxAmplitude() / BASE;
             double db = 0;// 分贝
             if (ratio > 1)
                 db = 20 * Math.log10(ratio);
-             voiceVal = (int) db;
+            voiceVal = (int) db;
         }
         return voiceVal;
     }
@@ -182,8 +163,8 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
      */
     @Override
     public void addMesgItem(CloudLiveBaseBean bean) {
-        if(getView() != null)
-        getView().refreshRecycleView(bean);
+        if (getView() != null)
+            getView().refreshRecycleView(bean);
     }
 
     @Override
@@ -194,11 +175,11 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
     @Override
     public String getLeaveMesgLength() {
         String timeLength = "";
-        long time = (endTime - startTime)/1000;
-        if(time / 60 == 0){
-            timeLength = time+"''";
-        }else {
-            timeLength = time/60 + "'"+time%60+"''";
+        long time = (endTime - startTime) / 1000;
+        if (time / 60 == 0) {
+            timeLength = time + "''";
+        } else {
+            timeLength = time / 60 + "'" + time % 60 + "''";
         }
         return timeLength;
     }
@@ -216,48 +197,43 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
      * desc:创建数据库
      */
     @Override
-    public DbUtils createBaseDB() {
-        DbUtils.DaoConfig config = new DbUtils.DaoConfig(getView().getContext());
+    public DbManager createBaseDB() {
+        DbManager.DaoConfig config = new DbManager.DaoConfig();
+        config.setContext(getView().getContext());
         config.setDbName(BASE_DB); //db名
         config.setDbVersion(1);  //db版本
         config.setDbUpgradeListener(new MyDbLisenter());
-        base_db = DbUtils.create(config);
-        base_db.configAllowTransaction(true);    //开启事物
+        config.setAllowTransaction(true);
+        base_db = DbManagerImpl.getInstance(config);
 
-        DbUtils.DaoConfig leave_db_config = new DbUtils.DaoConfig(getView().getContext());
+        DbManager.DaoConfig leave_db_config = new DbManager.DaoConfig();
         leave_db_config.setDbName(LEAVE_MESG_DB);
+        leave_db_config.setContext(getView().getContext());
         leave_db_config.setDbVersion(1);
         leave_db_config.setDbUpgradeListener(new MyDbLisenter());
-        leave_mesg_db = DbUtils.create(leave_db_config);
-        leave_mesg_db.configAllowTransaction(true);
+        leave_db_config.setAllowTransaction(true);
+        leave_mesg_db = DbManagerImpl.getInstance(config);
 
-        DbUtils.DaoConfig video_talk_db_config = new DbUtils.DaoConfig(getView().getContext());
+        DbManager.DaoConfig video_talk_db_config = new DbManager.DaoConfig();
         video_talk_db_config.setDbName(LEAVE_MESG_DB);
+        video_talk_db_config.setContext(getView().getContext());
         video_talk_db_config.setDbVersion(1);
         video_talk_db_config.setDbUpgradeListener(new MyDbLisenter());
-        video_talk_db = DbUtils.create(video_talk_db_config);
-        video_talk_db.configAllowTransaction(true);
-
-        try {
-            base_db.createTableIfNotExist(CloudLiveBaseBean.class); //创建一个表
-            leave_mesg_db.createTableIfNotExist(CloudLiveLeaveMesBean.class);
-            video_talk_db.createTableIfNotExist(CloudLiveVideoTalkBean.class);
-        } catch (DbException e) {
-            e.printStackTrace();
-        }
+        video_talk_db_config.setAllowTransaction(true);
+        video_talk_db = DbManagerImpl.getInstance(config);
 
         return base_db;
     }
 
-    public class MyDbLisenter implements DbUtils.DbUpgradeListener{
+    public class MyDbLisenter implements DbManager.DbUpgradeListener {
 
         @Override
-        public void onUpgrade(DbUtils dbUtils, int oldVersion, int newVersion) {
+        public void onUpgrade(DbManager DbManager, int oldVersion, int newVersion) {
             try {
                 if (oldVersion == 1 && newVersion == 2) {
-                    String sql = "ALTER TABLE " + dbUtils.getDaoConfig().getDbName()
+                    String sql = "ALTER TABLE " + DbManager.getDaoConfig().getDbName()
                             + " ADD COLUMN TEMP TEXT";
-                    dbUtils.execNonQuery(sql);
+                    DbManager.execNonQuery(sql);
                 }
             } catch (DbException e) {
                 e.printStackTrace();
