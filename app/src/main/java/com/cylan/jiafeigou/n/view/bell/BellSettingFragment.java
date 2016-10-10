@@ -132,7 +132,6 @@ public class BellSettingFragment extends Fragment
         this.presenter = presenter;
     }
 
-
     @Override
     public void onDialogAction(int id, Object value) {
         switch (id) {

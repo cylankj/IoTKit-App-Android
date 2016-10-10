@@ -13,11 +13,15 @@ import com.cylan.jiafeigou.n.mvp.BaseView;
 public interface CloudLiveContract {
 
     interface View extends BaseView<Presenter> {
-
+        void showVoiceTalkDialog(Context context);
+        void refreshView(int leftVal,int rightVal);
+        void initRecycleView();
     }
 
     interface Presenter extends BasePresenter{
-        void showVoiceTalkDialog(Context context);
         void startRecord();
+        void startTalk();
+        void stopRecord();
+        boolean checkSDCard();
     }
 }
