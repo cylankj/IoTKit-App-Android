@@ -32,7 +32,7 @@ public enum ConnectivityStatus {
     }
 
     /**
-     * Creates a function, which checks
+     * Creates activity_cloud_live_mesg_video_talk_item function, which checks
      * if single connectivity status or many statuses
      * are equal to current status. It can be used inside filter(...)
      * method from RxJava
@@ -56,7 +56,7 @@ public enum ConnectivityStatus {
     }
 
     /**
-     * Creates a function, which checks
+     * Creates activity_cloud_live_mesg_video_talk_item function, which checks
      * if single connectivity status or many statuses
      * are not equal to current status. It can be used inside filter(...)
      * method from RxJava

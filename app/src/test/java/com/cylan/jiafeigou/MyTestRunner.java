@@ -13,7 +13,7 @@ import org.robolectric.res.Fs;
  */
 public class MyTestRunner extends RobolectricTestRunner {
     /**
-     * Creates a runner to run {@code testClass}. Looks in your working directory for your AndroidManifest.xml file
+     * Creates activity_cloud_live_mesg_video_talk_item runner to run {@code testClass}. Looks in your working directory for your AndroidManifest.xml file
      * and res directory by default. Use the {@link Config} annotation to configure.
      *
      * @param testClass the test class to be run

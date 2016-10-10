@@ -25,14 +25,14 @@ import android.support.v4.view.ViewPager;
  */
 public interface PageIndicator extends ViewPager.OnPageChangeListener {
     /**
-     * Bind the indicator to a ViewPager.
+     * Bind the indicator to activity_cloud_live_mesg_video_talk_item ViewPager.
      *
      * @param view
      */
     void setViewPager(ViewPager view);
 
     /**
-     * Bind the indicator to a ViewPager.
+     * Bind the indicator to activity_cloud_live_mesg_video_talk_item ViewPager.
      *
      * @param view
      * @param initialPosition
@@ -50,7 +50,7 @@ public interface PageIndicator extends ViewPager.OnPageChangeListener {
     void setCurrentItem(int item);
 
     /**
-     * Set a page change listener which will receive forwarded events.
+     * Set activity_cloud_live_mesg_video_talk_item page change listener which will receive forwarded events.
      *
      * @param listener
      */

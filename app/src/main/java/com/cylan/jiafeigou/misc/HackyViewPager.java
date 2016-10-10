@@ -17,7 +17,7 @@ import android.view.MotionEvent;
  * http://code.google.com/p/android/issues/detail?id=18990
  * <p/>
  * ScaleGestureDetector seems to mess up the touch events, which means that
- * ViewGroups which make use of onInterceptTouchEvent throw a lot of
+ * ViewGroups which make use of onInterceptTouchEvent throw activity_cloud_live_mesg_video_talk_item lot of
  * IllegalArgumentException: pointerIndex out of range.
  * <p/>
  * There's not much I can do in my code for now, but we can mask the result by

@@ -2,7 +2,6 @@ package com.cylan.jiafeigou.n.view.activity;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
@@ -22,11 +21,21 @@ import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
 import com.cylan.jiafeigou.n.mvp.contract.cloud.CloudLiveContract;
 import com.cylan.jiafeigou.n.mvp.impl.cloud.CloudLivePresenterImp;
+import com.cylan.jiafeigou.n.mvp.model.CloudLiveBaseBean;
+import com.cylan.jiafeigou.n.mvp.model.CloudLiveLeaveMesBean;
+import com.cylan.jiafeigou.n.mvp.model.CloudLiveMesgBean;
+import com.cylan.jiafeigou.n.mvp.model.CloudLiveVideoTalkBean;
+import com.cylan.jiafeigou.n.view.adapter.CloudLiveMesgListAdapter;
 import com.cylan.jiafeigou.n.view.cloud.CloudLiveSettingFragment;
 import com.cylan.jiafeigou.n.view.cloud.CloudVideoChatConnetionFragment;
+import com.cylan.jiafeigou.n.view.cloud.LayoutIdMapCache;
+import com.cylan.jiafeigou.n.view.cloud.ViewTypeMapCache;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.CloudLiveVoiceTalkView;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -59,7 +68,8 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
     private TextView tv_show_mesg;
 
     private CloudLiveContract.Presenter presenter;
-
+    private List<CloudLiveBaseBean> mData;
+    private CloudLiveMesgListAdapter cloudLiveMesgAdapter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -69,6 +79,12 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
         getIntentData();
         initFragment();
         initPresenter();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        initRecycleView();
     }
 
     private void initPresenter() {
@@ -139,6 +155,21 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
                 .replace(android.R.id.content, fragment)
                 .addToBackStack("CloudVideoChatConnetionFragment")
                 .commit();
+
+        fragment.setOnIgnoreClickListener(new CloudVideoChatConnetionFragment.OnIgnoreClickListener() {
+            @Override
+            public void onIgnore() {
+                CloudLiveBaseBean newBean = presenter.creatMesgBean();
+                newBean.setType(1);
+                CloudLiveVideoTalkBean newLeaveBean = new CloudLiveVideoTalkBean();
+                newLeaveBean.setVideoLength("通话时长30''");
+                newLeaveBean.setHasConnet(false);
+                newLeaveBean.setVideoTime(presenter.parseTime(System.currentTimeMillis()+""));
+                newBean.setData(newLeaveBean);
+                presenter.addMesgItem(newBean);
+                //TODO 获取通话时长
+            }
+        });
     }
 
     @Override
@@ -166,7 +197,7 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
         window.setGravity(Gravity.BOTTOM);
         window.setWindowAnimations(R.style.dialogStyle);
         window.getDecorView().setPadding(0,0,0,0);
-        android.view.WindowManager.LayoutParams lp = window.getAttributes();
+        WindowManager.LayoutParams lp = window.getAttributes();
         lp.width = WindowManager.LayoutParams.MATCH_PARENT;
         lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
         window.setAttributes(lp);
@@ -178,6 +209,9 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
 
         iv_voice_delete = (ImageView) dialogView.findViewById(R.id.iv_voice_delete);
         iv_voice_delete.setOnTouchListener(new View.OnTouchListener() {
+
+            private String leaveMesgUrl;                        //录音的地址
+
             @Override
             public boolean onTouch(View v, MotionEvent event) {
 
@@ -189,7 +223,7 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
                             return false;
                         }
                         tv_show_mesg.setText("松开发送");
-                        presenter.startRecord();
+                        leaveMesgUrl = presenter.startRecord();
                         presenter.startTalk();
                         return true;
                     }
@@ -199,12 +233,21 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
                     case MotionEvent.ACTION_UP:{
                         tv_show_mesg.setText("按下留言");
                         presenter.stopRecord();
+                        ToastUtil.showToast(getContext(),leaveMesgUrl);
+                        CloudLiveBaseBean newBean = presenter.creatMesgBean();
+                        newBean.setType(0);
+                        CloudLiveLeaveMesBean newLeaveBean = new CloudLiveLeaveMesBean();
+                        newLeaveBean.setLeaveMesgLength(presenter.getLeaveMesgLength());
+                        newLeaveBean.setLeaveMesgUrl(leaveMesgUrl);
+                        newLeaveBean.setRead(false);
+                        newLeaveBean.setLeveMesgTime(presenter.parseTime(System.currentTimeMillis()+""));
+                        newBean.setData(newLeaveBean);
+                        presenter.addMesgItem(newBean);
                         return true;
                     }
                     default:
                         return false;
                 }
-
             }
         });
         dialog.show();
@@ -220,8 +263,41 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
 
     @Override
     public void initRecycleView() {
-        rcyCloudMesgList.setLayoutManager(new LinearLayoutManager(this));
+        if(mData == null){
+            mData = new ArrayList<>();
+        }
+        mData.addAll(creatList());
+        cloudLiveMesgAdapter = new CloudLiveMesgListAdapter(this, mData,null);
+        ViewTypeMapCache viewTypeMapCache = new ViewTypeMapCache();
+        viewTypeMapCache.registerType(CloudLiveLeaveMesBean.class, 0);
+        viewTypeMapCache.registerType(CloudLiveVideoTalkBean.class, 1);
+        cloudLiveMesgAdapter.setViewTypeCache(viewTypeMapCache);
 
+        LayoutIdMapCache layoutIdMapCache = new LayoutIdMapCache();
+        layoutIdMapCache.registerType(0, R.layout.activity_cloud_live_mesg_voice_item);
+        layoutIdMapCache.registerType(1, R.layout.activity_cloud_live_mesg_video_talk_item);
+        cloudLiveMesgAdapter.setLayoutIdMapCache(layoutIdMapCache);
+        rcyCloudMesgList.setLayoutManager(new LinearLayoutManager(this));
+        rcyCloudMesgList.setAdapter(cloudLiveMesgAdapter);
+    }
+
+    private List<CloudLiveBaseBean> creatList() {
+
+        List<CloudLiveBaseBean> list = new ArrayList<>();
+        CloudLiveBaseBean bean = new CloudLiveBaseBean();
+        bean.setType(0);
+        CloudLiveLeaveMesBean bb = new CloudLiveLeaveMesBean();
+        bb.setLeaveMesgLength("77''");
+        bean.setData(bb);
+        list.add(bean);
+        //TODO 网络获取消息记录
+        return list;
+    }
+
+    @Override
+    public void refreshRecycleView(CloudLiveBaseBean bean) {
+        cloudLiveMesgAdapter.add(bean);
+        cloudLiveMesgAdapter.notifyDataSetChanged();
     }
 
     public void getIntentData() {

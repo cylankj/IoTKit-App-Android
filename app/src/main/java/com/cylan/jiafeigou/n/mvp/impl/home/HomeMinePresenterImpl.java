@@ -166,7 +166,7 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
 
     @Override
     public String createRandomName() {
-        String[] firtPart = {"a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l"
+        String[] firtPart = {"activity_cloud_live_mesg_video_talk_item", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l"
                 , "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"};
         Random random = new Random();
         int randNum1 = random.nextInt(10);

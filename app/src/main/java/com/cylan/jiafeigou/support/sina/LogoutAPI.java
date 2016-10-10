@@ -22,7 +22,7 @@ import com.sina.weibo.sdk.net.WeiboParameters;
 
 /**
  * 该类提供了授权回收接口，帮助开发者主动取消用户的授权。
- * 详情请参考<a href="http://t.cn/zYeuB0k">授权回收</a>
+ * 详情请参考<activity_cloud_live_mesg_video_talk_item href="http://t.cn/zYeuB0k">授权回收</activity_cloud_live_mesg_video_talk_item>
  *
  * @author SINA
  * @since 2013-11-05

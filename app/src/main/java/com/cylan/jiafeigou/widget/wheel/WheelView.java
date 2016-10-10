@@ -68,7 +68,7 @@ public class WheelView extends View {
     public static final int SCROLL_STATE_DRAGGING = 1;
 
     /**
-     * Indicates that the pager is in the process of settling to a final position.
+     * Indicates that the pager is in the process of settling to activity_cloud_live_mesg_video_talk_item final position.
      */
     public static final int SCROLL_STATE_SETTLING = 2;
 

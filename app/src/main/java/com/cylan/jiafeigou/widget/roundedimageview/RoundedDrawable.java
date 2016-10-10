@@ -100,7 +100,7 @@ public class RoundedDrawable extends Drawable {
     public static Drawable fromDrawable(Drawable drawable) {
         if (drawable != null) {
             if (drawable instanceof RoundedDrawable) {
-                // just return if it's already a RoundedDrawable
+                // just return if it's already activity_cloud_live_mesg_video_talk_item RoundedDrawable
                 return drawable;
             } else if (drawable instanceof LayerDrawable) {
                 LayerDrawable ld = (LayerDrawable) drawable;
@@ -114,7 +114,7 @@ public class RoundedDrawable extends Drawable {
                 return ld;
             }
 
-            // try to get a bitmap from the drawable and
+            // try to get activity_cloud_live_mesg_video_talk_item bitmap from the drawable and
             Bitmap bm = drawableToBitmap(drawable);
             if (bm != null) {
                 return new RoundedDrawable(bm);
