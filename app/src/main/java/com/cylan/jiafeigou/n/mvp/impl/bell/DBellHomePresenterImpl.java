@@ -81,7 +81,7 @@ public class DBellHomePresenterImpl extends AbstractPresenter<DoorBellHomeContra
     }
 
     private static final SimpleDateFormat simpleDateFormat =
-            new SimpleDateFormat("hh:mm activity_cloud_live_mesg_video_talk_item", Locale.getDefault());
+            new SimpleDateFormat("hh:mm", Locale.getDefault());
 
     private static final SimpleDateFormat getSimpleDateFormat
             = new SimpleDateFormat("MM月dd日", Locale.getDefault());

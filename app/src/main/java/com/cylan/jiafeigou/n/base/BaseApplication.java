@@ -3,6 +3,7 @@ package com.cylan.jiafeigou.n.base;
 import android.app.Application;
 import android.content.ComponentCallbacks2;
 import android.content.Intent;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.cylan.jiafeigou.misc.JConstant;
@@ -12,6 +13,7 @@ import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.PathGetter;
 import com.cylan.jiafeigou.utils.SuperSpUtils;
 import com.cylan.utils.HandlerThreadUtils;
+import com.cylan.utils.ProcessUtils;
 import com.squareup.leakcanary.LeakCanary;
 
 /**
@@ -25,7 +27,11 @@ public class BaseApplication extends Application {
     public void onCreate() {
         super.onCreate();
         enableDebugOptions();
-        startService(new Intent(this, DaemonService.class));
+        //每一个新的进程启动时，都会调用onCreate方法。
+        if (TextUtils.equals(ProcessUtils.myProcessName(getApplicationContext()), getPackageName())) {
+            startService(new Intent(this, DaemonService.class));
+            Log.d("BaseApplication", "BaseApplication..." + ProcessUtils.myProcessName(getApplicationContext()));
+        }
         initLeakCanary();
     }
 

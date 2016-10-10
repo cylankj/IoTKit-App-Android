@@ -20,6 +20,9 @@ package com.cylan.utils;
 import android.app.ActivityManager;
 import android.content.Context;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.util.List;
 
 public class ProcessUtils {
@@ -61,5 +64,18 @@ public class ProcessUtils {
             }
         }
         return false;
+    }
+
+    public static String getProcessName() {
+        try {
+            File file = new File("/proc/" + android.os.Process.myPid() + "/" + "cmdline");
+            BufferedReader mBufferedReader = new BufferedReader(new FileReader(file));
+            String processName = mBufferedReader.readLine().trim();
+            mBufferedReader.close();
+            return processName;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }
