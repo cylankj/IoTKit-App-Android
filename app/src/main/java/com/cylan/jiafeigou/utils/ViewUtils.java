@@ -198,6 +198,7 @@ public class ViewUtils {
         }
         return getParentAdapterPosition(recyclerView, viewGroup, parentId);
     }
+
     public static void removeActivityFromTransitionManager(Activity activity) {
         if (Build.VERSION.SDK_INT < 21) {
             return;
@@ -222,6 +223,14 @@ public class ViewUtils {
             e.printStackTrace();
         } catch (IllegalAccessException e) {
             e.printStackTrace();
+        }
+    }
+
+    public static void setFitsSystemWindowsCompat(View view) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            view.setFitsSystemWindows(true);
+        } else {
+            view.setFitsSystemWindows(false);
         }
     }
 }
