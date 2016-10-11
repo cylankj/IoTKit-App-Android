@@ -1,0 +1,1 @@
+https://github.com/hehonghui/android-tech-frontier/blob/master/issue-22/Android-Activity%E6%B5%8B%E8%AF%95.md

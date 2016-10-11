@@ -77,7 +77,7 @@ android {
         customVersionCode
         versionName "1.0"
         multiDexEnabled true
-//        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         ndk {
             // 设置支持的SO库架构
             abiFilters 'armeabi-v7a', 'x86'//, 'armeabi-v7a', 'x86_64', 'arm64-v8a'
@@ -224,10 +224,6 @@ android {
 }
 
 
-def generateApk(File file, String tag) {
-
-}
-
 repositories {
     flatDir {
         dirs 'libs'
@@ -238,12 +234,21 @@ dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
 
     //////////////test///////////////////////
+    //testCompile和androidTestCompile的区别在于，测试文件所在的目录。
+    //前者在test/，后者在androidTest
     testCompile rootProject.ext.testRobolectric
     testCompile rootProject.ext.testAssertj
     testCompile rootProject.ext.testJunit4
     testCompile rootProject.ext.annotation
     testCompile rootProject.ext.testMockio
 
+    androidTestCompile rootProject.ext.testRules
+    androidTestCompile rootProject.ext.testRunner
+    //强制使用高版本，引用rootProject.ext.annotation，无效
+    androidTestCompile 'com.android.support:support-annotations:23.3.0'
+    androidTestCompile(rootProject.ext.testEspresso, {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
     /////////////////android///////////////////////
     compile rootProject.ext.appcompat
     compile rootProject.ext.appSupport
@@ -293,6 +298,5 @@ dependencies {
     //头像更改选择框架
     compile rootProject.ext.galleryFinal
     compile(name: rootProject.ext.cySdk, ext: 'aar')
-//    compile files('libs/xUtils-2.6.14.jar')
 }
 
