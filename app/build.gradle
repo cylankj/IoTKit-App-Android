@@ -69,11 +69,12 @@ android {
     buildToolsVersion rootProject.ext.buildToolsVersion
 
     defaultConfig {
-        applicationId "com.cylan.jiafeigou.debug"
+        applicationId "com.cylan.jiafeigou"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        manifestPlaceholders = [NICELY_VALUE: "test.jfgou.com:446",
-                                MAT_VALUE   : getMtaAppKey("test")]
+        manifestPlaceholders = [NICELY_VALUE: "yun.jfgou.com:446",
+                                MAT_VALUE   : getMtaAppKey("yun"),
+                                AUTHORITY   : "com.cylan.jiafeigou"]
         customVersionCode
         versionName "1.0"
         multiDexEnabled true
@@ -129,8 +130,6 @@ android {
     buildTypes {
         debug {
             minifyEnabled false
-            applicationIdSuffix ".debug"
-            versionNameSuffix "-debug"
             minifyEnabled false
             zipAlignEnabled false
             shrinkResources false
@@ -195,30 +194,42 @@ android {
 
     productFlavors {
         _test {
+            applicationIdSuffix ".test"
             manifestPlaceholders = [NICELY_VALUE: "test.jfgou.com:446",
-                                    MAT_VALUE   : getMtaAppKey("test")]
+                                    MAT_VALUE   : getMtaAppKey("test"),
+                                    AUTHORITY   : "com.cylan.jiafeigou.test"]
         }
         _test1 {
+            applicationIdSuffix ".test1"
             manifestPlaceholders = [NICELY_VALUE: "test1.jfgou.com:446",
-                                    MAT_VALUE   : getMtaAppKey("test1")]
+                                    MAT_VALUE   : getMtaAppKey("test1"),
+                                    AUTHORITY   : "com.cylan.jiafeigou.test1"]
         }
+
         _yun {
+            //官方运营
             manifestPlaceholders = [NICELY_VALUE: "yun.jfgou.com:446",
-                                    MAT_VALUE   : getMtaAppKey("yun")]
+                                    MAT_VALUE   : getMtaAppKey("yun"),
+                                    AUTHORITY   : "com.cylan.jiafeigou"]
         }
         _yun1 {
+            applicationIdSuffix ".yun1"
             manifestPlaceholders = [NICELY_VALUE: "yun1.jfgou.com:446",
-                                    MAT_VALUE   : getMtaAppKey("yun1")]
+                                    MAT_VALUE   : getMtaAppKey("yun1"),
+                                    AUTHORITY   : "com.cylan.jiafeigou.yun1"]
         }
         _yf {
+            applicationIdSuffix ".yf"
             manifestPlaceholders = [NICELY_VALUE: "yf.jfgou.com:446",
-                                    MAT_VALUE   : getMtaAppKey("yf")]
+                                    MAT_VALUE   : getMtaAppKey("yf"),
+                                    AUTHORITY   : "com.cylan.jiafeigou.yf"]
         }
         //中性包
         _zhongxing {
             applicationIdSuffix ".zhongxing"
             manifestPlaceholders = [NICELY_VALUE: "yun.jfgou.com:446",
-                                    MAT_VALUE   : getMtaAppKey("zhongxing")]
+                                    MAT_VALUE   : getMtaAppKey("zhongxing"),
+                                    AUTHORITY   : "com.cylan.jiafeigou.zhongxing"]
         }
     }
 }
@@ -292,7 +303,7 @@ dependencies {
     //add by hunt 2016-08-01
     compile rootProject.ext.switchButton
     //多进程文件共享方案
-    compile rootProject.ext.multiProcessSp
+//    compile rootProject.ext.multiProcessSp
     //glide
     compile rootProject.ext.glide
     //头像更改选择框架

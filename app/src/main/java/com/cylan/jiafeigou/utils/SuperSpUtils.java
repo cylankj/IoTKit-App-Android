@@ -2,7 +2,8 @@ package com.cylan.jiafeigou.utils;
 
 import android.content.Context;
 
-import net.grandcentrix.tray.AppPreferences;
+import com.cylan.jiafeigou.support.sp.AppPreferences;
+
 
 /**
  * Created by cylan-hunt on 16-8-6.

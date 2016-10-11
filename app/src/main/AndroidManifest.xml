@@ -129,7 +129,16 @@
                 <action android:name="android.intent.action.USER_PRESENT" />
             </intent-filter>
         </receiver>
-
+        <!--////////////////////////tray/////////////////////////////-->
+        <provider
+            android:name=".support.sp.provider.TrayContentProvider"
+            android:authorities="com.cylan.jiafeigou${AUTHORITY}"
+            android:exported="false"
+            android:multiprocess="false" />
+        <meta-data
+            android:name="AUTHORITY"
+            android:value="${AUTHORITY}" />
+        <!--/////////////////////////////////////////////////////-->
         <service
             android:name=".n.engine.DataSourceService"
             android:enabled="true"
