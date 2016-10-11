@@ -50,7 +50,6 @@ public class DataSourceService extends Service implements AppCallBack {
     public void onCreate() {
         super.onCreate();
         eventBus = RxBus.getInstance();
-        initNative();
     }
 
     @Override
@@ -60,6 +59,7 @@ public class DataSourceService extends Service implements AppCallBack {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        initNative();
         return START_STICKY;
     }
 

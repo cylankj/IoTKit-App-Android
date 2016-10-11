@@ -75,7 +75,7 @@
             android:value="${MAT_VALUE}" />
         <!-- server address -->
         <meta-data
-            android:name="CallOfDuty"
+            android:name="ServerAddress"
             android:value="${NICELY_VALUE}" />
 
         <!-- your vid getString must "\ " -->
@@ -137,7 +137,7 @@
             android:multiprocess="false" />
         <meta-data
             android:name="AUTHORITY"
-            android:value="${AUTHORITY}" />
+            android:value="com.cylan.jiafeigou${AUTHORITY}" />
         <!--/////////////////////////////////////////////////////-->
         <service
             android:name=".n.engine.DataSourceService"

@@ -182,6 +182,11 @@ public class LoginFragment extends android.support.v4.app.Fragment implements Lo
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+    }
+
+    @Override
     public void onStop() {
         super.onStop();
         if (presenter != null) presenter.stop();

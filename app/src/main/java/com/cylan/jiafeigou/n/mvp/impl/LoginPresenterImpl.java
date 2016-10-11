@@ -2,11 +2,14 @@ package com.cylan.jiafeigou.n.mvp.impl;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 
 import com.cylan.entity.jniCall.JFGResult;
 import com.cylan.jfgapp.jni.JfgAppCmd;
+import com.cylan.jiafeigou.n.engine.DaemonService;
+import com.cylan.jiafeigou.n.engine.DataSourceService;
 import com.cylan.jiafeigou.n.mvp.contract.login.LoginModelContract;
 import com.cylan.jiafeigou.n.mvp.model.LoginAccountBean;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -58,6 +61,22 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginModelContract.Vie
                     .subscribe(new Action1<LoginAccountBean>() {
                         @Override
                         public void call(LoginAccountBean o) {
+                            if (cmd == null) {
+                                getView().getContext()
+                                        .startService(new Intent(getView().getContext(),
+                                                DataSourceService.class));
+                            }
+                            AppLogger.d("cmd is null");
+                            //waiting for DataSourceService to start again and reInit JfgAppCmd
+                            //it works good in a new thread,but a little ...
+                            while ((cmd = JfgAppCmd.getInstance()) == null) {
+                                try {
+                                    Thread.sleep(200);
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                            AppLogger.d("cmd is re init");
                             cmd.login(o.userName, o.pwd);
                         }
                     }, new Action1<Throwable>() {
