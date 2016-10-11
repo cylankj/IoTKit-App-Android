@@ -63,7 +63,7 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
     private String output_Path = Environment.getExternalStorageDirectory().getAbsolutePath()
             + File.separator + "luyin.3gp";
 
-    private static final String DB_NAME ="cloud_live_db";
+
 
     private DbManager base_db;
 
@@ -212,7 +212,7 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
     @Override
 
     public void createDB() {
-        base_db = CloudLiveDbUtil.getInstance(DB_NAME).dbManager;;
+        base_db = CloudLiveDbUtil.getInstance().dbManager;;
     }
 
     @Override
@@ -271,20 +271,9 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
         } catch (DbException e) {
             e.printStackTrace();
         }
-
         return allData;
     }
 
-    /**
-     * desc：生成数据库的名字
-     * @return
-     */
-    private String generateDbName(){
-        String db_name = "";
 
-        //TODO 获取到用户的账号
-
-        return db_name;
-    }
 
 }

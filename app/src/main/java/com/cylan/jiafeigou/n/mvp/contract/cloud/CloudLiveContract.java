@@ -56,5 +56,7 @@ public interface CloudLiveContract {
 
         List<CloudLiveBaseDbBean> findFromAllDb();          //查询数据库
 
+
+
     }
 }

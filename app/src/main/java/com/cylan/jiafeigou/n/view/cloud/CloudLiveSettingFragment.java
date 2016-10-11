@@ -2,6 +2,7 @@ package com.cylan.jiafeigou.n.view.cloud;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
@@ -9,13 +10,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.contract.cloud.CloudLiveSettingContract;
 import com.cylan.jiafeigou.n.mvp.impl.cloud.CloudLiveSettingPresenterImp;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.SettingItemView2;
 
@@ -42,10 +43,22 @@ public class CloudLiveSettingFragment extends Fragment implements CloudLiveSetti
     TextView tvSettingUnbind;
     @BindView(R.id.tv_door_bell)
     TextView tvDoorBell;
+    @BindView(R.id.progress_clear_record)
+    ProgressBar progressClearRecord;
 
     private CloudLiveDeviceInfoFragment cloudLiveDeviceInfoFragment;
     private CloudCorrelationDoorBellFragment cloudCorrelationDoorBellFragment;
     private CloudLiveSettingContract.Presenter presenter;
+
+    private OnClearMesgRecordListener listener;
+
+    public interface OnClearMesgRecordListener {
+        void onClear();
+    }
+
+    public void setOnClearMesgRecordListener(OnClearMesgRecordListener listener) {
+        this.listener = listener;
+    }
 
     public static CloudLiveSettingFragment newInstance(Bundle bundle) {
         CloudLiveSettingFragment fragment = new CloudLiveSettingFragment();
@@ -86,7 +99,7 @@ public class CloudLiveSettingFragment extends Fragment implements CloudLiveSetti
     @Override
     public void onStart() {
         super.onStart();
-        if(presenter != null){
+        if (presenter != null) {
             presenter.start();
         }
     }
@@ -104,8 +117,8 @@ public class CloudLiveSettingFragment extends Fragment implements CloudLiveSetti
             case R.id.tv_bell_detail:
                 if (getView() != null)
                     ViewUtils.deBounceClick(getView().findViewById(R.id.tv_bell_detail));
-                    AppLogger.e("tv_bell_detail");
-                    jump2DeviceInfoFragment();
+                AppLogger.e("tv_bell_detail");
+                jump2DeviceInfoFragment();
                 break;
             case R.id.tv_bell_detail2:
                 if (getView() != null)
@@ -136,11 +149,11 @@ public class CloudLiveSettingFragment extends Fragment implements CloudLiveSetti
 
     @Override
     public void initSomeViewVisible(boolean isVisible) {
-        if(isVisible){
+        if (isVisible) {
             tvDoorBell.setVisibility(View.GONE);
             tvSettingClear.setVisibility(View.GONE);
             tvBellDetail2.setVisibility(View.GONE);
-        }else {
+        } else {
             tvDoorBell.setVisibility(View.VISIBLE);
             tvSettingClear.setVisibility(View.VISIBLE);
             tvBellDetail2.setVisibility(View.VISIBLE);
@@ -155,7 +168,10 @@ public class CloudLiveSettingFragment extends Fragment implements CloudLiveSetti
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
-                ToastUtil.showToast(getContext(),"正在清空中。。。");
+                presenter.clearMesgRecord();
+                if (listener != null) {
+                    listener.onClear();
+                }
             }
         });
         b.setNegativeButton("取消", new DialogInterface.OnClickListener() {
@@ -164,5 +180,23 @@ public class CloudLiveSettingFragment extends Fragment implements CloudLiveSetti
                 dialog.dismiss();
             }
         }).show();
+    }
+
+    @Override
+    public void showClearRecordProgress() {
+        progressClearRecord.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideClearRecordProgress() {
+        progressClearRecord.setVisibility(View.INVISIBLE);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (presenter != null){
+            presenter.stop();
+        }
     }
 }

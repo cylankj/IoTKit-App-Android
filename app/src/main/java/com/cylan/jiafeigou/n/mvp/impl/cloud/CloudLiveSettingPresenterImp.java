@@ -1,7 +1,19 @@
 package com.cylan.jiafeigou.n.mvp.impl.cloud;
 
+import com.cylan.jiafeigou.n.db.CloudLiveDbUtil;
 import com.cylan.jiafeigou.n.mvp.contract.cloud.CloudLiveSettingContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
+import com.cylan.jiafeigou.n.mvp.model.CloudLiveBaseDbBean;
+import com.cylan.jiafeigou.support.db.ex.DbException;
+
+import java.util.concurrent.TimeUnit;
+
+import rx.Observable;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 /**
  * 作者：zsl
@@ -9,6 +21,8 @@ import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
  * 描述：
  */
 public class CloudLiveSettingPresenterImp extends AbstractPresenter<CloudLiveSettingContract.View> implements CloudLiveSettingContract.Presenter{
+
+    private Subscription clearDbSub;
 
     public CloudLiveSettingPresenterImp(CloudLiveSettingContract.View view) {
         super(view);
@@ -23,7 +37,9 @@ public class CloudLiveSettingPresenterImp extends AbstractPresenter<CloudLiveSet
 
     @Override
     public void stop() {
-
+        if (clearDbSub != null){
+            clearDbSub.unsubscribe();
+        }
     }
 
     @Override
@@ -31,4 +47,31 @@ public class CloudLiveSettingPresenterImp extends AbstractPresenter<CloudLiveSet
         //TODO 查询用户的设备是否有绑定改云相框
         return false;
     }
+
+    @Override
+    public void clearMesgRecord() {
+        getView().showClearRecordProgress();
+        clearDbSub = Observable.just(null)
+                .subscribeOn(Schedulers.newThread())
+                .delay(3000, TimeUnit.MILLISECONDS)
+                .map(new Func1<Object, Object>() {
+                    @Override
+                    public Object call(Object o) {
+                        try {
+                            CloudLiveDbUtil.getInstance().dbManager.delete(CloudLiveBaseDbBean.class);
+                        } catch (DbException e) {
+                            e.printStackTrace();
+                        }
+                        return null;
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<Object>() {
+                    @Override
+                    public void call(Object o) {
+                        getView().hideClearRecordProgress();
+                    }
+                });
+    }
+
 }

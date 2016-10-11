@@ -11,31 +11,39 @@ import com.cylan.jiafeigou.utils.ContextUtils;
  */
 public class CloudLiveDbUtil {
 
+    private static final String DB_NAME ="cloud_live_db";
+
     private static CloudLiveDbUtil uniqueInstance = null;
 
     public static DbManager dbManager;
 
-    private CloudLiveDbUtil(String dbName){
+    private CloudLiveDbUtil(){
         if(dbManager == null){
-            dbManager = DbManagerImpl.getInstance(getDaoconfig(dbName));
+            dbManager = DbManagerImpl.getInstance(getDaoconfig());
         }
     }
 
-    public static CloudLiveDbUtil getInstance(String dbName) {
+    public static CloudLiveDbUtil getInstance() {
         synchronized (CloudLiveDbUtil.class){
             if (uniqueInstance == null) {
-                uniqueInstance = new CloudLiveDbUtil(dbName);
+                uniqueInstance = new CloudLiveDbUtil();
             }
             return uniqueInstance;
         }
     }
 
-    private DbManager.DaoConfig getDaoconfig(String dbName){
+    private DbManager.DaoConfig getDaoconfig(){
         return new DbManager.DaoConfig()
                 .setAllowTransaction(true)
                 .setContext(ContextUtils.getContext())
-                .setDbName(dbName)
+                .setDbName(DB_NAME)
                 .setDbVersion(1)
+                .setDbOpenListener(new DbManager.DbOpenListener() {
+                    @Override
+                    public void onDbOpened(DbManager db) {
+                        db.getDatabase().enableWriteAheadLogging();
+                    }
+                })
                 .setDbUpgradeListener(new MyDbLisenter());
     }
 
@@ -45,5 +53,17 @@ public class CloudLiveDbUtil {
         public void onUpgrade(DbManager DbManager, int oldVersion, int newVersion) {
             //TODO 数据库的升级
         }
+    }
+
+    /**
+     * desc：生成数据库的名字
+     * @return
+     */
+    private String generateDbName(){
+        String db_name = "";
+
+        //TODO 获取到用户的账号
+
+        return db_name;
     }
 }
