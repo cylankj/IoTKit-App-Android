@@ -81,6 +81,7 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
         initFragment();
         initPresenter();
         initDataBase();
+        initRecycleView();
     }
 
     private void initDataBase() {
@@ -90,7 +91,6 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
     @Override
     protected void onStart() {
         super.onStart();
-        initRecycleView();
     }
 
     private void initPresenter() {
@@ -244,7 +244,7 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
                         return true;
                     }
                     case MotionEvent.ACTION_UP:{
-                        tv_show_mesg.setText("按下留言kok");
+                        tv_show_mesg.setText("按下留言k5k");
                         presenter.stopRecord();
                         ToastUtil.showToast(getContext(),leaveMesgUrl);
                         CloudLiveBaseBean newBean = presenter.creatMesgBean();
@@ -304,11 +304,13 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
 
         List<CloudLiveBaseBean> list = new ArrayList<>();
         List<CloudLiveBaseDbBean> fromAllDb = presenter.findFromAllDb();
-        for(CloudLiveBaseDbBean dBbean:fromAllDb){
-            CloudLiveBaseBean newBean = new CloudLiveBaseBean();
-            newBean.setType(dBbean.getType());
-            newBean.setData(presenter.readSerializedObject(dBbean.getData()));
-            list.add(newBean);
+        if(fromAllDb != null && fromAllDb.size()>0){
+            for(CloudLiveBaseDbBean dBbean:fromAllDb){
+                CloudLiveBaseBean newBean = new CloudLiveBaseBean();
+                newBean.setType(dBbean.getType());
+                newBean.setData(presenter.readSerializedObject(dBbean.getData()));
+                list.add(newBean);
+            }
         }
         //TODO 网络获取消息记录
         return list;

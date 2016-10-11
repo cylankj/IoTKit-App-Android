@@ -1,16 +1,22 @@
 package com.cylan.jiafeigou.n.mvp.model;
 
+import com.cylan.jiafeigou.support.db.annotation.Column;
+import com.cylan.jiafeigou.support.db.annotation.Table;
+
 /**
  * 作者：zsl
  * 创建时间：2016/10/10
  * 描述：
  */
+@Table(name = "cloud_live_base_db_bean_table")
 public class CloudLiveBaseDbBean {
-
-
+    @Column(name = "id", isId = true)
     public int id;
+    @Column(name = "type")
     public int type;
+    @Column(name = "data")
     public byte[] data;
+    @Column(name = "userIcon")
     public String userIcon;
 
     public byte[] getData() {

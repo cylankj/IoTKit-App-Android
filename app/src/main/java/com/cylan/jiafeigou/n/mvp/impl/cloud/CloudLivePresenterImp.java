@@ -1,17 +1,24 @@
 package com.cylan.jiafeigou.n.mvp.impl.cloud;
 
+import android.content.ContentValues;
+import android.database.sqlite.SQLiteDatabase;
 import android.media.MediaRecorder;
 import android.os.Environment;
+import android.text.TextUtils;
 
+import com.cylan.jiafeigou.n.db.CloudLiveDbUtil;
 import com.cylan.jiafeigou.n.mvp.contract.cloud.CloudLiveContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.n.mvp.model.CloudLiveBaseBean;
 import com.cylan.jiafeigou.n.mvp.model.CloudLiveBaseDbBean;
 
+import com.cylan.jiafeigou.n.mvp.model.CloudLiveVideoTalkBean;
 import com.cylan.jiafeigou.support.db.DbManager;
 import com.cylan.jiafeigou.support.db.DbManagerImpl;
 import com.cylan.jiafeigou.support.db.ex.DbException;
-
+import com.cylan.jiafeigou.support.db.sqlite.SqlInfo;
+import com.cylan.jiafeigou.support.db.sqlite.SqlInfoBuilder;
+import com.sina.weibo.sdk.utils.LogUtil;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -21,6 +28,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 import java.util.List;
@@ -204,13 +212,7 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
     @Override
 
     public void createDB() {
-        DbManager.DaoConfig config = new DbManager.DaoConfig();
-        config.setDbName(DB_NAME); //db名
-        config.setDbVersion(1);  //db版本
-        config.setDbUpgradeListener(new MyDbLisenter());
-        config.setAllowTransaction(true);
-        base_db = DbManagerImpl.getInstance(config);
-
+        base_db = CloudLiveDbUtil.getInstance(DB_NAME).dbManager;;
     }
 
     @Override
@@ -258,33 +260,31 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
         } catch (DbException e) {
             e.printStackTrace();
         }
+
     }
 
     @Override
     public List<CloudLiveBaseDbBean> findFromAllDb() {
-        List<CloudLiveBaseDbBean> allData = null;
+        List<CloudLiveBaseDbBean> allData = new ArrayList<>();
         try {
             allData = base_db.findAll(CloudLiveBaseDbBean.class);
         } catch (DbException e) {
             e.printStackTrace();
         }
+
         return allData;
     }
 
-    public class MyDbLisenter implements DbManager.DbUpgradeListener {
+    /**
+     * desc：生成数据库的名字
+     * @return
+     */
+    private String generateDbName(){
+        String db_name = "";
 
-        @Override
-        public void onUpgrade(DbManager DbManager, int oldVersion, int newVersion) {
-            try {
-                if (oldVersion == 1 && newVersion == 2) {
-                    String sql = "ALTER TABLE " + DbManager.getDaoConfig().getDbName()
-                            + " ADD COLUMN TEMP TEXT";
-                    DbManager.execNonQuery(sql);
-                }
-            } catch (DbException e) {
-                e.printStackTrace();
-            }
-        }
+        //TODO 获取到用户的账号
+
+        return db_name;
     }
 
 }

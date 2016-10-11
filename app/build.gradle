@@ -235,15 +235,13 @@ repositories {
 }
 
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
-
+    compile fileTree(dir: 'libs', include: ['*.jar'])
     //////////////test///////////////////////
     testCompile rootProject.ext.testRobolectric
     testCompile rootProject.ext.testAssertj
     testCompile rootProject.ext.testJunit4
     testCompile rootProject.ext.annotation
     testCompile rootProject.ext.testMockio
-
     /////////////////android///////////////////////
     compile rootProject.ext.appcompat
     compile rootProject.ext.appSupport
@@ -251,14 +249,10 @@ dependencies {
     compile rootProject.ext.appDesign
     compile rootProject.ext.appCardview
     /////////////////android///////////////////////
-
-
     compile rootProject.ext.butterknife
     apt rootProject.ext.butterknifeApt
-
     compile rootProject.ext.rxAndroid
     compile rootProject.ext.permis
-
     compile rootProject.ext.systembartint
     apt rootProject.ext.permisApt
     compile project(':jlib')
@@ -274,15 +268,13 @@ dependencies {
     compile files('libs/zxing.jar')
     debugCompile files('src/main/jniLibs/jfg-debug-support.jar')
     releaseCompile files('src/main/jniLibs/jfg-release-support.jar')
-
     //其中latest.release指代最新版本号，也可以指定明确的版本号，例如2.1.5
     compile rootProject.ext.buglySdk
     //其中latest.release指代最新版本号，也可以指定明确的版本号，例如2.2.0
     compile rootProject.ext.buglyNdk
-
     debugCompile rootProject.ext.leakcanaryAndroid
     releaseCompile rootProject.ext.leakcanaryAndroidNoOp
-//    testCompile rootProject.ext.leakcanaryAndroidNoOp
+    //    testCompile rootProject.ext.leakcanaryAndroidNoOp
     compile files('src/main/jniLibs/zbar.jar')
     //add by hunt 2016-08-01
     compile rootProject.ext.switchButton
@@ -293,6 +285,7 @@ dependencies {
     //头像更改选择框架
     compile rootProject.ext.galleryFinal
     compile(name: rootProject.ext.cySdk, ext: 'aar')
-//    compile files('libs/xUtils-2.6.14.jar')
+    //    compile files('libs/xUtils-2.6.14.jar')
+    compile files('libs/xUtils-2.6.14.jar')
 }
 
