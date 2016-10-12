@@ -2,9 +2,11 @@ package com.cylan.jiafeigou.n.mvp.impl.cloud;
 
 import android.content.ContentValues;
 import android.database.sqlite.SQLiteDatabase;
+import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.os.Environment;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.cylan.jiafeigou.n.db.CloudLiveDbUtil;
 import com.cylan.jiafeigou.n.mvp.contract.cloud.CloudLiveContract;
@@ -55,15 +57,14 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
     private int BASE = 600;
 
     private MediaRecorder mMediaRecorder;
+    private MediaPlayer mPlayer;
     public static final int MAX_LENGTH = 1000 * 60 * 10;// 最大录音时长;
     private File filePath;
     private long startTime;
     private long endTime;
 
     private String output_Path = Environment.getExternalStorageDirectory().getAbsolutePath()
-            + File.separator + "luyin.3gp";
-
-
+            + File.separator + System.currentTimeMillis()+"luyin.3gp";
 
     private DbManager base_db;
 
@@ -82,6 +83,7 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
         if (talkSub != null) {
             talkSub.unsubscribe();
         }
+        stopPlayRecord();
     }
 
     @Override
@@ -161,6 +163,29 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
         mMediaRecorder.reset();
         mMediaRecorder.release();
         mMediaRecorder = null;
+    }
+
+    @Override
+    public void playRecord(String mFileName) {
+        mPlayer = new MediaPlayer();
+        try {
+            mPlayer.setDataSource(mFileName);
+            mPlayer.prepare();
+            mPlayer.start();
+        } catch (IOException e) {
+            LogUtil.d("cloud_live_play_record","prepare() failed"+e.getMessage());
+        }
+    }
+
+    @Override
+    public void stopPlayRecord() {
+        if (mPlayer == null){
+            return;
+        }
+        mPlayer.stop();
+        mPlayer.reset();
+        mPlayer.release();
+        mPlayer = null;
     }
 
     @Override
@@ -273,7 +298,5 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
         }
         return allData;
     }
-
-
 
 }

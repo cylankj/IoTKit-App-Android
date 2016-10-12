@@ -20,6 +20,7 @@ import com.cylan.jiafeigou.support.db.DbManager;
 public interface CloudLiveContract {
 
     interface View extends BaseView<Presenter> {
+
         void showVoiceTalkDialog(Context context);
 
         void refreshView(int leftVal, int rightVal);
@@ -35,6 +36,10 @@ public interface CloudLiveContract {
         void startTalk();
 
         void stopRecord();
+
+        void playRecord(String fileName);
+
+        void stopPlayRecord();
 
         boolean checkSDCard();
 
@@ -55,8 +60,6 @@ public interface CloudLiveContract {
         void saveIntoDb(CloudLiveBaseDbBean bean);          //保存到数据库
 
         List<CloudLiveBaseDbBean> findFromAllDb();          //查询数据库
-
-
 
     }
 }

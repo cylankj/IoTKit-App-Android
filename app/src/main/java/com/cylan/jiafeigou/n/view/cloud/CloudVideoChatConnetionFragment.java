@@ -57,7 +57,7 @@ public class CloudVideoChatConnetionFragment extends Fragment implements CloudVi
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        cloudVideoChatConettionOkFragment = cloudVideoChatConettionOkFragment.newInstance(new Bundle());
+        cloudVideoChatConettionOkFragment = CloudVideoChatConettionOkFragment.newInstance(new Bundle());
     }
 
     @Nullable
