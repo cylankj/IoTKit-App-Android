@@ -59,6 +59,8 @@ public interface LoginModelContract {
         void registerResult(int result);
 
         void switchBox(String account);
+
+        void updateAccount(String account);
     }
 
     interface Presenter extends BasePresenter {

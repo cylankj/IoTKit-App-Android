@@ -532,6 +532,16 @@ public class LoginFragment extends android.support.v4.app.Fragment
 //        }
     }
 
+    @Override
+    public void updateAccount(final String account) {
+        etLoginUsername.post(new Runnable() {
+            @Override
+            public void run() {
+                etLoginUsername.setText(account);
+            }
+        });
+    }
+
     @OnTextChanged(R.id.et_register_input_box)
     public void onRegisterEtChange(CharSequence s, int start, int before, int count) {
         boolean result;
@@ -738,13 +748,6 @@ public class LoginFragment extends android.support.v4.app.Fragment
                 }
             });
         }
-    }
-
-    /**
-     * 管理着注册方式的切换与输入
-     */
-    private static class RegisterWay {
-
     }
 
     /**

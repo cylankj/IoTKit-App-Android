@@ -23,11 +23,14 @@ import android.widget.ViewSwitcher;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.misc.RxEvent;
 import com.cylan.jiafeigou.n.mvp.contract.login.ForgetPwdContract;
 import com.cylan.jiafeigou.n.mvp.model.RequestResetPwdBean;
+import com.cylan.jiafeigou.support.rxbus.RxBus;
 import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.IMEUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;
+import com.cylan.utils.NetUtils;
 
 import java.util.List;
 
@@ -134,6 +137,13 @@ public class ForgetPwdFragment extends Fragment implements ForgetPwdContract.Vie
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        if (presenter != null)
+            presenter.start();
+    }
+
+    @Override
     public void onStop() {
         super.onStop();
         if (countDownTimer != null)
@@ -196,7 +206,7 @@ public class ForgetPwdFragment extends Fragment implements ForgetPwdContract.Vie
         tvMeterGetCode.setEnabled(false);
         Toast.makeText(getActivity(), "已发送", Toast.LENGTH_SHORT).show();
         if (presenter != null)
-            presenter.executeSubmitAccount(ViewUtils.getTextViewContent(etForgetUsername));
+            presenter.submitAccount(ViewUtils.getTextViewContent(etForgetUsername));
     }
 
     @OnClick(R.id.iv_forget_clear_username)
@@ -231,11 +241,11 @@ public class ForgetPwdFragment extends Fragment implements ForgetPwdContract.Vie
 //                    tvLoginTopCenter.setText("忘记密码(手机)");
                     start2HandleVerificationCode();
                     if (presenter != null) {
-                        presenter.submitForVerificationCode(ViewUtils.getTextViewContent(etForgetUsername));
+                        presenter.submitAccount(ViewUtils.getTextViewContent(etForgetUsername));
                     }
                 } else {
                     final String code = ViewUtils.getTextViewContent(etVerificationInput);
-                    if (!TextUtils.isEmpty(code) && code.length() != 6) {
+                    if (!TextUtils.isEmpty(code) && code.length() != JConstant.VALID_VERIFICATION_CODE_LEN) {
                         Toast.makeText(getActivity(), "验证码有错", Toast.LENGTH_SHORT).show();
                         return;
                     }
@@ -244,7 +254,7 @@ public class ForgetPwdFragment extends Fragment implements ForgetPwdContract.Vie
                         return;
                     }
                     //验证码过期
-                    if (!TextUtils.isEmpty(code) && code.length() == 6
+                    if (!TextUtils.isEmpty(code) && code.length() == JConstant.VALID_VERIFICATION_CODE_LEN
                             && JConstant.PHONE_REG.matcher(etForgetUsername.getText()).find()) {
                         if (TextUtils.equals(getString(R.string.item_reget_verification_code),
                                 ViewUtils.getTextViewContent(tvMeterGetCode))) {
@@ -263,7 +273,7 @@ public class ForgetPwdFragment extends Fragment implements ForgetPwdContract.Vie
                 Toast.makeText(getActivity(), "已发送", Toast.LENGTH_SHORT).show();
 //                tvLoginTopCenter.setText("忘记密码(邮箱)");
                 if (presenter != null)
-                    presenter.executeSubmitAccount(ViewUtils.getTextViewContent(etForgetUsername));
+                    presenter.submitAccount(ViewUtils.getTextViewContent(etForgetUsername));
                 break;
         }
         IMEUtils.hide(getActivity());
@@ -295,7 +305,10 @@ public class ForgetPwdFragment extends Fragment implements ForgetPwdContract.Vie
 
     @OnClick(R.id.tv_forget_pwd_submit)
     public void forgetPwdCommit(View v) {
-
+        if (NetUtils.getJfgNetType(getContext()) == 0) {
+            Toast.makeText(getContext(), "网络不通", Toast.LENGTH_SHORT).show();
+            return;
+        }
         next();
     }
 
@@ -324,7 +337,7 @@ public class ForgetPwdFragment extends Fragment implements ForgetPwdContract.Vie
         if (view != null) {
             vsSetAccountPwd.removeView(view);
         }
-        View mailView = LayoutInflater.from(getContext())
+        View mailView = LayoutInflater.from(getActivity())
                 .inflate(R.layout.fragment_forget_pwd_by_email, null);
         if (mailView == null) {
             return;
@@ -339,6 +352,7 @@ public class ForgetPwdFragment extends Fragment implements ForgetPwdContract.Vie
             public void onClick(View v) {
                 Toast.makeText(getActivity(), "yes?", Toast.LENGTH_SHORT).show();
                 getActivity().getSupportFragmentManager().popBackStack();
+                RxBus.getInstance().send(new RxEvent.LoginPopBack(etForgetUsername.getText().toString()));
             }
         });
         vsSetAccountPwd.addView(mailView);
@@ -368,12 +382,19 @@ public class ForgetPwdFragment extends Fragment implements ForgetPwdContract.Vie
         final int ret = bean == null ? -1 : bean.ret;
         switch (ret) {
             case JConstant.THIS_ACCOUNT_NOT_REGISTERED:
+                tvForgetPwdSubmit.setEnabled(true);
                 Toast.makeText(getContext(), "账号未注册", Toast.LENGTH_SHORT).show();
                 break;
             case JConstant.AUTHORIZE_MAIL:
+                if (bean != null && !TextUtils.equals(bean.content, etForgetUsername.getText())) {
+                    tvForgetPwdSubmit.setEnabled(true);
+                    Toast.makeText(getActivity(), "账号未注册", Toast.LENGTH_SHORT).show();
+                    break;
+                }
                 prepareMailView();
                 break;
             case JConstant.AUTHORIZE_PHONE:
+                tvForgetPwdSubmit.setEnabled(true);
                 preparePhoneView();
                 break;
         }

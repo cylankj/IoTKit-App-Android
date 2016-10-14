@@ -1,113 +1,98 @@
 package com.cylan.jiafeigou.n.mvp.impl;
 
-import android.text.TextUtils;
-import android.util.Log;
-
+import com.cylan.entity.JfgEnum;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.misc.JfgCmdEnsurance;
+import com.cylan.jiafeigou.misc.RxEvent;
 import com.cylan.jiafeigou.n.mvp.contract.login.ForgetPwdContract;
 import com.cylan.jiafeigou.n.mvp.model.RequestResetPwdBean;
-import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.utils.RandomUtils;
-
-import org.msgpack.annotation.NotNullable;
-
-import java.util.concurrent.TimeUnit;
+import com.cylan.jiafeigou.support.rxbus.RxBus;
+import com.cylan.jiafeigou.utils.PreferencesUtils;
 
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
-import rx.functions.Func1;
+import rx.schedulers.Schedulers;
+import rx.subscriptions.CompositeSubscription;
 
 ;
 
 /**
  * Created by cylan-hunt on 16-6-29.
  */
-public class ForgetPwdPresenterImpl extends AbstractPresenter<ForgetPwdContract.View> implements ForgetPwdContract.Presenter {
+public class ForgetPwdPresenterImpl extends AbstractPresenter<ForgetPwdContract.View>
+        implements ForgetPwdContract.Presenter {
 
-    Subscription subscription;
+    private Subscription subscription;
+    private CompositeSubscription compositeSubscription;
 
     public ForgetPwdPresenterImpl(ForgetPwdContract.View view) {
         super(view);
         view.setPresenter(this);
     }
 
-
     @Override
-    public void executeSubmitAccount(@NotNullable String account) {
+    public void submitAccount(final String account) {
         subscription = Observable.just(account)
-                .delay(3000, TimeUnit.MILLISECONDS)
-                .map(new Func1<String, String>() {
-                    @Override
-                    public String call(String s) {
-                        return s;
-                    }
-                })
-                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.newThread())
                 .subscribe(new Action1<String>() {
                     @Override
                     public void call(String s) {
-                        if (getView().getContext() != null)
-                            doStuff(TextUtils.isDigitsOnly(s) ? JConstant.TYPE_PHONE : JConstant.TYPE_EMAIL);
+                        final boolean isPhoneNum = JConstant.PHONE_REG.matcher(account).find();
+                        if (isPhoneNum) {
+                            JfgCmdEnsurance.getCmd()
+                                    .sendCheckCode(account, JfgEnum.JFG_SMS_FORGOTPASS);
+                        } else {
+                            JfgCmdEnsurance.getCmd().forgetPassByEmail(account);
+                        }
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+
                     }
                 });
     }
 
     @Override
-    public void submitForVerificationCode(String account) {
-        AppLogger.d("no thing happened");
-    }
-
-    @Override
-    public void submitPhoneNumAndCode(String account, String code) {
+    public void submitPhoneNumAndCode(final String account, final String code) {
         subscription = Observable.just(account)
-                .delay(3000, TimeUnit.MILLISECONDS)
-                .map(new Func1<String, String>() {
-                    @Override
-                    public String call(String s) {
-                        return s;
-                    }
-                })
-                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.newThread())
                 .subscribe(new Action1<String>() {
                     @Override
                     public void call(String s) {
-                        if (getView().getContext() != null)
-                            doStuff(JConstant.TYPE_PHONE);
+                        JfgCmdEnsurance.getCmd().verifySMS(account, code, PreferencesUtils.getString(JConstant.KEY_REGISTER_SMS_TOKEN));
                     }
                 });
-    }
-
-    private void doStuff(final int type) {
-        RequestResetPwdBean bean = testResult();
-        bean.ret = type;
-        if (getView() != null) {
-            getView().submitResult(bean);
-        } else {
-            Log.e("", "");
-        }
-    }
-
-    private RequestResetPwdBean testResult() {
-        RequestResetPwdBean bean = new RequestResetPwdBean();
-        bean.ret = RandomUtils.getRandom(4);
-        bean.ret = 1;
-        if (bean.ret == 1) {
-
-        } else if (bean.ret == 2) {
-
-        }
-        return bean;
     }
 
     @Override
     public void start() {
-
+        compositeSubscription = new CompositeSubscription();
+        compositeSubscription.add(RxBus.getInstance().toObservable()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<Object>() {
+                    @Override
+                    public void call(Object o) {
+                        if (o instanceof RxEvent.ForgetPwdByMail) {
+                            RequestResetPwdBean bean = new RequestResetPwdBean();
+                            bean.ret = JConstant.AUTHORIZE_MAIL;
+                            bean.content = ((RxEvent.ForgetPwdByMail) o).account;
+                            getView().submitResult(bean);
+                        }
+                        if (o instanceof RxEvent.SmsCodeResult) {
+                            if (((RxEvent.SmsCodeResult) o).error == 0) {
+                                //store the token .
+                                PreferencesUtils.putString(JConstant.KEY_REGISTER_SMS_TOKEN, ((RxEvent.SmsCodeResult) o).token);
+                            }
+                        }
+                    }
+                }));
     }
 
     @Override
     public void stop() {
-        unSubscribe(subscription);
+        unSubscribe(subscription, compositeSubscription);
     }
 }

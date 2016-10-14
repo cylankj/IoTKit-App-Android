@@ -4,8 +4,6 @@ import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
 import com.cylan.jiafeigou.n.mvp.model.RequestResetPwdBean;
 
-import org.msgpack.annotation.NotNullable;
-
 /**
  * Created by cylan-hunt on 16-6-29.
  */
@@ -25,14 +23,13 @@ public interface ForgetPwdContract {
     }
 
     interface Presenter extends BasePresenter {
+
         /**
-         * 账号
+         * 忘记密码，第一步：提交账号，等待返回。
          *
          * @param account
          */
-        void executeSubmitAccount(@NotNullable String account);
-
-        void submitForVerificationCode(final String account);
+        void submitAccount(final String account);
 
         void submitPhoneNumAndCode(final String account, final String code);
 

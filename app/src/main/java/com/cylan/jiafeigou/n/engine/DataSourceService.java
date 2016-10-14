@@ -216,7 +216,7 @@ public class DataSourceService extends Service implements AppCallBack {
 
     @Override
     public void OnSendSMSResult(int i, String s) {
-        AppLogger.d("OnLocalMessage :" + i + "," + s);
+        AppLogger.d("OnSendSMSResult :" + i + "," + s);
         if (eventBus != null && eventBus.hasObservers())
             eventBus.send(new RxEvent.SmsCodeResult(i, s));
     }
@@ -273,7 +273,10 @@ public class DataSourceService extends Service implements AppCallBack {
 
     @Override
     public void OnForgetPassByEmailRsp(int i, String s) {
-        AppLogger.d("OnForgetPassByEmailRsp :");
+        AppLogger.d("OnForgetPassByEmailRsp :" + s);
+        if (eventBus.hasObservers()) {
+            eventBus.send(new RxEvent.ForgetPwdByMail(s));
+        }
     }
 
     @Override

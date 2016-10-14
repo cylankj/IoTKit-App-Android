@@ -99,6 +99,9 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginModelContract.Vie
                         if (o instanceof RxEvent.SwitchBox) {
                             getView().switchBox("");
                         }
+                        if (o instanceof RxEvent.LoginPopBack) {
+                            getView().updateAccount(((RxEvent.LoginPopBack) o).account);
+                        }
                     }
                 }));
     }

@@ -156,12 +156,32 @@ public class RxEvent {
         public int code;
     }
 
+    /**
+     * 切换 “登陆” “注册”
+     */
     public static final class SwitchBox {
 //        public String account;
 
 //        public SwitchBox(String account) {
 //            this.account = account;
 //        }
+    }
+
+    public static final class LoginPopBack {
+        public String account;
+
+        public LoginPopBack(String account) {
+            this.account = account;
+        }
+
+    }
+
+    public static final class ForgetPwdByMail {
+        public String account;
+
+        public ForgetPwdByMail(String account) {
+            this.account = account;
+        }
     }
 
 }
