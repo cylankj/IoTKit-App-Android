@@ -2,14 +2,13 @@ package com.cylan.jiafeigou.n.mvp.impl;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 
-import com.cylan.entity.jniCall.JFGResult;
-import com.cylan.jfgapp.jni.JfgAppCmd;
-import com.cylan.jiafeigou.n.engine.DaemonService;
-import com.cylan.jiafeigou.n.engine.DataSourceService;
+import com.cylan.entity.JfgEnum;
+import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.misc.JfgCmdEnsurance;
+import com.cylan.jiafeigou.misc.RxEvent;
 import com.cylan.jiafeigou.n.mvp.contract.login.LoginModelContract;
 import com.cylan.jiafeigou.n.mvp.model.LoginAccountBean;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -18,6 +17,7 @@ import com.cylan.jiafeigou.support.sina.AccessTokenKeeper;
 import com.cylan.jiafeigou.support.sina.SinaWeiboUtil;
 import com.cylan.jiafeigou.support.sina.UsersAPI;
 import com.cylan.jiafeigou.support.tencent.TencentLoginUtils;
+import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.sina.weibo.sdk.auth.Oauth2AccessToken;
 import com.sina.weibo.sdk.auth.WeiboAuthListener;
 import com.sina.weibo.sdk.exception.WeiboException;
@@ -28,8 +28,7 @@ import com.tencent.tauth.UiError;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.concurrent.TimeUnit;
-
+import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
@@ -40,15 +39,14 @@ import rx.subscriptions.CompositeSubscription;
 /**
  * Created by lxh on 16-6-24.
  */
-public class LoginPresenterImpl extends AbstractPresenter<LoginModelContract.View> implements LoginModelContract.Presenter {
+public class LoginPresenterImpl extends AbstractPresenter<LoginModelContract.View>
+        implements LoginModelContract.Presenter {
 
-    private JfgAppCmd cmd;
     private Context ctx;
     private CompositeSubscription subscription;
 
     public LoginPresenterImpl(LoginModelContract.View view) {
         super(view);
-        cmd = JfgAppCmd.getInstance();
         view.setPresenter(this);
         ctx = view.getContext();
     }
@@ -61,23 +59,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginModelContract.Vie
                     .subscribe(new Action1<LoginAccountBean>() {
                         @Override
                         public void call(LoginAccountBean o) {
-                            if (cmd == null) {
-                                getView().getContext()
-                                        .startService(new Intent(getView().getContext(),
-                                                DataSourceService.class));
-                            }
-                            AppLogger.d("cmd is null");
-                            //waiting for DataSourceService to start again and reInit JfgAppCmd
-                            //it works good in a new thread,but a little ...
-                            while ((cmd = JfgAppCmd.getInstance()) == null) {
-                                try {
-                                    Thread.sleep(200);
-                                } catch (InterruptedException e) {
-                                    e.printStackTrace();
-                                }
-                            }
-                            AppLogger.d("cmd is re init");
-                            cmd.login(o.userName, o.pwd);
+                            JfgCmdEnsurance.getCmd().login(o.userName, o.pwd);
                         }
                     }, new Action1<Throwable>() {
                         @Override
@@ -93,17 +75,29 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginModelContract.Vie
         subscription = new CompositeSubscription();
         subscription.add(RxBus.getInstance()
                 .toObservable()
-                .delay(1000, TimeUnit.MILLISECONDS)//set a delay
+//                .delay(1000, TimeUnit.MILLISECONDS)//set a delay
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<Object>() {
                     @Override
                     public void call(Object o) {
-                        if (o instanceof JFGResult) {
-                            LoginAccountBean bean = new LoginAccountBean();
-                            bean.code = ((JFGResult) o).code;
-                            bean.event = ((JFGResult) o).event;
-                            AppLogger.d("LoginAccountBean: " + bean.toString());
-                            getView().loginResult(bean);
+                        if (o instanceof RxEvent.ResultLogin) {
+                            getView().loginResult(((RxEvent.ResultLogin) o).code);
+                        }
+                        if (o instanceof RxEvent.ResultRegister) {
+                            getView().registerResult(((RxEvent.ResultRegister) o).code);
+                        }
+                        if (o instanceof RxEvent.ResultVerifyCode) {
+                            getView().verifyCodeResult(((RxEvent.ResultVerifyCode) o).code);
+                        }
+                        if (o instanceof RxEvent.SmsCodeResult) {
+                            getView().registerResult(((RxEvent.SmsCodeResult) o).error);
+                            if (((RxEvent.SmsCodeResult) o).error == 0) {
+                                //store the token .
+                                PreferencesUtils.putString(JConstant.KEY_REGISTER_SMS_TOKEN, ((RxEvent.SmsCodeResult) o).token);
+                            }
+                        }
+                        if (o instanceof RxEvent.SwitchBox) {
+                            getView().switchBox("");
                         }
                     }
                 }));
@@ -136,6 +130,35 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginModelContract.Vie
         AppLogger.d("just send phone ");
     }
 
+    @Override
+    public void getCodeByPhone(final String phone) {
+        Observable.just(null)
+                .subscribeOn(Schedulers.newThread())
+                .subscribe(new Action1<Object>() {
+                    @Override
+                    public void call(Object o) {
+                        JfgCmdEnsurance.getCmd().sendCheckCode(phone, JfgEnum.JFG_SMS_REGISTER);
+                    }
+                });
+    }
+
+    @Override
+    public void verifyCode(final String phone, final String code, final String token) {
+        Observable.just(null)
+                .subscribeOn(Schedulers.newThread())
+                .subscribe(new Action1<Object>() {
+                    @Override
+                    public void call(Object o) {
+                        JfgCmdEnsurance.getCmd().verifySMS(phone, code, token);
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        AppLogger.i("throw:" + throwable.getLocalizedMessage());
+                    }
+                });
+    }
+
     /**
      * QQ授权的监听器
      */
@@ -155,7 +178,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginModelContract.Vie
                 if (jsonResponse.has("nickname")) {
                     alias = jsonResponse.getString("nickname");
                 }
-//                PreferencesUtils.setThirDswLoginPicUrl(ctx, jsonResponse.getString("figureurl_qq_1"));
+//                PreferencesUtils.setThirDswLoginPicUrl( jsonResponse.getString("figureurl_qq_1"));
 //                cmd.openLogin(alias, "", "QQ", ""); // 接口没测
             } catch (JSONException e) {
                 AppLogger.e(e.toString());

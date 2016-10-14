@@ -3,7 +3,9 @@ package com.cylan.jiafeigou.widget.dialog;
 
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,16 +23,20 @@ import butterknife.OnClick;
 public class SimpleDialogFragment extends BaseDialog {
 
     private Object cache;
-    public static final int ACTION_POSITIVE = 1;
-    public static final int ACTION_NEGATIVE = -1;
+    public static final int ACTION_LEFT = 1;
+    public static final int ACTION_RIGHT = -1;
 
+    public static final String KEY_TITLE = "key_title";
+    public static final String KEY_LEFT_CONTENT = "key_left";
+    public static final String KEY_RIGHT_CONTENT = "key_right";
+    public static final String KEY_TOUCH_OUT_SIDE_DISMISS = "key_touch_outside";
     public static final String KEY_VALUE = "key_value";
     @BindView(R.id.tv_dialog_title)
     TextView tvDialogTitle;
-    @BindView(R.id.tv_dialog_btn_positive)
-    TextView tvDialogBtnPositive;
-    @BindView(R.id.tv_dialog_btn_negative)
-    TextView tvDialogBtnNegative;
+    @BindView(R.id.tv_dialog_btn_left)
+    TextView tvDialogBtnLeft;
+    @BindView(R.id.tv_dialog_btn_right)
+    TextView tvDialogBtnRight;
 
     public static SimpleDialogFragment newInstance(Bundle bundle) {
         SimpleDialogFragment fragment = new SimpleDialogFragment();
@@ -55,20 +61,35 @@ public class SimpleDialogFragment extends BaseDialog {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_simple_dialog, container, false);
+        View view = inflater.inflate(R.layout.fragment_simple_dialog, container, true);
         ButterKnife.bind(this, view);
         return view;
     }
 
-    @OnClick({R.id.tv_dialog_btn_positive, R.id.tv_dialog_btn_negative})
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        Bundle bundle = getArguments();
+        final String title = bundle.getString(KEY_TITLE);
+        final String lContent = bundle.getString(KEY_LEFT_CONTENT);
+        final String rContent = bundle.getString(KEY_RIGHT_CONTENT);
+        if (!TextUtils.isEmpty(title))
+            tvDialogTitle.setText(title);
+        if (!TextUtils.isEmpty(lContent))
+            tvDialogBtnLeft.setText(lContent);
+        if (!TextUtils.isEmpty(rContent))
+            tvDialogBtnRight.setText(rContent);
+        getDialog().setCanceledOnTouchOutside(bundle.getBoolean(KEY_TOUCH_OUT_SIDE_DISMISS, false));
+    }
+
+    @OnClick({R.id.tv_dialog_btn_left, R.id.tv_dialog_btn_right})
     public void onClick(View view) {
         dismiss();
         switch (view.getId()) {
-            case R.id.tv_dialog_btn_positive:
-                if (action != null) action.onDialogAction(ACTION_POSITIVE, cache);
+            case R.id.tv_dialog_btn_left:
+                if (action != null) action.onDialogAction(ACTION_LEFT, cache);
                 break;
-            case R.id.tv_dialog_btn_negative:
-                if (action != null) action.onDialogAction(ACTION_NEGATIVE, cache);
+            case R.id.tv_dialog_btn_right:
+                if (action != null) action.onDialogAction(ACTION_RIGHT, cache);
                 break;
         }
     }
@@ -77,9 +98,17 @@ public class SimpleDialogFragment extends BaseDialog {
         this.action = action;
     }
 
-    public void setupTitle(CharSequence charSequence) {
-        if (tvDialogTitle != null && charSequence != null) tvDialogTitle.setText(charSequence);
-    }
+//    public void setupTitle(CharSequence charSequence) {
+//        if (tvDialogTitle != null && charSequence != null) tvDialogTitle.setText(charSequence);
+//    }
+//
+//    public void setupLeftBtnContent(CharSequence charSequence) {
+//        tvDialogBtnLeft.setText(charSequence);
+//    }
+//
+//    public void setupRightBtnContent(CharSequence charSequence) {
+//        tvDialogBtnRight.setText(charSequence);
+//    }
 
     private SimpleDialogAction action;
 

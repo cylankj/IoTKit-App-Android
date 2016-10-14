@@ -22,8 +22,7 @@ public interface SetupPwdContract {
     }
 
     interface Presenter extends BasePresenter {
-
-        void submitAccountInfo(final String account, final String pwd, final String code);
-
+        void register(final String account, final String pwd, int type, String token);
     }
+
 }

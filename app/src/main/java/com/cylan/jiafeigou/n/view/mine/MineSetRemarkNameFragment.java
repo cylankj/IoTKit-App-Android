@@ -114,7 +114,7 @@ public class MineSetRemarkNameFragment extends Fragment implements MineSetRemark
                     ToastUtil.showToast(getContext(), "备注名不能为空");
                     return;
                 } else {
-                    PreferencesUtils.putString(getActivity(), getEditName(), "username");
+                    PreferencesUtils.putString(getEditName(), "username");
                     ToastUtil.showToast(getContext(), "备注成功");
                     if (listener != null) {
                         listener.remarkNameChange(getEditName());

@@ -23,7 +23,7 @@
         android:orientation="horizontal">
 
         <TextView
-            android:id="@+id/tv_dialog_btn_positive"
+            android:id="@+id/tv_dialog_btn_left"
             style="@style/ripple_background"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -34,7 +34,7 @@
             android:textSize="14sp" />
 
         <TextView
-            android:id="@+id/tv_dialog_btn_negative"
+            android:id="@+id/tv_dialog_btn_right"
             style="@style/ripple_background"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

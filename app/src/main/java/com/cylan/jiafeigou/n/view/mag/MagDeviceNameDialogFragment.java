@@ -82,7 +82,7 @@ public class MagDeviceNameDialogFragment extends DialogFragment {
         mShowState = (TextView) view.findViewById(R.id.tv_information_show_state);
         mEtEditName = (EditText) view.findViewById(R.id.et_information_edit_name);
 
-        editName = PreferencesUtils.getString(getActivity(), "magEditName", "客厅摄像头");
+        editName = PreferencesUtils.getString("magEditName", "客厅摄像头");
         mEtEditName.setText(editName);
         mEtEditName.setTextColor(Color.parseColor("#666666"));
         mEtEditName.setSelection(editName.length());
@@ -164,8 +164,8 @@ public class MagDeviceNameDialogFragment extends DialogFragment {
             //点击确认按钮做相应的逻辑
             case R.id.btn_information_ensure:
                 mEditName = mEtEditName.getText().toString();
-                PreferencesUtils.putString(getActivity(), "magEditName", mEditName);
-                String editName = PreferencesUtils.getString(getActivity(), "magEditName", "客厅摄像头");
+                PreferencesUtils.putString("magEditName", mEditName);
+                String editName = PreferencesUtils.getString("magEditName", "客厅摄像头");
                 mEtEditName.setTextColor(Color.parseColor("#666666"));
                 mEtEditName.setText(editName);
                 if (mListener != null) {

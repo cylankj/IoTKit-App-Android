@@ -103,14 +103,13 @@ public class BindDeviceActivity extends BaseFullScreenFragmentActivity implement
 
         if (fragment == null || fragment.isResumed())
             return true;
-        fragment.setupTitle(getString(R.string.title_to_dismiss_bind));
         fragment.show(getSupportFragmentManager(), "SimpleDialogFragment");
         return true;
     }
 
     @Override
     public void onDialogAction(int id, Object value) {
-        if (id == SimpleDialogFragment.ACTION_NEGATIVE)
+        if (id == SimpleDialogFragment.ACTION_RIGHT)
             return;
         popAllFragmentStack();
     }

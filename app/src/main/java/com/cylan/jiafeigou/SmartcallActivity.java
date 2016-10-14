@@ -11,6 +11,8 @@ import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.app.AlertDialog;
+import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.Toast;
@@ -140,6 +142,13 @@ public class SmartcallActivity extends NeedLoginActivity
         } else {
             initLoginPage();
         }
+        View v = findViewById(android.R.id.content);
+        if (v != null) {
+            View splashView = v.findViewById(R.id.fLayout_splash);
+            if (splashView != null) {
+                ((ViewGroup) v).removeView(splashView);
+            }
+        }
     }
 
     @Override
@@ -149,7 +158,7 @@ public class SmartcallActivity extends NeedLoginActivity
 
 
     private boolean isLoginIn() {
-        return PreferencesUtils.getBoolean(this, UiHelper.TAG_LOGING_STATUS, false);
+        return PreferencesUtils.getBoolean(UiHelper.TAG_LOGING_STATUS, false);
     }
 
     /**
@@ -158,12 +167,12 @@ public class SmartcallActivity extends NeedLoginActivity
      * @return
      */
     private boolean isFirstUseApp() {
-        return PreferencesUtils.getBoolean(this, JConstant.KEY_FRESH, true);
+        return PreferencesUtils.getBoolean(JConstant.KEY_FRESH, true);
         // return true;
     }
 
     private void setFirstUseApp() {
-        PreferencesUtils.putBoolean(this, JConstant.KEY_FRESH, false);
+        PreferencesUtils.putBoolean(JConstant.KEY_FRESH, false);
     }
 
     @Override

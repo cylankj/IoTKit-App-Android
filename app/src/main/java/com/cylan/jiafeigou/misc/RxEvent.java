@@ -79,4 +79,89 @@ public class RxEvent {
         public static final int JFG_RESULT_SET_FRIEND_MARKNAME = 8;
     }
 
+    /**
+     * The type Sms code result.
+     */
+    public static class SmsCodeResult {
+
+        /**
+         * The Error.
+         */
+        public int error;
+        /**
+         * The Token.
+         */
+        public String token;
+
+        /**
+         * Instantiates a new Sms code result.
+         *
+         * @param error the error
+         * @param token the token
+         */
+        public SmsCodeResult(int error, String token) {
+            this.error = error;
+            this.token = token;
+        }
+
+        @Override
+        public String toString() {
+            return "SmsCodeResult{" +
+                    "error=" + error +
+                    ", token='" + token + '\'' +
+                    '}';
+        }
+    }
+
+    /**
+     * {@link com.cylan.jfgapp.jni.JfgAppCallBack#OnSendSMSResult(int, String)}
+     */
+    public static final class ResultVerifyCode {
+        public int code;
+
+        public ResultVerifyCode(int code) {
+            this.code = code;
+        }
+    }
+
+    /**
+     * 调用 {@link com.cylan.jfgapp.jni.JfgAppCmd#register(String, String, int, String)}
+     */
+    public static final class ResultRegister {
+        public int code;
+
+        public ResultRegister(int code) {
+            this.code = code;
+        }
+    }
+
+    public static final class ResultLogin {
+        public int code;
+
+        public ResultLogin(int code) {
+            this.code = code;
+        }
+    }
+
+    public static final class ResultBind {
+        public int code;
+
+        public ResultBind(int code) {
+            this.code = code;
+        }
+    }
+
+
+    public static final class ResultUnBind {
+        public int code;
+    }
+
+    public static final class SwitchBox {
+//        public String account;
+
+//        public SwitchBox(String account) {
+//            this.account = account;
+//        }
+    }
+
 }

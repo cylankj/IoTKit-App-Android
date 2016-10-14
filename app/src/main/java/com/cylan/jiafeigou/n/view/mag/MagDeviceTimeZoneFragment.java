@@ -286,6 +286,6 @@ public class MagDeviceTimeZoneFragment extends Fragment {
      * 保存用户所选择的时区
      */
     private void saveEditName() {
-        PreferencesUtils.putString(getActivity(), "magDetailText", mDetailText);
+        PreferencesUtils.putString("magDetailText", mDetailText);
     }
 }

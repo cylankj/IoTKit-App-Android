@@ -455,7 +455,7 @@ public class HomeWonderfulFragment extends Fragment implements
 
     @Override
     public void onDialogAction(int id, Object value) {
-        if (id == SimpleDialogFragment.ACTION_NEGATIVE)
+        if (id == SimpleDialogFragment.ACTION_RIGHT)
             return;
         if (value == null || !(value instanceof Integer)) {
             Toast.makeText(getContext(), "null: ", Toast.LENGTH_SHORT).show();

@@ -31,7 +31,7 @@ public class MineUserInfoLookBigHeadPresenterIMpl implements MineUserInfoLookBig
     public void loadImage(ImageView imageView) {
 
         Glide.with(view.getContext())
-                .load(PreferencesUtils.getString(view.getContext(), JConstant.USER_IMAGE_HEAD_URL, ""))
+                .load(PreferencesUtils.getString(JConstant.USER_IMAGE_HEAD_URL, ""))
                 .asBitmap()
                 .centerCrop()
                 .into(new BitmapImageViewTarget(imageView) {

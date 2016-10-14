@@ -43,6 +43,9 @@ public class NewHomeActivity extends NeedLoginActivity implements
     @BindView(R.id.rgLayout_home_bottom_menu)
     RadioGroup rgLayoutHomeBottomMenu;
 
+    public static final String KEY_ENTER_ANIM_ID = "key_enter_anim_id";
+    public static final String KEY_EXIT_ANIM_ID = "key_exit_anim_id";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,7 +70,11 @@ public class NewHomeActivity extends NeedLoginActivity implements
     }
 
     protected int[] getOverridePendingTransition() {
-        return new int[]{R.anim.alpha_in, R.anim.alpha_out};
+        Bundle bundle = getIntent().getExtras();
+        final int enterAnimId = bundle == null ? -1 : bundle.getInt(KEY_ENTER_ANIM_ID, -1);
+        final int exitAnimId = bundle == null ? -1 : bundle.getInt(KEY_EXIT_ANIM_ID, -1);
+        return new int[]{enterAnimId == -1 ? R.anim.alpha_in : enterAnimId,
+                exitAnimId == -1 ? R.anim.alpha_out : exitAnimId};
     }
 
     private void initMainContentAdapter() {

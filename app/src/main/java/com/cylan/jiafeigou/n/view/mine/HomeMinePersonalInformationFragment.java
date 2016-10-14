@@ -118,11 +118,11 @@ public class HomeMinePersonalInformationFragment extends Fragment implements Min
     @Override
     public void onStart() {
         super.onStart();
-        String mailBoxText = PreferencesUtils.getString(getActivity(), "邮箱", "未设置");
+        String mailBoxText = PreferencesUtils.getString("邮箱", "未设置");
         mTvMailBox.setText(mailBoxText);
 
         //昵称回显
-        tvUserName.setText(PreferencesUtils.getString(getActivity(), "username", "未设置"));
+        tvUserName.setText(PreferencesUtils.getString("username", "未设置"));
 
         //presenter.getUserInfomation(url);              //初始化显示用户信息
     }
@@ -130,7 +130,7 @@ public class HomeMinePersonalInformationFragment extends Fragment implements Min
     @OnClick({R.id.iv_home_mine_personal_back, R.id.btn_home_mine_personal_information,
             R.id.lLayout_home_mine_personal_mailbox, R.id.rLayout_home_mine_personal_pic,
             R.id.RLayout_home_mine_personal_phone, R.id.user_ImageHead,
-            R.id.rLayout_home_mine_personal_name,R.id.rl_change_password})
+            R.id.rLayout_home_mine_personal_name, R.id.rl_change_password})
     public void onClick(View view) {
         switch (view.getId()) {
             //点击回退到Mine的fragment
@@ -155,29 +155,29 @@ public class HomeMinePersonalInformationFragment extends Fragment implements Min
             case R.id.RLayout_home_mine_personal_phone:         //跳转到设置手机号界面
                 if (getView() != null)
                     ViewUtils.deBounceClick(getView().findViewById(R.id.RLayout_home_mine_personal_phone));
-                    AppLogger.e("RLayout_home_mine_personal_phone");
-                    jump2SetPhoneFragment();
+                AppLogger.e("RLayout_home_mine_personal_phone");
+                jump2SetPhoneFragment();
                 break;
 
             case R.id.user_ImageHead:                           //点击查看大头像
                 if (getView() != null)
                     ViewUtils.deBounceClick(getView().findViewById(R.id.user_ImageHead));
-                    AppLogger.e("user_ImageHead");
-                    lookBigImageHead();
+                AppLogger.e("user_ImageHead");
+                lookBigImageHead();
                 break;
 
             case R.id.rLayout_home_mine_personal_name:          //更改昵称
                 if (getView() != null)
                     ViewUtils.deBounceClick(getView().findViewById(R.id.rLayout_home_mine_personal_name));
-                    AppLogger.e("rLayout_home_mine_personal_name");
-                    jump2SetUserNameFragment();
+                AppLogger.e("rLayout_home_mine_personal_name");
+                jump2SetUserNameFragment();
                 break;
 
             case R.id.rl_change_password:                       //修改密码
                 if (getView() != null)
                     ViewUtils.deBounceClick(getView().findViewById(R.id.rl_change_password));
-                    AppLogger.e("rl_change_password");
-                    jump2ChangePasswordFragment();
+                AppLogger.e("rl_change_password");
+                jump2ChangePasswordFragment();
                 break;
         }
     }
@@ -229,7 +229,7 @@ public class HomeMinePersonalInformationFragment extends Fragment implements Min
     @Override
     public void initPersonalInformation(UserInfoBean bean) {
         //头像的回显
-        Glide.with(getContext()).load(PreferencesUtils.getString(getContext(), JConstant.USER_IMAGE_HEAD_URL, ""))
+        Glide.with(getContext()).load(PreferencesUtils.getString(JConstant.USER_IMAGE_HEAD_URL, ""))
                 .asBitmap().centerCrop()
                 .error(R.mipmap.ic_launcher)
                 .into(new BitmapImageViewTarget(userImageHead) {
@@ -332,7 +332,7 @@ public class HomeMinePersonalInformationFragment extends Fragment implements Min
         public void onHanlderSuccess(int reqeustCode, List<PhotoInfo> resultList) {
             if (resultList != null) {
                 alertDialog.dismiss();
-                PreferencesUtils.putString(getContext(), JConstant.USER_IMAGE_HEAD_URL, resultList.get(0).getPhotoPath());
+                PreferencesUtils.putString(JConstant.USER_IMAGE_HEAD_URL, resultList.get(0).getPhotoPath());
 
                 Glide.with(getContext()).load(resultList.get(0).getPhotoPath()).asBitmap().centerCrop().into(new BitmapImageViewTarget(userImageHead) {
                     @Override

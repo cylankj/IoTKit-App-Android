@@ -96,7 +96,7 @@ public class MineSetUserNameFragment extends Fragment implements MinePersionalIn
     }
 
     private void initEditText() {
-        etMinePersonalInformationNewName.setText(PreferencesUtils.getString(getActivity(), "username", ""));
+        etMinePersonalInformationNewName.setText(PreferencesUtils.getString("username", ""));
     }
 
     private void initPresenter() {
@@ -124,7 +124,7 @@ public class MineSetUserNameFragment extends Fragment implements MinePersionalIn
                     ToastUtil.showToast(getContext(), "昵称不能为空");
                     return;
                 } else {
-                    PreferencesUtils.putString(getActivity(), getEditName(), "username");
+                    PreferencesUtils.putString(getEditName(), "username");
                     ToastUtil.showToast(getContext(), "保存成功");
                     if (listener != null) {
                         listener.userNameChange(getEditName());

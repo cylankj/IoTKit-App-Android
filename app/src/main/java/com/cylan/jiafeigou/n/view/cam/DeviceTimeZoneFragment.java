@@ -285,6 +285,6 @@ public class DeviceTimeZoneFragment extends Fragment {
      * 保存用户所选择的时区
      */
     private void saveEditName() {
-        PreferencesUtils.putString(getActivity(), "detailText", mDetailText);
+        PreferencesUtils.putString("detailText", mDetailText);
     }
 }

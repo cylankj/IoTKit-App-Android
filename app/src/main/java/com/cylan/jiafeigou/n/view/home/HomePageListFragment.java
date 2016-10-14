@@ -33,7 +33,6 @@ import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
 import com.cylan.jiafeigou.n.mvp.model.GreetBean;
 import com.cylan.jiafeigou.n.view.activity.BindDeviceActivity;
 import com.cylan.jiafeigou.n.view.activity.CameraLiveActivity;
-import com.cylan.jiafeigou.n.view.activity.CloudLiveActivity;
 import com.cylan.jiafeigou.n.view.activity.MagLiveActivity;
 import com.cylan.jiafeigou.n.view.adapter.HomePageListAdapter;
 import com.cylan.jiafeigou.n.view.bell.DoorBellHomeActivity;
@@ -41,7 +40,6 @@ import com.cylan.jiafeigou.n.view.misc.HomeEmptyView;
 import com.cylan.jiafeigou.n.view.misc.IEmptyView;
 import com.cylan.jiafeigou.support.rxbus.RxBus;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
 import com.cylan.jiafeigou.widget.sticky.HeaderAnimator;
@@ -411,7 +409,7 @@ public class HomePageListFragment extends Fragment implements
 
     @Override
     public void onDialogAction(int id, Object value) {
-        if (id == SimpleDialogFragment.ACTION_NEGATIVE)
+        if (id == SimpleDialogFragment.ACTION_RIGHT)
             return;
         if (value == null || !(value instanceof Integer)) {
             Toast.makeText(getContext(), "null: ", Toast.LENGTH_SHORT).show();

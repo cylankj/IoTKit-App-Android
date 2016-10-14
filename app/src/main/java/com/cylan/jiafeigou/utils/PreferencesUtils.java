@@ -11,19 +11,19 @@ import android.content.SharedPreferences;
  * </ul>
  * <ul>
  * <strong>Put Value</strong>
- * <li>put string {@link #putString(Context, String, String)}</li>
- * <li>put int {@link #putInt(Context, String, int)}</li>
- * <li>put long {@link #putLong(Context, String, long)}</li>
- * <li>put float {@link #putFloat(Context, String, float)}</li>
- * <li>put boolean {@link #putBoolean(Context, String, boolean)}</li>
+ * <li>put string {@link #putString(String, String)}</li>
+ * <li>put int {@link #putInt(String, int)}</li>
+ * <li>put long {@link #putLong(String, long)}</li>
+ * <li>put float {@link #putFloat(String, float)}</li>
+ * <li>put boolean {@link #putBoolean(String, boolean)}</li>
  * </ul>
  * <ul>
  * <strong>Get Value</strong>
- * <li>get string {@link #getString(Context, String)}, {@link #getString(Context, String, String)}</li>
- * <li>get int {@link #getInt(Context, String)}, {@link #getInt(Context, String, int)}</li>
- * <li>get long {@link #getLong(Context, String)}, {@link #getLong(Context, String, long)}</li>
- * <li>get float {@link #getFloat(Context, String)}, {@link #getFloat(Context, String, float)}</li>
- * <li>get boolean {@link #getBoolean(Context, String)}, {@link #getBoolean(Context, String, boolean)}</li>
+ * <li>get string {@link #getString(String)}, {@link #getString(String, String)}</li>
+ * <li>get int {@link #getInt(String)}, {@link #getInt(String, int)}</li>
+ * <li>get long {@link #getLong(String)}, {@link #getLong(String, long)}</li>
+ * <li>get float {@link #getFloat(String)}, {@link #getFloat(String, float)}</li>
+ * <li>get boolean {@link #getBoolean(String)}, {@link #getBoolean(String, boolean)}</li>
  * </ul>
  *
  * @author <activity_cloud_live_mesg_video_talk_item href="http://www.trinea.cn" target="_blank">Trinea</activity_cloud_live_mesg_video_talk_item> 2013-3-6
@@ -35,12 +35,12 @@ public class PreferencesUtils {
     /**
      * put string preferences
      *
-     * @param context
-     * @param key     The name of the preference to modify
-     * @param value   The new value for the preference
+     * @param key   The name of the preference to modify
+     * @param value The new value for the preference
      * @return True if the new values were successfully written to persistent storage.
      */
-    public static boolean putString(Context context, String key, String value) {
+    public static boolean putString(String key, String value) {
+        Context context = ContextUtils.getContext();
         SharedPreferences settings = context.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = settings.edit();
         editor.putString(key, value);
@@ -50,26 +50,26 @@ public class PreferencesUtils {
     /**
      * get string preferences
      *
-     * @param context
-     * @param key     The name of the preference to retrieve
+     * @param key The name of the preference to retrieve
      * @return The preference value if it exists, or null. Throws ClassCastException if there is activity_cloud_live_mesg_video_talk_item preference with this
      * name that is not activity_cloud_live_mesg_video_talk_item string
-     * @see #getString(Context, String, String)
+     * @see #getString(String, String)
      */
-    public static String getString(Context context, String key) {
-        return getString(context, key, null);
+    public static String getString(String key) {
+        Context context = ContextUtils.getContext();
+        return getString(key, null);
     }
 
     /**
      * get string preferences
      *
-     * @param context
      * @param key          The name of the preference to retrieve
      * @param defaultValue Value to return if this preference does not exist
      * @return The preference value if it exists, or defValue. Throws ClassCastException if there is activity_cloud_live_mesg_video_talk_item preference with
      * this name that is not activity_cloud_live_mesg_video_talk_item string
      */
-    public static String getString(Context context, String key, String defaultValue) {
+    public static String getString(String key, String defaultValue) {
+        Context context = ContextUtils.getContext();
         SharedPreferences settings = context.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE);
         return settings.getString(key, defaultValue);
     }
@@ -77,12 +77,12 @@ public class PreferencesUtils {
     /**
      * put int preferences
      *
-     * @param context
-     * @param key     The name of the preference to modify
-     * @param value   The new value for the preference
+     * @param key   The name of the preference to modify
+     * @param value The new value for the preference
      * @return True if the new values were successfully written to persistent storage.
      */
-    public static boolean putInt(Context context, String key, int value) {
+    public static boolean putInt(String key, int value) {
+        Context context = ContextUtils.getContext();
         SharedPreferences settings = context.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = settings.edit();
         editor.putInt(key, value);
@@ -92,26 +92,25 @@ public class PreferencesUtils {
     /**
      * get int preferences
      *
-     * @param context
-     * @param key     The name of the preference to retrieve
+     * @param key The name of the preference to retrieve
      * @return The preference value if it exists, or -1. Throws ClassCastException if there is activity_cloud_live_mesg_video_talk_item preference with this
      * name that is not activity_cloud_live_mesg_video_talk_item int
-     * @see #getInt(Context, String, int)
+     * @see #getInt(String, int)
      */
-    public static int getInt(Context context, String key) {
-        return getInt(context, key, -1);
+    public static int getInt(String key) {
+        return getInt(key, -1);
     }
 
     /**
      * get int preferences
      *
-     * @param context
      * @param key          The name of the preference to retrieve
      * @param defaultValue Value to return if this preference does not exist
      * @return The preference value if it exists, or defValue. Throws ClassCastException if there is activity_cloud_live_mesg_video_talk_item preference with
      * this name that is not activity_cloud_live_mesg_video_talk_item int
      */
-    public static int getInt(Context context, String key, int defaultValue) {
+    public static int getInt(String key, int defaultValue) {
+        Context context = ContextUtils.getContext();
         SharedPreferences settings = context.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE);
         return settings.getInt(key, defaultValue);
     }
@@ -119,12 +118,12 @@ public class PreferencesUtils {
     /**
      * put long preferences
      *
-     * @param context
-     * @param key     The name of the preference to modify
-     * @param value   The new value for the preference
+     * @param key   The name of the preference to modify
+     * @param value The new value for the preference
      * @return True if the new values were successfully written to persistent storage.
      */
-    public static boolean putLong(Context context, String key, long value) {
+    public static boolean putLong(String key, long value) {
+        Context context = ContextUtils.getContext();
         SharedPreferences settings = context.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = settings.edit();
         editor.putLong(key, value);
@@ -134,26 +133,25 @@ public class PreferencesUtils {
     /**
      * get long preferences
      *
-     * @param context
-     * @param key     The name of the preference to retrieve
+     * @param key The name of the preference to retrieve
      * @return The preference value if it exists, or -1. Throws ClassCastException if there is activity_cloud_live_mesg_video_talk_item preference with this
      * name that is not activity_cloud_live_mesg_video_talk_item long
-     * @see #getLong(Context, String, long)
+     * @see #getLong(String, long)
      */
-    public static long getLong(Context context, String key) {
-        return getLong(context, key, -1);
+    public static long getLong(String key) {
+        return getLong(key, -1);
     }
 
     /**
      * get long preferences
      *
-     * @param context
      * @param key          The name of the preference to retrieve
      * @param defaultValue Value to return if this preference does not exist
      * @return The preference value if it exists, or defValue. Throws ClassCastException if there is activity_cloud_live_mesg_video_talk_item preference with
      * this name that is not activity_cloud_live_mesg_video_talk_item long
      */
-    public static long getLong(Context context, String key, long defaultValue) {
+    public static long getLong(String key, long defaultValue) {
+        Context context = ContextUtils.getContext();
         SharedPreferences settings = context.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE);
         return settings.getLong(key, defaultValue);
     }
@@ -161,12 +159,12 @@ public class PreferencesUtils {
     /**
      * put float preferences
      *
-     * @param context
-     * @param key     The name of the preference to modify
-     * @param value   The new value for the preference
+     * @param key   The name of the preference to modify
+     * @param value The new value for the preference
      * @return True if the new values were successfully written to persistent storage.
      */
-    public static boolean putFloat(Context context, String key, float value) {
+    public static boolean putFloat(String key, float value) {
+        Context context = ContextUtils.getContext();
         SharedPreferences settings = context.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = settings.edit();
         editor.putFloat(key, value);
@@ -176,26 +174,25 @@ public class PreferencesUtils {
     /**
      * get float preferences
      *
-     * @param context
-     * @param key     The name of the preference to retrieve
+     * @param key The name of the preference to retrieve
      * @return The preference value if it exists, or -1. Throws ClassCastException if there is activity_cloud_live_mesg_video_talk_item preference with this
      * name that is not activity_cloud_live_mesg_video_talk_item float
-     * @see #getFloat(Context, String, float)
+     * @see #getFloat(String, float)
      */
-    public static float getFloat(Context context, String key) {
-        return getFloat(context, key, -11111);
+    public static float getFloat(String key) {
+        return getFloat(key, -11111);
     }
 
     /**
      * get float preferences
      *
-     * @param context
      * @param key          The name of the preference to retrieve
      * @param defaultValue Value to return if this preference does not exist
      * @return The preference value if it exists, or defValue. Throws ClassCastException if there is activity_cloud_live_mesg_video_talk_item preference with
      * this name that is not activity_cloud_live_mesg_video_talk_item float
      */
-    public static float getFloat(Context context, String key, float defaultValue) {
+    public static float getFloat(String key, float defaultValue) {
+        Context context = ContextUtils.getContext();
         SharedPreferences settings = context.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE);
         return settings.getFloat(key, defaultValue);
     }
@@ -203,12 +200,12 @@ public class PreferencesUtils {
     /**
      * put boolean preferences
      *
-     * @param context
-     * @param key     The name of the preference to modify
-     * @param value   The new value for the preference
+     * @param key   The name of the preference to modify
+     * @param value The new value for the preference
      * @return True if the new values were successfully written to persistent storage.
      */
-    public static boolean putBoolean(Context context, String key, boolean value) {
+    public static boolean putBoolean(String key, boolean value) {
+        Context context = ContextUtils.getContext();
         SharedPreferences settings = context.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = settings.edit();
         editor.putBoolean(key, value);
@@ -218,26 +215,25 @@ public class PreferencesUtils {
     /**
      * get boolean preferences, default is false
      *
-     * @param context
-     * @param key     The name of the preference to retrieve
+     * @param key The name of the preference to retrieve
      * @return The preference value if it exists, or false. Throws ClassCastException if there is activity_cloud_live_mesg_video_talk_item preference with this
      * name that is not activity_cloud_live_mesg_video_talk_item boolean
-     * @see #getBoolean(Context, String, boolean)
+     * @see #getBoolean(String, boolean)
      */
-    public static boolean getBoolean(Context context, String key) {
-        return getBoolean(context, key, false);
+    public static boolean getBoolean(String key) {
+        return getBoolean(key, false);
     }
 
     /**
      * get boolean preferences
      *
-     * @param context
      * @param key          The name of the preference to retrieve
      * @param defaultValue Value to return if this preference does not exist
      * @return The preference value if it exists, or defValue. Throws ClassCastException if there is activity_cloud_live_mesg_video_talk_item preference with
      * this name that is not activity_cloud_live_mesg_video_talk_item boolean
      */
-    public static boolean getBoolean(Context context, String key, boolean defaultValue) {
+    public static boolean getBoolean(String key, boolean defaultValue) {
+        Context context = ContextUtils.getContext();
         SharedPreferences settings = context.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE);
         return settings.getBoolean(key, defaultValue);
     }

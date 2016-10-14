@@ -3,6 +3,7 @@ package com.cylan.jiafeigou.n.view.login;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
@@ -19,8 +20,8 @@ import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.mvp.contract.login.SetupPwdContract;
 import com.cylan.jiafeigou.n.mvp.model.RequestResetPwdBean;
-import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.IMEUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;
 
@@ -37,7 +38,7 @@ import butterknife.OnTextChanged;
  * Use the {@link SetupPwdFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class SetupPwdFragment extends android.support.v4.app.Fragment implements SetupPwdContract.View {
+public class SetupPwdFragment extends Fragment implements SetupPwdContract.View {
 
     @BindView(R.id.tv_register_pwd_submit)
     TextView tvRegisterPwdSubmit;
@@ -49,7 +50,7 @@ public class SetupPwdFragment extends android.support.v4.app.Fragment implements
     EditText etInputBox;
     @BindView(R.id.iv_top_bar_left)
     ImageView ivLoginTopLeft;
-    private SetupPwdContract.Presenter pwdPresenter;
+    protected SetupPwdContract.Presenter pwdPresenter;
 
     public SetupPwdFragment() {
         // Required empty public constructor
@@ -146,16 +147,21 @@ public class SetupPwdFragment extends android.support.v4.app.Fragment implements
                     return;
                 }
                 final String account = bundle.getString(JConstant.KEY_ACCOUNT_TO_SEND);
-                final String pwd = bundle.getString(JConstant.KEY_PWD_TO_SEND);
+                final String pwd = etInputBox.getText().toString().trim();
                 final String code = bundle.getString(JConstant.KEY_VCODE_TO_SEND);
-                if (pwdPresenter != null)
-                    pwdPresenter.submitAccountInfo(account, pwd, code);
                 IMEUtils.hide(getActivity());
-                Toast.makeText(getActivity(), "注册中。。。", Toast.LENGTH_SHORT).show();
+                if (pwdPresenter == null) {
+                    AppLogger.i("pwdPresenter is null ");
+                    return;
+                }
+                doAction(account, pwd, code);
                 break;
         }
     }
 
+    public void doAction(String account, String pwd, String code) {
+
+    }
 
     @Override
     public void setPresenter(SetupPwdContract.Presenter presenter) {

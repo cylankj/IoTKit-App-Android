@@ -55,7 +55,7 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
                     @Override
                     public void call(Object o) {
                         if (getView() != null)
-                            getView().onPortraitUpdate(PreferencesUtils.getString(getView().getContext(), JConstant.USER_IMAGE_HEAD_URL, ""));
+                            getView().onPortraitUpdate(PreferencesUtils.getString(JConstant.USER_IMAGE_HEAD_URL, ""));
                     }
                 });
     }

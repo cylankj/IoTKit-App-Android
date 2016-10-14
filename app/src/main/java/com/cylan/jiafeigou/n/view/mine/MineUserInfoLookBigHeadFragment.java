@@ -60,7 +60,7 @@ public class MineUserInfoLookBigHeadFragment extends Fragment implements MineUse
     private void loadBigImage() {
 
         Glide.with(getContext())
-                .load(PreferencesUtils.getString(getContext(), JConstant.USER_IMAGE_HEAD_URL, ""))
+                .load(PreferencesUtils.getString(JConstant.USER_IMAGE_HEAD_URL, ""))
                 .asBitmap()
                 .error(R.mipmap.ic_launcher)
                 .centerCrop()

@@ -110,12 +110,12 @@ public class HomeSettingPresenterImp extends AbstractPresenter<HomeSettingContra
 
     @Override
     public void savaSwitchState(boolean isChick, String key) {
-        PreferencesUtils.putBoolean(getView().getContext(), key, isChick);
+        PreferencesUtils.putBoolean(key, isChick);
     }
 
     @Override
     public boolean getSwitchState(String key) {
-        return PreferencesUtils.getBoolean(getView().getContext(), key, false);
+        return PreferencesUtils.getBoolean(key, false);
     }
 
     @Override

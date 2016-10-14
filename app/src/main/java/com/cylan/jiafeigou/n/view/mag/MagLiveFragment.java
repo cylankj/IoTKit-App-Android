@@ -42,11 +42,11 @@ public class MagLiveFragment extends Fragment implements HomeMagLiveContract.Vie
     private HomeMagLiveContract.Presenter presenter;
     private OnClearDoorOpenRecordLisenter listener;
 
-    public interface OnClearDoorOpenRecordLisenter{
+    public interface OnClearDoorOpenRecordLisenter {
         void onClear();
     }
 
-    public void setOnClearDoorOpenRecord(OnClearDoorOpenRecordLisenter listener){
+    public void setOnClearDoorOpenRecord(OnClearDoorOpenRecordLisenter listener) {
         this.listener = listener;
     }
 
@@ -121,7 +121,7 @@ public class MagLiveFragment extends Fragment implements HomeMagLiveContract.Vie
     @Override
     public void onStart() {
         super.onStart();
-        String editName = PreferencesUtils.getString(getActivity(), "magEditName", "客厅摄像头");
+        String editName = PreferencesUtils.getString("magEditName", "客厅摄像头");
         mFacilityName.setText(editName);
     }
 
@@ -130,14 +130,14 @@ public class MagLiveFragment extends Fragment implements HomeMagLiveContract.Vie
 
     }
 
-    @OnClick({R.id.btn_switch,R.id.tv_clear_mag_open_record})
+    @OnClick({R.id.btn_switch, R.id.tv_clear_mag_open_record})
     public void onClick(View view) {
-        switch (view.getId()){
+        switch (view.getId()) {
             case R.id.btn_switch:
-                presenter.savaSwitchState(openDoorNotify(), JConstant.OPEN_DOOR_NOTIFI);
+                presenter.savaSwitchState(openDoorNotify(), JConstant.OPEN_DOOR_NOTIFY);
                 break;
             case R.id.tv_clear_mag_open_record:
-                if (listener != null){
+                if (listener != null) {
                     listener.onClear();
                 }
                 break;
@@ -152,7 +152,7 @@ public class MagLiveFragment extends Fragment implements HomeMagLiveContract.Vie
 
     @Override
     public void initMagDoorStateNotify() {
-        btnSwitch.setChecked(presenter.getSwitchState(JConstant.OPEN_DOOR_NOTIFI));
+        btnSwitch.setChecked(presenter.getSwitchState(JConstant.OPEN_DOOR_NOTIFY));
     }
 
 

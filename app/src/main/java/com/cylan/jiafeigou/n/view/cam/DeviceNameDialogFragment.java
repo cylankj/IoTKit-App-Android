@@ -83,7 +83,7 @@ public class DeviceNameDialogFragment extends DialogFragment {
         mEtEditName = (EditText) view.findViewById(R.id.et_information_edit_name);
 
 
-        ininName = PreferencesUtils.getString(getActivity(), "editName", "客厅摄像头");
+        ininName = PreferencesUtils.getString("editName", "客厅摄像头");
         mEtEditName.setText(ininName);
         mEtEditName.setTextColor(Color.parseColor("#666666"));
         mEtEditName.setSelection(ininName.length());
@@ -165,8 +165,8 @@ public class DeviceNameDialogFragment extends DialogFragment {
             //点击确认按钮做相应的逻辑
             case R.id.btn_information_ensure:
                 mEditName = mEtEditName.getText().toString();
-                PreferencesUtils.putString(getActivity(), "editName", mEditName);
-                String editName = PreferencesUtils.getString(getActivity(), "editName", "客厅摄像头");
+                PreferencesUtils.putString("editName", mEditName);
+                String editName = PreferencesUtils.getString("editName", "客厅摄像头");
                 mEtEditName.setTextColor(Color.parseColor("#666666"));
                 mEtEditName.setText(editName);
                 if (mListener != null) {

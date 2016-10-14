@@ -142,9 +142,9 @@ public class MagLiveInformationFragment extends Fragment implements MagLiveInfor
 
     public void onStart() {
         super.onStart();
-        String editName = PreferencesUtils.getString(getActivity(), "magEditName", "客厅摄像头");
+        String editName = PreferencesUtils.getString("magEditName", "客厅摄像头");
         tvMagInformationFacilityName.setText(editName);
-        String detailText = PreferencesUtils.getString(getActivity(), "magDetailText", "北京/中国");
+        String detailText = PreferencesUtils.getString("magDetailText", "北京/中国");
         tvMagInformationFacilityTimeZone.setText(detailText);
         initSdCardState(presenter.checkSdCard());
     }

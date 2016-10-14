@@ -106,9 +106,9 @@ public class FragmentFacilityInformation extends Fragment {
 
     public void onStart() {
         super.onStart();
-        String editName = PreferencesUtils.getString(getActivity(), "editName", "客厅摄像头");
+        String editName = PreferencesUtils.getString("editName", "客厅摄像头");
         mTvName.setText(editName);
-        String detailText = PreferencesUtils.getString(getActivity(), "detailText", "北京/中国");
+        String detailText = PreferencesUtils.getString("detailText", "北京/中国");
         mTvTimezone.setText(detailText);
     }
 }

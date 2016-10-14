@@ -68,9 +68,9 @@ public class CloudLiveDeviceInfoFragment extends Fragment implements CloudLiveDe
     @Override
     public void onStart() {
         super.onStart();
-        String editName = PreferencesUtils.getString(getActivity(), "magEditName", "大门口的门铃");
+        String editName = PreferencesUtils.getString("magEditName", "大门口的门铃");
         tvInformationFacilityName.setText(editName);
-        String detailText = PreferencesUtils.getString(getActivity(), "magDetailText", "北京/中国");
+        String detailText = PreferencesUtils.getString("magDetailText", "北京/中国");
         tvInformationFacilityTimeZone.setText(detailText);
     }
 

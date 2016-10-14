@@ -29,12 +29,14 @@ public interface LoginModelContract {
 
     interface View extends BaseView<Presenter> {
 
+        void verifyCodeResult(int code);
+
         /**
          * 登陆结果
          *
-         * @param login , 只需要关注BeanInfoLogin 中的ret 和session . ret 为0才有session
+         * @param code , 只需要关注BeanInfoLogin 中的ret 和session . ret 为0才有session
          */
-        void loginResult(LoginAccountBean login);
+        void loginResult(int code);
 
 
         /**
@@ -50,6 +52,13 @@ public interface LoginModelContract {
          * @param ret 0为成功，1为用户取消授权，2为授权失败。
          */
         void onSinaAuthorizeResult(int ret);
+
+        /**
+         * @param result:查阅 error_define.md
+         */
+        void registerResult(int result);
+
+        void switchBox(String account);
     }
 
     interface Presenter extends BasePresenter {
@@ -72,6 +81,12 @@ public interface LoginModelContract {
 
 
         void registerByPhone(String phone, String verificationCode);
+
+        void getCodeByPhone(String phone);
+
+        void verifyCode(String phone, String code, String token);
+
+
     }
 
 

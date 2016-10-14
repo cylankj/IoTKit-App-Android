@@ -100,7 +100,7 @@ public class HomeMinePersonalInformationMailBoxFragment extends Fragment impleme
     @Override
     public void onResume() {
         super.onResume();
-        String mailBoxText = PreferencesUtils.getString(getActivity(), "邮箱");
+        String mailBoxText = PreferencesUtils.getString("邮箱");
         mETMailBox.setText(mailBoxText);
         mIvMailBoxBindDisable.setVisibility(View.VISIBLE);
         mIvMailBoxBind.setVisibility(View.GONE);
@@ -194,8 +194,8 @@ public class HomeMinePersonalInformationMailBoxFragment extends Fragment impleme
                     //二。通过手机号登录，点击确定2s后对出界面 TODO
                     if (onBindMailBoxListener != null) {
                         onBindMailBoxListener.mailBoxChange(mailBox);
-                        PreferencesUtils.putString(getActivity(), "邮箱", mailBox);
-                        String mailBoxText = PreferencesUtils.getString(getActivity(), "邮箱");
+                        PreferencesUtils.putString("邮箱", mailBox);
+                        String mailBoxText = PreferencesUtils.getString("邮箱");
                         mETMailBox.setText(mailBoxText);
                         IMEUtils.hide((Activity) getContext());
                         getFragmentManager().popBackStack();
