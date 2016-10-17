@@ -3,6 +3,9 @@ package com.cylan.jiafeigou.n.mvp.contract.cloud;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
 import com.cylan.jiafeigou.n.mvp.model.BellInfoBean;
+import com.cylan.jiafeigou.n.view.adapter.RelationDoorBellAdapter;
+import com.cylan.jiafeigou.n.view.adapter.UnRelationDoorBellAdapter;
+import com.cylan.superadapter.internal.SuperViewHolder;
 
 import java.util.List;
 
@@ -14,12 +17,19 @@ import java.util.List;
 public interface CloudCorrelationDoorBellContract {
 
     interface View extends BaseView<Presenter>{
-        void initRecycleView(List<BellInfoBean> list);
-        void showNoRelativeDevicesView();                       //显示没有设备图
+        void initRelativeRecycleView(List<BellInfoBean> list);
+        void initUnRelativeRecycleView(List<BellInfoBean> list);
+        void showNoRelativeDevicesView(int flag);                       //显示没有设备图
+        void showNoUnRelativeDevicesView(int flag);
+        void setOnUnRelItemClickListener(UnRelationDoorBellAdapter.OnRelativeClickListener listener);
+        void setOnRelaItemClickListener(RelationDoorBellAdapter.OnUnRelaItemClickListener listener);
+        void notifyUnRelativeRecycle(SuperViewHolder holder, int viewType, int layoutPosition, BellInfoBean item,int flag);
+        void notifyRelativeRecycle(SuperViewHolder holder, int viewType, int layoutPosition, BellInfoBean item,int flag);
     }
 
     interface Presenter extends BasePresenter{
         void loadDoorBellData(String url);
+        void loadUnRelaiveDoorBellData(String url);
     }
 
 }

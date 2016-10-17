@@ -54,6 +54,7 @@
         android:layout_height="48dp">
 
         <ImageView
+            android:layout_centerVertical="true"
             android:id="@+id/iv_cloud_share_pic"
             android:layout_marginLeft="42dp"
             android:src="@drawable/share_pic"
@@ -61,6 +62,7 @@
             android:layout_height="wrap_content" />
 
         <ImageView
+            android:layout_centerVertical="true"
             android:id="@+id/iv_cloud_videochat"
             android:layout_centerHorizontal="true"
             android:src="@drawable/image_videochat"
@@ -68,6 +70,7 @@
             android:layout_height="wrap_content" />
 
         <ImageView
+            android:layout_centerVertical="true"
             android:id="@+id/iv_cloud_talk"
             android:layout_alignParentRight="true"
             android:layout_marginRight="42dp"

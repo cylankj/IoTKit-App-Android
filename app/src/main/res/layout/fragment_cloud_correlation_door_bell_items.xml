@@ -14,6 +14,7 @@
         android:layout_height="wrap_content" />
 
     <TextView
+        android:id="@+id/tv_btn_relative"
         android:layout_marginRight="15dp"
         android:textSize="13sp"
         android:textColor="@color/color_4b9fd5"
