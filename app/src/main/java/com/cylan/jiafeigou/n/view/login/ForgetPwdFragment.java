@@ -22,6 +22,7 @@ import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.cache.JCache;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.RxEvent;
 import com.cylan.jiafeigou.n.mvp.contract.login.ForgetPwdContract;
@@ -307,6 +308,10 @@ public class ForgetPwdFragment extends Fragment implements ForgetPwdContract.Vie
     public void forgetPwdCommit(View v) {
         if (NetUtils.getJfgNetType(getContext()) == 0) {
             Toast.makeText(getContext(), "网络不通", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (!JCache.isOnline) {
+            Toast.makeText(getContext(), "连接服务器失败", Toast.LENGTH_SHORT).show();
             return;
         }
         next();
