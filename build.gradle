@@ -7,7 +7,7 @@ buildscript {
     dependencies {
 //        classpath 'com.android.tools.build:gradle:2.2.0-alpha1'
         //要对应java1.8，2.2.0才能使用unit测试。idea/misc.xml
-        classpath 'com.android.tools.build:gradle:2.2.0'
+        classpath 'com.android.tools.build:gradle:2.1.2'
         classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
@@ -64,5 +64,5 @@ ext {
     //多进程文件共享方案
     multiProcessSp = 'net.grandcentrix.tray:tray:0.10.0'
     galleryFinal = 'cn.finalteam:galleryfinal:1.4.8.7'
-    cySdk = 'JfgAndroidSDK-3.0.127'
+    cySdk = 'JfgAndroidSDK-3.0.129'
 }
