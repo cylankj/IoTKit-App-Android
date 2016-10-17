@@ -111,5 +111,27 @@
                 android:textColor="@color/color_FF3D32"
                 android:textSize="16sp" />
         </LinearLayout>
+
+        <RelativeLayout
+            android:id="@+id/rl_clear_cache"
+            android:visibility="invisible"
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <ProgressBar
+                android:id="@+id/progress_clear_record"
+                android:layout_centerHorizontal="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <TextView
+                android:layout_below="@id/progress_clear_record"
+                android:textColor="@color/color_black"
+                android:id="@+id/tv_clear_text"
+                android:text="正在清除..."
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </RelativeLayout>
+
     </FrameLayout>
+
 </LinearLayout>

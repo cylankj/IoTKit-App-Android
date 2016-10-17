@@ -9,6 +9,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
@@ -42,10 +44,24 @@ public class CloudLiveSettingFragment extends Fragment implements CloudLiveSetti
     TextView tvSettingUnbind;
     @BindView(R.id.tv_door_bell)
     TextView tvDoorBell;
+    @BindView(R.id.progress_clear_record)
+    ProgressBar progressClearRecord;
+    @BindView(R.id.rl_clear_cache)
+    RelativeLayout rlClearCache;
 
     private CloudLiveDeviceInfoFragment cloudLiveDeviceInfoFragment;
     private CloudCorrelationDoorBellFragment cloudCorrelationDoorBellFragment;
     private CloudLiveSettingContract.Presenter presenter;
+
+    private OnClearMesgRecordListener listener;
+
+    public interface OnClearMesgRecordListener {
+        void onClear();
+    }
+
+    public void setOnClearMesgRecordListener(OnClearMesgRecordListener listener) {
+        this.listener = listener;
+    }
 
     public static CloudLiveSettingFragment newInstance(Bundle bundle) {
         CloudLiveSettingFragment fragment = new CloudLiveSettingFragment();
@@ -86,7 +102,7 @@ public class CloudLiveSettingFragment extends Fragment implements CloudLiveSetti
     @Override
     public void onStart() {
         super.onStart();
-        if(presenter != null){
+        if (presenter != null) {
             presenter.start();
         }
     }
@@ -95,7 +111,7 @@ public class CloudLiveSettingFragment extends Fragment implements CloudLiveSetti
         ViewUtils.setViewPaddingStatusBar(fLayoutTopBarContainer);
     }
 
-    @OnClick({R.id.tv_setting_clear_, R.id.tv_bell_detail, R.id.tv_bell_detail2})
+    @OnClick({R.id.tv_setting_clear_, R.id.tv_bell_detail, R.id.tv_bell_detail2,R.id.tv_setting_unbind})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.tv_setting_clear_:
@@ -104,8 +120,8 @@ public class CloudLiveSettingFragment extends Fragment implements CloudLiveSetti
             case R.id.tv_bell_detail:
                 if (getView() != null)
                     ViewUtils.deBounceClick(getView().findViewById(R.id.tv_bell_detail));
-                    AppLogger.e("tv_bell_detail");
-                    jump2DeviceInfoFragment();
+                AppLogger.e("tv_bell_detail");
+                jump2DeviceInfoFragment();
                 break;
             case R.id.tv_bell_detail2:
                 if (getView() != null)
@@ -113,7 +129,33 @@ public class CloudLiveSettingFragment extends Fragment implements CloudLiveSetti
                 AppLogger.e("tv_bell_detail2");
                 jump2CorrelationDoorBellFragment();
                 break;
+            case R.id.tv_setting_unbind:
+                showClearDeviceDialog();
+                break;
         }
+    }
+
+    /**
+     * desc：删除设备弹出框
+     */
+    private void showClearDeviceDialog() {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle("确认删除大门口门铃及其相关数据吗？");
+        builder.setPositiveButton("确认", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                ToastUtil.showToast(getContext(),"正在删除中...");
+            }
+        });
+        builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        }).show();
+
     }
 
     private void jump2CorrelationDoorBellFragment() {
@@ -136,11 +178,11 @@ public class CloudLiveSettingFragment extends Fragment implements CloudLiveSetti
 
     @Override
     public void initSomeViewVisible(boolean isVisible) {
-        if(isVisible){
+        if (isVisible) {
             tvDoorBell.setVisibility(View.GONE);
             tvSettingClear.setVisibility(View.GONE);
             tvBellDetail2.setVisibility(View.GONE);
-        }else {
+        } else {
             tvDoorBell.setVisibility(View.VISIBLE);
             tvSettingClear.setVisibility(View.VISIBLE);
             tvBellDetail2.setVisibility(View.VISIBLE);
@@ -149,13 +191,16 @@ public class CloudLiveSettingFragment extends Fragment implements CloudLiveSetti
 
     @Override
     public void showClearRecordDialog() {
-        AlertDialog.Builder b = new AlertDialog.Builder(getContext());
+        AlertDialog.Builder b = new AlertDialog.Builder(getActivity());
         b.setTitle("确认清空消息记录？");
         b.setPositiveButton("确认", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
-                ToastUtil.showToast(getContext(),"正在清空中。。。");
+                presenter.clearMesgRecord();
+                if (listener != null) {
+                    listener.onClear();
+                }
             }
         });
         b.setNegativeButton("取消", new DialogInterface.OnClickListener() {
@@ -164,5 +209,25 @@ public class CloudLiveSettingFragment extends Fragment implements CloudLiveSetti
                 dialog.dismiss();
             }
         }).show();
+    }
+
+    @Override
+    public void showClearRecordProgress() {
+        progressClearRecord.setVisibility(View.VISIBLE);
+        rlClearCache.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideClearRecordProgress() {
+        progressClearRecord.setVisibility(View.INVISIBLE);
+        rlClearCache.setVisibility(View.INVISIBLE);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (presenter != null) {
+            presenter.stop();
+        }
     }
 }

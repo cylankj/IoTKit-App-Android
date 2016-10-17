@@ -62,7 +62,7 @@ public class LayoutHandler {
                 holder.setText(R.id.tv_time,videoBean.getVideoTime());
 
                 if (videoBean.isHasConnet()){
-                    holder.setText(R.id.tv_voideo_talk_length,videoBean.getVideoLength());
+                    holder.setText(R.id.tv_voideo_talk_length,"通话时长 "+videoBean.getVideoLength());
                 }else {
                     holder.setText(R.id.tv_voideo_talk_length,"未接听，点击回拨");
                 }

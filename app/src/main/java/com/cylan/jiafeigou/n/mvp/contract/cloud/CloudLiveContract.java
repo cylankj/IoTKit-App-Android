@@ -5,7 +5,12 @@ import android.content.Context;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
 import com.cylan.jiafeigou.n.mvp.model.CloudLiveBaseBean;
+
+import com.cylan.jiafeigou.n.mvp.model.CloudLiveBaseDbBean;
+import java.io.Serializable;
+import java.util.List;
 import com.cylan.jiafeigou.support.db.DbManager;
+
 
 /**
  * 作者：zsl
@@ -15,6 +20,7 @@ import com.cylan.jiafeigou.support.db.DbManager;
 public interface CloudLiveContract {
 
     interface View extends BaseView<Presenter> {
+
         void showVoiceTalkDialog(Context context);
 
         void refreshView(int leftVal, int rightVal);
@@ -22,6 +28,8 @@ public interface CloudLiveContract {
         void initRecycleView();
 
         void refreshRecycleView(CloudLiveBaseBean bean);
+
+        void hangUpRefreshView(String result);
     }
 
     interface Presenter extends BasePresenter {
@@ -30,6 +38,10 @@ public interface CloudLiveContract {
         void startTalk();
 
         void stopRecord();
+
+        void playRecord(String fileName);
+
+        void stopPlayRecord();
 
         boolean checkSDCard();
 
@@ -41,6 +53,17 @@ public interface CloudLiveContract {
 
         String parseTime(String times);
 
-        DbManager createBaseDB();
+        void createDB();
+
+        byte[] getSerializedObject(Serializable s);
+
+        Object readSerializedObject(byte[] in);
+
+        void saveIntoDb(CloudLiveBaseDbBean bean);          //保存到数据库
+
+        List<CloudLiveBaseDbBean> findFromAllDb();          //查询数据库
+
+        void initService();                                 //启动服务
+        void refreshHangUpView();
     }
 }

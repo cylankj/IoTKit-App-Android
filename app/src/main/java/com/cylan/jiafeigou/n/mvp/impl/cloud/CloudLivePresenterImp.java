@@ -1,19 +1,48 @@
 package com.cylan.jiafeigou.n.mvp.impl.cloud;
 
+import android.content.ComponentName;
+import android.content.ContentValues;
+import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
+import android.database.sqlite.SQLiteDatabase;
+import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.os.Environment;
+import android.os.IBinder;
+import android.os.RemoteException;
+import android.text.TextUtils;
+import android.util.Log;
 
+import com.cylan.jiafeigou.ICloudLiveService;
+import com.cylan.jiafeigou.n.db.CloudLiveDbUtil;
+import com.cylan.jiafeigou.n.engine.CloudLiveService;
 import com.cylan.jiafeigou.n.mvp.contract.cloud.CloudLiveContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.n.mvp.model.CloudLiveBaseBean;
+import com.cylan.jiafeigou.n.mvp.model.CloudLiveBaseDbBean;
+
+import com.cylan.jiafeigou.n.mvp.model.CloudLiveVideoTalkBean;
 import com.cylan.jiafeigou.support.db.DbManager;
 import com.cylan.jiafeigou.support.db.DbManagerImpl;
 import com.cylan.jiafeigou.support.db.ex.DbException;
+import com.cylan.jiafeigou.support.db.sqlite.SqlInfo;
+import com.cylan.jiafeigou.support.db.sqlite.SqlInfoBuilder;
+import com.sina.weibo.sdk.utils.LogUtil;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+
+import java.util.List;
+
 import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
@@ -36,23 +65,18 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
     private int BASE = 600;
 
     private MediaRecorder mMediaRecorder;
+    private MediaPlayer mPlayer;
     public static final int MAX_LENGTH = 1000 * 60 * 10;// 最大录音时长;
     private File filePath;
     private long startTime;
     private long endTime;
 
     private String output_Path = Environment.getExternalStorageDirectory().getAbsolutePath()
-            + File.separator + "luyin.3gp";
-
-
-    private static final String BASE_DB = "base_db";
-    private static final String LEAVE_MESG_DB = "leave_mesg_db";
-    private static final String VIDEO_TALK_DB = "video_talk_db";
-
+            + File.separator + System.currentTimeMillis()+"luyin.3gp";
 
     private DbManager base_db;
-    private DbManager leave_mesg_db;
-    private DbManager video_talk_db;
+
+    private ICloudLiveService mService;
 
     public CloudLivePresenterImp(CloudLiveContract.View view) {
         super(view);
@@ -69,6 +93,7 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
         if (talkSub != null) {
             talkSub.unsubscribe();
         }
+        stopPlayRecord();
     }
 
     @Override
@@ -151,6 +176,29 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
     }
 
     @Override
+    public void playRecord(String mFileName) {
+        mPlayer = new MediaPlayer();
+        try {
+            mPlayer.setDataSource(mFileName);
+            mPlayer.prepare();
+            mPlayer.start();
+        } catch (IOException e) {
+            LogUtil.d("cloud_live_play_record","prepare() failed"+e.getMessage());
+        }
+    }
+
+    @Override
+    public void stopPlayRecord() {
+        if (mPlayer == null){
+            return;
+        }
+        mPlayer.stop();
+        mPlayer.reset();
+        mPlayer.release();
+        mPlayer = null;
+    }
+
+    @Override
     public boolean checkSDCard() {
         if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED))
             return true;
@@ -197,48 +245,98 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
      * desc:创建数据库
      */
     @Override
-    public DbManager createBaseDB() {
-        DbManager.DaoConfig config = new DbManager.DaoConfig();
-        config.setContext(getView().getContext());
-        config.setDbName(BASE_DB); //db名
-        config.setDbVersion(1);  //db版本
-        config.setDbUpgradeListener(new MyDbLisenter());
-        config.setAllowTransaction(true);
-        base_db = DbManagerImpl.getInstance(config);
 
-        DbManager.DaoConfig leave_db_config = new DbManager.DaoConfig();
-        leave_db_config.setDbName(LEAVE_MESG_DB);
-        leave_db_config.setContext(getView().getContext());
-        leave_db_config.setDbVersion(1);
-        leave_db_config.setDbUpgradeListener(new MyDbLisenter());
-        leave_db_config.setAllowTransaction(true);
-        leave_mesg_db = DbManagerImpl.getInstance(config);
-
-        DbManager.DaoConfig video_talk_db_config = new DbManager.DaoConfig();
-        video_talk_db_config.setDbName(LEAVE_MESG_DB);
-        video_talk_db_config.setContext(getView().getContext());
-        video_talk_db_config.setDbVersion(1);
-        video_talk_db_config.setDbUpgradeListener(new MyDbLisenter());
-        video_talk_db_config.setAllowTransaction(true);
-        video_talk_db = DbManagerImpl.getInstance(config);
-
-        return base_db;
+    public void createDB() {
+        base_db = CloudLiveDbUtil.getInstance().dbManager;;
     }
 
-    public class MyDbLisenter implements DbManager.DbUpgradeListener {
-
-        @Override
-        public void onUpgrade(DbManager DbManager, int oldVersion, int newVersion) {
+    @Override
+    public byte[] getSerializedObject(Serializable s) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ObjectOutputStream oos = null;
+        try {
+            oos = new ObjectOutputStream(baos);
+            oos.writeObject(s);
+        } catch (IOException e) {
+            return null;
+        } finally {
             try {
-                if (oldVersion == 1 && newVersion == 2) {
-                    String sql = "ALTER TABLE " + DbManager.getDaoConfig().getDbName()
-                            + " ADD COLUMN TEMP TEXT";
-                    DbManager.execNonQuery(sql);
-                }
-            } catch (DbException e) {
-                e.printStackTrace();
+                oos.close();
+            } catch (IOException e) {
             }
+        }
+        byte[] result = baos.toByteArray();
+        return result;
+    }
+
+    @Override
+    public Object readSerializedObject(byte[] in) {
+        Object result = null;
+        ByteArrayInputStream bais = new ByteArrayInputStream(in);
+        ObjectInputStream ois = null;
+        try {
+            ois = new ObjectInputStream(bais);
+            result = ois.readObject();
+        } catch (Exception e) {
+            result = null;
+        } finally {
+            try {
+                ois.close();
+            } catch (Throwable e) {
+            }
+        }
+        return result;
+    }
+
+    @Override
+    public void saveIntoDb(CloudLiveBaseDbBean bean) {
+        try {
+            base_db.save(bean);
+        } catch (DbException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    @Override
+    public List<CloudLiveBaseDbBean> findFromAllDb() {
+        List<CloudLiveBaseDbBean> allData = new ArrayList<>();
+        try {
+            allData = base_db.findAll(CloudLiveBaseDbBean.class);
+        } catch (DbException e) {
+            e.printStackTrace();
+        }
+        return allData;
+    }
+
+    @Override
+    public void initService() {
+        Intent serviceIntent = new Intent(getView().getContext(), CloudLiveService.class);
+        getView().getContext().startService(serviceIntent);
+        getView().getContext().bindService(serviceIntent,conn, Context.BIND_AUTO_CREATE);
+    }
+
+    @Override
+    public void refreshHangUpView() {
+        try {
+            if (mService.getHangUpFlag()){
+                getView().hangUpRefreshView(mService.getHangUpResultData());
+                mService.setHangUpFlag(false);
+            }
+        } catch (RemoteException e) {
+            e.printStackTrace();
         }
     }
 
+    private ServiceConnection conn = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            mService = ICloudLiveService.Stub.asInterface(service);
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            mService = null;
+        }
+    };
 }
