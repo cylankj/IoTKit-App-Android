@@ -28,6 +28,8 @@ public interface CloudLiveContract {
         void initRecycleView();
 
         void refreshRecycleView(CloudLiveBaseBean bean);
+
+        void hangUpRefreshView(String result);
     }
 
     interface Presenter extends BasePresenter {
@@ -61,5 +63,7 @@ public interface CloudLiveContract {
 
         List<CloudLiveBaseDbBean> findFromAllDb();          //查询数据库
 
+        void initService();                                 //启动服务
+        void refreshHangUpView();
     }
 }

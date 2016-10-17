@@ -2,6 +2,7 @@ package com.cylan.jiafeigou.n.view.activity;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
@@ -32,6 +33,7 @@ import com.cylan.jiafeigou.n.view.cloud.CloudVideoChatConettionOkFragment;
 import com.cylan.jiafeigou.n.view.cloud.CloudVideoChatConnetionFragment;
 import com.cylan.jiafeigou.n.view.cloud.LayoutIdMapCache;
 import com.cylan.jiafeigou.n.view.cloud.ViewTypeMapCache;
+import com.cylan.jiafeigou.support.rxbus.RxBus;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.CloudLiveVoiceTalkView;
@@ -43,6 +45,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import rx.functions.Action1;
 
 /**
  * 作者：zsl
@@ -88,6 +91,7 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
         initDataBase();
         initRecycleView();
         initListener();
+        presenter.initService();
     }
 
     private void initListener() {
@@ -106,7 +110,7 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
                 CloudLiveBaseBean newBean = presenter.creatMesgBean();
                 newBean.setType(1);
                 CloudLiveVideoTalkBean newLeaveBean = new CloudLiveVideoTalkBean();
-                newLeaveBean.setVideoLength("通话时长30''");
+                newLeaveBean.setVideoLength("00:00");
                 newLeaveBean.setHasConnet(false);
                 newLeaveBean.setVideoTime(presenter.parseTime(System.currentTimeMillis()+""));
                 newBean.setData(newLeaveBean);
@@ -131,11 +135,16 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
                         presenter.playRecord(data.getLeaveMesgUrl());
                         break;
                     case 1:
-                        jump2VideoChatOkFragment();
+                        CloudLiveVideoTalkBean bean = (CloudLiveVideoTalkBean) mData.get(position).getData();
+                        if(!bean.isHasConnet()){
+                            Intent intent = new Intent(CloudLiveActivity.this,CloudLiveReturnCallActivity.class);
+                            startActivity(intent);
+                        }
                         break;
                 }
             }
         });
+
     }
 
     private void initDataBase() {
@@ -157,6 +166,7 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
 
         Bundle videoBundle = new Bundle();
         cloudVideoChatConnetionFragment = CloudVideoChatConnetionFragment.newInstance(videoBundle);
+
     }
 
     @Override
@@ -185,7 +195,9 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
                 break;
             case R.id.iv_cloud_videochat:                               //视频通话
                 ViewUtils.deBounceClick(findViewById(R.id.iv_cloud_videochat));
-                jump2VideoChatFragment();
+                //jump2VideoChatFragment();
+                Intent intent = new Intent(CloudLiveActivity.this,CloudLiveReturnCallActivity.class);
+                startActivity(intent);
                 break;
             case R.id.iv_cloud_talk:                                    //语音留言
                 showVoiceTalkDialog(CloudLiveActivity.this);
@@ -284,7 +296,7 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
                         return true;
                     }
                     case MotionEvent.ACTION_UP:{
-                        tv_show_mesg.setText("按下留言k2k");
+                        tv_show_mesg.setText("按下留言k7k");
                         presenter.stopRecord();
                         CloudLiveBaseBean newBean = presenter.creatMesgBean();
                         newBean.setType(0);
@@ -362,21 +374,35 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
         cloudLiveMesgAdapter.notifyDataSetChanged();
     }
 
+    @Override
+    public void hangUpRefreshView(String result) {
+        CloudLiveBaseBean newBean = presenter.creatMesgBean();
+        newBean.setType(1);
+        CloudLiveVideoTalkBean newLeaveBean = new CloudLiveVideoTalkBean();
+        newLeaveBean.setVideoLength(result);
+        newLeaveBean.setHasConnet(true);
+        newLeaveBean.setVideoTime(presenter.parseTime(System.currentTimeMillis()+""));
+        newBean.setData(newLeaveBean);
+        presenter.addMesgItem(newBean);
+
+        //添加到数据库
+        CloudLiveBaseDbBean dbBean = new CloudLiveBaseDbBean();
+        dbBean.setType(1);
+        dbBean.setData(presenter.getSerializedObject(newLeaveBean));
+        presenter.saveIntoDb(dbBean);
+    }
+
     public void getIntentData() {
         Bundle bundleExtra = getIntent().getExtras();
         Parcelable parcelable = bundleExtra.getParcelable(JConstant.KEY_DEVICE_ITEM_BUNDLE);
     }
 
-    /**
-     * desc：跳转到呼出界面
-     */
-    private void jump2VideoChatOkFragment() {
-        CloudVideoChatConettionOkFragment cloudVideoChatConettionOkFragment = CloudVideoChatConettionOkFragment.newInstance(new Bundle());
-        getSupportFragmentManager().beginTransaction()
-                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
-                        , R.anim.slide_in_left, R.anim.slide_out_right)
-                .add(android.R.id.content, cloudVideoChatConettionOkFragment, "cloudVideoChatConettionOkFragment")
-                .addToBackStack("cloudVideoChatConettionFragment")
-                .commit();
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        if(presenter != null){
+            presenter.refreshHangUpView();
+        }
     }
 }

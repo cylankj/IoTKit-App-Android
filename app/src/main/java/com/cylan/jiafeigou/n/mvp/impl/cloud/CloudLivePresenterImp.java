@@ -1,14 +1,22 @@
 package com.cylan.jiafeigou.n.mvp.impl.cloud;
 
+import android.content.ComponentName;
 import android.content.ContentValues;
+import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.database.sqlite.SQLiteDatabase;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.os.Environment;
+import android.os.IBinder;
+import android.os.RemoteException;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.cylan.jiafeigou.ICloudLiveService;
 import com.cylan.jiafeigou.n.db.CloudLiveDbUtil;
+import com.cylan.jiafeigou.n.engine.CloudLiveService;
 import com.cylan.jiafeigou.n.mvp.contract.cloud.CloudLiveContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.n.mvp.model.CloudLiveBaseBean;
@@ -67,6 +75,8 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
             + File.separator + System.currentTimeMillis()+"luyin.3gp";
 
     private DbManager base_db;
+
+    private ICloudLiveService mService;
 
     public CloudLivePresenterImp(CloudLiveContract.View view) {
         super(view);
@@ -299,4 +309,34 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
         return allData;
     }
 
+    @Override
+    public void initService() {
+        Intent serviceIntent = new Intent(getView().getContext(), CloudLiveService.class);
+        getView().getContext().startService(serviceIntent);
+        getView().getContext().bindService(serviceIntent,conn, Context.BIND_AUTO_CREATE);
+    }
+
+    @Override
+    public void refreshHangUpView() {
+        try {
+            if (mService.getHangUpFlag()){
+                getView().hangUpRefreshView(mService.getHangUpResultData());
+                mService.setHangUpFlag(false);
+            }
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private ServiceConnection conn = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            mService = ICloudLiveService.Stub.asInterface(service);
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            mService = null;
+        }
+    };
 }

@@ -1,5 +1,14 @@
 package com.cylan.jiafeigou.n.mvp.impl.cloud;
 
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
+import android.os.IBinder;
+import android.os.RemoteException;
+
+import com.cylan.jiafeigou.ICloudLiveService;
+import com.cylan.jiafeigou.n.engine.CloudLiveService;
 import com.cylan.jiafeigou.n.mvp.contract.cloud.CloudVideoChatConettionOkContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 
@@ -21,6 +30,8 @@ public class CloudVideoChatConettionOkPresenterImp extends AbstractPresenter<Clo
     private Subscription loadVideoSub;
     private Subscription loadProAnimSub;
     private int loadNum = 0;
+
+    private ICloudLiveService mIservice;
 
     public CloudVideoChatConettionOkPresenterImp(CloudVideoChatConettionOkContract.View view) {
         super(view);
@@ -67,6 +78,30 @@ public class CloudVideoChatConettionOkPresenterImp extends AbstractPresenter<Clo
                 });
     }
 
+    @Override
+    public void setVideoTalkFinishFlag(boolean isFinish) {
+        try {
+            mIservice.setHangUpFlag(isFinish);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void setVideoTalkFinishResultData(String data) {
+        try {
+            mIservice.setHangUpResultData(data);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void bindService() {
+        Intent intent = new Intent(getView().getContext(), CloudLiveService.class);
+        getView().getContext().bindService(intent,conn, Context.BIND_AUTO_CREATE);
+    }
+
     public void showLoadProgressAnim(){
 
         loadProAnimSub = Observable.interval(500,300, TimeUnit.MILLISECONDS)
@@ -84,4 +119,16 @@ public class CloudVideoChatConettionOkPresenterImp extends AbstractPresenter<Clo
                     }
                 });
     }
+
+    private ServiceConnection conn = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            mIservice = ICloudLiveService.Stub.asInterface(service);
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            mIservice = null;
+        }
+    };
 }

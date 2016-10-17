@@ -4,7 +4,10 @@ import com.cylan.jiafeigou.n.db.CloudLiveDbUtil;
 import com.cylan.jiafeigou.n.mvp.contract.cloud.CloudLiveSettingContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.n.mvp.model.CloudLiveBaseDbBean;
+import com.cylan.jiafeigou.support.db.DbManager;
 import com.cylan.jiafeigou.support.db.ex.DbException;
+import com.cylan.jiafeigou.support.db.table.TableEntity;
+import com.cylan.jiafeigou.utils.ToastUtil;
 
 import java.util.concurrent.TimeUnit;
 
@@ -50,7 +53,19 @@ public class CloudLiveSettingPresenterImp extends AbstractPresenter<CloudLiveSet
 
     @Override
     public void clearMesgRecord() {
+        DbManager dbManager = null;
+        try {
+            dbManager = CloudLiveDbUtil.getInstance().dbManager;
+
+            if(dbManager.findAll(CloudLiveBaseDbBean.class).size() == 0){
+                ToastUtil.showToast(getView().getContext(),"记录为空");
+                return;
+            }
+        } catch (DbException e) {
+            e.printStackTrace();
+        }
         getView().showClearRecordProgress();
+        final DbManager finalDbManager = dbManager;
         clearDbSub = Observable.just(null)
                 .subscribeOn(Schedulers.newThread())
                 .delay(3000, TimeUnit.MILLISECONDS)
@@ -58,7 +73,7 @@ public class CloudLiveSettingPresenterImp extends AbstractPresenter<CloudLiveSet
                     @Override
                     public Object call(Object o) {
                         try {
-                            CloudLiveDbUtil.getInstance().dbManager.delete(CloudLiveBaseDbBean.class);
+                            finalDbManager.delete(CloudLiveBaseDbBean.class);
                         } catch (DbException e) {
                             e.printStackTrace();
                         }

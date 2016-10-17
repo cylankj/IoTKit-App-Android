@@ -2,7 +2,6 @@ package com.cylan.jiafeigou.n.view.cloud;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
@@ -11,12 +10,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.contract.cloud.CloudLiveSettingContract;
 import com.cylan.jiafeigou.n.mvp.impl.cloud.CloudLiveSettingPresenterImp;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.SettingItemView2;
 
@@ -45,6 +46,8 @@ public class CloudLiveSettingFragment extends Fragment implements CloudLiveSetti
     TextView tvDoorBell;
     @BindView(R.id.progress_clear_record)
     ProgressBar progressClearRecord;
+    @BindView(R.id.rl_clear_cache)
+    RelativeLayout rlClearCache;
 
     private CloudLiveDeviceInfoFragment cloudLiveDeviceInfoFragment;
     private CloudCorrelationDoorBellFragment cloudCorrelationDoorBellFragment;
@@ -108,7 +111,7 @@ public class CloudLiveSettingFragment extends Fragment implements CloudLiveSetti
         ViewUtils.setViewPaddingStatusBar(fLayoutTopBarContainer);
     }
 
-    @OnClick({R.id.tv_setting_clear_, R.id.tv_bell_detail, R.id.tv_bell_detail2})
+    @OnClick({R.id.tv_setting_clear_, R.id.tv_bell_detail, R.id.tv_bell_detail2,R.id.tv_setting_unbind})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.tv_setting_clear_:
@@ -126,7 +129,33 @@ public class CloudLiveSettingFragment extends Fragment implements CloudLiveSetti
                 AppLogger.e("tv_bell_detail2");
                 jump2CorrelationDoorBellFragment();
                 break;
+            case R.id.tv_setting_unbind:
+                showClearDeviceDialog();
+                break;
         }
+    }
+
+    /**
+     * desc：删除设备弹出框
+     */
+    private void showClearDeviceDialog() {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle("确认删除大门口门铃及其相关数据吗？");
+        builder.setPositiveButton("确认", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                ToastUtil.showToast(getContext(),"正在删除中...");
+            }
+        });
+        builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        }).show();
+
     }
 
     private void jump2CorrelationDoorBellFragment() {
@@ -162,7 +191,7 @@ public class CloudLiveSettingFragment extends Fragment implements CloudLiveSetti
 
     @Override
     public void showClearRecordDialog() {
-        AlertDialog.Builder b = new AlertDialog.Builder(getContext());
+        AlertDialog.Builder b = new AlertDialog.Builder(getActivity());
         b.setTitle("确认清空消息记录？");
         b.setPositiveButton("确认", new DialogInterface.OnClickListener() {
             @Override
@@ -185,17 +214,19 @@ public class CloudLiveSettingFragment extends Fragment implements CloudLiveSetti
     @Override
     public void showClearRecordProgress() {
         progressClearRecord.setVisibility(View.VISIBLE);
+        rlClearCache.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void hideClearRecordProgress() {
         progressClearRecord.setVisibility(View.INVISIBLE);
+        rlClearCache.setVisibility(View.INVISIBLE);
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        if (presenter != null){
+        if (presenter != null) {
             presenter.stop();
         }
     }
