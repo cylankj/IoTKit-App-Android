@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="67dp">
+
+    <TextView
+        android:id="@+id/tv_door_bell_name"
+        android:layout_marginLeft="15dp"
+        android:layout_centerVertical="true"
+        android:textSize="16sp"
+        android:textColor="@color/color_333333"
+        android:text="门铃一"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:layout_marginRight="15dp"
+        android:textSize="13sp"
+        android:textColor="@color/color_4b9fd5"
+        android:layout_centerVertical="true"
+        android:layout_alignParentRight="true"
+        android:background="@drawable/btn_share"
+        android:text="取消关联"
+        android:gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+</RelativeLayout>

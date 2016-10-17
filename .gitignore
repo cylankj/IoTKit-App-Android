@@ -13,7 +13,6 @@
 /bin
 /gradle
 /node_modules
-app/libs/armeabi-v7a/libjfgsdk.so
 /captures
 *.hprof
 将删除 java_pid18089.hprof

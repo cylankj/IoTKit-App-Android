@@ -1,21 +1,28 @@
 package com.cylan.jiafeigou.n.view.cloud;
 
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Chronometer;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.VideoView;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.misc.RxEvent;
 import com.cylan.jiafeigou.n.mvp.contract.cloud.CloudVideoChatConettionOkContract;
 import com.cylan.jiafeigou.n.mvp.impl.cloud.CloudVideoChatConettionOkPresenterImp;
+import com.cylan.jiafeigou.support.rxbus.RxBus;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * 作者：zsl
@@ -31,11 +38,23 @@ public class CloudVideoChatConettionOkFragment extends Fragment implements Cloud
     @BindView(R.id.tv_connet_text)
     TextView tvConnetText;
     @BindView(R.id.tv_video_time)
-    TextView tvVideoTime;
+    Chronometer tvVideoTime;
     @BindView(R.id.ll_myself_video)
     LinearLayout llMyselfVideo;
+    @BindView(R.id.iv_hang_up)
+    ImageView ivHangUp;
 
     private CloudVideoChatConettionOkContract.Presenter presenter;
+
+    public OnHangUpListener listener;
+
+    public interface OnHangUpListener{
+        void onHangup(String time);
+    }
+
+    public void setOnHangupListener(OnHangUpListener listener){
+        this.listener = listener;
+    }
 
     public static CloudVideoChatConettionOkFragment newInstance(Bundle bundle) {
         CloudVideoChatConettionOkFragment fragment = new CloudVideoChatConettionOkFragment();
@@ -72,6 +91,7 @@ public class CloudVideoChatConettionOkFragment extends Fragment implements Cloud
         tvLoading.setVisibility(View.VISIBLE);
         tvConnetText.setVisibility(View.VISIBLE);
         tvVideoTime.setVisibility(View.INVISIBLE);
+        tvVideoTime.stop();
         llMyselfVideo.setVisibility(View.INVISIBLE);
     }
 
@@ -80,6 +100,8 @@ public class CloudVideoChatConettionOkFragment extends Fragment implements Cloud
         tvLoading.setVisibility(View.INVISIBLE);
         tvConnetText.setVisibility(View.INVISIBLE);
         tvVideoTime.setVisibility(View.VISIBLE);
+        tvVideoTime.setBase(SystemClock.elapsedRealtime());
+        tvVideoTime.start();
         llMyselfVideo.setVisibility(View.VISIBLE);
     }
 
@@ -99,6 +121,23 @@ public class CloudVideoChatConettionOkFragment extends Fragment implements Cloud
         super.onDestroy();
         if (presenter != null) {
             presenter.stop();
+        }
+    }
+
+    @OnClick(R.id.iv_hang_up)
+    public void onClick(View view) {
+        switch (view.getId()){
+            case R.id.iv_hang_up:               //挂断
+
+                if (RxBus.getInstance().hasObservers()) {
+                    RxBus.getInstance().send(new RxEvent.TimeTickEvent());
+                }
+
+                if(listener != null){
+                    listener.onHangup(tvVideoTime.getText().toString());
+                }
+                getFragmentManager().popBackStack();
+                break;
         }
     }
 }

@@ -242,8 +242,7 @@ repositories {
 }
 
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
-
+    compile fileTree(dir: 'libs', include: ['*.jar'])
     //////////////test///////////////////////
     //testCompile和androidTestCompile的区别在于，测试文件所在的目录。
     //前者在test/，后者在androidTest
@@ -252,7 +251,6 @@ dependencies {
     testCompile rootProject.ext.testJunit4
     testCompile rootProject.ext.annotation
     testCompile rootProject.ext.testMockio
-
     androidTestCompile rootProject.ext.testRules
     androidTestCompile rootProject.ext.testRunner
     //强制使用高版本，引用rootProject.ext.annotation，无效
@@ -267,14 +265,10 @@ dependencies {
     compile rootProject.ext.appDesign
     compile rootProject.ext.appCardview
     /////////////////android///////////////////////
-
-
     compile rootProject.ext.butterknife
     apt rootProject.ext.butterknifeApt
-
     compile rootProject.ext.rxAndroid
     compile rootProject.ext.permis
-
     apt rootProject.ext.permisApt
     compile project(':jlib')
     compile files('libs/aliyun-oss-sdk-android-2.2.0.jar')
@@ -289,15 +283,13 @@ dependencies {
     compile files('libs/zxing.jar')
     debugCompile files('src/main/jniLibs/jfg-debug-support.jar')
     releaseCompile files('src/main/jniLibs/jfg-release-support.jar')
-
     //其中latest.release指代最新版本号，也可以指定明确的版本号，例如2.1.5
     compile rootProject.ext.buglySdk
     //其中latest.release指代最新版本号，也可以指定明确的版本号，例如2.2.0
     compile rootProject.ext.buglyNdk
-
     debugCompile rootProject.ext.leakcanaryAndroid
     releaseCompile rootProject.ext.leakcanaryAndroidNoOp
-//    testCompile rootProject.ext.leakcanaryAndroidNoOp
+    //    testCompile rootProject.ext.leakcanaryAndroidNoOp
     compile files('src/main/jniLibs/zbar.jar')
     //add by hunt 2016-08-01
     compile rootProject.ext.switchButton

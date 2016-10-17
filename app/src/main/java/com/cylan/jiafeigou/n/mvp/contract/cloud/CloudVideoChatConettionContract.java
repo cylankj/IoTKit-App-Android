@@ -11,7 +11,6 @@ import com.cylan.jiafeigou.n.mvp.BaseView;
 public interface CloudVideoChatConettionContract {
 
     interface View extends BaseView<Presenter>{
-
     }
 
     interface Presenter extends BasePresenter{
