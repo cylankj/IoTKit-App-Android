@@ -78,17 +78,7 @@ public class CloudCorrelationDoorBellFragment extends Fragment implements CloudC
         View view = inflater.inflate(R.layout.fragment_cloud_correlation_door_bell, container, false);
         ButterKnife.bind(this, view);
         initPresenter();
-        //initItemListener();
         return view;
-    }
-
-    private void initItemListener() {
-        unRelationDoorBellAdapter.setOnRelativeClickListener(new UnRelationDoorBellAdapter.OnRelativeClickListener() {
-            @Override
-            public void relativeClick(SuperViewHolder holder, int viewType, int layoutPosition, BellInfoBean item) {
-
-            }
-        });
     }
 
     private void initPresenter() {
@@ -139,7 +129,6 @@ public class CloudCorrelationDoorBellFragment extends Fragment implements CloudC
         }else {
             tvRelativeDoorBell.setVisibility(View.GONE);
         }
-
     }
 
     @Override
@@ -149,7 +138,6 @@ public class CloudCorrelationDoorBellFragment extends Fragment implements CloudC
         }else {
             tvUnrelativeDoorBell.setVisibility(View.VISIBLE);
         }
-
     }
 
     @Override
@@ -177,7 +165,6 @@ public class CloudCorrelationDoorBellFragment extends Fragment implements CloudC
                 showNoUnRelativeDevicesView(flag);
             }
         }
-
     }
 
     @Override

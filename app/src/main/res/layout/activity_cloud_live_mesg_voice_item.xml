@@ -34,6 +34,7 @@
             android:layout_height="38dp">
 
             <TextView
+                android:textColor="@color/color_white"
                 android:id="@+id/tv_voice_length"
                 android:layout_marginLeft="15dp"
                 android:layout_gravity="center_vertical"

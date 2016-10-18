@@ -1,10 +1,14 @@
 package com.cylan.jiafeigou.n.mvp.impl.cloud;
 
+import android.content.DialogInterface;
+import android.support.v7.app.AlertDialog;
+
 import com.cylan.jiafeigou.n.mvp.contract.cloud.CloudCorrelationDoorBellContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.n.mvp.model.BellInfoBean;
 import com.cylan.jiafeigou.n.view.adapter.RelationDoorBellAdapter;
 import com.cylan.jiafeigou.n.view.adapter.UnRelationDoorBellAdapter;
+import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.superadapter.internal.SuperViewHolder;
 
@@ -146,6 +150,25 @@ public class CloudCorrelationDoorBellPresenterImp extends AbstractPresenter<Clou
             notifyFlag = 2;
             getView().notifyRelativeRecycle(holder,viewType,layoutPosition,item,notifyFlag);
             getView().notifyUnRelativeRecycle(holder,viewType,layoutPosition,item,notifyFlag);
+            if (PreferencesUtils.getBoolean("isFirstUnRelative",true)){
+                showFirstUnRelDialog(item);
+            }
         }
+    }
+
+    /**
+     * desc：第一次取消关联弹框提示
+     */
+    private void showFirstUnRelDialog(BellInfoBean item) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getView().getContext())
+                .setMessage(item.nickName+"取消关联后，该中控设备将不再收到呼叫信息")
+                .setPositiveButton("我知道了", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        PreferencesUtils.putBoolean("isFirstUnRelative",false);
+                        dialog.dismiss();
+                    }
+                });
+        builder.show();
     }
 }

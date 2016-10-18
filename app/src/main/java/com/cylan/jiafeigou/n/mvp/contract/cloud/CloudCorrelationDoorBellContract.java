@@ -19,8 +19,8 @@ public interface CloudCorrelationDoorBellContract {
     interface View extends BaseView<Presenter>{
         void initRelativeRecycleView(List<BellInfoBean> list);
         void initUnRelativeRecycleView(List<BellInfoBean> list);
-        void showNoRelativeDevicesView(int flag);                       //显示没有设备图
-        void showNoUnRelativeDevicesView(int flag);
+        void showNoRelativeDevicesView(int flag);                       //显示没有关联设备文案
+        void showNoUnRelativeDevicesView(int flag);                     //显示没有未关联设备文案
         void setOnUnRelItemClickListener(UnRelationDoorBellAdapter.OnRelativeClickListener listener);
         void setOnRelaItemClickListener(RelationDoorBellAdapter.OnUnRelaItemClickListener listener);
         void notifyUnRelativeRecycle(SuperViewHolder holder, int viewType, int layoutPosition, BellInfoBean item,int flag);

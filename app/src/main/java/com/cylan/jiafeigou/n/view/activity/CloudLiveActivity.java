@@ -79,6 +79,7 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
     private CloudLiveSettingFragment cloudLiveSettingFragment;
     private CloudVideoChatConnetionFragment cloudVideoChatConnetionFragment;
     private Dialog dialog;
+    private ImageView iv_cancle;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -269,10 +270,11 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
         dialog.setContentView(dialogView);
         left_voice = (CloudLiveVoiceTalkView) dialogView.findViewById(R.id.voidTalkView_left);
         right_voice = (CloudLiveVoiceTalkView) dialogView.findViewById(R.id.voidTalkView_right);
+        iv_cancle = (ImageView) dialogView.findViewById(R.id.iv_cancle);
         tv_show_mesg = (TextView) dialogView.findViewById(R.id.tv_show_mesg);
         tv_show_mesg.setText("按下留言");
-
         iv_voice_delete = (ImageView) dialogView.findViewById(R.id.iv_voice_delete);
+
         iv_voice_delete.setOnTouchListener(new View.OnTouchListener() {
 
             private String leaveMesgUrl;                        //录音的地址
@@ -321,6 +323,13 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
             }
         });
         dialog.show();
+
+        iv_cancle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
     }
 
     @Override
@@ -396,7 +405,6 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
         Bundle bundleExtra = getIntent().getExtras();
         Parcelable parcelable = bundleExtra.getParcelable(JConstant.KEY_DEVICE_ITEM_BUNDLE);
     }
-
 
     @Override
     protected void onRestart() {

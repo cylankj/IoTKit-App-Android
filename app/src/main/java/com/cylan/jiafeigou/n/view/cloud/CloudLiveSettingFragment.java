@@ -82,7 +82,18 @@ public class CloudLiveSettingFragment extends Fragment implements CloudLiveSetti
         View view = inflater.inflate(R.layout.fragment_cloud_live_setting, container, false);
         ButterKnife.bind(this, view);
         initPresenter();
+        initListener();
         return view;
+    }
+
+    private void initListener() {
+        cloudLiveDeviceInfoFragment.setOnChangeNameListener(new CloudLiveDeviceInfoFragment.OnChangeNameListener() {
+            @Override
+            public void changeName(String name) {
+                tvBellDetail.setTvSubTitle(name);
+                //TODO 名称上传服务器保存
+            }
+        });
     }
 
     private void initPresenter() {
