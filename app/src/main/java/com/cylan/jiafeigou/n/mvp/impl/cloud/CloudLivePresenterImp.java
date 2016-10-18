@@ -77,6 +77,8 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
     private DbManager base_db;
 
     private ICloudLiveService mService;
+    private Subscription checkDeviceOnLineSub;
+    private Subscription leaveMesgSub;
 
     public CloudLivePresenterImp(CloudLiveContract.View view) {
         super(view);
@@ -93,6 +95,15 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
         if (talkSub != null) {
             talkSub.unsubscribe();
         }
+
+        if (checkDeviceOnLineSub != null){
+            checkDeviceOnLineSub.unsubscribe();
+        }
+
+        if (leaveMesgSub != null){
+            leaveMesgSub.unsubscribe();
+        }
+
         stopPlayRecord();
     }
 
@@ -326,6 +337,51 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
         } catch (RemoteException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void handlerVideoTalk() {
+        getView().showReconnetProgress();
+        checkDeviceOnLineSub = Observable.just(null)
+                .map(new Func1<Object, Boolean>() {
+                    @Override
+                    public Boolean call(Object o) {
+                        //TODO 检测设备是否离线；true离线、false在线
+                        return true;
+                    }
+                })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<Boolean>() {
+                    @Override
+                    public void call(Boolean aBoolean) {
+                        getView().hideReconnetProgress();
+                        getView().handlerVideoTalk(aBoolean);
+                    }
+                });
+    }
+
+    @Override
+    public void handlerLeveaMesg(final Context context) {
+        getView().showReconnetProgress();
+        leaveMesgSub = Observable.just(null)
+                .delay(1000,TimeUnit.MILLISECONDS)
+                .map(new Func1<Object, Boolean>() {
+                    @Override
+                    public Boolean call(Object o) {
+                        //TODO 检查设备是否在线
+                        return true;
+                    }
+                })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<Boolean>() {
+                    @Override
+                    public void call(Boolean aBoolean) {
+                        getView().hideReconnetProgress();
+                        getView().showVoiceTalkDialog(context,aBoolean);
+                    }
+                });
     }
 
     private ServiceConnection conn = new ServiceConnection() {

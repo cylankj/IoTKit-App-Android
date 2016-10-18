@@ -39,12 +39,23 @@
             android:src="@drawable/icon_setting" />
     </RelativeLayout>
 
-    <android.support.v7.widget.RecyclerView
+    <FrameLayout
         android:layout_below="@id/rLayout_cloud_live_top_bar"
-        android:id="@+id/rcy_cloud_mesg_list"
         android:layout_width="match_parent"
         android:layout_height="fill_parent">
-    </android.support.v7.widget.RecyclerView>
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rcy_cloud_mesg_list"
+            android:layout_width="match_parent"
+            android:layout_height="fill_parent">
+        </android.support.v7.widget.RecyclerView>
+
+        <ProgressBar
+            android:visibility="invisible"
+            android:id="@+id/progress_re_connet"
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </FrameLayout>
 
     <RelativeLayout
         android:background="@color/color_white"

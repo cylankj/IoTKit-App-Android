@@ -25,6 +25,8 @@ public interface CloudCorrelationDoorBellContract {
         void setOnRelaItemClickListener(RelationDoorBellAdapter.OnUnRelaItemClickListener listener);
         void notifyUnRelativeRecycle(SuperViewHolder holder, int viewType, int layoutPosition, BellInfoBean item,int flag);
         void notifyRelativeRecycle(SuperViewHolder holder, int viewType, int layoutPosition, BellInfoBean item,int flag);
+        void showProgress();
+        void hideProgress();
     }
 
     interface Presenter extends BasePresenter{

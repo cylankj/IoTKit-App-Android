@@ -14,11 +14,13 @@ import com.cylan.superadapter.internal.SuperViewHolder;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
+import rx.functions.Func0;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
@@ -34,6 +36,8 @@ public class CloudCorrelationDoorBellPresenterImp extends AbstractPresenter<Clou
     public List<BellInfoBean> unRelativieList;
 
     public int notifyFlag = 1;
+    private Subscription refreshViewSub;
+    private Subscription refreshViewUnSub;
 
     public CloudCorrelationDoorBellPresenterImp(CloudCorrelationDoorBellContract.View view) {
         super(view);
@@ -53,6 +57,14 @@ public class CloudCorrelationDoorBellPresenterImp extends AbstractPresenter<Clou
 
         if (unRelativeSub != null){
             unRelativeSub.unsubscribe();
+        }
+
+        if(refreshViewSub != null){
+            refreshViewSub.unsubscribe();
+        }
+
+        if (refreshViewUnSub != null){
+            refreshViewUnSub.unsubscribe();
         }
     }
 
@@ -134,10 +146,22 @@ public class CloudCorrelationDoorBellPresenterImp extends AbstractPresenter<Clou
      */
     private class UnRelativeItemListener implements UnRelationDoorBellAdapter.OnRelativeClickListener {
         @Override
-        public void relativeClick(SuperViewHolder holder, int viewType, int layoutPosition, BellInfoBean item) {
+        public void relativeClick(final SuperViewHolder holder, final int viewType, final int layoutPosition, final BellInfoBean item) {
             notifyFlag = 1;
-            getView().notifyUnRelativeRecycle(holder,viewType,layoutPosition,item,notifyFlag);
-            getView().notifyRelativeRecycle(holder,viewType,layoutPosition,item,notifyFlag);
+            getView().showProgress();
+            refreshViewSub = Observable.just(null)
+                    .delay(3000, TimeUnit.MILLISECONDS)
+                    .subscribeOn(Schedulers.newThread())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Action1<Object>() {
+                        @Override
+                        public void call(Object o) {
+                            getView().hideProgress();
+                            getView().notifyUnRelativeRecycle(holder,viewType,layoutPosition,item,notifyFlag);
+                            getView().notifyRelativeRecycle(holder,viewType,layoutPosition,item,notifyFlag);
+                        }
+                    });
+
         }
     }
 
@@ -146,13 +170,24 @@ public class CloudCorrelationDoorBellPresenterImp extends AbstractPresenter<Clou
      */
     private class RelativeItemListener implements RelationDoorBellAdapter.OnUnRelaItemClickListener{
         @Override
-        public void unRelativeClick(SuperViewHolder holder, int viewType, int layoutPosition, BellInfoBean item) {
+        public void unRelativeClick(final SuperViewHolder holder, final int viewType, final int layoutPosition, final BellInfoBean item) {
             notifyFlag = 2;
-            getView().notifyRelativeRecycle(holder,viewType,layoutPosition,item,notifyFlag);
-            getView().notifyUnRelativeRecycle(holder,viewType,layoutPosition,item,notifyFlag);
-            if (PreferencesUtils.getBoolean("isFirstUnRelative",true)){
-                showFirstUnRelDialog(item);
-            }
+            getView().showProgress();
+            refreshViewUnSub = Observable.just(null)
+                    .delay(3000, TimeUnit.MILLISECONDS)
+                    .subscribeOn(Schedulers.newThread())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Action1<Object>() {
+                        @Override
+                        public void call(Object o) {
+                            getView().hideProgress();
+                            getView().notifyRelativeRecycle(holder,viewType,layoutPosition,item,notifyFlag);
+                            getView().notifyUnRelativeRecycle(holder,viewType,layoutPosition,item,notifyFlag);
+                            if (PreferencesUtils.getBoolean("isFirstUnRelative",true)){
+                                showFirstUnRelDialog(item);
+                            }
+                        }
+                    });
         }
     }
 
