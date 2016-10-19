@@ -31,6 +31,8 @@ public interface CloudLiveContract {
 
         void hangUpRefreshView(String result);
 
+        void ignoreRefreshView(String result);
+
         void handlerVideoTalk(boolean isOnline);
 
         void showReconnetProgress();
@@ -60,7 +62,7 @@ public interface CloudLiveContract {
 
         String parseTime(String times);
 
-        void createDB();
+        void getDBManger();
 
         byte[] getSerializedObject(Serializable s);
 
@@ -72,7 +74,9 @@ public interface CloudLiveContract {
 
         void initService();                                 //启动服务
 
-        void refreshHangUpView();
+        void refreshHangUpView();                           //更新挂断结果
+
+        void handlerIgnoreView();                           //更新忽略结果
 
         void handlerVideoTalk();                           //处理视频通话
 

@@ -52,6 +52,10 @@ public class CloudVideoChatConettionOkPresenterImp extends AbstractPresenter<Clo
         if(loadProAnimSub != null){
             loadProAnimSub.unsubscribe();
         }
+
+        if (conn != null){
+            getView().getContext().unbindService(conn);
+        }
     }
 
     @Override

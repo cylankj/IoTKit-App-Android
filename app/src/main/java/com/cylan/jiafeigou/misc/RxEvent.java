@@ -32,6 +32,10 @@ public class RxEvent {
         public Bundle bundle;
     }
 
+    public static class CloundLiveCall{
+
+    }
+
     /**
      * The type Result event.
      */

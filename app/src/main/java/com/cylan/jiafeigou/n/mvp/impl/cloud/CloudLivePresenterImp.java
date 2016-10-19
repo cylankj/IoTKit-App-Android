@@ -104,6 +104,10 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
             leaveMesgSub.unsubscribe();
         }
 
+        if (conn != null){
+            getView().getContext().unbindService(conn);
+        }
+
         stopPlayRecord();
     }
 
@@ -143,17 +147,13 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
             filePath = new File(output_Path);
             mMediaRecorder = new MediaRecorder();
             mMediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-
             mMediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.DEFAULT);
-
             mMediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
-
             mMediaRecorder.setOutputFile(filePath.getAbsolutePath());
             mMediaRecorder.setMaxDuration(MAX_LENGTH);
             mMediaRecorder.prepare();
             mMediaRecorder.start();
             startTime = System.currentTimeMillis();
-
         } catch (IllegalStateException e) {
 
         } catch (IOException e) {
@@ -257,8 +257,8 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
      */
     @Override
 
-    public void createDB() {
-        base_db = CloudLiveDbUtil.getInstance().dbManager;;
+    public void getDBManger() {
+        base_db = CloudLiveDbUtil.getInstance().dbManager;
     }
 
     @Override
@@ -294,6 +294,7 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
             try {
                 ois.close();
             } catch (Throwable e) {
+                LogUtil.d("readSerializedObject",e.getMessage());
             }
         }
         return result;
@@ -340,6 +341,18 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
     }
 
     @Override
+    public void handlerIgnoreView() {
+        try {
+            if (mService.getIgnoreFlag()){
+                getView().ignoreRefreshView(mService.getIgnoreResultData());
+                mService.setIgnoreFlag(false);
+            }
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
     public void handlerVideoTalk() {
         getView().showReconnetProgress();
         checkDeviceOnLineSub = Observable.just(null)
@@ -369,7 +382,7 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
                 .map(new Func1<Object, Boolean>() {
                     @Override
                     public Boolean call(Object o) {
-                        //TODO 检查设备是否在线
+                        //TODO 检查设备是否在线0
                         return true;
                     }
                 })
