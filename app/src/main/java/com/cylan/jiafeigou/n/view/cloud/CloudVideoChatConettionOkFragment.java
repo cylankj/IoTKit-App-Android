@@ -68,6 +68,7 @@ public class CloudVideoChatConettionOkFragment extends Fragment implements Cloud
         View view = inflater.inflate(R.layout.fragment_cloud_live_videochat, container, false);
         ButterKnife.bind(this, view);
         initPresenter();
+        presenter.bindService();
         return view;
     }
 
@@ -128,6 +129,8 @@ public class CloudVideoChatConettionOkFragment extends Fragment implements Cloud
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.iv_hang_up:               //挂断
+                presenter.setVideoTalkFinishFlag(true);
+                presenter.setVideoTalkFinishResultData(tvVideoTime.getText().toString().trim());
                 getActivity().finish();
                 break;
         }

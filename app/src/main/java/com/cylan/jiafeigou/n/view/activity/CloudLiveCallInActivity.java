@@ -10,13 +10,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.misc.RxEvent;
 import com.cylan.jiafeigou.n.mvp.contract.cloud.CloudLiveCallInContract;
 import com.cylan.jiafeigou.n.mvp.impl.cloud.CloudLiveCallInPresenterImp;
 import com.cylan.jiafeigou.n.view.cloud.CloudVideoChatConettionOkFragment;
-import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.support.rxbus.IEventBus;
-import com.cylan.jiafeigou.support.rxbus.RxBus;
 import com.cylan.jiafeigou.utils.ViewUtils;
 
 import butterknife.BindView;
@@ -58,7 +54,6 @@ public class CloudLiveCallInActivity extends AppCompatActivity implements CloudL
 
     @OnClick({R.id.iv_call_user_image_head, R.id.tv_ignore_call, R.id.tv_accept_call})
     public void onClick(View view) {
-
         switch (view.getId()) {
             case R.id.iv_call_user_image_head:
                 break;
