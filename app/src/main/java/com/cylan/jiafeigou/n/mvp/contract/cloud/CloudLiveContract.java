@@ -38,6 +38,8 @@ public interface CloudLiveContract {
         void showReconnetProgress();
 
         void hideReconnetProgress();
+
+        void scrollToLast();                               //滚动到最后一条
     }
 
     interface Presenter extends BasePresenter {
@@ -81,5 +83,7 @@ public interface CloudLiveContract {
         void handlerVideoTalk();                           //处理视频通话
 
         void handlerLeveaMesg(Context context);            //处理语音留言
+
+
     }
 }

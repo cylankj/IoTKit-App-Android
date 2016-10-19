@@ -128,10 +128,7 @@ public class CloudVideoChatConettionOkFragment extends Fragment implements Cloud
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.iv_hang_up:               //挂断
-                if(listener != null){
-                    listener.onHangup(tvVideoTime.getText().toString());
-                }
-                getFragmentManager().popBackStack();
+                getActivity().finish();
                 break;
         }
     }

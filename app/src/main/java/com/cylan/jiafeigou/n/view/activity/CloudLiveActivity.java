@@ -10,10 +10,12 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
@@ -344,6 +346,14 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
 
     @Override
     public void initRecycleView() {
+        //获取屏幕的高度设置列表的高度
+        DisplayMetrics metric = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(metric);
+        int height = metric.heightPixels;   // 屏幕高度（像素）
+        ViewGroup.LayoutParams layoutParams = rcyCloudMesgList.getLayoutParams();
+        layoutParams.height = height - ViewUtils.dp2px(121);
+        rcyCloudMesgList.setLayoutParams(layoutParams);
+
         if (mData == null) {
             mData = new ArrayList<>();
         }
@@ -425,6 +435,14 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
         progressReConnet.setVisibility(View.INVISIBLE);
     }
 
+    @Override
+    public void scrollToLast() {
+        if (cloudLiveMesgAdapter.getItemCount() == 0){
+            return;
+        }
+        rcyCloudMesgList.smoothScrollToPosition(cloudLiveMesgAdapter.getItemCount()-1);
+    }
+
     private void showDeviceDisOnlineDialog(final int whichshow) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("设备离线了");
@@ -439,7 +457,6 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
                         presenter.handlerLeveaMesg(CloudLiveActivity.this);
                         break;
                 }
-
             }
         });
         builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {

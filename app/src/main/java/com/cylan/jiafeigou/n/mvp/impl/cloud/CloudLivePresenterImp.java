@@ -224,6 +224,7 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
     public void addMesgItem(CloudLiveBaseBean bean) {
         if (getView() != null)
             getView().refreshRecycleView(bean);
+            getView().scrollToLast();
     }
 
     @Override
