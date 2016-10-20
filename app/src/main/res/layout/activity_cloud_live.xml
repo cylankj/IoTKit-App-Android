@@ -50,7 +50,7 @@
             android:layout_centerVertical="true"
             android:id="@+id/iv_cloud_share_pic"
             android:layout_marginLeft="42dp"
-            android:src="@drawable/share_pic"
+            android:src="@drawable/icon_album_bottom_share_pic"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
@@ -58,7 +58,7 @@
             android:layout_centerVertical="true"
             android:id="@+id/iv_cloud_videochat"
             android:layout_centerHorizontal="true"
-            android:src="@drawable/image_videochat"
+            android:src="@drawable/icon_album_bottom_videochat"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
@@ -67,7 +67,7 @@
             android:id="@+id/iv_cloud_talk"
             android:layout_alignParentRight="true"
             android:layout_marginRight="42dp"
-            android:src="@drawable/icon_talk"
+            android:src="@drawable/icon_album_bottom_talk"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
     </RelativeLayout>

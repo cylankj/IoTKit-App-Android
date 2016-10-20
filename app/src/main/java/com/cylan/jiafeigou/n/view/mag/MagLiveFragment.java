@@ -63,7 +63,6 @@ public class MagLiveFragment extends Fragment implements HomeMagLiveContract.Vie
         magLiveInformationFragment = MagLiveInformationFragment.newInstance(new Bundle());
     }
 
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -116,7 +115,6 @@ public class MagLiveFragment extends Fragment implements HomeMagLiveContract.Vie
             }
         });
     }
-
 
     @Override
     public void onStart() {
