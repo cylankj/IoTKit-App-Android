@@ -1,5 +1,6 @@
 package com.cylan.jiafeigou.n.view.activity;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -9,6 +10,8 @@ import android.widget.RelativeLayout;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
+import com.cylan.jiafeigou.n.mvp.contract.mag.MagLiveContract;
+import com.cylan.jiafeigou.n.mvp.impl.mag.MagLivePresenterImp;
 import com.cylan.jiafeigou.n.mvp.model.MagBean;
 import com.cylan.jiafeigou.n.view.adapter.MagActivityAdapter;
 import com.cylan.jiafeigou.n.view.home.HomeSettingAboutFragment;
@@ -37,7 +40,7 @@ import butterknife.OnClick;
  * 更新时间   $Date$
  * 更新描述   ${TODO}
  */
-public class MagLiveActivity extends BaseFullScreenFragmentActivity {
+public class MagLiveActivity extends BaseFullScreenFragmentActivity implements MagLiveContract.View{
 
 
     private int currentType;//当前item类型
@@ -59,7 +62,7 @@ public class MagLiveActivity extends BaseFullScreenFragmentActivity {
     private MagLiveFragment magLiveFragment;
     private List<MagBean> magList;
     private MagActivityAdapter adapter;
-
+    private MagLiveContract.Presenter presenter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,12 +70,17 @@ public class MagLiveActivity extends BaseFullScreenFragmentActivity {
         //实例化msgLiveFragment
         magLiveFragment = MagLiveFragment.newInstance(new Bundle());
         ButterKnife.bind(this);
+        initPresenter();
         //用来存放，所需要的bean对象
         initTopBar();
         initData();
         initView();
-        initDoorState(true);
+        initDoorState(presenter.getDoorCurrentState());
         initMagLiveFragmentLisenter();
+    }
+
+    private void initPresenter() {
+        presenter = new MagLivePresenterImp(this);
     }
 
     private void initMagLiveFragmentLisenter() {
@@ -144,6 +152,7 @@ public class MagLiveActivity extends BaseFullScreenFragmentActivity {
         LinearLayoutManager layoutManager = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false);
         RvMagState.setLayoutManager(layoutManager);
         adapter = new MagActivityAdapter(getApplication(), magList, null);
+        adapter.setCurrentState(presenter.getDoorCurrentState());
         RvMagState.setAdapter(adapter);
     }
 
@@ -191,4 +200,13 @@ public class MagLiveActivity extends BaseFullScreenFragmentActivity {
                 .commit();
     }
 
+    @Override
+    public void setPresenter(MagLiveContract.Presenter presenter) {
+
+    }
+
+    @Override
+    public Context getContext() {
+        return getApplicationContext();
+    }
 }

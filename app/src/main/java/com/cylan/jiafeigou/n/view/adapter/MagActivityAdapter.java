@@ -2,6 +2,7 @@ package com.cylan.jiafeigou.n.view.adapter;
 
 import android.content.Context;
 import android.view.View;
+import android.widget.ImageView;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.model.MagBean;
@@ -28,6 +29,8 @@ public class MagActivityAdapter extends SuperAdapter<MagBean> {
 
     private static final int TYPE_COUNT = 2;
 
+    private boolean currentState;             //true 为开， false为关
+
     private static final int TYPE_VISIBLE = 0;//正常显示类型
 
     private static final int TYPE_INVISIBLE = 1;//不显示类型
@@ -35,6 +38,10 @@ public class MagActivityAdapter extends SuperAdapter<MagBean> {
     public MagActivityAdapter(Context context, List<MagBean> items,
                               IMulItemViewType<MagBean> mulItemViewType) {
         super(context, items, mulItemViewType);
+    }
+
+    public void setCurrentState(boolean currentState){
+        this.currentState = currentState;
     }
 
     @Override
@@ -47,11 +54,10 @@ public class MagActivityAdapter extends SuperAdapter<MagBean> {
         }
     }
 
-
     private void initVisible(SuperViewHolder holder, final int layoutPosition) {
         setupPosition2View(holder, R.id.tv_mag_live_day, layoutPosition);
         setupPosition2View(holder, R.id.tv_mag_live_time, layoutPosition);
-        setupPosition2View(holder, R.id.flv_mag_live, layoutPosition);
+        setupPosition2View(holder, R.id.iv_mag_live, layoutPosition);
     }
 
     private void initInvisible(SuperViewHolder holder, final int layoutPosition) {
@@ -68,8 +74,13 @@ public class MagActivityAdapter extends SuperAdapter<MagBean> {
     private void handleVisibleState(SuperViewHolder holder, int layoutPosition, MagBean bean) {
         //每条的第一个设置内外圈颜色
         if (layoutPosition == 0) {
-            FateLineView view = (FateLineView) holder.getView(R.id.flv_mag_live);
-            view.setOuterCircleColor(R.color.color_red);
+            ImageView view = (ImageView) holder.getView(R.id.iv_mag_live);
+            if (currentState){
+                view.setImageDrawable(getContext().getResources().getDrawable(R.drawable.icon_dot_red));
+            }else {
+                view.setImageDrawable(getContext().getResources().getDrawable(R.drawable.icon_dot_green));
+            }
+
         }
         //把数据插入其中
         if (layoutPosition == 0) {
@@ -92,14 +103,13 @@ public class MagActivityAdapter extends SuperAdapter<MagBean> {
         return new IMulItemViewType<MagBean>() {
             @Override
             public int getViewTypeCount() {
-                return 2;
+                return TYPE_COUNT;
             }
 
             @Override
             public int getItemViewType(int position, MagBean magBean) {
                 return magBean.visibleType; //0.正常显示 ，1.只显示一条时间线的虚线
             }
-
 
             @Override
             public int getLayoutId(int viewType) {
@@ -109,7 +119,6 @@ public class MagActivityAdapter extends SuperAdapter<MagBean> {
             }
         };
     }
-
 
     /**
      * 获得当前日期的方法

@@ -14,9 +14,11 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.misc.RxEvent;
 import com.cylan.jiafeigou.n.mvp.contract.cloud.CloudLiveSettingContract;
 import com.cylan.jiafeigou.n.mvp.impl.cloud.CloudLiveSettingPresenterImp;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.support.rxbus.RxBus;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.SettingItemView2;
@@ -157,6 +159,9 @@ public class CloudLiveSettingFragment extends Fragment implements CloudLiveSetti
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
+                if (RxBus.getInstance().hasObservers()) {
+                    RxBus.getInstance().send(new RxEvent.CloundLiveDelete());
+                }
                 ToastUtil.showToast(getContext(),"正在删除中...");
             }
         });

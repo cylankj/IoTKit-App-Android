@@ -32,7 +32,7 @@ public class RxEvent {
         public Bundle bundle;
     }
 
-    public static class CloundLiveCall{
+    public static class CloundLiveDelete{
 
     }
 

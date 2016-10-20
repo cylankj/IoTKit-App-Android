@@ -31,6 +31,7 @@ import com.cylan.jiafeigou.n.mvp.model.CloudLiveBaseBean;
 import com.cylan.jiafeigou.n.mvp.model.CloudLiveBaseDbBean;
 import com.cylan.jiafeigou.n.mvp.model.CloudLiveLeaveMesBean;
 import com.cylan.jiafeigou.n.mvp.model.CloudLiveVideoTalkBean;
+import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
 import com.cylan.jiafeigou.n.view.adapter.CloudLiveMesgListAdapter;
 import com.cylan.jiafeigou.n.view.cloud.CloudLiveSettingFragment;
 import com.cylan.jiafeigou.n.view.cloud.CloudVideoChatConnetionFragment;
@@ -40,6 +41,7 @@ import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.CloudLiveVoiceTalkView;
 import com.cylan.superadapter.OnItemClickListener;
+import com.sina.weibo.sdk.utils.LogUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -126,7 +128,6 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
                 }
             }
         });
-
     }
 
     /**
@@ -231,7 +232,6 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
                 .replace(android.R.id.content, cloudVideoChatConnetionFragment)
                 .addToBackStack("CloudVideoChatConnetionFragment")
                 .commit();
-
     }
 
     @Override
@@ -470,6 +470,7 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
     public void getIntentData() {
         Bundle bundleExtra = getIntent().getExtras();
         Parcelable parcelable = bundleExtra.getParcelable(JConstant.KEY_DEVICE_ITEM_BUNDLE);
+        LogUtil.d("send data:",parcelable.toString());
     }
 
     @Override
