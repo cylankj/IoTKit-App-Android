@@ -23,7 +23,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.n.mvp.contract.mine.SuggestionChatContant;
+import com.cylan.jiafeigou.n.mvp.contract.mine.SuggestionChatContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.SuggestionPresenterImp;
 import com.cylan.jiafeigou.n.view.adapter.SuggestionChatAdapter;
 
@@ -33,11 +33,11 @@ import com.cylan.jiafeigou.n.view.adapter.SuggestionChatAdapter;
  * 创建时间：2016/8/30
  * 描述：
  */
-public class SuggestionChatFragment extends Fragment implements SuggestionChatContant.View, View.OnClickListener, TextView.OnEditorActionListener {
+public class SuggestionChatFragment extends Fragment implements SuggestionChatContract.View, View.OnClickListener, TextView.OnEditorActionListener {
 
     private EditText et_content;
     private RecyclerView recyclerView;
-    private SuggestionChatContant.Presenter presenter;
+    private SuggestionChatContract.Presenter presenter;
     private TextView te_send;
     private SuggestionChatAdapter chatAdapter;
     private TextView tv_clear;
@@ -187,7 +187,7 @@ public class SuggestionChatFragment extends Fragment implements SuggestionChatCo
     }
 
     @Override
-    public void setPresenter(SuggestionChatContant.Presenter presenter) {
+    public void setPresenter(SuggestionChatContract.Presenter presenter) {
     }
 
     @Override

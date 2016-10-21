@@ -1,8 +1,5 @@
 package com.cylan.jiafeigou.n.mvp.model;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
 import java.io.Serializable;
 
 /**

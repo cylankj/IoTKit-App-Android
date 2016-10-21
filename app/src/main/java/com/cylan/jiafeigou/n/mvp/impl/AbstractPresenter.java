@@ -3,7 +3,6 @@ package com.cylan.jiafeigou.n.mvp.impl;
 import com.cylan.jiafeigou.BuildConfig;
 
 import java.lang.ref.SoftReference;
-import java.lang.ref.WeakReference;
 
 import rx.Subscription;
 

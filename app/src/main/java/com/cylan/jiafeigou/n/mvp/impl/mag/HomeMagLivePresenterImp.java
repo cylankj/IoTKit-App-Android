@@ -40,8 +40,8 @@ public class HomeMagLivePresenterImp extends AbstractPresenter<HomeMagLiveContra
     }
 
     @Override
-    public void savaSwitchState(boolean isChick, String key) {
-        PreferencesUtils.putBoolean(key,isChick);
+    public void saveSwitchState(boolean isChick, String key) {
+        PreferencesUtils.putBoolean(key, isChick);
     }
 
     @Override

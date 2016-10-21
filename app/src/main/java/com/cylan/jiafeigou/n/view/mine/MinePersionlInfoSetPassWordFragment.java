@@ -13,7 +13,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.n.mvp.contract.mine.MinePersionlInfoSetPassWordContract;
+import com.cylan.jiafeigou.n.mvp.contract.mine.MinePersonalInfoSetPassWordContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MinePersionlInfoSetPassWordPresenterImp;
 import com.cylan.jiafeigou.utils.ToastUtil;
 
@@ -26,7 +26,7 @@ import butterknife.OnClick;
  * 创建时间：2016/9/20
  * 描述：
  */
-public class MinePersionlInfoSetPassWordFragment extends Fragment implements MinePersionlInfoSetPassWordContract.View {
+public class MinePersionlInfoSetPassWordFragment extends Fragment implements MinePersonalInfoSetPassWordContract.View {
 
     @BindView(R.id.iv_mine_personal_setpassword_back)
     ImageView ivMinePersonalSetpasswordBack;
@@ -46,7 +46,7 @@ public class MinePersionlInfoSetPassWordFragment extends Fragment implements Min
     ImageView ivMinePersonalInformationNewPasswordClear;
 
 
-    private MinePersionlInfoSetPassWordContract.Presenter presenter;
+    private MinePersonalInfoSetPassWordContract.Presenter presenter;
 
     public static MinePersionlInfoSetPassWordFragment newInstance() {
         return new MinePersionlInfoSetPassWordFragment();
@@ -138,7 +138,7 @@ public class MinePersionlInfoSetPassWordFragment extends Fragment implements Min
     }
 
     @Override
-    public void setPresenter(MinePersionlInfoSetPassWordContract.Presenter presenter) {
+    public void setPresenter(MinePersonalInfoSetPassWordContract.Presenter presenter) {
 
     }
 

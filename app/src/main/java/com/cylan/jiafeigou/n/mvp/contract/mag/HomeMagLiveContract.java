@@ -10,15 +10,19 @@ import com.cylan.jiafeigou.n.mvp.BaseView;
  */
 public interface HomeMagLiveContract {
 
-    interface View extends BaseView<Presenter>{
+    interface View extends BaseView<Presenter> {
         boolean openDoorNotify();           //打开开和关通知
+
         void initMagDoorStateNotify();
     }
 
-    interface Presenter extends BasePresenter{
+    interface Presenter extends BasePresenter {
         void clearOpenAndCloseRecord();             //清空开和关的记录
+
         boolean getNegation();
-        void savaSwitchState(boolean isChick, String key);
+
+        void saveSwitchState(boolean isChick, String key);
+
         boolean getSwitchState(String key);
     }
 

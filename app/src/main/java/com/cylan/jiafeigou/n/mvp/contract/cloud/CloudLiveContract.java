@@ -5,11 +5,10 @@ import android.content.Context;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
 import com.cylan.jiafeigou.n.mvp.model.CloudLiveBaseBean;
-
 import com.cylan.jiafeigou.n.mvp.model.CloudLiveBaseDbBean;
+
 import java.io.Serializable;
 import java.util.List;
-import com.cylan.jiafeigou.support.db.DbManager;
 
 
 /**
@@ -64,6 +63,7 @@ public interface CloudLiveContract {
         List<CloudLiveBaseDbBean> findFromAllDb();          //查询数据库
 
         void initService();                                 //启动服务
+
         void refreshHangUpView();
     }
 }

@@ -11,7 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.n.mvp.contract.mine.MinePersionalInfomationBindPhoneContract;
+import com.cylan.jiafeigou.n.mvp.contract.mine.MinePersonalInformationBindPhoneContract;
 import com.cylan.jiafeigou.utils.ToastUtil;
 
 import butterknife.BindView;
@@ -23,7 +23,7 @@ import butterknife.OnClick;
  * 创建时间：2016/9/1
  * 描述：
  */
-public class MineBindPhoneFragment extends Fragment implements MinePersionalInfomationBindPhoneContract.View {
+public class MineBindPhoneFragment extends Fragment implements MinePersonalInformationBindPhoneContract.View {
 
 
     @BindView(R.id.et_input_userphone)
@@ -55,7 +55,7 @@ public class MineBindPhoneFragment extends Fragment implements MinePersionalInfo
     }
 
     @Override
-    public void setPresenter(MinePersionalInfomationBindPhoneContract.Presenter presenter) {
+    public void setPresenter(MinePersonalInformationBindPhoneContract.Presenter presenter) {
 
     }
 

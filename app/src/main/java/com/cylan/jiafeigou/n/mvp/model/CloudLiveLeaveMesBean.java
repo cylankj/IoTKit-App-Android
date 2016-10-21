@@ -7,7 +7,7 @@ import java.io.Serializable;
  * 创建时间：2016/10/8
  * 描述：
  */
-public class CloudLiveLeaveMesBean implements Serializable{
+public class CloudLiveLeaveMesBean implements Serializable {
 
     public String getLeaveMesgLength() {
         return leaveMesgLength;

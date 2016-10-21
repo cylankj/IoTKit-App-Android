@@ -6,8 +6,8 @@ import com.cylan.jiafeigou.cache.SimpleCache;
 import com.cylan.jiafeigou.misc.ScanResultListFilter;
 import com.cylan.jiafeigou.n.mvp.contract.bind.BindDeviceContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
-import com.cylan.jiafeigou.support.network.ReactiveNetwork;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.support.network.ReactiveNetwork;
 
 import java.util.ArrayList;
 import java.util.List;

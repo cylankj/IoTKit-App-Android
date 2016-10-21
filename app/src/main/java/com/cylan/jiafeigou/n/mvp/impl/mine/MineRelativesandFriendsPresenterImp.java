@@ -79,7 +79,7 @@ public class MineRelativesandFriendsPresenterImp extends AbstractPresenter<MineR
 
     @Override
     public boolean checkAddRequestOutTime(SuggestionChatInfoBean bean) {
-        long oneMount = 30*24*60*60*1000L;
+        long oneMount = 30 * 24 * 60 * 60 * 1000L;
         return (System.currentTimeMillis() - Long.parseLong(bean.getTime())) > oneMount;
     }
 
@@ -87,7 +87,7 @@ public class MineRelativesandFriendsPresenterImp extends AbstractPresenter<MineR
     public void doAddRequestClick(final int position, final ArrayList<SuggestionChatInfoBean> list, final AddRelativesAndFriendsAdapter relativesAndFriendsAddAdapter,
                                   final ArrayList<SuggestionChatInfoBean> friendList, final RelativesAndFriendsAdapter relativesAndFriendsAdapter) {
 
-        if(checkAddRequestOutTime(list.get(position))){
+        if (checkAddRequestOutTime(list.get(position))) {
             //请求过期
             AlertDialog.Builder builder = new AlertDialog.Builder(getView().getContext());
             builder.setMessage("当前消息已过期，是否向对方发送添加好友验证？");
@@ -97,32 +97,33 @@ public class MineRelativesandFriendsPresenterImp extends AbstractPresenter<MineR
                     dialog.dismiss();
                     list.remove(position);
                     relativesAndFriendsAddAdapter.notifyDataSetChanged();
-                    ToastUtil.showToast(getView().getContext(),"请求已发送"+position);
+                    ToastUtil.showToast(getView().getContext(), "请求已发送" + position);
                     //TODO
                 }
             });
             builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }
-                    }).show();
-        }else {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            }).show();
+        } else {
             //请求未过期
-            addItems(list.get(position),friendList,relativesAndFriendsAdapter);
+            addItems(list.get(position), friendList, relativesAndFriendsAdapter);
             list.remove(position);
             relativesAndFriendsAddAdapter.notifyDataSetChanged();
-            ToastUtil.showToast(getView().getContext(),"添加成功");
+            ToastUtil.showToast(getView().getContext(), "添加成功");
         }
 
     }
 
     /**
      * desc：集合的排序
+     *
      * @param list
      * @return
      */
-    public ArrayList<SuggestionChatInfoBean> sortList(ArrayList<SuggestionChatInfoBean> list){
+    public ArrayList<SuggestionChatInfoBean> sortList(ArrayList<SuggestionChatInfoBean> list) {
         Comparator<SuggestionChatInfoBean> comparator = new Comparator<SuggestionChatInfoBean>() {
             @Override
             public int compare(SuggestionChatInfoBean lhs, SuggestionChatInfoBean rhs) {
@@ -131,7 +132,7 @@ public class MineRelativesandFriendsPresenterImp extends AbstractPresenter<MineR
                 return (int) (newTime - oldTime);
             }
         };
-        Collections.sort(list,comparator);
+        Collections.sort(list, comparator);
         return list;
     }
 

@@ -10,15 +10,19 @@ import com.cylan.jiafeigou.n.mvp.BaseView;
  */
 public interface CloudLiveSettingContract {
 
-    interface View extends BaseView<Presenter>{
+    interface View extends BaseView<Presenter> {
         void initSomeViewVisible(boolean isVisible);
+
         void showClearRecordDialog();
+
         void showClearRecordProgress();
+
         void hideClearRecordProgress();
     }
 
-    interface Presenter extends BasePresenter{
+    interface Presenter extends BasePresenter {
         boolean isHasBeenShareUser();           //判断是否的被分享的用户
+
         void clearMesgRecord();
     }
 }

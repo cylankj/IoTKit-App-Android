@@ -16,7 +16,7 @@ public interface MineLookBigImageContract {
         void hideLoadImageProgress();
     }
 
-    interface Presenter extends BasePresenter{
+    interface Presenter extends BasePresenter {
 
     }
 }

@@ -1,11 +1,6 @@
 package com.cylan.jiafeigou.n.mvp.impl.mine;
 
-import android.text.Editable;
-import android.text.TextUtils;
-import android.text.TextWatcher;
-import android.widget.EditText;
-
-import com.cylan.jiafeigou.n.mvp.contract.mine.MinePersionlInfoSetPassWordContract;
+import com.cylan.jiafeigou.n.mvp.contract.mine.MinePersonalInfoSetPassWordContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 
 /**
@@ -13,9 +8,9 @@ import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
  * 创建时间：2016/9/20
  * 描述：
  */
-public class MinePersionlInfoSetPassWordPresenterImp extends AbstractPresenter<MinePersionlInfoSetPassWordContract.View> implements MinePersionlInfoSetPassWordContract.Presenter{
+public class MinePersionlInfoSetPassWordPresenterImp extends AbstractPresenter<MinePersonalInfoSetPassWordContract.View> implements MinePersonalInfoSetPassWordContract.Presenter {
 
-    public MinePersionlInfoSetPassWordPresenterImp(MinePersionlInfoSetPassWordContract.View view) {
+    public MinePersionlInfoSetPassWordPresenterImp(MinePersonalInfoSetPassWordContract.View view) {
         super(view);
         view.setPresenter(this);
     }
@@ -43,7 +38,7 @@ public class MinePersionlInfoSetPassWordPresenterImp extends AbstractPresenter<M
 
     @Override
     public boolean checkNewPasswordLength(String newPass) {
-        return (newPass.length()<6 || newPass.length() > 12);
+        return (newPass.length() < 6 || newPass.length() > 12);
     }
 
 }

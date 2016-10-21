@@ -13,12 +13,13 @@ import java.util.List;
  */
 public interface CloudCorrelationDoorBellContract {
 
-    interface View extends BaseView<Presenter>{
+    interface View extends BaseView<Presenter> {
         void initRecycleView(List<BellInfoBean> list);
+
         void showNoRelativeDevicesView();                       //显示没有设备图
     }
 
-    interface Presenter extends BasePresenter{
+    interface Presenter extends BasePresenter {
         void loadDoorBellData(String url);
     }
 

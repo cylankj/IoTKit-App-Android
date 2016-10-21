@@ -95,7 +95,7 @@ public class MineRelativesAndFriendScanAddPresenterImp extends AbstractPresenter
     }
 
     @Override
-    public int getDimession() {
+    public int getDimension() {
         WindowManager manager = (WindowManager) getView().getContext().getSystemService(Context.WINDOW_SERVICE);
         Display display = manager.getDefaultDisplay();
         Point displaySize = new Point();

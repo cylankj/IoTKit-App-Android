@@ -134,7 +134,7 @@ public class MagLiveFragment extends Fragment implements HomeMagLiveContract.Vie
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_switch:
-                presenter.savaSwitchState(openDoorNotify(), JConstant.OPEN_DOOR_NOTIFY);
+                presenter.saveSwitchState(openDoorNotify(), JConstant.OPEN_DOOR_NOTIFY);
                 break;
             case R.id.tv_clear_mag_open_record:
                 if (listener != null) {
