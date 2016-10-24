@@ -43,14 +43,14 @@ public class ActivityUtils {
     }
 
     public static void addFragmentToActivity(@NonNull FragmentManager fragmentManager,
-                                             @NonNull Fragment fragment, int frameId, int id) {
+                                             @NonNull Fragment fragment, int containerId, int id) {
         fragmentManager
                 .beginTransaction()
                 .setCustomAnimations(R.anim.slide_down_in,
                         R.anim.slide_out_left,
                         R.anim.slide_in_left,
                         R.anim.slide_out_left)
-                .add(frameId, fragment, fragment.getClass().getSimpleName())
+                .add(containerId, fragment, fragment.getClass().getSimpleName())
                 .addToBackStack(fragment.getClass().getSimpleName())
                 .commit();
     }
@@ -62,6 +62,24 @@ public class ActivityUtils {
                 activity.getSupportFragmentManager().popBackStack();
             }
         }
+    }
+
+    public static void addFragmentSlideInFromRight(FragmentManager fragmentManager, Fragment fragment, int containerId) {
+        final String tag = fragment.getClass().getSimpleName();
+        Fragment f = fragmentManager.findFragmentByTag(tag);
+        if (f != null && f.isVisible()) {
+            return;
+        }
+        fragmentManager
+                .beginTransaction()
+                .setCustomAnimations(
+                        R.anim.slide_right_in,
+                        R.anim.slide_out_left,
+                        R.anim.slide_out_right,
+                        R.anim.slide_out_right)
+                .add(android.R.id.content, fragment, tag)
+                .addToBackStack(tag)
+                .commit();
     }
 
 }

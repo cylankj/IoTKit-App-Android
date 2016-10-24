@@ -83,7 +83,8 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginModelContract.Vie
                 .subscribe(new Action1<Object>() {
                     @Override
                     public void call(Object o) {
-                        if (o instanceof RxEvent.ResultLogin && getView().isVisible()) {
+                        //sdk中，登陆失败的话，自动一分钟登录一次。
+                        if (o instanceof RxEvent.ResultLogin && getView().isLoginViewVisible()) {
                             getView().loginResult(((RxEvent.ResultLogin) o).code);
                         }
                         if (o instanceof RxEvent.ResultRegister) {

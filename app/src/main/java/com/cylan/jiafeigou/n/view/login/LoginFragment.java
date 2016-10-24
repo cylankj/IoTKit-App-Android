@@ -19,6 +19,7 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -37,6 +38,7 @@ import com.cylan.jiafeigou.n.mvp.impl.ForgetPwdPresenterImpl;
 import com.cylan.jiafeigou.n.mvp.impl.SetupPwdPresenterImpl;
 import com.cylan.jiafeigou.n.mvp.model.LoginAccountBean;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.AnimatorUtils;
 import com.cylan.jiafeigou.utils.IMEUtils;
 import com.cylan.jiafeigou.utils.LocaleUtils;
@@ -124,6 +126,12 @@ public class LoginFragment extends android.support.v4.app.Fragment
     TextView tvRegisterWayContent;
     @BindView(R.id.fLayout_verification_code_input_box)
     FrameLayout fLayoutVerificationCodeInputBox;
+
+    @BindView(R.id.lLayout_agreement)
+    LinearLayout lLayoutAgreement;
+    @BindView(R.id.tv_agreement)
+    TextView tvAgreement;
+
 
     private VerificationCodeLogic verificationCodeLogic;
     private int registerWay = JConstant.REGISTER_BY_PHONE;
@@ -333,7 +341,8 @@ public class LoginFragment extends android.support.v4.app.Fragment
             R.id.iv_login_clear_username,
             R.id.tv_login_forget_pwd,
             R.id.iv_top_bar_left,
-            R.id.tv_top_bar_right
+            R.id.tv_top_bar_right,
+            R.id.tv_agreement
     })
     public void onClick(android.view.View view) {
         switch (view.getId()) {
@@ -362,6 +371,13 @@ public class LoginFragment extends android.support.v4.app.Fragment
             case R.id.tv_top_bar_right:
                 switchBox();
                 break;
+            case R.id.tv_agreement: {
+                IMEUtils.hide(getActivity());
+                AgreementFragment fragment = AgreementFragment.getInstance(null);
+                ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(),
+                        fragment, android.R.id.content);
+            }
+            break;
         }
     }
 
@@ -384,6 +400,8 @@ public class LoginFragment extends android.support.v4.app.Fragment
             vsLayoutSwitcher.setInAnimation(getContext(), R.anim.slide_in_left_overshoot);
             vsLayoutSwitcher.setOutAnimation(getContext(), R.anim.slide_out_right);
             vsLayoutSwitcher.showPrevious();
+            if (!lLayoutAgreement.isShown())
+                lLayoutAgreement.setVisibility(View.VISIBLE);
         }
     }
 
@@ -436,14 +454,14 @@ public class LoginFragment extends android.support.v4.app.Fragment
             bundle.putString(KEY_TEMP_ACCOUNT, tempAccount);
             ForgetPwdFragment forgetPwdFragment = ForgetPwdFragment.newInstance(bundle);
             new ForgetPwdPresenterImpl(forgetPwdFragment);
-            getActivity().getSupportFragmentManager()
-                    .beginTransaction()
-                    .setCustomAnimations(R.anim.slide_right_in, R.anim.slide_out_left
-                            , R.anim.slide_out_right, R.anim.slide_out_right)
-                    .add(containerId, forgetPwdFragment, "forgetPwd")
-                    .addToBackStack("forgetPwd")
-                    .commit();
+            ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(),
+                    forgetPwdFragment, containerId);
         }
+    }
+
+    @Override
+    public boolean isLoginViewVisible() {
+        return TextUtils.equals(tvLoginTopCenter.getText(), "登录");
     }
 
     @Override
@@ -612,14 +630,9 @@ public class LoginFragment extends android.support.v4.app.Fragment
             bundle.putString(JConstant.KEY_VCODE_TO_SEND, ViewUtils.getTextViewContent(etVerificationInput));
             bundle.putInt(JConstant.KEY_SET_UP_PWD_TYPE, 1);
             RegisterPwdFragment fragment = RegisterPwdFragment.newInstance(bundle);
-            getActivity().getSupportFragmentManager()
-                    .beginTransaction()
-                    .setCustomAnimations(R.anim.slide_right_in, R.anim.slide_out_left
-                            , R.anim.slide_out_right, R.anim.slide_out_right)
-                    .add(containerId, fragment, "RegisterPwdFragment")
-                    .addToBackStack("RegisterPwdFragment")
-                    .commit();
             new SetupPwdPresenterImpl(fragment);
+            ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(),
+                    fragment, containerId);
         }
     }
 
@@ -636,14 +649,11 @@ public class LoginFragment extends android.support.v4.app.Fragment
      * 注册块，确认按钮逻辑。
      */
     private void handleRegisterConfirm() {
+        final boolean validPhoneNum = JConstant.PHONE_REG.matcher(ViewUtils.getTextViewContent(etRegisterInputBox)).find();
+        registerWay = validPhoneNum ? JConstant.REGISTER_BY_PHONE : JConstant.REGISTER_BY_EMAIL;
         if (registerWay == JConstant.REGISTER_BY_PHONE) {
             final int codeLen = ViewUtils.getTextViewContent(etVerificationInput).length();
             if (fLayoutVerificationCodeInputBox.isShown()) {
-                boolean validPhoneNum = JConstant.PHONE_REG.matcher(ViewUtils.getTextViewContent(etRegisterInputBox)).find();
-                if (!validPhoneNum) {
-                    Toast.makeText(getActivity(), "invalid phoneNum", Toast.LENGTH_SHORT).show();
-                    return;
-                }
                 boolean validCode = codeLen == JConstant.VALID_VERIFICATION_CODE_LEN;
                 //显示重新发送，表示无效验证码
                 boolean aliveCode = TextUtils.equals(ViewUtils.getTextViewContent(tvMeterGetCode),
@@ -672,6 +682,7 @@ public class LoginFragment extends android.support.v4.app.Fragment
             //显示验证码输入框
             handleVerificationCodeBox(true);
             tvRegisterSubmit.setText(getString(R.string.item_carry_on));
+            lLayoutAgreement.setVisibility(View.GONE);
         } else {
             final boolean isValidEmail = Patterns.EMAIL_ADDRESS.matcher(ViewUtils.getTextViewContent(etRegisterInputBox)).find();
             if (!isValidEmail) {

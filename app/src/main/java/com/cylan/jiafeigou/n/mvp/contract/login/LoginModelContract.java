@@ -32,7 +32,7 @@ public interface LoginModelContract {
         /**
          * @return
          */
-        boolean isVisible();
+        boolean isLoginViewVisible();
 
         void verifyCodeResult(int code);
 
