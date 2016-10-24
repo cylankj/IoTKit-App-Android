@@ -97,7 +97,7 @@ public class MineRelativesandFriendsPresenterImp extends AbstractPresenter<MineR
                     dialog.dismiss();
                     list.remove(position);
                     relativesAndFriendsAddAdapter.notifyDataSetChanged();
-                    ToastUtil.showToast(getView().getContext(), "请求已发送" + position);
+                    ToastUtil.showToast("请求已发送" + position);
                     //TODO
                 }
             });
@@ -112,7 +112,7 @@ public class MineRelativesandFriendsPresenterImp extends AbstractPresenter<MineR
             addItems(list.get(position), friendList, relativesAndFriendsAdapter);
             list.remove(position);
             relativesAndFriendsAddAdapter.notifyDataSetChanged();
-            ToastUtil.showToast(getView().getContext(), "添加成功");
+            ToastUtil.showToast("添加成功");
         }
 
     }

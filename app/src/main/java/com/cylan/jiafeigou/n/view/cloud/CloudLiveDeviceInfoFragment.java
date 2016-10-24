@@ -12,7 +12,6 @@ import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.contract.cloud.CloudLiveDeviceInfoContract;
-import com.cylan.jiafeigou.n.mvp.impl.mag.MagLiveInformationPresenterImp;
 import com.cylan.jiafeigou.n.view.mag.MagDeviceNameDialogFragment;
 import com.cylan.jiafeigou.n.view.mag.MagDeviceTimeZoneFragment;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -100,22 +99,22 @@ public class CloudLiveDeviceInfoFragment extends Fragment implements CloudLiveDe
             case R.id.lLayout_information_facility_timezone:
                 if (getView() != null)
                     ViewUtils.deBounceClick(getView().findViewById(R.id.lLayout_information_facility_timezone));
-                    AppLogger.e("lLayout_information_facility_timezone");
-                    getFragmentManager().beginTransaction()
-                            .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
-                                    , R.anim.slide_in_left, R.anim.slide_out_right)
-                            .add(android.R.id.content, magDeviceTimeZoneFragment, "MagDeviceTimeZoneFragment")
-                            .addToBackStack("MagLiveInformationFragment")
-                            .commit();
-                    /**
-                     * 接口回调，得到相应的text，并且赋值给当前fragment
-                     */
-                    magDeviceTimeZoneFragment.setListener(new MagDeviceTimeZoneFragment.OnMagTimezoneChangeListener() {
-                        @Override
-                        public void magTimezoneChangeListener(String content) {
-                            tvInformationFacilityTimeZone.setText(content);
-                        }
-                    });
+                AppLogger.e("lLayout_information_facility_timezone");
+                getFragmentManager().beginTransaction()
+                        .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
+                                , R.anim.slide_in_left, R.anim.slide_out_right)
+                        .add(android.R.id.content, magDeviceTimeZoneFragment, "MagDeviceTimeZoneFragment")
+                        .addToBackStack("MagLiveInformationFragment")
+                        .commit();
+                /**
+                 * 接口回调，得到相应的text，并且赋值给当前fragment
+                 */
+                magDeviceTimeZoneFragment.setListener(new MagDeviceTimeZoneFragment.OnMagTimezoneChangeListener() {
+                    @Override
+                    public void magTimezoneChangeListener(String content) {
+                        tvInformationFacilityTimeZone.setText(content);
+                    }
+                });
                 break;
         }
     }

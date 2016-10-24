@@ -57,7 +57,7 @@ public class CloudLiveSettingPresenterImp extends AbstractPresenter<CloudLiveSet
             dbManager = CloudLiveDbUtil.getInstance().dbManager;
 
             if (dbManager.findAll(CloudLiveBaseDbBean.class).size() == 0) {
-                ToastUtil.showToast(getView().getContext(), "记录为空");
+                ToastUtil.showToast("记录为空");
                 return;
             }
         } catch (DbException e) {

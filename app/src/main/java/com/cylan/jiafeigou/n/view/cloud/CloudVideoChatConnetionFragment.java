@@ -13,7 +13,6 @@ import android.widget.TextView;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.contract.cloud.CloudVideoChatConettionContract;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 
 import butterknife.BindView;
@@ -40,11 +39,11 @@ public class CloudVideoChatConnetionFragment extends Fragment implements CloudVi
 
     private OnIgnoreClickListener igNoreListener;
 
-    public interface OnIgnoreClickListener{
+    public interface OnIgnoreClickListener {
         void onIgnore();
     }
 
-    public void setOnIgnoreClickListener(OnIgnoreClickListener igNoreListener){
+    public void setOnIgnoreClickListener(OnIgnoreClickListener igNoreListener) {
         this.igNoreListener = igNoreListener;
     }
 
@@ -80,7 +79,7 @@ public class CloudVideoChatConnetionFragment extends Fragment implements CloudVi
             case R.id.iv_call_user_image_head:
                 break;
             case R.id.tv_ignore_call:
-                if (igNoreListener != null){
+                if (igNoreListener != null) {
                     igNoreListener.onIgnore();
                 }
                 getFragmentManager().popBackStack();

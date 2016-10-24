@@ -72,7 +72,7 @@ public class MineShareToContactFragment extends Fragment implements MineShareToC
                 break;
 
             case R.id.iv_mine_share_to_contact_search:
-                ToastUtil.showToast(getContext(), "正在搜索...");
+                ToastUtil.showToast("正在搜索...");
                 break;
         }
     }
@@ -89,7 +89,7 @@ public class MineShareToContactFragment extends Fragment implements MineShareToC
         shareToContactAdapter.setOnShareLisenter(new ShareToContactAdapter.onShareLisenter() {
             @Override
             public void isChecked(View view, int position) {
-                ToastUtil.showToast(getContext(), shareToContactAdapter.getRcyList().get(position).getName());
+                ToastUtil.showToast(shareToContactAdapter.getRcyList().get(position).getName());
             }
         });
     }

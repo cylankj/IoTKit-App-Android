@@ -34,6 +34,7 @@ public class JConstant {
     public static final int VALID_VERIFICATION_CODE_LEN = 6;
     public static final int PWD_LEN_MIN = 6;
     public static final int PWD_LEN_MAX = 12;
+    public static final int USER_INPUT_LEN = 64;
     public static final int REGISTER_BY_PHONE = 0;
     public static final int REGISTER_BY_EMAIL = 1;
     /**
@@ -42,7 +43,8 @@ public class JConstant {
     public static final String KEY_ACTIVITY_FRAGMENT_CONTAINER_ID = "activityFragmentContainerId";
 
     public static final String KEY_LOCALE = "key_locale";
-    public static final int LOCALE_CN = 0;
+    public static final int LOCALE_SIMPLE_CN = 0;
+    public static final int LOCALE_T_CN = 10;
     public static final long VERIFICATION_CODE_DEADLINE = 90 * 1000L;
     /**
      * 注册，登陆模块，携带账号

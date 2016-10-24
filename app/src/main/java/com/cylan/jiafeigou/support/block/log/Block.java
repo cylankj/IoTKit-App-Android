@@ -17,7 +17,6 @@ import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.os.Build;
 import android.os.Build.VERSION;
-import android.telephony.TelephonyManager;
 import android.util.Log;
 
 import com.cylan.jiafeigou.support.block.BlockCanaryCore;

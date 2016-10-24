@@ -26,7 +26,7 @@ public class RelativesAndFriendsAdapter extends RecyclerView.Adapter<RelativesAn
         void onClick(View view, int position);
     }
 
-    public interface ItemLongClickLisenter{
+    public interface ItemLongClickLisenter {
         void onLongClick(View view, int position);
     }
 
@@ -34,7 +34,7 @@ public class RelativesAndFriendsAdapter extends RecyclerView.Adapter<RelativesAn
         this.itemClickListener = itemClickListener;
     }
 
-    public void setItemLongClickLisenter(ItemLongClickLisenter longClickLisenter){
+    public void setItemLongClickLisenter(ItemLongClickLisenter longClickLisenter) {
         this.itemLongClickLisenter = longClickLisenter;
     }
 
@@ -65,8 +65,8 @@ public class RelativesAndFriendsAdapter extends RecyclerView.Adapter<RelativesAn
         holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                if(itemLongClickLisenter != null){
-                    itemLongClickLisenter.onLongClick(holder.itemView,position);
+                if (itemLongClickLisenter != null) {
+                    itemLongClickLisenter.onLongClick(holder.itemView, position);
                 }
                 return true;
             }

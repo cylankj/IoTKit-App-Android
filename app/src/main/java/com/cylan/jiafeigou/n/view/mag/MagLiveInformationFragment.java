@@ -201,7 +201,7 @@ public class MagLiveInformationFragment extends Fragment implements MagLiveInfor
                 break;
 
             case MagLiveInformationPresenterImp.SD_UNINSTALL:
-                ToastUtil.showToast(getContext(), "请插入SD卡");
+                ToastUtil.showToast("请插入SD卡");
                 break;
 
             case MagLiveInformationPresenterImp.SD_FAIL_RW:
@@ -219,7 +219,7 @@ public class MagLiveInformationFragment extends Fragment implements MagLiveInfor
         builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                ToastUtil.showToast(getContext(), "正在格式化中。。。");
+                ToastUtil.showToast("正在格式化中。。。");
                 dialog.dismiss();
             }
         }).setNegativeButton("取消", new DialogInterface.OnClickListener() {

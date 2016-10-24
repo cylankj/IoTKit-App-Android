@@ -13,9 +13,6 @@ import android.view.ViewGroup;
 import com.cylan.jiafeigou.NewHomeActivity;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.RxEvent;
-import com.cylan.jiafeigou.n.engine.DownloadService;
-import com.cylan.jiafeigou.n.mvp.model.UpdateFileBean;
-import com.cylan.jiafeigou.n.view.misc.UpdateActivity;
 import com.cylan.jiafeigou.support.rxbus.RxBus;
 import com.cylan.jiafeigou.utils.ViewUtils;
 

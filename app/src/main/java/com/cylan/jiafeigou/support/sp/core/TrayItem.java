@@ -24,7 +24,7 @@ import java.util.Locale;
 
 /**
  * Immutable item from the Tray storage.
- *
+ * <p>
  * Created by jannisveerkamp on 17.09.14.
  */
 public class TrayItem {
@@ -42,7 +42,7 @@ public class TrayItem {
     private final String mValue;
 
     public TrayItem(final String module, final String key, final String migratedKey,
-            final String value, final Date created, final Date updated) {
+                    final String value, final Date created, final Date updated) {
         mCreated = created;
         mKey = key;
         mModule = module;

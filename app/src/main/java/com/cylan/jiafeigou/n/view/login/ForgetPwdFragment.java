@@ -159,7 +159,7 @@ public class ForgetPwdFragment extends Fragment implements ForgetPwdContract.Vie
         TextView tvTitle = (TextView) layout.findViewById(R.id.tv_top_bar_center);
         tvTitle.setText("忘记密码");
         ImageView imgBackHandle = (ImageView) layout.findViewById(R.id.iv_top_bar_left);
-        imgBackHandle.setImageResource(R.drawable.icon_nav_back_white);
+        imgBackHandle.setImageResource(R.drawable.icon_nav_back_gray);
         imgBackHandle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -176,6 +176,7 @@ public class ForgetPwdFragment extends Fragment implements ForgetPwdContract.Vie
 
 
     private void initView(View view) {
+        ViewUtils.setChineseExclude(etForgetUsername, JConstant.USER_INPUT_LEN);
         if (acceptType == 1) {
             etForgetUsername.setHint("please input email address");
         }

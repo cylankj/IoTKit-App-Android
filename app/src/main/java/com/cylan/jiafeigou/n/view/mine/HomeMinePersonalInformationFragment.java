@@ -359,7 +359,7 @@ public class HomeMinePersonalInformationFragment extends Fragment implements Min
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     GalleryFinal.openCamera(REQUEST_CODE_CAMERA, MinePersonalInformationPresenterImpl.functionConfig, mOnHanlderResultCallback);
                 } else {
-                    ToastUtil.showFailToast(getContext(), "相机未授权");
+                    ToastUtil.showNegativeToast("相机未授权");
                 }
                 break;
             default:

@@ -113,7 +113,7 @@ public class MineRelativeAndFriendAddFromContactFragment extends Fragment implem
         relativeAndFriendAddFromContactAdapter.setOnContactItemClickListener(new RelativeAndFriendAddFromContactAdapter.onContactItemClickListener() {
             @Override
             public void onClick(View view, int position) {
-                ToastUtil.showToast(getContext(), relativeAndFriendAddFromContactAdapter.getAdapterList().get(position).getName());
+                ToastUtil.showToast(relativeAndFriendAddFromContactAdapter.getAdapterList().get(position).getName());
                 getFragmentManager().beginTransaction()
                         .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                                 , R.anim.slide_in_left, R.anim.slide_out_right)

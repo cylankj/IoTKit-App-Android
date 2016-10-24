@@ -2,12 +2,12 @@ package com.cylan.jiafeigou.utils;
 
 import android.content.Context;
 
-;
-
 import com.cylan.jiafeigou.support.log.AppLogger;
 
 import java.io.IOException;
 import java.io.InputStream;
+
+;
 
 public class OEMConf {
 

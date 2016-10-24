@@ -28,6 +28,8 @@ import com.tencent.tauth.UiError;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.concurrent.TimeUnit;
+
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
@@ -59,6 +61,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginModelContract.Vie
                     .subscribe(new Action1<LoginAccountBean>() {
                         @Override
                         public void call(LoginAccountBean o) {
+                            AppLogger.d("log: " + o.toString());
                             JfgCmdEnsurance.getCmd().login(o.userName, o.pwd);
                         }
                     }, new Action1<Throwable>() {
@@ -75,12 +78,12 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginModelContract.Vie
         subscription = new CompositeSubscription();
         subscription.add(RxBus.getInstance()
                 .toObservable()
-//                .delay(1000, TimeUnit.MILLISECONDS)//set a delay
+                .delay(1000, TimeUnit.MILLISECONDS)//set a delay
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<Object>() {
                     @Override
                     public void call(Object o) {
-                        if (o instanceof RxEvent.ResultLogin) {
+                        if (o instanceof RxEvent.ResultLogin && getView().isVisible()) {
                             getView().loginResult(((RxEvent.ResultLogin) o).code);
                         }
                         if (o instanceof RxEvent.ResultRegister) {

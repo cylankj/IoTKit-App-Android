@@ -28,23 +28,23 @@ public class AddRelativesAndFriendsAdapter extends RecyclerView.Adapter<AddRelat
         void onClick(View view, int position);
     }
 
-    public interface ItemLongClickLisenter{
-        void onItemLongClick(View view,int position);
+    public interface ItemLongClickLisenter {
+        void onItemLongClick(View view, int position);
     }
 
-    public interface ItemOutOfBtnClickListener{
-        void onOutBtnClick(View view,int position);
+    public interface ItemOutOfBtnClickListener {
+        void onOutBtnClick(View view, int position);
     }
 
     public void setItemClickListener(ItemClickListener itemClickListener) {
         this.itemClickListener = itemClickListener;
     }
 
-    public void setItemLongClickLisenter(ItemLongClickLisenter longClickLisenter){
+    public void setItemLongClickLisenter(ItemLongClickLisenter longClickLisenter) {
         this.itemLongClickLisenter = longClickLisenter;
     }
 
-    public void setItemOutOfBtnClickListener(ItemOutOfBtnClickListener itemOutOfBtnClickListener){
+    public void setItemOutOfBtnClickListener(ItemOutOfBtnClickListener itemOutOfBtnClickListener) {
         this.itemOutOfBtnClickListener = itemOutOfBtnClickListener;
     }
 
@@ -82,8 +82,8 @@ public class AddRelativesAndFriendsAdapter extends RecyclerView.Adapter<AddRelat
         holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                if(itemLongClickLisenter != null){
-                    itemLongClickLisenter.onItemLongClick(holder.itemView,position);
+                if (itemLongClickLisenter != null) {
+                    itemLongClickLisenter.onItemLongClick(holder.itemView, position);
                 }
                 return false;
             }
@@ -93,8 +93,8 @@ public class AddRelativesAndFriendsAdapter extends RecyclerView.Adapter<AddRelat
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(itemOutOfBtnClickListener != null){
-                    itemOutOfBtnClickListener.onOutBtnClick(holder.itemView,position);
+                if (itemOutOfBtnClickListener != null) {
+                    itemOutOfBtnClickListener.onOutBtnClick(holder.itemView, position);
                 }
             }
         });

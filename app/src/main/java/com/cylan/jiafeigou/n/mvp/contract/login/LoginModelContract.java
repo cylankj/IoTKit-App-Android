@@ -29,6 +29,11 @@ public interface LoginModelContract {
 
     interface View extends BaseView<Presenter> {
 
+        /**
+         * @return
+         */
+        boolean isVisible();
+
         void verifyCodeResult(int code);
 
         /**

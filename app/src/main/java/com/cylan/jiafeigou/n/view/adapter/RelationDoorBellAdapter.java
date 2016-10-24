@@ -1,7 +1,6 @@
 package com.cylan.jiafeigou.n.view.adapter;
 
 import android.content.Context;
-import android.support.v7.widget.RecyclerView;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.model.BellInfoBean;
@@ -24,7 +23,7 @@ public class RelationDoorBellAdapter extends SuperAdapter<BellInfoBean> {
 
     @Override
     public void onBind(SuperViewHolder holder, int viewType, int layoutPosition, BellInfoBean item) {
-        holder.setText(R.id.tv_door_bell_name,item.nickName);
+        holder.setText(R.id.tv_door_bell_name, item.nickName);
     }
 
     @Override
@@ -34,10 +33,12 @@ public class RelationDoorBellAdapter extends SuperAdapter<BellInfoBean> {
             public int getViewTypeCount() {
                 return 1;
             }
+
             @Override
             public int getItemViewType(int position, BellInfoBean bellInfoBean) {
                 return 0;
             }
+
             @Override
             public int getLayoutId(int viewType) {
                 return R.layout.fragment_cloud_correlation_door_bell_items;

@@ -21,7 +21,6 @@ import com.cylan.jiafeigou.n.mvp.model.SuggestionChatInfoBean;
 import com.cylan.jiafeigou.n.view.adapter.AddRelativesAndFriendsAdapter;
 import com.cylan.jiafeigou.n.view.adapter.RelativesAndFriendsAdapter;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 
 import java.util.ArrayList;
@@ -110,7 +109,7 @@ public class MineRelativesandFriendsFragment extends Fragment implements MineRel
             public void onClick(View view, int position) {
 
                 Bundle bundle = new Bundle();
-                bundle.putInt("position",position);
+                bundle.putInt("position", position);
                 relativeAndFrienDetialFragment = MineRelativeAndFriendDetailFragment.newInstance(bundle);
                 getFragmentManager().beginTransaction()
                         .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
@@ -124,14 +123,14 @@ public class MineRelativesandFriendsFragment extends Fragment implements MineRel
         relativesAndFriendsAddAdapter.setItemLongClickLisenter(new AddRelativesAndFriendsAdapter.ItemLongClickLisenter() {
             @Override
             public void onItemLongClick(View view, int position) {
-                showLongClickDialog(view,position);
+                showLongClickDialog(view, position);
             }
         });
 
         relativesAndFriendsAddAdapter.setItemClickListener(new AddRelativesAndFriendsAdapter.ItemClickListener() {
             @Override
             public void onClick(View view, int position) {
-                presenter.doAddRequestClick(position,requestAddList,relativesAndFriendsAddAdapter,relativesAndFriendList,relativesAndFriendsListAdapter);
+                presenter.doAddRequestClick(position, requestAddList, relativesAndFriendsAddAdapter, relativesAndFriendList, relativesAndFriendsListAdapter);
             }
         });
 
@@ -140,12 +139,12 @@ public class MineRelativesandFriendsFragment extends Fragment implements MineRel
             public void onOutBtnClick(View view, int position) {
                 if (getView() != null)
                     ViewUtils.deBounceClick(view);
-                    AppLogger.e("add_request_detail_fragment");
-                    jump2AddReqDetailFragment();
+                AppLogger.e("add_request_detail_fragment");
+                jump2AddReqDetailFragment();
             }
         });
 
-        if(relativeAndFrienDetialFragment != null){
+        if (relativeAndFrienDetialFragment != null) {
             relativeAndFrienDetialFragment.setOnDeleteClickLisenter(new MineRelativeAndFriendDetailFragment.OnDeleteClickLisenter() {
                 @Override
                 public void onDelete(int position) {
@@ -202,8 +201,8 @@ public class MineRelativesandFriendsFragment extends Fragment implements MineRel
             case R.id.tv_home_mine_relativesandfriends_add:
                 if (getView() != null)
                     ViewUtils.deBounceClick(getView().findViewById(R.id.tv_home_mine_relativesandfriends_add));
-                    AppLogger.e("tv_home_mine_relativesandfriends_add");
-                    jump2AddReAndFriendFragment();
+                AppLogger.e("tv_home_mine_relativesandfriends_add");
+                jump2AddReAndFriendFragment();
                 break;
 
         }

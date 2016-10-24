@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,11 +47,11 @@ public class CloudVideoChatConettionOkFragment extends Fragment implements Cloud
 
     public OnHangUpListener listener;
 
-    public interface OnHangUpListener{
+    public interface OnHangUpListener {
         void onHangup(String time);
     }
 
-    public void setOnHangupListener(OnHangUpListener listener){
+    public void setOnHangupListener(OnHangUpListener listener) {
         this.listener = listener;
     }
 
@@ -126,14 +125,14 @@ public class CloudVideoChatConettionOkFragment extends Fragment implements Cloud
 
     @OnClick(R.id.iv_hang_up)
     public void onClick(View view) {
-        switch (view.getId()){
+        switch (view.getId()) {
             case R.id.iv_hang_up:               //挂断
 
                 if (RxBus.getInstance().hasObservers()) {
                     RxBus.getInstance().send(new RxEvent.TimeTickEvent());
                 }
 
-                if(listener != null){
+                if (listener != null) {
                     listener.onHangup(tvVideoTime.getText().toString());
                 }
                 getFragmentManager().popBackStack();

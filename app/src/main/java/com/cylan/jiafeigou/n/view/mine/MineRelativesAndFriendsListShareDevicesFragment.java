@@ -65,11 +65,11 @@ public class MineRelativesAndFriendsListShareDevicesFragment extends Fragment im
      * desc：初始化列表
      */
     private void initRecycleView() {
-        if (presenter.checkListEmpty(presenter.getDeviceData())){
+        if (presenter.checkListEmpty(presenter.getDeviceData())) {
             ivMinePersonalMailboxBindDisable.setImageDrawable(getResources().getDrawable(R.drawable.icon_finish_disable));
         }
         rcyShareDeviceList.setLayoutManager(new LinearLayoutManager(getContext()));
-        ChooseShareDeviceAdapter chooseShareDeviceAdapter =  new ChooseShareDeviceAdapter(presenter.getDeviceData());
+        ChooseShareDeviceAdapter chooseShareDeviceAdapter = new ChooseShareDeviceAdapter(presenter.getDeviceData());
         rcyShareDeviceList.setAdapter(chooseShareDeviceAdapter);
     }
 
@@ -85,7 +85,7 @@ public class MineRelativesAndFriendsListShareDevicesFragment extends Fragment im
                 getFragmentManager().popBackStack();
                 break;
             case R.id.iv_mine_friends_share_devices_ok:
-                ToastUtil.showToast(getContext(), "分享成功。。。");
+                ToastUtil.showToast("分享成功。。。");
                 break;
         }
     }

@@ -96,13 +96,13 @@ public class HomeSettingFragment extends Fragment implements HomeSettingContract
             case R.id.rl_home_setting_about:
                 if (getView() != null)
                     ViewUtils.deBounceClick(getView().findViewById(R.id.rl_home_setting_about));
-                    AppLogger.e("rl_home_setting_about");
-                    getFragmentManager().beginTransaction()
-                            .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
-                                    , R.anim.slide_in_left, R.anim.slide_out_right)
-                            .add(android.R.id.content, homeSettingAboutFragment, "homeSettingAboutFragment")
-                            .addToBackStack("mineHelpFragment")
-                            .commit();
+                AppLogger.e("rl_home_setting_about");
+                getFragmentManager().beginTransaction()
+                        .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
+                                , R.anim.slide_in_left, R.anim.slide_out_right)
+                        .add(android.R.id.content, homeSettingAboutFragment, "homeSettingAboutFragment")
+                        .addToBackStack("mineHelpFragment")
+                        .commit();
                 break;
 
             case R.id.rl_home_setting_clear:
@@ -152,12 +152,12 @@ public class HomeSettingFragment extends Fragment implements HomeSettingContract
     @Override
     public void clearFinish() {
         tvCacheSize.setText("0.0MB");
-        ToastUtil.showToast(getContext(), "清理成功");
+        ToastUtil.showToast("清理成功");
     }
 
     @Override
     public void clearNoCache() {
-        ToastUtil.showToast(getContext(), "暂无缓存");
+        ToastUtil.showToast("暂无缓存");
     }
 
     @Override

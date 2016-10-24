@@ -9,20 +9,30 @@ import android.widget.Toast;
 
 import com.cylan.jiafeigou.R;
 
+import java.lang.ref.SoftReference;
+
 public class ToastUtil {
 
+    private static SoftReference<TextView> toasterNormalView;
+    private static SoftReference<TextView> toasterPosView;
+    private static SoftReference<TextView> toasterNegView;
 
-    public static void showToast(Context cxt, String content) {
-        showToast(cxt, content, Gravity.CENTER, Toast.LENGTH_SHORT);
+    public static void showToast(String content) {
+        showToast(ContextUtils.getContext(), content, Gravity.CENTER, Toast.LENGTH_SHORT);
     }
 
-    public static void showToast(Context cxt, String content, int gravity) {
-        showToast(cxt, content, gravity, 2000);
+    public static void showToast(String content, int gravity) {
+        showToast(ContextUtils.getContext(), content, gravity, 2000);
     }
 
-    public static void showToast(Context cxt, String content, int gravity, int duration) {
+    private static void showToast(Context cxt, String content, int gravity, int duration) {
         try {
-            TextView tv = (TextView) View.inflate(cxt, R.layout.layout_toast_text, null);
+            TextView tv = toasterNormalView != null && toasterNormalView.get() != null ?
+                    toasterNormalView.get() :
+                    (TextView) View.inflate(cxt, R.layout.layout_toaster_normal, null);
+            if (toasterNormalView == null) {
+                toasterNormalView = new SoftReference<>(tv);
+            }
             final Toast toast = new Toast(cxt);
             toast.setGravity(gravity, 0, 0);
             toast.setDuration(duration);
@@ -34,37 +44,42 @@ public class ToastUtil {
         }
     }
 
-    public static void showSuccessToast(Context cxt, String content) {
+    public static void showPositiveToast(String content) {
         try {
-            TextView tv = (TextView) View.inflate(cxt, R.layout.layout_toast_text, null);
+            Context cxt = ContextUtils.getContext();
+            TextView tv = toasterPosView != null && toasterPosView.get() != null ?
+                    toasterPosView.get() :
+                    (TextView) View.inflate(cxt, R.layout.layout_toaster_positive, null);
+            if (toasterPosView == null) {
+                toasterPosView = new SoftReference<>(tv);
+            }
             final Toast toast = new Toast(cxt.getApplicationContext());
             toast.setView(tv);
             toast.setGravity(Gravity.CENTER, 0, 0);
             toast.setDuration(Toast.LENGTH_SHORT);
             tv.setText(content);
-//            tv.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_notify_result, 0, 0);
             toast.show();
         } catch (Exception e) {
         }
     }
 
-    public static void showFailToast(Context cxt, String content) {
+    public static void showNegativeToast(String content) {
         try {
-            TextView tv = (TextView) View.inflate(cxt, R.layout.layout_toast_text, null);
+            Context cxt = ContextUtils.getContext();
+            TextView tv = toasterNegView != null && toasterNegView.get() != null ?
+                    toasterNegView.get() :
+                    (TextView) View.inflate(cxt, R.layout.layout_toaster_positive, null);
+            if (toasterNegView == null) {
+                toasterNegView = new SoftReference<>(tv);
+            }
             final Toast toast = new Toast(cxt.getApplicationContext());
             toast.setView(tv);
             toast.setGravity(Gravity.CENTER, 0, 0);
             toast.setDuration(Toast.LENGTH_SHORT);
             tv.setText(content);
-//            tv.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_fail_notify_result, 0, 0);
             toast.show();
         } catch (Exception e) {
         }
-    }
-
-    //表示设置成功的时候，显示的吐司
-    public static void showSetSuccessToast(Context cxt, String content) {
-
     }
 
 }

@@ -63,7 +63,7 @@ public class MineBindPhoneFragment extends Fragment implements MinePersonalInfor
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.tv_get_checkNumber:
-                ToastUtil.showToast(getContext(), "获取验证码中。。。");
+                ToastUtil.showToast("获取验证码中。。。");
                 break;
 
             case R.id.iv_top_bar_left:

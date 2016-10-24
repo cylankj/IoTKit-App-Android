@@ -76,7 +76,7 @@ public class MineAddFromContactFragment extends Fragment implements MineAddFromC
 
     @Override
     public void showResultDialog() {
-        ToastUtil.showToast(getContext(), "发送请求成功");
+        ToastUtil.showToast("发送请求成功");
     }
 
     @Override

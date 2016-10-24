@@ -60,7 +60,7 @@ public class MineShareToRelativeAndFriendFragment extends Fragment implements Mi
 
             case R.id.tv_mine_share_to_relative_friend_true:
                 //TODO 确定分享
-                ToastUtil.showToast(getContext(), "分享成功");
+                ToastUtil.showToast("分享成功");
                 break;
         }
     }

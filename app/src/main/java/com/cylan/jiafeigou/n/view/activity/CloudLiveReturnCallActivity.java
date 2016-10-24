@@ -45,11 +45,11 @@ public class CloudLiveReturnCallActivity extends AppCompatActivity implements Cl
 
     public OnHangUpListener listener;
 
-    public interface OnHangUpListener{
+    public interface OnHangUpListener {
         void onHangup(String time);
     }
 
-    public void setOnHangupListener(OnHangUpListener listener){
+    public void setOnHangupListener(OnHangUpListener listener) {
         this.listener = listener;
     }
 
@@ -65,7 +65,7 @@ public class CloudLiveReturnCallActivity extends AppCompatActivity implements Cl
     @Override
     protected void onStart() {
         super.onStart();
-        if(presenter != null){
+        if (presenter != null) {
             presenter.start();
         }
     }
@@ -117,9 +117,9 @@ public class CloudLiveReturnCallActivity extends AppCompatActivity implements Cl
     @OnClick(R.id.iv_hang_up)
     public void onClick(View view) {
 
-        switch (view.getId()){
+        switch (view.getId()) {
             case R.id.iv_hang_up:
-                if(listener != null){
+                if (listener != null) {
                     listener.onHangup(tvVideoTime.getText().toString());
                 }
                 presenter.setVideoTalkFinishFlag(true);

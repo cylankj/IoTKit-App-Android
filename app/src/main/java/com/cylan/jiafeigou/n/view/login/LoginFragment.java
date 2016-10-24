@@ -30,6 +30,7 @@ import com.cylan.jiafeigou.NewHomeActivity;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.SmartcallActivity;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.RxEvent;
 import com.cylan.jiafeigou.n.mvp.contract.login.LoginModelContract;
 import com.cylan.jiafeigou.n.mvp.impl.ForgetPwdPresenterImpl;
@@ -38,12 +39,12 @@ import com.cylan.jiafeigou.n.mvp.model.LoginAccountBean;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.AnimatorUtils;
 import com.cylan.jiafeigou.utils.IMEUtils;
+import com.cylan.jiafeigou.utils.LocaleUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.LoginButton;
 import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
-import com.cylan.utils.RandomUtils;
 
 import java.lang.ref.WeakReference;
 
@@ -214,11 +215,14 @@ public class LoginFragment extends android.support.v4.app.Fragment
      * 是否显示邮箱注册。
      */
     private void decideRegisterWay() {
-        Bundle bundle = getArguments();
-        registerWay = bundle.getInt(JConstant.KEY_LOCALE);
-        if (registerWay == JConstant.LOCALE_CN) {
-            //中国大陆
+        int way = LocaleUtils.getLanguageType(getActivity());
+        if (way == JConstant.LOCALE_SIMPLE_CN) {
             tvRegisterWayContent.setVisibility(android.view.View.VISIBLE);
+            registerWay = JConstant.REGISTER_BY_PHONE;
+        }
+        registerWay = way == JConstant.LOCALE_SIMPLE_CN ? JConstant.REGISTER_BY_PHONE : JConstant.REGISTER_BY_EMAIL;
+        if (registerWay == JConstant.REGISTER_BY_PHONE) {
+            //中国大陆
             tvRegisterSubmit.setText(getString(R.string.item_get_verification_code));
         } else {
             //只显示邮箱注册
@@ -266,6 +270,7 @@ public class LoginFragment extends android.support.v4.app.Fragment
     private void initView() {
         if (getView() != null)
             getView().findViewById(R.id.tv_top_bar_right).setVisibility(View.VISIBLE);
+        ViewUtils.setChineseExclude(etLoginPwd, JConstant.PWD_LEN_MAX);
     }
 
     /**
@@ -427,7 +432,7 @@ public class LoginFragment extends android.support.v4.app.Fragment
             Bundle bundle = getArguments();
             final int containerId = bundle.getInt(JConstant.KEY_ACTIVITY_FRAGMENT_CONTAINER_ID);
             final String tempAccount = ViewUtils.getTextViewContent(etLoginUsername);
-            bundle.putInt(JConstant.KEY_LOCALE, RandomUtils.getRandom(2));
+            bundle.putInt(JConstant.KEY_LOCALE, LocaleUtils.getLanguageType(getActivity()));
             bundle.putString(KEY_TEMP_ACCOUNT, tempAccount);
             ForgetPwdFragment forgetPwdFragment = ForgetPwdFragment.newInstance(bundle);
             new ForgetPwdPresenterImpl(forgetPwdFragment);
@@ -459,6 +464,29 @@ public class LoginFragment extends android.support.v4.app.Fragment
             getActivity().finish();
         } else {
             resetView();
+            if (code == JError.ErrorAccountNotExist) {
+                //账号未注册
+                showSimpleDialog("账号未注册", " ", "确定", false);
+            } else if (code == JError.ErrorLoginInvalidPass) {
+                ToastUtil.showNegativeToast("账号或者密码错误");
+            }
+        }
+    }
+
+    /**
+     * 弹框，{fragment}
+     */
+    private void showSimpleDialog(String title, String lContent, String rContent, boolean dismiss) {
+        Fragment f = getActivity().getSupportFragmentManager().findFragmentByTag("dialogFragment");
+        if (f == null) {
+            Bundle bundle = new Bundle();
+            bundle.putString(SimpleDialogFragment.KEY_TITLE, title);
+            bundle.putString(SimpleDialogFragment.KEY_LEFT_CONTENT, lContent);
+            bundle.putString(SimpleDialogFragment.KEY_RIGHT_CONTENT, rContent);
+            bundle.putBoolean(SimpleDialogFragment.KEY_TOUCH_OUT_SIDE_DISMISS, dismiss);
+            SimpleDialogFragment dialogFragment = SimpleDialogFragment.newInstance(bundle);
+            dialogFragment.setAction(this);
+            dialogFragment.show(getActivity().getSupportFragmentManager(), "dialogFragment");
         }
     }
 
@@ -483,32 +511,20 @@ public class LoginFragment extends android.support.v4.app.Fragment
     @Override
     public void onQQAuthorizeResult(int ret) {
         //授权成功后，直接登录，不需要回调过来
-        ToastUtil.showToast(getContext(), "授权" + (ret == 2 ? "失败" : "取消"));
+        ToastUtil.showToast("授权" + (ret == 2 ? "失败" : "取消"));
     }
 
     @Override
     public void onSinaAuthorizeResult(int ret) {
         //授权成功后，直接登录，不需要回调过来
-        ToastUtil.showToast(getContext(), "授权" + (ret == 2 ? "失败" : "取消"));
+        ToastUtil.showToast("授权" + (ret == 2 ? "失败" : "取消"));
     }
 
     @Override
     public void registerResult(int result) {
-        if (result == 183) {
-            Fragment f = getActivity().getSupportFragmentManager().findFragmentByTag("dialogFragment");
-            if (f != null && f.isVisible()) {
-                AppLogger.i("fragment is added");
-                return;
-            }
-            Bundle bundle = new Bundle();
-            bundle.putString(SimpleDialogFragment.KEY_TITLE, "账号已经存在，请直接登陆");
-            bundle.putString(SimpleDialogFragment.KEY_LEFT_CONTENT, "取消");
-            bundle.putString(SimpleDialogFragment.KEY_RIGHT_CONTENT, "去登陆");
-            bundle.putBoolean(SimpleDialogFragment.KEY_TOUCH_OUT_SIDE_DISMISS, false);
-            SimpleDialogFragment dialogFragment = SimpleDialogFragment.newInstance(bundle);
-            dialogFragment.setAction(this);
-            dialogFragment.show(getActivity().getSupportFragmentManager(), "dialogFragment");
-        } else if (result == 0) {
+        if (result == JError.ErrorAccountAlreadyExist) {
+            showSimpleDialog("账号已经存在，请直接登陆", "取消", "去登陆", false);
+        } else if (result == JError.ErrorOK) {
             Toast.makeText(getActivity(), "注册成功", Toast.LENGTH_SHORT).show();
         }
     }
@@ -728,7 +744,6 @@ public class LoginFragment extends android.support.v4.app.Fragment
             ((SimpleDialogFragment) f).dismiss();
         }
         if (id == SimpleDialogFragment.ACTION_RIGHT) {
-            Toast.makeText(getContext(), "去登录", Toast.LENGTH_SHORT).show();
             etLoginPwd.setText("");
             final boolean validPhoneNum = JConstant.PHONE_REG.matcher(etRegisterInputBox.getText()).find();
             switchBox();

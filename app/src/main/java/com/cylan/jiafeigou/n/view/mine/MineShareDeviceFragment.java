@@ -92,8 +92,8 @@ public class MineShareDeviceFragment extends Fragment implements MineShareDevice
             case R.id.rl_mine_share_smartcamera:
                 if (getView() != null)
                     ViewUtils.deBounceClick(getView().findViewById(R.id.rl_mine_share_smartcamera));
-                    AppLogger.e("mine_share_smartcamera");
-                    getFragmentManager().beginTransaction()
+                AppLogger.e("mine_share_smartcamera");
+                getFragmentManager().beginTransaction()
                         .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                                 , R.anim.slide_in_left, R.anim.slide_out_right)
                         .add(android.R.id.content, mineDevicesShareManagerFragment, "mineDevicesShareManagerFragment")
@@ -116,14 +116,14 @@ public class MineShareDeviceFragment extends Fragment implements MineShareDevice
             public void onClick(View v) {
                 if (getView() != null)
                     ViewUtils.deBounceClick(getView().findViewById(R.id.tv_share_to_friends));
-                    AppLogger.e("tv_share_to_friends");
-                    getFragmentManager().beginTransaction()
-                            .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
-                                    , R.anim.slide_in_left, R.anim.slide_out_right)
-                            .add(android.R.id.content, shareToRelativeAndFriendFragment, "shareToRelativeAndFriendFragment")
-                            .addToBackStack("mineShareDeviceFragment")
-                            .commit();
-                    alertDialog.dismiss();
+                AppLogger.e("tv_share_to_friends");
+                getFragmentManager().beginTransaction()
+                        .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
+                                , R.anim.slide_in_left, R.anim.slide_out_right)
+                        .add(android.R.id.content, shareToRelativeAndFriendFragment, "shareToRelativeAndFriendFragment")
+                        .addToBackStack("mineShareDeviceFragment")
+                        .commit();
+                alertDialog.dismiss();
             }
         });
         view.findViewById(R.id.tv_share_to_contract).setOnClickListener(new View.OnClickListener() {
@@ -131,14 +131,14 @@ public class MineShareDeviceFragment extends Fragment implements MineShareDevice
             public void onClick(View v) {
                 if (getView() != null)
                     ViewUtils.deBounceClick(getView().findViewById(R.id.tv_share_to_contract));
-                    AppLogger.e("tv_share_to_contract");
-                    getFragmentManager().beginTransaction()
-                            .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
-                                    , R.anim.slide_in_left, R.anim.slide_out_right)
-                            .add(android.R.id.content, mineShareToContactFragment, "mineShareToContactFragment")
-                            .addToBackStack("mineShareDeviceFragment")
-                            .commit();
-                    alertDialog.dismiss();
+                AppLogger.e("tv_share_to_contract");
+                getFragmentManager().beginTransaction()
+                        .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
+                                , R.anim.slide_in_left, R.anim.slide_out_right)
+                        .add(android.R.id.content, mineShareToContactFragment, "mineShareToContactFragment")
+                        .addToBackStack("mineShareDeviceFragment")
+                        .commit();
+                alertDialog.dismiss();
             }
         });
         builder.setView(view);

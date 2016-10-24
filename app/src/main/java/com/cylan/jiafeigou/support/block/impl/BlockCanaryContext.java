@@ -3,7 +3,6 @@ package com.cylan.jiafeigou.support.block.impl;
 import android.content.Context;
 
 import com.cylan.jiafeigou.BuildConfig;
-import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.support.block.IBlockCanaryContext;
 import com.cylan.utils.NetUtils;
 

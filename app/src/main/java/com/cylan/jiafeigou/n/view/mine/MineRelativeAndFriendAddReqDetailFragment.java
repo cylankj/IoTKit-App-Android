@@ -6,7 +6,6 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -50,7 +49,7 @@ public class MineRelativeAndFriendAddReqDetailFragment extends Fragment implemen
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Bundle bundle = new Bundle();
-        bundle.putString("imageUrl","");
+        bundle.putString("imageUrl", "");
         lookBigImageFragment = MineLookBigImageFragment.newInstance(bundle);
     }
 
@@ -68,7 +67,7 @@ public class MineRelativeAndFriendAddReqDetailFragment extends Fragment implemen
      */
     private void initMegHight() {
         int lineCount = tvAddRequestMesg.getLineCount();
-        if (lineCount == 2){
+        if (lineCount == 2) {
             ViewGroup.LayoutParams layoutParams = tvAddRequestMesg.getLayoutParams();
             layoutParams.height = ViewUtils.dp2px(72);
             tvAddRequestMesg.setLayoutParams(layoutParams);
@@ -89,11 +88,11 @@ public class MineRelativeAndFriendAddReqDetailFragment extends Fragment implemen
             case R.id.iv_detail_user_head:                      //查看大头像
                 if (getView() != null)
                     ViewUtils.deBounceClick(getView().findViewById(R.id.iv_detail_user_head));
-                    AppLogger.e("iv_detail_user_head");
-                    jump2LookBigImage();
+                AppLogger.e("iv_detail_user_head");
+                jump2LookBigImage();
                 break;
             case R.id.tv_add_as_relative_and_friend:            //添加为亲友
-                ToastUtil.showToast(getContext(),"添加成功");
+                ToastUtil.showToast("添加成功");
                 break;
         }
     }

@@ -37,8 +37,8 @@ public class CloudLiveVoiceTalkView extends View {
     }
 
     private void initHeigt() {
-        longLineLen = dip2px(context,26);
-        shortLineLen = dip2px(context,14);
+        longLineLen = dip2px(context, 26);
+        shortLineLen = dip2px(context, 14);
     }
 
     Paint paint = new Paint();
@@ -46,7 +46,7 @@ public class CloudLiveVoiceTalkView extends View {
     private void init(Context context) {
         paint.setColor(Color.GREEN);
         paint.setStyle(Paint.Style.STROKE);
-        paint.setStrokeWidth(dip2px(context,3));
+        paint.setStrokeWidth(dip2px(context, 3));
         paint.setStrokeCap(Paint.Cap.ROUND);
     }
 
@@ -71,15 +71,15 @@ public class CloudLiveVoiceTalkView extends View {
     }
 
     private void setRect_t(int value1, int value2) {
-        longLineLen = dip2px(context,value1);
-        shortLineLen = dip2px(context,value2);
+        longLineLen = dip2px(context, value1);
+        shortLineLen = dip2px(context, value2);
     }
 
     public void reFreshUpView(int longValue, int shortValue) {
         setRect_t(longValue, shortValue);
-        if(status == true){
+        if (status == true) {
             CloudLiveVoiceTalkView.this.invalidate();
-        }else {
+        } else {
 
         }
     }
@@ -93,9 +93,9 @@ public class CloudLiveVoiceTalkView extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         for (int i = 0; i < 7; i++) {
-            float startY = i%2!=0?getHeight()/2-longLineLen/2:getHeight()/2-shortLineLen/2;
-            float endY = i%2!=0?getHeight()/2+longLineLen/2:getHeight()/2+shortLineLen/2;
-            canvas.drawLine((18*i)+getWidth()/4,startY, (18*i)+getWidth()/4,endY, paint);
+            float startY = i % 2 != 0 ? getHeight() / 2 - longLineLen / 2 : getHeight() / 2 - shortLineLen / 2;
+            float endY = i % 2 != 0 ? getHeight() / 2 + longLineLen / 2 : getHeight() / 2 + shortLineLen / 2;
+            canvas.drawLine((18 * i) + getWidth() / 4, startY, (18 * i) + getWidth() / 4, endY, paint);
         }
     }
 

@@ -82,11 +82,11 @@ public class MinePersionlInfoSetPassWordFragment extends Fragment implements Min
             @Override
             public void afterTextChanged(Editable s) {
                 boolean isEmpty = TextUtils.isEmpty(s);
-                if(isEmpty || TextUtils.isEmpty(getNewPassword())){
+                if (isEmpty || TextUtils.isEmpty(getNewPassword())) {
                     ivMinePersonalSetpasswordBind.setImageDrawable(getResources().getDrawable(R.drawable.icon_finish_disable));
                     ivMinePersonalSetpasswordBind.setEnabled(false);
                     ivMinePersonalSetpasswordBind.setClickable(false);
-                }else {
+                } else {
                     ivMinePersonalSetpasswordBind.setImageDrawable(getResources().getDrawable(R.drawable.icon_finish));
                     ivMinePersonalSetpasswordBind.setEnabled(true);
                     ivMinePersonalSetpasswordBind.setClickable(true);
@@ -111,11 +111,11 @@ public class MinePersionlInfoSetPassWordFragment extends Fragment implements Min
             @Override
             public void afterTextChanged(Editable s) {
                 boolean isEmpty = TextUtils.isEmpty(s);
-                if(isEmpty || TextUtils.isEmpty(getOldPassword())){
+                if (isEmpty || TextUtils.isEmpty(getOldPassword())) {
                     ivMinePersonalSetpasswordBind.setImageDrawable(getResources().getDrawable(R.drawable.icon_finish_disable));
                     ivMinePersonalSetpasswordBind.setClickable(false);
                     ivMinePersonalSetpasswordBind.setEnabled(false);
-                }else {
+                } else {
                     ivMinePersonalSetpasswordBind.setImageDrawable(getResources().getDrawable(R.drawable.icon_finish));
                     ivMinePersonalSetpasswordBind.setClickable(true);
                     ivMinePersonalSetpasswordBind.setEnabled(true);
@@ -130,9 +130,9 @@ public class MinePersionlInfoSetPassWordFragment extends Fragment implements Min
     @Override
     public void onResume() {
         super.onResume();
-        if(TextUtils.isEmpty(getNewPassword()) || TextUtils.isEmpty(getOldPassword())){
+        if (TextUtils.isEmpty(getNewPassword()) || TextUtils.isEmpty(getOldPassword())) {
             ivMinePersonalSetpasswordBind.setImageDrawable(getResources().getDrawable(R.drawable.icon_finish_disable));
-        }else {
+        } else {
             ivMinePersonalSetpasswordBind.setImageDrawable(getResources().getDrawable(R.drawable.icon_finish));
         }
     }
@@ -143,7 +143,7 @@ public class MinePersionlInfoSetPassWordFragment extends Fragment implements Min
     }
 
     @OnClick({R.id.iv_mine_personal_setpassword_back, R.id.iv_mine_personal_information_old_password_clear,
-            R.id.iv_mine_personal_information_new_password_clear,R.id.iv_mine_personal_setpassword_bind})
+            R.id.iv_mine_personal_information_new_password_clear, R.id.iv_mine_personal_setpassword_bind})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.iv_mine_personal_setpassword_back:
@@ -168,22 +168,22 @@ public class MinePersionlInfoSetPassWordFragment extends Fragment implements Min
      * desc：保存新密码
      */
     private void saveNewPassword() {
-        if(!presenter.checkOldPassword(getOldPassword())){
-            ToastUtil.showToast(getContext(),"原密码错误");
+        if (!presenter.checkOldPassword(getOldPassword())) {
+            ToastUtil.showToast("原密码错误");
             return;
         }
 
-        if(presenter.checkNewPassword(getOldPassword(),getNewPassword())){
-            ToastUtil.showToast(getContext(),"新密码与原密码相同");
+        if (presenter.checkNewPassword(getOldPassword(), getNewPassword())) {
+            ToastUtil.showToast("新密码与原密码相同");
             return;
         }
 
-        if(presenter.checkNewPasswordLength(getNewPassword())){
-            ToastUtil.showToast(getContext(),"请输入6~12位密码");
+        if (presenter.checkNewPasswordLength(getNewPassword())) {
+            ToastUtil.showToast("请输入6~12位密码");
             return;
         }
 
-        ToastUtil.showToast(getContext(),"修改成功");
+        ToastUtil.showToast("修改成功");
         getFragmentManager().popBackStack();
     }
 

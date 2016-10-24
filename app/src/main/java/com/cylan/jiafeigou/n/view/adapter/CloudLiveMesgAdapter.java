@@ -21,7 +21,7 @@ import java.util.List;
 public class CloudLiveMesgAdapter extends RecyclerView.Adapter<CloudLiveMesgAdapter.MesgHolder> {
 
     private static final int VOICE_TYPE = 0;
-    private static final int VIDEO_TALK_TYPE= 1;
+    private static final int VIDEO_TALK_TYPE = 1;
     private static final int SHARE_PIC_TYPE = 2;
 
     private List<CloudLiveMesgBean> mData;
@@ -33,36 +33,36 @@ public class CloudLiveMesgAdapter extends RecyclerView.Adapter<CloudLiveMesgAdap
     @Override
     public MesgHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = null;
-        switch (viewType){
+        switch (viewType) {
             case VOICE_TYPE:
-                view = View.inflate(parent.getContext(), R.layout.activity_cloud_live_mesg_voice_item,null);
+                view = View.inflate(parent.getContext(), R.layout.activity_cloud_live_mesg_voice_item, null);
                 break;
 
             case VIDEO_TALK_TYPE:
-                view = View.inflate(parent.getContext(), R.layout.activity_cloud_live_mesg_video_talk_item,null);
+                view = View.inflate(parent.getContext(), R.layout.activity_cloud_live_mesg_video_talk_item, null);
                 break;
 
             case SHARE_PIC_TYPE:
-                view = View.inflate(parent.getContext(), R.layout.activity_cloud_live_mesg_voice_item,null);
+                view = View.inflate(parent.getContext(), R.layout.activity_cloud_live_mesg_voice_item, null);
                 break;
         }
-        return new MesgHolder(view,viewType);
+        return new MesgHolder(view, viewType);
     }
 
     @Override
     public void onBindViewHolder(MesgHolder holder, int position) {
-        LinearLayout.LayoutParams item = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT);
-        if(position != 0){
-            item.setMargins(0, ViewUtils.dp2px(30),0,0);
+        LinearLayout.LayoutParams item = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        if (position != 0) {
+            item.setMargins(0, ViewUtils.dp2px(30), 0, 0);
             holder.itemView.setLayoutParams(item);
-        }else {
-            item.setMargins(0,ViewUtils.dp2px(11),0,0);
+        } else {
+            item.setMargins(0, ViewUtils.dp2px(11), 0, 0);
             holder.itemView.setLayoutParams(item);
         }
 
         CloudLiveMesgBean cloudLiveMesgBean = mData.get(position);
 
-        switch (cloudLiveMesgBean.itemType){
+        switch (cloudLiveMesgBean.itemType) {
             case VOICE_TYPE:
                 holder.tv_voice_length.setText(cloudLiveMesgBean.voiceLength);
                 break;
@@ -75,22 +75,22 @@ public class CloudLiveMesgAdapter extends RecyclerView.Adapter<CloudLiveMesgAdap
 
     @Override
     public int getItemCount() {
-        if (mData != null){
+        if (mData != null) {
             return mData.size();
-        }else {
+        } else {
             return 0;
         }
     }
 
-    class MesgHolder extends RecyclerView.ViewHolder{
+    class MesgHolder extends RecyclerView.ViewHolder {
 
-        private TextView tv_voice_length ;
-        private ImageView iv_user_icon ;
+        private TextView tv_voice_length;
+        private ImageView iv_user_icon;
         private TextView tv_video_talk_length;
 
-        public MesgHolder(View itemView,int viewType) {
+        public MesgHolder(View itemView, int viewType) {
             super(itemView);
-            switch (viewType){
+            switch (viewType) {
                 case VOICE_TYPE:
                     tv_voice_length = (TextView) itemView.findViewById(R.id.tv_voice_length);
                     iv_user_icon = (ImageView) itemView.findViewById(R.id.iv_user_icon);
