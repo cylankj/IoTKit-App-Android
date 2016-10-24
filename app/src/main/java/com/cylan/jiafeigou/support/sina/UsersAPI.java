@@ -16,6 +16,7 @@
 
 package com.cylan.jiafeigou.support.sina;
 
+import android.content.Context;
 import android.util.SparseArray;
 
 import com.sina.weibo.sdk.auth.Oauth2AccessToken;
@@ -39,14 +40,17 @@ public class UsersAPI extends AbsOpenAPI {
 
     private static final SparseArray<String> sAPIList = new SparseArray<String>();
 
+    private Context context;
+
     static {
         sAPIList.put(READ_USER, API_BASE_URL + "/show.json");
         sAPIList.put(READ_USER_BY_DOMAIN, API_BASE_URL + "/domain_show.json");
         sAPIList.put(READ_USER_COUNT, API_BASE_URL + "/counts.json");
     }
 
-    public UsersAPI(Oauth2AccessToken accessToken) {
+    public UsersAPI(Oauth2AccessToken accessToken, Context context) {
         super(accessToken);
+        this.context = context;
     }
 
     /**
@@ -56,9 +60,9 @@ public class UsersAPI extends AbsOpenAPI {
      * @param listener 异步请求回调接口
      */
     public void show(long uid, RequestListener listener) {
-        WeiboParameters params = new WeiboParameters();
+        WeiboParameters params = SinaLogin.getWeiboParameters();
         params.put("uid", uid);
-        requestAsync(sAPIList.get(READ_USER), params, HTTPMETHOD_GET, listener);
+        requestAsync(context, sAPIList.get(READ_USER), params, HTTPMETHOD_GET, listener);
     }
 
     /**
@@ -68,9 +72,9 @@ public class UsersAPI extends AbsOpenAPI {
      * @param listener    异步请求回调接口
      */
     public void show(String screen_name, RequestListener listener) {
-        WeiboParameters params = new WeiboParameters();
+        WeiboParameters params = SinaLogin.getWeiboParameters();
         params.put("screen_name", screen_name);
-        requestAsync(sAPIList.get(READ_USER), params, HTTPMETHOD_GET, listener);
+        requestAsync(context, sAPIList.get(READ_USER), params, HTTPMETHOD_GET, listener);
     }
 
     /**
@@ -80,9 +84,9 @@ public class UsersAPI extends AbsOpenAPI {
      * @param listener 异步请求回调接口
      */
     public void domainShow(String domain, RequestListener listener) {
-        WeiboParameters params = new WeiboParameters();
+        WeiboParameters params = SinaLogin.getWeiboParameters();
         params.put("domain", domain);
-        requestAsync(sAPIList.get(READ_USER_BY_DOMAIN), params, HTTPMETHOD_GET, listener);
+        requestAsync(context, sAPIList.get(READ_USER_BY_DOMAIN), params, HTTPMETHOD_GET, listener);
     }
 
     /**
@@ -93,7 +97,7 @@ public class UsersAPI extends AbsOpenAPI {
      */
     public void counts(long[] uids, RequestListener listener) {
         WeiboParameters params = buildCountsParams(uids);
-        requestAsync(sAPIList.get(READ_USER_COUNT), params, HTTPMETHOD_GET, listener);
+        requestAsync(context, sAPIList.get(READ_USER_COUNT), params, HTTPMETHOD_GET, listener);
     }
 
     /**
@@ -106,27 +110,27 @@ public class UsersAPI extends AbsOpenAPI {
      * @see #show(long, RequestListener)
      */
     public String showSync(long uid) {
-        WeiboParameters params = new WeiboParameters();
+        WeiboParameters params = SinaLogin.getWeiboParameters();
         params.put("uid", uid);
-        return requestSync(sAPIList.get(READ_USER), params, HTTPMETHOD_GET);
+        return requestSync(context, sAPIList.get(READ_USER), params, HTTPMETHOD_GET);
     }
 
     /**
      * @see #show(String, RequestListener)
      */
     public String showSync(String screen_name) {
-        WeiboParameters params = new WeiboParameters();
+        WeiboParameters params = SinaLogin.getWeiboParameters();
         params.put("screen_name", screen_name);
-        return requestSync(sAPIList.get(READ_USER), params, HTTPMETHOD_GET);
+        return requestSync(context, sAPIList.get(READ_USER), params, HTTPMETHOD_GET);
     }
 
     /**
      * @see #domainShow(String, RequestListener)
      */
     public String domainShowSync(String domain) {
-        WeiboParameters params = new WeiboParameters();
+        WeiboParameters params = SinaLogin.getWeiboParameters();
         params.put("domain", domain);
-        return requestSync(sAPIList.get(READ_USER_BY_DOMAIN), params, HTTPMETHOD_GET);
+        return requestSync(context, sAPIList.get(READ_USER_BY_DOMAIN), params, HTTPMETHOD_GET);
     }
 
     /**
@@ -134,11 +138,11 @@ public class UsersAPI extends AbsOpenAPI {
      */
     public String countsSync(long[] uids) {
         WeiboParameters params = buildCountsParams(uids);
-        return requestSync(sAPIList.get(READ_USER_COUNT), params, HTTPMETHOD_GET);
+        return requestSync(context, sAPIList.get(READ_USER_COUNT), params, HTTPMETHOD_GET);
     }
 
     private WeiboParameters buildCountsParams(long[] uids) {
-        WeiboParameters params = new WeiboParameters();
+        WeiboParameters params = SinaLogin.getWeiboParameters();
         StringBuilder strb = new StringBuilder();
         for (long cid : uids) {
             strb.append(cid).append(",");

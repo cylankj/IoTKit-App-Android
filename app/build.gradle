@@ -72,9 +72,10 @@ android {
         applicationId "com.cylan.jiafeigou"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        manifestPlaceholders = [NICELY_VALUE: "yun.jfgou.com:443",
-                                MAT_VALUE   : getMtaAppKey("yun"),
-                                AUTHORITY   : "com.cylan.jiafeigou"]
+        manifestPlaceholders = [NICELY_VALUE       : "yun.jfgou.com:443",
+                                MAT_VALUE          : getMtaAppKey("yun"),
+                                AUTHORITY          : "com.cylan.jiafeigou",
+                                NICELY_SINA_APP_KEY: ""]
         customVersionCode
         versionName "1.0"
         multiDexEnabled true
@@ -195,41 +196,47 @@ android {
     productFlavors {
         _test {
             applicationIdSuffix ".test"
-            manifestPlaceholders = [NICELY_VALUE: "test.jfgou.com:443",
-                                    MAT_VALUE   : getMtaAppKey("test"),
-                                    AUTHORITY   : ".test"]
+            manifestPlaceholders = [NICELY_VALUE       : "test.jfgou.com:443",
+                                    MAT_VALUE          : getMtaAppKey("test"),
+                                    AUTHORITY          : ".test",
+                                    NICELY_SINA_APP_KEY: ""]
         }
         _test1 {
             applicationIdSuffix ".test1"
-            manifestPlaceholders = [NICELY_VALUE: "test1.jfgou.com:443",
-                                    MAT_VALUE   : getMtaAppKey("test1"),
-                                    AUTHORITY   : ".test1"]
+            manifestPlaceholders = [NICELY_VALUE       : "test1.jfgou.com:443",
+                                    MAT_VALUE          : getMtaAppKey("test1"),
+                                    AUTHORITY          : ".test1",
+                                    NICELY_SINA_APP_KEY: ""]
         }
 
         _yun {
             //官方运营
-            manifestPlaceholders = [NICELY_VALUE: "yun.jfgou.com:443",
-                                    MAT_VALUE   : getMtaAppKey("yun"),
-                                    AUTHORITY   : ""]
+            manifestPlaceholders = [NICELY_VALUE       : "yun.jfgou.com:443",
+                                    MAT_VALUE          : getMtaAppKey("yun"),
+                                    AUTHORITY          : "",
+                                    NICELY_SINA_APP_KEY: ""]
         }
         _yun1 {
             applicationIdSuffix ".yun1"
-            manifestPlaceholders = [NICELY_VALUE: "yun1.jfgou.com:443",
-                                    MAT_VALUE   : getMtaAppKey("yun1"),
-                                    AUTHORITY   : ".yun1"]
+            manifestPlaceholders = [NICELY_VALUE       : "yun1.jfgou.com:443",
+                                    MAT_VALUE          : getMtaAppKey("yun1"),
+                                    AUTHORITY          : ".yun1",
+                                    NICELY_SINA_APP_KEY: ""]
         }
         _yf {
             applicationIdSuffix ".yf"
-            manifestPlaceholders = [NICELY_VALUE: "yf.jfgou.com:443",
-                                    MAT_VALUE   : getMtaAppKey("yf"),
-                                    AUTHORITY   : ".yf"]
+            manifestPlaceholders = [NICELY_VALUE       : "yf.jfgou.com:443",
+                                    MAT_VALUE          : getMtaAppKey("yf"),
+                                    AUTHORITY          : ".yf",
+                                    NICELY_SINA_APP_KEY: ""]
         }
         //中性包
         _zhongxing {
             applicationIdSuffix ".zhongxing"
-            manifestPlaceholders = [NICELY_VALUE: "yun.jfgou.com:443",
-                                    MAT_VALUE   : getMtaAppKey("zhongxing"),
-                                    AUTHORITY   : ".zhongxing"]
+            manifestPlaceholders = [NICELY_VALUE       : "yun.jfgou.com:443",
+                                    MAT_VALUE          : getMtaAppKey("zhongxing"),
+                                    AUTHORITY          : ".zhongxing",
+                                    NICELY_SINA_APP_KEY: ""]
         }
     }
 }
@@ -279,7 +286,7 @@ dependencies {
     compile files('libs/okhttp-3.2.0.jar')
     compile files('libs/okio-1.6.0.jar')
     compile files('libs/open_sdk_r5509_lite.jar')
-    compile files('libs/weibosdkcore.jar')
+    compile files('libs/weiboSDKCore_3.1.4.jar')
     compile files('libs/zxing.jar')
     debugCompile files('src/main/jniLibs/jfg-debug-support.jar')
     releaseCompile files('src/main/jniLibs/jfg-release-support.jar')

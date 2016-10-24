@@ -86,6 +86,9 @@
         <meta-data
             android:name="vkey"
             android:value="mqDHVBKutUcKvMMwDjYjvNv1Wy8Ll4HC" />
+        <meta-data
+            android:name="sina_app_key"
+            android:value="${NICELY_SINA_APP_KEY}" />
 
         <activity
             android:name=".SmartcallActivity"
@@ -240,10 +243,15 @@
             android:enabled="true"
             android:exported="true"
             android:process=":cloudlive" />
+
         <activity
             android:name=".n.view.activity.CloudLiveReturnCallActivity"
-            android:process=".cloudlive"
-             />
+            android:process=".cloudlive" />
+        <activity
+            android:name="com.sina.weibo.sdk.component.WeiboSdkBrowser"
+            android:configChanges="keyboardHidden|orientation"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
     </application>
 
 </manifest>

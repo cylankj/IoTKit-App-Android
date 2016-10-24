@@ -279,6 +279,8 @@ public class LoginFragment extends android.support.v4.app.Fragment
         if (getView() != null)
             getView().findViewById(R.id.tv_top_bar_right).setVisibility(View.VISIBLE);
         ViewUtils.setChineseExclude(etLoginPwd, JConstant.PWD_LEN_MAX);
+        //大陆用户显示 第三方登陆
+        rLayoutLoginThirdParty.setVisibility(LocaleUtils.getLanguageType(getActivity()) == JConstant.LOCALE_SIMPLE_CN ? View.VISIBLE : View.GONE);
     }
 
     /**

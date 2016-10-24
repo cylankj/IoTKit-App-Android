@@ -14,7 +14,7 @@ import com.cylan.jiafeigou.n.mvp.model.LoginAccountBean;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.rxbus.RxBus;
 import com.cylan.jiafeigou.support.sina.AccessTokenKeeper;
-import com.cylan.jiafeigou.support.sina.SinaWeiboUtil;
+import com.cylan.jiafeigou.support.sina.SinaLogin;
 import com.cylan.jiafeigou.support.sina.UsersAPI;
 import com.cylan.jiafeigou.support.tencent.TencentLoginUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
@@ -36,7 +36,6 @@ import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
-;
 
 /**
  * Created by lxh on 16-6-24.
@@ -128,7 +127,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginModelContract.Vie
 
     @Override
     public void getSinaAuthorize(Activity activity) {
-        SinaWeiboUtil sinaUtil = new SinaWeiboUtil(activity);
+        SinaLogin sinaUtil = new SinaLogin(activity);
         sinaUtil.login(activity, new SinaAuthorizeListener());
     }
 
@@ -221,7 +220,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginModelContract.Vie
             if (accessToken != null && accessToken.isSessionValid()) {
                 AccessTokenKeeper.writeAccessToken(ctx, accessToken);
                 Oauth2AccessToken mAccessToken = AccessTokenKeeper.readAccessToken(ctx);
-                UsersAPI mUsersAPI = new UsersAPI(mAccessToken);
+                UsersAPI mUsersAPI = new UsersAPI(mAccessToken, getView().getContext());
                 long uid = Long.parseLong(mAccessToken.getUid());
                 mUsersAPI.show(uid, sinaRequestListener);
 

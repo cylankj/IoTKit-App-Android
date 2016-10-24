@@ -855,4 +855,14 @@ public class PackageUtils {
      * uninstall fail if permission denied
      */
     public static final int DELETE_FAILED_PERMISSION_DENIED = -4;
+
+    public static String getMetaString(Context context, final String key) {
+        try {
+            ApplicationInfo applicationInfo = context
+                    .getPackageManager().getApplicationInfo(context.getPackageName(), PackageManager.GET_META_DATA);
+            return applicationInfo.metaData.getString(key);
+        } catch (PackageManager.NameNotFoundException e1) {
+            return "";
+        }
+    }
 }
