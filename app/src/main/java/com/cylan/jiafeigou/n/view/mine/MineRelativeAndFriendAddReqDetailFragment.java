@@ -10,11 +10,15 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineRelativeAndFriendAddReqDetailContract;
+import com.cylan.jiafeigou.n.mvp.model.SuggestionChatInfoBean;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
+
+import java.io.Serializable;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -42,8 +46,10 @@ public class MineRelativeAndFriendAddReqDetailFragment extends Fragment implemen
 
     private MineLookBigImageFragment lookBigImageFragment;
 
-    public static MineRelativeAndFriendAddReqDetailFragment newInstance() {
-        return new MineRelativeAndFriendAddReqDetailFragment();
+    public static MineRelativeAndFriendAddReqDetailFragment newInstance(Bundle bundle) {
+        MineRelativeAndFriendAddReqDetailFragment fragment = new MineRelativeAndFriendAddReqDetailFragment();
+        fragment.setArguments(bundle);
+        return fragment;
     }
 
     @Override
@@ -60,7 +66,19 @@ public class MineRelativeAndFriendAddReqDetailFragment extends Fragment implemen
         View view = inflater.inflate(R.layout.fragment_relative_and_friend_add_req_detail, container, false);
         ButterKnife.bind(this, view);
         initMegHight();
+        initData();
         return view;
+    }
+
+    /**
+     * desc：获取传递过来的数据
+     */
+    private void initData() {
+        Bundle arguments = getArguments();
+        SuggestionChatInfoBean addRequestItems = (SuggestionChatInfoBean) arguments.getSerializable("addRequestItems");
+        tvRelativeAndFriendName.setText(addRequestItems.getName());
+        tvAddRequestMesg.setText(addRequestItems.getContent());
+        Glide.with(getContext()).load(addRequestItems.getIcon()).error(R.drawable.icon_mine_head_normal).into(ivDetailUserHead);
     }
 
     /**
@@ -109,6 +127,4 @@ public class MineRelativeAndFriendAddReqDetailFragment extends Fragment implemen
                 .addToBackStack("mineHelpFragment")
                 .commit();
     }
-
-
 }

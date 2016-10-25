@@ -1,7 +1,11 @@
 package com.cylan.jiafeigou.n.mvp.impl.mine;
 
+import android.os.Bundle;
+
+import com.bumptech.glide.Glide;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineRelativeAndFriendDetailContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
+import com.cylan.jiafeigou.n.mvp.model.SuggestionChatInfoBean;
 
 /**
  * 作者：zsl

@@ -1,6 +1,7 @@
 package com.cylan.jiafeigou.n.view.mine;
 
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
@@ -12,6 +13,8 @@ import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineDevicesShareManagerContract;
+import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
+import com.sina.weibo.sdk.utils.LogUtil;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -31,8 +34,10 @@ public class MineDevicesShareManagerFragment extends Fragment implements MineDev
     @BindView(R.id.recycler_had_share_relatives_and_friend)
     RecyclerView recyclerHadShareRelativesAndFriend;
 
-    public static MineDevicesShareManagerFragment newInstance() {
-        return new MineDevicesShareManagerFragment();
+    public static MineDevicesShareManagerFragment newInstance(Bundle bundle) {
+        MineDevicesShareManagerFragment fragment = new MineDevicesShareManagerFragment();
+        fragment.setArguments(bundle);
+        return fragment;
     }
 
     @Nullable
@@ -40,6 +45,7 @@ public class MineDevicesShareManagerFragment extends Fragment implements MineDev
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_mine_device_share_manager, container, false);
         ButterKnife.bind(this, view);
+        getIntentData();
         return view;
     }
 
@@ -54,5 +60,11 @@ public class MineDevicesShareManagerFragment extends Fragment implements MineDev
                 getFragmentManager().popBackStack();
                 break;
         }
+    }
+
+    public void getIntentData() {
+        Bundle arguments = getArguments();
+        DeviceBean shareDeviceItem = arguments.getParcelable("shareDeviceItem");
+        LogUtil.d("kskkskskksk",shareDeviceItem.alias);
     }
 }
