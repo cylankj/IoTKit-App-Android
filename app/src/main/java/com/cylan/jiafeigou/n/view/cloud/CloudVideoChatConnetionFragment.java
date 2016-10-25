@@ -11,9 +11,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.n.mvp.contract.cloud.CloudVideoChatConettionContract;
+import com.cylan.jiafeigou.n.mvp.contract.cloud.CloudLiveCallInContract;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 
 import butterknife.BindView;
@@ -25,7 +24,7 @@ import butterknife.OnClick;
  * 创建时间：2016/9/26
  * 描述：
  */
-public class CloudVideoChatConnetionFragment extends Fragment implements CloudVideoChatConettionContract.View {
+public class CloudVideoChatConnetionFragment extends Fragment implements CloudLiveCallInContract.View {
 
     @BindView(R.id.iv_call_user_image_head)
     ImageView ivCallUserImageHead;
@@ -69,7 +68,7 @@ public class CloudVideoChatConnetionFragment extends Fragment implements CloudVi
     }
 
     @Override
-    public void setPresenter(CloudVideoChatConettionContract.Presenter presenter) {
+    public void setPresenter(CloudLiveCallInContract.Presenter presenter) {
 
     }
 
@@ -102,6 +101,5 @@ public class CloudVideoChatConnetionFragment extends Fragment implements CloudVi
                 .addToBackStack("cloudVideoChatConettionFragment")
                 .commit();
     }
-
 
 }

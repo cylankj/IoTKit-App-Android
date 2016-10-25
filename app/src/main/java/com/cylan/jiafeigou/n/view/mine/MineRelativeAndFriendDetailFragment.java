@@ -12,12 +12,15 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineRelativeAndFriendDetailContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineRelativeAndFriendDetailPresenterImp;
+import com.cylan.jiafeigou.n.mvp.model.SuggestionChatInfoBean;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
+import com.sina.weibo.sdk.utils.LogUtil;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -86,7 +89,18 @@ public class MineRelativeAndFriendDetailFragment extends Fragment implements Min
         ButterKnife.bind(this, view);
         initPresenter();
         initListener();
+        initData();
         return view;
+    }
+
+    /**
+     * desc:获取到传过来的数据
+     */
+    private void initData() {
+        Bundle bundle = getArguments();
+        SuggestionChatInfoBean frienditembean = (SuggestionChatInfoBean) bundle.getSerializable("frienditembean");
+        tvRelativeAndFriendName.setText(frienditembean.getName());
+        Glide.with(getContext()).load(frienditembean.getIcon()).error(R.drawable.icon_mine_head_normal).into(ivDetailUserHead);
     }
 
     private void initListener() {

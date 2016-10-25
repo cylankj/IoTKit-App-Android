@@ -2,6 +2,10 @@ package com.cylan.jiafeigou.misc;
 
 import android.os.Bundle;
 
+import com.cylan.entity.jniCall.JFGFriendAccount;
+
+import java.util.ArrayList;
+
 
 /**
  * Created by cylan-hunt on 16-7-6.
@@ -30,6 +34,10 @@ public class RxEvent {
 
     public static class ActivityResult {
         public Bundle bundle;
+    }
+
+    public static class CloundLiveDelete{
+
     }
 
     /**
@@ -167,6 +175,7 @@ public class RxEvent {
 //        }
     }
 
+
     public static final class LoginPopBack {
         public String account;
 
@@ -181,6 +190,17 @@ public class RxEvent {
 
         public ForgetPwdByMail(String account) {
             this.account = account;
+        }
+    }
+
+    public static final class GetFriendList{
+
+        public int i;
+        public ArrayList<JFGFriendAccount> arrayList;
+
+        public GetFriendList(int i, ArrayList<JFGFriendAccount> arrayList) {
+            this.i = i;
+            this.arrayList = arrayList;
         }
     }
 

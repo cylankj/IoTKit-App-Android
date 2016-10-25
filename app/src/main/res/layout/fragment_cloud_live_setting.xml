@@ -65,7 +65,6 @@
                 hunt:sv_sub_title_max_len="12"
                 hunt:sv_title="设备信息" />
 
-
             <TextView
                 android:id="@+id/tv_door_bell"
                 android:layout_width="wrap_content"
@@ -88,6 +87,13 @@
                 hunt:sv_sub_title_max_len="12"
                 hunt:sv_title="关联门铃" />
 
+            <View
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:background="@color/color_f2f2f2"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"/>
+
             <TextView
                 android:id="@+id/tv_setting_clear_"
                 android:layout_width="match_parent"
@@ -99,17 +105,32 @@
                 android:textColor="@color/color_black"
                 android:textSize="16sp" />
 
+            <View
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:background="@color/color_f2f2f2"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"/>
+
             <TextView
                 android:id="@+id/tv_setting_unbind"
                 android:layout_width="match_parent"
-                android:layout_height="48dp"
+                android:layout_height="54dp"
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="20dp"
-                android:layout_marginTop="10dp"
                 android:gravity="center"
                 android:text="删除设备"
                 android:textColor="@color/color_FF3D32"
                 android:textSize="16sp" />
+
+            <View
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:background="@color/color_f2f2f2"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"/>
+
         </LinearLayout>
 
         <RelativeLayout

@@ -14,12 +14,13 @@
         android:layout_height="wrap_content" />
 
     <TextView
+        android:id="@+id/tv_btn_relative"
         android:layout_marginRight="15dp"
         android:textSize="13sp"
         android:textColor="@color/color_4b9fd5"
         android:layout_centerVertical="true"
         android:layout_alignParentRight="true"
-        android:background="@drawable/btn_share"
+        android:background="@drawable/btn_cancle_relative_doorbell_shape"
         android:text="取消关联"
         android:gravity="center"
         android:layout_width="wrap_content"

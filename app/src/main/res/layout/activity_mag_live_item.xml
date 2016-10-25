@@ -21,16 +21,25 @@
             android:textColor="@color/color_333333"
             android:textSize="17sp" />
 
-        <com.cylan.jiafeigou.widget.FateLineView
-            android:id="@+id/flv_mag_live"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+        <FrameLayout
             android:layout_marginLeft="12dp"
-            hunt:dashLineColor="@color/color_e8e8e8"
-            hunt:dashLineWidth="2dp"
-            hunt:innerCircleColor="@color/color_e8e8e8"
-            hunt:innerCircleRadius="6dp"
-            hunt:outerCircleRadius="10dp" />
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent">
+
+            <com.cylan.jiafeigou.widget.DashLineView
+                android:layout_gravity="center_horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent">
+            </com.cylan.jiafeigou.widget.DashLineView>
+
+            <ImageView
+                android:id="@+id/iv_mag_live"
+                android:layout_gravity="center_vertical"
+                android:src="@drawable/icon_dot_gary"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </FrameLayout>
+
     </LinearLayout>
 
     <TextView

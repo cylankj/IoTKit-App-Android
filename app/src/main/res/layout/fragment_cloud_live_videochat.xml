@@ -54,19 +54,20 @@
             android:layout_height="wrap_content" />
 
         <LinearLayout
-            android:id="@+id/ll_myself_video"
+            android:visibility="invisible"
             android:orientation="vertical"
+            android:id="@+id/ll_myself_video"
             android:background="@color/color_white"
             android:layout_marginBottom="6dp"
             android:layout_marginRight="6dp"
             android:layout_alignParentBottom="true"
             android:layout_alignParentRight="true"
+            android:gravity="center"
             android:layout_width="88dp"
             android:layout_height="134dp">
-
             <VideoView
-                android:layout_width="87dp"
-                android:layout_height="133dp" />
+                android:layout_width="86dp"
+                android:layout_height="132dp" />
         </LinearLayout>
 
     </RelativeLayout>

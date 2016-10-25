@@ -1,7 +1,6 @@
 package com.cylan.jiafeigou.n.view.adapter;
 
 import android.content.Context;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.cylan.jiafeigou.R;
@@ -17,30 +16,31 @@ import java.util.List;
  * 创建时间：2016/10/14
  * 描述：
  */
-public class RelationDoorBellAdapter extends SuperAdapter<BellInfoBean> {
+public class UnRelationDoorBellAdapter extends SuperAdapter<BellInfoBean> {
 
-    public OnUnRelaItemClickListener listener;
+    private OnRelativeClickListener listener;
 
-    public interface OnUnRelaItemClickListener{
-        void unRelativeClick(SuperViewHolder holder, int viewType, int layoutPosition, BellInfoBean item);
+    public interface OnRelativeClickListener{
+        void relativeClick(SuperViewHolder holder, int viewType, int layoutPosition, BellInfoBean item);
     }
 
-    public void setOnUnRelaItemClickListener(OnUnRelaItemClickListener listener){
+    public void setOnRelativeClickListener(OnRelativeClickListener listener){
         this.listener = listener;
     }
 
-    public RelationDoorBellAdapter(Context context, List<BellInfoBean> items, IMulItemViewType<BellInfoBean> mulItemViewType) {
+    public UnRelationDoorBellAdapter(Context context, List<BellInfoBean> items, IMulItemViewType<BellInfoBean> mulItemViewType) {
         super(context, items, mulItemViewType);
     }
 
     @Override
     public void onBind(final SuperViewHolder holder, final int viewType, final int layoutPosition, final BellInfoBean item) {
         holder.setText(R.id.tv_door_bell_name,item.nickName);
+        holder.setText(R.id.tv_btn_relative,"关联");
         holder.setOnClickListener(R.id.tv_btn_relative, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (listener != null){
-                    listener.unRelativeClick(holder,viewType,layoutPosition,item);
+                    listener.relativeClick(holder,viewType,layoutPosition,item);
                 }
             }
         });
