@@ -14,6 +14,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.cylan.entity.jniCall.JFGFriendAccount;
+import com.cylan.entity.jniCall.JFGFriendRequest;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineRelativesFriendsContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineRelativesandFriendsPresenterImp;
@@ -50,6 +52,12 @@ public class MineRelativesandFriendsFragment extends Fragment implements MineRel
     LinearLayout llRelativeAndFriend;
     @BindView(R.id.ll_relative_and_friend_none)
     LinearLayout llRelativeAndFriendNone;
+    @BindView(R.id.tv_add_request_title)
+    TextView tvAddRequestTitle;
+    @BindView(R.id.tv_friend_list_title)
+    TextView tvFriendListTitle;
+    @BindView(R.id.btn_add_relative_and_friend)
+    TextView btnAddRelativeAndFriend;
 
 
     private MineRelativesFriendsContract.Presenter presenter;
@@ -57,12 +65,6 @@ public class MineRelativesandFriendsFragment extends Fragment implements MineRel
     private MineRelativesAndFriendAddFriendsFragment friendsFragment;
     private MineRelativeAndFriendDetailFragment relativeAndFrienDetialFragment;
     private MineRelativeAndFriendAddReqDetailFragment addReqDetailFragment;
-
-    private AddRelativesAndFriendsAdapter relativesAndFriendsAddAdapter;
-    private RelativesAndFriendsAdapter relativesAndFriendsListAdapter;
-
-    private ArrayList<SuggestionChatInfoBean> requestAddList;
-    private ArrayList<SuggestionChatInfoBean> relativesAndFriendList;
 
     public static MineRelativesandFriendsFragment newInstance() {
         return new MineRelativesandFriendsFragment();
@@ -80,84 +82,21 @@ public class MineRelativesandFriendsFragment extends Fragment implements MineRel
         View view = inflater.inflate(R.layout.fragment_home_mine_relativesandfriends, container, false);
         ButterKnife.bind(this, view);
         initPresenter();
-        initData();
         return view;
     }
 
-    private void initData() {
-        requestAddList = new ArrayList<>();
-        relativesAndFriendList = new ArrayList<>();
-        requestAddList.addAll(presenter.initAddRequestData());
-        relativesAndFriendList.addAll(presenter.initRelativatesAndFriendsData());
-
-        if (presenter.initRelativatesAndFriendsData().size() == 0) {
-            llRelativeAndFriend.setVisibility(View.GONE);
-            llRelativeAndFriendNone.setVisibility(View.VISIBLE);
-        } else {
-            llRelativeAndFriend.setVisibility(View.VISIBLE);
-            llRelativeAndFriendNone.setVisibility(View.GONE);
-            showAddRequestList();
-            showRelativesAndFriendsList();
-            initListener();
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (presenter != null){
+            presenter.start();
         }
     }
 
-    private void initListener() {
-        relativesAndFriendsListAdapter.setItemClickListener(new RelativesAndFriendsAdapter.ItemClickListener() {
-            @Override
-            public void onClick(View view, int position) {
-                Bundle bundle = new Bundle();
-                bundle.putInt("position",position);
-                bundle.putSerializable("frienditembean",relativesAndFriendList.get(position));
-                relativeAndFrienDetialFragment = MineRelativeAndFriendDetailFragment.newInstance(bundle);
-                getFragmentManager().beginTransaction()
-                        .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
-                                , R.anim.slide_in_left, R.anim.slide_out_right)
-                        .add(android.R.id.content, relativeAndFrienDetialFragment, "relativeAndFrienDetialFragment")
-                        .addToBackStack("mineHelpFragment")
-                        .commit();
-            }
-        });
-
-        relativesAndFriendsAddAdapter.setItemLongClickLisenter(new AddRelativesAndFriendsAdapter.ItemLongClickLisenter() {
-            @Override
-            public void onItemLongClick(View view, int position) {
-                showLongClickDialog(view,position);
-            }
-        });
-
-        relativesAndFriendsAddAdapter.setItemClickListener(new AddRelativesAndFriendsAdapter.ItemClickListener() {
-            @Override
-            public void onClick(View view, int position) {
-                presenter.doAddRequestClick(position,requestAddList,relativesAndFriendsAddAdapter,relativesAndFriendList,relativesAndFriendsListAdapter);
-            }
-        });
-
-        relativesAndFriendsAddAdapter.setItemOutOfBtnClickListener(new AddRelativesAndFriendsAdapter.ItemOutOfBtnClickListener() {
-            @Override
-            public void onOutBtnClick(View view, int position) {
-                if (getView() != null)
-                    ViewUtils.deBounceClick(view);
-                    AppLogger.e("add_request_detail_fragment");
-                    jump2AddReqDetailFragment(position);
-            }
-        });
-
-        if(relativeAndFrienDetialFragment != null){
-            relativeAndFrienDetialFragment.setOnDeleteClickLisenter(new MineRelativeAndFriendDetailFragment.OnDeleteClickLisenter() {
-                @Override
-                public void onDelete(int position) {
-                    relativesAndFriendsListAdapter.getList().remove(position);
-                    relativesAndFriendsListAdapter.notifyDataSetChanged();
-                }
-            });
-        }
-
-    }
-
-    private void jump2AddReqDetailFragment(int position) {
+    @Override
+    public void jump2AddReqDetailFragment(int position, JFGFriendRequest bean) {
         Bundle bundle = new Bundle();
-        bundle.putSerializable("addRequestItems",requestAddList.get(position));
+        bundle.putSerializable("addRequestItems", bean);
         addReqDetailFragment = MineRelativeAndFriendAddReqDetailFragment.newInstance(bundle);
         getFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
@@ -167,13 +106,43 @@ public class MineRelativesandFriendsFragment extends Fragment implements MineRel
                 .commit();
     }
 
-    private void showLongClickDialog(View view, final int position) {
+    /**
+     * desc：点击同意按钮弹出对话框
+     */
+    @Override
+    public void showReqOutTimeDialog() {
+        //请求过期
+        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(getView().getContext());
+        builder.setMessage("当前消息已过期，是否向对方发送添加好友验证？");
+        builder.setPositiveButton("发送", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                ToastUtil.showToast(getView().getContext(),"请求已发送");
+                //TODO SDK 向对方发送请求
+            }
+        });
+        builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        }).show();
+
+    }
+
+    @Override
+    public void showNullView() {
+        llRelativeAndFriendNone.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void showLongClickDialog(final int position, final JFGFriendRequest bean) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setPositiveButton("删除该请求", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                requestAddList.remove(position);
-                relativesAndFriendsAddAdapter.notifyDataSetChanged();
+                presenter.addReqDeleteItem(position,bean);
                 dialog.dismiss();
             }
         }).setNegativeButton("取消", new DialogInterface.OnClickListener() {
@@ -203,8 +172,8 @@ public class MineRelativesandFriendsFragment extends Fragment implements MineRel
             case R.id.tv_home_mine_relativesandfriends_add:
                 if (getView() != null)
                     ViewUtils.deBounceClick(getView().findViewById(R.id.tv_home_mine_relativesandfriends_add));
-                    AppLogger.e("tv_home_mine_relativesandfriends_add");
-                    jump2AddReAndFriendFragment();
+                AppLogger.e("tv_home_mine_relativesandfriends_add");
+                jump2AddReAndFriendFragment();
                 break;
         }
     }
@@ -219,17 +188,53 @@ public class MineRelativesandFriendsFragment extends Fragment implements MineRel
     }
 
     @Override
-    public void showAddRequestList() {
-        recyclerviewRequestAdd.setLayoutManager(new LinearLayoutManager(getContext()));
-        relativesAndFriendsAddAdapter = new AddRelativesAndFriendsAdapter(requestAddList);
-        recyclerviewRequestAdd.setAdapter(relativesAndFriendsAddAdapter);
+    public void initFriendRecyList(RelativesAndFriendsAdapter adapter) {
+        recyclerviewRelativesandfriendsList.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerviewRelativesandfriendsList.setAdapter(adapter);
     }
 
     @Override
-    public void showRelativesAndFriendsList() {
-        recyclerviewRelativesandfriendsList.setLayoutManager(new LinearLayoutManager(getContext()));
-        relativesAndFriendsListAdapter = new RelativesAndFriendsAdapter(relativesAndFriendList);
-        recyclerviewRelativesandfriendsList.setAdapter(relativesAndFriendsListAdapter);
+    public void initAddReqRecyList(AddRelativesAndFriendsAdapter adapter) {
+        recyclerviewRequestAdd.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerviewRequestAdd.setAdapter(adapter);
+    }
+
+    @Override
+    public void showFriendListTitle() {
+        tvFriendListTitle.setVisibility(View.VISIBLE);
+        recyclerviewRelativesandfriendsList.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideFriendListTitle() {
+        tvFriendListTitle.setVisibility(View.GONE);
+        recyclerviewRelativesandfriendsList.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showAddReqListTitle() {
+        tvAddRequestTitle.setVisibility(View.VISIBLE);
+        recyclerviewRequestAdd.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideAddReqListTitle() {
+        tvAddRequestTitle.setVisibility(View.GONE);
+        recyclerviewRequestAdd.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void jump2FriendDetailFragment(int position, JFGFriendAccount account) {
+        Bundle bundle = new Bundle();
+        bundle.putInt("position",position);
+        bundle.putSerializable("frienditembean",account);
+        relativeAndFrienDetialFragment = MineRelativeAndFriendDetailFragment.newInstance(bundle);
+        getFragmentManager().beginTransaction()
+                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
+                        , R.anim.slide_in_left, R.anim.slide_out_right)
+                .add(android.R.id.content, relativeAndFrienDetialFragment, "relativeAndFrienDetialFragment")
+                .addToBackStack("mineHelpFragment")
+                .commit();
     }
 
 }

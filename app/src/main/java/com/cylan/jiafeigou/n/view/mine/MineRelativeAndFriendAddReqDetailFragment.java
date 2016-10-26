@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.cylan.entity.jniCall.JFGFriendRequest;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineRelativeAndFriendAddReqDetailContract;
 import com.cylan.jiafeigou.n.mvp.model.SuggestionChatInfoBean;
@@ -75,10 +76,11 @@ public class MineRelativeAndFriendAddReqDetailFragment extends Fragment implemen
      */
     private void initData() {
         Bundle arguments = getArguments();
-        SuggestionChatInfoBean addRequestItems = (SuggestionChatInfoBean) arguments.getSerializable("addRequestItems");
-        tvRelativeAndFriendName.setText(addRequestItems.getName());
-        tvAddRequestMesg.setText(addRequestItems.getContent());
-        Glide.with(getContext()).load(addRequestItems.getIcon()).error(R.drawable.icon_mine_head_normal).into(ivDetailUserHead);
+        JFGFriendRequest addRequestItems = (JFGFriendRequest) arguments.getSerializable("addRequestItems");
+        tvRelativeAndFriendName.setText(addRequestItems.alias);
+        tvAddRequestMesg.setText(addRequestItems.sayHi);
+
+        //Glide.with(getContext()).load(addRequestItems.getIcon()).error(R.drawable.icon_mine_head_normal).into(ivDetailUserHead);
     }
 
     /**

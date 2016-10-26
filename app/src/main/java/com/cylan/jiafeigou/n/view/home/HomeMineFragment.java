@@ -128,8 +128,8 @@ public class HomeMineFragment extends Fragment
     }
 
     public void friendItem(View view) {
-        if (!JCache.isOnline)
-            return;
+//        if (!JCache.isOnline)
+//            return;
         getFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                         , R.anim.slide_in_left, R.anim.slide_out_right)
@@ -141,8 +141,8 @@ public class HomeMineFragment extends Fragment
 
 
     public void settingsItem(View view) {
-        if (!JCache.isOnline)
-            return;
+//        if (!JCache.isOnline)
+//            return;
         getFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                         , R.anim.slide_in_left, R.anim.slide_out_right)
@@ -153,8 +153,8 @@ public class HomeMineFragment extends Fragment
     }
 
     public void shareItem(View view) {
-        if (!JCache.isOnline)
-            return;
+//        if (!JCache.isOnline)
+//            return;
         getFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                         , R.anim.slide_in_left, R.anim.slide_out_right)
