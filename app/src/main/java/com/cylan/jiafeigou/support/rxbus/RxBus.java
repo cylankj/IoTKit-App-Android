@@ -31,6 +31,8 @@ public class RxBus implements IEventBus {
 
     @Override
     public void send(Object o) {
+        if (o == null)
+            return;
         _bus.onNext(o);
     }
 

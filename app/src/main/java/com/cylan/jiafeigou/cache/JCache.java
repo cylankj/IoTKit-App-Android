@@ -1,11 +1,18 @@
 package com.cylan.jiafeigou.cache;
 
+import android.util.ArrayMap;
+
+import com.cylan.entity.jniCall.JFGAccount;
+
+import java.util.Map;
+
 /**
  * Created by cylan-hunt on 16-9-28.
  */
 
 public class JCache {
 
+    private static Map<String, Object> simpleMap = new ArrayMap<>();
     public static boolean isOnline = false;
 
     /**
@@ -16,5 +23,18 @@ public class JCache {
      */
     public static boolean isSmsAction = false;
 
+
+    /**
+     * 应该是两级缓存
+     *
+     * @param jfgAccount
+     */
+    public static void setAccountCache(JFGAccount jfgAccount) {
+        simpleMap.put("jfgAccount", jfgAccount);
+    }
+
+    public static JFGAccount getAccountCache() {
+        return (JFGAccount) simpleMap.get("jfgAccount");
+    }
 
 }

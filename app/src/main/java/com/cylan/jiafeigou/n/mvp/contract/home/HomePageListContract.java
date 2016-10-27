@@ -2,6 +2,7 @@ package com.cylan.jiafeigou.n.mvp.contract.home;
 
 import android.support.annotation.UiThread;
 
+import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
 import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
@@ -23,7 +24,7 @@ public interface HomePageListContract {
          * @param greetBean: 从presenter处理后返回.
          */
         @UiThread
-        void onGreetUpdate(GreetBean greetBean);
+        void onAccountUpdate(JFGAccount greetBean);
 
         /**
          * @param dayTime：0白天 1黑夜

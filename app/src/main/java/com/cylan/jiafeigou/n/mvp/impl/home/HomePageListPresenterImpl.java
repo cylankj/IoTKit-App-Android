@@ -56,31 +56,20 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
                             public void call(Object event) {
                                 //6:00 am - 17:59 pm
                                 //18:00 pm-5:59 am
-                                if (event != null
-                                        && event instanceof RxEvent.TimeTickEvent) {
+                                if (event instanceof RxEvent.TimeTickEvent) {
                                     if (getView() != null) {
                                         getView().onTimeTick(JFGRules.getTimeRule());
-                                        getView().onGreetUpdate(generateBean());
+                                        if (JCache.getAccountCache() != null)
+                                            getView().onAccountUpdate(JCache.getAccountCache());
                                     }
                                 }
                                 //登陆响应
-                                if (event != null && (event instanceof RxEvent.LoginRsp)) {
+                                if ((event instanceof RxEvent.LoginRsp)) {
                                     if (getView() != null)
                                         getView().onLoginState(JCache.isOnline);
                                 }
                             }
                         }));
-    }
-
-    private static final String[] poet = {"行人无限秋风思，隔水青山似故乡。..........",
-            "一道鹊桥横渺渺，千声玉佩过玲玲。"};
-    private static final String[] nickName = {"女娲", "牛郎", "织女..........", "xxxxxxxxxx"};
-
-    private GreetBean generateBean() {
-        GreetBean greetBean = new GreetBean();
-        greetBean.nickName = nickName[RandomUtils.getRandom(4)];
-        greetBean.poet = poet[RandomUtils.getRandom(2)];
-        return greetBean;
     }
 
     @Override
@@ -145,8 +134,8 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
                 .subscribe(new Action1<GreetBean>() {
                     @Override
                     public void call(GreetBean greetBean) {
-                        if (getView() != null) {
-                            getView().onGreetUpdate(generateBean());
+                        if (getView() != null && JCache.getAccountCache() != null) {
+                            getView().onAccountUpdate(JCache.getAccountCache());
                         }
                     }
                 });
