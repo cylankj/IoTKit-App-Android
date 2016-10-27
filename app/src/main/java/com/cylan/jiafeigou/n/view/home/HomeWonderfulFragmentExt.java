@@ -328,7 +328,7 @@ public class HomeWonderfulFragmentExt extends Fragment implements
     }
 
     @Override
-    public void timeLineDataUpdate(WheelViewDataSet wheelViewDataSet) {
+    public void onTimeLineDataUpdate(WheelViewDataSet wheelViewDataSet) {
         View view = getWheelView();
         if (view == null)
             return;
@@ -348,6 +348,14 @@ public class HomeWonderfulFragmentExt extends Fragment implements
             imgWonderfulTopBg.setBackground(getResources().getDrawable(drawableId));
         }
         AppLogger.d("onTimeTick: " + dayTime);
+    }
+
+    @Override
+    public void onTimeLineWithDraw() {
+        View view = getWheelViewContainer();
+        if (view != null && view.isShown()) {
+            AnimatorUtils.slide(view);
+        }
     }
 
     @Override

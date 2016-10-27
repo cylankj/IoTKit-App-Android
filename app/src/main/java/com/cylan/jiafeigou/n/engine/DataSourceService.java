@@ -263,7 +263,7 @@ public class DataSourceService extends Service implements AppCallBack {
 
     @Override
     public void OnUpdateNTP(long l) {
-        AppLogger.d("OnUpdateNTP :");
+        AppLogger.d("OnUpdateNTP :"+l);
     }
 
     @Override

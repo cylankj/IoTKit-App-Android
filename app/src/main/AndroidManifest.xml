@@ -89,6 +89,12 @@
         <meta-data
             android:name="sina_app_key"
             android:value="${NICELY_SINA_APP_KEY}" />
+        <meta-data
+            android:name="qqAppKey"
+            android:value="${QQ_APP_KEY}" />
+        <meta-data
+            android:name="weChatAppKey"
+            android:value="${weChat_APP_KEY}" />
 
         <activity
             android:name=".SmartcallActivity"

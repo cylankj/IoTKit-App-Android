@@ -8,11 +8,13 @@
     tools:context="com.cylan.jiafeigou.n.view.bind.BindDeviceListFragment">
 
     <LinearLayout
+        android:layout_gravity="center"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
         <TextView
+            android:clickable="true"
             android:id="@+id/tv_share_to_friends"
             android:layout_width="match_parent"
             android:layout_height="48dp"
@@ -24,6 +26,7 @@
             android:text="朋友圈" />
 
         <TextView
+            android:clickable="true"
             android:id="@+id/tv_share_to_wechat"
             android:layout_width="match_parent"
             android:layout_height="48dp"

@@ -859,7 +859,8 @@ public class PackageUtils {
     public static String getMetaString(Context context, final String key) {
         try {
             ApplicationInfo applicationInfo = context
-                    .getPackageManager().getApplicationInfo(context.getPackageName(), PackageManager.GET_META_DATA);
+                    .getPackageManager().getApplicationInfo(context.getPackageName(),
+                            PackageManager.GET_META_DATA);
             return applicationInfo.metaData.getString(key);
         } catch (PackageManager.NameNotFoundException e1) {
             return "";

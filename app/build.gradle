@@ -75,7 +75,9 @@ android {
         manifestPlaceholders = [NICELY_VALUE       : "yun.jfgou.com:443",
                                 MAT_VALUE          : getMtaAppKey("yun"),
                                 AUTHORITY          : "com.cylan.jiafeigou",
-                                NICELY_SINA_APP_KEY: ""]
+                                QQ_APP_KEY         : "1103156296",
+                                weChat_APP_KEY     : "wx3081bcdae8a842cf",
+                                NICELY_SINA_APP_KEY: "1315129656"]
         customVersionCode
         versionName "1.0"
         multiDexEnabled true
@@ -199,14 +201,18 @@ android {
             manifestPlaceholders = [NICELY_VALUE       : "test.jfgou.com:443",
                                     MAT_VALUE          : getMtaAppKey("test"),
                                     AUTHORITY          : ".test",
-                                    NICELY_SINA_APP_KEY: ""]
+                                    QQ_APP_KEY         : "1103156296",
+                                    weChat_APP_KEY     : "wx3081bcdae8a842cf",
+                                    NICELY_SINA_APP_KEY: "1315129656"]
         }
         _test1 {
             applicationIdSuffix ".test1"
             manifestPlaceholders = [NICELY_VALUE       : "test1.jfgou.com:443",
                                     MAT_VALUE          : getMtaAppKey("test1"),
                                     AUTHORITY          : ".test1",
-                                    NICELY_SINA_APP_KEY: ""]
+                                    weChat_APP_KEY     : "wx3081bcdae8a842cf",
+                                    QQ_APP_KEY         : "1103156296",
+                                    NICELY_SINA_APP_KEY: "1315129656"]
         }
 
         _yun {
@@ -214,21 +220,27 @@ android {
             manifestPlaceholders = [NICELY_VALUE       : "yun.jfgou.com:443",
                                     MAT_VALUE          : getMtaAppKey("yun"),
                                     AUTHORITY          : "",
-                                    NICELY_SINA_APP_KEY: ""]
+                                    QQ_APP_KEY         : "1103156296",
+                                    weChat_APP_KEY     : "wx3081bcdae8a842cf",
+                                    NICELY_SINA_APP_KEY: "1315129656"]
         }
         _yun1 {
             applicationIdSuffix ".yun1"
             manifestPlaceholders = [NICELY_VALUE       : "yun1.jfgou.com:443",
                                     MAT_VALUE          : getMtaAppKey("yun1"),
                                     AUTHORITY          : ".yun1",
-                                    NICELY_SINA_APP_KEY: ""]
+                                    QQ_APP_KEY         : "1103156296",
+                                    weChat_APP_KEY     : "wx3081bcdae8a842cf",
+                                    NICELY_SINA_APP_KEY: "1315129656"]
         }
         _yf {
             applicationIdSuffix ".yf"
             manifestPlaceholders = [NICELY_VALUE       : "yf.jfgou.com:443",
                                     MAT_VALUE          : getMtaAppKey("yf"),
                                     AUTHORITY          : ".yf",
-                                    NICELY_SINA_APP_KEY: ""]
+                                    QQ_APP_KEY         : "1103156296",
+                                    weChat_APP_KEY     : "wx3081bcdae8a842cf",
+                                    NICELY_SINA_APP_KEY: "1315129656"]
         }
         //中性包
         _zhongxing {
@@ -236,7 +248,9 @@ android {
             manifestPlaceholders = [NICELY_VALUE       : "yun.jfgou.com:443",
                                     MAT_VALUE          : getMtaAppKey("zhongxing"),
                                     AUTHORITY          : ".zhongxing",
-                                    NICELY_SINA_APP_KEY: ""]
+                                    QQ_APP_KEY         : "1103156296",
+                                    weChat_APP_KEY     : "wx3081bcdae8a842cf",
+                                    NICELY_SINA_APP_KEY: "1315129656"]
         }
     }
 }
@@ -249,7 +263,7 @@ repositories {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile fileTree(include: ['*.jar'], dir: 'libs')
     //////////////test///////////////////////
     //testCompile和androidTestCompile的区别在于，测试文件所在的目录。
     //前者在test/，后者在androidTest
@@ -285,11 +299,12 @@ dependencies {
     compile files('libs/nineoldandroids-2.4.0.jar')
     compile files('libs/okhttp-3.2.0.jar')
     compile files('libs/okio-1.6.0.jar')
-    compile files('libs/open_sdk_r5509_lite.jar')
+    compile files('libs/open_sdk_r5756.jar')
     compile files('libs/weiboSDKCore_3.1.4.jar')
     compile files('libs/zxing.jar')
     debugCompile files('src/main/jniLibs/jfg-debug-support.jar')
     releaseCompile files('src/main/jniLibs/jfg-release-support.jar')
+    compile files('libs/libammsdk-3.1.1.jar')
     //其中latest.release指代最新版本号，也可以指定明确的版本号，例如2.1.5
     compile rootProject.ext.buglySdk
     //其中latest.release指代最新版本号，也可以指定明确的版本号，例如2.2.0
@@ -301,11 +316,12 @@ dependencies {
     //add by hunt 2016-08-01
     compile rootProject.ext.switchButton
     //多进程文件共享方案
-//    compile rootProject.ext.multiProcessSp
+    //    compile rootProject.ext.multiProcessSp
     //glide
     compile rootProject.ext.glide
     //头像更改选择框架
     compile rootProject.ext.galleryFinal
     compile(name: rootProject.ext.cySdk, ext: 'aar')
+
 }
 

@@ -30,6 +30,7 @@ import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.NewHomeActivity;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.SmartcallActivity;
+import com.cylan.jiafeigou.cache.JCache;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.RxEvent;
@@ -281,6 +282,8 @@ public class LoginFragment extends android.support.v4.app.Fragment
         ViewUtils.setChineseExclude(etLoginPwd, JConstant.PWD_LEN_MAX);
         //大陆用户显示 第三方登陆
         rLayoutLoginThirdParty.setVisibility(LocaleUtils.getLanguageType(getActivity()) == JConstant.LOCALE_SIMPLE_CN ? View.VISIBLE : View.GONE);
+        etLoginUsername.setHint(LocaleUtils.getLanguageType(getActivity()) == JConstant.LOCALE_SIMPLE_CN
+                ? "请输入手机号/邮箱" : "请输入邮箱");
     }
 
     /**
@@ -355,13 +358,17 @@ public class LoginFragment extends android.support.v4.app.Fragment
                 etLoginUsername.getText().clear();
                 break;
             case R.id.tv_login_forget_pwd:
+                boolean validAccount = JConstant.PHONE_REG.matcher(etLoginUsername.getText()).find()
+                        || JConstant.EMAIL_REG.matcher(etLoginUsername.getText()).find();
+                if (!validAccount)
+                    ToastUtil.showToast("无效的账号,原型漏洞");
                 forgetPwd();
                 break;
             case R.id.tv_qqLogin_commit:
                 presenter.getQQAuthorize(getActivity());
                 break;
             case R.id.tv_xlLogin_commit:
-                presenter.getSinaAuthorize(getActivity());
+                presenter.startSinaAuthorize(getActivity());
                 break;
             case R.id.iv_top_bar_left:
                 if (getActivity() != null && getActivity() instanceof SmartcallActivity) {
@@ -463,7 +470,21 @@ public class LoginFragment extends android.support.v4.app.Fragment
 
     @Override
     public boolean isLoginViewVisible() {
-        return TextUtils.equals(tvLoginTopCenter.getText(), "登录");
+        final long time = System.currentTimeMillis();
+        boolean notNull = getActivity() != null && getActivity().getWindow().getDecorView() != null;
+        if (notNull) {
+            View v = getActivity().getWindow().getDecorView().findViewById(android.R.id.content);
+            if (v != null && v instanceof ViewGroup) {
+                final int count = ((ViewGroup) v).getChildCount();
+                if (count > 0) {
+                    View thisLayout = ((ViewGroup) v).getChildAt(count - 1);
+                    //yes this fragment is in top
+                    notNull = (thisLayout != null && thisLayout.getId() == R.id.rLayout_login);
+                }
+            }
+        }
+        Log.d("perform", "perform: " + (System.currentTimeMillis() - time));
+        return notNull && TextUtils.equals(tvLoginTopCenter.getText(), "登录");
     }
 
     @Override
@@ -480,6 +501,7 @@ public class LoginFragment extends android.support.v4.app.Fragment
     @Override
     public void loginResult(int code) {
         if (code == JfgConstants.RESULT_OK) {
+            ToastUtil.showNegativeToast("注册成功");
             getContext().startActivity(new Intent(getContext(), NewHomeActivity.class));
             getActivity().finish();
         } else {
@@ -739,6 +761,7 @@ public class LoginFragment extends android.support.v4.app.Fragment
                 break;
             case R.id.tv_register_submit:
                 handleRegisterConfirm();
+                JCache.isSmsAction = true;
                 break;
             case R.id.tv_register_way_content:
                 handleRegisterByMail();

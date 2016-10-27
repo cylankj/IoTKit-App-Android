@@ -127,6 +127,7 @@ public class SmartcallActivity extends NeedLoginActivity
             //进入登陆页 login page
             getSupportFragmentManager().beginTransaction()
                     .add(android.R.id.content, BeforeLoginFragment.newInstance(null))
+                    .addToBackStack(BeforeLoginFragment.class.getSimpleName())
                     .commitAllowingStateLoss();
         }
     }

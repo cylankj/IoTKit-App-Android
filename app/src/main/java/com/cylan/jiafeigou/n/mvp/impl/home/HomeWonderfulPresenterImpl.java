@@ -71,6 +71,9 @@ public class HomeWonderfulPresenterImpl extends AbstractPresenter<HomeWonderfulC
                                         getView().onTimeTick(JFGRules.getTimeRule());
                                     }
                                 }
+                                if (event != null && event instanceof RxEvent.PageScrolled) {
+                                    getView().onTimeLineWithDraw();
+                                }
                             }
                         }));
     }
@@ -170,7 +173,7 @@ public class HomeWonderfulPresenterImpl extends AbstractPresenter<HomeWonderfulC
                     public void call(WheelViewDataSet wheelViewDataSet) {
                         if (wheelViewDataSet == null)
                             return;
-                        if (getView() != null) getView().timeLineDataUpdate(wheelViewDataSet);
+                        if (getView() != null) getView().onTimeLineDataUpdate(wheelViewDataSet);
                     }
                 });
     }

@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.OnActivityReenterListener;
+import com.cylan.jiafeigou.misc.RxEvent;
 import com.cylan.jiafeigou.misc.SharedElementCallBackListener;
 import com.cylan.jiafeigou.n.mvp.contract.home.NewHomeActivityContract;
 import com.cylan.jiafeigou.n.mvp.impl.home.HomeMinePresenterImpl;
@@ -28,6 +29,7 @@ import com.cylan.jiafeigou.n.view.activity.NeedLoginActivity;
 import com.cylan.jiafeigou.n.view.home.HomeMineFragment;
 import com.cylan.jiafeigou.n.view.home.HomePageListFragmentExt;
 import com.cylan.jiafeigou.n.view.home.HomeWonderfulFragmentExt;
+import com.cylan.jiafeigou.support.rxbus.RxBus;
 import com.cylan.jiafeigou.widget.CustomViewPager;
 
 import java.util.List;
@@ -78,7 +80,7 @@ public class NewHomeActivity extends NeedLoginActivity implements
     }
 
     private void initMainContentAdapter() {
-        HomeViewAdapter viewAdapter = new HomeViewAdapter(getSupportFragmentManager());
+        final HomeViewAdapter viewAdapter = new HomeViewAdapter(getSupportFragmentManager());
         vpHomeContent.setPagingEnabled(true);
         vpHomeContent.setAdapter(viewAdapter);
         vpHomeContent.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
@@ -87,6 +89,17 @@ public class NewHomeActivity extends NeedLoginActivity implements
                 final int id = position == 0 ? R.id.btn_home_list
                         : (position == 1 ? R.id.btn_home_wonderful : R.id.btn_home_mine);
                 rgLayoutHomeBottomMenu.check(id);
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+                if (state == ViewPager.SCROLL_STATE_IDLE) {
+                    final int index = vpHomeContent.getCurrentItem();
+                    if (index == 0 || index == 2) {
+                        if (RxBus.getInstance().hasObservers())
+                            RxBus.getInstance().send(new RxEvent.PageScrolled());
+                    }
+                }
             }
         });
     }

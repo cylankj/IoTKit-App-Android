@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 
 import com.cylan.entity.JfgEnum;
+import com.cylan.jiafeigou.cache.JCache;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JfgCmdEnsurance;
 import com.cylan.jiafeigou.misc.RxEvent;
@@ -16,7 +17,7 @@ import com.cylan.jiafeigou.support.rxbus.RxBus;
 import com.cylan.jiafeigou.support.sina.AccessTokenKeeper;
 import com.cylan.jiafeigou.support.sina.SinaLogin;
 import com.cylan.jiafeigou.support.sina.UsersAPI;
-import com.cylan.jiafeigou.support.tencent.TencentLoginUtils;
+import com.cylan.jiafeigou.support.tencent.TenCentLoginUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.sina.weibo.sdk.auth.Oauth2AccessToken;
 import com.sina.weibo.sdk.auth.WeiboAuthListener;
@@ -83,16 +84,19 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginModelContract.Vie
                     @Override
                     public void call(Object o) {
                         //sdk中，登陆失败的话，自动一分钟登录一次。
-                        if (o instanceof RxEvent.ResultLogin && getView().isLoginViewVisible()) {
+                        if (o instanceof RxEvent.ResultLogin
+                                && getView().isLoginViewVisible()) {
                             getView().loginResult(((RxEvent.ResultLogin) o).code);
                         }
-                        if (o instanceof RxEvent.ResultRegister) {
+                        if (o instanceof RxEvent.ResultRegister
+                                && getView().isLoginViewVisible()) {
                             getView().registerResult(((RxEvent.ResultRegister) o).code);
                         }
                         if (o instanceof RxEvent.ResultVerifyCode) {
                             getView().verifyCodeResult(((RxEvent.ResultVerifyCode) o).code);
                         }
-                        if (o instanceof RxEvent.SmsCodeResult) {
+                        if (o instanceof RxEvent.SmsCodeResult
+                                && getView().isLoginViewVisible() && JCache.isSmsAction) {
                             getView().registerResult(((RxEvent.SmsCodeResult) o).error);
                             if (((RxEvent.SmsCodeResult) o).error == 0) {
                                 //store the token .
@@ -121,12 +125,12 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginModelContract.Vie
 
     @Override
     public void getQQAuthorize(Activity activity) {
-        TencentLoginUtils qqUtils = new TencentLoginUtils(activity);
+        TenCentLoginUtils qqUtils = new TenCentLoginUtils(activity);
         qqUtils.login(activity, new QQAuthorizeListener());
     }
 
     @Override
-    public void getSinaAuthorize(Activity activity) {
+    public void startSinaAuthorize(Activity activity) {
         SinaLogin sinaUtil = new SinaLogin(activity);
         sinaUtil.login(activity, new SinaAuthorizeListener());
     }

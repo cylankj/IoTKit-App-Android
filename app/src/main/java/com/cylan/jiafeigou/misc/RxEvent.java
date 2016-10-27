@@ -184,4 +184,6 @@ public class RxEvent {
         }
     }
 
+    public static final class PageScrolled{}
+
 }

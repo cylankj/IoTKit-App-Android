@@ -18,12 +18,17 @@ public interface HomeWonderfulContract {
 
         void onHeadBackgroundChang(int daytime);
 
-        void timeLineDataUpdate(WheelViewDataSet wheelViewDataSet);
+        void onTimeLineDataUpdate(WheelViewDataSet wheelViewDataSet);
 
         /**
          * @param dayTime：0白天 1黑夜
          */
         void onTimeTick(int dayTime);
+
+        /**
+         * 收回
+         */
+        void onTimeLineWithDraw();
     }
 
     interface Presenter extends BasePresenter {

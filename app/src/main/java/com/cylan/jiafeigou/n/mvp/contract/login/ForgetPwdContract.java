@@ -31,6 +31,11 @@ public interface ForgetPwdContract {
          */
         void submitAccount(final String account);
 
+        /**
+         * 手机号，忘记密码，手机号+验证码
+         * @param account
+         * @param code
+         */
         void submitPhoneNumAndCode(final String account, final String code);
 
 
