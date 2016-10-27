@@ -20,10 +20,24 @@ public interface MineShareToContactContract {
 
         void showNoContactNullView();
 
+        void hideTopTitle();
+
+        void showSearchInputEdit();
+
+        void hideSearchInputEdit();
+
+        String getSearchInputContent();
+
+        void showShareDeviceDialog();
+
     }
 
     interface Presenter extends BasePresenter {
+
         void initContactData();
+
+        void handleSearchResult(String input);
+
     }
 
 }

@@ -19,15 +19,34 @@
             android:padding="15dp"
             android:src="@drawable/icon_nav_back_white" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+        <FrameLayout
             android:layout_alignParentBottom="true"
             android:layout_marginBottom="12dp"
             android:layout_marginLeft="48dp"
-            android:text="分享给联系人"
-            android:textColor="@color/color_white"
-            android:textSize="18sp" />
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/tv_top_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="分享给联系人"
+                android:textColor="@color/color_white"
+                android:textSize="18sp" />
+
+            <EditText
+                android:singleLine="true"
+                android:id="@+id/et_search_contact"
+                android:visibility="gone"
+                android:textColor="@color/color_white"
+                android:textColorHint="@color/color_white"
+                android:background="@null"
+                android:hint="搜索"
+                android:textSize="18sp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+        </FrameLayout>
 
         <ImageView
             android:src="@drawable/icon_search"

@@ -5,11 +5,15 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineShareToContactContract;
@@ -36,6 +40,10 @@ public class MineShareToContactFragment extends Fragment implements MineShareToC
     RecyclerView rcyMineShareToContactList;
     @BindView(R.id.ll_no_contact)
     LinearLayout llNoContact;
+    @BindView(R.id.tv_top_title)
+    TextView tvTopTitle;
+    @BindView(R.id.et_search_contact)
+    EditText etSearchContact;
 
     private MineShareToContactContract.Presenter presenter;
 
@@ -55,9 +63,33 @@ public class MineShareToContactFragment extends Fragment implements MineShareToC
     @Override
     public void onStart() {
         super.onStart();
-        if (presenter != null){
+        if (presenter != null) {
             presenter.start();
         }
+        initEditListener();
+    }
+
+    /**
+     * desc；监听搜索输入的变化
+     */
+    private void initEditListener() {
+
+        etSearchContact.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                presenter.handleSearchResult(s.toString().trim());
+            }
+        });
     }
 
     private void initPresenter() {
@@ -72,12 +104,13 @@ public class MineShareToContactFragment extends Fragment implements MineShareToC
     @OnClick({R.id.iv_mine_share_to_contact_back, R.id.iv_mine_share_to_contact_search})
     public void onClick(View view) {
         switch (view.getId()) {
-
             case R.id.iv_mine_share_to_contact_back:
                 getFragmentManager().popBackStack();
                 break;
 
             case R.id.iv_mine_share_to_contact_search:
+                hideTopTitle();
+                showSearchInputEdit();
                 ToastUtil.showToast(getContext(), "正在搜索...");
                 break;
         }
@@ -100,5 +133,30 @@ public class MineShareToContactFragment extends Fragment implements MineShareToC
     @Override
     public void showNoContactNullView() {
         llNoContact.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideTopTitle() {
+        tvTopTitle.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showSearchInputEdit() {
+        etSearchContact.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideSearchInputEdit() {
+        etSearchContact.setVisibility(View.GONE);
+    }
+
+    @Override
+    public String getSearchInputContent() {
+        return etSearchContact.getText().toString().trim();
+    }
+
+    @Override
+    public void showShareDeviceDialog() {
+
     }
 }
