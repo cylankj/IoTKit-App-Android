@@ -13,6 +13,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.cylan.entity.jniCall.JFGFriendAccount;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineRelativeAndFriendDetailContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineRelativeAndFriendDetailPresenterImp;
@@ -98,9 +99,12 @@ public class MineRelativeAndFriendDetailFragment extends Fragment implements Min
      */
     private void initData() {
         Bundle bundle = getArguments();
-        SuggestionChatInfoBean frienditembean = (SuggestionChatInfoBean) bundle.getSerializable("frienditembean");
-        tvRelativeAndFriendName.setText(frienditembean.getName());
-        Glide.with(getContext()).load(frienditembean.getIcon()).error(R.drawable.icon_mine_head_normal).into(ivDetailUserHead);
+        JFGFriendAccount frienditembean = (JFGFriendAccount) bundle.getSerializable("frienditembean");
+        tvRelativeAndFriendName.setText(frienditembean.markName);
+        tvRelativeAndFriendLikeName.setText(frienditembean.alias);
+
+        //TODO　头像获取
+        //Glide.with(getContext()).load(frienditembean.getIcon()).error(R.drawable.icon_mine_head_normal).into(ivDetailUserHead);
     }
 
     private void initListener() {

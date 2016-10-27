@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineAddFromContactContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineAddFromContactPresenterImp;
+import com.cylan.jiafeigou.n.mvp.model.SuggestionChatInfoBean;
 import com.cylan.jiafeigou.utils.ToastUtil;
 
 import butterknife.BindView;
@@ -35,9 +36,12 @@ public class MineAddFromContactFragment extends Fragment implements MineAddFromC
     EditText etMineAddContactMesg;
 
     private MineAddFromContactContract.Presenter presenter;
+    private SuggestionChatInfoBean contactItem;
 
-    public static MineAddFromContactFragment newInstance() {
-        return new MineAddFromContactFragment();
+    public static MineAddFromContactFragment newInstance(Bundle bundle) {
+        MineAddFromContactFragment fragment = new MineAddFromContactFragment();
+        fragment.setArguments(bundle);
+        return fragment;
     }
 
     @Nullable
@@ -46,7 +50,16 @@ public class MineAddFromContactFragment extends Fragment implements MineAddFromC
         View view = inflater.inflate(R.layout.fragment_mine_add_from_contact, container, false);
         ButterKnife.bind(this, view);
         initPresenter();
+        getIntentData();
         return view;
+    }
+
+    /**
+     * desc:获取传递过来的数据
+     */
+    private void getIntentData() {
+        Bundle bundle = getArguments();
+        contactItem = (SuggestionChatInfoBean) bundle.getSerializable("contactItem");
     }
 
     private void initPresenter() {
@@ -60,15 +73,14 @@ public class MineAddFromContactFragment extends Fragment implements MineAddFromC
 
     @Override
     public void initEditText() {
-        //TODO 获取到用户的昵称
-        etMineAddContactMesg.setText("我是多多");
+        etMineAddContactMesg.setText("我是" + contactItem.getName());
     }
 
     @Override
     public String getSendMesg() {
         String mesg = etMineAddContactMesg.getText().toString();
         if (TextUtils.isEmpty(mesg)) {
-            return "我是多多";
+            return "我是" + contactItem.getName();
         } else {
             return mesg;
         }
@@ -76,7 +88,7 @@ public class MineAddFromContactFragment extends Fragment implements MineAddFromC
 
     @Override
     public void showResultDialog() {
-        ToastUtil.showToast("发送请求成功");
+        ToastUtil.showToast("发送请求成功" + getSendMesg());
     }
 
     @Override

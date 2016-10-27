@@ -5,9 +5,13 @@ import android.net.Uri;
 import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
+import android.view.View;
 
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineRelativeAndFriendAddFromContactContract;
+import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.n.mvp.model.SuggestionChatInfoBean;
+import com.cylan.jiafeigou.n.view.adapter.RelativeAndFriendAddFromContactAdapter;
+import com.cylan.superadapter.OnItemClickListener;
 
 import java.util.ArrayList;
 
@@ -23,20 +27,20 @@ import rx.schedulers.Schedulers;
  * 创建时间：2016/9/6
  * 描述：
  */
-public class MineRelativeAndFriendAddFromContactPresenterImp implements MineRelativeAndFriendAddFromContactContract.Presenter {
+public class MineRelativeAndFriendAddFromContactPresenterImp extends AbstractPresenter<MineRelativeAndFriendAddFromContactContract.View> implements MineRelativeAndFriendAddFromContactContract.Presenter, RelativeAndFriendAddFromContactAdapter.onContactItemClickListener {
 
-    private MineRelativeAndFriendAddFromContactContract.View view;
     private Subscription contactSubscriber;
-    private ArrayList<SuggestionChatInfoBean> list;
-    private ArrayList<SuggestionChatInfoBean> filterDateList = new ArrayList<SuggestionChatInfoBean>();
+    private RelativeAndFriendAddFromContactAdapter contactListAdapter;
+    private ArrayList<SuggestionChatInfoBean> filterDateList;
 
     public MineRelativeAndFriendAddFromContactPresenterImp(MineRelativeAndFriendAddFromContactContract.View view) {
-        this.view = view;
+        super(view);
+        view.setPresenter(this);
     }
 
     @Override
     public void start() {
-
+        initContactData();
     }
 
     @Override
@@ -48,8 +52,6 @@ public class MineRelativeAndFriendAddFromContactPresenterImp implements MineRela
 
     @Override
     public void initContactData() {
-
-        list = new ArrayList<SuggestionChatInfoBean>();
 
         contactSubscriber = Observable.just(null)
                 .subscribeOn(Schedulers.newThread())
@@ -63,10 +65,29 @@ public class MineRelativeAndFriendAddFromContactPresenterImp implements MineRela
                 .subscribe(new Action1<ArrayList<SuggestionChatInfoBean>>() {
                     @Override
                     public void call(ArrayList<SuggestionChatInfoBean> arrayList) {
-                        view.setRcyAdapter(arrayList);
-                        view.InitItemClickListener();
+                        handlerDataResult(arrayList);
                     }
                 });
+    }
+
+    /**
+     * desc：处理获取到的联系人数据
+     * @param arrayList
+     */
+    private void handlerDataResult(ArrayList<SuggestionChatInfoBean> arrayList) {
+        if (arrayList != null && arrayList.size() != 0 && getView() != null){
+            contactListAdapter = new RelativeAndFriendAddFromContactAdapter(getView().getContext(),arrayList,null);
+            getView().initContactRecycleView(contactListAdapter);
+            contactListAdapter.setOnContactItemClickListener(this);
+            contactListAdapter.setOnItemClickListener(new OnItemClickListener() {
+                @Override
+                public void onItemClick(View itemView, int viewType, int position) {
+                    //TODO 跳转到联系人的详情界面去
+                }
+            });
+        }else {
+            getView().showNoContactView();
+        }
     }
 
     @NonNull
@@ -76,7 +97,7 @@ public class MineRelativeAndFriendAddFromContactPresenterImp implements MineRela
         Uri uri = ContactsContract.CommonDataKinds.Phone.CONTENT_URI;
         // 这里是获取联系人表的电话里的信息  包括：名字，名字拼音，联系人id,电话号码；
         // 然后在根据"sort-key"排序
-        cursor = view.getContext().getContentResolver().query(
+        cursor = getView().getContext().getContentResolver().query(
                 uri,
                 new String[]{"display_name", "sort_key", "contact_id",
                         "data1"}, null, null, "sort_key");
@@ -104,8 +125,15 @@ public class MineRelativeAndFriendAddFromContactPresenterImp implements MineRela
     }
 
     @Override
-    public void filterPhoneData(String filterStr) {
+    public void onAddClick(View view, int position,SuggestionChatInfoBean item) {
+        if (getView() != null){
+            getView().jump2SendAddMesgFragment(item);
+        }
+    }
 
+    @Override
+    public void filterPhoneData(String filterStr) {
+        filterDateList = new ArrayList<>();
         if (TextUtils.isEmpty(filterStr)) {
             filterDateList = getAllContactList();
         } else {
@@ -118,8 +146,7 @@ public class MineRelativeAndFriendAddFromContactPresenterImp implements MineRela
                 }
             }
         }
-        view.setRcyAdapter(filterDateList);
-        view.InitItemClickListener();
+        handlerDataResult(filterDateList);
     }
 
 }

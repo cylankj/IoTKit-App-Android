@@ -37,7 +37,7 @@
         android:layout_alignParentRight="true"
         android:text="添加"
         android:clickable="true"
-        android:background="@drawable/bg_screenshot"
+        android:background="@drawable/btn_accept_add_request_shape"
         android:textSize="13sp"
         android:textColor="@color/color_4b9fd5"
         android:layout_width="wrap_content"

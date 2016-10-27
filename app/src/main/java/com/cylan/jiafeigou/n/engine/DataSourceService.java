@@ -242,6 +242,9 @@ public class DataSourceService extends Service implements AppCallBack {
     @Override
     public void OnGetFriendRequestListRsp(int i, ArrayList<JFGFriendRequest> arrayList) {
         AppLogger.d("OnLocalMessage :");
+        if (eventBus != null && eventBus.hasObservers()){
+            eventBus.send(new RxEvent.GetAddReqList(i,arrayList));
+        }
     }
 
     @Override
@@ -267,6 +270,10 @@ public class DataSourceService extends Service implements AppCallBack {
     @Override
     public void OnGetShareListRsp(int i, ArrayList<JFGShareListInfo> arrayList) {
         AppLogger.d("OnGetShareListRsp :");
+        if (eventBus != null && eventBus.hasObservers()){
+            eventBus.send(new RxEvent.GetShareDeviceList(i,arrayList));
+        }
+
     }
 
     @Override

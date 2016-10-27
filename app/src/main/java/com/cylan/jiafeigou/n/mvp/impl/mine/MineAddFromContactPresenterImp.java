@@ -43,7 +43,7 @@ public class MineAddFromContactPresenterImp extends AbstractPresenter<MineAddFro
                 .map(new Func1<String, Object>() {
                     @Override
                     public Object call(String s) {
-                        //TODO 向服务器发送请求
+                        //TODO 向服务器发送请求添加请求
                         return null;
                     }
                 })

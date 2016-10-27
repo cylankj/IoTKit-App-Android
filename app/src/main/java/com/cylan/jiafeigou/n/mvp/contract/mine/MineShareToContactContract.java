@@ -3,6 +3,7 @@ package com.cylan.jiafeigou.n.mvp.contract.mine;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
 import com.cylan.jiafeigou.n.mvp.model.SuggestionChatInfoBean;
+import com.cylan.jiafeigou.n.view.adapter.ShareToContactAdapter;
 
 import java.util.ArrayList;
 
@@ -14,13 +15,31 @@ import java.util.ArrayList;
 public interface MineShareToContactContract {
 
     interface View extends BaseView<Presenter> {
-        void setAdapter(ArrayList<SuggestionChatInfoBean> list);
 
-        void setItemCheckListener();
+        void initContactReclyView(ShareToContactAdapter adapter);
+
+        void showNoContactNullView();
+
+        void hideTopTitle();
+
+        void showSearchInputEdit();
+
+        void hideSearchInputEdit();
+
+        String getSearchInputContent();
+
+        void showShareDeviceDialog(SuggestionChatInfoBean bean);
+
     }
 
     interface Presenter extends BasePresenter {
+
         void initContactData();
+
+        void handleSearchResult(String input);
+
+        void shareToContact(SuggestionChatInfoBean bean);
+
     }
 
 }

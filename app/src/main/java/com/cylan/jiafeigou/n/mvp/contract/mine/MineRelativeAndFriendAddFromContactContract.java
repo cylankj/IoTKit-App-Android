@@ -3,6 +3,7 @@ package com.cylan.jiafeigou.n.mvp.contract.mine;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
 import com.cylan.jiafeigou.n.mvp.model.SuggestionChatInfoBean;
+import com.cylan.jiafeigou.n.view.adapter.RelativeAndFriendAddFromContactAdapter;
 
 import java.util.ArrayList;
 
@@ -14,12 +15,16 @@ import java.util.ArrayList;
 public interface MineRelativeAndFriendAddFromContactContract {
 
     interface View extends BaseView<Presenter> {
-        void setRcyAdapter(ArrayList<SuggestionChatInfoBean> list);
 
-        void InitItemClickListener();
+        void initContactRecycleView(RelativeAndFriendAddFromContactAdapter adapter);
+
+        void jump2SendAddMesgFragment(SuggestionChatInfoBean bean);
+
+        void showNoContactView();
     }
 
     interface Presenter extends BasePresenter {
+
         void initContactData();
 
         void addContactItem(SuggestionChatInfoBean bean);
