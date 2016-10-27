@@ -28,7 +28,7 @@ public interface MineShareToContactContract {
 
         String getSearchInputContent();
 
-        void showShareDeviceDialog();
+        void showShareDeviceDialog(SuggestionChatInfoBean bean);
 
     }
 
@@ -37,6 +37,8 @@ public interface MineShareToContactContract {
         void initContactData();
 
         void handleSearchResult(String input);
+
+        void shareToContact(SuggestionChatInfoBean bean);
 
     }
 

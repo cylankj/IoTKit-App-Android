@@ -34,6 +34,7 @@ public class MineShareToContactPresenterImp extends AbstractPresenter<MineShareT
     private Subscription shareToContactSub;
     private ShareToContactAdapter shareToContactAdapter;
     private ArrayList<SuggestionChatInfoBean> filterDateList;
+    private Subscription shareToThisContact;
 
     public MineShareToContactPresenterImp(MineShareToContactContract.View view) {
         super(view);
@@ -49,6 +50,10 @@ public class MineShareToContactPresenterImp extends AbstractPresenter<MineShareT
     public void stop() {
         if (shareToContactSub != null && shareToContactSub.isUnsubscribed()) {
             shareToContactSub.unsubscribe();
+        }
+
+        if (shareToThisContact != null && shareToThisContact.isUnsubscribed()){
+            shareToThisContact.unsubscribe();
         }
     }
 
@@ -88,6 +93,29 @@ public class MineShareToContactPresenterImp extends AbstractPresenter<MineShareT
             }
         }
         handlerContactDataResult(filterDateList);
+    }
+
+    /**
+     * desc:分享设备给该联系人
+     * @param bean
+     */
+    @Override
+    public void shareToContact(SuggestionChatInfoBean bean) {
+        shareToThisContact = Observable.just(bean)
+                .map(new Func1<SuggestionChatInfoBean, Boolean>() {
+                    @Override
+                    public Boolean call(SuggestionChatInfoBean bean) {
+                        return null;
+                    }
+                })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<Boolean>() {
+                    @Override
+                    public void call(Boolean aBoolean) {
+
+                    }
+                });
     }
 
     /**
