@@ -81,7 +81,6 @@ public class BeforeLoginFragment extends android.support.v4.app.Fragment {
         if (getView() != null)
             ViewUtils.deBounceClick(getView().findViewById(R.id.btn_to_login));
         Bundle bundle = new Bundle();
-        bundle.putString(RxEvent.NeedLoginEvent.KEY, RxEvent.NeedLoginEvent.KEY);
         bundle.putBoolean(JConstant.KEY_SHOW_LOGIN_FRAGMENT_EXTRA, true);
         RxBus.getInstance().send(new RxEvent.NeedLoginEvent(bundle));
     }

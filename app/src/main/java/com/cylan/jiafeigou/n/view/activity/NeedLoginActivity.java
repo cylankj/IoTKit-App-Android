@@ -74,11 +74,11 @@ public class NeedLoginActivity extends BaseFullScreenFragmentActivity {
             return;
         if (extra.getBoolean(JConstant.KEY_SHOW_LOGIN_FRAGMENT_EXTRA)) {
             ActivityUtils.addFragmentToActivity(getSupportFragmentManager(),
-                    fragment, android.R.id.content, 0);
+                    fragment, android.R.id.content, false);
         } else {
             //do not add to back stack
             ActivityUtils.addFragmentToActivity(getSupportFragmentManager(),
-                    fragment, android.R.id.content, false);
+                    fragment, android.R.id.content, 0);
         }
     }
 

@@ -30,11 +30,13 @@ import com.cylan.jfgapp.jni.JfgAppCmd;
 import com.cylan.jiafeigou.cache.JCache;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
+import com.cylan.jiafeigou.misc.JfgCmdEnsurance;
 import com.cylan.jiafeigou.misc.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.rxbus.IEventBus;
 import com.cylan.jiafeigou.support.rxbus.RxBus;
 import com.cylan.jiafeigou.support.stat.MtaManager;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 
@@ -94,7 +96,7 @@ public class DataSourceService extends Service implements AppCallBack {
 
     @Override
     public void OnUpdateAccount(JFGAccount jfgAccount) {
-        AppLogger.d("OnLocalMessage :" + jfgAccount);
+        AppLogger.d("OnLocalMessage :" + new Gson().toJson(jfgAccount));
     }
 
     @Override
@@ -189,6 +191,10 @@ public class DataSourceService extends Service implements AppCallBack {
                 login = jfgResult.code == JError.ErrorOK;
                 eventBus.send(new RxEvent.ResultLogin(jfgResult.code));
                 break;
+        }
+        if (login) {
+            JfgCmdEnsurance.getCmd().getAccount();
+            AppLogger.i("get account");
         }
         AppLogger.i("jfgResult:[event:" + jfgResult.event + ",code:" + jfgResult.code + "]");
     }
