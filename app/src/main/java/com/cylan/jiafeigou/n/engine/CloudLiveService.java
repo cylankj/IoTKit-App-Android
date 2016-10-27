@@ -18,6 +18,9 @@ public class CloudLiveService extends Service {
     private String hangUpResult = null;
     private boolean hangUpFlag;
 
+    private String ignoreResult = null;
+    private boolean ignoreFlag;
+
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
@@ -43,6 +46,26 @@ public class CloudLiveService extends Service {
         @Override
         public String getHangUpResultData() throws RemoteException {
             return hangUpResult;
+        }
+
+        @Override
+        public void setIgnoreFlag(boolean isIgnore) throws RemoteException {
+            ignoreFlag = isIgnore;
+        }
+
+        @Override
+        public boolean getIgnoreFlag() throws RemoteException {
+            return ignoreFlag;
+        }
+
+        @Override
+        public void setIgnoreResultData(String obj) throws RemoteException {
+            ignoreResult = obj;
+        }
+
+        @Override
+        public String getIgnoreResultData() throws RemoteException {
+            return ignoreResult;
         }
     };
 

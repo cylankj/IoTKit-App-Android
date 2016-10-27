@@ -78,7 +78,7 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
     private GreetBean generateBean() {
         GreetBean greetBean = new GreetBean();
         greetBean.nickName = nickName[RandomUtils.getRandom(4)];
-        greetBean.poet = poet[RandomUtils.getRandom(4)];
+        greetBean.poet = poet[RandomUtils.getRandom(2)];
         return greetBean;
     }
 

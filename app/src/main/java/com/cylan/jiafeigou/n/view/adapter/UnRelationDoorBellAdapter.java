@@ -16,31 +16,31 @@ import java.util.List;
  * 创建时间：2016/10/14
  * 描述：
  */
-public class RelationDoorBellAdapter extends SuperAdapter<BellInfoBean> {
+public class UnRelationDoorBellAdapter extends SuperAdapter<BellInfoBean> {
 
-    public OnUnRelaItemClickListener listener;
+    private OnRelativeClickListener listener;
 
-    public interface OnUnRelaItemClickListener {
-        void unRelativeClick(SuperViewHolder holder, int viewType, int layoutPosition, BellInfoBean item);
+    public interface OnRelativeClickListener{
+        void relativeClick(SuperViewHolder holder, int viewType, int layoutPosition, BellInfoBean item);
     }
 
-    public void setOnUnRelaItemClickListener(OnUnRelaItemClickListener listener) {
+    public void setOnRelativeClickListener(OnRelativeClickListener listener){
         this.listener = listener;
     }
 
-    public RelationDoorBellAdapter(Context context, List<BellInfoBean> items, IMulItemViewType<BellInfoBean> mulItemViewType) {
+    public UnRelationDoorBellAdapter(Context context, List<BellInfoBean> items, IMulItemViewType<BellInfoBean> mulItemViewType) {
         super(context, items, mulItemViewType);
     }
 
-
-    public void onBind(final SuperViewHolder holder, final int viewType,
-                       final int layoutPosition, final BellInfoBean item) {
-        holder.setText(R.id.tv_door_bell_name, item.nickName);
+    @Override
+    public void onBind(final SuperViewHolder holder, final int viewType, final int layoutPosition, final BellInfoBean item) {
+        holder.setText(R.id.tv_door_bell_name,item.nickName);
+        holder.setText(R.id.tv_btn_relative,"关联");
         holder.setOnClickListener(R.id.tv_btn_relative, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (listener != null) {
-                    listener.unRelativeClick(holder, viewType, layoutPosition, item);
+                if (listener != null){
+                    listener.relativeClick(holder,viewType,layoutPosition,item);
                 }
             }
         });
@@ -53,12 +53,10 @@ public class RelationDoorBellAdapter extends SuperAdapter<BellInfoBean> {
             public int getViewTypeCount() {
                 return 1;
             }
-
             @Override
             public int getItemViewType(int position, BellInfoBean bellInfoBean) {
                 return 0;
             }
-
             @Override
             public int getLayoutId(int viewType) {
                 return R.layout.fragment_cloud_correlation_door_bell_items;

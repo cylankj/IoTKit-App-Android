@@ -40,6 +40,16 @@ public class CloudLiveDeviceInfoFragment extends Fragment implements CloudLiveDe
     @BindView(R.id.lLayout_information_facility_timezone)
     LinearLayout lLayoutInformationFacilityTimezone;
 
+    public OnChangeNameListener listener;
+
+    public interface OnChangeNameListener{
+        void changeName(String name);
+    }
+
+    public void setOnChangeNameListener(OnChangeNameListener listener){
+        this.listener = listener;
+    }
+
     private MagDeviceNameDialogFragment magDeviceNameDialogFragment;
     private MagDeviceTimeZoneFragment magDeviceTimeZoneFragment;
 
@@ -122,6 +132,14 @@ public class CloudLiveDeviceInfoFragment extends Fragment implements CloudLiveDe
     @Override
     public void initSdCardState(int state) {
 
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (listener != null){
+            listener.changeName(tvInformationFacilityName.getText().toString().trim());
+        }
 
     }
 }

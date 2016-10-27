@@ -234,6 +234,9 @@ public class DataSourceService extends Service implements AppCallBack {
     @Override
     public void OnGetFriendListRsp(int i, ArrayList<JFGFriendAccount> arrayList) {
         AppLogger.d("OnLocalMessage :");
+        if (eventBus != null && eventBus.hasObservers()){
+            eventBus.send(new RxEvent.GetFriendList(i,arrayList));
+        }
     }
 
     @Override

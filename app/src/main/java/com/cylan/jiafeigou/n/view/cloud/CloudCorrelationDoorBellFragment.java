@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
@@ -17,7 +18,9 @@ import com.cylan.jiafeigou.n.mvp.contract.cloud.CloudCorrelationDoorBellContract
 import com.cylan.jiafeigou.n.mvp.impl.cloud.CloudCorrelationDoorBellPresenterImp;
 import com.cylan.jiafeigou.n.mvp.model.BellInfoBean;
 import com.cylan.jiafeigou.n.view.adapter.RelationDoorBellAdapter;
+import com.cylan.jiafeigou.n.view.adapter.UnRelationDoorBellAdapter;
 import com.cylan.jiafeigou.utils.ViewUtils;
+import com.cylan.superadapter.internal.SuperViewHolder;
 
 import java.util.List;
 
@@ -48,10 +51,13 @@ public class CloudCorrelationDoorBellFragment extends Fragment implements CloudC
     TextView tvRelativeDoorBell;
     @BindView(R.id.tv_unrelative_door_bell)
     TextView tvUnrelativeDoorBell;
+    @BindView(R.id.progress_show)
+    ProgressBar progressShow;
 
     private RelationDoorBellAdapter hasRelativeAdapter;
 
     private CloudCorrelationDoorBellContract.Presenter presenter;
+    private UnRelationDoorBellAdapter unRelationDoorBellAdapter;
 
     public static CloudCorrelationDoorBellFragment newInstance(Bundle bundle) {
         CloudCorrelationDoorBellFragment fragment = new CloudCorrelationDoorBellFragment();
@@ -104,14 +110,89 @@ public class CloudCorrelationDoorBellFragment extends Fragment implements CloudC
     }
 
     @Override
-    public void initRecycleView(List<BellInfoBean> list) {
+    public void initRelativeRecycleView(List<BellInfoBean> list) {
         hasRelativeAdapter = new RelationDoorBellAdapter(getContext(), list, null);
         rcyHasCorrelation.setLayoutManager(new LinearLayoutManager(getContext()));
         rcyHasCorrelation.setAdapter(hasRelativeAdapter);
     }
 
     @Override
-    public void showNoRelativeDevicesView() {
-        tvRelativeDoorBell.setVisibility(View.INVISIBLE);
+    public void initUnRelativeRecycleView(List<BellInfoBean> list) {
+        unRelationDoorBellAdapter = new UnRelationDoorBellAdapter(getContext(), list, null);
+        rcyUncorrelation.setLayoutManager(new LinearLayoutManager(getContext()));
+        rcyUncorrelation.setAdapter(unRelationDoorBellAdapter);
     }
+
+    @Override
+    public void showNoRelativeDevicesView(int flag) {
+        if (flag == 1) {
+            tvRelativeDoorBell.setVisibility(View.VISIBLE);
+        } else {
+            tvRelativeDoorBell.setVisibility(View.GONE);
+        }
+    }
+
+    @Override
+    public void showNoUnRelativeDevicesView(int flag) {
+        if (flag == 1) {
+            tvUnrelativeDoorBell.setVisibility(View.GONE);
+        } else {
+            tvUnrelativeDoorBell.setVisibility(View.VISIBLE);
+        }
+    }
+
+    @Override
+    public void setOnUnRelItemClickListener(UnRelationDoorBellAdapter.OnRelativeClickListener listener) {
+        unRelationDoorBellAdapter.setOnRelativeClickListener(listener);
+    }
+
+    @Override
+    public void setOnRelaItemClickListener(RelationDoorBellAdapter.OnUnRelaItemClickListener listener) {
+        hasRelativeAdapter.setOnUnRelaItemClickListener(listener);
+    }
+
+    @Override
+    public void notifyUnRelativeRecycle(SuperViewHolder holder, int viewType, int layoutPosition, BellInfoBean item, int flag) {
+        if (flag == 1) {
+            unRelationDoorBellAdapter.remove(layoutPosition);
+            unRelationDoorBellAdapter.notifyDataSetChanged();
+            if (unRelationDoorBellAdapter.getCount() == 0) {
+                showNoUnRelativeDevicesView(flag);
+            }
+        } else if (flag == 2) {
+            unRelationDoorBellAdapter.add(item);
+            unRelationDoorBellAdapter.notifyDataSetChanged();
+            if (unRelationDoorBellAdapter.getCount() != 0) {
+                showNoUnRelativeDevicesView(flag);
+            }
+        }
+    }
+
+    @Override
+    public void notifyRelativeRecycle(SuperViewHolder holder, int viewType, int layoutPosition, BellInfoBean item, int flag) {
+        if (flag == 1) {
+            hasRelativeAdapter.add(item);
+            hasRelativeAdapter.notifyDataSetChanged();
+            if (hasRelativeAdapter.getCount() != 0) {
+                showNoRelativeDevicesView(flag);
+            }
+        } else if (flag == 2) {
+            hasRelativeAdapter.remove(layoutPosition);
+            hasRelativeAdapter.notifyDataSetChanged();
+            if (hasRelativeAdapter.getCount() == 0) {
+                showNoRelativeDevicesView(flag);
+            }
+        }
+    }
+
+    @Override
+    public void showProgress() {
+        progressShow.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideProgress() {
+        progressShow.setVisibility(View.INVISIBLE);
+    }
+
 }

@@ -39,13 +39,6 @@
             android:src="@drawable/icon_setting" />
     </RelativeLayout>
 
-    <android.support.v7.widget.RecyclerView
-        android:layout_below="@id/rLayout_cloud_live_top_bar"
-        android:id="@+id/rcy_cloud_mesg_list"
-        android:layout_width="match_parent"
-        android:layout_height="fill_parent">
-    </android.support.v7.widget.RecyclerView>
-
     <RelativeLayout
         android:background="@color/color_white"
         android:gravity="center_vertical"
@@ -54,26 +47,48 @@
         android:layout_height="48dp">
 
         <ImageView
+            android:layout_centerVertical="true"
             android:id="@+id/iv_cloud_share_pic"
             android:layout_marginLeft="42dp"
-            android:src="@drawable/share_pic"
+            android:src="@drawable/icon_album_bottom_share_pic"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
         <ImageView
+            android:layout_centerVertical="true"
             android:id="@+id/iv_cloud_videochat"
             android:layout_centerHorizontal="true"
-            android:src="@drawable/image_videochat"
+            android:src="@drawable/icon_album_bottom_videochat"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
         <ImageView
+            android:layout_centerVertical="true"
             android:id="@+id/iv_cloud_talk"
             android:layout_alignParentRight="true"
             android:layout_marginRight="42dp"
-            android:src="@drawable/icon_talk"
+            android:src="@drawable/icon_album_bottom_talk"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
     </RelativeLayout>
+
+    <FrameLayout
+        android:id="@+id/fl_recy_container"
+        android:layout_below="@id/rLayout_cloud_live_top_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rcy_cloud_mesg_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+        </android.support.v7.widget.RecyclerView>
+
+        <ProgressBar
+            android:visibility="invisible"
+            android:id="@+id/progress_re_connet"
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </FrameLayout>
 
 </RelativeLayout>

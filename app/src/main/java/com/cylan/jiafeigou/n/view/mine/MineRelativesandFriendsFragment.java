@@ -71,7 +71,6 @@ public class MineRelativesandFriendsFragment extends Fragment implements MineRel
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         friendsFragment = MineRelativesAndFriendAddFriendsFragment.newInstance();
-        addReqDetailFragment = MineRelativeAndFriendAddReqDetailFragment.newInstance();
     }
 
     @Nullable
@@ -100,16 +99,15 @@ public class MineRelativesandFriendsFragment extends Fragment implements MineRel
             showRelativesAndFriendsList();
             initListener();
         }
-
     }
 
     private void initListener() {
         relativesAndFriendsListAdapter.setItemClickListener(new RelativesAndFriendsAdapter.ItemClickListener() {
             @Override
             public void onClick(View view, int position) {
-
                 Bundle bundle = new Bundle();
                 bundle.putInt("position", position);
+                bundle.putSerializable("frienditembean", relativesAndFriendList.get(position));
                 relativeAndFrienDetialFragment = MineRelativeAndFriendDetailFragment.newInstance(bundle);
                 getFragmentManager().beginTransaction()
                         .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
@@ -140,7 +138,7 @@ public class MineRelativesandFriendsFragment extends Fragment implements MineRel
                 if (getView() != null)
                     ViewUtils.deBounceClick(view);
                 AppLogger.e("add_request_detail_fragment");
-                jump2AddReqDetailFragment();
+                jump2AddReqDetailFragment(position);
             }
         });
 
@@ -156,7 +154,10 @@ public class MineRelativesandFriendsFragment extends Fragment implements MineRel
 
     }
 
-    private void jump2AddReqDetailFragment() {
+    private void jump2AddReqDetailFragment(int position) {
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("addRequestItems", requestAddList.get(position));
+        addReqDetailFragment = MineRelativeAndFriendAddReqDetailFragment.newInstance(bundle);
         getFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                         , R.anim.slide_in_left, R.anim.slide_out_right)
@@ -204,9 +205,7 @@ public class MineRelativesandFriendsFragment extends Fragment implements MineRel
                 AppLogger.e("tv_home_mine_relativesandfriends_add");
                 jump2AddReAndFriendFragment();
                 break;
-
         }
-
     }
 
     private void jump2AddReAndFriendFragment() {

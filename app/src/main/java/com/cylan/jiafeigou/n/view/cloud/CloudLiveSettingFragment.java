@@ -14,9 +14,11 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.misc.RxEvent;
 import com.cylan.jiafeigou.n.mvp.contract.cloud.CloudLiveSettingContract;
 import com.cylan.jiafeigou.n.mvp.impl.cloud.CloudLiveSettingPresenterImp;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.support.rxbus.RxBus;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.SettingItemView2;
@@ -82,7 +84,18 @@ public class CloudLiveSettingFragment extends Fragment implements CloudLiveSetti
         View view = inflater.inflate(R.layout.fragment_cloud_live_setting, container, false);
         ButterKnife.bind(this, view);
         initPresenter();
+        initListener();
         return view;
+    }
+
+    private void initListener() {
+        cloudLiveDeviceInfoFragment.setOnChangeNameListener(new CloudLiveDeviceInfoFragment.OnChangeNameListener() {
+            @Override
+            public void changeName(String name) {
+                tvBellDetail.setTvSubTitle(name);
+                //TODO 名称上传服务器保存
+            }
+        });
     }
 
     private void initPresenter() {
@@ -146,6 +159,9 @@ public class CloudLiveSettingFragment extends Fragment implements CloudLiveSetti
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
+                if (RxBus.getInstance().hasObservers()) {
+                    RxBus.getInstance().send(new RxEvent.CloundLiveDelete());
+                }
                 ToastUtil.showToast("正在删除中...");
             }
         });

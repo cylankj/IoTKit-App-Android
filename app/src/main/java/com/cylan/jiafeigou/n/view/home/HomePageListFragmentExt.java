@@ -133,7 +133,6 @@ public class HomePageListFragmentExt extends Fragment implements
         super.onSaveInstanceState(outState);
     }
 
-
     @Override
     public void onResume() {
         super.onResume();
@@ -141,6 +140,7 @@ public class HomePageListFragmentExt extends Fragment implements
         onTimeTick(JFGRules.getTimeRule());
         if (presenter != null)
             presenter.fetchGreet();
+
     }
 
     @Override
@@ -348,7 +348,6 @@ public class HomePageListFragmentExt extends Fragment implements
             Toast.makeText(getContext(), "还没登陆", Toast.LENGTH_SHORT).show();
         }
     }
-
 
     @Override
     public void onRefresh() {

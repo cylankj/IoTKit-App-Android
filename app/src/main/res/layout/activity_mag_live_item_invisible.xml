@@ -5,16 +5,11 @@
     android:layout_height="48dp"
     android:orientation="horizontal">
 
-
-    <com.cylan.jiafeigou.widget.FateLineView
+    <com.cylan.jiafeigou.widget.DashLineView
         android:id="@+id/flv_mag_live_invisible"
+        android:layout_marginLeft="131dp"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_marginLeft="129dp"
-        hunt:dashLineColor="@color/color_e8e8e8"
-        hunt:dashLineWidth="2dp"
-        hunt:innerCircleColor="@color/color_e8e8e8"
-        hunt:innerCircleRadius="0dp"
-        hunt:outerCircleRadius="0dp" />
+        android:layout_height="match_parent">
+    </com.cylan.jiafeigou.widget.DashLineView>
 
 </LinearLayout>

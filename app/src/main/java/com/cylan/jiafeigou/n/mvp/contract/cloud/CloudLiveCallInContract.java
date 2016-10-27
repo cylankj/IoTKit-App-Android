@@ -8,12 +8,17 @@ import com.cylan.jiafeigou.n.mvp.BaseView;
  * 创建时间：2016/9/26
  * 描述：
  */
-public interface CloudVideoChatConettionContract {
+public interface CloudLiveCallInContract {
 
     interface View extends BaseView<Presenter> {
     }
 
-    interface Presenter extends BasePresenter {
 
+    interface Presenter extends BasePresenter {
+        void setVideoTalkFinishFlag(boolean isFinish);
+
+        void setVideoTalkFinishResultData(String data);
+
+        void bindService();
     }
 }

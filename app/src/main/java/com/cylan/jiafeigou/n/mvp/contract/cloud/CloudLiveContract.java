@@ -20,7 +20,7 @@ public interface CloudLiveContract {
 
     interface View extends BaseView<Presenter> {
 
-        void showVoiceTalkDialog(Context context);
+        void showVoiceTalkDialog(Context context, boolean isOnLine);
 
         void refreshView(int leftVal, int rightVal);
 
@@ -29,9 +29,20 @@ public interface CloudLiveContract {
         void refreshRecycleView(CloudLiveBaseBean bean);
 
         void hangUpRefreshView(String result);
+
+        void ignoreRefreshView(String result);
+
+        void handlerVideoTalk(boolean isOnline);
+
+        void showReconnetProgress();
+
+        void hideReconnetProgress();
+
+        void scrollToLast();                               //滚动到最后一条
     }
 
     interface Presenter extends BasePresenter {
+
         String startRecord();
 
         void startTalk();
@@ -52,7 +63,7 @@ public interface CloudLiveContract {
 
         String parseTime(String times);
 
-        void createDB();
+        void getDBManger();
 
         byte[] getSerializedObject(Serializable s);
 
@@ -64,6 +75,14 @@ public interface CloudLiveContract {
 
         void initService();                                 //启动服务
 
-        void refreshHangUpView();
+        void refreshHangUpView();                           //更新挂断结果
+
+        void handlerIgnoreView();                           //更新忽略结果
+
+        void handlerVideoTalk();                           //处理视频通话
+
+        void handlerLeveaMesg(Context context);            //处理语音留言
+
+
     }
 }

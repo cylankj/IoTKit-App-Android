@@ -1,11 +1,13 @@
 package com.cylan.jiafeigou.n.mvp.model;
 
+import java.io.Serializable;
+
 /**
  * 作者：zsl
  * 创建时间：2016/8/30
  * 描述：
  */
-public class SuggestionChatInfoBean {
+public class SuggestionChatInfoBean implements Serializable{
 
     public String content;
     public int type;

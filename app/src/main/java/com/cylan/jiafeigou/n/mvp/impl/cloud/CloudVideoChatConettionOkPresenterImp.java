@@ -52,6 +52,10 @@ public class CloudVideoChatConettionOkPresenterImp extends AbstractPresenter<Clo
         if (loadProAnimSub != null) {
             loadProAnimSub.unsubscribe();
         }
+
+        if (conn != null) {
+            getView().getContext().unbindService(conn);
+        }
     }
 
     @Override
@@ -103,7 +107,6 @@ public class CloudVideoChatConettionOkPresenterImp extends AbstractPresenter<Clo
     }
 
     public void showLoadProgressAnim() {
-
         loadProAnimSub = Observable.interval(500, 300, TimeUnit.MILLISECONDS)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
