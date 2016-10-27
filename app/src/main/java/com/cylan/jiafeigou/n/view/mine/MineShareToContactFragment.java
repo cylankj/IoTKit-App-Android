@@ -9,15 +9,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineShareToContactContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineShareToContactPresenterImp;
-import com.cylan.jiafeigou.n.mvp.model.SuggestionChatInfoBean;
 import com.cylan.jiafeigou.n.view.adapter.ShareToContactAdapter;
 import com.cylan.jiafeigou.utils.ToastUtil;
-
-import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -36,8 +34,9 @@ public class MineShareToContactFragment extends Fragment implements MineShareToC
     ImageView ivMineShareToContactSearch;
     @BindView(R.id.rcy_mine_share_to_contact_list)
     RecyclerView rcyMineShareToContactList;
+    @BindView(R.id.ll_no_contact)
+    LinearLayout llNoContact;
 
-    private ShareToContactAdapter shareToContactAdapter;
     private MineShareToContactContract.Presenter presenter;
 
     public static MineShareToContactFragment newInstance() {
@@ -50,8 +49,15 @@ public class MineShareToContactFragment extends Fragment implements MineShareToC
         View view = inflater.inflate(R.layout.frgment_mine_share_to_contact, container, false);
         ButterKnife.bind(this, view);
         initPresenter();
-        presenter.initContactData();
         return view;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (presenter != null){
+            presenter.start();
+        }
     }
 
     private void initPresenter() {
@@ -78,27 +84,21 @@ public class MineShareToContactFragment extends Fragment implements MineShareToC
     }
 
     @Override
-    public void setAdapter(ArrayList<SuggestionChatInfoBean> list) {
-        rcyMineShareToContactList.setLayoutManager(new LinearLayoutManager(getContext()));
-        shareToContactAdapter = new ShareToContactAdapter(list);
-        rcyMineShareToContactList.setAdapter(shareToContactAdapter);
-    }
-
-    @Override
-    public void setItemCheckListener() {
-        shareToContactAdapter.setOnShareLisenter(new ShareToContactAdapter.onShareLisenter() {
-            @Override
-            public void isChecked(View view, int position) {
-                ToastUtil.showToast(getContext(), shareToContactAdapter.getRcyList().get(position).getName());
-            }
-        });
-    }
-
-    @Override
     public void onStop() {
         super.onStop();
         if (presenter != null) {
             presenter.stop();
         }
+    }
+
+    @Override
+    public void initContactReclyView(ShareToContactAdapter adapter) {
+        rcyMineShareToContactList.setLayoutManager(new LinearLayoutManager(getContext()));
+        rcyMineShareToContactList.setAdapter(adapter);
+    }
+
+    @Override
+    public void showNoContactNullView() {
+        llNoContact.setVisibility(View.VISIBLE);
     }
 }

@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import com.cylan.entity.jniCall.JFGFriendAccount;
 import com.cylan.entity.jniCall.JFGFriendRequest;
+import com.cylan.entity.jniCall.JFGShareListInfo;
 
 import java.util.ArrayList;
 
@@ -218,6 +219,20 @@ public class RxEvent {
         public ArrayList<JFGFriendRequest> arrayList;
 
         public GetAddReqList(int i, ArrayList<JFGFriendRequest> arrayList) {
+            this.i = i;
+            this.arrayList = arrayList;
+        }
+    }
+
+    /**
+     * desc：获取到分享设备的信息
+     */
+    public static final class GetShareDeviceList{
+        public int i;
+
+        public ArrayList<JFGShareListInfo> arrayList;
+
+        public GetShareDeviceList(int i, ArrayList<JFGShareListInfo> arrayList) {
             this.i = i;
             this.arrayList = arrayList;
         }

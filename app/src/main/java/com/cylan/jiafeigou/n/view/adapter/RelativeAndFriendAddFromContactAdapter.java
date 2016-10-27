@@ -1,5 +1,6 @@
 package com.cylan.jiafeigou.n.view.adapter;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,81 +9,66 @@ import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.model.SuggestionChatInfoBean;
+import com.cylan.superadapter.IMulItemViewType;
+import com.cylan.superadapter.SuperAdapter;
+import com.cylan.superadapter.internal.SuperViewHolder;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 作者：zsl
  * 创建时间：2016/9/6
  * 描述：
  */
-public class RelativeAndFriendAddFromContactAdapter extends RecyclerView.Adapter<RelativeAndFriendAddFromContactAdapter.AddContactHolder> {
-
-    private ArrayList<SuggestionChatInfoBean> messages;
-
-    public RelativeAndFriendAddFromContactAdapter(ArrayList<SuggestionChatInfoBean> messages) {
-        this.messages = messages;
-    }
+public class RelativeAndFriendAddFromContactAdapter extends SuperAdapter<SuggestionChatInfoBean> {
 
     private onContactItemClickListener listener;
 
     public interface onContactItemClickListener {
-        void onClick(View view, int position);
+        void onAddClick(View view, int position,SuggestionChatInfoBean item);
     }
-
-    ;
-
 
     public void setOnContactItemClickListener(onContactItemClickListener listener) {
         this.listener = listener;
     }
 
-    @Override
-    public AddContactHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.fragment_mine_relativeandfriend_add_from_contact_item, parent, false);
-        return new AddContactHolder(view);
+    public RelativeAndFriendAddFromContactAdapter(Context context, List<SuggestionChatInfoBean> items, IMulItemViewType<SuggestionChatInfoBean> mulItemViewType) {
+        super(context, items, mulItemViewType);
     }
 
     @Override
-    public int getItemCount() {
-        if (messages != null) {
-            return messages.size();
-        } else {
-            return 0;
-        }
-    }
-
-    @Override
-    public void onBindViewHolder(final AddContactHolder holder, final int position) {
-
-        SuggestionChatInfoBean bean = messages.get(position);
-        holder.tv_contactname.setText(bean.getName());
-        holder.tv_contactphone.setText(bean.getContent());
-        holder.tv_contactadd.setOnClickListener(new View.OnClickListener() {
+    public void onBind(final SuperViewHolder holder, int viewType, final int layoutPosition, final SuggestionChatInfoBean item) {
+        holder.setText(R.id.tv_contactname,item.getName());
+        holder.setText(R.id.tv_contactphone,item.getContent());
+        holder.setOnClickListener(R.id.tv_contactadd, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (listener != null) {
-                    listener.onClick(holder.itemView, position);
+                if (listener != null){
+                    listener.onAddClick(holder.getView(layoutPosition),layoutPosition,item);
                 }
             }
         });
     }
 
-    public class AddContactHolder extends RecyclerView.ViewHolder {
+    @Override
+    protected IMulItemViewType<SuggestionChatInfoBean> offerMultiItemViewType() {
+        return new IMulItemViewType<SuggestionChatInfoBean>() {
+            @Override
+            public int getViewTypeCount() {
+                return 1;
+            }
 
-        private final TextView tv_contactname;
-        private final TextView tv_contactphone;
-        private final TextView tv_contactadd;
+            @Override
+            public int getItemViewType(int position, SuggestionChatInfoBean bean) {
+                return 0;
+            }
 
-        public AddContactHolder(View itemView) {
-            super(itemView);
-            tv_contactname = (TextView) itemView.findViewById(R.id.tv_contactname);
-            tv_contactphone = (TextView) itemView.findViewById(R.id.tv_contactphone);
-            tv_contactadd = (TextView) itemView.findViewById(R.id.tv_contactadd);
-        }
+            @Override
+            public int getLayoutId(int viewType) {
+                return R.layout.fragment_mine_relativeandfriend_add_from_contact_item;
+            }
+        };
     }
 
-    public ArrayList<SuggestionChatInfoBean> getAdapterList() {
-        return messages;
-    }
 }

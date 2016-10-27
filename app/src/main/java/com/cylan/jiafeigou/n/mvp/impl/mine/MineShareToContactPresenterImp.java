@@ -8,6 +8,9 @@ import android.support.annotation.NonNull;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineShareToContactContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.n.mvp.model.SuggestionChatInfoBean;
+import com.cylan.jiafeigou.n.view.adapter.ShareToContactAdapter;
+import com.cylan.jiafeigou.utils.ToastUtil;
+import com.sina.weibo.sdk.utils.LogUtil;
 
 import java.util.ArrayList;
 
@@ -24,9 +27,10 @@ import rx.schedulers.Schedulers;
  * 描述：
  */
 public class MineShareToContactPresenterImp extends AbstractPresenter<MineShareToContactContract.View>
-        implements MineShareToContactContract.Presenter {
+        implements MineShareToContactContract.Presenter, ShareToContactAdapter.onShareLisenter {
 
     private Subscription shareToContactSub;
+    private ShareToContactAdapter shareToContactAdapter;
 
     public MineShareToContactPresenterImp(MineShareToContactContract.View view) {
         super(view);
@@ -35,12 +39,12 @@ public class MineShareToContactPresenterImp extends AbstractPresenter<MineShareT
 
     @Override
     public void start() {
-
+        initContactData();
     }
 
     @Override
     public void stop() {
-        if (shareToContactSub != null) {
+        if (shareToContactSub != null && shareToContactSub.isUnsubscribed()) {
             shareToContactSub.unsubscribe();
         }
     }
@@ -60,10 +64,24 @@ public class MineShareToContactPresenterImp extends AbstractPresenter<MineShareT
                 .subscribe(new Action1<ArrayList<SuggestionChatInfoBean>>() {
                     @Override
                     public void call(ArrayList<SuggestionChatInfoBean> list) {
-                        getView().setAdapter(list);
-                        getView().setItemCheckListener();
+                        handlerContactDataResult(list);
                     }
                 });
+    }
+
+    /**
+     * desc:处理得到的数据结果
+     * @param list
+     */
+    private void handlerContactDataResult(ArrayList<SuggestionChatInfoBean> list) {
+
+        if (getView() != null && list != null && list.size() != 0){
+            shareToContactAdapter = new ShareToContactAdapter(getView().getContext(),list,null);
+            getView().initContactReclyView(shareToContactAdapter);
+            shareToContactAdapter.setOnShareLisenter(this);
+        }else {
+            getView().showNoContactNullView();
+        }
     }
 
     @NonNull
@@ -95,4 +113,13 @@ public class MineShareToContactPresenterImp extends AbstractPresenter<MineShareT
         return list;
     }
 
+
+    /**
+     * desc：点击分享按钮
+     * @param item
+     */
+    @Override
+    public void isShare(SuggestionChatInfoBean item) {
+        
+    }
 }

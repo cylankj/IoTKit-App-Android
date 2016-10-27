@@ -226,7 +226,6 @@ public class MineRelativesandFriendsPresenterImp extends AbstractPresenter<MineR
      * @param addReqList
      */
     private void handleInitAddReqListDataResult(final RxEvent.GetAddReqList addReqList) {
-        LogUtil.d("oooooooooooooooooolsl",addReqList.arrayList.size()+"长度");
         if (addReqList.arrayList.size() != 0){
             getView().showAddReqListTitle();
             addReqListAdater = new AddRelativesAndFriendsAdapter(getView().getContext(),addReqList.arrayList,null);

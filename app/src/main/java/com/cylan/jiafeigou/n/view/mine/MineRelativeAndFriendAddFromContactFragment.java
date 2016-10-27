@@ -12,15 +12,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineRelativeAndFriendAddFromContactContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineRelativeAndFriendAddFromContactPresenterImp;
 import com.cylan.jiafeigou.n.mvp.model.SuggestionChatInfoBean;
 import com.cylan.jiafeigou.n.view.adapter.RelativeAndFriendAddFromContactAdapter;
-import com.cylan.jiafeigou.utils.ToastUtil;
-
-import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -39,19 +37,27 @@ public class MineRelativeAndFriendAddFromContactFragment extends Fragment implem
     EditText etAddPhoneNumber;
     @BindView(R.id.rcy_contact_list)
     RecyclerView rcyContactList;
+    @BindView(R.id.ll_no_contact)
+    LinearLayout llNoContact;
 
     private MineRelativeAndFriendAddFromContactContract.Presenter presenter;
-    private RelativeAndFriendAddFromContactAdapter relativeAndFriendAddFromContactAdapter;
     private MineAddFromContactFragment mineAddFromContactFragment;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mineAddFromContactFragment = MineAddFromContactFragment.newInstance();
     }
 
     public static MineRelativeAndFriendAddFromContactFragment newInstance() {
         return new MineRelativeAndFriendAddFromContactFragment();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (presenter != null){
+            presenter.start();
+        }
     }
 
     @Nullable
@@ -60,7 +66,6 @@ public class MineRelativeAndFriendAddFromContactFragment extends Fragment implem
         View view = inflater.inflate(R.layout.fragment_mine_relativeandfriend_add_from_contact, container, false);
         ButterKnife.bind(this, view);
         initPresenter();
-        presenter.initContactData();
         initEditTextListenter();
         return view;
     }
@@ -102,41 +107,31 @@ public class MineRelativeAndFriendAddFromContactFragment extends Fragment implem
     }
 
     @Override
-    public void setRcyAdapter(ArrayList<SuggestionChatInfoBean> list) {
+    public void initContactRecycleView(RelativeAndFriendAddFromContactAdapter adapter) {
         rcyContactList.setLayoutManager(new LinearLayoutManager(getContext()));
-        relativeAndFriendAddFromContactAdapter = new RelativeAndFriendAddFromContactAdapter(list);
-        rcyContactList.setAdapter(relativeAndFriendAddFromContactAdapter);
+        rcyContactList.setAdapter(adapter);
     }
 
     @Override
-    public void InitItemClickListener() {
-        relativeAndFriendAddFromContactAdapter.setOnContactItemClickListener(new RelativeAndFriendAddFromContactAdapter.onContactItemClickListener() {
-            @Override
-            public void onClick(View view, int position) {
-                ToastUtil.showToast(getContext(), relativeAndFriendAddFromContactAdapter.getAdapterList().get(position).getName());
-                getFragmentManager().beginTransaction()
-                        .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
-                                , R.anim.slide_in_left, R.anim.slide_out_right)
-                        .add(android.R.id.content, mineAddFromContactFragment, "mineAddFromContactFragment")
-                        .addToBackStack("mineHelpFragment")
-                        .commit();
-            }
-        });
+    public void jump2SendAddMesgFragment(SuggestionChatInfoBean bean) {
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("contactItem",bean);
+        mineAddFromContactFragment = MineAddFromContactFragment.newInstance(bundle);
+        getFragmentManager().beginTransaction()
+                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
+                        , R.anim.slide_in_left, R.anim.slide_out_right)
+                .add(android.R.id.content, mineAddFromContactFragment, "mineAddFromContactFragment")
+                .addToBackStack("mineHelpFragment")
+                .commit();
     }
 
-
-    /*@OnTextChanged(value = R.id.et_add_phone_number, callback = OnTextChanged.Callback.BEFORE_TEXT_CHANGED)
-    void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
+    /**
+     * desc：显示空视图
+     */
+    @Override
+    public void showNoContactView() {
+        llNoContact.setVisibility(View.VISIBLE);
     }
-    @OnTextChanged(value = R.id.et_add_phone_number, callback = OnTextChanged.Callback.TEXT_CHANGED)
-    void onTextChanged(CharSequence s, int start, int before, int count) {
-        presenter.filterPhoneData(s.toString());
-    }
-    @OnTextChanged(value = R.id.et_add_phone_number, callback = OnTextChanged.Callback.AFTER_TEXT_CHANGED)
-    void afterTextChanged(Editable s) {
-
-    }*/
 
     @Override
     public void onStop() {
