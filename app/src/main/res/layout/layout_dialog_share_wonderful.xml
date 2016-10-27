@@ -15,7 +15,7 @@
 
         <TextView
             android:clickable="true"
-            android:id="@+id/tv_share_to_friends"
+            android:id="@+id/tv_share_to_timeline"
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:drawableLeft="@drawable/icon_share_to_friend"
@@ -27,7 +27,7 @@
 
         <TextView
             android:clickable="true"
-            android:id="@+id/tv_share_to_wechat"
+            android:id="@+id/tv_share_to_wechat_friends"
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:drawableLeft="@drawable/icon_share_to_wechat"

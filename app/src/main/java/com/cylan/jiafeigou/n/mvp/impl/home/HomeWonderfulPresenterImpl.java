@@ -16,6 +16,7 @@ import com.cylan.utils.RandomUtils;
 import com.google.gson.Gson;
 
 import java.io.File;
+import java.lang.ref.SoftReference;
 import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -43,10 +44,11 @@ import rx.subscriptions.CompositeSubscription;
 public class HomeWonderfulPresenterImpl extends AbstractPresenter<HomeWonderfulContract.View>
         implements HomeWonderfulContract.Presenter {
 
-    private WeakReference<List<MediaBean>> weakReferenceList;
+    private SoftReference<List<MediaBean>> weakReferenceList;
     private Subscription onRefreshSubscription;
     private Subscription onTimeLineSubscription;
     private CompositeSubscription _timeTickSubscriptions = new CompositeSubscription();
+    private long lastTime;
 
     public HomeWonderfulPresenterImpl(HomeWonderfulContract.View view) {
         super(view);
@@ -92,7 +94,7 @@ public class HomeWonderfulPresenterImpl extends AbstractPresenter<HomeWonderfulC
     private List<MediaBean> requestList() {
         int count = 10;
         List<MediaBean> list = new ArrayList<>();
-        long currentTime = System.currentTimeMillis();
+        long currentTime = lastTime == 0 ? System.currentTimeMillis() : lastTime;
         for (int i = 0; i < count; i++) {
             final long time = currentTime - (i * i) * 3600 * 24L * 1000;
             MediaBean baseBean = new MediaBean();
@@ -106,6 +108,9 @@ public class HomeWonderfulPresenterImpl extends AbstractPresenter<HomeWonderfulC
                 baseBean.srcUrl = videos[RandomUtils.getRandom(videos.length)];
             }
             list.add(baseBean);
+            if (i == count - 1) {
+                lastTime = time;
+            }
         }
         AppLogger.d("rawList: " + (new Gson().toJson(list)));
         return list;
@@ -120,11 +125,11 @@ public class HomeWonderfulPresenterImpl extends AbstractPresenter<HomeWonderfulC
         if (list == null || list.size() == 0)
             return;
         if (weakReferenceList == null) {
-            weakReferenceList = new WeakReference<>(list);
+            weakReferenceList = new SoftReference<>(list);
             return;
         }
         if (weakReferenceList.get() == null) {
-            weakReferenceList = new WeakReference<>(list);
+            weakReferenceList = new SoftReference<>(list);
             return;
         }
         if (weakReferenceList != null && weakReferenceList.get() != null) {
@@ -134,7 +139,7 @@ public class HomeWonderfulPresenterImpl extends AbstractPresenter<HomeWonderfulC
             rawList = new ArrayList<>(new HashSet<>(rawList));
             Collections.sort(rawList);
             //retain them again
-            weakReferenceList = new WeakReference<>(rawList);
+            weakReferenceList = new SoftReference<>(rawList);
         }
     }
 
@@ -159,9 +164,9 @@ public class HomeWonderfulPresenterImpl extends AbstractPresenter<HomeWonderfulC
     private void wrapTimeLineDataSet() {
         onTimeLineSubscription = Observable.just(weakReferenceList)
                 .subscribeOn(Schedulers.newThread())
-                .flatMap(new Func1<WeakReference<List<MediaBean>>, Observable<WheelViewDataSet>>() {
+                .flatMap(new Func1<SoftReference<List<MediaBean>>, Observable<WheelViewDataSet>>() {
                     @Override
-                    public Observable<WheelViewDataSet> call(WeakReference<List<MediaBean>> listWeakReference) {
+                    public Observable<WheelViewDataSet> call(SoftReference<List<MediaBean>> listWeakReference) {
                         if (listWeakReference == null || listWeakReference.get() == null)
                             return null;
                         return Observable.just(assembleTimeLineData(listWeakReference.get()));
@@ -207,6 +212,11 @@ public class HomeWonderfulPresenterImpl extends AbstractPresenter<HomeWonderfulC
 
                     }
                 });
+
+    }
+
+    @Override
+    public void deleteTimeline(long time) {
 
     }
 

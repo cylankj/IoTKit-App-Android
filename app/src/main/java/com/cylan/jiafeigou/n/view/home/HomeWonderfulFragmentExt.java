@@ -103,7 +103,7 @@ public class HomeWonderfulFragmentExt extends Fragment implements
 
     WeakReference<WheelView> wheelViewWeakReference;
     WeakReference<ShareDialogFragment> shareDialogFragmentWeakReference;
-    WeakReference<SimpleDialogFragment> simpleDialogFragmentWeakReference;
+    WeakReference<SimpleDialogFragment> deleteDialogFragmentWeakReference;
     @BindView(R.id.tv_sec_title_head_wonder)
     TextView tvSecTitleHeadWonder;
     @BindView(R.id.toolbar)
@@ -199,9 +199,9 @@ public class HomeWonderfulFragmentExt extends Fragment implements
     }
 
     private void initDeleteDialog() {
-        if (simpleDialogFragmentWeakReference == null || simpleDialogFragmentWeakReference.get() == null) {
-            simpleDialogFragmentWeakReference = new WeakReference<>(SimpleDialogFragment.newInstance(null));
-            simpleDialogFragmentWeakReference.get().setAction(this);
+        if (deleteDialogFragmentWeakReference == null || deleteDialogFragmentWeakReference.get() == null) {
+            deleteDialogFragmentWeakReference = new WeakReference<>(SimpleDialogFragment.newInstance(null));
+            deleteDialogFragmentWeakReference.get().setAction(this);
         }
     }
 
@@ -257,16 +257,16 @@ public class HomeWonderfulFragmentExt extends Fragment implements
         rVDevicesList.setLayoutManager(linearLayoutManager);
         rVDevicesList.setAdapter(homeWonderAdapter);
         rVDevicesList.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            int pastVisiblesItems, visibleItemCount, totalItemCount;
+            int pastVisibleItems, visibleItemCount, totalItemCount;
 
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 if (dy > 0) { //check for scroll down
                     visibleItemCount = linearLayoutManager.getChildCount();
                     totalItemCount = linearLayoutManager.getItemCount();
-                    pastVisiblesItems = linearLayoutManager.findFirstVisibleItemPosition();
+                    pastVisibleItems = linearLayoutManager.findFirstVisibleItemPosition();
                     if (endlessLoading) {
-                        if ((visibleItemCount + pastVisiblesItems) >= totalItemCount) {
+                        if ((visibleItemCount + pastVisibleItems) >= totalItemCount) {
                             endlessLoading = false;
                             if (presenter != null)
                                 presenter.startRefresh();
@@ -280,6 +280,12 @@ public class HomeWonderfulFragmentExt extends Fragment implements
     }
 
     private void initHeaderView() {
+        tvDateItemHeadWonder.post(new Runnable() {
+            @Override
+            public void run() {
+                tvDateItemHeadWonder.setText(TimeUtils.getTodayString());
+            }
+        });
     }
 
 
@@ -395,7 +401,10 @@ public class HomeWonderfulFragmentExt extends Fragment implements
                 break;
             case R.id.tv_wonderful_item_delete:
                 initDeleteDialog();
-                Toast.makeText(getContext(), "delete: " + position, Toast.LENGTH_SHORT).show();
+                SimpleDialogFragment deleteF = deleteDialogFragmentWeakReference.get();
+                deleteF.setValue(position);
+                deleteF.setArguments(new Bundle());
+                deleteF.show(getActivity().getSupportFragmentManager(), "deleteDialogFragment");
                 break;
         }
     }
@@ -414,7 +423,7 @@ public class HomeWonderfulFragmentExt extends Fragment implements
 
     private void deleteItem(final int position) {
         initDeleteDialog();
-        SimpleDialogFragment fragment = simpleDialogFragmentWeakReference.get();
+        SimpleDialogFragment fragment = deleteDialogFragmentWeakReference.get();
         fragment.setValue(position);
         fragment.show(getActivity().getSupportFragmentManager(), "ShareDialogFragment");
     }
@@ -490,20 +499,27 @@ public class HomeWonderfulFragmentExt extends Fragment implements
 
     @Override
     public void share(int id) {
-        initShareDialog();
+        switch (id) {
+            case R.id.tv_share_to_wechat_friends:
+                break;
+            case R.id.tv_share_to_timeline:
+                break;
+        }
         Toast.makeText(getContext(), "share to: " + id, Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onDialogAction(int id, Object value) {
-        if (id == SimpleDialogFragment.ACTION_RIGHT)
+        if (id == R.id.tv_dialog_btn_right)
             return;
         if (value == null || !(value instanceof Integer)) {
-            Toast.makeText(getContext(), "null: ", Toast.LENGTH_SHORT).show();
+            AppLogger.i("value is null :" + value);
             return;
         }
+        final int position = (int) value;
+        if (presenter != null && position >= 0 && position < homeWonderAdapter.getCount())
+            presenter.deleteTimeline(homeWonderAdapter.getItem(position).time);
         homeWonderAdapter.remove((Integer) value);
-        Toast.makeText(getContext(), "id: " + id + " value:" + value, Toast.LENGTH_SHORT).show();
     }
 
     @Override

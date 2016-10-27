@@ -33,6 +33,13 @@ public interface HomeWonderfulContract {
 
     interface Presenter extends BasePresenter {
         void startRefresh();
+
+        /**
+         * 删除每日精彩条目
+         *
+         * @param time
+         */
+        void deleteTimeline(long time);
     }
 
 }

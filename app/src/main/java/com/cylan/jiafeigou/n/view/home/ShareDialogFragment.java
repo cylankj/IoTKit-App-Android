@@ -22,9 +22,9 @@ public class ShareDialogFragment extends BaseDialog {
 
     @BindView(R.id.lLayout_dialog_share_wonderful)
     CardView lLayoutDialogShareWonderful;
-    @BindView(R.id.tv_share_to_friends)
+    @BindView(R.id.tv_share_to_timeline)
     TextView tvShareToFriends;
-    @BindView(R.id.tv_share_to_wechat)
+    @BindView(R.id.tv_share_to_wechat_friends)
     TextView tvShareToWechat;
 
     public static ShareDialogFragment newInstance(Bundle bundle) {
@@ -41,17 +41,17 @@ public class ShareDialogFragment extends BaseDialog {
         return view;
     }
 
-    @OnClick({R.id.tv_share_to_friends, R.id.tv_share_to_wechat})
+    @OnClick({R.id.tv_share_to_timeline, R.id.tv_share_to_wechat_friends})
     public void onClick(View view) {
         dismiss();
         switch (view.getId()) {
-            case R.id.tv_share_to_friends:
+            case R.id.tv_share_to_timeline:
                 if (shareToListener != null)
-                    shareToListener.share(0);
+                    shareToListener.share(R.id.tv_share_to_timeline);
                 break;
-            case R.id.tv_share_to_wechat:
+            case R.id.tv_share_to_wechat_friends:
                 if (shareToListener != null)
-                    shareToListener.share(1);
+                    shareToListener.share(R.id.tv_share_to_wechat_friends);
                 break;
         }
     }

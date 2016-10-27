@@ -7,8 +7,10 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.Toast;
 
+import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.JConstant;
-import com.cylan.jiafeigou.n.mvp.model.RequestResetPwdBean;
+import com.cylan.jiafeigou.misc.JError;
+import com.cylan.jiafeigou.misc.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
@@ -63,19 +65,9 @@ public class RegisterPwdFragment extends SetupPwdFragment
         ivLoginTopLeft.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Bundle bundle = new Bundle();
-                bundle.putString(SimpleDialogFragment.KEY_TITLE, "是否确认退出？");
-                bundle.putString(SimpleDialogFragment.KEY_LEFT_CONTENT, "否");
-                bundle.putString(SimpleDialogFragment.KEY_RIGHT_CONTENT, "是");
-                SimpleDialogFragment dialogFragment = SimpleDialogFragment.newInstance(bundle);
-                dialogFragment.setAction(RegisterPwdFragment.this);
-                dialogFragment.show(getActivity().getSupportFragmentManager(), DIALOG_KEY);
+                showSimpleDialog("是否确认退出?", "否", "是", false);
             }
         });
-    }
-
-    @Override
-    public void submitResult(RequestResetPwdBean bean) {
     }
 
     @Override
@@ -86,7 +78,7 @@ public class RegisterPwdFragment extends SetupPwdFragment
         if (f != null && f.isVisible()) {
             ((SimpleDialogFragment) f).dismiss();
         }
-        if (id == SimpleDialogFragment.ACTION_LEFT) {
+        if (id == R.id.tv_dialog_btn_left) {
         } else {
 //            Toast.makeText(getContext(), "去登录", Toast.LENGTH_SHORT).show();
             //dismiss the dialog
@@ -94,4 +86,32 @@ public class RegisterPwdFragment extends SetupPwdFragment
         }
     }
 
+    @Override
+    public void submitResult(RxEvent.ResultRegister register) {
+        switch (register.code) {
+            case JError.ErrorAccountAlreadyExist:
+                showSimpleDialog("账号已经存在，请直接登陆", "取消", "去登陆", false);
+                break;
+        }
+    }
+
+    /**
+     * 弹框，{fragment}
+     */
+    private void showSimpleDialog(String title,
+                                  String lContent,
+                                  String rContent,
+                                  boolean dismiss) {
+        Fragment f = getActivity().getSupportFragmentManager().findFragmentByTag(DIALOG_KEY);
+        if (f == null) {
+            Bundle bundle = new Bundle();
+            bundle.putString(SimpleDialogFragment.KEY_TITLE, title);
+            bundle.putString(SimpleDialogFragment.KEY_LEFT_CONTENT, lContent);
+            bundle.putString(SimpleDialogFragment.KEY_RIGHT_CONTENT, rContent);
+            bundle.putBoolean(SimpleDialogFragment.KEY_TOUCH_OUT_SIDE_DISMISS, dismiss);
+            SimpleDialogFragment dialogFragment = SimpleDialogFragment.newInstance(bundle);
+            dialogFragment.setAction(this);
+            dialogFragment.show(getActivity().getSupportFragmentManager(), DIALOG_KEY);
+        }
+    }
 }

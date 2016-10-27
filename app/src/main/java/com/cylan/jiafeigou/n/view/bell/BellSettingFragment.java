@@ -135,7 +135,7 @@ public class BellSettingFragment extends Fragment
     @Override
     public void onDialogAction(int id, Object value) {
         switch (id) {
-            case SimpleDialogFragment.ACTION_LEFT:
+            case R.id.tv_dialog_btn_left:
                 Bundle bundle = getArguments();
                 if (bundle == null) {
                     AppLogger.d("bundle is null");

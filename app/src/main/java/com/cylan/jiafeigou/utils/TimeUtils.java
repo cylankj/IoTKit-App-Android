@@ -44,4 +44,9 @@ public class TimeUtils {
     public static String getMediaVideoTimeInString(final long time) {
         return getSimpleDateFormatVideo.format(new Date(time));
     }
+
+    public static String getTodayString() {
+        return new SimpleDateFormat("yyyy.MM.dd", Locale.getDefault())
+                .format(new Date(System.currentTimeMillis()));
+    }
 }

@@ -37,6 +37,7 @@ import com.cylan.jiafeigou.utils.AnimatorUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.BellTopBackgroundView;
 import com.cylan.jiafeigou.widget.ImageViewTip;
+import com.cylan.jiafeigou.widget.LoadingDialog;
 import com.cylan.utils.RandomUtils;
 
 import java.lang.ref.WeakReference;
@@ -79,9 +80,12 @@ public class DoorBellHomeActivity extends BaseFullScreenFragmentActivity
     private WeakReference<BellSettingFragment> fragmentWeakReference;
     private WeakReference<LBatteryWarnDialog> lBatteryWarnDialog;
     private BellCallRecordListAdapter bellCallRecordListAdapter;
+    /**
+     * 加载更多
+     */
+    private boolean endlessLoading = true;
 
     @Override
-
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_door_bell);
@@ -132,9 +136,34 @@ public class DoorBellHomeActivity extends BaseFullScreenFragmentActivity
         bellCallRecordListAdapter.setSimpleClickListener(this);
         bellCallRecordListAdapter.setSimpleLongClickListener(this);
         rvBellList.setAdapter(bellCallRecordListAdapter);
-        rvBellList.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+        final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
+        rvBellList.setLayoutManager(linearLayoutManager);
         rvBellList.addItemDecoration(new SpacesItemDecoration(new Rect(ViewUtils.dp2px(10), ViewUtils.dp2px(15), 0, 0)));
         rvBellList.getViewTreeObserver().addOnGlobalLayoutListener(this);
+        rvBellList.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            int pastVisibleItems, visibleItemCount, totalItemCount;
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                if (dx > 0) { //check for scroll down
+                    visibleItemCount = linearLayoutManager.getChildCount();
+                    totalItemCount = linearLayoutManager.getItemCount();
+                    pastVisibleItems = linearLayoutManager.findFirstVisibleItemPosition();
+                    if (endlessLoading) {
+                        if ((visibleItemCount + pastVisibleItems) >= totalItemCount) {
+                            endlessLoading = false;
+                            startLoadData();
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    private void startLoadData() {
+        LoadingDialog.showLoading(getSupportFragmentManager(), "加载中...", true);
+        if (presenter != null)
+            presenter.fetchBellRecordsList();
     }
 
     private void initSomething() {
@@ -172,11 +201,6 @@ public class DoorBellHomeActivity extends BaseFullScreenFragmentActivity
             case R.id.tv_top_bar_left:
                 onBackPressed();
                 break;
-//            case R.id.btn_start_calling:
-//                Intent intent = new Intent(this, BellLiveActivity.class);
-//                intent.putExtra("text", "nihao");
-//                startActivity(intent);
-//                break;
         }
     }
 
@@ -242,6 +266,7 @@ public class DoorBellHomeActivity extends BaseFullScreenFragmentActivity
     @Override
     public void onRecordsListRsp(ArrayList<BellCallRecordBean> beanArrayList) {
         bellCallRecordListAdapter.addAll(beanArrayList);
+        LoadingDialog.dismissLoading(getSupportFragmentManager());
     }
 
     @Override
@@ -252,8 +277,6 @@ public class DoorBellHomeActivity extends BaseFullScreenFragmentActivity
             final int resultCode = result.bundle.getInt(JConstant.KEY_ACTIVITY_RESULT_CODE);
             switch (resultCode) {
                 case JConstant.RESULT_CODE_REMOVE_ITEM:
-//                    activityResultPresenter.setActivityResult(result);
-//                    popAllFragmentStack();
                     finishExt();
                     break;
             }

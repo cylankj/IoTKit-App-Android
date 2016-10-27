@@ -153,7 +153,7 @@ public class DBellHomePresenterImpl extends AbstractPresenter<DoorBellHomeContra
 
     @Override
     public void fetchBellRecordsList() {
-
+        onBellCallListSubscription();
     }
 
     private static final String[] pics = {

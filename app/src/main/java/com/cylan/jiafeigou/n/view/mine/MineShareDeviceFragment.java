@@ -111,11 +111,11 @@ public class MineShareDeviceFragment extends Fragment implements MineShareDevice
     public void showShareDialog() {
         final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         View view = View.inflate(getContext(), R.layout.fragment_home_mine_share_devices_dialog, null);
-        view.findViewById(R.id.tv_share_to_friends).setOnClickListener(new View.OnClickListener() {
+        view.findViewById(R.id.tv_share_to_timeline).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (getView() != null)
-                    ViewUtils.deBounceClick(getView().findViewById(R.id.tv_share_to_friends));
+                    ViewUtils.deBounceClick(getView().findViewById(R.id.tv_share_to_timeline));
                 AppLogger.e("tv_share_to_friends");
                 getFragmentManager().beginTransaction()
                         .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right

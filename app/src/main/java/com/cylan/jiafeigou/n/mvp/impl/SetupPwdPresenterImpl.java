@@ -1,9 +1,8 @@
 package com.cylan.jiafeigou.n.mvp.impl;
 
-import com.cylan.entity.jniCall.JFGResult;
 import com.cylan.jiafeigou.misc.JfgCmdEnsurance;
+import com.cylan.jiafeigou.misc.RxEvent;
 import com.cylan.jiafeigou.n.mvp.contract.login.SetupPwdContract;
-import com.cylan.jiafeigou.n.mvp.model.RequestResetPwdBean;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.rxbus.RxBus;
 
@@ -42,8 +41,8 @@ public class SetupPwdPresenterImpl extends AbstractPresenter<SetupPwdContract.Vi
                 .subscribe(new Action1<Object>() {
                     @Override
                     public void call(Object o) {
-                        if (o instanceof JFGResult) {
-                            getView().submitResult(new RequestResetPwdBean(((JFGResult) o).code, ((JFGResult) o).event + ""));
+                        if (o instanceof RxEvent.ResultRegister) {
+                            getView().submitResult((RxEvent.ResultRegister) o);
                         }
                     }
                 }));

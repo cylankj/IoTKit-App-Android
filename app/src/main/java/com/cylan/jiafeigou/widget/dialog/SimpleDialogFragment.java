@@ -23,8 +23,8 @@ import butterknife.OnClick;
 public class SimpleDialogFragment extends BaseDialog {
 
     private Object cache;
-    public static final int ACTION_LEFT = 1;
-    public static final int ACTION_RIGHT = -1;
+//    public static final int ACTION_LEFT = 1;
+//    public static final int ACTION_RIGHT = -1;
 
     public static final String KEY_TITLE = "key_title";
     public static final String KEY_LEFT_CONTENT = "key_left";
@@ -86,10 +86,10 @@ public class SimpleDialogFragment extends BaseDialog {
         dismiss();
         switch (view.getId()) {
             case R.id.tv_dialog_btn_left:
-                if (action != null) action.onDialogAction(ACTION_LEFT, cache);
+                if (action != null) action.onDialogAction(R.id.tv_dialog_btn_left, cache);
                 break;
             case R.id.tv_dialog_btn_right:
-                if (action != null) action.onDialogAction(ACTION_RIGHT, cache);
+                if (action != null) action.onDialogAction(R.id.tv_dialog_btn_right, cache);
                 break;
         }
     }

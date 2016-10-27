@@ -17,8 +17,8 @@ import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.misc.RxEvent;
 import com.cylan.jiafeigou.n.mvp.contract.login.SetupPwdContract;
-import com.cylan.jiafeigou.n.mvp.model.RequestResetPwdBean;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.IMEUtils;
@@ -172,8 +172,9 @@ public class SetupPwdFragment extends Fragment implements SetupPwdContract.View 
         this.pwdPresenter = presenter;
     }
 
+
     @Override
-    public void submitResult(RequestResetPwdBean bean) {
+    public void submitResult(RxEvent.ResultRegister register) {
 
     }
 }

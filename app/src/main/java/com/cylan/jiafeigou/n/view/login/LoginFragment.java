@@ -484,7 +484,7 @@ public class LoginFragment extends android.support.v4.app.Fragment
             }
         }
         Log.d("perform", "perform: " + (System.currentTimeMillis() - time));
-        return notNull && TextUtils.equals(tvLoginTopCenter.getText(), "登录");
+        return notNull;
     }
 
     @Override
@@ -779,7 +779,7 @@ public class LoginFragment extends android.support.v4.app.Fragment
         if (f != null && f.isVisible()) {
             ((SimpleDialogFragment) f).dismiss();
         }
-        if (id == SimpleDialogFragment.ACTION_RIGHT) {
+        if (id == R.id.tv_dialog_btn_right) {
             etLoginPwd.setText("");
             final boolean validPhoneNum = JConstant.PHONE_REG.matcher(etRegisterInputBox.getText()).find();
             switchBox();

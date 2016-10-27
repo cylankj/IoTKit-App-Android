@@ -147,7 +147,8 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginModelContract.Vie
                 .subscribe(new Action1<Object>() {
                     @Override
                     public void call(Object o) {
-                        JfgCmdEnsurance.getCmd().sendCheckCode(phone, JfgEnum.JFG_SMS_REGISTER);
+                        JfgCmdEnsurance.getCmd().sendCheckCode(phone,
+                                JfgEnum.JFG_SMS_REGISTER);
                     }
                 });
     }

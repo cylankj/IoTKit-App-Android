@@ -410,7 +410,7 @@ public class HomePageListFragment extends Fragment implements
 
     @Override
     public void onDialogAction(int id, Object value) {
-        if (id == SimpleDialogFragment.ACTION_RIGHT)
+        if (id == R.id.tv_dialog_btn_right)
             return;
         if (value == null || !(value instanceof Integer)) {
             Toast.makeText(getContext(), "null: ", Toast.LENGTH_SHORT).show();
