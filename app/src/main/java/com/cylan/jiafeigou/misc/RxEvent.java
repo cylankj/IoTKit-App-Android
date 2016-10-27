@@ -31,7 +31,11 @@ public class RxEvent {
     }
 
     public static class LoginRsp {
+        public boolean state;
 
+        public LoginRsp(boolean state) {
+            this.state = state;
+        }
     }
 
     public static class ActivityResult {

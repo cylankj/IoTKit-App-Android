@@ -2,7 +2,6 @@ package com.cylan.jiafeigou.n.mvp.impl.bell;
 
 import android.os.Environment;
 
-import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.RxEvent;
 import com.cylan.jiafeigou.n.mvp.contract.bell.DoorBellHomeContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
@@ -51,7 +50,6 @@ public class DBellHomePresenterImpl extends AbstractPresenter<DoorBellHomeContra
         compositeSubscription.add(onBellCallListSubscription());
         compositeSubscription.add(onLogStateSubscription());
         compositeSubscription.add(onBellBatteryState());
-        getView().onLoginState(RandomUtils.getRandom(1));
     }
 
     private Subscription onBellCallListSubscription() {
@@ -119,7 +117,8 @@ public class DBellHomePresenterImpl extends AbstractPresenter<DoorBellHomeContra
                     @Override
                     public void call(Object o) {
                         if (o != null && o instanceof RxEvent.LoginRsp) {
-                            if (getView() != null) getView().onLoginState(JFGRules.LOGIN);
+                            if (getView() != null)
+                                getView().onLoginState(((RxEvent.LoginRsp) o).state);
                         }
                     }
                 });

@@ -245,7 +245,7 @@ public class DoorBellHomeActivity extends BaseFullScreenFragmentActivity
     }
 
     @Override
-    public void onLoginState(int state) {
+    public void onLoginState(boolean state) {
     }
 
 

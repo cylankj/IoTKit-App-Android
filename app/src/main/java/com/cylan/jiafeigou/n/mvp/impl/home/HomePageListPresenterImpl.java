@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 
+import com.cylan.jiafeigou.cache.JCache;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.RxEvent;
 import com.cylan.jiafeigou.misc.br.TimeTickBroadcast;
@@ -65,7 +66,7 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
                                 //登陆响应
                                 if (event != null && (event instanceof RxEvent.LoginRsp)) {
                                     if (getView() != null)
-                                        getView().onLoginState(RandomUtils.getRandom(2));
+                                        getView().onLoginState(JCache.isOnline);
                                 }
                             }
                         }));
@@ -154,25 +155,16 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
 
     @Override
     public void fetchDeviceList() {
-        final int loginState = RandomUtils.getRandom(2);
-        if (loginState == JFGRules.LOGOUT) {
-            onRefreshSubscription = Observable.just("")
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Action1<String>() {
-                        @Override
-                        public void call(String s) {
-                            getView().onLoginState(JFGRules.LOGOUT);
-                        }
-                    });
-            return;
+        if (!JCache.isOnline) {
+            getView().onLoginState(false);
         }
-        final int testDelay = RandomUtils.getRandom(3);
-        onRefreshSubscription = Observable.just("")
+        final int testDelay = RandomUtils.getRandom(2);
+        onRefreshSubscription = Observable.just(JCache.isOnline)
                 .subscribeOn(Schedulers.newThread())
-                .delay(testDelay * 1000L, TimeUnit.MILLISECONDS)
-                .map(new Func1<String, List<DeviceBean>>() {
+                .delay(testDelay * 500L, TimeUnit.MILLISECONDS)
+                .map(new Func1<Boolean, List<DeviceBean>>() {
                     @Override
-                    public List<DeviceBean> call(String s) {
+                    public List<DeviceBean> call(Boolean s) {
                         return requestList();
                     }
                 })

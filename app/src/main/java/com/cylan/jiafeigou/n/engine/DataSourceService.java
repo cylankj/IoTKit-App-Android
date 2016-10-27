@@ -174,6 +174,7 @@ public class DataSourceService extends Service implements AppCallBack {
     public void OnlineStatus(boolean b) {
         AppLogger.d("OnlineStatus :" + b);
         JCache.isOnline = b;
+        RxBus.getInstance().send(new RxEvent.LoginRsp(b));
     }
 
     @Override
@@ -234,16 +235,16 @@ public class DataSourceService extends Service implements AppCallBack {
     @Override
     public void OnGetFriendListRsp(int i, ArrayList<JFGFriendAccount> arrayList) {
         AppLogger.d("OnLocalMessage :");
-        if (eventBus != null && eventBus.hasObservers()){
-            eventBus.send(new RxEvent.GetFriendList(i,arrayList));
+        if (eventBus != null && eventBus.hasObservers()) {
+            eventBus.send(new RxEvent.GetFriendList(i, arrayList));
         }
     }
 
     @Override
     public void OnGetFriendRequestListRsp(int i, ArrayList<JFGFriendRequest> arrayList) {
         AppLogger.d("OnLocalMessage :");
-        if (eventBus != null && eventBus.hasObservers()){
-            eventBus.send(new RxEvent.GetAddReqList(i,arrayList));
+        if (eventBus != null && eventBus.hasObservers()) {
+            eventBus.send(new RxEvent.GetAddReqList(i, arrayList));
         }
     }
 
@@ -270,8 +271,8 @@ public class DataSourceService extends Service implements AppCallBack {
     @Override
     public void OnGetShareListRsp(int i, ArrayList<JFGShareListInfo> arrayList) {
         AppLogger.d("OnGetShareListRsp :");
-        if (eventBus != null && eventBus.hasObservers()){
-            eventBus.send(new RxEvent.GetShareDeviceList(i,arrayList));
+        if (eventBus != null && eventBus.hasObservers()) {
+            eventBus.send(new RxEvent.GetShareDeviceList(i, arrayList));
         }
 
     }

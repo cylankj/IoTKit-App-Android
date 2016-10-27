@@ -341,11 +341,12 @@ public class HomePageListFragmentExt extends Fragment implements
     }
 
     @Override
-    public void onLoginState(int state) {
-        if (state == JFGRules.LOGIN) {
-        } else if (state == JFGRules.LOGOUT) {
+    public void onLoginState(boolean state) {
+        if (!state) {
             srLayoutMainContentHolder.setRefreshing(false);
             Toast.makeText(getContext(), "还没登陆", Toast.LENGTH_SHORT).show();
+        } else {
+            //update online view
         }
     }
 

@@ -31,10 +31,9 @@ public interface HomePageListContract {
         void onTimeTick(int dayTime);
 
         /**
-         * @param state login:{@link com.cylan.jiafeigou.misc.JFGRules#LOGIN}
-         *              logout :{@link com.cylan.jiafeigou.misc.JFGRules#LOGOUT}
+         * @param state
          */
-        void onLoginState(int state);
+        void onLoginState(boolean state);
     }
 
     interface Presenter extends BasePresenter {
