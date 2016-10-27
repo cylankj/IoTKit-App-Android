@@ -8,6 +8,7 @@ import android.text.TextUtils;
 import com.cylan.entity.JfgEnum;
 import com.cylan.jiafeigou.cache.JCache;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JfgCmdEnsurance;
 import com.cylan.jiafeigou.misc.RxEvent;
 import com.cylan.jiafeigou.n.mvp.contract.login.LoginModelContract;
@@ -91,6 +92,13 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginModelContract.Vie
                         if (o instanceof RxEvent.ResultRegister
                                 && getView().isLoginViewVisible()) {
                             getView().registerResult(((RxEvent.ResultRegister) o).code);
+                        }
+                        if (o instanceof RxEvent.ResultRegister) {
+                            if (((RxEvent.ResultRegister) o).code == JError.ErrorOK) {
+                                //注册成功
+                                PreferencesUtils.putString(JConstant.KEY_REGISTER_SMS_TOKEN, "");
+                                getView().registerResult(((RxEvent.ResultRegister) o).code);
+                            }
                         }
                         if (o instanceof RxEvent.ResultVerifyCode) {
                             getView().verifyCodeResult(((RxEvent.ResultVerifyCode) o).code);

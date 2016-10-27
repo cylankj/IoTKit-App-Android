@@ -72,8 +72,7 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
     }
 
     private static final String[] poet = {"行人无限秋风思，隔水青山似故乡。..........",
-            "一道鹊桥横渺渺，千声玉佩过玲玲。",
-            "柔情似水，佳期如梦。", "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"};
+            "一道鹊桥横渺渺，千声玉佩过玲玲。"};
     private static final String[] nickName = {"女娲", "牛郎", "织女..........", "xxxxxxxxxx"};
 
     private GreetBean generateBean() {

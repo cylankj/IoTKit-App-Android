@@ -29,6 +29,7 @@ import com.cylan.jfgapp.interfases.AppCallBack;
 import com.cylan.jfgapp.jni.JfgAppCmd;
 import com.cylan.jiafeigou.cache.JCache;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.rxbus.IEventBus;
@@ -88,12 +89,12 @@ public class DataSourceService extends Service implements AppCallBack {
 
     @Override
     public void OnReportJfgDevices(JFGDevice[] jfgDevices) {
-        AppLogger.d("OnLocalMessage :");
+        AppLogger.d("OnLocalMessage :" + jfgDevices);
     }
 
     @Override
     public void OnUpdateAccount(JFGAccount jfgAccount) {
-        AppLogger.d("OnLocalMessage :");
+        AppLogger.d("OnLocalMessage :" + jfgAccount);
     }
 
     @Override
@@ -169,20 +170,23 @@ public class DataSourceService extends Service implements AppCallBack {
 
     @Override
     public void OnlineStatus(boolean b) {
-        AppLogger.d("OnlineStatus :");
+        AppLogger.d("OnlineStatus :" + b);
         JCache.isOnline = b;
     }
 
     @Override
     public void OnResult(JFGResult jfgResult) {
+        boolean login = false;
         switch (jfgResult.event) {
             case 0:
                 eventBus.send(new RxEvent.ResultVerifyCode(jfgResult.code));
                 break;
             case 1:
+                login = jfgResult.code == JError.ErrorOK;
                 eventBus.send(new RxEvent.ResultRegister(jfgResult.code));
                 break;
             case 2:
+                login = jfgResult.code == JError.ErrorOK;
                 eventBus.send(new RxEvent.ResultLogin(jfgResult.code));
                 break;
         }
@@ -263,7 +267,7 @@ public class DataSourceService extends Service implements AppCallBack {
 
     @Override
     public void OnUpdateNTP(long l) {
-        AppLogger.d("OnUpdateNTP :"+l);
+        AppLogger.d("OnUpdateNTP :" + l);
     }
 
     @Override

@@ -9,7 +9,7 @@ import android.os.Bundle;
 public class RxEvent {
 
     public static class NeedLoginEvent {
-        public static final String KEY = "show_register";
+        public static final String KEY = "show_login_fragment";
         public Bundle bundle;
 
         public NeedLoginEvent(Bundle bundle) {

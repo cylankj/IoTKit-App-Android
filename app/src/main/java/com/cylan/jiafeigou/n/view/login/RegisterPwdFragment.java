@@ -13,6 +13,7 @@ import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
+import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
 import com.cylan.utils.NetUtils;
 
@@ -91,6 +92,12 @@ public class RegisterPwdFragment extends SetupPwdFragment
         switch (register.code) {
             case JError.ErrorAccountAlreadyExist:
                 showSimpleDialog("账号已经存在，请直接登陆", "取消", "去登陆", false);
+                break;
+            case JError.ErrorSMSCodeNotMatch:
+                ToastUtil.showToast("验证码不正确");
+                break;
+            case JError.ErrorOK:
+                ToastUtil.showToast("注册成功");
                 break;
         }
     }

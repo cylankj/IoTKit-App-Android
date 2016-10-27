@@ -25,7 +25,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
-import com.cylan.constants.JfgConstants;
 import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.NewHomeActivity;
 import com.cylan.jiafeigou.R;
@@ -500,8 +499,7 @@ public class LoginFragment extends android.support.v4.app.Fragment
 
     @Override
     public void loginResult(int code) {
-        if (code == JfgConstants.RESULT_OK) {
-            ToastUtil.showNegativeToast("注册成功");
+        if (code == JError.ErrorOK) {
             getContext().startActivity(new Intent(getContext(), NewHomeActivity.class));
             getActivity().finish();
         } else {
@@ -567,7 +565,8 @@ public class LoginFragment extends android.support.v4.app.Fragment
         if (result == JError.ErrorAccountAlreadyExist) {
             showSimpleDialog("账号已经存在，请直接登陆", "取消", "去登陆", false);
         } else if (result == JError.ErrorOK) {
-            Toast.makeText(getActivity(), "注册成功", Toast.LENGTH_SHORT).show();
+            getContext().startActivity(new Intent(getContext(), NewHomeActivity.class));
+            getActivity().finish();
         }
     }
 

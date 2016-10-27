@@ -58,7 +58,7 @@ public class NeedLoginActivity extends BaseFullScreenFragmentActivity {
         if (extra == null)
             extra = new Bundle();
         extra.putInt(JConstant.KEY_ACTIVITY_FRAGMENT_CONTAINER_ID, android.R.id.content);
-        extra.putInt(JConstant.KEY_FRAGMENT_ACTION_1, 1);
+        extra.putInt(JConstant.KEY_SHOW_LOGIN_FRAGMENT, 1);
         LoginFragment fragment = null;
         if (loginFragmentWeakReference != null && loginFragmentWeakReference.get() != null) {
             fragment = loginFragmentWeakReference.get();
@@ -72,8 +72,14 @@ public class NeedLoginActivity extends BaseFullScreenFragmentActivity {
         } else loginPresenterWeakReference = new WeakReference<>(new LoginPresenterImpl(fragment));
         if (getSupportFragmentManager().findFragmentByTag(fragment.getClass().getSimpleName()) != null)
             return;
-        ActivityUtils.addFragmentToActivity(getSupportFragmentManager(),
-                fragment, android.R.id.content, 0);
+        if (extra.getBoolean(JConstant.KEY_SHOW_LOGIN_FRAGMENT_EXTRA)) {
+            ActivityUtils.addFragmentToActivity(getSupportFragmentManager(),
+                    fragment, android.R.id.content, 0);
+        } else {
+            //do not add to back stack
+            ActivityUtils.addFragmentToActivity(getSupportFragmentManager(),
+                    fragment, android.R.id.content, false);
+        }
     }
 
     @Override

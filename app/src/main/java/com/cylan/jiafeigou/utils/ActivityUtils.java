@@ -55,6 +55,18 @@ public class ActivityUtils {
                 .commit();
     }
 
+    public static void addFragmentToActivity(@NonNull FragmentManager fragmentManager,
+                                             @NonNull Fragment fragment, int containerId, boolean id) {
+        fragmentManager
+                .beginTransaction()
+                .setCustomAnimations(R.anim.slide_down_in,
+                        R.anim.slide_out_left,
+                        R.anim.slide_in_left,
+                        R.anim.slide_out_left)
+                .add(containerId, fragment, fragment.getClass().getSimpleName())
+                .commit();
+    }
+
     public static void justPop(FragmentActivity activity) {
         if (activity != null && activity.getSupportFragmentManager() != null) {
             final int count = activity.getSupportFragmentManager().getBackStackEntryCount();

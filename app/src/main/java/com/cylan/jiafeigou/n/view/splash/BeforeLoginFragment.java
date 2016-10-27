@@ -6,12 +6,15 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityOptionsCompat;
+import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.cylan.jiafeigou.NewHomeActivity;
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.RxEvent;
 import com.cylan.jiafeigou.support.rxbus.RxBus;
 import com.cylan.jiafeigou.utils.ViewUtils;
@@ -41,6 +44,17 @@ public class BeforeLoginFragment extends android.support.v4.app.Fragment {
         return fragment;
     }
 
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        view.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                Log.d("", "");
+                return false;
+            }
+        });
+    }
+
     @OnClick(R.id.btn_look_around)
     public void toLookAround(View view) {
         if (getView() != null)
@@ -66,7 +80,10 @@ public class BeforeLoginFragment extends android.support.v4.app.Fragment {
     public void toLogin(View view) {
         if (getView() != null)
             ViewUtils.deBounceClick(getView().findViewById(R.id.btn_to_login));
-        RxBus.getInstance().send(new RxEvent.NeedLoginEvent(null));
+        Bundle bundle = new Bundle();
+        bundle.putString(RxEvent.NeedLoginEvent.KEY, RxEvent.NeedLoginEvent.KEY);
+        bundle.putBoolean(JConstant.KEY_SHOW_LOGIN_FRAGMENT_EXTRA, true);
+        RxBus.getInstance().send(new RxEvent.NeedLoginEvent(bundle));
     }
 
     @OnClick(R.id.btn_to_register)
@@ -75,6 +92,7 @@ public class BeforeLoginFragment extends android.support.v4.app.Fragment {
             ViewUtils.deBounceClick(getView().findViewById(R.id.btn_to_login));
         Bundle bundle = new Bundle();
         bundle.putString(RxEvent.NeedLoginEvent.KEY, RxEvent.NeedLoginEvent.KEY);
+        bundle.putBoolean(JConstant.KEY_SHOW_LOGIN_FRAGMENT_EXTRA, true);
         RxBus.getInstance().send(new RxEvent.NeedLoginEvent(bundle));
     }
 

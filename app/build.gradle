@@ -77,6 +77,8 @@ android {
                                 AUTHORITY          : "com.cylan.jiafeigou",
                                 QQ_APP_KEY         : "1103156296",
                                 weChat_APP_KEY     : "wx3081bcdae8a842cf",
+                                VKEY               : "kjSle3yL8XPYlobnG4GstpeI8rwNKGj9",
+                                VID                : "0H7A",
                                 NICELY_SINA_APP_KEY: "1315129656"]
         customVersionCode
         versionName "1.0"
@@ -203,15 +205,8 @@ android {
                                     AUTHORITY          : ".test",
                                     QQ_APP_KEY         : "1103156296",
                                     weChat_APP_KEY     : "wx3081bcdae8a842cf",
-                                    NICELY_SINA_APP_KEY: "1315129656"]
-        }
-        _test1 {
-            applicationIdSuffix ".test1"
-            manifestPlaceholders = [NICELY_VALUE       : "test1.jfgou.com:443",
-                                    MAT_VALUE          : getMtaAppKey("test1"),
-                                    AUTHORITY          : ".test1",
-                                    weChat_APP_KEY     : "wx3081bcdae8a842cf",
-                                    QQ_APP_KEY         : "1103156296",
+                                    VKEY               : "kjSle3yL8XPYlobnG4GstpeI8rwNKGj9",
+                                    VID                : "0H7A",
                                     NICELY_SINA_APP_KEY: "1315129656"]
         }
 
@@ -222,15 +217,8 @@ android {
                                     AUTHORITY          : "",
                                     QQ_APP_KEY         : "1103156296",
                                     weChat_APP_KEY     : "wx3081bcdae8a842cf",
-                                    NICELY_SINA_APP_KEY: "1315129656"]
-        }
-        _yun1 {
-            applicationIdSuffix ".yun1"
-            manifestPlaceholders = [NICELY_VALUE       : "yun1.jfgou.com:443",
-                                    MAT_VALUE          : getMtaAppKey("yun1"),
-                                    AUTHORITY          : ".yun1",
-                                    QQ_APP_KEY         : "1103156296",
-                                    weChat_APP_KEY     : "wx3081bcdae8a842cf",
+                                    VKEY               : "sXQHsCIxIOmOEX7k0nBxf0FNbbetSVRK",
+                                    VID                : "00PZ",
                                     NICELY_SINA_APP_KEY: "1315129656"]
         }
         _yf {
@@ -238,6 +226,8 @@ android {
             manifestPlaceholders = [NICELY_VALUE       : "yf.jfgou.com:443",
                                     MAT_VALUE          : getMtaAppKey("yf"),
                                     AUTHORITY          : ".yf",
+                                    VKEY               : "sXQHsCIxIOmOEX7k0nBxf0FNbbetSVRK",
+                                    VID                : "00PZ",
                                     QQ_APP_KEY         : "1103156296",
                                     weChat_APP_KEY     : "wx3081bcdae8a842cf",
                                     NICELY_SINA_APP_KEY: "1315129656"]
@@ -250,6 +240,8 @@ android {
                                     AUTHORITY          : ".zhongxing",
                                     QQ_APP_KEY         : "1103156296",
                                     weChat_APP_KEY     : "wx3081bcdae8a842cf",
+                                    VKEY               : "sXQHsCIxIOmOEX7k0nBxf0FNbbetSVRK",
+                                    VID                : "00PZ",
                                     NICELY_SINA_APP_KEY: "1315129656"]
         }
     }

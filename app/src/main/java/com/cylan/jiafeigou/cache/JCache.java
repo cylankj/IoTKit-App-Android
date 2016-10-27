@@ -15,4 +15,6 @@ public class JCache {
      * false:忘记密码逻辑。
      */
     public static boolean isSmsAction = false;
+
+
 }

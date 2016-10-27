@@ -61,7 +61,12 @@ public class JConstant {
     /**
      * fragment与宿主activity之间的切换关系，{1:finishActivity,2:just popFragment}
      */
-    public static final String KEY_FRAGMENT_ACTION_1 = "key_fragment_activity_0";
+    public static final String KEY_SHOW_LOGIN_FRAGMENT = "key_show_login_fragment";
+    /**
+     * 作为一个key:{@link com.cylan.jiafeigou.n.view.login.LoginFragment}
+     * ，是否需要调用addToBackStack
+     */
+    public static final String KEY_SHOW_LOGIN_FRAGMENT_EXTRA = "key_show_login_fragment_extra";
 
 
     public static final String KEY_FRESH = "is_you_fresh";

@@ -81,11 +81,11 @@
         <!-- your vid getString must "\ " -->
         <meta-data
             android:name="vid"
-            android:value="\ 0H79" />
+            android:value="\ 00PZ" />
         <!-- your vkey -->
         <meta-data
             android:name="vkey"
-            android:value="mqDHVBKutUcKvMMwDjYjvNv1Wy8Ll4HC" />
+            android:value="${VKEY}" />
         <meta-data
             android:name="sina_app_key"
             android:value="${NICELY_SINA_APP_KEY}" />
