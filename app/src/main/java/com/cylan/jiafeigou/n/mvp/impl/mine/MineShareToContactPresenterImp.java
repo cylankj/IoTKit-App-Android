@@ -1,6 +1,5 @@
 package com.cylan.jiafeigou.n.mvp.impl.mine;
 
-import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.ContactsContract;
@@ -9,9 +8,7 @@ import android.text.TextUtils;
 
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineShareToContactContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
-import com.cylan.jiafeigou.n.mvp.model.BaseBean;
 import com.cylan.jiafeigou.n.mvp.model.SuggestionChatInfoBean;
-import com.cylan.jiafeigou.n.view.adapter.ShareToContactAdapter;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 

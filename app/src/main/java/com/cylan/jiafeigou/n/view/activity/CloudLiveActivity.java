@@ -97,7 +97,6 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
         initDataBase();
         initRecycleView();
         initListener();
-        presenter.initService();
     }
 
     private void initListener() {
@@ -221,7 +220,7 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
 
     private void jump2SharePicFragment() {
         Intent intent = new Intent(this,CloudLiveCallInActivity.class);
-        startActivity(intent);
+        startActivityForResult(intent,1);
     }
 
     private void jump2VideoChatFragment() {
@@ -478,7 +477,14 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
         super.onRestart();
         if (presenter != null) {
             presenter.refreshHangUpView();
-            presenter.handlerIgnoreView();
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1 && data != null){
+            ignoreRefreshView(data.getStringExtra("ignore"));
         }
     }
 }

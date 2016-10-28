@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <RelativeLayout
+
+        android:layout_marginLeft="15dp"
+        android:layout_width="match_parent"
+        android:layout_height="67dp">
+
+        <com.cylan.jiafeigou.widget.roundedimageview.RoundedImageView
+            android:layout_centerVertical="true"
+            android:id="@+id/iv_userhead"
+            android:src="@drawable/img_me_list_head"
+            android:layout_width="50dp"
+            android:layout_height="50dp" />
+
+        <RelativeLayout
+            android:gravity="center_vertical"
+            android:layout_toRightOf="@id/iv_userhead"
+            android:paddingLeft="15dp"
+            android:layout_width="match_parent"
+            android:layout_height="67dp"
+            >
+            <TextView
+                android:id="@+id/tv_friend_name"
+                android:textSize="16sp"
+                android:textColor="@color/color_333333"
+                android:text="小名"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:id="@+id/tv_friend_account"
+                android:paddingTop="8dp"
+                android:layout_below="@id/tv_friend_name"
+                android:textSize="12sp"
+                android:textColor="@color/color_8c8c8c"
+                android:text="我是小姨"
+                android:singleLine="true"
+                android:ellipsize="end"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </RelativeLayout>
+
+        <ImageView
+            android:id="@+id/iv_is_share_check"
+            android:layout_marginRight="15dp"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:src="@drawable/icon_not_selected"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <View
+            android:layout_alignParentBottom="true"
+            android:id="@+id/view_line"
+            android:background="@color/color_f2f2f2"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"/>
+    </RelativeLayout>
+
+</LinearLayout>

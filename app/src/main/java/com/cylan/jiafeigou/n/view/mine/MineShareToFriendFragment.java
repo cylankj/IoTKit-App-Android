@@ -3,16 +3,22 @@ package com.cylan.jiafeigou.n.view.mine;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineShareToRelativeAndFriendContract;
+import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
+import com.cylan.jiafeigou.n.view.adapter.ShareToFriendsAdapter;
 import com.cylan.jiafeigou.utils.ToastUtil;
+
+import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -32,6 +38,9 @@ public class MineShareToFriendFragment extends Fragment implements MineShareToRe
     TextView tvMineShareToRelativeFriendTrue;
     @BindView(R.id.rcy_mine_share_to_relative_and_friend_list)
     RecyclerView rcyMineShareToRelativeAndFriendList;
+    @BindView(R.id.ll_no_friend)
+    LinearLayout llNoFriend;
+    private ShareToFriendsAdapter shareToFriendsAdapter;
 
     public static MineShareToFriendFragment newInstance() {
         return new MineShareToFriendFragment();
@@ -63,5 +72,25 @@ public class MineShareToFriendFragment extends Fragment implements MineShareToRe
                 ToastUtil.showToast(getContext(), "分享成功");
                 break;
         }
+    }
+
+    @Override
+    public void initRecycleView(ArrayList<RelAndFriendBean> list) {
+        rcyMineShareToRelativeAndFriendList.setLayoutManager(new LinearLayoutManager(getContext()));
+        shareToFriendsAdapter = new ShareToFriendsAdapter(getContext(), list, null);
+        rcyMineShareToRelativeAndFriendList.setAdapter(shareToFriendsAdapter);
+        initAdaListener();
+    }
+
+    @Override
+    public void showNoFriendNullView() {
+        llNoFriend.setVisibility(View.VISIBLE);
+    }
+
+    /**
+     * 列表的监听器
+     */
+    private void initAdaListener() {
+
     }
 }

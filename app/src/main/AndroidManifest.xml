@@ -239,15 +239,12 @@
             android:name=".n.engine.CloudLiveService"
             android:enabled="true"
             android:exported="true"
-            android:process=":cloudlive" />
+            />
         <activity
-            android:name=".n.view.activity.CloudLiveReturnCallActivity"
-            android:process=".cloudlive"
-             />
+            android:name=".n.view.activity.CloudLiveReturnCallActivity"/>
 
         <activity
-            android:name=".n.view.activity.CloudLiveCallInActivity"
-            android:process=".cloudlive"/>
+            android:name=".n.view.activity.CloudLiveCallInActivity"/>
     </application>
 
 </manifest>

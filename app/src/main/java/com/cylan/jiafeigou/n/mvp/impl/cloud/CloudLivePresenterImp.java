@@ -15,6 +15,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.cylan.jiafeigou.ICloudLiveService;
+import com.cylan.jiafeigou.misc.RxEvent;
 import com.cylan.jiafeigou.n.db.CloudLiveDbUtil;
 import com.cylan.jiafeigou.n.engine.CloudLiveService;
 import com.cylan.jiafeigou.n.mvp.contract.cloud.CloudLiveContract;
@@ -28,6 +29,7 @@ import com.cylan.jiafeigou.support.db.DbManagerImpl;
 import com.cylan.jiafeigou.support.db.ex.DbException;
 import com.cylan.jiafeigou.support.db.sqlite.SqlInfo;
 import com.cylan.jiafeigou.support.db.sqlite.SqlInfoBuilder;
+import com.cylan.jiafeigou.support.rxbus.RxBus;
 import com.sina.weibo.sdk.utils.LogUtil;
 
 import java.io.ByteArrayInputStream;
@@ -70,13 +72,13 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
     private File filePath;
     private long startTime;
     private long endTime;
+    private boolean isFinish;
 
     private String output_Path = Environment.getExternalStorageDirectory().getAbsolutePath()
             + File.separator + System.currentTimeMillis()+"luyin.3gp";
 
     private DbManager base_db;
 
-    private ICloudLiveService mService;
     private Subscription checkDeviceOnLineSub;
     private Subscription leaveMesgSub;
 
@@ -102,10 +104,6 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
 
         if (leaveMesgSub != null){
             leaveMesgSub.unsubscribe();
-        }
-
-        if (conn != null){
-            getView().getContext().unbindService(conn);
         }
 
         stopPlayRecord();
@@ -322,35 +320,19 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
         return allData;
     }
 
-    @Override
-    public void initService() {
-        Intent serviceIntent = new Intent(getView().getContext(), CloudLiveService.class);
-        getView().getContext().startService(serviceIntent);
-        getView().getContext().bindService(serviceIntent,conn, Context.BIND_AUTO_CREATE);
-    }
 
     @Override
     public void refreshHangUpView() {
-        try {
-            if (mService.getHangUpFlag()){
-                getView().hangUpRefreshView(mService.getHangUpResultData());
-                mService.setHangUpFlag(false);
-            }
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    public void handlerIgnoreView() {
-        try {
-            if (mService.getIgnoreFlag()){
-                getView().ignoreRefreshView(mService.getIgnoreResultData());
-                mService.setIgnoreFlag(false);
-            }
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
+        RxBus.getInstance().toObservable()
+                .subscribe(new Action1<Object>() {
+                    @Override
+                    public void call(Object o) {
+                        if (o != null && o instanceof RxEvent.HangUpVideoTalk){
+                            RxEvent.HangUpVideoTalk backData = (RxEvent.HangUpVideoTalk) o;
+                            getView().hangUpRefreshView( backData.talkTime);
+                        }
+                    }
+                });
     }
 
     @Override
@@ -398,15 +380,4 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
                 });
     }
 
-    private ServiceConnection conn = new ServiceConnection() {
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            mService = ICloudLiveService.Stub.asInterface(service);
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName name) {
-            mService = null;
-        }
-    };
 }

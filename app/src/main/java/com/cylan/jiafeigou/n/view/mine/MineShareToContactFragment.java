@@ -128,7 +128,6 @@ public class MineShareToContactFragment extends Fragment implements MineShareToC
             case R.id.iv_mine_share_to_contact_search:
                 hideTopTitle();
                 showSearchInputEdit();
-                ToastUtil.showToast(getContext(), "正在搜索...");
                 break;
         }
     }

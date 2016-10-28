@@ -13,6 +13,7 @@ public class RelAndFriendBean implements Parcelable {
     public String iconHead;
     public String alids;
     public String account;
+    public String markName;
 
     @Override
     public int describeContents() {
@@ -27,12 +28,14 @@ public class RelAndFriendBean implements Parcelable {
         dest.writeString(this.iconHead);
         dest.writeString(this.alids);
         dest.writeString(this.account);
+        dest.writeString(this.markName);
     }
 
     protected RelAndFriendBean(Parcel in) {
         this.iconHead = in.readString();
         this.alids = in.readString();
         this.account = in.readString();
+        this.markName = in.readString();
     }
 
     public static final Creator<RelAndFriendBean> CREATOR = new Creator<RelAndFriendBean>() {

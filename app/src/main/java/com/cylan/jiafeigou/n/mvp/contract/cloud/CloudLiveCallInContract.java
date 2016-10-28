@@ -15,8 +15,5 @@ public interface CloudLiveCallInContract {
     }
 
     interface Presenter extends BasePresenter{
-        void setVideoTalkFinishFlag(boolean isFinish);
-        void setVideoTalkFinishResultData(String data);
-        void bindService();
     }
 }
