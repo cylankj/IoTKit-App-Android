@@ -502,6 +502,10 @@ public class LoginFragment extends android.support.v4.app.Fragment
         if (code == JError.ErrorOK) {
             if (!(getActivity() instanceof NewHomeActivity))
                 getActivity().finish();
+            else {
+                getActivity().getSupportFragmentManager().popBackStack();
+                return;
+            }
             getContext().startActivity(new Intent(getContext(), NewHomeActivity.class));
         } else {
             resetView();

@@ -195,13 +195,6 @@
             android:screenOrientation="portrait"
             android:theme="@style/CamActivityTheme"
             android:windowSoftInputMode="adjustPan|stateHidden" />
-        <!-- <activity -->
-        <!-- android:name=".n.view.bell.BellSettingActivity" -->
-        <!-- android:configChanges="locale|orientation|keyboardHidden" -->
-        <!-- android:launchMode="singleTask" -->
-        <!-- android:screenOrientation="portrait" -->
-        <!-- android:theme="@style/CamActivityTheme" -->
-        <!-- android:windowSoftInputMode="adjustPan|stateHidden" /> -->
         <activity
             android:name=".n.view.bell.BellLiveActivity"
             android:configChanges="locale|orientation|keyboardHidden|navigation|screenSize"
@@ -217,11 +210,10 @@
             android:theme="@style/CamActivityTheme"
             android:windowSoftInputMode="adjustPan|stateHidden" />
 
-        <!-- 一个空的service，辅助启动bell_call进程。 -->
-        <service
-            android:name=".n.engine.SimpleHelperIntentService"
-            android:exported="false"
-            android:process=":bell_call" />
+        <!--&lt;!&ndash; 一个空的service，辅助启动bell_call进程。 &ndash;&gt;-->
+        <!--<service-->
+            <!--android:name=".n.engine.SimpleHelperIntentService"-->
+            <!--android:exported="false" />-->
 
         <activity
             android:name=".n.view.activity.MediaActivity"
@@ -250,8 +242,7 @@
         <service
             android:name=".n.engine.CloudLiveService"
             android:enabled="true"
-            android:exported="true"
-            android:process=":cloudlive" />
+            android:exported="true" />
 
         <activity
             android:name="com.sina.weibo.sdk.component.WeiboSdkBrowser"
@@ -259,13 +250,9 @@
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
 
-        <activity
-            android:name=".n.view.activity.CloudLiveReturnCallActivity"
-            android:process=".cloudlive" />
+        <activity android:name=".n.view.activity.CloudLiveCalledActivity" />
 
-        <activity
-            android:name=".n.view.activity.CloudLiveCallInActivity"
-            android:process=".cloudlive" />
+        <activity android:name=".n.view.activity.CloudLiveCallInActivity" />
     </application>
 
 </manifest>

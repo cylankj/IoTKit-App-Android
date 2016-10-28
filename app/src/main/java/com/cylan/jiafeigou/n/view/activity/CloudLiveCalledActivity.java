@@ -25,7 +25,7 @@ import butterknife.OnClick;
  * 创建时间：2016/10/13
  * 描述：
  */
-public class CloudLiveReturnCallActivity extends AppCompatActivity implements CloudVideoChatConettionOkContract.View {
+public class CloudLiveCalledActivity extends AppCompatActivity implements CloudVideoChatConettionOkContract.View {
 
     @BindView(R.id.vv_chatvideo_from)
     VideoView vvChatvideoFrom;

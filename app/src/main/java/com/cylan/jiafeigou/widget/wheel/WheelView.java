@@ -282,20 +282,20 @@ public class WheelView extends View {
     }
 
 
-    @Override
-    protected Parcelable onSaveInstanceState() {
-        Parcelable superState = super.onSaveInstanceState();
-        ViewState ss = new ViewState(superState);
-        ss.shouldScrollX = shouldScrollX;
-        return ss;
-    }
-
-    @Override
-    protected void onRestoreInstanceState(Parcelable state) {
-        ViewState ss = (ViewState) state;
-        super.onRestoreInstanceState(ss.getSuperState());
-        setShouldScrollX(ss.shouldScrollX);
-    }
+//    @Override
+//    protected Parcelable onSaveInstanceState() {
+//        Parcelable superState = super.onSaveInstanceState();
+//        ViewState ss = new ViewState(superState);
+//        ss.shouldScrollX = shouldScrollX;
+//        return ss;
+//    }
+//
+//    @Override
+//    protected void onRestoreInstanceState(Parcelable state) {
+//        ViewState ss = (ViewState) state;
+//        super.onRestoreInstanceState(ss.getSuperState());
+//        setShouldScrollX(ss.shouldScrollX);
+//    }
 
     /**
      * 寻找出离中心线最近的数据index,分三种情况{左边，中间，右边}，后期有待优化
@@ -432,41 +432,41 @@ public class WheelView extends View {
         return wheelViewDataSet;
     }
 
-    /**
-     * 参考 progressBar ,可当成一个模板使用。
-     */
-    public static class ViewState extends View.BaseSavedState {
-
-
-        float shouldScrollX;
-        int position;
-
-        public ViewState(Parcel source) {
-            super(source);
-            shouldScrollX = source.readFloat();
-        }
-
-        public ViewState(Parcelable superState) {
-            super(superState);
-        }
-
-        @Override
-        public void writeToParcel(Parcel out, int flags) {
-            super.writeToParcel(out, flags);
-            out.writeFloat(shouldScrollX);
-        }
-
-        public static final Parcelable.Creator<ViewState> CREATOR
-                = new Parcelable.Creator<ViewState>() {
-            public ViewState createFromParcel(Parcel in) {
-                return new ViewState(in);
-            }
-
-            public ViewState[] newArray(int size) {
-                return new ViewState[size];
-            }
-        };
-    }
+//    /**
+//     * 参考 progressBar ,可当成一个模板使用。
+//     */
+//    public static class ViewState extends View.BaseSavedState {
+//
+//
+//        float shouldScrollX;
+//        int position;
+//
+//        public ViewState(Parcel source) {
+//            super(source);
+//            shouldScrollX = source.readFloat();
+//        }
+//
+//        public ViewState(Parcelable superState) {
+//            super(superState);
+//        }
+//
+//        @Override
+//        public void writeToParcel(Parcel out, int flags) {
+//            super.writeToParcel(out, flags);
+//            out.writeFloat(shouldScrollX);
+//        }
+//
+//        public static final Parcelable.Creator<ViewState> CREATOR
+//                = new Parcelable.Creator<ViewState>() {
+//            public ViewState createFromParcel(Parcel in) {
+//                return new ViewState(in);
+//            }
+//
+//            public ViewState[] newArray(int size) {
+//                return new ViewState[size];
+//            }
+//        };
+//    }
 
     public void setOnItemChangedListener(OnItemChangedListener onItemChangedListener) {
         this.onItemChangedListener = onItemChangedListener;

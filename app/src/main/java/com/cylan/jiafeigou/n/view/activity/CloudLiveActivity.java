@@ -142,7 +142,7 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
                     case 1:
                         CloudLiveVideoTalkBean bean = (CloudLiveVideoTalkBean) mData.get(position).getData();
                         if (!bean.isHasConnet()) {
-                            Intent intent = new Intent(CloudLiveActivity.this, CloudLiveReturnCallActivity.class);
+                            Intent intent = new Intent(CloudLiveActivity.this, CloudLiveCalledActivity.class);
                             startActivity(intent);
                         }
                         break;
@@ -221,7 +221,7 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
             case R.id.iv_cloud_videochat:                               //视频通话
                 ViewUtils.deBounceClick(findViewById(R.id.iv_cloud_videochat));
                 //jump2VideoChatFragment();
-                Intent intent = new Intent(CloudLiveActivity.this, CloudLiveReturnCallActivity.class);
+                Intent intent = new Intent(CloudLiveActivity.this, CloudLiveCalledActivity.class);
                 startActivity(intent);
                 presenter.handlerVideoTalk();
                 break;
@@ -279,67 +279,6 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
         }
     }
 
-    //    @Override
-//    public void showVoiceTalkDialog(final Context context) {
-//        dialog = new Dialog(context, R.style.Theme_Light_Dialog);
-//        View dialogView = LayoutInflater.from(context).inflate(R.layout.fragment_cloud_voice_talk_dialog, null);
-//        Window window = dialog.getWindow();
-//        window.setGravity(Gravity.BOTTOM);
-//        window.setWindowAnimations(R.style.dialogStyle);
-//        window.getDecorView().setPadding(0, 0, 0, 0);
-//        WindowManager.LayoutParams lp = window.getAttributes();
-//        lp.width = WindowManager.LayoutParams.MATCH_PARENT;
-//        lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
-//        window.setAttributes(lp);
-//        dialog.setContentView(dialogView);
-//        left_voice = (CloudLiveVoiceTalkView) dialogView.findViewById(R.id.voidTalkView_left);
-//        right_voice = (CloudLiveVoiceTalkView) dialogView.findViewById(R.id.voidTalkView_right);
-//        tv_show_mesg = (TextView) dialogView.findViewById(R.id.tv_show_mesg);
-//        tv_show_mesg.setText("按下留言");
-//
-//        iv_voice_delete = (ImageView) dialogView.findViewById(R.id.iv_voice_delete);
-//        iv_voice_delete.setOnTouchListener(new View.OnTouchListener() {
-//
-//            private String leaveMesgUrl;                        //录音的地址
-//
-//            @Override
-//            public boolean onTouch(View v, MotionEvent event) {
-//
-//                switch (event.getAction()) {
-//
-//                    case MotionEvent.ACTION_DOWN: {
-//                        if (!presenter.checkSDCard()) {
-//                            ToastUtil.showToast("未检测到SD卡");
-//                            return false;
-//                        }
-//                        tv_show_mesg.setText("松开发送");
-//                        leaveMesgUrl = presenter.startRecord();
-//                        presenter.startTalk();
-//                        return true;
-//                    }
-//                    case MotionEvent.ACTION_MOVE: {
-//                        return true;
-//                    }
-//                    case MotionEvent.ACTION_UP: {
-//                        tv_show_mesg.setText("按下留言k7k");
-//                        presenter.stopRecord();
-//                        CloudLiveBaseBean newBean = presenter.creatMesgBean();
-//                        newBean.setType(0);
-//                        CloudLiveLeaveMesBean newLeaveBean = new CloudLiveLeaveMesBean();
-//                        newLeaveBean.setLeaveMesgLength(presenter.getLeaveMesgLength());
-//                        newLeaveBean.setLeaveMesgUrl(leaveMesgUrl);
-//                        newLeaveBean.setRead(false);
-//                        newLeaveBean.setLeveMesgTime(presenter.parseTime(System.currentTimeMillis() + ""));
-//                        newBean.setData(newLeaveBean);
-//                        presenter.addMesgItem(newBean);
-//
-//                        //保存到数据库
-//                        CloudLiveBaseDbBean dbBean = new CloudLiveBaseDbBean();
-//                        dbBean.setType(0);
-//                        dbBean.setData(presenter.getSerializedObject(newLeaveBean));
-//                        presenter.saveIntoDb(dbBean);
-//                        return true;
-//=======
     public void showVoiceTalkDialog(final Context context, boolean isOnLine) {
         if (isOnLine) {
             dialog = new Dialog(context, R.style.Theme_Light_Dialog);
@@ -501,7 +440,7 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
     @Override
     public void handlerVideoTalk(boolean isOnline) {
         if (isOnline) {
-            Intent intent = new Intent(CloudLiveActivity.this, CloudLiveReturnCallActivity.class);
+            Intent intent = new Intent(CloudLiveActivity.this, CloudLiveCalledActivity.class);
             startActivity(intent);
         } else {
             showDeviceDisOnlineDialog(1);
