@@ -23,7 +23,7 @@ import butterknife.OnClick;
  * 创建时间：2016/9/13
  * 描述：
  */
-public class MineShareToRelativeAndFriendFragment extends Fragment implements MineShareToRelativeAndFriendContract.View {
+public class MineShareToFriendFragment extends Fragment implements MineShareToRelativeAndFriendContract.View {
 
 
     @BindView(R.id.iv_mine_share_to_relative_friend_back)
@@ -33,8 +33,8 @@ public class MineShareToRelativeAndFriendFragment extends Fragment implements Mi
     @BindView(R.id.rcy_mine_share_to_relative_and_friend_list)
     RecyclerView rcyMineShareToRelativeAndFriendList;
 
-    public static MineShareToRelativeAndFriendFragment newInstance() {
-        return new MineShareToRelativeAndFriendFragment();
+    public static MineShareToFriendFragment newInstance() {
+        return new MineShareToFriendFragment();
     }
 
     @Nullable

@@ -6,20 +6,15 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.cylan.entity.jniCall.JFGFriendRequest;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineRelativeAndFriendAddReqDetailContract;
-import com.cylan.jiafeigou.n.mvp.model.SuggestionChatInfoBean;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
-
-import java.io.Serializable;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -30,7 +25,7 @@ import butterknife.OnClick;
  * 创建时间：2016/9/21
  * 描述：
  */
-public class MineRelativeAndFriendAddReqDetailFragment extends Fragment implements MineRelativeAndFriendAddReqDetailContract.View {
+public class MineFriendAddReqDetailFragment extends Fragment implements MineRelativeAndFriendAddReqDetailContract.View {
 
     @BindView(R.id.iv_top_bar_left_back)
     ImageView ivTopBarLeftBack;
@@ -47,8 +42,8 @@ public class MineRelativeAndFriendAddReqDetailFragment extends Fragment implemen
 
     private MineLookBigImageFragment lookBigImageFragment;
 
-    public static MineRelativeAndFriendAddReqDetailFragment newInstance(Bundle bundle) {
-        MineRelativeAndFriendAddReqDetailFragment fragment = new MineRelativeAndFriendAddReqDetailFragment();
+    public static MineFriendAddReqDetailFragment newInstance(Bundle bundle) {
+        MineFriendAddReqDetailFragment fragment = new MineFriendAddReqDetailFragment();
         fragment.setArguments(bundle);
         return fragment;
     }

@@ -28,7 +28,7 @@ import rx.schedulers.Schedulers;
  * 创建时间：2016/9/6
  * 描述：
  */
-public class MineRelativesAndFriendScanAddFragment extends Fragment implements ZXingScannerView.ResultHandler, MineRelativesAndFriendScanAddContract.View {
+public class MineFriendScanAddFragment extends Fragment implements ZXingScannerView.ResultHandler, MineRelativesAndFriendScanAddContract.View {
 
     @BindView(R.id.iv_home_mine_relativesandfriends_scan_add_back)
     ImageView ivHomeMineRelativesandfriendsScanAddBack;
@@ -38,8 +38,8 @@ public class MineRelativesAndFriendScanAddFragment extends Fragment implements Z
     ImageView ivErweima;
     private MineRelativesAndFriendScanAddContract.Presenter presenter;
 
-    public static MineRelativesAndFriendScanAddFragment newInstance() {
-        return new MineRelativesAndFriendScanAddFragment();
+    public static MineFriendScanAddFragment newInstance() {
+        return new MineFriendScanAddFragment();
     }
 
     @Override
@@ -110,7 +110,7 @@ public class MineRelativesAndFriendScanAddFragment extends Fragment implements Z
             getView().postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    zxVScanAddRelativesandfriend.resumeCameraPreview(MineRelativesAndFriendScanAddFragment.this);
+                    zxVScanAddRelativesandfriend.resumeCameraPreview(MineFriendScanAddFragment.this);
                 }
             }, 2000);
     }
@@ -118,7 +118,7 @@ public class MineRelativesAndFriendScanAddFragment extends Fragment implements Z
     @Override
     public void onResume() {
         super.onResume();
-        zxVScanAddRelativesandfriend.setResultHandler(MineRelativesAndFriendScanAddFragment.this);
+        zxVScanAddRelativesandfriend.setResultHandler(MineFriendScanAddFragment.this);
         if (presenter != null)
             presenter.start();
     }

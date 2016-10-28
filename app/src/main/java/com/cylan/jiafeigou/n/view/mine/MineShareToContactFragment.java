@@ -1,6 +1,8 @@
 package com.cylan.jiafeigou.n.view.mine;
 
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -15,6 +17,8 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
@@ -22,6 +26,7 @@ import com.cylan.jiafeigou.n.mvp.contract.mine.MineShareToContactContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineShareToContactPresenterImp;
 import com.cylan.jiafeigou.n.mvp.model.SuggestionChatInfoBean;
 import com.cylan.jiafeigou.n.view.adapter.ShareToContactAdapter;
+import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 
 import java.util.ArrayList;
@@ -29,11 +34,6 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
-import rx.functions.Func1;
-import rx.schedulers.Schedulers;
 
 /**
  * 作者：zsl
@@ -54,6 +54,12 @@ public class MineShareToContactFragment extends Fragment implements MineShareToC
     TextView tvTopTitle;
     @BindView(R.id.et_search_contact)
     EditText etSearchContact;
+    @BindView(R.id.pro_share_hint)
+    ProgressBar proShareHint;
+    @BindView(R.id.tv_share_hint)
+    TextView tvShareHint;
+    @BindView(R.id.rl_share_pro_hint)
+    RelativeLayout rlShareProHint;
 
     private MineShareToContactContract.Presenter presenter;
     private ShareToContactAdapter shareToContactAdapter;
@@ -138,7 +144,7 @@ public class MineShareToContactFragment extends Fragment implements MineShareToC
     @Override
     public void initContactReclyView(ArrayList<SuggestionChatInfoBean> list) {
         rcyMineShareToContactList.setLayoutManager(new LinearLayoutManager(getContext()));
-        shareToContactAdapter = new ShareToContactAdapter(getView().getContext(),list,null);
+        shareToContactAdapter = new ShareToContactAdapter(getView().getContext(), list, null);
         rcyMineShareToContactList.setAdapter(shareToContactAdapter);
         initAdaListener();
     }
@@ -171,13 +177,14 @@ public class MineShareToContactFragment extends Fragment implements MineShareToC
     }
 
     @Override
-    public void showShareDeviceDialog(SuggestionChatInfoBean bean) {
+    public void showShareDeviceDialog(final SuggestionChatInfoBean bean) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setTitle("分享设备");
         builder.setPositiveButton("确认", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
+                presenter.shareToContact(bean);
             }
         });
 
@@ -189,13 +196,42 @@ public class MineShareToContactFragment extends Fragment implements MineShareToC
         }).show();
     }
 
+    @Override
+    public void showShareingProHint() {
+        rlShareProHint.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideShareingProHint() {
+        rlShareProHint.setVisibility(View.INVISIBLE);
+    }
+
+    @Override
+    public void changeShareingProHint(String finish) {
+        tvShareHint.setText(finish);
+    }
+
+    @Override
+    public void showPersonOverDialog(String content) {
+        ToastUtil.showToast(ContextUtils.getContext(),content);
+    }
+
+    @Override
+    public void startSendMesgActivity(SuggestionChatInfoBean info) {
+        Uri smsToUri = Uri.parse("smsto:"+info.getContent());
+        Intent mIntent = new Intent(Intent.ACTION_SENDTO, smsToUri );
+        mIntent.putExtra("sms_body", "邀请你成为我的好友，点击XXXXXXXXX下载安装【加菲狗】");
+        startActivity( mIntent );
+    }
+
     /**
      * 点击分享按钮
+     *
      * @param item
      */
     @Override
     public void isShare(SuggestionChatInfoBean item) {
-        if (presenter != null){
+        if (presenter != null) {
             presenter.handlerShareClick(item);
         }
     }

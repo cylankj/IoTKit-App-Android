@@ -19,7 +19,6 @@ import com.cylan.entity.jniCall.JFGFriendRequest;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineRelativesFriendsContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineRelativesandFriendsPresenterImp;
-import com.cylan.jiafeigou.n.mvp.model.SuggestionChatInfoBean;
 import com.cylan.jiafeigou.n.view.adapter.AddRelativesAndFriendsAdapter;
 import com.cylan.jiafeigou.n.view.adapter.RelativesAndFriendsAdapter;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -40,7 +39,7 @@ import butterknife.OnClick;
  * 创建时间：2016/9/6
  * 描述：
  */
-public class MineRelativesandFriendsFragment extends Fragment implements MineRelativesFriendsContract.View, AddRelativesAndFriendsAdapter.OnAcceptClickLisenter {
+public class MineFriendsFragment extends Fragment implements MineRelativesFriendsContract.View, AddRelativesAndFriendsAdapter.OnAcceptClickLisenter {
 
 
     @BindView(R.id.iv_home_mine_relativesandfriends_back)
@@ -65,20 +64,20 @@ public class MineRelativesandFriendsFragment extends Fragment implements MineRel
 
     private MineRelativesFriendsContract.Presenter presenter;
 
-    private MineRelativesAndFriendAddFriendsFragment friendsFragment;
-    private MineRelativeAndFriendDetailFragment relativeAndFrienDetialFragment;
-    private MineRelativeAndFriendAddReqDetailFragment addReqDetailFragment;
+    private MineFriendAddFriendsFragment friendsFragment;
+    private MineFriendDetailFragment relativeAndFrienDetialFragment;
+    private MineFriendAddReqDetailFragment addReqDetailFragment;
     private AddRelativesAndFriendsAdapter addReqListAdater;
     private RelativesAndFriendsAdapter friendsListAdapter;
 
-    public static MineRelativesandFriendsFragment newInstance() {
-        return new MineRelativesandFriendsFragment();
+    public static MineFriendsFragment newInstance() {
+        return new MineFriendsFragment();
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        friendsFragment = MineRelativesAndFriendAddFriendsFragment.newInstance();
+        friendsFragment = MineFriendAddFriendsFragment.newInstance();
     }
 
     @Nullable
@@ -102,7 +101,7 @@ public class MineRelativesandFriendsFragment extends Fragment implements MineRel
     public void jump2AddReqDetailFragment(int position, JFGFriendRequest bean) {
         Bundle bundle = new Bundle();
         bundle.putSerializable("addRequestItems", bean);
-        addReqDetailFragment = MineRelativeAndFriendAddReqDetailFragment.newInstance(bundle);
+        addReqDetailFragment = MineFriendAddReqDetailFragment.newInstance(bundle);
         getFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                         , R.anim.slide_in_left, R.anim.slide_out_right)
@@ -306,7 +305,7 @@ public class MineRelativesandFriendsFragment extends Fragment implements MineRel
         Bundle bundle = new Bundle();
         bundle.putInt("position",position);
         bundle.putSerializable("frienditembean",account);
-        relativeAndFrienDetialFragment = MineRelativeAndFriendDetailFragment.newInstance(bundle);
+        relativeAndFrienDetialFragment = MineFriendDetailFragment.newInstance(bundle);
         getFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                         , R.anim.slide_in_left, R.anim.slide_out_right)

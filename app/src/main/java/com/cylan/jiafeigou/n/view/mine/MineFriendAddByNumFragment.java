@@ -28,7 +28,7 @@ import butterknife.OnClick;
  * 创建时间：2016/9/7
  * 描述：
  */
-public class MineRelativeAndFriendAddByNumFragment extends Fragment implements MineRelativeAndFriendAddByNumContract.View {
+public class MineFriendAddByNumFragment extends Fragment implements MineRelativeAndFriendAddByNumContract.View {
 
     @BindView(R.id.iv_home_mine_relativesandfriends_add_by_num_back)
     ImageView ivHomeMineRelativesandfriendsAddByNumBack;
@@ -49,8 +49,8 @@ public class MineRelativeAndFriendAddByNumFragment extends Fragment implements M
 
     private MineRelativeAndFriendAddByNumContract.Presenter presenter;
 
-    public static MineRelativeAndFriendAddByNumFragment newInstance() {
-        return new MineRelativeAndFriendAddByNumFragment();
+    public static MineFriendAddByNumFragment newInstance() {
+        return new MineFriendAddByNumFragment();
     }
 
     @Nullable

@@ -32,7 +32,7 @@ import butterknife.OnClick;
  * 创建时间：2016/9/6
  * 描述：
  */
-public class MineRelativeAndFriendAddFromContactFragment extends Fragment implements MineRelativeAndFriendAddFromContactContract.View, RelativeAndFriendAddFromContactAdapter.onContactItemClickListener {
+public class MineFriendAddFromContactFragment extends Fragment implements MineRelativeAndFriendAddFromContactContract.View, RelativeAndFriendAddFromContactAdapter.onContactItemClickListener {
 
     @BindView(R.id.iv_home_mine_relativesandfriends_add_from_contact_back)
     ImageView ivHomeMineRelativesandfriendsAddFromContactBack;
@@ -52,8 +52,8 @@ public class MineRelativeAndFriendAddFromContactFragment extends Fragment implem
         super.onCreate(savedInstanceState);
     }
 
-    public static MineRelativeAndFriendAddFromContactFragment newInstance() {
-        return new MineRelativeAndFriendAddFromContactFragment();
+    public static MineFriendAddFromContactFragment newInstance() {
+        return new MineFriendAddFromContactFragment();
     }
 
     @Override

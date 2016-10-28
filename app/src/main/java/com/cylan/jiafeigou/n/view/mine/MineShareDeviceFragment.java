@@ -14,7 +14,6 @@ import android.widget.LinearLayout;
 
 import com.cylan.entity.jniCall.JFGShareListInfo;
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.misc.RxEvent;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineShareDeviceContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineShareDevicePresenterImp;
 import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
@@ -46,7 +45,7 @@ public class MineShareDeviceFragment extends Fragment implements MineShareDevice
 
     private MineShareDeviceContract.Presenter presenter;
     private MineDevicesShareManagerFragment mineDevicesShareManagerFragment;
-    private MineShareToRelativeAndFriendFragment shareToRelativeAndFriendFragment;
+    private MineShareToFriendFragment shareToRelativeAndFriendFragment;
     private MineShareToContactFragment mineShareToContactFragment;
     private AlertDialog alertDialog;
     private MineShareDeviceAdapter adapter;
@@ -58,7 +57,7 @@ public class MineShareDeviceFragment extends Fragment implements MineShareDevice
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        shareToRelativeAndFriendFragment = MineShareToRelativeAndFriendFragment.newInstance();
+        shareToRelativeAndFriendFragment = MineShareToFriendFragment.newInstance();
         mineShareToContactFragment = MineShareToContactFragment.newInstance();
     }
 

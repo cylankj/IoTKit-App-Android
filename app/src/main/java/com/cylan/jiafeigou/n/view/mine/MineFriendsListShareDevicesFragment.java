@@ -25,7 +25,7 @@ import butterknife.OnClick;
  * 创建时间：2016/9/6
  * 描述：
  */
-public class MineRelativesAndFriendsListShareDevicesFragment extends Fragment implements MineRelativesAndFriendListShareDevicesToContract.View {
+public class MineFriendsListShareDevicesFragment extends Fragment implements MineRelativesAndFriendListShareDevicesToContract.View {
 
     @BindView(R.id.iv_mine_friends_share_devices_back)
     ImageView ivMineFriendsShareDevicesBack;
@@ -38,8 +38,8 @@ public class MineRelativesAndFriendsListShareDevicesFragment extends Fragment im
 
     private MineRelativesAndFriendListShareDevicesToContract.Presenter presenter;
 
-    public static MineRelativesAndFriendsListShareDevicesFragment newInstance() {
-        return new MineRelativesAndFriendsListShareDevicesFragment();
+    public static MineFriendsListShareDevicesFragment newInstance() {
+        return new MineFriendsListShareDevicesFragment();
     }
 
     @Override

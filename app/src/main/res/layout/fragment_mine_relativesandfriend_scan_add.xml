@@ -7,7 +7,7 @@
     android:clickable="true"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.cylan.jiafeigou.n.view.mine.MineRelativesAndFriendScanAddFragment">
+    tools:context=".n.view.mine.MineFriendScanAddFragment">
 
     <RelativeLayout
         android:id="@+id/rl_home_mine_relativesandfriends_scan_add"
