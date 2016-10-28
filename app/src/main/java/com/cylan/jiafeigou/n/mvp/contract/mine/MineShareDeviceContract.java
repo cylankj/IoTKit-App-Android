@@ -26,9 +26,8 @@ public interface MineShareDeviceContract {
 
         /**
          * desc:初始化分享的设备列表
-         * @param adapter
          */
-        void initRecycleView(MineShareDeviceAdapter adapter);
+        void initRecycleView(ArrayList<DeviceBean> list);
 
         /**
          * desc：跳转条设备分享管理界面
@@ -48,7 +47,11 @@ public interface MineShareDeviceContract {
 
         void initData();
 
-        DeviceBean getBean(int position);
+        /**
+         * 获取设备中已经分享的好友
+         * @return
+         */
+        JFGShareListInfo getJFGInfo(int position);
 
         /**
          * 获取到已分享的亲友的数据

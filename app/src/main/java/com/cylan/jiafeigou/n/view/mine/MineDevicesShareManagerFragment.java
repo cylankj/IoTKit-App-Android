@@ -33,7 +33,7 @@ import butterknife.OnClick;
  * 创建时间：2016/9/8
  * 描述：
  */
-public class MineDevicesShareManagerFragment extends Fragment implements MineDevicesShareManagerContract.View {
+public class MineDevicesShareManagerFragment extends Fragment implements MineDevicesShareManagerContract.View, MineHasShareAdapter.OnCancleShareListenter {
 
     @BindView(R.id.iv_home_mine_share_devices_manager_back)
     ImageView ivHomeMineShareDevicesManagerBack;
@@ -49,6 +49,7 @@ public class MineDevicesShareManagerFragment extends Fragment implements MineDev
     RelativeLayout rlCancleShareProgress;
 
     private MineDevicesShareManagerContract.Presenter presenter;
+    private MineHasShareAdapter hasShareAdapter;
 
     public static MineDevicesShareManagerFragment newInstance(Bundle bundle) {
         MineDevicesShareManagerFragment fragment = new MineDevicesShareManagerFragment();
@@ -109,10 +110,23 @@ public class MineDevicesShareManagerFragment extends Fragment implements MineDev
         recyclerHadShareRelativesAndFriend.setVisibility(View.VISIBLE);
     }
 
+    /**
+     * desc:初始化列表显示
+     * @param list
+     */
     @Override
-    public void inintHasShareFriendRecyView(MineHasShareAdapter adapter) {
+    public void inintHasShareFriendRecyView(ArrayList<RelAndFriendBean> list) {
         recyclerHadShareRelativesAndFriend.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerHadShareRelativesAndFriend.setAdapter(adapter);
+        hasShareAdapter = new MineHasShareAdapter(getView().getContext(),list,null);
+        recyclerHadShareRelativesAndFriend.setAdapter(hasShareAdapter);
+        initAdaListener();
+    }
+
+    /**
+     * 设置列表的监听器
+     */
+    private void initAdaListener() {
+        hasShareAdapter.setOnCancleShareListenter(this);
     }
 
     @Override
@@ -156,4 +170,18 @@ public class MineDevicesShareManagerFragment extends Fragment implements MineDev
             presenter.stop();
         }
     }
+
+    @Override
+    public void onCancleShare(RelAndFriendBean item) {
+        if (getView() != null){
+            showCancleShareDialog(item);
+        }
+    }
+
+    @Override
+    public void deleteItems(RelAndFriendBean bean) {
+        hasShareAdapter.remove(bean);
+        hasShareAdapter.notifyDataSetHasChanged();
+    }
+
 }

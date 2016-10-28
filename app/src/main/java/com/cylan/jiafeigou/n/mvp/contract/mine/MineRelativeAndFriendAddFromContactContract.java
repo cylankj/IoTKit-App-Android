@@ -16,7 +16,7 @@ public interface MineRelativeAndFriendAddFromContactContract {
 
     interface View extends BaseView<Presenter> {
 
-        void initContactRecycleView(RelativeAndFriendAddFromContactAdapter adapter);
+        void initContactRecycleView(ArrayList<SuggestionChatInfoBean> list);
 
         void jump2SendAddMesgFragment(SuggestionChatInfoBean bean);
 

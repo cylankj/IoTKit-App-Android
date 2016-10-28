@@ -24,7 +24,6 @@ import rx.schedulers.Schedulers;
 public class MineDevicesShareManagerPresenterImp extends AbstractPresenter<MineDevicesShareManagerContract.View>
         implements MineDevicesShareManagerContract.Presenter, MineHasShareAdapter.OnCancleShareListenter {
 
-    private MineHasShareAdapter hasShareAdapter;
     private Subscription cancleShareSub;
 
     public MineDevicesShareManagerPresenterImp(MineDevicesShareManagerContract.View view) {
@@ -48,9 +47,7 @@ public class MineDevicesShareManagerPresenterImp extends AbstractPresenter<MineD
     public void initHasShareListData(ArrayList<RelAndFriendBean> shareDeviceFriendlist) {
 
         if (getView() != null && shareDeviceFriendlist != null && shareDeviceFriendlist.size() != 0){
-            hasShareAdapter = new MineHasShareAdapter(getView().getContext(),shareDeviceFriendlist,null);
-            getView().inintHasShareFriendRecyView(hasShareAdapter);
-            hasShareAdapter.setOnCancleShareListenter(this);
+            getView().inintHasShareFriendRecyView(shareDeviceFriendlist);
         }else {
             getView().hideHasShareListTitle();
             getView().showNoHasShareFriendNullView();
@@ -79,17 +76,12 @@ public class MineDevicesShareManagerPresenterImp extends AbstractPresenter<MineD
                     @Override
                     public void call(Boolean aBoolean) {
                         getView().hideCancleShareProgress();
-                        deleteItems(bean);
+                        getView().deleteItems(bean);
                         ToastUtil.showToast(getView().getContext(),"取消分享成功");
                     }
                 });
     }
 
-    @Override
-    public void deleteItems(RelAndFriendBean bean) {
-        hasShareAdapter.remove(bean);
-        hasShareAdapter.notifyDataSetHasChanged();
-    }
 
     /**
      * desc:点击取消分享按钮

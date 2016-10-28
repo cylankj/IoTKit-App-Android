@@ -24,16 +24,23 @@ import com.cylan.jiafeigou.n.mvp.model.SuggestionChatInfoBean;
 import com.cylan.jiafeigou.n.view.adapter.ShareToContactAdapter;
 import com.cylan.jiafeigou.utils.ToastUtil;
 
+import java.util.ArrayList;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 /**
  * 作者：zsl
  * 创建时间：2016/9/13
  * 描述：
  */
-public class MineShareToContactFragment extends Fragment implements MineShareToContactContract.View {
+public class MineShareToContactFragment extends Fragment implements MineShareToContactContract.View, ShareToContactAdapter.onShareLisenter {
 
     @BindView(R.id.iv_mine_share_to_contact_back)
     ImageView ivMineShareToContactBack;
@@ -49,6 +56,7 @@ public class MineShareToContactFragment extends Fragment implements MineShareToC
     EditText etSearchContact;
 
     private MineShareToContactContract.Presenter presenter;
+    private ShareToContactAdapter shareToContactAdapter;
 
     public static MineShareToContactFragment newInstance() {
         return new MineShareToContactFragment();
@@ -128,9 +136,18 @@ public class MineShareToContactFragment extends Fragment implements MineShareToC
     }
 
     @Override
-    public void initContactReclyView(ShareToContactAdapter adapter) {
+    public void initContactReclyView(ArrayList<SuggestionChatInfoBean> list) {
         rcyMineShareToContactList.setLayoutManager(new LinearLayoutManager(getContext()));
-        rcyMineShareToContactList.setAdapter(adapter);
+        shareToContactAdapter = new ShareToContactAdapter(getView().getContext(),list,null);
+        rcyMineShareToContactList.setAdapter(shareToContactAdapter);
+        initAdaListener();
+    }
+
+    /**
+     * 设置列表的监听器
+     */
+    private void initAdaListener() {
+        shareToContactAdapter.setOnShareLisenter(this);
     }
 
     @Override
@@ -154,11 +171,6 @@ public class MineShareToContactFragment extends Fragment implements MineShareToC
     }
 
     @Override
-    public String getSearchInputContent() {
-        return etSearchContact.getText().toString().trim();
-    }
-
-    @Override
     public void showShareDeviceDialog(SuggestionChatInfoBean bean) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setTitle("分享设备");
@@ -175,5 +187,16 @@ public class MineShareToContactFragment extends Fragment implements MineShareToC
                 dialog.dismiss();
             }
         }).show();
+    }
+
+    /**
+     * 点击分享按钮
+     * @param item
+     */
+    @Override
+    public void isShare(SuggestionChatInfoBean item) {
+        if (presenter != null){
+            presenter.handlerShareClick(item);
+        }
     }
 }

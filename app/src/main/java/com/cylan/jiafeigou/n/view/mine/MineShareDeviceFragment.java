@@ -17,9 +17,14 @@ import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.RxEvent;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineShareDeviceContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineShareDevicePresenterImp;
+import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
 import com.cylan.jiafeigou.n.view.adapter.MineShareDeviceAdapter;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ViewUtils;
+import com.cylan.superadapter.OnItemClickListener;
+import com.cylan.superadapter.internal.SuperViewHolder;
+
+import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -44,6 +49,7 @@ public class MineShareDeviceFragment extends Fragment implements MineShareDevice
     private MineShareToRelativeAndFriendFragment shareToRelativeAndFriendFragment;
     private MineShareToContactFragment mineShareToContactFragment;
     private AlertDialog alertDialog;
+    private MineShareDeviceAdapter adapter;
 
     public static MineShareDeviceFragment newInstance() {
         return new MineShareDeviceFragment();
@@ -137,9 +143,32 @@ public class MineShareDeviceFragment extends Fragment implements MineShareDevice
     }
 
     @Override
-    public void initRecycleView(MineShareDeviceAdapter adapter) {
+    public void initRecycleView(ArrayList<DeviceBean> list) {
         recycleShareDeviceList.setLayoutManager(new LinearLayoutManager(getContext()));
+        adapter = new MineShareDeviceAdapter(getView().getContext(),list,null);
         recycleShareDeviceList.setAdapter(adapter);
+        initAdaListener();
+    }
+
+    /**
+     * 列表适配器的监听的器
+     */
+    private void initAdaListener() {
+        adapter.setOnShareClickListener(new MineShareDeviceAdapter.OnShareClickListener() {
+            @Override
+            public void onShare(SuperViewHolder holder, int viewType, int layoutPosition, DeviceBean item) {
+                showShareDialog();
+            }
+        });
+
+        adapter.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(View itemView, int viewType, int position) {
+                if (getView() != null) {
+                    jump2ShareDeviceMangerFragment(itemView,position,presenter.getJFGInfo(position));
+                }
+            }
+        });
     }
 
     @Override

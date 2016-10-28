@@ -16,7 +16,7 @@ public interface MineShareToContactContract {
 
     interface View extends BaseView<Presenter> {
 
-        void initContactReclyView(ShareToContactAdapter adapter);
+        void initContactReclyView(ArrayList<SuggestionChatInfoBean> list);
 
         void showNoContactNullView();
 
@@ -25,8 +25,6 @@ public interface MineShareToContactContract {
         void showSearchInputEdit();
 
         void hideSearchInputEdit();
-
-        String getSearchInputContent();
 
         void showShareDeviceDialog(SuggestionChatInfoBean bean);
 
@@ -39,6 +37,11 @@ public interface MineShareToContactContract {
         void handleSearchResult(String input);
 
         void shareToContact(SuggestionChatInfoBean bean);
+
+        /**
+         * 处理点击按钮
+         */
+        void handlerShareClick(SuggestionChatInfoBean bean);
 
     }
 

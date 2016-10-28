@@ -25,6 +25,9 @@ import com.cylan.jiafeigou.n.view.adapter.RelativesAndFriendsAdapter;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
+import com.cylan.superadapter.OnItemClickListener;
+import com.cylan.superadapter.OnItemLongClickListener;
+import com.cylan.superadapter.internal.SuperViewHolder;
 
 import java.util.ArrayList;
 
@@ -37,7 +40,7 @@ import butterknife.OnClick;
  * 创建时间：2016/9/6
  * 描述：
  */
-public class MineRelativesandFriendsFragment extends Fragment implements MineRelativesFriendsContract.View {
+public class MineRelativesandFriendsFragment extends Fragment implements MineRelativesFriendsContract.View, AddRelativesAndFriendsAdapter.OnAcceptClickLisenter {
 
 
     @BindView(R.id.iv_home_mine_relativesandfriends_back)
@@ -65,6 +68,8 @@ public class MineRelativesandFriendsFragment extends Fragment implements MineRel
     private MineRelativesAndFriendAddFriendsFragment friendsFragment;
     private MineRelativeAndFriendDetailFragment relativeAndFrienDetialFragment;
     private MineRelativeAndFriendAddReqDetailFragment addReqDetailFragment;
+    private AddRelativesAndFriendsAdapter addReqListAdater;
+    private RelativesAndFriendsAdapter friendsListAdapter;
 
     public static MineRelativesandFriendsFragment newInstance() {
         return new MineRelativesandFriendsFragment();
@@ -136,13 +141,38 @@ public class MineRelativesandFriendsFragment extends Fragment implements MineRel
         llRelativeAndFriendNone.setVisibility(View.VISIBLE);
     }
 
+    /**
+     * 添加请求列表添加一个条目
+     * @param position
+     * @param bean
+     */
+    @Override
+    public void addReqDeleteItem(int position, JFGFriendRequest bean) {
+        addReqListAdater.remove(bean);
+        addReqListAdater.notifyDataSetHasChanged();
+        if (addReqListAdater.getItemCount()==0){
+            hideAddReqListTitle();
+        }
+    }
+
+    /**
+     * 好友列表添加一个条目
+     * @param position
+     * @param bean
+     */
+    @Override
+    public void friendlistAddItem(int position, JFGFriendAccount bean) {
+        friendsListAdapter.add(0,bean);
+        friendsListAdapter.notifyDataSetHasChanged();
+    }
+
     @Override
     public void showLongClickDialog(final int position, final JFGFriendRequest bean) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setPositiveButton("删除该请求", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                presenter.addReqDeleteItem(position,bean);
+                addReqDeleteItem(position,bean);
                 dialog.dismiss();
             }
         }).setNegativeButton("取消", new DialogInterface.OnClickListener() {
@@ -188,15 +218,63 @@ public class MineRelativesandFriendsFragment extends Fragment implements MineRel
     }
 
     @Override
-    public void initFriendRecyList(RelativesAndFriendsAdapter adapter) {
+    public void initFriendRecyList(ArrayList<JFGFriendAccount> list) {
         recyclerviewRelativesandfriendsList.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerviewRelativesandfriendsList.setAdapter(adapter);
+        friendsListAdapter = new RelativesAndFriendsAdapter(getView().getContext(),list,null);
+        recyclerviewRelativesandfriendsList.setAdapter(friendsListAdapter);
+        initFriendAdaListener();
+    }
+
+    /**
+     * desc:设置好友列表的监听
+     */
+    private void initFriendAdaListener() {
+        friendsListAdapter.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(View itemView, int viewType, int position) {
+                if (getView() != null){
+                    jump2FriendDetailFragment(position,friendsListAdapter.getList().get(position));
+                }
+            }
+        });
     }
 
     @Override
     public void initAddReqRecyList(AddRelativesAndFriendsAdapter adapter) {
         recyclerviewRequestAdd.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerviewRequestAdd.setAdapter(adapter);
+    }
+
+    @Override
+    public void initAddReqRecyList(ArrayList<JFGFriendRequest> list) {
+        recyclerviewRequestAdd.setLayoutManager(new LinearLayoutManager(getContext()));
+        addReqListAdater = new AddRelativesAndFriendsAdapter(getView().getContext(),list,null);
+        recyclerviewRequestAdd.setAdapter(addReqListAdater);
+        initAddReqAdaListener();
+    }
+
+    /**
+     * desc：设置添加请求列表监听
+     */
+    private void initAddReqAdaListener() {
+        addReqListAdater.setOnAcceptClickLisenter(this);
+        addReqListAdater.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(View itemView, int viewType, int position) {
+                if (getView() != null){
+                    jump2AddReqDetailFragment(position,addReqListAdater.getList().get(position));
+                }
+            }
+        });
+
+        addReqListAdater.setOnItemLongClickListener(new OnItemLongClickListener() {
+            @Override
+            public void onItemLongClick(View itemView, int viewType, int position) {
+                if (getView() != null){
+                    showLongClickDialog(position,addReqListAdater.getList().get(position));
+                }
+            }
+        });
     }
 
     @Override
@@ -237,4 +315,22 @@ public class MineRelativesandFriendsFragment extends Fragment implements MineRel
                 .commit();
     }
 
+    /**
+     * desc:点击同意按钮
+     * @param holder
+     * @param viewType
+     * @param layoutPosition
+     * @param item
+     */
+    @Override
+    public void onAccept(SuperViewHolder holder, int viewType, int layoutPosition, JFGFriendRequest item) {
+        if (presenter.checkAddRequestOutTime(item)){
+                showReqOutTimeDialog();
+        }else {
+            ToastUtil.showToast(getView().getContext(),"添加成功");
+            JFGFriendAccount account = new JFGFriendAccount(item.account,"",item.alias);
+            friendlistAddItem(layoutPosition,account);
+            addReqDeleteItem(layoutPosition,item);
+        }
+    }
 }

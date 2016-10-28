@@ -32,6 +32,7 @@ import rx.schedulers.Schedulers;
 public class MineShareDevicePresenterImp extends AbstractPresenter<MineShareDeviceContract.View> implements MineShareDeviceContract.Presenter {
 
     private Subscription initDataSub;
+    private ArrayList<JFGShareListInfo> hasShareFriendList;
 
     public MineShareDevicePresenterImp(MineShareDeviceContract.View view) {
         super(view);
@@ -68,6 +69,11 @@ public class MineShareDevicePresenterImp extends AbstractPresenter<MineShareDevi
         handlerShareDeviceListData(shareDeviceList);
     }
 
+    @Override
+    public JFGShareListInfo getJFGInfo(int position) {
+        return hasShareFriendList.get(position);
+    }
+
     /**
      * desc;测试的数据
      * @return
@@ -100,26 +106,10 @@ public class MineShareDevicePresenterImp extends AbstractPresenter<MineShareDevi
      */
     private void handlerShareDeviceListData(final RxEvent.GetShareDeviceList shareDeviceList) {
         if (shareDeviceList != null && shareDeviceList.arrayList.size() != 0){
-            MineShareDeviceAdapter adapter = new MineShareDeviceAdapter(getView().getContext(),getShareDeviceList(shareDeviceList),null);
+            hasShareFriendList = shareDeviceList.arrayList;
             if (getView() != null){
-                getView().initRecycleView(adapter);
-                adapter.setOnShareClickListener(new MineShareDeviceAdapter.OnShareClickListener() {
-                    @Override
-                    public void onShare(SuperViewHolder holder, int viewType, int layoutPosition, DeviceBean item) {
-                        getView().showShareDialog();
-                    }
-                });
-
-                adapter.setOnItemClickListener(new OnItemClickListener() {
-                    @Override
-                    public void onItemClick(View itemView, int viewType, int position) {
-                        if (getView() != null) {
-                            getView().jump2ShareDeviceMangerFragment(itemView,position,shareDeviceList.arrayList.get(position));
-                        }
-                    }
-                });
+                getView().initRecycleView(getShareDeviceList(shareDeviceList));
             }
-
         }else {
             if (getView() != null){
                 getView().showNoDeviceView();
@@ -145,10 +135,7 @@ public class MineShareDevicePresenterImp extends AbstractPresenter<MineShareDevi
         return list;
     }
 
-    @Override
-    public DeviceBean getBean(int position) {
-        return testData().get(position);
-    }
+
 
     @Override
     public ArrayList<RelAndFriendBean> getHasShareRelAndFriendList(JFGShareListInfo info) {
@@ -165,17 +152,4 @@ public class MineShareDevicePresenterImp extends AbstractPresenter<MineShareDevi
         return list;
     }
 
-
-    /**
-     *desc:测试数据
-     */
-    private List<DeviceBean> testData() {
-        List<DeviceBean> list = new ArrayList<>();
-        for (int i = 0;i<3;i++){
-            DeviceBean bean = new DeviceBean();
-            bean.alias = "云相框"+i;
-            list.add(bean);
-        }
-        return list;
-    }
 }

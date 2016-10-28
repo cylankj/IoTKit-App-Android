@@ -28,7 +28,7 @@ public interface MineDevicesShareManagerContract {
         /**
          * desc：初始化显示已分享的列表
          */
-        void inintHasShareFriendRecyView(MineHasShareAdapter adapter);
+        void inintHasShareFriendRecyView(ArrayList<RelAndFriendBean> list);
 
         /**
          * desc：显示空视图
@@ -50,6 +50,12 @@ public interface MineDevicesShareManagerContract {
          */
         void hideCancleShareProgress();
 
+        /**
+         * desc：删除列表的一个条目
+         * @param bean
+         */
+        void deleteItems(RelAndFriendBean bean);
+
     }
 
     interface Presenter extends BasePresenter {
@@ -64,11 +70,6 @@ public interface MineDevicesShareManagerContract {
          */
         void cancleShare(RelAndFriendBean bean);
 
-        /**
-         * desc：删除列表的一个条目
-         * @param bean
-         */
-        void deleteItems(RelAndFriendBean bean);
     }
 
 }

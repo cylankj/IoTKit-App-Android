@@ -24,9 +24,12 @@ public interface MineRelativesFriendsContract {
         /**
          * desc:初始化好友列表
          */
-        void initFriendRecyList(RelativesAndFriendsAdapter adapter);
+        void initFriendRecyList(ArrayList<JFGFriendAccount> list);
 
         void initAddReqRecyList(AddRelativesAndFriendsAdapter adapter);
+
+
+        void initAddReqRecyList(ArrayList<JFGFriendRequest> list);
 
         /**
          * desc：显示好友列表标题
@@ -61,6 +64,20 @@ public interface MineRelativesFriendsContract {
          */
         void showNullView();
 
+        /**
+         * desc：删除添加请求条目
+         * @param position
+         * @param bean
+         */
+        void addReqDeleteItem(int position,JFGFriendRequest bean);
+
+        /**
+         * desc：好友列表添加条目
+         * @param position
+         * @param bean
+         */
+        void friendlistAddItem(int position,JFGFriendAccount bean);
+
     }
 
     interface Presenter extends BasePresenter {
@@ -80,20 +97,6 @@ public interface MineRelativesFriendsContract {
          * desc：初始化处理添加请求列表
          */
         void initAddReqRecyListData();
-
-        /**
-         * desc：删除添加请求条目
-         * @param position
-         * @param bean
-         */
-        void addReqDeleteItem(int position,JFGFriendRequest bean);
-
-        /**
-         * desc：好友列表添加条目
-         * @param position
-         * @param bean
-         */
-        void friendlistAddItem(int position,JFGFriendAccount bean);
 
         /**
          * desc：检查是否为空界面

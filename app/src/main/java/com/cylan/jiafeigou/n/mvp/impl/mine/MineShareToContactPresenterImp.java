@@ -11,8 +11,6 @@ import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.n.mvp.model.BaseBean;
 import com.cylan.jiafeigou.n.mvp.model.SuggestionChatInfoBean;
 import com.cylan.jiafeigou.n.view.adapter.ShareToContactAdapter;
-import com.cylan.jiafeigou.utils.ToastUtil;
-import com.sina.weibo.sdk.utils.LogUtil;
 
 import java.util.ArrayList;
 
@@ -29,12 +27,12 @@ import rx.schedulers.Schedulers;
  * 描述：
  */
 public class MineShareToContactPresenterImp extends AbstractPresenter<MineShareToContactContract.View>
-        implements MineShareToContactContract.Presenter, ShareToContactAdapter.onShareLisenter {
+        implements MineShareToContactContract.Presenter {
 
     private Subscription shareToContactSub;
-    private ShareToContactAdapter shareToContactAdapter;
     private ArrayList<SuggestionChatInfoBean> filterDateList;
     private Subscription shareToThisContact;
+    private Subscription isRegisterSub;
 
     public MineShareToContactPresenterImp(MineShareToContactContract.View view) {
         super(view);
@@ -55,11 +53,14 @@ public class MineShareToContactPresenterImp extends AbstractPresenter<MineShareT
         if (shareToThisContact != null && shareToThisContact.isUnsubscribed()){
             shareToThisContact.unsubscribe();
         }
+
+        if(isRegisterSub != null && isRegisterSub.isUnsubscribed()){
+            isRegisterSub.unsubscribe();
+        }
     }
 
     @Override
     public void initContactData() {
-
         shareToContactSub = Observable.just(null)
                 .map(new Func1<Object, ArrayList<SuggestionChatInfoBean>>() {
                     @Override
@@ -105,6 +106,7 @@ public class MineShareToContactPresenterImp extends AbstractPresenter<MineShareT
                 .map(new Func1<SuggestionChatInfoBean, Boolean>() {
                     @Override
                     public Boolean call(SuggestionChatInfoBean bean) {
+                        //TODO 调用SDK分享该设备给该联系人
                         return null;
                     }
                 })
@@ -118,6 +120,27 @@ public class MineShareToContactPresenterImp extends AbstractPresenter<MineShareT
                 });
     }
 
+    @Override
+    public void handlerShareClick(final SuggestionChatInfoBean item) {
+        // TODO SDK　检测是否已经注册
+        isRegisterSub = Observable.just(item)
+                .map(new Func1<SuggestionChatInfoBean, Boolean>() {
+                    @Override
+                    public Boolean call(SuggestionChatInfoBean bean) {
+                        // TODO SDK　检测是否已经注册
+                        return true;
+                    }
+                })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<Boolean>() {
+                    @Override
+                    public void call(Boolean aBoolean) {
+                        handlerCheckRegister(aBoolean,item);
+                    }
+                });
+    }
+
     /**
      * desc:处理得到的数据结果
      * @param list
@@ -125,9 +148,7 @@ public class MineShareToContactPresenterImp extends AbstractPresenter<MineShareT
     private void handlerContactDataResult(ArrayList<SuggestionChatInfoBean> list) {
 
         if (getView() != null && list != null && list.size() != 0){
-            shareToContactAdapter = new ShareToContactAdapter(getView().getContext(),list,null);
-            getView().initContactReclyView(shareToContactAdapter);
-            shareToContactAdapter.setOnShareLisenter(this);
+            getView().initContactReclyView(list);
         }else {
             getView().showNoContactNullView();
         }
@@ -162,40 +183,17 @@ public class MineShareToContactPresenterImp extends AbstractPresenter<MineShareT
         return list;
     }
 
-
-    /**
-     * desc：点击分享按钮
-     * @param item
-     */
-    @Override
-    public void isShare(SuggestionChatInfoBean item) {
-        Subscription isRegisterSub = Observable.just(item)
-                .map(new Func1<SuggestionChatInfoBean, Boolean>() {
-                    @Override
-                    public Boolean call(SuggestionChatInfoBean bean) {
-                        // TODO SDK　检测是否已经注册
-                        return null;
-                    }
-                })
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<Boolean>() {
-                    @Override
-                    public void call(Boolean aBoolean) {
-                        handlerCheckRegister(aBoolean);
-                    }
-                });
-    }
-
     /**
      * desc:处理检测注册的结果
      * @param aBoolean
      */
-    private void handlerCheckRegister(Boolean aBoolean) {
+    private void handlerCheckRegister(Boolean aBoolean,SuggestionChatInfoBean item) {
         if (aBoolean){
-
+            if (getView() != null){
+                getView().showShareDeviceDialog(item);
+            }
         }else {
-
+            //TODO
         }
     }
 }

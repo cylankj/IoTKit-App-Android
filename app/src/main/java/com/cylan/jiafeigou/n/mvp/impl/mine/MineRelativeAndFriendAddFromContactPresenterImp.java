@@ -27,10 +27,9 @@ import rx.schedulers.Schedulers;
  * 创建时间：2016/9/6
  * 描述：
  */
-public class MineRelativeAndFriendAddFromContactPresenterImp extends AbstractPresenter<MineRelativeAndFriendAddFromContactContract.View> implements MineRelativeAndFriendAddFromContactContract.Presenter, RelativeAndFriendAddFromContactAdapter.onContactItemClickListener {
+public class MineRelativeAndFriendAddFromContactPresenterImp extends AbstractPresenter<MineRelativeAndFriendAddFromContactContract.View> implements MineRelativeAndFriendAddFromContactContract.Presenter {
 
     private Subscription contactSubscriber;
-    private RelativeAndFriendAddFromContactAdapter contactListAdapter;
     private ArrayList<SuggestionChatInfoBean> filterDateList;
 
     public MineRelativeAndFriendAddFromContactPresenterImp(MineRelativeAndFriendAddFromContactContract.View view) {
@@ -76,15 +75,7 @@ public class MineRelativeAndFriendAddFromContactPresenterImp extends AbstractPre
      */
     private void handlerDataResult(ArrayList<SuggestionChatInfoBean> arrayList) {
         if (arrayList != null && arrayList.size() != 0 && getView() != null){
-            contactListAdapter = new RelativeAndFriendAddFromContactAdapter(getView().getContext(),arrayList,null);
-            getView().initContactRecycleView(contactListAdapter);
-            contactListAdapter.setOnContactItemClickListener(this);
-            contactListAdapter.setOnItemClickListener(new OnItemClickListener() {
-                @Override
-                public void onItemClick(View itemView, int viewType, int position) {
-                    //TODO 跳转到联系人的详情界面去
-                }
-            });
+            getView().initContactRecycleView(arrayList);
         }else {
             getView().showNoContactView();
         }
@@ -122,13 +113,6 @@ public class MineRelativeAndFriendAddFromContactPresenterImp extends AbstractPre
     @Override
     public void addContactItem(SuggestionChatInfoBean bean) {
 
-    }
-
-    @Override
-    public void onAddClick(View view, int position,SuggestionChatInfoBean item) {
-        if (getView() != null){
-            getView().jump2SendAddMesgFragment(item);
-        }
     }
 
     @Override
