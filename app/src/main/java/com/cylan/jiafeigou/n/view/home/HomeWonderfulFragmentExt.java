@@ -45,6 +45,7 @@ import com.cylan.jiafeigou.n.view.adapter.HomeWonderfulAdapter;
 import com.cylan.jiafeigou.n.view.misc.HomeEmptyView;
 import com.cylan.jiafeigou.n.view.misc.IEmptyView;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.support.wechat.WechatShare;
 import com.cylan.jiafeigou.utils.AnimatorUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;
@@ -63,6 +64,9 @@ import java.util.Map;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+
+import static com.tencent.mm.sdk.modelmsg.SendMessageToWX.Req.WXSceneSession;
+import static com.tencent.mm.sdk.modelmsg.SendMessageToWX.Req.WXSceneTimeline;
 
 
 public class HomeWonderfulFragmentExt extends Fragment implements
@@ -101,9 +105,10 @@ public class HomeWonderfulFragmentExt extends Fragment implements
     @BindView(R.id.fLayout_empty_view_container)
     FrameLayout fLayoutWonderfulEmptyContainer;
 
-    WeakReference<WheelView> wheelViewWeakReference;
-    WeakReference<ShareDialogFragment> shareDialogFragmentWeakReference;
-    WeakReference<SimpleDialogFragment> deleteDialogFragmentWeakReference;
+    private WeakReference<WheelView> wheelViewWeakReference;
+    private WeakReference<ShareDialogFragment> shareDialogFragmentWeakReference;
+    private WeakReference<SimpleDialogFragment> deleteDialogFragmentWeakReference;
+
     @BindView(R.id.tv_sec_title_head_wonder)
     TextView tvSecTitleHeadWonder;
     @BindView(R.id.toolbar)
@@ -219,6 +224,9 @@ public class HomeWonderfulFragmentExt extends Fragment implements
 
     @Override
     public void onPause() {
+        if (presenter != null)
+            presenter.unregisterWechat();
+        //应当放在super前面
         super.onPause();
     }
 
@@ -226,6 +234,8 @@ public class HomeWonderfulFragmentExt extends Fragment implements
     @Override
     public void onStop() {
         super.onStop();
+        if (presenter != null)
+            presenter.stop();
     }
 
     @Override
@@ -357,11 +367,25 @@ public class HomeWonderfulFragmentExt extends Fragment implements
     }
 
     @Override
-    public void onTimeLineWithDraw() {
+    public void onPageScrolled() {
         View view = getWheelViewContainer();
         if (view != null && view.isShown()) {
             AnimatorUtils.slide(view);
         }
+        if (srLayoutMainContentHolder != null)
+            srLayoutMainContentHolder.setRefreshing(false);
+    }
+
+    @Override
+    public void onWechatCheckRsp(boolean installed) {
+        if (!installed) {
+            Toast.makeText(getActivity(), "微信没有安装", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        initShareDialog();
+        ShareDialogFragment fragment = shareDialogFragmentWeakReference.get();
+        fragment.setArguments(new Bundle());
+        fragment.show(getActivity().getSupportFragmentManager(), "ShareDialogFragment");
     }
 
     @Override
@@ -394,10 +418,8 @@ public class HomeWonderfulFragmentExt extends Fragment implements
                 AppLogger.d("transition:getName " + ViewCompat.getTransitionName(v));
                 break;
             case R.id.tv_wonderful_item_share:
-                initShareDialog();
-                ShareDialogFragment fragment = shareDialogFragmentWeakReference.get();
-                fragment.setArguments(new Bundle());
-                fragment.show(getActivity().getSupportFragmentManager(), "ShareDialogFragment");
+                if (presenter != null)
+                    presenter.checkWechat();
                 break;
             case R.id.tv_wonderful_item_delete:
                 initDeleteDialog();
@@ -499,13 +521,48 @@ public class HomeWonderfulFragmentExt extends Fragment implements
 
     @Override
     public void share(int id) {
+        WechatShare.ShareContent shareContent = null;
         switch (id) {
             case R.id.tv_share_to_wechat_friends:
+                shareContent = new WechatShare.ShareContentImpl() {
+                    @Override
+                    public String getContent() {
+                        return "什么a ";
+                    }
+
+                    @Override
+                    public int getShareWay() {
+                        return WechatShare.WEIXIN_SHARE_WAY_TEXT;
+                    }
+
+                    @Override
+                    protected int getShareType() {
+                        return WXSceneSession;
+                    }
+                };
                 break;
             case R.id.tv_share_to_timeline:
+                shareContent = new WechatShare.ShareContentImpl() {
+                    @Override
+                    public String getContent() {
+                        return "什么a ";
+                    }
+
+                    @Override
+                    public int getShareWay() {
+                        return WechatShare.WEIXIN_SHARE_WAY_TEXT;
+                    }
+
+                    @Override
+                    protected int getShareType() {
+                        return WXSceneTimeline;
+                    }
+                };
                 break;
         }
-        Toast.makeText(getContext(), "share to: " + id, Toast.LENGTH_SHORT).show();
+        if (presenter != null) {
+            presenter.shareToWechat(shareContent);
+        }
     }
 
     @Override
@@ -647,5 +704,4 @@ public class HomeWonderfulFragmentExt extends Fragment implements
             homePageEmptyView.show(count == 0);
         }
     }
-
 }

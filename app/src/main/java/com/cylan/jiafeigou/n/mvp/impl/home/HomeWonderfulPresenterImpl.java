@@ -1,6 +1,7 @@
 package com.cylan.jiafeigou.n.mvp.impl.home;
 
 
+import android.app.Activity;
 import android.os.Environment;
 
 import com.cylan.jiafeigou.misc.JFGRules;
@@ -11,6 +12,7 @@ import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.n.mvp.model.MediaBean;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.rxbus.RxBus;
+import com.cylan.jiafeigou.support.wechat.WechatShare;
 import com.cylan.jiafeigou.widget.wheel.WheelViewDataSet;
 import com.cylan.utils.RandomUtils;
 import com.google.gson.Gson;
@@ -49,6 +51,7 @@ public class HomeWonderfulPresenterImpl extends AbstractPresenter<HomeWonderfulC
     private Subscription onTimeLineSubscription;
     private CompositeSubscription _timeTickSubscriptions = new CompositeSubscription();
     private long lastTime;
+    private WeakReference<WechatShare> wechatShareWeakReference;
 
     public HomeWonderfulPresenterImpl(HomeWonderfulContract.View view) {
         super(view);
@@ -74,7 +77,7 @@ public class HomeWonderfulPresenterImpl extends AbstractPresenter<HomeWonderfulC
                                     }
                                 }
                                 if (event != null && event instanceof RxEvent.PageScrolled) {
-                                    getView().onTimeLineWithDraw();
+                                    getView().onPageScrolled();
                                 }
                             }
                         }));
@@ -218,6 +221,48 @@ public class HomeWonderfulPresenterImpl extends AbstractPresenter<HomeWonderfulC
     @Override
     public void deleteTimeline(long time) {
 
+    }
+
+    private void initWechatInstance() {
+        if (wechatShareWeakReference == null || wechatShareWeakReference.get() == null)
+            wechatShareWeakReference = new WeakReference<>(new WechatShare((Activity) getView().getContext()));
+    }
+
+    @Override
+    public void checkWechat() {
+        Observable.just(true)
+                .map(new Func1<Boolean, Boolean>() {
+                    @Override
+                    public Boolean call(Boolean aBoolean) {
+                        initWechatInstance();
+                        return wechatShareWeakReference.get().getWxApi().isWXAppInstalled();
+                    }
+                })
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<Boolean>() {
+                    @Override
+                    public void call(Boolean aBoolean) {
+                        getView().onWechatCheckRsp(aBoolean);
+                    }
+                });
+    }
+
+    @Override
+    public void unregisterWechat() {
+        if (wechatShareWeakReference != null && wechatShareWeakReference.get() != null) {
+            wechatShareWeakReference.get().unregister();
+        }
+    }
+
+    @Override
+    public void shareToWechat(WechatShare.ShareContent shareContent) {
+        if (shareContent == null) {
+            AppLogger.i("shareContent is null");
+            return;
+        }
+        if (wechatShareWeakReference == null || wechatShareWeakReference.get() == null)
+            wechatShareWeakReference = new WeakReference<>(new WechatShare((Activity) getView().getContext()));
+        wechatShareWeakReference.get().shareByWeixin(shareContent);
     }
 
     private static final String[] pics = {

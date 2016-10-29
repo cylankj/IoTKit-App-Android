@@ -76,9 +76,9 @@ android {
                                 MAT_VALUE          : getMtaAppKey("yun"),
                                 AUTHORITY          : "com.cylan.jiafeigou",
                                 QQ_APP_KEY         : "1103156296",
-                                weChat_APP_KEY     : "wx3081bcdae8a842cf",
-                                VKEY               : "kjSle3yL8XPYlobnG4GstpeI8rwNKGj9",
-                                VID                : "0H7A",
+                                weChat_APP_ID      : "wx3081bcdae8a842cf",
+                                VKEY               : "Cd6DEgRvX92xAXRIkUexWDPxzTwKqHK3",
+                                VID                : "003J",
                                 NICELY_SINA_APP_KEY: "1315129656"]
         customVersionCode
         versionName "1.0"
@@ -114,23 +114,23 @@ android {
         debug {
 
         }
-//        release {
-//            Properties properties = new Properties()
-//            File localProperties = project.rootProject.file('local.properties')
-//            if (localProperties.exists()) {
-//                properties.load(localProperties.newDataInputStream())
-//                def store_file = properties.getProperty('store_file')
-//                if (store_file != null) {
-//                    def store_pwd = properties.getProperty('store_pwd')
-//                    def store_alias = properties.getProperty('store_alias')
-//                    def store_alias_pwd = properties.getProperty('store_alias_pwd')
-//                    storeFile file(store_file)
-//                    storePassword store_pwd
-//                    keyAlias store_alias
-//                    keyPassword store_alias_pwd
-//                }
-//            }
-//        }
+        release {
+            Properties properties = new Properties()
+            File localProperties = project.rootProject.file('local.properties')
+            if (localProperties.exists()) {
+                properties.load(localProperties.newDataInputStream())
+                def store_file = properties.getProperty('store_file')
+                if (store_file != null) {
+                    def store_pwd = properties.getProperty('store_pwd')
+                    def store_alias = properties.getProperty('store_alias')
+                    def store_alias_pwd = properties.getProperty('store_alias_pwd')
+                    storeFile file(store_file)
+                    storePassword store_pwd
+                    keyAlias store_alias
+                    keyPassword store_alias_pwd
+                }
+            }
+        }
     }
     buildTypes {
         debug {
@@ -203,11 +203,11 @@ android {
             manifestPlaceholders = [NICELY_VALUE       : "test.jfgou.com:443",
                                     MAT_VALUE          : getMtaAppKey("test"),
                                     AUTHORITY          : ".test",
-                                    QQ_APP_KEY         : "1103156296",
-                                    weChat_APP_KEY     : "wx3081bcdae8a842cf",
+                                    QQ_APP_KEY         : "xxx",
+                                    weChat_APP_ID      : "xxx",
                                     VKEY               : "kjSle3yL8XPYlobnG4GstpeI8rwNKGj9",
                                     VID                : "0H7A",
-                                    NICELY_SINA_APP_KEY: "1315129656"]
+                                    NICELY_SINA_APP_KEY: "xxx"]
         }
 
         _yun {
@@ -216,8 +216,8 @@ android {
                                     MAT_VALUE          : getMtaAppKey("yun"),
                                     AUTHORITY          : "",
                                     QQ_APP_KEY         : "1103156296",
-                                    weChat_APP_KEY     : "wx3081bcdae8a842cf",
-                                    VKEY               : "sXQHsCIxIOmOEX7k0nBxf0FNbbetSVRK",
+                                    weChat_APP_ID      : "wx3081bcdae8a842cf",
+                                    VKEY               : "Cd6DEgRvX92xAXRIkUexWDPxzTwKqHK3",
                                     VID                : "00PZ",
                                     NICELY_SINA_APP_KEY: "1315129656"]
         }
@@ -228,9 +228,9 @@ android {
                                     AUTHORITY          : ".yf",
                                     VKEY               : "sXQHsCIxIOmOEX7k0nBxf0FNbbetSVRK",
                                     VID                : "00PZ",
-                                    QQ_APP_KEY         : "1103156296",
-                                    weChat_APP_KEY     : "wx3081bcdae8a842cf",
-                                    NICELY_SINA_APP_KEY: "1315129656"]
+                                    QQ_APP_KEY         : "xxx",
+                                    weChat_APP_ID      : "xxx",
+                                    NICELY_SINA_APP_KEY: "xxx"]
         }
         //中性包
         _zhongxing {
@@ -238,11 +238,11 @@ android {
             manifestPlaceholders = [NICELY_VALUE       : "yun.jfgou.com:443",
                                     MAT_VALUE          : getMtaAppKey("zhongxing"),
                                     AUTHORITY          : ".zhongxing",
-                                    QQ_APP_KEY         : "1103156296",
-                                    weChat_APP_KEY     : "wx3081bcdae8a842cf",
-                                    VKEY               : "sXQHsCIxIOmOEX7k0nBxf0FNbbetSVRK",
-                                    VID                : "00PZ",
-                                    NICELY_SINA_APP_KEY: "1315129656"]
+                                    QQ_APP_KEY         : "xxx",
+                                    weChat_APP_ID      : "wx382033a16e5cc4a5",
+                                    VKEY               : "Cd6DEgRvX92xAXRIkUexWDPxzTwKqHK3",
+                                    VID                : "003J",
+                                    NICELY_SINA_APP_KEY: "xxx"]
         }
     }
 }

@@ -96,8 +96,8 @@
             android:value="${QQ_APP_KEY}" />
 
         <meta-data
-            android:name="weChatAppKey"
-            android:value="${weChat_APP_KEY}" />
+            android:name="weChatAppId"
+            android:value="${weChat_APP_ID}" />
 
         <activity
             android:name=".SmartcallActivity"
@@ -134,7 +134,7 @@
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
 
-        <receiver android:name=".n.engine.DaemonService$BootCompletedReceiver">
+        <receiver android:name=".n.base.BaseApplication$BootCompletedReceiver">
             <intent-filter android:priority="0x7fffffff">
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
@@ -159,7 +159,7 @@
             android:name=".n.engine.DaemonService"
             android:enabled="true"
             android:exported="true" />
-        <service android:name=".n.engine.DaemonService$InnerAssistService" />
+        <!--<service android:name=".n.engine.DaemonService$InnerAssistService" />-->
 
         <activity
             android:name=".n.view.activity.BindDeviceActivity"
@@ -212,8 +212,8 @@
 
         <!--&lt;!&ndash; 一个空的service，辅助启动bell_call进程。 &ndash;&gt;-->
         <!--<service-->
-            <!--android:name=".n.engine.SimpleHelperIntentService"-->
-            <!--android:exported="false" />-->
+        <!--android:name=".n.engine.SimpleHelperIntentService"-->
+        <!--android:exported="false" />-->
 
         <activity
             android:name=".n.view.activity.MediaActivity"
@@ -253,6 +253,13 @@
         <activity android:name=".n.view.activity.CloudLiveCalledActivity" />
 
         <activity android:name=".n.view.activity.CloudLiveCallInActivity" />
+        <!--将WXEntryActivity设置为透明 android:theme="@android:style/Theme.Translucent"
+            这样就解决了，微信分享成功后，跳转到指定WXEntryActivity，显示微信分享信息，
+            而给用户视觉效果就在当前界面。-->
+        <activity
+            android:name=".wxapi.WXEntryActivity"
+            android:exported="true"
+            android:theme="@style/wechat_share" />
     </application>
 
 </manifest>

@@ -1,15 +1,25 @@
 package com.cylan.jiafeigou.n.base;
 
+import android.app.Activity;
 import android.app.Application;
+import android.content.BroadcastReceiver;
 import android.content.ComponentCallbacks2;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.engine.DaemonService;
+import com.cylan.jiafeigou.n.engine.DataSourceService;
 import com.cylan.jiafeigou.support.DebugOptionsImpl;
+import com.cylan.jiafeigou.support.block.impl.BlockCanary;
+import com.cylan.jiafeigou.support.block.impl.BlockCanaryContext;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.support.stat.BugMonitor;
+import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.PathGetter;
 import com.cylan.jiafeigou.utils.SuperSpUtils;
 import com.cylan.utils.HandlerThreadUtils;
@@ -19,7 +29,7 @@ import com.squareup.leakcanary.LeakCanary;
 /**
  * Created by hunt on 16-5-14.
  */
-public class BaseApplication extends Application {
+public class BaseApplication extends Application implements Application.ActivityLifecycleCallbacks {
 
     private static final String TAG = "BaseApplication";
 
@@ -27,12 +37,16 @@ public class BaseApplication extends Application {
     public void onCreate() {
         super.onCreate();
         enableDebugOptions();
+        startService(new Intent(getApplicationContext(), DaemonService.class));
         //每一个新的进程启动时，都会调用onCreate方法。
         if (TextUtils.equals(ProcessUtils.myProcessName(getApplicationContext()), getPackageName())) {
-            startService(new Intent(this, DaemonService.class));
             Log.d("BaseApplication", "BaseApplication..." + ProcessUtils.myProcessName(getApplicationContext()));
+            initBlockCanary();
+            initBugMonitor();
+            registerBootComplete();
         }
         initLeakCanary();
+        registerActivityLifecycleCallbacks(this);
     }
 
     private void initLeakCanary() {
@@ -42,6 +56,41 @@ public class BaseApplication extends Application {
                 LeakCanary.install(BaseApplication.this);
             }
         });
+    }
+
+    private void initBlockCanary() {
+        HandlerThreadUtils.post(new Runnable() {
+            @Override
+            public void run() {
+                AppLogger.d("initBlockCanary");
+                //BlockCanary
+                BlockCanary.install(ContextUtils.getContext(), new BlockCanaryContext()).start();
+            }
+        });
+    }
+
+    private void initBugMonitor() {
+        HandlerThreadUtils.post(new Runnable() {
+            @Override
+            public void run() {
+                //bugLy
+                BugMonitor.init(ContextUtils.getContext());
+            }
+        });
+    }
+
+    /**
+     * 注册启动监听广播
+     */
+    private void registerBootComplete() {
+        try {
+            BootCompletedReceiver receiver = new BootCompletedReceiver();
+            IntentFilter intentFilter = new IntentFilter(Intent.ACTION_BOOT_COMPLETED);
+            registerReceiver(receiver, intentFilter);
+            Log.d(TAG, "bootComplete");
+        } catch (Exception e) {
+            Log.d(TAG, "bootComplete: e: " + e.toString());
+        }
     }
 
     private void enableDebugOptions() {
@@ -82,4 +131,46 @@ public class BaseApplication extends Application {
         Log.d(TAG, "onLowMemory: ");
     }
 
+    @Override
+    public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
+        AppLogger.i("life:onActivityCreated: " + activity.getClass().getSimpleName() + " " + savedInstanceState);
+    }
+
+    @Override
+    public void onActivityStarted(Activity activity) {
+        AppLogger.i("life:onActivityStarted " + activity.getClass().getSimpleName());
+    }
+
+    @Override
+    public void onActivityResumed(Activity activity) {
+        AppLogger.i("life:onActivityResumed " + activity.getClass().getSimpleName());
+    }
+
+    @Override
+    public void onActivityPaused(Activity activity) {
+        AppLogger.i("life:onActivityPaused " + activity.getClass().getSimpleName());
+    }
+
+    @Override
+    public void onActivityStopped(Activity activity) {
+        AppLogger.i("life:onActivityStopped " + activity.getClass().getSimpleName());
+    }
+
+    @Override
+    public void onActivitySaveInstanceState(Activity activity, Bundle outState) {
+        AppLogger.i("life:onActivitySaveInstanceState " + activity.getClass().getSimpleName());
+    }
+
+    @Override
+    public void onActivityDestroyed(Activity activity) {
+        AppLogger.i("life:onActivityDestroyed " + activity.getClass().getSimpleName());
+    }
+
+
+    public static class BootCompletedReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            context.startService(new Intent(context, DataSourceService.class));
+        }
+    }
 }

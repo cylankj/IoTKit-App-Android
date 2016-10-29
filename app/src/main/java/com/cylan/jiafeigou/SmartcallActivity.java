@@ -107,7 +107,7 @@ public class SmartcallActivity extends NeedLoginActivity
     private void initGuidePage() {
         getSupportFragmentManager().beginTransaction()
                 .add(android.R.id.content, GuideFragment.newInstance())
-                .commit();
+                .commitAllowingStateLoss();
     }
 
     /**
