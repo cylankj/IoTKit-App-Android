@@ -1,8 +1,12 @@
 package com.cylan.jiafeigou.n.view.mine;
 
+import android.content.DialogInterface;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -13,10 +17,12 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.n.mvp.contract.mine.MineShareToRelativeAndFriendContract;
+import com.cylan.jiafeigou.n.mvp.contract.mine.MineShareToFriendContract;
+import com.cylan.jiafeigou.n.mvp.impl.mine.MineShareToFriendPresenterImp;
 import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
 import com.cylan.jiafeigou.n.view.adapter.ShareToFriendsAdapter;
 import com.cylan.jiafeigou.utils.ToastUtil;
+import com.cylan.superadapter.internal.SuperViewHolder;
 
 import java.util.ArrayList;
 
@@ -29,7 +35,7 @@ import butterknife.OnClick;
  * 创建时间：2016/9/13
  * 描述：
  */
-public class MineShareToFriendFragment extends Fragment implements MineShareToRelativeAndFriendContract.View {
+public class MineShareToFriendFragment extends Fragment implements MineShareToFriendContract.View {
 
 
     @BindView(R.id.iv_mine_share_to_relative_friend_back)
@@ -40,7 +46,13 @@ public class MineShareToFriendFragment extends Fragment implements MineShareToRe
     RecyclerView rcyMineShareToRelativeAndFriendList;
     @BindView(R.id.ll_no_friend)
     LinearLayout llNoFriend;
+
+    private MineShareToFriendContract.Presenter presenter;
+
     private ShareToFriendsAdapter shareToFriendsAdapter;
+    private int hasShareNum;
+
+    private ArrayList<RelAndFriendBean> isChooseToShareList = new ArrayList<>();
 
     public static MineShareToFriendFragment newInstance() {
         return new MineShareToFriendFragment();
@@ -51,11 +63,24 @@ public class MineShareToFriendFragment extends Fragment implements MineShareToRe
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_mine_share_to_relative_and_friend, container, false);
         ButterKnife.bind(this, view);
+        initPresenter();
         return view;
     }
 
+    private void initPresenter() {
+        presenter = new MineShareToFriendPresenterImp(this);
+    }
+
     @Override
-    public void setPresenter(MineShareToRelativeAndFriendContract.Presenter presenter) {
+    public void onStart() {
+        super.onStart();
+        if (presenter != null){
+            presenter.start();
+        }
+    }
+
+    @Override
+    public void setPresenter(MineShareToFriendContract.Presenter presenter) {
 
     }
 
@@ -68,8 +93,7 @@ public class MineShareToFriendFragment extends Fragment implements MineShareToRe
                 break;
 
             case R.id.tv_mine_share_to_relative_friend_true:
-                //TODO 确定分享
-                ToastUtil.showToast(getContext(), "分享成功");
+                presenter.sendShareToFriendReq(isChooseToShareList);
                 break;
         }
     }
@@ -87,10 +111,79 @@ public class MineShareToFriendFragment extends Fragment implements MineShareToRe
         llNoFriend.setVisibility(View.VISIBLE);
     }
 
+    @Override
+    public void setHasShareFriendNum(boolean isChange,int number) {
+        if (number == 0){
+            tvMineShareToRelativeFriendTrue.setText("确定（0/5）");
+            tvMineShareToRelativeFriendTrue.setTextColor(Color.GRAY);
+        }else if (isChange){
+            tvMineShareToRelativeFriendTrue.setTextColor(Color.WHITE);
+            tvMineShareToRelativeFriendTrue.setText("确定（"+number+"/5）");
+        }else {
+            tvMineShareToRelativeFriendTrue.setTextColor(Color.GRAY);
+            tvMineShareToRelativeFriendTrue.setText("确定（"+number+"/5）");
+        }
+    }
+
+    @Override
+    public void showShareAllSuccess() {
+        //TODO 完善
+        ToastUtil.showToast(getContext(),"分享成功");
+    }
+
+    @Override
+    public void showShareSomeFail(int some) {
+        //TODO 完善
+        showShareResultDialog(some+"用户分享失败");
+    }
+
+    @Override
+    public void showShareAllFail() {
+        //TODO 完善
+        showShareResultDialog("分享失败");
+    }
+
+    /**
+     * 弹出分享
+     * @param title
+     */
+    private void showShareResultDialog(String title) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle(title);
+        builder.setPositiveButton("重试", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                presenter.sendShareToFriendReq(isChooseToShareList);
+            }
+        });
+        builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        }).show();
+    }
+
     /**
      * 列表的监听器
      */
     private void initAdaListener() {
-
+        shareToFriendsAdapter.setOnShareCheckListener(new ShareToFriendsAdapter.OnShareCheckListener() {
+            @Override
+            public void onCheck(boolean isCheckFlag,SuperViewHolder holder,RelAndFriendBean item) {
+                hasShareNum = presenter.getHasShareFriendNumber();
+                boolean numIsChange = false;
+                isChooseToShareList.clear();
+                for (RelAndFriendBean bean:shareToFriendsAdapter.getList()){
+                    if (bean.isCheckFlag == 1){
+                        hasShareNum++;
+                        numIsChange = true;
+                        isChooseToShareList.add(bean);
+                    }
+                }
+                setHasShareFriendNum(numIsChange,hasShareNum);
+            }
+        });
     }
 }

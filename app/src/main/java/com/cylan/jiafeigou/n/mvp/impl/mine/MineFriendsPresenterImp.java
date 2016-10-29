@@ -1,27 +1,12 @@
 package com.cylan.jiafeigou.n.mvp.impl.mine;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
-import android.os.SystemClock;
-import android.support.v7.widget.RecyclerView;
-import android.view.View;
-
 import com.cylan.entity.jniCall.JFGFriendAccount;
 import com.cylan.entity.jniCall.JFGFriendRequest;
 import com.cylan.jiafeigou.misc.RxEvent;
-import com.cylan.jiafeigou.n.mvp.contract.mine.MineRelativesFriendsContract;
+import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendsContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
-import com.cylan.jiafeigou.n.mvp.model.SuggestionChatInfoBean;
-import com.cylan.jiafeigou.n.view.adapter.AddRelativesAndFriendsAdapter;
-import com.cylan.jiafeigou.n.view.adapter.RelativesAndFriendsAdapter;
 import com.cylan.jiafeigou.support.rxbus.RxBus;
-import com.cylan.jiafeigou.utils.ToastUtil;
-import com.cylan.superadapter.OnItemClickListener;
-import com.cylan.superadapter.OnItemLongClickListener;
-import com.cylan.superadapter.internal.SuperViewHolder;
-import com.sina.weibo.sdk.utils.LogUtil;
 
-import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -34,7 +19,7 @@ import rx.functions.Action1;
  * 创建时间：2016/9/6
  * 描述：
  */
-public class MineRelativesandFriendsPresenterImp extends AbstractPresenter<MineRelativesFriendsContract.View> implements MineRelativesFriendsContract.Presenter {
+public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContract.View> implements MineFriendsContract.Presenter {
 
     private Subscription friendListSub;
     private Subscription addReqListSub;
@@ -42,7 +27,7 @@ public class MineRelativesandFriendsPresenterImp extends AbstractPresenter<MineR
     private boolean addReqNull;
     private boolean friendListNull;
 
-    public MineRelativesandFriendsPresenterImp(MineRelativesFriendsContract.View view) {
+    public MineFriendsPresenterImp(MineFriendsContract.View view) {
         super(view);
         view.setPresenter(this);
     }

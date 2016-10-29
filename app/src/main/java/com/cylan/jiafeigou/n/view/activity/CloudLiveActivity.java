@@ -477,6 +477,7 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
         super.onRestart();
         if (presenter != null) {
             presenter.refreshHangUpView();
+
         }
     }
 
@@ -486,5 +487,14 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
         if (requestCode == 1 && data != null){
             ignoreRefreshView(data.getStringExtra("ignore"));
         }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if(presenter != null){
+            presenter.unSubCallIn();
+        }
+
     }
 }

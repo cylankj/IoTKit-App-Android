@@ -19,5 +19,6 @@ public interface CloudVideoChatConettionOkContract {
 
     interface Presenter extends BasePresenter{
         void loadVideo();
+        void handlerHangUp(String time);
     }
 }

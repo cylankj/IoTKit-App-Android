@@ -80,6 +80,6 @@ public interface CloudLiveContract {
 
         void handlerLeveaMesg(Context context);            //处理语音留言
 
-
+        void unSubCallIn();                                 //解除视频通话结束接收绑定
     }
 }

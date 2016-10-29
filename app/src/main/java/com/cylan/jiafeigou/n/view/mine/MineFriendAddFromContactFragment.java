@@ -15,8 +15,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.n.mvp.contract.mine.MineRelativeAndFriendAddFromContactContract;
-import com.cylan.jiafeigou.n.mvp.impl.mine.MineRelativeAndFriendAddFromContactPresenterImp;
+import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendAddFromContactContract;
+import com.cylan.jiafeigou.n.mvp.impl.mine.MineFriendAddFromContactPresenterImp;
 import com.cylan.jiafeigou.n.mvp.model.SuggestionChatInfoBean;
 import com.cylan.jiafeigou.n.view.adapter.RelativeAndFriendAddFromContactAdapter;
 import com.cylan.superadapter.OnItemClickListener;
@@ -32,7 +32,7 @@ import butterknife.OnClick;
  * 创建时间：2016/9/6
  * 描述：
  */
-public class MineFriendAddFromContactFragment extends Fragment implements MineRelativeAndFriendAddFromContactContract.View, RelativeAndFriendAddFromContactAdapter.onContactItemClickListener {
+public class MineFriendAddFromContactFragment extends Fragment implements MineFriendAddFromContactContract.View, RelativeAndFriendAddFromContactAdapter.onContactItemClickListener {
 
     @BindView(R.id.iv_home_mine_relativesandfriends_add_from_contact_back)
     ImageView ivHomeMineRelativesandfriendsAddFromContactBack;
@@ -43,7 +43,7 @@ public class MineFriendAddFromContactFragment extends Fragment implements MineRe
     @BindView(R.id.ll_no_contact)
     LinearLayout llNoContact;
 
-    private MineRelativeAndFriendAddFromContactContract.Presenter presenter;
+    private MineFriendAddFromContactContract.Presenter presenter;
     private MineAddFromContactFragment mineAddFromContactFragment;
     private RelativeAndFriendAddFromContactAdapter contactListAdapter;
 
@@ -93,11 +93,11 @@ public class MineFriendAddFromContactFragment extends Fragment implements MineRe
     }
 
     private void initPresenter() {
-        presenter = new MineRelativeAndFriendAddFromContactPresenterImp(this);
+        presenter = new MineFriendAddFromContactPresenterImp(this);
     }
 
     @Override
-    public void setPresenter(MineRelativeAndFriendAddFromContactContract.Presenter presenter) {
+    public void setPresenter(MineFriendAddFromContactContract.Presenter presenter) {
 
     }
 

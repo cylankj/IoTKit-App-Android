@@ -14,6 +14,7 @@ public class RelAndFriendBean implements Parcelable {
     public String alids;
     public String account;
     public String markName;
+    public int isCheckFlag;
 
     @Override
     public int describeContents() {
@@ -29,6 +30,8 @@ public class RelAndFriendBean implements Parcelable {
         dest.writeString(this.alids);
         dest.writeString(this.account);
         dest.writeString(this.markName);
+        dest.writeInt(this.isCheckFlag);
+
     }
 
     protected RelAndFriendBean(Parcel in) {

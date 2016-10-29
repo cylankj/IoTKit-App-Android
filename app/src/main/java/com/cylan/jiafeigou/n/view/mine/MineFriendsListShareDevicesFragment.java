@@ -11,8 +11,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.n.mvp.contract.mine.MineRelativesAndFriendListShareDevicesToContract;
-import com.cylan.jiafeigou.n.mvp.impl.mine.MineRelativesAndFriendListShareDevicesPresenterImp;
+import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendListShareDevicesToContract;
+import com.cylan.jiafeigou.n.mvp.impl.mine.MineFriendListShareDevicesPresenterImp;
 import com.cylan.jiafeigou.n.view.adapter.ChooseShareDeviceAdapter;
 import com.cylan.jiafeigou.utils.ToastUtil;
 
@@ -25,7 +25,7 @@ import butterknife.OnClick;
  * 创建时间：2016/9/6
  * 描述：
  */
-public class MineFriendsListShareDevicesFragment extends Fragment implements MineRelativesAndFriendListShareDevicesToContract.View {
+public class MineFriendsListShareDevicesFragment extends Fragment implements MineFriendListShareDevicesToContract.View {
 
     @BindView(R.id.iv_mine_friends_share_devices_back)
     ImageView ivMineFriendsShareDevicesBack;
@@ -36,7 +36,7 @@ public class MineFriendsListShareDevicesFragment extends Fragment implements Min
     @BindView(R.id.rcy_share_device_list)
     RecyclerView rcyShareDeviceList;
 
-    private MineRelativesAndFriendListShareDevicesToContract.Presenter presenter;
+    private MineFriendListShareDevicesToContract.Presenter presenter;
 
     public static MineFriendsListShareDevicesFragment newInstance() {
         return new MineFriendsListShareDevicesFragment();
@@ -58,7 +58,7 @@ public class MineFriendsListShareDevicesFragment extends Fragment implements Min
     }
 
     private void initPresenter() {
-        presenter = new MineRelativesAndFriendListShareDevicesPresenterImp(this);
+        presenter = new MineFriendListShareDevicesPresenterImp(this);
     }
 
     /**
@@ -74,7 +74,7 @@ public class MineFriendsListShareDevicesFragment extends Fragment implements Min
     }
 
     @Override
-    public void setPresenter(MineRelativesAndFriendListShareDevicesToContract.Presenter presenter) {
+    public void setPresenter(MineFriendListShareDevicesToContract.Presenter presenter) {
 
     }
 

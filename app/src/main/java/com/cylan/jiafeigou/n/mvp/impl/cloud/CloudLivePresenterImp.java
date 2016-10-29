@@ -72,7 +72,6 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
     private File filePath;
     private long startTime;
     private long endTime;
-    private boolean isFinish;
 
     private String output_Path = Environment.getExternalStorageDirectory().getAbsolutePath()
             + File.separator + System.currentTimeMillis()+"luyin.3gp";
@@ -81,6 +80,7 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
 
     private Subscription checkDeviceOnLineSub;
     private Subscription leaveMesgSub;
+    private Subscription callInSub;
 
     public CloudLivePresenterImp(CloudLiveContract.View view) {
         super(view);
@@ -105,7 +105,6 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
         if (leaveMesgSub != null){
             leaveMesgSub.unsubscribe();
         }
-
         stopPlayRecord();
     }
 
@@ -323,13 +322,13 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
 
     @Override
     public void refreshHangUpView() {
-        RxBus.getInstance().toObservable()
+        callInSub = RxBus.getInstance().toObservable()
                 .subscribe(new Action1<Object>() {
                     @Override
                     public void call(Object o) {
                         if (o != null && o instanceof RxEvent.HangUpVideoTalk){
                             RxEvent.HangUpVideoTalk backData = (RxEvent.HangUpVideoTalk) o;
-                            getView().hangUpRefreshView( backData.talkTime);
+                            getView().hangUpRefreshView(backData.talkTime);
                         }
                     }
                 });
@@ -378,6 +377,13 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
                         getView().showVoiceTalkDialog(context,aBoolean);
                     }
                 });
+    }
+
+    @Override
+    public void unSubCallIn() {
+        if (callInSub != null && callInSub.isUnsubscribed()){
+            callInSub.unsubscribe();
+        }
     }
 
 }

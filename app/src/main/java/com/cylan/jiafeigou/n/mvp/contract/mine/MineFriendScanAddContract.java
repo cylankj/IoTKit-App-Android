@@ -1,25 +1,28 @@
 package com.cylan.jiafeigou.n.mvp.contract.mine;
 
+import android.graphics.Bitmap;
+
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
-import com.cylan.jiafeigou.n.mvp.model.UserInfoBean;
 
 /**
  * 作者：zsl
- * 创建时间：2016/9/7
+ * 创建时间：2016/9/6
  * 描述：
  */
-public interface MineRelativeAndFriendAddByNumContract {
+public interface MineFriendScanAddContract {
 
     interface View extends BaseView<Presenter> {
-        String getInputNum();
+        void onStartScan();
 
-        void showFindResult(UserInfoBean bean);
-
-        void showFindLoad();
+        void showErWeiMa(Bitmap bitmap);
     }
 
     interface Presenter extends BasePresenter {
-        void findUserFromServer(String number);
+        Bitmap encodeAsBitmap(String contents, int dimension);      //生成二维码
+
+        int getDimession();
+
     }
+
 }

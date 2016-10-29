@@ -18,7 +18,7 @@ import java.util.ArrayList;
  * 创建时间：2016/9/6
  * 描述：
  */
-public interface MineRelativesFriendsContract {
+public interface MineFriendsContract {
 
     interface View extends BaseView<Presenter> {
         /**

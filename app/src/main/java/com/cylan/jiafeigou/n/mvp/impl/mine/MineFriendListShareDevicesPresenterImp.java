@@ -1,6 +1,6 @@
 package com.cylan.jiafeigou.n.mvp.impl.mine;
 
-import com.cylan.jiafeigou.n.mvp.contract.mine.MineRelativesAndFriendListShareDevicesToContract;
+import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendListShareDevicesToContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.n.mvp.model.MineShareDeviceBean;
 
@@ -11,9 +11,9 @@ import java.util.ArrayList;
  * 创建时间：2016/9/6
  * 描述：
  */
-public class MineRelativesAndFriendListShareDevicesPresenterImp extends AbstractPresenter<MineRelativesAndFriendListShareDevicesToContract.View> implements MineRelativesAndFriendListShareDevicesToContract.Presenter {
+public class MineFriendListShareDevicesPresenterImp extends AbstractPresenter<MineFriendListShareDevicesToContract.View> implements MineFriendListShareDevicesToContract.Presenter {
 
-    public MineRelativesAndFriendListShareDevicesPresenterImp(MineRelativesAndFriendListShareDevicesToContract.View view) {
+    public MineFriendListShareDevicesPresenterImp(MineFriendListShareDevicesToContract.View view) {
         super(view);
         view.setPresenter(this);
     }

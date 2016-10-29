@@ -17,8 +17,8 @@ import android.widget.TextView;
 import com.cylan.entity.jniCall.JFGFriendAccount;
 import com.cylan.entity.jniCall.JFGFriendRequest;
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.n.mvp.contract.mine.MineRelativesFriendsContract;
-import com.cylan.jiafeigou.n.mvp.impl.mine.MineRelativesandFriendsPresenterImp;
+import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendsContract;
+import com.cylan.jiafeigou.n.mvp.impl.mine.MineFriendsPresenterImp;
 import com.cylan.jiafeigou.n.view.adapter.AddRelativesAndFriendsAdapter;
 import com.cylan.jiafeigou.n.view.adapter.RelativesAndFriendsAdapter;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -39,7 +39,7 @@ import butterknife.OnClick;
  * 创建时间：2016/9/6
  * 描述：
  */
-public class MineFriendsFragment extends Fragment implements MineRelativesFriendsContract.View, AddRelativesAndFriendsAdapter.OnAcceptClickLisenter {
+public class MineFriendsFragment extends Fragment implements MineFriendsContract.View, AddRelativesAndFriendsAdapter.OnAcceptClickLisenter {
 
 
     @BindView(R.id.iv_home_mine_relativesandfriends_back)
@@ -62,7 +62,7 @@ public class MineFriendsFragment extends Fragment implements MineRelativesFriend
     TextView btnAddRelativeAndFriend;
 
 
-    private MineRelativesFriendsContract.Presenter presenter;
+    private MineFriendsContract.Presenter presenter;
 
     private MineFriendAddFriendsFragment friendsFragment;
     private MineFriendDetailFragment relativeAndFrienDetialFragment;
@@ -183,11 +183,11 @@ public class MineFriendsFragment extends Fragment implements MineRelativesFriend
     }
 
     private void initPresenter() {
-        presenter = new MineRelativesandFriendsPresenterImp(this);
+        presenter = new MineFriendsPresenterImp(this);
     }
 
     @Override
-    public void setPresenter(MineRelativesFriendsContract.Presenter presenter) {
+    public void setPresenter(MineFriendsContract.Presenter presenter) {
     }
 
     @OnClick({R.id.iv_home_mine_relativesandfriends_back, R.id.tv_home_mine_relativesandfriends_add})

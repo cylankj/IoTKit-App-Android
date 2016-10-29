@@ -5,13 +5,10 @@ import android.net.Uri;
 import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
-import android.view.View;
 
-import com.cylan.jiafeigou.n.mvp.contract.mine.MineRelativeAndFriendAddFromContactContract;
+import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendAddFromContactContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.n.mvp.model.SuggestionChatInfoBean;
-import com.cylan.jiafeigou.n.view.adapter.RelativeAndFriendAddFromContactAdapter;
-import com.cylan.superadapter.OnItemClickListener;
 
 import java.util.ArrayList;
 
@@ -27,12 +24,12 @@ import rx.schedulers.Schedulers;
  * 创建时间：2016/9/6
  * 描述：
  */
-public class MineRelativeAndFriendAddFromContactPresenterImp extends AbstractPresenter<MineRelativeAndFriendAddFromContactContract.View> implements MineRelativeAndFriendAddFromContactContract.Presenter {
+public class MineFriendAddFromContactPresenterImp extends AbstractPresenter<MineFriendAddFromContactContract.View> implements MineFriendAddFromContactContract.Presenter {
 
     private Subscription contactSubscriber;
     private ArrayList<SuggestionChatInfoBean> filterDateList;
 
-    public MineRelativeAndFriendAddFromContactPresenterImp(MineRelativeAndFriendAddFromContactContract.View view) {
+    public MineFriendAddFromContactPresenterImp(MineFriendAddFromContactContract.View view) {
         super(view);
         view.setPresenter(this);
     }

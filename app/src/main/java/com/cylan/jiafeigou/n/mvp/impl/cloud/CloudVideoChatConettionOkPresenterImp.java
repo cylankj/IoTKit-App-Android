@@ -8,9 +8,11 @@ import android.os.IBinder;
 import android.os.RemoteException;
 
 import com.cylan.jiafeigou.ICloudLiveService;
+import com.cylan.jiafeigou.misc.RxEvent;
 import com.cylan.jiafeigou.n.engine.CloudLiveService;
 import com.cylan.jiafeigou.n.mvp.contract.cloud.CloudVideoChatConettionOkContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
+import com.cylan.jiafeigou.support.rxbus.RxBus;
 
 import java.util.concurrent.TimeUnit;
 
@@ -75,6 +77,11 @@ public class CloudVideoChatConettionOkPresenterImp extends AbstractPresenter<Clo
                         }
                     }
                 });
+    }
+
+    @Override
+    public void handlerHangUp(String time) {
+        RxBus.getInstance().send(new RxEvent.HangUpVideoTalk(true,time));
     }
 
     public void showLoadProgressAnim(){
