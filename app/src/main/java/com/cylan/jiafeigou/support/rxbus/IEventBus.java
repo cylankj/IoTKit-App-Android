@@ -5,7 +5,7 @@ package com.cylan.jiafeigou.support.rxbus;
  */
 
 public interface IEventBus {
-    void send(Object object);
+    void post(Object object);
 
     boolean hasObservers();
 }

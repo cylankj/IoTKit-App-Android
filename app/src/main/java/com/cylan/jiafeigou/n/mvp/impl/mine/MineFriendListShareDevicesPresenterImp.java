@@ -42,6 +42,6 @@ public class MineFriendListShareDevicesPresenterImp extends AbstractPresenter<Mi
 
     @Override
     public boolean checkListEmpty(ArrayList<MineShareDeviceBean> list) {
-        return list.size() == 0 ? true:false;
+        return list.size() == 0 ? true : false;
     }
 }

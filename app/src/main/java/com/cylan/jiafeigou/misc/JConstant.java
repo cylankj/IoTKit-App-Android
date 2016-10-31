@@ -1,6 +1,7 @@
 package com.cylan.jiafeigou.misc;
 
 import android.os.Environment;
+import android.util.Patterns;
 
 import com.cylan.jiafeigou.NewHomeActivity;
 import com.cylan.jiafeigou.n.view.bell.BellLiveActivity;
@@ -24,6 +25,7 @@ public class JConstant {
     public static final int TYPE_PHONE = 0;
     public static final int TYPE_EMAIL = 1;
     public final static Pattern PHONE_REG = Pattern.compile("^1[3|4|5|7|8]\\d{9}$");
+    public final static Pattern EMAIL_REG = Patterns.EMAIL_ADDRESS;
 
     public static final int JFG_DEVICE_BELL = 0;
     public static final int JFG_DEVICE_CAMERA = 1;
@@ -34,6 +36,7 @@ public class JConstant {
     public static final int VALID_VERIFICATION_CODE_LEN = 6;
     public static final int PWD_LEN_MIN = 6;
     public static final int PWD_LEN_MAX = 12;
+    public static final int USER_INPUT_LEN = 64;
     public static final int REGISTER_BY_PHONE = 0;
     public static final int REGISTER_BY_EMAIL = 1;
     /**
@@ -42,7 +45,8 @@ public class JConstant {
     public static final String KEY_ACTIVITY_FRAGMENT_CONTAINER_ID = "activityFragmentContainerId";
 
     public static final String KEY_LOCALE = "key_locale";
-    public static final int LOCALE_CN = 0;
+    public static final int LOCALE_SIMPLE_CN = 0;
+    public static final int LOCALE_T_CN = 10;
     public static final long VERIFICATION_CODE_DEADLINE = 90 * 1000L;
     /**
      * 注册，登陆模块，携带账号
@@ -57,7 +61,12 @@ public class JConstant {
     /**
      * fragment与宿主activity之间的切换关系，{1:finishActivity,2:just popFragment}
      */
-    public static final String KEY_FRAGMENT_ACTION_1 = "key_fragment_activity_0";
+    public static final String KEY_SHOW_LOGIN_FRAGMENT = "key_show_login_fragment";
+    /**
+     * 作为一个key:{@link com.cylan.jiafeigou.n.view.login.LoginFragment}
+     * ，是否需要调用addToBackStack
+     */
+    public static final String KEY_SHOW_LOGIN_FRAGMENT_EXTRA = "key_show_login_fragment_extra";
 
 
     public static final String KEY_FRESH = "is_you_fresh";

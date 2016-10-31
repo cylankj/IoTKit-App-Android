@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 
+import com.cylan.jiafeigou.cache.JCache;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.RxEvent;
 import com.cylan.jiafeigou.misc.br.TimeTickBroadcast;
@@ -47,40 +48,42 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
     public void start() {
         //注册1
         _timeTickSubscriptions
-                .add(RxBus.getInstance().toObservable()
-                        .throttleFirst(1000, TimeUnit.MILLISECONDS)
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new Action1<Object>() {
-                            @Override
-                            public void call(Object event) {
-                                //6:00 am - 17:59 pm
-                                //18:00 pm-5:59 am
-                                if (event != null
-                                        && event instanceof RxEvent.TimeTickEvent) {
-                                    if (getView() != null) {
-                                        getView().onTimeTick(JFGRules.getTimeRule());
-                                        getView().onGreetUpdate(generateBean());
-                                    }
-                                }
-                                //登陆响应
-                                if (event != null && (event instanceof RxEvent.LoginRsp)) {
-                                    if (getView() != null)
-                                        getView().onLoginState(RandomUtils.getRandom(2));
-                                }
-                            }
-                        }));
+                .add(getTimeTickEventSub());
+        _timeTickSubscriptions
+                .add(getLoginRspSub());
     }
 
-    private static final String[] poet = {"行人无限秋风思，隔水青山似故乡。..........",
-            "一道鹊桥横渺渺，千声玉佩过玲玲。",
-            "柔情似水，佳期如梦。", "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"};
-    private static final String[] nickName = {"女娲", "牛郎", "织女..........", "xxxxxxxxxx"};
+    private Subscription getTimeTickEventSub() {
+        return RxBus.getDefault().toObservable(RxEvent.TimeTickEvent.class)
+                .throttleFirst(1000, TimeUnit.MILLISECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<RxEvent.TimeTickEvent>() {
+                    @Override
+                    public void call(RxEvent.TimeTickEvent o) {
+                        //6:00 am - 17:59 pm
+                        //18:00 pm-5:59 am
+                        if (getView() != null) {
+                            getView().onTimeTick(JFGRules.getTimeRule());
 
-    private GreetBean generateBean() {
-        GreetBean greetBean = new GreetBean();
-        greetBean.nickName = nickName[RandomUtils.getRandom(4)];
-        greetBean.poet = poet[RandomUtils.getRandom(4)];
-        return greetBean;
+                        }
+                    }
+                });
+
+    }
+
+    private Subscription getLoginRspSub() {
+        return RxBus.getDefault().toObservable(RxEvent.LoginRsp.class)
+                .throttleFirst(1000, TimeUnit.MILLISECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<RxEvent.LoginRsp>() {
+                    @Override
+                    public void call(RxEvent.LoginRsp o) {
+                        if (getView() != null)
+                            getView().onLoginState(JCache.isOnline);
+                        if (JCache.getAccountCache() != null)
+                            getView().onAccountUpdate(JCache.getAccountCache());
+                    }
+                });
     }
 
     @Override
@@ -145,8 +148,8 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
                 .subscribe(new Action1<GreetBean>() {
                     @Override
                     public void call(GreetBean greetBean) {
-                        if (getView() != null) {
-                            getView().onGreetUpdate(generateBean());
+                        if (getView() != null && JCache.getAccountCache() != null) {
+                            getView().onAccountUpdate(JCache.getAccountCache());
                         }
                     }
                 });
@@ -155,25 +158,16 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
 
     @Override
     public void fetchDeviceList() {
-        final int loginState = RandomUtils.getRandom(2);
-        if (loginState == JFGRules.LOGOUT) {
-            onRefreshSubscription = Observable.just("")
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Action1<String>() {
-                        @Override
-                        public void call(String s) {
-                            getView().onLoginState(JFGRules.LOGOUT);
-                        }
-                    });
-            return;
+        if (!JCache.isOnline) {
+            getView().onLoginState(false);
         }
-        final int testDelay = RandomUtils.getRandom(3);
-        onRefreshSubscription = Observable.just("")
+        final int testDelay = RandomUtils.getRandom(2);
+        onRefreshSubscription = Observable.just(JCache.isOnline)
                 .subscribeOn(Schedulers.newThread())
-                .delay(testDelay * 1000L, TimeUnit.MILLISECONDS)
-                .map(new Func1<String, List<DeviceBean>>() {
+                .delay(testDelay * 500L, TimeUnit.MILLISECONDS)
+                .map(new Func1<Boolean, List<DeviceBean>>() {
                     @Override
-                    public List<DeviceBean> call(String s) {
+                    public List<DeviceBean> call(Boolean s) {
                         return requestList();
                     }
                 })

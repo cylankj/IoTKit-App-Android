@@ -155,7 +155,7 @@ public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMine
                     }
                     afterTime = System.currentTimeMillis();
                 } else {
-                    ToastUtil.showToast(getActivity(), "输入内容不能小于10个字符");
+                    ToastUtil.showToast("输入内容不能小于10个字符");
                 }
                 mRvMineSuggestion.scrollToPosition(suggestionList.size() - 1);      //滚动到集合最后一条显示；
                 break;
@@ -172,7 +172,7 @@ public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMine
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         suggestionAdapter.removeAll(suggestionList);
-                        ToastUtil.showToast(getView().getContext(), "消息已清空");
+                        ToastUtil.showToast("消息已清空");
                     }
                 })
                 .setNegativeButton("取消", new DialogInterface.OnClickListener() {

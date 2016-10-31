@@ -10,7 +10,6 @@ import android.view.ViewGroup;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.widget.GreatDragView;
-import com.cylan.jiafeigou.widget.GuideIndicatorLayout;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

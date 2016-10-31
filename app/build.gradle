@@ -72,9 +72,14 @@ android {
         applicationId "com.cylan.jiafeigou"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        manifestPlaceholders = [NICELY_VALUE: "yun.jfgou.com:443",
-                                MAT_VALUE   : getMtaAppKey("yun"),
-                                AUTHORITY   : "com.cylan.jiafeigou"]
+        manifestPlaceholders = [NICELY_VALUE       : "yun.jfgou.com:443",
+                                MAT_VALUE          : getMtaAppKey("yun"),
+                                AUTHORITY          : "com.cylan.jiafeigou",
+                                QQ_APP_KEY         : "1103156296",
+                                weChat_APP_ID      : "wx3081bcdae8a842cf",
+                                VKEY               : "Cd6DEgRvX92xAXRIkUexWDPxzTwKqHK3",
+                                VID                : "003J",
+                                NICELY_SINA_APP_KEY: "1315129656"]
         customVersionCode
         versionName "1.0"
         multiDexEnabled true
@@ -109,23 +114,23 @@ android {
         debug {
 
         }
-//        release {
-//            Properties properties = new Properties()
-//            File localProperties = project.rootProject.file('local.properties')
-//            if (localProperties.exists()) {
-//                properties.load(localProperties.newDataInputStream())
-//                def store_file = properties.getProperty('store_file')
-//                if (store_file != null) {
-//                    def store_pwd = properties.getProperty('store_pwd')
-//                    def store_alias = properties.getProperty('store_alias')
-//                    def store_alias_pwd = properties.getProperty('store_alias_pwd')
-//                    storeFile file(store_file)
-//                    storePassword store_pwd
-//                    keyAlias store_alias
-//                    keyPassword store_alias_pwd
-//                }
-//            }
-//        }
+        release {
+            Properties properties = new Properties()
+            File localProperties = project.rootProject.file('local.properties')
+            if (localProperties.exists()) {
+                properties.load(localProperties.newDataInputStream())
+                def store_file = properties.getProperty('store_file')
+                if (store_file != null) {
+                    def store_pwd = properties.getProperty('store_pwd')
+                    def store_alias = properties.getProperty('store_alias')
+                    def store_alias_pwd = properties.getProperty('store_alias_pwd')
+                    storeFile file(store_file)
+                    storePassword store_pwd
+                    keyAlias store_alias
+                    keyPassword store_alias_pwd
+                }
+            }
+        }
     }
     buildTypes {
         debug {
@@ -195,41 +200,49 @@ android {
     productFlavors {
         _test {
             applicationIdSuffix ".test"
-            manifestPlaceholders = [NICELY_VALUE: "test.jfgou.com:443",
-                                    MAT_VALUE   : getMtaAppKey("test"),
-                                    AUTHORITY   : ".test"]
-        }
-        _test1 {
-            applicationIdSuffix ".test1"
-            manifestPlaceholders = [NICELY_VALUE: "test1.jfgou.com:443",
-                                    MAT_VALUE   : getMtaAppKey("test1"),
-                                    AUTHORITY   : ".test1"]
+            manifestPlaceholders = [NICELY_VALUE       : "test.jfgou.com:443",
+                                    MAT_VALUE          : getMtaAppKey("test"),
+                                    AUTHORITY          : ".test",
+                                    QQ_APP_KEY         : "xxx",
+                                    weChat_APP_ID      : "xxx",
+                                    VKEY               : "kjSle3yL8XPYlobnG4GstpeI8rwNKGj9",
+                                    VID                : "0H7A",
+                                    NICELY_SINA_APP_KEY: "xxx"]
         }
 
         _yun {
             //官方运营
-            manifestPlaceholders = [NICELY_VALUE: "yun.jfgou.com:443",
-                                    MAT_VALUE   : getMtaAppKey("yun"),
-                                    AUTHORITY   : ""]
-        }
-        _yun1 {
-            applicationIdSuffix ".yun1"
-            manifestPlaceholders = [NICELY_VALUE: "yun1.jfgou.com:443",
-                                    MAT_VALUE   : getMtaAppKey("yun1"),
-                                    AUTHORITY   : ".yun1"]
+            manifestPlaceholders = [NICELY_VALUE       : "yun.jfgou.com:443",
+                                    MAT_VALUE          : getMtaAppKey("yun"),
+                                    AUTHORITY          : "",
+                                    QQ_APP_KEY         : "1103156296",
+                                    weChat_APP_ID      : "wx3081bcdae8a842cf",
+                                    VKEY               : "Cd6DEgRvX92xAXRIkUexWDPxzTwKqHK3",
+                                    VID                : "00PZ",
+                                    NICELY_SINA_APP_KEY: "1315129656"]
         }
         _yf {
             applicationIdSuffix ".yf"
-            manifestPlaceholders = [NICELY_VALUE: "yf.jfgou.com:443",
-                                    MAT_VALUE   : getMtaAppKey("yf"),
-                                    AUTHORITY   : ".yf"]
+            manifestPlaceholders = [NICELY_VALUE       : "yf.jfgou.com:443",
+                                    MAT_VALUE          : getMtaAppKey("yf"),
+                                    AUTHORITY          : ".yf",
+                                    VKEY               : "sXQHsCIxIOmOEX7k0nBxf0FNbbetSVRK",
+                                    VID                : "00PZ",
+                                    QQ_APP_KEY         : "xxx",
+                                    weChat_APP_ID      : "xxx",
+                                    NICELY_SINA_APP_KEY: "xxx"]
         }
         //中性包
         _zhongxing {
             applicationIdSuffix ".zhongxing"
-            manifestPlaceholders = [NICELY_VALUE: "yun.jfgou.com:443",
-                                    MAT_VALUE   : getMtaAppKey("zhongxing"),
-                                    AUTHORITY   : ".zhongxing"]
+            manifestPlaceholders = [NICELY_VALUE       : "yun.jfgou.com:443",
+                                    MAT_VALUE          : getMtaAppKey("zhongxing"),
+                                    AUTHORITY          : ".zhongxing",
+                                    QQ_APP_KEY         : "xxx",
+                                    weChat_APP_ID      : "wx382033a16e5cc4a5",
+                                    VKEY               : "Cd6DEgRvX92xAXRIkUexWDPxzTwKqHK3",
+                                    VID                : "003J",
+                                    NICELY_SINA_APP_KEY: "xxx"]
         }
     }
 }
@@ -242,7 +255,7 @@ repositories {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile fileTree(include: ['*.jar'], dir: 'libs')
     //////////////test///////////////////////
     //testCompile和androidTestCompile的区别在于，测试文件所在的目录。
     //前者在test/，后者在androidTest
@@ -278,11 +291,12 @@ dependencies {
     compile files('libs/nineoldandroids-2.4.0.jar')
     compile files('libs/okhttp-3.2.0.jar')
     compile files('libs/okio-1.6.0.jar')
-    compile files('libs/open_sdk_r5509_lite.jar')
-    compile files('libs/weibosdkcore.jar')
+    compile files('libs/open_sdk_r5756.jar')
+    compile files('libs/weiboSDKCore_3.1.4.jar')
     compile files('libs/zxing.jar')
     debugCompile files('src/main/jniLibs/jfg-debug-support.jar')
     releaseCompile files('src/main/jniLibs/jfg-release-support.jar')
+    compile files('libs/libammsdk-3.1.1.jar')
     //其中latest.release指代最新版本号，也可以指定明确的版本号，例如2.1.5
     compile rootProject.ext.buglySdk
     //其中latest.release指代最新版本号，也可以指定明确的版本号，例如2.2.0
@@ -294,11 +308,12 @@ dependencies {
     //add by hunt 2016-08-01
     compile rootProject.ext.switchButton
     //多进程文件共享方案
-//    compile rootProject.ext.multiProcessSp
+    //    compile rootProject.ext.multiProcessSp
     //glide
     compile rootProject.ext.glide
     //头像更改选择框架
     compile rootProject.ext.galleryFinal
     compile(name: rootProject.ext.cySdk, ext: 'aar')
+
 }
 

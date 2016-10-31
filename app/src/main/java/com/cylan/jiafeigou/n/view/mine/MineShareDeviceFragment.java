@@ -70,6 +70,42 @@ public class MineShareDeviceFragment extends Fragment implements MineShareDevice
         return view;
     }
 
+    @OnClick({R.id.iv_home_mine_sharedevices_back})
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.iv_home_mine_sharedevices_back:
+                getFragmentManager().popBackStack();
+                break;
+//            case R.id.tv_share_smartcamera:          //摄像头分享
+//                showShareDialog();
+//                break;
+//
+//            case R.id.tv_share_smartcamera1:         //摄像头1分享
+//                showShareDialog();
+//                break;
+//
+//            case R.id.tv_share_smartcloud:           //云相框分享
+//                showShareDialog();
+//                break;
+//
+//            case R.id.tv_share_smartbell:            //门铃分享
+//                showShareDialog();
+//                break;
+//
+//            case R.id.rl_mine_share_smartcamera:
+//                if (getView() != null)
+//                    ViewUtils.deBounceClick(getView().findViewById(R.id.rl_mine_share_smartcamera));
+//                AppLogger.e("mine_share_smartcamera");
+//                getFragmentManager().beginTransaction()
+//                        .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
+//                                , R.anim.slide_in_left, R.anim.slide_out_right)
+//                        .add(android.R.id.content, mineDevicesShareManagerFragment, "mineDevicesShareManagerFragment")
+//                        .addToBackStack("mineShareDeviceFragment")
+//                        .commit();
+//                break;
+        }
+    }
+
     @Override
     public void onStart() {
         super.onStart();
@@ -91,11 +127,11 @@ public class MineShareDeviceFragment extends Fragment implements MineShareDevice
     public void showShareDialog() {
         final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         View view = View.inflate(getContext(), R.layout.fragment_home_mine_share_devices_dialog, null);
-        view.findViewById(R.id.tv_share_to_friends).setOnClickListener(new View.OnClickListener() {
+        view.findViewById(R.id.tv_share_to_timeline).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (getView() != null)
-                    ViewUtils.deBounceClick(getView().findViewById(R.id.tv_share_to_friends));
+                    ViewUtils.deBounceClick(getView().findViewById(R.id.tv_share_to_wechat_friends));
                 AppLogger.e("tv_share_to_friends");
                 jump2ShareToFriendFragment();
                 alertDialog.dismiss();

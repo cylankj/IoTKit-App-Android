@@ -9,7 +9,6 @@ import com.cylan.jiafeigou.n.mvp.model.BellInfoBean;
 import com.cylan.jiafeigou.n.view.adapter.RelationDoorBellAdapter;
 import com.cylan.jiafeigou.n.view.adapter.UnRelationDoorBellAdapter;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
-import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.superadapter.internal.SuperViewHolder;
 
 import java.util.ArrayList;
@@ -20,7 +19,6 @@ import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
-import rx.functions.Func0;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
@@ -29,7 +27,7 @@ import rx.schedulers.Schedulers;
  * 创建时间：2016/9/29
  * 描述：
  */
-public class CloudCorrelationDoorBellPresenterImp extends AbstractPresenter<CloudCorrelationDoorBellContract.View> implements CloudCorrelationDoorBellContract.Presenter{
+public class CloudCorrelationDoorBellPresenterImp extends AbstractPresenter<CloudCorrelationDoorBellContract.View> implements CloudCorrelationDoorBellContract.Presenter {
 
     private Subscription subscription;
     private Subscription unRelativeSub;
@@ -51,19 +49,19 @@ public class CloudCorrelationDoorBellPresenterImp extends AbstractPresenter<Clou
 
     @Override
     public void stop() {
-        if (subscription != null){
+        if (subscription != null) {
             subscription.unsubscribe();
         }
 
-        if (unRelativeSub != null){
+        if (unRelativeSub != null) {
             unRelativeSub.unsubscribe();
         }
 
-        if(refreshViewSub != null){
+        if (refreshViewSub != null) {
             refreshViewSub.unsubscribe();
         }
 
-        if (refreshViewUnSub != null){
+        if (refreshViewUnSub != null) {
             refreshViewUnSub.unsubscribe();
         }
     }
@@ -86,7 +84,7 @@ public class CloudCorrelationDoorBellPresenterImp extends AbstractPresenter<Clou
                 .subscribe(new Action1<List<BellInfoBean>>() {
                     @Override
                     public void call(List<BellInfoBean> bellInfoBeen) {
-                        if (bellInfoBeen.size()== 0){
+                        if (bellInfoBeen.size() == 0) {
                             getView().showNoRelativeDevicesView(notifyFlag);
                         }
                         getView().initRelativeRecycleView(bellInfoBeen);
@@ -113,11 +111,11 @@ public class CloudCorrelationDoorBellPresenterImp extends AbstractPresenter<Clou
                 .subscribe(new Action1<List<BellInfoBean>>() {
                     @Override
                     public void call(List<BellInfoBean> list) {
-                        if (unRelativieList == null){
+                        if (unRelativieList == null) {
                             unRelativieList = new ArrayList<BellInfoBean>();
                         }
                         unRelativieList.addAll(list);
-                        if (list.size()== 0){
+                        if (list.size() == 0) {
                             getView().showNoUnRelativeDevicesView(notifyFlag);
                         }
                         getView().initUnRelativeRecycleView(unRelativieList);
@@ -127,15 +125,14 @@ public class CloudCorrelationDoorBellPresenterImp extends AbstractPresenter<Clou
     }
 
     /**
-     *
      * desc:测试数据
      */
     private List<BellInfoBean> TestData() {
         List<BellInfoBean> list = new ArrayList<>();
-        for (int i = 0; i< 3;i++){
+        for (int i = 0; i < 3; i++) {
             BellInfoBean bean = new BellInfoBean();
-            bean.nickName = "门铃"+i;
-            bean.ssid ="序列号"+i;
+            bean.nickName = "门铃" + i;
+            bean.ssid = "序列号" + i;
             list.add(bean);
         }
         return list;
@@ -157,8 +154,8 @@ public class CloudCorrelationDoorBellPresenterImp extends AbstractPresenter<Clou
                         @Override
                         public void call(Object o) {
                             getView().hideProgress();
-                            getView().notifyUnRelativeRecycle(holder,viewType,layoutPosition,item,notifyFlag);
-                            getView().notifyRelativeRecycle(holder,viewType,layoutPosition,item,notifyFlag);
+                            getView().notifyUnRelativeRecycle(holder, viewType, layoutPosition, item, notifyFlag);
+                            getView().notifyRelativeRecycle(holder, viewType, layoutPosition, item, notifyFlag);
                         }
                     });
 
@@ -168,7 +165,7 @@ public class CloudCorrelationDoorBellPresenterImp extends AbstractPresenter<Clou
     /**
      * desc:取消关联按钮监听
      */
-    private class RelativeItemListener implements RelationDoorBellAdapter.OnUnRelaItemClickListener{
+    private class RelativeItemListener implements RelationDoorBellAdapter.OnUnRelaItemClickListener {
         @Override
         public void unRelativeClick(final SuperViewHolder holder, final int viewType, final int layoutPosition, final BellInfoBean item) {
             notifyFlag = 2;
@@ -181,9 +178,9 @@ public class CloudCorrelationDoorBellPresenterImp extends AbstractPresenter<Clou
                         @Override
                         public void call(Object o) {
                             getView().hideProgress();
-                            getView().notifyRelativeRecycle(holder,viewType,layoutPosition,item,notifyFlag);
-                            getView().notifyUnRelativeRecycle(holder,viewType,layoutPosition,item,notifyFlag);
-                            if (PreferencesUtils.getBoolean("isFirstUnRelative",true)){
+                            getView().notifyRelativeRecycle(holder, viewType, layoutPosition, item, notifyFlag);
+                            getView().notifyUnRelativeRecycle(holder, viewType, layoutPosition, item, notifyFlag);
+                            if (PreferencesUtils.getBoolean("isFirstUnRelative", true)) {
                                 showFirstUnRelDialog(item);
                             }
                         }
@@ -196,11 +193,11 @@ public class CloudCorrelationDoorBellPresenterImp extends AbstractPresenter<Clou
      */
     private void showFirstUnRelDialog(BellInfoBean item) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getView().getContext())
-                .setMessage(item.nickName+"取消关联后，该中控设备将不再收到呼叫信息")
+                .setMessage(item.nickName + "取消关联后，该中控设备将不再收到呼叫信息")
                 .setPositiveButton("我知道了", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        PreferencesUtils.putBoolean("isFirstUnRelative",false);
+                        PreferencesUtils.putBoolean("isFirstUnRelative", false);
                         dialog.dismiss();
                     }
                 });

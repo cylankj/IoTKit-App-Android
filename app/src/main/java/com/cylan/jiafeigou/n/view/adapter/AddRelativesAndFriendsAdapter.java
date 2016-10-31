@@ -1,33 +1,27 @@
 package com.cylan.jiafeigou.n.view.adapter;
 
 import android.content.Context;
-import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import com.cylan.entity.jniCall.JFGFriendRequest;
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.n.mvp.model.SuggestionChatInfoBean;
 import com.cylan.superadapter.IMulItemViewType;
 import com.cylan.superadapter.SuperAdapter;
 import com.cylan.superadapter.internal.SuperViewHolder;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
 public class AddRelativesAndFriendsAdapter extends SuperAdapter<JFGFriendRequest> {
 
+
     private OnAcceptClickLisenter lisenter;
 
-    public interface OnAcceptClickLisenter{
+    public interface OnAcceptClickLisenter {
         void onAccept(SuperViewHolder holder, int viewType, int layoutPosition, JFGFriendRequest item);
     }
 
-    public void setOnAcceptClickLisenter(OnAcceptClickLisenter lisenter){
+    public void setOnAcceptClickLisenter(OnAcceptClickLisenter lisenter) {
         this.lisenter = lisenter;
     }
 
@@ -37,20 +31,19 @@ public class AddRelativesAndFriendsAdapter extends SuperAdapter<JFGFriendRequest
 
     @Override
     public void onBind(final SuperViewHolder holder, final int viewType, final int layoutPosition, final JFGFriendRequest item) {
-        holder.setText(R.id.tv_username,item.alias);
-        holder.setText(R.id.tv_add_message,item.sayHi);
+        holder.setText(R.id.tv_username, item.alias);
+        holder.setText(R.id.tv_add_message, item.sayHi);
 
 
-
-        if (layoutPosition == getItemCount() -1){
-            holder.setVisibility(R.id.view_line,View.INVISIBLE);
+        if (layoutPosition == getItemCount() - 1) {
+            holder.setVisibility(R.id.view_line, View.INVISIBLE);
         }
 
         holder.setOnClickListener(R.id.tv_accept_request, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (lisenter != null){
-                    lisenter.onAccept(holder,viewType,layoutPosition,item);
+                if (lisenter != null) {
+                    lisenter.onAccept(holder, viewType, layoutPosition, item);
                 }
             }
         });
@@ -61,6 +54,7 @@ public class AddRelativesAndFriendsAdapter extends SuperAdapter<JFGFriendRequest
     protected IMulItemViewType<JFGFriendRequest> offerMultiItemViewType() {
         return new IMulItemViewType<JFGFriendRequest>() {
             @Override
+
             public int getViewTypeCount() {
                 return 1;
             }

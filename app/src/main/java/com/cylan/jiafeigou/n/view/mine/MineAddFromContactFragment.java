@@ -16,8 +16,6 @@ import com.cylan.jiafeigou.n.mvp.impl.mine.MineAddFromContactPresenterImp;
 import com.cylan.jiafeigou.n.mvp.model.SuggestionChatInfoBean;
 import com.cylan.jiafeigou.utils.ToastUtil;
 
-import java.io.Serializable;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -75,14 +73,14 @@ public class MineAddFromContactFragment extends Fragment implements MineAddFromC
 
     @Override
     public void initEditText() {
-        etMineAddContactMesg.setText("我是"+contactItem.getName());
+        etMineAddContactMesg.setText("我是" + contactItem.getName());
     }
 
     @Override
     public String getSendMesg() {
         String mesg = etMineAddContactMesg.getText().toString();
         if (TextUtils.isEmpty(mesg)) {
-            return "我是"+contactItem.getName();
+            return "我是" + contactItem.getName();
         } else {
             return mesg;
         }
@@ -90,7 +88,7 @@ public class MineAddFromContactFragment extends Fragment implements MineAddFromC
 
     @Override
     public void showResultDialog() {
-        ToastUtil.showToast(getContext(), "发送请求成功"+getSendMesg());
+        ToastUtil.showToast("发送请求成功" + getSendMesg());
     }
 
     @Override

@@ -45,6 +45,7 @@ import com.cylan.jiafeigou.n.view.adapter.HomeWonderfulAdapter;
 import com.cylan.jiafeigou.n.view.misc.HomeEmptyView;
 import com.cylan.jiafeigou.n.view.misc.IEmptyView;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.support.wechat.WechatShare;
 import com.cylan.jiafeigou.utils.AnimatorUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;
@@ -63,6 +64,9 @@ import java.util.Map;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+
+import static com.tencent.mm.sdk.modelmsg.SendMessageToWX.Req.WXSceneSession;
+import static com.tencent.mm.sdk.modelmsg.SendMessageToWX.Req.WXSceneTimeline;
 
 
 public class HomeWonderfulFragmentExt extends Fragment implements
@@ -101,9 +105,10 @@ public class HomeWonderfulFragmentExt extends Fragment implements
     @BindView(R.id.fLayout_empty_view_container)
     FrameLayout fLayoutWonderfulEmptyContainer;
 
-    WeakReference<WheelView> wheelViewWeakReference;
-    WeakReference<ShareDialogFragment> shareDialogFragmentWeakReference;
-    WeakReference<SimpleDialogFragment> simpleDialogFragmentWeakReference;
+    private WeakReference<WheelView> wheelViewWeakReference;
+    private WeakReference<ShareDialogFragment> shareDialogFragmentWeakReference;
+    private WeakReference<SimpleDialogFragment> deleteDialogFragmentWeakReference;
+
     @BindView(R.id.tv_sec_title_head_wonder)
     TextView tvSecTitleHeadWonder;
     @BindView(R.id.toolbar)
@@ -199,9 +204,9 @@ public class HomeWonderfulFragmentExt extends Fragment implements
     }
 
     private void initDeleteDialog() {
-        if (simpleDialogFragmentWeakReference == null || simpleDialogFragmentWeakReference.get() == null) {
-            simpleDialogFragmentWeakReference = new WeakReference<>(SimpleDialogFragment.newInstance(null));
-            simpleDialogFragmentWeakReference.get().setAction(this);
+        if (deleteDialogFragmentWeakReference == null || deleteDialogFragmentWeakReference.get() == null) {
+            deleteDialogFragmentWeakReference = new WeakReference<>(SimpleDialogFragment.newInstance(null));
+            deleteDialogFragmentWeakReference.get().setAction(this);
         }
     }
 
@@ -219,6 +224,9 @@ public class HomeWonderfulFragmentExt extends Fragment implements
 
     @Override
     public void onPause() {
+        if (presenter != null)
+            presenter.unregisterWechat();
+        //应当放在super前面
         super.onPause();
     }
 
@@ -226,6 +234,8 @@ public class HomeWonderfulFragmentExt extends Fragment implements
     @Override
     public void onStop() {
         super.onStop();
+        if (presenter != null)
+            presenter.stop();
     }
 
     @Override
@@ -257,16 +267,16 @@ public class HomeWonderfulFragmentExt extends Fragment implements
         rVDevicesList.setLayoutManager(linearLayoutManager);
         rVDevicesList.setAdapter(homeWonderAdapter);
         rVDevicesList.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            int pastVisiblesItems, visibleItemCount, totalItemCount;
+            int pastVisibleItems, visibleItemCount, totalItemCount;
 
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 if (dy > 0) { //check for scroll down
                     visibleItemCount = linearLayoutManager.getChildCount();
                     totalItemCount = linearLayoutManager.getItemCount();
-                    pastVisiblesItems = linearLayoutManager.findFirstVisibleItemPosition();
+                    pastVisibleItems = linearLayoutManager.findFirstVisibleItemPosition();
                     if (endlessLoading) {
-                        if ((visibleItemCount + pastVisiblesItems) >= totalItemCount) {
+                        if ((visibleItemCount + pastVisibleItems) >= totalItemCount) {
                             endlessLoading = false;
                             if (presenter != null)
                                 presenter.startRefresh();
@@ -280,6 +290,12 @@ public class HomeWonderfulFragmentExt extends Fragment implements
     }
 
     private void initHeaderView() {
+        tvDateItemHeadWonder.post(new Runnable() {
+            @Override
+            public void run() {
+                tvDateItemHeadWonder.setText(TimeUtils.getTodayString());
+            }
+        });
     }
 
 
@@ -328,7 +344,7 @@ public class HomeWonderfulFragmentExt extends Fragment implements
     }
 
     @Override
-    public void timeLineDataUpdate(WheelViewDataSet wheelViewDataSet) {
+    public void onTimeLineDataUpdate(WheelViewDataSet wheelViewDataSet) {
         View view = getWheelView();
         if (view == null)
             return;
@@ -348,6 +364,28 @@ public class HomeWonderfulFragmentExt extends Fragment implements
             imgWonderfulTopBg.setBackground(getResources().getDrawable(drawableId));
         }
         AppLogger.d("onTimeTick: " + dayTime);
+    }
+
+    @Override
+    public void onPageScrolled() {
+        View view = getWheelViewContainer();
+        if (view != null && view.isShown()) {
+            AnimatorUtils.slide(view);
+        }
+        if (srLayoutMainContentHolder != null)
+            srLayoutMainContentHolder.setRefreshing(false);
+    }
+
+    @Override
+    public void onWechatCheckRsp(boolean installed) {
+        if (!installed) {
+            Toast.makeText(getActivity(), "微信没有安装", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        initShareDialog();
+        ShareDialogFragment fragment = shareDialogFragmentWeakReference.get();
+        fragment.setArguments(new Bundle());
+        fragment.show(getActivity().getSupportFragmentManager(), "ShareDialogFragment");
     }
 
     @Override
@@ -380,14 +418,15 @@ public class HomeWonderfulFragmentExt extends Fragment implements
                 AppLogger.d("transition:getName " + ViewCompat.getTransitionName(v));
                 break;
             case R.id.tv_wonderful_item_share:
-                initShareDialog();
-                ShareDialogFragment fragment = shareDialogFragmentWeakReference.get();
-                fragment.setArguments(new Bundle());
-                fragment.show(getActivity().getSupportFragmentManager(), "ShareDialogFragment");
+                if (presenter != null)
+                    presenter.checkWechat();
                 break;
             case R.id.tv_wonderful_item_delete:
                 initDeleteDialog();
-                Toast.makeText(getContext(), "delete: " + position, Toast.LENGTH_SHORT).show();
+                SimpleDialogFragment deleteF = deleteDialogFragmentWeakReference.get();
+                deleteF.setValue(position);
+                deleteF.setArguments(new Bundle());
+                deleteF.show(getActivity().getSupportFragmentManager(), "deleteDialogFragment");
                 break;
         }
     }
@@ -406,7 +445,7 @@ public class HomeWonderfulFragmentExt extends Fragment implements
 
     private void deleteItem(final int position) {
         initDeleteDialog();
-        SimpleDialogFragment fragment = simpleDialogFragmentWeakReference.get();
+        SimpleDialogFragment fragment = deleteDialogFragmentWeakReference.get();
         fragment.setValue(position);
         fragment.show(getActivity().getSupportFragmentManager(), "ShareDialogFragment");
     }
@@ -482,20 +521,62 @@ public class HomeWonderfulFragmentExt extends Fragment implements
 
     @Override
     public void share(int id) {
-        initShareDialog();
-        Toast.makeText(getContext(), "share to: " + id, Toast.LENGTH_SHORT).show();
+        WechatShare.ShareContent shareContent = null;
+        switch (id) {
+            case R.id.tv_share_to_wechat_friends:
+                shareContent = new WechatShare.ShareContentImpl() {
+                    @Override
+                    public String getContent() {
+                        return "什么a ";
+                    }
+
+                    @Override
+                    public int getShareWay() {
+                        return WechatShare.WEIXIN_SHARE_WAY_TEXT;
+                    }
+
+                    @Override
+                    protected int getShareType() {
+                        return WXSceneSession;
+                    }
+                };
+                break;
+            case R.id.tv_share_to_timeline:
+                shareContent = new WechatShare.ShareContentImpl() {
+                    @Override
+                    public String getContent() {
+                        return "什么a ";
+                    }
+
+                    @Override
+                    public int getShareWay() {
+                        return WechatShare.WEIXIN_SHARE_WAY_TEXT;
+                    }
+
+                    @Override
+                    protected int getShareType() {
+                        return WXSceneTimeline;
+                    }
+                };
+                break;
+        }
+        if (presenter != null) {
+            presenter.shareToWechat(shareContent);
+        }
     }
 
     @Override
     public void onDialogAction(int id, Object value) {
-        if (id == SimpleDialogFragment.ACTION_RIGHT)
+        if (id == R.id.tv_dialog_btn_right)
             return;
         if (value == null || !(value instanceof Integer)) {
-            Toast.makeText(getContext(), "null: ", Toast.LENGTH_SHORT).show();
+            AppLogger.i("value is null :" + value);
             return;
         }
+        final int position = (int) value;
+        if (presenter != null && position >= 0 && position < homeWonderAdapter.getCount())
+            presenter.deleteTimeline(homeWonderAdapter.getItem(position).time);
         homeWonderAdapter.remove((Integer) value);
-        Toast.makeText(getContext(), "id: " + id + " value:" + value, Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -623,5 +704,4 @@ public class HomeWonderfulFragmentExt extends Fragment implements
             homePageEmptyView.show(count == 0);
         }
     }
-
 }

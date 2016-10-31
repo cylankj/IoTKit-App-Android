@@ -14,12 +14,11 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.misc.RxEvent;
 import com.cylan.jiafeigou.n.mvp.contract.login.SetupPwdContract;
-import com.cylan.jiafeigou.n.mvp.model.RequestResetPwdBean;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.IMEUtils;
@@ -101,7 +100,11 @@ public class SetupPwdFragment extends Fragment implements SetupPwdContract.View 
         layout.findViewById(R.id.tv_top_bar_right).setVisibility(android.view.View.GONE);
         TextView tvTitle = (TextView) layout.findViewById(R.id.tv_top_bar_center);
         tvTitle.setText("密码");
-        ivLoginTopLeft.setImageResource(R.drawable.icon_nav_back_white);
+        ivLoginTopLeft.setImageResource(R.drawable.icon_nav_back_gray);
+        initNavigateBack();
+    }
+
+    protected void initNavigateBack() {
         ivLoginTopLeft.setOnClickListener(new android.view.View.OnClickListener() {
             @Override
             public void onClick(android.view.View v) {
@@ -114,6 +117,7 @@ public class SetupPwdFragment extends Fragment implements SetupPwdContract.View 
         EditText editText = (EditText) getView().findViewById(R.id.et_input_box);
         editText.setHint(getString(R.string.input_new_pwd));
         editText.setInputType(EditorInfo.TYPE_TEXT_VARIATION_PASSWORD);
+        ViewUtils.setChineseExclude(editText, JConstant.PWD_LEN_MAX);
     }
 
     @OnTextChanged(R.id.et_input_box)
@@ -168,8 +172,9 @@ public class SetupPwdFragment extends Fragment implements SetupPwdContract.View 
         this.pwdPresenter = presenter;
     }
 
+
     @Override
-    public void submitResult(RequestResetPwdBean bean) {
+    public void submitResult(RxEvent.ResultRegister register) {
 
     }
 }

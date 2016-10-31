@@ -1,6 +1,5 @@
 package com.cylan.jiafeigou.n.view.cloud;
 
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -11,7 +10,6 @@ import com.cylan.jiafeigou.n.mvp.model.CloudLiveLeaveMesBean;
 import com.cylan.jiafeigou.n.mvp.model.CloudLiveVideoTalkBean;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.superadapter.internal.SuperViewHolder;
-import com.sina.weibo.sdk.utils.LogUtil;
 
 /**
  * 作者：zsl
@@ -36,35 +34,35 @@ public class LayoutHandler {
 
     public void handleLayout(SuperViewHolder holder, int viewType, int layoutPosition, CloudLiveBaseBean items) {
         Object o = items.data;
-        LinearLayout.LayoutParams item = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT);
-        if(layoutPosition != 0){
-            item.setMargins(0, ViewUtils.dp2px(30),0,0);
+        LinearLayout.LayoutParams item = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        if (layoutPosition != 0) {
+            item.setMargins(0, ViewUtils.dp2px(30), 0, 0);
             holder.itemView.setLayoutParams(item);
-        }else {
-            item.setMargins(0,ViewUtils.dp2px(11),0,0);
+        } else {
+            item.setMargins(0, ViewUtils.dp2px(11), 0, 0);
             holder.itemView.setLayoutParams(item);
         }
 
-        switch (viewType){
+        switch (viewType) {
             case LEAVE_MESG_TYPE:
                 CloudLiveLeaveMesBean cc = (CloudLiveLeaveMesBean) o;
-                holder.setText(R.id.tv_voice_length,cc.getLeaveMesgLength());
-                holder.setText(R.id.tv_time,cc.getLeveMesgTime());
-                if(cc.isRead()){
+                holder.setText(R.id.tv_voice_length, cc.getLeaveMesgLength());
+                holder.setText(R.id.tv_time, cc.getLeveMesgTime());
+                if (cc.isRead()) {
                     holder.setVisibility(R.id.tv_is_read, View.VISIBLE);
-                }else {
+                } else {
                     holder.setVisibility(R.id.tv_is_read, View.INVISIBLE);
                 }
                 break;
 
             case VIDEO_TALK_TYPE:
                 CloudLiveVideoTalkBean videoBean = (CloudLiveVideoTalkBean) o;
-                holder.setText(R.id.tv_time,videoBean.getVideoTime());
+                holder.setText(R.id.tv_time, videoBean.getVideoTime());
 
-                if (videoBean.isHasConnet()){
-                    holder.setText(R.id.tv_voideo_talk_length,"通话时长 "+videoBean.getVideoLength());
-                }else {
-                    holder.setText(R.id.tv_voideo_talk_length,"未接听，点击回拨");
+                if (videoBean.isHasConnet()) {
+                    holder.setText(R.id.tv_voideo_talk_length, "通话时长 " + videoBean.getVideoLength());
+                } else {
+                    holder.setText(R.id.tv_voideo_talk_length, "未接听，点击回拨");
                 }
                 break;
         }

@@ -30,6 +30,7 @@ import com.cylan.jiafeigou.n.mvp.model.RequestResetPwdBean;
 import com.cylan.jiafeigou.support.rxbus.RxBus;
 import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.IMEUtils;
+import com.cylan.jiafeigou.utils.LocaleUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.utils.NetUtils;
 
@@ -159,7 +160,7 @@ public class ForgetPwdFragment extends Fragment implements ForgetPwdContract.Vie
         TextView tvTitle = (TextView) layout.findViewById(R.id.tv_top_bar_center);
         tvTitle.setText("忘记密码");
         ImageView imgBackHandle = (ImageView) layout.findViewById(R.id.iv_top_bar_left);
-        imgBackHandle.setImageResource(R.drawable.icon_nav_back_white);
+        imgBackHandle.setImageResource(R.drawable.icon_nav_back_gray);
         imgBackHandle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -176,6 +177,8 @@ public class ForgetPwdFragment extends Fragment implements ForgetPwdContract.Vie
 
 
     private void initView(View view) {
+        etForgetUsername.setEnabled(false);
+        ViewUtils.setChineseExclude(etNewPwdInput, JConstant.PWD_LEN_MAX);
         if (acceptType == 1) {
             etForgetUsername.setHint("please input email address");
         }
@@ -183,6 +186,10 @@ public class ForgetPwdFragment extends Fragment implements ForgetPwdContract.Vie
         if (bundle != null && !TextUtils.isEmpty(bundle.getString(LoginFragment.KEY_TEMP_ACCOUNT))) {
             etForgetUsername.setText(bundle.getString(LoginFragment.KEY_TEMP_ACCOUNT));
             ivForgetClearUsername.setVisibility(View.GONE);
+        }
+        if (TextUtils.isEmpty(etForgetUsername.getText())) {
+            final int type = LocaleUtils.getLanguageType(getActivity());
+            etForgetUsername.setHint(type == JConstant.LOCALE_SIMPLE_CN ? "请输入手机号/邮箱" : "please input email");
         }
     }
 
@@ -306,14 +313,15 @@ public class ForgetPwdFragment extends Fragment implements ForgetPwdContract.Vie
 
     @OnClick(R.id.tv_forget_pwd_submit)
     public void forgetPwdCommit(View v) {
+        JCache.isSmsAction = false;
         if (NetUtils.getJfgNetType(getContext()) == 0) {
             Toast.makeText(getContext(), "网络不通", Toast.LENGTH_SHORT).show();
             return;
         }
-        if (!JCache.isOnline) {
-            Toast.makeText(getContext(), "连接服务器失败", Toast.LENGTH_SHORT).show();
-            return;
-        }
+//        if (!JCache.isOnline) {
+//            Toast.makeText(getContext(), "连接服务器失败", Toast.LENGTH_SHORT).show();
+//            return;
+//        }
         next();
     }
 
@@ -357,7 +365,7 @@ public class ForgetPwdFragment extends Fragment implements ForgetPwdContract.Vie
             public void onClick(View v) {
                 Toast.makeText(getActivity(), "yes?", Toast.LENGTH_SHORT).show();
                 getActivity().getSupportFragmentManager().popBackStack();
-                RxBus.getInstance().send(new RxEvent.LoginPopBack(etForgetUsername.getText().toString()));
+                RxBus.getDefault().post(new RxEvent.LoginPopBack(etForgetUsername.getText().toString()));
             }
         });
         vsSetAccountPwd.addView(mailView);

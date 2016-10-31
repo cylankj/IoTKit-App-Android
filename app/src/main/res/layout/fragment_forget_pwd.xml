@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/lLayout_forget_pwd"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/color_white"
@@ -54,7 +55,7 @@
                         android:focusableInTouchMode="true"
                         android:gravity="center"
                         android:hint="请输入手机号/邮箱"
-                        android:maxLength="60"
+                        android:maxLength="65"
                         android:textColor="@color/color_666666"
                         android:textColorHint="@color/color_cecece"
                         android:textCursorDrawable="@drawable/bg_common_cursor"

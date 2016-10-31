@@ -80,7 +80,6 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
 
     private Subscription checkDeviceOnLineSub;
     private Subscription leaveMesgSub;
-    private Subscription callInSub;
 
     public CloudLivePresenterImp(CloudLiveContract.View view) {
         super(view);
@@ -220,7 +219,7 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
     public void addMesgItem(CloudLiveBaseBean bean) {
         if (getView() != null)
             getView().refreshRecycleView(bean);
-            getView().scrollToLast();
+        getView().scrollToLast();
     }
 
     @Override
@@ -320,7 +319,7 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
 
     @Override
     public void refreshHangUpView() {
-        callInSub = RxBus.getInstance().toObservable()
+        RxBus.getDefault().toObservableSticky(RxEvent.HangUpVideoTalk.class)
                 .subscribe(new Action1<Object>() {
                     @Override
                     public void call(Object o) {
@@ -379,9 +378,8 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
 
     @Override
     public void unSubCallIn() {
-        if (callInSub != null && callInSub.isUnsubscribed()){
-            callInSub.unsubscribe();
-        }
+        RxBus.getDefault().removeStickyEvent(RxEvent.HangUpVideoTalk.class);
+        RxBus.getDefault().reset();
     }
 
 }

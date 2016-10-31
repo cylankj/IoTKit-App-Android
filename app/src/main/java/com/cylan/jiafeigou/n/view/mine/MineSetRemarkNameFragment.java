@@ -91,10 +91,10 @@ public class MineSetRemarkNameFragment extends Fragment implements MineSetRemark
             @Override
             public void afterTextChanged(Editable s) {
                 boolean isEmpty = TextUtils.isEmpty(getEditName());
-                if(isEmpty){
+                if (isEmpty) {
                     ivMineSetRemarknameBind.setImageDrawable(getResources().getDrawable(R.drawable.icon_finish_disable));
                     ivMineSetRemarknameBind.setEnabled(false);
-                }else {
+                } else {
                     ivMineSetRemarknameBind.setImageDrawable(getResources().getDrawable(R.drawable.icon_finish));
                     ivMineSetRemarknameBind.setEnabled(true);
                 }
@@ -111,11 +111,11 @@ public class MineSetRemarkNameFragment extends Fragment implements MineSetRemark
                 break;
             case R.id.iv_mine_set_remarkname_bind:
                 if (presenter.isEditEmpty(getEditName())) {
-                    ToastUtil.showToast(getContext(), "备注名不能为空");
+                    ToastUtil.showToast("备注名不能为空");
                     return;
                 } else {
                     PreferencesUtils.putString(getEditName(), "username");
-                    ToastUtil.showToast(getContext(), "备注成功");
+                    ToastUtil.showToast("备注成功");
                     if (listener != null) {
                         listener.remarkNameChange(getEditName());
                     }
@@ -136,10 +136,10 @@ public class MineSetRemarkNameFragment extends Fragment implements MineSetRemark
     @Override
     public void onResume() {
         super.onResume();
-        if(TextUtils.isEmpty(getEditName())){
+        if (TextUtils.isEmpty(getEditName())) {
             ivMineSetRemarknameBind.setImageDrawable(getResources().getDrawable(R.drawable.icon_finish_disable));
             ivMineSetRemarknameBind.setEnabled(false);
-        }else {
+        } else {
             ivMineSetRemarknameBind.setImageDrawable(getResources().getDrawable(R.drawable.icon_finish));
             ivMineSetRemarknameBind.setEnabled(true);
         }

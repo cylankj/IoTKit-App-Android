@@ -83,10 +83,10 @@ public class MineSetUserNameFragment extends Fragment implements MinePersionalIn
             @Override
             public void afterTextChanged(Editable s) {
                 boolean isEmpty = TextUtils.isEmpty(getEditName());
-                if(isEmpty){
+                if (isEmpty) {
                     ivMinePersonalSetnameBind.setImageDrawable(getResources().getDrawable(R.drawable.icon_finish_disable));
                     ivMinePersonalSetnameBind.setEnabled(false);
-                }else {
+                } else {
                     ivMinePersonalSetnameBind.setImageDrawable(getResources().getDrawable(R.drawable.icon_finish));
                     ivMinePersonalSetnameBind.setEnabled(true);
                 }
@@ -121,11 +121,11 @@ public class MineSetUserNameFragment extends Fragment implements MinePersionalIn
                 break;
             case R.id.iv_mine_personal_setname_bind:
                 if (presenter.isEditEmpty(getEditName())) {
-                    ToastUtil.showToast(getContext(), "昵称不能为空");
+                    ToastUtil.showToast("昵称不能为空");
                     return;
                 } else {
                     PreferencesUtils.putString(getEditName(), "username");
-                    ToastUtil.showToast(getContext(), "保存成功");
+                    ToastUtil.showToast("保存成功");
                     if (listener != null) {
                         listener.userNameChange(getEditName());
                     }
@@ -141,10 +141,10 @@ public class MineSetUserNameFragment extends Fragment implements MinePersionalIn
     @Override
     public void onResume() {
         super.onResume();
-        if(TextUtils.isEmpty(getEditName())){
+        if (TextUtils.isEmpty(getEditName())) {
             ivMinePersonalSetnameBind.setImageDrawable(getResources().getDrawable(R.drawable.icon_finish_disable));
             ivMinePersonalSetnameBind.setEnabled(false);
-        }else {
+        } else {
             ivMinePersonalSetnameBind.setImageDrawable(getResources().getDrawable(R.drawable.icon_finish));
             ivMinePersonalSetnameBind.setEnabled(true);
         }

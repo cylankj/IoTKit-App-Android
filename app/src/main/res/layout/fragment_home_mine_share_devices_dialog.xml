@@ -7,7 +7,7 @@
     android:layout_height="wrap_content">
 
     <TextView
-        android:id="@+id/tv_share_to_friends"
+        android:id="@+id/tv_share_to_timeline"
         android:drawablePadding="25dp"
         android:gravity="center_vertical"
         android:drawableLeft="@mipmap/ic_launcher"

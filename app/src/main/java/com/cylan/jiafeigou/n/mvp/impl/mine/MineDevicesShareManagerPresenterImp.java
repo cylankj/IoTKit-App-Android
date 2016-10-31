@@ -77,7 +77,7 @@ public class MineDevicesShareManagerPresenterImp extends AbstractPresenter<MineD
                     public void call(Boolean aBoolean) {
                         getView().hideCancleShareProgress();
                         getView().deleteItems(bean);
-                        ToastUtil.showToast(getView().getContext(),"取消分享成功");
+                        ToastUtil.showToast("取消分享成功");
                     }
                 });
     }

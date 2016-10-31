@@ -17,9 +17,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineLookBigImageContract;
-import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 
 import butterknife.BindView;
@@ -42,7 +40,7 @@ public class MineLookBigImageFragment extends Fragment implements MineLookBigIma
     private String imageUrl;
 
     public static MineLookBigImageFragment newInstance(Bundle bundle) {
-        MineLookBigImageFragment fragment =  new MineLookBigImageFragment();
+        MineLookBigImageFragment fragment = new MineLookBigImageFragment();
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -83,7 +81,7 @@ public class MineLookBigImageFragment extends Fragment implements MineLookBigIma
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
-                ToastUtil.showToast(getContext(),"图片保存成功");
+                ToastUtil.showToast("图片保存成功");
                 //TODO
             }
         }).setNegativeButton("取消", new DialogInterface.OnClickListener() {
@@ -95,9 +93,9 @@ public class MineLookBigImageFragment extends Fragment implements MineLookBigIma
     }
 
     private void initImage() {
-        if(loadResult){
+        if (loadResult) {
 
-        }else {
+        } else {
             ViewGroup.LayoutParams layoutParams = ivLookBigImage.getLayoutParams();
             layoutParams.width = 200;
             layoutParams.height = 200;
@@ -140,7 +138,7 @@ public class MineLookBigImageFragment extends Fragment implements MineLookBigIma
                         super.onLoadFailed(e, errorDrawable);
                         hideLoadImageProgress();
                         loadResult = false;
-                        ToastUtil.showFailToast(getContext(), "加载失败，点击重试");
+                        ToastUtil.showNegativeToast("加载失败，点击重试");
                     }
 
                 });
@@ -155,9 +153,9 @@ public class MineLookBigImageFragment extends Fragment implements MineLookBigIma
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.iv_look_big_image:                //点击大图退出全屏
-                if(loadResult){
+                if (loadResult) {
                     getFragmentManager().popBackStack();
-                }else {
+                } else {
                     loadImage();
                 }
                 break;

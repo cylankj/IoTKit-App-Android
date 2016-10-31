@@ -31,7 +31,7 @@
             android:layout_below="@id/tv_title_head_wonder"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="8dp"
-            android:text="在这里,发现最美的一天"
+            android:text="每一天的生活，都值得被记录"
             android:textColor="@color/color_white"
             android:textSize="15sp" />
     </RelativeLayout>

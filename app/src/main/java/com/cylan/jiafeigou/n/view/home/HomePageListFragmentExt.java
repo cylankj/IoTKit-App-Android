@@ -23,7 +23,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.cache.JCache;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.RxEvent;
@@ -31,7 +33,6 @@ import com.cylan.jiafeigou.n.mvp.contract.ActivityResultContract;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomePageListContract;
 import com.cylan.jiafeigou.n.mvp.impl.ActivityResultPresenterImpl;
 import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
-import com.cylan.jiafeigou.n.mvp.model.GreetBean;
 import com.cylan.jiafeigou.n.view.activity.BindDeviceActivity;
 import com.cylan.jiafeigou.n.view.activity.CameraLiveActivity;
 import com.cylan.jiafeigou.n.view.activity.CloudLiveActivity;
@@ -41,6 +42,7 @@ import com.cylan.jiafeigou.n.view.bell.DoorBellHomeActivity;
 import com.cylan.jiafeigou.n.view.misc.HomeEmptyView;
 import com.cylan.jiafeigou.n.view.misc.IEmptyView;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.support.rxbus.RxBus;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
 import com.cylan.jiafeigou.widget.wave.SuperWaveView;
@@ -247,11 +249,11 @@ public class HomePageListFragmentExt extends Fragment implements
 
     @OnClick(R.id.imgV_add_devices)
     void onClickAddDevice() {
-//        if (!JCache.isOnline) {
-//            if (RxBus.getInstance().hasObservers())
-//                RxBus.getInstance().send(new RxEvent.NeedLoginEvent(null));
-//            return;
-//        }
+        if (!JCache.isOnline) {
+            if (RxBus.getDefault().hasObservers())
+                RxBus.getDefault().post(new RxEvent.NeedLoginEvent(null));
+            return;
+        }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             getActivity().startActivity(new Intent(getActivity(), BindDeviceActivity.class),
                     ActivityOptionsCompat.makeCustomAnimation(getContext(),
@@ -316,10 +318,11 @@ public class HomePageListFragmentExt extends Fragment implements
     }
 
     @Override
-    public void onGreetUpdate(GreetBean greetBean) {
+    public void onAccountUpdate(JFGAccount greetBean) {
         tvHeaderNickName.setText(String.format(getString(R.string.home_nick_name),
-                greetBean.nickName));
-        tvHeaderPoet.setText(greetBean.poet);
+                greetBean.getAccount()));
+        tvHeaderPoet.setText(JFGRules.getTimeRule() == JFGRules.RULE_DAY_TIME ? "每天都给自己一点小期待"
+                : "每次的歇息，总会带来新的向往");
     }
 
     @SuppressWarnings("deprecation")
@@ -328,9 +331,6 @@ public class HomePageListFragmentExt extends Fragment implements
         //需要优化
         int drawableId = dayTime == JFGRules.RULE_DAY_TIME
                 ? R.drawable.bg_home_title_daytime : R.drawable.bg_home_title_night;
-//        Glide.with(this)
-//                .load(drawableId)
-//                .into(imgHomePageHeaderBg);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             imgHomePageHeaderBg.setBackground(getResources().getDrawable(drawableId, null));
         } else {
@@ -339,11 +339,12 @@ public class HomePageListFragmentExt extends Fragment implements
     }
 
     @Override
-    public void onLoginState(int state) {
-        if (state == JFGRules.LOGIN) {
-        } else if (state == JFGRules.LOGOUT) {
+    public void onLoginState(boolean state) {
+        if (!state) {
             srLayoutMainContentHolder.setRefreshing(false);
             Toast.makeText(getContext(), "还没登陆", Toast.LENGTH_SHORT).show();
+        } else {
+            //update online view
         }
     }
 
@@ -420,7 +421,7 @@ public class HomePageListFragmentExt extends Fragment implements
 
     @Override
     public void onDialogAction(int id, Object value) {
-        if (id == SimpleDialogFragment.ACTION_RIGHT)
+        if (id == R.id.tv_dialog_btn_right)
             return;
         if (value == null || !(value instanceof Integer)) {
             Toast.makeText(getContext(), "null: ", Toast.LENGTH_SHORT).show();

@@ -11,7 +11,9 @@ import android.net.Uri;
 import android.provider.ContactsContract;
 import android.text.TextUtils;
 
-;import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.support.log.AppLogger;
+
+;
 
 
 /**

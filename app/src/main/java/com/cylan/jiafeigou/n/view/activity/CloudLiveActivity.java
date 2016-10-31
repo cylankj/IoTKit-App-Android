@@ -31,7 +31,6 @@ import com.cylan.jiafeigou.n.mvp.model.CloudLiveBaseBean;
 import com.cylan.jiafeigou.n.mvp.model.CloudLiveBaseDbBean;
 import com.cylan.jiafeigou.n.mvp.model.CloudLiveLeaveMesBean;
 import com.cylan.jiafeigou.n.mvp.model.CloudLiveVideoTalkBean;
-import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
 import com.cylan.jiafeigou.n.view.adapter.CloudLiveMesgListAdapter;
 import com.cylan.jiafeigou.n.view.cloud.CloudLiveSettingFragment;
 import com.cylan.jiafeigou.n.view.cloud.CloudVideoChatConnetionFragment;
@@ -41,7 +40,6 @@ import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.CloudLiveVoiceTalkView;
 import com.cylan.superadapter.OnItemClickListener;
-import com.sina.weibo.sdk.utils.LogUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -106,6 +104,28 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
                 cloudLiveMesgAdapter.clear();
                 mData.clear();
                 cloudLiveMesgAdapter.notifyDataSetChanged();
+            }
+        });
+
+        cloudVideoChatConnetionFragment.setOnIgnoreClickListener(new CloudVideoChatConnetionFragment.OnIgnoreClickListener() {
+            @Override
+            public void onIgnore() {
+                CloudLiveBaseBean newBean = presenter.creatMesgBean();
+                newBean.setType(1);
+                CloudLiveVideoTalkBean newLeaveBean = new CloudLiveVideoTalkBean();
+                newLeaveBean.setVideoLength("00:00");
+                newLeaveBean.setHasConnet(false);
+                newLeaveBean.setVideoTime(presenter.parseTime(System.currentTimeMillis() + ""));
+                newBean.setData(newLeaveBean);
+                presenter.addMesgItem(newBean);
+
+                //添加到数据库
+                CloudLiveBaseDbBean dbBean = new CloudLiveBaseDbBean();
+                dbBean.setType(1);
+                dbBean.setData(presenter.getSerializedObject(newLeaveBean));
+                presenter.saveIntoDb(dbBean);
+
+                //TODO 获取通话时长
             }
         });
 
@@ -198,6 +218,7 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
                 break;
             case R.id.iv_cloud_videochat:                               //视频通话
                 ViewUtils.deBounceClick(findViewById(R.id.iv_cloud_videochat));
+                //jump2VideoChatFragment();
                 presenter.handlerVideoTalk();
                 break;
             case R.id.iv_cloud_talk:                                    //语音留言
@@ -219,7 +240,7 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
     }
 
     private void jump2SharePicFragment() {
-        Intent intent = new Intent(this,CloudLiveCallInActivity.class);
+        Intent intent = new Intent(this, CloudLiveCallInActivity.class);
         startActivityForResult(intent,1);
     }
 
@@ -254,9 +275,8 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
         }
     }
 
-    @Override
-    public void showVoiceTalkDialog(final Context context,boolean isOnLine) {
-        if (isOnLine){
+    public void showVoiceTalkDialog(final Context context, boolean isOnLine) {
+        if (isOnLine) {
             dialog = new Dialog(context, R.style.Theme_Light_Dialog);
             View dialogView = LayoutInflater.from(context).inflate(R.layout.fragment_cloud_voice_talk_dialog, null);
             Window window = dialog.getWindow();
@@ -281,12 +301,11 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
 
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
-
                     switch (event.getAction()) {
 
                         case MotionEvent.ACTION_DOWN: {
                             if (!presenter.checkSDCard()) {
-                                ToastUtil.showToast(context, "未检测到SD卡");
+                                ToastUtil.showToast("未检测到SD卡");
                                 return false;
                             }
                             tv_show_mesg.setText("松开发送");
@@ -330,7 +349,7 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
                     dialog.dismiss();
                 }
             });
-        }else {
+        } else {
             showDeviceDisOnlineDialog(2);
         }
     }
@@ -436,10 +455,10 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
 
     @Override
     public void scrollToLast() {
-        if (cloudLiveMesgAdapter.getItemCount() == 0){
+        if (cloudLiveMesgAdapter.getItemCount() == 0) {
             return;
         }
-        rcyCloudMesgList.smoothScrollToPosition(cloudLiveMesgAdapter.getItemCount()-1);
+        rcyCloudMesgList.smoothScrollToPosition(cloudLiveMesgAdapter.getItemCount() - 1);
     }
 
     private void showDeviceDisOnlineDialog(final int whichshow) {
@@ -448,7 +467,7 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
         builder.setPositiveButton("重试", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                switch (whichshow){
+                switch (whichshow) {
                     case 1:
                         presenter.handlerVideoTalk();
                         break;
@@ -469,15 +488,14 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
     public void getIntentData() {
         Bundle bundleExtra = getIntent().getExtras();
         Parcelable parcelable = bundleExtra.getParcelable(JConstant.KEY_DEVICE_ITEM_BUNDLE);
-        LogUtil.d("send data:",parcelable.toString());
     }
 
     @Override
-    protected void onRestart() {
-        super.onRestart();
+    protected void onResume() {
+        super.onResume();
         if (presenter != null) {
             presenter.refreshHangUpView();
-
+            presenter.unSubCallIn();
         }
     }
 
@@ -489,12 +507,4 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
         }
     }
 
-    @Override
-    protected void onStop() {
-        super.onStop();
-        if(presenter != null){
-            presenter.unSubCallIn();
-        }
-
-    }
 }

@@ -15,7 +15,7 @@ import java.util.ArrayList;
 public class RxEvent {
 
     public static class NeedLoginEvent {
-        public static final String KEY = "show_register";
+        public static final String KEY = "show_login_fragment";
         public Bundle bundle;
 
         public NeedLoginEvent(Bundle bundle) {
@@ -31,14 +31,18 @@ public class RxEvent {
     }
 
     public static class LoginRsp {
+        public boolean state;
 
+        public LoginRsp(boolean state) {
+            this.state = state;
+        }
     }
 
     public static class ActivityResult {
         public Bundle bundle;
     }
 
-    public static class CloundLiveDelete{
+    public static class CloundLiveDelete {
 
     }
 
@@ -195,10 +199,13 @@ public class RxEvent {
         }
     }
 
+    public static final class PageScrolled {
+    }
+
     /**
      * desc:获取好友列表类
      */
-    public static final class GetFriendList{
+    public static final class GetFriendList {
 
         public int i;
         public ArrayList<JFGFriendAccount> arrayList;
@@ -212,7 +219,7 @@ public class RxEvent {
     /**
      * desc：获取添加请求类
      */
-    public static final class GetAddReqList{
+    public static final class GetAddReqList {
 
         public int i;
 
@@ -227,7 +234,7 @@ public class RxEvent {
     /**
      * desc：获取到分享设备的信息
      */
-    public static final class GetShareDeviceList{
+    public static final class GetShareDeviceList {
         public int i;
 
         public ArrayList<JFGShareListInfo> arrayList;

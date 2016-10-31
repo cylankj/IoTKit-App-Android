@@ -4,12 +4,16 @@ package com.cylan.jiafeigou.n.view.login;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
+import android.view.View;
 import android.widget.Toast;
 
+import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.JConstant;
-import com.cylan.jiafeigou.n.mvp.model.RequestResetPwdBean;
+import com.cylan.jiafeigou.misc.JError;
+import com.cylan.jiafeigou.misc.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
+import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
 import com.cylan.utils.NetUtils;
 
@@ -19,7 +23,9 @@ import com.cylan.utils.NetUtils;
  * Use the {@link RegisterPwdFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class RegisterPwdFragment extends SetupPwdFragment implements SimpleDialogFragment.SimpleDialogAction {
+public class RegisterPwdFragment extends SetupPwdFragment
+        implements SimpleDialogFragment.SimpleDialogAction {
+    private static final String DIALOG_KEY = "dialogFragment";
 
     public RegisterPwdFragment() {
         // Required empty public constructor
@@ -56,52 +62,63 @@ public class RegisterPwdFragment extends SetupPwdFragment implements SimpleDialo
     }
 
     @Override
-    public void submitResult(RequestResetPwdBean bean) {
-//        if (bean.ret == 0) {
-//            Toast.makeText(getActivity().getApplicationContext(), "注册成功", Toast.LENGTH_SHORT).show();
-//            //这样启动Activity耦合严重，应该使用路由的方式。
-//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-//                Bundle bundle = new Bundle();
-//                bundle.putInt(NewHomeActivity.KEY_ENTER_ANIM_ID, R.anim.slide_down_out);
-//                bundle.putInt(NewHomeActivity.KEY_EXIT_ANIM_ID, R.anim.slide_down_in);
-//                getActivity().startActivity(new Intent(getActivity(), NewHomeActivity.class)
-//                                .putExtras(bundle),
-//                        ActivityOptionsCompat.makeCustomAnimation(getContext(), R.anim.slide_down_in,
-//                                R.anim.slide_down_out).toBundle());
-//            } else {
-//                getActivity().startActivity(new Intent(getActivity(), NewHomeActivity.class));
-//            }
-//            getActivity().finish();
-//        } else if (bean.ret == 183) {
-//            Toast.makeText(getActivity().getApplicationContext(), "账号已存在", Toast.LENGTH_SHORT).show();
-//            Fragment f = getActivity().getSupportFragmentManager().findFragmentByTag("dialogFragment");
-//            if (f != null && f.isVisible()) {
-//                AppLogger.i("fragment is added");
-//                return;
-//            }
-//            Bundle bundle = new Bundle();
-//            bundle.putString(SimpleDialogFragment.KEY_TITLE, "账号已经存在，请直接登陆");
-//            bundle.putString(SimpleDialogFragment.KEY_LEFT_CONTENT, "取消");
-//            bundle.putString(SimpleDialogFragment.KEY_RIGHT_CONTENT, "去登陆");
-//            SimpleDialogFragment dialogFragment = SimpleDialogFragment.newInstance(bundle);
-//            dialogFragment.setAction(this);
-//            dialogFragment.show(getActivity().getSupportFragmentManager(), "dialogFragment");
-//        } else {
-//            Toast.makeText(getActivity(), "注册失败", Toast.LENGTH_SHORT).show();
-//        }
+    protected void initNavigateBack() {
+        ivLoginTopLeft.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showSimpleDialog("是否确认退出?", "否", "是", false);
+            }
+        });
     }
 
     @Override
     public void onDialogAction(int id, Object value) {
-//        if (id == SimpleDialogFragment.ACTION_LEFT) {
-//            Fragment f = getActivity().getSupportFragmentManager().findFragmentByTag("dialogFragment");
-//            if (f != null && f.isVisible()) {
-//                ((SimpleDialogFragment) f).dismiss();
-//            }
-//        } else {
+        Fragment f = getActivity()
+                .getSupportFragmentManager()
+                .findFragmentByTag(DIALOG_KEY);
+        if (f != null && f.isVisible()) {
+            ((SimpleDialogFragment) f).dismiss();
+        }
+        if (id == R.id.tv_dialog_btn_left) {
+        } else {
 //            Toast.makeText(getContext(), "去登录", Toast.LENGTH_SHORT).show();
-//            getActivity().getSupportFragmentManager().popBackStack();
-//            RxBus.getInstance().send(new RxEvent.SwitchBox());
-//        }
+            //dismiss the dialog
+            getActivity().getSupportFragmentManager().popBackStack();
+        }
+    }
+
+    @Override
+    public void submitResult(RxEvent.ResultRegister register) {
+        switch (register.code) {
+            case JError.ErrorAccountAlreadyExist:
+                showSimpleDialog("账号已经存在，请直接登陆", "取消", "去登陆", false);
+                break;
+            case JError.ErrorSMSCodeNotMatch:
+                ToastUtil.showToast("验证码不正确");
+                break;
+            case JError.ErrorOK:
+                ToastUtil.showToast("注册成功");
+                break;
+        }
+    }
+
+    /**
+     * 弹框，{fragment}
+     */
+    private void showSimpleDialog(String title,
+                                  String lContent,
+                                  String rContent,
+                                  boolean dismiss) {
+        Fragment f = getActivity().getSupportFragmentManager().findFragmentByTag(DIALOG_KEY);
+        if (f == null) {
+            Bundle bundle = new Bundle();
+            bundle.putString(SimpleDialogFragment.KEY_TITLE, title);
+            bundle.putString(SimpleDialogFragment.KEY_LEFT_CONTENT, lContent);
+            bundle.putString(SimpleDialogFragment.KEY_RIGHT_CONTENT, rContent);
+            bundle.putBoolean(SimpleDialogFragment.KEY_TOUCH_OUT_SIDE_DISMISS, dismiss);
+            SimpleDialogFragment dialogFragment = SimpleDialogFragment.newInstance(bundle);
+            dialogFragment.setAction(this);
+            dialogFragment.show(getActivity().getSupportFragmentManager(), DIALOG_KEY);
+        }
     }
 }

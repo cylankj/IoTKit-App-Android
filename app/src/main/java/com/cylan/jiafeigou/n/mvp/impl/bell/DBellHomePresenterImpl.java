@@ -2,13 +2,12 @@ package com.cylan.jiafeigou.n.mvp.impl.bell;
 
 import android.os.Environment;
 
-import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.RxEvent;
 import com.cylan.jiafeigou.n.mvp.contract.bell.DoorBellHomeContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.n.mvp.model.BellCallRecordBean;
-import com.cylan.jiafeigou.support.rxbus.RxBus;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.support.rxbus.RxBus;
 import com.cylan.jiafeigou.utils.TimeUtils;
 import com.cylan.utils.RandomUtils;
 
@@ -51,7 +50,6 @@ public class DBellHomePresenterImpl extends AbstractPresenter<DoorBellHomeContra
         compositeSubscription.add(onBellCallListSubscription());
         compositeSubscription.add(onLogStateSubscription());
         compositeSubscription.add(onBellBatteryState());
-        getView().onLoginState(RandomUtils.getRandom(1));
     }
 
     private Subscription onBellCallListSubscription() {
@@ -113,14 +111,13 @@ public class DBellHomePresenterImpl extends AbstractPresenter<DoorBellHomeContra
      * @return
      */
     private Subscription onLogStateSubscription() {
-        return RxBus.getInstance().toObservable()
+        return RxBus.getDefault().toObservable(RxEvent.LoginRsp.class)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<Object>() {
+                .subscribe(new Action1<RxEvent.LoginRsp>() {
                     @Override
-                    public void call(Object o) {
-                        if (o != null && o instanceof RxEvent.LoginRsp) {
-                            if (getView() != null) getView().onLoginState(JFGRules.LOGIN);
-                        }
+                    public void call(RxEvent.LoginRsp o) {
+                        if (getView() != null)
+                            getView().onLoginState(o.state);
                     }
                 });
     }
@@ -153,7 +150,7 @@ public class DBellHomePresenterImpl extends AbstractPresenter<DoorBellHomeContra
 
     @Override
     public void fetchBellRecordsList() {
-
+        onBellCallListSubscription();
     }
 
     private static final String[] pics = {

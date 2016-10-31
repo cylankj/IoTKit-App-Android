@@ -86,7 +86,7 @@ public class VideoDetailsFragment extends PicDetailsFragment {
                     @Override
                     public void onTransitionEnd(Transition transition) {
                         AppLogger.d("video transition is end: ");
-        }
+                    }
                 });
             }
         }

@@ -1,12 +1,10 @@
 package com.cylan.jiafeigou.n.mvp.impl.bell;
 
-import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.RxEvent;
 import com.cylan.jiafeigou.n.mvp.contract.bell.BellSettingContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.n.mvp.model.BellInfoBean;
 import com.cylan.jiafeigou.support.rxbus.RxBus;
-import com.cylan.utils.RandomUtils;
 
 import rx.Observable;
 import rx.Subscription;
@@ -32,7 +30,6 @@ public class BellSettingPresenterImpl extends AbstractPresenter<BellSettingContr
     public void start() {
         compositeSubscription.add(onBellInfoSubscription());
         compositeSubscription.add(onLogStateSubscription());
-        getView().onLoginState(RandomUtils.getRandom(1));
     }
 
     private Subscription onBellInfoSubscription() {
@@ -64,14 +61,13 @@ public class BellSettingPresenterImpl extends AbstractPresenter<BellSettingContr
      * @return
      */
     private Subscription onLogStateSubscription() {
-        return RxBus.getInstance().toObservable()
+        return RxBus.getDefault().toObservable(RxEvent.LoginRsp.class)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<Object>() {
+                .subscribe(new Action1<RxEvent.LoginRsp>() {
                     @Override
-                    public void call(Object o) {
-                        if (o != null && o instanceof RxEvent.LoginRsp) {
-                            if (getView() != null) getView().onLoginState(JFGRules.LOGIN);
-                        }
+                    public void call(RxEvent.LoginRsp o) {
+                        if (getView() != null)
+                            getView().onLoginState(o.state);
                     }
                 });
     }
@@ -83,7 +79,7 @@ public class BellSettingPresenterImpl extends AbstractPresenter<BellSettingContr
 
     @Override
     public void sendActivityResult(RxEvent.ActivityResult result) {
-        if (RxBus.getInstance().hasObservers())
-            RxBus.getInstance().send(result);
+        if (RxBus.getDefault().hasObservers())
+            RxBus.getDefault().post(result);
     }
 }

@@ -55,7 +55,7 @@ public class MineShareDevicePresenterImp extends AbstractPresenter<MineShareDevi
 
     @Override
     public void initData() {
-        initDataSub = RxBus.getInstance().toObservable()
+        initDataSub = RxBus.getDefault().toObservable(RxEvent.GetShareDeviceList.class)
                 .subscribe(new Action1<Object>() {
                     @Override
                     public void call(Object o) {

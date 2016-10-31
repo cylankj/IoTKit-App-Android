@@ -84,7 +84,7 @@ public class MineUserInfoLookBigHeadFragment extends Fragment implements MineUse
                         super.onLoadFailed(e, errorDrawable);
                         hideLoadImageProgress();
                         loadResult = false;
-                        ToastUtil.showFailToast(getContext(), "加载失败，点击重试");
+                        ToastUtil.showNegativeToast("加载失败，点击重试");
                     }
 
                 });

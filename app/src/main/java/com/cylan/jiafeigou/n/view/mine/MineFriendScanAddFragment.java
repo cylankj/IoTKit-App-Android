@@ -54,7 +54,7 @@ public class MineFriendScanAddFragment extends Fragment implements ZXingScannerV
         View view = inflater.inflate(R.layout.fragment_mine_relativesandfriend_scan_add, container, false);
         ButterKnife.bind(this, view);
         initView();
-        showErWeiMa(presenter.encodeAsBitmap("1234", presenter.getDimession()));
+        showQrCode(presenter.encodeAsBitmap("1234", presenter.getDimension()));
         return view;
     }
 
@@ -66,7 +66,7 @@ public class MineFriendScanAddFragment extends Fragment implements ZXingScannerV
         scanlayoutParams.height = (int) (screenHeight * 0.41 + 0.5);
         scanlayoutParams.width = (int) (screenWidth * 0.72 + 0.5);
         zxVScanAddRelativesandfriend.setLayoutParams(scanlayoutParams);
-
+        //二维码 qrCode
         ViewGroup.LayoutParams erWeimalayoutParams = ivErweima.getLayoutParams();
         erWeimalayoutParams.height = (int) (screenHeight * 0.135 + 0.5);
         erWeimalayoutParams.width = (int) (screenWidth * 0.24 + 0.5);
@@ -94,7 +94,7 @@ public class MineFriendScanAddFragment extends Fragment implements ZXingScannerV
     }
 
     @Override
-    public void showErWeiMa(Bitmap bitmap) {
+    public void showQrCode(Bitmap bitmap) {
         ivErweima.setImageBitmap(bitmap);
     }
 

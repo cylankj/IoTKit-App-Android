@@ -19,6 +19,7 @@ public interface MineFriendListShareDevicesToContract {
 
     interface Presenter extends BasePresenter {
         ArrayList<MineShareDeviceBean> getDeviceData();
+
         boolean checkListEmpty(ArrayList<MineShareDeviceBean> list);
     }
 

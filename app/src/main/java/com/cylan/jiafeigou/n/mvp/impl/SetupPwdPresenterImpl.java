@@ -1,9 +1,8 @@
 package com.cylan.jiafeigou.n.mvp.impl;
 
-import com.cylan.entity.jniCall.JFGResult;
 import com.cylan.jiafeigou.misc.JfgCmdEnsurance;
+import com.cylan.jiafeigou.misc.RxEvent;
 import com.cylan.jiafeigou.n.mvp.contract.login.SetupPwdContract;
-import com.cylan.jiafeigou.n.mvp.model.RequestResetPwdBean;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.rxbus.RxBus;
 
@@ -36,15 +35,13 @@ public class SetupPwdPresenterImpl extends AbstractPresenter<SetupPwdContract.Vi
 
     private void initComposeSubscription() {
         compositeSubscription = new CompositeSubscription();
-        compositeSubscription.add(RxBus.getInstance().toObservable()
+        compositeSubscription.add(RxBus.getDefault().toObservable(RxEvent.ResultRegister.class)
                 .observeOn(AndroidSchedulers.mainThread())
                 .throttleFirst(1000L, TimeUnit.MICROSECONDS)
-                .subscribe(new Action1<Object>() {
+                .subscribe(new Action1<RxEvent.ResultRegister>() {
                     @Override
-                    public void call(Object o) {
-                        if (o instanceof JFGResult) {
-                            getView().submitResult(new RequestResetPwdBean(((JFGResult) o).code, ((JFGResult) o).event + ""));
-                        }
+                    public void call(RxEvent.ResultRegister register) {
+                        getView().submitResult(register);
                     }
                 }));
     }

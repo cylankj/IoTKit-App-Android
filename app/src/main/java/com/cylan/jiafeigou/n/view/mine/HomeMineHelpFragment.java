@@ -91,13 +91,13 @@ public class HomeMineHelpFragment extends Fragment {
             case R.id.tv_mine_help_suggestion:
                 if (getView() != null)
                     ViewUtils.deBounceClick(getView().findViewById(R.id.tv_mine_help_suggestion));
-                    AppLogger.e("tv_mine_help_suggestion");
-                    getFragmentManager().beginTransaction()
-                            .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
-                                    , R.anim.slide_in_left, R.anim.slide_out_right)
-                            .add(android.R.id.content, suggestionChatFragment, "suggestionChatFragment")
-                            .addToBackStack("mineHelpFragment")
-                            .commit();
+                AppLogger.e("tv_mine_help_suggestion");
+                getFragmentManager().beginTransaction()
+                        .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
+                                , R.anim.slide_in_left, R.anim.slide_out_right)
+                        .add(android.R.id.content, suggestionChatFragment, "suggestionChatFragment")
+                        .addToBackStack("mineHelpFragment")
+                        .commit();
                 //Intent intent = new Intent(getActivity(),SuggestionChatContainerActivity.class);
                 //startActivity(intent);
                 break;

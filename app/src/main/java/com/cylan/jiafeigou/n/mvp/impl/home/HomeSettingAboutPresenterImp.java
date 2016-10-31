@@ -61,7 +61,7 @@ public class HomeSettingAboutPresenterImp implements HomeSettingAboutContract.Pr
                     // 已经获取对应权限
                 } else {
                     // 未获取到授权，取消需要该权限的方法
-                    ToastUtil.showToast(view.getContext(), "权限未授予");
+                    ToastUtil.showToast("权限未授予");
                 }
 
                 break;

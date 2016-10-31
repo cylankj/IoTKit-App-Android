@@ -6,7 +6,6 @@ import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.n.mvp.model.CloudLiveBaseDbBean;
 import com.cylan.jiafeigou.support.db.DbManager;
 import com.cylan.jiafeigou.support.db.ex.DbException;
-import com.cylan.jiafeigou.support.db.table.TableEntity;
 import com.cylan.jiafeigou.utils.ToastUtil;
 
 import java.util.concurrent.TimeUnit;
@@ -23,7 +22,7 @@ import rx.schedulers.Schedulers;
  * 创建时间：2016/9/26
  * 描述：
  */
-public class CloudLiveSettingPresenterImp extends AbstractPresenter<CloudLiveSettingContract.View> implements CloudLiveSettingContract.Presenter{
+public class CloudLiveSettingPresenterImp extends AbstractPresenter<CloudLiveSettingContract.View> implements CloudLiveSettingContract.Presenter {
 
     private Subscription clearDbSub;
 
@@ -33,14 +32,14 @@ public class CloudLiveSettingPresenterImp extends AbstractPresenter<CloudLiveSet
 
     @Override
     public void start() {
-        if(getView() != null){
+        if (getView() != null) {
             getView().initSomeViewVisible(isHasBeenShareUser());
         }
     }
 
     @Override
     public void stop() {
-        if (clearDbSub != null){
+        if (clearDbSub != null) {
             clearDbSub.unsubscribe();
         }
     }
@@ -57,8 +56,8 @@ public class CloudLiveSettingPresenterImp extends AbstractPresenter<CloudLiveSet
         try {
             dbManager = CloudLiveDbUtil.getInstance().dbManager;
 
-            if(dbManager.findAll(CloudLiveBaseDbBean.class).size() == 0){
-                ToastUtil.showToast(getView().getContext(),"记录为空");
+            if (dbManager.findAll(CloudLiveBaseDbBean.class).size() == 0) {
+                ToastUtil.showToast("记录为空");
                 return;
             }
         } catch (DbException e) {

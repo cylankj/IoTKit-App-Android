@@ -92,7 +92,7 @@ public class MineFriendsFragment extends Fragment implements MineFriendsContract
     @Override
     public void onStart() {
         super.onStart();
-        if (presenter != null){
+        if (presenter != null) {
             presenter.start();
         }
     }
@@ -122,7 +122,7 @@ public class MineFriendsFragment extends Fragment implements MineFriendsContract
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
-                ToastUtil.showToast(getView().getContext(),"请求已发送");
+                ToastUtil.showToast("请求已发送");
                 //TODO SDK 向对方发送请求
             }
         });
@@ -219,7 +219,7 @@ public class MineFriendsFragment extends Fragment implements MineFriendsContract
     @Override
     public void initFriendRecyList(ArrayList<JFGFriendAccount> list) {
         recyclerviewRelativesandfriendsList.setLayoutManager(new LinearLayoutManager(getContext()));
-        friendsListAdapter = new RelativesAndFriendsAdapter(getView().getContext(),list,null);
+        friendsListAdapter = new RelativesAndFriendsAdapter(getContext(),list,null);
         recyclerviewRelativesandfriendsList.setAdapter(friendsListAdapter);
         initFriendAdaListener();
     }
@@ -229,7 +229,7 @@ public class MineFriendsFragment extends Fragment implements MineFriendsContract
      */
     private void initFriendAdaListener() {
         friendsListAdapter.setOnItemClickListener(new OnItemClickListener() {
-            @Override
+    @Override
             public void onItemClick(View itemView, int viewType, int position) {
                 if (getView() != null){
                     jump2FriendDetailFragment(position,friendsListAdapter.getList().get(position));
@@ -297,8 +297,8 @@ public class MineFriendsFragment extends Fragment implements MineFriendsContract
     @Override
     public void jump2FriendDetailFragment(int position, JFGFriendAccount account) {
         Bundle bundle = new Bundle();
-        bundle.putInt("position",position);
-        bundle.putSerializable("frienditembean",account);
+        bundle.putInt("position", position);
+        bundle.putSerializable("frienditembean", account);
         relativeAndFrienDetialFragment = MineFriendDetailFragment.newInstance(bundle);
         getFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
@@ -320,7 +320,7 @@ public class MineFriendsFragment extends Fragment implements MineFriendsContract
         if (presenter.checkAddRequestOutTime(item)){
                 showReqOutTimeDialog();
         }else {
-            ToastUtil.showToast(getView().getContext(),"添加成功");
+            ToastUtil.showToast("添加成功");
             JFGFriendAccount account = new JFGFriendAccount(item.account,"",item.alias);
             friendlistAddItem(layoutPosition,account);
             addReqDeleteItem(layoutPosition,item);

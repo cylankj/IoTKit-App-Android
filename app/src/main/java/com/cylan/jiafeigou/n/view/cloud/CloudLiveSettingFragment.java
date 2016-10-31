@@ -124,7 +124,7 @@ public class CloudLiveSettingFragment extends Fragment implements CloudLiveSetti
         ViewUtils.setViewPaddingStatusBar(fLayoutTopBarContainer);
     }
 
-    @OnClick({R.id.tv_setting_clear_, R.id.tv_bell_detail, R.id.tv_bell_detail2,R.id.tv_setting_unbind})
+    @OnClick({R.id.tv_setting_clear_, R.id.tv_bell_detail, R.id.tv_bell_detail2, R.id.tv_setting_unbind})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.tv_setting_clear_:
@@ -159,10 +159,10 @@ public class CloudLiveSettingFragment extends Fragment implements CloudLiveSetti
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
-                if (RxBus.getInstance().hasObservers()) {
-                    RxBus.getInstance().send(new RxEvent.CloundLiveDelete());
+                if (RxBus.getDefault().hasObservers()) {
+                    RxBus.getDefault().post(new RxEvent.CloundLiveDelete());
                 }
-                ToastUtil.showToast(getContext(),"正在删除中...");
+                ToastUtil.showToast("正在删除中...");
             }
         });
         builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {

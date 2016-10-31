@@ -59,7 +59,7 @@ public class MineFriendAddFromContactFragment extends Fragment implements MineFr
     @Override
     public void onStart() {
         super.onStart();
-        if (presenter != null){
+        if (presenter != null) {
             presenter.start();
         }
     }
@@ -134,7 +134,7 @@ public class MineFriendAddFromContactFragment extends Fragment implements MineFr
     @Override
     public void jump2SendAddMesgFragment(SuggestionChatInfoBean bean) {
         Bundle bundle = new Bundle();
-        bundle.putSerializable("contactItem",bean);
+        bundle.putSerializable("contactItem", bean);
         mineAddFromContactFragment = MineAddFromContactFragment.newInstance(bundle);
         getFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right

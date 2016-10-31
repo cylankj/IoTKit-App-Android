@@ -81,11 +81,23 @@
         <!-- your vid getString must "\ " -->
         <meta-data
             android:name="vid"
-            android:value="\ 0H79" />
-        <!-- your vkey -->
+            android:value="${VID}" />
+
         <meta-data
             android:name="vkey"
-            android:value="mqDHVBKutUcKvMMwDjYjvNv1Wy8Ll4HC" />
+            android:value="${VKEY}" />
+
+        <meta-data
+            android:name="sina_app_key"
+            android:value="${NICELY_SINA_APP_KEY}" />
+
+        <meta-data
+            android:name="qqAppKey"
+            android:value="${QQ_APP_KEY}" />
+
+        <meta-data
+            android:name="weChatAppId"
+            android:value="${weChat_APP_ID}" />
 
         <activity
             android:name=".SmartcallActivity"
@@ -122,7 +134,7 @@
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
 
-        <receiver android:name=".n.engine.DaemonService$BootCompletedReceiver">
+        <receiver android:name=".n.base.BaseApplication$BootCompletedReceiver">
             <intent-filter android:priority="0x7fffffff">
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
@@ -147,7 +159,7 @@
             android:name=".n.engine.DaemonService"
             android:enabled="true"
             android:exported="true" />
-        <service android:name=".n.engine.DaemonService$InnerAssistService" />
+        <!--<service android:name=".n.engine.DaemonService$InnerAssistService" />-->
 
         <activity
             android:name=".n.view.activity.BindDeviceActivity"
@@ -183,13 +195,6 @@
             android:screenOrientation="portrait"
             android:theme="@style/CamActivityTheme"
             android:windowSoftInputMode="adjustPan|stateHidden" />
-        <!-- <activity -->
-        <!-- android:name=".n.view.bell.BellSettingActivity" -->
-        <!-- android:configChanges="locale|orientation|keyboardHidden" -->
-        <!-- android:launchMode="singleTask" -->
-        <!-- android:screenOrientation="portrait" -->
-        <!-- android:theme="@style/CamActivityTheme" -->
-        <!-- android:windowSoftInputMode="adjustPan|stateHidden" /> -->
         <activity
             android:name=".n.view.bell.BellLiveActivity"
             android:configChanges="locale|orientation|keyboardHidden|navigation|screenSize"
@@ -205,11 +210,10 @@
             android:theme="@style/CamActivityTheme"
             android:windowSoftInputMode="adjustPan|stateHidden" />
 
-        <!-- 一个空的service，辅助启动bell_call进程。 -->
-        <service
-            android:name=".n.engine.SimpleHelperIntentService"
-            android:exported="false"
-            android:process=":bell_call" />
+        <!--&lt;!&ndash; 一个空的service，辅助启动bell_call进程。 &ndash;&gt;-->
+        <!--<service-->
+        <!--android:name=".n.engine.SimpleHelperIntentService"-->
+        <!--android:exported="false" />-->
 
         <activity
             android:name=".n.view.activity.MediaActivity"
@@ -238,13 +242,24 @@
         <service
             android:name=".n.engine.CloudLiveService"
             android:enabled="true"
-            android:exported="true"
-            />
-        <activity
-            android:name=".n.view.activity.CloudLiveReturnCallActivity"/>
+            android:exported="true" />
 
         <activity
-            android:name=".n.view.activity.CloudLiveCallInActivity"/>
+            android:name="com.sina.weibo.sdk.component.WeiboSdkBrowser"
+            android:configChanges="keyboardHidden|orientation"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+
+        <activity android:name=".n.view.activity.CloudLiveReturnCallActivity" />
+
+        <activity android:name=".n.view.activity.CloudLiveCallInActivity" />
+        <!--将WXEntryActivity设置为透明 android:theme="@android:style/Theme.Translucent"
+            这样就解决了，微信分享成功后，跳转到指定WXEntryActivity，显示微信分享信息，
+            而给用户视觉效果就在当前界面。-->
+        <activity
+            android:name=".wxapi.WXEntryActivity"
+            android:exported="true"
+            android:theme="@style/wechat_share" />
     </application>
 
 </manifest>

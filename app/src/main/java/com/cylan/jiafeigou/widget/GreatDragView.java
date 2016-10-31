@@ -56,6 +56,8 @@ public class GreatDragView extends FrameLayout {
 
             @Override
             public int clampViewPositionHorizontal(View child, int left, int dx) {
+                //根据原型，第一张不能向右滑动。
+                if (dx > 0 && getChildCount() == 3) return left;
                 float rotationX = (float) dx / (getWidth() - child.getWidth() / 2);
                 if (preDx != dx) {
                     if (dx >= 0 && preDx < dx) {

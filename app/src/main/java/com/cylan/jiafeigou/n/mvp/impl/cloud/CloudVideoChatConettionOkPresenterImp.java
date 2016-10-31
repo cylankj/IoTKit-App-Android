@@ -81,7 +81,7 @@ public class CloudVideoChatConettionOkPresenterImp extends AbstractPresenter<Clo
 
     @Override
     public void handlerHangUp(String time) {
-        RxBus.getInstance().send(new RxEvent.HangUpVideoTalk(true,time));
+        RxBus.getDefault().post(new RxEvent.HangUpVideoTalk(true,time));
     }
 
     public void showLoadProgressAnim(){

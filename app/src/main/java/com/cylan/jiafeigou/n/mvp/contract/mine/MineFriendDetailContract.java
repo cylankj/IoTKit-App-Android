@@ -11,10 +11,10 @@ import com.cylan.jiafeigou.n.mvp.model.SuggestionChatInfoBean;
  */
 public interface MineFriendDetailContract {
 
-    interface View extends BaseView<Presenter>{
+    interface View extends BaseView<Presenter> {
 
     }
 
-    interface Presenter extends BasePresenter{
+    interface Presenter extends BasePresenter {
     }
 }

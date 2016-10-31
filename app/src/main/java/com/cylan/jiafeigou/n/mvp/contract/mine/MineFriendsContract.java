@@ -1,13 +1,9 @@
 package com.cylan.jiafeigou.n.mvp.contract.mine;
 
-import android.support.v7.widget.RecyclerView;
-import android.view.View;
-
 import com.cylan.entity.jniCall.JFGFriendAccount;
 import com.cylan.entity.jniCall.JFGFriendRequest;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
-import com.cylan.jiafeigou.n.mvp.model.SuggestionChatInfoBean;
 import com.cylan.jiafeigou.n.view.adapter.AddRelativesAndFriendsAdapter;
 import com.cylan.jiafeigou.n.view.adapter.RelativesAndFriendsAdapter;
 
@@ -21,6 +17,7 @@ import java.util.ArrayList;
 public interface MineFriendsContract {
 
     interface View extends BaseView<Presenter> {
+
         /**
          * desc:初始化好友列表
          */
@@ -49,9 +46,9 @@ public interface MineFriendsContract {
          */
         void hideAddReqListTitle();
 
-        void jump2FriendDetailFragment(int position,JFGFriendAccount account);
+        void jump2FriendDetailFragment(int position, JFGFriendAccount account);
 
-        void showLongClickDialog(int position,JFGFriendRequest bean);
+        void showLongClickDialog(int position, JFGFriendRequest bean);
 
         void jump2AddReqDetailFragment(int position, JFGFriendRequest bean);
 
@@ -100,6 +97,7 @@ public interface MineFriendsContract {
          * desc：检查是否为空界面
          */
         void checkAllNull();
+
     }
 
 }

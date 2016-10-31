@@ -11,20 +11,20 @@ import com.cylan.jiafeigou.utils.ContextUtils;
  */
 public class CloudLiveDbUtil {
 
-    private static final String DB_NAME ="cloud_live_db";
+    private static final String DB_NAME = "cloud_live_db";
 
     private static CloudLiveDbUtil uniqueInstance = null;
 
     public static DbManager dbManager;
 
-    private CloudLiveDbUtil(){
-        if(dbManager == null){
+    private CloudLiveDbUtil() {
+        if (dbManager == null) {
             dbManager = DbManagerImpl.getInstance(getDaoconfig());
         }
     }
 
     public static CloudLiveDbUtil getInstance() {
-        synchronized (CloudLiveDbUtil.class){
+        synchronized (CloudLiveDbUtil.class) {
             if (uniqueInstance == null) {
                 uniqueInstance = new CloudLiveDbUtil();
             }
@@ -32,7 +32,7 @@ public class CloudLiveDbUtil {
         }
     }
 
-    private DbManager.DaoConfig getDaoconfig(){
+    private DbManager.DaoConfig getDaoconfig() {
         return new DbManager.DaoConfig()
                 .setAllowTransaction(true)
                 .setContext(ContextUtils.getContext())
@@ -57,9 +57,10 @@ public class CloudLiveDbUtil {
 
     /**
      * desc：生成数据库的名字
+     *
      * @return
      */
-    private String generateDbName(){
+    private String generateDbName() {
         String db_name = "";
 
         //TODO 获取到用户的账号

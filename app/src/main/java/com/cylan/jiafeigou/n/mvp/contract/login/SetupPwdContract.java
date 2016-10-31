@@ -1,5 +1,6 @@
 package com.cylan.jiafeigou.n.mvp.contract.login;
 
+import com.cylan.jiafeigou.misc.RxEvent;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
 import com.cylan.jiafeigou.n.mvp.model.RequestResetPwdBean;
@@ -15,9 +16,9 @@ public interface SetupPwdContract {
         /**
          * 登陆结果
          *
-         * @param bean , 返回结果。
+         * @param register , 返回结果。
          */
-        void submitResult(RequestResetPwdBean bean);
+        void submitResult(RxEvent.ResultRegister register);
 
     }
 

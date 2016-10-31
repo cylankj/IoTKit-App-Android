@@ -212,7 +212,7 @@ public class MineShareToContactFragment extends Fragment implements MineShareToC
 
     @Override
     public void showPersonOverDialog(String content) {
-        ToastUtil.showToast(ContextUtils.getContext(),content);
+        ToastUtil.showToast(content);
     }
 
     @Override

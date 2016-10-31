@@ -29,6 +29,11 @@ public interface LoginModelContract {
 
     interface View extends BaseView<Presenter> {
 
+        /**
+         * @return
+         */
+        boolean isLoginViewVisible();
+
         void verifyCodeResult(int code);
 
         /**
@@ -79,7 +84,7 @@ public interface LoginModelContract {
         /**
          * 获取新浪微博的授权
          */
-        void getSinaAuthorize(Activity activity);
+        void startSinaAuthorize(Activity activity);
 
 
         void registerByPhone(String phone, String verificationCode);

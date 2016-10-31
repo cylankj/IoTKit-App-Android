@@ -15,13 +15,13 @@ public interface MineFriendScanAddContract {
     interface View extends BaseView<Presenter> {
         void onStartScan();
 
-        void showErWeiMa(Bitmap bitmap);
+        void showQrCode(Bitmap bitmap);
     }
 
     interface Presenter extends BasePresenter {
         Bitmap encodeAsBitmap(String contents, int dimension);      //生成二维码
 
-        int getDimession();
+        int getDimension();
 
     }
 

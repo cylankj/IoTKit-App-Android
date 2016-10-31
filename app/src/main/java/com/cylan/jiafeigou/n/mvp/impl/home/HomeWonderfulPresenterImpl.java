@@ -1,6 +1,7 @@
 package com.cylan.jiafeigou.n.mvp.impl.home;
 
 
+import android.app.Activity;
 import android.os.Environment;
 
 import com.cylan.jiafeigou.misc.JFGRules;
@@ -11,11 +12,13 @@ import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.n.mvp.model.MediaBean;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.rxbus.RxBus;
+import com.cylan.jiafeigou.support.wechat.WechatShare;
 import com.cylan.jiafeigou.widget.wheel.WheelViewDataSet;
 import com.cylan.utils.RandomUtils;
 import com.google.gson.Gson;
 
 import java.io.File;
+import java.lang.ref.SoftReference;
 import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -43,10 +46,12 @@ import rx.subscriptions.CompositeSubscription;
 public class HomeWonderfulPresenterImpl extends AbstractPresenter<HomeWonderfulContract.View>
         implements HomeWonderfulContract.Presenter {
 
-    private WeakReference<List<MediaBean>> weakReferenceList;
+    private SoftReference<List<MediaBean>> weakReferenceList;
     private Subscription onRefreshSubscription;
     private Subscription onTimeLineSubscription;
     private CompositeSubscription _timeTickSubscriptions = new CompositeSubscription();
+    private long lastTime;
+    private WeakReference<WechatShare> wechatShareWeakReference;
 
     public HomeWonderfulPresenterImpl(HomeWonderfulContract.View view) {
         super(view);
@@ -56,23 +61,38 @@ public class HomeWonderfulPresenterImpl extends AbstractPresenter<HomeWonderfulC
     @Override
     public void start() {
         //注册1
-        _timeTickSubscriptions
-                .add(RxBus.getInstance().toObservable()
-                        .throttleFirst(1000, TimeUnit.MILLISECONDS)
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new Action1<Object>() {
-                            @Override
-                            public void call(Object event) {
-                                //6:00 am - 17:59 pm
-                                //18:00 pm-5:59 am
-                                if (event != null
-                                        && event instanceof RxEvent.TimeTickEvent) {
-                                    if (getView() != null) {
-                                        getView().onTimeTick(JFGRules.getTimeRule());
-                                    }
-                                }
-                            }
-                        }));
+        _timeTickSubscriptions.add(getTimeTickEventSub());
+        _timeTickSubscriptions.add(getPageScrolledSub());
+    }
+
+    private Subscription getTimeTickEventSub() {
+        return RxBus.getDefault().toObservable(RxEvent.TimeTickEvent.class)
+                .throttleFirst(1000, TimeUnit.MILLISECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<RxEvent.TimeTickEvent>() {
+                    @Override
+                    public void call(RxEvent.TimeTickEvent timeTickEvent) {
+                        if (getView() != null) {
+                            getView().onTimeTick(JFGRules.getTimeRule());
+                        }
+                    }
+                });
+    }
+
+    private Subscription getPageScrolledSub() {
+        return RxBus.getDefault().toObservable(RxEvent.PageScrolled.class)
+                .throttleFirst(1000, TimeUnit.MILLISECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<RxEvent.PageScrolled>() {
+                    @Override
+                    public void call(RxEvent.PageScrolled timeTickEvent) {
+                        //6:00 am - 17:59 pm
+                        //18:00 pm-5:59 am
+                        if (getView() != null) {
+                            getView().onPageScrolled();
+                        }
+                    }
+                });
     }
 
     @Override
@@ -89,7 +109,7 @@ public class HomeWonderfulPresenterImpl extends AbstractPresenter<HomeWonderfulC
     private List<MediaBean> requestList() {
         int count = 10;
         List<MediaBean> list = new ArrayList<>();
-        long currentTime = System.currentTimeMillis();
+        long currentTime = lastTime == 0 ? System.currentTimeMillis() : lastTime;
         for (int i = 0; i < count; i++) {
             final long time = currentTime - (i * i) * 3600 * 24L * 1000;
             MediaBean baseBean = new MediaBean();
@@ -103,6 +123,9 @@ public class HomeWonderfulPresenterImpl extends AbstractPresenter<HomeWonderfulC
                 baseBean.srcUrl = videos[RandomUtils.getRandom(videos.length)];
             }
             list.add(baseBean);
+            if (i == count - 1) {
+                lastTime = time;
+            }
         }
         AppLogger.d("rawList: " + (new Gson().toJson(list)));
         return list;
@@ -117,11 +140,11 @@ public class HomeWonderfulPresenterImpl extends AbstractPresenter<HomeWonderfulC
         if (list == null || list.size() == 0)
             return;
         if (weakReferenceList == null) {
-            weakReferenceList = new WeakReference<>(list);
+            weakReferenceList = new SoftReference<>(list);
             return;
         }
         if (weakReferenceList.get() == null) {
-            weakReferenceList = new WeakReference<>(list);
+            weakReferenceList = new SoftReference<>(list);
             return;
         }
         if (weakReferenceList != null && weakReferenceList.get() != null) {
@@ -131,7 +154,7 @@ public class HomeWonderfulPresenterImpl extends AbstractPresenter<HomeWonderfulC
             rawList = new ArrayList<>(new HashSet<>(rawList));
             Collections.sort(rawList);
             //retain them again
-            weakReferenceList = new WeakReference<>(rawList);
+            weakReferenceList = new SoftReference<>(rawList);
         }
     }
 
@@ -156,9 +179,9 @@ public class HomeWonderfulPresenterImpl extends AbstractPresenter<HomeWonderfulC
     private void wrapTimeLineDataSet() {
         onTimeLineSubscription = Observable.just(weakReferenceList)
                 .subscribeOn(Schedulers.newThread())
-                .flatMap(new Func1<WeakReference<List<MediaBean>>, Observable<WheelViewDataSet>>() {
+                .flatMap(new Func1<SoftReference<List<MediaBean>>, Observable<WheelViewDataSet>>() {
                     @Override
-                    public Observable<WheelViewDataSet> call(WeakReference<List<MediaBean>> listWeakReference) {
+                    public Observable<WheelViewDataSet> call(SoftReference<List<MediaBean>> listWeakReference) {
                         if (listWeakReference == null || listWeakReference.get() == null)
                             return null;
                         return Observable.just(assembleTimeLineData(listWeakReference.get()));
@@ -170,7 +193,7 @@ public class HomeWonderfulPresenterImpl extends AbstractPresenter<HomeWonderfulC
                     public void call(WheelViewDataSet wheelViewDataSet) {
                         if (wheelViewDataSet == null)
                             return;
-                        if (getView() != null) getView().timeLineDataUpdate(wheelViewDataSet);
+                        if (getView() != null) getView().onTimeLineDataUpdate(wheelViewDataSet);
                     }
                 });
     }
@@ -205,6 +228,53 @@ public class HomeWonderfulPresenterImpl extends AbstractPresenter<HomeWonderfulC
                     }
                 });
 
+    }
+
+    @Override
+    public void deleteTimeline(long time) {
+
+    }
+
+    private void initWechatInstance() {
+        if (wechatShareWeakReference == null || wechatShareWeakReference.get() == null)
+            wechatShareWeakReference = new WeakReference<>(new WechatShare((Activity) getView().getContext()));
+    }
+
+    @Override
+    public void checkWechat() {
+        Observable.just(true)
+                .map(new Func1<Boolean, Boolean>() {
+                    @Override
+                    public Boolean call(Boolean aBoolean) {
+                        initWechatInstance();
+                        return wechatShareWeakReference.get().getWxApi().isWXAppInstalled();
+                    }
+                })
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<Boolean>() {
+                    @Override
+                    public void call(Boolean aBoolean) {
+                        getView().onWechatCheckRsp(aBoolean);
+                    }
+                });
+    }
+
+    @Override
+    public void unregisterWechat() {
+        if (wechatShareWeakReference != null && wechatShareWeakReference.get() != null) {
+            wechatShareWeakReference.get().unregister();
+        }
+    }
+
+    @Override
+    public void shareToWechat(WechatShare.ShareContent shareContent) {
+        if (shareContent == null) {
+            AppLogger.i("shareContent is null");
+            return;
+        }
+        if (wechatShareWeakReference == null || wechatShareWeakReference.get() == null)
+            wechatShareWeakReference = new WeakReference<>(new WechatShare((Activity) getView().getContext()));
+        wechatShareWeakReference.get().shareByWeixin(shareContent);
     }
 
     private static final String[] pics = {

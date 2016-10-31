@@ -22,11 +22,11 @@ package com.cylan.jiafeigou.support.sina;
  * @author SINA
  * @since 2013-09-29
  */
-public interface Constants {
+interface Constants {
     /**
      * 当前 DEMO 应用的 APP_KEY，第三方应用应该使用自己的 APP_KEY 替换该 APP_KEY
      */
-    String APP_KEY = "1315129656";
+//    String APP_KEY = "1315129656";
 
     /**
      * 当前 DEMO 应用的回调页，第三方应用可以使用自己的回调页。

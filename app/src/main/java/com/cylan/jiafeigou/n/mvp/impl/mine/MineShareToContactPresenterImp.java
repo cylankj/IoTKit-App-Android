@@ -9,7 +9,6 @@ import android.text.TextUtils;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineShareToContactContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.n.mvp.model.SuggestionChatInfoBean;
-import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 
 import java.util.ArrayList;
@@ -57,7 +56,7 @@ public class MineShareToContactPresenterImp extends AbstractPresenter<MineShareT
 
         if(isRegisterSub != null && isRegisterSub.isUnsubscribed()){
             isRegisterSub.unsubscribe();
-        }
+    }
     }
 
     @Override
@@ -122,9 +121,9 @@ public class MineShareToContactPresenterImp extends AbstractPresenter<MineShareT
                     public void call(Boolean aBoolean) {
                         getView().hideShareingProHint();
                         if (aBoolean){
-                            ToastUtil.showToast(ContextUtils.getContext(),"分享成功");
+                            ToastUtil.showToast("分享成功");
                         }else {
-                            ToastUtil.showToast(ContextUtils.getContext(),"分享失败");
+                            ToastUtil.showToast("分享失败");
                         }
                     }
                 });
@@ -136,7 +135,7 @@ public class MineShareToContactPresenterImp extends AbstractPresenter<MineShareT
         if (getView() != null){
             getView().showShareingProHint();
             getView().changeShareingProHint("loading");
-        }
+                    }
         isRegisterSub = Observable.just(item)
                 .map(new Func1<SuggestionChatInfoBean, Integer>() {
                     @Override
@@ -208,19 +207,19 @@ public class MineShareToContactPresenterImp extends AbstractPresenter<MineShareT
             case 1:                                     //已注册 未分享人数未达到5人
                 if (getView() != null){
                     getView().showShareDeviceDialog(item);
-                }
+                    }
                 break;
 
             case 2:                                     //已注册 未分享但人数达到5人
                 if (getView() != null){
                     getView().showPersonOverDialog("只能分享给5位用户");
-                }
+                    }
                 break;
 
             case 3:                                    //已注册 已分享
                 if (getView() != null){
                     getView().showPersonOverDialog("已经分享给此账号啦");
-                }
+    }
                 break;
             case 4:                                    //未注册
                 jump2SendMesg(item);

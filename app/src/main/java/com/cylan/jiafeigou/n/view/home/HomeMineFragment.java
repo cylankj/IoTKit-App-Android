@@ -205,8 +205,8 @@ public class HomeMineFragment extends Fragment
 
 
     private boolean needStartLoginFragment() {
-        if (RxBus.getInstance().hasObservers()) {
-            RxBus.getInstance().send(new RxEvent.NeedLoginEvent(null));
+        if (RxBus.getDefault().hasObservers()) {
+            RxBus.getDefault().post(new RxEvent.NeedLoginEvent(null));
             return true;
         }
         return false;

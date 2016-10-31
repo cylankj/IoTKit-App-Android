@@ -56,7 +56,7 @@ public class CloudLiveReturnCallActivity extends AppCompatActivity implements Cl
     @Override
     protected void onStart() {
         super.onStart();
-        if(presenter != null){
+        if (presenter != null) {
             presenter.start();
         }
     }
@@ -107,9 +107,9 @@ public class CloudLiveReturnCallActivity extends AppCompatActivity implements Cl
 
     @OnClick(R.id.iv_hang_up)
     public void onClick(View view) {
-        switch (view.getId()){
+        switch (view.getId()) {
             case R.id.iv_hang_up:
-                presenter.handlerHangUp(tvVideoTime.getText().toString().trim());
+                RxBus.getDefault().postSticky(new RxEvent.HangUpVideoTalk(true,tvVideoTime.getText().toString().trim()));
                 finish();
                 break;
         }

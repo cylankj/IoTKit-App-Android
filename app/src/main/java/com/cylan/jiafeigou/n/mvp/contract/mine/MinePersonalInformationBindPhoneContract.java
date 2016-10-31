@@ -4,11 +4,11 @@ import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
 
 /**
- * 作者：zsl
+ * 作者：zsl personal
  * 创建时间：2016/9/1
  * 描述：
  */
-public interface MinePersionalInfomationBindPhoneContract {
+public interface MinePersonalInformationBindPhoneContract {
 
     interface View extends BaseView<Presenter> {
         void initToolbarTitle();

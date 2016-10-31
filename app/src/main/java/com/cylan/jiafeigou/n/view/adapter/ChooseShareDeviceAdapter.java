@@ -26,18 +26,18 @@ public class ChooseShareDeviceAdapter extends RecyclerView.Adapter<ChooseShareDe
 
     @Override
     public ChooseDeviceHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = View.inflate(parent.getContext(), R.layout.fragment_relative_friend_share_device_items,null);
+        View view = View.inflate(parent.getContext(), R.layout.fragment_relative_friend_share_device_items, null);
         return new ChooseDeviceHolder(view);
     }
 
     @Override
     public void onBindViewHolder(ChooseDeviceHolder holder, int position) {
         MineShareDeviceBean mineShareDeviceBean = mData.get(position);
-        holder.tv_share_number.setText(mineShareDeviceBean.getShareNumber()+"/5");
+        holder.tv_share_number.setText(mineShareDeviceBean.getShareNumber() + "/5");
         holder.tv_device_name.setText(mineShareDeviceBean.getDeviceName());
-        holder.iv_isCheck.setImageDrawable(holder.itemView.getResources().getDrawable(mineShareDeviceBean.isCheck() == true ? R.drawable.icon_selected:R.drawable.icon_not_selected));
+        holder.iv_isCheck.setImageDrawable(holder.itemView.getResources().getDrawable(mineShareDeviceBean.isCheck() == true ? R.drawable.icon_selected : R.drawable.icon_not_selected));
 
-        switch (mineShareDeviceBean.getDeviceName()){
+        switch (mineShareDeviceBean.getDeviceName()) {
             case "智能摄像头":
                 holder.iv_device_icon.setImageDrawable(holder.itemView.getResources().getDrawable(R.drawable.icon_home_camera_online));
                 break;
@@ -54,14 +54,14 @@ public class ChooseShareDeviceAdapter extends RecyclerView.Adapter<ChooseShareDe
 
     @Override
     public int getItemCount() {
-        if(mData != null){
+        if (mData != null) {
             return mData.size();
-        }else {
+        } else {
             return 0;
         }
     }
 
-    class ChooseDeviceHolder extends RecyclerView.ViewHolder{
+    class ChooseDeviceHolder extends RecyclerView.ViewHolder {
         private final ImageView iv_device_icon;
         private final TextView tv_device_name;
         private final TextView tv_share_number;
@@ -69,8 +69,8 @@ public class ChooseShareDeviceAdapter extends RecyclerView.Adapter<ChooseShareDe
 
         public ChooseDeviceHolder(View itemView) {
             super(itemView);
-            iv_device_icon =  (ImageView) itemView.findViewById(R.id.iv_device_icon);
-            tv_device_name =  (TextView) itemView.findViewById(R.id.tv_device_name);
+            iv_device_icon = (ImageView) itemView.findViewById(R.id.iv_device_icon);
+            tv_device_name = (TextView) itemView.findViewById(R.id.tv_device_name);
             tv_share_number = (TextView) itemView.findViewById(R.id.tv_share_device_number);
             iv_isCheck = (ImageView) itemView.findViewById(R.id.iv_share_isCheck);
         }

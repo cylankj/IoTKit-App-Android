@@ -11,11 +11,11 @@ import com.cylan.jiafeigou.n.mvp.BaseView;
  */
 public interface MineFriendAddReqDetailContract {
 
-    interface View extends BaseView<Presenter>{
+    interface View extends BaseView<Presenter> {
 
     }
 
-    interface Presenter extends BasePresenter{
+    interface Presenter extends BasePresenter {
         /**
          * 添加为亲友
          */

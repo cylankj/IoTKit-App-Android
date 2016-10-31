@@ -55,11 +55,11 @@ public class MineFriendDetailFragment extends Fragment implements MineFriendDeta
 
     public OnDeleteClickLisenter lisenter;
 
-    public interface OnDeleteClickLisenter{
+    public interface OnDeleteClickLisenter {
         void onDelete(int position);
     }
 
-    public void setOnDeleteClickLisenter(OnDeleteClickLisenter lisenter){
+    public void setOnDeleteClickLisenter(OnDeleteClickLisenter lisenter) {
         this.lisenter = lisenter;
     }
 
@@ -76,7 +76,7 @@ public class MineFriendDetailFragment extends Fragment implements MineFriendDeta
         mineSetRemarkNameFragment = MineSetRemarkNameFragment.newInstance(new Bundle());
 
         Bundle bundle = new Bundle();
-        bundle.putString("imageUrl","");
+        bundle.putString("imageUrl", "");
         mineLookBigImageFragment = MineLookBigImageFragment.newInstance(bundle);
     }
 
@@ -123,7 +123,7 @@ public class MineFriendDetailFragment extends Fragment implements MineFriendDeta
     }
 
     @OnClick({R.id.iv_top_bar_left_back, R.id.rl_change_name, R.id.rl_delete_relativeandfriend,
-            R.id.tv_share_device,R.id.iv_detail_user_head})
+            R.id.tv_share_device, R.id.iv_detail_user_head})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.iv_top_bar_left_back:
@@ -132,26 +132,26 @@ public class MineFriendDetailFragment extends Fragment implements MineFriendDeta
             case R.id.rl_change_name:
                 if (getView() != null)
                     ViewUtils.deBounceClick(getView().findViewById(R.id.rl_change_name));
-                    AppLogger.e("rl_change_name");
-                    jump2SetRemarkNameFragment();
+                AppLogger.e("rl_change_name");
+                jump2SetRemarkNameFragment();
                 break;
             case R.id.rl_delete_relativeandfriend:
                 if (getView() != null)
                     ViewUtils.deBounceClick(getView().findViewById(R.id.rl_delete_relativeandfriend));
-                    AppLogger.e("rl_delete_relativeandfriend");
-                    showDeleteDialog();
+                AppLogger.e("rl_delete_relativeandfriend");
+                showDeleteDialog();
                 break;
             case R.id.tv_share_device:
                 if (getView() != null)
                     ViewUtils.deBounceClick(getView().findViewById(R.id.tv_share_device));
-                    AppLogger.e("tv_share_device");
-                    jump2ShareDeviceFragment();
+                AppLogger.e("tv_share_device");
+                jump2ShareDeviceFragment();
                 break;
             case R.id.iv_detail_user_head:
                 if (getView() != null)
                     ViewUtils.deBounceClick(getView().findViewById(R.id.iv_detail_user_head));
-                    AppLogger.e("iv_detail_user_head");
-                    jump2LookBigImageFragment();
+                AppLogger.e("iv_detail_user_head");
+                jump2LookBigImageFragment();
                 break;
         }
     }
@@ -163,11 +163,11 @@ public class MineFriendDetailFragment extends Fragment implements MineFriendDeta
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
-                if(lisenter != null){
+                if (lisenter != null) {
                     Bundle arguments = getArguments();
                     int position = arguments.getInt("position");
                     lisenter.onDelete(position);
-                    ToastUtil.showToast(getContext(),"删除成功");
+                    ToastUtil.showToast("删除成功");
                 }
                 getFragmentManager().popBackStack();
             }

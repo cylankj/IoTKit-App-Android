@@ -45,7 +45,7 @@ public class SqliteHelper {
      * @return combined selection
      */
     public static String extendSelection(@Nullable String selection,
-            @Nullable String selectionToAdd) {
+                                         @Nullable String selectionToAdd) {
         // Add to selection or set as selection if selection is empty
         if (!TextUtils.isEmpty(selection)) {
             if (TextUtils.isEmpty(selectionToAdd)) {
@@ -74,7 +74,7 @@ public class SqliteHelper {
      * @return concatenated selection args
      */
     public static String[] extendSelectionArgs(@Nullable String[] selectionArgs,
-            @Nullable String[] newSelectionArgs) {
+                                               @Nullable String[] newSelectionArgs) {
         if (newSelectionArgs == null) {
             return selectionArgs;
         }
@@ -92,7 +92,7 @@ public class SqliteHelper {
      * @return concatenated selection args
      */
     public static String[] extendSelectionArgs(@Nullable String[] selectionArgs,
-            @Nullable List<String> newSelectionArgs) {
+                                               @Nullable List<String> newSelectionArgs) {
         if (newSelectionArgs == null) {
             return selectionArgs;
         }
@@ -114,7 +114,7 @@ public class SqliteHelper {
      * @return concatenated selection args
      */
     public static String[] extendSelectionArgs(@Nullable String selectionArg,
-            @Nullable String[] newSelectionArgs) {
+                                               @Nullable String[] newSelectionArgs) {
         if (TextUtils.isEmpty(selectionArg)) {
             return newSelectionArgs;
         }
@@ -135,8 +135,8 @@ public class SqliteHelper {
      * @return 1 for insert, 0 for update and -1 if something goes wrong
      */
     public static int insertOrUpdate(@Nullable SQLiteDatabase sqlDb, String table,
-            @Nullable String selection, String[] selectionArgs, @NonNull final ContentValues values,
-            @Nullable final String[] excludeFieldsForUpdate) {
+                                     @Nullable String selection, String[] selectionArgs, @NonNull final ContentValues values,
+                                     @Nullable final String[] excludeFieldsForUpdate) {
         if (sqlDb == null) {
             return -1;
         }

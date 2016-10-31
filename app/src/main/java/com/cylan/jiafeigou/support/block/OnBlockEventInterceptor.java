@@ -8,5 +8,5 @@ import android.content.Context;
  * @author markzhai
  */
 public interface OnBlockEventInterceptor {
-    void onBlockEvent(Context context, String timeStart, final String blockContent,final boolean needDsplay);
+    void onBlockEvent(Context context, String timeStart, final String blockContent, final boolean needDsplay);
 }

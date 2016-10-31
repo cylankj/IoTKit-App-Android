@@ -14,7 +14,7 @@ import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
  * 创建时间：2016/9/26
  * 描述：
  */
-public class CloudLiveDeviceInfoPresenterImp extends AbstractPresenter<CloudLiveDeviceInfoContract.View> implements CloudLiveDeviceInfoContract.Presenter{
+public class CloudLiveDeviceInfoPresenterImp extends AbstractPresenter<CloudLiveDeviceInfoContract.View> implements CloudLiveDeviceInfoContract.Presenter {
 
     public static final int SD_NORMAL = 0;
     public static final int SD_UNINSTALL = 1;
@@ -38,12 +38,12 @@ public class CloudLiveDeviceInfoPresenterImp extends AbstractPresenter<CloudLive
     public int checkSdCard() {
         int sdCardState = SD_NORMAL;
 
-        if(Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)){
+        if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
             sdCardState = SD_NORMAL;
-        }else if(Environment.getExternalStorageState().equals(Environment.MEDIA_REMOVED) ||
-                Environment.getExternalStorageState().equals(Environment.MEDIA_BAD_REMOVAL )){
+        } else if (Environment.getExternalStorageState().equals(Environment.MEDIA_REMOVED) ||
+                Environment.getExternalStorageState().equals(Environment.MEDIA_BAD_REMOVAL)) {
             sdCardState = SD_UNINSTALL;
-        }else {
+        } else {
             sdCardState = SD_FAIL_RW;
         }
         return sdCardState;
@@ -54,18 +54,15 @@ public class CloudLiveDeviceInfoPresenterImp extends AbstractPresenter<CloudLive
         String type = "中国移动";
         TelephonyManager iPhoneManager = (TelephonyManager) getView().getContext().getSystemService(Context.TELEPHONY_SERVICE);
         String iNumeric = iPhoneManager.getSimOperator();
-        if (iNumeric.length() > 0)
-        {
+        if (iNumeric.length() > 0) {
             if (iNumeric.equals("46000") || iNumeric.equals("46002")) {
                 type = "中国移动";
-            }
-            else if (iNumeric.equals("46001")) {
+            } else if (iNumeric.equals("46001")) {
                 type = "中国联通";
-            }
-            else if (iNumeric.equals("46003")) {
+            } else if (iNumeric.equals("46003")) {
                 type = "中国电信";
             }
-        }else {
+        } else {
             type = "未插入SIM卡";
         }
         return type;
@@ -74,11 +71,11 @@ public class CloudLiveDeviceInfoPresenterImp extends AbstractPresenter<CloudLive
     @Override
     public String getWifiState() {
         String result = "未开启";
-        WifiManager wifiManager = (WifiManager)getView().getContext().getSystemService(Context.WIFI_SERVICE);
-        if(wifiManager != null){
+        WifiManager wifiManager = (WifiManager) getView().getContext().getSystemService(Context.WIFI_SERVICE);
+        if (wifiManager != null) {
             int wifiState = wifiManager.getWifiState();
 
-            switch (wifiState){
+            switch (wifiState) {
                 case WifiManager.WIFI_STATE_DISABLED:
                     result = "未开启";
                     break;
@@ -88,7 +85,7 @@ public class CloudLiveDeviceInfoPresenterImp extends AbstractPresenter<CloudLive
                     result = wifiInfo.getSSID();
                     break;
             }
-        }else {
+        } else {
             return result;
         }
         return result;

@@ -7,6 +7,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.v7.widget.RecyclerView;
 import android.text.InputFilter;
+import android.text.Spanned;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
 import android.transition.Transition;
@@ -232,6 +233,43 @@ public class ViewUtils {
         } else {
             view.setFitsSystemWindows(false);
         }
+    }
+
+    public static void setChineseExclude(TextView textView, final int maxLength) {
+        InputFilter filter = new InputFilter() {
+            @Override
+            public CharSequence filter(CharSequence source, int start, int end,
+                                       Spanned dest, int dstart, int dend) {
+                for (int i = start; i < end; i++) {
+                    if (isChineseChar(source.charAt(i))) {
+                        return "";
+                    }
+                }
+                return null;
+            }
+        };
+        textView.setFilters(new InputFilter[]{filter, new InputFilter.LengthFilter(maxLength)});
+    }
+
+    /**
+     * 汉字，不包含字符。
+     * textView.setFilters(new InputFilter[]{filter, new InputFilter.LengthFilter(maxLength)});
+     * }
+     * <p/>
+     * /**
+     *
+     * @param c
+     * @return
+     */
+    private static boolean isChineseChar(char c) {
+        Character.UnicodeBlock ub = Character.UnicodeBlock.of(c);
+        return ub == Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS;
+//                || ub == Character.UnicodeBlock.CJK_COMPATIBILITY_IDEOGRAPHS
+//                || ub == Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS_EXTENSION_A
+//                || ub == Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS_EXTENSION_B
+//                || ub == Character.UnicodeBlock.CJK_SYMBOLS_AND_PUNCTUATION
+//                || ub == Character.UnicodeBlock.HALFWIDTH_AND_FULLWIDTH_FORMS;
+//                || ub == Character.UnicodeBlock.GENERAL_PUNCTUATION;
     }
 }
 

@@ -14,7 +14,7 @@ public interface DoorBellHomeContract {
 
     interface View extends BaseView<Presenter> {
 
-        void onLoginState(int state);
+        void onLoginState(boolean state);
 
         /**
          * 电量提醒

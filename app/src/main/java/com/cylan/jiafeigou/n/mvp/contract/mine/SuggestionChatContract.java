@@ -11,7 +11,7 @@ import java.util.ArrayList;
  * 创建时间：2016/8/30
  * 描述：
  */
-public interface SuggestionChatContant {
+public interface SuggestionChatContract {
 
     interface View extends BaseView<Presenter> {
         void showChatList();

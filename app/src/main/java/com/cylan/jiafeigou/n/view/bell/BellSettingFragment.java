@@ -12,7 +12,6 @@ import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.JConstant;
-import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.RxEvent;
 import com.cylan.jiafeigou.n.mvp.contract.bell.BellSettingContract;
 import com.cylan.jiafeigou.n.mvp.model.BellInfoBean;
@@ -118,13 +117,7 @@ public class BellSettingFragment extends Fragment
     }
 
     @Override
-    public void onLoginState(int state) {
-        switch (state) {
-            case JFGRules.LOGIN:
-                break;
-            case JFGRules.LOGOUT:
-                break;
-        }
+    public void onLoginState(boolean state) {
     }
 
     @Override
@@ -135,7 +128,7 @@ public class BellSettingFragment extends Fragment
     @Override
     public void onDialogAction(int id, Object value) {
         switch (id) {
-            case SimpleDialogFragment.ACTION_LEFT:
+            case R.id.tv_dialog_btn_left:
                 Bundle bundle = getArguments();
                 if (bundle == null) {
                     AppLogger.d("bundle is null");

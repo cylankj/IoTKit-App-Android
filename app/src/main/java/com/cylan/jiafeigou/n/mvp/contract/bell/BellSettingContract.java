@@ -15,7 +15,7 @@ public interface BellSettingContract {
 
         void onSettingInfoRsp(BellInfoBean bellInfoBean);
 
-        void onLoginState(int state);
+        void onLoginState(boolean state);
 
     }
 

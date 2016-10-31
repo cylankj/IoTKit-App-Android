@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:hunt="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/toaster_bg"
+    android:orientation="vertical">
+
+    <com.cylan.jiafeigou.widget.SimpleProgressBar
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_gravity="center"
+        android:padding="10dp"
+        hunt:progress_point_radius="3dp"
+        hunt:progress_stroke_color="@color/color_cecece" />
+
+    <TextView
+        android:id="@+id/tv_loading_content"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:textColor="@color/color_cecece" />
+</LinearLayout>

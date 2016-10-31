@@ -16,21 +16,31 @@ import java.util.List;
  */
 public interface CloudCorrelationDoorBellContract {
 
-    interface View extends BaseView<Presenter>{
+    interface View extends BaseView<Presenter> {
         void initRelativeRecycleView(List<BellInfoBean> list);
+
         void initUnRelativeRecycleView(List<BellInfoBean> list);
+
         void showNoRelativeDevicesView(int flag);                       //显示没有关联设备文案
+
         void showNoUnRelativeDevicesView(int flag);                     //显示没有未关联设备文案
+
         void setOnUnRelItemClickListener(UnRelationDoorBellAdapter.OnRelativeClickListener listener);
+
         void setOnRelaItemClickListener(RelationDoorBellAdapter.OnUnRelaItemClickListener listener);
-        void notifyUnRelativeRecycle(SuperViewHolder holder, int viewType, int layoutPosition, BellInfoBean item,int flag);
-        void notifyRelativeRecycle(SuperViewHolder holder, int viewType, int layoutPosition, BellInfoBean item,int flag);
+
+        void notifyUnRelativeRecycle(SuperViewHolder holder, int viewType, int layoutPosition, BellInfoBean item, int flag);
+
+        void notifyRelativeRecycle(SuperViewHolder holder, int viewType, int layoutPosition, BellInfoBean item, int flag);
+
         void showProgress();
+
         void hideProgress();
     }
 
-    interface Presenter extends BasePresenter{
+    interface Presenter extends BasePresenter {
         void loadDoorBellData(String url);
+
         void loadUnRelaiveDoorBellData(String url);
     }
 

@@ -39,11 +39,11 @@ public class CloudVideoChatConnetionFragment extends Fragment implements CloudLi
 
     private OnIgnoreClickListener igNoreListener;
 
-    public interface OnIgnoreClickListener{
+    public interface OnIgnoreClickListener {
         void onIgnore();
     }
 
-    public void setOnIgnoreClickListener(OnIgnoreClickListener igNoreListener){
+    public void setOnIgnoreClickListener(OnIgnoreClickListener igNoreListener) {
         this.igNoreListener = igNoreListener;
     }
 
@@ -79,7 +79,7 @@ public class CloudVideoChatConnetionFragment extends Fragment implements CloudLi
             case R.id.iv_call_user_image_head:
                 break;
             case R.id.tv_ignore_call:
-                if (igNoreListener != null){
+                if (igNoreListener != null) {
                     igNoreListener.onIgnore();
                 }
                 getFragmentManager().popBackStack();

@@ -6,20 +6,20 @@ import android.content.SharedPreferences;
 import android.text.TextUtils;
 
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.sina.weibo.sdk.auth.WeiboAuth;
-import com.sina.weibo.sdk.auth.WeiboAuth.AuthInfo;
+import com.cylan.utils.PackageUtils;
+import com.sina.weibo.sdk.auth.AuthInfo;
+import com.sina.weibo.sdk.auth.Oauth2AccessToken;
 import com.sina.weibo.sdk.auth.WeiboAuthListener;
 import com.sina.weibo.sdk.auth.sso.SsoHandler;
 import com.sina.weibo.sdk.exception.WeiboException;
 import com.sina.weibo.sdk.net.RequestListener;
+import com.sina.weibo.sdk.net.WeiboParameters;
 import com.sina.weibo.sdk.utils.LogUtil;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-;
-
-public class SinaWeiboUtil {
+public class SinaLogin {
 
     /**
      * 访问微博服务接口的地址
@@ -33,35 +33,26 @@ public class SinaWeiboUtil {
      */
     public static final String HTTPMETHOD_POST = "POST";
 
-    private static final String TAG = "SinaWeiboUtil";
+    private static final String TAG = "SinaLogin";
 
 
     private AuthInfo mWeibo;
 
+    public static String APP_KEY;
     /**
      * 调用SSO授权
      **/
     public SsoHandler mSsoHandler;
 
-    private WeiboListener listener;
+    public SinaLogin(Context context) {
 
-    public SinaWeiboUtil(Context context) {
-        mWeibo = new AuthInfo(context, Constants.APP_KEY, Constants.REDIRECT_URL, Constants.SCOPE);
+        APP_KEY = PackageUtils.getMetaString(context, "sina_app_key");
+        mWeibo = new AuthInfo(context, APP_KEY, Constants.REDIRECT_URL, Constants.SCOPE);
     }
-
-
-    public SsoHandler getMySsoHandler() {
-        return mSsoHandler;
-    }
-
-    // public boolean isVaild(){
-    // mWeibo.
-    // }
 
     public void login(Context ctx, WeiboAuthListener mAuthListener) {
         if (null == mSsoHandler && mWeibo != null) {
-            WeiboAuth weiboAuth = new WeiboAuth(ctx, mWeibo);
-            mSsoHandler = new SsoHandler((Activity) ctx, weiboAuth);
+            mSsoHandler = new SsoHandler((Activity) ctx, mWeibo);
         }
 
         if (mSsoHandler != null) {
@@ -74,7 +65,7 @@ public class SinaWeiboUtil {
     public void logout(Context ctx) {
         if (AccessTokenKeeper.readAccessToken(ctx) != null && AccessTokenKeeper.readAccessToken(ctx).isSessionValid()) {
             LogOutRequestListener mLogoutListener = new LogOutRequestListener(ctx);
-            new LogoutAPI(AccessTokenKeeper.readAccessToken(ctx)).logout(mLogoutListener);
+            new LogoutAPI(AccessTokenKeeper.readAccessToken(ctx)).logout(ctx, mLogoutListener);
         }
     }
 
@@ -121,4 +112,41 @@ public class SinaWeiboUtil {
         return !TextUtils.isEmpty(token);
     }
 
+    /**
+     * 该类提供了授权回收接口，帮助开发者主动取消用户的授权。
+     * 详情请参考<activity_cloud_live_mesg_video_talk_item href="http://t.cn/zYeuB0k">授权回收</activity_cloud_live_mesg_video_talk_item>
+     *
+     * @author SINA
+     * @since 2013-11-05
+     */
+    public class LogoutAPI extends AbsOpenAPI {
+        /**
+         * 注销地址（URL）
+         */
+        private static final String REVOKE_OAUTH_URL = "https://api.weibo.com/oauth2/revokeoauth2";
+
+        /**
+         * 构造函数。
+         *
+         * @param oauth2AccessToken Token 实例
+         */
+        public LogoutAPI(Oauth2AccessToken oauth2AccessToken) {
+            super(oauth2AccessToken);
+        }
+
+        /**
+         * 异步取消用户的授权。
+         *
+         * @param listener 异步请求回调接口
+         */
+        public void logout(Context context,
+                           RequestListener listener) {
+            requestAsync(context, REVOKE_OAUTH_URL,
+                    getWeiboParameters(), HTTPMETHOD_POST, listener);
+        }
+    }
+
+    public static WeiboParameters getWeiboParameters() {
+        return new WeiboParameters(APP_KEY);
+    }
 }

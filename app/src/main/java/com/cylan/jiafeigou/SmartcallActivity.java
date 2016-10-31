@@ -17,6 +17,7 @@ import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
+import com.cylan.jiafeigou.cache.JCache;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.mvp.contract.splash.SplashContract;
 import com.cylan.jiafeigou.n.mvp.impl.splash.SplashPresenterImpl;
@@ -26,7 +27,6 @@ import com.cylan.jiafeigou.n.view.splash.GuideFragment;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.IMEUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
-import com.cylan.jiafeigou.utils.UiHelper;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -107,7 +107,7 @@ public class SmartcallActivity extends NeedLoginActivity
     private void initGuidePage() {
         getSupportFragmentManager().beginTransaction()
                 .add(android.R.id.content, GuideFragment.newInstance())
-                .commit();
+                .commitAllowingStateLoss();
     }
 
     /**
@@ -127,6 +127,7 @@ public class SmartcallActivity extends NeedLoginActivity
             //进入登陆页 login page
             getSupportFragmentManager().beginTransaction()
                     .add(android.R.id.content, BeforeLoginFragment.newInstance(null))
+//                    .addToBackStack(BeforeLoginFragment.class.getSimpleName())
                     .commitAllowingStateLoss();
         }
     }
@@ -158,7 +159,7 @@ public class SmartcallActivity extends NeedLoginActivity
 
 
     private boolean isLoginIn() {
-        return PreferencesUtils.getBoolean(UiHelper.TAG_LOGING_STATUS, false);
+        return JCache.isOnline;
     }
 
     /**

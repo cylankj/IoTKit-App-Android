@@ -3,7 +3,7 @@ package com.cylan.jiafeigou.n.mvp.impl.mine;
 import android.content.Context;
 import android.widget.Toast;
 
-import com.cylan.jiafeigou.n.mvp.contract.mine.SuggestionChatContant;
+import com.cylan.jiafeigou.n.mvp.contract.mine.SuggestionChatContract;
 import com.cylan.jiafeigou.n.mvp.model.SuggestionChatInfoBean;
 
 import java.util.ArrayList;
@@ -13,14 +13,14 @@ import java.util.ArrayList;
  * 创建时间：2016/8/30
  * 描述：
  */
-public class SuggestionPresenterImp implements SuggestionChatContant.Presenter {
+public class SuggestionPresenterImp implements SuggestionChatContract.Presenter {
 
     private ArrayList<SuggestionChatInfoBean> list;
     private int i = 0;
     private Context context;
-    private SuggestionChatContant.View view;
+    private SuggestionChatContract.View view;
 
-    public SuggestionPresenterImp(SuggestionChatContant.View view, Context context) {
+    public SuggestionPresenterImp(SuggestionChatContract.View view, Context context) {
         view.setPresenter(this);
         this.context = context;
     }

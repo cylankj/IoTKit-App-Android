@@ -1,24 +1,18 @@
 package com.cylan.jiafeigou.n.view.adapter;
 
 import android.content.Context;
-import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.cylan.entity.jniCall.JFGFriendAccount;
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.n.mvp.model.SuggestionChatInfoBean;
 import com.cylan.superadapter.IMulItemViewType;
 import com.cylan.superadapter.SuperAdapter;
 import com.cylan.superadapter.internal.SuperViewHolder;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
 public class RelativesAndFriendsAdapter extends SuperAdapter<JFGFriendAccount> {
+
 
     public RelativesAndFriendsAdapter(Context context, List<JFGFriendAccount> items, IMulItemViewType<JFGFriendAccount> mulItemViewType) {
         super(context, items, mulItemViewType);
@@ -27,8 +21,8 @@ public class RelativesAndFriendsAdapter extends SuperAdapter<JFGFriendAccount> {
     @Override
     public void onBind(SuperViewHolder holder, int viewType, int layoutPosition, JFGFriendAccount item) {
         //TODO 如果没有备注名就显示别人昵称或者账号
-        holder.setText(R.id.tv_username,(item.markName==null || item.markName.equals(""))?item.alias:item.markName);
-        holder.setText(R.id.tv_add_message,item.account);
+        holder.setText(R.id.tv_username, (item.markName == null || item.markName.equals("")) ? item.alias : item.markName);
+        holder.setText(R.id.tv_add_message, item.account);
     }
 
     @Override

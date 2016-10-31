@@ -8,12 +8,14 @@
     tools:context="com.cylan.jiafeigou.n.view.bind.BindDeviceListFragment">
 
     <LinearLayout
+        android:layout_gravity="center"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/tv_share_to_friends"
+            android:clickable="true"
+            android:id="@+id/tv_share_to_timeline"
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:drawableLeft="@drawable/icon_share_to_friend"
@@ -24,7 +26,8 @@
             android:text="朋友圈" />
 
         <TextView
-            android:id="@+id/tv_share_to_wechat"
+            android:clickable="true"
+            android:id="@+id/tv_share_to_wechat_friends"
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:drawableLeft="@drawable/icon_share_to_wechat"

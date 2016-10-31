@@ -14,10 +14,8 @@ import com.cylan.jiafeigou.n.mvp.contract.mag.MagLiveContract;
 import com.cylan.jiafeigou.n.mvp.impl.mag.MagLivePresenterImp;
 import com.cylan.jiafeigou.n.mvp.model.MagBean;
 import com.cylan.jiafeigou.n.view.adapter.MagActivityAdapter;
-import com.cylan.jiafeigou.n.view.home.HomeSettingAboutFragment;
 import com.cylan.jiafeigou.n.view.mag.MagLiveFragment;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.utils.ColorPhrase;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.utils.RandomUtils;
@@ -87,12 +85,12 @@ public class MagLiveActivity extends BaseFullScreenFragmentActivity implements M
         magLiveFragment.setOnClearDoorOpenRecord(new MagLiveFragment.OnClearDoorOpenRecordLisenter() {
             @Override
             public void onClear() {
-                ToastUtil.showToast(MagLiveActivity.this,"清空了啊啊啊啊");
-                if(magList != null && magList.size() != 0){
+                ToastUtil.showToast("清空了啊啊啊啊");
+                if (magList != null && magList.size() != 0) {
                     magList.clear();
                     adapter.notifyDataSetHasChanged();
-                }else {
-                    ToastUtil.showToast(MagLiveActivity.this,"没有记录");
+                } else {
+                    ToastUtil.showToast("没有记录");
                 }
             }
         });
@@ -100,20 +98,21 @@ public class MagLiveActivity extends BaseFullScreenFragmentActivity implements M
 
     /**
      * 初始化门的状态
+     *
      * @param isOpen
      */
     private void initDoorState(boolean isOpen) {
-        if(isOpen){
+        if (isOpen) {
             imgVTopDoor.setImageDrawable(getResources().getDrawable(R.drawable.iocn_open));
             rLayoutMsgLiveTopBar.setBackgroundColor(getResources().getColor(R.color.color_f28080));
-        }else {
+        } else {
             imgVTopDoor.setImageDrawable(getResources().getDrawable(R.drawable.icon_close));
             rLayoutMsgLiveTopBar.setBackgroundColor(getResources().getColor(R.color.color_66bb6a));
         }
     }
 
     private void initData() {
-        if(magList == null){
+        if (magList == null) {
             magList = new ArrayList<>();
         }
 

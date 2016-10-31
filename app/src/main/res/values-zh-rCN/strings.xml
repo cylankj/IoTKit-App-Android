@@ -582,7 +582,6 @@
     <string name="item_jf_dog">加菲狗</string>
     <string name="item_wonder">每日精彩</string>
     <string name="item_mine">我的</string>
-    <string name="item_user_name_input_rules">0123456789abcdefghigklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ@.</string>
     <string name="item_register">注册</string>
     <string name="item_confirm">确认</string>
     <string name="item_input_phone_num">请输入手机号</string>
