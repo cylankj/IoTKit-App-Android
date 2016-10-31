@@ -1,5 +1,6 @@
 package com.cylan.jiafeigou.n.mvp.contract.mine;
 
+import com.cylan.entity.jniCall.JFGFriendRequest;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
 
@@ -15,7 +16,10 @@ public interface MineFriendAddReqDetailContract {
     }
 
     interface Presenter extends BasePresenter{
-
+        /**
+         * 添加为亲友
+         */
+        void handlerAddAsFriend(JFGFriendRequest addRequestItems);
     }
 
 }

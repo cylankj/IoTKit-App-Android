@@ -2,7 +2,6 @@ package com.cylan.jiafeigou.n.view.mine;
 
 import android.content.DialogInterface;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -10,10 +9,13 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
@@ -23,6 +25,7 @@ import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
 import com.cylan.jiafeigou.n.view.adapter.ShareToFriendsAdapter;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.superadapter.internal.SuperViewHolder;
+import com.sina.weibo.sdk.utils.LogUtil;
 
 import java.util.ArrayList;
 
@@ -46,6 +49,8 @@ public class MineShareToFriendFragment extends Fragment implements MineShareToFr
     RecyclerView rcyMineShareToRelativeAndFriendList;
     @BindView(R.id.ll_no_friend)
     LinearLayout llNoFriend;
+    @BindView(R.id.rl_send_pro_hint)
+    RelativeLayout rlSendProHint;
 
     private MineShareToFriendContract.Presenter presenter;
 
@@ -74,7 +79,7 @@ public class MineShareToFriendFragment extends Fragment implements MineShareToFr
     @Override
     public void onStart() {
         super.onStart();
-        if (presenter != null){
+        if (presenter != null) {
             presenter.start();
         }
     }
@@ -93,7 +98,11 @@ public class MineShareToFriendFragment extends Fragment implements MineShareToFr
                 break;
 
             case R.id.tv_mine_share_to_relative_friend_true:
-                presenter.sendShareToFriendReq(isChooseToShareList);
+                if (presenter.checkNetConnetion()){
+                    presenter.sendShareToFriendReq(isChooseToShareList);
+                }else {
+                    ToastUtil.showToast(getContext(),"网络不可用");
+                }
                 break;
         }
     }
@@ -112,29 +121,29 @@ public class MineShareToFriendFragment extends Fragment implements MineShareToFr
     }
 
     @Override
-    public void setHasShareFriendNum(boolean isChange,int number) {
-        if (number == 0){
+    public void setHasShareFriendNum(boolean isChange, int number) {
+        if (number == 0) {
             tvMineShareToRelativeFriendTrue.setText("确定（0/5）");
             tvMineShareToRelativeFriendTrue.setTextColor(Color.GRAY);
-        }else if (isChange){
+        } else if (isChange) {
             tvMineShareToRelativeFriendTrue.setTextColor(Color.WHITE);
-            tvMineShareToRelativeFriendTrue.setText("确定（"+number+"/5）");
-        }else {
+            tvMineShareToRelativeFriendTrue.setText("确定（" + number + "/5）");
+        } else {
             tvMineShareToRelativeFriendTrue.setTextColor(Color.GRAY);
-            tvMineShareToRelativeFriendTrue.setText("确定（"+number+"/5）");
+            tvMineShareToRelativeFriendTrue.setText("确定（" + number + "/5）");
         }
     }
 
     @Override
     public void showShareAllSuccess() {
         //TODO 完善
-        ToastUtil.showToast(getContext(),"分享成功");
+        ToastUtil.showToast(getContext(), "分享成功");
     }
 
     @Override
     public void showShareSomeFail(int some) {
         //TODO 完善
-        showShareResultDialog(some+"用户分享失败");
+        showShareResultDialog(some + "位用户分享失败");
     }
 
     @Override
@@ -143,8 +152,26 @@ public class MineShareToFriendFragment extends Fragment implements MineShareToFr
         showShareResultDialog("分享失败");
     }
 
+    @Override
+    public void showSendProgress() {
+        rlSendProHint.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideSendProgress() {
+        rlSendProHint.setVisibility(View.INVISIBLE);
+    }
+
+    @Override
+    public void showNumIsOverDialog(SuperViewHolder holder) {
+        //当人数超过5人时选中 松开手之后弹起
+        holder.setChecked(R.id.checkbox_is_share_check,false);
+        ToastUtil.showToast(getContext(),"该设备已达到最大分享数");
+    }
+
     /**
      * 弹出分享
+     *
      * @param title
      */
     private void showShareResultDialog(String title) {
@@ -154,10 +181,11 @@ public class MineShareToFriendFragment extends Fragment implements MineShareToFr
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
+                //TODO　部分分享失败 等待SDK返回的数据
                 presenter.sendShareToFriendReq(isChooseToShareList);
             }
         });
-        builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton("关闭", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
@@ -171,19 +199,27 @@ public class MineShareToFriendFragment extends Fragment implements MineShareToFr
     private void initAdaListener() {
         shareToFriendsAdapter.setOnShareCheckListener(new ShareToFriendsAdapter.OnShareCheckListener() {
             @Override
-            public void onCheck(boolean isCheckFlag,SuperViewHolder holder,RelAndFriendBean item) {
+            public void onCheck(boolean isCheckFlag, SuperViewHolder holder, RelAndFriendBean item) {
                 hasShareNum = presenter.getHasShareFriendNumber();
                 boolean numIsChange = false;
                 isChooseToShareList.clear();
-                for (RelAndFriendBean bean:shareToFriendsAdapter.getList()){
-                    if (bean.isCheckFlag == 1){
+                for (RelAndFriendBean bean : shareToFriendsAdapter.getList()) {
+                    if (bean.isCheckFlag == 1) {
                         hasShareNum++;
                         numIsChange = true;
                         isChooseToShareList.add(bean);
                     }
                 }
-                setHasShareFriendNum(numIsChange,hasShareNum);
+                presenter.checkShareNumIsOver(holder,numIsChange,hasShareNum);
             }
         });
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (presenter != null){
+            presenter.stop();
+        }
     }
 }

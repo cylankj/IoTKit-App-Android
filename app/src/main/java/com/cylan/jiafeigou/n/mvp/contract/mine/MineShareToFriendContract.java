@@ -3,6 +3,7 @@ package com.cylan.jiafeigou.n.mvp.contract.mine;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
 import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
+import com.cylan.superadapter.internal.SuperViewHolder;
 
 import java.util.ArrayList;
 
@@ -46,6 +47,22 @@ public interface MineShareToFriendContract {
          */
         void showShareAllFail();
 
+        /**
+         * 显示发送分享请求的进度
+         */
+        void showSendProgress();
+
+        /**
+         * 隐藏发送请求的进度
+         */
+        void hideSendProgress();
+
+        /**
+         * 提示分享人数已经超过5人
+         */
+        void showNumIsOverDialog(SuperViewHolder holder);
+
+
     }
 
     interface Presenter extends BasePresenter {
@@ -69,6 +86,17 @@ public interface MineShareToFriendContract {
          * 点击确定发送分享请求给服务器
          */
         void sendShareToFriendReq(ArrayList<RelAndFriendBean> list);
+
+        /**
+         * 检测是否有网络
+         */
+        boolean checkNetConnetion();
+
+        /**
+         * 检测分享人数是否已达到5人
+         * @return
+         */
+        void checkShareNumIsOver(SuperViewHolder holder, boolean isChange, int number);
     }
 
 }

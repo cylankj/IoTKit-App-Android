@@ -3,6 +3,7 @@ package com.cylan.jiafeigou.n.mvp.impl.mine;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineShareToFriendContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
+import com.cylan.superadapter.internal.SuperViewHolder;
 
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
@@ -86,7 +87,7 @@ public class MineShareToFriendPresenterImp extends AbstractPresenter<MineShareTo
                 .subscribe(new Action1<Object>() {
                     @Override
                     public void call(Object o) {
-                        hasShareNum = 1;
+                        hasShareNum = 3;
                         handlerHasShareNumResult(hasShareNum);
                     }
                 });
@@ -105,6 +106,9 @@ public class MineShareToFriendPresenterImp extends AbstractPresenter<MineShareTo
      */
     @Override
     public void sendShareToFriendReq(ArrayList<RelAndFriendBean> list) {
+        if (getView() != null){
+            getView().showSendProgress();
+        }
         sendShareFriendSub = Observable.just(null)
                 .map(new Func1<Object, Integer>() {
                     @Override
@@ -114,14 +118,37 @@ public class MineShareToFriendPresenterImp extends AbstractPresenter<MineShareTo
                         return 2;
                     }
                 })
+                .delay(2000,TimeUnit.MILLISECONDS)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<Integer>() {
                     @Override
                     public void call(Integer o) {
+                        getView().hideSendProgress();
                         handlerAfterSendShareReq(o);
                     }
                 });
+    }
+
+    @Override
+    public boolean checkNetConnetion() {
+        //TODO 检测是否有网络
+
+        return true;
+    }
+
+    /**
+     * 判断分享人数是否已超过5人
+     * @param number
+     * @return
+     */
+    @Override
+    public void checkShareNumIsOver(SuperViewHolder holder, boolean isChange, int number) {
+        if(number > 5 && getView() != null){
+            getView().showNumIsOverDialog(holder);
+        }else {
+            getView().setHasShareFriendNum(isChange,number);
+        }
     }
 
     /**
