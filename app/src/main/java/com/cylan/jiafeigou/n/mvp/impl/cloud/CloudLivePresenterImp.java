@@ -26,11 +26,11 @@ import com.cylan.jiafeigou.n.mvp.model.CloudLiveBaseDbBean;
 import com.cylan.jiafeigou.n.mvp.model.CloudLiveVideoTalkBean;
 import com.cylan.jiafeigou.support.db.DbManager;
 import com.cylan.jiafeigou.support.db.DbManagerImpl;
+import com.cylan.jiafeigou.support.db.LogUtil;
 import com.cylan.jiafeigou.support.db.ex.DbException;
 import com.cylan.jiafeigou.support.db.sqlite.SqlInfo;
 import com.cylan.jiafeigou.support.db.sqlite.SqlInfoBuilder;
 import com.cylan.jiafeigou.support.rxbus.RxBus;
-import com.sina.weibo.sdk.utils.LogUtil;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -191,7 +191,6 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
             mPlayer.prepare();
             mPlayer.start();
         } catch (IOException e) {
-            LogUtil.d("cloud_live_play_record","prepare() failed"+e.getMessage());
         }
     }
 
@@ -292,7 +291,6 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
             try {
                 ois.close();
             } catch (Throwable e) {
-                LogUtil.d("readSerializedObject",e.getMessage());
             }
         }
         return result;

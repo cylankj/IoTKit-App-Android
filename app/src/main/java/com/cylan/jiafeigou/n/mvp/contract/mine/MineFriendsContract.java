@@ -26,8 +26,6 @@ public interface MineFriendsContract {
          */
         void initFriendRecyList(ArrayList<JFGFriendAccount> list);
 
-        void initAddReqRecyList(AddRelativesAndFriendsAdapter adapter);
-
 
         void initAddReqRecyList(ArrayList<JFGFriendRequest> list);
 

@@ -239,12 +239,6 @@ public class MineFriendsFragment extends Fragment implements MineFriendsContract
     }
 
     @Override
-    public void initAddReqRecyList(AddRelativesAndFriendsAdapter adapter) {
-        recyclerviewRequestAdd.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerviewRequestAdd.setAdapter(adapter);
-    }
-
-    @Override
     public void initAddReqRecyList(ArrayList<JFGFriendRequest> list) {
         recyclerviewRequestAdd.setLayoutManager(new LinearLayoutManager(getContext()));
         addReqListAdater = new AddRelativesAndFriendsAdapter(getView().getContext(),list,null);
