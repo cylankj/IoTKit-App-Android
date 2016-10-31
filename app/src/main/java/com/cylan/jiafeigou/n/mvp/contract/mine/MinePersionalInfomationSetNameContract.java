@@ -15,6 +15,7 @@ public interface MinePersionalInfomationSetNameContract {
     }
 
     interface Presenter extends BasePresenter {
+
         void saveName();
 
         boolean isEditEmpty(String string);

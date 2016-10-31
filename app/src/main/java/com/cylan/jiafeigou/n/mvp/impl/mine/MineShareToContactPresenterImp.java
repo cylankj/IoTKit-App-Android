@@ -8,11 +8,11 @@ import android.text.TextUtils;
 
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineShareToContactContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
-import com.cylan.jiafeigou.n.mvp.model.BaseBean;
 import com.cylan.jiafeigou.n.mvp.model.SuggestionChatInfoBean;
-import com.cylan.jiafeigou.n.view.adapter.ShareToContactAdapter;
+import com.cylan.jiafeigou.utils.ToastUtil;
 
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
 import rx.Subscription;
@@ -27,12 +27,12 @@ import rx.schedulers.Schedulers;
  * 描述：
  */
 public class MineShareToContactPresenterImp extends AbstractPresenter<MineShareToContactContract.View>
-        implements MineShareToContactContract.Presenter, ShareToContactAdapter.onShareLisenter {
+        implements MineShareToContactContract.Presenter {
 
     private Subscription shareToContactSub;
-    private ShareToContactAdapter shareToContactAdapter;
     private ArrayList<SuggestionChatInfoBean> filterDateList;
     private Subscription shareToThisContact;
+    private Subscription isRegisterSub;
 
     public MineShareToContactPresenterImp(MineShareToContactContract.View view) {
         super(view);
@@ -53,11 +53,14 @@ public class MineShareToContactPresenterImp extends AbstractPresenter<MineShareT
         if (shareToThisContact != null && shareToThisContact.isUnsubscribed()){
             shareToThisContact.unsubscribe();
         }
+
+        if(isRegisterSub != null && isRegisterSub.isUnsubscribed()){
+            isRegisterSub.unsubscribe();
+    }
     }
 
     @Override
     public void initContactData() {
-
         shareToContactSub = Observable.just(null)
                 .map(new Func1<Object, ArrayList<SuggestionChatInfoBean>>() {
                     @Override
@@ -99,19 +102,56 @@ public class MineShareToContactPresenterImp extends AbstractPresenter<MineShareT
      */
     @Override
     public void shareToContact(SuggestionChatInfoBean bean) {
+        if (getView() != null){
+            getView().showShareingProHint();
+        }
         shareToThisContact = Observable.just(bean)
                 .map(new Func1<SuggestionChatInfoBean, Boolean>() {
                     @Override
                     public Boolean call(SuggestionChatInfoBean bean) {
-                        return null;
+                        //TODO 调用SDK分享该设备给该联系人
+                        return true;
                     }
                 })
+                .delay(2000, TimeUnit.MILLISECONDS)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<Boolean>() {
                     @Override
                     public void call(Boolean aBoolean) {
+                        getView().hideShareingProHint();
+                        if (aBoolean){
+                            ToastUtil.showToast("分享成功");
+                        }else {
+                            ToastUtil.showToast("分享失败");
+                        }
+                    }
+                });
+    }
 
+    @Override
+    public void handlerShareClick(final SuggestionChatInfoBean item) {
+        // TODO SDK　检测是否已经注册及设置已经分享的人数是否超过5人
+        if (getView() != null){
+            getView().showShareingProHint();
+            getView().changeShareingProHint("loading");
+                    }
+        isRegisterSub = Observable.just(item)
+                .map(new Func1<SuggestionChatInfoBean, Integer>() {
+                    @Override
+                    public Integer call(SuggestionChatInfoBean bean) {
+                        // TODO SDK　检测是否已经注册 1.已注册未分享  2.已注册未分享人数到达5人  3.已注册已分享  4.未注册
+                        return 4;
+                    }
+                })
+                .delay(2000,TimeUnit.MILLISECONDS)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<Integer>() {
+                    @Override
+                    public void call(Integer state) {
+                        getView().hideShareingProHint();
+                        handlerCheckRegister(state,item);
                     }
                 });
     }
@@ -123,9 +163,7 @@ public class MineShareToContactPresenterImp extends AbstractPresenter<MineShareT
     private void handlerContactDataResult(ArrayList<SuggestionChatInfoBean> list) {
 
         if (getView() != null && list != null && list.size() != 0){
-            shareToContactAdapter = new ShareToContactAdapter(getView().getContext(),list,null);
-            getView().initContactReclyView(shareToContactAdapter);
-            shareToContactAdapter.setOnShareLisenter(this);
+            getView().initContactReclyView(list);
         }else {
             getView().showNoContactNullView();
         }
@@ -160,40 +198,42 @@ public class MineShareToContactPresenterImp extends AbstractPresenter<MineShareT
         return list;
     }
 
-
     /**
-     * desc：点击分享按钮
-     * @param item
+     * desc:处理检测注册的结果
+     * @param state
      */
-    @Override
-    public void isShare(SuggestionChatInfoBean item) {
-        Subscription isRegisterSub = Observable.just(item)
-                .map(new Func1<SuggestionChatInfoBean, Boolean>() {
-                    @Override
-                    public Boolean call(SuggestionChatInfoBean bean) {
-                        // TODO SDK　检测是否已经注册
-                        return null;
+    private void handlerCheckRegister(int state,SuggestionChatInfoBean item) {
+        switch (state){
+            case 1:                                     //已注册 未分享人数未达到5人
+                if (getView() != null){
+                    getView().showShareDeviceDialog(item);
                     }
-                })
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<Boolean>() {
-                    @Override
-                    public void call(Boolean aBoolean) {
-                        handlerCheckRegister(aBoolean);
+                break;
+
+            case 2:                                     //已注册 未分享但人数达到5人
+                if (getView() != null){
+                    getView().showPersonOverDialog("只能分享给5位用户");
                     }
-                });
+                break;
+
+            case 3:                                    //已注册 已分享
+                if (getView() != null){
+                    getView().showPersonOverDialog("已经分享给此账号啦");
+    }
+                break;
+            case 4:                                    //未注册
+                jump2SendMesg(item);
+                break;
+        }
     }
 
     /**
-     * desc:处理检测注册的结果
-     * @param aBoolean
+     * 发送邀请短信
+     * @param item
      */
-    private void handlerCheckRegister(Boolean aBoolean) {
-        if (aBoolean){
-
-        }else {
-
+    private void jump2SendMesg(SuggestionChatInfoBean item) {
+        if (getView() != null){
+            getView().startSendMesgActivity(item);
         }
     }
 }

@@ -13,8 +13,10 @@ import android.widget.TextView;
 import android.widget.VideoView;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.misc.RxEvent;
 import com.cylan.jiafeigou.n.mvp.contract.cloud.CloudVideoChatConettionOkContract;
 import com.cylan.jiafeigou.n.mvp.impl.cloud.CloudVideoChatConettionOkPresenterImp;
+import com.cylan.jiafeigou.support.rxbus.RxBus;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -25,7 +27,7 @@ import butterknife.OnClick;
  * 创建时间：2016/10/13
  * 描述：
  */
-public class CloudLiveCalledActivity extends AppCompatActivity implements CloudVideoChatConettionOkContract.View {
+public class CloudLiveReturnCallActivity extends AppCompatActivity implements CloudVideoChatConettionOkContract.View {
 
     @BindView(R.id.vv_chatvideo_from)
     VideoView vvChatvideoFrom;
@@ -43,23 +45,12 @@ public class CloudLiveCalledActivity extends AppCompatActivity implements CloudV
 
     private CloudVideoChatConettionOkContract.Presenter presenter;
 
-    public OnHangUpListener listener;
-
-    public interface OnHangUpListener {
-        void onHangup(String time);
-    }
-
-    public void setOnHangupListener(OnHangUpListener listener) {
-        this.listener = listener;
-    }
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_cloud_live_videochat);
         ButterKnife.bind(this);
         initPresenter();
-        presenter.bindService();
     }
 
     @Override
@@ -116,18 +107,12 @@ public class CloudLiveCalledActivity extends AppCompatActivity implements CloudV
 
     @OnClick(R.id.iv_hang_up)
     public void onClick(View view) {
-
         switch (view.getId()) {
             case R.id.iv_hang_up:
-                if (listener != null) {
-                    listener.onHangup(tvVideoTime.getText().toString());
-                }
-                presenter.setVideoTalkFinishFlag(true);
-                presenter.setVideoTalkFinishResultData(tvVideoTime.getText().toString());
+                RxBus.getDefault().postSticky(new RxEvent.HangUpVideoTalk(true,tvVideoTime.getText().toString().trim()));
                 finish();
                 break;
         }
-
     }
 
     @Override

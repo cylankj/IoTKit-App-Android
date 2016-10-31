@@ -8,9 +8,11 @@ import android.os.IBinder;
 import android.os.RemoteException;
 
 import com.cylan.jiafeigou.ICloudLiveService;
+import com.cylan.jiafeigou.misc.RxEvent;
 import com.cylan.jiafeigou.n.engine.CloudLiveService;
 import com.cylan.jiafeigou.n.mvp.contract.cloud.CloudVideoChatConettionOkContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
+import com.cylan.jiafeigou.support.rxbus.RxBus;
 
 import java.util.concurrent.TimeUnit;
 
@@ -31,7 +33,6 @@ public class CloudVideoChatConettionOkPresenterImp extends AbstractPresenter<Clo
     private Subscription loadProAnimSub;
     private int loadNum = 0;
 
-    private ICloudLiveService mIservice;
 
     public CloudVideoChatConettionOkPresenterImp(CloudVideoChatConettionOkContract.View view) {
         super(view);
@@ -45,16 +46,12 @@ public class CloudVideoChatConettionOkPresenterImp extends AbstractPresenter<Clo
 
     @Override
     public void stop() {
-        if (loadVideoSub != null) {
+        if (loadVideoSub != null){
             loadVideoSub.unsubscribe();
         }
 
-        if (loadProAnimSub != null) {
+        if(loadProAnimSub != null){
             loadProAnimSub.unsubscribe();
-        }
-
-        if (conn != null) {
-            getView().getContext().unbindService(conn);
         }
     }
 
@@ -75,7 +72,7 @@ public class CloudVideoChatConettionOkPresenterImp extends AbstractPresenter<Clo
                     @Override
                     public void call(Object o) {
                         getView().hideLoadingView();
-                        if (loadProAnimSub != null) {
+                        if (loadProAnimSub != null){
                             loadProAnimSub.unsubscribe();
                         }
                     }
@@ -83,55 +80,25 @@ public class CloudVideoChatConettionOkPresenterImp extends AbstractPresenter<Clo
     }
 
     @Override
-    public void setVideoTalkFinishFlag(boolean isFinish) {
-        try {
-            mIservice.setHangUpFlag(isFinish);
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
+    public void handlerHangUp(String time) {
+        RxBus.getDefault().post(new RxEvent.HangUpVideoTalk(true,time));
     }
 
-    @Override
-    public void setVideoTalkFinishResultData(String data) {
-        try {
-            mIservice.setHangUpResultData(data);
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    public void bindService() {
-        Intent intent = new Intent(getView().getContext(), CloudLiveService.class);
-        getView().getContext().bindService(intent, conn, Context.BIND_AUTO_CREATE);
-    }
-
-    public void showLoadProgressAnim() {
-        loadProAnimSub = Observable.interval(500, 300, TimeUnit.MILLISECONDS)
+    public void showLoadProgressAnim(){
+        loadProAnimSub = Observable.interval(500,300, TimeUnit.MILLISECONDS)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<Long>() {
                     @Override
                     public void call(Long aLong) {
-                        String[] loadContext = {".", "..", "...",};
+                        String[] loadContext = {".","..","...",};
                         getView().showLoadingView();
                         getView().setLoadingText(loadContext[loadNum++]);
-                        if (loadNum == 3) {
+                        if (loadNum == 3){
                             loadNum = 0;
                         }
                     }
                 });
     }
 
-    private ServiceConnection conn = new ServiceConnection() {
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            mIservice = ICloudLiveService.Stub.asInterface(service);
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName name) {
-            mIservice = null;
-        }
-    };
 }

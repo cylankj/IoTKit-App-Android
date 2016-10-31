@@ -67,7 +67,7 @@ public class CloudVideoChatConettionOkFragment extends Fragment implements Cloud
         View view = inflater.inflate(R.layout.fragment_cloud_live_videochat, container, false);
         ButterKnife.bind(this, view);
         initPresenter();
-        presenter.bindService();
+        //presenter.bindService();
         return view;
     }
 
@@ -128,16 +128,10 @@ public class CloudVideoChatConettionOkFragment extends Fragment implements Cloud
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.iv_hang_up:               //挂断
-                if (RxBus.getDefault().hasObservers()) {
-                    RxBus.getDefault().post(new RxEvent.TimeTickEvent());
-                }
+//                presenter.setVideoTalkFinishFlag(true);
+//                presenter.setVideoTalkFinishResultData(tvVideoTime.getText().toString().trim());
 
-                if (listener != null) {
-                    listener.onHangup(tvVideoTime.getText().toString());
-                }
-                getFragmentManager().popBackStack();
-                presenter.setVideoTalkFinishFlag(true);
-                presenter.setVideoTalkFinishResultData(tvVideoTime.getText().toString().trim());
+                RxBus.getDefault().postSticky(new RxEvent.HangUpVideoTalk(true,tvVideoTime.getText().toString().trim()));
                 getActivity().finish();
                 break;
         }

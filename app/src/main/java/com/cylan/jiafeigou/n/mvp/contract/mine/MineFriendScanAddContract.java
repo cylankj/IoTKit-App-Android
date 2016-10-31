@@ -1,26 +1,28 @@
 package com.cylan.jiafeigou.n.mvp.contract.mine;
 
+import android.graphics.Bitmap;
+
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
-import com.cylan.jiafeigou.n.mvp.model.MineShareDeviceBean;
-
-import java.util.ArrayList;
 
 /**
  * 作者：zsl
  * 创建时间：2016/9/6
  * 描述：
  */
-public interface MineRelativesAndFriendListShareDevicesToContract {
+public interface MineFriendScanAddContract {
 
     interface View extends BaseView<Presenter> {
+        void onStartScan();
 
+        void showQrCode(Bitmap bitmap);
     }
 
     interface Presenter extends BasePresenter {
-        ArrayList<MineShareDeviceBean> getDeviceData();
+        Bitmap encodeAsBitmap(String contents, int dimension);      //生成二维码
 
-        boolean checkListEmpty(ArrayList<MineShareDeviceBean> list);
+        int getDimension();
+
     }
 
 }

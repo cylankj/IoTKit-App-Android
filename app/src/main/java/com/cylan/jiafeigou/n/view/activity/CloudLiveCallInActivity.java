@@ -1,6 +1,7 @@
 package com.cylan.jiafeigou.n.view.activity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -45,7 +46,6 @@ public class CloudLiveCallInActivity extends AppCompatActivity implements CloudL
         setContentView(R.layout.fragment_cloud_live_videochat_connetion);
         ButterKnife.bind(this);
         initPrestener();
-        presenter.bindService();
     }
 
     private void initPrestener() {
@@ -58,9 +58,9 @@ public class CloudLiveCallInActivity extends AppCompatActivity implements CloudL
             case R.id.iv_call_user_image_head:
                 break;
             case R.id.tv_ignore_call:
-                //TODO AIDL传输
-                presenter.setVideoTalkFinishFlag(true);
-                presenter.setVideoTalkFinishResultData("未接听，点击回拨");
+                Intent backIntent = new Intent();
+                backIntent.putExtra("ignore","未接听，点击回拨");
+                setResult(1,backIntent);
                 finish();
                 break;
             case R.id.tv_accept_call:

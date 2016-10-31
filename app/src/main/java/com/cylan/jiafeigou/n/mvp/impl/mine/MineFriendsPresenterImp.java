@@ -5,7 +5,7 @@ import android.view.View;
 import com.cylan.entity.jniCall.JFGFriendAccount;
 import com.cylan.entity.jniCall.JFGFriendRequest;
 import com.cylan.jiafeigou.misc.RxEvent;
-import com.cylan.jiafeigou.n.mvp.contract.mine.MineRelativesFriendsContract;
+import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendsContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.n.view.adapter.AddRelativesAndFriendsAdapter;
 import com.cylan.jiafeigou.n.view.adapter.RelativesAndFriendsAdapter;
@@ -27,17 +27,15 @@ import rx.functions.Action1;
  * 创建时间：2016/9/6
  * 描述：
  */
-public class MineRelativesandFriendsPresenterImp extends AbstractPresenter<MineRelativesFriendsContract.View> implements MineRelativesFriendsContract.Presenter, AddRelativesAndFriendsAdapter.OnAcceptClickLisenter {
+public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContract.View> implements MineFriendsContract.Presenter {
 
     private Subscription friendListSub;
-    private RelativesAndFriendsAdapter friendsListAdapter;
     private Subscription addReqListSub;
-    private AddRelativesAndFriendsAdapter addReqListAdater;
 
     private boolean addReqNull;
     private boolean friendListNull;
 
-    public MineRelativesandFriendsPresenterImp(MineRelativesFriendsContract.View view) {
+    public MineFriendsPresenterImp(MineFriendsContract.View view) {
         super(view);
         view.setPresenter(this);
     }
@@ -181,23 +179,6 @@ public class MineRelativesandFriendsPresenterImp extends AbstractPresenter<MineR
     }
 
     @Override
-    public void addReqDeleteItem(int position, JFGFriendRequest bean) {
-        addReqListAdater.remove(bean);
-        addReqListAdater.notifyDataSetHasChanged();
-        if (addReqListAdater.getItemCount() == 0) {
-            if (getView() != null) {
-                getView().hideAddReqListTitle();
-            }
-        }
-    }
-
-    @Override
-    public void friendlistAddItem(int position, JFGFriendAccount bean) {
-        friendsListAdapter.add(0, bean);
-        friendsListAdapter.notifyDataSetHasChanged();
-    }
-
-    @Override
     public void checkAllNull() {
         if (addReqNull && friendListNull) {
             if (getView() != null) {
@@ -216,27 +197,7 @@ public class MineRelativesandFriendsPresenterImp extends AbstractPresenter<MineR
     private void handleInitAddReqListDataResult(final RxEvent.GetAddReqList addReqList) {
         if (addReqList.arrayList.size() != 0) {
             getView().showAddReqListTitle();
-            addReqListAdater = new AddRelativesAndFriendsAdapter(getView().getContext(), addReqList.arrayList, null);
-            getView().initAddReqRecyList(addReqListAdater);
-            addReqListAdater.setOnAcceptClickLisenter(this);
-            addReqListAdater.setOnItemClickListener(new OnItemClickListener() {
-                @Override
-                public void onItemClick(View itemView, int viewType, int position) {
-                    if (getView() != null) {
-                        getView().jump2AddReqDetailFragment(position, addReqListAdater.getList().get(position));
-                    }
-                }
-            });
-
-            addReqListAdater.setOnItemLongClickListener(new OnItemLongClickListener() {
-                @Override
-                public void onItemLongClick(View itemView, int viewType, int position) {
-                    if (getView() != null) {
-                        getView().showLongClickDialog(position, addReqList.arrayList.get(position));
-                    }
-                }
-            });
-
+            getView().initAddReqRecyList(addReqList.arrayList);
         } else {
             addReqNull = true;
             getView().hideAddReqListTitle();
@@ -251,36 +212,13 @@ public class MineRelativesandFriendsPresenterImp extends AbstractPresenter<MineR
     private void handleInitFriendListDataResult(final RxEvent.GetFriendList friendList) {
         if (friendList.arrayList.size() != 0) {
             getView().showFriendListTitle();
-            friendsListAdapter = new RelativesAndFriendsAdapter(getView().getContext(), friendList.arrayList, null);
-            getView().initFriendRecyList(friendsListAdapter);
-            friendsListAdapter.setOnItemClickListener(new OnItemClickListener() {
-                @Override
-                public void onItemClick(View itemView, int viewType, int position) {
-                    if (getView() != null) {
-                        getView().jump2FriendDetailFragment(position, friendsListAdapter.getList().get(position));
-                    }
-                }
-            });
+            getView().initFriendRecyList(friendList.arrayList);
+
         } else {
             friendListNull = true;
             getView().hideFriendListTitle();
         }
     }
 
-    /**
-     * 点击添加请求同意按钮
-     */
-    @Override
-    public void onAccept(SuperViewHolder holder, int viewType, int layoutPosition, JFGFriendRequest item) {
-        if (checkAddRequestOutTime(item)) {
-            if (getView() != null) {
-                getView().showReqOutTimeDialog();
-            }
-        } else {
-            ToastUtil.showToast("添加成功");
-            JFGFriendAccount account = new JFGFriendAccount(item.account, "", item.alias);
-            friendlistAddItem(layoutPosition, account);
-            addReqDeleteItem(layoutPosition, item);
-        }
-    }
+
 }

@@ -17,13 +17,18 @@ import android.widget.TextView;
 import com.cylan.entity.jniCall.JFGFriendAccount;
 import com.cylan.entity.jniCall.JFGFriendRequest;
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.n.mvp.contract.mine.MineRelativesFriendsContract;
-import com.cylan.jiafeigou.n.mvp.impl.mine.MineRelativesandFriendsPresenterImp;
+import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendsContract;
+import com.cylan.jiafeigou.n.mvp.impl.mine.MineFriendsPresenterImp;
 import com.cylan.jiafeigou.n.view.adapter.AddRelativesAndFriendsAdapter;
 import com.cylan.jiafeigou.n.view.adapter.RelativesAndFriendsAdapter;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
+import com.cylan.superadapter.OnItemClickListener;
+import com.cylan.superadapter.OnItemLongClickListener;
+import com.cylan.superadapter.internal.SuperViewHolder;
+
+import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -34,7 +39,7 @@ import butterknife.OnClick;
  * 创建时间：2016/9/6
  * 描述：
  */
-public class MineRelativesandFriendsFragment extends Fragment implements MineRelativesFriendsContract.View {
+public class MineFriendsFragment extends Fragment implements MineFriendsContract.View, AddRelativesAndFriendsAdapter.OnAcceptClickLisenter {
 
 
     @BindView(R.id.iv_home_mine_relativesandfriends_back)
@@ -57,20 +62,22 @@ public class MineRelativesandFriendsFragment extends Fragment implements MineRel
     TextView btnAddRelativeAndFriend;
 
 
-    private MineRelativesFriendsContract.Presenter presenter;
+    private MineFriendsContract.Presenter presenter;
 
-    private MineRelativesAndFriendAddFriendsFragment friendsFragment;
-    private MineRelativeAndFriendDetailFragment relativeAndFrienDetialFragment;
-    private MineRelativeAndFriendAddReqDetailFragment addReqDetailFragment;
+    private MineFriendAddFriendsFragment friendsFragment;
+    private MineFriendDetailFragment relativeAndFrienDetialFragment;
+    private MineFriendAddReqDetailFragment addReqDetailFragment;
+    private AddRelativesAndFriendsAdapter addReqListAdater;
+    private RelativesAndFriendsAdapter friendsListAdapter;
 
-    public static MineRelativesandFriendsFragment newInstance() {
-        return new MineRelativesandFriendsFragment();
+    public static MineFriendsFragment newInstance() {
+        return new MineFriendsFragment();
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        friendsFragment = MineRelativesAndFriendAddFriendsFragment.newInstance();
+        friendsFragment = MineFriendAddFriendsFragment.newInstance();
     }
 
     @Nullable
@@ -94,7 +101,7 @@ public class MineRelativesandFriendsFragment extends Fragment implements MineRel
     public void jump2AddReqDetailFragment(int position, JFGFriendRequest bean) {
         Bundle bundle = new Bundle();
         bundle.putSerializable("addRequestItems", bean);
-        addReqDetailFragment = MineRelativeAndFriendAddReqDetailFragment.newInstance(bundle);
+        addReqDetailFragment = MineFriendAddReqDetailFragment.newInstance(bundle);
         getFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                         , R.anim.slide_in_left, R.anim.slide_out_right)
@@ -133,13 +140,38 @@ public class MineRelativesandFriendsFragment extends Fragment implements MineRel
         llRelativeAndFriendNone.setVisibility(View.VISIBLE);
     }
 
+    /**
+     * 添加请求列表添加一个条目
+     * @param position
+     * @param bean
+     */
+    @Override
+    public void addReqDeleteItem(int position, JFGFriendRequest bean) {
+        addReqListAdater.remove(bean);
+        addReqListAdater.notifyDataSetHasChanged();
+        if (addReqListAdater.getItemCount()==0){
+            hideAddReqListTitle();
+        }
+    }
+
+    /**
+     * 好友列表添加一个条目
+     * @param position
+     * @param bean
+     */
+    @Override
+    public void friendlistAddItem(int position, JFGFriendAccount bean) {
+        friendsListAdapter.add(0,bean);
+        friendsListAdapter.notifyDataSetHasChanged();
+    }
+
     @Override
     public void showLongClickDialog(final int position, final JFGFriendRequest bean) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setPositiveButton("删除该请求", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                presenter.addReqDeleteItem(position, bean);
+                addReqDeleteItem(position,bean);
                 dialog.dismiss();
             }
         }).setNegativeButton("取消", new DialogInterface.OnClickListener() {
@@ -151,11 +183,11 @@ public class MineRelativesandFriendsFragment extends Fragment implements MineRel
     }
 
     private void initPresenter() {
-        presenter = new MineRelativesandFriendsPresenterImp(this);
+        presenter = new MineFriendsPresenterImp(this);
     }
 
     @Override
-    public void setPresenter(MineRelativesFriendsContract.Presenter presenter) {
+    public void setPresenter(MineFriendsContract.Presenter presenter) {
     }
 
     @OnClick({R.id.iv_home_mine_relativesandfriends_back, R.id.tv_home_mine_relativesandfriends_add})
@@ -185,25 +217,57 @@ public class MineRelativesandFriendsFragment extends Fragment implements MineRel
     }
 
     @Override
-    public void showAddRequestList() {
-
-    }
-
-    @Override
-    public void showRelativesAndFriendsList() {
-
-    }
-
-    @Override
-    public void initFriendRecyList(RelativesAndFriendsAdapter adapter) {
+    public void initFriendRecyList(ArrayList<JFGFriendAccount> list) {
         recyclerviewRelativesandfriendsList.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerviewRelativesandfriendsList.setAdapter(adapter);
+        friendsListAdapter = new RelativesAndFriendsAdapter(getContext(),list,null);
+        recyclerviewRelativesandfriendsList.setAdapter(friendsListAdapter);
+        initFriendAdaListener();
+    }
+
+    /**
+     * desc:设置好友列表的监听
+     */
+    private void initFriendAdaListener() {
+        friendsListAdapter.setOnItemClickListener(new OnItemClickListener() {
+    @Override
+            public void onItemClick(View itemView, int viewType, int position) {
+                if (getView() != null){
+                    jump2FriendDetailFragment(position,friendsListAdapter.getList().get(position));
+                }
+            }
+        });
     }
 
     @Override
-    public void initAddReqRecyList(AddRelativesAndFriendsAdapter adapter) {
+    public void initAddReqRecyList(ArrayList<JFGFriendRequest> list) {
         recyclerviewRequestAdd.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerviewRequestAdd.setAdapter(adapter);
+        addReqListAdater = new AddRelativesAndFriendsAdapter(getView().getContext(),list,null);
+        recyclerviewRequestAdd.setAdapter(addReqListAdater);
+        initAddReqAdaListener();
+    }
+
+    /**
+     * desc：设置添加请求列表监听
+     */
+    private void initAddReqAdaListener() {
+        addReqListAdater.setOnAcceptClickLisenter(this);
+        addReqListAdater.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(View itemView, int viewType, int position) {
+                if (getView() != null){
+                    jump2AddReqDetailFragment(position,addReqListAdater.getList().get(position));
+                }
+            }
+        });
+
+        addReqListAdater.setOnItemLongClickListener(new OnItemLongClickListener() {
+            @Override
+            public void onItemLongClick(View itemView, int viewType, int position) {
+                if (getView() != null){
+                    showLongClickDialog(position,addReqListAdater.getList().get(position));
+                }
+            }
+        });
     }
 
     @Override
@@ -235,7 +299,7 @@ public class MineRelativesandFriendsFragment extends Fragment implements MineRel
         Bundle bundle = new Bundle();
         bundle.putInt("position", position);
         bundle.putSerializable("frienditembean", account);
-        relativeAndFrienDetialFragment = MineRelativeAndFriendDetailFragment.newInstance(bundle);
+        relativeAndFrienDetialFragment = MineFriendDetailFragment.newInstance(bundle);
         getFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                         , R.anim.slide_in_left, R.anim.slide_out_right)
@@ -244,4 +308,22 @@ public class MineRelativesandFriendsFragment extends Fragment implements MineRel
                 .commit();
     }
 
+    /**
+     * desc:点击同意按钮
+     * @param holder
+     * @param viewType
+     * @param layoutPosition
+     * @param item
+     */
+    @Override
+    public void onAccept(SuperViewHolder holder, int viewType, int layoutPosition, JFGFriendRequest item) {
+        if (presenter.checkAddRequestOutTime(item)){
+                showReqOutTimeDialog();
+        }else {
+            ToastUtil.showToast("添加成功");
+            JFGFriendAccount account = new JFGFriendAccount(item.account,"",item.alias);
+            friendlistAddItem(layoutPosition,account);
+            addReqDeleteItem(layoutPosition,item);
+        }
+    }
 }

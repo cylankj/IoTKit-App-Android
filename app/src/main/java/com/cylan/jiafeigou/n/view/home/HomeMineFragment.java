@@ -15,7 +15,7 @@ import com.cylan.jiafeigou.misc.RxEvent;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeMineContract;
 import com.cylan.jiafeigou.n.view.mine.HomeMineHelpFragment;
 import com.cylan.jiafeigou.n.view.mine.HomeMinePersonalInformationFragment;
-import com.cylan.jiafeigou.n.view.mine.MineRelativesandFriendsFragment;
+import com.cylan.jiafeigou.n.view.mine.MineFriendsFragment;
 import com.cylan.jiafeigou.n.view.mine.MineShareDeviceFragment;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.rxbus.RxBus;
@@ -59,7 +59,7 @@ public class HomeMineFragment extends Fragment
     private HomeSettingFragment homeSettingFragment;
     private HomeMineMessageFragment homeMineMessageFragment;
     private MineShareDeviceFragment mineShareDeviceFragment;
-    private MineRelativesandFriendsFragment mineRelativesandFriendsFragment;
+    private MineFriendsFragment mineRelativesandFriendsFragment;
 
 
     public static HomeMineFragment newInstance(Bundle bundle) {
@@ -76,7 +76,7 @@ public class HomeMineFragment extends Fragment
         homeSettingFragment = HomeSettingFragment.newInstance();
         homeMineMessageFragment = HomeMineMessageFragment.newInstance();
         mineShareDeviceFragment = MineShareDeviceFragment.newInstance();
-        mineRelativesandFriendsFragment = MineRelativesandFriendsFragment.newInstance();
+        mineRelativesandFriendsFragment = MineFriendsFragment.newInstance();
     }
 
     @Override

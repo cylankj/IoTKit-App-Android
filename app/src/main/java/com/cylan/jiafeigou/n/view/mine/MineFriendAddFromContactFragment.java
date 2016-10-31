@@ -15,10 +15,13 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.n.mvp.contract.mine.MineRelativeAndFriendAddFromContactContract;
-import com.cylan.jiafeigou.n.mvp.impl.mine.MineRelativeAndFriendAddFromContactPresenterImp;
+import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendAddFromContactContract;
+import com.cylan.jiafeigou.n.mvp.impl.mine.MineFriendAddFromContactPresenterImp;
 import com.cylan.jiafeigou.n.mvp.model.SuggestionChatInfoBean;
 import com.cylan.jiafeigou.n.view.adapter.RelativeAndFriendAddFromContactAdapter;
+import com.cylan.superadapter.OnItemClickListener;
+
+import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -29,7 +32,7 @@ import butterknife.OnClick;
  * 创建时间：2016/9/6
  * 描述：
  */
-public class MineRelativeAndFriendAddFromContactFragment extends Fragment implements MineRelativeAndFriendAddFromContactContract.View {
+public class MineFriendAddFromContactFragment extends Fragment implements MineFriendAddFromContactContract.View, RelativeAndFriendAddFromContactAdapter.onContactItemClickListener {
 
     @BindView(R.id.iv_home_mine_relativesandfriends_add_from_contact_back)
     ImageView ivHomeMineRelativesandfriendsAddFromContactBack;
@@ -40,16 +43,17 @@ public class MineRelativeAndFriendAddFromContactFragment extends Fragment implem
     @BindView(R.id.ll_no_contact)
     LinearLayout llNoContact;
 
-    private MineRelativeAndFriendAddFromContactContract.Presenter presenter;
+    private MineFriendAddFromContactContract.Presenter presenter;
     private MineAddFromContactFragment mineAddFromContactFragment;
+    private RelativeAndFriendAddFromContactAdapter contactListAdapter;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
 
-    public static MineRelativeAndFriendAddFromContactFragment newInstance() {
-        return new MineRelativeAndFriendAddFromContactFragment();
+    public static MineFriendAddFromContactFragment newInstance() {
+        return new MineFriendAddFromContactFragment();
     }
 
     @Override
@@ -89,11 +93,11 @@ public class MineRelativeAndFriendAddFromContactFragment extends Fragment implem
     }
 
     private void initPresenter() {
-        presenter = new MineRelativeAndFriendAddFromContactPresenterImp(this);
+        presenter = new MineFriendAddFromContactPresenterImp(this);
     }
 
     @Override
-    public void setPresenter(MineRelativeAndFriendAddFromContactContract.Presenter presenter) {
+    public void setPresenter(MineFriendAddFromContactContract.Presenter presenter) {
 
     }
 
@@ -107,9 +111,24 @@ public class MineRelativeAndFriendAddFromContactFragment extends Fragment implem
     }
 
     @Override
-    public void initContactRecycleView(RelativeAndFriendAddFromContactAdapter adapter) {
+    public void initContactRecycleView(ArrayList<SuggestionChatInfoBean> list) {
         rcyContactList.setLayoutManager(new LinearLayoutManager(getContext()));
-        rcyContactList.setAdapter(adapter);
+        contactListAdapter = new RelativeAndFriendAddFromContactAdapter(getView().getContext(),list,null);
+        rcyContactList.setAdapter(contactListAdapter);
+        initAdaListener();
+    }
+
+    /**
+     * 设置列表监听
+     */
+    private void initAdaListener() {
+        contactListAdapter.setOnContactItemClickListener(this);
+        contactListAdapter.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(View itemView, int viewType, int position) {
+                //TODO 跳转到联系人的详情界面去
+            }
+        });
     }
 
     @Override
@@ -138,6 +157,13 @@ public class MineRelativeAndFriendAddFromContactFragment extends Fragment implem
         super.onStop();
         if (presenter != null) {
             presenter.stop();
+        }
+    }
+
+    @Override
+    public void onAddClick(View view, int position,SuggestionChatInfoBean item) {
+        if (getView() != null){
+            jump2SendAddMesgFragment(item);
         }
     }
 }
