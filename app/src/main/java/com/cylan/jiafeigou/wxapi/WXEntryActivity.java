@@ -66,7 +66,7 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
                 break;
         }
         finish();
-        Log.d("WXEntryActivity", "WXEntryActivity: " + new Gson().toJson(req));
+        Log.e("WXEntryActivity", "WXEntryActivity: " + new Gson().toJson(req));
     }
 
 
@@ -84,6 +84,6 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
                 break;
         }
         finish();
-        Log.d("WXEntryActivity", "WXEntryActivity: " + new Gson().toJson(resp));
+        Log.e("WXEntryActivity", "WXEntryActivity: " + new Gson().toJson(resp));
     }
 }

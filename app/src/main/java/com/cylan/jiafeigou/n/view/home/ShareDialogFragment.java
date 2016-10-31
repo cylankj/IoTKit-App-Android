@@ -20,6 +20,8 @@ import butterknife.OnClick;
  */
 public class ShareDialogFragment extends BaseDialog {
 
+    public final static String KEY_PARCEL_ = "key_parcel";
+
     @BindView(R.id.lLayout_dialog_share_wonderful)
     CardView lLayoutDialogShareWonderful;
     @BindView(R.id.tv_share_to_timeline)
@@ -47,11 +49,11 @@ public class ShareDialogFragment extends BaseDialog {
         switch (view.getId()) {
             case R.id.tv_share_to_timeline:
                 if (shareToListener != null)
-                    shareToListener.share(R.id.tv_share_to_timeline);
+                    shareToListener.share(R.id.tv_share_to_timeline, getArguments().getParcelable(KEY_PARCEL_));
                 break;
             case R.id.tv_share_to_wechat_friends:
                 if (shareToListener != null)
-                    shareToListener.share(R.id.tv_share_to_wechat_friends);
+                    shareToListener.share(R.id.tv_share_to_wechat_friends, getArguments().getParcelable(KEY_PARCEL_));
                 break;
         }
     }
@@ -60,9 +62,9 @@ public class ShareDialogFragment extends BaseDialog {
         this.shareToListener = shareToListener;
     }
 
-    ShareToListener shareToListener;
+    private ShareToListener shareToListener;
 
     public interface ShareToListener {
-        void share(int id);
+        void share(int id, Object t);
     }
 }

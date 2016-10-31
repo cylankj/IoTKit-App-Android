@@ -2,8 +2,15 @@ package com.cylan.jiafeigou.n.mvp.impl.home;
 
 
 import android.app.Activity;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.os.Environment;
+import android.webkit.MimeTypeMap;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.RxEvent;
 import com.cylan.jiafeigou.misc.TimeLineAssembler;
@@ -13,13 +20,13 @@ import com.cylan.jiafeigou.n.mvp.model.MediaBean;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.rxbus.RxBus;
 import com.cylan.jiafeigou.support.wechat.WechatShare;
+import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.widget.wheel.WheelViewDataSet;
 import com.cylan.utils.RandomUtils;
 import com.google.gson.Gson;
 
 import java.io.File;
 import java.lang.ref.SoftReference;
-import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -51,7 +58,7 @@ public class HomeWonderfulPresenterImpl extends AbstractPresenter<HomeWonderfulC
     private Subscription onTimeLineSubscription;
     private CompositeSubscription _timeTickSubscriptions = new CompositeSubscription();
     private long lastTime;
-    private WeakReference<WechatShare> wechatShareWeakReference;
+    private WechatShare wechatShare;
 
     public HomeWonderfulPresenterImpl(HomeWonderfulContract.View view) {
         super(view);
@@ -236,45 +243,90 @@ public class HomeWonderfulPresenterImpl extends AbstractPresenter<HomeWonderfulC
     }
 
     private void initWechatInstance() {
-        if (wechatShareWeakReference == null || wechatShareWeakReference.get() == null)
-            wechatShareWeakReference = new WeakReference<>(new WechatShare((Activity) getView().getContext()));
+        if (wechatShare == null || !wechatShare.isRegister()) {
+            wechatShare = new WechatShare((Activity) getView().getContext());
+        }
     }
 
     @Override
-    public void checkWechat() {
-        Observable.just(true)
-                .map(new Func1<Boolean, Boolean>() {
-                    @Override
-                    public Boolean call(Boolean aBoolean) {
-                        initWechatInstance();
-                        return wechatShareWeakReference.get().getWxApi().isWXAppInstalled();
-                    }
-                })
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<Boolean>() {
-                    @Override
-                    public void call(Boolean aBoolean) {
-                        getView().onWechatCheckRsp(aBoolean);
-                    }
-                });
+    public boolean checkWechat() {
+//        Observable.just(true)
+//                .map(new Func1<Boolean, Boolean>() {
+//                    @Override
+//                    public Boolean call(Boolean aBoolean) {
+        try {
+            return getView()
+                    .getContext()
+                    .getPackageManager()
+                    .getPackageInfo("com.tencent.mm", PackageManager.GET_SIGNATURES) != null;
+        } catch (PackageManager.NameNotFoundException e) {
+            return false;
+        }
+//                    }
+//                })
+//                .subscribeOn(AndroidSchedulers.mainThread())
+//                .subscribe(new Action1<Boolean>() {
+//                    @Override
+//                    public void call(Boolean aBoolean) {
+//                        getView().onWechatCheckRsp(aBoolean);
+//                    }
+//                });
     }
 
     @Override
     public void unregisterWechat() {
-        if (wechatShareWeakReference != null && wechatShareWeakReference.get() != null) {
-            wechatShareWeakReference.get().unregister();
+        if (wechatShare != null) {
+            wechatShare.unregister();
+            wechatShare = null;
         }
     }
 
     @Override
-    public void shareToWechat(WechatShare.ShareContent shareContent) {
-        if (shareContent == null) {
-            AppLogger.i("shareContent is null");
+    public void shareToWechat(MediaBean mediaBean, final int type) {
+        if (mediaBean == null) {
+            AppLogger.i("mediaBean is null");
             return;
         }
-        if (wechatShareWeakReference == null || wechatShareWeakReference.get() == null)
-            wechatShareWeakReference = new WeakReference<>(new WechatShare((Activity) getView().getContext()));
-        wechatShareWeakReference.get().shareByWeixin(shareContent);
+        initWechatInstance();
+        //find bitmap from glide
+        final WechatShare.ShareContent shareContent = new WechatShare.ShareContentImpl();
+        //朋友圈，微信
+        shareContent.shareType = type;
+        final int mimeType = RandomUtils.getRandom(2);//0:picture,1:url
+//        if (mimeType == 0) {
+        Glide.with(ContextUtils.getContext())
+                .load(mediaBean.srcUrl)
+                .asBitmap()
+                .into(new SimpleTarget<Bitmap>(150, 150) {
+                    @Override
+                    public void onResourceReady(Bitmap resource, GlideAnimation glideAnimation) {
+                        shareContent.bitmap = resource;
+                        shareContent.shareWay = WechatShare.WEIXIN_SHARE_WAY_PIC;
+                        wechatShare.shareByWX(shareContent);
+                    }
+
+                    @Override
+                    public void onLoadFailed(Exception e, Drawable errorDrawable) {
+                        AppLogger.e("fxxx,load image failed: " + e.getLocalizedMessage());
+                    }
+                });
+//        } else {
+//            wechatShare.shareByWeixin(shareContent);
+//        }
+    }
+
+    /**
+     * @param mediaBean
+     * @return text:0,pic:1
+     */
+    private static int getMimeType(MediaBean mediaBean) {
+        // url = file path or whatever suitable URL you want.
+        String type = null;
+        String extension = MimeTypeMap.getFileExtensionFromUrl(mediaBean.srcUrl);
+        if (extension != null) {
+            type = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
+        }
+        return 1;
     }
 
     private static final String[] pics = {

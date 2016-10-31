@@ -3,7 +3,6 @@ package com.cylan.jiafeigou.n.mvp.contract.home;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
 import com.cylan.jiafeigou.n.mvp.model.MediaBean;
-import com.cylan.jiafeigou.support.wechat.WechatShare;
 import com.cylan.jiafeigou.widget.wheel.WheelViewDataSet;
 
 import java.util.List;
@@ -47,11 +46,11 @@ public interface HomeWonderfulContract {
         /**
          * 检查微信是否已经安装
          */
-        void checkWechat();
+        boolean checkWechat();
 
         void unregisterWechat();
 
-        void shareToWechat(WechatShare.ShareContent shareContent);
+        void shareToWechat(MediaBean mediaBean, int type);
     }
 
 }

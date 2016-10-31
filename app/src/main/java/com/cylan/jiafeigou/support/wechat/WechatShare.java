@@ -1,12 +1,9 @@
 package com.cylan.jiafeigou.support.wechat;
 
 import android.app.Activity;
-import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.text.TextUtils;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
@@ -31,6 +28,7 @@ public class WechatShare {
 
     private IWXAPI wxApi;
 
+    private boolean isRegister = true;
 
     /**
      * weChatAppId：定义在 app-build.gradle的文件中。
@@ -51,7 +49,14 @@ public class WechatShare {
         wxApi.registerApp(appId);
     }
 
+    public boolean isRegister() {
+        return isRegister;
+    }
+
     public void unregister() {
+        if (isRegister)
+            return;
+        isRegister = false;
         wxApi.unregisterApp();
         //必须要调用detach,否则内存泄露。
         wxApi.detach();
@@ -91,7 +96,7 @@ public class WechatShare {
      * @param shareContent 分享的方式（文本、图片、链接）
      *                     分享的类型（朋友圈，会话）
      */
-    public void shareByWeixin(ShareContent shareContent) {
+    public void shareByWX(ShareContent shareContent) {
         switch (shareContent.getShareWay()) {
             case WEIXIN_SHARE_WAY_TEXT:
                 shareText(shareContent.getShareType(), shareContent);
@@ -106,6 +111,20 @@ public class WechatShare {
     }
 
     public static abstract class ShareContent {
+
+        /**
+         * 朋友圈，微信
+         */
+        public int shareWay;
+        /**
+         * 文字，图片，链接
+         */
+        public int shareType;
+        public String content;
+        public String title;
+        public String url;
+        public Bitmap bitmap;
+
 
         protected abstract int getShareWay();
 
@@ -123,9 +142,14 @@ public class WechatShare {
          */
         protected abstract String getTitle();
 
-        protected abstract String getURL();
+        /**
+         * 服务端h5-url
+         *
+         * @return
+         */
+        protected abstract String getShareURL();
 
-        protected abstract int getPicResource();
+        protected abstract Bitmap getPicResource();
 
         /**
          * 分享方式： {@link com.tencent.mm.sdk.modelmsg.SendMessageToWX.Req#WXSceneSession}
@@ -141,32 +165,32 @@ public class WechatShare {
     public static class ShareContentImpl extends ShareContent {
         @Override
         public int getShareWay() {
-            return 0;
+            return shareWay;
         }
 
         @Override
         public String getContent() {
-            return null;
+            return content;
         }
 
         @Override
         public String getTitle() {
-            return null;
+            return title;
         }
 
         @Override
-        public String getURL() {
-            return null;
+        public String getShareURL() {
+            return url;
         }
 
         @Override
-        public int getPicResource() {
-            return 0;
+        public Bitmap getPicResource() {
+            return bitmap;
         }
 
         @Override
         protected int getShareType() {
-            return 0;
+            return shareType;
         }
     }
 
@@ -176,42 +200,29 @@ public class WechatShare {
      * @author Administrator
      */
     public class ShareContentText extends ShareContent {
-
-        private String content;
-
-        /**
-         * 构造分享文字类
-         *
-         * @param content 分享的文字内容
-         */
-        public ShareContentText(String content) {
-            this.content = content;
-        }
-
         @Override
         protected String getContent() {
-
             return content;
         }
 
         @Override
         protected String getTitle() {
-            return null;
+            return title;
         }
 
         @Override
-        protected String getURL() {
-            return null;
+        protected String getShareURL() {
+            return url;
         }
 
         @Override
-        protected int getPicResource() {
-            return -1;
+        protected Bitmap getPicResource() {
+            return bitmap;
         }
 
         @Override
         protected int getShareType() {
-            return 0;
+            return shareType;
         }
 
         @Override
@@ -227,35 +238,30 @@ public class WechatShare {
      * @author Administrator
      */
     public class ShareContentPic extends ShareContent {
-        private int picResource;
-
-        public ShareContentPic(int picResource) {
-            this.picResource = picResource;
-        }
 
         @Override
         protected String getContent() {
-            return null;
+            return content;
         }
 
         @Override
         protected String getTitle() {
-            return null;
+            return title;
         }
 
         @Override
-        protected String getURL() {
-            return null;
+        protected String getShareURL() {
+            return url;
         }
 
         @Override
-        protected int getPicResource() {
-            return picResource;
+        protected Bitmap getPicResource() {
+            return bitmap;
         }
 
         @Override
         protected int getShareType() {
-            return 0;
+            return shareType;
         }
 
         @Override
@@ -270,18 +276,7 @@ public class WechatShare {
      * @author Administrator
      */
     public class ShareContentWebpage extends ShareContent {
-        private String title;
-        private String content;
-        private String url;
-        private int picResource;
 
-        public ShareContentWebpage(String title, String content,
-                                   String url, int picResource) {
-            this.title = title;
-            this.content = content;
-            this.url = url;
-            this.picResource = picResource;
-        }
 
         @Override
         protected String getContent() {
@@ -294,18 +289,18 @@ public class WechatShare {
         }
 
         @Override
-        protected String getURL() {
+        protected String getShareURL() {
             return url;
         }
 
         @Override
-        protected int getPicResource() {
-            return picResource;
+        protected Bitmap getPicResource() {
+            return bitmap;
         }
 
         @Override
         protected int getShareType() {
-            return 0;
+            return shareType;
         }
 
         @Override
@@ -341,18 +336,15 @@ public class WechatShare {
      * 分享图片
      */
     private void sharePicture(int shareType, ShareContent shareContent) {
-        Context context = ContextUtils.getContext();
-        Bitmap bmp = BitmapFactory.decodeResource(context.getResources(), shareContent.getPicResource());
+        Bitmap bmp = shareContent.getPicResource();
         WXImageObject imgObj = new WXImageObject(bmp);
-
         WXMediaMessage msg = new WXMediaMessage();
         msg.mediaObject = imgObj;
-
         Bitmap thumbBmp = Bitmap.createScaledBitmap(bmp, THUMB_SIZE, THUMB_SIZE, true);
         bmp.recycle();
         msg.thumbData = WechatUtils.bmpToByteArray(thumbBmp, true);  //设置缩略图
         SendMessageToWX.Req req = new SendMessageToWX.Req();
-        req.transaction = buildTransaction("imgshareappdata");
+        req.transaction = buildTransaction("img");
         req.message = msg;
         req.scene = shareType;
         wxApi.sendReq(req);
@@ -362,16 +354,16 @@ public class WechatShare {
      * 分享链接
      */
     private void shareWebPage(int shareType, ShareContent shareContent) {
-        Context context = ContextUtils.getContext();
         WXWebpageObject webpage = new WXWebpageObject();
-        webpage.webpageUrl = shareContent.getURL();
+        webpage.webpageUrl = shareContent.getShareURL();
         WXMediaMessage msg = new WXMediaMessage(webpage);
         msg.title = shareContent.getTitle();
         msg.description = shareContent.getContent();
-
-        Bitmap thumb = BitmapFactory.decodeResource(context.getResources(), shareContent.getPicResource());
+        Bitmap src = shareContent.getPicResource();
+        Bitmap thumb = Bitmap.createScaledBitmap(src, THUMB_SIZE, THUMB_SIZE, true);
+        src.recycle();
         if (thumb == null) {
-            Toast.makeText(context, "图片不能为空", Toast.LENGTH_SHORT).show();
+            AppLogger.i("pic is null");
         } else {
             msg.thumbData = WechatUtils.bmpToByteArray(thumb, true);
         }
