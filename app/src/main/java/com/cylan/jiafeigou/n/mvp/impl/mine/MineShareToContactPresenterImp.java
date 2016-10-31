@@ -9,7 +9,7 @@ import android.text.TextUtils;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineShareToContactContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.n.mvp.model.SuggestionChatInfoBean;
-import com.cylan.jiafeigou.utils.ContextUtils;
+import com.cylan.jiafeigou.utils.ToastUtil;
 
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
@@ -121,9 +121,9 @@ public class MineShareToContactPresenterImp extends AbstractPresenter<MineShareT
                     public void call(Boolean aBoolean) {
                         getView().hideShareingProHint();
                         if (aBoolean){
-                            ToastUtil.showToast(ContextUtils.getContext(),"分享成功");
+                            ToastUtil.showToast("分享成功");
                         }else {
-                            ToastUtil.showToast(ContextUtils.getContext(),"分享失败");
+                            ToastUtil.showToast("分享失败");
                         }
                     }
                 });

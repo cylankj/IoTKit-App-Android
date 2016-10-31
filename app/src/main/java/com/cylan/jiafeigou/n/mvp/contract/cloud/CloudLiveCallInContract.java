@@ -10,15 +10,10 @@ import com.cylan.jiafeigou.n.mvp.BaseView;
  */
 public interface CloudLiveCallInContract {
 
-    interface View extends BaseView<Presenter> {
+    interface View extends BaseView<Presenter>{
+
     }
 
-
-    interface Presenter extends BasePresenter {
-        void setVideoTalkFinishFlag(boolean isFinish);
-
-        void setVideoTalkFinishResultData(String data);
-
-        void bindService();
+    interface Presenter extends BasePresenter{
     }
 }

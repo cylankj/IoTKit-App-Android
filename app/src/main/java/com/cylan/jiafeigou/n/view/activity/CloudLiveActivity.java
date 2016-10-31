@@ -219,8 +219,6 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
             case R.id.iv_cloud_videochat:                               //视频通话
                 ViewUtils.deBounceClick(findViewById(R.id.iv_cloud_videochat));
                 //jump2VideoChatFragment();
-                Intent intent = new Intent(CloudLiveActivity.this, CloudLiveReturnCallActivity.class);
-                startActivity(intent);
                 presenter.handlerVideoTalk();
                 break;
             case R.id.iv_cloud_talk:                                    //语音留言
@@ -493,11 +491,11 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
     }
 
     @Override
-    protected void onRestart() {
-        super.onRestart();
+    protected void onResume() {
+        super.onResume();
         if (presenter != null) {
             presenter.refreshHangUpView();
-
+            presenter.unSubCallIn();
         }
     }
 
@@ -509,12 +507,4 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
         }
     }
 
-    @Override
-    protected void onStop() {
-        super.onStop();
-        if(presenter != null){
-            presenter.unSubCallIn();
-        }
-
-    }
 }

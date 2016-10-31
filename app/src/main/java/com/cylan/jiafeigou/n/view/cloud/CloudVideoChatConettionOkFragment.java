@@ -131,7 +131,7 @@ public class CloudVideoChatConettionOkFragment extends Fragment implements Cloud
 //                presenter.setVideoTalkFinishFlag(true);
 //                presenter.setVideoTalkFinishResultData(tvVideoTime.getText().toString().trim());
 
-                RxBus.getInstance().send(new RxEvent.HangUpVideoTalk(true,tvVideoTime.getText().toString().trim()));
+                RxBus.getDefault().postSticky(new RxEvent.HangUpVideoTalk(true,tvVideoTime.getText().toString().trim()));
                 getActivity().finish();
                 break;
         }

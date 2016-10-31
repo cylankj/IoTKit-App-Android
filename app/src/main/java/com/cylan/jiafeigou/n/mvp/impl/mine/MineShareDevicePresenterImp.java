@@ -17,8 +17,12 @@ import com.cylan.superadapter.internal.SuperViewHolder;
 import java.util.ArrayList;
 import java.util.List;
 
+import rx.Observable;
 import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
+import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 /**
  * 作者：zsl
@@ -37,14 +41,14 @@ public class MineShareDevicePresenterImp extends AbstractPresenter<MineShareDevi
 
     @Override
     public void start() {
-        if (getView() != null) {
+        if (getView() != null){
             initData();
         }
     }
 
     @Override
     public void stop() {
-        if (initDataSub != null && initDataSub.isUnsubscribed()) {
+        if (initDataSub != null && initDataSub.isUnsubscribed()){
             initDataSub.unsubscribe();
         }
     }
@@ -52,13 +56,16 @@ public class MineShareDevicePresenterImp extends AbstractPresenter<MineShareDevi
     @Override
     public void initData() {
         initDataSub = RxBus.getDefault().toObservable(RxEvent.GetShareDeviceList.class)
-                .subscribe(new Action1<RxEvent.GetShareDeviceList>() {
+                .subscribe(new Action1<Object>() {
                     @Override
-                    public void call(RxEvent.GetShareDeviceList o) {
-                        handlerShareDeviceListData(o);
+                    public void call(Object o) {
+                        if (o != null && o instanceof RxEvent.GetShareDeviceList){
+                            RxEvent.GetShareDeviceList shareDeviceList = (RxEvent.GetShareDeviceList) o;
+                            handlerShareDeviceListData(shareDeviceList);
+                        }
                     }
                 });
-        RxEvent.GetShareDeviceList shareDeviceList = new RxEvent.GetShareDeviceList(1, TestData());
+        RxEvent.GetShareDeviceList shareDeviceList = new RxEvent.GetShareDeviceList(1,TestData());
         handlerShareDeviceListData(shareDeviceList);
     }
 
@@ -69,23 +76,22 @@ public class MineShareDevicePresenterImp extends AbstractPresenter<MineShareDevi
 
     /**
      * desc;测试的数据
-     *
      * @return
      */
     private ArrayList<JFGShareListInfo> TestData() {
         ArrayList<JFGShareListInfo> list = new ArrayList<>();
 
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < 3; i++){
             JFGShareListInfo info = new JFGShareListInfo();
-            info.cid = i + "cid";
+            info.cid = i+"cid";
 
             ArrayList<JFGFriendAccount> listNei = new ArrayList<>();
 
-            for (int j = 0; j < 3; j++) {
+            for (int j = 0; j< 3;j++){
                 JFGFriendAccount account = new JFGFriendAccount();
-                account.markName = "备注名" + i + j;
-                account.account = "账号" + i + j;
-                account.alias = "昵称" + i + j;
+                account.markName = "备注名"+i+j;
+                account.account = "账号"+i+j;
+                account.alias = "昵称"+i+j;
                 listNei.add(account);
             }
             info.friends = listNei;
@@ -99,25 +105,13 @@ public class MineShareDevicePresenterImp extends AbstractPresenter<MineShareDevi
      * desc:处理设备分享的数据
      */
     private void handlerShareDeviceListData(final RxEvent.GetShareDeviceList shareDeviceList) {
-        if (shareDeviceList != null && shareDeviceList.arrayList.size() != 0) {
-            MineShareDeviceAdapter adapter = new MineShareDeviceAdapter(getView().getContext(), getShareDeviceList(shareDeviceList), null);
-            if (getView() != null) {
+        if (shareDeviceList != null && shareDeviceList.arrayList.size() != 0){
+            hasShareFriendList = shareDeviceList.arrayList;
+            if (getView() != null){
                 getView().initRecycleView(getShareDeviceList(shareDeviceList));
-                    }
-                });
-
-                adapter.setOnItemClickListener(new OnItemClickListener() {
-                    @Override
-                    public void onItemClick(View itemView, int viewType, int position) {
-                        if (getView() != null) {
-                            getView().jump2ShareDeviceMangerFragment(itemView, position, shareDeviceList.arrayList.get(position));
-                        }
-                    }
-                });
             }
-
-        } else {
-            if (getView() != null) {
+        }else {
+            if (getView() != null){
                 getView().showNoDeviceView();
             }
         }
@@ -125,14 +119,13 @@ public class MineShareDevicePresenterImp extends AbstractPresenter<MineShareDevi
 
     /**
      * desc:获取到分享设备的list集合数据
-     *
      * @param shareDeviceList
      */
     private ArrayList<DeviceBean> getShareDeviceList(RxEvent.GetShareDeviceList shareDeviceList) {
 
         ArrayList<DeviceBean> list = new ArrayList<>();
 
-        for (JFGShareListInfo info : shareDeviceList.arrayList) {
+        for (JFGShareListInfo info:shareDeviceList.arrayList){
             //TODO 数据的详细赋值
             DeviceBean bean = new DeviceBean();
             bean.alias = "相框" + info.cid;
@@ -149,7 +142,7 @@ public class MineShareDevicePresenterImp extends AbstractPresenter<MineShareDevi
 
         ArrayList<RelAndFriendBean> list = new ArrayList<>();
 
-        for (JFGFriendAccount account : info.friends) {
+        for (JFGFriendAccount account:info.friends){
             RelAndFriendBean bean = new RelAndFriendBean();
             bean.account = account.account;
             bean.alids = account.alias;
@@ -159,17 +152,4 @@ public class MineShareDevicePresenterImp extends AbstractPresenter<MineShareDevi
         return list;
     }
 
-
-    /**
-     * desc:测试数据
-     */
-    private List<DeviceBean> testData() {
-        List<DeviceBean> list = new ArrayList<>();
-        for (int i = 0; i < 3; i++) {
-            DeviceBean bean = new DeviceBean();
-            bean.alias = "云相框" + i;
-            list.add(bean);
-        }
-        return list;
-    }
 }

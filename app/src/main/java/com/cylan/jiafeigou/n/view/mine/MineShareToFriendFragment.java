@@ -101,7 +101,7 @@ public class MineShareToFriendFragment extends Fragment implements MineShareToFr
                 if (presenter.checkNetConnetion()){
                     presenter.sendShareToFriendReq(isChooseToShareList);
                 }else {
-                    ToastUtil.showToast(getContext(),"网络不可用");
+                    ToastUtil.showToast("网络不可用");
                 }
                 break;
         }
@@ -137,7 +137,7 @@ public class MineShareToFriendFragment extends Fragment implements MineShareToFr
     @Override
     public void showShareAllSuccess() {
         //TODO 完善
-        ToastUtil.showToast(getContext(), "分享成功");
+        ToastUtil.showToast( "分享成功");
     }
 
     @Override
@@ -166,7 +166,7 @@ public class MineShareToFriendFragment extends Fragment implements MineShareToFr
     public void showNumIsOverDialog(SuperViewHolder holder) {
         //当人数超过5人时选中 松开手之后弹起
         holder.setChecked(R.id.checkbox_is_share_check,false);
-        ToastUtil.showToast(getContext(),"该设备已达到最大分享数");
+        ToastUtil.showToast("该设备已达到最大分享数");
     }
 
     /**
