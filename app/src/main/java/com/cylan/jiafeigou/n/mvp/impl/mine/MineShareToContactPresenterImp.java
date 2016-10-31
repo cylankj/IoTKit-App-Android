@@ -11,8 +11,6 @@ import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.n.mvp.model.BaseBean;
 import com.cylan.jiafeigou.n.mvp.model.SuggestionChatInfoBean;
 import com.cylan.jiafeigou.n.view.adapter.ShareToContactAdapter;
-import com.cylan.jiafeigou.utils.ToastUtil;
-import com.sina.weibo.sdk.utils.LogUtil;
 
 import java.util.ArrayList;
 
