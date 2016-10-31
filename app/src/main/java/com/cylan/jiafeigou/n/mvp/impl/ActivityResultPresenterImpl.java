@@ -24,23 +24,23 @@ public class ActivityResultPresenterImpl extends
 
     @Override
     public void setActivityResult(RxEvent.ActivityResult result) {
-        if (RxBus.getInstance().hasObservers()) {
-            RxBus.getInstance().send(result);
+        if (RxBus.getDefault().hasObservers()) {
+            RxBus.getDefault().post(result);
         }
     }
 
     @Override
     public void start() {
-        subscription = RxBus.getInstance().toObservable()
+        subscription = getActivityResultSub();
+    }
+
+    private Subscription getActivityResultSub() {
+        return RxBus.getDefault().toObservable(RxEvent.ActivityResult.class)
                 .throttleFirst(3000, TimeUnit.MILLISECONDS)
-                .subscribe(new Action1<Object>() {
+                .subscribe(new Action1<RxEvent.ActivityResult>() {
                     @Override
-                    public void call(Object o) {
-                        if (getView() == null)
-                            return;
-                        if (o != null && o instanceof RxEvent.ActivityResult) {
-                            getView().onActivityResult((RxEvent.ActivityResult) o);
-                        }
+                    public void call(RxEvent.ActivityResult o) {
+                        getView().onActivityResult(o);
                     }
                 });
     }

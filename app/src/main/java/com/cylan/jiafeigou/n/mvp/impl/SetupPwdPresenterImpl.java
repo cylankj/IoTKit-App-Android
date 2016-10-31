@@ -35,15 +35,13 @@ public class SetupPwdPresenterImpl extends AbstractPresenter<SetupPwdContract.Vi
 
     private void initComposeSubscription() {
         compositeSubscription = new CompositeSubscription();
-        compositeSubscription.add(RxBus.getInstance().toObservable()
+        compositeSubscription.add(RxBus.getDefault().toObservable(RxEvent.ResultRegister.class)
                 .observeOn(AndroidSchedulers.mainThread())
                 .throttleFirst(1000L, TimeUnit.MICROSECONDS)
-                .subscribe(new Action1<Object>() {
+                .subscribe(new Action1<RxEvent.ResultRegister>() {
                     @Override
-                    public void call(Object o) {
-                        if (o instanceof RxEvent.ResultRegister) {
-                            getView().submitResult((RxEvent.ResultRegister) o);
-                        }
+                    public void call(RxEvent.ResultRegister register) {
+                        getView().submitResult(register);
                     }
                 }));
     }

@@ -70,25 +70,37 @@ public class ForgetPwdPresenterImpl extends AbstractPresenter<ForgetPwdContract.
     @Override
     public void start() {
         compositeSubscription = new CompositeSubscription();
-        compositeSubscription.add(RxBus.getInstance().toObservable()
+        compositeSubscription.add(getForgetPwdByMailSub());
+        compositeSubscription.add(getSmsCodeResultSub());
+    }
+
+    private Subscription getForgetPwdByMailSub() {
+        return RxBus.getDefault().toObservable(RxEvent.ForgetPwdByMail.class)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<Object>() {
+                .subscribe(new Action1<RxEvent.ForgetPwdByMail>() {
                     @Override
-                    public void call(Object o) {
-                        if (o instanceof RxEvent.ForgetPwdByMail) {
-                            RequestResetPwdBean bean = new RequestResetPwdBean();
-                            bean.ret = JConstant.AUTHORIZE_MAIL;
-                            bean.content = ((RxEvent.ForgetPwdByMail) o).account;
-                            getView().submitResult(bean);
-                        }
-                        if (o instanceof RxEvent.SmsCodeResult) {
-                            if (((RxEvent.SmsCodeResult) o).error == 0) {
-                                //store the token .
-                                PreferencesUtils.putString(JConstant.KEY_REGISTER_SMS_TOKEN, ((RxEvent.SmsCodeResult) o).token);
-                            }
+                    public void call(RxEvent.ForgetPwdByMail forgetPwdByMail) {
+                        RequestResetPwdBean bean = new RequestResetPwdBean();
+                        bean.ret = JConstant.AUTHORIZE_MAIL;
+                        bean.content = forgetPwdByMail.account;
+                        getView().submitResult(bean);
+                    }
+                });
+    }
+
+    private Subscription getSmsCodeResultSub() {
+        return RxBus.getDefault().toObservable(RxEvent.SmsCodeResult.class)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<RxEvent.SmsCodeResult>() {
+                    @Override
+                    public void call(RxEvent.SmsCodeResult smsCodeResult) {
+                        if (smsCodeResult.error == 0) {
+                            //store the token .
+                            PreferencesUtils.putString(JConstant.KEY_REGISTER_SMS_TOKEN,
+                                    smsCodeResult.token);
                         }
                     }
-                }));
+                });
     }
 
     @Override

@@ -14,6 +14,7 @@ import com.cylan.jiafeigou.utils.ActivityUtils;
 import java.lang.ref.WeakReference;
 import java.util.concurrent.TimeUnit;
 
+import rx.Subscription;
 import rx.functions.Action1;
 import rx.subscriptions.CompositeSubscription;
 
@@ -40,18 +41,22 @@ public class NeedLoginActivity extends BaseFullScreenFragmentActivity {
 
     private void registerRxBug() {
         //注册1
+        if (_subscriptions != null && !_subscriptions.isUnsubscribed()) {
+            _subscriptions.unsubscribe();
+        }
         _subscriptions = new CompositeSubscription();
-        _subscriptions
-                .add(RxBus.getInstance().toObservable()
-                        .throttleFirst(1000, TimeUnit.MILLISECONDS)//2s内只发生一次
-                        .subscribe(new Action1<Object>() {
-                            @Override
-                            public void call(Object event) {
-                                if (event instanceof RxEvent.NeedLoginEvent) {
-                                    signInFirst(((RxEvent.NeedLoginEvent) event).bundle);
-                                }
-                            }
-                        }));
+        _subscriptions.add(getNeedLoginEvent());
+    }
+
+    private Subscription getNeedLoginEvent() {
+        return RxBus.getDefault().toObservable(RxEvent.NeedLoginEvent.class)
+                .throttleFirst(1000, TimeUnit.MILLISECONDS)//2s内只发生一次
+                .subscribe(new Action1<RxEvent.NeedLoginEvent>() {
+                    @Override
+                    public void call(RxEvent.NeedLoginEvent event) {
+                        signInFirst(event.bundle);
+                    }
+                });
     }
 
     private void signInFirst(Bundle extra) {

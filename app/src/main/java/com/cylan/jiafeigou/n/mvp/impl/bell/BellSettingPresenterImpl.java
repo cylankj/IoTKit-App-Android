@@ -61,15 +61,13 @@ public class BellSettingPresenterImpl extends AbstractPresenter<BellSettingContr
      * @return
      */
     private Subscription onLogStateSubscription() {
-        return RxBus.getInstance().toObservable()
+        return RxBus.getDefault().toObservable(RxEvent.LoginRsp.class)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<Object>() {
+                .subscribe(new Action1<RxEvent.LoginRsp>() {
                     @Override
-                    public void call(Object o) {
-                        if (o != null && o instanceof RxEvent.LoginRsp) {
-                            if (getView() != null)
-                                getView().onLoginState(((RxEvent.LoginRsp) o).state);
-                        }
+                    public void call(RxEvent.LoginRsp o) {
+                        if (getView() != null)
+                            getView().onLoginState(o.state);
                     }
                 });
     }
@@ -81,7 +79,7 @@ public class BellSettingPresenterImpl extends AbstractPresenter<BellSettingContr
 
     @Override
     public void sendActivityResult(RxEvent.ActivityResult result) {
-        if (RxBus.getInstance().hasObservers())
-            RxBus.getInstance().send(result);
+        if (RxBus.getDefault().hasObservers())
+            RxBus.getDefault().post(result);
     }
 }

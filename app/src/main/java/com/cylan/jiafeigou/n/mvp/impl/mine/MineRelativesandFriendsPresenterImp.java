@@ -145,17 +145,12 @@ public class MineRelativesandFriendsPresenterImp extends AbstractPresenter<MineR
      */
     @Override
     public void initFriendRecyListData() {
-
-        friendListSub = RxBus.getInstance().toObservable()
-                .subscribe(new Action1<Object>() {
+        friendListSub = RxBus.getDefault().toObservable(RxEvent.GetFriendList.class)
+                .subscribe(new Action1<RxEvent.GetFriendList>() {
                     @Override
-                    public void call(Object o) {
-                        if (getView() == null)
-                            return;
-                        if (o != null && o instanceof RxEvent.GetFriendList) {
-                            RxEvent.GetFriendList friendList = (RxEvent.GetFriendList) o;
-                            handleInitFriendListDataResult(friendList);
-                        }
+                    public void call(RxEvent.GetFriendList o) {
+                        if (getView() != null)
+                            handleInitFriendListDataResult(o);
                     }
                 });
 
@@ -170,16 +165,13 @@ public class MineRelativesandFriendsPresenterImp extends AbstractPresenter<MineR
     @Override
     public void initAddReqRecyListData() {
 
-        addReqListSub = RxBus.getInstance().toObservable()
-                .subscribe(new Action1<Object>() {
+        addReqListSub = RxBus.getDefault().toObservable(RxEvent.GetAddReqList.class)
+                .subscribe(new Action1<RxEvent.GetAddReqList>() {
                     @Override
-                    public void call(Object o) {
+                    public void call(RxEvent.GetAddReqList o) {
                         if (getView() == null)
                             return;
-                        if (o != null && o instanceof RxEvent.GetAddReqList) {
-                            RxEvent.GetAddReqList addReqList = (RxEvent.GetAddReqList) o;
-                            handleInitAddReqListDataResult(addReqList);
-                        }
+                        handleInitAddReqListDataResult(o);
                     }
                 });
 

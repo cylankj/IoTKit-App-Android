@@ -96,8 +96,8 @@ public class NewHomeActivity extends NeedLoginActivity implements
                 if (state == ViewPager.SCROLL_STATE_IDLE) {
                     final int index = vpHomeContent.getCurrentItem();
                     if (index == 0 || index == 2) {
-                        if (RxBus.getInstance().hasObservers())
-                            RxBus.getInstance().send(new RxEvent.PageScrolled());
+                        if (RxBus.getDefault().hasObservers())
+                            RxBus.getDefault().post(new RxEvent.PageScrolled());
                     }
                 }
             }

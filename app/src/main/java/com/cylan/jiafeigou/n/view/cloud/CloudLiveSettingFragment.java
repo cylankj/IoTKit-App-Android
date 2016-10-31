@@ -159,8 +159,8 @@ public class CloudLiveSettingFragment extends Fragment implements CloudLiveSetti
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
-                if (RxBus.getInstance().hasObservers()) {
-                    RxBus.getInstance().send(new RxEvent.CloundLiveDelete());
+                if (RxBus.getDefault().hasObservers()) {
+                    RxBus.getDefault().post(new RxEvent.CloundLiveDelete());
                 }
                 ToastUtil.showToast("正在删除中...");
             }

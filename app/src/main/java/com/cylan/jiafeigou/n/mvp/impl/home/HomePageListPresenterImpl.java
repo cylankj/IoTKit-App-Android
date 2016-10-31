@@ -48,28 +48,42 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
     public void start() {
         //注册1
         _timeTickSubscriptions
-                .add(RxBus.getInstance().toObservable()
-                        .throttleFirst(1000, TimeUnit.MILLISECONDS)
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new Action1<Object>() {
-                            @Override
-                            public void call(Object event) {
-                                //6:00 am - 17:59 pm
-                                //18:00 pm-5:59 am
-                                if (event instanceof RxEvent.TimeTickEvent) {
-                                    if (getView() != null) {
-                                        getView().onTimeTick(JFGRules.getTimeRule());
-                                        if (JCache.getAccountCache() != null)
-                                            getView().onAccountUpdate(JCache.getAccountCache());
-                                    }
-                                }
-                                //登陆响应
-                                if ((event instanceof RxEvent.LoginRsp)) {
-                                    if (getView() != null)
-                                        getView().onLoginState(JCache.isOnline);
-                                }
-                            }
-                        }));
+                .add(getTimeTickEventSub());
+        _timeTickSubscriptions
+                .add(getLoginRspSub());
+    }
+
+    private Subscription getTimeTickEventSub() {
+        return RxBus.getDefault().toObservable(RxEvent.TimeTickEvent.class)
+                .throttleFirst(1000, TimeUnit.MILLISECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<RxEvent.TimeTickEvent>() {
+                    @Override
+                    public void call(RxEvent.TimeTickEvent o) {
+                        //6:00 am - 17:59 pm
+                        //18:00 pm-5:59 am
+                        if (getView() != null) {
+                            getView().onTimeTick(JFGRules.getTimeRule());
+
+                        }
+                    }
+                });
+
+    }
+
+    private Subscription getLoginRspSub() {
+        return RxBus.getDefault().toObservable(RxEvent.LoginRsp.class)
+                .throttleFirst(1000, TimeUnit.MILLISECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<RxEvent.LoginRsp>() {
+                    @Override
+                    public void call(RxEvent.LoginRsp o) {
+                        if (getView() != null)
+                            getView().onLoginState(JCache.isOnline);
+                        if (JCache.getAccountCache() != null)
+                            getView().onAccountUpdate(JCache.getAccountCache());
+                    }
+                });
     }
 
     @Override

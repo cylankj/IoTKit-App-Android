@@ -61,26 +61,38 @@ public class HomeWonderfulPresenterImpl extends AbstractPresenter<HomeWonderfulC
     @Override
     public void start() {
         //注册1
-        _timeTickSubscriptions
-                .add(RxBus.getInstance().toObservable()
-                        .throttleFirst(1000, TimeUnit.MILLISECONDS)
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new Action1<Object>() {
-                            @Override
-                            public void call(Object event) {
-                                //6:00 am - 17:59 pm
-                                //18:00 pm-5:59 am
-                                if (event != null
-                                        && event instanceof RxEvent.TimeTickEvent) {
-                                    if (getView() != null) {
-                                        getView().onTimeTick(JFGRules.getTimeRule());
-                                    }
-                                }
-                                if (event != null && event instanceof RxEvent.PageScrolled) {
-                                    getView().onPageScrolled();
-                                }
-                            }
-                        }));
+        _timeTickSubscriptions.add(getTimeTickEventSub());
+        _timeTickSubscriptions.add(getPageScrolledSub());
+    }
+
+    private Subscription getTimeTickEventSub() {
+        return RxBus.getDefault().toObservable(RxEvent.TimeTickEvent.class)
+                .throttleFirst(1000, TimeUnit.MILLISECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<RxEvent.TimeTickEvent>() {
+                    @Override
+                    public void call(RxEvent.TimeTickEvent timeTickEvent) {
+                        if (getView() != null) {
+                            getView().onTimeTick(JFGRules.getTimeRule());
+                        }
+                    }
+                });
+    }
+
+    private Subscription getPageScrolledSub() {
+        return RxBus.getDefault().toObservable(RxEvent.PageScrolled.class)
+                .throttleFirst(1000, TimeUnit.MILLISECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<RxEvent.PageScrolled>() {
+                    @Override
+                    public void call(RxEvent.PageScrolled timeTickEvent) {
+                        //6:00 am - 17:59 pm
+                        //18:00 pm-5:59 am
+                        if (getView() != null) {
+                            getView().onPageScrolled();
+                        }
+                    }
+                });
     }
 
     @Override
