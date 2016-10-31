@@ -1,6 +1,6 @@
 package com.cylan.jiafeigou.n.mvp.impl.mine;
 
-import com.cylan.jiafeigou.n.mvp.contract.mine.MineRelativeAndFriendAddByNumContract;
+import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendAddByNumContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.n.mvp.model.UserInfoBean;
 
@@ -16,12 +16,12 @@ import rx.schedulers.Schedulers;
  * 创建时间：2016/9/7
  * 描述：
  */
-public class MineRelativeAndFriendAddByNumPresenterImp extends AbstractPresenter<MineRelativeAndFriendAddByNumContract.View>
-        implements MineRelativeAndFriendAddByNumContract.Presenter {
+public class MineFriendAddByNumPresenterImp extends AbstractPresenter<MineFriendAddByNumContract.View>
+        implements MineFriendAddByNumContract.Presenter {
 
     private Subscription findUserFromServerSub;
 
-    public MineRelativeAndFriendAddByNumPresenterImp(MineRelativeAndFriendAddByNumContract.View view) {
+    public MineFriendAddByNumPresenterImp(MineFriendAddByNumContract.View view) {
         super(view);
         view.setPresenter(this);
     }

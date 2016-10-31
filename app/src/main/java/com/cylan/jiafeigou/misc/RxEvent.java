@@ -245,4 +245,19 @@ public class RxEvent {
         }
     }
 
+    /**
+     * 挂断视频通话挂断传递
+     */
+    public static final class HangUpVideoTalk{
+
+        public boolean isFinish;
+
+        public String talkTime;
+
+        public HangUpVideoTalk(boolean isFinish, String talkTime) {
+            this.isFinish = isFinish;
+            this.talkTime = talkTime;
+        }
+    }
+
 }

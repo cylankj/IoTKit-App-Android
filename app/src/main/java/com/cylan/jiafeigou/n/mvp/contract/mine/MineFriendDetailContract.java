@@ -9,7 +9,7 @@ import com.cylan.jiafeigou.n.mvp.model.SuggestionChatInfoBean;
  * 创建时间：2016/9/21
  * 描述：
  */
-public interface MineRelativeAndFriendDetailContract {
+public interface MineFriendDetailContract {
 
     interface View extends BaseView<Presenter> {
 

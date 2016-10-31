@@ -16,7 +16,7 @@ public interface MineShareToContactContract {
 
     interface View extends BaseView<Presenter> {
 
-        void initContactReclyView(ShareToContactAdapter adapter);
+        void initContactReclyView(ArrayList<SuggestionChatInfoBean> list);
 
         void showNoContactNullView();
 
@@ -26,9 +26,33 @@ public interface MineShareToContactContract {
 
         void hideSearchInputEdit();
 
-        String getSearchInputContent();
-
         void showShareDeviceDialog(SuggestionChatInfoBean bean);
+
+        /**
+         * 显示正在分享的进度提示
+         */
+        void showShareingProHint();
+
+        /**
+         * 隐藏正在分享进度的提示
+         */
+        void hideShareingProHint();
+
+        /**
+         * 修改正在分享的进度提示
+         */
+        void changeShareingProHint(String finish);
+
+        /**
+         * 分享不同状态提示
+         */
+        void showPersonOverDialog(String content);
+
+        /**
+         * 调用系统发送短信的界面
+         * @param info
+         */
+        void startSendMesgActivity(SuggestionChatInfoBean info);
 
     }
 
@@ -39,6 +63,10 @@ public interface MineShareToContactContract {
         void handleSearchResult(String input);
 
         void shareToContact(SuggestionChatInfoBean bean);
+        /**
+         * 处理点击按钮
+         */
+        void handlerShareClick(SuggestionChatInfoBean bean);
 
     }
 

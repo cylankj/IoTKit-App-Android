@@ -11,7 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.n.mvp.contract.mine.MineRelativesAndFriendsAddFriendContract;
+import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendsAddFriendContract;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ViewUtils;
 
@@ -24,7 +24,7 @@ import butterknife.OnClick;
  * 创建时间：2016/9/6
  * 描述：
  */
-public class MineRelativesAndFriendAddFriendsFragment extends Fragment implements MineRelativesAndFriendsAddFriendContract.View {
+public class MineFriendAddFriendsFragment extends Fragment implements MineFriendsAddFriendContract.View {
 
 
     @BindView(R.id.iv_home_mine_relativesandfriends_add_back)
@@ -36,25 +36,25 @@ public class MineRelativesAndFriendAddFriendsFragment extends Fragment implement
     @BindView(R.id.tv_add_from_contract)
     TextView tvAddFromContract;
 
-    private MineRelativesAndFriendScanAddFragment scanAddFragment;
-    private MineRelativeAndFriendAddFromContactFragment addFromContactFragment;
-    private MineRelativeAndFriendAddByNumFragment addByNumFragment;
+    private MineFriendScanAddFragment scanAddFragment;
+    private MineFriendAddFromContactFragment addFromContactFragment;
+    private MineFriendAddByNumFragment addByNumFragment;
 
-    public static MineRelativesAndFriendAddFriendsFragment newInstance() {
-        return new MineRelativesAndFriendAddFriendsFragment();
+    public static MineFriendAddFriendsFragment newInstance() {
+        return new MineFriendAddFriendsFragment();
     }
 
     @Override
-    public void setPresenter(MineRelativesAndFriendsAddFriendContract.Presenter presenter) {
+    public void setPresenter(MineFriendsAddFriendContract.Presenter presenter) {
 
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        scanAddFragment = MineRelativesAndFriendScanAddFragment.newInstance();
-        addFromContactFragment = MineRelativeAndFriendAddFromContactFragment.newInstance();
-        addByNumFragment = MineRelativeAndFriendAddByNumFragment.newInstance();
+        scanAddFragment = MineFriendScanAddFragment.newInstance();
+        addFromContactFragment = MineFriendAddFromContactFragment.newInstance();
+        addByNumFragment = MineFriendAddByNumFragment.newInstance();
     }
 
     @Nullable

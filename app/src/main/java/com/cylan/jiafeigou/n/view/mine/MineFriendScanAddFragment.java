@@ -11,8 +11,8 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.n.mvp.contract.mine.MineRelativesAndFriendScanAddContract;
-import com.cylan.jiafeigou.n.mvp.impl.mine.MineRelativesAndFriendScanAddPresenterImp;
+import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendScanAddContract;
+import com.cylan.jiafeigou.n.mvp.impl.mine.MineFriendScanAddPresenterImp;
 import com.cylan.jiafeigou.support.zscan.ZXingScannerView;
 import com.google.zxing.Result;
 
@@ -28,7 +28,7 @@ import rx.schedulers.Schedulers;
  * 创建时间：2016/9/6
  * 描述：
  */
-public class MineRelativesAndFriendScanAddFragment extends Fragment implements ZXingScannerView.ResultHandler, MineRelativesAndFriendScanAddContract.View {
+public class MineFriendScanAddFragment extends Fragment implements ZXingScannerView.ResultHandler, MineFriendScanAddContract.View {
 
     @BindView(R.id.iv_home_mine_relativesandfriends_scan_add_back)
     ImageView ivHomeMineRelativesandfriendsScanAddBack;
@@ -36,16 +36,16 @@ public class MineRelativesAndFriendScanAddFragment extends Fragment implements Z
     ZXingScannerView zxVScanAddRelativesandfriend;
     @BindView(R.id.iv_erweima)
     ImageView ivErweima;
-    private MineRelativesAndFriendScanAddContract.Presenter presenter;
+    private MineFriendScanAddContract.Presenter presenter;
 
-    public static MineRelativesAndFriendScanAddFragment newInstance() {
-        return new MineRelativesAndFriendScanAddFragment();
+    public static MineFriendScanAddFragment newInstance() {
+        return new MineFriendScanAddFragment();
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        presenter = new MineRelativesAndFriendScanAddPresenterImp(this);
+        presenter = new MineFriendScanAddPresenterImp(this);
     }
 
     @Nullable
@@ -74,7 +74,7 @@ public class MineRelativesAndFriendScanAddFragment extends Fragment implements Z
     }
 
     @Override
-    public void setPresenter(MineRelativesAndFriendScanAddContract.Presenter presenter) {
+    public void setPresenter(MineFriendScanAddContract.Presenter presenter) {
         this.presenter = presenter;
     }
 
@@ -110,7 +110,7 @@ public class MineRelativesAndFriendScanAddFragment extends Fragment implements Z
             getView().postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    zxVScanAddRelativesandfriend.resumeCameraPreview(MineRelativesAndFriendScanAddFragment.this);
+                    zxVScanAddRelativesandfriend.resumeCameraPreview(MineFriendScanAddFragment.this);
                 }
             }, 2000);
     }
@@ -118,7 +118,7 @@ public class MineRelativesAndFriendScanAddFragment extends Fragment implements Z
     @Override
     public void onResume() {
         super.onResume();
-        zxVScanAddRelativesandfriend.setResultHandler(MineRelativesAndFriendScanAddFragment.this);
+        zxVScanAddRelativesandfriend.setResultHandler(MineFriendScanAddFragment.this);
         if (presenter != null)
             presenter.start();
     }

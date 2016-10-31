@@ -12,11 +12,11 @@ import java.util.ArrayList;
  * 创建时间：2016/9/6
  * 描述：
  */
-public interface MineRelativeAndFriendAddFromContactContract {
+public interface MineFriendAddFromContactContract {
 
     interface View extends BaseView<Presenter> {
 
-        void initContactRecycleView(RelativeAndFriendAddFromContactAdapter adapter);
+        void initContactRecycleView(ArrayList<SuggestionChatInfoBean> list);
 
         void jump2SendAddMesgFragment(SuggestionChatInfoBean bean);
 

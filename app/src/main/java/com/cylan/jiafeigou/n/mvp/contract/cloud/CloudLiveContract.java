@@ -73,16 +73,12 @@ public interface CloudLiveContract {
 
         List<CloudLiveBaseDbBean> findFromAllDb();          //查询数据库
 
-        void initService();                                 //启动服务
-
         void refreshHangUpView();                           //更新挂断结果
-
-        void handlerIgnoreView();                           //更新忽略结果
 
         void handlerVideoTalk();                           //处理视频通话
 
         void handlerLeveaMesg(Context context);            //处理语音留言
 
-
+        void unSubCallIn();                                 //解除视频通话结束接收绑定
     }
 }

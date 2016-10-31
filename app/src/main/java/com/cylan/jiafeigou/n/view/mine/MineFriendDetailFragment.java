@@ -12,16 +12,13 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.cylan.entity.jniCall.JFGFriendAccount;
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.n.mvp.contract.mine.MineRelativeAndFriendDetailContract;
-import com.cylan.jiafeigou.n.mvp.impl.mine.MineRelativeAndFriendDetailPresenterImp;
-import com.cylan.jiafeigou.n.mvp.model.SuggestionChatInfoBean;
+import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendDetailContract;
+import com.cylan.jiafeigou.n.mvp.impl.mine.MineFriendDetailPresenterImp;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
-import com.sina.weibo.sdk.utils.LogUtil;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -32,7 +29,7 @@ import butterknife.OnClick;
  * 创建时间：2016/9/21
  * 描述：
  */
-public class MineRelativeAndFriendDetailFragment extends Fragment implements MineRelativeAndFriendDetailContract.View {
+public class MineFriendDetailFragment extends Fragment implements MineFriendDetailContract.View {
 
 
     @BindView(R.id.iv_top_bar_left_back)
@@ -50,11 +47,11 @@ public class MineRelativeAndFriendDetailFragment extends Fragment implements Min
     @BindView(R.id.tv_share_device)
     TextView tvShareDevice;
 
-    private MineRelativesAndFriendsListShareDevicesFragment mineShareDeviceFragment;
+    private MineFriendsListShareDevicesFragment mineShareDeviceFragment;
     private MineSetRemarkNameFragment mineSetRemarkNameFragment;
     private MineLookBigImageFragment mineLookBigImageFragment;
 
-    private MineRelativeAndFriendDetailContract.Presenter presenter;
+    private MineFriendDetailContract.Presenter presenter;
 
     public OnDeleteClickLisenter lisenter;
 
@@ -66,8 +63,8 @@ public class MineRelativeAndFriendDetailFragment extends Fragment implements Min
         this.lisenter = lisenter;
     }
 
-    public static MineRelativeAndFriendDetailFragment newInstance(Bundle bundle) {
-        MineRelativeAndFriendDetailFragment fragment = new MineRelativeAndFriendDetailFragment();
+    public static MineFriendDetailFragment newInstance(Bundle bundle) {
+        MineFriendDetailFragment fragment = new MineFriendDetailFragment();
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -75,7 +72,7 @@ public class MineRelativeAndFriendDetailFragment extends Fragment implements Min
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mineShareDeviceFragment = MineRelativesAndFriendsListShareDevicesFragment.newInstance();
+        mineShareDeviceFragment = MineFriendsListShareDevicesFragment.newInstance();
         mineSetRemarkNameFragment = MineSetRemarkNameFragment.newInstance(new Bundle());
 
         Bundle bundle = new Bundle();
@@ -117,11 +114,11 @@ public class MineRelativeAndFriendDetailFragment extends Fragment implements Min
     }
 
     private void initPresenter() {
-        presenter = new MineRelativeAndFriendDetailPresenterImp(this);
+        presenter = new MineFriendDetailPresenterImp(this);
     }
 
     @Override
-    public void setPresenter(MineRelativeAndFriendDetailContract.Presenter presenter) {
+    public void setPresenter(MineFriendDetailContract.Presenter presenter) {
 
     }
 

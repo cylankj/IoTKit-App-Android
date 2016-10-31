@@ -40,7 +40,6 @@ import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.CloudLiveVoiceTalkView;
 import com.cylan.superadapter.OnItemClickListener;
-import com.sina.weibo.sdk.utils.LogUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -96,7 +95,6 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
         initDataBase();
         initRecycleView();
         initListener();
-        presenter.initService();
     }
 
     private void initListener() {
@@ -142,7 +140,7 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
                     case 1:
                         CloudLiveVideoTalkBean bean = (CloudLiveVideoTalkBean) mData.get(position).getData();
                         if (!bean.isHasConnet()) {
-                            Intent intent = new Intent(CloudLiveActivity.this, CloudLiveCalledActivity.class);
+                            Intent intent = new Intent(CloudLiveActivity.this, CloudLiveReturnCallActivity.class);
                             startActivity(intent);
                         }
                         break;
@@ -221,7 +219,7 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
             case R.id.iv_cloud_videochat:                               //视频通话
                 ViewUtils.deBounceClick(findViewById(R.id.iv_cloud_videochat));
                 //jump2VideoChatFragment();
-                Intent intent = new Intent(CloudLiveActivity.this, CloudLiveCalledActivity.class);
+                Intent intent = new Intent(CloudLiveActivity.this, CloudLiveReturnCallActivity.class);
                 startActivity(intent);
                 presenter.handlerVideoTalk();
                 break;
@@ -245,7 +243,7 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
 
     private void jump2SharePicFragment() {
         Intent intent = new Intent(this, CloudLiveCallInActivity.class);
-        startActivity(intent);
+        startActivityForResult(intent,1);
     }
 
     private void jump2VideoChatFragment() {
@@ -440,7 +438,7 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
     @Override
     public void handlerVideoTalk(boolean isOnline) {
         if (isOnline) {
-            Intent intent = new Intent(CloudLiveActivity.this, CloudLiveCalledActivity.class);
+            Intent intent = new Intent(CloudLiveActivity.this, CloudLiveReturnCallActivity.class);
             startActivity(intent);
         } else {
             showDeviceDisOnlineDialog(1);
@@ -492,7 +490,6 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
     public void getIntentData() {
         Bundle bundleExtra = getIntent().getExtras();
         Parcelable parcelable = bundleExtra.getParcelable(JConstant.KEY_DEVICE_ITEM_BUNDLE);
-        LogUtil.d("send data:", parcelable.toString());
     }
 
     @Override
@@ -500,7 +497,24 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
         super.onRestart();
         if (presenter != null) {
             presenter.refreshHangUpView();
-            presenter.handlerIgnoreView();
+
         }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1 && data != null){
+            ignoreRefreshView(data.getStringExtra("ignore"));
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if(presenter != null){
+            presenter.unSubCallIn();
+        }
+
     }
 }

@@ -28,6 +28,7 @@ import rx.functions.Action1;
 public class MineShareDevicePresenterImp extends AbstractPresenter<MineShareDeviceContract.View> implements MineShareDeviceContract.Presenter {
 
     private Subscription initDataSub;
+    private ArrayList<JFGShareListInfo> hasShareFriendList;
 
     public MineShareDevicePresenterImp(MineShareDeviceContract.View view) {
         super(view);
@@ -59,6 +60,11 @@ public class MineShareDevicePresenterImp extends AbstractPresenter<MineShareDevi
                 });
         RxEvent.GetShareDeviceList shareDeviceList = new RxEvent.GetShareDeviceList(1, TestData());
         handlerShareDeviceListData(shareDeviceList);
+    }
+
+    @Override
+    public JFGShareListInfo getJFGInfo(int position) {
+        return hasShareFriendList.get(position);
     }
 
     /**
@@ -96,11 +102,7 @@ public class MineShareDevicePresenterImp extends AbstractPresenter<MineShareDevi
         if (shareDeviceList != null && shareDeviceList.arrayList.size() != 0) {
             MineShareDeviceAdapter adapter = new MineShareDeviceAdapter(getView().getContext(), getShareDeviceList(shareDeviceList), null);
             if (getView() != null) {
-                getView().initRecycleView(adapter);
-                adapter.setOnShareClickListener(new MineShareDeviceAdapter.OnShareClickListener() {
-                    @Override
-                    public void onShare(SuperViewHolder holder, int viewType, int layoutPosition, DeviceBean item) {
-                        getView().showShareDialog();
+                getView().initRecycleView(getShareDeviceList(shareDeviceList));
                     }
                 });
 
@@ -140,10 +142,7 @@ public class MineShareDevicePresenterImp extends AbstractPresenter<MineShareDevi
         return list;
     }
 
-    @Override
-    public DeviceBean getBean(int position) {
-        return testData().get(position);
-    }
+
 
     @Override
     public ArrayList<RelAndFriendBean> getHasShareRelAndFriendList(JFGShareListInfo info) {

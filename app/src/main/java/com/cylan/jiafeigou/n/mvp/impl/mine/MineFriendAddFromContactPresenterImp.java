@@ -5,13 +5,10 @@ import android.net.Uri;
 import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
-import android.view.View;
 
-import com.cylan.jiafeigou.n.mvp.contract.mine.MineRelativeAndFriendAddFromContactContract;
+import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendAddFromContactContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.n.mvp.model.SuggestionChatInfoBean;
-import com.cylan.jiafeigou.n.view.adapter.RelativeAndFriendAddFromContactAdapter;
-import com.cylan.superadapter.OnItemClickListener;
 
 import java.util.ArrayList;
 
@@ -27,13 +24,12 @@ import rx.schedulers.Schedulers;
  * 创建时间：2016/9/6
  * 描述：
  */
-public class MineRelativeAndFriendAddFromContactPresenterImp extends AbstractPresenter<MineRelativeAndFriendAddFromContactContract.View> implements MineRelativeAndFriendAddFromContactContract.Presenter, RelativeAndFriendAddFromContactAdapter.onContactItemClickListener {
+public class MineFriendAddFromContactPresenterImp extends AbstractPresenter<MineFriendAddFromContactContract.View> implements MineFriendAddFromContactContract.Presenter {
 
     private Subscription contactSubscriber;
-    private RelativeAndFriendAddFromContactAdapter contactListAdapter;
     private ArrayList<SuggestionChatInfoBean> filterDateList;
 
-    public MineRelativeAndFriendAddFromContactPresenterImp(MineRelativeAndFriendAddFromContactContract.View view) {
+    public MineFriendAddFromContactPresenterImp(MineFriendAddFromContactContract.View view) {
         super(view);
         view.setPresenter(this);
     }
@@ -76,15 +72,7 @@ public class MineRelativeAndFriendAddFromContactPresenterImp extends AbstractPre
      */
     private void handlerDataResult(ArrayList<SuggestionChatInfoBean> arrayList) {
         if (arrayList != null && arrayList.size() != 0 && getView() != null){
-            contactListAdapter = new RelativeAndFriendAddFromContactAdapter(getView().getContext(),arrayList,null);
-            getView().initContactRecycleView(contactListAdapter);
-            contactListAdapter.setOnContactItemClickListener(this);
-            contactListAdapter.setOnItemClickListener(new OnItemClickListener() {
-                @Override
-                public void onItemClick(View itemView, int viewType, int position) {
-                    //TODO 跳转到联系人的详情界面去
-                }
-            });
+            getView().initContactRecycleView(arrayList);
         }else {
             getView().showNoContactView();
         }
@@ -122,13 +110,6 @@ public class MineRelativeAndFriendAddFromContactPresenterImp extends AbstractPre
     @Override
     public void addContactItem(SuggestionChatInfoBean bean) {
 
-    }
-
-    @Override
-    public void onAddClick(View view, int position,SuggestionChatInfoBean item) {
-        if (getView() != null){
-            getView().jump2SendAddMesgFragment(item);
-        }
     }
 
     @Override

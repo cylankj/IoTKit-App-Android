@@ -14,8 +14,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.n.mvp.contract.mine.MineRelativeAndFriendAddByNumContract;
-import com.cylan.jiafeigou.n.mvp.impl.mine.MineRelativeAndFriendAddByNumPresenterImp;
+import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendAddByNumContract;
+import com.cylan.jiafeigou.n.mvp.impl.mine.MineFriendAddByNumPresenterImp;
 import com.cylan.jiafeigou.n.mvp.model.UserInfoBean;
 import com.cylan.jiafeigou.widget.roundedimageview.RoundedImageView;
 
@@ -28,7 +28,7 @@ import butterknife.OnClick;
  * 创建时间：2016/9/7
  * 描述：
  */
-public class MineRelativeAndFriendAddByNumFragment extends Fragment implements MineRelativeAndFriendAddByNumContract.View {
+public class MineFriendAddByNumFragment extends Fragment implements MineFriendAddByNumContract.View {
 
     @BindView(R.id.iv_home_mine_relativesandfriends_add_by_num_back)
     ImageView ivHomeMineRelativesandfriendsAddByNumBack;
@@ -47,10 +47,10 @@ public class MineRelativeAndFriendAddByNumFragment extends Fragment implements M
     @BindView(R.id.fl_display_find_result)
     FrameLayout flDisplayFindResult;
 
-    private MineRelativeAndFriendAddByNumContract.Presenter presenter;
+    private MineFriendAddByNumContract.Presenter presenter;
 
-    public static MineRelativeAndFriendAddByNumFragment newInstance() {
-        return new MineRelativeAndFriendAddByNumFragment();
+    public static MineFriendAddByNumFragment newInstance() {
+        return new MineFriendAddByNumFragment();
     }
 
     @Nullable
@@ -64,7 +64,7 @@ public class MineRelativeAndFriendAddByNumFragment extends Fragment implements M
     }
 
     private void initPresenter() {
-        presenter = new MineRelativeAndFriendAddByNumPresenterImp(this);
+        presenter = new MineFriendAddByNumPresenterImp(this);
     }
 
     private void initKeyListener() {
@@ -82,7 +82,7 @@ public class MineRelativeAndFriendAddByNumFragment extends Fragment implements M
     }
 
     @Override
-    public void setPresenter(MineRelativeAndFriendAddByNumContract.Presenter presenter) {
+    public void setPresenter(MineFriendAddByNumContract.Presenter presenter) {
 
     }
 

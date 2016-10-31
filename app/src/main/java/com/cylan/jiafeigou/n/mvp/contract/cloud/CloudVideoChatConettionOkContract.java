@@ -21,6 +21,7 @@ public interface CloudVideoChatConettionOkContract {
     }
 
     interface Presenter extends BasePresenter {
+
         void loadVideo();
 
         void setVideoTalkFinishFlag(boolean isFinish);

@@ -6,7 +6,7 @@ import android.graphics.Point;
 import android.view.Display;
 import android.view.WindowManager;
 
-import com.cylan.jiafeigou.n.mvp.contract.mine.MineRelativesAndFriendScanAddContract;
+import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendScanAddContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.EncodeHintType;
@@ -27,15 +27,15 @@ import rx.schedulers.Schedulers;
  * 创建时间：2016/9/6
  * 描述：
  */
-public class MineRelativesAndFriendScanAddPresenterImp extends AbstractPresenter<MineRelativesAndFriendScanAddContract.View>
-        implements MineRelativesAndFriendScanAddContract.Presenter {
+public class MineFriendScanAddPresenterImp extends AbstractPresenter<MineFriendScanAddContract.View>
+        implements MineFriendScanAddContract.Presenter {
 
     private static final int WHITE = 0xFFFFFFFF;
     private static final int BLACK = 0xFF000000;
 
     private Subscription subscription;
 
-    public MineRelativesAndFriendScanAddPresenterImp(MineRelativesAndFriendScanAddContract.View view) {
+    public MineFriendScanAddPresenterImp(MineFriendScanAddContract.View view) {
         super(view);
         view.setPresenter(this);
     }
