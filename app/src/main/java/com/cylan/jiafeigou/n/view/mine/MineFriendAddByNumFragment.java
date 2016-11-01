@@ -10,9 +10,12 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.cylan.entity.jniCall.JFGFriendRequest;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendAddByNumContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineFriendAddByNumPresenterImp;
@@ -42,10 +45,14 @@ public class MineFriendAddByNumFragment extends Fragment implements MineFriendAd
     TextView tvUserPhone;
     @BindView(R.id.rl_relative_and_friend_container)
     RelativeLayout rlRelativeAndFriendContainer;
-    @BindView(R.id.rl_find_load_progress)
-    RelativeLayout rlFindLoadProgress;
     @BindView(R.id.fl_display_find_result)
     FrameLayout flDisplayFindResult;
+    @BindView(R.id.rl_home_mine_relativesandfriends_add_by_num)
+    RelativeLayout rlHomeMineRelativesandfriendsAddByNum;
+    @BindView(R.id.rl_find_load_progress)
+    RelativeLayout rlFindLoadProgress;
+    @BindView(R.id.ll_no_friend)
+    LinearLayout llNoFriend;
 
     private MineFriendAddByNumContract.Presenter presenter;
 
@@ -72,7 +79,7 @@ public class MineFriendAddByNumFragment extends Fragment implements MineFriendAd
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 if (KeyEvent.KEYCODE_ENTER == keyCode && KeyEvent.ACTION_DOWN == event.getAction()) {
-                    showFindLoad();
+                    showFindLoading();
                     presenter.findUserFromServer(getInputNum());
                     return true;
                 }
@@ -101,24 +108,66 @@ public class MineFriendAddByNumFragment extends Fragment implements MineFriendAd
     }
 
     @Override
-    public void showFindResult(UserInfoBean bean) {
-        rlFindLoadProgress.setVisibility(View.GONE);
+    public void showFindResult(JFGFriendRequest bean) {
         if (bean == null) {
-            rlRelativeAndFriendContainer.setVisibility(View.GONE);
-            TextView noneResult = new TextView(getContext());
-            noneResult.setText("无结果");
-            flDisplayFindResult.addView(noneResult);
+            showFindNoResult();
         } else {
-            rlRelativeAndFriendContainer.setVisibility(View.VISIBLE);
-            //TODO 设置显示查询结果
+            presenter.checkIsSendAddReqToMe(bean);
         }
-
     }
 
     @Override
-    public void showFindLoad() {
+    public void showFindLoading() {
         rlFindLoadProgress.setVisibility(View.VISIBLE);
-        rlRelativeAndFriendContainer.setVisibility(View.INVISIBLE);
+    }
+
+    @Override
+    public void hideFindLoading() {
+        rlFindLoadProgress.setVisibility(View.GONE);
+    }
+
+    /**
+     * 显示无结果
+     */
+    @Override
+    public void showFindNoResult() {
+        rlRelativeAndFriendContainer.setVisibility(View.GONE);
+        llNoFriend.setVisibility(View.VISIBLE);
+    }
+
+    /**
+     * 隐藏显示无结果
+     */
+    @Override
+    public void hideFindNoResult() {
+        llNoFriend.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void setFindResult(boolean isFrom,boolean hasSendToMe,JFGFriendRequest bean) {
+        if (hasSendToMe){
+            Bundle bundle = new Bundle();
+            bundle.putBoolean("isFrom",isFrom);
+            bundle.putSerializable("addRequestItems", bean);
+            MineFriendAddReqDetailFragment addReqDetailFragment = MineFriendAddReqDetailFragment.newInstance(bundle);
+            getFragmentManager().beginTransaction()
+                    .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
+                            , R.anim.slide_in_left, R.anim.slide_out_right)
+                    .add(android.R.id.content, addReqDetailFragment, "addReqDetailFragment")
+                    .addToBackStack("mineHelpFragment")
+                    .commit();
+
+        }else {
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("contactItem", bean);
+            MineAddFromContactFragment mineAddFromContactFragment = MineAddFromContactFragment.newInstance(bundle);
+            getFragmentManager().beginTransaction()
+                    .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
+                            , R.anim.slide_in_left, R.anim.slide_out_right)
+                    .add(android.R.id.content, mineAddFromContactFragment, "mineAddFromContactFragment")
+                    .addToBackStack("mineHelpFragment")
+                    .commit();
+        }
     }
 
     @Override

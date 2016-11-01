@@ -101,7 +101,7 @@ public class MineShareToFriendFragment extends Fragment implements MineShareToFr
                 if (presenter.checkNetConnetion()){
                     presenter.sendShareToFriendReq(isChooseToShareList);
                 }else {
-                    ToastUtil.showToast("网络不可用");
+                    ToastUtil.showNegativeToast("网络不可用");
                 }
                 break;
         }
@@ -137,7 +137,7 @@ public class MineShareToFriendFragment extends Fragment implements MineShareToFr
     @Override
     public void showShareAllSuccess() {
         //TODO 完善
-        ToastUtil.showToast( "分享成功");
+        ToastUtil.showPositiveToast( "分享成功");
     }
 
     @Override

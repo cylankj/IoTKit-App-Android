@@ -5,6 +5,8 @@ import com.cylan.entity.jniCall.JFGFriendRequest;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendAddReqDetailContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 
+import java.util.concurrent.TimeUnit;
+
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -20,6 +22,7 @@ import rx.schedulers.Schedulers;
 public class MineFriendAddReqDetailPresenterImp extends AbstractPresenter<MineFriendAddReqDetailContract.View> implements MineFriendAddReqDetailContract.Presenter {
 
     private Subscription addAsFriendSub;
+    private Subscription sendAddReqSub;
 
     public MineFriendAddReqDetailPresenterImp(MineFriendAddReqDetailContract.View view) {
         super(view);
@@ -33,8 +36,12 @@ public class MineFriendAddReqDetailPresenterImp extends AbstractPresenter<MineFr
 
     @Override
     public void stop() {
-        if (addAsFriendSub != null && addAsFriendSub.isUnsubscribed()){
+        if (addAsFriendSub != null && !addAsFriendSub.isUnsubscribed()){
             addAsFriendSub.unsubscribe();
+        }
+
+        if (sendAddReqSub != null && !sendAddReqSub.isUnsubscribed()){
+            sendAddReqSub.unsubscribe();
         }
     }
 
@@ -52,14 +59,57 @@ public class MineFriendAddReqDetailPresenterImp extends AbstractPresenter<MineFr
                         return false;
                     }
                 })
+                .delay(2000,TimeUnit.MILLISECONDS)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<Boolean>() {
                     @Override
                     public void call(Boolean aBoolean) {
-
+                        getView().showAddedReult(aBoolean);
                     }
                 });
+    }
 
+    /**
+     * 判断添加请求是否过期
+     * @param addRequestItems
+     * @return
+     */
+    @Override
+    public void checkAddReqOutTime(JFGFriendRequest addRequestItems) {
+        //true 过期 false未过期
+        if ((System.currentTimeMillis() - addRequestItems.time) > 30*24*60*1000 ){
+            if (getView() != null){
+                getView().showReqOutTimeDialog();
+            }
+        }else {
+            handlerAddAsFriend(addRequestItems);
+        }
+    }
+
+    /**
+     * 发送好友添加请求
+     * @param addRequestItems
+     */
+    @Override
+    public void sendAddReq(JFGFriendRequest addRequestItems) {
+        //调用SDK 模拟发送请求
+        sendAddReqSub = Observable.just(addRequestItems)
+                .map(new Func1<JFGFriendRequest, Boolean>() {
+                    @Override
+                    public Boolean call(JFGFriendRequest jfgFriendRequest) {
+                        //TODO 调用SDK 发送添加请求
+                        return false;
+                    }
+                })
+                .delay(2000, TimeUnit.MILLISECONDS)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<Boolean>() {
+                    @Override
+                    public void call(Boolean o) {
+                        getView().showSendAddReqResult(o);
+                    }
+                });
     }
 }

@@ -23,6 +23,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
+import rx.subscriptions.CompositeSubscription;
 
 /**
  * 作者：zsl
@@ -33,6 +34,7 @@ public class MineShareDevicePresenterImp extends AbstractPresenter<MineShareDevi
 
     private Subscription initDataSub;
     private ArrayList<JFGShareListInfo> hasShareFriendList;
+    private CompositeSubscription subscription;
 
     public MineShareDevicePresenterImp(MineShareDeviceContract.View view) {
         super(view);
@@ -41,20 +43,23 @@ public class MineShareDevicePresenterImp extends AbstractPresenter<MineShareDevi
 
     @Override
     public void start() {
-        if (getView() != null){
-            initData();
+        if (subscription != null && !subscription.isUnsubscribed()){
+            subscription.unsubscribe();
+        }else {
+            subscription = new CompositeSubscription();
+            subscription.add(initData());
         }
     }
 
     @Override
     public void stop() {
-        if (initDataSub != null && initDataSub.isUnsubscribed()){
-            initDataSub.unsubscribe();
+        if (subscription != null && !subscription.isUnsubscribed()){
+            subscription.unsubscribe();
         }
     }
 
     @Override
-    public void initData() {
+    public Subscription initData() {
         initDataSub = RxBus.getDefault().toObservable(RxEvent.GetShareDeviceList.class)
                 .subscribe(new Action1<Object>() {
                     @Override
@@ -67,6 +72,7 @@ public class MineShareDevicePresenterImp extends AbstractPresenter<MineShareDevi
                 });
         RxEvent.GetShareDeviceList shareDeviceList = new RxEvent.GetShareDeviceList(1,TestData());
         handlerShareDeviceListData(shareDeviceList);
+        return initDataSub;
     }
 
     @Override

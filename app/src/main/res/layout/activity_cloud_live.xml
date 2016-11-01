@@ -49,27 +49,31 @@
         <ImageView
             android:layout_centerVertical="true"
             android:id="@+id/iv_cloud_share_pic"
-            android:layout_marginLeft="42dp"
+            android:paddingStart="42dp"
+            android:paddingEnd="42dp"
             android:src="@drawable/icon_album_bottom_share_pic"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="match_parent" />
 
         <ImageView
             android:layout_centerVertical="true"
             android:id="@+id/iv_cloud_videochat"
             android:layout_centerHorizontal="true"
+            android:paddingStart="42dp"
+            android:paddingEnd="42dp"
             android:src="@drawable/icon_album_bottom_videochat"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="match_parent" />
 
         <ImageView
             android:layout_centerVertical="true"
             android:id="@+id/iv_cloud_talk"
             android:layout_alignParentRight="true"
-            android:layout_marginRight="42dp"
+            android:paddingStart="42dp"
+            android:paddingEnd="42dp"
             android:src="@drawable/icon_album_bottom_talk"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="match_parent" />
     </RelativeLayout>
 
     <FrameLayout
