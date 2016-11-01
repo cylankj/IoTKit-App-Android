@@ -30,14 +30,24 @@ public interface HomeMineContract {
 
         void requestLatestPortrait();
 
+        /**
+         * 设置头像的背景
+         * @param id
+         */
         void portraitBlur(@DrawableRes int id);
 
+        /**
+         * 设置头像
+         * @param url
+         */
         void portraitUpdateByUrl(String url);
 
-        boolean checkIsLogin(String userID);
-
         int whichLoginMethd();
-
+        /**
+         * 产生随机的昵称
+         * @return
+         */
         String createRandomName();
+
     }
 }

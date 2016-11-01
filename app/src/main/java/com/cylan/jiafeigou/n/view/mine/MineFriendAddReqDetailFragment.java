@@ -16,6 +16,7 @@ import com.cylan.entity.jniCall.JFGFriendRequest;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendAddReqDetailContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineFriendAddReqDetailPresenterImp;
+import com.cylan.jiafeigou.n.mvp.model.MineAddReqBean;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
@@ -49,7 +50,7 @@ public class MineFriendAddReqDetailFragment extends Fragment implements MineFrie
     private MineLookBigImageFragment lookBigImageFragment;
 
     private MineFriendAddReqDetailContract.Presenter presenter;
-    private JFGFriendRequest addRequestItems;
+    private MineAddReqBean addRequestItems;
 
     public static MineFriendAddReqDetailFragment newInstance(Bundle bundle) {
         MineFriendAddReqDetailFragment fragment = new MineFriendAddReqDetailFragment();
@@ -86,7 +87,7 @@ public class MineFriendAddReqDetailFragment extends Fragment implements MineFrie
     private void initData() {
         Bundle arguments = getArguments();
         boolean isFrome = arguments.getBoolean("isFrom");
-        addRequestItems = (JFGFriendRequest) arguments.getSerializable("addRequestItems");
+        addRequestItems = (MineAddReqBean) arguments.getSerializable("addRequestItems");
         tvRelativeAndFriendName.setText(addRequestItems.alias);
         tvAddRequestMesg.setText(addRequestItems.sayHi);
         showOrHideReqMesg(isFrome);

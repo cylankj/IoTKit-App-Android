@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
 import com.cylan.jiafeigou.n.mvp.model.SuggestionChatInfoBean;
 import com.cylan.superadapter.IMulItemViewType;
 import com.cylan.superadapter.SuperAdapter;
@@ -21,26 +22,26 @@ import java.util.List;
  * 创建时间：2016/9/6
  * 描述：
  */
-public class RelativeAndFriendAddFromContactAdapter extends SuperAdapter<SuggestionChatInfoBean> {
+public class RelativeAndFriendAddFromContactAdapter extends SuperAdapter<RelAndFriendBean> {
 
     private onContactItemClickListener listener;
 
     public interface onContactItemClickListener {
-        void onAddClick(View view, int position,SuggestionChatInfoBean item);
+        void onAddClick(View view, int position,RelAndFriendBean item);
     }
 
     public void setOnContactItemClickListener(onContactItemClickListener listener) {
         this.listener = listener;
     }
 
-    public RelativeAndFriendAddFromContactAdapter(Context context, List<SuggestionChatInfoBean> items, IMulItemViewType<SuggestionChatInfoBean> mulItemViewType) {
+    public RelativeAndFriendAddFromContactAdapter(Context context, List<RelAndFriendBean> items, IMulItemViewType<RelAndFriendBean> mulItemViewType) {
         super(context, items, mulItemViewType);
     }
 
     @Override
-    public void onBind(final SuperViewHolder holder, int viewType, final int layoutPosition, final SuggestionChatInfoBean item) {
-        holder.setText(R.id.tv_contactname,item.getName());
-        holder.setText(R.id.tv_contactphone,item.getContent());
+    public void onBind(final SuperViewHolder holder, int viewType, final int layoutPosition, final RelAndFriendBean item) {
+        holder.setText(R.id.tv_contactname,item.alias);
+        holder.setText(R.id.tv_contactphone,item.account);
         holder.setOnClickListener(R.id.tv_contactadd, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -52,15 +53,15 @@ public class RelativeAndFriendAddFromContactAdapter extends SuperAdapter<Suggest
     }
 
     @Override
-    protected IMulItemViewType<SuggestionChatInfoBean> offerMultiItemViewType() {
-        return new IMulItemViewType<SuggestionChatInfoBean>() {
+    protected IMulItemViewType<RelAndFriendBean> offerMultiItemViewType() {
+        return new IMulItemViewType<RelAndFriendBean>() {
             @Override
             public int getViewTypeCount() {
                 return 1;
             }
 
             @Override
-            public int getItemViewType(int position, SuggestionChatInfoBean bean) {
+            public int getItemViewType(int position, RelAndFriendBean bean) {
                 return 0;
             }
 

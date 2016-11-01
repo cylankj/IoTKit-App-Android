@@ -76,9 +76,9 @@ public interface CloudLiveContract {
 
         void refreshHangUpView();                           //更新挂断结果
 
-        void handlerVideoTalk();                           //处理视频通话
+        void handlerVideoTalk();                            //处理视频通话
 
-        void handlerLeveaMesg();            //处理语音留言
+        void handlerLeveaMesg();                            //处理语音留言
 
     }
 }

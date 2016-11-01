@@ -106,7 +106,6 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
                         getView().onBlur(drawable);
                     }
                 });
-
     }
 
     @Override
@@ -148,15 +147,6 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
                         getView().setUserImageHead(drawable);
                     }
                 });
-    }
-
-    @Override
-    public boolean checkIsLogin(String userID) {
-        if (TextUtils.isEmpty(userID)) {
-            return false;
-        } else {
-            return true;
-        }
     }
 
     @Override

@@ -3,6 +3,7 @@ package com.cylan.jiafeigou.n.mvp.contract.mine;
 import com.cylan.entity.jniCall.JFGFriendRequest;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
+import com.cylan.jiafeigou.n.mvp.model.MineAddReqBean;
 
 /**
  * 作者：zsl
@@ -40,19 +41,19 @@ public interface MineFriendAddReqDetailContract {
         /**
          * 添加为亲友
          */
-        void handlerAddAsFriend(JFGFriendRequest addRequestItems);
+        void handlerAddAsFriend(MineAddReqBean addRequestItems);
 
         /**
          * 判断添加请求是否过期
          * @param addRequestItems
          * @return
          */
-        void checkAddReqOutTime(JFGFriendRequest addRequestItems);
+        void checkAddReqOutTime(MineAddReqBean addRequestItems);
         /**
          * 发送添加请求
          * @param addRequestItems
          */
-        void sendAddReq(JFGFriendRequest addRequestItems);
+        void sendAddReq(MineAddReqBean addRequestItems);
     }
 
 }

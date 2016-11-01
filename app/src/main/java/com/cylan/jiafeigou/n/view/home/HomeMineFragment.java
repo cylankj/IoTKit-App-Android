@@ -61,7 +61,6 @@ public class HomeMineFragment extends Fragment
     private MineShareDeviceFragment mineShareDeviceFragment;
     private MineFriendsFragment mineRelativesandFriendsFragment;
 
-
     public static HomeMineFragment newInstance(Bundle bundle) {
         HomeMineFragment fragment = new HomeMineFragment();
         fragment.setArguments(bundle);
@@ -120,7 +119,6 @@ public class HomeMineFragment extends Fragment
         super.onDetach();
     }
 
-
     public void portrait() {
         if (needStartLoginFragment())
             return;
@@ -137,7 +135,6 @@ public class HomeMineFragment extends Fragment
                 .addToBackStack("mineHelpFragment")
                 .commit();
     }
-
 
     public void settingsItem(View view) {
 //        if (!JCache.isOnline)

@@ -17,6 +17,7 @@ import android.widget.LinearLayout;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendAddFromContactContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineFriendAddFromContactPresenterImp;
+import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
 import com.cylan.jiafeigou.n.mvp.model.SuggestionChatInfoBean;
 import com.cylan.jiafeigou.n.view.adapter.RelativeAndFriendAddFromContactAdapter;
 import com.cylan.superadapter.OnItemClickListener;
@@ -111,7 +112,7 @@ public class MineFriendAddFromContactFragment extends Fragment implements MineFr
     }
 
     @Override
-    public void initContactRecycleView(ArrayList<SuggestionChatInfoBean> list) {
+    public void initContactRecycleView(ArrayList<RelAndFriendBean> list) {
         rcyContactList.setLayoutManager(new LinearLayoutManager(getContext()));
         contactListAdapter = new RelativeAndFriendAddFromContactAdapter(getView().getContext(),list,null);
         rcyContactList.setAdapter(contactListAdapter);
@@ -132,9 +133,9 @@ public class MineFriendAddFromContactFragment extends Fragment implements MineFr
     }
 
     @Override
-    public void jump2SendAddMesgFragment(SuggestionChatInfoBean bean) {
+    public void jump2SendAddMesgFragment(RelAndFriendBean bean) {
         Bundle bundle = new Bundle();
-        bundle.putSerializable("contactItem", bean);
+        bundle.putParcelable("contactItem", bean);
         mineAddFromContactFragment = MineAddFromContactFragment.newInstance(bundle);
         getFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
@@ -161,7 +162,7 @@ public class MineFriendAddFromContactFragment extends Fragment implements MineFr
     }
 
     @Override
-    public void onAddClick(View view, int position,SuggestionChatInfoBean item) {
+    public void onAddClick(View view, int position,RelAndFriendBean item) {
         if (getView() != null){
             jump2SendAddMesgFragment(item);
         }

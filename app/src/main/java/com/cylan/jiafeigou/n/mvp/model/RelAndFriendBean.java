@@ -10,8 +10,8 @@ import android.os.Parcelable;
  */
 public class RelAndFriendBean implements Parcelable {
 
-    public String iconHead;
-    public String alids;
+    public String iconUrl;
+    public String alias;
     public String account;
     public String markName;
     public int isCheckFlag;
@@ -26,8 +26,8 @@ public class RelAndFriendBean implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.iconHead);
-        dest.writeString(this.alids);
+        dest.writeString(this.iconUrl);
+        dest.writeString(this.alias);
         dest.writeString(this.account);
         dest.writeString(this.markName);
         dest.writeInt(this.isCheckFlag);
@@ -35,8 +35,8 @@ public class RelAndFriendBean implements Parcelable {
     }
 
     protected RelAndFriendBean(Parcel in) {
-        this.iconHead = in.readString();
-        this.alids = in.readString();
+        this.iconUrl = in.readString();
+        this.alias = in.readString();
         this.account = in.readString();
         this.markName = in.readString();
     }
