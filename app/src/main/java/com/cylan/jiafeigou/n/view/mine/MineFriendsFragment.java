@@ -100,6 +100,7 @@ public class MineFriendsFragment extends Fragment implements MineFriendsContract
     @Override
     public void jump2AddReqDetailFragment(int position, JFGFriendRequest bean) {
         Bundle bundle = new Bundle();
+        bundle.putBoolean("isFrom",true);
         bundle.putSerializable("addRequestItems", bean);
         addReqDetailFragment = MineFriendAddReqDetailFragment.newInstance(bundle);
         getFragmentManager().beginTransaction()
@@ -122,7 +123,7 @@ public class MineFriendsFragment extends Fragment implements MineFriendsContract
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
-                ToastUtil.showToast("请求已发送");
+                ToastUtil.showPositiveToast("请求已发送");
                 //TODO SDK 向对方发送请求
             }
         });
@@ -192,7 +193,6 @@ public class MineFriendsFragment extends Fragment implements MineFriendsContract
 
     @OnClick({R.id.iv_home_mine_relativesandfriends_back, R.id.tv_home_mine_relativesandfriends_add})
     public void onClick(View view) {
-
         switch (view.getId()) {
             case R.id.iv_home_mine_relativesandfriends_back:
                 getFragmentManager().popBackStack();
@@ -320,7 +320,7 @@ public class MineFriendsFragment extends Fragment implements MineFriendsContract
         if (presenter.checkAddRequestOutTime(item)){
                 showReqOutTimeDialog();
         }else {
-            ToastUtil.showToast("添加成功");
+            ToastUtil.showPositiveToast("添加成功");
             JFGFriendAccount account = new JFGFriendAccount(item.account,"",item.alias);
             friendlistAddItem(layoutPosition,account);
             addReqDeleteItem(layoutPosition,item);

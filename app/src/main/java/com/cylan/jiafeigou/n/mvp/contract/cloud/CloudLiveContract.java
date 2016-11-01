@@ -21,7 +21,7 @@ public interface CloudLiveContract {
 
     interface View extends BaseView<Presenter> {
 
-        void showVoiceTalkDialog(Context context,boolean isOnLine);
+        void showVoiceTalkDialog(boolean isOnLine);
 
         void refreshView(int leftVal, int rightVal);
 
@@ -78,8 +78,7 @@ public interface CloudLiveContract {
 
         void handlerVideoTalk();                           //处理视频通话
 
-        void handlerLeveaMesg(Context context);            //处理语音留言
+        void handlerLeveaMesg();            //处理语音留言
 
-        void unSubCallIn();                                 //解除视频通话结束接收绑定
     }
 }

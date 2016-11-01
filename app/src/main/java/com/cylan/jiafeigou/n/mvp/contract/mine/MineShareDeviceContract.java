@@ -13,6 +13,8 @@ import com.cylan.jiafeigou.n.view.adapter.MineShareDeviceAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
+import rx.Subscription;
+
 /**
  * 作者：zsl
  * 创建时间：2016/9/5
@@ -45,7 +47,7 @@ public interface MineShareDeviceContract {
 
     interface Presenter extends BasePresenter {
 
-        void initData();
+        Subscription initData();
 
         /**
          * 获取设备中已经分享的好友

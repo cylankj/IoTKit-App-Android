@@ -18,7 +18,6 @@ import com.cylan.jiafeigou.support.rxbus.RxBus;
 import com.cylan.jiafeigou.support.sina.AccessTokenKeeper;
 import com.cylan.jiafeigou.support.sina.SinaLogin;
 import com.cylan.jiafeigou.support.sina.UsersAPI;
-import com.cylan.jiafeigou.support.tencent.TenCentLoginUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.sina.weibo.sdk.auth.Oauth2AccessToken;
 import com.sina.weibo.sdk.auth.WeiboAuthListener;
@@ -191,8 +190,8 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginModelContract.Vie
 
     @Override
     public void getQQAuthorize(Activity activity) {
-        TenCentLoginUtils qqUtils = new TenCentLoginUtils(activity);
-        qqUtils.login(activity, new QQAuthorizeListener());
+//        TenCentLoginUtils qqUtils = new TenCentLoginUtils(activity);
+//        qqUtils.login(activity, new QQAuthorizeListener());
     }
 
     @Override
