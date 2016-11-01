@@ -45,7 +45,7 @@ public class BindCameraFragment extends BaseTitleFragment implements BindDeviceC
     ImageView imgVCameraHand;
     @BindView(R.id.imgV_camera_red_dot)
     ImageView imgVCameraRedDot;
-
+    private Animator animator;
     private BindDeviceContract.Presenter presenter;
 
     public BindCameraFragment() {
@@ -81,7 +81,6 @@ public class BindCameraFragment extends BaseTitleFragment implements BindDeviceC
         initAnimation();
     }
 
-    Animator animator;
 
     @Override
     protected int getSubContentViewId() {
