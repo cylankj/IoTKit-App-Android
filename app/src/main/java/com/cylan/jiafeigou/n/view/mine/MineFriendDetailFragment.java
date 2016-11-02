@@ -75,8 +75,7 @@ public class MineFriendDetailFragment extends Fragment implements MineFriendDeta
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mineShareDeviceFragment = MineFriendsListShareDevicesFragment.newInstance();
-        mineSetRemarkNameFragment = MineSetRemarkNameFragment.newInstance(new Bundle());
+
 
         Bundle bundle = new Bundle();
         bundle.putString("imageUrl", "");
@@ -89,7 +88,6 @@ public class MineFriendDetailFragment extends Fragment implements MineFriendDeta
         View view = inflater.inflate(R.layout.fragment_mine_relativeandfriend_detail, container, false);
         ButterKnife.bind(this, view);
         initPresenter();
-        initListener();
         initData();
         return view;
     }
@@ -213,15 +211,22 @@ public class MineFriendDetailFragment extends Fragment implements MineFriendDeta
      * desc:跳转到备注名称的界面；
      */
     private void jump2SetRemarkNameFragment() {
+        Bundle bundle = new Bundle();
+        bundle.putParcelable("friendBean",frienditembean);
+        mineSetRemarkNameFragment = MineSetRemarkNameFragment.newInstance(bundle);
         getFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                         , R.anim.slide_in_left, R.anim.slide_out_right)
                 .add(android.R.id.content, mineSetRemarkNameFragment, "mineSetRemarkNameFragment")
                 .addToBackStack("mineHelpFragment")
                 .commit();
+        initListener();                     //修改备注回调监听
     }
 
     private void jump2ShareDeviceFragment() {
+        Bundle bundle = new Bundle();
+        bundle.putParcelable("shareDeviceBean",frienditembean);
+        mineShareDeviceFragment = MineFriendsListShareDevicesFragment.newInstance(bundle);
         getFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                         , R.anim.slide_in_left, R.anim.slide_out_right)

@@ -93,7 +93,6 @@ public class MineShareDevicePresenterImp extends AbstractPresenter<MineShareDevi
             info.friends = listNei;
             list.add(info);
         }
-
         return list;
     }
 

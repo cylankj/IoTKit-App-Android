@@ -19,6 +19,7 @@ public class DeviceBean implements Parcelable {
     public long msgTime;
     public String cid = "";
     public String alias = "";
+    public int isChooseFlag;
 
     @Override
     public int describeContents() {
@@ -34,6 +35,7 @@ public class DeviceBean implements Parcelable {
         dest.writeInt(this.battery);
         dest.writeInt(this.isProtectedMode);
         dest.writeInt(this.isShared);
+        dest.writeInt(this.isChooseFlag);
         dest.writeLong(this.msgTime);
         dest.writeString(this.cid);
         dest.writeString(this.alias);
@@ -50,6 +52,7 @@ public class DeviceBean implements Parcelable {
         this.battery = in.readInt();
         this.isProtectedMode = in.readInt();
         this.isShared = in.readInt();
+        this.isChooseFlag = in.readInt();
         this.msgTime = in.readLong();
         this.cid = in.readString();
         this.alias = in.readString();

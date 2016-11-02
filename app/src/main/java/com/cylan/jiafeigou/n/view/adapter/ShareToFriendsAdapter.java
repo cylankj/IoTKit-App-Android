@@ -38,7 +38,9 @@ public class ShareToFriendsAdapter extends SuperAdapter<RelAndFriendBean> {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 item.isCheckFlag = isChecked?1:2;
-                listener.onCheck(isChecked,holder,item);
+                if (listener != null){
+                    listener.onCheck(isChecked,holder,item);
+                }
             }
         });
     }

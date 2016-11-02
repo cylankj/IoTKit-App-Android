@@ -1,6 +1,7 @@
 package com.cylan.jiafeigou.n.view.mine;
 
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
@@ -11,11 +12,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineSetRemarkNameContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineSetRemarkNamePresenterImp;
-import com.cylan.jiafeigou.utils.PreferencesUtils;
+import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
 import com.cylan.jiafeigou.utils.ToastUtil;
 
 import butterknife.BindView;
@@ -39,10 +41,13 @@ public class MineSetRemarkNameFragment extends Fragment implements MineSetRemark
     View viewMinePersonalSetRemarknameNewNameLine;
     @BindView(R.id.iv_mine_personal_set_remarkname_clear)
     ImageView ivMinePersonalSetRemarknameClear;
+    @BindView(R.id.rl_send_pro_hint)
+    RelativeLayout rlSendProHint;
 
     private MineSetRemarkNameContract.Presenter presenter;
 
     private OnSetRemarkNameListener listener;
+    private RelAndFriendBean friendBean;
 
     public interface OnSetRemarkNameListener {
         void remarkNameChange(String name);
@@ -64,6 +69,8 @@ public class MineSetRemarkNameFragment extends Fragment implements MineSetRemark
         View view = inflater.inflate(R.layout.fragment_set_remark_name, container, false);
         ButterKnife.bind(this, view);
         initPresenter();
+        initViewShow();
+        initEditListener();
         return view;
     }
 
@@ -98,7 +105,6 @@ public class MineSetRemarkNameFragment extends Fragment implements MineSetRemark
                     ivMineSetRemarknameBind.setImageDrawable(getResources().getDrawable(R.drawable.icon_finish));
                     ivMineSetRemarknameBind.setEnabled(true);
                 }
-
             }
         });
     }
@@ -110,16 +116,8 @@ public class MineSetRemarkNameFragment extends Fragment implements MineSetRemark
                 getFragmentManager().popBackStack();
                 break;
             case R.id.iv_mine_set_remarkname_bind:
-                if (presenter.isEditEmpty(getEditName())) {
-                    ToastUtil.showToast("备注名不能为空");
-                    return;
-                } else {
-                    PreferencesUtils.putString(getEditName(), "username");
-                    ToastUtil.showToast("备注成功");
-                    if (listener != null) {
-                        listener.remarkNameChange(getEditName());
-                    }
-                    getFragmentManager().popBackStack();
+                if (presenter != null){
+                    presenter.sendSetmarkNameReq(getEditName(),friendBean);
                 }
                 break;
             case R.id.iv_mine_personal_set_remarkname_clear:
@@ -131,6 +129,45 @@ public class MineSetRemarkNameFragment extends Fragment implements MineSetRemark
     @Override
     public String getEditName() {
         return etMineSetRemarknameNewName.getText().toString().trim();
+    }
+
+    /**
+     * 初始化页面显示
+     */
+    @Override
+    public void initViewShow() {
+        Bundle arguments = getArguments();
+        friendBean = arguments.getParcelable("friendBean");
+        etMineSetRemarknameNewName.setText(friendBean.markName);
+    }
+
+    /**
+     * 修改完成结果设置
+     */
+    @Override
+    public void showFinishResult(int result) {
+        //TODO　根据返回的result 确定结果
+        ToastUtil.showPositiveToast("备注成功"+result);
+        if (listener != null) {
+            listener.remarkNameChange(getEditName());
+        }
+        getFragmentManager().popBackStack();
+    }
+
+    /**
+     * 显示正在修改进度提示
+     */
+    @Override
+    public void showSendReqPro() {
+        rlSendProHint.setVisibility(View.VISIBLE);
+    }
+
+    /**
+     * 隐藏修改进度提示
+     */
+    @Override
+    public void hideSendReqPro() {
+        rlSendProHint.setVisibility(View.INVISIBLE);
     }
 
     @Override
