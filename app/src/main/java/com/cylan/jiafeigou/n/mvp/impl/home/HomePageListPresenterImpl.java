@@ -13,6 +13,7 @@ import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
 import com.cylan.jiafeigou.n.mvp.model.GreetBean;
 import com.cylan.jiafeigou.support.rxbus.RxBus;
+import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.utils.RandomUtils;
 
 import java.util.ArrayList;
@@ -197,10 +198,10 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
 
     @Override
     public void unRegisterWorker() {
-        Context context = getView() == null ? null :
-                (getView().getContext() != null ? getView().getContext().getApplicationContext() : null);
+        Context context = ContextUtils.getContext();
         if (timeTickBroadcast != null && context != null) {
             context.unregisterReceiver(timeTickBroadcast);
+            timeTickBroadcast = null;
         }
     }
 

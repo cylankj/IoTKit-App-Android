@@ -181,6 +181,21 @@ public class HomePageListFragmentExt extends Fragment implements
         addEmptyView();
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        //只有app退出后，被调用。
+        if (presenter != null) {
+            presenter.stop();
+            presenter.unRegisterWorker();
+            presenter = null;
+        }
+        if (activityResultPresenter != null) {
+            activityResultPresenter.stop();
+            activityResultPresenter = null;
+        }
+    }
+
     private void initListAdapter() {
         rVDevicesList.setLayoutManager(new LinearLayoutManager(getContext()));
         rVDevicesList.setAdapter(homePageListAdapter);
