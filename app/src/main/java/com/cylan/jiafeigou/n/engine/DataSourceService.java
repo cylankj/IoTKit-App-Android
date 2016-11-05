@@ -30,7 +30,7 @@ import com.cylan.jfgapp.jni.JfgAppCmd;
 import com.cylan.jiafeigou.cache.JCache;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
-import com.cylan.jiafeigou.misc.JfgCmdEnsurance;
+import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.misc.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.rxbus.IEventBus;
@@ -194,7 +194,7 @@ public class DataSourceService extends Service implements AppCallBack {
                 break;
         }
         if (login) {
-            JfgCmdEnsurance.getCmd().getAccount();
+            JfgCmdInsurance.getCmd().getAccount();
             AppLogger.i("get account");
         }
         AppLogger.i("jfgResult:[event:" + jfgResult.event + ",code:" + jfgResult.code + "]");

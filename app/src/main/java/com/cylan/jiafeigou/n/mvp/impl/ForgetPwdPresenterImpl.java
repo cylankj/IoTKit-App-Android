@@ -2,7 +2,7 @@ package com.cylan.jiafeigou.n.mvp.impl;
 
 import com.cylan.entity.JfgEnum;
 import com.cylan.jiafeigou.misc.JConstant;
-import com.cylan.jiafeigou.misc.JfgCmdEnsurance;
+import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.misc.RxEvent;
 import com.cylan.jiafeigou.n.mvp.contract.login.ForgetPwdContract;
 import com.cylan.jiafeigou.n.mvp.model.RequestResetPwdBean;
@@ -41,10 +41,10 @@ public class ForgetPwdPresenterImpl extends AbstractPresenter<ForgetPwdContract.
                     public void call(String s) {
                         final boolean isPhoneNum = JConstant.PHONE_REG.matcher(account).find();
                         if (isPhoneNum) {
-                            JfgCmdEnsurance.getCmd()
+                            JfgCmdInsurance.getCmd()
                                     .sendCheckCode(account, JfgEnum.JFG_SMS_FORGOTPASS);
                         } else {
-                            JfgCmdEnsurance.getCmd().forgetPassByEmail(account);
+                            JfgCmdInsurance.getCmd().forgetPassByEmail(account);
                         }
                     }
                 }, new Action1<Throwable>() {
@@ -62,7 +62,7 @@ public class ForgetPwdPresenterImpl extends AbstractPresenter<ForgetPwdContract.
                 .subscribe(new Action1<String>() {
                     @Override
                     public void call(String s) {
-                        JfgCmdEnsurance.getCmd().verifySMS(account, code, PreferencesUtils.getString(JConstant.KEY_REGISTER_SMS_TOKEN));
+                        JfgCmdInsurance.getCmd().verifySMS(account, code, PreferencesUtils.getString(JConstant.KEY_REGISTER_SMS_TOKEN));
                     }
                 });
     }

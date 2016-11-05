@@ -5,6 +5,7 @@ import org.mockito.Mockito;
 
 import rx.Observable;
 import rx.functions.Action1;
+import rx.functions.Func1;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -93,14 +94,27 @@ public class RxBusTest {
     public void testException() {
         RxBus rxBus = RxBus.getDefault();
         rxBus.toObservable(Integer.class)
+                .map(new Func1<Integer, Integer>() {
+                    @Override
+                    public Integer call(Integer integer) {
+                        System.out.println("what integer: " + 10 / integer);
+                        return 10 / integer;
+                    }
+                })
+                .retry()
                 .subscribe(new Action1<Integer>() {
                     @Override
                     public void call(Integer s) {
-                        try {
-                            System.out.println("what int: " + 10 / s);
-                        } catch (Throwable e) {
-                            System.out.println("err: " + e.getLocalizedMessage());
-                        }
+//                        try {
+                        System.out.println("what int: " + s);
+//                        } catch (Throwable e) {
+//                            System.out.println("err: " + e.getLocalizedMessage());
+//                        }
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        System.out.println("...." + throwable.getLocalizedMessage());
                     }
                 });
         rxBus.post(5);

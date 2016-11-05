@@ -11,7 +11,7 @@ import com.cylan.jiafeigou.utils.ContextUtils;
  * Created by cylan-hunt on 16-10-13.
  */
 
-public class JfgCmdEnsurance {
+public class JfgCmdInsurance {
 
     /**
      * 必须在非ui线程中调用
