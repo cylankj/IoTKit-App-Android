@@ -1,18 +1,13 @@
 package com.cylan.jiafeigou.n.view.mine;
 
 
-import android.Manifest;
-import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.app.AlertDialog;
@@ -28,9 +23,17 @@ import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MinePersonalInformationContract;
+import com.cylan.jiafeigou.n.mvp.impl.mine.GlideImageLoaderPresenterImpl;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MinePersonalInformationPresenterImpl;
 import com.cylan.jiafeigou.n.mvp.model.UserInfoBean;
+import com.cylan.jiafeigou.support.galleryfinal.CoreConfig;
+import com.cylan.jiafeigou.support.galleryfinal.FunctionConfig;
+import com.cylan.jiafeigou.support.galleryfinal.GalleryFinal;
+import com.cylan.jiafeigou.support.galleryfinal.ImageLoader;
+import com.cylan.jiafeigou.support.galleryfinal.ThemeConfig;
+import com.cylan.jiafeigou.support.galleryfinal.model.PhotoInfo;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
@@ -41,8 +44,8 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import cn.finalteam.galleryfinal.GalleryFinal;
-import cn.finalteam.galleryfinal.model.PhotoInfo;
+
+
 
 /**
  * 创建者     谢坤
@@ -58,6 +61,7 @@ public class HomeMinePersonalInformationFragment extends Fragment implements Min
     //拉取出照相机时，产生的状态码
     private final int REQUEST_CODE_CAMERA = 1000;
     private final int REQUEST_CODE_GALLERY = 1001;
+    public FunctionConfig functionConfig;
 
     @BindView(R.id.tv_home_mine_personal_mailbox)
     TextView mTvMailBox;
@@ -107,8 +111,39 @@ public class HomeMinePersonalInformationFragment extends Fragment implements Min
         View view = inflater.inflate(R.layout.fragment_home_mine_personal_information, container, false);
         ButterKnife.bind(this, view);
         initPresenter();
-        initPersonalInformation(new UserInfoBean());
+        initGalleryFinal();
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        initPersonalInformation(getArgumentData());
+    }
+
+    /**
+     * 初始化相册选择框架
+     */
+    private void initGalleryFinal() {
+        //设置主题
+        ThemeConfig theme = new ThemeConfig.Builder()
+                .build();
+        //配置功能
+        functionConfig = new FunctionConfig.Builder()
+                .setEnableCamera(true)
+                .setEnableEdit(true)
+                .setEnableCrop(true)
+                .setEnableRotate(true)
+                .setCropSquare(true)
+                .setEnablePreview(true)
+                .build();
+
+        //配置imageloader
+        ImageLoader imageloader = new GlideImageLoaderPresenterImpl();
+        CoreConfig coreConfig = new CoreConfig.Builder(ContextUtils.getContext(), imageloader, theme)
+                .setFunctionConfig(functionConfig)
+                .build();
+        GalleryFinal.init(coreConfig);
     }
 
     private void initPresenter() {
@@ -148,7 +183,6 @@ public class HomeMinePersonalInformationFragment extends Fragment implements Min
                 break;
 
             case R.id.rLayout_home_mine_personal_pic:           //更换头像
-                presenter.initGallery();
                 showChooseImageDialog();
                 break;
 
@@ -228,26 +262,37 @@ public class HomeMinePersonalInformationFragment extends Fragment implements Min
 
     @Override
     public void initPersonalInformation(UserInfoBean bean) {
-        //头像的回显
-        Glide.with(getContext()).load(PreferencesUtils.getString(JConstant.USER_IMAGE_HEAD_URL, ""))
-                .asBitmap().centerCrop()
-                .error(R.mipmap.ic_launcher)
-                .into(new BitmapImageViewTarget(userImageHead) {
-                    @Override
-                    protected void setResource(Bitmap resource) {
-                        RoundedBitmapDrawable circularBitmapDrawable =
-                                RoundedBitmapDrawableFactory.create(getContext().getResources(), resource);
-                        circularBitmapDrawable.setCircular(true);
-                        userImageHead.setImageDrawable(circularBitmapDrawable);
-                    }
-                });
+        if (bean != null){
+            //头像的回显
+            Glide.with(getContext()).load(PreferencesUtils.getString(JConstant.USER_IMAGE_HEAD_URL, ""))
+                    .asBitmap().centerCrop()
+                    .error(R.mipmap.ic_launcher)
+                    .into(new BitmapImageViewTarget(userImageHead) {
+                        @Override
+                        protected void setResource(Bitmap resource) {
+                            RoundedBitmapDrawable circularBitmapDrawable =
+                                    RoundedBitmapDrawableFactory.create(getContext().getResources(), resource);
+                            circularBitmapDrawable.setCircular(true);
+                            userImageHead.setImageDrawable(circularBitmapDrawable);
+                        }
+                    });
 
-        //tvUserAccount.setText(bean.getAccount());
-        //tvUserName.setText(bean.getName());
-        //mTvMailBox.setText(bean.getEmail());
-        //tvHomeMinePersonalPhone.setText(bean.getPhone());
+            tvUserAccount.setText(bean.getAccount());
 
+            tvUserName.setText(bean.getName());
 
+            if (bean.getEmail() == null | "".equals(bean.getEmail())){
+                mTvMailBox.setText("未设置");
+            }else {
+                mTvMailBox.setText(bean.getEmail());
+            }
+
+            if(bean.getPhone() == null && "".equals(bean.getPhone())){
+                tvHomeMinePersonalPhone.setText("未设置");
+            }else {
+                tvHomeMinePersonalPhone.setText(bean.getPhone());
+            }
+        }
     }
 
     @Override
@@ -276,27 +321,16 @@ public class HomeMinePersonalInformationFragment extends Fragment implements Min
         view.findViewById(R.id.tv_pick_from_canmera).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                if (Build.VERSION.SDK_INT >= 23) {
-                    int checkCallPhonePermission = ContextCompat.checkSelfPermission(getContext(), Manifest.permission.CAMERA);
-                    if (checkCallPhonePermission != PackageManager.PERMISSION_GRANTED) {
-                        ActivityCompat.requestPermissions((Activity) getContext(), new String[]{Manifest.permission.CAMERA}, 1);
-                        return;
-                    } else {
-                        GalleryFinal.openCamera(REQUEST_CODE_CAMERA, MinePersonalInformationPresenterImpl.functionConfig, mOnHanlderResultCallback);
-                    }
-
-                } else {
-                    GalleryFinal.openCamera(REQUEST_CODE_CAMERA, MinePersonalInformationPresenterImpl.functionConfig, mOnHanlderResultCallback);
-                }
-
+                GalleryFinal.openCamera(REQUEST_CODE_CAMERA, functionConfig, null);
+                alertDialog.dismiss();
             }
         });
 
         view.findViewById(R.id.tv_pick_from_grallery).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                GalleryFinal.openGallerySingle(REQUEST_CODE_GALLERY, MinePersonalInformationPresenterImpl.functionConfig, mOnHanlderResultCallback);
+                GalleryFinal.openGallerySingle(REQUEST_CODE_GALLERY,functionConfig, null);
+                alertDialog.dismiss();
             }
         });
 
@@ -324,49 +358,6 @@ public class HomeMinePersonalInformationFragment extends Fragment implements Min
     public void setPresenter(MinePersonalInformationContract.Presenter presenter) {
     }
 
-    /**
-     * desc:头像选择回调
-     */
-    private GalleryFinal.OnHanlderResultCallback mOnHanlderResultCallback = new GalleryFinal.OnHanlderResultCallback() {
-        @Override
-        public void onHanlderSuccess(int reqeustCode, List<PhotoInfo> resultList) {
-            if (resultList != null) {
-                alertDialog.dismiss();
-                PreferencesUtils.putString(JConstant.USER_IMAGE_HEAD_URL, resultList.get(0).getPhotoPath());
-
-                Glide.with(getContext()).load(resultList.get(0).getPhotoPath()).asBitmap().centerCrop().into(new BitmapImageViewTarget(userImageHead) {
-                    @Override
-                    protected void setResource(Bitmap resource) {
-                        RoundedBitmapDrawable circularBitmapDrawable =
-                                RoundedBitmapDrawableFactory.create(getContext().getResources(), resource);
-                        circularBitmapDrawable.setCircular(true);
-                        userImageHead.setImageDrawable(circularBitmapDrawable);
-                    }
-                });
-            }
-        }
-
-        @Override
-        public void onHanlderFailure(int requestCode, String errorMsg) {
-            Toast.makeText(getContext(), errorMsg, Toast.LENGTH_SHORT).show();
-        }
-    };
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        switch (requestCode) {
-            case 1:
-                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    GalleryFinal.openCamera(REQUEST_CODE_CAMERA, MinePersonalInformationPresenterImpl.functionConfig, mOnHanlderResultCallback);
-                } else {
-                    ToastUtil.showNegativeToast("相机未授权");
-                }
-                break;
-            default:
-                super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        }
-    }
-
     @Override
     public void showLogOutDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
@@ -386,4 +377,13 @@ public class HomeMinePersonalInformationFragment extends Fragment implements Min
         }).show();
     }
 
+    /**
+     * 获取传递过来的用户信息bean
+     * @return
+     */
+    public UserInfoBean getArgumentData() {
+        Bundle arguments = getArguments();
+        UserInfoBean argumentData = (UserInfoBean) arguments.getSerializable("userInfoBean");
+        return argumentData;
+    }
 }

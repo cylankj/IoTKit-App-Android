@@ -255,7 +255,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginModelContract.Vie
                     alias = jsonResponse.getString("nickname");
                 }
 //                PreferencesUtils.setThirDswLoginPicUrl( jsonResponse.getString("figureurl_qq_1"));
-//                cmd.openLogin(alias, "", "QQ", ""); // 接口没测
+//                cmd.openLogin(name, "", "QQ", ""); // 接口没测
             } catch (JSONException e) {
                 AppLogger.e(e.toString());
             }

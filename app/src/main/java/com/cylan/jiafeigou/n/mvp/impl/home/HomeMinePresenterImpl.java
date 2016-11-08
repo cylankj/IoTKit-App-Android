@@ -5,14 +5,18 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.DrawableRes;
-import android.text.TextUtils;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
+import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.cache.JCache;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.misc.RxEvent;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeMineContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
+import com.cylan.jiafeigou.n.mvp.model.UserInfoBean;
+import com.cylan.jiafeigou.support.rxbus.RxBus;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.utils.BitmapUtil;
 import com.cylan.utils.FastBlurUtil;
@@ -26,6 +30,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
+import rx.subscriptions.CompositeSubscription;
 
 /**
  * Created by hunt on 16-5-23.
@@ -39,6 +44,8 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
     private Subscription onRefreshSubscription;
     private Subscription onBlurSubscribtion;
     private Subscription onLoadUserHeadSubscribtion;
+    private CompositeSubscription subscription;
+    private UserInfoBean userInfo;                          //用户信息bean
 
     public HomeMinePresenterImpl(HomeMineContract.View view) {
         super(view);
@@ -47,7 +54,7 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
 
     @Override
     public void start() {
-        onRefreshSubscription = Observable.just(null)
+/*        onRefreshSubscription = Observable.just(null)
                 .subscribeOn(Schedulers.io())
                 .delay(3000, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
@@ -57,11 +64,19 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
                         if (getView() != null)
                             getView().onPortraitUpdate(PreferencesUtils.getString(JConstant.USER_IMAGE_HEAD_URL, ""));
                     }
-                });
+                });*/
+
+        if (subscription != null && !subscription.isUnsubscribed()){
+            subscription.unsubscribe();
+        }else {
+            subscription = new CompositeSubscription();
+            subscription.add(initData());
+        }
     }
 
     @Override
     public void stop() {
+        unSubscribe(subscription);
         unSubscribe(onRefreshSubscription);
         unSubscribe(onLoadUserHeadSubscribtion);
     }
@@ -150,11 +165,6 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
     }
 
     @Override
-    public int whichLoginMethd() {
-        return 0;
-    }
-
-    @Override
     public String createRandomName() {
         String[] firtPart = {"a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l"
                 , "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"};
@@ -184,5 +194,55 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
         String result = firtPart[a] + firtPart[b] + firtPart[c]
                 + randNum1 + randNum2 + randNum3;
         return result;
+    }
+
+    /**
+     * 初始化界面的数据
+     */
+    @Override
+    public Subscription initData() {
+        return RxBus.getDefault().toObservable(RxEvent.GetUserInfo.class)
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<RxEvent.GetUserInfo>() {
+                    @Override
+                    public void call(RxEvent.GetUserInfo getUserInfo) {
+                        if (getUserInfo != null && getUserInfo instanceof RxEvent.GetUserInfo){
+                            userInfo = new UserInfoBean();
+                            userInfo.account = getUserInfo.jfgAccount.getAccount();
+                            userInfo.phone = getUserInfo.jfgAccount.getPhone();
+                            userInfo.email = getUserInfo.jfgAccount.getEmail();
+                            userInfo.name = getUserInfo.jfgAccount.getAlias();
+                            userInfo.token = getUserInfo.jfgAccount.getToken();
+                            userInfo.enableVibrate = getUserInfo.jfgAccount.isEnableVibrate();
+                            userInfo.enableSound = getUserInfo.jfgAccount.isEnableSound();
+                            userInfo.enablePush = getUserInfo.jfgAccount.isEnablePush();
+
+                            if (getView() != null){
+                                getView().setUserImageHead(userInfo.token);
+                                if (userInfo.name == null | "".equals(userInfo.name)){
+                                    userInfo.name = createRandomName();
+                                }
+                                getView().setAliasName(userInfo.name);
+                                getView().setMesgNumber(99);
+                            }
+                        }
+                    }
+                });
+    }
+
+    @Override
+    public UserInfoBean getUserInfoBean() {
+        return userInfo;
+    }
+
+    /**
+     * 测试数据
+     */
+    private UserInfoBean testData() {
+        UserInfoBean bean = new UserInfoBean();
+        bean.name = "混世魔王";
+        bean.account = "1008611";
+        bean.token = "http://img.zcool.cn/community/018f61564df8976ac7251c94500d90.png";
+        return bean;
     }
 }

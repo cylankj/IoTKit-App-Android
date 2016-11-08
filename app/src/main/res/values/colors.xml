@@ -93,4 +93,9 @@
 
     <color name="background_tab_pressed">#6633B5E5</color>
     <color name="color_cam_live_handle_bar_background">#33000000</color>
+
+    <!--相册选择勾出-->
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
 </resources>

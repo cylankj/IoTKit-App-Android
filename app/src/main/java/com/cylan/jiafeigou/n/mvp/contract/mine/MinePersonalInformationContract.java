@@ -12,6 +12,7 @@ import com.cylan.jiafeigou.n.mvp.model.UserInfoBean;
 public interface MinePersonalInformationContract {
 
     interface View extends BaseView<Presenter> {
+
         void initPersonalInformation(UserInfoBean bean);        //初始化显示个人信息
 
         void jump2SetEmailFragment();
@@ -32,8 +33,6 @@ public interface MinePersonalInformationContract {
         void bindPersonPhone();                 //绑定手机
 
         void changePassword();                  //更改密码
-
-        void initGallery();                    //grallery框架初始化
 
         void getUserInfomation(String url);     //获取到用户信息
     }

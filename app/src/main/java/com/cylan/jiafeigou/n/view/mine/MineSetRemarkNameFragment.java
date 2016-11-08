@@ -118,6 +118,7 @@ public class MineSetRemarkNameFragment extends Fragment implements MineSetRemark
             case R.id.iv_mine_set_remarkname_bind:
                 if (presenter != null){
                     presenter.sendSetmarkNameReq(getEditName(),friendBean);
+                    showFinishResult();
                 }
                 break;
             case R.id.iv_mine_personal_set_remarkname_clear:
@@ -145,9 +146,8 @@ public class MineSetRemarkNameFragment extends Fragment implements MineSetRemark
      * 修改完成结果设置
      */
     @Override
-    public void showFinishResult(int result) {
-        //TODO　根据返回的result 确定结果
-        ToastUtil.showPositiveToast("备注成功"+result);
+    public void showFinishResult() {
+        ToastUtil.showPositiveToast("设置成功");
         if (listener != null) {
             listener.remarkNameChange(getEditName());
         }

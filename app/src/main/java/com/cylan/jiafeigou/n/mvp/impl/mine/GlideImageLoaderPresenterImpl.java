@@ -9,11 +9,11 @@ import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.Request;
 import com.bumptech.glide.request.target.ImageViewTarget;
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.support.galleryfinal.ImageLoader;
+import com.cylan.jiafeigou.support.galleryfinal.widget.GFImageView;
 
-import cn.finalteam.galleryfinal.widget.GFImageView;
 
-
-public class GlideImageLoaderPresenterImpl implements cn.finalteam.galleryfinal.ImageLoader {
+public class GlideImageLoaderPresenterImpl implements ImageLoader {
 
     @Override
     public void displayImage(Activity activity, String path, final GFImageView imageView, Drawable defaultDrawable, int width, int height) {

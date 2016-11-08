@@ -28,5 +28,5 @@
 
     <!--头像选择-->
     <item name="adapter_item_tag_key" type="id"/>
-
+    <item name="fab_label" type="id"/>
 </resources>

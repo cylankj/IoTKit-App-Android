@@ -3,9 +3,11 @@ package com.cylan.jiafeigou.n.mvp.impl.mine;
 import android.text.TextUtils;
 
 import com.cylan.jfgapp.jni.JfgAppCmd;
+import com.cylan.jiafeigou.misc.JfgCmdEnsurance;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineSetRemarkNameContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
+import com.cylan.jiafeigou.support.log.AppLogger;
 import com.tencent.open.utils.HttpUtils;
 
 import java.util.concurrent.TimeUnit;
@@ -24,8 +26,6 @@ import rx.schedulers.Schedulers;
  */
 public class MineSetRemarkNamePresenterImp extends AbstractPresenter<MineSetRemarkNameContract.View> implements MineSetRemarkNameContract.Presenter {
 
-    private Subscription sendSetMarkNameReqSub;
-
     public MineSetRemarkNamePresenterImp(MineSetRemarkNameContract.View view) {
         super(view);
         view.setPresenter(this);
@@ -38,9 +38,7 @@ public class MineSetRemarkNamePresenterImp extends AbstractPresenter<MineSetRema
 
     @Override
     public void stop() {
-        if (sendSetMarkNameReqSub != null && !sendSetMarkNameReqSub.isUnsubscribed()){
-            sendSetMarkNameReqSub.unsubscribe();
-        }
+
     }
 
     @Override
@@ -54,31 +52,17 @@ public class MineSetRemarkNamePresenterImp extends AbstractPresenter<MineSetRema
      */
     @Override
     public void sendSetmarkNameReq(final String newName, final RelAndFriendBean friendBean) {
-        if (getView() != null){
-            getView().showSendReqPro();
-        }
-        sendSetMarkNameReqSub = Observable.just(friendBean)
-                .map(new Func1<RelAndFriendBean, Integer>() {
+        rx.Observable.just(friendBean)
+              .subscribeOn(Schedulers.newThread())
+                .subscribe(new Action1<RelAndFriendBean>() {
                     @Override
-                    public Integer call(RelAndFriendBean friendBean) {
-                        //调用SDK 发送修改备注名的请求
-                        try {
-                            return JfgAppCmd.getInstance().setFriendMarkName(friendBean.account,newName);
-                        }catch (Exception e){
-                            throw new NullPointerException(e.getMessage());
-                        }
+                    public void call(RelAndFriendBean bean) {
+                        JfgCmdEnsurance.getCmd().setFriendMarkName(friendBean.account, newName);
                     }
-                })
-                .delay(2000, TimeUnit.MILLISECONDS)
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<Integer>() {
+                }, new Action1<Throwable>() {
                     @Override
-                    public void call(Integer integer) {
-                        if (integer != null){
-                            getView().hideSendReqPro();
-                            getView().showFinishResult(integer);
-                        }
+                    public void call(Throwable throwable) {
+                        AppLogger.e("sendSetmarkNameReq: " + throwable.getLocalizedMessage());
                     }
                 });
     }

@@ -20,6 +20,7 @@ public interface MineAddFromContactContract {
 
     interface Presenter extends BasePresenter {
         void sendRequest(String mesg);
+        String getwhat();
     }
 
 }

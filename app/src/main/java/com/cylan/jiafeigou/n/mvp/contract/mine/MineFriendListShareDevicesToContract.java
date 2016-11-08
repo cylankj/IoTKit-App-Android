@@ -63,8 +63,6 @@ public interface MineFriendListShareDevicesToContract {
 
     interface Presenter extends BasePresenter {
 
-        ArrayList<MineShareDeviceBean> getDeviceData();
-
         /**
          * 获取设备列表是数据
          */
@@ -73,12 +71,23 @@ public interface MineFriendListShareDevicesToContract {
         /**
          * 发送分享设备给的亲友的请求
          */
-        void sendShareToReq(ArrayList<DeviceBean> chooseList);
+        void sendShareToReq(ArrayList<DeviceBean> chooseList,RelAndFriendBean bean);
 
         /**
          * 检测是否有选中的
          */
         void checkIsChoose(ArrayList<DeviceBean> list);
+
+        /**
+         * 分享设备的回调
+         * @return
+         */
+        Subscription shareDeviceCallBack();
+
+        /**
+         * 触发加载分享设备列表的数据
+         */
+        void callShareDeviceList();
 
     }
 

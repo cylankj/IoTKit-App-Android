@@ -2,8 +2,10 @@ package com.cylan.jiafeigou.misc;
 
 import android.os.Bundle;
 
+import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.entity.jniCall.JFGFriendAccount;
 import com.cylan.entity.jniCall.JFGFriendRequest;
+import com.cylan.entity.jniCall.JFGMsgHttpResult;
 import com.cylan.entity.jniCall.JFGShareListInfo;
 
 import java.util.ArrayList;
@@ -229,6 +231,7 @@ public class RxEvent {
             this.i = i;
             this.arrayList = arrayList;
         }
+
     }
 
     /**
@@ -257,6 +260,47 @@ public class RxEvent {
         public HangUpVideoTalk(boolean isFinish, String talkTime) {
             this.isFinish = isFinish;
             this.talkTime = talkTime;
+        }
+    }
+
+    /**
+     * 获取登录用户的信息
+     */
+    public static final class GetUserInfo{
+
+        public JFGAccount jfgAccount;
+
+        public GetUserInfo(JFGAccount jfgAccount) {
+            this.jfgAccount = jfgAccount;
+        }
+    }
+
+    /**
+     * 获取到http请求的结果
+     */
+    public static final class GetHttpDoneResult{
+        public JFGMsgHttpResult jfgMsgHttpResult;
+
+        public GetHttpDoneResult(JFGMsgHttpResult jfgMsgHttpResult) {
+            this.jfgMsgHttpResult = jfgMsgHttpResult;
+        }
+    }
+
+    /**
+     * 分享设备的回调
+     */
+    public static final class ShareDeviceCallBack{
+
+        public int requestId;
+
+        public String cid;
+
+        public String account;
+
+        public ShareDeviceCallBack(int requestId, String cid, String account) {
+            this.requestId = requestId;
+            this.cid = cid;
+            this.account = account;
         }
     }
 

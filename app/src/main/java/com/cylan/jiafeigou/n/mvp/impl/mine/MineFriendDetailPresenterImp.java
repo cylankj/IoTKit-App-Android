@@ -1,7 +1,9 @@
 package com.cylan.jiafeigou.n.mvp.impl.mine;
 
+import com.cylan.jiafeigou.misc.JfgCmdEnsurance;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendDetailContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
+import com.cylan.jiafeigou.support.log.AppLogger;
 
 import java.util.concurrent.TimeUnit;
 
@@ -19,7 +21,6 @@ import rx.schedulers.Schedulers;
  */
 public class MineFriendDetailPresenterImp extends AbstractPresenter<MineFriendDetailContract.View> implements MineFriendDetailContract.Presenter {
 
-    private Subscription sendDelFriendReqSub;
 
     public MineFriendDetailPresenterImp(MineFriendDetailContract.View view) {
         super(view);
@@ -32,9 +33,7 @@ public class MineFriendDetailPresenterImp extends AbstractPresenter<MineFriendDe
 
     @Override
     public void stop() {
-        if (sendDelFriendReqSub != null && !sendDelFriendReqSub.isUnsubscribed()){
-            sendDelFriendReqSub.unsubscribe();
-        }
+
     }
 
     /**
@@ -42,31 +41,23 @@ public class MineFriendDetailPresenterImp extends AbstractPresenter<MineFriendDe
      * @param account
      */
     @Override
-    public void sendDeleteFriendReq(String account) {
+    public void sendDeleteFriendReq(final String account) {
         if (getView() != null){
             getView().showDeleteProgress();
         }
-        sendDelFriendReqSub = Observable.just(account)
-                .map(new Func1<String, Integer>() {
+        rx.Observable.just(account)
+               .subscribeOn(Schedulers.newThread())
+                .subscribe(new Action1<String>() {
                     @Override
-                    public Integer call(String s) {
-                        // TODO 调用SDK 发送删除好友请求
-                        return null;
+                    public void call(String s) {
+                        JfgCmdEnsurance.getCmd().delFriend(account);
                     }
-                })
-                .delay(2000, TimeUnit.MILLISECONDS)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<Integer>() {
+                }, new Action1<Throwable>() {
                     @Override
-                    public void call(Integer integer) {
-                        // TODO 根据integer判断结果
-
-                        getView().hideDeleteProgress();
-                        getView().handlerDelCallBack();
+                    public void call(Throwable throwable) {
+                        AppLogger.e("sendDeleteFriendReq",throwable.getLocalizedMessage());
                     }
                 });
     }
-
 
 }

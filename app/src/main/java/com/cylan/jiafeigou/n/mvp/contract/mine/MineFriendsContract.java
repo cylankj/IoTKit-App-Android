@@ -57,7 +57,7 @@ public interface MineFriendsContract {
 
         void jump2AddReqDetailFragment(int position, MineAddReqBean bean);
 
-        void showReqOutTimeDialog();
+        void showReqOutTimeDialog(MineAddReqBean item);
 
         /**
          * desc：显示空界面
@@ -102,7 +102,26 @@ public interface MineFriendsContract {
          */
         void checkAllNull();
 
+        /**
+         * 启动获取到添加请求的SDK
+         */
+        Subscription getAddRequest();
 
+        /**
+         * 启动获取好友列表的SDK
+         * @return
+         */
+        Subscription getFriendList();
+
+        /**
+         * 发送添加请求
+         */
+        void sendAddReq(String account);
+
+        /**
+         * 同意添加成功后调用SDK
+         */
+        void acceptAddSDK(String account);
 
     }
 

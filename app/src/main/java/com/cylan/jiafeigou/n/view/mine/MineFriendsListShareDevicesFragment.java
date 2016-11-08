@@ -54,7 +54,6 @@ public class MineFriendsListShareDevicesFragment extends Fragment implements Min
     private RelAndFriendBean shareDeviceBean;
     private ChooseShareDeviceAdapter chooseShareDeviceAdapter;
     private ArrayList<DeviceBean> chooseList = new ArrayList<DeviceBean>();
-    ;
 
     public static MineFriendsListShareDevicesFragment newInstance(Bundle bundle) {
         MineFriendsListShareDevicesFragment fragment = new MineFriendsListShareDevicesFragment();
@@ -108,7 +107,7 @@ public class MineFriendsListShareDevicesFragment extends Fragment implements Min
                 getFragmentManager().popBackStack();
                 break;
             case R.id.iv_mine_friends_share_devices_ok:
-                presenter.sendShareToReq(chooseList);
+                presenter.sendShareToReq(chooseList,shareDeviceBean);
                 break;
         }
     }

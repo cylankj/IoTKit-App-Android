@@ -55,7 +55,6 @@ public interface MineDevicesShareManagerContract {
          * @param bean
          */
         void deleteItems(RelAndFriendBean bean);
-
     }
 
     interface Presenter extends BasePresenter {

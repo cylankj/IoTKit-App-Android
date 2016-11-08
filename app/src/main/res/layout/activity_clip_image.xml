@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/black"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="130dp"
+        android:background="#000000">
+    </RelativeLayout>
+    <!--圆形裁剪框示例
+        app:clipBorderWidth="5dp"     ： 裁剪框边框宽度
+        app:clipType="circle"         ： 裁剪框类型为圆形
+        app:mHorizontalPadding="30dp" ：裁剪框距离左右边距为30dp
+     -->
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <com.cylan.jiafeigou.support.galleryfinal.widget.zoonview.ClipViewLayout
+            android:id="@+id/clipViewLayout1"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            app:clipBorderWidth="0dp"
+            app:clipType="circle"
+            />
+
+
+
+        <RelativeLayout
+            android:visibility="invisible"
+            android:id="@+id/rl_upload_pro_hint"
+            android:layout_marginTop="120dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <ProgressBar
+                android:layout_centerHorizontal="true"
+                android:id="@+id/pro_upload_hint"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:textColor="@color/color_black"
+                android:text="正在上传..."
+                android:layout_below="@id/pro_upload_hint"
+                android:id="@+id/tv_share_hint"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </RelativeLayout>
+
+    </FrameLayout>
+
+    <!--矩形裁剪框示例 -->
+    <com.example.zsl.graliy_gou.ClipViewLayout
+        android:id="@+id/clipViewLayout2"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        app:clipBorderWidth="2dp"
+        app:clipType="rectangle"
+        app:mHorizontalPadding="30dp"
+        android:visibility="gone"
+        />
+
+    <RelativeLayout
+        android:id="@+id/bottom"
+        android:layout_width="match_parent"
+        android:layout_height="130dp"
+        android:background="#000000">
+
+        <TextView
+            android:id="@+id/btn_cancel"
+            android:layout_width="80dp"
+            android:layout_height="match_parent"
+            android:gravity="bottom"
+            android:paddingLeft="14dp"
+            android:text="取消"
+            android:paddingBottom="24dp"
+            android:textColor="#ffffff"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/bt_ok"
+            android:layout_width="80dp"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:gravity="bottom|end"
+            android:text="使用"
+            android:paddingRight="14dp"
+            android:paddingBottom="24dp"
+            android:textColor="#ffffff"
+            android:textSize="16sp" />
+    </RelativeLayout>
+
+
+</LinearLayout>

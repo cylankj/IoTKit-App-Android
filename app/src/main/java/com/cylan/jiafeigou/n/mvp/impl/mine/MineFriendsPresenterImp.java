@@ -4,6 +4,7 @@ import android.view.View;
 
 import com.cylan.entity.jniCall.JFGFriendAccount;
 import com.cylan.entity.jniCall.JFGFriendRequest;
+import com.cylan.jiafeigou.misc.JfgCmdEnsurance;
 import com.cylan.jiafeigou.misc.RxEvent;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendsContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
@@ -11,6 +12,7 @@ import com.cylan.jiafeigou.n.mvp.model.MineAddReqBean;
 import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
 import com.cylan.jiafeigou.n.view.adapter.AddRelativesAndFriendsAdapter;
 import com.cylan.jiafeigou.n.view.adapter.RelativesAndFriendsAdapter;
+import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.rxbus.RxBus;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.superadapter.OnItemClickListener;
@@ -55,6 +57,8 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
             unSubscribe(compositeSubscription);
         }
         compositeSubscription = new CompositeSubscription();
+        compositeSubscription.add(getAddRequest());
+        compositeSubscription.add(getFriendList());
         compositeSubscription.add(initAddReqRecyListData());
         compositeSubscription.add(initFriendRecyListData());
         checkAllNull();
@@ -74,6 +78,7 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
 
         for (JFGFriendRequest jfgFriendRequest:addReqList.arrayList){
             MineAddReqBean emMessage = new MineAddReqBean();
+            emMessage.iconUrl = JfgCmdEnsurance.getCmd().getCloudUrl(jfgFriendRequest.account);
             emMessage.alias = jfgFriendRequest.alias;
             emMessage.sayHi = jfgFriendRequest.sayHi;
             emMessage.account = jfgFriendRequest.account;
@@ -113,6 +118,8 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
         ArrayList list = new ArrayList<RelAndFriendBean>();
         for (JFGFriendAccount account:friendList.arrayList) {
             RelAndFriendBean emMessage = new RelAndFriendBean();
+            //emMessage.iconUrl = JfgCmdEnsurance.getCmd().getCloudUrl(account.account);
+            emMessage.iconUrl = "http://www.uimaker.com/uploads/allimg/120410/1_120410103814_7.jpg";
             emMessage.markName = account.markName;
             emMessage.account = account.account;
             emMessage.alias = account.alias;
@@ -202,7 +209,7 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
      */
     @Override
     public Subscription initAddReqRecyListData() {
-        //TODO 转圈
+
         addReqListSub = RxBus.getDefault().toObservable(RxEvent.GetAddReqList.class)
                 .subscribe(new Action1<RxEvent.GetAddReqList>() {
                     @Override
@@ -228,6 +235,88 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
                 getView().showNullView();
             }
         }
+    }
+
+    /**
+     * 启动获取添加请求的SDK
+     * @return
+     */
+    @Override
+    public Subscription getAddRequest() {
+        return rx.Observable.just(null)
+                .subscribeOn(Schedulers.newThread())
+                .subscribe(new Action1<Object>() {
+                    @Override
+                    public void call(Object o) {
+                        JfgCmdEnsurance.getCmd().getFriendRequestList();
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        AppLogger.e("getAddRequest: " + throwable.getLocalizedMessage());
+                    }
+                });
+    }
+
+    /**
+     * 启动获取好友列表的SDK
+     * @return
+     */
+    @Override
+    public Subscription getFriendList() {
+        return rx.Observable.just(null)
+                .subscribeOn(Schedulers.newThread())
+                .subscribe(new Action1<Object>() {
+                    @Override
+                    public void call(Object o) {
+                        JfgCmdEnsurance.getCmd().getFriendList();
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        AppLogger.e("getFriendList: " + throwable.getLocalizedMessage());
+                    }
+                });
+    }
+
+    /**
+     * 发送添加请求
+     */
+    @Override
+    public void sendAddReq(final String account) {
+        rx.Observable.just(null)
+                .subscribeOn(Schedulers.newThread())
+                .subscribe(new Action1<Object>() {
+                    @Override
+                    public void call(Object o) {
+                        JfgCmdEnsurance.getCmd().addFriend(account,"");
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        AppLogger.e("sendAddReq: " + throwable.getLocalizedMessage());
+                    }
+                });
+    }
+
+    /**
+     * 同意添加后SDK的调用
+     */
+    @Override
+    public void acceptAddSDK(String account) {
+        rx.Observable.just(account)
+                .subscribeOn(Schedulers.newThread())
+                .subscribe(new Action1<String>() {
+                    @Override
+                    public void call(String account) {
+                        JfgCmdEnsurance.getCmd().consentAddFriend(account);
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        AppLogger.e("acceptAddSDK: " + throwable.getLocalizedMessage());
+                    }
+                });
     }
 
 

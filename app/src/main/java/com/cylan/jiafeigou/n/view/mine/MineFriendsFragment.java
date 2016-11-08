@@ -63,7 +63,6 @@ public class MineFriendsFragment extends Fragment implements MineFriendsContract
     @BindView(R.id.btn_add_relative_and_friend)
     TextView btnAddRelativeAndFriend;
 
-
     private MineFriendsContract.Presenter presenter;
 
     private MineFriendAddFriendsFragment friendsFragment;
@@ -117,7 +116,7 @@ public class MineFriendsFragment extends Fragment implements MineFriendsContract
      * desc：点击同意按钮弹出对话框
      */
     @Override
-    public void showReqOutTimeDialog() {
+    public void showReqOutTimeDialog(final MineAddReqBean item) {
         //请求过期
         android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(getView().getContext());
         builder.setMessage("当前消息已过期，是否向对方发送添加好友验证？");
@@ -126,7 +125,8 @@ public class MineFriendsFragment extends Fragment implements MineFriendsContract
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
                 ToastUtil.showPositiveToast("请求已发送");
-                //TODO SDK 向对方发送请求
+                //SDK 向对方发送请求
+                presenter.sendAddReq(item.account);
             }
         });
         builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
@@ -175,6 +175,7 @@ public class MineFriendsFragment extends Fragment implements MineFriendsContract
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 addReqDeleteItem(position,bean);
+                // TODO 删除添加请求
                 dialog.dismiss();
             }
         }).setNegativeButton("取消", new DialogInterface.OnClickListener() {
@@ -334,9 +335,13 @@ public class MineFriendsFragment extends Fragment implements MineFriendsContract
     @Override
     public void onAccept(SuperViewHolder holder, int viewType, int layoutPosition, MineAddReqBean item) {
         if (presenter.checkAddRequestOutTime(item)){
-                showReqOutTimeDialog();
+                showReqOutTimeDialog(item);
         }else {
+            //SDK 调用添加成功
+            presenter.acceptAddSDK(item.account);
             ToastUtil.showPositiveToast("添加成功");
+
+            //更新好友列表
             RelAndFriendBean account = new RelAndFriendBean();
             account.account = item.account;
             account.alias = item.alias;

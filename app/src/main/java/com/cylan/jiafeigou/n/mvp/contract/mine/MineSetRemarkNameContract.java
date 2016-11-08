@@ -22,7 +22,7 @@ public interface MineSetRemarkNameContract {
         /**
          * 设置修改完成结果
          */
-        void showFinishResult(int result);
+        void showFinishResult();
 
         /**
          * 显示正在修改的进度提示

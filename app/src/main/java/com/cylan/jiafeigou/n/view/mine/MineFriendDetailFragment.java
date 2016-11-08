@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendDetailContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineFriendDetailPresenterImp;
@@ -19,6 +20,7 @@ import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
+import com.cylan.jiafeigou.widget.roundedimageview.RoundedImageView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -34,7 +36,7 @@ public class MineFriendDetailFragment extends Fragment implements MineFriendDeta
     @BindView(R.id.iv_top_bar_left_back)
     ImageView ivTopBarLeftBack;
     @BindView(R.id.iv_detail_user_head)
-    ImageView ivDetailUserHead;
+    RoundedImageView ivDetailUserHead;
     @BindView(R.id.tv_relative_and_friend_name)
     TextView tvRelativeAndFriendName;
     @BindView(R.id.tv_relative_and_friend_like_name)
@@ -76,7 +78,6 @@ public class MineFriendDetailFragment extends Fragment implements MineFriendDeta
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-
         Bundle bundle = new Bundle();
         bundle.putString("imageUrl", "");
         mineLookBigImageFragment = MineLookBigImageFragment.newInstance(bundle);
@@ -101,7 +102,7 @@ public class MineFriendDetailFragment extends Fragment implements MineFriendDeta
         tvRelativeAndFriendName.setText(frienditembean.markName);
         tvRelativeAndFriendLikeName.setText(frienditembean.alias);
         //TODO　头像获取
-        //Glide.with(getContext()).load(frienditembean.getIcon()).error(R.drawable.icon_mine_head_normal).into(ivDetailUserHead);
+        Glide.with(getContext()).load(frienditembean.iconUrl).error(R.drawable.icon_mine_head_normal).into(ivDetailUserHead);
     }
 
     private void initListener() {
@@ -163,6 +164,8 @@ public class MineFriendDetailFragment extends Fragment implements MineFriendDeta
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 presenter.sendDeleteFriendReq(bean.account);
+                hideDeleteProgress();
+                handlerDelCallBack();
                 dialog.dismiss();
             }
         });

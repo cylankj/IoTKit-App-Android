@@ -6,6 +6,9 @@ import android.support.annotation.UiThread;
 
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
+import com.cylan.jiafeigou.n.mvp.model.UserInfoBean;
+
+import rx.Subscription;
 
 /**
  * Created by hunt on 16-5-23.
@@ -22,14 +25,27 @@ public interface HomeMineContract {
         void onBlur(Drawable drawable);
 
         void setUserImageHead(Drawable drawable);
+        /**
+         * 设置昵称
+         * @param name
+         */
+        void setAliasName(String name);
 
-        void initName();
+        /**
+         * 通过URL设置头像
+         * @param url
+         */
+        void setUserImageHead(String url);
+
+        /**
+         * 设置新消息的数量
+         */
+        void setMesgNumber(int number);
     }
 
     interface Presenter extends BasePresenter {
 
         void requestLatestPortrait();
-
         /**
          * 设置头像的背景
          * @param id
@@ -42,12 +58,22 @@ public interface HomeMineContract {
          */
         void portraitUpdateByUrl(String url);
 
-        int whichLoginMethd();
         /**
          * 产生随机的昵称
          * @return
          */
         String createRandomName();
+
+        /**
+         * 初始化界面的数据
+         */
+        Subscription initData();
+
+        /**
+         * 获取到登录用户的bean
+         * @return
+         */
+        UserInfoBean getUserInfoBean();
 
     }
 }

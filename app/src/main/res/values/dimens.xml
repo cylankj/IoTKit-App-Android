@@ -90,4 +90,12 @@
     <dimen name="default_corner_radius">4dp</dimen>
     <dimen name="default_shadow_radius">4dp</dimen>
 
+    <!--相册选择勾出-->
+    <dimen name="gf_title_bar_height">56dp</dimen>
+    <dimen name="fab_size_normal">56dp</dimen>
+    <dimen name="fab_icon_size">24dp</dimen>
+    <dimen name="fab_shadow_offset">3dp</dimen>
+    <dimen name="fab_shadow_radius">9dp</dimen>
+    <dimen name="fab_stroke_width">0.0dp</dimen>
+
 </resources>

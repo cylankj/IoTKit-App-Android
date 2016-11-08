@@ -2,11 +2,15 @@ package com.cylan.jiafeigou.n.mvp.impl.mine;
 
 import com.cylan.entity.jniCall.JFGFriendAccount;
 import com.cylan.entity.jniCall.JFGShareListInfo;
+import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.misc.JfgCmdEnsurance;
 import com.cylan.jiafeigou.misc.RxEvent;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendListShareDevicesToContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
 import com.cylan.jiafeigou.n.mvp.model.MineShareDeviceBean;
+import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
+import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.rxbus.RxBus;
 
 import java.util.ArrayList;
@@ -29,7 +33,6 @@ public class MineFriendListShareDevicesPresenterImp extends AbstractPresenter<Mi
 
     private CompositeSubscription subscription;
     private ArrayList<JFGShareListInfo> hasShareFriendList;
-    private Subscription sendShareToReqSub;
 
     public MineFriendListShareDevicesPresenterImp(MineFriendListShareDevicesToContract.View view) {
         super(view);
@@ -43,6 +46,7 @@ public class MineFriendListShareDevicesPresenterImp extends AbstractPresenter<Mi
         }else {
             subscription = new CompositeSubscription();
             subscription.add(initDeviceListData());
+            subscription.add(shareDeviceCallBack());
         }
     }
 
@@ -51,21 +55,6 @@ public class MineFriendListShareDevicesPresenterImp extends AbstractPresenter<Mi
         if (subscription != null && !subscription.isUnsubscribed()){
             subscription.unsubscribe();
         }
-        if (sendShareToReqSub != null && !sendShareToReqSub.isUnsubscribed()){
-            sendShareToReqSub.unsubscribe();
-        }
-    }
-
-    @Override
-    public ArrayList<MineShareDeviceBean> getDeviceData() {
-        ArrayList<MineShareDeviceBean> list = new ArrayList<>();
-        MineShareDeviceBean mineShareDeviceBean = new MineShareDeviceBean();
-        mineShareDeviceBean.setCheck(true);
-        mineShareDeviceBean.setDeviceName("智能摄像头");
-        mineShareDeviceBean.setIconUrl("");
-        mineShareDeviceBean.setShareNumber(2);
-        list.add(mineShareDeviceBean);
-        return list;
     }
 
     /**
@@ -73,7 +62,6 @@ public class MineFriendListShareDevicesPresenterImp extends AbstractPresenter<Mi
      */
     @Override
     public Subscription initDeviceListData() {
-
         //Test 数据。。。。
         RxEvent.GetShareDeviceList shareDeviceList = new RxEvent.GetShareDeviceList(1,TestData());
         handlerShareDeviceListData(shareDeviceList);
@@ -94,30 +82,31 @@ public class MineFriendListShareDevicesPresenterImp extends AbstractPresenter<Mi
      * 发送分享的设备给亲友的请求
      */
     @Override
-    public void sendShareToReq(ArrayList<DeviceBean> chooseList) {
+    public void sendShareToReq(ArrayList<DeviceBean> chooseList, final RelAndFriendBean friendBean) {
         if (getView() != null){
             getView().showSendReqProgress();
         }
-        sendShareToReqSub = Observable.just(chooseList)
-                .map(new Func1<ArrayList<DeviceBean>, Integer>() {
-                    @Override
-                    public Integer call(ArrayList<DeviceBean> deviceBeen) {
-                        //TODO SDK发送分享请求
-                        return null;
-                    }
-                })
-                .delay(2000, TimeUnit.MILLISECONDS)
+        rx.Observable.just(chooseList)
                 .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<Integer>() {
+                .subscribe(new Action1<ArrayList<DeviceBean>>() {
                     @Override
-                    public void call(Integer integer) {
-                        getView().hideSendReqProgress();
-                        getView().showSendReqFinishReuslt();
+                    public void call(ArrayList<DeviceBean> deviceBeen) {
+                        for (DeviceBean bean:deviceBeen){
+                            JfgCmdEnsurance.getCmd().shareDevice(bean.cid,friendBean.account);
+                        }
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        AppLogger.e("sendShareToReq",throwable.getLocalizedMessage());
                     }
                 });
     }
 
+    /**
+     * 是否有勾选中的设置按钮状态
+     * @param list
+     */
     @Override
     public void checkIsChoose(ArrayList<DeviceBean> list) {
         if (list.size() == 0){
@@ -125,6 +114,41 @@ public class MineFriendListShareDevicesPresenterImp extends AbstractPresenter<Mi
         }else {
             getView().showFinishBtn();
         }
+    }
+
+    /**
+     * 分享设备的回调
+     * @return
+     */
+    @Override
+    public Subscription shareDeviceCallBack() {
+        return RxBus.getDefault().toObservable(RxEvent.ShareDeviceCallBack.class)
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<RxEvent.ShareDeviceCallBack>() {
+                    @Override
+                    public void call(RxEvent.ShareDeviceCallBack shareDeviceCallBack) {
+                        //TODO 返回成功与否
+                        if (getView() != null){
+                            getView().hideSendReqProgress();
+                            getView().showSendReqFinishReuslt();
+                        }
+                    }
+                });
+    }
+
+    /**
+     * 触发加载分享设备列表的数据
+     */
+    @Override
+    public void callShareDeviceList() {
+        rx.Observable.just(null)
+                .subscribeOn(Schedulers.newThread())
+                .subscribe(new Action1<Object>() {
+                    @Override
+                    public void call(Object o) {
+                        //TODO 触发请求
+                    }
+                });
     }
 
     /**
