@@ -2,11 +2,14 @@ package com.cylan.jiafeigou.misc;
 
 import android.os.Bundle;
 
+import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.entity.jniCall.JFGFriendAccount;
 import com.cylan.entity.jniCall.JFGFriendRequest;
 import com.cylan.entity.jniCall.JFGShareListInfo;
+import com.cylan.entity.jniCall.RobotoGetDataRsp;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -42,7 +45,7 @@ public class RxEvent {
         public Bundle bundle;
     }
 
-    public static class CloundLiveDelete {
+    public static class CloudLiveDelete {
 
     }
 
@@ -248,7 +251,7 @@ public class RxEvent {
     /**
      * 挂断视频通话挂断传递
      */
-    public static final class HangUpVideoTalk{
+    public static final class HangUpVideoTalk {
 
         public boolean isFinish;
 
@@ -257,6 +260,29 @@ public class RxEvent {
         public HangUpVideoTalk(boolean isFinish, String talkTime) {
             this.isFinish = isFinish;
             this.talkTime = talkTime;
+        }
+    }
+
+    /**
+     * 设备列表返回
+     */
+    public static final class DeviceList {
+        public List<JFGDevice> jfgDevices = new ArrayList<>();
+
+        public DeviceList(List<JFGDevice> list) {
+            this.jfgDevices = list;
+        }
+    }
+
+    /**
+     * 设备属性
+     */
+    public static final class DpDataRsp {
+        //萝卜头
+        public RobotoGetDataRsp robotoGetDataRsp;
+
+        public DpDataRsp(RobotoGetDataRsp robotoGetDataRsp) {
+            this.robotoGetDataRsp = robotoGetDataRsp;
         }
     }
 

@@ -6,7 +6,6 @@ import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
 import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
-import com.cylan.jiafeigou.n.mvp.model.GreetBean;
 
 import java.util.List;
 
@@ -19,6 +18,7 @@ public interface HomePageListContract {
         @UiThread
         void onDeviceListRsp(List<DeviceBean> resultList);
 
+        List<DeviceBean> getDeviceList();
 
         /**
          * @param greetBean: 从presenter处理后返回.

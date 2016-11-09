@@ -1,6 +1,6 @@
 package com.cylan.jiafeigou.n.mvp.impl;
 
-import com.cylan.jiafeigou.misc.JfgCmdEnsurance;
+import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.misc.RxEvent;
 import com.cylan.jiafeigou.n.mvp.contract.login.SetupPwdContract;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -63,7 +63,7 @@ public class SetupPwdPresenterImpl extends AbstractPresenter<SetupPwdContract.Vi
                 .subscribe(new Action1<Object>() {
                     @Override
                     public void call(Object s) {
-                        JfgCmdEnsurance.getCmd().register(account, pwd, type, token);
+                        JfgCmdInsurance.getCmd().register(account, pwd, type, token);
                     }
                 }, new Action1<Throwable>() {
                     @Override

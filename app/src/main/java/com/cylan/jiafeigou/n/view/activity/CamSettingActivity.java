@@ -84,7 +84,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity
         Parcelable p = bundle.getParcelable(JConstant.KEY_DEVICE_ITEM_BUNDLE);
         if (p != null && p instanceof DeviceBean) {
             if (presenter != null)
-                presenter.fetchCamInfo(((DeviceBean) p).cid);
+                presenter.fetchCamInfo(((DeviceBean) p).uuid);
         } else {
             AppLogger.d("o is null");
         }

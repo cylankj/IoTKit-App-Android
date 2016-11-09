@@ -5,6 +5,8 @@ import org.mockito.Mockito;
 
 import rx.Observable;
 import rx.functions.Action1;
+import rx.functions.Func1;
+import rx.functions.Func2;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -93,16 +95,24 @@ public class RxBusTest {
     public void testException() {
         RxBus rxBus = RxBus.getDefault();
         rxBus.toObservable(Integer.class)
-                .subscribe(new Action1<Integer>() {
+                .map(new Func1<Integer, Integer>() {
                     @Override
-                    public void call(Integer s) {
-                        try {
-                            System.out.println("what int: " + 10 / s);
-                        } catch (Throwable e) {
-                            System.out.println("err: " + e.getLocalizedMessage());
-                        }
+                    public Integer call(Integer integer) {
+                        if (integer == 0)
+                            throw new IllegalArgumentException("bifaadf");
+                        System.out.println("compute: " + 10 / integer);
+                        return 10 / integer;
                     }
-                });
+                })
+                .retry(new Func2<Integer, Throwable, Boolean>() {
+                    @Override
+                    public Boolean call(Integer integer, Throwable throwable) {
+                        //记录消息
+                        System.out.println("thr: " + integer + " " + throwable.getLocalizedMessage());
+                        return true;
+                    }
+                })
+                .subscribe();
         rxBus.post(5);
         rxBus.post(0);
         rxBus.post(5);

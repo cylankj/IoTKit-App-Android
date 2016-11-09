@@ -179,7 +179,7 @@ public class HomeWonderfulPresenterImpl extends AbstractPresenter<HomeWonderfulC
     }
 
     private String getDate(final long time) {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("MM月dd", Locale.getDefault());
+        SimpleDateFormat dateFormat = new SimpleDateFormat("MM:dd", Locale.getDefault());
         return dateFormat.format(new Date(time));
     }
 

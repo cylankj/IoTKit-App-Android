@@ -9,7 +9,7 @@ import com.cylan.entity.JfgEnum;
 import com.cylan.jiafeigou.cache.JCache;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
-import com.cylan.jiafeigou.misc.JfgCmdEnsurance;
+import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.misc.RxEvent;
 import com.cylan.jiafeigou.n.mvp.contract.login.LoginModelContract;
 import com.cylan.jiafeigou.n.mvp.model.LoginAccountBean;
@@ -63,7 +63,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginModelContract.Vie
                         @Override
                         public void call(LoginAccountBean o) {
                             AppLogger.d("log: " + o.toString());
-                            JfgCmdEnsurance.getCmd().login(o.userName, o.pwd);
+                            JfgCmdInsurance.getCmd().login(o.userName, o.pwd);
                         }
                     }, new Action1<Throwable>() {
                         @Override
@@ -212,7 +212,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginModelContract.Vie
                 .subscribe(new Action1<Object>() {
                     @Override
                     public void call(Object o) {
-                        JfgCmdEnsurance.getCmd().sendCheckCode(phone,
+                        JfgCmdInsurance.getCmd().sendCheckCode(phone,
                                 JfgEnum.JFG_SMS_REGISTER);
                     }
                 });
@@ -225,7 +225,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginModelContract.Vie
                 .subscribe(new Action1<Object>() {
                     @Override
                     public void call(Object o) {
-                        JfgCmdEnsurance.getCmd().verifySMS(phone, code, token);
+                        JfgCmdInsurance.getCmd().verifySMS(phone, code, token);
                     }
                 }, new Action1<Throwable>() {
                     @Override
