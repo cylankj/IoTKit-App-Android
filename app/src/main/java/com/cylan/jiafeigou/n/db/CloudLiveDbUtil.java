@@ -2,6 +2,7 @@ package com.cylan.jiafeigou.n.db;
 
 import com.cylan.jiafeigou.support.db.DbManager;
 import com.cylan.jiafeigou.support.db.DbManagerImpl;
+import com.cylan.jiafeigou.support.db.table.TableEntity;
 import com.cylan.jiafeigou.utils.ContextUtils;
 
 /**
@@ -45,6 +46,7 @@ public class CloudLiveDbUtil {
                     }
                 })
                 .setDbUpgradeListener(new MyDbLisenter());
+
     }
 
     private class MyDbLisenter implements DbManager.DbUpgradeListener {

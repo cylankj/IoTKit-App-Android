@@ -71,10 +71,16 @@ public class MagLiveActivity extends BaseFullScreenFragmentActivity implements M
         initPresenter();
         //用来存放，所需要的bean对象
         initTopBar();
-        initData();
-        initView();
         initDoorState(presenter.getDoorCurrentState());
         initMagLiveFragmentLisenter();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (presenter != null){
+            presenter.start();
+        }
     }
 
     private void initPresenter() {
@@ -111,28 +117,6 @@ public class MagLiveActivity extends BaseFullScreenFragmentActivity implements M
         }
     }
 
-    private void initData() {
-        if (magList == null) {
-            magList = new ArrayList<>();
-        }
-
-        for (int i = 0; i <= 10; i++) {
-            MagBean magBean = new MagBean();
-            magBean.setIsOpen(i % 2 == 0 ? false : true);
-            if (i == 0) {
-                magBean.setVisibleType(0);
-            } else if (i == 5) {
-                magBean.setVisibleType(1);
-            } else if (i == 6) {
-                magBean.setVisibleType(0);
-            } else {
-                magBean.setVisibleType(0);
-            }
-            magBean.setMagTime(System.currentTimeMillis() - RandomUtils.getRandom(24 * 3600));
-            magList.add(magBean);
-        }
-    }
-
     /**
      * 获得当前日期的方法
      *
@@ -143,18 +127,6 @@ public class MagLiveActivity extends BaseFullScreenFragmentActivity implements M
         String nowDate = sdf.format(new Date());
         return nowDate;
     }
-
-    /**
-     * 初始化recycleView视图
-     */
-    private void initView() {
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false);
-        RvMagState.setLayoutManager(layoutManager);
-        adapter = new MagActivityAdapter(getApplication(), magList, null);
-        adapter.setCurrentState(presenter.getDoorCurrentState());
-        RvMagState.setAdapter(adapter);
-    }
-
 
     private void initTopBar() {
         ViewUtils.setViewPaddingStatusBar(rLayoutMsgLiveTopBar);
@@ -182,6 +154,13 @@ public class MagLiveActivity extends BaseFullScreenFragmentActivity implements M
         loadFragment(android.R.id.content, magLiveFragment);
     }
 
+    @OnClick(R.id.imgV_msg_title_top_door)
+    public void onClickTest(){
+        if (presenter != null){
+            presenter.getMesgFromMag();
+        }
+    }
+
     /**
      * 用来加载fragment的方法。
      */
@@ -207,5 +186,68 @@ public class MagLiveActivity extends BaseFullScreenFragmentActivity implements M
     @Override
     public Context getContext() {
         return getApplicationContext();
+    }
+
+    /**
+     * 初始化消息列表显示
+     */
+    @Override
+    public void initRecycleView(ArrayList<MagBean> list) {
+
+        //保证只有第一条的圈圈为彩色
+        for (int i = 0;i<list.size();i++){
+            if (i == 0){
+                list.get(i).isFirst = true;
+            }else {
+                list.get(i).isFirst = false;
+            }
+        }
+
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+        RvMagState.setLayoutManager(layoutManager);
+        adapter = new MagActivityAdapter(getContext(), list, null);
+        adapter.setCurrentState(presenter.getDoorCurrentState());
+        RvMagState.setAdapter(adapter);
+    }
+
+    /**
+     * 添加一条门磁消息
+     */
+    @Override
+    public void addOneMagMesg(MagBean addBean) {
+        // 以下为模拟测试 判断当前的时间和列表的第一条数据的时间是否相等 相等 直接添加为第一条， 不相等，先添加一条空白的
+
+        if (adapter != null){
+            if (adapter.getItemCount() != 0){
+                MagBean firstBean = adapter.getList().get(0);
+                if (adapter.checkSame(addBean.magTime,firstBean.magTime)){
+                    adapter.getItem(0).isFirst = false;
+                    adapter.add(0,addBean);
+                    adapter.notifyItemRangeChanged(0,adapter.getItemCount());
+                    RvMagState.smoothScrollToPosition(0);
+
+                }else {
+                    // 先插入一条空白的
+                    MagBean nullBean = new MagBean();
+                    nullBean.magTime = addBean.magTime;
+                    nullBean.visibleType = 1;
+
+                    adapter.getItem(0).isFirst = false;
+                    adapter.add(0,nullBean);
+                    adapter.notifyItemRangeChanged(0,adapter.getItemCount());
+                    RvMagState.smoothScrollToPosition(0);
+
+                    adapter.add(0,addBean);
+                    adapter.notifyItemRangeChanged(0,adapter.getItemCount());
+                    RvMagState.smoothScrollToPosition(0);
+                }
+
+            }else {
+                //第一条为空 直接插入
+                adapter.add(0,addBean);
+                adapter.notifyDataSetHasChanged();
+            }
+            
+        }
     }
 }

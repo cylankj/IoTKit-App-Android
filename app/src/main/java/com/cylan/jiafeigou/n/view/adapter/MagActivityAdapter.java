@@ -12,6 +12,7 @@ import com.cylan.superadapter.SuperAdapter;
 import com.cylan.superadapter.internal.SuperViewHolder;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -46,11 +47,12 @@ public class MagActivityAdapter extends SuperAdapter<MagBean> {
 
     @Override
     public void onBind(SuperViewHolder holder, int viewType, int layoutPosition, MagBean item) {
+
         if (viewType == TYPE_VISIBLE) {
-            initVisible(holder, layoutPosition);
+            //initVisible(holder, layoutPosition);
             handleVisibleState(holder, layoutPosition, item);
         } else if (viewType == TYPE_INVISIBLE) {
-            initInvisible(holder, layoutPosition);
+            //initInvisible(holder, layoutPosition);
         }
     }
 
@@ -73,22 +75,29 @@ public class MagActivityAdapter extends SuperAdapter<MagBean> {
 
     private void handleVisibleState(SuperViewHolder holder, int layoutPosition, MagBean bean) {
         //每条的第一个设置内外圈颜色
-        if (layoutPosition == 0) {
-            ImageView view = (ImageView) holder.getView(R.id.iv_mag_live);
+        ImageView view = (ImageView) holder.getView(R.id.iv_mag_live);
+        if (bean.isFirst) {
             if (currentState){
                 view.setImageDrawable(getContext().getResources().getDrawable(R.drawable.icon_dot_red));
             }else {
                 view.setImageDrawable(getContext().getResources().getDrawable(R.drawable.icon_dot_green));
             }
-
+        }else {
+            view.setImageDrawable(getContext().getResources().getDrawable(R.drawable.icon_dot_gary));
         }
-        //把数据插入其中
-        if (layoutPosition == 0) {
-            holder.setText(R.id.tv_mag_live_day, "今天");
-        } else if (layoutPosition == 6) {
-            holder.setText(R.id.tv_mag_live_day, getDate(bean.magDate) + "月");
-        } else {
-            holder.setText(R.id.tv_mag_live_day, "");
+
+        if (layoutPosition == 0){
+            if (checkIsToday(bean.getMagTime())){
+                holder.setText(R.id.tv_mag_live_day, "今天");
+            }else {
+                holder.setText(R.id.tv_mag_live_day, getDate(bean.magTime) + "月");
+            }
+        }else {
+            if (checkSame(bean.magTime,getList().get(layoutPosition-1).magTime)){
+                holder.setText(R.id.tv_mag_live_day, "");
+            }else {
+                holder.setText(R.id.tv_mag_live_day, getDate(bean.magTime) + "月");
+            }
         }
 
         if (bean.isOpen) {
@@ -96,6 +105,56 @@ public class MagActivityAdapter extends SuperAdapter<MagBean> {
         } else {
             holder.setText(R.id.tv_mag_live_time, longToDate(bean.magTime) + " " + "关闭");
         }
+    }
+
+    /**
+     * 检测是否是今天
+     * @param magTime
+     * @return
+     */
+    public boolean checkIsToday(long magTime) {
+        Calendar pre = Calendar.getInstance();
+        Date predate = new Date(System.currentTimeMillis());
+        pre.setTime(predate);
+
+        Calendar cal = Calendar.getInstance();
+        Date date = new Date(magTime);
+        cal.setTime(date);
+
+        if (cal.get(Calendar.YEAR) == (pre.get(Calendar.YEAR))) {
+            int diffDay = cal.get(Calendar.DAY_OF_YEAR)
+                    - pre.get(Calendar.DAY_OF_YEAR);
+
+            if (diffDay == 0) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+    /**
+     * 检测是否和前一天相等
+     * @return
+     */
+    public boolean checkSame(long thisTime,long lastTime) {
+        Calendar pre = Calendar.getInstance();
+        Date predate = new Date(thisTime);
+        pre.setTime(predate);
+
+        Calendar cal = Calendar.getInstance();
+        Date date = new Date(lastTime);
+        cal.setTime(date);
+
+        if (cal.get(Calendar.YEAR) == (pre.get(Calendar.YEAR))) {
+            int diffDay = cal.get(Calendar.DAY_OF_YEAR)
+                    - pre.get(Calendar.DAY_OF_YEAR);
+
+            if (diffDay == 0) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
@@ -125,9 +184,9 @@ public class MagActivityAdapter extends SuperAdapter<MagBean> {
      *
      * @param magDate
      */
-    public String getDate(String magDate) {
+    public String getDate(long magDate) {
         SimpleDateFormat sdf = new SimpleDateFormat("dd/M");
-        String nowDate = sdf.format(new Date());
+        String nowDate = sdf.format(new Date(magDate));
         return nowDate;
     }
 
@@ -139,11 +198,5 @@ public class MagActivityAdapter extends SuperAdapter<MagBean> {
         SimpleDateFormat sd = new SimpleDateFormat("HH:mm:ss");
         return sd.format(date);
     }
-
- /*   public MagActivityAdapter setOutCircleColor(int viewId, int outColor) {
-        FateLineView view = getView(viewId);
-        view.setOuterCircleColor(outColor);
-        return this;
-    }*/
 
 }

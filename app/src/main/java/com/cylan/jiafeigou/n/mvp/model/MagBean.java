@@ -9,11 +9,19 @@ public class MagBean {
 
     public long magTime;
 
-    public String magDate = "";
-
     public boolean isOpen;
 
     public int visibleType;
+
+    public boolean isFirst() {
+        return isFirst;
+    }
+
+    public void setFirst(boolean first) {
+        isFirst = first;
+    }
+
+    public boolean isFirst;
 
     public void setMagTime(long magTime) {
         this.magTime = magTime;
@@ -21,14 +29,6 @@ public class MagBean {
 
     public long getMagTime() {
         return magTime;
-    }
-
-    public void setMagDate(String magDate) {
-        this.magDate = magDate;
-    }
-
-    public String getMagDate() {
-        return magDate;
     }
 
     public void setIsOpen(boolean isOpen) {
