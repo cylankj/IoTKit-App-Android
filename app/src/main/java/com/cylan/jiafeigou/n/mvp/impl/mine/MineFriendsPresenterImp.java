@@ -21,6 +21,7 @@ import java.util.Comparator;
 
 import rx.Subscription;
 import rx.functions.Action1;
+import rx.subscriptions.CompositeSubscription;
 
 /**
  * 作者：zsl
@@ -31,6 +32,8 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
 
     private Subscription friendListSub;
     private Subscription addReqListSub;
+    private CompositeSubscription compositeSubscription;
+
 
     private boolean addReqNull;
     private boolean friendListNull;
@@ -42,19 +45,19 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
 
     @Override
     public void start() {
-        initAddReqRecyListData();
-        initFriendRecyListData();
+        if (compositeSubscription != null && !compositeSubscription.isUnsubscribed()) {
+            unSubscribe(compositeSubscription);
+        }
+        compositeSubscription = new CompositeSubscription();
+        compositeSubscription.add(initAddReqRecyListData());
+        compositeSubscription.add(initFriendRecyListData());
         checkAllNull();
     }
 
     @Override
     public void stop() {
-        if (friendListSub != null && friendListSub.isUnsubscribed()) {
-            friendListSub.unsubscribe();
-        }
-
-        if (addReqListSub != null && addReqListSub.isUnsubscribed()) {
-            addReqListSub.unsubscribe();
+        if (compositeSubscription != null && compositeSubscription.isUnsubscribed()) {
+            compositeSubscription.unsubscribe();
         }
     }
 
@@ -142,7 +145,7 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
      * desc：初始化好友列表的数据
      */
     @Override
-    public void initFriendRecyListData() {
+    public Subscription initFriendRecyListData() {
         friendListSub = RxBus.getDefault().toObservable(RxEvent.GetFriendList.class)
                 .subscribe(new Action1<RxEvent.GetFriendList>() {
                     @Override
@@ -155,14 +158,15 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
         //测试数据 TODO
         RxEvent.GetFriendList friendListTest = new RxEvent.GetFriendList(1, initRelativatesAndFriendsData());
         handleInitFriendListDataResult(friendListTest);
+        return friendListSub;
     }
 
     /**
      * desc：初始化添加请求列表的数据
      */
     @Override
-    public void initAddReqRecyListData() {
-
+    public Subscription initAddReqRecyListData() {
+        //TODO 转圈
         addReqListSub = RxBus.getDefault().toObservable(RxEvent.GetAddReqList.class)
                 .subscribe(new Action1<RxEvent.GetAddReqList>() {
                     @Override
@@ -176,6 +180,7 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
         //测试数据 TODO
         RxEvent.GetAddReqList addReqListTest = new RxEvent.GetAddReqList(1, initAddRequestData());
         handleInitAddReqListDataResult(addReqListTest);
+        return addReqListSub;
     }
 
     @Override

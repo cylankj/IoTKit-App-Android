@@ -177,6 +177,8 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
     @Override
     protected void onStart() {
         super.onStart();
+        if(presenter!=null)
+            presenter.start();
     }
 
     private void initPresenter() {
@@ -222,7 +224,7 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
                 presenter.handlerVideoTalk();
                 break;
             case R.id.iv_cloud_talk:                                    //语音留言
-                presenter.handlerLeveaMesg(CloudLiveActivity.this);
+                presenter.handlerLeveaMesg();
                 break;
         }
     }
@@ -275,10 +277,10 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
         }
     }
 
-    public void showVoiceTalkDialog(final Context context, boolean isOnLine) {
+    public void showVoiceTalkDialog(boolean isOnLine) {
         if (isOnLine) {
-            dialog = new Dialog(context, R.style.Theme_Light_Dialog);
-            View dialogView = LayoutInflater.from(context).inflate(R.layout.fragment_cloud_voice_talk_dialog, null);
+            dialog = new Dialog(CloudLiveActivity.this, R.style.Theme_Light_Dialog);
+            View dialogView = LayoutInflater.from(CloudLiveActivity.this).inflate(R.layout.fragment_cloud_voice_talk_dialog, null);
             Window window = dialog.getWindow();
             window.setGravity(Gravity.BOTTOM);
             window.setWindowAnimations(R.style.dialogStyle);
@@ -472,7 +474,7 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
                         presenter.handlerVideoTalk();
                         break;
                     case 2:
-                        presenter.handlerLeveaMesg(CloudLiveActivity.this);
+                        presenter.handlerLeveaMesg();
                         break;
                 }
             }
@@ -488,15 +490,6 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
     public void getIntentData() {
         Bundle bundleExtra = getIntent().getExtras();
         Parcelable parcelable = bundleExtra.getParcelable(JConstant.KEY_DEVICE_ITEM_BUNDLE);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if (presenter != null) {
-            presenter.refreshHangUpView();
-            presenter.unSubCallIn();
-        }
     }
 
     @Override

@@ -232,4 +232,11 @@ public class MineShareDeviceFragment extends Fragment implements MineShareDevice
         getFragmentManager().popBackStack();
     }
 
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (presenter != null){
+            presenter.stop();
+        }
+    }
 }

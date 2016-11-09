@@ -9,6 +9,8 @@ import com.cylan.jiafeigou.n.view.adapter.RelativesAndFriendsAdapter;
 
 import java.util.ArrayList;
 
+import rx.Subscription;
+
 /**
  * 作者：zsl
  * 创建时间：2016/9/6
@@ -86,12 +88,12 @@ public interface MineFriendsContract {
         /**
          * desc：初始化处理好友列表
          */
-        void initFriendRecyListData();
+        Subscription initFriendRecyListData();
 
         /**
          * desc：初始化处理添加请求列表
          */
-        void initAddReqRecyListData();
+        Subscription initAddReqRecyListData();
 
         /**
          * desc：检查是否为空界面

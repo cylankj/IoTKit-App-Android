@@ -31,6 +31,7 @@ import com.cylan.jiafeigou.support.db.ex.DbException;
 import com.cylan.jiafeigou.support.db.sqlite.SqlInfo;
 import com.cylan.jiafeigou.support.db.sqlite.SqlInfoBuilder;
 import com.cylan.jiafeigou.support.rxbus.RxBus;
+import com.cylan.utils.CloseUtils;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -80,6 +81,7 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
 
     private Subscription checkDeviceOnLineSub;
     private Subscription leaveMesgSub;
+    private Subscription subscriptionRefresh;
 
     public CloudLivePresenterImp(CloudLiveContract.View view) {
         super(view);
@@ -88,7 +90,10 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
 
     @Override
     public void start() {
-
+        if(subscriptionRefresh!=null && !subscriptionRefresh.isUnsubscribed()){
+            subscriptionRefresh.unsubscribe();
+        }
+        refreshHangUpView();
     }
 
     @Override
@@ -267,10 +272,7 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
         } catch (IOException e) {
             return null;
         } finally {
-            try {
-                oos.close();
-            } catch (IOException e) {
-            }
+            CloseUtils.close(oos);
         }
         byte[] result = baos.toByteArray();
         return result;
@@ -287,10 +289,7 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
         } catch (Exception e) {
             result = null;
         } finally {
-            try {
-                ois.close();
-            } catch (Throwable e) {
-            }
+            CloseUtils.close(ois);
         }
         return result;
     }
@@ -319,14 +318,11 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
 
     @Override
     public void refreshHangUpView() {
-        RxBus.getDefault().toObservableSticky(RxEvent.HangUpVideoTalk.class)
-                .subscribe(new Action1<Object>() {
+        subscriptionRefresh = RxBus.getDefault().toObservable(RxEvent.HangUpVideoTalk.class)
+                .subscribe(new Action1<RxEvent.HangUpVideoTalk>() {
                     @Override
-                    public void call(Object o) {
-                        if (o != null && o instanceof RxEvent.HangUpVideoTalk){
-                            RxEvent.HangUpVideoTalk backData = (RxEvent.HangUpVideoTalk) o;
-                            getView().hangUpRefreshView(backData.talkTime);
-                        }
+                    public void call(RxEvent.HangUpVideoTalk o) {
+                            getView().hangUpRefreshView(o.talkTime);
                     }
                 });
     }
@@ -354,7 +350,7 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
     }
 
     @Override
-    public void handlerLeveaMesg(final Context context) {
+    public void handlerLeveaMesg() {
         getView().showReconnetProgress();
         leaveMesgSub = Observable.just(null)
                 .delay(1000,TimeUnit.MILLISECONDS)
@@ -371,15 +367,9 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
                     @Override
                     public void call(Boolean aBoolean) {
                         getView().hideReconnetProgress();
-                        getView().showVoiceTalkDialog(context,aBoolean);
+                        getView().showVoiceTalkDialog(aBoolean);
                     }
                 });
-    }
-
-    @Override
-    public void unSubCallIn() {
-        RxBus.getDefault().removeStickyEvent(RxEvent.HangUpVideoTalk.class);
-        RxBus.getDefault().reset();
     }
 
 }

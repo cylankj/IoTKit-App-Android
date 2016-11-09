@@ -1,8 +1,11 @@
 package com.cylan.jiafeigou.n.mvp.impl.mine;
 
+import com.cylan.entity.jniCall.JFGFriendRequest;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendAddByNumContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.n.mvp.model.UserInfoBean;
+
+import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
 import rx.Subscription;
@@ -20,6 +23,7 @@ public class MineFriendAddByNumPresenterImp extends AbstractPresenter<MineFriend
         implements MineFriendAddByNumContract.Presenter {
 
     private Subscription findUserFromServerSub;
+    private Subscription checkSendToMeSub;
 
     public MineFriendAddByNumPresenterImp(MineFriendAddByNumContract.View view) {
         super(view);
@@ -33,8 +37,12 @@ public class MineFriendAddByNumPresenterImp extends AbstractPresenter<MineFriend
 
     @Override
     public void stop() {
-        if (findUserFromServerSub != null) {
+        if (findUserFromServerSub != null && !findUserFromServerSub.isUnsubscribed()) {
             findUserFromServerSub.unsubscribe();
+        }
+
+        if (checkSendToMeSub != null && !checkSendToMeSub.isUnsubscribed()){
+            checkSendToMeSub.unsubscribe();
         }
     }
 
@@ -43,22 +51,58 @@ public class MineFriendAddByNumPresenterImp extends AbstractPresenter<MineFriend
         if (number == null) {
             return;
         }
+        if (getView() != null){
+            getView().showFindLoading();
+        }
         findUserFromServerSub = Observable.just(number)
-                .map(new Func1<String, UserInfoBean>() {
+                .map(new Func1<String, JFGFriendRequest>() {
                     @Override
-                    public UserInfoBean call(String s) {
+                    public JFGFriendRequest call(String s) {
                         //TODO 访问服务器查询该用户
-                        return null;
+                        return testData();
+                    }
+                })
+                .delay(2000, TimeUnit.MILLISECONDS)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<JFGFriendRequest>() {
+                    @Override
+                    public void call(JFGFriendRequest bean) {
+                        getView().hideFindLoading();
+                        getView().showFindResult(bean);
+                    }
+                });
+    }
+
+    @Override
+    public void checkIsSendAddReqToMe(final JFGFriendRequest bean) {
+
+        checkSendToMeSub = Observable.just(bean)
+                .map(new Func1<JFGFriendRequest, Boolean>() {
+                    @Override
+                    public Boolean call(JFGFriendRequest bean) {
+                        // TODO SDK 有么有接口 获取好友请求列表查询
+                        return true;
                     }
                 })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<UserInfoBean>() {
+                .subscribe(new Action1<Boolean>() {
                     @Override
-                    public void call(UserInfoBean bean) {
-                        getView().showFindResult(bean);
+                    public void call(Boolean o) {
+                        getView().setFindResult(false,o,bean);
                     }
                 });
+    }
 
+    /**
+     * 测试数据
+     * @return
+     */
+    private JFGFriendRequest testData() {
+        JFGFriendRequest info = new JFGFriendRequest();
+        info.alias = "赵四";
+        info.account = "13413544333";
+        return info;
     }
 }
