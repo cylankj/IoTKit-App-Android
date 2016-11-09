@@ -19,6 +19,8 @@ import com.cylan.entity.jniCall.JFGFriendRequest;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendAddByNumContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineFriendAddByNumPresenterImp;
+import com.cylan.jiafeigou.n.mvp.model.MineAddReqBean;
+import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
 import com.cylan.jiafeigou.n.mvp.model.UserInfoBean;
 import com.cylan.jiafeigou.widget.roundedimageview.RoundedImageView;
 
@@ -108,7 +110,7 @@ public class MineFriendAddByNumFragment extends Fragment implements MineFriendAd
     }
 
     @Override
-    public void showFindResult(JFGFriendRequest bean) {
+    public void showFindResult(MineAddReqBean bean) {
         if (bean == null) {
             showFindNoResult();
         } else {
@@ -144,7 +146,7 @@ public class MineFriendAddByNumFragment extends Fragment implements MineFriendAd
     }
 
     @Override
-    public void setFindResult(boolean isFrom,boolean hasSendToMe,JFGFriendRequest bean) {
+    public void setFindResult(boolean isFrom,boolean hasSendToMe,MineAddReqBean bean) {
         if (hasSendToMe){
             Bundle bundle = new Bundle();
             bundle.putBoolean("isFrom",isFrom);

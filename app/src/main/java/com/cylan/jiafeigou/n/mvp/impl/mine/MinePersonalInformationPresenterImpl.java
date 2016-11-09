@@ -6,12 +6,10 @@ import android.content.Context;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MinePersonalInformationContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.n.mvp.model.UserInfoBean;
+import com.cylan.jiafeigou.support.galleryfinal.FunctionConfig;
 
-import cn.finalteam.galleryfinal.CoreConfig;
-import cn.finalteam.galleryfinal.FunctionConfig;
-import cn.finalteam.galleryfinal.GalleryFinal;
-import cn.finalteam.galleryfinal.ImageLoader;
-import cn.finalteam.galleryfinal.ThemeConfig;
+
+
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -55,29 +53,6 @@ public class MinePersonalInformationPresenterImpl extends AbstractPresenter<Mine
     @Override
     public void changePassword() {
 
-    }
-
-    @Override
-    public void initGallery() {
-        //设置主题
-        ThemeConfig theme = new ThemeConfig.Builder()
-                .build();
-        //配置功能
-        functionConfig = new FunctionConfig.Builder()
-                .setEnableCamera(true)
-                .setEnableEdit(true)
-                .setEnableCrop(true)
-                .setEnableRotate(true)
-                .setCropSquare(true)
-                .setEnablePreview(true)
-                .build();
-
-        //配置imageloader
-        ImageLoader imageloader = new GlideImageLoaderPresenterImpl();
-        CoreConfig coreConfig = new CoreConfig.Builder(context, imageloader, theme)
-                .setFunctionConfig(functionConfig)
-                .build();
-        GalleryFinal.init(coreConfig);
     }
 
     @Override

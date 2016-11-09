@@ -47,8 +47,11 @@ public interface MineShareDeviceContract {
 
     interface Presenter extends BasePresenter {
 
+        /**
+         * 获取分享设备列表的数据
+         * @return
+         */
         Subscription initData();
-
         /**
          * 获取设备中已经分享的好友
          * @return

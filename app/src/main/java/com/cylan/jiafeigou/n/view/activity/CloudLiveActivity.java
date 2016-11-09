@@ -124,7 +124,6 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
                 dbBean.setType(1);
                 dbBean.setData(presenter.getSerializedObject(newLeaveBean));
                 presenter.saveIntoDb(dbBean);
-
                 //TODO 获取通话时长
             }
         });

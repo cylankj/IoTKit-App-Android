@@ -1,11 +1,9 @@
 package com.cylan.jiafeigou.n.view.adapter;
 
 import android.content.Context;
-import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 
-import com.cylan.entity.jniCall.JFGFriendAccount;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
 import com.cylan.superadapter.IMulItemViewType;
@@ -33,14 +31,16 @@ public class ShareToFriendsAdapter extends SuperAdapter<RelAndFriendBean> {
     @Override
     public void onBind(final SuperViewHolder holder, int viewType, final int layoutPosition, final RelAndFriendBean item) {
         //TODO 如果没有备注名就显示别人昵称或者账号
-        holder.setText(R.id.tv_friend_name,(item.markName==null || item.markName.equals(""))?item.alids:item.markName);
+        holder.setText(R.id.tv_friend_name,(item.markName==null || item.markName.equals(""))?item.alias :item.markName);
         holder.setText(R.id.tv_friend_account,item.account);
         CheckBox checkBox = (CheckBox) holder.itemView.findViewById(R.id.checkbox_is_share_check);
         checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 item.isCheckFlag = isChecked?1:2;
-                listener.onCheck(isChecked,holder,item);
+                if (listener != null){
+                    listener.onCheck(isChecked,holder,item);
+                }
             }
         });
     }

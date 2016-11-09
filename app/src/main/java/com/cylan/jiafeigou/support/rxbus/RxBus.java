@@ -42,8 +42,9 @@ public class RxBus implements IEventBus {
     /**
      * 发送事件
      */
-    public void post(Object event) {
+    public Object post(Object event) {
         mBus.onNext(event);
+        return event;
     }
 
     /**

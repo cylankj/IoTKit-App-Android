@@ -128,7 +128,7 @@ public class JConstant {
     public static final String RECEIVE_MESSAGE_NOTIFICATION = "receive_message_notification";      //接收消息通知
     public static final String OPEN_VOICE = "open_voice";                       //开启声音提示
     public static final String OPEN_SHAKE = "open_shake";                       //开启震动提示
-    public static final String OPEN_DOOR_NOTIFY = "open_door_notify";                       //门磁开关提示
+    public static final String OPEN_DOOR_NOTIFY = "open_door_notify";           //门磁开关提示
 
     public static final String KEY_REGISTER_SMS_TOKEN = "key_token";
 

@@ -19,6 +19,7 @@ public class DeviceBean extends JFGDevBaseValue implements Parcelable {
     public String uuid = "";
     public String shareAccount = "";
     public String alias = "";
+    public int isChooseFlag;
 
     public DeviceBean() {
     }
@@ -56,6 +57,7 @@ public class DeviceBean extends JFGDevBaseValue implements Parcelable {
         dest.writeInt(this.msgCount);
         dest.writeInt(this.isProtectedMode);
         dest.writeInt(this.isShared);
+        dest.writeInt(this.isChooseFlag);
         dest.writeLong(this.msgTime);
         dest.writeString(this.uuid);
         dest.writeString(this.shareAccount);
@@ -84,6 +86,7 @@ public class DeviceBean extends JFGDevBaseValue implements Parcelable {
         this.msgCount = in.readInt();
         this.isProtectedMode = in.readInt();
         this.isShared = in.readInt();
+        this.isChooseFlag = in.readInt();
         this.msgTime = in.readLong();
         this.uuid = in.readString();
         this.shareAccount = in.readString();

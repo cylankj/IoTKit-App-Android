@@ -3,6 +3,8 @@ package com.cylan.jiafeigou.n.mvp.impl.mine;
 import com.cylan.entity.jniCall.JFGFriendRequest;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendAddByNumContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
+import com.cylan.jiafeigou.n.mvp.model.MineAddReqBean;
+import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
 import com.cylan.jiafeigou.n.mvp.model.UserInfoBean;
 
 import java.util.concurrent.TimeUnit;
@@ -55,9 +57,9 @@ public class MineFriendAddByNumPresenterImp extends AbstractPresenter<MineFriend
             getView().showFindLoading();
         }
         findUserFromServerSub = Observable.just(number)
-                .map(new Func1<String, JFGFriendRequest>() {
+                .map(new Func1<String, MineAddReqBean>() {
                     @Override
-                    public JFGFriendRequest call(String s) {
+                    public MineAddReqBean call(String s) {
                         //TODO 访问服务器查询该用户
                         return testData();
                     }
@@ -65,9 +67,9 @@ public class MineFriendAddByNumPresenterImp extends AbstractPresenter<MineFriend
                 .delay(2000, TimeUnit.MILLISECONDS)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<JFGFriendRequest>() {
+                .subscribe(new Action1<MineAddReqBean>() {
                     @Override
-                    public void call(JFGFriendRequest bean) {
+                    public void call(MineAddReqBean bean) {
                         getView().hideFindLoading();
                         getView().showFindResult(bean);
                     }
@@ -75,12 +77,12 @@ public class MineFriendAddByNumPresenterImp extends AbstractPresenter<MineFriend
     }
 
     @Override
-    public void checkIsSendAddReqToMe(final JFGFriendRequest bean) {
+    public void checkIsSendAddReqToMe(final MineAddReqBean bean) {
 
         checkSendToMeSub = Observable.just(bean)
-                .map(new Func1<JFGFriendRequest, Boolean>() {
+                .map(new Func1<MineAddReqBean, Boolean>() {
                     @Override
-                    public Boolean call(JFGFriendRequest bean) {
+                    public Boolean call(MineAddReqBean bean) {
                         // TODO SDK 有么有接口 获取好友请求列表查询
                         return true;
                     }
@@ -99,8 +101,8 @@ public class MineFriendAddByNumPresenterImp extends AbstractPresenter<MineFriend
      * 测试数据
      * @return
      */
-    private JFGFriendRequest testData() {
-        JFGFriendRequest info = new JFGFriendRequest();
+    private MineAddReqBean testData() {
+        MineAddReqBean info = new MineAddReqBean();
         info.alias = "赵四";
         info.account = "13413544333";
         return info;

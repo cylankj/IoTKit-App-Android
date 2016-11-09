@@ -4,6 +4,7 @@ package com.cylan.jiafeigou.n.mvp.impl.mine;
 import com.cylan.entity.jniCall.JFGFriendRequest;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendAddReqDetailContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
+import com.cylan.jiafeigou.n.mvp.model.MineAddReqBean;
 
 import java.util.concurrent.TimeUnit;
 
@@ -49,12 +50,12 @@ public class MineFriendAddReqDetailPresenterImp extends AbstractPresenter<MineFr
      * 添加为亲友；
      */
     @Override
-    public void handlerAddAsFriend(JFGFriendRequest addRequestItems) {
+    public void handlerAddAsFriend(MineAddReqBean addRequestItems) {
 
         addAsFriendSub = Observable.just(addRequestItems)
-                .map(new Func1<JFGFriendRequest, Boolean>() {
+                .map(new Func1<MineAddReqBean, Boolean>() {
                     @Override
-                    public Boolean call(JFGFriendRequest jfgFriendRequest) {
+                    public Boolean call(MineAddReqBean jfgFriendRequest) {
                         //TODO 调用SDK 添加为好友
                         return false;
                     }
@@ -76,7 +77,7 @@ public class MineFriendAddReqDetailPresenterImp extends AbstractPresenter<MineFr
      * @return
      */
     @Override
-    public void checkAddReqOutTime(JFGFriendRequest addRequestItems) {
+    public void checkAddReqOutTime(MineAddReqBean addRequestItems) {
         //true 过期 false未过期
         if ((System.currentTimeMillis() - addRequestItems.time) > 30*24*60*1000 ){
             if (getView() != null){
@@ -92,12 +93,12 @@ public class MineFriendAddReqDetailPresenterImp extends AbstractPresenter<MineFr
      * @param addRequestItems
      */
     @Override
-    public void sendAddReq(JFGFriendRequest addRequestItems) {
+    public void sendAddReq(MineAddReqBean addRequestItems) {
         //调用SDK 模拟发送请求
         sendAddReqSub = Observable.just(addRequestItems)
-                .map(new Func1<JFGFriendRequest, Boolean>() {
+                .map(new Func1<MineAddReqBean, Boolean>() {
                     @Override
-                    public Boolean call(JFGFriendRequest jfgFriendRequest) {
+                    public Boolean call(MineAddReqBean jfgFriendRequest) {
                         //TODO 调用SDK 发送添加请求
                         return false;
                     }

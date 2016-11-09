@@ -3,7 +3,6 @@ package com.cylan.jiafeigou.n.view.adapter;
 import android.content.Context;
 import android.view.View;
 
-import com.cylan.entity.jniCall.JFGFriendAccount;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
 import com.cylan.superadapter.IMulItemViewType;
@@ -36,7 +35,7 @@ public class MineHasShareAdapter extends SuperAdapter<RelAndFriendBean> {
 
     @Override
     public void onBind(SuperViewHolder holder, int viewType, int layoutPosition, final RelAndFriendBean item) {
-        holder.setText(R.id.tv_username,item.alids);
+        holder.setText(R.id.tv_username,item.alias);
         holder.setText(R.id.tv_friend_account,item.account);
         holder.setOnClickListener(R.id.tv_btn_cancle_share, new View.OnClickListener() {
             @Override

@@ -200,7 +200,7 @@ public class MineShareToFriendPresenterImp extends AbstractPresenter<MineShareTo
         for (int i = 0; i < 4; i++) {
             RelAndFriendBean emMessage = new RelAndFriendBean();
             emMessage.account = "账号"+i;
-            emMessage.alids = "昵称"+i;
+            emMessage.alias = "昵称"+i;
             list.add(emMessage);
         }
         return list;

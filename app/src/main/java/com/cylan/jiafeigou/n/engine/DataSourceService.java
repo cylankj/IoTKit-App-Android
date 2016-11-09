@@ -112,6 +112,9 @@ public class DataSourceService extends Service implements AppCallBack {
     @Override
     public void OnUpdateAccount(JFGAccount jfgAccount) {
         AppLogger.d("OnLocalMessage :" + new Gson().toJson(jfgAccount));
+        if (eventBus != null && eventBus.hasObservers()) {
+            eventBus.post(new RxEvent.GetUserInfo(jfgAccount));
+        }
     }
 
     @Override
@@ -153,6 +156,8 @@ public class DataSourceService extends Service implements AppCallBack {
     @Override
     public void OnHttpDone(JFGMsgHttpResult jfgMsgHttpResult) {
         AppLogger.d("OnLocalMessage :");
+        if (eventBus != null && eventBus.hasObservers())
+            eventBus.post(new RxEvent.GetHttpDoneResult(jfgMsgHttpResult));
     }
 
     @Override
@@ -279,6 +284,9 @@ public class DataSourceService extends Service implements AppCallBack {
     @Override
     public void OnShareDeviceRsp(int i, String s, String s1) {
         AppLogger.d("OnShareDeviceRsp :");
+        if (eventBus != null && eventBus.hasObservers()) {
+            eventBus.post(new RxEvent.ShareDeviceCallBack(i,s,s1));
+        }
     }
 
     @Override

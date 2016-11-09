@@ -38,7 +38,7 @@ public class MineDevicesShareManagerPresenterImp extends AbstractPresenter<MineD
 
     @Override
     public void stop() {
-        if (cancleShareSub != null && cancleShareSub.isUnsubscribed()){
+        if (cancleShareSub != null && !cancleShareSub.isUnsubscribed()){
             cancleShareSub.unsubscribe();
         }
     }

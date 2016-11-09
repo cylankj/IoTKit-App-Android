@@ -2,9 +2,15 @@ package com.cylan.jiafeigou.n.view.adapter;
 
 import android.content.Context;
 import android.view.View;
+import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.cylan.entity.jniCall.JFGFriendRequest;
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.n.mvp.model.MineAddReqBean;
+import com.cylan.jiafeigou.utils.ContextUtils;
+import com.cylan.jiafeigou.widget.roundedimageview.RoundedImageView;
 import com.cylan.superadapter.IMulItemViewType;
 import com.cylan.superadapter.SuperAdapter;
 import com.cylan.superadapter.internal.SuperViewHolder;
@@ -12,28 +18,32 @@ import com.cylan.superadapter.internal.SuperViewHolder;
 import java.util.List;
 
 
-public class AddRelativesAndFriendsAdapter extends SuperAdapter<JFGFriendRequest> {
+public class AddRelativesAndFriendsAdapter extends SuperAdapter<MineAddReqBean> {
 
 
     private OnAcceptClickLisenter lisenter;
 
     public interface OnAcceptClickLisenter {
-        void onAccept(SuperViewHolder holder, int viewType, int layoutPosition, JFGFriendRequest item);
+        void onAccept(SuperViewHolder holder, int viewType, int layoutPosition, MineAddReqBean item);
     }
 
     public void setOnAcceptClickLisenter(OnAcceptClickLisenter lisenter) {
         this.lisenter = lisenter;
     }
 
-    public AddRelativesAndFriendsAdapter(Context context, List<JFGFriendRequest> items, IMulItemViewType<JFGFriendRequest> mulItemViewType) {
+    public AddRelativesAndFriendsAdapter(Context context, List<MineAddReqBean> items, IMulItemViewType<MineAddReqBean> mulItemViewType) {
         super(context, items, mulItemViewType);
     }
 
     @Override
-    public void onBind(final SuperViewHolder holder, final int viewType, final int layoutPosition, final JFGFriendRequest item) {
+    public void onBind(final SuperViewHolder holder, final int viewType, final int layoutPosition, final MineAddReqBean item) {
         holder.setText(R.id.tv_username, item.alias);
         holder.setText(R.id.tv_add_message, item.sayHi);
-
+        //头像
+        Glide.with(ContextUtils.getContext()).load(item.iconUrl)
+                .error(R.drawable.img_me_list_head)
+                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                .into((RoundedImageView) holder.getView(R.id.iv_userhead));
 
         if (layoutPosition == getItemCount() - 1) {
             holder.setVisibility(R.id.view_line, View.INVISIBLE);
@@ -51,8 +61,8 @@ public class AddRelativesAndFriendsAdapter extends SuperAdapter<JFGFriendRequest
 
 
     @Override
-    protected IMulItemViewType<JFGFriendRequest> offerMultiItemViewType() {
-        return new IMulItemViewType<JFGFriendRequest>() {
+    protected IMulItemViewType<MineAddReqBean> offerMultiItemViewType() {
+        return new IMulItemViewType<MineAddReqBean>() {
             @Override
 
             public int getViewTypeCount() {
@@ -60,7 +70,7 @@ public class AddRelativesAndFriendsAdapter extends SuperAdapter<JFGFriendRequest
             }
 
             @Override
-            public int getItemViewType(int position, JFGFriendRequest jfgFriendRequest) {
+            public int getItemViewType(int position, MineAddReqBean jfgFriendRequest) {
                 return 0;
             }
 

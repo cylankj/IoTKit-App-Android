@@ -10,10 +10,12 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.cache.JCache;
 import com.cylan.jiafeigou.misc.RxEvent;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeMineContract;
+import com.cylan.jiafeigou.n.mvp.model.UserInfoBean;
 import com.cylan.jiafeigou.n.view.mine.HomeMineHelpFragment;
 import com.cylan.jiafeigou.n.view.mine.HomeMinePersonalInformationFragment;
 import com.cylan.jiafeigou.n.view.mine.MineFriendsFragment;
@@ -30,7 +32,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-;
 
 public class HomeMineFragment extends Fragment
         implements HomeMineContract.View {
@@ -62,7 +63,6 @@ public class HomeMineFragment extends Fragment
     private MineShareDeviceFragment mineShareDeviceFragment;
     private MineFriendsFragment mineRelativesandFriendsFragment;
 
-
     public static HomeMineFragment newInstance(Bundle bundle) {
         HomeMineFragment fragment = new HomeMineFragment();
         fragment.setArguments(bundle);
@@ -73,7 +73,7 @@ public class HomeMineFragment extends Fragment
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mineHelpFragment = HomeMineHelpFragment.newInstance(new Bundle());
-        personalInformationFragment = HomeMinePersonalInformationFragment.newInstance(new Bundle());
+
         homeSettingFragment = HomeSettingFragment.newInstance();
         homeMineMessageFragment = HomeMineMessageFragment.newInstance();
         mineShareDeviceFragment = MineShareDeviceFragment.newInstance();
@@ -97,15 +97,20 @@ public class HomeMineFragment extends Fragment
     @Override
     public void onStart() {
         super.onStart();
-        initName();
+        if (presenter != null){
+            if (!JCache.isOnline){
+                //访客状态
+                presenter.portraitBlur(R.drawable.clouds);
+                setAliasName("立即登录");
+            }else {
+                presenter.start();
+            }
+        }
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        if (presenter != null) {
-            presenter.start();
-        }
     }
 
     @Override
@@ -121,10 +126,15 @@ public class HomeMineFragment extends Fragment
         super.onDetach();
     }
 
-
+    /**
+     * 点击个人头像
+     */
     public void portrait() {
-        if (needStartLoginFragment())
+        if (!JCache.isOnline){
+            needStartLoginFragment();
             return;
+        }
+        jump2UserInfoFrgment();
     }
 
     public void friendItem(View view) {
@@ -138,7 +148,6 @@ public class HomeMineFragment extends Fragment
                 .addToBackStack("mineHelpFragment")
                 .commit();
     }
-
 
     public void settingsItem(View view) {
         if (!JCache.isOnline)
@@ -199,11 +208,32 @@ public class HomeMineFragment extends Fragment
         ivHomeMinePortrait.setImageDrawable(drawable);
     }
 
+    /**
+     * 设置昵称
+     * @param name
+     */
     @Override
-    public void initName() {
-        tvHomeMineNick.setText(presenter.createRandomName());
+    public void setAliasName(String name) {
+        tvHomeMineNick.setText(name);
     }
 
+    @Override
+    public void setUserImageHead(String url) {
+        Glide.with(getContext()).load(url).error(R.drawable.icon_mine_head_normal).into(ivHomeMinePortrait);
+    }
+
+    /**
+     * 设置新消息的数量
+     */
+    @Override
+    public void setMesgNumber(final int number) {
+        tvHomeMineMsgCount.post(new Runnable() {
+            @Override
+            public void run() {
+                tvHomeMineMsgCount.setText(number+"+");
+            }
+        });
+    }
 
     private boolean needStartLoginFragment() {
         if (!JCache.isOnline && RxBus.getDefault().hasObservers()) {
@@ -255,27 +285,65 @@ public class HomeMineFragment extends Fragment
             case R.id.shadow_layout:
                 if (getView() != null)
                     ViewUtils.deBounceClick(getView().findViewById(R.id.shadow_layout));
-                AppLogger.e("home_mine_item_settings");
+                AppLogger.e("shadow_layout");
                 portrait();
                 break;
             case R.id.tv_home_mine_nick:
-                getFragmentManager().beginTransaction()
-                        .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
-                                , R.anim.slide_in_left, R.anim.slide_out_right)
-                        .add(android.R.id.content, personalInformationFragment, "personalInformationFragment")
-                        .addToBackStack("personalInformationFragment")
-                        .commit();
+                if (getView() != null)
+                    ViewUtils.deBounceClick(getView().findViewById(R.id.tv_home_mine_nick));
+                AppLogger.e("tv_home_mine_nick");
+                jump2UserInfo();
                 break;
 
             case R.id.tv_home_mine_msg_count:
-                getFragmentManager().beginTransaction()
-                        .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
-                                , R.anim.slide_in_left, R.anim.slide_out_right)
-                        .add(android.R.id.content, homeMineMessageFragment, "homeMineMessageFragment")
-                        .addToBackStack("personalInformationFragment")
-                        .commit();
+                if (getView() != null)
+                    ViewUtils.deBounceClick(getView().findViewById(R.id.tv_home_mine_msg_count));
+                AppLogger.e("tv_home_mine_msg_count");
+                jump2MesgFragment();
                 break;
         }
+    }
+
+    /**
+     * 跳转到消息界面
+     */
+    private void jump2MesgFragment() {
+        if (!JCache.isOnline){
+            needStartLoginFragment();
+            return;
+        }
+        getFragmentManager().beginTransaction()
+                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
+                        , R.anim.slide_in_left, R.anim.slide_out_right)
+                .add(android.R.id.content, homeMineMessageFragment, "homeMineMessageFragment")
+                .addToBackStack("personalInformationFragment")
+                .commit();
+    }
+
+    /**
+     *点击个人昵称
+     */
+    private void jump2UserInfo() {
+        if (JCache.isOnline){
+            needStartLoginFragment();
+            return;
+        }
+        jump2UserInfoFrgment();
+    }
+
+    /**
+     * 跳转个人信息页
+     */
+    private void jump2UserInfoFrgment() {
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("userInfoBean",presenter.getUserInfoBean());
+        personalInformationFragment = HomeMinePersonalInformationFragment.newInstance(bundle);
+        getFragmentManager().beginTransaction()
+                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
+                        , R.anim.slide_in_left, R.anim.slide_out_right)
+                .add(android.R.id.content, personalInformationFragment, "personalInformationFragment")
+                .addToBackStack("personalInformationFragment")
+                .commit();
     }
 
 }

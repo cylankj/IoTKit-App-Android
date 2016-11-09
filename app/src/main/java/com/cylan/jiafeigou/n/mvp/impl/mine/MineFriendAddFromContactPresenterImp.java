@@ -8,6 +8,7 @@ import android.text.TextUtils;
 
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendAddFromContactContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
+import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
 import com.cylan.jiafeigou.n.mvp.model.SuggestionChatInfoBean;
 
 import java.util.ArrayList;
@@ -27,7 +28,7 @@ import rx.schedulers.Schedulers;
 public class MineFriendAddFromContactPresenterImp extends AbstractPresenter<MineFriendAddFromContactContract.View> implements MineFriendAddFromContactContract.Presenter {
 
     private Subscription contactSubscriber;
-    private ArrayList<SuggestionChatInfoBean> filterDateList;
+    private ArrayList<RelAndFriendBean> filterDateList;
 
     public MineFriendAddFromContactPresenterImp(MineFriendAddFromContactContract.View view) {
         super(view);
@@ -36,6 +37,9 @@ public class MineFriendAddFromContactPresenterImp extends AbstractPresenter<Mine
 
     @Override
     public void start() {
+        if (contactSubscriber != null && !contactSubscriber.isUnsubscribed()){
+            contactSubscriber.unsubscribe();
+        }
         initContactData();
     }
 
@@ -51,16 +55,16 @@ public class MineFriendAddFromContactPresenterImp extends AbstractPresenter<Mine
 
         contactSubscriber = Observable.just(null)
                 .subscribeOn(Schedulers.newThread())
-                .map(new Func1<Object, ArrayList<SuggestionChatInfoBean>>() {
+                .map(new Func1<Object, ArrayList<RelAndFriendBean>>() {
                     @Override
                     public ArrayList call(Object o) {
                         return getAllContactList();
                     }
                 })
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<ArrayList<SuggestionChatInfoBean>>() {
+                .subscribe(new Action1<ArrayList<RelAndFriendBean>>() {
                     @Override
-                    public void call(ArrayList<SuggestionChatInfoBean> arrayList) {
+                    public void call(ArrayList<RelAndFriendBean> arrayList) {
                         handlerDataResult(arrayList);
                     }
                 });
@@ -70,7 +74,7 @@ public class MineFriendAddFromContactPresenterImp extends AbstractPresenter<Mine
      * desc：处理获取到的联系人数据
      * @param arrayList
      */
-    private void handlerDataResult(ArrayList<SuggestionChatInfoBean> arrayList) {
+    private void handlerDataResult(ArrayList<RelAndFriendBean> arrayList) {
         if (arrayList != null && arrayList.size() != 0 && getView() != null){
             getView().initContactRecycleView(arrayList);
         }else {
@@ -79,8 +83,8 @@ public class MineFriendAddFromContactPresenterImp extends AbstractPresenter<Mine
     }
 
     @NonNull
-    public ArrayList<SuggestionChatInfoBean> getAllContactList() {
-        ArrayList<SuggestionChatInfoBean> list = new ArrayList<SuggestionChatInfoBean>();
+    public ArrayList<RelAndFriendBean> getAllContactList() {
+        ArrayList<RelAndFriendBean> list = new ArrayList<RelAndFriendBean>();
         Cursor cursor = null;
         Uri uri = ContactsContract.CommonDataKinds.Phone.CONTENT_URI;
         // 这里是获取联系人表的电话里的信息  包括：名字，名字拼音，联系人id,电话号码；
@@ -92,13 +96,13 @@ public class MineFriendAddFromContactPresenterImp extends AbstractPresenter<Mine
 
         if (cursor.moveToFirst()) {
             do {
-                SuggestionChatInfoBean contact = new SuggestionChatInfoBean("", 1, "");
+                RelAndFriendBean contact = new RelAndFriendBean();
                 String contact_phone = cursor
                         .getString(cursor
                                 .getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
                 String name = cursor.getString(0);
-                contact.setContent(contact_phone);
-                contact.setName(name);
+                contact.account = contact_phone;
+                contact.alias = name;
                 if (name != null)
                     list.add(contact);
             } while (cursor.moveToNext());
@@ -108,7 +112,7 @@ public class MineFriendAddFromContactPresenterImp extends AbstractPresenter<Mine
     }
 
     @Override
-    public void addContactItem(SuggestionChatInfoBean bean) {
+    public void addContactItem(RelAndFriendBean bean) {
 
     }
 
@@ -119,9 +123,9 @@ public class MineFriendAddFromContactPresenterImp extends AbstractPresenter<Mine
             filterDateList = getAllContactList();
         } else {
             filterDateList.clear();
-            for (SuggestionChatInfoBean s : getAllContactList()) {
-                String phone = s.getContent();
-                String name = s.getName();
+            for (RelAndFriendBean s : getAllContactList()) {
+                String phone = s.account;
+                String name = s.alias;
                 if (phone.replace(" ", "").contains(filterStr) || name.contains(filterStr)) {
                     filterDateList.add(s);
                 }

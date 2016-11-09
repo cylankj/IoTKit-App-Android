@@ -63,6 +63,5 @@ ext {
     leakcanaryAndroidNoOp = 'com.squareup.leakcanary:leakcanary-android-no-op:1.4-beta2'
     //多进程文件共享方案
     multiProcessSp = 'net.grandcentrix.tray:tray:0.10.0'
-    galleryFinal = 'cn.finalteam:galleryfinal:1.4.8.7'
-    cySdk = 'JfgAndroidSDK-3.0.135'
+    cySdk = 'JfgAndroidSDK-3.0.137'
 }

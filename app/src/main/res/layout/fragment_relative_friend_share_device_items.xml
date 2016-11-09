@@ -44,11 +44,12 @@ android:layout_height="67dp">
     android:layout_width="match_parent"
     android:layout_height="1dp"/>
 
-<ImageView
-    android:id="@+id/iv_share_isCheck"
+<CheckBox
+    android:id="@+id/cbx_share_isCheck"
     android:layout_marginRight="15dp"
     android:gravity="center"
-    android:src="@drawable/icon_selected"
+    android:background="@drawable/share_to_friend_check_box_seclector"
+    android:button="@null"
     android:layout_centerVertical="true"
     android:layout_alignParentRight="true"
     android:layout_width="wrap_content"

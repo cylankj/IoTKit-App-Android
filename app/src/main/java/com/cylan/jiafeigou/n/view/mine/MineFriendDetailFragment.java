@@ -12,13 +12,15 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.cylan.entity.jniCall.JFGFriendAccount;
+import com.bumptech.glide.Glide;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendDetailContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineFriendDetailPresenterImp;
+import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
+import com.cylan.jiafeigou.widget.roundedimageview.RoundedImageView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -31,11 +33,10 @@ import butterknife.OnClick;
  */
 public class MineFriendDetailFragment extends Fragment implements MineFriendDetailContract.View {
 
-
     @BindView(R.id.iv_top_bar_left_back)
     ImageView ivTopBarLeftBack;
     @BindView(R.id.iv_detail_user_head)
-    ImageView ivDetailUserHead;
+    RoundedImageView ivDetailUserHead;
     @BindView(R.id.tv_relative_and_friend_name)
     TextView tvRelativeAndFriendName;
     @BindView(R.id.tv_relative_and_friend_like_name)
@@ -46,6 +47,8 @@ public class MineFriendDetailFragment extends Fragment implements MineFriendDeta
     RelativeLayout rlDeleteRelativeandfriend;
     @BindView(R.id.tv_share_device)
     TextView tvShareDevice;
+    @BindView(R.id.rl_delete_pro_hint)
+    RelativeLayout rlDeleteProHint;
 
     private MineFriendsListShareDevicesFragment mineShareDeviceFragment;
     private MineSetRemarkNameFragment mineSetRemarkNameFragment;
@@ -54,6 +57,8 @@ public class MineFriendDetailFragment extends Fragment implements MineFriendDeta
     private MineFriendDetailContract.Presenter presenter;
 
     public OnDeleteClickLisenter lisenter;
+    private RelAndFriendBean frienditembean;
+
 
     public interface OnDeleteClickLisenter {
         void onDelete(int position);
@@ -72,8 +77,6 @@ public class MineFriendDetailFragment extends Fragment implements MineFriendDeta
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mineShareDeviceFragment = MineFriendsListShareDevicesFragment.newInstance();
-        mineSetRemarkNameFragment = MineSetRemarkNameFragment.newInstance(new Bundle());
 
         Bundle bundle = new Bundle();
         bundle.putString("imageUrl", "");
@@ -86,7 +89,6 @@ public class MineFriendDetailFragment extends Fragment implements MineFriendDeta
         View view = inflater.inflate(R.layout.fragment_mine_relativeandfriend_detail, container, false);
         ButterKnife.bind(this, view);
         initPresenter();
-        initListener();
         initData();
         return view;
     }
@@ -96,12 +98,11 @@ public class MineFriendDetailFragment extends Fragment implements MineFriendDeta
      */
     private void initData() {
         Bundle bundle = getArguments();
-        JFGFriendAccount frienditembean = (JFGFriendAccount) bundle.getSerializable("frienditembean");
+        frienditembean = (RelAndFriendBean) bundle.getParcelable("frienditembean");
         tvRelativeAndFriendName.setText(frienditembean.markName);
         tvRelativeAndFriendLikeName.setText(frienditembean.alias);
-
         //TODO　头像获取
-        //Glide.with(getContext()).load(frienditembean.getIcon()).error(R.drawable.icon_mine_head_normal).into(ivDetailUserHead);
+        Glide.with(getContext()).load(frienditembean.iconUrl).error(R.drawable.icon_mine_head_normal).into(ivDetailUserHead);
     }
 
     private void initListener() {
@@ -139,7 +140,7 @@ public class MineFriendDetailFragment extends Fragment implements MineFriendDeta
                 if (getView() != null)
                     ViewUtils.deBounceClick(getView().findViewById(R.id.rl_delete_relativeandfriend));
                 AppLogger.e("rl_delete_relativeandfriend");
-                showDeleteDialog();
+                showDeleteDialog(frienditembean);
                 break;
             case R.id.tv_share_device:
                 if (getView() != null)
@@ -156,20 +157,16 @@ public class MineFriendDetailFragment extends Fragment implements MineFriendDeta
         }
     }
 
-    private void showDeleteDialog() {
+    private void showDeleteDialog(final RelAndFriendBean bean) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setTitle("是否删除亲友");
         builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                presenter.sendDeleteFriendReq(bean.account);
+                hideDeleteProgress();
+                handlerDelCallBack();
                 dialog.dismiss();
-                if (lisenter != null) {
-                    Bundle arguments = getArguments();
-                    int position = arguments.getInt("position");
-                    lisenter.onDelete(position);
-                    ToastUtil.showToast("删除成功");
-                }
-                getFragmentManager().popBackStack();
             }
         });
         builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
@@ -178,6 +175,27 @@ public class MineFriendDetailFragment extends Fragment implements MineFriendDeta
                 dialog.dismiss();
             }
         }).show();
+    }
+
+    @Override
+    public void handlerDelCallBack() {
+        if (lisenter != null) {
+            Bundle arguments = getArguments();
+            int position = arguments.getInt("position");
+            lisenter.onDelete(position);
+            ToastUtil.showToast("删除成功");
+        }
+        getFragmentManager().popBackStack();
+    }
+
+    @Override
+    public void showDeleteProgress() {
+        rlDeleteProHint.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideDeleteProgress() {
+        rlDeleteProHint.setVisibility(View.INVISIBLE);
     }
 
     /**
@@ -196,20 +214,35 @@ public class MineFriendDetailFragment extends Fragment implements MineFriendDeta
      * desc:跳转到备注名称的界面；
      */
     private void jump2SetRemarkNameFragment() {
+        Bundle bundle = new Bundle();
+        bundle.putParcelable("friendBean",frienditembean);
+        mineSetRemarkNameFragment = MineSetRemarkNameFragment.newInstance(bundle);
         getFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                         , R.anim.slide_in_left, R.anim.slide_out_right)
                 .add(android.R.id.content, mineSetRemarkNameFragment, "mineSetRemarkNameFragment")
                 .addToBackStack("mineHelpFragment")
                 .commit();
+        initListener();                     //修改备注回调监听
     }
 
     private void jump2ShareDeviceFragment() {
+        Bundle bundle = new Bundle();
+        bundle.putParcelable("shareDeviceBean",frienditembean);
+        mineShareDeviceFragment = MineFriendsListShareDevicesFragment.newInstance(bundle);
         getFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                         , R.anim.slide_in_left, R.anim.slide_out_right)
                 .add(android.R.id.content, mineShareDeviceFragment, "mineShareDeviceFragment")
                 .addToBackStack("mineHelpFragment")
                 .commit();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (presenter != null){
+            presenter.stop();
+        }
     }
 }

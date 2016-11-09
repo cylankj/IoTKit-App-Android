@@ -94,7 +94,6 @@ public class MineShareDevicePresenterImp extends AbstractPresenter<MineShareDevi
             info.friends = listNei;
             list.add(info);
         }
-
         return list;
     }
 
@@ -142,7 +141,7 @@ public class MineShareDevicePresenterImp extends AbstractPresenter<MineShareDevi
         for (JFGFriendAccount account : info.friends) {
             RelAndFriendBean bean = new RelAndFriendBean();
             bean.account = account.account;
-            bean.alids = account.alias;
+            bean.alias = account.alias;
             //TODO 具体赋值
             list.add(bean);
         }

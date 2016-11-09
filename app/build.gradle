@@ -311,8 +311,6 @@ dependencies {
     //    compile rootProject.ext.multiProcessSp
     //glide
     compile rootProject.ext.glide
-    //头像更改选择框架
-    compile rootProject.ext.galleryFinal
     compile(name: rootProject.ext.cySdk, ext: 'aar')
 
 }

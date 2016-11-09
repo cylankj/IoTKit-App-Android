@@ -19,6 +19,8 @@ import com.cylan.entity.jniCall.JFGFriendRequest;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendsContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineFriendsPresenterImp;
+import com.cylan.jiafeigou.n.mvp.model.MineAddReqBean;
+import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
 import com.cylan.jiafeigou.n.view.adapter.AddRelativesAndFriendsAdapter;
 import com.cylan.jiafeigou.n.view.adapter.RelativesAndFriendsAdapter;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -61,7 +63,6 @@ public class MineFriendsFragment extends Fragment implements MineFriendsContract
     @BindView(R.id.btn_add_relative_and_friend)
     TextView btnAddRelativeAndFriend;
 
-
     private MineFriendsContract.Presenter presenter;
 
     private MineFriendAddFriendsFragment friendsFragment;
@@ -98,7 +99,7 @@ public class MineFriendsFragment extends Fragment implements MineFriendsContract
     }
 
     @Override
-    public void jump2AddReqDetailFragment(int position, JFGFriendRequest bean) {
+    public void jump2AddReqDetailFragment(int position, MineAddReqBean bean) {
         Bundle bundle = new Bundle();
         bundle.putBoolean("isFrom",true);
         bundle.putSerializable("addRequestItems", bean);
@@ -115,7 +116,7 @@ public class MineFriendsFragment extends Fragment implements MineFriendsContract
      * desc：点击同意按钮弹出对话框
      */
     @Override
-    public void showReqOutTimeDialog() {
+    public void showReqOutTimeDialog(final MineAddReqBean item) {
         //请求过期
         android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(getView().getContext());
         builder.setMessage("当前消息已过期，是否向对方发送添加好友验证？");
@@ -124,7 +125,8 @@ public class MineFriendsFragment extends Fragment implements MineFriendsContract
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
                 ToastUtil.showPositiveToast("请求已发送");
-                //TODO SDK 向对方发送请求
+                //SDK 向对方发送请求
+                presenter.sendAddReq(item.account);
             }
         });
         builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
@@ -147,7 +149,7 @@ public class MineFriendsFragment extends Fragment implements MineFriendsContract
      * @param bean
      */
     @Override
-    public void addReqDeleteItem(int position, JFGFriendRequest bean) {
+    public void addReqDeleteItem(int position, MineAddReqBean bean) {
         addReqListAdater.remove(bean);
         addReqListAdater.notifyDataSetHasChanged();
         if (addReqListAdater.getItemCount()==0){
@@ -161,18 +163,19 @@ public class MineFriendsFragment extends Fragment implements MineFriendsContract
      * @param bean
      */
     @Override
-    public void friendlistAddItem(int position, JFGFriendAccount bean) {
+    public void friendlistAddItem(int position, RelAndFriendBean bean) {
         friendsListAdapter.add(0,bean);
         friendsListAdapter.notifyDataSetHasChanged();
     }
 
     @Override
-    public void showLongClickDialog(final int position, final JFGFriendRequest bean) {
+    public void showLongClickDialog(final int position, final MineAddReqBean bean) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setPositiveButton("删除该请求", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 addReqDeleteItem(position,bean);
+                // TODO 删除添加请求
                 dialog.dismiss();
             }
         }).setNegativeButton("取消", new DialogInterface.OnClickListener() {
@@ -217,7 +220,7 @@ public class MineFriendsFragment extends Fragment implements MineFriendsContract
     }
 
     @Override
-    public void initFriendRecyList(ArrayList<JFGFriendAccount> list) {
+    public void initFriendRecyList(ArrayList<RelAndFriendBean> list) {
         recyclerviewRelativesandfriendsList.setLayoutManager(new LinearLayoutManager(getContext()));
         friendsListAdapter = new RelativesAndFriendsAdapter(getContext(),list,null);
         recyclerviewRelativesandfriendsList.setAdapter(friendsListAdapter);
@@ -239,7 +242,7 @@ public class MineFriendsFragment extends Fragment implements MineFriendsContract
     }
 
     @Override
-    public void initAddReqRecyList(ArrayList<JFGFriendRequest> list) {
+    public void initAddReqRecyList(ArrayList<MineAddReqBean> list) {
         recyclerviewRequestAdd.setLayoutManager(new LinearLayoutManager(getContext()));
         addReqListAdater = new AddRelativesAndFriendsAdapter(getView().getContext(),list,null);
         recyclerviewRequestAdd.setAdapter(addReqListAdater);
@@ -295,10 +298,10 @@ public class MineFriendsFragment extends Fragment implements MineFriendsContract
     }
 
     @Override
-    public void jump2FriendDetailFragment(int position, JFGFriendAccount account) {
+    public void jump2FriendDetailFragment(int position, RelAndFriendBean account) {
         Bundle bundle = new Bundle();
         bundle.putInt("position", position);
-        bundle.putSerializable("frienditembean", account);
+        bundle.putParcelable("frienditembean", account);
         relativeAndFrienDetialFragment = MineFriendDetailFragment.newInstance(bundle);
         getFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
@@ -306,6 +309,20 @@ public class MineFriendsFragment extends Fragment implements MineFriendsContract
                 .add(android.R.id.content, relativeAndFrienDetialFragment, "relativeAndFrienDetialFragment")
                 .addToBackStack("mineHelpFragment")
                 .commit();
+        initFriendDeleteListener();
+    }
+
+    /**
+     * 好友详情界面点击删除回调
+     */
+    private void initFriendDeleteListener() {
+        relativeAndFrienDetialFragment.setOnDeleteClickLisenter(new MineFriendDetailFragment.OnDeleteClickLisenter() {
+            @Override
+            public void onDelete(int position) {
+                friendsListAdapter.remove(position);
+                friendsListAdapter.notifyDataSetHasChanged();
+            }
+        });
     }
 
     /**
@@ -316,12 +333,19 @@ public class MineFriendsFragment extends Fragment implements MineFriendsContract
      * @param item
      */
     @Override
-    public void onAccept(SuperViewHolder holder, int viewType, int layoutPosition, JFGFriendRequest item) {
+    public void onAccept(SuperViewHolder holder, int viewType, int layoutPosition, MineAddReqBean item) {
         if (presenter.checkAddRequestOutTime(item)){
-                showReqOutTimeDialog();
+                showReqOutTimeDialog(item);
         }else {
+            //SDK 调用添加成功
+            presenter.acceptAddSDK(item.account);
             ToastUtil.showPositiveToast("添加成功");
-            JFGFriendAccount account = new JFGFriendAccount(item.account,"",item.alias);
+
+            //更新好友列表
+            RelAndFriendBean account = new RelAndFriendBean();
+            account.account = item.account;
+            account.alias = item.alias;
+            account.markName = "";
             friendlistAddItem(layoutPosition,account);
             addReqDeleteItem(layoutPosition,item);
         }

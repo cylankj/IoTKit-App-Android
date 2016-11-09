@@ -1,79 +1,81 @@
 package com.cylan.jiafeigou.n.view.adapter;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
 import com.cylan.jiafeigou.n.mvp.model.MineShareDeviceBean;
+import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
+import com.cylan.superadapter.IMulItemViewType;
+import com.cylan.superadapter.SuperAdapter;
+import com.cylan.superadapter.internal.SuperViewHolder;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 作者：zsl
  * 创建时间：2016/9/24
  * 描述：
  */
-public class ChooseShareDeviceAdapter extends RecyclerView.Adapter<ChooseShareDeviceAdapter.ChooseDeviceHolder> {
+public class ChooseShareDeviceAdapter extends SuperAdapter<DeviceBean> {
 
-    private ArrayList<MineShareDeviceBean> mData;
+    private OnCheckClickListener listener;
 
-    public ChooseShareDeviceAdapter(ArrayList<MineShareDeviceBean> data) {
-        this.mData = data;
+    public interface OnCheckClickListener{
+        void onCheckClick(DeviceBean item);
+    }
+
+    public void setOnCheckClickListener(OnCheckClickListener listener){
+        this.listener = listener;
+    }
+
+    public ChooseShareDeviceAdapter(Context context, List<DeviceBean> items, IMulItemViewType<DeviceBean> mulItemViewType) {
+        super(context, items, mulItemViewType);
     }
 
     @Override
-    public ChooseDeviceHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = View.inflate(parent.getContext(), R.layout.fragment_relative_friend_share_device_items, null);
-        return new ChooseDeviceHolder(view);
+    public void onBind(SuperViewHolder holder, int viewType, int layoutPosition, final DeviceBean item) {
+        //TODO 已分享的人数
+        holder.setText(R.id.tv_share_device_number, "2/5");
+        holder.setText(R.id.tv_device_name,item.alias);
+        CheckBox checkBox = holder.getView(R.id.cbx_share_isCheck);
+        checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                item.isChooseFlag = isChecked ? 1:0;
+                if (listener != null){
+                    listener.onCheckClick(item);
+                }
+            }
+        });
     }
 
     @Override
-    public void onBindViewHolder(ChooseDeviceHolder holder, int position) {
-        MineShareDeviceBean mineShareDeviceBean = mData.get(position);
-        holder.tv_share_number.setText(mineShareDeviceBean.getShareNumber() + "/5");
-        holder.tv_device_name.setText(mineShareDeviceBean.getDeviceName());
-        holder.iv_isCheck.setImageDrawable(holder.itemView.getResources().getDrawable(mineShareDeviceBean.isCheck() == true ? R.drawable.icon_selected : R.drawable.icon_not_selected));
+    protected IMulItemViewType<DeviceBean> offerMultiItemViewType() {
+        return new IMulItemViewType<DeviceBean>() {
+            @Override
+            public int getViewTypeCount() {
+                return 1;
+            }
 
-        switch (mineShareDeviceBean.getDeviceName()) {
-            case "智能摄像头":
-                holder.iv_device_icon.setImageDrawable(holder.itemView.getResources().getDrawable(R.drawable.icon_home_camera_online));
-                break;
-            case "智能门铃":
-                holder.iv_device_icon.setImageDrawable(holder.itemView.getResources().getDrawable(R.drawable.icon_home_doorbell_online));
-                break;
-            case "云相框":
-                holder.iv_device_icon.setImageDrawable(holder.itemView.getResources().getDrawable(R.drawable.icon_home_album_online));
-                break;
-        }
+            @Override
+            public int getItemViewType(int position, DeviceBean bean) {
+                return 0;
+            }
 
-
-    }
-
-    @Override
-    public int getItemCount() {
-        if (mData != null) {
-            return mData.size();
-        } else {
-            return 0;
-        }
-    }
-
-    class ChooseDeviceHolder extends RecyclerView.ViewHolder {
-        private final ImageView iv_device_icon;
-        private final TextView tv_device_name;
-        private final TextView tv_share_number;
-        private final ImageView iv_isCheck;
-
-        public ChooseDeviceHolder(View itemView) {
-            super(itemView);
-            iv_device_icon = (ImageView) itemView.findViewById(R.id.iv_device_icon);
-            tv_device_name = (TextView) itemView.findViewById(R.id.tv_device_name);
-            tv_share_number = (TextView) itemView.findViewById(R.id.tv_share_device_number);
-            iv_isCheck = (ImageView) itemView.findViewById(R.id.iv_share_isCheck);
-        }
+            @Override
+            public int getLayoutId(int viewType) {
+                return R.layout.fragment_relative_friend_share_device_items;
+            }
+        };
     }
 }
 

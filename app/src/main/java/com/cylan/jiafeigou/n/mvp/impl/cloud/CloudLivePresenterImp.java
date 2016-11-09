@@ -257,7 +257,6 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
      * desc:创建数据库
      */
     @Override
-
     public void getDBManger() {
         base_db = CloudLiveDbUtil.getInstance().dbManager;
     }
