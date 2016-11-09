@@ -4,9 +4,14 @@ import android.os.Environment;
 import android.util.Patterns;
 
 import com.cylan.jiafeigou.NewHomeActivity;
+import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.view.bell.BellLiveActivity;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 /**
@@ -126,5 +131,116 @@ public class JConstant {
     public static final String OPEN_DOOR_NOTIFY = "open_door_notify";                       //门磁开关提示
 
     public static final String KEY_REGISTER_SMS_TOKEN = "key_token";
+
+    public static final int OS_SERVER = -1; //system message
+    public static final int OS_IOS_PHONE = 0;
+    public static final int OS_PC = 1;
+    public static final int OS_ANDROID_PHONE = 2;
+    public static final int OS_CAMARA_ANDROID_SERVICE = 3;
+    public static final int OS_CAMERA_ANDROID = 4;
+    public static final int OS_CAMERA_UCOS = 5;
+    public static final int OS_DOOR_BELL = 6;
+    public static final int OS_CAMERA_UCOS_V2 = 7;
+    public static final int OS_EFAML = 8;
+    public static final int OS_TEMP_HUMI = 9;//EHOME 温湿度
+    public static final int OS_IR = 10; //EHOME 红外
+    public static final int OS_MAGNET = 11;//EHOME 门窗磁
+    public static final int OS_AIR_DETECTOR = 12;////EHOME 空气检测
+    public static final int OS_CAMERA_UCOS_V3 = 13; //define("OS_CAMERA_UCOS_V3", 13); //DOG-1W-V3
+    public static final int OS_DOOR_BELL_CAM = 14; //摄像头主板
+    public static final int OS_DOOR_BELL_V2 = 15; //wifi狗主板
+    public static final int OS_CAMERA_ANDROID_4G = 16;  //DOG_82
+    public static final int OS_CAMERA_CC3200 = 17;    //乐视狗使用门铃包DOG-CAM-CC3200
+    public static final int OS_CAMERA_PANORAMA_HAISI = 18;    //海思全景摄像头
+    public static final int OS_CAMERA_PANORAMA_QIAOAN = 19;    //乔安全景摄像头
+    public static final int OS_CAMERA_PANORAMA_GUOKE = 20;    //国科全景摄像头
+
+    public static final int OS_MAX_COUNT = OS_CAMERA_PANORAMA_GUOKE;
+    public static Map<Integer, Integer> onLineIconMap = new HashMap<>();
+    public static Map<Integer, Integer> offLineIconMap = new HashMap<>();
+
+    static {
+        //bell
+        onLineIconMap.put(JConstant.OS_DOOR_BELL, R.drawable.icon_home_doorbell_online);
+        //camera
+        onLineIconMap.put(JConstant.OS_CAMARA_ANDROID_SERVICE, R.drawable.icon_home_camera_online);
+        onLineIconMap.put(JConstant.OS_CAMERA_ANDROID, R.drawable.icon_home_camera_online);
+        onLineIconMap.put(JConstant.OS_CAMERA_ANDROID_4G, R.drawable.icon_home_camera_online);
+        onLineIconMap.put(JConstant.OS_CAMERA_CC3200, R.drawable.icon_home_camera_online);
+        onLineIconMap.put(JConstant.OS_CAMERA_PANORAMA_GUOKE, R.drawable.icon_home_camera_online);
+        onLineIconMap.put(JConstant.OS_CAMERA_PANORAMA_HAISI, R.drawable.icon_home_camera_online);
+        onLineIconMap.put(JConstant.OS_CAMERA_PANORAMA_QIAOAN, R.drawable.icon_home_camera_online);
+        onLineIconMap.put(JConstant.OS_CAMERA_UCOS_V3, R.drawable.icon_home_camera_online);
+        onLineIconMap.put(JConstant.OS_CAMERA_UCOS_V2, R.drawable.icon_home_camera_online);
+        onLineIconMap.put(JConstant.OS_CAMERA_UCOS, R.drawable.icon_home_camera_online);
+
+        //MAG
+        onLineIconMap.put(JConstant.OS_MAGNET, R.drawable.icon_home_magnetic_online);
+        //E_FAMILY
+        onLineIconMap.put(JConstant.OS_EFAML, R.drawable.icon_home_album_online);
+        for (int i = 0; i < OS_MAX_COUNT; i++) {
+            if (onLineIconMap.get(i) == null) {
+                onLineIconMap.put(i, R.mipmap.ic_launcher);
+            }
+        }
+    }
+
+    static {
+        //offline
+        //bell
+        offLineIconMap.put(JConstant.OS_DOOR_BELL, R.drawable.icon_home_doorbell_offline);
+        //camera
+        offLineIconMap.put(JConstant.OS_CAMARA_ANDROID_SERVICE, R.drawable.icon_home_camera_offline);
+        offLineIconMap.put(JConstant.OS_CAMERA_ANDROID, R.drawable.icon_home_camera_offline);
+        offLineIconMap.put(JConstant.OS_CAMERA_ANDROID_4G, R.drawable.icon_home_camera_offline);
+        offLineIconMap.put(JConstant.OS_CAMERA_CC3200, R.drawable.icon_home_camera_offline);
+        offLineIconMap.put(JConstant.OS_CAMERA_PANORAMA_GUOKE, R.drawable.icon_home_camera_offline);
+        offLineIconMap.put(JConstant.OS_CAMERA_PANORAMA_HAISI, R.drawable.icon_home_camera_offline);
+        offLineIconMap.put(JConstant.OS_CAMERA_PANORAMA_QIAOAN, R.drawable.icon_home_camera_offline);
+        offLineIconMap.put(JConstant.OS_CAMERA_UCOS_V3, R.drawable.icon_home_camera_offline);
+        offLineIconMap.put(JConstant.OS_CAMERA_UCOS_V2, R.drawable.icon_home_camera_offline);
+        offLineIconMap.put(JConstant.OS_CAMERA_UCOS, R.drawable.icon_home_camera_offline);
+
+        //MAG
+        offLineIconMap.put(JConstant.OS_MAGNET, R.drawable.icon_home_magnetic_offline);
+        //E_FAMILY
+        offLineIconMap.put(JConstant.OS_EFAML, R.drawable.icon_home_album_offline);
+        for (int i = 0; i < OS_MAX_COUNT; i++) {
+            if (offLineIconMap.get(i) == null) {
+                offLineIconMap.put(i, R.mipmap.ic_launcher);
+            }
+        }
+    }
+
+    public static List<Integer> CAMERA_OS_LIST = new ArrayList<>();
+
+    static {
+        CAMERA_OS_LIST.add(OS_CAMARA_ANDROID_SERVICE);
+        CAMERA_OS_LIST.add(OS_CAMERA_ANDROID);
+        CAMERA_OS_LIST.add(OS_CAMERA_ANDROID_4G);
+        CAMERA_OS_LIST.add(OS_CAMERA_CC3200);
+        CAMERA_OS_LIST.add(OS_CAMERA_PANORAMA_GUOKE);
+        CAMERA_OS_LIST.add(OS_CAMERA_PANORAMA_HAISI);
+        CAMERA_OS_LIST.add(OS_CAMERA_PANORAMA_QIAOAN);
+        CAMERA_OS_LIST.add(OS_CAMERA_UCOS_V3);
+        CAMERA_OS_LIST.add(OS_CAMERA_UCOS_V2);
+        CAMERA_OS_LIST.add(OS_CAMERA_UCOS);
+    }
+
+    public static boolean isCamera(int pid) {
+        return CAMERA_OS_LIST.contains(pid);
+    }
+
+    public static boolean isBell(int pid) {
+        return OS_DOOR_BELL == pid;
+    }
+
+    public static boolean isEFamily(int pid) {
+        return OS_EFAML == pid;
+    }
+
+    public static boolean isMag(int pid) {
+        return OS_MAGNET == pid;
+    }
 
 }

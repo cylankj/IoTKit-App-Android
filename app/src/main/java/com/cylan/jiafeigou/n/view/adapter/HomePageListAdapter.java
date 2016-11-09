@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import android.view.View;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
 import com.cylan.superadapter.IMulItemViewType;
 import com.cylan.superadapter.SuperAdapter;
@@ -22,9 +23,10 @@ import java.util.Locale;
 
 public class HomePageListAdapter extends SuperAdapter<DeviceBean> {
 
-    private final static int[] deviceIconOnlineRes = {R.drawable.icon_home_doorbell_online, R.drawable.icon_home_camera_online, R.drawable.icon_home_album_online, R.drawable.icon_home_magnetic_online};
-    private final static int[] deviceIconOfflineRes = {R.drawable.icon_home_doorbell_offline, R.drawable.icon_home_camera_offline, R.drawable.icon_home_album_offline, R.drawable.icon_home_magnetic_offline};
-    private final static int[] msgContentRes = {R.string.receive_new_news, R.string.receive_new_news, R.string.receive_new_news, R.string.receive_new_news};
+    private final static int[] msgContentRes = {R.string.receive_new_news,
+            R.string.receive_new_news,
+            R.string.receive_new_news,
+            R.string.receive_new_news};
     private DeviceItemClickListener deviceItemClickListener;
     private DeviceItemLongClickListener deviceItemLongClickListener;
 
@@ -52,21 +54,12 @@ public class HomePageListAdapter extends SuperAdapter<DeviceBean> {
         handleState(holder, item);
     }
 
-    /**
-     * safe mode
-     *
-     * @param type
-     * @return
-     */
-    private int getDeviceType(int type) {
-        return type > 3 ? 3 : type;
-    }
 
     private String getMessageContent(DeviceBean bean) {
-        final int deviceType = bean.deviceType;
+        final int deviceType = bean.pid;
         final int msgCount = bean.msgCount;
         return String.format(Locale.getDefault(),
-                getContext().getString(msgContentRes[deviceType]), msgCount);
+                getContext().getString(msgContentRes[0]), msgCount);
     }
 
     private String convertTime(DeviceBean bean) {
@@ -93,7 +86,7 @@ public class HomePageListAdapter extends SuperAdapter<DeviceBean> {
             return null;
         ArrayList<DeviceBean> arrayList = new ArrayList<>(getList());
         for (DeviceBean bean : arrayList) {
-            if (TextUtils.equals(bean.cid, cid)) {
+            if (TextUtils.equals(bean.uuid, cid)) {
                 return bean;
             }
         }
@@ -109,21 +102,17 @@ public class HomePageListAdapter extends SuperAdapter<DeviceBean> {
 
     private void handleState(SuperViewHolder holder, DeviceBean bean) {
         final int onLineState = bean.netType;
-        final int deviceType = bean.deviceType;
-        int iconRes = onLineState != 0 ? deviceIconOnlineRes[getDeviceType(deviceType)]
-                : deviceIconOfflineRes[getDeviceType(deviceType)];
-//        int fontColor = onLineState != 0 ? R.color.blue : R.color.red_color;
+        final int deviceType = bean.pid;
+        int iconRes = onLineState != 0 ? JConstant.onLineIconMap.get(deviceType)
+                : JConstant.offLineIconMap.get(deviceType);
         //昵称
-        holder.setText(R.id.tv_device_alias, TextUtils.isEmpty(bean.alias) ? bean.cid : bean.alias);
-//        holder.setTextColor(R.id.tv_device_alias, fontColor);
+        holder.setText(R.id.tv_device_alias, TextUtils.isEmpty(bean.alias) ? bean.uuid : bean.alias);
         //图标
         holder.setBackgroundResource(R.id.img_device_icon, iconRes);
         //消息数
         holder.setText(R.id.tv_device_msg_count, getMessageContent(bean));
-//        holder.setTextColor(R.id.tv_device_msg_count, fontColor);
         //时间
         holder.setText(R.id.tv_device_msg_time, convertTime(bean));
-//        holder.setTextColor(R.id.tv_device_msg_time, fontColor);
         //右下角状态
         setItemState(holder, bean);
     }

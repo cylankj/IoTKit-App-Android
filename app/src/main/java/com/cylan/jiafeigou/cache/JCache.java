@@ -1,9 +1,13 @@
 package com.cylan.jiafeigou.cache;
 
+import android.text.TextUtils;
 import android.util.ArrayMap;
 
 import com.cylan.entity.jniCall.JFGAccount;
+import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
 
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**

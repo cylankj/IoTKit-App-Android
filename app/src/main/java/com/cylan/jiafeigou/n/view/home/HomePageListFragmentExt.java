@@ -326,10 +326,18 @@ public class HomePageListFragmentExt extends Fragment implements
             }
             srLayoutMainContentHolder.setNestedScrollingEnabled(false);
             return;
+        } else {
+            //可能会闪烁
+            homePageListAdapter.clear();
         }
         homePageListAdapter.addAll(resultList);
         emptyViewState.determineEmptyViewState(homePageListAdapter.getCount());
         srLayoutMainContentHolder.setNestedScrollingEnabled(homePageListAdapter.getCount() > JFGRules.NETSTE_SCROLL_COUNT);
+    }
+
+    @Override
+    public List<DeviceBean> getDeviceList() {
+        return homePageListAdapter == null ? null : homePageListAdapter.getList();
     }
 
     @Override
@@ -399,16 +407,16 @@ public class HomePageListFragmentExt extends Fragment implements
         if (bean != null) {
             Bundle bundle = new Bundle();
             bundle.putParcelable(JConstant.KEY_DEVICE_ITEM_BUNDLE, bean);
-            if (bean.deviceType == JConstant.JFG_DEVICE_CAMERA) {
+            if (JConstant.isCamera(bean.pid)) {
                 startActivity(new Intent(getActivity(), CameraLiveActivity.class)
                         .putExtra(JConstant.KEY_DEVICE_ITEM_BUNDLE, bundle));
-            } else if (bean.deviceType == JConstant.JFG_DEVICE_MAG) {
+            } else if (JConstant.isMag(bean.pid)) {
                 startActivity(new Intent(getActivity(), MagLiveActivity.class)
                         .putExtra(JConstant.KEY_DEVICE_ITEM_BUNDLE, bundle));
-            } else if (bean.deviceType == JConstant.JFG_DEVICE_BELL) {
+            } else if (JConstant.isBell(bean.pid)) {
                 startActivity(new Intent(getActivity(), DoorBellHomeActivity.class)
                         .putExtra(JConstant.KEY_DEVICE_ITEM_BUNDLE, bundle));
-            } else if (bean.deviceType == JConstant.JFG_DEVICE_ALBUM) {
+            } else if (JConstant.isEFamily(bean.pid)) {
                 startActivity(new Intent(getActivity(), CloudLiveActivity.class)
                         .putExtra(JConstant.KEY_DEVICE_ITEM_BUNDLE, bundle));
             }
@@ -464,7 +472,7 @@ public class HomePageListFragmentExt extends Fragment implements
         }
         Object o = bundle.getParcelable(JConstant.KEY_DEVICE_ITEM_BUNDLE);
         if (o != null && o instanceof DeviceBean) {
-            final String cid = ((DeviceBean) o).cid;
+            final String cid = ((DeviceBean) o).uuid;
             DeviceBean bean = homePageListAdapter.findTarget(cid);
             if (bean == null) {
                 AppLogger.d("bean is null cid: " + cid);

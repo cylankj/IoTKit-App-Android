@@ -28,6 +28,7 @@ import com.cylan.entity.jniCall.RobotoGetDataRsp;
 import com.cylan.jfgapp.interfases.AppCallBack;
 import com.cylan.jfgapp.jni.JfgAppCmd;
 import com.cylan.jiafeigou.cache.JCache;
+import com.cylan.jiafeigou.dp.DpParser;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
@@ -36,9 +37,12 @@ import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.rxbus.IEventBus;
 import com.cylan.jiafeigou.support.rxbus.RxBus;
 import com.cylan.jiafeigou.support.stat.MtaManager;
+import com.cylan.utils.ListUtils;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 
 public class DataSourceService extends Service implements AppCallBack {
@@ -54,6 +58,13 @@ public class DataSourceService extends Service implements AppCallBack {
     public void onCreate() {
         super.onCreate();
         eventBus = RxBus.getDefault();
+        DpParser.getDpParser().registerDpParser();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        DpParser.getDpParser().unregisterDpParser();
     }
 
     @Override
@@ -91,7 +102,11 @@ public class DataSourceService extends Service implements AppCallBack {
 
     @Override
     public void OnReportJfgDevices(JFGDevice[] jfgDevices) {
-        AppLogger.d("OnLocalMessage :" + jfgDevices);
+        List<JFGDevice> list = jfgDevices == null ? null : Arrays.asList(jfgDevices);
+        if (!ListUtils.isEmpty(list) && RxBus.getDefault().hasObservers())
+            RxBus.getDefault().postSticky(new RxEvent.DeviceList(list));
+        for (int i = 0; i < (list == null ? 0 : list.size()); i++)
+            AppLogger.d("OnLocalMessage :" + new Gson().toJson(list.get(i)));
     }
 
     @Override
@@ -152,7 +167,10 @@ public class DataSourceService extends Service implements AppCallBack {
 
     @Override
     public void OnRobotGetDataRsp(RobotoGetDataRsp robotoGetDataRsp) {
-        AppLogger.d("OnLocalMessage :");
+        AppLogger.d("OnLocalMessage :" + new Gson().toJson(robotoGetDataRsp));
+        if (RxBus.getDefault().hasObservers() && robotoGetDataRsp != null) {
+            RxBus.getDefault().post(new RxEvent.DpDataRsp(robotoGetDataRsp));
+        }
     }
 
     @Override
