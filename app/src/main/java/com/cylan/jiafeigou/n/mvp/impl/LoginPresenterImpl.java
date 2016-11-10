@@ -64,6 +64,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginModelContract.Vie
                         public void call(LoginAccountBean o) {
                             AppLogger.d("log: " + o.toString());
                             JfgCmdInsurance.getCmd().login(o.userName, o.pwd);
+                            JCache.tmpAccount = o;
                         }
                     }, new Action1<Throwable>() {
                         @Override

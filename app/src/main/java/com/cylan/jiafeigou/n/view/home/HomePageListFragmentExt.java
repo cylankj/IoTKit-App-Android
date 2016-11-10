@@ -490,7 +490,7 @@ public class HomePageListFragmentExt extends Fragment implements
         srLayoutMainContentHolder.setEnabled(verticalOffset == 0);
         final float ratio = (appbar.getTotalScrollRange() + verticalOffset) * 1.0f
                 / appbar.getTotalScrollRange();
-        AppLogger.d("verticalOffset: " + " " + verticalOffset + "   " + ratio);
+//        AppLogger.d("verticalOffset: " + " " + verticalOffset + "   " + ratio);
         updateWaveViewAmplitude(ratio);
     }
 

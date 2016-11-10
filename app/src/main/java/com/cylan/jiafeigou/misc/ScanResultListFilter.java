@@ -11,6 +11,8 @@ import java.util.List;
  * Created by cylan-hunt on 16-7-9.
  */
 public class ScanResultListFilter {
+    private ScanResultListFilter() {
+    }
 
     /**
      * filter the  bad one
@@ -18,7 +20,7 @@ public class ScanResultListFilter {
      * @param list
      * @return
      */
-    public List<ScanResult> extractPretty(List<ScanResult> list) {
+    public static List<ScanResult> extractPretty(List<ScanResult> list) {
         List<ScanResult> results = new ArrayList<>();
         if (list == null) {
             return results;
@@ -33,7 +35,7 @@ public class ScanResultListFilter {
         return results;
     }
 
-    public List<ScanResult> extractJFG(List<ScanResult> resultList, String... filters) {
+    public static List<ScanResult> extractJFG(List<ScanResult> resultList, String... filters) {
         if (filters == null)
             return resultList;
         List<ScanResult> scanResultList = new ArrayList<>();

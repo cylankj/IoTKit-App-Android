@@ -31,7 +31,6 @@ import com.cylan.jiafeigou.cache.JCache;
 import com.cylan.jiafeigou.dp.DpParser;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
-import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.misc.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.rxbus.IEventBus;
@@ -112,9 +111,8 @@ public class DataSourceService extends Service implements AppCallBack {
     @Override
     public void OnUpdateAccount(JFGAccount jfgAccount) {
         AppLogger.d("OnLocalMessage :" + new Gson().toJson(jfgAccount));
-        if (eventBus != null && eventBus.hasObservers()) {
-            eventBus.post(new RxEvent.GetUserInfo(jfgAccount));
-        }
+//        if(RxBus.getDefault().getStickyEvent(JFGAccount.class)==null)
+        RxBus.getDefault().postSticky(jfgAccount);
     }
 
     @Override
@@ -208,17 +206,17 @@ public class DataSourceService extends Service implements AppCallBack {
                 eventBus.post(new RxEvent.ResultVerifyCode(jfgResult.code));
                 break;
             case 1:
-                login = jfgResult.code == JError.ErrorOK;
+                login = jfgResult.code == JError.ErrorOK;//注册成功
                 eventBus.post(new RxEvent.ResultRegister(jfgResult.code));
                 break;
             case 2:
-                login = jfgResult.code == JError.ErrorOK;
+                login = jfgResult.code == JError.ErrorOK;//登陆成功
                 eventBus.post(new RxEvent.ResultLogin(jfgResult.code));
                 break;
         }
         if (login) {
-            JfgCmdInsurance.getCmd().getAccount();
-            AppLogger.i("get account");
+            AfterLoginService.startGetAccountAction(getApplicationContext());
+            AfterLoginService.startSaveAccountAction(getApplicationContext());
         }
         AppLogger.i("jfgResult:[event:" + jfgResult.event + ",code:" + jfgResult.code + "]");
     }
@@ -285,7 +283,7 @@ public class DataSourceService extends Service implements AppCallBack {
     public void OnShareDeviceRsp(int i, String s, String s1) {
         AppLogger.d("OnShareDeviceRsp :");
         if (eventBus != null && eventBus.hasObservers()) {
-            eventBus.post(new RxEvent.ShareDeviceCallBack(i,s,s1));
+            eventBus.post(new RxEvent.ShareDeviceCallBack(i, s, s1));
         }
     }
 

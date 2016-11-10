@@ -29,6 +29,7 @@ import butterknife.ButterKnife;
  * Use the {@link BindDeviceListFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
+@Deprecated
 public class BindDeviceListFragment extends BaseTitleFragment implements ToBindDeviceListAdapter.ItemClickListener {
 
     @BindView(R.id.rv_to_bind_device_list)

@@ -636,5 +636,6 @@
     <string name="permissions_tips_gallery">This app requesting access to your Gallery</string>
     <string name="permissions_denied_tips">Unable to get pictures</string>
     <string name="maxsize_zero_tip">Maxsize should be greater than zero</string>
+    <!-- TODO: Remove or change this placeholder text -->
 
 </resources>

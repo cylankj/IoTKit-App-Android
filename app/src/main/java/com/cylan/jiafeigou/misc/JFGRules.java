@@ -1,5 +1,7 @@
 package com.cylan.jiafeigou.misc;
 
+import android.text.TextUtils;
+
 import com.cylan.jiafeigou.utils.TimeUtils;
 
 /**
@@ -9,7 +11,7 @@ public class JFGRules {
 
     public static final int NETSTE_SCROLL_COUNT = 4;
 
-//    public static final int LOGIN = 1;
+    //    public static final int LOGIN = 1;
 //    public static final int LOGOUT = 0;
     public static final int RULE_DAY_TIME = 0;
     public static final int RULE_NIGHT_TIME = 1;
@@ -27,5 +29,19 @@ public class JFGRules {
                 - TimeUtils.getTodayStartTime()) / 1000L;
         return time >= TIME_1800 || time < TIME_6000
                 ? RULE_NIGHT_TIME : RULE_DAY_TIME;
+    }
+
+    public static boolean isCylanDevice(String ssid) {
+        if (!TextUtils.isEmpty(ssid)) {
+            return JConstant.JFG_DOG_DEVICE_REG.matcher(ssid.replace("\"", "")).find()
+                    || JConstant.JFG_BELL_DEVICE_REG.matcher(ssid.replace("\"", "")).find();
+        }
+        return false;
+    }
+
+    public static String getDigitsFromString(String string) {
+        if (TextUtils.isEmpty(string))
+            return "";
+        return string.replaceAll("\\D+", "");
     }
 }

@@ -17,6 +17,7 @@ import android.widget.Toast;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.contract.bind.BindDeviceContract;
 import com.cylan.jiafeigou.n.view.BaseTitleFragment;
+import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.AnimatorUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.utils.ListUtils;
@@ -119,7 +120,11 @@ public class BindCameraFragment extends BaseTitleFragment implements BindDeviceC
         if (getView() != null)
             ViewUtils.deBounceClick(getView().findViewById(R.id.tv_bind_camera_tip));
         Toast.makeText(getContext(), "startScan", Toast.LENGTH_SHORT).show();
-        if (presenter != null) presenter.scanDevices();
+//        if (presenter != null) presenter.scanDevices();
+        BindGuideFragment fragment = BindGuideFragment.newInstance();
+        ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(),
+                fragment, -1);
+        cancelAnimation();
     }
 
     WeakReference<BindDeviceListFragment> listFragmentWeakReference;

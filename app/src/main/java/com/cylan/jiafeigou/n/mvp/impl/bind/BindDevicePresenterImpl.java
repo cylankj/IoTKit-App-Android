@@ -28,12 +28,10 @@ public class BindDevicePresenterImpl extends AbstractPresenter<BindDeviceContrac
 
     private Subscription subscription;
 
-    private ScanResultListFilter scanResultListFilter;
 
     public BindDevicePresenterImpl(BindDeviceContract.View view) {
         super(view);
         view.setPresenter(this);
-        scanResultListFilter = new ScanResultListFilter();
     }
 
 
@@ -51,14 +49,14 @@ public class BindDevicePresenterImpl extends AbstractPresenter<BindDeviceContrac
                 .map(new Func1<List<ScanResult>, Result>() {
                     @Override
                     public Result call(List<ScanResult> resultList) {
-                        resultList = new ArrayList<>(scanResultListFilter.extractPretty(resultList));
+                        resultList = new ArrayList<>(ScanResultListFilter.extractPretty(resultList));
                         SimpleCache.getInstance().setWeakScanResult(resultList);
                         Result result = new Result();
                         result.errState = resultList.size() == 0 ? BindDeviceContract.STATE_NO_RESULT : BindDeviceContract.STATE_HAS_RESULT;
                         if (result.errState == BindDeviceContract.STATE_NO_RESULT) {
                             return result;
                         }
-                        List<ScanResult> newList = new ArrayList<>(scanResultListFilter.extractJFG(resultList, filters));
+                        List<ScanResult> newList = new ArrayList<>(ScanResultListFilter.extractJFG(resultList, filters));
                         newList = resultList;
                         //没有设备
                         if (newList.size() == 0)
