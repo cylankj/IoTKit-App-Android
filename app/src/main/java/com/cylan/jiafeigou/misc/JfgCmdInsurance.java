@@ -22,7 +22,9 @@ public class JfgCmdInsurance {
         final long time = System.currentTimeMillis();
         JfgAppCmd jfgAppCmd = JfgAppCmd.getInstance();
         if (jfgAppCmd == null) {
-            ContextUtils.getContext().startService(new Intent(ContextUtils.getContext(), DataSourceService.class));
+            AppLogger.i("JfgAppCmd is null");
+            ContextUtils.getContext().startService(new Intent(ContextUtils.getContext(),
+                    DataSourceService.class));
         } else return jfgAppCmd;
         while ((jfgAppCmd = JfgAppCmd.getInstance()) == null) {
             try {

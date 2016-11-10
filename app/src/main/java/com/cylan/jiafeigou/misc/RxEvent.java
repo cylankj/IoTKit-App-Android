@@ -1,5 +1,6 @@
 package com.cylan.jiafeigou.misc;
 
+import android.net.wifi.ScanResult;
 import android.os.Bundle;
 
 import com.cylan.entity.jniCall.JFGDevice;
@@ -286,4 +287,11 @@ public class RxEvent {
         }
     }
 
+    public static final class ScanResultList {
+        public List<ScanResult> scanResultList;
+
+        public ScanResultList(List<ScanResult> scanResultList) {
+            this.scanResultList = scanResultList;
+        }
+    }
 }
