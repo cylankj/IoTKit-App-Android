@@ -38,7 +38,7 @@ public class DpMsgIdClassMap {
 
 
     static {
-        Id2ClassMap.put(DP_ID_JFG_BEGIN + 1, String.class);
+        Id2ClassMap.put(DP_ID_JFG_BEGIN + 1, DpMsgDefine.MsgNet.class);
         Id2ClassMap.put(DP_ID_JFG_BEGIN + 2, String.class);
         Id2ClassMap.put(DP_ID_JFG_BEGIN + 3, boolean.class);
         Id2ClassMap.put(DP_ID_JFG_BEGIN + 4, String.class);
@@ -83,4 +83,6 @@ public class DpMsgIdClassMap {
         //700
         Id2ClassMap.put(DP_ID_SYSTEM_BEGIN + 1, CLASS_TYPE_MAP.get(SYS_PUSH_FLAG));
     }
+
+
 }
