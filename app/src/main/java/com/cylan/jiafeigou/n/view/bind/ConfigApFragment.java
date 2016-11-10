@@ -23,7 +23,9 @@ import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.mvp.contract.bind.ConfigApContract;
 import com.cylan.jiafeigou.n.mvp.model.BeanWifiList;
 import com.cylan.jiafeigou.n.view.BaseTitleFragment;
+import com.cylan.jiafeigou.utils.BindUtils;
 import com.cylan.jiafeigou.utils.NullCheckerUtils;
+import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 
 import java.lang.ref.WeakReference;
@@ -175,7 +177,24 @@ public class ConfigApFragment extends BaseTitleFragment implements ConfigApContr
                 etWifiPwd.setText("");
                 break;
             case R.id.tv_wifi_pwd_submit:
-
+                String ssid = ViewUtils.getTextViewContent(tvConfigApName);
+                String pwd = ViewUtils.getTextViewContent(etWifiPwd);
+                int type = 0;
+                if (TextUtils.isEmpty(ssid)) {
+                    ToastUtil.showNegativeToast("请选择wifi");
+                    return;
+                }
+                Object o = tvConfigApName.getTag();
+                if (o != null && o instanceof ScanResult) {
+                    type = BindUtils.getSecurity((ScanResult) o);
+                }
+                if (TextUtils.isEmpty(pwd)) {
+                    ToastUtil.showNegativeToast("请输入密码");
+                    return;
+                }
+                if (presenter != null)
+                    presenter.sendWifiInfo(ViewUtils.getTextViewContent(tvConfigApName),
+                            ViewUtils.getTextViewContent(etWifiPwd), type);
                 break;
             case R.id.tv_config_ap_name:
                 if (getView() != null)
@@ -232,6 +251,8 @@ public class ConfigApFragment extends BaseTitleFragment implements ConfigApContr
         if (isResumed()) {
             tvConfigApName.setTag(new BeanWifiList(scanResult));
             tvConfigApName.setText(scanResult.SSID);
+            rLayoutWifiPwdInputBox.setVisibility(BindUtils.getSecurity(scanResult) != 0
+                    ? View.VISIBLE : View.GONE);
         }
     }
 }

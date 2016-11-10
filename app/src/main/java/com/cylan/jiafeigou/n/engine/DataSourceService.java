@@ -58,12 +58,14 @@ public class DataSourceService extends Service implements AppCallBack {
         super.onCreate();
         eventBus = RxBus.getDefault();
         DpParser.getDpParser().registerDpParser();
+        GlobalUdpDataSource.getInstance().register();
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
         DpParser.getDpParser().unregisterDpParser();
+        GlobalUdpDataSource.getInstance().unregister();
     }
 
     @Override
@@ -97,6 +99,13 @@ public class DataSourceService extends Service implements AppCallBack {
     @Override
     public void OnLocalMessage(String s, int i, byte[] bytes) {
         AppLogger.d("OnLocalMessage :" + s + ",i:" + i);
+        if (RxBus.getDefault().hasObservers()) {
+            RxEvent.LocalUdpMsg msg = new RxEvent.LocalUdpMsg();
+            msg.ip = s;
+            msg.port = (short) i;
+            msg.data = bytes;
+            RxBus.getDefault().post(msg);
+        }
     }
 
     @Override

@@ -40,5 +40,12 @@ public interface ConfigApContract {
          * @param context : this context should be application context
          */
         void registerWiFiBroadcast(Context context);
+
+        /**
+         * @param ssid
+         * @param pwd
+         * @param type
+         */
+        void sendWifiInfo(String ssid, String pwd, int type);
     }
 }

@@ -5,8 +5,10 @@ import android.net.wifi.ScanResult;
 import android.util.Log;
 
 import com.cylan.jiafeigou.cache.SimpleCache;
+import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.misc.RxEvent;
 import com.cylan.jiafeigou.misc.ScanResultListFilter;
+import com.cylan.jiafeigou.misc.bind.UdpConstant;
 import com.cylan.jiafeigou.n.mvp.contract.bind.ConfigApContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -14,6 +16,7 @@ import com.cylan.jiafeigou.support.network.ConnectivityStatus;
 import com.cylan.jiafeigou.support.network.ReactiveNetwork;
 import com.cylan.jiafeigou.support.rxbus.RxBus;
 import com.cylan.jiafeigou.utils.ContextUtils;
+import com.cylan.udpMsgPack.JfgUdpMsg;
 import com.cylan.utils.ListUtils;
 
 import java.util.ArrayList;
@@ -143,6 +146,24 @@ public class ConfigApPresenterImpl extends AbstractPresenter<ConfigApContract.Vi
         accessPeriod = accessPointsPeriod();
         getAccessPointsSub = getAccessPointsSubscription();
         connectSub = connectivitySubscription();
+    }
+
+    @Override
+    public void sendWifiInfo(String ssid, String pwd, int type) {
+        //1.先发送ping,等待ping_ack
+        //2.发送fping,等待fping_ack
+        //3.发送setServer,setLanguage
+        //4.发送sendWifi
+        Observable.just(null)
+                .subscribeOn(Schedulers.newThread())
+                .subscribe(new Action1<Object>() {
+                    @Override
+                    public void call(Object o) {
+                        JfgCmdInsurance.getCmd().sendLocalMessage(UdpConstant.IP,
+                                UdpConstant.PORT,
+                                new JfgUdpMsg.Ping().toBytes());
+                    }
+                });
     }
 
     @Override

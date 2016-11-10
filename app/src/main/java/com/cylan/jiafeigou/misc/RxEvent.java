@@ -10,6 +10,7 @@ import com.cylan.entity.jniCall.JFGShareListInfo;
 import com.cylan.entity.jniCall.RobotoGetDataRsp;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -292,6 +293,21 @@ public class RxEvent {
 
         public ScanResultList(List<ScanResult> scanResultList) {
             this.scanResultList = scanResultList;
+        }
+    }
+
+    public static final class LocalUdpMsg {
+        public String ip;
+        public short port;
+        public byte[] data;
+
+        @Override
+        public String toString() {
+            return "LocalUdpMsg{" +
+                    "ip='" + ip + '\'' +
+                    ", port=" + port +
+                    ", data=" + Arrays.toString(data) +
+                    '}';
         }
     }
 }
