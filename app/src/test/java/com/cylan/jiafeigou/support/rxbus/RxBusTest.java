@@ -95,6 +95,12 @@ public class RxBusTest {
     public void testException() {
         RxBus rxBus = RxBus.getDefault();
         rxBus.toObservable(Integer.class)
+                .filter(new Func1<Integer, Boolean>() {
+                    @Override
+                    public Boolean call(Integer integer) {
+                        return integer != null && integer != 0;
+                    }
+                })
                 .map(new Func1<Integer, Integer>() {
                     @Override
                     public Integer call(Integer integer) {
@@ -120,7 +126,6 @@ public class RxBusTest {
 
     @Test
     public void getStickyEvent() throws Exception {
-
     }
 
     @Test

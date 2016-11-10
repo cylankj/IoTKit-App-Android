@@ -190,8 +190,8 @@ public class ReactiveNetwork {
                 final BroadcastReceiver receiver = new BroadcastReceiver() {
                     @Override
                     public void onReceive(Context context, Intent intent) {
-                        if (wifiManager.getScanResults() == null && nullAgain)
-                            // we need to start scan again to get fresh results ASAP
+                        if ((wifiManager.getScanResults() == null || wifiManager.getScanResults().size() == 0) && nullAgain)
+                            // we need to start scan again to get refresh results ASAP
                             wifiManager.startScan();
                         subscriber.onNext(wifiManager.getScanResults());
                     }

@@ -1,8 +1,10 @@
 package com.cylan.jiafeigou.n.mvp.impl;
 
+import com.cylan.jiafeigou.cache.JCache;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.misc.RxEvent;
 import com.cylan.jiafeigou.n.mvp.contract.login.SetupPwdContract;
+import com.cylan.jiafeigou.n.mvp.model.LoginAccountBean;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.rxbus.RxBus;
 
@@ -64,10 +66,15 @@ public class SetupPwdPresenterImpl extends AbstractPresenter<SetupPwdContract.Vi
                     @Override
                     public void call(Object s) {
                         JfgCmdInsurance.getCmd().register(account, pwd, type, token);
+                        LoginAccountBean bean = new LoginAccountBean();
+                        bean.userName = account;
+                        bean.pwd = pwd;
+                        JCache.tmpAccount = bean;
                     }
                 }, new Action1<Throwable>() {
                     @Override
                     public void call(Throwable throwable) {
+                        JCache.tmpAccount = null;
                         AppLogger.e("god..." + throwable.getLocalizedMessage());
                     }
                 });

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 
+import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.jiafeigou.cache.JCache;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.RxEvent;
@@ -54,10 +55,12 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
                 .add(getLoginRspSub());
         _timeTickSubscriptions
                 .add(getDeviceList());
+        _timeTickSubscriptions
+                .add(JFGAccountUpdate());
     }
 
     private Subscription getTimeTickEventSub() {
-        return RxBus.getDefault().toObservable(RxEvent.TimeTickEvent.class)
+        return RxBus.getDefault().toObservableSticky(RxEvent.TimeTickEvent.class)
                 .throttleFirst(1000, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<RxEvent.TimeTickEvent>() {
@@ -67,7 +70,6 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
                         //18:00 pm-5:59 am
                         if (getView() != null) {
                             getView().onTimeTick(JFGRules.getTimeRule());
-
                         }
                     }
                 });
@@ -87,6 +89,26 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
                             getView().onAccountUpdate(JCache.getAccountCache());
                     }
                 });
+    }
+
+    private Subscription JFGAccountUpdate() {
+        return RxBus.getDefault().toObservableSticky(JFGAccount.class)
+                .filter(new Func1<JFGAccount, Boolean>() {
+                    @Override
+                    public Boolean call(JFGAccount jfgAccount) {
+                        return getView() != null;
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .map(new Func1<JFGAccount, Object>() {
+                    @Override
+                    public Object call(JFGAccount jfgAccount) {
+                        getView().onAccountUpdate(jfgAccount);
+                        return null;
+                    }
+                })
+                .retry()
+                .subscribe();
     }
 
     /**
