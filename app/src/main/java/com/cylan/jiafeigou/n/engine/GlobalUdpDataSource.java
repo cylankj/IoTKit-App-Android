@@ -69,7 +69,7 @@ public class GlobalUdpDataSource {
                                 AppLogger.i(new Gson().toJson(f_pingAck));
                             }
                         } catch (IOException e) {
-                            e.printStackTrace();
+                            AppLogger.i("unpack msgpack failed:"+e.getLocalizedMessage());
                         }
                         AppLogger.i("udp performance: " + (System.currentTimeMillis() - time));
                         return null;

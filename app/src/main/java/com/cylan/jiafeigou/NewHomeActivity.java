@@ -183,7 +183,7 @@ public class NewHomeActivity extends NeedLoginActivity implements
             switch (position) {
                 case INDEX_0: {
                     HomePageListFragmentExt fragment = HomePageListFragmentExt.newInstance(new Bundle());
-                    new HomePageListPresenterImpl(fragment);
+
                     if (fragment != null && fragment.getContext() != null)
                         Toast.makeText(fragment.getContext(), "重新new了。。。1", Toast.LENGTH_SHORT).show();
                     return fragment;
@@ -196,14 +196,13 @@ public class NewHomeActivity extends NeedLoginActivity implements
                     HomeWonderfulFragmentExt fragment = HomeWonderfulFragmentExt.newInstance(bundle);
                     sharedElementCallBackListener = fragment;
                     onActivityReenterListener = fragment;
-                    new HomeWonderfulPresenterImpl(fragment);
+
                     if (fragment != null && fragment.getContext() != null)
                         Toast.makeText(fragment.getContext(), "重新new了。。。2", Toast.LENGTH_SHORT).show();
                     return fragment;
                 }
                 case INDEX_2:
                     HomeMineFragment fragment = HomeMineFragment.newInstance(new Bundle());
-                    new HomeMinePresenterImpl(fragment);
                     if (fragment != null && fragment.getContext() != null)
                         Toast.makeText(fragment.getContext(), "重新new了。。。3", Toast.LENGTH_SHORT).show();
                     return fragment;

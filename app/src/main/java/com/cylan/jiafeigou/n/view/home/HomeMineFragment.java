@@ -3,7 +3,6 @@ package com.cylan.jiafeigou.n.view.home;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,7 +12,9 @@ import android.widget.TextView;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.cache.JCache;
 import com.cylan.jiafeigou.misc.RxEvent;
+import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeMineContract;
+import com.cylan.jiafeigou.n.mvp.impl.home.HomeMinePresenterImpl;
 import com.cylan.jiafeigou.n.view.mine.HomeMineHelpFragment;
 import com.cylan.jiafeigou.n.view.mine.HomeMinePersonalInformationFragment;
 import com.cylan.jiafeigou.n.view.mine.MineFriendsFragment;
@@ -32,7 +33,7 @@ import butterknife.OnClick;
 
 ;
 
-public class HomeMineFragment extends Fragment
+public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
         implements HomeMineContract.View {
     @BindView(R.id.iv_home_mine_portrait)
     RoundedImageView ivHomeMinePortrait;
@@ -54,7 +55,6 @@ public class HomeMineFragment extends Fragment
     @BindView(R.id.home_mine_item_settings)
     HomeMineItemView homeMineItemSettings;
 
-    private HomeMineContract.Presenter presenter;
     private HomeMineHelpFragment mineHelpFragment;
     private HomeMinePersonalInformationFragment personalInformationFragment;
     private HomeSettingFragment homeSettingFragment;
@@ -72,6 +72,7 @@ public class HomeMineFragment extends Fragment
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        this.basePresenter = new HomeMinePresenterImpl(this);
         mineHelpFragment = HomeMineHelpFragment.newInstance(new Bundle());
         personalInformationFragment = HomeMinePersonalInformationFragment.newInstance(new Bundle());
         homeSettingFragment = HomeSettingFragment.newInstance();
@@ -103,17 +104,11 @@ public class HomeMineFragment extends Fragment
     @Override
     public void onResume() {
         super.onResume();
-        if (presenter != null) {
-            presenter.start();
-        }
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        if (presenter != null) {
-            presenter.stop();
-        }
     }
 
     @Override
@@ -169,15 +164,15 @@ public class HomeMineFragment extends Fragment
     }
 
     @Override
-    public void setPresenter(HomeMineContract.Presenter presenter) {
-        this.presenter = presenter;
+    public void setPresenter(HomeMineContract.Presenter basePresenter) {
+        this.basePresenter = basePresenter;
     }
 
     @Override
     public void onPortraitUpdate(String url) {
         if (getActivity() != null) {
             ivHomeMinePortrait.setImageResource(R.drawable.clouds);
-            if (presenter != null) presenter.portraitBlur(R.drawable.clouds);
+            if (basePresenter != null) basePresenter.portraitBlur(R.drawable.clouds);
             tvHomeMineMsgCount.post(new Runnable() {
                 @Override
                 public void run() {
@@ -201,7 +196,7 @@ public class HomeMineFragment extends Fragment
 
     @Override
     public void initName() {
-        tvHomeMineNick.setText(presenter.createRandomName());
+        tvHomeMineNick.setText(basePresenter.createRandomName());
     }
 
 

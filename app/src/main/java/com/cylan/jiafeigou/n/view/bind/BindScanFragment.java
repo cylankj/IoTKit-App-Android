@@ -12,7 +12,9 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.bind.ScanContract;
+import com.cylan.jiafeigou.n.mvp.impl.bind.ScanContractImpl;
 import com.cylan.jiafeigou.support.zscan.ZXingScannerView;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.google.zxing.Result;
@@ -29,13 +31,12 @@ import rx.schedulers.Schedulers;
  * Use the {@link BindScanFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class BindScanFragment extends Fragment implements ZXingScannerView.ResultHandler, ScanContract.View {
+public class BindScanFragment extends IBaseFragment<ScanContract.Presenter> implements ZXingScannerView.ResultHandler, ScanContract.View {
 
     @BindView(R.id.zxV_scan)
     ZXingScannerView zxVScan;
     @BindView(R.id.imgV_nav_back)
     ImageView imgVNavBack;
-    ScanContract.Presenter presenter;
 
     public BindScanFragment() {
         // Required empty public constructor
@@ -50,14 +51,13 @@ public class BindScanFragment extends Fragment implements ZXingScannerView.Resul
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        this.basePresenter = new ScanContractImpl(this);
     }
 
     @Override
     public void onResume() {
         super.onResume();
         zxVScan.setResultHandler(BindScanFragment.this);
-        if (presenter != null)
-            presenter.start();
     }
 
     @Override
@@ -77,7 +77,6 @@ public class BindScanFragment extends Fragment implements ZXingScannerView.Resul
     @Override
     public void onStop() {
         super.onStop();
-        if (presenter != null) presenter.stop();
     }
 
     @Override
@@ -129,6 +128,6 @@ public class BindScanFragment extends Fragment implements ZXingScannerView.Resul
 
     @Override
     public void setPresenter(ScanContract.Presenter presenter) {
-        this.presenter = presenter;
+        this.basePresenter = presenter;
     }
 }
