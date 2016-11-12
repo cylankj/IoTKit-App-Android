@@ -35,6 +35,28 @@ public class ScanResultListFilter {
         return results;
     }
 
+    public static List<ScanResult> extractPretty(List<ScanResult> list, boolean withDog) {
+        if (withDog) {
+            return extractPretty(list);
+        }
+        List<ScanResult> results = new ArrayList<>();
+        if (list == null) {
+            return results;
+        }
+        for (ScanResult result : list) {
+            final String ssid = result.SSID.replace("\"", "");
+            if (JFGRules.isCylanDevice(ssid))
+                continue;
+            if (TextUtils.isEmpty(result.SSID)
+                    || TextUtils.equals(result.SSID, "<unknown ssid>")
+                    || TextUtils.equals(result.SSID, "0x"))
+                continue;
+            results.add(result);
+        }
+        return results;
+
+    }
+
     public static List<ScanResult> extractJFG(List<ScanResult> resultList, String... filters) {
         if (filters == null)
             return resultList;

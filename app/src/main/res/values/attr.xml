@@ -107,6 +107,7 @@
         <attr name="progress_stroke_width" format="dimension" />
         <attr name="progress_stroke_color" format="reference|color" />
         <attr name="progress_point_radius" format="dimension" />
+        <attr name="progress_swipe_degree" format="integer" />
     </declare-styleable>
     <declare-styleable name="SettingItemViewStyle">
         <attr name="sv_title" format="string|reference" />

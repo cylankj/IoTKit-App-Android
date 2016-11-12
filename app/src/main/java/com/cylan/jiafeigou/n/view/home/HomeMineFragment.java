@@ -21,7 +21,6 @@ import com.cylan.jiafeigou.n.view.mine.MineFriendsFragment;
 import com.cylan.jiafeigou.n.view.mine.MineShareDeviceFragment;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.rxbus.RxBus;
-import com.cylan.jiafeigou.utils.ContinuityClickUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.HomeMineItemView;
 import com.cylan.jiafeigou.widget.MsgBoxView;
@@ -230,9 +229,6 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
                     ViewUtils.deBounceClick(getView().findViewById(R.id.home_mine_item_help));
                 AppLogger.e("home_mine_item_help");*/
             /*    helpItem(view);*/
-                if (ContinuityClickUtils.isFastDoubleClick()) {
-                    return;
-                }
                 getFragmentManager().beginTransaction()
                         .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                                 , R.anim.slide_in_left, R.anim.slide_out_right)

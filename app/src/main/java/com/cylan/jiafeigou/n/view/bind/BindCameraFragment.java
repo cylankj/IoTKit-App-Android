@@ -118,12 +118,6 @@ public class BindCameraFragment extends BaseTitleFragment<BindDeviceContract.Pre
         cancelAnimation();
     }
 
-//    WeakReference<BindDeviceListFragment> listFragmentWeakReference;
-
-//    private void initDeviceListFragment() {
-//        if (listFragmentWeakReference == null || listFragmentWeakReference.get() == null)
-//            listFragmentWeakReference = new WeakReference<>(BindDeviceListFragment.newInstance(getArguments()));
-//    }
 
     @Override
     public void onDevicesRsp(List<ScanResult> resultList) {

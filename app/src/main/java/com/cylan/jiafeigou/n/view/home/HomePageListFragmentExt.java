@@ -141,7 +141,6 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
         initEmptyViewState(context);
         //需要优化.
         activityResultPresenter = new ActivityResultPresenterImpl(this);
-        activityResultPresenter.start();
     }
 
     @Override
@@ -335,7 +334,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
     @Override
     public void onLoginState(boolean state) {
         if (!state) {
-            srLayoutMainContentHolder.setRefreshing(false);
+            onRefreshFinish();
             Toast.makeText(getContext(), "还没登陆", Toast.LENGTH_SHORT).show();
         } else {
             //update online view
@@ -343,8 +342,14 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
     }
 
     @Override
+    public void onRefreshFinish() {
+        srLayoutMainContentHolder.setRefreshing(false);
+    }
+
+    @Override
     public void onRefresh() {
-        if (basePresenter != null) basePresenter.fetchDeviceList();
+        if (basePresenter != null)
+            basePresenter.fetchDeviceList();
         //不使用post,因为会泄露
         srLayoutMainContentHolder.setRefreshing(true);
     }

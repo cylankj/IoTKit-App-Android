@@ -1,8 +1,8 @@
 package com.cylan.jiafeigou.n.mvp.contract.bind;
 
-import android.content.Context;
 import android.net.wifi.ScanResult;
 
+import com.cylan.jiafeigou.misc.bind.UdpConstant;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
 
@@ -21,7 +21,7 @@ public interface ConfigApContract {
          *
          * @param state -2:unknown,-1:offline 0:mobile 1:wifi
          */
-        void onWifiStateChanged(int state);
+        void onNetStateChanged(int state);
 
         /**
          * wifi列表回调
@@ -30,16 +30,25 @@ public interface ConfigApContract {
          */
         void onWiFiResult(List<ScanResult> resultList);
 
+        void onSetWifiFinished(UdpConstant.UdpDevicePortrait udpDevicePortrait);
+
+        /**
+         * 丢失与狗的连接
+         */
+        void lossDogConnection();
+
     }
 
     interface Presenter extends BasePresenter {
 
         /**
          * 注册wifi广播
-         *
-         * @param context : this context should be application context
+         * <p>
+         * : this context should be application context
          */
-        void registerWiFiBroadcast(Context context);
+        void registerNetworkMonitor();
+
+        void unregisterNetworkMonitor();
 
         /**
          * @param ssid
@@ -47,5 +56,17 @@ public interface ConfigApContract {
          * @param type
          */
         void sendWifiInfo(String ssid, String pwd, int type);
+
+        /**
+         * 会发送ping,fping消息,确认设备是否在通信范围内.
+         */
+        void checkDeviceState();
+
+        void refreshWifiList();
+
+        /**
+         * 先清空其他狗绑定的信息
+         */
+        void clearConnection();
     }
 }

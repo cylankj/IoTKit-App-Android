@@ -3,6 +3,9 @@ package com.cylan.jiafeigou.support.rxbus;
 import org.junit.Test;
 import org.mockito.Mockito;
 
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+
 import rx.Observable;
 import rx.functions.Action1;
 import rx.functions.Func1;
@@ -114,13 +117,19 @@ public class RxBusTest {
                     @Override
                     public Boolean call(Integer integer, Throwable throwable) {
                         //记录消息
-                        System.out.println("thr: " + integer + " " + throwable.getLocalizedMessage());
-                        return true;
+                        System.out.println("thr: " + integer + " " + throwable.getMessage());
+                        return throwable instanceof TimeoutException;
                     }
                 })
                 .subscribe();
         rxBus.post(5);
+        rxBus.post(5);
         rxBus.post(0);
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         rxBus.post(5);
     }
 

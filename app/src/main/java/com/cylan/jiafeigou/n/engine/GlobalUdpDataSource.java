@@ -63,13 +63,18 @@ public class GlobalUdpDataSource {
                             AppLogger.i("headerTag: " + headTag);
                             if (TextUtils.equals(headTag, UdpConstant.PING_ACK)) {
                                 JfgUdpMsg.PingAck pingAck = msgPack.read(localUdpMsg.data, JfgUdpMsg.PingAck.class);
+                                //保存ping_ack
+                                RxBus.getDefault().post(pingAck);
+//                                UdpConstant.udpObjectMap.put(UdpConstant.PingAckT.class, new UdpConstant.PingAckT(System.currentTimeMillis(), pingAck));
                                 AppLogger.i(new Gson().toJson(pingAck));
                             } else if (TextUtils.equals(headTag, UdpConstant.F_PING_ACK)) {
                                 JfgUdpMsg.FPingAck f_pingAck = msgPack.read(localUdpMsg.data, JfgUdpMsg.FPingAck.class);
+                                RxBus.getDefault().post(f_pingAck);
+//                                UdpConstant.udpObjectMap.put(UdpConstant.PingAckT.class, new UdpConstant.FPingAckT(System.currentTimeMillis(), f_pingAck));
                                 AppLogger.i(new Gson().toJson(f_pingAck));
                             }
                         } catch (IOException e) {
-                            AppLogger.i("unpack msgpack failed:"+e.getLocalizedMessage());
+                            AppLogger.i("unpack msgpack failed:" + e.getLocalizedMessage());
                         }
                         AppLogger.i("udp performance: " + (System.currentTimeMillis() - time));
                         return null;

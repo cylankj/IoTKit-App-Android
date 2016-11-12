@@ -8,6 +8,7 @@ import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.jiafeigou.cache.JCache;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.RxEvent;
+import com.cylan.jiafeigou.misc.RxHelper;
 import com.cylan.jiafeigou.misc.br.TimeTickBroadcast;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomePageListContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
@@ -96,7 +97,7 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
                 .filter(new Func1<JFGAccount, Boolean>() {
                     @Override
                     public Boolean call(JFGAccount jfgAccount) {
-                        return getView() != null;
+                        return getView() != null && JCache.isOnline;
                     }
                 })
                 .observeOn(AndroidSchedulers.mainThread())
@@ -107,7 +108,7 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
                         return null;
                     }
                 })
-                .retry()
+                .retry(new RxHelper.RxException<>("JFGAccount"))
                 .subscribe();
     }
 
@@ -191,13 +192,22 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
     public void fetchDeviceList() {
         if (!JCache.isOnline) {
             getView().onLoginState(false);
+            getView().onRefreshFinish();
         }
         onRefreshSubscription = Observable.just(JCache.isOnline)
                 .subscribeOn(Schedulers.newThread())
-                .subscribe(new Action1<Boolean>() {
+                .map(new Func1<Boolean, Object>() {
                     @Override
-                    public void call(Boolean aBoolean) {
-
+                    public Object call(Boolean aBoolean) {
+                        return null;
+                    }
+                })
+                .delay(2000, TimeUnit.MILLISECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<Object>() {
+                    @Override
+                    public void call(Object aBoolean) {
+                        if (getView() != null) getView().onRefreshFinish();
                     }
                 });
     }

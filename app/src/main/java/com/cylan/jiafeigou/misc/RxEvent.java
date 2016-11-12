@@ -1,11 +1,11 @@
 package com.cylan.jiafeigou.misc;
 
-import android.net.wifi.ScanResult;
 import android.os.Bundle;
 
 import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.entity.jniCall.JFGFriendAccount;
 import com.cylan.entity.jniCall.JFGFriendRequest;
+import com.cylan.entity.jniCall.JFGResult;
 import com.cylan.entity.jniCall.JFGShareListInfo;
 import com.cylan.entity.jniCall.RobotoGetDataRsp;
 
@@ -288,15 +288,17 @@ public class RxEvent {
         }
     }
 
-    public static final class ScanResultList {
-        public List<ScanResult> scanResultList;
-
-        public ScanResultList(List<ScanResult> scanResultList) {
-            this.scanResultList = scanResultList;
-        }
-    }
+//    public static final class ScanResultList {
+//        public List<ScanResult> scanResultList;
+//
+//        public ScanResultList(List<ScanResult> scanResultList) {
+//            this.scanResultList = scanResultList;
+//        }
+//    }
 
     public static final class LocalUdpMsg {
+        //消息的时间,可以用来判断有效性.
+        public long time;
         public String ip;
         public short port;
         public byte[] data;
@@ -308,6 +310,14 @@ public class RxEvent {
                     ", port=" + port +
                     ", data=" + Arrays.toString(data) +
                     '}';
+        }
+    }
+
+    public static final class BindDeviceEvent {
+        public JFGResult jfgResult;
+
+        public BindDeviceEvent(JFGResult jfgResult) {
+            this.jfgResult = jfgResult;
         }
     }
 }

@@ -20,7 +20,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public abstract class BaseTitleFragment<P extends BasePresenter> extends IBaseFragment {
+public abstract class BaseTitleFragment<P extends BasePresenter> extends IBaseFragment<P> {
 
 
     @BindView(R.id.tv_top_bar_center)

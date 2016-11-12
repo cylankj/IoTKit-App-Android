@@ -15,12 +15,12 @@ public abstract class IBaseFragment<P extends BasePresenter> extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        basePresenter.start();
+        if (basePresenter != null) basePresenter.start();
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        basePresenter.stop();
+        if (basePresenter != null) basePresenter.stop();
     }
 }

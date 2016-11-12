@@ -35,6 +35,8 @@ public interface HomePageListContract {
          * @param state
          */
         void onLoginState(boolean state);
+
+        void onRefreshFinish();
     }
 
     interface Presenter extends BasePresenter {

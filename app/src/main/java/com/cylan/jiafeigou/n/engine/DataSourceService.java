@@ -31,9 +31,9 @@ import com.cylan.jiafeigou.cache.JCache;
 import com.cylan.jiafeigou.dp.DpParser;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
+import com.cylan.jiafeigou.misc.JResultEvent;
 import com.cylan.jiafeigou.misc.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.support.rxbus.IEventBus;
 import com.cylan.jiafeigou.support.rxbus.RxBus;
 import com.cylan.jiafeigou.support.stat.MtaManager;
 import com.cylan.utils.ListUtils;
@@ -51,12 +51,10 @@ public class DataSourceService extends Service implements AppCallBack {
         System.loadLibrary("sqlcipher");
     }
 
-    private IEventBus eventBus;
 
     @Override
     public void onCreate() {
         super.onCreate();
-        eventBus = RxBus.getDefault();
         DpParser.getDpParser().registerDpParser();
         GlobalUdpDataSource.getInstance().register();
     }
@@ -101,6 +99,7 @@ public class DataSourceService extends Service implements AppCallBack {
         AppLogger.d("OnLocalMessage :" + s + ",i:" + i);
         if (RxBus.getDefault().hasObservers()) {
             RxEvent.LocalUdpMsg msg = new RxEvent.LocalUdpMsg();
+            msg.time = System.currentTimeMillis();
             msg.ip = s;
             msg.port = (short) i;
             msg.data = bytes;
@@ -210,20 +209,25 @@ public class DataSourceService extends Service implements AppCallBack {
         boolean login = false;
         switch (jfgResult.event) {
             case 0:
-                eventBus.post(new RxEvent.ResultVerifyCode(jfgResult.code));
+                RxBus.getDefault().post(new RxEvent.ResultVerifyCode(jfgResult.code));
                 break;
             case 1:
                 login = jfgResult.code == JError.ErrorOK;//注册成功
-                eventBus.post(new RxEvent.ResultRegister(jfgResult.code));
+                RxBus.getDefault().post(new RxEvent.ResultRegister(jfgResult.code));
                 break;
             case 2:
                 login = jfgResult.code == JError.ErrorOK;//登陆成功
-                eventBus.post(new RxEvent.ResultLogin(jfgResult.code));
+                RxBus.getDefault().post(new RxEvent.ResultLogin(jfgResult.code));
+                break;
+            case JResultEvent.JFG_RESULT_BINDDEV:
+                //绑定设备
+                RxBus.getDefault().postSticky(new RxEvent.BindDeviceEvent(jfgResult));
                 break;
         }
         if (login) {
             AfterLoginService.startGetAccountAction(getApplicationContext());
             AfterLoginService.startSaveAccountAction(getApplicationContext());
+            AfterLoginService.resumeOfflineRequest();
         }
         AppLogger.i("jfgResult:[event:" + jfgResult.event + ",code:" + jfgResult.code + "]");
     }
@@ -256,23 +260,23 @@ public class DataSourceService extends Service implements AppCallBack {
     @Override
     public void OnSendSMSResult(int i, String s) {
         AppLogger.d("OnSendSMSResult :" + i + "," + s);
-        if (eventBus != null && eventBus.hasObservers())
-            eventBus.post(new RxEvent.SmsCodeResult(i, s));
+        if (RxBus.getDefault() != null && RxBus.getDefault().hasObservers())
+            RxBus.getDefault().post(new RxEvent.SmsCodeResult(i, s));
     }
 
     @Override
     public void OnGetFriendListRsp(int i, ArrayList<JFGFriendAccount> arrayList) {
         AppLogger.d("OnLocalMessage :");
-        if (eventBus != null && eventBus.hasObservers()) {
-            eventBus.post(new RxEvent.GetFriendList(i, arrayList));
+        if (RxBus.getDefault() != null && RxBus.getDefault().hasObservers()) {
+            RxBus.getDefault().post(new RxEvent.GetFriendList(i, arrayList));
         }
     }
 
     @Override
     public void OnGetFriendRequestListRsp(int i, ArrayList<JFGFriendRequest> arrayList) {
         AppLogger.d("OnLocalMessage :");
-        if (eventBus != null && eventBus.hasObservers()) {
-            eventBus.post(new RxEvent.GetAddReqList(i, arrayList));
+        if (RxBus.getDefault() != null && RxBus.getDefault().hasObservers()) {
+            RxBus.getDefault().post(new RxEvent.GetAddReqList(i, arrayList));
         }
     }
 
@@ -299,8 +303,8 @@ public class DataSourceService extends Service implements AppCallBack {
     @Override
     public void OnGetShareListRsp(int i, ArrayList<JFGShareListInfo> arrayList) {
         AppLogger.d("OnGetShareListRsp :");
-        if (eventBus != null && eventBus.hasObservers()) {
-            eventBus.post(new RxEvent.GetShareDeviceList(i, arrayList));
+        if (RxBus.getDefault() != null && RxBus.getDefault().hasObservers()) {
+            RxBus.getDefault().post(new RxEvent.GetShareDeviceList(i, arrayList));
         }
 
     }
@@ -323,8 +327,8 @@ public class DataSourceService extends Service implements AppCallBack {
     @Override
     public void OnForgetPassByEmailRsp(int i, String s) {
         AppLogger.d("OnForgetPassByEmailRsp :" + s);
-        if (eventBus.hasObservers()) {
-            eventBus.post(new RxEvent.ForgetPwdByMail(s));
+        if (RxBus.getDefault().hasObservers()) {
+            RxBus.getDefault().post(new RxEvent.ForgetPwdByMail(s));
         }
     }
 

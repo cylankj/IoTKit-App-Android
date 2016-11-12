@@ -7,8 +7,10 @@ import android.text.TextUtils;
 
 import com.cylan.jiafeigou.cache.JCache;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
+import com.cylan.jiafeigou.n.engine.task.OfflineTaskQueue;
 import com.cylan.jiafeigou.n.mvp.model.LoginAccountBean;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 
 /**
@@ -29,6 +31,8 @@ public class AfterLoginService extends IntentService {
      */
     public static final String ACTION_SAVE_ACCOUNT = "action_save_account";
     public static final String ACTION_GET_ACCOUNT = "action_get_account";
+    public static final String ACTION_SYN_OFFLINE_REQ = "action_offline_req";
+
 
     public AfterLoginService() {
         super("AfterLoginService");
@@ -46,6 +50,15 @@ public class AfterLoginService extends IntentService {
         context.startService(intent);
     }
 
+    /**
+     * 恢复离线时候,加入请求队列的消息
+     */
+    public static void resumeOfflineRequest() {
+        Intent intent = new Intent(ContextUtils.getContext(), AfterLoginService.class);
+        intent.putExtra(TAG, ACTION_SYN_OFFLINE_REQ);
+        ContextUtils.getContext().startService(intent);
+    }
+
     @Override
     protected void onHandleIntent(Intent intent) {
         if (intent != null) {
@@ -61,6 +74,8 @@ public class AfterLoginService extends IntentService {
                 //
             } else if (TextUtils.equals(action, ACTION_GET_ACCOUNT)) {
                 JfgCmdInsurance.getCmd().getAccount();
+            } else if (TextUtils.equals(action, ACTION_SYN_OFFLINE_REQ)) {
+                OfflineTaskQueue.getInstance().startRolling();
             }
         }
     }
