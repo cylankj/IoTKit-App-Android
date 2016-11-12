@@ -2,9 +2,13 @@ package com.cylan.jiafeigou.n.mvp.impl.mine;
 
 
 import com.cylan.entity.jniCall.JFGFriendRequest;
+import com.cylan.jiafeigou.misc.JfgCmdInsurance;
+import com.cylan.jiafeigou.misc.RxEvent;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendAddReqDetailContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.n.mvp.model.MineAddReqBean;
+import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.support.rxbus.RxBus;
 
 import java.util.concurrent.TimeUnit;
 
@@ -14,6 +18,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
+import rx.subscriptions.CompositeSubscription;
 
 /**
  * 作者：zsl
@@ -24,6 +29,8 @@ public class MineFriendAddReqDetailPresenterImp extends AbstractPresenter<MineFr
 
     private Subscription addAsFriendSub;
     private Subscription sendAddReqSub;
+    private CompositeSubscription compositeSubscription;
+
 
     public MineFriendAddReqDetailPresenterImp(MineFriendAddReqDetailContract.View view) {
         super(view);
@@ -32,17 +39,20 @@ public class MineFriendAddReqDetailPresenterImp extends AbstractPresenter<MineFr
 
     @Override
     public void start() {
-
+        if (compositeSubscription != null && !compositeSubscription.isUnsubscribed()){
+            compositeSubscription.unsubscribe();
+        }
+        compositeSubscription = new CompositeSubscription();
+        compositeSubscription.add(excuteGetAddReqlistData());
+        compositeSubscription.add(getAddReqListDataCall());
     }
 
     @Override
     public void stop() {
-        if (addAsFriendSub != null && !addAsFriendSub.isUnsubscribed()){
-            addAsFriendSub.unsubscribe();
-        }
-
-        if (sendAddReqSub != null && !sendAddReqSub.isUnsubscribed()){
-            sendAddReqSub.unsubscribe();
+        if (compositeSubscription != null){
+            if (!compositeSubscription.isUnsubscribed()){
+                unSubscribe(compositeSubscription);
+            }
         }
     }
 
@@ -50,23 +60,18 @@ public class MineFriendAddReqDetailPresenterImp extends AbstractPresenter<MineFr
      * 添加为亲友；
      */
     @Override
-    public void handlerAddAsFriend(MineAddReqBean addRequestItems) {
-
-        addAsFriendSub = Observable.just(addRequestItems)
-                .map(new Func1<MineAddReqBean, Boolean>() {
+    public void handlerAddAsFriend(String addRequestItems) {
+        rx.Observable.just(addRequestItems)
+                .subscribeOn(Schedulers.newThread())
+                .subscribe(new Action1<String>() {
                     @Override
-                    public Boolean call(MineAddReqBean jfgFriendRequest) {
-                        //TODO 调用SDK 添加为好友
-                        return false;
+                    public void call(String account) {
+                        JfgCmdInsurance.getCmd().consentAddFriend(account);
                     }
-                })
-                .delay(2000,TimeUnit.MILLISECONDS)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<Boolean>() {
+                }, new Action1<Throwable>() {
                     @Override
-                    public void call(Boolean aBoolean) {
-                        getView().showAddedReult(aBoolean);
+                    public void call(Throwable throwable) {
+                        AppLogger.e("handlerAddAsFriend"+throwable.getLocalizedMessage());
                     }
                 });
     }
@@ -84,7 +89,7 @@ public class MineFriendAddReqDetailPresenterImp extends AbstractPresenter<MineFr
                 getView().showReqOutTimeDialog();
             }
         }else {
-            handlerAddAsFriend(addRequestItems);
+            handlerAddAsFriend(addRequestItems.account);
         }
     }
 
@@ -94,22 +99,62 @@ public class MineFriendAddReqDetailPresenterImp extends AbstractPresenter<MineFr
      */
     @Override
     public void sendAddReq(MineAddReqBean addRequestItems) {
-        //调用SDK 模拟发送请求
-        sendAddReqSub = Observable.just(addRequestItems)
-                .map(new Func1<MineAddReqBean, Boolean>() {
+        rx.Observable.just(addRequestItems)
+                .subscribeOn(Schedulers.newThread())
+                .subscribe(new Action1<MineAddReqBean>() {
                     @Override
-                    public Boolean call(MineAddReqBean jfgFriendRequest) {
-                        //TODO 调用SDK 发送添加请求
-                        return false;
+                    public void call(MineAddReqBean mineAddReqBean) {
+                        JfgCmdInsurance.getCmd().addFriend(mineAddReqBean.account,"");
                     }
-                })
-                .delay(2000, TimeUnit.MILLISECONDS)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<Boolean>() {
+                }, new Action1<Throwable>() {
                     @Override
-                    public void call(Boolean o) {
-                        getView().showSendAddReqResult(o);
+                    public void call(Throwable throwable) {
+                        AppLogger.e("sendAddReq"+throwable.getLocalizedMessage());
+                    }
+                });
+    }
+
+    /**
+     * 判断是否向我发送过添加请求
+     * @return
+     */
+    @Override
+    public Subscription getAddReqListDataCall() {
+        return RxBus.getDefault().toObservable(RxEvent.GetAddReqList.class)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<RxEvent.GetAddReqList>() {
+                    @Override
+                    public void call(RxEvent.GetAddReqList getAddReqList) {
+                        if (getAddReqList != null && getAddReqList instanceof RxEvent.GetAddReqList){
+                            if (getAddReqList.arrayList.size() == 0){
+                                // 未向我发送过请求
+                                if (getView() != null)getView().jump2AddReqFragment();
+                            }else {
+                                // 判断是否包含该账号
+                                if (getView() != null) getView().isHasAccountResult(getAddReqList);
+                            }
+                        }
+                    }
+                });
+    }
+
+
+    /**
+     * 执行请求数据
+     */
+    @Override
+    public Subscription excuteGetAddReqlistData() {
+        return rx.Observable.just(null)
+                .subscribeOn(Schedulers.newThread())
+                .subscribe(new Action1<Object>() {
+                    @Override
+                    public void call(Object o) {
+                        JfgCmdInsurance.getCmd().getFriendRequestList();
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        AppLogger.e("excuteGetAddReqlistData"+throwable.getLocalizedMessage());
                     }
                 });
     }

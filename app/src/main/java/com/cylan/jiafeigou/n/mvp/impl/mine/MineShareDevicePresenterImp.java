@@ -2,6 +2,7 @@ package com.cylan.jiafeigou.n.mvp.impl.mine;
 
 import com.cylan.entity.jniCall.JFGFriendAccount;
 import com.cylan.entity.jniCall.JFGShareListInfo;
+import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.misc.RxEvent;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineShareDeviceContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
@@ -13,6 +14,7 @@ import java.util.ArrayList;
 
 import rx.Subscription;
 import rx.functions.Action1;
+import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
 /**
@@ -60,8 +62,8 @@ public class MineShareDevicePresenterImp extends AbstractPresenter<MineShareDevi
                         }
                     }
                 });
-        RxEvent.GetShareDeviceList shareDeviceList = new RxEvent.GetShareDeviceList(1, TestData());
-        handlerShareDeviceListData(shareDeviceList);
+//        RxEvent.GetShareDeviceList shareDeviceList = new RxEvent.GetShareDeviceList(1, TestData());
+//        handlerShareDeviceListData(shareDeviceList);
         return initDataSub;
     }
 
@@ -147,5 +149,6 @@ public class MineShareDevicePresenterImp extends AbstractPresenter<MineShareDevi
         }
         return list;
     }
+
 
 }

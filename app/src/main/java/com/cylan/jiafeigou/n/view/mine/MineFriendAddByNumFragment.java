@@ -3,6 +3,8 @@ package com.cylan.jiafeigou.n.view.mine;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -72,6 +74,12 @@ public class MineFriendAddByNumFragment extends Fragment implements MineFriendAd
         return view;
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (presenter != null)presenter.start();
+    }
+
     private void initPresenter() {
         presenter = new MineFriendAddByNumPresenterImp(this);
     }
@@ -82,10 +90,27 @@ public class MineFriendAddByNumFragment extends Fragment implements MineFriendAd
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 if (KeyEvent.KEYCODE_ENTER == keyCode && KeyEvent.ACTION_DOWN == event.getAction()) {
                     showFindLoading();
-                    presenter.findUserFromServer(getInputNum());
+                    presenter.checkFriendAccount(getInputNum());
                     return true;
                 }
                 return false;
+            }
+        });
+
+        etAddByNumber.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                hideFindNoResult();
             }
         });
     }
@@ -146,8 +171,7 @@ public class MineFriendAddByNumFragment extends Fragment implements MineFriendAd
     }
 
     @Override
-    public void setFindResult(boolean isFrom,boolean hasSendToMe,MineAddReqBean bean) {
-        if (hasSendToMe){
+    public void setFindResult(boolean isFrom,MineAddReqBean bean) {
             Bundle bundle = new Bundle();
             bundle.putBoolean("isFrom",isFrom);
             bundle.putSerializable("addRequestItems", bean);
@@ -158,18 +182,6 @@ public class MineFriendAddByNumFragment extends Fragment implements MineFriendAd
                     .add(android.R.id.content, addReqDetailFragment, "addReqDetailFragment")
                     .addToBackStack("mineHelpFragment")
                     .commit();
-
-        }else {
-            Bundle bundle = new Bundle();
-            bundle.putSerializable("contactItem", bean);
-            MineAddFromContactFragment mineAddFromContactFragment = MineAddFromContactFragment.newInstance(bundle);
-            getFragmentManager().beginTransaction()
-                    .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
-                            , R.anim.slide_in_left, R.anim.slide_out_right)
-                    .add(android.R.id.content, mineAddFromContactFragment, "mineAddFromContactFragment")
-                    .addToBackStack("mineHelpFragment")
-                    .commit();
-        }
     }
 
     @Override

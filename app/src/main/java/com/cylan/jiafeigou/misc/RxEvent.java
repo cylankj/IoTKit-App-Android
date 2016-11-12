@@ -329,4 +329,21 @@ public class RxEvent {
         }
     }
 
+    /**
+     * 检验邮箱是否注册过回调
+     */
+    public static final class CheckAccountCallback {
+        public int i;
+
+        public CheckAccountCallback(int i, String s, String s1, boolean b) {
+            this.i = i;
+            this.s = s;
+            this.s1 = s1;
+            this.b = b;
+        }
+        public String s;
+        public String s1;
+        public boolean b;
+    }
+
 }

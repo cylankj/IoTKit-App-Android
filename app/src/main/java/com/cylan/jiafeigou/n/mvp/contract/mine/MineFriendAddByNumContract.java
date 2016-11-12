@@ -7,6 +7,8 @@ import com.cylan.jiafeigou.n.mvp.model.MineAddReqBean;
 import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
 import com.cylan.jiafeigou.n.mvp.model.UserInfoBean;
 
+import rx.Subscription;
+
 /**
  * 作者：zsl
  * 创建时间：2016/9/7
@@ -45,17 +47,26 @@ public interface MineFriendAddByNumContract {
          * isFrom:是否从添加请求界面点击进入
          * hasSendToMe：是否已向我发送请求过
          */
-        void setFindResult(boolean isFrom,boolean hasSendToMe,MineAddReqBean bean);
+        void setFindResult(boolean isFrom,MineAddReqBean bean);
 
     }
 
     interface Presenter extends BasePresenter {
 
-        void findUserFromServer(String number);
-
         /**
          * 判断是否已向我发送添加请求
          */
         void checkIsSendAddReqToMe(MineAddReqBean bean);
+
+        /**
+         * 检测好友账号是否注册过
+         */
+        void checkFriendAccount(String account);
+
+        /**
+         * 检测好友的回调
+         * @return
+         */
+        Subscription checkFriendAccountCallBack();
     }
 }

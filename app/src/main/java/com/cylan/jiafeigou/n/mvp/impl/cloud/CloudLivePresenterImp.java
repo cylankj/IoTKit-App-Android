@@ -54,6 +54,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
+import rx.subscriptions.CompositeSubscription;
 
 /**
  * 作者：zsl
@@ -82,10 +83,12 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
     private Subscription checkDeviceOnLineSub;
     private Subscription leaveMesgSub;
     private Subscription subscriptionRefresh;
+    private CompositeSubscription subscription;
 
     public CloudLivePresenterImp(CloudLiveContract.View view) {
         super(view);
         view.setPresenter(this);
+        subscription = new CompositeSubscription();
     }
 
     @Override
@@ -93,6 +96,7 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
         if(subscriptionRefresh!=null && !subscriptionRefresh.isUnsubscribed()){
             subscriptionRefresh.unsubscribe();
         }
+        subscription.add(getAccount());
         refreshHangUpView();
     }
 
@@ -109,6 +113,9 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
         if (leaveMesgSub != null){
             leaveMesgSub.unsubscribe();
         }
+
+        unSubscribe(subscription);
+
         stopPlayRecord();
     }
 
@@ -257,8 +264,8 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
      * desc:创建数据库
      */
     @Override
-    public void getDBManger() {
-        base_db = CloudLiveDbUtil.getInstance().dbManager;
+    public void getDBManger(String dbName) {
+        base_db = CloudLiveDbUtil.getInstance(dbName).dbManager;
     }
 
     @Override
@@ -367,6 +374,23 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
                     public void call(Boolean aBoolean) {
                         getView().hideReconnetProgress();
                         getView().showVoiceTalkDialog(aBoolean);
+                    }
+                });
+    }
+
+    /**
+     * 获取账号信息用于创建数据库
+     */
+    @Override
+    public Subscription getAccount() {
+        return RxBus.getDefault().toObservable(RxEvent.GetUserInfo.class)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<RxEvent.GetUserInfo>() {
+                    @Override
+                    public void call(RxEvent.GetUserInfo getUserInfo) {
+                        if (getUserInfo != null && getUserInfo instanceof RxEvent.GetUserInfo){
+                            getDBManger(getUserInfo.jfgAccount.getAccount());
+                        }
                     }
                 });
     }

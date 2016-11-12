@@ -1,5 +1,7 @@
 package com.cylan.jiafeigou.n.db;
 
+import android.os.Environment;
+
 import com.cylan.jiafeigou.support.db.DbManager;
 import com.cylan.jiafeigou.support.db.DbManagerImpl;
 import com.cylan.jiafeigou.support.db.table.TableEntity;
@@ -18,26 +20,27 @@ public class CloudLiveDbUtil {
 
     public static DbManager dbManager;
 
-    private CloudLiveDbUtil() {
+    private CloudLiveDbUtil(String dbName) {
         if (dbManager == null) {
-            dbManager = DbManagerImpl.getInstance(getDaoconfig());
+            dbManager = DbManagerImpl.getInstance(getDaoconfig(dbName));
         }
     }
 
-    public static CloudLiveDbUtil getInstance() {
+    public static CloudLiveDbUtil getInstance(String dbName) {
         synchronized (CloudLiveDbUtil.class) {
             if (uniqueInstance == null) {
-                uniqueInstance = new CloudLiveDbUtil();
+                uniqueInstance = new CloudLiveDbUtil(dbName);
             }
             return uniqueInstance;
         }
     }
 
-    private DbManager.DaoConfig getDaoconfig() {
+    private DbManager.DaoConfig getDaoconfig(String dbName) {
         return new DbManager.DaoConfig()
                 .setAllowTransaction(true)
                 .setContext(ContextUtils.getContext())
-                .setDbName(DB_NAME)
+                .setDbDir(Environment.getExternalStorageDirectory())
+                .setDbName(dbName)
                 .setDbVersion(1)
                 .setDbOpenListener(new DbManager.DbOpenListener() {
                     @Override
@@ -46,7 +49,6 @@ public class CloudLiveDbUtil {
                     }
                 })
                 .setDbUpgradeListener(new MyDbLisenter());
-
     }
 
     private class MyDbLisenter implements DbManager.DbUpgradeListener {

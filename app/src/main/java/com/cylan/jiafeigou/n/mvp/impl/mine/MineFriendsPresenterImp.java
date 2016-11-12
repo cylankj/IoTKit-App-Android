@@ -18,6 +18,7 @@ import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.superadapter.OnItemClickListener;
 import com.cylan.superadapter.OnItemLongClickListener;
 import com.cylan.superadapter.internal.SuperViewHolder;
+import com.sina.weibo.sdk.utils.LogUtil;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -49,14 +50,11 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
     public MineFriendsPresenterImp(MineFriendsContract.View view) {
         super(view);
         view.setPresenter(this);
+        compositeSubscription = new CompositeSubscription();
     }
 
     @Override
     public void start() {
-        if (compositeSubscription != null && !compositeSubscription.isUnsubscribed()) {
-            unSubscribe(compositeSubscription);
-        }
-        compositeSubscription = new CompositeSubscription();
         compositeSubscription.add(getAddRequest());
         compositeSubscription.add(getFriendList());
         compositeSubscription.add(initAddReqRecyListData());
@@ -66,9 +64,7 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
 
     @Override
     public void stop() {
-        if (compositeSubscription != null && compositeSubscription.isUnsubscribed()) {
-            compositeSubscription.unsubscribe();
-        }
+        unSubscribe(compositeSubscription);
     }
 
     @Override
@@ -190,6 +186,7 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
     @Override
     public Subscription initFriendRecyListData() {
         friendListSub = RxBus.getDefault().toObservable(RxEvent.GetFriendList.class)
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<RxEvent.GetFriendList>() {
                     @Override
                     public void call(RxEvent.GetFriendList o) {
@@ -197,10 +194,6 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
                             handleInitFriendListDataResult(o);
                     }
                 });
-
-        //测试数据 TODO
-        RxEvent.GetFriendList friendListTest = new RxEvent.GetFriendList(1, testRelativatesAndFriendsData());
-        handleInitFriendListDataResult(friendListTest);
         return friendListSub;
     }
 
@@ -209,8 +202,8 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
      */
     @Override
     public Subscription initAddReqRecyListData() {
-
         addReqListSub = RxBus.getDefault().toObservable(RxEvent.GetAddReqList.class)
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<RxEvent.GetAddReqList>() {
                     @Override
                     public void call(RxEvent.GetAddReqList o) {
@@ -219,10 +212,6 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
                         handleInitAddReqListDataResult(o);
                     }
                 });
-
-        //测试数据 TODO
-        RxEvent.GetAddReqList addReqListTest = new RxEvent.GetAddReqList(1, testAddRequestData());
-        handleInitAddReqListDataResult(addReqListTest);
         return addReqListSub;
     }
 
@@ -331,6 +320,7 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
             getView().initAddReqRecyList(initAddRequestData(addReqList));
         } else {
             addReqNull = true;
+            checkAllNull();
             getView().hideAddReqListTitle();
         }
     }
@@ -344,11 +334,12 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
         if (friendList.arrayList.size() != 0) {
             getView().showFriendListTitle();
             getView().initFriendRecyList(initRelativatesAndFriendsData(friendList));
-
         } else {
             friendListNull = true;
+            checkAllNull();
             getView().hideFriendListTitle();
         }
+
     }
 
 

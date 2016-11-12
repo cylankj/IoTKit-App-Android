@@ -1,20 +1,19 @@
 package com.cylan.jiafeigou.n.mvp.impl.mine;
 
-import com.cylan.entity.jniCall.JFGFriendRequest;
+import com.cylan.jiafeigou.misc.JfgCmdInsurance;
+import com.cylan.jiafeigou.misc.RxEvent;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendAddByNumContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.n.mvp.model.MineAddReqBean;
-import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
-import com.cylan.jiafeigou.n.mvp.model.UserInfoBean;
+import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.support.rxbus.RxBus;
 
-import java.util.concurrent.TimeUnit;
 
-import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
-import rx.functions.Func1;
 import rx.schedulers.Schedulers;
+import rx.subscriptions.CompositeSubscription;
 
 /**
  * 作者：zsl
@@ -24,8 +23,7 @@ import rx.schedulers.Schedulers;
 public class MineFriendAddByNumPresenterImp extends AbstractPresenter<MineFriendAddByNumContract.View>
         implements MineFriendAddByNumContract.Presenter {
 
-    private Subscription findUserFromServerSub;
-    private Subscription checkSendToMeSub;
+    private CompositeSubscription compositeSubscription;
 
     public MineFriendAddByNumPresenterImp(MineFriendAddByNumContract.View view) {
         super(view);
@@ -34,77 +32,86 @@ public class MineFriendAddByNumPresenterImp extends AbstractPresenter<MineFriend
 
     @Override
     public void start() {
-
+        if (compositeSubscription != null && !compositeSubscription.isUnsubscribed()){
+            unSubscribe(compositeSubscription);
+        }
+        compositeSubscription = new CompositeSubscription();
+        compositeSubscription.add(checkFriendAccountCallBack());
     }
 
     @Override
     public void stop() {
-        if (findUserFromServerSub != null && !findUserFromServerSub.isUnsubscribed()) {
-            findUserFromServerSub.unsubscribe();
-        }
-
-        if (checkSendToMeSub != null && !checkSendToMeSub.isUnsubscribed()){
-            checkSendToMeSub.unsubscribe();
-        }
+        unSubscribe(compositeSubscription);
     }
 
+
+    /**
+     * 是否想我发送过请求
+     * @param bean
+     */
     @Override
-    public void findUserFromServer(String number) {
-        if (number == null) {
-            return;
-        }
-        if (getView() != null){
-            getView().showFindLoading();
-        }
-        findUserFromServerSub = Observable.just(number)
-                .map(new Func1<String, MineAddReqBean>() {
-                    @Override
-                    public MineAddReqBean call(String s) {
-                        //TODO 访问服务器查询该用户
-                        return testData();
-                    }
-                })
-                .delay(2000, TimeUnit.MILLISECONDS)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<MineAddReqBean>() {
-                    @Override
-                    public void call(MineAddReqBean bean) {
-                        getView().hideFindLoading();
-                        getView().showFindResult(bean);
-                    }
-                });
+    public void checkIsSendAddReqToMe(MineAddReqBean bean) {
+
     }
 
+    /**
+     * 检测好友账号是否注册过
+     */
     @Override
-    public void checkIsSendAddReqToMe(final MineAddReqBean bean) {
-
-        checkSendToMeSub = Observable.just(bean)
-                .map(new Func1<MineAddReqBean, Boolean>() {
+    public void checkFriendAccount(final String account) {
+        rx.Observable.just(account)
+                .subscribeOn(Schedulers.newThread())
+                .subscribe(new Action1<String>() {
                     @Override
-                    public Boolean call(MineAddReqBean bean) {
-                        // TODO SDK 有么有接口 获取好友请求列表查询
-                        return true;
+                    public void call(String account) {
+                        JfgCmdInsurance.getCmd().checkFriendAccount(account);
                     }
-                })
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<Boolean>() {
+                }, new Action1<Throwable>() {
                     @Override
-                    public void call(Boolean o) {
-                        getView().setFindResult(false,o,bean);
+                    public void call(Throwable throwable) {
+                        AppLogger.d("checkFriendAccount"+throwable.getLocalizedMessage());
                     }
                 });
     }
 
     /**
-     * 测试数据
+     * 检测好友的回调
      * @return
      */
-    private MineAddReqBean testData() {
-        MineAddReqBean info = new MineAddReqBean();
-        info.alias = "赵四";
-        info.account = "13413544333";
-        return info;
+    @Override
+    public Subscription checkFriendAccountCallBack() {
+        return RxBus.getDefault().toObservable(RxEvent.CheckAccountCallback.class)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<RxEvent.CheckAccountCallback>() {
+                    @Override
+                    public void call(RxEvent.CheckAccountCallback checkAccountCallback) {
+                        if (checkAccountCallback != null){
+                            handlerCheckCallBackResult(checkAccountCallback);
+                        }
+                    }
+                });
     }
+    /**
+     * 处理检测的回调结果
+     * @param checkAccountCallback
+     */
+    private void handlerCheckCallBackResult(RxEvent.CheckAccountCallback checkAccountCallback) {
+        if (checkAccountCallback.i == 0){
+            // 是亲友 已注册
+            if (getView() != null){
+                MineAddReqBean addReqBean = new MineAddReqBean();
+                addReqBean.account = checkAccountCallback.s;
+                addReqBean.alias = checkAccountCallback.s1;
+                getView().hideFindLoading();
+                getView().setFindResult(false,addReqBean);
+            }
+        }else {
+            // 不是亲友 未注册 无结果
+            if (getView() != null){
+                getView().hideFindLoading();
+                getView().showFindNoResult();
+            }
+        }
+    }
+
 }

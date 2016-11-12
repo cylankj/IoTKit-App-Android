@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.cylan.entity.jniCall.JFGFriendRequest;
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.misc.RxEvent;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendAddReqDetailContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineFriendAddReqDetailPresenterImp;
 import com.cylan.jiafeigou.n.mvp.model.MineAddReqBean;
@@ -38,7 +39,7 @@ public class MineFriendAddReqDetailFragment extends Fragment implements MineFrie
     ImageView ivDetailUserHead;
     @BindView(R.id.tv_relative_and_friend_name)
     TextView tvRelativeAndFriendName;
-    @BindView(R.id.tv_relative_and_friend_like_name)
+    @BindView(R.id.tv_relative_and_friend_account)
     TextView tvRelativeAndFriendLikeName;
     @BindView(R.id.tv_add_request_mesg)
     TextView tvAddRequestMesg;
@@ -88,7 +89,12 @@ public class MineFriendAddReqDetailFragment extends Fragment implements MineFrie
         Bundle arguments = getArguments();
         boolean isFrome = arguments.getBoolean("isFrom");
         addRequestItems = (MineAddReqBean) arguments.getSerializable("addRequestItems");
-        tvRelativeAndFriendName.setText(addRequestItems.alias);
+        if ("".equals(addRequestItems.alias)){
+            tvRelativeAndFriendName.setText("sjd172");
+        }else {
+            tvRelativeAndFriendName.setText(addRequestItems.alias);
+        }
+        tvRelativeAndFriendLikeName.setText(addRequestItems.account);
         tvAddRequestMesg.setText(addRequestItems.sayHi);
         showOrHideReqMesg(isFrome);
         //Glide.with(getContext()).load(addRequestItems.getIcon()).error(R.drawable.icon_mine_head_normal).into(ivDetailUserHead);
@@ -125,7 +131,7 @@ public class MineFriendAddReqDetailFragment extends Fragment implements MineFrie
                 break;
             case R.id.tv_add_as_relative_and_friend:            //添加为亲友
                 if (presenter != null){
-                   presenter.checkAddReqOutTime(addRequestItems);
+                   presenter.start();
                 }
                 break;
         }
@@ -164,6 +170,7 @@ public class MineFriendAddReqDetailFragment extends Fragment implements MineFrie
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
                 presenter.sendAddReq(addRequestItems);
+                showSendAddReqResult(true);
             }
         });
         builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
@@ -183,7 +190,6 @@ public class MineFriendAddReqDetailFragment extends Fragment implements MineFrie
             getFragmentManager().popBackStack();
             ToastUtil.showNegativeToast("请求发送失败");
         }
-
     }
 
     @Override
@@ -192,6 +198,44 @@ public class MineFriendAddReqDetailFragment extends Fragment implements MineFrie
             ToastUtil.showPositiveToast("添加成功");
         }else {
             ToastUtil.showNegativeToast("添加失败");
+        }
+
+    }
+
+    /**
+     * 跳转到添加请求页
+     */
+    @Override
+    public void jump2AddReqFragment() {
+        Bundle bundle = new Bundle();
+        bundle.putString("account",addRequestItems.account);
+        MineAddFromContactFragment fragment = MineAddFromContactFragment.newInstance(bundle);
+        getFragmentManager().beginTransaction()
+                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
+                        , R.anim.slide_in_left, R.anim.slide_out_right)
+                .add(android.R.id.content, fragment, "addFromContactFragment")
+                .addToBackStack("mineHelpFragment")
+                .commit();
+    }
+
+    /**
+     * 是否存在该账号的结果
+     * @param getAddReqList
+     */
+    @Override
+    public void isHasAccountResult(RxEvent.GetAddReqList getAddReqList) {
+        for (JFGFriendRequest bean:getAddReqList.arrayList){
+            if (bean.account.equals(addRequestItems.account)){
+                // 向我发送过请求
+                MineAddReqBean addReqBean = new MineAddReqBean();
+                addReqBean.account = bean.account;
+                addReqBean.time = bean.time;
+                presenter.checkAddReqOutTime(addReqBean);
+                return;
+            }else {
+                //未向我发送过请求
+                jump2AddReqFragment();
+            }
         }
 
     }

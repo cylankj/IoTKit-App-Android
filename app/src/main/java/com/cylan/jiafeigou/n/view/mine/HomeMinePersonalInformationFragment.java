@@ -20,6 +20,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
+import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MinePersonalInformationContract;
@@ -88,6 +89,7 @@ public class HomeMinePersonalInformationFragment extends Fragment implements Min
     private MinePersionlInfoSetPassWordFragment setPassWordFragment;
     private MinePersonalInformationContract.Presenter presenter;
     private AlertDialog alertDialog;
+    private JFGAccount argumentData;
 
     public static HomeMinePersonalInformationFragment newInstance(Bundle bundle) {
         HomeMinePersonalInformationFragment fragment = new HomeMinePersonalInformationFragment();
@@ -98,11 +100,10 @@ public class HomeMinePersonalInformationFragment extends Fragment implements Min
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mailBoxFragment = HomeMinePersonalInformationMailBoxFragment.newInstance(new Bundle());
         bigHeadFragment = MineUserInfoLookBigHeadFragment.newInstance(new Bundle());
         bindPhoneFragment = MineBindPhoneFragment.newInstance(new Bundle());
         setUserNameFragment = MineSetUserNameFragment.newInstance();
-        setPassWordFragment = MinePersionlInfoSetPassWordFragment.newInstance();
+
     }
 
     @Nullable
@@ -220,6 +221,9 @@ public class HomeMinePersonalInformationFragment extends Fragment implements Min
      * 修改密码的界面
      */
     private void jump2ChangePasswordFragment() {
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("userinfo",argumentData);
+        setPassWordFragment = MinePersionlInfoSetPassWordFragment.newInstance(bundle);
         getFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                         , R.anim.slide_in_left, R.anim.slide_out_right)
@@ -261,12 +265,12 @@ public class HomeMinePersonalInformationFragment extends Fragment implements Min
     }
 
     @Override
-    public void initPersonalInformation(UserInfoBean bean) {
+    public void initPersonalInformation(JFGAccount bean) {
         if (bean != null){
             //头像的回显
-            Glide.with(getContext()).load(PreferencesUtils.getString(JConstant.USER_IMAGE_HEAD_URL, ""))
+            Glide.with(getContext()).load(bean.getPhotoUrl())
                     .asBitmap().centerCrop()
-                    .error(R.mipmap.ic_launcher)
+                    .error(R.drawable.icon_mine_head_normal)
                     .into(new BitmapImageViewTarget(userImageHead) {
                         @Override
                         protected void setResource(Bitmap resource) {
@@ -279,7 +283,7 @@ public class HomeMinePersonalInformationFragment extends Fragment implements Min
 
             tvUserAccount.setText(bean.getAccount());
 
-            tvUserName.setText(bean.getName());
+            tvUserName.setText(bean.getAlias());
 
             if (bean.getEmail() == null | "".equals(bean.getEmail())){
                 mTvMailBox.setText("未设置");
@@ -297,6 +301,9 @@ public class HomeMinePersonalInformationFragment extends Fragment implements Min
 
     @Override
     public void jump2SetEmailFragment() {
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("userinfo",argumentData);
+        mailBoxFragment = HomeMinePersonalInformationMailBoxFragment.newInstance(bundle);
         getFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                         , R.anim.slide_in_left, R.anim.slide_out_right)
@@ -365,6 +372,7 @@ public class HomeMinePersonalInformationFragment extends Fragment implements Min
         builder.setPositiveButton("退出登录", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                presenter.logOut();
                 getFragmentManager().popBackStack();
                 dialog.dismiss();
             }
@@ -381,9 +389,9 @@ public class HomeMinePersonalInformationFragment extends Fragment implements Min
      * 获取传递过来的用户信息bean
      * @return
      */
-    public UserInfoBean getArgumentData() {
+    public JFGAccount getArgumentData() {
         Bundle arguments = getArguments();
-        UserInfoBean argumentData = (UserInfoBean) arguments.getSerializable("userInfoBean");
+        argumentData = (JFGAccount) arguments.getSerializable("userInfoBean");
         return argumentData;
     }
 }

@@ -63,6 +63,7 @@ public interface MineShareDeviceContract {
          * @return
          */
         ArrayList<RelAndFriendBean> getHasShareRelAndFriendList(JFGShareListInfo info);
+
     }
 
 }

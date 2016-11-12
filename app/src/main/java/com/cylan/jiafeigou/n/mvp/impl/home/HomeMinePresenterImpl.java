@@ -9,13 +9,16 @@ import android.support.annotation.DrawableRes;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
+import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.cache.JCache;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.misc.RxEvent;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeMineContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.n.mvp.model.UserInfoBean;
+import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.rxbus.RxBus;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.utils.BitmapUtil;
@@ -45,7 +48,7 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
     private Subscription onBlurSubscribtion;
     private Subscription onLoadUserHeadSubscribtion;
     private CompositeSubscription subscription;
-    private UserInfoBean userInfo;                          //用户信息bean
+    private JFGAccount userInfo;                          //用户信息bean
 
     public HomeMinePresenterImpl(HomeMineContract.View view) {
         super(view);
@@ -65,13 +68,11 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
                             getView().onPortraitUpdate(PreferencesUtils.getString(JConstant.USER_IMAGE_HEAD_URL, ""));
                     }
                 });*/
-
-        if (subscription != null && !subscription.isUnsubscribed()){
+        if(subscription != null && !subscription.isUnsubscribed()){
             subscription.unsubscribe();
-        }else {
+        }
             subscription = new CompositeSubscription();
             subscription.add(initData());
-        }
     }
 
     @Override
@@ -201,48 +202,27 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
      */
     @Override
     public Subscription initData() {
-        return RxBus.getDefault().toObservable(RxEvent.GetUserInfo.class)
-                .subscribeOn(AndroidSchedulers.mainThread())
+        return RxBus.getDefault().toObservableSticky(RxEvent.GetUserInfo.class)
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<RxEvent.GetUserInfo>() {
                     @Override
                     public void call(RxEvent.GetUserInfo getUserInfo) {
-                        if (getUserInfo != null && getUserInfo instanceof RxEvent.GetUserInfo){
-                            userInfo = new UserInfoBean();
-                            userInfo.account = getUserInfo.jfgAccount.getAccount();
-                            userInfo.phone = getUserInfo.jfgAccount.getPhone();
-                            userInfo.email = getUserInfo.jfgAccount.getEmail();
-                            userInfo.name = getUserInfo.jfgAccount.getAlias();
-                            userInfo.token = getUserInfo.jfgAccount.getToken();
-                            userInfo.enableVibrate = getUserInfo.jfgAccount.isEnableVibrate();
-                            userInfo.enableSound = getUserInfo.jfgAccount.isEnableSound();
-                            userInfo.enablePush = getUserInfo.jfgAccount.isEnablePush();
-
+                            userInfo = getUserInfo.jfgAccount;
                             if (getView() != null){
-                                getView().setUserImageHead(userInfo.token);
-                                if (userInfo.name == null | "".equals(userInfo.name)){
-                                    userInfo.name = createRandomName();
+                                getView().setUserImageHead(userInfo.getPhotoUrl());
+                                if (userInfo.getAlias() == null | "".equals(userInfo.getAlias())){
+                                    userInfo.setAlias(createRandomName());
                                 }
-                                getView().setAliasName(userInfo.name);
+                                getView().setAliasName(userInfo.getAlias());
                                 getView().setMesgNumber(99);
                             }
-                        }
                     }
                 });
     }
 
     @Override
-    public UserInfoBean getUserInfoBean() {
+    public JFGAccount getUserInfoBean() {
         return userInfo;
     }
 
-    /**
-     * 测试数据
-     */
-    private UserInfoBean testData() {
-        UserInfoBean bean = new UserInfoBean();
-        bean.name = "混世魔王";
-        bean.account = "1008611";
-        bean.token = "http://img.zcool.cn/community/018f61564df8976ac7251c94500d90.png";
-        return bean;
-    }
 }

@@ -73,7 +73,6 @@ public class HomeMineFragment extends Fragment
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mineHelpFragment = HomeMineHelpFragment.newInstance(new Bundle());
-
         homeSettingFragment = HomeSettingFragment.newInstance();
         homeMineMessageFragment = HomeMineMessageFragment.newInstance();
         mineShareDeviceFragment = MineShareDeviceFragment.newInstance();
@@ -97,6 +96,11 @@ public class HomeMineFragment extends Fragment
     @Override
     public void onStart() {
         super.onStart();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
         if (presenter != null){
             if (!JCache.isOnline){
                 //访客状态
@@ -106,11 +110,6 @@ public class HomeMineFragment extends Fragment
                 presenter.start();
             }
         }
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
     }
 
     @Override
@@ -138,8 +137,10 @@ public class HomeMineFragment extends Fragment
     }
 
     public void friendItem(View view) {
-        if (!JCache.isOnline)
+        if (!JCache.isOnline){
+            needStartLoginFragment();
             return;
+        }
         getFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                         , R.anim.slide_in_left, R.anim.slide_out_right)
@@ -150,8 +151,10 @@ public class HomeMineFragment extends Fragment
     }
 
     public void settingsItem(View view) {
-        if (!JCache.isOnline)
+        if (!JCache.isOnline){
+            needStartLoginFragment();
             return;
+        }
         getFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                         , R.anim.slide_in_left, R.anim.slide_out_right)
@@ -162,8 +165,10 @@ public class HomeMineFragment extends Fragment
     }
 
     public void shareItem(View view) {
-        if (!JCache.isOnline)
+        if (!JCache.isOnline){
+            needStartLoginFragment();
             return;
+        }
         getFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                         , R.anim.slide_in_left, R.anim.slide_out_right)
@@ -324,7 +329,7 @@ public class HomeMineFragment extends Fragment
      *点击个人昵称
      */
     private void jump2UserInfo() {
-        if (JCache.isOnline){
+        if (!JCache.isOnline){
             needStartLoginFragment();
             return;
         }

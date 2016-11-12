@@ -1,5 +1,6 @@
 package com.cylan.jiafeigou.n.mvp.contract.mine;
 
+import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
 import com.cylan.jiafeigou.n.mvp.model.UserInfoBean;
@@ -13,7 +14,7 @@ public interface MinePersonalInformationContract {
 
     interface View extends BaseView<Presenter> {
 
-        void initPersonalInformation(UserInfoBean bean);        //初始化显示个人信息
+        void initPersonalInformation(JFGAccount bean);        //初始化显示个人信息
 
         void jump2SetEmailFragment();
 
@@ -35,6 +36,11 @@ public interface MinePersonalInformationContract {
         void changePassword();                  //更改密码
 
         void getUserInfomation(String url);     //获取到用户信息
+
+        /**
+         * 退出登录
+         */
+        void logOut();
     }
 
 }

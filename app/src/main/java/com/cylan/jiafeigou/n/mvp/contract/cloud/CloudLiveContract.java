@@ -11,6 +11,8 @@ import java.io.Serializable;
 import java.util.List;
 import com.cylan.jiafeigou.support.db.DbManager;
 
+import rx.Subscription;
+
 
 /**
  * 作者：zsl
@@ -64,7 +66,7 @@ public interface CloudLiveContract {
 
         String parseTime(String times);
 
-        void getDBManger();
+        void getDBManger(String dbName);
 
         byte[] getSerializedObject(Serializable s);
 
@@ -79,6 +81,10 @@ public interface CloudLiveContract {
         void handlerVideoTalk();                            //处理视频通话
 
         void handlerLeveaMesg();                            //处理语音留言
+        /**
+         * 获取到账号的信息用于创建数据库
+         */
+        Subscription getAccount();
 
     }
 }

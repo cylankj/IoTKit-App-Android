@@ -1,11 +1,13 @@
 package com.cylan.jiafeigou.n.mvp.impl.cloud;
 
+import com.cylan.jiafeigou.misc.RxEvent;
 import com.cylan.jiafeigou.n.db.CloudLiveDbUtil;
 import com.cylan.jiafeigou.n.mvp.contract.cloud.CloudLiveSettingContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.n.mvp.model.CloudLiveBaseDbBean;
 import com.cylan.jiafeigou.support.db.DbManager;
 import com.cylan.jiafeigou.support.db.ex.DbException;
+import com.cylan.jiafeigou.support.rxbus.RxBus;
 import com.cylan.jiafeigou.utils.ToastUtil;
 
 import java.util.concurrent.TimeUnit;
@@ -16,6 +18,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
+import rx.subscriptions.CompositeSubscription;
 
 /**
  * 作者：zsl
@@ -25,9 +28,14 @@ import rx.schedulers.Schedulers;
 public class CloudLiveSettingPresenterImp extends AbstractPresenter<CloudLiveSettingContract.View> implements CloudLiveSettingContract.Presenter {
 
     private Subscription clearDbSub;
+    private DbManager dbManager = null;
+    private CompositeSubscription subscription;
+
 
     public CloudLiveSettingPresenterImp(CloudLiveSettingContract.View view) {
         super(view);
+        view.setPresenter(this);
+        subscription = new CompositeSubscription();
     }
 
     @Override
@@ -35,6 +43,7 @@ public class CloudLiveSettingPresenterImp extends AbstractPresenter<CloudLiveSet
         if (getView() != null) {
             getView().initSomeViewVisible(isHasBeenShareUser());
         }
+        subscription.add(getAccount());
     }
 
     @Override
@@ -52,10 +61,7 @@ public class CloudLiveSettingPresenterImp extends AbstractPresenter<CloudLiveSet
 
     @Override
     public void clearMesgRecord() {
-        DbManager dbManager = null;
         try {
-            dbManager = CloudLiveDbUtil.getInstance().dbManager;
-
             if (dbManager.findAll(CloudLiveBaseDbBean.class).size() == 0) {
                 ToastUtil.showToast("记录为空");
                 return;
@@ -84,6 +90,23 @@ public class CloudLiveSettingPresenterImp extends AbstractPresenter<CloudLiveSet
                     @Override
                     public void call(Object o) {
                         getView().hideClearRecordProgress();
+                    }
+                });
+    }
+
+    /**
+     * 获取到用户的账号信息
+     */
+    @Override
+    public Subscription getAccount() {
+        return RxBus.getDefault().toObservable(RxEvent.GetUserInfo.class)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<RxEvent.GetUserInfo>() {
+                    @Override
+                    public void call(RxEvent.GetUserInfo getUserInfo) {
+                        if (getUserInfo != null && getUserInfo instanceof RxEvent.GetUserInfo){
+                            dbManager = CloudLiveDbUtil.getInstance(getUserInfo.jfgAccount.getAccount()).dbManager;
+                        }
                     }
                 });
     }

@@ -39,6 +39,7 @@ import com.cylan.jiafeigou.support.rxbus.RxBus;
 import com.cylan.jiafeigou.support.stat.MtaManager;
 import com.cylan.utils.ListUtils;
 import com.google.gson.Gson;
+import com.sina.weibo.sdk.utils.LogUtil;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -111,9 +112,9 @@ public class DataSourceService extends Service implements AppCallBack {
 
     @Override
     public void OnUpdateAccount(JFGAccount jfgAccount) {
-        AppLogger.d("OnLocalMessage :" + new Gson().toJson(jfgAccount));
-        if (eventBus != null && eventBus.hasObservers()) {
-            eventBus.post(new RxEvent.GetUserInfo(jfgAccount));
+        AppLogger.d("OnUpdateAccount :" + new Gson().toJson(jfgAccount));
+        if (RxBus.getDefault().hasObservers()) {
+            RxBus.getDefault().postSticky(new RxEvent.GetUserInfo(jfgAccount));
         }
     }
 
@@ -265,7 +266,7 @@ public class DataSourceService extends Service implements AppCallBack {
 
     @Override
     public void OnGetFriendRequestListRsp(int i, ArrayList<JFGFriendRequest> arrayList) {
-        AppLogger.d("OnLocalMessage :");
+        AppLogger.d("OnLocalMessage :"+i+arrayList.size());
         if (eventBus != null && eventBus.hasObservers()) {
             eventBus.post(new RxEvent.GetAddReqList(i, arrayList));
         }
@@ -279,6 +280,9 @@ public class DataSourceService extends Service implements AppCallBack {
     @Override
     public void OnCheckFriendAccountRsp(int i, String s, String s1, boolean b) {
         AppLogger.d("OnLocalMessage :");
+        if (eventBus != null && eventBus.hasObservers()){
+            eventBus.post(new RxEvent.CheckAccountCallback(i,s,s1,b));
+        }
     }
 
     @Override

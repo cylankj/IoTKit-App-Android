@@ -1,8 +1,13 @@
 package com.cylan.jiafeigou.n.mvp.impl.mine;
 
+import com.cylan.jiafeigou.misc.JfgCmdInsurance;
+import com.cylan.jiafeigou.misc.RxEvent;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineAddFromContactContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
+import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.rxbus.RxBus;
+
+import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
 import rx.Subscription;
@@ -10,6 +15,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
+import rx.subscriptions.CompositeSubscription;
 
 /**
  * 作者：zsl
@@ -18,7 +24,10 @@ import rx.schedulers.Schedulers;
  */
 public class MineAddFromContactPresenterImp extends AbstractPresenter<MineAddFromContactContract.View> implements MineAddFromContactContract.Presenter {
 
+    private String userAlids = "";
+
     private Subscription sendRequestSub;
+    private CompositeSubscription compositeSubscription;
 
     public MineAddFromContactPresenterImp(MineAddFromContactContract.View view) {
         super(view);
@@ -27,40 +36,59 @@ public class MineAddFromContactPresenterImp extends AbstractPresenter<MineAddFro
 
     @Override
     public void start() {
+        if (compositeSubscription != null && !compositeSubscription.isUnsubscribed()){
+            compositeSubscription.unsubscribe();
+        }
 
+        compositeSubscription = new CompositeSubscription();
+        compositeSubscription.add(getAcocountAlids());
     }
 
     @Override
     public void stop() {
-        if (sendRequestSub != null) {
-            sendRequestSub.unsubscribe();
-        }
+        unSubscribe(compositeSubscription);
     }
 
     @Override
-    public void sendRequest(String mesg) {
-        //TODO 向服务器发送请求
-        sendRequestSub = Observable.just(mesg)
-                .map(new Func1<String, Object>() {
-                    @Override
-                    public Object call(String s) {
-                        //TODO 向服务器发送请求添加请求
-                        return null;
-                    }
-                })
-                .subscribeOn(Schedulers.io())
+    public void sendRequest(final String account, final String mesg) {
+        rx.Observable.just(account,mesg)
+            .delay(2000, TimeUnit.MILLISECONDS)
+            .subscribeOn(Schedulers.newThread())
+            .subscribe(new Action1<String>() {
+                @Override
+                public void call(String s) {
+                    JfgCmdInsurance.getCmd().addFriend(account,mesg);
+                }
+            }, new Action1<Throwable>() {
+                @Override
+                public void call(Throwable throwable) {
+                    AppLogger.e("sendRequest"+throwable.getLocalizedMessage());
+                }
+            });
+
+    }
+
+    @Override
+    public Subscription getAcocountAlids() {
+        return RxBus.getDefault().toObservableSticky(RxEvent.GetUserInfo.class)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<Object>() {
+                .subscribe(new Action1<RxEvent.GetUserInfo>() {
                     @Override
-                    public void call(Object o) {
-                        getView().showResultDialog();
+                    public void call(RxEvent.GetUserInfo getUserInfo) {
+                        if (getUserInfo != null && getUserInfo instanceof RxEvent.GetUserInfo){
+                            if (getView() != null)getView().initEditText(getUserInfo.jfgAccount.getAlias());
+                            userAlids = getUserInfo.jfgAccount.getAlias();
+                        }
                     }
                 });
     }
 
+    /**
+     * 获取到用户的昵称
+     * @return
+     */
     @Override
-    public String getwhat() {
-        RxBus.getDefault().post("dddd");
-        return null;
+    public String getUserAlis() {
+        return userAlids;
     }
 }

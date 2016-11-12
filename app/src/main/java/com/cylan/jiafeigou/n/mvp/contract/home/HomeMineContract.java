@@ -4,6 +4,7 @@ import android.graphics.drawable.Drawable;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.UiThread;
 
+import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
 import com.cylan.jiafeigou.n.mvp.model.UserInfoBean;
@@ -73,7 +74,7 @@ public interface HomeMineContract {
          * 获取到登录用户的bean
          * @return
          */
-        UserInfoBean getUserInfoBean();
+        JFGAccount getUserInfoBean();
 
     }
 }

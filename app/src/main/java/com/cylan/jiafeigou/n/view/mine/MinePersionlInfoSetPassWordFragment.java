@@ -48,8 +48,10 @@ public class MinePersionlInfoSetPassWordFragment extends Fragment implements Min
 
     private MinePersonalInfoSetPassWordContract.Presenter presenter;
 
-    public static MinePersionlInfoSetPassWordFragment newInstance() {
-        return new MinePersionlInfoSetPassWordFragment();
+    public static MinePersionlInfoSetPassWordFragment newInstance(Bundle bundle) {
+        MinePersionlInfoSetPassWordFragment fragment = new MinePersionlInfoSetPassWordFragment();
+        fragment.setArguments(bundle);
+        return fragment;
     }
 
     @Nullable

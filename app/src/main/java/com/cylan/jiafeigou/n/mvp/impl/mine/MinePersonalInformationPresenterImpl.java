@@ -3,6 +3,7 @@ package com.cylan.jiafeigou.n.mvp.impl.mine;
 import android.app.AlertDialog;
 import android.content.Context;
 
+import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MinePersonalInformationContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.n.mvp.model.UserInfoBean;
@@ -69,7 +70,22 @@ public class MinePersonalInformationPresenterImpl extends AbstractPresenter<Mine
                 .subscribe(new Action1<UserInfoBean>() {
                     @Override
                     public void call(UserInfoBean userInfoBean) {
-                        getView().initPersonalInformation(userInfoBean);
+                        //getView().initPersonalInformation(userInfoBean);
+                    }
+                });
+    }
+
+    /**
+     * 退出登录
+     */
+    @Override
+    public void logOut() {
+        rx.Observable.just(null)
+                .subscribeOn(Schedulers.newThread())
+                .subscribe(new Action1<Object>() {
+                    @Override
+                    public void call(Object o) {
+                        JfgCmdInsurance.getCmd().logout();
                     }
                 });
     }

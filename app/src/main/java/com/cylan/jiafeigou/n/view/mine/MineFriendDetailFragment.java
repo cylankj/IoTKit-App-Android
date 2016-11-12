@@ -39,7 +39,7 @@ public class MineFriendDetailFragment extends Fragment implements MineFriendDeta
     RoundedImageView ivDetailUserHead;
     @BindView(R.id.tv_relative_and_friend_name)
     TextView tvRelativeAndFriendName;
-    @BindView(R.id.tv_relative_and_friend_like_name)
+    @BindView(R.id.tv_relative_and_friend_account)
     TextView tvRelativeAndFriendLikeName;
     @BindView(R.id.rl_change_name)
     RelativeLayout rlChangeName;

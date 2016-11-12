@@ -29,6 +29,7 @@ import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.superadapter.OnItemClickListener;
 import com.cylan.superadapter.OnItemLongClickListener;
 import com.cylan.superadapter.internal.SuperViewHolder;
+import com.sina.weibo.sdk.utils.LogUtil;
 
 import java.util.ArrayList;
 
@@ -125,7 +126,7 @@ public class MineFriendsFragment extends Fragment implements MineFriendsContract
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
                 ToastUtil.showPositiveToast("请求已发送");
-                //SDK 向对方发送请求
+                //向对方发送请求
                 presenter.sendAddReq(item.account);
             }
         });
