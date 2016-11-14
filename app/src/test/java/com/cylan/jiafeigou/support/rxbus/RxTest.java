@@ -1,8 +1,12 @@
 package com.cylan.jiafeigou.support.rxbus;
 
+import com.cylan.jiafeigou.BuildConfig;
+import com.cylan.jiafeigou.MyTestRunner;
 import com.cylan.utils.RandomUtils;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.robolectric.annotation.Config;
 
 import java.util.concurrent.TimeUnit;
 
@@ -16,7 +20,8 @@ import rx.schedulers.Schedulers;
 /**
  * Created by cylan-hunt on 16-11-10.
  */
-
+@RunWith(MyTestRunner.class)
+@Config(constants = BuildConfig.class, sdk = 21)
 public class RxTest {
 
 
@@ -103,4 +108,26 @@ public class RxTest {
 //                .timeout(500, TimeUnit.MILLISECONDS)
     }
 
+    @Test
+    public void testTimeout() {
+        System.out.println("f");
+        Observable.just(null)
+                .delay(2, TimeUnit.SECONDS)
+                .map(new Func1<Object, Object>() {
+                    @Override
+                    public Object call(Object o) {
+                        System.out.println("go");
+                        return null;
+                    }
+                })
+                .timeout(1, TimeUnit.SECONDS, Observable.just(null)
+                        .map(new Func1<Object, Object>() {
+                            @Override
+                            public Object call(Object o) {
+                                System.out.println("timeout");
+                                return null;
+                            }
+                        }))
+                .subscribe();
+    }
 }

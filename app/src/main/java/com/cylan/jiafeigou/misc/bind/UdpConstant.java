@@ -17,7 +17,8 @@ public class UdpConstant {
     public static final short PORT = 10008;
     public static final String PING_ACK = "ping_ack";
     public static final String F_PING_ACK = "f_ping_ack";
-
+    public static final String UPGRADE_VERSION = "3.0.0.0";
+    public static final String BIND_TAG = "bindTag:";
     /**
      * 绑定的设备画像
      */
@@ -97,5 +98,23 @@ public class UdpConstant {
                 return new UdpDevicePortrait[size];
             }
         };
+    }
+
+    public static final class UpgradeStatus {
+        /**
+         * {@link IBindResult#UPGRADE_FAILED,IBindResult#UPGRADING,IBindResult#UPGRADE_SUCCESS}
+         */
+        public int state;
+
+        public UpgradeStatus(int state) {
+            this.state = state;
+        }
+
+        @Override
+        public String toString() {
+            return "UpgradeStatus{" +
+                    "state=" + state +
+                    '}';
+        }
     }
 }

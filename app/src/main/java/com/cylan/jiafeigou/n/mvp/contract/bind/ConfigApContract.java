@@ -2,6 +2,7 @@ package com.cylan.jiafeigou.n.mvp.contract.bind;
 
 import android.net.wifi.ScanResult;
 
+import com.cylan.jiafeigou.misc.bind.IBindUdpFlow;
 import com.cylan.jiafeigou.misc.bind.UdpConstant;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
@@ -37,6 +38,12 @@ public interface ConfigApContract {
          */
         void lossDogConnection();
 
+        /**
+         * {@link IBindUdpFlow#startUpgrade()}
+         *
+         * @param state
+         */
+        void upgradeDogState(int state);
     }
 
     interface Presenter extends BasePresenter {
@@ -68,5 +75,11 @@ public interface ConfigApContract {
          * 先清空其他狗绑定的信息
          */
         void clearConnection();
+
+        /**
+         * 一旦进来页面,就开始ping流程,避免在后台做,ping结果需要保持,状态判断.
+         * 这一流程,非常快.
+         */
+        void startPingFlow();
     }
 }

@@ -68,7 +68,8 @@ public class SubmitBindingInfoContractImpl extends
                     public Observable<Boolean> call(RxEvent.DeviceList deviceList) {
                         final int count = deviceList.jfgDevices.size();
                         for (int i = 0; i < count; i++) {
-                            if (TextUtils.equals(portrait.cid, deviceList.jfgDevices.get(i).uuid)) {
+                            if (TextUtils.equals(portrait.cid,
+                                    deviceList.jfgDevices.get(i).uuid)) {
                                 //hit the binding cid
                                 return Observable.just(true);
                             }

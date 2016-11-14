@@ -7,7 +7,6 @@ import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.wifi.ScanResult;
-import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.text.TextUtils;
@@ -16,42 +15,43 @@ import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.misc.RxHelper;
 import com.cylan.jiafeigou.misc.ScanResultListFilter;
+import com.cylan.jiafeigou.misc.bind.AFullBind;
+import com.cylan.jiafeigou.misc.bind.IBindResult;
+import com.cylan.jiafeigou.misc.bind.SimpleBindFlow;
 import com.cylan.jiafeigou.misc.bind.UdpConstant;
-import com.cylan.jiafeigou.n.engine.task.OfflineTaskQueue;
 import com.cylan.jiafeigou.n.mvp.contract.bind.ConfigApContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.network.ConnectivityStatus;
 import com.cylan.jiafeigou.support.network.ReactiveNetwork;
-import com.cylan.jiafeigou.support.rxbus.RxBus;
 import com.cylan.jiafeigou.utils.BindUtils;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.udpMsgPack.JfgUdpMsg;
-import com.cylan.utils.PackageUtils;
 import com.google.gson.Gson;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
-import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
-import rx.functions.Func2;
 import rx.schedulers.Schedulers;
 
 /**
  * Created by cylan-hunt on 16-7-8.
  */
 public class ConfigApPresenterImpl extends AbstractPresenter<ConfigApContract.View>
-        implements ConfigApContract.Presenter {
-    private Subscription pingFlowSub;
+        implements ConfigApContract.Presenter, IBindResult {
+
     private Network network;
+
+    private AFullBind aFullBind;
 
     public ConfigApPresenterImpl(ConfigApContract.View view) {
         super(view);
         view.setPresenter(this);
+        aFullBind = new SimpleBindFlow(this);
     }
 
     @Override
@@ -67,7 +67,6 @@ public class ConfigApPresenterImpl extends AbstractPresenter<ConfigApContract.Vi
                 ContextUtils.getContext().registerReceiver(network, filter);
             }
         } catch (Exception e) {
-
         }
     }
 
@@ -97,50 +96,8 @@ public class ConfigApPresenterImpl extends AbstractPresenter<ConfigApContract.Vi
         if (!TextUtils.isDigitsOnly(ssidInDigits)) {
 
         }
-        unSubscribe(pingFlowSub);
-        //zip用法,合并
-        pingFlowSub = Observable.zip(pingObservable(ssidInDigits),
-                fPingObservable(ssidInDigits),
-                new Func2<JfgUdpMsg.PingAck, JfgUdpMsg.FPingAck, UdpConstant.UdpDevicePortrait>() {
-                    @Override
-                    public UdpConstant.UdpDevicePortrait call(JfgUdpMsg.PingAck pingAck, JfgUdpMsg.FPingAck fPingAck) {
-                        //此处完成了第1和第2步.
-                        UdpConstant.UdpDevicePortrait devicePortrait = new UdpConstant.UdpDevicePortrait();
-                        devicePortrait.cid = pingAck.cid;
-                        devicePortrait.mac = fPingAck.mac;
-                        devicePortrait.version = fPingAck.version;
-                        devicePortrait.net = pingAck.net;
-                        return devicePortrait;
-                    }
-                })
-                .subscribeOn(Schedulers.newThread())
-                .map(new Func1<UdpConstant.UdpDevicePortrait, UdpConstant.UdpDevicePortrait>() {
-                    @Override
-                    public UdpConstant.UdpDevicePortrait call(final UdpConstant.UdpDevicePortrait udpDevicePortrait) {
-                        setServer_Language(udpDevicePortrait);
-                        setWifiInfo(udpDevicePortrait, ssid, pwd, type);
-                        //此时,设备还没恢复连接,需要加入队列
-                        int key = ("JfgCmdInsurance.getCmd().bindDevice" + udpDevicePortrait.cid).hashCode();
-                        OfflineTaskQueue.getInstance().enqueue(key, new Runnable() {
-                            @Override
-                            public void run() {
-                                AppLogger.i("bind cid: " + udpDevicePortrait.cid);
-                                JfgCmdInsurance.getCmd().bindDevice(udpDevicePortrait.cid, "fxx");
-                            }
-                        });
-                        return null;
-                    }
-                })
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<UdpConstant.UdpDevicePortrait>() {
-                    @Override
-                    public void call(UdpConstant.UdpDevicePortrait o) {
-                        if (getView() != null) {
-                            getView().onSetWifiFinished(o);
-                        }
-                    }
-                }, new RxHelper.EmptyException("binding flow"));
-        sendPing_FPing();
+        if (aFullBind != null)
+            aFullBind.sendWifiInfo(ssid, pwd, type);
     }
 
     @Override
@@ -155,29 +112,27 @@ public class ConfigApPresenterImpl extends AbstractPresenter<ConfigApContract.Vi
 
     @Override
     public void clearConnection() {
-        Observable.just(null)
-                .throttleFirst(200, TimeUnit.MILLISECONDS)
-                .subscribeOn(Schedulers.io())
-                .map(new Func1<Object, Object>() {
-                    @Override
-                    public Object call(Object o) {
-                        WifiManager wifiManager = (WifiManager) ContextUtils.getContext().getSystemService(Context.WIFI_SERVICE);
-                        List<WifiConfiguration> list =
-                                wifiManager.getConfiguredNetworks();
-                        if (list != null) {
-                            for (int i = 0; i < list.size(); i++) {
-                                String ssid = list.get(i).SSID.replace("\"", "");
-                                if (JFGRules.isCylanDevice(ssid)) {
-                                    //找到这个狗,清空他的信息
-                                    wifiManager.removeNetwork(list.get(i).networkId);
-                                    AppLogger.i("clean dog like ssid: " + ssid);
-                                }
-                            }
-                        }
-                        return null;
-                    }
-                }).subscribe();
     }
+
+    @Override
+    public void startPingFlow() {
+        if (aFullBind != null) {
+            WifiManager wifiManager = (WifiManager) ContextUtils.getContext().getSystemService(Context.WIFI_SERVICE);
+            WifiInfo wifiInfo = wifiManager.getConnectionInfo();
+            if (wifiInfo == null || !JFGRules.isCylanDevice(wifiInfo.getSSID())) {
+                //something happened
+                AppLogger.i("ConfigApPresenterImpl 连接错误");
+                getView().lossDogConnection();
+                return;
+            }
+            //纯数字
+            final String ssidInDigits = BindUtils.getDigitsString(wifiInfo.getSSID());
+            aFullBind.startPingFPing(ssidInDigits);
+        }
+
+
+    }
+
 
     //发送wifi配置
     private void setWifiInfo(UdpConstant.UdpDevicePortrait udpDevicePortrait,
@@ -193,99 +148,6 @@ public class ConfigApPresenterImpl extends AbstractPresenter<ConfigApContract.Vi
         AppLogger.i("ConfigApPresenterImpl:" + new Gson().toJson(setWifi));
     }
 
-    /**
-     * 发送服务器信息,发送timeZone信息
-     *
-     * @param udpDevicePortrait
-     */
-    private void setServer_Language(UdpConstant.UdpDevicePortrait udpDevicePortrait) {
-        AppLogger.i("ConfigApPresenterImpl: " + udpDevicePortrait);
-        final String[] serverDetails = PackageUtils.getMetaString(ContextUtils.getContext(),
-                "ServerAddress").split(":");
-        String address = serverDetails[0];
-        int port = Integer.parseInt(serverDetails[1]);
-        //设置语言
-        JfgUdpMsg.SetLanguage setLanguage = new JfgUdpMsg.SetLanguage(
-                udpDevicePortrait.cid,
-                udpDevicePortrait.mac,
-                JFGRules.getLanguageType(ContextUtils.getContext()));
-        //设置服务器
-        JfgUdpMsg.SetServer setServer =
-                new JfgUdpMsg.SetServer(udpDevicePortrait.cid,
-                        udpDevicePortrait.mac,
-                        address,
-                        port,
-                        80);
-        AppLogger.i("setServer: " + new Gson().toJson(setServer));
-        AppLogger.i("setLanguage: " + new Gson().toJson(setLanguage));
-        JfgCmdInsurance.getCmd().sendLocalMessage(UdpConstant.IP,
-                UdpConstant.PORT,
-                setServer.toBytes());
-        //
-        JfgCmdInsurance.getCmd().sendLocalMessage(UdpConstant.IP,
-                UdpConstant.PORT,
-                setLanguage.toBytes());
-    }
-
-    /**
-     * 此处的消息来源非常关键{@link com.cylan.jiafeigou.n.engine.GlobalUdpDataSource}
-     * emit出来 {@link JfgUdpMsg.PingAck},两者都是异步.
-     *
-     * @param ssidInDigits
-     * @return
-     */
-    private Observable<JfgUdpMsg.PingAck> pingObservable(final String ssidInDigits) {
-        return RxBus.getDefault().toObservable(JfgUdpMsg.PingAck.class)
-                .filter(new Func1<JfgUdpMsg.PingAck, Boolean>() {
-                    @Override
-                    public Boolean call(JfgUdpMsg.PingAck pingAck) {
-                        //注意条件
-                        return !TextUtils.isEmpty(pingAck.cid)
-                                && pingAck.cid.endsWith(ssidInDigits);
-                    }
-                })
-                .throttleFirst(100, TimeUnit.MILLISECONDS);
-    }
-
-    /**
-     * 此处的消息来源非常关键{@link com.cylan.jiafeigou.n.engine.GlobalUdpDataSource}
-     * emit出来 {@link JfgUdpMsg.FPingAck}
-     *
-     * @param ssidInDigits f_ping_ack 消息只取100ms内的第一条
-     * @return
-     */
-    private Observable<JfgUdpMsg.FPingAck> fPingObservable(final String ssidInDigits) {
-        return RxBus.getDefault().toObservable(JfgUdpMsg.FPingAck.class)
-                .filter(new Func1<JfgUdpMsg.FPingAck, Boolean>() {
-                    @Override
-                    public Boolean call(JfgUdpMsg.FPingAck pingAck) {
-                        //注意条件
-                        return !TextUtils.isEmpty(pingAck.cid)
-                                && pingAck.cid.endsWith(ssidInDigits);
-                    }
-                })
-                .throttleFirst(100, TimeUnit.MILLISECONDS);
-    }
-
-    /**
-     * 发送,三次
-     */
-    private void sendPing_FPing() {
-        Observable.just(1, 2)
-                .subscribeOn(Schedulers.newThread())
-                .subscribe(new Action1<Integer>() {
-                    @Override
-                    public void call(Integer integer) {
-                        JfgCmdInsurance.getCmd().sendLocalMessage(UdpConstant.IP,
-                                UdpConstant.PORT,
-                                new JfgUdpMsg.Ping().toBytes());
-                        JfgCmdInsurance.getCmd().sendLocalMessage(UdpConstant.IP,
-                                UdpConstant.PORT,
-                                new JfgUdpMsg.FPing().toBytes());
-                        AppLogger.i("send ping n fping: " + integer);
-                    }
-                });
-    }
 
     @Override
     public void start() {
@@ -294,7 +156,6 @@ public class ConfigApPresenterImpl extends AbstractPresenter<ConfigApContract.Vi
 
     @Override
     public void stop() {
-        unSubscribe(pingFlowSub);
     }
 
     /**
@@ -371,6 +232,85 @@ public class ConfigApPresenterImpl extends AbstractPresenter<ConfigApContract.Vi
                         getView().lossDogConnection();
                     }
                 });
+    }
+
+    @Override
+    public void pingFPingFailed() {
+        Observable.just(null)
+                .filter(new Func1<Object, Boolean>() {
+                    @Override
+                    public Boolean call(Object o) {
+                        return getView() != null;
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<Object>() {
+                    @Override
+                    public void call(Object o) {
+                        getView().lossDogConnection();
+                    }
+                });
+    }
+
+    @Override
+    public void isMobileNet() {
+        //马上跳转
+        Observable.just(null)
+                .filter(new Func1<Object, Boolean>() {
+                    @Override
+                    public Boolean call(Object o) {
+                        return getView() != null;
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<Object>() {
+                    @Override
+                    public void call(Object o) {
+                        getView().onSetWifiFinished(aFullBind.getDevicePortrait());
+                    }
+                });
+    }
+
+
+    @Override
+    public void needToUpgrade() {
+        Observable.just(getView())
+                .flatMap(new Func1<ConfigApContract.View, Observable<ConfigApContract.View>>() {
+                    @Override
+                    public Observable<ConfigApContract.View> call(ConfigApContract.View view) {
+                        //
+                        aFullBind.startUpgrade();
+                        return Observable.just(view);
+                    }
+                })
+                .filter(new Func1<ConfigApContract.View, Boolean>() {
+                    @Override
+                    public Boolean call(ConfigApContract.View view) {
+                        return view != null;
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<ConfigApContract.View>() {
+                    @Override
+                    public void call(ConfigApContract.View view) {
+                        view.upgradeDogState(0);
+                    }
+                });
+    }
+
+    @Override
+    public void updateState(int state) {
+
+    }
+
+    @Override
+    public void bindFailed() {
+
+    }
+
+    @Override
+    public void bindSuccess() {
+
     }
 
     private class Network extends BroadcastReceiver {

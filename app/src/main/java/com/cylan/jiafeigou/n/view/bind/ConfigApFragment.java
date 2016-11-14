@@ -2,6 +2,7 @@ package com.cylan.jiafeigou.n.view.bind;
 
 
 import android.net.wifi.ScanResult;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -15,7 +16,7 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
+import android.widget.ViewSwitcher;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.JConstant;
@@ -62,6 +63,8 @@ public class ConfigApFragment extends BaseTitleFragment<ConfigApContract.Present
     FrameLayout fLayoutTopBar;
     @BindView(R.id.rLayout_wifi_pwd_input_box)
     FrameLayout rLayoutWifiPwdInputBox;
+    @BindView(R.id.vs_show_content)
+    ViewSwitcher vsShowContent;
 
 
     private List<ScanResult> cacheList;
@@ -122,8 +125,10 @@ public class ConfigApFragment extends BaseTitleFragment<ConfigApContract.Present
     @Override
     public void onResume() {
         super.onResume();
-        if (basePresenter != null)
+        if (basePresenter != null) {
             basePresenter.refreshWifiList();
+            basePresenter.startPingFlow();
+        }
     }
 
     @Override
@@ -225,14 +230,14 @@ public class ConfigApFragment extends BaseTitleFragment<ConfigApContract.Present
 
     @Override
     public void onNetStateChanged(int state) {
-        Toast.makeText(getContext(), "state: " + state, Toast.LENGTH_SHORT).show();
+//        Toast.makeText(getContext(), "state: " + state, Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onWiFiResult(List<ScanResult> resultList) {
         final int count = resultList == null ? 0 : resultList.size();
         if (count == 0) {
-            if (android.os.Build.VERSION.SDK_INT >= 23) {
+            if (Build.VERSION.SDK_INT >= 23) {
                 ToastUtil.showNegativeToast("请确认是否已经开启位置信息权限");
             } else {
                 ToastUtil.showNegativeToast("请尝试手动开关wifi");
@@ -261,6 +266,15 @@ public class ConfigApFragment extends BaseTitleFragment<ConfigApContract.Present
     @Override
     public void lossDogConnection() {
         ToastUtil.showNegativeToast("狗丢了....");
+    }
+
+
+    @Override
+    public void upgradeDogState(int state) {
+        if (vsShowContent.getCurrentView().getId() == R.id.fragment_config_ap_pre) {
+            vsShowContent.showNext();
+        }
+
     }
 
     @Override
