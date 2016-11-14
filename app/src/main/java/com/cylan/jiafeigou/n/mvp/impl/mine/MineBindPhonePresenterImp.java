@@ -3,12 +3,16 @@ package com.cylan.jiafeigou.n.mvp.impl.mine;
 import com.cylan.entity.JfgEnum;
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.misc.RxEvent;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineBindPhoneContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.rxbus.RxBus;
+import com.cylan.jiafeigou.utils.PreferencesUtils;
+
+import java.util.concurrent.TimeUnit;
 
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -112,6 +116,7 @@ public class MineBindPhonePresenterImp extends AbstractPresenter<MineBindPhoneCo
     @Override
     public void sendChangePhoneReq(final JFGAccount userinfo) {
         rx.Observable.just(userinfo)
+                .delay(1000, TimeUnit.MILLISECONDS)
                 .subscribeOn(Schedulers.newThread())
                 .subscribe(new Action1<JFGAccount>() {
                     @Override
@@ -126,6 +131,24 @@ public class MineBindPhonePresenterImp extends AbstractPresenter<MineBindPhoneCo
                 });
     }
 
+    /**
+     * 获取到验证码的回调
+     * @return
+     */
+    @Override
+    public Subscription getCheckCodeCallback() {
+        return RxBus.getDefault().toObservable(RxEvent.SmsCodeResult.class)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<RxEvent.SmsCodeResult>() {
+                    @Override
+                    public void call(RxEvent.SmsCodeResult smsCodeResult) {
+                        if (smsCodeResult.error == JError.ErrorOK){
+                            PreferencesUtils.putString(JConstant.KEY_REGISTER_SMS_TOKEN,smsCodeResult.token);
+                        }
+                    }
+                });
+    }
+
     @Override
     public void start() {
         if (compositeSubscription != null && !compositeSubscription.isUnsubscribed()){
@@ -133,6 +156,7 @@ public class MineBindPhonePresenterImp extends AbstractPresenter<MineBindPhoneCo
         }else {
             compositeSubscription = new CompositeSubscription();
             compositeSubscription.add(getCheckPhoneCallback());
+            compositeSubscription.add(getCheckCodeCallback());
         }
     }
 

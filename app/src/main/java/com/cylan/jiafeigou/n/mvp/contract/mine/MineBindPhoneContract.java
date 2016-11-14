@@ -27,6 +27,12 @@ public interface MineBindPhoneContract {
         String getInputPhone();
 
         /**
+         * 获取到输入的验证码
+         * @return
+         */
+        String getInputCheckCode();
+
+        /**
          * 检测账号的是否已经注册的结果
          * @param checkAccountCallback
          */
@@ -60,6 +66,12 @@ public interface MineBindPhoneContract {
          * 发送修改手机号请求
          */
         void sendChangePhoneReq(JFGAccount userinfo);
+
+        /**
+         * 获取验证码的回调
+         * @return
+         */
+        Subscription getCheckCodeCallback();
     }
 
 }
