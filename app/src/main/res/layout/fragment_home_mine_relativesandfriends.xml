@@ -55,6 +55,7 @@
             android:layout_height="wrap_content">
             <!--添加请求-->
             <TextView
+                android:visibility="invisible"
                 android:id="@+id/tv_add_request_title"
                 android:layout_marginTop="19dp"
                 android:layout_marginLeft="15dp"
@@ -72,6 +73,7 @@
 
             <!--亲友列表-->
             <TextView
+                android:visibility="invisible"
                 android:id="@+id/tv_friend_list_title"
                 android:layout_marginTop="19dp"
                 android:layout_marginLeft="15dp"

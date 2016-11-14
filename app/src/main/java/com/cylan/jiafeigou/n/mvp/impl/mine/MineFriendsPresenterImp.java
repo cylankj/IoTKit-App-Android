@@ -59,7 +59,6 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
         compositeSubscription.add(getFriendList());
         compositeSubscription.add(initAddReqRecyListData());
         compositeSubscription.add(initFriendRecyListData());
-        checkAllNull();
     }
 
     @Override

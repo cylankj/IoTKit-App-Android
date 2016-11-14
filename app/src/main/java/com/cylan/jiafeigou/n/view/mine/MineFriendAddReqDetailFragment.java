@@ -63,7 +63,7 @@ public class MineFriendAddReqDetailFragment extends Fragment implements MineFrie
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Bundle bundle = new Bundle();
-        bundle.putString("imageUrl", "");
+        bundle.putString("imageUrl", addRequestItems.iconUrl);
         lookBigImageFragment = MineLookBigImageFragment.newInstance(bundle);
     }
 

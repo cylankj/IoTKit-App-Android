@@ -40,6 +40,7 @@ public class MineUserInfoLookBigHeadFragment extends Fragment implements MineUse
     private boolean loadResult = false;
 
     private MineUserInfoLookBigHeadContract.Presenter presenter;
+    private String iamgeUrl;
 
     public static MineUserInfoLookBigHeadFragment newInstance(Bundle bundle) {
         MineUserInfoLookBigHeadFragment fragment = new MineUserInfoLookBigHeadFragment();
@@ -52,20 +53,28 @@ public class MineUserInfoLookBigHeadFragment extends Fragment implements MineUse
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_mine_userinfo_lookbigimagehead, container, false);
         ButterKnife.bind(this, view);
+        getArgumentData();
         initPresenter();
-        loadBigImage();
+        loadBigImage(iamgeUrl);
         return view;
     }
 
-    private void loadBigImage() {
+    /**
+     * 获取传递过来的参数
+     */
+    private void getArgumentData() {
+        Bundle arguments = getArguments();
+        iamgeUrl = arguments.getString("iamgeUrl");
+    }
+
+    private void loadBigImage(String url) {
 
         Glide.with(getContext())
-                .load(PreferencesUtils.getString(JConstant.USER_IMAGE_HEAD_URL, ""))
+                .load(url)
                 .asBitmap()
                 .error(R.mipmap.ic_launcher)
                 .centerCrop()
                 .into(new BitmapImageViewTarget(ivUserinfoBigImage) {
-
                     @Override
                     public void onLoadStarted(Drawable placeholder) {
                         super.onLoadStarted(placeholder);
@@ -99,7 +108,7 @@ public class MineUserInfoLookBigHeadFragment extends Fragment implements MineUse
         if (loadResult) {
             getFragmentManager().popBackStack();
         } else {
-            loadBigImage();
+            loadBigImage(iamgeUrl);
         }
     }
 
@@ -112,7 +121,6 @@ public class MineUserInfoLookBigHeadFragment extends Fragment implements MineUse
     public void hideLoadImageProgress() {
         progressBar.setVisibility(View.INVISIBLE);
     }
-
 
     @Override
     public void setPresenter(MineUserInfoLookBigHeadContract.Presenter presenter) {

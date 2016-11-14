@@ -91,9 +91,6 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        bigHeadFragment = MineUserInfoLookBigHeadFragment.newInstance(new Bundle());
-
-
 
     }
 
@@ -250,6 +247,9 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
      * desc: 查看大头像
      */
     private void lookBigImageHead() {
+        Bundle bundle = new Bundle();
+        bundle.putString("imageUrl",argumentData.getPhotoUrl());
+        bigHeadFragment = MineUserInfoLookBigHeadFragment.newInstance(bundle);
         getFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                         , R.anim.slide_in_left, R.anim.slide_out_right)
