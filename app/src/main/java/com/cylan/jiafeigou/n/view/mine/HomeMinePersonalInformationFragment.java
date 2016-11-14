@@ -101,7 +101,7 @@ public class HomeMinePersonalInformationFragment extends Fragment implements Min
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         bigHeadFragment = MineUserInfoLookBigHeadFragment.newInstance(new Bundle());
-        bindPhoneFragment = MineBindPhoneFragment.newInstance(new Bundle());
+
         setUserNameFragment = MineSetUserNameFragment.newInstance();
 
     }
@@ -353,6 +353,9 @@ public class HomeMinePersonalInformationFragment extends Fragment implements Min
     }
 
     private void jump2SetPhoneFragment() {
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("userinfo",argumentData);
+        bindPhoneFragment = MineBindPhoneFragment.newInstance(bundle);
         getFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                         , R.anim.slide_in_left, R.anim.slide_out_right)

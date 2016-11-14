@@ -12,10 +12,13 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 
+import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MinePersonalInfoSetPassWordContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MinePersionlInfoSetPassWordPresenterImp;
 import com.cylan.jiafeigou.utils.ToastUtil;
+
+import java.io.Serializable;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -47,6 +50,7 @@ public class MinePersionlInfoSetPassWordFragment extends Fragment implements Min
 
 
     private MinePersonalInfoSetPassWordContract.Presenter presenter;
+    private JFGAccount userinfo;
 
     public static MinePersionlInfoSetPassWordFragment newInstance(Bundle bundle) {
         MinePersionlInfoSetPassWordFragment fragment = new MinePersionlInfoSetPassWordFragment();
@@ -60,8 +64,17 @@ public class MinePersionlInfoSetPassWordFragment extends Fragment implements Min
         View view = inflater.inflate(R.layout.fragment_mine_persion_info_set_password, container, false);
         ButterKnife.bind(this, view);
         initPresenter();
+        getArgumentData();
         initEditLisenter();
         return view;
+    }
+
+    /**
+     * 获取传递过来的参数
+     */
+    private void getArgumentData() {
+        Bundle arguments = getArguments();
+        userinfo = (JFGAccount) arguments.getSerializable("userinfo");
     }
 
     private void initPresenter() {
@@ -184,6 +197,8 @@ public class MinePersionlInfoSetPassWordFragment extends Fragment implements Min
             ToastUtil.showToast("请输入6~12位密码");
             return;
         }
+
+        presenter.sendChangePassReq(userinfo.getAccount(),getOldPassword(),getNewPassword());
 
         ToastUtil.showToast("修改成功");
         getFragmentManager().popBackStack();

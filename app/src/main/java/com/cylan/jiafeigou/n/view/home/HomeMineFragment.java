@@ -106,9 +106,8 @@ public class HomeMineFragment extends Fragment
                 //访客状态
                 presenter.portraitBlur(R.drawable.clouds);
                 setAliasName("立即登录");
-            }else {
-                presenter.start();
             }
+            presenter.start();
         }
     }
 
