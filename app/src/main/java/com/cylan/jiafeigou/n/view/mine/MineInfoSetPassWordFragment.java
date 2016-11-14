@@ -14,11 +14,9 @@ import android.widget.ImageView;
 
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.n.mvp.contract.mine.MinePersonalInfoSetPassWordContract;
-import com.cylan.jiafeigou.n.mvp.impl.mine.MinePersionlInfoSetPassWordPresenterImp;
+import com.cylan.jiafeigou.n.mvp.contract.mine.MineInfoSetPassWordContract;
+import com.cylan.jiafeigou.n.mvp.impl.mine.MineInfoSetPassWordPresenterImp;
 import com.cylan.jiafeigou.utils.ToastUtil;
-
-import java.io.Serializable;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -29,7 +27,7 @@ import butterknife.OnClick;
  * 创建时间：2016/9/20
  * 描述：
  */
-public class MinePersionlInfoSetPassWordFragment extends Fragment implements MinePersonalInfoSetPassWordContract.View {
+public class MineInfoSetPassWordFragment extends Fragment implements MineInfoSetPassWordContract.View {
 
     @BindView(R.id.iv_mine_personal_setpassword_back)
     ImageView ivMinePersonalSetpasswordBack;
@@ -49,11 +47,11 @@ public class MinePersionlInfoSetPassWordFragment extends Fragment implements Min
     ImageView ivMinePersonalInformationNewPasswordClear;
 
 
-    private MinePersonalInfoSetPassWordContract.Presenter presenter;
+    private MineInfoSetPassWordContract.Presenter presenter;
     private JFGAccount userinfo;
 
-    public static MinePersionlInfoSetPassWordFragment newInstance(Bundle bundle) {
-        MinePersionlInfoSetPassWordFragment fragment = new MinePersionlInfoSetPassWordFragment();
+    public static MineInfoSetPassWordFragment newInstance(Bundle bundle) {
+        MineInfoSetPassWordFragment fragment = new MineInfoSetPassWordFragment();
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -78,7 +76,7 @@ public class MinePersionlInfoSetPassWordFragment extends Fragment implements Min
     }
 
     private void initPresenter() {
-        presenter = new MinePersionlInfoSetPassWordPresenterImp(this);
+        presenter = new MineInfoSetPassWordPresenterImp(this);
     }
 
     private void initEditLisenter() {
@@ -153,7 +151,7 @@ public class MinePersionlInfoSetPassWordFragment extends Fragment implements Min
     }
 
     @Override
-    public void setPresenter(MinePersonalInfoSetPassWordContract.Presenter presenter) {
+    public void setPresenter(MineInfoSetPassWordContract.Presenter presenter) {
 
     }
 

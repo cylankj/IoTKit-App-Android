@@ -12,7 +12,7 @@ import rx.Subscription;
  * 创建时间：2016/9/12
  * 描述：
  */
-public interface MinePersonalInformationBindMailContract {
+public interface MineInfoBindMailContract {
 
     interface View extends BaseView<Presenter> {
         /**

@@ -1,7 +1,7 @@
 package com.cylan.jiafeigou.n.mvp.impl.mine;
 
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
-import com.cylan.jiafeigou.n.mvp.contract.mine.MinePersonalInfoSetPassWordContract;
+import com.cylan.jiafeigou.n.mvp.contract.mine.MineInfoSetPassWordContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.support.log.AppLogger;
 
@@ -13,9 +13,9 @@ import rx.schedulers.Schedulers;
  * 创建时间：2016/9/20
  * 描述：
  */
-public class MinePersionlInfoSetPassWordPresenterImp extends AbstractPresenter<MinePersonalInfoSetPassWordContract.View> implements MinePersonalInfoSetPassWordContract.Presenter {
+public class MineInfoSetPassWordPresenterImp extends AbstractPresenter<MineInfoSetPassWordContract.View> implements MineInfoSetPassWordContract.Presenter {
 
-    public MinePersionlInfoSetPassWordPresenterImp(MinePersonalInfoSetPassWordContract.View view) {
+    public MineInfoSetPassWordPresenterImp(MineInfoSetPassWordContract.View view) {
         super(view);
         view.setPresenter(this);
     }

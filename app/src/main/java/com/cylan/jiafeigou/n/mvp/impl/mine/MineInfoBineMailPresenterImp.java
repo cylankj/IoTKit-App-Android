@@ -3,11 +3,10 @@ package com.cylan.jiafeigou.n.mvp.impl.mine;
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.misc.RxEvent;
-import com.cylan.jiafeigou.n.mvp.contract.mine.MinePersonalInformationBindMailContract;
+import com.cylan.jiafeigou.n.mvp.contract.mine.MineInfoBindMailContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.rxbus.RxBus;
-import com.cylan.jiafeigou.utils.ToastUtil;
 
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
@@ -16,7 +15,6 @@ import java.util.regex.Pattern;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
-import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
@@ -25,11 +23,11 @@ import rx.subscriptions.CompositeSubscription;
  * 创建时间：2016/9/12
  * 描述：
  */
-public class MinePersonalInformationBineMailPresenterImp extends AbstractPresenter<MinePersonalInformationBindMailContract.View> implements MinePersonalInformationBindMailContract.Presenter {
+public class MineInfoBineMailPresenterImp extends AbstractPresenter<MineInfoBindMailContract.View> implements MineInfoBindMailContract.Presenter {
 
     private CompositeSubscription compositeSubscription;
 
-    public MinePersonalInformationBineMailPresenterImp(MinePersonalInformationBindMailContract.View view) {
+    public MineInfoBineMailPresenterImp(MineInfoBindMailContract.View view) {
         super(view);
         view.setPresenter(this);
 

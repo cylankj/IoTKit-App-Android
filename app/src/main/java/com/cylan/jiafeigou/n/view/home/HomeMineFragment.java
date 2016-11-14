@@ -15,9 +15,8 @@ import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.cache.JCache;
 import com.cylan.jiafeigou.misc.RxEvent;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeMineContract;
-import com.cylan.jiafeigou.n.mvp.model.UserInfoBean;
 import com.cylan.jiafeigou.n.view.mine.HomeMineHelpFragment;
-import com.cylan.jiafeigou.n.view.mine.HomeMinePersonalInformationFragment;
+import com.cylan.jiafeigou.n.view.mine.HomeMineInfoFragment;
 import com.cylan.jiafeigou.n.view.mine.MineFriendsFragment;
 import com.cylan.jiafeigou.n.view.mine.MineShareDeviceFragment;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -57,7 +56,7 @@ public class HomeMineFragment extends Fragment
 
     private HomeMineContract.Presenter presenter;
     private HomeMineHelpFragment mineHelpFragment;
-    private HomeMinePersonalInformationFragment personalInformationFragment;
+    private HomeMineInfoFragment personalInformationFragment;
     private HomeSettingFragment homeSettingFragment;
     private HomeMineMessageFragment homeMineMessageFragment;
     private MineShareDeviceFragment mineShareDeviceFragment;
@@ -341,7 +340,7 @@ public class HomeMineFragment extends Fragment
     private void jump2UserInfoFrgment() {
         Bundle bundle = new Bundle();
         bundle.putSerializable("userInfoBean",presenter.getUserInfoBean());
-        personalInformationFragment = HomeMinePersonalInformationFragment.newInstance(bundle);
+        personalInformationFragment = HomeMineInfoFragment.newInstance(bundle);
         getFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                         , R.anim.slide_in_left, R.anim.slide_out_right)

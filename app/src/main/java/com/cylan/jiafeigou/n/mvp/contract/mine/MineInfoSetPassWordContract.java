@@ -7,7 +7,7 @@ import com.cylan.jiafeigou.n.mvp.BasePresenter;
  * 创建时间：2016/9/20
  * 描述：
  */
-public interface MinePersonalInfoSetPassWordContract {
+public interface MineInfoSetPassWordContract {
 
     interface View extends BaseView<Presenter> {
 

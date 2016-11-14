@@ -22,8 +22,8 @@ import android.widget.TextView;
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.RxEvent;
-import com.cylan.jiafeigou.n.mvp.contract.mine.MinePersonalInformationBindMailContract;
-import com.cylan.jiafeigou.n.mvp.impl.mine.MinePersonalInformationBineMailPresenterImp;
+import com.cylan.jiafeigou.n.mvp.contract.mine.MineInfoBindMailContract;
+import com.cylan.jiafeigou.n.mvp.impl.mine.MineInfoBineMailPresenterImp;
 import com.cylan.jiafeigou.utils.IMEUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
@@ -41,7 +41,7 @@ import butterknife.OnClick;
  * 更新时间   $Date$
  * 更新描述   ${TODO}
  */
-public class HomeMinePersonalInformationMailBoxFragment extends Fragment implements MinePersonalInformationBindMailContract.View {
+public class HomeMineInfoMailBoxFragment extends Fragment implements MineInfoBindMailContract.View {
 
     @BindView(R.id.iv_mine_personal_information_mailbox)
     ImageView mIvMailBox;
@@ -63,7 +63,7 @@ public class HomeMinePersonalInformationMailBoxFragment extends Fragment impleme
     RelativeLayout rlSendProHint;
 
     private String mailBox;
-    private MinePersonalInformationBindMailContract.Presenter presenter;
+    private MineInfoBindMailContract.Presenter presenter;
 
     private OnBindMailBoxListener onBindMailBoxListener;
     private JFGAccount userinfo;
@@ -71,7 +71,7 @@ public class HomeMinePersonalInformationMailBoxFragment extends Fragment impleme
     private boolean bindOrChange = false;       //绑定或者修改邮箱
 
     @Override
-    public void setPresenter(MinePersonalInformationBindMailContract.Presenter presenter) {
+    public void setPresenter(MineInfoBindMailContract.Presenter presenter) {
 
     }
 
@@ -134,8 +134,8 @@ public class HomeMinePersonalInformationMailBoxFragment extends Fragment impleme
         this.onBindMailBoxListener = mListener;
     }
 
-    public static HomeMinePersonalInformationMailBoxFragment newInstance(Bundle bundle) {
-        HomeMinePersonalInformationMailBoxFragment fragment = new HomeMinePersonalInformationMailBoxFragment();
+    public static HomeMineInfoMailBoxFragment newInstance(Bundle bundle) {
+        HomeMineInfoMailBoxFragment fragment = new HomeMineInfoMailBoxFragment();
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -175,7 +175,7 @@ public class HomeMinePersonalInformationMailBoxFragment extends Fragment impleme
     }
 
     private void initPresenter() {
-        presenter = new MinePersonalInformationBineMailPresenterImp(this);
+        presenter = new MineInfoBineMailPresenterImp(this);
     }
 
     /**

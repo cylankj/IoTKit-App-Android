@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,14 +29,14 @@ import com.cylan.jiafeigou.utils.ToastUtil;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.OnTextChanged;
 
 /**
  * 作者：zsl
  * 创建时间：2016/9/1
  * 描述：
  */
-public class MineBindPhoneFragment extends Fragment implements MineBindPhoneContract.View {
-
+public class MineInfoBindPhoneFragment extends Fragment implements MineBindPhoneContract.View {
 
     @BindView(R.id.et_input_userphone)
     EditText etInputUserphone;
@@ -71,6 +72,18 @@ public class MineBindPhoneFragment extends Fragment implements MineBindPhoneCont
         initEditListener();
         initCountDownTime();
         return view;
+    }
+
+    /**
+     * 验证码输入框变化监听
+     */
+    @OnTextChanged(R.id.et_verification_input)
+    public void initCheckCodeListener(CharSequence s, int start, int before, int count) {
+         if (TextUtils.isEmpty(s)){
+             tvGetCheckNumber.setEnabled(false);
+         }else {
+             tvGetCheckNumber.setEnabled(true);
+         }
     }
 
     private void initCountDownTime() {
@@ -143,8 +156,8 @@ public class MineBindPhoneFragment extends Fragment implements MineBindPhoneCont
         userinfo = (JFGAccount) arguments.getSerializable("userinfo");
     }
 
-    public static MineBindPhoneFragment newInstance(Bundle bundle) {
-        MineBindPhoneFragment fragment = new MineBindPhoneFragment();
+    public static MineInfoBindPhoneFragment newInstance(Bundle bundle) {
+        MineInfoBindPhoneFragment fragment = new MineInfoBindPhoneFragment();
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -170,7 +183,6 @@ public class MineBindPhoneFragment extends Fragment implements MineBindPhoneCont
                     // 更改手机号
                     handlerChangeOrBindPhone();
                 }
-
                 break;
 
             case R.id.iv_top_bar_left:
@@ -196,7 +208,7 @@ public class MineBindPhoneFragment extends Fragment implements MineBindPhoneCont
      * 跳转到设置密码界面
      */
     private void jump2SetpassFragment(String account) {
-
+        // TODO　跳转到设置密码界面
     }
 
     /**
@@ -284,6 +296,7 @@ public class MineBindPhoneFragment extends Fragment implements MineBindPhoneCont
     public void onStop() {
         super.onStop();
         if (countDownTimer != null) {
+            tvMeterGetCode.setVisibility(View.INVISIBLE);
             countDownTimer.onFinish();
         }
         if (presenter != null)presenter.stop();

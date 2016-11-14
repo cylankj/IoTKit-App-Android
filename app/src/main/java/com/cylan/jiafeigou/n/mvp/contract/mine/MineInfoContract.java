@@ -10,7 +10,7 @@ import com.cylan.jiafeigou.n.mvp.model.UserInfoBean;
  * 创建时间：2016/9/1
  * 描述：
  */
-public interface MinePersonalInformationContract {
+public interface MineInfoContract {
 
     interface View extends BaseView<Presenter> {
 

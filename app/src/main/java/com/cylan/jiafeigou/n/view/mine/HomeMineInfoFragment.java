@@ -2,10 +2,8 @@ package com.cylan.jiafeigou.n.view.mine;
 
 
 import android.content.DialogInterface;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
@@ -16,31 +14,24 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.misc.JConstant;
-import com.cylan.jiafeigou.n.mvp.contract.mine.MinePersonalInformationContract;
+import com.cylan.jiafeigou.n.mvp.contract.mine.MineInfoContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.GlideImageLoaderPresenterImpl;
-import com.cylan.jiafeigou.n.mvp.impl.mine.MinePersonalInformationPresenterImpl;
-import com.cylan.jiafeigou.n.mvp.model.UserInfoBean;
+import com.cylan.jiafeigou.n.mvp.impl.mine.MineInfoPresenterImpl;
 import com.cylan.jiafeigou.support.galleryfinal.CoreConfig;
 import com.cylan.jiafeigou.support.galleryfinal.FunctionConfig;
 import com.cylan.jiafeigou.support.galleryfinal.GalleryFinal;
 import com.cylan.jiafeigou.support.galleryfinal.ImageLoader;
 import com.cylan.jiafeigou.support.galleryfinal.ThemeConfig;
-import com.cylan.jiafeigou.support.galleryfinal.model.PhotoInfo;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
-import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.roundedimageview.RoundedImageView;
-
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -57,7 +48,7 @@ import butterknife.OnClick;
  * 更新时间   $Date$
  * 更新描述   ${TODO}
  */
-public class HomeMinePersonalInformationFragment extends Fragment implements MinePersonalInformationContract.View {
+public class HomeMineInfoFragment extends Fragment implements MineInfoContract.View {
 
     //拉取出照相机时，产生的状态码
     private final int REQUEST_CODE_CAMERA = 1000;
@@ -82,17 +73,17 @@ public class HomeMinePersonalInformationFragment extends Fragment implements Min
     RelativeLayout rlChangePassword;
 
 
-    private HomeMinePersonalInformationMailBoxFragment mailBoxFragment;
-    private MineBindPhoneFragment bindPhoneFragment;
+    private HomeMineInfoMailBoxFragment mailBoxFragment;
+    private MineInfoBindPhoneFragment bindPhoneFragment;
     private MineUserInfoLookBigHeadFragment bigHeadFragment;
     private MineSetUserNameFragment setUserNameFragment;
-    private MinePersionlInfoSetPassWordFragment setPassWordFragment;
-    private MinePersonalInformationContract.Presenter presenter;
+    private MineInfoSetPassWordFragment setPassWordFragment;
+    private MineInfoContract.Presenter presenter;
     private AlertDialog alertDialog;
     private JFGAccount argumentData;
 
-    public static HomeMinePersonalInformationFragment newInstance(Bundle bundle) {
-        HomeMinePersonalInformationFragment fragment = new HomeMinePersonalInformationFragment();
+    public static HomeMineInfoFragment newInstance(Bundle bundle) {
+        HomeMineInfoFragment fragment = new HomeMineInfoFragment();
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -102,7 +93,7 @@ public class HomeMinePersonalInformationFragment extends Fragment implements Min
         super.onCreate(savedInstanceState);
         bigHeadFragment = MineUserInfoLookBigHeadFragment.newInstance(new Bundle());
 
-        setUserNameFragment = MineSetUserNameFragment.newInstance();
+
 
     }
 
@@ -148,7 +139,7 @@ public class HomeMinePersonalInformationFragment extends Fragment implements Min
     }
 
     private void initPresenter() {
-        presenter = new MinePersonalInformationPresenterImpl(this, getContext());
+        presenter = new MineInfoPresenterImpl(this, getContext());
     }
 
     @Override
@@ -223,7 +214,7 @@ public class HomeMinePersonalInformationFragment extends Fragment implements Min
     private void jump2ChangePasswordFragment() {
         Bundle bundle = new Bundle();
         bundle.putSerializable("userinfo",argumentData);
-        setPassWordFragment = MinePersionlInfoSetPassWordFragment.newInstance(bundle);
+        setPassWordFragment = MineInfoSetPassWordFragment.newInstance(bundle);
         getFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                         , R.anim.slide_in_left, R.anim.slide_out_right)
@@ -236,6 +227,9 @@ public class HomeMinePersonalInformationFragment extends Fragment implements Min
      * 跳转到修改昵称界面
      */
     private void jump2SetUserNameFragment() {
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("userinfo",argumentData);
+        setUserNameFragment = MineSetUserNameFragment.newInstance(bundle);
         getFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                         , R.anim.slide_in_left, R.anim.slide_out_right)
@@ -303,7 +297,7 @@ public class HomeMinePersonalInformationFragment extends Fragment implements Min
     public void jump2SetEmailFragment() {
         Bundle bundle = new Bundle();
         bundle.putSerializable("userinfo",argumentData);
-        mailBoxFragment = HomeMinePersonalInformationMailBoxFragment.newInstance(bundle);
+        mailBoxFragment = HomeMineInfoMailBoxFragment.newInstance(bundle);
         getFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                         , R.anim.slide_in_left, R.anim.slide_out_right)
@@ -311,7 +305,7 @@ public class HomeMinePersonalInformationFragment extends Fragment implements Min
                 .addToBackStack("personalInformationFragment")
                 .commit();
         if (getActivity() != null && getActivity().getFragmentManager() != null) {
-            mailBoxFragment.setListener(new HomeMinePersonalInformationMailBoxFragment.OnBindMailBoxListener() {
+            mailBoxFragment.setListener(new HomeMineInfoMailBoxFragment.OnBindMailBoxListener() {
                 @Override
                 public void mailBoxChange(String content) {
                     mTvMailBox.setText(content);
@@ -355,7 +349,7 @@ public class HomeMinePersonalInformationFragment extends Fragment implements Min
     private void jump2SetPhoneFragment() {
         Bundle bundle = new Bundle();
         bundle.putSerializable("userinfo",argumentData);
-        bindPhoneFragment = MineBindPhoneFragment.newInstance(bundle);
+        bindPhoneFragment = MineInfoBindPhoneFragment.newInstance(bundle);
         getFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                         , R.anim.slide_in_left, R.anim.slide_out_right)
@@ -365,7 +359,7 @@ public class HomeMinePersonalInformationFragment extends Fragment implements Min
     }
 
     @Override
-    public void setPresenter(MinePersonalInformationContract.Presenter presenter) {
+    public void setPresenter(MineInfoContract.Presenter presenter) {
     }
 
     @Override

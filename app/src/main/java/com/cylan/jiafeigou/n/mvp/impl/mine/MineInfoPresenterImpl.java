@@ -4,7 +4,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
-import com.cylan.jiafeigou.n.mvp.contract.mine.MinePersonalInformationContract;
+import com.cylan.jiafeigou.n.mvp.contract.mine.MineInfoContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.n.mvp.model.UserInfoBean;
 import com.cylan.jiafeigou.support.galleryfinal.FunctionConfig;
@@ -23,13 +23,13 @@ import rx.schedulers.Schedulers;
  * 创建时间：2016/9/1
  * 描述：
  */
-public class MinePersonalInformationPresenterImpl extends AbstractPresenter<MinePersonalInformationContract.View> implements MinePersonalInformationContract.Presenter {
+public class MineInfoPresenterImpl extends AbstractPresenter<MineInfoContract.View> implements MineInfoContract.Presenter {
 
     private Context context;
     public static FunctionConfig functionConfig;
     private Subscription getUserInfoSubscription;
 
-    public MinePersonalInformationPresenterImpl(MinePersonalInformationContract.View view, Context context) {
+    public MineInfoPresenterImpl(MineInfoContract.View view, Context context) {
         super(view);
         view.setPresenter(this);
         this.context = context;
