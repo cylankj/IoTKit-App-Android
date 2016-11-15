@@ -315,5 +315,8 @@ dependencies {
     compile rootProject.ext.galleryFinal
     compile(name: rootProject.ext.cySdk, ext: 'aar')
 
+    //自己写的 apt
+    compile project(':annotation')
+    apt project(':compiler')
 }
 

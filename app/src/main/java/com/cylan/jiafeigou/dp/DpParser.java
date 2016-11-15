@@ -64,26 +64,26 @@ public class DpParser {
                     public Object call(List<JFGDevice> list) {
                         for (int i = 0; i < list.size(); i++) {
                             DpParameters.Builder builder = new DpParameters.Builder();
-                            builder.addParam(DpMsgIdMap.IdMap.get(DpMsgConstant.NET), 0);
-                            builder.addParam(DpMsgIdMap.IdMap.get(DpMsgConstant.MAC), 0);
-                            builder.addParam(DpMsgIdMap.IdMap.get(DpMsgConstant.SDCARD_STATE), 0);
-                            builder.addParam(DpMsgIdMap.IdMap.get(DpMsgConstant.SDCARD_STORAGE), 0);
-                            builder.addParam(DpMsgIdMap.IdMap.get(DpMsgConstant.CHARGING), 0);
-                            builder.addParam(DpMsgIdMap.IdMap.get(DpMsgConstant.BATTERY), 0);
-                            builder.addParam(DpMsgIdMap.IdMap.get(DpMsgConstant.APP_VERSION), 0);
-                            builder.addParam(DpMsgIdMap.IdMap.get(DpMsgConstant.SYS_VERSION), 0);
-                            builder.addParam(DpMsgIdMap.IdMap.get(DpMsgConstant.LED_INDICATOR), 0);
-                            builder.addParam(DpMsgIdMap.IdMap.get(DpMsgConstant.UP_TIME), 0);
-                            builder.addParam(DpMsgIdMap.IdMap.get(DpMsgConstant.APP_UPLOAD_LOG), 0);
-                            builder.addParam(DpMsgIdMap.IdMap.get(DpMsgConstant.DEVICE_UPLOAD_LOG), 0);
-                            builder.addParam(DpMsgIdMap.IdMap.get(DpMsgConstant.DEVICE_P2P_VERSION), 0);
-                            builder.addParam(DpMsgIdMap.IdMap.get(DpMsgConstant.DEVICE_TIME_ZONE), 0);
-                            builder.addParam(DpMsgIdMap.IdMap.get(DpMsgConstant.DEVICE_RTMP), 0);
-                            builder.addParam(DpMsgIdMap.IdMap.get(DpMsgConstant.DEVICE_VOLTAGE), 0);
-                            builder.addParam(DpMsgIdMap.IdMap.get(DpMsgConstant.DEVICE_MOBILE_NET_PRIORITY), 0);
-                            builder.addParam(DpMsgIdMap.IdMap.get(DpMsgConstant.DEVICE_FORMAT_SDCARD), 0);
-                            builder.addParam(DpMsgIdMap.IdMap.get(DpMsgConstant.DEVICE_BIND_LOG), 0);
-                            builder.addParam(DpMsgIdMap.IdMap.get(DpMsgConstant.SDK_VERSION), 0);
+                            builder.addParam(DpMsgMap.NAME_2_ID_MAP.get(DpMsgConstant.NET), 0);
+                            builder.addParam(DpMsgMap.NAME_2_ID_MAP.get(DpMsgConstant.MAC), 0);
+                            builder.addParam(DpMsgMap.NAME_2_ID_MAP.get(DpMsgConstant.SDCARD_STATE), 0);
+                            builder.addParam(DpMsgMap.NAME_2_ID_MAP.get(DpMsgConstant.SDCARD_STORAGE), 0);
+                            builder.addParam(DpMsgMap.NAME_2_ID_MAP.get(DpMsgConstant.CHARGING), 0);
+                            builder.addParam(DpMsgMap.NAME_2_ID_MAP.get(DpMsgConstant.BATTERY), 0);
+                            builder.addParam(DpMsgMap.NAME_2_ID_MAP.get(DpMsgConstant.APP_VERSION), 0);
+                            builder.addParam(DpMsgMap.NAME_2_ID_MAP.get(DpMsgConstant.SYS_VERSION), 0);
+                            builder.addParam(DpMsgMap.NAME_2_ID_MAP.get(DpMsgConstant.LED_INDICATOR), 0);
+                            builder.addParam(DpMsgMap.NAME_2_ID_MAP.get(DpMsgConstant.UP_TIME), 0);
+                            builder.addParam(DpMsgMap.NAME_2_ID_MAP.get(DpMsgConstant.APP_UPLOAD_LOG), 0);
+                            builder.addParam(DpMsgMap.NAME_2_ID_MAP.get(DpMsgConstant.DEVICE_UPLOAD_LOG), 0);
+                            builder.addParam(DpMsgMap.NAME_2_ID_MAP.get(DpMsgConstant.DEVICE_P2P_VERSION), 0);
+                            builder.addParam(DpMsgMap.NAME_2_ID_MAP.get(DpMsgConstant.DEVICE_TIME_ZONE), 0);
+                            builder.addParam(DpMsgMap.NAME_2_ID_MAP.get(DpMsgConstant.DEVICE_RTMP), 0);
+                            builder.addParam(DpMsgMap.NAME_2_ID_MAP.get(DpMsgConstant.DEVICE_VOLTAGE), 0);
+                            builder.addParam(DpMsgMap.NAME_2_ID_MAP.get(DpMsgConstant.DEVICE_MOBILE_NET_PRIORITY), 0);
+                            builder.addParam(DpMsgMap.NAME_2_ID_MAP.get(DpMsgConstant.DEVICE_FORMAT_SDCARD), 0);
+                            builder.addParam(DpMsgMap.NAME_2_ID_MAP.get(DpMsgConstant.DEVICE_BIND_LOG), 0);
+                            builder.addParam(DpMsgMap.NAME_2_ID_MAP.get(DpMsgConstant.SDK_VERSION), 0);
                             AppLogger.i("DpParser: " + builder.toString());
                             long seq = JfgAppCmd.getInstance().robotGetData(list.get(i).uuid, builder.build(), 1, false, 0);
                             seqList.add(seq);
@@ -106,7 +106,7 @@ public class DpParser {
                         for (Map.Entry<Integer, ArrayList<JFGDPMsg>> entry : dpDataRsp.robotoGetDataRsp.map.entrySet()) {
                             final int keyId = entry.getKey();
                             JFGDPMsg dp = entry.getValue().get(0);
-                            Class<?> clazz = DpMsgIdClassMap.Id2ClassMap.get(keyId);
+                            Class<?> clazz = DpMsgMap.ID_2_CLASS_MAP.get(keyId);
                             try {
                                 Object o = unpackData(dp.packValue, clazz);
                                 Log.d("DpParser", "superParser: " + o + " " + keyId);

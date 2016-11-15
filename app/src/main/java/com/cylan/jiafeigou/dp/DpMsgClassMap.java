@@ -66,7 +66,7 @@ public class DpMsgClassMap {
         CLASS_TYPE_MAP.put(DEVICE_TIME_ZONE, int.class);
         CLASS_TYPE_MAP.put(DEVICE_RTMP, boolean.class);
         CLASS_TYPE_MAP.put(DEVICE_VOLTAGE, boolean.class);
-        CLASS_TYPE_MAP.put(DEVICE_MOBILE_NET_PRIORITY, boolean.class);
+        CLASS_TYPE_MAP.put(DEVICE_MOBILE_NET_PRIORITY, int.class);
         CLASS_TYPE_MAP.put(DEVICE_FORMAT_SDCARD, Void.class);
         CLASS_TYPE_MAP.put(DEVICE_BIND_LOG, String.class);
         CLASS_TYPE_MAP.put(SDK_VERSION, String.class);
