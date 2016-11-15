@@ -39,11 +39,7 @@ import rx.subscriptions.CompositeSubscription;
  */
 public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContract.View> implements MineFriendsContract.Presenter {
 
-    private Subscription friendListSub;
-    private Subscription addReqListSub;
     private CompositeSubscription compositeSubscription;
-
-
     private boolean addReqNull;
     private boolean friendListNull;
 
@@ -184,16 +180,16 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
      */
     @Override
     public Subscription initFriendRecyListData() {
-        friendListSub = RxBus.getDefault().toObservable(RxEvent.GetFriendList.class)
+        return RxBus.getDefault().toObservable(RxEvent.GetFriendList.class)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<RxEvent.GetFriendList>() {
                     @Override
                     public void call(RxEvent.GetFriendList o) {
-                        if (getView() != null)
+                        if (o != null && o instanceof RxEvent.GetFriendList){
                             handleInitFriendListDataResult(o);
+                        }
                     }
                 });
-        return friendListSub;
     }
 
     /**
@@ -201,17 +197,16 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
      */
     @Override
     public Subscription initAddReqRecyListData() {
-        addReqListSub = RxBus.getDefault().toObservable(RxEvent.GetAddReqList.class)
+        return RxBus.getDefault().toObservable(RxEvent.GetAddReqList.class)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<RxEvent.GetAddReqList>() {
                     @Override
                     public void call(RxEvent.GetAddReqList o) {
-                        if (getView() == null)
-                            return;
-                        handleInitAddReqListDataResult(o);
+                        if(o != null && o instanceof RxEvent.GetAddReqList){
+                            handleInitAddReqListDataResult(o);
+                        }
                     }
                 });
-        return addReqListSub;
     }
 
     @Override
@@ -314,13 +309,15 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
      * @param addReqList
      */
     private void handleInitAddReqListDataResult(final RxEvent.GetAddReqList addReqList) {
-        if (addReqList.arrayList.size() != 0) {
-            getView().showAddReqListTitle();
-            getView().initAddReqRecyList(initAddRequestData(addReqList));
-        } else {
-            addReqNull = true;
-            checkAllNull();
-            getView().hideAddReqListTitle();
+        if (getView() != null){
+            if (addReqList.arrayList.size() != 0) {
+                getView().showAddReqListTitle();
+                getView().initAddReqRecyList(initAddRequestData(addReqList));
+            } else {
+                addReqNull = true;
+                checkAllNull();
+                getView().hideAddReqListTitle();
+            }
         }
     }
 
@@ -330,16 +327,16 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
      * @param friendList
      */
     private void handleInitFriendListDataResult(final RxEvent.GetFriendList friendList) {
-        if (friendList.arrayList.size() != 0) {
-            getView().showFriendListTitle();
-            getView().initFriendRecyList(initRelativatesAndFriendsData(friendList));
-        } else {
-            friendListNull = true;
-            checkAllNull();
-            getView().hideFriendListTitle();
+        if (getView() != null){
+            if (friendList.arrayList.size() != 0) {
+                getView().showFriendListTitle();
+                getView().initFriendRecyList(initRelativatesAndFriendsData(friendList));
+            } else {
+                friendListNull = true;
+                checkAllNull();
+                getView().hideFriendListTitle();
+            }
         }
-
     }
-
 
 }

@@ -42,7 +42,8 @@ import butterknife.OnClick;
  * 创建时间：2016/9/6
  * 描述：
  */
-public class MineFriendsFragment extends Fragment implements MineFriendsContract.View, AddRelativesAndFriendsAdapter.OnAcceptClickLisenter {
+public class
+MineFriendsFragment extends Fragment implements MineFriendsContract.View, AddRelativesAndFriendsAdapter.OnAcceptClickLisenter {
 
 
     @BindView(R.id.iv_home_mine_relativesandfriends_back)
@@ -145,7 +146,7 @@ public class MineFriendsFragment extends Fragment implements MineFriendsContract
     }
 
     /**
-     * 添加请求列表添加一个条目
+     * 添加请求列表删除一个条目
      * @param position
      * @param bean
      */
@@ -338,7 +339,7 @@ public class MineFriendsFragment extends Fragment implements MineFriendsContract
         if (presenter.checkAddRequestOutTime(item)){
                 showReqOutTimeDialog(item);
         }else {
-            //SDK 调用添加成功
+            //调用添加成功
             presenter.acceptAddSDK(item.account);
             ToastUtil.showPositiveToast("添加成功");
 

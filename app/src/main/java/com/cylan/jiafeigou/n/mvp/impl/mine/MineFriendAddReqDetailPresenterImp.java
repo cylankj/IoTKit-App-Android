@@ -1,7 +1,6 @@
 package com.cylan.jiafeigou.n.mvp.impl.mine;
 
 
-import com.cylan.entity.jniCall.JFGFriendRequest;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.misc.RxEvent;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendAddReqDetailContract;
@@ -10,13 +9,10 @@ import com.cylan.jiafeigou.n.mvp.model.MineAddReqBean;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.rxbus.RxBus;
 
-import java.util.concurrent.TimeUnit;
 
-import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
-import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
@@ -27,10 +23,7 @@ import rx.subscriptions.CompositeSubscription;
  */
 public class MineFriendAddReqDetailPresenterImp extends AbstractPresenter<MineFriendAddReqDetailContract.View> implements MineFriendAddReqDetailContract.Presenter {
 
-    private Subscription addAsFriendSub;
-    private Subscription sendAddReqSub;
     private CompositeSubscription compositeSubscription;
-
 
     public MineFriendAddReqDetailPresenterImp(MineFriendAddReqDetailContract.View view) {
         super(view);

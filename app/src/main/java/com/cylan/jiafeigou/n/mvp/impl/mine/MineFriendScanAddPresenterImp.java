@@ -6,8 +6,12 @@ import android.graphics.Point;
 import android.view.Display;
 import android.view.WindowManager;
 
+import com.cylan.jiafeigou.misc.JfgCmdInsurance;
+import com.cylan.jiafeigou.misc.RxEvent;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendScanAddContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
+import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.support.rxbus.RxBus;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.EncodeHintType;
 import com.google.zxing.MultiFormatWriter;
@@ -19,6 +23,7 @@ import java.util.Map;
 
 import rx.Observable;
 import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
@@ -116,4 +121,61 @@ public class MineFriendScanAddPresenterImp extends AbstractPresenter<MineFriendS
         }
         return null;
     }
+
+
+    /**
+     * 检测扫描结果
+     * @param account
+     */
+    @Override
+    public void checkScannAccount(String account) {
+        rx.Observable.just(account)
+                .subscribeOn(Schedulers.newThread())
+                .subscribe(new Action1<String>() {
+                    @Override
+                    public void call(String s) {
+                        JfgCmdInsurance.getCmd().checkFriendAccount(s);
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        AppLogger.e("checkScannAccount"+throwable.getLocalizedMessage());
+                    }
+                });
+    }
+
+    /**
+     * 扫描结果的回调
+     * @return
+     */
+    @Override
+    public Subscription checkAccountCallBack() {
+        return RxBus.getDefault().toObservable(RxEvent.CheckAccountCallback.class)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<RxEvent.CheckAccountCallback>() {
+                    @Override
+                    public void call(RxEvent.CheckAccountCallback checkAccountCallback) {
+                        if (checkAccountCallback != null && checkAccountCallback instanceof RxEvent.CheckAccountCallback){
+                            handlerCheckResult(checkAccountCallback);
+                        }
+                    }
+                });
+    }
+
+    /**
+     * 处理检测的结果
+     * @param checkAccountCallback
+     */
+    private void handlerCheckResult(RxEvent.CheckAccountCallback checkAccountCallback) {
+        if (getView() != null){
+            if (checkAccountCallback.i == 0){
+                // 已注册
+            }else if (checkAccountCallback.i == 241){
+                // 已经是好友了
+            } else{
+                // 未注册
+            }
+        }
+    }
+
 }

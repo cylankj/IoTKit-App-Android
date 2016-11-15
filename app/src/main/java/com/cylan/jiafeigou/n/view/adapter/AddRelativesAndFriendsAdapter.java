@@ -1,11 +1,15 @@
 package com.cylan.jiafeigou.n.view.adapter;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.view.View;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.cylan.entity.jniCall.JFGFriendRequest;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.model.MineAddReqBean;
@@ -22,6 +26,7 @@ public class AddRelativesAndFriendsAdapter extends SuperAdapter<MineAddReqBean> 
 
 
     private OnAcceptClickLisenter lisenter;
+    private RoundedImageView headImag;
 
     public interface OnAcceptClickLisenter {
         void onAccept(SuperViewHolder holder, int viewType, int layoutPosition, MineAddReqBean item);
@@ -38,12 +43,27 @@ public class AddRelativesAndFriendsAdapter extends SuperAdapter<MineAddReqBean> 
     @Override
     public void onBind(final SuperViewHolder holder, final int viewType, final int layoutPosition, final MineAddReqBean item) {
         holder.setText(R.id.tv_username, item.alias);
-        holder.setText(R.id.tv_add_message, item.sayHi);
+        if(item.sayHi == null || "".equals(item.sayHi)){
+            holder.setText(R.id.tv_add_message, item.alias+"想添加你为好友");
+        }else {
+            holder.setText(R.id.tv_add_message, item.sayHi);
+        }
+
+        headImag = holder.getView(R.id.iv_userhead);
         //头像
-        Glide.with(ContextUtils.getContext()).load(item.iconUrl)
-                .error(R.drawable.img_me_list_head)
+        Glide.with(getContext()).load(item.iconUrl)
+                .asBitmap().centerCrop()
+                .error(R.drawable.icon_mine_head_normal)
                 .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                .into((RoundedImageView) holder.getView(R.id.iv_userhead));
+                .into(new BitmapImageViewTarget(headImag) {
+                    @Override
+                    protected void setResource(Bitmap resource) {
+                        RoundedBitmapDrawable circularBitmapDrawable =
+                                RoundedBitmapDrawableFactory.create(getContext().getResources(), resource);
+                        circularBitmapDrawable.setCircular(true);
+                        headImag.setImageDrawable(circularBitmapDrawable);
+                    }
+                });
 
         if (layoutPosition == getItemCount() - 1) {
             holder.setVisibility(R.id.view_line, View.INVISIBLE);
@@ -58,7 +78,6 @@ public class AddRelativesAndFriendsAdapter extends SuperAdapter<MineAddReqBean> 
             }
         });
     }
-
 
     @Override
     protected IMulItemViewType<MineAddReqBean> offerMultiItemViewType() {

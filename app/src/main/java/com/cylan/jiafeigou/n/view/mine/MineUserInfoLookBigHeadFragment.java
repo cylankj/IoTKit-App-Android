@@ -20,6 +20,7 @@ import com.cylan.jiafeigou.n.mvp.contract.mine.MineUserInfoLookBigHeadContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineUserInfoLookBigHeadPresenterIMpl;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
+import com.cylan.photoview.PhotoView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -33,7 +34,7 @@ import butterknife.OnClick;
 public class MineUserInfoLookBigHeadFragment extends Fragment implements MineUserInfoLookBigHeadContract.View {
 
     @BindView(R.id.iv_userinfo_big_image)
-    ImageView ivUserinfoBigImage;
+    PhotoView ivUserinfoBigImage;
     @BindView(R.id.progress_bar)
     ProgressBar progressBar;
 

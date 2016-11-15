@@ -37,7 +37,7 @@
 
     <com.cylan.jiafeigou.support.zscan.ZXingScannerView
         android:layout_marginTop="30dp"
-        android:layout_gravity="center_horizontal"
+        android:layout_gravity="center"
         android:id="@+id/zxV_scan_add_relativesandfriend"
         android:layout_width="350dp"
         android:layout_height="350dp"

@@ -1,5 +1,7 @@
 package com.cylan.jiafeigou.n.mvp.contract.mine;
 
+import android.graphics.Bitmap;
+
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
 
@@ -18,6 +20,9 @@ public interface MineLookBigImageContract {
     }
 
     interface Presenter extends BasePresenter {
-
+        /**
+         * 长按保存图片
+         */
+        void saveImage(Bitmap bmp);
     }
 }
