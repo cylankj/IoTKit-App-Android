@@ -79,7 +79,6 @@ public class SmartcallActivity extends NeedLoginActivity
     @Override
     protected void onStart() {
         super.onStart();
-        if (presenter != null) presenter.resumeLogin();
         SmartcallActivityPermissionsDispatcher.showWriteStoragePermissionsWithCheck(this);
     }
 
@@ -160,10 +159,7 @@ public class SmartcallActivity extends NeedLoginActivity
 
 
     private boolean isLoginIn() {
-        String a = PreferencesUtils.getString("wth_a");
-        String p = PreferencesUtils.getString("wth_p");
-        //有账号密码
-        return JCache.isOnline || (!TextUtils.isEmpty(a) && !TextUtils.isEmpty(p));
+        return JCache.isOnline;
     }
 
     /**

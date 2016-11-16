@@ -7,6 +7,8 @@ import com.cylan.jiafeigou.n.view.adapter.MineHasShareAdapter;
 
 import java.util.ArrayList;
 
+import rx.Subscription;
+
 /**
  * 作者：zsl
  * 创建时间：2016/9/8
@@ -52,12 +54,35 @@ public interface MineDevicesShareManagerContract {
 
         /**
          * desc：删除列表的一个条目
-         * @param bean
          */
-        void deleteItems(RelAndFriendBean bean);
+        void deleteItems();
+
+        /**
+         * 取消分享的结果
+         */
+        void showUnShareResult(String result);
+
+        /**
+         * 显示顶部标题头
+         * @param name
+         */
+        void setTopTitle(String name);
     }
 
     interface Presenter extends BasePresenter {
+
+        /**
+         * 获取已分享的好友
+         * @param cid
+         */
+        void getHasShareList(String cid);
+
+        /**
+         * 获取到到已分享好友的回调
+         * @return
+         */
+        Subscription getHasShareListCallback();
+
         /**
          * desc:初始化显示已分享给的好友的数据
          */
@@ -67,7 +92,12 @@ public interface MineDevicesShareManagerContract {
          * desc：取消分享
          * @param bean
          */
-        void cancleShare(RelAndFriendBean bean);
+        void cancleShare(String cid,RelAndFriendBean bean);
+
+        /**
+         * 取消分享的回调
+         */
+        Subscription cancleShareCallBack();
 
     }
 

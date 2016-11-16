@@ -13,6 +13,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import static com.cylan.jiafeigou.dp.DpMsgIdMap.IdMap;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -24,12 +25,12 @@ public class DpMsgIdTest {
 
     @Test
     public void testRepeatValue() {
-        final int count = DpMsgMap.ID_2_CLASS_MAP.size();
-        Set<String> keySet = DpMsgMap.NAME_2_ID_MAP.keySet();
+        final int count = IdMap.size();
+        Set<String> keySet = DpMsgIdMap.IdMap.keySet();
         Iterator<String> iterator = keySet.iterator();
         List<Integer> valueList = new ArrayList<>();
         while (iterator.hasNext()) {
-            valueList.add(DpMsgMap.NAME_2_ID_MAP.get(iterator.next()));
+            valueList.add(IdMap.get(iterator.next()));
         }
         final int valueListSize = valueList.size();
         System.out.println(valueListSize);
@@ -37,7 +38,7 @@ public class DpMsgIdTest {
         assertTrue("不等", valueList.size() == valueListSize);
 
         for (int i = 201; i < 220; i++) {
-            Class<?> clazz = DpMsgMap.ID_2_CLASS_MAP.get(i);
+            Class<?> clazz = DpMsgIdClassMap.Id2ClassMap.get(i);
             System.out.println("i: " + i + " " + clazz);
             System.out.println(clazz.isInstance(int.class));
         }

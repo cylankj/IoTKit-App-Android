@@ -4,12 +4,11 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.cylan.entity.jniCall.JFGDevBaseValue;
-import com.cylan.entity.jniCall.JFGDevice;
 
 /**
  * Created by hunt on 16-5-14.
  */
-public class DeviceBean extends JFGDevBaseValue implements Parcelable, Cloneable {
+public class DeviceBean extends JFGDevBaseValue implements Parcelable {
 
     public int id = 0;
     public int pid;//os type
@@ -121,47 +120,4 @@ public class DeviceBean extends JFGDevBaseValue implements Parcelable, Cloneable
             return new DeviceBean[size];
         }
     };
-
-    public void fillData(JFGDevice device) {
-        this.alias = device.alias;
-        this.uuid = device.uuid;
-        this.shareAccount = device.shareAccount;
-        this.pid = device.pid;
-        this.sn = device.sn;
-
-        this.priorityMobleNet = device.base.priorityMobleNet;
-        this.intTimeZone = device.base.intTimeZone;
-        this.strTimeZone = device.base.strTimeZone;
-        this.ledModel = device.base.ledModel;
-        this.mac = device.base.mac;
-        this.netName = device.base.netName;
-        this.netType = device.base.netType;
-        this.hasSDCard = device.base.hasSDCard;
-        this.sdcardUsedCapacity = device.base.sdcardUsedCapacity;
-        this.sdcardUsedCapacity = device.base.sdcardUsedCapacity;
-        this.sdcardErrorCode = device.base.sdcardErrorCode;
-        this.version = device.base.version;
-        this.sysVersion = device.base.sysVersion;
-        this.charging = device.base.charging;
-        this.battery = device.base.battery;
-        this.ledModel = device.base.ledModel;
-        this.intTimeZone = device.base.intTimeZone;
-        this.strTimeZone = device.base.strTimeZone;
-        this.priorityMobleNet = device.base.priorityMobleNet;
-    }
-
-    @Override
-    public String toString() {
-        return "DeviceBean{" +
-                "id=" + id +
-                ", pid=" + pid +
-                ", msgCount=" + msgCount +
-                ", isProtectedMode=" + isProtectedMode +
-                ", isShared=" + isShared +
-                ", msgTime=" + msgTime +
-                ", uuid='" + uuid + '\'' +
-                ", shareAccount='" + shareAccount + '\'' +
-                ", alias='" + alias + '\'' +
-                '}';
-    }
 }

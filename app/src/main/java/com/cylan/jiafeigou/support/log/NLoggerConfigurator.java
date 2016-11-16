@@ -9,7 +9,7 @@ import android.util.Log;
 public class NLoggerConfigurator {
 
     private int logLevel = Log.VERBOSE;
-    private String messagePattern = "yyyy-MM-dd HH:mm:ss.SSS ";
+    private String messagePattern = "yyyy-mm-dd HH:mm:ss.SSS ";
     private String logCatPattern = "%m%n";
 //    /**
 //     * 文件目录

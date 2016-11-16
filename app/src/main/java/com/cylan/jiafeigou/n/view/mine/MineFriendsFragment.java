@@ -29,6 +29,7 @@ import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.superadapter.OnItemClickListener;
 import com.cylan.superadapter.OnItemLongClickListener;
 import com.cylan.superadapter.internal.SuperViewHolder;
+import com.sina.weibo.sdk.utils.LogUtil;
 
 import java.util.ArrayList;
 
@@ -41,7 +42,8 @@ import butterknife.OnClick;
  * 创建时间：2016/9/6
  * 描述：
  */
-public class MineFriendsFragment extends Fragment implements MineFriendsContract.View, AddRelativesAndFriendsAdapter.OnAcceptClickLisenter {
+public class
+MineFriendsFragment extends Fragment implements MineFriendsContract.View, AddRelativesAndFriendsAdapter.OnAcceptClickLisenter {
 
 
     @BindView(R.id.iv_home_mine_relativesandfriends_back)
@@ -125,7 +127,7 @@ public class MineFriendsFragment extends Fragment implements MineFriendsContract
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
                 ToastUtil.showPositiveToast("请求已发送");
-                //SDK 向对方发送请求
+                //向对方发送请求
                 presenter.sendAddReq(item.account);
             }
         });
@@ -144,7 +146,7 @@ public class MineFriendsFragment extends Fragment implements MineFriendsContract
     }
 
     /**
-     * 添加请求列表添加一个条目
+     * 添加请求列表删除一个条目
      * @param position
      * @param bean
      */
@@ -337,7 +339,7 @@ public class MineFriendsFragment extends Fragment implements MineFriendsContract
         if (presenter.checkAddRequestOutTime(item)){
                 showReqOutTimeDialog(item);
         }else {
-            //SDK 调用添加成功
+            //调用添加成功
             presenter.acceptAddSDK(item.account);
             ToastUtil.showPositiveToast("添加成功");
 
@@ -349,5 +351,11 @@ public class MineFriendsFragment extends Fragment implements MineFriendsContract
             friendlistAddItem(layoutPosition,account);
             addReqDeleteItem(layoutPosition,item);
         }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (presenter != null)presenter.stop();
     }
 }

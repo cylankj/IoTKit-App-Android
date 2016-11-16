@@ -1,9 +1,11 @@
 package com.cylan.jiafeigou.n.view.adapter;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.view.View;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
 import com.cylan.superadapter.IMulItemViewType;
 import com.cylan.superadapter.SuperAdapter;
@@ -34,7 +36,13 @@ public class MineShareDeviceAdapter extends SuperAdapter<DeviceBean> {
 
     @Override
     public void onBind(final SuperViewHolder holder, final int viewType, final int layoutPosition, final DeviceBean item) {
-        holder.setText(R.id.tv_share_device_name,item.alias);
+        final int deviceType = item.pid;
+        int iconRes = JConstant.onLineIconMap.get(deviceType);
+        //昵称
+        holder.setText(R.id.tv_share_device_name, TextUtils.isEmpty(item.alias) ? item.uuid : item.alias);
+        //图标
+        holder.setImageDrawable(R.id.iv_share_device_icon, getContext().getResources().getDrawable(iconRes));
+
         holder.setOnClickListener(R.id.tv_share_device_btn, new View.OnClickListener() {
             @Override
             public void onClick(View v) {

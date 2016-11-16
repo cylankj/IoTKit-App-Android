@@ -1,8 +1,8 @@
 package com.cylan.jiafeigou.n.mvp.impl;
 
-import com.cylan.jiafeigou.rx.RxEvent;
+import com.cylan.jiafeigou.misc.RxEvent;
 import com.cylan.jiafeigou.n.mvp.contract.ActivityResultContract;
-import com.cylan.jiafeigou.rx.RxBus;
+import com.cylan.jiafeigou.support.rxbus.RxBus;
 
 import java.util.concurrent.TimeUnit;
 

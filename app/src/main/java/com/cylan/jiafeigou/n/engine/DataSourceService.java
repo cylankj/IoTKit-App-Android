@@ -31,14 +31,18 @@ import com.cylan.jiafeigou.cache.JCache;
 import com.cylan.jiafeigou.dp.DpParser;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
-import com.cylan.jiafeigou.misc.JResultEvent;
-import com.cylan.jiafeigou.rx.RxBus;
-import com.cylan.jiafeigou.rx.RxEvent;
+import com.cylan.jiafeigou.misc.JfgCmdInsurance;
+import com.cylan.jiafeigou.misc.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.support.rxbus.IEventBus;
+import com.cylan.jiafeigou.support.rxbus.RxBus;
 import com.cylan.jiafeigou.support.stat.MtaManager;
+import com.cylan.utils.ListUtils;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 
 public class DataSourceService extends Service implements AppCallBack {
@@ -48,19 +52,19 @@ public class DataSourceService extends Service implements AppCallBack {
         System.loadLibrary("sqlcipher");
     }
 
+    private IEventBus eventBus;
 
     @Override
     public void onCreate() {
         super.onCreate();
+        eventBus = RxBus.getCacheInstance();
         DpParser.getDpParser().registerDpParser();
-        GlobalUdpDataSource.getInstance().register();
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
         DpParser.getDpParser().unregisterDpParser();
-        GlobalUdpDataSource.getInstance().unregister();
     }
 
     @Override
@@ -94,25 +98,23 @@ public class DataSourceService extends Service implements AppCallBack {
     @Override
     public void OnLocalMessage(String s, int i, byte[] bytes) {
         AppLogger.d("OnLocalMessage :" + s + ",i:" + i);
-        if (RxBus.getCacheInstance().hasObservers()) {
-            RxEvent.LocalUdpMsg msg = new RxEvent.LocalUdpMsg();
-            msg.time = System.currentTimeMillis();
-            msg.ip = s;
-            msg.port = (short) i;
-            msg.data = bytes;
-            RxBus.getCacheInstance().post(msg);
-        }
     }
 
     @Override
     public void OnReportJfgDevices(JFGDevice[] jfgDevices) {
-        RxBus.getCacheInstance().postSticky(new RxEvent.DeviceRawList(jfgDevices));
+        List<JFGDevice> list = jfgDevices == null ? null : Arrays.asList(jfgDevices);
+        if (!ListUtils.isEmpty(list) && RxBus.getCacheInstance().hasObservers())
+            RxBus.getCacheInstance().postSticky(new RxEvent.DeviceList(list));
+        for (int i = 0; i < (list == null ? 0 : list.size()); i++)
+            AppLogger.d("OnLocalMessage :" + new Gson().toJson(list.get(i)));
     }
 
     @Override
     public void OnUpdateAccount(JFGAccount jfgAccount) {
-        AppLogger.d("OnLocalMessage :" + new Gson().toJson(jfgAccount));
-        RxBus.getCacheInstance().postSticky(jfgAccount);
+        AppLogger.d("OnUpdateAccount :" + new Gson().toJson(jfgAccount));
+        if (RxBus.getCacheInstance().hasObservers()) {
+            RxBus.getCacheInstance().postSticky(new RxEvent.GetUserInfo(jfgAccount));
+        }
     }
 
     @Override
@@ -154,8 +156,8 @@ public class DataSourceService extends Service implements AppCallBack {
     @Override
     public void OnHttpDone(JFGMsgHttpResult jfgMsgHttpResult) {
         AppLogger.d("OnLocalMessage :");
-        if (RxBus.getCacheInstance().hasObservers())
-            RxBus.getCacheInstance().post(new RxEvent.GetHttpDoneResult(jfgMsgHttpResult));
+        if (eventBus != null && eventBus.hasObservers())
+            eventBus.post(new RxEvent.GetHttpDoneResult(jfgMsgHttpResult));
     }
 
     @Override
@@ -172,7 +174,7 @@ public class DataSourceService extends Service implements AppCallBack {
     public void OnRobotGetDataRsp(RobotoGetDataRsp robotoGetDataRsp) {
         AppLogger.d("OnLocalMessage :" + new Gson().toJson(robotoGetDataRsp));
         if (RxBus.getCacheInstance().hasObservers() && robotoGetDataRsp != null) {
-            RxBus.getCacheInstance().post(new RobotoGetDataRsp());
+            RxBus.getCacheInstance().post(new RxEvent.DpDataRsp(robotoGetDataRsp));
         }
     }
 
@@ -203,25 +205,20 @@ public class DataSourceService extends Service implements AppCallBack {
         boolean login = false;
         switch (jfgResult.event) {
             case 0:
-                RxBus.getCacheInstance().post(new RxEvent.ResultVerifyCode(jfgResult.code));
+                eventBus.post(new RxEvent.ResultVerifyCode(jfgResult.code));
                 break;
             case 1:
-                login = jfgResult.code == JError.ErrorOK;//注册成功
-                RxBus.getCacheInstance().post(new RxEvent.ResultRegister(jfgResult.code));
+                login = jfgResult.code == JError.ErrorOK;
+                eventBus.post(new RxEvent.ResultRegister(jfgResult.code));
                 break;
             case 2:
-                login = jfgResult.code == JError.ErrorOK;//登陆成功
-                RxBus.getCacheInstance().post(new RxEvent.ResultLogin(jfgResult.code));
-                break;
-            case JResultEvent.JFG_RESULT_BINDDEV:
-                //绑定设备
-                RxBus.getCacheInstance().postSticky(new RxEvent.BindDeviceEvent(jfgResult));
+                login = jfgResult.code == JError.ErrorOK;
+                eventBus.post(new RxEvent.ResultLogin(jfgResult.code));
                 break;
         }
         if (login) {
-            AfterLoginService.startGetAccountAction(getApplicationContext());
-            AfterLoginService.startSaveAccountAction(getApplicationContext());
-            AfterLoginService.resumeOfflineRequest();
+            JfgCmdInsurance.getCmd().getAccount();
+            AppLogger.i("get account");
         }
         AppLogger.i("jfgResult:[event:" + jfgResult.event + ",code:" + jfgResult.code + "]");
     }
@@ -254,23 +251,23 @@ public class DataSourceService extends Service implements AppCallBack {
     @Override
     public void OnSendSMSResult(int i, String s) {
         AppLogger.d("OnSendSMSResult :" + i + "," + s);
-        if (RxBus.getCacheInstance() != null && RxBus.getCacheInstance().hasObservers())
-            RxBus.getCacheInstance().post(new RxEvent.SmsCodeResult(i, s));
+        if (eventBus != null && eventBus.hasObservers())
+            eventBus.post(new RxEvent.SmsCodeResult(i, s));
     }
 
     @Override
     public void OnGetFriendListRsp(int i, ArrayList<JFGFriendAccount> arrayList) {
         AppLogger.d("OnLocalMessage :");
-        if (RxBus.getCacheInstance() != null && RxBus.getCacheInstance().hasObservers()) {
-            RxBus.getCacheInstance().post(new RxEvent.GetFriendList(i, arrayList));
+        if (eventBus != null && eventBus.hasObservers()) {
+            eventBus.post(new RxEvent.GetFriendList(i, arrayList));
         }
     }
 
     @Override
     public void OnGetFriendRequestListRsp(int i, ArrayList<JFGFriendRequest> arrayList) {
-        AppLogger.d("OnLocalMessage :");
-        if (RxBus.getCacheInstance() != null && RxBus.getCacheInstance().hasObservers()) {
-            RxBus.getCacheInstance().post(new RxEvent.GetAddReqList(i, arrayList));
+        AppLogger.d("OnLocalMessage :"+i+arrayList.size());
+        if (eventBus != null && eventBus.hasObservers()) {
+            eventBus.post(new RxEvent.GetAddReqList(i, arrayList));
         }
     }
 
@@ -282,33 +279,42 @@ public class DataSourceService extends Service implements AppCallBack {
     @Override
     public void OnCheckFriendAccountRsp(int i, String s, String s1, boolean b) {
         AppLogger.d("OnLocalMessage :");
+        if (eventBus != null && eventBus.hasObservers()){
+            eventBus.post(new RxEvent.CheckAccountCallback(i,s,s1,b));
+        }
     }
 
     @Override
     public void OnShareDeviceRsp(int i, String s, String s1) {
         AppLogger.d("OnShareDeviceRsp :");
-        if (RxBus.getCacheInstance() != null && RxBus.getCacheInstance().hasObservers()) {
-            RxBus.getCacheInstance().post(new RxEvent.ShareDeviceCallBack(i, s, s1));
+        if (eventBus != null && eventBus.hasObservers()) {
+            eventBus.post(new RxEvent.ShareDeviceCallBack(i,s,s1));
         }
     }
 
     @Override
     public void OnUnShareDeviceRsp(int i, String s, String s1) {
-        AppLogger.d("OnUnShareDeviceRsp :");
+        AppLogger.d("OnUnShareDeviceRsp :"+i+s);
+        if (eventBus != null && eventBus.hasObservers()) {
+            eventBus.post(new RxEvent.UnshareDeviceCallBack(i, s,s1));
+        }
     }
 
     @Override
     public void OnGetShareListRsp(int i, ArrayList<JFGShareListInfo> arrayList) {
         AppLogger.d("OnGetShareListRsp :");
-        if (RxBus.getCacheInstance() != null && RxBus.getCacheInstance().hasObservers()) {
-            RxBus.getCacheInstance().post(new RxEvent.GetShareDeviceList(i, arrayList));
+        if (eventBus != null && eventBus.hasObservers()) {
+            eventBus.post(new RxEvent.GetShareDeviceList(i, arrayList));
         }
 
     }
 
     @Override
     public void OnGetUnShareListByCidRsp(int i, ArrayList<JFGFriendAccount> arrayList) {
-        AppLogger.d("OnGetUnShareListByCidRsp :");
+        AppLogger.d("OnGetUnShareListByCidRsp :"+i+arrayList.size());
+        if (eventBus != null && eventBus.hasObservers()) {
+            eventBus.post(new RxEvent.GetHasShareFriendCallBack(i, arrayList));
+        }
     }
 
     @Override
@@ -324,8 +330,8 @@ public class DataSourceService extends Service implements AppCallBack {
     @Override
     public void OnForgetPassByEmailRsp(int i, String s) {
         AppLogger.d("OnForgetPassByEmailRsp :" + s);
-        if (RxBus.getCacheInstance().hasObservers()) {
-            RxBus.getCacheInstance().post(new RxEvent.ForgetPwdByMail(s));
+        if (eventBus.hasObservers()) {
+            eventBus.post(new RxEvent.ForgetPwdByMail(s));
         }
     }
 

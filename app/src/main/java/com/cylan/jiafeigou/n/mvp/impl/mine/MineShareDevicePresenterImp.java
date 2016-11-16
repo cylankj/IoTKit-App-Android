@@ -1,18 +1,22 @@
 package com.cylan.jiafeigou.n.mvp.impl.mine;
 
+import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.entity.jniCall.JFGFriendAccount;
 import com.cylan.entity.jniCall.JFGShareListInfo;
-import com.cylan.jiafeigou.rx.RxEvent;
+import com.cylan.jiafeigou.misc.RxEvent;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineShareDeviceContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
 import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
-import com.cylan.jiafeigou.rx.RxBus;
+import com.cylan.jiafeigou.support.rxbus.RxBus;
 
 import java.util.ArrayList;
 
+import rx.Observable;
 import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
+import rx.functions.Func1;
 import rx.subscriptions.CompositeSubscription;
 
 /**
@@ -22,7 +26,6 @@ import rx.subscriptions.CompositeSubscription;
  */
 public class MineShareDevicePresenterImp extends AbstractPresenter<MineShareDeviceContract.View> implements MineShareDeviceContract.Presenter {
 
-    private Subscription initDataSub;
     private ArrayList<JFGShareListInfo> hasShareFriendList;
     private CompositeSubscription subscription;
 
@@ -50,19 +53,23 @@ public class MineShareDevicePresenterImp extends AbstractPresenter<MineShareDevi
 
     @Override
     public Subscription initData() {
-        initDataSub = RxBus.getCacheInstance().toObservable(RxEvent.GetShareDeviceList.class)
-                .subscribe(new Action1<Object>() {
+        return RxBus.getCacheInstance().toObservableSticky(RxEvent.DeviceList.class)
+                .flatMap(new Func1<RxEvent.DeviceList, Observable<ArrayList<DeviceBean>>>() {
                     @Override
-                    public void call(Object o) {
-                        if (o != null && o instanceof RxEvent.GetShareDeviceList) {
-                            RxEvent.GetShareDeviceList shareDeviceList = (RxEvent.GetShareDeviceList) o;
-                            handlerShareDeviceListData(shareDeviceList);
+                    public Observable<ArrayList<DeviceBean>> call(RxEvent.DeviceList deviceList) {
+                        if (deviceList == null || deviceList.jfgDevices == null){
+                            return null;
                         }
+                        return Observable.just(getShareDeviceList(deviceList));
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<ArrayList<DeviceBean>>() {
+                    @Override
+                    public void call(ArrayList<DeviceBean> deviceList) {
+                        handlerShareDeviceListData(deviceList);
                     }
                 });
-        RxEvent.GetShareDeviceList shareDeviceList = new RxEvent.GetShareDeviceList(1, TestData());
-        handlerShareDeviceListData(shareDeviceList);
-        return initDataSub;
     }
 
     @Override
@@ -71,40 +78,13 @@ public class MineShareDevicePresenterImp extends AbstractPresenter<MineShareDevi
     }
 
     /**
-     * desc;测试的数据
-     *
-     * @return
-     */
-    private ArrayList<JFGShareListInfo> TestData() {
-        ArrayList<JFGShareListInfo> list = new ArrayList<>();
-
-        for (int i = 0; i < 3; i++) {
-            JFGShareListInfo info = new JFGShareListInfo();
-            info.cid = i + "cid";
-
-            ArrayList<JFGFriendAccount> listNei = new ArrayList<>();
-
-            for (int j = 0; j < 3; j++) {
-                JFGFriendAccount account = new JFGFriendAccount();
-                account.markName = "备注名" + i + j;
-                account.account = "账号" + i + j;
-                account.alias = "昵称" + i + j;
-                listNei.add(account);
-            }
-            info.friends = listNei;
-            list.add(info);
-        }
-        return list;
-    }
-
-    /**
      * desc:处理设备分享的数据
      */
-    private void handlerShareDeviceListData(final RxEvent.GetShareDeviceList shareDeviceList) {
-        if (shareDeviceList != null && shareDeviceList.arrayList.size() != 0) {
-            hasShareFriendList = shareDeviceList.arrayList;
+    private void handlerShareDeviceListData(ArrayList<DeviceBean> shareDeviceList) {
+        if (shareDeviceList != null && shareDeviceList.size() != 0) {
+            //hasShareFriendList = shareDeviceList.jfgDevices;
             if (getView() != null) {
-                getView().initRecycleView(getShareDeviceList(shareDeviceList));
+                getView().initRecycleView(shareDeviceList);
             }
         } else {
             if (getView() != null) {
@@ -118,15 +98,17 @@ public class MineShareDevicePresenterImp extends AbstractPresenter<MineShareDevi
      *
      * @param shareDeviceList
      */
-    private ArrayList<DeviceBean> getShareDeviceList(RxEvent.GetShareDeviceList shareDeviceList) {
+    private ArrayList<DeviceBean> getShareDeviceList(RxEvent.DeviceList shareDeviceList) {
 
         ArrayList<DeviceBean> list = new ArrayList<>();
 
-        for (JFGShareListInfo info : shareDeviceList.arrayList) {
-            //TODO 数据的详细赋值
+        for (JFGDevice info : shareDeviceList.jfgDevices) {
             DeviceBean bean = new DeviceBean();
-            bean.alias = "相框" + info.cid;
-            bean.uuid = info.cid;
+            bean.alias = info.alias;
+            bean.pid = info.pid;
+            bean.uuid = info.uuid;
+            bean.shareAccount = info.shareAccount;
+            bean.sn = info.sn;
             list.add(bean);
         }
         return list;
@@ -147,5 +129,6 @@ public class MineShareDevicePresenterImp extends AbstractPresenter<MineShareDevi
         }
         return list;
     }
+
 
 }

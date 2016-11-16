@@ -10,11 +10,11 @@ import com.cylan.jiafeigou.cache.JCache;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
+import com.cylan.jiafeigou.misc.RxEvent;
 import com.cylan.jiafeigou.n.mvp.contract.login.LoginModelContract;
 import com.cylan.jiafeigou.n.mvp.model.LoginAccountBean;
-import com.cylan.jiafeigou.rx.RxBus;
-import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.support.rxbus.RxBus;
 import com.cylan.jiafeigou.support.sina.AccessTokenKeeper;
 import com.cylan.jiafeigou.support.sina.SinaLogin;
 import com.cylan.jiafeigou.support.sina.UsersAPI;
@@ -64,7 +64,6 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginModelContract.Vie
                         public void call(LoginAccountBean o) {
                             AppLogger.d("log: " + o.toString());
                             JfgCmdInsurance.getCmd().login(o.userName, o.pwd);
-                            JCache.tmpAccount = o;
                         }
                     }, new Action1<Throwable>() {
                         @Override

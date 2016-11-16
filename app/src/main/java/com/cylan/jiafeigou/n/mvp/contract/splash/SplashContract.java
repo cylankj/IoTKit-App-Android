@@ -22,8 +22,6 @@ public interface SplashContract {
     interface Presenter extends BasePresenter {
 
         void finishAppDelay();
-
-        void resumeLogin();
     }
 
 }

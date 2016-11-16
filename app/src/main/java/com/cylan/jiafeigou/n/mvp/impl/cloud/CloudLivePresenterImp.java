@@ -4,15 +4,16 @@ import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.os.Environment;
 
+import com.cylan.jiafeigou.misc.RxEvent;
 import com.cylan.jiafeigou.n.db.CloudLiveDbUtil;
 import com.cylan.jiafeigou.n.mvp.contract.cloud.CloudLiveContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.n.mvp.model.CloudLiveBaseBean;
 import com.cylan.jiafeigou.n.mvp.model.CloudLiveBaseDbBean;
-import com.cylan.jiafeigou.rx.RxBus;
-import com.cylan.jiafeigou.rx.RxEvent;
+
 import com.cylan.jiafeigou.support.db.DbManager;
 import com.cylan.jiafeigou.support.db.ex.DbException;
+import com.cylan.jiafeigou.support.rxbus.RxBus;
 import com.cylan.utils.CloseUtils;
 
 import java.io.ByteArrayInputStream;
@@ -25,7 +26,9 @@ import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+
 import java.util.List;
+
 import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
@@ -34,14 +37,14 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
+import rx.subscriptions.CompositeSubscription;
 
 /**
  * 作者：zsl
  * 创建时间：2016/9/26
  * 描述：
  */
-public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.View>
-        implements CloudLiveContract.Presenter {
+public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.View> implements CloudLiveContract.Presenter {
 
     private int val1;
     private int val2;
@@ -56,24 +59,27 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
     private long endTime;
 
     private String output_Path = Environment.getExternalStorageDirectory().getAbsolutePath()
-            + File.separator + System.currentTimeMillis() + "luyin.3gp";
+            + File.separator + System.currentTimeMillis()+"luyin.3gp";
 
     private DbManager base_db;
 
     private Subscription checkDeviceOnLineSub;
     private Subscription leaveMesgSub;
     private Subscription subscriptionRefresh;
+    private CompositeSubscription subscription;
 
     public CloudLivePresenterImp(CloudLiveContract.View view) {
         super(view);
         view.setPresenter(this);
+        subscription = new CompositeSubscription();
     }
 
     @Override
     public void start() {
-        if (subscriptionRefresh != null && !subscriptionRefresh.isUnsubscribed()) {
+        if(subscriptionRefresh!=null && !subscriptionRefresh.isUnsubscribed()){
             subscriptionRefresh.unsubscribe();
         }
+        subscription.add(getAccount());
         refreshHangUpView();
     }
 
@@ -83,13 +89,16 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
             talkSub.unsubscribe();
         }
 
-        if (checkDeviceOnLineSub != null) {
+        if (checkDeviceOnLineSub != null){
             checkDeviceOnLineSub.unsubscribe();
         }
 
-        if (leaveMesgSub != null) {
+        if (leaveMesgSub != null){
             leaveMesgSub.unsubscribe();
         }
+
+        unSubscribe(subscription);
+
         stopPlayRecord();
     }
 
@@ -181,7 +190,7 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
 
     @Override
     public void stopPlayRecord() {
-        if (mPlayer == null) {
+        if (mPlayer == null){
             return;
         }
         mPlayer.stop();
@@ -238,8 +247,8 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
      * desc:创建数据库
      */
     @Override
-    public void getDBManger() {
-        base_db = CloudLiveDbUtil.getInstance().dbManager;
+    public void getDBManger(String dbName) {
+        base_db = CloudLiveDbUtil.getInstance(dbName).dbManager;
     }
 
     @Override
@@ -298,11 +307,11 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
 
     @Override
     public void refreshHangUpView() {
-        RxBus.getCacheInstance().toObservableSticky(RxEvent.HangUpVideoTalk.class)
+        subscriptionRefresh = RxBus.getCacheInstance().toObservable(RxEvent.HangUpVideoTalk.class)
                 .subscribe(new Action1<RxEvent.HangUpVideoTalk>() {
                     @Override
                     public void call(RxEvent.HangUpVideoTalk o) {
-                        getView().hangUpRefreshView(o.talkTime);
+                            getView().hangUpRefreshView(o.talkTime);
                     }
                 });
     }
@@ -333,7 +342,7 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
     public void handlerLeveaMesg() {
         getView().showReconnetProgress();
         leaveMesgSub = Observable.just(null)
-                .delay(1000, TimeUnit.MILLISECONDS)
+                .delay(1000,TimeUnit.MILLISECONDS)
                 .map(new Func1<Object, Boolean>() {
                     @Override
                     public Boolean call(Object o) {
@@ -352,9 +361,21 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
                 });
     }
 
-    public void unSubCallIn() {
-        RxBus.getCacheInstance().removeStickyEvent(RxEvent.HangUpVideoTalk.class);
-        RxBus.getCacheInstance().reset();
+    /**
+     * 获取账号信息用于创建数据库
+     */
+    @Override
+    public Subscription getAccount() {
+        return RxBus.getCacheInstance().toObservable(RxEvent.GetUserInfo.class)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<RxEvent.GetUserInfo>() {
+                    @Override
+                    public void call(RxEvent.GetUserInfo getUserInfo) {
+                        if (getUserInfo != null && getUserInfo instanceof RxEvent.GetUserInfo){
+                            getDBManger(getUserInfo.jfgAccount.getAccount());
+                        }
+                    }
+                });
     }
 
 }

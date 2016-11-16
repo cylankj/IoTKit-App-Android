@@ -1,9 +1,12 @@
 package com.cylan.jiafeigou.n.view.mine;
 
 import android.content.DialogInterface;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,8 +15,11 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.cylan.entity.jniCall.JFGFriendRequest;
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.misc.RxEvent;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendAddReqDetailContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineFriendAddReqDetailPresenterImp;
 import com.cylan.jiafeigou.n.mvp.model.MineAddReqBean;
@@ -38,7 +44,7 @@ public class MineFriendAddReqDetailFragment extends Fragment implements MineFrie
     ImageView ivDetailUserHead;
     @BindView(R.id.tv_relative_and_friend_name)
     TextView tvRelativeAndFriendName;
-    @BindView(R.id.tv_relative_and_friend_like_name)
+    @BindView(R.id.tv_relative_and_friend_account)
     TextView tvRelativeAndFriendLikeName;
     @BindView(R.id.tv_add_request_mesg)
     TextView tvAddRequestMesg;
@@ -48,9 +54,9 @@ public class MineFriendAddReqDetailFragment extends Fragment implements MineFrie
     RelativeLayout rlAddRequestMesg;
 
     private MineLookBigImageFragment lookBigImageFragment;
-
     private MineFriendAddReqDetailContract.Presenter presenter;
     private MineAddReqBean addRequestItems;
+    private MineAddFromContactFragment addReqFragment;
 
     public static MineFriendAddReqDetailFragment newInstance(Bundle bundle) {
         MineFriendAddReqDetailFragment fragment = new MineFriendAddReqDetailFragment();
@@ -58,13 +64,6 @@ public class MineFriendAddReqDetailFragment extends Fragment implements MineFrie
         return fragment;
     }
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        Bundle bundle = new Bundle();
-        bundle.putString("imageUrl", "");
-        lookBigImageFragment = MineLookBigImageFragment.newInstance(bundle);
-    }
 
     @Nullable
     @Override
@@ -88,10 +87,27 @@ public class MineFriendAddReqDetailFragment extends Fragment implements MineFrie
         Bundle arguments = getArguments();
         boolean isFrome = arguments.getBoolean("isFrom");
         addRequestItems = (MineAddReqBean) arguments.getSerializable("addRequestItems");
-        tvRelativeAndFriendName.setText(addRequestItems.alias);
+        if ("".equals(addRequestItems.alias)){
+            tvRelativeAndFriendName.setText("sjd172");
+        }else {
+            tvRelativeAndFriendName.setText(addRequestItems.alias);
+        }
+        tvRelativeAndFriendLikeName.setText(addRequestItems.account);
         tvAddRequestMesg.setText(addRequestItems.sayHi);
         showOrHideReqMesg(isFrome);
-        //Glide.with(getContext()).load(addRequestItems.getIcon()).error(R.drawable.icon_mine_head_normal).into(ivDetailUserHead);
+        //显示头像
+        Glide.with(getContext()).load(addRequestItems.iconUrl)
+                .asBitmap().centerCrop()
+                .error(R.drawable.icon_mine_head_normal)
+                .into(new BitmapImageViewTarget(ivDetailUserHead) {
+                    @Override
+                    protected void setResource(Bitmap resource) {
+                        RoundedBitmapDrawable circularBitmapDrawable =
+                                RoundedBitmapDrawableFactory.create(getContext().getResources(), resource);
+                        circularBitmapDrawable.setCircular(true);
+                        ivDetailUserHead.setImageDrawable(circularBitmapDrawable);
+                    }
+                });
     }
 
     /**
@@ -125,7 +141,7 @@ public class MineFriendAddReqDetailFragment extends Fragment implements MineFrie
                 break;
             case R.id.tv_add_as_relative_and_friend:            //添加为亲友
                 if (presenter != null){
-                   presenter.checkAddReqOutTime(addRequestItems);
+                   presenter.start();
                 }
                 break;
         }
@@ -135,6 +151,9 @@ public class MineFriendAddReqDetailFragment extends Fragment implements MineFrie
      * desc:查看大头像
      */
     private void jump2LookBigImage() {
+        Bundle bundle = new Bundle();
+        bundle.putString("imageUrl", addRequestItems.iconUrl);
+        lookBigImageFragment = MineLookBigImageFragment.newInstance(bundle);
         getFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                         , R.anim.slide_in_left, R.anim.slide_out_right)
@@ -164,6 +183,7 @@ public class MineFriendAddReqDetailFragment extends Fragment implements MineFrie
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
                 presenter.sendAddReq(addRequestItems);
+                showSendAddReqResult(true);
             }
         });
         builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
@@ -183,7 +203,6 @@ public class MineFriendAddReqDetailFragment extends Fragment implements MineFrie
             getFragmentManager().popBackStack();
             ToastUtil.showNegativeToast("请求发送失败");
         }
-
     }
 
     @Override
@@ -193,6 +212,49 @@ public class MineFriendAddReqDetailFragment extends Fragment implements MineFrie
         }else {
             ToastUtil.showNegativeToast("添加失败");
         }
+    }
 
+    /**
+     * 跳转到添加请求页
+     */
+    @Override
+    public void jump2AddReqFragment() {
+        Bundle addReqBundle = new Bundle();
+        addReqBundle.putString("account",addRequestItems.account);
+        addReqFragment = MineAddFromContactFragment.newInstance(addReqBundle);
+        getFragmentManager().beginTransaction()
+                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
+                        , R.anim.slide_in_left, R.anim.slide_out_right)
+                .add(android.R.id.content, addReqFragment, "addFromContactFragment")
+                .addToBackStack("mineHelpFragment")
+                .commit();
+    }
+
+    /**
+     * 是否存在该账号的结果
+     * @param getAddReqList
+     */
+    @Override
+    public void isHasAccountResult(RxEvent.GetAddReqList getAddReqList) {
+        for (JFGFriendRequest bean:getAddReqList.arrayList){
+            if (bean.account.equals(addRequestItems.account)){
+                // 向我发送过请求
+                MineAddReqBean addReqBean = new MineAddReqBean();
+                addReqBean.account = bean.account;
+                addReqBean.time = bean.time;
+                presenter.checkAddReqOutTime(addReqBean);
+                return;
+            }else {
+                //未向我发送过请求
+                jump2AddReqFragment();
+            }
+        }
+
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (presenter != null) presenter.stop();
     }
 }

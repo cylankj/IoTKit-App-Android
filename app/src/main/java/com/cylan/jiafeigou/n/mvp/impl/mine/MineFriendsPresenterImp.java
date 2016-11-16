@@ -3,19 +3,20 @@ package com.cylan.jiafeigou.n.mvp.impl.mine;
 import com.cylan.entity.jniCall.JFGFriendAccount;
 import com.cylan.entity.jniCall.JFGFriendRequest;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
+import com.cylan.jiafeigou.misc.RxEvent;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendsContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.n.mvp.model.MineAddReqBean;
 import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
-import com.cylan.jiafeigou.rx.RxBus;
-import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.support.rxbus.RxBus;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
 import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
@@ -25,40 +26,29 @@ import rx.subscriptions.CompositeSubscription;
  * 创建时间：2016/9/6
  * 描述：
  */
-public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContract.View>
-        implements MineFriendsContract.Presenter {
+public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContract.View> implements MineFriendsContract.Presenter {
 
-    private Subscription friendListSub;
-    private Subscription addReqListSub;
     private CompositeSubscription compositeSubscription;
-
-
     private boolean addReqNull;
     private boolean friendListNull;
 
     public MineFriendsPresenterImp(MineFriendsContract.View view) {
         super(view);
         view.setPresenter(this);
+        compositeSubscription = new CompositeSubscription();
     }
 
     @Override
     public void start() {
-        if (compositeSubscription != null && !compositeSubscription.isUnsubscribed()) {
-            unSubscribe(compositeSubscription);
-        }
-        compositeSubscription = new CompositeSubscription();
         compositeSubscription.add(getAddRequest());
         compositeSubscription.add(getFriendList());
         compositeSubscription.add(initAddReqRecyListData());
         compositeSubscription.add(initFriendRecyListData());
-        checkAllNull();
     }
 
     @Override
     public void stop() {
-        if (compositeSubscription != null && compositeSubscription.isUnsubscribed()) {
-            compositeSubscription.unsubscribe();
-        }
+        unSubscribe(compositeSubscription);
     }
 
     @Override
@@ -66,7 +56,7 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
 
         ArrayList list = new ArrayList<MineAddReqBean>();
 
-        for (JFGFriendRequest jfgFriendRequest : addReqList.arrayList) {
+        for (JFGFriendRequest jfgFriendRequest:addReqList.arrayList){
             MineAddReqBean emMessage = new MineAddReqBean();
             //emMessage.iconUrl = JfgCmdInsurance.getCmd().getCloudUrlByType(jfgFriendRequest.account);
             emMessage.alias = jfgFriendRequest.alias;
@@ -81,7 +71,6 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
 
     /**
      * 测试数据
-     *
      * @return
      */
     public ArrayList<JFGFriendRequest> testAddRequestData() {
@@ -107,7 +96,7 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
     @Override
     public ArrayList<RelAndFriendBean> initRelativatesAndFriendsData(RxEvent.GetFriendList friendList) {
         ArrayList list = new ArrayList<RelAndFriendBean>();
-        for (JFGFriendAccount account : friendList.arrayList) {
+        for (JFGFriendAccount account:friendList.arrayList) {
             RelAndFriendBean emMessage = new RelAndFriendBean();
             //emMessage.iconUrl = JfgCmdEnsurance.getCmd().getCloudUrl(account.account);
             emMessage.iconUrl = "http://www.uimaker.com/uploads/allimg/120410/1_120410103814_7.jpg";
@@ -180,19 +169,16 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
      */
     @Override
     public Subscription initFriendRecyListData() {
-        friendListSub = RxBus.getCacheInstance().toObservable(RxEvent.GetFriendList.class)
+        return RxBus.getCacheInstance().toObservable(RxEvent.GetFriendList.class)
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<RxEvent.GetFriendList>() {
                     @Override
                     public void call(RxEvent.GetFriendList o) {
-                        if (getView() != null)
+                        if (o != null && o instanceof RxEvent.GetFriendList){
                             handleInitFriendListDataResult(o);
+                        }
                     }
                 });
-
-        //测试数据 TODO
-        RxEvent.GetFriendList friendListTest = new RxEvent.GetFriendList(1, testRelativatesAndFriendsData());
-        handleInitFriendListDataResult(friendListTest);
-        return friendListSub;
     }
 
     /**
@@ -200,21 +186,16 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
      */
     @Override
     public Subscription initAddReqRecyListData() {
-
-        addReqListSub = RxBus.getCacheInstance().toObservable(RxEvent.GetAddReqList.class)
+        return RxBus.getCacheInstance().toObservable(RxEvent.GetAddReqList.class)
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<RxEvent.GetAddReqList>() {
                     @Override
                     public void call(RxEvent.GetAddReqList o) {
-                        if (getView() == null)
-                            return;
-                        handleInitAddReqListDataResult(o);
+                        if(o != null && o instanceof RxEvent.GetAddReqList){
+                            handleInitAddReqListDataResult(o);
+                        }
                     }
                 });
-
-        //测试数据 TODO
-        RxEvent.GetAddReqList addReqListTest = new RxEvent.GetAddReqList(1, testAddRequestData());
-        handleInitAddReqListDataResult(addReqListTest);
-        return addReqListSub;
     }
 
     @Override
@@ -230,7 +211,6 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
 
     /**
      * 启动获取添加请求的SDK
-     *
      * @return
      */
     @Override
@@ -252,7 +232,6 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
 
     /**
      * 启动获取好友列表的SDK
-     *
      * @return
      */
     @Override
@@ -282,7 +261,7 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
                 .subscribe(new Action1<Object>() {
                     @Override
                     public void call(Object o) {
-                        JfgCmdInsurance.getCmd().addFriend(account, "");
+                        JfgCmdInsurance.getCmd().addFriend(account,"");
                     }
                 }, new Action1<Throwable>() {
                     @Override
@@ -319,12 +298,15 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
      * @param addReqList
      */
     private void handleInitAddReqListDataResult(final RxEvent.GetAddReqList addReqList) {
-        if (addReqList.arrayList.size() != 0) {
-            getView().showAddReqListTitle();
-            getView().initAddReqRecyList(initAddRequestData(addReqList));
-        } else {
-            addReqNull = true;
-            getView().hideAddReqListTitle();
+        if (getView() != null){
+            if (addReqList.arrayList.size() != 0) {
+                getView().showAddReqListTitle();
+                getView().initAddReqRecyList(initAddRequestData(addReqList));
+            } else {
+                addReqNull = true;
+                checkAllNull();
+                getView().hideAddReqListTitle();
+            }
         }
     }
 
@@ -334,15 +316,16 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
      * @param friendList
      */
     private void handleInitFriendListDataResult(final RxEvent.GetFriendList friendList) {
-        if (friendList.arrayList.size() != 0) {
-            getView().showFriendListTitle();
-            getView().initFriendRecyList(initRelativatesAndFriendsData(friendList));
-
-        } else {
-            friendListNull = true;
-            getView().hideFriendListTitle();
+        if (getView() != null){
+            if (friendList.arrayList.size() != 0) {
+                getView().showFriendListTitle();
+                getView().initFriendRecyList(initRelativatesAndFriendsData(friendList));
+            } else {
+                friendListNull = true;
+                checkAllNull();
+                getView().hideFriendListTitle();
+            }
         }
     }
-
 
 }

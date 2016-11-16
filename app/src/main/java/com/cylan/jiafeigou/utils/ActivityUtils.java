@@ -76,11 +76,11 @@ public class ActivityUtils {
         }
     }
 
-    public static boolean addFragmentSlideInFromRight(FragmentManager fragmentManager, Fragment fragment, int containerId) {
+    public static void addFragmentSlideInFromRight(FragmentManager fragmentManager, Fragment fragment, int containerId) {
         final String tag = fragment.getClass().getSimpleName();
         Fragment f = fragmentManager.findFragmentByTag(tag);
         if (f != null && f.isVisible()) {
-            return false;
+            return;
         }
         fragmentManager
                 .beginTransaction()
@@ -92,7 +92,6 @@ public class ActivityUtils {
                 .add(android.R.id.content, fragment, tag)
                 .addToBackStack(tag)
                 .commit();
-        return true;
     }
 
 }

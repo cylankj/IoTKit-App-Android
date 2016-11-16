@@ -102,7 +102,7 @@ public class ReactiveNetwork {
      * @param context Application Context is recommended here
      * @return ConnectivityStatus, which can be WIFI_CONNECTED, MOBILE_CONNECTED or OFFLINE
      */
-    public static ConnectivityStatus getConnectivityStatus(final Context context) {
+    public ConnectivityStatus getConnectivityStatus(final Context context) {
         if (context instanceof Activity)
             throw new IllegalArgumentException("woo,this context should be application context");
         final String service = Context.CONNECTIVITY_SERVICE;
@@ -190,8 +190,8 @@ public class ReactiveNetwork {
                 final BroadcastReceiver receiver = new BroadcastReceiver() {
                     @Override
                     public void onReceive(Context context, Intent intent) {
-                        if ((wifiManager.getScanResults() == null || wifiManager.getScanResults().size() == 0) && nullAgain)
-                            // we need to start scan again to get refresh results ASAP
+                        if (wifiManager.getScanResults() == null && nullAgain)
+                            // we need to start scan again to get fresh results ASAP
                             wifiManager.startScan();
                         subscriber.onNext(wifiManager.getScanResults());
                     }

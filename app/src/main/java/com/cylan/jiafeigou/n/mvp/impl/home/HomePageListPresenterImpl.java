@@ -4,22 +4,19 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 
-import com.cylan.entity.jniCall.JFGAccount;
-import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.jiafeigou.cache.JCache;
 import com.cylan.jiafeigou.misc.JFGRules;
-import com.cylan.jiafeigou.rx.RxEvent;
-import com.cylan.jiafeigou.rx.RxHelper;
+import com.cylan.jiafeigou.misc.RxEvent;
 import com.cylan.jiafeigou.misc.br.TimeTickBroadcast;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomePageListContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
 import com.cylan.jiafeigou.n.mvp.model.GreetBean;
-import com.cylan.jiafeigou.rx.RxBus;
+import com.cylan.jiafeigou.support.rxbus.RxBus;
 import com.cylan.jiafeigou.utils.ContextUtils;
-import com.cylan.jiafeigou.utils.MiscUtils;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -57,12 +54,10 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
                 .add(getLoginRspSub());
         _timeTickSubscriptions
                 .add(getDeviceList());
-        _timeTickSubscriptions
-                .add(JFGAccountUpdate());
     }
 
     private Subscription getTimeTickEventSub() {
-        return RxBus.getCacheInstance().toObservableSticky(RxEvent.TimeTickEvent.class)
+        return RxBus.getCacheInstance().toObservable(RxEvent.TimeTickEvent.class)
                 .throttleFirst(1000, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<RxEvent.TimeTickEvent>() {
@@ -72,6 +67,7 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
                         //18:00 pm-5:59 am
                         if (getView() != null) {
                             getView().onTimeTick(JFGRules.getTimeRule());
+
                         }
                     }
                 });
@@ -93,57 +89,50 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
                 });
     }
 
-    private Subscription JFGAccountUpdate() {
-        return RxBus.getCacheInstance().toObservableSticky(JFGAccount.class)
-                .filter(new RxHelper.Filter<>((getView() != null && JCache.isOnline)))
-                .observeOn(AndroidSchedulers.mainThread())
-                .map(new Func1<JFGAccount, Object>() {
-                    @Override
-                    public Object call(JFGAccount jfgAccount) {
-                        getView().onAccountUpdate(jfgAccount);
-                        return null;
-                    }
-                })
-                .retry(new RxHelper.RxException<>("JFGAccount"))
-                .subscribe();
-    }
-
     /**
      * 粘性订阅
      *
      * @return
      */
     private Subscription getDeviceList() {
-        return RxBus.getCacheInstance().toObservableSticky(JFGDevice.class)
-                .filter(new RxHelper.Filter<>(getView() != null))
-                .flatMap(new Func1<JFGDevice, Observable<DeviceBean>>() {
+        return RxBus.getCacheInstance().toObservableSticky(RxEvent.DeviceList.class)
+                .flatMap(new Func1<RxEvent.DeviceList, Observable<List<DeviceBean>>>() {
                     @Override
-                    public Observable<DeviceBean> call(JFGDevice jfgDevice) {
-                        DeviceBean bean = new DeviceBean();
-                        bean.fillData(jfgDevice);
-                        return Observable.just(bean);
+                    public Observable<List<DeviceBean>> call(RxEvent.DeviceList deviceList) {
+                        if (getView() == null
+                                || deviceList == null
+                                || deviceList.jfgDevices == null)
+                            return null;
+                        List<DeviceBean> list = convert(deviceList);
+                        if (getView().getDeviceList() != null) {
+                            list.addAll(getView().getDeviceList());
+                            list = new ArrayList<>(new HashSet<>(list));
+                        }
+                        return Observable.just(list);
                     }
                 })
                 .observeOn(AndroidSchedulers.mainThread())
-                .map(new Func1<DeviceBean, DeviceBean>() {
+                .subscribe(new Action1<List<DeviceBean>>() {
                     @Override
-                    public DeviceBean call(DeviceBean o) {
-                        List<DeviceBean> list = getView().getDeviceList();
-                        final int index = list.indexOf(o);
-                        if (MiscUtils.isInRange(0, list.size(), index)) {
-                            list.set(index, o);
-                            getView().onItemUpdate(index);
-                        } else {
-                            //a new one
-                            List<DeviceBean> oList = new ArrayList<>();
-                            oList.add(o);
-                            getView().onItemsInsert(oList);
-                        }
-                        return null;
+                    public void call(List<DeviceBean> deviceList) {
+                        getView().onDeviceListRsp(deviceList);
                     }
-                })
-                .retry(RxHelper.exceptionFun)
-                .subscribe();
+                });
+    }
+
+    private List<DeviceBean> convert(RxEvent.DeviceList deviceList) {
+        final int count = deviceList == null || deviceList.jfgDevices == null ? 0 : deviceList.jfgDevices.size();
+        List<DeviceBean> list = new ArrayList<>();
+        for (int i = 0; i < count; i++) {
+            DeviceBean bean = new DeviceBean();
+            bean.alias = deviceList.jfgDevices.get(i).alias;
+            bean.pid = deviceList.jfgDevices.get(i).pid;
+            bean.uuid = deviceList.jfgDevices.get(i).uuid;
+            bean.shareAccount = deviceList.jfgDevices.get(i).shareAccount;
+            bean.sn = deviceList.jfgDevices.get(i).sn;
+            list.add(bean);
+        }
+        return list;
     }
 
     @Override
@@ -180,22 +169,13 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
     public void fetchDeviceList() {
         if (!JCache.isOnline) {
             getView().onLoginState(false);
-            getView().onRefreshFinish();
         }
         onRefreshSubscription = Observable.just(JCache.isOnline)
                 .subscribeOn(Schedulers.newThread())
-                .map(new Func1<Boolean, Object>() {
+                .subscribe(new Action1<Boolean>() {
                     @Override
-                    public Object call(Boolean aBoolean) {
-                        return null;
-                    }
-                })
-                .delay(2000, TimeUnit.MILLISECONDS)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<Object>() {
-                    @Override
-                    public void call(Object aBoolean) {
-                        if (getView() != null) getView().onRefreshFinish();
+                    public void call(Boolean aBoolean) {
+
                     }
                 });
     }

@@ -6,10 +6,15 @@ import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
+import com.cylan.entity.jniCall.JFGFriendAccount;
+import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.misc.JfgCmdInsurance;
+import com.cylan.jiafeigou.misc.RxEvent;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendAddFromContactContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
-import com.cylan.jiafeigou.n.mvp.model.SuggestionChatInfoBean;
+import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.support.rxbus.RxBus;
 
 import java.util.ArrayList;
 
@@ -19,6 +24,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
+import rx.subscriptions.CompositeSubscription;
 
 /**
  * 作者：zsl
@@ -27,9 +33,9 @@ import rx.schedulers.Schedulers;
  */
 public class MineFriendAddFromContactPresenterImp extends AbstractPresenter<MineFriendAddFromContactContract.View> implements MineFriendAddFromContactContract.Presenter {
 
-    private Subscription contactSubscriber;
     private ArrayList<RelAndFriendBean> filterDateList;
-
+    private CompositeSubscription compositeSubscription;
+    private ArrayList<RelAndFriendBean> allContactBean;
     public MineFriendAddFromContactPresenterImp(MineFriendAddFromContactContract.View view) {
         super(view);
         view.setPresenter(this);
@@ -37,23 +43,26 @@ public class MineFriendAddFromContactPresenterImp extends AbstractPresenter<Mine
 
     @Override
     public void start() {
-        if (contactSubscriber != null && !contactSubscriber.isUnsubscribed()){
-            contactSubscriber.unsubscribe();
+        if (compositeSubscription != null && !compositeSubscription.isUnsubscribed()){
+            compositeSubscription.unsubscribe();
+        }else {
+            compositeSubscription = new CompositeSubscription();
+            compositeSubscription.add(getFriendListData());
+            compositeSubscription.add(getFriendListDataCallBack());
+            compositeSubscription.add(checkFriendAccountCallBack());
         }
-        initContactData();
     }
 
     @Override
     public void stop() {
-        if (contactSubscriber != null) {
-            contactSubscriber.unsubscribe();
+        if (compositeSubscription != null && !compositeSubscription.isUnsubscribed()){
+            compositeSubscription.unsubscribe();
         }
     }
 
     @Override
-    public void initContactData() {
-
-        contactSubscriber = Observable.just(null)
+    public Subscription initContactData() {
+        return Observable.just(null)
                 .subscribeOn(Schedulers.newThread())
                 .map(new Func1<Object, ArrayList<RelAndFriendBean>>() {
                     @Override
@@ -75,8 +84,13 @@ public class MineFriendAddFromContactPresenterImp extends AbstractPresenter<Mine
      * @param arrayList
      */
     private void handlerDataResult(ArrayList<RelAndFriendBean> arrayList) {
-        if (arrayList != null && arrayList.size() != 0 && getView() != null){
-            getView().initContactRecycleView(arrayList);
+        if (arrayList != null){
+            if (arrayList.size() != 0 && getView() != null){
+                getView().initContactRecycleView(arrayList);
+                getView().hideNoContactView();
+            }else {
+                getView().showNoContactView();
+            }
         }else {
             getView().showNoContactView();
         }
@@ -119,19 +133,151 @@ public class MineFriendAddFromContactPresenterImp extends AbstractPresenter<Mine
     @Override
     public void filterPhoneData(String filterStr) {
         filterDateList = new ArrayList<>();
-        if (TextUtils.isEmpty(filterStr)) {
-            filterDateList = getAllContactList();
-        } else {
-            filterDateList.clear();
-            for (RelAndFriendBean s : getAllContactList()) {
-                String phone = s.account;
-                String name = s.alias;
-                if (phone.replace(" ", "").contains(filterStr) || name.contains(filterStr)) {
-                    filterDateList.add(s);
+        if (allContactBean.size() != 0){
+            if (TextUtils.isEmpty(filterStr)) {
+                filterDateList = allContactBean;
+            } else {
+                filterDateList.clear();
+                for (RelAndFriendBean s : allContactBean) {
+                    String phone = s.account;
+                    String name = s.alias;
+                    if (phone.replace(" ", "").contains(filterStr) || name.contains(filterStr)) {
+                        filterDateList.add(s);
+                    }
                 }
             }
         }
         handlerDataResult(filterDateList);
     }
 
+    /**
+     * 获取好友列表的数据
+     * @return
+     */
+    @Override
+    public Subscription getFriendListData() {
+        return rx.Observable.just(null)
+                .subscribeOn(Schedulers.newThread())
+                .subscribe(new Action1<Object>() {
+                    @Override
+                    public void call(Object o) {
+                        JfgCmdInsurance.getCmd().getFriendList();
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        AppLogger.e("getFriendListData"+throwable.getLocalizedMessage());
+                    }
+                });
+    }
+
+    /**
+     * 获取好友列表的回调
+     * @return
+     */
+    @Override
+    public Subscription getFriendListDataCallBack() {
+        return RxBus.getCacheInstance().toObservable(RxEvent.GetFriendList.class)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<RxEvent.GetFriendList>() {
+                    @Override
+                    public void call(RxEvent.GetFriendList getFriendList) {
+                        if (getFriendList != null && getFriendList instanceof RxEvent.GetFriendList){
+                            allContactBean = new ArrayList<RelAndFriendBean>();
+                            allContactBean.addAll(handlerData(getFriendList.arrayList));
+                            handlerDataResult(allContactBean);
+                        }
+                    }
+                });
+    }
+
+    /**
+     * 检测好友的账号是否已经注册
+     * @param account
+     */
+    @Override
+    public void checkFriendAccount(final String account) {
+        rx.Observable.just(account)
+                .subscribeOn(Schedulers.newThread())
+                .subscribe(new Action1<String>() {
+                    @Override
+                    public void call(String s) {
+                        JfgCmdInsurance.getCmd().checkFriendAccount(account);
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        AppLogger.e("checkFriendAccount"+throwable.getLocalizedMessage());
+                    }
+                });
+    }
+
+    /**
+     * 检测好友的账号是否已经注册回调
+     * @return
+     */
+    @Override
+    public Subscription checkFriendAccountCallBack() {
+        return RxBus.getCacheInstance().toObservable(RxEvent.CheckAccountCallback.class)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<RxEvent.CheckAccountCallback>() {
+                    @Override
+                    public void call(RxEvent.CheckAccountCallback checkAccountCallback) {
+                        if (checkAccountCallback != null && checkAccountCallback instanceof RxEvent.CheckAccountCallback){
+                            getView().hideLoadingPro();
+                            handlerCheckAccountResult(checkAccountCallback);
+                        }
+                    }
+                });
+    }
+
+    /**
+     * 处理检测账号的结果
+     * @param checkAccountCallback
+     */
+    private void handlerCheckAccountResult(RxEvent.CheckAccountCallback checkAccountCallback) {
+        if (getView() != null){
+            if (checkAccountCallback.i == 240){
+                //未注册发送短信
+                getView().sendSms();
+            }else if (checkAccountCallback.i == 0){
+                //已注册
+                getView().jump2SendAddMesgFragment();
+            }
+        }
+    }
+
+    /**
+     * //数据处理标记已添加与否
+     */
+    private ArrayList<RelAndFriendBean> handlerData(ArrayList<JFGFriendAccount> getFriendList) {
+        ArrayList<RelAndFriendBean> tempList = new ArrayList<>();
+        ArrayList<RelAndFriendBean> resultList = new ArrayList<>();
+
+        for (RelAndFriendBean friendBean:getAllContactList()){
+            if (friendBean.account.startsWith("+86")){
+                friendBean.account = friendBean.account.substring(3);
+            }else if (friendBean.account.startsWith("86")){
+                friendBean.account = friendBean.account.substring(2);
+            }
+
+            if (JConstant.PHONE_REG.matcher(friendBean.account).find()){
+                tempList.add(friendBean);
+            }
+        }
+
+        for (RelAndFriendBean friendBean:tempList){
+            if(tempList.size() != 0){
+                for (JFGFriendAccount account:getFriendList){
+                    if (friendBean.account.equals(account.account)){
+                        friendBean.isCheckFlag = 1;
+                    }else {
+                        friendBean.isCheckFlag = 0;
+                    }
+                }
+            }
+            resultList.add(friendBean);
+        }
+        return resultList;
+    }
 }

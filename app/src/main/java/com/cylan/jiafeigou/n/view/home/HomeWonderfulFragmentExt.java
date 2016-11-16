@@ -38,9 +38,7 @@ import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.OnActivityReenterListener;
 import com.cylan.jiafeigou.misc.SharedElementCallBackListener;
-import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeWonderfulContract;
-import com.cylan.jiafeigou.n.mvp.impl.home.HomeWonderfulPresenterImpl;
 import com.cylan.jiafeigou.n.mvp.model.MediaBean;
 import com.cylan.jiafeigou.n.view.activity.MediaActivity;
 import com.cylan.jiafeigou.n.view.adapter.HomeWonderfulAdapter;
@@ -70,7 +68,7 @@ import static com.tencent.mm.sdk.modelmsg.SendMessageToWX.Req.WXSceneSession;
 import static com.tencent.mm.sdk.modelmsg.SendMessageToWX.Req.WXSceneTimeline;
 
 
-public class HomeWonderfulFragmentExt extends IBaseFragment<HomeWonderfulContract.Presenter> implements
+public class HomeWonderfulFragmentExt extends Fragment implements
         HomeWonderfulContract.View, SwipeRefreshLayout.OnRefreshListener,
         HomeWonderfulAdapter.WonderfulItemClickListener,
         HomeWonderfulAdapter.WonderfulItemLongClickListener,
@@ -127,6 +125,7 @@ public class HomeWonderfulFragmentExt extends IBaseFragment<HomeWonderfulContrac
 
     private EmptyViewState emptyViewState;
     private HomeWonderfulAdapter homeWonderAdapter;
+    private HomeWonderfulContract.Presenter presenter;
     public boolean isShowTimeLine;
 
     public static HomeWonderfulFragmentExt newInstance(Bundle bundle) {
@@ -141,7 +140,6 @@ public class HomeWonderfulFragmentExt extends IBaseFragment<HomeWonderfulContrac
         if (savedInstanceState != null) {
             AppLogger.d("save L:" + savedInstanceState);
         }
-        this.basePresenter = new HomeWonderfulPresenterImpl(this);
     }
 
     @Override
@@ -215,6 +213,7 @@ public class HomeWonderfulFragmentExt extends IBaseFragment<HomeWonderfulContrac
     @Override
     public void onStart() {
         super.onStart();
+        if (presenter != null) presenter.start();
     }
 
     @Override
@@ -232,12 +231,17 @@ public class HomeWonderfulFragmentExt extends IBaseFragment<HomeWonderfulContrac
     @Override
     public void onStop() {
         super.onStop();
+        if (presenter != null)
+            presenter.stop();
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
+        if (presenter != null) presenter.stop();
         dismissShareDialog();
+        if (presenter != null)
+            presenter.unregisterWechat();
     }
 
     private void dismissShareDialog() {
@@ -273,8 +277,8 @@ public class HomeWonderfulFragmentExt extends IBaseFragment<HomeWonderfulContrac
                     if (endlessLoading) {
                         if ((visibleItemCount + pastVisibleItems) >= totalItemCount) {
                             endlessLoading = false;
-                            if (basePresenter != null)
-                                basePresenter.startRefresh();
+                            if (presenter != null)
+                                presenter.startRefresh();
                             AppLogger.v("Last Item Wow !");
                             //Do pagination.. i.e. fetch new data
                         }
@@ -302,8 +306,8 @@ public class HomeWonderfulFragmentExt extends IBaseFragment<HomeWonderfulContrac
     }
 
     @Override
-    public void setPresenter(HomeWonderfulContract.Presenter basePresenter) {
-        this.basePresenter = basePresenter;
+    public void setPresenter(HomeWonderfulContract.Presenter presenter) {
+        this.presenter = presenter;
     }
 
     @UiThread
@@ -378,7 +382,7 @@ public class HomeWonderfulFragmentExt extends IBaseFragment<HomeWonderfulContrac
 
     @Override
     public void onRefresh() {
-        if (basePresenter != null) basePresenter.startRefresh();
+        if (presenter != null) presenter.startRefresh();
         //不使用post,因为会泄露
         srLayoutMainContentHolder.setRefreshing(true);
     }
@@ -407,8 +411,8 @@ public class HomeWonderfulFragmentExt extends IBaseFragment<HomeWonderfulContrac
                 break;
             case R.id.tv_wonderful_item_share:
                 boolean installed = false;
-                if (basePresenter != null)
-                    installed = basePresenter.checkWechat();
+                if (presenter != null)
+                    installed = presenter.checkWechat();
                 if (!installed) {
                     Toast.makeText(getActivity(), "微信没有安装", Toast.LENGTH_SHORT).show();
                     return;
@@ -499,12 +503,12 @@ public class HomeWonderfulFragmentExt extends IBaseFragment<HomeWonderfulContrac
     }
 
     private void showTimeLine() {
-        //do something basePresenter.xxx
+        //do something presenter.xxx
         isShowTimeLine = true;
     }
 
     private void hideTimeLine() {
-        //do something basePresenter.xxx
+        //do something presenter.xxx
         isShowTimeLine = false;
     }
 
@@ -535,8 +539,8 @@ public class HomeWonderfulFragmentExt extends IBaseFragment<HomeWonderfulContrac
                 type = 0;
                 break;
         }
-        if (basePresenter != null) {
-            basePresenter.shareToWechat((MediaBean) o, type);
+        if (presenter != null) {
+            presenter.shareToWechat((MediaBean) o, type);
         }
     }
 
@@ -549,8 +553,8 @@ public class HomeWonderfulFragmentExt extends IBaseFragment<HomeWonderfulContrac
             return;
         }
         final int position = (int) value;
-        if (basePresenter != null && position >= 0 && position < homeWonderAdapter.getCount())
-            basePresenter.deleteTimeline(homeWonderAdapter.getItem(position).time);
+        if (presenter != null && position >= 0 && position < homeWonderAdapter.getCount())
+            presenter.deleteTimeline(homeWonderAdapter.getItem(position).time);
         homeWonderAdapter.remove((Integer) value);
     }
 

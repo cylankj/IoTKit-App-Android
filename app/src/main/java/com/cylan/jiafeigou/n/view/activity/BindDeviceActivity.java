@@ -128,6 +128,7 @@ public class BindDeviceActivity extends BaseFullScreenFragmentActivity implement
                         .replace(android.R.id.content, fragment)
                         .addToBackStack("BindScanFragment")
                         .commit();
+                new ScanContractImpl(fragment);
                 break;
             }
             case R.id.v_to_bind_camera: {
@@ -141,6 +142,7 @@ public class BindDeviceActivity extends BaseFullScreenFragmentActivity implement
                         .add(android.R.id.content, fragment)
                         .addToBackStack("BindCameraFragment")
                         .commit();
+                new BindDevicePresenterImpl(fragment);
                 break;
             }
             case R.id.v_to_bind_doorbell: {
@@ -154,6 +156,7 @@ public class BindDeviceActivity extends BaseFullScreenFragmentActivity implement
                         .add(android.R.id.content, fragment)
                         .addToBackStack("BindDoorBellFragment")
                         .commit();
+                new BindDevicePresenterImpl(fragment);
                 break;
             }
             case R.id.v_to_bind_cloud_album:
@@ -167,6 +170,7 @@ public class BindDeviceActivity extends BaseFullScreenFragmentActivity implement
                         .replace(android.R.id.content, fragment)
                         .addToBackStack("BindScanFragment")
                         .commit();
+                new ScanContractImpl(fragment);
                 break;
         }
     }

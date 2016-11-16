@@ -82,15 +82,19 @@
         <meta-data
             android:name="vid"
             android:value="${VID}" />
+
         <meta-data
             android:name="vkey"
             android:value="${VKEY}" />
+
         <meta-data
             android:name="sina_app_key"
             android:value="${NICELY_SINA_APP_KEY}" />
+
         <meta-data
             android:name="qqAppKey"
             android:value="${QQ_APP_KEY}" />
+
         <meta-data
             android:name="weChatAppId"
             android:value="${weChat_APP_ID}" />
@@ -137,17 +141,16 @@
                 <action android:name="android.intent.action.USER_PRESENT" />
             </intent-filter>
         </receiver>
-        <!-- ////////////////////////tray///////////////////////////// -->
+        <!--////////////////////////tray/////////////////////////////-->
         <provider
             android:name=".support.sp.provider.TrayContentProvider"
             android:authorities="com.cylan.jiafeigou${AUTHORITY}"
             android:exported="false"
             android:multiprocess="false" />
-
         <meta-data
             android:name="AUTHORITY"
             android:value="com.cylan.jiafeigou${AUTHORITY}" />
-        <!-- ///////////////////////////////////////////////////// -->
+        <!--/////////////////////////////////////////////////////-->
         <service
             android:name=".n.engine.DataSourceService"
             android:enabled="true"
@@ -156,7 +159,7 @@
             android:name=".n.engine.DaemonService"
             android:enabled="true"
             android:exported="true" />
-        <!-- <service android:name=".n.engine.DaemonService$InnerAssistService" /> -->
+        <!--<service android:name=".n.engine.DaemonService$InnerAssistService" />-->
 
         <activity
             android:name=".n.view.activity.BindDeviceActivity"
@@ -207,10 +210,10 @@
             android:theme="@style/CamActivityTheme"
             android:windowSoftInputMode="adjustPan|stateHidden" />
 
-        <!-- &lt;!&ndash; 一个空的service，辅助启动bell_call进程。 &ndash;&gt; -->
-        <!-- <service -->
-        <!-- android:name=".n.engine.SimpleHelperIntentService" -->
-        <!-- android:exported="false" /> -->
+        <!--&lt;!&ndash; 一个空的service，辅助启动bell_call进程。 &ndash;&gt;-->
+        <!--<service-->
+        <!--android:name=".n.engine.SimpleHelperIntentService"-->
+        <!--android:exported="false" />-->
 
         <activity
             android:name=".n.view.activity.MediaActivity"
@@ -246,13 +249,13 @@
             android:configChanges="keyboardHidden|orientation"
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
+
         <activity android:name=".n.view.activity.CloudLiveReturnCallActivity" />
+
         <activity android:name=".n.view.activity.CloudLiveCallInActivity" />
-        <!--
-            将WXEntryActivity设置为透明 android:theme="@android:style/Theme.Translucent"
+        <!--将WXEntryActivity设置为透明 android:theme="@android:style/Theme.Translucent"
             这样就解决了，微信分享成功后，跳转到指定WXEntryActivity，显示微信分享信息，
-            而给用户视觉效果就在当前界面。
-        -->
+            而给用户视觉效果就在当前界面。-->
         <activity
             android:name=".wxapi.WXEntryActivity"
             android:exported="true"
@@ -269,16 +272,14 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".support.galleryfinal.PhotoPreviewActivity"
+            android:screenOrientation="portrait"
             android:configChanges="orientation|keyboard|keyboardHidden|screenSize"
-            android:screenOrientation="portrait" />
+            />
 
         <activity
             android:name=".support.galleryfinal.ClipImageActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"/>
 
-        <service
-            android:name=".n.engine.AfterLoginService"
-            android:exported="false" />
     </application>
 
 </manifest>

@@ -1,5 +1,7 @@
 package com.cylan.jiafeigou.n.view.mine;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -13,12 +15,12 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendAddFromContactContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineFriendAddFromContactPresenterImp;
 import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
-import com.cylan.jiafeigou.n.mvp.model.SuggestionChatInfoBean;
 import com.cylan.jiafeigou.n.view.adapter.RelativeAndFriendAddFromContactAdapter;
 import com.cylan.superadapter.OnItemClickListener;
 
@@ -43,10 +45,14 @@ public class MineFriendAddFromContactFragment extends Fragment implements MineFr
     RecyclerView rcyContactList;
     @BindView(R.id.ll_no_contact)
     LinearLayout llNoContact;
+    @BindView(R.id.rl_send_pro_hint)
+    RelativeLayout rlSendProHint;
 
     private MineFriendAddFromContactContract.Presenter presenter;
     private MineAddFromContactFragment mineAddFromContactFragment;
     private RelativeAndFriendAddFromContactAdapter contactListAdapter;
+
+    private String friendAccount;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -114,7 +120,7 @@ public class MineFriendAddFromContactFragment extends Fragment implements MineFr
     @Override
     public void initContactRecycleView(ArrayList<RelAndFriendBean> list) {
         rcyContactList.setLayoutManager(new LinearLayoutManager(getContext()));
-        contactListAdapter = new RelativeAndFriendAddFromContactAdapter(getView().getContext(),list,null);
+        contactListAdapter = new RelativeAndFriendAddFromContactAdapter(getView().getContext(), list, null);
         rcyContactList.setAdapter(contactListAdapter);
         initAdaListener();
     }
@@ -133,9 +139,9 @@ public class MineFriendAddFromContactFragment extends Fragment implements MineFr
     }
 
     @Override
-    public void jump2SendAddMesgFragment(RelAndFriendBean bean) {
+    public void jump2SendAddMesgFragment() {
         Bundle bundle = new Bundle();
-        bundle.putParcelable("contactItem", bean);
+        bundle.putString("account", friendAccount);
         mineAddFromContactFragment = MineAddFromContactFragment.newInstance(bundle);
         getFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
@@ -154,6 +160,38 @@ public class MineFriendAddFromContactFragment extends Fragment implements MineFr
     }
 
     @Override
+    public void hideNoContactView() {
+        llNoContact.setVisibility(View.INVISIBLE);
+    }
+
+    /**
+     * 显示进度浮层
+     */
+    @Override
+    public void showLoadingPro() {
+        rlSendProHint.setVisibility(View.VISIBLE);
+    }
+
+    /**
+     * 隐藏进度浮层
+     */
+    @Override
+    public void hideLoadingPro() {
+        rlSendProHint.setVisibility(View.INVISIBLE);
+    }
+
+    /**
+     * 发送短信邀请
+     */
+    @Override
+    public void sendSms() {
+        Uri smsToUri = Uri.parse("smsto:" + friendAccount);
+        Intent mIntent = new Intent(Intent.ACTION_SENDTO, smsToUri);
+        mIntent.putExtra("sms_body", "邀请你成为我的好友，点击XXXXXXXXX下载安装【加菲狗】");
+        startActivity(mIntent);
+    }
+
+    @Override
     public void onStop() {
         super.onStop();
         if (presenter != null) {
@@ -162,9 +200,11 @@ public class MineFriendAddFromContactFragment extends Fragment implements MineFr
     }
 
     @Override
-    public void onAddClick(View view, int position,RelAndFriendBean item) {
-        if (getView() != null){
-            jump2SendAddMesgFragment(item);
+    public void onAddClick(View view, int position, RelAndFriendBean item) {
+        friendAccount = item.account;
+        if (presenter != null) {
+            showLoadingPro();
+            presenter.checkFriendAccount(item.account);
         }
     }
 }

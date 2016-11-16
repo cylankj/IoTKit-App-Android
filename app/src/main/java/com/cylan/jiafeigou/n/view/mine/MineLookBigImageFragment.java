@@ -18,6 +18,7 @@ import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineLookBigImageContract;
+import com.cylan.jiafeigou.n.mvp.impl.mine.MineLookBigImagePresenterImp;
 import com.cylan.jiafeigou.utils.ToastUtil;
 
 import butterknife.BindView;
@@ -36,8 +37,11 @@ public class MineLookBigImageFragment extends Fragment implements MineLookBigIma
     @BindView(R.id.progress_loading)
     ProgressBar progressLoading;
 
+    private MineLookBigImageContract.Presenter presenter;
     private boolean loadResult = false;
     private String imageUrl;
+
+    private Bitmap bitmapSource;
 
     public static MineLookBigImageFragment newInstance(Bundle bundle) {
         MineLookBigImageFragment fragment = new MineLookBigImageFragment();
@@ -57,9 +61,13 @@ public class MineLookBigImageFragment extends Fragment implements MineLookBigIma
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_mine_long_big_image, container, false);
         ButterKnife.bind(this, view);
-        initImage();
+        initPresenter();
         initLongClickListener();
         return view;
+    }
+
+    private void initPresenter() {
+        presenter = new MineLookBigImagePresenterImp(this);
     }
 
     private void initLongClickListener() {
@@ -82,7 +90,9 @@ public class MineLookBigImageFragment extends Fragment implements MineLookBigIma
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
                 ToastUtil.showToast("图片保存成功");
-                //TODO
+                if (presenter != null){
+                    presenter.saveImage(bitmapSource);
+                }
             }
         }).setNegativeButton("取消", new DialogInterface.OnClickListener() {
             @Override
@@ -96,6 +106,7 @@ public class MineLookBigImageFragment extends Fragment implements MineLookBigIma
         if (loadResult) {
 
         } else {
+            //失败只显示200*200
             ViewGroup.LayoutParams layoutParams = ivLookBigImage.getLayoutParams();
             layoutParams.width = 200;
             layoutParams.height = 200;
@@ -107,6 +118,15 @@ public class MineLookBigImageFragment extends Fragment implements MineLookBigIma
     public void onStart() {
         super.onStart();
         loadImage();
+        initImage();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (bitmapSource != null){
+            bitmapSource.recycle();
+        }
     }
 
     /**
@@ -125,10 +145,10 @@ public class MineLookBigImageFragment extends Fragment implements MineLookBigIma
                         super.onLoadStarted(placeholder);
                         showLoadImageProgress();
                     }
-
                     @Override
                     public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
                         super.onResourceReady(resource, glideAnimation);
+                        bitmapSource = resource;
                         hideLoadImageProgress();
                         loadResult = true;
                     }

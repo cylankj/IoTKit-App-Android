@@ -11,12 +11,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 
+import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.n.mvp.contract.mine.MinePersionalInfomationSetNameContract;
-import com.cylan.jiafeigou.n.mvp.impl.mine.MinePersionalInfomationSetNamePresenterImpl;
+import com.cylan.jiafeigou.misc.RxEvent;
+import com.cylan.jiafeigou.n.mvp.contract.mine.MineInfoSetNameContract;
+import com.cylan.jiafeigou.n.mvp.impl.mine.MineInfoSetNamePresenterImpl;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
+import com.cylan.utils.NetUtils;
+
+import java.io.Serializable;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -27,7 +33,7 @@ import butterknife.OnClick;
  * 创建时间：2016/9/2
  * 描述：
  */
-public class MineSetUserNameFragment extends Fragment implements MinePersionalInfomationSetNameContract.View {
+public class MineSetUserNameFragment extends Fragment implements MineInfoSetNameContract.View {
 
     @BindView(R.id.iv_top_bar_left_back)
     ImageView ivTopBarLeftBack;
@@ -39,22 +45,26 @@ public class MineSetUserNameFragment extends Fragment implements MinePersionalIn
     View viewMinePersonalInformationNewNameLine;
     @BindView(R.id.iv_mine_personal_information_new_name_clear)
     ImageView ivMinePersonalInformationNewNameClear;
-    private MinePersionalInfomationSetNameContract.Presenter presenter;
+    @BindView(R.id.rl_send_pro_hint)
+    RelativeLayout rlSendProHint;
+
+    private MineInfoSetNameContract.Presenter presenter;
 
     private OnSetUsernameListener listener;
+    private JFGAccount userinfo;
 
     public interface OnSetUsernameListener {
-
         void userNameChange(String name);
-
     }
 
     public void setOnSetUsernameListener(OnSetUsernameListener listener) {
         this.listener = listener;
     }
 
-    public static MineSetUserNameFragment newInstance() {
-        return new MineSetUserNameFragment();
+    public static MineSetUserNameFragment newInstance(Bundle bundle) {
+        MineSetUserNameFragment fragment = new MineSetUserNameFragment();
+        fragment.setArguments(bundle);
+        return fragment;
     }
 
     @Nullable
@@ -63,9 +73,18 @@ public class MineSetUserNameFragment extends Fragment implements MinePersionalIn
         View view = inflater.inflate(R.layout.fragment_home_mine__set_name, container, false);
         ButterKnife.bind(this, view);
         initPresenter();
+        getArgumentData();
         initEditText();
         initEditListener();
         return view;
+    }
+
+    /**
+     * 获取传递过来的参数
+     */
+    private void getArgumentData() {
+        Bundle arguments = getArguments();
+        userinfo = (JFGAccount) arguments.getSerializable("userinfo");
     }
 
     private void initEditListener() {
@@ -90,7 +109,6 @@ public class MineSetUserNameFragment extends Fragment implements MinePersionalIn
                     ivMinePersonalSetnameBind.setImageDrawable(getResources().getDrawable(R.drawable.icon_finish));
                     ivMinePersonalSetnameBind.setEnabled(true);
                 }
-
             }
         });
     }
@@ -100,7 +118,7 @@ public class MineSetUserNameFragment extends Fragment implements MinePersionalIn
     }
 
     private void initPresenter() {
-        presenter = new MinePersionalInfomationSetNamePresenterImpl();
+        presenter = new MineInfoSetNamePresenterImpl(this);
     }
 
     @Override
@@ -109,7 +127,31 @@ public class MineSetUserNameFragment extends Fragment implements MinePersionalIn
     }
 
     @Override
-    public void setPresenter(MinePersionalInfomationSetNameContract.Presenter presenter) {
+    public void showSendHint() {
+        rlSendProHint.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideSendHint() {
+        rlSendProHint.setVisibility(View.INVISIBLE);
+    }
+
+    /**
+     * 处理互调的结果
+     * @param getUserInfo
+     */
+    @Override
+    public void handlerResult(RxEvent.GetUserInfo getUserInfo) {
+        if (getEditName().equals(getUserInfo.jfgAccount.getAlias())){
+            ToastUtil.showPositiveToast("设置成功");
+            getFragmentManager().popBackStack();
+        }else {
+            ToastUtil.showPositiveToast("设置失败");
+        }
+    }
+
+    @Override
+    public void setPresenter(MineInfoSetNameContract.Presenter presenter) {
 
     }
 
@@ -124,12 +166,10 @@ public class MineSetUserNameFragment extends Fragment implements MinePersionalIn
                     ToastUtil.showToast("昵称不能为空");
                     return;
                 } else {
-                    PreferencesUtils.putString(getEditName(), "username");
-                    ToastUtil.showToast("保存成功");
-                    if (listener != null) {
-                        listener.userNameChange(getEditName());
-                    }
-                    getFragmentManager().popBackStack();
+                    userinfo.setAlias(getEditName());
+                    userinfo.resetFlag();
+                    if (presenter != null) presenter.saveName(userinfo);
+                    presenter.start();
                 }
                 break;
             case R.id.iv_mine_personal_information_new_name_clear:
@@ -148,5 +188,11 @@ public class MineSetUserNameFragment extends Fragment implements MinePersionalIn
             ivMinePersonalSetnameBind.setImageDrawable(getResources().getDrawable(R.drawable.icon_finish));
             ivMinePersonalSetnameBind.setEnabled(true);
         }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (presenter != null)presenter.stop();
     }
 }

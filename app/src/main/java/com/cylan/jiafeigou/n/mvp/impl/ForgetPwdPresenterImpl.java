@@ -3,10 +3,10 @@ package com.cylan.jiafeigou.n.mvp.impl;
 import com.cylan.entity.JfgEnum;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
-import com.cylan.jiafeigou.rx.RxEvent;
+import com.cylan.jiafeigou.misc.RxEvent;
 import com.cylan.jiafeigou.n.mvp.contract.login.ForgetPwdContract;
 import com.cylan.jiafeigou.n.mvp.model.RequestResetPwdBean;
-import com.cylan.jiafeigou.rx.RxBus;
+import com.cylan.jiafeigou.support.rxbus.RxBus;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 
 import rx.Observable;

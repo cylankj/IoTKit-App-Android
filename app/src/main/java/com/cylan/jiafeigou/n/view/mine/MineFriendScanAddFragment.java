@@ -8,12 +8,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendScanAddContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineFriendScanAddPresenterImp;
+import com.cylan.jiafeigou.n.mvp.model.MineAddReqBean;
 import com.cylan.jiafeigou.support.zscan.ZXingScannerView;
+import com.cylan.jiafeigou.utils.ToastUtil;
 import com.google.zxing.Result;
 
 import butterknife.BindView;
@@ -36,6 +39,8 @@ public class MineFriendScanAddFragment extends Fragment implements ZXingScannerV
     ZXingScannerView zxVScanAddRelativesandfriend;
     @BindView(R.id.iv_erweima)
     ImageView ivErweima;
+    @BindView(R.id.rl_send_pro_hint)
+    RelativeLayout rlSendProHint;
     private MineFriendScanAddContract.Presenter presenter;
 
     public static MineFriendScanAddFragment newInstance() {
@@ -54,7 +59,7 @@ public class MineFriendScanAddFragment extends Fragment implements ZXingScannerV
         View view = inflater.inflate(R.layout.fragment_mine_relativesandfriend_scan_add, container, false);
         ButterKnife.bind(this, view);
         initView();
-        showQrCode(presenter.encodeAsBitmap("1234", presenter.getDimension()));
+//        showQrCode(presenter.encodeAsBitmap("1234", presenter.getDimension()));
         return view;
     }
 
@@ -98,10 +103,69 @@ public class MineFriendScanAddFragment extends Fragment implements ZXingScannerV
         ivErweima.setImageBitmap(bitmap);
     }
 
+    /**
+     * 跳转到对方详情页
+     */
     @Override
-    public void handleResult(Result rawResult) {
-        Toast.makeText(getActivity(), "Contents = " + rawResult.getText() +
-                ", Format = " + rawResult.getBarcodeFormat().name(), Toast.LENGTH_SHORT).show();
+    public void jump2FriendDetailFragment(boolean isFrom, MineAddReqBean bean) {
+        Bundle bundle = new Bundle();
+        bundle.putBoolean("isFrom", isFrom);
+        bundle.putSerializable("addRequestItems", bean);
+        MineFriendAddReqDetailFragment addReqDetailFragment = MineFriendAddReqDetailFragment.newInstance(bundle);
+        getFragmentManager().beginTransaction()
+                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
+                        , R.anim.slide_in_left, R.anim.slide_out_right)
+                .add(android.R.id.content, addReqDetailFragment, "addReqDetailFragment")
+                .addToBackStack("mineHelpFragment")
+                .commit();
+    }
+
+    /**
+     * 已经是亲友
+     */
+    @Override
+    public void isMineFriendResult() {
+        ToastUtil.showToast("已是亲友");
+    }
+
+    /**
+     * 扫描无结果
+     */
+    @Override
+    public void scanNoResult() {
+        ToastUtil.showToast("无效的二维码");
+    }
+
+    /**
+     * 显示加载进度
+     */
+    @Override
+    public void showLoadingPro() {
+        rlSendProHint.setVisibility(View.VISIBLE);
+    }
+
+    /**
+     * 隐藏加载进度
+     */
+    @Override
+    public void hideLoadingPro() {
+        rlSendProHint.setVisibility(View.INVISIBLE);
+    }
+
+    @Override
+    public void handleResult(final Result rawResult) {
+        showLoadingPro();
+        if (getView() != null) {
+            getView().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    if (presenter != null) {
+                        presenter.checkScannAccount(rawResult.getText());
+                    }
+                }
+            }, 2000);
+        }
+
         // Note:
         // * Wait 2 seconds to resume the preview.
         // * On older devices continuously stopping and resuming camera preview can result in freezing the app.
@@ -141,5 +205,4 @@ public class MineFriendScanAddFragment extends Fragment implements ZXingScannerV
         super.onStop();
         if (presenter != null) presenter.stop();
     }
-
 }

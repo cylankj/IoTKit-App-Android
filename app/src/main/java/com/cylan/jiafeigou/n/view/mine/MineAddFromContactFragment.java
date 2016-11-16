@@ -9,12 +9,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineAddFromContactContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineAddFromContactPresenterImp;
-import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
-import com.cylan.jiafeigou.n.mvp.model.SuggestionChatInfoBean;
 import com.cylan.jiafeigou.utils.ToastUtil;
 
 import butterknife.BindView;
@@ -35,9 +34,11 @@ public class MineAddFromContactFragment extends Fragment implements MineAddFromC
     ImageView ivMineAddFromContactSend;
     @BindView(R.id.et_mine_add_contact_mesg)
     EditText etMineAddContactMesg;
+    @BindView(R.id.rl_send_pro_hint)
+    RelativeLayout rlSendProHint;
 
     private MineAddFromContactContract.Presenter presenter;
-    private RelAndFriendBean contactItem;
+    private String contactItem;
 
     public static MineAddFromContactFragment newInstance(Bundle bundle) {
         MineAddFromContactFragment fragment = new MineAddFromContactFragment();
@@ -60,7 +61,7 @@ public class MineAddFromContactFragment extends Fragment implements MineAddFromC
      */
     private void getIntentData() {
         Bundle bundle = getArguments();
-        contactItem = (RelAndFriendBean) bundle.getParcelable("contactItem");
+        contactItem = bundle.getString("account");
     }
 
     private void initPresenter() {
@@ -73,15 +74,15 @@ public class MineAddFromContactFragment extends Fragment implements MineAddFromC
     }
 
     @Override
-    public void initEditText() {
-        etMineAddContactMesg.setText("我是" + contactItem.alias);
+    public void initEditText(String alids) {
+        etMineAddContactMesg.setText("我是" + alids);
     }
 
     @Override
     public String getSendMesg() {
         String mesg = etMineAddContactMesg.getText().toString();
         if (TextUtils.isEmpty(mesg)) {
-            return "我是" + contactItem.alias;
+            return "我是" + presenter.getUserAlis();
         } else {
             return mesg;
         }
@@ -89,20 +90,33 @@ public class MineAddFromContactFragment extends Fragment implements MineAddFromC
 
     @Override
     public void showResultDialog() {
-        ToastUtil.showToast("发送请求成功" + getSendMesg());
+        ToastUtil.showToast("请求已发送");
+    }
+
+    @Override
+    public void showSendReqHint() {
+        rlSendProHint.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideSendReqHint() {
+        rlSendProHint.setVisibility(View.INVISIBLE);
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        initEditText();
+        if (presenter != null) presenter.start();
     }
 
     @OnClick({R.id.iv_mine_add_from_contact_send, R.id.iv_mine_add_from_contact_back})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.iv_mine_add_from_contact_send:
-                presenter.sendRequest(getSendMesg());
+                showSendReqHint();
+                presenter.sendRequest(contactItem, getSendMesg());
+                hideSendReqHint();
+                showResultDialog();
                 getFragmentManager().popBackStack();
                 break;
             case R.id.iv_mine_add_from_contact_back:

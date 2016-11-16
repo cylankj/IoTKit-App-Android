@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 import android.support.annotation.UiThread;
 import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -27,12 +28,10 @@ import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.cache.JCache;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
-import com.cylan.jiafeigou.rx.RxEvent;
-import com.cylan.jiafeigou.n.base.IBaseFragment;
+import com.cylan.jiafeigou.misc.RxEvent;
 import com.cylan.jiafeigou.n.mvp.contract.ActivityResultContract;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomePageListContract;
 import com.cylan.jiafeigou.n.mvp.impl.ActivityResultPresenterImpl;
-import com.cylan.jiafeigou.n.mvp.impl.home.HomePageListPresenterImpl;
 import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
 import com.cylan.jiafeigou.n.view.activity.BindDeviceActivity;
 import com.cylan.jiafeigou.n.view.activity.CameraLiveActivity;
@@ -43,8 +42,7 @@ import com.cylan.jiafeigou.n.view.bell.DoorBellHomeActivity;
 import com.cylan.jiafeigou.n.view.misc.HomeEmptyView;
 import com.cylan.jiafeigou.n.view.misc.IEmptyView;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.rx.RxBus;
-import com.cylan.jiafeigou.utils.MiscUtils;
+import com.cylan.jiafeigou.support.rxbus.RxBus;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
 import com.cylan.jiafeigou.widget.wave.SuperWaveView;
@@ -53,13 +51,19 @@ import org.msgpack.annotation.NotNullable;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import rx.Observable;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.schedulers.Schedulers;
 
 
-public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.Presenter> implements
+public class HomePageListFragmentExt extends Fragment implements
         AppBarLayout.OnOffsetChangedListener,
         HomePageListContract.View, SwipeRefreshLayout.OnRefreshListener,
         HomePageListAdapter.DeviceItemClickListener,
@@ -67,6 +71,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
         SimpleDialogFragment.SimpleDialogAction,
         HomePageListAdapter.DeviceItemLongClickListener {
 
+    private static final int REFRESH_DELAY = 1500;
     @BindView(R.id.srLayout_home_page_container)
     SwipeRefreshLayout srLayoutMainContentHolder;
     @BindView(R.id.imgV_add_devices)
@@ -98,11 +103,16 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
     FrameLayout fLayoutEmptyViewContainer;
     @BindView(R.id.img_home_page_header_bg)
     ImageView imgHomePageHeaderBg;
+    private HomePageListContract.Presenter presenter;
+
     private ActivityResultContract.Presenter activityResultPresenter;
     private HomePageListAdapter homePageListAdapter;
 
     private EmptyViewState emptyViewState;
-
+    /**
+     * 手动完成刷新,自动完成刷新 订阅者.
+     */
+    private Subscription refreshCompleteSubscription;
 
     public static HomePageListFragmentExt newInstance(Bundle bundle) {
         HomePageListFragmentExt fragment = new HomePageListFragmentExt();
@@ -116,7 +126,6 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
         if (savedInstanceState != null) {
             AppLogger.d("save L:" + savedInstanceState);
         }
-        this.basePresenter = new HomePageListPresenterImpl(this);
     }
 
     @Override
@@ -129,19 +138,25 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
         super.onResume();
         initWaveAnimation();
         onTimeTick(JFGRules.getTimeRule());
-        if (basePresenter != null)
-            basePresenter.fetchGreet();
+        if (presenter != null)
+            presenter.fetchGreet();
+
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+        if (presenter != null) {
+            presenter.start();
+            presenter.registerWorker();
+        }
         homePageListAdapter = new HomePageListAdapter(getContext(), null, null);
         homePageListAdapter.setDeviceItemClickListener(this);
         homePageListAdapter.setDeviceItemLongClickListener(this);
         initEmptyViewState(context);
         //需要优化.
         activityResultPresenter = new ActivityResultPresenterImpl(this);
+        activityResultPresenter.start();
     }
 
     @Override
@@ -170,10 +185,10 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
     public void onDestroy() {
         super.onDestroy();
         //只有app退出后，被调用。
-        if (basePresenter != null) {
-            basePresenter.stop();
-            basePresenter.unRegisterWorker();
-            basePresenter = null;
+        if (presenter != null) {
+            presenter.stop();
+            presenter.unRegisterWorker();
+            presenter = null;
         }
         if (activityResultPresenter != null) {
             activityResultPresenter.stop();
@@ -272,7 +287,8 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
     public void onDestroyView() {
         super.onDestroyView();
         if (vWaveAnimation != null) vWaveAnimation.stopAnimation();
-        if (basePresenter != null) basePresenter.stop();
+        if (presenter != null) presenter.stop();
+        unRegisterSubscription(refreshCompleteSubscription);
     }
 
     @Override
@@ -280,15 +296,28 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
         super.onDetach();
     }
 
+    /**
+     * 反注册
+     *
+     * @param subscriptions
+     */
+    private void unRegisterSubscription(Subscription... subscriptions) {
+        if (subscriptions != null)
+            for (Subscription subscription : subscriptions) {
+                if (subscription != null)
+                    subscription.unsubscribe();
+            }
+    }
+
     @Override
-    public void setPresenter(HomePageListContract.Presenter basePresenter) {
-        AppLogger.e("ffff: " + (basePresenter == null));
-        this.basePresenter = basePresenter;
+    public void setPresenter(HomePageListContract.Presenter presenter) {
+        AppLogger.e("ffff: " + (presenter == null));
+        this.presenter = presenter;
     }
 
     @UiThread
     @Override
-    public void onItemsInsert(List<DeviceBean> resultList) {
+    public void onDeviceListRsp(List<DeviceBean> resultList) {
         srLayoutMainContentHolder.setRefreshing(false);
         if (resultList == null || resultList.size() == 0) {
             homePageListAdapter.clear();
@@ -304,19 +333,6 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
         homePageListAdapter.addAll(resultList);
         emptyViewState.determineEmptyViewState(homePageListAdapter.getCount());
         srLayoutMainContentHolder.setNestedScrollingEnabled(homePageListAdapter.getCount() > JFGRules.NETSTE_SCROLL_COUNT);
-    }
-
-    @Override
-    public void onItemUpdate(int index) {
-        if (homePageListAdapter != null
-                && MiscUtils.isInRange(0, homePageListAdapter.getCount(), index)) {
-
-        }
-    }
-
-    @Override
-    public void onItemDelete(int index) {
-
     }
 
     @Override
@@ -348,7 +364,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
     @Override
     public void onLoginState(boolean state) {
         if (!state) {
-            onRefreshFinish();
+            srLayoutMainContentHolder.setRefreshing(false);
             Toast.makeText(getContext(), "还没登陆", Toast.LENGTH_SHORT).show();
         } else {
             //update online view
@@ -356,16 +372,20 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
     }
 
     @Override
-    public void onRefreshFinish() {
-        srLayoutMainContentHolder.setRefreshing(false);
-    }
-
-    @Override
     public void onRefresh() {
-        if (basePresenter != null)
-            basePresenter.fetchDeviceList();
+        if (presenter != null) presenter.fetchDeviceList();
         //不使用post,因为会泄露
         srLayoutMainContentHolder.setRefreshing(true);
+        refreshCompleteSubscription = Observable.just(srLayoutMainContentHolder)
+                .subscribeOn(Schedulers.newThread())
+                .delay(REFRESH_DELAY, TimeUnit.MILLISECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<SwipeRefreshLayout>() {
+                    @Override
+                    public void call(SwipeRefreshLayout swipeRefreshLayout) {
+                        swipeRefreshLayout.setRefreshing(false);
+                    }
+                });
     }
 
     @Override
@@ -373,10 +393,16 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
         final int position = ViewUtils.getParentAdapterPosition(rVDevicesList,
                 v,
                 R.id.rLayout_device_item);
-        if (position < 0 || position > homePageListAdapter.getCount() - 1) {
+        if (position < 0 || position > homePageListAdapter.getCount()) {
             AppLogger.d("woo,position is invalid: " + position);
             return;
         }
+        if (position < 0 || position > homePageListAdapter.getCount()) {
+            AppLogger.d("woo,position is invalid: " + position);
+            return;
+        }
+        if (position < 0 || position > homePageListAdapter.getCount() - 1)
+            return;
         DeviceBean bean = homePageListAdapter.getItem(position);
         if (bean != null) {
             Bundle bundle = new Bundle();
@@ -464,7 +490,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
         srLayoutMainContentHolder.setEnabled(verticalOffset == 0);
         final float ratio = (appbar.getTotalScrollRange() + verticalOffset) * 1.0f
                 / appbar.getTotalScrollRange();
-//        AppLogger.d("verticalOffset: " + " " + verticalOffset + "   " + ratio);
+        AppLogger.d("verticalOffset: " + " " + verticalOffset + "   " + ratio);
         updateWaveViewAmplitude(ratio);
     }
 

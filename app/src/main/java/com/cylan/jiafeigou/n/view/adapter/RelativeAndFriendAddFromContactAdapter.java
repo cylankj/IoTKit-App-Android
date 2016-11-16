@@ -1,6 +1,7 @@
 package com.cylan.jiafeigou.n.view.adapter;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -42,6 +43,14 @@ public class RelativeAndFriendAddFromContactAdapter extends SuperAdapter<RelAndF
     public void onBind(final SuperViewHolder holder, int viewType, final int layoutPosition, final RelAndFriendBean item) {
         holder.setText(R.id.tv_contactname,item.alias);
         holder.setText(R.id.tv_contactphone,item.account);
+
+        TextView addBtn = holder.getView(R.id.tv_contactadd);
+        if (item.isCheckFlag == 1){
+            addBtn.setText("已添加");
+            addBtn.setEnabled(false);
+            addBtn.setTextColor(Color.parseColor("#ADADAD"));
+            addBtn.setBackground(null);
+        }
         holder.setOnClickListener(R.id.tv_contactadd, new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -75,21 +75,21 @@ public class MineFriendAddFriendsFragment extends Fragment implements MineFriend
             case R.id.tv_scan_add:                                      //扫一扫添加
                 if (getView() != null)
                     ViewUtils.deBounceClick(getView().findViewById(R.id.tv_scan_add));
-                AppLogger.e("tv_scan_add");
+                AppLogger.d("tv_scan_add");
                 jump2ScanAddFragment();
                 break;
 
             case R.id.tv_add_from_contract:                             //从通讯录添加
                 if (getView() != null)
                     ViewUtils.deBounceClick(getView().findViewById(R.id.tv_add_from_contract));
-                AppLogger.e("tv_add_from_contract");
+                AppLogger.d("tv_add_from_contract");
                 jump2AddFromContactFragment();
                 break;
 
             case R.id.et_friend_phonenumber:                            //根据对方账号添加
                 if (getView() != null)
                     ViewUtils.deBounceClick(getView().findViewById(R.id.et_friend_phonenumber));
-                AppLogger.e("et_friend_phonenumber");
+                AppLogger.d("et_friend_phonenumber");
                 jump2AddByNumberFragment();
                 break;
         }
@@ -115,8 +115,8 @@ public class MineFriendAddFriendsFragment extends Fragment implements MineFriend
 
     private void jump2ScanAddFragment() {
         getFragmentManager().beginTransaction()
-                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
-                        , R.anim.slide_in_left, R.anim.slide_out_right)
+//                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
+//                        , R.anim.slide_in_left, R.anim.slide_out_right)
                 .add(android.R.id.content, scanAddFragment, "scanAddFragment")
                 .addToBackStack("mineHelpFragment")
                 .commit();

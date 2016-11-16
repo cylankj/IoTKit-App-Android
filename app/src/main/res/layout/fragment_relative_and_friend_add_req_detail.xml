@@ -59,7 +59,7 @@
                 android:layout_height="wrap_content" />
 
             <TextView
-                android:id="@+id/tv_relative_and_friend_like_name"
+                android:id="@+id/tv_relative_and_friend_account"
                 android:layout_marginTop="3dp"
                 android:layout_gravity="center_horizontal"
                 android:textColor="@color/color_777777"

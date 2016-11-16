@@ -2,7 +2,6 @@ package com.cylan.jiafeigou.n.view.bind;
 
 
 import android.net.wifi.ScanResult;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -16,18 +15,15 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.ViewSwitcher;
+import android.widget.Toast;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.cache.SimpleCache;
 import com.cylan.jiafeigou.misc.JConstant;
-import com.cylan.jiafeigou.misc.bind.UdpConstant;
 import com.cylan.jiafeigou.n.mvp.contract.bind.ConfigApContract;
-import com.cylan.jiafeigou.n.mvp.impl.bind.ConfigApPresenterImpl;
 import com.cylan.jiafeigou.n.mvp.model.BeanWifiList;
 import com.cylan.jiafeigou.n.view.BaseTitleFragment;
-import com.cylan.jiafeigou.utils.ActivityUtils;
-import com.cylan.jiafeigou.utils.BindUtils;
-import com.cylan.jiafeigou.utils.ToastUtil;
+import com.cylan.jiafeigou.utils.NullCheckerUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;
 
 import java.lang.ref.WeakReference;
@@ -44,8 +40,7 @@ import butterknife.OnTextChanged;
  * Use the {@link ConfigApFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ConfigApFragment extends BaseTitleFragment<ConfigApContract.Presenter>
-        implements ConfigApContract.View, WiFiListDialogFragment.ClickCallBack {
+public class ConfigApFragment extends BaseTitleFragment implements ConfigApContract.View, WiFiListDialogFragment.ClickCallBack {
 
     @BindView(R.id.iv_wifi_clear_pwd)
     ImageView ivWifiClearPwd;
@@ -63,11 +58,10 @@ public class ConfigApFragment extends BaseTitleFragment<ConfigApContract.Present
     FrameLayout fLayoutTopBar;
     @BindView(R.id.rLayout_wifi_pwd_input_box)
     FrameLayout rLayoutWifiPwdInputBox;
-    @BindView(R.id.vs_show_content)
-    ViewSwitcher vsShowContent;
 
 
-    private List<ScanResult> cacheList;
+    List<ScanResult> cacheList;
+    private ConfigApContract.Presenter presenter;
 
     public ConfigApFragment() {
         // Required empty public constructor
@@ -92,8 +86,6 @@ public class ConfigApFragment extends BaseTitleFragment<ConfigApContract.Present
         super.onCreate(savedInstanceState);
         initFragment();
         JConstant.ConfigApState = 1;
-        this.basePresenter = new ConfigApPresenterImpl(this);
-        basePresenter.clearConnection();
     }
 
     @Override
@@ -107,6 +99,8 @@ public class ConfigApFragment extends BaseTitleFragment<ConfigApContract.Present
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        WeakReference<List<ScanResult>> weakReference = SimpleCache.getInstance().getWeakScanResult();
+        cacheList = weakReference == null ? null : weakReference.get();
         if (cacheList != null && cacheList.size() > 0) {
             tvConfigApName.setText(cacheList.get(0).SSID);
             tvConfigApName.setTag(new BeanWifiList(cacheList.get(0)));
@@ -116,28 +110,23 @@ public class ConfigApFragment extends BaseTitleFragment<ConfigApContract.Present
     @Override
     public void onStart() {
         super.onStart();
-        if (basePresenter != null) {
-            basePresenter.checkDeviceState();
-            basePresenter.registerNetworkMonitor();
+        NullCheckerUtils.checkObject(presenter);
+        if (presenter != null) {
+            presenter.registerWiFiBroadcast(getContext().getApplicationContext());
         }
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        if (basePresenter != null) {
-            basePresenter.refreshWifiList();
-            basePresenter.startPingFlow();
-        }
     }
 
     @Override
     public void onPause() {
         super.onPause();
         JConstant.ConfigApState = 0;
-        if (basePresenter != null) {
-            basePresenter.unregisterNetworkMonitor();
-        }
+        if (presenter != null)
+            presenter.stop();
     }
 
     @Override
@@ -186,25 +175,7 @@ public class ConfigApFragment extends BaseTitleFragment<ConfigApContract.Present
                 etWifiPwd.setText("");
                 break;
             case R.id.tv_wifi_pwd_submit:
-                ViewUtils.deBounceClick(tvWifiPwdSubmit);
-                String ssid = ViewUtils.getTextViewContent(tvConfigApName);
-                String pwd = ViewUtils.getTextViewContent(etWifiPwd);
-                int type = 0;
-                if (TextUtils.isEmpty(ssid)) {
-                    ToastUtil.showNegativeToast("请选择wifi");
-                    return;
-                }
-                Object o = tvConfigApName.getTag();
-                if (o != null && o instanceof ScanResult) {
-                    type = BindUtils.getSecurity((ScanResult) o);
-                }
-                if (TextUtils.isEmpty(pwd)) {
-                    ToastUtil.showNegativeToast("请输入密码");
-                    return;
-                }
-                if (basePresenter != null)
-                    basePresenter.sendWifiInfo(ViewUtils.getTextViewContent(tvConfigApName),
-                            ViewUtils.getTextViewContent(etWifiPwd), type);
+
                 break;
             case R.id.tv_config_ap_name:
                 if (getView() != null)
@@ -214,8 +185,8 @@ public class ConfigApFragment extends BaseTitleFragment<ConfigApContract.Present
                 fiListDialogFragment.setClickCallBack(this);
                 fiListDialogFragment.updateList(cacheList, tvConfigApName.getTag());
                 fiListDialogFragment.show(getActivity().getSupportFragmentManager(), "WiFiListDialogFragment");
-                if (basePresenter != null) {
-                    basePresenter.refreshWifiList();
+                if (presenter != null) {
+                    presenter.registerWiFiBroadcast(getContext().getApplicationContext());
                 }
                 break;
         }
@@ -229,24 +200,21 @@ public class ConfigApFragment extends BaseTitleFragment<ConfigApContract.Present
     private WeakReference<WiFiListDialogFragment> fragmentWeakReference;
 
     @Override
-    public void onNetStateChanged(int state) {
-//        Toast.makeText(getContext(), "state: " + state, Toast.LENGTH_SHORT).show();
+    public void onWifiStateChanged(int state) {
+        Toast.makeText(getContext(), "state: " + state, Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onWiFiResult(List<ScanResult> resultList) {
         final int count = resultList == null ? 0 : resultList.size();
         if (count == 0) {
-            if (Build.VERSION.SDK_INT >= 23) {
-                ToastUtil.showNegativeToast("请确认是否已经开启位置信息权限");
-            } else {
-                ToastUtil.showNegativeToast("请尝试手动开关wifi");
-            }
             return;
         }
         cacheList = resultList;
         if (fiListDialogFragment != null)
             fiListDialogFragment.updateList(cacheList, tvConfigApName.getTag());
+//        Log.d("what", "what............");
+        Toast.makeText(getContext(), "list: " + resultList.size(), Toast.LENGTH_SHORT).show();
         Object object = tvConfigApName.getTag();
         if (object == null) {
             tvConfigApName.setTag(new BeanWifiList(resultList.get(0)));
@@ -255,31 +223,8 @@ public class ConfigApFragment extends BaseTitleFragment<ConfigApContract.Present
     }
 
     @Override
-    public void onSetWifiFinished(UdpConstant.UdpDevicePortrait o) {
-        ToastUtil.showPositiveToast("wth good");
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(UdpConstant.KEY_BINDE_DEVICE_PORTRAIT, o);
-        SubmitBindingInfoFragment fragment = SubmitBindingInfoFragment.newInstance(bundle);
-        ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(), fragment, -1);
-    }
-
-    @Override
-    public void lossDogConnection() {
-        ToastUtil.showNegativeToast("狗丢了....");
-    }
-
-
-    @Override
-    public void upgradeDogState(int state) {
-        if (vsShowContent.getCurrentView().getId() == R.id.fragment_config_ap_pre) {
-            vsShowContent.showNext();
-        }
-
-    }
-
-    @Override
-    public void setPresenter(ConfigApContract.Presenter basePresenter) {
-        this.basePresenter = basePresenter;
+    public void setPresenter(ConfigApContract.Presenter presenter) {
+        this.presenter = presenter;
     }
 
     @Override
@@ -287,8 +232,6 @@ public class ConfigApFragment extends BaseTitleFragment<ConfigApContract.Present
         if (isResumed()) {
             tvConfigApName.setTag(new BeanWifiList(scanResult));
             tvConfigApName.setText(scanResult.SSID);
-            rLayoutWifiPwdInputBox.setVisibility(BindUtils.getSecurity(scanResult) != 0
-                    ? View.VISIBLE : View.GONE);
         }
     }
 }

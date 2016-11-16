@@ -194,7 +194,7 @@ public class AppLogger {
     private static NLogger getLogger(String filePath) {
         try {
             return NLoggerManager.getLogger(TextUtils.isEmpty(filePath) ? DEFAULT_LOG : filePath);
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             Log.w("AppLogger", "AppLogger: " + e.getLocalizedMessage());
         }
