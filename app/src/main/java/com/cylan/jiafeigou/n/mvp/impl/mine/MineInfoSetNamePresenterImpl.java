@@ -67,7 +67,7 @@ public class MineInfoSetNamePresenterImpl extends AbstractPresenter<MineInfoSetN
      */
     @Override
     public Subscription saveAliasCallBack() {
-        return RxBus.getDefault().toObservableSticky(RxEvent.GetUserInfo.class)
+        return RxBus.getCacheInstance().toObservableSticky(RxEvent.GetUserInfo.class)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<RxEvent.GetUserInfo>() {
                     @Override

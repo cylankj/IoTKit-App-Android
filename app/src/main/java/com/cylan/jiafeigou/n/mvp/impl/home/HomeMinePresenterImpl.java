@@ -10,22 +10,14 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.cylan.entity.jniCall.JFGAccount;
-import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.cache.JCache;
-import com.cylan.jiafeigou.misc.JConstant;
-import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.misc.RxEvent;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeMineContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
-import com.cylan.jiafeigou.n.mvp.model.UserInfoBean;
-import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.rxbus.RxBus;
-import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.utils.BitmapUtil;
 import com.cylan.utils.FastBlurUtil;
 
 import java.util.Random;
-import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
 import rx.Subscription;
@@ -202,7 +194,7 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
      */
     @Override
     public Subscription initData() {
-        return RxBus.getDefault().toObservableSticky(RxEvent.GetUserInfo.class)
+        return RxBus.getCacheInstance().toObservableSticky(RxEvent.GetUserInfo.class)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<RxEvent.GetUserInfo>() {
                     @Override

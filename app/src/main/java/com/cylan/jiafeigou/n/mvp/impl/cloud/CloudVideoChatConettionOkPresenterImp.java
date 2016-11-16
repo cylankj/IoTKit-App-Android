@@ -1,15 +1,6 @@
 package com.cylan.jiafeigou.n.mvp.impl.cloud;
 
-import android.content.ComponentName;
-import android.content.Context;
-import android.content.Intent;
-import android.content.ServiceConnection;
-import android.os.IBinder;
-import android.os.RemoteException;
-
-import com.cylan.jiafeigou.ICloudLiveService;
 import com.cylan.jiafeigou.misc.RxEvent;
-import com.cylan.jiafeigou.n.engine.CloudLiveService;
 import com.cylan.jiafeigou.n.mvp.contract.cloud.CloudVideoChatConettionOkContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.support.rxbus.RxBus;
@@ -81,7 +72,7 @@ public class CloudVideoChatConettionOkPresenterImp extends AbstractPresenter<Clo
 
     @Override
     public void handlerHangUp(String time) {
-        RxBus.getDefault().post(new RxEvent.HangUpVideoTalk(true,time));
+        RxBus.getCacheInstance().post(new RxEvent.HangUpVideoTalk(true,time));
     }
 
     public void showLoadProgressAnim(){

@@ -73,7 +73,7 @@ public class HomeWonderfulPresenterImpl extends AbstractPresenter<HomeWonderfulC
     }
 
     private Subscription getTimeTickEventSub() {
-        return RxBus.getDefault().toObservable(RxEvent.TimeTickEvent.class)
+        return RxBus.getCacheInstance().toObservable(RxEvent.TimeTickEvent.class)
                 .throttleFirst(1000, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<RxEvent.TimeTickEvent>() {
@@ -87,7 +87,7 @@ public class HomeWonderfulPresenterImpl extends AbstractPresenter<HomeWonderfulC
     }
 
     private Subscription getPageScrolledSub() {
-        return RxBus.getDefault().toObservable(RxEvent.PageScrolled.class)
+        return RxBus.getCacheInstance().toObservable(RxEvent.PageScrolled.class)
                 .throttleFirst(1000, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<RxEvent.PageScrolled>() {

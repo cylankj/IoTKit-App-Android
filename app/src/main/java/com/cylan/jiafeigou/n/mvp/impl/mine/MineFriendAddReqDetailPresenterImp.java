@@ -113,7 +113,7 @@ public class MineFriendAddReqDetailPresenterImp extends AbstractPresenter<MineFr
      */
     @Override
     public Subscription getAddReqListDataCall() {
-        return RxBus.getDefault().toObservable(RxEvent.GetAddReqList.class)
+        return RxBus.getCacheInstance().toObservable(RxEvent.GetAddReqList.class)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<RxEvent.GetAddReqList>() {
                     @Override

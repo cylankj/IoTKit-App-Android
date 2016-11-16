@@ -1,7 +1,5 @@
 package com.cylan.jiafeigou.n.mvp.impl.mine;
 
-import android.view.View;
-
 import com.cylan.entity.jniCall.JFGFriendAccount;
 import com.cylan.entity.jniCall.JFGFriendRequest;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
@@ -10,25 +8,16 @@ import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendsContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.n.mvp.model.MineAddReqBean;
 import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
-import com.cylan.jiafeigou.n.view.adapter.AddRelativesAndFriendsAdapter;
-import com.cylan.jiafeigou.n.view.adapter.RelativesAndFriendsAdapter;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.rxbus.RxBus;
-import com.cylan.jiafeigou.utils.ToastUtil;
-import com.cylan.superadapter.OnItemClickListener;
-import com.cylan.superadapter.OnItemLongClickListener;
-import com.cylan.superadapter.internal.SuperViewHolder;
-import com.sina.weibo.sdk.utils.LogUtil;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
-import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
-import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
@@ -180,7 +169,7 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
      */
     @Override
     public Subscription initFriendRecyListData() {
-        return RxBus.getDefault().toObservable(RxEvent.GetFriendList.class)
+        return RxBus.getCacheInstance().toObservable(RxEvent.GetFriendList.class)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<RxEvent.GetFriendList>() {
                     @Override
@@ -197,7 +186,7 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
      */
     @Override
     public Subscription initAddReqRecyListData() {
-        return RxBus.getDefault().toObservable(RxEvent.GetAddReqList.class)
+        return RxBus.getCacheInstance().toObservable(RxEvent.GetAddReqList.class)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<RxEvent.GetAddReqList>() {
                     @Override

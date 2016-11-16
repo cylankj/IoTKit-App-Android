@@ -49,7 +49,7 @@ public class NeedLoginActivity extends BaseFullScreenFragmentActivity {
     }
 
     private Subscription getNeedLoginEvent() {
-        return RxBus.getDefault().toObservable(RxEvent.NeedLoginEvent.class)
+        return RxBus.getCacheInstance().toObservable(RxEvent.NeedLoginEvent.class)
                 .throttleFirst(1000, TimeUnit.MILLISECONDS)//2s内只发生一次
                 .subscribe(new Action1<RxEvent.NeedLoginEvent>() {
                     @Override

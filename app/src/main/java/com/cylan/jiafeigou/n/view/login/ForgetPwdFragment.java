@@ -365,7 +365,7 @@ public class ForgetPwdFragment extends Fragment implements ForgetPwdContract.Vie
             public void onClick(View v) {
                 Toast.makeText(getActivity(), "yes?", Toast.LENGTH_SHORT).show();
                 getActivity().getSupportFragmentManager().popBackStack();
-                RxBus.getDefault().post(new RxEvent.LoginPopBack(etForgetUsername.getText().toString()));
+                RxBus.getCacheInstance().post(new RxEvent.LoginPopBack(etForgetUsername.getText().toString()));
             }
         });
         vsSetAccountPwd.addView(mailView);

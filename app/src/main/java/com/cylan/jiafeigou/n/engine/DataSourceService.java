@@ -39,7 +39,6 @@ import com.cylan.jiafeigou.support.rxbus.RxBus;
 import com.cylan.jiafeigou.support.stat.MtaManager;
 import com.cylan.utils.ListUtils;
 import com.google.gson.Gson;
-import com.sina.weibo.sdk.utils.LogUtil;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -58,7 +57,7 @@ public class DataSourceService extends Service implements AppCallBack {
     @Override
     public void onCreate() {
         super.onCreate();
-        eventBus = RxBus.getDefault();
+        eventBus = RxBus.getCacheInstance();
         DpParser.getDpParser().registerDpParser();
     }
 
@@ -104,8 +103,8 @@ public class DataSourceService extends Service implements AppCallBack {
     @Override
     public void OnReportJfgDevices(JFGDevice[] jfgDevices) {
         List<JFGDevice> list = jfgDevices == null ? null : Arrays.asList(jfgDevices);
-        if (!ListUtils.isEmpty(list) && RxBus.getDefault().hasObservers())
-            RxBus.getDefault().postSticky(new RxEvent.DeviceList(list));
+        if (!ListUtils.isEmpty(list) && RxBus.getCacheInstance().hasObservers())
+            RxBus.getCacheInstance().postSticky(new RxEvent.DeviceList(list));
         for (int i = 0; i < (list == null ? 0 : list.size()); i++)
             AppLogger.d("OnLocalMessage :" + new Gson().toJson(list.get(i)));
     }
@@ -113,8 +112,8 @@ public class DataSourceService extends Service implements AppCallBack {
     @Override
     public void OnUpdateAccount(JFGAccount jfgAccount) {
         AppLogger.d("OnUpdateAccount :" + new Gson().toJson(jfgAccount));
-        if (RxBus.getDefault().hasObservers()) {
-            RxBus.getDefault().postSticky(new RxEvent.GetUserInfo(jfgAccount));
+        if (RxBus.getCacheInstance().hasObservers()) {
+            RxBus.getCacheInstance().postSticky(new RxEvent.GetUserInfo(jfgAccount));
         }
     }
 
@@ -174,8 +173,8 @@ public class DataSourceService extends Service implements AppCallBack {
     @Override
     public void OnRobotGetDataRsp(RobotoGetDataRsp robotoGetDataRsp) {
         AppLogger.d("OnLocalMessage :" + new Gson().toJson(robotoGetDataRsp));
-        if (RxBus.getDefault().hasObservers() && robotoGetDataRsp != null) {
-            RxBus.getDefault().post(new RxEvent.DpDataRsp(robotoGetDataRsp));
+        if (RxBus.getCacheInstance().hasObservers() && robotoGetDataRsp != null) {
+            RxBus.getCacheInstance().post(new RxEvent.DpDataRsp(robotoGetDataRsp));
         }
     }
 
@@ -198,7 +197,7 @@ public class DataSourceService extends Service implements AppCallBack {
     public void OnlineStatus(boolean b) {
         AppLogger.d("OnlineStatus :" + b);
         JCache.isOnline = b;
-        RxBus.getDefault().post(new RxEvent.LoginRsp(b));
+        RxBus.getCacheInstance().post(new RxEvent.LoginRsp(b));
     }
 
     @Override

@@ -265,8 +265,8 @@ public class HomePageListFragmentExt extends Fragment implements
     @OnClick(R.id.imgV_add_devices)
     void onClickAddDevice() {
         if (!JCache.isOnline) {
-            if (RxBus.getDefault().hasObservers())
-                RxBus.getDefault().post(new RxEvent.NeedLoginEvent(null));
+            if (RxBus.getCacheInstance().hasObservers())
+                RxBus.getCacheInstance().post(new RxEvent.NeedLoginEvent(null));
             return;
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {

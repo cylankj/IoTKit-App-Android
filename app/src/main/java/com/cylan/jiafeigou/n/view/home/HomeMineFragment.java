@@ -239,8 +239,8 @@ public class HomeMineFragment extends Fragment
     }
 
     private boolean needStartLoginFragment() {
-        if (!JCache.isOnline && RxBus.getDefault().hasObservers()) {
-            RxBus.getDefault().post(new RxEvent.NeedLoginEvent(null));
+        if (!JCache.isOnline && RxBus.getCacheInstance().hasObservers()) {
+            RxBus.getCacheInstance().post(new RxEvent.NeedLoginEvent(null));
             return true;
         }
         return false;

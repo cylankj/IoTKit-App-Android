@@ -82,7 +82,7 @@ public class BeforeLoginFragment extends android.support.v4.app.Fragment {
             ViewUtils.deBounceClick(getView().findViewById(R.id.btn_to_login));
         Bundle bundle = new Bundle();
         bundle.putBoolean(JConstant.KEY_SHOW_LOGIN_FRAGMENT_EXTRA, true);
-        RxBus.getDefault().post(new RxEvent.NeedLoginEvent(bundle));
+        RxBus.getCacheInstance().post(new RxEvent.NeedLoginEvent(bundle));
     }
 
     @OnClick(R.id.btn_to_register)
@@ -92,7 +92,7 @@ public class BeforeLoginFragment extends android.support.v4.app.Fragment {
         Bundle bundle = new Bundle();
         bundle.putString(RxEvent.NeedLoginEvent.KEY, RxEvent.NeedLoginEvent.KEY);
         bundle.putBoolean(JConstant.KEY_SHOW_LOGIN_FRAGMENT_EXTRA, true);
-        RxBus.getDefault().post(new RxEvent.NeedLoginEvent(bundle));
+        RxBus.getCacheInstance().post(new RxEvent.NeedLoginEvent(bundle));
     }
 
     /**

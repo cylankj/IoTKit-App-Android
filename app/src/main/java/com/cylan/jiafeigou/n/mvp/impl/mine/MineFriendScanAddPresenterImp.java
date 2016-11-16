@@ -154,7 +154,7 @@ public class MineFriendScanAddPresenterImp extends AbstractPresenter<MineFriendS
      */
     @Override
     public Subscription checkAccountCallBack() {
-        return RxBus.getDefault().toObservable(RxEvent.CheckAccountCallback.class)
+        return RxBus.getCacheInstance().toObservable(RxEvent.CheckAccountCallback.class)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<RxEvent.CheckAccountCallback>() {
                     @Override
@@ -172,7 +172,7 @@ public class MineFriendScanAddPresenterImp extends AbstractPresenter<MineFriendS
      */
     @Override
     public Subscription getUserInfo() {
-        return RxBus.getDefault().toObservableSticky(RxEvent.GetUserInfo.class)
+        return RxBus.getCacheInstance().toObservableSticky(RxEvent.GetUserInfo.class)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<RxEvent.GetUserInfo>() {
                     @Override

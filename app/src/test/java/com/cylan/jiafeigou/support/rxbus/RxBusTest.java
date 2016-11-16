@@ -17,13 +17,13 @@ import static org.junit.Assert.assertTrue;
 public class RxBusTest {
     @Test
     public void getDefault() throws Exception {
-        RxBus rxBus = RxBus.getDefault();
+        RxBus rxBus = RxBus.getCacheInstance();
         assertNotNull(rxBus);
     }
 
     @Test
     public void post() throws Exception {
-        RxBus rxBus = RxBus.getDefault();
+        RxBus rxBus = RxBus.getCacheInstance();
         rxBus.toObservable(String.class)
                 .subscribe(new Action1<String>() {
                     @Override
@@ -36,14 +36,14 @@ public class RxBusTest {
 
     @Test
     public void toObservable() throws Exception {
-        RxBus rxBus = RxBus.getDefault();
+        RxBus rxBus = RxBus.getCacheInstance();
         Observable<Integer> observable = rxBus.toObservable(Integer.class);
         assertTrue(observable != null);
     }
 
     @Test
     public void hasObservers() throws Exception {
-        RxBus rxBus = RxBus.getDefault();
+        RxBus rxBus = RxBus.getCacheInstance();
 //        assertTrue(rxBus.hasObservers());
         rxBus.toObservable(String.class)
                 .subscribe(new Action1<String>() {
@@ -63,7 +63,7 @@ public class RxBusTest {
 
     @Test
     public void postSticky() throws Exception {
-        RxBus rxBus = RxBus.getDefault();
+        RxBus rxBus = RxBus.getCacheInstance();
         rxBus.postSticky("this is sticky event");
         rxBus.toObservableSticky(String.class)
                 .subscribe(new Action1<String>() {
@@ -93,7 +93,7 @@ public class RxBusTest {
 
     @Test
     public void testException() {
-        RxBus rxBus = RxBus.getDefault();
+        RxBus rxBus = RxBus.getCacheInstance();
         rxBus.toObservable(Integer.class)
                 .map(new Func1<Integer, Integer>() {
                     @Override

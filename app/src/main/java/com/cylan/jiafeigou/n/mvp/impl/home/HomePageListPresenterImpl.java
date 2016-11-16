@@ -57,7 +57,7 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
     }
 
     private Subscription getTimeTickEventSub() {
-        return RxBus.getDefault().toObservable(RxEvent.TimeTickEvent.class)
+        return RxBus.getCacheInstance().toObservable(RxEvent.TimeTickEvent.class)
                 .throttleFirst(1000, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<RxEvent.TimeTickEvent>() {
@@ -75,7 +75,7 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
     }
 
     private Subscription getLoginRspSub() {
-        return RxBus.getDefault().toObservable(RxEvent.LoginRsp.class)
+        return RxBus.getCacheInstance().toObservable(RxEvent.LoginRsp.class)
                 .throttleFirst(1000, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<RxEvent.LoginRsp>() {
@@ -95,7 +95,7 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
      * @return
      */
     private Subscription getDeviceList() {
-        return RxBus.getDefault().toObservableSticky(RxEvent.DeviceList.class)
+        return RxBus.getCacheInstance().toObservableSticky(RxEvent.DeviceList.class)
                 .flatMap(new Func1<RxEvent.DeviceList, Observable<List<DeviceBean>>>() {
                     @Override
                     public Observable<List<DeviceBean>> call(RxEvent.DeviceList deviceList) {

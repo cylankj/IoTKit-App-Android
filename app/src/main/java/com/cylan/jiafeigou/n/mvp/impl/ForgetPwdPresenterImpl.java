@@ -75,7 +75,7 @@ public class ForgetPwdPresenterImpl extends AbstractPresenter<ForgetPwdContract.
     }
 
     private Subscription getForgetPwdByMailSub() {
-        return RxBus.getDefault().toObservable(RxEvent.ForgetPwdByMail.class)
+        return RxBus.getCacheInstance().toObservable(RxEvent.ForgetPwdByMail.class)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<RxEvent.ForgetPwdByMail>() {
                     @Override
@@ -89,7 +89,7 @@ public class ForgetPwdPresenterImpl extends AbstractPresenter<ForgetPwdContract.
     }
 
     private Subscription getSmsCodeResultSub() {
-        return RxBus.getDefault().toObservable(RxEvent.SmsCodeResult.class)
+        return RxBus.getCacheInstance().toObservable(RxEvent.SmsCodeResult.class)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<RxEvent.SmsCodeResult>() {
                     @Override

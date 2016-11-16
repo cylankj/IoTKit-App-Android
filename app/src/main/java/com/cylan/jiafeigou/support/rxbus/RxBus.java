@@ -28,7 +28,7 @@ public class RxBus implements IEventBus {
         mStickyEventMap = new ConcurrentHashMap<>();
     }
 
-    public static RxBus getDefault() {
+    public static RxBus getCacheInstance() {
         if (mDefaultInstance == null) {
             synchronized (RxBus.class) {
                 if (mDefaultInstance == null) {

@@ -98,7 +98,7 @@ public class MineInfoBineMailPresenterImp extends AbstractPresenter<MineInfoBind
      */
     @Override
     public Subscription getCheckAccountCallBack() {
-        return RxBus.getDefault().toObservable(RxEvent.CheckAccountCallback.class)
+        return RxBus.getCacheInstance().toObservable(RxEvent.CheckAccountCallback.class)
                 .delay(1000,TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<RxEvent.CheckAccountCallback>() {
@@ -116,7 +116,7 @@ public class MineInfoBineMailPresenterImp extends AbstractPresenter<MineInfoBind
      */
     @Override
     public Subscription getChangeAccountCallBack() {
-        return RxBus.getDefault().toObservableSticky(RxEvent.GetUserInfo.class)
+        return RxBus.getCacheInstance().toObservableSticky(RxEvent.GetUserInfo.class)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<RxEvent.GetUserInfo>() {
                     @Override

@@ -99,7 +99,7 @@ public class CloudLiveSettingPresenterImp extends AbstractPresenter<CloudLiveSet
      */
     @Override
     public Subscription getAccount() {
-        return RxBus.getDefault().toObservable(RxEvent.GetUserInfo.class)
+        return RxBus.getCacheInstance().toObservable(RxEvent.GetUserInfo.class)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<RxEvent.GetUserInfo>() {
                     @Override

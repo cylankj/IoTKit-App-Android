@@ -1,7 +1,5 @@
 package com.cylan.jiafeigou.n.mvp.impl.mag;
 
-import android.os.SystemClock;
-
 import com.cylan.jiafeigou.misc.RxEvent;
 import com.cylan.jiafeigou.n.mvp.contract.mag.MagLiveContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
@@ -67,7 +65,7 @@ public class MagLivePresenterImp extends AbstractPresenter<MagLiveContract.View>
         getView().addOneMagMesg(bean);
 /*
         // TODO SDK 调用
-        return RxBus.getDefault().toObservable(null)
+        return RxBus.getCacheInstance().toObservable(null)
                 .subscribe(new Action1<Object>() {
                     @Override
                     public void call(Object o) {
@@ -86,7 +84,7 @@ public class MagLivePresenterImp extends AbstractPresenter<MagLiveContract.View>
      */
     @Override
     public Subscription getAccount() {
-        return RxBus.getDefault().toObservable(RxEvent.GetUserInfo.class)
+        return RxBus.getCacheInstance().toObservable(RxEvent.GetUserInfo.class)
                 .subscribe(new Action1<RxEvent.GetUserInfo>() {
                     @Override
                     public void call(RxEvent.GetUserInfo getUserInfo) {

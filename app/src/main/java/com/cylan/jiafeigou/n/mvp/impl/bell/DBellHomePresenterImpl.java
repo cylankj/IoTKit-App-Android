@@ -111,7 +111,7 @@ public class DBellHomePresenterImpl extends AbstractPresenter<DoorBellHomeContra
      * @return
      */
     private Subscription onLogStateSubscription() {
-        return RxBus.getDefault().toObservable(RxEvent.LoginRsp.class)
+        return RxBus.getCacheInstance().toObservable(RxEvent.LoginRsp.class)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<RxEvent.LoginRsp>() {
                     @Override

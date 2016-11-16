@@ -7,13 +7,10 @@ import com.cylan.jiafeigou.misc.RxEvent;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineDevicesShareManagerContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
-import com.cylan.jiafeigou.n.view.adapter.MineHasShareAdapter;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.rxbus.RxBus;
-import com.cylan.jiafeigou.utils.ToastUtil;
 
 import java.util.ArrayList;
-import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
 import rx.Subscription;
@@ -82,7 +79,7 @@ public class MineDevicesShareManagerPresenterImp extends AbstractPresenter<MineD
      */
     @Override
     public Subscription getHasShareListCallback() {
-        return RxBus.getDefault().toObservable(RxEvent.GetHasShareFriendCallBack.class)
+        return RxBus.getCacheInstance().toObservable(RxEvent.GetHasShareFriendCallBack.class)
                 .flatMap(new Func1<RxEvent.GetHasShareFriendCallBack, Observable<ArrayList<RelAndFriendBean>>>() {
                     @Override
                     public Observable<ArrayList<RelAndFriendBean>> call(RxEvent.GetHasShareFriendCallBack getHasShareFriendCallBack) {
@@ -160,7 +157,7 @@ public class MineDevicesShareManagerPresenterImp extends AbstractPresenter<MineD
      */
     @Override
     public Subscription cancleShareCallBack() {
-        return RxBus.getDefault().toObservable(RxEvent.UnshareDeviceCallBack.class)
+        return RxBus.getCacheInstance().toObservable(RxEvent.UnshareDeviceCallBack.class)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<RxEvent.UnshareDeviceCallBack>() {
                     @Override

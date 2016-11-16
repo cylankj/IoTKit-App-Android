@@ -3,7 +3,6 @@ package com.cylan.jiafeigou.n.mvp.impl.mine;
 import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.entity.jniCall.JFGFriendAccount;
 import com.cylan.entity.jniCall.JFGShareListInfo;
-import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.misc.RxEvent;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineShareDeviceContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
@@ -12,14 +11,12 @@ import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
 import com.cylan.jiafeigou.support.rxbus.RxBus;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
-import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
 /**
@@ -56,7 +53,7 @@ public class MineShareDevicePresenterImp extends AbstractPresenter<MineShareDevi
 
     @Override
     public Subscription initData() {
-        return RxBus.getDefault().toObservableSticky(RxEvent.DeviceList.class)
+        return RxBus.getCacheInstance().toObservableSticky(RxEvent.DeviceList.class)
                 .flatMap(new Func1<RxEvent.DeviceList, Observable<ArrayList<DeviceBean>>>() {
                     @Override
                     public Observable<ArrayList<DeviceBean>> call(RxEvent.DeviceList deviceList) {

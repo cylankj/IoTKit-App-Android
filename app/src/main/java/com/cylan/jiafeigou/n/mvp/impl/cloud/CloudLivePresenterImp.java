@@ -1,35 +1,18 @@
 package com.cylan.jiafeigou.n.mvp.impl.cloud;
 
-import android.content.ComponentName;
-import android.content.ContentValues;
-import android.content.Context;
-import android.content.Intent;
-import android.content.ServiceConnection;
-import android.database.sqlite.SQLiteDatabase;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.os.Environment;
-import android.os.IBinder;
-import android.os.RemoteException;
-import android.text.TextUtils;
-import android.util.Log;
 
-import com.cylan.jiafeigou.ICloudLiveService;
 import com.cylan.jiafeigou.misc.RxEvent;
 import com.cylan.jiafeigou.n.db.CloudLiveDbUtil;
-import com.cylan.jiafeigou.n.engine.CloudLiveService;
 import com.cylan.jiafeigou.n.mvp.contract.cloud.CloudLiveContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.n.mvp.model.CloudLiveBaseBean;
 import com.cylan.jiafeigou.n.mvp.model.CloudLiveBaseDbBean;
 
-import com.cylan.jiafeigou.n.mvp.model.CloudLiveVideoTalkBean;
 import com.cylan.jiafeigou.support.db.DbManager;
-import com.cylan.jiafeigou.support.db.DbManagerImpl;
-import com.cylan.jiafeigou.support.db.LogUtil;
 import com.cylan.jiafeigou.support.db.ex.DbException;
-import com.cylan.jiafeigou.support.db.sqlite.SqlInfo;
-import com.cylan.jiafeigou.support.db.sqlite.SqlInfoBuilder;
 import com.cylan.jiafeigou.support.rxbus.RxBus;
 import com.cylan.utils.CloseUtils;
 
@@ -324,7 +307,7 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
 
     @Override
     public void refreshHangUpView() {
-        subscriptionRefresh = RxBus.getDefault().toObservable(RxEvent.HangUpVideoTalk.class)
+        subscriptionRefresh = RxBus.getCacheInstance().toObservable(RxEvent.HangUpVideoTalk.class)
                 .subscribe(new Action1<RxEvent.HangUpVideoTalk>() {
                     @Override
                     public void call(RxEvent.HangUpVideoTalk o) {
@@ -383,7 +366,7 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
      */
     @Override
     public Subscription getAccount() {
-        return RxBus.getDefault().toObservable(RxEvent.GetUserInfo.class)
+        return RxBus.getCacheInstance().toObservable(RxEvent.GetUserInfo.class)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<RxEvent.GetUserInfo>() {
                     @Override

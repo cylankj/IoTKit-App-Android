@@ -177,7 +177,7 @@ public class MineFriendAddFromContactPresenterImp extends AbstractPresenter<Mine
      */
     @Override
     public Subscription getFriendListDataCallBack() {
-        return RxBus.getDefault().toObservable(RxEvent.GetFriendList.class)
+        return RxBus.getCacheInstance().toObservable(RxEvent.GetFriendList.class)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<RxEvent.GetFriendList>() {
                     @Override
@@ -218,7 +218,7 @@ public class MineFriendAddFromContactPresenterImp extends AbstractPresenter<Mine
      */
     @Override
     public Subscription checkFriendAccountCallBack() {
-        return RxBus.getDefault().toObservable(RxEvent.CheckAccountCallback.class)
+        return RxBus.getCacheInstance().toObservable(RxEvent.CheckAccountCallback.class)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<RxEvent.CheckAccountCallback>() {
                     @Override

@@ -9,11 +9,9 @@ import com.cylan.jiafeigou.support.rxbus.RxBus;
 
 import java.util.concurrent.TimeUnit;
 
-import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
-import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
@@ -70,7 +68,7 @@ public class MineAddFromContactPresenterImp extends AbstractPresenter<MineAddFro
 
     @Override
     public Subscription getAcocountAlids() {
-        return RxBus.getDefault().toObservableSticky(RxEvent.GetUserInfo.class)
+        return RxBus.getCacheInstance().toObservableSticky(RxEvent.GetUserInfo.class)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<RxEvent.GetUserInfo>() {
                     @Override

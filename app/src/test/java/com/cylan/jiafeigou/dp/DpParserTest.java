@@ -39,7 +39,7 @@ public class DpParserTest {
 //        ArrayList<JFGDevice> list = new ArrayList<>();
 //        list.add(device);
 //        RxEvent.DeviceList deviceList = new RxEvent.DeviceList(list);
-//        RxBus.getDefault().post(deviceList);
+//        RxBus.getCacheInstance().post(deviceList);
 //        Thread.sleep(5000);
 
 

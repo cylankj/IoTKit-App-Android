@@ -50,7 +50,7 @@ public class DpParser {
     }
 
     private Subscription updateJfgDeviceAttr() {
-        return RxBus.getDefault().toObservable(RxEvent.DeviceList.class)
+        return RxBus.getCacheInstance().toObservable(RxEvent.DeviceList.class)
                 .subscribeOn(Schedulers.newThread())
                 .flatMap(new Func1<RxEvent.DeviceList, Observable<List<JFGDevice>>>() {
                     @Override
@@ -96,7 +96,7 @@ public class DpParser {
     }
 
     private Subscription superParser() {
-        return RxBus.getDefault().toObservable(RxEvent.DpDataRsp.class)
+        return RxBus.getCacheInstance().toObservable(RxEvent.DpDataRsp.class)
                 .subscribeOn(Schedulers.computation())
                 .filter(notNullFunc)
                 .map(new Func1<RxEvent.DpDataRsp, Integer>() {
