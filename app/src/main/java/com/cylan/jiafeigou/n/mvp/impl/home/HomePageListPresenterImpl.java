@@ -8,14 +8,15 @@ import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.jiafeigou.cache.JCache;
 import com.cylan.jiafeigou.misc.JFGRules;
-import com.cylan.jiafeigou.rx.RxEvent;
-import com.cylan.jiafeigou.rx.RxHelper;
 import com.cylan.jiafeigou.misc.br.TimeTickBroadcast;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomePageListContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
 import com.cylan.jiafeigou.n.mvp.model.GreetBean;
 import com.cylan.jiafeigou.rx.RxBus;
+import com.cylan.jiafeigou.rx.RxEvent;
+import com.cylan.jiafeigou.rx.RxHelper;
+import com.cylan.jiafeigou.rx.RxUiEvent;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
 
@@ -56,7 +57,7 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
         _timeTickSubscriptions
                 .add(getLoginRspSub());
         _timeTickSubscriptions
-                .add(getDeviceList());
+                .add(subDeviceList());
         _timeTickSubscriptions
                 .add(JFGAccountUpdate());
     }
@@ -113,31 +114,40 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
      *
      * @return
      */
-    private Subscription getDeviceList() {
-        return RxBus.getCacheInstance().toObservableSticky(JFGDevice.class)
+    private Subscription subDeviceList() {
+        return RxBus.getUiInstance().toObservable(RxUiEvent.BulkDeviceList.class)
                 .filter(new RxHelper.Filter<>(getView() != null))
-                .flatMap(new Func1<JFGDevice, Observable<DeviceBean>>() {
+                .flatMap(new Func1<RxUiEvent.BulkDeviceList, Observable<List<DeviceBean>>>() {
                     @Override
-                    public Observable<DeviceBean> call(JFGDevice jfgDevice) {
-                        DeviceBean bean = new DeviceBean();
-                        bean.fillData(jfgDevice);
-                        return Observable.just(bean);
+                    public Observable<List<DeviceBean>> call(RxUiEvent.BulkDeviceList list) {
+                        List<DeviceBean> beanList = new ArrayList<>();
+                        for (JFGDevice device : list.bulkList) {
+                            DeviceBean bean = new DeviceBean();
+                            bean.fillData(device);
+                            beanList.add(bean);
+                        }
+                        return Observable.just(beanList);
                     }
                 })
                 .observeOn(AndroidSchedulers.mainThread())
-                .map(new Func1<DeviceBean, DeviceBean>() {
+                .map(new Func1<List<DeviceBean>, DeviceBean>() {
                     @Override
-                    public DeviceBean call(DeviceBean o) {
-                        List<DeviceBean> list = getView().getDeviceList();
-                        final int index = list.indexOf(o);
-                        if (MiscUtils.isInRange(0, list.size(), index)) {
-                            list.set(index, o);
-                            getView().onItemUpdate(index);
-                        } else {
-                            //a new one
-                            List<DeviceBean> oList = new ArrayList<>();
-                            oList.add(o);
-                            getView().onItemsInsert(oList);
+                    public DeviceBean call(List<DeviceBean> oList) {
+                        //已经展示的列表
+                        List<DeviceBean> vList = getView().getDeviceList();
+                        //新列表
+                        for (DeviceBean bean : oList) {
+                            final int index = vList.indexOf(bean);
+                            if (MiscUtils.isInRange(0, oList.size(), index)) {
+                                //更新对应的item
+                                vList.set(index, bean);
+                                getView().onItemUpdate(index);
+                            } else {
+                                //a new one
+                                List<DeviceBean> newList = new ArrayList<>();
+                                newList.add(bean);
+                                getView().onItemsInsert(newList);
+                            }
                         }
                         return null;
                     }
@@ -187,6 +197,8 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
                 .map(new Func1<Boolean, Object>() {
                     @Override
                     public Object call(Boolean aBoolean) {
+                        //发送给DpDeviceAssembler
+                        RxBus.getCacheInstance().post(new RxUiEvent.QueryBulkDevice());
                         return null;
                     }
                 })

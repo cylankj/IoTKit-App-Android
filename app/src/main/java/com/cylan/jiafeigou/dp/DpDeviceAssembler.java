@@ -7,10 +7,11 @@ import com.cylan.entity.jniCall.JFGDevBaseValue;
 import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.entity.jniCall.RobotoGetDataRsp;
 import com.cylan.jfgapp.jni.JfgAppCmd;
+import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.rx.RxHelper;
+import com.cylan.jiafeigou.rx.RxUiEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.rx.RxBus;
 import com.google.gson.Gson;
 
 import org.msgpack.MessagePack;
@@ -19,6 +20,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -45,7 +47,7 @@ public class DpDeviceAssembler implements IParser {
      */
     private final Map<Long, JFGDevice> deviceMap = new HashMap<>();
 
-    private final Map<String, JFGDevice> jfgDeviceMap = new HashMap<>();
+    private final Map<String, JFGDevice> cacheJfgDeviceMap = new HashMap<>();
 
     private DpDeviceAssembler() {
     }
@@ -58,10 +60,36 @@ public class DpDeviceAssembler implements IParser {
 
     @Override
     public Subscription[] register() {
-        Subscription[] subscriptions = {deviceListSub(), deviceDpSub()};
+        Subscription[] subscriptions = {simpleBulkSubSend2Ui(),
+                deviceListSub(),
+                deviceDpSub(),
+        };
         return subscriptions;
     }
 
+    private Subscription simpleBulkSubSend2Ui() {
+        return RxBus.getCacheInstance().toObservable(RxUiEvent.QueryBulkDevice.class)
+                .map(new Func1<RxUiEvent.QueryBulkDevice, Object>() {
+                    @Override
+                    public Object call(RxUiEvent.QueryBulkDevice queryBulkDevice) {
+                        RxUiEvent.BulkDeviceList cacheList = new RxUiEvent.BulkDeviceList();
+                        Iterator<String> iterator = cacheJfgDeviceMap.keySet().iterator();
+                        while (iterator.hasNext()) {
+                            cacheList.bulkList.add(cacheJfgDeviceMap.get(iterator.next()));
+                        }
+                        if (cacheList.bulkList.size() == 0)
+                            return null;//do nothing
+                        RxBus.getUiInstance().post(cacheList);
+                        return null;
+                    }
+                }).subscribe();
+    }
+
+    /**
+     * 从dataSource来的消息
+     *
+     * @return
+     */
     private Subscription deviceListSub() {
         return RxBus.getCacheInstance().toObservableSticky(RxEvent.DeviceRawList.class)
                 .filter(new Func1<RxEvent.DeviceRawList, Boolean>() {
@@ -126,6 +154,7 @@ public class DpDeviceAssembler implements IParser {
                     @Override
                     public Integer call(RobotoGetDataRsp dpDataRsp) {
                         final String identity = dpDataRsp.identity;
+                        Log.d("DpParser", "DpParser: " + identity);
                         JFGDevice device = deviceMap.get(dpDataRsp.seq);
                         for (Map.Entry<Integer, ArrayList<JFGDPMsg>> entry : dpDataRsp.map.entrySet()) {
                             JFGDPMsg dp = entry.getValue() != null
@@ -149,10 +178,12 @@ public class DpDeviceAssembler implements IParser {
                         }
                         AppLogger.i(new Gson().toJson(device));
                         //yes...
-                        jfgDeviceMap.put(identity, device);
+                        cacheJfgDeviceMap.put(identity, device);
                         //得到最终数据,应该先做缓存.
                         //发射出去,应该是一种sticky模式
-                        RxBus.getCacheInstance().post(device);
+                        RxUiEvent.BulkDeviceList cacheList = new RxUiEvent.BulkDeviceList();
+                        cacheList.bulkList.add(device);
+                        RxBus.getUiInstance().post(cacheList);
                         return null;
                     }
                 })
@@ -168,6 +199,8 @@ public class DpDeviceAssembler implements IParser {
     private Func1<RobotoGetDataRsp, Boolean> notNullFunc = new Func1<RobotoGetDataRsp, Boolean>() {
         @Override
         public Boolean call(RobotoGetDataRsp dpDataRsp) {
+            AppLogger.i("false? " + (dpDataRsp != null
+                    && seqList.contains(dpDataRsp.seq)));
             //过滤
             return dpDataRsp != null
                     && seqList.contains(dpDataRsp.seq);

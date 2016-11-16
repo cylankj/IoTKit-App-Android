@@ -27,7 +27,6 @@ import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.cache.JCache;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
-import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.ActivityResultContract;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomePageListContract;
@@ -42,8 +41,9 @@ import com.cylan.jiafeigou.n.view.adapter.HomePageListAdapter;
 import com.cylan.jiafeigou.n.view.bell.DoorBellHomeActivity;
 import com.cylan.jiafeigou.n.view.misc.HomeEmptyView;
 import com.cylan.jiafeigou.n.view.misc.IEmptyView;
-import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.rx.RxBus;
+import com.cylan.jiafeigou.rx.RxEvent;
+import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
@@ -129,8 +129,10 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
         super.onResume();
         initWaveAnimation();
         onTimeTick(JFGRules.getTimeRule());
-        if (basePresenter != null)
+        if (basePresenter != null) {
             basePresenter.fetchGreet();
+            basePresenter.fetchDeviceList();
+        }
     }
 
     @Override
@@ -310,7 +312,6 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
     public void onItemUpdate(int index) {
         if (homePageListAdapter != null
                 && MiscUtils.isInRange(0, homePageListAdapter.getCount(), index)) {
-
         }
     }
 
