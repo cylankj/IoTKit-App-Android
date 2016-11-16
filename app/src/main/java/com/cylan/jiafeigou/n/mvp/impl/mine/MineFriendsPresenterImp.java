@@ -1,19 +1,11 @@
 package com.cylan.jiafeigou.n.mvp.impl.mine;
 
-import android.view.View;
-
 import com.cylan.entity.jniCall.JFGFriendAccount;
 import com.cylan.entity.jniCall.JFGFriendRequest;
-import com.cylan.jiafeigou.misc.RxEvent;
+import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendsContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
-import com.cylan.jiafeigou.n.view.adapter.AddRelativesAndFriendsAdapter;
-import com.cylan.jiafeigou.n.view.adapter.RelativesAndFriendsAdapter;
-import com.cylan.jiafeigou.support.rxbus.RxBus;
-import com.cylan.jiafeigou.utils.ToastUtil;
-import com.cylan.superadapter.OnItemClickListener;
-import com.cylan.superadapter.OnItemLongClickListener;
-import com.cylan.superadapter.internal.SuperViewHolder;
+import com.cylan.jiafeigou.rx.RxBus;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -143,7 +135,7 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
      */
     @Override
     public void initFriendRecyListData() {
-        friendListSub = RxBus.getDefault().toObservable(RxEvent.GetFriendList.class)
+        friendListSub = RxBus.getCacheInstance().toObservable(RxEvent.GetFriendList.class)
                 .subscribe(new Action1<RxEvent.GetFriendList>() {
                     @Override
                     public void call(RxEvent.GetFriendList o) {
@@ -163,7 +155,7 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
     @Override
     public void initAddReqRecyListData() {
 
-        addReqListSub = RxBus.getDefault().toObservable(RxEvent.GetAddReqList.class)
+        addReqListSub = RxBus.getCacheInstance().toObservable(RxEvent.GetAddReqList.class)
                 .subscribe(new Action1<RxEvent.GetAddReqList>() {
                     @Override
                     public void call(RxEvent.GetAddReqList o) {

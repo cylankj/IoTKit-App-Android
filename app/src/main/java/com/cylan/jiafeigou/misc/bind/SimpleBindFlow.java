@@ -6,7 +6,7 @@ import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.engine.task.OfflineTaskQueue;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.support.rxbus.RxBus;
+import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.utils.BindUtils;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.udpMsgPack.JfgUdpMsg;
@@ -109,7 +109,7 @@ public class SimpleBindFlow extends AFullBind {
                     @Override
                     public Boolean call(Boolean aBoolean) {
                         //如果在升级,就不继续
-                        UdpConstant.UpgradeStatus status = RxBus.getDefault().getStickyEvent(UdpConstant.UpgradeStatus.class);
+                        UdpConstant.UpgradeStatus status = RxBus.getCacheInstance().getStickyEvent(UdpConstant.UpgradeStatus.class);
                         AppLogger.i(BIND_TAG + ":升级状态: " + status);
                         return !isDogUpgrading && status != null && status.state != IBindResult.UPGRADE_FAILED;
                     }
@@ -118,14 +118,14 @@ public class SimpleBindFlow extends AFullBind {
                     @Override
                     public Object call(Boolean aBoolean) {
                         AppLogger.e("开始启动httpServer升级狗");
-                        RxBus.getDefault().postSticky(new UdpConstant.UpgradeStatus(IBindResult.UPGRADING));
+                        RxBus.getCacheInstance().postSticky(new UdpConstant.UpgradeStatus(IBindResult.UPGRADING));
                         return null;
                     }
                 });
     }
 
     private void registerUpgradeMonitor() {
-        RxBus.getDefault().toObservableSticky(JfgUdpMsg.FPingAck.class)
+        RxBus.getCacheInstance().toObservableSticky(JfgUdpMsg.FPingAck.class)
                 .filter(new Func1<JfgUdpMsg.FPingAck, Boolean>() {
                     @Override
                     public Boolean call(JfgUdpMsg.FPingAck fPingAck) {
@@ -224,7 +224,7 @@ public class SimpleBindFlow extends AFullBind {
      * @return
      */
     private Observable<JfgUdpMsg.PingAck> pingObservable(final String ssidInDigits) {
-        return RxBus.getDefault().toObservable(JfgUdpMsg.PingAck.class)
+        return RxBus.getCacheInstance().toObservable(JfgUdpMsg.PingAck.class)
                 .filter(new Func1<JfgUdpMsg.PingAck, Boolean>() {
                     @Override
                     public Boolean call(JfgUdpMsg.PingAck pingAck) {
@@ -244,7 +244,7 @@ public class SimpleBindFlow extends AFullBind {
      * @return
      */
     private Observable<JfgUdpMsg.FPingAck> fPingObservable(final String ssidInDigits) {
-        return RxBus.getDefault().toObservable(JfgUdpMsg.FPingAck.class)
+        return RxBus.getCacheInstance().toObservable(JfgUdpMsg.FPingAck.class)
                 .filter(new Func1<JfgUdpMsg.FPingAck, Boolean>() {
                     @Override
                     public Boolean call(JfgUdpMsg.FPingAck pingAck) {

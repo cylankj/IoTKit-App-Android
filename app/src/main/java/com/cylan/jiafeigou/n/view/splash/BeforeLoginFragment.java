@@ -15,8 +15,8 @@ import android.view.ViewGroup;
 import com.cylan.jiafeigou.NewHomeActivity;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.JConstant;
-import com.cylan.jiafeigou.misc.RxEvent;
-import com.cylan.jiafeigou.support.rxbus.RxBus;
+import com.cylan.jiafeigou.rx.RxEvent;
+import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.utils.ViewUtils;
 
 import butterknife.ButterKnife;
@@ -82,7 +82,7 @@ public class BeforeLoginFragment extends android.support.v4.app.Fragment {
             ViewUtils.deBounceClick(getView().findViewById(R.id.btn_to_login));
         Bundle bundle = new Bundle();
         bundle.putBoolean(JConstant.KEY_SHOW_LOGIN_FRAGMENT_EXTRA, true);
-        RxBus.getDefault().post(new RxEvent.NeedLoginEvent(bundle));
+        RxBus.getCacheInstance().post(new RxEvent.NeedLoginEvent(bundle));
     }
 
     @OnClick(R.id.btn_to_register)
@@ -92,7 +92,7 @@ public class BeforeLoginFragment extends android.support.v4.app.Fragment {
         Bundle bundle = new Bundle();
         bundle.putString(RxEvent.NeedLoginEvent.KEY, RxEvent.NeedLoginEvent.KEY);
         bundle.putBoolean(JConstant.KEY_SHOW_LOGIN_FRAGMENT_EXTRA, true);
-        RxBus.getDefault().post(new RxEvent.NeedLoginEvent(bundle));
+        RxBus.getCacheInstance().post(new RxEvent.NeedLoginEvent(bundle));
     }
 
     /**

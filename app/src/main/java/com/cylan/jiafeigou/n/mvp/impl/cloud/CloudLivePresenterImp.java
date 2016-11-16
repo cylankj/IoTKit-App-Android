@@ -1,36 +1,20 @@
 package com.cylan.jiafeigou.n.mvp.impl.cloud;
 
-import android.content.ComponentName;
-import android.content.ContentValues;
 import android.content.Context;
-import android.content.Intent;
-import android.content.ServiceConnection;
-import android.database.sqlite.SQLiteDatabase;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.os.Environment;
-import android.os.IBinder;
-import android.os.RemoteException;
-import android.text.TextUtils;
-import android.util.Log;
 
-import com.cylan.jiafeigou.ICloudLiveService;
-import com.cylan.jiafeigou.misc.RxEvent;
+import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.n.db.CloudLiveDbUtil;
-import com.cylan.jiafeigou.n.engine.CloudLiveService;
 import com.cylan.jiafeigou.n.mvp.contract.cloud.CloudLiveContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.n.mvp.model.CloudLiveBaseBean;
 import com.cylan.jiafeigou.n.mvp.model.CloudLiveBaseDbBean;
 
-import com.cylan.jiafeigou.n.mvp.model.CloudLiveVideoTalkBean;
 import com.cylan.jiafeigou.support.db.DbManager;
-import com.cylan.jiafeigou.support.db.DbManagerImpl;
-import com.cylan.jiafeigou.support.db.LogUtil;
 import com.cylan.jiafeigou.support.db.ex.DbException;
-import com.cylan.jiafeigou.support.db.sqlite.SqlInfo;
-import com.cylan.jiafeigou.support.db.sqlite.SqlInfoBuilder;
-import com.cylan.jiafeigou.support.rxbus.RxBus;
+import com.cylan.jiafeigou.rx.RxBus;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -319,7 +303,7 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
 
     @Override
     public void refreshHangUpView() {
-        RxBus.getDefault().toObservableSticky(RxEvent.HangUpVideoTalk.class)
+        RxBus.getCacheInstance().toObservableSticky(RxEvent.HangUpVideoTalk.class)
                 .subscribe(new Action1<Object>() {
                     @Override
                     public void call(Object o) {
@@ -378,8 +362,8 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
 
     @Override
     public void unSubCallIn() {
-        RxBus.getDefault().removeStickyEvent(RxEvent.HangUpVideoTalk.class);
-        RxBus.getDefault().reset();
+        RxBus.getCacheInstance().removeStickyEvent(RxEvent.HangUpVideoTalk.class);
+        RxBus.getCacheInstance().reset();
     }
 
 }

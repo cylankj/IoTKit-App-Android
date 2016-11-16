@@ -15,8 +15,18 @@ import java.util.List;
 public interface HomePageListContract {
 
     interface View extends BaseView<Presenter> {
+
         @UiThread
-        void onDeviceListRsp(List<DeviceBean> resultList);
+        void onItemsInsert(List<DeviceBean> resultList);
+
+        /**
+         * 对单个设备操作
+         *
+         * @param index
+         */
+        void onItemUpdate(int index);
+
+        void onItemDelete(int index);
 
         List<DeviceBean> getDeviceList();
 

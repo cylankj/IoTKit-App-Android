@@ -1,4 +1,4 @@
-package com.cylan.jiafeigou.misc;
+package com.cylan.jiafeigou.rx;
 
 import android.os.Bundle;
 
@@ -7,11 +7,9 @@ import com.cylan.entity.jniCall.JFGFriendAccount;
 import com.cylan.entity.jniCall.JFGFriendRequest;
 import com.cylan.entity.jniCall.JFGResult;
 import com.cylan.entity.jniCall.JFGShareListInfo;
-import com.cylan.entity.jniCall.RobotoGetDataRsp;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 
 /**
@@ -266,35 +264,15 @@ public class RxEvent {
     }
 
     /**
-     * 设备列表返回
+     * 设备列表返回,粗糙数据,任然需要通过查询
      */
-    public static final class DeviceList {
-        public List<JFGDevice> jfgDevices = new ArrayList<>();
+    public static final class DeviceRawList {
+        public JFGDevice[] devices;
 
-        public DeviceList(List<JFGDevice> list) {
-            this.jfgDevices = list;
+        public DeviceRawList(JFGDevice[] list) {
+            this.devices = list;
         }
     }
-
-    /**
-     * 设备属性
-     */
-    public static final class DpDataRsp {
-        //萝卜头
-        public RobotoGetDataRsp robotoGetDataRsp;
-
-        public DpDataRsp(RobotoGetDataRsp robotoGetDataRsp) {
-            this.robotoGetDataRsp = robotoGetDataRsp;
-        }
-    }
-
-//    public static final class ScanResultList {
-//        public List<ScanResult> scanResultList;
-//
-//        public ScanResultList(List<ScanResult> scanResultList) {
-//            this.scanResultList = scanResultList;
-//        }
-//    }
 
     public static final class LocalUdpMsg {
         //消息的时间,可以用来判断有效性.

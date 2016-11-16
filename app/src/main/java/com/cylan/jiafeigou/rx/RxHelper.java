@@ -1,7 +1,8 @@
-package com.cylan.jiafeigou.misc;
+package com.cylan.jiafeigou.rx;
 
 import android.util.Log;
 
+import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.support.log.AppLogger;
 
 import java.util.concurrent.TimeUnit;
@@ -74,6 +75,37 @@ public class RxHelper {
         public Boolean call(Integer integer, Throwable throwable) {
             AppLogger.e(prefix + ":" + throwable.getLocalizedMessage());
             return true;
+        }
+    }
+
+    /**
+     * 异常情况下，返回true,将继续订阅
+     */
+    public static Func2<Integer, Throwable, Boolean> exceptionFun = new Func2<Integer, Throwable, Boolean>() {
+        @Override
+        public Boolean call(Integer integer, Throwable throwable) {
+            if (BuildConfig.DEBUG) {
+                throw new IllegalArgumentException(": " + throwable.getLocalizedMessage());
+            }
+            //此处return true:表示继续订阅，
+            AppLogger.e("DpParser: " + throwable.getLocalizedMessage());
+            return true;
+        }
+    };
+
+    /**
+     * simple 过滤器
+     */
+    public static class Filter<T> implements Func1<T, Boolean> {
+        private boolean enable;
+
+        public Filter(boolean enable) {
+            this.enable = enable;
+        }
+
+        @Override
+        public Boolean call(Object object) {
+            return enable;
         }
     }
 }

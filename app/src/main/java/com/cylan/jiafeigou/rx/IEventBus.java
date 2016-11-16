@@ -1,4 +1,4 @@
-package com.cylan.jiafeigou.support.rxbus;
+package com.cylan.jiafeigou.rx;
 
 /**
  * Created by cylan-hunt on 16-9-28.

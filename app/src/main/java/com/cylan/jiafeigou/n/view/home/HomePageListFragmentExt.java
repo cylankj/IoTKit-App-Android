@@ -27,7 +27,7 @@ import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.cache.JCache;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
-import com.cylan.jiafeigou.misc.RxEvent;
+import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.ActivityResultContract;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomePageListContract;
@@ -43,7 +43,8 @@ import com.cylan.jiafeigou.n.view.bell.DoorBellHomeActivity;
 import com.cylan.jiafeigou.n.view.misc.HomeEmptyView;
 import com.cylan.jiafeigou.n.view.misc.IEmptyView;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.support.rxbus.RxBus;
+import com.cylan.jiafeigou.rx.RxBus;
+import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
 import com.cylan.jiafeigou.widget.wave.SuperWaveView;
@@ -249,8 +250,8 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
     @OnClick(R.id.imgV_add_devices)
     void onClickAddDevice() {
         if (!JCache.isOnline) {
-            if (RxBus.getDefault().hasObservers())
-                RxBus.getDefault().post(new RxEvent.NeedLoginEvent(null));
+            if (RxBus.getCacheInstance().hasObservers())
+                RxBus.getCacheInstance().post(new RxEvent.NeedLoginEvent(null));
             return;
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
@@ -287,7 +288,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
 
     @UiThread
     @Override
-    public void onDeviceListRsp(List<DeviceBean> resultList) {
+    public void onItemsInsert(List<DeviceBean> resultList) {
         srLayoutMainContentHolder.setRefreshing(false);
         if (resultList == null || resultList.size() == 0) {
             homePageListAdapter.clear();
@@ -303,6 +304,19 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
         homePageListAdapter.addAll(resultList);
         emptyViewState.determineEmptyViewState(homePageListAdapter.getCount());
         srLayoutMainContentHolder.setNestedScrollingEnabled(homePageListAdapter.getCount() > JFGRules.NETSTE_SCROLL_COUNT);
+    }
+
+    @Override
+    public void onItemUpdate(int index) {
+        if (homePageListAdapter != null
+                && MiscUtils.isInRange(0, homePageListAdapter.getCount(), index)) {
+
+        }
+    }
+
+    @Override
+    public void onItemDelete(int index) {
+
     }
 
     @Override

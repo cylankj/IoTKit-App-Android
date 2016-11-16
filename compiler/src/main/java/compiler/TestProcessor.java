@@ -48,6 +48,7 @@ public class TestProcessor extends AbstractProcessor {
 
     private static final String ID_2_CLASS_MAP = "ID_2_CLASS_MAP";
     private static final String NAME_2_ID_MAP = "NAME_2_ID_MAP";
+    private static final String ID_2_NAME_MAP = "ID_2_NAME_MAP";
 
     /**
      * public static final Map<String, Integer> IdMap = new HashMap<>();
@@ -77,6 +78,15 @@ public class TestProcessor extends AbstractProcessor {
             mapVerify_.put(element.getSimpleName().toString(), test.msgId());
         }
         //static block
+        CodeBlock.Builder blockId2NameClass = CodeBlock.builder();
+        for (Element element : set) {
+            DpAnnotation test = element.getAnnotation(DpAnnotation.class);
+            final int msgId = test.msgId();
+            blockId2NameClass.addStatement(ID_2_NAME_MAP + ".put($L,$S)", msgId, element.getSimpleName());
+        }
+
+
+        //static block
         CodeBlock.Builder blockIdClass = CodeBlock.builder();
         for (Element element : set) {
             DpAnnotation test = element.getAnnotation(DpAnnotation.class);
@@ -95,7 +105,9 @@ public class TestProcessor extends AbstractProcessor {
                         .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
                         .addField(getIdClassMap().build())
                         .addField(getNameIdMap().build())
+                        .addField(getId2NameMap().build())
                         .addStaticBlock(blockNameId.build())
+                        .addStaticBlock(blockId2NameClass.build())
                         .addStaticBlock(blockIdClass.build())
                         .build();
 //        package
@@ -143,6 +155,20 @@ public class TestProcessor extends AbstractProcessor {
         blockBuilder.addModifiers(Modifier.STATIC);
         blockBuilder.addModifiers(Modifier.FINAL);
         return blockBuilder;
+    }
+
+    private FieldSpec.Builder getId2NameMap() {
+        ParameterizedTypeName type = ParameterizedTypeName.get(Map.class,
+                Integer.class,
+                String.class);
+        //field
+        FieldSpec.Builder field = FieldSpec.builder(type,
+                ID_2_NAME_MAP,
+                Modifier.PUBLIC,
+                Modifier.STATIC,
+                Modifier.FINAL);
+        field.initializer("new $T<$T,$T>()", HashMap.class, Integer.class, String.class);
+        return field;
     }
 }
 

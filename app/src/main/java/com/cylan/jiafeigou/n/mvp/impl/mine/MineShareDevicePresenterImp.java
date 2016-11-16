@@ -2,12 +2,12 @@ package com.cylan.jiafeigou.n.mvp.impl.mine;
 
 import com.cylan.entity.jniCall.JFGFriendAccount;
 import com.cylan.entity.jniCall.JFGShareListInfo;
-import com.cylan.jiafeigou.misc.RxEvent;
+import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineShareDeviceContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
 import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
-import com.cylan.jiafeigou.support.rxbus.RxBus;
+import com.cylan.jiafeigou.rx.RxBus;
 
 import java.util.ArrayList;
 
@@ -45,7 +45,7 @@ public class MineShareDevicePresenterImp extends AbstractPresenter<MineShareDevi
 
     @Override
     public void initData() {
-        initDataSub = RxBus.getDefault().toObservable(RxEvent.GetShareDeviceList.class)
+        initDataSub = RxBus.getCacheInstance().toObservable(RxEvent.GetShareDeviceList.class)
                 .subscribe(new Action1<Object>() {
                     @Override
                     public void call(Object o) {

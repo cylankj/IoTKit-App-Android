@@ -15,13 +15,14 @@ public class DpMsgConstant {
     public static final int DP_ID_ACCOUNT_BEGIN = 600;
     public static final int DP_ID_SYSTEM_BEGIN = 700;
 
-    @DpAnnotation(msgId = 201, clazz = String.class)
+    @DpAnnotation(msgId = 201, clazz = DpMsgDefine.MsgNet.class)
     public static final String NET = "NET";//201
     @DpAnnotation(msgId = 202, clazz = String.class)
     public static final String MAC = "MAC";
     @DpAnnotation(msgId = 203, clazz = boolean.class)
     public static final String SDCARD_STATE = "SDCARD_STATE";
-    @DpAnnotation(msgId = 204, clazz = String.class)
+
+    @DpAnnotation(msgId = 204, clazz = DpMsgDefine.SdStatus.class)
     public static final String SDCARD_STORAGE = "SDCARD_STORAGE";
 
     @DpAnnotation(msgId = 205, clazz = boolean.class)
@@ -39,7 +40,7 @@ public class DpMsgConstant {
     @DpAnnotation(msgId = 209, clazz = boolean.class)
     public static final String LED_INDICATOR = "LED_INDICATOR";
 
-    @DpAnnotation(msgId = 210, clazz = boolean.class)
+    @DpAnnotation(msgId = 210, clazz = int.class)
     public static final String UP_TIME = "UP_TIME";
 
     @DpAnnotation(msgId = 211, clazz = int.class)
@@ -51,7 +52,7 @@ public class DpMsgConstant {
     @DpAnnotation(msgId = 213, clazz = int.class)
     public static final String DEVICE_P2P_VERSION = "DEVICE_P2P_VERSION";
 
-    @DpAnnotation(msgId = 214, clazz = int.class)
+    @DpAnnotation(msgId = 214, clazz = DpMsgDefine.MsgTimeZone.class)
     public static final String DEVICE_TIME_ZONE = "DEVICE_TIME_ZONE";
 
     @DpAnnotation(msgId = 215, clazz = boolean.class)
@@ -60,13 +61,13 @@ public class DpMsgConstant {
     @DpAnnotation(msgId = 216, clazz = boolean.class)
     public static final String DEVICE_VOLTAGE = "DEVICE_VOLTAGE";
 
-    @DpAnnotation(msgId = 217, clazz = int.class)
+    @DpAnnotation(msgId = 217, clazz = boolean.class)
     public static final String DEVICE_MOBILE_NET_PRIORITY = "DEVICE_MOBILE_NET_PRIORITY";
 
     @DpAnnotation(msgId = 218, clazz = Void.class)
     public static final String DEVICE_FORMAT_SDCARD = "DEVICE_FORMAT_SDCARD";
 
-    @DpAnnotation(msgId = 219, clazz = String.class)
+    @DpAnnotation(msgId = 219, clazz = DpMsgDefine.Bind.class)
     public static final String DEVICE_BIND_LOG = "DEVICE_BIND_LOG";
 
     @DpAnnotation(msgId = 220, clazz = String.class)

@@ -2,6 +2,7 @@ package com.cylan.jiafeigou.support.rxbus;
 
 import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.MyTestRunner;
+import com.cylan.jiafeigou.rx.RxBus;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -28,13 +29,13 @@ import static org.junit.Assert.assertTrue;
 public class RxBusTest {
     @Test
     public void getDefault() throws Exception {
-        RxBus rxBus = RxBus.getDefault();
+        RxBus rxBus = RxBus.getCacheInstance();
         assertNotNull(rxBus);
     }
 
     @Test
     public void post() throws Exception {
-        RxBus rxBus = RxBus.getDefault();
+        RxBus rxBus = RxBus.getCacheInstance();
         rxBus.toObservable(String.class)
                 .subscribe(new Action1<String>() {
                     @Override
@@ -47,14 +48,14 @@ public class RxBusTest {
 
     @Test
     public void toObservable() throws Exception {
-        RxBus rxBus = RxBus.getDefault();
+        RxBus rxBus = RxBus.getCacheInstance();
         Observable<Integer> observable = rxBus.toObservable(Integer.class);
         assertTrue(observable != null);
     }
 
     @Test
     public void hasObservers() throws Exception {
-        RxBus rxBus = RxBus.getDefault();
+        RxBus rxBus = RxBus.getCacheInstance();
 //        assertTrue(rxBus.hasObservers());
         rxBus.toObservable(String.class)
                 .subscribe(new Action1<String>() {
@@ -74,7 +75,7 @@ public class RxBusTest {
 
     @Test
     public void postSticky() throws Exception {
-        RxBus rxBus = RxBus.getDefault();
+        RxBus rxBus = RxBus.getCacheInstance();
         rxBus.postSticky("this is sticky event");
         rxBus.toObservableSticky(String.class)
                 .subscribe(new Action1<String>() {
@@ -104,7 +105,7 @@ public class RxBusTest {
 
     @Test
     public void testException() {
-        RxBus rxBus = RxBus.getDefault();
+        RxBus rxBus = RxBus.getCacheInstance();
         rxBus.toObservable(Integer.class)
                 .filter(new Func1<Integer, Boolean>() {
                     @Override
@@ -157,7 +158,7 @@ public class RxBusTest {
 
     @Test
     public void testTimeout() {
-        RxBus.getDefault().toObservable(String.class)
+        RxBus.getCacheInstance().toObservable(String.class)
                 .subscribeOn(Schedulers.immediate())
                 .map(new Func1<String, Object>() {
                     @Override
@@ -180,7 +181,7 @@ public class RxBusTest {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        RxBus.getDefault().post("nihao");
+        RxBus.getCacheInstance().post("nihao");
 
     }
 
@@ -207,18 +208,18 @@ public class RxBusTest {
                 }))
                 .subscribe();
 
-        RxBus.getDefault().post(1);
-        RxBus.getDefault().post("ni");
+        RxBus.getCacheInstance().post(1);
+        RxBus.getCacheInstance().post("ni");
         try {
             Thread.sleep(3000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        RxBus.getDefault().post("ni...");
+        RxBus.getCacheInstance().post("ni...");
     }
 
     private Observable<Integer> getInt() {
-        return RxBus.getDefault().toObservable(Integer.class)
+        return RxBus.getCacheInstance().toObservable(Integer.class)
                 .map(new Func1<Integer, Integer>() {
                     @Override
                     public Integer call(Integer integer) {
@@ -229,7 +230,7 @@ public class RxBusTest {
     }
 
     private Observable<String> getString() {
-        return RxBus.getDefault().toObservable(String.class)
+        return RxBus.getCacheInstance().toObservable(String.class)
                 .map(new Func1<String, String>() {
                     @Override
                     public String call(String string) {

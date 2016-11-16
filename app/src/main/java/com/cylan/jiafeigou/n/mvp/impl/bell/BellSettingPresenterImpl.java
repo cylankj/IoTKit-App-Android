@@ -1,10 +1,10 @@
 package com.cylan.jiafeigou.n.mvp.impl.bell;
 
-import com.cylan.jiafeigou.misc.RxEvent;
+import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.n.mvp.contract.bell.BellSettingContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.n.mvp.model.BellInfoBean;
-import com.cylan.jiafeigou.support.rxbus.RxBus;
+import com.cylan.jiafeigou.rx.RxBus;
 
 import rx.Observable;
 import rx.Subscription;
@@ -61,7 +61,7 @@ public class BellSettingPresenterImpl extends AbstractPresenter<BellSettingContr
      * @return
      */
     private Subscription onLogStateSubscription() {
-        return RxBus.getDefault().toObservable(RxEvent.LoginRsp.class)
+        return RxBus.getCacheInstance().toObservable(RxEvent.LoginRsp.class)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<RxEvent.LoginRsp>() {
                     @Override
@@ -79,7 +79,7 @@ public class BellSettingPresenterImpl extends AbstractPresenter<BellSettingContr
 
     @Override
     public void sendActivityResult(RxEvent.ActivityResult result) {
-        if (RxBus.getDefault().hasObservers())
-            RxBus.getDefault().post(result);
+        if (RxBus.getCacheInstance().hasObservers())
+            RxBus.getCacheInstance().post(result);
     }
 }

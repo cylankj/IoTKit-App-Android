@@ -2,10 +2,10 @@ package com.cylan.jiafeigou.n.engine;
 
 import android.text.TextUtils;
 
-import com.cylan.jiafeigou.misc.RxEvent;
+import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.misc.bind.UdpConstant;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.support.rxbus.RxBus;
+import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.udpMsgPack.JfgUdpMsg;
 import com.google.gson.Gson;
 
@@ -38,7 +38,7 @@ public class GlobalUdpDataSource {
 
     public void register() {
         unregister();
-        subscription = RxBus.getDefault().toObservable(RxEvent.LocalUdpMsg.class)
+        subscription = RxBus.getCacheInstance().toObservable(RxEvent.LocalUdpMsg.class)
                 .subscribeOn(Schedulers.immediate())
                 .filter(new Func1<RxEvent.LocalUdpMsg, Boolean>() {
                     @Override
@@ -64,12 +64,12 @@ public class GlobalUdpDataSource {
                             if (TextUtils.equals(headTag, UdpConstant.PING_ACK)) {
                                 JfgUdpMsg.PingAck pingAck = msgPack.read(localUdpMsg.data, JfgUdpMsg.PingAck.class);
                                 //保存ping_ack
-                                RxBus.getDefault().post(pingAck);
+                                RxBus.getCacheInstance().post(pingAck);
 //                                UdpConstant.udpObjectMap.put(UdpConstant.PingAckT.class, new UdpConstant.PingAckT(System.currentTimeMillis(), pingAck));
                                 AppLogger.i(new Gson().toJson(pingAck));
                             } else if (TextUtils.equals(headTag, UdpConstant.F_PING_ACK)) {
                                 JfgUdpMsg.FPingAck f_pingAck = msgPack.read(localUdpMsg.data, JfgUdpMsg.FPingAck.class);
-                                RxBus.getDefault().post(f_pingAck);
+                                RxBus.getCacheInstance().post(f_pingAck);
 //                                UdpConstant.udpObjectMap.put(UdpConstant.PingAckT.class, new UdpConstant.FPingAckT(System.currentTimeMillis(), f_pingAck));
                                 AppLogger.i(new Gson().toJson(f_pingAck));
                             }

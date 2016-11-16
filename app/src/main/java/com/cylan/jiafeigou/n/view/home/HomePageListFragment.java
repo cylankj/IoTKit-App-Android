@@ -25,7 +25,7 @@
 //import com.cylan.jiafeigou.R;
 //import com.cylan.jiafeigou.misc.JConstant;
 //import com.cylan.jiafeigou.misc.JFGRules;
-//import com.cylan.jiafeigou.misc.RxEvent;
+//import com.cylan.jiafeigou.rx.RxEvent;
 //import com.cylan.jiafeigou.n.mvp.contract.ActivityResultContract;
 //import com.cylan.jiafeigou.n.mvp.contract.home.HomePageListContract;
 //import com.cylan.jiafeigou.n.mvp.impl.ActivityResultPresenterImpl;

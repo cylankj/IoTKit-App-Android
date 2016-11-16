@@ -1,4 +1,4 @@
-package com.cylan.jiafeigou.support.rxbus;
+package com.cylan.jiafeigou.rx;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -16,19 +16,24 @@ import rx.subjects.Subject;
 public class RxBus implements IEventBus {
 
     private static volatile RxBus mDefaultInstance;
+    private static volatile RxBus mUiInstance;
     private final Subject<Object, Object> mBus;
 
     private final Map<Class<?>, Object> mStickyEventMap;
 
     public RxBus() {
-
         // If multiple threads are going to emit events to this
         // then it must be made thread-safe like this instead
         mBus = new SerializedSubject<>(PublishSubject.create());
         mStickyEventMap = new ConcurrentHashMap<>();
     }
 
-    public static RxBus getDefault() {
+    /**
+     * default Instance is for caching layer
+     *
+     * @return
+     */
+    public static RxBus getCacheInstance() {
         if (mDefaultInstance == null) {
             synchronized (RxBus.class) {
                 if (mDefaultInstance == null) {
@@ -37,6 +42,22 @@ public class RxBus implements IEventBus {
             }
         }
         return mDefaultInstance;
+    }
+
+    /**
+     * ui Instance is for ui layer
+     *
+     * @return
+     */
+    public static RxBus getUiInstance() {
+        if (mUiInstance == null) {
+            synchronized (RxBus.class) {
+                if (mUiInstance == null) {
+                    mUiInstance = new RxBus();
+                }
+            }
+        }
+        return mUiInstance;
     }
 
     /**

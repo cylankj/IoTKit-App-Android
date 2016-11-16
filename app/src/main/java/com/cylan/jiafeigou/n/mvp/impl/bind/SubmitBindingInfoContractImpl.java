@@ -2,13 +2,12 @@ package com.cylan.jiafeigou.n.mvp.impl.bind;
 
 import android.text.TextUtils;
 
-import com.cylan.jiafeigou.misc.RxEvent;
 import com.cylan.jiafeigou.misc.SimulatePercent;
 import com.cylan.jiafeigou.misc.bind.UdpConstant;
 import com.cylan.jiafeigou.n.mvp.contract.bind.SubmitBindingInfoContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
-import com.cylan.jiafeigou.support.rxbus.RxBus;
-import com.cylan.utils.ListUtils;
+import com.cylan.jiafeigou.rx.RxEvent;
+import com.cylan.jiafeigou.rx.RxBus;
 
 import rx.Observable;
 import rx.Subscription;
@@ -54,22 +53,22 @@ public class SubmitBindingInfoContractImpl extends
     @Override
     public void start() {
         unSubscribe(bindSub);
-        bindSub = RxBus.getDefault().toObservableSticky(RxEvent.DeviceList.class)
-                .filter(new Func1<RxEvent.DeviceList, Boolean>() {
+        bindSub = RxBus.getCacheInstance().toObservableSticky(RxEvent.DeviceRawList.class)
+                .filter(new Func1<RxEvent.DeviceRawList, Boolean>() {
                     @Override
-                    public Boolean call(RxEvent.DeviceList deviceList) {
+                    public Boolean call(RxEvent.DeviceRawList deviceList) {
                         return getView() != null
                                 && deviceList != null
-                                && !ListUtils.isEmpty(deviceList.jfgDevices);
+                                && deviceList.devices.length > 0;
                     }
                 })
-                .flatMap(new Func1<RxEvent.DeviceList, Observable<Boolean>>() {
+                .flatMap(new Func1<RxEvent.DeviceRawList, Observable<Boolean>>() {
                     @Override
-                    public Observable<Boolean> call(RxEvent.DeviceList deviceList) {
-                        final int count = deviceList.jfgDevices.size();
+                    public Observable<Boolean> call(RxEvent.DeviceRawList deviceList) {
+                        final int count = deviceList.devices.length;
                         for (int i = 0; i < count; i++) {
                             if (TextUtils.equals(portrait.cid,
-                                    deviceList.jfgDevices.get(i).uuid)) {
+                                    deviceList.devices[i].uuid)) {
                                 //hit the binding cid
                                 return Observable.just(true);
                             }
