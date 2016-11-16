@@ -43,6 +43,7 @@
             android:layout_height="wrap_content">
 
             <TextView
+                android:visibility="invisible"
                 android:id="@+id/tv_has_share_title"
                 android:layout_marginTop="19dp"
                 android:layout_marginLeft="15dp"

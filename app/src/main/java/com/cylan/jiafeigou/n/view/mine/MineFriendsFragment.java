@@ -352,4 +352,10 @@ MineFriendsFragment extends Fragment implements MineFriendsContract.View, AddRel
             addReqDeleteItem(layoutPosition,item);
         }
     }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (presenter != null)presenter.stop();
+    }
 }

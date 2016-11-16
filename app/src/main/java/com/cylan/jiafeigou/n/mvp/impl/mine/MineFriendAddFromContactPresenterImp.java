@@ -84,9 +84,13 @@ public class MineFriendAddFromContactPresenterImp extends AbstractPresenter<Mine
      * @param arrayList
      */
     private void handlerDataResult(ArrayList<RelAndFriendBean> arrayList) {
-        if (arrayList != null && arrayList.size() != 0 && getView() != null){
-            getView().initContactRecycleView(arrayList);
-            getView().hideNoContactView();
+        if (arrayList != null){
+            if (arrayList.size() != 0 && getView() != null){
+                getView().initContactRecycleView(arrayList);
+                getView().hideNoContactView();
+            }else {
+                getView().showNoContactView();
+            }
         }else {
             getView().showNoContactView();
         }
@@ -129,15 +133,17 @@ public class MineFriendAddFromContactPresenterImp extends AbstractPresenter<Mine
     @Override
     public void filterPhoneData(String filterStr) {
         filterDateList = new ArrayList<>();
-        if (TextUtils.isEmpty(filterStr)) {
-            filterDateList = allContactBean;
-        } else {
-            filterDateList.clear();
-            for (RelAndFriendBean s : allContactBean) {
-                String phone = s.account;
-                String name = s.alias;
-                if (phone.replace(" ", "").contains(filterStr) || name.contains(filterStr)) {
-                    filterDateList.add(s);
+        if (allContactBean.size() != 0){
+            if (TextUtils.isEmpty(filterStr)) {
+                filterDateList = allContactBean;
+            } else {
+                filterDateList.clear();
+                for (RelAndFriendBean s : allContactBean) {
+                    String phone = s.account;
+                    String name = s.alias;
+                    if (phone.replace(" ", "").contains(filterStr) || name.contains(filterStr)) {
+                        filterDateList.add(s);
+                    }
                 }
             }
         }

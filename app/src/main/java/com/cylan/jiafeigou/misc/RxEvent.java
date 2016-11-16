@@ -274,7 +274,6 @@ public class RxEvent {
 
         public DeviceList(List<JFGDevice> list) {
             this.jfgDevices = list;
-
         }
     }
     /**
@@ -344,6 +343,34 @@ public class RxEvent {
         public String s;
         public String s1;
         public boolean b;
+    }
+
+    /**
+     * 获取到已经分享的好友的回调
+     */
+    public static final class GetHasShareFriendCallBack{
+        public int i;
+        public ArrayList<JFGFriendAccount> arrayList;
+
+        public GetHasShareFriendCallBack(int i, ArrayList<JFGFriendAccount> arrayList) {
+            this.i = i;
+            this.arrayList = arrayList;
+        }
+    }
+
+    /**
+     * 取消分享的回调
+     */
+    public static final class UnshareDeviceCallBack{
+        public int i;
+        public String cid;
+        public String account;
+
+        public UnshareDeviceCallBack(int i, String cid, String account) {
+            this.i = i;
+            this.cid = cid;
+            this.account = account;
+        }
     }
 
 }

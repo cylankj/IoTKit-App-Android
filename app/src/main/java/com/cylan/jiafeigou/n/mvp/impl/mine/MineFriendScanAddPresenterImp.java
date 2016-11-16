@@ -10,6 +10,7 @@ import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.misc.RxEvent;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendScanAddContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
+import com.cylan.jiafeigou.n.mvp.model.MineAddReqBean;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.rxbus.RxBus;
 import com.google.zxing.BarcodeFormat;
@@ -26,6 +27,7 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
+import rx.subscriptions.CompositeSubscription;
 
 /**
  * 作者：zsl
@@ -38,7 +40,7 @@ public class MineFriendScanAddPresenterImp extends AbstractPresenter<MineFriendS
     private static final int WHITE = 0xFFFFFFFF;
     private static final int BLACK = 0xFF000000;
 
-    private Subscription subscription;
+    private CompositeSubscription compositeSubscription;
 
     public MineFriendScanAddPresenterImp(MineFriendScanAddContract.View view) {
         super(view);
@@ -47,19 +49,21 @@ public class MineFriendScanAddPresenterImp extends AbstractPresenter<MineFriendS
 
     @Override
     public void start() {
-        subscription = Observable.just(null)
-                .subscribeOn(Schedulers.io())
-                .subscribe(new Action1<Object>() {
-                    @Override
-                    public void call(Object o) {
-                        getView().onStartScan();
-                    }
-                });
+        if (compositeSubscription != null && !compositeSubscription.isUnsubscribed()){
+            compositeSubscription.unsubscribe();
+        }else {
+            compositeSubscription = new CompositeSubscription();
+            compositeSubscription.add(beginScan());
+            compositeSubscription.add(getUserInfo());
+            compositeSubscription.add(checkAccountCallBack());
+        }
     }
 
     @Override
     public void stop() {
-        subscription.unsubscribe();
+        if (compositeSubscription != null && !compositeSubscription.isUnsubscribed()){
+            compositeSubscription.unsubscribe();
+        }
     }
 
     @Override
@@ -163,17 +167,60 @@ public class MineFriendScanAddPresenterImp extends AbstractPresenter<MineFriendS
     }
 
     /**
+     * 获取到用户的信息用于产生二维码
+     * @return
+     */
+    @Override
+    public Subscription getUserInfo() {
+        return RxBus.getDefault().toObservableSticky(RxEvent.GetUserInfo.class)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<RxEvent.GetUserInfo>() {
+                    @Override
+                    public void call(RxEvent.GetUserInfo getUserInfo) {
+                        if (getUserInfo != null && getUserInfo instanceof RxEvent.GetUserInfo){
+                            if (getView() != null){
+                                getView().showQrCode(encodeAsBitmap(getUserInfo.jfgAccount.getAccount(),getDimension()));
+                            }
+                        }
+                    }
+                });
+    }
+
+    /**
+     * 开始扫描
+     * @return
+     */
+    @Override
+    public Subscription beginScan() {
+        return Observable.just(null)
+                .subscribeOn(Schedulers.io())
+                .subscribe(new Action1<Object>() {
+                    @Override
+                    public void call(Object o) {
+                        getView().onStartScan();
+                    }
+                });
+    }
+
+    /**
      * 处理检测的结果
      * @param checkAccountCallback
      */
     private void handlerCheckResult(RxEvent.CheckAccountCallback checkAccountCallback) {
         if (getView() != null){
+            getView().hideLoadingPro();
             if (checkAccountCallback.i == 0){
                 // 已注册
+                MineAddReqBean resutBean = new MineAddReqBean();
+                resutBean.account = checkAccountCallback.s;
+                resutBean.alias = checkAccountCallback.s1;
+                getView().jump2FriendDetailFragment(false,resutBean);
             }else if (checkAccountCallback.i == 241){
                 // 已经是好友了
+                getView().isMineFriendResult();
             } else{
                 // 未注册
+                getView().scanNoResult();
             }
         }
     }

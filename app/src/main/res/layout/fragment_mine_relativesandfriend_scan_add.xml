@@ -35,14 +35,43 @@
             android:textSize="18sp" />
     </RelativeLayout>
 
-    <com.cylan.jiafeigou.support.zscan.ZXingScannerView
-        android:layout_marginTop="30dp"
-        android:layout_gravity="center"
-        android:id="@+id/zxV_scan_add_relativesandfriend"
-        android:layout_width="350dp"
-        android:layout_height="350dp"
-        hunt:hint=""
-        />
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.cylan.jiafeigou.support.zscan.ZXingScannerView
+            android:layout_marginTop="30dp"
+            android:layout_gravity="center"
+            android:id="@+id/zxV_scan_add_relativesandfriend"
+            android:layout_width="350dp"
+            android:layout_height="350dp"
+            hunt:hint=""
+            />
+
+        <RelativeLayout
+            android:visibility="invisible"
+            android:id="@+id/rl_send_pro_hint"
+            android:layout_marginTop="120dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <ProgressBar
+                android:layout_centerHorizontal="true"
+                android:id="@+id/pro_send_hint"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:textColor="@color/color_black"
+                android:text="loading..."
+                android:layout_below="@id/pro_send_hint"
+                android:id="@+id/tv_send_hint"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </RelativeLayout>
+
+    </FrameLayout>
 
     <TextView
         android:layout_gravity="center_horizontal"
@@ -56,7 +85,6 @@
     <ImageView
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="50dp"
-        android:src="@mipmap/ic_launcher"
         android:id="@+id/iv_erweima"
         android:layout_width="150dp"
         android:layout_height="150dp" />

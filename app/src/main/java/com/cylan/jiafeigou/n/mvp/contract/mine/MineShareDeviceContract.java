@@ -33,10 +33,8 @@ public interface MineShareDeviceContract {
 
         /**
          * desc：跳转条设备分享管理界面
-         * @param itemView
-         * @param position
          */
-        void jump2ShareDeviceMangerFragment(android.view.View itemView, int position,JFGShareListInfo info);
+        void jump2ShareDeviceMangerFragment(DeviceBean bean);
 
         /**
          * desc：无分享设备显示null视图

@@ -76,33 +76,6 @@ public class MineShareDeviceFragment extends Fragment implements MineShareDevice
             case R.id.iv_home_mine_sharedevices_back:
                 getFragmentManager().popBackStack();
                 break;
-//            case R.id.tv_share_smartcamera:          //摄像头分享
-//                showShareDialog();
-//                break;
-//
-//            case R.id.tv_share_smartcamera1:         //摄像头1分享
-//                showShareDialog();
-//                break;
-//
-//            case R.id.tv_share_smartcloud:           //云相框分享
-//                showShareDialog();
-//                break;
-//
-//            case R.id.tv_share_smartbell:            //门铃分享
-//                showShareDialog();
-//                break;
-//
-//            case R.id.rl_mine_share_smartcamera:
-//                if (getView() != null)
-//                    ViewUtils.deBounceClick(getView().findViewById(R.id.rl_mine_share_smartcamera));
-//                AppLogger.e("mine_share_smartcamera");
-//                getFragmentManager().beginTransaction()
-//                        .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
-//                                , R.anim.slide_in_left, R.anim.slide_out_right)
-//                        .add(android.R.id.content, mineDevicesShareManagerFragment, "mineDevicesShareManagerFragment")
-//                        .addToBackStack("mineShareDeviceFragment")
-//                        .commit();
-//                break;
         }
     }
 
@@ -200,19 +173,22 @@ public class MineShareDeviceFragment extends Fragment implements MineShareDevice
             @Override
             public void onItemClick(View itemView, int viewType, int position) {
                 if (getView() != null) {
-                    jump2ShareDeviceMangerFragment(itemView,position,presenter.getJFGInfo(position));
+                    ViewUtils.deBounceClick(itemView);
+                    AppLogger.e("tv_share_device_manger");
+                    jump2ShareDeviceMangerFragment(adapter.getList().get(position));
                 }
             }
         });
     }
 
+    /**
+     * 跳转到分享管理界面
+     * @param bean
+     */
     @Override
-    public void jump2ShareDeviceMangerFragment(View itemView, int position, JFGShareListInfo info) {
-        if (getView() != null)
-            ViewUtils.deBounceClick(itemView);
-        AppLogger.e("tv_share_device_manger");
+    public void jump2ShareDeviceMangerFragment(DeviceBean bean) {
         Bundle bundle = new Bundle();
-        bundle.putParcelableArrayList("shareDeviceFriendlist",presenter.getHasShareRelAndFriendList(info));
+        bundle.putParcelable("devicebean",bean);
         mineDevicesShareManagerFragment = MineDevicesShareManagerFragment.newInstance(bundle);
         getFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right

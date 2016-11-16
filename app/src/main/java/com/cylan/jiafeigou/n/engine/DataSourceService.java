@@ -295,7 +295,10 @@ public class DataSourceService extends Service implements AppCallBack {
 
     @Override
     public void OnUnShareDeviceRsp(int i, String s, String s1) {
-        AppLogger.d("OnUnShareDeviceRsp :");
+        AppLogger.d("OnUnShareDeviceRsp :"+i+s);
+        if (eventBus != null && eventBus.hasObservers()) {
+            eventBus.post(new RxEvent.UnshareDeviceCallBack(i, s,s1));
+        }
     }
 
     @Override
@@ -309,7 +312,10 @@ public class DataSourceService extends Service implements AppCallBack {
 
     @Override
     public void OnGetUnShareListByCidRsp(int i, ArrayList<JFGFriendAccount> arrayList) {
-        AppLogger.d("OnGetUnShareListByCidRsp :");
+        AppLogger.d("OnGetUnShareListByCidRsp :"+i+arrayList.size());
+        if (eventBus != null && eventBus.hasObservers()) {
+            eventBus.post(new RxEvent.GetHasShareFriendCallBack(i, arrayList));
+        }
     }
 
     @Override

@@ -115,8 +115,8 @@ public class MineFriendAddFriendsFragment extends Fragment implements MineFriend
 
     private void jump2ScanAddFragment() {
         getFragmentManager().beginTransaction()
-                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
-                        , R.anim.slide_in_left, R.anim.slide_out_right)
+//                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
+//                        , R.anim.slide_in_left, R.anim.slide_out_right)
                 .add(android.R.id.content, scanAddFragment, "scanAddFragment")
                 .addToBackStack("mineHelpFragment")
                 .commit();
