@@ -199,7 +199,7 @@ public class MineDevicesShareManagerFragment extends Fragment implements MineDev
     public void showUnShareResult(String result) {
         ToastUtil.showToast(result);
     }
-
+    
     /**
      * 顶部标题
      * @param name
