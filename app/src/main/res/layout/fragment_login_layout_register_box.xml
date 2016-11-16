@@ -31,7 +31,7 @@
                 android:focusable="true"
                 android:focusableInTouchMode="true"
                 android:gravity="center"
-                android:hint="@string/item_input_phone_num"
+                android:hint="@string/PHONE_NUMBER_2"
                 android:inputType="phone"
                 android:maxLength="11"
                 android:paddingLeft="40dp"
@@ -81,7 +81,7 @@
                 android:focusable="true"
                 android:focusableInTouchMode="true"
                 android:gravity="center"
-                android:hint="@string/item_input_verification_code"
+                android:hint="@string/ENTER_CODE"
                 android:inputType="numberDecimal"
                 android:maxLength="6"
                 android:paddingLeft="40dp"
@@ -144,7 +144,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:autoLink="web"
-                android:text="@string/item_user_license_agreements" />
+                android:text="@string/TERM_OF_USE" />
         </LinearLayout>
 
 

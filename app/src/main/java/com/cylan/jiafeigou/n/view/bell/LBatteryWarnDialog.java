@@ -61,9 +61,9 @@ public class LBatteryWarnDialog extends BaseDialog {
     }
 
     private void highLight() {
-        final String needHighLight = getString(R.string.item_green);
+        final String needHighLight = "绿色";
         final int len = needHighLight.length();
-        final String tmpContent = getString(R.string.s_bell_low_battery_content);
+        final String tmpContent = getString(R.string.DOOR_BETTERYMESG);
         String fullContent = String.format(Locale.getDefault(), tmpContent, needHighLight);
         final int startIndex = fullContent.indexOf(needHighLight);
         if (startIndex < 0 || startIndex + len > fullContent.length()) {

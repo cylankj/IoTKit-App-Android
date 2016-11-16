@@ -231,11 +231,11 @@ public class LoginFragment extends android.support.v4.app.Fragment
         registerWay = way == JConstant.LOCALE_SIMPLE_CN ? JConstant.REGISTER_BY_PHONE : JConstant.REGISTER_BY_EMAIL;
         if (registerWay == JConstant.REGISTER_BY_PHONE) {
             //中国大陆
-            tvRegisterSubmit.setText(getString(R.string.item_get_verification_code));
+            tvRegisterSubmit.setText(getString(R.string.GET_CODE));
         } else {
             //只显示邮箱注册
             etRegisterInputBox.setInputType(EditorInfo.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
-            etRegisterInputBox.setHint(getString(R.string.item_input_email));
+            etRegisterInputBox.setHint(getString(R.string.EMAIL_2));
         }
 
     }
@@ -394,16 +394,16 @@ public class LoginFragment extends android.support.v4.app.Fragment
      */
     private void switchBox() {
         final String content = tvLoginTopRight.getText().toString();
-        if (TextUtils.equals(content, getString(R.string.item_register))) {
+        if (TextUtils.equals(content, getString(R.string.Tap0_register))) {
             //register
-            tvLoginTopCenter.setText(getString(R.string.item_register));
-            tvLoginTopRight.setText(getString(R.string.SignIn));
+            tvLoginTopCenter.setText(getString(R.string.Tap0_register));
+            tvLoginTopRight.setText(getString(R.string.LOGIN));
             vsLayoutSwitcher.setInAnimation(getContext(), R.anim.slide_in_right_overshoot);
             vsLayoutSwitcher.setOutAnimation(getContext(), R.anim.slide_out_left);
             vsLayoutSwitcher.showNext();
-        } else if (TextUtils.equals(content, getString(R.string.SignIn))) {
-            tvLoginTopCenter.setText(getString(R.string.SignIn));
-            tvLoginTopRight.setText(getString(R.string.item_register));
+        } else if (TextUtils.equals(content, getString(R.string.LOGIN))) {
+            tvLoginTopCenter.setText(getString(R.string.LOGIN));
+            tvLoginTopRight.setText(getString(R.string.Tap0_register));
             //延时200ms,
             vsLayoutSwitcher.setInAnimation(getContext(), R.anim.slide_in_left_overshoot);
             vsLayoutSwitcher.setOutAnimation(getContext(), R.anim.slide_out_right);
@@ -686,9 +686,9 @@ public class LoginFragment extends android.support.v4.app.Fragment
                 boolean validCode = codeLen == JConstant.VALID_VERIFICATION_CODE_LEN;
                 //显示重新发送，表示无效验证码
                 boolean aliveCode = TextUtils.equals(ViewUtils.getTextViewContent(tvMeterGetCode),
-                        getString(R.string.item_reget_verification_code));
+                        getString(R.string.ANEW_SEND));
                 if (validCode && aliveCode) {
-                    Toast.makeText(getActivity(), getString(R.string.item_verification_code_is_outdate), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), getString(R.string.INVALID_CODE), Toast.LENGTH_SHORT).show();
                     return;
                 }
                 if (validCode) {
@@ -710,7 +710,7 @@ public class LoginFragment extends android.support.v4.app.Fragment
                         getCodeByPhone(ViewUtils.getTextViewContent(etRegisterInputBox));
             //显示验证码输入框
             handleVerificationCodeBox(true);
-            tvRegisterSubmit.setText(getString(R.string.item_carry_on));
+            tvRegisterSubmit.setText(getString(R.string.CARRY_ON));
             lLayoutAgreement.setVisibility(View.GONE);
         } else {
             final boolean isValidEmail = Patterns.EMAIL_ADDRESS.matcher(ViewUtils.getTextViewContent(etRegisterInputBox)).find();
@@ -726,21 +726,21 @@ public class LoginFragment extends android.support.v4.app.Fragment
         if (registerWay == JConstant.REGISTER_BY_PHONE) {
             tvRegisterWayContent.setText(getString(R.string.PHONE_SIGNUP));
             etRegisterInputBox.setText("");
-            etRegisterInputBox.setHint(getString(R.string.item_input_email));
+            etRegisterInputBox.setHint(getString(R.string.EMAIL_2));
             etRegisterInputBox.setInputType(EditorInfo.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
             //设置长度
             ViewUtils.setTextViewMaxFilter(etRegisterInputBox, 60);
             registerWay = JConstant.REGISTER_BY_EMAIL;
-            tvRegisterSubmit.setText(getString(R.string.item_carry_on));
+            tvRegisterSubmit.setText(getString(R.string.CARRY_ON));
             handleVerificationCodeBox(false);
         } else if (registerWay == JConstant.REGISTER_BY_EMAIL) {
             tvRegisterWayContent.setText(getString(R.string.EMAIL_SIGNUP));
             etRegisterInputBox.setText("");
-            etRegisterInputBox.setHint(getString(R.string.item_input_phone_num));
+            etRegisterInputBox.setHint(getString(R.string.PHONE_NUMBER_2));
             etRegisterInputBox.setInputType(EditorInfo.TYPE_CLASS_PHONE);
             ViewUtils.setTextViewMaxFilter(etRegisterInputBox, 11);
             registerWay = JConstant.REGISTER_BY_PHONE;
-            tvRegisterSubmit.setText(getString(R.string.item_get_verification_code));
+            tvRegisterSubmit.setText(getString(R.string.GET_CODE));
         }
     }
 
@@ -842,7 +842,7 @@ public class LoginFragment extends android.support.v4.app.Fragment
                 this.viewWeakReference.get().setText(
                         viewWeakReference.get()
                                 .getContext()
-                                .getString(R.string.item_reget_verification_code));
+                                .getString(R.string.Button_ReObtain));
             }
         }
 
@@ -862,7 +862,7 @@ public class LoginFragment extends android.support.v4.app.Fragment
                     if (viewWeakReference.get() == null)
                         return;
                     TextView tv = viewWeakReference.get();
-                    tv.setText(tv.getContext().getString(R.string.item_reget_verification_code));
+                    tv.setText(tv.getContext().getString(R.string.Button_ReObtain));
                     tv.setEnabled(true);
                 }
             };

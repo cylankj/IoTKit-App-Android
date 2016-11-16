@@ -86,7 +86,7 @@
                         android:focusable="true"
                         android:focusableInTouchMode="true"
                         android:gravity="center"
-                        android:hint="@string/item_input_phone_num"
+                        android:hint="@string/PHONE_NUMBER_2"
                         android:inputType="numberDecimal"
                         android:maxLength="6"
                         android:paddingLeft="40dp"

@@ -40,25 +40,26 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
 
     private TimeTickBroadcast timeTickBroadcast;
     private Subscription onRefreshSubscription;
-    private CompositeSubscription _timeTickSubscriptions;
+    private CompositeSubscription bulkSubscriptions;
     private Subscription onGreetSubscription;
 
     public HomePageListPresenterImpl(HomePageListContract.View view) {
         super(view);
         view.setPresenter(this);
-        _timeTickSubscriptions = new CompositeSubscription();
     }
 
     @Override
     public void start() {
+        //注意事项
+        bulkSubscriptions = new CompositeSubscription();
         //注册1
-        _timeTickSubscriptions
+        bulkSubscriptions
                 .add(getTimeTickEventSub());
-        _timeTickSubscriptions
+        bulkSubscriptions
                 .add(getLoginRspSub());
-        _timeTickSubscriptions
+        bulkSubscriptions
                 .add(subDeviceList());
-        _timeTickSubscriptions
+        bulkSubscriptions
                 .add(JFGAccountUpdate());
     }
 
@@ -159,7 +160,7 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
     @Override
     public void stop() {
         unSubscribe(onRefreshSubscription,
-                _timeTickSubscriptions,
+                bulkSubscriptions,
                 onGreetSubscription);
     }
 

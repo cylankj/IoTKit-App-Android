@@ -312,6 +312,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
     public void onItemUpdate(int index) {
         if (homePageListAdapter != null
                 && MiscUtils.isInRange(0, homePageListAdapter.getCount(), index)) {
+            homePageListAdapter.notifyItemChanged(index);
         }
     }
 
@@ -327,7 +328,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
 
     @Override
     public void onAccountUpdate(JFGAccount greetBean) {
-        tvHeaderNickName.setText(String.format(getString(R.string.home_nick_name),
+        tvHeaderNickName.setText(String.format("Hi,%s",
                 greetBean.getAccount()));
         tvHeaderPoet.setText(JFGRules.getTimeRule() == JFGRules.RULE_DAY_TIME ? "每天都给自己一点小期待"
                 : "每次的歇息，总会带来新的向往");

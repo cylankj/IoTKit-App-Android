@@ -26,7 +26,7 @@
             android:focusable="true"
             android:focusableInTouchMode="true"
             android:gravity="center"
-            android:hint="@string/item_input_phone_or_email"
+            android:hint="@string/Tap0_enterphoneoremail"
             android:maxLength="60"
             android:paddingLeft="40dp"
             android:paddingRight="40dp"
