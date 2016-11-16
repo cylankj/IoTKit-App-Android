@@ -2,11 +2,11 @@ package com.cylan.jiafeigou.n.mvp.impl;
 
 import com.cylan.jiafeigou.cache.JCache;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
-import com.cylan.jiafeigou.misc.RxEvent;
+import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.n.mvp.contract.login.SetupPwdContract;
 import com.cylan.jiafeigou.n.mvp.model.LoginAccountBean;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.support.rxbus.RxBus;
+import com.cylan.jiafeigou.rx.RxBus;
 
 import java.util.concurrent.TimeUnit;
 
@@ -37,7 +37,7 @@ public class SetupPwdPresenterImpl extends AbstractPresenter<SetupPwdContract.Vi
 
     private void initComposeSubscription() {
         compositeSubscription = new CompositeSubscription();
-        compositeSubscription.add(RxBus.getDefault().toObservable(RxEvent.ResultRegister.class)
+        compositeSubscription.add(RxBus.getCacheInstance().toObservable(RxEvent.ResultRegister.class)
                 .observeOn(AndroidSchedulers.mainThread())
                 .throttleFirst(1000L, TimeUnit.MICROSECONDS)
                 .subscribe(new Action1<RxEvent.ResultRegister>() {

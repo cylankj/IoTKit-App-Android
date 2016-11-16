@@ -12,13 +12,13 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.cylan.jiafeigou.misc.JFGRules;
-import com.cylan.jiafeigou.misc.RxEvent;
+import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.misc.TimeLineAssembler;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeWonderfulContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.n.mvp.model.MediaBean;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.support.rxbus.RxBus;
+import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.support.wechat.WechatShare;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.widget.wheel.WheelViewDataSet;
@@ -73,7 +73,7 @@ public class HomeWonderfulPresenterImpl extends AbstractPresenter<HomeWonderfulC
     }
 
     private Subscription getTimeTickEventSub() {
-        return RxBus.getDefault().toObservable(RxEvent.TimeTickEvent.class)
+        return RxBus.getCacheInstance().toObservable(RxEvent.TimeTickEvent.class)
                 .throttleFirst(1000, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<RxEvent.TimeTickEvent>() {
@@ -87,7 +87,7 @@ public class HomeWonderfulPresenterImpl extends AbstractPresenter<HomeWonderfulC
     }
 
     private Subscription getPageScrolledSub() {
-        return RxBus.getDefault().toObservable(RxEvent.PageScrolled.class)
+        return RxBus.getCacheInstance().toObservable(RxEvent.PageScrolled.class)
                 .throttleFirst(1000, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<RxEvent.PageScrolled>() {

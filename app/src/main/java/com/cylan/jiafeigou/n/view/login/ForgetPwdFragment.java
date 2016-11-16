@@ -24,10 +24,10 @@ import android.widget.ViewSwitcher;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.cache.JCache;
 import com.cylan.jiafeigou.misc.JConstant;
-import com.cylan.jiafeigou.misc.RxEvent;
+import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.n.mvp.contract.login.ForgetPwdContract;
 import com.cylan.jiafeigou.n.mvp.model.RequestResetPwdBean;
-import com.cylan.jiafeigou.support.rxbus.RxBus;
+import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.IMEUtils;
 import com.cylan.jiafeigou.utils.LocaleUtils;
@@ -365,7 +365,7 @@ public class ForgetPwdFragment extends Fragment implements ForgetPwdContract.Vie
             public void onClick(View v) {
                 Toast.makeText(getActivity(), "yes?", Toast.LENGTH_SHORT).show();
                 getActivity().getSupportFragmentManager().popBackStack();
-                RxBus.getDefault().post(new RxEvent.LoginPopBack(etForgetUsername.getText().toString()));
+                RxBus.getCacheInstance().post(new RxEvent.LoginPopBack(etForgetUsername.getText().toString()));
             }
         });
         vsSetAccountPwd.addView(mailView);

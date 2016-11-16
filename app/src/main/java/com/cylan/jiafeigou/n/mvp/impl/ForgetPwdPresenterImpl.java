@@ -3,10 +3,10 @@ package com.cylan.jiafeigou.n.mvp.impl;
 import com.cylan.entity.JfgEnum;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
-import com.cylan.jiafeigou.misc.RxEvent;
+import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.n.mvp.contract.login.ForgetPwdContract;
 import com.cylan.jiafeigou.n.mvp.model.RequestResetPwdBean;
-import com.cylan.jiafeigou.support.rxbus.RxBus;
+import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 
 import rx.Observable;
@@ -75,7 +75,7 @@ public class ForgetPwdPresenterImpl extends AbstractPresenter<ForgetPwdContract.
     }
 
     private Subscription getForgetPwdByMailSub() {
-        return RxBus.getDefault().toObservable(RxEvent.ForgetPwdByMail.class)
+        return RxBus.getCacheInstance().toObservable(RxEvent.ForgetPwdByMail.class)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<RxEvent.ForgetPwdByMail>() {
                     @Override
@@ -89,7 +89,7 @@ public class ForgetPwdPresenterImpl extends AbstractPresenter<ForgetPwdContract.
     }
 
     private Subscription getSmsCodeResultSub() {
-        return RxBus.getDefault().toObservable(RxEvent.SmsCodeResult.class)
+        return RxBus.getCacheInstance().toObservable(RxEvent.SmsCodeResult.class)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<RxEvent.SmsCodeResult>() {
                     @Override

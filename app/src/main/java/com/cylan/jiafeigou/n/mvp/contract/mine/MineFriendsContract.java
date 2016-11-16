@@ -1,14 +1,10 @@
 package com.cylan.jiafeigou.n.mvp.contract.mine;
 
-import com.cylan.entity.jniCall.JFGFriendAccount;
-import com.cylan.entity.jniCall.JFGFriendRequest;
-import com.cylan.jiafeigou.misc.RxEvent;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
 import com.cylan.jiafeigou.n.mvp.model.MineAddReqBean;
 import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
-import com.cylan.jiafeigou.n.view.adapter.AddRelativesAndFriendsAdapter;
-import com.cylan.jiafeigou.n.view.adapter.RelativesAndFriendsAdapter;
+import com.cylan.jiafeigou.rx.RxEvent;
 
 import java.util.ArrayList;
 
@@ -66,17 +62,19 @@ public interface MineFriendsContract {
 
         /**
          * desc：删除添加请求条目
+         *
          * @param position
          * @param bean
          */
-        void addReqDeleteItem(int position,MineAddReqBean bean);
+        void addReqDeleteItem(int position, MineAddReqBean bean);
 
         /**
          * desc：好友列表添加条目
+         *
          * @param position
          * @param bean
          */
-        void friendlistAddItem(int position,RelAndFriendBean bean);
+        void friendlistAddItem(int position, RelAndFriendBean bean);
 
     }
 
@@ -87,6 +85,7 @@ public interface MineFriendsContract {
         ArrayList<RelAndFriendBean> initRelativatesAndFriendsData(RxEvent.GetFriendList friendList);
 
         boolean checkAddRequestOutTime(MineAddReqBean bean);        //检测添加请求是否超时
+
         /**
          * desc：初始化处理好友列表
          */
@@ -109,6 +108,7 @@ public interface MineFriendsContract {
 
         /**
          * 启动获取好友列表的SDK
+         *
          * @return
          */
         Subscription getFriendList();

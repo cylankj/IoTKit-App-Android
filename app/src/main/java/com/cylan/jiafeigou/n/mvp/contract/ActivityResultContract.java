@@ -1,6 +1,6 @@
 package com.cylan.jiafeigou.n.mvp.contract;
 
-import com.cylan.jiafeigou.misc.RxEvent;
+import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 
 import org.msgpack.annotation.NotNullable;

@@ -22,6 +22,8 @@ public class SimpleCache {
     }
 
     public WeakReference<List<ScanResult>> getWeakScanResult() {
+        if (weakScanResult == null)
+            weakScanResult = new WeakReference<>(null);
         return weakScanResult;
     }
 

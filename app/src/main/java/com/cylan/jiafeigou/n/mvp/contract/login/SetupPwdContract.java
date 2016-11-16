@@ -1,9 +1,8 @@
 package com.cylan.jiafeigou.n.mvp.contract.login;
 
-import com.cylan.jiafeigou.misc.RxEvent;
+import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
-import com.cylan.jiafeigou.n.mvp.model.RequestResetPwdBean;
 
 /**
  * Created by chen on 5/30/16.

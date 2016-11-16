@@ -1,20 +1,15 @@
 package com.cylan.jiafeigou.n.mvp.impl.mine;
 
-import com.cylan.entity.JfgEnum;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
-import com.cylan.jiafeigou.misc.RxEvent;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineClipImageContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
+import com.cylan.jiafeigou.rx.RxBus;
+import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.support.rxbus.RxBus;
 
-import java.util.concurrent.TimeUnit;
-
-import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
-import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
@@ -34,11 +29,12 @@ public class MineClipImagePresenterImp extends AbstractPresenter<MineClipImageCo
 
     /**
      * 上传用户的头像
+     *
      * @param path
      */
     @Override
     public void upLoadUserHeadImag(String path) {
-        if (getView() != null){
+        if (getView() != null) {
             getView().showUpLoadPro();
         }
         // TODO 上传头像
@@ -62,12 +58,12 @@ public class MineClipImagePresenterImp extends AbstractPresenter<MineClipImageCo
      */
     @Override
     public Subscription getUpLoadResult() {
-        return RxBus.getDefault().toObservable(RxEvent.GetHttpDoneResult.class)
+        return RxBus.getCacheInstance().toObservable(RxEvent.GetHttpDoneResult.class)
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<RxEvent.GetHttpDoneResult>() {
                     @Override
                     public void call(RxEvent.GetHttpDoneResult getHttpDoneResult) {
-                        if (getHttpDoneResult != null && getHttpDoneResult instanceof RxEvent.GetHttpDoneResult){
+                        if (getHttpDoneResult != null && getHttpDoneResult instanceof RxEvent.GetHttpDoneResult) {
                             getView().hideUpLoadPro();
                             getView().upLoadResultView(getHttpDoneResult.jfgMsgHttpResult.requestId);
                         }
@@ -77,9 +73,9 @@ public class MineClipImagePresenterImp extends AbstractPresenter<MineClipImageCo
 
     @Override
     public void start() {
-        if (subscription != null && !subscription.isUnsubscribed()){
+        if (subscription != null && !subscription.isUnsubscribed()) {
             subscription.unsubscribe();
-        }else {
+        } else {
             subscription = new CompositeSubscription();
             subscription.add(getUpLoadResult());
         }
@@ -88,7 +84,7 @@ public class MineClipImagePresenterImp extends AbstractPresenter<MineClipImageCo
 
     @Override
     public void stop() {
-        if (subscription != null && !subscription.isUnsubscribed()){
+        if (subscription != null && !subscription.isUnsubscribed()) {
             subscription.unsubscribe();
         }
     }

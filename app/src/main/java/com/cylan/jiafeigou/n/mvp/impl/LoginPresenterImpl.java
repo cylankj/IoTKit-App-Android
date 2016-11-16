@@ -10,11 +10,11 @@ import com.cylan.jiafeigou.cache.JCache;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
-import com.cylan.jiafeigou.misc.RxEvent;
 import com.cylan.jiafeigou.n.mvp.contract.login.LoginModelContract;
 import com.cylan.jiafeigou.n.mvp.model.LoginAccountBean;
+import com.cylan.jiafeigou.rx.RxBus;
+import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.support.rxbus.RxBus;
 import com.cylan.jiafeigou.support.sina.AccessTokenKeeper;
 import com.cylan.jiafeigou.support.sina.SinaLogin;
 import com.cylan.jiafeigou.support.sina.UsersAPI;
@@ -91,7 +91,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginModelContract.Vie
 
     private Subscription resultLoginSub() {
         //sdk中，登陆失败的话，自动一分钟登录一次。
-        return RxBus.getDefault().toObservable(RxEvent.ResultLogin.class)
+        return RxBus.getCacheInstance().toObservable(RxEvent.ResultLogin.class)
                 .delay(1000, TimeUnit.MILLISECONDS)//set a delay
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<RxEvent.ResultLogin>() {
@@ -105,7 +105,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginModelContract.Vie
     }
 
     private Subscription resultRegisterSub() {
-        return RxBus.getDefault().toObservable(RxEvent.ResultRegister.class)
+        return RxBus.getCacheInstance().toObservable(RxEvent.ResultRegister.class)
                 .delay(1000, TimeUnit.MILLISECONDS)//set a delay
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<RxEvent.ResultRegister>() {
@@ -124,7 +124,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginModelContract.Vie
     }
 
     private Subscription resultVerifyCodeSub() {
-        return RxBus.getDefault().toObservable(RxEvent.ResultVerifyCode.class)
+        return RxBus.getCacheInstance().toObservable(RxEvent.ResultVerifyCode.class)
                 .delay(1000, TimeUnit.MILLISECONDS)//set a delay
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<RxEvent.ResultVerifyCode>() {
@@ -136,7 +136,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginModelContract.Vie
     }
 
     private Subscription smsCodeResultSub() {
-        return RxBus.getDefault().toObservable(RxEvent.SmsCodeResult.class)
+        return RxBus.getCacheInstance().toObservable(RxEvent.SmsCodeResult.class)
                 .delay(1000, TimeUnit.MILLISECONDS)//set a delay
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<RxEvent.SmsCodeResult>() {
@@ -154,7 +154,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginModelContract.Vie
     }
 
     private Subscription switchBoxSub() {
-        return RxBus.getDefault().toObservable(RxEvent.SwitchBox.class)
+        return RxBus.getCacheInstance().toObservable(RxEvent.SwitchBox.class)
                 .delay(1000, TimeUnit.MILLISECONDS)//set a delay
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<RxEvent.SwitchBox>() {
@@ -167,7 +167,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginModelContract.Vie
     }
 
     private Subscription loginPopBackSub() {
-        return RxBus.getDefault().toObservable(RxEvent.LoginPopBack.class)
+        return RxBus.getCacheInstance().toObservable(RxEvent.LoginPopBack.class)
                 .delay(1000, TimeUnit.MILLISECONDS)//set a delay
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<RxEvent.LoginPopBack>() {

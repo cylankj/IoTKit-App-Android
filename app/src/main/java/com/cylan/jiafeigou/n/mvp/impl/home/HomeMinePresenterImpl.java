@@ -9,20 +9,15 @@ import android.support.annotation.DrawableRes;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
-import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.cache.JCache;
-import com.cylan.jiafeigou.misc.JConstant;
-import com.cylan.jiafeigou.misc.RxEvent;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeMineContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.n.mvp.model.UserInfoBean;
-import com.cylan.jiafeigou.support.rxbus.RxBus;
-import com.cylan.jiafeigou.utils.PreferencesUtils;
+import com.cylan.jiafeigou.rx.RxBus;
+import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.utils.BitmapUtil;
 import com.cylan.utils.FastBlurUtil;
 
 import java.util.Random;
-import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
 import rx.Subscription;
@@ -66,9 +61,9 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
                     }
                 });*/
 
-        if (subscription != null && !subscription.isUnsubscribed()){
+        if (subscription != null && !subscription.isUnsubscribed()) {
             subscription.unsubscribe();
-        }else {
+        } else {
             subscription = new CompositeSubscription();
             subscription.add(initData());
         }
@@ -201,12 +196,12 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
      */
     @Override
     public Subscription initData() {
-        return RxBus.getDefault().toObservable(RxEvent.GetUserInfo.class)
+        return RxBus.getCacheInstance().toObservable(RxEvent.GetUserInfo.class)
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<RxEvent.GetUserInfo>() {
                     @Override
                     public void call(RxEvent.GetUserInfo getUserInfo) {
-                        if (getUserInfo != null && getUserInfo instanceof RxEvent.GetUserInfo){
+                        if (getUserInfo != null) {
                             userInfo = new UserInfoBean();
                             userInfo.account = getUserInfo.jfgAccount.getAccount();
                             userInfo.phone = getUserInfo.jfgAccount.getPhone();
@@ -217,9 +212,9 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
                             userInfo.enableSound = getUserInfo.jfgAccount.isEnableSound();
                             userInfo.enablePush = getUserInfo.jfgAccount.isEnablePush();
 
-                            if (getView() != null){
+                            if (getView() != null) {
                                 getView().setUserImageHead(userInfo.token);
-                                if (userInfo.name == null | "".equals(userInfo.name)){
+                                if (userInfo.name == null | "".equals(userInfo.name)) {
                                     userInfo.name = createRandomName();
                                 }
                                 getView().setAliasName(userInfo.name);

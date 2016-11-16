@@ -1,8 +1,8 @@
 package com.cylan.jiafeigou.n.mvp.impl;
 
-import com.cylan.jiafeigou.misc.RxEvent;
+import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.n.mvp.contract.ActivityResultContract;
-import com.cylan.jiafeigou.support.rxbus.RxBus;
+import com.cylan.jiafeigou.rx.RxBus;
 
 import java.util.concurrent.TimeUnit;
 
@@ -24,8 +24,8 @@ public class ActivityResultPresenterImpl extends
 
     @Override
     public void setActivityResult(RxEvent.ActivityResult result) {
-        if (RxBus.getDefault().hasObservers()) {
-            RxBus.getDefault().post(result);
+        if (RxBus.getCacheInstance().hasObservers()) {
+            RxBus.getCacheInstance().post(result);
         }
     }
 
@@ -35,7 +35,7 @@ public class ActivityResultPresenterImpl extends
     }
 
     private Subscription getActivityResultSub() {
-        return RxBus.getDefault().toObservable(RxEvent.ActivityResult.class)
+        return RxBus.getCacheInstance().toObservable(RxEvent.ActivityResult.class)
                 .throttleFirst(3000, TimeUnit.MILLISECONDS)
                 .subscribe(new Action1<RxEvent.ActivityResult>() {
                     @Override

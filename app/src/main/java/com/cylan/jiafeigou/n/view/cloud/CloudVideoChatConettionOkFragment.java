@@ -14,10 +14,10 @@ import android.widget.TextView;
 import android.widget.VideoView;
 
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.misc.RxEvent;
+import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.n.mvp.contract.cloud.CloudVideoChatConettionOkContract;
 import com.cylan.jiafeigou.n.mvp.impl.cloud.CloudVideoChatConettionOkPresenterImp;
-import com.cylan.jiafeigou.support.rxbus.RxBus;
+import com.cylan.jiafeigou.rx.RxBus;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -131,7 +131,7 @@ public class CloudVideoChatConettionOkFragment extends Fragment implements Cloud
 //                presenter.setVideoTalkFinishFlag(true);
 //                presenter.setVideoTalkFinishResultData(tvVideoTime.getText().toString().trim());
 
-                RxBus.getDefault().post(new RxEvent.HangUpVideoTalk(true,tvVideoTime.getText().toString().trim()));
+                RxBus.getCacheInstance().postSticky(new RxEvent.HangUpVideoTalk(true,tvVideoTime.getText().toString().trim()));
                 getActivity().finish();
                 break;
         }

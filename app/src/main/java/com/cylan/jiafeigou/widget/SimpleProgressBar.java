@@ -29,7 +29,7 @@ public class SimpleProgressBar
     /**
      *
      */
-    private static final int swipeDegree = 300;
+    private int swipeDegree = 300;
     private Paint circlePaint = new Paint();
     private Paint pointPaint = new Paint();
 
@@ -53,7 +53,8 @@ public class SimpleProgressBar
                         defStyleAttr, 0);
         strokeWidth = a.getDimension(R.styleable.SimpleProgressStyle_progress_stroke_width, 3);
         strokeColor = a.getColor(R.styleable.SimpleProgressStyle_progress_stroke_color, Color.BLACK);
-        pointRadius = a.getDimension(R.styleable.SimpleProgressStyle_progress_point_radius, Color.BLACK);
+        pointRadius = a.getDimension(R.styleable.SimpleProgressStyle_progress_point_radius, 10);
+        swipeDegree = a.getInt(R.styleable.SimpleProgressStyle_progress_swipe_degree, 300);
         a.recycle();
         init();
     }

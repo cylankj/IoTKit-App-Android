@@ -1,8 +1,11 @@
 package com.cylan.jiafeigou.misc;
 
+import android.content.Context;
 import android.text.TextUtils;
 
 import com.cylan.jiafeigou.utils.TimeUtils;
+
+import java.util.Locale;
 
 /**
  * Created by cylan-hunt on 16-8-3.
@@ -43,5 +46,51 @@ public class JFGRules {
         if (TextUtils.isEmpty(string))
             return "";
         return string.replaceAll("\\D+", "");
+    }
+
+    public static final int LANGUAGE_TYPE_SIMPLE_CHINESE = 0;
+    public static final int LANGUAGE_TYPE_ENGLISH = 1;
+    public static final int LANGUAGE_TYPE_RU = 2;
+    //add by hunt
+    public static final int LANGUAGE_TYPE_POR = 3;
+    public static final int LANGUAGE_TYPE_SPANISH = 4;
+    public static final int LANGUAGE_TYPE_JAPAN = 5;
+    public static final int LANGUAGE_TYPE_FRENCH = 6;
+    public static final int LANGUAGE_TYPE_GERMANY = 7;
+    public static final int LANGUAGE_TYPE_ITALIAN = 8;
+    public static final int LANGUAGE_TYPE_TURKISH = 9;
+    public static final int LANGUAGE_TYPE_TRA_CHINESE = 10;
+
+    private static final Locale[] CONST_LOCALE = {
+            Locale.SIMPLIFIED_CHINESE,
+            Locale.ENGLISH,
+            new Locale("ru", "RU"),
+            new Locale("pt", "BR"),
+            new Locale("es", "ES"),
+            Locale.JAPAN,
+            Locale.FRANCE,
+            Locale.GERMANY,
+            Locale.ITALY,
+            new Locale("tr", "TR"),
+            Locale.TRADITIONAL_CHINESE};
+
+    private static final Locale LOCALE_HK = new Locale("zh", "HK");
+
+    public static int getLanguageType(Context ctx) {
+        Locale locale = ctx.getResources().getConfiguration().locale;
+        if (locale.equals(LOCALE_HK))
+            return LANGUAGE_TYPE_TRA_CHINESE;
+        final int count = CONST_LOCALE.length;
+
+        if (locale.getLanguage().equals("zh")) {
+            if (locale.getCountry().equals("CN"))
+                return LANGUAGE_TYPE_SIMPLE_CHINESE;
+            return LANGUAGE_TYPE_TRA_CHINESE;
+        }
+        for (int i = 0; i < count; i++) {
+            if (locale.equals(CONST_LOCALE[i]))
+                return i;
+        }
+        return LANGUAGE_TYPE_ENGLISH;
     }
 }

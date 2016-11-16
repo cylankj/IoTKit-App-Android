@@ -1,12 +1,10 @@
 package com.cylan.jiafeigou.n.mvp.impl.mag;
 
-import android.os.SystemClock;
-
-import com.cylan.jiafeigou.misc.RxEvent;
 import com.cylan.jiafeigou.n.mvp.contract.mag.MagLiveContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.n.mvp.model.MagBean;
-import com.cylan.jiafeigou.support.rxbus.RxBus;
+import com.cylan.jiafeigou.rx.RxBus;
+import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.utils.RandomUtils;
 
 import java.text.SimpleDateFormat;
@@ -48,7 +46,7 @@ public class MagLivePresenterImp extends AbstractPresenter<MagLiveContract.View>
      */
     @Override
     public void initMagData() {
-        if (getView() != null){
+        if (getView() != null) {
             //TODO 从本地数据库 获取消息记录 或者从服务器拉取
             getView().initRecycleView(TestData());
         }
@@ -86,7 +84,7 @@ public class MagLivePresenterImp extends AbstractPresenter<MagLiveContract.View>
      */
     @Override
     public Subscription getAccount() {
-        return RxBus.getDefault().toObservable(RxEvent.GetUserInfo.class)
+        return RxBus.getCacheInstance().toObservable(RxEvent.GetUserInfo.class)
                 .subscribe(new Action1<RxEvent.GetUserInfo>() {
                     @Override
                     public void call(RxEvent.GetUserInfo getUserInfo) {
@@ -112,6 +110,7 @@ public class MagLivePresenterImp extends AbstractPresenter<MagLiveContract.View>
 
     /**
      * 将时间字符串转换成毫秒
+     *
      * @param time
      * @return
      */
@@ -126,7 +125,6 @@ public class MagLivePresenterImp extends AbstractPresenter<MagLiveContract.View>
 
         return -1l;
     }
-
 
 
     private ArrayList<MagBean> initData() {

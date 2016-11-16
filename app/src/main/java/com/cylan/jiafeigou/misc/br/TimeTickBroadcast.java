@@ -4,8 +4,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
-import com.cylan.jiafeigou.misc.RxEvent;
-import com.cylan.jiafeigou.support.rxbus.RxBus;
+import com.cylan.jiafeigou.rx.RxEvent;
+import com.cylan.jiafeigou.rx.RxBus;
 
 /**
  * Created by cylan-hunt on 16-8-3.
@@ -15,8 +15,8 @@ public class TimeTickBroadcast extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        if (RxBus.getDefault().hasObservers()) {
-            RxBus.getDefault().postSticky(new RxEvent.TimeTickEvent());
+        if (RxBus.getCacheInstance().hasObservers()) {
+            RxBus.getCacheInstance().postSticky(new RxEvent.TimeTickEvent());
         }
     }
 

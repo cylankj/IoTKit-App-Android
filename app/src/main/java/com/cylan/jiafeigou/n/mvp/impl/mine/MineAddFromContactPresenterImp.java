@@ -2,7 +2,7 @@ package com.cylan.jiafeigou.n.mvp.impl.mine;
 
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineAddFromContactContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
-import com.cylan.jiafeigou.support.rxbus.RxBus;
+import com.cylan.jiafeigou.rx.RxBus;
 
 import rx.Observable;
 import rx.Subscription;
@@ -60,7 +60,7 @@ public class MineAddFromContactPresenterImp extends AbstractPresenter<MineAddFro
 
     @Override
     public String getwhat() {
-        RxBus.getDefault().post("dddd");
+        RxBus.getUiInstance().post("dddd");
         return null;
     }
 }

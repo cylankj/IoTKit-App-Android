@@ -18,18 +18,15 @@ import android.widget.Toast;
 
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.OnActivityReenterListener;
-import com.cylan.jiafeigou.misc.RxEvent;
+import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.misc.SharedElementCallBackListener;
 import com.cylan.jiafeigou.n.mvp.contract.home.NewHomeActivityContract;
-import com.cylan.jiafeigou.n.mvp.impl.home.HomeMinePresenterImpl;
-import com.cylan.jiafeigou.n.mvp.impl.home.HomePageListPresenterImpl;
-import com.cylan.jiafeigou.n.mvp.impl.home.HomeWonderfulPresenterImpl;
 import com.cylan.jiafeigou.n.mvp.impl.home.NewHomeActivityPresenterImpl;
 import com.cylan.jiafeigou.n.view.activity.NeedLoginActivity;
 import com.cylan.jiafeigou.n.view.home.HomeMineFragment;
 import com.cylan.jiafeigou.n.view.home.HomePageListFragmentExt;
 import com.cylan.jiafeigou.n.view.home.HomeWonderfulFragmentExt;
-import com.cylan.jiafeigou.support.rxbus.RxBus;
+import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.widget.CustomViewPager;
 
 import java.util.List;
@@ -96,8 +93,8 @@ public class NewHomeActivity extends NeedLoginActivity implements
                 if (state == ViewPager.SCROLL_STATE_IDLE) {
                     final int index = vpHomeContent.getCurrentItem();
                     if (index == 0 || index == 2) {
-                        if (RxBus.getDefault().hasObservers())
-                            RxBus.getDefault().post(new RxEvent.PageScrolled());
+                        if (RxBus.getCacheInstance().hasObservers())
+                            RxBus.getCacheInstance().post(new RxEvent.PageScrolled());
                     }
                 }
             }
@@ -183,7 +180,7 @@ public class NewHomeActivity extends NeedLoginActivity implements
             switch (position) {
                 case INDEX_0: {
                     HomePageListFragmentExt fragment = HomePageListFragmentExt.newInstance(new Bundle());
-                    new HomePageListPresenterImpl(fragment);
+
                     if (fragment != null && fragment.getContext() != null)
                         Toast.makeText(fragment.getContext(), "重新new了。。。1", Toast.LENGTH_SHORT).show();
                     return fragment;
@@ -196,14 +193,13 @@ public class NewHomeActivity extends NeedLoginActivity implements
                     HomeWonderfulFragmentExt fragment = HomeWonderfulFragmentExt.newInstance(bundle);
                     sharedElementCallBackListener = fragment;
                     onActivityReenterListener = fragment;
-                    new HomeWonderfulPresenterImpl(fragment);
+
                     if (fragment != null && fragment.getContext() != null)
                         Toast.makeText(fragment.getContext(), "重新new了。。。2", Toast.LENGTH_SHORT).show();
                     return fragment;
                 }
                 case INDEX_2:
                     HomeMineFragment fragment = HomeMineFragment.newInstance(new Bundle());
-                    new HomeMinePresenterImpl(fragment);
                     if (fragment != null && fragment.getContext() != null)
                         Toast.makeText(fragment.getContext(), "重新new了。。。3", Toast.LENGTH_SHORT).show();
                     return fragment;

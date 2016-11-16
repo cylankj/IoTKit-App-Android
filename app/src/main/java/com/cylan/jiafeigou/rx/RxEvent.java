@@ -1,17 +1,17 @@
-package com.cylan.jiafeigou.misc;
+package com.cylan.jiafeigou.rx;
 
 import android.os.Bundle;
 
-import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.entity.jniCall.JFGAccount;
+import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.entity.jniCall.JFGFriendAccount;
 import com.cylan.entity.jniCall.JFGFriendRequest;
 import com.cylan.entity.jniCall.JFGMsgHttpResult;
+import com.cylan.entity.jniCall.JFGResult;
 import com.cylan.entity.jniCall.JFGShareListInfo;
-import com.cylan.entity.jniCall.RobotoGetDataRsp;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
 
 
 /**
@@ -267,20 +267,21 @@ public class RxEvent {
     }
 
     /**
-     * 设备列表返回
+     * 设备列表返回,粗糙数据,任然需要通过查询
      */
-    public static final class DeviceList {
-        public List<JFGDevice> jfgDevices = new ArrayList<>();
+    public static final class DeviceRawList {
+        public JFGDevice[] devices;
 
-        public DeviceList(List<JFGDevice> list) {
-            this.jfgDevices = list;
+        public DeviceRawList(JFGDevice[] list) {
+            this.devices = list;
 
         }
     }
+
     /**
      * 获取登录用户的信息
      */
-    public static final class GetUserInfo{
+    public static final class GetUserInfo {
 
         public JFGAccount jfgAccount;
 
@@ -292,7 +293,7 @@ public class RxEvent {
     /**
      * 获取到http请求的结果
      */
-    public static final class GetHttpDoneResult{
+    public static final class GetHttpDoneResult {
         public JFGMsgHttpResult jfgMsgHttpResult;
 
         public GetHttpDoneResult(JFGMsgHttpResult jfgMsgHttpResult) {
@@ -300,21 +301,27 @@ public class RxEvent {
         }
     }
 
-    /**
-     * 设备属性
-     */
-    public static final class DpDataRsp {
-        //萝卜头
-        public RobotoGetDataRsp robotoGetDataRsp;
+    public static final class LocalUdpMsg {
+        //消息的时间,可以用来判断有效性.
+        public long time;
+        public String ip;
+        public short port;
+        public byte[] data;
 
-        public DpDataRsp(RobotoGetDataRsp robotoGetDataRsp) {
-            this.robotoGetDataRsp = robotoGetDataRsp;
+        @Override
+        public String toString() {
+            return "LocalUdpMsg{" +
+                    "ip='" + ip + '\'' +
+                    ", port=" + port +
+                    ", data=" + Arrays.toString(data) +
+                    '}';
         }
     }
+
     /**
      * 分享设备的回调
      */
-    public static final class ShareDeviceCallBack{
+    public static final class ShareDeviceCallBack {
 
         public int requestId;
 
@@ -329,4 +336,11 @@ public class RxEvent {
         }
     }
 
+    public static final class BindDeviceEvent {
+        public JFGResult jfgResult;
+
+        public BindDeviceEvent(JFGResult jfgResult) {
+            this.jfgResult = jfgResult;
+        }
+    }
 }
