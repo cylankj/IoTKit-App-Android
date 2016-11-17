@@ -43,7 +43,7 @@
             android:layout_gravity="center"
             android:drawablePadding="12dp"
             android:drawableTop="@drawable/bg_bell_home_offline_icon"
-            android:text="@string/item_bad_net_work"
+            android:text="@string/OFFLINE_ERR_1"
             android:textColor="@color/color_white"
             android:textSize="14sp" />
     </FrameLayout>

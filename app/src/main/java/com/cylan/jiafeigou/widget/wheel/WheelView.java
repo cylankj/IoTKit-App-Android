@@ -100,7 +100,7 @@ public class WheelView extends View {
 
         textSize = convertToPx(textSize, getResources());
         textPaint.setTextSize(textSize);
-        final String testString = getContext().getString(R.string.item_just_for_test);
+        final String testString = "00";
         textPaint.getTextBounds(testString, 0, testString.length(), textHeightRect);
         wheelViewDataSet = new WheelViewDataSet();
         itemWidth = convertToPx((int) itemWidth, getResources());

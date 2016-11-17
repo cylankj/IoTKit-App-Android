@@ -216,13 +216,13 @@ public class SmartcallActivity extends NeedLoginActivity
     public void onCameraDenied() {
         // NOTE: Deal with activity_cloud_live_mesg_video_talk_item denied permission, e.g. by showing specific UI
         // or disabling certain functionality
-        Toast.makeText(this, R.string.permission_camera_denied, Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, R.string.SET_PHOTO_FAIL, Toast.LENGTH_SHORT).show();
         AppLogger.d(JConstant.LOG_TAG.PERMISSION + "onCameraDenied");
     }
 
     @OnNeverAskAgain(Manifest.permission.CAMERA)
     public void onCameraNeverAskAgain() {
-        Toast.makeText(this, R.string.permission_camera_never_askagain, Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this, R.string.permission_camera_never_askagain, Toast.LENGTH_SHORT).show();
         AppLogger.d(JConstant.LOG_TAG.PERMISSION + "onCameraNeverAskAgain");
     }
 
@@ -237,20 +237,20 @@ public class SmartcallActivity extends NeedLoginActivity
     public void showRationaleForCamera(PermissionRequest request) {
         // NOTE: Show activity_cloud_live_mesg_video_talk_item rationale to explain why the permission is needed, e.g. with activity_cloud_live_mesg_video_talk_item dialog.
         // Call proceed() or cancel() on the provided PermissionRequest to continue or abort
-        showRationaleDialog(R.string.permission_camera_rationale, request);
+        showRationaleDialog(R.string.SET_PHOTO_FAIL, request);
         AppLogger.d(JConstant.LOG_TAG.PERMISSION + "showRationaleForCamera");
     }
 
 
     private void showRationaleDialog(@StringRes int messageResId, final PermissionRequest request) {
         new AlertDialog.Builder(this)
-                .setPositiveButton(R.string.button_allow, new DialogInterface.OnClickListener() {
+                .setPositiveButton(R.string.SET_PHOTO_FAIL, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(@NonNull DialogInterface dialog, int which) {
                         request.proceed();
                     }
                 })
-                .setNegativeButton(R.string.button_deny, new DialogInterface.OnClickListener() {
+                .setNegativeButton(R.string.SET_PHOTO_FAIL, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(@NonNull DialogInterface dialog, int which) {
                         request.cancel();

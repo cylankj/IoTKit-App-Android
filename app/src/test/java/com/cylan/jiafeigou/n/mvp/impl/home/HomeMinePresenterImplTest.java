@@ -1,21 +1,12 @@
 package com.cylan.jiafeigou.n.mvp.impl.home;
 
-import com.cylan.jiafeigou.n.mvp.contract.mine.MineAddFromContactContract;
-import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendAddReqDetailContract;
-import com.cylan.jiafeigou.support.rxbus.RxBus;
-import com.google.common.base.Verify;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 
-import java.util.List;
-
-import rx.functions.Action1;
-
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
 /**
  * 作者：zsl
@@ -36,7 +27,7 @@ public class HomeMinePresenterImplTest {
 
     @Test
     public void testStart() throws Exception {
-        HomeMinePresenterImpl homeMinePresenter =Mockito.mock(HomeMinePresenterImpl.class);
+        HomeMinePresenterImpl homeMinePresenter = Mockito.mock(HomeMinePresenterImpl.class);
         assertTrue(homeMinePresenter.createRandomName().contains("d"));
 
     }

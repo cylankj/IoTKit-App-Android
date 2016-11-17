@@ -25,7 +25,7 @@
             android:id="@+id/tv_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/preview"
+            android:text="string/preview"
             android:textColor="@android:color/white"
             android:textSize="18sp"
             android:layout_toRightOf="@id/iv_back"
