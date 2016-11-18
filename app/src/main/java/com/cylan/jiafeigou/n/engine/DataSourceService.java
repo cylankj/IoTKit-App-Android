@@ -304,7 +304,7 @@ public class DataSourceService extends Service implements AppCallBack {
     public void OnGetShareListRsp(int i, ArrayList<JFGShareListInfo> arrayList) {
         AppLogger.d("OnGetShareListRsp :");
         if (eventBus != null && eventBus.hasObservers()) {
-            eventBus.post(new RxEvent.GetShareDeviceList(i, arrayList));
+            eventBus.post(new RxEvent.GetShareListCallBack(i, arrayList));
         }
 
     }

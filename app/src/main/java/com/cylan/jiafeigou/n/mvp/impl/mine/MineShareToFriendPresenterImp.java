@@ -1,8 +1,12 @@
 package com.cylan.jiafeigou.n.mvp.impl.mine;
 
+import com.cylan.jiafeigou.misc.JfgCmdInsurance;
+import com.cylan.jiafeigou.misc.RxEvent;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineShareToFriendContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
+import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.support.rxbus.RxBus;
 import com.cylan.superadapter.internal.SuperViewHolder;
 
 import java.util.ArrayList;
@@ -14,6 +18,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
+import rx.subscriptions.CompositeSubscription;
 
 /**
  * 作者：zsl
@@ -29,6 +34,8 @@ public class MineShareToFriendPresenterImp extends AbstractPresenter<MineShareTo
     private static int hasShareNum;
     private Subscription sendShareFriendSub;
 
+    private CompositeSubscription compositeSubscription;
+
     public MineShareToFriendPresenterImp(MineShareToFriendContract.View view) {
         super(view);
         view.setPresenter(this);
@@ -36,6 +43,14 @@ public class MineShareToFriendPresenterImp extends AbstractPresenter<MineShareTo
 
     @Override
     public void start() {
+
+        if (compositeSubscription != null && !compositeSubscription.isUnsubscribed()){
+            compositeSubscription.unsubscribe();
+        }else {
+            compositeSubscription = new CompositeSubscription();
+            compositeSubscription.add(getUnShareFriendCallBack());
+        }
+
         initFriendListData();
         handlerHasShareFriendNumber();
     }
@@ -156,8 +171,60 @@ public class MineShareToFriendPresenterImp extends AbstractPresenter<MineShareTo
      */
     @Override
     public void getUnShareFriend(String cid) {
+        rx.Observable.just(cid)
+                .subscribeOn(Schedulers.newThread())
+                .subscribe(new Action1<String>() {
+                    @Override
+                    public void call(String cid) {
+                        ArrayList<String> list = new ArrayList<String>();
+                        list.add(cid);
+                        JfgCmdInsurance.getCmd().getShareList(list);
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        AppLogger.e("getUnShareFriend"+throwable.getLocalizedMessage());
+                    }
+                });
+    }
 
+    /**
+     * 获取到未分享亲友的回调
+     * @return
+     */
+    @Override
+    public Subscription getUnShareFriendCallBack() {
+        return RxBus.getCacheInstance().toObservable(RxEvent.GetShareListCallBack.class)
+                .flatMap(new Func1<RxEvent.GetShareListCallBack, Observable<ArrayList<RelAndFriendBean>>>() {
+                    @Override
+                    public Observable<ArrayList<RelAndFriendBean>> call(RxEvent.GetShareListCallBack getShareListCallBack) {
+                        if (getShareListCallBack != null && getShareListCallBack instanceof RxEvent.GetShareListCallBack){
+                            if (getShareListCallBack.i == 0 && getShareListCallBack.arrayList.size() != 0){
+                                return Observable.just(converData(getShareListCallBack));
+                            }else {
+                                return null;
+                            }
+                        }else {
+                            return null;
+                        }
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<ArrayList<RelAndFriendBean>>() {
+                    @Override
+                    public void call(ArrayList<RelAndFriendBean> list) {
+                            handlerDataResult(list);
+                    }
+                });
+    }
 
+    /**
+     * 数据的转换
+     * @param getShareListCallBack
+     * @return
+     */
+    private ArrayList<RelAndFriendBean> converData(RxEvent.GetShareListCallBack getShareListCallBack) {
+        return null;
     }
 
     /**
@@ -167,7 +234,7 @@ public class MineShareToFriendPresenterImp extends AbstractPresenter<MineShareTo
     private void handlerAfterSendShareReq(Integer o) {
 
         switch (o){
-            case 1:        //分享成功
+            case 1:         //分享成功
                 getView().showShareAllSuccess();
                 break;
 

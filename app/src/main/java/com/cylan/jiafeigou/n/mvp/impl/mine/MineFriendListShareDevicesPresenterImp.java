@@ -58,15 +58,15 @@ public class MineFriendListShareDevicesPresenterImp extends AbstractPresenter<Mi
     @Override
     public Subscription initDeviceListData() {
         //Test 数据。。。。
-        RxEvent.GetShareDeviceList shareDeviceList = new RxEvent.GetShareDeviceList(1,TestData());
+        RxEvent.GetShareListCallBack shareDeviceList = new RxEvent.GetShareListCallBack(1,TestData());
         handlerShareDeviceListData(shareDeviceList);
 
-        return RxBus.getCacheInstance().toObservable(RxEvent.GetShareDeviceList.class)
+        return RxBus.getCacheInstance().toObservable(RxEvent.GetShareListCallBack.class)
                 .subscribe(new Action1<Object>() {
                     @Override
                     public void call(Object o) {
-                        if (o != null && o instanceof RxEvent.GetShareDeviceList){
-                            RxEvent.GetShareDeviceList shareDeviceList = (RxEvent.GetShareDeviceList) o;
+                        if (o != null && o instanceof RxEvent.GetShareListCallBack){
+                            RxEvent.GetShareListCallBack shareDeviceList = (RxEvent.GetShareListCallBack) o;
                             handlerShareDeviceListData(shareDeviceList);
                         }
                     }
@@ -176,7 +176,7 @@ public class MineFriendListShareDevicesPresenterImp extends AbstractPresenter<Mi
      * 处理请求回的列表数据
      * @param shareDeviceList
      */
-    private void handlerShareDeviceListData(RxEvent.GetShareDeviceList shareDeviceList) {
+    private void handlerShareDeviceListData(RxEvent.GetShareListCallBack shareDeviceList) {
         if (shareDeviceList != null && shareDeviceList.arrayList.size() != 0){
             hasShareFriendList = shareDeviceList.arrayList;
             if (getView() != null){
@@ -192,7 +192,7 @@ public class MineFriendListShareDevicesPresenterImp extends AbstractPresenter<Mi
      * desc:获取到分享设备的list集合数据
      * @param shareDeviceList
      */
-    private ArrayList<DeviceBean> getShareDeviceList(RxEvent.GetShareDeviceList shareDeviceList) {
+    private ArrayList<DeviceBean> getShareDeviceList(RxEvent.GetShareListCallBack shareDeviceList) {
 
         ArrayList<DeviceBean> list = new ArrayList<>();
 

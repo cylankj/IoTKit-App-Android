@@ -62,6 +62,18 @@ public interface MineShareDeviceContract {
          */
         ArrayList<RelAndFriendBean> getHasShareRelAndFriendList(JFGShareListInfo info);
 
+        /**
+         * 获取到设备已分享的亲友数
+         * @param cid
+         */
+        void getDeviceInfo(ArrayList<String> cid);
+
+        /**
+         * 获取设备已分享的亲友数的回调
+         * @return
+         */
+        Subscription getDeviceInfoCallBack();
+
     }
 
 }

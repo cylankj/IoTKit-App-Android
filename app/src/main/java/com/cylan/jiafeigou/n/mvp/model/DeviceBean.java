@@ -20,6 +20,7 @@ public class DeviceBean extends JFGDevBaseValue implements Parcelable {
     public String shareAccount = "";
     public String alias = "";
     public int isChooseFlag;
+    public int hasShareCount;
 
     public DeviceBean() {
     }
@@ -78,6 +79,7 @@ public class DeviceBean extends JFGDevBaseValue implements Parcelable {
         dest.writeInt(this.intTimeZone);
         dest.writeString(this.strTimeZone);
         dest.writeByte(this.priorityMobleNet ? (byte) 1 : (byte) 0);
+        dest.writeInt(this.hasShareCount);
     }
 
     protected DeviceBean(Parcel in) {
@@ -107,6 +109,7 @@ public class DeviceBean extends JFGDevBaseValue implements Parcelable {
         this.intTimeZone = in.readInt();
         this.strTimeZone = in.readString();
         this.priorityMobleNet = in.readByte() != 0;
+        this.hasShareCount = in.readInt();
     }
 
     public static final Creator<DeviceBean> CREATOR = new Creator<DeviceBean>() {

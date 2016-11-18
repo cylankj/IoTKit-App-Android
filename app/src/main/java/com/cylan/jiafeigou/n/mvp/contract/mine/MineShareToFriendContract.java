@@ -7,6 +7,8 @@ import com.cylan.superadapter.internal.SuperViewHolder;
 
 import java.util.ArrayList;
 
+import rx.Subscription;
+
 /**
  * 作者：zsl
  * 创建时间：2016/9/13
@@ -103,6 +105,12 @@ public interface MineShareToFriendContract {
          * @param cid
          */
         void getUnShareFriend(String cid);
+
+        /**
+         * 获取到未分享的亲友的回调
+         * @return
+         */
+        Subscription getUnShareFriendCallBack();
     }
 
 }

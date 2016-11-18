@@ -240,12 +240,12 @@ public class RxEvent {
     /**
      * desc：获取到分享设备的信息
      */
-    public static final class GetShareDeviceList {
+    public static final class GetShareListCallBack {
         public int i;
 
         public ArrayList<JFGShareListInfo> arrayList;
 
-        public GetShareDeviceList(int i, ArrayList<JFGShareListInfo> arrayList) {
+        public GetShareListCallBack(int i, ArrayList<JFGShareListInfo> arrayList) {
             this.i = i;
             this.arrayList = arrayList;
         }
