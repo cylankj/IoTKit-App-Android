@@ -1,5 +1,6 @@
 package com.cylan.jiafeigou.n.mvp.contract.mine;
 
+import com.cylan.jiafeigou.misc.RxEvent;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
 import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
@@ -64,30 +65,19 @@ public interface MineShareToFriendContract {
          */
         void showNumIsOverDialog(SuperViewHolder holder);
 
+        /**
+         * 处理分享后的结果
+         */
+        void handlerAfterSendShareReq(ArrayList<RxEvent.ShareDeviceCallBack> callbackList);
 
     }
 
     interface Presenter extends BasePresenter {
-        /**
-         * 获取亲友列表的数据
-         */
-        void initFriendListData();
-
-        /**
-         * 处理已经分享的亲友人数
-         */
-        void handlerHasShareFriendNumber();
-
-        /**
-         * 获取到已分享的亲友人数
-         * @return
-         */
-        int getHasShareFriendNumber();
 
         /**
          * 点击确定发送分享请求给服务器
          */
-        void sendShareToFriendReq(ArrayList<RelAndFriendBean> list);
+        void sendShareToFriendReq(String cid,ArrayList<RelAndFriendBean> list);
 
         /**
          * 检测是否有网络
@@ -101,16 +91,21 @@ public interface MineShareToFriendContract {
         void checkShareNumIsOver(SuperViewHolder holder, boolean isChange, int number);
 
         /**
-         * 获取到未分享的亲友
-         * @param cid
+         * 获取到所有的亲友
          */
-        void getUnShareFriend(String cid);
+        Subscription getAllShareFriend();
 
         /**
-         * 获取到未分享的亲友的回调
+         * 获取到所有的亲友的回调
          * @return
          */
-        Subscription getUnShareFriendCallBack();
+        Subscription getAllShareFriendCallBack();
+
+        /**
+         * 分享设备的回调
+         * @return
+         */
+        Subscription shareDeviceCallBack();
     }
 
 }

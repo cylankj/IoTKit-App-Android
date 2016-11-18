@@ -24,7 +24,7 @@ public interface MineShareDeviceContract {
 
     interface View extends BaseView<Presenter> {
 
-        void showShareDialog(DeviceBean item);
+        void showShareDialog(int layoutPosition,DeviceBean item);
 
         /**
          * desc:初始化分享的设备列表
@@ -54,7 +54,7 @@ public interface MineShareDeviceContract {
          * 获取设备中已经分享的好友
          * @return
          */
-        JFGShareListInfo getJFGInfo(int position);
+        ArrayList<RelAndFriendBean> getJFGInfo(int position);
 
         /**
          * 获取到已分享的亲友的数据

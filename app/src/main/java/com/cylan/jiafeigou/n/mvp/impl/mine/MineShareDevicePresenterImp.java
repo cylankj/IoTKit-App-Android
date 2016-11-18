@@ -29,7 +29,7 @@ import rx.subscriptions.CompositeSubscription;
  */
 public class MineShareDevicePresenterImp extends AbstractPresenter<MineShareDeviceContract.View> implements MineShareDeviceContract.Presenter {
 
-    private ArrayList<JFGShareListInfo> hasShareFriendList;
+    private ArrayList<JFGShareListInfo> hasShareFriendList = new ArrayList<>();
     private CompositeSubscription subscription;
     private ArrayList<DeviceBean> allDevice = new ArrayList<>();
 
@@ -87,8 +87,15 @@ public class MineShareDevicePresenterImp extends AbstractPresenter<MineShareDevi
     }
 
     @Override
-    public JFGShareListInfo getJFGInfo(int position) {
-        return hasShareFriendList.get(position);
+    public ArrayList<RelAndFriendBean> getJFGInfo(int position) {
+        ArrayList<RelAndFriendBean> list = new ArrayList<>();
+        for (JFGFriendAccount info:hasShareFriendList.get(position).friends){
+            RelAndFriendBean relAndFriendBean = new RelAndFriendBean();
+            relAndFriendBean.account = info.account;
+            relAndFriendBean.alias = info.alias;
+            list.add(relAndFriendBean);
+        }
+        return list;
     }
 
     /**
@@ -178,6 +185,9 @@ public class MineShareDevicePresenterImp extends AbstractPresenter<MineShareDevi
                     public Observable<ArrayList<DeviceBean>> call(RxEvent.GetShareListCallBack getShareListCallBack) {
                         if (getShareListCallBack != null && getShareListCallBack instanceof RxEvent.GetShareListCallBack){
                             if (getShareListCallBack.i == 0 && getShareListCallBack.arrayList.size() != 0){
+                                //每个设备已分享的亲友集合
+                                hasShareFriendList.clear();
+                                hasShareFriendList.addAll(getShareListCallBack.arrayList);
                                 //该设备以分享的亲友数赋值
                                 for (int i = 0;i<allDevice.size();i++){
                                     if (allDevice.get(i).uuid.equals(getShareListCallBack.arrayList.get(i).cid)){
