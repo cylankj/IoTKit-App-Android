@@ -24,7 +24,7 @@ public interface MineShareDeviceContract {
 
     interface View extends BaseView<Presenter> {
 
-        void showShareDialog();
+        void showShareDialog(DeviceBean item);
 
         /**
          * desc:初始化分享的设备列表

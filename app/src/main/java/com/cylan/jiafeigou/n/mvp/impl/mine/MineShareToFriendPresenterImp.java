@@ -133,7 +133,6 @@ public class MineShareToFriendPresenterImp extends AbstractPresenter<MineShareTo
     @Override
     public boolean checkNetConnetion() {
         //TODO 检测是否有网络
-
         return true;
     }
 
@@ -149,6 +148,16 @@ public class MineShareToFriendPresenterImp extends AbstractPresenter<MineShareTo
         }else {
             getView().setHasShareFriendNum(isChange,number);
         }
+    }
+
+    /**
+     * 获取到未分享的亲友
+     * @param cid
+     */
+    @Override
+    public void getUnShareFriend(String cid) {
+
+
     }
 
     /**

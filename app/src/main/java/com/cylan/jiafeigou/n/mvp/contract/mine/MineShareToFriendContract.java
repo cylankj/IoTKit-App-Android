@@ -97,6 +97,12 @@ public interface MineShareToFriendContract {
          * @return
          */
         void checkShareNumIsOver(SuperViewHolder holder, boolean isChange, int number);
+
+        /**
+         * 获取到未分享的亲友
+         * @param cid
+         */
+        void getUnShareFriend(String cid);
     }
 
 }

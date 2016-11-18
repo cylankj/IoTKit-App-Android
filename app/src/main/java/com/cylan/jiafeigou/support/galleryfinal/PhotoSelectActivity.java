@@ -27,6 +27,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.animation.AnimationUtils;
@@ -38,7 +39,6 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.support.galleryfinal.adapter.FolderListAdapter;
@@ -52,7 +52,6 @@ import com.cylan.jiafeigou.support.galleryfinal.widget.FloatingActionButton;
 import com.cylan.jiafeigou.support.toolsfinal.DeviceUtils;
 import com.cylan.jiafeigou.support.toolsfinal.StringUtils;
 import com.cylan.jiafeigou.support.toolsfinal.io.FilenameUtils;
-import com.cylan.jiafeigou.utils.ContextUtils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -69,6 +68,7 @@ public class PhotoSelectActivity extends PhotoBaseActivity implements View.OnCli
 
     private final int HANLDER_TAKE_PHOTO_EVENT = 1000;
     private final int HANDLER_REFRESH_LIST_EVENT = 1002;
+    private static final int REQUEST_CROP_PHOTO = 102;
     private GridView mGvPhotoList;
     private ListView mLvFolderList;
     private LinearLayout mLlFolderPanel;
@@ -317,7 +317,8 @@ public class PhotoSelectActivity extends PhotoBaseActivity implements View.OnCli
 /*        Intent intent = new Intent(this, PhotoEditActivity.class);
         intent.putExtra(PhotoEditActivity.SELECT_MAP, mSelectPhotoList);
         startActivity(intent);*/
-        Intent intent = new Intent(ContextUtils.getContext(), ClipImageActivity.class);
+
+        Intent intent = new Intent(this, ClipImageActivity.class);
         File file = new File(picPath);
         intent.putExtra("cameraAction",false);
         intent.setData(Uri.fromFile(file));
@@ -502,6 +503,7 @@ public class PhotoSelectActivity extends PhotoBaseActivity implements View.OnCli
                         mCurPhotoList.addAll(allFolderList.get(0).getPhotoList());
                     }
                 }
+
                 refreshAdapter();
             }
         }.start();

@@ -92,7 +92,7 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
         getIntentData();
         initFragment();
         initPresenter();
-//        initDataBase();
+        presenter.start();
         initRecycleView();
         initListener();
     }
@@ -169,15 +169,9 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
         presenter.saveIntoDb(dbBean);
     }
 
-    private void initDataBase() {
-       // presenter.getDBManger();
-    }
-
     @Override
-    protected void onStart() {
-        super.onStart();
-        if(presenter!=null)
-            presenter.start();
+    public void initDataBase(String name) {
+        presenter.getDBManger(name);
     }
 
     private void initPresenter() {

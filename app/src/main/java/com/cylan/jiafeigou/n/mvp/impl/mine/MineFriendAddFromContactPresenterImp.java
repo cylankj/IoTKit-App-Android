@@ -35,7 +35,7 @@ public class MineFriendAddFromContactPresenterImp extends AbstractPresenter<Mine
 
     private ArrayList<RelAndFriendBean> filterDateList;
     private CompositeSubscription compositeSubscription;
-    private ArrayList<RelAndFriendBean> allContactBean;
+    private ArrayList<RelAndFriendBean> allContactBean = new ArrayList<RelAndFriendBean>();
     public MineFriendAddFromContactPresenterImp(MineFriendAddFromContactContract.View view) {
         super(view);
         view.setPresenter(this);
@@ -47,7 +47,6 @@ public class MineFriendAddFromContactPresenterImp extends AbstractPresenter<Mine
             compositeSubscription.unsubscribe();
         }else {
             compositeSubscription = new CompositeSubscription();
-            compositeSubscription.add(getFriendListData());
             compositeSubscription.add(getFriendListDataCallBack());
             compositeSubscription.add(checkFriendAccountCallBack());
         }
@@ -60,24 +59,6 @@ public class MineFriendAddFromContactPresenterImp extends AbstractPresenter<Mine
         }
     }
 
-    @Override
-    public Subscription initContactData() {
-        return Observable.just(null)
-                .subscribeOn(Schedulers.newThread())
-                .map(new Func1<Object, ArrayList<RelAndFriendBean>>() {
-                    @Override
-                    public ArrayList call(Object o) {
-                        return getAllContactList();
-                    }
-                })
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<ArrayList<RelAndFriendBean>>() {
-                    @Override
-                    public void call(ArrayList<RelAndFriendBean> arrayList) {
-                        handlerDataResult(arrayList);
-                    }
-                });
-    }
 
     /**
      * desc：处理获取到的联系人数据
@@ -96,6 +77,10 @@ public class MineFriendAddFromContactPresenterImp extends AbstractPresenter<Mine
         }
     }
 
+    /**
+     * 获取到过滤后的所有的联系人
+     * @return
+     */
     @NonNull
     public ArrayList<RelAndFriendBean> getAllContactList() {
         ArrayList<RelAndFriendBean> list = new ArrayList<RelAndFriendBean>();
@@ -110,15 +95,25 @@ public class MineFriendAddFromContactPresenterImp extends AbstractPresenter<Mine
 
         if (cursor.moveToFirst()) {
             do {
-                RelAndFriendBean contact = new RelAndFriendBean();
+                RelAndFriendBean friendBean = new RelAndFriendBean();
                 String contact_phone = cursor
                         .getString(cursor
                                 .getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
                 String name = cursor.getString(0);
-                contact.account = contact_phone;
-                contact.alias = name;
-                if (name != null)
-                    list.add(contact);
+                friendBean.account = contact_phone;
+                friendBean.alias = name;
+                if (name != null){
+                    if (friendBean.account.startsWith("+86")){
+                        friendBean.account = friendBean.account.substring(3);
+                    }else if (friendBean.account.startsWith("86")){
+                        friendBean.account = friendBean.account.substring(2);
+                    }
+
+                    if (JConstant.PHONE_REG.matcher(friendBean.account).find()){
+                        list.add(friendBean);
+                    }
+                }
+
             } while (cursor.moveToNext());
         }
         cursor.close();
@@ -126,16 +121,11 @@ public class MineFriendAddFromContactPresenterImp extends AbstractPresenter<Mine
     }
 
     @Override
-    public void addContactItem(RelAndFriendBean bean) {
-
-    }
-
-    @Override
     public void filterPhoneData(String filterStr) {
         filterDateList = new ArrayList<>();
         if (allContactBean.size() != 0){
             if (TextUtils.isEmpty(filterStr)) {
-                filterDateList = allContactBean;
+                filterDateList.addAll(allContactBean);
             } else {
                 filterDateList.clear();
                 for (RelAndFriendBean s : allContactBean) {
@@ -155,8 +145,8 @@ public class MineFriendAddFromContactPresenterImp extends AbstractPresenter<Mine
      * @return
      */
     @Override
-    public Subscription getFriendListData() {
-        return rx.Observable.just(null)
+    public void getFriendListData() {
+        rx.Observable.just(null)
                 .subscribeOn(Schedulers.newThread())
                 .subscribe(new Action1<Object>() {
                     @Override
@@ -178,15 +168,26 @@ public class MineFriendAddFromContactPresenterImp extends AbstractPresenter<Mine
     @Override
     public Subscription getFriendListDataCallBack() {
         return RxBus.getCacheInstance().toObservable(RxEvent.GetFriendList.class)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<RxEvent.GetFriendList>() {
+                .flatMap(new Func1<RxEvent.GetFriendList, Observable<ArrayList<RelAndFriendBean>>>() {
                     @Override
-                    public void call(RxEvent.GetFriendList getFriendList) {
+                    public Observable<ArrayList<RelAndFriendBean>> call(RxEvent.GetFriendList getFriendList) {
                         if (getFriendList != null && getFriendList instanceof RxEvent.GetFriendList){
-                            allContactBean = new ArrayList<RelAndFriendBean>();
-                            allContactBean.addAll(handlerData(getFriendList.arrayList));
-                            handlerDataResult(allContactBean);
+                            if (getFriendList.arrayList.size() != 0){
+                                return Observable.just(converData(getFriendList.arrayList));
+                            }else {
+                                return Observable.just(getAllContactList());
+                            }
+                        }else {
+                            return Observable.just(getAllContactList());
                         }
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<ArrayList<RelAndFriendBean>>() {
+                    @Override
+                    public void call(ArrayList<RelAndFriendBean> list) {
+                        allContactBean.addAll(list);
+                        handlerDataResult(list);
                     }
                 });
     }
@@ -248,36 +249,22 @@ public class MineFriendAddFromContactPresenterImp extends AbstractPresenter<Mine
     }
 
     /**
-     * //数据处理标记已添加与否
+     * 数据的转换 标记已添加和未添加
+     * @param arrayList
+     * @return
      */
-    private ArrayList<RelAndFriendBean> handlerData(ArrayList<JFGFriendAccount> getFriendList) {
-        ArrayList<RelAndFriendBean> tempList = new ArrayList<>();
-        ArrayList<RelAndFriendBean> resultList = new ArrayList<>();
-
-        for (RelAndFriendBean friendBean:getAllContactList()){
-            if (friendBean.account.startsWith("+86")){
-                friendBean.account = friendBean.account.substring(3);
-            }else if (friendBean.account.startsWith("86")){
-                friendBean.account = friendBean.account.substring(2);
-            }
-
-            if (JConstant.PHONE_REG.matcher(friendBean.account).find()){
-                tempList.add(friendBean);
-            }
-        }
-
-        for (RelAndFriendBean friendBean:tempList){
-            if(tempList.size() != 0){
-                for (JFGFriendAccount account:getFriendList){
-                    if (friendBean.account.equals(account.account)){
-                        friendBean.isCheckFlag = 1;
-                    }else {
-                        friendBean.isCheckFlag = 0;
-                    }
+    private ArrayList<RelAndFriendBean> converData(ArrayList<JFGFriendAccount> arrayList) {
+        ArrayList<RelAndFriendBean> list = new ArrayList<>();
+        for (RelAndFriendBean contract:getAllContactList()){
+            for (JFGFriendAccount friend:arrayList){
+                if (friend.account.equals(contract.account)){
+                    contract.isCheckFlag = 1;
+                }else {
+                    contract.isCheckFlag = 0;
                 }
             }
-            resultList.add(friendBean);
+            list.add(contract);
         }
-        return resultList;
+        return list;
     }
 }

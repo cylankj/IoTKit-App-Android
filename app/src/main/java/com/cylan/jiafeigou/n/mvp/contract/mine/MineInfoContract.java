@@ -41,6 +41,7 @@ public interface MineInfoContract {
          * 退出登录
          */
         void logOut();
+
     }
 
 }

@@ -61,7 +61,7 @@
         android:layout_marginLeft="20dp"
         android:gravity="center_vertical"
         android:text="从通讯录选取"
-        android:drawableLeft="@drawable/ico_scan_qrcode"
+        android:drawableLeft="@drawable/icon_setting_information"
         android:drawablePadding="15dp"
         android:layout_width="match_parent"
         android:layout_height="67dp" />

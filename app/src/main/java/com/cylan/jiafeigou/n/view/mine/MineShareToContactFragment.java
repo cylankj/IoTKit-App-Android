@@ -4,6 +4,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
@@ -22,8 +23,11 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineShareToContactContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineShareToContactPresenterImp;
+import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
+import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
 import com.cylan.jiafeigou.n.mvp.model.SuggestionChatInfoBean;
 import com.cylan.jiafeigou.n.view.adapter.ShareToContactAdapter;
 import com.cylan.jiafeigou.utils.ContextUtils;
@@ -34,6 +38,7 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.OnTextChanged;
 
 /**
  * 作者：zsl
@@ -63,9 +68,13 @@ public class MineShareToContactFragment extends Fragment implements MineShareToC
 
     private MineShareToContactContract.Presenter presenter;
     private ShareToContactAdapter shareToContactAdapter;
+    private DeviceBean deviceinfo;
+    private String contractPhone;
 
-    public static MineShareToContactFragment newInstance() {
-        return new MineShareToContactFragment();
+    public static MineShareToContactFragment newInstance(Bundle bundle) {
+        MineShareToContactFragment fragment = new MineShareToContactFragment();
+        fragment.setArguments(bundle);
+        return fragment;
     }
 
     @Nullable
@@ -73,40 +82,34 @@ public class MineShareToContactFragment extends Fragment implements MineShareToC
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.frgment_mine_share_to_contact, container, false);
         ButterKnife.bind(this, view);
+        getArgumentData();
         initPresenter();
         return view;
+    }
+
+    /**
+     * 获取到传递过来的参数
+     */
+    private void getArgumentData() {
+        Bundle arguments = getArguments();
+        deviceinfo = arguments.getParcelable("deviceinfo");
     }
 
     @Override
     public void onStart() {
         super.onStart();
         if (presenter != null) {
+            presenter.getHasShareContract(deviceinfo.uuid);
             presenter.start();
         }
-        initEditListener();
     }
 
     /**
      * desc；监听搜索输入的变化
      */
-    private void initEditListener() {
-
-        etSearchContact.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                presenter.handleSearchResult(s.toString().trim());
-            }
-        });
+    @OnTextChanged(R.id.et_search_contact)
+    public void initEditListener(CharSequence s, int start, int before, int count){
+        presenter.handleSearchResult(s.toString().trim());
     }
 
     private void initPresenter() {
@@ -141,7 +144,7 @@ public class MineShareToContactFragment extends Fragment implements MineShareToC
     }
 
     @Override
-    public void initContactReclyView(ArrayList<SuggestionChatInfoBean> list) {
+    public void initContactReclyView(ArrayList<RelAndFriendBean> list) {
         rcyMineShareToContactList.setLayoutManager(new LinearLayoutManager(getContext()));
         shareToContactAdapter = new ShareToContactAdapter(getView().getContext(), list, null);
         rcyMineShareToContactList.setAdapter(shareToContactAdapter);
@@ -176,14 +179,23 @@ public class MineShareToContactFragment extends Fragment implements MineShareToC
     }
 
     @Override
-    public void showShareDeviceDialog(final SuggestionChatInfoBean bean) {
+    public void showShareDeviceDialog(final String account) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setTitle("分享设备");
         builder.setPositiveButton("确认", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
-                presenter.shareToContact(bean);
+                showShareingProHint();
+                changeShareingProHint("loading");
+                if (getView() != null && presenter != null) {
+                    getView().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            presenter.handlerShareClick(deviceinfo.uuid,account);
+                        }
+                    },2000);
+                }
             }
         });
 
@@ -216,22 +228,48 @@ public class MineShareToContactFragment extends Fragment implements MineShareToC
     }
 
     @Override
-    public void startSendMesgActivity(SuggestionChatInfoBean info) {
-        Uri smsToUri = Uri.parse("smsto:"+info.getContent());
+    public void startSendMesgActivity(String account) {
+        Uri smsToUri = Uri.parse("smsto:"+account);
         Intent mIntent = new Intent(Intent.ACTION_SENDTO, smsToUri );
         mIntent.putExtra("sms_body", "邀请你成为我的好友，点击XXXXXXXXX下载安装【加菲狗】");
         startActivity( mIntent );
     }
 
     /**
+     * 分享结果的处理
+     * @param requtestId
+     */
+    @Override
+    public void handlerCheckRegister(int requtestId, String item) {
+        switch (requtestId){
+            case JError.ErrorOK:                                           //分享成功
+                ToastUtil.showPositiveToast("分享成功");
+                break;
+
+            case JError.ErrorShareExceedsLimit:                             //已注册 未分享但人数达到5人
+                if (getView() != null){
+                    showPersonOverDialog("只能分享给5位用户");
+                }
+                break;
+
+            case JError.ErrorShareAlready:                                    //已注册 已分享
+                if (getView() != null){
+                    showPersonOverDialog("已经分享给此账号啦");
+                }
+                break;
+            case JError.ErrorShareInvalidAccount:                             //未注册
+                startSendMesgActivity(contractPhone);
+                break;
+        }
+    }
+
+    /**
      * 点击分享按钮
-     *
      * @param item
      */
     @Override
-    public void isShare(SuggestionChatInfoBean item) {
-        if (presenter != null) {
-            presenter.handlerShareClick(item);
-        }
+    public void isShare(RelAndFriendBean item) {
+        contractPhone = item.account;
+        showShareDeviceDialog(item.account);
     }
 }

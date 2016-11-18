@@ -46,17 +46,13 @@ public interface MineFriendAddFromContactContract {
 
     interface Presenter extends BasePresenter {
 
-        Subscription initContactData();
-
-        void addContactItem(RelAndFriendBean bean);
-
         void filterPhoneData(String filterStr);
 
         /**
          * 获取好友列表的数据
          * @return
          */
-        Subscription getFriendListData();
+        void getFriendListData();
 
         /**
          * 获取好友的列表的回调

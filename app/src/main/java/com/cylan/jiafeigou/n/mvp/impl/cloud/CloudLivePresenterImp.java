@@ -48,7 +48,6 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
 
     private int val1;
     private int val2;
-    private Subscription talkSub;
     private int BASE = 600;
 
     private MediaRecorder mMediaRecorder;
@@ -65,29 +64,28 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
 
     private Subscription checkDeviceOnLineSub;
     private Subscription leaveMesgSub;
-    private Subscription subscriptionRefresh;
     private CompositeSubscription subscription;
 
     public CloudLivePresenterImp(CloudLiveContract.View view) {
         super(view);
         view.setPresenter(this);
-        subscription = new CompositeSubscription();
+
     }
 
     @Override
     public void start() {
-        if(subscriptionRefresh!=null && !subscriptionRefresh.isUnsubscribed()){
-            subscriptionRefresh.unsubscribe();
+        if(subscription!=null && !subscription.isUnsubscribed()){
+            subscription.unsubscribe();
+        }else {
+            subscription = new CompositeSubscription();
+            subscription.add(getAccount());
+            subscription.add(refreshHangUpView());
         }
-        subscription.add(getAccount());
-        refreshHangUpView();
+
     }
 
     @Override
     public void stop() {
-        if (talkSub != null) {
-            talkSub.unsubscribe();
-        }
 
         if (checkDeviceOnLineSub != null){
             checkDeviceOnLineSub.unsubscribe();
@@ -98,13 +96,12 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
         }
 
         unSubscribe(subscription);
-
         stopPlayRecord();
     }
 
     @Override
     public void startTalk() {
-        talkSub = Observable.interval(500, 200, TimeUnit.MILLISECONDS)
+        rx.Observable.interval(500, 200, TimeUnit.MILLISECONDS)
                 .subscribeOn(Schedulers.newThread())
                 .map(new Func1<Long, Double>() {
                     @Override
@@ -185,6 +182,7 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
             mPlayer.prepare();
             mPlayer.start();
         } catch (IOException e) {
+
         }
     }
 
@@ -306,8 +304,8 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
 
 
     @Override
-    public void refreshHangUpView() {
-        subscriptionRefresh = RxBus.getCacheInstance().toObservable(RxEvent.HangUpVideoTalk.class)
+    public Subscription refreshHangUpView() {
+        return RxBus.getCacheInstance().toObservable(RxEvent.HangUpVideoTalk.class)
                 .subscribe(new Action1<RxEvent.HangUpVideoTalk>() {
                     @Override
                     public void call(RxEvent.HangUpVideoTalk o) {
@@ -366,13 +364,15 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
      */
     @Override
     public Subscription getAccount() {
-        return RxBus.getCacheInstance().toObservable(RxEvent.GetUserInfo.class)
+        return RxBus.getCacheInstance().toObservableSticky(RxEvent.GetUserInfo.class)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<RxEvent.GetUserInfo>() {
                     @Override
                     public void call(RxEvent.GetUserInfo getUserInfo) {
                         if (getUserInfo != null && getUserInfo instanceof RxEvent.GetUserInfo){
-                            getDBManger(getUserInfo.jfgAccount.getAccount());
+                            if (getView() != null){
+                                getView().initDataBase(getUserInfo.jfgAccount.getAccount());
+                            }
                         }
                     }
                 });

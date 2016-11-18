@@ -2,10 +2,13 @@ package com.cylan.jiafeigou.n.mvp.contract.mine;
 
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
+import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
 import com.cylan.jiafeigou.n.mvp.model.SuggestionChatInfoBean;
 import com.cylan.jiafeigou.n.view.adapter.ShareToContactAdapter;
 
 import java.util.ArrayList;
+
+import rx.Subscription;
 
 /**
  * 作者：zsl
@@ -16,7 +19,7 @@ public interface MineShareToContactContract {
 
     interface View extends BaseView<Presenter> {
 
-        void initContactReclyView(ArrayList<SuggestionChatInfoBean> list);
+        void initContactReclyView(ArrayList<RelAndFriendBean> list);
 
         void showNoContactNullView();
 
@@ -26,7 +29,7 @@ public interface MineShareToContactContract {
 
         void hideSearchInputEdit();
 
-        void showShareDeviceDialog(SuggestionChatInfoBean bean);
+        void showShareDeviceDialog(String account);
 
         /**
          * 显示正在分享的进度提示
@@ -50,23 +53,45 @@ public interface MineShareToContactContract {
 
         /**
          * 调用系统发送短信的界面
-         * @param info
          */
-        void startSendMesgActivity(SuggestionChatInfoBean info);
+        void startSendMesgActivity(String account);
+
+        /**
+         * 分享结果处理
+         * @param requtestId
+         * @param account
+         */
+        void handlerCheckRegister(int requtestId,String account);
 
     }
 
     interface Presenter extends BasePresenter {
 
-        void initContactData();
-
         void handleSearchResult(String input);
 
-        void shareToContact(SuggestionChatInfoBean bean);
         /**
          * 处理点击按钮
          */
-        void handlerShareClick(SuggestionChatInfoBean bean);
+        void handlerShareClick(String cid,String account);
+
+        /**
+         * 获取到已经分享给的亲友数
+         * @param cid
+         * @return
+         */
+        Subscription getHasShareContract(String cid);
+
+        /**
+         * 获取以分享好友的回调
+         * @return
+         */
+        Subscription getHasShareContractCallBack();
+
+        /**
+         * 分享设备的回调
+         * @return
+         */
+        Subscription shareDeviceCallBack();
 
     }
 

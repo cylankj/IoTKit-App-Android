@@ -59,16 +59,4 @@ public class CloudLiveDbUtil {
         }
     }
 
-    /**
-     * desc：生成数据库的名字
-     *
-     * @return
-     */
-    private String generateDbName() {
-        String db_name = "";
-
-        //TODO 获取到用户的账号
-
-        return db_name;
-    }
 }

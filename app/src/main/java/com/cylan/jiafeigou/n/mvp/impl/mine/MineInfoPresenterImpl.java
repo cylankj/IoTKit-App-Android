@@ -2,13 +2,13 @@ package com.cylan.jiafeigou.n.mvp.impl.mine;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.Intent;
 
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineInfoContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.n.mvp.model.UserInfoBean;
 import com.cylan.jiafeigou.support.galleryfinal.FunctionConfig;
-
 
 
 import rx.Observable;

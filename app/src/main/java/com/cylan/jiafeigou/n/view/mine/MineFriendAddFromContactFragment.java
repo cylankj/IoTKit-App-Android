@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.OnTextChanged;
 
 /**
  * 作者：zsl
@@ -67,6 +68,7 @@ public class MineFriendAddFromContactFragment extends Fragment implements MineFr
     public void onStart() {
         super.onStart();
         if (presenter != null) {
+            presenter.getFriendListData();
             presenter.start();
         }
     }
@@ -77,26 +79,11 @@ public class MineFriendAddFromContactFragment extends Fragment implements MineFr
         View view = inflater.inflate(R.layout.fragment_mine_relativeandfriend_add_from_contact, container, false);
         ButterKnife.bind(this, view);
         initPresenter();
-        initEditTextListenter();
         return view;
     }
-
-    private void initEditTextListenter() {
-        etAddPhoneNumber.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                presenter.filterPhoneData(s.toString());
-            }
-        });
-
+    @OnTextChanged(R.id.et_add_phone_number)
+    public void initEditTextListenter(CharSequence s, int start, int before, int count) {
+        presenter.filterPhoneData(s.toString());
     }
 
     private void initPresenter() {
@@ -200,11 +187,16 @@ public class MineFriendAddFromContactFragment extends Fragment implements MineFr
     }
 
     @Override
-    public void onAddClick(View view, int position, RelAndFriendBean item) {
+    public void onAddClick(View view, int position, final RelAndFriendBean item) {
         friendAccount = item.account;
-        if (presenter != null) {
+        if (getView() != null && presenter != null) {
             showLoadingPro();
-            presenter.checkFriendAccount(item.account);
+            getView().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    presenter.checkFriendAccount(item.account);
+                }
+            },2000);
         }
     }
 }

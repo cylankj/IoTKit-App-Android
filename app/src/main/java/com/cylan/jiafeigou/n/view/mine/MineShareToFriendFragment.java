@@ -3,6 +3,7 @@ package com.cylan.jiafeigou.n.view.mine;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
@@ -21,6 +22,7 @@ import android.widget.TextView;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineShareToFriendContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineShareToFriendPresenterImp;
+import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
 import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
 import com.cylan.jiafeigou.n.view.adapter.ShareToFriendsAdapter;
 import com.cylan.jiafeigou.utils.ToastUtil;
@@ -58,9 +60,12 @@ public class MineShareToFriendFragment extends Fragment implements MineShareToFr
     private int hasShareNum;
 
     private ArrayList<RelAndFriendBean> isChooseToShareList = new ArrayList<>();
+    private DeviceBean deviceinfo;
 
-    public static MineShareToFriendFragment newInstance() {
-        return new MineShareToFriendFragment();
+    public static MineShareToFriendFragment newInstance(Bundle bundle) {
+        MineShareToFriendFragment fragment = new MineShareToFriendFragment();
+        fragment.setArguments(bundle);
+        return fragment;
     }
 
     @Nullable
@@ -68,8 +73,17 @@ public class MineShareToFriendFragment extends Fragment implements MineShareToFr
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_mine_share_to_relative_and_friend, container, false);
         ButterKnife.bind(this, view);
+        getArgumentData();
         initPresenter();
         return view;
+    }
+
+    /**
+     * 获取传递过来的参数
+     */
+    private void getArgumentData() {
+        Bundle arguments = getArguments();
+        deviceinfo = arguments.getParcelable("deviceinfo");
     }
 
     private void initPresenter() {

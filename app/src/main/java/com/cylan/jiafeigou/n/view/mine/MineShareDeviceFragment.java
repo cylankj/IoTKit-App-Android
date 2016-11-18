@@ -57,8 +57,8 @@ public class MineShareDeviceFragment extends Fragment implements MineShareDevice
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        shareToRelativeAndFriendFragment = MineShareToFriendFragment.newInstance();
-        mineShareToContactFragment = MineShareToContactFragment.newInstance();
+
+
     }
 
     @Nullable
@@ -97,7 +97,7 @@ public class MineShareDeviceFragment extends Fragment implements MineShareDevice
     }
 
     @Override
-    public void showShareDialog() {
+    public void showShareDialog(final DeviceBean item) {
         final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         View view = View.inflate(getContext(), R.layout.fragment_home_mine_share_devices_dialog, null);
         view.findViewById(R.id.tv_share_to_timeline).setOnClickListener(new View.OnClickListener() {
@@ -106,7 +106,7 @@ public class MineShareDeviceFragment extends Fragment implements MineShareDevice
                 if (getView() != null)
                     ViewUtils.deBounceClick(getView().findViewById(R.id.tv_share_to_wechat_friends));
                 AppLogger.e("tv_share_to_friends");
-                jump2ShareToFriendFragment();
+                jump2ShareToFriendFragment(item);
                 alertDialog.dismiss();
             }
         });
@@ -116,7 +116,7 @@ public class MineShareDeviceFragment extends Fragment implements MineShareDevice
                 if (getView() != null)
                     ViewUtils.deBounceClick(getView().findViewById(R.id.tv_share_to_contract));
                 AppLogger.e("tv_share_to_contract");
-                jump2ShareToContractFragment();
+                jump2ShareToContractFragment(item);
                 alertDialog.dismiss();
             }
         });
@@ -129,7 +129,10 @@ public class MineShareDeviceFragment extends Fragment implements MineShareDevice
     /**
      * desc；跳转到通过联系人分享的界面
      */
-    private void jump2ShareToContractFragment() {
+    private void jump2ShareToContractFragment(DeviceBean item) {
+        Bundle bundle = new Bundle();
+        bundle.putParcelable("deviceinfo",item);
+        mineShareToContactFragment = MineShareToContactFragment.newInstance(bundle);
         getFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                         , R.anim.slide_in_left, R.anim.slide_out_right)
@@ -141,7 +144,10 @@ public class MineShareDeviceFragment extends Fragment implements MineShareDevice
     /**
      * desc:跳转到通过亲友分享
      */
-    private void jump2ShareToFriendFragment() {
+    private void jump2ShareToFriendFragment(DeviceBean item) {
+        Bundle bundle = new Bundle();
+        bundle.putParcelable("deviceinfo",item);
+        shareToRelativeAndFriendFragment = MineShareToFriendFragment.newInstance(bundle);
         getFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                         , R.anim.slide_in_left, R.anim.slide_out_right)
@@ -165,7 +171,7 @@ public class MineShareDeviceFragment extends Fragment implements MineShareDevice
         adapter.setOnShareClickListener(new MineShareDeviceAdapter.OnShareClickListener() {
             @Override
             public void onShare(SuperViewHolder holder, int viewType, int layoutPosition, DeviceBean item) {
-                showShareDialog();
+                showShareDialog(item);
             }
         });
 

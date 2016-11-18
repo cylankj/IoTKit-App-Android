@@ -42,6 +42,8 @@ public interface CloudLiveContract {
         void hideReconnetProgress();
 
         void scrollToLast();                               //滚动到最后一条
+
+        void initDataBase(String name);
     }
 
     interface Presenter extends BasePresenter {
@@ -76,7 +78,7 @@ public interface CloudLiveContract {
 
         List<CloudLiveBaseDbBean> findFromAllDb();          //查询数据库
 
-        void refreshHangUpView();                           //更新挂断结果
+        Subscription refreshHangUpView();                   //更新挂断结果
 
         void handlerVideoTalk();                            //处理视频通话
 
