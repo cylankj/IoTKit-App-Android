@@ -43,7 +43,6 @@ public interface CloudLiveContract {
 
         void scrollToLast();                               //滚动到最后一条
 
-        void initDataBase(String name);
     }
 
     interface Presenter extends BasePresenter {

@@ -5,7 +5,7 @@ import android.media.MediaRecorder;
 import android.os.Environment;
 
 import com.cylan.jiafeigou.misc.RxEvent;
-import com.cylan.jiafeigou.n.db.CloudLiveDbUtil;
+import com.cylan.jiafeigou.n.db.DataBaseUtil;
 import com.cylan.jiafeigou.n.mvp.contract.cloud.CloudLiveContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.n.mvp.model.CloudLiveBaseBean;
@@ -69,7 +69,6 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
     public CloudLivePresenterImp(CloudLiveContract.View view) {
         super(view);
         view.setPresenter(this);
-
     }
 
     @Override
@@ -81,7 +80,6 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
             subscription.add(getAccount());
             subscription.add(refreshHangUpView());
         }
-
     }
 
     @Override
@@ -94,7 +92,6 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
         if (leaveMesgSub != null){
             leaveMesgSub.unsubscribe();
         }
-
         unSubscribe(subscription);
         stopPlayRecord();
     }
@@ -246,7 +243,7 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
      */
     @Override
     public void getDBManger(String dbName) {
-        base_db = CloudLiveDbUtil.getInstance(dbName).dbManager;
+        base_db = DataBaseUtil.getInstance(dbName).dbManager;
     }
 
     @Override
@@ -371,7 +368,8 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
                     public void call(RxEvent.GetUserInfo getUserInfo) {
                         if (getUserInfo != null && getUserInfo instanceof RxEvent.GetUserInfo){
                             if (getView() != null){
-                                getView().initDataBase(getUserInfo.jfgAccount.getAccount());
+                                getDBManger(getUserInfo.jfgAccount.getAccount());
+                                getView().initRecycleView();
                             }
                         }
                     }

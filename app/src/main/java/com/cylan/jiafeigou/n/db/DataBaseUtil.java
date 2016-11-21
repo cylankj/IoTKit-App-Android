@@ -4,7 +4,6 @@ import android.os.Environment;
 
 import com.cylan.jiafeigou.support.db.DbManager;
 import com.cylan.jiafeigou.support.db.DbManagerImpl;
-import com.cylan.jiafeigou.support.db.table.TableEntity;
 import com.cylan.jiafeigou.utils.ContextUtils;
 
 /**
@@ -12,24 +11,24 @@ import com.cylan.jiafeigou.utils.ContextUtils;
  * 创建时间：2016/10/11
  * 描述：
  */
-public class CloudLiveDbUtil {
+public class DataBaseUtil {
 
     private static final String DB_NAME = "cloud_live_db";
 
-    private static CloudLiveDbUtil uniqueInstance = null;
+    private static DataBaseUtil uniqueInstance = null;
 
     public static DbManager dbManager;
 
-    private CloudLiveDbUtil(String dbName) {
+    private DataBaseUtil(String dbName) {
         if (dbManager == null) {
             dbManager = DbManagerImpl.getInstance(getDaoconfig(dbName));
         }
     }
 
-    public static CloudLiveDbUtil getInstance(String dbName) {
-        synchronized (CloudLiveDbUtil.class) {
+    public static DataBaseUtil getInstance(String dbName) {
+        synchronized (DataBaseUtil.class) {
             if (uniqueInstance == null) {
-                uniqueInstance = new CloudLiveDbUtil(dbName);
+                uniqueInstance = new DataBaseUtil(dbName);
             }
             return uniqueInstance;
         }

@@ -1,17 +1,22 @@
 package com.cylan.jiafeigou.n.mvp.impl.mag;
 
 import com.cylan.jiafeigou.misc.RxEvent;
+import com.cylan.jiafeigou.n.db.DataBaseUtil;
 import com.cylan.jiafeigou.n.mvp.contract.mag.MagLiveContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.n.mvp.model.MagBean;
+import com.cylan.jiafeigou.support.db.DbManager;
+import com.cylan.jiafeigou.support.db.ex.DbException;
 import com.cylan.jiafeigou.support.rxbus.RxBus;
-import com.cylan.utils.RandomUtils;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.List;
 
 import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
+import rx.subscriptions.CompositeSubscription;
 
 /**
  * 作者：zsl
@@ -20,6 +25,10 @@ import rx.functions.Action1;
  */
 public class MagLivePresenterImp extends AbstractPresenter<MagLiveContract.View> implements MagLiveContract.Presenter {
 
+    private DbManager dbManager;
+
+    private CompositeSubscription compositeSubscription;
+
     public MagLivePresenterImp(MagLiveContract.View view) {
         super(view);
         view.setPresenter(this);
@@ -27,12 +36,20 @@ public class MagLivePresenterImp extends AbstractPresenter<MagLiveContract.View>
 
     @Override
     public void start() {
-        initMagData();
+        if (compositeSubscription != null && !compositeSubscription.isUnsubscribed()){
+            compositeSubscription.unsubscribe();
+        }else {
+            compositeSubscription = new CompositeSubscription();
+            compositeSubscription.add(getAccount());
+        }
+
     }
 
     @Override
     public void stop() {
-
+        if (compositeSubscription != null && !compositeSubscription.isUnsubscribed()){
+            compositeSubscription.unsubscribe();
+        }
     }
 
     @Override
@@ -47,8 +64,7 @@ public class MagLivePresenterImp extends AbstractPresenter<MagLiveContract.View>
     @Override
     public void initMagData() {
         if (getView() != null){
-            //TODO 从本地数据库 获取消息记录 或者从服务器拉取
-            getView().initRecycleView(TestData());
+            getView().initRecycleView(getDbData());
         }
     }
 
@@ -84,27 +100,66 @@ public class MagLivePresenterImp extends AbstractPresenter<MagLiveContract.View>
      */
     @Override
     public Subscription getAccount() {
-        return RxBus.getCacheInstance().toObservable(RxEvent.GetUserInfo.class)
+        return RxBus.getCacheInstance().toObservableSticky(RxEvent.GetUserInfo.class)
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<RxEvent.GetUserInfo>() {
                     @Override
                     public void call(RxEvent.GetUserInfo getUserInfo) {
-
+                        if (getUserInfo != null && getUserInfo instanceof RxEvent.GetUserInfo){
+                            getDb(getUserInfo.jfgAccount.getAccount());
+                            initMagData();
+                        }
                     }
                 });
     }
 
+    /**
+     * 获取到数据库的操作对象
+     * @param account
+     */
+    @Override
+    public void getDb(String account) {
+        dbManager = DataBaseUtil.getInstance(account).dbManager;
+    }
 
     /**
-     * 测试的数据
+     * 保存到数据库
+     * @param bean
      */
-    private ArrayList<MagBean> TestData() {
-        ArrayList<MagBean> list = new ArrayList<>();
-        //TODO 获取本地数据
-        MagBean bean = new MagBean();
-        bean.magTime = timeStrToSecond("2016-11-8 20:32:12");
-        bean.isFirst = true;
-        bean.isOpen = true;
-        list.add(bean);
+    @Override
+    public void saveIntoDb(MagBean bean) {
+        try {
+            dbManager.save(bean);
+        } catch (DbException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 拿到数据库中的所有数据
+     * @return
+     */
+    @Override
+    public List<MagBean> findFromAllDb() {
+        List<MagBean> allData = new ArrayList<>();
+        try {
+          List<MagBean> tempList = dbManager.findAll(MagBean.class);
+            if (tempList != null && tempList.size() >0){
+                allData.clear();
+                allData.addAll(tempList);
+            }
+        } catch (DbException e) {
+            e.printStackTrace();
+        }
+        return allData;
+    }
+
+    /**
+     * 获取本地的数据
+     */
+    private List<MagBean> getDbData() {
+        List<MagBean> list = new ArrayList<>();
+        list.addAll(findFromAllDb());
         return list;
     }
 
@@ -121,31 +176,7 @@ public class MagLivePresenterImp extends AbstractPresenter<MagLiveContract.View>
         } catch (Exception e) {
             e.printStackTrace();
         }
-
         return -1l;
-    }
-
-
-
-    private ArrayList<MagBean> initData() {
-        ArrayList<MagBean> magList = new ArrayList<>();
-
-        for (int i = 0; i <= 10; i++) {
-            MagBean magBean = new MagBean();
-            magBean.setIsOpen(i % 2 == 0 ? false : true);
-            if (i == 0) {
-                magBean.setVisibleType(0);
-            } else if (i == 5) {
-                magBean.setVisibleType(1);
-            } else if (i == 6) {
-                magBean.setVisibleType(0);
-            } else {
-                magBean.setVisibleType(0);
-            }
-            magBean.setMagTime(System.currentTimeMillis() - RandomUtils.getRandom(24 * 3600));
-            magList.add(magBean);
-        }
-        return magList;
     }
 
 }

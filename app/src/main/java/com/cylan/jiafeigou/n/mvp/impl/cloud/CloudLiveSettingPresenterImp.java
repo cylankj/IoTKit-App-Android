@@ -1,7 +1,7 @@
 package com.cylan.jiafeigou.n.mvp.impl.cloud;
 
 import com.cylan.jiafeigou.misc.RxEvent;
-import com.cylan.jiafeigou.n.db.CloudLiveDbUtil;
+import com.cylan.jiafeigou.n.db.DataBaseUtil;
 import com.cylan.jiafeigou.n.mvp.contract.cloud.CloudLiveSettingContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.n.mvp.model.CloudLiveBaseDbBean;
@@ -73,7 +73,7 @@ public class CloudLiveSettingPresenterImp extends AbstractPresenter<CloudLiveSet
         final DbManager finalDbManager = dbManager;
         clearDbSub = Observable.just(null)
                 .subscribeOn(Schedulers.newThread())
-                .delay(3000, TimeUnit.MILLISECONDS)
+                .delay(2000, TimeUnit.MILLISECONDS)
                 .map(new Func1<Object, Object>() {
                     @Override
                     public Object call(Object o) {
@@ -99,13 +99,13 @@ public class CloudLiveSettingPresenterImp extends AbstractPresenter<CloudLiveSet
      */
     @Override
     public Subscription getAccount() {
-        return RxBus.getCacheInstance().toObservable(RxEvent.GetUserInfo.class)
+        return RxBus.getCacheInstance().toObservableSticky(RxEvent.GetUserInfo.class)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<RxEvent.GetUserInfo>() {
                     @Override
                     public void call(RxEvent.GetUserInfo getUserInfo) {
                         if (getUserInfo != null && getUserInfo instanceof RxEvent.GetUserInfo){
-                            dbManager = CloudLiveDbUtil.getInstance(getUserInfo.jfgAccount.getAccount()).dbManager;
+                            dbManager = DataBaseUtil.getInstance(getUserInfo.jfgAccount.getAccount()).dbManager;
                         }
                     }
                 });

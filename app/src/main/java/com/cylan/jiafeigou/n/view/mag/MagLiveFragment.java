@@ -1,11 +1,14 @@
 package com.cylan.jiafeigou.n.view.mag;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
@@ -13,6 +16,7 @@ import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.mvp.contract.mag.HomeMagLiveContract;
 import com.cylan.jiafeigou.n.mvp.impl.mag.HomeMagLivePresenterImp;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
+import com.cylan.jiafeigou.utils.ToastUtil;
 import com.kyleduo.switchbutton.SwitchButton;
 
 import butterknife.BindView;
@@ -37,6 +41,8 @@ public class MagLiveFragment extends Fragment implements HomeMagLiveContract.Vie
     SwitchButton btnSwitch;
     @BindView(R.id.tv_clear_mag_open_record)
     TextView tvClearMagOpenRecord;
+    @BindView(R.id.rl_clear_pro_hint)
+    RelativeLayout rlClearProHint;
 
     private MagLiveInformationFragment magLiveInformationFragment;
     private HomeMagLiveContract.Presenter presenter;
@@ -119,8 +125,15 @@ public class MagLiveFragment extends Fragment implements HomeMagLiveContract.Vie
     @Override
     public void onStart() {
         super.onStart();
+        if (presenter != null) presenter.start();
         String editName = PreferencesUtils.getString("magEditName", "客厅摄像头");
         mFacilityName.setText(editName);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (presenter != null) presenter.stop();
     }
 
     @Override
@@ -135,12 +148,34 @@ public class MagLiveFragment extends Fragment implements HomeMagLiveContract.Vie
                 presenter.saveSwitchState(openDoorNotify(), JConstant.OPEN_DOOR_NOTIFY);
                 break;
             case R.id.tv_clear_mag_open_record:
-                if (listener != null) {
-                    listener.onClear();
-                }
+                showClearDialog();
                 break;
         }
 
+    }
+
+    /**
+     * 删除消息对话框
+     */
+    private void showClearDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle("确认清空开关记录");
+        builder.setPositiveButton("确认", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                presenter.clearOpenAndCloseRecord();
+                if (listener != null) {
+                    listener.onClear();
+                }
+                dialog.dismiss();
+            }
+        });
+        builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        }).show();
     }
 
     @Override
@@ -153,5 +188,28 @@ public class MagLiveFragment extends Fragment implements HomeMagLiveContract.Vie
         btnSwitch.setChecked(presenter.getSwitchState(JConstant.OPEN_DOOR_NOTIFY));
     }
 
+    /**
+     * 消息记录为空
+     */
+    @Override
+    public void showNoMesg() {
+        ToastUtil.showToast("消息记录为空");
+    }
+
+    /**
+     * 显示清除进度
+     */
+    @Override
+    public void showClearProgress() {
+        rlClearProHint.setVisibility(View.VISIBLE);
+    }
+
+    /**
+     * 隐藏清除的进度
+     */
+    @Override
+    public void hideClearProgress() {
+        rlClearProHint.setVisibility(View.INVISIBLE);
+    }
 
 }

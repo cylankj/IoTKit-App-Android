@@ -5,7 +5,9 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import com.cylan.jiafeigou.R;
@@ -18,10 +20,8 @@ import com.cylan.jiafeigou.n.view.mag.MagLiveFragment;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
-import com.cylan.utils.RandomUtils;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -38,29 +38,27 @@ import butterknife.OnClick;
  * 更新时间   $Date$
  * 更新描述   ${TODO}
  */
-public class MagLiveActivity extends BaseFullScreenFragmentActivity implements MagLiveContract.View{
+public class MagLiveActivity extends BaseFullScreenFragmentActivity implements MagLiveContract.View {
 
 
-    private int currentType;//当前item类型
-
+    @BindView(R.id.ll_no_mesg)
+    LinearLayout llNoMesg;
     @BindView(R.id.imgV_msg_title_top_back)
     ImageView imgVTopBack;
-
     @BindView(R.id.imgV_msg_title_top_setting)
     ImageView imgVTopSetting;
-
     @BindView(R.id.imgV_msg_title_top_door)
     ImageView imgVTopDoor;
-
     @BindView(R.id.rLayout_mag_live_top_bar)
     RelativeLayout rLayoutMsgLiveTopBar;
-
     @BindView(R.id.rv_mag_state)
     RecyclerView RvMagState;
+
+    private int currentType;//当前item类型
     private MagLiveFragment magLiveFragment;
-    private List<MagBean> magList;
     private MagActivityAdapter adapter;
     private MagLiveContract.Presenter presenter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,9 +76,15 @@ public class MagLiveActivity extends BaseFullScreenFragmentActivity implements M
     @Override
     protected void onStart() {
         super.onStart();
-        if (presenter != null){
+        if (presenter != null) {
             presenter.start();
         }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (presenter != null) presenter.stop();
     }
 
     private void initPresenter() {
@@ -91,13 +95,8 @@ public class MagLiveActivity extends BaseFullScreenFragmentActivity implements M
         magLiveFragment.setOnClearDoorOpenRecord(new MagLiveFragment.OnClearDoorOpenRecordLisenter() {
             @Override
             public void onClear() {
-                ToastUtil.showToast("清空了啊啊啊啊");
-                if (magList != null && magList.size() != 0) {
-                    magList.clear();
-                    adapter.notifyDataSetHasChanged();
-                } else {
-                    ToastUtil.showToast("没有记录");
-                }
+                adapter.clear();
+                adapter.notifyDataSetHasChanged();
             }
         });
     }
@@ -155,8 +154,8 @@ public class MagLiveActivity extends BaseFullScreenFragmentActivity implements M
     }
 
     @OnClick(R.id.imgV_msg_title_top_door)
-    public void onClickTest(){
-        if (presenter != null){
+    public void onClickTest() {
+        if (presenter != null) {
             presenter.getMesgFromMag();
         }
     }
@@ -192,22 +191,26 @@ public class MagLiveActivity extends BaseFullScreenFragmentActivity implements M
      * 初始化消息列表显示
      */
     @Override
-    public void initRecycleView(ArrayList<MagBean> list) {
-
-        //保证只有第一条的圈圈为彩色
-        for (int i = 0;i<list.size();i++){
-            if (i == 0){
-                list.get(i).isFirst = true;
-            }else {
-                list.get(i).isFirst = false;
+    public void initRecycleView(List<MagBean> list) {
+        if (list != null) {
+            //保证只有第一条的圈圈为彩色
+            for (int i = 0; i < list.size(); i++) {
+                if (i == 0) {
+                    list.get(i).isFirst = true;
+                } else {
+                    list.get(i).isFirst = false;
+                }
             }
-        }
 
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
-        RvMagState.setLayoutManager(layoutManager);
-        adapter = new MagActivityAdapter(getContext(), list, null);
-        adapter.setCurrentState(presenter.getDoorCurrentState());
-        RvMagState.setAdapter(adapter);
+            hideNoMesg();
+            LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+            RvMagState.setLayoutManager(layoutManager);
+            adapter = new MagActivityAdapter(getContext(), list, null);
+            adapter.setCurrentState(presenter.getDoorCurrentState());
+            RvMagState.setAdapter(adapter);
+        }else {
+            showNoMesg();
+        }
     }
 
     /**
@@ -217,37 +220,56 @@ public class MagLiveActivity extends BaseFullScreenFragmentActivity implements M
     public void addOneMagMesg(MagBean addBean) {
         // 以下为模拟测试 判断当前的时间和列表的第一条数据的时间是否相等 相等 直接添加为第一条， 不相等，先添加一条空白的
 
-        if (adapter != null){
-            if (adapter.getItemCount() != 0){
+        if (adapter != null) {
+            if (adapter.getItemCount() != 0) {
                 MagBean firstBean = adapter.getList().get(0);
-                if (adapter.checkSame(addBean.magTime,firstBean.magTime)){
+                if (adapter.checkSame(addBean.magTime, firstBean.magTime)) {
                     adapter.getItem(0).isFirst = false;
-                    adapter.add(0,addBean);
-                    adapter.notifyItemRangeChanged(0,adapter.getItemCount());
+                    adapter.add(0, addBean);
+                    adapter.notifyItemRangeChanged(0, adapter.getItemCount());
                     RvMagState.smoothScrollToPosition(0);
-
-                }else {
+                    presenter.saveIntoDb(addBean);
+                } else {
                     // 先插入一条空白的
                     MagBean nullBean = new MagBean();
                     nullBean.magTime = addBean.magTime;
                     nullBean.visibleType = 1;
+                    presenter.saveIntoDb(nullBean);
 
                     adapter.getItem(0).isFirst = false;
-                    adapter.add(0,nullBean);
-                    adapter.notifyItemRangeChanged(0,adapter.getItemCount());
+                    adapter.add(0, nullBean);
+                    adapter.notifyItemRangeChanged(0, adapter.getItemCount());
                     RvMagState.smoothScrollToPosition(0);
 
-                    adapter.add(0,addBean);
-                    adapter.notifyItemRangeChanged(0,adapter.getItemCount());
+                    adapter.add(0, addBean);
+                    adapter.notifyItemRangeChanged(0, adapter.getItemCount());
                     RvMagState.smoothScrollToPosition(0);
+                    presenter.saveIntoDb(addBean);
                 }
 
-            }else {
+            } else {
                 //第一条为空 直接插入
-                adapter.add(0,addBean);
+                adapter.add(0, addBean);
                 adapter.notifyDataSetHasChanged();
+                presenter.saveIntoDb(addBean);
             }
-            
+
         }
+    }
+
+    /**
+     * 没有消息记录
+     */
+    @Override
+    public void showNoMesg() {
+        llNoMesg.setVisibility(View.VISIBLE);
+    }
+
+    /**
+     * 隐藏无消息
+     */
+    @Override
+    public void hideNoMesg() {
+        llNoMesg.setVisibility(View.GONE);
     }
 }

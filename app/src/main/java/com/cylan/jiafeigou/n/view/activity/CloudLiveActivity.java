@@ -92,9 +92,12 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
         getIntentData();
         initFragment();
         initPresenter();
-        presenter.start();
-        initRecycleView();
-        initListener();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (presenter != null)presenter.start();
     }
 
     private void initListener() {
@@ -169,11 +172,6 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
         presenter.saveIntoDb(dbBean);
     }
 
-    @Override
-    public void initDataBase(String name) {
-        presenter.getDBManger(name);
-    }
-
     private void initPresenter() {
         presenter = new CloudLivePresenterImp(this);
     }
@@ -231,7 +229,6 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
                 .replace(android.R.id.content, cloudLiveSettingFragment)
                 .addToBackStack("CloudLiveSettingFragment")
                 .commit();
-
     }
 
     private void jump2SharePicFragment() {
@@ -383,6 +380,9 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
         cloudLiveMesgAdapter.setLayoutIdMapCache(layoutIdMapCache);
         rcyCloudMesgList.setLayoutManager(new LinearLayoutManager(this));
         rcyCloudMesgList.setAdapter(cloudLiveMesgAdapter);
+
+        //列表监听
+        initListener();
     }
 
     private List<CloudLiveBaseBean> creatList() {

@@ -344,4 +344,9 @@ public class DataSourceService extends Service implements AppCallBack {
     public void OnGetFeedbackRsp(int i, ArrayList<JFGFeedbackInfo> arrayList) {
         AppLogger.d("OnGetFeedbackRsp :");
     }
+
+    @Override
+    public void OnCheckDevVersionRsp(boolean b, String s, String s1, String s2, String s3) {
+
+    }
 }

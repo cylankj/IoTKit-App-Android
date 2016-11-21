@@ -8,7 +8,7 @@ import com.cylan.jiafeigou.support.db.annotation.Table;
  * 创建时间：2016/10/10
  * 描述：
  */
-@Table(name = "cloud_live_base_db_bean_table")
+@Table(name = "CloudLiveBaseDbBean")
 public class CloudLiveBaseDbBean {
     @Column(name = "id", isId = true)
     public int id;
