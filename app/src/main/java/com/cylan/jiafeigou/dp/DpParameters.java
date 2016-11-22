@@ -12,13 +12,11 @@ public class DpParameters {
 
     public static class Builder {
         private ArrayList<JFGDPMsg> arrayList = new ArrayList<>();
-        private ArrayList<Integer> msgIdList = new ArrayList<>();
 
-        public Builder addParam(int msgId, int version) {
+        public Builder addParam(int msgId, long version) {
             JFGDPMsg msg = new JFGDPMsg();
             msg.id = msgId;
             msg.version = version;
-            msgIdList.add(msgId);
             arrayList.add(msg);
             return this;
         }
@@ -27,10 +25,15 @@ public class DpParameters {
             return arrayList;
         }
 
+        public Builder addAll(ArrayList<JFGDPMsg> all) {
+            this.arrayList.addAll(all);
+            return this;
+        }
+
         @Override
         public String toString() {
             return "Builder{" +
-                    "msgIdList=" + msgIdList +
+                    "msgIdList=" + arrayList +
                     '}';
         }
     }

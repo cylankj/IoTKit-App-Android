@@ -34,8 +34,8 @@ import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.misc.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.support.rxbus.IEventBus;
-import com.cylan.jiafeigou.support.rxbus.RxBus;
+import com.cylan.jiafeigou.rx.IEventBus;
+import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.support.stat.MtaManager;
 import com.cylan.utils.ListUtils;
 import com.google.gson.Gson;
@@ -196,7 +196,7 @@ public class DataSourceService extends Service implements AppCallBack {
     @Override
     public void OnlineStatus(boolean b) {
         AppLogger.d("OnlineStatus :" + b);
-        JCache.isOnline = b;
+        JCache.onLineStatus = b;
         RxBus.getCacheInstance().post(new RxEvent.LoginRsp(b));
     }
 

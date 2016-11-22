@@ -41,6 +41,7 @@ public class BaseApplication extends Application implements Application.Activity
         //每一个新的进程启动时，都会调用onCreate方法。
         if (TextUtils.equals(ProcessUtils.myProcessName(getApplicationContext()), getPackageName())) {
             Log.d("BaseApplication", "BaseApplication..." + ProcessUtils.myProcessName(getApplicationContext()));
+            initNative();
             initBlockCanary();
             initBugMonitor();
             registerBootComplete();
@@ -56,6 +57,15 @@ public class BaseApplication extends Application implements Application.Activity
                 LeakCanary.install(BaseApplication.this);
             }
         });
+    }
+
+    private void initNative() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                startService(new Intent(getApplicationContext(), DataSourceService.class));
+            }
+        }).start();
     }
 
     private void initBlockCanary() {
@@ -170,7 +180,10 @@ public class BaseApplication extends Application implements Application.Activity
     public static class BootCompletedReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
-            context.startService(new Intent(context, DataSourceService.class));
+            if (!ProcessUtils.isServiceRunning(context, DataSourceService.class)) {
+                AppLogger.i("start DataSourceService");
+                context.startService(new Intent(context, DataSourceService.class));
+            }
         }
     }
 }

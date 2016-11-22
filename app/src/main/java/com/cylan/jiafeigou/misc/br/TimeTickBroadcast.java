@@ -5,7 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 
 import com.cylan.jiafeigou.misc.RxEvent;
-import com.cylan.jiafeigou.support.rxbus.RxBus;
+import com.cylan.jiafeigou.rx.RxBus;
 
 /**
  * Created by cylan-hunt on 16-8-3.

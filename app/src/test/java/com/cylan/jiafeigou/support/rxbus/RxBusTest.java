@@ -1,5 +1,7 @@
 package com.cylan.jiafeigou.support.rxbus;
 
+import com.cylan.jiafeigou.rx.RxBus;
+
 import org.junit.Test;
 import org.mockito.Mockito;
 

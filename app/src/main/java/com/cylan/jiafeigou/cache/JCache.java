@@ -1,13 +1,12 @@
 package com.cylan.jiafeigou.cache;
 
-import android.text.TextUtils;
 import android.util.ArrayMap;
+import android.util.Log;
 
 import com.cylan.entity.jniCall.JFGAccount;
-import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
+import com.cylan.jiafeigou.n.mvp.model.LoginAccountBean;
+import com.google.gson.Gson;
 
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -16,8 +15,7 @@ import java.util.Map;
 
 public class JCache {
 
-    private static Map<String, Object> simpleMap = new ArrayMap<>();
-    public static boolean isOnline = false;
+    private static Map<String, JFGAccount> simpleMap = new ArrayMap<>();
 
     /**
      * 非常坑爹啊，需要客户端记录标记。
@@ -28,17 +26,25 @@ public class JCache {
     public static boolean isSmsAction = false;
 
 
+    public static boolean isOnline() {
+        return onLineStatus && simpleMap.get("jfgAccount") != null;
+    }
+
+    public static boolean onLineStatus = false;
+
     /**
      * 应该是两级缓存
      *
      * @param jfgAccount
      */
     public static void setAccountCache(JFGAccount jfgAccount) {
+        Log.d("setAccountCache", "setAccountCache: " + new Gson().toJson(jfgAccount));
         simpleMap.put("jfgAccount", jfgAccount);
     }
 
     public static JFGAccount getAccountCache() {
-        return (JFGAccount) simpleMap.get("jfgAccount");
+        return simpleMap.get("jfgAccount");
     }
 
+    public static LoginAccountBean tmpAccount;
 }

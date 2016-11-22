@@ -13,7 +13,7 @@ import com.cylan.jiafeigou.n.mvp.model.CloudLiveBaseDbBean;
 
 import com.cylan.jiafeigou.support.db.DbManager;
 import com.cylan.jiafeigou.support.db.ex.DbException;
-import com.cylan.jiafeigou.support.rxbus.RxBus;
+import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.utils.CloseUtils;
 
 import java.io.ByteArrayInputStream;

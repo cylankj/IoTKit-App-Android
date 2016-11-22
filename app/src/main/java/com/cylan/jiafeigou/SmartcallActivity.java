@@ -159,7 +159,7 @@ public class SmartcallActivity extends NeedLoginActivity
 
 
     private boolean isLoginIn() {
-        return JCache.isOnline;
+        return JCache.isOnline();
     }
 
     /**

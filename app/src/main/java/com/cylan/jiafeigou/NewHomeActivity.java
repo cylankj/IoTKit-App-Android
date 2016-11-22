@@ -21,15 +21,12 @@ import com.cylan.jiafeigou.misc.OnActivityReenterListener;
 import com.cylan.jiafeigou.misc.RxEvent;
 import com.cylan.jiafeigou.misc.SharedElementCallBackListener;
 import com.cylan.jiafeigou.n.mvp.contract.home.NewHomeActivityContract;
-import com.cylan.jiafeigou.n.mvp.impl.home.HomeMinePresenterImpl;
-import com.cylan.jiafeigou.n.mvp.impl.home.HomePageListPresenterImpl;
-import com.cylan.jiafeigou.n.mvp.impl.home.HomeWonderfulPresenterImpl;
 import com.cylan.jiafeigou.n.mvp.impl.home.NewHomeActivityPresenterImpl;
 import com.cylan.jiafeigou.n.view.activity.NeedLoginActivity;
 import com.cylan.jiafeigou.n.view.home.HomeMineFragment;
 import com.cylan.jiafeigou.n.view.home.HomePageListFragmentExt;
 import com.cylan.jiafeigou.n.view.home.HomeWonderfulFragmentExt;
-import com.cylan.jiafeigou.support.rxbus.RxBus;
+import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.widget.CustomViewPager;
 
 import java.util.List;
@@ -47,7 +44,6 @@ public class NewHomeActivity extends NeedLoginActivity implements
 
     public static final String KEY_ENTER_ANIM_ID = "key_enter_anim_id";
     public static final String KEY_EXIT_ANIM_ID = "key_exit_anim_id";
-    private HomeMineFragment fragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -184,7 +180,7 @@ public class NewHomeActivity extends NeedLoginActivity implements
             switch (position) {
                 case INDEX_0: {
                     HomePageListFragmentExt fragment = HomePageListFragmentExt.newInstance(new Bundle());
-                    new HomePageListPresenterImpl(fragment);
+
                     if (fragment != null && fragment.getContext() != null)
                         Toast.makeText(fragment.getContext(), "重新new了。。。1", Toast.LENGTH_SHORT).show();
                     return fragment;
@@ -197,14 +193,13 @@ public class NewHomeActivity extends NeedLoginActivity implements
                     HomeWonderfulFragmentExt fragment = HomeWonderfulFragmentExt.newInstance(bundle);
                     sharedElementCallBackListener = fragment;
                     onActivityReenterListener = fragment;
-                    new HomeWonderfulPresenterImpl(fragment);
+
                     if (fragment != null && fragment.getContext() != null)
                         Toast.makeText(fragment.getContext(), "重新new了。。。2", Toast.LENGTH_SHORT).show();
                     return fragment;
                 }
                 case INDEX_2:
-                    fragment = HomeMineFragment.newInstance(new Bundle());
-                    new HomeMinePresenterImpl(fragment);
+                    HomeMineFragment fragment = HomeMineFragment.newInstance(new Bundle());
                     if (fragment != null && fragment.getContext() != null)
                         Toast.makeText(fragment.getContext(), "重新new了。。。3", Toast.LENGTH_SHORT).show();
                     return fragment;
@@ -224,9 +219,5 @@ public class NewHomeActivity extends NeedLoginActivity implements
         }
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        fragment.onActivityResult(requestCode, resultCode, data);
-    }
+
 }

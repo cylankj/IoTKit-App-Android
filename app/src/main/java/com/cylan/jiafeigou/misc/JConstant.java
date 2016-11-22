@@ -158,7 +158,18 @@ public class JConstant {
     public static final int OS_MAX_COUNT = OS_CAMERA_PANORAMA_GUOKE;
     public static Map<Integer, Integer> onLineIconMap = new HashMap<>();
     public static Map<Integer, Integer> offLineIconMap = new HashMap<>();
+    public static Map<Integer, Integer> NET_TYPE_RES = new HashMap<>();
 
+
+    static {
+        NET_TYPE_RES.put(-1, -1);
+        NET_TYPE_RES.put(0, -1);
+        NET_TYPE_RES.put(1, R.drawable.icon_home_net_wifi);
+        NET_TYPE_RES.put(2, R.drawable.icon_home_net_2g);
+        NET_TYPE_RES.put(3, R.drawable.icon_home_net_3g);
+        NET_TYPE_RES.put(4, -1);
+        NET_TYPE_RES.put(5, -1);
+    }
     static {
         //bell
         onLineIconMap.put(JConstant.OS_DOOR_BELL, R.drawable.icon_home_doorbell_online);

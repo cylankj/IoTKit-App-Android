@@ -1,0 +1,19 @@
+package com.cylan.annotation;
+
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
+
+import static java.lang.annotation.ElementType.FIELD;
+import static java.lang.annotation.RetentionPolicy.SOURCE;
+
+/**
+ * Created by cylan-hunt on 16-11-16.
+ * 标记一个属性属于哪一种设备
+ */
+
+@Retention(SOURCE)
+@Target(FIELD)
+public @interface ForDevice {
+
+    Device[] value();
+}

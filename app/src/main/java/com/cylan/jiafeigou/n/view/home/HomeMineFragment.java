@@ -1,10 +1,8 @@
 package com.cylan.jiafeigou.n.view.home;
 
-import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,16 +12,16 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.cache.JCache;
-import com.cylan.jiafeigou.misc.RxEvent;
+import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeMineContract;
 import com.cylan.jiafeigou.n.mvp.impl.home.HomeMinePresenterImpl;
 import com.cylan.jiafeigou.n.view.mine.HomeMineHelpFragment;
 import com.cylan.jiafeigou.n.view.mine.HomeMineInfoFragment;
 import com.cylan.jiafeigou.n.view.mine.MineFriendsFragment;
 import com.cylan.jiafeigou.n.view.mine.MineShareDeviceFragment;
+import com.cylan.jiafeigou.rx.RxBus;
+import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.support.rxbus.RxBus;
-import com.cylan.jiafeigou.utils.ContinuityClickUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.HomeMineItemView;
 import com.cylan.jiafeigou.widget.MsgBoxView;
@@ -34,7 +32,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 
-public class HomeMineFragment extends Fragment
+public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
         implements HomeMineContract.View {
     @BindView(R.id.iv_home_mine_portrait)
     RoundedImageView ivHomeMinePortrait;
@@ -56,7 +54,6 @@ public class HomeMineFragment extends Fragment
     @BindView(R.id.home_mine_item_settings)
     HomeMineItemView homeMineItemSettings;
 
-    private HomeMineContract.Presenter presenter;
     private HomeMineHelpFragment mineHelpFragment;
     private HomeMineInfoFragment personalInformationFragment;
     private HomeSettingFragment homeSettingFragment;
@@ -73,7 +70,9 @@ public class HomeMineFragment extends Fragment
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        this.basePresenter = new HomeMinePresenterImpl(this);
         mineHelpFragment = HomeMineHelpFragment.newInstance(new Bundle());
+
         homeSettingFragment = HomeSettingFragment.newInstance();
         homeMineMessageFragment = HomeMineMessageFragment.newInstance();
         mineShareDeviceFragment = MineShareDeviceFragment.newInstance();
@@ -85,12 +84,7 @@ public class HomeMineFragment extends Fragment
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home_mine, container, false);
         ButterKnife.bind(this, view);
-        initPresenter();
         return view;
-    }
-
-    private void initPresenter() {
-        presenter = new HomeMinePresenterImpl(this);
     }
 
     @Override
@@ -102,27 +96,21 @@ public class HomeMineFragment extends Fragment
     @Override
     public void onStart() {
         super.onStart();
+        if (!JCache.isOnline()) {
+            //访客状态
+            basePresenter.portraitBlur(R.drawable.clouds);
+            setAliasName("立即登录");
+        }
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        if (presenter != null){
-            if (!JCache.isOnline){
-                //访客状态
-                presenter.portraitBlur(R.drawable.clouds);
-                setAliasName("立即登录");
-            }
-            presenter.start();
-        }
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        if (presenter != null) {
-            presenter.stop();
-        }
     }
 
     @Override
@@ -134,7 +122,7 @@ public class HomeMineFragment extends Fragment
      * 点击个人头像
      */
     public void portrait() {
-        if (!JCache.isOnline){
+        if (!JCache.isOnline()) {
             needStartLoginFragment();
             return;
         }
@@ -142,7 +130,7 @@ public class HomeMineFragment extends Fragment
     }
 
     public void friendItem(View view) {
-        if (!JCache.isOnline){
+        if (!JCache.isOnline()) {
             needStartLoginFragment();
             return;
         }
@@ -156,7 +144,7 @@ public class HomeMineFragment extends Fragment
     }
 
     public void settingsItem(View view) {
-        if (!JCache.isOnline){
+        if (!JCache.isOnline()) {
             needStartLoginFragment();
             return;
         }
@@ -170,7 +158,7 @@ public class HomeMineFragment extends Fragment
     }
 
     public void shareItem(View view) {
-        if (!JCache.isOnline){
+        if (!JCache.isOnline()) {
             needStartLoginFragment();
             return;
         }
@@ -188,15 +176,15 @@ public class HomeMineFragment extends Fragment
     }
 
     @Override
-    public void setPresenter(HomeMineContract.Presenter presenter) {
-        this.presenter = presenter;
+    public void setPresenter(HomeMineContract.Presenter basePresenter) {
+        this.basePresenter = basePresenter;
     }
 
     @Override
     public void onPortraitUpdate(String url) {
         if (getActivity() != null) {
             ivHomeMinePortrait.setImageResource(R.drawable.clouds);
-            if (presenter != null) presenter.portraitBlur(R.drawable.clouds);
+            if (basePresenter != null) basePresenter.portraitBlur(R.drawable.clouds);
             tvHomeMineMsgCount.post(new Runnable() {
                 @Override
                 public void run() {
@@ -220,6 +208,7 @@ public class HomeMineFragment extends Fragment
 
     /**
      * 设置昵称
+     *
      * @param name
      */
     @Override
@@ -240,13 +229,13 @@ public class HomeMineFragment extends Fragment
         tvHomeMineMsgCount.post(new Runnable() {
             @Override
             public void run() {
-                tvHomeMineMsgCount.setText(number+"+");
+                tvHomeMineMsgCount.setText(number + "+");
             }
         });
     }
 
     private boolean needStartLoginFragment() {
-        if (!JCache.isOnline && RxBus.getCacheInstance().hasObservers()) {
+        if (!JCache.isOnline() && RxBus.getCacheInstance().hasObservers()) {
             RxBus.getCacheInstance().post(new RxEvent.NeedLoginEvent(null));
             return true;
         }
@@ -275,9 +264,6 @@ public class HomeMineFragment extends Fragment
                     ViewUtils.deBounceClick(getView().findViewById(R.id.home_mine_item_help));
                 AppLogger.e("home_mine_item_help");*/
             /*    helpItem(view);*/
-                if (ContinuityClickUtils.isFastDoubleClick()) {
-                    return;
-                }
                 getFragmentManager().beginTransaction()
                         .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                                 , R.anim.slide_in_left, R.anim.slide_out_right)
@@ -318,7 +304,7 @@ public class HomeMineFragment extends Fragment
      * 跳转到消息界面
      */
     private void jump2MesgFragment() {
-        if (!JCache.isOnline){
+        if (!JCache.isOnline()) {
             needStartLoginFragment();
             return;
         }
@@ -331,10 +317,10 @@ public class HomeMineFragment extends Fragment
     }
 
     /**
-     *点击个人昵称
+     * 点击个人昵称
      */
     private void jump2UserInfo() {
-        if (!JCache.isOnline){
+        if (!JCache.isOnline()) {
             needStartLoginFragment();
             return;
         }
@@ -346,7 +332,7 @@ public class HomeMineFragment extends Fragment
      */
     private void jump2UserInfoFrgment() {
         Bundle bundle = new Bundle();
-        bundle.putSerializable("userInfoBean",presenter.getUserInfoBean());
+        bundle.putSerializable("userInfoBean", basePresenter.getUserInfoBean());
         personalInformationFragment = HomeMineInfoFragment.newInstance(bundle);
         getFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
