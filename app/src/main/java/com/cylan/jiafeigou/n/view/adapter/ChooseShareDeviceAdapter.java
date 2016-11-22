@@ -2,6 +2,7 @@ package com.cylan.jiafeigou.n.view.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
@@ -10,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
 import com.cylan.jiafeigou.n.mvp.model.MineShareDeviceBean;
 import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
@@ -42,15 +44,27 @@ public class ChooseShareDeviceAdapter extends SuperAdapter<DeviceBean> {
     }
 
     @Override
-    public void onBind(SuperViewHolder holder, int viewType, int layoutPosition, final DeviceBean item) {
-        //TODO 已分享的人数
-        holder.setText(R.id.tv_share_device_number, "2/5");
-        holder.setText(R.id.tv_device_name,item.alias);
+    public void onBind(final SuperViewHolder holder, int viewType, int layoutPosition, final DeviceBean item) {
+        final int deviceType = item.pid;
+
+        int iconRes = JConstant.onLineIconMap.get(deviceType);
+        //昵称
+        holder.setText(R.id.tv_device_name, TextUtils.isEmpty(item.alias) ? item.uuid : item.alias);
+        //图标
+        holder.setImageDrawable(R.id.iv_device_icon, getContext().getResources().getDrawable(iconRes));
+        //已分享数
+        final TextView hasShareNum = holder.getView(R.id.tv_share_device_number);
+        hasShareNum.setText(item.hasShareCount+"/5");
+
         CheckBox checkBox = holder.getView(R.id.cbx_share_isCheck);
+
         checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 item.isChooseFlag = isChecked ? 1:0;
+                item.hasShareCount = isChecked ? item.hasShareCount+1:item.hasShareCount-1;
+                hasShareNum.setText(item.hasShareCount+"/5");
+
                 if (listener != null){
                     listener.onCheckClick(item);
                 }

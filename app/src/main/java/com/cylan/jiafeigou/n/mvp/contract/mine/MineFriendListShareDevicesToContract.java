@@ -1,5 +1,6 @@
 package com.cylan.jiafeigou.n.mvp.contract.mine;
 
+import com.cylan.jiafeigou.misc.RxEvent;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
 import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
@@ -57,7 +58,7 @@ public interface MineFriendListShareDevicesToContract {
         /**
          * 设置分享请求发送结果
          */
-        void showSendReqFinishReuslt();
+        void showSendReqFinishReuslt(ArrayList<RxEvent.ShareDeviceCallBack> list);
 
     }
 
@@ -85,9 +86,16 @@ public interface MineFriendListShareDevicesToContract {
         Subscription shareDeviceCallBack();
 
         /**
-         * 触发加载分享设备列表的数据
+         * 获取到设备已经分享的亲友数
+         * @param cid
          */
-        void callShareDeviceList();
+        void getDeviceInfo(ArrayList<String> cid);
+
+        /**
+         * 获取到设备信息的回调
+         * @return
+         */
+        Subscription getDeviceInfoCallBack();
 
     }
 
