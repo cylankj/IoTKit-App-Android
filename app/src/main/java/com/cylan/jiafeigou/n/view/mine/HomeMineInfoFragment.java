@@ -36,6 +36,7 @@ import com.cylan.jiafeigou.support.photoselect.ClipImageActivity;
 import com.cylan.jiafeigou.support.photoselect.activities.AlbumSelectActivity;
 import com.cylan.jiafeigou.support.photoselect.helpers.Constants;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
+import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.roundedimageview.RoundedImageView;
 
@@ -309,14 +310,22 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
         view.findViewById(R.id.tv_pick_from_canmera).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO 打开相机
-                outPutUri = Uri.fromFile(tempFile);
-                Intent intent = new Intent();
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                intent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);//设置Action为拍照
-                intent.putExtra(MediaStore.EXTRA_OUTPUT, outPutUri);//将拍取的照片保存到指定URI
-                startActivityForResult(intent,OPEN_CAMERA);
-                alertDialog.dismiss();
+                //打开相机
+                if (presenter.checkHasCamera()){
+                    if (presenter.cameraIsCanUse()){
+                        outPutUri = Uri.fromFile(tempFile);
+                        Intent intent = new Intent();
+                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        intent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
+                        intent.putExtra(MediaStore.EXTRA_OUTPUT, outPutUri);
+                        startActivityForResult(intent,OPEN_CAMERA);
+                        alertDialog.dismiss();
+                    }else {
+                        ToastUtil.showToast("相机不可用");
+                    }
+                }else {
+                    ToastUtil.showToast("没有相机");
+                }
             }
         });
 
@@ -398,7 +407,6 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
                 return;
             }
             String cropImagePath = getRealFilePathFromUri(getContext(), uri);
-
             PreferencesUtils.putString("UserImageUrl",cropImagePath);
 
             //TODO 此处后面可以将bitMap转为二进制上传后台网络

@@ -41,8 +41,16 @@ public interface MineInfoContract {
          */
         String checkFileExit(String path);
 
+        /**
+         * 检测是否存在相机
+         * @return
+         */
         boolean checkHasCamera();
 
+        /**
+         * 检测相机是否可用
+         * @return
+         */
         boolean cameraIsCanUse();
     }
 

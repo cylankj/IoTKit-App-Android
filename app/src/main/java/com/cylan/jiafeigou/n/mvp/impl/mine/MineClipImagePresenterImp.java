@@ -33,10 +33,7 @@ public class MineClipImagePresenterImp extends AbstractPresenter<MineClipImageCo
      */
     @Override
     public void upLoadUserHeadImag(String path) {
-        if (getView() != null){
-            getView().showUpLoadPro();
-        }
-        // TODO 上传头像
+        //上传头像
         rx.Observable.just(path)
                 .subscribeOn(Schedulers.newThread())
                 .subscribe(new Action1<String>() {
