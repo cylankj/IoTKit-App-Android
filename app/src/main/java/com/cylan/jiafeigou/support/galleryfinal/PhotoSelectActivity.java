@@ -49,6 +49,7 @@ import com.cylan.jiafeigou.support.galleryfinal.permission.AfterPermissionGrante
 import com.cylan.jiafeigou.support.galleryfinal.permission.EasyPermissions;
 import com.cylan.jiafeigou.support.galleryfinal.utils.PhotoTools;
 import com.cylan.jiafeigou.support.galleryfinal.widget.FloatingActionButton;
+import com.cylan.jiafeigou.support.photoselect.ClipImageActivity;
 import com.cylan.jiafeigou.support.toolsfinal.DeviceUtils;
 import com.cylan.jiafeigou.support.toolsfinal.StringUtils;
 import com.cylan.jiafeigou.support.toolsfinal.io.FilenameUtils;

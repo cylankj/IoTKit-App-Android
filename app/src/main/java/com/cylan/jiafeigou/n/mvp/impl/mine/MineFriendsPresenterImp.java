@@ -1,5 +1,6 @@
 package com.cylan.jiafeigou.n.mvp.impl.mine;
 
+import com.cylan.entity.JfgEnum;
 import com.cylan.entity.jniCall.JFGFriendAccount;
 import com.cylan.entity.jniCall.JFGFriendRequest;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
@@ -58,7 +59,7 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
 
         for (JFGFriendRequest jfgFriendRequest:addReqList.arrayList){
             MineAddReqBean emMessage = new MineAddReqBean();
-            //emMessage.iconUrl = JfgCmdInsurance.getCmd().getCloudUrlByType(jfgFriendRequest.account);
+            emMessage.iconUrl = JfgCmdInsurance.getCmd().getCloudUrlByType(JfgEnum.JFG_URL.PORTRAIT,0,jfgFriendRequest.account+".jpg","");
             emMessage.alias = jfgFriendRequest.alias;
             emMessage.sayHi = jfgFriendRequest.sayHi;
             emMessage.account = jfgFriendRequest.account;
@@ -69,52 +70,15 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
         return list;
     }
 
-    /**
-     * 测试数据
-     * @return
-     */
-    public ArrayList<JFGFriendRequest> testAddRequestData() {
-
-        ArrayList list = new ArrayList<JFGFriendRequest>();
-
-        JFGFriendRequest emMessage = new JFGFriendRequest();
-        emMessage.alias = "乔帮主";
-        emMessage.sayHi = "我是小小姨";
-        emMessage.account = "110";
-        emMessage.time = System.currentTimeMillis();
-
-        JFGFriendRequest emMessage2 = new JFGFriendRequest();
-        emMessage2.alias = "张无忌";
-        emMessage2.sayHi = "我是大大姨";
-        emMessage2.account = "120";
-        emMessage2.time = System.currentTimeMillis();
-        list.add(emMessage);
-        list.add(emMessage2);
-        return list;
-    }
-
     @Override
     public ArrayList<RelAndFriendBean> initRelativatesAndFriendsData(RxEvent.GetFriendList friendList) {
         ArrayList list = new ArrayList<RelAndFriendBean>();
         for (JFGFriendAccount account:friendList.arrayList) {
             RelAndFriendBean emMessage = new RelAndFriendBean();
-            //emMessage.iconUrl = JfgCmdEnsurance.getCmd().getCloudUrl(account.account);
-            emMessage.iconUrl = "http://www.uimaker.com/uploads/allimg/120410/1_120410103814_7.jpg";
+            emMessage.iconUrl = JfgCmdInsurance.getCmd().getCloudUrlByType(JfgEnum.JFG_URL.PORTRAIT,0,account.account+".jpg","");
             emMessage.markName = account.markName;
             emMessage.account = account.account;
             emMessage.alias = account.alias;
-            list.add(emMessage);
-        }
-        return list;
-    }
-
-    public ArrayList<JFGFriendAccount> testRelativatesAndFriendsData() {
-        ArrayList list = new ArrayList<JFGFriendAccount>();
-        for (int i = 0; i < 9; i++) {
-            JFGFriendAccount emMessage = new JFGFriendAccount();
-            emMessage.markName = "阿三" + i;
-            emMessage.account = "账号" + i;
-            emMessage.alias = "昵称" + i;
             list.add(emMessage);
         }
         return list;

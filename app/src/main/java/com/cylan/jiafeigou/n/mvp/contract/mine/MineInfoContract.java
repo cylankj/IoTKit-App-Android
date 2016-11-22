@@ -27,21 +27,23 @@ public interface MineInfoContract {
 
     interface Presenter extends BasePresenter {
 
-        void setPersonName();                   //更改昵称
-
         void bindPersonEmail();                 //绑定邮箱
-
-        void bindPersonPhone();                 //绑定手机
-
-        void changePassword();                  //更改密码
-
-        void getUserInfomation(String url);     //获取到用户信息
 
         /**
          * 退出登录
          */
         void logOut();
 
+        /**
+         * 检查文件是否存在
+         * @param path
+         * @return
+         */
+        String checkFileExit(String path);
+
+        boolean checkHasCamera();
+
+        boolean cameraIsCanUse();
     }
 
 }

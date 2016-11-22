@@ -1,5 +1,6 @@
 package com.cylan.jiafeigou.n.view.home;
 
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -15,6 +16,7 @@ import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.cache.JCache;
 import com.cylan.jiafeigou.misc.RxEvent;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeMineContract;
+import com.cylan.jiafeigou.n.mvp.impl.home.HomeMinePresenterImpl;
 import com.cylan.jiafeigou.n.view.mine.HomeMineHelpFragment;
 import com.cylan.jiafeigou.n.view.mine.HomeMineInfoFragment;
 import com.cylan.jiafeigou.n.view.mine.MineFriendsFragment;
@@ -83,7 +85,12 @@ public class HomeMineFragment extends Fragment
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home_mine, container, false);
         ButterKnife.bind(this, view);
+        initPresenter();
         return view;
+    }
+
+    private void initPresenter() {
+        presenter = new HomeMinePresenterImpl(this);
     }
 
     @Override

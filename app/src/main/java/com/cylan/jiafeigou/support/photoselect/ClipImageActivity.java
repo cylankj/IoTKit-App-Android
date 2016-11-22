@@ -1,6 +1,5 @@
-package com.cylan.jiafeigou.support.galleryfinal;
+package com.cylan.jiafeigou.support.photoselect;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -8,46 +7,33 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
-import android.view.Window;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
-
 
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.support.galleryfinal.model.PhotoInfo;
-import com.cylan.jiafeigou.support.galleryfinal.widget.crop.CropImageActivity;
-import com.cylan.jiafeigou.support.galleryfinal.widget.zoonview.ClipViewLayout;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.net.URI;
 
 
 /**
  * 头像裁剪Activity
  */
-public class ClipImageActivity extends CropImageActivity implements View.OnClickListener {
-    private static final int RESULT_CAMERA =2;
+public class ClipImageActivity extends AppCompatActivity implements View.OnClickListener {
     private ClipViewLayout clipViewLayout1;
     private ClipViewLayout clipViewLayout2;
+    private ImageView back;
     private TextView btnCancel;
     private TextView btnOk;
     private int type;
-    private Uri mCameraSaveUri;
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_clip_image);
         type = getIntent().getIntExtra("type", 1);
-        mTakePhotoAction = getIntent().getBooleanExtra("cameraAction", false);
         initView();
-        if (mTakePhotoAction){
-            takePhotoAction();
-        }
     }
 
     /**
@@ -66,11 +52,17 @@ public class ClipImageActivity extends CropImageActivity implements View.OnClick
     @Override
     protected void onResume() {
         super.onResume();
-        clipViewLayout1.setVisibility(View.VISIBLE);
-        clipViewLayout2.setVisibility(View.GONE);
-        //设置图片资源
-        if (getIntent().getData() != null){
+        if (type == 1) {
+            clipViewLayout1.setVisibility(View.VISIBLE);
+            clipViewLayout2.setVisibility(View.GONE);
+            //设置图片资源
             clipViewLayout1.setImageSrc(getIntent().getData());
+
+        } else {
+            clipViewLayout2.setVisibility(View.VISIBLE);
+            clipViewLayout1.setVisibility(View.GONE);
+            //设置图片资源
+            clipViewLayout2.setImageSrc(getIntent().getData());
         }
     }
 
@@ -86,15 +78,18 @@ public class ClipImageActivity extends CropImageActivity implements View.OnClick
         }
     }
 
+
     /**
      * 生成Uri并且通过setResult返回给打开的activity
      */
     private void generateUriAndReturn() {
         //调用返回剪切图
         Bitmap zoomedCropBitmap;
-
-        zoomedCropBitmap = clipViewLayout1.clip();
-
+        if (type == 1) {
+            zoomedCropBitmap = clipViewLayout1.clip();
+        } else {
+            zoomedCropBitmap = clipViewLayout2.clip();
+        }
         if (zoomedCropBitmap == null) {
             Log.e("android", "zoomedCropBitmap == null");
             return;
@@ -118,36 +113,10 @@ public class ClipImageActivity extends CropImageActivity implements View.OnClick
                     }
                 }
             }
-
-            if (mTakePhotoAction){
-                Intent intent = new Intent();
-                intent.setData(mCameraSaveUri);
-                setResult(RESULT_CAMERA, intent);
-                //TODO 保存URi地址
-            }else {
-                Intent intent = new Intent();
-                intent.setData(mSaveUri);
-                setResult(RESULT_OK, intent);
-                //TODO 保存URi地址
-            }
+            Intent intent = new Intent();
+            intent.setData(mSaveUri);
+            setResult(RESULT_OK, intent);
             finish();
         }
-    }
-
-    @Override
-    protected void takeResult(PhotoInfo info) {
-        File file = new File(info.getPhotoPath());
-        clipViewLayout1.setImageSrc(Uri.fromFile(file));
-        mCameraSaveUri = Uri.fromFile(file);
-    }
-
-    @Override
-    public void setCropSaveSuccess(File file) {
-
-    }
-
-    @Override
-    public void setCropSaveException(Throwable throwable) {
-
     }
 }

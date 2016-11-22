@@ -22,6 +22,7 @@ import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -58,6 +59,7 @@ public class MagLiveActivity extends BaseFullScreenFragmentActivity implements M
     private MagLiveFragment magLiveFragment;
     private MagActivityAdapter adapter;
     private MagLiveContract.Presenter presenter;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,6 +99,7 @@ public class MagLiveActivity extends BaseFullScreenFragmentActivity implements M
             public void onClear() {
                 adapter.clear();
                 adapter.notifyDataSetHasChanged();
+                showNoMesg();
             }
         });
     }
@@ -192,7 +195,7 @@ public class MagLiveActivity extends BaseFullScreenFragmentActivity implements M
      */
     @Override
     public void initRecycleView(List<MagBean> list) {
-        if (list != null) {
+        if (list != null && list.size() > 0) {
             //保证只有第一条的圈圈为彩色
             for (int i = 0; i < list.size(); i++) {
                 if (i == 0) {
@@ -209,6 +212,12 @@ public class MagLiveActivity extends BaseFullScreenFragmentActivity implements M
             adapter.setCurrentState(presenter.getDoorCurrentState());
             RvMagState.setAdapter(adapter);
         }else {
+            List<MagBean> magBeanList = new ArrayList<>();
+            LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+            RvMagState.setLayoutManager(layoutManager);
+            adapter = new MagActivityAdapter(getContext(), magBeanList, null);
+            adapter.setCurrentState(presenter.getDoorCurrentState());
+            RvMagState.setAdapter(adapter);
             showNoMesg();
         }
     }
@@ -219,7 +228,7 @@ public class MagLiveActivity extends BaseFullScreenFragmentActivity implements M
     @Override
     public void addOneMagMesg(MagBean addBean) {
         // 以下为模拟测试 判断当前的时间和列表的第一条数据的时间是否相等 相等 直接添加为第一条， 不相等，先添加一条空白的
-
+        hideNoMesg();
         if (adapter != null) {
             if (adapter.getItemCount() != 0) {
                 MagBean firstBean = adapter.getList().get(0);

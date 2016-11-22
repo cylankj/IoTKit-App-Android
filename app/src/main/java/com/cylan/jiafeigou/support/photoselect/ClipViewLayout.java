@@ -1,4 +1,4 @@
-package com.cylan.jiafeigou.support.galleryfinal.widget.zoonview;
+package com.cylan.jiafeigou.support.photoselect;
 
 import android.content.ContentResolver;
 import android.content.Context;
@@ -22,9 +22,11 @@ import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
+
 import com.cylan.jiafeigou.R;
 
 import java.io.IOException;
+
 
 /**
  * 头像上传原图裁剪容器

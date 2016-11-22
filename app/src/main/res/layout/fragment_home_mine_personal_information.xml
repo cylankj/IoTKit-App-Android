@@ -55,7 +55,7 @@
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_marginRight="20dp"
-            android:src="@mipmap/ic_launcher"
+            android:src="@drawable/icon_mine_head_normal"
             hunt:riv_oval="true" />
 
 

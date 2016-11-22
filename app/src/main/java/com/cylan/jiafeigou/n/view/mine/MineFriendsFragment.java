@@ -45,7 +45,6 @@ import butterknife.OnClick;
 public class
 MineFriendsFragment extends Fragment implements MineFriendsContract.View, AddRelativesAndFriendsAdapter.OnAcceptClickLisenter {
 
-
     @BindView(R.id.iv_home_mine_relativesandfriends_back)
     ImageView ivHomeMineRelativesandfriendsBack;
     @BindView(R.id.recyclerview_request_add)

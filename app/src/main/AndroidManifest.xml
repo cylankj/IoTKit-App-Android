@@ -275,9 +275,15 @@
             android:screenOrientation="portrait"
             android:configChanges="orientation|keyboard|keyboardHidden|screenSize"
             />
-
+        <activity android:name=".support.photoselect.activities.AlbumSelectActivity"
+            android:screenOrientation="portrait"
+            android:configChanges="orientation|keyboard|keyboardHidden|screenSize"
+            />
+        <activity android:name=".support.photoselect.activities.ImageSelectActivity"
+            android:screenOrientation="portrait"
+            android:configChanges="orientation|keyboard|keyboardHidden|screenSize"/>
         <activity
-            android:name=".support.galleryfinal.ClipImageActivity"
+            android:name=".support.photoselect.ClipImageActivity"
             android:screenOrientation="portrait"/>
 
     </application>

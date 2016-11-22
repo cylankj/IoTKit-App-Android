@@ -1,11 +1,20 @@
 package com.cylan.jiafeigou.n.view.mine;
 
 
+import android.content.ContentResolver;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.app.AlertDialog;
@@ -14,24 +23,23 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineInfoContract;
-import com.cylan.jiafeigou.n.mvp.impl.mine.GlideImageLoaderPresenterImpl;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineInfoPresenterImpl;
-import com.cylan.jiafeigou.support.galleryfinal.CoreConfig;
-import com.cylan.jiafeigou.support.galleryfinal.FunctionConfig;
-import com.cylan.jiafeigou.support.galleryfinal.GalleryFinal;
-import com.cylan.jiafeigou.support.galleryfinal.ImageLoader;
-import com.cylan.jiafeigou.support.galleryfinal.ThemeConfig;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.utils.ContextUtils;
+import com.cylan.jiafeigou.support.photoselect.ClipImageActivity;
+import com.cylan.jiafeigou.support.photoselect.activities.AlbumSelectActivity;
+import com.cylan.jiafeigou.support.photoselect.helpers.Constants;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.roundedimageview.RoundedImageView;
+
+import java.io.File;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -51,9 +59,8 @@ import butterknife.OnClick;
 public class HomeMineInfoFragment extends Fragment implements MineInfoContract.View {
 
     //拉取出照相机时，产生的状态码
-    private final int REQUEST_CODE_CAMERA = 1000;
-    private final int REQUEST_CODE_GALLERY = 1001;
-    public FunctionConfig functionConfig;
+    private static final int REQUEST_CROP_PHOTO = 102;
+    private static final int OPEN_CAMERA = 101;
 
     @BindView(R.id.tv_home_mine_personal_mailbox)
     TextView mTvMailBox;
@@ -81,6 +88,8 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
     private MineInfoContract.Presenter presenter;
     private AlertDialog alertDialog;
     private JFGAccount argumentData;
+    private Uri outPutUri;
+    private File tempFile;
 
     public static HomeMineInfoFragment newInstance(Bundle bundle) {
         HomeMineInfoFragment fragment = new HomeMineInfoFragment();
@@ -91,7 +100,6 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
     }
 
     @Nullable
@@ -100,39 +108,20 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
         View view = inflater.inflate(R.layout.fragment_home_mine_personal_information, container, false);
         ButterKnife.bind(this, view);
         initPresenter();
-        initGalleryFinal();
+        createCameraTempFile(savedInstanceState);
         return view;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putSerializable("tempFile", tempFile);
     }
 
     @Override
     public void onResume() {
         super.onResume();
         initPersonalInformation(getArgumentData());
-    }
-
-    /**
-     * 初始化相册选择框架
-     */
-    private void initGalleryFinal() {
-        //设置主题
-        ThemeConfig theme = new ThemeConfig.Builder()
-                .build();
-        //配置功能
-        functionConfig = new FunctionConfig.Builder()
-                .setEnableCamera(true)
-                .setEnableEdit(true)
-                .setEnableCrop(true)
-                .setEnableRotate(true)
-                .setCropSquare(true)
-                .setEnablePreview(true)
-                .build();
-
-        //配置imageloader
-        ImageLoader imageloader = new GlideImageLoaderPresenterImpl();
-        CoreConfig coreConfig = new CoreConfig.Builder(ContextUtils.getContext(), imageloader, theme)
-                .setFunctionConfig(functionConfig)
-                .build();
-        GalleryFinal.init(coreConfig);
     }
 
     private void initPresenter() {
@@ -142,13 +131,6 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
     @Override
     public void onStart() {
         super.onStart();
-        String mailBoxText = PreferencesUtils.getString("邮箱", "未设置");
-        mTvMailBox.setText(mailBoxText);
-
-        //昵称回显
-        tvUserName.setText(PreferencesUtils.getString("username", "未设置"));
-
-        //presenter.getUserInfomation(url);              //初始化显示用户信息
     }
 
     @OnClick({R.id.iv_home_mine_personal_back, R.id.btn_home_mine_personal_information,
@@ -262,7 +244,12 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
     public void initPersonalInformation(JFGAccount bean) {
         if (bean != null){
             //头像的回显
-            Glide.with(getContext()).load(bean.getPhotoUrl())
+            String photoUrl = bean.getPhotoUrl();
+            if ("".equals(bean.getPhotoUrl())){
+                photoUrl = PreferencesUtils.getString("UserImageUrl");
+            }
+
+            Glide.with(getContext()).load(photoUrl)
                     .asBitmap().centerCrop()
                     .error(R.drawable.icon_mine_head_normal)
                     .into(new BitmapImageViewTarget(userImageHead) {
@@ -322,7 +309,13 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
         view.findViewById(R.id.tv_pick_from_canmera).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                GalleryFinal.openCamera(REQUEST_CODE_CAMERA, functionConfig, null);
+                // TODO 打开相机
+                outPutUri = Uri.fromFile(tempFile);
+                Intent intent = new Intent();
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                intent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);//设置Action为拍照
+                intent.putExtra(MediaStore.EXTRA_OUTPUT, outPutUri);//将拍取的照片保存到指定URI
+                startActivityForResult(intent,OPEN_CAMERA);
                 alertDialog.dismiss();
             }
         });
@@ -330,7 +323,9 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
         view.findViewById(R.id.tv_pick_from_grallery).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                GalleryFinal.openGallerySingle(REQUEST_CODE_GALLERY,functionConfig, null);
+                Intent intent = new Intent(getContext(), AlbumSelectActivity.class);
+                intent.putExtra(Constants.INTENT_EXTRA_LIMIT, 3);
+                startActivityForResult(intent, Constants.REQUEST_CODE);
                 alertDialog.dismiss();
             }
         });
@@ -391,4 +386,86 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
         argumentData = (JFGAccount) arguments.getSerializable("userInfoBean");
         return argumentData;
     }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == Constants.REQUEST_CODE && data != null) {
+            gotoClipActivity(Uri.parse(data.getStringExtra(Constants.INTENT_EXTRA_IMAGES)));
+        }else if (requestCode == REQUEST_CROP_PHOTO && data != null){
+            final Uri uri = data.getData();
+            if (uri == null) {
+                return;
+            }
+            String cropImagePath = getRealFilePathFromUri(getContext(), uri);
+
+            PreferencesUtils.putString("UserImageUrl",cropImagePath);
+
+            //TODO 此处后面可以将bitMap转为二进制上传后台网络
+
+        }else if (requestCode == OPEN_CAMERA){
+            if (resultCode == getActivity().RESULT_OK) {
+                gotoClipActivity(outPutUri);
+            }
+        }
+    }
+
+    /**
+     * 打开截图界面
+     *
+     * @param uri
+     */
+    public void gotoClipActivity(Uri uri) {
+        if (uri == null) {
+            return;
+        }
+        Intent intent = new Intent();
+        intent.setClass(getContext(), ClipImageActivity.class);
+        intent.putExtra("type", 1);
+        intent.setData(uri);
+        startActivityForResult(intent, REQUEST_CROP_PHOTO);
+    }
+
+    /**
+     * @param context
+     * @param uri
+     * @return the file path or null
+     */
+    public static String getRealFilePathFromUri(final Context context, final Uri uri) {
+        if (null == uri) return null;
+        final String scheme = uri.getScheme();
+        String data = null;
+        if (scheme == null)
+            data = uri.getPath();
+        else if (ContentResolver.SCHEME_FILE.equals(scheme)) {
+            data = uri.getPath();
+        } else if (ContentResolver.SCHEME_CONTENT.equals(scheme)) {
+            Cursor cursor = context.getContentResolver().query(uri, new String[]{MediaStore.Images.ImageColumns.DATA}, null, null, null);
+            if (null != cursor) {
+                if (cursor.moveToFirst()) {
+                    int index = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
+                    if (index > -1) {
+                        data = cursor.getString(index);
+                    }
+                }
+                cursor.close();
+            }
+        }
+        return data;
+    }
+
+    /**
+     * 创建调用系统照相机待存储的临时文件
+     *
+     * @param savedInstanceState
+     */
+    private void createCameraTempFile(Bundle savedInstanceState) {
+        if (savedInstanceState != null && savedInstanceState.containsKey("tempFile")) {
+            tempFile = (File) savedInstanceState.getSerializable("tempFile");
+        } else {
+            tempFile = new File(presenter.checkFileExit(Environment.getExternalStorageDirectory().getPath() + "/image/"),
+                    System.currentTimeMillis() + ".jpg");
+        }
+    }
+
 }

@@ -3,13 +3,22 @@ package com.cylan.jiafeigou.n.mvp.impl.mine;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.hardware.Camera;
+import android.os.Build;
+import android.text.TextUtils;
+import android.widget.Toast;
 
+import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineInfoContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.n.mvp.model.UserInfoBean;
 import com.cylan.jiafeigou.support.galleryfinal.FunctionConfig;
 
+
+import java.io.File;
+import java.util.List;
 
 import rx.Observable;
 import rx.Subscription;
@@ -25,54 +34,14 @@ import rx.schedulers.Schedulers;
  */
 public class MineInfoPresenterImpl extends AbstractPresenter<MineInfoContract.View> implements MineInfoContract.Presenter {
 
-    private Context context;
-    public static FunctionConfig functionConfig;
-    private Subscription getUserInfoSubscription;
-
     public MineInfoPresenterImpl(MineInfoContract.View view, Context context) {
         super(view);
         view.setPresenter(this);
-        this.context = context;
-    }
-
-    @Override
-    public void setPersonName() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.show();
     }
 
     @Override
     public void bindPersonEmail() {
         getView().jump2SetEmailFragment();
-    }
-
-    @Override
-    public void bindPersonPhone() {
-
-    }
-
-    @Override
-    public void changePassword() {
-
-    }
-
-    @Override
-    public void getUserInfomation(String url) {
-        getUserInfoSubscription = Observable.just(url)
-                .map(new Func1<String, UserInfoBean>() {
-                    @Override
-                    public UserInfoBean call(String s) {
-                        return null;
-                    }
-                })
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<UserInfoBean>() {
-                    @Override
-                    public void call(UserInfoBean userInfoBean) {
-                        //getView().initPersonalInformation(userInfoBean);
-                    }
-                });
     }
 
     /**
@@ -90,6 +59,65 @@ public class MineInfoPresenterImpl extends AbstractPresenter<MineInfoContract.Vi
                 });
     }
 
+    /**
+     * 检查文件是否存在
+     * @param dirPath
+     * @return
+     */
+    @Override
+    public String checkFileExit(String dirPath) {
+        if (TextUtils.isEmpty(dirPath)) {
+            return "";
+        }
+        File dir = new File(dirPath);
+        if (!dir.exists()) {
+            dir.mkdirs();
+        }
+        return dirPath;
+    }
+
+    /**
+     * 检验是否存在相机
+     * @return
+     */
+    @Override
+    public boolean checkHasCamera() {
+        PackageManager pm = getView().getContext().getPackageManager();
+        boolean hasACamera = pm.hasSystemFeature(PackageManager.FEATURE_CAMERA)
+                || pm.hasSystemFeature(PackageManager.FEATURE_CAMERA_FRONT)
+                || Build.VERSION.SDK_INT < Build.VERSION_CODES.GINGERBREAD
+                || Camera.getNumberOfCameras() > 0;
+        return hasACamera;
+    }
+
+    /**
+     * 检测相机是否可用
+     * @return
+     */
+    @Override
+    public boolean cameraIsCanUse() {
+        boolean isCanUse = true;
+        Camera mCamera = null;
+        try {
+            mCamera = Camera.open();
+            Camera.Parameters mParameters = mCamera.getParameters();
+            mCamera.setParameters(mParameters);
+        } catch (Exception e) {
+            isCanUse = false;
+        }
+
+        if (mCamera != null) {
+            try {
+                mCamera.release();
+            } catch (Exception e) {
+                e.printStackTrace();
+                return isCanUse;
+            }
+        }
+        return isCanUse;
+    }
+
+
     @Override
     public void start() {
 
@@ -97,8 +125,6 @@ public class MineInfoPresenterImpl extends AbstractPresenter<MineInfoContract.Vi
 
     @Override
     public void stop() {
-        if (getUserInfoSubscription != null) {
-            getUserInfoSubscription.unsubscribe();
-        }
+
     }
 }

@@ -1,4 +1,4 @@
-package com.cylan.jiafeigou.support.galleryfinal.widget.zoonview;
+package com.cylan.jiafeigou.support.photoselect;
 
 /*
  * Copyright 2014 - 2016 Henning Dodenhof
@@ -38,6 +38,7 @@ import android.util.AttributeSet;
 import android.widget.ImageView;
 
 import com.cylan.jiafeigou.R;
+
 
 /**
  * https://github.com/hdodenhof/CircleImageView

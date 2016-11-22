@@ -14,7 +14,6 @@ import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.cylan.entity.jniCall.JFGFriendAccount;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
-import com.cylan.jiafeigou.support.galleryfinal.widget.zoonview.CircleImageView;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.widget.roundedimageview.RoundedImageView;
 import com.cylan.superadapter.IMulItemViewType;

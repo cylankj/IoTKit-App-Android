@@ -1,4 +1,4 @@
-package com.cylan.jiafeigou.support.galleryfinal.widget.zoonview;
+package com.cylan.jiafeigou.support.photoselect;
 
 import android.content.Context;
 import android.graphics.Canvas;

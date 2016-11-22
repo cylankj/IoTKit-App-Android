@@ -25,6 +25,7 @@ import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.support.galleryfinal.model.PhotoInfo;
 import com.cylan.jiafeigou.support.galleryfinal.utils.ILogger;
 import com.cylan.jiafeigou.support.galleryfinal.utils.Utils;
+import com.cylan.jiafeigou.support.photoselect.ClipImageActivity;
 import com.cylan.jiafeigou.support.toolsfinal.DeviceUtils;
 import com.cylan.jiafeigou.support.toolsfinal.StringUtils;
 import com.cylan.jiafeigou.support.toolsfinal.io.FileUtils;

@@ -47,6 +47,7 @@ public class NewHomeActivity extends NeedLoginActivity implements
 
     public static final String KEY_ENTER_ANIM_ID = "key_enter_anim_id";
     public static final String KEY_EXIT_ANIM_ID = "key_exit_anim_id";
+    private HomeMineFragment fragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -202,7 +203,7 @@ public class NewHomeActivity extends NeedLoginActivity implements
                     return fragment;
                 }
                 case INDEX_2:
-                    HomeMineFragment fragment = HomeMineFragment.newInstance(new Bundle());
+                    fragment = HomeMineFragment.newInstance(new Bundle());
                     new HomeMinePresenterImpl(fragment);
                     if (fragment != null && fragment.getContext() != null)
                         Toast.makeText(fragment.getContext(), "重新new了。。。3", Toast.LENGTH_SHORT).show();
@@ -223,5 +224,9 @@ public class NewHomeActivity extends NeedLoginActivity implements
         }
     }
 
-
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        fragment.onActivityResult(requestCode, resultCode, data);
+    }
 }
