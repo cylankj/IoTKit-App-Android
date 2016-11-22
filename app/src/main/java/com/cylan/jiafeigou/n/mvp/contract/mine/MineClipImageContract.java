@@ -47,5 +47,9 @@ public interface MineClipImageContract {
          */
         Subscription getUpLoadResult();
 
+        /**
+         * 获取到用户的信息
+         */
+        Subscription getAccount();
     }
 }

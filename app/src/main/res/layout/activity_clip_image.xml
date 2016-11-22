@@ -25,8 +25,7 @@
         <com.cylan.jiafeigou.support.photoselect.ClipViewLayout
             android:id="@+id/clipViewLayout1"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
+            android:layout_height="match_parent"
             app:clipBorderWidth="0dp"
             app:clipType="circle"
             />
@@ -65,7 +64,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
         </RelativeLayout>
-
 
     </FrameLayout>
 

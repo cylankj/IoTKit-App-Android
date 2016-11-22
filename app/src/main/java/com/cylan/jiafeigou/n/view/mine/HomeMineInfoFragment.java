@@ -278,6 +278,20 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
             }else {
                 tvHomeMinePersonalPhone.setText(bean.getPhone());
             }
+        }else {
+            Glide.with(getContext()).load(PreferencesUtils.getString("UserImageUrl"))
+                    .asBitmap().centerCrop()
+                    .error(R.drawable.icon_mine_head_normal)
+                    .into(new BitmapImageViewTarget(userImageHead) {
+                        @Override
+                        protected void setResource(Bitmap resource) {
+                            RoundedBitmapDrawable circularBitmapDrawable =
+                                    RoundedBitmapDrawableFactory.create(getContext().getResources(), resource);
+                            circularBitmapDrawable.setCircular(true);
+                            userImageHead.setImageDrawable(circularBitmapDrawable);
+                        }
+                    });
+
         }
     }
 
@@ -408,7 +422,6 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
             }
             String cropImagePath = getRealFilePathFromUri(getContext(), uri);
             PreferencesUtils.putString("UserImageUrl",cropImagePath);
-
             //TODO 此处后面可以将bitMap转为二进制上传后台网络
 
         }else if (requestCode == OPEN_CAMERA){
