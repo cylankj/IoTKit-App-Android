@@ -5,7 +5,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
 /**
  * 作者：zsl
@@ -26,7 +26,7 @@ public class HomeMinePresenterImplTest {
 
     @Test
     public void testStart() throws Exception {
-        HomeMinePresenterImpl homeMinePresenter =Mockito.mock(HomeMinePresenterImpl.class);
+        HomeMinePresenterImpl homeMinePresenter = Mockito.mock(HomeMinePresenterImpl.class);
         assertTrue(homeMinePresenter.createRandomName().contains("d"));
 
     }

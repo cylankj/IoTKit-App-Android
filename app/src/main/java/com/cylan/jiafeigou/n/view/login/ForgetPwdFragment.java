@@ -264,7 +264,7 @@ public class ForgetPwdFragment extends Fragment implements ForgetPwdContract.Vie
                     //验证码过期
                     if (!TextUtils.isEmpty(code) && code.length() == JConstant.VALID_VERIFICATION_CODE_LEN
                             && JConstant.PHONE_REG.matcher(etForgetUsername.getText()).find()) {
-                        if (TextUtils.equals(getString(R.string.item_reget_verification_code),
+                        if (TextUtils.equals(getString(R.string.Button_ReObtain),
                                 ViewUtils.getTextViewContent(tvMeterGetCode))) {
                             Toast.makeText(getActivity(), "验证码已过期", Toast.LENGTH_SHORT).show();
                             return;
@@ -355,7 +355,7 @@ public class ForgetPwdFragment extends Fragment implements ForgetPwdContract.Vie
         if (mailView == null) {
             return;
         }
-        final String content = String.format(getString(R.string.send_email_tip_content),
+        final String content = String.format(getString(R.string.EMAIL_RESET_PWD),
                 ViewUtils.getTextViewContent(etForgetUsername));
         ((TextView) mailView.findViewById(R.id.tv_send_email_content)).setText(content);
         View btn = mailView.findViewById(R.id.tv_email_confirm);

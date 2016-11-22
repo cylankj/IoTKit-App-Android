@@ -92,7 +92,7 @@ public class SetupPwdFragment extends Fragment implements SetupPwdContract.View 
     }
 
     private void setupButton() {
-        tvRegisterPwdSubmit.setText(getString(R.string.item_confirm));
+        tvRegisterPwdSubmit.setText(getString(R.string.Button_Sure));
     }
 
     private void initTitleBar() {
@@ -115,7 +115,7 @@ public class SetupPwdFragment extends Fragment implements SetupPwdContract.View 
 
     private void setupInputBox() {
         EditText editText = (EditText) getView().findViewById(R.id.et_input_box);
-        editText.setHint(getString(R.string.input_new_pwd));
+        editText.setHint(getString(R.string.ENTER_PWD));
         editText.setInputType(EditorInfo.TYPE_TEXT_VARIATION_PASSWORD);
         ViewUtils.setChineseExclude(editText, JConstant.PWD_LEN_MAX);
     }

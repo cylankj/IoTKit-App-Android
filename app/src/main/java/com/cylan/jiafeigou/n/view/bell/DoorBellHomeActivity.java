@@ -342,7 +342,7 @@ public class DoorBellHomeActivity extends BaseFullScreenFragmentActivity
             case R.id.tv_bell_home_list_select_all:
                 if (TextUtils.equals(tvBellHomeListSelectAll.getText(), getString(R.string.SELECT_ALL))) {
                     bellCallRecordListAdapter.selectAll(lPos);
-                    tvBellHomeListSelectAll.setText(getString(R.string.SELECT_NONE));
+//                    tvBellHomeListSelectAll.setText(getString(R.string.SELECT_NONE));
                 } else {
                     bellCallRecordListAdapter.selectNone(lPos);
                     tvBellHomeListSelectAll.setText(getString(R.string.SELECT_ALL));
