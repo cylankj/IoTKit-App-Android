@@ -113,7 +113,7 @@ public class DpDeviceAssembler implements IParser {
                 .map(new Func1<RxEvent.DeviceRawList, RxEvent.DeviceRawList>() {
                     @Override
                     public RxEvent.DeviceRawList call(RxEvent.DeviceRawList deviceRawList) {
-                        AppLogger.i("wait_for_account_end");
+                        AppLogger.i("wait_for_account_end: " + (JCache.getAccountCache() == null));
                         return deviceRawList;
                     }
                 })

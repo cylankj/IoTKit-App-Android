@@ -112,6 +112,7 @@ public class DataSourceService extends Service implements AppCallBack {
     @Override
     public void OnUpdateAccount(JFGAccount jfgAccount) {
         AppLogger.d("OnLocalMessage :" + new Gson().toJson(jfgAccount));
+        JCache.setAccountCache(jfgAccount);
         RxBus.getCacheInstance().postSticky(jfgAccount);
     }
 
