@@ -20,16 +20,15 @@ public interface HomeMineHelpSuggestionContract {
          * @param list
          */
         void initRecycleView(ArrayList<MineHelpSuggestionBean> list);
-
-        /**
-         * 添加服务器回复
-         */
-        void addServerItem();
-
         /**
          * 添加自动回复条目
          */
         void addAutoReply();
+
+        /**
+         * 添加用户输入的条目
+         */
+        void addInputItem();
     }
 
     interface Presenter extends BasePresenter {
@@ -46,5 +45,23 @@ public interface HomeMineHelpSuggestionContract {
          * 获取到用户的信息拿到数据库对象
          */
         Subscription getAccountInfo();
+
+        /**
+         * 保存到本地数据库
+         * @param bean
+         */
+        void saveIntoDb(MineHelpSuggestionBean bean);
+
+        /**
+         * 获取到用户的头像地址
+         */
+        String getUserPhotoUrl();
+
+        /**
+         * 检测是否超过5分钟
+         * @param bean
+         * @return
+         */
+        boolean checkOverTime(MineHelpSuggestionBean bean);
     }
 }

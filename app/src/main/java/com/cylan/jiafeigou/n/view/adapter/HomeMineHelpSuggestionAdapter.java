@@ -1,8 +1,14 @@
 package com.cylan.jiafeigou.n.view.adapter;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.view.View;
+import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.model.MineHelpSuggestionBean;
 import com.cylan.superadapter.IMulItemViewType;
@@ -30,6 +36,10 @@ public class HomeMineHelpSuggestionAdapter extends SuperAdapter<MineHelpSuggesti
 
     private static final int TYPE_Client = 1;//客户端类型
 
+    private ImageView clientImage;
+
+    public boolean isFirstItem = true;
+
     public HomeMineHelpSuggestionAdapter(Context context,
                                          List<MineHelpSuggestionBean> items,
                                          IMulItemViewType<MineHelpSuggestionBean> mulItemViewType) {
@@ -38,68 +48,57 @@ public class HomeMineHelpSuggestionAdapter extends SuperAdapter<MineHelpSuggesti
 
     @Override
     public void onBind(SuperViewHolder holder, int viewType, int layoutPosition, MineHelpSuggestionBean item) {
-        if (viewType == TYPE_SERVER) {
-            initServer(holder, layoutPosition);
-            handleServerState(holder, layoutPosition, item);
-        } else if (viewType == TYPE_Client) {
-            initClient(holder, layoutPosition);
-            handleClientState(holder, layoutPosition, item);
-        }
-    }
+        if (viewType == 1){     //客户端
+            holder.setText(R.id.tv_mine_suggestion_client_time, getNowDate(item.getDate()));
+            holder.setText(R.id.tv_mine_suggestion_client_speak, getNowDate(item.getText()));
 
-    private void initServer(SuperViewHolder holder, final int layoutPosition) {
-        setupPosition2View(holder, R.id.tv_mine_suggestion_server_time, layoutPosition);
-        setupPosition2View(holder, R.id.tv_mine_suggestion_server_speak, layoutPosition);
-        setupPosition2View(holder, R.id.iv_mine_suggestion_server, layoutPosition);
-    }
+            if (isFirstItem){
+                holder.setVisibility(R.id.tv_mine_suggestion_client_time,View.VISIBLE);
+            }else {
+                holder.setVisibility(R.id.tv_mine_suggestion_client_time,View.INVISIBLE);
+            }
 
-    private void initClient(SuperViewHolder holder, final int layoutPosition) {
-        setupPosition2View(holder, R.id.tv_mine_suggestion_client_time, layoutPosition);
-        setupPosition2View(holder, R.id.tv_mine_suggestion_client_speak, layoutPosition);
-        setupPosition2View(holder, R.id.iv_mine_suggestion_client, layoutPosition);
-    }
+            if (checkIsOverTime(item.getDate()) && !isFirstItem){
+                holder.setVisibility(R.id.tv_mine_suggestion_client_time,View.VISIBLE);
+            }else {
+                holder.setVisibility(R.id.tv_mine_suggestion_client_time,View.INVISIBLE);
+            }
 
-    private void setupPosition2View(SuperViewHolder holder, final int viewId, final int position) {
-        final View view = holder.getView(viewId);
-        if (view != null) {
-            view.setTag(position);
-        }
-    }
+            clientImage = holder.getView(R.id.iv_mine_suggestion_client);
+            Glide.with(getContext()).load(item.getIcon())
+                    .asBitmap().centerCrop()
+                    .error(R.drawable.icon_mine_head_normal)
+                    .into(new BitmapImageViewTarget(clientImage) {
+                        @Override
+                        protected void setResource(Bitmap resource) {
+                            RoundedBitmapDrawable circularBitmapDrawable =
+                                    RoundedBitmapDrawableFactory.create(getContext().getResources(), resource);
+                            circularBitmapDrawable.setCircular(true);
+                            clientImage.setImageDrawable(circularBitmapDrawable);
+                        }
+                    });
 
-    private void handleServerState(SuperViewHolder holder, int layoutPosition, MineHelpSuggestionBean bean) {
-        if (layoutPosition != 0) {
-            holder.itemView.setPadding(0, 34, 0, 10);
-        } else {
-            holder.itemView.setPadding(0, 20, 0, 0);
-        }
+        }else {     //服务端
 
-        if (bean.isShowTime) {
-            holder.setText(R.id.tv_mine_suggestion_server_time, getNowDate(bean.getDate()));
-//            holder.setBackgroundResource(R.id.iv_mine_suggestion_server, bean.getIcon());
-            holder.setText(R.id.tv_mine_suggestion_server_speak, bean.getText());
-        } else {
-            holder.setVisibility(R.id.tv_mine_suggestion_server_time, View.GONE);
-//            holder.setBackgroundResource(R.id.iv_mine_suggestion_server, bean.getIcon());
-            holder.setText(R.id.tv_mine_suggestion_server_speak, bean.getText());
-        }
-    }
+            if (isFirstItem){
+                holder.setVisibility(R.id.tv_mine_suggestion_server_time,View.VISIBLE);
+            }else {
+                holder.setVisibility(R.id.tv_mine_suggestion_server_time,View.INVISIBLE);
+            }
 
-    private void handleClientState(SuperViewHolder holder, int layoutPosition, MineHelpSuggestionBean bean) {
-        if (layoutPosition != 0) {
-            holder.itemView.setPadding(0, 34, 0, 10);
-        } else {
-            holder.itemView.setPadding(0, 20, 0, 0);
+            if (checkIsOverTime(item.getDate()) && !isFirstItem){
+                holder.setVisibility(R.id.tv_mine_suggestion_server_time,View.VISIBLE);
+            }else {
+                holder.setVisibility(R.id.tv_mine_suggestion_server_time,View.INVISIBLE);
+            }
+
+            holder.setText(R.id.tv_mine_suggestion_server_speak,item.getText());
+
+            holder.setText(R.id.tv_mine_suggestion_server_time,getNowDate(item.getDate()));
+
+            holder.setBackgroundResource(R.id.iv_mine_suggestion_server, R.drawable.pic_head);
         }
 
-        if (bean.isShowTime) {
-            holder.setText(R.id.tv_mine_suggestion_client_time, getNowDate(bean.getDate()));
-//            holder.setBackgroundResource(R.id.iv_mine_suggestion_client, bean.getIcon());
-            holder.setText(R.id.tv_mine_suggestion_client_speak, bean.getText());
-        } else {
-            holder.setVisibility(R.id.tv_mine_suggestion_client_time, View.GONE);
-//            holder.setBackgroundResource(R.id.iv_mine_suggestion_client, bean.getIcon());
-            holder.setText(R.id.tv_mine_suggestion_client_speak, bean.getText());
-        }
     }
 
     @Override
@@ -131,7 +130,21 @@ public class HomeMineHelpSuggestionAdapter extends SuperAdapter<MineHelpSuggesti
      */
     public String getNowDate(String magDate) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm");
-        String nowDate = sdf.format(new Date());
+        String nowDate = sdf.format(new Date(magDate));
         return nowDate;
+    }
+
+    /**
+     * 检测是否超时
+     * @param time
+     * @return
+     */
+    public boolean checkIsOverTime(String time){
+        long lastItemTime = Long.parseLong(time);
+        if (System.currentTimeMillis() - lastItemTime > 5){
+            return true;
+        }else {
+            return false;
+        }
     }
 }
