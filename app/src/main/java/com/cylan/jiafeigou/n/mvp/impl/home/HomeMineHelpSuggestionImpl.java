@@ -3,9 +3,14 @@ package com.cylan.jiafeigou.n.mvp.impl.home;
 import android.content.Context;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.n.db.DataBaseUtil;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeMineHelpSuggestionContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.n.mvp.model.MineHelpSuggestionBean;
+import com.cylan.jiafeigou.rx.RxBus;
+import com.cylan.jiafeigou.rx.RxEvent;
+import com.cylan.jiafeigou.support.db.DbManager;
+import com.cylan.jiafeigou.support.db.ex.DbException;
 
 import java.util.ArrayList;
 
@@ -30,11 +35,10 @@ public class HomeMineHelpSuggestionImpl extends AbstractPresenter<HomeMineHelpSu
 
     Subscription subscription;
     private ArrayList<MineHelpSuggestionBean> list;
-    private Context context;
+    private DbManager dbManager;
 
-    private HomeMineHelpSuggestionImpl(HomeMineHelpSuggestionContract.View view, Context context) {
+    private HomeMineHelpSuggestionImpl(HomeMineHelpSuggestionContract.View view) {
         super(view);
-        this.context = context;
         view.setPresenter(this);
     }
 
@@ -48,13 +52,11 @@ public class HomeMineHelpSuggestionImpl extends AbstractPresenter<HomeMineHelpSu
             if (i == 0) {
                 bean.setType(0);
                 bean.setText(server);
-                bean.setIcon(R.drawable.pic_head);
                 bean.setIsShowTime(true);
                 list.add(bean);
             } else {
                 bean.setType(1);
                 bean.setText(client);
-                bean.setIcon(R.drawable.img_head);
                 bean.setIsShowTime(true);
                 list.add(bean);
             }
@@ -76,10 +78,12 @@ public class HomeMineHelpSuggestionImpl extends AbstractPresenter<HomeMineHelpSu
                 .subscribe(new Action1<ArrayList<MineHelpSuggestionBean>>() {
                     @Override
                     public void call(ArrayList<MineHelpSuggestionBean> beanArrayList) {
-                        getView().onTalkList(beanArrayList);
+
                     }
                 });
     }
+
+
 
     @Override
     public void stop() {
@@ -87,11 +91,35 @@ public class HomeMineHelpSuggestionImpl extends AbstractPresenter<HomeMineHelpSu
     }
 
     /**
-     * 添加条目
+     * 获取到列表的数据
      */
     @Override
-    public void addItemOfList() {
-
+    public void initData() {
+        rx.Observable.just(null)
+                .flatMap(new Func1<Object, Observable<ArrayList<MineHelpSuggestionBean>>>() {
+                    @Override
+                    public Observable<ArrayList<MineHelpSuggestionBean>> call(Object o) {
+                        ArrayList<MineHelpSuggestionBean> tempList = new ArrayList<MineHelpSuggestionBean>();
+                        if (dbManager == null){
+                            return Observable.just(tempList);
+                        }
+                        try {
+                            tempList.addAll(dbManager.findAll(MineHelpSuggestionBean.class));
+                        } catch (DbException e) {
+                            e.printStackTrace();
+                            return Observable.just(tempList);
+                        }
+                        return Observable.just(tempList);
+                    }
+                })
+                .subscribe(new Action1<ArrayList<MineHelpSuggestionBean>>() {
+                    @Override
+                    public void call(ArrayList<MineHelpSuggestionBean> list) {
+                        if (getView() != null){
+                            getView().initRecycleView(list);
+                        }
+                    }
+                });
     }
 
     /**
@@ -99,5 +127,22 @@ public class HomeMineHelpSuggestionImpl extends AbstractPresenter<HomeMineHelpSu
      */
     @Override
     public void onClearAllTalk() {
+    }
+
+    /**
+     * 拿到数据库对象
+     */
+    @Override
+    public Subscription getAccountInfo() {
+        return RxBus.getCacheInstance().toObservableSticky(RxEvent.GetUserInfo.class)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<RxEvent.GetUserInfo>() {
+                    @Override
+                    public void call(RxEvent.GetUserInfo userInfo) {
+                        if (userInfo != null && userInfo instanceof RxEvent.GetUserInfo){
+                            dbManager = DataBaseUtil.getInstance(userInfo.jfgAccount.getAccount()).dbManager;
+                        }
+                    }
+                });
     }
 }

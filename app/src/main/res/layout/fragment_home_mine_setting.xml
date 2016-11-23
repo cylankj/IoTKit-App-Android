@@ -57,7 +57,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:paddingRight="26dp"
-                android:checked="true"
+                android:checked="false"
                 />
 
             <View

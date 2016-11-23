@@ -1,5 +1,7 @@
 package com.cylan.jiafeigou.n.mvp.impl.mine;
 
+import com.cylan.entity.jniCall.JFGAccount;
+import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineClipImageContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
@@ -21,6 +23,7 @@ import rx.subscriptions.CompositeSubscription;
 public class MineClipImagePresenterImp extends AbstractPresenter<MineClipImageContract.View> implements MineClipImageContract.Presenter {
 
     private CompositeSubscription subscription;
+    public JFGAccount jfgAccount;
 
     public MineClipImagePresenterImp(MineClipImageContract.View view) {
         super(view);
@@ -33,7 +36,6 @@ public class MineClipImagePresenterImp extends AbstractPresenter<MineClipImageCo
      */
     @Override
     public void upLoadUserHeadImag(String path) {
-        //上传头像
         rx.Observable.just(path)
                 .subscribeOn(Schedulers.newThread())
                 .subscribe(new Action1<String>() {
@@ -61,7 +63,57 @@ public class MineClipImagePresenterImp extends AbstractPresenter<MineClipImageCo
                     public void call(RxEvent.GetHttpDoneResult getHttpDoneResult) {
                         if (getHttpDoneResult != null && getHttpDoneResult instanceof RxEvent.GetHttpDoneResult){
                             getView().hideUpLoadPro();
+                            handlerUploadImage(getHttpDoneResult);
                             getView().upLoadResultView(getHttpDoneResult.jfgMsgHttpResult.requestId);
+                        }
+                    }
+                });
+    }
+
+    /**
+     * 处理上传头像文件后
+     * @param getHttpDoneResult
+     */
+    private void handlerUploadImage(RxEvent.GetHttpDoneResult getHttpDoneResult) {
+        if (getHttpDoneResult.jfgMsgHttpResult.requestId == JError.ErrorOK){
+            sendResetUrl();
+        }
+    }
+
+    /**
+     * 更新头像的Url
+     */
+    private void sendResetUrl() {
+        rx.Observable.just(null)
+                .subscribeOn(Schedulers.newThread())
+                .subscribe(new Action1<Object>() {
+                    @Override
+                    public void call(Object o) {
+                        if (jfgAccount != null){
+                            jfgAccount.setPhoto(true);
+                            JfgCmdInsurance.getCmd().setAccount(jfgAccount);
+                        }
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        AppLogger.e("sendResetUrl"+throwable.getLocalizedMessage());
+                    }
+                });
+    }
+
+    /**
+     * 获取到用户的信息
+     */
+    @Override
+    public Subscription getAccount() {
+        return RxBus.getCacheInstance().toObservableSticky(RxEvent.GetUserInfo.class)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<RxEvent.GetUserInfo>() {
+                    @Override
+                    public void call(RxEvent.GetUserInfo getUserInfo) {
+                        if (getUserInfo != null && getUserInfo instanceof RxEvent.GetUserInfo){
+                            jfgAccount = getUserInfo.jfgAccount;
                         }
                     }
                 });
@@ -73,9 +125,9 @@ public class MineClipImagePresenterImp extends AbstractPresenter<MineClipImageCo
             subscription.unsubscribe();
         }else {
             subscription = new CompositeSubscription();
+            subscription.add(getAccount());
             subscription.add(getUpLoadResult());
         }
-
     }
 
     @Override
@@ -84,5 +136,4 @@ public class MineClipImagePresenterImp extends AbstractPresenter<MineClipImageCo
             subscription.unsubscribe();
         }
     }
-
 }

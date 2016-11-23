@@ -48,11 +48,8 @@ public class HomeMineMessageFragment extends Fragment implements HomeMineMessage
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home_mine_message, container, false);
         ButterKnife.bind(this, view);
-
         initPresenter();
-
         showMessageList();
-
         return view;
     }
 

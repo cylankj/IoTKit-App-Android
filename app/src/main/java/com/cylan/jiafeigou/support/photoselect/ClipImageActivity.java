@@ -30,12 +30,13 @@ import java.io.OutputStream;
 public class ClipImageActivity extends AppCompatActivity implements MineClipImageContract.View,View.OnClickListener {
     private ClipViewLayout clipViewLayout1;
     private ClipViewLayout clipViewLayout2;
-    private ImageView back;
     private TextView btnCancel;
     private TextView btnOk;
     private int type;
+    private Handler handler;
     private RelativeLayout rl_loading;
     private MineClipImageContract.Presenter presenter;
+    private Uri mSaveUri;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,7 +48,14 @@ public class ClipImageActivity extends AppCompatActivity implements MineClipImag
     }
 
     private void initPresenter() {
+        handler = new Handler();
         presenter = new MineClipImagePresenterImp(this);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (presenter != null)presenter.start();
     }
 
     /**
@@ -93,7 +101,6 @@ public class ClipImageActivity extends AppCompatActivity implements MineClipImag
         }
     }
 
-
     /**
      * 生成Uri并且通过setResult返回给打开的activity
      */
@@ -109,7 +116,7 @@ public class ClipImageActivity extends AppCompatActivity implements MineClipImag
             Log.e("android", "zoomedCropBitmap == null");
             return;
         }
-        final Uri mSaveUri = Uri.fromFile(new File(getCacheDir(), "cropped_" + System.currentTimeMillis() + ".jpg"));
+        mSaveUri = Uri.fromFile(new File(getCacheDir(), "cropped_" + System.currentTimeMillis() + ".jpg"));
         if (mSaveUri != null) {
             OutputStream outputStream = null;
             try {
@@ -131,18 +138,13 @@ public class ClipImageActivity extends AppCompatActivity implements MineClipImag
 
             if (presenter != null){
                 showUpLoadPro();
-                new Handler().postDelayed(new Runnable() {
+                handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         presenter.upLoadUserHeadImag(mSaveUri.getPath());
                     }
                 },2000);
             }
-
-            Intent intent = new Intent();
-            intent.setData(mSaveUri);
-            setResult(RESULT_OK, intent);
-            finish();
         }
     }
 
@@ -159,9 +161,14 @@ public class ClipImageActivity extends AppCompatActivity implements MineClipImag
     @Override
     public void upLoadResultView(int code) {
         if (code == JError.ErrorOK){
+            Intent intent = new Intent();
+            intent.setData(mSaveUri);
+            setResult(RESULT_OK, intent);
+            finish();
             ToastUtil.showPositiveToast("上传成功");
         }else {
             ToastUtil.showNegativeToast("上传失败");
+            finish();
         }
     }
 
@@ -173,5 +180,11 @@ public class ClipImageActivity extends AppCompatActivity implements MineClipImag
     @Override
     public Context getContext() {
         return null;
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (presenter != null)presenter.stop();
     }
 }

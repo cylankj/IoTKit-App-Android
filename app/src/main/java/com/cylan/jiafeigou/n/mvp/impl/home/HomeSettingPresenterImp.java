@@ -4,13 +4,21 @@ import android.content.Context;
 import android.os.Environment;
 import android.text.TextUtils;
 import android.util.Log;
+import android.widget.Switch;
 
+import com.cylan.entity.jniCall.JFGAccount;
+import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.misc.JfgCmdInsurance;
+import com.cylan.jiafeigou.misc.RxEvent;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeSettingContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
+import com.cylan.jiafeigou.rx.RxBus;
+import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 
 import java.io.File;
 import java.text.DecimalFormat;
+import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
 import rx.Subscription;
@@ -18,6 +26,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
+import rx.subscriptions.CompositeSubscription;
 
 /**
  * 作者：zsl
@@ -26,9 +35,9 @@ import rx.schedulers.Schedulers;
  */
 public class HomeSettingPresenterImp extends AbstractPresenter<HomeSettingContract.View> implements HomeSettingContract.Presenter {
 
-    private Subscription calculateSubscription;
-    private Subscription clearCacheSubscription;
+    private CompositeSubscription compositeSubscription;
     private boolean isChick;
+    private JFGAccount userInfo;
 
     public HomeSettingPresenterImp(HomeSettingContract.View view) {
         super(view);
@@ -36,9 +45,19 @@ public class HomeSettingPresenterImp extends AbstractPresenter<HomeSettingContra
     }
 
     @Override
+    public void start() {
+        if (compositeSubscription != null && !compositeSubscription.isUnsubscribed()){
+            compositeSubscription.unsubscribe();
+        }else {
+            compositeSubscription = new CompositeSubscription();
+            compositeSubscription.add(getAccountInfo());
+        }
+    }
+
+    @Override
     public void clearCache() {
         getView().showClearingCacheProgress();
-        clearCacheSubscription = Observable.just(null)
+        rx.Observable.just(null)
                 .subscribeOn(Schedulers.newThread())
                 .map(new Func1<Object, Object>() {
                     @Override
@@ -52,6 +71,7 @@ public class HomeSettingPresenterImp extends AbstractPresenter<HomeSettingContra
                         return null;
                     }
                 })
+                .delay(2000, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<Object>() {
                     @Override
@@ -65,13 +85,11 @@ public class HomeSettingPresenterImp extends AbstractPresenter<HomeSettingContra
                         }
                     }
                 });
-
     }
 
     @Override
     public void calculateCacheSize() {
-
-        calculateSubscription = Observable.just(null)
+        rx.Observable.just(null)
                 .subscribeOn(Schedulers.computation())
                 .map(new Func1<Object, String>() {
                     @Override
@@ -108,28 +126,80 @@ public class HomeSettingPresenterImp extends AbstractPresenter<HomeSettingContra
         return isChick;
     }
 
+    /**
+     * 更改状态
+     * @param isChick
+     * @param key
+     */
     @Override
-    public void savaSwitchState(boolean isChick, String key) {
-        PreferencesUtils.putBoolean(key, isChick);
+    public void savaSwitchState(boolean isChick, final String key) {
+        rx.Observable.just(isChick)
+                .subscribeOn(Schedulers.newThread())
+                .subscribe(new Action1<Boolean>() {
+                    @Override
+                    public void call(Boolean aBoolean) {
+                        chooseWhichSet(aBoolean,key);
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        AppLogger.e("savaSwitchState"+throwable.getLocalizedMessage());
+                    }
+                });
     }
 
-    @Override
-    public boolean getSwitchState(String key) {
-        return PreferencesUtils.getBoolean(key, false);
+    /**
+     * 选择哪个开关
+     * @param aBoolean
+     * @param key
+     */
+    private void chooseWhichSet(Boolean aBoolean, String key) {
+        switch (key){
+            case JConstant.RECEIVE_MESSAGE_NOTIFICATION:
+                userInfo.resetFlag();
+                userInfo.setEnablePush(aBoolean);
+                JfgCmdInsurance.getCmd().setAccount(userInfo);
+                break;
+
+            case JConstant.OPEN_VOICE:
+                userInfo.resetFlag();
+                userInfo.setEnableSound(aBoolean);
+                JfgCmdInsurance.getCmd().setAccount(userInfo);
+                break;
+
+            case JConstant.OPEN_SHAKE:
+                userInfo.resetFlag();
+                userInfo.setEnableVibrate(aBoolean);
+                JfgCmdInsurance.getCmd().setAccount(userInfo);
+                break;
+        }
     }
 
+    /**
+     * 获取到用户信息 设置通知等的开启和关闭
+     * @return
+     */
     @Override
-    public void start() {
-
+    public Subscription getAccountInfo() {
+        return RxBus.getCacheInstance().toObservableSticky(RxEvent.GetUserInfo.class)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<RxEvent.GetUserInfo>() {
+                    @Override
+                    public void call(RxEvent.GetUserInfo getUserInfo) {
+                        if (getUserInfo != null && getUserInfo instanceof RxEvent.GetUserInfo && getView() != null){
+                            getView().initSwitchState(getUserInfo);
+                            userInfo = getUserInfo.jfgAccount;
+                        }
+                    }
+                });
     }
+
+
 
     @Override
     public void stop() {
-        if (calculateSubscription != null) {
-            calculateSubscription.unsubscribe();
-        }
-        if (clearCacheSubscription != null) {
-            clearCacheSubscription.unsubscribe();
+        if (compositeSubscription != null && !compositeSubscription.isUnsubscribed()){
+            compositeSubscription.unsubscribe();
         }
     }
 

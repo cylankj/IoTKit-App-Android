@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.misc.RxEvent;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeSettingContract;
 import com.cylan.jiafeigou.n.mvp.impl.home.HomeSettingPresenterImp;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -58,7 +59,6 @@ public class HomeSettingFragment extends Fragment implements HomeSettingContract
     public static HomeSettingFragment newInstance() {
         return new HomeSettingFragment();
     }
-
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -121,7 +121,6 @@ public class HomeSettingFragment extends Fragment implements HomeSettingContract
                 presenter.savaSwitchState(switchShake(), JConstant.OPEN_SHAKE);
                 break;
         }
-
     }
 
     @Override
@@ -176,10 +175,10 @@ public class HomeSettingFragment extends Fragment implements HomeSettingContract
     }
 
     @Override
-    public void initSwitchState() {
-        btnItemSwitchAccessMes.setChecked(presenter.getSwitchState(JConstant.RECEIVE_MESSAGE_NOTIFICATION));
-        btnItemSwitchVoide.setChecked(presenter.getSwitchState(JConstant.OPEN_VOICE));
-        btnItemSwitchShake.setChecked(presenter.getSwitchState(JConstant.OPEN_SHAKE));
+    public void initSwitchState(RxEvent.GetUserInfo userInfo) {
+        btnItemSwitchAccessMes.setChecked(userInfo.jfgAccount.isEnablePush());
+        btnItemSwitchVoide.setChecked(userInfo.jfgAccount.isEnableSound());
+        btnItemSwitchShake.setChecked(userInfo.jfgAccount.isEnableVibrate());
     }
 
     @Override
@@ -193,6 +192,6 @@ public class HomeSettingFragment extends Fragment implements HomeSettingContract
     @Override
     public void onStart() {
         super.onStart();
-        initSwitchState();
+        if (presenter != null)presenter.start();
     }
 }

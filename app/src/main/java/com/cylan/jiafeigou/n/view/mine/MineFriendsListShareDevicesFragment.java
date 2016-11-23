@@ -15,6 +15,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.misc.JError;
+import com.cylan.jiafeigou.misc.RxEvent;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendListShareDevicesToContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineFriendListShareDevicesPresenterImp;
 import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
@@ -89,6 +91,12 @@ public class MineFriendsListShareDevicesFragment extends Fragment implements Min
     public void onStart() {
         super.onStart();
         if (presenter != null) presenter.start();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (presenter != null)presenter.stop();
     }
 
     private void initPresenter() {
@@ -173,7 +181,6 @@ public class MineFriendsListShareDevicesFragment extends Fragment implements Min
     @Override
     public void showFinishBtn() {
         ivMineFriendsShareDevicesOk.setImageDrawable(getResources().getDrawable(R.drawable.icon_finish));
-
     }
 
     /**
@@ -204,8 +211,21 @@ public class MineFriendsListShareDevicesFragment extends Fragment implements Min
      * 设置分享请求发送结果
      */
     @Override
-    public void showSendReqFinishReuslt() {
-        ToastUtil.showPositiveToast("分享成功");
+    public void showSendReqFinishReuslt(ArrayList<RxEvent.ShareDeviceCallBack> callBacks) {
+        for (int i = 0;i<callBacks.size();i++){
+            if (callBacks.get(i).requestId == JError.ErrorOK
+                    || callBacks.get(i).requestId == JError.ErrorShareAlready
+                    || callBacks.get(i).requestId == JError.ErrorShareExceedsLimit){
+                chooseList.remove(i);
+            }
+        }
+
+        if (chooseList.size() == 0){
+            ToastUtil.showPositiveToast("分享成功");
+        }else if (chooseList.size() != 0){
+            ToastUtil.showPositiveToast("分享失败");
+        }
+
     }
 
 }
