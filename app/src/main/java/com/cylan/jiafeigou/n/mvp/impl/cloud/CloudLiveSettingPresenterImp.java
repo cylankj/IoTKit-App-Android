@@ -1,10 +1,10 @@
 package com.cylan.jiafeigou.n.mvp.impl.cloud;
 
-import com.cylan.jiafeigou.misc.RxEvent;
 import com.cylan.jiafeigou.n.db.DataBaseUtil;
 import com.cylan.jiafeigou.n.mvp.contract.cloud.CloudLiveSettingContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.n.mvp.model.CloudLiveBaseDbBean;
+import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.db.DbManager;
 import com.cylan.jiafeigou.support.db.ex.DbException;
 import com.cylan.jiafeigou.rx.RxBus;

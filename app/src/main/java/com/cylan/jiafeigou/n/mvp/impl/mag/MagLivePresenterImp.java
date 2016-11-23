@@ -1,13 +1,13 @@
 package com.cylan.jiafeigou.n.mvp.impl.mag;
 
-import com.cylan.jiafeigou.misc.RxEvent;
 import com.cylan.jiafeigou.n.db.DataBaseUtil;
 import com.cylan.jiafeigou.n.mvp.contract.mag.MagLiveContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.n.mvp.model.MagBean;
+import com.cylan.jiafeigou.rx.RxBus;
+import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.db.DbManager;
 import com.cylan.jiafeigou.support.db.ex.DbException;
-import com.cylan.jiafeigou.rx.RxBus;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -36,9 +36,9 @@ public class MagLivePresenterImp extends AbstractPresenter<MagLiveContract.View>
 
     @Override
     public void start() {
-        if (compositeSubscription != null && !compositeSubscription.isUnsubscribed()){
+        if (compositeSubscription != null && !compositeSubscription.isUnsubscribed()) {
             compositeSubscription.unsubscribe();
-        }else {
+        } else {
             compositeSubscription = new CompositeSubscription();
             compositeSubscription.add(getAccount());
         }
@@ -47,7 +47,7 @@ public class MagLivePresenterImp extends AbstractPresenter<MagLiveContract.View>
 
     @Override
     public void stop() {
-        if (compositeSubscription != null && !compositeSubscription.isUnsubscribed()){
+        if (compositeSubscription != null && !compositeSubscription.isUnsubscribed()) {
             compositeSubscription.unsubscribe();
         }
     }
@@ -63,7 +63,7 @@ public class MagLivePresenterImp extends AbstractPresenter<MagLiveContract.View>
      */
     @Override
     public void initMagData() {
-        if (getView() != null){
+        if (getView() != null) {
             getView().initRecycleView(getDbData());
         }
     }
@@ -105,7 +105,7 @@ public class MagLivePresenterImp extends AbstractPresenter<MagLiveContract.View>
                 .subscribe(new Action1<RxEvent.GetUserInfo>() {
                     @Override
                     public void call(RxEvent.GetUserInfo getUserInfo) {
-                        if (getUserInfo != null && getUserInfo instanceof RxEvent.GetUserInfo){
+                        if (getUserInfo != null) {
                             getDb(getUserInfo.jfgAccount.getAccount());
                             initMagData();
                         }
@@ -115,6 +115,7 @@ public class MagLivePresenterImp extends AbstractPresenter<MagLiveContract.View>
 
     /**
      * 获取到数据库的操作对象
+     *
      * @param account
      */
     @Override
@@ -124,6 +125,7 @@ public class MagLivePresenterImp extends AbstractPresenter<MagLiveContract.View>
 
     /**
      * 保存到数据库
+     *
      * @param bean
      */
     @Override
@@ -137,14 +139,15 @@ public class MagLivePresenterImp extends AbstractPresenter<MagLiveContract.View>
 
     /**
      * 拿到数据库中的所有数据
+     *
      * @return
      */
     @Override
     public List<MagBean> findFromAllDb() {
         List<MagBean> allData = new ArrayList<>();
         try {
-          List<MagBean> tempList = dbManager.findAll(MagBean.class);
-            if (tempList != null && tempList.size() >0){
+            List<MagBean> tempList = dbManager.findAll(MagBean.class);
+            if (tempList != null && tempList.size() > 0) {
                 allData.clear();
                 allData.addAll(tempList);
             }
@@ -165,6 +168,7 @@ public class MagLivePresenterImp extends AbstractPresenter<MagLiveContract.View>
 
     /**
      * 将时间字符串转换成毫秒
+     *
      * @param time
      * @return
      */

@@ -18,7 +18,6 @@ import android.widget.Toast;
 
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.OnActivityReenterListener;
-import com.cylan.jiafeigou.misc.RxEvent;
 import com.cylan.jiafeigou.misc.SharedElementCallBackListener;
 import com.cylan.jiafeigou.n.mvp.contract.home.NewHomeActivityContract;
 import com.cylan.jiafeigou.n.mvp.impl.home.NewHomeActivityPresenterImpl;
@@ -27,6 +26,7 @@ import com.cylan.jiafeigou.n.view.home.HomeMineFragment;
 import com.cylan.jiafeigou.n.view.home.HomePageListFragmentExt;
 import com.cylan.jiafeigou.n.view.home.HomeWonderfulFragmentExt;
 import com.cylan.jiafeigou.rx.RxBus;
+import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.widget.CustomViewPager;
 
 import java.util.List;

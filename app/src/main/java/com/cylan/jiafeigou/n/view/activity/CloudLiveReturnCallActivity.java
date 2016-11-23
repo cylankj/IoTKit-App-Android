@@ -13,10 +13,10 @@ import android.widget.TextView;
 import android.widget.VideoView;
 
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.misc.RxEvent;
 import com.cylan.jiafeigou.n.mvp.contract.cloud.CloudVideoChatConettionOkContract;
 import com.cylan.jiafeigou.n.mvp.impl.cloud.CloudVideoChatConettionOkPresenterImp;
 import com.cylan.jiafeigou.rx.RxBus;
+import com.cylan.jiafeigou.rx.RxEvent;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

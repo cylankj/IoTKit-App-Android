@@ -1,14 +1,10 @@
 package com.cylan.jiafeigou.n.mvp.contract.mine;
 
-import com.cylan.entity.jniCall.JFGFriendAccount;
-import com.cylan.entity.jniCall.JFGFriendRequest;
-import com.cylan.jiafeigou.misc.RxEvent;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
 import com.cylan.jiafeigou.n.mvp.model.MineAddReqBean;
 import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
-import com.cylan.jiafeigou.n.view.adapter.AddRelativesAndFriendsAdapter;
-import com.cylan.jiafeigou.n.view.adapter.RelativesAndFriendsAdapter;
+import com.cylan.jiafeigou.rx.RxEvent;
 
 import java.util.ArrayList;
 

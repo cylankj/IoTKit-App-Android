@@ -15,8 +15,8 @@ import android.view.ViewGroup;
 import com.cylan.jiafeigou.NewHomeActivity;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.JConstant;
-import com.cylan.jiafeigou.misc.RxEvent;
 import com.cylan.jiafeigou.rx.RxBus;
+import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.utils.ViewUtils;
 
 import butterknife.ButterKnife;

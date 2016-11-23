@@ -66,6 +66,11 @@ public interface LoginModelContract {
         void switchBox(String account);
 
         void updateAccount(String account);
+
+        /**
+         * 登陆超时
+         */
+        void loginTimeout();
     }
 
     interface Presenter extends BasePresenter {

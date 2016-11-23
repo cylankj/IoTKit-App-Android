@@ -4,16 +4,15 @@ import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.os.Environment;
 
-import com.cylan.jiafeigou.misc.RxEvent;
 import com.cylan.jiafeigou.n.db.DataBaseUtil;
 import com.cylan.jiafeigou.n.mvp.contract.cloud.CloudLiveContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.n.mvp.model.CloudLiveBaseBean;
 import com.cylan.jiafeigou.n.mvp.model.CloudLiveBaseDbBean;
-
+import com.cylan.jiafeigou.rx.RxBus;
+import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.db.DbManager;
 import com.cylan.jiafeigou.support.db.ex.DbException;
-import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.utils.CloseUtils;
 
 import java.io.ByteArrayInputStream;
@@ -26,9 +25,7 @@ import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-
 import java.util.List;
-
 import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
@@ -58,7 +55,7 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
     private long endTime;
 
     private String output_Path = Environment.getExternalStorageDirectory().getAbsolutePath()
-            + File.separator + System.currentTimeMillis()+"luyin.3gp";
+            + File.separator + System.currentTimeMillis() + "luyin.3gp";
 
     private DbManager base_db;
 
@@ -73,9 +70,9 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
 
     @Override
     public void start() {
-        if(subscription!=null && !subscription.isUnsubscribed()){
+        if (subscription != null && !subscription.isUnsubscribed()) {
             subscription.unsubscribe();
-        }else {
+        } else {
             subscription = new CompositeSubscription();
             subscription.add(getAccount());
             subscription.add(refreshHangUpView());
@@ -85,11 +82,11 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
     @Override
     public void stop() {
 
-        if (checkDeviceOnLineSub != null){
+        if (checkDeviceOnLineSub != null) {
             checkDeviceOnLineSub.unsubscribe();
         }
 
-        if (leaveMesgSub != null){
+        if (leaveMesgSub != null) {
             leaveMesgSub.unsubscribe();
         }
         unSubscribe(subscription);
@@ -185,7 +182,7 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
 
     @Override
     public void stopPlayRecord() {
-        if (mPlayer == null){
+        if (mPlayer == null) {
             return;
         }
         mPlayer.stop();
@@ -306,7 +303,7 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
                 .subscribe(new Action1<RxEvent.HangUpVideoTalk>() {
                     @Override
                     public void call(RxEvent.HangUpVideoTalk o) {
-                            getView().hangUpRefreshView(o.talkTime);
+                        getView().hangUpRefreshView(o.talkTime);
                     }
                 });
     }
@@ -337,7 +334,7 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
     public void handlerLeveaMesg() {
         getView().showReconnetProgress();
         leaveMesgSub = Observable.just(null)
-                .delay(1000,TimeUnit.MILLISECONDS)
+                .delay(1000, TimeUnit.MILLISECONDS)
                 .map(new Func1<Object, Boolean>() {
                     @Override
                     public Boolean call(Object o) {
@@ -366,8 +363,8 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
                 .subscribe(new Action1<RxEvent.GetUserInfo>() {
                     @Override
                     public void call(RxEvent.GetUserInfo getUserInfo) {
-                        if (getUserInfo != null && getUserInfo instanceof RxEvent.GetUserInfo){
-                            if (getView() != null){
+                        if (getUserInfo != null && getUserInfo instanceof RxEvent.GetUserInfo) {
+                            if (getView() != null) {
                                 getDBManger(getUserInfo.jfgAccount.getAccount());
                                 getView().initRecycleView();
                             }

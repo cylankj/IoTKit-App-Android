@@ -21,16 +21,14 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.JConstant;
-import com.cylan.jiafeigou.misc.RxEvent;
 import com.cylan.jiafeigou.misc.SpacesItemDecoration;
 import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
-import com.cylan.jiafeigou.n.mvp.contract.ActivityResultContract;
 import com.cylan.jiafeigou.n.mvp.contract.bell.DoorBellHomeContract;
-import com.cylan.jiafeigou.n.mvp.impl.ActivityResultPresenterImpl;
 import com.cylan.jiafeigou.n.mvp.impl.bell.BellSettingPresenterImpl;
 import com.cylan.jiafeigou.n.mvp.impl.bell.DBellHomePresenterImpl;
 import com.cylan.jiafeigou.n.mvp.model.BellCallRecordBean;
 import com.cylan.jiafeigou.n.view.adapter.BellCallRecordListAdapter;
+import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.AnimatorUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;
@@ -52,8 +50,7 @@ public class DoorBellHomeActivity extends BaseFullScreenFragmentActivity
         BellCallRecordListAdapter.SimpleClickListener,
         BellTopBackgroundView.ActionInterface,
         BellCallRecordListAdapter.LoadImageListener,
-        ViewTreeObserver.OnGlobalLayoutListener,
-        ActivityResultContract.View {
+        ViewTreeObserver.OnGlobalLayoutListener {
 
     private static final String tag = "DoorBellHomeActivity";
     @BindView(R.id.tv_top_bar_left)
@@ -75,7 +72,6 @@ public class DoorBellHomeActivity extends BaseFullScreenFragmentActivity
     @BindView(R.id.cv_bell_home_background)
     BellTopBackgroundView cvBellHomeBackground;
     private DoorBellHomeContract.Presenter presenter;
-    private ActivityResultContract.Presenter activityResultPresenter;
     private WeakReference<BellSettingFragment> fragmentWeakReference;
     private WeakReference<LBatteryWarnDialog> lBatteryWarnDialog;
     private BellCallRecordListAdapter bellCallRecordListAdapter;
@@ -92,7 +88,6 @@ public class DoorBellHomeActivity extends BaseFullScreenFragmentActivity
         ButterKnife.bind(this);
         initAdapter();
         initToolbar();
-        initSomething();
         initTopBackground();
     }
 
@@ -125,8 +120,6 @@ public class DoorBellHomeActivity extends BaseFullScreenFragmentActivity
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (activityResultPresenter != null)
-            activityResultPresenter.stop();
     }
 
     private void initAdapter() {
@@ -163,12 +156,6 @@ public class DoorBellHomeActivity extends BaseFullScreenFragmentActivity
         LoadingDialog.showLoading(getSupportFragmentManager(), "加载中...", true);
         if (presenter != null)
             presenter.fetchBellRecordsList();
-    }
-
-    private void initSomething() {
-        if (activityResultPresenter == null)
-            activityResultPresenter = new ActivityResultPresenterImpl(this);
-        activityResultPresenter.start();
     }
 
     private void initToolbar() {
@@ -268,7 +255,6 @@ public class DoorBellHomeActivity extends BaseFullScreenFragmentActivity
         LoadingDialog.dismissLoading(getSupportFragmentManager());
     }
 
-    @Override
     public void onActivityResult(RxEvent.ActivityResult result) {
         if (result == null || result.bundle == null)
             return;

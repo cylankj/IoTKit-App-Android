@@ -15,14 +15,11 @@ import android.widget.RelativeLayout;
 
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.misc.RxEvent;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineInfoSetNameContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineInfoSetNamePresenterImpl;
+import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
-import com.cylan.utils.NetUtils;
-
-import java.io.Serializable;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

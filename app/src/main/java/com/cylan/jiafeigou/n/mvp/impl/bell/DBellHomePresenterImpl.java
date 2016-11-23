@@ -2,10 +2,10 @@ package com.cylan.jiafeigou.n.mvp.impl.bell;
 
 import android.os.Environment;
 
-import com.cylan.jiafeigou.misc.RxEvent;
 import com.cylan.jiafeigou.n.mvp.contract.bell.DoorBellHomeContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.n.mvp.model.BellCallRecordBean;
+import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.utils.TimeUtils;

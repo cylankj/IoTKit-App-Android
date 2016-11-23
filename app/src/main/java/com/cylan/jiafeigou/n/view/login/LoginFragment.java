@@ -32,11 +32,11 @@ import com.cylan.jiafeigou.SmartcallActivity;
 import com.cylan.jiafeigou.cache.JCache;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
-import com.cylan.jiafeigou.misc.RxEvent;
 import com.cylan.jiafeigou.n.mvp.contract.login.LoginModelContract;
 import com.cylan.jiafeigou.n.mvp.impl.ForgetPwdPresenterImpl;
 import com.cylan.jiafeigou.n.mvp.impl.SetupPwdPresenterImpl;
 import com.cylan.jiafeigou.n.mvp.model.LoginAccountBean;
+import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.AnimatorUtils;
@@ -550,7 +550,7 @@ public class LoginFragment extends android.support.v4.app.Fragment
     @Override
     public void setPresenter(LoginModelContract.Presenter presenter) {
         this.presenter = presenter;
-        AppLogger.e("setPresenter");
+//        AppLogger.e("setPresenter");
     }
 
     @Override
@@ -603,6 +603,12 @@ public class LoginFragment extends android.support.v4.app.Fragment
                 etLoginUsername.setText(account);
             }
         });
+    }
+
+    @Override
+    public void loginTimeout() {
+        resetView();
+        ToastUtil.showNegativeToast(getContext().getString(R.string.LOGIN_ERR));
     }
 
     @OnTextChanged(R.id.et_register_input_box)

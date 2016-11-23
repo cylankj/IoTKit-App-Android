@@ -247,7 +247,7 @@ public class DataSourceService extends Service implements AppCallBack {
 
     @Override
     public void OnRobotSyncData(boolean b, String s, ArrayList<JFGDPMsg> arrayList) {
-        AppLogger.d("OnLocalMessage :");
+        AppLogger.d("OnLocalMessage :" + b + " " + s + "arr" + arrayList);
     }
 
     @Override

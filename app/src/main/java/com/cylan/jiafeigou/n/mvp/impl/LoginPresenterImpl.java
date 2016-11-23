@@ -10,11 +10,11 @@ import com.cylan.jiafeigou.cache.JCache;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
-import com.cylan.jiafeigou.misc.RxEvent;
 import com.cylan.jiafeigou.n.mvp.contract.login.LoginModelContract;
 import com.cylan.jiafeigou.n.mvp.model.LoginAccountBean;
-import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.rx.RxBus;
+import com.cylan.jiafeigou.rx.RxEvent;
+import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.sina.AccessTokenKeeper;
 import com.cylan.jiafeigou.support.sina.SinaLogin;
 import com.cylan.jiafeigou.support.sina.UsersAPI;
@@ -35,6 +35,7 @@ import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
@@ -47,6 +48,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginModelContract.Vie
 
     private Context ctx;
     private CompositeSubscription subscription;
+    private Subscription logTimeoutSub;
 
     public LoginPresenterImpl(LoginModelContract.View view) {
         super(view);
@@ -56,22 +58,24 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginModelContract.Vie
 
     @Override
     public void executeLogin(LoginAccountBean login) {
-        if (login != null) {
-            rx.Observable.just(login)
-                    .subscribeOn(Schedulers.newThread())
-                    .subscribe(new Action1<LoginAccountBean>() {
-                        @Override
-                        public void call(LoginAccountBean o) {
-                            AppLogger.d("log: " + o.toString());
-                            JfgCmdInsurance.getCmd().login(o.userName, o.pwd);
-                        }
-                    }, new Action1<Throwable>() {
-                        @Override
-                        public void call(Throwable throwable) {
-                            AppLogger.e("executeLogin: " + throwable.getLocalizedMessage());
-                        }
-                    });
-        }
+        unSubscribe(logTimeoutSub);
+        logTimeoutSub = Observable.just(login)
+                .subscribeOn(Schedulers.newThread())
+                .map(new Func1<LoginAccountBean, LoginAccountBean>() {
+                    @Override
+                    public LoginAccountBean call(LoginAccountBean o) {
+                        JfgCmdInsurance.getCmd().login(o.userName, o.pwd);
+                        return o;
+                    }
+                })
+                .delay(3, TimeUnit.SECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<LoginAccountBean>() {
+                    @Override
+                    public void call(LoginAccountBean loginAccountBean) {
+                        getView().loginTimeout();
+                    }
+                });
     }
 
     @Override
@@ -96,6 +100,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginModelContract.Vie
                 .subscribe(new Action1<RxEvent.ResultLogin>() {
                     @Override
                     public void call(RxEvent.ResultLogin resultLogin) {
+                        unSubscribe(logTimeoutSub);
                         if (getView().isLoginViewVisible()) {
                             getView().loginResult(resultLogin.code);
                         }

@@ -3,6 +3,7 @@ package com.cylan.jiafeigou.dp;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.entity.jniCall.RobotoGetDataRsp;
@@ -19,7 +20,7 @@ import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.rx.RxHelper;
 import com.cylan.jiafeigou.rx.RxUiEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.google.gson.Gson;
+import com.cylan.utils.RandomUtils;
 
 import org.msgpack.MessagePack;
 
@@ -113,7 +114,13 @@ public class DpDeviceAssembler implements IParser {
                 .map(new Func1<RxEvent.DeviceRawList, RxEvent.DeviceRawList>() {
                     @Override
                     public RxEvent.DeviceRawList call(RxEvent.DeviceRawList deviceRawList) {
-                        AppLogger.i("wait_for_account_end: " + (JCache.getAccountCache() == null));
+                        if (JCache.getAccountCache() == null) {
+                            JFGAccount account = new JFGAccount();
+                            account.setAlias("shit");
+                            account.setAlias(RandomUtils.getRandom(10) % 2 == 0 ? "share" : "");
+                            JCache.setAccountCache(account);
+                            AppLogger.i("wait_for_account_end: " + (JCache.getAccountCache() == null));
+                        }
                         return deviceRawList;
                     }
                 })

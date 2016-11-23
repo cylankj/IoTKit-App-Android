@@ -12,6 +12,7 @@ import com.cylan.entity.jniCall.JFGShareListInfo;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 
 /**
@@ -240,12 +241,12 @@ public class RxEvent {
     /**
      * desc：获取到分享设备的信息
      */
-    public static final class GetShareDeviceList {
+    public static final class GetShareListCallBack {
         public int i;
 
         public ArrayList<JFGShareListInfo> arrayList;
 
-        public GetShareDeviceList(int i, ArrayList<JFGShareListInfo> arrayList) {
+        public GetShareListCallBack(int i, ArrayList<JFGShareListInfo> arrayList) {
             this.i = i;
             this.arrayList = arrayList;
         }
@@ -342,5 +343,55 @@ public class RxEvent {
         public BindDeviceEvent(JFGResult jfgResult) {
             this.jfgResult = jfgResult;
         }
+    }
+
+    /**
+     * 检验邮箱是否注册过回调
+     */
+    public static final class CheckAccountCallback {
+        public int i;
+
+        public CheckAccountCallback(int i, String s, String s1, boolean b) {
+            this.i = i;
+            this.s = s;
+            this.s1 = s1;
+            this.b = b;
+        }
+
+        public String s;
+        public String s1;
+        public boolean b;
+    }
+
+    /**
+     * 获取到已经分享的好友的回调
+     */
+    public static final class GetHasShareFriendCallBack {
+        public int i;
+        public ArrayList<JFGFriendAccount> arrayList;
+
+        public GetHasShareFriendCallBack(int i, ArrayList<JFGFriendAccount> arrayList) {
+            this.i = i;
+            this.arrayList = arrayList;
+        }
+    }
+
+    /**
+     * 取消分享的回调
+     */
+    public static final class UnshareDeviceCallBack {
+        public int i;
+        public String cid;
+        public String account;
+
+        public UnshareDeviceCallBack(int i, String cid, String account) {
+            this.i = i;
+            this.cid = cid;
+            this.account = account;
+        }
+    }
+
+    public static final class DeviceList {
+        public List<JFGDevice> jfgDevices;
     }
 }
