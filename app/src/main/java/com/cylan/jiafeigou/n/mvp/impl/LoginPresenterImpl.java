@@ -80,9 +80,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginModelContract.Vie
 
     @Override
     public void start() {
-        if (subscription != null && !subscription.isUnsubscribed()) {
-            unSubscribe(subscription);
-        }
+        unSubscribe(subscription);
         subscription = new CompositeSubscription();
         subscription.add(resultLoginSub());
         subscription.add(resultRegisterSub());
@@ -95,8 +93,8 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginModelContract.Vie
     private Subscription resultLoginSub() {
         //sdk中，登陆失败的话，自动一分钟登录一次。
         return RxBus.getCacheInstance().toObservable(RxEvent.ResultLogin.class)
-                .delay(1000, TimeUnit.MILLISECONDS)//set a delay
                 .observeOn(AndroidSchedulers.mainThread())
+                .delay(500, TimeUnit.MILLISECONDS)//set a delay
                 .subscribe(new Action1<RxEvent.ResultLogin>() {
                     @Override
                     public void call(RxEvent.ResultLogin resultLogin) {
@@ -110,6 +108,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginModelContract.Vie
 
     private Subscription resultRegisterSub() {
         return RxBus.getCacheInstance().toObservable(RxEvent.ResultRegister.class)
+                .subscribeOn(Schedulers.newThread())
                 .delay(1000, TimeUnit.MILLISECONDS)//set a delay
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<RxEvent.ResultRegister>() {
@@ -129,6 +128,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginModelContract.Vie
 
     private Subscription resultVerifyCodeSub() {
         return RxBus.getCacheInstance().toObservable(RxEvent.ResultVerifyCode.class)
+                .subscribeOn(Schedulers.newThread())
                 .delay(1000, TimeUnit.MILLISECONDS)//set a delay
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<RxEvent.ResultVerifyCode>() {
@@ -185,11 +185,8 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginModelContract.Vie
 
     @Override
     public void stop() {
-        if (subscription != null) {
-            if (!subscription.isUnsubscribed()) {
-                subscription.unsubscribe();
-            }
-        }
+        unSubscribe(subscription);
+        unSubscribe(logTimeoutSub);
     }
 
 

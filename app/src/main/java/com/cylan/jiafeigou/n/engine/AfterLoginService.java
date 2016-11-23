@@ -63,6 +63,7 @@ public class AfterLoginService extends IntentService {
     protected void onHandleIntent(Intent intent) {
         if (intent != null) {
             final String action = intent.getStringExtra(TAG);
+            AppLogger.i("AfterLoginService: " + action);
             if (TextUtils.equals(action, ACTION_SAVE_ACCOUNT)) {
                 LoginAccountBean l = JCache.tmpAccount;
                 if (l == null || TextUtils.isEmpty(l.userName) || TextUtils.isEmpty(l.pwd)) {

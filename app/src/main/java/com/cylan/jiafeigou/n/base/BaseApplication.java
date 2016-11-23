@@ -37,10 +37,10 @@ public class BaseApplication extends Application implements Application.Activity
     public void onCreate() {
         super.onCreate();
         enableDebugOptions();
-        startService(new Intent(getApplicationContext(), DaemonService.class));
         //每一个新的进程启动时，都会调用onCreate方法。
         if (TextUtils.equals(ProcessUtils.myProcessName(getApplicationContext()), getPackageName())) {
             Log.d("BaseApplication", "BaseApplication..." + ProcessUtils.myProcessName(getApplicationContext()));
+            startService(new Intent(getApplicationContext(), DaemonService.class));
             initNative();
             initBlockCanary();
             initBugMonitor();

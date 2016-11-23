@@ -298,6 +298,7 @@ public class AppLogger {
         final String content = buildMessage(msg);
         if (DEBUG)
             android.util.Log.i(TAG, buildMessage(msg));
+        logFile(null, content);
     }
 
     /**

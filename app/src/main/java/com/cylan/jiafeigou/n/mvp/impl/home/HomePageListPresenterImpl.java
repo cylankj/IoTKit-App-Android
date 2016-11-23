@@ -3,7 +3,6 @@ package com.cylan.jiafeigou.n.mvp.impl.home;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.util.Log;
 
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.jiafeigou.cache.JCache;
@@ -67,45 +66,6 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
                 .add(JFGAccountUpdate());
     }
 
-    private Subscription singleDeviceUpdate() {
-        return RxBus.getUiInstance().toObservableSticky(RxUiEvent.SingleDevice.class)
-                .filter(new RxHelper.Filter<>(getView() != null))
-                .subscribeOn(Schedulers.newThread())
-                .flatMap(new Func1<RxUiEvent.SingleDevice, Observable<DpMsgDefine.DpWrap>>() {
-                    @Override
-                    public Observable<DpMsgDefine.DpWrap> call(RxUiEvent.SingleDevice singleDevice) {
-                        return Observable.just(singleDevice.dpMsg);
-                    }
-                })
-                .observeOn(AndroidSchedulers.mainThread())
-                .map(new Func1<DpMsgDefine.DpWrap, Object>() {
-                    @Override
-                    public Object call(DpMsgDefine.DpWrap baseDpMsg) {
-//                        //已经展示的列表
-                        List<DeviceBean> vList = getView().getDeviceList();
-                        //新列表
-                        DeviceBean bean = new DeviceBean();
-                        bean.fillData(baseDpMsg.baseDpDevice, baseDpMsg.baseDpMsgList);
-                        final int index = vList.indexOf(bean);
-                        boolean update = MiscUtils.isInRange(0, vList.size(), index);
-                        Log.d("update", "update; " + update + ", " + baseDpMsg);
-                        if (update) {
-                            //更新对应的item
-                            vList.set(index, bean);
-                            getView().onItemUpdate(index);
-                        } else {
-                            //a new one
-                            List<DeviceBean> newList = new ArrayList<>();
-                            newList.add(bean);
-                            getView().onItemsInsert(newList);
-                        }
-                        return null;
-                    }
-                })
-                .retry(RxHelper.exceptionFun)
-                .subscribe();
-    }
-
     private Subscription getTimeTickEventSub() {
         return RxBus.getCacheInstance().toObservableSticky(RxEvent.TimeTickEvent.class)
                 .throttleFirst(1000, TimeUnit.MILLISECONDS)
@@ -160,7 +120,14 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
      */
     private Subscription subDeviceList() {
         return RxBus.getUiInstance().toObservable(RxUiEvent.BulkDeviceList.class)
-                .filter(new RxHelper.Filter<>(getView() != null))
+                .filter(new Func1<RxUiEvent.BulkDeviceList, Boolean>() {
+                    @Override
+                    public Boolean call(RxUiEvent.BulkDeviceList list) {
+                        boolean notNull = getView() != null && list != null && list.allDevices != null;
+                        AppLogger.i("notNull: " + notNull);
+                        return notNull;
+                    }
+                })
                 .flatMap(new Func1<RxUiEvent.BulkDeviceList, Observable<List<DeviceBean>>>() {
                     @Override
                     public Observable<List<DeviceBean>> call(RxUiEvent.BulkDeviceList list) {
@@ -183,7 +150,7 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
                         List<DeviceBean> vList = getView().getDeviceList();
                         //新列表
                         for (DeviceBean bean : oList) {
-                            final int index = vList.indexOf(bean);
+                            final int index = vList == null ? -1 : vList.indexOf(bean);
                             if (MiscUtils.isInRange(0, oList.size(), index)) {
                                 //更新对应的item
                                 vList.set(index, bean);
@@ -198,7 +165,7 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
                         return null;
                     }
                 })
-                .retry(RxHelper.exceptionFun)
+                .retry(new RxHelper.ExceptionFun<>("subDeviceList"))
                 .subscribe();
     }
 

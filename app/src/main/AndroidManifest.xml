@@ -286,6 +286,9 @@
             android:name=".support.photoselect.ClipImageActivity"
             android:screenOrientation="portrait"/>
 
+        <service
+            android:name=".n.engine.AfterLoginService"
+            android:exported="false" />
     </application>
 
 </manifest>

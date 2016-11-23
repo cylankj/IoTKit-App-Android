@@ -88,20 +88,26 @@ public class RxHelper {
         }
     }
 
-    /**
-     * 异常情况下，返回true,将继续订阅
-     */
-    public static Func2<Integer, Throwable, Boolean> exceptionFun = new Func2<Integer, Throwable, Boolean>() {
+
+    public static final class ExceptionFun<Integer, Throwable, Boolean> implements Func2<java.lang.Integer, java.lang.Throwable, java.lang.Boolean> {
+
+        public ExceptionFun(String tag) {
+            this.tag = tag;
+        }
+
+        private String tag;
+
         @Override
-        public Boolean call(Integer integer, Throwable throwable) {
+        public java.lang.Boolean call(java.lang.Integer integer, java.lang.Throwable throwable) {
+
             if (BuildConfig.DEBUG) {
                 throw new IllegalArgumentException(": " + throwable.getLocalizedMessage());
             }
             //此处return true:表示继续订阅，
-            AppLogger.e("DpParser: " + throwable.getLocalizedMessage());
+            AppLogger.e(tag + throwable.getLocalizedMessage());
             return true;
         }
-    };
+    }
 
     /**
      * simple 过滤器
