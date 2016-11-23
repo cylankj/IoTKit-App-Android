@@ -66,7 +66,6 @@ public class HomeMineHelpSuggestionAdapter extends SuperAdapter<MineHelpSuggesti
         }
     }
 
-
     private void handleServerState(SuperViewHolder holder, int layoutPosition, MineHelpSuggestionBean bean) {
         if (layoutPosition != 0) {
             holder.itemView.setPadding(0, 34, 0, 10);
@@ -76,11 +75,11 @@ public class HomeMineHelpSuggestionAdapter extends SuperAdapter<MineHelpSuggesti
 
         if (bean.isShowTime) {
             holder.setText(R.id.tv_mine_suggestion_server_time, getNowDate(bean.getDate()));
-            holder.setBackgroundResource(R.id.iv_mine_suggestion_server, bean.getIcon());
+//            holder.setBackgroundResource(R.id.iv_mine_suggestion_server, bean.getIcon());
             holder.setText(R.id.tv_mine_suggestion_server_speak, bean.getText());
         } else {
             holder.setVisibility(R.id.tv_mine_suggestion_server_time, View.GONE);
-            holder.setBackgroundResource(R.id.iv_mine_suggestion_server, bean.getIcon());
+//            holder.setBackgroundResource(R.id.iv_mine_suggestion_server, bean.getIcon());
             holder.setText(R.id.tv_mine_suggestion_server_speak, bean.getText());
         }
     }
@@ -94,11 +93,11 @@ public class HomeMineHelpSuggestionAdapter extends SuperAdapter<MineHelpSuggesti
 
         if (bean.isShowTime) {
             holder.setText(R.id.tv_mine_suggestion_client_time, getNowDate(bean.getDate()));
-            holder.setBackgroundResource(R.id.iv_mine_suggestion_client, bean.getIcon());
+//            holder.setBackgroundResource(R.id.iv_mine_suggestion_client, bean.getIcon());
             holder.setText(R.id.tv_mine_suggestion_client_speak, bean.getText());
         } else {
             holder.setVisibility(R.id.tv_mine_suggestion_client_time, View.GONE);
-            holder.setBackgroundResource(R.id.iv_mine_suggestion_client, bean.getIcon());
+//            holder.setBackgroundResource(R.id.iv_mine_suggestion_client, bean.getIcon());
             holder.setText(R.id.tv_mine_suggestion_client_speak, bean.getText());
         }
     }
@@ -115,7 +114,6 @@ public class HomeMineHelpSuggestionAdapter extends SuperAdapter<MineHelpSuggesti
             public int getItemViewType(int position, MineHelpSuggestionBean bean) {
                 return bean.type; //0.显示服务端 ，1.显示客户端
             }
-
 
             @Override
             public int getLayoutId(int viewType) {

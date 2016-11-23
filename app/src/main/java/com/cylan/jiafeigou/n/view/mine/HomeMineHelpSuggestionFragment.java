@@ -43,7 +43,6 @@ public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMine
     @BindView(R.id.et_home_mine_suggestion)
     EditText mEtSuggestion;
 
-
     private List<MineHelpSuggestionBean> suggestionList;
     private HomeMineHelpSuggestionAdapter suggestionAdapter;
     private String suggestion;
@@ -53,7 +52,6 @@ public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMine
     //当前点击的时间和上次点击的时间
     private long afterTime;
     private long nowTime;
-    private String TAG = "HomeMineHelpSuggestionFragment";
 
     public static HomeMineHelpSuggestionFragment newInstance(Bundle bundle) {
         HomeMineHelpSuggestionFragment fragment = new HomeMineHelpSuggestionFragment();
@@ -65,7 +63,6 @@ public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMine
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
-
 
     @Nullable
     @Override
@@ -97,18 +94,15 @@ public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMine
             if (i == 0) {
                 bean.setType(0);
                 bean.setText(server);
-                bean.setIcon(R.drawable.pic_head);
                 bean.setIsShowTime(true);
             } else {
                 bean.setType(1);
                 bean.setText(client);
-                bean.setIcon(R.drawable.img_head);
                 bean.setIsShowTime(true);
             }
             suggestionList.add(bean);
         }
     }
-
 
     /**
      * 对recyclerView进行初始化的显示
@@ -120,7 +114,6 @@ public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMine
         suggestionAdapter = new HomeMineHelpSuggestionAdapter(getContext(), suggestionList, null);
         mRvMineSuggestion.setAdapter(suggestionAdapter);
     }
-
 
     @OnClick({R.id.iv_home_mine_suggestion_back, R.id.tv_mine_help_suggestion_clear, R.id.tv_home_mine_suggestion})
     public void onClick(View v) {
@@ -190,14 +183,12 @@ public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMine
     private void addClientItem() {
         if (nowTime - afterTime > 300000) {
             MineHelpSuggestionBean suggestionBean = new MineHelpSuggestionBean();
-            suggestionBean.setIcon(R.drawable.img_head);
             suggestionBean.setType(1);
             suggestionBean.setText(suggestion);
             suggestionBean.setIsShowTime(true);
             suggestionList.add(suggestionBean);
         } else {
             MineHelpSuggestionBean suggestionBean = new MineHelpSuggestionBean();
-            suggestionBean.setIcon(R.drawable.img_head);
             suggestionBean.setType(1);
             suggestionBean.setText(suggestion);
             suggestionBean.setDate("");
@@ -209,9 +200,9 @@ public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMine
     /**
      * 用户进行反馈时添加一个自动回复的条目
      */
-    private void addAutoReply() {
+    @Override
+    public void addAutoReply() {
         MineHelpSuggestionBean autoReplyBean = new MineHelpSuggestionBean();
-        autoReplyBean.setIcon(R.drawable.pic_head);
         autoReplyBean.setType(0);
         autoReplyBean.setText("您的反馈已经收到，我们将会尽快回复"); //TODO 服务端反馈回来的消息
         autoReplyBean.setDate("");
@@ -222,10 +213,10 @@ public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMine
     /**
      * 服务端主动推送给客户的消息
      */
-    private void addServerItem() {
+    @Override
+    public void addServerItem() {
         if (nowTime - afterTime > 300000) {
             MineHelpSuggestionBean autoReplyBean = new MineHelpSuggestionBean();
-            autoReplyBean.setIcon(R.drawable.pic_head);
             autoReplyBean.setType(0);
             autoReplyBean.setText("");
             autoReplyBean.setDate("");
@@ -233,7 +224,6 @@ public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMine
             suggestionList.add(autoReplyBean);
         } else {
             MineHelpSuggestionBean autoReplyBean = new MineHelpSuggestionBean();
-            autoReplyBean.setIcon(R.drawable.pic_head);
             autoReplyBean.setType(0);
             autoReplyBean.setText("您的反馈已收到，我们将会尽快回复");
             autoReplyBean.setDate("");
@@ -242,15 +232,16 @@ public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMine
         }
     }
 
-
+    /**
+     * 初始化显示列表
+     * @param list
+     */
     @Override
-    public void onTalkList(ArrayList<MineHelpSuggestionBean> beanOfArrayList) {
-
-    }
-
-    @Override
-    public void onClearAllTalk() {
-
+    public void initRecycleView(ArrayList<MineHelpSuggestionBean> list) {
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+        mRvMineSuggestion.setLayoutManager(layoutManager);
+        suggestionAdapter = new HomeMineHelpSuggestionAdapter(getContext(), list, null);
+        mRvMineSuggestion.setAdapter(suggestionAdapter);
     }
 
     @Override

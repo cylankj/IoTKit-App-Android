@@ -55,7 +55,7 @@ public class HomeMineHelpFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //homeMineHelpSuggestionFragment = HomeMineHelpSuggestionFragment.newInstance(new Bundle());
+        homeMineHelpSuggestionFragment = HomeMineHelpSuggestionFragment.newInstance(new Bundle());
         suggestionChatFragment = new SuggestionChatFragment();
     }
 
@@ -95,7 +95,7 @@ public class HomeMineHelpFragment extends Fragment {
                 getFragmentManager().beginTransaction()
                         .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                                 , R.anim.slide_in_left, R.anim.slide_out_right)
-                        .add(android.R.id.content, suggestionChatFragment, "suggestionChatFragment")
+                        .add(android.R.id.content, homeMineHelpSuggestionFragment, "suggestionChatFragment")
                         .addToBackStack("mineHelpFragment")
                         .commit();
                 //Intent intent = new Intent(getActivity(),SuggestionChatContainerActivity.class);

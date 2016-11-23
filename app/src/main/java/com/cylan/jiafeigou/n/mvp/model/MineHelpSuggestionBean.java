@@ -1,6 +1,9 @@
 package com.cylan.jiafeigou.n.mvp.model;
 
 
+import com.cylan.jiafeigou.support.db.annotation.Column;
+import com.cylan.jiafeigou.support.db.annotation.Table;
+
 import java.util.ArrayList;
 
 /**
@@ -12,13 +15,20 @@ import java.util.ArrayList;
  * 更新时间   $Date$
  * 更新描述   ${TODO}
  */
+@Table(name = "MineHelpSuggestionBean")
 public class MineHelpSuggestionBean {
-    public int icon;
+    @Column(name = "id", isId = true)
+    public int id;
+    @Column(name = "icon")
+    public String icon;
+    @Column(name = "text")
     public String text;
+    @Column(name = "date")
     public String date;
+    @Column(name = "type")
     public int type;
+    @Column(name = "isShowTime")
     public boolean isShowTime;
-    public ArrayList<String> urlList;
 
     public void setIsShowTime(boolean isShowTime) {
         this.isShowTime = isShowTime;
@@ -36,12 +46,12 @@ public class MineHelpSuggestionBean {
         return type;
     }
 
-    public void setIcon(int icon) {
-        this.icon = icon;
+    public String getIcon() {
+        return icon;
     }
 
-    public int getIcon() {
-        return icon;
+    public void setIcon(String icon) {
+        this.icon = icon;
     }
 
     public void setText(String text) {
@@ -58,5 +68,13 @@ public class MineHelpSuggestionBean {
 
     public String getDate() {
         return date;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }
