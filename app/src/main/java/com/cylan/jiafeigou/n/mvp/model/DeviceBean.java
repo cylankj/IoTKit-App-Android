@@ -6,6 +6,7 @@ import android.text.TextUtils;
 
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -20,31 +21,10 @@ public class DeviceBean implements Parcelable {
     public int isChooseFlag;
     public int hasShareCount;
 
-    public List<DpMsgDefine.BaseDpMsg> dataList;
+    public List<DpMsgDefine.DpMsg> dataList;
 
     public DeviceBean() {
     }
-
-    protected DeviceBean(Parcel in) {
-        uuid = in.readString();
-        sn = in.readString();
-        alias = in.readString();
-        shareAccount = in.readString();
-        pid = in.readInt();
-        isChooseFlag = in.readInt();
-    }
-
-    public static final Creator<DeviceBean> CREATOR = new Creator<DeviceBean>() {
-        @Override
-        public DeviceBean createFromParcel(Parcel in) {
-            return new DeviceBean(in);
-        }
-
-        @Override
-        public DeviceBean[] newArray(int size) {
-            return new DeviceBean[size];
-        }
-    };
 
     @Override
     public boolean equals(Object o) {
@@ -61,28 +41,13 @@ public class DeviceBean implements Parcelable {
         return uuid != null ? uuid.hashCode() : 0;
     }
 
-    public void fillData(DpMsgDefine.BaseDpDevice baseDpMsg, List<DpMsgDefine.BaseDpMsg> list) {
+    public void fillData(BaseBean baseDpMsg, List<DpMsgDefine.DpMsg> list) {
         this.uuid = baseDpMsg.uuid;
         this.pid = baseDpMsg.pid;
         this.sn = baseDpMsg.sn;
         this.shareAccount = baseDpMsg.shareAccount;
         this.alias = baseDpMsg.alias;
         this.dataList = list;
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(uuid);
-        dest.writeString(sn);
-        dest.writeString(alias);
-        dest.writeString(shareAccount);
-        dest.writeInt(pid);
-        dest.writeInt(isChooseFlag);
     }
 
     @Override
@@ -97,4 +62,45 @@ public class DeviceBean implements Parcelable {
                 ", dataList=" + dataList +
                 '}';
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.uuid);
+        dest.writeString(this.sn);
+        dest.writeString(this.alias);
+        dest.writeString(this.shareAccount);
+        dest.writeInt(this.pid);
+        dest.writeInt(this.isChooseFlag);
+        dest.writeInt(this.hasShareCount);
+        dest.writeList(this.dataList);
+    }
+
+    protected DeviceBean(Parcel in) {
+        this.uuid = in.readString();
+        this.sn = in.readString();
+        this.alias = in.readString();
+        this.shareAccount = in.readString();
+        this.pid = in.readInt();
+        this.isChooseFlag = in.readInt();
+        this.hasShareCount = in.readInt();
+        this.dataList = new ArrayList<DpMsgDefine.DpMsg>();
+        in.readList(this.dataList, DpMsgDefine.DpMsg.class.getClassLoader());
+    }
+
+    public static final Creator<DeviceBean> CREATOR = new Creator<DeviceBean>() {
+        @Override
+        public DeviceBean createFromParcel(Parcel source) {
+            return new DeviceBean(source);
+        }
+
+        @Override
+        public DeviceBean[] newArray(int size) {
+            return new DeviceBean[size];
+        }
+    };
 }

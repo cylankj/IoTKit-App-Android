@@ -1,10 +1,10 @@
 package com.cylan.jiafeigou.cache;
 
 import android.util.ArrayMap;
-import android.util.Log;
 
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.jiafeigou.n.mvp.model.LoginAccountBean;
+import com.cylan.jiafeigou.support.log.AppLogger;
 import com.google.gson.Gson;
 
 import java.util.Map;
@@ -38,7 +38,7 @@ public class JCache {
      * @param jfgAccount
      */
     public static void setAccountCache(JFGAccount jfgAccount) {
-        Log.d("setAccountCache", "setAccountCache: " + new Gson().toJson(jfgAccount));
+        AppLogger.d("setAccountCache: " + new Gson().toJson(jfgAccount));
         simpleMap.put("jfgAccount", jfgAccount);
     }
 

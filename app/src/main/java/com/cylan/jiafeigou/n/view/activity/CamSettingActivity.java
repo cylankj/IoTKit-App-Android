@@ -14,7 +14,7 @@ import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamSettingContract;
 import com.cylan.jiafeigou.n.mvp.impl.cam.CamSettingPresenterImpl;
-import com.cylan.jiafeigou.n.mvp.model.CamInfoBean;
+import com.cylan.jiafeigou.n.mvp.model.BeanCamInfo;
 import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
 import com.cylan.jiafeigou.n.view.cam.DeviceStandbyFragment;
 import com.cylan.jiafeigou.n.view.cam.FragmentFacilityInformation;
@@ -31,7 +31,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class CamSettingActivity extends BaseFullScreenFragmentActivity
+public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettingContract.Presenter>
         implements CamSettingContract.View {
 
     @BindView(R.id.imgV_top_bar_center)
@@ -61,8 +61,6 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity
     @BindView(R.id.tv_setting_unbind)
     TextView tvSettingUnbind;
 
-    private CamSettingContract.Presenter presenter;
-
     private WeakReference<FragmentFacilityInformation> informationWeakReference;
     private WeakReference<DeviceStandbyFragment> deviceStandbyFragmentWeakReference;
     private WeakReference<SafeProtectionFragment> safeProtectionFragmentWeakReference;
@@ -70,11 +68,11 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        basePresenter = new CamSettingPresenterImpl(this);
         setContentView(R.layout.activity_cam_setting);
         ButterKnife.bind(this);
         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
         initTopBar();
-        presenter = new CamSettingPresenterImpl(this);
     }
 
     @Override
@@ -83,8 +81,8 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity
         Bundle bundle = getIntent().getBundleExtra(JConstant.KEY_DEVICE_ITEM_BUNDLE);
         Parcelable p = bundle.getParcelable(JConstant.KEY_DEVICE_ITEM_BUNDLE);
         if (p != null && p instanceof DeviceBean) {
-            if (presenter != null)
-                presenter.fetchCamInfo(((DeviceBean) p).uuid);
+            if (basePresenter != null)
+                basePresenter.fetchCamInfo(((DeviceBean) p));
         } else {
             AppLogger.d("o is null");
         }
@@ -134,31 +132,31 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity
                 loadFragment(android.R.id.content, informationWeakReference.get());
                 break;
             case R.id.sv_setting_device_indicator:
-                if (presenter != null) {
-                    CamInfoBean camInfoBean = presenter.getCamInfoBean();
-                    camInfoBean.isDeviceIndicator = !camInfoBean.isDeviceIndicator;
-                    presenter.saveCamInfoBean(camInfoBean);
+                if (basePresenter != null) {
+                    BeanCamInfo camInfoBean = basePresenter.getCamInfoBean();
+                    camInfoBean.ledIndicator = !camInfoBean.ledIndicator;
+                    basePresenter.saveCamInfoBean(camInfoBean);
                 }
                 break;
             case R.id.sv_setting_device_rotatable:
-                if (presenter != null) {
-                    CamInfoBean camInfoBean = presenter.getCamInfoBean();
-                    camInfoBean.isRotatable = !camInfoBean.isRotatable;
-                    presenter.saveCamInfoBean(camInfoBean);
+                if (basePresenter != null) {
+                    BeanCamInfo camInfoBean = basePresenter.getCamInfoBean();
+//                    camInfoBean.deviceCameraRotate = !camInfoBean.deviceCameraRotate;
+                    basePresenter.saveCamInfoBean(camInfoBean);
                 }
                 break;
             case R.id.sbtn_setting_item_switch_110v:
-                if (presenter != null) {
-                    CamInfoBean camInfoBean = presenter.getCamInfoBean();
-                    camInfoBean.isSupport110V = !camInfoBean.isSupport110V;
-                    presenter.saveCamInfoBean(camInfoBean);
+                if (basePresenter != null) {
+                    BeanCamInfo camInfoBean = basePresenter.getCamInfoBean();
+                    camInfoBean.deviceVoltage = !camInfoBean.deviceVoltage;
+                    basePresenter.saveCamInfoBean(camInfoBean);
                 }
                 break;
             case R.id.sv_setting_device_mobile_network:
-                if (presenter != null) {
-                    CamInfoBean camInfoBean = presenter.getCamInfoBean();
-                    camInfoBean.isMobileNet = !camInfoBean.isMobileNet;
-                    presenter.saveCamInfoBean(camInfoBean);
+                if (basePresenter != null) {
+                    BeanCamInfo camInfoBean = basePresenter.getCamInfoBean();
+                    camInfoBean.deviceMobileNetPriority = !camInfoBean.deviceMobileNetPriority;
+                    basePresenter.saveCamInfoBean(camInfoBean);
                 }
                 break;
             case R.id.tv_setting_unbind:
@@ -209,19 +207,19 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity
     }
 
     @Override
-    public void onCamInfoRsp(CamInfoBean camInfoBean) {
-        svSettingDeviceWifi.setTvSubTitle(camInfoBean.ssid);
-        svSettingDeviceMobileNetwork.setSwitchButtonState(camInfoBean.isMobileNet);
-        svSettingSafeProtection.setTvSubTitle(camInfoBean.safeSummary);
-        svSettingDeviceStandbyMode.setTvSubTitle(camInfoBean.isStandby ? "开启" : "关闭");
-        svSettingDeviceIndicator.setSwitchButtonState(camInfoBean.isDeviceIndicator);
-        svSettingDeviceRotate.setSwitchButtonState(camInfoBean.isRotatable);
-        tbSettingItemSwitch110v.setChecked(camInfoBean.isSupport110V);
+    public void onCamInfoRsp(BeanCamInfo camInfoBean) {
+        svSettingDeviceWifi.setTvSubTitle(camInfoBean.net != null && camInfoBean.net.ssid != null ? camInfoBean.net.ssid : "");
+        svSettingDeviceMobileNetwork.setSwitchButtonState(camInfoBean.deviceMobileNetPriority);
+//        svSettingSafeProtection.setTvSubTitle(camInfoBean.safeSummary);
+        svSettingDeviceStandbyMode.setTvSubTitle(camInfoBean.cameraStandbyFlag ? "开启" : "关闭");
+        svSettingDeviceIndicator.setSwitchButtonState(camInfoBean.ledIndicator);
+        svSettingDeviceRotate.setSwitchButtonState(camInfoBean.deviceCameraRotate);
+        tbSettingItemSwitch110v.setChecked(camInfoBean.deviceVoltage);
     }
 
     @Override
-    public void setPresenter(CamSettingContract.Presenter presenter) {
-        this.presenter = presenter;
+    public void setPresenter(CamSettingContract.Presenter basePresenter) {
+        this.basePresenter = basePresenter;
     }
 
     @Override

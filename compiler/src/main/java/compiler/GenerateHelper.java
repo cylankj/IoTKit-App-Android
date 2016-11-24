@@ -2,6 +2,7 @@ package compiler;
 
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
+import com.squareup.javapoet.ParameterSpec;
 import com.squareup.javapoet.TypeSpec;
 
 import java.io.IOException;
@@ -14,12 +15,13 @@ import javax.lang.model.element.Modifier;
  * Created by cylan-hunt on 16-11-16.
  */
 
-public class ParameterGen {
-    public static void go(ProcessingEnvironment processingEnv, RoundEnvironment roundEnv) {
+public class GenerateHelper {
+
+    public static void blewHelper(ProcessingEnvironment processingEnv, RoundEnvironment roundEnv) {
         TypeSpec msgIdMap =
-                TypeSpec.classBuilder("DpQueryHelper")
+                TypeSpec.classBuilder("DpHelper")
                         .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
-                        .addMethod(createCamQueryMethod().build())
+                        .addMethod(createMethod().build())
                         .build();
         JavaFile javaFile = JavaFile.builder("com.cylan.jiafeigou.dp", msgIdMap)
                 .build();
@@ -30,12 +32,14 @@ public class ParameterGen {
         }
     }
 
-    private static MethodSpec.Builder createCamQueryMethod() {
-        MethodSpec.Builder builder = MethodSpec.methodBuilder("getCamQueryParameters");
-//        builder.addModifiers(Modifier.PUBLIC)
-//                .addModifiers(Modifier.STATIC)
-//                .returns(DpParameters.Builder.class);
-
+    private static MethodSpec.Builder createMethod() {
+        MethodSpec.Builder builder = MethodSpec.methodBuilder("fillData");
+        ParameterSpec.Builder p0 = ParameterSpec.builder(String.class, "vice");
+        ParameterSpec.Builder p1 = ParameterSpec.builder(String.class, "device");
+        builder.addParameter(p0.build());
+        builder.addParameter(p1.build());
+        builder.addModifiers(Modifier.PUBLIC)
+                .addModifiers(Modifier.STATIC);
         return builder;
     }
 }

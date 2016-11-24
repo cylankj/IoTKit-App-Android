@@ -51,15 +51,15 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
 
     @Override
     public void start() {
+        AppLogger.i("start");
         //注意事项
+        unSubscribe(bulkSubscriptions);
         bulkSubscriptions = new CompositeSubscription();
         //注册1
         bulkSubscriptions
                 .add(getTimeTickEventSub());
         bulkSubscriptions
                 .add(getLoginRspSub());
-//        bulkSubscriptions
-//                .add(singleDeviceUpdate());
         bulkSubscriptions
                 .add(subDeviceList());
         bulkSubscriptions
@@ -119,7 +119,7 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
      * @return
      */
     private Subscription subDeviceList() {
-        return RxBus.getUiInstance().toObservable(RxUiEvent.BulkDeviceList.class)
+        return RxBus.getUiInstance().toObservableSticky(RxUiEvent.BulkDeviceList.class)
                 .filter(new Func1<RxUiEvent.BulkDeviceList, Boolean>() {
                     @Override
                     public Boolean call(RxUiEvent.BulkDeviceList list) {
@@ -171,6 +171,7 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
 
     @Override
     public void stop() {
+        AppLogger.i("stop");
         unSubscribe(onRefreshSubscription,
                 bulkSubscriptions,
                 onGreetSubscription);
