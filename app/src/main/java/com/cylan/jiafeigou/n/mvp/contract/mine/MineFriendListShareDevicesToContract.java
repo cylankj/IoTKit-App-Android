@@ -1,11 +1,10 @@
 package com.cylan.jiafeigou.n.mvp.contract.mine;
 
-import com.cylan.jiafeigou.misc.RxEvent;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
 import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
-import com.cylan.jiafeigou.n.mvp.model.MineShareDeviceBean;
 import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
+import com.cylan.jiafeigou.rx.RxEvent;
 
 import java.util.ArrayList;
 
@@ -26,6 +25,7 @@ public interface MineFriendListShareDevicesToContract {
 
         /**
          * 初始化列表的显示
+         *
          * @param list
          */
         void initRecycleView(ArrayList<DeviceBean> list);
@@ -72,7 +72,7 @@ public interface MineFriendListShareDevicesToContract {
         /**
          * 发送分享设备给的亲友的请求
          */
-        void sendShareToReq(ArrayList<DeviceBean> chooseList,RelAndFriendBean bean);
+        void sendShareToReq(ArrayList<DeviceBean> chooseList, RelAndFriendBean bean);
 
         /**
          * 检测是否有选中的
@@ -81,18 +81,21 @@ public interface MineFriendListShareDevicesToContract {
 
         /**
          * 分享设备的回调
+         *
          * @return
          */
         Subscription shareDeviceCallBack();
 
         /**
          * 获取到设备已经分享的亲友数
+         *
          * @param cid
          */
         void getDeviceInfo(ArrayList<String> cid);
 
         /**
          * 获取到设备信息的回调
+         *
          * @return
          */
         Subscription getDeviceInfoCallBack();

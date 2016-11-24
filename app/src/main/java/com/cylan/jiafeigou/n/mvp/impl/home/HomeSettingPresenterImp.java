@@ -4,23 +4,20 @@ import android.content.Context;
 import android.os.Environment;
 import android.text.TextUtils;
 import android.util.Log;
-import android.widget.Switch;
 
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
-import com.cylan.jiafeigou.misc.RxEvent;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeSettingContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.rx.RxBus;
+import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.utils.PreferencesUtils;
 
 import java.io.File;
 import java.text.DecimalFormat;
 import java.util.concurrent.TimeUnit;
 
-import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
@@ -46,9 +43,9 @@ public class HomeSettingPresenterImp extends AbstractPresenter<HomeSettingContra
 
     @Override
     public void start() {
-        if (compositeSubscription != null && !compositeSubscription.isUnsubscribed()){
+        if (compositeSubscription != null && !compositeSubscription.isUnsubscribed()) {
             compositeSubscription.unsubscribe();
-        }else {
+        } else {
             compositeSubscription = new CompositeSubscription();
             compositeSubscription.add(getAccountInfo());
         }
@@ -128,6 +125,7 @@ public class HomeSettingPresenterImp extends AbstractPresenter<HomeSettingContra
 
     /**
      * 更改状态
+     *
      * @param isChick
      * @param key
      */
@@ -138,23 +136,24 @@ public class HomeSettingPresenterImp extends AbstractPresenter<HomeSettingContra
                 .subscribe(new Action1<Boolean>() {
                     @Override
                     public void call(Boolean aBoolean) {
-                        chooseWhichSet(aBoolean,key);
+                        chooseWhichSet(aBoolean, key);
                     }
                 }, new Action1<Throwable>() {
                     @Override
                     public void call(Throwable throwable) {
-                        AppLogger.e("savaSwitchState"+throwable.getLocalizedMessage());
+                        AppLogger.e("savaSwitchState" + throwable.getLocalizedMessage());
                     }
                 });
     }
 
     /**
      * 选择哪个开关
+     *
      * @param aBoolean
      * @param key
      */
     private void chooseWhichSet(Boolean aBoolean, String key) {
-        switch (key){
+        switch (key) {
             case JConstant.RECEIVE_MESSAGE_NOTIFICATION:
                 userInfo.resetFlag();
                 userInfo.setEnablePush(aBoolean);
@@ -177,6 +176,7 @@ public class HomeSettingPresenterImp extends AbstractPresenter<HomeSettingContra
 
     /**
      * 获取到用户信息 设置通知等的开启和关闭
+     *
      * @return
      */
     @Override
@@ -186,7 +186,7 @@ public class HomeSettingPresenterImp extends AbstractPresenter<HomeSettingContra
                 .subscribe(new Action1<RxEvent.GetUserInfo>() {
                     @Override
                     public void call(RxEvent.GetUserInfo getUserInfo) {
-                        if (getUserInfo != null && getUserInfo instanceof RxEvent.GetUserInfo && getView() != null){
+                        if (getUserInfo != null && getUserInfo instanceof RxEvent.GetUserInfo && getView() != null) {
                             getView().initSwitchState(getUserInfo);
                             userInfo = getUserInfo.jfgAccount;
                         }
@@ -195,10 +195,9 @@ public class HomeSettingPresenterImp extends AbstractPresenter<HomeSettingContra
     }
 
 
-
     @Override
     public void stop() {
-        if (compositeSubscription != null && !compositeSubscription.isUnsubscribed()){
+        if (compositeSubscription != null && !compositeSubscription.isUnsubscribed()) {
             compositeSubscription.unsubscribe();
         }
     }

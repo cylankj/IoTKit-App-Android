@@ -1,8 +1,8 @@
 package com.cylan.jiafeigou.n.mvp.contract.home;
 
-import com.cylan.jiafeigou.misc.RxEvent;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
+import com.cylan.jiafeigou.rx.RxEvent;
 
 import rx.Subscription;
 
@@ -49,6 +49,7 @@ public interface HomeSettingContract {
 
         /**
          * 获取到用户的信息
+         *
          * @return
          */
         Subscription getAccountInfo();

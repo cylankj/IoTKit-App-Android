@@ -265,7 +265,6 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
     public void onDestroyView() {
         super.onDestroyView();
         if (vWaveAnimation != null) vWaveAnimation.stopAnimation();
-        if (basePresenter != null) basePresenter.stop();
     }
 
     @Override
@@ -275,7 +274,6 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
 
     @Override
     public void setPresenter(HomePageListContract.Presenter basePresenter) {
-        AppLogger.e("ffff: " + (basePresenter == null));
         this.basePresenter = basePresenter;
     }
 

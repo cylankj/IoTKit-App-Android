@@ -1,5 +1,6 @@
 package compiler;
 
+import com.cylan.annotation.Device;
 import com.cylan.annotation.DpAnnotation;
 import com.google.auto.service.AutoService;
 import com.squareup.javapoet.CodeBlock;
@@ -7,9 +8,7 @@ import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeSpec;
-import com.squareup.javapoet.WildcardTypeName;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
@@ -19,6 +18,8 @@ import java.util.Set;
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.Processor;
 import javax.annotation.processing.RoundEnvironment;
+import javax.annotation.processing.SupportedSourceVersion;
+import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
@@ -31,6 +32,7 @@ import javax.lang.model.type.TypeMirror;
  */
 
 @AutoService(Processor.class)
+@SupportedSourceVersion(SourceVersion.RELEASE_7)
 public class TestProcessor extends AbstractProcessor {
 
     @Override
@@ -42,9 +44,11 @@ public class TestProcessor extends AbstractProcessor {
 
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
-        Set<? extends Element> set = roundEnv.getElementsAnnotatedWith(DpAnnotation.class);
-        brewIdMap(set);
-        ParameterGen.go(processingEnv, roundEnv);
+        brewIdMap(roundEnv);
+        BeanInfoGen.go(Device.CAMERA, processingEnv, roundEnv);
+        BeanInfoGen.go(Device.BELL, processingEnv, roundEnv);
+        BeanInfoGen.go(Device.CLOUD, processingEnv, roundEnv);
+        BeanInfoGen.go(Device.MAG, processingEnv, roundEnv);
         return false;
     }
 
@@ -59,9 +63,10 @@ public class TestProcessor extends AbstractProcessor {
      * IdMap.put(MAC, DP_ID_JFG_BEGIN + 2);
      * }
      *
-     * @param set
+     * @param roundEnv
      */
-    private void brewIdMap(Set<? extends Element> set) {
+    private void brewIdMap(RoundEnvironment roundEnv) {
+        Set<? extends Element> set = roundEnv.getElementsAnnotatedWith(DpAnnotation.class);
         //static block
         Map<Integer, String> mapVerify = new HashMap<>();
         Map<String, Integer> mapVerify_ = new HashMap<>();
@@ -114,7 +119,8 @@ public class TestProcessor extends AbstractProcessor {
                         .addStaticBlock(blockNameId.build())
                         .addStaticBlock(blockId2NameClass.build())
                         .addStaticBlock(blockIdClass.build());
-        addFinalField(fileBuilder, fieldList);
+        addFinalStringField(fileBuilder, fieldList);
+        addFinalIntField(fileBuilder, fieldList);
         TypeSpec msgIdMap = fileBuilder.build();
 //                        .build();
 //        package
@@ -123,8 +129,8 @@ public class TestProcessor extends AbstractProcessor {
 
         try {
             javaFile.writeTo(processingEnv.getFiler());
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+//            e.printStackTrace();
         }
 
     }
@@ -135,7 +141,7 @@ public class TestProcessor extends AbstractProcessor {
      * @return
      */
     private FieldSpec.Builder getNameIdMap() {
-        System.out.println("hunt: " + WildcardTypeName.subtypeOf(Object.class).toString());
+//        System.out.println("hunt: " + WildcardTypeName.subtypeOf(Object.class).toString());
         ParameterizedTypeName type = ParameterizedTypeName.get(Map.class,
                 String.class,
                 Integer.class);
@@ -179,7 +185,7 @@ public class TestProcessor extends AbstractProcessor {
         return field;
     }
 
-    private void addFinalField(TypeSpec.Builder typeSpec, Map<String, Integer> fieldMap) {
+    private void addFinalStringField(TypeSpec.Builder typeSpec, Map<String, Integer> fieldMap) {
         Iterator<String> i = fieldMap.keySet().iterator();
         while (i.hasNext()) {
             String name = i.next();
@@ -189,6 +195,20 @@ public class TestProcessor extends AbstractProcessor {
                     Modifier.STATIC,
                     Modifier.FINAL);
             field.initializer("$S", name.toLowerCase());
+            typeSpec.addField(field.build());
+        }
+    }
+
+    private void addFinalIntField(TypeSpec.Builder typeSpec, Map<String, Integer> fieldMap) {
+        Iterator<String> i = fieldMap.keySet().iterator();
+        while (i.hasNext()) {
+            String name = i.next();
+            FieldSpec.Builder field = FieldSpec.builder(int.class,
+                    "ID_" + fieldMap.get(name) + "_" + name,
+                    Modifier.PUBLIC,
+                    Modifier.STATIC,
+                    Modifier.FINAL);
+            field.initializer("$L", fieldMap.get(name));
             typeSpec.addField(field.build());
         }
     }

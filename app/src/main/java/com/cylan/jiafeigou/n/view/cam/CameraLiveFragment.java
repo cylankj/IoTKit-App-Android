@@ -1,6 +1,7 @@
 package com.cylan.jiafeigou.n.view.cam;
 
 
+import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -17,7 +18,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamLiveContract;
+import com.cylan.jiafeigou.n.mvp.impl.cam.CamLivePresenterImpl;
 import com.cylan.jiafeigou.n.view.misc.LandLiveBarAnimDelegate;
 import com.cylan.jiafeigou.n.view.misc.LiveBottomBarAnimDelegate;
 import com.cylan.jiafeigou.utils.ViewUtils;
@@ -32,7 +35,7 @@ import butterknife.OnClick;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class CameraLiveFragment extends Fragment implements CamLandLiveAction,
+public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter> implements CamLandLiveAction,
         CamLiveContract.View {
 
 
@@ -71,8 +74,6 @@ public class CameraLiveFragment extends Fragment implements CamLandLiveAction,
     private CamLandLiveLayerInterface camLandLiveLayerInterface;
 
 
-    private CamLiveContract.Presenter presenter;
-
     public CameraLiveFragment() {
         // Required empty public constructor
     }
@@ -81,6 +82,18 @@ public class CameraLiveFragment extends Fragment implements CamLandLiveAction,
         CameraLiveFragment fragment = new CameraLiveFragment();
         fragment.setArguments(bundle);
         return fragment;
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        basePresenter = new CamLivePresenterImpl(this);
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
     }
 
     @Override
@@ -107,22 +120,21 @@ public class CameraLiveFragment extends Fragment implements CamLandLiveAction,
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+        if (basePresenter != null)
+            basePresenter.fetchHistoryData();
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
-        swCamPortWheel.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if (presenter != null)
-                    presenter.fetchHistoryData();
-            }
-        }, 3000);
+
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        if (presenter != null)
-            presenter.stop();
     }
 
     @Override
@@ -270,8 +282,8 @@ public class CameraLiveFragment extends Fragment implements CamLandLiveAction,
     }
 
     @Override
-    public void setPresenter(CamLiveContract.Presenter presenter) {
-        this.presenter = presenter;
+    public void setPresenter(CamLiveContract.Presenter basePresenter) {
+        this.basePresenter = basePresenter;
     }
 
 

@@ -1,5 +1,7 @@
 package com.cylan.jiafeigou.dp;
 
+import com.cylan.jiafeigou.n.mvp.model.BaseBean;
+
 import java.util.List;
 
 /**
@@ -16,7 +18,7 @@ public interface IFlat {
      */
     void cache(String account, String uuid);
 
-    void cache(String account, DpMsgDefine.BaseDpDevice dpDevice);
+    void cache(String account, BaseBean dpDevice);
 
     /**
      * 缓存清空
@@ -35,7 +37,7 @@ public interface IFlat {
 
     DpMsgDefine.DpWrap getWrap(String account, String uuid);
 
-    void cache(String account, String uuid, DpMsgDefine.BaseDpMsg msg);
+    void cache(String account, String uuid, DpMsgDefine.DpMsg msg);
 
     List<DpMsgDefine.DpWrap> getAllDevices(String account);
 }

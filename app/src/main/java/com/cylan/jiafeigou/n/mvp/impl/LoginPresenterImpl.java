@@ -68,7 +68,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginModelContract.Vie
                         return o;
                     }
                 })
-                .delay(3, TimeUnit.SECONDS)
+                .delay(5, TimeUnit.SECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<LoginAccountBean>() {
                     @Override
