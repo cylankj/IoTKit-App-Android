@@ -133,7 +133,7 @@ public class HomePageListAdapter extends SuperAdapter<DeviceBean> {
      */
     private DpMsgDefine.MsgNet determineNet(DeviceBean bean) {
         if (bean.dataList != null) {
-            for (DpMsgDefine.BaseDpMsg dp : bean.dataList) {
+            for (DpMsgDefine.DpMsg dp : bean.dataList) {
                 if (dp.msgId == 201) {
                     if (dp.o != null && (dp.o instanceof DpMsgDefine.MsgNet)) {
                         return (DpMsgDefine.MsgNet) dp.o;

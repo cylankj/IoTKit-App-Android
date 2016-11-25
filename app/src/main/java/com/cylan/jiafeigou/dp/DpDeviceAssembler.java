@@ -10,6 +10,7 @@ import com.cylan.entity.jniCall.RobotoGetDataRsp;
 import com.cylan.jfgapp.jni.JfgAppCmd;
 import com.cylan.jiafeigou.cache.JCache;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.n.mvp.model.BaseBean;
 import com.cylan.jiafeigou.n.mvp.model.param.BaseParam;
 import com.cylan.jiafeigou.n.mvp.model.param.BellParam;
 import com.cylan.jiafeigou.n.mvp.model.param.CamParam;
@@ -20,7 +21,6 @@ import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.rx.RxHelper;
 import com.cylan.jiafeigou.rx.RxUiEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.utils.RandomUtils;
 
 import org.msgpack.MessagePack;
 
@@ -29,11 +29,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
 import rx.Subscription;
 import rx.functions.Func1;
+import rx.functions.Func2;
 import rx.schedulers.Schedulers;
 
 import static com.cylan.jiafeigou.dp.DpMsgMap.ID_2_CLASS_MAP;
@@ -94,7 +94,7 @@ public class DpDeviceAssembler implements IParser {
      * @param device
      */
     private void assembleBase(JFGDevice device) {
-        DpMsgDefine.BaseDpDevice dpDevice = new DpMsgDefine.BaseDpDevice();
+        BaseBean dpDevice = new BaseBean();
         dpDevice.alias = device.alias;
         dpDevice.pid = device.pid;
         dpDevice.shareAccount = device.shareAccount;
@@ -103,64 +103,37 @@ public class DpDeviceAssembler implements IParser {
         flatMsg.cache(JCache.getAccountCache().getAccount(), dpDevice);
     }
 
+    private Observable<JFGAccount> monitorJFGAccount() {
+        return RxBus.getCacheInstance().toObservableSticky(JFGAccount.class);
+    }
+
+    private Observable<RxEvent.DeviceRawList> monitorDeviceRawList() {
+        return RxBus.getCacheInstance().toObservable(RxEvent.DeviceRawList.class);
+    }
+
     /**
      * 从dataSource来的消息
      *
      * @return
      */
     private Subscription deviceListSub() {
-        return RxBus.getCacheInstance().toObservableSticky(RxEvent.DeviceRawList.class)
-                //账号不为空
-                .map(new Func1<RxEvent.DeviceRawList, RxEvent.DeviceRawList>() {
+        return Observable.zip(monitorJFGAccount(), monitorDeviceRawList(),
+                new Func2<JFGAccount, RxEvent.DeviceRawList, List<JFGDevice>>() {
                     @Override
-                    public RxEvent.DeviceRawList call(RxEvent.DeviceRawList deviceRawList) {
-                        if (JCache.getAccountCache() == null) {
-                            JFGAccount account = new JFGAccount();
-                            account.setAlias("shit");
-                            account.setAlias(RandomUtils.getRandom(10) % 2 == 0 ? "share" : "");
-                            JCache.setAccountCache(account);
-                            AppLogger.i("wait_for_account_end: " + (JCache.getAccountCache() == null));
-                        }
-                        return deviceRawList;
+                    public List<JFGDevice> call(JFGAccount account, RxEvent.DeviceRawList deviceRawList) {
+                        AppLogger.i("yes jfgAccount is ready and deviceList is ready too");
+                        return Arrays.asList(deviceRawList.devices);
                     }
                 })
                 .subscribeOn(Schedulers.newThread())
-                .delay(500, TimeUnit.MILLISECONDS)
-                .flatMap(new Func1<RxEvent.DeviceRawList, Observable<List<JFGDevice>>>() {
-                    @Override
-                    public Observable<List<JFGDevice>> call(RxEvent.DeviceRawList deviceList) {
-                        return Observable.just(Arrays.asList(deviceList.devices));
-                    }
-                })
+//                .delay(500, TimeUnit.MILLISECONDS)
                 .map(new Func1<List<JFGDevice>, Object>() {
                     @Override
                     public Object call(List<JFGDevice> list) {
                         for (int i = 0; i < list.size(); i++) {
                             assembleBase(list.get(i));
                             final int pid = list.get(i).pid;
-                            BaseParam baseParam = null;
-                            switch (pid) {//摄像头全部属性
-                                case JConstant.OS_CAMERA_ANDROID:
-                                case JConstant.OS_CAMERA_UCOS:
-                                case JConstant.OS_CAMERA_UCOS_V2:
-                                case JConstant.OS_CAMERA_UCOS_V3:
-                                case JConstant.OS_CAMERA_ANDROID_4G:
-                                case JConstant.OS_CAMERA_CC3200:
-                                case JConstant.OS_CAMERA_PANORAMA_HAISI:
-                                case JConstant.OS_CAMERA_PANORAMA_QIAOAN:
-                                case JConstant.OS_CAMERA_PANORAMA_GUOKE:
-                                    baseParam = new CamParam();
-                                    break;
-                                case JConstant.OS_EFAML:
-                                    baseParam = new EfamilyParam();
-                                    break;
-                                case JConstant.OS_MAGNET:
-                                    baseParam = new MagParam();
-                                    break;
-                                case JConstant.OS_DOOR_BELL:
-                                    baseParam = new BellParam();
-                                    break;
-                            }
+                            BaseParam baseParam = merger(pid);
                             AppLogger.i("req: " + list.get(i).uuid);
                             long seq = JfgAppCmd.getInstance().robotGetData(list.get(i).uuid, baseParam.queryParameters(null), 1, false, 0);
                             seqList.add(seq);
@@ -170,6 +143,39 @@ public class DpDeviceAssembler implements IParser {
                 })
                 .retry(new RxHelper.RxException<>("deviceListSub"))
                 .subscribe();
+    }
+
+    /**
+     * 根据不同的pid来组合不同的请求体
+     *
+     * @param pid
+     * @return
+     */
+    private BaseParam merger(int pid) {
+        BaseParam baseParam = null;
+        switch (pid) {//摄像头全部属性
+            case JConstant.OS_CAMERA_ANDROID:
+            case JConstant.OS_CAMERA_UCOS:
+            case JConstant.OS_CAMERA_UCOS_V2:
+            case JConstant.OS_CAMERA_UCOS_V3:
+            case JConstant.OS_CAMERA_ANDROID_4G:
+            case JConstant.OS_CAMERA_CC3200:
+            case JConstant.OS_CAMERA_PANORAMA_HAISI:
+            case JConstant.OS_CAMERA_PANORAMA_QIAOAN:
+            case JConstant.OS_CAMERA_PANORAMA_GUOKE:
+                baseParam = new CamParam();
+                break;
+            case JConstant.OS_EFAML:
+                baseParam = new EfamilyParam();
+                break;
+            case JConstant.OS_MAGNET:
+                baseParam = new MagParam();
+                break;
+            case JConstant.OS_DOOR_BELL:
+                baseParam = new BellParam();
+                break;
+        }
+        return baseParam;
     }
 
     /**
@@ -213,6 +219,11 @@ public class DpDeviceAssembler implements IParser {
                             //完成所有设备更新
                             RxUiEvent.BulkDeviceList cacheList = new RxUiEvent.BulkDeviceList();
                             cacheList.allDevices = flatMsg.getAllDevices(JCache.getAccountCache().getAccount());
+                            if (cacheList.allDevices == null || cacheList.allDevices.size() == 0) {
+                                AppLogger.i("DpParser:null ");
+                                return null;
+                            }
+                            AppLogger.i("DpParser:" + cacheList);
                             RxBus.getUiInstance().postSticky(cacheList);
                         }
                         return null;
@@ -223,8 +234,8 @@ public class DpDeviceAssembler implements IParser {
                 .subscribe();
     }
 
-    private DpMsgDefine.BaseDpMsg wrap(Object o, int msgId, long version) {
-        DpMsgDefine.BaseDpMsg base = new DpMsgDefine.BaseDpMsg();
+    private DpMsgDefine.DpMsg wrap(Object o, int msgId, long version) {
+        DpMsgDefine.DpMsg base = new DpMsgDefine.DpMsg();
         base.version = version;
         base.msgId = msgId;
         base.o = o;

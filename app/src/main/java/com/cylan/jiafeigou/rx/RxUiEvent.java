@@ -15,6 +15,13 @@ public class RxUiEvent {
 
     public static final class BulkDeviceList {
         public List<DpMsgDefine.DpWrap> allDevices;
+
+        @Override
+        public String toString() {
+            return "BulkDeviceList{" +
+                    "allDevices=" + allDevices +
+                    '}';
+        }
     }
 
     @Deprecated//不应该再使用了,sticky Event只是根据 ClassType来区分,所有非常容易覆盖.

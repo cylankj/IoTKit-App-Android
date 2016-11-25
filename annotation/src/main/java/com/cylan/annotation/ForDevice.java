@@ -15,5 +15,10 @@ import static java.lang.annotation.RetentionPolicy.SOURCE;
 @Target(FIELD)
 public @interface ForDevice {
 
-    Device[] value();
+    Device[] device();
+
+    /**
+     * @return: 自动生成bean
+     */
+    String[] targetBeanName();
 }

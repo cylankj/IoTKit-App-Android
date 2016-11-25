@@ -2,7 +2,7 @@ package com.cylan.jiafeigou.n.mvp.contract.cam;
 
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
-import com.cylan.jiafeigou.n.mvp.model.CamInfoBean;
+import com.cylan.jiafeigou.n.mvp.model.BeanCamInfo;
 import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
 
 /**
@@ -13,17 +13,17 @@ public interface CamSettingContract {
 
     interface View extends BaseView<Presenter> {
 
-        void onCamInfoRsp(CamInfoBean timeSet);
+        void onCamInfoRsp(BeanCamInfo timeSet);
 
     }
 
     interface Presenter extends BasePresenter {
 
-        void fetchCamInfo(final String cid);
+        void fetchCamInfo(final DeviceBean cid);
 
-        CamInfoBean getCamInfoBean();
+        BeanCamInfo getCamInfoBean();
 
-        void saveCamInfoBean(CamInfoBean camInfoBean);
+        void saveCamInfoBean(BeanCamInfo camInfoBean);
     }
 }
 

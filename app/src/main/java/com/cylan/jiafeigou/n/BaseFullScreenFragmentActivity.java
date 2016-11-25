@@ -12,6 +12,7 @@ import android.widget.Toast;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.NotifyManager;
+import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.view.misc.SystemUiHider;
 import com.cylan.jiafeigou.widget.SystemBarTintManager;
 import com.cylan.utils.ListUtils;
@@ -25,8 +26,9 @@ import static com.cylan.jiafeigou.misc.INotify.KEY_NEED_EMPTY_NOTIFICATION;
  * Created by cylan-hunt on 16-6-6.
  */
 
-public class BaseFullScreenFragmentActivity extends FragmentActivity {
+public class BaseFullScreenFragmentActivity<T extends BasePresenter> extends FragmentActivity {
 
+    protected T basePresenter;
     private SystemBarTintManager tintManager;
     private WeakReference<SystemUiHider> systemUiHiderWeakReference;
 
@@ -39,6 +41,20 @@ public class BaseFullScreenFragmentActivity extends FragmentActivity {
             tintManager = new SystemBarTintManager(this);
             setSystemBarTintEnable(true);
         }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (basePresenter != null)
+            basePresenter.start();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (basePresenter != null)
+            basePresenter.stop();
     }
 
     @Override
