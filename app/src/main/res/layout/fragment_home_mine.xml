@@ -66,6 +66,7 @@
             android:layout_marginEnd="13dp"
             android:layout_marginTop="17dp"
             android:padding="5dp"
+            android:clickable="true"
             android:src="@drawable/icon_mine_message"
             hunt:mb_circleColor="@color/color_red_dot_f43531"
             hunt:mb_textColor="@color/color_white"

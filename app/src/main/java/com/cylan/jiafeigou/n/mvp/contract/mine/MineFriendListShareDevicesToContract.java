@@ -36,6 +36,11 @@ public interface MineFriendListShareDevicesToContract {
         void showNoDeviceView();
 
         /**
+         * 有可分享的设备时
+         */
+        void hideNoDeviceView();
+
+        /**
          * 显示完成按钮
          */
         void showFinishBtn();

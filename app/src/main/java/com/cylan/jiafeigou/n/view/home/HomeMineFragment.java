@@ -244,7 +244,7 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
 
     @OnClick({R.id.home_mine_item_friend, R.id.home_mine_item_share,
             R.id.home_mine_item_help, R.id.home_mine_item_settings,
-            R.id.shadow_layout, R.id.tv_home_mine_nick})
+            R.id.shadow_layout, R.id.tv_home_mine_nick,R.id.tv_home_mine_msg_count})
     public void onButterKnifeClick(View view) {
         switch (view.getId()) {
             case R.id.home_mine_item_friend:
