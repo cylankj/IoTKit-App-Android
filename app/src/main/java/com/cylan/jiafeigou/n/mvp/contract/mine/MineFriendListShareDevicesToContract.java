@@ -1,11 +1,11 @@
 package com.cylan.jiafeigou.n.mvp.contract.mine;
 
-import com.cylan.jiafeigou.misc.RxEvent;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
 import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
 import com.cylan.jiafeigou.n.mvp.model.MineShareDeviceBean;
 import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
+import com.cylan.jiafeigou.rx.RxEvent;
 
 import java.util.ArrayList;
 

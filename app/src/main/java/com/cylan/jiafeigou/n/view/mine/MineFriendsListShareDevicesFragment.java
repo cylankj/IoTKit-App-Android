@@ -16,12 +16,12 @@ import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.JError;
-import com.cylan.jiafeigou.misc.RxEvent;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendListShareDevicesToContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineFriendListShareDevicesPresenterImp;
 import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
 import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
 import com.cylan.jiafeigou.n.view.adapter.ChooseShareDeviceAdapter;
+import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.utils.ToastUtil;
 
 import java.util.ArrayList;

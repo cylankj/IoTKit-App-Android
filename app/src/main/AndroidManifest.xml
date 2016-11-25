@@ -222,11 +222,6 @@
             android:screenOrientation="portrait"
             android:theme="@style/MediaActivityTransition"
             android:windowSoftInputMode="adjustPan|stateHidden" />
-        <!-- 容纳意见反馈的Activity -->
-        <activity
-            android:name=".n.view.mine.SuggestionChatContainerActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
-            android:windowSoftInputMode="adjustResize" />
 
         <service
             android:name=".n.engine.DownloadService"

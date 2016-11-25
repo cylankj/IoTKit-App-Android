@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/color_white"
+    android:orientation="vertical">
+
+    <FrameLayout
+        android:id="@+id/rl_home_mine_suggestion"
+        android:layout_width="match_parent"
+        android:layout_height="73dp"
+        android:background="#0BA8CF">
+
+        <TextView
+            android:drawableLeft="@drawable/icon_nav_back_white"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="帮助与反馈"
+            android:layout_gravity="bottom"
+            android:drawablePadding="15dp"
+            android:padding="15dp"
+            android:textColor="@color/color_white"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/tv_mine_help_suggestion_clear"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right|bottom"
+            android:clickable="true"
+            android:padding="15dp"
+            android:text="清空"
+            android:textColor="@color/color_white"
+            android:textSize="14sp" />
+    </FrameLayout>
+
+    <include layout="@layout/layout_suggestion_recycleview_list" />
+    <include layout="@layout/layout_suggestion_user_input" />
+
+    <com.cylan.jiafeigou.support.softkeyboard.widget.KPSwitchFSPanelLinearLayout
+        android:id="@+id/panel_root"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:orientation="vertical"
+        android:visibility="gone">
+    </com.cylan.jiafeigou.support.softkeyboard.widget.KPSwitchFSPanelLinearLayout>
+
+</LinearLayout>

@@ -32,6 +32,7 @@ import com.cylan.jiafeigou.dp.DpParser;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JResultEvent;
+import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -299,7 +300,7 @@ public class DataSourceService extends Service implements AppCallBack {
     @Override
     public void OnGetShareListRsp(int i, ArrayList<JFGShareListInfo> arrayList) {
         AppLogger.d("OnGetShareListRsp :");
-        //RxBus.getCacheInstance().post(new RxEvent.GetShareListCallBack(i, arrayList));
+        RxBus.getCacheInstance().post(new RxEvent.GetShareListCallBack(i, arrayList));
     }
 
     @Override

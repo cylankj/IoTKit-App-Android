@@ -33,7 +33,6 @@ public class HomeMineHelpFragment extends Fragment {
     @BindView(R.id.rLayout_mine_help_top_bar)
     RelativeLayout rLayoutTopBar;
 
-
     @BindView(R.id.tv_mine_help_suggestion)
     TextView mTvHelpSuggestion;
 

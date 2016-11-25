@@ -98,4 +98,8 @@
     <dimen name="fab_shadow_radius">9dp</dimen>
     <dimen name="fab_stroke_width">0.0dp</dimen>
 
+    <!--软键盘-->
+    <dimen name="min_panel_height">220dp</dimen>
+    <dimen name="max_panel_height">380dp</dimen>
+    <dimen name="min_keyboard_height">80dp</dimen>
 </resources>
