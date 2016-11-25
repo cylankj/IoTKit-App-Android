@@ -42,14 +42,16 @@ public class TestProcessor extends AbstractProcessor {
         return types;
     }
 
+    private BeanInfoGen beanInfoGen;
+
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
         brewIdMap(roundEnv);
-        BeanInfoGen.go(Device.CAMERA, processingEnv, roundEnv);
-        BeanInfoGen.go(Device.BELL, processingEnv, roundEnv);
-        BeanInfoGen.go(Device.CLOUD, processingEnv, roundEnv);
-        BeanInfoGen.go(Device.MAG, processingEnv, roundEnv);
-        return false;
+        if (beanInfoGen == null) {
+            beanInfoGen = new BeanInfoGen();
+            beanInfoGen.go(Device.CAMERA, processingEnv, roundEnv);
+        }
+        return true;
     }
 
     private static final String ID_2_CLASS_MAP = "ID_2_CLASS_MAP";

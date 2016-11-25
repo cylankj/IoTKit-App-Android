@@ -10,13 +10,11 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamSettingContract;
 import com.cylan.jiafeigou.n.mvp.impl.cam.CamSettingPresenterImpl;
 import com.cylan.jiafeigou.n.mvp.model.BeanCamInfo;
 import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
-import com.cylan.jiafeigou.n.view.cam.DeviceStandbyFragment;
 import com.cylan.jiafeigou.n.view.cam.FragmentFacilityInformation;
 import com.cylan.jiafeigou.n.view.cam.SafeProtectionFragment;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -30,6 +28,8 @@ import java.lang.ref.WeakReference;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+
+import static com.cylan.jiafeigou.misc.JConstant.KEY_DEVICE_ITEM_BUNDLE;
 
 public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettingContract.Presenter>
         implements CamSettingContract.View {
@@ -51,7 +51,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
     @BindView(R.id.sv_setting_device_delay_capture)
     SettingItemView0 svSettingDeviceDelayCapture;
     @BindView(R.id.sv_setting_device_standby_mode)
-    SettingItemView0 svSettingDeviceStandbyMode;
+    SettingItemView1 svSettingDeviceStandbyMode;
     @BindView(R.id.sv_setting_device_indicator)
     SettingItemView1 svSettingDeviceIndicator;
     @BindView(R.id.sv_setting_device_rotatable)
@@ -62,7 +62,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
     TextView tvSettingUnbind;
 
     private WeakReference<FragmentFacilityInformation> informationWeakReference;
-    private WeakReference<DeviceStandbyFragment> deviceStandbyFragmentWeakReference;
+    //    private WeakReference<DeviceStandbyFragment> deviceStandbyFragmentWeakReference;
     private WeakReference<SafeProtectionFragment> safeProtectionFragmentWeakReference;
 
     @Override
@@ -78,8 +78,8 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
     @Override
     protected void onStart() {
         super.onStart();
-        Bundle bundle = getIntent().getBundleExtra(JConstant.KEY_DEVICE_ITEM_BUNDLE);
-        Parcelable p = bundle.getParcelable(JConstant.KEY_DEVICE_ITEM_BUNDLE);
+        Bundle bundle = getIntent().getBundleExtra(KEY_DEVICE_ITEM_BUNDLE);
+        Parcelable p = bundle.getParcelable(KEY_DEVICE_ITEM_BUNDLE);
         if (p != null && p instanceof DeviceBean) {
             if (basePresenter != null)
                 basePresenter.fetchCamInfo(((DeviceBean) p));
@@ -122,14 +122,18 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
             R.id.sv_setting_device_rotatable,
             R.id.sbtn_setting_item_switch_110v,
             R.id.tv_setting_unbind,
-            R.id.sv_setting_device_standby_mode,
+//            R.id.sv_setting_device_standby_mode,
             R.id.sv_setting_safe_protection,
             R.id.sv_setting_device_mobile_network})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.sv_setting_device_detail:
                 initFacilityFragment();
-                loadFragment(android.R.id.content, informationWeakReference.get());
+                Fragment fragment = informationWeakReference.get();
+                Bundle bundle = new Bundle();
+                bundle.putParcelable(KEY_DEVICE_ITEM_BUNDLE, basePresenter.getCamInfoBean());
+                fragment.setArguments(bundle);
+                loadFragment(android.R.id.content, fragment);
                 break;
             case R.id.sv_setting_device_indicator:
                 if (basePresenter != null) {
@@ -165,10 +169,10 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
                 initSafeProtectionFragment();
                 loadFragment(android.R.id.content, safeProtectionFragmentWeakReference.get());
                 break;
-            case R.id.sv_setting_device_standby_mode:
-                initStandbyInfoFragment();
-                loadFragment(android.R.id.content, deviceStandbyFragmentWeakReference.get());
-                break;
+//            case R.id.sv_setting_device_standby_mode:
+//                initStandbyInfoFragment();
+//                loadFragment(android.R.id.content, deviceStandbyFragmentWeakReference.get());
+//                break;
         }
     }
 
@@ -188,14 +192,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
     private void initFacilityFragment() {
         //should load
         if (informationWeakReference == null || informationWeakReference.get() == null) {
-            informationWeakReference = new WeakReference<>(FragmentFacilityInformation.newInstance(new Bundle()));
-        }
-    }
-
-    private void initStandbyInfoFragment() {
-        //should load
-        if (deviceStandbyFragmentWeakReference == null || deviceStandbyFragmentWeakReference.get() == null) {
-            deviceStandbyFragmentWeakReference = new WeakReference<>(DeviceStandbyFragment.newInstance(new Bundle()));
+            informationWeakReference = new WeakReference<>(FragmentFacilityInformation.newInstance(null));
         }
     }
 
@@ -208,13 +205,18 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
 
     @Override
     public void onCamInfoRsp(BeanCamInfo camInfoBean) {
+        svSettingDeviceDetail.setTvSubTitle(camInfoBean.deviceBase != null && camInfoBean.deviceBase.alias != null ? camInfoBean.deviceBase.alias : "");
         svSettingDeviceWifi.setTvSubTitle(camInfoBean.net != null && camInfoBean.net.ssid != null ? camInfoBean.net.ssid : "");
         svSettingDeviceMobileNetwork.setSwitchButtonState(camInfoBean.deviceMobileNetPriority);
-//        svSettingSafeProtection.setTvSubTitle(camInfoBean.safeSummary);
-        svSettingDeviceStandbyMode.setTvSubTitle(camInfoBean.cameraStandbyFlag ? "开启" : "关闭");
         svSettingDeviceIndicator.setSwitchButtonState(camInfoBean.ledIndicator);
         svSettingDeviceRotate.setSwitchButtonState(camInfoBean.deviceCameraRotate);
         tbSettingItemSwitch110v.setChecked(camInfoBean.deviceVoltage);
+        svSettingDeviceStandbyMode.setSwitchButtonState(camInfoBean.cameraStandbyFlag);
+    }
+
+    @Override
+    public void isSharedDevice() {
+
     }
 
     @Override

@@ -26,7 +26,7 @@
                 android:drawableLeft="@drawable/icon_nav_back_white"
                 android:drawablePadding="15dp"
                 android:padding="15dp"
-                android:text="功能设置"
+                android:text="@string/SETTINGS_1"
                 android:textColor="@color/color_white"
                 android:textSize="16sp" />
         </FrameLayout>
@@ -53,7 +53,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="设备"
+                    android:text="@string/SETTINGS"
                     android:textColor="@color/color_4b9fd5"
                     android:textSize="15sp" />
 
@@ -62,13 +62,13 @@
                     android:layout_width="match_parent"
                     android:layout_height="72dp"
                     hunt:sv_image_src="@drawable/icon_setting_information"
-                    hunt:sv_sub_title="设备详情"
-                    hunt:sv_title="设备详情" />
+                    hunt:sv_sub_title="@string/EQUIPMENT_INFO"
+                    hunt:sv_title="@string/EQUIPMENT_INFO" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="网络"
+                    android:text="@string/NETWORK"
                     android:textColor="@color/color_4b9fd5"
                     android:textSize="15sp" />
 
@@ -78,7 +78,7 @@
                     android:layout_height="72dp"
                     hunt:sv_image_src="@drawable/icon_setting_wifi"
                     hunt:sv_sub_title="cylan608"
-                    hunt:sv_title="WiFi配置" />
+                    hunt:sv_title="@string/WIFI" />
 
                 <View
                     android:layout_width="match_parent"
@@ -95,7 +95,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="功能设置"
+                    android:text="@string/SETTINGS_1"
                     android:textColor="@color/color_4b9fd5"
                     android:textSize="15sp" />
 
@@ -105,7 +105,7 @@
                     android:layout_height="72dp"
                     hunt:sv_image_src="@drawable/icon_setting_safe"
                     hunt:sv_sub_title="000d0d0d"
-                    hunt:sv_title="安全防护" />
+                    hunt:sv_title="@string/SECURE" />
 
                 <View
                     android:layout_width="match_parent"
@@ -118,7 +118,7 @@
                     android:layout_height="72dp"
                     hunt:sv_image_src="@drawable/icon_setting_videotape"
                     hunt:sv_sub_title="000d0d0d"
-                    hunt:sv_title="自动录像" />
+                    hunt:sv_title="@string/SETTING_RECORD" />
 
                 <View
                     android:layout_width="match_parent"
@@ -131,20 +131,20 @@
                     android:layout_height="72dp"
                     hunt:sv_image_src="@drawable/icon_setting_filming"
                     hunt:sv_sub_title="即将开始"
-                    hunt:sv_title="延时摄影" />
+                    hunt:sv_title="@string/Tap2_Timelapse_title" />
 
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:background="@color/color_e8e8e8" />
 
-                <com.cylan.jiafeigou.widget.SettingItemView0
+                <com.cylan.jiafeigou.widget.SettingItemView1
                     android:id="@+id/sv_setting_device_standby_mode"
                     android:layout_width="match_parent"
                     android:layout_height="72dp"
                     hunt:sv_image_src="@drawable/icon_setting_standby"
                     hunt:sv_sub_title="000d0d0d"
-                    hunt:sv_title="待机" />
+                    hunt:sv_title="@string/Tap1_CameraFun_Standby" />
 
                 <View
                     android:layout_width="match_parent"
@@ -156,7 +156,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="54dp"
                     hunt:sv_image_src="@drawable/icon_setting_3g"
-                    hunt:sv_title="设备指示灯" />
+                    hunt:sv_title="@string/LED" />
 
                 <View
                     android:layout_width="match_parent"
@@ -168,7 +168,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="54dp"
                     hunt:sv_image_src="@drawable/icon_setting_rotate_pic"
-                    hunt:sv_title="画面翻转" />
+                    hunt:sv_title="@string/Tap1_CameraFun_VideoDirection" />
 
                 <View
                     android:layout_width="match_parent"
@@ -192,13 +192,14 @@
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
                         android:layout_marginStart="10dp"
-                        android:layout_toRightOf="@+id/imgv_setting_item_electricity_icon"
+                        android:layout_toEndOf="@+id/imgv_setting_item_electricity_icon"
+                        android:layout_toStartOf="@+id/sbtn_setting_item_switch_110v"
                         android:orientation="vertical">
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="支持110V市电"
+                            android:text="@string/HZ_VOTE"
                             android:textColor="@color/color_black"
                             android:textSize="16sp" />
 
@@ -206,7 +207,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="3dp"
-                            android:text="fadfadfafafadfadfdafda"
+                            android:text="@string/FOOT_TIP_VOTE"
                             android:textColor="@color/color_8C8C8C"
                             android:textSize="13sp" />
                     </LinearLayout>

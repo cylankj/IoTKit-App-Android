@@ -5,6 +5,7 @@ import com.cylan.annotation.DeviceBase;
 import com.cylan.annotation.DpAnnotation;
 import com.cylan.annotation.DpBase;
 import com.cylan.annotation.ForDevice;
+import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.JavaFile;
@@ -35,19 +36,24 @@ import javax.lang.model.type.TypeMirror;
 
 public class BeanInfoGen {
 
-    private static Map<Device, String> deviceBeanMap = new HashMap<>();
-    private static Map<Integer, String> idNameMap = new HashMap<>();
-    private static TypeMirror dpTypeName = null;
-    private static TypeMirror deviceTypeName = null;
-    private static Map<Integer, String> idFieldNameMap = new HashMap<>();
-    private static Device device;
+    private Map<Device, String> deviceBeanMap = new HashMap<>();
+    private Map<Integer, String> idNameMap = new HashMap<>();
+    private TypeMirror dpTypeName = null;
+    private TypeMirror deviceTypeName = null;
+    private Map<Integer, TypeName> devClazzMap = new HashMap<>();
+    private Device device;
+    /**
+     * 所有属性名称集合
+     */
+    private List<String> fieldList = new ArrayList<>();
+    private Map<String, TypeName> nameClassMap = new HashMap<>();
 
-    public static void go(Device device, ProcessingEnvironment processingEnv, RoundEnvironment roundEnv) {
-        BeanInfoGen.device = device;
+    public void go(Device device, ProcessingEnvironment processingEnv, RoundEnvironment roundEnv) {
+        this.device = device;
         collect(processingEnv, roundEnv);
     }
 
-    private static void collect(ProcessingEnvironment processingEnv, RoundEnvironment roundEnv) {
+    private void collect(ProcessingEnvironment processingEnv, RoundEnvironment roundEnv) {
         Set<? extends Element> deviceSet = roundEnv.getElementsAnnotatedWith(ForDevice.class);
         Set<? extends Element> dpSet = roundEnv.getElementsAnnotatedWith(DpAnnotation.class);
 
@@ -63,11 +69,10 @@ public class BeanInfoGen {
                 deviceBeanMap.put(device, beanList.get(index));
             }
         }
-        Map<Integer, TypeName> devClazzList = new HashMap<>();
         for (Element e : dpSet) {
             DpAnnotation test = e.getAnnotation(DpAnnotation.class);
-            final String name = e.getSimpleName().toString();
-            idNameMap.put(test.msgId(), e.getSimpleName().toString());
+            final String name = (e.getSimpleName().toString());
+            idNameMap.put(test.msgId(), name);
             TypeMirror clazzType = null;
             try {
                 test.clazz();
@@ -77,7 +82,8 @@ public class BeanInfoGen {
             }
             TypeName typeName = ParameterizedTypeName.get(clazzType);
             if (devList.contains(name)) {
-                devClazzList.put(test.msgId(), typeName);
+                devClazzMap.put(test.msgId(), typeName);
+                nameClassMap.put(handlerString(name), typeName);
             }
         }
         Set<? extends Element> dpBase = roundEnv.getElementsAnnotatedWith(DpBase.class);
@@ -87,7 +93,7 @@ public class BeanInfoGen {
         for (Element e : dpBase) {
             dpTypeName = e.asType();
             annotationCount++;
-            if (annotationCount != 1) {
+            if (annotationCount > 1) {
                 throw new RuntimeException("只能能注解一个类:DpBase--->" + dpTypeName);
             }
         }
@@ -95,7 +101,7 @@ public class BeanInfoGen {
         for (Element e : deviceBase) {
             deviceTypeName = e.asType();
             annotationCount++;
-            if (annotationCount != 1) {
+            if (annotationCount > 1) {
                 throw new RuntimeException("只能能注解一个类:DeviceBase--->" + deviceTypeName);
             }
         }
@@ -104,14 +110,16 @@ public class BeanInfoGen {
         String devBeanName = deviceBeanMap.get(device);
         TypeSpec.Builder typeSpec =
                 TypeSpec.classBuilder(devBeanName)
-                        .addModifiers(Modifier.PUBLIC, Modifier.FINAL);
-        addDevField(typeSpec, devClazzList);
-        addDevMethod(devClazzList, typeSpec, roundEnv);
+                        .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
+                        .addSuperinterface(ClassName.get("", "android.os.Parcelable"));
+        addDevField(typeSpec);
+        addDevMethod(typeSpec);
+        addParcelableImplements(typeSpec);
         generate(typeSpec, processingEnv);
     }
 
 
-    private static void generate(TypeSpec.Builder typeSpec, ProcessingEnvironment processingEnv) {
+    private void generate(TypeSpec.Builder typeSpec, ProcessingEnvironment processingEnv) {
         JavaFile javaFile = JavaFile.builder("com.cylan.jiafeigou.n.mvp.model", typeSpec.build())
                 .addFileComment("自动生成文件,请勿修改!!!")
                 .build();
@@ -122,16 +130,18 @@ public class BeanInfoGen {
         }
     }
 
-    private static TypeSpec.Builder addDevField(TypeSpec.Builder typeSpec, Map<Integer, TypeName> map) {
+    private TypeSpec.Builder addDevField(TypeSpec.Builder typeSpec) {
         FieldSpec.Builder baseDeviceFiled = FieldSpec.builder(TypeName.get(deviceTypeName),
                 "deviceBase", Modifier.PUBLIC);
         typeSpec.addField(baseDeviceFiled.build());
-        Iterator<Integer> iterator = map.keySet().iterator();
+        fieldList.add("deviceBase");
+        nameClassMap.put("deviceBase", TypeName.get(deviceTypeName));
+        Iterator<Integer> iterator = devClazzMap.keySet().iterator();
         while (iterator.hasNext()) {
             int id = iterator.next();
-            TypeName typeName = map.get(id);
+            TypeName typeName = devClazzMap.get(id);
             String fieldName = handlerString(idNameMap.get(id));
-            idFieldNameMap.put(id, fieldName);
+            fieldList.add(fieldName);
             FieldSpec.Builder builder = FieldSpec.builder(typeName,
                     fieldName, Modifier.PUBLIC);
             typeSpec.addField(builder.build());
@@ -139,18 +149,114 @@ public class BeanInfoGen {
         return typeSpec;
     }
 
-    private static void addDevMethod(Map<Integer, TypeName> map, TypeSpec.Builder typeSpec, RoundEnvironment roundEnv) {
+    private void addParcelableImplements(TypeSpec.Builder typeBuilder) {
+        //describeContents函数
+        MethodSpec.Builder descBuilder = MethodSpec.methodBuilder("describeContents")
+                .addAnnotation(AnnotationSpec.builder(Override.class).build())
+                .addModifiers(Modifier.PUBLIC)
+                .returns(int.class)
+                .addStatement("return 0");
+        typeBuilder.addMethod(descBuilder.build());
+        //空构造函数
+        MethodSpec.Builder emptyConstructorBuilder = MethodSpec.constructorBuilder()
+                .addModifiers(Modifier.PUBLIC);
+        typeBuilder.addMethod(emptyConstructorBuilder.build());
+        //带Parcel构造函数
+        addStatement2Constructor(typeBuilder);
+        //CREATOR变量
+        FieldSpec.Builder creatorField = FieldSpec.builder(ClassName.get("", "android.os.Parcelable.Creator"),
+                "CREATOR", Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL);
+        creatorField.initializer("new Creator<$L>() {\n" +
+                        "            @Override\n" +
+                        "            public $L createFromParcel(android.os.Parcel source) {\n" +
+                        "                return new $L(source);\n" +
+                        "            }\n" +
+                        "\n" +
+                        "            @Override\n" +
+                        "            public $L[] newArray(int size) {\n" +
+                        "                return new $L[size];\n" +
+                        "            }\n" +
+                        "        }",
+                deviceBeanMap.get(device),
+                deviceBeanMap.get(device),
+                deviceBeanMap.get(device),
+                deviceBeanMap.get(device),
+                deviceBeanMap.get(device));
+        typeBuilder.addField(creatorField.build());
+        //创建writeToParcel函数
+        addStatement2writeToParcel(typeBuilder);
+    }
+
+    /**
+     * 填充构造函数
+     */
+    private void addStatement2Constructor(TypeSpec.Builder typeBuilder) {
+        MethodSpec.Builder withParamConstructor = MethodSpec.constructorBuilder()
+                .addParameter(ClassName.get("", "android.os.Parcel"), "in")
+                .addModifiers(Modifier.PUBLIC);
+        int count = fieldList.size();
+        for (int i = 0; i < count; i++) {
+            String fieldName = fieldList.get(i);
+            TypeName typeName = nameClassMap.get(fieldName);
+            if (typeName == TypeName.BOOLEAN) {
+                withParamConstructor.addStatement("this.$L = in.readByte() != 0", fieldName);
+            }
+            if (typeName.equals(TypeName.get(String.class))) {
+                withParamConstructor.addStatement("this.$L = in.readString()", fieldName);
+            }
+            if (typeName == TypeName.INT) {
+                withParamConstructor.addStatement("this.$L = in.readInt()", fieldName);
+            }
+            if (typeName.toString().contains("DpMsgDefine")) {
+                withParamConstructor.addStatement("this.$L = in.readParcelable($L)", fieldName, typeName + ".class.getClassLoader()");
+            }
+        }
+        typeBuilder.addMethod(withParamConstructor.build());
+    }
+
+    /**
+     * 创建writeToParcel函数
+     *
+     * @param typeBuilder
+     */
+    private void addStatement2writeToParcel(TypeSpec.Builder typeBuilder) {
+        MethodSpec.Builder writeToParcel = MethodSpec.methodBuilder("writeToParcel")
+                .addModifiers(Modifier.PUBLIC)
+                .addAnnotation(Override.class)
+                .addParameter(ClassName.get("", "android.os.Parcel"), "dest")
+                .addParameter(int.class, "flags");
+        int count = fieldList.size();
+        for (int i = 0; i < count; i++) {
+            String fieldName = fieldList.get(i);
+            TypeName typeName = nameClassMap.get(fieldName);
+            if (typeName.equals(TypeName.BOOLEAN)) {
+                writeToParcel.addStatement("dest.writeByte($L?(byte) 1 : (byte) 0)", "this." + fieldName);
+            }
+            if (typeName.equals(TypeName.get(String.class))) {
+                writeToParcel.addStatement("dest.writeString($L)", "this." + fieldName);
+            }
+            if (typeName.equals(TypeName.INT)) {
+                writeToParcel.addStatement("dest.writeInt($L)", "this." + fieldName);
+            }
+            if (typeName.toString().contains("DpMsgDefine")) {
+                writeToParcel.addStatement("dest.writeParcelable(this.$L, $L)", fieldName, "flags");
+            }
+        }
+        typeBuilder.addMethod(writeToParcel.build());
+    }
+
+    private void addDevMethod(TypeSpec.Builder typeSpec) {
         MethodSpec.Builder builder0 = MethodSpec.methodBuilder("convert")
                 .addModifiers(Modifier.PUBLIC)
                 .returns(TypeName.VOID)
                 .addParameter(TypeName.get(deviceTypeName), "deviceBase")
                 .addParameter(ParameterizedTypeName.get(ClassName.get(List.class),
                         TypeName.get(dpTypeName)), "listDp");
-        addStatement(builder0, map);
+        addStatement(builder0, devClazzMap);
         typeSpec.addMethod(builder0.build());
     }
 
-    private static void addStatement(MethodSpec.Builder builder, Map<Integer, TypeName> map) {
+    private void addStatement(MethodSpec.Builder builder, Map<Integer, TypeName> map) {
         builder.addStatement("this.deviceBase = deviceBase");
         builder.addStatement("int count = listDp.size()");
         builder.beginControlFlow("for (int i = 0; i < count; i++)");
@@ -160,13 +266,13 @@ public class BeanInfoGen {
             int keyId = iterator.next();
             String name = handlerString(idNameMap.get(keyId));
             builder.beginControlFlow("if(dpMsg.msgId==$L)", keyId);
-            builder.addStatement("this.$L = ($T) dpMsg.o;", name, map.get(keyId));
+            builder.addStatement("this.$L = ($T) dpMsg.o", name, map.get(keyId));
             builder.endControlFlow();
         }
         builder.endControlFlow();
     }
 
-    private static String handlerString(String string) {
+    private String handlerString(String string) {
         if (string.contains("_")) {
             String[] split = string.split("_");
             StringBuilder builder = new StringBuilder();

@@ -63,7 +63,7 @@
 
                 <ImageView
                     android:layout_marginTop="28dp"
-                    android:layout_toLeftOf="@id/tv_information_facility_name"
+                    android:layout_toLeftOf="@id/tv_device_alias"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:src="@drawable/icon_setting_information" />
@@ -84,7 +84,7 @@
 
                     <TextView
                         android:layout_marginTop="6dp"
-                        android:id="@+id/tv_information_facility_name"
+                        android:id="@+id/tv_device_alias"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="大门口的门铃"

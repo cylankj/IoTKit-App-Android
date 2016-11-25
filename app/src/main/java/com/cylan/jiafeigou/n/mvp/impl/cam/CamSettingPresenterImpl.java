@@ -11,6 +11,8 @@ import com.cylan.jiafeigou.n.mvp.model.BeanCamInfo;
 import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxUiEvent;
+import com.cylan.jiafeigou.support.log.AppLogger;
+import com.google.gson.Gson;
 
 import rx.Observable;
 import rx.Subscription;
@@ -64,7 +66,7 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
         wrap(bean);
         //查询设备列表
         unSubscribe(subscription);
-        subscription = RxBus.getUiInstance().toObservable(RxUiEvent.BulkDeviceList.class)
+        subscription = RxBus.getUiInstance().toObservableSticky(RxUiEvent.BulkDeviceList.class)
                 .subscribeOn(Schedulers.computation())
                 .filter(new Func1<RxUiEvent.BulkDeviceList, Boolean>() {
                     @Override
@@ -94,6 +96,7 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
                     public Observable<BeanCamInfo> call(DpMsgDefine.DpWrap dpWrap) {
                         BeanCamInfo info = new BeanCamInfo();
                         info.convert(dpWrap.baseDpDevice, dpWrap.baseDpMsgList);
+                        AppLogger.i("BeanCamInfo: " + new Gson().toJson(info));
                         return Observable.just(info);
                     }
                 })
@@ -103,6 +106,10 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
                     public void call(BeanCamInfo camInfoBean) {
                         //刷新
                         getView().onCamInfoRsp(camInfoBean);
+                        if (camInfoBean.deviceBase != null
+                                && !TextUtils.isEmpty(camInfoBean.deviceBase.shareAccount)) {
+                            getView().isSharedDevice();
+                        }
                     }
                 });
         RxBus.getCacheInstance().post(new RxUiEvent.QueryBulkDevice());
