@@ -68,7 +68,7 @@
                     android:textSize="16sp" />
 
                 <TextView
-                    android:id="@+id/tv_information_facility_name"
+                    android:id="@+id/tv_device_alias"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="3dp"
@@ -101,7 +101,7 @@
                     android:textSize="16sp" />
 
                 <TextView
-                    android:id="@+id/tv_information_facility_time_zone"
+                    android:id="@+id/tv_device_time_zone"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="3dp"
@@ -141,7 +141,7 @@
                     android:textSize="16sp" />
 
                 <TextView
-                    android:id="@+id/tv_information_facility_card_state"
+                    android:id="@+id/tv_device_sdcard_state"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="3dp"
@@ -182,7 +182,7 @@
                     android:textSize="16sp" />
 
                 <TextView
-                    android:id="@+id/tv_information_facility_net"
+                    android:id="@+id/tv_device_mobile_net"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="3dp"
@@ -213,7 +213,7 @@
                     android:textSize="16sp" />
 
                 <TextView
-                    android:id="@+id/tv_information_facility_wifi_state"
+                    android:id="@+id/tv_device_wifi_state"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="3dp"
@@ -254,7 +254,7 @@
                     android:textSize="16sp" />
 
                 <TextView
-                    android:id="@+id/tv_information_facility_cid_number"
+                    android:id="@+id/tv_device_cid"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="3dp"
@@ -375,7 +375,7 @@
                     android:textSize="16sp" />
 
                 <TextView
-                    android:id="@+id/tv_information_facility_battery_leve"
+                    android:id="@+id/tv_device_battery_level"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="3dp"
@@ -406,7 +406,7 @@
                     android:textSize="16sp" />
 
                 <TextView
-                    android:id="@+id/tv_information_facility_storage"
+                    android:id="@+id/tv_device_storage"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="3dp"

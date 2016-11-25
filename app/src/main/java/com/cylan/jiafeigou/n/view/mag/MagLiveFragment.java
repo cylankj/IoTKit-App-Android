@@ -35,7 +35,7 @@ import butterknife.OnClick;
  */
 public class MagLiveFragment extends Fragment implements HomeMagLiveContract.View {
 
-    @BindView(R.id.tv_information_facility_name)
+    @BindView(R.id.tv_device_alias)
     TextView mFacilityName;
     @BindView(R.id.btn_switch)
     SwitchButton btnSwitch;

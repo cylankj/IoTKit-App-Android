@@ -31,11 +31,11 @@ public class CloudLiveDeviceInfoFragment extends Fragment implements CloudLiveDe
 
     @BindView(R.id.iv_information_back)
     ImageView ivInformationBack;
-    @BindView(R.id.tv_information_facility_name)
+    @BindView(R.id.tv_device_alias)
     TextView tvInformationFacilityName;
     @BindView(R.id.lLayout_information_facility_name)
     LinearLayout lLayoutInformationFacilityName;
-    @BindView(R.id.tv_information_facility_time_zone)
+    @BindView(R.id.tv_device_time_zone)
     TextView tvInformationFacilityTimeZone;
     @BindView(R.id.lLayout_information_facility_timezone)
     LinearLayout lLayoutInformationFacilityTimezone;

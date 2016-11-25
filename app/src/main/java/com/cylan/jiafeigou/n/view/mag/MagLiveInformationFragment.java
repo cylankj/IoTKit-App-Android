@@ -41,19 +41,19 @@ public class MagLiveInformationFragment extends Fragment implements MagLiveInfor
     TextView tvMagInformationFacilityTimeZone;
     @BindView(R.id.lLayout_mag_information_facility_timezone)
     LinearLayout lLayoutMagInformationFacilityTimezone;
-    @BindView(R.id.tv_information_facility_card_state)
+    @BindView(R.id.tv_device_sdcard_state)
     TextView tvInformationFacilityCardState;
     @BindView(R.id.ll_information_facility_card_state)
     LinearLayout llInformationFacilityCardState;
-    @BindView(R.id.tv_information_facility_wifi_state)
+    @BindView(R.id.tv_device_wifi_state)
     TextView tvInformationFacilityWifiState;
-    @BindView(R.id.tv_information_facility_cid_number)
+    @BindView(R.id.tv_device_cid)
     TextView tvInformationFacilityCidNumber;
-    @BindView(R.id.tv_information_facility_battery_leve)
+    @BindView(R.id.tv_device_battery_level)
     TextView tvInformationFacilityBatteryLeve;
-    @BindView(R.id.tv_information_facility_storage)
+    @BindView(R.id.tv_device_storage)
     TextView tvInformationFacilityStorage;
-    @BindView(R.id.tv_information_facility_net)
+    @BindView(R.id.tv_device_mobile_net)
     TextView tvInformationFacilityNet;
 
     //实例化fragment对象

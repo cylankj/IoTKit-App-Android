@@ -62,9 +62,11 @@ public class DpMsgConstant {
     @DpAnnotation(msgId = 206, clazz = int.class)
     public static final String BATTERY = null;
 
+    @ForDevice(device = Device.CAMERA, targetBeanName = CAM_BEAN_NAME)
     @DpAnnotation(msgId = 207, clazz = String.class)
     public static final String DEVICE_VERSION = null;
 
+    @ForDevice(device = Device.CAMERA, targetBeanName = CAM_BEAN_NAME)
     @DpAnnotation(msgId = 208, clazz = String.class)
     public static final String DEVICE_SYS_VERSION = null;
 

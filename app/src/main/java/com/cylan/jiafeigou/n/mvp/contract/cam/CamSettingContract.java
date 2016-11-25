@@ -15,6 +15,7 @@ public interface CamSettingContract {
 
         void onCamInfoRsp(BeanCamInfo timeSet);
 
+        void isSharedDevice();
     }
 
     interface Presenter extends BasePresenter {
