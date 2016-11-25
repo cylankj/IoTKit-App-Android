@@ -176,6 +176,15 @@ public class MineFriendsListShareDevicesFragment extends Fragment implements Min
     }
 
     /**
+     * 可分享设备为无
+     */
+    @Override
+    public void hideNoDeviceView() {
+        llNoDevice.setVisibility(View.INVISIBLE);
+        tvChooseDeviceTitle.setVisibility(View.VISIBLE);
+    }
+
+    /**
      * 显示完成按钮
      */
     @Override

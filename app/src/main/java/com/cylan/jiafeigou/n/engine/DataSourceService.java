@@ -114,6 +114,7 @@ public class DataSourceService extends Service implements AppCallBack {
     public void OnUpdateAccount(JFGAccount jfgAccount) {
         JCache.setAccountCache(jfgAccount);
         RxBus.getCacheInstance().postSticky(jfgAccount);
+        RxBus.getCacheInstance().postSticky(new RxEvent.GetUserInfo(jfgAccount));
     }
 
     @Override

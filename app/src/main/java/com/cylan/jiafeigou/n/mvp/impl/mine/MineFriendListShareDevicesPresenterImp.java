@@ -187,6 +187,7 @@ public class MineFriendListShareDevicesPresenterImp extends AbstractPresenter<Mi
     private void handlerShareDeviceListData(ArrayList<DeviceBean> shareDeviceList) {
         if (shareDeviceList != null && shareDeviceList.size() != 0) {
             if (getView() != null) {
+                getView().hideNoDeviceView();
                 getView().initRecycleView(shareDeviceList);
             }
         } else {

@@ -183,6 +183,7 @@ public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMine
             presenter.saveIntoDb(suggestionBean);
         } else {
             ToastUtil.showToast("输入内容不能小于10个字符");
+            return;
         }
     }
 

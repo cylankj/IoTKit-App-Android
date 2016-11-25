@@ -59,6 +59,7 @@
                 android:layout_marginBottom="8dp"
                 android:text="选择分享设备"
                 android:textSize="14sp"
+                android:visibility="invisible"
                 android:textColor="@color/color_4b9fd5"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
