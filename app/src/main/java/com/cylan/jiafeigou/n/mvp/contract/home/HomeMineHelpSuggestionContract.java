@@ -59,9 +59,15 @@ public interface HomeMineHelpSuggestionContract {
 
         /**
          * 检测是否超过5分钟
-         * @param bean
          * @return
          */
-        boolean checkOverTime(MineHelpSuggestionBean bean);
+        boolean checkOverTime(String time);
+
+        /**
+         * 检测是否超过20s
+         * @param time
+         * @return
+         */
+        boolean checkOver20s(String time);
     }
 }

@@ -14,21 +14,21 @@ import java.util.ArrayList;
 public interface SuggestionChatContract {
 
     interface View extends BaseView<Presenter> {
-        void showChatList();
-
-        String getEditContent();
-
-        String getTime();
-
-        void clearEdit();
-
-        void keyboardListener();
-
-        boolean editLessShowDialog();
-
-        void notifyChatList();
-
-        void showDialog();
+//        void showChatList();
+//
+//        String getEditContent();
+//
+//        String getTime();
+//
+//        void clearEdit();
+//
+//        void keyboardListener();
+//
+//        boolean editLessShowDialog();
+//
+//        void notifyChatList();
+//
+//        void showDialog();
     }
 
     interface Presenter extends BasePresenter {

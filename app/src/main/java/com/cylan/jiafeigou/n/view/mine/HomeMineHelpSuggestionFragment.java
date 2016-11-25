@@ -9,23 +9,28 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeMineHelpSuggestionContract;
 import com.cylan.jiafeigou.n.mvp.impl.home.HomeMineHelpSuggestionImpl;
 import com.cylan.jiafeigou.n.mvp.model.MineHelpSuggestionBean;
 import com.cylan.jiafeigou.n.view.adapter.HomeMineHelpSuggestionAdapter;
+import com.cylan.jiafeigou.support.softkeyboard.util.KPSwitchConflictUtil;
+import com.cylan.jiafeigou.support.softkeyboard.util.KeyboardUtil;
+import com.cylan.jiafeigou.support.softkeyboard.widget.KPSwitchFSPanelLinearLayout;
 import com.cylan.jiafeigou.utils.ToastUtil;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+
 
 /**
  * 创建者     谢坤
@@ -36,18 +41,21 @@ import butterknife.OnClick;
  * 更新时间   $Date$
  * 更新描述   ${TODO}
  */
-public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMineHelpSuggestionContract.View {
+public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMineHelpSuggestionContract.View{
 
     @BindView(R.id.rv_home_mine_suggestion)
     RecyclerView mRvMineSuggestion;
-
     @BindView(R.id.et_home_mine_suggestion)
     EditText mEtSuggestion;
+    @BindView(R.id.tv_mine_help_suggestion_clear)
+    TextView tvMineHelpSuggestionClear;
+    @BindView(R.id.tv_home_mine_suggestion)
+    TextView tvHomeMineSuggestion;
+    @BindView(R.id.panel_root)
+    KPSwitchFSPanelLinearLayout panelRoot;
 
-    private List<MineHelpSuggestionBean> suggestionList;
     private HomeMineHelpSuggestionAdapter suggestionAdapter;
     private String suggestion;
-    private boolean isFirstInput = true; // 是否第一次输入
     private HomeMineHelpSuggestionContract.Presenter presenter;
 
     public static HomeMineHelpSuggestionFragment newInstance(Bundle bundle) {
@@ -64,8 +72,9 @@ public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMine
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_home_mine_suggestion, container, false);
+        View view = inflater.inflate(R.layout.fragment_mine_help_suggestion, container, false);
         ButterKnife.bind(this, view);
+        initKeyBoard();
         initPresenter();
         return view;
     }
@@ -77,43 +86,34 @@ public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMine
     @Override
     public void onStart() {
         super.onStart();
-        if (presenter != null)presenter.start();
+        if (presenter != null) presenter.start();
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        if (presenter != null)presenter.stop();
+        if (presenter != null) presenter.stop();
     }
 
-    @OnClick(R.id.iv_home_mine_suggestion_back)
-    public void onClick() {
-        getFragmentManager().popBackStack();
-    }
 
-    @OnClick({R.id.iv_home_mine_suggestion_back, R.id.tv_mine_help_suggestion_clear, R.id.tv_home_mine_suggestion})
+    @OnClick({R.id.tv_mine_help_suggestion_clear, R.id.tv_home_mine_suggestion})
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.tv_mine_help_suggestion_clear:
-                //TODO  点击清空进行集合的清空
-                /***********add begin**********/
                 //弹出对话框
                 showDialog();
-                /***********add end**********/
-                break;
-            case R.id.iv_home_mine_suggestion_back:
-                getFragmentManager().popBackStack();
                 break;
             case R.id.tv_home_mine_suggestion:
                 addInputItem();
-                if (isFirstInput){
-                    isFirstInput = false;
+                if (suggestionAdapter.getItemCount() != 1) {
+                    if (presenter.checkOverTime(suggestionAdapter.getItem(suggestionAdapter.getItemCount() - 1).getDate())) {
+                        addAutoReply();
+                    }
+                } else {
                     addAutoReply();
                 }
-                if (presenter.checkOverTime(suggestionAdapter.getItem(suggestionAdapter.getItemCount()-1)) && !isFirstInput){
-                    addAutoReply();
-                }
-                mRvMineSuggestion.scrollToPosition(suggestionAdapter.getItemCount()-1); //滚动到集合最后一条显示；
+                mRvMineSuggestion.scrollToPosition(suggestionAdapter.getItemCount() - 1); //滚动到集合最后一条显示；
+                mEtSuggestion.setText("");
                 break;
         }
     }
@@ -127,7 +127,9 @@ public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMine
                 .setPositiveButton("清空", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        suggestionAdapter.removeAll(suggestionList);
+                        presenter.onClearAllTalk();
+                        suggestionAdapter.clear();
+                        suggestionAdapter.notifyDataSetHasChanged();
                         ToastUtil.showToast("消息已清空");
                     }
                 })
@@ -147,8 +149,8 @@ public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMine
         MineHelpSuggestionBean autoReplyBean = new MineHelpSuggestionBean();
         autoReplyBean.setType(0);
         autoReplyBean.setText("您的反馈已经收到，我们将会尽快回复");
-        autoReplyBean.setDate(System.currentTimeMillis()+"");
-        suggestionAdapter.add(suggestionAdapter.getItemCount()-1,autoReplyBean);
+        autoReplyBean.setDate(System.currentTimeMillis() + "");
+        suggestionAdapter.add(autoReplyBean);
         suggestionAdapter.notifyDataSetHasChanged();
         presenter.saveIntoDb(autoReplyBean);
     }
@@ -163,18 +165,30 @@ public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMine
             MineHelpSuggestionBean suggestionBean = new MineHelpSuggestionBean();
             suggestionBean.setType(1);
             suggestionBean.setText(suggestion);
-            suggestionBean.setDate(System.currentTimeMillis()+"");
-            suggestionAdapter.add(suggestionAdapter.getItemCount()-1,suggestionBean);
+            suggestionBean.setIcon(presenter.getUserPhotoUrl());
+            String time = System.currentTimeMillis() + "";
+            suggestionBean.setDate(time);
+
+            if (suggestionAdapter.getItemCount() != 0) {
+                if (presenter.checkOver20s(suggestionAdapter.getList().get(suggestionAdapter.getItemCount() - 1).getDate())) {
+                    suggestionBean.isShowTime = true;
+                } else {
+                    suggestionBean.isShowTime = false;
+                }
+            } else {
+                suggestionBean.isShowTime = true;
+            }
+            suggestionAdapter.add(suggestionBean);
             suggestionAdapter.notifyDataSetHasChanged();
-            suggestionAdapter.isFirstItem = false;
             presenter.saveIntoDb(suggestionBean);
-        }else {
+        } else {
             ToastUtil.showToast("输入内容不能小于10个字符");
         }
     }
 
     /**
      * 初始化显示列表
+     *
      * @param list
      */
     @Override
@@ -188,5 +202,35 @@ public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMine
     @Override
     public void setPresenter(HomeMineHelpSuggestionContract.Presenter presenter) {
         this.presenter = presenter;
+    }
+
+    private void initKeyBoard() {
+        KeyboardUtil.attach(getActivity(), panelRoot, new KeyboardUtil.OnKeyboardShowingListener() {
+            @Override
+            public void onKeyboardShowing(boolean isShowing) {
+                mRvMineSuggestion.scrollToPosition(suggestionAdapter.getItemCount()-1);
+            }
+        });
+        KPSwitchConflictUtil.attach(panelRoot, mEtSuggestion,
+                new KPSwitchConflictUtil.SwitchClickListener() {
+                    @Override
+                    public void onClickSwitch(boolean switchToPanel) {
+                        if (switchToPanel) {
+                            mEtSuggestion.clearFocus();
+                        } else {
+                            mEtSuggestion.requestFocus();
+                        }
+                    }
+                });
+
+        mRvMineSuggestion.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    KPSwitchConflictUtil.hidePanelAndKeyboard(panelRoot);
+                }
+                return false;
+            }
+        });
     }
 }
