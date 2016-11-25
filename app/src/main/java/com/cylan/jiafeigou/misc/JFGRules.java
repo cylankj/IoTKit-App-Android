@@ -1,6 +1,7 @@
 package com.cylan.jiafeigou.misc;
 
 import android.content.Context;
+import android.text.TextUtils;
 
 import com.cylan.jiafeigou.utils.TimeUtils;
 
@@ -31,6 +32,20 @@ public class JFGRules {
                 - TimeUtils.getTodayStartTime()) / 1000L;
         return time >= TIME_1800 || time < TIME_6000
                 ? RULE_NIGHT_TIME : RULE_DAY_TIME;
+    }
+
+    public static boolean isCylanDevice(String ssid) {
+        if (!TextUtils.isEmpty(ssid)) {
+            return JConstant.JFG_DOG_DEVICE_REG.matcher(ssid.replace("\"", "")).find()
+                    || JConstant.JFG_BELL_DEVICE_REG.matcher(ssid.replace("\"", "")).find();
+        }
+        return false;
+    }
+
+    public static String getDigitsFromString(String string) {
+        if (TextUtils.isEmpty(string))
+            return "";
+        return string.replaceAll("\\D+", "");
     }
 
     public static final int LANGUAGE_TYPE_SIMPLE_CHINESE = 0;

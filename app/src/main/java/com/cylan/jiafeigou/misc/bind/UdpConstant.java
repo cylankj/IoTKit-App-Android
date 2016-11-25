@@ -22,7 +22,7 @@ public class UdpConstant {
     /**
      * 绑定的设备画像
      */
-    public static final String KEY_BINDE_DEVICE_PORTRAIT = "key_binde_device_portrait";
+    public static final String KEY_BINDE_DEVICE_PORTRAIT = "key_bind_device_portrait";
     public static final Map<Class<?>, Object> udpObjectMap = new HashMap<>();
 
     public static final class PingAckT {

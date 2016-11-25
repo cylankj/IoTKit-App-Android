@@ -9,118 +9,19 @@
 
     <include layout="@layout/layout_top_bar_item" />
 
-    <TextView
+    <ViewSwitcher
+        android:id="@+id/vs_show_content"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:layout_marginTop="20dp"
-        android:gravity="center"
-        android:text="选择设备要连接的WiFi"
-        android:textColor="@color/color_333333"
-        android:textSize="26sp" />
+        android:layout_height="match_parent"
+        android:layout_marginTop="20dp">
 
-    <TextView
-        android:id="@+id/tv_config_ap_name"
-        style="@style/ripple_background"
-        android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:layout_marginTop="55dp"
-        android:drawableRight="@drawable/ico_drop_down"
-        android:gravity="center"
-        android:text="xxxxxx"
-        android:textColor="@color/color_333333"
-        android:textSize="15sp" />
+        <include
+            android:id="@+id/fragment_config_ap_pre"
+            layout="@layout/fragment_config_ap_pre" />
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_gravity="bottom"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:background="@color/color_f2f2f2" />
+        <include
+            android:id="@+id/fragment_config_ap_next"
+            layout="@layout/fragment_config_ap_next" />
 
-    <FrameLayout
-        android:id="@+id/rLayout_wifi_pwd_input_box"
-        android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:layout_marginTop="29dp">
-
-        <EditText
-            android:id="@+id/et_wifi_pwd"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:layout_marginBottom="5dp"
-            android:layout_marginTop="5dp"
-            android:background="@null"
-            android:focusable="true"
-            android:focusableInTouchMode="true"
-            android:gravity="center"
-            android:hint="请输入WiFi密码"
-            android:inputType="textPassword"
-            android:maxLength="30"
-            android:paddingLeft="40dp"
-            android:paddingRight="40dp"
-            android:textColor="@color/color_666666"
-            android:textColorHint="@color/color_cecece"
-            android:textCursorDrawable="@drawable/bg_common_cursor"
-            android:textSize="15sp" />
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_gravity="end|center_vertical"
-            android:orientation="horizontal">
-
-            <ImageView
-                android:id="@+id/iv_wifi_clear_pwd"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_gravity="center_vertical"
-                android:paddingLeft="15dp"
-                android:paddingRight="7dp"
-                android:src="@drawable/btn_login_clear_text"
-                android:visibility="gone" />
-
-            <CheckBox
-                android:id="@+id/cb_wifi_pwd"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginLeft="7dp"
-                android:layout_marginRight="20dp"
-                android:background="@drawable/icon_common_show_pwd_selector"
-                android:button="@null"
-                android:checked="false" />
-
-
-        </LinearLayout>
-
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_gravity="bottom"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:background="@color/color_f2f2f2" />
-
-    </FrameLayout>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="15dp"
-        android:text="注:暂不支持5GHz的WiFi网络"
-        android:textColor="@color/color_4b9fd5"
-        android:textSize="13sp" />
-
-    <TextView
-        android:id="@+id/tv_wifi_pwd_submit"
-        style="@style/login_model_commit_style"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="37dp"
-        android:text="下一步" />
+    </ViewSwitcher>
 </LinearLayout>
