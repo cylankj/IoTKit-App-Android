@@ -13,13 +13,15 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.n.base.IBaseFragment;
+import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.utils.ViewUtils;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public abstract class BaseTitleFragment extends Fragment {
+public abstract class BaseTitleFragment<P extends BasePresenter> extends IBaseFragment<P> {
 
 
     @BindView(R.id.tv_top_bar_center)

@@ -102,7 +102,7 @@ public class ReactiveNetwork {
      * @param context Application Context is recommended here
      * @return ConnectivityStatus, which can be WIFI_CONNECTED, MOBILE_CONNECTED or OFFLINE
      */
-    public ConnectivityStatus getConnectivityStatus(final Context context) {
+    public static ConnectivityStatus getConnectivityStatus(final Context context) {
         if (context instanceof Activity)
             throw new IllegalArgumentException("woo,this context should be application context");
         final String service = Context.CONNECTIVITY_SERVICE;
