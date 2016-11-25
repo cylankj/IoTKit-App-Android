@@ -12,8 +12,10 @@ import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.db.DbManager;
 import com.cylan.jiafeigou.support.db.ex.DbException;
+import com.cylan.jiafeigou.support.download.utils.L;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import rx.Observable;
 import rx.Subscription;
@@ -74,7 +76,10 @@ public class HomeMineHelpSuggestionImpl extends AbstractPresenter<HomeMineHelpSu
                             return Observable.just(tempList);
                         }
                         try {
-                            tempList.addAll(dbManager.findAll(MineHelpSuggestionBean.class));
+                            List<MineHelpSuggestionBean> list = dbManager.findAll(MineHelpSuggestionBean.class);
+                            if (list != null && list.size() != 0){
+                                tempList.addAll(list);
+                            }
                         } catch (DbException e) {
                             e.printStackTrace();
                             return Observable.just(tempList);
@@ -97,6 +102,11 @@ public class HomeMineHelpSuggestionImpl extends AbstractPresenter<HomeMineHelpSu
      */
     @Override
     public void onClearAllTalk() {
+        try {
+            dbManager.delete(MineHelpSuggestionBean.class);
+        } catch (DbException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -145,13 +155,27 @@ public class HomeMineHelpSuggestionImpl extends AbstractPresenter<HomeMineHelpSu
 
     /**
      * 检测是否超时5分钟
-     * @param bean
      * @return
      */
     @Override
-    public boolean checkOverTime(MineHelpSuggestionBean bean) {
-        long lastItemTime = Long.parseLong(bean.getDate());
+    public boolean checkOverTime(String time) {
+        long lastItemTime = Long.parseLong(time);
         if (System.currentTimeMillis() - lastItemTime > 5*60*1000){
+            return true;
+        }else {
+            return false;
+        }
+    }
+
+    /**
+     * 检测是否超过20s
+     * @param time
+     * @return
+     */
+    @Override
+    public boolean checkOver20s(String time) {
+        long lastItemTime = Long.parseLong(time);
+        if (System.currentTimeMillis() - lastItemTime > 2*60*1000){
             return true;
         }else {
             return false;

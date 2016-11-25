@@ -5,12 +5,15 @@ import android.graphics.Bitmap;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.model.MineHelpSuggestionBean;
+import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.superadapter.IMulItemViewType;
 import com.cylan.superadapter.SuperAdapter;
 import com.cylan.superadapter.internal.SuperViewHolder;
@@ -38,8 +41,6 @@ public class HomeMineHelpSuggestionAdapter extends SuperAdapter<MineHelpSuggesti
 
     private ImageView clientImage;
 
-    public boolean isFirstItem = true;
-
     public HomeMineHelpSuggestionAdapter(Context context,
                                          List<MineHelpSuggestionBean> items,
                                          IMulItemViewType<MineHelpSuggestionBean> mulItemViewType) {
@@ -49,16 +50,21 @@ public class HomeMineHelpSuggestionAdapter extends SuperAdapter<MineHelpSuggesti
     @Override
     public void onBind(SuperViewHolder holder, int viewType, int layoutPosition, MineHelpSuggestionBean item) {
         if (viewType == 1){     //客户端
-            holder.setText(R.id.tv_mine_suggestion_client_time, getNowDate(item.getDate()));
-            holder.setText(R.id.tv_mine_suggestion_client_speak, getNowDate(item.getText()));
-
-            if (isFirstItem){
-                holder.setVisibility(R.id.tv_mine_suggestion_client_time,View.VISIBLE);
+            TextView textView = holder.getView(R.id.tv_mine_suggestion_client_speak);
+            ViewGroup.LayoutParams lp = textView.getLayoutParams();
+            // 动态改变条目的长度
+            if (item.getText().length() <=13){
+                lp.width = ViewGroup.LayoutParams.WRAP_CONTENT;
+                textView.setLayoutParams(lp);
             }else {
-                holder.setVisibility(R.id.tv_mine_suggestion_client_time,View.INVISIBLE);
+                lp.width = ViewUtils.dp2px(230);
+                textView.setLayoutParams(lp);
             }
 
-            if (checkIsOverTime(item.getDate()) && !isFirstItem){
+            holder.setText(R.id.tv_mine_suggestion_client_time, getNowDate(item.getDate()));
+            holder.setText(R.id.tv_mine_suggestion_client_speak, item.getText());
+
+            if (item.isShowTime){
                 holder.setVisibility(R.id.tv_mine_suggestion_client_time,View.VISIBLE);
             }else {
                 holder.setVisibility(R.id.tv_mine_suggestion_client_time,View.INVISIBLE);
@@ -80,13 +86,18 @@ public class HomeMineHelpSuggestionAdapter extends SuperAdapter<MineHelpSuggesti
 
         }else {     //服务端
 
-            if (isFirstItem){
-                holder.setVisibility(R.id.tv_mine_suggestion_server_time,View.VISIBLE);
+            TextView textView = holder.getView(R.id.tv_mine_suggestion_server_speak);
+            ViewGroup.LayoutParams lp = textView.getLayoutParams();
+            // 动态改变条目的长度
+            if (item.getText().length() <=13){
+                lp.width = ViewGroup.LayoutParams.WRAP_CONTENT;
+                textView.setLayoutParams(lp);
             }else {
-                holder.setVisibility(R.id.tv_mine_suggestion_server_time,View.INVISIBLE);
+                lp.width = ViewUtils.dp2px(230);
+                textView.setLayoutParams(lp);
             }
 
-            if (checkIsOverTime(item.getDate()) && !isFirstItem){
+            if (item.isShowTime){
                 holder.setVisibility(R.id.tv_mine_suggestion_server_time,View.VISIBLE);
             }else {
                 holder.setVisibility(R.id.tv_mine_suggestion_server_time,View.INVISIBLE);
@@ -130,21 +141,8 @@ public class HomeMineHelpSuggestionAdapter extends SuperAdapter<MineHelpSuggesti
      */
     public String getNowDate(String magDate) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm");
-        String nowDate = sdf.format(new Date(magDate));
+        String nowDate = sdf.format(new Date(Long.parseLong(magDate)));
         return nowDate;
     }
 
-    /**
-     * 检测是否超时
-     * @param time
-     * @return
-     */
-    public boolean checkIsOverTime(String time){
-        long lastItemTime = Long.parseLong(time);
-        if (System.currentTimeMillis() - lastItemTime > 5){
-            return true;
-        }else {
-            return false;
-        }
-    }
 }
