@@ -1,6 +1,7 @@
 package com.cylan.jiafeigou.n.view.cam;
 
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -14,7 +15,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamMessageListContract;
+import com.cylan.jiafeigou.n.mvp.impl.cam.CamMessageListPresenterImpl;
 import com.cylan.jiafeigou.n.mvp.model.CamMessageBean;
 import com.cylan.jiafeigou.n.view.adapter.CamMessageListAdapter;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -31,7 +34,7 @@ import butterknife.OnClick;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class CamMessageListFragment extends Fragment
+public class CamMessageListFragment extends IBaseFragment<CamMessageListContract.Presenter>
         implements CamMessageListContract.View, SwipeRefreshLayout.OnRefreshListener {
 
 
@@ -53,7 +56,6 @@ public class CamMessageListFragment extends Fragment
      * 列表第一条可见item的position,用户刷新timeLine控件的位置。
      */
     private int currentPosition = 0;
-    private CamMessageListContract.Presenter presenter;
     private CamMessageListAdapter camMessageListAdapter;
 
     public CamMessageListFragment() {
@@ -67,10 +69,14 @@ public class CamMessageListFragment extends Fragment
     }
 
     @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        basePresenter = new CamMessageListPresenterImpl(this);
+    }
+
+    @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (presenter != null)
-            presenter.start();
     }
 
     @Override
@@ -136,13 +142,13 @@ public class CamMessageListFragment extends Fragment
 
     @Override
     public void setPresenter(CamMessageListContract.Presenter presenter) {
-        this.presenter = presenter;
+        this.basePresenter = presenter;
     }
 
     @Override
     public void onRefresh() {
         srLayoutCamListRefresh.setRefreshing(true);
-        if (presenter != null)
-            presenter.fetchMessageList();
+        if (basePresenter != null)
+            basePresenter.fetchMessageList();
     }
 }
