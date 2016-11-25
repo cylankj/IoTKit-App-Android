@@ -27,6 +27,7 @@ import org.msgpack.MessagePack;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -44,12 +45,13 @@ import static com.cylan.jiafeigou.dp.DpMsgMap.ID_2_CLASS_MAP;
  */
 
 public class DpDeviceAssembler implements IParser {
+    private static final String TAG = "DpDeviceAssembler:";
 
     private static DpDeviceAssembler instance;
     /**
      * 请求序列
      */
-    private final List<Long> seqList = new ArrayList<>();
+    private final Map<Long, Long> seqMap = new HashMap<>();
 
     private IFlat flatMsg;
 
@@ -121,12 +123,11 @@ public class DpDeviceAssembler implements IParser {
                 new Func2<JFGAccount, RxEvent.DeviceRawList, List<JFGDevice>>() {
                     @Override
                     public List<JFGDevice> call(JFGAccount account, RxEvent.DeviceRawList deviceRawList) {
-                        AppLogger.i("yes jfgAccount is ready and deviceList is ready too");
+                        AppLogger.i(TAG + " yes jfgAccount is ready and deviceList is ready too");
                         return Arrays.asList(deviceRawList.devices);
                     }
                 })
                 .subscribeOn(Schedulers.newThread())
-//                .delay(500, TimeUnit.MILLISECONDS)
                 .map(new Func1<List<JFGDevice>, Object>() {
                     @Override
                     public Object call(List<JFGDevice> list) {
@@ -134,14 +135,14 @@ public class DpDeviceAssembler implements IParser {
                             assembleBase(list.get(i));
                             final int pid = list.get(i).pid;
                             BaseParam baseParam = merger(pid);
-                            AppLogger.i("req: " + list.get(i).uuid);
+                            AppLogger.i(TAG + " req: " + list.get(i).uuid);
                             long seq = JfgAppCmd.getInstance().robotGetData(list.get(i).uuid, baseParam.queryParameters(null), 1, false, 0);
-                            seqList.add(seq);
+                            seqMap.put(seq, seq);
                         }
                         return null;
                     }
                 })
-                .retry(new RxHelper.RxException<>("deviceListSub"))
+                .retry(new RxHelper.RxException<>(TAG + " deviceListSub"))
                 .subscribe();
     }
 
@@ -191,6 +192,7 @@ public class DpDeviceAssembler implements IParser {
                     @Override
                     public Integer call(RobotoGetDataRsp dpDataRsp) {
                         final String identity = dpDataRsp.identity;
+                        Log.d(TAG, "dpDataRsp: " + identity);
                         for (Map.Entry<Integer, ArrayList<JFGDPMsg>> entry : dpDataRsp.map.entrySet()) {
                             JFGDPMsg dp = entry.getValue() != null
                                     && entry.getValue().size() > 0 ? entry.getValue().get(0) : null;
@@ -199,38 +201,37 @@ public class DpDeviceAssembler implements IParser {
                             if (clazz == null || dp == null) {
                                 continue;
                             }
-                            Log.d("superParser", "superParser: " + keyId + " " + clazz);
                             Object o = null;
                             try {
                                 o = unpackData(dp.packValue, clazz);
                             } catch (Exception e) {
-                                AppLogger.e("DpParser:" + keyId + " " + e.getLocalizedMessage());
+                                AppLogger.e(TAG + keyId + " " + e.getLocalizedMessage());
                             }
                             try {
                                 flatMsg.cache(JCache.getAccountCache().getAccount(),
                                         identity,
                                         wrap(o, keyId, dp.version));
-                                Log.d("DpParser", "superParser: " + keyId + " " + o);
+                                Log.d(TAG, "superParser: " + keyId + " " + o);
                             } catch (Exception e) {
-                                AppLogger.e("DpParser:" + keyId + " " + e.getLocalizedMessage());
+                                AppLogger.e(TAG + keyId + " " + e.getLocalizedMessage());
                             }
                         }
-                        if (seqList.size() == 0) {
+                        if (seqMap.size() == 0) {
                             //完成所有设备更新
                             RxUiEvent.BulkDeviceList cacheList = new RxUiEvent.BulkDeviceList();
                             cacheList.allDevices = flatMsg.getAllDevices(JCache.getAccountCache().getAccount());
                             if (cacheList.allDevices == null || cacheList.allDevices.size() == 0) {
-                                AppLogger.i("DpParser:null ");
+                                AppLogger.i(TAG + "DpParser:null ");
                                 return null;
                             }
-                            AppLogger.i("DpParser:" + cacheList);
+                            AppLogger.i(TAG + cacheList);
                             RxBus.getUiInstance().postSticky(cacheList);
                         }
                         return null;
                     }
                 })
                 //此retry能跳过当前一次的exception
-                .retry(new RxHelper.RxException<>("deviceDpSub"))
+                .retry(new RxHelper.RxException<>(TAG + "deviceDpSub"))
                 .subscribe();
     }
 
@@ -248,10 +249,14 @@ public class DpDeviceAssembler implements IParser {
     private Func1<RobotoGetDataRsp, Boolean> notNullFunc = new Func1<RobotoGetDataRsp, Boolean>() {
         @Override
         public Boolean call(RobotoGetDataRsp dpDataRsp) {
+
             boolean good = (dpDataRsp != null
-                    && seqList.remove(dpDataRsp.seq)//包含了此次请求
+                    && seqMap.containsKey(dpDataRsp.seq)//包含了此次请求
                     && JCache.getAccountCache() != null);
-            AppLogger.i("false? " + good);
+            AppLogger.i(TAG + "false? " + (dpDataRsp != null) + " " + (JCache.getAccountCache() != null) + " " + good);
+            if (dpDataRsp != null) {
+                seqMap.remove(dpDataRsp.seq);
+            }
             //过滤
             return good;
         }

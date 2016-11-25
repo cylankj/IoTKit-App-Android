@@ -54,4 +54,15 @@ public class BaseBean implements Parcelable{
             return new BaseBean[size];
         }
     };
+
+    @Override
+    public String toString() {
+        return "BaseBean{" +
+                "pid=" + pid +
+                ", uuid='" + uuid + '\'' +
+                ", sn='" + sn + '\'' +
+                ", alias='" + alias + '\'' +
+                ", shareAccount='" + shareAccount + '\'' +
+                '}';
+    }
 }

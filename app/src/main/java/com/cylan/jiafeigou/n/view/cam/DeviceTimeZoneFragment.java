@@ -47,7 +47,6 @@ import butterknife.ButterKnife;
  */
 public class DeviceTimeZoneFragment extends Fragment {
 
-
     private static final String TAG = "tag";
 
     private static final String TIME_ZONE_TAG = "timezone";
@@ -73,7 +72,7 @@ public class DeviceTimeZoneFragment extends Fragment {
     RecyclerView mDetail;
 
     @BindView(R.id.tv_timezone_noresult)
-    TextView mTvNoresult;
+    TextView mTvNoResult;
 
     private String mDetailText;
     private List<TimeZoneBean> mCityList;
@@ -90,7 +89,7 @@ public class DeviceTimeZoneFragment extends Fragment {
      * 接口回调，用来刷新UI
      */
     public interface OnTimezoneChangeListener {
-        void timezoneChangeListener(String content);
+        void timezoneChangeListener(int id, String content);
     }
 
     public DeviceTimeZoneFragment() {
@@ -206,7 +205,7 @@ public class DeviceTimeZoneFragment extends Fragment {
             public void afterTextChanged(Editable s) {
                 if (TextUtils.isEmpty(s)) {
                     setRefreshData(assembleRawList());
-                    mTvNoresult.setVisibility(View.GONE);
+                    mTvNoResult.setVisibility(View.GONE);
                     return;
                 }
                 findResult = new ArrayList<>();
@@ -217,7 +216,7 @@ public class DeviceTimeZoneFragment extends Fragment {
                     }
                 }
                 setRefreshData(findResult);
-                mTvNoresult.setVisibility(ListUtils.isEmpty(findResult) ? View.VISIBLE : View.GONE);
+                mTvNoResult.setVisibility(ListUtils.isEmpty(findResult) ? View.VISIBLE : View.GONE);
             }
         });
     }
@@ -245,23 +244,23 @@ public class DeviceTimeZoneFragment extends Fragment {
     public void showDialog(final List<TimeZoneBean> data) {
         adapter.setOnRecyclerViewListener(new CamDeviceTimeZoneAdapter.OnRecyclerViewListener() {
             @Override
-            public void onItemClick(final View view, int position) {
+            public void onItemClick(final View view, final int position) {
                 mDetailText = data.get(position).getName();
                 final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                builder.setTitle("提示");
-                builder.setMessage("更改设备时区可能导致录像时间发生变化，是否继续？");
-                builder.setPositiveButton("继续", new DialogInterface.OnClickListener() {
+                builder.setTitle(R.string.TIPS);
+                builder.setMessage(R.string.TIMEZONE_INFO);
+                builder.setPositiveButton(R.string.CARRY_ON, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         saveEditName();
                         if (mTimezoneListener != null) {
-                            mTimezoneListener.timezoneChangeListener(mDetailText);
+                            mTimezoneListener.timezoneChangeListener(position, mDetailText);
                         }
                         hideKeyboard(view);
                         getFragmentManager().popBackStack();
                     }
                 });
-                builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                builder.setNegativeButton(R.string.CANCEL, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
 

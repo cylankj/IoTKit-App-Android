@@ -37,8 +37,9 @@ public class JConstant {
     public static final int JFG_DEVICE_ALBUM = 2;
     public static final int JFG_DEVICE_MAG = 3;
 
-    public static final Pattern JFG_DOG_DEVICE_REG = Pattern.compile("DOG-\\d{6}");
-    public static final Pattern JFG_BELL_DEVICE_REG = Pattern.compile("DOG-ML\\d{6}");
+    //看JConstantTest单元测试
+    public static final Pattern JFG_DOG_DEVICE_REG = Pattern.compile("DOG-[a-zA-Z0-9]{6}");
+    public static final Pattern JFG_BELL_DEVICE_REG = Pattern.compile("DOG-ML-[a-zA-Z0-9]{6}");
     public static final int VALID_VERIFICATION_CODE_LEN = 6;
     public static final int PWD_LEN_MIN = 6;
     public static final int PWD_LEN_MAX = 12;

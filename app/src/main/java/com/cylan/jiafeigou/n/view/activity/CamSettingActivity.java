@@ -15,7 +15,7 @@ import com.cylan.jiafeigou.n.mvp.contract.cam.CamSettingContract;
 import com.cylan.jiafeigou.n.mvp.impl.cam.CamSettingPresenterImpl;
 import com.cylan.jiafeigou.n.mvp.model.BeanCamInfo;
 import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
-import com.cylan.jiafeigou.n.view.cam.FragmentFacilityInformation;
+import com.cylan.jiafeigou.n.view.cam.DeviceInfoDetailFragment;
 import com.cylan.jiafeigou.n.view.cam.SafeProtectionFragment;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ViewUtils;
@@ -61,7 +61,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
     @BindView(R.id.tv_setting_unbind)
     TextView tvSettingUnbind;
 
-    private WeakReference<FragmentFacilityInformation> informationWeakReference;
+    private WeakReference<DeviceInfoDetailFragment> informationWeakReference;
     //    private WeakReference<DeviceStandbyFragment> deviceStandbyFragmentWeakReference;
     private WeakReference<SafeProtectionFragment> safeProtectionFragmentWeakReference;
 
@@ -192,7 +192,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
     private void initFacilityFragment() {
         //should load
         if (informationWeakReference == null || informationWeakReference.get() == null) {
-            informationWeakReference = new WeakReference<>(FragmentFacilityInformation.newInstance(null));
+            informationWeakReference = new WeakReference<>(DeviceInfoDetailFragment.newInstance(null));
         }
     }
 
