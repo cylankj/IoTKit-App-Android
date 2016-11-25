@@ -35,9 +35,9 @@ public class CamParam extends BaseParam {
         builder.addParam(DpMsgMap.NAME_2_ID_MAP.get(DpMsgMap.DEVICE_CAMERA_ROTATE_304), getVersion(mapVersion, 304));
 
         builder.addParam(DpMsgMap.NAME_2_ID_MAP.get(DpMsgMap.CAMERA_ALARM_FLAG_501), getVersion(mapVersion, 501));
-        builder.addParam(DpMsgMap.NAME_2_ID_MAP.get(DpMsgMap.CAMERA_ALARM_DURATION_502), getVersion(mapVersion, 502));
+        builder.addParam(DpMsgMap.NAME_2_ID_MAP.get(DpMsgMap.CAMERA_ALARM_INFO_502), getVersion(mapVersion, 502));
         builder.addParam(DpMsgMap.NAME_2_ID_MAP.get(DpMsgMap.CAMERA_ALARM_SENSITIVITY_503), getVersion(mapVersion, 503));
-        builder.addParam(DpMsgMap.NAME_2_ID_MAP.get(DpMsgMap.CAMERA_ALARM_SOUND_EFFECT_504), getVersion(mapVersion, 504));
+        builder.addParam(DpMsgMap.NAME_2_ID_MAP.get(DpMsgMap.CAMERA_ALARM_NOTIFICATION_504), getVersion(mapVersion, 504));
         builder.addParam(DpMsgMap.NAME_2_ID_MAP.get(DpMsgMap.CAMERA_ALARM_MSG_505), getVersion(mapVersion, 505));
         builder.addParam(DpMsgMap.NAME_2_ID_MAP.get(DpMsgMap.CAMERA_TIME_LAPSE_PHOTOGRAPHY_506), getVersion(mapVersion, 506));
         builder.addParam(DpMsgMap.NAME_2_ID_MAP.get(DpMsgMap.CAMERA_STANDBY_FLAG_508), getVersion(mapVersion, 508));

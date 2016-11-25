@@ -25,11 +25,12 @@
         android:textSize="15sp" />
 
     <com.cylan.jiafeigou.widget.SettingItemView1
+        android:id="@+id/sw_motion_detection"
         android:layout_width="match_parent"
         android:layout_height="54dp"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
-        hunt:sv_title="移动侦测" />
+        hunt:sv_title="@string/SECURE_TYPE" />
 
     <View
         android:layout_width="match_parent"
@@ -54,7 +55,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="灵敏度"
+                android:text="@string/SECURE_SENSITIVITY"
                 android:textColor="@color/color_black"
                 android:textSize="16sp" />
 
@@ -62,7 +63,6 @@
                 android:id="@+id/tv_protection_sensitivity"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="灵敏度"
                 android:textColor="@color/color_8C8C8C"
                 android:textSize="13sp" />
         </LinearLayout>
@@ -118,7 +118,7 @@
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
         android:layout_marginTop="20dp"
-        android:text="时间"
+        android:text="@string/TIME"
         android:textColor="@color/color_4b9fd5"
         android:textSize="15sp" />
 
@@ -138,7 +138,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="开始时间"
+                android:text="@string/FROME"
                 android:textColor="@color/color_black"
                 android:textSize="16sp" />
 
@@ -146,7 +146,6 @@
                 android:id="@+id/tv_protection_start_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="00:00"
                 android:textColor="@color/color_8C8C8C"
                 android:textSize="13sp" />
         </LinearLayout>
@@ -175,7 +174,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="结束时间"
+                android:text="@string/TO"
                 android:textColor="@color/color_black"
                 android:textSize="16sp" />
 
@@ -183,7 +182,6 @@
                 android:id="@+id/tv_protection_end_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="00:00"
                 android:textColor="@color/color_8C8C8C"
                 android:textSize="13sp" />
         </LinearLayout>
@@ -212,7 +210,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="重复"
+                android:text="@string/REPEAT"
                 android:textColor="@color/color_black"
                 android:textSize="16sp" />
 

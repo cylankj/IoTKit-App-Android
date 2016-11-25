@@ -8,20 +8,20 @@ import com.cylan.jiafeigou.n.mvp.model.BeanCamInfo;
  * Created by cylan-hunt on 16-11-25.
  */
 
-public interface CamInfoContract {
+public interface CamWarnContract {
 
-    public interface View extends BaseView<Presenter> {
+    interface View extends BaseView<Presenter> {
 
 
     }
 
-    public interface Presenter extends BasePresenter {
+    interface Presenter extends BasePresenter {
         /**
          * 刷新BeanCamInfo
          *
          * @param info
          */
-        void updateCamInfoBean(BeanCamInfo info);
+        void save(BeanCamInfo info);
 
         BeanCamInfo getBeanCamInfo();
     }

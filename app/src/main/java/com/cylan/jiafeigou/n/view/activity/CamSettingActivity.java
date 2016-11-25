@@ -127,14 +127,15 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
             R.id.sv_setting_device_mobile_network})
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.sv_setting_device_detail:
+            case R.id.sv_setting_device_detail: {
                 initFacilityFragment();
                 Fragment fragment = informationWeakReference.get();
                 Bundle bundle = new Bundle();
                 bundle.putParcelable(KEY_DEVICE_ITEM_BUNDLE, basePresenter.getCamInfoBean());
                 fragment.setArguments(bundle);
                 loadFragment(android.R.id.content, fragment);
-                break;
+            }
+            break;
             case R.id.sv_setting_device_indicator:
                 if (basePresenter != null) {
                     BeanCamInfo camInfoBean = basePresenter.getCamInfoBean();
@@ -165,10 +166,15 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
                 break;
             case R.id.tv_setting_unbind:
                 break;
-            case R.id.sv_setting_safe_protection:
+            case R.id.sv_setting_safe_protection: {
+                Bundle bundle = new Bundle();
+                bundle.putParcelable(KEY_DEVICE_ITEM_BUNDLE, basePresenter.getCamInfoBean());
                 initSafeProtectionFragment();
+                Fragment fragment = safeProtectionFragmentWeakReference.get();
+                fragment.setArguments(bundle);
                 loadFragment(android.R.id.content, safeProtectionFragmentWeakReference.get());
-                break;
+            }
+            break;
 //            case R.id.sv_setting_device_standby_mode:
 //                initStandbyInfoFragment();
 //                loadFragment(android.R.id.content, deviceStandbyFragmentWeakReference.get());

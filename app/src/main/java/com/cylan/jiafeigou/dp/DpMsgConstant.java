@@ -145,7 +145,7 @@ public class DpMsgConstant {
 
     @ForDevice(device = Device.CAMERA, targetBeanName = CAM_BEAN_NAME)
     @DpAnnotation(msgId = 502, clazz = DpMsgDefine.AlarmInfo.class)
-    public static final String CAMERA_ALARM_DURATION = null;
+    public static final String CAMERA_ALARM_INFO = null;
 
     @ForDevice(device = Device.CAMERA, targetBeanName = CAM_BEAN_NAME)
     @DpAnnotation(msgId = 503, clazz = int.class)
@@ -153,7 +153,7 @@ public class DpMsgConstant {
 
     @ForDevice(device = Device.CAMERA, targetBeanName = CAM_BEAN_NAME)
     @DpAnnotation(msgId = 504, clazz = DpMsgDefine.NotificationInfo.class)
-    public static final String CAMERA_ALARM_SOUND_EFFECT = null;//报警音效
+    public static final String CAMERA_ALARM_NOTIFICATION = null;//报警音效
 
     @ForDevice(device = Device.CAMERA, targetBeanName = CAM_BEAN_NAME)
     @DpAnnotation(msgId = 505, clazz = DpMsgDefine.AlarmMsg.class)

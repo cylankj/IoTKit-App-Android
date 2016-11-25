@@ -8,11 +8,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.CompoundButton;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.n.mvp.model.BeanCamInfo;
 import com.cylan.jiafeigou.widget.dialog.BaseDialog;
 
 import butterknife.BindView;
@@ -70,24 +73,25 @@ public class SetSensitivityDialogFragment extends BaseDialog {
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        initButton();
+        getDialog().setCanceledOnTouchOutside(false);
+        final BeanCamInfo beanCamInfo = getArguments().getParcelable(JConstant.KEY_DEVICE_ITEM_BUNDLE);
+        int level = beanCamInfo.cameraAlarmSensitivity;
+        final int count = rgSensitivity.getChildCount();
+        for (int i = 0; i < count; i++) {
+            final int index = i;
+            RadioButton box = (RadioButton) rgSensitivity.getChildAt(i);
+            box.setChecked(level == i);
+            box.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    if (isChecked) {
+                        beanCamInfo.cameraAlarmSensitivity = index;
+                    }
+                }
+            });
+        }
     }
 
-    private void initButton() {
-        rgSensitivity.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
-                switch (checkedId) {
-                    case R.id.rbtn_sensitivity_high:
-                        break;
-                    case R.id.rbtn_sensitivity_middle:
-                        break;
-                    case R.id.rbtn_sensitivity_low:
-                        break;
-                }
-            }
-        });
-    }
 
     @Override
     protected int getCustomHeight() {

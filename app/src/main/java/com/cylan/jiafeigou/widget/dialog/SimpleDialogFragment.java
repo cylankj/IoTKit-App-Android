@@ -91,13 +91,5 @@ public class SimpleDialogFragment extends BaseDialog {
         }
     }
 
-    public void setAction(SimpleDialogAction action) {
-        this.action = action;
-    }
 
-    private SimpleDialogAction action;
-
-    public interface SimpleDialogAction {
-        void onDialogAction(int id, Object value);
-    }
 }

@@ -126,15 +126,6 @@ public class DpMsgDefine {
         public String oldAccount;
 
         @Override
-        public String toString() {
-            return "BindLog{" +
-                    "isBind=" + isBind +
-                    ", accout='" + account + '\'' +
-                    ", oldAccount='" + oldAccount + '\'' +
-                    '}';
-        }
-
-        @Override
         public int describeContents() {
             return 0;
         }
@@ -166,6 +157,15 @@ public class DpMsgDefine {
                 return new BindLog[size];
             }
         };
+
+        @Override
+        public String toString() {
+            return "BindLog{" +
+                    "isBind=" + isBind +
+                    ", account='" + account + '\'' +
+                    ", oldAccount='" + oldAccount + '\'' +
+                    '}';
+        }
     }
 
     @Message
@@ -176,15 +176,6 @@ public class DpMsgDefine {
         public long used;
         @Index(2)
         public int err;
-
-        @Override
-        public String toString() {
-            return "SdStatus{" +
-                    "total=" + total +
-                    ", used=" + used +
-                    ", err=" + err +
-                    '}';
-        }
 
         @Override
         public int describeContents() {
@@ -218,6 +209,15 @@ public class DpMsgDefine {
                 return new SdStatus[size];
             }
         };
+
+        @Override
+        public String toString() {
+            return "SdStatus{" +
+                    "total=" + total +
+                    ", used=" + used +
+                    ", err=" + err +
+                    '}';
+        }
     }
 
     @Message
@@ -230,7 +230,7 @@ public class DpMsgDefine {
          * 每周的星期*， 从低位到高位代表周一到周日。如0b00000001代表周一，0b01000000代表周日
          */
         @Index(2)
-        public int duration;
+        public int day;
 
         @Override
         public int describeContents() {
@@ -241,7 +241,7 @@ public class DpMsgDefine {
         public void writeToParcel(Parcel dest, int flags) {
             dest.writeInt(this.timeStart);
             dest.writeInt(this.timeEnd);
-            dest.writeInt(this.duration);
+            dest.writeInt(this.day);
         }
 
         public AlarmInfo() {
@@ -250,7 +250,7 @@ public class DpMsgDefine {
         protected AlarmInfo(Parcel in) {
             this.timeStart = in.readInt();
             this.timeEnd = in.readInt();
-            this.duration = in.readInt();
+            this.day = in.readInt();
         }
 
         public static final Creator<AlarmInfo> CREATOR = new Creator<AlarmInfo>() {
@@ -264,6 +264,15 @@ public class DpMsgDefine {
                 return new AlarmInfo[size];
             }
         };
+
+        @Override
+        public String toString() {
+            return "AlarmInfo{" +
+                    "timeStart=" + timeStart +
+                    ", timeEnd=" + timeEnd +
+                    ", duration=" + day +
+                    '}';
+        }
     }
 
     @Message
@@ -293,6 +302,16 @@ public class DpMsgDefine {
         public AlarmMsg() {
         }
 
+        @Override
+        public String toString() {
+            return "AlarmMsg{" +
+                    "time=" + time +
+                    ", isRecording=" + isRecording +
+                    ", fileIndex=" + fileIndex +
+                    ", type=" + type +
+                    '}';
+        }
+
         protected AlarmMsg(Parcel in) {
             this.time = in.readInt();
             this.isRecording = in.readInt();
@@ -316,7 +335,7 @@ public class DpMsgDefine {
     @Message//504
     public static final class NotificationInfo implements Parcelable {
         @Index(0)
-        public int notificatoin;
+        public int notification;
         @Index(1)
         public int duration;
 
@@ -327,15 +346,23 @@ public class DpMsgDefine {
 
         @Override
         public void writeToParcel(Parcel dest, int flags) {
-            dest.writeInt(this.notificatoin);
+            dest.writeInt(this.notification);
             dest.writeInt(this.duration);
+        }
+
+        @Override
+        public String toString() {
+            return "NotificationInfo{" +
+                    "notification=" + notification +
+                    ", duration=" + duration +
+                    '}';
         }
 
         public NotificationInfo() {
         }
 
         protected NotificationInfo(Parcel in) {
-            this.notificatoin = in.readInt();
+            this.notification = in.readInt();
             this.duration = in.readInt();
         }
 
@@ -397,6 +424,16 @@ public class DpMsgDefine {
                 return new TimeLapse[size];
             }
         };
+
+        @Override
+        public String toString() {
+            return "TimeLapse{" +
+                    "timeStart=" + timeStart +
+                    ", timePeriod=" + timePeriod +
+                    ", timeDuration=" + timeDuration +
+                    ", status=" + status +
+                    '}';
+        }
     }
 
     @Message
@@ -440,6 +477,15 @@ public class DpMsgDefine {
                 return new CamCoord[size];
             }
         };
+
+        @Override
+        public String toString() {
+            return "CamCoord{" +
+                    "x=" + x +
+                    ", y=" + y +
+                    ", r=" + r +
+                    '}';
+        }
     }
 
     @Message
@@ -491,6 +537,16 @@ public class DpMsgDefine {
                 return new BellCallState[size];
             }
         };
+
+        @Override
+        public String toString() {
+            return "BellCallState{" +
+                    "state=" + state +
+                    ", time=" + time +
+                    ", duration=" + duration +
+                    ", type=" + type +
+                    '}';
+        }
     }
 
     @DpBase
