@@ -1,6 +1,7 @@
 package com.cylan.jiafeigou.n.view.cam;
 
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -9,13 +10,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.LinearLayout;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.dp.DpMsgDefine;
+import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.n.mvp.model.BeanCamInfo;
+import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.widget.dialog.BaseDialog;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnCheckedChanged;
 
 /**
  * 自动录像周期设置
@@ -26,20 +32,8 @@ import butterknife.OnCheckedChanged;
 public class CapturePeriodDialogFragment extends BaseDialog {
 
 
-    @BindView(R.id.cb_capture_mon)
-    CheckBox cbCaptureMon;
-    @BindView(R.id.cb_capture_tue)
-    CheckBox cbCaptureTue;
-    @BindView(R.id.cb_capture_wed)
-    CheckBox cbCaptureWed;
-    @BindView(R.id.cb_capture_thur)
-    CheckBox cbCaptureThur;
-    @BindView(R.id.cb_capture_fri)
-    CheckBox cbCaptureFri;
-    @BindView(R.id.cb_capture_sat)
-    CheckBox cbCaptureSat;
-    @BindView(R.id.cb_capture_sun)
-    CheckBox cbCaptureSun;
+    @BindView(R.id.lLayout_week)
+    LinearLayout lLayoutWeek;
 
     public CapturePeriodDialogFragment() {
         // Required empty public constructor
@@ -80,38 +74,34 @@ public class CapturePeriodDialogFragment extends BaseDialog {
     }
 
     private void initView() {
-
+        BeanCamInfo info = getArguments().getParcelable(JConstant.KEY_DEVICE_ITEM_BUNDLE);
+        DpMsgDefine.AlarmInfo alarmInfo = info == null ? null : info.cameraAlarmInfo;
+        if (info == null || alarmInfo == null) {
+            AppLogger.e("should not happen");
+            return;
+        }
+        checkedSerial = alarmInfo.day;
+        final int checkBoxCount = lLayoutWeek.getChildCount();//应该是7
+        for (int i = 0; i < checkBoxCount; i++) {
+            final int index = i;
+            CheckBox view = (CheckBox) lLayoutWeek.getChildAt(i);
+            view.setChecked((checkedSerial >> (checkBoxCount - 1 - i) & 1) == 1);
+            view.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    checkedSerial ^= (1 << index);//按位取反
+                }
+            });
+        }
     }
 
-    @OnCheckedChanged(R.id.cb_capture_mon)
-    public void onCheckBoxMon(boolean checked) {
-//        checkedSerial|=
+    @Override
+    public void onDismiss(DialogInterface dialog) {
+        super.onDismiss(dialog);
+        if (action != null) {
+            action.onDialogAction(0, checkedSerial);
+        }
     }
-
-    @OnCheckedChanged(R.id.cb_capture_tue)
-    public void onCheckBoxTue(boolean checked) {
-    }
-
-    @OnCheckedChanged(R.id.cb_capture_wed)
-    public void onCheckBoxWed(boolean checked) {
-    }
-
-    @OnCheckedChanged(R.id.cb_capture_thur)
-    public void onCheckBoxThur(boolean checked) {
-    }
-
-    @OnCheckedChanged(R.id.cb_capture_fri)
-    public void onCheckBoxFri(boolean checked) {
-    }
-
-    @OnCheckedChanged(R.id.cb_capture_sat)
-    public void onCheckBoxSat(boolean checked) {
-    }
-
-    @OnCheckedChanged(R.id.cb_capture_sun)
-    public void onCheckBoxSun(boolean checked) {
-    }
-
 
     @Override
     protected int getCustomHeight() {

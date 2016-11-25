@@ -577,43 +577,6 @@
     <string name="USER_HELP">FAQ</string>
     <string name="doorbell_title">%1$s(%2$s)</string>
 
-    <string name="send_email_tip_content">系统已经发送邮件到\n%s\n请点击邮件的链接重置密码</string>
-
-
-    <string name="item_jf_dog">加菲狗</string>
-    <string name="item_wonder">每日精彩</string>
-    <string name="item_mine">我的</string>
-    <string name="item_register">注册</string>
-    <string name="item_confirm">确认</string>
-    <string name="item_input_phone_num">请输入手机号</string>
-    <string name="item_input_phone_or_email">请输入手机号/邮箱</string>
-    <string name="item_input_email">请输入邮箱</string>
-    <string name="item_carry_on">继续</string>
-    <string name="item_get_verification_code">获取验证码</string>
-    <string name="item_input_verification_code">请输入验证码</string>
-    <string name="item_reget_verification_code">重新发送</string>
-    <string name="item_verification_code_is_outdate">验证码已过期</string>
-    <string name="item_user_license_agreements"><a href="http://www.cylan.com.cn/">《用户使用协议》</a></string>
-
-    <string name="item_just_for_test">05月</string>
-    <string name="title_to_dismiss_bind">确定退出?</string>
-    <string name="home_nick_name">Hi，%s</string>
-    <string name="item_device_standby_explanation">开启待机，设备将进入休眠状态，查看直播、历时录像、安全防护及报警、自动录像、延时摄影等功能将无法使用</string>
-
-    <string name="item_bad_net_work">当前网络不可用</string>
-    <string name="item_select_wifi">请选择网络</string>
-    <string name="item_loading">加载中&#8230;</string>
-    <!--//门铃低电量提示-->
-    <string name="s_bell_low_battery_content">建议使用5V/1A的充电器；充电过程中\n指示灯%s常亮，充满电后会自动熄灭</string>
-    <string name="item_green">绿色</string>
-    <string name="input_new_pwd">input password</string>
-    <string name="permission_camera_denied">权限被拒绝</string>
-    <string name="permission_camera_never_askagain">再次询问</string>
-    <string name="permission_camera_rationale">摄像头...</string>
-    <string name="button_allow">允许</string>
-    <string name="button_deny">拒绝</string>
-
-
     <!--相册选择勾出-->
     <string name="gallery">Gallery</string>
     <string name="all_photo">All Photo</string>
@@ -643,7 +606,6 @@
     <string name="permission_settings">Settings</string>
     <string name="permission_package">package</string>
 
-=======
     <string name="input_rule">0123456789abcdefghigklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ</string>
     <string name="turn_on_storage">For normal use, please allow %s to access your storage</string>
     <string name="Tap0_WelcomeTourist">Take a look</string>
@@ -873,5 +835,4 @@
     <string name="Tap1_Camera_Overlook">Overlook</string>
     <string name="Tap1_Camera_FrontTips">Viewing with horizontal angle needs to keep a wide vision in front of camera</string>
     <string name="Tap1_Camera_OverlookTips">Viewing with overlooking angle needs to place the camera on high</string>
->>>>>>> 65ee0bd724ae0c0fb111a7b504b6e7321c913fcc
 </resources>

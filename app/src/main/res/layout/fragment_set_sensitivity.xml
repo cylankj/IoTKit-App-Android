@@ -15,7 +15,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
-            android:text="灵敏度"
+            android:text="@string/SECURE_SENSITIVITY"
             android:textColor="@color/color_black"
             android:textSize="16sp" />
 
@@ -29,7 +29,7 @@
                 android:id="@+id/rbtn_sensitivity_high"
                 android:layout_width="wrap_content"
                 android:layout_height="54dp"
-                android:text="高"
+                android:text="@string/SENSITIVI_HIGHT"
                 android:textColor="@color/color_black"
                 android:textSize="14sp" />
 
@@ -37,7 +37,7 @@
                 android:id="@+id/rbtn_sensitivity_middle"
                 android:layout_width="wrap_content"
                 android:layout_height="54dp"
-                android:text="中"
+                android:text="@string/SENSITIVI_STANDARD"
                 android:textColor="@color/color_black"
                 android:textSize="14sp" />
 
@@ -45,7 +45,7 @@
                 android:id="@+id/rbtn_sensitivity_low"
                 android:layout_width="wrap_content"
                 android:layout_height="54dp"
-                android:text="低"
+                android:text="@string/SENSITIVI_LOW"
                 android:textColor="@color/color_black"
                 android:textSize="14sp" />
         </RadioGroup>

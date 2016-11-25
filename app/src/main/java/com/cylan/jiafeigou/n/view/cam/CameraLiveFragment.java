@@ -35,8 +35,8 @@ import butterknife.OnClick;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter> implements CamLandLiveAction,
-        CamLiveContract.View {
+public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
+        implements CamLandLiveAction, CamLiveContract.View {
 
 
     @BindView(R.id.fLayout_live_view_container)

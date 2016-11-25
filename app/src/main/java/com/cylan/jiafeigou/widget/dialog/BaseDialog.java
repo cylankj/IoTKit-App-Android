@@ -45,4 +45,14 @@ public class BaseDialog extends DialogFragment {
                 .setLayout(getCustomWidth() == 0 ? maxWidth : getCustomWidth(),
                         getCustomHeight() == 0 ? minHeight : getCustomHeight());
     }
+
+    public void setAction(SimpleDialogAction action) {
+        this.action = action;
+    }
+
+    protected SimpleDialogAction action;
+
+    public interface SimpleDialogAction {
+        void onDialogAction(int id, Object value);
+    }
 }

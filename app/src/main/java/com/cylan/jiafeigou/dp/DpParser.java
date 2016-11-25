@@ -32,7 +32,7 @@ public class DpParser {
     }
 
     public void registerDpParser() {
-        AppLogger.e("DpParser: registerDpParser");
+        AppLogger.i("DpParser: registerDpParser");
         if (compositeSubscription != null) {
             compositeSubscription.unsubscribe();
         }

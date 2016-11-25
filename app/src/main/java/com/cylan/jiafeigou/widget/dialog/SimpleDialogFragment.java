@@ -23,14 +23,11 @@ import butterknife.OnClick;
 public class SimpleDialogFragment extends BaseDialog {
 
     private Object cache;
-//    public static final int ACTION_LEFT = 1;
-//    public static final int ACTION_RIGHT = -1;
 
     public static final String KEY_TITLE = "key_title";
     public static final String KEY_LEFT_CONTENT = "key_left";
     public static final String KEY_RIGHT_CONTENT = "key_right";
     public static final String KEY_TOUCH_OUT_SIDE_DISMISS = "key_touch_outside";
-    public static final String KEY_VALUE = "key_value";
     @BindView(R.id.tv_dialog_title)
     TextView tvDialogTitle;
     @BindView(R.id.tv_dialog_btn_left)
@@ -92,28 +89,6 @@ public class SimpleDialogFragment extends BaseDialog {
                 if (action != null) action.onDialogAction(R.id.tv_dialog_btn_right, cache);
                 break;
         }
-    }
-
-    public void setAction(SimpleDialogAction action) {
-        this.action = action;
-    }
-
-//    public void setupTitle(CharSequence charSequence) {
-//        if (tvDialogTitle != null && charSequence != null) tvDialogTitle.setText(charSequence);
-//    }
-//
-//    public void setupLeftBtnContent(CharSequence charSequence) {
-//        tvDialogBtnLeft.setText(charSequence);
-//    }
-//
-//    public void setupRightBtnContent(CharSequence charSequence) {
-//        tvDialogBtnRight.setText(charSequence);
-//    }
-
-    private SimpleDialogAction action;
-
-    public interface SimpleDialogAction {
-        void onDialogAction(int id, Object value);
     }
 
 

@@ -31,14 +31,13 @@ import butterknife.OnClick;
  */
 public class MagDeviceNameDialogFragment extends DialogFragment {
 
-    private static final String TAG = "DeviceNameDialogFragment";
+    private static final String TAG = "EditFragmentDialog";
     private EditText mEtEditName;
-    private Button mBtnEnsure;
-    private Button mBtnCancel;
+    private TextView mBtnEnsure;
+    private TextView mBtnCancel;
     private String mEditName;
 
     protected OnMagDataChangeListener mListener;
-    private TextView mShowState;
     private String editName;
 
     public void setListener(OnMagDataChangeListener mListener) {
@@ -76,11 +75,10 @@ public class MagDeviceNameDialogFragment extends DialogFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         getDialog().requestWindowFeature(Window.FEATURE_NO_TITLE);
 
-        View view = inflater.inflate(R.layout.fragment_edit_name, container);
-        mBtnEnsure = (Button) view.findViewById(R.id.btn_information_ensure);
-        mBtnCancel = (Button) view.findViewById(R.id.btn_information_cancel);
-        mShowState = (TextView) view.findViewById(R.id.tv_information_show_state);
-        mEtEditName = (EditText) view.findViewById(R.id.et_information_edit_name);
+        View view = inflater.inflate(R.layout.fragment_dialog_edit_name, container);
+        mBtnEnsure = (TextView) view.findViewById(R.id.tv_confirm);
+        mBtnCancel = (TextView) view.findViewById(R.id.tv_cancel);
+        mEtEditName = (EditText) view.findViewById(R.id.et_input_box);
 
         editName = PreferencesUtils.getString("magEditName", "客厅摄像头");
         mEtEditName.setText(editName);
@@ -120,8 +118,6 @@ public class MagDeviceNameDialogFragment extends DialogFragment {
                 mBtnEnsure.setEnabled(!isEmpty);
                 mBtnEnsure.setClickable(!isEmpty);
                 mBtnEnsure.setBackgroundColor(isEmpty ? getResources().getColor(R.color.color_cecece) : getResources().getColor(R.color.color_c5e6fc));
-                mShowState.setVisibility(!isEmpty ? View.GONE : View.VISIBLE);
-                mShowState.setText("名称不能为空");
                 /*mEditName = mEtEditName.getText().toString();
                 if(mEditName.equals("")){
                     mBtnEnsure.setFocusable(false);
@@ -149,20 +145,20 @@ public class MagDeviceNameDialogFragment extends DialogFragment {
         });
     }
 
-    @OnClick({R.id.et_information_edit_name, R.id.btn_information_ensure, R.id.btn_information_cancel})
+    @OnClick({R.id.et_input_box, R.id.tv_confirm, R.id.tv_cancel})
     public void OnClick(View view) {
         switch (view.getId()) {
             //点击editText做相应的逻辑
-            case R.id.et_information_edit_name:
+            case R.id.et_input_box:
                 initListener();
                 break;
             //点击取消按钮做相应的逻辑
-            case R.id.btn_information_cancel:
+            case R.id.tv_cancel:
                 hideKeyboard(view);
                 dismiss();
                 break;
             //点击确认按钮做相应的逻辑
-            case R.id.btn_information_ensure:
+            case R.id.tv_confirm:
                 mEditName = mEtEditName.getText().toString();
                 PreferencesUtils.putString("magEditName", mEditName);
                 String editName = PreferencesUtils.getString("magEditName", "客厅摄像头");

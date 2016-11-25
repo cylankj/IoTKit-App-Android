@@ -1,6 +1,7 @@
 package com.cylan.jiafeigou.n.view.cam;
 
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
@@ -12,8 +13,16 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.dp.DpMsgDefine;
+import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.n.base.IBaseFragment;
+import com.cylan.jiafeigou.n.mvp.contract.setting.SafeInfoContract;
+import com.cylan.jiafeigou.n.mvp.impl.setting.SafeInfoPresenterImpl;
+import com.cylan.jiafeigou.n.mvp.model.BeanCamInfo;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ViewUtils;
+import com.cylan.jiafeigou.widget.SettingItemView1;
+import com.cylan.jiafeigou.widget.dialog.BaseDialog;
 
 import java.lang.ref.WeakReference;
 
@@ -26,8 +35,12 @@ import butterknife.OnClick;
  * Use the {@link SafeProtectionFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class SafeProtectionFragment extends Fragment {
+public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Presenter>
+        implements SafeInfoContract.View {
 
+    private static final int weekStringId[] = {
+            R.string.MON_1, R.string.TUE_1, R.string.WED_1, R.string.THU_1, R.string.FRI_1,
+            R.string.SAT_1, R.string.SUN_1};
     @BindView(R.id.imgV_top_bar_center)
     TextView imgVTopBarCenter;
     @BindView(R.id.fLayout_top_bar_container)
@@ -42,14 +55,23 @@ public class SafeProtectionFragment extends Fragment {
     TextView tvProtectionEndTime;
     @BindView(R.id.tv_protection_repeat_period)
     TextView tvProtectionRepeatPeriod;
+    @BindView(R.id.sw_motion_detection)
+    SettingItemView1 swMotionDetection;
 
 
-    WeakReference<SetSensitivityDialogFragment> setSensitivityFragmentWeakReference;
-    WeakReference<WarnEffectFragment> warnEffectFragmentWeakReference;
-    WeakReference<CapturePeriodDialogFragment> capturePeriodDialogFragmentWeakReference;
+    private WeakReference<SetSensitivityDialogFragment> setSensitivityFragmentWeakReference;
+    private WeakReference<WarnEffectFragment> warnEffectFragmentWeakReference;
+    private WeakReference<CapturePeriodDialogFragment> capturePeriodDialogFragmentWeakReference;
 
     public SafeProtectionFragment() {
         // Required empty public constructor
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        basePresenter = new SafeInfoPresenterImpl(this,
+                (BeanCamInfo) getArguments().getParcelable(JConstant.KEY_DEVICE_ITEM_BUNDLE));
     }
 
     /**
@@ -82,8 +104,21 @@ public class SafeProtectionFragment extends Fragment {
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        imgVTopBarCenter.setText("安全防护");
+        BeanCamInfo info = getArguments().getParcelable(JConstant.KEY_DEVICE_ITEM_BUNDLE);
+        imgVTopBarCenter.setText(R.string.SECURE);
         ViewUtils.setViewPaddingStatusBar(fLayoutTopBarContainer);
+        //移动侦测
+        swMotionDetection.setSwitchButtonState(info.cameraAlarmFlag);
+        //提示音
+        DpMsgDefine.NotificationInfo notificationInfo = info.cameraAlarmNotification;
+        if (notificationInfo != null) {
+            tvProtectionNotification.setText(getString(notificationInfo.notification == 0
+                    ? R.string.MUTE : (notificationInfo.notification == 1
+                    ? R.string.BARKING : R.string.ALARM)));
+        }
+        //灵敏度
+        tvProtectionSensitivity.setText(info.cameraAlarmSensitivity == 0 ? getString(R.string.SENSITIVI_LOW)
+                : (info.cameraAlarmSensitivity == 1 ? getString(R.string.SENSITIVI_STANDARD) : getString(R.string.SENSITIVI_HIGHT)));
     }
 
 
@@ -98,22 +133,51 @@ public class SafeProtectionFragment extends Fragment {
             case R.id.imgV_top_bar_center:
                 getActivity().getSupportFragmentManager().popBackStack();
                 break;
-            case R.id.fLayout_protection_sensitivity:
+            case R.id.fLayout_protection_sensitivity: {
                 initSensitivityFragment();
-                showFragment(setSensitivityFragmentWeakReference.get());
-                break;
-            case R.id.fLayout_protection_warn_effect:
+                Fragment fragment = setSensitivityFragmentWeakReference.get();
+                fragment.setArguments(getArguments());
+                showFragment((DialogFragment) fragment);
+            }
+            break;
+            case R.id.fLayout_protection_warn_effect: {
                 initWarnEffectFragment();
-                loadFragment(android.R.id.content, warnEffectFragmentWeakReference.get());
-                break;
+                Fragment fragment = warnEffectFragmentWeakReference.get();
+                fragment.setArguments(getArguments());
+                loadFragment(android.R.id.content, fragment);
+            }
+            break;
             case R.id.fLayout_protection_start_time:
                 break;
             case R.id.fLayout_protection_end_time:
                 break;
-            case R.id.fLayout_protection_repeat_period:
+            case R.id.fLayout_protection_repeat_period: {
                 initCapturePeriodFragment();
-                showFragment(capturePeriodDialogFragmentWeakReference.get());
-                break;
+                BaseDialog fragment = capturePeriodDialogFragmentWeakReference.get();
+                fragment.setArguments(getArguments());
+                fragment.setAction(new BaseDialog.SimpleDialogAction() {
+                    @Override
+                    public void onDialogAction(int id, Object value) {
+                        if (value != null && value instanceof Integer) {
+                            StringBuilder builder = new StringBuilder();
+                            for (int i = 0; i < 7; i++) {
+                                if ((((int) value >> (7 - 1 - i)) & 0x01) == 1) {
+                                    builder.append(getString(weekStringId[i]));
+                                    builder.append(" ");
+                                }
+                            }
+                            tvProtectionRepeatPeriod.setText(builder.toString());
+                            BeanCamInfo info = basePresenter.getBean();
+                            DpMsgDefine.AlarmInfo alarmInfo = info == null ? new DpMsgDefine.AlarmInfo() : info.cameraAlarmInfo;
+                            alarmInfo.day = (int) value;
+                            info.cameraAlarmInfo = alarmInfo;
+                            basePresenter.save(info);
+                        }
+                    }
+                });
+                showFragment(fragment);
+            }
+            break;
         }
     }
 
@@ -161,5 +225,15 @@ public class SafeProtectionFragment extends Fragment {
                 .add(id, fragment, fragment.getClass().getSimpleName())
                 .addToBackStack(fragment.getClass().getSimpleName())
                 .commit();
+    }
+
+    @Override
+    public void beanUpdate(BeanCamInfo info) {
+
+    }
+
+    @Override
+    public void setPresenter(SafeInfoContract.Presenter presenter) {
+        this.basePresenter = presenter;
     }
 }
