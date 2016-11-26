@@ -24,7 +24,9 @@
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
+                android:layout_gravity="center_horizontal"
                 android:background="@android:color/transparent"
+                app:contentInsetStart="0dp"
                 app:layout_collapseMode="pin">
 
                 <FrameLayout
@@ -36,8 +38,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/dimens_48dp"
                         android:layout_gravity="bottom|center_horizontal"
-                        android:gravity="center"
                         android:alpha="0"
+                        android:gravity="center"
                         android:text="@string/app_name"
                         android:textColor="@android:color/white"
                         android:textSize="20sp" />

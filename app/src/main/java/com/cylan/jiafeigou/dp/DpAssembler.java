@@ -22,13 +22,13 @@ import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.rx.RxHelper;
 import com.cylan.jiafeigou.rx.RxUiEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.google.gson.Gson;
 
 import org.msgpack.MessagePack;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -52,7 +52,7 @@ public class DpAssembler implements IParser {
     /**
      * 请求序列
      */
-    private final Map<Long, Long> seqMap = new HashMap<>();
+//    private final Map<Long, Long> seqMap = new HashMap<>();
 
     private IFlat flatMsg;
 
@@ -98,7 +98,7 @@ public class DpAssembler implements IParser {
                     @Override
                     public Object call(Pair<DpMsgDefine.DpMsg, String> arrayListStringPair) {
                         //拿出对应uuid的所有属性
-                        DpMsgDefine.DpWrap deviceDetailsCache = flatMsg.getWrap(JCache.getAccountCache().getAccount(),
+                        DpMsgDefine.DpWrap deviceDetailsCache = flatMsg.getDevice(JCache.getAccountCache().getAccount(),
                                 arrayListStringPair.second);
                         if (deviceDetailsCache == null || deviceDetailsCache.baseDpMsgList == null) {
                             AppLogger.e("deviceDetailsCache is null");
@@ -129,8 +129,13 @@ public class DpAssembler implements IParser {
      */
     private Subscription simpleBulkSubSend2Ui() {
         return RxBus.getCacheInstance().toObservable(RxUiEvent.QueryBulkDevice.class)
-                .filter(new RxHelper.Filter<>(TAG + "simpleBulkSubSend2Ui", JCache.getAccountCache() != null
-                        && !TextUtils.isEmpty(JCache.getAccountCache().getAccount())))
+                .filter(new Func1<RxUiEvent.QueryBulkDevice, Boolean>() {
+                    @Override
+                    public Boolean call(RxUiEvent.QueryBulkDevice queryBulkDevice) {
+                        AppLogger.i(TAG + " simpleBulkSubSend2Ui: " + new Gson().toJson(JCache.getAccountCache()));
+                        return JCache.getAccountCache() != null;
+                    }
+                })
                 .map(new Func1<RxUiEvent.QueryBulkDevice, Object>() {
                     @Override
                     public Object call(RxUiEvent.QueryBulkDevice queryBulkDevice) {
@@ -189,7 +194,6 @@ public class DpAssembler implements IParser {
                             BaseParam baseParam = merger(pid);
                             AppLogger.i(TAG + " req: " + list.get(i).uuid);
                             long seq = JfgAppCmd.getInstance().robotGetData(list.get(i).uuid, baseParam.queryParameters(null), 1, false, 0);
-                            seqMap.put(seq, seq);
                         }
                         return null;
                     }
@@ -268,17 +272,14 @@ public class DpAssembler implements IParser {
                                 AppLogger.e(TAG + keyId + " " + e.getLocalizedMessage());
                             }
                         }
-                        if (seqMap.size() == 0) {
-                            //完成所有设备更新
-                            RxUiEvent.BulkDeviceList cacheList = new RxUiEvent.BulkDeviceList();
-                            cacheList.allDevices = flatMsg.getAllDevices(JCache.getAccountCache().getAccount());
-                            if (cacheList.allDevices == null || cacheList.allDevices.size() == 0) {
-                                AppLogger.i(TAG + "DpParser:null ");
-                                return null;
-                            }
-                            AppLogger.i(TAG + cacheList);
-                            RxBus.getUiInstance().postSticky(cacheList);
+                        RxUiEvent.SingleDevice singleDevice = new RxUiEvent.SingleDevice();
+                        singleDevice.dpMsg = flatMsg.getDevice(JCache.getAccountCache().getAccount(), identity);
+                        if (singleDevice.dpMsg == null) {
+                            AppLogger.i(TAG + "DpParser:null ");
+                            return null;
                         }
+                        AppLogger.i(TAG + singleDevice);
+                        RxBus.getUiInstance().post(singleDevice);
                         return null;
                     }
                 })
@@ -303,11 +304,11 @@ public class DpAssembler implements IParser {
         public Boolean call(RobotoGetDataRsp dpDataRsp) {
 
             boolean good = (dpDataRsp != null
-                    && seqMap.containsKey(dpDataRsp.seq)//包含了此次请求
+//                    && seqMap.containsKey(dpDataRsp.seq)//包含了此次请求
                     && JCache.getAccountCache() != null);
             AppLogger.i(TAG + "false? " + (dpDataRsp != null) + " " + (JCache.getAccountCache() != null) + " " + good);
             if (dpDataRsp != null) {
-                seqMap.remove(dpDataRsp.seq);
+//                seqMap.remove(dpDataRsp.seq);
             }
             //过滤
             return good;

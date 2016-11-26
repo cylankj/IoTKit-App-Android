@@ -8,7 +8,6 @@ import com.cylan.jiafeigou.support.log.AppLogger;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -20,7 +19,7 @@ public class FlattenMsgDp implements IFlat {
     /**
      * <账号,uuid></>
      */
-    private Map<String, List<String>> accountUUidMap = new HashMap<>();
+    private Map<String, ArrayList<String>> accountUUidMap = new HashMap<>();
 
     /**
      * <uuid,基本信息></>
@@ -29,11 +28,11 @@ public class FlattenMsgDp implements IFlat {
     /**
      * uuid,msgId,Object
      */
-    private Map<String, List<DpMsgDefine.DpMsg>> simpleMap = new HashMap<>();
+    private Map<String, ArrayList<DpMsgDefine.DpMsg>> simpleMap = new HashMap<>();
 
     @Override
     public void cache(String account, String uuid) {
-        List<String> uuidList = accountUUidMap.get(account);
+        ArrayList<String> uuidList = accountUUidMap.get(account);
         if (uuidList == null) {
             uuidList = new ArrayList<>();
         }
@@ -45,7 +44,7 @@ public class FlattenMsgDp implements IFlat {
 
     @Override
     public void cache(String account, BaseBean dpDevice) {
-        List<String> uuidList = accountUUidMap.get(account);
+        ArrayList<String> uuidList = accountUUidMap.get(account);
         if (uuidList == null) {
             uuidList = new ArrayList<>();
         }
@@ -69,7 +68,7 @@ public class FlattenMsgDp implements IFlat {
      * @return
      */
     @Override
-    public List<String> getUuidList(String account) {
+    public ArrayList<String> getUuidList(String account) {
         return accountUUidMap.get(account);
     }
 
@@ -80,10 +79,10 @@ public class FlattenMsgDp implements IFlat {
 
 
     @Override
-    public DpMsgDefine.DpWrap getWrap(String account, String uuid) {
+    public DpMsgDefine.DpWrap getDevice(String account, String uuid) {
         exception(account, uuid);
         BaseBean baseDpDevice = baseDpDeviceMap.get(uuid);
-        List<DpMsgDefine.DpMsg> dpMsgList = simpleMap.get(uuid);
+        ArrayList<DpMsgDefine.DpMsg> dpMsgList = simpleMap.get(uuid);
         DpMsgDefine.DpWrap wrap = new DpMsgDefine.DpWrap();
         wrap.baseDpDevice = baseDpDevice;
         wrap.baseDpMsgList = dpMsgList;
@@ -93,9 +92,8 @@ public class FlattenMsgDp implements IFlat {
     @Override
     public void cache(String account, String uuid, DpMsgDefine.DpMsg msg) {
         exception(account, uuid);
-//        List<String> uuidList = accountUUidMap.get(account);
-        DpMsgDefine.DpWrap wrap = getWrap(account, uuid);
-        List<DpMsgDefine.DpMsg> list = wrap.baseDpMsgList;
+        DpMsgDefine.DpWrap wrap = getDevice(account, uuid);
+        ArrayList<DpMsgDefine.DpMsg> list = wrap.baseDpMsgList;
         if (list == null)
             list = new ArrayList<>();
         if (!list.contains(msg)) {
@@ -106,19 +104,19 @@ public class FlattenMsgDp implements IFlat {
 
 
     @Override
-    public List<DpMsgDefine.DpWrap> getAllDevices(String account) {
+    public ArrayList<DpMsgDefine.DpWrap> getAllDevices(String account) {
         if (TextUtils.isEmpty(account)) {
             AppLogger.i("account is null");
             return null;
         }
-        List<DpMsgDefine.DpWrap> finalList = new ArrayList<>();
-        List<String> uuidList = accountUUidMap.get(account);
+        ArrayList<DpMsgDefine.DpWrap> finalList = new ArrayList<>();
+        ArrayList<String> uuidList = accountUUidMap.get(account);
         if (uuidList == null) {
             AppLogger.e("uuidList is null: " + account);
             return null;
         }
         for (String uuid : uuidList) {
-            finalList.add(getWrap(account, uuid));
+            finalList.add(getDevice(account, uuid));
         }
         return finalList;
     }

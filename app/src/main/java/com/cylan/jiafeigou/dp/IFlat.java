@@ -2,6 +2,7 @@ package com.cylan.jiafeigou.dp;
 
 import com.cylan.jiafeigou.n.mvp.model.BaseBean;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -30,14 +31,14 @@ public interface IFlat {
      *
      * @return
      */
-    List<String> getUuidList(String account);
+    ArrayList<String> getUuidList(String account);
 
 
     DpMsgDefine.DpWrap removeMsg(String account, String uuid);
 
-    DpMsgDefine.DpWrap getWrap(String account, String uuid);
+    DpMsgDefine.DpWrap getDevice(String account, String uuid);
 
     void cache(String account, String uuid, DpMsgDefine.DpMsg msg);
 
-    List<DpMsgDefine.DpWrap> getAllDevices(String account);
+    ArrayList<DpMsgDefine.DpWrap> getAllDevices(String account);
 }
