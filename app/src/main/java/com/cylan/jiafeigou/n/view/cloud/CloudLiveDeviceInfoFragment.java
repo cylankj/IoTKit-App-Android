@@ -12,11 +12,7 @@ import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.contract.cloud.CloudLiveDeviceInfoContract;
-import com.cylan.jiafeigou.n.view.mag.MagDeviceNameDialogFragment;
-import com.cylan.jiafeigou.n.view.mag.MagDeviceTimeZoneFragment;
-import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
-import com.cylan.jiafeigou.utils.ViewUtils;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -42,16 +38,15 @@ public class CloudLiveDeviceInfoFragment extends Fragment implements CloudLiveDe
 
     public OnChangeNameListener listener;
 
-    public interface OnChangeNameListener{
+    public interface OnChangeNameListener {
         void changeName(String name);
     }
 
-    public void setOnChangeNameListener(OnChangeNameListener listener){
+    public void setOnChangeNameListener(OnChangeNameListener listener) {
         this.listener = listener;
     }
 
-    private MagDeviceNameDialogFragment magDeviceNameDialogFragment;
-    private MagDeviceTimeZoneFragment magDeviceTimeZoneFragment;
+//    private MagDeviceNameDialogFragment magDeviceNameDialogFragment;
 
     public static CloudLiveDeviceInfoFragment newInstance(Bundle bundle) {
         CloudLiveDeviceInfoFragment fragment = new CloudLiveDeviceInfoFragment();
@@ -62,8 +57,7 @@ public class CloudLiveDeviceInfoFragment extends Fragment implements CloudLiveDe
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        magDeviceNameDialogFragment = MagDeviceNameDialogFragment.newInstance(new Bundle());
-        magDeviceTimeZoneFragment = MagDeviceTimeZoneFragment.newInstance(new Bundle());
+//        magDeviceNameDialogFragment = MagDeviceNameDialogFragment.newInstance(new Bundle());
     }
 
     @Nullable
@@ -95,36 +89,18 @@ public class CloudLiveDeviceInfoFragment extends Fragment implements CloudLiveDe
                 getFragmentManager().popBackStack();
                 break;
             case R.id.lLayout_information_facility_name:
-                magDeviceNameDialogFragment.show(getActivity().getFragmentManager(),
-                        "MsgDeviceNameDialogFragment");
-                if (getActivity() != null && getActivity().getFragmentManager() != null) {
-                    magDeviceNameDialogFragment.setListener(new MagDeviceNameDialogFragment.OnMagDataChangeListener() {
-                        @Override
-                        public void magDataChangeListener(String content) {
-                            tvInformationFacilityName.setText(content);
-                        }
-                    });
-                }
+//                magDeviceNameDialogFragment.show(getActivity().getFragmentManager(),
+//                        "MsgDeviceNameDialogFragment");
+//                if (getActivity() != null && getActivity().getFragmentManager() != null) {
+//                    magDeviceNameDialogFragment.setListener(new MagDeviceNameDialogFragment.OnMagDataChangeListener() {
+//                        @Override
+//                        public void magDataChangeListener(String content) {
+//                            tvInformationFacilityName.setText(content);
+//                        }
+//                    });
+//                }
                 break;
             case R.id.lLayout_information_facility_timezone:
-                if (getView() != null)
-                    ViewUtils.deBounceClick(getView().findViewById(R.id.lLayout_information_facility_timezone));
-                AppLogger.e("lLayout_information_facility_timezone");
-                getFragmentManager().beginTransaction()
-                        .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
-                                , R.anim.slide_in_left, R.anim.slide_out_right)
-                        .add(android.R.id.content, magDeviceTimeZoneFragment, "MagDeviceTimeZoneFragment")
-                        .addToBackStack("MagLiveInformationFragment")
-                        .commit();
-                /**
-                 * 接口回调，得到相应的text，并且赋值给当前fragment
-                 */
-                magDeviceTimeZoneFragment.setListener(new MagDeviceTimeZoneFragment.OnMagTimezoneChangeListener() {
-                    @Override
-                    public void magTimezoneChangeListener(String content) {
-                        tvInformationFacilityTimeZone.setText(content);
-                    }
-                });
                 break;
         }
     }
@@ -137,7 +113,7 @@ public class CloudLiveDeviceInfoFragment extends Fragment implements CloudLiveDe
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (listener != null){
+        if (listener != null) {
             listener.changeName(tvInformationFacilityName.getText().toString().trim());
         }
 

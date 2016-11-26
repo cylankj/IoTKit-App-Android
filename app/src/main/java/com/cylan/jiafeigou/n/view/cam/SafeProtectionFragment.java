@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
+import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.setting.SafeInfoContract;
@@ -57,7 +58,6 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
     TextView tvProtectionRepeatPeriod;
     @BindView(R.id.sw_motion_detection)
     SettingItemView1 swMotionDetection;
-
 
     private WeakReference<SetSensitivityDialogFragment> setSensitivityFragmentWeakReference;
     private WeakReference<WarnEffectFragment> warnEffectFragmentWeakReference;
@@ -104,7 +104,11 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        BeanCamInfo info = getArguments().getParcelable(JConstant.KEY_DEVICE_ITEM_BUNDLE);
+        updateDetails();
+    }
+
+    private void updateDetails() {
+        BeanCamInfo info = basePresenter.getBeanCamInfo();
         imgVTopBarCenter.setText(R.string.SECURE);
         ViewUtils.setViewPaddingStatusBar(fLayoutTopBarContainer);
         //移动侦测
@@ -120,7 +124,6 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
         tvProtectionSensitivity.setText(info.cameraAlarmSensitivity == 0 ? getString(R.string.SENSITIVI_LOW)
                 : (info.cameraAlarmSensitivity == 1 ? getString(R.string.SENSITIVI_STANDARD) : getString(R.string.SENSITIVI_HIGHT)));
     }
-
 
     @OnClick({R.id.imgV_top_bar_center,
             R.id.fLayout_protection_sensitivity,
@@ -142,7 +145,22 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
             break;
             case R.id.fLayout_protection_warn_effect: {
                 initWarnEffectFragment();
-                Fragment fragment = warnEffectFragmentWeakReference.get();
+                WarnEffectFragment fragment = warnEffectFragmentWeakReference.get();
+                fragment.setCallBack(new CallBack() {
+                    @Override
+                    public void callBack(Object o) {
+                        BeanCamInfo info = basePresenter.getBeanCamInfo();
+                        if (o instanceof DpMsgDefine.NotificationInfo) {
+                            if (info.cameraAlarmNotification.notification != ((DpMsgDefine.NotificationInfo) o).notification
+                                    || info.cameraAlarmNotification.duration != ((DpMsgDefine.NotificationInfo) o).duration) {
+                                //something update
+                                info.cameraAlarmNotification = (DpMsgDefine.NotificationInfo) o;
+                                basePresenter.updateInfo(info, DpMsgMap.ID_504_CAMERA_ALARM_NOTIFICATION);
+                                updateDetails();
+                            }
+                        }
+                    }
+                });
                 fragment.setArguments(getArguments());
                 loadFragment(android.R.id.content, fragment);
             }
@@ -167,11 +185,13 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
                                 }
                             }
                             tvProtectionRepeatPeriod.setText(builder.toString());
-                            BeanCamInfo info = basePresenter.getBean();
+                            BeanCamInfo info = basePresenter.getBeanCamInfo();
                             DpMsgDefine.AlarmInfo alarmInfo = info == null ? new DpMsgDefine.AlarmInfo() : info.cameraAlarmInfo;
-                            alarmInfo.day = (int) value;
-                            info.cameraAlarmInfo = alarmInfo;
-                            basePresenter.save(info);
+                            if (alarmInfo.day != (int) value) {
+                                alarmInfo.day = (int) value;
+                                info.cameraAlarmInfo = alarmInfo;
+                                basePresenter.updateInfo(info, DpMsgMap.ID_502_CAMERA_ALARM_INFO);
+                            }
                         }
                     }
                 });

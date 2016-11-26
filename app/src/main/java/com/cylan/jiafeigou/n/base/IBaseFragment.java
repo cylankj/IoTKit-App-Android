@@ -23,4 +23,14 @@ public abstract class IBaseFragment<P extends BasePresenter> extends Fragment {
         super.onPause();
         if (basePresenter != null) basePresenter.stop();
     }
+
+    protected CallBack callBack;
+
+    public void setCallBack(CallBack callBack) {
+        this.callBack = callBack;
+    }
+
+    public interface CallBack {
+        void callBack(Object t);
+    }
 }

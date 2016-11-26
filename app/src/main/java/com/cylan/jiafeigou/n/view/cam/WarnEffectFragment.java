@@ -51,6 +51,7 @@ public class WarnEffectFragment extends IBaseFragment<CamWarnContract.Presenter>
     LinearLayout lLayoutWarnRepeatMode;
     @BindView(R.id.rg_warn_effect)
     RadioGroup rgWarnEffect;
+    private BeanCamInfo info;
 
     public WarnEffectFragment() {
         // Required empty public constructor
@@ -89,9 +90,10 @@ public class WarnEffectFragment extends IBaseFragment<CamWarnContract.Presenter>
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         imgVTopBarCenter.setText("设备提示音");
         ViewUtils.setViewPaddingStatusBar(fLayoutTopBarContainer);
-        final BeanCamInfo info = getArguments().getParcelable(JConstant.KEY_DEVICE_ITEM_BUNDLE);
+        info = getArguments().getParcelable(JConstant.KEY_DEVICE_ITEM_BUNDLE);
         final DpMsgDefine.NotificationInfo notificationInfo = info.cameraAlarmNotification == null ?
                 new DpMsgDefine.NotificationInfo() : info.cameraAlarmNotification;
+        info.cameraAlarmNotification = notificationInfo;
         int effect = notificationInfo.notification;
         int duration = notificationInfo.duration;
         final int count = rgWarnEffect.getChildCount();
@@ -110,6 +112,14 @@ public class WarnEffectFragment extends IBaseFragment<CamWarnContract.Presenter>
             });
         }
         tvWarnRepeatMode.setText(String.format(Locale.getDefault(), "%ss", duration));
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        if (callBack != null) {
+            callBack.callBack(info.cameraAlarmNotification);
+        }
     }
 
     @OnClick({R.id.imgV_top_bar_center, R.id.lLayout_warn_repeat_mode})

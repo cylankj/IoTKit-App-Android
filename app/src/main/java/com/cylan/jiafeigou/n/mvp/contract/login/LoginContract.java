@@ -9,7 +9,7 @@ import com.cylan.jiafeigou.n.mvp.model.LoginAccountBean;
 /**
  * Created by lxh on 16-6-24.
  */
-public interface LoginModelContract {
+public interface LoginContract {
 
     /**
      * 授权失败

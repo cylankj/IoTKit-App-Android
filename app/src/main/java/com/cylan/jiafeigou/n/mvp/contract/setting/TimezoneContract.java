@@ -3,20 +3,25 @@ package com.cylan.jiafeigou.n.mvp.contract.setting;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
 import com.cylan.jiafeigou.n.mvp.model.BeanCamInfo;
+import com.cylan.jiafeigou.n.mvp.model.TimeZoneBean;
+
+import java.util.List;
 
 /**
  * Created by hunt on 16-5-26.
  */
 
-public interface SafeInfoContract {
+public interface TimezoneContract {
 
     interface View extends BaseView<Presenter> {
-        void beanUpdate(BeanCamInfo info);
+        void timezoneList(List<TimeZoneBean> list);
     }
 
     interface Presenter extends BasePresenter {
-        void updateInfo(BeanCamInfo beanCamInfo, int... id);
+        void onSearch(String content);
 
-        BeanCamInfo getBeanCamInfo();
+        void updateBeanInfo(BeanCamInfo info);
+
+        BeanCamInfo getInfo();
     }
 }

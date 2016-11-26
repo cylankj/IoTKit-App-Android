@@ -137,7 +137,7 @@ public class MineFriendListShareDevicesPresenterImp extends AbstractPresenter<Mi
                 }, new Action1<Throwable>() {
                     @Override
                     public void call(Throwable throwable) {
-                        AppLogger.e("sendShareToReq",throwable.getLocalizedMessage());
+                        AppLogger.e(throwable.getLocalizedMessage());
                     }
                 });
     }

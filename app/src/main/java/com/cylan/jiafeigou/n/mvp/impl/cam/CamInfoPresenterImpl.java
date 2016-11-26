@@ -22,9 +22,8 @@ public class CamInfoPresenterImpl extends AbstractPresenter<CamInfoContract.View
     }
 
     @Override
-    public void updateCamInfoBean(BeanCamInfo info) {
+    public void updateInfo(BeanCamInfo info, int... ids) {
         AppLogger.i("update camInfo: " + new Gson().toJson(info));
-
     }
 
     @Override

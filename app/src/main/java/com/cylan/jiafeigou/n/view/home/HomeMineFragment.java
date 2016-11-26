@@ -198,7 +198,6 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
     public void onBlur(Drawable drawable) {
         long time = System.currentTimeMillis();
         rLayoutHomeMineTop.setBackground(drawable);
-        AppLogger.e("use time:%d ms", System.currentTimeMillis() - time);
     }
 
     @Override

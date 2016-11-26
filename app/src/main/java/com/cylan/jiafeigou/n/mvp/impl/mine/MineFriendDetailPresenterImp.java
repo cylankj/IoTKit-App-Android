@@ -55,7 +55,7 @@ public class MineFriendDetailPresenterImp extends AbstractPresenter<MineFriendDe
                 }, new Action1<Throwable>() {
                     @Override
                     public void call(Throwable throwable) {
-                        AppLogger.e("sendDeleteFriendReq",throwable.getLocalizedMessage());
+                        AppLogger.e(throwable.getLocalizedMessage());
                     }
                 });
     }

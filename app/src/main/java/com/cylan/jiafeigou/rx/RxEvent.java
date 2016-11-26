@@ -9,6 +9,7 @@ import com.cylan.entity.jniCall.JFGFriendRequest;
 import com.cylan.entity.jniCall.JFGMsgHttpResult;
 import com.cylan.entity.jniCall.JFGResult;
 import com.cylan.entity.jniCall.JFGShareListInfo;
+import com.cylan.jiafeigou.dp.DpMsgDefine;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -393,5 +394,14 @@ public class RxEvent {
 
     public static final class DeviceList {
         public List<JFGDevice> jfgDevices;
+    }
+
+
+    /**
+     * 只有一个属性,设置页面更新的某一个属性
+     */
+    public static final class JfgDpMsgUpdate {
+        public String uuid;
+        public DpMsgDefine.DpMsg dpMsg;
     }
 }

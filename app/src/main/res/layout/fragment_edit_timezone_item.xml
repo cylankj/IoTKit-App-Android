@@ -1,18 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/lLayout_timezone_item"
     android:layout_width="match_parent"
-    android:layout_height="54dp"
-    android:background="@color/color_white"
-    android:orientation="vertical">
+    android:layout_height="54dp">
 
-    <TextView
-        android:id="@+id/tv_timezone_item"
-        android:layout_width="match_parent"
+    <LinearLayout
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="18dp"
-        android:text="中国/香港"
-        android:textColor="#000000"
-        android:textSize="16sp" />
+        android:layout_gravity="center_vertical"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_timezone_id"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/black"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/tv_timezone_gmt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/color_666666" />
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/imv_item_check"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|center_vertical"
+        android:layout_marginEnd="10dp"
+        android:src="@drawable/icon_check" />
 
     <View
         android:layout_width="match_parent"

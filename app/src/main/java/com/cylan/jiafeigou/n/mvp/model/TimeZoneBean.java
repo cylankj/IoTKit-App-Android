@@ -13,7 +13,7 @@ public class TimeZoneBean {
     private String gmt;
     private String id;
     private String name;
-    public int visibleType;
+    private int offset;
 
     public void setGmt(String gmt) {
         this.gmt = gmt;
@@ -37,5 +37,23 @@ public class TimeZoneBean {
 
     public String getName() {
         return name;
+    }
+
+    public void setOffset(int offset) {
+        this.offset = offset;
+    }
+
+    public int getOffset() {
+        return offset;
+    }
+
+    @Override
+    public String toString() {
+        return "TimeZoneBean{" +
+                "gmt='" + gmt + '\'' +
+                ", id='" + id + '\'' +
+                ", name='" + name + '\'' +
+                ", offset=" + offset +
+                '}';
     }
 }

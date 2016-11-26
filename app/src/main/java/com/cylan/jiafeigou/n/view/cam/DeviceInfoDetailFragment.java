@@ -2,8 +2,9 @@ package com.cylan.jiafeigou.n.view.cam;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,11 +13,11 @@ import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
-import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamInfoContract;
 import com.cylan.jiafeigou.n.mvp.impl.cam.CamInfoPresenterImpl;
 import com.cylan.jiafeigou.n.mvp.model.BeanCamInfo;
+import com.cylan.jiafeigou.n.mvp.model.TimeZoneBean;
 import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.dialog.EditFragmentDialog;
@@ -103,17 +104,22 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
         ViewUtils.setViewPaddingStatusBar(view.findViewById(R.id.fLayout_top_bar_container));
     }
 
+    @Override
     public void onStart() {
         super.onStart();
-        Parcelable p = getArguments().getParcelable(JConstant.KEY_DEVICE_ITEM_BUNDLE);
-        if (p != null && p instanceof BeanCamInfo) {
-            tvDeviceSdcardState.setText(getSdcardState(((BeanCamInfo) p).sdcardState, ((BeanCamInfo) p).sdcardStorage));
-            tvDeviceAlias.setText(((BeanCamInfo) p).deviceBase.alias);
-            tvDeviceCid.setText(((BeanCamInfo) p).deviceBase.uuid);
-            tvDeviceMac.setText(((BeanCamInfo) p).mac);
-            tvDeviceBatteryLevel.setText(((BeanCamInfo) p).battery + "");
-            tvDeviceSoftVersion.setText(((BeanCamInfo) p).deviceVersion);
-            tvDeviceSystemVersion.setText(((BeanCamInfo) p).deviceSysVersion);
+        updateDetails();
+    }
+
+    private void updateDetails() {
+        BeanCamInfo p = basePresenter.getBeanCamInfo();
+        if (p != null) {
+            tvDeviceSdcardState.setText(getSdcardState(p.sdcardState, p.sdcardStorage));
+            tvDeviceAlias.setText(p.deviceBase.alias);
+            tvDeviceCid.setText(p.deviceBase.uuid);
+            tvDeviceMac.setText(p.mac);
+            tvDeviceBatteryLevel.setText(p.battery + "");
+            tvDeviceSoftVersion.setText(p.deviceVersion);
+            tvDeviceSystemVersion.setText(p.deviceSysVersion);
         }
     }
 
@@ -137,41 +143,77 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
                 getActivity().onBackPressed();
                 break;
             case R.id.lLayout_information_facility_name:
-                if (editDialogFragment == null) {
-                    Bundle bundle = new Bundle();
-                    bundle.putString(KEY_TITLE, getString(R.string.EQUIPMENT_NAME));
-                    bundle.putString(KEY_LEFT_CONTENT, getString(R.string.OK));
-                    bundle.putString(KEY_RIGHT_CONTENT, getString(R.string.CANCEL));
-                    bundle.putBoolean(KEY_TOUCH_OUT_SIDE_DISMISS, false);
-                    editDialogFragment = EditFragmentDialog.newInstance(bundle);
-                }
-                if (editDialogFragment.isVisible())
-                    return;
-                editDialogFragment.show(getChildFragmentManager(), "editDialogFragment");
-                editDialogFragment.setAction(new EditFragmentDialog.DialogAction<String>() {
-                    @Override
-                    public void onDialogAction(int id, String value) {
-                        if (id == R.id.tv_confirm) {
-                            tvDeviceAlias.setText(value);
-                            if (basePresenter != null) {
-                                BeanCamInfo info = basePresenter.getBeanCamInfo();
-                                info.deviceBase.alias = value;
-                                basePresenter.updateCamInfoBean(info);
-                            }
-                        }
-                    }
-                });
+                toEditAlias();
                 break;
             case R.id.lLayout_information_facility_timezone:
-                DeviceTimeZoneFragment timeZoneFragment = DeviceTimeZoneFragment.newInstance(null);
-                ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(),
-                        timeZoneFragment, android.R.id.content);
+                toEditTimezone();
+
                 break;
         }
     }
 
+    /**
+     * 编辑时区
+     */
+    private void toEditTimezone() {
+
+        DeviceTimeZoneFragment timeZoneFragment = DeviceTimeZoneFragment.newInstance(getArguments());
+        timeZoneFragment.setCallBack(new CallBack() {
+            @Override
+            public void callBack(Object zone) {
+                if (!(zone instanceof TimeZoneBean)) {
+                    return;
+                }
+                TimeZoneBean timeZoneBean = (TimeZoneBean) zone;
+                BeanCamInfo info = basePresenter.getBeanCamInfo();
+                DpMsgDefine.MsgTimeZone timeZone = info.deviceTimeZone == null ? new DpMsgDefine.MsgTimeZone() : info.deviceTimeZone;
+                timeZone.timezone = timeZoneBean.getGmt();
+                info.deviceTimeZone = timeZone;
+                basePresenter.updateInfo(info);
+                updateDetails();
+                Log.d("CYLAN_TAG", "timezone: " + timeZoneBean);
+            }
+        });
+        ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(),
+                timeZoneFragment, android.R.id.content);
+    }
+
+    /**
+     * 编辑昵称
+     */
+    private void toEditAlias() {
+        if (editDialogFragment == null) {
+            Bundle bundle = new Bundle();
+            bundle.putString(KEY_TITLE, getString(R.string.EQUIPMENT_NAME));
+            bundle.putString(KEY_LEFT_CONTENT, getString(R.string.OK));
+            bundle.putString(KEY_RIGHT_CONTENT, getString(R.string.CANCEL));
+            bundle.putBoolean(KEY_TOUCH_OUT_SIDE_DISMISS, false);
+            editDialogFragment = EditFragmentDialog.newInstance(bundle);
+        }
+        if (editDialogFragment.isVisible())
+            return;
+        editDialogFragment.show(getChildFragmentManager(), "editDialogFragment");
+        editDialogFragment.setAction(new EditFragmentDialog.DialogAction<String>() {
+            @Override
+            public void onDialogAction(int id, String value) {
+                if (id == R.id.tv_confirm) {
+                    tvDeviceAlias.setText(value);
+                    if (basePresenter != null) {
+                        BeanCamInfo info = basePresenter.getBeanCamInfo();
+                        if (!TextUtils.equals(info.deviceBase.alias, value)) {
+                            info.deviceBase.alias = value;
+                            basePresenter.updateInfo(info);
+                            updateDetails();
+                            Log.d("BeanCamInfo", "BeanCamInfo: update alias: " + value);
+                        }
+                    }
+                }
+            }
+        });
+    }
+
     @Override
     public void setPresenter(CamInfoContract.Presenter presenter) {
-
+        basePresenter = presenter;
     }
 }

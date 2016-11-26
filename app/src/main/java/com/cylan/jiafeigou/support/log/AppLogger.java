@@ -226,31 +226,31 @@ public class AppLogger {
         logFile(null, content);
     }
 
-    /**
-     * Send activity_cloud_live_mesg_video_talk_item VERBOSE log message.
-     *
-     * @param filePath :作为一个标志
-     * @param msg The message you would like logged.
-     */
-    public static void v(String filePath, String msg) {
-        final String content = buildMessage(msg);
-        if (DEBUG)
-            android.util.Log.v(TAG, content);
-        logFile(filePath, content);
-    }
+//    /**
+//     * Send activity_cloud_live_mesg_video_talk_item VERBOSE log message.
+//     *
+//     * @param filePath :作为一个标志
+//     * @param msg The message you would like logged.
+//     */
+//    public static void v(String filePath, String msg) {
+//        final String content = buildMessage(msg);
+//        if (DEBUG)
+//            android.util.Log.v(TAG, content);
+//        logFile(filePath, content);
+//    }
 
-    /**
-     * Send activity_cloud_live_mesg_video_talk_item VERBOSE log message and log the exception.
-     *
-     * @param msg The message you would like logged.
-     * @param thr An exception to log
-     */
-    public static void v(String msg, Throwable thr) {
-        final String content = buildMessage(msg);
-        if (DEBUG)
-            android.util.Log.v(TAG, buildMessage(msg), thr);
-        logFile(null, content);
-    }
+//    /**
+//     * Send activity_cloud_live_mesg_video_talk_item VERBOSE log message and log the exception.
+//     *
+//     * @param msg The message you would like logged.
+//     * @param thr An exception to log
+//     */
+//    public static void v(String msg, Throwable thr) {
+//        final String content = buildMessage(msg);
+//        if (DEBUG)
+//            android.util.Log.v(TAG, buildMessage(msg), thr);
+//        logFile(null, content);
+//    }
 
     /**
      * Send activity_cloud_live_mesg_video_talk_item DEBUG log message.
@@ -264,30 +264,30 @@ public class AppLogger {
         logFile(null, content);
     }
 
-    /**
-     * Send activity_cloud_live_mesg_video_talk_item DEBUG log message.
-     *
-     * @param msg
-     */
-    public static void d(String filePath, String msg) {
-        final String content = buildMessage(msg);
-        if (DEBUG)
-            android.util.Log.d(TAG, buildMessage(msg));
-        logFile(filePath, content);
-    }
+//    /**
+//     * Send activity_cloud_live_mesg_video_talk_item DEBUG log message.
+//     *
+//     * @param msg
+//     */
+//    public static void d(String filePath, String msg) {
+//        final String content = buildMessage(msg);
+//        if (DEBUG)
+//            android.util.Log.d(TAG, buildMessage(msg));
+//        logFile(filePath, content);
+//    }
 
-    /**
-     * Send activity_cloud_live_mesg_video_talk_item DEBUG log message and log the exception.
-     *
-     * @param msg The message you would like logged.
-     * @param thr An exception to log
-     */
-    public static void d(String msg, Throwable thr) {
-        final String content = buildMessage(msg, thr);
-        if (DEBUG)
-            android.util.Log.d(TAG, content, thr);
-        logFile(null, content);
-    }
+//    /**
+//     * Send activity_cloud_live_mesg_video_talk_item DEBUG log message and log the exception.
+//     *
+//     * @param msg The message you would like logged.
+//     * @param thr An exception to log
+//     */
+//    public static void d(String msg, Throwable thr) {
+//        final String content = buildMessage(msg, thr);
+//        if (DEBUG)
+//            android.util.Log.d(TAG, content, thr);
+//        logFile(null, content);
+//    }
 
     /**
      * Send an INFO log message.
@@ -301,29 +301,29 @@ public class AppLogger {
         logFile(null, content);
     }
 
-    /**
-     * Send an INFO log message.
-     *
-     * @param msg The message you would like logged.
-     */
-    public static void i(String filePath, String msg) {
-        final String content = buildMessage(msg);
-        if (DEBUG)
-            android.util.Log.i(TAG, content);
-        logFile(filePath, content);
-    }
+//    /**
+//     * Send an INFO log message.
+//     *
+//     * @param msg The message you would like logged.
+//     */
+//    public static void i(String filePath, String msg) {
+//        final String content = buildMessage(msg);
+//        if (DEBUG)
+//            android.util.Log.i(TAG, content);
+//        logFile(filePath, content);
+//    }
 
-    /**
-     * Send activity_cloud_live_mesg_video_talk_item INFO log message and log the exception.
-     *
-     * @param msg The message you would like logged.
-     * @param thr An exception to log
-     */
-    public static void i(String msg, Throwable thr) {
-        final String content = buildMessage(msg);
-        if (DEBUG)
-            android.util.Log.i(TAG, buildMessage(msg), thr);
-    }
+//    /**
+//     * Send activity_cloud_live_mesg_video_talk_item INFO log message and log the exception.
+//     *
+//     * @param msg The message you would like logged.
+//     * @param thr An exception to log
+//     */
+//    public static void i(String msg, Throwable thr) {
+//        final String content = buildMessage(msg);
+//        if (DEBUG)
+//            android.util.Log.i(TAG, buildMessage(msg), thr);
+//    }
 
     /**
      * Send an ERROR log message.
@@ -337,17 +337,17 @@ public class AppLogger {
         logFile(null, msg);
     }
 
-    /**
-     * Send an ERROR log message.
-     *
-     * @param msg The message you would like logged.
-     */
-    public static void e(String filePath, String msg) {
-        final String content = buildMessage(msg);
-        if (DEBUG)
-            android.util.Log.e(TAG, content);
-        logFile(filePath, msg);
-    }
+//    /**
+//     * Send an ERROR log message.
+//     *
+//     * @param msg The message you would like logged.
+//     */
+//    public static void e(String filePath, String msg) {
+//        final String content = buildMessage(msg);
+//        if (DEBUG)
+//            android.util.Log.e(TAG, content);
+//        logFile(filePath, msg);
+//    }
 
     /**
      * Send activity_cloud_live_mesg_video_talk_item WARN log message
@@ -360,29 +360,29 @@ public class AppLogger {
             android.util.Log.w(TAG, buildMessage(msg));
     }
 
-    /**
-     * Send activity_cloud_live_mesg_video_talk_item WARN log message
-     *
-     * @param msg The message you would like logged.
-     */
-    public static void w(String filePath, String msg) {
-        final String content = buildMessage(msg);
-        if (DEBUG)
-            android.util.Log.w(TAG, content);
-        logFile(filePath, content);
-    }
+//    /**
+//     * Send activity_cloud_live_mesg_video_talk_item WARN log message
+//     *
+//     * @param msg The message you would like logged.
+//     */
+//    public static void w(String filePath, String msg) {
+//        final String content = buildMessage(msg);
+//        if (DEBUG)
+//            android.util.Log.w(TAG, content);
+//        logFile(filePath, content);
+//    }
 
-    /**
-     * Send activity_cloud_live_mesg_video_talk_item WARN log message and log the exception.
-     *
-     * @param msg The message you would like logged.
-     * @param thr An exception to log
-     */
-    public static void w(String msg, Throwable thr) {
-        final String content = buildMessage(msg);
-        if (DEBUG)
-            android.util.Log.w(TAG, buildMessage(msg), thr);
-    }
+//    /**
+//     * Send activity_cloud_live_mesg_video_talk_item WARN log message and log the exception.
+//     *
+//     * @param msg The message you would like logged.
+//     * @param thr An exception to log
+//     */
+//    public static void w(String msg, Throwable thr) {
+//        final String content = buildMessage(msg);
+//        if (DEBUG)
+//            android.util.Log.w(TAG, buildMessage(msg), thr);
+//    }
 
     /**
      * Send an empty WARN log message and log the exception.
@@ -394,23 +394,23 @@ public class AppLogger {
             android.util.Log.w(TAG, buildMessage(""), thr);
     }
 
-    /**
-     * Send an ERROR log message and log the exception.
-     *
-     * @param msg The message you would like logged.
-     * @param thr An exception to log
-     */
-    public static void e(String msg, Throwable thr) {
-        final String content = buildMessage(msg, thr);
-        if (DEBUG)
-            android.util.Log.e(TAG, buildMessage(msg), thr);
-    }
-
-    public static void e(String message, Object... args) {
-        final String content = buildMessage(message, args);
-        if (DEBUG)
-            android.util.Log.e(TAG, buildMessage(message, args));
-    }
+//    /**
+//     * Send an ERROR log message and log the exception.
+//     *
+//     * @param msg The message you would like logged.
+//     * @param thr An exception to log
+//     */
+//    public static void e(String msg, Throwable thr) {
+//        final String content = buildMessage(msg, thr);
+//        if (DEBUG)
+//            android.util.Log.e(TAG, buildMessage(msg), thr);
+//    }
+//
+//    public static void e(String message, Object... args) {
+//        final String content = buildMessage(message, args);
+//        if (DEBUG)
+//            android.util.Log.e(TAG, buildMessage(message, args));
+//    }
 
     /**
      * Building Message

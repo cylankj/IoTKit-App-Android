@@ -1,6 +1,5 @@
 package com.cylan.jiafeigou.n.mvp.impl.setting;
 
-import com.cylan.jfgapp.jni.JfgAppCmd;
 import com.cylan.jiafeigou.n.mvp.contract.setting.SafeInfoContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.n.mvp.model.BeanCamInfo;
@@ -21,12 +20,13 @@ public class SafeInfoPresenterImpl extends AbstractPresenter<SafeInfoContract.Vi
     }
 
     @Override
-    public void save(BeanCamInfo beanCamInfo) {
+    public void updateInfo(BeanCamInfo beanCamInfo, int... id) {
         this.beanCamInfo = beanCamInfo;
+
     }
 
     @Override
-    public BeanCamInfo getBean() {
+    public BeanCamInfo getBeanCamInfo() {
         return beanCamInfo;
     }
 
