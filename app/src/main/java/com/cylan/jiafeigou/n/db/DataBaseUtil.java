@@ -13,7 +13,6 @@ import com.cylan.jiafeigou.utils.ContextUtils;
  */
 public class DataBaseUtil {
 
-    private static final String DB_NAME = "cloud_live_db";
 
     private static DataBaseUtil uniqueInstance = null;
 

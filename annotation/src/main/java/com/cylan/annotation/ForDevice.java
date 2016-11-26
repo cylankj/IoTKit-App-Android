@@ -8,7 +8,7 @@ import static java.lang.annotation.RetentionPolicy.SOURCE;
 
 /**
  * Created by cylan-hunt on 16-11-16.
- * 标记一个属性属于哪一种设备
+ *
  */
 
 @Retention(SOURCE)

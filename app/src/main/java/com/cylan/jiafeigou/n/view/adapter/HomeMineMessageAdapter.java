@@ -1,5 +1,6 @@
 package com.cylan.jiafeigou.n.view.adapter;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -7,79 +8,57 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.n.mvp.model.SuggestionChatInfoBean;
+import com.cylan.jiafeigou.n.mvp.model.MineMessageBean;
+import com.cylan.superadapter.IMulItemViewType;
+import com.cylan.superadapter.SuperAdapter;
+import com.cylan.superadapter.internal.SuperViewHolder;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 
-public class HomeMineMessageAdapter extends RecyclerView.Adapter<HomeMineMessageAdapter.ChatViewHolder> {
-    private ArrayList<SuggestionChatInfoBean> messages;
+public class HomeMineMessageAdapter extends SuperAdapter<MineMessageBean>{
 
-    public HomeMineMessageAdapter(ArrayList<SuggestionChatInfoBean> messages) {
-        this.messages = messages;
+
+    public HomeMineMessageAdapter(Context context, List<MineMessageBean> items, IMulItemViewType<MineMessageBean> mulItemViewType) {
+        super(context, items, mulItemViewType);
     }
 
     @Override
-    public ChatViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view;
-        if (viewType == 0) {
-            //发送的消息布局
-            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.fragment_home_mine_message_items, parent, false);
-        } else {
-            //接收的消息布局
-            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.fragment_home_mine_message_items, parent, false);
-        }
-        return new ChatViewHolder(view);
-    }
-
-    //发送消息  0  接收receive  1
-    @Override
-    public int getItemViewType(int position) {
-        if (messages.get(position).getType() == 0) {
-            return 0;
-        } else {
-            return 1;
-        }
-    }
-
-    @Override
-    public void onBindViewHolder(ChatViewHolder holder, int position) {
-        SuggestionChatInfoBean message = messages.get(position);
+    public void onBind(SuperViewHolder holder, int viewType, int layoutPosition, MineMessageBean item) {
         //处理消息时间
-        holder.chat_item_time.setText(parseTime(message.getTime()));
-        if (position == 0 || compareTime(messages.get(position - 1).getTime(), messages.get(position).getTime())) {
-            holder.chat_item_time.setVisibility(View.VISIBLE);
+        holder.setText(R.id.message_item_time,parseTime(item.getTime()));
+        if (layoutPosition == 0 | compareTime(getItem(getItemCount() - 1).getTime(), item.getTime())) {
+            holder.setVisibility(R.id.message_item_time,View.VISIBLE);
         } else {
-            holder.chat_item_time.setVisibility(View.GONE);
+            holder.setVisibility(R.id.message_item_time,View.GONE);
         }
         //处理消息显示
-        holder.chat_item_msg.setText(message.getContent());
+        holder.setText(R.id.message_item_msg,item.getContent());
 
         //TODO
-
     }
 
     @Override
-    public int getItemCount() {
-        return messages.size();
-    }
+    protected IMulItemViewType<MineMessageBean> offerMultiItemViewType() {
+        return new IMulItemViewType<MineMessageBean>() {
+            @Override
+            public int getViewTypeCount() {
+                return 1;
+            }
 
-    class ChatViewHolder extends RecyclerView.ViewHolder {
+            @Override
+            public int getItemViewType(int position, MineMessageBean mineMessageBean) {
+                return 0;
+            }
 
-        private final TextView chat_item_time;
-        private final TextView chat_item_msg;
-
-        public ChatViewHolder(View itemView) {
-            super(itemView);
-            chat_item_time = (TextView) itemView.findViewById(R.id.message_item_time);
-            chat_item_msg = (TextView) itemView.findViewById(R.id.message_item_msg);
-        }
-    }
-
-    public ArrayList<SuggestionChatInfoBean> getList() {
-        return messages;
+            @Override
+            public int getLayoutId(int viewType) {
+                return R.layout.fragment_home_mine_message_items;
+            }
+        };
     }
 
     public String parseTime(String times) {

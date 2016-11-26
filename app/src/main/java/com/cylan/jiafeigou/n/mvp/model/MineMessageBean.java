@@ -1,5 +1,8 @@
 package com.cylan.jiafeigou.n.mvp.model;
 
+import com.cylan.jiafeigou.support.db.annotation.Column;
+import com.cylan.jiafeigou.support.db.annotation.Table;
+
 import java.io.Serializable;
 
 /**
@@ -7,25 +10,34 @@ import java.io.Serializable;
  * 创建时间：2016/8/30
  * 描述：
  */
-public class SuggestionChatInfoBean implements Serializable{
+@Table(name = "MineMessageBean")
+public class MineMessageBean implements Serializable{
 
+    @Column(name = "id", isId = true)
+    public int id;
+    @Column(name = "content")
     public String content;
+    @Column(name = "type")
     public int type;
+    @Column(name = "time")
     public String time;
-    public int icon;
+    @Column(name = "name")
     public String name;
 
+    public MineMessageBean(){}
 
-    public void setShowAcceptButton(boolean showAcceptButton) {
-        isShowAcceptButton = showAcceptButton;
-    }
-
-    public boolean isShowAcceptButton;
-
-    public SuggestionChatInfoBean(String content, int type, String time) {
+    public MineMessageBean(String content, int type, String time) {
         this.content = content;
         this.type = type;
         this.time = time;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getContent() {
@@ -52,16 +64,8 @@ public class SuggestionChatInfoBean implements Serializable{
         this.time = time;
     }
 
-    public int getIcon() {
-        return icon;
-    }
-
     public String getName() {
         return name;
-    }
-
-    public void setIcon(int icon) {
-        this.icon = icon;
     }
 
     public void setName(String name) {

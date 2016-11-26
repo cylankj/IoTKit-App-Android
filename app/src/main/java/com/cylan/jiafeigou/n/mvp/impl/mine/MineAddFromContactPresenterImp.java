@@ -24,7 +24,6 @@ public class MineAddFromContactPresenterImp extends AbstractPresenter<MineAddFro
 
     private String userAlids = "";
 
-    private Subscription sendRequestSub;
     private CompositeSubscription compositeSubscription;
 
     public MineAddFromContactPresenterImp(MineAddFromContactContract.View view) {

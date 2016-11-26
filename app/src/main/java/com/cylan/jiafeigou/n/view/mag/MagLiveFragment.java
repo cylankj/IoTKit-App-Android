@@ -62,7 +62,6 @@ public class MagLiveFragment extends Fragment implements HomeMagLiveContract.Vie
         return fragment;
     }
 
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

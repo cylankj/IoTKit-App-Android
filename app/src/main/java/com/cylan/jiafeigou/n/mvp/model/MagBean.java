@@ -9,7 +9,7 @@ import com.cylan.jiafeigou.support.db.annotation.Table;
  * 描述	      ${用来存放  magActivity页面所需要的数据的来源}
  */
 @Table(name = "MagBean")
-public class MagBean {
+public class MagBean{
 
     @Column(name = "id", isId = true)
     public int id;
@@ -22,6 +22,9 @@ public class MagBean {
 
     @Column(name = "visibleType")
     public int visibleType;
+
+    @Column(name = "isFirst")
+    public boolean isFirst;
 
     public boolean isFirst() {
         return isFirst;
@@ -39,8 +42,6 @@ public class MagBean {
         isFirst = first;
 
     }
-
-    public boolean isFirst;
 
     public void setMagTime(long magTime) {
         this.magTime = magTime;
@@ -74,4 +75,5 @@ public class MagBean {
     public void setId(int id) {
         this.id = id;
     }
+
 }

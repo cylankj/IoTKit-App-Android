@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.n.mvp.model.SuggestionChatInfoBean;
+import com.cylan.jiafeigou.n.mvp.model.MineMessageBean;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -15,9 +15,9 @@ import java.util.Date;
 
 
 public class SuggestionChatAdapter extends RecyclerView.Adapter<SuggestionChatAdapter.ChatViewHolder> {
-    private ArrayList<SuggestionChatInfoBean> messages;
+    private ArrayList<MineMessageBean> messages;
 
-    public SuggestionChatAdapter(ArrayList<SuggestionChatInfoBean> messages) {
+    public SuggestionChatAdapter(ArrayList<MineMessageBean> messages) {
         this.messages = messages;
     }
 
@@ -46,7 +46,7 @@ public class SuggestionChatAdapter extends RecyclerView.Adapter<SuggestionChatAd
 
     @Override
     public void onBindViewHolder(ChatViewHolder holder, int position) {
-        SuggestionChatInfoBean message = messages.get(position);
+        MineMessageBean message = messages.get(position);
         //处理消息时间
         holder.chat_item_time.setText(parseTime(message.getTime()));
         if (position == 0 || compareTime(messages.get(position - 1).getTime(), messages.get(position).getTime())) {
@@ -78,7 +78,7 @@ public class SuggestionChatAdapter extends RecyclerView.Adapter<SuggestionChatAd
         }
     }
 
-    public ArrayList<SuggestionChatInfoBean> getList() {
+    public ArrayList<MineMessageBean> getList() {
         return messages;
     }
 

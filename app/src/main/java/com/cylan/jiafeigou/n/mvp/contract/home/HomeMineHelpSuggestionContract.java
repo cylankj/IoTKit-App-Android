@@ -29,6 +29,16 @@ public interface HomeMineHelpSuggestionContract {
          * 添加用户输入的条目
          */
         void addInputItem();
+
+        /**
+         * 显示加载进度的提示框
+         */
+        void showLoadingDialog();
+
+        /**
+         * 隐藏加载进度的提示框
+         */
+        void hideLoadingDialog();
     }
 
     interface Presenter extends BasePresenter {
@@ -64,10 +74,10 @@ public interface HomeMineHelpSuggestionContract {
         boolean checkOverTime(String time);
 
         /**
-         * 检测是否超过20s
+         * 检测是否超过2分钟
          * @param time
          * @return
          */
-        boolean checkOver20s(String time);
+        boolean checkOver20Min(String time);
     }
 }

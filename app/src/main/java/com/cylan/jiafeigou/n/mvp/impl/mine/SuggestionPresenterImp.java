@@ -4,7 +4,7 @@ import android.content.Context;
 import android.widget.Toast;
 
 import com.cylan.jiafeigou.n.mvp.contract.mine.SuggestionChatContract;
-import com.cylan.jiafeigou.n.mvp.model.SuggestionChatInfoBean;
+import com.cylan.jiafeigou.n.mvp.model.MineMessageBean;
 
 import java.util.ArrayList;
 
@@ -15,7 +15,7 @@ import java.util.ArrayList;
  */
 public class SuggestionPresenterImp implements SuggestionChatContract.Presenter {
 
-    private ArrayList<SuggestionChatInfoBean> list;
+    private ArrayList<MineMessageBean> list;
     private int i = 0;
     private Context context;
     private SuggestionChatContract.View view;
@@ -26,11 +26,11 @@ public class SuggestionPresenterImp implements SuggestionChatContract.Presenter 
     }
 
     @Override
-    public ArrayList<SuggestionChatInfoBean> initChatData() {
+    public ArrayList<MineMessageBean> initChatData() {
 
-        list = new ArrayList<SuggestionChatInfoBean>();
+        list = new ArrayList<MineMessageBean>();
 
-        SuggestionChatInfoBean emMessage = new SuggestionChatInfoBean("我们一直在聆听，欢迎您提出宝贵的意见", 1, System.currentTimeMillis() + "");
+        MineMessageBean emMessage = new MineMessageBean("我们一直在聆听，欢迎您提出宝贵的意见", 1, System.currentTimeMillis() + "");
 
         list.add(emMessage);
 
@@ -38,13 +38,13 @@ public class SuggestionPresenterImp implements SuggestionChatContract.Presenter 
     }
 
     @Override
-    public void addChatItem(SuggestionChatInfoBean emMessage) {
+    public void addChatItem(MineMessageBean emMessage) {
         list.add(emMessage);
     }
 
     @Override
-    public SuggestionChatInfoBean makeEMMessageBean(String content, int type, String time) {
-        return new SuggestionChatInfoBean(content, type, time);
+    public MineMessageBean makeEMMessageBean(String content, int type, String time) {
+        return new MineMessageBean(content, type, time);
     }
 
     @Override
@@ -53,7 +53,7 @@ public class SuggestionPresenterImp implements SuggestionChatContract.Presenter 
     }
 
     @Override
-    public void clearChatList(ArrayList<SuggestionChatInfoBean> list) {
+    public void clearChatList(ArrayList<MineMessageBean> list) {
         list.clear();
     }
 
@@ -68,16 +68,16 @@ public class SuggestionPresenterImp implements SuggestionChatContract.Presenter 
     }
 
     @Override
-    public SuggestionChatInfoBean testServerData(long times) {
+    public MineMessageBean testServerData(long times) {
 
         if (i == 2) {
             i = 0;
         }
 
-        ArrayList<SuggestionChatInfoBean> list = new ArrayList<>();
+        ArrayList<MineMessageBean> list = new ArrayList<>();
 
-        SuggestionChatInfoBean emMessage1 = new SuggestionChatInfoBean("你的反馈已收到，我们将尽快回复", 1, times + "");
-        SuggestionChatInfoBean emMessage2 = new SuggestionChatInfoBean("您好，PC客户端已经实现视频下载，请 在加菲够官网——服务中心下载安装。" +
+        MineMessageBean emMessage1 = new MineMessageBean("你的反馈已收到，我们将尽快回复", 1, times + "");
+        MineMessageBean emMessage2 = new MineMessageBean("您好，PC客户端已经实现视频下载，请 在加菲够官网——服务中心下载安装。" +
                 "感谢您使用加菲狗产品，祝您生活愉快！", 1, times + "");
         list.add(emMessage1);
         list.add(emMessage2);
