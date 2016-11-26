@@ -4,9 +4,11 @@ import android.util.ArrayMap;
 
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.jiafeigou.n.mvp.model.LoginAccountBean;
+import com.cylan.jiafeigou.n.mvp.model.TimeZoneBean;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.google.gson.Gson;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -47,4 +49,6 @@ public class JCache {
     }
 
     public static LoginAccountBean tmpAccount;
+
+    public static List<TimeZoneBean> timeZoneBeenList;
 }

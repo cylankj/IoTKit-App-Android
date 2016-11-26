@@ -22,11 +22,14 @@ import butterknife.OnClick;
  */
 public class SimpleDialogFragment extends BaseDialog {
 
+    @BindView(R.id.tv_dialog_content)
+    TextView tvDialogContent;
     private Object cache;
 
     public static final String KEY_TITLE = "key_title";
     public static final String KEY_LEFT_CONTENT = "key_left";
     public static final String KEY_RIGHT_CONTENT = "key_right";
+    public static final String KEY_CONTENT_CONTENT = "key_content";
     public static final String KEY_TOUCH_OUT_SIDE_DISMISS = "key_touch_outside";
     @BindView(R.id.tv_dialog_title)
     TextView tvDialogTitle;
@@ -43,7 +46,7 @@ public class SimpleDialogFragment extends BaseDialog {
 
     @Override
     protected int getCustomHeight() {
-        return (int) (Resources.getSystem().getDisplayMetrics().density * 119 + 0.5f);
+        return ViewGroup.LayoutParams.WRAP_CONTENT;
     }
 
     public SimpleDialogFragment() {
@@ -69,12 +72,16 @@ public class SimpleDialogFragment extends BaseDialog {
         final String title = bundle.getString(KEY_TITLE);
         final String lContent = bundle.getString(KEY_LEFT_CONTENT);
         final String rContent = bundle.getString(KEY_RIGHT_CONTENT);
+        final String content = bundle.getString(KEY_CONTENT_CONTENT);
         if (!TextUtils.isEmpty(title))
             tvDialogTitle.setText(title);
         if (!TextUtils.isEmpty(lContent))
             tvDialogBtnLeft.setText(lContent);
         if (!TextUtils.isEmpty(rContent))
             tvDialogBtnRight.setText(rContent);
+        if (TextUtils.isEmpty(content)) {
+            tvDialogContent.setVisibility(View.GONE);
+        } else tvDialogContent.setText(content);
         getDialog().setCanceledOnTouchOutside(bundle.getBoolean(KEY_TOUCH_OUT_SIDE_DISMISS, false));
     }
 

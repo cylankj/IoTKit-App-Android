@@ -32,7 +32,7 @@ import com.cylan.jiafeigou.SmartcallActivity;
 import com.cylan.jiafeigou.cache.JCache;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
-import com.cylan.jiafeigou.n.mvp.contract.login.LoginModelContract;
+import com.cylan.jiafeigou.n.mvp.contract.login.LoginContract;
 import com.cylan.jiafeigou.n.mvp.impl.ForgetPwdPresenterImpl;
 import com.cylan.jiafeigou.n.mvp.impl.SetupPwdPresenterImpl;
 import com.cylan.jiafeigou.n.mvp.model.LoginAccountBean;
@@ -62,7 +62,7 @@ import butterknife.OnTextChanged;
  * 登陆主界面
  */
 public class LoginFragment extends android.support.v4.app.Fragment
-        implements LoginModelContract.View,
+        implements LoginContract.View,
         SimpleDialogFragment.SimpleDialogAction {
     private static final String TAG = "Fragment";
     public static final String KEY_TEMP_ACCOUNT = "temp_account";
@@ -135,7 +135,7 @@ public class LoginFragment extends android.support.v4.app.Fragment
 
     private VerificationCodeLogic verificationCodeLogic;
     private int registerWay = JConstant.REGISTER_BY_PHONE;
-    private LoginModelContract.Presenter presenter;
+    private LoginContract.Presenter presenter;
 
     public static LoginFragment newInstance(Bundle bundle) {
         LoginFragment fragment = new LoginFragment();
@@ -539,16 +539,16 @@ public class LoginFragment extends android.support.v4.app.Fragment
      * 登录超时，或者失败后动画复位
      */
     private void resetView() {
-        enableEditTextCursor(true);
-        enableOtherBtn(true);
         lbLogin.viewZoomBig();
         AnimatorUtils.viewAlpha(tvForgetPwd, true, 300, 0);
         AnimatorUtils.viewTranslationY(rLayoutLoginThirdParty, true, 100, 800, 0, 200);
+        enableOtherBtn(true);
+        enableEditTextCursor(true);
     }
 
 
     @Override
-    public void setPresenter(LoginModelContract.Presenter presenter) {
+    public void setPresenter(LoginContract.Presenter presenter) {
         this.presenter = presenter;
 //        AppLogger.e("setPresenter");
     }

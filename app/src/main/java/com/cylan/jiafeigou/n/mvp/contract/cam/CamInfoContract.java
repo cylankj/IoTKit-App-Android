@@ -10,18 +10,18 @@ import com.cylan.jiafeigou.n.mvp.model.BeanCamInfo;
 
 public interface CamInfoContract {
 
-    public interface View extends BaseView<Presenter> {
+    interface View extends BaseView<Presenter> {
 
 
     }
 
-    public interface Presenter extends BasePresenter {
+    interface Presenter extends BasePresenter {
         /**
          * 刷新BeanCamInfo
          *
          * @param info
          */
-        void updateCamInfoBean(BeanCamInfo info);
+        void updateInfo(BeanCamInfo info, int... ids);
 
         BeanCamInfo getBeanCamInfo();
     }

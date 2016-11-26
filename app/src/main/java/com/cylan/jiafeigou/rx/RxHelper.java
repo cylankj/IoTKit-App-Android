@@ -115,12 +115,16 @@ public class RxHelper {
     public static class Filter<T> implements Func1<T, Boolean> {
         private boolean enable;
 
-        public Filter(boolean enable) {
+        private String tag;
+
+        public Filter(String tag, boolean enable) {
             this.enable = enable;
+            this.tag = tag;
         }
 
         @Override
         public Boolean call(Object object) {
+            AppLogger.i(tag + ":" + enable);
             return enable;
         }
     }

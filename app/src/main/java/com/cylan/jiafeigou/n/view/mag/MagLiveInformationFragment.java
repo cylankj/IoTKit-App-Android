@@ -58,7 +58,6 @@ public class MagLiveInformationFragment extends Fragment implements MagLiveInfor
 
     //实例化fragment对象
     private MagDeviceNameDialogFragment magDeviceNameDialogFragment;
-    private MagDeviceTimeZoneFragment magDeviceTimeZoneFragment;
     private MagLiveInformationContract.Presenter presenter;
 
     private OnMagLiveDataChangeListener mListener;
@@ -106,7 +105,6 @@ public class MagLiveInformationFragment extends Fragment implements MagLiveInfor
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         magDeviceNameDialogFragment = MagDeviceNameDialogFragment.newInstance(new Bundle());
-        magDeviceTimeZoneFragment = MagDeviceTimeZoneFragment.newInstance(new Bundle());
         //在执行该回调方法前，可以进行数据的预先加载
         //在oncreatView之前，把fragment页面的布局内的需要修改的信息，修改一下。
     }
@@ -169,21 +167,6 @@ public class MagLiveInformationFragment extends Fragment implements MagLiveInfor
                 }
                 break;
             case R.id.lLayout_mag_information_facility_timezone:
-                getFragmentManager().beginTransaction()
-                        .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
-                                , R.anim.slide_in_left, R.anim.slide_out_right)
-                        .add(android.R.id.content, magDeviceTimeZoneFragment, "MagDeviceTimeZoneFragment")
-                        .addToBackStack("MagLiveInformationFragment")
-                        .commit();
-                /**
-                 * 接口回调，得到相应的text，并且赋值给当前fragment
-                 */
-                magDeviceTimeZoneFragment.setListener(new MagDeviceTimeZoneFragment.OnMagTimezoneChangeListener() {
-                    @Override
-                    public void magTimezoneChangeListener(String content) {
-                        tvMagInformationFacilityTimeZone.setText(content);
-                    }
-                });
                 break;
             case R.id.ll_information_facility_card_state:
                 onSdcardClick();

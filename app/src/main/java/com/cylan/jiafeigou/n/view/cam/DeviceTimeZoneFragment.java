@@ -1,17 +1,10 @@
 package com.cylan.jiafeigou.n.view.cam;
 
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.res.XmlResourceParser;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.Editable;
-import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,19 +14,24 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.dp.DpMsgDefine;
+import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.n.base.IBaseFragment;
+import com.cylan.jiafeigou.n.mvp.contract.setting.TimezoneContract;
+import com.cylan.jiafeigou.n.mvp.impl.setting.TimezonePresenterImpl;
+import com.cylan.jiafeigou.n.mvp.model.BeanCamInfo;
 import com.cylan.jiafeigou.n.mvp.model.TimeZoneBean;
-import com.cylan.jiafeigou.n.view.adapter.CamDeviceTimeZoneAdapter;
-import com.cylan.jiafeigou.utils.PreferencesUtils;
-import com.cylan.utils.ListUtils;
+import com.cylan.jiafeigou.n.view.adapter.DeviceTimeZoneAdapter;
+import com.cylan.jiafeigou.utils.ViewUtils;
+import com.cylan.jiafeigou.widget.dialog.BaseDialog;
+import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
 
-import org.xmlpull.v1.XmlPullParserException;
-
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
+import butterknife.OnTextChanged;
 
 
 /**
@@ -45,51 +43,35 @@ import butterknife.ButterKnife;
  * 更新时间   $Date$
  * 更新描述   ${TODO}
  */
-public class DeviceTimeZoneFragment extends Fragment {
+public class DeviceTimeZoneFragment extends IBaseFragment<TimezoneContract.Presenter>
+        implements TimezoneContract.View {
 
-    private static final String TAG = "tag";
 
-    private static final String TIME_ZONE_TAG = "timezone";
-    private static final String GMT_TAG = "gmt";
-    private static final String ID_TAG = "id";
+    @BindView(R.id.iv_back)
+    ImageView ivBack;
+    @BindView(R.id.et_timezone_search)
+    EditText etTimezoneSearch;
+    @BindView(R.id.iv_timezone_search)
+    ImageView ivTimezoneSearch;
+    @BindView(R.id.lv_timezone_detail)
+    RecyclerView lvTimezoneDetail;
+    @BindView(R.id.tv_timezone_no_result)
+    TextView tvTimezoneNoResult;
+    private DeviceTimeZoneAdapter adapter;
+    private SimpleDialogFragment simpleDialog;
 
-    //用来保存最初的data数据，在搜索内容为空的时候显示
-    private List<TimeZoneBean> mNoSearchCity = new ArrayList<>();
-
-    @BindView(R.id.tv_information_timezone_text)
-    TextView mTvText;
-
-    @BindView(R.id.et_information_timezone_find)
-    EditText mEtFind;
-
-    @BindView(R.id.iv_information_back)
-    ImageView mIvBack;
-
-    @BindView(R.id.iv_information_timezone_search)
-    ImageView mIvSearch;
-
-    @BindView(R.id.lv_information_timezone_detail)
-    RecyclerView mDetail;
-
-    @BindView(R.id.tv_timezone_noresult)
-    TextView mTvNoResult;
-
-    private String mDetailText;
-    private List<TimeZoneBean> mCityList;
-    private List<TimeZoneBean> findResult;
-    private CamDeviceTimeZoneAdapter adapter;
-
-    protected OnTimezoneChangeListener mTimezoneListener;
-
-    public void setListener(OnTimezoneChangeListener mListener) {
-        this.mTimezoneListener = mListener;
+    @Override
+    public void timezoneList(List<TimeZoneBean> list) {
+        if (adapter != null) {
+            adapter.clear();
+            adapter.addAll(list);
+        }
+        tvTimezoneNoResult.setVisibility(list == null || list.size() == 0 ? View.VISIBLE : View.GONE);
     }
 
-    /**
-     * 接口回调，用来刷新UI
-     */
-    public interface OnTimezoneChangeListener {
-        void timezoneChangeListener(int id, String content);
+    @Override
+    public void setPresenter(TimezoneContract.Presenter presenter) {
+        basePresenter = presenter;
     }
 
     public DeviceTimeZoneFragment() {
@@ -102,20 +84,10 @@ public class DeviceTimeZoneFragment extends Fragment {
     }
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        mEtFind.getText().clear();
-        initView();
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        basePresenter = new TimezonePresenterImpl(this,
+                (BeanCamInfo) getArguments().getParcelable(JConstant.KEY_DEVICE_ITEM_BUNDLE));
     }
 
     @Nullable
@@ -123,154 +95,79 @@ public class DeviceTimeZoneFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_edit_timezone, null);
         ButterKnife.bind(this, view);
-        mTvText.setVisibility(View.VISIBLE);
-        mEtFind.setVisibility(View.INVISIBLE);
-
-        initData();
-        initView();
-        initEtListener();
         return view;
     }
 
-    private void initView() {
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity().getApplicationContext(), LinearLayoutManager.VERTICAL, false);
-        mDetail.setLayoutManager(layoutManager);
-        adapter = new CamDeviceTimeZoneAdapter(getActivity().getApplicationContext(), mCityList, null);
-        showDialog(mCityList);
-        mDetail.setAdapter(adapter);
-    }
-
-    private void initData() {
-        mCityList = new ArrayList<>();
-        XmlResourceParser xrp = getResources().getXml(R.xml.timezones);
-        try {
-            while (xrp.getEventType() != XmlResourceParser.END_DOCUMENT) {
-                if (xrp.getEventType() == XmlResourceParser.START_TAG) {
-                    TimeZoneBean bean = new TimeZoneBean();
-                    final String name = xrp.getName();
-                    if (TextUtils.equals(name, TIME_ZONE_TAG)) {
-                        final String timeGmtName = xrp.getAttributeValue(0);
-                        bean.setGmt(timeGmtName);
-                        final String timeIdName = xrp.getAttributeValue(1);
-                        bean.setId(timeIdName);
-                        String rigon = xrp.nextText();
-                        bean.setName(rigon);
-                        mCityList.add(bean);
-                    }
-                }
-                xrp.next();
-            }
-        } catch (XmlPullParserException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-
+    private void initDialog() {
+        if (simpleDialog == null) {
+            simpleDialog = new SimpleDialogFragment();
+            Bundle bundle = new Bundle();
+            bundle.putString(SimpleDialogFragment.KEY_TITLE, getString(R.string.TIMEZONE_CHOOSE));
+            bundle.putString(SimpleDialogFragment.KEY_LEFT_CONTENT, getString(R.string.CANCEL));
+            bundle.putString(SimpleDialogFragment.KEY_RIGHT_CONTENT, getString(R.string.OK));
+            bundle.putString(SimpleDialogFragment.KEY_CONTENT_CONTENT, getString(R.string.TIMEZONE_INFO));
+            simpleDialog.setArguments(bundle);
         }
     }
 
-    private void initEtListener() {
-
-        mIvBack.setOnClickListener(new View.OnClickListener() {
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        ViewUtils.setViewPaddingStatusBar(view.findViewById(R.id.rLayout_timezone_list));
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity().getApplicationContext(), LinearLayoutManager.VERTICAL, false);
+        lvTimezoneDetail.setLayoutManager(layoutManager);
+        adapter = new DeviceTimeZoneAdapter(getActivity().getApplicationContext());
+        BeanCamInfo info = basePresenter.getInfo();
+        int offset = info.deviceTimeZone == null ? 0 : info.deviceTimeZone.offset;
+        adapter.setChooseId(offset);
+        lvTimezoneDetail.setAdapter(adapter);
+        adapter.setOnCLick(new DeviceTimeZoneAdapter.OnCLick() {
             @Override
             public void onClick(View v) {
-                getActivity().getSupportFragmentManager().popBackStack();
-                hideKeyboard(v);
-            }
-        });
-
-        mEtFind.setFocusable(true);
-        mEtFind.setFocusableInTouchMode(true);
-        mEtFind.requestFocus();
-        mIvSearch.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mTvText.setVisibility(View.INVISIBLE);
-                mEtFind.setVisibility(View.VISIBLE);
-                InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-                inputMethodManager.showSoftInput(mEtFind, InputMethodManager.SHOW_FORCED);
-            }
-        });
-
-        mEtFind.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                if (TextUtils.isEmpty(s)) {
-                    setRefreshData(assembleRawList());
-                    mTvNoResult.setVisibility(View.GONE);
+                initDialog();
+                if (simpleDialog.isVisible() || simpleDialog.isResumed()) {
                     return;
                 }
-                findResult = new ArrayList<>();
-                for (TimeZoneBean str : mCityList) {
-                    if (str.getName().contains(s)) {
-                        //如果包含就把包含的每个丢进新建的数组中去
-                        findResult.add(str);
-                    }
-                }
-                setRefreshData(findResult);
-                mTvNoResult.setVisibility(ListUtils.isEmpty(findResult) ? View.VISIBLE : View.GONE);
-            }
-        });
-    }
-
-    private List<TimeZoneBean> assembleRawList() {
-        if (ListUtils.isEmpty(mNoSearchCity))
-            mNoSearchCity.addAll(mCityList);
-        return mNoSearchCity;
-    }
-
-    /**
-     * 当editText更新的时候，重新setAdapter
-     */
-    private void setRefreshData(List<TimeZoneBean> data) {
-        adapter = new CamDeviceTimeZoneAdapter(getActivity().getApplicationContext(), data, null);
-        showDialog(data);
-        mDetail.setAdapter(adapter);
-    }
-
-    /**
-     * 对于不同的数据集合，展示相同的dialog并保存
-     *
-     * @param data
-     */
-    public void showDialog(final List<TimeZoneBean> data) {
-        adapter.setOnRecyclerViewListener(new CamDeviceTimeZoneAdapter.OnRecyclerViewListener() {
-            @Override
-            public void onItemClick(final View view, final int position) {
-                mDetailText = data.get(position).getName();
-                final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                builder.setTitle(R.string.TIPS);
-                builder.setMessage(R.string.TIMEZONE_INFO);
-                builder.setPositiveButton(R.string.CARRY_ON, new DialogInterface.OnClickListener() {
+                int id = ViewUtils.getParentAdapterPosition(lvTimezoneDetail, v, R.id.lLayout_timezone_item);
+                simpleDialog.setValue(adapter.getItem(id));
+                simpleDialog.setAction(new BaseDialog.SimpleDialogAction() {
                     @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        saveEditName();
-                        if (mTimezoneListener != null) {
-                            mTimezoneListener.timezoneChangeListener(position, mDetailText);
+                    public void onDialogAction(int id, Object value) {
+                        if (value != null && value instanceof TimeZoneBean) {
+                            BeanCamInfo info = basePresenter.getInfo();
+                            DpMsgDefine.MsgTimeZone timeZone = info.deviceTimeZone = info.deviceTimeZone == null ? new DpMsgDefine.MsgTimeZone() : info.deviceTimeZone;
+                            int offset = timeZone.offset;
+                            if (offset != ((TimeZoneBean) value).getOffset()) {
+                                //update
+                                timeZone.offset = offset;
+                                timeZone.timezone = ((TimeZoneBean) value).getName();
+                                basePresenter.updateBeanInfo(info);
+                            }
                         }
-                        hideKeyboard(view);
-                        getFragmentManager().popBackStack();
                     }
                 });
-                builder.setNegativeButton(R.string.CANCEL, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-                    }
-                });
-                builder.show();
+                simpleDialog.show(getChildFragmentManager(), "simpleDialog");
+                hideKeyboard(getView());
+            }
+        });
+        lvTimezoneDetail.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                if (dy > 0) {
+                    hideKeyboard(getView());
+                }
             }
         });
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+    }
+
+    @OnTextChanged(R.id.et_timezone_search)
+    public void onInputTextChanged(CharSequence s, int start, int before, int count) {
+        basePresenter.onSearch(s.toString());
+    }
 
     /**
      * 点击确认按钮之后，把软键盘进行隐藏
@@ -280,10 +177,11 @@ public class DeviceTimeZoneFragment extends Fragment {
         inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 
-    /**
-     * 保存用户所选择的时区
-     */
-    private void saveEditName() {
-        PreferencesUtils.putString("detailText", mDetailText);
+    @OnClick(R.id.iv_timezone_search)
+    public void onClick() {
+        etTimezoneSearch.getText().clear();
+        etTimezoneSearch.setFocusableInTouchMode(true);
+        etTimezoneSearch.setFocusable(true);
+        etTimezoneSearch.requestFocus();
     }
 }

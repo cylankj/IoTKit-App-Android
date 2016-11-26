@@ -2,6 +2,7 @@ package com.cylan.jiafeigou.dp;
 
 import android.text.TextUtils;
 import android.util.Log;
+import android.util.Pair;
 
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.entity.jniCall.JFGDPMsg;
@@ -44,10 +45,10 @@ import static com.cylan.jiafeigou.dp.DpMsgMap.ID_2_CLASS_MAP;
  * Created by cylan-hunt on 16-11-16.
  */
 
-public class DpDeviceAssembler implements IParser {
-    private static final String TAG = "DpDeviceAssembler:";
+public class DpAssembler implements IParser {
+    private static final String TAG = "DpAssembler:";
 
-    private static DpDeviceAssembler instance;
+    private static DpAssembler instance;
     /**
      * 请求序列
      */
@@ -55,13 +56,13 @@ public class DpDeviceAssembler implements IParser {
 
     private IFlat flatMsg;
 
-    private DpDeviceAssembler() {
+    private DpAssembler() {
         flatMsg = new FlattenMsgDp();
     }
 
-    public static DpDeviceAssembler getInstance() {
+    public static DpAssembler getInstance() {
         if (instance == null)
-            instance = new DpDeviceAssembler();
+            instance = new DpAssembler();
         return instance;
     }
 
@@ -71,13 +72,64 @@ public class DpDeviceAssembler implements IParser {
                 simpleBulkSubSend2Ui(),
                 deviceListSub(),
                 deviceDpSub(),
+                updateDpMsg(),
         };
         return subscriptions;
     }
 
+    /**
+     * 作为流水线的下游,更新所有的数据.
+     *
+     * @return
+     */
+    private Subscription updateDpMsg() {
+
+        return RxBus.getCacheInstance().toObservable(RxEvent.JfgDpMsgUpdate.class)
+                .subscribeOn(Schedulers.computation())
+                .filter(new RxHelper.Filter<RxEvent.JfgDpMsgUpdate>(TAG + "updateDpMsg",
+                        JCache.getAccountCache() != null && !TextUtils.isEmpty(JCache.getAccountCache().getAccount())))
+                .flatMap(new Func1<RxEvent.JfgDpMsgUpdate, Observable<Pair<DpMsgDefine.DpMsg, String>>>() {
+                    @Override
+                    public Observable<Pair<DpMsgDefine.DpMsg, String>> call(RxEvent.JfgDpMsgUpdate jfgDpMsgUpdate) {
+                        return Observable.just(new Pair<>(jfgDpMsgUpdate.dpMsg, jfgDpMsgUpdate.uuid));
+                    }
+                })
+                .map(new Func1<Pair<DpMsgDefine.DpMsg, String>, Object>() {
+                    @Override
+                    public Object call(Pair<DpMsgDefine.DpMsg, String> arrayListStringPair) {
+                        //拿出对应uuid的所有属性
+                        DpMsgDefine.DpWrap deviceDetailsCache = flatMsg.getWrap(JCache.getAccountCache().getAccount(),
+                                arrayListStringPair.second);
+                        if (deviceDetailsCache == null || deviceDetailsCache.baseDpMsgList == null) {
+                            AppLogger.e("deviceDetailsCache is null");
+                            return null;
+                        }
+                        for (DpMsgDefine.DpMsg dpMsg : deviceDetailsCache.baseDpMsgList) {
+                            if (dpMsg.msgId == arrayListStringPair.first.msgId) {
+                                //hit
+                                if (arrayListStringPair.first.version > dpMsg.version) {
+
+                                    AppLogger.i("update attr: " + dpMsg + " -->" + arrayListStringPair.first);
+                                    break;
+                                }
+                            }
+                        }
+                        return null;
+                    }
+                })
+                .retry(new RxHelper.ExceptionFun<>(TAG + "updateDpMsg"))
+                .subscribe();
+    }
+
+    /**
+     * 由于一个账号绑定的设备量不是很多{0,100},100个设备也是逆天了.
+     * 批量请求,批量更新
+     *
+     * @return
+     */
     private Subscription simpleBulkSubSend2Ui() {
         return RxBus.getCacheInstance().toObservable(RxUiEvent.QueryBulkDevice.class)
-                .filter(new RxHelper.Filter<>(JCache.getAccountCache() != null
+                .filter(new RxHelper.Filter<>(TAG + "simpleBulkSubSend2Ui", JCache.getAccountCache() != null
                         && !TextUtils.isEmpty(JCache.getAccountCache().getAccount())))
                 .map(new Func1<RxUiEvent.QueryBulkDevice, Object>() {
                     @Override

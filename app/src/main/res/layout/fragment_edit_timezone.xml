@@ -1,65 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@android:color/white"
     android:clickable="true"
     android:orientation="vertical">
 
-    <RelativeLayout
+    <FrameLayout
+        android:id="@+id/rLayout_timezone_list"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:layout_marginTop="25dp"
-        android:background="#0BA8CF">
+        android:layout_height="wrap_content"
+        android:background="#0BA8CF"
+        android:minHeight="48dp">
 
         <ImageView
-            android:id="@+id/iv_information_back"
+            android:id="@+id/iv_back"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_centerVertical="true"
+            android:layout_gravity="center_vertical"
             android:padding="15dp"
             android:src="@drawable/icon_nav_back_white" />
 
         <EditText
-            android:id="@+id/et_information_timezone_find"
+            android:id="@+id/et_timezone_search"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="48dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginEnd="48dp"
+            android:layout_marginStart="48dp"
             android:background="@null"
             android:focusable="true"
-            android:hint="搜索"
+            android:hint="@string/Search"
+            android:inputType="none"
+            android:text="@string/TIMEZONE_CHOOSE"
             android:textColor="@color/color_white"
             android:textColorHint="#B9DFED"
             android:textSize="18sp" />
 
-        <TextView
-            android:id="@+id/tv_information_timezone_text"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="48dp"
-            android:text="时区"
-            android:textColor="#FFFFFF"
-            android:textSize="18sp" />
-
-
         <ImageView
-            android:id="@+id/iv_information_timezone_search"
+            android:id="@+id/iv_timezone_search"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_alignParentRight="true"
+            android:layout_gravity="end|center_vertical"
             android:padding="15dp"
             android:src="@drawable/icon_search"
             android:visibility="visible" />
-    </RelativeLayout>
+    </FrameLayout>
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_below="@+id/rLayout_timezone_list"
         android:background="@color/color_white">
 
         <android.support.v7.widget.RecyclerView
-            android:id="@+id/lv_information_timezone_detail"
+            android:id="@+id/lv_timezone_detail"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginLeft="20dp"
@@ -70,17 +65,18 @@
             android:focusable="true"
             android:overScrollMode="never"
             android:scrollbars="none"
-            android:visibility="visible"/>
+            android:visibility="visible" />
 
-        <TextView
-            android:id="@+id/tv_timezone_noresult"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="90dp"
-            android:text="无结果"
-            android:textColor="#666666"
-            android:textSize="15sp"
-            android:visibility="gone" />
     </RelativeLayout>
-</LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_timezone_no_result"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/rLayout_timezone_list"
+        android:layout_marginTop="90dp"
+        android:background="@color/color_white"
+        android:gravity="center_horizontal"
+        android:text="@string/Tap3_FriendsAdd_NoContent"
+        android:visibility="gone" />
+</RelativeLayout>

@@ -41,7 +41,7 @@ public class BaseApplication extends Application implements Application.Activity
         if (TextUtils.equals(ProcessUtils.myProcessName(getApplicationContext()), getPackageName())) {
             Log.d("BaseApplication", "BaseApplication..." + ProcessUtils.myProcessName(getApplicationContext()));
             startService(new Intent(getApplicationContext(), DaemonService.class));
-            initNative();
+            startService(new Intent(getApplicationContext(), DataSourceService.class));
             initBlockCanary();
             initBugMonitor();
             registerBootComplete();
@@ -57,15 +57,6 @@ public class BaseApplication extends Application implements Application.Activity
                 LeakCanary.install(BaseApplication.this);
             }
         });
-    }
-
-    private void initNative() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                startService(new Intent(getApplicationContext(), DataSourceService.class));
-            }
-        }).start();
     }
 
     private void initBlockCanary() {

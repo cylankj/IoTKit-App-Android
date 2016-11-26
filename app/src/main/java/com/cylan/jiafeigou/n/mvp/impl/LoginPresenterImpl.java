@@ -10,7 +10,7 @@ import com.cylan.jiafeigou.cache.JCache;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
-import com.cylan.jiafeigou.n.mvp.contract.login.LoginModelContract;
+import com.cylan.jiafeigou.n.mvp.contract.login.LoginContract;
 import com.cylan.jiafeigou.n.mvp.model.LoginAccountBean;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
@@ -43,14 +43,14 @@ import rx.subscriptions.CompositeSubscription;
 /**
  * Created by lxh on 16-6-24.
  */
-public class LoginPresenterImpl extends AbstractPresenter<LoginModelContract.View>
-        implements LoginModelContract.Presenter {
+public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
+        implements LoginContract.Presenter {
 
     private Context ctx;
     private CompositeSubscription subscription;
     private Subscription logTimeoutSub;
 
-    public LoginPresenterImpl(LoginModelContract.View view) {
+    public LoginPresenterImpl(LoginContract.View view) {
         super(view);
         view.setPresenter(this);
         ctx = view.getContext();
@@ -93,8 +93,8 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginModelContract.Vie
     private Subscription resultLoginSub() {
         //sdk中，登陆失败的话，自动一分钟登录一次。
         return RxBus.getCacheInstance().toObservable(RxEvent.ResultLogin.class)
-                .observeOn(AndroidSchedulers.mainThread())
                 .delay(500, TimeUnit.MILLISECONDS)//set a delay
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<RxEvent.ResultLogin>() {
                     @Override
                     public void call(RxEvent.ResultLogin resultLogin) {
@@ -246,7 +246,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginModelContract.Vie
         public void onComplete(Object response) {
             if (null == response) {
                 if (getView() != null) {
-                    getView().onQQAuthorizeResult(LoginModelContract.AUTHORIZE_ERROR);
+                    getView().onQQAuthorizeResult(LoginContract.AUTHORIZE_ERROR);
                 }
                 return;
             }
@@ -268,7 +268,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginModelContract.Vie
         @Override
         public void onError(UiError uiError) {
             if (getView() != null) {
-                getView().onQQAuthorizeResult(LoginModelContract.AUTHORIZE_ERROR);
+                getView().onQQAuthorizeResult(LoginContract.AUTHORIZE_ERROR);
             }
             AppLogger.e("errorCode: %d ,error: %s", uiError.errorCode, uiError.errorMessage);
         }
@@ -276,7 +276,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginModelContract.Vie
         @Override
         public void onCancel() {
             if (getView() != null) {
-                getView().onQQAuthorizeResult(LoginModelContract.AUTHORIZE_CANCLE);
+                getView().onQQAuthorizeResult(LoginContract.AUTHORIZE_CANCLE);
             }
         }
     }
@@ -302,7 +302,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginModelContract.Vie
         @Override
         public void onWeiboException(WeiboException e) {
             if (getView() != null) {
-                getView().onSinaAuthorizeResult(LoginModelContract.AUTHORIZE_ERROR);
+                getView().onSinaAuthorizeResult(LoginContract.AUTHORIZE_ERROR);
             }
             AppLogger.e(e.toString());
         }
@@ -310,7 +310,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginModelContract.Vie
         @Override
         public void onCancel() {
             if (getView() != null) {
-                getView().onSinaAuthorizeResult(LoginModelContract.AUTHORIZE_CANCLE);
+                getView().onSinaAuthorizeResult(LoginContract.AUTHORIZE_CANCLE);
             }
         }
 
@@ -338,7 +338,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginModelContract.Vie
         @Override
         public void onWeiboException(WeiboException e) {
             if (getView() != null) {
-                getView().onSinaAuthorizeResult(LoginModelContract.AUTHORIZE_CANCLE);
+                getView().onSinaAuthorizeResult(LoginContract.AUTHORIZE_CANCLE);
             }
             AppLogger.e(e.toString());
         }

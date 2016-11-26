@@ -2,9 +2,6 @@ package com.cylan.jiafeigou.dp;
 
 import com.cylan.jiafeigou.support.log.AppLogger;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import rx.subscriptions.CompositeSubscription;
 
 /**
@@ -21,7 +18,7 @@ public class DpParser {
     private IParser deviceDpParser;
 
     private DpParser() {
-        deviceDpParser = DpDeviceAssembler.getInstance();
+        deviceDpParser = DpAssembler.getInstance();
     }
 
     public static DpParser getDpParser() {

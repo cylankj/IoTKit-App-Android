@@ -39,6 +39,7 @@ import rx.subscriptions.CompositeSubscription;
 public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListContract.View>
         implements HomePageListContract.Presenter {
 
+    private static final String TAG = "HomePageListPresenterImpl:";
     private TimeTickBroadcast timeTickBroadcast;
     private Subscription onRefreshSubscription;
     private CompositeSubscription bulkSubscriptions;
@@ -100,7 +101,7 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
 
     private Subscription JFGAccountUpdate() {
         return RxBus.getCacheInstance().toObservableSticky(JFGAccount.class)
-                .filter(new RxHelper.Filter<>((getView() != null && JCache.isOnline())))
+                .filter(new RxHelper.Filter<>(TAG + "JFGAccountUpdate", (getView() != null && JCache.isOnline())))
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(new Func1<JFGAccount, Object>() {
                     @Override
