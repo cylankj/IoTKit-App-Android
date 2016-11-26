@@ -21,9 +21,12 @@ public interface MineInfoSetPassWordContract {
         boolean checkOldPassword(String oldPass);
 
         boolean checkNewPassword(String oldPass, String newPass);
-
+        /**
+         * 检测新密码长度
+         * @param newPass
+         * @return
+         */
         boolean checkNewPasswordLength(String newPass);
-
         /**
          * 发送修改密码请求
          * @param account

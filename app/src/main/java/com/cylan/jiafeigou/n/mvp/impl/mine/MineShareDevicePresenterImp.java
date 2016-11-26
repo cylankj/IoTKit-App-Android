@@ -1,5 +1,10 @@
 package com.cylan.jiafeigou.n.mvp.impl.mine;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
+
 import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.entity.jniCall.JFGFriendAccount;
 import com.cylan.entity.jniCall.JFGShareListInfo;
@@ -210,6 +215,20 @@ public class MineShareDevicePresenterImp extends AbstractPresenter<MineShareDevi
                         handlerShareDeviceListData(deviceBeen);
                     }
                 });
+    }
+
+    /**
+     * 检测是否拥有联系人的权限
+     */
+    @Override
+    public boolean checkPermission() {
+        if (ContextCompat.checkSelfPermission(getView().getContext(),
+                Manifest.permission.READ_CONTACTS)
+                != PackageManager.PERMISSION_GRANTED) {
+            return false;
+        }else{
+            return true;
+        }
     }
 
 }

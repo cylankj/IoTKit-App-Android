@@ -73,11 +73,6 @@ public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMine
         return fragment;
     }
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -104,7 +99,6 @@ public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMine
         if (presenter != null) presenter.stop();
     }
 
-
     @OnClick({R.id.tv_mine_help_suggestion_clear, R.id.tv_home_mine_suggestion})
     public void onClick(View v) {
         switch (v.getId()) {
@@ -118,7 +112,7 @@ public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMine
                     return;
                 }
                 if (suggestionAdapter.getItemCount() != 1) {
-                    if (presenter.checkOverTime(suggestionAdapter.getItem(suggestionAdapter.getList().size() - 1).getDate())) {
+                    if (presenter.checkOverTime(suggestionAdapter.getItem(suggestionAdapter.getItemCount() - 1).getDate())) {
                         addAutoReply();
                     }
                 } else {
@@ -148,10 +142,9 @@ public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMine
                                 suggestionAdapter.clear();
                                 suggestionAdapter.notifyDataSetHasChanged();
                                 hideLoadingDialog();
-                                ToastUtil.showToast("消息已清空");
+                                ToastUtil.showPositiveToast("清空成功");
                             }
                         }, 2000);
-
                     }
                 })
                 .setNegativeButton("取消", new DialogInterface.OnClickListener() {

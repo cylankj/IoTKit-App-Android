@@ -69,6 +69,11 @@ public interface MineShareDeviceContract {
          */
         Subscription getDeviceInfoCallBack();
 
+        /**
+         * 检测是否拥有联系人的权限
+         */
+        boolean checkPermission();
+
     }
 
 }

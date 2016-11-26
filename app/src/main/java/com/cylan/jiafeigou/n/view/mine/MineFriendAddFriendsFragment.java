@@ -1,7 +1,11 @@
 package com.cylan.jiafeigou.n.view.mine;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,7 +16,9 @@ import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendsAddFriendContract;
+import com.cylan.jiafeigou.n.mvp.impl.mine.MineFriendsAddFriendPresenterImp;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 
 import butterknife.BindView;
@@ -39,6 +45,7 @@ public class MineFriendAddFriendsFragment extends Fragment implements MineFriend
     private MineFriendScanAddFragment scanAddFragment;
     private MineFriendAddFromContactFragment addFromContactFragment;
     private MineFriendAddByNumFragment addByNumFragment;
+    private MineFriendsAddFriendContract.Presenter presenter;
 
     public static MineFriendAddFriendsFragment newInstance() {
         return new MineFriendAddFriendsFragment();
@@ -62,7 +69,12 @@ public class MineFriendAddFriendsFragment extends Fragment implements MineFriend
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home_mine_relativesandfriends_addfriends, container, false);
         ButterKnife.bind(this, view);
+        initPresenter();
         return view;
+    }
+
+    private void initPresenter() {
+        presenter = new MineFriendsAddFriendPresenterImp(this);
     }
 
     @OnClick({R.id.iv_home_mine_relativesandfriends_add_back, R.id.tv_scan_add, R.id.tv_add_from_contract, R.id.et_friend_phonenumber})
@@ -83,7 +95,14 @@ public class MineFriendAddFriendsFragment extends Fragment implements MineFriend
                 if (getView() != null)
                     ViewUtils.deBounceClick(getView().findViewById(R.id.tv_add_from_contract));
                 AppLogger.d("tv_add_from_contract");
-                jump2AddFromContactFragment();
+                if (presenter.checkPermission()){
+                    jump2AddFromContactFragment();
+                }else {
+                    ActivityCompat.requestPermissions(getActivity(),
+                            new String[]{Manifest.permission.READ_CONTACTS},
+                            1);
+                }
+
                 break;
 
             case R.id.et_friend_phonenumber:                            //根据对方账号添加
@@ -120,5 +139,17 @@ public class MineFriendAddFriendsFragment extends Fragment implements MineFriend
                 .add(android.R.id.content, scanAddFragment, "scanAddFragment")
                 .addToBackStack("mineHelpFragment")
                 .commit();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == 1){
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                jump2AddFromContactFragment();
+            } else {
+                ToastUtil.showNegativeToast("请授权，才能访问联系人");
+            }
+        }
     }
 }
