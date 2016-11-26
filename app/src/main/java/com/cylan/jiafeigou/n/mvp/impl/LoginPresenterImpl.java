@@ -270,7 +270,6 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
             if (getView() != null) {
                 getView().onQQAuthorizeResult(LoginContract.AUTHORIZE_ERROR);
             }
-            AppLogger.e("errorCode: %d ,error: %s", uiError.errorCode, uiError.errorMessage);
         }
 
         @Override

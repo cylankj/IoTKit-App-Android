@@ -47,27 +47,17 @@
             android:visibility="visible" />
     </FrameLayout>
 
-    <RelativeLayout
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/lv_timezone_detail"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/rLayout_timezone_list"
-        android:background="@color/color_white">
+        android:layout_marginBottom="14dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="14dp" />
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/lv_timezone_detail"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:layout_marginTop="14dp"
-            android:background="@color/color_white"
-            android:clickable="true"
-            android:focusable="true"
-            android:overScrollMode="never"
-            android:scrollbars="none"
-            android:visibility="visible" />
-
-    </RelativeLayout>
 
     <TextView
         android:id="@+id/tv_timezone_no_result"

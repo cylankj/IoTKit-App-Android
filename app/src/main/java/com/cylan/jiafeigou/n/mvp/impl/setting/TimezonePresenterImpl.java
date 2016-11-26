@@ -117,7 +117,7 @@ public class TimezonePresenterImpl extends AbstractPresenter<TimezoneContract.Vi
 
     @Override
     public void updateBeanInfo(final BeanCamInfo info) {
-        AppLogger.i(TAG, "save info: " + new Gson().toJson(info));
+        AppLogger.i(TAG + "save info: " + new Gson().toJson(info));
         Observable.just(null)
                 .subscribeOn(Schedulers.newThread())
                 .subscribe(new Action1<Object>() {
