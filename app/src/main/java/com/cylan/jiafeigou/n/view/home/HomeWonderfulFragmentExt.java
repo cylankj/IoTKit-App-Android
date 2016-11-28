@@ -39,6 +39,7 @@ import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.OnActivityReenterListener;
 import com.cylan.jiafeigou.misc.SharedElementCallBackListener;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeWonderfulContract;
+import com.cylan.jiafeigou.n.mvp.impl.home.HomeWonderfulPresenterImpl;
 import com.cylan.jiafeigou.n.mvp.model.MediaBean;
 import com.cylan.jiafeigou.n.view.activity.MediaActivity;
 import com.cylan.jiafeigou.n.view.adapter.HomeWonderfulAdapter;
@@ -140,6 +141,7 @@ public class HomeWonderfulFragmentExt extends Fragment implements
         if (savedInstanceState != null) {
             AppLogger.d("save L:" + savedInstanceState);
         }
+        this.presenter = new HomeWonderfulPresenterImpl(this);
     }
 
     @Override
@@ -197,6 +199,12 @@ public class HomeWonderfulFragmentExt extends Fragment implements
 
     private SimpleDialogFragment initDeleteDialog() {
         if (deleteDialogFragmentWeakReference == null || deleteDialogFragmentWeakReference.get() == null) {
+            //为删除dialog设置提示信息
+            Bundle args = new Bundle();
+            args.putString(SimpleDialogFragment.KEY_TITLE, "");
+            args.putString(SimpleDialogFragment.KEY_LEFT_CONTENT, "");
+            args.putString(SimpleDialogFragment.KEY_RIGHT_CONTENT, "");
+            args.putString(SimpleDialogFragment.KEY_CONTENT_CONTENT, "");
             deleteDialogFragmentWeakReference = new WeakReference<>(SimpleDialogFragment.newInstance(null));
             deleteDialogFragmentWeakReference.get().setAction(this);
         }
