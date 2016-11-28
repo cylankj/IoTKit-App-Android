@@ -97,6 +97,7 @@ public class BaseApplication extends Application implements Application.Activity
     private void enableDebugOptions() {
         DebugOptionsImpl options = new DebugOptionsImpl("test");
         options.enableCrashHandler(this, PathGetter.createPath(JConstant.CRASH_PATH));
+
         options.enableStrictMode();
     }
 

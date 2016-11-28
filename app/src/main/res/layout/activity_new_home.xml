@@ -14,11 +14,11 @@
 
 
     <FrameLayout
-        android:background="@color/color_f9f9f9"
         android:id="@+id/fLayout_new_home_bottom_menu"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true">
+        android:layout_alignParentBottom="true"
+        android:background="@color/color_f9f9f9">
 
 
         <RadioGroup
@@ -58,56 +58,47 @@
             android:background="@color/color_d2d2d2" />
     </FrameLayout>
 
-    <RelativeLayout
-        android:id="@+id/fLayout_wonderful_timeline"
+
+    <!--<RelativeLayout-->
+    <!--android:id="@+id/fLayout_wonderful_timeline"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="55dp"-->
+    <!--android:layout_alignParentBottom="true"-->
+    <!--android:visibility="gone">-->
+
+    <com.cylan.jiafeigou.widget.wheel.TimeWheelView
+        android:id="@+id/wv_wonderful_timeline"
         android:layout_width="match_parent"
-        android:layout_height="80dp"
+        android:layout_height="55dp"
         android:layout_alignParentBottom="true"
-        android:visibility="gone">
+        android:background="@color/color_f6f9fa"
+        android:visibility="gone"
+        />
+
+    <!--<RelativeLayout-->
+    <!--android:id="@+id/rLayout_time_line_hot"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:layout_below="@+id/tv_time_line_pop"-->
+    <!--android:layout_marginTop="5dp"-->
+    <!--android:background="@color/color_f6f9fa">-->
+
+    <!--<View-->
+    <!--android:id="@+id/v_simple_38line"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="1dp"-->
+    <!--android:background="@color/color_d2d2d2"/>-->
 
 
-        <TextView
-            android:id="@+id/tv_time_line_pop"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:background="@drawable/time_line_pop"
-            android:gravity="center"
-            android:text="2016-09-07"
-            android:textColor="@android:color/white"
-            android:textSize="11sp" />
+    <!--<com.cylan.jiafeigou.widget.wheel.WheelView-->
+    <!--android:id="@+id/wv_wonderful_timeline"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="55dp"-->
+    <!--android:layout_alignParentBottom="true"-->
+    <!--android:layout_below="@+id/v_simple_38line"-->
+    <!--android:layout_marginTop="5dp"/>-->
 
 
-        <RelativeLayout
-            android:id="@+id/rLayout_time_line_hot"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_below="@+id/tv_time_line_pop"
-            android:layout_marginTop="5dp"
-            android:background="@color/color_f6f9fa">
-
-            <View
-                android:id="@+id/v_simple_38line"
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/color_d2d2d2" />
-
-
-            <com.cylan.jiafeigou.widget.wheel.WheelView
-                android:id="@+id/wv_wonderful_timeline"
-                android:layout_width="match_parent"
-                android:layout_height="55dp"
-                android:layout_alignParentBottom="true"
-                android:layout_below="@+id/v_simple_38line"
-                android:layout_marginTop="5dp" />
-
-            <!--<View-->
-            <!--android:layout_width="3dp"-->
-            <!--android:layout_height="35dp"-->
-            <!--android:layout_alignParentBottom="true"-->
-            <!--android:layout_centerHorizontal="true"-->
-            <!--android:background="@color/color_36bdff" />-->
-
-        </RelativeLayout>
-    </RelativeLayout>
+    <!--</RelativeLayout>-->
+    <!--</RelativeLayout>-->
 </RelativeLayout>

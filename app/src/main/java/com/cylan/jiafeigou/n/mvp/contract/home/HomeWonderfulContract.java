@@ -3,7 +3,6 @@ package com.cylan.jiafeigou.n.mvp.contract.home;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
 import com.cylan.jiafeigou.n.mvp.model.MediaBean;
-import com.cylan.jiafeigou.widget.wheel.WheelViewDataSet;
 
 import java.util.List;
 
@@ -18,7 +17,7 @@ public interface HomeWonderfulContract {
 
         void onHeadBackgroundChang(int daytime);
 
-        void onTimeLineDataUpdate(WheelViewDataSet wheelViewDataSet);
+        void onTimeLineDataUpdate(List<Long> wheelViewDataSet);
 
         /**
          * @param dayTime：0白天 1黑夜
@@ -35,6 +34,8 @@ public interface HomeWonderfulContract {
 
     interface Presenter extends BasePresenter {
         void startRefresh();
+
+        void startLoadMore(long startTime);
 
         /**
          * 删除每日精彩条目

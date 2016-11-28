@@ -189,4 +189,27 @@
     <declare-styleable name="KPSwitchPanelLayout">
         <attr name="ignore_recommend_height" format="boolean" />
     </declare-styleable>
+
+    <declare-styleable name="TimeWheelView">
+        <attr name="divideLine_height" format="dimension|reference"/>
+        <attr name="markLine_color" format="color|reference"/>
+        <attr name="markLine_color_bg" format="color|reference"/>
+        <attr name="markLine_width" format="dimension|reference"/>
+        <attr name="monthText_color" format="color|reference"/>
+        <attr name="monthText_size" format="dimension|reference"/>
+        <attr name="monthLine_color" format="color|reference"/>
+        <attr name="monthLine_width" format="dimension|reference"/>
+        <attr name="divideLine_color" format="color|reference"/>
+        <attr name="divideLine_width" format="dimension|reference"/>
+        <attr name="popWindow_showTime" format="integer|reference"/>
+        <attr name="animate_duration" format="integer|reference"/>
+        <attr name="popWindow_layout" format="reference"/>
+        <attr name="popWindow_margin" format="dimension|reference"/>
+        <attr name="markLine_space" format="dimension|reference"/>
+        <attr name="markLine_height" format="dimension|reference"/>
+        <attr name="monthLine_height" format="dimension|reference"/>
+        <attr name="monthText_margin" format="dimension|reference"/>
+        <attr name="bound_line_width" format="dimension|reference"/>
+        <attr name="bound_line_color" format="color|reference"/>
+    </declare-styleable>
 </resources>

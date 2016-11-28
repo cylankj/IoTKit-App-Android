@@ -45,6 +45,42 @@ public class AnimatorUtils {
         an.setDuration(duration).start();
     }
 
+    public static void slide(final View target, final OnEndListener listener) {
+        int height = target.getHeight();
+        if (height == 0) height = 300;
+        final float start = target.isShown() ? 0.0f : height;
+        final float end = target.isShown() ? height : 0.0f;
+        final boolean shouldGone = target.isShown();
+        AnimatorSet set = new AnimatorSet();
+        set.playTogether(ObjectAnimator.ofFloat(target, "translationY", start, end));
+        set.setDuration(200);
+        set.setInterpolator(new AccelerateInterpolator());
+        set.addListener(new SimpleAnimationListener() {
+            @Override
+            public void onAnimationStart(Animator animator) {
+                if (!target.isShown())
+                    target.setVisibility(View.VISIBLE);
+                if (listener!=null){
+                    listener.onAnimationStart(target.isShown());
+                }
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animator) {
+                if (shouldGone)
+                    target.setVisibility(View.GONE);
+                if (listener != null) listener.onAnimationEnd(shouldGone);
+            }
+        });
+        set.start();
+    }
+
+    public interface OnEndListener {
+        void onAnimationEnd(boolean gone);
+
+        void onAnimationStart(boolean gone);
+    }
+
     public static void slide(final View target) {
         int height = target.getHeight();
         if (height == 0) height = 300;

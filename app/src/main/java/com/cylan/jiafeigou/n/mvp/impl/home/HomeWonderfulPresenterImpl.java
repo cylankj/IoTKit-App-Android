@@ -12,16 +12,14 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.cylan.jiafeigou.misc.JFGRules;
-import com.cylan.jiafeigou.misc.TimeLineAssembler;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeWonderfulContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.n.mvp.model.MediaBean;
+import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.support.wechat.WechatShare;
 import com.cylan.jiafeigou.utils.ContextUtils;
-import com.cylan.jiafeigou.widget.wheel.WheelViewDataSet;
 import com.cylan.utils.RandomUtils;
 import com.google.gson.Gson;
 
@@ -32,7 +30,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
@@ -172,32 +169,38 @@ public class HomeWonderfulPresenterImpl extends AbstractPresenter<HomeWonderfulC
      * @param list
      * @return
      */
-    private WheelViewDataSet assembleTimeLineData(List<MediaBean> list) {
-        TimeLineAssembler timeLineAssemble = new TimeLineAssembler();
-        timeLineAssemble.setMediaBeanLinkedList(new LinkedList<>(list));
-        return timeLineAssemble.generateDataSet();
+    private List<Long> assembleTimeLineData(List<MediaBean> list) {
+//        TimeLineAssembler timeLineAssemble = new TimeLineAssembler();
+//        timeLineAssemble.setMediaBeanLinkedList(new LinkedList<>(list));
+//        return timeLineAssemble.generateDataSet();
+        ArrayList<Long> result = new ArrayList<>(1024);
+        for (MediaBean bean : list) {
+            result.add(bean.time);
+        }
+        return result;
     }
 
+
     private String getDate(final long time) {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("MM:dd", Locale.getDefault());
+        SimpleDateFormat dateFormat = new SimpleDateFormat("MM月dd", Locale.getDefault());
         return dateFormat.format(new Date(time));
     }
 
     private void wrapTimeLineDataSet() {
         onTimeLineSubscription = Observable.just(weakReferenceList)
                 .subscribeOn(Schedulers.newThread())
-                .flatMap(new Func1<SoftReference<List<MediaBean>>, Observable<WheelViewDataSet>>() {
+                .flatMap(new Func1<SoftReference<List<MediaBean>>, Observable<List<Long>>>() {
                     @Override
-                    public Observable<WheelViewDataSet> call(SoftReference<List<MediaBean>> listWeakReference) {
+                    public Observable<List<Long>> call(SoftReference<List<MediaBean>> listWeakReference) {
                         if (listWeakReference == null || listWeakReference.get() == null)
                             return null;
                         return Observable.just(assembleTimeLineData(listWeakReference.get()));
                     }
                 })
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<WheelViewDataSet>() {
+                .subscribe(new Action1<List<Long>>() {
                     @Override
-                    public void call(WheelViewDataSet wheelViewDataSet) {
+                    public void call(List<Long> wheelViewDataSet) {
                         if (wheelViewDataSet == null)
                             return;
                         if (getView() != null) getView().onTimeLineDataUpdate(wheelViewDataSet);
@@ -234,6 +237,11 @@ public class HomeWonderfulPresenterImpl extends AbstractPresenter<HomeWonderfulC
 
                     }
                 });
+
+    }
+
+    @Override
+    public void startLoadMore(long startTime) {
 
     }
 
