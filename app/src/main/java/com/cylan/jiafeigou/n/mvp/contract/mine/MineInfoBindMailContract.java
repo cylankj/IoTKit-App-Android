@@ -46,7 +46,6 @@ public interface MineInfoBindMailContract {
         boolean checkEmail(String email);               //检查邮箱的合法性
 
         void checkEmailIsBinded(String email);       //检验邮箱是否已经绑定过
-
         /**
          * 检验账号是否手机号
          * @param account
@@ -64,7 +63,6 @@ public interface MineInfoBindMailContract {
          * @return
          */
         Subscription getCheckAccountCallBack();
-
 
         /**
          * 修改属性后的回调

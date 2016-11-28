@@ -63,7 +63,7 @@ public class MineShareToContactPresenterImp extends AbstractPresenter<MineShareT
     }
 
     @Override
-    public void handleSearchResult(String inputContent) {
+    public void handlerSearchResult(String inputContent) {
         filterDateList = new ArrayList<>();
         if (TextUtils.isEmpty(inputContent)) {
             filterDateList.addAll(allCoverData);

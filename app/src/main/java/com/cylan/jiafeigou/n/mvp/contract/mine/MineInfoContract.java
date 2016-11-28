@@ -52,6 +52,13 @@ public interface MineInfoContract {
          * @return
          */
         boolean cameraIsCanUse();
+
+        /**
+         * 检测相机的权限
+         * @return
+         */
+        boolean checkCameraPermission();
+
     }
 
 }

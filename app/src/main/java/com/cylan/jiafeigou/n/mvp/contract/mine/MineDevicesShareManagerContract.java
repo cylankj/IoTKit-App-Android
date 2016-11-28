@@ -30,7 +30,7 @@ public interface MineDevicesShareManagerContract {
         /**
          * desc：初始化显示已分享的列表
          */
-        void inintHasShareFriendRecyView(ArrayList<RelAndFriendBean> list);
+        void initHasShareFriendRecyView(ArrayList<RelAndFriendBean> list);
 
         /**
          * desc：显示空视图

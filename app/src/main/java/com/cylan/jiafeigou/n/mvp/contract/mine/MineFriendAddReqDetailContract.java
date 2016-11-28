@@ -66,7 +66,6 @@ public interface MineFriendAddReqDetailContract {
          */
         void sendAddReq(MineAddReqBean addRequestItems);
 
-
         /**
          * 获取到好友添加请求的列表，用户判断是否向我发送过添加请求
          * @return

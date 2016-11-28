@@ -65,7 +65,7 @@ public interface MineShareToContactContract {
 
     interface Presenter extends BasePresenter {
 
-        void handleSearchResult(String input);
+        void handlerSearchResult(String input);
 
         /**
          * 处理点击按钮

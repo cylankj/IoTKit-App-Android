@@ -104,7 +104,7 @@ public class MineShareToContactFragment extends Fragment implements MineShareToC
      */
     @OnTextChanged(R.id.et_search_contact)
     public void initEditListener(CharSequence s, int start, int before, int count){
-        presenter.handleSearchResult(s.toString().trim());
+        presenter.handlerSearchResult(s.toString().trim());
     }
 
     private void initPresenter() {
@@ -254,6 +254,12 @@ public class MineShareToContactFragment extends Fragment implements MineShareToC
                 break;
             case JError.ErrorShareInvalidAccount:                             //未注册
                 startSendMesgActivity(contractPhone);
+                break;
+
+            case JError.ErrorShareToSelf:                                     //不能分享给自己
+                if (getView() != null){
+                    showPersonOverDialog("你不能分享给自己");
+                }
                 break;
         }
     }

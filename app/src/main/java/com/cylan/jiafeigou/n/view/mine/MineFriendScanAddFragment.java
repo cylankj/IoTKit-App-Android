@@ -9,7 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendScanAddContract;
@@ -160,7 +159,7 @@ public class MineFriendScanAddFragment extends Fragment implements ZXingScannerV
                 @Override
                 public void run() {
                     if (presenter != null) {
-                        presenter.checkScannAccount(rawResult.getText());
+                        presenter.checkScanAccount(rawResult.getText());
                     }
                 }
             }, 2000);

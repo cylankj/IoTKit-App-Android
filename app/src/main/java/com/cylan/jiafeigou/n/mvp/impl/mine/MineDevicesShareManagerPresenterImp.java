@@ -42,6 +42,7 @@ public class MineDevicesShareManagerPresenterImp extends AbstractPresenter<MineD
         }else {
             compositeSubscription = new CompositeSubscription();
             compositeSubscription.add(getHasShareListCallback());
+            compositeSubscription.add(cancleShareCallBack());
         }
     }
 
@@ -100,7 +101,7 @@ public class MineDevicesShareManagerPresenterImp extends AbstractPresenter<MineD
     }
 
     /**
-     * 讲数据装换
+     * 将数据装换
      * @param getHasShareFriendCallBack
      */
     private ArrayList<RelAndFriendBean> converData(RxEvent.GetHasShareFriendCallBack getHasShareFriendCallBack) {
@@ -119,7 +120,7 @@ public class MineDevicesShareManagerPresenterImp extends AbstractPresenter<MineD
     public void initHasShareListData(ArrayList<RelAndFriendBean> shareDeviceFriendlist) {
         if (getView() != null && shareDeviceFriendlist != null && shareDeviceFriendlist.size() != 0){
             getView().showHasShareListTitle();
-            getView().inintHasShareFriendRecyView(shareDeviceFriendlist);
+            getView().initHasShareFriendRecyView(shareDeviceFriendlist);
         }else {
             getView().hideHasShareListTitle();
             getView().showNoHasShareFriendNullView();
@@ -163,7 +164,7 @@ public class MineDevicesShareManagerPresenterImp extends AbstractPresenter<MineD
                     @Override
                     public void call(RxEvent.UnshareDeviceCallBack unshareDeviceCallBack) {
                         if (unshareDeviceCallBack != null && unshareDeviceCallBack instanceof RxEvent.UnshareDeviceCallBack){
-                            handlderUnShareCallback(unshareDeviceCallBack);
+                            handlerUnShareCallback(unshareDeviceCallBack);
                         }
                     }
                 });
@@ -173,7 +174,7 @@ public class MineDevicesShareManagerPresenterImp extends AbstractPresenter<MineD
      * 取消分享回调的处理
      * @param unshareDeviceCallBack
      */
-    private void handlderUnShareCallback(RxEvent.UnshareDeviceCallBack unshareDeviceCallBack) {
+    private void handlerUnShareCallback(RxEvent.UnshareDeviceCallBack unshareDeviceCallBack) {
         if (getView() != null){
             getView().hideCancleShareProgress();
             if (unshareDeviceCallBack.i == JError.ErrorOK){
