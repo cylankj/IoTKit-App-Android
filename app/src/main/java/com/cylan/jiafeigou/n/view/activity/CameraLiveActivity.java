@@ -93,7 +93,8 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
 
 
     private void initAdapter() {
-        SimpleAdapterPager simpleAdapterPager = new SimpleAdapterPager(getSupportFragmentManager());
+        SimpleAdapterPager simpleAdapterPager = new SimpleAdapterPager(getSupportFragmentManager(),
+                getIntent().getBundleExtra(JConstant.KEY_DEVICE_ITEM_BUNDLE));
         vpCameraLive.setAdapter(simpleAdapterPager);
         vIndicator.setViewPager(vpCameraLive);
         vIndicator.setOnPageChangeListener(simpleListener);
@@ -157,24 +158,24 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
 
 class SimpleAdapterPager extends FragmentPagerAdapter {
 
-    public SimpleAdapterPager(FragmentManager fm) {
+    private Bundle bundle;
+
+    public SimpleAdapterPager(FragmentManager fm, Bundle bundle) {
         super(fm);
+        this.bundle = bundle;
     }
 
     @Override
     public Fragment getItem(int position) {
-        Bundle bundle = new Bundle();
-        bundle.putInt("what", position);
         if (position == 0) {
             return CameraLiveFragment.newInstance(bundle);
         } else {
-            return CamMessageListFragment.newInstance(new Bundle());
+            return CamMessageListFragment.newInstance(bundle);
         }
     }
 
     @Override
     public void destroyItem(ViewGroup container, int position, Object object) {
-//        super.destroyItem(container, position, object);
     }
 
     @Override

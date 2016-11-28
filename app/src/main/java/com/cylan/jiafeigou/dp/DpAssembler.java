@@ -10,6 +10,7 @@ import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.entity.jniCall.RobotoGetDataRsp;
 import com.cylan.jfgapp.jni.JfgAppCmd;
 import com.cylan.jiafeigou.cache.JCache;
+import com.cylan.jiafeigou.misc.Convertor;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.mvp.model.BaseBean;
 import com.cylan.jiafeigou.n.mvp.model.param.BaseParam;
@@ -49,10 +50,6 @@ public class DpAssembler implements IParser {
     private static final String TAG = "DpAssembler:";
 
     private static DpAssembler instance;
-    /**
-     * 请求序列
-     */
-//    private final Map<Long, Long> seqMap = new HashMap<>();
 
     private IFlat flatMsg;
 
@@ -253,33 +250,14 @@ public class DpAssembler implements IParser {
                             JFGDPMsg dp = entry.getValue() != null
                                     && entry.getValue().size() > 0 ? entry.getValue().get(0) : null;
                             final int keyId = entry.getKey();
-                            Class<?> clazz = ID_2_CLASS_MAP.get(keyId);
-                            if (clazz == null || dp == null) {
-                                continue;
+                            if (keyId == DpMsgMap.ID_505_CAMERA_ALARM_MSG || dp == null) {
+                                //报警消息
+                                assembleCamAlarmMsg(identity, entry.getValue());
+                                return null;
                             }
-                            Object o = null;
-                            try {
-                                o = unpackData(dp.packValue, clazz);
-                            } catch (Exception e) {
-                                AppLogger.e(TAG + keyId + " " + e.getLocalizedMessage());
-                            }
-                            try {
-                                flatMsg.cache(JCache.getAccountCache().getAccount(),
-                                        identity,
-                                        wrap(o, keyId, dp.version));
-                                Log.d(TAG, "superParser: " + keyId + " " + o);
-                            } catch (Exception e) {
-                                AppLogger.e(TAG + keyId + " " + e.getLocalizedMessage());
-                            }
+                            assembleMiscMsg(identity, dp, keyId);
                         }
-                        RxUiEvent.SingleDevice singleDevice = new RxUiEvent.SingleDevice();
-                        singleDevice.dpMsg = flatMsg.getDevice(JCache.getAccountCache().getAccount(), identity);
-                        if (singleDevice.dpMsg == null) {
-                            AppLogger.i(TAG + "DpParser:null ");
-                            return null;
-                        }
-                        AppLogger.i(TAG + singleDevice);
-                        RxBus.getUiInstance().post(singleDevice);
+//                        sendSingleDeviceInfo(identity);
                         return null;
                     }
                 })
@@ -288,12 +266,76 @@ public class DpAssembler implements IParser {
                 .subscribe();
     }
 
-    private DpMsgDefine.DpMsg wrap(Object o, int msgId, long version) {
-        DpMsgDefine.DpMsg base = new DpMsgDefine.DpMsg();
-        base.version = version;
-        base.msgId = msgId;
-        base.o = o;
-        return base;
+    /**
+     * 摄像头的报警图片是批量返回的.
+     *
+     * @param uuid
+     * @param msgs
+     */
+    private void assembleCamAlarmMsg(String uuid, ArrayList<JFGDPMsg> msgs) {
+        RxEvent.JfgAlarmMsg msg = new RxEvent.JfgAlarmMsg();
+        msg.uuid = uuid;
+        if (msg.jfgdpMsgs == null)
+            msg.jfgdpMsgs = new ArrayList<>();
+        if (msgs == null) {
+            RxBus.getCacheInstance().post(msg);
+            return;
+        }
+        for (JFGDPMsg jfgdpMsg : msgs) {
+            try {
+                DpMsgDefine.AlarmMsg o = unpackData(jfgdpMsg.packValue,
+                        DpMsgDefine.AlarmMsg.class);
+                DpMsgDefine.DpMsg dpMsg = new DpMsgDefine.DpMsg();
+                dpMsg.msgId = (int) jfgdpMsg.id;
+                dpMsg.version = jfgdpMsg.version;
+                dpMsg.o = o;
+                msg.jfgdpMsgs.add(dpMsg);
+            } catch (Exception e) {
+                AppLogger.e("assembleCamAlarmMsg: " + e.getLocalizedMessage());
+            }
+        }
+        flatMsg.cache(JCache.getAccountCache().getAccount(), uuid, msg.jfgdpMsgs);
+        RxBus.getCacheInstance().post(msg);
+    }
+
+    /**
+     * 组装零散的消息
+     *
+     * @param identity
+     * @param dp
+     * @param keyId
+     */
+    private void assembleMiscMsg(String identity, JFGDPMsg dp, int keyId) {
+        if (dp == null) {
+            AppLogger.e("dp is null: " + keyId);
+            return;
+        }
+        try {
+            Class<?> clazz = ID_2_CLASS_MAP.get(keyId);
+            Object o = unpackData(dp.packValue, clazz);
+            if (o == null) {
+                AppLogger.e("o is null" + keyId);
+                return;
+            }
+            flatMsg.cache(JCache.getAccountCache().getAccount(),
+                    identity,
+                    Convertor.convert(o, keyId, dp.version));
+            Log.d(TAG, "superParser: " + keyId + " " + o);
+        } catch (Exception e) {
+            AppLogger.e(TAG + keyId + " " + e.getLocalizedMessage());
+        }
+    }
+
+    private void sendSingleDeviceInfo(String uuid) {
+        RxUiEvent.SingleDevice singleDevice = new RxUiEvent.SingleDevice();
+        singleDevice.dpMsg = flatMsg.getDevice(JCache.getAccountCache().getAccount(),
+                uuid);
+        if (singleDevice.dpMsg == null) {
+            AppLogger.i(TAG + "DpParser:null ");
+            return;
+        }
+        AppLogger.i(TAG + singleDevice);
+        RxBus.getUiInstance().post(singleDevice);
     }
 
     /**
@@ -322,6 +364,10 @@ public class DpAssembler implements IParser {
      * @return
      */
     private <T> T unpackData(byte[] data, Class<T> clazz) throws IOException {
+        if (clazz == null || data == null) {
+            AppLogger.e("value is null: " + clazz);
+            return null;
+        }
         MessagePack ms = new MessagePack();
         return ms.read(data, clazz);
     }

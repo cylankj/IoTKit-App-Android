@@ -1,12 +1,18 @@
 package com.cylan.jiafeigou.n.view.adapter;
 
 import android.content.Context;
+import android.content.res.Resources;
+import android.view.View;
+import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.model.CamMessageBean;
 import com.cylan.superadapter.IMulItemViewType;
 import com.cylan.superadapter.SuperAdapter;
 import com.cylan.superadapter.internal.SuperViewHolder;
+import com.cylan.utils.DensityUtils;
 
 import java.util.List;
 
@@ -27,8 +33,15 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
     public static final int MODE_NORMAL = 0;
     public static final int MODE_EDIT = 1;
 
+    //图片Container的总体宽度,可能有3条,可能有2条.
+    private final int pic_container_width;
+    private final int pic_container_height;
+
     public CamMessageListAdapter(Context context, List<CamMessageBean> items, IMulItemViewType<CamMessageBean> mulItemViewType) {
         super(context, items, mulItemViewType);
+        //这个40是根据layout中的marginStart,marginEnd距离提取出来,如果需要修改,参考这个layout
+        pic_container_width = Resources.getSystem().getDisplayMetrics().widthPixels - DensityUtils.dip2px(40);
+        pic_container_height = DensityUtils.dip2px(225 - 48 - 36 - 5);
     }
 
     public void setMode(int mode) {
@@ -42,31 +55,35 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
                 handleTextContentLayout(holder, layoutPosition, item);
                 break;
             case 1:
-                handleOnePicLayout(holder, layoutPosition, item);
-                break;
-            case 2:
-                handleTwoPicLayout(holder, layoutPosition, item);
-                break;
-            case 3:
-                handleThreePicLayout(holder, layoutPosition, item);
+                handlePicsLayout(holder, layoutPosition, item);
                 break;
         }
     }
 
-    private void handleTextContentLayout(SuperViewHolder holder, int layoutPosition, CamMessageBean item) {
+    private void handleTextContentLayout(SuperViewHolder holder,
+                                         int layoutPosition,
+                                         CamMessageBean item) {
 
     }
 
-    private void handleOnePicLayout(SuperViewHolder holder, int layoutPosition, CamMessageBean item) {
-
-    }
-
-    private void handleTwoPicLayout(SuperViewHolder holder, int layoutPosition, CamMessageBean item) {
-
-    }
-
-    private void handleThreePicLayout(SuperViewHolder holder, int layoutPosition, CamMessageBean item) {
-
+    private void handlePicsLayout(SuperViewHolder holder,
+                                  int layoutPosition,
+                                  CamMessageBean item) {
+        final int count = item.urlList.size();
+        //根据图片总数,设置view的Gone属性
+        for (int i = 2; i >= 0; i--) {
+            holder.setVisibility(R.id.imgV_cam_message_pic_0 + i,
+                    count - 1 >= i ? View.VISIBLE : View.GONE);
+        }
+        for (int i = 0; i < item.urlList.size(); i++) {
+            Glide.with(getContext())
+                    .load(item.urlList.get(i))
+                    .placeholder(R.drawable.wonderful_pic_place_holder)
+                    .override(pic_container_width / count, pic_container_height)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .centerCrop()
+                    .into((ImageView) holder.getView(R.id.imgV_cam_message_pic_0 + i));
+        }
     }
 
     @Override
@@ -89,10 +106,6 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
                         return R.layout.layout_item_cam_msg_list_0;
                     case 1:
                         return R.layout.layout_item_cam_msg_list_1;
-                    case 2:
-                        return R.layout.layout_item_cam_msg_list_2;
-                    case 3:
-                        return R.layout.layout_item_cam_msg_list_3;
                     default:
                         return R.layout.layout_wonderful_empty;
                 }

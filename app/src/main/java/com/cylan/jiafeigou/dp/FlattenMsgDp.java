@@ -8,6 +8,7 @@ import com.cylan.jiafeigou.support.log.AppLogger;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -22,16 +23,21 @@ public class FlattenMsgDp implements IFlat {
     private Map<String, ArrayList<String>> accountUUidMap = new HashMap<>();
 
     /**
-     * <uuid,基本信息></>
+     * <account+uuid,基本信息></>
      */
     private Map<String, BaseBean> baseDpDeviceMap = new HashMap<>();
     /**
-     * uuid,msgId,Object
+     * account+uuid,msgId,Object
      */
     private Map<String, ArrayList<DpMsgDefine.DpMsg>> simpleMap = new HashMap<>();
+    /**
+     * account+uuid:报警消息
+     */
+    private Map<String, ArrayList<DpMsgDefine.DpMsg>> alarmMsg = new HashMap<>();
 
     @Override
     public void cache(String account, String uuid) {
+        //某个账号下所有的uuid
         ArrayList<String> uuidList = accountUUidMap.get(account);
         if (uuidList == null) {
             uuidList = new ArrayList<>();
@@ -44,6 +50,7 @@ public class FlattenMsgDp implements IFlat {
 
     @Override
     public void cache(String account, BaseBean dpDevice) {
+        //某个账号下所有的uuid
         ArrayList<String> uuidList = accountUUidMap.get(account);
         if (uuidList == null) {
             uuidList = new ArrayList<>();
@@ -52,7 +59,38 @@ public class FlattenMsgDp implements IFlat {
             uuidList.add(dpDevice.uuid);
             accountUUidMap.put(account, uuidList);
         }
-        baseDpDeviceMap.put(dpDevice.uuid, dpDevice);
+        baseDpDeviceMap.put(account + dpDevice.uuid, dpDevice);
+    }
+
+    @Override
+    public void cache(String account, String uuid, ArrayList<DpMsgDefine.DpMsg> jfgdpMsgs) {
+        exception(account, uuid);
+        alarmMsg.put(account + uuid, jfgdpMsgs);
+    }
+
+    @Override
+    public void rm(String account) {
+        if (!accountUUidMap.containsKey(account)) {
+            AppLogger.e("not contains account");
+            return;
+        }
+        List<String> uuidList = accountUUidMap.get(account);
+        if (uuidList != null) {
+            for (String uuid : uuidList) {
+                simpleMap.remove(account + uuid);
+                baseDpDeviceMap.remove(account + uuid);
+                alarmMsg.remove(account + uuid);
+            }
+        }
+        accountUUidMap.remove(account);
+    }
+
+    @Override
+    public void rm(String account, String uuid) {
+        exception(account, uuid);
+        simpleMap.remove(account + uuid);
+        baseDpDeviceMap.remove(account + uuid);
+        alarmMsg.remove(account + uuid);
     }
 
     @Override
@@ -81,8 +119,8 @@ public class FlattenMsgDp implements IFlat {
     @Override
     public DpMsgDefine.DpWrap getDevice(String account, String uuid) {
         exception(account, uuid);
-        BaseBean baseDpDevice = baseDpDeviceMap.get(uuid);
-        ArrayList<DpMsgDefine.DpMsg> dpMsgList = simpleMap.get(uuid);
+        BaseBean baseDpDevice = baseDpDeviceMap.get(account + uuid);
+        ArrayList<DpMsgDefine.DpMsg> dpMsgList = simpleMap.get(account + uuid);
         DpMsgDefine.DpWrap wrap = new DpMsgDefine.DpWrap();
         wrap.baseDpDevice = baseDpDevice;
         wrap.baseDpMsgList = dpMsgList;
@@ -99,7 +137,7 @@ public class FlattenMsgDp implements IFlat {
         if (!list.contains(msg)) {
             list.add(msg);
         }
-        simpleMap.put(uuid, list);
+        simpleMap.put(account + uuid, list);
     }
 
 
@@ -123,7 +161,8 @@ public class FlattenMsgDp implements IFlat {
 
     private void exception(String account, String uuid) {
         if (TextUtils.isEmpty(account)
-                || TextUtils.isEmpty(uuid)) {
+                || TextUtils.isEmpty(uuid)
+                || !accountUUidMap.containsKey(account)) {
             AppLogger.e("wrong: " + account + " " + uuid);
         }
     }

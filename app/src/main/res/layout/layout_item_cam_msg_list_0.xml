@@ -9,18 +9,18 @@
     android:paddingRight="10dp">
 
     <com.cylan.jiafeigou.widget.FateLineView
-        android:id="@+id/fl_wonderful_item_time_line"
+        android:id="@+id/fl_item_time_line"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:paddingLeft="2dp"
         android:paddingRight="2dp"
         hunt:dashLineColor="@color/color_e8e8e8"
         hunt:dashLineWidth="2dp"
-        hunt:innerCircleColor="@color/color_e8e8e8"
+        hunt:innerCircleColor="@color/color_white"
         hunt:innerCircleRadius="6dp"
-        hunt:outerCircleStrokeWidth="4dp"
-        hunt:outerCircleColor="@color/color_white"
+        hunt:outerCircleColor="@color/color_e8e8e8"
         hunt:outerCircleRadius="10dp"
+        hunt:outerCircleStrokeWidth="4dp"
         hunt:outerCircleY="10dp" />
 
     <FrameLayout
@@ -36,7 +36,6 @@
             android:layout_width="wrap_content"
             android:layout_height="26dp"
             android:gravity="center"
-            android:text="Hi~"
             android:textColor="@color/color_666666"
             android:textSize="13sp" />
 

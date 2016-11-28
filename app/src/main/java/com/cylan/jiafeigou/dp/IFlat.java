@@ -1,9 +1,9 @@
 package com.cylan.jiafeigou.dp;
 
+import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.jiafeigou.n.mvp.model.BaseBean;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by cylan-hunt on 16-11-17.
@@ -20,6 +20,30 @@ public interface IFlat {
     void cache(String account, String uuid);
 
     void cache(String account, BaseBean dpDevice);
+
+    /**
+     * 缓存报警消息
+     *
+     * @param account
+     * @param uuid
+     * @param jfgdpMsgs
+     */
+    void cache(String account, String uuid, ArrayList<DpMsgDefine.DpMsg> jfgdpMsgs);
+
+    /**
+     * 删除账户消息
+     *
+     * @param account
+     */
+    void rm(String account);
+
+    /**
+     * 删除账户下,某个uuid的消息
+     *
+     * @param account
+     * @param uuid
+     */
+    void rm(String account, String uuid);
 
     /**
      * 缓存清空
