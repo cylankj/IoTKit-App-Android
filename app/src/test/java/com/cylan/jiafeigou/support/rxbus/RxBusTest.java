@@ -1,13 +1,9 @@
 package com.cylan.jiafeigou.support.rxbus;
 
-import com.cylan.jiafeigou.BuildConfig;
-import com.cylan.jiafeigou.MyTestRunner;
 import com.cylan.jiafeigou.rx.RxBus;
 
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mockito;
-import org.robolectric.annotation.Config;
 
 import java.util.concurrent.TimeUnit;
 
@@ -92,7 +88,31 @@ public class RxBusTest {
 
     @Test
     public void reset() throws Exception {
-
+        RxBus.getCacheInstance().toObservable(String.class)
+                .timeout(1000, TimeUnit.MILLISECONDS, Observable.just("")
+                        .map(new Func1<String, String>() {
+                            @Override
+                            public String call(String s) {
+                                System.out.println("time out? " + s);
+                                return null;
+                            }
+                        }))
+                .subscribe(new Action1<String>() {
+                    @Override
+                    public void call(String s) {
+                        System.out.println("zheli : " + s);
+                    }
+                });
+        RxBus.getCacheInstance().toObservable(String.class)
+                .subscribe(new Action1<String>() {
+                    @Override
+                    public void call(String s) {
+                        System.out.println("zheli : " + s);
+                    }
+                });
+        RxBus.getCacheInstance().post("before");
+        Thread.sleep(2000);
+        RxBus.getCacheInstance().post("nihao");
     }
 
     @Test

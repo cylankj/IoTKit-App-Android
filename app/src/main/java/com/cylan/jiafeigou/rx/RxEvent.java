@@ -3,6 +3,7 @@ package com.cylan.jiafeigou.rx;
 import android.os.Bundle;
 
 import com.cylan.entity.jniCall.JFGAccount;
+import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.entity.jniCall.JFGFriendAccount;
 import com.cylan.entity.jniCall.JFGFriendRequest;
@@ -403,5 +404,16 @@ public class RxEvent {
     public static final class JfgDpMsgUpdate {
         public String uuid;
         public DpMsgDefine.DpMsg dpMsg;
+    }
+
+    public static final class JfgAlarmMsg {
+        public String uuid;
+        public ArrayList<DpMsgDefine.DpMsg> jfgdpMsgs;
+    }
+
+    public static final class JFGRobotSyncData {
+        public String identity;
+        public boolean state;
+        public ArrayList<JFGDPMsg> dataList;
     }
 }

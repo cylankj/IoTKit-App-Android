@@ -1,18 +1,25 @@
 package com.cylan.jiafeigou.n.mvp.impl.cam;
 
+import com.cylan.entity.jniCall.JFGDPMsg;
+import com.cylan.jiafeigou.dp.DpMsgMap;
+import com.cylan.jiafeigou.misc.Convertor;
+import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamMessageListContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
+import com.cylan.jiafeigou.n.mvp.model.BeanCamInfo;
 import com.cylan.jiafeigou.n.mvp.model.CamMessageBean;
-import com.cylan.utils.RandomUtils;
+import com.cylan.jiafeigou.rx.RxBus;
+import com.cylan.jiafeigou.rx.RxEvent;
+import com.cylan.jiafeigou.rx.RxHelper;
 
 import java.util.ArrayList;
 
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
+import rx.subscriptions.CompositeSubscription;
 
 /**
  * Created by cylan-hunt on 16-7-13.
@@ -21,28 +28,21 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
         implements CamMessageListContract.Presenter {
 
 
-    Subscription subscription;
+    private Subscription subscription;
+    private BeanCamInfo info;
+    private CompositeSubscription compositeSubscription;
 
-    public CamMessageListPresenterImpl(CamMessageListContract.View view) {
+    public CamMessageListPresenterImpl(CamMessageListContract.View view, BeanCamInfo info) {
         super(view);
         view.setPresenter(this);
-    }
-
-
-    private ArrayList<CamMessageBean> testData() {
-        ArrayList<CamMessageBean> list = new ArrayList<>();
-        for (int i = 0; i < 5; i++) {
-            CamMessageBean bean = new CamMessageBean();
-            bean.viewType = RandomUtils.getRandom(4);
-            bean.time = System.currentTimeMillis() - RandomUtils.getRandom(24 * 3600);
-            list.add(bean);
-        }
-        return list;
+        this.info = info;
     }
 
     @Override
     public void start() {
-
+        unSubscribe(compositeSubscription);
+        compositeSubscription = new CompositeSubscription();
+        compositeSubscription.add(messageListSub());
     }
 
     @Override
@@ -50,22 +50,42 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
         unSubscribe(subscription);
     }
 
-    @Override
-    public void fetchMessageList() {
-        subscription = Observable.just(null)
-                .subscribeOn(Schedulers.io())
-                .map(new Func1<Object, ArrayList<CamMessageBean>>() {
+    private Subscription messageListSub() {
+        return RxBus.getCacheInstance().toObservable(RxEvent.JfgAlarmMsg.class)
+                .subscribeOn(Schedulers.newThread())
+                .flatMap(new Func1<RxEvent.JfgAlarmMsg, Observable<ArrayList<CamMessageBean>>>() {
                     @Override
-                    public ArrayList<CamMessageBean> call(Object o) {
-                        return testData();
+                    public Observable<ArrayList<CamMessageBean>> call(RxEvent.JfgAlarmMsg jfgAlarmMsg) {
+                        ArrayList<CamMessageBean> beanList = Convertor.convert(jfgAlarmMsg.uuid, jfgAlarmMsg.jfgdpMsgs);
+                        return Observable.just(beanList);
                     }
                 })
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<ArrayList<CamMessageBean>>() {
+                .map(new Func1<ArrayList<CamMessageBean>, Object>() {
                     @Override
-                    public void call(ArrayList<CamMessageBean> beanArrayList) {
-                        getView().onMessageListRsp(beanArrayList);
+                    public Object call(ArrayList<CamMessageBean> jfgdpMsgs) {
+                        getView().onMessageListRsp(jfgdpMsgs);
+                        return null;
                     }
-                });
+                })
+                .retry(new RxHelper.RxException<>("messageListSub"))
+                .subscribe();
+    }
+
+    @Override
+    public void fetchMessageList() {
+        Observable.just(null)
+                .subscribeOn(Schedulers.newThread())
+                .map(new Func1<Object, ArrayList<CamMessageBean>>() {
+                    @Override
+                    public ArrayList<CamMessageBean> call(Object o) {
+                        ArrayList<JFGDPMsg> dps = new ArrayList<>();
+                        dps.add(new JFGDPMsg(DpMsgMap.ID_505_CAMERA_ALARM_MSG, 0));
+                        JfgCmdInsurance.getCmd().robotGetData(info.deviceBase.uuid,
+                                dps, 20, false, 0);
+                        return null;
+                    }
+                })
+                .subscribe();
     }
 }

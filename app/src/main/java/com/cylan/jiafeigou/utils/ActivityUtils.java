@@ -16,11 +16,13 @@
 
 package com.cylan.jiafeigou.utils;
 
+import android.app.Activity;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.view.View;
 
 import com.cylan.jiafeigou.R;
 
@@ -89,10 +91,14 @@ public class ActivityUtils {
                         R.anim.slide_out_left,
                         R.anim.slide_out_right,
                         R.anim.slide_out_right)
-                .add(android.R.id.content, fragment, tag)
+                .add(containerId, fragment, tag)
                 .addToBackStack(tag)
                 .commit();
         return true;
     }
 
+    public static boolean isFragmentInTop(Activity activity, int fragmentLayoutId) {
+        View rootView = activity.findViewById(android.R.id.content);
+        return rootView != null && rootView.findViewById(fragmentLayoutId) != null;
+    }
 }

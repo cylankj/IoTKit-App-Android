@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.ViewSwitcher;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.bind.UdpConstant;
@@ -15,10 +16,12 @@ import com.cylan.jiafeigou.n.mvp.contract.bind.SubmitBindingInfoContract;
 import com.cylan.jiafeigou.n.mvp.impl.bind.SubmitBindingInfoContractImpl;
 import com.cylan.jiafeigou.n.view.BaseTitleFragment;
 import com.cylan.jiafeigou.utils.ActivityUtils;
+import com.cylan.jiafeigou.widget.LoginButton;
 import com.cylan.jiafeigou.widget.SimpleProgressBar;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * Created by cylan-hunt on 16-11-12.
@@ -31,6 +34,10 @@ public class SubmitBindingInfoFragment extends BaseTitleFragment<SubmitBindingIn
     SimpleProgressBar progressLoading;
     @BindView(R.id.tv_loading_percent)
     TextView tvLoadingPercent;
+    @BindView(R.id.btn_bind_repeat)
+    LoginButton btnBindRepeat;
+    @BindView(R.id.vs_layout_switch)
+    ViewSwitcher vsLayoutSwitch;
 
     public static SubmitBindingInfoFragment newInstance(Bundle bundle) {
         SubmitBindingInfoFragment fragment = new SubmitBindingInfoFragment();
@@ -41,7 +48,7 @@ public class SubmitBindingInfoFragment extends BaseTitleFragment<SubmitBindingIn
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        UdpConstant.UdpDevicePortrait portrait = getArguments().getParcelable(UdpConstant.KEY_BINDE_DEVICE_PORTRAIT);
+        UdpConstant.UdpDevicePortrait portrait = getArguments().getParcelable(UdpConstant.KEY_BIND_DEVICE_PORTRAIT);
         this.basePresenter = new SubmitBindingInfoContractImpl(this, portrait);
     }
 
@@ -76,18 +83,22 @@ public class SubmitBindingInfoFragment extends BaseTitleFragment<SubmitBindingIn
     }
 
     @Override
-    public void onSuccess() {
-        progressLoading.setVisibility(View.INVISIBLE);
-        if (basePresenter != null)
-            basePresenter.stop();
-        SetDeviceAliasFragment fragment = SetDeviceAliasFragment.newInstance(null);
-        ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(),
-                fragment, -1);
-    }
-
-    @Override
-    public void onFailed() {
-
+    public void bindState(int state) {
+        if (state == 0) {
+            //绑定失败
+            vsLayoutSwitch.showNext();
+            return;
+        }
+        if (state > 0) {
+            progressLoading.setVisibility(View.INVISIBLE);
+            if (basePresenter != null)
+                basePresenter.stop();
+            SetDeviceAliasFragment fragment = SetDeviceAliasFragment.newInstance(getArguments());
+            ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(),
+                    fragment, android.R.id.content);
+            if(basePresenter!=null)
+                basePresenter.stop();
+        }
     }
 
     @Override
@@ -107,5 +118,9 @@ public class SubmitBindingInfoFragment extends BaseTitleFragment<SubmitBindingIn
         View rootView = super.onCreateView(inflater, container, savedInstanceState);
         ButterKnife.bind(this, rootView);
         return rootView;
+    }
+
+    @OnClick(R.id.btn_bind_repeat)
+    public void onClick() {
     }
 }

@@ -64,7 +64,58 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
         bulkSubscriptions
                 .add(subDeviceList());
         bulkSubscriptions
+                .add(singleDeviceSub());
+        bulkSubscriptions
                 .add(JFGAccountUpdate());
+    }
+
+    /**
+     * 跟新单个
+     *
+     * @return
+     */
+    private Subscription singleDeviceSub() {
+        return RxBus.getUiInstance().toObservable(RxUiEvent.SingleDevice.class)
+                .filter(new Func1<RxUiEvent.SingleDevice, Boolean>() {
+                    @Override
+                    public Boolean call(RxUiEvent.SingleDevice singleDevice) {
+                        boolean notNull = getView() != null && singleDevice != null && singleDevice.dpMsg != null;
+                        AppLogger.i("notNull: " + notNull);
+                        return notNull;
+                    }
+                })
+                .flatMap(new Func1<RxUiEvent.SingleDevice, Observable<DeviceBean>>() {
+                    @Override
+                    public Observable<DeviceBean> call(RxUiEvent.SingleDevice singleDevice) {
+                        AppLogger.i("get devices : " + singleDevice);
+                        DeviceBean bean = new DeviceBean();
+                        bean.fillData(singleDevice.dpMsg.baseDpDevice, singleDevice.dpMsg.baseDpMsgList);
+                        return Observable.just(bean);
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .map(new Func1<DeviceBean, DeviceBean>() {
+                    @Override
+                    public DeviceBean call(DeviceBean bean) {
+                        //已经展示的列表
+                        List<DeviceBean> vList = getView().getDeviceList();
+                        //新列表
+                        final int index = vList == null ? -1 : vList.indexOf(bean);
+                        if (MiscUtils.isInRange(0, 1, index)) {
+                            //更新对应的item
+                            vList.set(index, bean);
+                            getView().onItemUpdate(index);
+                        } else {
+                            //a new one
+                            List<DeviceBean> newList = new ArrayList<>();
+                            newList.add(bean);
+                            getView().onItemsInsert(newList);
+                        }
+                        return null;
+                    }
+                })
+                .retry(new RxHelper.ExceptionFun<>("singleDeviceSub"))
+                .subscribe();
     }
 
     private Subscription getTimeTickEventSub() {

@@ -49,6 +49,8 @@ public class ScanResultListFilter {
                     || TextUtils.equals(result.SSID, "<unknown ssid>")
                     || TextUtils.equals(result.SSID, "0x"))
                 continue;
+            if (result.frequency > 4900 && result.frequency < 5900)
+                continue;
             results.add(result);
         }
         return results;

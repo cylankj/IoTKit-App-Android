@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.mvp.contract.bind.BindDeviceContract;
 import com.cylan.jiafeigou.n.mvp.impl.bind.BindDevicePresenterImpl;
 import com.cylan.jiafeigou.n.view.BaseTitleFragment;
@@ -112,9 +113,11 @@ public class BindCameraFragment extends BaseTitleFragment<BindDeviceContract.Pre
     public void onClick() {
         if (getView() != null)
             ViewUtils.deBounceClick(getView().findViewById(R.id.tv_bind_camera_tip));
-        BindGuideFragment fragment = BindGuideFragment.newInstance();
+        Bundle bundle = new Bundle();
+        bundle.putString(JConstant.KEY_BIND_DEVICE, getString(R.string.DOG_CAMERA_NAME));
+        BindGuideFragment fragment = BindGuideFragment.newInstance(bundle);
         ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(),
-                fragment, -1);
+                fragment, android.R.id.content);
         cancelAnimation();
     }
 

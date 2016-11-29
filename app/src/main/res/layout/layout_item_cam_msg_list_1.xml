@@ -9,25 +9,25 @@
     android:paddingRight="10dp">
 
     <com.cylan.jiafeigou.widget.FateLineView
-        android:id="@+id/fl_wonderful_item_time_line"
+        android:id="@+id/fl_item_time_line"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:paddingLeft="2dp"
         android:paddingRight="2dp"
         hunt:dashLineColor="@color/color_e8e8e8"
         hunt:dashLineWidth="2dp"
-        hunt:innerCircleColor="@color/color_e8e8e8"
+        hunt:innerCircleColor="@color/color_white"
         hunt:innerCircleRadius="6dp"
-        hunt:outerCircleStrokeWidth="4dp"
-        hunt:outerCircleColor="@color/color_white"
+        hunt:outerCircleColor="@color/color_e8e8e8"
         hunt:outerCircleRadius="10dp"
+        hunt:outerCircleStrokeWidth="4dp"
         hunt:outerCircleY="10dp" />
 
     <RelativeLayout
         android:id="@+id/rLayout_cam_message"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginLeft="4dp"
+        android:layout_marginStart="4dp"
         android:layout_marginTop="5dp"
         android:orientation="vertical">
 
@@ -36,19 +36,47 @@
             android:layout_width="wrap_content"
             android:layout_height="26dp"
             android:gravity="center"
-            android:text="Hi~"
             android:textColor="@color/color_666666"
             android:textSize="13sp" />
 
-        <ImageView
-            android:id="@+id/imgV_cam_message_one_pic"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+        <LinearLayout
+            android:id="@+id/lLayout_cam_msg_pics_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:layout_above="@+id/fLayout_cam_message_item_bottom"
             android:layout_below="@+id/tv_cam_message_item_date"
-            android:scaleType="fitXY"
-            android:src="@mipmap/ic_launcher" />
+            android:orientation="horizontal">
 
+            <ImageView
+                android:id="@+id/imgV_cam_message_pic_0"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="2dp"
+                android:layout_marginStart="2dp"
+                android:layout_weight="1"
+                android:scaleType="fitXY"
+                android:src="@mipmap/ic_launcher" />
+
+            <ImageView
+                android:id="@+id/imgV_cam_message_pic_1"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="2dp"
+                android:layout_marginStart="2dp"
+                android:layout_weight="1"
+                android:scaleType="fitXY"
+                android:src="@mipmap/ic_launcher" />
+
+            <ImageView
+                android:id="@+id/imgV_cam_message_pic_2"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="2dp"
+                android:layout_marginStart="2dp"
+                android:layout_weight="1"
+                android:scaleType="fitXY"
+                android:src="@mipmap/ic_launcher" />
+        </LinearLayout>
 
         <FrameLayout
             android:id="@+id/fLayout_cam_message_item_bottom"
@@ -64,7 +92,7 @@
                 android:layout_height="match_parent"
                 android:gravity="center_vertical"
                 android:padding="10dp"
-                android:text="删除"
+                android:text="@string/DELETE"
                 android:textColor="@color/color_4b9fd5"
                 android:textSize="11sp" />
 
@@ -74,10 +102,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_gravity="end|center_vertical"
-                android:drawableLeft="@drawable/btn_to_live_selector"
                 android:drawablePadding="10dp"
+                android:drawableStart="@drawable/btn_to_live_selector"
                 android:gravity="center"
-                android:text="查看视频"
+                android:text="@string/Tap1_Camera_Messages_ViewTheVideo"
                 android:textColor="@color/color_909090"
                 android:textSize="11sp" />
 

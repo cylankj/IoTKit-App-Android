@@ -8,6 +8,8 @@ import rx.Subscription;
 
 public abstract class AFullBind implements IFullBind {
 
+    public static final String TAG = UdpConstant.BIND_TAG;
+
     public AFullBind(IBindResult iBindResult) {
         this.iBindResult = iBindResult;
     }
@@ -15,6 +17,10 @@ public abstract class AFullBind implements IFullBind {
     protected IBindResult iBindResult;
 
     private String currentBindUUID = "";
+    /**
+     * ping fping流程.
+     */
+    protected Subscription pingFPingSub;
 
     protected boolean isDogUpgrading = false;
 
@@ -47,6 +53,7 @@ public abstract class AFullBind implements IFullBind {
 
     @Override
     public void clean() {
+        unSubscribe(pingFPingSub);
         iBindResult = null;
         devicePortrait = null;
         currentBindUUID = null;

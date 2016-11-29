@@ -93,4 +93,21 @@ public class JFGRules {
         }
         return LANGUAGE_TYPE_ENGLISH;
     }
+
+    public static boolean isCamera(int pid) {
+        switch (pid) {
+            case JConstant.OS_CAMERA_ANDROID:
+            case JConstant.OS_CAMERA_UCOS:
+            case JConstant.OS_CAMERA_UCOS_V2:
+            case JConstant.OS_CAMERA_UCOS_V3:
+            case JConstant.OS_CAMERA_ANDROID_4G:
+            case JConstant.OS_CAMERA_CC3200:
+            case JConstant.OS_CAMERA_PANORAMA_HAISI:
+            case JConstant.OS_CAMERA_PANORAMA_QIAOAN:
+            case JConstant.OS_CAMERA_PANORAMA_GUOKE:
+                return true;
+            default:
+                return false;
+        }
+    }
 }

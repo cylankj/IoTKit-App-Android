@@ -13,6 +13,7 @@ import com.google.gson.Gson;
 import org.msgpack.annotation.Index;
 import org.msgpack.annotation.Message;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -631,7 +632,7 @@ public class DpMsgDefine {
 
     public static class DpWrap implements Parcelable {
         public BaseBean baseDpDevice;
-        public List<DpMsg> baseDpMsgList;
+        public ArrayList<DpMsg> baseDpMsgList;
 
         @Override
         public String toString() {
