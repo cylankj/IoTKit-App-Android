@@ -16,14 +16,10 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.cylan.entity.jniCall.JFGFriendRequest;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendAddByNumContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineFriendAddByNumPresenterImp;
 import com.cylan.jiafeigou.n.mvp.model.MineAddReqBean;
-import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
-import com.cylan.jiafeigou.n.mvp.model.UserInfoBean;
 import com.cylan.jiafeigou.widget.roundedimageview.RoundedImageView;
 
 import butterknife.BindView;
@@ -67,7 +63,7 @@ public class MineFriendAddByNumFragment extends Fragment implements MineFriendAd
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_mine_relativeandfriend_add_by_num, container, false);
+        View view = inflater.inflate(R.layout.fragment_mine_friend_add_by_num, container, false);
         ButterKnife.bind(this, view);
         initPresenter();
         initKeyListener();

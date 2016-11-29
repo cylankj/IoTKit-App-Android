@@ -24,7 +24,7 @@ import butterknife.OnClick;
  * 创建时间：2016/9/26
  * 描述：
  */
-public class CloudVideoChatConnetionFragment extends Fragment implements CloudLiveCallInContract.View {
+public class CloudVideoChatCallInFragment extends Fragment implements CloudLiveCallInContract.View {
 
     @BindView(R.id.iv_call_user_image_head)
     ImageView ivCallUserImageHead;
@@ -35,7 +35,7 @@ public class CloudVideoChatConnetionFragment extends Fragment implements CloudLi
     @BindView(R.id.tv_accept_call)
     TextView tvAcceptCall;
 
-    private CloudVideoChatConettionOkFragment cloudVideoChatConettionOkFragment;
+    private CloudVideoChatCallOutFragment cloudVideoChatConettionOkFragment;
 
     private OnIgnoreClickListener igNoreListener;
 
@@ -47,8 +47,8 @@ public class CloudVideoChatConnetionFragment extends Fragment implements CloudLi
         this.igNoreListener = igNoreListener;
     }
 
-    public static CloudVideoChatConnetionFragment newInstance(Bundle bundle) {
-        CloudVideoChatConnetionFragment fragment = new CloudVideoChatConnetionFragment();
+    public static CloudVideoChatCallInFragment newInstance(Bundle bundle) {
+        CloudVideoChatCallInFragment fragment = new CloudVideoChatCallInFragment();
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -56,13 +56,13 @@ public class CloudVideoChatConnetionFragment extends Fragment implements CloudLi
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        cloudVideoChatConettionOkFragment = CloudVideoChatConettionOkFragment.newInstance(new Bundle());
+        cloudVideoChatConettionOkFragment = CloudVideoChatCallOutFragment.newInstance(new Bundle());
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_cloud_live_videochat_connetion, container, false);
+        View view = inflater.inflate(R.layout.fragment_cloud_live_videochat_connect, container, false);
         ButterKnife.bind(this, view);
         return view;
     }

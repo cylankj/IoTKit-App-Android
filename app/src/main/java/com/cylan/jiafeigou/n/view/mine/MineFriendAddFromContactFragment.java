@@ -11,8 +11,6 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -81,7 +79,7 @@ public class MineFriendAddFromContactFragment extends Fragment implements MineFr
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_mine_relativeandfriend_add_from_contact, container, false);
+        View view = inflater.inflate(R.layout.fragment_mine_friend_add_from_contact, container, false);
         ButterKnife.bind(this, view);
         initPresenter();
         return view;

@@ -2,6 +2,7 @@ package com.cylan.jiafeigou.n.mvp.impl.mine;
 
 import com.cylan.entity.JfgEnum;
 import com.cylan.entity.jniCall.JFGAccount;
+import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
@@ -39,10 +40,10 @@ public class MineBindPhonePresenterImp extends AbstractPresenter<MineBindPhoneCo
         if (getView() != null && userinfo != null){
             if ("".equals(userinfo.getPhone()) || userinfo.getPhone() == null){
                 //绑定手机号
-                getView().initToolbarTitle("绑定手机号");
+                getView().initToolbarTitle(getView().getContext().getString(R.string.Tap0_BindPhoneNo));
             }else {
                 //修改手机号
-                getView().initToolbarTitle("更改手机号");
+                getView().initToolbarTitle(getView().getContext().getString(R.string.CHANGE_PHONE_NUM));
             }
         }
     }

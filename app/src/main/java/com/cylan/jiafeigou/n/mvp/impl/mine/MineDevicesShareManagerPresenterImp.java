@@ -1,6 +1,7 @@
 package com.cylan.jiafeigou.n.mvp.impl.mine;
 
 import com.cylan.entity.jniCall.JFGFriendAccount;
+import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineDevicesShareManagerContract;
@@ -179,7 +180,7 @@ public class MineDevicesShareManagerPresenterImp extends AbstractPresenter<MineD
             getView().hideCancleShareProgress();
             if (unshareDeviceCallBack.i == JError.ErrorOK){
                 getView().deleteItems();
-                getView().showUnShareResult("取消分享成功");
+                getView().showUnShareResult(getView().getContext().getString(R.string.Tap3_ShareDevice_DeleteSucces));
             }else {
                 getView().showUnShareResult("取消分享失败");
             }

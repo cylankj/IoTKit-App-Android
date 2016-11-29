@@ -13,7 +13,7 @@ import android.widget.TextView;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.contract.cloud.CloudLiveCallInContract;
 import com.cylan.jiafeigou.n.mvp.impl.cloud.CloudLiveCallInPresenterImp;
-import com.cylan.jiafeigou.n.view.cloud.CloudVideoChatConettionOkFragment;
+import com.cylan.jiafeigou.n.view.cloud.CloudVideoChatCallOutFragment;
 import com.cylan.jiafeigou.utils.ViewUtils;
 
 import butterknife.BindView;
@@ -38,12 +38,12 @@ public class CloudLiveCallInActivity extends AppCompatActivity implements CloudL
 
     private CloudLiveCallInContract.Presenter presenter;
 
-    private CloudVideoChatConettionOkFragment cloudVideoChatConettionOkFragment;
+    private CloudVideoChatCallOutFragment cloudVideoChatConettionOkFragment;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.fragment_cloud_live_videochat_connetion);
+        setContentView(R.layout.fragment_cloud_live_videochat_connect);
         ButterKnife.bind(this);
         initPrestener();
     }
@@ -71,7 +71,7 @@ public class CloudLiveCallInActivity extends AppCompatActivity implements CloudL
     }
 
     private void jump2VideoChatOkFragment() {
-        cloudVideoChatConettionOkFragment = new CloudVideoChatConettionOkFragment();
+        cloudVideoChatConettionOkFragment = new CloudVideoChatCallOutFragment();
         getSupportFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                         , R.anim.slide_in_left, R.anim.slide_out_right)

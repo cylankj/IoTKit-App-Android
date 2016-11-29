@@ -55,7 +55,7 @@ public class MineFriendScanAddFragment extends Fragment implements ZXingScannerV
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_mine_relativesandfriend_scan_add, container, false);
+        View view = inflater.inflate(R.layout.fragment_mine_friend_scan_add, container, false);
         ButterKnife.bind(this, view);
         initView();
 //        showQrCode(presenter.encodeAsBitmap("1234", presenter.getDimension()));

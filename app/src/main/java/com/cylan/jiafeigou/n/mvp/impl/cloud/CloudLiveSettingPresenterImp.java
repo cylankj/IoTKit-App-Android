@@ -1,5 +1,6 @@
 package com.cylan.jiafeigou.n.mvp.impl.cloud;
 
+import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.db.DataBaseUtil;
 import com.cylan.jiafeigou.n.mvp.contract.cloud.CloudLiveSettingContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
@@ -63,7 +64,7 @@ public class CloudLiveSettingPresenterImp extends AbstractPresenter<CloudLiveSet
     public void clearMesgRecord() {
         try {
             if (dbManager.findAll(CloudLiveBaseDbBean.class).size() == 0) {
-                ToastUtil.showToast("记录为空");
+                ToastUtil.showToast(getView().getContext().getString(R.string.NO_MESSAGE));
                 return;
             }
         } catch (DbException e) {

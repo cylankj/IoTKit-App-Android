@@ -14,8 +14,8 @@ import android.widget.TextView;
 import android.widget.VideoView;
 
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.n.mvp.contract.cloud.CloudVideoChatConettionOkContract;
-import com.cylan.jiafeigou.n.mvp.impl.cloud.CloudVideoChatConettionOkPresenterImp;
+import com.cylan.jiafeigou.n.mvp.contract.cloud.CloudVideoChatConnectOkContract;
+import com.cylan.jiafeigou.n.mvp.impl.cloud.CloudVideoChatCallOutPresenterImp;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 
@@ -28,7 +28,7 @@ import butterknife.OnClick;
  * 创建时间：2016/9/26
  * 描述：
  */
-public class CloudVideoChatConettionOkFragment extends Fragment implements CloudVideoChatConettionOkContract.View {
+public class CloudVideoChatCallOutFragment extends Fragment implements CloudVideoChatConnectOkContract.View {
 
     @BindView(R.id.vv_chatvideo_from)
     VideoView vvChatvideoFrom;
@@ -43,7 +43,7 @@ public class CloudVideoChatConettionOkFragment extends Fragment implements Cloud
     @BindView(R.id.iv_hang_up)
     ImageView ivHangUp;
 
-    private CloudVideoChatConettionOkContract.Presenter presenter;
+    private CloudVideoChatConnectOkContract.Presenter presenter;
 
     public OnHangUpListener listener;
 
@@ -55,8 +55,8 @@ public class CloudVideoChatConettionOkFragment extends Fragment implements Cloud
         this.listener = listener;
     }
 
-    public static CloudVideoChatConettionOkFragment newInstance(Bundle bundle) {
-        CloudVideoChatConettionOkFragment fragment = new CloudVideoChatConettionOkFragment();
+    public static CloudVideoChatCallOutFragment newInstance(Bundle bundle) {
+        CloudVideoChatCallOutFragment fragment = new CloudVideoChatCallOutFragment();
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -78,11 +78,11 @@ public class CloudVideoChatConettionOkFragment extends Fragment implements Cloud
     }
 
     private void initPresenter() {
-        presenter = new CloudVideoChatConettionOkPresenterImp(this);
+        presenter = new CloudVideoChatCallOutPresenterImp(this);
     }
 
     @Override
-    public void setPresenter(CloudVideoChatConettionOkContract.Presenter presenter) {
+    public void setPresenter(CloudVideoChatConnectOkContract.Presenter presenter) {
 
     }
 
@@ -117,8 +117,8 @@ public class CloudVideoChatConettionOkFragment extends Fragment implements Cloud
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
+    public void onStop() {
+        super.onStop();
         if (presenter != null) {
             presenter.stop();
         }
@@ -128,11 +128,8 @@ public class CloudVideoChatConettionOkFragment extends Fragment implements Cloud
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.iv_hang_up:               //挂断
-//                presenter.setVideoTalkFinishFlag(true);
-//                presenter.setVideoTalkFinishResultData(tvVideoTime.getText().toString().trim());
-
                 RxBus.getCacheInstance().post(new RxEvent.HangUpVideoTalk(true,tvVideoTime.getText().toString().trim()));
-                getActivity().finish();
+                getFragmentManager().popBackStack();
                 break;
         }
     }

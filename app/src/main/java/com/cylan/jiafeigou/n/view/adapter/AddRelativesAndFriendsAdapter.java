@@ -5,15 +5,12 @@ import android.graphics.Bitmap;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.view.View;
-import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
-import com.cylan.entity.jniCall.JFGFriendRequest;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.model.MineAddReqBean;
-import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.widget.roundedimageview.RoundedImageView;
 import com.cylan.superadapter.IMulItemViewType;
 import com.cylan.superadapter.SuperAdapter;
@@ -95,7 +92,7 @@ public class AddRelativesAndFriendsAdapter extends SuperAdapter<MineAddReqBean> 
 
             @Override
             public int getLayoutId(int viewType) {
-                return R.layout.fragment_mine_relativesandfriends_request_add_items;
+                return R.layout.fragment_mine_friends_request_add_items;
             }
         };
     }

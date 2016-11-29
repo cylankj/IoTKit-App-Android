@@ -78,6 +78,7 @@ public class MineShareDevicePresenterImp extends AbstractPresenter<MineShareDevi
                     @Override
                     public void call(ArrayList<DeviceBean> deviceList) {
                         if (getView() != null && deviceList != null){
+                            allDevice.clear();
                             allDevice.addAll(deviceList);
                             ArrayList<String> cidList = new ArrayList<String>();
                             for (DeviceBean bean:deviceList){

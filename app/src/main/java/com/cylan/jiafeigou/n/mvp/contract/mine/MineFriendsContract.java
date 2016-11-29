@@ -74,6 +74,16 @@ public interface MineFriendsContract {
          */
         void friendlistAddItem(int position,RelAndFriendBean bean);
 
+        /**
+         * 显示加载进度
+         */
+        void showLoadingDialog();
+
+        /**
+         * 隐藏加载进度
+         */
+        void hideLoadingDialog();
+
     }
 
     interface Presenter extends BasePresenter {

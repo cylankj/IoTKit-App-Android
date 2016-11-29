@@ -71,7 +71,7 @@ public class MagLiveFragment extends Fragment implements HomeMagLiveContract.Vie
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_msglive_message, null);
+        View view = inflater.inflate(R.layout.fragment_maglive_message, null);
         ButterKnife.bind(this, view);
         initPresenter();
         initMagDoorStateNotify();

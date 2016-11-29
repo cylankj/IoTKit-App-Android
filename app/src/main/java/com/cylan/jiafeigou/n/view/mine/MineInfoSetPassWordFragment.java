@@ -59,7 +59,7 @@ public class MineInfoSetPassWordFragment extends Fragment implements MineInfoSet
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_mine_persion_info_set_password, container, false);
+        View view = inflater.inflate(R.layout.fragment_mine_info_set_password, container, false);
         ButterKnife.bind(this, view);
         initPresenter();
         getArgumentData();

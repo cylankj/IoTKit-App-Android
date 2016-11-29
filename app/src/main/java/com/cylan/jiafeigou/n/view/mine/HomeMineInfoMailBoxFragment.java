@@ -166,7 +166,7 @@ public class HomeMineInfoMailBoxFragment extends Fragment implements MineInfoBin
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_mine_personal_information_mailbox, container, false);
+        View view = inflater.inflate(R.layout.fragment_mine_info_mailbox, container, false);
         ButterKnife.bind(this, view);
         getArgumentData();
         initPresenter();

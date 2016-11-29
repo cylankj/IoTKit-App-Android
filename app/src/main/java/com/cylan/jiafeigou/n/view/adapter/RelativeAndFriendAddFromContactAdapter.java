@@ -71,7 +71,7 @@ public class RelativeAndFriendAddFromContactAdapter extends SuperAdapter<RelAndF
 
             @Override
             public int getLayoutId(int viewType) {
-                return R.layout.fragment_mine_relativeandfriend_add_from_contact_item;
+                return R.layout.fragment_mine_friend_add_from_contact_item;
             }
         };
     }

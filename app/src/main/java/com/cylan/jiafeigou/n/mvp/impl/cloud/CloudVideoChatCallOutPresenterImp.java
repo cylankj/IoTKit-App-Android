@@ -1,6 +1,6 @@
 package com.cylan.jiafeigou.n.mvp.impl.cloud;
 
-import com.cylan.jiafeigou.n.mvp.contract.cloud.CloudVideoChatConettionOkContract;
+import com.cylan.jiafeigou.n.mvp.contract.cloud.CloudVideoChatConnectOkContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
@@ -18,14 +18,14 @@ import rx.schedulers.Schedulers;
  * 创建时间：2016/9/26
  * 描述：
  */
-public class CloudVideoChatConettionOkPresenterImp extends AbstractPresenter<CloudVideoChatConettionOkContract.View> implements CloudVideoChatConettionOkContract.Presenter {
+public class CloudVideoChatCallOutPresenterImp extends AbstractPresenter<CloudVideoChatConnectOkContract.View> implements CloudVideoChatConnectOkContract.Presenter {
 
     private Subscription loadVideoSub;
     private Subscription loadProAnimSub;
     private int loadNum = 0;
 
 
-    public CloudVideoChatConettionOkPresenterImp(CloudVideoChatConettionOkContract.View view) {
+    public CloudVideoChatCallOutPresenterImp(CloudVideoChatConnectOkContract.View view) {
         super(view);
         view.setPresenter(this);
     }

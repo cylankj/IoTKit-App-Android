@@ -49,7 +49,7 @@ public class HomeSettingAboutFragment extends Fragment implements HomeSettingAbo
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_home_mine_settint_about, container, false);
+        View view = inflater.inflate(R.layout.fragment_home_mine_setting_about, container, false);
         ButterKnife.bind(this, view);
         return view;
     }

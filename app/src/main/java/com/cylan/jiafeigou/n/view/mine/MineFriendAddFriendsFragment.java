@@ -67,7 +67,7 @@ public class MineFriendAddFriendsFragment extends Fragment implements MineFriend
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_home_mine_relativesandfriends_addfriends, container, false);
+        View view = inflater.inflate(R.layout.fragment_home_mine_friends_addfriends, container, false);
         ButterKnife.bind(this, view);
         initPresenter();
         return view;

@@ -36,6 +36,16 @@ public interface MineShareDeviceContract {
          */
         void showNoDeviceView();
 
+        /**
+         * 显示加载进度
+         */
+        void showLoadingDialog();
+
+        /**
+         * 隐藏加载进度
+         */
+        void hideLoadingDialog();
+
     }
 
     interface Presenter extends BasePresenter {

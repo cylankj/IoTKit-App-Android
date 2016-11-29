@@ -8,7 +8,7 @@ import com.cylan.jiafeigou.n.mvp.BaseView;
  * 创建时间：2016/9/26
  * 描述：
  */
-public interface CloudVideoChatConettionOkContract {
+public interface CloudVideoChatConnectOkContract {
 
     interface View extends BaseView<Presenter>{
         void showLoadingView();

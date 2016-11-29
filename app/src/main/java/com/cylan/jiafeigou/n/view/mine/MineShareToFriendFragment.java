@@ -69,7 +69,7 @@ public class MineShareToFriendFragment extends Fragment implements MineShareToFr
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_mine_share_to_relative_and_friend, container, false);
+        View view = inflater.inflate(R.layout.fragment_mine_share_to_friend, container, false);
         ButterKnife.bind(this, view);
         getArgumentData();
         initPresenter();

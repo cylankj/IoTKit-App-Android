@@ -26,6 +26,7 @@ import com.cylan.jiafeigou.n.view.adapter.MineShareDeviceAdapter;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
+import com.cylan.jiafeigou.widget.LoadingDialog;
 import com.cylan.superadapter.OnItemClickListener;
 import com.cylan.superadapter.internal.SuperViewHolder;
 
@@ -67,6 +68,7 @@ public class MineShareDeviceFragment extends Fragment implements MineShareDevice
         View view = inflater.inflate(R.layout.fragment_mine_share_device, container, false);
         ButterKnife.bind(this, view);
         initPresenter();
+        showLoadingDialog();
         return view;
     }
 
@@ -166,6 +168,7 @@ public class MineShareDeviceFragment extends Fragment implements MineShareDevice
 
     @Override
     public void initRecycleView(ArrayList<DeviceBean> list) {
+        hideLoadingDialog();
         recycleShareDeviceList.setLayoutManager(new LinearLayoutManager(getContext()));
         adapter = new MineShareDeviceAdapter(getView().getContext(),list,null);
         recycleShareDeviceList.setAdapter(adapter);
@@ -217,6 +220,22 @@ public class MineShareDeviceFragment extends Fragment implements MineShareDevice
         llNoDevice.setVisibility(View.VISIBLE);
     }
 
+    /**
+     * 显示加载进度
+     */
+    @Override
+    public void showLoadingDialog() {
+        LoadingDialog.showLoading(getFragmentManager(),getString(R.string.LOADING));
+    }
+
+    /**
+     * 隐藏加载进度
+     */
+    @Override
+    public void hideLoadingDialog() {
+        LoadingDialog.dismissLoading(getFragmentManager());
+    }
+
     @OnClick(R.id.iv_home_mine_sharedevices_back)
     public void onClick() {
         getFragmentManager().popBackStack();
@@ -237,7 +256,7 @@ public class MineShareDeviceFragment extends Fragment implements MineShareDevice
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 jump2ShareToContractFragment();
             } else {
-                ToastUtil.showNegativeToast("请授权，才能访问联系人");
+                ToastUtil.showNegativeToast(getString(R.string.permission_camera_denied));
             }
         }
     }

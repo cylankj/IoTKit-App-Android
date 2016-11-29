@@ -14,8 +14,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.cylan.entity.jniCall.JFGFriendAccount;
-import com.cylan.entity.jniCall.JFGFriendRequest;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendsContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineFriendsPresenterImp;
@@ -26,10 +24,10 @@ import com.cylan.jiafeigou.n.view.adapter.RelativesAndFriendsAdapter;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
+import com.cylan.jiafeigou.widget.LoadingDialog;
 import com.cylan.superadapter.OnItemClickListener;
 import com.cylan.superadapter.OnItemLongClickListener;
 import com.cylan.superadapter.internal.SuperViewHolder;
-import com.sina.weibo.sdk.utils.LogUtil;
 
 import java.util.ArrayList;
 
@@ -84,9 +82,10 @@ public class MineFriendsFragment extends Fragment implements MineFriendsContract
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_home_mine_relativesandfriends, container, false);
+        View view = inflater.inflate(R.layout.fragment_home_mine_friends, container, false);
         ButterKnife.bind(this, view);
         initPresenter();
+        showLoadingDialog();
         return view;
     }
 
@@ -168,6 +167,22 @@ public class MineFriendsFragment extends Fragment implements MineFriendsContract
         friendsListAdapter.notifyDataSetHasChanged();
     }
 
+    /**
+     * 显示加载进度
+     */
+    @Override
+    public void showLoadingDialog() {
+        LoadingDialog.showLoading(getFragmentManager(),"加载中");
+    }
+
+    /**
+     * 隐藏加载进度
+      */
+    @Override
+    public void hideLoadingDialog() {
+        LoadingDialog.dismissLoading(getFragmentManager());
+    }
+
     @Override
     public void showLongClickDialog(final int position, final MineAddReqBean bean) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
@@ -221,6 +236,7 @@ public class MineFriendsFragment extends Fragment implements MineFriendsContract
 
     @Override
     public void initFriendRecyList(ArrayList<RelAndFriendBean> list) {
+        hideLoadingDialog();
         recyclerviewRelativesandfriendsList.setLayoutManager(new LinearLayoutManager(getContext()));
         friendsListAdapter = new RelativesAndFriendsAdapter(getContext(),list,null);
         recyclerviewRelativesandfriendsList.setAdapter(friendsListAdapter);
@@ -232,7 +248,7 @@ public class MineFriendsFragment extends Fragment implements MineFriendsContract
      */
     private void initFriendAdaListener() {
         friendsListAdapter.setOnItemClickListener(new OnItemClickListener() {
-    @Override
+            @Override
             public void onItemClick(View itemView, int viewType, int position) {
                 if (getView() != null){
                     jump2FriendDetailFragment(position,friendsListAdapter.getList().get(position));
@@ -243,6 +259,7 @@ public class MineFriendsFragment extends Fragment implements MineFriendsContract
 
     @Override
     public void initAddReqRecyList(ArrayList<MineAddReqBean> list) {
+        hideLoadingDialog();
         recyclerviewRequestAdd.setLayoutManager(new LinearLayoutManager(getContext()));
         addReqListAdater = new AddRelativesAndFriendsAdapter(getView().getContext(),list,null);
         recyclerviewRequestAdd.setAdapter(addReqListAdater);

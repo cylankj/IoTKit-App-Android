@@ -85,11 +85,12 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
         if (checkDeviceOnLineSub != null) {
             checkDeviceOnLineSub.unsubscribe();
         }
-
         if (leaveMesgSub != null) {
             leaveMesgSub.unsubscribe();
         }
-        unSubscribe(subscription);
+        if (subscription != null && !subscription.isUnsubscribed()) {
+            subscription.unsubscribe();
+        }
         stopPlayRecord();
     }
 
@@ -278,24 +279,26 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
     @Override
     public void saveIntoDb(CloudLiveBaseDbBean bean) {
         try {
+            if (base_db == null)return;
             base_db.save(bean);
         } catch (DbException e) {
             e.printStackTrace();
         }
-
     }
 
     @Override
     public List<CloudLiveBaseDbBean> findFromAllDb() {
         List<CloudLiveBaseDbBean> allData = new ArrayList<>();
         try {
-            allData = base_db.findAll(CloudLiveBaseDbBean.class);
+            List<CloudLiveBaseDbBean> tempAll = base_db.findAll(CloudLiveBaseDbBean.class);
+            if (tempAll != null && tempAll.size() > 0 ){
+                allData.addAll(tempAll);
+            }
         } catch (DbException e) {
             e.printStackTrace();
         }
         return allData;
     }
-
 
     @Override
     public Subscription refreshHangUpView() {
@@ -325,7 +328,7 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
                     @Override
                     public void call(Boolean aBoolean) {
                         getView().hideReconnetProgress();
-                        getView().handlerVideoTalk(aBoolean);
+                        getView().handlerVideoTalkResult(aBoolean);
                     }
                 });
     }
@@ -366,11 +369,44 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
                         if (getUserInfo != null && getUserInfo instanceof RxEvent.GetUserInfo) {
                             if (getView() != null) {
                                 getDBManger(getUserInfo.jfgAccount.getAccount());
-                                getView().initRecycleView();
+                                initData();
                             }
                         }
                     }
                 });
     }
 
+    /**
+     * 初始化消息列表的数据
+     */
+    @Override
+    public void initData() {
+        List<CloudLiveBaseBean> list = new ArrayList<>();
+        List<CloudLiveBaseDbBean> fromAllDb = findFromAllDb();
+        if (fromAllDb != null && fromAllDb.size() > 0) {
+            for (CloudLiveBaseDbBean dBbean : fromAllDb) {
+                CloudLiveBaseBean newBean = new CloudLiveBaseBean();
+                newBean.setType(dBbean.getType());
+                newBean.setData(readSerializedObject(dBbean.getData()));
+                list.add(newBean);
+            }
+        }
+        if (getView() != null){
+            handlerDataResult(list);
+        }
+    }
+
+    /**
+     * 处理数据的结果
+     * @param list
+     */
+    private void handlerDataResult(List<CloudLiveBaseBean> list) {
+        if (list.size()==0){
+            getView().showNoMesg();
+            getView().initRecycleView(list);
+        }else {
+            getView().hideNoMesg();
+            getView().initRecycleView(list);
+        }
+    }
 }

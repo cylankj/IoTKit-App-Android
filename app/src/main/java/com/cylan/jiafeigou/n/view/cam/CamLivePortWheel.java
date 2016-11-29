@@ -60,7 +60,6 @@ public class CamLivePortWheel extends FrameLayout implements SuperWheel.WheelRol
     }
 
     @Override
-
     public void onTimeUpdate(long time) {
 
     }
@@ -72,5 +71,6 @@ public class CamLivePortWheel extends FrameLayout implements SuperWheel.WheelRol
 
     @OnClick(R.id.tv_cam_live_port_live)
     public void onClick() {
+
     }
 }
