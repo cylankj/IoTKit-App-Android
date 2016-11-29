@@ -3,6 +3,8 @@ package com.cylan.jiafeigou.n.view.home;
 import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -16,6 +18,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -376,11 +379,11 @@ public class HomeWonderfulFragmentExt extends Fragment implements
         //需要优化
         int drawableId = dayTime == JFGRules.RULE_DAY_TIME
                 ? R.drawable.bg_wonderful_daytime : R.drawable.bg_wonderful_night;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            imgWonderfulTopBg.setBackground(getResources().getDrawable(drawableId, null));
-        } else {
-            imgWonderfulTopBg.setBackground(getResources().getDrawable(drawableId));
-        }
+        Glide.with(this)
+                .load(drawableId)
+                .asBitmap()
+                .format(DecodeFormat.PREFER_ARGB_8888)
+                .into(imgWonderfulTopBg);
         AppLogger.d("onTimeTick: " + dayTime);
     }
 

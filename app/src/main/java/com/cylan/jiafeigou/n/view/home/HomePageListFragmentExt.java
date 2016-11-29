@@ -22,6 +22,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DecodeFormat;
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.cache.JCache;
@@ -323,11 +325,16 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
         //需要优化
         int drawableId = dayTime == JFGRules.RULE_DAY_TIME
                 ? R.drawable.bg_home_title_daytime : R.drawable.bg_home_title_night;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            imgHomePageHeaderBg.setBackground(getResources().getDrawable(drawableId, null));
-        } else {
-            imgHomePageHeaderBg.setBackground(getResources().getDrawable(drawableId));
-        }
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+//            imgHomePageHeaderBg.setBackground(getResources().getDrawable(drawableId, null));
+//        } else {
+//            imgHomePageHeaderBg.setBackground(getResources().getDrawable(drawableId));
+//        }
+        Glide.with(this)
+                .load(drawableId)
+                .asBitmap()
+                .format(DecodeFormat.PREFER_ARGB_8888)
+                .into(imgHomePageHeaderBg);
     }
 
     @Override
