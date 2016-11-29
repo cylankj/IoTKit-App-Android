@@ -4,9 +4,11 @@ import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.util.Log;
+import android.view.View;
 import android.widget.RemoteViews;
 
 import com.cylan.jiafeigou.NewHomeActivity;
@@ -14,7 +16,6 @@ import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.view.activity.BindDeviceActivity;
 import com.cylan.jiafeigou.n.view.bell.DoorBellHomeActivity;
 import com.cylan.jiafeigou.utils.ContextUtils;
-import com.cylan.jiafeigou.utils.TimeUtils;
 import com.cylan.utils.RandomUtils;
 
 import java.lang.ref.WeakReference;
@@ -93,23 +94,33 @@ public class NotifyManager implements INotify {
         return count < 0 ? 0 : (count > 99 ? 99 : count);
     }
 
+    private int getNotificationIcon() {
+        boolean useWhiteIcon = (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP);
+        return useWhiteIcon ? R.mipmap.notify_empty : R.mipmap.ic_launcher;
+    }
+
     @Override
     public void sendNotify(NotifyBean notifyBean) {
         final NotificationCompat.Builder builder = new NotificationCompat.Builder(getContext());
-        builder.setSmallIcon(R.mipmap.notify_empty);
-        RemoteViews remoteViews = getRemoteView();
+        builder.setSmallIcon(getNotificationIcon());
+        builder.setContentTitle(getContext().getString(R.string.app_name));
+        builder.setContentText(getContext().getString(R.string.EFAMILY_MISSED_CALL));
+        builder.setLargeIcon(BitmapFactory.decodeResource(getContext().getResources(),
+                R.mipmap.ic_launcher));
         final int count = getCount(notifyBean.count);
         final String title = count == 0 ? getContext().getString(R.string.app_name) :
-                String.format(getContext().getString(R.string.app_name) + "(%s未接听)", count);
+                String.format(getContext().getString(R.string.app_name) + "(%s%s)", count, getContext().getString(R.string.DOOR_NOT_CONNECT));
         final String subTitle = count == 0 ?
-                "想家，就用加菲狗" : "点击回拨";
-        remoteViews.setTextViewText(R.id.tv_notify_content, title);
-        remoteViews.setTextViewText(R.id.tv_notify_sub_content, subTitle);
-        remoteViews.setTextViewText(R.id.tv_notify_time, notifyBean.time == 0 ? "" : TimeUtils.getMediaVideoTimeInString(notifyBean.time));
-        builder.setContent(getRemoteView());
+                getContext().getString(R.string.Slogan) : getContext().getString(R.string.EFAMILY_MISSED_CALL);
+        builder.setContentTitle(title);
+        builder.setContentText(subTitle);
         if (notifyBean.pendingIntent != null)
             builder.setContentIntent(notifyBean.pendingIntent);
         final Notification notification = builder.build();
+        int smallIconId = getContext().getResources().getIdentifier("right_icon", "id", android.R.class.getPackage().getName());
+        if (smallIconId != 0) {
+            notification.contentView.setViewVisibility(smallIconId, View.INVISIBLE);
+        }
         notification.flags |= Notification.FLAG_FOREGROUND_SERVICE;
         notification.flags |= Notification.FLAG_NO_CLEAR;
         notification.flags |= Notification.FLAG_ONGOING_EVENT;

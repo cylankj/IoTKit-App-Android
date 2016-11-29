@@ -72,4 +72,22 @@
     <style name="wechat_share" parent="@android:style/Theme.Translucent">
         <item name="android:windowNoTitle">true</item>
     </style>
+
+    <style name="status_bar_text_title">
+        <item name="android:textAppearance">
+            @android:style/TextAppearance.Material.Notification.Title
+        </item>
+    </style>
+
+    <style name="status_bar_text_content">
+        <item name="android:textAppearance">
+            @android:style/TextAppearance.Material.Notification.Line2
+        </item>
+    </style>
+
+    <style name="status_bar_text_time">
+        <item name="android:textAppearance">
+            @android:style/TextAppearance.Material.Notification.Emphasis
+        </item>
+    </style>
 </resources>
