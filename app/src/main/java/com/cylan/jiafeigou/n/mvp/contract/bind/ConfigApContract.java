@@ -81,5 +81,9 @@ public interface ConfigApContract {
          * 这一流程,非常快.
          */
         void startPingFlow();
+
+        boolean isConnectDog();
+
+        void  finish();
     }
 }

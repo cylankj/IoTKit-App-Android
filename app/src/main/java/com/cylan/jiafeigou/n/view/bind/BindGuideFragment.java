@@ -60,18 +60,15 @@ public class BindGuideFragment extends BaseTitleFragment {
      * @return A new instance of fragment BindGuideFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static BindGuideFragment newInstance() {
+    public static BindGuideFragment newInstance(Bundle bundle) {
         BindGuideFragment fragment = new BindGuideFragment();
-        Bundle args = new Bundle();
-        fragment.setArguments(args);
+        fragment.setArguments(bundle);
         return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-        }
     }
 
 
@@ -113,9 +110,9 @@ public class BindGuideFragment extends BaseTitleFragment {
             AppLogger.i("bind: " + info);
             return;
         }
-        ConfigApFragment fragment = ConfigApFragment.newInstance(null);
+        ConfigApFragment fragment = ConfigApFragment.newInstance(getArguments());
         boolean result = ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(),
-                fragment, -1);
+                fragment, android.R.id.content);
         if (result) {
             //add a new one
             new ConfigApPresenterImpl(fragment);

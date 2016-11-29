@@ -29,6 +29,7 @@ import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.BindUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
+import com.cylan.jiafeigou.widget.LoginButton;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
@@ -52,7 +53,7 @@ public class ConfigApFragment extends BaseTitleFragment<ConfigApContract.Present
     @BindView(R.id.cb_wifi_pwd)
     CheckBox cbWifiPwd;
     @BindView(R.id.tv_wifi_pwd_submit)
-    TextView tvWifiPwdSubmit;
+    LoginButton tvWifiPwdSubmit;
     @BindView(R.id.et_wifi_pwd)
     EditText etWifiPwd;
     @BindView(R.id.tv_config_ap_name)
@@ -116,10 +117,6 @@ public class ConfigApFragment extends BaseTitleFragment<ConfigApContract.Present
     @Override
     public void onStart() {
         super.onStart();
-        if (basePresenter != null) {
-            basePresenter.checkDeviceState();
-            basePresenter.registerNetworkMonitor();
-        }
     }
 
     @Override
@@ -187,6 +184,12 @@ public class ConfigApFragment extends BaseTitleFragment<ConfigApContract.Present
                 break;
             case R.id.tv_wifi_pwd_submit:
                 ViewUtils.deBounceClick(tvWifiPwdSubmit);
+                tvWifiPwdSubmit.viewZoomSmall();
+                if (basePresenter == null ||
+                        !basePresenter.isConnectDog()) {
+                    ToastUtil.showNegativeToast("狗丢了");
+                    return;
+                }
                 String ssid = ViewUtils.getTextViewContent(tvConfigApName);
                 String pwd = ViewUtils.getTextViewContent(etWifiPwd);
                 int type = 0;
@@ -195,8 +198,8 @@ public class ConfigApFragment extends BaseTitleFragment<ConfigApContract.Present
                     return;
                 }
                 Object o = tvConfigApName.getTag();
-                if (o != null && o instanceof ScanResult) {
-                    type = BindUtils.getSecurity((ScanResult) o);
+                if (o != null && o instanceof BeanWifiList) {
+                    type = BindUtils.getSecurity(((BeanWifiList) o).result);
                 }
                 if (TextUtils.isEmpty(pwd)) {
                     ToastUtil.showNegativeToast("请输入密码");
@@ -257,14 +260,20 @@ public class ConfigApFragment extends BaseTitleFragment<ConfigApContract.Present
     @Override
     public void onSetWifiFinished(UdpConstant.UdpDevicePortrait o) {
         ToastUtil.showPositiveToast("wth good");
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(UdpConstant.KEY_BINDE_DEVICE_PORTRAIT, o);
+        Bundle bundle = getArguments();
+        bundle.putParcelable(UdpConstant.KEY_BIND_DEVICE_PORTRAIT, o);
         SubmitBindingInfoFragment fragment = SubmitBindingInfoFragment.newInstance(bundle);
-        ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(), fragment, -1);
+        ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(),
+                fragment, android.R.id.content);
+        if (basePresenter != null) {
+            basePresenter.finish();
+        }
     }
 
     @Override
     public void lossDogConnection() {
+        if (ActivityUtils.isFragmentInTop(getActivity(), R.id.fLayout_submit_bind_info))
+            return;
         ToastUtil.showNegativeToast("狗丢了....");
     }
 

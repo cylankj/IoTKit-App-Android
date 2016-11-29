@@ -5,8 +5,8 @@ import android.text.TextUtils;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.engine.task.OfflineTaskQueue;
-import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.rx.RxBus;
+import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.BindUtils;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.udpMsgPack.JfgUdpMsg;
@@ -32,10 +32,7 @@ import static com.cylan.jiafeigou.misc.bind.UdpConstant.UPGRADE_VERSION;
 
 public class SimpleBindFlow extends AFullBind {
 
-    /**
-     * ping fping流程.
-     */
-    private Subscription pingFPingSub;
+
 
 
     public SimpleBindFlow(IBindResult iBindResult) {
@@ -45,6 +42,8 @@ public class SimpleBindFlow extends AFullBind {
     @Override
     public void startPingFPing(final String shortUUID) {
         unSubscribe(pingFPingSub);
+        //空
+        setDevicePortrait(null);
         //zip用法,合并,这里使用了timeout,也就是说,次subscription的生命周期只有1s
         pingFPingSub = Observable.zip(pingObservable(shortUUID),
                 fPingObservable(shortUUID),
@@ -66,7 +65,8 @@ public class SimpleBindFlow extends AFullBind {
                         boolean needUpdate = BindUtils.versionCompare(UPGRADE_VERSION, udpDevicePortrait.version) > 0
                                 && BindUtils.isUcos(udpDevicePortrait.cid);
                         //是否需要升级
-                        iBindResult.needToUpgrade();
+                        if (needUpdate)
+                            iBindResult.needToUpgrade();
                         return !needUpdate;
                     }
                 })
@@ -77,16 +77,7 @@ public class SimpleBindFlow extends AFullBind {
                             iBindResult.isMobileNet();
                         }
                         setServerLanguage(udpDevicePortrait);
-                        //此时,设备还没恢复连接,需要加入队列
-                        int key = ("JfgCmdInsurance.getCmd().bindDevice" + udpDevicePortrait.cid).hashCode();
-                        OfflineTaskQueue.getInstance().enqueue(key, new Runnable() {
-                            @Override
-                            public void run() {
-                                AppLogger.i(BIND_TAG + udpDevicePortrait.cid);
-                                JfgCmdInsurance.getCmd().bindDevice(udpDevicePortrait.cid, "fxx");
-                            }
-                        });
-                        return null;
+                        return udpDevicePortrait;
                     }
                 })
                 //1s内
@@ -117,7 +108,7 @@ public class SimpleBindFlow extends AFullBind {
                 .map(new Func1<Boolean, Object>() {
                     @Override
                     public Object call(Boolean aBoolean) {
-                        AppLogger.e("开始启动httpServer升级狗");
+                        AppLogger.e(BIND_TAG + "开始启动httpServer升级狗");
                         RxBus.getCacheInstance().postSticky(new UdpConstant.UpgradeStatus(IBindResult.UPGRADING));
                         return null;
                     }
@@ -138,7 +129,7 @@ public class SimpleBindFlow extends AFullBind {
                 .map(new Func1<JfgUdpMsg.FPingAck, Object>() {
                     @Override
                     public Object call(JfgUdpMsg.FPingAck fPingAck) {
-                        AppLogger.e("sdk还没支持 upgrade status");
+                        AppLogger.e(BIND_TAG + "sdk还没支持 upgrade status");
                         return null;
                     }
                 });
@@ -172,6 +163,13 @@ public class SimpleBindFlow extends AFullBind {
     private Observable<UdpConstant.UdpDevicePortrait> timeoutException() {
         return Observable.just(null)
                 .subscribeOn(AndroidSchedulers.mainThread())
+                .filter(new Func1<Object, Boolean>() {
+                    @Override
+                    public Boolean call(Object o) {
+                        //没有设备画像
+                        return devicePortrait == null;
+                    }
+                })
                 .map(new Func1<Object, UdpConstant.UdpDevicePortrait>() {
                     @Override
                     public UdpConstant.UdpDevicePortrait call(Object o) {
@@ -188,7 +186,7 @@ public class SimpleBindFlow extends AFullBind {
      * @param udpDevicePortrait
      */
     private void setServerLanguage(UdpConstant.UdpDevicePortrait udpDevicePortrait) {
-        AppLogger.i("ConfigApPresenterImpl: " + udpDevicePortrait);
+        AppLogger.i(BIND_TAG + udpDevicePortrait);
         final String[] serverDetails = PackageUtils.getMetaString(ContextUtils.getContext(),
                 "ServerAddress").split(":");
         String address = serverDetails[0];
@@ -205,8 +203,8 @@ public class SimpleBindFlow extends AFullBind {
                         address,
                         port,
                         80);
-        AppLogger.i("setServer: " + new Gson().toJson(setServer));
-        AppLogger.i("setLanguage: " + new Gson().toJson(setLanguage));
+        AppLogger.i(BIND_TAG + "setServer: " + new Gson().toJson(setServer));
+        AppLogger.i(BIND_TAG + "setLanguage: " + new Gson().toJson(setLanguage));
         JfgCmdInsurance.getCmd().sendLocalMessage(UdpConstant.IP,
                 UdpConstant.PORT,
                 setServer.toBytes());
@@ -268,7 +266,47 @@ public class SimpleBindFlow extends AFullBind {
     }
 
     @Override
-    public void sendWifiInfo(String ssid, String pwd, int type) {
+    public void sendWifiInfo(final String ssid, final String pwd, final int type) {
+        Observable.just(null)
+                .subscribeOn(Schedulers.newThread())
+                .map(new Func1<Object, Object>() {
+                    @Override
+                    public Object call(Object o) {
+                        JfgUdpMsg.DoSetWifi setWifi = new JfgUdpMsg.DoSetWifi(devicePortrait.cid,
+                                devicePortrait.mac,
+                                ssid, pwd);
+                        setWifi.security = type;
+                        //发送wifi配置
+                        JfgCmdInsurance.getCmd().sendLocalMessage(UdpConstant.IP,
+                                UdpConstant.PORT,
+                                setWifi.toBytes());
+                        AppLogger.i(TAG + new Gson().toJson(setWifi));
+
+                        //此时,设备还没恢复连接,需要加入队列
+                        int key = ("JfgCmdInsurance.getCmd().bindDevice" + devicePortrait.cid).hashCode();
+                        OfflineTaskQueue.getInstance().enqueue(key, new Runnable() {
+                            @Override
+                            public void run() {
+                                AppLogger.i(BIND_TAG + devicePortrait.cid);
+                                JfgCmdInsurance.getCmd().bindDevice(devicePortrait.cid, "fxx");
+                            }
+                        });
+                        return null;
+                    }
+                })
+                .delay(500, TimeUnit.MILLISECONDS)
+                .subscribe(new Action1<Object>() {
+                    @Override
+                    public void call(Object o) {
+                        //恢复wifi
+                        iBindResult.onLocalFlowFinish();
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+
+                    }
+                });
 
     }
 }

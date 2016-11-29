@@ -410,4 +410,10 @@ public class RxEvent {
         public String uuid;
         public ArrayList<DpMsgDefine.DpMsg> jfgdpMsgs;
     }
+
+    public static final class JFGRobotSyncData {
+        public String identity;
+        public boolean state;
+        public ArrayList<JFGDPMsg> dataList;
+    }
 }

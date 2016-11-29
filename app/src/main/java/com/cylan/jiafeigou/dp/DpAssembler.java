@@ -25,11 +25,9 @@ import com.cylan.jiafeigou.rx.RxUiEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.google.gson.Gson;
 
-import org.msgpack.MessagePack;
-
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -56,6 +54,8 @@ public class DpAssembler implements IParser {
     private DpAssembler() {
         flatMsg = new FlattenMsgDp();
     }
+
+    private HashMap<Long, Long> seqSequence = new HashMap<>();
 
     public static DpAssembler getInstance() {
         if (instance == null)
@@ -189,8 +189,9 @@ public class DpAssembler implements IParser {
                             assembleBase(list.get(i));
                             final int pid = list.get(i).pid;
                             BaseParam baseParam = merger(pid);
-                            AppLogger.i(TAG + " req: " + list.get(i).uuid);
                             long seq = JfgAppCmd.getInstance().robotGetData(list.get(i).uuid, baseParam.queryParameters(null), 1, false, 0);
+                            AppLogger.i(TAG + " req: " + list.get(i).uuid);
+                            seqSequence.put(seq, seq);
                         }
                         return null;
                     }
@@ -253,11 +254,17 @@ public class DpAssembler implements IParser {
                             if (keyId == DpMsgMap.ID_505_CAMERA_ALARM_MSG || dp == null) {
                                 //报警消息
                                 assembleCamAlarmMsg(identity, entry.getValue());
-                                return null;
+                                continue;
                             }
                             assembleMiscMsg(identity, dp, keyId);
                         }
-//                        sendSingleDeviceInfo(identity);
+                        if (seqSequence.containsKey(dpDataRsp.seq)) {
+                            //这次请求是,设备更新
+                            sendSingleDeviceInfo(identity);
+                            seqSequence.remove(dpDataRsp.seq);
+                        } else {
+                            AppLogger.i("not contains key: " + dpDataRsp.seq + " " + seqSequence);
+                        }
                         return null;
                     }
                 })
@@ -283,7 +290,7 @@ public class DpAssembler implements IParser {
         }
         for (JFGDPMsg jfgdpMsg : msgs) {
             try {
-                DpMsgDefine.AlarmMsg o = unpackData(jfgdpMsg.packValue,
+                DpMsgDefine.AlarmMsg o = DpUtils.unpackData(jfgdpMsg.packValue,
                         DpMsgDefine.AlarmMsg.class);
                 DpMsgDefine.DpMsg dpMsg = new DpMsgDefine.DpMsg();
                 dpMsg.msgId = (int) jfgdpMsg.id;
@@ -312,7 +319,7 @@ public class DpAssembler implements IParser {
         }
         try {
             Class<?> clazz = ID_2_CLASS_MAP.get(keyId);
-            Object o = unpackData(dp.packValue, clazz);
+            Object o = DpUtils.unpackData(dp.packValue, clazz);
             if (o == null) {
                 AppLogger.e("o is null" + keyId);
                 return;
@@ -357,20 +364,6 @@ public class DpAssembler implements IParser {
         }
     };
 
-    /**
-     * @param data
-     * @param clazz
-     * @param <T>
-     * @return
-     */
-    private <T> T unpackData(byte[] data, Class<T> clazz) throws IOException {
-        if (clazz == null || data == null) {
-            AppLogger.e("value is null: " + clazz);
-            return null;
-        }
-        MessagePack ms = new MessagePack();
-        return ms.read(data, clazz);
-    }
 
     @Override
     public void unregister() {

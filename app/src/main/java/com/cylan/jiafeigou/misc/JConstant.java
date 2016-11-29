@@ -172,6 +172,7 @@ public class JConstant {
         NET_TYPE_RES.put(4, -1);
         NET_TYPE_RES.put(5, -1);
     }
+
     static {
         //bell
         onLineIconMap.put(JConstant.OS_DOOR_BELL, R.drawable.icon_home_doorbell_online);
@@ -256,4 +257,9 @@ public class JConstant {
         return OS_MAGNET == pid;
     }
 
+    public static final String KEY_BIND_DEVICE = "BIND_DEVICE";
+    public static final String BIND_DEVICE_CAM = "cam";
+    public static final String BIND_DEVICE_BELL = "bell";
+    public static final String BIND_DEVICE_CLOUD = "cloud";
+    public static final String BIND_DEVICE_MAG = "mag";
 }

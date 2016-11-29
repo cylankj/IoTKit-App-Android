@@ -32,7 +32,6 @@ import com.cylan.jiafeigou.dp.DpParser;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JResultEvent;
-import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -247,7 +246,11 @@ public class DataSourceService extends Service implements AppCallBack {
 
     @Override
     public void OnRobotSyncData(boolean b, String s, ArrayList<JFGDPMsg> arrayList) {
-        AppLogger.d("OnLocalMessage :" + b + " " + s + "arr" + arrayList);
+        AppLogger.d("OnRobotSyncData :" + b + " " + s + " " + arrayList);
+        RxEvent.JFGRobotSyncData data = new RxEvent.JFGRobotSyncData();
+        data.state = b;
+        data.identity = s;
+        data.dataList = arrayList;
     }
 
     @Override

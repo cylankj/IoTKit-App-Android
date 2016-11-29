@@ -1,4 +1,5 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:hunt="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
@@ -8,7 +9,7 @@
         android:layout_height="48dp"
 
         android:gravity="center"
-        android:text="选择设备要连接的WiFi"
+        android:text="@string/choose_connect_wifi"
         android:textColor="@color/color_333333"
         android:textSize="26sp" />
 
@@ -22,7 +23,6 @@
         android:layout_marginTop="55dp"
         android:drawableRight="@drawable/ico_drop_down"
         android:gravity="center"
-        android:text="xxxxxx"
         android:textColor="@color/color_333333"
         android:textSize="15sp" />
 
@@ -51,7 +51,7 @@
             android:focusable="true"
             android:focusableInTouchMode="true"
             android:gravity="center"
-            android:hint="请输入WiFi密码"
+            android:hint="@string/ENTER_WIFI_PWD"
             android:inputType="textPassword"
             android:maxLength="30"
             android:paddingLeft="40dp"
@@ -107,14 +107,19 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="15dp"
-        android:text="注:暂不支持5GHz的WiFi网络"
+        android:text="@string/WIFI_SET_5GTIPS"
         android:textColor="@color/color_4b9fd5"
         android:textSize="13sp" />
 
-    <TextView
+    <com.cylan.jiafeigou.widget.LoginButton
         android:id="@+id/tv_wifi_pwd_submit"
-        style="@style/login_model_commit_style"
+        android:layout_width="173dp"
+        android:layout_height="50dp"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="37dp"
-        android:text="下一步" />
+        android:gravity="center"
+        android:text="@string/NEXT"
+        android:textColor="@color/color_4b9fd5"
+        android:textSize="17sp"
+        hunt:lb_stroke_color="@color/color_d8d8d8" />
 </LinearLayout>

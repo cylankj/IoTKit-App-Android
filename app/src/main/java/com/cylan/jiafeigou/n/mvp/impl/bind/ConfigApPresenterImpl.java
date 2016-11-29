@@ -7,27 +7,24 @@ import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.wifi.ScanResult;
+import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.text.TextUtils;
 
 import com.cylan.jiafeigou.misc.JFGRules;
-import com.cylan.jiafeigou.misc.JfgCmdInsurance;
-import com.cylan.jiafeigou.rx.RxHelper;
 import com.cylan.jiafeigou.misc.ScanResultListFilter;
 import com.cylan.jiafeigou.misc.bind.AFullBind;
 import com.cylan.jiafeigou.misc.bind.IBindResult;
 import com.cylan.jiafeigou.misc.bind.SimpleBindFlow;
-import com.cylan.jiafeigou.misc.bind.UdpConstant;
 import com.cylan.jiafeigou.n.mvp.contract.bind.ConfigApContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
+import com.cylan.jiafeigou.rx.RxHelper;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.network.ConnectivityStatus;
 import com.cylan.jiafeigou.support.network.ReactiveNetwork;
 import com.cylan.jiafeigou.utils.BindUtils;
 import com.cylan.jiafeigou.utils.ContextUtils;
-import com.cylan.udpMsgPack.JfgUdpMsg;
-import com.google.gson.Gson;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -133,30 +130,30 @@ public class ConfigApPresenterImpl extends AbstractPresenter<ConfigApContract.Vi
 
     }
 
+    @Override
+    public boolean isConnectDog() {
+        return aFullBind != null && aFullBind.getDevicePortrait() != null;
+    }
 
-    //发送wifi配置
-    private void setWifiInfo(UdpConstant.UdpDevicePortrait udpDevicePortrait,
-                             String ssid, String pwd, int type) {
-        JfgUdpMsg.DoSetWifi setWifi = new JfgUdpMsg.DoSetWifi(udpDevicePortrait.cid,
-                udpDevicePortrait.mac,
-                ssid, pwd);
-        setWifi.security = type;
-        //发送wifi配置
-        JfgCmdInsurance.getCmd().sendLocalMessage(UdpConstant.IP,
-                UdpConstant.PORT,
-                setWifi.toBytes());
-        AppLogger.i("ConfigApPresenterImpl:" + new Gson().toJson(setWifi));
+    @Override
+    public void finish() {
+        stop();
+        if (aFullBind != null)
+            aFullBind.clean();
     }
 
 
     @Override
     public void start() {
-
+        checkDeviceState();
+        registerNetworkMonitor();
     }
 
     @Override
     public void stop() {
+        unregisterNetworkMonitor();
     }
+
 
     /**
      * wifi列表
@@ -311,6 +308,45 @@ public class ConfigApPresenterImpl extends AbstractPresenter<ConfigApContract.Vi
     @Override
     public void bindSuccess() {
 
+    }
+
+    @Override
+    public void onLocalFlowFinish() {
+        getView().onSetWifiFinished(aFullBind.getDevicePortrait());
+        Observable.just(null)
+                .throttleFirst(200, TimeUnit.MILLISECONDS)
+                .subscribeOn(Schedulers.io())
+                .map(new Func1<Object, Object>() {
+                    @Override
+                    public Object call(Object o) {
+                        WifiManager wifiManager = (WifiManager) ContextUtils.getContext().getSystemService(Context.WIFI_SERVICE);
+                        List<WifiConfiguration> list =
+                                wifiManager.getConfiguredNetworks();
+                        if (list != null) {
+                            int highPriority = -1;
+                            int index = -1;
+                            for (int i = 0; i < list.size(); i++) {
+                                String ssid = list.get(i).SSID.replace("\"", "");
+                                if (JFGRules.isCylanDevice(ssid)) {
+                                    //找到这个狗,清空他的信息
+                                    wifiManager.removeNetwork(list.get(i).networkId);
+                                    AppLogger.i(TAG + "clean dog like ssid: " + ssid);
+                                } else {
+                                    //恢复之前连接过的wifi
+                                    if (highPriority < list.get(i).priority) {
+                                        highPriority = list.get(i).priority;
+                                        index = i;
+                                    }
+                                }
+                            }
+                            if (index != -1) {
+                                AppLogger.i("re enable ssid: " + list.get(index).SSID);
+                                wifiManager.enableNetwork(list.get(index).networkId, false);
+                            }
+                        }
+                        return null;
+                    }
+                }).subscribe();
     }
 
     private class Network extends BroadcastReceiver {

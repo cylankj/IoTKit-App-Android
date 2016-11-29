@@ -16,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.anim.FlipAnimation;
 import com.cylan.jiafeigou.n.mvp.contract.bind.BindDeviceContract;
 import com.cylan.jiafeigou.n.mvp.impl.bind.BindDevicePresenterImpl;
@@ -38,8 +39,6 @@ import butterknife.OnClick;
  * create an instance of this fragment.
  */
 public class BindDoorBellFragment extends BaseTitleFragment<BindDeviceContract.Presenter> implements BindDeviceContract.View {
-    public static final String KEY_SUB_FRAGMENT_ID = "sub_key_id";
-    public static final String KEY_DEVICE_LIST = "key_device_list";
 
     @BindView(R.id.fLayout_flip_before)
     FrameLayout fLayoutFlipBefore;
@@ -271,9 +270,11 @@ public class BindDoorBellFragment extends BaseTitleFragment<BindDeviceContract.P
 //        if (basePresenter != null) basePresenter.scanDevices();
         if (getView() != null)
             ViewUtils.deBounceClick(getView().findViewById(R.id.tv_bind_camera_tip));
-        BindGuideFragment fragment = BindGuideFragment.newInstance();
+        Bundle bundle = new Bundle();
+        bundle.putString(JConstant.KEY_BIND_DEVICE, getString(R.string.CALL_CAMERA_NAME));
+        BindGuideFragment fragment = BindGuideFragment.newInstance(bundle);
         ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(),
-                fragment, -1);
+                fragment, android.R.id.content);
         cancelAnimation();
     }
 }

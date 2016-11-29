@@ -13,7 +13,7 @@ import java.util.concurrent.Executors;
  */
 
 public class OfflineTaskQueue {
-
+    private static final String TAG = "OfflineTaskQueue";
     private ExecutorService executors = Executors.newSingleThreadExecutor();
     private static OfflineTaskQueue instance;
     private volatile boolean isWorking;
@@ -54,7 +54,7 @@ public class OfflineTaskQueue {
         while (iterator.hasNext()) {
             final int key = iterator.next();
             executors.submit(queueMap.get(key));
-            AppLogger.i("start rollll..." + queueMap.size());
+            AppLogger.i(TAG + "start rollll..." + queueMap.size());
         }
         //绝对有问题,应该是一个blockingQueue
         queueMap.clear();

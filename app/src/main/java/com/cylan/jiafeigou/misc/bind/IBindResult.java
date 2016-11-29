@@ -40,6 +40,11 @@ public interface IBindResult {
      */
     void bindSuccess();
 
+    /**
+     * 绑定udp消息流程完成
+     */
+    void onLocalFlowFinish();
+
     int UPGRADE_FAILED = -1;
     int UPGRADING = 0;
     int UPGRADE_SUCCESS = 1;

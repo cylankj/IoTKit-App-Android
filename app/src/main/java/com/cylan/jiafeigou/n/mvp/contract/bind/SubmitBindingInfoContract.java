@@ -11,11 +11,9 @@ public interface SubmitBindingInfoContract {
 
     interface View extends BaseView<Presenter> {
         /**
-         * 绑定成功
+         * 绑定状态: -1:连接中,0离线,>0 成功
          */
-        void onSuccess();
-
-        void onFailed();
+        void bindState(int state);
 
         void onCounting(int percent);
     }
