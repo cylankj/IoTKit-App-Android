@@ -56,7 +56,7 @@ public interface MineFriendScanAddContract {
          * 检测扫描结果
          * @param account
          */
-        void checkScannAccount(String account);
+        void checkScanAccount(String account);
 
         /**
          * 扫描结果的回调

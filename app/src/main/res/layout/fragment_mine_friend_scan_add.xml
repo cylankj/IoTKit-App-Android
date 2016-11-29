@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:hunt="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:background="@color/color_white"
+    android:clickable="true"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".n.view.mine.MineFriendScanAddFragment">
+
+    <RelativeLayout
+        android:id="@+id/rl_home_mine_relativesandfriends_scan_add"
+        android:layout_width="match_parent"
+        android:layout_height="73dp"
+        android:background="#0BA8CF">
+
+        <ImageView
+            android:id="@+id/iv_home_mine_relativesandfriends_scan_add_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:padding="15dp"
+            android:clickable="true"
+            android:src="@drawable/icon_nav_back_white" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="12dp"
+            android:layout_marginLeft="48dp"
+            android:text="扫一扫添加"
+            android:textColor="@color/color_white"
+            android:textSize="18sp" />
+    </RelativeLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.cylan.jiafeigou.support.zscan.ZXingScannerView
+            android:layout_marginTop="30dp"
+            android:layout_gravity="center"
+            android:id="@+id/zxV_scan_add_relativesandfriend"
+            android:layout_width="350dp"
+            android:layout_height="350dp"
+            hunt:hint=""
+            />
+
+        <RelativeLayout
+            android:visibility="invisible"
+            android:id="@+id/rl_send_pro_hint"
+            android:layout_marginTop="120dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <ProgressBar
+                android:layout_centerHorizontal="true"
+                android:id="@+id/pro_send_hint"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:textColor="@color/color_black"
+                android:text="loading..."
+                android:layout_below="@id/pro_send_hint"
+                android:id="@+id/tv_send_hint"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </RelativeLayout>
+
+    </FrameLayout>
+
+    <TextView
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="20dp"
+        android:textColor="@color/color_333333"
+        android:textSize="16sp"
+        android:text="将对方二维码放入框内，即可完成扫描"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <ImageView
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="50dp"
+        android:id="@+id/iv_erweima"
+        android:layout_width="150dp"
+        android:layout_height="150dp" />
+
+    <TextView
+        android:layout_gravity="center_horizontal"
+        android:text="我的二维码"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+</LinearLayout>

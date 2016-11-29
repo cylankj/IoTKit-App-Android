@@ -4,14 +4,11 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,9 +25,7 @@ import com.cylan.jiafeigou.n.mvp.contract.mine.MineShareToContactContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineShareToContactPresenterImp;
 import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
 import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
-import com.cylan.jiafeigou.n.mvp.model.SuggestionChatInfoBean;
 import com.cylan.jiafeigou.n.view.adapter.ShareToContactAdapter;
-import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 
 import java.util.ArrayList;
@@ -109,7 +104,7 @@ public class MineShareToContactFragment extends Fragment implements MineShareToC
      */
     @OnTextChanged(R.id.et_search_contact)
     public void initEditListener(CharSequence s, int start, int before, int count){
-        presenter.handleSearchResult(s.toString().trim());
+        presenter.handlerSearchResult(s.toString().trim());
     }
 
     private void initPresenter() {
@@ -259,6 +254,12 @@ public class MineShareToContactFragment extends Fragment implements MineShareToC
                 break;
             case JError.ErrorShareInvalidAccount:                             //未注册
                 startSendMesgActivity(contractPhone);
+                break;
+
+            case JError.ErrorShareToSelf:                                     //不能分享给自己
+                if (getView() != null){
+                    showPersonOverDialog("你不能分享给自己");
+                }
                 break;
         }
     }

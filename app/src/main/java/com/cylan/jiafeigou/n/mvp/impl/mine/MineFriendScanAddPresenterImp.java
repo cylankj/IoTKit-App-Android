@@ -132,7 +132,7 @@ public class MineFriendScanAddPresenterImp extends AbstractPresenter<MineFriendS
      * @param account
      */
     @Override
-    public void checkScannAccount(String account) {
+    public void checkScanAccount(String account) {
         rx.Observable.just(account)
                 .subscribeOn(Schedulers.newThread())
                 .subscribe(new Action1<String>() {
@@ -143,7 +143,7 @@ public class MineFriendScanAddPresenterImp extends AbstractPresenter<MineFriendS
                 }, new Action1<Throwable>() {
                     @Override
                     public void call(Throwable throwable) {
-                        AppLogger.e("checkScannAccount"+throwable.getLocalizedMessage());
+                        AppLogger.e("checkScanAccount"+throwable.getLocalizedMessage());
                     }
                 });
     }

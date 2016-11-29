@@ -12,7 +12,11 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.EditText;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
@@ -41,7 +45,7 @@ import butterknife.OnClick;
  * 更新时间   $Date$
  * 更新描述   ${TODO}
  */
-public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMineHelpSuggestionContract.View{
+public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMineHelpSuggestionContract.View {
 
     @BindView(R.id.rv_home_mine_suggestion)
     RecyclerView mRvMineSuggestion;
@@ -53,20 +57,20 @@ public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMine
     TextView tvHomeMineSuggestion;
     @BindView(R.id.panel_root)
     KPSwitchFSPanelLinearLayout panelRoot;
+    @BindView(R.id.iv_loading_rotate)
+    ImageView ivLoadingRotate;
+    @BindView(R.id.fl_loading_container)
+    FrameLayout flLoadingContainer;
 
     private HomeMineHelpSuggestionAdapter suggestionAdapter;
     private String suggestion;
     private HomeMineHelpSuggestionContract.Presenter presenter;
 
+
     public static HomeMineHelpSuggestionFragment newInstance(Bundle bundle) {
         HomeMineHelpSuggestionFragment fragment = new HomeMineHelpSuggestionFragment();
         fragment.setArguments(bundle);
         return fragment;
-    }
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
     }
 
     @Nullable
@@ -95,7 +99,6 @@ public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMine
         if (presenter != null) presenter.stop();
     }
 
-
     @OnClick({R.id.tv_mine_help_suggestion_clear, R.id.tv_home_mine_suggestion})
     public void onClick(View v) {
         switch (v.getId()) {
@@ -105,6 +108,9 @@ public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMine
                 break;
             case R.id.tv_home_mine_suggestion:
                 addInputItem();
+                if (suggestionAdapter.getItemCount() == 0) {
+                    return;
+                }
                 if (suggestionAdapter.getItemCount() != 1) {
                     if (presenter.checkOverTime(suggestionAdapter.getItem(suggestionAdapter.getItemCount() - 1).getDate())) {
                         addAutoReply();
@@ -127,10 +133,18 @@ public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMine
                 .setPositiveButton("清空", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
                         presenter.onClearAllTalk();
-                        suggestionAdapter.clear();
-                        suggestionAdapter.notifyDataSetHasChanged();
-                        ToastUtil.showToast("消息已清空");
+                        showLoadingDialog();
+                        getView().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                suggestionAdapter.clear();
+                                suggestionAdapter.notifyDataSetHasChanged();
+                                hideLoadingDialog();
+                                ToastUtil.showPositiveToast("清空成功");
+                            }
+                        }, 2000);
                     }
                 })
                 .setNegativeButton("取消", new DialogInterface.OnClickListener() {
@@ -170,7 +184,7 @@ public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMine
             suggestionBean.setDate(time);
 
             if (suggestionAdapter.getItemCount() != 0) {
-                if (presenter.checkOver20s(suggestionAdapter.getList().get(suggestionAdapter.getItemCount() - 1).getDate())) {
+                if (presenter.checkOver20Min(suggestionAdapter.getList().get(suggestionAdapter.getItemCount() - 1).getDate())) {
                     suggestionBean.isShowTime = true;
                 } else {
                     suggestionBean.isShowTime = false;
@@ -185,6 +199,19 @@ public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMine
             ToastUtil.showToast("输入内容不能小于10个字符");
             return;
         }
+    }
+
+    @Override
+    public void showLoadingDialog() {
+        flLoadingContainer.setVisibility(View.VISIBLE);
+        Animation animation = AnimationUtils.loadAnimation(getContext(), R.anim.loading_progress_rotate);
+        ivLoadingRotate.startAnimation(animation);
+    }
+
+    @Override
+    public void hideLoadingDialog() {
+        flLoadingContainer.setVisibility(View.GONE);
+        ivLoadingRotate.clearAnimation();
     }
 
     /**
@@ -209,7 +236,7 @@ public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMine
         KeyboardUtil.attach(getActivity(), panelRoot, new KeyboardUtil.OnKeyboardShowingListener() {
             @Override
             public void onKeyboardShowing(boolean isShowing) {
-                mRvMineSuggestion.scrollToPosition(suggestionAdapter.getItemCount()-1);
+                mRvMineSuggestion.scrollToPosition(suggestionAdapter.getItemCount() - 1);
             }
         });
         KPSwitchConflictUtil.attach(panelRoot, mEtSuggestion,

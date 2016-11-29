@@ -30,7 +30,7 @@ import rx.subscriptions.CompositeSubscription;
 public class MineFriendListShareDevicesPresenterImp extends AbstractPresenter<MineFriendListShareDevicesToContract.View> implements MineFriendListShareDevicesToContract.Presenter {
 
     private CompositeSubscription subscription;
-    private ArrayList<JFGShareListInfo> hasShareFriendList;
+    private ArrayList<JFGShareListInfo> hasShareFriendList = new ArrayList<>();
     private ArrayList<DeviceBean> allDevice = new ArrayList<>();
     private ArrayList<RxEvent.ShareDeviceCallBack> callBackList = new ArrayList<>();
     private int totalFriend;
@@ -79,6 +79,7 @@ public class MineFriendListShareDevicesPresenterImp extends AbstractPresenter<Mi
                     @Override
                     public void call(ArrayList<DeviceBean> deviceList) {
                         if (getView() != null && deviceList != null){
+                            allDevice.clear();
                             allDevice.addAll(deviceList);
                             ArrayList<String> cidList = new ArrayList<String>();
                             for (DeviceBean bean:deviceList){

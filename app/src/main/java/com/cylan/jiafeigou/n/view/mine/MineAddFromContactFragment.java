@@ -82,7 +82,7 @@ public class MineAddFromContactFragment extends Fragment implements MineAddFromC
     public String getSendMesg() {
         String mesg = etMineAddContactMesg.getText().toString();
         if (TextUtils.isEmpty(mesg)) {
-            return "我是" + presenter.getUserAlis();
+            return "我是" + presenter.getUserAlias();
         } else {
             return mesg;
         }

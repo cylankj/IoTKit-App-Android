@@ -1,20 +1,22 @@
 package com.cylan.jiafeigou.n.view.mine;
 
 
+import android.Manifest;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.app.AlertDialog;
@@ -23,7 +25,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
@@ -106,7 +107,7 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_home_mine_personal_information, container, false);
+        View view = inflater.inflate(R.layout.fragment_home_mine_info, container, false);
         ButterKnife.bind(this, view);
         initPresenter();
         createCameraTempFile(savedInstanceState);
@@ -147,7 +148,6 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
             //点击退出做相应的逻辑
             case R.id.btn_home_mine_personal_information:
                 showLogOutDialog();
-                //TODO 信息数据的保存
                 break;
             //点击邮箱跳转到相应的页面
             case R.id.lLayout_home_mine_personal_mailbox:
@@ -326,17 +326,23 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
             public void onClick(View v) {
                 //打开相机
                 if (presenter.checkHasCamera()){
-                    if (presenter.cameraIsCanUse()){
-                        outPutUri = Uri.fromFile(tempFile);
-                        Intent intent = new Intent();
-                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        intent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
-                        intent.putExtra(MediaStore.EXTRA_OUTPUT, outPutUri);
-                        startActivityForResult(intent,OPEN_CAMERA);
-                        alertDialog.dismiss();
+
+                    if(presenter.checkCameraPermission()){
+
+                        if (presenter.cameraIsCanUse()){
+                            openCamera();
+                            alertDialog.dismiss();
+                        }else {
+                            ToastUtil.showToast("相机不可用");
+                        }
+
                     }else {
-                        ToastUtil.showToast("相机不可用");
+                        //申请权限
+                        ActivityCompat.requestPermissions(getActivity(),
+                                new String[]{Manifest.permission.CAMERA},
+                                1);
                     }
+
                 }else {
                     ToastUtil.showToast("没有相机");
                 }
@@ -362,6 +368,18 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
         builder.setView(view);
         alertDialog = builder.create();
         alertDialog.show();
+    }
+
+    /**
+     * 启动相机
+     */
+    private void openCamera() {
+        outPutUri = Uri.fromFile(tempFile);
+        Intent intent = new Intent();
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, outPutUri);
+        startActivityForResult(intent,OPEN_CAMERA);
     }
 
     private void jump2SetPhoneFragment() {
@@ -422,8 +440,6 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
             }
             String cropImagePath = getRealFilePathFromUri(getContext(), uri);
             PreferencesUtils.putString("UserImageUrl",cropImagePath);
-            //TODO 此处后面可以将bitMap转为二进制上传后台网络
-
         }else if (requestCode == OPEN_CAMERA){
             if (resultCode == getActivity().RESULT_OK) {
                 gotoClipActivity(outPutUri);
@@ -486,6 +502,18 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
         } else {
             tempFile = new File(presenter.checkFileExit(Environment.getExternalStorageDirectory().getPath() + "/image/"),
                     System.currentTimeMillis() + ".jpg");
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == 1){
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                openCamera();
+            } else {
+                ToastUtil.showNegativeToast("请授权，才能调用相机");
+            }
         }
     }
 

@@ -36,6 +36,16 @@ public interface MineShareDeviceContract {
          */
         void showNoDeviceView();
 
+        /**
+         * 显示加载进度
+         */
+        void showLoadingDialog();
+
+        /**
+         * 隐藏加载进度
+         */
+        void hideLoadingDialog();
+
     }
 
     interface Presenter extends BasePresenter {
@@ -68,6 +78,11 @@ public interface MineShareDeviceContract {
          * @return
          */
         Subscription getDeviceInfoCallBack();
+
+        /**
+         * 检测是否拥有联系人的权限
+         */
+        boolean checkPermission();
 
     }
 

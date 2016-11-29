@@ -121,7 +121,7 @@ public class MineDevicesShareManagerFragment extends Fragment implements MineDev
      * @param list
      */
     @Override
-    public void inintHasShareFriendRecyView(ArrayList<RelAndFriendBean> list) {
+    public void initHasShareFriendRecyView(ArrayList<RelAndFriendBean> list) {
         recyclerHadShareRelativesAndFriend.setLayoutManager(new LinearLayoutManager(getContext()));
         hasShareAdapter = new MineHasShareAdapter(getView().getContext(),list,null);
         recyclerHadShareRelativesAndFriend.setAdapter(hasShareAdapter);

@@ -1,11 +1,13 @@
 package com.cylan.jiafeigou.n.mvp.impl.mine;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.hardware.Camera;
 import android.os.Build;
+import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.widget.Toast;
 
@@ -115,6 +117,21 @@ public class MineInfoPresenterImpl extends AbstractPresenter<MineInfoContract.Vi
             }
         }
         return isCanUse;
+    }
+
+    /**
+     * 检测相机的权限
+     * @return
+     */
+    @Override
+    public boolean checkCameraPermission() {
+        if (ContextCompat.checkSelfPermission(getView().getContext(),
+                Manifest.permission.CAMERA)
+                != PackageManager.PERMISSION_GRANTED) {
+            return false;
+        }else{
+            return true;
+        }
     }
 
 

@@ -39,6 +39,7 @@ import com.cylan.jiafeigou.support.stat.MtaManager;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
 public class DataSourceService extends Service implements AppCallBack {
@@ -107,6 +108,11 @@ public class DataSourceService extends Service implements AppCallBack {
     @Override
     public void OnReportJfgDevices(JFGDevice[] jfgDevices) {
         RxBus.getCacheInstance().postSticky(new RxEvent.DeviceRawList(jfgDevices));
+        List<JFGDevice> list = new ArrayList<>();
+        for (int i = 0;i<jfgDevices.length;i++){
+            list.add(jfgDevices[i]);
+        }
+        RxBus.getCacheInstance().postSticky(new RxEvent.DeviceList(list));
     }
 
     @Override
@@ -285,6 +291,7 @@ public class DataSourceService extends Service implements AppCallBack {
     @Override
     public void OnCheckFriendAccountRsp(int i, String s, String s1, boolean b) {
         AppLogger.d("OnLocalMessage :");
+        RxBus.getCacheInstance().post(new RxEvent.CheckAccountCallback(i,s,s1,b));
     }
 
     @Override
@@ -298,6 +305,7 @@ public class DataSourceService extends Service implements AppCallBack {
     @Override
     public void OnUnShareDeviceRsp(int i, String s, String s1) {
         AppLogger.d("OnUnShareDeviceRsp :");
+        RxBus.getCacheInstance().post(new RxEvent.UnshareDeviceCallBack(i,s,s1));
     }
 
     @Override
@@ -308,7 +316,8 @@ public class DataSourceService extends Service implements AppCallBack {
 
     @Override
     public void OnGetUnShareListByCidRsp(int i, ArrayList<JFGFriendAccount> arrayList) {
-        AppLogger.d("OnGetUnShareListByCidRsp :");
+        AppLogger.d("OnGetUnShareListByCidRsp :"+arrayList.get(0));
+        //RxBus.getCacheInstance().post(new RxEvent.GetHasShareFriendCallBack(i,arrayList));
     }
 
     @Override

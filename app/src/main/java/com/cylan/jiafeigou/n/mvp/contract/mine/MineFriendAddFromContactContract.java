@@ -3,8 +3,6 @@ package com.cylan.jiafeigou.n.mvp.contract.mine;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
 import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
-import com.cylan.jiafeigou.n.mvp.model.SuggestionChatInfoBean;
-import com.cylan.jiafeigou.n.view.adapter.RelativeAndFriendAddFromContactAdapter;
 
 import java.util.ArrayList;
 
@@ -40,14 +38,16 @@ public interface MineFriendAddFromContactContract {
         /**
          * 发送短信邀请
          */
-        void sendSms();
+        void openSendSms();
 
     }
 
     interface Presenter extends BasePresenter {
-
+        /**
+         * 过滤数据
+         * @param filterStr
+         */
         void filterPhoneData(String filterStr);
-
         /**
          * 获取好友列表的数据
          * @return
@@ -70,6 +70,12 @@ public interface MineFriendAddFromContactContract {
          * @return
          */
         Subscription checkFriendAccountCallBack();
+
+        /**
+         * 检测短信权限
+         * @return
+         */
+        boolean checkSmsPermission();
     }
 
 }

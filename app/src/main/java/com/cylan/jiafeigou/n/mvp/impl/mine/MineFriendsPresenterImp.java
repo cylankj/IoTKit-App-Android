@@ -156,6 +156,7 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
                     @Override
                     public void call(RxEvent.GetAddReqList o) {
                         if(o != null && o instanceof RxEvent.GetAddReqList){
+
                             handleInitAddReqListDataResult(o);
                         }
                     }

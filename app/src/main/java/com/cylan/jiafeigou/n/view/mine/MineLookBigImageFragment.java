@@ -59,7 +59,7 @@ public class MineLookBigImageFragment extends Fragment implements MineLookBigIma
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_mine_long_big_image, container, false);
+        View view = inflater.inflate(R.layout.fragment_mine_look_big_image, container, false);
         ButterKnife.bind(this, view);
         initPresenter();
         initLongClickListener();

@@ -11,12 +11,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeMineMessageContract;
 import com.cylan.jiafeigou.n.mvp.impl.home.HomeMineMessagePresenterImp;
+import com.cylan.jiafeigou.n.mvp.model.MineMessageBean;
 import com.cylan.jiafeigou.n.view.adapter.HomeMineMessageAdapter;
+
+import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -35,6 +39,8 @@ public class HomeMineMessageFragment extends Fragment implements HomeMineMessage
     TextView tvHomeMineMessageClear;
     @BindView(R.id.rcl_home_mine_message_recyclerview)
     RecyclerView rclHomeMineMessageRecyclerview;
+    @BindView(R.id.ll_no_mesg)
+    LinearLayout llNoMesg;
 
     private HomeMineMessageContract.Presenter presenter;
     private HomeMineMessageAdapter messageAdapter;
@@ -49,7 +55,6 @@ public class HomeMineMessageFragment extends Fragment implements HomeMineMessage
         View view = inflater.inflate(R.layout.fragment_home_mine_message, container, false);
         ButterKnife.bind(this, view);
         initPresenter();
-        showMessageList();
         return view;
     }
 
@@ -58,16 +63,27 @@ public class HomeMineMessageFragment extends Fragment implements HomeMineMessage
     }
 
     @Override
-    public void showMessageList() {
-        presenter.initMessageData();
-        rclHomeMineMessageRecyclerview.setLayoutManager(new LinearLayoutManager(getContext()));
-        messageAdapter = new HomeMineMessageAdapter(presenter.initMessageData());
-        rclHomeMineMessageRecyclerview.setAdapter(messageAdapter);
+    public void onStart() {
+        super.onStart();
+        if (presenter != null)presenter.start();
     }
 
     @Override
-    public void notifyMessageList() {
+    public void onStop() {
+        super.onStop();
+        if (presenter != null)presenter.stop();
+    }
 
+    /**
+     * 初始化列表显示
+     *
+     * @param list
+     */
+    @Override
+    public void initRecycleView(ArrayList<MineMessageBean> list) {
+        rclHomeMineMessageRecyclerview.setLayoutManager(new LinearLayoutManager(getContext()));
+        messageAdapter = new HomeMineMessageAdapter(getContext(), list, null);
+        rclHomeMineMessageRecyclerview.setAdapter(messageAdapter);
     }
 
     @Override
@@ -76,7 +92,8 @@ public class HomeMineMessageFragment extends Fragment implements HomeMineMessage
         builder.setTitle("亲！确定要清空吗？").setPositiveButton("清空", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                messageAdapter.getList().clear();
+                presenter.clearRecoard();
+                messageAdapter.clear();
                 messageAdapter.notifyDataSetChanged();
             }
         }).setNegativeButton("取消", new DialogInterface.OnClickListener() {
@@ -85,6 +102,24 @@ public class HomeMineMessageFragment extends Fragment implements HomeMineMessage
                 dialog.dismiss();
             }
         }).show();
+    }
+
+    /**
+     * 消息为空显示
+     */
+    @Override
+    public void showNoMesgView() {
+        rclHomeMineMessageRecyclerview.setVisibility(View.INVISIBLE);
+        llNoMesg.setVisibility(View.VISIBLE);
+    }
+
+    /**
+     * 消息不为空显示
+     */
+    @Override
+    public void hideNoMesgView() {
+        rclHomeMineMessageRecyclerview.setVisibility(View.VISIBLE);
+        llNoMesg.setVisibility(View.GONE);
     }
 
     @Override

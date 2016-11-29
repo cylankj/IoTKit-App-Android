@@ -24,7 +24,6 @@ public class MineAddFromContactPresenterImp extends AbstractPresenter<MineAddFro
 
     private String userAlids = "";
 
-    private Subscription sendRequestSub;
     private CompositeSubscription compositeSubscription;
 
     public MineAddFromContactPresenterImp(MineAddFromContactContract.View view) {
@@ -39,7 +38,7 @@ public class MineAddFromContactPresenterImp extends AbstractPresenter<MineAddFro
         }
 
         compositeSubscription = new CompositeSubscription();
-        compositeSubscription.add(getAcocountAlids());
+        compositeSubscription.add(getAccountAlids());
     }
 
     @Override
@@ -67,7 +66,7 @@ public class MineAddFromContactPresenterImp extends AbstractPresenter<MineAddFro
     }
 
     @Override
-    public Subscription getAcocountAlids() {
+    public Subscription getAccountAlids() {
         return RxBus.getCacheInstance().toObservableSticky(RxEvent.GetUserInfo.class)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<RxEvent.GetUserInfo>() {
@@ -86,7 +85,7 @@ public class MineAddFromContactPresenterImp extends AbstractPresenter<MineAddFro
      * @return
      */
     @Override
-    public String getUserAlis() {
+    public String getUserAlias() {
         return userAlids;
     }
 }

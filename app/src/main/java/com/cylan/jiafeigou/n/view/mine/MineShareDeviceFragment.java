@@ -1,8 +1,12 @@
 package com.cylan.jiafeigou.n.view.mine;
 
+import android.Manifest;
 import android.app.AlertDialog;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -12,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import com.cylan.annotation.Device;
 import com.cylan.entity.jniCall.JFGShareListInfo;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineShareDeviceContract;
@@ -19,7 +24,9 @@ import com.cylan.jiafeigou.n.mvp.impl.mine.MineShareDevicePresenterImp;
 import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
 import com.cylan.jiafeigou.n.view.adapter.MineShareDeviceAdapter;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
+import com.cylan.jiafeigou.widget.LoadingDialog;
 import com.cylan.superadapter.OnItemClickListener;
 import com.cylan.superadapter.internal.SuperViewHolder;
 
@@ -49,6 +56,7 @@ public class MineShareDeviceFragment extends Fragment implements MineShareDevice
     private MineShareToContactFragment mineShareToContactFragment;
     private AlertDialog alertDialog;
     private MineShareDeviceAdapter adapter;
+    private DeviceBean whichClick;
 
     public static MineShareDeviceFragment newInstance() {
         return new MineShareDeviceFragment();
@@ -60,6 +68,7 @@ public class MineShareDeviceFragment extends Fragment implements MineShareDevice
         View view = inflater.inflate(R.layout.fragment_mine_share_device, container, false);
         ButterKnife.bind(this, view);
         initPresenter();
+        showLoadingDialog();
         return view;
     }
 
@@ -91,6 +100,7 @@ public class MineShareDeviceFragment extends Fragment implements MineShareDevice
 
     @Override
     public void showShareDialog(final int layoutPosition, final DeviceBean item) {
+        whichClick = item;
         final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         View view = View.inflate(getContext(), R.layout.fragment_home_mine_share_devices_dialog, null);
         view.findViewById(R.id.tv_share_to_timeline).setOnClickListener(new View.OnClickListener() {
@@ -109,7 +119,13 @@ public class MineShareDeviceFragment extends Fragment implements MineShareDevice
                 if (getView() != null)
                     ViewUtils.deBounceClick(getView().findViewById(R.id.tv_share_to_contract));
                 AppLogger.e("tv_share_to_contract");
-                jump2ShareToContractFragment(item);
+                if(presenter.checkPermission()){
+                    jump2ShareToContractFragment();
+                }else {
+                    ActivityCompat.requestPermissions(getActivity(),
+                            new String[]{Manifest.permission.READ_CONTACTS},
+                            1);
+                }
                 alertDialog.dismiss();
             }
         });
@@ -122,9 +138,9 @@ public class MineShareDeviceFragment extends Fragment implements MineShareDevice
     /**
      * desc；跳转到通过联系人分享的界面
      */
-    private void jump2ShareToContractFragment(DeviceBean item) {
+    private void jump2ShareToContractFragment() {
         Bundle bundle = new Bundle();
-        bundle.putParcelable("deviceinfo",item);
+        bundle.putParcelable("deviceinfo",whichClick);
         mineShareToContactFragment = MineShareToContactFragment.newInstance(bundle);
         getFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
@@ -152,6 +168,7 @@ public class MineShareDeviceFragment extends Fragment implements MineShareDevice
 
     @Override
     public void initRecycleView(ArrayList<DeviceBean> list) {
+        hideLoadingDialog();
         recycleShareDeviceList.setLayoutManager(new LinearLayoutManager(getContext()));
         adapter = new MineShareDeviceAdapter(getView().getContext(),list,null);
         recycleShareDeviceList.setAdapter(adapter);
@@ -203,6 +220,22 @@ public class MineShareDeviceFragment extends Fragment implements MineShareDevice
         llNoDevice.setVisibility(View.VISIBLE);
     }
 
+    /**
+     * 显示加载进度
+     */
+    @Override
+    public void showLoadingDialog() {
+        LoadingDialog.showLoading(getFragmentManager(),getString(R.string.LOADING));
+    }
+
+    /**
+     * 隐藏加载进度
+     */
+    @Override
+    public void hideLoadingDialog() {
+        LoadingDialog.dismissLoading(getFragmentManager());
+    }
+
     @OnClick(R.id.iv_home_mine_sharedevices_back)
     public void onClick() {
         getFragmentManager().popBackStack();
@@ -213,6 +246,18 @@ public class MineShareDeviceFragment extends Fragment implements MineShareDevice
         super.onStop();
         if (presenter != null){
             presenter.stop();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == 1){
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                jump2ShareToContractFragment();
+            } else {
+                ToastUtil.showNegativeToast(getString(R.string.permission_camera_denied));
+            }
         }
     }
 }

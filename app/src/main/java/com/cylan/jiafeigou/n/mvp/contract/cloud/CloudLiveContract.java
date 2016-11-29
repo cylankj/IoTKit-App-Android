@@ -8,6 +8,7 @@ import com.cylan.jiafeigou.n.mvp.model.CloudLiveBaseBean;
 
 import com.cylan.jiafeigou.n.mvp.model.CloudLiveBaseDbBean;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import com.cylan.jiafeigou.support.db.DbManager;
 
@@ -27,15 +28,11 @@ public interface CloudLiveContract {
 
         void refreshView(int leftVal, int rightVal);
 
-        void initRecycleView();
-
         void refreshRecycleView(CloudLiveBaseBean bean);
 
         void hangUpRefreshView(String result);
 
-        void ignoreRefreshView(String result);
-
-        void handlerVideoTalk(boolean isOnline);
+        void handlerVideoTalkResult(boolean isOnline);
 
         void showReconnetProgress();
 
@@ -43,6 +40,21 @@ public interface CloudLiveContract {
 
         void scrollToLast();                               //滚动到最后一条
 
+        /**
+         * 初始化消息列表
+         * @param list
+         */
+        void initRecycleView(List<CloudLiveBaseBean> list);
+
+        /**
+         * 显示空视图
+         */
+        void showNoMesg();
+
+        /**
+         * 隐藏空视图
+         */
+        void hideNoMesg();
     }
 
     interface Presenter extends BasePresenter {
@@ -87,5 +99,9 @@ public interface CloudLiveContract {
          */
         Subscription getAccount();
 
+        /**
+         * 初始化消息列表的数据
+         */
+        void initData();
     }
 }

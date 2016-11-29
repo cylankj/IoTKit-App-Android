@@ -39,13 +39,13 @@ public interface MineAddFromContactContract {
          * 获取到昵称
          * @return
          */
-        Subscription getAcocountAlids();
+        Subscription getAccountAlids();
 
         /**
          * 获取到用户的昵称
          * @return
          */
-        String getUserAlis();
+        String getUserAlias();
     }
 
 }

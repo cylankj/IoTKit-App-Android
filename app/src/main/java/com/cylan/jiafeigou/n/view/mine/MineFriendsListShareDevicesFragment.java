@@ -23,6 +23,7 @@ import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
 import com.cylan.jiafeigou.n.view.adapter.ChooseShareDeviceAdapter;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.utils.ToastUtil;
+import com.cylan.jiafeigou.widget.LoadingDialog;
 
 import java.util.ArrayList;
 
@@ -71,11 +72,12 @@ public class MineFriendsListShareDevicesFragment extends Fragment implements Min
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_mine_relativeandfriend_share_devices, container, false);
+        View view = inflater.inflate(R.layout.fragment_mine_friend_share_devices, container, false);
         ButterKnife.bind(this, view);
         initPresenter();
         getArgumentData();
         initTitleView(shareDeviceBean);
+        showLoadingDialog();
         return view;
     }
 
@@ -142,6 +144,7 @@ public class MineFriendsListShareDevicesFragment extends Fragment implements Min
      */
     @Override
     public void initRecycleView(ArrayList<DeviceBean> list) {
+        hideLoadingDialog();
         rcyShareDeviceList.setLayoutManager(new LinearLayoutManager(getContext()));
         chooseShareDeviceAdapter = new ChooseShareDeviceAdapter(getContext(), list, null);
         rcyShareDeviceList.setAdapter(chooseShareDeviceAdapter);
@@ -235,6 +238,22 @@ public class MineFriendsListShareDevicesFragment extends Fragment implements Min
             ToastUtil.showPositiveToast("分享失败");
         }
 
+    }
+
+    /**
+     * 显示加载进度
+     */
+    @Override
+    public void showLoadingDialog() {
+        LoadingDialog.showLoading(getFragmentManager(),"加载中");
+    }
+
+    /**
+     * 隐藏加载进度
+     */
+    @Override
+    public void hideLoadingDialog() {
+        LoadingDialog.dismissLoading(getFragmentManager());
     }
 
 }

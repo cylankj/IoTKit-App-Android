@@ -393,8 +393,15 @@ public class RxEvent {
         }
     }
 
+    /**
+     * 获取设备列表
+     */
     public static final class DeviceList {
         public List<JFGDevice> jfgDevices;
+
+        public DeviceList(List<JFGDevice> jfgDevices) {
+            this.jfgDevices = jfgDevices;
+        }
     }
 
 

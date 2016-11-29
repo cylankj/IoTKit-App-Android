@@ -68,7 +68,7 @@ public class MineFriendAddReqDetailFragment extends Fragment implements MineFrie
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_relative_and_friend_add_req_detail, container, false);
+        View view = inflater.inflate(R.layout.fragment_friend_add_req_detail, container, false);
         ButterKnife.bind(this, view);
         initPresenter();
         initMegHight();

@@ -60,7 +60,6 @@ public class MagLiveActivity extends BaseFullScreenFragmentActivity implements M
     private MagActivityAdapter adapter;
     private MagLiveContract.Presenter presenter;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -121,7 +120,6 @@ public class MagLiveActivity extends BaseFullScreenFragmentActivity implements M
 
     /**
      * 获得当前日期的方法
-     *
      * @param
      */
     public String getDate() {
@@ -241,7 +239,7 @@ public class MagLiveActivity extends BaseFullScreenFragmentActivity implements M
                 } else {
                     // 先插入一条空白的
                     MagBean nullBean = new MagBean();
-                    nullBean.magTime = addBean.magTime;
+                    nullBean.magTime = addBean.magTime - 1;
                     nullBean.visibleType = 1;
                     presenter.saveIntoDb(nullBean);
 

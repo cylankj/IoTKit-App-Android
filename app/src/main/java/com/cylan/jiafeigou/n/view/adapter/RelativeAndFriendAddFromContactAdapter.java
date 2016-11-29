@@ -2,20 +2,15 @@ package com.cylan.jiafeigou.n.view.adapter;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
-import com.cylan.jiafeigou.n.mvp.model.SuggestionChatInfoBean;
 import com.cylan.superadapter.IMulItemViewType;
 import com.cylan.superadapter.SuperAdapter;
 import com.cylan.superadapter.internal.SuperViewHolder;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -76,7 +71,7 @@ public class RelativeAndFriendAddFromContactAdapter extends SuperAdapter<RelAndF
 
             @Override
             public int getLayoutId(int viewType) {
-                return R.layout.fragment_mine_relativeandfriend_add_from_contact_item;
+                return R.layout.fragment_mine_friend_add_from_contact_item;
             }
         };
     }

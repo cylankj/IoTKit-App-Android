@@ -11,6 +11,8 @@ import com.cylan.jiafeigou.support.db.ex.DbException;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import rx.Subscription;
@@ -42,7 +44,6 @@ public class MagLivePresenterImp extends AbstractPresenter<MagLiveContract.View>
             compositeSubscription = new CompositeSubscription();
             compositeSubscription.add(getAccount());
         }
-
     }
 
     @Override
@@ -154,6 +155,7 @@ public class MagLivePresenterImp extends AbstractPresenter<MagLiveContract.View>
         } catch (DbException e) {
             e.printStackTrace();
         }
+        Collections.sort(allData,new SortComparator());
         return allData;
     }
 
@@ -183,4 +185,13 @@ public class MagLivePresenterImp extends AbstractPresenter<MagLiveContract.View>
         return -1l;
     }
 
+    /**
+     * 按时间排序
+     */
+    public class SortComparator implements Comparator<MagBean>{
+        @Override
+        public int compare(MagBean lhs, MagBean rhs) {
+            return (int) (rhs.magTime - lhs.magTime);
+        }
+    }
 }

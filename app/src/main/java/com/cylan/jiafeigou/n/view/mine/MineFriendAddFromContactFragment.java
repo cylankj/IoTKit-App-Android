@@ -1,14 +1,16 @@
 package com.cylan.jiafeigou.n.view.mine;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +24,7 @@ import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendAddFromContactContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineFriendAddFromContactPresenterImp;
 import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
 import com.cylan.jiafeigou.n.view.adapter.RelativeAndFriendAddFromContactAdapter;
+import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.superadapter.OnItemClickListener;
 
 import java.util.ArrayList;
@@ -76,7 +79,7 @@ public class MineFriendAddFromContactFragment extends Fragment implements MineFr
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_mine_relativeandfriend_add_from_contact, container, false);
+        View view = inflater.inflate(R.layout.fragment_mine_friend_add_from_contact, container, false);
         ButterKnife.bind(this, view);
         initPresenter();
         return view;
@@ -171,7 +174,21 @@ public class MineFriendAddFromContactFragment extends Fragment implements MineFr
      * 发送短信邀请
      */
     @Override
-    public void sendSms() {
+    public void openSendSms() {
+        if (presenter.checkSmsPermission()){
+            sendSms();
+        }else {
+            //申请权限
+            ActivityCompat.requestPermissions(getActivity(),
+                    new String[]{Manifest.permission.SEND_SMS},
+                    1);
+        }
+    }
+
+    /**
+     * 发送短信
+     */
+    private void sendSms() {
         Uri smsToUri = Uri.parse("smsto:" + friendAccount);
         Intent mIntent = new Intent(Intent.ACTION_SENDTO, smsToUri);
         mIntent.putExtra("sms_body", "邀请你成为我的好友，点击XXXXXXXXX下载安装【加菲狗】");
@@ -197,6 +214,18 @@ public class MineFriendAddFromContactFragment extends Fragment implements MineFr
                     presenter.checkFriendAccount(item.account);
                 }
             },2000);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == 1){
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                sendSms();
+            } else {
+                ToastUtil.showNegativeToast("请授权，才能发送邀请短信");
+            }
         }
     }
 }

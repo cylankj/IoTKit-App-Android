@@ -173,7 +173,7 @@ public class HomeMineHelpSuggestionImpl extends AbstractPresenter<HomeMineHelpSu
      * @return
      */
     @Override
-    public boolean checkOver20s(String time) {
+    public boolean checkOver20Min(String time) {
         long lastItemTime = Long.parseLong(time);
         if (System.currentTimeMillis() - lastItemTime > 2*60*1000){
             return true;

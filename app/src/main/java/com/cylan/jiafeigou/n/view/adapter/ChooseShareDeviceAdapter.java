@@ -1,25 +1,18 @@
 package com.cylan.jiafeigou.n.view.adapter;
 
 import android.content.Context;
-import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
-import com.cylan.jiafeigou.n.mvp.model.MineShareDeviceBean;
-import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
 import com.cylan.superadapter.IMulItemViewType;
 import com.cylan.superadapter.SuperAdapter;
 import com.cylan.superadapter.internal.SuperViewHolder;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -87,7 +80,7 @@ public class ChooseShareDeviceAdapter extends SuperAdapter<DeviceBean> {
 
             @Override
             public int getLayoutId(int viewType) {
-                return R.layout.fragment_relative_friend_share_device_items;
+                return R.layout.fragment_friend_share_device_items;
             }
         };
     }

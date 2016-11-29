@@ -79,6 +79,7 @@ public class ToastUtil {
             tv.setText(content);
             toast.show();
         } catch (Exception e) {
+
         }
     }
 

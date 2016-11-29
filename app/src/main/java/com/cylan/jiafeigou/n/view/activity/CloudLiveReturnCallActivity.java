@@ -13,8 +13,8 @@ import android.widget.TextView;
 import android.widget.VideoView;
 
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.n.mvp.contract.cloud.CloudVideoChatConettionOkContract;
-import com.cylan.jiafeigou.n.mvp.impl.cloud.CloudVideoChatConettionOkPresenterImp;
+import com.cylan.jiafeigou.n.mvp.contract.cloud.CloudVideoChatConnectOkContract;
+import com.cylan.jiafeigou.n.mvp.impl.cloud.CloudVideoChatCallOutPresenterImp;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 
@@ -27,7 +27,7 @@ import butterknife.OnClick;
  * 创建时间：2016/10/13
  * 描述：
  */
-public class CloudLiveReturnCallActivity extends AppCompatActivity implements CloudVideoChatConettionOkContract.View {
+public class CloudLiveReturnCallActivity extends AppCompatActivity implements CloudVideoChatConnectOkContract.View {
 
     @BindView(R.id.vv_chatvideo_from)
     VideoView vvChatvideoFrom;
@@ -43,7 +43,7 @@ public class CloudLiveReturnCallActivity extends AppCompatActivity implements Cl
     LinearLayout llMyselfVideo;
 
 
-    private CloudVideoChatConettionOkContract.Presenter presenter;
+    private CloudVideoChatConnectOkContract.Presenter presenter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -62,7 +62,7 @@ public class CloudLiveReturnCallActivity extends AppCompatActivity implements Cl
     }
 
     private void initPresenter() {
-        presenter = new CloudVideoChatConettionOkPresenterImp(this);
+        presenter = new CloudVideoChatCallOutPresenterImp(this);
     }
 
     @Override
@@ -96,7 +96,7 @@ public class CloudLiveReturnCallActivity extends AppCompatActivity implements Cl
     }
 
     @Override
-    public void setPresenter(CloudVideoChatConettionOkContract.Presenter presenter) {
+    public void setPresenter(CloudVideoChatConnectOkContract.Presenter presenter) {
 
     }
 
@@ -109,7 +109,7 @@ public class CloudLiveReturnCallActivity extends AppCompatActivity implements Cl
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.iv_hang_up:
-                RxBus.getCacheInstance().post(new RxEvent.HangUpVideoTalk(true,tvVideoTime.getText().toString().trim()));
+                RxBus.getCacheInstance().postSticky(new RxEvent.HangUpVideoTalk(true,tvVideoTime.getText().toString().trim()));
                 finish();
                 break;
         }

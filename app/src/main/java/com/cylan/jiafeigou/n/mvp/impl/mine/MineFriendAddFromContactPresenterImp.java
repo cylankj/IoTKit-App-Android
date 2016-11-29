@@ -1,9 +1,12 @@
 package com.cylan.jiafeigou.n.mvp.impl.mine;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 
 import com.cylan.entity.jniCall.JFGFriendAccount;
@@ -233,6 +236,21 @@ public class MineFriendAddFromContactPresenterImp extends AbstractPresenter<Mine
     }
 
     /**
+     * 检测短信权限
+     * @return
+     */
+    @Override
+    public boolean checkSmsPermission() {
+        if (ContextCompat.checkSelfPermission(getView().getContext(),
+                Manifest.permission.SEND_SMS)
+                != PackageManager.PERMISSION_GRANTED) {
+            return false;
+        }else{
+            return true;
+        }
+    }
+
+    /**
      * 处理检测账号的结果
      * @param checkAccountCallback
      */
@@ -240,7 +258,7 @@ public class MineFriendAddFromContactPresenterImp extends AbstractPresenter<Mine
         if (getView() != null){
             if (checkAccountCallback.i == 240){
                 //未注册发送短信
-                getView().sendSms();
+                getView().openSendSms();
             }else if (checkAccountCallback.i == 0){
                 //已注册
                 getView().jump2SendAddMesgFragment();
