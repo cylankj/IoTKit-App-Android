@@ -18,18 +18,21 @@
         android:orientation="vertical">
 
         <TextView
-            android:textColor="#888000"
             android:id="@+id/tv_notify_content"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="加菲狗" />
+            android:text="@string/app_name"
+            android:textAppearance="@style/status_bar_text_title"
+            android:textSize="16sp" />
 
         <TextView
-            android:textColor="#888000"
             android:id="@+id/tv_notify_sub_content"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="想家，就用加菲狗" />
+            android:text="@string/Slogan"
+            android:textAppearance="@style/status_bar_text_content"
+            android:textColor="@color/color_818181"
+            android:textSize="14sp" />
     </LinearLayout>
 
     <LinearLayout
@@ -38,12 +41,12 @@
         android:orientation="vertical">
 
         <TextView
-            android:textColor="#888000"
             android:id="@+id/tv_notify_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end"
-            android:text="10:11" />
+            android:textAppearance="@style/status_bar_text_time"
+            android:textSize="13sp" />
 
     </LinearLayout>
 </LinearLayout>
