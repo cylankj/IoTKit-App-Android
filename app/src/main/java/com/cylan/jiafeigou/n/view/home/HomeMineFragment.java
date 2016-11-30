@@ -99,7 +99,7 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
         if (!JCache.isOnline()) {
             //访客状态
             basePresenter.portraitBlur(R.drawable.clouds);
-            setAliasName("立即登录");
+            setAliasName(getString(R.string.Tap3_LogIn));
         }
     }
 

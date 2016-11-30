@@ -147,7 +147,7 @@ public class MineSetRemarkNameFragment extends Fragment implements MineSetRemark
      */
     @Override
     public void showFinishResult() {
-        ToastUtil.showPositiveToast("设置成功");
+        ToastUtil.showPositiveToast(getString(R.string.PWD_OK_2));
         if (listener != null) {
             listener.remarkNameChange(getEditName());
         }

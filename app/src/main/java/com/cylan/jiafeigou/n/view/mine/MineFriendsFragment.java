@@ -118,17 +118,17 @@ public class MineFriendsFragment extends Fragment implements MineFriendsContract
     public void showReqOutTimeDialog(final MineAddReqBean item) {
         //请求过期
         android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(getView().getContext());
-        builder.setMessage("当前消息已过期，是否向对方发送添加好友验证？");
-        builder.setPositiveButton("发送", new DialogInterface.OnClickListener() {
+        builder.setMessage(getString(R.string.Tap3_FriendsAdd_ExpiredTips));
+        builder.setPositiveButton(getString(R.string.Tap3_FriendsAdd_Send), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
-                ToastUtil.showPositiveToast("请求已发送");
+                ToastUtil.showPositiveToast(getString(R.string.Tap3_FriendsAdd_Contacts_InvitedTips));
                 //向对方发送请求
                 presenter.sendAddReq(item.account);
             }
         });
-        builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(getString(R.string.CANCEL), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
@@ -172,7 +172,7 @@ public class MineFriendsFragment extends Fragment implements MineFriendsContract
      */
     @Override
     public void showLoadingDialog() {
-        LoadingDialog.showLoading(getFragmentManager(),"加载中");
+        LoadingDialog.showLoading(getFragmentManager(),getString(R.string.LOADING));
     }
 
     /**
@@ -186,14 +186,14 @@ public class MineFriendsFragment extends Fragment implements MineFriendsContract
     @Override
     public void showLongClickDialog(final int position, final MineAddReqBean bean) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        builder.setPositiveButton("删除该请求", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(getString(R.string.DELETE), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 addReqDeleteItem(position,bean);
                 // TODO 删除添加请求
                 dialog.dismiss();
             }
-        }).setNegativeButton("取消", new DialogInterface.OnClickListener() {
+        }).setNegativeButton(getString(R.string.CANCEL), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
@@ -356,7 +356,7 @@ public class MineFriendsFragment extends Fragment implements MineFriendsContract
         }else {
             //调用添加成功
             presenter.acceptAddSDK(item.account);
-            ToastUtil.showPositiveToast("添加成功");
+            ToastUtil.showPositiveToast(getString(R.string.Tap3_FriendsAdd_Success));
 
             //更新好友列表
             RelAndFriendBean account = new RelAndFriendBean();

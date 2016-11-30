@@ -78,8 +78,8 @@ public class HomeMineInfoMailBoxFragment extends Fragment implements MineInfoBin
     @Override
     public void showMailHasBindDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        builder.setMessage("该邮箱已经被绑定")
-                .setPositiveButton("我知道了", new DialogInterface.OnClickListener() {
+        builder.setMessage(getString(R.string.RET_EEDITUSERINFO_EMAIL))
+                .setPositiveButton(getString(R.string.SURE), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
@@ -103,7 +103,7 @@ public class HomeMineInfoMailBoxFragment extends Fragment implements MineInfoBin
         hideSendReqHint();
         if (!"".equals(getUserInfo.jfgAccount.getEmail())) {
             //绑定成功
-            ToastUtil.showPositiveToast("绑定成功");
+            ToastUtil.showPositiveToast(getString(R.string.Added_successfully));
             getFragmentManager().popBackStack();
         } else {
             //绑定失败
@@ -121,7 +121,7 @@ public class HomeMineInfoMailBoxFragment extends Fragment implements MineInfoBin
             bindOrChange = true;
         } else {
             bindOrChange = false;
-            tvTopTitle.setText("修改邮箱");
+            tvTopTitle.setText(getString(R.string.CHANGE_EMAIL));
         }
 
     }
@@ -240,7 +240,7 @@ public class HomeMineInfoMailBoxFragment extends Fragment implements MineInfoBin
                 if (TextUtils.isEmpty(mailBox)) {
                     return;
                 } else if (!presenter.checkEmail(mailBox)) {
-                    ToastUtil.showToast("请输入有效邮箱");
+                    ToastUtil.showToast(getString(R.string.EMAIL_2));
                     return;
                 } else {
                     if (bindOrChange) {

@@ -31,7 +31,7 @@
                 android:id="@+id/tv_top_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="分享给联系人"
+                android:text="@string/Tap3_ShareDevice_ToContacts"
                 android:textColor="@color/color_white"
                 android:textSize="18sp" />
 
@@ -42,7 +42,7 @@
                 android:textColor="@color/color_white"
                 android:textColorHint="@color/color_white"
                 android:background="@null"
-                android:hint="搜索"
+                android:hint="@string/Search"
                 android:textSize="18sp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />

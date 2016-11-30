@@ -176,8 +176,8 @@ public class MineShareToContactFragment extends Fragment implements MineShareToC
     @Override
     public void showShareDeviceDialog(final String account) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        builder.setTitle("分享设备");
-        builder.setPositiveButton("确认", new DialogInterface.OnClickListener() {
+        builder.setTitle(getString(R.string.Tap3_ShareDevice));
+        builder.setPositiveButton(getString(R.string.Button_Sure), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
@@ -194,7 +194,7 @@ public class MineShareToContactFragment extends Fragment implements MineShareToC
             }
         });
 
-        builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(getString(R.string.CANCEL), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
@@ -226,7 +226,7 @@ public class MineShareToContactFragment extends Fragment implements MineShareToC
     public void startSendMesgActivity(String account) {
         Uri smsToUri = Uri.parse("smsto:"+account);
         Intent mIntent = new Intent(Intent.ACTION_SENDTO, smsToUri );
-        mIntent.putExtra("sms_body", "邀请你成为我的好友，点击XXXXXXXXX下载安装【加菲狗】");
+        mIntent.putExtra("sms_body", getString(R.string.Tap1_share_tips));
         startActivity( mIntent );
     }
 
@@ -238,18 +238,18 @@ public class MineShareToContactFragment extends Fragment implements MineShareToC
     public void handlerCheckRegister(int requtestId, String item) {
         switch (requtestId){
             case JError.ErrorOK:                                           //分享成功
-                ToastUtil.showPositiveToast("分享成功");
+                ToastUtil.showPositiveToast(getString(R.string.Tap3_ShareDevice_SuccessTips));
                 break;
 
             case JError.ErrorShareExceedsLimit:                             //已注册 未分享但人数达到5人
                 if (getView() != null){
-                    showPersonOverDialog("只能分享给5位用户");
+                    showPersonOverDialog(getString(R.string.SHARE_ERR));
                 }
                 break;
 
             case JError.ErrorShareAlready:                                    //已注册 已分享
                 if (getView() != null){
-                    showPersonOverDialog("已经分享给此账号啦");
+                    showPersonOverDialog(getString(R.string.RET_ESHARE_REPEAT));
                 }
                 break;
             case JError.ErrorShareInvalidAccount:                             //未注册
@@ -258,7 +258,7 @@ public class MineShareToContactFragment extends Fragment implements MineShareToC
 
             case JError.ErrorShareToSelf:                                     //不能分享给自己
                 if (getView() != null){
-                    showPersonOverDialog("你不能分享给自己");
+                    showPersonOverDialog(getString(R.string.RET_ESHARE_NOT_YOURSELF));
                 }
                 break;
         }

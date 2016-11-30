@@ -128,6 +128,7 @@ public class MineFriendAddFromContactPresenterImp extends AbstractPresenter<Mine
         filterDateList = new ArrayList<>();
         if (allContactBean.size() != 0){
             if (TextUtils.isEmpty(filterStr)) {
+                filterDateList.clear();
                 filterDateList.addAll(allContactBean);
             } else {
                 filterDateList.clear();

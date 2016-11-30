@@ -29,7 +29,7 @@
                 android:layout_marginLeft="48dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="设置"
+                android:text="@string/SETTINGS"
                 android:textSize="18sp"
                 android:textColor="@color/color_white" />
 
@@ -45,7 +45,7 @@
                 android:layout_marginLeft="20dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="接收消息通知"
+                android:text="@string/PUSH_MSG"
                 android:textSize="16sp"
                 android:textColor="@color/color_black" />
 
@@ -79,7 +79,7 @@
                 android:layout_marginLeft="20dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="声音"
+                android:text="@string/IN_APP_SOUND"
                 android:textSize="16sp"
                 android:textColor="@color/color_black" />
 
@@ -113,7 +113,7 @@
                 android:layout_marginLeft="20dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="震动"
+                android:text="@string/IN_APP_VIBRATE"
                 android:textSize="16sp"
                 android:textColor="@color/color_black" />
 
@@ -153,7 +153,7 @@
                 android:layout_marginLeft="20dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="清空消息缓存"
+                android:text="@string/CLEAR_DATA"
                 android:textSize="16sp"
                 android:textColor="@color/color_black" />
 
@@ -202,7 +202,7 @@
                 android:layout_marginLeft="20dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="关于"
+                android:text="@string/ABOUT"
                 android:textSize="16sp"
                 android:textColor="@color/color_black" />
 

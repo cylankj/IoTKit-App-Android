@@ -59,7 +59,7 @@ public class CloudLiveCallInActivity extends AppCompatActivity implements CloudL
                 break;
             case R.id.tv_ignore_call:
                 Intent backIntent = new Intent();
-                backIntent.putExtra("ignore","未接听，点击回拨");
+                backIntent.putExtra("ignore",getString(R.string.EFAMILY_MISSED_CALL));
                 setResult(1,backIntent);
                 finish();
                 break;

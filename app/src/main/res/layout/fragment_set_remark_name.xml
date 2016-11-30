@@ -26,7 +26,7 @@
             android:layout_marginLeft="48dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="修改备注"
+            android:text="@string/Tap3_Friends_UserInfo_ModName"
             android:textSize="18sp"
             android:textColor="@color/color_white" />
 
@@ -53,7 +53,7 @@
             android:textColor="@color/color_333333"
             android:textSize="16sp"
             android:layout_centerVertical="true"
-            android:hint="输入备注名称"
+            android:hint="@string/Tap3_Friends_UserInfo_Name"
             android:maxLength="12"
             android:background="@null"
             android:layout_marginRight="20dp"

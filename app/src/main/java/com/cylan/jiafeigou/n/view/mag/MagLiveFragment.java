@@ -158,8 +158,8 @@ public class MagLiveFragment extends Fragment implements HomeMagLiveContract.Vie
      */
     private void showClearDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        builder.setTitle("确认清空开关记录");
-        builder.setPositiveButton("确认", new DialogInterface.OnClickListener() {
+        builder.setTitle(getString(R.string.Tap1_Magnetism_ClearRecord));
+        builder.setPositiveButton(getString(R.string.OK), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 presenter.clearOpenAndCloseRecord();
@@ -169,7 +169,7 @@ public class MagLiveFragment extends Fragment implements HomeMagLiveContract.Vie
                 dialog.dismiss();
             }
         });
-        builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(getString(R.string.CANCEL), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
@@ -192,7 +192,7 @@ public class MagLiveFragment extends Fragment implements HomeMagLiveContract.Vie
      */
     @Override
     public void showNoMesg() {
-        ToastUtil.showToast("消息记录为空");
+        ToastUtil.showToast(getString(R.string.NO_MESSAGE));
     }
 
     /**

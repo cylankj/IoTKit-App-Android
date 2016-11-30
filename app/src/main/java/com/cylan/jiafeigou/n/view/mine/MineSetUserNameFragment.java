@@ -140,7 +140,7 @@ public class MineSetUserNameFragment extends Fragment implements MineInfoSetName
     @Override
     public void handlerResult(RxEvent.GetUserInfo getUserInfo) {
         if (getEditName().equals(getUserInfo.jfgAccount.getAlias())){
-            ToastUtil.showPositiveToast("设置成功");
+            ToastUtil.showPositiveToast(getString(R.string.PWD_OK_2));
             getFragmentManager().popBackStack();
         }else {
             ToastUtil.showPositiveToast("设置失败");

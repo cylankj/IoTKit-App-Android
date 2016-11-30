@@ -177,8 +177,8 @@ public class MineFriendAddReqDetailFragment extends Fragment implements MineFrie
     @Override
     public void showReqOutTimeDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        builder.setMessage("当前消息已过期，是否向对方发送\n" + "添加好友验证？");
-        builder.setPositiveButton("发送", new DialogInterface.OnClickListener() {
+        builder.setMessage(getString(R.string.Tap3_FriendsAdd_ExpiredTips));
+        builder.setPositiveButton(getString(R.string.Tap3_FriendsAdd_Send), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
@@ -186,7 +186,7 @@ public class MineFriendAddReqDetailFragment extends Fragment implements MineFrie
                 showSendAddReqResult(true);
             }
         });
-        builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(getString(R.string.CANCEL), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
@@ -198,7 +198,7 @@ public class MineFriendAddReqDetailFragment extends Fragment implements MineFrie
     public void showSendAddReqResult(boolean flag) {
         if(flag){
             getFragmentManager().popBackStack();
-            ToastUtil.showPositiveToast("请求已发送");
+            ToastUtil.showPositiveToast(getString(R.string.Tap3_FriendsAdd_Contacts_InvitedTips));
         }else {
             getFragmentManager().popBackStack();
             ToastUtil.showNegativeToast("请求发送失败");
@@ -208,7 +208,7 @@ public class MineFriendAddReqDetailFragment extends Fragment implements MineFrie
     @Override
     public void showAddedReult(boolean flag) {
         if (flag) {
-            ToastUtil.showPositiveToast("添加成功");
+            ToastUtil.showPositiveToast(getString(R.string.Tap3_FriendsAdd_Success));
         }else {
             ToastUtil.showNegativeToast("添加失败");
         }

@@ -143,15 +143,15 @@ public class MineDevicesShareManagerFragment extends Fragment implements MineDev
     @Override
     public void showCancleShareDialog(final RelAndFriendBean bean) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        builder.setTitle("是否删除对该用户的分享？");
-        builder.setPositiveButton("删除", new DialogInterface.OnClickListener() {
+        builder.setTitle(getString(R.string.Tap3_ShareDevice_CancleShare));
+        builder.setPositiveButton(getString(R.string.DELETE), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
                 presenter.cancleShare(devicebean.uuid,bean);
             }
         });
-        builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(getString(R.string.CANCEL), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();

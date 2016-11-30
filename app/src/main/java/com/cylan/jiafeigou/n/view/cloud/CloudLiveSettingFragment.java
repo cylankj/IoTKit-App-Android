@@ -21,6 +21,7 @@ import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
+import com.cylan.jiafeigou.widget.LoadingDialog;
 import com.cylan.jiafeigou.widget.SettingItemView2;
 
 import butterknife.BindView;
@@ -46,10 +47,6 @@ public class CloudLiveSettingFragment extends Fragment implements CloudLiveSetti
     TextView tvSettingUnbind;
     @BindView(R.id.tv_door_bell)
     TextView tvDoorBell;
-    @BindView(R.id.progress_clear_record)
-    ProgressBar progressClearRecord;
-    @BindView(R.id.rl_clear_cache)
-    RelativeLayout rlClearCache;
 
     private CloudLiveDeviceInfoFragment cloudLiveDeviceInfoFragment;
     private CloudCorrelationDoorBellFragment cloudCorrelationDoorBellFragment;
@@ -155,7 +152,7 @@ public class CloudLiveSettingFragment extends Fragment implements CloudLiveSetti
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle("确认删除大门口门铃及其相关数据吗？");
-        builder.setPositiveButton("确认", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(getString(R.string.OK), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
@@ -165,7 +162,7 @@ public class CloudLiveSettingFragment extends Fragment implements CloudLiveSetti
                 ToastUtil.showToast("正在删除中...");
             }
         });
-        builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(getString(R.string.CANCEL), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
@@ -208,8 +205,8 @@ public class CloudLiveSettingFragment extends Fragment implements CloudLiveSetti
     @Override
     public void showClearRecordDialog() {
         AlertDialog.Builder b = new AlertDialog.Builder(getActivity());
-        b.setTitle("确认清空消息记录？");
-        b.setPositiveButton("确认", new DialogInterface.OnClickListener() {
+        b.setTitle(getString(R.string.Tap1_Tipsforclearrecents));
+        b.setPositiveButton(getString(R.string.OK), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
@@ -219,7 +216,7 @@ public class CloudLiveSettingFragment extends Fragment implements CloudLiveSetti
                 }
             }
         });
-        b.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+        b.setNegativeButton(getString(R.string.CANCEL), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
@@ -229,14 +226,12 @@ public class CloudLiveSettingFragment extends Fragment implements CloudLiveSetti
 
     @Override
     public void showClearRecordProgress() {
-        progressClearRecord.setVisibility(View.VISIBLE);
-        rlClearCache.setVisibility(View.VISIBLE);
+        LoadingDialog.showLoading(getFragmentManager(),"清除中...");
     }
 
     @Override
     public void hideClearRecordProgress() {
-        progressClearRecord.setVisibility(View.INVISIBLE);
-        rlClearCache.setVisibility(View.INVISIBLE);
+        LoadingDialog.dismissLoading(getFragmentManager());
     }
 
     @Override

@@ -131,9 +131,9 @@ public class MineFriendsListShareDevicesFragment extends Fragment implements Min
     public void initTitleView(RelAndFriendBean bean) {
 
         if (TextUtils.isEmpty(bean.markName.trim())) {
-            tvShareTo.setText("分享设备给" + bean.alias);
+            tvShareTo.setText(getString(R.string.Tap3_Friends_Share)+bean.alias);
         } else {
-            tvShareTo.setText("分享设备给" + bean.markName);
+            tvShareTo.setText(getString(R.string.Tap3_Friends_Share) + bean.markName);
         }
     }
 
@@ -233,9 +233,9 @@ public class MineFriendsListShareDevicesFragment extends Fragment implements Min
         }
 
         if (chooseList.size() == 0) {
-            ToastUtil.showPositiveToast("分享成功");
+            ToastUtil.showPositiveToast(getString(R.string.Tap3_ShareDevice_SuccessTips));
         } else if (chooseList.size() != 0) {
-            ToastUtil.showPositiveToast("分享失败");
+            ToastUtil.showPositiveToast(getString(R.string.Tap3_ShareDevice_FailTips));
         }
 
     }
@@ -245,7 +245,7 @@ public class MineFriendsListShareDevicesFragment extends Fragment implements Min
      */
     @Override
     public void showLoadingDialog() {
-        LoadingDialog.showLoading(getFragmentManager(),"加载中");
+        LoadingDialog.showLoading(getFragmentManager(),getString(R.string.LOADING));
     }
 
     /**

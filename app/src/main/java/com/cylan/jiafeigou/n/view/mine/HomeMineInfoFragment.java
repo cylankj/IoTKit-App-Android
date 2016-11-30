@@ -268,13 +268,13 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
             tvUserName.setText(bean.getAlias());
 
             if (bean.getEmail() == null | "".equals(bean.getEmail())){
-                mTvMailBox.setText("未设置");
+                mTvMailBox.setText(getString(R.string.NO_SET));
             }else {
                 mTvMailBox.setText(bean.getEmail());
             }
 
             if(bean.getPhone() == null && "".equals(bean.getPhone())){
-                tvHomeMinePersonalPhone.setText("未设置");
+                tvHomeMinePersonalPhone.setText(getString(R.string.NO_SET));
             }else {
                 tvHomeMinePersonalPhone.setText(bean.getPhone());
             }
@@ -401,8 +401,8 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
     @Override
     public void showLogOutDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        builder.setTitle("退出不会删除账号信息，你可以再次登录");
-        builder.setPositiveButton("退出登录", new DialogInterface.OnClickListener() {
+        builder.setTitle(getString(R.string.LOGOUT_INFO));
+        builder.setPositiveButton(getString(R.string.LOGOUT), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 presenter.logOut();
@@ -410,7 +410,7 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
                 dialog.dismiss();
             }
         });
-        builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(getString(R.string.CANCEL), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
@@ -512,7 +512,7 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 openCamera();
             } else {
-                ToastUtil.showNegativeToast("请授权，才能调用相机");
+                ToastUtil.showNegativeToast(getString(R.string.Tap0_Authorizationfailed));
             }
         }
     }

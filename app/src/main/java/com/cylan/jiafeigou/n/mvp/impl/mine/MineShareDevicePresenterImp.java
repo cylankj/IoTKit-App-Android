@@ -86,6 +86,7 @@ public class MineShareDevicePresenterImp extends AbstractPresenter<MineShareDevi
                             }
                             getDeviceInfo(cidList);
                         }else {
+                            getView().hideLoadingDialog();
                             getView().showNoDeviceView();
                         }
                     }
@@ -114,6 +115,7 @@ public class MineShareDevicePresenterImp extends AbstractPresenter<MineShareDevi
             }
         } else {
             if (getView() != null) {
+                getView().hideLoadingDialog();
                 getView().showNoDeviceView();
             }
         }

@@ -25,6 +25,7 @@ import com.cylan.jiafeigou.n.mvp.impl.mine.MineFriendAddFromContactPresenterImp;
 import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
 import com.cylan.jiafeigou.n.view.adapter.RelativeAndFriendAddFromContactAdapter;
 import com.cylan.jiafeigou.utils.ToastUtil;
+import com.cylan.jiafeigou.widget.LoadingDialog;
 import com.cylan.superadapter.OnItemClickListener;
 
 import java.util.ArrayList;
@@ -49,8 +50,6 @@ public class MineFriendAddFromContactFragment extends Fragment implements MineFr
     RecyclerView rcyContactList;
     @BindView(R.id.ll_no_contact)
     LinearLayout llNoContact;
-    @BindView(R.id.rl_send_pro_hint)
-    RelativeLayout rlSendProHint;
 
     private MineFriendAddFromContactContract.Presenter presenter;
     private MineAddFromContactFragment mineAddFromContactFragment;
@@ -159,7 +158,7 @@ public class MineFriendAddFromContactFragment extends Fragment implements MineFr
      */
     @Override
     public void showLoadingPro() {
-        rlSendProHint.setVisibility(View.VISIBLE);
+        LoadingDialog.showLoading(getFragmentManager());
     }
 
     /**
@@ -167,7 +166,7 @@ public class MineFriendAddFromContactFragment extends Fragment implements MineFr
      */
     @Override
     public void hideLoadingPro() {
-        rlSendProHint.setVisibility(View.INVISIBLE);
+        LoadingDialog.dismissLoading(getFragmentManager());
     }
 
     /**
@@ -191,7 +190,7 @@ public class MineFriendAddFromContactFragment extends Fragment implements MineFr
     private void sendSms() {
         Uri smsToUri = Uri.parse("smsto:" + friendAccount);
         Intent mIntent = new Intent(Intent.ACTION_SENDTO, smsToUri);
-        mIntent.putExtra("sms_body", "邀请你成为我的好友，点击XXXXXXXXX下载安装【加菲狗】");
+        mIntent.putExtra("sms_body", getString(R.string.Tap1_share_tips));
         startActivity(mIntent);
     }
 
@@ -224,7 +223,7 @@ public class MineFriendAddFromContactFragment extends Fragment implements MineFr
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 sendSms();
             } else {
-                ToastUtil.showNegativeToast("请授权，才能发送邀请短信");
+                ToastUtil.showNegativeToast(getString(R.string.Tap0_Authorizationfailed));
             }
         }
     }

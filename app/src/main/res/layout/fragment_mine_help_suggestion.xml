@@ -15,7 +15,7 @@
             android:drawableLeft="@drawable/icon_nav_back_white"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="帮助与反馈"
+            android:text="@string/FEEDBACK"
             android:layout_gravity="bottom"
             android:drawablePadding="15dp"
             android:padding="15dp"
@@ -29,7 +29,7 @@
             android:layout_gravity="right|bottom"
             android:clickable="true"
             android:padding="15dp"
-            android:text="清空"
+            android:text="@string/Tap3_Feedback_Clear"
             android:textColor="@color/color_white"
             android:textSize="14sp" />
     </FrameLayout>

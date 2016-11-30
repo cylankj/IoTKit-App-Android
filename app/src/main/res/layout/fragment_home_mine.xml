@@ -30,16 +30,18 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
+                android:layout_gravity="center_horizontal"
                 hunt:sl_cornerRadius="56dp"
                 hunt:sl_dx="0dp"
                 hunt:sl_dy="2dp"
                 hunt:sl_shadowColor="#88000000"
                 hunt:sl_shadowRadius="2dp">
 
-                <com.cylan.jiafeigou.widget.roundedimageview.RoundedImageView
+            <com.cylan.jiafeigou.widget.roundedimageview.RoundedImageView
                     android:id="@+id/iv_home_mine_portrait"
                     android:layout_width="76dp"
                     android:layout_height="76dp"
+                    android:layout_gravity="center_horizontal"
                     android:src="@drawable/pic_head_normal240px"
                     hunt:riv_oval="true" />
             </com.cylan.jiafeigou.widget.wave.ShadowLayout>
@@ -51,7 +53,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginTop="13dp"
-                android:text="用户昵称"
+                android:text="@string/Tap3_LogIn"
                 android:textColor="@color/color_white"
                 android:textSize="19sp"
                 tools:ignore="HardcodedText" />
@@ -98,7 +100,7 @@
             android:layout_height="60dp"
             hunt:leftDrawable="@drawable/icon_mine_share"
             hunt:rightDrawable="@drawable/list_icon_next"
-            hunt:text="分享设备"
+            hunt:text="@string/Tap3_ShareDevice"
             hunt:textColor="@color/color_333333"
             hunt:textSize="16sp" />
 
@@ -108,7 +110,7 @@
             android:layout_height="60dp"
             hunt:leftDrawable="@drawable/icon_mine_hlep"
             hunt:rightDrawable="@drawable/list_icon_next"
-            hunt:text="帮助与反馈"
+            hunt:text="@string/Tap3_Feedback"
             hunt:textColor="@color/color_333333"
             hunt:textSize="16sp" />
 
@@ -118,7 +120,7 @@
             android:layout_height="60dp"
             hunt:leftDrawable="@drawable/icon_mine_setting"
             hunt:rightDrawable="@drawable/list_icon_next"
-            hunt:text="设置"
+            hunt:text="@string/SETTINGS"
             hunt:textColor="@color/color_333333"
             hunt:textSize="16sp" />
     </LinearLayout>

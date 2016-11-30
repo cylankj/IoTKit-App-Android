@@ -57,7 +57,7 @@
                 android:layout_marginLeft="15dp"
                 android:layout_marginTop="19dp"
                 android:layout_marginBottom="8dp"
-                android:text="选择分享设备"
+                android:text="@string/Tap3_Friends_UserInfo_ShareDevice_Select"
                 android:textSize="14sp"
                 android:visibility="invisible"
                 android:textColor="@color/color_4b9fd5"
@@ -90,7 +90,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:text="请先绑定设备"
+                android:text="@string/Tap3_Friends_UserInfo_ShareDevice_Fail"
                 android:textColor="#aaaaaa"
                 android:textSize="15sp" />
         </LinearLayout>

@@ -26,7 +26,7 @@
             android:layout_marginLeft="48dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="搜索"
+            android:hint="@string/Search"
             android:textColor="#B9DFED"
             android:textColorHint="#B9DFED"
             android:textSize="18sp" />
@@ -37,7 +37,7 @@
             android:layout_marginLeft="48dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="时区"
+            android:text="@string/TIMEZONE_CHOOSE"
             android:textSize="18sp"
             android:textColor="#FFFFFF" />
 
@@ -75,7 +75,7 @@
             android:layout_centerHorizontal="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="无结果"
+            android:text="@string/Tap3_FriendsAdd_NoContent"
             android:textSize="15sp"
             android:textColor="#666666" />
     </RelativeLayout>

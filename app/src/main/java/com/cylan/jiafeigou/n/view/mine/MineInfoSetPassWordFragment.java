@@ -182,23 +182,23 @@ public class MineInfoSetPassWordFragment extends Fragment implements MineInfoSet
      */
     private void saveNewPassword() {
         if (!presenter.checkOldPassword(getOldPassword())) {
-            ToastUtil.showToast("原密码错误");
+            ToastUtil.showToast(getString(R.string.RET_ECHANGEPASS_OLDPASS_ERROR));
             return;
         }
 
         if (presenter.checkNewPassword(getOldPassword(), getNewPassword())) {
-            ToastUtil.showToast("新密码与原密码相同");
+            ToastUtil.showToast(getString(R.string.RET_ECHANGEPASS_SAME));
             return;
         }
 
         if (presenter.checkNewPasswordLength(getNewPassword())) {
-            ToastUtil.showToast("请输入6~12位密码");
+            ToastUtil.showToast(getString(R.string.PASSWORD_LESSTHAN_SIX));
             return;
         }
 
         presenter.sendChangePassReq(userinfo.getAccount(),getOldPassword(),getNewPassword());
 
-        ToastUtil.showToast("修改成功");
+        ToastUtil.showToast(getString(R.string.PWD_OK_1));
         getFragmentManager().popBackStack();
     }
 

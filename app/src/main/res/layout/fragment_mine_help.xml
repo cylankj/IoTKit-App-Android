@@ -39,7 +39,7 @@
             android:layout_alignParentBottom="true"
             android:layout_marginBottom="12dp"
             android:layout_marginLeft="48dp"
-            android:text="帮助与反馈"
+            android:text="@string/Tap3_Feedback"
             android:textColor="@color/color_white"
             android:textSize="18sp" />
 
@@ -52,7 +52,7 @@
             android:layout_alignParentRight="true"
             android:clickable="true"
             android:padding="15dp"
-            android:text="意见反馈"
+            android:text="@string/FEEDBACK"
             android:textColor="@color/color_white"
             android:textSize="14sp" />
     </RelativeLayout>

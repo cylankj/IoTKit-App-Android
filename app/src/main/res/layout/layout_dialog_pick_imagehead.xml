@@ -15,7 +15,7 @@
         <TextView
             android:layout_margin="10dp"
             android:textSize="18sp"
-            android:text="更换头像"
+            android:text="@string/SET_PROFILE_PHOTO"
             android:textColor="#446688"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
@@ -29,7 +29,7 @@
             android:paddingLeft="20dp"
             android:paddingRight="20dp"
             android:textSize="16sp"
-            android:text="从相册选择" />
+            android:text="@string/CHOOSE_PHOTOS" />
 
         <TextView
             android:id="@+id/tv_pick_from_canmera"
@@ -40,7 +40,7 @@
             android:paddingLeft="20dp"
             android:paddingRight="20dp"
             android:textSize="16sp"
-            android:text="相机" />
+            android:text="@string/TAKE_PHOTO" />
 
         <TextView
             android:id="@+id/tv_pick_cancle"
@@ -51,6 +51,6 @@
             android:paddingLeft="20dp"
             android:paddingRight="20dp"
             android:textSize="16sp"
-            android:text="取消" />
+            android:text="@string/CANCEL" />
     </LinearLayout>
 </android.support.v7.widget.CardView>

@@ -30,7 +30,7 @@
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="15dp"
                 android:background="@drawable/home_mine_suggestion_shape"
-                android:hint="请详细描述您遇到的问题、意见或建议"
+                android:hint="@string/Tap3_Feedback_TextTips"
                 android:maxLength="128"
                 android:paddingLeft="10dp"
                 android:textColorHint="@color/color_cecece"
@@ -46,7 +46,7 @@
                 android:layout_marginTop="19dp"
                 android:clickable="true"
                 android:contextClickable="true"
-                android:text="发送"
+                android:text="@string/Tap3_FriendsAdd_Send"
                 android:textColor="@color/color_4b9fd5"
                 android:textSize="18sp" />
         </RelativeLayout>
@@ -79,7 +79,7 @@
                 android:drawableLeft="@drawable/icon_nav_back_white"
                 android:layout_width="wrap_content"
                 android:layout_height="48dp"
-                android:text="帮助与反馈"
+                android:text="@string/Tap3_Feedback"
                 android:drawablePadding="15dp"
                 android:padding="15dp"
                 android:textColor="@color/color_white"
@@ -92,7 +92,7 @@
                 android:layout_gravity="right"
                 android:clickable="true"
                 android:padding="15dp"
-                android:text="清空"
+                android:text="@string/CLEAR"
                 android:textColor="@color/color_white"
                 android:textSize="14sp" />
         </FrameLayout>

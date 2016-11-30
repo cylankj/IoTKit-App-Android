@@ -159,8 +159,8 @@ public class MineFriendDetailFragment extends Fragment implements MineFriendDeta
 
     private void showDeleteDialog(final RelAndFriendBean bean) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        builder.setTitle("是否删除亲友");
-        builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+        builder.setTitle(getString(R.string.Tap3_Friends_DeleteFriends));
+        builder.setPositiveButton(getString(R.string.OK), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 presenter.sendDeleteFriendReq(bean.account);
@@ -169,7 +169,7 @@ public class MineFriendDetailFragment extends Fragment implements MineFriendDeta
                 dialog.dismiss();
             }
         });
-        builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(getString(R.string.CANCEL), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
@@ -183,7 +183,7 @@ public class MineFriendDetailFragment extends Fragment implements MineFriendDeta
             Bundle arguments = getArguments();
             int position = arguments.getInt("position");
             lisenter.onDelete(position);
-            ToastUtil.showToast("删除成功");
+            ToastUtil.showToast(getString(R.string.DELETED_SUC));
         }
         getFragmentManager().popBackStack();
     }

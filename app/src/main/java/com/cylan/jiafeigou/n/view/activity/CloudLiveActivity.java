@@ -453,8 +453,8 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
 
     private void showDeviceDisOnlineDialog(final int whichshow) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("设备离线了");
-        builder.setPositiveButton("重试", new DialogInterface.OnClickListener() {
+        builder.setTitle(getString(R.string.OFFLINE_ERR));
+        builder.setPositiveButton(getString(R.string.TRY_AGAIN), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 switch (whichshow) {
@@ -467,7 +467,7 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
                 }
             }
         });
-        builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(getString(R.string.CANCEL), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();

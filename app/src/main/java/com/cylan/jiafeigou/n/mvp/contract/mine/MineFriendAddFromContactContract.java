@@ -16,15 +16,23 @@ import rx.Subscription;
 public interface MineFriendAddFromContactContract {
 
     interface View extends BaseView<Presenter> {
-
+        /**
+         * 初始化联系人列表
+         * @param list
+         */
         void initContactRecycleView(ArrayList<RelAndFriendBean> list);
-
+        /**
+         * 跳转到发送添加请求界面
+         */
         void jump2SendAddMesgFragment();
-
+        /**
+         * 显示联系人为空视图
+         */
         void showNoContactView();
-
+        /**
+         * 隐藏联系人为空视图
+         */
         void hideNoContactView();
-
         /**
          * 显示进度浮层
          */

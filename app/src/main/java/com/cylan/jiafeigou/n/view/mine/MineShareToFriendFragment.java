@@ -146,33 +146,33 @@ public class MineShareToFriendFragment extends Fragment implements MineShareToFr
     @Override
     public void setHasShareFriendNum(boolean isChange, int number) {
         if (number == 0) {
-            tvMineShareToRelativeFriendTrue.setText("确定（0/5）");
+            tvMineShareToRelativeFriendTrue.setText(getString(R.string.OK)+"（0/5）");
             tvMineShareToRelativeFriendTrue.setTextColor(Color.GRAY);
         } else if (isChange) {
             tvMineShareToRelativeFriendTrue.setTextColor(Color.WHITE);
-            tvMineShareToRelativeFriendTrue.setText("确定（" + number + "/5）");
+            tvMineShareToRelativeFriendTrue.setText(getString(R.string.OK)+"（" + number + "/5）");
         } else {
             tvMineShareToRelativeFriendTrue.setTextColor(Color.GRAY);
-            tvMineShareToRelativeFriendTrue.setText("确定（" + number + "/5）");
+            tvMineShareToRelativeFriendTrue.setText(getString(R.string.OK)+"（" + number + "/5）");
         }
     }
 
     @Override
     public void showShareAllSuccess() {
         //TODO 完善
-        ToastUtil.showPositiveToast( "分享成功");
+        ToastUtil.showPositiveToast(getString(R.string.Tap3_ShareDevice_SuccessTips));
     }
 
     @Override
     public void showShareSomeFail(int some) {
         //TODO 完善
-        showShareResultDialog(some + "位用户分享失败");
+        showShareResultDialog(some + getString(R.string.Tap3_ShareDevice_Friends_FailTips));
     }
 
     @Override
     public void showShareAllFail() {
         //TODO 完善
-        showShareResultDialog("分享失败");
+        showShareResultDialog(getString(R.string.Tap3_ShareDevice_FailTips));
     }
 
     @Override
@@ -189,7 +189,7 @@ public class MineShareToFriendFragment extends Fragment implements MineShareToFr
     public void showNumIsOverDialog(SuperViewHolder holder) {
         //当人数超过5人时选中 松开手之后弹起
         holder.setChecked(R.id.checkbox_is_share_check,false);
-        ToastUtil.showToast("该设备已达到最大分享数");
+        ToastUtil.showToast(getString(R.string.Tap3_ShareDevice_Tips));
     }
 
     /**
@@ -229,7 +229,7 @@ public class MineShareToFriendFragment extends Fragment implements MineShareToFr
     private void showShareResultDialog(String title) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setTitle(title);
-        builder.setPositiveButton("重试", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(getString(R.string.TRY_AGAIN), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
@@ -237,7 +237,7 @@ public class MineShareToFriendFragment extends Fragment implements MineShareToFr
                 presenter.sendShareToFriendReq(deviceinfo.uuid,isChooseToShareList);
             }
         });
-        builder.setNegativeButton("关闭", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(getString(R.string.MAGNETISM_OFF), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();

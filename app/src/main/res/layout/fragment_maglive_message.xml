@@ -29,7 +29,7 @@
             android:layout_alignParentBottom="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="功能设置"
+            android:text="@string/SETTINGS_1"
             android:textSize="18sp"
             android:textColor="#FFFFFF" />
     </RelativeLayout>
@@ -78,7 +78,7 @@
                         android:layout_marginTop="18dp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="设备信息"
+                        android:text="@string/EQUIPMENT_INFO"
                         android:textColor="#000000"
                         android:textSize="16sp" />
 
@@ -124,7 +124,7 @@
                 android:layout_toRightOf="@id/rl_iv_icon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="开/关时通知我" />
+                android:text="@string/Tap1_Magnetism_Setting_Notify" />
 
             <!-- 开关的切换 -->
             <com.kyleduo.switchbutton.SwitchButton
@@ -151,7 +151,7 @@
             style="@style/information_item"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="清空开关记录"
+            android:text="@string/Tap1_Magnetism_ClearRecord"
             android:textSize="16sp"
             android:textColor="@color/color_4b9fd5" />
 

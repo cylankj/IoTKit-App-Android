@@ -27,7 +27,7 @@
             android:layout_marginLeft="48dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="关于"
+            android:text="@string/ABOUT"
             android:textSize="18sp"
             android:textColor="@color/color_white" />
 
@@ -75,7 +75,7 @@
                 android:layout_marginLeft="20dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="访问官网"
+                android:text="@string/WEB"
                 android:textSize="16sp"
                 android:textColor="@color/color_33333" />
 
@@ -116,7 +116,7 @@
                 android:layout_marginLeft="20dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="客服热线"
+                android:text="@string/ABOUT_PHONE"
                 android:textSize="16sp"
                 android:textColor="@color/color_33333" />
 
@@ -146,7 +146,7 @@
         android:textSize="16sp"
         android:layout_gravity="center_horizontal"
         android:layout_alignParentBottom="true"
-        android:text="用户使用协议"
+        android:text="@string/TERM_OF_USE"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
@@ -155,7 +155,7 @@
             android:textSize="11sp"
             android:layout_gravity="center_horizontal"
             android:layout_alignParentBottom="true"
-            android:text="Copyright ©2005-2016 Cylan.All Rights Reserved."
+            android:text="@string/copyrightEn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
     </LinearLayout>

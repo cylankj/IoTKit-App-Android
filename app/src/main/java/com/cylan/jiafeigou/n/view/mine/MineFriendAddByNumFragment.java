@@ -20,6 +20,7 @@ import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendAddByNumContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineFriendAddByNumPresenterImp;
 import com.cylan.jiafeigou.n.mvp.model.MineAddReqBean;
+import com.cylan.jiafeigou.widget.LoadingDialog;
 import com.cylan.jiafeigou.widget.roundedimageview.RoundedImageView;
 
 import butterknife.BindView;
@@ -49,8 +50,6 @@ public class MineFriendAddByNumFragment extends Fragment implements MineFriendAd
     FrameLayout flDisplayFindResult;
     @BindView(R.id.rl_home_mine_relativesandfriends_add_by_num)
     RelativeLayout rlHomeMineRelativesandfriendsAddByNum;
-    @BindView(R.id.rl_find_load_progress)
-    RelativeLayout rlFindLoadProgress;
     @BindView(R.id.ll_no_friend)
     LinearLayout llNoFriend;
 
@@ -141,12 +140,12 @@ public class MineFriendAddByNumFragment extends Fragment implements MineFriendAd
 
     @Override
     public void showFindLoading() {
-        rlFindLoadProgress.setVisibility(View.VISIBLE);
+        LoadingDialog.showLoading(getFragmentManager());
     }
 
     @Override
     public void hideFindLoading() {
-        rlFindLoadProgress.setVisibility(View.GONE);
+        LoadingDialog.dismissLoading(getFragmentManager());
     }
 
     /**

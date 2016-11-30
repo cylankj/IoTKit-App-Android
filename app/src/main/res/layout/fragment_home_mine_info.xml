@@ -29,7 +29,7 @@
             android:layout_alignParentBottom="true"
             android:layout_marginBottom="12dp"
             android:layout_marginLeft="48dp"
-            android:text="个人信息"
+            android:text="@string/Tap3_Friends_UserInfo"
             android:textColor="@color/color_white"
             android:textSize="18sp" />
     </RelativeLayout>
@@ -44,7 +44,7 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_marginLeft="20dp"
-            android:text="头像"
+            android:text="@string/PROFILE_PHOTO"
             android:textColor="@color/color_333333"
             android:textSize="16sp" />
 
@@ -79,7 +79,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
             android:paddingTop="15dp"
-            android:text="我的账号"
+            android:text="@string/Tap3_Friends_Myaccount"
             android:textColor="@color/color_8c8c8c"
             android:textSize="12sp" />
 
@@ -117,7 +117,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
             android:paddingTop="15dp"
-            android:text="昵称"
+            android:text="@string/ALIAS"
             android:textColor="@color/color_8c8c8c"
             android:textSize="12sp" />
 
@@ -128,7 +128,6 @@
             android:layout_below="@id/tv_like_name"
             android:layout_marginLeft="20dp"
             android:paddingTop="8dp"
-            android:text="多多"
             android:textColor="@color/color_333333"
             android:textSize="16sp" />
 
@@ -154,7 +153,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
             android:paddingTop="15dp"
-            android:text="邮箱"
+            android:text="@string/EMAIL"
             android:textColor="@color/color_8c8c8c"
             android:textSize="12sp" />
 
@@ -165,7 +164,7 @@
             android:layout_below="@id/tv_my_message"
             android:layout_marginLeft="20dp"
             android:paddingTop="8dp"
-            android:text="未设置"
+            android:text="@string/NO_SET"
             android:textColor="@color/color_333333"
             android:textSize="16sp" />
 
@@ -191,7 +190,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
             android:paddingTop="15dp"
-            android:text="手机号码"
+            android:text="@string/PHONE_NUMBER"
             android:textColor="@color/color_8c8c8c"
             android:textSize="12sp" />
 
@@ -226,7 +225,7 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_marginLeft="20dp"
-            android:text="修改密码"
+            android:text="@string/CHANGE_PWD"
             android:textColor="@color/color_333333"
             android:textSize="16sp" />
 
@@ -249,7 +248,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:text="退出登录"
+            android:text="@string/LOGOUT"
             android:textColor="@color/color_ff3b30"
             android:textSize="16sp" />
 

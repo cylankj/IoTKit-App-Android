@@ -89,12 +89,12 @@ public class MineLookBigImageFragment extends Fragment implements MineLookBigIma
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
-                ToastUtil.showToast("图片保存成功");
+                ToastUtil.showToast(getString(R.string.SAVED_PHOTOS));
                 if (presenter != null){
                     presenter.saveImage(bitmapSource);
                 }
             }
-        }).setNegativeButton("取消", new DialogInterface.OnClickListener() {
+        }).setNegativeButton(getString(R.string.CANCEL), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
@@ -158,7 +158,7 @@ public class MineLookBigImageFragment extends Fragment implements MineLookBigIma
                         super.onLoadFailed(e, errorDrawable);
                         hideLoadImageProgress();
                         loadResult = false;
-                        ToastUtil.showNegativeToast("加载失败，点击重试");
+                        ToastUtil.showNegativeToast(getString(R.string.Item_LoadFail));
                     }
 
                 });

@@ -87,6 +87,7 @@ public class MineFriendListShareDevicesPresenterImp extends AbstractPresenter<Mi
                             }
                             getDeviceInfo(cidList);
                         }else {
+                            getView().hideLoadingDialog();
                             getView().showNoDeviceView();
                         }
                     }
@@ -193,6 +194,7 @@ public class MineFriendListShareDevicesPresenterImp extends AbstractPresenter<Mi
             }
         } else {
             if (getView() != null) {
+                getView().hideLoadingDialog();
                 getView().showNoDeviceView();
             }
         }

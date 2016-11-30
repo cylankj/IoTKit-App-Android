@@ -440,7 +440,7 @@
   <string name="DOOR_LOWBETTERY">设备电量较低，请及时充电</string>
   <string name="DOOR_BETTERYMESG">建议使用5V/1A的充电器； \n充电过程中指示灯绿色常亮，充满电后会自动熄灭</string>
   <string name="DOOR_SLIDE_TIP">右滑通话</string>
-  <string name="DOOR_ANSWERING">连接中...</string>
+  <string name="DOOR_ANSWERING">连接中</string>
   <string name="DOOR_VOICE">声音</string>
   <string name="DOOR_TALK">对讲</string>
   <string name="DOOR_CAMERA">拍照</string>

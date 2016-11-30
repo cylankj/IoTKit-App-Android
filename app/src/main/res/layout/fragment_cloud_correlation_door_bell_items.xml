@@ -9,7 +9,6 @@
         android:layout_centerVertical="true"
         android:textSize="16sp"
         android:textColor="@color/color_333333"
-        android:text="门铃一"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
@@ -21,7 +20,7 @@
         android:layout_centerVertical="true"
         android:layout_alignParentRight="true"
         android:background="@drawable/btn_cancle_relative_doorbell_shape"
-        android:text="取消关联"
+        android:text="@string/Tap1_iHome_disassociate"
         android:gravity="center"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
