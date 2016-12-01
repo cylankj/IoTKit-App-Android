@@ -71,7 +71,10 @@ public class DataSourceService extends Service implements AppCallBack {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        if (intent == null)
+            return START_STICKY;
         initNative();
+        AppLogger.i("onStartCommand initNative:" + intent);
         return START_STICKY;
     }
 
@@ -109,7 +112,7 @@ public class DataSourceService extends Service implements AppCallBack {
     public void OnReportJfgDevices(JFGDevice[] jfgDevices) {
         RxBus.getCacheInstance().postSticky(new RxEvent.DeviceRawList(jfgDevices));
         List<JFGDevice> list = new ArrayList<>();
-        for (int i = 0;i<jfgDevices.length;i++){
+        for (int i = 0; i < jfgDevices.length; i++) {
             list.add(jfgDevices[i]);
         }
         RxBus.getCacheInstance().postSticky(new RxEvent.DeviceList(list));
@@ -124,38 +127,39 @@ public class DataSourceService extends Service implements AppCallBack {
 
     @Override
     public void OnUpdateHistoryVideoList(JFGHistoryVideo jfgHistoryVideo) {
-        AppLogger.d("OnLocalMessage :");
+        AppLogger.d("OnUpdateHistoryVideoList :");
     }
 
     @Override
     public void OnUpdateHistoryErrorCode(JFGHistoryVideoErrorInfo jfgHistoryVideoErrorInfo) {
-        AppLogger.d("OnLocalMessage :");
+        AppLogger.d("OnUpdateHistoryErrorCode :");
     }
 
 
     @Override
     public void OnServerConfig(JFGServerCfg jfgServerCfg) {
-        AppLogger.d("OnLocalMessage :");
+        AppLogger.d("OnServerConfig :");
     }
 
     @Override
     public void OnLogoutByServer(int i) {
-        AppLogger.d("OnLocalMessage :");
+        AppLogger.d("OnLogoutByServer :");
     }
 
     @Override
     public void OnVideoDisconnect(JFGMsgVideoDisconn jfgMsgVideoDisconn) {
-        AppLogger.d("OnLocalMessage :");
+        RxBus.getCacheInstance().post(jfgMsgVideoDisconn);
+        AppLogger.d("OnVideoDisconnect :" + new Gson().toJson(jfgMsgVideoDisconn));
     }
 
     @Override
     public void OnVideoNotifyResolution(JFGMsgVideoResolution jfgMsgVideoResolution) {
-        AppLogger.d("OnLocalMessage :");
+        RxBus.getCacheInstance().post(jfgMsgVideoResolution);
     }
 
     @Override
     public void OnVideoNotifyRTCP(JFGMsgVideoRtcp jfgMsgVideoRtcp) {
-        AppLogger.d("OnLocalMessage :");
+        RxBus.getCacheInstance().post(jfgMsgVideoRtcp);
     }
 
     @Override
@@ -291,7 +295,7 @@ public class DataSourceService extends Service implements AppCallBack {
     @Override
     public void OnCheckFriendAccountRsp(int i, String s, String s1, boolean b) {
         AppLogger.d("OnLocalMessage :");
-        RxBus.getCacheInstance().post(new RxEvent.CheckAccountCallback(i,s,s1,b));
+        RxBus.getCacheInstance().post(new RxEvent.CheckAccountCallback(i, s, s1, b));
     }
 
     @Override
@@ -305,7 +309,7 @@ public class DataSourceService extends Service implements AppCallBack {
     @Override
     public void OnUnShareDeviceRsp(int i, String s, String s1) {
         AppLogger.d("OnUnShareDeviceRsp :");
-        RxBus.getCacheInstance().post(new RxEvent.UnshareDeviceCallBack(i,s,s1));
+        RxBus.getCacheInstance().post(new RxEvent.UnshareDeviceCallBack(i, s, s1));
     }
 
     @Override
@@ -316,7 +320,7 @@ public class DataSourceService extends Service implements AppCallBack {
 
     @Override
     public void OnGetUnShareListByCidRsp(int i, ArrayList<JFGFriendAccount> arrayList) {
-        AppLogger.d("OnGetUnShareListByCidRsp :"+arrayList.get(0));
+        AppLogger.d("OnGetUnShareListByCidRsp :" + arrayList.get(0));
         //RxBus.getCacheInstance().post(new RxEvent.GetHasShareFriendCallBack(i,arrayList));
     }
 

@@ -4,6 +4,7 @@ import com.cylan.jiafeigou.rx.RxBus;
 
 import org.junit.Test;
 import org.mockito.Mockito;
+import org.robolectric.util.Pair;
 
 import java.util.concurrent.TimeUnit;
 
@@ -187,4 +188,48 @@ public class RxBusTest {
 
     }
 
+    @Test
+    public void testThrottle() throws InterruptedException {
+        RxBus.getCacheInstance().toObservable(String.class)
+                .throttleFirst(1000, TimeUnit.MILLISECONDS)
+                .subscribe(new Action1<String>() {
+                    @Override
+                    public void call(String s) {
+                        System.out.println("result: " + s);
+                    }
+                });
+        RxBus.getCacheInstance().post("ni hao");
+        Thread.sleep(2000);
+    }
+
+    @Test
+    public void testZipWith() throws InterruptedException {
+        RxBus.getCacheInstance().toObservable(String.class)
+                .zipWith(RxBus.getCacheInstance().toObservable(Integer.class)
+                        .map(new Func1<Integer, Integer>() {
+                            @Override
+                            public Integer call(Integer integer) {
+                                System.out.println("what: " + integer);
+                                return integer;
+                            }
+                        }), new Func2<String, Integer, Pair<Integer, String>>() {
+                    @Override
+                    public Pair<Integer, String> call(String s, Integer integer) {
+                        return new Pair<>(integer, s);
+                    }
+                })
+                .subscribe(new Action1<Pair<Integer, String>>() {
+                    @Override
+                    public void call(Pair<Integer, String> integerStringPair) {
+                        System.out.println("pair: " + integerStringPair.first + " ..." + integerStringPair.second);
+                    }
+                });
+        RxBus.getCacheInstance().post("4nihao");
+        RxBus.getCacheInstance().post(5);
+        RxBus.getCacheInstance().post(15);
+        RxBus.getCacheInstance().post(25);
+        RxBus.getCacheInstance().post(35);
+        RxBus.getCacheInstance().post(45);
+        Thread.sleep(2000);
+    }
 }

@@ -470,9 +470,12 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
 //            AppLogger.d("ratio: " + ratio);
 
         }
-        final float alpha = 1.0f - ratio;
-        if (tvHeaderLastTitle.getAlpha() != alpha)
+        float alpha = 1.0f - ratio;
+        if (tvHeaderLastTitle.getAlpha() != alpha) {
+            if (alpha < 0.02f)
+                alpha = 0;//设定一个阀值,以免掉帧导致回调不及时
             tvHeaderLastTitle.setAlpha(alpha);
+        }
     }
 
     private static class EmptyViewState {

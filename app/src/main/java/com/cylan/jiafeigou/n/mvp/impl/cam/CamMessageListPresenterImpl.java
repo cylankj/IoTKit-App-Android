@@ -28,7 +28,6 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
         implements CamMessageListContract.Presenter {
 
 
-    private Subscription subscription;
     private BeanCamInfo info;
     private CompositeSubscription compositeSubscription;
 
@@ -47,7 +46,7 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
 
     @Override
     public void stop() {
-        unSubscribe(subscription);
+        unSubscribe(compositeSubscription);
     }
 
     private Subscription messageListSub() {
@@ -61,6 +60,7 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
                     }
                 })
                 .observeOn(AndroidSchedulers.mainThread())
+                .filter(new RxHelper.Filter<ArrayList<CamMessageBean>>("messageListSub()=null?", getView() != null))
                 .map(new Func1<ArrayList<CamMessageBean>, Object>() {
                     @Override
                     public Object call(ArrayList<CamMessageBean> jfgdpMsgs) {

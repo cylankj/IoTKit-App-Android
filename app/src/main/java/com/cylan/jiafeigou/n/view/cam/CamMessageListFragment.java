@@ -75,13 +75,13 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        DeviceBean bean = getArguments().getParcelable(JConstant.KEY_DEVICE_ITEM_BUNDLE);
-        basePresenter = new CamMessageListPresenterImpl(this, Convertor.convert(bean));
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        DeviceBean bean = getArguments().getParcelable(JConstant.KEY_DEVICE_ITEM_BUNDLE);
+        basePresenter = new CamMessageListPresenterImpl(this, Convertor.convert(bean));
     }
 
     @Override
@@ -143,7 +143,8 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
     public void onMessageListRsp(ArrayList<CamMessageBean> beanArrayList) {
         srLayoutCamListRefresh.setRefreshing(false);
         if (beanArrayList == null || beanArrayList.size() == 0) {
-            ToastUtil.showNegativeToast("没有数据");
+//            ToastUtil.showNegativeToast("没有数据");
+            AppLogger.i("没有数据");
             return;
         }
         camMessageListAdapter.addAll(beanArrayList);

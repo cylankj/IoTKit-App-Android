@@ -43,6 +43,7 @@
             android:scrollbars="none">
 
             <LinearLayout
+                android:id="@+id/lLayout_setting_item_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
@@ -63,7 +64,8 @@
                     android:layout_height="72dp"
                     hunt:sv_image_src="@drawable/icon_setting_information"
                     hunt:sv_sub_title="@string/EQUIPMENT_INFO"
-                    hunt:sv_title="@string/EQUIPMENT_INFO" />
+                    hunt:sv_title="@string/EQUIPMENT_INFO"
+                    hunt:sv_v_divider="true" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -78,19 +80,16 @@
                     android:layout_height="72dp"
                     hunt:sv_image_src="@drawable/icon_setting_wifi"
                     hunt:sv_sub_title="cylan608"
-                    hunt:sv_title="@string/WIFI" />
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="@color/color_e8e8e8" />
+                    hunt:sv_title="@string/WIFI"
+                    hunt:sv_v_divider="true" />
 
                 <com.cylan.jiafeigou.widget.SettingItemView1
                     android:id="@+id/sv_setting_device_mobile_network"
                     android:layout_width="match_parent"
                     android:layout_height="54dp"
                     hunt:sv_image_src="@drawable/icon_setting_3g"
-                    hunt:sv_title="3G/4G网络" />
+                    hunt:sv_title="3G/4G网络"
+                    hunt:sv_v_divider="true" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -105,12 +104,9 @@
                     android:layout_height="72dp"
                     hunt:sv_image_src="@drawable/icon_setting_safe"
                     hunt:sv_sub_title="000d0d0d"
-                    hunt:sv_title="@string/SECURE" />
+                    hunt:sv_title="@string/SECURE"
+                    hunt:sv_v_divider="true" />
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="@color/color_e8e8e8" />
 
                 <com.cylan.jiafeigou.widget.SettingItemView0
                     android:id="@+id/sv_setting_device_auto_record"
@@ -118,12 +114,9 @@
                     android:layout_height="72dp"
                     hunt:sv_image_src="@drawable/icon_setting_videotape"
                     hunt:sv_sub_title="000d0d0d"
-                    hunt:sv_title="@string/SETTING_RECORD" />
+                    hunt:sv_title="@string/SETTING_RECORD"
+                    hunt:sv_v_divider="true" />
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="@color/color_e8e8e8" />
 
                 <com.cylan.jiafeigou.widget.SettingItemView0
                     android:id="@+id/sv_setting_device_delay_capture"
@@ -131,98 +124,47 @@
                     android:layout_height="72dp"
                     hunt:sv_image_src="@drawable/icon_setting_filming"
                     hunt:sv_sub_title="即将开始"
-                    hunt:sv_title="@string/Tap2_Timelapse_title" />
+                    hunt:sv_title="@string/Tap2_Timelapse_title"
+                    hunt:sv_v_divider="true" />
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="@color/color_e8e8e8" />
 
                 <com.cylan.jiafeigou.widget.SettingItemView1
                     android:id="@+id/sv_setting_device_standby_mode"
                     android:layout_width="match_parent"
-                    android:layout_height="72dp"
+                    android:layout_height="54dp"
                     hunt:sv_image_src="@drawable/icon_setting_standby"
                     hunt:sv_sub_title="000d0d0d"
-                    hunt:sv_title="@string/Tap1_CameraFun_Standby" />
+                    hunt:sv_title="@string/Tap1_CameraFun_Standby"
+                    hunt:sv_v_divider="true" />
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="@color/color_e8e8e8" />
 
                 <com.cylan.jiafeigou.widget.SettingItemView1
                     android:id="@+id/sv_setting_device_indicator"
                     android:layout_width="match_parent"
                     android:layout_height="54dp"
                     hunt:sv_image_src="@drawable/icon_setting_3g"
-                    hunt:sv_title="@string/LED" />
+                    hunt:sv_title="@string/LED"
+                    hunt:sv_v_divider="true" />
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="@color/color_e8e8e8" />
 
                 <com.cylan.jiafeigou.widget.SettingItemView1
                     android:id="@+id/sv_setting_device_rotatable"
                     android:layout_width="match_parent"
                     android:layout_height="54dp"
                     hunt:sv_image_src="@drawable/icon_setting_rotate_pic"
-                    hunt:sv_title="@string/Tap1_CameraFun_VideoDirection" />
+                    hunt:sv_title="@string/Tap1_CameraFun_VideoDirection"
+                    hunt:sv_v_divider="true" />
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="@color/color_e8e8e8" />
-
-                <RelativeLayout
+                <com.cylan.jiafeigou.widget.SettingItemView0
+                    android:id="@+id/sbtn_setting_110v"
                     android:layout_width="match_parent"
                     android:layout_height="72dp"
-                    android:orientation="horizontal">
+                    hunt:sv_image_src="@drawable/icon_setting_electricity"
+                    hunt:sv_sub_title="@string/FOOT_TIP_VOTE"
+                    hunt:sv_title="@string/HZ_VOTE"
+                    hunt:sv_v_divider="true"
+                    hunt:sv_visibility="true" />
 
-                    <ImageView
-                        android:id="@+id/imgv_setting_item_electricity_icon"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:src="@drawable/icon_setting_electricity" />
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:layout_marginStart="10dp"
-                        android:layout_toEndOf="@+id/imgv_setting_item_electricity_icon"
-                        android:layout_toStartOf="@+id/sbtn_setting_item_switch_110v"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/HZ_VOTE"
-                            android:textColor="@color/color_black"
-                            android:textSize="16sp" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="3dp"
-                            android:text="@string/FOOT_TIP_VOTE"
-                            android:textColor="@color/color_8C8C8C"
-                            android:textSize="13sp" />
-                    </LinearLayout>
-
-                    <com.kyleduo.switchbutton.SwitchButton
-                        android:id="@+id/sbtn_setting_item_switch_110v"
-                        style="@style/SwitchButtonStyleMD"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
-                        android:layout_centerVertical="true"
-                        android:layout_gravity="end|center_vertical"
-                        android:checked="true"
-                        android:gravity="end" />
-                </RelativeLayout>
 
                 <TextView
                     android:id="@+id/tv_setting_unbind"
@@ -232,7 +174,7 @@
                     android:layout_marginTop="50dp"
                     android:background="@color/color_f2f2f2"
                     android:gravity="center"
-                    android:text="解除绑定"
+                    android:text="@string/DELETE_CID"
                     android:textColor="@color/color_FF3D32"
                     android:textSize="16sp" />
             </LinearLayout>

@@ -258,7 +258,7 @@ public class BeanInfoGen {
 
     private void addStatement(MethodSpec.Builder builder, Map<Integer, TypeName> map) {
         builder.addStatement("this.deviceBase = deviceBase");
-        builder.addStatement("int count = listDp.size()");
+        builder.addStatement("int count = listDp == null ? 0 : listDp.size()");
         builder.beginControlFlow("for (int i = 0; i < count; i++)");
         builder.addStatement("DpMsgDefine.DpMsg dpMsg = listDp.get(i)");
         Iterator<Integer> iterator = map.keySet().iterator();

@@ -172,7 +172,7 @@ public class IMEUtils {
         try {
             mServedViewField = InputMethodManager.class.getDeclaredField("mServedView");
             mServedViewField.setAccessible(true);
-            mHField = InputMethodManager.class.getDeclaredField("mServedView");
+            mHField = InputMethodManager.class.getDeclaredField("mH");
             mHField.setAccessible(true);
             finishInputLockedMethod = InputMethodManager.class.getDeclaredMethod("finishInputLocked");
             finishInputLockedMethod.setAccessible(true);

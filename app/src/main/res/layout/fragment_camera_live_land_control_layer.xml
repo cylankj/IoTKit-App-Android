@@ -1,9 +1,8 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/fLayout_cam_live_land_layer"
+    android:id="@+id/fLayout_cam_live_land_control_layer"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#eee444"
     android:orientation="vertical"
     tools:context="com.cylan.jiafeigou.n.view.cam.CameraLiveFragment">
 

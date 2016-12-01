@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="39dp"
     android:layout_gravity="bottom"
-    android:id="@+id/fLayout_live_port_bottom_handle_bar"
+    android:id="@+id/fLayout_live_port_bottom_control_bar"
     android:background="@color/color_cam_live_handle_bar_background">
 
     <LinearLayout
