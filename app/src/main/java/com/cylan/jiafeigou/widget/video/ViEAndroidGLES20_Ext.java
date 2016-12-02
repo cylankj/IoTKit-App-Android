@@ -31,10 +31,6 @@ public class ViEAndroidGLES20_Ext extends ViEAndroidGLES20 implements VideoViewF
 
     }
 
-    @Override
-    public int getMode() {
-        return 0;
-    }
 
     @Override
     public void setInterActListener(VideoViewFactory.InterActListener interActListener) {

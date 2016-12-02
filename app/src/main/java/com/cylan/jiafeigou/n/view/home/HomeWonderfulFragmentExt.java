@@ -3,8 +3,6 @@ package com.cylan.jiafeigou.n.view.home;
 import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -18,7 +16,6 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -52,6 +49,7 @@ import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.AnimatorUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;
+import com.cylan.jiafeigou.widget.dialog.BaseDialog;
 import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
 import com.cylan.jiafeigou.widget.textview.WonderfulTitleHead;
 import com.cylan.jiafeigou.widget.wheel.TimeWheelView;
@@ -77,7 +75,7 @@ public class HomeWonderfulFragmentExt extends Fragment implements
         HomeWonderfulAdapter.WonderfulItemClickListener,
         HomeWonderfulAdapter.WonderfulItemLongClickListener,
         ShareDialogFragment.ShareToListener,
-        SimpleDialogFragment.SimpleDialogAction,
+        BaseDialog.BaseDialogAction,
         AppBarLayout.OnOffsetChangedListener,
         HomeWonderfulAdapter.LoadMediaListener,
         SharedElementCallBackListener,

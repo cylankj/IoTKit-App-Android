@@ -26,7 +26,7 @@ public class VideoViewFactory {
          */
         void setMode(int mode);
 
-        int getMode();
+//        int getMode();
 
         void setInterActListener(InterActListener interActListener);
 

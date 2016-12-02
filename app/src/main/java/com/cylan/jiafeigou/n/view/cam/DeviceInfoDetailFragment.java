@@ -13,14 +13,17 @@ import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
+import com.cylan.jiafeigou.dp.DpMsgMap;
+import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamInfoContract;
-import com.cylan.jiafeigou.n.mvp.impl.cam.CamInfoPresenterImpl;
+import com.cylan.jiafeigou.n.mvp.impl.cam.DeviceInfoDetailPresenterImpl;
 import com.cylan.jiafeigou.n.mvp.model.BeanCamInfo;
-import com.cylan.jiafeigou.n.mvp.model.TimeZoneBean;
 import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.dialog.EditFragmentDialog;
+
+import java.text.DecimalFormat;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -81,7 +84,7 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
     public void onAttach(Context context) {
         super.onAttach(context);
         BeanCamInfo bean = getArguments().getParcelable(KEY_DEVICE_ITEM_BUNDLE);
-        basePresenter = new CamInfoPresenterImpl(this, bean);
+        basePresenter = new DeviceInfoDetailPresenterImpl(this, bean);
     }
 
     @Override
@@ -113,6 +116,9 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
     private void updateDetails() {
         BeanCamInfo p = basePresenter.getBeanCamInfo();
         if (p != null) {
+            tvDeviceTimeZone.setText(p.deviceTimeZone != null
+                    && !TextUtils.isEmpty(p.deviceTimeZone.timezone)
+                    ? p.deviceTimeZone.timezone : "");
             tvDeviceSdcardState.setText(getSdcardState(p.sdcardState, p.sdcardStorage));
             tvDeviceAlias.setText(p.deviceBase.alias);
             tvDeviceCid.setText(p.deviceBase.uuid);
@@ -120,7 +126,27 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
             tvDeviceBatteryLevel.setText(p.battery + "");
             tvDeviceSoftVersion.setText(p.deviceVersion);
             tvDeviceSystemVersion.setText(p.deviceSysVersion);
+            if (p.sdcardStorage == null || !p.sdcardState) {
+                tvDeviceStorage.setText(getString(R.string.SD_NO));
+            } else {
+                if (p.sdcardStorage == null) {
+                    tvDeviceStorage.setText(getString(R.string.SD_NO));
+                    return;
+                }
+                if (p.sdcardStorage.err != 0) {
+                    //未初始化
+                    tvDeviceStorage.setText(getString(R.string.SD_NO));
+                } else {
+                    if (p.sdcardStorage.total != 0) {
+                        String content = new DecimalFormat("#0.00").format(((float) p.sdcardStorage.used / p.sdcardStorage.total));
+                        tvDeviceStorage.setText(
+                                String.format(getString(R.string.REMAIN_SPACE), content));
+                    }
+                }
+            }
+
         }
+
     }
 
     private String getSdcardState(boolean sd, DpMsgDefine.SdStatus sdStatus) {
@@ -147,7 +173,6 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
                 break;
             case R.id.lLayout_information_facility_timezone:
                 toEditTimezone();
-
                 break;
         }
     }
@@ -156,22 +181,21 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
      * 编辑时区
      */
     private void toEditTimezone() {
-
-        DeviceTimeZoneFragment timeZoneFragment = DeviceTimeZoneFragment.newInstance(getArguments());
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(JConstant.KEY_DEVICE_ITEM_BUNDLE, basePresenter.getBeanCamInfo());
+        DeviceTimeZoneFragment timeZoneFragment = DeviceTimeZoneFragment.newInstance(bundle);
         timeZoneFragment.setCallBack(new CallBack() {
             @Override
             public void callBack(Object zone) {
-                if (!(zone instanceof TimeZoneBean)) {
+                if (!(zone instanceof DpMsgDefine.MsgTimeZone)) {
                     return;
                 }
-                TimeZoneBean timeZoneBean = (TimeZoneBean) zone;
                 BeanCamInfo info = basePresenter.getBeanCamInfo();
-                DpMsgDefine.MsgTimeZone timeZone = info.deviceTimeZone == null ? new DpMsgDefine.MsgTimeZone() : info.deviceTimeZone;
-                timeZone.timezone = timeZoneBean.getGmt();
-                info.deviceTimeZone = timeZone;
-                basePresenter.updateInfo(info);
+                info.deviceTimeZone = (DpMsgDefine.MsgTimeZone) zone;
+                //更新ui
                 updateDetails();
-                Log.d("CYLAN_TAG", "timezone: " + timeZoneBean);
+                basePresenter.saveCamInfoBean(info, DpMsgMap.ID_214_DEVICE_TIME_ZONE);
+                Log.d("CYLAN_TAG", "timezone: " + info.deviceTimeZone);
             }
         });
         ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(),
@@ -196,20 +220,25 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
         editDialogFragment.setAction(new EditFragmentDialog.DialogAction<String>() {
             @Override
             public void onDialogAction(int id, String value) {
-                if (id == R.id.tv_confirm) {
-                    tvDeviceAlias.setText(value);
-                    if (basePresenter != null) {
-                        BeanCamInfo info = basePresenter.getBeanCamInfo();
-                        if (!TextUtils.equals(info.deviceBase.alias, value)) {
-                            info.deviceBase.alias = value;
-                            basePresenter.updateInfo(info);
-                            updateDetails();
-                            Log.d("BeanCamInfo", "BeanCamInfo: update alias: " + value);
-                        }
+                if (basePresenter != null) {
+                    BeanCamInfo info = basePresenter.getBeanCamInfo();
+                    if (!TextUtils.isEmpty(value)
+                            && !TextUtils.equals(info.deviceBase.alias, value)) {
+                        tvDeviceAlias.setText(value);
+                        info.deviceBase.alias = value;
+                        updateDetails();
+                        basePresenter.saveCamInfoBean(info, DpMsgMap.ID_2000003_BASE_ALIAS);
                     }
                 }
             }
         });
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        if (callBack != null)
+            callBack.callBack(null);
     }
 
     @Override

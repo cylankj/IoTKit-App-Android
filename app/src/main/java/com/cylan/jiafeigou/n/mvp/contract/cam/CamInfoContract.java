@@ -21,7 +21,7 @@ public interface CamInfoContract {
          *
          * @param info
          */
-        void updateInfo(BeanCamInfo info, int... ids);
+        void saveCamInfoBean(BeanCamInfo info, int id);
 
         BeanCamInfo getBeanCamInfo();
     }

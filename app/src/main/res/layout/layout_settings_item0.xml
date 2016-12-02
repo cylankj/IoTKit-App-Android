@@ -48,7 +48,6 @@
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
         android:layout_gravity="end|center_vertical"
-        android:checked="true"
         android:gravity="end"
         android:paddingStart="20dp" />
 

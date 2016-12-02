@@ -423,4 +423,11 @@ public class RxEvent {
         public boolean state;
         public ArrayList<JFGDPMsg> dataList;
     }
+
+    /**
+     * 修改设备属性
+     */
+    public static final class JFGAttributeUpdate extends DpMsgDefine.DpMsg {
+        public String uuid;
+    }
 }

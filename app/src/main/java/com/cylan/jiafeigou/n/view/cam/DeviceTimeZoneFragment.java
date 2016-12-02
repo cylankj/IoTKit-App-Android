@@ -117,8 +117,8 @@ public class DeviceTimeZoneFragment extends IBaseFragment<TimezoneContract.Prese
         lvTimezoneDetail.setLayoutManager(layoutManager);
         adapter = new DeviceTimeZoneAdapter(getActivity().getApplicationContext());
         BeanCamInfo info = basePresenter.getInfo();
-        int offset = info.deviceTimeZone == null ? 0 : info.deviceTimeZone.offset;
-        adapter.setChooseId(offset);
+        String timeZoneId = info.deviceTimeZone == null ? "" : info.deviceTimeZone.timezone;
+        adapter.setChooseId(timeZoneId);
         lvTimezoneDetail.setAdapter(adapter);
         adapter.setOnCLick(new DeviceTimeZoneAdapter.OnCLick() {
             @Override
@@ -129,7 +129,7 @@ public class DeviceTimeZoneFragment extends IBaseFragment<TimezoneContract.Prese
                 }
                 int id = ViewUtils.getParentAdapterPosition(lvTimezoneDetail, v, R.id.lLayout_timezone_item);
                 simpleDialog.setValue(adapter.getItem(id));
-                simpleDialog.setAction(new BaseDialog.SimpleDialogAction() {
+                simpleDialog.setAction(new BaseDialog.BaseDialogAction() {
                     @Override
                     public void onDialogAction(int id, Object value) {
                         if (value != null && value instanceof TimeZoneBean) {
@@ -137,10 +137,11 @@ public class DeviceTimeZoneFragment extends IBaseFragment<TimezoneContract.Prese
                             DpMsgDefine.MsgTimeZone timeZone = info.deviceTimeZone = info.deviceTimeZone == null ? new DpMsgDefine.MsgTimeZone() : info.deviceTimeZone;
                             int offset = timeZone.offset;
                             if (offset != ((TimeZoneBean) value).getOffset()) {
-                                //update
-                                timeZone.offset = offset;
                                 timeZone.timezone = ((TimeZoneBean) value).getName();
-                                basePresenter.updateBeanInfo(info);
+                                if (callBack != null)
+                                    callBack.callBack(timeZone);
+                                getActivity().onBackPressed();
+                                //没必要设置
                             }
                         }
                     }

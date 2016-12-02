@@ -41,18 +41,19 @@ public class BaseDialog extends DialogFragment {
     @Override
     public void onResume() {
         super.onResume();
-        getDialog().getWindow()
-                .setLayout(getCustomWidth() == 0 ? maxWidth : getCustomWidth(),
-                        getCustomHeight() == 0 ? minHeight : getCustomHeight());
+        if (getDialog() != null && getDialog().getWindow() != null)
+            getDialog().getWindow()
+                    .setLayout(getCustomWidth() == 0 ? maxWidth : getCustomWidth(),
+                            getCustomHeight() == 0 ? minHeight : getCustomHeight());
     }
 
-    public void setAction(SimpleDialogAction action) {
+    public void setAction(BaseDialogAction action) {
         this.action = action;
     }
 
-    protected SimpleDialogAction action;
+    protected BaseDialogAction action;
 
-    public interface SimpleDialogAction {
+    public interface BaseDialogAction {
         void onDialogAction(int id, Object value);
     }
 }

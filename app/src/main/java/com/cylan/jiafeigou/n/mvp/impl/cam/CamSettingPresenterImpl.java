@@ -1,18 +1,26 @@
 package com.cylan.jiafeigou.n.mvp.impl.cam;
 
+import android.content.Context;
 import android.text.TextUtils;
+import android.util.Pair;
 
 import com.cylan.jiafeigou.BuildConfig;
+import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
+import com.cylan.jiafeigou.dp.DpUtils;
+import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamSettingContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.n.mvp.model.BaseBean;
 import com.cylan.jiafeigou.n.mvp.model.BeanCamInfo;
 import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
 import com.cylan.jiafeigou.rx.RxBus;
+import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.rx.RxUiEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.google.gson.Gson;
+
+import java.util.Locale;
 
 import rx.Observable;
 import rx.Subscription;
@@ -30,6 +38,9 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
     private Subscription subscription;
 
     private BeanCamInfo camInfoBean;
+    private static final int[] periodResId = {R.string.MON_1, R.string.TUE_1,
+            R.string.WED_1, R.string.THU_1,
+            R.string.FRI_1, R.string.SAT_1, R.string.SUN_1};
 
     public CamSettingPresenterImpl(CamSettingContract.View view) {
         super(view);
@@ -62,8 +73,8 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
     }
 
     @Override
-    public void fetchCamInfo(final DeviceBean bean) {
-        wrap(bean);
+    public void fetchCamInfo(final String uuid) {
+
         //查询设备列表
         unSubscribe(subscription);
         subscription = RxBus.getUiInstance().toObservableSticky(RxUiEvent.BulkDeviceList.class)
@@ -78,7 +89,7 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
                     @Override
                     public Observable<DpMsgDefine.DpWrap> call(RxUiEvent.BulkDeviceList list) {
                         for (DpMsgDefine.DpWrap wrap : list.allDevices) {
-                            if (TextUtils.equals(wrap.baseDpDevice.uuid, bean.uuid)) {
+                            if (TextUtils.equals(wrap.baseDpDevice.uuid, uuid)) {
                                 return Observable.just(wrap);
                             }
                         }
@@ -96,6 +107,7 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
                     public Observable<BeanCamInfo> call(DpMsgDefine.DpWrap dpWrap) {
                         BeanCamInfo info = new BeanCamInfo();
                         info.convert(dpWrap.baseDpDevice, dpWrap.baseDpMsgList);
+                        camInfoBean = info;
                         AppLogger.i("BeanCamInfo: " + new Gson().toJson(info));
                         return Observable.just(info);
                     }
@@ -116,6 +128,51 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
     }
 
     @Override
+    public String getDetailsSubTitle(Context context) {
+        //sd卡状态
+        if (camInfoBean.sdcardStorage != null) {
+            if (camInfoBean.sdcardState && camInfoBean.sdcardStorage.err != 0) {
+                //sd初始化失败时候显示
+                return context.getString(R.string.NO_SDCARD);
+            }
+        }
+        return TextUtils.isEmpty(camInfoBean.deviceBase.alias) ?
+                camInfoBean.deviceBase.uuid : camInfoBean.deviceBase.alias;
+    }
+
+    @Override
+    public String getAlarmSubTitle(Context context) {
+        if (!camInfoBean.cameraAlarmFlag || camInfoBean.cameraAlarmInfo == null) {
+            return getView().getContext().getString(R.string.MAGNETISM_OFF);
+        }
+        int day = camInfoBean.cameraAlarmInfo.day;
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < 7; i++) {
+            if (((day >> (7 - 1 - i)) & 0x01) == 1) {
+                //hit
+                builder.append(context.getString(periodResId[i]));
+                builder.append(",");
+            }
+        }
+        if (day == 127) {//全天
+            builder.setLength(0);
+            builder.append(context.getString(R.string.HOURS));
+        } else if (day == 124) {//工作日
+            builder.setLength(0);
+            builder.append(context.getString(R.string.WEEKDAYS));
+        }
+        builder.append(parse2Time(camInfoBean.cameraAlarmInfo.timeStart));
+        builder.append("-");
+        builder.append(parse2Time(camInfoBean.cameraAlarmInfo.timeEnd));
+        return builder.toString();
+    }
+
+    public static String parse2Time(int value) {
+        return String.format(Locale.getDefault(), "%02d", value >> 8)
+                + String.format(Locale.getDefault(), ":%02d", (((byte) value << 8) >> 8));
+    }
+
+    @Override
     public BeanCamInfo getCamInfoBean() {
         if (camInfoBean == null)
             camInfoBean = new BeanCamInfo();
@@ -123,7 +180,26 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
     }
 
     @Override
-    public void saveCamInfoBean(BeanCamInfo camInfoBean) {
+    public void saveCamInfoBean(final BeanCamInfo camInfoBean, int id) {
         this.camInfoBean = camInfoBean;
+        Observable.just(new Pair<>(camInfoBean, id))
+                .subscribeOn(Schedulers.io())
+                .subscribe(new Action1<Pair<BeanCamInfo, Integer>>() {
+                    @Override
+                    public void call(Pair<BeanCamInfo, Integer> beanCamInfoIntegerPair) {
+                        int id = beanCamInfoIntegerPair.second;
+                        RxEvent.JFGAttributeUpdate update = new RxEvent.JFGAttributeUpdate();
+                        update.uuid = camInfoBean.deviceBase.uuid;
+                        update.o = beanCamInfoIntegerPair.first.getObject(id);
+                        update.msgId = id;
+                        update.version = System.currentTimeMillis();
+                        RxBus.getCacheInstance().post(update);
+                        JfgCmdInsurance.getCmd().robotSetData(camInfoBean.deviceBase.uuid,
+                                DpUtils.getList(id,
+                                        beanCamInfoIntegerPair.first.getByte(id)
+                                        , System.currentTimeMillis()));
+                        AppLogger.i("save bean Cam info");
+                    }
+                });
     }
 }

@@ -6,6 +6,7 @@ import com.cylan.annotation.DpAnnotation;
 import com.cylan.annotation.DpBase;
 import com.cylan.annotation.ForDevice;
 import com.squareup.javapoet.AnnotationSpec;
+import com.squareup.javapoet.ArrayTypeName;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.JavaFile;
@@ -36,27 +37,32 @@ import javax.lang.model.type.TypeMirror;
 
 public class BeanInfoGen {
 
+    private Device device;
+    private List<String> fieldList = new ArrayList<>();
     private Map<Device, String> deviceBeanMap = new HashMap<>();
     private Map<Integer, String> idNameMap = new HashMap<>();
+    private Map<Integer, TypeName> devClazzMap = new HashMap<>();
+    private Map<String, TypeName> nameClassMap = new HashMap<>();
     private TypeMirror dpTypeName = null;
     private TypeMirror deviceTypeName = null;
-    private Map<Integer, TypeName> devClazzMap = new HashMap<>();
-    private Device device;
-    /**
-     * 所有属性名称集合
-     */
-    private List<String> fieldList = new ArrayList<>();
-    private Map<String, TypeName> nameClassMap = new HashMap<>();
 
     public void go(Device device, ProcessingEnvironment processingEnv, RoundEnvironment roundEnv) {
+        reset();
         this.device = device;
         collect(processingEnv, roundEnv);
+    }
+
+    private void reset() {
+        devClazzMap.clear();
+        idNameMap.clear();
+        devClazzMap.clear();
+        fieldList.clear();
+        nameClassMap.clear();
     }
 
     private void collect(ProcessingEnvironment processingEnv, RoundEnvironment roundEnv) {
         Set<? extends Element> deviceSet = roundEnv.getElementsAnnotatedWith(ForDevice.class);
         Set<? extends Element> dpSet = roundEnv.getElementsAnnotatedWith(DpAnnotation.class);
-
         List<String> devList = new ArrayList<>();
         for (Element e : deviceSet) {
             ForDevice forDevice = e.getAnnotation(ForDevice.class);
@@ -76,7 +82,6 @@ public class BeanInfoGen {
             TypeMirror clazzType = null;
             try {
                 test.clazz();
-
             } catch (MirroredTypeException mte) {
                 clazzType = mte.getTypeMirror();
             }
@@ -106,18 +111,119 @@ public class BeanInfoGen {
             }
         }
 
-
         String devBeanName = deviceBeanMap.get(device);
         TypeSpec.Builder typeSpec =
                 TypeSpec.classBuilder(devBeanName)
                         .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
-                        .addSuperinterface(ClassName.get("", "android.os.Parcelable"));
+                        .addSuperinterface(ClassName.get("android.os", "Parcelable"));
         addDevField(typeSpec);
         addDevMethod(typeSpec);
         addParcelableImplements(typeSpec);
+        addGetByteMethod(typeSpec);
+        addGetObjectMethod(typeSpec);
         generate(typeSpec, processingEnv);
     }
 
+    private void addGetObjectMethod(TypeSpec.Builder typeSpec) {
+        MethodSpec.Builder builder = MethodSpec.methodBuilder("getObject");
+        builder.addModifiers(Modifier.PUBLIC)
+                .addParameter(int.class, "id")
+                .returns(Object.class);
+        for (int i = 1; i < fieldList.size(); i++) {
+            String fieldName = fieldList.get(i);
+            Iterator<Integer> it = idNameMap.keySet().iterator();
+            while (it.hasNext()) {
+                int id = it.next();
+                String name = handlerString(idNameMap.get(id));
+                if (fieldName.equals(name)) {
+                    builder.beginControlFlow("if($L == id) ", id);
+                    builder.addStatement("return $L", name);
+                    builder.endControlFlow();
+                }
+            }
+        }
+        builder.addStatement("return null");
+        typeSpec.addMethod(builder.build());
+    }
+
+    /**
+     * 生成 getByte()函数
+     *
+     * @param typeSpec
+     */
+    private void addGetByteMethod(TypeSpec.Builder typeSpec) {
+        MethodSpec.Builder builder = MethodSpec.methodBuilder("getByte");
+        builder.addModifiers(Modifier.PUBLIC)
+                .addParameter(int.class, "id")
+                .returns(ArrayTypeName.get(byte[].class));
+        int getInfoCount = 0;
+
+        for (int i = 1; i < fieldList.size(); i++) {
+            String fieldName = fieldList.get(i);
+            Iterator<Integer> it = idNameMap.keySet().iterator();
+            while (it.hasNext()) {
+                int id = it.next();
+                String name = handlerString(idNameMap.get(id));
+                TypeName typeName = devClazzMap.get(id);
+                //处理一些简单的类{String boolean int float}
+                //继承BaseDataPoint的类,直接toBytes();
+                if (fieldName.equals(name)) {
+                    if (handleSimpleObject(builder, name, id, typeName)) {
+                        //简单类
+                        getInfoCount++;
+                        break;
+                    } else if (handlerNormalType(builder, id, name)) {
+                        //正常类
+                        getInfoCount++;
+                        break;
+                    } else {
+                        System.out.println("hunt: " + typeName + " ");
+                    }
+                }
+
+            }
+        }
+        builder.addStatement("return null");
+        typeSpec.addMethod(builder.build());
+
+        System.out.println("hunt addGetMethod: " + device);
+        System.out.println("hunt: " + device + " " + getInfoCount + " ");
+        if (getInfoCount != fieldList.size() - 1) {
+            throw new IllegalArgumentException("还没完全实现方法");
+        }
+    }
+
+    private boolean handlerNormalType(MethodSpec.Builder builder, int id, String name) {
+        builder.beginControlFlow("if($L == id) ", id);
+        builder.addStatement("return $L.toBytes()", name);
+        builder.endControlFlow();
+        return true;
+    }
+
+    private boolean handleSimpleObject(MethodSpec.Builder builder, String name, int id, TypeName typeName) {
+        if (typeName != null && typeName.toString().equals("boolean")) {
+            builder.beginControlFlow("if($L == id) ", id);
+            builder.addStatement("return new $T($L).toBytes()", ClassName.get("com.cylan.jiafeigou.n.mvp.model", "SingleBoolean"), name);
+            builder.endControlFlow();
+            return true;
+        }
+        if (typeName != null && typeName.toString().equals("int")) {
+            builder.beginControlFlow("if($L == id) ", id);
+            builder.addStatement("return new $T($L).toBytes()", ClassName.get("com.cylan.jiafeigou.n.mvp.model", "SingleInt"), name);
+            builder.endControlFlow();
+            return true;
+        }
+        if (typeName != null && typeName.toString().equals("float")) {
+            return false;
+        }
+        if (typeName != null && typeName.toString().equals("java.lang.String")) {
+            builder.beginControlFlow("if($L == id) ", id);
+            builder.addStatement("return new $T($L).toBytes()", ClassName.get("com.cylan.jiafeigou.n.mvp.model", "SingleString"), name);
+            builder.endControlFlow();
+            return true;
+        }
+        return false;
+    }
 
     private void generate(TypeSpec.Builder typeSpec, ProcessingEnvironment processingEnv) {
         JavaFile javaFile = JavaFile.builder("com.cylan.jiafeigou.n.mvp.model", typeSpec.build())

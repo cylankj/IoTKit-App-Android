@@ -29,16 +29,25 @@ public interface CamLiveContract {
 
         void onResolution(JFGMsgVideoResolution resolution);
 
+        void onDeviceStandBy(boolean state);
     }
 
     interface Presenter extends BasePresenter {
 
+        /**
+         * 播放状态
+         *
+         * @return
+         */
+        int getPlayState();
 
         void fetchHistoryData();
 
         void startPlayVideo();
 
         void stopPlayVideo();
+
+        void fetchCamInfo(String uuid);
 
         BeanCamInfo getCamInfo();
     }

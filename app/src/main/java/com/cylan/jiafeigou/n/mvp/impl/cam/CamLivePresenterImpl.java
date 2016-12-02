@@ -8,7 +8,8 @@ import com.cylan.entity.jniCall.JFGMsgVideoDisconn;
 import com.cylan.entity.jniCall.JFGMsgVideoResolution;
 import com.cylan.entity.jniCall.JFGMsgVideoRtcp;
 import com.cylan.jfgapp.jni.JfgAppCmd;
-import com.cylan.jiafeigou.misc.Convertor;
+import com.cylan.jiafeigou.dp.DpMsgDefine;
+import com.cylan.jiafeigou.misc.Converter;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamLiveContract;
@@ -16,13 +17,19 @@ import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.n.mvp.model.BeanCamInfo;
 import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
 import com.cylan.jiafeigou.rx.RxBus;
+import com.cylan.jiafeigou.rx.RxUiEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.utils.NetUtils;
 import com.google.gson.Gson;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action0;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
@@ -35,32 +42,57 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
     private static final String TAG = "CamLivePresenterImpl";
     private DeviceBean bean;
     private BeanCamInfo beanCamInfo;
+    private Subscription bulkDevicesSub;
     private CompositeSubscription compositeSubscription;
     private boolean isRtcpSignal;
+    /**
+     * 帧率记录
+     */
+    private List<Integer> frameRateList = new ArrayList<>();
 
     public CamLivePresenterImpl(CamLiveContract.View view, DeviceBean bean) {
         super(view);
         view.setPresenter(this);
         this.bean = bean;
-        this.beanCamInfo = Convertor.convert(bean);
+        this.beanCamInfo = Converter.convert(bean);
     }
 
     /**
      * Rtcp和resolution的回调,
      * 只有resolution回调之后,才能设置{@link JfgAppCmd#setRenderLocalView(View)}
      * 正常播放回调
+     * 10s没有视频,直接断开
      *
      * @return
      */
-    private Subscription RtcpNotifySub() {
+    private Subscription rtcpNotifySub() {
         return RxBus.getCacheInstance().toObservable(JFGMsgVideoRtcp.class)
-                .subscribeOn(AndroidSchedulers.mainThread())
                 .filter(new Func1<JFGMsgVideoRtcp, Boolean>() {
                     @Override
                     public Boolean call(JFGMsgVideoRtcp rtcp) {
                         return getView() != null && isRtcpSignal;
                     }
                 })
+                .subscribeOn(Schedulers.newThread())
+                .map(new Func1<JFGMsgVideoRtcp, JFGMsgVideoRtcp>() {
+                    @Override
+                    public JFGMsgVideoRtcp call(JFGMsgVideoRtcp rtcp) {
+                        frameRateList.add(rtcp.frameRate);
+                        if (frameRateList.size() == 11) {
+                            frameRateList.remove(0);//移除最前沿的一个
+                            boolean isBad = MiscUtils.isBad(frameRateList, 2, 10);
+                            if (isBad) {
+                                frameRateList.clear();
+                                AppLogger.e("is bad net work");
+                                getView().onFailed(JFGRules.PlayErr.ERR_LOW_FRAME_RATE);
+                                //暂停播放
+                                stopPlayVideo();
+                            }
+                        }
+                        return rtcp;
+                    }
+                })
+                .subscribeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<JFGMsgVideoRtcp>() {
                     @Override
                     public void call(JFGMsgVideoRtcp rtcp) {
@@ -72,6 +104,11 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                     public void call(Throwable throwable) {
                         AppLogger.e("rtcp err: " + throwable.getLocalizedMessage());
                     }
+                }, new Action0() {
+                    @Override
+                    public void call() {
+                        AppLogger.d("what...complete?");
+                    }
                 });
     }
 
@@ -80,7 +117,7 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
      *
      * @return
      */
-    private Subscription ResolutionNotifySub() {
+    private Subscription resolutionNotifySub() {
         return RxBus.getCacheInstance().toObservable(JFGMsgVideoResolution.class)
                 .filter(new Func1<JFGMsgVideoResolution, Boolean>() {
                     @Override
@@ -147,6 +184,11 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
     }
 
     @Override
+    public int getPlayState() {
+        return 0;
+    }
+
+    @Override
     public void fetchHistoryData() {
         Observable.just(null)
                 .observeOn(Schedulers.newThread())
@@ -209,9 +251,59 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
     }
 
     @Override
+    public void fetchCamInfo(final String uuid) {
+        //查询设备列表
+        unSubscribe(bulkDevicesSub);
+        bulkDevicesSub = RxBus.getUiInstance().toObservableSticky(RxUiEvent.BulkDeviceList.class)
+                .subscribeOn(Schedulers.computation())
+                .filter(new Func1<RxUiEvent.BulkDeviceList, Boolean>() {
+                    @Override
+                    public Boolean call(RxUiEvent.BulkDeviceList list) {
+                        return getView() != null && list != null && list.allDevices != null;
+                    }
+                })
+                .flatMap(new Func1<RxUiEvent.BulkDeviceList, Observable<DpMsgDefine.DpWrap>>() {
+                    @Override
+                    public Observable<DpMsgDefine.DpWrap> call(RxUiEvent.BulkDeviceList list) {
+                        for (DpMsgDefine.DpWrap wrap : list.allDevices) {
+                            if (TextUtils.equals(wrap.baseDpDevice.uuid, uuid)) {
+                                return Observable.just(wrap);
+                            }
+                        }
+                        return null;
+                    }
+                })
+                .filter(new Func1<DpMsgDefine.DpWrap, Boolean>() {
+                    @Override
+                    public Boolean call(DpMsgDefine.DpWrap dpWrap) {
+                        return dpWrap != null && dpWrap.baseDpDevice != null;
+                    }
+                })
+                .flatMap(new Func1<DpMsgDefine.DpWrap, Observable<BeanCamInfo>>() {
+                    @Override
+                    public Observable<BeanCamInfo> call(DpMsgDefine.DpWrap dpWrap) {
+                        BeanCamInfo info = new BeanCamInfo();
+                        info.convert(dpWrap.baseDpDevice, dpWrap.baseDpMsgList);
+                        beanCamInfo = info;
+                        AppLogger.i("BeanCamInfo: " + new Gson().toJson(info));
+                        return Observable.just(info);
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<BeanCamInfo>() {
+                    @Override
+                    public void call(BeanCamInfo camInfoBean) {
+                        //刷新 //如果设备变成待机模式
+                        getView().onDeviceStandBy(camInfoBean.cameraStandbyFlag);
+                    }
+                });
+        RxBus.getCacheInstance().post(new RxUiEvent.QueryBulkDevice());
+    }
+
+    @Override
     public BeanCamInfo getCamInfo() {
         if (this.beanCamInfo == null)
-            this.beanCamInfo = Convertor.convert(this.bean);
+            this.beanCamInfo = Converter.convert(this.bean);
         return beanCamInfo;
     }
 
@@ -219,13 +311,14 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
     public void start() {
         unSubscribe(compositeSubscription);
         compositeSubscription = new CompositeSubscription();
-        compositeSubscription.add(RtcpNotifySub());
-        compositeSubscription.add(ResolutionNotifySub());
+        compositeSubscription.add(rtcpNotifySub());
+        compositeSubscription.add(resolutionNotifySub());
         compositeSubscription.add(videoDisconnectSub());
     }
 
     @Override
     public void stop() {
+        frameRateList.clear();
         unSubscribe(compositeSubscription);
         compositeSubscription = null;
     }

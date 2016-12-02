@@ -59,9 +59,12 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
     @BindView(R.id.sw_motion_detection)
     SettingItemView1 swMotionDetection;
 
-    private WeakReference<SetSensitivityDialogFragment> setSensitivityFragmentWeakReference;
-    private WeakReference<WarnEffectFragment> warnEffectFragmentWeakReference;
-    private WeakReference<CapturePeriodDialogFragment> capturePeriodDialogFragmentWeakReference;
+    private static final int soundResId[] = {
+            R.string.MUTE, R.string.BARKING, R.string.ALARM
+    };
+    //    private WeakReference<SetSensitivityDialogFragment> setSensitivityFragmentWeakReference;
+    private WeakReference<AlarmSoundEffectFragment> warnEffectFragmentWeakReference;
+//    private WeakReference<CapturePeriodDialogFragment> capturePeriodDialogFragmentWeakReference;
 
     public SafeProtectionFragment() {
         // Required empty public constructor
@@ -104,13 +107,13 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        ViewUtils.setViewPaddingStatusBar(fLayoutTopBarContainer);
         updateDetails();
     }
 
     private void updateDetails() {
         BeanCamInfo info = basePresenter.getBeanCamInfo();
         imgVTopBarCenter.setText(R.string.SECURE);
-        ViewUtils.setViewPaddingStatusBar(fLayoutTopBarContainer);
         //移动侦测
         swMotionDetection.setSwitchButtonState(info.cameraAlarmFlag);
         //提示音
@@ -123,6 +126,8 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
         //灵敏度
         tvProtectionSensitivity.setText(info.cameraAlarmSensitivity == 0 ? getString(R.string.SENSITIVI_LOW)
                 : (info.cameraAlarmSensitivity == 1 ? getString(R.string.SENSITIVI_STANDARD) : getString(R.string.SENSITIVI_HIGHT)));
+        //报警周期
+        tvProtectionRepeatPeriod.setText(basePresenter.getRepeatMode(getContext()));
     }
 
     @OnClick({R.id.imgV_top_bar_center,
@@ -137,27 +142,35 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
                 getActivity().getSupportFragmentManager().popBackStack();
                 break;
             case R.id.fLayout_protection_sensitivity: {
-                initSensitivityFragment();
-                Fragment fragment = setSensitivityFragmentWeakReference.get();
+                SetSensitivityDialogFragment fragment = SetSensitivityDialogFragment.newInstance(getArguments());
+                fragment.setAction(new BaseDialog.BaseDialogAction() {
+                    @Override
+                    public void onDialogAction(int id, Object value) {
+                        if (value != null && value instanceof Integer) {
+                            int level = (int) value;
+                            BeanCamInfo info = basePresenter.getBeanCamInfo();
+                            info.cameraAlarmSensitivity = level;
+                            basePresenter.saveCamInfoBean(info, DpMsgMap.ID_503_CAMERA_ALARM_SENSITIVITY);
+                            updateDetails();
+                        }
+                    }
+                });
                 fragment.setArguments(getArguments());
-                showFragment((DialogFragment) fragment);
+                showFragment(fragment);
             }
             break;
             case R.id.fLayout_protection_warn_effect: {
                 initWarnEffectFragment();
-                WarnEffectFragment fragment = warnEffectFragmentWeakReference.get();
+                AlarmSoundEffectFragment fragment = warnEffectFragmentWeakReference.get();
                 fragment.setCallBack(new CallBack() {
                     @Override
                     public void callBack(Object o) {
-                        BeanCamInfo info = basePresenter.getBeanCamInfo();
                         if (o instanceof DpMsgDefine.NotificationInfo) {
-                            if (info.cameraAlarmNotification.notification != ((DpMsgDefine.NotificationInfo) o).notification
-                                    || info.cameraAlarmNotification.duration != ((DpMsgDefine.NotificationInfo) o).duration) {
-                                //something update
-                                info.cameraAlarmNotification = (DpMsgDefine.NotificationInfo) o;
-                                basePresenter.updateInfo(info, DpMsgMap.ID_504_CAMERA_ALARM_NOTIFICATION);
-                                updateDetails();
-                            }
+                            BeanCamInfo info = basePresenter.getBeanCamInfo();
+                            //something update
+                            info.cameraAlarmNotification = (DpMsgDefine.NotificationInfo) o;
+                            basePresenter.saveCamInfoBean(info, DpMsgMap.ID_504_CAMERA_ALARM_NOTIFICATION);
+                            updateDetails();
                         }
                     }
                 });
@@ -170,28 +183,21 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
             case R.id.fLayout_protection_end_time:
                 break;
             case R.id.fLayout_protection_repeat_period: {
-                initCapturePeriodFragment();
-                BaseDialog fragment = capturePeriodDialogFragmentWeakReference.get();
+                BaseDialog fragment = CapturePeriodDialogFragment.newInstance(getArguments());
                 fragment.setArguments(getArguments());
-                fragment.setAction(new BaseDialog.SimpleDialogAction() {
+                fragment.setAction(new BaseDialog.BaseDialogAction() {
                     @Override
                     public void onDialogAction(int id, Object value) {
                         if (value != null && value instanceof Integer) {
-                            StringBuilder builder = new StringBuilder();
-                            for (int i = 0; i < 7; i++) {
-                                if ((((int) value >> (7 - 1 - i)) & 0x01) == 1) {
-                                    builder.append(getString(weekStringId[i]));
-                                    builder.append(" ");
-                                }
-                            }
-                            tvProtectionRepeatPeriod.setText(builder.toString());
+                            int result = (int) value;
                             BeanCamInfo info = basePresenter.getBeanCamInfo();
-                            DpMsgDefine.AlarmInfo alarmInfo = info == null ? new DpMsgDefine.AlarmInfo() : info.cameraAlarmInfo;
-                            if (alarmInfo.day != (int) value) {
-                                alarmInfo.day = (int) value;
+                            DpMsgDefine.AlarmInfo alarmInfo = info.cameraAlarmInfo == null ? new DpMsgDefine.AlarmInfo() : info.cameraAlarmInfo;
+                            if (alarmInfo.day != result) {
+                                alarmInfo.day = result;
                                 info.cameraAlarmInfo = alarmInfo;
-                                basePresenter.updateInfo(info, DpMsgMap.ID_502_CAMERA_ALARM_INFO);
+                                basePresenter.saveCamInfoBean(info, DpMsgMap.ID_502_CAMERA_ALARM_INFO);
                             }
+                            updateDetails();
                         }
                     }
                 });
@@ -201,24 +207,10 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
         }
     }
 
-    private void initSensitivityFragment() {
-        if (setSensitivityFragmentWeakReference == null
-                || setSensitivityFragmentWeakReference.get() == null) {
-            setSensitivityFragmentWeakReference = new WeakReference<>(SetSensitivityDialogFragment.newInstance(new Bundle()));
-        }
-    }
-
     private void initWarnEffectFragment() {
         if (warnEffectFragmentWeakReference == null
                 || warnEffectFragmentWeakReference.get() == null) {
-            warnEffectFragmentWeakReference = new WeakReference<>(WarnEffectFragment.newInstance(new Bundle()));
-        }
-    }
-
-    private void initCapturePeriodFragment() {
-        if (capturePeriodDialogFragmentWeakReference == null
-                || capturePeriodDialogFragmentWeakReference.get() == null) {
-            capturePeriodDialogFragmentWeakReference = new WeakReference<>(CapturePeriodDialogFragment.newInstance(new Bundle()));
+            warnEffectFragmentWeakReference = new WeakReference<>(AlarmSoundEffectFragment.newInstance(new Bundle()));
         }
     }
 

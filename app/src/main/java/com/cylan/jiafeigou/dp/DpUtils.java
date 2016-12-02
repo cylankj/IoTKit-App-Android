@@ -44,4 +44,14 @@ public class DpUtils {
         }
         return null;
     }
+
+    public static ArrayList<JFGDPMsg> getList(int id, byte[] value, long version) {
+        JFGDPMsg jfgdpMsg = new JFGDPMsg();
+        jfgdpMsg.id = id;
+        jfgdpMsg.version = version;
+        jfgdpMsg.packValue = value;
+        ArrayList<JFGDPMsg> list = new ArrayList<>();
+        list.add(jfgdpMsg);
+        return list;
+    }
 }

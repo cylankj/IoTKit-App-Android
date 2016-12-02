@@ -19,6 +19,7 @@ import com.cylan.jiafeigou.support.sina.AccessTokenKeeper;
 import com.cylan.jiafeigou.support.sina.SinaLogin;
 import com.cylan.jiafeigou.support.sina.UsersAPI;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
+import com.google.gson.Gson;
 import com.sina.weibo.sdk.auth.Oauth2AccessToken;
 import com.sina.weibo.sdk.auth.WeiboAuthListener;
 import com.sina.weibo.sdk.exception.WeiboException;
@@ -34,8 +35,10 @@ import java.util.concurrent.TimeUnit;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action0;
 import rx.functions.Action1;
 import rx.functions.Func1;
+import rx.observers.SafeSubscriber;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
@@ -48,7 +51,6 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
 
     private Context ctx;
     private CompositeSubscription subscription;
-    private Subscription logTimeoutSub;
 
     public LoginPresenterImpl(LoginContract.View view) {
         super(view);
@@ -57,25 +59,18 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
     }
 
     @Override
-    public void executeLogin(LoginAccountBean login) {
-        unSubscribe(logTimeoutSub);
-        logTimeoutSub = Observable.just(login)
+    public void executeLogin(final LoginAccountBean login) {
+        Observable.just(login)
                 .subscribeOn(Schedulers.newThread())
                 .map(new Func1<LoginAccountBean, LoginAccountBean>() {
                     @Override
                     public LoginAccountBean call(LoginAccountBean o) {
                         JfgCmdInsurance.getCmd().login(o.userName, o.pwd);
+                        AppLogger.e("LoginAccountBean: " + new Gson().toJson(login));
                         return o;
                     }
                 })
-                .delay(5, TimeUnit.SECONDS)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<LoginAccountBean>() {
-                    @Override
-                    public void call(LoginAccountBean loginAccountBean) {
-                        getView().loginTimeout();
-                    }
-                });
+                .subscribe();
     }
 
     @Override
@@ -98,10 +93,14 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
                 .subscribe(new Action1<RxEvent.ResultLogin>() {
                     @Override
                     public void call(RxEvent.ResultLogin resultLogin) {
-                        unSubscribe(logTimeoutSub);
                         if (getView().isLoginViewVisible()) {
                             getView().loginResult(resultLogin.code);
                         }
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        AppLogger.e("" + throwable);
                     }
                 });
     }
@@ -123,6 +122,11 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
                             getView().registerResult(register.code);
                         }
                     }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        AppLogger.e("" + throwable.getLocalizedMessage());
+                    }
                 });
     }
 
@@ -135,6 +139,16 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
                     @Override
                     public void call(RxEvent.ResultVerifyCode resultVerifyCode) {
                         getView().verifyCodeResult(resultVerifyCode.code);
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        AppLogger.e("" + throwable.getLocalizedMessage());
+                    }
+                }, new Action0() {
+                    @Override
+                    public void call() {
+                        AppLogger.d("complete?");
                     }
                 });
     }
@@ -154,6 +168,11 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
                             }
                         }
                     }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        AppLogger.e("" + throwable.getLocalizedMessage());
+                    }
                 });
     }
 
@@ -165,6 +184,11 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
                     @Override
                     public void call(RxEvent.SwitchBox switchBox) {
                         getView().switchBox("");
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        AppLogger.e("" + throwable.getLocalizedMessage());
                     }
                 });
 
@@ -180,13 +204,17 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
 
                         getView().updateAccount(loginPopBack.account);
                     }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        AppLogger.e("" + throwable.getLocalizedMessage());
+                    }
                 });
     }
 
     @Override
     public void stop() {
         unSubscribe(subscription);
-        unSubscribe(logTimeoutSub);
     }
 
 
@@ -216,6 +244,11 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
                     public void call(Object o) {
                         JfgCmdInsurance.getCmd().sendCheckCode(phone,
                                 JfgEnum.JFG_SMS_REGISTER);
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        AppLogger.e("" + throwable.getLocalizedMessage());
                     }
                 });
     }

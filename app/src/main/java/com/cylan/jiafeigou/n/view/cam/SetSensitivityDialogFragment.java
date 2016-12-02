@@ -86,6 +86,8 @@ public class SetSensitivityDialogFragment extends BaseDialog {
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     if (isChecked) {
                         beanCamInfo.cameraAlarmSensitivity = index;
+                        if (action != null) action.onDialogAction(0, 2 - index);
+                        dismiss();
                     }
                 }
             });
