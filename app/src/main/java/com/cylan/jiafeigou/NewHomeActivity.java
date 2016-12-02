@@ -61,6 +61,7 @@ public class NewHomeActivity extends NeedLoginActivity implements
     }
 
     /**
+     * TYPE_MOBILE
      * Dispatch onStart() to all fragments.  Ensure any created loaders are
      * now started.
      */
@@ -158,11 +159,22 @@ public class NewHomeActivity extends NeedLoginActivity implements
                 if (sharedElementCallBackListener != null)
                     sharedElementCallBackListener.onSharedElementCallBack(names, sharedElements);
             }
+
+            @Override
+            public void onSharedElementEnd(List<String> sharedElementNames, List<View> sharedElements, List<View> sharedElementSnapshots) {
+                if (sharedElementCallBackListener != null)
+                    sharedElementCallBackListener.onSharedElementEnd(sharedElementNames, sharedElements, sharedElementSnapshots);
+            }
         };
     }
 
     private SharedElementCallBackListener sharedElementCallBackListener;
     private OnActivityReenterListener onActivityReenterListener;
+
+    @Override
+    public void onEnterAnimationComplete() {
+        super.onEnterAnimationComplete();
+    }
 
     /**
      * 主页的三个页面

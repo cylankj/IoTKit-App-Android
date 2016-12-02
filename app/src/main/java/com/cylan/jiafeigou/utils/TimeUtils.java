@@ -49,4 +49,9 @@ public class TimeUtils {
         return new SimpleDateFormat("yyyy.MM.dd", Locale.getDefault())
                 .format(new Date(System.currentTimeMillis()));
     }
+
+    public static String getDayString(long time) {
+        return new SimpleDateFormat("yyyy.MM.dd", Locale.getDefault())
+                .format(time);
+    }
 }

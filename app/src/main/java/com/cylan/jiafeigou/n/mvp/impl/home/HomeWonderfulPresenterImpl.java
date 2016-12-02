@@ -53,7 +53,7 @@ public class HomeWonderfulPresenterImpl extends AbstractPresenter<HomeWonderfulC
     private SoftReference<List<MediaBean>> weakReferenceList;
     private Subscription onRefreshSubscription;
     private Subscription onTimeLineSubscription;
-    private CompositeSubscription _timeTickSubscriptions = new CompositeSubscription();
+    private CompositeSubscription _timeTickSubscriptions;//这个类是一次性的必须每次重新创建，否则就不能正常订阅
     private long lastTime;
     private WechatShare wechatShare;
 
@@ -65,6 +65,7 @@ public class HomeWonderfulPresenterImpl extends AbstractPresenter<HomeWonderfulC
     @Override
     public void start() {
         //注册1
+        _timeTickSubscriptions = new CompositeSubscription();
         _timeTickSubscriptions.add(getTimeTickEventSub());
         _timeTickSubscriptions.add(getPageScrolledSub());
     }
@@ -94,9 +95,8 @@ public class HomeWonderfulPresenterImpl extends AbstractPresenter<HomeWonderfulC
                     public void call(RxEvent.PageScrolled timeTickEvent) {
                         //6:00 am - 17:59 pm
                         //18:00 pm-5:59 am
-                        if (getView() != null) {
+                        if (getView() != null)
                             getView().onPageScrolled();
-                        }
                     }
                 });
     }
@@ -408,35 +408,14 @@ public class HomeWonderfulPresenterImpl extends AbstractPresenter<HomeWonderfulC
             "http://imgsrc.baidu.com/forum/w%3D580/sign=b8640487b90e7bec23da03e91f2fb9fa/ea0635fae6cd7b891f342a0b0e2442a7d8330eda.jpg",
             "http://imgsrc.baidu.com/forum/w%3D580/sign=4031f330d53f8794d3ff4826e21a0ead/189659ee3d6d55fb608f66ae6c224f4a21a4ddea.jpg",
             "http://imgsrc.baidu.com/forum/w%3D580/sign=b9458a86b03533faf5b6932698d2fdca/b5d5b31c8701a18b274b11c79f2f07082938fe93.jpg",
-            "",
-            "http://..",
-            "http://..",
-            "http://..",
-            "http://..",
-            "http://..",
-            "http://..",
-            "http://..",
-            "http://..",
-            "http://..",
-            "http://..",
-            "http://..",
-            "http://..",
-            "http://..",
-            "http://..",
-            "http://..",
-            "http://..",
-            "http://..",
-            "http://..",
-            "http://..",
             Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "Smarthome" + File.separator + "21564772.jpg"
     };
 
     public static final String videos[] = {
-            "http://r1.ykimg.com/material/0A03/201609/0905/119766/1300.swf?jsStart=&jsEnd=execHtmlEndCMDfortaobao&url=http://val.atm.youku.com/c?id=9612",
-            "http://yf.cylan.com.cn:82/Garfield/1045020208160b9706425470.mp4",
-            Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "1045020208160b9706425470.mp4",
-            Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "Smarthome" + File.separator + "2052787320ae200c438272b8.mp4",
-            Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "Smarthome" + File.separator + "1096863_70ea6a0d88b18de8de580ccd5812c606.mp4"
+            Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "111.mp4",
+            Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "demo.mp4",
+            Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "d.mp4",
+            "http://yf.cylan.com.cn:82/Garfield/1045020208160b9706425470.mp4"
     };
 }
 

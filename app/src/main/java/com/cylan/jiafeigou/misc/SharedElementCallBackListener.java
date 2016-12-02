@@ -10,4 +10,6 @@ import java.util.Map;
  */
 public interface SharedElementCallBackListener {
     void onSharedElementCallBack(List<String> names, Map<String, View> sharedElements);
+
+    void onSharedElementEnd(List<String> sharedElementNames, List<View> sharedElements, List<View> sharedElementSnapshots);
 }

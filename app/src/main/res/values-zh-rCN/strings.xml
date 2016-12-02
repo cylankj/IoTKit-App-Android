@@ -828,4 +828,6 @@
   <string name="permissions_tips_gallery">这个App请求访问你的相册</string>
   <string name="permissions_denied_tips">无法获取图片</string>
   <string name="maxsize_zero_tip">maxsize 应该大于0</string>
+  <!--每日精彩-->
+  <string name="Tips_Delete_Msg">您是否确定删除？</string>
 </resources>

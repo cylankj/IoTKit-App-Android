@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.Typeface;
 import android.hardware.SensorManager;
 import android.support.v4.util.LongSparseArray;
 import android.text.TextPaint;
@@ -69,6 +70,7 @@ public class TimeWheelView extends View implements ValueAnimator.AnimatorUpdateL
     private int mBoundLineWidth;
     private int mBoundLineColor;
     private float mDivideLineHeight;
+    private String mMonthFont;
 
     private int mDrawOffsetX;//Touch事件造成的偏移量
     private LongSparseArray<TimePair> mTimeLineMap = new LongSparseArray<>(512);//以天为单位排序后的map集合,是有序的
@@ -126,12 +128,12 @@ public class TimeWheelView extends View implements ValueAnimator.AnimatorUpdateL
     public TimeWheelView(Context context, AttributeSet attrs) {
         super(context, attrs);
         TypedArray array = context.obtainStyledAttributes(attrs, R.styleable.TimeWheelView);
-        mDivideLineHeight = array.getDimension(R.styleable.TimeWheelView_divideLine_height, dp2px(context, 40));
+        mDivideLineHeight = array.getDimension(R.styleable.TimeWheelView_divideLine_height, dp2px(context, 49));
         mMarkLineColor = array.getColor(R.styleable.TimeWheelView_markLine_color, 0XFF36BDFF);
         mMarkLineColorBG = array.getColor(R.styleable.TimeWheelView_markLine_color_bg, 0XFFDEDEDE);
         mMarkLineWidth = array.getDimensionPixelSize(R.styleable.TimeWheelView_markLine_width, dp2px(context, 2F));
         mMonthTextColor = array.getColor(R.styleable.TimeWheelView_monthText_color, 0XFF888888);
-        mMonthTextSize = array.getDimension(R.styleable.TimeWheelView_monthText_size, dp2px(context, 12F));
+        mMonthTextSize = array.getDimension(R.styleable.TimeWheelView_monthText_size, dp2px(context, 11F));
         mMonthLineColor = array.getColor(R.styleable.TimeWheelView_monthLine_color, 0XFF36BDFF);
         mMonthLineWidth = array.getDimensionPixelSize(R.styleable.TimeWheelView_monthLine_width, dp2px(context, 2F));
         mDivideLineColor = array.getColor(R.styleable.TimeWheelView_divideLine_color, 0XFF36BDFF);
@@ -140,12 +142,13 @@ public class TimeWheelView extends View implements ValueAnimator.AnimatorUpdateL
         mAnimatorDuration = array.getInt(R.styleable.TimeWheelView_animate_duration, 200);
         mPopWindowLayout = array.getResourceId(R.styleable.TimeWheelView_popWindow_layout, R.layout.view_time_line_pop);
         mPopWindowMargin = array.getDimensionPixelSize(R.styleable.TimeWheelView_popWindow_margin, dp2px(context, 5F));
-        mMarkLineSpace = array.getDimensionPixelSize(R.styleable.TimeWheelView_markLine_space, 0);
-        mMarkLineHeight = array.getDimensionPixelSize(R.styleable.TimeWheelView_markLine_height, 25);
-        mMonthLineHeight = array.getDimensionPixelSize(R.styleable.TimeWheelView_monthLine_height, 50);
-        mMonthTextMargin = array.getDimensionPixelSize(R.styleable.TimeWheelView_monthText_margin, dp2px(context, 5F));
+        mMarkLineSpace = array.getDimensionPixelSize(R.styleable.TimeWheelView_markLine_space, dp2px(context, 7));
+        mMarkLineHeight = array.getDimensionPixelSize(R.styleable.TimeWheelView_markLine_height, dp2px(context, 9));
+        mMonthLineHeight = array.getDimensionPixelSize(R.styleable.TimeWheelView_monthLine_height, dp2px(context, 17));
+        mMonthTextMargin = array.getDimensionPixelSize(R.styleable.TimeWheelView_monthText_margin, dp2px(context, 14F));
         mBoundLineWidth = (int) array.getDimension(R.styleable.TimeWheelView_bound_line_width, dp2px(context, 2F));
         mBoundLineColor = array.getColor(R.styleable.TimeWheelView_bound_line_color, 0XFFD2D2D2);
+        mMonthFont = array.getString(R.styleable.TimeWheelView_monthText_font);
         array.recycle();
         init();
     }
@@ -177,6 +180,7 @@ public class TimeWheelView extends View implements ValueAnimator.AnimatorUpdateL
         mMonthTextPaint.setStyle(Paint.Style.STROKE);
         mMonthTextPaint.setAntiAlias(true);
         mMonthTextPaint.setTextAlign(Paint.Align.CENTER);
+        mMonthTextPaint.setTypeface(Typeface.create(mMonthFont, Typeface.NORMAL));
 
         mBoundLinePaint = new TextPaint();
         mBoundLinePaint.setColor(mBoundLineColor);
@@ -289,6 +293,9 @@ public class TimeWheelView extends View implements ValueAnimator.AnimatorUpdateL
         canvas.drawLine(0, 0, mViewWidth, 0, mBoundLinePaint);
     }
 
+    private String getMonthText(boolean halfMonth, int month) {
+        return null;
+    }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
@@ -411,6 +418,11 @@ public class TimeWheelView extends View implements ValueAnimator.AnimatorUpdateL
     }
 
     public boolean moveToDay(long time) {
+        long dayIndex = time / DAY_MILLISECOND;
+        return animateToDayIndex(dayIndex);
+    }
+
+    public boolean updateDay(long time) {
         long dayIndex = time / DAY_MILLISECOND;
         mNotNotify = true;
         return animateToDayIndex(dayIndex);
@@ -718,7 +730,7 @@ public class TimeWheelView extends View implements ValueAnimator.AnimatorUpdateL
 
     private class TimePair {
         long minLongTime = Long.MAX_VALUE;
-        int timeCount;
+        int timeCount = 0;
     }
 
     public interface OnTimeLineChangeListener {

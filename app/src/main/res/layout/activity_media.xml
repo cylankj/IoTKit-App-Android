@@ -1,13 +1,13 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/color_black">
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             android:background="@color/color_black">
 
     <com.cylan.jiafeigou.misc.HackyViewPager
         android:id="@+id/pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_gravity="center" />
+        android:layout_gravity="center"/>
 
     <FrameLayout
         android:id="@+id/fLayout_details_title"
@@ -21,7 +21,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="15dp"
-            android:src="@drawable/btn_login_nav_close" />
+            android:src="@drawable/btn_login_nav_close"/>
 
         <TextView
             android:id="@+id/tv_big_pic_title"
@@ -30,7 +30,7 @@
             android:layout_gravity="center"
             android:text="2016-09-06 16:26:10"
             android:textColor="@color/color_white"
-            android:textSize="16sp" />
+            android:textSize="16sp"/>
     </FrameLayout>
 
     <FrameLayout
@@ -38,7 +38,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:transitionGroup="true">
+        android:transitionGroup="true"
+        android:visibility="visible">
 
         <ImageView
             android:id="@+id/imgV_big_pic_download"
@@ -46,7 +47,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="25dp"
             android:padding="15dp"
-            android:src="@drawable/icon_download" />
+            android:src="@drawable/icon_download"/>
 
         <ImageView
             android:id="@+id/imgV_big_pic_share"
@@ -55,7 +56,7 @@
             android:layout_gravity="center"
             android:layout_margin="25dp"
             android:padding="15dp"
-            android:src="@drawable/icon_share" />
+            android:src="@drawable/icon_share"/>
 
         <ImageView
             android:id="@+id/imgV_big_pic_collect"
@@ -64,6 +65,6 @@
             android:layout_gravity="end"
             android:layout_margin="25dp"
             android:padding="15dp"
-            android:src="@drawable/icon_collection" />
+            android:src="@drawable/icon_collection"/>
     </FrameLayout>
 </FrameLayout>

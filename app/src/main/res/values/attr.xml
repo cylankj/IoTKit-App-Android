@@ -1,143 +1,141 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <declare-styleable name="ImageViewTipsTheme">
-        <attr name="t_position" format="integer" />
-        <attr name="t_ignore" format="boolean" />
-        <attr name="t_radius" format="dimension" />
-        <attr name="t_margin" format="dimension" />
-        <attr name="t_show_point" format="boolean" />
-        <attr name="t_point_color" format="color" />
-        <attr name="t_drawable" format="reference" />
-        <attr name="t_border_color" format="color" />
-        <attr name="t_border_width" format="dimension" />
-        <attr name="t_enable_border" format="boolean" />
-        <attr name="t_round_image" format="boolean" />
+        <attr name="t_position" format="integer"/>
+        <attr name="t_ignore" format="boolean"/>
+        <attr name="t_radius" format="dimension"/>
+        <attr name="t_margin" format="dimension"/>
+        <attr name="t_show_point" format="boolean"/>
+        <attr name="t_point_color" format="color"/>
+        <attr name="t_drawable" format="reference"/>
+        <attr name="t_border_color" format="color"/>
+        <attr name="t_border_width" format="dimension"/>
+        <attr name="t_enable_border" format="boolean"/>
+        <attr name="t_round_image" format="boolean"/>
     </declare-styleable>
     <declare-styleable name="WaveTheme">
-        <attr name="frontColor" format="color" />
-        <attr name="behindColor" format="color" />
+        <attr name="frontColor" format="color"/>
+        <attr name="behindColor" format="color"/>
     </declare-styleable>
     <declare-styleable name="SuperWaveTheme">
-        <attr name="waveColor" format="color|reference" />
-        <attr name="waveCount" format="integer" />
+        <attr name="waveColor" format="color|reference"/>
+        <attr name="waveCount" format="integer"/>
     </declare-styleable>
     <declare-styleable name="HomeMineItemViewStyle">
-        <attr name="leftDrawable" format="reference" />
-        <attr name="rightDrawable" format="reference" />
-        <attr name="textSize" format="dimension" />
-        <attr name="textColor" format="color|integer" />
-        <attr name="text" format="string" />
+        <attr name="leftDrawable" format="reference"/>
+        <attr name="rightDrawable" format="reference"/>
+        <attr name="textSize" format="dimension"/>
+        <attr name="textColor" format="color|integer"/>
+        <attr name="text" format="string"/>
     </declare-styleable>
     <declare-styleable name="FateLineViewStyle">
-        <attr name="dashLineWidth" format="integer|dimension" />
-        <attr name="dashLineColor" format="color|reference" />
-        <attr name="outerCircleColor" format="color|reference" />
-        <attr name="innerCircleColor" format="color|reference" />
-        <attr name="outerCircleRadius" format="integer|dimension" />
-        <attr name="innerCircleRadius" format="integer|dimension" />
-        <attr name="outerCircleStrokeWidth" format="float|dimension" />
-        <attr name="outerCircleY" format="float|dimension" />
+        <attr name="dashLineWidth" format="integer|dimension"/>
+        <attr name="dashLineColor" format="color|reference"/>
+        <attr name="outerCircleColor" format="color|reference"/>
+        <attr name="innerCircleColor" format="color|reference"/>
+        <attr name="outerCircleRadius" format="integer|dimension"/>
+        <attr name="innerCircleRadius" format="integer|dimension"/>
+        <attr name="outerCircleStrokeWidth" format="float|dimension"/>
+        <attr name="outerCircleY" format="float|dimension"/>
     </declare-styleable>
     <declare-styleable name="WheelViewStyle">
-        <attr name="shortLineHeight" format="float|dimension" />
-        <attr name="longLineHeight" format="float|dimension" />
+        <attr name="shortLineHeight" format="float|dimension"/>
+        <attr name="longLineHeight" format="float|dimension"/>
     </declare-styleable>
     <declare-styleable name="SWheelViewStyle">
-        <attr name="sw_shortLineHeight" format="float|dimension" />
-        <attr name="sw_longLineHeight" format="float|dimension" />
-        <attr name="sw_lineIntervalWidth" format="float|dimension" />
-        <attr name="sw_lineWidth" format="float|dimension" />
-        <attr name="sw_dateTextSize" format="integer" />
-        <attr name="sw_markerColor" format="color|reference" />
+        <attr name="sw_shortLineHeight" format="float|dimension"/>
+        <attr name="sw_longLineHeight" format="float|dimension"/>
+        <attr name="sw_lineIntervalWidth" format="float|dimension"/>
+        <attr name="sw_lineWidth" format="float|dimension"/>
+        <attr name="sw_dateTextSize" format="integer"/>
+        <attr name="sw_markerColor" format="color|reference"/>
         <!--<attr name="markerLineHeight" format="float|dimension" />-->
     </declare-styleable>
     <declare-styleable name="ZXingScannerViewStyle">
-        <attr name="hint" format="reference|string" />
+        <attr name="hint" format="reference|string"/>
     </declare-styleable>
     <declare-styleable name="RoundedImageViewStyle">
-        <attr name="riv_corner_radius" format="dimension" />
-        <attr name="riv_corner_radius_top_left" format="dimension" />
-        <attr name="riv_corner_radius_top_right" format="dimension" />
-        <attr name="riv_corner_radius_bottom_left" format="dimension" />
-        <attr name="riv_corner_radius_bottom_right" format="dimension" />
-        <attr name="riv_border_width" format="dimension" />
-        <attr name="riv_border_color" format="color" />
-        <attr name="riv_mutate_background" format="boolean" />
-        <attr name="riv_oval" format="boolean" />
-        <attr name="android:scaleType" />
+        <attr name="riv_corner_radius" format="dimension"/>
+        <attr name="riv_corner_radius_top_left" format="dimension"/>
+        <attr name="riv_corner_radius_top_right" format="dimension"/>
+        <attr name="riv_corner_radius_bottom_left" format="dimension"/>
+        <attr name="riv_corner_radius_bottom_right" format="dimension"/>
+        <attr name="riv_border_width" format="dimension"/>
+        <attr name="riv_border_color" format="color"/>
+        <attr name="riv_mutate_background" format="boolean"/>
+        <attr name="riv_oval" format="boolean"/>
+        <attr name="android:scaleType"/>
         <attr name="riv_tile_mode">
-            <enum name="clamp" value="0" />
-            <enum name="repeat" value="1" />
-            <enum name="mirror" value="2" />
+            <enum name="clamp" value="0"/>
+            <enum name="repeat" value="1"/>
+            <enum name="mirror" value="2"/>
         </attr>
         <attr name="riv_tile_mode_x">
-            <enum name="clamp" value="0" />
-            <enum name="repeat" value="1" />
-            <enum name="mirror" value="2" />
+            <enum name="clamp" value="0"/>
+            <enum name="repeat" value="1"/>
+            <enum name="mirror" value="2"/>
         </attr>
         <attr name="riv_tile_mode_y">
-            <enum name="clamp" value="0" />
-            <enum name="repeat" value="1" />
-            <enum name="mirror" value="2" />
+            <enum name="clamp" value="0"/>
+            <enum name="repeat" value="1"/>
+            <enum name="mirror" value="2"/>
         </attr>
     </declare-styleable>
     <!--add by hunt -->
     <declare-styleable name="ScanEffectViewStyle">
-        <attr name="effectStartColor" format="reference|color" />
-        <attr name="effectEndColor" format="reference|color" />
-        <attr name="laserWidth" format="integer|dimension" />
-        <attr name="duration" format="integer|reference" />
+        <attr name="effectStartColor" format="reference|color"/>
+        <attr name="effectEndColor" format="reference|color"/>
+        <attr name="laserWidth" format="integer|dimension"/>
+        <attr name="duration" format="integer|reference"/>
     </declare-styleable>
 
     <declare-styleable name="PagerSlidingTabStrip">
-        <attr name="pstsIndicatorColor" format="color" />
-        <attr name="pstsUnderlineColor" format="color" />
-        <attr name="pstsDividerColor" format="color" />
-        <attr name="pstsIndicatorHeight" format="dimension" />
-        <attr name="pstsUnderlineHeight" format="dimension" />
-        <attr name="pstsDividerPadding" format="dimension" />
-        <attr name="pstsTabPaddingLeftRight" format="dimension" />
-        <attr name="pstsScrollOffset" format="dimension" />
-        <attr name="pstsTabBackground" format="reference" />
-        <attr name="pstsShouldExpand" format="boolean" />
-        <attr name="pstsTextAllCaps" format="boolean" />
+        <attr name="pstsIndicatorColor" format="color"/>
+        <attr name="pstsUnderlineColor" format="color"/>
+        <attr name="pstsDividerColor" format="color"/>
+        <attr name="pstsIndicatorHeight" format="dimension"/>
+        <attr name="pstsUnderlineHeight" format="dimension"/>
+        <attr name="pstsDividerPadding" format="dimension"/>
+        <attr name="pstsTabPaddingLeftRight" format="dimension"/>
+        <attr name="pstsScrollOffset" format="dimension"/>
+        <attr name="pstsTabBackground" format="reference"/>
+        <attr name="pstsShouldExpand" format="boolean"/>
+        <attr name="pstsTextAllCaps" format="boolean"/>
     </declare-styleable>
 
     <declare-styleable name="SimpleProgressStyle">
-        <attr name="progress_stroke_width" format="dimension" />
-        <attr name="progress_stroke_color" format="reference|color" />
-        <attr name="progress_point_radius" format="dimension" />
-        <attr name="progress_swipe_degree" format="integer" />
+        <attr name="progress_stroke_width" format="dimension"/>
+        <attr name="progress_stroke_color" format="reference|color"/>
+        <attr name="progress_point_radius" format="dimension"/>
+        <attr name="progress_swipe_degree" format="integer"/>
     </declare-styleable>
     <declare-styleable name="SettingItemViewStyle">
-        <attr name="sv_title" format="string|reference" />
-        <attr name="sv_sub_title" format="string|reference" />
-        <attr name="sv_sub_title_max_len" format="integer" />
-        <attr name="sv_image_src" format="reference" />
-        <attr name="sv_visibility" format="boolean" />
-        <attr name="sv_v_divider" format="boolean" />
+        <attr name="sv_title" format="string|reference"/>
+        <attr name="sv_sub_title" format="string|reference"/>
+        <attr name="sv_sub_title_max_len" format="integer"/>
+        <attr name="sv_image_src" format="reference"/>
     </declare-styleable>
 
     <declare-styleable name="LLViewStyle">
-        <attr name="ll_small_radius" format="dimension" />
-        <attr name="ll_big_outer_radius" format="dimension" />
-        <attr name="ll_small_interval" format="dimension" />
-        <attr name="ll_big_inner_radius" format="dimension" />
-        <attr name="ll_small_color" format="reference|color" />
-        <attr name="ll_big_outer_color" format="reference|color" />
-        <attr name="ll_big_inner_color" format="reference|color" />
-        <attr name="ll_reverse" format="boolean" />
+        <attr name="ll_small_radius" format="dimension"/>
+        <attr name="ll_big_outer_radius" format="dimension"/>
+        <attr name="ll_small_interval" format="dimension"/>
+        <attr name="ll_big_inner_radius" format="dimension"/>
+        <attr name="ll_small_color" format="reference|color"/>
+        <attr name="ll_big_outer_color" format="reference|color"/>
+        <attr name="ll_big_inner_color" format="reference|color"/>
+        <attr name="ll_reverse" format="boolean"/>
     </declare-styleable>
     <declare-styleable name="LSViewStyle">
-        <attr name="ls_min_radius" format="dimension" />
-        <attr name="ls_max_radius" format="dimension" />
-        <attr name="ls_inner_color" format="reference|color" />
-        <attr name="ls_outer_color" format="reference|color" />
+        <attr name="ls_min_radius" format="dimension"/>
+        <attr name="ls_max_radius" format="dimension"/>
+        <attr name="ls_inner_color" format="reference|color"/>
+        <attr name="ls_outer_color" format="reference|color"/>
     </declare-styleable>
     <declare-styleable name="guide_indicator_style">
-        <attr name="g_normal_color" format="reference|color" />
-        <attr name="g_focused_color" format="reference|color" />
-        <attr name="g_circle_radius" format="reference|dimension" />
+        <attr name="g_normal_color" format="reference|color"/>
+        <attr name="g_focused_color" format="reference|color"/>
+        <attr name="g_circle_radius" format="reference|dimension"/>
     </declare-styleable>
 
     <style name="progressBar_style" parent="@android:style/Widget.ProgressBar.Horizontal">
@@ -151,67 +149,71 @@
     </style>
 
     <declare-styleable name="msg_box_style">
-        <attr name="mb_circleColor" format="reference|color" />
-        <attr name="mb_textSize" format="reference|dimension" />
-        <attr name="mb_textColor" format="reference|color" />
+        <attr name="mb_circleColor" format="reference|color"/>
+        <attr name="mb_textSize" format="reference|dimension"/>
+        <attr name="mb_textColor" format="reference|color"/>
     </declare-styleable>
 
     <!--相册选择框架勾出-->
     <declare-styleable name="GFFloatingActionButton">
-        <attr name="fabColorPressed" format="color" />
-        <attr name="fabColorNormal" format="color" />
-        <attr name="fabIcon" format="reference" />
-        <attr name="fabTitle" format="string" />
+        <attr name="fabColorPressed" format="color"/>
+        <attr name="fabColorNormal" format="color"/>
+        <attr name="fabIcon" format="reference"/>
+        <attr name="fabTitle" format="string"/>
     </declare-styleable>
 
     <declare-styleable name="HorizontalListView">
-        <attr name="dividerWidth" format="dimension" />
-        <attr name="android:divider" />
-        <attr name="android:requiresFadingEdge" />
-        <attr name="android:fadingEdgeLength" />
+        <attr name="dividerWidth" format="dimension"/>
+        <attr name="android:divider"/>
+        <attr name="android:requiresFadingEdge"/>
+        <attr name="android:fadingEdgeLength"/>
     </declare-styleable>
 
     <declare-styleable name="ClipViewLayout">
         <attr name="clipType" format="enum">
-            <enum name="circle" value="1" />
-            <enum name="rectangle" value="2" />
+            <enum name="circle" value="1"/>
+            <enum name="rectangle" value="2"/>
         </attr>
-        <attr name="mHorizontalPadding" format="dimension" />
-        <attr name="clipBorderWidth" format="dimension" />
+        <attr name="mHorizontalPadding" format="dimension"/>
+        <attr name="clipBorderWidth" format="dimension"/>
     </declare-styleable>
 
     <declare-styleable name="CircleImageView">
-        <attr name="civ_border_width" format="dimension" />
-        <attr name="civ_border_color" format="color" />
-        <attr name="civ_border_overlay" format="boolean" />
-        <attr name="civ_fill_color" format="color" />
+        <attr name="civ_border_width" format="dimension"/>
+        <attr name="civ_border_color" format="color"/>
+        <attr name="civ_border_overlay" format="boolean"/>
+        <attr name="civ_fill_color" format="color"/>
     </declare-styleable>
 
     <!--软键盘-->
     <declare-styleable name="KPSwitchPanelLayout">
-        <attr name="ignore_recommend_height" format="boolean" />
+        <attr name="ignore_recommend_height" format="boolean"/>
     </declare-styleable>
 
     <declare-styleable name="TimeWheelView">
-        <attr name="divideLine_height" format="dimension|reference" />
-        <attr name="markLine_color" format="color|reference" />
-        <attr name="markLine_color_bg" format="color|reference" />
-        <attr name="markLine_width" format="dimension|reference" />
-        <attr name="monthText_color" format="color|reference" />
-        <attr name="monthText_size" format="dimension|reference" />
-        <attr name="monthLine_color" format="color|reference" />
-        <attr name="monthLine_width" format="dimension|reference" />
-        <attr name="divideLine_color" format="color|reference" />
-        <attr name="divideLine_width" format="dimension|reference" />
-        <attr name="popWindow_showTime" format="integer|reference" />
-        <attr name="animate_duration" format="integer|reference" />
-        <attr name="popWindow_layout" format="reference" />
-        <attr name="popWindow_margin" format="dimension|reference" />
-        <attr name="markLine_space" format="dimension|reference" />
-        <attr name="markLine_height" format="dimension|reference" />
-        <attr name="monthLine_height" format="dimension|reference" />
-        <attr name="monthText_margin" format="dimension|reference" />
-        <attr name="bound_line_width" format="dimension|reference" />
-        <attr name="bound_line_color" format="color|reference" />
+        <attr name="divideLine_height" format="dimension|reference"/>
+        <attr name="markLine_color" format="color|reference"/>
+        <attr name="markLine_color_bg" format="color|reference"/>
+        <attr name="markLine_width" format="dimension|reference"/>
+        <attr name="monthText_color" format="color|reference"/>
+        <attr name="monthText_size" format="dimension|reference"/>
+        <attr name="monthLine_color" format="color|reference"/>
+        <attr name="monthLine_width" format="dimension|reference"/>
+        <attr name="divideLine_color" format="color|reference"/>
+        <attr name="divideLine_width" format="dimension|reference"/>
+        <attr name="popWindow_showTime" format="integer|reference"/>
+        <attr name="animate_duration" format="integer|reference"/>
+        <attr name="popWindow_layout" format="reference"/>
+        <attr name="popWindow_margin" format="dimension|reference"/>
+        <attr name="markLine_space" format="dimension|reference"/>
+        <attr name="markLine_height" format="dimension|reference"/>
+        <attr name="monthLine_height" format="dimension|reference"/>
+        <attr name="monthText_margin" format="dimension|reference"/>
+        <attr name="bound_line_width" format="dimension|reference"/>
+        <attr name="bound_line_color" format="color|reference"/>
+        <attr name="monthText_font" format="string|reference"/>
+    </declare-styleable>
+    <declare-styleable name="ShadowFrameLayout">
+        <attr name="fixSize" format="boolean"/>
     </declare-styleable>
 </resources>

@@ -1,6 +1,5 @@
 package com.cylan.jiafeigou.n.view.home;
 
-import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -12,6 +11,7 @@ import android.support.annotation.Nullable;
 import android.support.annotation.UiThread;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -31,11 +31,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.DecodeFormat;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool;
-import com.bumptech.glide.load.resource.bitmap.FileDescriptorBitmapDecoder;
-import com.bumptech.glide.load.resource.bitmap.VideoBitmapDecoder;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
@@ -50,8 +46,10 @@ import com.cylan.jiafeigou.n.view.misc.HomeEmptyView;
 import com.cylan.jiafeigou.n.view.misc.IEmptyView;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.AnimatorUtils;
+import com.cylan.jiafeigou.utils.GlideNetVideoUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;
+import com.cylan.jiafeigou.widget.ShadowFrameLayout;
 import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
 import com.cylan.jiafeigou.widget.textview.WonderfulTitleHead;
 import com.cylan.jiafeigou.widget.wheel.TimeWheelView;
@@ -131,6 +129,8 @@ public class HomeWonderfulFragmentExt extends Fragment implements
     private HomeWonderfulContract.Presenter presenter;
     public boolean isShowTimeLine;
     private LinearLayoutManager mLinearLayoutManager;
+    private View mContentView;
+    private ShadowFrameLayout mParent;
 
     public static HomeWonderfulFragmentExt newInstance(Bundle bundle) {
         HomeWonderfulFragmentExt fragment = new HomeWonderfulFragmentExt();
@@ -172,9 +172,11 @@ public class HomeWonderfulFragmentExt extends Fragment implements
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_home_wonderful_ext, container, false);
-        ButterKnife.bind(this, view);
-        return view;
+        if (mContentView == null) {
+            mContentView = inflater.inflate(R.layout.fragment_home_wonderful_ext, container, false);
+            ButterKnife.bind(this, mContentView);
+        }
+        return mContentView;
     }
 
     @Override
@@ -207,7 +209,7 @@ public class HomeWonderfulFragmentExt extends Fragment implements
             args.putString(SimpleDialogFragment.KEY_TITLE, "");
             args.putString(SimpleDialogFragment.KEY_LEFT_CONTENT, "");
             args.putString(SimpleDialogFragment.KEY_RIGHT_CONTENT, "");
-            args.putString(SimpleDialogFragment.KEY_CONTENT_CONTENT, "");
+            args.putString(SimpleDialogFragment.KEY_CONTENT_CONTENT, this.getString(R.string.Tips_Delete_Msg));
             deleteDialogFragmentWeakReference = new WeakReference<>(SimpleDialogFragment.newInstance(null));
             deleteDialogFragmentWeakReference.get().setAction(this);
         }
@@ -242,6 +244,7 @@ public class HomeWonderfulFragmentExt extends Fragment implements
     @Override
     public void onStop() {
         super.onStop();
+
         if (presenter != null)
             presenter.stop();
     }
@@ -301,9 +304,11 @@ public class HomeWonderfulFragmentExt extends Fragment implements
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 //同步更新时间轴的数据
                 int position = mLinearLayoutManager.findFirstCompletelyVisibleItemPosition();
-                if (recyclerView.getScrollState() == RecyclerView.SCROLL_STATE_IDLE && position != -1) {
+                if (newState == RecyclerView.SCROLL_STATE_IDLE && position != -1) {
                     MediaBean item = homeWonderAdapter.getItem(position);
-                    getWheelView().moveToDay(item.time);
+                    getWheelView().updateDay(item.time);
+                    tvDateItemHeadWonder.setText(TimeUtils.getDayString(item.time));
+
                 }
             }
         });
@@ -427,7 +432,7 @@ public class HomeWonderfulFragmentExt extends Fragment implements
     }
 
     @Override
-    public void onClick(View v) {
+    public void onClick(final View v) {
         final int position = ViewUtils.getParentAdapterPosition(rVDevicesList, v, R.id.lLayout_item_wonderful);
         if (position < 0 || position > homeWonderAdapter.getCount()) {
             AppLogger.d("woo,position is invalid: " + position);
@@ -435,14 +440,15 @@ public class HomeWonderfulFragmentExt extends Fragment implements
         }
         switch (v.getId()) {
             case R.id.iv_wonderful_item_content:
-                Intent intent = new Intent(getActivity(), MediaActivity.class);
+                final Intent intent = new Intent(getActivity(), MediaActivity.class);
                 // Pass data object in the bundle and populate details activity.
                 intent.putParcelableArrayListExtra(JConstant.KEY_SHARED_ELEMENT_LIST, (ArrayList<? extends Parcelable>) homeWonderAdapter.getList());
                 intent.putExtra(JConstant.KEY_SHARED_ELEMENT_STARTED_POSITION, position);
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    getActivity().startActivity(intent,
-                            ActivityOptions.makeSceneTransitionAnimation(getActivity(),
-                                    v, v.getTransitionName()).toBundle());
+                    mParent = (ShadowFrameLayout) v.getParent();
+                    mParent.adjustSize(true);
+                    ActivityOptionsCompat compat = ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity(), v, v.getTransitionName());
+                    startActivity(intent, compat.toBundle());
                 } else {
                     startActivity(intent);
                 }
@@ -620,7 +626,7 @@ public class HomeWonderfulFragmentExt extends Fragment implements
     }
 
     @Override
-    public void loadMedia(int mediaType, String srcUrl, ImageView imageView) {
+    public void loadMedia(int mediaType, final String srcUrl, final ImageView imageView) {
         //图标
         if (mediaType == MediaBean.TYPE_PIC) {
             Glide.with(this)
@@ -629,44 +635,42 @@ public class HomeWonderfulFragmentExt extends Fragment implements
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .into(imageView);
         } else if (mediaType == MediaBean.TYPE_VIDEO) {
-            BitmapPool bitmapPool = Glide.get(getContext()).getBitmapPool();
-            FileDescriptorBitmapDecoder decoder = new FileDescriptorBitmapDecoder(
-                    new VideoBitmapDecoder(1000000),
-                    bitmapPool,
-                    DecodeFormat.PREFER_RGB_565);
-            Glide.with(this)
-                    .load(srcUrl)
-                    .asBitmap()
-                    .placeholder(R.drawable.wonderful_pic_place_holder)
-                    .videoDecoder(decoder)
-                    .into(imageView);
-            AppLogger.d("load url: " + srcUrl);
+            if (srcUrl.startsWith("http://") || srcUrl.startsWith("https://")) {
+                GlideNetVideoUtils.loadNetVideo(getContext(), srcUrl, imageView);
+            } else {
+                Glide.with(this).load(srcUrl).into(imageView);
+            }
         }
     }
+
 
     @Override
     public void onSharedElementCallBack(List<String> names, Map<String, View> sharedElements) {
         if (mTmpReenterState != null) {
             int startingPosition = mTmpReenterState.getInt(JConstant.EXTRA_STARTING_ALBUM_POSITION);
             int currentPosition = mTmpReenterState.getInt(JConstant.EXTRA_CURRENT_ALBUM_POSITION);
-            if (startingPosition != currentPosition) {
-                // If startingPosition != currentPosition the user must have swiped to activity_cloud_live_mesg_video_talk_item
-                // different page in the DetailsActivity. We must update the shared element
-                // so that the correct one falls into place.
-                String newTransitionName = currentPosition + JConstant.KEY_SHARED_ELEMENT_TRANSITION_NAME_SUFFIX;
-                SuperViewHolder holder = (SuperViewHolder) rVDevicesList.findViewHolderForAdapterPosition(currentPosition);
-                holder.getView(R.id.iv_wonderful_item_content);
-                View newSharedElement = holder.getView(R.id.iv_wonderful_item_content);
-                AppLogger.d("transition newTransitionName: " + newTransitionName);
-                AppLogger.d("transition newSharedElement: " + newSharedElement);
-                if (newSharedElement != null) {
-                    names.clear();
-                    names.add(newTransitionName);
-                    sharedElements.clear();
-                    sharedElements.put(newTransitionName, newSharedElement);
-                }
-            }
 
+//            if (startingPosition != currentPosition) {
+            // If startingPosition != currentPosition the user must have swiped to activity_cloud_live_mesg_video_talk_item
+            // different page in the DetailsActivity. We must update the shared element
+            // so that the correct one falls into place.
+            String newTransitionName = currentPosition + JConstant.KEY_SHARED_ELEMENT_TRANSITION_NAME_SUFFIX;
+            SuperViewHolder holder = (SuperViewHolder) rVDevicesList.findViewHolderForAdapterPosition(currentPosition);
+            holder.getView(R.id.iv_wonderful_item_content);
+            View newSharedElement = holder.getView(R.id.iv_wonderful_item_content);
+            ShadowFrameLayout parent = (ShadowFrameLayout) newSharedElement.getParent();
+            if (mParent != parent) {
+                mParent.adjustSize(false);
+                parent.adjustSize(true);
+            }
+            AppLogger.d("transition newTransitionName: " + newTransitionName);
+            AppLogger.d("transition newSharedElement: " + newSharedElement);
+            if (newSharedElement != null) {
+                names.clear();
+                names.add(newTransitionName);
+                sharedElements.clear();
+                sharedElements.put(newTransitionName, newSharedElement);
+            }
             mTmpReenterState = null;
         } else {
             // If mTmpReenterState is null, then the activity is exiting.
@@ -680,6 +684,20 @@ public class HomeWonderfulFragmentExt extends Fragment implements
 //                names.add(statusBar.getTransitionName());
 //                sharedElements.put(statusBar.getTransitionName(), statusBar);
 //            }
+        }
+    }
+
+    @Override
+    public void onSharedElementEnd(List<String> sharedElementNames, List<View> sharedElements, List<View> sharedElementSnapshots) {
+        View view = sharedElements.get(0);
+        if (view != null) {
+            final ShadowFrameLayout parent = (ShadowFrameLayout) view.getParent();
+            parent.post(new Runnable() {
+                @Override
+                public void run() {
+                    parent.adjustSize(false);
+                }
+            });
         }
     }
 
