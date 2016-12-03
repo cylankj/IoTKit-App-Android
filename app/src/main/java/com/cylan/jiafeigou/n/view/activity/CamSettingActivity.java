@@ -126,7 +126,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
      * 待机模式按钮,关联到其他按钮
      */
     private void initStandbyBtn() {
-        enableAllItem(lLayoutSettingItemContainer, !basePresenter.getCamInfoBean().cameraStandbyFlag);
+        enableAllItem(lLayoutSettingItemContainer, basePresenter.getCamInfoBean().cameraStandbyFlag);
         ((SwitchButton) svSettingDeviceStandbyMode.findViewById(R.id.btn_item_switch))
                 .setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                     @Override
