@@ -3,7 +3,6 @@ package com.cylan.jiafeigou.n.view.activity;
 import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +13,7 @@ import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.dp.DpMsgMap;
+import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamSettingContract;
@@ -76,10 +76,17 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        basePresenter = new CamSettingPresenterImpl(this);
         setContentView(R.layout.activity_cam_setting);
         ButterKnife.bind(this);
         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+        Bundle bundle = getIntent().getBundleExtra(JConstant.KEY_DEVICE_ITEM_BUNDLE);
+        if (bundle == null) {
+            AppLogger.e("bundle is null");
+            finish();
+            return;
+        }
+        basePresenter = new CamSettingPresenterImpl(this,
+                (DeviceBean) bundle.getParcelable(JConstant.KEY_DEVICE_ITEM_BUNDLE));
         initTopBar();
         initStandbyBtn();
         init110VVoltageBtn();
@@ -91,14 +98,6 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
     @Override
     protected void onStart() {
         super.onStart();
-        Bundle bundle = getIntent().getBundleExtra(KEY_DEVICE_ITEM_BUNDLE);
-        Parcelable p = bundle.getParcelable(KEY_DEVICE_ITEM_BUNDLE);
-        if (p != null && p instanceof DeviceBean) {
-            if (basePresenter != null)
-                basePresenter.fetchCamInfo(((DeviceBean) p).uuid);
-        } else {
-            AppLogger.d("o is null");
-        }
     }
 
     @Override
@@ -126,17 +125,17 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
      * 待机模式按钮,关联到其他按钮
      */
     private void initStandbyBtn() {
-        enableAllItem(lLayoutSettingItemContainer, basePresenter.getCamInfoBean().cameraStandbyFlag);
+        switchBtn(lLayoutSettingItemContainer, !basePresenter.getCamInfoBean().cameraStandbyFlag);
         ((SwitchButton) svSettingDeviceStandbyMode.findViewById(R.id.btn_item_switch))
                 .setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                     @Override
                     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                         BeanCamInfo info = basePresenter.getCamInfoBean();
-                        info.cameraStandbyFlag = isChecked;
+                        info.cameraStandbyFlag = !info.cameraStandbyFlag;
                         basePresenter.saveCamInfoBean(info, DpMsgMap.ID_508_CAMERA_STANDBY_FLAG);
                         AppLogger.i("save id:" + DpMsgMap.ID_508_CAMERA_STANDBY_FLAG);
                         AppLogger.i("save value:" + info.cameraStandbyFlag);
-                        enableAllItem(lLayoutSettingItemContainer, !isChecked);
+                        switchBtn(lLayoutSettingItemContainer, !isChecked);
                     }
                 });
     }
@@ -218,7 +217,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
                 fragment.setCallBack(new IBaseFragment.CallBack() {
                     @Override
                     public void callBack(Object t) {
-                        basePresenter.fetchCamInfo(basePresenter.getCamInfoBean().deviceBase.uuid);
+                        onCamInfoRsp(basePresenter.getCamInfoBean());
                     }
                 });
                 Bundle bundle = new Bundle();
@@ -269,7 +268,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
      * @param viewGroup
      * @param enable
      */
-    private void enableAllItem(ViewGroup viewGroup, boolean enable) {
+    private void switchBtn(ViewGroup viewGroup, boolean enable) {
         final int count = viewGroup.getChildCount();
         for (int i = 0; i < count; i++) {
             View view = viewGroup.getChildAt(i);
@@ -277,7 +276,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
                 continue;
             }
             if (view instanceof ViewGroup) {
-                enableAllItem((ViewGroup) view, enable);
+                switchBtn((ViewGroup) view, enable);
             }
             view.setEnabled(enable);
         }
@@ -320,7 +319,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
     @Override
     public void onCamInfoRsp(BeanCamInfo camInfoBean) {
         svSettingDeviceDetail.setTvSubTitle(basePresenter.getDetailsSubTitle(getContext()));
-        svSettingDeviceWifi.setTvSubTitle(camInfoBean.net != null && camInfoBean.net.ssid != null ? camInfoBean.net.ssid : "");
+        svSettingDeviceWifi.setTvSubTitle(camInfoBean.net != null && camInfoBean.net.ssid != null ? camInfoBean.net.ssid : getString(R.string.OFF_LINE));
         svSettingDeviceMobileNetwork.setSwitchButtonState(camInfoBean.deviceMobileNetPriority);
         svSettingDeviceIndicator.setSwitchButtonState(camInfoBean.ledIndicator);
         svSettingDeviceRotate.setSwitchButtonState(camInfoBean.deviceCameraRotate);

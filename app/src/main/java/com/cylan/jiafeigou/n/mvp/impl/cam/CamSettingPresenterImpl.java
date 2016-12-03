@@ -4,7 +4,6 @@ import android.content.Context;
 import android.text.TextUtils;
 import android.util.Pair;
 
-import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpUtils;
@@ -47,9 +46,21 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
             R.string.RECORD_MODE_2
     };
 
-    public CamSettingPresenterImpl(CamSettingContract.View view) {
+    public CamSettingPresenterImpl(CamSettingContract.View view, DeviceBean bean) {
         super(view);
         view.setPresenter(this);
+        fillData(bean);
+    }
+
+    private void fillData(DeviceBean bean) {
+        camInfoBean = new BeanCamInfo();
+        BaseBean baseBean = new BaseBean();
+        baseBean.alias = bean.alias;
+        baseBean.pid = bean.pid;
+        baseBean.uuid = bean.uuid;
+        baseBean.sn = bean.sn;
+        camInfoBean.convert(baseBean, bean.dataList);
+        getView().onCamInfoRsp(camInfoBean);
     }
 
     @Override
@@ -62,24 +73,7 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
         unSubscribe(subscription);
     }
 
-    private void wrap(DeviceBean bean) {
-        BaseBean baseBean = new BaseBean();
-        baseBean.alias = bean.alias;
-        baseBean.pid = bean.pid;
-        baseBean.shareAccount = bean.shareAccount;
-        baseBean.sn = bean.sn;
-        baseBean.uuid = bean.uuid;
-        BeanCamInfo info = new BeanCamInfo();
-        if (bean.dataList == null && BuildConfig.DEBUG) {
-            throw new IllegalArgumentException("list is null");
-        }
-        info.convert(baseBean, bean.dataList);
-        this.camInfoBean = info;
-    }
-
-    @Override
     public void fetchCamInfo(final String uuid) {
-
         //查询设备列表
         unSubscribe(subscription);
         subscription = RxBus.getUiInstance().toObservableSticky(RxUiEvent.BulkDeviceList.class)
@@ -129,7 +123,7 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
                         }
                     }
                 });
-        RxBus.getCacheInstance().post(new RxUiEvent.QueryBulkDevice());
+//        RxBus.getCacheInstance().post(new RxUiEvent.QueryBulkDevice());
     }
 
     @Override
