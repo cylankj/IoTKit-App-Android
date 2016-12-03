@@ -78,6 +78,8 @@ public class SafeInfoPresenterImpl extends AbstractPresenter<SafeInfoContract.Vi
                 builder.append(",");
             }
         }
+        if (builder.length() > 1)
+        builder.replace(builder.toString().length() - 1, builder.toString().length(), "");
         if (day == 127) {//全天
             builder.setLength(0);
             builder.append(context.getString(R.string.HOURS));

@@ -154,6 +154,8 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
                 builder.append(",");
             }
         }
+        if (builder.length() > 1)
+            builder.replace(builder.length() - 1, builder.length(), "");
         if (day == 127) {//全天
             builder.setLength(0);
             builder.append(context.getString(R.string.HOURS));
