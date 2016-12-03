@@ -30,6 +30,7 @@ import com.cylan.jiafeigou.n.mvp.impl.cam.CamLivePresenterImpl;
 import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
 import com.cylan.jiafeigou.n.view.misc.LandLiveBarAnimDelegate;
 import com.cylan.jiafeigou.n.view.misc.LiveBottomBarAnimDelegate;
+import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.video.VideoViewFactory;
@@ -112,7 +113,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_camera_live, container, false);
         ButterKnife.bind(this, view);
-        vsProgress.inflate();
+
         return view;
     }
 
@@ -136,11 +137,11 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
     public void onStart() {
         super.onStart();
         if (basePresenter != null) {
+            basePresenter.fetchCamInfo(basePresenter.getCamInfo().deviceBase.uuid);
             basePresenter.fetchHistoryData();
             basePresenter.startPlayVideo();
-        }
-        if (!vsProgress.isShown()) {
-            vsProgress.setVisibility(View.VISIBLE);
+            showLoading(basePresenter.getCamInfo().net != null
+                    && basePresenter.getCamInfo().net.net != 0);
         }
     }
 
@@ -152,7 +153,15 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        vsProgress.setVisibility(View.GONE);
+        showLoading(false);
+    }
+
+    private void showLoading(boolean show) {
+        if (vsProgress.getInflatedId() == View.NO_ID) {
+            vsProgress.setInflatedId("vsProgress".hashCode());
+            vsProgress.inflate();
+        }
+        vsProgress.setVisibility(show ? View.VISIBLE : View.INVISIBLE);
     }
 
     @Override
@@ -320,20 +329,25 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
 
     @Override
     public void onHistoryDataRsp(SDataStack dataStack) {
-//        swCamPortWheel.loading(false);
         swCamPortWheel.setupHistoryData(dataStack);
         setCamLandLiveHistory(dataStack);
     }
 
     @Override
     public void onFailed(int id) {
-        vsProgress.setVisibility(View.GONE);
+        showLoading(false);
         switch (id) {
             case JFGRules.PlayErr.ERR_NERWORK:
                 ToastUtil.showNegativeToast(getString(R.string.OFFLINE_ERR_1));
                 break;
             case JFGRules.PlayErr.ERR_UNKOWN:
                 ToastUtil.showNegativeToast("出错了");
+                break;
+            case JFGRules.PlayErr.ERR_LOW_FRAME_RATE:
+                ToastUtil.showNegativeToast("帧率太低,不足以播放,重试");
+                break;
+            case JFGRules.PlayErr.ERR_DEVICE_OFFLINE:
+                ToastUtil.showNegativeToast(getString(R.string.OFFLINE_ERR));
                 break;
         }
     }
@@ -345,9 +359,30 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
 
     @Override
     public void onResolution(JFGMsgVideoResolution resolution) {
-        vsProgress.setVisibility(View.GONE);
+        showLoading(false);
         JfgCmdInsurance.getCmd().setRenderRemoteView((View) initVideoView());
         updateVideoViewLayoutParameters(resolution);
+    }
+
+    @Override
+    public void onDeviceStandBy(boolean state) {
+        //进入待机模式
+        if (basePresenter == null) {
+            AppLogger.e("basePresenter is null");
+            return;
+        }
+        if (state) {
+            basePresenter.stopPlayVideo();
+            showLoading(false);
+            if (basePresenter.getPlayState() != 0) {
+                //处于非播放状态
+
+            }
+        } else {
+            if (getActivity().getRequestedOrientation() == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
+                ViewUtils.setRequestedOrientation(getActivity(), ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+            }
+        }
     }
 
     private void setCamLandLiveHistory(SDataStack dataStack) {

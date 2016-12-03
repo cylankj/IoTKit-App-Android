@@ -50,6 +50,8 @@ public interface IFlat {
      */
     void clean();
 
+    void update(String account, String uuid, DpMsgDefine.DpMsg dpMsg);
+
     /**
      * 获取当前账号下的uuidList
      *

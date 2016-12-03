@@ -10,7 +10,7 @@ import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.entity.jniCall.RobotoGetDataRsp;
 import com.cylan.jfgapp.jni.JfgAppCmd;
 import com.cylan.jiafeigou.cache.JCache;
-import com.cylan.jiafeigou.misc.Convertor;
+import com.cylan.jiafeigou.misc.Converter;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.mvp.model.BaseBean;
 import com.cylan.jiafeigou.n.mvp.model.param.BaseParam;
@@ -70,8 +70,49 @@ public class DpAssembler implements IParser {
                 deviceListSub(),
                 deviceDpSub(),
                 updateDpMsg(),
+                attributeUpdate()
         };
         return subscriptions;
+    }
+
+    /**
+     * 设备修改属性
+     *
+     * @return
+     */
+    private Subscription attributeUpdate() {
+        return RxBus.getCacheInstance().toObservable(RxEvent.JFGAttributeUpdate.class)
+                .subscribeOn(Schedulers.newThread())
+                .filter(new Func1<RxEvent.JFGAttributeUpdate, Boolean>() {
+                    @Override
+                    public Boolean call(RxEvent.JFGAttributeUpdate jfgAttributeUpdate) {
+                        return JCache.getAccountCache() != null && JCache.getAccountCache().getAccount() != null;
+                    }
+                })
+                .map(new Func1<RxEvent.JFGAttributeUpdate, Object>() {
+                    @Override
+                    public Object call(RxEvent.JFGAttributeUpdate jfgAttributeUpdate) {
+                        if (jfgAttributeUpdate.msgId == DpMsgMap.ID_2000003_BASE_ALIAS) {
+                            DpMsgDefine.DpWrap wrap = flatMsg.getDevice(JCache.getAccountCache().getAccount(),
+                                    jfgAttributeUpdate.uuid);
+                            wrap.baseDpDevice.alias = (String) jfgAttributeUpdate.o;
+                            flatMsg.cache(JCache.getAccountCache().getAccount(),
+                                    wrap.baseDpDevice);
+                            AppLogger.i("update alias: " + jfgAttributeUpdate.o);
+                            return null;
+                        }
+                        String uuid = jfgAttributeUpdate.uuid;
+                        String account = JCache.getAccountCache().getAccount();
+                        DpMsgDefine.DpMsg dp = new DpMsgDefine.DpMsg();
+                        dp.msgId = jfgAttributeUpdate.msgId;
+                        dp.o = jfgAttributeUpdate.o;
+                        dp.version = jfgAttributeUpdate.version;
+                        flatMsg.update(account, uuid, dp);
+                        return null;
+                    }
+                })
+                .retry(new RxHelper.RxException<>("attributeUpdate"))
+                .subscribe();
     }
 
     /**
@@ -326,7 +367,7 @@ public class DpAssembler implements IParser {
             }
             flatMsg.cache(JCache.getAccountCache().getAccount(),
                     identity,
-                    Convertor.convert(o, keyId, dp.version));
+                    Converter.convert(o, keyId, dp.version));
             Log.d(TAG, "superParser: " + keyId + " " + o);
         } catch (Exception e) {
             AppLogger.e(TAG + keyId + " " + e.getLocalizedMessage());

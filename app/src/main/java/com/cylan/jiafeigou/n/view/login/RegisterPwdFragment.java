@@ -14,6 +14,7 @@ import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
+import com.cylan.jiafeigou.widget.dialog.BaseDialog;
 import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
 import com.cylan.utils.NetUtils;
 
@@ -24,7 +25,7 @@ import com.cylan.utils.NetUtils;
  * create an instance of this fragment.
  */
 public class RegisterPwdFragment extends SetupPwdFragment
-        implements SimpleDialogFragment.SimpleDialogAction {
+        implements BaseDialog.BaseDialogAction {
     private static final String DIALOG_KEY = "dialogFragment";
 
     public RegisterPwdFragment() {

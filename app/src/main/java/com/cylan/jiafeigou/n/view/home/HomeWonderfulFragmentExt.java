@@ -2,8 +2,6 @@ package com.cylan.jiafeigou.n.view.home;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -18,7 +16,6 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,6 +28,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DecodeFormat;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.JConstant;
@@ -50,6 +48,7 @@ import com.cylan.jiafeigou.utils.GlideNetVideoUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.ShadowFrameLayout;
+import com.cylan.jiafeigou.widget.dialog.BaseDialog;
 import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
 import com.cylan.jiafeigou.widget.textview.WonderfulTitleHead;
 import com.cylan.jiafeigou.widget.wheel.TimeWheelView;
@@ -69,13 +68,12 @@ import butterknife.OnClick;
 import static com.tencent.mm.sdk.modelmsg.SendMessageToWX.Req.WXSceneSession;
 import static com.tencent.mm.sdk.modelmsg.SendMessageToWX.Req.WXSceneTimeline;
 
-
 public class HomeWonderfulFragmentExt extends Fragment implements
         HomeWonderfulContract.View, SwipeRefreshLayout.OnRefreshListener,
         HomeWonderfulAdapter.WonderfulItemClickListener,
         HomeWonderfulAdapter.WonderfulItemLongClickListener,
         ShareDialogFragment.ShareToListener,
-        SimpleDialogFragment.SimpleDialogAction,
+        BaseDialog.BaseDialogAction,
         AppBarLayout.OnOffsetChangedListener,
         HomeWonderfulAdapter.LoadMediaListener,
         SharedElementCallBackListener,

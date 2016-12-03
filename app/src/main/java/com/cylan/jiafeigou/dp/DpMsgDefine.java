@@ -14,7 +14,6 @@ import org.msgpack.annotation.Index;
 import org.msgpack.annotation.Message;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by cylan-hunt on 16-11-9.
@@ -23,8 +22,9 @@ import java.util.List;
 
 public class DpMsgDefine {
 
+
     @Message
-    public static final class MsgNet implements Parcelable {
+    public static final class MsgNet extends BaseDataPoint implements Parcelable {
         @Index(0)
         public int net;
         @Index(1)
@@ -71,7 +71,7 @@ public class DpMsgDefine {
     }
 
     @Message
-    public static final class MsgTimeZone implements Parcelable {
+    public static final class MsgTimeZone extends BaseDataPoint implements Parcelable {
         @Index(0)
         public String timezone;
         @Index(1)
@@ -118,7 +118,7 @@ public class DpMsgDefine {
     }
 
     @Message
-    public static final class BindLog implements Parcelable {
+    public static final class BindLog extends BaseDataPoint implements Parcelable {
         @Index(0)
         public boolean isBind;
         @Index(1)
@@ -170,7 +170,7 @@ public class DpMsgDefine {
     }
 
     @Message
-    public static final class SdStatus implements Parcelable {
+    public static final class SdStatus extends BaseDataPoint implements Parcelable {
         @Index(0)
         public long total;
         @Index(1)
@@ -222,7 +222,7 @@ public class DpMsgDefine {
     }
 
     @Message
-    public static final class AlarmInfo implements Parcelable {
+    public static final class AlarmInfo extends BaseDataPoint implements Parcelable {
         @Index(0)
         public int timeStart;
         @Index(1)
@@ -277,7 +277,7 @@ public class DpMsgDefine {
     }
 
     @Message
-    public static final class AlarmMsg implements Parcelable {//505 报警消息
+    public static final class AlarmMsg extends BaseDataPoint implements Parcelable {//505 报警消息
         @Index(0)
         public int time;
         @Index(1)
@@ -334,11 +334,30 @@ public class DpMsgDefine {
     }
 
     @Message//504
-    public static final class NotificationInfo implements Parcelable {
+    public static final class NotificationInfo extends BaseDataPoint implements Parcelable {
         @Index(0)
         public int notification;
         @Index(1)
         public int duration;
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            NotificationInfo that = (NotificationInfo) o;
+
+            if (notification != that.notification) return false;
+            return duration == that.duration;
+
+        }
+
+        @Override
+        public int hashCode() {
+            int result = notification;
+            result = 31 * result + duration;
+            return result;
+        }
 
         @Override
         public int describeContents() {
@@ -381,7 +400,7 @@ public class DpMsgDefine {
     }
 
     @Message
-    public static final class TimeLapse implements Parcelable {
+    public static final class TimeLapse extends BaseDataPoint implements Parcelable {
         @Index(0)
         public int timeStart;
         @Index(1)
@@ -438,7 +457,7 @@ public class DpMsgDefine {
     }
 
     @Message
-    public static final class CamCoord implements Parcelable {
+    public static final class CamCoord extends BaseDataPoint implements Parcelable {
         @Index(0)
         public int x;
         @Index(1)
@@ -490,7 +509,7 @@ public class DpMsgDefine {
     }
 
     @Message
-    public static final class BellCallState implements Parcelable {
+    public static final class BellCallState extends BaseDataPoint implements Parcelable {
 
         @Index(0)
         public int state;
@@ -560,8 +579,11 @@ public class DpMsgDefine {
         public boolean equals(Object o) {
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
+
             DpMsg dpMsg = (DpMsg) o;
+
             return msgId == dpMsg.msgId;
+
         }
 
         @Override

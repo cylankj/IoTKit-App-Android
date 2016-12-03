@@ -26,10 +26,6 @@ public class PanoramicView_Ext extends PanoramicView implements VideoViewFactory
 
     }
 
-    @Override
-    public int getMode() {
-        return 0;
-    }
 
     @Override
     public void setInterActListener(VideoViewFactory.InterActListener interActListener) {

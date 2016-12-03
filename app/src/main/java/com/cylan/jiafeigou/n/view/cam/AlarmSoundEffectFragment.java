@@ -16,11 +16,15 @@ import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
+import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamWarnContract;
+import com.cylan.jiafeigou.n.mvp.impl.cam.CamAlarmPresenterImpl;
 import com.cylan.jiafeigou.n.mvp.model.BeanCamInfo;
 import com.cylan.jiafeigou.utils.ViewUtils;
+import com.cylan.jiafeigou.widget.dialog.BaseDialog;
+import com.cylan.jiafeigou.widget.dialog.DurationDialogFragment;
 
 import java.util.Locale;
 
@@ -30,10 +34,10 @@ import butterknife.OnClick;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link WarnEffectFragment#newInstance} factory method to
+ * Use the {@link AlarmSoundEffectFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class WarnEffectFragment extends IBaseFragment<CamWarnContract.Presenter> implements CamWarnContract.View {
+public class AlarmSoundEffectFragment extends IBaseFragment<CamWarnContract.Presenter> implements CamWarnContract.View {
 
     @BindView(R.id.imgV_top_bar_center)
     TextView imgVTopBarCenter;
@@ -52,8 +56,9 @@ public class WarnEffectFragment extends IBaseFragment<CamWarnContract.Presenter>
     @BindView(R.id.rg_warn_effect)
     RadioGroup rgWarnEffect;
     private BeanCamInfo info;
+    private DpMsgDefine.NotificationInfo notificationInfo;
 
-    public WarnEffectFragment() {
+    public AlarmSoundEffectFragment() {
         // Required empty public constructor
     }
 
@@ -62,11 +67,11 @@ public class WarnEffectFragment extends IBaseFragment<CamWarnContract.Presenter>
      * this fragment using the provided parameters.
      *
      * @param args Parameter 1.
-     * @return A new instance of fragment WarnEffectFragment.
+     * @return A new instance of fragment AlarmSoundEffectFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static WarnEffectFragment newInstance(Bundle args) {
-        WarnEffectFragment fragment = new WarnEffectFragment();
+    public static AlarmSoundEffectFragment newInstance(Bundle args) {
+        AlarmSoundEffectFragment fragment = new AlarmSoundEffectFragment();
         fragment.setArguments(args);
         return fragment;
     }
@@ -74,13 +79,14 @@ public class WarnEffectFragment extends IBaseFragment<CamWarnContract.Presenter>
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        basePresenter = new CamAlarmPresenterImpl(this, (BeanCamInfo) getArguments().getParcelable(JConstant.KEY_DEVICE_ITEM_BUNDLE));
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_warn_effect, container, false);
+        View view = inflater.inflate(R.layout.fragment_alarm_sound_effect, container, false);
         ButterKnife.bind(this, view);
         return view;
     }
@@ -88,14 +94,12 @@ public class WarnEffectFragment extends IBaseFragment<CamWarnContract.Presenter>
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        imgVTopBarCenter.setText("设备提示音");
+        imgVTopBarCenter.setText(getString(R.string.SOUNDS));
         ViewUtils.setViewPaddingStatusBar(fLayoutTopBarContainer);
-        info = getArguments().getParcelable(JConstant.KEY_DEVICE_ITEM_BUNDLE);
-        final DpMsgDefine.NotificationInfo notificationInfo = info.cameraAlarmNotification == null ?
+        info = basePresenter.getBeanCamInfo();
+        notificationInfo = info.cameraAlarmNotification == null ?
                 new DpMsgDefine.NotificationInfo() : info.cameraAlarmNotification;
-        info.cameraAlarmNotification = notificationInfo;
         int effect = notificationInfo.notification;
-        int duration = notificationInfo.duration;
         final int count = rgWarnEffect.getChildCount();
         for (int i = 0; i < count; i++) {
             final int index = i;
@@ -106,12 +110,14 @@ public class WarnEffectFragment extends IBaseFragment<CamWarnContract.Presenter>
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     if (isChecked) {
                         notificationInfo.notification = index;
-
+                        info.cameraAlarmNotification = notificationInfo;
+                        basePresenter.saveCamInfoBean(info, DpMsgMap.ID_504_CAMERA_ALARM_NOTIFICATION);
                     }
                 }
             });
         }
-        tvWarnRepeatMode.setText(String.format(Locale.getDefault(), "%ss", duration));
+        tvWarnRepeatMode.setText(String.format(Locale.getDefault(), getString(R.string.EFAMILY_CALL_DURATION_S),
+                notificationInfo.duration));
     }
 
     @Override
@@ -129,6 +135,20 @@ public class WarnEffectFragment extends IBaseFragment<CamWarnContract.Presenter>
                 getActivity().getSupportFragmentManager().popBackStack();
                 break;
             case R.id.lLayout_warn_repeat_mode:
+                ViewUtils.deBounceClick(view);
+                DurationDialogFragment durationDialogFragment = DurationDialogFragment.newInstance(null);
+                durationDialogFragment.setValue(info.cameraAlarmNotification.duration);
+                durationDialogFragment.setAction(new BaseDialog.BaseDialogAction() {
+
+                    @Override
+                    public void onDialogAction(int id, Object value) {
+                        tvWarnRepeatMode.setText(String.format(Locale.getDefault(), "%ss", value));
+                        notificationInfo.duration = (int) value;
+                        info.cameraAlarmNotification = notificationInfo;
+                        basePresenter.saveCamInfoBean(info, DpMsgMap.ID_504_CAMERA_ALARM_NOTIFICATION);
+                    }
+                });
+                durationDialogFragment.show(getActivity().getSupportFragmentManager(), "durationDialogFragment");
                 break;
         }
     }

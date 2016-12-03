@@ -4,6 +4,7 @@ import android.app.Service;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.IBinder;
+import android.os.Process;
 
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.entity.jniCall.JFGDPMsg;
@@ -71,10 +72,11 @@ public class DataSourceService extends Service implements AppCallBack {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        if (intent == null)
+        AppLogger.i("onStartCommand initNative:" + (intent == null));
+        if (intent == null) {
             return START_STICKY;
+        }
         initNative();
-        AppLogger.i("onStartCommand initNative:" + intent);
         return START_STICKY;
     }
 
@@ -82,6 +84,7 @@ public class DataSourceService extends Service implements AppCallBack {
         new Thread(new Runnable() {
             @Override
             public void run() {
+                Process.setThreadPriority(Process.THREAD_PRIORITY_FOREGROUND);
                 try {
                     JfgAppCmd.initJfgAppCmd(getApplicationContext(), DataSourceService.this,
                             JConstant.LOG_PATH);
@@ -187,7 +190,7 @@ public class DataSourceService extends Service implements AppCallBack {
 
     @Override
     public void OnRobotSetDataRsp(long l, ArrayList<JFGDPMsgRet> arrayList) {
-        AppLogger.d("OnLocalMessage :");
+        AppLogger.d("OnRobotSetDataRsp :" + l + new Gson().toJson(arrayList));
     }
 
     @Override
@@ -325,7 +328,7 @@ public class DataSourceService extends Service implements AppCallBack {
     }
 
     @Override
-    public void OnUpdateNTP(long l) {
+    public void OnUpdateNTP(int l) {
         AppLogger.d("OnUpdateNTP :" + l);
     }
 

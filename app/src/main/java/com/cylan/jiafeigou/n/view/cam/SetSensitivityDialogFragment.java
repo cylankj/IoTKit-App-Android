@@ -80,12 +80,14 @@ public class SetSensitivityDialogFragment extends BaseDialog {
         for (int i = 0; i < count; i++) {
             final int index = i;
             RadioButton box = (RadioButton) rgSensitivity.getChildAt(i);
-            box.setChecked(level == i);
+            box.setChecked(level == (2 - i));
             box.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     if (isChecked) {
                         beanCamInfo.cameraAlarmSensitivity = index;
+                        if (action != null) action.onDialogAction(0, 2 - index);
+                        dismiss();
                     }
                 }
             });

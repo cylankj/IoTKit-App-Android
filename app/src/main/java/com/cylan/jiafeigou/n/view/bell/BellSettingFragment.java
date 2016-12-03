@@ -19,6 +19,7 @@ import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.SettingItemView2;
+import com.cylan.jiafeigou.widget.dialog.BaseDialog;
 import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
 
 import butterknife.BindView;
@@ -27,7 +28,7 @@ import butterknife.OnClick;
 
 public class BellSettingFragment extends Fragment
         implements BellSettingContract.View,
-        SimpleDialogFragment.SimpleDialogAction {
+        BaseDialog.BaseDialogAction {
 
     @BindView(R.id.imgV_top_bar_center)
     TextView imgVTopBarCenter;

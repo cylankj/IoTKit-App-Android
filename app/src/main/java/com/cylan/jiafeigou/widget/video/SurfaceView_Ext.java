@@ -36,10 +36,6 @@ public class SurfaceView_Ext extends SurfaceView implements VideoViewFactory.IVi
 
     }
 
-    @Override
-    public int getMode() {
-        return 0;
-    }
 
     @Override
     public void setInterActListener(VideoViewFactory.InterActListener interActListener) {

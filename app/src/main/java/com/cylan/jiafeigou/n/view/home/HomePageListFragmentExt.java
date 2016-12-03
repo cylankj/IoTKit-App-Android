@@ -46,6 +46,7 @@ import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;
+import com.cylan.jiafeigou.widget.dialog.BaseDialog;
 import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
 import com.cylan.jiafeigou.widget.wave.SuperWaveView;
 
@@ -63,7 +64,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
         AppBarLayout.OnOffsetChangedListener,
         HomePageListContract.View, SwipeRefreshLayout.OnRefreshListener,
         HomePageListAdapter.DeviceItemClickListener,
-        SimpleDialogFragment.SimpleDialogAction,
+        BaseDialog.BaseDialogAction,
         HomePageListAdapter.DeviceItemLongClickListener {
 
     @BindView(R.id.srLayout_home_page_container)

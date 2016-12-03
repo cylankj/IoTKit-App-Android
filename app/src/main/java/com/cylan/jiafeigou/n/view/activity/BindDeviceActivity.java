@@ -9,12 +9,12 @@ import android.widget.TextView;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
-import com.cylan.jiafeigou.n.mvp.impl.bind.BindDevicePresenterImpl;
 import com.cylan.jiafeigou.n.mvp.impl.bind.ScanContractImpl;
 import com.cylan.jiafeigou.n.view.bind.BindCameraFragment;
 import com.cylan.jiafeigou.n.view.bind.BindDoorBellFragment;
 import com.cylan.jiafeigou.n.view.bind.BindScanFragment;
 import com.cylan.jiafeigou.utils.ViewUtils;
+import com.cylan.jiafeigou.widget.dialog.BaseDialog;
 import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
 
 import java.lang.ref.WeakReference;
@@ -23,7 +23,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class BindDeviceActivity extends BaseFullScreenFragmentActivity implements SimpleDialogFragment.SimpleDialogAction {
+public class BindDeviceActivity extends BaseFullScreenFragmentActivity implements BaseDialog.BaseDialogAction {
 
     @BindView(R.id.imgV_top_bar_left)
     ImageView imgVTopBarLeft;

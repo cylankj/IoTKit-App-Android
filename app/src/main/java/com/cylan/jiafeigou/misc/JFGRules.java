@@ -133,5 +133,15 @@ public class JFGRules {
          */
         public static final int ERR_NOT_FLOW = 1;
 
+        /**
+         * 帧率太低
+         */
+        public static final int ERR_LOW_FRAME_RATE = 2;
+
+        /**
+         * 设备离线了
+         */
+        public static final int ERR_DEVICE_OFFLINE = 3;
+
     }
 }

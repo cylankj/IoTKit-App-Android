@@ -68,4 +68,8 @@ public class SettingItemView0 extends RelativeLayout {
     public void setTvSubTitle(CharSequence charSequence) {
         tvSubTitle.setText(charSequence);
     }
+
+    public void setSwitchButtonState(boolean state) {
+        switchButton.setChecked(state);
+    }
 }

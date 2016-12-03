@@ -2,7 +2,7 @@ package com.cylan.jiafeigou.n.mvp.impl.cam;
 
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.jiafeigou.dp.DpMsgMap;
-import com.cylan.jiafeigou.misc.Convertor;
+import com.cylan.jiafeigou.misc.Converter;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamMessageListContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
@@ -55,7 +55,7 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
                 .flatMap(new Func1<RxEvent.JfgAlarmMsg, Observable<ArrayList<CamMessageBean>>>() {
                     @Override
                     public Observable<ArrayList<CamMessageBean>> call(RxEvent.JfgAlarmMsg jfgAlarmMsg) {
-                        ArrayList<CamMessageBean> beanList = Convertor.convert(jfgAlarmMsg.uuid, jfgAlarmMsg.jfgdpMsgs);
+                        ArrayList<CamMessageBean> beanList = Converter.convert(jfgAlarmMsg.uuid, jfgAlarmMsg.jfgdpMsgs);
                         return Observable.just(beanList);
                     }
                 })

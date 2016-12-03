@@ -1,9 +1,11 @@
 package com.cylan.jiafeigou.dp;
 
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.cylan.jiafeigou.n.mvp.model.BaseBean;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -96,6 +98,23 @@ public class FlattenMsgDp implements IFlat {
     @Override
     public void clean() {
         accountUUidMap.clear();
+    }
+
+    @Override
+    public void update(String account, String uuid, DpMsgDefine.DpMsg msg) {
+        exception(account, uuid);
+        DpMsgDefine.DpWrap wrap = getDevice(account, uuid);
+        ArrayList<DpMsgDefine.DpMsg> list = wrap.baseDpMsgList;
+        if (list == null)
+            list = new ArrayList<>();
+        int index = list.indexOf(msg);
+        if (index != -1) {
+            list.set(index, msg);
+        } else {
+            list.add(msg);
+        }
+        Log.d("FlattenMsgDp", "update?: " + (index != -1) + "," + new Gson().toJson(msg));
+        simpleMap.put(account + uuid, list);
     }
 
 

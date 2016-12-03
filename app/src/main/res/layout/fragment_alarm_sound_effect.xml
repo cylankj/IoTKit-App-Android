@@ -5,7 +5,7 @@
     android:background="@color/color_white"
     android:clickable="true"
     android:orientation="vertical"
-    tools:context="com.cylan.jiafeigou.n.view.cam.WarnEffectFragment">
+    tools:context="com.cylan.jiafeigou.n.view.cam.AlarmSoundEffectFragment">
 
     <include layout="@layout/layout_toolbar" />
 

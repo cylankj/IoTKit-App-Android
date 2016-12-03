@@ -1,5 +1,7 @@
 package com.cylan.jiafeigou.n.mvp.contract.setting;
 
+import android.content.Context;
+
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
 import com.cylan.jiafeigou.n.mvp.model.BeanCamInfo;
@@ -15,8 +17,10 @@ public interface SafeInfoContract {
     }
 
     interface Presenter extends BasePresenter {
-        void updateInfo(BeanCamInfo beanCamInfo, int... id);
+        void saveCamInfoBean(BeanCamInfo beanCamInfo, int id);
 
         BeanCamInfo getBeanCamInfo();
+
+        String getRepeatMode(Context context);
     }
 }
