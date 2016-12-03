@@ -10,8 +10,9 @@ import com.cylan.utils.DensityUtils;
 /**
  * Created by cylan-hunt on 16-7-26.
  */
-public class BaseDialog extends DialogFragment {
+public class BaseDialog<T> extends DialogFragment {
 
+    public static final String KEY_TITLE = "key_title";
     private static final float MIN_HEIGHT = 0.17F;
     private static final float MAX_HEIGHT = 0.475F;
     private int minHeight = 0;
@@ -52,6 +53,12 @@ public class BaseDialog extends DialogFragment {
     }
 
     protected BaseDialogAction action;
+
+    protected T value;
+
+    public void setValue(T value) {
+        this.value = value;
+    }
 
     public interface BaseDialogAction {
         void onDialogAction(int id, Object value);

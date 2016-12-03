@@ -41,6 +41,11 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
     private static final int[] periodResId = {R.string.MON_1, R.string.TUE_1,
             R.string.WED_1, R.string.THU_1,
             R.string.FRI_1, R.string.SAT_1, R.string.SUN_1};
+    private static final int[] autoRecordMode = {
+            R.string.RECORD_MODE,
+            R.string.RECORD_MODE_1,
+            R.string.RECORD_MODE_2
+    };
 
     public CamSettingPresenterImpl(CamSettingContract.View view) {
         super(view);
@@ -167,6 +172,14 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
         builder.append("-");
         builder.append(parse2Time(camInfoBean.cameraAlarmInfo.timeEnd));
         return builder.toString();
+    }
+
+    @Override
+    public String getAutoRecordTitle(Context context) {
+        if (camInfoBean.deviceAutoVideoRecord > 2 || camInfoBean.deviceAutoVideoRecord < 0) {
+            camInfoBean.deviceAutoVideoRecord = 0;
+        }
+        return context.getString(autoRecordMode[camInfoBean.deviceAutoVideoRecord]);
     }
 
     public static String parse2Time(int value) {

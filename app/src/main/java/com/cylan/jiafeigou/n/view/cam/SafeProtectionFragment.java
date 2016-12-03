@@ -9,7 +9,9 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
@@ -21,15 +23,20 @@ import com.cylan.jiafeigou.n.mvp.contract.setting.SafeInfoContract;
 import com.cylan.jiafeigou.n.mvp.impl.setting.SafeInfoPresenterImpl;
 import com.cylan.jiafeigou.n.mvp.model.BeanCamInfo;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.SettingItemView1;
 import com.cylan.jiafeigou.widget.dialog.BaseDialog;
+import com.cylan.jiafeigou.widget.dialog.TimePickDialogFragment;
+import com.kyleduo.switchbutton.SwitchButton;
 
 import java.lang.ref.WeakReference;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+
+import static com.cylan.jiafeigou.widget.dialog.BaseDialog.KEY_TITLE;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -39,9 +46,6 @@ import butterknife.OnClick;
 public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Presenter>
         implements SafeInfoContract.View {
 
-    private static final int weekStringId[] = {
-            R.string.MON_1, R.string.TUE_1, R.string.WED_1, R.string.THU_1, R.string.FRI_1,
-            R.string.SAT_1, R.string.SUN_1};
     @BindView(R.id.imgV_top_bar_center)
     TextView imgVTopBarCenter;
     @BindView(R.id.fLayout_top_bar_container)
@@ -58,13 +62,10 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
     TextView tvProtectionRepeatPeriod;
     @BindView(R.id.sw_motion_detection)
     SettingItemView1 swMotionDetection;
-
-    private static final int soundResId[] = {
-            R.string.MUTE, R.string.BARKING, R.string.ALARM
-    };
-    //    private WeakReference<SetSensitivityDialogFragment> setSensitivityFragmentWeakReference;
+    @BindView(R.id.lLayout_safe_container)
+    LinearLayout lLayoutSafeContainer;
     private WeakReference<AlarmSoundEffectFragment> warnEffectFragmentWeakReference;
-//    private WeakReference<CapturePeriodDialogFragment> capturePeriodDialogFragmentWeakReference;
+    private TimePickDialogFragment timePickDialogFragment;
 
     public SafeProtectionFragment() {
         // Required empty public constructor
@@ -109,6 +110,35 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         ViewUtils.setViewPaddingStatusBar(fLayoutTopBarContainer);
         updateDetails();
+        ((SwitchButton) swMotionDetection.findViewById(R.id.btn_item_switch))
+                .setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                        BeanCamInfo info = basePresenter.getBeanCamInfo();
+                        info.cameraAlarmFlag = isChecked;
+                        basePresenter.saveCamInfoBean(info, DpMsgMap.ID_501_CAMERA_ALARM_FLAG);
+                        showDetail(isChecked);
+                    }
+                });
+        showDetail(basePresenter.getBeanCamInfo().cameraAlarmFlag);
+    }
+
+    private void showDetail(boolean show) {
+        final int count = lLayoutSafeContainer.getChildCount();
+        for (int i = 0; i < count; i++) {
+            View v = lLayoutSafeContainer.getChildAt(i);
+            if (v.getId() == R.id.sw_motion_detection) continue;//不要隐藏自己了
+            if (v instanceof FrameLayout) {
+                v.setVisibility(show ? View.VISIBLE : View.GONE);
+            }
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        if (callBack != null)
+            callBack.callBack(null);
     }
 
     private void updateDetails() {
@@ -128,6 +158,10 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
                 : (info.cameraAlarmSensitivity == 1 ? getString(R.string.SENSITIVI_STANDARD) : getString(R.string.SENSITIVI_HIGHT)));
         //报警周期
         tvProtectionRepeatPeriod.setText(basePresenter.getRepeatMode(getContext()));
+        if (info.cameraAlarmInfo != null) {
+            tvProtectionStartTime.setText(MiscUtils.parse2Time(info.cameraAlarmInfo.timeStart));
+            tvProtectionEndTime.setText(MiscUtils.parse2Time(info.cameraAlarmInfo.timeEnd));
+        }
     }
 
     @OnClick({R.id.imgV_top_bar_center,
@@ -165,23 +199,51 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
                 fragment.setCallBack(new CallBack() {
                     @Override
                     public void callBack(Object o) {
-                        if (o instanceof DpMsgDefine.NotificationInfo) {
-                            BeanCamInfo info = basePresenter.getBeanCamInfo();
-                            //something update
-                            info.cameraAlarmNotification = (DpMsgDefine.NotificationInfo) o;
-                            basePresenter.saveCamInfoBean(info, DpMsgMap.ID_504_CAMERA_ALARM_NOTIFICATION);
-                            updateDetails();
-                        }
+                        updateDetails();
                     }
                 });
                 fragment.setArguments(getArguments());
                 loadFragment(android.R.id.content, fragment);
             }
             break;
-            case R.id.fLayout_protection_start_time:
-                break;
-            case R.id.fLayout_protection_end_time:
-                break;
+            case R.id.fLayout_protection_start_time: {
+                initTimePickDialogFragment();
+                timePickDialogFragment.setArguments(getBundle(getString(R.string.FROME)));
+                timePickDialogFragment.show(getActivity().getSupportFragmentManager(), "timePickDialogFragmentStart");
+                timePickDialogFragment.setAction(new BaseDialog.BaseDialogAction() {
+                    @Override
+                    public void onDialogAction(int id, Object value) {
+                        if (value != null && value instanceof Integer) {
+                            BeanCamInfo info = basePresenter.getBeanCamInfo();
+                            if (info.cameraAlarmInfo.timeStart != (int) value) {
+                                info.cameraAlarmInfo.timeStart = (int) value;
+                                basePresenter.saveCamInfoBean(info, DpMsgMap.ID_502_CAMERA_ALARM_INFO);
+                            }
+                            updateDetails();
+                        }
+                    }
+                });
+            }
+            break;
+            case R.id.fLayout_protection_end_time: {
+                initTimePickDialogFragment();
+                timePickDialogFragment.setArguments(getBundle(getString(R.string.TO)));
+                timePickDialogFragment.show(getActivity().getSupportFragmentManager(), "timePickDialogFragmentEnd");
+                timePickDialogFragment.setAction(new BaseDialog.BaseDialogAction() {
+                    @Override
+                    public void onDialogAction(int id, Object value) {
+                        if (value != null && value instanceof Integer) {
+                            BeanCamInfo info = basePresenter.getBeanCamInfo();
+                            if (info.cameraAlarmInfo.timeEnd != (int) value) {
+                                info.cameraAlarmInfo.timeEnd = (int) value;
+                                basePresenter.saveCamInfoBean(info, DpMsgMap.ID_502_CAMERA_ALARM_INFO);
+                            }
+                            updateDetails();
+                        }
+                    }
+                });
+            }
+            break;
             case R.id.fLayout_protection_repeat_period: {
                 BaseDialog fragment = CapturePeriodDialogFragment.newInstance(getArguments());
                 fragment.setArguments(getArguments());
@@ -204,6 +266,18 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
                 showFragment(fragment);
             }
             break;
+        }
+    }
+
+    private Bundle getBundle(String title) {
+        Bundle bundle = getArguments();
+        bundle.putString(KEY_TITLE, title);
+        return bundle;
+    }
+
+    private void initTimePickDialogFragment() {
+        if (timePickDialogFragment == null) {
+            timePickDialogFragment = TimePickDialogFragment.newInstance(null);
         }
     }
 
@@ -241,7 +315,8 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
 
     @Override
     public void beanUpdate(BeanCamInfo info) {
-
+        basePresenter.saveCamInfoBean(info, -1);
+        updateDetails();
     }
 
     @Override

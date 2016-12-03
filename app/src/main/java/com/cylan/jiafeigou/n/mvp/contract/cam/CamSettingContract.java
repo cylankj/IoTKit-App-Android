@@ -27,6 +27,8 @@ public interface CamSettingContract {
 
         String getAlarmSubTitle(Context context);
 
+        String getAutoRecordTitle(Context context);
+
         BeanCamInfo getCamInfoBean();
 
         void saveCamInfoBean(BeanCamInfo camInfoBean, int id);

@@ -1,12 +1,14 @@
 package com.cylan.jiafeigou.n.mvp.impl.setting;
 
-import android.content.Context;
+/**
+ * Created by cylan-hunt on 16-12-3.
+ */
+
 import android.util.Pair;
 
-import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.dp.DpUtils;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
-import com.cylan.jiafeigou.n.mvp.contract.setting.SafeInfoContract;
+import com.cylan.jiafeigou.n.mvp.contract.setting.VideoAutoRecordContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.n.mvp.model.BeanCamInfo;
 import com.cylan.jiafeigou.rx.RxBus;
@@ -18,22 +20,15 @@ import rx.Observable;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
-/**
- * Created by cylan-hunt on 16-11-25.
- */
 
-public class SafeInfoPresenterImpl extends AbstractPresenter<SafeInfoContract.View>
-        implements SafeInfoContract.Presenter {
-
+public class VideoAutoRecordPresenterImpl extends AbstractPresenter<VideoAutoRecordContract.View>
+        implements VideoAutoRecordContract.Presenter {
     private BeanCamInfo beanCamInfo;
-    private static final int[] periodResId = {R.string.MON_1, R.string.TUE_1,
-            R.string.WED_1, R.string.THU_1,
-            R.string.FRI_1, R.string.SAT_1, R.string.SUN_1};
 
-    public SafeInfoPresenterImpl(SafeInfoContract.View view, BeanCamInfo beanCamInfo) {
+    public VideoAutoRecordPresenterImpl(VideoAutoRecordContract.View view,
+                                        BeanCamInfo beanCamInfo) {
         super(view);
         this.beanCamInfo = beanCamInfo;
-        view.setPresenter(this);
     }
 
     @Override
@@ -64,32 +59,6 @@ public class SafeInfoPresenterImpl extends AbstractPresenter<SafeInfoContract.Vi
     @Override
     public BeanCamInfo getBeanCamInfo() {
         return beanCamInfo;
-    }
-
-    @Override
-    public String getRepeatMode(Context context) {
-        if (!beanCamInfo.cameraAlarmFlag || beanCamInfo.cameraAlarmInfo == null) {
-            return getView().getContext().getString(R.string.MAGNETISM_OFF);
-        }
-        int day = beanCamInfo.cameraAlarmInfo.day;
-        StringBuilder builder = new StringBuilder();
-        for (int i = 0; i < 7; i++) {
-            if (((day >> (7 - 1 - i)) & 0x01) == 1) {
-                //hit
-                builder.append(context.getString(periodResId[i]));
-                builder.append(",");
-            }
-        }
-        if (builder.length() > 1)
-            builder.replace(builder.toString().length() - 1, builder.toString().length(), "");
-        if (day == 127) {//全天
-            builder.setLength(0);
-            builder.append(context.getString(R.string.HOURS));
-        } else if (day == 124) {//工作日
-            builder.setLength(0);
-            builder.append(context.getString(R.string.WEEKDAYS));
-        }
-        return builder.toString();
     }
 
     @Override

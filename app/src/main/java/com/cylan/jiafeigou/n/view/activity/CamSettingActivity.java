@@ -22,6 +22,7 @@ import com.cylan.jiafeigou.n.mvp.model.BeanCamInfo;
 import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
 import com.cylan.jiafeigou.n.view.cam.DeviceInfoDetailFragment;
 import com.cylan.jiafeigou.n.view.cam.SafeProtectionFragment;
+import com.cylan.jiafeigou.n.view.cam.VideoAutoRecordFragment;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.SettingItemView0;
@@ -70,6 +71,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
 
     private WeakReference<DeviceInfoDetailFragment> informationWeakReference;
     private WeakReference<SafeProtectionFragment> safeProtectionFragmentWeakReference;
+    private WeakReference<VideoAutoRecordFragment> videoAutoRecordFragmentWeakReference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -124,6 +126,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
      * 待机模式按钮,关联到其他按钮
      */
     private void initStandbyBtn() {
+        enableAllItem(lLayoutSettingItemContainer, !basePresenter.getCamInfoBean().cameraStandbyFlag);
         ((SwitchButton) svSettingDeviceStandbyMode.findViewById(R.id.btn_item_switch))
                 .setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                     @Override
@@ -203,6 +206,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
     }
 
     @OnClick({R.id.sv_setting_device_detail,
+            R.id.sv_setting_device_auto_record,
             R.id.tv_setting_unbind,
             R.id.sv_setting_safe_protection
     })
@@ -225,16 +229,34 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
             break;
             case R.id.tv_setting_unbind:
                 break;
-            case R.id.sv_setting_device_auto_record:
-
-                break;
+            case R.id.sv_setting_device_auto_record: {
+                initVideoAutoRecordFragment();
+                Bundle bundle = new Bundle();
+                bundle.putParcelable(KEY_DEVICE_ITEM_BUNDLE, basePresenter.getCamInfoBean());
+                VideoAutoRecordFragment fragment = videoAutoRecordFragmentWeakReference.get();
+                fragment.setArguments(bundle);
+                loadFragment(android.R.id.content, fragment);
+                fragment.setCallBack(new IBaseFragment.CallBack() {
+                    @Override
+                    public void callBack(Object t) {
+                        onCamInfoRsp(basePresenter.getCamInfoBean());//刷新
+                    }
+                });
+            }
+            break;
             case R.id.sv_setting_safe_protection: {
                 Bundle bundle = new Bundle();
                 bundle.putParcelable(KEY_DEVICE_ITEM_BUNDLE, basePresenter.getCamInfoBean());
                 initSafeProtectionFragment();
-                Fragment fragment = safeProtectionFragmentWeakReference.get();
+                SafeProtectionFragment fragment = safeProtectionFragmentWeakReference.get();
                 fragment.setArguments(bundle);
                 loadFragment(android.R.id.content, safeProtectionFragmentWeakReference.get());
+                fragment.setCallBack(new IBaseFragment.CallBack() {
+                    @Override
+                    public void callBack(Object t) {
+                        onCamInfoRsp(basePresenter.getCamInfoBean());//刷新
+                    }
+                });
             }
             break;
         }
@@ -288,6 +310,13 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         }
     }
 
+    private void initVideoAutoRecordFragment() {
+        //should load
+        if (videoAutoRecordFragmentWeakReference == null || videoAutoRecordFragmentWeakReference.get() == null) {
+            videoAutoRecordFragmentWeakReference = new WeakReference<>(VideoAutoRecordFragment.newInstance(null));
+        }
+    }
+
     @Override
     public void onCamInfoRsp(BeanCamInfo camInfoBean) {
         svSettingDeviceDetail.setTvSubTitle(basePresenter.getDetailsSubTitle(getContext()));
@@ -297,7 +326,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         svSettingDeviceRotate.setSwitchButtonState(camInfoBean.deviceCameraRotate);
         svSettingDeviceStandbyMode.setSwitchButtonState(camInfoBean.cameraStandbyFlag);
         svSettingSafeProtection.setTvSubTitle(basePresenter.getAlarmSubTitle(getContext()));
-        svSettingDeviceAutoRecord.setEnabled(basePresenter.getCamInfoBean().deviceAutoVideoRecord != 0);
+        svSettingDeviceAutoRecord.setTvSubTitle(basePresenter.getAutoRecordTitle(getContext()));
     }
 
     @Override
