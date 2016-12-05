@@ -114,6 +114,8 @@
         <attr name="sv_sub_title" format="string|reference"/>
         <attr name="sv_sub_title_max_len" format="integer"/>
         <attr name="sv_image_src" format="reference"/>
+        <attr name="sv_v_divider" format="boolean"/>
+        <attr name="sv_visibility" format="boolean"/>
     </declare-styleable>
 
     <declare-styleable name="LLViewStyle">
