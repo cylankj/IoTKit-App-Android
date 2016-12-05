@@ -430,4 +430,19 @@ public class RxEvent {
     public static final class JFGAttributeUpdate extends DpMsgDefine.DpMsg {
         public String uuid;
     }
+
+    /**
+     * 获取好友的信息回调
+     */
+    public static final class GetFriendInfoCall{
+       public int i;
+
+        public GetFriendInfoCall(int i, JFGFriendAccount jfgFriendAccount) {
+            this.i = i;
+            this.jfgFriendAccount = jfgFriendAccount;
+        }
+
+        public JFGFriendAccount jfgFriendAccount;
+
+    }
 }

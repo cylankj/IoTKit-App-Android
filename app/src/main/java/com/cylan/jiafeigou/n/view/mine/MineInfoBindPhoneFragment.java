@@ -96,7 +96,7 @@ public class MineInfoBindPhoneFragment extends Fragment implements MineBindPhone
 
             @Override
             public void onFinish() {
-                tvMeterGetCode.setText("重新获取");
+                tvMeterGetCode.setText(getString(R.string.Button_ReObtain));
                 tvMeterGetCode.setEnabled(true);
             }
         };
@@ -195,7 +195,6 @@ public class MineInfoBindPhoneFragment extends Fragment implements MineBindPhone
 
             case R.id.tv_meter_get_code:
                 //重新获取验证码
-                ToastUtil.showToast("验证码已发送");
                 countDownTimer.start();
                 tvMeterGetCode.setEnabled(false);
                 presenter.getCheckCode(getInputPhone());
@@ -216,24 +215,24 @@ public class MineInfoBindPhoneFragment extends Fragment implements MineBindPhone
      */
     private void handlerChangeOrBindPhone() {
         //绑定手机号
-        if (tvGetCheckNumber.getText().equals("获取验证码")) {
+        if (tvGetCheckNumber.getText().equals(getString(R.string.GET_CODE))) {
             if (JConstant.PHONE_REG.matcher(getInputPhone()).find()) {
                 presenter.checkPhoneIsBind(getInputPhone());
             } else {
-                ToastUtil.showToast("请求输入有效手机号");
+                ToastUtil.showToast(getString(R.string.PHONE_NUMBER_2));
             }
         } else {
             // 发送修改用户属性请求
             if (getInputPhone().equals(PreferencesUtils.getString(JConstant.KEY_REGISTER_SMS_TOKEN))){
-                if (!tvMeterGetCode.getText().toString().equals("重新获取")){
+                if (!tvMeterGetCode.getText().toString().equals(getString(R.string.Button_ReObtain))){
                     userinfo.setPhone(getInputPhone(),getInputCheckCode());
                     userinfo.resetFlag();
                     presenter.sendChangePhoneReq(userinfo);
                 }else {
-                    ToastUtil.showToast("验证码已失效");
+                    ToastUtil.showToast(getString(R.string.Tap0_invaildcode));
                 }
             }else {
-                ToastUtil.showToast("验证码错误");
+                ToastUtil.showToast(getString(R.string.Tap0_wrongcode));
             }
         }
     }
@@ -241,7 +240,7 @@ public class MineInfoBindPhoneFragment extends Fragment implements MineBindPhone
     @Override
     public void initToolbarTitle(String title) {
         tvTopBarCenter.setText(title);
-        if (title.equals("更改手机号")){
+        if (title.equals(getString(R.string.CHANGE_PHONE_NUM))){
             isBindOrChange = false;
         }else {
             isBindOrChange = true;
@@ -271,8 +270,8 @@ public class MineInfoBindPhoneFragment extends Fragment implements MineBindPhone
     public void handlerCheckPhoneResult(RxEvent.CheckAccountCallback checkAccountCallback) {
         if (getInputPhone().equals(checkAccountCallback.s)) {
             AlertDialog.Builder hasBineDialog = new AlertDialog.Builder(getContext())
-                    .setTitle("该手机号已经被绑定")
-                    .setPositiveButton("我知道了", new DialogInterface.OnClickListener() {
+                    .setTitle(getString(R.string.RET_EEDITUSERINFO_SMS_PHONE))
+                    .setPositiveButton(getString(R.string.I_KNOW), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();
@@ -281,11 +280,10 @@ public class MineInfoBindPhoneFragment extends Fragment implements MineBindPhone
             hasBineDialog.show();
         } else {
             //显示倒计时
-            ToastUtil.showToast("验证码已发送");
             fLayoutVerificationCodeInputBox.setVisibility(View.VISIBLE);
             countDownTimer.start();
             tvMeterGetCode.setEnabled(false);
-            tvGetCheckNumber.setText("继续");
+            tvGetCheckNumber.setText(getString(R.string.CARRY_ON));
             tvGetCheckNumber.setEnabled(false);
             //发送验证码
             presenter.getCheckCode(getInputPhone());

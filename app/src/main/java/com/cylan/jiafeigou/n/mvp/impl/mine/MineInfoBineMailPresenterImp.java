@@ -26,6 +26,7 @@ import rx.subscriptions.CompositeSubscription;
 public class MineInfoBineMailPresenterImp extends AbstractPresenter<MineInfoBindMailContract.View> implements MineInfoBindMailContract.Presenter {
 
     private CompositeSubscription compositeSubscription;
+    private JFGAccount jfgAccount;
 
     public MineInfoBineMailPresenterImp(MineInfoBindMailContract.View view) {
         super(view);
@@ -72,17 +73,19 @@ public class MineInfoBineMailPresenterImp extends AbstractPresenter<MineInfoBind
      * 发送修改用户属性请求
      */
     @Override
-    public void sendSetAccountReq(JFGAccount account) {
+    public void sendSetAccountReq(String newEmail) {
         if (getView() != null){
             getView().showSendReqHint();
         }
-        rx.Observable.just(account)
+        rx.Observable.just(newEmail)
                 .delay(2000,TimeUnit.MILLISECONDS)
                 .subscribeOn(Schedulers.newThread())
-                .subscribe(new Action1<JFGAccount>() {
+                .subscribe(new Action1<String>() {
                     @Override
-                    public void call(JFGAccount account) {
-                        JfgCmdInsurance.getCmd().setAccount(account);
+                    public void call(String newEmail) {
+                        jfgAccount.resetFlag();
+                        jfgAccount.setEmail(newEmail);
+                        JfgCmdInsurance.getCmd().setAccount(jfgAccount);
                     }
                 }, new Action1<Throwable>() {
                     @Override
@@ -99,7 +102,6 @@ public class MineInfoBineMailPresenterImp extends AbstractPresenter<MineInfoBind
     @Override
     public Subscription getCheckAccountCallBack() {
         return RxBus.getCacheInstance().toObservable(RxEvent.CheckAccountCallback.class)
-                .delay(1000,TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<RxEvent.CheckAccountCallback>() {
                     @Override
@@ -122,12 +124,24 @@ public class MineInfoBineMailPresenterImp extends AbstractPresenter<MineInfoBind
                     @Override
                     public void call(RxEvent.GetUserInfo getUserInfo) {
                         if (getUserInfo != null && getUserInfo instanceof RxEvent.GetUserInfo){
+                            jfgAccount = getUserInfo.jfgAccount;
+                            getView().getUserAccountData(getUserInfo.jfgAccount);
                             getView().showSendReqResult(getUserInfo);
                         }
                     }
                 });
 
     }
+
+    /**
+     * 拿到用户的账号
+     * @return
+     */
+    @Override
+    public JFGAccount getUserAccount() {
+        return jfgAccount;
+    }
+
 
     /**
      * 处理检测邮箱是否绑定后结果
@@ -152,13 +166,15 @@ public class MineInfoBineMailPresenterImp extends AbstractPresenter<MineInfoBind
             compositeSubscription.unsubscribe();
         }else {
             compositeSubscription = new CompositeSubscription();
+            compositeSubscription.add(getChangeAccountCallBack());
             compositeSubscription.add(getCheckAccountCallBack());
-            //compositeSubscription.add(getChangeAccountCallBack());
         }
     }
 
     @Override
     public void stop() {
-        unSubscribe(compositeSubscription);
+        if (compositeSubscription != null && !compositeSubscription.isUnsubscribed()){
+            compositeSubscription.unsubscribe();
+        }
     }
 }

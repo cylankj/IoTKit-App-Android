@@ -1,5 +1,6 @@
 package com.cylan.jiafeigou.n.mvp.impl.mine;
 
+import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendAddByNumContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
@@ -96,8 +97,8 @@ public class MineFriendAddByNumPresenterImp extends AbstractPresenter<MineFriend
      * @param checkAccountCallback
      */
     private void handlerCheckCallBackResult(RxEvent.CheckAccountCallback checkAccountCallback) {
-        if (checkAccountCallback.i == 0){
-            // 是亲友 已注册
+        if (checkAccountCallback.i == JError.ErrorOK){
+            //  已注册
             if (getView() != null){
                 MineAddReqBean addReqBean = new MineAddReqBean();
                 addReqBean.account = checkAccountCallback.s;
@@ -106,7 +107,7 @@ public class MineFriendAddByNumPresenterImp extends AbstractPresenter<MineFriend
                 getView().setFindResult(false,addReqBean);
             }
         }else {
-            // 不是亲友 未注册 无结果
+            //  未注册 无结果
             if (getView() != null){
                 getView().hideFindLoading();
                 getView().showFindNoResult();

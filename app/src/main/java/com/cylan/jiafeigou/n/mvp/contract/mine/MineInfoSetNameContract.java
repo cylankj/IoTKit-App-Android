@@ -42,15 +42,15 @@ public interface MineInfoSetNameContract {
         /**
          * 发送修改昵称请求
          */
-        void saveName(JFGAccount newAlias);
+        void saveName(String newAlias);
 
         boolean isEditEmpty(String string);
-
         /**
          * 修改昵称之后的回调
          * @return
          */
         Subscription saveAliasCallBack();
+
     }
 
 }

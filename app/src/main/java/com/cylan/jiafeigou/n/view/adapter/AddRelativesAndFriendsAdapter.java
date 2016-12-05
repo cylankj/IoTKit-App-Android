@@ -51,6 +51,7 @@ public class AddRelativesAndFriendsAdapter extends SuperAdapter<MineAddReqBean> 
         Glide.with(getContext()).load(item.iconUrl)
                 .asBitmap().centerCrop()
                 .error(R.drawable.icon_mine_head_normal)
+                .placeholder(R.drawable.icon_mine_head_normal)
                 .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                 .into(new BitmapImageViewTarget(headImag) {
                     @Override

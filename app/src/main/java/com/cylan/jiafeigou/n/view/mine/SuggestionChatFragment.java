@@ -17,7 +17,6 @@ import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.contract.mine.SuggestionChatContract;
 import com.cylan.jiafeigou.n.mvp.model.MineHelpSuggestionBean;
 import com.cylan.jiafeigou.n.view.adapter.HomeMineHelpSuggestionAdapter;
-import com.cylan.jiafeigou.n.view.adapter.SuggestionChatAdapter;
 import com.cylan.jiafeigou.support.softkeyboard.util.KPSwitchConflictUtil;
 import com.cylan.jiafeigou.support.softkeyboard.util.KeyboardUtil;
 import com.cylan.jiafeigou.support.softkeyboard.widget.KPSwitchFSPanelLinearLayout;

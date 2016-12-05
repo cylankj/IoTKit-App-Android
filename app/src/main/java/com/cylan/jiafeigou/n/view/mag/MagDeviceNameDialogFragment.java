@@ -31,7 +31,6 @@ import butterknife.OnClick;
  */
 public class MagDeviceNameDialogFragment extends DialogFragment {
 
-    private static final String TAG = "EditFragmentDialog";
     private EditText mEtEditName;
     private TextView mBtnEnsure;
     private TextView mBtnCancel;

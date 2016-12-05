@@ -35,7 +35,7 @@
         android:layout_marginRight="15dp"
         android:gravity="center"
         android:layout_alignParentRight="true"
-        android:text="分享"
+        android:text="@string/Tap3_ShareDevice_Button"
         android:clickable="true"
         android:background="@drawable/btn_accept_add_request_shape"
         android:textSize="13sp"

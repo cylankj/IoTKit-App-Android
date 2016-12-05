@@ -148,7 +148,7 @@ public class MineFriendAddFriendsFragment extends Fragment implements MineFriend
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 jump2AddFromContactFragment();
             } else {
-                ToastUtil.showNegativeToast("请授权，才能访问联系人");
+                ToastUtil.showNegativeToast(getString(R.string.Tap0_Authorizationfailed));
             }
         }
     }

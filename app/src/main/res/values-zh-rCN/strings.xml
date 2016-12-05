@@ -440,7 +440,7 @@
   <string name="DOOR_LOWBETTERY">设备电量较低，请及时充电</string>
   <string name="DOOR_BETTERYMESG">建议使用5V/1A的充电器； \n充电过程中指示灯绿色常亮，充满电后会自动熄灭</string>
   <string name="DOOR_SLIDE_TIP">右滑通话</string>
-  <string name="DOOR_ANSWERING">连接中...</string>
+  <string name="DOOR_ANSWERING">连接中</string>
   <string name="DOOR_VOICE">声音</string>
   <string name="DOOR_TALK">对讲</string>
   <string name="DOOR_CAMERA">拍照</string>
@@ -766,7 +766,7 @@
   <string name="Tap3_Feedback_ClearTips">清空消息？</string>
   <string name="Tap1_Camera_Messages_ViewTheVideo">查看视频</string>
   <string name="Tips_SureDelete">是否删除?</string>
-  <string name="Tap3_Friends_Share">分享设备给%1$s</string>
+  <string name="Tap3_Friends_Share">分享设备给</string>
   <string name="Tap3_ShareDevice_Tips">该设备已到达最大分享数</string>
   <string name="Tips_DeleteFail">删除失败</string>
   <string name="Yesterday">昨天</string>

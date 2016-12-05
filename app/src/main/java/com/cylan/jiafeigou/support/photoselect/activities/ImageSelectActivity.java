@@ -26,6 +26,7 @@ import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.support.photoselect.adapters.CustomImageSelectAdapter;
 import com.cylan.jiafeigou.support.photoselect.helpers.Constants;
 import com.cylan.jiafeigou.support.photoselect.models.Image;
+import com.cylan.jiafeigou.widget.LoadingDialog;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -70,10 +71,11 @@ public class ImageSelectActivity extends HelperActivity {
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            Intent intent = new Intent();
-            intent.putExtra(Constants.INTENT_EXTRA_IMAGES,images.get(position).path);
-            setResult(RESULT_OK, intent);
-            finish();
+                LoadingDialog.showLoading(getSupportFragmentManager(),getString(R.string.LOADING));
+                Intent intent = new Intent();
+                intent.putExtra(Constants.INTENT_EXTRA_IMAGES,images.get(position).path);
+                setResult(RESULT_OK, intent);
+                finish();
             }
         });
     }
@@ -145,16 +147,13 @@ public class ImageSelectActivity extends HelperActivity {
             }
         };
         getContentResolver().registerContentObserver(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, false, observer);
-
         checkPermission();
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-
         stopThread();
-
         getContentResolver().unregisterContentObserver(observer);
         observer = null;
 
@@ -167,6 +166,7 @@ public class ImageSelectActivity extends HelperActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        LoadingDialog.dismissLoading(getSupportFragmentManager());
         images = null;
         if (adapter != null) {
             adapter.releaseResources();

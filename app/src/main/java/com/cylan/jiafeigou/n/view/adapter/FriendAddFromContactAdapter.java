@@ -7,6 +7,7 @@ import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
+import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.superadapter.IMulItemViewType;
 import com.cylan.superadapter.SuperAdapter;
 import com.cylan.superadapter.internal.SuperViewHolder;
@@ -18,7 +19,7 @@ import java.util.List;
  * 创建时间：2016/9/6
  * 描述：
  */
-public class RelativeAndFriendAddFromContactAdapter extends SuperAdapter<RelAndFriendBean> {
+public class FriendAddFromContactAdapter extends SuperAdapter<RelAndFriendBean> {
 
     private onContactItemClickListener listener;
 
@@ -30,7 +31,7 @@ public class RelativeAndFriendAddFromContactAdapter extends SuperAdapter<RelAndF
         this.listener = listener;
     }
 
-    public RelativeAndFriendAddFromContactAdapter(Context context, List<RelAndFriendBean> items, IMulItemViewType<RelAndFriendBean> mulItemViewType) {
+    public FriendAddFromContactAdapter(Context context, List<RelAndFriendBean> items, IMulItemViewType<RelAndFriendBean> mulItemViewType) {
         super(context, items, mulItemViewType);
     }
 
@@ -41,7 +42,7 @@ public class RelativeAndFriendAddFromContactAdapter extends SuperAdapter<RelAndF
 
         TextView addBtn = holder.getView(R.id.tv_contactadd);
         if (item.isCheckFlag == 1){
-            addBtn.setText("已添加");
+            addBtn.setText(ContextUtils.getContext().getString(R.string.Tap3_Added));
             addBtn.setEnabled(false);
             addBtn.setTextColor(Color.parseColor("#ADADAD"));
             addBtn.setBackground(null);

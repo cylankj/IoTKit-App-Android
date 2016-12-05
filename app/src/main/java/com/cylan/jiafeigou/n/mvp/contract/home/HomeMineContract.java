@@ -76,5 +76,11 @@ public interface HomeMineContract {
          */
         JFGAccount getUserInfoBean();
 
+        /**
+         * 判断是否是三方登录
+         * @return
+         */
+        boolean checkOpenLogIn();
+
     }
 }

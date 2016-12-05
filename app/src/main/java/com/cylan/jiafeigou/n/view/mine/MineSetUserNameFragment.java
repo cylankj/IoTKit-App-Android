@@ -20,10 +20,12 @@ import com.cylan.jiafeigou.n.mvp.impl.mine.MineInfoSetNamePresenterImpl;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
+import com.cylan.jiafeigou.widget.LoadingDialog;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.OnTextChanged;
 
 /**
  * 作者：zsl
@@ -42,8 +44,7 @@ public class MineSetUserNameFragment extends Fragment implements MineInfoSetName
     View viewMinePersonalInformationNewNameLine;
     @BindView(R.id.iv_mine_personal_information_new_name_clear)
     ImageView ivMinePersonalInformationNewNameClear;
-    @BindView(R.id.rl_send_pro_hint)
-    RelativeLayout rlSendProHint;
+
 
     private MineInfoSetNameContract.Presenter presenter;
 
@@ -72,8 +73,13 @@ public class MineSetUserNameFragment extends Fragment implements MineInfoSetName
         initPresenter();
         getArgumentData();
         initEditText();
-        initEditListener();
         return view;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (presenter != null)presenter.start();
     }
 
     /**
@@ -84,30 +90,16 @@ public class MineSetUserNameFragment extends Fragment implements MineInfoSetName
         userinfo = (JFGAccount) arguments.getSerializable("userinfo");
     }
 
-    private void initEditListener() {
-        etMinePersonalInformationNewName.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                boolean isEmpty = TextUtils.isEmpty(getEditName());
-                if (isEmpty) {
-                    ivMinePersonalSetnameBind.setImageDrawable(getResources().getDrawable(R.drawable.icon_finish_disable));
-                    ivMinePersonalSetnameBind.setEnabled(false);
-                } else {
-                    ivMinePersonalSetnameBind.setImageDrawable(getResources().getDrawable(R.drawable.icon_finish));
-                    ivMinePersonalSetnameBind.setEnabled(true);
-                }
-            }
-        });
+    @OnTextChanged(R.id.et_mine_personal_information_new_name)
+    public void onEditChange(CharSequence s, int start, int before, int count) {
+        boolean isEmpty = TextUtils.isEmpty(getEditName());
+        if (isEmpty) {
+            ivMinePersonalSetnameBind.setImageDrawable(getResources().getDrawable(R.drawable.icon_finish_disable));
+            ivMinePersonalSetnameBind.setEnabled(false);
+        } else {
+            ivMinePersonalSetnameBind.setImageDrawable(getResources().getDrawable(R.drawable.icon_finish));
+            ivMinePersonalSetnameBind.setEnabled(true);
+        }
     }
 
     private void initEditText() {
@@ -125,12 +117,12 @@ public class MineSetUserNameFragment extends Fragment implements MineInfoSetName
 
     @Override
     public void showSendHint() {
-        rlSendProHint.setVisibility(View.VISIBLE);
+        LoadingDialog.showLoading(getFragmentManager(),getString(R.string.LOADING));
     }
 
     @Override
     public void hideSendHint() {
-        rlSendProHint.setVisibility(View.INVISIBLE);
+        LoadingDialog.dismissLoading(getFragmentManager());
     }
 
     /**
@@ -139,11 +131,14 @@ public class MineSetUserNameFragment extends Fragment implements MineInfoSetName
      */
     @Override
     public void handlerResult(RxEvent.GetUserInfo getUserInfo) {
-        if (getEditName().equals(getUserInfo.jfgAccount.getAlias())){
-            ToastUtil.showPositiveToast("设置成功");
-            getFragmentManager().popBackStack();
-        }else {
-            ToastUtil.showPositiveToast("设置失败");
+        if (!TextUtils.isEmpty(getEditName())) {
+            hideSendHint();
+            if (getEditName().equals(getUserInfo.jfgAccount.getAlias())) {
+                ToastUtil.showPositiveToast(getString(R.string.PWD_OK_2));
+                getFragmentManager().popBackStack();
+            } else {
+                ToastUtil.showPositiveToast(getString(R.string.SUBMIT_FAIL));
+            }
         }
     }
 
@@ -160,13 +155,9 @@ public class MineSetUserNameFragment extends Fragment implements MineInfoSetName
                 break;
             case R.id.iv_mine_personal_setname_bind:
                 if (presenter.isEditEmpty(getEditName())) {
-                    ToastUtil.showToast("昵称不能为空");
                     return;
                 } else {
-                    userinfo.setAlias(getEditName());
-                    userinfo.resetFlag();
-                    if (presenter != null) presenter.saveName(userinfo);
-                    presenter.start();
+                    if (presenter != null) presenter.saveName(getEditName());
                 }
                 break;
             case R.id.iv_mine_personal_information_new_name_clear:
@@ -190,6 +181,7 @@ public class MineSetUserNameFragment extends Fragment implements MineInfoSetName
     @Override
     public void onStop() {
         super.onStop();
+        hideSendHint();
         if (presenter != null)presenter.stop();
     }
 }

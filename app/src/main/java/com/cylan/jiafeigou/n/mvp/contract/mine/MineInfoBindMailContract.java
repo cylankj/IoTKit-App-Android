@@ -39,6 +39,18 @@ public interface MineInfoBindMailContract {
          * 隐藏绑定进度
          */
         void hideSendReqHint();
+
+        /**
+         * 获取输入内容
+         * @return
+         */
+        String getEditText();
+
+        /**
+         * 标题修改
+         * @param account
+         */
+        void getUserAccountData(JFGAccount account);
     }
 
     interface Presenter extends BasePresenter {
@@ -56,7 +68,7 @@ public interface MineInfoBindMailContract {
         /**
          * 发送修改用户属性请求
          */
-        void sendSetAccountReq(JFGAccount account);
+        void sendSetAccountReq(String newEmail);
 
         /**
          * 接收到检验邮箱是否已经注册过
@@ -68,5 +80,12 @@ public interface MineInfoBindMailContract {
          * 修改属性后的回调
          */
         Subscription getChangeAccountCallBack();
+
+        /**
+         * 拿到用户的账号
+         * @return
+         */
+        JFGAccount getUserAccount();
+
     }
 }

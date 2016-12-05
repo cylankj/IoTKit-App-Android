@@ -25,7 +25,7 @@
                 android:drawableLeft="@drawable/icon_nav_back_white"
                 android:drawablePadding="15dp"
                 android:padding="15dp"
-                android:text="功能设置"
+                android:text="@string/SETTINGS_1"
                 android:textColor="@color/color_white"
                 android:textSize="16sp" />
         </FrameLayout>
@@ -51,7 +51,7 @@
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="20dp"
                 android:layout_marginTop="10dp"
-                android:text="设备"
+                android:text="@string/SETTINGS"
                 android:textColor="@color/color_4b9fd5"
                 android:textSize="15sp" />
 
@@ -64,7 +64,7 @@
                 hunt:sv_image_src="@drawable/icon_setting_information"
                 hunt:sv_sub_title="大门口的门铃"
                 hunt:sv_sub_title_max_len="12"
-                hunt:sv_title="设备信息" />
+                hunt:sv_title="@string/EQUIPMENT_INFO" />
 
             <TextView
                 android:id="@+id/tv_door_bell"
@@ -73,7 +73,7 @@
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="20dp"
                 android:layout_marginTop="10dp"
-                android:text="门铃"
+                android:text="@string/CALL_CAMERA_NAME"
                 android:textColor="@color/color_4b9fd5"
                 android:textSize="15sp" />
 
@@ -86,7 +86,7 @@
                 hunt:sv_image_src="@drawable/icon_setting_information"
                 hunt:sv_sub_title="1台"
                 hunt:sv_sub_title_max_len="12"
-                hunt:sv_title="关联门铃" />
+                hunt:sv_title="@string/EFAMILY_RELEVANCE_DOOR" />
 
             <View
                 android:layout_marginLeft="20dp"
@@ -121,7 +121,7 @@
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="20dp"
                 android:gravity="center"
-                android:text="删除设备"
+                android:text="@string/DELETE_CID"
                 android:textColor="@color/color_FF3D32"
                 android:textSize="16sp" />
 
@@ -133,26 +133,6 @@
                 android:layout_height="1dp"/>
 
         </LinearLayout>
-
-        <RelativeLayout
-            android:id="@+id/rl_clear_cache"
-            android:visibility="invisible"
-            android:layout_gravity="center"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-            <ProgressBar
-                android:id="@+id/progress_clear_record"
-                android:layout_centerHorizontal="true"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-            <TextView
-                android:layout_below="@id/progress_clear_record"
-                android:textColor="@color/color_black"
-                android:id="@+id/tv_clear_text"
-                android:text="正在清除..."
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-        </RelativeLayout>
 
     </FrameLayout>
 

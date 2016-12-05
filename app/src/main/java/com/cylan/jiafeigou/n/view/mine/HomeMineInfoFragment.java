@@ -30,15 +30,19 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineInfoContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineInfoPresenterImpl;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.photoselect.ClipImageActivity;
 import com.cylan.jiafeigou.support.photoselect.activities.AlbumSelectActivity;
 import com.cylan.jiafeigou.support.photoselect.helpers.Constants;
+import com.cylan.jiafeigou.utils.LocaleUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
+import com.cylan.jiafeigou.widget.LoadingDialog;
 import com.cylan.jiafeigou.widget.roundedimageview.RoundedImageView;
 
 import java.io.File;
@@ -81,7 +85,6 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
     @BindView(R.id.rl_change_password)
     RelativeLayout rlChangePassword;
 
-
     private HomeMineInfoMailBoxFragment mailBoxFragment;
     private MineInfoBindPhoneFragment bindPhoneFragment;
     private MineUserInfoLookBigHeadFragment bigHeadFragment;
@@ -93,9 +96,8 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
     private Uri outPutUri;
     private File tempFile;
 
-    public static HomeMineInfoFragment newInstance(Bundle bundle) {
+    public static HomeMineInfoFragment newInstance() {
         HomeMineInfoFragment fragment = new HomeMineInfoFragment();
-        fragment.setArguments(bundle);
         return fragment;
     }
 
@@ -121,9 +123,32 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+        initView();
+    }
+
+    /**
+     * 判断是否大陆用户显示绑定手机号码一栏
+     */
+    private void initView() {
+        int way = LocaleUtils.getLanguageType(getActivity());
+        if (way != JConstant.LOCALE_SIMPLE_CN) {
+            mRlayout_setPersonPhone.setVisibility(View.GONE);
+        }else {
+            mRlayout_setPersonPhone.setVisibility(View.VISIBLE);
+        }
+
+        if (presenter.checkOpenLogin()){
+            rlChangePassword.setVisibility(View.GONE);
+        }
+
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
-        initPersonalInformation(getArgumentData());
+        if (presenter != null)presenter.start();
     }
 
     private void initPresenter() {
@@ -131,8 +156,9 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
+    public void onStop() {
+        super.onStop();
+        if (presenter != null)presenter.stop();
     }
 
     @OnClick({R.id.iv_home_mine_personal_back, R.id.btn_home_mine_personal_information,
@@ -216,6 +242,7 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
                 .add(android.R.id.content, setUserNameFragment, "setUserNameFragment")
                 .addToBackStack("personalInformationFragment")
                 .commit();
+
         if (getActivity() != null && getActivity().getFragmentManager() != null) {
             setUserNameFragment.setOnSetUsernameListener(new MineSetUserNameFragment.OnSetUsernameListener() {
                 @Override
@@ -244,6 +271,7 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
     @Override
     public void initPersonalInformation(JFGAccount bean) {
         if (bean != null){
+            argumentData = bean;
             //头像的回显
             String photoUrl = bean.getPhotoUrl();
             if ("".equals(bean.getPhotoUrl())){
@@ -268,13 +296,13 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
             tvUserName.setText(bean.getAlias());
 
             if (bean.getEmail() == null | "".equals(bean.getEmail())){
-                mTvMailBox.setText("未设置");
+                mTvMailBox.setText(getString(R.string.NO_SET));
             }else {
                 mTvMailBox.setText(bean.getEmail());
             }
 
             if(bean.getPhone() == null && "".equals(bean.getPhone())){
-                tvHomeMinePersonalPhone.setText("未设置");
+                tvHomeMinePersonalPhone.setText(getString(R.string.NO_SET));
             }else {
                 tvHomeMinePersonalPhone.setText(bean.getPhone());
             }
@@ -352,9 +380,14 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
         view.findViewById(R.id.tv_pick_from_grallery).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getContext(), AlbumSelectActivity.class);
-                intent.putExtra(Constants.INTENT_EXTRA_LIMIT, 3);
-                startActivityForResult(intent, Constants.REQUEST_CODE);
+                if (presenter.checkExternalStorePermission()){
+                    openGallery();
+                }else {
+                    //申请权限
+                    ActivityCompat.requestPermissions(getActivity(),
+                            new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                            2);
+                }
                 alertDialog.dismiss();
             }
         });
@@ -368,6 +401,15 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
         builder.setView(view);
         alertDialog = builder.create();
         alertDialog.show();
+    }
+
+    /**
+     * 打开相册
+     */
+    private void openGallery() {
+        Intent intent = new Intent(getContext(), AlbumSelectActivity.class);
+        intent.putExtra(Constants.INTENT_EXTRA_LIMIT, 3);
+        startActivityForResult(intent, Constants.REQUEST_CODE);
     }
 
     /**
@@ -396,21 +438,30 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
 
     @Override
     public void setPresenter(MineInfoContract.Presenter presenter) {
+
     }
 
     @Override
     public void showLogOutDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        builder.setTitle("退出不会删除账号信息，你可以再次登录");
-        builder.setPositiveButton("退出登录", new DialogInterface.OnClickListener() {
+        builder.setTitle(getString(R.string.LOGOUT_INFO));
+        builder.setPositiveButton(getString(R.string.LOGOUT), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                presenter.logOut();
-                getFragmentManager().popBackStack();
                 dialog.dismiss();
+//                LoadingDialog.showLoading(getFragmentManager(),"正在退出...");
+                if (getView() != null){
+                    getView().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            presenter.logOut();
+                        }
+                    },2000);
+                }
+
             }
         });
-        builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(getString(R.string.CANCEL), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
@@ -419,13 +470,16 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
     }
 
     /**
-     * 获取传递过来的用户信息bean
-     * @return
+     * 退出登录结果
      */
-    public JFGAccount getArgumentData() {
-        Bundle arguments = getArguments();
-        argumentData = (JFGAccount) arguments.getSerializable("userInfoBean");
-        return argumentData;
+    @Override
+    public void logOutResult(int logout) {
+        LoadingDialog.dismissLoading(getFragmentManager());
+        if (logout == JError.ErrorOK){
+            getFragmentManager().popBackStack();
+        }else {
+            ToastUtil.showNegativeToast("退出登录失败");
+        }
     }
 
     @Override
@@ -512,7 +566,13 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 openCamera();
             } else {
-                ToastUtil.showNegativeToast("请授权，才能调用相机");
+                ToastUtil.showNegativeToast(getString(R.string.Tap0_Authorizationfailed));
+            }
+        }else if (requestCode == 2){
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                openGallery();
+            } else {
+                ToastUtil.showNegativeToast(getString(R.string.Tap0_Authorizationfailed));
             }
         }
     }

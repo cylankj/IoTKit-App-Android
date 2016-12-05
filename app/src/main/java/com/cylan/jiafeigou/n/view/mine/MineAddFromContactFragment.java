@@ -90,7 +90,7 @@ public class MineAddFromContactFragment extends Fragment implements MineAddFromC
 
     @Override
     public void showResultDialog() {
-        ToastUtil.showToast("请求已发送");
+        ToastUtil.showToast(getString(R.string.Tap3_FriendsAdd_Contacts_InvitedTips));
     }
 
     @Override

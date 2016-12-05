@@ -214,9 +214,23 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
                 });
     }
 
+    /**
+     * 获取到用户信息
+     * @return
+     */
     @Override
     public JFGAccount getUserInfoBean() {
         return userInfo;
+    }
+
+    /**
+     * 判断是否是三方的登录
+     * @return
+     */
+    @Override
+    public boolean checkOpenLogIn() {
+        // TODO
+        return false;
     }
 
 }

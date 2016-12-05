@@ -46,7 +46,7 @@
                 android:layout_marginRight="20dp"
                 android:id="@+id/tv_voideo_talk_length"
                 android:layout_gravity="center_vertical"
-                android:text="通话时长10:30"
+                android:text="通话时长:10:30"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 

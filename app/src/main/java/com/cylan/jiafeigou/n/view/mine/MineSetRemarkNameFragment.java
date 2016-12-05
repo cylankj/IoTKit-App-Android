@@ -15,14 +15,18 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineSetRemarkNameContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineSetRemarkNamePresenterImp;
 import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
+import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.utils.ToastUtil;
+import com.cylan.jiafeigou.widget.LoadingDialog;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.OnTextChanged;
 
 /**
  * 作者：zsl
@@ -41,8 +45,7 @@ public class MineSetRemarkNameFragment extends Fragment implements MineSetRemark
     View viewMinePersonalSetRemarknameNewNameLine;
     @BindView(R.id.iv_mine_personal_set_remarkname_clear)
     ImageView ivMinePersonalSetRemarknameClear;
-    @BindView(R.id.rl_send_pro_hint)
-    RelativeLayout rlSendProHint;
+
 
     private MineSetRemarkNameContract.Presenter presenter;
 
@@ -70,8 +73,19 @@ public class MineSetRemarkNameFragment extends Fragment implements MineSetRemark
         ButterKnife.bind(this, view);
         initPresenter();
         initViewShow();
-        initEditListener();
         return view;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (presenter != null)presenter.start();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (presenter != null)presenter.stop();
     }
 
     private void initPresenter() {
@@ -83,30 +97,18 @@ public class MineSetRemarkNameFragment extends Fragment implements MineSetRemark
 
     }
 
-    private void initEditListener() {
-        etMineSetRemarknameNewName.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                boolean isEmpty = TextUtils.isEmpty(getEditName());
-                if (isEmpty) {
-                    ivMineSetRemarknameBind.setImageDrawable(getResources().getDrawable(R.drawable.icon_finish_disable));
-                    ivMineSetRemarknameBind.setEnabled(false);
-                } else {
-                    ivMineSetRemarknameBind.setImageDrawable(getResources().getDrawable(R.drawable.icon_finish));
-                    ivMineSetRemarknameBind.setEnabled(true);
-                }
-            }
-        });
+    @OnTextChanged(R.id.et_mine_set_remarkname_new_name)
+    public void onEditChange(CharSequence s, int start, int before, int count) {
+        boolean isEmpty = TextUtils.isEmpty(getEditName());
+        if (isEmpty) {
+            ivMineSetRemarknameBind.setImageDrawable(getResources().getDrawable(R.drawable.icon_finish_disable));
+            ivMineSetRemarknameBind.setEnabled(false);
+            ivMinePersonalSetRemarknameClear.setVisibility(View.GONE);
+        } else {
+            ivMineSetRemarknameBind.setImageDrawable(getResources().getDrawable(R.drawable.icon_finish));
+            ivMineSetRemarknameBind.setEnabled(true);
+            ivMinePersonalSetRemarknameClear.setVisibility(View.VISIBLE);
+        }
     }
 
     @OnClick({R.id.iv_top_bar_left_back, R.id.iv_mine_set_remarkname_bind, R.id.iv_mine_personal_set_remarkname_clear})
@@ -118,7 +120,6 @@ public class MineSetRemarkNameFragment extends Fragment implements MineSetRemark
             case R.id.iv_mine_set_remarkname_bind:
                 if (presenter != null){
                     presenter.sendSetmarkNameReq(getEditName(),friendBean);
-                    showFinishResult();
                 }
                 break;
             case R.id.iv_mine_personal_set_remarkname_clear:
@@ -146,12 +147,17 @@ public class MineSetRemarkNameFragment extends Fragment implements MineSetRemark
      * 修改完成结果设置
      */
     @Override
-    public void showFinishResult() {
-        ToastUtil.showPositiveToast("设置成功");
-        if (listener != null) {
-            listener.remarkNameChange(getEditName());
+    public void showFinishResult(RxEvent.GetFriendInfoCall getFriendInfoCall) {
+        if (getFriendInfoCall.i == JError.ErrorOK && getEditName().equals(getFriendInfoCall.jfgFriendAccount.markName)){
+            ToastUtil.showPositiveToast(getString(R.string.PWD_OK_2));
+            if (listener != null) {
+                listener.remarkNameChange(getEditName());
+            }
+            getFragmentManager().popBackStack();
+        }else {
+            ToastUtil.showPositiveToast(getString(R.string.SUBMIT_FAIL));
         }
-        getFragmentManager().popBackStack();
+
     }
 
     /**
@@ -159,7 +165,7 @@ public class MineSetRemarkNameFragment extends Fragment implements MineSetRemark
      */
     @Override
     public void showSendReqPro() {
-        rlSendProHint.setVisibility(View.VISIBLE);
+        LoadingDialog.showLoading(getFragmentManager(),getString(R.string.is_creating));
     }
 
     /**
@@ -167,7 +173,7 @@ public class MineSetRemarkNameFragment extends Fragment implements MineSetRemark
      */
     @Override
     public void hideSendReqPro() {
-        rlSendProHint.setVisibility(View.INVISIBLE);
+        LoadingDialog.dismissLoading(getFragmentManager());
     }
 
     @Override
@@ -176,9 +182,11 @@ public class MineSetRemarkNameFragment extends Fragment implements MineSetRemark
         if (TextUtils.isEmpty(getEditName())) {
             ivMineSetRemarknameBind.setImageDrawable(getResources().getDrawable(R.drawable.icon_finish_disable));
             ivMineSetRemarknameBind.setEnabled(false);
+            ivMinePersonalSetRemarknameClear.setVisibility(View.GONE);
         } else {
             ivMineSetRemarknameBind.setImageDrawable(getResources().getDrawable(R.drawable.icon_finish));
             ivMineSetRemarknameBind.setEnabled(true);
+            ivMinePersonalSetRemarknameClear.setVisibility(View.VISIBLE);
         }
     }
 }

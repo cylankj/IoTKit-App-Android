@@ -67,7 +67,6 @@ public class CloudVideoChatCallOutFragment extends Fragment implements CloudVide
         View view = inflater.inflate(R.layout.fragment_cloud_live_videochat, container, false);
         ButterKnife.bind(this, view);
         initPresenter();
-        //presenter.bindService();
         return view;
     }
 
@@ -113,7 +112,7 @@ public class CloudVideoChatCallOutFragment extends Fragment implements CloudVide
     @Override
     public void showLoadResult() {
         tvConnetText.setVisibility(View.INVISIBLE);
-        tvLoading.setText("连接失败");
+        tvLoading.setText(getString(R.string.WIFI_ERR_INFO));
     }
 
     @Override

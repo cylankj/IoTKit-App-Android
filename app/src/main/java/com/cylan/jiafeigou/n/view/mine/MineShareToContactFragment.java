@@ -4,6 +4,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
@@ -27,6 +28,7 @@ import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
 import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
 import com.cylan.jiafeigou.n.view.adapter.ShareToContactAdapter;
 import com.cylan.jiafeigou.utils.ToastUtil;
+import com.cylan.jiafeigou.widget.LoadingDialog;
 
 import java.util.ArrayList;
 
@@ -54,17 +56,13 @@ public class MineShareToContactFragment extends Fragment implements MineShareToC
     TextView tvTopTitle;
     @BindView(R.id.et_search_contact)
     EditText etSearchContact;
-    @BindView(R.id.pro_share_hint)
-    ProgressBar proShareHint;
-    @BindView(R.id.tv_share_hint)
-    TextView tvShareHint;
-    @BindView(R.id.rl_share_pro_hint)
-    RelativeLayout rlShareProHint;
+
 
     private MineShareToContactContract.Presenter presenter;
     private ShareToContactAdapter shareToContactAdapter;
     private DeviceBean deviceinfo;
     private String contractPhone;
+    private ArrayList<RelAndFriendBean> hasSharefriend;
 
     public static MineShareToContactFragment newInstance(Bundle bundle) {
         MineShareToContactFragment fragment = new MineShareToContactFragment();
@@ -88,13 +86,14 @@ public class MineShareToContactFragment extends Fragment implements MineShareToC
     private void getArgumentData() {
         Bundle arguments = getArguments();
         deviceinfo = arguments.getParcelable("deviceinfo");
+        hasSharefriend = arguments.getParcelableArrayList("sharefriend");
     }
 
     @Override
     public void onStart() {
         super.onStart();
         if (presenter != null) {
-            presenter.getHasShareContract(deviceinfo.uuid);
+//            presenter.getHasShareContract(deviceinfo.uuid);
             presenter.start();
         }
     }
@@ -108,7 +107,7 @@ public class MineShareToContactFragment extends Fragment implements MineShareToC
     }
 
     private void initPresenter() {
-        presenter = new MineShareToContactPresenterImp(this);
+        presenter = new MineShareToContactPresenterImp(this,hasSharefriend);
     }
 
     @Override
@@ -176,8 +175,8 @@ public class MineShareToContactFragment extends Fragment implements MineShareToC
     @Override
     public void showShareDeviceDialog(final String account) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        builder.setTitle("分享设备");
-        builder.setPositiveButton("确认", new DialogInterface.OnClickListener() {
+        builder.setTitle(getString(R.string.Tap3_ShareDevice));
+        builder.setPositiveButton(getString(R.string.Button_Sure), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
@@ -194,7 +193,7 @@ public class MineShareToContactFragment extends Fragment implements MineShareToC
             }
         });
 
-        builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(getString(R.string.CANCEL), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
@@ -204,17 +203,16 @@ public class MineShareToContactFragment extends Fragment implements MineShareToC
 
     @Override
     public void showShareingProHint() {
-        rlShareProHint.setVisibility(View.VISIBLE);
+        LoadingDialog.showLoading(getFragmentManager(),getString(R.string.LOADING));
     }
 
     @Override
     public void hideShareingProHint() {
-        rlShareProHint.setVisibility(View.INVISIBLE);
+        LoadingDialog.dismissLoading(getFragmentManager());
     }
 
     @Override
     public void changeShareingProHint(String finish) {
-        tvShareHint.setText(finish);
     }
 
     @Override
@@ -226,7 +224,7 @@ public class MineShareToContactFragment extends Fragment implements MineShareToC
     public void startSendMesgActivity(String account) {
         Uri smsToUri = Uri.parse("smsto:"+account);
         Intent mIntent = new Intent(Intent.ACTION_SENDTO, smsToUri );
-        mIntent.putExtra("sms_body", "邀请你成为我的好友，点击XXXXXXXXX下载安装【加菲狗】");
+        mIntent.putExtra("sms_body", getString(R.string.Tap1_share_tips));
         startActivity( mIntent );
     }
 
@@ -238,18 +236,18 @@ public class MineShareToContactFragment extends Fragment implements MineShareToC
     public void handlerCheckRegister(int requtestId, String item) {
         switch (requtestId){
             case JError.ErrorOK:                                           //分享成功
-                ToastUtil.showPositiveToast("分享成功");
+                ToastUtil.showPositiveToast(getString(R.string.Tap3_ShareDevice_SuccessTips));
                 break;
 
             case JError.ErrorShareExceedsLimit:                             //已注册 未分享但人数达到5人
                 if (getView() != null){
-                    showPersonOverDialog("只能分享给5位用户");
+                    showPersonOverDialog(getString(R.string.SHARE_ERR));
                 }
                 break;
 
             case JError.ErrorShareAlready:                                    //已注册 已分享
                 if (getView() != null){
-                    showPersonOverDialog("已经分享给此账号啦");
+                    showPersonOverDialog(getString(R.string.RET_ESHARE_REPEAT));
                 }
                 break;
             case JError.ErrorShareInvalidAccount:                             //未注册
@@ -258,7 +256,7 @@ public class MineShareToContactFragment extends Fragment implements MineShareToC
 
             case JError.ErrorShareToSelf:                                     //不能分享给自己
                 if (getView() != null){
-                    showPersonOverDialog("你不能分享给自己");
+                    showPersonOverDialog(getString(R.string.RET_ESHARE_NOT_YOURSELF));
                 }
                 break;
         }

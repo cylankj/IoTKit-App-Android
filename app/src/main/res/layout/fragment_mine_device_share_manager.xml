@@ -27,7 +27,7 @@
             android:layout_marginLeft="48dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="设备名称"
+            android:text="@string/EQUIPMENT_NAME"
             android:textSize="18sp"
             android:textColor="@color/color_white" />
 
@@ -81,32 +81,10 @@
                 android:layout_marginTop="16dp"
                 android:textColor="#aaaaaa"
                 android:textSize="15sp"
-                android:text="暂无分享"
+                android:text="@string/Tap3_ShareDevice_NoShare"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
         </LinearLayout>
-
-        <RelativeLayout
-            android:visibility="invisible"
-            android:id="@+id/rl_cancle_share_progress"
-            android:layout_gravity="center"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-
-            <ProgressBar
-                android:layout_centerHorizontal="true"
-                android:id="@+id/progress_bar"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-
-            <TextView
-                android:text="取消分享中..."
-                android:layout_below="@id/progress_bar"
-                android:textColor="@color/color_black"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-
-        </RelativeLayout>
 
     </FrameLayout>
 

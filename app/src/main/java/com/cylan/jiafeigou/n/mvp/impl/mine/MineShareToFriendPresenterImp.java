@@ -45,7 +45,6 @@ public class MineShareToFriendPresenterImp extends AbstractPresenter<MineShareTo
             compositeSubscription.unsubscribe();
         }else {
             compositeSubscription = new CompositeSubscription();
-            compositeSubscription.add(getAllShareFriend());
             compositeSubscription.add(getAllShareFriendCallBack());
             compositeSubscription.add(shareDeviceCallBack());
         }
@@ -109,13 +108,13 @@ public class MineShareToFriendPresenterImp extends AbstractPresenter<MineShareTo
      * 获取到未分享的亲友
      */
     @Override
-    public Subscription getAllShareFriend() {
-        return rx.Observable.just(null)
+    public void getAllShareFriend(String cid) {
+        rx.Observable.just(cid)
                 .subscribeOn(Schedulers.newThread())
-                .subscribe(new Action1<Object>() {
+                .subscribe(new Action1<String>() {
                     @Override
-                    public void call(Object o) {
-                        JfgCmdInsurance.getCmd().getFriendList();
+                    public void call(String cid) {
+                        JfgCmdInsurance.getCmd().getUnShareListByCid(cid);
                     }
                 }, new Action1<Throwable>() {
                     @Override
@@ -131,13 +130,13 @@ public class MineShareToFriendPresenterImp extends AbstractPresenter<MineShareTo
      */
     @Override
     public Subscription getAllShareFriendCallBack() {
-        return RxBus.getCacheInstance().toObservable(RxEvent.GetFriendList.class)
-                .flatMap(new Func1<RxEvent.GetFriendList, Observable<ArrayList<RelAndFriendBean>>>() {
+        return RxBus.getCacheInstance().toObservable(RxEvent.GetHasShareFriendCallBack.class)
+                .flatMap(new Func1<RxEvent.GetHasShareFriendCallBack, Observable<ArrayList<RelAndFriendBean>>>() {
                     @Override
-                    public Observable<ArrayList<RelAndFriendBean>> call(RxEvent.GetFriendList getFriendList) {
-                        if (getFriendList != null && getFriendList instanceof RxEvent.GetFriendList){
+                    public Observable<ArrayList<RelAndFriendBean>> call(RxEvent.GetHasShareFriendCallBack getFriendList) {
+                        if (getFriendList != null && getFriendList instanceof RxEvent.GetHasShareFriendCallBack){
                             if (getFriendList.i == 0 && getFriendList.arrayList.size() != 0){
-                                return Observable.just(converData(getFriendList));
+                                return Observable.just(converData(getFriendList.arrayList));
                             }else {
                                 return Observable.just(null);
                             }
@@ -185,12 +184,12 @@ public class MineShareToFriendPresenterImp extends AbstractPresenter<MineShareTo
 
     /**
      * 数据的转换
-     * @param getShareListCallBack
+     * @param friendList
      * @return
      */
-    private ArrayList<RelAndFriendBean> converData(RxEvent.GetFriendList getShareListCallBack) {
+    private ArrayList<RelAndFriendBean> converData(ArrayList<JFGFriendAccount> friendList) {
         ArrayList<RelAndFriendBean> list = new ArrayList<>();
-        for (JFGFriendAccount friendAccount:getShareListCallBack.arrayList){
+        for (JFGFriendAccount friendAccount:friendList){
             RelAndFriendBean bean = new RelAndFriendBean();
             bean.account = friendAccount.account;
             bean.alias = friendAccount.alias;

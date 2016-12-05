@@ -17,14 +17,14 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendAddFromContactContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineFriendAddFromContactPresenterImp;
 import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
-import com.cylan.jiafeigou.n.view.adapter.RelativeAndFriendAddFromContactAdapter;
+import com.cylan.jiafeigou.n.view.adapter.FriendAddFromContactAdapter;
 import com.cylan.jiafeigou.utils.ToastUtil;
+import com.cylan.jiafeigou.widget.LoadingDialog;
 import com.cylan.superadapter.OnItemClickListener;
 
 import java.util.ArrayList;
@@ -39,7 +39,7 @@ import butterknife.OnTextChanged;
  * 创建时间：2016/9/6
  * 描述：
  */
-public class MineFriendAddFromContactFragment extends Fragment implements MineFriendAddFromContactContract.View, RelativeAndFriendAddFromContactAdapter.onContactItemClickListener {
+public class MineFriendAddFromContactFragment extends Fragment implements MineFriendAddFromContactContract.View, FriendAddFromContactAdapter.onContactItemClickListener {
 
     @BindView(R.id.iv_home_mine_relativesandfriends_add_from_contact_back)
     ImageView ivHomeMineRelativesandfriendsAddFromContactBack;
@@ -49,12 +49,10 @@ public class MineFriendAddFromContactFragment extends Fragment implements MineFr
     RecyclerView rcyContactList;
     @BindView(R.id.ll_no_contact)
     LinearLayout llNoContact;
-    @BindView(R.id.rl_send_pro_hint)
-    RelativeLayout rlSendProHint;
 
     private MineFriendAddFromContactContract.Presenter presenter;
     private MineAddFromContactFragment mineAddFromContactFragment;
-    private RelativeAndFriendAddFromContactAdapter contactListAdapter;
+    private FriendAddFromContactAdapter contactListAdapter;
 
     private String friendAccount;
 
@@ -110,7 +108,7 @@ public class MineFriendAddFromContactFragment extends Fragment implements MineFr
     @Override
     public void initContactRecycleView(ArrayList<RelAndFriendBean> list) {
         rcyContactList.setLayoutManager(new LinearLayoutManager(getContext()));
-        contactListAdapter = new RelativeAndFriendAddFromContactAdapter(getView().getContext(), list, null);
+        contactListAdapter = new FriendAddFromContactAdapter(getView().getContext(), list, null);
         rcyContactList.setAdapter(contactListAdapter);
         initAdaListener();
     }
@@ -159,7 +157,7 @@ public class MineFriendAddFromContactFragment extends Fragment implements MineFr
      */
     @Override
     public void showLoadingPro() {
-        rlSendProHint.setVisibility(View.VISIBLE);
+        LoadingDialog.showLoading(getFragmentManager(),getString(R.string.getting));
     }
 
     /**
@@ -167,7 +165,7 @@ public class MineFriendAddFromContactFragment extends Fragment implements MineFr
      */
     @Override
     public void hideLoadingPro() {
-        rlSendProHint.setVisibility(View.INVISIBLE);
+        LoadingDialog.dismissLoading(getFragmentManager());
     }
 
     /**
@@ -191,7 +189,7 @@ public class MineFriendAddFromContactFragment extends Fragment implements MineFr
     private void sendSms() {
         Uri smsToUri = Uri.parse("smsto:" + friendAccount);
         Intent mIntent = new Intent(Intent.ACTION_SENDTO, smsToUri);
-        mIntent.putExtra("sms_body", "邀请你成为我的好友，点击XXXXXXXXX下载安装【加菲狗】");
+        mIntent.putExtra("sms_body", getString(R.string.Tap1_share_tips));
         startActivity(mIntent);
     }
 
@@ -224,7 +222,7 @@ public class MineFriendAddFromContactFragment extends Fragment implements MineFr
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 sendSms();
             } else {
-                ToastUtil.showNegativeToast("请授权，才能发送邀请短信");
+                ToastUtil.showNegativeToast(getString(R.string.Tap0_Authorizationfailed));
             }
         }
     }

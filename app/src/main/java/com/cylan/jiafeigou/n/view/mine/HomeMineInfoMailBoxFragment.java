@@ -7,16 +7,13 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
-import android.text.Editable;
 import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.cylan.entity.jniCall.JFGAccount;
@@ -27,10 +24,12 @@ import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.utils.IMEUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
+import com.cylan.jiafeigou.widget.LoadingDialog;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.OnTextChanged;
 
 /**
  * 创建者     谢坤
@@ -45,22 +44,17 @@ public class HomeMineInfoMailBoxFragment extends Fragment implements MineInfoBin
 
     @BindView(R.id.iv_mine_personal_information_mailbox)
     ImageView mIvMailBox;
-
     @BindView(R.id.view_mine_personal_information_mailbox)
     View mViewMailBox;
-
     @BindView(R.id.et_mine_personal_information_mailbox)
     EditText mETMailBox;
-
     @BindView(R.id.iv_mine_personal_mailbox_bind)
     ImageView mIvMailBoxBind;
-
     @BindView(R.id.iv_mine_personal_mailbox_bind_disable)
     ImageView mIvMailBoxBindDisable;
     @BindView(R.id.tv_top_title)
     TextView tvTopTitle;
-    @BindView(R.id.rl_send_pro_hint)
-    RelativeLayout rlSendProHint;
+
 
     private String mailBox;
     private MineInfoBindMailContract.Presenter presenter;
@@ -78,8 +72,8 @@ public class HomeMineInfoMailBoxFragment extends Fragment implements MineInfoBin
     @Override
     public void showMailHasBindDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        builder.setMessage("该邮箱已经被绑定")
-                .setPositiveButton("我知道了", new DialogInterface.OnClickListener() {
+        builder.setMessage(getString(R.string.RET_EEDITUSERINFO_EMAIL))
+                .setPositiveButton(getString(R.string.SURE), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
@@ -92,38 +86,34 @@ public class HomeMineInfoMailBoxFragment extends Fragment implements MineInfoBin
      */
     @Override
     public void showSendReqResult(RxEvent.GetUserInfo getUserInfo) {
-//        if (onBindMailBoxListener != null) {
-//            onBindMailBoxListener.mailBoxChange(mailBox);
-//            String mailBoxText = PreferencesUtils.getString(userinfo.getAccount() + "邮箱");
-//            mETMailBox.setText(mailBoxText);
-//            IMEUtils.hide((Activity) getContext());
-//            getFragmentManager().popBackStack();
-//        }
-
-        hideSendReqHint();
-        if (!"".equals(getUserInfo.jfgAccount.getEmail())) {
-            //绑定成功
-            ToastUtil.showPositiveToast("绑定成功");
-            getFragmentManager().popBackStack();
-        } else {
-            //绑定失败
-            ToastUtil.showPositiveToast("绑定失败");
+        if (!TextUtils.isEmpty(getEditText())){
+            hideSendReqHint();
+            if (getEditText().equals(getUserInfo.jfgAccount.getEmail())) {
+                //绑定成功
+                ToastUtil.showPositiveToast(getString(R.string.SCENE_SAVED));
+                getFragmentManager().popBackStack();
+            } else {
+                //绑定失败
+                ToastUtil.showPositiveToast(getString(R.string.SUBMIT_FAIL));
+            }
         }
 
     }
 
-
-    public void getArgumentData() {
-        Bundle arguments = getArguments();
-        userinfo = (JFGAccount) arguments.getSerializable("userinfo");
-
-        if ("".equals(userinfo.getEmail()) || userinfo.getEmail() == null) {
-            bindOrChange = true;
-        } else {
-            bindOrChange = false;
-            tvTopTitle.setText("修改邮箱");
+    /**
+     * 拿到账号
+     */
+    @Override
+    public void getUserAccountData(JFGAccount account) {
+        userinfo = account;
+        if (userinfo != null){
+            if ("".equals(userinfo.getEmail()) || userinfo.getEmail() == null) {
+                bindOrChange = true;
+            } else {
+                bindOrChange = false;
+                tvTopTitle.setText(getString(R.string.CHANGE_EMAIL));
+            }
         }
-
     }
 
     public interface OnBindMailBoxListener {
@@ -148,14 +138,20 @@ public class HomeMineInfoMailBoxFragment extends Fragment implements MineInfoBin
     @Override
     public void onStart() {
         super.onStart();
-        if (presenter != null) presenter.start();
+        if (presenter != null){
+            presenter.start();
+        }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (presenter != null) presenter.stop();
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        String mailBoxText = PreferencesUtils.getString(userinfo.getAccount() + "邮箱");
-        mETMailBox.setText(mailBoxText);
         mIvMailBoxBindDisable.setVisibility(View.VISIBLE);
         mIvMailBoxBind.setVisibility(View.GONE);
         mIvMailBoxBindDisable.setClickable(false);
@@ -168,7 +164,6 @@ public class HomeMineInfoMailBoxFragment extends Fragment implements MineInfoBin
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_mine_info_mailbox, container, false);
         ButterKnife.bind(this, view);
-        getArgumentData();
         initPresenter();
         initListener();
         return view;
@@ -176,6 +171,21 @@ public class HomeMineInfoMailBoxFragment extends Fragment implements MineInfoBin
 
     private void initPresenter() {
         presenter = new MineInfoBineMailPresenterImp(this);
+    }
+
+
+
+    @OnTextChanged(R.id.et_mine_personal_information_mailbox)
+    public void onEditChange(CharSequence s, int start, int before, int count) {
+        boolean isEmpty = TextUtils.isEmpty(s);
+        mIvMailBox.setVisibility(isEmpty ? View.GONE : View.VISIBLE);
+        mIvMailBoxBind.setVisibility(isEmpty ? View.GONE : View.VISIBLE);
+        mIvMailBoxBindDisable.setVisibility(isEmpty ? View.VISIBLE : View.GONE);
+        mViewMailBox.setBackgroundColor(isEmpty ? getResources().getColor(R.color.color_f2f2f2) : getResources().getColor(R.color.color_36bdff));
+        mIvMailBoxBindDisable.setClickable(false);
+        mIvMailBoxBindDisable.setEnabled(false);
+        mIvMailBoxBind.setClickable(true);
+        mIvMailBoxBind.setEnabled(true);
     }
 
     /**
@@ -187,31 +197,6 @@ public class HomeMineInfoMailBoxFragment extends Fragment implements MineInfoBin
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 return (event.getKeyCode() == KeyEvent.KEYCODE_ENTER);
-            }
-        });
-
-        mETMailBox.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                boolean isEmpty = TextUtils.isEmpty(s);
-                mIvMailBox.setVisibility(isEmpty ? View.GONE : View.VISIBLE);
-                mIvMailBoxBind.setVisibility(isEmpty ? View.GONE : View.VISIBLE);
-                mIvMailBoxBindDisable.setVisibility(isEmpty ? View.VISIBLE : View.GONE);
-                mViewMailBox.setBackgroundColor(isEmpty ? getResources().getColor(R.color.color_f2f2f2) : getResources().getColor(R.color.color_36bdff));
-                mIvMailBoxBindDisable.setClickable(false);
-                mIvMailBoxBindDisable.setEnabled(false);
-                mIvMailBoxBind.setClickable(true);
-                mIvMailBoxBind.setEnabled(true);
             }
         });
 
@@ -236,23 +221,14 @@ public class HomeMineInfoMailBoxFragment extends Fragment implements MineInfoBin
                 break;
             //绑定邮箱
             case R.id.iv_mine_personal_mailbox_bind:
-                mailBox = mETMailBox.getText().toString();
+                mailBox = getEditText();
                 if (TextUtils.isEmpty(mailBox)) {
                     return;
                 } else if (!presenter.checkEmail(mailBox)) {
-                    ToastUtil.showToast("请输入有效邮箱");
+                    ToastUtil.showToast(getString(R.string.EMAIL_2));
                     return;
                 } else {
-                    if (bindOrChange) {
-                        //绑定邮箱
-                        presenter.checkEmailIsBinded(mailBox);
-                    } else {
-                        //修改邮箱
-                        userinfo.setEmail(mETMailBox.getText().toString());
-                        userinfo.resetFlag();
-                        presenter.sendSetAccountReq(userinfo);
-                    }
-                    presenter.getChangeAccountCallBack();
+                    presenter.checkEmailIsBinded(mailBox);
                 }
                 break;
         }
@@ -265,25 +241,32 @@ public class HomeMineInfoMailBoxFragment extends Fragment implements MineInfoBin
     public void showAccountUnReg() {
         if (presenter.checkAccoutIsPhone(userinfo.getAccount())) {
             //是手机号登录
-            userinfo.setEmail(mETMailBox.getText().toString());
-            userinfo.resetFlag();
-            presenter.sendSetAccountReq(userinfo);
+            presenter.sendSetAccountReq(getEditText());
         } else {
             // 三方登录 未绑定邮箱和手机号跳转到设置密码界面
             if ("".equals(userinfo.getEmail()) && "".equals(userinfo.getPhone())) {
-                jump2SetPasswordFragment(mETMailBox.getText().toString());
+                jump2SetPasswordFragment(getEditText());
             }
         }
     }
 
     @Override
     public void showSendReqHint() {
-        rlSendProHint.setVisibility(View.VISIBLE);
+        LoadingDialog.showLoading(getFragmentManager(),getString(R.string.upload));
     }
 
     @Override
     public void hideSendReqHint() {
-        rlSendProHint.setVisibility(View.INVISIBLE);
+        LoadingDialog.dismissLoading(getFragmentManager());
+    }
+
+    /**
+     * 获取到输入的内容
+     * @return
+     */
+    @Override
+    public String getEditText() {
+        return mETMailBox.getText().toString();
     }
 
     /**

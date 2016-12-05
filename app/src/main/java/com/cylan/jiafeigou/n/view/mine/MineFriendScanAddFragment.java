@@ -132,7 +132,7 @@ public class MineFriendScanAddFragment extends Fragment implements ZXingScannerV
      */
     @Override
     public void scanNoResult() {
-        ToastUtil.showToast("无效的二维码");
+        ToastUtil.showToast(getString(R.string.EFAMILY_INVALID_DEVICE));
     }
 
     /**

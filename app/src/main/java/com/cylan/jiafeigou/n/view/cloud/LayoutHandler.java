@@ -8,6 +8,7 @@ import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.model.CloudLiveBaseBean;
 import com.cylan.jiafeigou.n.mvp.model.CloudLiveLeaveMesBean;
 import com.cylan.jiafeigou.n.mvp.model.CloudLiveVideoTalkBean;
+import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.superadapter.internal.SuperViewHolder;
 
@@ -60,9 +61,9 @@ public class LayoutHandler {
                 holder.setText(R.id.tv_time, videoBean.getVideoTime());
 
                 if (videoBean.isHasConnet()) {
-                    holder.setText(R.id.tv_voideo_talk_length, "通话时长 " + videoBean.getVideoLength());
+                    holder.setText(R.id.tv_voideo_talk_length, String.format(ContextUtils.getContext().getString(R.string.Tap1_iHome_CallDuration),videoBean.getVideoLength()));
                 } else {
-                    holder.setText(R.id.tv_voideo_talk_length, "未接听，点击回拨");
+                    holder.setText(R.id.tv_voideo_talk_length, ContextUtils.getContext().getString(R.string.EFAMILY_MISSED_CALL));
                 }
                 break;
         }

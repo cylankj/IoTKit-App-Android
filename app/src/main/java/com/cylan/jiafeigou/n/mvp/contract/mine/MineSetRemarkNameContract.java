@@ -3,6 +3,9 @@ package com.cylan.jiafeigou.n.mvp.contract.mine;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
 import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
+import com.cylan.jiafeigou.rx.RxEvent;
+
+import rx.Subscription;
 
 /**
  * 作者：zsl
@@ -22,7 +25,7 @@ public interface MineSetRemarkNameContract {
         /**
          * 设置修改完成结果
          */
-        void showFinishResult();
+        void showFinishResult(RxEvent.GetFriendInfoCall getFriendInfoCall);
 
         /**
          * 显示正在修改的进度提示
@@ -44,5 +47,11 @@ public interface MineSetRemarkNameContract {
          * @param friendBean
          */
         void sendSetmarkNameReq(String newName,RelAndFriendBean friendBean);
+
+        /**
+         * 设置好友备注名回调
+         * @return
+         */
+        Subscription getFriendRemarkNameCallBack();
     }
 }

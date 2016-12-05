@@ -156,7 +156,6 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
                     @Override
                     public void call(RxEvent.GetAddReqList o) {
                         if(o != null && o instanceof RxEvent.GetAddReqList){
-
                             handleInitAddReqListDataResult(o);
                         }
                     }
@@ -167,6 +166,7 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
     public void checkAllNull() {
         if (addReqNull && friendListNull) {
             if (getView() != null) {
+                getView().hideLoadingDialog();
                 getView().hideAddReqListTitle();
                 getView().hideFriendListTitle();
                 getView().showNullView();

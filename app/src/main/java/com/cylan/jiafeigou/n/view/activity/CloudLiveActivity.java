@@ -203,12 +203,11 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
      * 跳转到设置界面
      */
     private void jump2SettingFragment() {
-
         getSupportFragmentManager()
                 .beginTransaction()
                 .setCustomAnimations(0, R.anim.slide_down_out
                         , R.anim.slide_in_left, R.anim.slide_out_right)
-                .replace(android.R.id.content, cloudLiveSettingFragment)
+                .add(android.R.id.content, cloudLiveSettingFragment)
                 .addToBackStack("CloudLiveSettingFragment")
                 .commit();
     }
@@ -218,7 +217,7 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
                 .beginTransaction()
                 .setCustomAnimations(0, R.anim.slide_down_out
                         , R.anim.slide_in_left, R.anim.slide_out_right)
-                .replace(android.R.id.content, cloudVideoChatConnetionFragment)
+                .add(android.R.id.content, cloudVideoChatConnetionFragment)
                 .addToBackStack("cloudVideoChatConnetionFragment")
                 .commit();
     }
@@ -261,7 +260,7 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
             right_voice = (CloudLiveVoiceTalkView) dialogView.findViewById(R.id.voidTalkView_right);
             iv_cancle = (ImageView) dialogView.findViewById(R.id.iv_cancle);
             tv_show_mesg = (TextView) dialogView.findViewById(R.id.tv_show_mesg);
-            tv_show_mesg.setText("按下留言");
+            tv_show_mesg.setText(getString(R.string.EFAMILY_PUSH_TO_LEAVE_MSG));
             iv_voice_delete = (ImageView) dialogView.findViewById(R.id.iv_voice_delete);
 
             iv_voice_delete.setOnTouchListener(new View.OnTouchListener() {
@@ -286,7 +285,7 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
                             return true;
                         }
                         case MotionEvent.ACTION_UP: {
-                            tv_show_mesg.setText("按下留言");
+                            tv_show_mesg.setText(getString(R.string.EFAMILY_PUSH_TO_LEAVE_MSG));
                             presenter.stopRecord();
                             CloudLiveBaseBean newBean = presenter.creatMesgBean();
                             newBean.setType(0);
@@ -453,8 +452,8 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
 
     private void showDeviceDisOnlineDialog(final int whichshow) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("设备离线了");
-        builder.setPositiveButton("重试", new DialogInterface.OnClickListener() {
+        builder.setTitle(getString(R.string.OFFLINE_ERR));
+        builder.setPositiveButton(getString(R.string.TRY_AGAIN), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 switch (whichshow) {
@@ -467,7 +466,7 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
                 }
             }
         });
-        builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(getString(R.string.CANCEL), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();

@@ -146,7 +146,8 @@ public class DataSourceService extends Service implements AppCallBack {
 
     @Override
     public void OnLogoutByServer(int i) {
-        AppLogger.d("OnLogoutByServer :");
+        AppLogger.d("OnLocalMessage :"+i);
+        RxBus.getCacheInstance().post(i);
     }
 
     @Override
@@ -167,7 +168,7 @@ public class DataSourceService extends Service implements AppCallBack {
 
     @Override
     public void OnHttpDone(JFGMsgHttpResult jfgMsgHttpResult) {
-        AppLogger.d("OnLocalMessage :");
+        AppLogger.d("OnLocalMessage :"+new Gson().toJson(jfgMsgHttpResult));
         if (RxBus.getCacheInstance().hasObservers())
             RxBus.getCacheInstance().post(new RxEvent.GetHttpDoneResult(jfgMsgHttpResult));
     }
@@ -292,7 +293,8 @@ public class DataSourceService extends Service implements AppCallBack {
 
     @Override
     public void OnGetFriendInfoRsp(int i, JFGFriendAccount jfgFriendAccount) {
-        AppLogger.d("OnLocalMessage :");
+        AppLogger.d("OnLocalMessage :"+new Gson().toJson(jfgFriendAccount));
+        RxBus.getCacheInstance().post(new RxEvent.GetFriendInfoCall(i,jfgFriendAccount));
     }
 
     @Override
@@ -324,7 +326,7 @@ public class DataSourceService extends Service implements AppCallBack {
     @Override
     public void OnGetUnShareListByCidRsp(int i, ArrayList<JFGFriendAccount> arrayList) {
         AppLogger.d("OnGetUnShareListByCidRsp :" + arrayList.get(0));
-        //RxBus.getCacheInstance().post(new RxEvent.GetHasShareFriendCallBack(i,arrayList));
+//        RxBus.getCacheInstance().post(new RxEvent.GetHasShareFriendCallBack(i,arrayList));
     }
 
     @Override
@@ -359,4 +361,5 @@ public class DataSourceService extends Service implements AppCallBack {
     public void OnCheckDevVersionRsp(boolean b, String s, String s1, String s2, String s3) {
 
     }
+
 }

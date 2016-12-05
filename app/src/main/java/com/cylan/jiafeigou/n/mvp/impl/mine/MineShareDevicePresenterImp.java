@@ -5,6 +5,7 @@ import android.content.pm.PackageManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 
+import com.cylan.entity.JfgEnum;
 import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.entity.jniCall.JFGFriendAccount;
 import com.cylan.entity.jniCall.JFGShareListInfo;
@@ -86,6 +87,7 @@ public class MineShareDevicePresenterImp extends AbstractPresenter<MineShareDevi
                             }
                             getDeviceInfo(cidList);
                         }else {
+                            getView().hideLoadingDialog();
                             getView().showNoDeviceView();
                         }
                     }
@@ -95,11 +97,14 @@ public class MineShareDevicePresenterImp extends AbstractPresenter<MineShareDevi
     @Override
     public ArrayList<RelAndFriendBean> getJFGInfo(int position) {
         ArrayList<RelAndFriendBean> list = new ArrayList<>();
-        for (JFGFriendAccount info:hasShareFriendList.get(position).friends){
-            RelAndFriendBean relAndFriendBean = new RelAndFriendBean();
-            relAndFriendBean.account = info.account;
-            relAndFriendBean.alias = info.alias;
-            list.add(relAndFriendBean);
+        if (hasShareFriendList != null && hasShareFriendList.size()!= 0){
+            for (JFGFriendAccount info:hasShareFriendList.get(position).friends){
+                RelAndFriendBean relAndFriendBean = new RelAndFriendBean();
+                relAndFriendBean.account = info.account;
+                relAndFriendBean.alias = info.alias;
+                relAndFriendBean.iconUrl = JfgCmdInsurance.getCmd().getCloudUrlByType(JfgEnum.JFG_URL.PORTRAIT,0,info.account+".jpg","");
+                list.add(relAndFriendBean);
+            }
         }
         return list;
     }
@@ -114,6 +119,7 @@ public class MineShareDevicePresenterImp extends AbstractPresenter<MineShareDevi
             }
         } else {
             if (getView() != null) {
+                getView().hideLoadingDialog();
                 getView().showNoDeviceView();
             }
         }

@@ -7,6 +7,7 @@ import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
+import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.superadapter.IMulItemViewType;
 import com.cylan.superadapter.SuperAdapter;
 import com.cylan.superadapter.internal.SuperViewHolder;
@@ -43,7 +44,7 @@ public class ShareToContactAdapter extends SuperAdapter<RelAndFriendBean> {
 
         if (item.isCheckFlag == 1){
             shareBtn.setTextColor(Color.parseColor("#ADADAD"));
-            shareBtn.setText("已分享");
+            shareBtn.setText(ContextUtils.getContext().getString(R.string.Tap3_ShareDevice_Shared));
             shareBtn.setBackground(null);
         }
 

@@ -17,6 +17,7 @@ import com.cylan.jiafeigou.n.mvp.contract.mag.HomeMagLiveContract;
 import com.cylan.jiafeigou.n.mvp.impl.mag.HomeMagLivePresenterImp;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
+import com.cylan.jiafeigou.widget.LoadingDialog;
 import com.kyleduo.switchbutton.SwitchButton;
 
 import butterknife.BindView;
@@ -41,8 +42,6 @@ public class MagLiveFragment extends Fragment implements HomeMagLiveContract.Vie
     SwitchButton btnSwitch;
     @BindView(R.id.tv_clear_mag_open_record)
     TextView tvClearMagOpenRecord;
-    @BindView(R.id.rl_clear_pro_hint)
-    RelativeLayout rlClearProHint;
 
     private MagLiveInformationFragment magLiveInformationFragment;
     private HomeMagLiveContract.Presenter presenter;
@@ -158,8 +157,8 @@ public class MagLiveFragment extends Fragment implements HomeMagLiveContract.Vie
      */
     private void showClearDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        builder.setTitle("确认清空开关记录");
-        builder.setPositiveButton("确认", new DialogInterface.OnClickListener() {
+        builder.setTitle(getString(R.string.Tap1_Magnetism_ClearRecord));
+        builder.setPositiveButton(getString(R.string.OK), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 presenter.clearOpenAndCloseRecord();
@@ -169,7 +168,7 @@ public class MagLiveFragment extends Fragment implements HomeMagLiveContract.Vie
                 dialog.dismiss();
             }
         });
-        builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(getString(R.string.CANCEL), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
@@ -192,7 +191,7 @@ public class MagLiveFragment extends Fragment implements HomeMagLiveContract.Vie
      */
     @Override
     public void showNoMesg() {
-        ToastUtil.showToast("消息记录为空");
+        ToastUtil.showToast(getString(R.string.NO_MESSAGE));
     }
 
     /**
@@ -200,7 +199,7 @@ public class MagLiveFragment extends Fragment implements HomeMagLiveContract.Vie
      */
     @Override
     public void showClearProgress() {
-        rlClearProHint.setVisibility(View.VISIBLE);
+        LoadingDialog.showLoading(getFragmentManager(),"清除中...");
     }
 
     /**
@@ -208,7 +207,7 @@ public class MagLiveFragment extends Fragment implements HomeMagLiveContract.Vie
      */
     @Override
     public void hideClearProgress() {
-        rlClearProHint.setVisibility(View.INVISIBLE);
+        LoadingDialog.dismissLoading(getFragmentManager());
     }
 
 }

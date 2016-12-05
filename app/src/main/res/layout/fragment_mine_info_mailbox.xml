@@ -28,7 +28,7 @@
             android:layout_marginLeft="48dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="绑定邮箱"
+            android:text="@string/Tap0_BindEmail"
             android:textSize="18sp"
             android:textColor="@color/color_white" />
 
@@ -67,7 +67,7 @@
             android:textColor="@color/color_333333"
             android:textSize="16sp"
             android:layout_centerVertical="true"
-            android:hint="邮箱地址"
+            android:hint="@string/EMAIL_1"
             android:maxLength="65"
             android:background="@null"
             android:layout_marginRight="20dp"
@@ -94,30 +94,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/btn_login_clear_text" />
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:visibility="invisible"
-        android:id="@+id/rl_send_pro_hint"
-        android:layout_marginTop="120dp"
-        android:layout_gravity="center_horizontal"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
-
-        <ProgressBar
-            android:layout_centerHorizontal="true"
-            android:id="@+id/pro_share_hint"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
-        <TextView
-            android:textColor="@color/color_black"
-            android:text="load..."
-            android:layout_below="@id/pro_share_hint"
-            android:id="@+id/tv_share_hint"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
     </RelativeLayout>
 
 </LinearLayout>

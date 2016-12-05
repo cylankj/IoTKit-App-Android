@@ -129,8 +129,8 @@ public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMine
      */
     private void showDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getView().getContext());
-        builder.setTitle("清空消息？")
-                .setPositiveButton("清空", new DialogInterface.OnClickListener() {
+        builder.setTitle(getString(R.string.Tap3_Feedback_ClearTips))
+                .setPositiveButton(getString(R.string.Tap3_Feedback_Clear), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
@@ -142,12 +142,11 @@ public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMine
                                 suggestionAdapter.clear();
                                 suggestionAdapter.notifyDataSetHasChanged();
                                 hideLoadingDialog();
-                                ToastUtil.showPositiveToast("清空成功");
                             }
                         }, 2000);
                     }
                 })
-                .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                .setNegativeButton(getString(R.string.CANCEL), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
@@ -162,7 +161,7 @@ public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMine
     public void addAutoReply() {
         MineHelpSuggestionBean autoReplyBean = new MineHelpSuggestionBean();
         autoReplyBean.setType(0);
-        autoReplyBean.setText("您的反馈已经收到，我们将会尽快回复");
+        autoReplyBean.setText(getString(R.string.Tap3_Feedback_AutoReply));
         autoReplyBean.setDate(System.currentTimeMillis() + "");
         suggestionAdapter.add(autoReplyBean);
         suggestionAdapter.notifyDataSetHasChanged();
@@ -195,8 +194,9 @@ public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMine
             suggestionAdapter.add(suggestionBean);
             suggestionAdapter.notifyDataSetHasChanged();
             presenter.saveIntoDb(suggestionBean);
+            presenter.sendFeedBack(suggestionBean);
         } else {
-            ToastUtil.showToast("输入内容不能小于10个字符");
+            ToastUtil.showNegativeToast(getString(R.string.Tap3_Feedback_TextFail));
             return;
         }
     }

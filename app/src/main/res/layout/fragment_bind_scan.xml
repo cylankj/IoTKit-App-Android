@@ -11,7 +11,7 @@
         android:id="@+id/zxV_scan"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        hunt:hint="将取景框对准二维码，即可自动扫描" />
+        hunt:hint="@string/EFAMILY_QRCODE_BOTTOM_TEXT" />
 
     <ImageView
         android:id="@+id/imgV_nav_back"
