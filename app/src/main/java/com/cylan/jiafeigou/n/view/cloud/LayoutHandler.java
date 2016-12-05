@@ -61,7 +61,7 @@ public class LayoutHandler {
                 holder.setText(R.id.tv_time, videoBean.getVideoTime());
 
                 if (videoBean.isHasConnet()) {
-                    holder.setText(R.id.tv_voideo_talk_length, ContextUtils.getContext().getString(R.string.Tap1_iHome_CallDuration) + videoBean.getVideoLength());
+                    holder.setText(R.id.tv_voideo_talk_length, String.format(ContextUtils.getContext().getString(R.string.Tap1_iHome_CallDuration),videoBean.getVideoLength()));
                 } else {
                     holder.setText(R.id.tv_voideo_talk_length, ContextUtils.getContext().getString(R.string.EFAMILY_MISSED_CALL));
                 }

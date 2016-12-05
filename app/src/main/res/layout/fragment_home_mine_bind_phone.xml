@@ -45,7 +45,7 @@
                         android:focusableInTouchMode="true"
                         android:gravity="center"
                         android:inputType="phone"
-                        android:hint="请输入手机号"
+                        android:hint="@string/PHONE_NUMBER_2"
                         android:maxLength="60"
                         android:textColor="@color/color_666666"
                         android:textColorHint="@color/color_cecece"

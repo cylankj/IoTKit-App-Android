@@ -29,7 +29,7 @@ public interface MineShareDeviceContract {
         /**
          * desc：跳转条设备分享管理界面
          */
-        void jump2ShareDeviceMangerFragment(DeviceBean bean);
+        void jump2ShareDeviceMangerFragment(DeviceBean bean,int position);
 
         /**
          * desc：无分享设备显示null视图

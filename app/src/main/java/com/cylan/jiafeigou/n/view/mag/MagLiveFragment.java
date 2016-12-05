@@ -17,6 +17,7 @@ import com.cylan.jiafeigou.n.mvp.contract.mag.HomeMagLiveContract;
 import com.cylan.jiafeigou.n.mvp.impl.mag.HomeMagLivePresenterImp;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
+import com.cylan.jiafeigou.widget.LoadingDialog;
 import com.kyleduo.switchbutton.SwitchButton;
 
 import butterknife.BindView;
@@ -41,8 +42,6 @@ public class MagLiveFragment extends Fragment implements HomeMagLiveContract.Vie
     SwitchButton btnSwitch;
     @BindView(R.id.tv_clear_mag_open_record)
     TextView tvClearMagOpenRecord;
-    @BindView(R.id.rl_clear_pro_hint)
-    RelativeLayout rlClearProHint;
 
     private MagLiveInformationFragment magLiveInformationFragment;
     private HomeMagLiveContract.Presenter presenter;
@@ -200,7 +199,7 @@ public class MagLiveFragment extends Fragment implements HomeMagLiveContract.Vie
      */
     @Override
     public void showClearProgress() {
-        rlClearProHint.setVisibility(View.VISIBLE);
+        LoadingDialog.showLoading(getFragmentManager(),"清除中...");
     }
 
     /**
@@ -208,7 +207,7 @@ public class MagLiveFragment extends Fragment implements HomeMagLiveContract.Vie
      */
     @Override
     public void hideClearProgress() {
-        rlClearProHint.setVisibility(View.INVISIBLE);
+        LoadingDialog.dismissLoading(getFragmentManager());
     }
 
 }

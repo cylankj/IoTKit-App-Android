@@ -49,7 +49,6 @@ public class MineAddFromContactPresenterImp extends AbstractPresenter<MineAddFro
     @Override
     public void sendRequest(final String account, final String mesg) {
         rx.Observable.just(account,mesg)
-            .delay(2000, TimeUnit.MILLISECONDS)
             .subscribeOn(Schedulers.newThread())
             .subscribe(new Action1<String>() {
                 @Override
@@ -65,6 +64,10 @@ public class MineAddFromContactPresenterImp extends AbstractPresenter<MineAddFro
 
     }
 
+    /**
+     * 获取到账号昵称
+     * @return
+     */
     @Override
     public Subscription getAccountAlids() {
         return RxBus.getCacheInstance().toObservableSticky(RxEvent.GetUserInfo.class)

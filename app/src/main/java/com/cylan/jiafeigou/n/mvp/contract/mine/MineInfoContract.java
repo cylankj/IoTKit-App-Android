@@ -5,6 +5,8 @@ import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
 import com.cylan.jiafeigou.n.mvp.model.UserInfoBean;
 
+import rx.Subscription;
+
 /**
  * 作者：zsl
  * 创建时间：2016/9/1
@@ -14,13 +16,15 @@ public interface MineInfoContract {
 
     interface View extends BaseView<Presenter> {
 
-        void initPersonalInformation(JFGAccount bean);        //初始化显示个人信息
+        void initPersonalInformation(JFGAccount bean);          //初始化显示个人信息
 
-        void jump2SetEmailFragment();
+        void jump2SetEmailFragment();                           //更改邮箱
 
-        void showChooseImageDialog();
+        void showChooseImageDialog();                           //更改头像
 
         void showLogOutDialog();                                //退出登录提示框
+
+        void logOutResult(int logout);                                    //退出登录结果
 
     }
 
@@ -28,11 +32,16 @@ public interface MineInfoContract {
     interface Presenter extends BasePresenter {
 
         void bindPersonEmail();                 //绑定邮箱
-
         /**
          * 退出登录
          */
         void logOut();
+
+        /**
+         * 退出登录回调
+         * @return
+         */
+        Subscription logOutCallBack();
 
         /**
          * 检查文件是否存在
@@ -58,6 +67,22 @@ public interface MineInfoContract {
          * @return
          */
         boolean checkCameraPermission();
+
+        /**
+         * 检测存储权限
+         * @return
+         */
+        boolean checkExternalStorePermission();
+        /**
+         * 获取到用户信息
+         */
+        Subscription getAccount();
+
+        /**
+         * 判断是否是三方登录
+         * @return
+         */
+        boolean checkOpenLogin();
 
     }
 

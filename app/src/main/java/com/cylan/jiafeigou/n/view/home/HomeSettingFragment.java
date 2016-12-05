@@ -19,6 +19,7 @@ import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
+import com.cylan.jiafeigou.widget.LoadingDialog;
 import com.kyleduo.switchbutton.SwitchButton;
 
 import butterknife.BindView;
@@ -140,18 +141,18 @@ public class HomeSettingFragment extends Fragment implements HomeSettingContract
 
     @Override
     public void showClearingCacheProgress() {
-        progressbarClearingCache.setVisibility(View.VISIBLE);
+        LoadingDialog.showLoading(getFragmentManager(),getString(R.string.LOADING));
     }
 
     @Override
     public void hideClearingCacheProgress() {
-        progressbarClearingCache.setVisibility(View.INVISIBLE);
+        LoadingDialog.showLoading(getFragmentManager());
     }
 
     @Override
     public void clearFinish() {
         tvCacheSize.setText("0.0MB");
-        ToastUtil.showToast("清理成功");
+        ToastUtil.showToast(getString(R.string.Clear_Sdcard_tips3));
     }
 
     @Override

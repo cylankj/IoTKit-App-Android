@@ -30,19 +30,22 @@ public class MineDevicesShareManagerPresenterImp extends AbstractPresenter<MineD
         implements MineDevicesShareManagerContract.Presenter{
 
     private CompositeSubscription compositeSubscription;
+    private ArrayList<RelAndFriendBean> hasShareFriend;
 
-    public MineDevicesShareManagerPresenterImp(MineDevicesShareManagerContract.View view) {
+    public MineDevicesShareManagerPresenterImp(MineDevicesShareManagerContract.View view,ArrayList<RelAndFriendBean> hasShareFriend) {
         super(view);
         view.setPresenter(this);
+        this.hasShareFriend = hasShareFriend;
     }
 
     @Override
     public void start() {
+        initHasShareListData(hasShareFriend);
         if (compositeSubscription != null && !compositeSubscription.isUnsubscribed()){
             compositeSubscription.unsubscribe();
         }else {
             compositeSubscription = new CompositeSubscription();
-            compositeSubscription.add(getHasShareListCallback());
+            //compositeSubscription.add(getHasShareListCallback());
             compositeSubscription.add(cancleShareCallBack());
         }
     }
@@ -60,12 +63,14 @@ public class MineDevicesShareManagerPresenterImp extends AbstractPresenter<MineD
      */
     @Override
     public void getHasShareList(String cid) {
-        rx.Observable.just(cid)
+        ArrayList<String> deviceCid = new ArrayList<>();
+        deviceCid.add(cid);
+        rx.Observable.just(deviceCid)
                 .subscribeOn(Schedulers.newThread())
-                .subscribe(new Action1<String>() {
+                .subscribe(new Action1<ArrayList<String>>() {
                     @Override
-                    public void call(String cid) {
-                        JfgCmdInsurance.getCmd().getUnShareListByCid(cid);
+                    public void call(ArrayList<String> cid) {
+                        JfgCmdInsurance.getCmd().getShareList(cid);
                     }
                 }, new Action1<Throwable>() {
                     @Override
@@ -81,14 +86,14 @@ public class MineDevicesShareManagerPresenterImp extends AbstractPresenter<MineD
      */
     @Override
     public Subscription getHasShareListCallback() {
-        return RxBus.getCacheInstance().toObservable(RxEvent.GetHasShareFriendCallBack.class)
-                .flatMap(new Func1<RxEvent.GetHasShareFriendCallBack, Observable<ArrayList<RelAndFriendBean>>>() {
+        return RxBus.getCacheInstance().toObservable(RxEvent.GetShareListCallBack.class)
+                .flatMap(new Func1<RxEvent.GetShareListCallBack, Observable<ArrayList<RelAndFriendBean>>>() {
                     @Override
-                    public Observable<ArrayList<RelAndFriendBean>> call(RxEvent.GetHasShareFriendCallBack getHasShareFriendCallBack) {
-                        if (getHasShareFriendCallBack != null && getHasShareFriendCallBack instanceof RxEvent.GetHasShareFriendCallBack){
-                            return Observable.just(converData(getHasShareFriendCallBack));
+                    public Observable<ArrayList<RelAndFriendBean>> call(RxEvent.GetShareListCallBack getShareListCallBack) {
+                        if (getShareListCallBack != null && getShareListCallBack instanceof RxEvent.GetShareListCallBack){
+                            return Observable.just(converData(getShareListCallBack.arrayList.get(0).friends));
                         }else {
-                            return null;
+                            return Observable.just(null);
                         }
                     }
                 })
@@ -96,18 +101,21 @@ public class MineDevicesShareManagerPresenterImp extends AbstractPresenter<MineD
                 .subscribe(new Action1<ArrayList<RelAndFriendBean>>() {
                     @Override
                     public void call(ArrayList<RelAndFriendBean> list) {
-                        initHasShareListData(list);
+                        if (list != null && list.size() > 0){
+                            initHasShareListData(list);
+                        }else {
+                            getView().showNoHasShareFriendNullView();
+                        }
                     }
                 });
     }
 
     /**
      * 将数据装换
-     * @param getHasShareFriendCallBack
      */
-    private ArrayList<RelAndFriendBean> converData(RxEvent.GetHasShareFriendCallBack getHasShareFriendCallBack) {
+    private ArrayList<RelAndFriendBean> converData(ArrayList<JFGFriendAccount> friendList) {
         ArrayList<RelAndFriendBean> list = new ArrayList<>();
-        for (JFGFriendAccount friendBean:getHasShareFriendCallBack.arrayList){
+        for (JFGFriendAccount friendBean:friendList){
             RelAndFriendBean tempBean = new RelAndFriendBean();
             tempBean.account = friendBean.account;
             tempBean.alias = friendBean.alias;
@@ -182,7 +190,7 @@ public class MineDevicesShareManagerPresenterImp extends AbstractPresenter<MineD
                 getView().deleteItems();
                 getView().showUnShareResult(getView().getContext().getString(R.string.Tap3_ShareDevice_DeleteSucces));
             }else {
-                getView().showUnShareResult("取消分享失败");
+                getView().showUnShareResult(getView().getContext().getString(R.string.SUBMIT_FAIL));
             }
         }
     }

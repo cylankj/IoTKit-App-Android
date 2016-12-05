@@ -18,8 +18,10 @@ import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineUserInfoLookBigHeadContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineUserInfoLookBigHeadPresenterIMpl;
+import com.cylan.jiafeigou.support.photoselect.models.Image;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
+import com.cylan.jiafeigou.widget.LoadingDialog;
 import com.cylan.photoview.PhotoView;
 
 import butterknife.BindView;
@@ -34,9 +36,7 @@ import butterknife.OnClick;
 public class MineUserInfoLookBigHeadFragment extends Fragment implements MineUserInfoLookBigHeadContract.View {
 
     @BindView(R.id.iv_userinfo_big_image)
-    PhotoView ivUserinfoBigImage;
-    @BindView(R.id.progress_bar)
-    ProgressBar progressBar;
+    ImageView ivUserinfoBigImage;
 
     private boolean loadResult = false;
 
@@ -65,15 +65,14 @@ public class MineUserInfoLookBigHeadFragment extends Fragment implements MineUse
      */
     private void getArgumentData() {
         Bundle arguments = getArguments();
-        iamgeUrl = arguments.getString("iamgeUrl");
+        iamgeUrl = arguments.getString("imageUrl");
     }
 
     private void loadBigImage(String url) {
-
         Glide.with(getContext())
                 .load(url)
                 .asBitmap()
-                .error(R.mipmap.ic_launcher)
+                .error(R.drawable.icon_mine_head_normal)
                 .centerCrop()
                 .into(new BitmapImageViewTarget(ivUserinfoBigImage) {
                     @Override
@@ -96,7 +95,6 @@ public class MineUserInfoLookBigHeadFragment extends Fragment implements MineUse
                         loadResult = false;
                         ToastUtil.showNegativeToast(getString(R.string.Item_LoadFail));
                     }
-
                 });
     }
 
@@ -115,12 +113,12 @@ public class MineUserInfoLookBigHeadFragment extends Fragment implements MineUse
 
     @Override
     public void showLoadImageProgress() {
-        progressBar.setVisibility(View.VISIBLE);
+        LoadingDialog.showLoading(getFragmentManager(),getString(R.string.LOADING));
     }
 
     @Override
     public void hideLoadImageProgress() {
-        progressBar.setVisibility(View.INVISIBLE);
+        LoadingDialog.dismissLoading(getFragmentManager());
     }
 
     @Override

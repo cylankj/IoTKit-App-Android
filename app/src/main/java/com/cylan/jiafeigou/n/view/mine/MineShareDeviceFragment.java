@@ -57,6 +57,7 @@ public class MineShareDeviceFragment extends Fragment implements MineShareDevice
     private AlertDialog alertDialog;
     private MineShareDeviceAdapter adapter;
     private DeviceBean whichClick;
+    private int position;
 
     public static MineShareDeviceFragment newInstance() {
         return new MineShareDeviceFragment();
@@ -101,6 +102,7 @@ public class MineShareDeviceFragment extends Fragment implements MineShareDevice
     @Override
     public void showShareDialog(final int layoutPosition, final DeviceBean item) {
         whichClick = item;
+        position = layoutPosition;
         final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         View view = View.inflate(getContext(), R.layout.fragment_home_mine_share_devices_dialog, null);
         view.findViewById(R.id.tv_share_to_timeline).setOnClickListener(new View.OnClickListener() {
@@ -141,6 +143,7 @@ public class MineShareDeviceFragment extends Fragment implements MineShareDevice
     private void jump2ShareToContractFragment() {
         Bundle bundle = new Bundle();
         bundle.putParcelable("deviceinfo",whichClick);
+        bundle.putParcelableArrayList("sharefriend",presenter.getJFGInfo(position));
         mineShareToContactFragment = MineShareToContactFragment.newInstance(bundle);
         getFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
@@ -192,7 +195,7 @@ public class MineShareDeviceFragment extends Fragment implements MineShareDevice
                 if (getView() != null) {
                     ViewUtils.deBounceClick(itemView);
                     AppLogger.e("tv_share_device_manger");
-                    jump2ShareDeviceMangerFragment(adapter.getList().get(position));
+                    jump2ShareDeviceMangerFragment(adapter.getList().get(position),position);
                 }
             }
         });
@@ -203,9 +206,10 @@ public class MineShareDeviceFragment extends Fragment implements MineShareDevice
      * @param bean
      */
     @Override
-    public void jump2ShareDeviceMangerFragment(DeviceBean bean) {
+    public void jump2ShareDeviceMangerFragment(DeviceBean bean,int position) {
         Bundle bundle = new Bundle();
         bundle.putParcelable("devicebean",bean);
+        bundle.putParcelableArrayList("friendlist",presenter.getJFGInfo(position));
         mineDevicesShareManagerFragment = MineDevicesShareManagerFragment.newInstance(bundle);
         getFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right

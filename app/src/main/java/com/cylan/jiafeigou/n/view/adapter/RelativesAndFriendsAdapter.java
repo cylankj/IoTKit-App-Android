@@ -38,7 +38,7 @@ public class RelativesAndFriendsAdapter extends SuperAdapter<RelAndFriendBean> {
         Glide.with(getContext()).load(item.iconUrl)
                 .asBitmap().centerCrop()
                 .error(R.drawable.icon_mine_head_normal)
-                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                .placeholder(R.drawable.icon_mine_head_normal)
                 .into(new BitmapImageViewTarget(userImag) {
                     @Override
                     protected void setResource(Bitmap resource) {

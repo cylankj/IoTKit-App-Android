@@ -6,6 +6,7 @@ import android.widget.ImageView;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.model.MagBean;
+import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.widget.FateLineView;
 import com.cylan.superadapter.IMulItemViewType;
 import com.cylan.superadapter.SuperAdapter;
@@ -88,22 +89,22 @@ public class MagActivityAdapter extends SuperAdapter<MagBean> {
 
         if (layoutPosition == 0){
             if (checkIsToday(bean.getMagTime())){
-                holder.setText(R.id.tv_mag_live_day, "今天");
+                holder.setText(R.id.tv_mag_live_day, ContextUtils.getContext().getString(R.string.DOOR_TODAY));
             }else {
-                holder.setText(R.id.tv_mag_live_day, getDate(bean.magTime) + "月");
+                holder.setText(R.id.tv_mag_live_day, getDate(bean.magTime) + ContextUtils.getContext().getString(R.string.MONTHS));
             }
         }else {
             if (checkSame(bean.magTime,getList().get(layoutPosition-1).magTime)){
                 holder.setText(R.id.tv_mag_live_day, "");
             }else {
-                holder.setText(R.id.tv_mag_live_day, getDate(bean.magTime) + "月");
+                holder.setText(R.id.tv_mag_live_day, getDate(bean.magTime) + ContextUtils.getContext().getString(R.string.MONTHS));
             }
         }
 
         if (bean.isOpen) {
-            holder.setText(R.id.tv_mag_live_time, longToDate(bean.magTime) + " " + "打开");
+            holder.setText(R.id.tv_mag_live_time, longToDate(bean.magTime) + " " + ContextUtils.getContext().getString(R.string.MAGNETISM_ON));
         } else {
-            holder.setText(R.id.tv_mag_live_time, longToDate(bean.magTime) + " " + "关闭");
+            holder.setText(R.id.tv_mag_live_time, longToDate(bean.magTime) + " " + ContextUtils.getContext().getString(R.string.MAGNETISM_OFF));
         }
     }
 

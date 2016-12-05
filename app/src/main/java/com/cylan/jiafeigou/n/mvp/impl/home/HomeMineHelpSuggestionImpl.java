@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.db.DataBaseUtil;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeMineHelpSuggestionContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
@@ -13,6 +14,7 @@ import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.db.DbManager;
 import com.cylan.jiafeigou.support.db.ex.DbException;
 import com.cylan.jiafeigou.support.download.utils.L;
+import com.cylan.jiafeigou.support.log.AppLogger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -180,5 +182,25 @@ public class HomeMineHelpSuggestionImpl extends AbstractPresenter<HomeMineHelpSu
         }else {
             return false;
         }
+    }
+
+    /**
+     * 上传意见反馈
+     */
+    @Override
+    public void sendFeedBack(MineHelpSuggestionBean bean) {
+        rx.Observable.just(bean)
+                .subscribeOn(Schedulers.newThread())
+                .subscribe(new Action1<MineHelpSuggestionBean>() {
+                    @Override
+                    public void call(MineHelpSuggestionBean bean) {
+                        JfgCmdInsurance.getCmd().sendFeedback(Long.parseLong(bean.getDate()), bean.getText(), true);
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        AppLogger.d("sendFeedBack"+throwable.getLocalizedMessage());
+                    }
+                });
     }
 }

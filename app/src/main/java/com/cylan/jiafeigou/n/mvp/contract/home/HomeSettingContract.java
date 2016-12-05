@@ -14,6 +14,7 @@ import rx.Subscription;
 public interface HomeSettingContract {
 
     interface View extends BaseView<Presenter> {
+
         void showLoadCacheSizeProgress();
 
         void hideLoadCacheSizeProgress();
@@ -39,12 +40,27 @@ public interface HomeSettingContract {
 
     interface Presenter extends BasePresenter {
 
+        /**
+         * 清理缓存
+         */
         void clearCache();
 
+        /**
+         * 计算缓存的大小
+         */
         void calculateCacheSize();
 
+        /**
+         * 取反
+         * @return
+         */
         boolean getNegation();
 
+        /**
+         * 保存开关状态
+         * @param isChick
+         * @param key
+         */
         void savaSwitchState(boolean isChick, String key);
 
         /**

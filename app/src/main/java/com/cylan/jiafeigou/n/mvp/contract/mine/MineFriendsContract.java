@@ -88,8 +88,18 @@ public interface MineFriendsContract {
 
     interface Presenter extends BasePresenter {
 
+        /**
+         * 加载添加请求列表数据
+         * @param addReqList
+         * @return
+         */
         ArrayList<MineAddReqBean> initAddRequestData(RxEvent.GetAddReqList addReqList);
 
+        /**
+         * 加载亲友列表数据
+         * @param friendList
+         * @return
+         */
         ArrayList<RelAndFriendBean> initRelativatesAndFriendsData(RxEvent.GetFriendList friendList);
 
         boolean checkAddRequestOutTime(MineAddReqBean bean);        //检测添加请求是否超时

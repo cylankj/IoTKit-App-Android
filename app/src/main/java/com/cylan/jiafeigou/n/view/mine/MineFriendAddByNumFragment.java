@@ -140,7 +140,7 @@ public class MineFriendAddByNumFragment extends Fragment implements MineFriendAd
 
     @Override
     public void showFindLoading() {
-        LoadingDialog.showLoading(getFragmentManager());
+        LoadingDialog.showLoading(getFragmentManager(),getString(R.string.LOADING));
     }
 
     @Override

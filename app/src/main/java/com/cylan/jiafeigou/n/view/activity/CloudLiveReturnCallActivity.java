@@ -92,7 +92,7 @@ public class CloudLiveReturnCallActivity extends AppCompatActivity implements Cl
     @Override
     public void showLoadResult() {
         tvConnetText.setVisibility(View.INVISIBLE);
-        tvLoading.setText("连接失败");
+        tvLoading.setText(getString(R.string.WIFI_ERR_INFO));
     }
 
     @Override

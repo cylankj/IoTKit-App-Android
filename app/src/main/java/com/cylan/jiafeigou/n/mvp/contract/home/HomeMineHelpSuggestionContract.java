@@ -79,5 +79,10 @@ public interface HomeMineHelpSuggestionContract {
          * @return
          */
         boolean checkOver20Min(String time);
+
+        /**
+         * 上传意见反馈
+         */
+        void sendFeedBack(MineHelpSuggestionBean bean);
     }
 }

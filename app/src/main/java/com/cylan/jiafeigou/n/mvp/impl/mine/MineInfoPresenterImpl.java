@@ -11,11 +11,15 @@ import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.widget.Toast;
 
+import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineInfoContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.n.mvp.model.UserInfoBean;
+import com.cylan.jiafeigou.rx.RxBus;
+import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.galleryfinal.FunctionConfig;
 
 
@@ -28,6 +32,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
+import rx.subscriptions.CompositeSubscription;
 
 /**
  * 作者：zsl
@@ -35,6 +40,8 @@ import rx.schedulers.Schedulers;
  * 描述：
  */
 public class MineInfoPresenterImpl extends AbstractPresenter<MineInfoContract.View> implements MineInfoContract.Presenter {
+
+    private CompositeSubscription compositeSubscription;
 
     public MineInfoPresenterImpl(MineInfoContract.View view, Context context) {
         super(view);
@@ -57,6 +64,24 @@ public class MineInfoPresenterImpl extends AbstractPresenter<MineInfoContract.Vi
                     @Override
                     public void call(Object o) {
                         JfgCmdInsurance.getCmd().logout();
+                    }
+                });
+    }
+
+    /**
+     * 退出登录的回调
+     * @return
+     */
+    @Override
+    public Subscription logOutCallBack() {
+        return RxBus.getCacheInstance().toObservable(Integer.class)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<Integer>() {
+                    @Override
+                    public void call(Integer integer) {
+                        if (getView() != null){
+                            getView().logOutResult(integer);
+                        }
                     }
                 });
     }
@@ -134,14 +159,64 @@ public class MineInfoPresenterImpl extends AbstractPresenter<MineInfoContract.Vi
         }
     }
 
+    /**
+     * 检测存储权限
+     * @return
+     */
+    @Override
+    public boolean checkExternalStorePermission() {
+        if (ContextCompat.checkSelfPermission(getView().getContext(),
+                Manifest.permission.READ_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+            return false;
+        }else{
+            return true;
+        }
+    }
+
+    /**
+     * 获取到用户的信息
+     */
+    @Override
+    public Subscription getAccount() {
+        return RxBus.getCacheInstance().toObservableSticky(RxEvent.GetUserInfo.class)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<RxEvent.GetUserInfo>() {
+                    @Override
+                    public void call(RxEvent.GetUserInfo getUserInfo) {
+                        if (getUserInfo != null && getUserInfo instanceof RxEvent.GetUserInfo){
+                            if (getView() != null)getView().initPersonalInformation(getUserInfo.jfgAccount);
+                        }
+                    }
+                });
+    }
+
 
     @Override
     public void start() {
+        if (compositeSubscription != null && !compositeSubscription.isUnsubscribed()){
+            compositeSubscription.unsubscribe();
+        }else {
+            compositeSubscription = new CompositeSubscription();
+            compositeSubscription.add(getAccount());
+//            compositeSubscription.add(logOutCallBack());
+        }
+    }
 
+
+    /**
+     * 判断是否是三方登录
+     * @return
+     */
+    @Override
+    public boolean checkOpenLogin() {
+        return false;
     }
 
     @Override
     public void stop() {
-
+        if (compositeSubscription != null && !compositeSubscription.isUnsubscribed()){
+            compositeSubscription.unsubscribe();
+        }
     }
 }

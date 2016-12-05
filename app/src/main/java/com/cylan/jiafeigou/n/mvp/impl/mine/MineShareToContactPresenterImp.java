@@ -37,19 +37,32 @@ public class MineShareToContactPresenterImp extends AbstractPresenter<MineShareT
     private CompositeSubscription compositeSubscription;
     private ArrayList<RelAndFriendBean> filterDateList;
     private ArrayList<RelAndFriendBean> allCoverData = new ArrayList<>();
+    private ArrayList<RelAndFriendBean> hasShareFriend;
 
-    public MineShareToContactPresenterImp(MineShareToContactContract.View view) {
+    public MineShareToContactPresenterImp(MineShareToContactContract.View view,ArrayList<RelAndFriendBean> hasShareFiend) {
         super(view);
         view.setPresenter(this);
+        this.hasShareFriend = hasShareFiend;
     }
 
     @Override
     public void start() {
+
+        if (hasShareFriend != null && hasShareFriend.size() != 0){
+            ArrayList<RelAndFriendBean> list = converData2(hasShareFriend);
+            allCoverData.addAll(list);
+            handlerContactDataResult(list);
+        }else {
+            ArrayList<RelAndFriendBean> list = getAllContactList();
+            allCoverData.addAll(list);
+            handlerContactDataResult(list);
+        }
+
         if (compositeSubscription != null && !compositeSubscription.isUnsubscribed()){
             compositeSubscription.unsubscribe();
         }else {
             compositeSubscription = new CompositeSubscription();
-            compositeSubscription.add(getHasShareContractCallBack());
+//            compositeSubscription.add(getHasShareContractCallBack());
             compositeSubscription.add(shareDeviceCallBack());
         }
     }
@@ -66,6 +79,7 @@ public class MineShareToContactPresenterImp extends AbstractPresenter<MineShareT
     public void handlerSearchResult(String inputContent) {
         filterDateList = new ArrayList<>();
         if (TextUtils.isEmpty(inputContent)) {
+            filterDateList.clear();
             filterDateList.addAll(allCoverData);
         } else {
             filterDateList.clear();
@@ -181,6 +195,27 @@ public class MineShareToContactPresenterImp extends AbstractPresenter<MineShareT
         ArrayList<RelAndFriendBean> list = new ArrayList<>();
         for (RelAndFriendBean contract:getAllContactList()){
             for (JFGFriendAccount friend:arrayList){
+                if (friend.account.equals(contract.account)){
+                    contract.isCheckFlag = 1;
+                }else {
+                    contract.isCheckFlag = 0;
+                }
+            }
+            list.add(contract);
+        }
+        return list;
+    }
+
+
+    /**
+     * 数据的转换 标记已分享和未分享
+     * @param arrayList
+     * @return
+     */
+    private ArrayList<RelAndFriendBean> converData2(ArrayList<RelAndFriendBean> arrayList) {
+        ArrayList<RelAndFriendBean> list = new ArrayList<>();
+        for (RelAndFriendBean contract:getAllContactList()){
+            for (RelAndFriendBean friend:arrayList){
                 if (friend.account.equals(contract.account)){
                     contract.isCheckFlag = 1;
                 }else {

@@ -1,8 +1,11 @@
 package com.cylan.jiafeigou.n.view.home;
 
+import android.content.DialogInterface;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +21,7 @@ import com.cylan.jiafeigou.n.mvp.impl.home.HomeMinePresenterImpl;
 import com.cylan.jiafeigou.n.view.mine.HomeMineHelpFragment;
 import com.cylan.jiafeigou.n.view.mine.HomeMineInfoFragment;
 import com.cylan.jiafeigou.n.view.mine.MineFriendsFragment;
+import com.cylan.jiafeigou.n.view.mine.MineInfoBindPhoneFragment;
 import com.cylan.jiafeigou.n.view.mine.MineShareDeviceFragment;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
@@ -60,6 +64,7 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
     private HomeMineMessageFragment homeMineMessageFragment;
     private MineShareDeviceFragment mineShareDeviceFragment;
     private MineFriendsFragment mineRelativesandFriendsFragment;
+    private MineInfoBindPhoneFragment bindPhoneFragment;
 
     public static HomeMineFragment newInstance(Bundle bundle) {
         HomeMineFragment fragment = new HomeMineFragment();
@@ -129,11 +134,24 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
         jump2UserInfoFrgment();
     }
 
+    /**
+     * 我的亲友
+     * @param view
+     */
     public void friendItem(View view) {
         if (!JCache.isOnline()) {
             needStartLoginFragment();
             return;
         }
+
+        if (basePresenter.checkOpenLogIn()){
+            if(TextUtils.isEmpty(basePresenter.getUserInfoBean().getEmail()) &&
+                    TextUtils.isEmpty(basePresenter.getUserInfoBean().getPhone())){
+                showBindPhoneOrEmailDialog();
+                return;
+            }
+        }
+
         getFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                         , R.anim.slide_in_left, R.anim.slide_out_right)
@@ -141,6 +159,27 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
                         "mineRelativesandFriendsFragment")
                 .addToBackStack("mineHelpFragment")
                 .commit();
+    }
+
+    /**
+     * 弹出绑定手机或者邮箱的提示框
+     */
+    private void showBindPhoneOrEmailDialog() {
+        AlertDialog.Builder b = new AlertDialog.Builder(getContext());
+        b.setTitle("使用亲友功能需要绑定手机号/邮箱");
+        b.setPositiveButton(getString(R.string.Tap2_Index_Open_NoDeviceOption), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                jump2SetPhoneFragment();
+            }
+        });
+        b.setNegativeButton(getString(R.string.CANCEL), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        }).show();
     }
 
     public void settingsItem(View view) {
@@ -259,17 +298,10 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
                 shareItem(view);
                 break;
             case R.id.home_mine_item_help:
-                /*if (getView() != null)
+                if (getView() != null)
                     ViewUtils.deBounceClick(getView().findViewById(R.id.home_mine_item_help));
-                AppLogger.e("home_mine_item_help");*/
-            /*    helpItem(view);*/
-                getFragmentManager().beginTransaction()
-                        .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
-                                , R.anim.slide_in_left, R.anim.slide_out_right)
-                        .add(android.R.id.content, mineHelpFragment, "mineHelpFragment")
-                        .addToBackStack("mineHelpFragment")
-                        .commit();
-
+                AppLogger.e("home_mine_item_help");
+                helpItem(view);
                 break;
             case R.id.home_mine_item_settings:
                 if (getView() != null)
@@ -297,6 +329,24 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
                 jump2MesgFragment();
                 break;
         }
+    }
+
+    /**
+     * 帮助与反馈
+     * @param view
+     */
+    private void helpItem(View view) {
+        if (!JCache.isOnline()) {
+            needStartLoginFragment();
+            return;
+        }
+        getFragmentManager().beginTransaction()
+                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
+                        , R.anim.slide_in_left, R.anim.slide_out_right)
+                .add(android.R.id.content, mineHelpFragment, "mineHelpFragment")
+                .addToBackStack("mineHelpFragment")
+                .commit();
+
     }
 
     /**
@@ -330,9 +380,7 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
      * 跳转个人信息页
      */
     private void jump2UserInfoFrgment() {
-        Bundle bundle = new Bundle();
-        bundle.putSerializable("userInfoBean", basePresenter.getUserInfoBean());
-        personalInformationFragment = HomeMineInfoFragment.newInstance(bundle);
+        personalInformationFragment = HomeMineInfoFragment.newInstance();
         getFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                         , R.anim.slide_in_left, R.anim.slide_out_right)
@@ -341,4 +389,18 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
                 .commit();
     }
 
+    /**
+     * 跳转到绑定手机
+     */
+    private void jump2SetPhoneFragment() {
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("userinfo",basePresenter.getUserInfoBean());
+        bindPhoneFragment = MineInfoBindPhoneFragment.newInstance(bundle);
+        getFragmentManager().beginTransaction()
+                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
+                        , R.anim.slide_in_left, R.anim.slide_out_right)
+                .add(android.R.id.content, bindPhoneFragment, "bindPhoneFragment")
+                .addToBackStack("personalInformationFragment")
+                .commit();
+    }
 }

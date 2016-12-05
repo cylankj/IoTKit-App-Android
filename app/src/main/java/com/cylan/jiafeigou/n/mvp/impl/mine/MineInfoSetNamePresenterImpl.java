@@ -26,6 +26,7 @@ import rx.subscriptions.CompositeSubscription;
 public class MineInfoSetNamePresenterImpl extends AbstractPresenter<MineInfoSetNameContract.View> implements MineInfoSetNameContract.Presenter {
 
     private CompositeSubscription compositeSubscription;
+    private JFGAccount jfgAccount;
 
     public MineInfoSetNamePresenterImpl(MineInfoSetNameContract.View view) {
         super(view);
@@ -36,17 +37,18 @@ public class MineInfoSetNamePresenterImpl extends AbstractPresenter<MineInfoSetN
      * 发送保存昵称的请求
      */
     @Override
-    public void saveName(JFGAccount newAliasAccount) {
+    public void saveName(final String newAlias) {
         if (getView() != null){
             getView().showSendHint();
         }
-        rx.Observable.just(newAliasAccount)
-                .delay(2000, TimeUnit.MILLISECONDS)
+        rx.Observable.just(newAlias)
                 .subscribeOn(Schedulers.newThread())
-                .subscribe(new Action1<JFGAccount>() {
+                .subscribe(new Action1<String>() {
                     @Override
-                    public void call(JFGAccount newAliasAccount) {
-                        JfgCmdInsurance.getCmd().setAccount(newAliasAccount);
+                    public void call(String newAliasAccount) {
+                        jfgAccount.resetFlag();
+                        jfgAccount.setAlias(newAliasAccount);
+                        JfgCmdInsurance.getCmd().setAccount(jfgAccount);
                     }
                 }, new Action1<Throwable>() {
                     @Override
@@ -54,6 +56,7 @@ public class MineInfoSetNamePresenterImpl extends AbstractPresenter<MineInfoSetN
                         AppLogger.e("saveName"+throwable.getLocalizedMessage());
                     }
                 });
+
     }
 
     @Override
@@ -73,7 +76,7 @@ public class MineInfoSetNamePresenterImpl extends AbstractPresenter<MineInfoSetN
                     @Override
                     public void call(RxEvent.GetUserInfo getUserInfo) {
                         if (getView() != null){
-                            getView().hideSendHint();
+                            jfgAccount = getUserInfo.jfgAccount;
                             getView().handlerResult(getUserInfo);
                         }
                     }

@@ -175,9 +175,7 @@
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
             android:background="@color/color_f2f2f2" />
-
     </RelativeLayout>
-
 
     <RelativeLayout
         android:id="@+id/RLayout_home_mine_personal_phone"

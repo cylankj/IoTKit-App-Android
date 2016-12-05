@@ -97,7 +97,9 @@ public class MineFriendAddReqDetailFragment extends Fragment implements MineFrie
         showOrHideReqMesg(isFrome);
         //显示头像
         Glide.with(getContext()).load(addRequestItems.iconUrl)
-                .asBitmap().centerCrop()
+                .asBitmap()
+                .centerCrop()
+                .placeholder(R.drawable.icon_mine_head_normal)
                 .error(R.drawable.icon_mine_head_normal)
                 .into(new BitmapImageViewTarget(ivDetailUserHead) {
                     @Override

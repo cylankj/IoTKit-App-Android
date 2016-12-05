@@ -131,8 +131,8 @@ public class MineFriendListShareDevicesPresenterImp extends AbstractPresenter<Mi
                 .subscribeOn(Schedulers.newThread())
                 .subscribe(new Action1<ArrayList<DeviceBean>>() {
                     @Override
-                    public void call(ArrayList<DeviceBean> deviceBeen) {
-                        for (DeviceBean bean:deviceBeen){
+                    public void call(ArrayList<DeviceBean> chooseList) {
+                        for (DeviceBean bean:chooseList){
                             JfgCmdInsurance.getCmd().shareDevice(bean.uuid,friendBean.account);
                         }
                     }
@@ -164,7 +164,7 @@ public class MineFriendListShareDevicesPresenterImp extends AbstractPresenter<Mi
     @Override
     public Subscription shareDeviceCallBack() {
         return RxBus.getCacheInstance().toObservable(RxEvent.ShareDeviceCallBack.class)
-                .subscribeOn(AndroidSchedulers.mainThread())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<RxEvent.ShareDeviceCallBack>() {
                     @Override
                     public void call(RxEvent.ShareDeviceCallBack shareDeviceCallBack) {

@@ -22,6 +22,7 @@ import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
 import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
 import com.cylan.jiafeigou.n.view.adapter.ChooseShareDeviceAdapter;
 import com.cylan.jiafeigou.rx.RxEvent;
+import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.widget.LoadingDialog;
 
@@ -48,8 +49,6 @@ public class MineFriendsListShareDevicesFragment extends Fragment implements Min
     TextView tvShareTo;
     @BindView(R.id.ll_no_device)
     LinearLayout llNoDevice;
-    @BindView(R.id.rl_send_pro_hint)
-    RelativeLayout rlSendProHint;
     @BindView(R.id.tv_choose_device_title)
     TextView tvChooseDeviceTitle;
 
@@ -129,11 +128,10 @@ public class MineFriendsListShareDevicesFragment extends Fragment implements Min
      */
     @Override
     public void initTitleView(RelAndFriendBean bean) {
-
         if (TextUtils.isEmpty(bean.markName.trim())) {
             tvShareTo.setText(getString(R.string.Tap3_Friends_Share)+bean.alias);
         } else {
-            tvShareTo.setText(getString(R.string.Tap3_Friends_Share) + bean.markName);
+            tvShareTo.setText(getString(R.string.Tap3_Friends_Share)+bean.markName);
         }
     }
 
@@ -208,7 +206,7 @@ public class MineFriendsListShareDevicesFragment extends Fragment implements Min
      */
     @Override
     public void showSendReqProgress() {
-        rlSendProHint.setVisibility(View.VISIBLE);
+        LoadingDialog.showLoading(getFragmentManager(),getString(R.string.LOADING));
     }
 
     /**
@@ -216,7 +214,7 @@ public class MineFriendsListShareDevicesFragment extends Fragment implements Min
      */
     @Override
     public void hideSendReqProgress() {
-        rlSendProHint.setVisibility(View.INVISIBLE);
+        LoadingDialog.dismissLoading(getFragmentManager());
     }
 
     /**

@@ -18,6 +18,7 @@ import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineClipImageContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineClipImagePresenterImp;
 import com.cylan.jiafeigou.utils.ToastUtil;
+import com.cylan.jiafeigou.widget.LoadingDialog;
 
 import java.io.File;
 import java.io.IOException;
@@ -34,7 +35,6 @@ public class ClipImageActivity extends AppCompatActivity implements MineClipImag
     private TextView btnOk;
     private int type;
     private Handler handler;
-    private RelativeLayout rl_loading;
     private MineClipImageContract.Presenter presenter;
     private Uri mSaveUri;
 
@@ -66,7 +66,6 @@ public class ClipImageActivity extends AppCompatActivity implements MineClipImag
         clipViewLayout2 = (ClipViewLayout) findViewById(R.id.clipViewLayout2);
         btnCancel = (TextView) findViewById(R.id.btn_cancel);
         btnOk = (TextView) findViewById(R.id.bt_ok);
-        rl_loading = (RelativeLayout) findViewById(R.id.rl_send_pro_hint);
         //设置点击事件监听器
         btnCancel.setOnClickListener(this);
         btnOk.setOnClickListener(this);
@@ -150,26 +149,24 @@ public class ClipImageActivity extends AppCompatActivity implements MineClipImag
 
     @Override
     public void showUpLoadPro() {
-        rl_loading.setVisibility(View.VISIBLE);
+        LoadingDialog.showLoading(getSupportFragmentManager(),getString(R.string.Tap3_Uploading));
     }
 
     @Override
     public void hideUpLoadPro() {
-        rl_loading.setVisibility(View.GONE);
+        LoadingDialog.dismissLoading(getSupportFragmentManager());
     }
 
     @Override
     public void upLoadResultView(int code) {
-        if (code == JError.ErrorOK){
+        if (code == 1){
             Intent intent = new Intent();
             intent.setData(mSaveUri);
             setResult(RESULT_OK, intent);
-            finish();
-            ToastUtil.showPositiveToast("上传成功");
         }else {
-            ToastUtil.showNegativeToast("上传失败");
-            finish();
+            ToastUtil.showNegativeToast(getString(R.string.Tap3_UploadingFailed));
         }
+         finish();
     }
 
     @Override

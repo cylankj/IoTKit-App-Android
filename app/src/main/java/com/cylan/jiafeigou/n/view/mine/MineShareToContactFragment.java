@@ -4,6 +4,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
@@ -27,6 +28,7 @@ import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
 import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
 import com.cylan.jiafeigou.n.view.adapter.ShareToContactAdapter;
 import com.cylan.jiafeigou.utils.ToastUtil;
+import com.cylan.jiafeigou.widget.LoadingDialog;
 
 import java.util.ArrayList;
 
@@ -54,17 +56,13 @@ public class MineShareToContactFragment extends Fragment implements MineShareToC
     TextView tvTopTitle;
     @BindView(R.id.et_search_contact)
     EditText etSearchContact;
-    @BindView(R.id.pro_share_hint)
-    ProgressBar proShareHint;
-    @BindView(R.id.tv_share_hint)
-    TextView tvShareHint;
-    @BindView(R.id.rl_share_pro_hint)
-    RelativeLayout rlShareProHint;
+
 
     private MineShareToContactContract.Presenter presenter;
     private ShareToContactAdapter shareToContactAdapter;
     private DeviceBean deviceinfo;
     private String contractPhone;
+    private ArrayList<RelAndFriendBean> hasSharefriend;
 
     public static MineShareToContactFragment newInstance(Bundle bundle) {
         MineShareToContactFragment fragment = new MineShareToContactFragment();
@@ -88,13 +86,14 @@ public class MineShareToContactFragment extends Fragment implements MineShareToC
     private void getArgumentData() {
         Bundle arguments = getArguments();
         deviceinfo = arguments.getParcelable("deviceinfo");
+        hasSharefriend = arguments.getParcelableArrayList("sharefriend");
     }
 
     @Override
     public void onStart() {
         super.onStart();
         if (presenter != null) {
-            presenter.getHasShareContract(deviceinfo.uuid);
+//            presenter.getHasShareContract(deviceinfo.uuid);
             presenter.start();
         }
     }
@@ -108,7 +107,7 @@ public class MineShareToContactFragment extends Fragment implements MineShareToC
     }
 
     private void initPresenter() {
-        presenter = new MineShareToContactPresenterImp(this);
+        presenter = new MineShareToContactPresenterImp(this,hasSharefriend);
     }
 
     @Override
@@ -204,17 +203,16 @@ public class MineShareToContactFragment extends Fragment implements MineShareToC
 
     @Override
     public void showShareingProHint() {
-        rlShareProHint.setVisibility(View.VISIBLE);
+        LoadingDialog.showLoading(getFragmentManager(),getString(R.string.LOADING));
     }
 
     @Override
     public void hideShareingProHint() {
-        rlShareProHint.setVisibility(View.INVISIBLE);
+        LoadingDialog.dismissLoading(getFragmentManager());
     }
 
     @Override
     public void changeShareingProHint(String finish) {
-        tvShareHint.setText(finish);
     }
 
     @Override

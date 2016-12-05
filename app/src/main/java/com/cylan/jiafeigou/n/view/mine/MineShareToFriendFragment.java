@@ -24,6 +24,7 @@ import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
 import com.cylan.jiafeigou.n.view.adapter.ShareToFriendsAdapter;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.utils.ToastUtil;
+import com.cylan.jiafeigou.widget.LoadingDialog;
 import com.cylan.superadapter.internal.SuperViewHolder;
 
 import java.util.ArrayList;
@@ -48,8 +49,6 @@ public class MineShareToFriendFragment extends Fragment implements MineShareToFr
     RecyclerView rcyMineShareToRelativeAndFriendList;
     @BindView(R.id.ll_no_friend)
     LinearLayout llNoFriend;
-    @BindView(R.id.rl_send_pro_hint)
-    RelativeLayout rlSendProHint;
 
     private MineShareToFriendContract.Presenter presenter;
 
@@ -92,11 +91,17 @@ public class MineShareToFriendFragment extends Fragment implements MineShareToFr
     @Override
     public void onStart() {
         super.onStart();
-        if (presenter != null) {
-            presenter.start();
-        }
         //第一次进入以分享数显示灰色
         setHasShareFriendNum(false,hasSharefriend.size());
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (presenter != null) {
+            presenter.getAllShareFriend(deviceinfo.uuid);
+            presenter.start();
+        }
     }
 
     @Override
@@ -177,12 +182,12 @@ public class MineShareToFriendFragment extends Fragment implements MineShareToFr
 
     @Override
     public void showSendProgress() {
-        rlSendProHint.setVisibility(View.VISIBLE);
+        LoadingDialog.showLoading(getFragmentManager(),getString(R.string.LOADING));
     }
 
     @Override
     public void hideSendProgress() {
-        rlSendProHint.setVisibility(View.INVISIBLE);
+        LoadingDialog.dismissLoading(getFragmentManager());
     }
 
     @Override

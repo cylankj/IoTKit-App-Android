@@ -766,7 +766,7 @@
   <string name="Tap3_Feedback_ClearTips">清空消息？</string>
   <string name="Tap1_Camera_Messages_ViewTheVideo">查看视频</string>
   <string name="Tips_SureDelete">是否删除?</string>
-  <string name="Tap3_Friends_Share">分享设备给%1$s</string>
+  <string name="Tap3_Friends_Share">分享设备给</string>
   <string name="Tap3_ShareDevice_Tips">该设备已到达最大分享数</string>
   <string name="Tips_DeleteFail">删除失败</string>
   <string name="Yesterday">昨天</string>

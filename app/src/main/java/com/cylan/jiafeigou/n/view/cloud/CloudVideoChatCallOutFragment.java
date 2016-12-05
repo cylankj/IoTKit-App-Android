@@ -67,7 +67,6 @@ public class CloudVideoChatCallOutFragment extends Fragment implements CloudVide
         View view = inflater.inflate(R.layout.fragment_cloud_live_videochat, container, false);
         ButterKnife.bind(this, view);
         initPresenter();
-        //presenter.bindService();
         return view;
     }
 

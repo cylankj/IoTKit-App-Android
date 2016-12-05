@@ -1,9 +1,12 @@
 package com.cylan.jiafeigou.n.view.mine;
 
 import android.content.DialogInterface;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +16,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendDetailContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineFriendDetailPresenterImp;
@@ -20,6 +24,7 @@ import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
+import com.cylan.jiafeigou.widget.LoadingDialog;
 import com.cylan.jiafeigou.widget.roundedimageview.RoundedImageView;
 
 import butterknife.BindView;
@@ -47,8 +52,6 @@ public class MineFriendDetailFragment extends Fragment implements MineFriendDeta
     RelativeLayout rlDeleteRelativeandfriend;
     @BindView(R.id.tv_share_device)
     TextView tvShareDevice;
-    @BindView(R.id.rl_delete_pro_hint)
-    RelativeLayout rlDeleteProHint;
 
     private MineFriendsListShareDevicesFragment mineShareDeviceFragment;
     private MineSetRemarkNameFragment mineSetRemarkNameFragment;
@@ -58,7 +61,6 @@ public class MineFriendDetailFragment extends Fragment implements MineFriendDeta
 
     public OnDeleteClickLisenter lisenter;
     private RelAndFriendBean frienditembean;
-
 
     public interface OnDeleteClickLisenter {
         void onDelete(int position);
@@ -72,15 +74,6 @@ public class MineFriendDetailFragment extends Fragment implements MineFriendDeta
         MineFriendDetailFragment fragment = new MineFriendDetailFragment();
         fragment.setArguments(bundle);
         return fragment;
-    }
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        Bundle bundle = new Bundle();
-        bundle.putString("imageUrl", "");
-        mineLookBigImageFragment = MineLookBigImageFragment.newInstance(bundle);
     }
 
     @Nullable
@@ -101,8 +94,21 @@ public class MineFriendDetailFragment extends Fragment implements MineFriendDeta
         frienditembean = (RelAndFriendBean) bundle.getParcelable("frienditembean");
         tvRelativeAndFriendName.setText(frienditembean.markName);
         tvRelativeAndFriendLikeName.setText(frienditembean.alias);
-        //TODO　头像获取
-        Glide.with(getContext()).load(frienditembean.iconUrl).error(R.drawable.icon_mine_head_normal).into(ivDetailUserHead);
+        //头像显示
+        Glide.with(getContext()).load(frienditembean.iconUrl)
+                .asBitmap()
+                .centerCrop()
+                .placeholder(R.drawable.icon_mine_head_normal)
+                .error(R.drawable.icon_mine_head_normal)
+                .into(new BitmapImageViewTarget(ivDetailUserHead) {
+                    @Override
+                    protected void setResource(Bitmap resource) {
+                        RoundedBitmapDrawable circularBitmapDrawable =
+                                RoundedBitmapDrawableFactory.create(getContext().getResources(), resource);
+                        circularBitmapDrawable.setCircular(true);
+                        ivDetailUserHead.setImageDrawable(circularBitmapDrawable);
+                    }
+                });
     }
 
     private void initListener() {
@@ -190,18 +196,21 @@ public class MineFriendDetailFragment extends Fragment implements MineFriendDeta
 
     @Override
     public void showDeleteProgress() {
-        rlDeleteProHint.setVisibility(View.VISIBLE);
+        LoadingDialog.showLoading(getFragmentManager(),getString(R.string.DELETEING));
     }
 
     @Override
     public void hideDeleteProgress() {
-        rlDeleteProHint.setVisibility(View.INVISIBLE);
+        LoadingDialog.dismissLoading(getFragmentManager());
     }
 
     /**
      * desc:查看大头像
      */
     private void jump2LookBigImageFragment() {
+        Bundle bundle = new Bundle();
+        bundle.putString("imageUrl",frienditembean.iconUrl);
+        mineLookBigImageFragment = MineLookBigImageFragment.newInstance(bundle);
         getFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                         , R.anim.slide_in_left, R.anim.slide_out_right)

@@ -23,6 +23,7 @@ import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
 import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
 import com.cylan.jiafeigou.n.view.adapter.MineHasShareAdapter;
 import com.cylan.jiafeigou.utils.ToastUtil;
+import com.cylan.jiafeigou.widget.LoadingDialog;
 
 import java.util.ArrayList;
 
@@ -47,13 +48,12 @@ public class MineDevicesShareManagerFragment extends Fragment implements MineDev
     TextView tvHasShareTitle;
     @BindView(R.id.ll_no_share_friend)
     LinearLayout llNoShareFriend;
-    @BindView(R.id.rl_cancle_share_progress)
-    RelativeLayout rlCancleShareProgress;
 
     private MineDevicesShareManagerContract.Presenter presenter;
     private MineHasShareAdapter hasShareAdapter;
     private DeviceBean devicebean;
     private RelAndFriendBean tempBean;
+    private ArrayList<RelAndFriendBean> hasShareFriendlist;
 
     public static MineDevicesShareManagerFragment newInstance(Bundle bundle) {
         MineDevicesShareManagerFragment fragment = new MineDevicesShareManagerFragment();
@@ -72,16 +72,16 @@ public class MineDevicesShareManagerFragment extends Fragment implements MineDev
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
+    public void onResume() {
+        super.onResume();
         if (presenter != null) {
-            presenter.getHasShareList(devicebean.uuid);
+//            presenter.getHasShareList(devicebean.uuid);
             presenter.start();
         }
     }
 
     private void initPresenter() {
-        presenter = new MineDevicesShareManagerPresenterImp(this);
+        presenter = new MineDevicesShareManagerPresenterImp(this,hasShareFriendlist);
     }
 
     @Override
@@ -101,6 +101,7 @@ public class MineDevicesShareManagerFragment extends Fragment implements MineDev
     public void getIntentData() {
         Bundle arguments = getArguments();
         devicebean = arguments.getParcelable("devicebean");
+        hasShareFriendlist = arguments.getParcelableArrayList("friendlist");
         setTopTitle("".equals(devicebean.alias)?devicebean.uuid:devicebean.alias);
     }
 
@@ -161,12 +162,12 @@ public class MineDevicesShareManagerFragment extends Fragment implements MineDev
 
     @Override
     public void showCancleShareProgress() {
-        rlCancleShareProgress.setVisibility(View.VISIBLE);
+        LoadingDialog.showLoading(getFragmentManager(),getString(R.string.LOADING));
     }
 
     @Override
     public void hideCancleShareProgress() {
-        rlCancleShareProgress.setVisibility(View.INVISIBLE);
+        LoadingDialog.dismissLoading(getFragmentManager());
     }
 
     @Override
@@ -198,6 +199,10 @@ public class MineDevicesShareManagerFragment extends Fragment implements MineDev
     @Override
     public void showUnShareResult(String result) {
         ToastUtil.showToast(result);
+        if (hasShareAdapter.getItemCount() == 0){
+            hideHasShareListTitle();
+            showNoHasShareFriendNullView();
+        }
     }
     
     /**

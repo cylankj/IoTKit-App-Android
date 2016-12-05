@@ -142,7 +142,6 @@ public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMine
                                 suggestionAdapter.clear();
                                 suggestionAdapter.notifyDataSetHasChanged();
                                 hideLoadingDialog();
-                                ToastUtil.showPositiveToast("清空成功");
                             }
                         }, 2000);
                     }
@@ -195,8 +194,9 @@ public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMine
             suggestionAdapter.add(suggestionBean);
             suggestionAdapter.notifyDataSetHasChanged();
             presenter.saveIntoDb(suggestionBean);
+            presenter.sendFeedBack(suggestionBean);
         } else {
-            ToastUtil.showToast(getString(R.string.Tap3_Feedback_TextFail));
+            ToastUtil.showNegativeToast(getString(R.string.Tap3_Feedback_TextFail));
             return;
         }
     }

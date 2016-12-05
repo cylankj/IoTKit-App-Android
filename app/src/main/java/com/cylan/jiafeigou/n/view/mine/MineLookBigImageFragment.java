@@ -14,12 +14,14 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineLookBigImageContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineLookBigImagePresenterImp;
 import com.cylan.jiafeigou.utils.ToastUtil;
+import com.cylan.jiafeigou.widget.LoadingDialog;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -34,8 +36,6 @@ public class MineLookBigImageFragment extends Fragment implements MineLookBigIma
 
     @BindView(R.id.iv_look_big_image)
     ImageView ivLookBigImage;
-    @BindView(R.id.progress_loading)
-    ProgressBar progressLoading;
 
     private MineLookBigImageContract.Presenter presenter;
     private boolean loadResult = false;
@@ -118,32 +118,25 @@ public class MineLookBigImageFragment extends Fragment implements MineLookBigIma
     public void onStart() {
         super.onStart();
         loadImage();
-        initImage();
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        if (bitmapSource != null){
-            bitmapSource.recycle();
-        }
     }
 
     /**
      * desc:加载图片
      */
     private void loadImage() {
+        showLoadImageProgress();
         Glide.with(getContext())
                 .load(imageUrl)
                 .asBitmap()
-                .error(R.drawable.icon_mine_defult_head)
+                .placeholder(R.drawable.icon_mine_head_normal)
+                .error(R.drawable.icon_mine_head_normal)
                 .centerCrop()
+                .skipMemoryCache(true)
+                .diskCacheStrategy(DiskCacheStrategy.NONE)
                 .into(new BitmapImageViewTarget(ivLookBigImage) {
-
                     @Override
                     public void onLoadStarted(Drawable placeholder) {
                         super.onLoadStarted(placeholder);
-                        showLoadImageProgress();
                     }
                     @Override
                     public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
@@ -158,9 +151,9 @@ public class MineLookBigImageFragment extends Fragment implements MineLookBigIma
                         super.onLoadFailed(e, errorDrawable);
                         hideLoadImageProgress();
                         loadResult = false;
+                        initImage();
                         ToastUtil.showNegativeToast(getString(R.string.Item_LoadFail));
                     }
-
                 });
     }
 
@@ -183,12 +176,22 @@ public class MineLookBigImageFragment extends Fragment implements MineLookBigIma
     }
 
     @Override
+    public void onDestroy() {
+        super.onDestroy();
+        ivLookBigImage.setImageBitmap(null);
+        if (bitmapSource != null && bitmapSource.isRecycled()) {
+            bitmapSource.recycle();
+            bitmapSource = null;
+        }
+    }
+
+    @Override
     public void showLoadImageProgress() {
-        progressLoading.setVisibility(View.VISIBLE);
+        LoadingDialog.showLoading(getFragmentManager(),getString(R.string.LOADING));
     }
 
     @Override
     public void hideLoadImageProgress() {
-        progressLoading.setVisibility(View.INVISIBLE);
+        LoadingDialog.dismissLoading(getFragmentManager());
     }
 }

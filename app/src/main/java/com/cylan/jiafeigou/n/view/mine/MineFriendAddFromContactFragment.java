@@ -17,13 +17,12 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendAddFromContactContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineFriendAddFromContactPresenterImp;
 import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
-import com.cylan.jiafeigou.n.view.adapter.RelativeAndFriendAddFromContactAdapter;
+import com.cylan.jiafeigou.n.view.adapter.FriendAddFromContactAdapter;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.widget.LoadingDialog;
 import com.cylan.superadapter.OnItemClickListener;
@@ -40,7 +39,7 @@ import butterknife.OnTextChanged;
  * 创建时间：2016/9/6
  * 描述：
  */
-public class MineFriendAddFromContactFragment extends Fragment implements MineFriendAddFromContactContract.View, RelativeAndFriendAddFromContactAdapter.onContactItemClickListener {
+public class MineFriendAddFromContactFragment extends Fragment implements MineFriendAddFromContactContract.View, FriendAddFromContactAdapter.onContactItemClickListener {
 
     @BindView(R.id.iv_home_mine_relativesandfriends_add_from_contact_back)
     ImageView ivHomeMineRelativesandfriendsAddFromContactBack;
@@ -53,7 +52,7 @@ public class MineFriendAddFromContactFragment extends Fragment implements MineFr
 
     private MineFriendAddFromContactContract.Presenter presenter;
     private MineAddFromContactFragment mineAddFromContactFragment;
-    private RelativeAndFriendAddFromContactAdapter contactListAdapter;
+    private FriendAddFromContactAdapter contactListAdapter;
 
     private String friendAccount;
 
@@ -109,7 +108,7 @@ public class MineFriendAddFromContactFragment extends Fragment implements MineFr
     @Override
     public void initContactRecycleView(ArrayList<RelAndFriendBean> list) {
         rcyContactList.setLayoutManager(new LinearLayoutManager(getContext()));
-        contactListAdapter = new RelativeAndFriendAddFromContactAdapter(getView().getContext(), list, null);
+        contactListAdapter = new FriendAddFromContactAdapter(getView().getContext(), list, null);
         rcyContactList.setAdapter(contactListAdapter);
         initAdaListener();
     }
@@ -158,7 +157,7 @@ public class MineFriendAddFromContactFragment extends Fragment implements MineFr
      */
     @Override
     public void showLoadingPro() {
-        LoadingDialog.showLoading(getFragmentManager());
+        LoadingDialog.showLoading(getFragmentManager(),getString(R.string.getting));
     }
 
     /**

@@ -75,7 +75,7 @@ public class MineClipImagePresenterImp extends AbstractPresenter<MineClipImageCo
      * @param getHttpDoneResult
      */
     private void handlerUploadImage(RxEvent.GetHttpDoneResult getHttpDoneResult) {
-        if (getHttpDoneResult.jfgMsgHttpResult.requestId == JError.ErrorOK){
+        if (getHttpDoneResult.jfgMsgHttpResult.requestId == 1){
             sendResetUrl();
         }
     }

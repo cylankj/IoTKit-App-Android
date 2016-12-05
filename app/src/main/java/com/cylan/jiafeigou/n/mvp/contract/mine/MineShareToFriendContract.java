@@ -93,7 +93,7 @@ public interface MineShareToFriendContract {
         /**
          * 获取到所有的亲友
          */
-        Subscription getAllShareFriend();
+        void getAllShareFriend(String cid);
 
         /**
          * 获取到所有的亲友的回调

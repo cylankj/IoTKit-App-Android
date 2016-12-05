@@ -51,7 +51,7 @@
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="20dp"
                 android:layout_marginTop="10dp"
-                android:text="设备"
+                android:text="@string/SETTINGS"
                 android:textColor="@color/color_4b9fd5"
                 android:textSize="15sp" />
 
@@ -73,7 +73,7 @@
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="20dp"
                 android:layout_marginTop="10dp"
-                android:text="门铃"
+                android:text="@string/CALL_CAMERA_NAME"
                 android:textColor="@color/color_4b9fd5"
                 android:textSize="15sp" />
 

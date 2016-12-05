@@ -5,6 +5,7 @@ import android.view.View;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.model.BellInfoBean;
+import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.superadapter.IMulItemViewType;
 import com.cylan.superadapter.SuperAdapter;
 import com.cylan.superadapter.internal.SuperViewHolder;
@@ -35,7 +36,7 @@ public class UnRelationDoorBellAdapter extends SuperAdapter<BellInfoBean> {
     @Override
     public void onBind(final SuperViewHolder holder, final int viewType, final int layoutPosition, final BellInfoBean item) {
         holder.setText(R.id.tv_door_bell_name,item.nickName);
-        holder.setText(R.id.tv_btn_relative,"关联");
+        holder.setText(R.id.tv_btn_relative, ContextUtils.getContext().getString(R.string.Tap1_iHome_Associate));
         holder.setOnClickListener(R.id.tv_btn_relative, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
