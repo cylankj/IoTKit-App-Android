@@ -26,8 +26,6 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.MirroredTypeException;
 import javax.lang.model.type.TypeMirror;
 
-import compiler.helper.SingleFieldClassHelper;
-
 
 /**
  * Created by com.cylan-hunt on 16-11-8.
@@ -55,9 +53,6 @@ public class TestProcessor extends AbstractProcessor {
             beanInfoGen.go(Device.BELL, processingEnv, roundEnv);
             beanInfoGen.go(Device.CLOUD, processingEnv, roundEnv);
             beanInfoGen.go(Device.MAG, processingEnv, roundEnv);
-            SingleFieldClassHelper.go(processingEnv, String.class, "SingleString");
-            SingleFieldClassHelper.go(processingEnv, int.class, "SingleInt");
-            SingleFieldClassHelper.go(processingEnv, boolean.class, "SingleBoolean");
         }
         return true;
     }

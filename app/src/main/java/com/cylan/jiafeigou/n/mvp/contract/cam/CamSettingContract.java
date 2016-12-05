@@ -21,7 +21,7 @@ public interface CamSettingContract {
 
     interface Presenter extends BasePresenter {
 
-        void fetchCamInfo(final String uuid);
+//        void fetchCamInfo(final String uuid);
 
         String getDetailsSubTitle(Context context);
 

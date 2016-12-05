@@ -112,9 +112,6 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (savedInstanceState != null) {
-            AppLogger.d("save L:" + savedInstanceState);
-        }
         this.basePresenter = new HomePageListPresenterImpl(this);
     }
 

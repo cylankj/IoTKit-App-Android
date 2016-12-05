@@ -36,7 +36,7 @@ public class DaemonService extends Service {
                 .sendNotify(NotifyManager
                         .getNotifyManager()
                         .sendDefaultEmptyNotify());
-        NotifyManager.getNotifyManager().simpleTestNotify();
+//        NotifyManager.getNotifyManager().simpleTestNotify();
         return START_STICKY;
     }
 

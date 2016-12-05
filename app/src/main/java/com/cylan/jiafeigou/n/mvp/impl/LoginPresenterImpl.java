@@ -66,7 +66,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
                     @Override
                     public LoginAccountBean call(LoginAccountBean o) {
                         JfgCmdInsurance.getCmd().login(o.userName, o.pwd);
-                        AppLogger.e("LoginAccountBean: " + new Gson().toJson(login));
+                        AppLogger.i("LoginAccountBean: " + new Gson().toJson(login));
                         return o;
                     }
                 })

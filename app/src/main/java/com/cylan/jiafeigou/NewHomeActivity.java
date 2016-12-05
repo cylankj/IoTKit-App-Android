@@ -28,6 +28,7 @@ import com.cylan.jiafeigou.n.view.home.HomePageListFragmentExt;
 import com.cylan.jiafeigou.n.view.home.HomeWonderfulFragmentExt;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
+import com.cylan.jiafeigou.utils.IMEUtils;
 import com.cylan.jiafeigou.widget.CustomViewPager;
 
 import java.util.List;
@@ -68,6 +69,12 @@ public class NewHomeActivity extends NeedLoginActivity implements
     @Override
     protected void onStart() {
         super.onStart();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        IMEUtils.fixFocusedViewLeak(getApplication());
     }
 
     protected int[] getOverridePendingTransition() {

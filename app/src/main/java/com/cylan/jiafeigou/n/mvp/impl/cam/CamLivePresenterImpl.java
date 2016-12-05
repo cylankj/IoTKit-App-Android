@@ -17,6 +17,7 @@ import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.n.mvp.model.BeanCamInfo;
 import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
 import com.cylan.jiafeigou.rx.RxBus;
+import com.cylan.jiafeigou.rx.RxHelper;
 import com.cylan.jiafeigou.rx.RxUiEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.MiscUtils;
@@ -290,6 +291,7 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                     }
                 })
                 .observeOn(AndroidSchedulers.mainThread())
+                .filter(new RxHelper.Filter<BeanCamInfo>("", getView() != null))
                 .subscribe(new Action1<BeanCamInfo>() {
                     @Override
                     public void call(BeanCamInfo camInfoBean) {

@@ -15,6 +15,7 @@ import com.cylan.jiafeigou.NewHomeActivity;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.view.activity.BindDeviceActivity;
 import com.cylan.jiafeigou.n.view.bell.DoorBellHomeActivity;
+import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.utils.RandomUtils;
 
@@ -147,6 +148,11 @@ public class NotifyManager implements INotify {
                         notifyBean.sound = true;
                         sendNotify(notifyBean);
                         Log.d("simpleTestNotify", "simpleTestNotify: ");
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        AppLogger.e("wth: " + throwable.getLocalizedMessage());
                     }
                 });
     }
