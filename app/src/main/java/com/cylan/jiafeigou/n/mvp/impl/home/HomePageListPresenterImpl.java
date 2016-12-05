@@ -76,6 +76,7 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
      */
     private Subscription singleDeviceSub() {
         return RxBus.getUiInstance().toObservable(RxUiEvent.SingleDevice.class)
+                .throttleFirst(500, TimeUnit.MILLISECONDS)
                 .filter(new Func1<RxUiEvent.SingleDevice, Boolean>() {
                     @Override
                     public Boolean call(RxUiEvent.SingleDevice singleDevice) {

@@ -9,6 +9,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -17,9 +18,11 @@ import android.widget.RelativeLayout;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
+import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
 import com.cylan.jiafeigou.n.view.cam.CamMessageListFragment;
 import com.cylan.jiafeigou.n.view.cam.CameraLiveFragment;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.CustomViewPager;
 import com.cylan.jiafeigou.widget.indicator.PagerSlidingTabStrip;
@@ -180,12 +183,15 @@ class SimpleAdapterPager extends FragmentPagerAdapter {
 
     @Override
     public int getCount() {
-        return 2;
+        DeviceBean bean = bundle.getParcelable(JConstant.KEY_DEVICE_ITEM_BUNDLE);
+        return bean != null && !TextUtils.isEmpty(bean.shareAccount)
+                ? 1 : 2;
     }
 
 
     @Override
     public CharSequence getPageTitle(int position) {
-        return position == 0 ? "视频" : "消息";
+        return position == 0 ? ContextUtils.getContext().getString(R.string.Tap1_Camera_Video) :
+                ContextUtils.getContext().getString(R.string.Tap1_Camera_Messages);
     }
 }

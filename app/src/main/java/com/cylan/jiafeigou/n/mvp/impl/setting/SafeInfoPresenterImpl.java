@@ -37,7 +37,7 @@ public class SafeInfoPresenterImpl extends AbstractPresenter<SafeInfoContract.Vi
     }
 
     @Override
-    public void saveCamInfoBean(BeanCamInfo beanCamInfo, int id) {
+    public void saveCamInfoBean(final BeanCamInfo beanCamInfo, int id) {
         this.beanCamInfo = beanCamInfo;
         Observable.just(new Pair<>(beanCamInfo, id))
                 .filter(new RxHelper.Filter<Pair<BeanCamInfo, Integer>>("", id > 0))

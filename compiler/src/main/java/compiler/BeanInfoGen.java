@@ -201,24 +201,12 @@ public class BeanInfoGen {
     }
 
     private boolean handleSimpleObject(MethodSpec.Builder builder, String name, int id, TypeName typeName) {
-        if (typeName != null && typeName.toString().equals("boolean")) {
+        if (typeName != null && (typeName.toString().equals("boolean")
+                || typeName.toString().equals("int")
+                || typeName.toString().equals("float")
+                || typeName.toString().equals("java.lang.String"))) {
             builder.beginControlFlow("if($L == id) ", id);
-            builder.addStatement("return new $T($L).toBytes()", ClassName.get("com.cylan.jiafeigou.n.mvp.model", "SingleBoolean"), name);
-            builder.endControlFlow();
-            return true;
-        }
-        if (typeName != null && typeName.toString().equals("int")) {
-            builder.beginControlFlow("if($L == id) ", id);
-            builder.addStatement("return new $T($L).toBytes()", ClassName.get("com.cylan.jiafeigou.n.mvp.model", "SingleInt"), name);
-            builder.endControlFlow();
-            return true;
-        }
-        if (typeName != null && typeName.toString().equals("float")) {
-            return false;
-        }
-        if (typeName != null && typeName.toString().equals("java.lang.String")) {
-            builder.beginControlFlow("if($L == id) ", id);
-            builder.addStatement("return new $T($L).toBytes()", ClassName.get("com.cylan.jiafeigou.n.mvp.model", "SingleString"), name);
+            builder.addStatement("return com.cylan.jiafeigou.dp.DpUtils.pack($L)", name);
             builder.endControlFlow();
             return true;
         }
