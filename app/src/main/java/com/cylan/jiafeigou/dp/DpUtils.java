@@ -13,6 +13,8 @@ import java.util.ArrayList;
  */
 
 public class DpUtils {
+    private static MessagePack mp = new MessagePack();
+
     /**
      * @param data
      * @param clazz
@@ -24,8 +26,7 @@ public class DpUtils {
             AppLogger.e("value is null: " + clazz);
             return null;
         }
-        MessagePack ms = new MessagePack();
-        return ms.read(data, clazz);
+        return mp.createBufferUnpacker(data).read(clazz);
     }
 
     public static <T> T getMsg(ArrayList<JFGDPMsg> list, int id, Class<T> tClass) {
@@ -43,5 +44,30 @@ public class DpUtils {
             }
         }
         return null;
+    }
+
+    public static ArrayList<JFGDPMsg> getList(int id, byte[] value, long version) {
+        JFGDPMsg jfgdpMsg = new JFGDPMsg();
+        jfgdpMsg.id = id;
+        jfgdpMsg.version = version;
+        jfgdpMsg.packValue = value;
+        ArrayList<JFGDPMsg> list = new ArrayList<>();
+        list.add(jfgdpMsg);
+        return list;
+    }
+
+    /**
+     * 打包msgpack
+     *
+     * @param o
+     * @return
+     */
+    public static byte[] pack(Object o) {
+        try {
+            return mp.write(o);
+        } catch (IOException e) {
+            AppLogger.e("msgpack err: " + e.getLocalizedMessage());
+            return null;
+        }
     }
 }

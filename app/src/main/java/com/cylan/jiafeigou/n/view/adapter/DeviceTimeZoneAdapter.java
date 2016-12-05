@@ -1,6 +1,7 @@
 package com.cylan.jiafeigou.n.view.adapter;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.view.View;
 
 import com.cylan.jiafeigou.R;
@@ -24,9 +25,9 @@ public class DeviceTimeZoneAdapter extends SuperAdapter<TimeZoneBean> {
         super(context, null, null);
     }
 
-    private int chooseId;
+    private String chooseId;
 
-    public void setChooseId(int chooseId) {
+    public void setChooseId(String chooseId) {
         this.chooseId = chooseId;
     }
 
@@ -34,7 +35,7 @@ public class DeviceTimeZoneAdapter extends SuperAdapter<TimeZoneBean> {
     public void onBind(final SuperViewHolder holder, int viewType, int layoutPosition, TimeZoneBean item) {
         holder.setText(R.id.tv_timezone_id, item.getName());
         holder.setText(R.id.tv_timezone_gmt, item.getGmt());
-        holder.setVisibility(R.id.imv_item_check, item.getOffset() == chooseId ? View.VISIBLE : View.INVISIBLE);
+        holder.setVisibility(R.id.imv_item_check, TextUtils.equals(item.getId(), chooseId) ? View.VISIBLE : View.INVISIBLE);
         holder.setOnClickListener(R.id.lLayout_timezone_item, onCLick);
     }
 

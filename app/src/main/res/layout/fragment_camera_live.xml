@@ -8,7 +8,7 @@
     <FrameLayout
         android:id="@+id/fLayout_cam_live_view"
         android:layout_width="match_parent"
-        android:layout_height="10dp"
+        android:layout_height="100dp"
         android:background="@drawable/bg_wonderful_daytime">
 
         <FrameLayout
@@ -16,7 +16,12 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
-        <include layout="@layout/v_stub_progress" />
+        <ViewStub
+            android:id="@+id/vs_progress"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_gravity="center"
+            android:layout="@layout/circle_progress_bar" />
 
         <include layout="@layout/cam_live_port_handle_bar" />
 

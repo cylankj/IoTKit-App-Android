@@ -42,7 +42,15 @@ public class SettingItemView1 extends FrameLayout {
         final Drawable srcId = ta.getDrawable(R.styleable.SettingItemViewStyle_sv_image_src);
         ViewUtils.setDrawablePadding(tvTitle, srcId, 0);
         tvTitle.setText(title);
+        findViewById(R.id.v_divider).setVisibility(ta.getBoolean(R.styleable.SettingItemViewStyle_sv_v_divider, false)
+                ? VISIBLE : GONE);
         ta.recycle();
+    }
+
+    @Override
+    public void setEnabled(boolean enabled) {
+        super.setEnabled(enabled);
+        switchButton.setEnabled(enabled);
     }
 
     public void setTvTitle(CharSequence charSequence) {

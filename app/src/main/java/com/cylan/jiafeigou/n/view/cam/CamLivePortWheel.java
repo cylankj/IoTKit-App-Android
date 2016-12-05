@@ -24,8 +24,8 @@ public class CamLivePortWheel extends FrameLayout implements SuperWheel.WheelRol
 
     @BindView(R.id.sw_cam_live_wheel)
     SuperWheel swCamLiveWheel;
-    @BindView(R.id.pb_loading_history)
-    SimpleProgressBar pbLoadingHistory;
+//    @BindView(R.id.pb_loading_history)
+//    SimpleProgressBar pbLoadingHistory;
     @BindView(R.id.tv_cam_live_port_live)
     TextView tvCamLivePortLive;
 
@@ -45,13 +45,13 @@ public class CamLivePortWheel extends FrameLayout implements SuperWheel.WheelRol
         ButterKnife.bind(view);
         swCamLiveWheel.setWheelRollListener(this);
     }
-
-    /**
-     * @param loading
-     */
-    public void loading(boolean loading) {
-        pbLoadingHistory.setVisibility(loading ? VISIBLE : INVISIBLE);
-    }
+//
+//    /**
+//     * @param loading
+//     */
+//    public void loading(boolean loading) {
+//        pbLoadingHistory.setVisibility(loading ? VISIBLE : INVISIBLE);
+//    }
 
     public void setupHistoryData(SDataStack dataStack) {
         final long time = System.currentTimeMillis();

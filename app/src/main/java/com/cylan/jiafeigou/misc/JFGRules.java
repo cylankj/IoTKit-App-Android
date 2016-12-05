@@ -110,4 +110,38 @@ public class JFGRules {
                 return false;
         }
     }
+
+    public static boolean isNeedPanoramicView(int pid) {
+        switch (pid) {
+            case JConstant.OS_CAMERA_PANORAMA_HAISI:
+            case JConstant.OS_CAMERA_PANORAMA_QIAOAN:
+            case JConstant.OS_CAMERA_PANORAMA_GUOKE:
+                return true;
+        }
+        return false;
+    }
+
+    public static class PlayErr {
+
+        public static final int ERR_UNKOWN = -2;
+        /**
+         * 网络
+         */
+        public static final int ERR_NERWORK = 0;
+        /**
+         * 没有流量
+         */
+        public static final int ERR_NOT_FLOW = 1;
+
+        /**
+         * 帧率太低
+         */
+        public static final int ERR_LOW_FRAME_RATE = 2;
+
+        /**
+         * 设备离线了
+         */
+        public static final int ERR_DEVICE_OFFLINE = 3;
+
+    }
 }

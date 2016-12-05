@@ -105,9 +105,9 @@ public class EditFragmentDialog extends BaseDialog {
             case R.id.tv_cancel:
                 hideKeyboard(view);
                 dismiss();
-                if (action != null) {
-                    action.onDialogAction(R.id.tv_cancel, null);
-                }
+//                if (action != null) {
+//                    action.onDialogAction(R.id.tv_cancel, null);
+//                }
                 break;
         }
     }

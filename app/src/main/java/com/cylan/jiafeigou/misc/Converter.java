@@ -14,7 +14,7 @@ import java.util.ArrayList;
  * Created by cylan-hunt on 16-11-28.
  */
 
-public class Convertor {
+public class Converter {
 
     public static BeanCamInfo convert(DeviceBean bean) {
         BaseBean baseBean = new BaseBean();

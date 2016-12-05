@@ -425,6 +425,13 @@ public class RxEvent {
     }
 
     /**
+     * 修改设备属性
+     */
+    public static final class JFGAttributeUpdate extends DpMsgDefine.DpMsg {
+        public String uuid;
+    }
+
+    /**
      * 获取好友的信息回调
      */
     public static final class GetFriendInfoCall{

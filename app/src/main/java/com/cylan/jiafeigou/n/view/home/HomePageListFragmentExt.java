@@ -22,6 +22,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DecodeFormat;
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.cache.JCache;
@@ -44,6 +46,7 @@ import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;
+import com.cylan.jiafeigou.widget.dialog.BaseDialog;
 import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
 import com.cylan.jiafeigou.widget.wave.SuperWaveView;
 
@@ -61,7 +64,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
         AppBarLayout.OnOffsetChangedListener,
         HomePageListContract.View, SwipeRefreshLayout.OnRefreshListener,
         HomePageListAdapter.DeviceItemClickListener,
-        SimpleDialogFragment.SimpleDialogAction,
+        BaseDialog.BaseDialogAction,
         HomePageListAdapter.DeviceItemLongClickListener {
 
     @BindView(R.id.srLayout_home_page_container)
@@ -109,9 +112,6 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (savedInstanceState != null) {
-            AppLogger.d("save L:" + savedInstanceState);
-        }
         this.basePresenter = new HomePageListPresenterImpl(this);
     }
 
@@ -323,11 +323,16 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
         //需要优化
         int drawableId = dayTime == JFGRules.RULE_DAY_TIME
                 ? R.drawable.bg_home_title_daytime : R.drawable.bg_home_title_night;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            imgHomePageHeaderBg.setBackground(getResources().getDrawable(drawableId, null));
-        } else {
-            imgHomePageHeaderBg.setBackground(getResources().getDrawable(drawableId));
-        }
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+//            imgHomePageHeaderBg.setBackground(getResources().getDrawable(drawableId, null));
+//        } else {
+//            imgHomePageHeaderBg.setBackground(getResources().getDrawable(drawableId));
+//        }
+        Glide.with(this)
+                .load(drawableId)
+                .asBitmap()
+                .format(DecodeFormat.PREFER_ARGB_8888)
+                .into(imgHomePageHeaderBg);
     }
 
     @Override
@@ -463,9 +468,12 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
 //            AppLogger.d("ratio: " + ratio);
 
         }
-        final float alpha = 1.0f - ratio;
-        if (tvHeaderLastTitle.getAlpha() != alpha)
+        float alpha = 1.0f - ratio;
+        if (tvHeaderLastTitle.getAlpha() != alpha) {
+            if (alpha < 0.02f)
+                alpha = 0;//设定一个阀值,以免掉帧导致回调不及时
             tvHeaderLastTitle.setAlpha(alpha);
+        }
     }
 
     private static class EmptyViewState {

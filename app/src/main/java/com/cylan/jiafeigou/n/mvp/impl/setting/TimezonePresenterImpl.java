@@ -6,13 +6,10 @@ import android.util.Log;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.cache.JCache;
-import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.n.mvp.contract.setting.TimezoneContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.n.mvp.model.BeanCamInfo;
 import com.cylan.jiafeigou.n.mvp.model.TimeZoneBean;
-import com.cylan.jiafeigou.rx.RxBus;
-import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.BindUtils;
 import com.google.gson.Gson;
@@ -71,7 +68,7 @@ public class TimezonePresenterImpl extends AbstractPresenter<TimezoneContract.Vi
                                         int factor = timeGmtName.contains("+") ? 1 : -1;
                                         String digitGmt = BindUtils.getDigitsString(timeGmtName);
                                         int offset = factor * Integer.parseInt(digitGmt.substring(0, 2));
-                                        bean.setOffset(offset);
+                                        bean.setOffset(offset * 3600);
                                         list.add(bean);
                                     }
                                 }
@@ -116,22 +113,22 @@ public class TimezonePresenterImpl extends AbstractPresenter<TimezoneContract.Vi
     }
 
     @Override
-    public void updateBeanInfo(final BeanCamInfo info) {
+    public void saveCamInfoBean(final BeanCamInfo info, int id) {
         AppLogger.i(TAG + "save info: " + new Gson().toJson(info));
-        Observable.just(null)
-                .subscribeOn(Schedulers.newThread())
-                .subscribe(new Action1<Object>() {
-                    @Override
-                    public void call(Object o) {
-                        RxEvent.JfgDpMsgUpdate msgUpdate = new RxEvent.JfgDpMsgUpdate();
-                        msgUpdate.uuid = info.deviceBase.uuid;
-                        DpMsgDefine.DpMsg dpMsg = new DpMsgDefine.DpMsg();
-                        //
-
-                        AppLogger.i("xuyao 修改");
-                        RxBus.getCacheInstance().post(msgUpdate);
-                    }
-                });
+//        Observable.just(null)
+//                .subscribeOn(Schedulers.newThread())
+//                .subscribe(new Action1<Object>() {
+//                    @Override
+//                    public void call(Object o) {
+//                        RxEvent.JfgDpMsgUpdate msgUpdate = new RxEvent.JfgDpMsgUpdate();
+//                        msgUpdate.uuid = info.deviceBase.uuid;
+//                        DpMsgDefine.DpMsg dpMsg = new DpMsgDefine.DpMsg();
+//                        //
+//
+//                        AppLogger.i("xuyao 修改");
+//                        RxBus.getCacheInstance().post(msgUpdate);
+//                    }
+//                });
     }
 
     @Override

@@ -8,8 +8,6 @@ import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.PixelFormat;
 import android.graphics.drawable.Drawable;
-import android.widget.ImageView;
-
 
 import java.io.FileOutputStream;
 import java.io.OutputStream;
@@ -172,8 +170,9 @@ public class BitmapUtil {
 
 
     /**
-     *放大图片，避免传入和生成的bitmap分辨率一致，否则容易导致RuntimeException
-     * @param bitmap  original bitmap
+     * 放大图片，避免传入和生成的bitmap分辨率一致，否则容易导致RuntimeException
+     *
+     * @param bitmap original bitmap
      * @param w
      * @param h
      * @return bitma
@@ -184,7 +183,7 @@ public class BitmapUtil {
         Matrix matrix = new Matrix();
         float scaleWidht = ((float) w / width);
         float scaleHeight = ((float) h / height);
-        if (scaleHeight == height && scaleWidht == width){
+        if (scaleHeight == height && scaleWidht == width) {
             height += 1;
             width += 1;
         }
@@ -204,11 +203,12 @@ public class BitmapUtil {
      * @param resId
      * @return
      */
+    @SuppressWarnings("deprecation")
     public static Bitmap readBitMap(Context context, int resId, int reqWidth, int reqHeight) {
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight);
         options.inPreferredConfig = Bitmap.Config.RGB_565;
-        options.inDither=false;
+        options.inDither = false;
         options.inPurgeable = true;
         return BitmapFactory.decodeStream(context.getResources().openRawResource(resId), null, options);
     }
@@ -248,7 +248,6 @@ public class BitmapUtil {
 
         return isSave;
     }
-
 
 
     public static int calculateInSampleSize(

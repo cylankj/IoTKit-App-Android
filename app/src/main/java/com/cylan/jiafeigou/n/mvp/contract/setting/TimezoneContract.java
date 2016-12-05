@@ -20,7 +20,7 @@ public interface TimezoneContract {
     interface Presenter extends BasePresenter {
         void onSearch(String content);
 
-        void updateBeanInfo(BeanCamInfo info);
+        void saveCamInfoBean(BeanCamInfo info, int id);
 
         BeanCamInfo getInfo();
     }

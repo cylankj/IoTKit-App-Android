@@ -1,19 +1,19 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:hunt="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/lLayout_item_wonderful"
-    android:layout_width="match_parent"
-    android:layout_height="225dp"
+              xmlns:hunt="http://schemas.android.com/apk/res-auto"
+              android:id="@+id/lLayout_item_wonderful"
+              android:layout_width="match_parent"
+              android:layout_height="250dp"
 
-    android:clickable="true"
-    android:orientation="horizontal"
-    android:paddingLeft="10dp"
-    android:paddingRight="10dp">
+              android:clickable="true"
+              android:orientation="horizontal"
+              android:paddingLeft="10dp"
+              android:paddingRight="10dp">
 
     <com.cylan.jiafeigou.widget.FateLineView
         android:id="@+id/fl_wonderful_item_time_line"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:paddingLeft="2dp"
+        android:layout_marginLeft="8dp"
         android:paddingRight="2dp"
         hunt:dashLineColor="@color/color_e8e8e8"
         hunt:dashLineWidth="2dp"
@@ -22,7 +22,7 @@
         hunt:outerCircleColor="@color/color_e8e8e8"
         hunt:outerCircleRadius="10dp"
         hunt:outerCircleStrokeWidth="4dp"
-        hunt:outerCircleY="10dp" />
+        hunt:outerCircleY="16dp"/>
 
     <RelativeLayout
         android:id="@+id/rLayout_wonderful_item_wonder"
@@ -35,27 +35,34 @@
         <TextView
             android:id="@+id/tv_wonderful_item_date"
             android:layout_width="wrap_content"
-            android:layout_height="26dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="14dp"
             android:gravity="center"
             android:text="Hi~"
             android:textColor="@color/color_666666"
-            android:textSize="13sp" />
+            android:textSize="13sp"/>
 
-        <ImageView
-            android:id="@+id/iv_wonderful_item_content"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+        <com.cylan.jiafeigou.widget.ShadowFrameLayout
+            android:layout_width="162dp"
+            android:layout_height="120dp"
             android:layout_above="@+id/fLayout_wonderful_item_bottom"
-            android:layout_below="@+id/tv_wonderful_item_date"
-            android:minWidth="200dp"
-            android:scaleType="fitXY"
-            android:transitionName="picDetailsFragment" />
+            android:layout_below="@+id/tv_wonderful_item_date">
+
+            <ImageView
+                android:id="@+id/iv_wonderful_item_content"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:minWidth="200dp"
+                android:scaleType="fitXY"
+                android:transitionName="picDetailsFragment"/>
+        </com.cylan.jiafeigou.widget.ShadowFrameLayout>
 
 
-        <FrameLayout
+        <RelativeLayout
             android:id="@+id/fLayout_wonderful_item_bottom"
             android:layout_width="match_parent"
-            android:layout_height="48dp"
+            android:layout_height="36dp"
             android:layout_alignParentBottom="true"
             android:layout_gravity="bottom">
 
@@ -71,16 +78,17 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:gravity="center_vertical"
-                    android:padding="10dp"
+                    android:paddingLeft="12dp"
+                    android:paddingRight="10dp"
                     android:text="删除"
                     android:textColor="@color/color_4b9fd5"
-                    android:textSize="11sp" />
+                    android:textSize="11sp"/>
 
                 <View
                     android:layout_width="1dp"
                     android:layout_height="10dp"
                     android:layout_gravity="center_vertical"
-                    android:background="@color/color_e8e8e8" />
+                    android:background="@color/color_e8e8e8"/>
 
                 <TextView
                     android:id="@+id/tv_wonderful_item_device_name"
@@ -88,10 +96,11 @@
                     android:layout_height="match_parent"
                     android:gravity="center_vertical"
                     android:maxLength="8"
-                    android:padding="10dp"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
                     android:text="摄像头水电费三点多"
                     android:textColor="@color/color_909090"
-                    android:textSize="11sp" />
+                    android:textSize="11sp"/>
             </LinearLayout>
 
             <TextView
@@ -99,22 +108,24 @@
                 style="@style/ripple_background_borderless"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
+                android:layout_alignParentRight="true"
                 android:layout_gravity="end|center_vertical"
+                android:layout_marginRight="12dp"
                 android:drawableLeft="@drawable/icon_share_item_wonderful_selector"
                 android:drawablePadding="4dp"
                 android:drawableStart="@drawable/icon_share_item_wonderful_selector"
                 android:gravity="center"
                 android:text="分享"
                 android:textColor="@color/color_909090"
-                android:textSize="11sp" />
+                android:textSize="11sp"/>
 
-        </FrameLayout>
+        </RelativeLayout>
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_alignParentBottom="true"
             android:layout_gravity="bottom"
-            android:background="@color/color_e8e8e8" />
+            android:background="@color/color_e8e8e8"/>
     </RelativeLayout>
 </LinearLayout>

@@ -46,6 +46,7 @@ import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.LoginButton;
+import com.cylan.jiafeigou.widget.dialog.BaseDialog;
 import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
 
 import java.lang.ref.WeakReference;
@@ -63,7 +64,7 @@ import butterknife.OnTextChanged;
  */
 public class LoginFragment extends android.support.v4.app.Fragment
         implements LoginContract.View,
-        SimpleDialogFragment.SimpleDialogAction {
+        BaseDialog.BaseDialogAction {
     private static final String TAG = "Fragment";
     public static final String KEY_TEMP_ACCOUNT = "temp_account";
     @BindView(R.id.et_login_username)

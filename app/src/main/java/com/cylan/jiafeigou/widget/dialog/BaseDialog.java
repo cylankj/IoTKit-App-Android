@@ -10,8 +10,9 @@ import com.cylan.utils.DensityUtils;
 /**
  * Created by cylan-hunt on 16-7-26.
  */
-public class BaseDialog extends DialogFragment {
+public class BaseDialog<T> extends DialogFragment {
 
+    public static final String KEY_TITLE = "key_title";
     private static final float MIN_HEIGHT = 0.17F;
     private static final float MAX_HEIGHT = 0.475F;
     private int minHeight = 0;
@@ -41,18 +42,25 @@ public class BaseDialog extends DialogFragment {
     @Override
     public void onResume() {
         super.onResume();
-        getDialog().getWindow()
-                .setLayout(getCustomWidth() == 0 ? maxWidth : getCustomWidth(),
-                        getCustomHeight() == 0 ? minHeight : getCustomHeight());
+        if (getDialog() != null && getDialog().getWindow() != null)
+            getDialog().getWindow()
+                    .setLayout(getCustomWidth() == 0 ? maxWidth : getCustomWidth(),
+                            getCustomHeight() == 0 ? minHeight : getCustomHeight());
     }
 
-    public void setAction(SimpleDialogAction action) {
+    public void setAction(BaseDialogAction action) {
         this.action = action;
     }
 
-    protected SimpleDialogAction action;
+    protected BaseDialogAction action;
 
-    public interface SimpleDialogAction {
+    protected T value;
+
+    public void setValue(T value) {
+        this.value = value;
+    }
+
+    public interface BaseDialogAction {
         void onDialogAction(int id, Object value);
     }
 }

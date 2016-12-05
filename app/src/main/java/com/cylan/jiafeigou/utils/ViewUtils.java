@@ -18,6 +18,8 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.cylan.jiafeigou.support.log.AppLogger;
+
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -144,6 +146,10 @@ public class ViewUtils {
 
 
     public static void setRequestedOrientation(Activity activity, int orientation) {
+        if (activity == null) {
+            AppLogger.e("setRequestedOrientation activity isnull ");
+            return;
+        }
         activity.setRequestedOrientation(orientation);
     }
 

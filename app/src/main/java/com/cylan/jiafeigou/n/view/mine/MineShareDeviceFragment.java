@@ -260,7 +260,7 @@ public class MineShareDeviceFragment extends Fragment implements MineShareDevice
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 jump2ShareToContractFragment();
             } else {
-                ToastUtil.showNegativeToast(getString(R.string.Tap0_Authorizationfailed));
+//                ToastUtil.showNegativeToast(getString(R.string.permission_camera_denied));
             }
         }
     }

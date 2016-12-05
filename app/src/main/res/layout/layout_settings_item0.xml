@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<merge xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="52dp">
+    android:layout_height="match_parent">
 
     <ImageView
         android:id="@+id/imgv_item_icon"
@@ -12,9 +12,12 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
         android:layout_gravity="center_vertical"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginStart="10dp"
+        android:layout_toEndOf="@+id/imgv_item_icon"
+        android:layout_toStartOf="@+id/btn_item_switch"
         android:orientation="vertical">
 
 
@@ -33,8 +36,25 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="3dp"
             android:gravity="center"
-            android:text="xxxxx"
             android:textColor="@color/color_8C8C8C"
             android:textSize="13sp" />
     </LinearLayout>
-</merge>
+
+    <com.kyleduo.switchbutton.SwitchButton
+        android:id="@+id/btn_item_switch"
+        style="@style/SwitchButtonStyleMD"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:layout_gravity="end|center_vertical"
+        android:gravity="end"
+        android:paddingStart="20dp" />
+
+    <View
+        android:id="@+id/v_divider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_alignParentBottom="true"
+        android:background="@color/color_e8e8e8" />
+</RelativeLayout>

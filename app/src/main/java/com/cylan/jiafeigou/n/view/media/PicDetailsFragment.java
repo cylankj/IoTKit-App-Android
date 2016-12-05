@@ -32,18 +32,22 @@ import butterknife.ButterKnife;
 public class PicDetailsFragment extends Fragment {
 
     public static final String KEY_MEDIA_URL = "key_media_url";
-    public static final String ARG_ALBUM_IMAGE_POSITION = "arg_album_image_position";
-    public static final String ARG_STARTING_ALBUM_IMAGE_POSITION = "arg_starting_album_image_position";
+    public static final String ARG_MEDIA_POSITION = "arg_media_position";
+    public static final String ARG_MEDIA_START_POSITION = "arg_media_start_position";
+    public static final String ARG_MEDIA_TYPE = "arg_media_type";
     @BindView(R.id.details_album_image)
     PhotoView detailsAlbumImage;
 
-    protected int mStartingPosition;
-    protected int mAlbumPosition;
+    protected int mStartPosition;
+    protected int mPosition;
+    protected int mMediaType;//0:pic;1:video
+    protected View mRootView;
 
     public static PicDetailsFragment newInstance(int position, int startingPosition, final String url) {
         Bundle args = new Bundle();
-        args.putInt(ARG_ALBUM_IMAGE_POSITION, position);
-        args.putInt(ARG_STARTING_ALBUM_IMAGE_POSITION, startingPosition);
+        args.putInt(ARG_MEDIA_TYPE, 0);
+        args.putInt(ARG_MEDIA_POSITION, position);
+        args.putInt(ARG_MEDIA_START_POSITION, startingPosition);
         args.putString(KEY_MEDIA_URL, url);
         PicDetailsFragment fragment = new PicDetailsFragment();
         fragment.setArguments(args);
@@ -53,49 +57,57 @@ public class PicDetailsFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mStartingPosition = getArguments().getInt(ARG_STARTING_ALBUM_IMAGE_POSITION);
-        mAlbumPosition = getArguments().getInt(ARG_ALBUM_IMAGE_POSITION);
+        mStartPosition = getArguments().getInt(ARG_MEDIA_START_POSITION);
+        mPosition = getArguments().getInt(ARG_MEDIA_POSITION);
     }
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, final Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.layout_fragment_media_pic_details, container, false);
-        ButterKnife.bind(this, rootView);
-        return rootView;
+        mRootView = inflater.inflate(getLayoutID(), container, false);
+        ButterKnife.bind(this, mRootView);
+        return mRootView;
+    }
+
+    protected int getLayoutID() {
+        return R.layout.layout_fragment_media_pic_details;
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         //设置transition名字，这个名字需要对应前一个scene的ImageView的transitionName,
-        ViewCompat.setTransitionName(detailsAlbumImage,
-                mAlbumPosition + JConstant.KEY_SHARED_ELEMENT_TRANSITION_NAME_SUFFIX);
+        ViewCompat.setTransitionName(getTransitionView(),
+                mPosition + JConstant.KEY_SHARED_ELEMENT_TRANSITION_NAME_SUFFIX);
         final String albumImageUrl = getArguments().getString(KEY_MEDIA_URL);
-        loadMedia(detailsAlbumImage, albumImageUrl);
+        loadMedia(albumImageUrl);
+    }
+
+    protected View getTransitionView() {
+        return detailsAlbumImage;
     }
 
     /**
      * 加载资源
      */
-    protected void loadMedia(final ImageView imageView, final String mediaUrl) {
+    protected void loadMedia(final String mediaUrl) {
         Glide.with(this)
                 .load(mediaUrl)
                 .listener(requestListener)
                 .placeholder(R.drawable.wonderful_pic_place_holder)
-                .fitCenter()
-                .into(imageView);
+//                .fitCenter()
+                .into(detailsAlbumImage);
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        AppLogger.d("onDestroyView: " + mAlbumPosition);
+        AppLogger.d("onDestroyView: " + mPosition);
     }
 
     protected void startPostponedEnterTransition() {
-        if (mAlbumPosition == mStartingPosition) {
+        if (mPosition == mStartPosition) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                AppLogger.d("transition: startPostponedEnterTransition: " + mAlbumPosition + "\n" +
+                AppLogger.d("transition: startPostponedEnterTransition: " + mPosition + "\n" +
                         detailsAlbumImage.getTransitionName());
             }
             detailsAlbumImage.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {

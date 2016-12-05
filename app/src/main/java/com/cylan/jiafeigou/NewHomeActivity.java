@@ -28,6 +28,7 @@ import com.cylan.jiafeigou.n.view.home.HomePageListFragmentExt;
 import com.cylan.jiafeigou.n.view.home.HomeWonderfulFragmentExt;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
+import com.cylan.jiafeigou.utils.IMEUtils;
 import com.cylan.jiafeigou.widget.CustomViewPager;
 
 import java.util.List;
@@ -61,12 +62,19 @@ public class NewHomeActivity extends NeedLoginActivity implements
     }
 
     /**
+     * TYPE_MOBILE
      * Dispatch onStart() to all fragments.  Ensure any created loaders are
      * now started.
      */
     @Override
     protected void onStart() {
         super.onStart();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        IMEUtils.fixFocusedViewLeak(getApplication());
     }
 
     protected int[] getOverridePendingTransition() {
@@ -158,11 +166,22 @@ public class NewHomeActivity extends NeedLoginActivity implements
                 if (sharedElementCallBackListener != null)
                     sharedElementCallBackListener.onSharedElementCallBack(names, sharedElements);
             }
+
+            @Override
+            public void onSharedElementEnd(List<String> sharedElementNames, List<View> sharedElements, List<View> sharedElementSnapshots) {
+                if (sharedElementCallBackListener != null)
+                    sharedElementCallBackListener.onSharedElementEnd(sharedElementNames, sharedElements, sharedElementSnapshots);
+            }
         };
     }
 
     private SharedElementCallBackListener sharedElementCallBackListener;
     private OnActivityReenterListener onActivityReenterListener;
+
+    @Override
+    public void onEnterAnimationComplete() {
+        super.onEnterAnimationComplete();
+    }
 
     /**
      * 主页的三个页面

@@ -7,15 +7,16 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
+import com.kyleduo.switchbutton.SwitchButton;
 
 /**
  * Created by cylan-hunt on 16-7-29.
  */
-public class SettingItemView0 extends LinearLayout {
+public class SettingItemView0 extends RelativeLayout {
 
     /**
      * 主标题
@@ -28,6 +29,8 @@ public class SettingItemView0 extends LinearLayout {
 
     ImageView imgvIcon;
 
+    SwitchButton switchButton;
+
     public SettingItemView0(Context context) {
         this(context, null);
     }
@@ -38,18 +41,22 @@ public class SettingItemView0 extends LinearLayout {
 
     public SettingItemView0(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        setOrientation(LinearLayout.HORIZONTAL);
         TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.SettingItemViewStyle);
-        View view = LayoutInflater.from(getContext()).inflate(R.layout.layout_settings_item, this, true);
+        View view = LayoutInflater.from(getContext()).inflate(R.layout.layout_settings_item0, this, true);
         tvTitle = (TextView) view.findViewById(R.id.tv_settings_item_title);
         tvSubTitle = (TextView) view.findViewById(R.id.tv_settings_item_sub_title);
         imgvIcon = (ImageView) view.findViewById(R.id.imgv_item_icon);
+        switchButton = (SwitchButton) view.findViewById(R.id.btn_item_switch);
         final String title = ta.getString(R.styleable.SettingItemViewStyle_sv_title);
         final String subTitle = ta.getString(R.styleable.SettingItemViewStyle_sv_sub_title);
         final Drawable srcId = ta.getDrawable(R.styleable.SettingItemViewStyle_sv_image_src);
         imgvIcon.setImageDrawable(srcId);
         tvTitle.setText(title);
         tvSubTitle.setText(subTitle);
+        switchButton.setVisibility(ta.getBoolean(R.styleable.SettingItemViewStyle_sv_visibility, false)
+                ? VISIBLE : GONE);
+        findViewById(R.id.v_divider).setVisibility(ta.getBoolean(R.styleable.SettingItemViewStyle_sv_v_divider, false)
+                ? VISIBLE : GONE);
         ta.recycle();
     }
 
@@ -60,5 +67,9 @@ public class SettingItemView0 extends LinearLayout {
      */
     public void setTvSubTitle(CharSequence charSequence) {
         tvSubTitle.setText(charSequence);
+    }
+
+    public void setSwitchButtonState(boolean state) {
+        switchButton.setChecked(state);
     }
 }

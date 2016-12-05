@@ -1,0 +1,150 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/lLayout_video_auto_record_container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/color_white"
+    android:clickable="true"
+    android:orientation="vertical">
+
+    <include layout="@layout/layout_toolbar" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="10dp"
+        android:background="@drawable/little_shape" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="12dp">
+
+        <LinearLayout
+            android:id="@+id/lLayout_mode_motion"
+            android:layout_width="wrap_content"
+            android:layout_height="72dp"
+            android:layout_toStartOf="@+id/rg_auto_record_mode"
+            android:gravity="center_vertical"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/RECORD_MODE"
+                android:textColor="@color/color_black"
+                android:textSize="16sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/RECORD_INFO_0"
+                android:textColor="@color/color_8c8c8c"
+                android:textSize="13sp" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_below="@+id/lLayout_mode_motion"
+            android:layout_gravity="bottom"
+            android:background="@color/color_e8e8e8" />
+
+        <LinearLayout
+            android:id="@+id/lLayout_mode_24_hours"
+            android:layout_width="match_parent"
+            android:layout_height="72dp"
+            android:layout_below="@+id/lLayout_mode_motion"
+            android:layout_toStartOf="@+id/rg_auto_record_mode"
+            android:gravity="center_vertical"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/RECORD_MODE_1"
+                android:textColor="@color/color_black"
+                android:textSize="16sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/RECORD_INFO_1"
+                android:textColor="@color/color_8c8c8c"
+                android:textSize="13sp" />
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_below="@+id/lLayout_mode_24_hours"
+            android:layout_gravity="bottom"
+            android:background="@color/color_e8e8e8" />
+
+        <LinearLayout
+            android:id="@+id/lLayout_mode_never"
+            android:layout_width="match_parent"
+            android:layout_height="72dp"
+            android:layout_below="@+id/lLayout_mode_24_hours"
+            android:layout_toStartOf="@+id/rg_auto_record_mode"
+            android:gravity="center_vertical"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/RECORD_MODE_2"
+                android:textColor="@color/color_black"
+                android:textSize="16sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/RECORD_INFO_2"
+                android:textColor="@color/color_8c8c8c"
+                android:textSize="13sp" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_below="@+id/lLayout_mode_never"
+            android:layout_gravity="bottom"
+            android:background="@color/color_e8e8e8" />
+
+        <RadioGroup
+            android:id="@+id/rg_auto_record_mode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_gravity="end">
+
+            <RadioButton
+                android:id="@+id/rb_motion"
+                android:layout_width="match_parent"
+                android:layout_height="72dp"
+                android:layout_gravity="end"
+                android:gravity="end|center_vertical"
+                android:textColor="@color/color_black"
+                android:textSize="14sp" />
+
+            <RadioButton
+                android:id="@+id/rb_24_hours"
+                android:layout_width="wrap_content"
+                android:layout_height="72dp"
+                android:layout_gravity="end"
+                android:gravity="end|center_vertical"
+                android:textColor="@color/color_black"
+                android:textSize="14sp" />
+
+            <RadioButton
+                android:id="@+id/rb_never"
+                android:layout_width="wrap_content"
+                android:layout_height="72dp"
+                android:layout_gravity="end"
+                android:gravity="end|center_vertical"
+                android:textSize="14sp" />
+        </RadioGroup>
+    </RelativeLayout>
+</LinearLayout>

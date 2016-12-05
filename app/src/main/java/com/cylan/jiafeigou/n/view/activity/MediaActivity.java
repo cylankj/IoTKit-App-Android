@@ -2,9 +2,13 @@ package com.cylan.jiafeigou.n.view.activity;
 
 import android.annotation.TargetApi;
 import android.app.SharedElementCallback;
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Matrix;
+import android.graphics.RectF;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -64,6 +68,7 @@ public class MediaActivity extends FragmentActivity {
     private PicDetailsFragment mCurrentDetailsFragment;
 
     private ArrayList<MediaBean> beanArrayList;
+    private SharedElementCallback mExitCallback;
 
     //    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -76,6 +81,7 @@ public class MediaActivity extends FragmentActivity {
             postponeEnterTransition();
             initSharedElementCallback();
             setEnterSharedElementCallback(mCallback);
+            setExitSharedElementCallback(mExitCallback);
         }
         ViewUtils.setViewMarginStatusBar(fLayoutDetailsTitle);
         mStartingPosition = getIntent().getIntExtra(JConstant.KEY_SHARED_ELEMENT_STARTED_POSITION, 0);
@@ -138,7 +144,7 @@ public class MediaActivity extends FragmentActivity {
             public void onMapSharedElements(List<String> names, Map<String, View> sharedElements) {
                 if (mIsReturning) {
                     ImageView sharedElement = mCurrentDetailsFragment.getAlbumImage();
-                    AppLogger.d("transition:mStartingPosition " + mStartingPosition);
+                    AppLogger.d("transition:mStartPosition " + mStartingPosition);
                     AppLogger.d("transition:mCurrentPosition " + mCurrentPosition);
                     if (sharedElement == null) {
                         // If shared element is null, then it has been scrolled off screen and
@@ -159,6 +165,26 @@ public class MediaActivity extends FragmentActivity {
                     }
                 }
             }
+
+            @Override
+            public void onSharedElementEnd(List<String> sharedElementNames, List<View> sharedElements, List<View> sharedElementSnapshots) {
+                super.onSharedElementEnd(sharedElementNames, sharedElements, sharedElementSnapshots);
+//                fLayoutDetailsActionBar.setVisibility(View.VISIBLE);
+            }
+        };
+
+        mExitCallback=new SharedElementCallback() {
+            @Override
+            public Parcelable onCaptureSharedElementSnapshot(View sharedElement, Matrix viewToGlobalMatrix, RectF screenBounds) {
+                return super.onCaptureSharedElementSnapshot(sharedElement, viewToGlobalMatrix, screenBounds);
+            }
+
+            @Override
+            public View onCreateSnapshotView(Context context, Parcelable snapshot) {
+                return super.onCreateSnapshotView(context, snapshot);
+
+            }
+
         };
     }
 
