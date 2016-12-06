@@ -11,6 +11,7 @@ import com.cylan.jiafeigou.n.mvp.model.BeanBellInfo;
 import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
+import com.cylan.jiafeigou.rx.RxHelper;
 import com.cylan.jiafeigou.rx.RxUiEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.google.gson.Gson;
@@ -54,6 +55,37 @@ public class BellSettingPresenterImpl extends AbstractPresenter<BellSettingContr
         compositeSubscription = new CompositeSubscription();
         compositeSubscription.add(onBellInfoSubscription());
         compositeSubscription.add(onLoginStateSubscription());
+        compositeSubscription.add(unbindDevSub());
+    }
+
+    /**
+     * 门铃解绑
+     *
+     * @return
+     */
+    private Subscription unbindDevSub() {
+        return RxBus.getCacheInstance().toObservableSticky(RxEvent.UnBindDeviceEvent.class)
+                .subscribeOn(Schedulers.newThread())
+                .filter(new Func1<RxEvent.UnBindDeviceEvent, Boolean>() {
+                    @Override
+                    public Boolean call(RxEvent.UnBindDeviceEvent unBindDeviceEvent) {
+                        return getView() != null;
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .map(new Func1<RxEvent.UnBindDeviceEvent, Object>() {
+                    @Override
+                    public Object call(RxEvent.UnBindDeviceEvent unBindDeviceEvent) {
+                        getView().unbindDeviceRsp(unBindDeviceEvent.jfgResult.code);
+                        if (unBindDeviceEvent.jfgResult.code == 0) {
+                            //清理这个订阅
+                            RxBus.getCacheInstance().removeStickyEvent(RxEvent.UnBindDeviceEvent.class);
+                        }
+                        return null;
+                    }
+                })
+                .retry(new RxHelper.RxException<>("unbindDevSub"))
+                .subscribe();
     }
 
     private Subscription onBellInfoSubscription() {
@@ -135,7 +167,7 @@ public class BellSettingPresenterImpl extends AbstractPresenter<BellSettingContr
     }
 
     @Override
-    public void deleteDevice() {
+    public void unbindDevice() {
         Observable.just(null)
                 .subscribeOn(Schedulers.newThread())
                 .subscribe(new Action1<Object>() {

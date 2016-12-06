@@ -12,12 +12,15 @@ import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.bell.BellSettingContract;
 import com.cylan.jiafeigou.n.mvp.impl.bell.BellSettingPresenterImpl;
 import com.cylan.jiafeigou.n.mvp.model.BeanBellInfo;
 import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
+import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
+import com.cylan.jiafeigou.widget.LoadingDialog;
 import com.cylan.jiafeigou.widget.SettingItemView0;
 import com.cylan.jiafeigou.widget.dialog.BaseDialog;
 import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
@@ -153,6 +156,15 @@ public class BellSettingFragment extends IBaseFragment<BellSettingContract.Prese
     }
 
     @Override
+    public void unbindDeviceRsp(int state) {
+        if (state == JError.ErrorOK) {
+            LoadingDialog.dismissLoading(getActivity().getSupportFragmentManager());
+            ToastUtil.showPositiveToast(getString(R.string.DOOR_UNBIND));
+            getActivity().finish();
+        }
+    }
+
+    @Override
     public void setPresenter(BellSettingContract.Presenter presenter) {
         this.basePresenter = presenter;
     }
@@ -161,8 +173,8 @@ public class BellSettingFragment extends IBaseFragment<BellSettingContract.Prese
     public void onDialogAction(int id, Object value) {
         switch (id) {
             case R.id.tv_dialog_btn_left:
-                basePresenter.deleteDevice();
-                getActivity().finish();
+                basePresenter.unbindDevice();
+                LoadingDialog.showLoading(getActivity().getSupportFragmentManager(), getString(R.string.DELETEING));
                 break;
         }
 

@@ -103,7 +103,9 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
                         }
                         return null;
                     }
-                }).subscribe();
+                })
+                .retry(new RxHelper.RxException<>("unbindDevSub"))
+                .subscribe();
     }
 
     private Subscription fetchCamInfo() {
