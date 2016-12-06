@@ -150,16 +150,17 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
     }
 
     private String getSdcardState(boolean sd, DpMsgDefine.SdStatus sdStatus) {
+        //sd卡状态
+        if (sdStatus != null) {
+            if (sd && sdStatus.err != 0) {
+                //sd初始化失败时候显示
+                return getString(R.string.NO_SDCARD);
+            }
+        }
         if (!sd) {
             return getString(R.string.SD_ERR_1);
         }
-        if (sdStatus != null) {
-            int sdState = sdStatus.err;
-            if (sdState == 0) {
-                return getString(R.string.SD_NORMAL);
-            }
-        }
-        return "";
+        return sdStatus != null ? getString(R.string.SD_NORMAL) : "";
     }
 
     @OnClick({R.id.imgV_top_bar_center, R.id.lLayout_information_facility_name, R.id.lLayout_information_facility_timezone})

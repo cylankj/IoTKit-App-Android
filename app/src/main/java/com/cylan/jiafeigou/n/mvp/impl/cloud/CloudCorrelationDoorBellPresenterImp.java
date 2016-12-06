@@ -5,7 +5,7 @@ import android.support.v7.app.AlertDialog;
 
 import com.cylan.jiafeigou.n.mvp.contract.cloud.CloudCorrelationDoorBellContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
-import com.cylan.jiafeigou.n.mvp.model.BellInfoBean;
+import com.cylan.jiafeigou.n.mvp.model.BellBean;
 import com.cylan.jiafeigou.n.view.adapter.RelationDoorBellAdapter;
 import com.cylan.jiafeigou.n.view.adapter.UnRelationDoorBellAdapter;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
@@ -31,7 +31,7 @@ public class CloudCorrelationDoorBellPresenterImp extends AbstractPresenter<Clou
 
     private Subscription subscription;
     private Subscription unRelativeSub;
-    public List<BellInfoBean> unRelativieList;
+    public List<BellBean> unRelativieList;
 
     public int notifyFlag = 1;
     private Subscription refreshViewSub;
@@ -70,20 +70,20 @@ public class CloudCorrelationDoorBellPresenterImp extends AbstractPresenter<Clou
     public void loadDoorBellData(String url) {
 
         subscription = Observable.just(url)
-                .map(new Func1<String, List<BellInfoBean>>() {
+                .map(new Func1<String, List<BellBean>>() {
                     @Override
-                    public List<BellInfoBean> call(String url) {
+                    public List<BellBean> call(String url) {
                         //TODO 开启网络访问服务器
-                        List<BellInfoBean> list = new ArrayList<BellInfoBean>();
+                        List<BellBean> list = new ArrayList<BellBean>();
                         list.addAll(TestData());
                         return list;
                     }
                 })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<List<BellInfoBean>>() {
+                .subscribe(new Action1<List<BellBean>>() {
                     @Override
-                    public void call(List<BellInfoBean> bellInfoBeen) {
+                    public void call(List<BellBean> bellInfoBeen) {
                         if (bellInfoBeen.size() == 0) {
                             getView().showNoRelativeDevicesView(notifyFlag);
                         }
@@ -97,22 +97,22 @@ public class CloudCorrelationDoorBellPresenterImp extends AbstractPresenter<Clou
     public void loadUnRelaiveDoorBellData(String url) {
 
         unRelativeSub = Observable.just(url)
-                .map(new Func1<String, List<BellInfoBean>>() {
+                .map(new Func1<String, List<BellBean>>() {
                     @Override
-                    public List<BellInfoBean> call(String s) {
+                    public List<BellBean> call(String s) {
                         //TODO 开启网络访问服务器
-                        List<BellInfoBean> list = new ArrayList<BellInfoBean>();
+                        List<BellBean> list = new ArrayList<BellBean>();
                         list.addAll(TestData());
                         return list;
                     }
                 })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<List<BellInfoBean>>() {
+                .subscribe(new Action1<List<BellBean>>() {
                     @Override
-                    public void call(List<BellInfoBean> list) {
+                    public void call(List<BellBean> list) {
                         if (unRelativieList == null) {
-                            unRelativieList = new ArrayList<BellInfoBean>();
+                            unRelativieList = new ArrayList<BellBean>();
                         }
                         unRelativieList.addAll(list);
                         if (list.size() == 0) {
@@ -127,10 +127,10 @@ public class CloudCorrelationDoorBellPresenterImp extends AbstractPresenter<Clou
     /**
      * desc:测试数据
      */
-    private List<BellInfoBean> TestData() {
-        List<BellInfoBean> list = new ArrayList<>();
+    private List<BellBean> TestData() {
+        List<BellBean> list = new ArrayList<>();
         for (int i = 0; i < 3; i++) {
-            BellInfoBean bean = new BellInfoBean();
+            BellBean bean = new BellBean();
             bean.nickName = "门铃" + i;
             bean.ssid = "序列号" + i;
             list.add(bean);
@@ -143,7 +143,7 @@ public class CloudCorrelationDoorBellPresenterImp extends AbstractPresenter<Clou
      */
     private class UnRelativeItemListener implements UnRelationDoorBellAdapter.OnRelativeClickListener {
         @Override
-        public void relativeClick(final SuperViewHolder holder, final int viewType, final int layoutPosition, final BellInfoBean item) {
+        public void relativeClick(final SuperViewHolder holder, final int viewType, final int layoutPosition, final BellBean item) {
             notifyFlag = 1;
             getView().showProgress();
             refreshViewSub = Observable.just(null)
@@ -167,7 +167,7 @@ public class CloudCorrelationDoorBellPresenterImp extends AbstractPresenter<Clou
      */
     private class RelativeItemListener implements RelationDoorBellAdapter.OnUnRelaItemClickListener {
         @Override
-        public void unRelativeClick(final SuperViewHolder holder, final int viewType, final int layoutPosition, final BellInfoBean item) {
+        public void unRelativeClick(final SuperViewHolder holder, final int viewType, final int layoutPosition, final BellBean item) {
             notifyFlag = 2;
             getView().showProgress();
             refreshViewUnSub = Observable.just(null)
@@ -191,7 +191,7 @@ public class CloudCorrelationDoorBellPresenterImp extends AbstractPresenter<Clou
     /**
      * desc：第一次取消关联弹框提示
      */
-    private void showFirstUnRelDialog(BellInfoBean item) {
+    private void showFirstUnRelDialog(BellBean item) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getView().getContext())
                 .setMessage(item.nickName + "取消关联后，该中控设备将不再收到呼叫信息")
                 .setPositiveButton("我知道了", new DialogInterface.OnClickListener() {

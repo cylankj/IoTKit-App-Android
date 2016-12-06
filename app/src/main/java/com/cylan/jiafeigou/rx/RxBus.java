@@ -1,8 +1,5 @@
 package com.cylan.jiafeigou.rx;
 
-import com.cylan.jiafeigou.support.log.AppLogger;
-import com.google.gson.Gson;
-
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -68,7 +65,6 @@ public class RxBus implements IEventBus {
      */
     public Object post(Object event) {
         mBus.onNext(event);
-        AppLogger.i("rxEvent: " + new Gson().toJson(event));
         return event;
     }
 

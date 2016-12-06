@@ -81,6 +81,7 @@ public class ConfigApPresenterImpl extends AbstractPresenter<ConfigApContract.Vi
         //2.发送fping,等待fping_ack
         //3.发送setServer,setLanguage
         //4.发送sendWifi
+        AppLogger.i("sendWifiInfo:start:");
         WifiManager wifiManager = (WifiManager) ContextUtils.getContext().getSystemService(Context.WIFI_SERVICE);
         WifiInfo wifiInfo = wifiManager.getConnectionInfo();
         if (wifiInfo == null || !JFGRules.isCylanDevice(wifiInfo.getSSID())) {
@@ -95,6 +96,7 @@ public class ConfigApPresenterImpl extends AbstractPresenter<ConfigApContract.Vi
         }
         if (aFullBind != null)
             aFullBind.sendWifiInfo(ssid, pwd, type);
+        AppLogger.i("sendWifiInfo: " + (aFullBind != null));
     }
 
     @Override

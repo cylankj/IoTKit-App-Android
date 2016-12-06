@@ -33,7 +33,8 @@ import butterknife.OnClick;
 
 
 public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
-
+    public static final int REQUEST_CODE = 3;
+    public static final int RESULT_CODE = 4;
     @BindView(R.id.imgV_nav_back)
     ImageView imgVNavBack;
     @BindView(R.id.v_indicator)
@@ -135,11 +136,22 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
     public void onClickSetting() {
         Intent intent = new Intent(this, CamSettingActivity.class);
         intent.putExtra(JConstant.KEY_DEVICE_ITEM_BUNDLE, getIntent().getBundleExtra(JConstant.KEY_DEVICE_ITEM_BUNDLE));
-        startActivity(intent,
+        startActivityForResult(intent,
+                REQUEST_CODE,
                 ActivityOptionsCompat.makeCustomAnimation(getApplicationContext(),
                         R.anim.slide_in_right, R.anim.slide_out_left).toBundle());
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case REQUEST_CODE:
+                if (resultCode == RESULT_OK) {
+                    finish();
+                }
+                break;
+        }
+    }
 
     private class SimplePageListener implements ViewPager.OnPageChangeListener {
         @Override

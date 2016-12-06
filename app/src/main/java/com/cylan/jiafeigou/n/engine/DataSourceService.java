@@ -40,7 +40,7 @@ import com.cylan.jiafeigou.support.stat.MtaManager;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
 
 
 public class DataSourceService extends Service implements AppCallBack {
@@ -113,12 +113,15 @@ public class DataSourceService extends Service implements AppCallBack {
 
     @Override
     public void OnReportJfgDevices(JFGDevice[] jfgDevices) {
+        AppLogger.i("OnReportJfgDevices:" + (jfgDevices == null ? 0 : jfgDevices.length));
         RxBus.getCacheInstance().postSticky(new RxEvent.DeviceRawList(jfgDevices));
-        List<JFGDevice> list = new ArrayList<>();
-        for (int i = 0; i < jfgDevices.length; i++) {
-            list.add(jfgDevices[i]);
+        if (JCache.getAccountCache() != null) {
+            //如果JFGAccount不为空的话,也发送一个
+            RxBus.getCacheInstance().postSticky(JCache.getAccountCache());
         }
-        RxBus.getCacheInstance().postSticky(new RxEvent.DeviceList(list));
+        if (jfgDevices != null) {
+            RxBus.getCacheInstance().postSticky(new RxEvent.DeviceList(Arrays.asList(jfgDevices)));
+        }
     }
 
     @Override
@@ -229,6 +232,9 @@ public class DataSourceService extends Service implements AppCallBack {
                 //绑定设备
                 RxBus.getCacheInstance().postSticky(new RxEvent.BindDeviceEvent(jfgResult));
                 break;
+            case JResultEvent.JFG_RESULT_UNBINDDEV:
+                RxBus.getCacheInstance().postSticky(new RxEvent.UnBindDeviceEvent(jfgResult));
+                break;
         }
         if (login) {
             AfterLoginService.startGetAccountAction(getApplicationContext());
@@ -263,8 +269,9 @@ public class DataSourceService extends Service implements AppCallBack {
         AppLogger.d("OnRobotSyncData :" + b + " " + s + " " + arrayList);
         RxEvent.JFGRobotSyncData data = new RxEvent.JFGRobotSyncData();
         data.state = b;
-        data.identity = s;
+        data.identity = "200000000472";
         data.dataList = arrayList;
+        RxBus.getCacheInstance().post(data);
     }
 
     @Override

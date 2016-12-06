@@ -2,6 +2,7 @@ package com.cylan.jiafeigou.n.view.adapter;
 
 import android.content.Context;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 
 import com.cylan.jiafeigou.R;
@@ -13,7 +14,6 @@ import com.cylan.superadapter.SuperAdapter;
 import com.cylan.superadapter.internal.SuperViewHolder;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -67,35 +67,7 @@ public class HomePageListAdapter extends SuperAdapter<DeviceBean> {
     }
 
     private String convertTime(DeviceBean bean) {
-//        final long timeInterval = System.currentTimeMillis() - bean.msgTime;
-//        if (timeInterval <= 5 * 60 * 1000) {
-//            return getContext().getString(R.string.JUST_NOW);
-//        } else if (timeInterval <= 24 * 60 * 1000) {
-//            date.setTime(bean.msgTime);
-//            return format_0.format(date);
-//        } else {
-//            date.setTime(bean.msgTime);
-//            return format_1.format(date);
-//        }
         return "";
-    }
-
-    /**
-     * 通过cid查找index
-     *
-     * @param cid
-     * @return
-     */
-    public DeviceBean findTarget(final String cid) {
-        if (getCount() == 0 || TextUtils.isEmpty(cid))
-            return null;
-        ArrayList<DeviceBean> arrayList = new ArrayList<>(getList());
-        for (DeviceBean bean : arrayList) {
-            if (TextUtils.equals(bean.uuid, cid)) {
-                return bean;
-            }
-        }
-        return null;
     }
 
     private void setItemState(SuperViewHolder holder, DeviceBean bean, DpMsgDefine.MsgNet net) {
@@ -148,9 +120,10 @@ public class HomePageListAdapter extends SuperAdapter<DeviceBean> {
         DpMsgDefine.MsgNet net = determineNet(bean);
         //门磁一直在线状态
         final int onLineState = net != null ? net.net : (bean.pid == JConstant.OS_MAGNET ? 1 : 0);
-        final int deviceType = bean.pid;
-        int iconRes = (onLineState != 0 && onLineState != -1) ? JConstant.onLineIconMap.get(deviceType)
-                : JConstant.offLineIconMap.get(deviceType);
+//        final int deviceType = bean.pid;
+        Log.d("handleState", "handleState: " + bean.uuid + " " + net);
+        int iconRes = (onLineState != 0 && onLineState != -1) ? JConstant.onLineIconMap.get(bean.pid)
+                : JConstant.offLineIconMap.get(bean.pid);
         //昵称
         holder.setText(R.id.tv_device_alias, TextUtils.isEmpty(bean.alias) ? bean.uuid : bean.alias);
         //图标

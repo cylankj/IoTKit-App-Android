@@ -347,6 +347,14 @@ public class RxEvent {
         }
     }
 
+    public static final class UnBindDeviceEvent {
+        public JFGResult jfgResult;
+
+        public UnBindDeviceEvent(JFGResult jfgResult) {
+            this.jfgResult = jfgResult;
+        }
+    }
+
     /**
      * 检验邮箱是否注册过回调
      */
@@ -428,6 +436,10 @@ public class RxEvent {
      * 修改设备属性
      */
     public static final class JFGAttributeUpdate extends DpMsgDefine.DpMsg {
+        public String uuid;
+    }
+
+    public static final class JFGDeviceDeletion {
         public String uuid;
     }
 }

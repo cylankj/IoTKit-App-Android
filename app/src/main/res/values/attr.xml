@@ -116,6 +116,7 @@
         <attr name="sv_image_src" format="reference" />
         <attr name="sv_visibility" format="boolean" />
         <attr name="sv_v_divider" format="boolean" />
+        <attr name="sv_v_image_show" format="boolean" />
     </declare-styleable>
 
     <declare-styleable name="LLViewStyle">

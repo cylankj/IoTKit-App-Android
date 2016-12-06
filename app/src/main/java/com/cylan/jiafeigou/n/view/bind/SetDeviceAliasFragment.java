@@ -84,6 +84,12 @@ public class SetDeviceAliasFragment extends IBaseFragment<SetDeviceAliasContract
         }
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (btnBindDone != null) btnBindDone.cancelAnim();
+    }
+
     @OnClick({R.id.iv_clear_alias, R.id.btn_bind_done})
     public void onClick(View view) {
         switch (view.getId()) {
@@ -91,8 +97,11 @@ public class SetDeviceAliasFragment extends IBaseFragment<SetDeviceAliasContract
                 etInputBox.getText().clear();
                 break;
             case R.id.btn_bind_done:
-                if (basePresenter != null)
-                    basePresenter.setupAlias(etInputBox.getText().toString());
+                if (basePresenter != null) {
+                    CharSequence alias = TextUtils.isEmpty(etInputBox.getText())
+                            ? etInputBox.getHint() : etInputBox.getText();
+                    basePresenter.setupAlias(alias.toString());
+                }
                 btnBindDone.viewZoomSmall();
                 break;
         }

@@ -21,14 +21,12 @@ import android.widget.Toast;
 import com.cylan.entity.jniCall.JFGMsgVideoResolution;
 import com.cylan.entity.jniCall.JFGMsgVideoRtcp;
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamLiveContract;
 import com.cylan.jiafeigou.n.mvp.impl.cam.CamLivePresenterImpl;
-import com.cylan.jiafeigou.n.mvp.model.BeanCamInfo;
 import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
 import com.cylan.jiafeigou.n.view.misc.LandLiveBarAnimDelegate;
 import com.cylan.jiafeigou.n.view.misc.LiveBottomBarAnimDelegate;
@@ -144,8 +142,6 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
     public void onStart() {
         super.onStart();
         if (basePresenter != null) {
-            showSceneView();
-            basePresenter.fetchCamInfo(basePresenter.getCamInfo().deviceBase.uuid);
             basePresenter.fetchHistoryData();
             basePresenter.startPlayVideo();
             showLoading(basePresenter.getCamInfo().net != null
@@ -167,13 +163,8 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
     /**
      * 根据 待机模式 ,分享用户模式设置一些view的状态
      */
-    private void showSceneView() {
-        BeanCamInfo info = basePresenter.getCamInfo();
-        Object o = info.getObject(DpMsgMap.ID_508_CAMERA_STANDBY_FLAG);
-        boolean flag = false;
-        if (o != null && o instanceof Boolean) {
-            flag = (boolean) o;
-        }
+    @Override
+    public void showSceneView(boolean flag) {
         View v = fLayoutLiveViewContainer.findViewById("showSceneView".hashCode());
         if (v == null && !flag) {
             return;
@@ -182,10 +173,11 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
             if (viewStandbyRef == null || viewStandbyRef.get() == null) {
                 long time = System.currentTimeMillis();
                 v = LayoutInflater.from(getContext()).inflate(R.layout.layout_fragment_cam_live_standby, null, false);
+                v.setId("showSceneView".hashCode());
                 viewStandbyRef = new WeakReference<>(v);
                 Log.d("showSceneView", "showSceneView: " + (System.currentTimeMillis() - time));
+                fLayoutLiveViewContainer.addView(v);
             } else v = viewStandbyRef.get();
-            fLayoutLiveViewContainer.addView(v);
         }
         v.setVisibility(flag ? View.VISIBLE : View.GONE);
         AppLogger.i("show standby view");

@@ -30,6 +30,8 @@ public interface CamLiveContract {
         void onResolution(JFGMsgVideoResolution resolution);
 
         void onDeviceStandBy(boolean state);
+
+        void showSceneView(boolean show);
     }
 
     interface Presenter extends BasePresenter {
@@ -46,8 +48,6 @@ public interface CamLiveContract {
         void startPlayVideo();
 
         void stopPlayVideo();
-
-        void fetchCamInfo(String uuid);
 
         BeanCamInfo getCamInfo();
     }

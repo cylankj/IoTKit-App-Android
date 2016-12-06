@@ -3,7 +3,6 @@ package com.cylan.jiafeigou.n.view.activity;
 import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
@@ -14,6 +13,7 @@ import android.widget.TextView;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamSettingContract;
@@ -24,9 +24,13 @@ import com.cylan.jiafeigou.n.view.cam.DeviceInfoDetailFragment;
 import com.cylan.jiafeigou.n.view.cam.SafeProtectionFragment;
 import com.cylan.jiafeigou.n.view.cam.VideoAutoRecordFragment;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
+import com.cylan.jiafeigou.widget.LoadingDialog;
 import com.cylan.jiafeigou.widget.SettingItemView0;
 import com.cylan.jiafeigou.widget.SettingItemView1;
+import com.cylan.jiafeigou.widget.dialog.BaseDialog;
+import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
 import com.kyleduo.switchbutton.SwitchButton;
 
 import java.lang.ref.WeakReference;
@@ -36,6 +40,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 import static com.cylan.jiafeigou.misc.JConstant.KEY_DEVICE_ITEM_BUNDLE;
+import static com.cylan.jiafeigou.utils.ActivityUtils.loadFragment;
 
 public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettingContract.Presenter>
         implements CamSettingContract.View {
@@ -210,6 +215,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
             R.id.sv_setting_safe_protection
     })
     public void onClick(View view) {
+        ViewUtils.deBounceClick(view);
         switch (view.getId()) {
             case R.id.sv_setting_device_detail: {
                 initInfoDetailFragment();
@@ -223,18 +229,30 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
                 Bundle bundle = new Bundle();
                 bundle.putParcelable(KEY_DEVICE_ITEM_BUNDLE, basePresenter.getCamInfoBean());
                 fragment.setArguments(bundle);
-                loadFragment(android.R.id.content, fragment);
+                loadFragment(android.R.id.content, getSupportFragmentManager(), fragment);
             }
             break;
-            case R.id.tv_setting_unbind:
-                break;
+            case R.id.tv_setting_unbind: {
+                Bundle bundle = new Bundle();
+                bundle.putString(SimpleDialogFragment.KEY_TITLE, getString(R.string.DELETE_CID));
+                SimpleDialogFragment simpleDialogFragment = SimpleDialogFragment.newInstance(bundle);
+                simpleDialogFragment.setAction(new BaseDialog.BaseDialogAction() {
+                    @Override
+                    public void onDialogAction(int id, Object value) {
+                        basePresenter.unbindDevice();
+                        LoadingDialog.showLoading(getSupportFragmentManager(), getString(R.string.DELETEING));
+                    }
+                });
+                simpleDialogFragment.show(getSupportFragmentManager(), "simpleDialogFragment");
+            }
+            break;
             case R.id.sv_setting_device_auto_record: {
                 initVideoAutoRecordFragment();
                 Bundle bundle = new Bundle();
                 bundle.putParcelable(KEY_DEVICE_ITEM_BUNDLE, basePresenter.getCamInfoBean());
                 VideoAutoRecordFragment fragment = videoAutoRecordFragmentWeakReference.get();
                 fragment.setArguments(bundle);
-                loadFragment(android.R.id.content, fragment);
+                loadFragment(android.R.id.content, getSupportFragmentManager(), fragment);
                 fragment.setCallBack(new IBaseFragment.CallBack() {
                     @Override
                     public void callBack(Object t) {
@@ -249,7 +267,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
                 initSafeProtectionFragment();
                 SafeProtectionFragment fragment = safeProtectionFragmentWeakReference.get();
                 fragment.setArguments(bundle);
-                loadFragment(android.R.id.content, safeProtectionFragmentWeakReference.get());
+                loadFragment(android.R.id.content, getSupportFragmentManager(), safeProtectionFragmentWeakReference.get());
                 fragment.setCallBack(new IBaseFragment.CallBack() {
                     @Override
                     public void callBack(Object t) {
@@ -275,6 +293,9 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
             if (view.getId() == R.id.sv_setting_device_standby_mode) {
                 continue;
             }
+            if (view.getId() == R.id.tv_setting_unbind) {
+                continue;//解绑按钮
+            }
             if (view instanceof ViewGroup) {
                 switchBtn((ViewGroup) view, enable);
             }
@@ -282,18 +303,6 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         }
     }
 
-    /**
-     * 用来加载fragment的方法。
-     */
-    private void loadFragment(int id, Fragment fragment) {
-        getSupportFragmentManager().beginTransaction()
-                //如果需要动画，可以把动画添加进来
-                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
-                        , R.anim.slide_in_left, R.anim.slide_out_right)
-                .add(id, fragment, fragment.getClass().getSimpleName())
-                .addToBackStack(fragment.getClass().getSimpleName())
-                .commit();
-    }
 
     private void initInfoDetailFragment() {
         //should load
@@ -330,7 +339,23 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
 
     @Override
     public void isSharedDevice() {
+        //分享账号 隐藏
+        final int count = lLayoutSettingItemContainer.getChildCount();
+        for (int i = 2; i < count - 1; i++) {
+            View v = lLayoutSettingItemContainer.getChildAt(i);
+            if (v != null)
+                v.setVisibility(View.GONE);
+        }
+    }
 
+    @Override
+    public void unbindDeviceRsp(int state) {
+        if (state == JError.ErrorOK) {
+            LoadingDialog.dismissLoading(getSupportFragmentManager());
+            setResult(RESULT_OK);
+            ToastUtil.showPositiveToast(getString(R.string.DOOR_UNBIND));
+            finish();
+        }
     }
 
     @Override

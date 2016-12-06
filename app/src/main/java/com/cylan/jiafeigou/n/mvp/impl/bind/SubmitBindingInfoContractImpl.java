@@ -2,9 +2,11 @@ package com.cylan.jiafeigou.n.mvp.impl.bind;
 
 import android.text.TextUtils;
 
+import com.cylan.entity.jniCall.JFGResult;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.dp.DpUtils;
+import com.cylan.jiafeigou.misc.JResultEvent;
 import com.cylan.jiafeigou.misc.SimulatePercent;
 import com.cylan.jiafeigou.misc.bind.UdpConstant;
 import com.cylan.jiafeigou.n.mvp.contract.bind.SubmitBindingInfoContract;
@@ -67,10 +69,42 @@ public class SubmitBindingInfoContractImpl extends
         unSubscribe(compositeSubscription);
         compositeSubscription = new CompositeSubscription();
         compositeSubscription.add(robotSyncDataSub());
-        compositeSubscription.add(bingResultMonitor());
+        compositeSubscription.add(bindTimeoutSub());
+        compositeSubscription.add(bindResultSub());
         compositeSubscription.add(monitorBulkDeviceList());
         //查询
         RxBus.getCacheInstance().post(new RxUiEvent.QueryBulkDevice());
+    }
+
+    /**
+     * 绑定结果:通过{@link com.cylan.jiafeigou.n.engine.DataSourceService#OnResult(JFGResult)}
+     * {@link com.cylan.jiafeigou.misc.JResultEvent#JFG_RESULT_BINDDEV}
+     *
+     * @return
+     */
+    private Subscription bindResultSub() {
+        return RxBus.getCacheInstance().toObservableSticky(RxEvent.BindDeviceEvent.class)
+                .filter(new Func1<RxEvent.BindDeviceEvent, Boolean>() {
+                    @Override
+                    public Boolean call(RxEvent.BindDeviceEvent bindDeviceEvent) {
+                        return getView() != null
+                                && bindDeviceEvent.jfgResult.event == JResultEvent.JFG_RESULT_BINDDEV;
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .map(new Func1<RxEvent.BindDeviceEvent, Object>() {
+                    @Override
+                    public Object call(RxEvent.BindDeviceEvent bindDeviceEvent) {
+                        if (simulatePercent != null)
+                            simulatePercent.boost();
+                        success = true;
+                        AppLogger.i("bind success");
+                        RxBus.getCacheInstance().removeStickyEvent(RxEvent.BindDeviceEvent.class);
+                        return null;
+                    }
+                })
+                .retry(new RxHelper.RxException<>("bindResultSub"))
+                .subscribe();
     }
 
     /**
@@ -91,10 +125,13 @@ public class SubmitBindingInfoContractImpl extends
                 .flatMap(new Func1<RxUiEvent.BulkDeviceList, Observable<Boolean>>() {
                     @Override
                     public Observable<Boolean> call(RxUiEvent.BulkDeviceList deviceList) {
+                        AppLogger.i("monitorBulkDeviceList: " + deviceList.allDevices);
                         final int count = deviceList.allDevices.size();
                         for (int i = 0; i < count; i++) {
+                            DpMsgDefine.DpWrap wrap = deviceList.allDevices.get(i);
+                            if (wrap == null || wrap.baseDpDevice == null) continue;
                             if (portrait != null && TextUtils.equals(portrait.cid,
-                                    deviceList.allDevices.get(i).baseDpDevice.uuid)) {
+                                    wrap.baseDpDevice.uuid)) {
                                 //hit the binding cid
                                 return Observable.just(true);
                             }
@@ -106,9 +143,6 @@ public class SubmitBindingInfoContractImpl extends
                 .subscribe(new Action1<Boolean>() {
                     @Override
                     public void call(Boolean aBoolean) {
-//                        Log.d(TAG, "boost");
-//                        if (simulatePercent != null)
-//                            simulatePercent.boost();
                     }
                 });
     }
@@ -118,15 +152,16 @@ public class SubmitBindingInfoContractImpl extends
      *
      * @return
      */
-    private Subscription bingResultMonitor() {
+    private Subscription bindTimeoutSub() {
         return RxBus.getUiInstance().toObservable(RxUiEvent.SingleDevice.class)
                 .filter(new Func1<RxUiEvent.SingleDevice, Boolean>() {
                     @Override
                     public Boolean call(RxUiEvent.SingleDevice singleDevice) {
-                        boolean filter = portrait != null && singleDevice != null && singleDevice.dpMsg != null &&
-                                singleDevice.dpMsg.baseDpDevice != null &&
-                                TextUtils.equals(portrait.cid, singleDevice.dpMsg.baseDpDevice.uuid);
-                        AppLogger.i(TAG + ":filter: " + filter + "-->" + portrait + "\n" + singleDevice);
+                        boolean filter = portrait != null
+                                && singleDevice.dpMsg != null
+                                && singleDevice.dpMsg.baseDpDevice != null
+                                && TextUtils.equals(portrait.cid, singleDevice.dpMsg.baseDpDevice.uuid);
+                        AppLogger.i(TAG + ":filter: " + filter);
                         return filter;
                     }
                 })

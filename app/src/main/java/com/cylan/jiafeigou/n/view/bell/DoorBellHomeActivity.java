@@ -24,11 +24,9 @@ import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.SpacesItemDecoration;
 import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
 import com.cylan.jiafeigou.n.mvp.contract.bell.DoorBellHomeContract;
-import com.cylan.jiafeigou.n.mvp.impl.bell.BellSettingPresenterImpl;
 import com.cylan.jiafeigou.n.mvp.impl.bell.DBellHomePresenterImpl;
 import com.cylan.jiafeigou.n.mvp.model.BellCallRecordBean;
 import com.cylan.jiafeigou.n.view.adapter.BellCallRecordListAdapter;
-import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.AnimatorUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;
@@ -52,7 +50,6 @@ public class DoorBellHomeActivity extends BaseFullScreenFragmentActivity
         BellCallRecordListAdapter.LoadImageListener,
         ViewTreeObserver.OnGlobalLayoutListener {
 
-    private static final String tag = "DoorBellHomeActivity";
     @BindView(R.id.tv_top_bar_left)
     TextView imgVTopBarCenter;
     @BindView(R.id.fLayout_top_bar_container)
@@ -97,7 +94,6 @@ public class DoorBellHomeActivity extends BaseFullScreenFragmentActivity
         if (presenter == null)
             presenter = new DBellHomePresenterImpl(this);
         presenter.start();
-//        startService(new Intent(getApplicationContext(), SimpleHelperIntentService.class));
     }
 
     @Override
@@ -175,7 +171,7 @@ public class DoorBellHomeActivity extends BaseFullScreenFragmentActivity
                 ViewUtils.deBounceClick(v);
                 initSettingFragment();
                 BellSettingFragment fragment = fragmentWeakReference.get();
-                new BellSettingPresenterImpl(fragment);
+
                 getSupportFragmentManager().beginTransaction()
                         //如果需要动画，可以把动画添加进来
                         .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
@@ -192,7 +188,7 @@ public class DoorBellHomeActivity extends BaseFullScreenFragmentActivity
 
     private void initSettingFragment() {
         if (fragmentWeakReference == null || fragmentWeakReference.get() == null) {
-            fragmentWeakReference = new WeakReference<>(BellSettingFragment.newInstance(new Bundle()));
+            fragmentWeakReference = new WeakReference<>(BellSettingFragment.newInstance(null));
         }
         Bundle bundle = getIntent().getBundleExtra(JConstant.KEY_DEVICE_ITEM_BUNDLE);
         if (bundle != null) {
@@ -253,19 +249,6 @@ public class DoorBellHomeActivity extends BaseFullScreenFragmentActivity
     public void onRecordsListRsp(ArrayList<BellCallRecordBean> beanArrayList) {
         bellCallRecordListAdapter.addAll(beanArrayList);
         LoadingDialog.dismissLoading(getSupportFragmentManager());
-    }
-
-    public void onActivityResult(RxEvent.ActivityResult result) {
-        if (result == null || result.bundle == null)
-            return;
-        if (result.bundle.containsKey(JConstant.KEY_ACTIVITY_RESULT_CODE)) {
-            final int resultCode = result.bundle.getInt(JConstant.KEY_ACTIVITY_RESULT_CODE);
-            switch (resultCode) {
-                case JConstant.RESULT_CODE_REMOVE_ITEM:
-                    finishExt();
-                    break;
-            }
-        }
     }
 
     @Override
