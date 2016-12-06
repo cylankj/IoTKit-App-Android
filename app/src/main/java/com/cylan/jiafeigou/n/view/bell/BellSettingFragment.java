@@ -124,6 +124,16 @@ public class BellSettingFragment extends IBaseFragment<BellSettingContract.Prese
 
     @Override
     public void onSettingInfoRsp(BeanBellInfo bellInfoBean) {
+        if (bellInfoBean.deviceBase != null && !TextUtils.isEmpty(bellInfoBean.deviceBase.shareAccount)) {
+            //分享账号
+            final int count = lLayoutSettingContainer.getChildCount();
+            for (int i = 3; i < count; i++) {
+                View v = lLayoutSettingContainer.getChildAt(i);
+                if (v != null) {
+                    v.setVisibility(View.GONE);
+                }
+            }
+        }
         svSettingDeviceDetail.setTvSubTitle(TextUtils.isEmpty(bellInfoBean.deviceBase.alias)
                 ? bellInfoBean.deviceBase.uuid : bellInfoBean.deviceBase.alias);
         String ssid = bellInfoBean.net == null || TextUtils.isEmpty(bellInfoBean.net.ssid)
