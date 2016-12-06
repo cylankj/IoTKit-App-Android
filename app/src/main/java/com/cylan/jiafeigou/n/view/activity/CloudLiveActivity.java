@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -37,6 +38,7 @@ import com.cylan.jiafeigou.n.view.cloud.CloudVideoChatCallInFragment;
 import com.cylan.jiafeigou.n.view.cloud.CloudVideoChatCallOutFragment;
 import com.cylan.jiafeigou.n.view.cloud.LayoutIdMapCache;
 import com.cylan.jiafeigou.n.view.cloud.ViewTypeMapCache;
+import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.CloudLiveVoiceTalkView;
@@ -205,11 +207,12 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
     private void jump2SettingFragment() {
         getSupportFragmentManager()
                 .beginTransaction()
-                .setCustomAnimations(0, R.anim.slide_down_out
+                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                         , R.anim.slide_in_left, R.anim.slide_out_right)
                 .add(android.R.id.content, cloudLiveSettingFragment)
                 .addToBackStack("CloudLiveSettingFragment")
                 .commit();
+
     }
 
     private void jump2VideoChatFragment() {
