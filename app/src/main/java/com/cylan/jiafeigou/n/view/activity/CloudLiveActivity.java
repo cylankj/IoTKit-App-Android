@@ -93,7 +93,6 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cloud_live);
         ButterKnife.bind(this);
-        getIntentData();
         initFragment();
         initPresenter();
     }
@@ -160,9 +159,7 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
     }
 
     private void initFragment() {
-        Bundle bundle = new Bundle();
-        cloudLiveSettingFragment = CloudLiveSettingFragment.newInstance(bundle);
-
+        cloudLiveSettingFragment = CloudLiveSettingFragment.newInstance(getIntent().getBundleExtra(JConstant.KEY_DEVICE_ITEM_BUNDLE));
         Bundle videoBundle = new Bundle();
         cloudVideoChatConnetionFragment = CloudVideoChatCallInFragment.newInstance(videoBundle);
     }
@@ -205,6 +202,7 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
      * 跳转到设置界面
      */
     private void jump2SettingFragment() {
+
         getSupportFragmentManager()
                 .beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
@@ -477,9 +475,5 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
         }).show();
     }
 
-    public void getIntentData() {
-        Bundle bundleExtra = getIntent().getExtras();
-        Parcelable parcelable = bundleExtra.getParcelable(JConstant.KEY_DEVICE_ITEM_BUNDLE);
-    }
 
 }

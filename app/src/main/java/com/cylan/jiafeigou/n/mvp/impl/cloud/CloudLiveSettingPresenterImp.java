@@ -1,10 +1,16 @@
 package com.cylan.jiafeigou.n.mvp.impl.cloud;
 
+import android.text.TextUtils;
+
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.db.DataBaseUtil;
 import com.cylan.jiafeigou.n.mvp.contract.cloud.CloudLiveSettingContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
+import com.cylan.jiafeigou.n.mvp.model.BaseBean;
+import com.cylan.jiafeigou.n.mvp.model.BeanCamInfo;
+import com.cylan.jiafeigou.n.mvp.model.BeanCloudInfo;
 import com.cylan.jiafeigou.n.mvp.model.CloudLiveBaseDbBean;
+import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.db.DbManager;
 import com.cylan.jiafeigou.support.db.ex.DbException;
@@ -31,28 +37,51 @@ public class CloudLiveSettingPresenterImp extends AbstractPresenter<CloudLiveSet
     private Subscription clearDbSub;
     private DbManager dbManager = null;
     private CompositeSubscription subscription;
+    private BeanCloudInfo cloudInfoBean;
+    private DeviceBean bean;
 
 
-    public CloudLiveSettingPresenterImp(CloudLiveSettingContract.View view) {
+    public CloudLiveSettingPresenterImp(CloudLiveSettingContract.View view, DeviceBean bean) {
         super(view);
         view.setPresenter(this);
-        subscription = new CompositeSubscription();
+        this.bean = bean;
     }
 
     @Override
     public void start() {
+        fillData(bean);
         if (getView() != null) {
             getView().initSomeViewVisible(isHasBeenShareUser());
         }
-        subscription.add(getAccount());
+        if (subscription != null && !subscription.isUnsubscribed()){
+            subscription.unsubscribe();
+        }else {
+            subscription = new CompositeSubscription();
+            subscription.add(getAccount());
+        }
     }
 
     @Override
     public void stop() {
+        if (subscription != null && !subscription.isUnsubscribed()){
+            subscription.unsubscribe();
+        }
         if (clearDbSub != null) {
             clearDbSub.unsubscribe();
         }
     }
+
+    private void fillData(DeviceBean bean) {
+        cloudInfoBean = new BeanCloudInfo();
+        BaseBean baseBean = new BaseBean();
+        baseBean.alias = bean.alias;
+        baseBean.pid = bean.pid;
+        baseBean.uuid = bean.uuid;
+        baseBean.sn = bean.sn;
+        cloudInfoBean.convert(baseBean, bean.dataList);
+        getView().onCloudInfoRsp(cloudInfoBean);
+    }
+
 
     @Override
     public boolean isHasBeenShareUser() {
@@ -110,6 +139,27 @@ public class CloudLiveSettingPresenterImp extends AbstractPresenter<CloudLiveSet
                         }
                     }
                 });
+    }
+
+    /**
+     * 拿到设备的名称
+     * @return
+     */
+    @Override
+    public String getDeviceName() {
+        return TextUtils.isEmpty(cloudInfoBean.deviceBase.alias) ?
+                cloudInfoBean.deviceBase.uuid : cloudInfoBean.deviceBase.alias;
+    }
+
+    /**
+     * 获取到中控设备的信息
+     * @return
+     */
+    @Override
+    public BeanCloudInfo getCloudInfoBean() {
+        if (cloudInfoBean == null)
+            cloudInfoBean = new BeanCloudInfo();
+        return cloudInfoBean;
     }
 
 }

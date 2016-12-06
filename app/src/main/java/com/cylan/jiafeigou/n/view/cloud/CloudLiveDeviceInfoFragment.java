@@ -3,6 +3,7 @@ package com.cylan.jiafeigou.n.view.cloud;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,12 +12,22 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.n.mvp.contract.cloud.CloudLiveDeviceInfoContract;
-import com.cylan.jiafeigou.utils.PreferencesUtils;
+import com.cylan.jiafeigou.n.mvp.impl.cloud.CloudLiveDeviceInfoPresenterImp;
+import com.cylan.jiafeigou.n.mvp.model.BeanCloudInfo;
+import com.cylan.jiafeigou.n.mvp.model.BeanMagInfo;
+import com.cylan.jiafeigou.widget.dialog.EditFragmentDialog;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+
+import static com.cylan.jiafeigou.misc.JConstant.KEY_DEVICE_ITEM_BUNDLE;
+import static com.cylan.jiafeigou.widget.dialog.EditFragmentDialog.KEY_LEFT_CONTENT;
+import static com.cylan.jiafeigou.widget.dialog.EditFragmentDialog.KEY_RIGHT_CONTENT;
+import static com.cylan.jiafeigou.widget.dialog.EditFragmentDialog.KEY_TITLE;
+import static com.cylan.jiafeigou.widget.dialog.EditFragmentDialog.KEY_TOUCH_OUT_SIDE_DISMISS;
 
 /**
  * 作者：zsl
@@ -31,11 +42,23 @@ public class CloudLiveDeviceInfoFragment extends Fragment implements CloudLiveDe
     TextView tvInformationFacilityName;
     @BindView(R.id.lLayout_information_facility_name)
     LinearLayout lLayoutInformationFacilityName;
-    @BindView(R.id.tv_device_time_zone)
-    TextView tvInformationFacilityTimeZone;
-    @BindView(R.id.lLayout_information_facility_timezone)
-    LinearLayout lLayoutInformationFacilityTimezone;
+    @BindView(R.id.tv_device_sdcard_state)
+    TextView tvDeviceSdcardState;
+    @BindView(R.id.tv_device_wifi_state)
+    TextView tvDeviceWifiState;
+    @BindView(R.id.tv_device_cid)
+    TextView tvDeviceCid;
+    @BindView(R.id.tv_device_storage)
+    TextView tvDeviceStorage;
+    @BindView(R.id.tv_device_mac)
+    TextView tvDeviceMac;
+    @BindView(R.id.tv_system_version)
+    TextView tvSystemVersion;
+    @BindView(R.id.tv_soft_version)
+    TextView tvSoftVersion;
 
+    private EditFragmentDialog editDialogFragment;
+    private CloudLiveDeviceInfoContract.Presenter presenter;
     public OnChangeNameListener listener;
 
     public interface OnChangeNameListener {
@@ -46,8 +69,6 @@ public class CloudLiveDeviceInfoFragment extends Fragment implements CloudLiveDe
         this.listener = listener;
     }
 
-//    private MagDeviceNameDialogFragment magDeviceNameDialogFragment;
-
     public static CloudLiveDeviceInfoFragment newInstance(Bundle bundle) {
         CloudLiveDeviceInfoFragment fragment = new CloudLiveDeviceInfoFragment();
         fragment.setArguments(bundle);
@@ -57,7 +78,6 @@ public class CloudLiveDeviceInfoFragment extends Fragment implements CloudLiveDe
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        magDeviceNameDialogFragment = MagDeviceNameDialogFragment.newInstance(new Bundle());
     }
 
     @Nullable
@@ -65,16 +85,32 @@ public class CloudLiveDeviceInfoFragment extends Fragment implements CloudLiveDe
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_cloud_live_device_info, container, false);
         ButterKnife.bind(this, view);
+        initPresenter();
         return view;
+    }
+
+    private void initPresenter() {
+        BeanCloudInfo beanCloudInfo = getArguments().getParcelable(KEY_DEVICE_ITEM_BUNDLE);
+        presenter = new CloudLiveDeviceInfoPresenterImp(this, beanCloudInfo);
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        String editName = PreferencesUtils.getString("magEditName", "大门口的门铃");
-        tvInformationFacilityName.setText(editName);
-        String detailText = PreferencesUtils.getString("magDetailText", "北京/中国");
-        tvInformationFacilityTimeZone.setText(detailText);
+        updateDetails();
+    }
+
+    private void updateDetails() {
+        BeanCloudInfo p = presenter.getCloudInfoBean();
+        if (p != null) {
+            tvInformationFacilityName.setText(p.deviceBase.alias);
+            tvDeviceCid.setText(p.deviceBase.uuid);
+            tvDeviceMac.setText(p.mac);
+//            tvDeviceBatteryLevel.setText(p.battery + "");
+//            tvSoftVersion.setText(p.deviceVersion);
+//            tvSystemVersion.setText(p.deviceSysVersion);
+        }
+
     }
 
     @Override
@@ -82,40 +118,57 @@ public class CloudLiveDeviceInfoFragment extends Fragment implements CloudLiveDe
 
     }
 
-    @OnClick({R.id.iv_information_back, R.id.lLayout_information_facility_name, R.id.lLayout_information_facility_timezone})
+    @OnClick({R.id.iv_information_back, R.id.lLayout_information_facility_name})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.iv_information_back:
                 getFragmentManager().popBackStack();
                 break;
             case R.id.lLayout_information_facility_name:
-//                magDeviceNameDialogFragment.show(getActivity().getFragmentManager(),
-//                        "MsgDeviceNameDialogFragment");
-//                if (getActivity() != null && getActivity().getFragmentManager() != null) {
-//                    magDeviceNameDialogFragment.setListener(new MagDeviceNameDialogFragment.OnMagDataChangeListener() {
-//                        @Override
-//                        public void magDataChangeListener(String content) {
-//                            tvInformationFacilityName.setText(content);
-//                        }
-//                    });
-//                }
-                break;
-            case R.id.lLayout_information_facility_timezone:
+                toEditAlias();
                 break;
         }
     }
 
-    @Override
-    public void initSdCardState(int state) {
+    /**
+     * 编辑昵称
+     */
+    private void toEditAlias() {
+        if (editDialogFragment == null) {
+            Bundle bundle = new Bundle();
+            bundle.putString(KEY_TITLE, getString(R.string.EQUIPMENT_NAME));
+            bundle.putString(KEY_LEFT_CONTENT, getString(R.string.OK));
+            bundle.putString(KEY_RIGHT_CONTENT, getString(R.string.CANCEL));
+            bundle.putBoolean(KEY_TOUCH_OUT_SIDE_DISMISS, false);
+            editDialogFragment = EditFragmentDialog.newInstance(bundle);
+        }
+        if (editDialogFragment.isVisible())
+            return;
+        editDialogFragment.show(getChildFragmentManager(), "editDialogFragment");
+        editDialogFragment.setAction(new EditFragmentDialog.DialogAction<String>() {
+            @Override
+            public void onDialogAction(int id, String value) {
+                if (presenter != null) {
+                    BeanCloudInfo info = presenter.getCloudInfoBean();
+                    if (!TextUtils.isEmpty(value)
+                            && !TextUtils.equals(info.deviceBase.alias, value)) {
+                        tvInformationFacilityName.setText(value);
+                        info.deviceBase.alias = value;
+                        updateDetails();
+                        presenter.saveCloudInfoBean(info, DpMsgMap.ID_2000003_BASE_ALIAS);
 
+                        if (listener != null){
+                            listener.changeName(value);
+                        }
+
+                    }
+                }
+            }
+        });
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (listener != null) {
-            listener.changeName(tvInformationFacilityName.getText().toString().trim());
-        }
-
     }
 }
