@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.model.MineHelpSuggestionBean;
@@ -72,8 +73,11 @@ public class HomeMineHelpSuggestionAdapter extends SuperAdapter<MineHelpSuggesti
 
             clientImage = holder.getView(R.id.iv_mine_suggestion_client);
             Glide.with(getContext()).load(item.getIcon())
-                    .asBitmap().centerCrop()
+                    .asBitmap()
                     .error(R.drawable.icon_mine_head_normal)
+                    .centerCrop()
+                    .placeholder(R.drawable.icon_mine_head_normal)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .into(new BitmapImageViewTarget(clientImage) {
                         @Override
                         protected void setResource(Bitmap resource) {

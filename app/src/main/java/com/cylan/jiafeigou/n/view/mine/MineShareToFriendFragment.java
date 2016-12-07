@@ -112,7 +112,6 @@ public class MineShareToFriendFragment extends Fragment implements MineShareToFr
     @OnClick({R.id.iv_mine_share_to_relative_friend_back, R.id.tv_mine_share_to_relative_friend_true})
     public void onClick(View view) {
         switch (view.getId()) {
-
             case R.id.iv_mine_share_to_relative_friend_back:
                 getFragmentManager().popBackStack();
                 break;
@@ -130,13 +129,13 @@ public class MineShareToFriendFragment extends Fragment implements MineShareToFr
     @Override
     public void initRecycleView(ArrayList<RelAndFriendBean> list) {
         //过滤掉已分享的亲友
-        for (RelAndFriendBean bean:list){
-            for (RelAndFriendBean hasBean:hasSharefriend){
-                if (bean.account.equals(hasBean.account)){
-                    list.remove(bean);
-                }
-            }
-        }
+//        for (RelAndFriendBean bean:list){
+//            for (RelAndFriendBean hasBean:hasSharefriend){
+//                if (bean.account.equals(hasBean.account)){
+//                    list.remove(bean);
+//                }
+//            }
+//        }
         rcyMineShareToRelativeAndFriendList.setLayoutManager(new LinearLayoutManager(getContext()));
         shareToFriendsAdapter = new ShareToFriendsAdapter(getContext(), list, null);
         rcyMineShareToRelativeAndFriendList.setAdapter(shareToFriendsAdapter);

@@ -145,7 +145,6 @@ public class CloudLiveSettingFragment extends Fragment implements CloudLiveSetti
      * desc：删除设备弹出框
      */
     private void showClearDeviceDialog() {
-
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle("确认删除大门口门铃及其相关数据吗？");
         builder.setPositiveButton(getString(R.string.OK), new DialogInterface.OnClickListener() {

@@ -16,6 +16,10 @@ public interface HomeMagLiveContract {
 
     interface View extends BaseView<Presenter> {
 
+        /**
+         * 初始化设备名称的设置
+         * @param magInfoBean
+         */
         void onMagInfoRsp(BeanMagInfo magInfoBean);
 
         boolean openDoorNotify();           //打开开和关通知
@@ -42,10 +46,24 @@ public interface HomeMagLiveContract {
 
         void clearOpenAndCloseRecord();             //清空开和关的记录
 
+        /**
+         * 取反操作
+         * @return
+         */
         boolean getNegation();
 
+        /**
+         * 保存开关的状态
+         * @param isChick
+         * @param key
+         */
         void saveSwitchState(boolean isChick, String key);
 
+        /**
+         * 获取的开关的的状态
+         * @param key
+         * @return
+         */
         boolean getSwitchState(String key);
 
         /**

@@ -12,6 +12,7 @@ import com.cylan.jiafeigou.n.mvp.model.BeanCloudInfo;
 public interface CloudLiveDeviceInfoContract {
 
     interface View extends BaseView<Presenter> {
+
     }
 
     interface Presenter extends BasePresenter {
@@ -34,6 +35,7 @@ public interface CloudLiveDeviceInfoContract {
          * @return
          */
         BeanCloudInfo getCloudInfoBean();
+
     }
 
 }

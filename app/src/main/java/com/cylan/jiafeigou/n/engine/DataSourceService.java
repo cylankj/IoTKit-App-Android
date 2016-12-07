@@ -326,7 +326,7 @@ public class DataSourceService extends Service implements AppCallBack {
     @Override
     public void OnGetUnShareListByCidRsp(int i, ArrayList<JFGFriendAccount> arrayList) {
         AppLogger.d("OnGetUnShareListByCidRsp :" + arrayList.get(0));
-//        RxBus.getCacheInstance().post(new RxEvent.GetHasShareFriendCallBack(i,arrayList));
+        RxBus.getCacheInstance().post(new RxEvent.GetHasShareFriendCallBack(i,arrayList));
     }
 
     @Override

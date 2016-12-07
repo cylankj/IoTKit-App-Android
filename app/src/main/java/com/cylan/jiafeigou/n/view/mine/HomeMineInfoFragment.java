@@ -27,6 +27,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.jiafeigou.R;
@@ -279,8 +280,11 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
             }
 
             Glide.with(getContext()).load(photoUrl)
-                    .asBitmap().centerCrop()
+                    .asBitmap()
+                    .centerCrop()
+                    .placeholder(R.drawable.icon_mine_head_normal)
                     .error(R.drawable.icon_mine_head_normal)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .into(new BitmapImageViewTarget(userImageHead) {
                         @Override
                         protected void setResource(Bitmap resource) {

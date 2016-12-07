@@ -52,7 +52,8 @@ public class AddRelativesAndFriendsAdapter extends SuperAdapter<MineAddReqBean> 
                 .asBitmap().centerCrop()
                 .error(R.drawable.icon_mine_head_normal)
                 .placeholder(R.drawable.icon_mine_head_normal)
-                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                .centerCrop()
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(new BitmapImageViewTarget(headImag) {
                     @Override
                     protected void setResource(Bitmap resource) {

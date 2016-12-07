@@ -13,6 +13,7 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.cache.JCache;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
@@ -256,7 +257,11 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
 
     @Override
     public void setUserImageHead(String url) {
-        Glide.with(getContext()).load(url).error(R.drawable.icon_mine_head_normal).into(ivHomeMinePortrait);
+        Glide.with(getContext()).load(url)
+                .error(R.drawable.icon_mine_head_normal)
+                .centerCrop()
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .into(ivHomeMinePortrait);
     }
 
     /**
