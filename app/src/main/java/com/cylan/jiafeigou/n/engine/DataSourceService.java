@@ -285,7 +285,7 @@ public class DataSourceService extends Service implements AppCallBack {
 
     @Override
     public void OnGetFriendRequestListRsp(int i, ArrayList<JFGFriendRequest> arrayList) {
-        AppLogger.d("OnLocalMessage :");
+        AppLogger.d("OnLocalMessage:"+arrayList.size());
         if (RxBus.getCacheInstance() != null && RxBus.getCacheInstance().hasObservers()) {
             RxBus.getCacheInstance().post(new RxEvent.GetAddReqList(i, arrayList));
         }

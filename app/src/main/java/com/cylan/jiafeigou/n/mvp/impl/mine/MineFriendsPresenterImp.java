@@ -36,15 +36,19 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
     public MineFriendsPresenterImp(MineFriendsContract.View view) {
         super(view);
         view.setPresenter(this);
-        compositeSubscription = new CompositeSubscription();
     }
 
     @Override
     public void start() {
-        compositeSubscription.add(getAddRequest());
-        compositeSubscription.add(getFriendList());
-        compositeSubscription.add(initAddReqRecyListData());
-        compositeSubscription.add(initFriendRecyListData());
+        if (compositeSubscription != null && !compositeSubscription.isUnsubscribed()){
+            compositeSubscription.unsubscribe();
+        }else {
+            compositeSubscription = new CompositeSubscription();
+            compositeSubscription.add(getAddRequest());
+            compositeSubscription.add(getFriendList());
+            compositeSubscription.add(initAddReqRecyListData());
+            compositeSubscription.add(initFriendRecyListData());
+        }
     }
 
     @Override
@@ -111,7 +115,6 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
 
     /**
      * desc：好友列表的排序
-     *
      * @param list
      * @return
      */

@@ -14,7 +14,7 @@
         android:text="@string/Tap3_Friends"
         android:textSize="16sp"
         android:textColor="@color/color_black"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
     <TextView
@@ -26,7 +26,7 @@
         android:text="@string/contacts_auth"
         android:textSize="16sp"
         android:textColor="@color/color_black"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
 </LinearLayout>

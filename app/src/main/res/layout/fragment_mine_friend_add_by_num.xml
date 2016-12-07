@@ -30,7 +30,7 @@
             android:layout_marginLeft="48dp"
             android:hint="@string/SHARE_ACCOUNT"
             android:maxLength="65"
-            android:inputType="number"
+            android:inputType="textVisiblePassword"
             android:textColorHint="#60ffffff"
             android:background="@null"
             android:textSize="18sp" />

@@ -119,7 +119,7 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
     @Override
     public void portraitUpdateByUrl(String url) {
         onLoadUserHeadSubscribtion = Observable.just(url)
-                .subscribeOn(Schedulers.io())
+                .subscribeOn(Schedulers.computation())
                 .map(new Func1<String, Bitmap>() {
                     @Override
                     public Bitmap call(String url) {
