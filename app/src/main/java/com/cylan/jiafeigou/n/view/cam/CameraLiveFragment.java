@@ -145,9 +145,12 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
         super.onStart();
         if (basePresenter != null) {
             basePresenter.fetchHistoryDataList();
-            basePresenter.startPlayVideo(basePresenter.getPlayType());
-            showLoading(basePresenter.getCamInfo().net != null
-                    && basePresenter.getCamInfo().net.net != 0);
+            //非待机模式
+            if (!basePresenter.getCamInfo().cameraStandbyFlag) {
+                basePresenter.startPlayVideo(basePresenter.getPlayType());
+                showLoading(basePresenter.getCamInfo().net != null
+                        && basePresenter.getCamInfo().net.net != 0);
+            }
         }
     }
 
