@@ -45,10 +45,8 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
     private static final String TAG = "CamLivePresenterImpl";
     private DeviceBean bean;
     private BeanCamInfo beanCamInfo;
-    //    private Subscription bulkDevicesSub;
     private CompositeSubscription compositeSubscription;
     private boolean isRtcpSignal;
-    private ArrayList<DpMsgDefine.DpMsg> preListData;
     /**
      * 帧率记录
      */
@@ -201,7 +199,12 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                     public void call(Object dataStack) {
                         //获取设备历史录像
                         if (getCamInfo().deviceBase != null && getCamInfo().deviceBase.uuid != null) {
-                            JfgCmdInsurance.getCmd().getVideoList(getCamInfo().deviceBase.uuid);
+                            RxEvent.JFGHistoryVideoReq req = new RxEvent.JFGHistoryVideoReq();
+                            req.uuid = getCamInfo().deviceBase.uuid;
+                            RxBus.getCacheInstance().post(req);
+                            //不直接使用这个接口,因为在videoList的数据结构中没有uuid标签,只能使用请求的seq来判断.
+                            //所有把它统一放到History类中管理.
+                            //JfgCmdInsurance.getCmd().getVideoList(getCamInfo().deviceBase.uuid);
                             AppLogger.i("getVideoList");
                         }
                     }

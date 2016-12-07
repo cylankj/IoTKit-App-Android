@@ -29,7 +29,7 @@ import com.cylan.entity.jniCall.RobotoGetDataRsp;
 import com.cylan.jfgapp.interfases.AppCallBack;
 import com.cylan.jfgapp.jni.JfgAppCmd;
 import com.cylan.jiafeigou.cache.JCache;
-import com.cylan.jiafeigou.dp.DpParser;
+import com.cylan.jiafeigou.cache.CacheParser;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JResultEvent;
@@ -54,14 +54,14 @@ public class DataSourceService extends Service implements AppCallBack {
     @Override
     public void onCreate() {
         super.onCreate();
-        DpParser.getDpParser().registerDpParser();
+        CacheParser.getDpParser().registerDpParser();
         GlobalUdpDataSource.getInstance().register();
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        DpParser.getDpParser().unregisterDpParser();
+        CacheParser.getDpParser().unregisterDpParser();
         GlobalUdpDataSource.getInstance().unregister();
     }
 
@@ -133,7 +133,8 @@ public class DataSourceService extends Service implements AppCallBack {
 
     @Override
     public void OnUpdateHistoryVideoList(JFGHistoryVideo jfgHistoryVideo) {
-        AppLogger.d("OnUpdateHistoryVideoList :");
+        AppLogger.d("OnUpdateHistoryVideoList :" + jfgHistoryVideo.list.size());
+        RxBus.getCacheInstance().post(jfgHistoryVideo);
     }
 
     @Override

@@ -174,7 +174,7 @@ public class BellSettingPresenterImpl extends AbstractPresenter<BellSettingContr
                     @Override
                     public void call(Object o) {
                         String uuid = beanBellInfo.deviceBase.uuid;
-                        RxEvent.JFGDeviceDeletion deletion = new RxEvent.JFGDeviceDeletion();
+                        RxEvent.UnbindJFGDevice deletion = new RxEvent.UnbindJFGDevice();
                         deletion.uuid = uuid;
                         RxBus.getCacheInstance().post(deletion);
                         JfgCmdInsurance.getCmd().unBindDevice(uuid);

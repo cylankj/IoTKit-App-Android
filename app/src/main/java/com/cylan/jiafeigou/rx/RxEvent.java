@@ -439,7 +439,24 @@ public class RxEvent {
         public String uuid;
     }
 
-    public static final class JFGDeviceDeletion {
+    /**
+     * 解绑设备
+     */
+    public static final class UnbindJFGDevice {
         public String uuid;
+    }
+
+    /**
+     * 历史数据查询
+     */
+    public static final class JFGHistoryVideoReq {
+        public String uuid;
+    }
+
+    /**
+     * 历史录像数据响应
+     */
+    public static final class JFGHistoryVideoRsp {
+
     }
 }

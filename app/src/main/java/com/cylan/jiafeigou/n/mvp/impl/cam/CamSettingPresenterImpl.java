@@ -260,7 +260,7 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
                     @Override
                     public void call(Object o) {
                         String uuid = camInfoBean.deviceBase.uuid;
-                        RxEvent.JFGDeviceDeletion deletion = new RxEvent.JFGDeviceDeletion();
+                        RxEvent.UnbindJFGDevice deletion = new RxEvent.UnbindJFGDevice();
                         deletion.uuid = uuid;
                         RxBus.getCacheInstance().post(deletion);
                         JfgCmdInsurance.getCmd().unBindDevice(uuid);

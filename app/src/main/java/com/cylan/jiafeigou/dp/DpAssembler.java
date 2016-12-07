@@ -197,11 +197,11 @@ public class DpAssembler implements IParser {
      * @return
      */
     private Subscription deviceDeleteSub() {
-        return RxBus.getCacheInstance().toObservable(RxEvent.JFGDeviceDeletion.class)
+        return RxBus.getCacheInstance().toObservable(RxEvent.UnbindJFGDevice.class)
                 .subscribeOn(Schedulers.newThread())
-                .map(new Func1<RxEvent.JFGDeviceDeletion, Object>() {
+                .map(new Func1<RxEvent.UnbindJFGDevice, Object>() {
                     @Override
-                    public Object call(RxEvent.JFGDeviceDeletion jfgDeviceDeletion) {
+                    public Object call(RxEvent.UnbindJFGDevice jfgDeviceDeletion) {
                         String uuid = jfgDeviceDeletion.uuid;
                         if (!TextUtils.isEmpty(uuid)) {
                             flatMsg.rm(JCache.getAccountCache().getAccount(), uuid);
@@ -465,7 +465,8 @@ public class DpAssembler implements IParser {
 
 
     @Override
-    public void unregister() {
-
+    public void clear() {
+        if (flatMsg != null)
+            flatMsg.clean();
     }
 }
