@@ -76,9 +76,11 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
     @BindView(R.id.fLayout_cam_live_menu)
     FrameLayout fLayoutCamLiveMenu;
 
-    WeakReference<View> fLayoutLandScapeControlLayerRef;
     @BindView(R.id.sw_cam_port_wheel)
     CamLivePortWheel swCamPortWheel;
+
+    private View loadingView;
+    private WeakReference<View> fLayoutLandScapeControlLayerRef;
     private WeakReference<LiveBottomBarAnimDelegate> liveBottomBarAnimDelegateWeakReference;
     private WeakReference<CamLandLiveLayerInterface> landLiveLayerViewActionWeakReference;
     private CamLandLiveLayerInterface camLandLiveLayerInterface;
@@ -133,7 +135,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
     public void onPause() {
         super.onPause();
         if (basePresenter != null)
-            basePresenter.stopPlayVideo();
+            basePresenter.stopPlayVideo(basePresenter.getPlayType());
         if (camLandLiveLayerInterface != null)
             camLandLiveLayerInterface.destroy();
     }
@@ -142,8 +144,8 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
     public void onStart() {
         super.onStart();
         if (basePresenter != null) {
-            basePresenter.fetchHistoryData();
-            basePresenter.startPlayVideo();
+            basePresenter.fetchHistoryDataList();
+            basePresenter.startPlayVideo(basePresenter.getPlayType());
             showLoading(basePresenter.getCamInfo().net != null
                     && basePresenter.getCamInfo().net.net != 0);
         }
@@ -157,14 +159,14 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        showLoading(false);
     }
 
     /**
      * 根据 待机模式 ,分享用户模式设置一些view的状态
      */
     @Override
-    public void showSceneView(boolean flag) {
+    public void onDeviceStandBy(boolean flag) {
+        //进入待机模式
         View v = fLayoutLiveViewContainer.findViewById("showSceneView".hashCode());
         if (v == null && !flag) {
             return;
@@ -180,15 +182,27 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
             } else v = viewStandbyRef.get();
         }
         v.setVisibility(flag ? View.VISIBLE : View.GONE);
-        AppLogger.i("show standby view");
+        AppLogger.i("onDeviceStandBy");
+    }
+
+    @Override
+    public void onLivePrepare(int type) {
+        showLoading(basePresenter.getCamInfo().net != null
+                && basePresenter.getCamInfo().net.net != 0);
+        AppLogger.i("onLivePrepare");
+    }
+
+    @Override
+    public void onLiveStarted(int type) {
+        showLoading(false);
+        AppLogger.i("onLiveStarted");
     }
 
     private void showLoading(boolean show) {
-        if (vsProgress.getInflatedId() == View.NO_ID) {
-            vsProgress.setInflatedId("vsProgress".hashCode());
-            vsProgress.inflate();
-        }
-        vsProgress.setVisibility(show ? View.VISIBLE : View.INVISIBLE);
+        if (loadingView == null)
+            loadingView = vsProgress.inflate();
+        loadingView.setVisibility(show ? View.VISIBLE : View.INVISIBLE);
+        AppLogger.i("showLoading:" + Integer.toHexString("vsProgress".hashCode()));
     }
 
     @Override
@@ -207,6 +221,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
             ViewUtils.updateViewHeight(fLayoutCamLiveView, 0.75f);
             showLandLayerView(false);
         }
+        AppLogger.i("onConfigurationChanged");
     }
 
     /**
@@ -222,9 +237,15 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
             ((View) videoView).setId("IVideoView".hashCode());
 
         }
+        AppLogger.i("initVideoView");
         return videoView;
     }
 
+    /**
+     * 第一次创建view,会导致全屏闪烁一下.
+     *
+     * @param resolution
+     */
     private void updateVideoViewLayoutParameters(JFGMsgVideoResolution resolution) {
         FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
@@ -235,6 +256,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
         } else {
             view.setLayoutParams(lp);
         }
+        AppLogger.i("updateVideoViewLayoutParameters:" + (view == null));
     }
 
     /**
@@ -254,6 +276,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
         if (show) {
             initLandLiveLayerViewAction();
         }
+        AppLogger.i("showLandLayerView");
     }
 
     private void initLandLiveLayerViewAction() {
@@ -265,7 +288,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
                     new WeakReference<>(camLandLiveLayerInterface);
             landLiveLayerViewActionWeakReference.get().setCamLandLiveAction(this);
         }
-        Log.d("performance", "initLandLiveLayerViewAction performance: " + (System.currentTimeMillis() - time));
+        AppLogger.i("initLandLiveLayerViewAction:" + (System.currentTimeMillis() - time));
     }
 
     /**
@@ -282,6 +305,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
         if (view == null) {
             fLayoutLiveViewContainer.addView(fLayoutLandScapeControlLayerRef.get());
         }
+        AppLogger.i("initLandControlLayer");
     }
 
     @OnClick({R.id.imgV_cam_switch_speaker,
@@ -325,32 +349,32 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
     }
 
     @Override
-    public void onLive() {
+    public void onClickLive() {
     }
 
     @Override
-    public void onLandPlay(int state) {
+    public void onClickLandPlay(int state) {
         Toast.makeText(getContext(), "play: ", Toast.LENGTH_SHORT).show();
     }
 
     @Override
-    public void onLandBack() {
+    public void onClickLandBack() {
         Toast.makeText(getContext(), "onBack: ", Toast.LENGTH_SHORT).show();
         ViewUtils.setRequestedOrientation(getActivity(), ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
     }
 
     @Override
-    public void onLandSwitchSpeaker(int state) {
+    public void onClickLandSwitchSpeaker(int state) {
         Toast.makeText(getContext(), "onSwitchSpeaker: ", Toast.LENGTH_SHORT).show();
     }
 
     @Override
-    public void onLandSwitchRecorder(int state) {
+    public void onClickLandSwitchRecorder(int state) {
         Toast.makeText(getContext(), "onSwitchRecorder: ", Toast.LENGTH_SHORT).show();
     }
 
     @Override
-    public void onLandCapture() {
+    public void onClickLandCapture() {
         Toast.makeText(getContext(), "onCapture: ", Toast.LENGTH_SHORT).show();
     }
 
@@ -361,9 +385,9 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
     }
 
     @Override
-    public void onFailed(int id) {
+    public void onLiveStop(int playType, int errId) {
         showLoading(false);
-        switch (id) {
+        switch (errId) {
             case JFGRules.PlayErr.ERR_NERWORK:
                 ToastUtil.showNegativeToast(getString(R.string.OFFLINE_ERR_1));
                 break;
@@ -386,32 +410,8 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
 
     @Override
     public void onResolution(JFGMsgVideoResolution resolution) {
-        showLoading(false);
         JfgCmdInsurance.getCmd().setRenderRemoteView((View) initVideoView());
         updateVideoViewLayoutParameters(resolution);
-    }
-
-    @Override
-    public void onDeviceStandBy(boolean state) {
-        //进入待机模式
-        if (basePresenter == null) {
-            AppLogger.e("basePresenter is null");
-            return;
-        }
-        if (state) {
-            basePresenter.stopPlayVideo();
-            showLoading(false);
-            if (basePresenter.getPlayState() != 0) {
-                //处于非播放状态
-
-            }
-        } else {
-            if (getActivity() == null)
-                return;
-            if (getActivity().getRequestedOrientation() == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
-                ViewUtils.setRequestedOrientation(getActivity(), ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-            }
-        }
     }
 
     private void setCamLandLiveHistory(SDataStack dataStack) {
@@ -511,22 +511,22 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
 
         @Override
         public void onBack() {
-            if (camLandLiveAction != null) camLandLiveAction.onLandBack();
+            if (camLandLiveAction != null) camLandLiveAction.onClickLandBack();
         }
 
         @Override
         public void onSwitchSpeaker() {
-            if (camLandLiveAction != null) camLandLiveAction.onLandSwitchSpeaker(0);
+            if (camLandLiveAction != null) camLandLiveAction.onClickLandSwitchSpeaker(0);
         }
 
         @Override
         public void onTriggerRecorder() {
-            if (camLandLiveAction != null) camLandLiveAction.onLandSwitchRecorder(0);
+            if (camLandLiveAction != null) camLandLiveAction.onClickLandSwitchRecorder(0);
         }
 
         @Override
         public void onTriggerCapture() {
-            if (camLandLiveAction != null) camLandLiveAction.onLandCapture();
+            if (camLandLiveAction != null) camLandLiveAction.onClickLandCapture();
         }
     }
 
@@ -567,17 +567,16 @@ interface CamLandLiveLayerInterface {
 
 interface CamLandLiveAction {
 
-    void onLive();
+    void onClickLive();
 
+    void onClickLandPlay(int state);
 
-    void onLandPlay(int state);
+    void onClickLandBack();
 
-    void onLandBack();
+    void onClickLandSwitchSpeaker(int state);
 
-    void onLandSwitchSpeaker(int state);
+    void onClickLandSwitchRecorder(int state);
 
-    void onLandSwitchRecorder(int state);
-
-    void onLandCapture();
+    void onClickLandCapture();
 
 }

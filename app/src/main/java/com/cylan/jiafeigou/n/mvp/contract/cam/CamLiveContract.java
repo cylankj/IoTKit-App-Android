@@ -12,26 +12,47 @@ import com.cylan.jiafeigou.widget.wheel.SDataStack;
  */
 public interface CamLiveContract {
 
+    /**
+     * 默认直播
+     */
+    int TYPE_LIVE = 0;
+    int TYPE_HISTURY = 1;
 
     interface View extends BaseView<Presenter> {
 
 
         void onHistoryDataRsp(SDataStack timeSet);
 
-        /**
-         * 失败 0:网络失败
-         *
-         * @param id
-         */
-        void onFailed(int id);
 
         void onRtcp(JFGMsgVideoRtcp rtcp);
 
         void onResolution(JFGMsgVideoResolution resolution);
 
+        /**
+         * @param state
+         */
         void onDeviceStandBy(boolean state);
 
-        void showSceneView(boolean show);
+        /**
+         * 准备播放
+         */
+        void onLivePrepare(int type);
+
+        /**
+         * 直播或者历史录像
+         *
+         * @param type
+         */
+        void onLiveStarted(int type);
+
+        /**
+         * 直播或者历史录像
+         *
+         * @param type
+         * @param errId : 失败 0:网络失败
+         */
+        void onLiveStop(int type, int errId);
+
     }
 
     interface Presenter extends BasePresenter {
@@ -43,11 +64,29 @@ public interface CamLiveContract {
          */
         int getPlayState();
 
-        void fetchHistoryData();
+        /**
+         * 当前直播,或者历史视频
+         *
+         * @return
+         */
+        int getPlayType();
 
-        void startPlayVideo();
+        /**
+         * 抓取历史录像列表
+         */
+        void fetchHistoryDataList();
 
-        void stopPlayVideo();
+        /**
+         * 开始播放历史录像或者开始直播
+         */
+        void startPlayVideo(int type);
+
+        /**
+         * 停止播放历史录像或者直播
+         *
+         * @param type
+         */
+        void stopPlayVideo(int type);
 
         BeanCamInfo getCamInfo();
     }
