@@ -17,6 +17,7 @@ public interface CamSettingContract {
         void onCamInfoRsp(BeanCamInfo timeSet);
 
         void isSharedDevice();
+        void unbindDeviceRsp(int state);
     }
 
     interface Presenter extends BasePresenter {
@@ -32,6 +33,10 @@ public interface CamSettingContract {
         BeanCamInfo getCamInfoBean();
 
         void saveCamInfoBean(BeanCamInfo camInfoBean, int id);
+
+        void unbindDevice();
+
+
     }
 }
 

@@ -1,6 +1,7 @@
 package com.cylan.jiafeigou.misc.bind;
 
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
@@ -16,7 +17,6 @@ import com.google.gson.Gson;
 import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
-import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
@@ -31,8 +31,6 @@ import static com.cylan.jiafeigou.misc.bind.UdpConstant.UPGRADE_VERSION;
  */
 
 public class SimpleBindFlow extends AFullBind {
-
-
 
 
     public SimpleBindFlow(IBindResult iBindResult) {
@@ -267,6 +265,7 @@ public class SimpleBindFlow extends AFullBind {
 
     @Override
     public void sendWifiInfo(final String ssid, final String pwd, final int type) {
+        AppLogger.i("sendWifiInfo:");
         Observable.just(null)
                 .subscribeOn(Schedulers.newThread())
                 .map(new Func1<Object, Object>() {
@@ -285,10 +284,13 @@ public class SimpleBindFlow extends AFullBind {
                         //此时,设备还没恢复连接,需要加入队列
                         int key = ("JfgCmdInsurance.getCmd().bindDevice" + devicePortrait.cid).hashCode();
                         OfflineTaskQueue.getInstance().enqueue(key, new Runnable() {
+                            private String cid = devicePortrait.cid;
+
                             @Override
                             public void run() {
-                                AppLogger.i(BIND_TAG + devicePortrait.cid);
-                                JfgCmdInsurance.getCmd().bindDevice(devicePortrait.cid, "fxx");
+                                AppLogger.i(BIND_TAG + cid);
+                                Log.d("run", "run: ");
+                                JfgCmdInsurance.getCmd().bindDevice(cid, "fxx");
                             }
                         });
                         return null;
@@ -300,11 +302,12 @@ public class SimpleBindFlow extends AFullBind {
                     public void call(Object o) {
                         //恢复wifi
                         iBindResult.onLocalFlowFinish();
+                        AppLogger.i(BIND_TAG + "onLocalFlowFinish");
                     }
                 }, new Action1<Throwable>() {
                     @Override
                     public void call(Throwable throwable) {
-
+                        AppLogger.e(BIND_TAG + throwable.getLocalizedMessage());
                     }
                 });
 

@@ -347,6 +347,14 @@ public class RxEvent {
         }
     }
 
+    public static final class UnBindDeviceEvent {
+        public JFGResult jfgResult;
+
+        public UnBindDeviceEvent(JFGResult jfgResult) {
+            this.jfgResult = jfgResult;
+        }
+    }
+
     /**
      * 检验邮箱是否注册过回调
      */
@@ -432,10 +440,11 @@ public class RxEvent {
     }
 
     /**
+     * <<<<<<< HEAD
      * 获取好友的信息回调
      */
-    public static final class GetFriendInfoCall{
-       public int i;
+    public static final class GetFriendInfoCall {
+        public int i;
 
         public GetFriendInfoCall(int i, JFGFriendAccount jfgFriendAccount) {
             this.i = i;
@@ -443,6 +452,25 @@ public class RxEvent {
         }
 
         public JFGFriendAccount jfgFriendAccount;
+    }
 
+    /**
+     * 解绑设备
+     */
+    public static final class UnbindJFGDevice {
+        public String uuid;
+    }
+
+    /**
+     * 历史数据查询
+     */
+    public static final class JFGHistoryVideoReq {
+        public String uuid;
+    }
+
+    /**
+     * 历史录像数据响应
+     */
+    public static final class JFGHistoryVideoRsp {
     }
 }

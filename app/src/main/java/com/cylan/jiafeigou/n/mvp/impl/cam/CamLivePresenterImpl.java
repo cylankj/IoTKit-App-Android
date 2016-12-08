@@ -17,11 +17,13 @@ import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.n.mvp.model.BeanCamInfo;
 import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
 import com.cylan.jiafeigou.rx.RxBus;
+import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.rx.RxHelper;
 import com.cylan.jiafeigou.rx.RxUiEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.utils.NetUtils;
+import com.cylan.utils.RandomUtils;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
@@ -43,9 +45,9 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
     private static final String TAG = "CamLivePresenterImpl";
     private DeviceBean bean;
     private BeanCamInfo beanCamInfo;
-    private Subscription bulkDevicesSub;
     private CompositeSubscription compositeSubscription;
     private boolean isRtcpSignal;
+    private int playType = CamLiveContract.TYPE_LIVE;
     /**
      * 帧率记录
      */
@@ -85,9 +87,10 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                             if (isBad) {
                                 frameRateList.clear();
                                 AppLogger.e("is bad net work");
-                                getView().onFailed(JFGRules.PlayErr.ERR_LOW_FRAME_RATE);
+                                getView().onLiveStop(playType,
+                                        JFGRules.PlayErr.ERR_LOW_FRAME_RATE);
                                 //暂停播放
-                                stopPlayVideo();
+                                stopPlayVideo(playType);
                             }
                         }
                         return rtcp;
@@ -140,6 +143,7 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                     public void call(JFGMsgVideoResolution resolution) {
                         isRtcpSignal = true;
                         getView().onResolution(resolution);
+                        getView().onLiveStarted(playType);
                         AppLogger.i("ResolutionNotifySub: " + new Gson().toJson(resolution));
                     }
                 }, new Action1<Throwable>() {
@@ -174,7 +178,7 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                 .subscribe(new Action1<JFGMsgVideoDisconn>() {
                     @Override
                     public void call(JFGMsgVideoDisconn jfgMsgVideoDisconn) {
-                        getView().onFailed(jfgMsgVideoDisconn.code);
+                        getView().onLiveStop(playType, jfgMsgVideoDisconn.code);
                     }
                 }, new Action1<Throwable>() {
                     @Override
@@ -190,7 +194,12 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
     }
 
     @Override
-    public void fetchHistoryData() {
+    public int getPlayType() {
+        return playType;
+    }
+
+    @Override
+    public void fetchHistoryDataList() {
         Observable.just(null)
                 .observeOn(Schedulers.newThread())
                 .subscribe(new Action1<Object>() {
@@ -198,7 +207,12 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                     public void call(Object dataStack) {
                         //获取设备历史录像
                         if (getCamInfo().deviceBase != null && getCamInfo().deviceBase.uuid != null) {
-                            JfgCmdInsurance.getCmd().getVideoList(getCamInfo().deviceBase.uuid);
+                            RxEvent.JFGHistoryVideoReq req = new RxEvent.JFGHistoryVideoReq();
+                            req.uuid = getCamInfo().deviceBase.uuid;
+                            RxBus.getCacheInstance().post(req);
+                            //不直接使用这个接口,因为在videoList的数据结构中没有uuid标签,只能使用请求的seq来判断.
+                            //所有把它统一放到History类中管理.
+                            //JfgCmdInsurance.getCmd().getVideoList(getCamInfo().deviceBase.uuid);
                             AppLogger.i("getVideoList");
                         }
                     }
@@ -206,7 +220,8 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
     }
 
     @Override
-    public void startPlayVideo() {
+    public void startPlayVideo(int type) {
+        getView().onLivePrepare(type);
         Observable.just(getCamInfo().deviceBase.uuid)
                 .subscribeOn(Schedulers.newThread())
                 .filter(new Func1<String, Boolean>() {
@@ -216,7 +231,7 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                         final int net = NetUtils.getJfgNetType(getView().getContext());
                         AppLogger.i("play env state: " + net + " " + s);
                         if (net == 0) {
-                            getView().onFailed(JFGRules.PlayErr.ERR_NERWORK);
+                            getView().onLiveStop(playType, JFGRules.PlayErr.ERR_NERWORK);
                             return false;
                         }
                         return !TextUtils.isEmpty(s);
@@ -232,7 +247,7 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
     }
 
     @Override
-    public void stopPlayVideo() {
+    public void stopPlayVideo(int type) {
         Observable.just(getCamInfo().deviceBase.uuid)
                 .subscribeOn(Schedulers.newThread())
                 .filter(new Func1<String, Boolean>() {
@@ -251,23 +266,23 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                 });
     }
 
-    @Override
-    public void fetchCamInfo(final String uuid) {
+    public Subscription fetchCamInfo() {
         //查询设备列表
-        unSubscribe(bulkDevicesSub);
-        bulkDevicesSub = RxBus.getUiInstance().toObservableSticky(RxUiEvent.BulkDeviceList.class)
+        return RxBus.getUiInstance().toObservableSticky(RxUiEvent.BulkDeviceList.class)
                 .subscribeOn(Schedulers.computation())
                 .filter(new Func1<RxUiEvent.BulkDeviceList, Boolean>() {
                     @Override
                     public Boolean call(RxUiEvent.BulkDeviceList list) {
-                        return getView() != null && list != null && list.allDevices != null;
+                        return getView() != null && list != null && list.allDevices != null
+                                && beanCamInfo != null && beanCamInfo.deviceBase != null;
                     }
                 })
                 .flatMap(new Func1<RxUiEvent.BulkDeviceList, Observable<DpMsgDefine.DpWrap>>() {
                     @Override
                     public Observable<DpMsgDefine.DpWrap> call(RxUiEvent.BulkDeviceList list) {
                         for (DpMsgDefine.DpWrap wrap : list.allDevices) {
-                            if (TextUtils.equals(wrap.baseDpDevice.uuid, uuid)) {
+                            if (wrap.baseDpDevice != null
+                                    && TextUtils.equals(wrap.baseDpDevice.uuid, beanCamInfo.deviceBase.uuid)) {
                                 return Observable.just(wrap);
                             }
                         }
@@ -280,14 +295,15 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                         return dpWrap != null && dpWrap.baseDpDevice != null;
                     }
                 })
-                .flatMap(new Func1<DpMsgDefine.DpWrap, Observable<BeanCamInfo>>() {
+                .map(new Func1<DpMsgDefine.DpWrap, BeanCamInfo>() {
                     @Override
-                    public Observable<BeanCamInfo> call(DpMsgDefine.DpWrap dpWrap) {
+                    public BeanCamInfo call(DpMsgDefine.DpWrap dpWrap) {
                         BeanCamInfo info = new BeanCamInfo();
                         info.convert(dpWrap.baseDpDevice, dpWrap.baseDpMsgList);
+                        someFlagUpdate(info);
                         beanCamInfo = info;
                         AppLogger.i("BeanCamInfo: " + new Gson().toJson(info));
-                        return Observable.just(info);
+                        return info;
                     }
                 })
                 .observeOn(AndroidSchedulers.mainThread())
@@ -297,9 +313,29 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                     public void call(BeanCamInfo camInfoBean) {
                         //刷新 //如果设备变成待机模式
                         getView().onDeviceStandBy(camInfoBean.cameraStandbyFlag);
+                        AppLogger.i("onDeviceStandBy: ");
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        AppLogger.e("fetchCamInfo:" + throwable.getLocalizedMessage());
                     }
                 });
-        RxBus.getCacheInstance().post(new RxUiEvent.QueryBulkDevice());
+//        RxBus.getCacheInstance().post(new RxUiEvent.QueryBulkDevice());
+    }
+
+    private void someFlagUpdate(BeanCamInfo newInfo) {
+        //standby flag
+        if (beanCamInfo != null && newInfo != null) {
+            Observable.just(newInfo.cameraStandbyFlag)
+                    .subscribeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Action1<Boolean>() {
+                        @Override
+                        public void call(Boolean aBoolean) {
+                            getView().onDeviceStandBy(aBoolean);
+                        }
+                    });
+        }
     }
 
     @Override
@@ -316,6 +352,31 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
         compositeSubscription.add(rtcpNotifySub());
         compositeSubscription.add(resolutionNotifySub());
         compositeSubscription.add(videoDisconnectSub());
+        compositeSubscription.add(robotDataSync());
+        compositeSubscription.add(fetchCamInfo());
+    }
+
+    private Subscription robotDataSync() {
+        return RxBus.getCacheInstance().toObservable(RxEvent.JFGRobotSyncData.class)
+                .filter(new Func1<RxEvent.JFGRobotSyncData, Boolean>() {
+                    @Override
+                    public Boolean call(RxEvent.JFGRobotSyncData jfgRobotSyncData) {
+                        return getView() != null && beanCamInfo != null &&
+                                TextUtils.equals(beanCamInfo.deviceBase.uuid,
+                                        jfgRobotSyncData.identity);
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .map(new Func1<RxEvent.JFGRobotSyncData, Object>() {
+                    @Override
+                    public Object call(RxEvent.JFGRobotSyncData jfgRobotSyncData) {
+                        beanCamInfo.cameraStandbyFlag = RandomUtils.getRandom(10) % 2 == 0;
+                        getView().onDeviceStandBy(beanCamInfo.cameraStandbyFlag);
+                        return null;
+                    }
+                })
+                .retry(new RxHelper.RxException<>("robotDataSync"))
+                .subscribe();
     }
 
     @Override

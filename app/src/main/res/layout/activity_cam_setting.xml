@@ -88,7 +88,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="54dp"
                     hunt:sv_image_src="@drawable/icon_setting_3g"
-                    hunt:sv_title="3G/4G网络"
+                    hunt:sv_title="@string/MOBILE_DATA"
                     hunt:sv_v_divider="true" />
 
                 <TextView
@@ -122,7 +122,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="72dp"
                     hunt:sv_image_src="@drawable/icon_setting_filming"
-                    hunt:sv_sub_title="即将开始"
+                    hunt:sv_sub_title="@string/Tap1_CameraFun_Timelapse_NotStart"
                     hunt:sv_title="@string/Tap2_Timelapse_title"
                     hunt:sv_v_divider="true" />
 

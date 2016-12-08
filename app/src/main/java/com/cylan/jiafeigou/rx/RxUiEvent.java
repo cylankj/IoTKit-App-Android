@@ -11,6 +11,10 @@ import java.util.ArrayList;
 public class RxUiEvent {
 
     public static final class QueryBulkDevice {
+        @Override
+        public String toString() {
+            return "QueryBulkDevice";
+        }
     }
 
     public static final class BulkDeviceList {

@@ -22,6 +22,7 @@ public class JResultEvent {
     public static final int JFG_RESULT_LOGIN = 2;
     /**
      * The constant JFG_RESULT_BINDDEV.
+     * 绑定结果
      */
     public static final int JFG_RESULT_BINDDEV = 3;
 

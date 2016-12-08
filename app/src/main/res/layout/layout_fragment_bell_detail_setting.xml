@@ -41,18 +41,8 @@
             android:layout_height="10dp"
             android:background="@drawable/little_shape" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:layout_marginTop="10dp"
-            android:text="设备"
-            android:textColor="@color/color_4b9fd5"
-            android:textSize="15sp" />
-
         <com.cylan.jiafeigou.widget.SettingItemView0
-            android:id="@+id/sv_setting_device_detail"
+            android:id="@+id/sv_setting_device_alias"
             android:layout_width="match_parent"
             android:layout_height="72dp"
             android:layout_marginLeft="20dp"
@@ -60,17 +50,19 @@
             hunt:sv_image_src="@drawable/icon_setting_information"
             hunt:sv_sub_title="@string/EQUIPMENT_INFO"
             hunt:sv_title="@string/EQUIPMENT_INFO"
-            hunt:sv_v_divider="true" />
+            hunt:sv_v_divider="true"
+            hunt:sv_v_image_show="false" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+        <com.cylan.jiafeigou.widget.SettingItemView0
+            android:id="@+id/sv_setting_device_cid"
+            android:layout_width="match_parent"
+            android:layout_height="72dp"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
-            android:layout_marginTop="10dp"
-            android:text="@string/NETWORK"
-            android:textColor="@color/color_4b9fd5"
-            android:textSize="15sp" />
+            hunt:sv_image_src="@drawable/icon_setting_information"
+            hunt:sv_title="@string/Tap1_Setting_Cid"
+            hunt:sv_v_divider="true"
+            hunt:sv_v_image_show="false" />
 
         <com.cylan.jiafeigou.widget.SettingItemView0
             android:id="@+id/sv_setting_device_wifi"
@@ -79,40 +71,52 @@
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
             hunt:sv_image_src="@drawable/icon_setting_information"
-            hunt:sv_title="@string/WIFI"
-            hunt:sv_v_divider="true" />
+            hunt:sv_title="@string/device_Wi_Fi"
+            hunt:sv_v_divider="true"
+            hunt:sv_v_image_show="false" />
 
-
-        <TextView
-            android:id="@+id/tv_setting_clear_"
+        <com.cylan.jiafeigou.widget.SettingItemView0
+            android:id="@+id/sv_setting_device_mac"
             android:layout_width="match_parent"
-            android:layout_height="52dp"
-            android:gravity="center_vertical"
-            android:paddingLeft="20dp"
-            android:paddingRight="20dp"
-            android:text="@string/DOOR_CLEAR_REOCRD"
-            android:textColor="@color/color_black"
-            android:textSize="16sp" />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="0.5dp"
-            android:layout_gravity="bottom"
+            android:layout_height="72dp"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
-            android:background="@color/color_e8e8e8" />
+            hunt:sv_image_src="@drawable/icon_setting_information"
+            hunt:sv_title="@string/MAC"
+            hunt:sv_v_divider="true"
+            hunt:sv_v_image_show="false" />
 
-        <TextView
-            android:id="@+id/tv_setting_unbind"
+        <com.cylan.jiafeigou.widget.SettingItemView0
+            android:id="@+id/sv_setting_device_sys_version"
             android:layout_width="match_parent"
-            android:layout_height="48dp"
+            android:layout_height="72dp"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
-            android:layout_marginTop="10dp"
-            android:background="@color/color_f2f2f2"
-            android:gravity="center"
-            android:text="@string/DELETE_CID"
-            android:textColor="@color/color_FF3D32"
-            android:textSize="16sp" />
+            hunt:sv_image_src="@drawable/icon_setting_information"
+            hunt:sv_title="@string/SYSTME_VERSION"
+            hunt:sv_v_divider="true"
+            hunt:sv_v_image_show="false" />
+
+        <com.cylan.jiafeigou.widget.SettingItemView0
+            android:id="@+id/sv_setting_device_version"
+            android:layout_width="match_parent"
+            android:layout_height="72dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            hunt:sv_image_src="@drawable/icon_setting_information"
+            hunt:sv_title="@string/SOFTWARE_VERSION"
+            hunt:sv_v_divider="true"
+            hunt:sv_v_image_show="false" />
+
+        <com.cylan.jiafeigou.widget.SettingItemView0
+            android:id="@+id/sv_setting_device_battery"
+            android:layout_width="match_parent"
+            android:layout_height="72dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            hunt:sv_image_src="@drawable/icon_setting_information"
+            hunt:sv_title="@string/BATTERY_LEVEL"
+            hunt:sv_v_divider="true"
+            hunt:sv_v_image_show="false" />
     </LinearLayout>
 </LinearLayout>

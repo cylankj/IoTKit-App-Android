@@ -2,6 +2,7 @@ package com.cylan.jiafeigou.dp;
 
 import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.MyTestRunner;
+import com.cylan.jiafeigou.cache.CacheParser;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -19,11 +20,11 @@ import static junit.framework.Assert.assertNotNull;
 @Config(constants = BuildConfig.class, sdk = 21)
 public class DpParserTest {
 
-    DpParser dpParser;
+    CacheParser dpParser;
 
     @Before
     public void setup() {
-        dpParser = Mockito.mock(DpParser.class);
+        dpParser = Mockito.mock(CacheParser.class);
         assertNotNull("dpParser is null?", dpParser);
     }
 

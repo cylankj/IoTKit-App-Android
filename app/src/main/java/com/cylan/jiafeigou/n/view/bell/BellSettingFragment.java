@@ -1,24 +1,27 @@
 package com.cylan.jiafeigou.n.view.bell;
 
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.misc.JError;
+import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.bell.BellSettingContract;
-import com.cylan.jiafeigou.n.mvp.model.BellInfoBean;
+import com.cylan.jiafeigou.n.mvp.impl.bell.BellSettingPresenterImpl;
+import com.cylan.jiafeigou.n.mvp.model.BeanBellInfo;
 import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
-import com.cylan.jiafeigou.rx.RxEvent;
-import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
-import com.cylan.jiafeigou.widget.SettingItemView2;
+import com.cylan.jiafeigou.widget.LoadingDialog;
+import com.cylan.jiafeigou.widget.SettingItemView0;
 import com.cylan.jiafeigou.widget.dialog.BaseDialog;
 import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
 
@@ -26,7 +29,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class BellSettingFragment extends Fragment
+import static com.cylan.jiafeigou.utils.ActivityUtils.loadFragment;
+
+public class BellSettingFragment extends IBaseFragment<BellSettingContract.Presenter>
         implements BellSettingContract.View,
         BaseDialog.BaseDialogAction {
 
@@ -34,11 +39,17 @@ public class BellSettingFragment extends Fragment
     TextView imgVTopBarCenter;
     @BindView(R.id.fLayout_top_bar_container)
     FrameLayout fLayoutTopBarContainer;
-    @BindView(R.id.tv_bell_detail)
-    SettingItemView2 tvBellDetail;
-    @BindView(R.id.tv_bell_wifi)
-    SettingItemView2 tvBellWifi;
-    private BellSettingContract.Presenter presenter;
+
+    @BindView(R.id.sv_setting_device_detail)
+    SettingItemView0 svSettingDeviceDetail;
+    @BindView(R.id.sv_setting_device_wifi)
+    SettingItemView0 svSettingDeviceWifi;
+    @BindView(R.id.tv_setting_clear_)
+    TextView tvSettingClear;
+    @BindView(R.id.tv_setting_unbind)
+    TextView tvSettingUnbind;
+    @BindView(R.id.lLayout_setting_container)
+    LinearLayout lLayoutSettingContainer;
     private SimpleDialogFragment simpleDialogFragment;
 
 
@@ -51,7 +62,8 @@ public class BellSettingFragment extends Fragment
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        DeviceBean bean = getArguments().getParcelable(JConstant.KEY_DEVICE_ITEM_BUNDLE);
+        basePresenter = new BellSettingPresenterImpl(this, bean);
     }
 
     @Nullable
@@ -67,54 +79,76 @@ public class BellSettingFragment extends Fragment
         initTopBar();
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        presenter.start();
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        if (presenter != null)
-            presenter.stop();
-    }
-
     private void initTopBar() {
         ViewUtils.setViewPaddingStatusBar(fLayoutTopBarContainer);
     }
 
 
     @OnClick({R.id.imgV_top_bar_center,
-            R.id.tv_bell_detail,
-            R.id.tv_bell_wifi,
+            R.id.sv_setting_device_detail,
+            R.id.sv_setting_device_wifi,
             R.id.tv_setting_clear_,
             R.id.tv_setting_unbind})
     public void onClick(View view) {
         switch (view.getId()) {
+            case R.id.sv_setting_device_detail: {
+                BellDetailFragment fragment = BellDetailFragment.newInstance(null);
+                Bundle bundle = new Bundle();
+                bundle.putParcelable(JConstant.KEY_DEVICE_ITEM_BUNDLE, basePresenter.getBellInfo());
+                fragment.setArguments(bundle);
+                fragment.setCallBack(new IBaseFragment.CallBack() {
+                    @Override
+                    public void callBack(Object t) {
+                        onSettingInfoRsp(basePresenter.getBellInfo());
+                    }
+                });
+                loadFragment(android.R.id.content, getActivity().getSupportFragmentManager(), fragment);
+            }
+            break;
             case R.id.imgV_top_bar_center:
                 getActivity().getSupportFragmentManager().popBackStack();
                 break;
-            case R.id.tv_bell_detail:
-                break;
-            case R.id.tv_bell_wifi:
+            case R.id.sv_setting_device_wifi:
                 break;
             case R.id.tv_setting_clear_:
                 break;
             case R.id.tv_setting_unbind:
+                ViewUtils.deBounceClick(view);
                 if (simpleDialogFragment == null) {
-                    simpleDialogFragment = SimpleDialogFragment.newInstance(new Bundle());
-                    simpleDialogFragment.setAction(this);
+                    Bundle bundle = new Bundle();
+                    bundle.putString(SimpleDialogFragment.KEY_TITLE, getString(R.string.DELETE_CID));
+                    simpleDialogFragment = SimpleDialogFragment.newInstance(bundle);
                 }
+                simpleDialogFragment.setAction(this);
                 simpleDialogFragment.show(getActivity().getSupportFragmentManager(), "simpleDialogFragment");
                 break;
         }
     }
 
     @Override
-    public void onSettingInfoRsp(BellInfoBean bellInfoBean) {
-        tvBellDetail.setTvSubTitle(bellInfoBean.nickName);
-        tvBellWifi.setTvSubTitle(bellInfoBean.ssid);
+    public void onSettingInfoRsp(BeanBellInfo bellInfoBean) {
+        if (bellInfoBean.deviceBase != null && !TextUtils.isEmpty(bellInfoBean.deviceBase.shareAccount)) {
+            //分享账号
+            final int count = lLayoutSettingContainer.getChildCount();
+            for (int i = 3; i < count; i++) {
+                View v = lLayoutSettingContainer.getChildAt(i);
+                if (v != null) {
+                    v.setVisibility(View.GONE);
+                }
+            }
+        }
+        svSettingDeviceDetail.setTvSubTitle(TextUtils.isEmpty(bellInfoBean.deviceBase.alias)
+                ? bellInfoBean.deviceBase.uuid : bellInfoBean.deviceBase.alias);
+        String ssid = bellInfoBean.net == null || TextUtils.isEmpty(bellInfoBean.net.ssid)
+                ? getString(R.string.OFF_LINE) : bellInfoBean.net.ssid;
+        svSettingDeviceWifi.setTvSubTitle(ssid);
+        if (!TextUtils.isEmpty(bellInfoBean.deviceBase.shareAccount)) {
+            final int count = lLayoutSettingContainer.getChildCount();
+            for (int i = 3; i < count - 2; i++) {
+                View v = lLayoutSettingContainer.getChildAt(i);
+                v.setVisibility(View.GONE);
+            }
+        }
     }
 
     @Override
@@ -122,31 +156,25 @@ public class BellSettingFragment extends Fragment
     }
 
     @Override
+    public void unbindDeviceRsp(int state) {
+        if (state == JError.ErrorOK) {
+            LoadingDialog.dismissLoading(getActivity().getSupportFragmentManager());
+            ToastUtil.showPositiveToast(getString(R.string.DOOR_UNBIND));
+            getActivity().finish();
+        }
+    }
+
+    @Override
     public void setPresenter(BellSettingContract.Presenter presenter) {
-        this.presenter = presenter;
+        this.basePresenter = presenter;
     }
 
     @Override
     public void onDialogAction(int id, Object value) {
         switch (id) {
             case R.id.tv_dialog_btn_left:
-                Bundle bundle = getArguments();
-                if (bundle == null) {
-                    AppLogger.d("bundle is null");
-                    return;
-                }
-                Object o = bundle.getParcelable(JConstant.KEY_DEVICE_ITEM_BUNDLE);
-                if (o != null) {
-                    bundle.putParcelable(JConstant.KEY_DEVICE_ITEM_BUNDLE, (Parcelable) o);
-                }
-                if (o instanceof DeviceBean) {
-                    AppLogger.d("yes get it");
-                }
-                bundle.putInt(JConstant.KEY_ACTIVITY_RESULT_CODE, JConstant.RESULT_CODE_REMOVE_ITEM);
-                bundle.putString(JConstant.KEY_REMOVE_DEVICE, JConstant.KEY_REMOVE_DEVICE);
-                RxEvent.ActivityResult result = new RxEvent.ActivityResult();
-                result.bundle = bundle;
-                if (presenter != null) presenter.sendActivityResult(result);
+                basePresenter.unbindDevice();
+                LoadingDialog.showLoading(getActivity().getSupportFragmentManager(), getString(R.string.DELETEING));
                 break;
         }
 
