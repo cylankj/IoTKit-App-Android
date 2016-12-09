@@ -20,11 +20,13 @@ import android.widget.TextView;
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineBindPhoneContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineBindPhonePresenterImp;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
+import com.cylan.jiafeigou.widget.LoadingDialog;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -56,7 +58,6 @@ public class MineInfoBindPhoneFragment extends Fragment implements MineBindPhone
     EditText etVerificationInput;
 
     private JFGAccount userinfo;
-
     private boolean isBindOrChange;
     private MineBindPhoneContract.Presenter presenter;
     private CountDownTimer countDownTimer;
@@ -64,12 +65,10 @@ public class MineInfoBindPhoneFragment extends Fragment implements MineBindPhone
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-
         View view = inflater.inflate(R.layout.fragment_home_mine_bind_phone, container, false);
         ButterKnife.bind(this, view);
         getArgumentData();
         initPresenter();
-        initEditListener();
         initCountDownTime();
         return view;
     }
@@ -105,30 +104,17 @@ public class MineInfoBindPhoneFragment extends Fragment implements MineBindPhone
     /**
      * 输入框监听
      */
-    private void initEditListener() {
-        etInputUserphone.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                if (s.length() == 0) {
-                    tvGetCheckNumber.setEnabled(false);
-                    ivForgetClearUsername.setVisibility(View.INVISIBLE);
-                } else {
-                    tvGetCheckNumber.setEnabled(true);
-                    ivForgetClearUsername.setVisibility(View.VISIBLE);
-                }
-            }
-        });
+    @OnTextChanged(R.id.et_input_userphone)
+    public void initEditListener(CharSequence s, int start, int before, int count) {
+        if (s.length() == 0) {
+            tvGetCheckNumber.setEnabled(false);
+            ivForgetClearUsername.setVisibility(View.INVISIBLE);
+        } else {
+            tvGetCheckNumber.setEnabled(true);
+            ivForgetClearUsername.setVisibility(View.VISIBLE);
+        }
     }
+
 
     private void initPresenter() {
         presenter = new MineBindPhonePresenterImp(this);
@@ -167,21 +153,25 @@ public class MineInfoBindPhoneFragment extends Fragment implements MineBindPhone
 
     }
 
-    @OnClick({R.id.tv_get_checkNumber, R.id.iv_top_bar_left})
+    @OnClick({R.id.tv_get_checkNumber, R.id.iv_top_bar_left,R.id.tv_meter_get_code})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.tv_get_checkNumber:
-                if (isBindOrChange) {
-                    if (false){
-                        // TODO 三方登录
-                        jump2SetpassFragment(userinfo.getAccount());
-                    }else {
-                        // 非三方登录
-                        handlerChangeOrBindPhone();
+                if (tvGetCheckNumber.getText().equals(getString(R.string.GET_CODE))){
+                    //获取验证码点击
+                    if (JConstant.PHONE_REG.matcher(getInputPhone()).find()) {
+                        presenter.checkPhoneIsBind(getInputPhone());
+                    } else {
+                        ToastUtil.showToast(getString(R.string.PHONE_NUMBER_2));
                     }
                 }else {
-                    // 更改手机号
-                    handlerChangeOrBindPhone();
+                    //继续点击
+                    if (getInputCheckCode().length() != 6){
+                        ToastUtil.showToast(getString(R.string.Tap0_wrongcode));
+                    }else {
+
+                        presenter.CheckVerifyCode(getInputCheckCode(),PreferencesUtils.getString(JConstant.KEY_REGISTER_SMS_TOKEN));
+                    }
                 }
                 break;
 
@@ -208,33 +198,6 @@ public class MineInfoBindPhoneFragment extends Fragment implements MineBindPhone
      */
     private void jump2SetpassFragment(String account) {
         // TODO　跳转到设置密码界面
-    }
-
-    /**
-     * 处理绑定者更改手机号
-     */
-    private void handlerChangeOrBindPhone() {
-        //绑定手机号
-        if (tvGetCheckNumber.getText().equals(getString(R.string.GET_CODE))) {
-            if (JConstant.PHONE_REG.matcher(getInputPhone()).find()) {
-                presenter.checkPhoneIsBind(getInputPhone());
-            } else {
-                ToastUtil.showToast(getString(R.string.PHONE_NUMBER_2));
-            }
-        } else {
-            // 发送修改用户属性请求
-            if (getInputPhone().equals(PreferencesUtils.getString(JConstant.KEY_REGISTER_SMS_TOKEN))){
-                if (!tvMeterGetCode.getText().toString().equals(getString(R.string.Button_ReObtain))){
-                    userinfo.setPhone(getInputPhone(),getInputCheckCode());
-                    userinfo.resetFlag();
-                    presenter.sendChangePhoneReq(userinfo);
-                }else {
-                    ToastUtil.showToast(getString(R.string.Tap0_invaildcode));
-                }
-            }else {
-                ToastUtil.showToast(getString(R.string.Tap0_wrongcode));
-            }
-        }
     }
 
     @Override
@@ -283,11 +246,77 @@ public class MineInfoBindPhoneFragment extends Fragment implements MineBindPhone
             fLayoutVerificationCodeInputBox.setVisibility(View.VISIBLE);
             countDownTimer.start();
             tvMeterGetCode.setEnabled(false);
-            tvGetCheckNumber.setText(getString(R.string.CARRY_ON));
+            if (isBindOrChange){
+                tvGetCheckNumber.setText(getString(R.string.CARRY_ON));
+            }else {
+                tvGetCheckNumber.setText(getString(R.string.FINISHED));
+            }
             tvGetCheckNumber.setEnabled(false);
             //发送验证码
             presenter.getCheckCode(getInputPhone());
         }
+    }
+
+    /**
+     * 校验短信验证码的结果
+     * @param resultVerifyCode
+     */
+    @Override
+    public void handlerCheckCodeResult(RxEvent.ResultVerifyCode resultVerifyCode) {
+        if (resultVerifyCode.code == JError.ErrorOK){
+            if (isBindOrChange){
+                if (false){
+                    //是三方登录
+                    jump2SetpassFragment(userinfo.getAccount());
+                    return;
+                }
+            }
+            showLoadingDialog();
+            presenter.sendChangePhoneReq();
+        }else {
+            hideLoadingDialog();
+            ToastUtil.showNegativeToast(getString(R.string.RET_ESMS_CODE_FALSE));
+        }
+    }
+
+    /**
+     * 处理修改结果
+     * @param getUserInfo
+     */
+    @Override
+    public void handlerResetPhoneResult(RxEvent.GetUserInfo getUserInfo) {
+        hideLoadingDialog();
+        if (!TextUtils.isEmpty(getInputPhone())){
+            if (getInputPhone().equals(getUserInfo.jfgAccount.getPhone())){
+                ToastUtil.showPositiveToast(getString(R.string.SCENE_SAVED));
+                if (getView()!= null){
+                    getView().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            getFragmentManager().popBackStack();
+                        }
+                    },2000);
+                }
+            }else {
+                ToastUtil.showPositiveToast(getString(R.string.SUBMIT_FAIL));
+            }
+        }
+    }
+
+    /**
+     * 显示loading
+     */
+    @Override
+    public void showLoadingDialog() {
+        LoadingDialog.showLoading(getFragmentManager(),getString(R.string.LOADING));
+    }
+
+    /**
+     * 隐藏loading
+     */
+    @Override
+    public void hideLoadingDialog() {
+        LoadingDialog.dismissLoading(getFragmentManager());
     }
 
     @Override

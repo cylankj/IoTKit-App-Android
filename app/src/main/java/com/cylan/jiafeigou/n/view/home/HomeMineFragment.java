@@ -252,9 +252,6 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
      */
     @Override
     public void setAliasName(String name) {
-        if ("".equals(name)){
-            name = getString(R.string.NO_SET);
-        }
         tvHomeMineNick.setText(name);
     }
 

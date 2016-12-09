@@ -96,7 +96,7 @@ public class HomeSettingAboutFragment extends Fragment implements HomeSettingAbo
                     getContext().startActivity(intent);
                 } else {
                     // 未获取到授权
-                    ToastUtil.showToast("权限未授予");
+                    ToastUtil.showToast(getString(R.string.Tap0_Authorizationfailed));
                 }
                 break;
         }

@@ -97,7 +97,6 @@ public class DataSourceService extends Service implements AppCallBack {
         }).start();
     }
 
-
     @Override
     public void OnLocalMessage(String s, int i, byte[] bytes) {
         AppLogger.d("OnLocalMessage :" + s + ",i:" + i);
@@ -137,7 +136,6 @@ public class DataSourceService extends Service implements AppCallBack {
     public void OnUpdateHistoryErrorCode(JFGHistoryVideoErrorInfo jfgHistoryVideoErrorInfo) {
         AppLogger.d("OnUpdateHistoryErrorCode :");
     }
-
 
     @Override
     public void OnServerConfig(JFGServerCfg jfgServerCfg) {
@@ -325,7 +323,7 @@ public class DataSourceService extends Service implements AppCallBack {
 
     @Override
     public void OnGetUnShareListByCidRsp(int i, ArrayList<JFGFriendAccount> arrayList) {
-        AppLogger.d("OnGetUnShareListByCidRsp :" + arrayList.get(0));
+        AppLogger.d("OnGetUnShareListByCidRsp :");
         RxBus.getCacheInstance().post(new RxEvent.GetHasShareFriendCallBack(i,arrayList));
     }
 

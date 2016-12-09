@@ -20,6 +20,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.app.AlertDialog;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -297,7 +298,7 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
 
             tvUserAccount.setText(bean.getAccount());
 
-            tvUserName.setText(bean.getAlias());
+            tvUserName.setText(TextUtils.isEmpty(bean.getAlias())? getString(R.string.NO_SET) : bean.getAlias());
 
             if (bean.getEmail() == null | "".equals(bean.getEmail())){
                 mTvMailBox.setText(getString(R.string.NO_SET));
@@ -305,7 +306,7 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
                 mTvMailBox.setText(bean.getEmail());
             }
 
-            if(bean.getPhone() == null && "".equals(bean.getPhone())){
+            if("".equals(bean.getPhone())){
                 tvHomeMinePersonalPhone.setText(getString(R.string.NO_SET));
             }else {
                 tvHomeMinePersonalPhone.setText(bean.getPhone());

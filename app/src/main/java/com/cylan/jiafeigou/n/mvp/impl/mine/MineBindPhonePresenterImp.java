@@ -11,6 +11,7 @@ import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.rx.RxBus;
+import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 
 import java.util.concurrent.TimeUnit;
@@ -29,6 +30,7 @@ import rx.subscriptions.CompositeSubscription;
 public class MineBindPhonePresenterImp extends AbstractPresenter<MineBindPhoneContract.View> implements MineBindPhoneContract.Presenter{
 
     private CompositeSubscription compositeSubscription;
+    private JFGAccount jfgAccount;
 
     public MineBindPhonePresenterImp(MineBindPhoneContract.View view) {
         super(view);
@@ -38,7 +40,7 @@ public class MineBindPhonePresenterImp extends AbstractPresenter<MineBindPhoneCo
     @Override
     public void isBindOrChange(JFGAccount userinfo) {
         if (getView() != null && userinfo != null){
-            if ("".equals(userinfo.getPhone()) || userinfo.getPhone() == null){
+            if ("".equals(userinfo.getPhone())){
                 //绑定手机号
                 getView().initToolbarTitle(getView().getContext().getString(R.string.Tap0_BindPhoneNo));
             }else {
@@ -112,17 +114,17 @@ public class MineBindPhonePresenterImp extends AbstractPresenter<MineBindPhoneCo
 
     /**
      * 发送修改phone的请求
-     * @param userinfo
      */
     @Override
-    public void sendChangePhoneReq(final JFGAccount userinfo) {
-        rx.Observable.just(userinfo)
-                .delay(1000, TimeUnit.MILLISECONDS)
+    public void sendChangePhoneReq() {
+        rx.Observable.just(jfgAccount)
                 .subscribeOn(Schedulers.newThread())
                 .subscribe(new Action1<JFGAccount>() {
                     @Override
                     public void call(JFGAccount account) {
-                        JfgCmdInsurance.getCmd().setAccount(userinfo);
+                        account.resetFlag();
+                        account.setPhone(getView().getInputPhone(),getView().getInputCheckCode());
+                        JfgCmdInsurance.getCmd().setAccount(account);
                     }
                 }, new Action1<Throwable>() {
                     @Override
@@ -139,13 +141,77 @@ public class MineBindPhonePresenterImp extends AbstractPresenter<MineBindPhoneCo
     @Override
     public Subscription getCheckCodeCallback() {
         return RxBus.getCacheInstance().toObservable(RxEvent.SmsCodeResult.class)
+                .delay(1000, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<RxEvent.SmsCodeResult>() {
                     @Override
                     public void call(RxEvent.SmsCodeResult smsCodeResult) {
-                        if (smsCodeResult.error == JError.ErrorOK){
-                            PreferencesUtils.putString(JConstant.KEY_REGISTER_SMS_TOKEN,smsCodeResult.token);
+                        if (smsCodeResult != null && smsCodeResult instanceof RxEvent.SmsCodeResult){
+                            if (smsCodeResult.error == JError.ErrorOK){
+                                AppLogger.d("jjjjjjjjjjj"+smsCodeResult.token);
+                                PreferencesUtils.putString(JConstant.KEY_REGISTER_SMS_TOKEN, smsCodeResult.token);
+                            }
                         }
+                    }
+                });
+    }
+
+    /**
+     * 获取到用户信息
+     * @return
+     */
+    @Override
+    public Subscription getAccountCallBack() {
+        return RxBus.getCacheInstance().toObservableSticky(RxEvent.GetUserInfo.class)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<RxEvent.GetUserInfo>() {
+                    @Override
+                    public void call(RxEvent.GetUserInfo getUserInfo) {
+                        if (getView()!= null && getUserInfo != null && getUserInfo instanceof RxEvent.GetUserInfo){
+                            jfgAccount = getUserInfo.jfgAccount;
+                            getView().handlerResetPhoneResult(getUserInfo);
+                        }
+                    }
+                });
+    }
+
+    /**
+     * 短信校验的结果回调
+     * @return
+     */
+    @Override
+    public Subscription checkVerifyCodeCallBack() {
+        return RxBus.getCacheInstance().toObservable(RxEvent.ResultVerifyCode.class)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<RxEvent.ResultVerifyCode>() {
+                    @Override
+                    public void call(RxEvent.ResultVerifyCode resultVerifyCode) {
+                        if (resultVerifyCode != null && resultVerifyCode instanceof RxEvent.ResultVerifyCode){
+                            if (getView() != null){
+                                getView().handlerCheckCodeResult(resultVerifyCode);
+                            }
+                        }
+                    }
+                });
+    }
+
+    /**
+     * 校验短信验证码
+     * @param code
+     */
+    @Override
+    public void CheckVerifyCode(final String inputCode, String code) {
+        rx.Observable.just(code)
+                .subscribeOn(Schedulers.newThread())
+                .subscribe(new Action1<String>() {
+                    @Override
+                    public void call(String code) {
+                        JfgCmdInsurance.getCmd().verifySMS(jfgAccount.getAccount(),inputCode,code);
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        AppLogger.e("CheckVerifyCode"+throwable.getLocalizedMessage());
                     }
                 });
     }
@@ -156,8 +222,10 @@ public class MineBindPhonePresenterImp extends AbstractPresenter<MineBindPhoneCo
             compositeSubscription.unsubscribe();
         }else {
             compositeSubscription = new CompositeSubscription();
+            compositeSubscription.add(getAccountCallBack());
             compositeSubscription.add(getCheckPhoneCallback());
             compositeSubscription.add(getCheckCodeCallback());
+            compositeSubscription.add(checkVerifyCodeCallBack());
         }
     }
 

@@ -1,6 +1,7 @@
 package com.cylan.jiafeigou.n.mvp.contract.cloud;
 
 import android.content.Context;
+import android.widget.ImageView;
 
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
@@ -39,7 +40,6 @@ public interface CloudLiveContract {
         void hideReconnetProgress();
 
         void scrollToLast();                               //滚动到最后一条
-
         /**
          * 初始化消息列表
          * @param list
@@ -55,13 +55,24 @@ public interface CloudLiveContract {
          * 隐藏空视图
          */
         void hideNoMesg();
+
+        /**
+         * 播放录音动画
+         * @param view
+         */
+        void startPlayVoiceAnim(ImageView view);
+
+        /**
+         * 停止播放录音动画
+         */
+        void stopPlayVoiceAnim();
     }
 
     interface Presenter extends BasePresenter {
 
         String startRecord();
 
-        void startTalk();
+        void startTalkAnimation();
 
         void stopRecord();
 
@@ -87,7 +98,7 @@ public interface CloudLiveContract {
 
         void saveIntoDb(CloudLiveBaseDbBean bean);          //保存到数据库
 
-        List<CloudLiveBaseDbBean> findFromAllDb();          //查询数据库
+        List<CloudLiveBaseDbBean> findAllFromDb();          //查询数据库
 
         Subscription refreshHangUpView();                   //更新挂断结果
 
@@ -103,5 +114,10 @@ public interface CloudLiveContract {
          * 初始化消息列表的数据
          */
         void initData();
+
+        /**
+         * 检测录音的权限
+         */
+        boolean checkRecordPermission();
     }
 }

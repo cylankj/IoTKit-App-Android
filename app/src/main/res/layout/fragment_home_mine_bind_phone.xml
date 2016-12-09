@@ -57,6 +57,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout_gravity="end"
+                        android:layout_marginEnd="15dp"
                         android:src="@drawable/btn_login_clear_text"
                         android:visibility="gone" />
 
@@ -96,7 +97,6 @@
                         android:textCursorDrawable="@drawable/bg_common_cursor"
                         android:textSize="15sp" />
 
-
                     <TextView
                         android:id="@+id/tv_meter_get_code"
                         android:layout_width="wrap_content"
@@ -108,14 +108,12 @@
                         android:paddingRight="10dp"
                         android:textColor="@color/common_btn_color_state" />
 
-
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
                         android:layout_gravity="bottom"
                         android:background="@color/color_f2f2f2" />
                 </FrameLayout>
-
 
                 <TextView
                     android:enabled="true"
