@@ -37,6 +37,7 @@ public class VideoMoreDialog extends BaseDialog {
     @OnClick({R.id.dialog_media_video_delete, R.id.dialog_media_video_download, R.id.dialog_media_video_share})
     public void onClick(View view) {
         if (action != null) action.onDialogAction(view.getId(), view);
+        dismiss();
     }
 }
 

@@ -127,6 +127,8 @@ public class JConstant {
     public static final String DAEMON_DIR = ROOT_DIR + File.separator + "daemon";
     public static final String LOG_PATH = ROOT_DIR + File.separator + "log";
     public static final String USER_IMAGE_HEAD_URL = "";                  //用户头像
+    public static final String MEDIA_DETAIL_PICTURE_DOWNLOAD_DIR = ROOT_DIR + File.separator + "images";
+    public static final String MEDIA_DETAIL_VIDEO_DOWNLOAD_DIR = ROOT_DIR + File.separator + "videos";
 
     public static final String RECEIVE_MESSAGE_NOTIFICATION = "receive_message_notification";      //接收消息通知
     public static final String OPEN_VOICE = "open_voice";                       //开启声音提示

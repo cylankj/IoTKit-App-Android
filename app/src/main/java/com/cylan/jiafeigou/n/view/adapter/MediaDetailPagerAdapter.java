@@ -14,6 +14,7 @@ import com.bumptech.glide.request.target.Target;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.mvp.model.MediaBean;
+import com.cylan.jiafeigou.utils.GlideNetVideoUtils;
 import com.cylan.jiafeigou.widget.SimpleProgressBar;
 import com.cylan.photoview.PhotoView;
 
@@ -56,15 +57,23 @@ public class MediaDetailPagerAdapter extends PagerAdapter {
             ViewHolder holder = new ViewHolder(contentView);
             photoView = holder.mPhotoView;
             contentView.setTag(holder);
+            ViewCompat.setTransitionName(photoView, position + JConstant.KEY_SHARED_ELEMENT_TRANSITION_NAME_SUFFIX);
+            GlideNetVideoUtils.loadNetVideo(container.getContext(), bean.srcUrl, photoView, () -> {
+                if (mFirstLoad && mReadToShow != null) {
+                    mReadToShow.onReady();
+                }
+                mFirstLoad = false;
+            });
         } else {
             photoView = new PhotoView(container.getContext());
             contentView = photoView;
+            ViewCompat.setTransitionName(photoView, position + JConstant.KEY_SHARED_ELEMENT_TRANSITION_NAME_SUFFIX);
+            Glide.with(container.getContext())
+                    .load(bean.srcUrl)
+                    .listener((mFirstLoad && position == mStartPosition) ? mListener : null)
+                    .into(photoView);
         }
-        ViewCompat.setTransitionName(photoView, position + JConstant.KEY_SHARED_ELEMENT_TRANSITION_NAME_SUFFIX);
-        Glide.with(container.getContext())
-                .load(bean.srcUrl)
-                .listener((mFirstLoad && position == mStartPosition) ? mListener : null)
-                .into(photoView);
+
         container.addView(contentView);
         return contentView;
     }
