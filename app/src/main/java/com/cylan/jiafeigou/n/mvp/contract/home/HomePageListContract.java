@@ -7,6 +7,7 @@ import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
 import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -28,7 +29,7 @@ public interface HomePageListContract {
 
         void onItemDelete(int index);
 
-        List<DeviceBean> getDeviceList();
+        ArrayList<DeviceBean> getDeviceList();
 
         /**
          * @param greetBean: 从presenter处理后返回.

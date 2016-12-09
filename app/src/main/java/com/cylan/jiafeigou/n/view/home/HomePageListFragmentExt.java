@@ -50,9 +50,8 @@ import com.cylan.jiafeigou.widget.dialog.BaseDialog;
 import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
 import com.cylan.jiafeigou.widget.wave.SuperWaveView;
 
-import org.msgpack.annotation.NotNullable;
-
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -127,7 +126,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
         onTimeTick(JFGRules.getTimeRule());
         if (basePresenter != null) {
             basePresenter.fetchGreet();
-            basePresenter.fetchDeviceList();
+//            basePresenter.fetchDeviceList();
         }
     }
 
@@ -305,8 +304,8 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
     }
 
     @Override
-    public List<DeviceBean> getDeviceList() {
-        return homePageListAdapter == null ? null : homePageListAdapter.getList();
+    public ArrayList<DeviceBean> getDeviceList() {
+        return homePageListAdapter == null ? null : (ArrayList<DeviceBean>) homePageListAdapter.getList();
     }
 
     @Override
@@ -421,32 +420,6 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
         srLayoutMainContentHolder.setNestedScrollingEnabled(homePageListAdapter.getCount() > JFGRules.NETSTE_SCROLL_COUNT);
     }
 
-    public void onActivityResult(@NotNullable RxEvent.ActivityResult result) {
-        //这段逻辑 违背MVP，稍后需要修改。
-        AppLogger.d("this slice is illegal");
-        final Bundle bundle = result.bundle;
-        if (bundle == null) {
-            AppLogger.d("bundle is null");
-            return;
-        }
-        if (!bundle.containsKey(JConstant.KEY_REMOVE_DEVICE)) {
-            AppLogger.d("not the removing");
-            return;
-        }
-        Object o = bundle.getParcelable(JConstant.KEY_DEVICE_ITEM_BUNDLE);
-        if (o != null && o instanceof DeviceBean) {
-            final String cid = ((DeviceBean) o).uuid;
-            DeviceBean bean = homePageListAdapter.findTarget(cid);
-            if (bean == null) {
-                AppLogger.d("bean is null cid: " + cid);
-                return;
-            }
-            homePageListAdapter.remove(bean);
-        } else {
-            AppLogger.d("woo,bundle is not the type");
-        }
-        srLayoutMainContentHolder.setNestedScrollingEnabled(homePageListAdapter.getCount() > JFGRules.NETSTE_SCROLL_COUNT);
-    }
 
     @Override
     public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {

@@ -36,7 +36,7 @@ public class DpCam extends DpBase<CamParam> {
     }
 
     @Override
-    public void unregister() {
+    public void clear() {
 
     }
 

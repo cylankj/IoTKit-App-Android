@@ -62,11 +62,11 @@ public class DpMsgConstant {
     @DpAnnotation(msgId = 206, clazz = int.class)
     public static final String BATTERY = null;
 
-    @ForDevice(device = Device.CAMERA, targetBeanName = CAM_BEAN_NAME)
+    @ForDevice(device = {Device.CAMERA, Device.BELL}, targetBeanName = {CAM_BEAN_NAME, BELL_BEAN_NAME})
     @DpAnnotation(msgId = 207, clazz = String.class)
     public static final String DEVICE_VERSION = null;
 
-    @ForDevice(device = Device.CAMERA, targetBeanName = CAM_BEAN_NAME)
+    @ForDevice(device = {Device.CAMERA, Device.BELL}, targetBeanName = {CAM_BEAN_NAME, BELL_BEAN_NAME})
     @DpAnnotation(msgId = 208, clazz = String.class)
     public static final String DEVICE_SYS_VERSION = null;
 
@@ -155,7 +155,7 @@ public class DpMsgConstant {
     @DpAnnotation(msgId = 504, clazz = DpMsgDefine.NotificationInfo.class)
     public static final String CAMERA_ALARM_NOTIFICATION = null;//报警音效
 
-//    @ForDevice(device = Device.CAMERA, targetBeanName = CAM_BEAN_NAME)暂时去掉,这是一个列表消息.可能包含大量的数据
+    //    @ForDevice(device = Device.CAMERA, targetBeanName = CAM_BEAN_NAME)暂时去掉,这是一个列表消息.可能包含大量的数据
     @DpAnnotation(msgId = 505, clazz = DpMsgDefine.AlarmMsg.class)
     public static final String CAMERA_ALARM_MSG = null;//
 

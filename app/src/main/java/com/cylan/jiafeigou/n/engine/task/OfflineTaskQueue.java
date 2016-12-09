@@ -1,22 +1,23 @@
 package com.cylan.jiafeigou.n.engine.task;
 
-import com.cylan.jiafeigou.support.log.AppLogger;
+import android.os.Handler;
+import android.os.HandlerThread;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingDeque;
 
 /**
  * Created by cylan-hunt on 16-11-11.
  */
 
 public class OfflineTaskQueue {
-    private static final String TAG = "OfflineTaskQueue";
-    private ExecutorService executors = Executors.newSingleThreadExecutor();
+
+    //    private ExecutorService executors = Executors.newSingleThreadExecutor();
+    private LinkedBlockingDeque<Runnable> queue = new LinkedBlockingDeque<>();
+
     private static OfflineTaskQueue instance;
-    private volatile boolean isWorking;
+
+    private static final String TAG = "OfflineTaskQueue:";
+    private Handler handler;
 
     public static OfflineTaskQueue getInstance() {
         if (instance == null)
@@ -25,40 +26,26 @@ public class OfflineTaskQueue {
     }
 
     private OfflineTaskQueue() {
+        HandlerThread thread = new HandlerThread("offlineTask");
+        thread.start();
+        handler = new Handler(thread.getLooper());
     }
-
-    private Map<Integer, Runnable> queueMap = new HashMap<>();
 
     /**
      * @param key:这个key,需要自己组装,非常多坑.不同接口有不同的
      * @param runnable
      */
     public void enqueue(int key, Runnable runnable) {
-        if (queueMap == null)
-            queueMap = new HashMap<>();
-        queueMap.put(key, runnable);
-    }
-
-    public Map<Integer, Runnable> getQueueMap() {
-        return queueMap;
+        queue.offer(runnable);
     }
 
     /**
      * 后续需要更新
      */
     public void startRolling() {
-        if (isWorking || queueMap.keySet().size() == 0)
-            return;
-        isWorking = true;
-        Iterator<Integer> iterator = queueMap.keySet().iterator();
-        while (iterator.hasNext()) {
-            final int key = iterator.next();
-            executors.submit(queueMap.get(key));
-            AppLogger.i(TAG + "start rollll..." + queueMap.size());
+        Runnable runnable = queue.poll();
+        if (runnable != null) {
+            handler.post(runnable);
         }
-        //绝对有问题,应该是一个blockingQueue
-        queueMap.clear();
-        //work done
-        isWorking = false;
     }
 }

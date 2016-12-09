@@ -1,17 +1,17 @@
 package com.cylan.jiafeigou.n.mvp.impl.bell;
 
 import android.text.TextUtils;
+import android.util.Pair;
 
 import com.cylan.jiafeigou.dp.DpMsgDefine;
+import com.cylan.jiafeigou.dp.DpMsgMap;
+import com.cylan.jiafeigou.dp.DpUtils;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
-import com.cylan.jiafeigou.n.mvp.contract.bell.BellSettingContract;
+import com.cylan.jiafeigou.n.mvp.contract.bell.BellDetailContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
-import com.cylan.jiafeigou.n.mvp.model.BaseBean;
 import com.cylan.jiafeigou.n.mvp.model.BeanBellInfo;
-import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
-import com.cylan.jiafeigou.rx.RxHelper;
 import com.cylan.jiafeigou.rx.RxUiEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.google.gson.Gson;
@@ -27,27 +27,16 @@ import rx.subscriptions.CompositeSubscription;
 /**
  * Created by cylan-hunt on 16-8-3.
  */
-public class BellSettingPresenterImpl extends AbstractPresenter<BellSettingContract.View>
-        implements BellSettingContract.Presenter {
+public class BellDetailSettingPresenterImpl extends AbstractPresenter<BellDetailContract.View>
+        implements BellDetailContract.Presenter {
     private BeanBellInfo beanBellInfo;
     private CompositeSubscription compositeSubscription = new CompositeSubscription();
 
-    public BellSettingPresenterImpl(BellSettingContract.View view, DeviceBean bean) {
+    public BellDetailSettingPresenterImpl(BellDetailContract.View view, BeanBellInfo bean) {
         super(view);
         view.setPresenter(this);
-        fillData(bean);
+        this.beanBellInfo = bean;
     }
-
-    private void fillData(DeviceBean bean) {
-        beanBellInfo = new BeanBellInfo();
-        BaseBean baseBean = new BaseBean();
-        baseBean.alias = bean.alias;
-        baseBean.pid = bean.pid;
-        baseBean.uuid = bean.uuid;
-        baseBean.sn = bean.sn;
-        beanBellInfo.convert(baseBean, bean.dataList);
-    }
-
 
     @Override
     public void start() {
@@ -55,37 +44,6 @@ public class BellSettingPresenterImpl extends AbstractPresenter<BellSettingContr
         compositeSubscription = new CompositeSubscription();
         compositeSubscription.add(onBellInfoSubscription());
         compositeSubscription.add(onLoginStateSubscription());
-        compositeSubscription.add(unbindDevSub());
-    }
-
-    /**
-     * 门铃解绑
-     *
-     * @return
-     */
-    private Subscription unbindDevSub() {
-        return RxBus.getCacheInstance().toObservableSticky(RxEvent.UnBindDeviceEvent.class)
-                .subscribeOn(Schedulers.newThread())
-                .filter(new Func1<RxEvent.UnBindDeviceEvent, Boolean>() {
-                    @Override
-                    public Boolean call(RxEvent.UnBindDeviceEvent unBindDeviceEvent) {
-                        return getView() != null;
-                    }
-                })
-                .observeOn(AndroidSchedulers.mainThread())
-                .map(new Func1<RxEvent.UnBindDeviceEvent, Object>() {
-                    @Override
-                    public Object call(RxEvent.UnBindDeviceEvent unBindDeviceEvent) {
-                        getView().unbindDeviceRsp(unBindDeviceEvent.jfgResult.code);
-                        if (unBindDeviceEvent.jfgResult.code == 0) {
-                            //清理这个订阅
-                            RxBus.getCacheInstance().removeStickyEvent(RxEvent.UnBindDeviceEvent.class);
-                        }
-                        return null;
-                    }
-                })
-                .retry(new RxHelper.RxException<>("unbindDevSub"))
-                .subscribe();
     }
 
     private Subscription onBellInfoSubscription() {
@@ -149,8 +107,6 @@ public class BellSettingPresenterImpl extends AbstractPresenter<BellSettingContr
                 .subscribe(new Action1<RxEvent.LoginRsp>() {
                     @Override
                     public void call(RxEvent.LoginRsp o) {
-                        if (getView() != null)
-                            getView().onLoginState(o.state);
                     }
                 });
     }
@@ -167,24 +123,35 @@ public class BellSettingPresenterImpl extends AbstractPresenter<BellSettingContr
     }
 
     @Override
-    public void unbindDevice() {
-        Observable.just(null)
-                .subscribeOn(Schedulers.newThread())
-                .subscribe(new Action1<Object>() {
+    public void saveBellInfo(BeanBellInfo info, int id) {
+        this.beanBellInfo = info;
+        Observable.just(new Pair<>(info, id))
+                .subscribeOn(Schedulers.io())
+                .subscribe(new Action1<Pair<BeanBellInfo, Integer>>() {
                     @Override
-                    public void call(Object o) {
-                        String uuid = beanBellInfo.deviceBase.uuid;
-                        RxEvent.UnbindJFGDevice deletion = new RxEvent.UnbindJFGDevice();
-                        deletion.uuid = uuid;
-                        RxBus.getCacheInstance().post(deletion);
-                        JfgCmdInsurance.getCmd().unBindDevice(uuid);
-                        AppLogger.i("unbind uuid: " + uuid);
-                    }
-                }, new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                        AppLogger.e("delete uuid failed: " + throwable.getLocalizedMessage());
+                    public void call(Pair<BeanBellInfo, Integer> beanCamInfoIntegerPair) {
+                        int id = beanCamInfoIntegerPair.second;
+                        RxEvent.JFGAttributeUpdate update = new RxEvent.JFGAttributeUpdate();
+                        update.uuid = beanBellInfo.deviceBase.uuid;
+                        if (id == DpMsgMap.ID_2000003_BASE_ALIAS)
+                            update.o = beanCamInfoIntegerPair.first.deviceBase.alias;
+                        else update.o = beanCamInfoIntegerPair.first.getObject(id);
+                        update.msgId = id;
+                        update.version = System.currentTimeMillis();
+                        RxBus.getCacheInstance().post(update);
+                        if (id == DpMsgMap.ID_2000003_BASE_ALIAS) {
+                            JfgCmdInsurance.getCmd().setAliasByCid(beanBellInfo.deviceBase.uuid,
+                                    beanBellInfo.deviceBase.alias);
+                            AppLogger.i("update alias: " + new Gson().toJson(beanBellInfo));
+                            return;
+                        }
+                        JfgCmdInsurance.getCmd().robotSetData(beanBellInfo.deviceBase.uuid,
+                                DpUtils.getList(id,
+                                        beanCamInfoIntegerPair.first.getByte(id)
+                                        , System.currentTimeMillis()));
+                        AppLogger.i("update camInfo: " + new Gson().toJson(beanBellInfo));
                     }
                 });
     }
+
 }

@@ -8,6 +8,7 @@ import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.jiafeigou.cache.JCache;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.misc.JFGRules;
+import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.misc.br.TimeTickBroadcast;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomePageListContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
@@ -41,7 +42,7 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
 
     private static final String TAG = "HomePageListPresenterImpl:";
     private TimeTickBroadcast timeTickBroadcast;
-    private Subscription onRefreshSubscription;
+    //    private Subscription onRefreshSubscription;
     private CompositeSubscription bulkSubscriptions;
     private Subscription onGreetSubscription;
 
@@ -58,6 +59,8 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
         bulkSubscriptions = new CompositeSubscription();
         //注册1
         bulkSubscriptions
+                .add(getDevicesList());
+        bulkSubscriptions
                 .add(getTimeTickEventSub());
         bulkSubscriptions
                 .add(getLoginRspSub());
@@ -67,6 +70,23 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
                 .add(singleDeviceSub());
         bulkSubscriptions
                 .add(JFGAccountUpdate());
+    }
+
+    /**
+     * 启动,就要获取设备列表
+     *
+     * @return
+     */
+    private Subscription getDevicesList() {
+        return Observable.just("null")
+                .subscribeOn(Schedulers.newThread())
+                .subscribe(new Action1<String>() {
+                    @Override
+                    public void call(String s) {
+                        RxBus.getCacheInstance().post(new RxUiEvent.QueryBulkDevice());
+                        JfgCmdInsurance.getCmd().refreshDevList();
+                    }
+                });
     }
 
     /**
@@ -98,6 +118,9 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
                 .map(new Func1<DeviceBean, DeviceBean>() {
                     @Override
                     public DeviceBean call(DeviceBean bean) {
+//                        if (bean.uuid.equals("200000000472")) {//测试分享账号显示
+//                            bean.shareAccount = "what";
+//                        }
                         //已经展示的列表
                         List<DeviceBean> vList = getView().getDeviceList();
                         //新列表
@@ -176,7 +199,7 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
                 .filter(new Func1<RxUiEvent.BulkDeviceList, Boolean>() {
                     @Override
                     public Boolean call(RxUiEvent.BulkDeviceList list) {
-                        boolean notNull = getView() != null && list != null && list.allDevices != null;
+                        boolean notNull = getView() != null && list.allDevices != null;
                         AppLogger.i("notNull: " + notNull);
                         return notNull;
                     }
@@ -184,10 +207,11 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
                 .flatMap(new Func1<RxUiEvent.BulkDeviceList, Observable<List<DeviceBean>>>() {
                     @Override
                     public Observable<List<DeviceBean>> call(RxUiEvent.BulkDeviceList list) {
-                        AppLogger.i("get devices list: " + list.allDevices.size());
+                        AppLogger.i("get devices list: " + list.allDevices);
                         List<DeviceBean> beanList = new ArrayList<>();
                         List<DpMsgDefine.DpWrap> oList = list.allDevices;
                         for (DpMsgDefine.DpWrap wrap : oList) {
+                            if (wrap.baseDpDevice == null) continue;
                             DeviceBean bean = new DeviceBean();
                             bean.fillData(wrap.baseDpDevice, wrap.baseDpMsgList);
                             beanList.add(bean);
@@ -199,34 +223,24 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
                 .map(new Func1<List<DeviceBean>, DeviceBean>() {
                     @Override
                     public DeviceBean call(List<DeviceBean> oList) {
-                        //已经展示的列表
-                        List<DeviceBean> vList = getView().getDeviceList();
                         //新列表
+                        ArrayList<DeviceBean> newList = new ArrayList<>();
                         for (DeviceBean bean : oList) {
-                            final int index = vList == null ? -1 : vList.indexOf(bean);
-                            if (MiscUtils.isInRange(0, oList.size(), index)) {
-                                //更新对应的item
-                                vList.set(index, bean);
-                                getView().onItemUpdate(index);
-                            } else {
-                                //a new one
-                                List<DeviceBean> newList = new ArrayList<>();
-                                newList.add(bean);
-                                getView().onItemsInsert(newList);
-                            }
+                            newList.add(bean);
                         }
+                        getView().onItemsInsert(null);//清空列表
+                        getView().onItemsInsert(newList);
                         return null;
                     }
                 })
-                .retry(new RxHelper.ExceptionFun<>("subDeviceList"))
+                .retry(new RxHelper.ExceptionFun<>("subDeviceList:"))
                 .subscribe();
     }
 
     @Override
     public void stop() {
         AppLogger.i("stop");
-        unSubscribe(onRefreshSubscription,
-                bulkSubscriptions,
+        unSubscribe(bulkSubscriptions,
                 onGreetSubscription);
     }
 
@@ -259,13 +273,14 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
             getView().onLoginState(false);
             getView().onRefreshFinish();
         }
-        onRefreshSubscription = Observable.just(JCache.isOnline())
+        Observable.just(JCache.isOnline())
                 .subscribeOn(Schedulers.newThread())
                 .map(new Func1<Boolean, Object>() {
                     @Override
                     public Object call(Boolean aBoolean) {
                         //发送给DpDeviceAssembler
-                        RxBus.getCacheInstance().post(new RxUiEvent.QueryBulkDevice());
+//
+                        JfgCmdInsurance.getCmd().refreshDevList();//刷新列表.
                         return null;
                     }
                 })
