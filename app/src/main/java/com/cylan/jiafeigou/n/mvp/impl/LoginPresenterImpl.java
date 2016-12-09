@@ -19,6 +19,7 @@ import com.cylan.jiafeigou.support.sina.AccessTokenKeeper;
 import com.cylan.jiafeigou.support.sina.SinaLogin;
 import com.cylan.jiafeigou.support.sina.UsersAPI;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
+import com.cylan.jiafeigou.utils.ToastUtil;
 import com.google.gson.Gson;
 import com.sina.weibo.sdk.auth.Oauth2AccessToken;
 import com.sina.weibo.sdk.auth.WeiboAuthListener;
@@ -294,8 +295,6 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
             } catch (JSONException e) {
                 AppLogger.e(e.toString());
             }
-
-
         }
 
         @Override
@@ -327,7 +326,9 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
                 UsersAPI mUsersAPI = new UsersAPI(mAccessToken, getView().getContext());
                 long uid = Long.parseLong(mAccessToken.getUid());
                 mUsersAPI.show(uid, sinaRequestListener);
-
+            }else {
+                String code = values.getString("code", "");
+                AppLogger.d("sina_code"+code);
             }
         }
 
@@ -358,6 +359,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
             try {
                 if (!TextUtils.isEmpty(response)) {
                     String strId = new JSONObject(response).getString("idstr");
+                    ToastUtil.showToast(strId);
 //                    PreferencesUtils.setThirDswLoginPicUrl(ctx, new JSONObject(response).getString("profile_image_url"));
 //                    cmd.openLogin(strId, "", "SINA", ""); // 接口没测
                 }

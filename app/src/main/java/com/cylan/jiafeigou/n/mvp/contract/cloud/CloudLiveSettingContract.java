@@ -2,6 +2,7 @@ package com.cylan.jiafeigou.n.mvp.contract.cloud;
 
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
+import com.cylan.jiafeigou.n.mvp.model.BeanCloudInfo;
 
 import rx.Subscription;
 
@@ -13,6 +14,7 @@ import rx.Subscription;
 public interface CloudLiveSettingContract {
 
     interface View extends BaseView<Presenter> {
+
         void initSomeViewVisible(boolean isVisible);
 
         void showClearRecordDialog();
@@ -20,6 +22,13 @@ public interface CloudLiveSettingContract {
         void showClearRecordProgress();
 
         void hideClearRecordProgress();
+
+        /**
+         * 初始化显示设备名称
+         * @param beanCloudInfo
+         * @return
+         */
+        void onCloudInfoRsp(BeanCloudInfo beanCloudInfo);
     }
 
     interface Presenter extends BasePresenter {
@@ -32,5 +41,17 @@ public interface CloudLiveSettingContract {
          * 获取到用户的账号
          */
         Subscription getAccount();
+
+        /**
+         * 获取设备名称
+         * @return
+         */
+        String getDeviceName();
+
+        /**
+         * 获取到中控的信息
+         * @return
+         */
+        BeanCloudInfo getCloudInfoBean();
     }
 }

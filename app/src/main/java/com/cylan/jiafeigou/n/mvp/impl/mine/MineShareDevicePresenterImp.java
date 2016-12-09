@@ -69,7 +69,7 @@ public class MineShareDevicePresenterImp extends AbstractPresenter<MineShareDevi
                     @Override
                     public Observable<ArrayList<DeviceBean>> call(RxEvent.DeviceList deviceList) {
                         if (deviceList == null || deviceList.jfgDevices == null){
-                            return null;
+                            return Observable.just(null);
                         }
                         return Observable.just(getShareDeviceList(deviceList));
                     }
@@ -78,7 +78,7 @@ public class MineShareDevicePresenterImp extends AbstractPresenter<MineShareDevi
                 .subscribe(new Action1<ArrayList<DeviceBean>>() {
                     @Override
                     public void call(ArrayList<DeviceBean> deviceList) {
-                        if (getView() != null && deviceList != null){
+                        if (getView() != null && deviceList != null && deviceList.size() > 0){
                             allDevice.clear();
                             allDevice.addAll(deviceList);
                             ArrayList<String> cidList = new ArrayList<String>();

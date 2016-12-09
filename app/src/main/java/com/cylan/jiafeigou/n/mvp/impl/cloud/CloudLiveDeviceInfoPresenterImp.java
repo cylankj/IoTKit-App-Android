@@ -5,9 +5,23 @@ import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Environment;
 import android.telephony.TelephonyManager;
+import android.util.Pair;
 
+import com.cylan.jiafeigou.dp.DpMsgMap;
+import com.cylan.jiafeigou.dp.DpUtils;
+import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.contract.cloud.CloudLiveDeviceInfoContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
+import com.cylan.jiafeigou.n.mvp.model.BeanCamInfo;
+import com.cylan.jiafeigou.n.mvp.model.BeanCloudInfo;
+import com.cylan.jiafeigou.rx.RxBus;
+import com.cylan.jiafeigou.rx.RxEvent;
+import com.cylan.jiafeigou.support.log.AppLogger;
+import com.google.gson.Gson;
+
+import rx.Observable;
+import rx.functions.Action1;
+import rx.schedulers.Schedulers;
 
 /**
  * 作者：zsl
@@ -20,8 +34,11 @@ public class CloudLiveDeviceInfoPresenterImp extends AbstractPresenter<CloudLive
     public static final int SD_UNINSTALL = 1;
     public static final int SD_FAIL_RW = 2;
 
-    public CloudLiveDeviceInfoPresenterImp(CloudLiveDeviceInfoContract.View view) {
+    private BeanCloudInfo beanCloudInfo;
+
+    public CloudLiveDeviceInfoPresenterImp(CloudLiveDeviceInfoContract.View view, BeanCloudInfo bean) {
         super(view);
+        this.beanCloudInfo = bean;
     }
 
     @Override
@@ -89,5 +106,51 @@ public class CloudLiveDeviceInfoPresenterImp extends AbstractPresenter<CloudLive
             return result;
         }
         return result;
+    }
+
+
+    @Override
+    public void saveCloudInfoBean(BeanCloudInfo info, int id) {
+        this.beanCloudInfo = info;
+        Observable.just(new Pair<>(info, id))
+                .subscribeOn(Schedulers.io())
+                .subscribe(new Action1<Pair<BeanCloudInfo, Integer>>() {
+                    @Override
+                    public void call(Pair<BeanCloudInfo, Integer> beanCloudInfoIntegerPair) {
+                        int id = beanCloudInfoIntegerPair.second;
+                        RxEvent.JFGAttributeUpdate update = new RxEvent.JFGAttributeUpdate();
+                        update.uuid = beanCloudInfo.deviceBase.uuid;
+                        if (id == DpMsgMap.ID_2000003_BASE_ALIAS)
+                            update.o = beanCloudInfoIntegerPair.first.deviceBase.alias;
+                        else update.o = beanCloudInfoIntegerPair.first.getObject(id);
+                        update.msgId = id;
+                        update.version = System.currentTimeMillis();
+                        RxBus.getCacheInstance().post(update);
+                        if (id == DpMsgMap.ID_2000003_BASE_ALIAS) {
+                            JfgCmdInsurance.getCmd().setAliasByCid(beanCloudInfo.deviceBase.uuid,
+                                    beanCloudInfo.deviceBase.alias);
+                            AppLogger.i("update alias: " + new Gson().toJson(beanCloudInfo));
+                            return;
+                        }
+                        JfgCmdInsurance.getCmd().robotSetData(beanCloudInfo.deviceBase.uuid,
+                                DpUtils.getList(id,
+                                        beanCloudInfoIntegerPair.first.getByte(id)
+                                        , System.currentTimeMillis()));
+                        AppLogger.i("update camInfo: " + new Gson().toJson(beanCloudInfo));
+                    }
+                });
+    }
+
+    /**
+     * 获取的到设备信息
+     * @return
+     */
+    @Override
+    public BeanCloudInfo getCloudInfoBean() {
+        if (beanCloudInfo != null){
+            return beanCloudInfo;
+        }else {
+            return new BeanCloudInfo();
+        }
     }
 }

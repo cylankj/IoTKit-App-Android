@@ -1,243 +1,102 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:clickable="true"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:clickable="true"
+    android:orientation="vertical">
 
     <!-- 顶部栏 -->
-    <RelativeLayout
-        android:layout_marginTop="25dp"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:background="#0BA8CF">
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
-        <ImageView
-            android:id="@+id/iv_mag_information_back"
-            android:layout_centerVertical="true"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:padding="15dp"
-            android:src="@drawable/icon_nav_back_white" />
-
-        <TextView
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="48dp"
+        <FrameLayout
+            android:id="@+id/fLayout_top_bar_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="功能设置"
-            android:textSize="18sp"
-            android:textColor="#FFFFFF" />
-    </RelativeLayout>
+            android:background="@color/color_0ba8cf">
+
+            <TextView
+                android:id="@+id/imgV_top_bar_center"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+                android:drawableLeft="@drawable/icon_nav_back_white"
+                android:drawablePadding="15dp"
+                android:padding="15dp"
+                android:text="@string/EQUIPMENT_INFO"
+                android:textColor="@color/color_white"
+                android:textSize="16sp" />
+        </FrameLayout>
+    </LinearLayout>
 
     <ScrollView
-        android:overScrollMode="never"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/color_white"
+        android:overScrollMode="never"
         android:scrollbars="none">
         <!-- “设置”相关模块 -->
         <!-- 设备名称 -->
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical">
 
             <TextView
+                style="@style/information_item"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
-                style="@style/information_item"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="设置"
+                android:text="@string/SETTINGS"
                 android:textColor="#4B9FD5"
                 android:textSize="14sp" />
 
             <LinearLayout
-                style="@style/information_item"
-                android:id="@+id/lLayout_mag_information_facility_name"
-                android:layout_width="match_parent"
-                android:layout_height="72dp"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_marginTop="15dp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="设备名称"
-                    android:textColor="#000000"
-                    android:textSize="16sp" />
-
-                <TextView
-                    android:id="@+id/tv_mag_information_facility_name"
-                    android:layout_marginTop="6dp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:singleLine="true"
-                    android:text="客厅摄像头"
-                    android:textColor="#8C8C8C"
-                    android:textSize="13sp" />
-
-                <View
-                    android:layout_marginTop="10dp"
-                    android:layout_width="match_parent"
-                    android:layout_height="1dip"
-                    android:background="#F2F2F2" />
-            </LinearLayout>
-
-
-            <!-- 设备时区 -->
-            <LinearLayout
-                android:id="@+id/lLayout_mag_information_facility_timezone"
+                android:id="@+id/lLayout_information_facility_name"
                 style="@style/information_item"
                 android:layout_width="match_parent"
                 android:layout_height="72dp"
                 android:orientation="vertical">
 
                 <TextView
-                    android:layout_marginTop="15dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="设备时区"
+                    android:layout_marginTop="15dp"
+                    android:text="@string/EQUIPMENT_NAME"
                     android:textColor="#000000"
                     android:textSize="16sp" />
 
                 <TextView
-                    android:id="@+id/tv_mag_information_facility_time_zone"
-                    android:layout_marginTop="6dp"
+                    android:id="@+id/tv_device_alias"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="北京/中国"
+                    android:layout_marginTop="3dp"
                     android:textColor="#8C8C8C"
                     android:textSize="13sp" />
 
                 <View
-                    android:layout_marginTop="10dp"
                     android:layout_width="match_parent"
                     android:layout_height="1dip"
-                    android:background="#F2F2F2" />
-            </LinearLayout>
-
-            <TextView
-                android:layout_marginTop="15dp"
-                style="@style/information_item"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="存储"
-                android:textColor="#4B9FD5"
-                android:textSize="14sp" />
-
-            <!-- “储存”相关模块 -->
-            <LinearLayout
-                android:id="@+id/ll_information_facility_card_state"
-                style="@style/information_item"
-                android:layout_width="match_parent"
-                android:layout_height="72dp"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_marginTop="15dp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Micro SD卡"
-                    android:textColor="#000000"
-                    android:textSize="16sp" />
-
-                <TextView
-                    android:id="@+id/tv_device_sdcard_state"
-                    android:layout_marginTop="6dp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="读写失败"
-                    android:textColor="#8C8C8C"
-                    android:textSize="13sp" />
-
-                <View
                     android:layout_marginTop="10dp"
-                    android:layout_width="match_parent"
-                    android:layout_height="1dip"
-                    android:background="#F2F2F2" />
-            </LinearLayout>
-
-            <!-- “网络”相关模块 -->
-            <!-- 移动网络 -->
-            <TextView
-                android:layout_marginTop="12dp"
-                style="@style/information_item"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="网络"
-                android:textColor="#4B9FD5"
-                android:textSize="14sp" />
-
-            <LinearLayout
-                style="@style/information_item"
-                android:layout_width="match_parent"
-                android:layout_height="72dp"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_marginTop="15dp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="移动网络"
-                    android:textColor="#000000"
-                    android:textSize="16sp" />
-
-                <TextView
-                    android:id="@+id/tv_device_mobile_net"
-                    android:layout_marginTop="6dp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="中国联通"
-                    android:textColor="#8C8C8C"
-                    android:textSize="13sp" />
-
-                <View
-                    android:layout_marginTop="10dp"
-                    android:layout_width="match_parent"
-                    android:layout_height="1dip"
-                    android:background="#F2F2F2" />
-            </LinearLayout>
-
-            <!-- Wi-Fi -->
-            <LinearLayout
-                style="@style/information_item"
-                android:layout_width="match_parent"
-                android:layout_height="72dp"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_marginTop="15dp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Wi-Fi"
-                    android:textColor="#000000"
-                    android:textSize="16sp" />
-
-                <TextView
-                    android:id="@+id/tv_device_wifi_state"
-                    android:layout_marginTop="6dp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="未启用"
-                    android:textColor="#8C8C8C"
-                    android:textSize="13sp" />
-
-                <View
-                    android:layout_marginTop="10dp"
-                    android:layout_width="match_parent"
-                    android:layout_height="1dip"
-                    android:background="#F2F2F2" />
+                    android:background="@color/color_f2f2f2" />
             </LinearLayout>
 
             <!-- "信息"模块 -->
-            <!-- CID编号 -->
             <TextView
-                android:layout_marginTop="12dp"
                 style="@style/information_item"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="信息"
+                android:layout_marginTop="12dp"
+                android:text="@string/EQUIPMENT_INFO"
+                android:textColor="#4B9FD5"
+                android:textSize="14sp" />
+            <!-- CID编号 -->
+            <TextView
+                style="@style/information_item"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
                 android:textColor="#4B9FD5"
                 android:textSize="14sp" />
 
@@ -248,27 +107,25 @@
                 android:orientation="vertical">
 
                 <TextView
-                    android:layout_marginTop="15dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="CID编号"
+                    android:text="@string/Tap1_Setting_Cid"
                     android:textColor="#000000"
                     android:textSize="16sp" />
 
                 <TextView
                     android:id="@+id/tv_device_cid"
-                    android:layout_marginTop="6dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="16位的字符串，设备首次激活时生成"
+                    android:layout_marginTop="3dp"
                     android:textColor="#8C8C8C"
                     android:textSize="13sp" />
 
                 <View
-                    android:layout_marginTop="10dp"
                     android:layout_width="match_parent"
                     android:layout_height="1dip"
-                    android:background="#F2F2F2" />
+                    android:layout_marginTop="10dp"
+                    android:background="@color/color_f2f2f2" />
             </LinearLayout>
 
             <!-- MAC -->
@@ -279,87 +136,27 @@
                 android:orientation="vertical">
 
                 <TextView
-                    android:layout_marginTop="15dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="MAC"
+                    android:text="@string/MAC"
                     android:textColor="#000000"
                     android:textSize="16sp" />
 
                 <TextView
-                    android:layout_marginTop="6dp"
+                    android:id="@+id/tv_device_mac"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="WiFi芯片写死的"
+                    android:layout_marginTop="3dp"
                     android:textColor="#8C8C8C"
                     android:textSize="13sp" />
 
                 <View
-                    android:layout_marginTop="10dp"
                     android:layout_width="match_parent"
                     android:layout_height="1dip"
-                    android:background="#F2F2F2" />
-            </LinearLayout>
-
-            <!-- 系统版本 -->
-            <LinearLayout
-                style="@style/information_item"
-                android:layout_width="match_parent"
-                android:layout_height="72dp"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_marginTop="15dp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="系统版本"
-                    android:textColor="#000000"
-                    android:textSize="16sp" />
-
-                <TextView
-                    android:layout_marginTop="6dp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="JFG1.2"
-                    android:textColor="#8C8C8C"
-                    android:textSize="13sp" />
-
-                <View
                     android:layout_marginTop="10dp"
-                    android:layout_width="match_parent"
-                    android:layout_height="1dip"
-                    android:background="#F2F2F2" />
+                    android:background="@color/color_f2f2f2" />
             </LinearLayout>
 
-            <!-- 软件版本 -->
-            <LinearLayout
-                style="@style/information_item"
-                android:layout_width="match_parent"
-                android:layout_height="72dp"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_marginTop="15dp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="软件版本"
-                    android:textColor="#000000"
-                    android:textSize="16sp" />
-
-                <TextView
-                    android:layout_marginTop="6dp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="2.4.6.696"
-                    android:textColor="#8C8C8C"
-                    android:textSize="13sp" />
-
-                <View
-                    android:layout_marginTop="10dp"
-                    android:layout_width="match_parent"
-                    android:layout_height="1dip"
-                    android:background="#F2F2F2" />
-            </LinearLayout>
 
             <!-- 电池电量 -->
             <LinearLayout
@@ -369,30 +166,29 @@
                 android:orientation="vertical">
 
                 <TextView
-                    android:layout_marginTop="15dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="电池电量"
+                    android:text="@string/BATTERY_LEVEL"
                     android:textColor="#000000"
                     android:textSize="16sp" />
 
                 <TextView
                     android:id="@+id/tv_device_battery_level"
-                    android:layout_marginTop="6dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="充电中 67%"
+                    android:layout_marginTop="3dp"
+                    android:text="@string/CHARGING"
                     android:textColor="#8C8C8C"
                     android:textSize="13sp" />
 
                 <View
-                    android:layout_marginTop="10dp"
                     android:layout_width="match_parent"
                     android:layout_height="1dip"
-                    android:background="#F2F2F2" />
+                    android:layout_marginTop="10dp"
+                    android:background="@color/color_f2f2f2" />
             </LinearLayout>
 
-            <!-- 储存空间 -->
+            <!-- 连续运行 -->
             <LinearLayout
                 style="@style/information_item"
                 android:layout_width="match_parent"
@@ -400,27 +196,25 @@
                 android:orientation="vertical">
 
                 <TextView
-                    android:layout_marginTop="15dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="储存空间"
+                    android:text="@string/STANBY"
                     android:textColor="#000000"
                     android:textSize="16sp" />
 
                 <TextView
-                    android:id="@+id/tv_device_storage"
-                    android:layout_marginTop="6dp"
+                    android:id="@+id/tv_device_runtime"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="1.5GB可用"
+                    android:layout_marginTop="3dp"
                     android:textColor="#8C8C8C"
                     android:textSize="13sp" />
 
                 <View
-                    android:layout_marginTop="10dp"
                     android:layout_width="match_parent"
                     android:layout_height="1dip"
-                    android:background="#F2F2F2" />
+                    android:layout_marginTop="10dp"
+                    android:background="@color/color_f2f2f2" />
             </LinearLayout>
         </LinearLayout>
     </ScrollView>

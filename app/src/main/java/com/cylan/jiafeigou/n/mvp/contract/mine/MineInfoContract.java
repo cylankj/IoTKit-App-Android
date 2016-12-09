@@ -24,7 +24,7 @@ public interface MineInfoContract {
 
         void showLogOutDialog();                                //退出登录提示框
 
-        void logOutResult(int logout);                                    //退出登录结果
+        void logOutResult(int logout);                          //退出登录结果
 
     }
 

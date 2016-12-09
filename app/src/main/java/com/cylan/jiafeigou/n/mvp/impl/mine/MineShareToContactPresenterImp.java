@@ -47,7 +47,6 @@ public class MineShareToContactPresenterImp extends AbstractPresenter<MineShareT
 
     @Override
     public void start() {
-
         if (hasShareFriend != null && hasShareFriend.size() != 0){
             ArrayList<RelAndFriendBean> list = converData2(hasShareFriend);
             allCoverData.addAll(list);

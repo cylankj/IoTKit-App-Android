@@ -35,10 +35,11 @@ public class MineAddFromContactPresenterImp extends AbstractPresenter<MineAddFro
     public void start() {
         if (compositeSubscription != null && !compositeSubscription.isUnsubscribed()){
             compositeSubscription.unsubscribe();
+        }else {
+            compositeSubscription = new CompositeSubscription();
+            compositeSubscription.add(getAccountAlids());
+            compositeSubscription.add(checkAccountCallBack());
         }
-
-        compositeSubscription = new CompositeSubscription();
-        compositeSubscription.add(getAccountAlids());
     }
 
     @Override
@@ -91,4 +92,46 @@ public class MineAddFromContactPresenterImp extends AbstractPresenter<MineAddFro
     public String getUserAlias() {
         return userAlids;
     }
+
+    /**
+     * 检测账号
+     * @param account
+     */
+    @Override
+    public void checkAccount(String account) {
+        rx.Observable.just(account)
+                .subscribeOn(Schedulers.newThread())
+                .subscribe(new Action1<String>() {
+                    @Override
+                    public void call(String s) {
+                        JfgCmdInsurance.getCmd().checkFriendAccount(s);
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        AppLogger.e("checkoutAccount"+throwable.getLocalizedMessage());
+                    }
+                });
+    }
+
+    /**
+     * 检测账号的回调
+     * @return
+     */
+    @Override
+    public Subscription checkAccountCallBack() {
+        return RxBus.getCacheInstance().toObservable(RxEvent.CheckAccountCallback.class)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<RxEvent.CheckAccountCallback>() {
+                    @Override
+                    public void call(RxEvent.CheckAccountCallback checkAccountCallback) {
+                        if (checkAccountCallback != null && checkAccountCallback instanceof RxEvent.CheckAccountCallback){
+                            if (getView() != null){
+                                getView().showResultDialog(checkAccountCallback);
+                            }
+                        }
+                    }
+                });
+    }
+
 }

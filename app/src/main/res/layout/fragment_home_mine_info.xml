@@ -199,7 +199,7 @@
             android:layout_below="@id/tv_my_number"
             android:layout_marginLeft="20dp"
             android:paddingTop="8dp"
-            android:text="15825252626"
+            android:text="@string/NO_SET"
             android:textColor="@color/color_333333"
             android:textSize="16sp" />
 

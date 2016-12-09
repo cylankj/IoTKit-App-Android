@@ -16,6 +16,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.cylan.entity.jniCall.JFGFriendRequest;
 import com.cylan.jiafeigou.R;
@@ -100,6 +101,7 @@ public class MineFriendAddReqDetailFragment extends Fragment implements MineFrie
                 .asBitmap()
                 .centerCrop()
                 .placeholder(R.drawable.icon_mine_head_normal)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .error(R.drawable.icon_mine_head_normal)
                 .into(new BitmapImageViewTarget(ivDetailUserHead) {
                     @Override

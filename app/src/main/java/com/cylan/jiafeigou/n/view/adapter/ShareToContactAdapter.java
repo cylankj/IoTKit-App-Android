@@ -46,6 +46,12 @@ public class ShareToContactAdapter extends SuperAdapter<RelAndFriendBean> {
             shareBtn.setTextColor(Color.parseColor("#ADADAD"));
             shareBtn.setText(ContextUtils.getContext().getString(R.string.Tap3_ShareDevice_Shared));
             shareBtn.setBackground(null);
+            shareBtn.setEnabled(false);
+        }else {
+            shareBtn.setTextColor(Color.parseColor("#4b9fd5"));
+            shareBtn.setText(ContextUtils.getContext().getString(R.string.Tap3_ShareDevice_Button));
+            shareBtn.setBackground(ContextUtils.getContext().getResources().getDrawable(R.drawable.btn_accept_add_request_shape));
+            shareBtn.setEnabled(true);
         }
 
         holder.setOnClickListener(R.id.tv_contactshare, new View.OnClickListener() {

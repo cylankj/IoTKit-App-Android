@@ -13,16 +13,24 @@ import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.mag.HomeMagLiveContract;
 import com.cylan.jiafeigou.n.mvp.impl.mag.HomeMagLivePresenterImp;
+import com.cylan.jiafeigou.n.mvp.model.BeanMagInfo;
+import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
+import com.cylan.jiafeigou.n.view.cam.DeviceInfoDetailFragment;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.widget.LoadingDialog;
 import com.kyleduo.switchbutton.SwitchButton;
 
+import java.lang.ref.WeakReference;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+
+import static com.cylan.jiafeigou.misc.JConstant.KEY_DEVICE_ITEM_BUNDLE;
 
 
 /**
@@ -43,7 +51,7 @@ public class MagLiveFragment extends Fragment implements HomeMagLiveContract.Vie
     @BindView(R.id.tv_clear_mag_open_record)
     TextView tvClearMagOpenRecord;
 
-    private MagLiveInformationFragment magLiveInformationFragment;
+    private WeakReference<MagLiveInformationFragment> informationWeakReference;
     private HomeMagLiveContract.Presenter presenter;
     private OnClearDoorOpenRecordLisenter listener;
 
@@ -61,12 +69,6 @@ public class MagLiveFragment extends Fragment implements HomeMagLiveContract.Vie
         return fragment;
     }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        magLiveInformationFragment = MagLiveInformationFragment.newInstance(new Bundle());
-    }
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -78,7 +80,9 @@ public class MagLiveFragment extends Fragment implements HomeMagLiveContract.Vie
     }
 
     private void initPresenter() {
-        presenter = new HomeMagLivePresenterImp(this);
+        Bundle bundle = getArguments();
+        DeviceBean deviceBean = (DeviceBean) bundle.getParcelable(JConstant.KEY_DEVICE_ITEM_BUNDLE);
+        presenter = new HomeMagLivePresenterImp(this,deviceBean);
     }
 
     /**
@@ -102,17 +106,19 @@ public class MagLiveFragment extends Fragment implements HomeMagLiveContract.Vie
      */
     @OnClick(R.id.lLayout_home_mag_information)
     public void onFacilityMessage() {
-        getFragmentManager().beginTransaction()
-                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
-                        , R.anim.slide_in_left, R.anim.slide_out_right)
-                .add(android.R.id.content, magLiveInformationFragment, "magLiveInformationFragment")
-                .addToBackStack("MagLiveFragment")
-                .commit();
-
-        /**
-         * 接口回调，得到相应的text，并且赋值给当前fragment
-         */
-        magLiveInformationFragment.setListener(new MagLiveInformationFragment.OnMagLiveDataChangeListener() {
+        initInfoDetailFragment();
+        MagLiveInformationFragment fragment = informationWeakReference.get();
+        fragment.setCallBack(new IBaseFragment.CallBack() {
+            @Override
+            public void callBack(Object t) {
+                onMagInfoRsp(presenter.getMagInfoBean());
+            }
+        });
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(KEY_DEVICE_ITEM_BUNDLE, presenter.getMagInfoBean());
+        fragment.setArguments(bundle);
+        loadFragment(android.R.id.content, fragment);
+        fragment.setListener(new MagLiveInformationFragment.OnMagLiveDataChangeListener() {
             @Override
             public void magLiveDataChange(String content) {
                 mFacilityName.setText(content);
@@ -124,8 +130,6 @@ public class MagLiveFragment extends Fragment implements HomeMagLiveContract.Vie
     public void onStart() {
         super.onStart();
         if (presenter != null) presenter.start();
-        String editName = PreferencesUtils.getString("magEditName", "客厅摄像头");
-        mFacilityName.setText(editName);
     }
 
     @Override
@@ -176,6 +180,15 @@ public class MagLiveFragment extends Fragment implements HomeMagLiveContract.Vie
         }).show();
     }
 
+    /**
+     * 初始化界面显示
+     * @param magInfoBean
+     */
+    @Override
+    public void onMagInfoRsp(BeanMagInfo magInfoBean) {
+        mFacilityName.setText(presenter.getDeviceName());
+    }
+
     @Override
     public boolean openDoorNotify() {
         return presenter.getNegation();
@@ -208,6 +221,26 @@ public class MagLiveFragment extends Fragment implements HomeMagLiveContract.Vie
     @Override
     public void hideClearProgress() {
         LoadingDialog.dismissLoading(getFragmentManager());
+    }
+
+    private void initInfoDetailFragment() {
+        //should load
+        if (informationWeakReference == null || informationWeakReference.get() == null) {
+            informationWeakReference = new WeakReference<>(MagLiveInformationFragment.newInstance(null));
+        }
+    }
+
+    /**
+     * 用来加载fragment的方法。
+     */
+    private void loadFragment(int id, Fragment fragment) {
+        getFragmentManager().beginTransaction()
+                //如果需要动画，可以把动画添加进来
+                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
+                        , R.anim.slide_in_left, R.anim.slide_out_right)
+                .add(id, fragment, fragment.getClass().getSimpleName())
+                .addToBackStack(fragment.getClass().getSimpleName())
+                .commit();
     }
 
 }

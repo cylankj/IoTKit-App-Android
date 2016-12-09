@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -31,8 +32,7 @@ import butterknife.OnClick;
  * 创建时间：2016/9/5
  * 描述：
  */
-public class HomeSettingFragment extends Fragment implements HomeSettingContract.View {
-
+public class HomeSettingFragment extends Fragment implements HomeSettingContract.View, CompoundButton.OnCheckedChangeListener {
 
     @BindView(R.id.iv_home_setting_back)
     ImageView ivHomeSettingBack;
@@ -86,10 +86,8 @@ public class HomeSettingFragment extends Fragment implements HomeSettingContract
         this.presenter = presenter;
     }
 
-    @OnClick({R.id.iv_home_setting_back, R.id.rl_home_setting_about, R.id.rl_home_setting_clear,
-            R.id.btn_item_switch_accessMes, R.id.btn_item_switch_voide, R.id.btn_item_switch_shake})
+    @OnClick({R.id.iv_home_setting_back, R.id.rl_home_setting_about, R.id.rl_home_setting_clear})
     public void onClick(View view) {
-
         switch (view.getId()) {
             case R.id.iv_home_setting_back:
                 getFragmentManager().popBackStack();
@@ -108,18 +106,6 @@ public class HomeSettingFragment extends Fragment implements HomeSettingContract
 
             case R.id.rl_home_setting_clear:
                 presenter.clearCache();
-                break;
-
-            case R.id.btn_item_switch_accessMes:
-                presenter.savaSwitchState(switchAcceptMesg(), JConstant.RECEIVE_MESSAGE_NOTIFICATION);
-                break;
-
-            case R.id.btn_item_switch_voide:
-                presenter.savaSwitchState(switchVoice(), JConstant.OPEN_VOICE);
-                break;
-
-            case R.id.btn_item_switch_shake:
-                presenter.savaSwitchState(switchShake(), JConstant.OPEN_SHAKE);
                 break;
         }
     }
@@ -146,7 +132,7 @@ public class HomeSettingFragment extends Fragment implements HomeSettingContract
 
     @Override
     public void hideClearingCacheProgress() {
-        LoadingDialog.showLoading(getFragmentManager());
+        LoadingDialog.dismissLoading(getFragmentManager());
     }
 
     @Override
@@ -176,7 +162,7 @@ public class HomeSettingFragment extends Fragment implements HomeSettingContract
     }
 
     @Override
-    public void initSwitchState(RxEvent.GetUserInfo userInfo) {
+    public void initSwitchState(final RxEvent.GetUserInfo userInfo) {
         btnItemSwitchAccessMes.setChecked(userInfo.jfgAccount.isEnablePush());
         btnItemSwitchVoide.setChecked(userInfo.jfgAccount.isEnableSound());
         btnItemSwitchShake.setChecked(userInfo.jfgAccount.isEnableVibrate());
@@ -194,5 +180,29 @@ public class HomeSettingFragment extends Fragment implements HomeSettingContract
     public void onStart() {
         super.onStart();
         if (presenter != null) presenter.start();
+        initSwitchBtnListener();
+    }
+
+    private void initSwitchBtnListener() {
+        btnItemSwitchAccessMes.setOnCheckedChangeListener(this);
+        btnItemSwitchVoide.setOnCheckedChangeListener(this);
+        btnItemSwitchShake.setOnCheckedChangeListener(this);
+    }
+
+    @Override
+    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        switch (buttonView.getId()){
+            case R.id.btn_item_switch_accessMes:
+                presenter.savaSwitchState(isChecked, JConstant.RECEIVE_MESSAGE_NOTIFICATION);
+                break;
+
+            case R.id.btn_item_switch_voide:
+                presenter.savaSwitchState(isChecked, JConstant.OPEN_VOICE);
+                break;
+
+            case R.id.btn_item_switch_shake:
+                presenter.savaSwitchState(isChecked, JConstant.OPEN_SHAKE);
+                break;
+        }
     }
 }

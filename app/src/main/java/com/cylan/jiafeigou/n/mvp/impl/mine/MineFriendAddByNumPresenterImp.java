@@ -1,5 +1,6 @@
 package com.cylan.jiafeigou.n.mvp.impl.mine;
 
+import com.cylan.entity.JfgEnum;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendAddByNumContract;
@@ -103,6 +104,7 @@ public class MineFriendAddByNumPresenterImp extends AbstractPresenter<MineFriend
                 MineAddReqBean addReqBean = new MineAddReqBean();
                 addReqBean.account = checkAccountCallback.s;
                 addReqBean.alias = checkAccountCallback.s1;
+                addReqBean.iconUrl = JfgCmdInsurance.getCmd().getCloudUrlByType(JfgEnum.JFG_URL.PORTRAIT,0,checkAccountCallback.s+".jpg","");
                 getView().hideFindLoading();
                 getView().setFindResult(false,addReqBean);
             }

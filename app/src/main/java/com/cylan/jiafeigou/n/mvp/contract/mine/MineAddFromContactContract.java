@@ -2,6 +2,7 @@ package com.cylan.jiafeigou.n.mvp.contract.mine;
 
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
+import com.cylan.jiafeigou.rx.RxEvent;
 
 import rx.Subscription;
 
@@ -14,11 +15,11 @@ public interface MineAddFromContactContract {
 
     interface View extends BaseView<Presenter> {
 
-        void initEditText(String alids);
+        void initEditText(String alias);
 
         String getSendMesg();
 
-        void showResultDialog();
+        void showResultDialog(RxEvent.CheckAccountCallback callback);
 
         /**
          * 发送请求的进度
@@ -46,6 +47,18 @@ public interface MineAddFromContactContract {
          * @return
          */
         String getUserAlias();
+
+        /**
+         * 检测账号
+         * @param account
+         */
+        void checkAccount(String account);
+
+        /**
+         * 检测账号的回调
+         * @return
+         */
+        Subscription checkAccountCallBack();
     }
 
 }

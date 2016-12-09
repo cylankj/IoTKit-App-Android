@@ -45,8 +45,9 @@
             <ImageView
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="20dp"
+                android:id="@+id/iv_voice_play"
                 android:layout_gravity="center_vertical"
-                android:src="@drawable/icon_call"
+                android:background="@drawable/play_voice_record"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
         </LinearLayout>
