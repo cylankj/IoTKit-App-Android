@@ -15,6 +15,7 @@ import com.cylan.jiafeigou.n.mvp.model.BeanCamInfo;
 import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
+import com.cylan.jiafeigou.rx.RxHelper;
 import com.cylan.jiafeigou.rx.RxUiEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.google.gson.Gson;
@@ -27,6 +28,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
+import rx.subscriptions.CompositeSubscription;
 
 /**
  * Created by cylan-hunt on 16-7-27.
@@ -34,7 +36,7 @@ import rx.schedulers.Schedulers;
 public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContract.View> implements
         CamSettingContract.Presenter {
 
-    private Subscription subscription;
+    private CompositeSubscription subscription;
 
     private BeanCamInfo camInfoBean;
     private static final int[] periodResId = {R.string.MON_1, R.string.TUE_1,
@@ -65,7 +67,10 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
 
     @Override
     public void start() {
-
+        unSubscribe(subscription);
+        subscription = new CompositeSubscription();
+        subscription.add(fetchCamInfo());
+        subscription.add(unbindDevSub());
     }
 
     @Override
@@ -73,22 +78,52 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
         unSubscribe(subscription);
     }
 
-    public void fetchCamInfo(final String uuid) {
+    /**
+     * 解绑设备
+     *
+     * @return
+     */
+    private Subscription unbindDevSub() {
+        return RxBus.getCacheInstance().toObservableSticky(RxEvent.UnBindDeviceEvent.class)
+                .subscribeOn(Schedulers.newThread())
+                .filter(new Func1<RxEvent.UnBindDeviceEvent, Boolean>() {
+                    @Override
+                    public Boolean call(RxEvent.UnBindDeviceEvent unBindDeviceEvent) {
+                        return getView() != null;
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .map(new Func1<RxEvent.UnBindDeviceEvent, Object>() {
+                    @Override
+                    public Object call(RxEvent.UnBindDeviceEvent unBindDeviceEvent) {
+                        getView().unbindDeviceRsp(unBindDeviceEvent.jfgResult.code);
+                        if (unBindDeviceEvent.jfgResult.code == 0) {
+                            //清理这个订阅
+                            RxBus.getCacheInstance().removeStickyEvent(RxEvent.UnBindDeviceEvent.class);
+                        }
+                        return null;
+                    }
+                })
+                .retry(new RxHelper.RxException<>("unbindDevSub"))
+                .subscribe();
+    }
+
+    private Subscription fetchCamInfo() {
         //查询设备列表
-        unSubscribe(subscription);
-        subscription = RxBus.getUiInstance().toObservableSticky(RxUiEvent.BulkDeviceList.class)
+        return RxBus.getUiInstance().toObservableSticky(RxUiEvent.BulkDeviceList.class)
                 .subscribeOn(Schedulers.computation())
                 .filter(new Func1<RxUiEvent.BulkDeviceList, Boolean>() {
                     @Override
                     public Boolean call(RxUiEvent.BulkDeviceList list) {
-                        return getView() != null && list != null && list.allDevices != null;
+                        return getView() != null && list.allDevices != null && camInfoBean != null;
                     }
                 })
                 .flatMap(new Func1<RxUiEvent.BulkDeviceList, Observable<DpMsgDefine.DpWrap>>() {
                     @Override
                     public Observable<DpMsgDefine.DpWrap> call(RxUiEvent.BulkDeviceList list) {
                         for (DpMsgDefine.DpWrap wrap : list.allDevices) {
-                            if (TextUtils.equals(wrap.baseDpDevice.uuid, uuid)) {
+                            if (wrap.baseDpDevice != null
+                                    && TextUtils.equals(wrap.baseDpDevice.uuid, camInfoBean.deviceBase.uuid)) {
                                 return Observable.just(wrap);
                             }
                         }
@@ -111,6 +146,7 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
                         return Observable.just(info);
                     }
                 })
+                .retry(new RxHelper.RxException<>("fetchCamInfo"))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<BeanCamInfo>() {
                     @Override
@@ -122,8 +158,12 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
                             getView().isSharedDevice();
                         }
                     }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        AppLogger.e("err: " + throwable.getLocalizedMessage());
+                    }
                 });
-//        RxBus.getCacheInstance().post(new RxUiEvent.QueryBulkDevice());
     }
 
     @Override
@@ -208,6 +248,28 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
                                         beanCamInfoIntegerPair.first.getByte(id)
                                         , System.currentTimeMillis()));
                         AppLogger.i("save bean Cam info");
+                    }
+                });
+    }
+
+    @Override
+    public void unbindDevice() {
+        Observable.just(null)
+                .subscribeOn(Schedulers.newThread())
+                .subscribe(new Action1<Object>() {
+                    @Override
+                    public void call(Object o) {
+                        String uuid = camInfoBean.deviceBase.uuid;
+                        RxEvent.UnbindJFGDevice deletion = new RxEvent.UnbindJFGDevice();
+                        deletion.uuid = uuid;
+                        RxBus.getCacheInstance().post(deletion);
+                        JfgCmdInsurance.getCmd().unBindDevice(uuid);
+                        AppLogger.i("unbind uuid: " + uuid);
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        AppLogger.e("delete uuid failed: " + throwable.getLocalizedMessage());
                     }
                 });
     }

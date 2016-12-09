@@ -98,6 +98,9 @@ public class FlattenMsgDp implements IFlat {
     @Override
     public void clean() {
         accountUUidMap.clear();
+        baseDpDeviceMap.clear();
+        simpleMap.clear();
+        alarmMsg.clear();
     }
 
     @Override

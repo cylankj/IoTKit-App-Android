@@ -9,5 +9,6 @@ public interface IParser {
 
     Subscription[] register();
 
-    void unregister();
+    void clear();
 }
+

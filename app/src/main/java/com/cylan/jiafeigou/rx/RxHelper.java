@@ -99,12 +99,11 @@ public class RxHelper {
 
         @Override
         public java.lang.Boolean call(java.lang.Integer integer, java.lang.Throwable throwable) {
-
-            if (BuildConfig.DEBUG) {
-                throw new IllegalArgumentException(": " + throwable.getLocalizedMessage());
-            }
             //此处return true:表示继续订阅，
             AppLogger.e(tag + throwable.getLocalizedMessage());
+//            if (BuildConfig.DEBUG) {
+//                throw new IllegalArgumentException(": " + throwable.getLocalizedMessage());
+//            }
             return true;
         }
     }

@@ -16,7 +16,7 @@ import android.widget.TextView;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.contract.cloud.CloudCorrelationDoorBellContract;
 import com.cylan.jiafeigou.n.mvp.impl.cloud.CloudCorrelationDoorBellPresenterImp;
-import com.cylan.jiafeigou.n.mvp.model.BellInfoBean;
+import com.cylan.jiafeigou.n.mvp.model.BellBean;
 import com.cylan.jiafeigou.n.view.adapter.RelationDoorBellAdapter;
 import com.cylan.jiafeigou.n.view.adapter.UnRelationDoorBellAdapter;
 import com.cylan.jiafeigou.utils.ViewUtils;
@@ -110,14 +110,14 @@ public class CloudCorrelationDoorBellFragment extends Fragment implements CloudC
     }
 
     @Override
-    public void initRelativeRecycleView(List<BellInfoBean> list) {
+    public void initRelativeRecycleView(List<BellBean> list) {
         hasRelativeAdapter = new RelationDoorBellAdapter(getContext(), list, null);
         rcyHasCorrelation.setLayoutManager(new LinearLayoutManager(getContext()));
         rcyHasCorrelation.setAdapter(hasRelativeAdapter);
     }
 
     @Override
-    public void initUnRelativeRecycleView(List<BellInfoBean> list) {
+    public void initUnRelativeRecycleView(List<BellBean> list) {
         unRelationDoorBellAdapter = new UnRelationDoorBellAdapter(getContext(), list, null);
         rcyUncorrelation.setLayoutManager(new LinearLayoutManager(getContext()));
         rcyUncorrelation.setAdapter(unRelationDoorBellAdapter);
@@ -152,7 +152,7 @@ public class CloudCorrelationDoorBellFragment extends Fragment implements CloudC
     }
 
     @Override
-    public void notifyUnRelativeRecycle(SuperViewHolder holder, int viewType, int layoutPosition, BellInfoBean item, int flag) {
+    public void notifyUnRelativeRecycle(SuperViewHolder holder, int viewType, int layoutPosition, BellBean item, int flag) {
         if (flag == 1) {
             unRelationDoorBellAdapter.remove(layoutPosition);
             unRelationDoorBellAdapter.notifyDataSetChanged();
@@ -169,7 +169,7 @@ public class CloudCorrelationDoorBellFragment extends Fragment implements CloudC
     }
 
     @Override
-    public void notifyRelativeRecycle(SuperViewHolder holder, int viewType, int layoutPosition, BellInfoBean item, int flag) {
+    public void notifyRelativeRecycle(SuperViewHolder holder, int viewType, int layoutPosition, BellBean item, int flag) {
         if (flag == 1) {
             hasRelativeAdapter.add(item);
             hasRelativeAdapter.notifyDataSetChanged();

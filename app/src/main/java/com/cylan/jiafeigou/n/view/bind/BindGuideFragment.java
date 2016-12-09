@@ -117,5 +117,6 @@ public class BindGuideFragment extends BaseTitleFragment {
             //add a new one
             new ConfigApPresenterImpl(fragment);
         }
+        imvBindGuide.setVisibility(View.GONE);
     }
 }

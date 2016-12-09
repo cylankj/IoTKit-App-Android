@@ -25,6 +25,15 @@ public class DpMsgDefine {
 
     @Message
     public static final class MsgNet extends BaseDataPoint implements Parcelable {
+        /**
+         * |NET_CONNECT | -1 | #绑定后的连接中 |
+         * |NET_OFFLINE |  0 | #不在线 |
+         * |NET_WIFI    |  1 | #WIFI网络 |
+         * |NET_2G      |  2 | #2G网络 |
+         * |NET_3G      |  3 | #3G网络 |
+         * |NET_4G      |  4 | #4G网络  |
+         * |NET_5G      |  5 | #5G网络  |
+         */
         @Index(0)
         public int net;
         @Index(1)
