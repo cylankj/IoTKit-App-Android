@@ -412,9 +412,9 @@ public class HomeWonderfulPresenterImpl extends AbstractPresenter<HomeWonderfulC
     };
 
     public static final String videos[] = {
-            Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "111.mp4",
-            Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "demo.mp4",
-            Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "d.mp4",
+//            Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "111.mp4",
+//            Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "demo.mp4",
+//            Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "d.mp4",
             "http://yf.cylan.com.cn:82/Garfield/1045020208160b9706425470.mp4"
     };
 }

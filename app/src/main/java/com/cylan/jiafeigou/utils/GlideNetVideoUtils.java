@@ -6,6 +6,9 @@ import android.media.MediaMetadataRetriever;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.cylan.utils.MD5Util;
 
 import java.io.File;
@@ -25,7 +28,11 @@ import rx.schedulers.Schedulers;
 
 public class GlideNetVideoUtils {
 
-    public static void loadNetVideo(final Context context, final String url, final ImageView imageView) {
+    public interface LoadReady {
+        void onRead();
+    }
+
+    public static void loadNetVideo(final Context context, final String url, final ImageView imageView, final LoadReady listener) {
         //网络视频加载
 
         Observable.create(new Observable.OnSubscribe<File>() {
@@ -49,10 +56,25 @@ public class GlideNetVideoUtils {
                     public void call(File file) {
                         Glide.with(context)
                                 .load(file)
+                                .listener(new RequestListener<File, GlideDrawable>() {
+                                    @Override
+                                    public boolean onException(Exception e, File model, Target<GlideDrawable> target, boolean isFirstResource) {
+                                        if (listener != null) listener.onRead();
+                                        return false;
+                                    }
+
+                                    @Override
+                                    public boolean onResourceReady(GlideDrawable resource, File model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                                        if (listener != null) listener.onRead();
+                                        return false;
+                                    }
+                                })
                                 .into(imageView);
                     }
                 });
     }
+
+
 
     public static Bitmap createVideoThumbnail(String filePath) {
         Bitmap bitmap = null;

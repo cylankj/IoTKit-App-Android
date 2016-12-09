@@ -6,4 +6,60 @@
         <item name="windowNoTitle">true</item>
         <item name="android:windowFullscreen">true</item>
     </style>
+
+    <item name="video_opt_play_drawable" type="drawable">@drawable/landscape_btn_play</item>
+    <item name="video_opt_pause_drawable" type="drawable">@drawable/landscape_btn_pause</item>
+
+    <!--<style name="video_opt_play">-->
+    <!--<item name="android:layout_width">wrap_content</item>-->
+    <!--<item name="android:layout_height">wrap_content</item>-->
+    <!--<item name="android:layout_marginLeft">21dp</item>-->
+    <!--<item name="android:layout_marginRight">30dp</item>-->
+    <!--<item name="android:src">@drawable/landscape_btn_pause</item>-->
+    <!--</style>-->
+
+    <!--<style name="video_opt_full_screen">-->
+    <!--<item name="android:layout_width">wrap_content</item>-->
+    <!--<item name="android:layout_height">wrap_content</item>-->
+    <!--<item name="android:layout_marginLeft">30dp</item>-->
+    <!--<item name="android:layout_marginRight">21dp</item>-->
+    <!--<item name="android:src">@drawable/landscape_icon_screen</item>-->
+    <!--</style>-->
+
+    <!--<style name="video_opt_seek_bar">-->
+    <!--<item name="android:layout_width">0dp</item>-->
+    <!--<item name="android:layout_height">wrap_content</item>-->
+    <!--<item name="android:layout_weight">1</item>-->
+    <!--</style>-->
+
+    <!--<style name="video_opt_play_time">-->
+    <!--<item name="android:layout_width">wrap_content</item>-->
+    <!--<item name="android:layout_height">wrap_content</item>-->
+    <!--<item name="android:textSize">11sp</item>-->
+    <!--<item name="android:textColor">#CCCCCC</item>-->
+    <!--<item name="android:layout_marginRight">9dp</item>-->
+    <!--</style>-->
+
+    <!--<style name="video_opt_more">-->
+    <!--<item name="android:layout_width">wrap_content</item>-->
+    <!--<item name="android:layout_height">wrap_content</item>-->
+    <!--<item name="android:src">@drawable/icon_more</item>-->
+    <!--<item name="android:visibility">gone</item>-->
+    <!--</style>-->
+
+    <!--<style name="video_header_opt_container">-->
+    <!--<item name="android:layout_width">wrap_content</item>-->
+    <!--<item name="android:layout_height">match_parent</item>-->
+    <!--<item name="android:layout_alignParentRight">true</item>-->
+    <!--<item name="android:gravity">center_vertical</item>-->
+    <!--<item name="android:visibility">visible</item>-->
+    <!--</style>-->
+
+    <!--<style name="video_opt_container">-->
+    <!--<item name="android:layout_width">match_parent</item>-->
+    <!--<item name="android:layout_height">48dp</item>-->
+    <!--<item name="android:background">#000000</item>-->
+    <!--<item name="android:alpha">0.5</item>-->
+    <!--<item name="android:gravity">center_vertical</item>-->
+    <!--</style>-->
 </resources>

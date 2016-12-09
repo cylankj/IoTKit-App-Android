@@ -9,11 +9,16 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.n.mvp.model.MediaBean;
+import com.cylan.jiafeigou.utils.ShareUtils;
 import com.cylan.jiafeigou.widget.dialog.BaseDialog;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+
+import static com.tencent.mm.sdk.modelmsg.SendMessageToWX.Req.WXSceneSession;
+import static com.tencent.mm.sdk.modelmsg.SendMessageToWX.Req.WXSceneTimeline;
 
 /**
  * Created by cylan-hunt on 16-7-26.
@@ -21,6 +26,7 @@ import butterknife.OnClick;
 public class ShareDialogFragment extends BaseDialog {
 
     public final static String KEY_PARCEL_ = "key_parcel";
+    private static final String KEY_MEDIA_CONTENT = "key_media_content";
 
     @BindView(R.id.lLayout_dialog_share_wonderful)
     CardView lLayoutDialogShareWonderful;
@@ -29,10 +35,26 @@ public class ShareDialogFragment extends BaseDialog {
     @BindView(R.id.tv_share_to_wechat_friends)
     TextView tvShareToWechat;
 
+    private MediaBean mMediaBean;
+
     public static ShareDialogFragment newInstance(Bundle bundle) {
         ShareDialogFragment fragment = new ShareDialogFragment();
         fragment.setArguments(bundle);
         return fragment;
+    }
+
+    public static ShareDialogFragment newInstance(MediaBean bean) {
+        ShareDialogFragment fragment = new ShareDialogFragment();
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(KEY_MEDIA_CONTENT, bean);
+        fragment.setArguments(bundle);
+        return fragment;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mMediaBean = getArguments().getParcelable(KEY_MEDIA_CONTENT);
     }
 
     @Nullable
@@ -48,12 +70,10 @@ public class ShareDialogFragment extends BaseDialog {
         dismiss();
         switch (view.getId()) {
             case R.id.tv_share_to_timeline:
-                if (shareToListener != null)
-                    shareToListener.share(R.id.tv_share_to_timeline, getArguments().getParcelable(KEY_PARCEL_));
+                ShareUtils.shareToWechat(getActivity(), mMediaBean, WXSceneSession);
                 break;
             case R.id.tv_share_to_wechat_friends:
-                if (shareToListener != null)
-                    shareToListener.share(R.id.tv_share_to_wechat_friends, getArguments().getParcelable(KEY_PARCEL_));
+                ShareUtils.shareToWechat(getActivity(), mMediaBean, WXSceneTimeline);
                 break;
         }
     }

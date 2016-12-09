@@ -17,4 +17,10 @@
 
 <resources>
     <dimen name="gf_title_bar_height">48dp</dimen>
+
+    <dimen name="video_footer_height">48dp</dimen>
+    <dimen name="video_option_full_screen_margin_left">30dp</dimen>
+    <dimen name="video_option_full_screen_margin_right">21dp</dimen>
+    <dimen name="video_option_play_margin_left">21dp</dimen>
+    <dimen name="video_option_play_margin_right">30dp</dimen>
 </resources>

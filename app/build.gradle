@@ -1,5 +1,6 @@
 apply plugin: 'com.android.application'
 apply plugin: 'com.neenbedankt.android-apt'
+apply plugin: 'me.tatarka.retrolambda'
 
 
 def releaseTime() {
@@ -63,7 +64,10 @@ def getPackageSuffix(String variantName) {
 android {
     def vCode = getCustomVersionCode()
     def vName = getCustomVersionName()
-
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 
     compileSdkVersion rootProject.ext.compileSdkVersion
     buildToolsVersion rootProject.ext.buildToolsVersion
@@ -150,7 +154,7 @@ android {
                         def fileName = "${getPackageName()}" +
                                 "-${vName}" +
                                 ".${vCode}" +
-                                "-${releaseTime()}" +
+//                                "-${releaseTime()}" +
                                 shortName
                         if (outputFile.name.contains("debug")) {
                             fileName = fileName +
@@ -314,6 +318,12 @@ dependencies {
     compile(name: rootProject.ext.cySdk, ext: 'aar')
     //自己写的 apt
     compile project(':annotation')
+
+    compile 'com.danikula:videocache:2.6.4'
+    compile 'tv.danmaku.ijk.media:ijkplayer-java:0.7.5'
+    compile 'tv.danmaku.ijk.media:ijkplayer-armv7a:0.7.5'
+    compile 'tv.danmaku.ijk.media:ijkplayer-exo:0.7.5'
+
     apt files('../poet.jar')
 }
 
