@@ -224,11 +224,13 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
     private SurfaceHolder.Callback mSurfaceCallback = new SurfaceHolder.Callback() {
         @Override
         public void surfaceCreated(SurfaceHolder holder) {
+
         }
 
         @Override
         public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
             mMediaPlayer.setDisplay(holder);
+            mVideoView.requestLayout();
         }
 
         @Override
@@ -285,10 +287,13 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
 
     private void setHeaderContent() {
         if (mCurrentViewType == MediaBean.TYPE_VIDEO) {
+            mHeaderOptContainer.setVisibility(View.VISIBLE);
             mHeaderTitle.setText(TimeUtils.getMediaVideoTimeInString(mCurrentMediaBean.time));
         } else if (mCurrentViewType == MediaBean.TYPE_PIC) {
+            mHeaderOptContainer.setVisibility(View.GONE);
             mHeaderTitle.setText(TimeUtils.getMediaPicTimeInString(mCurrentMediaBean.time));
         }
+
     }
 
     @Override
@@ -328,7 +333,7 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
         mVideoFullScreen.setImageResource(R.drawable.icon_full_screen);
         mHeaderBack.setImageResource(R.drawable.btn_close);
         mVideoMore.setVisibility(View.VISIBLE);
-
+        updatePlayState();
     }
 
     private void setStatusBarProperty() {
