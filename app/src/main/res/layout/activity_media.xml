@@ -1,43 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/act_media_root_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#000000">
 
     <!--<com.cylan.jiafeigou.widget.ShadowFrameLayout-->
-    <!--android:id="@+id/act_media_video_container"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="match_parent"-->
-    <!--android:layout_gravity="center"-->
-    <!--android:visibility="invisible"-->
-    <!--hunt:fixSize="true">-->
+        <!--android:id="@+id/act_media_video_container"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:layout_gravity="center"-->
+        <!--android:visibility="visible"-->
+        <!--app:fixSize="true">-->
 
-    <!--<SurfaceView-->
-    <!--android:id="@+id/act_media_video_view"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="match_parent"/>-->
+        <!--<SurfaceView-->
+            <!--android:id="@+id/act_media_video_view"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent"/>-->
 
-    <!--<com.cylan.jiafeigou.widget.SimpleProgressBar-->
-    <!--android:id="@+id/act_media_video_loading_bar"-->
-    <!--android:layout_width="50dp"-->
-    <!--android:layout_height="50dp"-->
-    <!--android:layout_gravity="center"-->
-    <!--android:padding="10dp"-->
-    <!--android:visibility="gone"-->
-    <!--hunt:progress_point_radius="3dp"-->
-    <!--hunt:progress_stroke_color="@color/color_cecece"/>-->
+        <!--<com.cylan.jiafeigou.widget.SimpleProgressBar-->
+            <!--android:id="@+id/act_media_video_loading_bar"-->
+            <!--android:layout_width="50dp"-->
+            <!--android:layout_height="50dp"-->
+            <!--android:layout_gravity="center"-->
+            <!--android:padding="10dp"-->
+            <!--android:visibility="gone"-->
+            <!--app:progress_point_radius="3dp"-->
+            <!--app:progress_stroke_color="@color/color_cecece"/>-->
     <!--</com.cylan.jiafeigou.widget.ShadowFrameLayout>-->
 
-    <SurfaceView
-        android:layout_width="0dp"
-        android:layout_height="0dp"/>
-
-    <android.support.v4.view.ViewPager
+    <com.cylan.jiafeigou.misc.HackyViewPager
         android:id="@+id/act_media_pager"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="wrap_content"/>
 
 
     <FrameLayout

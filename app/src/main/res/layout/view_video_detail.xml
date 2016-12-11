@@ -12,7 +12,7 @@
         android:layout_gravity="center"
         app:fixSize="true">
 
-        <SurfaceView
+        <TextureView
             android:id="@+id/view_media_video_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

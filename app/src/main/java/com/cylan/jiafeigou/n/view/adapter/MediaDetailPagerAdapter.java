@@ -2,7 +2,7 @@ package com.cylan.jiafeigou.n.view.adapter;
 
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewCompat;
-import android.view.SurfaceView;
+import android.view.TextureView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -118,12 +118,12 @@ public class MediaDetailPagerAdapter extends PagerAdapter {
 
     public static class ViewHolder {
         public ImageView mPhotoView;
-        public SurfaceView mSurfaceView;
+        public TextureView mSurfaceView;
         public SimpleProgressBar mProgressBar;
 
         public ViewHolder(View root) {
             mPhotoView = (ImageView) root.findViewById(R.id.view_video_picture);
-            mSurfaceView = (SurfaceView) root.findViewById(R.id.view_media_video_view);
+            mSurfaceView = (TextureView) root.findViewById(R.id.view_media_video_view);
             mProgressBar = (SimpleProgressBar) root.findViewById(R.id.view_media_video_loading_bar);
         }
     }

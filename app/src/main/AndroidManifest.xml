@@ -218,7 +218,7 @@
 
         <activity
             android:name=".n.view.activity.MediaActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:configChanges="orientation|keyboardHidden|screenSize|screenLayout"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/MediaActivityTransition"

@@ -63,7 +63,7 @@ public class NewHomeActivity extends NeedLoginActivity implements
 
     /**
      * TYPE_MOBILE
-     * Dispatch onStart() to all fragments.  Ensure any created loaders are
+     * Dispatch onFinish() to all fragments.  Ensure any created loaders are
      * now started.
      */
     @Override

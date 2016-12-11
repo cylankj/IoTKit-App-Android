@@ -5,16 +5,17 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.graphics.SurfaceTexture;
 import android.graphics.drawable.Drawable;
-import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.SharedElementCallback;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.transition.Transition;
+import android.view.Surface;
 import android.view.SurfaceHolder;
-import android.view.SurfaceView;
+import android.view.TextureView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -28,6 +29,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.misc.HackyViewPager;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.model.MediaBean;
@@ -55,9 +57,10 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import tv.danmaku.ijk.media.exo.IjkExoMediaPlayer;
 import tv.danmaku.ijk.media.player.IMediaPlayer;
+import tv.danmaku.ijk.media.player.IjkMediaPlayer;
 
 
-public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnPreparedListener, IMediaPlayer.OnInfoListener, IMediaPlayer.OnCompletionListener, SeekBar.OnSeekBarChangeListener, ViewPager.OnPageChangeListener, IMediaPlayer.OnErrorListener {
+public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnPreparedListener, IMediaPlayer.OnInfoListener, IMediaPlayer.OnCompletionListener, SeekBar.OnSeekBarChangeListener, ViewPager.OnPageChangeListener, IMediaPlayer.OnErrorListener, IMediaPlayer.OnVideoSizeChangedListener {
 
 
     private static final int PLAY_STATE_RESET = 0;
@@ -68,7 +71,7 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
     private static final int PLAY_STATE_LOADING_FINISH = 5;
 
     @BindView(R.id.act_media_pager)
-    ViewPager mMediaPager;
+    HackyViewPager mMediaPager;
     @BindView(R.id.act_media_header_title)
     TextView mHeaderTitle;
     @BindView(R.id.act_media_header_opt_delete)
@@ -109,7 +112,7 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
     FrameLayout mContentRootView;
     @BindView(R.id.act_media_header_back)
     ImageView mHeaderBack;
-    SurfaceView mVideoView;
+    TextureView mVideoView;
     SimpleProgressBar mVideoLoadingBar;
     private IjkExoMediaPlayer mMediaPlayer;
     private StringBuilder mFormatBuilder;
@@ -191,6 +194,7 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
         ViewUtils.setViewMarginStatusBar(mHeaderContainer);
 
         mMediaPlayer = new IjkExoMediaPlayer(this);
+
         mVideoSeekBar.setOnSeekBarChangeListener(this);
         mAdapter = new MediaDetailPagerAdapter(mMediaList, mStartPosition) {
             @Override
@@ -202,11 +206,13 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
                     mPhotoView = holder.mPhotoView;
                     mVideoLoadingBar = holder.mProgressBar;
                     if (mVideoView != null) {
-                        mVideoView.getHolder().removeCallback(mSurfaceCallback);
+//                        mVideoView.getHolder().removeCallback(mSurfaceCallback);
+                        mVideoView.setSurfaceTextureListener(null);
                         mMediaPlayer.reset();
                     }
                     mVideoView = holder.mSurfaceView;
-                    mVideoView.getHolder().addCallback(mSurfaceCallback);
+                    mVideoView.setSurfaceTextureListener(mSurfaceTextureListener);
+//                    mVideoView.getHolder().addCallback(mSurfaceCallback);
                     if (mEnterAnimationFinished) startPlayVideo();
                 } else if (mCurrentViewType == MediaBean.TYPE_PIC && mPhotoView != object) {
                     mPhotoView = (View) object;
@@ -220,6 +226,29 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
         mMediaPager.setCurrentItem(mStartPosition);
         mMediaPager.addOnPageChangeListener(this);
     }
+
+    private TextureView.SurfaceTextureListener mSurfaceTextureListener = new TextureView.SurfaceTextureListener() {
+        @Override
+        public void onSurfaceTextureAvailable(SurfaceTexture surface, int width, int height) {
+            Surface videoSurface = new Surface(surface);
+            mMediaPlayer.setSurface(videoSurface);
+        }
+
+        @Override
+        public void onSurfaceTextureSizeChanged(SurfaceTexture surface, int width, int height) {
+
+        }
+
+        @Override
+        public boolean onSurfaceTextureDestroyed(SurfaceTexture surface) {
+            return true;
+        }
+
+        @Override
+        public void onSurfaceTextureUpdated(SurfaceTexture surface) {
+
+        }
+    };
 
     private SurfaceHolder.Callback mSurfaceCallback = new SurfaceHolder.Callback() {
         @Override
@@ -238,8 +267,11 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
         }
     };
 
-
     private void animateHeaderAndFooter(boolean showHeader, boolean showFooter) {
+        animateHeaderAndFooter(showHeader, showFooter, null);
+    }
+
+    private void animateHeaderAndFooter(boolean showHeader, boolean showFooter, AnimatorUtils.OnFinish finish) {
         AppLogger.d("animateHeaderAndFooter");
         if (showHeader && mHeaderContainer.isShown()) {
             //需要显示Footer,但此时Footer已经显示，则先隐藏再显示
@@ -261,15 +293,15 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
             //需要显示Footer,但此时Footer已经显示，则先隐藏再显示
             AnimatorUtils.slide(mFooterContainer, true, () -> {
                 setFooterContent();
-                AnimatorUtils.slide(mFooterContainer, true, null);
+                AnimatorUtils.slide(mFooterContainer, true, finish);
             });
         } else if (showFooter && !mFooterContainer.isShown()) {
             //需要显示Footer,但此时Footer还没显示，则直接显示
             setFooterContent();
-            AnimatorUtils.slide(mFooterContainer, true, null);
+            AnimatorUtils.slide(mFooterContainer, true, finish);
         } else if (!showFooter && mFooterContainer.isShown()) {
             //需要隐藏Footer,但此时Footer已经显示，则直接隐藏
-            AnimatorUtils.slide(mFooterContainer, true, null);
+            AnimatorUtils.slide(mFooterContainer, true, finish);
         }
     }
 
@@ -287,10 +319,8 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
 
     private void setHeaderContent() {
         if (mCurrentViewType == MediaBean.TYPE_VIDEO) {
-            mHeaderOptContainer.setVisibility(View.VISIBLE);
             mHeaderTitle.setText(TimeUtils.getMediaVideoTimeInString(mCurrentMediaBean.time));
         } else if (mCurrentViewType == MediaBean.TYPE_PIC) {
-            mHeaderOptContainer.setVisibility(View.GONE);
             mHeaderTitle.setText(TimeUtils.getMediaPicTimeInString(mCurrentMediaBean.time));
         }
 
@@ -301,10 +331,11 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
         super.onConfigurationChanged(newConfig);
         if (newConfig.orientation == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE | newConfig.orientation == ActivityInfo.SCREEN_ORIENTATION_USER) {
             setLandScapeLayout();
+            animateHeaderAndFooter(true, true, () -> mContentRootView.postDelayed(() -> animateHeaderAndFooter(false, false), 3000));
         } else if (newConfig.orientation == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
             setPortraitLayout();
+            animateHeaderAndFooter(true, true);
         }
-        animateHeaderAndFooter(true, true);
     }
 
     private void setPortraitLayout() {
@@ -333,6 +364,7 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
         mVideoFullScreen.setImageResource(R.drawable.icon_full_screen);
         mHeaderBack.setImageResource(R.drawable.btn_close);
         mVideoMore.setVisibility(View.VISIBLE);
+        mMediaPager.setLocked(false);
         updatePlayState();
     }
 
@@ -374,6 +406,7 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
         mVideoFullScreen.setImageResource(R.drawable.landscape_icon_screen);
         mHeaderBack.setImageResource(R.drawable.icon_arrow_back);
         mVideoMore.setVisibility(View.GONE);
+        mMediaPager.setLocked(true);
         updatePlayState();
     }
 
@@ -415,6 +448,7 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
         int duration = (int) mMediaPlayer.getDuration();
         mVideoTotalTime.setText(stringForTime(duration));
         mVideoSeekBar.setMax(duration);
+        mCurrentPlayState = PLAY_STATE_PLAYING;
         startUpdateTime();
         updatePlayState();
         mPhotoView.setVisibility(View.INVISIBLE);
@@ -438,7 +472,7 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
         if (mCurrentPlayState == PLAY_STATE_PLAYING) {
             mCurrentPlayState = PLAY_STATE_PAUSED;
             mMediaPlayer.pause();
-        } else if (mCurrentPlayState == PLAY_STATE_READY_TO_PLAY) {
+        } else if (mCurrentPlayState == PLAY_STATE_READY_TO_PLAY || mCurrentPlayState == PLAY_STATE_PAUSED) {
             mCurrentPlayState = PLAY_STATE_PLAYING;
             mMediaPlayer.start();
             startUpdateTime();
@@ -451,13 +485,13 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
     private void updatePlayState() {
         switch (mCurrentPlayState) {
             case PLAY_STATE_PLAYING:
-            case PLAY_STATE_LOADING_FINISH:
+//            case PLAY_STATE_LOADING_START:
+//            case PLAY_STATE_LOADING_FINISH:
                 mVideoPlay.setImageResource(R.drawable.video_opt_pause_drawable);
                 break;
             case PLAY_STATE_PAUSED:
             case PLAY_STATE_RESET:
             case PLAY_STATE_READY_TO_PLAY:
-            case PLAY_STATE_LOADING_START:
                 mVideoPlay.setImageResource(R.drawable.video_opt_play_drawable);
                 break;
         }
@@ -553,15 +587,14 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
     public void onBackPressed() {
         int orientation = getRequestedOrientation();
         if (orientation != ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
-            cleanUpForExit();
-            mContentRootView.postDelayed(super::onBackPressed, 400);
+            cleanUpForExit(super::onBackPressed);
         } else {
             rotateScreen();
         }
     }
 
-    private void cleanUpForExit() {
-        animateHeaderAndFooter(false, false);
+    private void cleanUpForExit(AnimatorUtils.OnFinish finish) {
+        animateHeaderAndFooter(false, false, finish);
         if (mCurrentViewType == MediaBean.TYPE_VIDEO) {
             mMediaPlayer.reset();
             if (mVideoView != null) mVideoView.setVisibility(View.GONE);
@@ -586,26 +619,29 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
     }
 
     @Override
-    public boolean onInfo(IMediaPlayer iMediaPlayer, int what, int i1) {
+    public boolean onInfo(IMediaPlayer iMediaPlayer, int what, int extra) {
         switch (what) {
-            case MediaPlayer.MEDIA_INFO_BUFFERING_START:
-                mCurrentPlayState = PLAY_STATE_LOADING_START;
+            case IjkMediaPlayer.MEDIA_INFO_BUFFERING_START:
+//                mCurrentPlayState = PLAY_STATE_LOADING_START;
                 mVideoLoadingBar.setVisibility(View.VISIBLE);
-                updatePlayState();
+//                updatePlayState();
                 break;
-            case MediaPlayer.MEDIA_INFO_BUFFERING_END:
-                mCurrentPlayState = PLAY_STATE_LOADING_FINISH;
+            case IjkMediaPlayer.MEDIA_INFO_BUFFERING_END:
+//                mCurrentPlayState = PLAY_STATE_LOADING_FINISH;
                 mVideoLoadingBar.setVisibility(View.INVISIBLE);
-                updatePlayState();
+//                updatePlayState();
                 break;
+//            case IjkMediaPlayer.MEDIA_INFO_VIDEO_ROTATION_CHANGED:
+//                if (mVideoView != null)
+//                    mVideoView.setRotation(extra);
         }
         return false;
     }
 
     @Override
     public void onCompletion(IMediaPlayer iMediaPlayer) {
-        iMediaPlayer.seekTo(0);
         iMediaPlayer.pause();
+        iMediaPlayer.seekTo(0);
         mCurrentPlayState = PLAY_STATE_PAUSED;
         updatePlayState();
     }
@@ -629,7 +665,7 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
 
     @Override
     public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-        mMediaPlayer.pause();
+//        mMediaPlayer.pause();
     }
 
 
@@ -660,8 +696,13 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
         mMediaPlayer.setOnPreparedListener(this);
         mMediaPlayer.setOnCompletionListener(this);
         mMediaPlayer.setOnErrorListener(this);
-        mMediaPlayer.setDisplay(mVideoView.getHolder());
+        mMediaPlayer.setOnVideoSizeChangedListener(this);
+        if (mVideoView != null && mVideoView.isAvailable()) {
+            mMediaPlayer.setSurface(new Surface(mVideoView.getSurfaceTexture()));
+        }
         mMediaPlayer.prepareAsync();
+        mCurrentPlayState = PLAY_STATE_PLAYING;
+        updatePlayState();
     }
 
     private void startUpdateTime() {
@@ -681,5 +722,18 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
         mCurrentPlayState = PLAY_STATE_RESET;
         mMediaPlayer.reset();
         return false;
+    }
+
+    @Override
+    public void onVideoSizeChanged(IMediaPlayer iMediaPlayer, int width, int height, int i2, int i3) {
+//        if (mVideoView != null) {
+//            int videoWidth = mVideoView.getWidth();
+//            int videoHeight = mVideoView.getHeight();
+//            mVideoView.setScaleX(videoWidth / height);
+//            mVideoView.setScaleY(videoHeight / width);
+//            Matrix transform = mVideoView.getTransform(null);
+//            transform.setScale(height / videoWidth, width / videoHeight);
+//            mVideoView.setTransform(transform);
+//        }
     }
 }
