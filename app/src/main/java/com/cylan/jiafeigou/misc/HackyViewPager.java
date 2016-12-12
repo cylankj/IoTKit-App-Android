@@ -28,6 +28,7 @@ import android.view.MotionEvent;
 public class HackyViewPager extends ViewPager {
 
     private boolean isLocked;
+    private OnTouchListener mTouchListener;
 
     public HackyViewPager(Context context) {
         super(context);
@@ -54,6 +55,7 @@ public class HackyViewPager extends ViewPager {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+        if (isLocked && mTouchListener != null) mTouchListener.onTouch(this, event);
         return !isLocked && super.onTouchEvent(event);
     }
 
@@ -67,6 +69,10 @@ public class HackyViewPager extends ViewPager {
 
     public boolean isLocked() {
         return isLocked;
+    }
+
+    public void setOnLockModeTouchListener(OnTouchListener listener) {
+        mTouchListener = listener;
     }
 
 }

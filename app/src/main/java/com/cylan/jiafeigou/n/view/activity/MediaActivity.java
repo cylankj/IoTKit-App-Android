@@ -14,7 +14,6 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.transition.Transition;
 import android.view.Surface;
-import android.view.SurfaceHolder;
 import android.view.TextureView;
 import android.view.View;
 import android.view.ViewGroup;
@@ -133,6 +132,7 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
     private WeakReference<ShareDialogFragment> mShareDialog;
     private File mDownloadFile;
     private int mCurrentPlayState = PLAY_STATE_RESET;
+    private static final long HEADER_AND_FOOTER_SHOW_TIME = 3000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -206,13 +206,11 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
                     mPhotoView = holder.mPhotoView;
                     mVideoLoadingBar = holder.mProgressBar;
                     if (mVideoView != null) {
-//                        mVideoView.getHolder().removeCallback(mSurfaceCallback);
                         mVideoView.setSurfaceTextureListener(null);
                         mMediaPlayer.reset();
                     }
                     mVideoView = holder.mSurfaceView;
                     mVideoView.setSurfaceTextureListener(mSurfaceTextureListener);
-//                    mVideoView.getHolder().addCallback(mSurfaceCallback);
                     if (mEnterAnimationFinished) startPlayVideo();
                 } else if (mCurrentViewType == MediaBean.TYPE_PIC && mPhotoView != object) {
                     mPhotoView = (View) object;
@@ -225,6 +223,13 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
         mMediaPager.setAdapter(mAdapter);
         mMediaPager.setCurrentItem(mStartPosition);
         mMediaPager.addOnPageChangeListener(this);
+        mMediaPager.setOnLockModeTouchListener((view, event) -> {
+            if (!mFooterContainer.isShown() && !mHeaderContainer.isShown()) {
+                mContentRootView.removeCallbacks(mHideHeaderAndFooterCallback);
+                animateHeaderAndFooter(true, true, () -> mContentRootView.postDelayed(mHideHeaderAndFooterCallback, HEADER_AND_FOOTER_SHOW_TIME));
+            }
+            return false;
+        });
     }
 
     private TextureView.SurfaceTextureListener mSurfaceTextureListener = new TextureView.SurfaceTextureListener() {
@@ -247,23 +252,6 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
         @Override
         public void onSurfaceTextureUpdated(SurfaceTexture surface) {
 
-        }
-    };
-
-    private SurfaceHolder.Callback mSurfaceCallback = new SurfaceHolder.Callback() {
-        @Override
-        public void surfaceCreated(SurfaceHolder holder) {
-
-        }
-
-        @Override
-        public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-            mMediaPlayer.setDisplay(holder);
-            mVideoView.requestLayout();
-        }
-
-        @Override
-        public void surfaceDestroyed(SurfaceHolder holder) {
         }
     };
 
@@ -326,12 +314,15 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
 
     }
 
+    private Runnable mHideHeaderAndFooterCallback = () -> animateHeaderAndFooter(false, false);
+
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
+        mContentRootView.removeCallbacks(mHideHeaderAndFooterCallback);
         if (newConfig.orientation == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE | newConfig.orientation == ActivityInfo.SCREEN_ORIENTATION_USER) {
             setLandScapeLayout();
-            animateHeaderAndFooter(true, true, () -> mContentRootView.postDelayed(() -> animateHeaderAndFooter(false, false), 3000));
+            animateHeaderAndFooter(true, true, () -> mContentRootView.postDelayed(mHideHeaderAndFooterCallback, HEADER_AND_FOOTER_SHOW_TIME));
         } else if (newConfig.orientation == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
             setPortraitLayout();
             animateHeaderAndFooter(true, true);
@@ -586,10 +577,10 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
     @OnClick(R.id.act_media_header_back)
     public void onBackPressed() {
         int orientation = getRequestedOrientation();
-        if (orientation != ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
-            cleanUpForExit(super::onBackPressed);
-        } else {
+        if (orientation == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
             rotateScreen();
+        } else {
+            cleanUpForExit(super::onBackPressed);
         }
     }
 
