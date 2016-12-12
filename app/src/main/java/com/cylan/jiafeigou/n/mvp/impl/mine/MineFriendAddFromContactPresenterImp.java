@@ -10,6 +10,7 @@ import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 
 import com.cylan.entity.jniCall.JFGFriendAccount;
+import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendAddFromContactContract;
@@ -206,7 +207,11 @@ public class MineFriendAddFromContactPresenterImp extends AbstractPresenter<Mine
                 .subscribe(new Action1<String>() {
                     @Override
                     public void call(String s) {
-                        JfgCmdInsurance.getCmd().checkFriendAccount(account);
+                        try {
+                            JfgCmdInsurance.getCmd().checkFriendAccount(account);
+                        } catch (JfgException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }, new Action1<Throwable>() {
                     @Override

@@ -7,6 +7,7 @@ import android.view.View;
 import com.cylan.entity.jniCall.JFGMsgVideoDisconn;
 import com.cylan.entity.jniCall.JFGMsgVideoResolution;
 import com.cylan.entity.jniCall.JFGMsgVideoRtcp;
+import com.cylan.ex.JfgException;
 import com.cylan.jfgapp.jni.JfgAppCmd;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.misc.Converter;
@@ -76,10 +77,10 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                         return getView() != null && isRtcpSignal;
                     }
                 })
-                .subscribeOn(Schedulers.newThread())
-                .map(new Func1<JFGMsgVideoRtcp, JFGMsgVideoRtcp>() {
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<JFGMsgVideoRtcp>() {
                     @Override
-                    public JFGMsgVideoRtcp call(JFGMsgVideoRtcp rtcp) {
+                    public void call(JFGMsgVideoRtcp rtcp) {
                         frameRateList.add(rtcp.frameRate);
                         if (frameRateList.size() == 11) {
                             frameRateList.remove(0);//移除最前沿的一个
@@ -93,13 +94,6 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                                 stopPlayVideo(playType);
                             }
                         }
-                        return rtcp;
-                    }
-                })
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<JFGMsgVideoRtcp>() {
-                    @Override
-                    public void call(JFGMsgVideoRtcp rtcp) {
                         getView().onRtcp(rtcp);
                         Log.d(TAG, "rtcp: " + new Gson().toJson(rtcp));
                     }
@@ -142,7 +136,11 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                     @Override
                     public void call(JFGMsgVideoResolution resolution) {
                         isRtcpSignal = true;
-                        getView().onResolution(resolution);
+                        try {
+                            getView().onResolution(resolution);
+                        } catch (JfgException e) {
+                            e.printStackTrace();
+                        }
                         getView().onLiveStarted(playType);
                         AppLogger.i("ResolutionNotifySub: " + new Gson().toJson(resolution));
                     }
@@ -240,7 +238,11 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                 .subscribe(new Action1<String>() {
                     @Override
                     public void call(String s) {
-                        JfgCmdInsurance.getCmd().playVideo(s);
+                        try {
+                            JfgCmdInsurance.getCmd().playVideo(s);
+                        } catch (JfgException e) {
+                            e.printStackTrace();
+                        }
                         AppLogger.i("play video");
                     }
                 });
@@ -261,7 +263,11 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                 .subscribe(new Action1<String>() {
                     @Override
                     public void call(String s) {
-                        JfgCmdInsurance.getCmd().stopPlay(s);
+                        try {
+                            JfgCmdInsurance.getCmd().stopPlay(s);
+                        } catch (JfgException e) {
+                            e.printStackTrace();
+                        }
                     }
                 });
     }

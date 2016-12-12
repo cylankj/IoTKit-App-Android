@@ -1,6 +1,7 @@
 package com.cylan.jiafeigou.n.mvp.impl.mine;
 
 import com.cylan.entity.jniCall.JFGFriendAccount;
+import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
@@ -65,7 +66,11 @@ public class MineDevicesShareManagerPresenterImp extends AbstractPresenter<MineD
                 .subscribe(new Action1<String>() {
                     @Override
                     public void call(String cid) {
-                        JfgCmdInsurance.getCmd().getUnShareListByCid(cid);
+                        try {
+                            JfgCmdInsurance.getCmd().getUnShareListByCid(cid);
+                        } catch (JfgException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }, new Action1<Throwable>() {
                     @Override
@@ -143,7 +148,11 @@ public class MineDevicesShareManagerPresenterImp extends AbstractPresenter<MineD
                 .subscribe(new Action1<Object>() {
                     @Override
                     public void call(Object o) {
-                        JfgCmdInsurance.getCmd().unShareDevice(cid,bean.account);
+                        try {
+                            JfgCmdInsurance.getCmd().unShareDevice(cid,bean.account);
+                        } catch (JfgException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }, new Action1<Throwable>() {
                     @Override

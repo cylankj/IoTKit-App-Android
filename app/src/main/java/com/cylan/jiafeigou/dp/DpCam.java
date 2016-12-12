@@ -3,6 +3,7 @@ package com.cylan.jiafeigou.dp;
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.entity.jniCall.JFGDevice;
+import com.cylan.ex.JfgException;
 import com.cylan.jfgapp.jni.JfgAppCmd;
 import com.cylan.jiafeigou.cache.JCache;
 import com.cylan.jiafeigou.misc.JFGRules;
@@ -58,7 +59,11 @@ public class DpCam extends DpBase<CamParam> {
                             //过滤摄像头设备
                             if (JFGRules.isCamera(list.get(i).pid))
                                 assembleBase(list.get(i));
-                            long seq = JfgAppCmd.getInstance().robotGetData(list.get(i).uuid, getParameters(), 1, false, 0);
+                            try {
+                                long seq = JfgAppCmd.getInstance().robotGetData(list.get(i).uuid, getParameters(), 1, false, 0);
+                            } catch (JfgException e) {
+                                e.printStackTrace();
+                            }
                         }
                         return null;
                     }

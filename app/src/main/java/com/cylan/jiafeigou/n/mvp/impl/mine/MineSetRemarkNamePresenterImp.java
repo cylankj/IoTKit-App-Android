@@ -2,6 +2,7 @@ package com.cylan.jiafeigou.n.mvp.impl.mine;
 
 import android.text.TextUtils;
 
+import com.cylan.ex.JfgException;
 import com.cylan.jfgapp.jni.JfgAppCmd;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineSetRemarkNameContract;
@@ -57,7 +58,11 @@ public class MineSetRemarkNamePresenterImp extends AbstractPresenter<MineSetRema
                 .subscribe(new Action1<RelAndFriendBean>() {
                     @Override
                     public void call(RelAndFriendBean bean) {
-                        JfgCmdInsurance.getCmd().setFriendMarkName(friendBean.account, newName);
+                        try {
+                            JfgCmdInsurance.getCmd().setFriendMarkName(friendBean.account, newName);
+                        } catch (JfgException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }, new Action1<Throwable>() {
                     @Override

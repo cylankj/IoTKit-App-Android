@@ -1,6 +1,7 @@
 package com.cylan.jiafeigou.n.mvp.impl;
 
 import com.cylan.entity.JfgEnum;
+import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.contract.login.ForgetPwdContract;
@@ -44,7 +45,11 @@ public class ForgetPwdPresenterImpl extends AbstractPresenter<ForgetPwdContract.
                             JfgCmdInsurance.getCmd()
                                     .sendCheckCode(account, JfgEnum.JFG_SMS_FORGOTPASS);
                         } else {
-                            JfgCmdInsurance.getCmd().forgetPassByEmail(account);
+                            try {
+                                JfgCmdInsurance.getCmd().forgetPassByEmail(account);
+                            } catch (JfgException e) {
+                                e.printStackTrace();
+                            }
                         }
                     }
                 }, new Action1<Throwable>() {
@@ -62,7 +67,11 @@ public class ForgetPwdPresenterImpl extends AbstractPresenter<ForgetPwdContract.
                 .subscribe(new Action1<String>() {
                     @Override
                     public void call(String s) {
-                        JfgCmdInsurance.getCmd().verifySMS(account, code, PreferencesUtils.getString(JConstant.KEY_REGISTER_SMS_TOKEN));
+                        try {
+                            JfgCmdInsurance.getCmd().verifySMS(account, code, PreferencesUtils.getString(JConstant.KEY_REGISTER_SMS_TOKEN));
+                        } catch (JfgException e) {
+                            e.printStackTrace();
+                        }
                     }
                 });
     }

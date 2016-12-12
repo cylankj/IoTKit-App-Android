@@ -4,6 +4,7 @@ import android.content.Context;
 import android.text.TextUtils;
 import android.util.Pair;
 
+import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpUtils;
@@ -243,10 +244,14 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
                         update.msgId = id;
                         update.version = System.currentTimeMillis();
                         RxBus.getCacheInstance().post(update);
-                        JfgCmdInsurance.getCmd().robotSetData(camInfoBean.deviceBase.uuid,
-                                DpUtils.getList(id,
-                                        beanCamInfoIntegerPair.first.getByte(id)
-                                        , System.currentTimeMillis()));
+                        try {
+                            JfgCmdInsurance.getCmd().robotSetData(camInfoBean.deviceBase.uuid,
+                                    DpUtils.getList(id,
+                                            beanCamInfoIntegerPair.first.getByte(id)
+                                            , System.currentTimeMillis()));
+                        } catch (JfgException e) {
+                            e.printStackTrace();
+                        }
                         AppLogger.i("save bean Cam info");
                     }
                 });
@@ -263,7 +268,11 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
                         RxEvent.UnbindJFGDevice deletion = new RxEvent.UnbindJFGDevice();
                         deletion.uuid = uuid;
                         RxBus.getCacheInstance().post(deletion);
-                        JfgCmdInsurance.getCmd().unBindDevice(uuid);
+                        try {
+                            JfgCmdInsurance.getCmd().unBindDevice(uuid);
+                        } catch (JfgException e) {
+                            e.printStackTrace();
+                        }
                         AppLogger.i("unbind uuid: " + uuid);
                     }
                 }, new Action1<Throwable>() {

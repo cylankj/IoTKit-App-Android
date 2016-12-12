@@ -1,5 +1,6 @@
 package com.cylan.jiafeigou.n.mvp.impl.mine;
 
+import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineInfoSetPassWordContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
@@ -57,7 +58,11 @@ public class MineInfoSetPassWordPresenterImp extends AbstractPresenter<MineInfoS
                 .subscribe(new Action1<String>() {
                     @Override
                     public void call(String s) {
-                        JfgCmdInsurance.getCmd().resetPassword(account,oldPass,newPass);
+                        try {
+                            JfgCmdInsurance.getCmd().resetPassword(account,oldPass,newPass);
+                        } catch (JfgException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }, new Action1<Throwable>() {
                     @Override

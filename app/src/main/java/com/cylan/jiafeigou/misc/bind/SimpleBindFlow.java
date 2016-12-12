@@ -3,6 +3,7 @@ package com.cylan.jiafeigou.misc.bind;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.engine.task.OfflineTaskQueue;
@@ -142,12 +143,17 @@ public class SimpleBindFlow extends AFullBind {
                 .subscribe(new Action1<Integer>() {
                     @Override
                     public void call(Integer integer) {
-                        JfgCmdInsurance.getCmd().sendLocalMessage(UdpConstant.IP,
-                                UdpConstant.PORT,
-                                new JfgUdpMsg.Ping().toBytes());
-                        JfgCmdInsurance.getCmd().sendLocalMessage(UdpConstant.IP,
-                                UdpConstant.PORT,
-                                new JfgUdpMsg.FPing().toBytes());
+                        try {
+                            JfgCmdInsurance.getCmd().sendLocalMessage(UdpConstant.IP,
+                                    UdpConstant.PORT,
+                                    new JfgUdpMsg.Ping().toBytes());
+                            JfgCmdInsurance.getCmd().sendLocalMessage(UdpConstant.IP,
+                                    UdpConstant.PORT,
+                                    new JfgUdpMsg.FPing().toBytes());
+                        } catch (JfgException e) {
+                            e.printStackTrace();
+                        }
+
                         AppLogger.i(BIND_TAG + integer);
                     }
                 });
@@ -203,13 +209,18 @@ public class SimpleBindFlow extends AFullBind {
                         80);
         AppLogger.i(BIND_TAG + "setServer: " + new Gson().toJson(setServer));
         AppLogger.i(BIND_TAG + "setLanguage: " + new Gson().toJson(setLanguage));
-        JfgCmdInsurance.getCmd().sendLocalMessage(UdpConstant.IP,
-                UdpConstant.PORT,
-                setServer.toBytes());
-        //
-        JfgCmdInsurance.getCmd().sendLocalMessage(UdpConstant.IP,
-                UdpConstant.PORT,
-                setLanguage.toBytes());
+        try {
+            JfgCmdInsurance.getCmd().sendLocalMessage(UdpConstant.IP,
+                    UdpConstant.PORT,
+                    setServer.toBytes());
+            //
+            JfgCmdInsurance.getCmd().sendLocalMessage(UdpConstant.IP,
+                    UdpConstant.PORT,
+                    setLanguage.toBytes());
+        } catch (JfgException e) {
+            e.printStackTrace();
+        }
+
     }
 
     /**
@@ -276,10 +287,15 @@ public class SimpleBindFlow extends AFullBind {
                                 ssid, pwd);
                         setWifi.security = type;
                         //发送wifi配置
-                        JfgCmdInsurance.getCmd().sendLocalMessage(UdpConstant.IP,
-                                UdpConstant.PORT,
-                                setWifi.toBytes());
-                        AppLogger.i(TAG + new Gson().toJson(setWifi));
+                        try {
+                            JfgCmdInsurance.getCmd().sendLocalMessage(UdpConstant.IP,
+                                    UdpConstant.PORT,
+                                    setWifi.toBytes());
+                            AppLogger.i(TAG + new Gson().toJson(setWifi));
+                        } catch (JfgException e) {
+                            e.printStackTrace();
+                        }
+
 
                         //此时,设备还没恢复连接,需要加入队列
                         int key = ("JfgCmdInsurance.getCmd().bindDevice" + devicePortrait.cid).hashCode();
@@ -290,7 +306,11 @@ public class SimpleBindFlow extends AFullBind {
                             public void run() {
                                 AppLogger.i(BIND_TAG + cid);
                                 Log.d("run", "run: ");
-                                JfgCmdInsurance.getCmd().bindDevice(cid, "fxx");
+                                try {
+                                    JfgCmdInsurance.getCmd().bindDevice(cid, "fxx");
+                                } catch (JfgException e) {
+                                    e.printStackTrace();
+                                }
                             }
                         });
                         return null;

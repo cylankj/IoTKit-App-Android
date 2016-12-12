@@ -3,6 +3,7 @@ package com.cylan.jiafeigou.n.mvp.impl.mine;
 import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.entity.jniCall.JFGFriendAccount;
 import com.cylan.entity.jniCall.JFGShareListInfo;
+import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendListShareDevicesToContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
@@ -132,7 +133,11 @@ public class MineFriendListShareDevicesPresenterImp extends AbstractPresenter<Mi
                     @Override
                     public void call(ArrayList<DeviceBean> deviceBeen) {
                         for (DeviceBean bean:deviceBeen){
-                            JfgCmdInsurance.getCmd().shareDevice(bean.uuid,friendBean.account);
+                            try {
+                                JfgCmdInsurance.getCmd().shareDevice(bean.uuid,friendBean.account);
+                            } catch (JfgException e) {
+                                e.printStackTrace();
+                            }
                         }
                     }
                 }, new Action1<Throwable>() {

@@ -2,6 +2,7 @@ package com.cylan.jiafeigou.n.mvp.contract.cam;
 
 import com.cylan.entity.jniCall.JFGMsgVideoResolution;
 import com.cylan.entity.jniCall.JFGMsgVideoRtcp;
+import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
 import com.cylan.jiafeigou.n.mvp.model.BeanCamInfo;
@@ -26,7 +27,7 @@ public interface CamLiveContract {
 
         void onRtcp(JFGMsgVideoRtcp rtcp);
 
-        void onResolution(JFGMsgVideoResolution resolution);
+        void onResolution(JFGMsgVideoResolution resolution) throws JfgException;
 
         /**
          * @param state

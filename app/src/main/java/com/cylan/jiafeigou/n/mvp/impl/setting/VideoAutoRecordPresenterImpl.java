@@ -6,6 +6,7 @@ package com.cylan.jiafeigou.n.mvp.impl.setting;
 
 import android.util.Pair;
 
+import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.dp.DpUtils;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.contract.setting.VideoAutoRecordContract;
@@ -47,10 +48,14 @@ public class VideoAutoRecordPresenterImpl extends AbstractPresenter<VideoAutoRec
                         update.msgId = id;
                         update.version = System.currentTimeMillis();
                         RxBus.getCacheInstance().post(update);
-                        JfgCmdInsurance.getCmd().robotSetData(beanCamInfoIntegerPair.first.deviceBase.uuid,
-                                DpUtils.getList(id,
-                                        beanCamInfoIntegerPair.first.getByte(id)
-                                        , System.currentTimeMillis()));
+                        try {
+                            JfgCmdInsurance.getCmd().robotSetData(beanCamInfoIntegerPair.first.deviceBase.uuid,
+                                    DpUtils.getList(id,
+                                            beanCamInfoIntegerPair.first.getByte(id)
+                                            , System.currentTimeMillis()));
+                        } catch (JfgException e) {
+                            e.printStackTrace();
+                        }
                         AppLogger.i("save bean Cam info");
                     }
                 });

@@ -3,6 +3,7 @@ package com.cylan.jiafeigou.n.mvp.impl.splash;
 
 import android.text.TextUtils;
 
+import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.cache.JCache;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.contract.splash.SplashContract;
@@ -57,7 +58,11 @@ public class SplashPresenterImpl extends AbstractPresenter<SplashContract.View>
                         if (TextUtils.isEmpty(a) || TextUtils.isEmpty(p))
                             return;
                         AppLogger.i("auto login");
-                        JfgCmdInsurance.getCmd().login(a, p);
+                        try {
+                            JfgCmdInsurance.getCmd().login(a, p);
+                        } catch (JfgException e) {
+                            e.printStackTrace();
+                        }
                     }
                 });
     }

@@ -1,17 +1,12 @@
 package com.cylan.jiafeigou.n.mvp.impl.mine;
 
+import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendDetailContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.support.log.AppLogger;
 
-import java.util.concurrent.TimeUnit;
-
-import rx.Observable;
-import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
-import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 /**
@@ -38,19 +33,24 @@ public class MineFriendDetailPresenterImp extends AbstractPresenter<MineFriendDe
 
     /**
      * 发送删除好友请求
+     *
      * @param account
      */
     @Override
     public void sendDeleteFriendReq(final String account) {
-        if (getView() != null){
+        if (getView() != null) {
             getView().showDeleteProgress();
         }
         rx.Observable.just(account)
-               .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.newThread())
                 .subscribe(new Action1<String>() {
                     @Override
                     public void call(String s) {
-                        JfgCmdInsurance.getCmd().delFriend(account);
+                        try {
+                            JfgCmdInsurance.getCmd().delFriend(account);
+                        } catch (JfgException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }, new Action1<Throwable>() {
                     @Override

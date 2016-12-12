@@ -11,6 +11,7 @@ import android.view.View;
 
 import com.cylan.jiafeigou.R;
 
+
 /**
  * Created by cylan-hunt on 16-7-13.
  */
@@ -55,6 +56,7 @@ public class SimpleProgressBar
         strokeColor = a.getColor(R.styleable.SimpleProgressStyle_progress_stroke_color, Color.BLACK);
         pointRadius = a.getDimension(R.styleable.SimpleProgressStyle_progress_point_radius, 10);
         swipeDegree = a.getInt(R.styleable.SimpleProgressStyle_progress_swipe_degree, 300);
+        circleRadius = a.getDimensionPixelSize(R.styleable.SimpleProgressStyle_progress_radius, 5);
         a.recycle();
         init();
     }
@@ -71,13 +73,32 @@ public class SimpleProgressBar
     }
 
     @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        setMeasuredDimension(getSize(true, widthMeasureSpec), getSize(false, heightMeasureSpec));
+    }
+
+    private int getSize(boolean isWidth, int measureSpec) {
+        int result;
+        final int mode = MeasureSpec.getMode(measureSpec);
+        final int size = MeasureSpec.getSize(measureSpec);
+        final int padding = isWidth ? getPaddingLeft() + getPaddingRight()
+                : getPaddingTop() + getPaddingBottom();
+        if (mode == MeasureSpec.EXACTLY) {
+            result = size;
+        } else {
+            result = (int) (circleRadius * 2 + 0.5f);
+            result += padding + pointRadius;
+        }
+        return result;
+    }
+
+    @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         final int padding = getPaddingLeft();
         circleRect.left = padding;
         circleRect.top = padding;
         circleRect.right = getMeasuredWidth() - padding;
         circleRect.bottom = getMeasuredHeight() - padding;
-        circleRadius = circleRect.width() / 2;
     }
 
 

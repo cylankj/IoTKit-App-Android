@@ -1,6 +1,7 @@
 package com.cylan.jiafeigou.n.mvp.impl.mine;
 
 import com.cylan.entity.jniCall.JFGAccount;
+import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineInfoBindMailContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
@@ -48,7 +49,11 @@ public class MineInfoBineMailPresenterImp extends AbstractPresenter<MineInfoBind
                 .subscribe(new Action1<String>() {
                     @Override
                     public void call(String s) {
-                        JfgCmdInsurance.getCmd().checkFriendAccount(email);
+                        try {
+                            JfgCmdInsurance.getCmd().checkFriendAccount(email);
+                        } catch (JfgException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }, new Action1<Throwable>() {
                     @Override
@@ -82,7 +87,11 @@ public class MineInfoBineMailPresenterImp extends AbstractPresenter<MineInfoBind
                 .subscribe(new Action1<JFGAccount>() {
                     @Override
                     public void call(JFGAccount account) {
-                        JfgCmdInsurance.getCmd().setAccount(account);
+                        try {
+                            JfgCmdInsurance.getCmd().setAccount(account);
+                        } catch (JfgException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }, new Action1<Throwable>() {
                     @Override

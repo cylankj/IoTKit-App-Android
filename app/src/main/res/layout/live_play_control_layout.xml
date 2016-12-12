@@ -1,0 +1,7 @@
+<com.cylan.jiafeigou.widget.live.LivePlayControlView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/lv_control"
+    android:layout_width="60dp"
+    android:layout_height="60dp"
+    android:padding="10dp">
+
+</com.cylan.jiafeigou.widget.live.LivePlayControlView>

@@ -3,6 +3,7 @@ package com.cylan.jiafeigou.n.mvp.impl.mine;
 import android.text.TextUtils;
 
 import com.cylan.entity.jniCall.JFGAccount;
+import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineInfoSetNameContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
@@ -46,7 +47,11 @@ public class MineInfoSetNamePresenterImpl extends AbstractPresenter<MineInfoSetN
                 .subscribe(new Action1<JFGAccount>() {
                     @Override
                     public void call(JFGAccount newAliasAccount) {
-                        JfgCmdInsurance.getCmd().setAccount(newAliasAccount);
+                        try {
+                            JfgCmdInsurance.getCmd().setAccount(newAliasAccount);
+                        } catch (JfgException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }, new Action1<Throwable>() {
                     @Override

@@ -18,10 +18,10 @@
 
         <ViewStub
             android:id="@+id/vs_progress"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout="@layout/circle_progress_bar" />
+            android:layout="@layout/live_play_control_layout" />
 
         <include layout="@layout/cam_live_port_handle_bar" />
 
