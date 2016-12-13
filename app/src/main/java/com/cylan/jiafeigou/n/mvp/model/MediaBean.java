@@ -12,11 +12,11 @@ public class MediaBean implements Comparable<MediaBean>, Parcelable {
     public static final int TYPE_PIC = 0;
     public static final int TYPE_VIDEO = 1;
     public static final int TYPE_LOAD = 2;
-    public long time;
-    public int mediaType;
-    public String srcUrl;
-    public String deviceName;
-    public String timeInStr;
+    public String cid;
+    public int time;
+    public int msgType;
+    public int regionType;
+    public String fileName;
 
     @Override
     public boolean equals(Object o) {
@@ -31,13 +31,13 @@ public class MediaBean implements Comparable<MediaBean>, Parcelable {
 
     @Override
     public int hashCode() {
-        return (int) (time ^ (time >>> 32));
+        return time ^ (time >>> 32);
     }
 
 
     @Override
     public int compareTo(MediaBean another) {
-        return another != null ? (int) (another.time - this.time) : 0;
+        return another != null ? another.time - this.time : 0;
     }
 
     @Override
@@ -47,22 +47,22 @@ public class MediaBean implements Comparable<MediaBean>, Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(cid);
         dest.writeLong(this.time);
-        dest.writeInt(this.mediaType);
-        dest.writeString(this.srcUrl);
-        dest.writeString(this.deviceName);
-        dest.writeString(this.timeInStr);
+        dest.writeInt(this.msgType);
+        dest.writeInt(this.regionType);
+        dest.writeString(this.fileName);
     }
 
     public MediaBean() {
     }
 
     protected MediaBean(Parcel in) {
-        this.time = in.readLong();
-        this.mediaType = in.readInt();
-        this.srcUrl = in.readString();
-        this.deviceName = in.readString();
-        this.timeInStr = in.readString();
+        this.cid = in.readString();
+        this.time = in.readInt();
+        this.msgType = in.readInt();
+        this.regionType = in.readInt();
+        this.fileName = in.readString();
     }
 
     public static final Creator<MediaBean> CREATOR = new Creator<MediaBean>() {
@@ -80,12 +80,12 @@ public class MediaBean implements Comparable<MediaBean>, Parcelable {
     @Override
     public String toString() {
         return "MediaBean{" +
-                "time=" + time +
-                ", mediaType=" + mediaType +
-                ", srcUrl='" + srcUrl + '\'' +
-                ", deviceName='" + deviceName + '\'' +
-                ", timeInStr='" + timeInStr + '\'' +
-                '}' + "\n";
+                "cid='" + cid + '\'' +
+                ", time=" + time +
+                ", msgType=" + msgType +
+                ", regionType=" + regionType +
+                ", fileName='" + fileName + '\'' +
+                '}';
     }
 
     private static MediaBean loadBean = new MediaBean();
@@ -93,7 +93,7 @@ public class MediaBean implements Comparable<MediaBean>, Parcelable {
     public static MediaBean getEmptyLoadTypeBean() {
         if (loadBean == null)
             loadBean = new MediaBean();
-        loadBean.mediaType = TYPE_LOAD;
+        loadBean.msgType = TYPE_LOAD;
         return loadBean;
     }
 }

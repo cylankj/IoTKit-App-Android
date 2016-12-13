@@ -352,7 +352,7 @@ public class HomeWonderfulFragmentExt extends Fragment implements
 
     private void handleFootView() {
         final int itemCount = homeWonderAdapter.getItemCount();
-        if (itemCount > 0 && homeWonderAdapter.getItem(itemCount - 1).mediaType == MediaBean.TYPE_LOAD) {
+        if (itemCount > 0 && homeWonderAdapter.getItem(itemCount - 1).msgType == MediaBean.TYPE_LOAD) {
             homeWonderAdapter.remove(itemCount - 1);
         }
     }

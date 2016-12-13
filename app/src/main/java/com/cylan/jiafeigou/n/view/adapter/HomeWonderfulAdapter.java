@@ -66,14 +66,14 @@ public class HomeWonderfulAdapter extends SuperAdapter<MediaBean> {
 
 
         //时间
-        holder.setText(R.id.tv_wonderful_item_date, bean.timeInStr);
+        holder.setText(R.id.tv_wonderful_item_date, "00;00");
 
         if (loadMediaListener != null)
-            loadMediaListener.loadMedia(bean.mediaType,
-                    bean.srcUrl,
+            loadMediaListener.loadMedia(bean.msgType,
+                    bean.fileName,
                     (ImageView) holder.getView(R.id.iv_wonderful_item_content));
         //来自摄像头
-        holder.setText(R.id.tv_wonderful_item_device_name, bean.deviceName);
+        holder.setText(R.id.tv_wonderful_item_device_name, "南湖");
     }
 
     @Override
@@ -86,7 +86,7 @@ public class HomeWonderfulAdapter extends SuperAdapter<MediaBean> {
 
             @Override
             public int getItemViewType(int position, MediaBean mediaBean) {
-                return mediaBean.mediaType;//0:image view  1:videoView
+                return mediaBean.msgType;//0:image view  1:videoView
             }
 
             @Override

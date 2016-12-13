@@ -148,7 +148,7 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
         mCurrentPosition = mStartPosition = getIntent().getIntExtra(JConstant.KEY_SHARED_ELEMENT_STARTED_POSITION, 0);
         mMediaList = getIntent().getParcelableArrayListExtra(JConstant.KEY_SHARED_ELEMENT_LIST);
         mCurrentMediaBean = mMediaList.get(mStartPosition);
-        mCurrentViewType = mCurrentMediaBean.mediaType;
+        mCurrentViewType = mCurrentMediaBean.msgType;
         if (savedInstanceState != null) {
             mCurrentPosition = savedInstanceState.getInt(STATE_CURRENT_PAGE_POSITION);
         }
@@ -501,9 +501,9 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
     @OnClick({R.id.act_media_header_opt_download, R.id.act_media_picture_opt_download})
     public void download() {
         if (mCurrentViewType == MediaBean.TYPE_PIC) {
-            mDownloadFile = new File(JConstant.MEDIA_DETAIL_PICTURE_DOWNLOAD_DIR, mCurrentMediaBean.srcUrl);
+            mDownloadFile = new File(JConstant.MEDIA_DETAIL_PICTURE_DOWNLOAD_DIR, mCurrentMediaBean.fileName);
         } else if (mCurrentViewType == MediaBean.TYPE_VIDEO) {
-            mDownloadFile = new File(JConstant.MEDIA_DETAIL_VIDEO_DOWNLOAD_DIR, mCurrentMediaBean.srcUrl);
+            mDownloadFile = new File(JConstant.MEDIA_DETAIL_VIDEO_DOWNLOAD_DIR, mCurrentMediaBean.fileName);
         } else {
             return;
         }
@@ -513,7 +513,7 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
             return;
         }
 
-        Glide.with(this).load(mCurrentMediaBean.srcUrl).
+        Glide.with(this).load(mCurrentMediaBean.fileName).
                 downloadOnly(new SimpleTarget<File>() {
                     @Override
                     public void onResourceReady(File resource, GlideAnimation<? super File> glideAnimation) {
@@ -664,7 +664,7 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
     public void onPageSelected(int position) {
         mCurrentPosition = position;
         mCurrentMediaBean = mMediaList.get(position);
-        int type = mCurrentMediaBean.mediaType;
+        int type = mCurrentMediaBean.msgType;
         boolean change = type != mCurrentViewType;
         mCurrentViewType = type;
         if (change) {
@@ -678,7 +678,7 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
     private void startPlayVideo() {
         mVideoView.setVisibility(View.VISIBLE);
         mVideoLoadingBar.setVisibility(View.VISIBLE);
-        String url = mCurrentMediaBean.srcUrl;
+        String url = mCurrentMediaBean.fileName;
         mCurrentPlayState = PLAY_STATE_RESET;
         mMediaPlayer.reset();
         String proxyUrl = BaseApplication.getProxy(this).getProxyUrl(url);

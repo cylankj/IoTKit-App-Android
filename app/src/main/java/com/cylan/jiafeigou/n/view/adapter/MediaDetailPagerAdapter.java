@@ -52,13 +52,13 @@ public class MediaDetailPagerAdapter extends PagerAdapter {
         View contentView;
         MediaBean bean = mMediaBeanList.get(position);
         ImageView photoView;
-        if (bean.mediaType == MediaBean.TYPE_VIDEO) {
+        if (bean.msgType == MediaBean.TYPE_VIDEO) {
             contentView = View.inflate(container.getContext(), R.layout.view_video_detail, null);
             ViewHolder holder = new ViewHolder(contentView);
             photoView = holder.mPhotoView;
             contentView.setTag(holder);
             ViewCompat.setTransitionName(photoView, position + JConstant.KEY_SHARED_ELEMENT_TRANSITION_NAME_SUFFIX);
-            GlideNetVideoUtils.loadNetVideo(container.getContext(), bean.srcUrl, photoView, () -> {
+            GlideNetVideoUtils.loadNetVideo(container.getContext(), bean.fileName, photoView, () -> {
                 if (mFirstLoad && mReadToShow != null) {
                     mReadToShow.onReady();
                 }
@@ -69,7 +69,7 @@ public class MediaDetailPagerAdapter extends PagerAdapter {
             contentView = photoView;
             ViewCompat.setTransitionName(photoView, position + JConstant.KEY_SHARED_ELEMENT_TRANSITION_NAME_SUFFIX);
             Glide.with(container.getContext())
-                    .load(bean.srcUrl)
+                    .load(bean.fileName)
                     .listener((mFirstLoad && position == mStartPosition) ? mListener : null)
                     .into(photoView);
         }

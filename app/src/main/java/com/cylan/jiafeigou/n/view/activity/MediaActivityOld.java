@@ -129,7 +129,7 @@ public class MediaActivityOld extends FragmentActivity {
      */
     private void updateTitle(final int index) {
         if (beanArrayList != null && index < beanArrayList.size()) {
-            final int mediaType = beanArrayList.get(index).mediaType;
+            final int mediaType = beanArrayList.get(index).msgType;
             final long time = beanArrayList.get(index).time;
             if (mediaType == MediaBean.TYPE_PIC)
                 tvBigPicTitle.setText(TimeUtils.getMediaPicTimeInString(time));
@@ -228,14 +228,14 @@ public class MediaActivityOld extends FragmentActivity {
 
         @Override
         public Fragment getItem(int position) {
-            if (list.get(position).mediaType == MediaBean.TYPE_PIC) {
+            if (list.get(position).msgType == MediaBean.TYPE_PIC) {
                 return PicDetailsFragment.newInstance(position,
                         mStartingPosition,
-                        list.get(position).srcUrl);
-            } else if (list.get(position).mediaType == MediaBean.TYPE_VIDEO) {
+                        list.get(position).fileName);
+            } else if (list.get(position).msgType == MediaBean.TYPE_VIDEO) {
                 return newInstance(position,
                         mStartingPosition,
-                        list.get(position).srcUrl);
+                        list.get(position).fileName);
             } else {
                 return null;
             }
