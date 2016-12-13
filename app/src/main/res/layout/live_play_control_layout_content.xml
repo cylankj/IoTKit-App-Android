@@ -1,0 +1,39 @@
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:hunt="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/progress_bar"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center">
+
+        <ImageView
+            android:id="@+id/img_state"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:visibility="gone" />
+
+        <com.cylan.jiafeigou.widget.SimpleProgressBar
+            android:id="@+id/sp_control_loading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            hunt:progress_point_radius="2dp"
+            hunt:progress_radius="20dp"
+            hunt:progress_stroke_color="@color/color_white"
+            hunt:progress_swipe_degree="310" />
+    </FrameLayout>
+
+    <TextView
+        android:id="@+id/tv_control_content"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="10dp"
+        android:textColor="@color/color_DDDDDD"
+        android:textSize="14sp" />
+</merge>

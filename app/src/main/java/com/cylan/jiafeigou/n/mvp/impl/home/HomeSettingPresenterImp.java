@@ -6,6 +6,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.cylan.entity.jniCall.JFGAccount;
+import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeSettingContract;
@@ -157,19 +158,31 @@ public class HomeSettingPresenterImp extends AbstractPresenter<HomeSettingContra
             case JConstant.RECEIVE_MESSAGE_NOTIFICATION:
                 userInfo.resetFlag();
                 userInfo.setEnablePush(aBoolean);
-                JfgCmdInsurance.getCmd().setAccount(userInfo);
+                try {
+                    JfgCmdInsurance.getCmd().setAccount(userInfo);
+                } catch (JfgException e) {
+                    e.printStackTrace();
+                }
                 break;
 
             case JConstant.OPEN_VOICE:
                 userInfo.resetFlag();
                 userInfo.setEnableSound(aBoolean);
-                JfgCmdInsurance.getCmd().setAccount(userInfo);
+                try {
+                    JfgCmdInsurance.getCmd().setAccount(userInfo);
+                } catch (JfgException e) {
+                    e.printStackTrace();
+                }
                 break;
 
             case JConstant.OPEN_SHAKE:
                 userInfo.resetFlag();
                 userInfo.setEnableVibrate(aBoolean);
-                JfgCmdInsurance.getCmd().setAccount(userInfo);
+                try {
+                    JfgCmdInsurance.getCmd().setAccount(userInfo);
+                } catch (JfgException e) {
+                    e.printStackTrace();
+                }
                 break;
         }
     }

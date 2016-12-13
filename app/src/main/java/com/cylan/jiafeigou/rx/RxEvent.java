@@ -462,10 +462,12 @@ public class RxEvent {
     }
 
     /**
-     * 历史数据查询
+     * 历史数据查询,带一个时间戳,m默认一次请求10条.
      */
     public static final class JFGHistoryVideoReq {
         public String uuid;
+        public boolean desc;//降序,逆序
+        public long version;
     }
 
     /**

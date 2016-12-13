@@ -1,6 +1,7 @@
 package com.cylan.jiafeigou.n.mvp.impl.mine;
 
 import com.cylan.entity.jniCall.JFGAccount;
+import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineClipImageContract;
@@ -41,7 +42,11 @@ public class MineClipImagePresenterImp extends AbstractPresenter<MineClipImageCo
                 .subscribe(new Action1<String>() {
                     @Override
                     public void call(String path) {
-                        JfgCmdInsurance.getCmd().updateAccountPortrait(path);
+                        try {
+                            JfgCmdInsurance.getCmd().updateAccountPortrait(path);
+                        } catch (JfgException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }, new Action1<Throwable>() {
                     @Override
@@ -91,7 +96,11 @@ public class MineClipImagePresenterImp extends AbstractPresenter<MineClipImageCo
                     public void call(Object o) {
                         if (jfgAccount != null){
                             jfgAccount.setPhoto(true);
-                            JfgCmdInsurance.getCmd().setAccount(jfgAccount);
+                            try {
+                                JfgCmdInsurance.getCmd().setAccount(jfgAccount);
+                            } catch (JfgException e) {
+                                e.printStackTrace();
+                            }
                         }
                     }
                 }, new Action1<Throwable>() {

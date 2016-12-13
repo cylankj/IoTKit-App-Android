@@ -1,6 +1,7 @@
 package com.cylan.jiafeigou.n.mvp.impl.cam;
 
 import com.cylan.entity.jniCall.JFGDPMsg;
+import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.Converter;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
@@ -81,8 +82,12 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
                     public ArrayList<CamMessageBean> call(Object o) {
                         ArrayList<JFGDPMsg> dps = new ArrayList<>();
                         dps.add(new JFGDPMsg(DpMsgMap.ID_505_CAMERA_ALARM_MSG, 0));
-                        JfgCmdInsurance.getCmd().robotGetData(info.deviceBase.uuid,
-                                dps, 20, false, 0);
+                        try {
+                            JfgCmdInsurance.getCmd().robotGetData(info.deviceBase.uuid,
+                                    dps, 20, false, 0);
+                        } catch (JfgException e) {
+                            e.printStackTrace();
+                        }
                         return null;
                     }
                 })

@@ -38,4 +38,24 @@ public class MiscUtils {
         return String.format(Locale.getDefault(), "%02d", value >> 8)
                 + String.format(Locale.getDefault(), ":%02d", (((byte) value << 8) >> 8));
     }
+
+    public static String getBit(int flow) {
+        int factor = flow / 1024;
+        if (factor >= 1024) {
+            return "GB";
+        }
+        if (factor >= 1) {
+            return "Mb";
+        }
+        return "Kb";
+    }
+
+    public static void main(String[] args) {
+        System.out.println(getBit(1024 * 1024 + 1));
+        System.out.println(getBit(1024 * 1024));
+        System.out.println(getBit(1024 * 1024 - 1));
+        System.out.println(getBit(1025));
+        System.out.println(getBit(1024));
+        System.out.println(getBit(1023));
+    }
 }

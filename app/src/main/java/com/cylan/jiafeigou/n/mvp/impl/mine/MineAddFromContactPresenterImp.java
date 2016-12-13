@@ -1,5 +1,6 @@
 package com.cylan.jiafeigou.n.mvp.impl.mine;
 
+import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineAddFromContactContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
@@ -53,7 +54,11 @@ public class MineAddFromContactPresenterImp extends AbstractPresenter<MineAddFro
             .subscribe(new Action1<String>() {
                 @Override
                 public void call(String s) {
-                    JfgCmdInsurance.getCmd().addFriend(account,mesg);
+                    try {
+                        JfgCmdInsurance.getCmd().addFriend(account,mesg);
+                    } catch (JfgException e) {
+                        e.printStackTrace();
+                    }
                 }
             }, new Action1<Throwable>() {
                 @Override

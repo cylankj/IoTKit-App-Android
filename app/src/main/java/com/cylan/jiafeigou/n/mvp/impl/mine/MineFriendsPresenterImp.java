@@ -3,6 +3,7 @@ package com.cylan.jiafeigou.n.mvp.impl.mine;
 import com.cylan.entity.JfgEnum;
 import com.cylan.entity.jniCall.JFGFriendAccount;
 import com.cylan.entity.jniCall.JFGFriendRequest;
+import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendsContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
@@ -59,7 +60,11 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
 
         for (JFGFriendRequest jfgFriendRequest:addReqList.arrayList){
             MineAddReqBean emMessage = new MineAddReqBean();
-            emMessage.iconUrl = JfgCmdInsurance.getCmd().getCloudUrlByType(JfgEnum.JFG_URL.PORTRAIT,0,jfgFriendRequest.account+".jpg","");
+            try {
+                emMessage.iconUrl = JfgCmdInsurance.getCmd().getCloudUrlByType(JfgEnum.JFG_URL.PORTRAIT,0,jfgFriendRequest.account+".jpg","");
+            } catch (JfgException e) {
+                e.printStackTrace();
+            }
             emMessage.alias = jfgFriendRequest.alias;
             emMessage.sayHi = jfgFriendRequest.sayHi;
             emMessage.account = jfgFriendRequest.account;
@@ -75,7 +80,11 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
         ArrayList list = new ArrayList<RelAndFriendBean>();
         for (JFGFriendAccount account:friendList.arrayList) {
             RelAndFriendBean emMessage = new RelAndFriendBean();
-            emMessage.iconUrl = JfgCmdInsurance.getCmd().getCloudUrlByType(JfgEnum.JFG_URL.PORTRAIT,0,account.account+".jpg","");
+            try {
+                emMessage.iconUrl = JfgCmdInsurance.getCmd().getCloudUrlByType(JfgEnum.JFG_URL.PORTRAIT,0,account.account+".jpg","");
+            } catch (JfgException e) {
+                e.printStackTrace();
+            }
             emMessage.markName = account.markName;
             emMessage.account = account.account;
             emMessage.alias = account.alias;
@@ -226,7 +235,11 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
                 .subscribe(new Action1<Object>() {
                     @Override
                     public void call(Object o) {
-                        JfgCmdInsurance.getCmd().addFriend(account,"");
+                        try {
+                            JfgCmdInsurance.getCmd().addFriend(account,"");
+                        } catch (JfgException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }, new Action1<Throwable>() {
                     @Override
@@ -246,7 +259,11 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
                 .subscribe(new Action1<String>() {
                     @Override
                     public void call(String account) {
-                        JfgCmdInsurance.getCmd().consentAddFriend(account);
+                        try {
+                            JfgCmdInsurance.getCmd().consentAddFriend(account);
+                        } catch (JfgException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }, new Action1<Throwable>() {
                     @Override

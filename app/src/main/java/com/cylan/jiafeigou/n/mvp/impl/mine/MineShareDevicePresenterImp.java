@@ -9,6 +9,7 @@ import com.cylan.entity.JfgEnum;
 import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.entity.jniCall.JFGFriendAccount;
 import com.cylan.entity.jniCall.JFGShareListInfo;
+import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineShareDeviceContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
@@ -102,7 +103,11 @@ public class MineShareDevicePresenterImp extends AbstractPresenter<MineShareDevi
                 RelAndFriendBean relAndFriendBean = new RelAndFriendBean();
                 relAndFriendBean.account = info.account;
                 relAndFriendBean.alias = info.alias;
-                relAndFriendBean.iconUrl = JfgCmdInsurance.getCmd().getCloudUrlByType(JfgEnum.JFG_URL.PORTRAIT,0,info.account+".jpg","");
+                try {
+                    relAndFriendBean.iconUrl = JfgCmdInsurance.getCmd().getCloudUrlByType(JfgEnum.JFG_URL.PORTRAIT,0,info.account+".jpg","");
+                } catch (JfgException e) {
+                    e.printStackTrace();
+                }
                 list.add(relAndFriendBean);
             }
         }

@@ -3,6 +3,7 @@ package com.cylan.jiafeigou.n.mvp.impl.bell;
 import android.text.TextUtils;
 import android.util.Pair;
 
+import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.dp.DpUtils;
@@ -140,15 +141,23 @@ public class BellDetailSettingPresenterImpl extends AbstractPresenter<BellDetail
                         update.version = System.currentTimeMillis();
                         RxBus.getCacheInstance().post(update);
                         if (id == DpMsgMap.ID_2000003_BASE_ALIAS) {
-                            JfgCmdInsurance.getCmd().setAliasByCid(beanBellInfo.deviceBase.uuid,
-                                    beanBellInfo.deviceBase.alias);
+                            try {
+                                JfgCmdInsurance.getCmd().setAliasByCid(beanBellInfo.deviceBase.uuid,
+                                        beanBellInfo.deviceBase.alias);
+                            } catch (JfgException e) {
+                                e.printStackTrace();
+                            }
                             AppLogger.i("update alias: " + new Gson().toJson(beanBellInfo));
                             return;
                         }
-                        JfgCmdInsurance.getCmd().robotSetData(beanBellInfo.deviceBase.uuid,
-                                DpUtils.getList(id,
-                                        beanCamInfoIntegerPair.first.getByte(id)
-                                        , System.currentTimeMillis()));
+                        try {
+                            JfgCmdInsurance.getCmd().robotSetData(beanBellInfo.deviceBase.uuid,
+                                    DpUtils.getList(id,
+                                            beanCamInfoIntegerPair.first.getByte(id)
+                                            , System.currentTimeMillis()));
+                        } catch (JfgException e) {
+                            e.printStackTrace();
+                        }
                         AppLogger.i("update camInfo: " + new Gson().toJson(beanBellInfo));
                     }
                 });

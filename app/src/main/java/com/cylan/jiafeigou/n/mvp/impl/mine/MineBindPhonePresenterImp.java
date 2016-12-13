@@ -2,6 +2,7 @@ package com.cylan.jiafeigou.n.mvp.impl.mine;
 
 import com.cylan.entity.JfgEnum;
 import com.cylan.entity.jniCall.JFGAccount;
+import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
@@ -80,7 +81,11 @@ public class MineBindPhonePresenterImp extends AbstractPresenter<MineBindPhoneCo
                 .subscribe(new Action1<String>() {
                     @Override
                     public void call(String s) {
-                        JfgCmdInsurance.getCmd().checkFriendAccount(s);
+                        try {
+                            JfgCmdInsurance.getCmd().checkFriendAccount(s);
+                        } catch (JfgException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }, new Action1<Throwable>() {
                     @Override
@@ -122,7 +127,11 @@ public class MineBindPhonePresenterImp extends AbstractPresenter<MineBindPhoneCo
                 .subscribe(new Action1<JFGAccount>() {
                     @Override
                     public void call(JFGAccount account) {
-                        JfgCmdInsurance.getCmd().setAccount(userinfo);
+                        try {
+                            JfgCmdInsurance.getCmd().setAccount(userinfo);
+                        } catch (JfgException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }, new Action1<Throwable>() {
                     @Override
