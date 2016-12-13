@@ -127,12 +127,13 @@ public class MineBindPhonePresenterImp extends AbstractPresenter<MineBindPhoneCo
                 .subscribe(new Action1<JFGAccount>() {
                     @Override
                     public void call(JFGAccount account) {
-                        account.resetFlag();
-                        account.setPhone(getView().getInputPhone(),getView().getInputCheckCode());
-                        JfgCmdInsurance.getCmd().setAccount(account);
+                        try {
+                            account.resetFlag();
+                            account.setPhone(getView().getInputPhone(),getView().getInputCheckCode());
+                            JfgCmdInsurance.getCmd().setAccount(account);
                         } catch (JfgException e) {
                             e.printStackTrace();
-                    }
+                        }
                     }
                 }, new Action1<Throwable>() {
                     @Override
@@ -214,7 +215,11 @@ public class MineBindPhonePresenterImp extends AbstractPresenter<MineBindPhoneCo
                 .subscribe(new Action1<String>() {
                     @Override
                     public void call(String code) {
-                        JfgCmdInsurance.getCmd().verifySMS(jfgAccount.getAccount(),inputCode,code);
+                        try {
+                            JfgCmdInsurance.getCmd().verifySMS(jfgAccount.getAccount(),inputCode,code);
+                        } catch (JfgException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }, new Action1<Throwable>() {
                     @Override

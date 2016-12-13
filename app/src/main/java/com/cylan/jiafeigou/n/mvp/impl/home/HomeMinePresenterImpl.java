@@ -10,13 +10,19 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.cylan.entity.jniCall.JFGAccount;
+import com.cylan.entity.jniCall.JFGDPMsg;
+import com.cylan.entity.jniCall.RobotoGetDataRsp;
+import com.cylan.ex.JfgException;
+import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeMineContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
+import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.utils.BitmapUtil;
 import com.cylan.utils.FastBlurUtil;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 import rx.Observable;
@@ -65,6 +71,8 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
         }
             subscription = new CompositeSubscription();
             subscription.add(initData());
+            subscription.add(getMesgDpDataCallBack());
+            subscription.add(getMesgDpData());
     }
 
     @Override
@@ -207,7 +215,6 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
                                     userInfo.setAlias(createRandomName());
                                 }
                                 getView().setAliasName(userInfo.getAlias());
-                                getView().setMesgNumber(99);
                             }
                         }
                     }
@@ -231,6 +238,53 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
     public boolean checkOpenLogIn() {
         // TODO
         return false;
+    }
+
+    /**
+     * Dp获取到消息记录
+     */
+    @Override
+    public Subscription getMesgDpData() {
+        return rx.Observable.just(null)
+                .subscribeOn(Schedulers.newThread())
+                .subscribe(new Action1<Object>() {
+                    @Override
+                    public void call(Object o) {
+                        try {
+                            ArrayList<JFGDPMsg> dp = new ArrayList<>();
+                            JFGDPMsg msg = new JFGDPMsg(601, 0);
+                            dp.add(msg);
+                            long seq = JfgCmdInsurance.getCmd().getInstance().robotGetData("", dp, 20, false, 0);
+                            AppLogger.d("getMesgDpData"+seq);
+                        } catch (JfgException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        AppLogger.e("getMesgDpData"+throwable.getLocalizedMessage());
+                    }
+                });
+    }
+
+    /**
+     * Dp获取消息记录的回调
+     * @return
+     */
+    @Override
+    public Subscription getMesgDpDataCallBack() {
+        return RxBus.getCacheInstance().toObservable(RobotoGetDataRsp.class)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<RobotoGetDataRsp>() {
+                    @Override
+                    public void call(RobotoGetDataRsp robotoGetDataRsp) {
+                        if (robotoGetDataRsp != null && robotoGetDataRsp instanceof RobotoGetDataRsp){
+                            int size = robotoGetDataRsp.map.get(0).size();
+                            getView().setMesgNumber(size);
+                        }
+                    }
+                });
     }
 
 }

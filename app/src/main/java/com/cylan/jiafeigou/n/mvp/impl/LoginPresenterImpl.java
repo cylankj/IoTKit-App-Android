@@ -442,7 +442,6 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
             String openID = response.getString("openid");
             String accessToken = response.getString("access_token");
             String expires = response.getString("expires_in");
-
             //执行登录
             executeOpenLogin(accessToken);
 

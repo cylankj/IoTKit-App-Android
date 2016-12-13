@@ -53,10 +53,6 @@ public class HomeMineMessagePresenterImp extends AbstractPresenter<HomeMineMessa
         }
     }
 
-    @Override
-    public void addMessageItem() {
-
-    }
 
     /**
      * 加载消息数据

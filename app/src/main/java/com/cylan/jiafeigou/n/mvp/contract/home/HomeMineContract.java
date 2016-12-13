@@ -82,5 +82,16 @@ public interface HomeMineContract {
          */
         boolean checkOpenLogIn();
 
+        /**
+         * Dp获取消息记录数据
+         */
+        Subscription getMesgDpData();
+
+        /**
+         * Dp获取消息记录数据回调
+         * @return
+         */
+        Subscription getMesgDpDataCallBack();
+
     }
 }
