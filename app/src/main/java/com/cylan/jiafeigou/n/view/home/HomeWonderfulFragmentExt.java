@@ -29,7 +29,6 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DecodeFormat;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
@@ -44,7 +43,6 @@ import com.cylan.jiafeigou.n.view.misc.HomeEmptyView;
 import com.cylan.jiafeigou.n.view.misc.IEmptyView;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.AnimatorUtils;
-import com.cylan.jiafeigou.utils.GlideNetVideoUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.ShadowFrameLayout;
@@ -75,7 +73,6 @@ public class HomeWonderfulFragmentExt extends Fragment implements
         ShareDialogFragment.ShareToListener,
         BaseDialog.BaseDialogAction,
         AppBarLayout.OnOffsetChangedListener,
-        HomeWonderfulAdapter.LoadMediaListener,
         SharedElementCallBackListener,
         OnActivityReenterListener, TimeWheelView.OnTimeLineChangeListener {
 
@@ -157,7 +154,6 @@ public class HomeWonderfulFragmentExt extends Fragment implements
         homeWonderAdapter = new HomeWonderfulAdapter(getContext(), null, null);
         homeWonderAdapter.setWonderfulItemClickListener(this);
         homeWonderAdapter.setWonderfulItemLongClickListener(this);
-        homeWonderAdapter.setLoadMediaListener(this);
         initEmptyViewState(context);
     }
 
@@ -190,13 +186,10 @@ public class HomeWonderfulFragmentExt extends Fragment implements
 
         initSomeViewMargin();
 
-        srLayoutMainContentHolder.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                emptyViewState.setEmptyViewState(fLayoutWonderfulEmptyContainer,
-                        fLayoutHomeHeaderContainer.getBottom());
-                emptyViewState.determineEmptyViewState(homeWonderAdapter.getCount());
-            }
+        srLayoutMainContentHolder.postDelayed(() -> {
+            emptyViewState.setEmptyViewState(fLayoutWonderfulEmptyContainer,
+                    fLayoutHomeHeaderContainer.getBottom());
+            emptyViewState.determineEmptyViewState(homeWonderAdapter.getCount());
         }, 20);
     }
 
@@ -242,7 +235,6 @@ public class HomeWonderfulFragmentExt extends Fragment implements
     @Override
     public void onStop() {
         super.onStop();
-
         if (presenter != null)
             presenter.stop();
     }
@@ -304,8 +296,8 @@ public class HomeWonderfulFragmentExt extends Fragment implements
                 int position = mLinearLayoutManager.findFirstCompletelyVisibleItemPosition();
                 if (newState == RecyclerView.SCROLL_STATE_IDLE && position != -1) {
                     MediaBean item = homeWonderAdapter.getItem(position);
-                    getWheelView().updateDay(item.time);
-                    tvDateItemHeadWonder.setText(TimeUtils.getDayString(item.time));
+                    getWheelView().updateDay(item.time * 1000L);//蛋疼
+                    tvDateItemHeadWonder.setText(TimeUtils.getDayString(item.time * 1000L));
 
                 }
             }
@@ -313,12 +305,7 @@ public class HomeWonderfulFragmentExt extends Fragment implements
     }
 
     private void initHeaderView() {
-        tvDateItemHeadWonder.post(new Runnable() {
-            @Override
-            public void run() {
-                tvDateItemHeadWonder.setText(TimeUtils.getTodayString());
-            }
-        });
+        tvDateItemHeadWonder.post(() -> tvDateItemHeadWonder.setText(TimeUtils.getTodayString()));
     }
 
 
@@ -340,7 +327,7 @@ public class HomeWonderfulFragmentExt extends Fragment implements
         endlessLoading = true;
         srLayoutMainContentHolder.setRefreshing(false);
         if (resultList == null || resultList.size() == 0) {
-            homeWonderAdapter.clear();
+//            homeWonderAdapter.clear();
             return;
         }
         handleFootView();
@@ -372,13 +359,13 @@ public class HomeWonderfulFragmentExt extends Fragment implements
         if (view == null)
             return;
         ((TimeWheelView) view).append(wheelViewDataSet);
-//        ((WheelView) view).setOnItemChangedListener(this);
         ((TimeWheelView) view).addTimeLineListener(this);
     }
 
     @SuppressWarnings("deprecation")
     @Override
     public void onTimeTick(int dayTime) {
+
         //需要优化
         int drawableId = dayTime == JFGRules.RULE_DAY_TIME
                 ? R.drawable.bg_wonderful_daytime : R.drawable.bg_wonderful_night;
@@ -447,8 +434,6 @@ public class HomeWonderfulFragmentExt extends Fragment implements
                     mParent.adjustSize(true);
                     ActivityOptionsCompat compat = ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity(), v, v.getTransitionName());
                     startActivity(intent, compat.toBundle());
-//                    startActivity(intent);
-
                 } else {
                     startActivity(intent);
                 }
@@ -625,24 +610,6 @@ public class HomeWonderfulFragmentExt extends Fragment implements
         }
     }
 
-    @Override
-    public void loadMedia(int mediaType, final String srcUrl, final ImageView imageView) {
-        //图标
-        if (mediaType == MediaBean.TYPE_PIC) {
-            Glide.with(this)
-                    .load(srcUrl)
-                    .placeholder(R.drawable.wonderful_pic_place_holder)
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .into(imageView);
-        } else if (mediaType == MediaBean.TYPE_VIDEO) {
-            if (srcUrl.startsWith("http://") || srcUrl.startsWith("https://")) {
-                GlideNetVideoUtils.loadNetVideo(getContext(), srcUrl, imageView, null);
-            } else {
-                Glide.with(this).load(srcUrl).into(imageView);
-            }
-        }
-    }
-
 
     @Override
     public void onSharedElementCallBack(List<String> names, Map<String, View> sharedElements) {
@@ -733,7 +700,7 @@ public class HomeWonderfulFragmentExt extends Fragment implements
     public void onTimeLineChanged(long newTime) {
         List<MediaBean> list = homeWonderAdapter.getList();
         for (MediaBean bean : list) {
-            if (bean.time == newTime) {
+            if (bean.time == newTime / 1000) {
                 int index = list.indexOf(bean);
                 int position = mLinearLayoutManager.findFirstVisibleItemPosition();
                 rVDevicesList.smoothScrollToPosition(index > position ? index + 1 : index);

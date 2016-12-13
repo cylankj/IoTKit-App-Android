@@ -307,9 +307,9 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
 
     private void setHeaderContent() {
         if (mCurrentViewType == MediaBean.TYPE_VIDEO) {
-            mHeaderTitle.setText(TimeUtils.getMediaVideoTimeInString(mCurrentMediaBean.time));
+            mHeaderTitle.setText(TimeUtils.getMediaVideoTimeInString(mCurrentMediaBean.time * 1000L));
         } else if (mCurrentViewType == MediaBean.TYPE_PIC) {
-            mHeaderTitle.setText(TimeUtils.getMediaPicTimeInString(mCurrentMediaBean.time));
+            mHeaderTitle.setText(TimeUtils.getMediaPicTimeInString(mCurrentMediaBean.time * 1000L));
         }
 
     }

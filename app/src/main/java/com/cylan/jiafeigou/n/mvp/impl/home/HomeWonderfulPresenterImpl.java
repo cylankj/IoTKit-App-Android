@@ -6,7 +6,6 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Environment;
-import android.view.MotionEvent;
 import android.webkit.MimeTypeMap;
 
 import com.bumptech.glide.Glide;
@@ -346,8 +345,6 @@ public class HomeWonderfulPresenterImpl extends AbstractPresenter<HomeWonderfulC
         String extension = MimeTypeMap.getFileExtensionFromUrl(mediaBean.fileName);
         if (extension != null) {
             type = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
-            MotionEvent event = null;
-//            event.getActionMasked()
         }
         return 1;
     }
@@ -432,26 +429,28 @@ public class HomeWonderfulPresenterImpl extends AbstractPresenter<HomeWonderfulC
     };
 
     private Subscription getRobotDataRspSub() {
+
         return RxBus.getCacheInstance().toObservable(RobotoGetDataRsp.class).subscribeOn(Schedulers.io())
+                .filter(robotoGetDataRsp -> mSeqList.remove(robotoGetDataRsp.seq))
                 .map(robotoRsp -> {
                     List<MediaBean> results = new ArrayList<>();
-                    if (mSeqList.remove(robotoRsp.seq)) {
-                        ArrayList<JFGDPMsg> msgs = robotoRsp.map.get(DpMsgMap.ID_602_ACCOUNT_WONDERFUL_MSG);
-                        MediaBean bean;
-                        for (JFGDPMsg msg : msgs) {
-                            try {
-                                bean = DpUtils.unpackData(msg.packValue, MediaBean.class);
-                                results.add(bean);
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
+                    ArrayList<JFGDPMsg> msgs = robotoRsp.map.get(DpMsgMap.ID_602_ACCOUNT_WONDERFUL_MSG);
+                    MediaBean bean;
+                    for (JFGDPMsg msg : msgs) {
+                        try {
+                            bean = DpUtils.unpackData(msg.packValue, MediaBean.class);
+                            results.add(bean);
+                        } catch (IOException e) {
+                            e.printStackTrace();
                         }
-                        updateCache(results);
                     }
+                    updateCache(results);
                     return results;
                 }).observeOn(AndroidSchedulers.mainThread())
                 .subscribe(results -> {
                     if (getView() != null) {
+//                        results = new ArrayList<MediaBean>(new HashSet<MediaBean>(results));
+//                        Collections.sort(results);
                         getView().onMediaListRsp(results);
                         List<Long> times = assembleTimeLineData(results);
                         getView().onTimeLineDataUpdate(times);

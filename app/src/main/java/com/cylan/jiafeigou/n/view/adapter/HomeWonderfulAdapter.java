@@ -2,12 +2,17 @@ package com.cylan.jiafeigou.n.view.adapter;
 
 import android.content.Context;
 import android.support.v4.view.ViewCompat;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.mvp.model.MediaBean;
+import com.cylan.jiafeigou.utils.TimeUtils;
+import com.cylan.jiafeigou.utils.WonderGlideURL;
 import com.cylan.superadapter.IMulItemViewType;
 import com.cylan.superadapter.SuperAdapter;
 import com.cylan.superadapter.internal.SuperViewHolder;
@@ -63,17 +68,20 @@ public class HomeWonderfulAdapter extends SuperAdapter<MediaBean> {
     }
 
     private void handleState(SuperViewHolder holder, MediaBean bean) {
-
-
         //时间
-        holder.setText(R.id.tv_wonderful_item_date, "00;00");
-
-        if (loadMediaListener != null)
-            loadMediaListener.loadMedia(bean.msgType,
-                    bean.fileName,
-                    (ImageView) holder.getView(R.id.iv_wonderful_item_content));
+        holder.setText(R.id.tv_wonderful_item_date, TimeUtils.getHH_MM(bean.time * 1000));
         //来自摄像头
-        holder.setText(R.id.tv_wonderful_item_device_name, "南湖");
+        if (TextUtils.isEmpty(bean.place)) {
+            holder.setVisibility(R.id.tv_wonderful_item_device_name, View.GONE);
+        } else {
+            holder.setText(R.id.tv_wonderful_item_device_name, bean.place);
+            holder.setVisibility(R.id.tv_wonderful_item_device_name, View.VISIBLE);
+        }
+
+        Glide.with(getContext()).load(new WonderGlideURL(bean))
+                .placeholder(R.drawable.wonderful_pic_place_holder)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .into((ImageView) holder.getView(R.id.iv_wonderful_item_content));
     }
 
     @Override
@@ -107,6 +115,6 @@ public class HomeWonderfulAdapter extends SuperAdapter<MediaBean> {
     }
 
     public interface LoadMediaListener {
-        void loadMedia(int type, String url, ImageView imageView);
+        void loadMedia(MediaBean bean, ImageView imageView);
     }
 }

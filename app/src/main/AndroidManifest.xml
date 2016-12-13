@@ -100,10 +100,6 @@
             android:name="weChatAppId"
             android:value="${weChat_APP_ID}"/>
 
-        <meta-data
-            android:name="com.cylan.jiafeigou.n.engine.GlideWonderLoader"
-            android:value="GlideModule"/>
-
         <activity
             android:name=".SmartcallActivity"
             android:configChanges="locale|orientation|keyboardHidden"

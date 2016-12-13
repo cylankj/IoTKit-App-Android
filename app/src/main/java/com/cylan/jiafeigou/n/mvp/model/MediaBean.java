@@ -28,6 +28,8 @@ public class MediaBean extends BaseDataPoint implements Comparable<MediaBean>, P
     public int regionType;
     @Index(4)
     public String fileName;
+    @Index(5)
+    public String place;
 
     @Override
     public boolean equals(Object o) {
@@ -58,11 +60,12 @@ public class MediaBean extends BaseDataPoint implements Comparable<MediaBean>, P
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(cid);
-        dest.writeLong(this.time);
+        dest.writeString(this.cid);
+        dest.writeInt(this.time);
         dest.writeInt(this.msgType);
         dest.writeInt(this.regionType);
         dest.writeString(this.fileName);
+        dest.writeString(this.place);
     }
 
     public MediaBean() {
@@ -74,6 +77,7 @@ public class MediaBean extends BaseDataPoint implements Comparable<MediaBean>, P
         this.msgType = in.readInt();
         this.regionType = in.readInt();
         this.fileName = in.readString();
+        this.place = in.readString();
     }
 
     public static final Creator<MediaBean> CREATOR = new Creator<MediaBean>() {
@@ -96,6 +100,7 @@ public class MediaBean extends BaseDataPoint implements Comparable<MediaBean>, P
                 ", msgType=" + msgType +
                 ", regionType=" + regionType +
                 ", fileName='" + fileName + '\'' +
+                ", place='" + place + '\'' +
                 '}';
     }
 

@@ -10,15 +10,27 @@ import java.util.Locale;
  */
 public class TimeUtils {
 
-    public static SimpleDateFormat simpleDateFormat_1 = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
 
-    public static String getDateStyle_0(final long time) {
-        return simpleDateFormat_1.format(new Date(time));
-    }
-//    public static void main(String[] args) {
-//        System.out.println(getDayMiddleNight(System.currentTimeMillis()));
-//    }
+    private static final ThreadLocal<SimpleDateFormat> getSimpleDateFormat_1 = new ThreadLocal<SimpleDateFormat>() {
+        @Override
+        protected SimpleDateFormat initialValue() {
+            return new SimpleDateFormat("yyyy.MM.dd HH:mm", Locale.getDefault());
+        }
+    };
 
+    private static final ThreadLocal<SimpleDateFormat> getSimpleDateFormatVideo = new ThreadLocal<SimpleDateFormat>() {
+        @Override
+        protected SimpleDateFormat initialValue() {
+            return new SimpleDateFormat("MM.dd-HH:mm", Locale.getDefault());
+        }
+    };
+
+    private static final ThreadLocal<SimpleDateFormat> getSimpleDateFormatHHMM = new ThreadLocal<SimpleDateFormat>() {
+        @Override
+        protected SimpleDateFormat initialValue() {
+            return new SimpleDateFormat("HH:mm", Locale.getDefault());
+        }
+    };
 
     /**
      * 获取当天0点时间戳
@@ -33,16 +45,13 @@ public class TimeUtils {
         return calendar.getTimeInMillis();
     }
 
-    private static final SimpleDateFormat getSimpleDateFormat_1 = new SimpleDateFormat("yyyy.MM.dd HH:mm", Locale.getDefault());
-
     public static String getMediaPicTimeInString(final long time) {
-        return getSimpleDateFormat_1.format(new Date(time));
+        return getSimpleDateFormat_1.get().format(new Date(time));
     }
 
-    private static final SimpleDateFormat getSimpleDateFormatVideo = new SimpleDateFormat("MM.dd-HH:mm", Locale.getDefault());
 
     public static String getMediaVideoTimeInString(final long time) {
-        return getSimpleDateFormatVideo.format(new Date(time));
+        return getSimpleDateFormatVideo.get().format(new Date(time));
     }
 
     public static String getTodayString() {
@@ -52,6 +61,10 @@ public class TimeUtils {
 
     public static String getDayString(long time) {
         return new SimpleDateFormat("yyyy.MM.dd", Locale.getDefault())
-                .format(time);
+                .format(new Date(time));
+    }
+
+    public static String getHH_MM(long time) {
+        return getSimpleDateFormatHHMM.get().format(new Date(time));
     }
 }
