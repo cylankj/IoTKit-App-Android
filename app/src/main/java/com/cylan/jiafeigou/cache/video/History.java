@@ -2,6 +2,7 @@ package com.cylan.jiafeigou.cache.video;
 
 import com.cylan.entity.jniCall.JFGHistoryVideo;
 import com.cylan.entity.jniCall.JFGVideo;
+import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
@@ -10,6 +11,7 @@ import com.cylan.jiafeigou.support.log.AppLogger;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 
 import rx.Subscription;
 import rx.functions.Func1;
@@ -27,7 +29,6 @@ public class History implements IHistory {
      * 数据集,不实现Lru逻辑
      */
     private ArrayList<JFGVideo> dataList;
-    //    private Map<String,Long>
     private final Object object = new Object();
 
     public static History getHistory() {
@@ -61,6 +62,7 @@ public class History implements IHistory {
                             if (dataList == null)
                                 dataList = new ArrayList<>();
                             dataList.addAll(list);
+                            dataList = new ArrayList<>(new HashSet<>(dataList));
                             Collections.sort(dataList);
                         }
                         return null;
@@ -81,8 +83,12 @@ public class History implements IHistory {
                 .map(new Func1<RxEvent.JFGHistoryVideoReq, Object>() {
                     @Override
                     public Object call(RxEvent.JFGHistoryVideoReq jfgHistoryVideoReq) {
+                        try {
+                            JfgCmdInsurance.getCmd().getVideoList(jfgHistoryVideoReq.uuid);
+                        } catch (JfgException e) {
+                            e.printStackTrace();
+                        }
                         AppLogger.i(IHistory + jfgHistoryVideoReq.uuid);
-                        JfgCmdInsurance.getCmd().getVideoList(jfgHistoryVideoReq.uuid);
                         return null;
                     }
                 })

@@ -1,5 +1,6 @@
 package com.cylan.jiafeigou.n.mvp.impl.bind;
 
+import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.misc.bind.UdpConstant;
 import com.cylan.jiafeigou.n.mvp.contract.bind.SetDeviceAliasContract;
@@ -48,7 +49,11 @@ public class SetDeviceAliasPresenterImpl extends AbstractPresenter<SetDeviceAlia
                     public String call(String s) {
                         AppLogger.i("setup alias: " + portrait);
                         if (portrait != null)
-                            JfgCmdInsurance.getCmd().setAliasByCid(portrait.cid, s);
+                            try {
+                                JfgCmdInsurance.getCmd().setAliasByCid(portrait.cid, s);
+                            } catch (JfgException e) {
+                                e.printStackTrace();
+                            }
                         return s;
                     }
                 })

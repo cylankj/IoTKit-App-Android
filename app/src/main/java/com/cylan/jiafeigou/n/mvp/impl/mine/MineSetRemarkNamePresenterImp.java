@@ -1,9 +1,8 @@
 package com.cylan.jiafeigou.n.mvp.impl.mine;
 
-import android.content.Context;
 import android.text.TextUtils;
 
-import com.cylan.jfgapp.jni.JfgAppCmd;
+import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineSetRemarkNameContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
@@ -11,15 +10,10 @@ import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.tencent.open.utils.HttpUtils;
 
-import java.util.concurrent.TimeUnit;
-
-import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
-import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
@@ -39,9 +33,9 @@ public class MineSetRemarkNamePresenterImp extends AbstractPresenter<MineSetRema
 
     @Override
     public void start() {
-        if (compositeSubscription != null && !compositeSubscription.isUnsubscribed()){
+        if (compositeSubscription != null && !compositeSubscription.isUnsubscribed()) {
             compositeSubscription.unsubscribe();
-        }else {
+        } else {
             compositeSubscription = new CompositeSubscription();
             compositeSubscription.add(getFriendRemarkNameCallBack());
         }
@@ -49,7 +43,7 @@ public class MineSetRemarkNamePresenterImp extends AbstractPresenter<MineSetRema
 
     @Override
     public void stop() {
-        if (compositeSubscription != null && !compositeSubscription.isUnsubscribed()){
+        if (compositeSubscription != null && !compositeSubscription.isUnsubscribed()) {
             compositeSubscription.unsubscribe();
         }
     }
@@ -61,18 +55,23 @@ public class MineSetRemarkNamePresenterImp extends AbstractPresenter<MineSetRema
 
     /**
      * 发送修改备注名的请求
+     *
      * @param friendBean
      */
     @Override
     public void sendSetmarkNameReq(final String newName, final RelAndFriendBean friendBean) {
         getView().showSendReqPro();
         rx.Observable.just(friendBean)
-              .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.newThread())
                 .subscribe(new Action1<RelAndFriendBean>() {
                     @Override
                     public void call(RelAndFriendBean bean) {
-                        JfgCmdInsurance.getCmd().setFriendMarkName(friendBean.account, newName);
-                        JfgCmdInsurance.getCmd().getFriendInfo(friendBean.account);
+                        try {
+                            JfgCmdInsurance.getCmd().setFriendMarkName(friendBean.account, newName);
+                            JfgCmdInsurance.getCmd().getFriendInfo(friendBean.account);
+                        } catch (JfgException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }, new Action1<Throwable>() {
                     @Override
@@ -85,6 +84,7 @@ public class MineSetRemarkNamePresenterImp extends AbstractPresenter<MineSetRema
 
     /**
      * 设置好友的备注名回调
+     *
      * @return
      */
     @Override
@@ -94,8 +94,8 @@ public class MineSetRemarkNamePresenterImp extends AbstractPresenter<MineSetRema
                 .subscribe(new Action1<RxEvent.GetFriendInfoCall>() {
                     @Override
                     public void call(RxEvent.GetFriendInfoCall getFriendInfoCall) {
-                        if (getFriendInfoCall != null && getFriendInfoCall instanceof RxEvent.GetFriendInfoCall){
-                            if(getView() != null){
+                        if (getFriendInfoCall != null && getFriendInfoCall instanceof RxEvent.GetFriendInfoCall) {
+                            if (getView() != null) {
                                 getView().hideSendReqPro();
                                 getView().showFinishResult(getFriendInfoCall);
                             }

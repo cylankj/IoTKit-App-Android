@@ -1,6 +1,7 @@
 package com.cylan.jiafeigou.n.mvp.impl.mine;
 
 
+import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendAddReqDetailContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
@@ -59,7 +60,11 @@ public class MineFriendAddReqDetailPresenterImp extends AbstractPresenter<MineFr
                 .subscribe(new Action1<String>() {
                     @Override
                     public void call(String account) {
-                        JfgCmdInsurance.getCmd().consentAddFriend(account);
+                        try {
+                            JfgCmdInsurance.getCmd().consentAddFriend(account);
+                        } catch (JfgException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }, new Action1<Throwable>() {
                     @Override
@@ -97,7 +102,11 @@ public class MineFriendAddReqDetailPresenterImp extends AbstractPresenter<MineFr
                 .subscribe(new Action1<MineAddReqBean>() {
                     @Override
                     public void call(MineAddReqBean mineAddReqBean) {
-                        JfgCmdInsurance.getCmd().addFriend(mineAddReqBean.account,"");
+                        try {
+                            JfgCmdInsurance.getCmd().addFriend(mineAddReqBean.account,"");
+                        } catch (JfgException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }, new Action1<Throwable>() {
                     @Override

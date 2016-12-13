@@ -1,6 +1,7 @@
 package com.cylan.jiafeigou.n.mvp.impl.mine;
 
 import com.cylan.entity.jniCall.JFGFriendAccount;
+import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineShareToFriendContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
@@ -73,7 +74,11 @@ public class MineShareToFriendPresenterImp extends AbstractPresenter<MineShareTo
                     @Override
                     public void call(ArrayList<RelAndFriendBean> list) {
                         for (RelAndFriendBean bean:list){
-                            JfgCmdInsurance.getCmd().shareDevice(cid,bean.account);
+                            try {
+                                JfgCmdInsurance.getCmd().shareDevice(cid,bean.account);
+                            } catch (JfgException e) {
+                                e.printStackTrace();
+                            }
                         }
                     }
                 }, new Action1<Throwable>() {
@@ -114,7 +119,11 @@ public class MineShareToFriendPresenterImp extends AbstractPresenter<MineShareTo
                 .subscribe(new Action1<String>() {
                     @Override
                     public void call(String cid) {
-                        JfgCmdInsurance.getCmd().getUnShareListByCid(cid);
+                        try {
+                            JfgCmdInsurance.getCmd().getUnShareListByCid(cid);
+                        } catch (JfgException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }, new Action1<Throwable>() {
                     @Override

@@ -3,6 +3,7 @@ package com.cylan.jiafeigou.n.mvp.impl.mine;
 import android.text.TextUtils;
 
 import com.cylan.entity.jniCall.JFGAccount;
+import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineInfoSetNameContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
@@ -38,7 +39,7 @@ public class MineInfoSetNamePresenterImpl extends AbstractPresenter<MineInfoSetN
      */
     @Override
     public void saveName(final String newAlias) {
-        if (getView() != null){
+        if (getView() != null) {
             getView().showSendHint();
         }
         rx.Observable.just(newAlias)
@@ -48,12 +49,16 @@ public class MineInfoSetNamePresenterImpl extends AbstractPresenter<MineInfoSetN
                     public void call(String newAliasAccount) {
                         jfgAccount.resetFlag();
                         jfgAccount.setAlias(newAliasAccount);
-                        JfgCmdInsurance.getCmd().setAccount(jfgAccount);
+                        try {
+                            JfgCmdInsurance.getCmd().setAccount(jfgAccount);
+                        } catch (JfgException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }, new Action1<Throwable>() {
                     @Override
                     public void call(Throwable throwable) {
-                        AppLogger.e("saveName"+throwable.getLocalizedMessage());
+                        AppLogger.e("saveName" + throwable.getLocalizedMessage());
                     }
                 });
 
@@ -66,6 +71,7 @@ public class MineInfoSetNamePresenterImpl extends AbstractPresenter<MineInfoSetN
 
     /**
      * 修改昵称之后的回调
+     *
      * @return
      */
     @Override
@@ -75,7 +81,7 @@ public class MineInfoSetNamePresenterImpl extends AbstractPresenter<MineInfoSetN
                 .subscribe(new Action1<RxEvent.GetUserInfo>() {
                     @Override
                     public void call(RxEvent.GetUserInfo getUserInfo) {
-                        if (getView() != null){
+                        if (getView() != null) {
                             jfgAccount = getUserInfo.jfgAccount;
                             getView().handlerResult(getUserInfo);
                         }
@@ -85,9 +91,9 @@ public class MineInfoSetNamePresenterImpl extends AbstractPresenter<MineInfoSetN
 
     @Override
     public void start() {
-        if (compositeSubscription != null && !compositeSubscription.isUnsubscribed()){
+        if (compositeSubscription != null && !compositeSubscription.isUnsubscribed()) {
             compositeSubscription.unsubscribe();
-        }else {
+        } else {
             compositeSubscription = new CompositeSubscription();
             compositeSubscription.add(saveAliasCallBack());
         }
@@ -95,7 +101,7 @@ public class MineInfoSetNamePresenterImpl extends AbstractPresenter<MineInfoSetN
 
     @Override
     public void stop() {
-        if (compositeSubscription != null && !compositeSubscription.isUnsubscribed()){
+        if (compositeSubscription != null && !compositeSubscription.isUnsubscribed()) {
             compositeSubscription.unsubscribe();
         }
     }

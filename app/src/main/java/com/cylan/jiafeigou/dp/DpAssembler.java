@@ -8,10 +8,12 @@ import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.entity.jniCall.RobotoGetDataRsp;
+import com.cylan.ex.JfgException;
 import com.cylan.jfgapp.jni.JfgAppCmd;
 import com.cylan.jiafeigou.cache.JCache;
 import com.cylan.jiafeigou.misc.Converter;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.model.BaseBean;
 import com.cylan.jiafeigou.n.mvp.model.param.BaseParam;
 import com.cylan.jiafeigou.n.mvp.model.param.BellParam;
@@ -279,7 +281,12 @@ public class DpAssembler implements IParser {
                             assembleBase(list.get(i));
                             final int pid = list.get(i).pid;
                             BaseParam baseParam = merger(pid);
-                            long seq = JfgAppCmd.getInstance().robotGetData(list.get(i).uuid, baseParam.queryParameters(null), 1, false, 0);
+                            long seq = 0;
+                            try {
+                                seq = JfgCmdInsurance.getCmd().robotGetData(list.get(i).uuid, baseParam.queryParameters(null), 1, false, 0);
+                            } catch (JfgException e) {
+                                e.printStackTrace();
+                            }
                             map.put(list.get(i).uuid, seq);
                             AppLogger.i(TAG + " req: " + list.get(i).uuid);
                         }
