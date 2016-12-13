@@ -136,7 +136,6 @@ public class LoginFragment extends android.support.v4.app.Fragment
     @BindView(R.id.tv_agreement)
     TextView tvAgreement;
 
-
     private VerificationCodeLogic verificationCodeLogic;
     private int registerWay = JConstant.REGISTER_BY_PHONE;
     private LoginContract.Presenter presenter;
@@ -274,7 +273,6 @@ public class LoginFragment extends android.support.v4.app.Fragment
         AnimatorUtils.onSimpleBounceUpIn(vsLayoutSwitcher, 1000, 20);
         AnimatorUtils.onSimpleBounceUpIn(rLayoutLoginThirdParty, 200, 400);
     }
-
 
     /**
      * 初始化view
