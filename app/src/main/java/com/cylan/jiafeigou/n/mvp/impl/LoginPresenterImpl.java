@@ -366,9 +366,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
                 getView().onSinaAuthorizeResult(LoginContract.AUTHORIZE_CANCLE);
             }
         }
-
     }
-
 
     /**
      * 新浪权限检查的监听器
@@ -452,7 +450,5 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
             e.printStackTrace();
         }
     }
-
-
 
 }
