@@ -58,11 +58,13 @@ public class VideoViewFactory {
          * 截图
          */
         void takeSnapshot();
+
+        void performTouch();
     }
 
     public interface InterActListener {
         // 单击
-        void onSingleTap(float x, float y);
+        boolean onSingleTap(float x, float y);
 
         // opengl截图，回调
         void onSnapshot(Bitmap bitmap, boolean tag);

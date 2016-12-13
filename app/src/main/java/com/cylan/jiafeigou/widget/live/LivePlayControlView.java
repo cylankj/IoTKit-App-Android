@@ -1,6 +1,8 @@
 package com.cylan.jiafeigou.widget.live;
 
 import android.content.Context;
+import android.os.Handler;
+import android.os.Message;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -26,6 +28,7 @@ public class LivePlayControlView extends LinearLayout implements ILiveControl, V
     private SimpleProgressBar simpleProgressBar;
     private ImageView imageView;
     private Action action;
+    private Handler handler;
 
     public LivePlayControlView(Context context) {
         this(context, null);
@@ -46,11 +49,17 @@ public class LivePlayControlView extends LinearLayout implements ILiveControl, V
         textView.setOnClickListener(this);
     }
 
+    public int getState() {
+        return state;
+    }
+
     @Override
     public void setState(int state, CharSequence content) {
         this.state = state;
         switch (state) {
             case STATE_LOADING:
+                toDismiss(3);
+                toDismiss(1);
                 textView.setVisibility(GONE);
                 imageView.setVisibility(GONE);
                 if (!simpleProgressBar.isShown())
@@ -58,6 +67,7 @@ public class LivePlayControlView extends LinearLayout implements ILiveControl, V
                 simpleProgressBar.setVisibility(VISIBLE);
                 break;
             case STATE_PLAYING:
+                toDismiss(0);
                 if (!imageView.isShown())
                     imageView.setVisibility(VISIBLE);
                 imageView.setImageResource(R.drawable.btn_video_playing);
@@ -65,6 +75,7 @@ public class LivePlayControlView extends LinearLayout implements ILiveControl, V
                 simpleProgressBar.setVisibility(GONE);
                 break;
             case STATE_STOP:
+                toDismiss(0);
                 if (!imageView.isShown())
                     imageView.setVisibility(VISIBLE);
                 imageView.setImageResource(R.drawable.btn_video_stop);
@@ -72,6 +83,7 @@ public class LivePlayControlView extends LinearLayout implements ILiveControl, V
                 simpleProgressBar.setVisibility(GONE);
                 break;
             case STATE_LOADING_FAILED:
+                toDismiss(1);
                 if (!imageView.isShown())
                     imageView.setVisibility(VISIBLE);
                 imageView.setImageResource(R.drawable.btn_video_retry);
@@ -80,10 +92,51 @@ public class LivePlayControlView extends LinearLayout implements ILiveControl, V
                     textView.setVisibility(VISIBLE);
                 textView.setText(content);
                 break;
-            case STATE_SHOWING_OR_HIDING:
-                break;
         }
         Log.d("setState", "setState: " + state);
+    }
+
+    /**
+     * 0:3s后准备隐藏
+     * 1:一直显示
+     * 2:马上隐藏
+     * 3:马上显示
+     *
+     * @param show
+     */
+    private void toDismiss(int show) {
+        if (handler == null) {
+            handler = new Handler((Message msg) -> {
+                switch (msg.what) {
+                    case 0:
+                        handler.removeMessages(0);
+                        handler.removeMessages(2);
+                        if (!LivePlayControlView.this.isShown()) {
+                            handler.sendEmptyMessage(3);//马上显示
+                            handler.sendEmptyMessageDelayed(2, 3000);
+                        } else {
+                            handler.sendEmptyMessage(2);//马上隐藏
+                        }
+                        break;
+                    case 1:
+                        handler.removeMessages(0);
+                        handler.removeMessages(2);
+                        handler.sendEmptyMessage(3);//马上显示
+                        break;
+                    case 2:
+                        //隐藏
+                        if (LivePlayControlView.this.isShown())
+                            LivePlayControlView.this.setVisibility(INVISIBLE);
+                        break;
+                    case 3:
+                        if (!LivePlayControlView.this.isShown())
+                            LivePlayControlView.this.setVisibility(VISIBLE);
+                        break;
+                }
+                return true;
+            });
+        }
+        handler.sendEmptyMessage(show);
     }
 
     @Override

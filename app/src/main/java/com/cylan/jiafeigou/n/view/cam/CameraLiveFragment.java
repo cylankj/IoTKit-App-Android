@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -29,7 +30,6 @@ import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamLiveContract;
 import com.cylan.jiafeigou.n.mvp.impl.cam.CamLivePresenterImpl;
-import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
 import com.cylan.jiafeigou.n.view.misc.LandLiveBarAnimDelegate;
 import com.cylan.jiafeigou.n.view.misc.LiveBottomBarAnimDelegate;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -47,6 +47,8 @@ import java.util.Locale;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+
+import static com.cylan.jiafeigou.misc.JFGRules.PlayErr.ERR_STOP;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -116,7 +118,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        basePresenter = new CamLivePresenterImpl(this, (DeviceBean) getArguments().getParcelable(JConstant.KEY_DEVICE_ITEM_BUNDLE));
+        basePresenter = new CamLivePresenterImpl(this, getArguments().getParcelable(JConstant.KEY_DEVICE_ITEM_BUNDLE));
     }
 
     @Override
@@ -131,7 +133,6 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_camera_live, container, false);
         ButterKnife.bind(this, view);
-
         return view;
     }
 
@@ -228,9 +229,23 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
                 iLiveActionViewRef = new WeakReference<>(control);
                 control.setAction(new ILiveControl.Action() {
                     @Override
-                    public void clickImage(int state) {
-                        switch (state) {
+                    public void clickImage(int curState) {
+                        switch (curState) {
+                            case ILiveControl.STATE_LOADING_FAILED:
+                            case ILiveControl.STATE_STOP:
+                                //下一步playing
+                                if (basePresenter != null)
+                                    basePresenter.startPlayVideo(basePresenter.getPlayType());
+                                break;
+                            case ILiveControl.STATE_PLAYING:
+                                //下一步stop
+                                if (basePresenter != null) {
+                                    onLiveStop(basePresenter.getPlayType(), ERR_STOP);//
+                                    basePresenter.stopPlayVideo(basePresenter.getPlayType());
+                                }
+                                break;
                         }
+                        AppLogger.i("clickImage:" + curState);
                     }
 
                     @Override
@@ -270,6 +285,13 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
         View v = fLayoutLiveViewContainer.findViewById("flow".hashCode());
         if (!show && v == null)
             return;
+        if (!show && v.isShown()) {
+            v.setVisibility(View.GONE);
+            return;
+        }
+        if (show && v != null && !v.isShown()) {
+            v.setVisibility(View.VISIBLE);
+        }
         if (v == null) {
             if (tvFlowRef == null || tvFlowRef.get() == null) {
                 TextView textView = new TextView(getContext());
@@ -300,7 +322,21 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
             videoView = VideoViewFactory.CreateRendererExt(JFGRules.isNeedPanoramicView(pid),
                     getContext(), true);
             ((View) videoView).setId("IVideoView".hashCode());
+            videoView.setInterActListener(new VideoViewFactory.InterActListener() {
 
+                @Override
+                public boolean onSingleTap(float x, float y) {
+                    Log.d("InterActListener", "InterActListener:onSingleTap");
+                    if (iLiveActionViewRef != null && iLiveActionViewRef.get() != null)
+                        showLoading(iLiveActionViewRef.get().getState(), null);
+                    return true;
+                }
+
+                @Override
+                public void onSnapshot(Bitmap bitmap, boolean tag) {
+
+                }
+            });
         }
         AppLogger.i("initVideoView");
         return videoView;
@@ -395,6 +431,8 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
                 break;
             case R.id.fLayout_cam_live_view:
                 animateBottomBar(false);
+                if (videoView != null)
+                    videoView.performTouch();
                 break;
         }
     }
@@ -467,6 +505,9 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
             case JFGRules.PlayErr.ERR_DEVICE_OFFLINE:
                 ToastUtil.showNegativeToast(getString(R.string.OFFLINE_ERR));
                 break;
+            default:
+                showLoading(ILiveControl.STATE_STOP, null);
+                break;
         }
     }
 
@@ -535,11 +576,8 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
 
         private void setup() {
             viewWeakReference.get().findViewById(R.id.fLayout_cam_live_land_control_layer)
-                    .setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            landLiveBarAnimDelegate.startAnimation(false);
-                        }
+                    .setOnClickListener((View v) -> {
+                        landLiveBarAnimDelegate.startAnimation(false);
                     });
             imgvPlay = (ImageView) viewWeakReference.get().findViewById(R.id.imgV_cam_live_land_play);
             imgvPlay.setOnClickListener(new View.OnClickListener() {

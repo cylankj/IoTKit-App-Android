@@ -37,6 +37,8 @@ import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
+import static com.cylan.jiafeigou.misc.JFGRules.PlayErr.ERR_STOP;
+
 /**
  * Created by cylan-hunt on 16-7-27.
  */

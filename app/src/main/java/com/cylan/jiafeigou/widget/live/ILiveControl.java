@@ -10,7 +10,6 @@ public interface ILiveControl {
     int STATE_STOP = 1;
     int STATE_LOADING = 2;
     int STATE_LOADING_FAILED = 3;
-    int STATE_SHOWING_OR_HIDING = 4;//展示或者隐藏
 
     /**
      * 播放
@@ -22,6 +21,8 @@ public interface ILiveControl {
      * @param state
      */
     void setState(int state, CharSequence content);
+
+    int getState();
 
     void setAction(Action action);
 
