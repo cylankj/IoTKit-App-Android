@@ -26,6 +26,7 @@ import com.cylan.entity.jniCall.JFGServerCfg;
 import com.cylan.entity.jniCall.JFGShareListInfo;
 import com.cylan.entity.jniCall.RobotMsg;
 import com.cylan.entity.jniCall.RobotoGetDataRsp;
+import com.cylan.ex.JfgException;
 import com.cylan.jfgapp.interfases.AppCallBack;
 import com.cylan.jfgapp.jni.JfgAppCmd;
 import com.cylan.jiafeigou.cache.JCache;
@@ -89,6 +90,8 @@ public class DataSourceService extends Service implements AppCallBack {
                     JfgAppCmd.initJfgAppCmd(getApplicationContext(), DataSourceService.this,
                             JConstant.LOG_PATH);
                 } catch (PackageManager.NameNotFoundException e) {
+                    AppLogger.d("let's go err:" + e.getLocalizedMessage());
+                } catch (JfgException e) {
                     AppLogger.d("let's go err:" + e.getLocalizedMessage());
                 }
                 AppLogger.d("let's go initNative:");

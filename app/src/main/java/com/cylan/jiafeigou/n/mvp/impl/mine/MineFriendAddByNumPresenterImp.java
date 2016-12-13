@@ -6,10 +6,9 @@ import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendAddByNumContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.n.mvp.model.MineAddReqBean;
+import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.rx.RxBus;
-
 
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -34,7 +33,7 @@ public class MineFriendAddByNumPresenterImp extends AbstractPresenter<MineFriend
 
     @Override
     public void start() {
-        if (compositeSubscription != null && !compositeSubscription.isUnsubscribed()){
+        if (compositeSubscription != null && !compositeSubscription.isUnsubscribed()) {
             unSubscribe(compositeSubscription);
         }
         compositeSubscription = new CompositeSubscription();
@@ -49,6 +48,7 @@ public class MineFriendAddByNumPresenterImp extends AbstractPresenter<MineFriend
 
     /**
      * 是否想我发送过请求
+     *
      * @param bean
      */
     @Override
@@ -66,18 +66,23 @@ public class MineFriendAddByNumPresenterImp extends AbstractPresenter<MineFriend
                 .subscribe(new Action1<String>() {
                     @Override
                     public void call(String account) {
+                        try {
                         JfgCmdInsurance.getCmd().checkFriendAccount(account);
+                        } catch (JfgException e) {
+                            e.printStackTrace();
+                    }
                     }
                 }, new Action1<Throwable>() {
                     @Override
                     public void call(Throwable throwable) {
-                        AppLogger.d("checkFriendAccount"+throwable.getLocalizedMessage());
+                        AppLogger.d("checkFriendAccount" + throwable.getLocalizedMessage());
                     }
                 });
     }
 
     /**
      * 检测好友的回调
+     *
      * @return
      */
     @Override
@@ -87,30 +92,32 @@ public class MineFriendAddByNumPresenterImp extends AbstractPresenter<MineFriend
                 .subscribe(new Action1<RxEvent.CheckAccountCallback>() {
                     @Override
                     public void call(RxEvent.CheckAccountCallback checkAccountCallback) {
-                        if (checkAccountCallback != null){
+                        if (checkAccountCallback != null) {
                             handlerCheckCallBackResult(checkAccountCallback);
                         }
                     }
                 });
     }
+
     /**
      * 处理检测的回调结果
+     *
      * @param checkAccountCallback
      */
     private void handlerCheckCallBackResult(RxEvent.CheckAccountCallback checkAccountCallback) {
-        if (checkAccountCallback.i == JError.ErrorOK){
+        if (checkAccountCallback.i == JError.ErrorOK) {
             //  已注册
-            if (getView() != null){
+            if (getView() != null) {
                 MineAddReqBean addReqBean = new MineAddReqBean();
                 addReqBean.account = checkAccountCallback.s;
                 addReqBean.alias = checkAccountCallback.s1;
                 addReqBean.iconUrl = JfgCmdInsurance.getCmd().getCloudUrlByType(JfgEnum.JFG_URL.PORTRAIT,0,checkAccountCallback.s+".jpg","");
                 getView().hideFindLoading();
-                getView().setFindResult(false,addReqBean);
+                getView().setFindResult(false, addReqBean);
             }
-        }else {
+        } else {
             //  未注册 无结果
-            if (getView() != null){
+            if (getView() != null) {
                 getView().hideFindLoading();
                 getView().showFindNoResult();
             }

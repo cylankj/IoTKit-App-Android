@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import com.cylan.entity.jniCall.JFGFriendAccount;
+import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineShareToContactContract;
@@ -100,7 +101,11 @@ public class MineShareToContactPresenterImp extends AbstractPresenter<MineShareT
                 .subscribe(new Action1<String>() {
                     @Override
                     public void call(String account) {
-                        JfgCmdInsurance.getCmd().shareDevice(cid,account);
+                        try {
+                            JfgCmdInsurance.getCmd().shareDevice(cid,account);
+                        } catch (JfgException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }, new Action1<Throwable>() {
                     @Override
@@ -122,7 +127,11 @@ public class MineShareToContactPresenterImp extends AbstractPresenter<MineShareT
                 .subscribe(new Action1<String>() {
                     @Override
                     public void call(String s) {
-                        JfgCmdInsurance.getCmd().getUnShareListByCid(cid);
+                        try {
+                            JfgCmdInsurance.getCmd().getUnShareListByCid(cid);
+                        } catch (JfgException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }, new Action1<Throwable>() {
                     @Override

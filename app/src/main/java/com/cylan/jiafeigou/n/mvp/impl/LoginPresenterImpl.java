@@ -9,6 +9,7 @@ import android.widget.Toast;
 
 import com.cylan.entity.JfgEnum;
 import com.cylan.jiafeigou.R;
+import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.cache.JCache;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
@@ -80,7 +81,11 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
                 .map(new Func1<LoginAccountBean, LoginAccountBean>() {
                     @Override
                     public LoginAccountBean call(LoginAccountBean o) {
+                        try {
                         JfgCmdInsurance.getCmd().login(o.userName, o.pwd);
+                        } catch (JfgException e) {
+                            e.printStackTrace();
+                        }
                         AppLogger.i("LoginAccountBean: " + new Gson().toJson(login));
                         return o;
                     }
@@ -99,7 +104,11 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
                 .subscribe(new Action1<Object>() {
                     @Override
                     public void call(Object o) {
-                        JfgCmdInsurance.getCmd().openLogin(openId,"www.cylan.com");
+                        try {
+                            JfgCmdInsurance.getCmd().openLogin(openId,"www.cylan.com");
+                        } catch (JfgException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }, new Action1<Throwable>() {
                     @Override
@@ -298,7 +307,11 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
                 .subscribe(new Action1<Object>() {
                     @Override
                     public void call(Object o) {
+                        try {
                         JfgCmdInsurance.getCmd().verifySMS(phone, code, token);
+                        } catch (JfgException e) {
+                            e.printStackTrace();
+                    }
                     }
                 }, new Action1<Throwable>() {
                     @Override
