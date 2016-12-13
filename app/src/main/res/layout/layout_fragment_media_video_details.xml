@@ -1,4 +1,6 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:app="http://schemas.android.com/apk/res-auto"
+             xmlns:hunt="http://schemas.android.com/apk/res-auto"
              xmlns:tools="http://schemas.android.com/tools"
              android:layout_width="match_parent"
              android:layout_height="match_parent"
@@ -6,17 +8,96 @@
              android:background="@color/color_black"
              tools:ignore="ContentDescription">
 
-
-    <VideoView
-        android:id="@+id/vv_play_video"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="invisible"
-        android:layout_gravity="center"/>
-
-    <com.cylan.photoview.PhotoView
-        android:id="@+id/details_album_image"
+    <com.cylan.jiafeigou.widget.ShadowFrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_gravity="center"/>
+        android:layout_gravity="center"
+        app:fixSize="true">
+
+        <SurfaceView
+            android:id="@+id/vv_play_video"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="invisible"/>
+
+
+        <com.cylan.photoview.PhotoView
+            android:id="@+id/details_album_image"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clickable="false"
+            android:scaleType="fitXY"
+            android:visibility="visible"/>
+
+        <com.cylan.jiafeigou.widget.SimpleProgressBar
+            android:id="@+id/vv_play_loading"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center"
+            android:padding="10dp"
+            android:visibility="invisible"
+            hunt:progress_point_radius="3dp"
+            hunt:progress_stroke_color="@color/color_cecece"/>
+    </com.cylan.jiafeigou.widget.ShadowFrameLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_gravity="bottom">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/vv_play"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:layout_marginLeft="9dp"
+                android:layout_marginRight="14dp"
+                android:src="@drawable/icon_suspend"/>
+
+            <TextView
+                android:id="@+id/vv_play_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="9dp"
+                android:text="00:16"
+                android:textColor="#CCCCCC"
+                android:textSize="11sp"/>
+
+            <SeekBar
+                android:id="@+id/vv_seekbar"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"/>
+
+            <TextView
+                android:id="@+id/vv_total_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="9dp"
+                android:text="00:16"
+                android:textColor="#CCCCCC"
+                android:textSize="11sp"/>
+
+            <ImageView
+                android:id="@+id/vv_full_screen"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:layout_marginLeft="14dp"
+                android:layout_marginRight="13dp"
+                android:src="@drawable/icon_full_screen"/>
+
+            <ImageView
+                android:id="@+id/vv_more"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:layout_marginRight="9dp"
+                android:src="@drawable/icon_more"/>
+
+        </LinearLayout>
+    </FrameLayout>
 </FrameLayout>

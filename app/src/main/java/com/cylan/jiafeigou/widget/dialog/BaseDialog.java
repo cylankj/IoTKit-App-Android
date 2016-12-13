@@ -3,6 +3,7 @@ package com.cylan.jiafeigou.widget.dialog;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
+import android.view.ViewGroup;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.utils.DensityUtils;
@@ -44,8 +45,8 @@ public class BaseDialog<T> extends DialogFragment {
         super.onResume();
         if (getDialog() != null && getDialog().getWindow() != null)
             getDialog().getWindow()
-                    .setLayout(getCustomWidth() == 0 ? maxWidth : getCustomWidth(),
-                            getCustomHeight() == 0 ? minHeight : getCustomHeight());
+                    .setLayout(getCustomWidth() == 0 ? maxWidth : getCustomWidth(), ViewGroup.LayoutParams.WRAP_CONTENT
+                    );
     }
 
     public void setAction(BaseDialogAction action) {

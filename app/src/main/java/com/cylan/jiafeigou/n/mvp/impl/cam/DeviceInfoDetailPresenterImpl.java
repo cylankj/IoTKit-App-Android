@@ -3,6 +3,7 @@ package com.cylan.jiafeigou.n.mvp.impl.cam;
 import android.util.Pair;
 
 import com.cylan.entity.jniCall.JFGDPMsg;
+import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.dp.DpUtils;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
@@ -51,15 +52,23 @@ public class DeviceInfoDetailPresenterImpl extends AbstractPresenter<CamInfoCont
                         update.version = System.currentTimeMillis();
                         RxBus.getCacheInstance().post(update);
                         if (id == DpMsgMap.ID_2000003_BASE_ALIAS) {
-                            JfgCmdInsurance.getCmd().setAliasByCid(beanCamInfo.deviceBase.uuid,
-                                    beanCamInfo.deviceBase.alias);
+                            try {
+                                JfgCmdInsurance.getCmd().setAliasByCid(beanCamInfo.deviceBase.uuid,
+                                        beanCamInfo.deviceBase.alias);
+                            } catch (JfgException e) {
+                                e.printStackTrace();
+                            }
                             AppLogger.i("update alias: " + new Gson().toJson(beanCamInfo));
                             return;
                         }
-                        JfgCmdInsurance.getCmd().robotSetData(beanCamInfo.deviceBase.uuid,
-                                DpUtils.getList(id,
-                                        beanCamInfoIntegerPair.first.getByte(id)
-                                        , System.currentTimeMillis()));
+                        try {
+                            JfgCmdInsurance.getCmd().robotSetData(beanCamInfo.deviceBase.uuid,
+                                    DpUtils.getList(id,
+                                            beanCamInfoIntegerPair.first.getByte(id)
+                                            , System.currentTimeMillis()));
+                        } catch (JfgException e) {
+                            e.printStackTrace();
+                        }
                         AppLogger.i("update camInfo: " + new Gson().toJson(beanCamInfo));
                     }
                 });

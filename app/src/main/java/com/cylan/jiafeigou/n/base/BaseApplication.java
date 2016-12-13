@@ -24,6 +24,7 @@ import com.cylan.jiafeigou.utils.PathGetter;
 import com.cylan.jiafeigou.utils.SuperSpUtils;
 import com.cylan.utils.HandlerThreadUtils;
 import com.cylan.utils.ProcessUtils;
+import com.danikula.videocache.HttpProxyCacheServer;
 import com.squareup.leakcanary.LeakCanary;
 
 /**
@@ -32,6 +33,7 @@ import com.squareup.leakcanary.LeakCanary;
 public class BaseApplication extends Application implements Application.ActivityLifecycleCallbacks {
 
     private static final String TAG = "BaseApplication";
+    private HttpProxyCacheServer proxy;
 
     @Override
     public void onCreate() {
@@ -177,5 +179,14 @@ public class BaseApplication extends Application implements Application.Activity
                 context.startService(new Intent(context, DataSourceService.class));
             }
         }
+    }
+
+    public static HttpProxyCacheServer getProxy(Context context) {
+        BaseApplication app = (BaseApplication) context.getApplicationContext();
+        return app.proxy == null ? (app.proxy = app.newProxy()) : app.proxy;
+    }
+
+    private HttpProxyCacheServer newProxy() {
+        return new HttpProxyCacheServer.Builder(this).maxCacheSize(Long.MAX_VALUE).maxCacheFilesCount(Integer.MAX_VALUE).build();
     }
 }

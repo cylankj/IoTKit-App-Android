@@ -216,7 +216,7 @@ public class HomeWonderfulFragmentExt extends Fragment implements
 
     private ShareDialogFragment initShareDialog() {
         if (shareDialogFragmentWeakReference == null || shareDialogFragmentWeakReference.get() == null) {
-            shareDialogFragmentWeakReference = new WeakReference<>(ShareDialogFragment.newInstance(null));
+            shareDialogFragmentWeakReference = new WeakReference<>(ShareDialogFragment.newInstance((Bundle) null));
         }
         return shareDialogFragmentWeakReference.get();
     }
@@ -447,6 +447,8 @@ public class HomeWonderfulFragmentExt extends Fragment implements
                     mParent.adjustSize(true);
                     ActivityOptionsCompat compat = ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity(), v, v.getTransitionName());
                     startActivity(intent, compat.toBundle());
+//                    startActivity(intent);
+
                 } else {
                     startActivity(intent);
                 }
@@ -634,7 +636,7 @@ public class HomeWonderfulFragmentExt extends Fragment implements
                     .into(imageView);
         } else if (mediaType == MediaBean.TYPE_VIDEO) {
             if (srcUrl.startsWith("http://") || srcUrl.startsWith("https://")) {
-                GlideNetVideoUtils.loadNetVideo(getContext(), srcUrl, imageView);
+                GlideNetVideoUtils.loadNetVideo(getContext(), srcUrl, imageView, null);
             } else {
                 Glide.with(this).load(srcUrl).into(imageView);
             }

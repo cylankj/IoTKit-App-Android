@@ -1,76 +1,136 @@
 package com.cylan.jiafeigou.n.view.activity;
 
 import android.annotation.TargetApi;
-import android.app.SharedElementCallback;
-import android.content.Context;
 import android.content.Intent;
-import android.graphics.Matrix;
-import android.graphics.RectF;
+import android.content.pm.ActivityInfo;
+import android.content.res.Configuration;
+import android.content.res.Resources;
+import android.graphics.drawable.Drawable;
+import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Parcelable;
-import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.app.SharedElementCallback;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AppCompatActivity;
+import android.transition.Transition;
+import android.view.SurfaceHolder;
+import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.misc.HackyViewPager;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.model.MediaBean;
-import com.cylan.jiafeigou.n.view.media.PicDetailsFragment;
-import com.cylan.jiafeigou.n.view.media.VideoDetailsFragment;
+import com.cylan.jiafeigou.n.view.adapter.MediaDetailPagerAdapter;
+import com.cylan.jiafeigou.n.view.adapter.TransitionListenerAdapter;
+import com.cylan.jiafeigou.n.view.home.ShareDialogFragment;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.AnimatorUtils;
+import com.cylan.jiafeigou.utils.FileUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;
+import com.cylan.jiafeigou.widget.SimpleProgressBar;
+import com.cylan.jiafeigou.widget.dialog.VideoMoreDialog;
 
+import java.io.File;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Formatter;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import tv.danmaku.ijk.media.exo.IjkExoMediaPlayer;
+import tv.danmaku.ijk.media.player.IMediaPlayer;
 
 
-/**
- * https://plus.google.com/+AlexLockwood/posts/RPtwZ5nNebb
- * 存在Transition问题。
- */
-public class MediaActivity extends FragmentActivity {
+public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnPreparedListener, IMediaPlayer.OnInfoListener, IMediaPlayer.OnCompletionListener, SeekBar.OnSeekBarChangeListener, ViewPager.OnPageChangeListener, IMediaPlayer.OnErrorListener {
 
-    private static final String STATE_CURRENT_PAGE_POSITION = "state_current_page_position";
 
-    private int mStartingPosition;
+    private static final int PLAY_STATE_RESET = 0;
+    private static final int PLAY_STATE_PAUSED = 1;
+    private static final int PLAY_STATE_PLAYING = 2;
+    private static final int PLAY_STATE_READY_TO_PLAY = 3;
+    private static final int PLAY_STATE_LOADING_START = 4;
+    private static final int PLAY_STATE_LOADING_FINISH = 5;
+
+    @BindView(R.id.act_media_pager)
+    ViewPager mMediaPager;
+    @BindView(R.id.act_media_header_title)
+    TextView mHeaderTitle;
+    @BindView(R.id.act_media_header_opt_delete)
+    ImageView mHeaderDelete;
+    @BindView(R.id.act_media_header_opt_download)
+    ImageView mHeaderDownload;
+    @BindView(R.id.act_media_header_opt_share)
+    ImageView mHeaderShare;
+    @BindView(R.id.act_media_header)
+    FrameLayout mHeaderContainer;
+    @BindView(R.id.act_media_picture_opt_download)
+    ImageView mPictureDownload;
+    @BindView(R.id.act_media_picture_opt_share)
+    ImageView mPictureShare;
+    @BindView(R.id.act_media_picture_opt_collection)
+    ImageView mPictureCollection;
+    @BindView(R.id.act_media_pic_option)
+    FrameLayout mPictureFooterContainer;
+    @BindView(R.id.act_media_video_opt_play)
+    ImageView mVideoPlay;
+    @BindView(R.id.act_media_video_opt_play_time)
+    TextView mVideoPlayTime;
+    @BindView(R.id.act_media_video_opt_seek_bar)
+    SeekBar mVideoSeekBar;
+    @BindView(R.id.act_media_video_opt_total_time)
+    TextView mVideoTotalTime;
+    @BindView(R.id.act_media_video_opt_full_screen)
+    ImageView mVideoFullScreen;
+    @BindView(R.id.act_media_video_opt_more)
+    ImageView mVideoMore;
+    @BindView(R.id.act_media_video_option)
+    FrameLayout mVideoFooterContainer;
+    @BindView(R.id.act_media_footer)
+    FrameLayout mFooterContainer;
+    @BindView(R.id.act_media_header_opt_container)
+    LinearLayout mHeaderOptContainer;
+    @BindView(R.id.act_media_root_view)
+    FrameLayout mContentRootView;
+    @BindView(R.id.act_media_header_back)
+    ImageView mHeaderBack;
+    SurfaceView mVideoView;
+    SimpleProgressBar mVideoLoadingBar;
+    private IjkExoMediaPlayer mMediaPlayer;
+    private StringBuilder mFormatBuilder;
+    private Formatter mFormatter;
+
+    private long mVideoPlayPosition;
+    private int mStartPosition;
     private int mCurrentPosition;
-    private boolean mIsReturning;
-    @BindView(R.id.tv_big_pic_close)
-    ImageView tvBigPicClose;
-    @BindView(R.id.tv_big_pic_title)
-    TextView tvBigPicTitle;
-    @BindView(R.id.fLayout_details_title)
-    FrameLayout fLayoutDetailsTitle;
-    @BindView(R.id.imgV_big_pic_download)
-    ImageView imgVBigPicDownload;
-    @BindView(R.id.imgV_big_pic_share)
-    ImageView imgVBigPicShare;
-    @BindView(R.id.imgV_big_pic_collect)
-    ImageView imgVBigPicCollect;
-    @BindView(R.id.fLayout_details_action_bar)
-    FrameLayout fLayoutDetailsActionBar;
-    private PicDetailsFragment mCurrentDetailsFragment;
+    private ArrayList<MediaBean> mMediaList;
+    private int mCurrentViewType;
+    private MediaBean mCurrentMediaBean;
+    private static final String STATE_CURRENT_PAGE_POSITION = "state_current_page_position";
+    private MediaDetailPagerAdapter mAdapter;
+    private View mPhotoView;
+    private View mPagerContentView;
+    private boolean mEnterAnimationFinished = false;
+    private WeakReference<VideoMoreDialog> mMoreDialog;
+    private WeakReference<ShareDialogFragment> mShareDialog;
+    private File mDownloadFile;
+    private int mCurrentPlayState = PLAY_STATE_RESET;
 
-    private ArrayList<MediaBean> beanArrayList;
-    private SharedElementCallback mExitCallback;
-
-    //    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -79,186 +139,542 @@ public class MediaActivity extends FragmentActivity {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             postponeEnterTransition();
-            initSharedElementCallback();
-            setEnterSharedElementCallback(mCallback);
-            setExitSharedElementCallback(mExitCallback);
+            initShareElementCallback();
         }
-        ViewUtils.setViewMarginStatusBar(fLayoutDetailsTitle);
-        mStartingPosition = getIntent().getIntExtra(JConstant.KEY_SHARED_ELEMENT_STARTED_POSITION, 0);
-        if (savedInstanceState == null) {
-            mCurrentPosition = mStartingPosition;
-        } else {
+        //数据初始化
+        mCurrentPosition = mStartPosition = getIntent().getIntExtra(JConstant.KEY_SHARED_ELEMENT_STARTED_POSITION, 0);
+        mMediaList = getIntent().getParcelableArrayListExtra(JConstant.KEY_SHARED_ELEMENT_LIST);
+        mCurrentMediaBean = mMediaList.get(mStartPosition);
+        mCurrentViewType = mCurrentMediaBean.mediaType;
+        if (savedInstanceState != null) {
             mCurrentPosition = savedInstanceState.getInt(STATE_CURRENT_PAGE_POSITION);
         }
-        ArrayList<MediaBean> list = getIntent().getParcelableArrayListExtra(JConstant.KEY_SHARED_ELEMENT_LIST);
-        beanArrayList = list;
-        //this adapter fix 'java.lang.IllegalArgumentException: pointerIndex out of range'
-        HackyViewPager pager = (HackyViewPager) findViewById(R.id.pager);
-        pager.setAdapter(new DetailsFragmentPagerAdapter(getSupportFragmentManager(), list));
-        pager.setCurrentItem(mCurrentPosition);
-        //刷新当前时间
-        updateTitle(mCurrentPosition);
-        pager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
-            @Override
-            public void onPageSelected(int position) {
-                mCurrentPosition = position;
-                updateActionBar(position);
-                updateTitle(position);
-            }
-        });
-        AppLogger.d("MediaActivity:onCreate");
+        initViewAndListener();
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        ViewUtils.removeActivityFromTransitionManager(this);
-    }
-
-    /**
-     * 刷新图片头部日期
-     *
-     * @param index
-     */
-    private void updateTitle(final int index) {
-        if (beanArrayList != null && index < beanArrayList.size()) {
-            final int mediaType = beanArrayList.get(index).mediaType;
-            final long time = beanArrayList.get(index).time;
-            if (mediaType == MediaBean.TYPE_PIC)
-                tvBigPicTitle.setText(TimeUtils.getMediaPicTimeInString(time));
-            else if (mediaType == MediaBean.TYPE_VIDEO)
-                tvBigPicTitle.setText(TimeUtils.getMediaVideoTimeInString(time));
-        }
-    }
-
-    private void updateActionBar(final int index) {
-
-    }
-
-    private SharedElementCallback mCallback;
-
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    private void initSharedElementCallback() {
-        mCallback = new SharedElementCallback() {
-            @Override
-            public void onMapSharedElements(List<String> names, Map<String, View> sharedElements) {
-                if (mIsReturning) {
-                    ImageView sharedElement = mCurrentDetailsFragment.getAlbumImage();
-                    AppLogger.d("transition:mStartPosition " + mStartingPosition);
-                    AppLogger.d("transition:mCurrentPosition " + mCurrentPosition);
-                    if (sharedElement == null) {
-                        // If shared element is null, then it has been scrolled off screen and
-                        // no longer visible. In this case we cancel the shared element transition by
-                        // removing the shared element from the shared elements map.
-                        names.clear();
-                        sharedElements.clear();
-                    } else if (mStartingPosition != mCurrentPosition) {
-                        // If the user has swiped to activity_cloud_live_mesg_video_talk_item different ViewPager page, then we need to
-                        // remove the old shared element and replace it with the new shared element
-                        // that should be transitioned instead.
-                        final String transitionName = sharedElement.getTransitionName();
-                        AppLogger.d("transition:transitionName " + transitionName);
-                        names.clear();
-                        names.add(transitionName);
-                        sharedElements.clear();
-                        sharedElements.put(transitionName, sharedElement);
-                    }
-                }
-            }
-
-            @Override
-            public void onSharedElementEnd(List<String> sharedElementNames, List<View> sharedElements, List<View> sharedElementSnapshots) {
-                super.onSharedElementEnd(sharedElementNames, sharedElements, sharedElementSnapshots);
-//                fLayoutDetailsActionBar.setVisibility(View.VISIBLE);
-            }
-        };
-
-        mExitCallback=new SharedElementCallback() {
-            @Override
-            public Parcelable onCaptureSharedElementSnapshot(View sharedElement, Matrix viewToGlobalMatrix, RectF screenBounds) {
-                return super.onCaptureSharedElementSnapshot(sharedElement, viewToGlobalMatrix, screenBounds);
-            }
-
-            @Override
-            public View onCreateSnapshotView(Context context, Parcelable snapshot) {
-                return super.onCreateSnapshotView(context, snapshot);
-
-            }
-
-        };
-    }
-
-
-    @Override
-    protected void onSaveInstanceState(@NonNull Bundle outState) {
+    protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt(STATE_CURRENT_PAGE_POSITION, mCurrentPosition);
     }
 
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    private void initShareElementCallback() {
+        getWindow().getSharedElementEnterTransition().addListener(new TransitionListenerAdapter() {
+            @Override
+            public void onTransitionEnd(Transition transition) {
+                getWindow().getSharedElementEnterTransition().removeListener(this);
+                mEnterAnimationFinished = true;
+                animateHeaderAndFooter(true, true);
+                if (mCurrentViewType == MediaBean.TYPE_VIDEO) {
+                    startPlayVideo();
+                }
+            }
+        });
+        setEnterSharedElementCallback(new SharedElementCallback() {
+            @Override
+            public void onMapSharedElements(List<String> names, Map<String, View> sharedElements) {
+                names.clear();
+                sharedElements.clear();
+                if (mPhotoView != null) {
+                    names.add(mPhotoView.getTransitionName());
+                    sharedElements.put(mPhotoView.getTransitionName(), mPhotoView);
+                }
+            }
+        });
+    }
+
+    private void initViewAndListener() {
+        mFormatBuilder = new StringBuilder();
+        mFormatter = new Formatter(mFormatBuilder, Locale.getDefault());
+
+        ViewUtils.setViewMarginStatusBar(mHeaderContainer);
+
+        mMediaPlayer = new IjkExoMediaPlayer(this);
+        mVideoSeekBar.setOnSeekBarChangeListener(this);
+        mAdapter = new MediaDetailPagerAdapter(mMediaList, mStartPosition) {
+            @Override
+            public void setPrimaryItem(ViewGroup container, int position, Object object) {
+                super.setPrimaryItem(container, position, object);
+                if (mCurrentViewType == MediaBean.TYPE_VIDEO && mPagerContentView != object) {
+                    mPagerContentView = (View) object;
+                    ViewHolder holder = (ViewHolder) mPagerContentView.getTag();
+                    mPhotoView = holder.mPhotoView;
+                    mVideoLoadingBar = holder.mProgressBar;
+                    if (mVideoView != null) {
+                        mVideoView.getHolder().removeCallback(mSurfaceCallback);
+                        mMediaPlayer.reset();
+                    }
+                    mVideoView = holder.mSurfaceView;
+                    mVideoView.getHolder().addCallback(mSurfaceCallback);
+                    if (mEnterAnimationFinished) startPlayVideo();
+                } else if (mCurrentViewType == MediaBean.TYPE_PIC && mPhotoView != object) {
+                    mPhotoView = (View) object;
+                }
+
+            }
+        };
+        mMediaPager.setPageMargin((int) getResources().getDimension(R.dimen.video_pager_page_margin));
+        mAdapter.setOnInitFinishListener(this::startPostponedEnterTransition);
+        mMediaPager.setAdapter(mAdapter);
+        mMediaPager.setCurrentItem(mStartPosition);
+        mMediaPager.addOnPageChangeListener(this);
+    }
+
+    private SurfaceHolder.Callback mSurfaceCallback = new SurfaceHolder.Callback() {
+        @Override
+        public void surfaceCreated(SurfaceHolder holder) {
+        }
+
+        @Override
+        public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+            mMediaPlayer.setDisplay(holder);
+        }
+
+        @Override
+        public void surfaceDestroyed(SurfaceHolder holder) {
+        }
+    };
+
+
+    private void animateHeaderAndFooter(boolean showHeader, boolean showFooter) {
+        AppLogger.d("animateHeaderAndFooter");
+        if (showHeader && mHeaderContainer.isShown()) {
+            //需要显示Footer,但此时Footer已经显示，则先隐藏再显示
+            AnimatorUtils.slide(mHeaderContainer, false, () -> {
+                setHeaderContent();
+                AnimatorUtils.slide(mHeaderContainer, false, null);
+            });
+        } else if (showHeader && !mHeaderContainer.isShown()) {
+            //需要显示Footer,但此时Footer还没显示，则直接显示
+            setHeaderContent();
+            AnimatorUtils.slide(mHeaderContainer, false, null);
+        } else if (!showHeader && mHeaderContainer.isShown()) {
+            //需要隐藏Footer,但此时Footer已经显示，则直接隐藏
+            AnimatorUtils.slide(mHeaderContainer, false, null)
+            ;
+        }
+
+        if (showFooter && mFooterContainer.isShown()) {
+            //需要显示Footer,但此时Footer已经显示，则先隐藏再显示
+            AnimatorUtils.slide(mFooterContainer, true, () -> {
+                setFooterContent();
+                AnimatorUtils.slide(mFooterContainer, true, null);
+            });
+        } else if (showFooter && !mFooterContainer.isShown()) {
+            //需要显示Footer,但此时Footer还没显示，则直接显示
+            setFooterContent();
+            AnimatorUtils.slide(mFooterContainer, true, null);
+        } else if (!showFooter && mFooterContainer.isShown()) {
+            //需要隐藏Footer,但此时Footer已经显示，则直接隐藏
+            AnimatorUtils.slide(mFooterContainer, true, null);
+        }
+    }
+
+    private void setFooterContent() {
+        if (mCurrentViewType == MediaBean.TYPE_VIDEO) {
+            mVideoFooterContainer.setVisibility(View.VISIBLE);
+            mPictureFooterContainer.setVisibility(View.GONE);
+            updatePlayState();
+        } else if (mCurrentViewType == MediaBean.TYPE_PIC) {
+            mPictureFooterContainer.setVisibility(View.VISIBLE);
+            mVideoFooterContainer.setVisibility(View.GONE);
+        }
+    }
+
+
+    private void setHeaderContent() {
+        if (mCurrentViewType == MediaBean.TYPE_VIDEO) {
+            mHeaderTitle.setText(TimeUtils.getMediaVideoTimeInString(mCurrentMediaBean.time));
+        } else if (mCurrentViewType == MediaBean.TYPE_PIC) {
+            mHeaderTitle.setText(TimeUtils.getMediaPicTimeInString(mCurrentMediaBean.time));
+        }
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        if (newConfig.orientation == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE | newConfig.orientation == ActivityInfo.SCREEN_ORIENTATION_USER) {
+            setLandScapeLayout();
+        } else if (newConfig.orientation == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
+            setPortraitLayout();
+        }
+        animateHeaderAndFooter(true, true);
+    }
+
+    private void setPortraitLayout() {
+        ViewUtils.setViewMarginStatusBar(mContentRootView);
+        setStatusBarProperty();
+
+        mHeaderOptContainer.setVisibility(View.GONE);
+
+        Resources resources = getResources();
+
+        FrameLayout.LayoutParams footerParams = (FrameLayout.LayoutParams) mVideoFooterContainer.getLayoutParams();
+        footerParams.height = (int) resources.getDimension(R.dimen.video_footer_height);
+        mVideoFooterContainer.setLayoutParams(footerParams);
+
+        LinearLayout.LayoutParams params;
+        params = (LinearLayout.LayoutParams) mVideoPlay.getLayoutParams();
+        params.leftMargin = (int) resources.getDimension(R.dimen.video_option_play_margin_left);
+        params.rightMargin = (int) resources.getDimension(R.dimen.video_option_play_margin_right);
+        mVideoPlay.setLayoutParams(params);
+
+        params = (LinearLayout.LayoutParams) mVideoFullScreen.getLayoutParams();
+        params.leftMargin = (int) resources.getDimension(R.dimen.video_option_full_screen_margin_left);
+        params.rightMargin = (int) resources.getDimension(R.dimen.video_option_full_screen_margin_right);
+        mVideoFullScreen.setLayoutParams(params);
+
+        mVideoFullScreen.setImageResource(R.drawable.icon_full_screen);
+        mHeaderBack.setImageResource(R.drawable.btn_close);
+        mVideoMore.setVisibility(View.VISIBLE);
+
+    }
+
+    private void setStatusBarProperty() {
+        int orientation = getRequestedOrientation();
+        if (orientation != ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
+            mContentRootView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
+        } else {
+            mContentRootView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                    | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                    | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                    | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                    | View.SYSTEM_UI_FLAG_FULLSCREEN
+                    | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+        }
+    }
+
+    private void setLandScapeLayout() {
+        ViewUtils.clearViewMarginStatusBar(mContentRootView);
+        setStatusBarProperty();
+        mHeaderOptContainer.setVisibility(View.VISIBLE);
+        Resources resources = getResources();
+
+        FrameLayout.LayoutParams footerParams = (FrameLayout.LayoutParams) mVideoFooterContainer.getLayoutParams();
+        footerParams.height = (int) resources.getDimension(R.dimen.video_footer_height);
+        mVideoFooterContainer.setLayoutParams(footerParams);
+
+        LinearLayout.LayoutParams params;
+        params = (LinearLayout.LayoutParams) mVideoPlay.getLayoutParams();
+        params.leftMargin = (int) resources.getDimension(R.dimen.video_option_play_margin_left);
+        params.rightMargin = (int) resources.getDimension(R.dimen.video_option_play_margin_right);
+        mVideoPlay.setLayoutParams(params);
+
+        params = (LinearLayout.LayoutParams) mVideoFullScreen.getLayoutParams();
+        params.leftMargin = (int) resources.getDimension(R.dimen.video_option_full_screen_margin_left);
+        params.rightMargin = (int) resources.getDimension(R.dimen.video_option_full_screen_margin_right);
+        mVideoFullScreen.setLayoutParams(params);
+
+        mVideoFullScreen.setImageResource(R.drawable.landscape_icon_screen);
+        mHeaderBack.setImageResource(R.drawable.icon_arrow_back);
+        mVideoMore.setVisibility(View.GONE);
+        updatePlayState();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        AppLogger.d("onPause");
+        if (mMediaPlayer != null && mMediaPlayer.isPlaying()) {
+            mVideoPlayPosition = mMediaPlayer.getCurrentPosition();
+            mCurrentPlayState = PLAY_STATE_RESET;
+            mMediaPlayer.reset();
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (mCurrentViewType == MediaBean.TYPE_VIDEO && mVideoPlayPosition > 0) {
+            startPlayVideo();
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        AppLogger.d("onStop");
+    }
+
+    @Override
+    public void onPrepared(IMediaPlayer iMediaPlayer) {
+        mVideoLoadingBar.setVisibility(View.INVISIBLE);
+        mCurrentPlayState = PLAY_STATE_READY_TO_PLAY;
+        mMediaPlayer.start();
+        if (mVideoPlayPosition > 0) {
+            mMediaPlayer.seekTo(mVideoPlayPosition);
+            mVideoPlayPosition = 0;
+            mCurrentPlayState = PLAY_STATE_PLAYING;
+        }
+        int duration = (int) mMediaPlayer.getDuration();
+        mVideoTotalTime.setText(stringForTime(duration));
+        mVideoSeekBar.setMax(duration);
+        startUpdateTime();
+        updatePlayState();
+        mPhotoView.setVisibility(View.INVISIBLE);
+    }
+
+
+    @OnClick({R.id.act_media_video_opt_full_screen})
+    public void rotateScreen() {
+        //转屏之前先将头和脚隐藏掉
+        animateHeaderAndFooter(false, false);
+        int orientation = getRequestedOrientation();
+        if (orientation != ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+        } else {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        }
+    }
+
+    @OnClick(R.id.act_media_video_opt_play)
+    public void playOrPause() {
+        if (mCurrentPlayState == PLAY_STATE_PLAYING) {
+            mCurrentPlayState = PLAY_STATE_PAUSED;
+            mMediaPlayer.pause();
+        } else if (mCurrentPlayState == PLAY_STATE_READY_TO_PLAY) {
+            mCurrentPlayState = PLAY_STATE_PLAYING;
+            mMediaPlayer.start();
+            startUpdateTime();
+        } else {
+            startPlayVideo();
+        }
+        updatePlayState();
+    }
+
+    private void updatePlayState() {
+        switch (mCurrentPlayState) {
+            case PLAY_STATE_PLAYING:
+            case PLAY_STATE_LOADING_FINISH:
+                mVideoPlay.setImageResource(R.drawable.video_opt_pause_drawable);
+                break;
+            case PLAY_STATE_PAUSED:
+            case PLAY_STATE_RESET:
+            case PLAY_STATE_READY_TO_PLAY:
+            case PLAY_STATE_LOADING_START:
+                mVideoPlay.setImageResource(R.drawable.video_opt_play_drawable);
+                break;
+        }
+    }
+
+    @OnClick({R.id.act_media_header_opt_delete})
+    public void delete() {
+
+    }
+
+    @OnClick(R.id.act_media_picture_opt_collection)
+    public void collection() {
+
+    }
+
+    @OnClick({R.id.act_media_header_opt_download, R.id.act_media_picture_opt_download})
+    public void download() {
+        if (mCurrentViewType == MediaBean.TYPE_PIC) {
+            mDownloadFile = new File(JConstant.MEDIA_DETAIL_PICTURE_DOWNLOAD_DIR, mCurrentMediaBean.srcUrl);
+        } else if (mCurrentViewType == MediaBean.TYPE_VIDEO) {
+            mDownloadFile = new File(JConstant.MEDIA_DETAIL_VIDEO_DOWNLOAD_DIR, mCurrentMediaBean.srcUrl);
+        } else {
+            return;
+        }
+
+        if (mDownloadFile.exists()) {
+            Toast.makeText(this, "文件已下载", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        Glide.with(this).load(mCurrentMediaBean.srcUrl).
+                downloadOnly(new SimpleTarget<File>() {
+                    @Override
+                    public void onResourceReady(File resource, GlideAnimation<? super File> glideAnimation) {
+                        Toast.makeText(MediaActivity.this, "下载完成", Toast.LENGTH_SHORT).show();
+                        FileUtils.copyFile(resource, mDownloadFile);
+                        mDownloadFile = null;
+                    }
+
+                    @Override
+                    public void onLoadStarted(Drawable placeholder) {
+                        Toast.makeText(MediaActivity.this, "开始下载", Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onLoadFailed(Exception e, Drawable errorDrawable) {
+                        Toast.makeText(MediaActivity.this, "下载失败", Toast.LENGTH_SHORT).show();
+                        mDownloadFile = null;
+                    }
+                });
+    }
+
+    @OnClick({R.id.act_media_header_opt_share, R.id.act_media_picture_opt_share})
+    public void share() {
+        if (mShareDialog == null || mShareDialog.get() == null) {
+            mShareDialog = new WeakReference<>(ShareDialogFragment.newInstance(mCurrentMediaBean));
+        }
+        mShareDialog.get().show(getSupportFragmentManager(), ShareDialogFragment.class.getName());
+    }
+
+    @OnClick(R.id.act_media_video_opt_more)
+    public void more() {
+        if (mMoreDialog == null || mMoreDialog.get() == null) {
+            mMoreDialog = new WeakReference<>(VideoMoreDialog.newInstance(null));
+            mMoreDialog.get().setAction((id, view) -> {
+                switch (id) {
+                    case R.id.dialog_media_video_delete:
+                        delete();
+                        break;
+                    case R.id.dialog_media_video_download:
+                        download();
+                        break;
+                    case R.id.dialog_media_video_share:
+                        share();
+                        break;
+                }
+            });
+        }
+        mMoreDialog.get().show(getSupportFragmentManager(), VideoMoreDialog.class.getName());
+    }
+
     @Override
     public void finishAfterTransition() {
-        mIsReturning = true;
         Intent data = new Intent();
-        data.putExtra(JConstant.EXTRA_STARTING_ALBUM_POSITION, mStartingPosition);
+        data.putExtra(JConstant.EXTRA_STARTING_ALBUM_POSITION, mStartPosition);
         data.putExtra(JConstant.EXTRA_CURRENT_ALBUM_POSITION, mCurrentPosition);
         setResult(RESULT_OK, data);
         super.finishAfterTransition();
     }
 
-    @OnClick({R.id.tv_big_pic_close,
-            R.id.imgV_big_pic_download,
-            R.id.imgV_big_pic_share,
-            R.id.imgV_big_pic_collect})
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.tv_big_pic_close:
-                onBackPressed();
-                break;
-            case R.id.imgV_big_pic_download:
-                break;
-            case R.id.imgV_big_pic_share:
-                break;
-            case R.id.imgV_big_pic_collect:
-                break;
+    @Override
+    @OnClick(R.id.act_media_header_back)
+    public void onBackPressed() {
+        int orientation = getRequestedOrientation();
+        if (orientation != ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
+            cleanUpForExit();
+            mContentRootView.postDelayed(super::onBackPressed, 400);
+        } else {
+            rotateScreen();
         }
     }
 
-    private class DetailsFragmentPagerAdapter extends FragmentStatePagerAdapter {
-        ArrayList<MediaBean> list;
-
-        public DetailsFragmentPagerAdapter(FragmentManager fm, ArrayList<MediaBean> list) {
-            super(fm);
-            this.list = list;
+    private void cleanUpForExit() {
+        animateHeaderAndFooter(false, false);
+        if (mCurrentViewType == MediaBean.TYPE_VIDEO) {
+            mMediaPlayer.reset();
+            if (mVideoView != null) mVideoView.setVisibility(View.GONE);
+            if (mVideoLoadingBar != null) mVideoLoadingBar.setVisibility(View.GONE);
+            if (mPhotoView != null) mPhotoView.setVisibility(View.VISIBLE);
         }
+    }
 
-        @Override
-        public Fragment getItem(int position) {
-            if (list.get(position).mediaType == MediaBean.TYPE_PIC) {
-                return PicDetailsFragment.newInstance(position,
-                        mStartingPosition,
-                        list.get(position).srcUrl);
-            } else if (list.get(position).mediaType == MediaBean.TYPE_VIDEO) {
-                return VideoDetailsFragment.newInstance(position,
-                        mStartingPosition,
-                        list.get(position).srcUrl);
-            } else {
-                return null;
-            }
+    private String stringForTime(int timeMs) {
+        int totalSeconds = timeMs / 1000;
+
+        int seconds = totalSeconds % 60;
+        int minutes = (totalSeconds / 60) % 60;
+        int hours = totalSeconds / 3600;
+
+        mFormatBuilder.setLength(0);
+        if (hours > 0) {
+            return mFormatter.format("%d:%02d:%02d", hours, minutes, seconds).toString();
+        } else {
+            return mFormatter.format("%02d:%02d", minutes, seconds).toString();
         }
+    }
 
-        @Override
-        public void setPrimaryItem(ViewGroup container, int position, Object object) {
-            super.setPrimaryItem(container, position, object);
-            //this item
-            if (object instanceof PicDetailsFragment)
-                mCurrentDetailsFragment = (PicDetailsFragment) object;
-            AppLogger.d("transition: setPrimaryItem: " + position);
+    @Override
+    public boolean onInfo(IMediaPlayer iMediaPlayer, int what, int i1) {
+        switch (what) {
+            case MediaPlayer.MEDIA_INFO_BUFFERING_START:
+                mCurrentPlayState = PLAY_STATE_LOADING_START;
+                mVideoLoadingBar.setVisibility(View.VISIBLE);
+                updatePlayState();
+                break;
+            case MediaPlayer.MEDIA_INFO_BUFFERING_END:
+                mCurrentPlayState = PLAY_STATE_LOADING_FINISH;
+                mVideoLoadingBar.setVisibility(View.INVISIBLE);
+                updatePlayState();
+                break;
         }
+        return false;
+    }
 
-        @Override
-        public int getCount() {
-            return list == null ? 0 : list.size();
+    @Override
+    public void onCompletion(IMediaPlayer iMediaPlayer) {
+        iMediaPlayer.seekTo(0);
+        iMediaPlayer.pause();
+        mCurrentPlayState = PLAY_STATE_PAUSED;
+        updatePlayState();
+    }
+
+    @Override
+    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+        if (fromUser) {
+            mMediaPlayer.seekTo(progress);
         }
+    }
 
+    @Override
+    public void onStartTrackingTouch(SeekBar seekBar) {
+
+    }
+
+    @Override
+    public void onStopTrackingTouch(SeekBar seekBar) {
+
+    }
+
+    @Override
+    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+        mMediaPlayer.pause();
+    }
+
+
+    @Override
+    public void onPageSelected(int position) {
+        mCurrentPosition = position;
+        mCurrentMediaBean = mMediaList.get(position);
+        int type = mCurrentMediaBean.mediaType;
+        boolean change = type != mCurrentViewType;
+        mCurrentViewType = type;
+        if (change) {
+            animateHeaderAndFooter(true, true);
+        } else {
+            setHeaderContent();
+            setFooterContent();
+        }
+    }
+
+    private void startPlayVideo() {
+        mVideoView.setVisibility(View.VISIBLE);
+        mVideoLoadingBar.setVisibility(View.VISIBLE);
+        String url = mCurrentMediaBean.srcUrl;
+        mCurrentPlayState = PLAY_STATE_RESET;
+        mMediaPlayer.reset();
+        String proxyUrl = BaseApplication.getProxy(this).getProxyUrl(url);
+        mMediaPlayer.setDataSource(proxyUrl);
+        mMediaPlayer.setOnInfoListener(this);
+        mMediaPlayer.setOnPreparedListener(this);
+        mMediaPlayer.setOnCompletionListener(this);
+        mMediaPlayer.setOnErrorListener(this);
+        mMediaPlayer.setDisplay(mVideoView.getHolder());
+        mMediaPlayer.prepareAsync();
+    }
+
+    private void startUpdateTime() {
+        long position = mMediaPlayer.getCurrentPosition();
+        mVideoPlayTime.setText(stringForTime((int) position));
+        mVideoSeekBar.setProgress((int) position);
+        if (mMediaPlayer.isPlaying()) mContentRootView.postDelayed(this::startUpdateTime, 200);
+    }
+
+    @Override
+    public void onPageScrollStateChanged(int state) {
+
+    }
+
+    @Override
+    public boolean onError(IMediaPlayer iMediaPlayer, int i, int i1) {
+        mCurrentPlayState = PLAY_STATE_RESET;
+        mMediaPlayer.reset();
+        return false;
     }
 }

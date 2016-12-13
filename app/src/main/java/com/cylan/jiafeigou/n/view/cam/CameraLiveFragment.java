@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +21,7 @@ import android.widget.Toast;
 
 import com.cylan.entity.jniCall.JFGMsgVideoResolution;
 import com.cylan.entity.jniCall.JFGMsgVideoRtcp;
+import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
@@ -33,10 +35,14 @@ import com.cylan.jiafeigou.n.view.misc.LiveBottomBarAnimDelegate;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
+import com.cylan.jiafeigou.widget.live.ILiveControl;
+import com.cylan.jiafeigou.widget.live.LivePlayControlView;
 import com.cylan.jiafeigou.widget.video.VideoViewFactory;
 import com.cylan.jiafeigou.widget.wheel.SDataStack;
+import com.google.gson.Gson;
 
 import java.lang.ref.WeakReference;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -52,7 +58,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
     @BindView(R.id.fLayout_live_view_container)
     FrameLayout fLayoutLiveViewContainer;
     @BindView(R.id.vs_progress)
-    ViewStub vsProgress;
+    ViewStub vs_control;//中间loading那个view
     @BindView(R.id.fLayout_cam_live_protection_flip)
     FrameLayout fLayoutCamLiveProtectionFlip;
     @BindView(R.id.tv_cam_live_protection)
@@ -79,18 +85,23 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
     @BindView(R.id.sw_cam_port_wheel)
     CamLivePortWheel swCamPortWheel;
 
-    private View loadingView;
     private WeakReference<View> fLayoutLandScapeControlLayerRef;
     private WeakReference<LiveBottomBarAnimDelegate> liveBottomBarAnimDelegateWeakReference;
     private WeakReference<CamLandLiveLayerInterface> landLiveLayerViewActionWeakReference;
     private CamLandLiveLayerInterface camLandLiveLayerInterface;
 
     private VideoViewFactory.IVideoView videoView;
-
+    //流量显示
+    private WeakReference<TextView> tvFlowRef;
     /**
      * 待机模式的view:"已进入待机模式,前往打开"
      */
     private WeakReference<View> viewStandbyRef;
+
+    /**
+     * 播放,暂停,loading,播放失败提示按钮.
+     */
+    private WeakReference<ILiveControl> iLiveActionViewRef;
 
     public CameraLiveFragment() {
         // Required empty public constructor
@@ -148,8 +159,6 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
             //非待机模式
             if (!basePresenter.getCamInfo().cameraStandbyFlag) {
                 basePresenter.startPlayVideo(basePresenter.getPlayType());
-                showLoading(basePresenter.getCamInfo().net != null
-                        && basePresenter.getCamInfo().net.net != 0);
             }
         }
     }
@@ -190,22 +199,49 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
 
     @Override
     public void onLivePrepare(int type) {
-        showLoading(basePresenter.getCamInfo().net != null
-                && basePresenter.getCamInfo().net.net != 0);
+        showLoading(ILiveControl.STATE_LOADING, null);
         AppLogger.i("onLivePrepare");
     }
 
     @Override
     public void onLiveStarted(int type) {
-        showLoading(false);
+        showLoading(ILiveControl.STATE_PLAYING, null);
         AppLogger.i("onLiveStarted");
+        if (getView() != null)
+            getView().setKeepScreenOn(true);
     }
 
-    private void showLoading(boolean show) {
-        if (loadingView == null)
-            loadingView = vsProgress.inflate();
-        loadingView.setVisibility(show ? View.VISIBLE : View.INVISIBLE);
-        AppLogger.i("showLoading:" + Integer.toHexString("vsProgress".hashCode()));
+    private void showLoading(int state, String content) {
+        initLiveControlView();
+        iLiveActionViewRef.get().setState(state, content);
+        AppLogger.i("showLoading:" + state);
+    }
+
+    /**
+     * 中间白色 loading 播放 暂停 按钮
+     */
+    private void initLiveControlView() {
+        if (iLiveActionViewRef == null || iLiveActionViewRef.get() == null) {
+            View view = vs_control.inflate();
+            if (view != null && view instanceof LivePlayControlView) {
+                ILiveControl control = (ILiveControl) view;
+                iLiveActionViewRef = new WeakReference<>(control);
+                control.setAction(new ILiveControl.Action() {
+                    @Override
+                    public void clickImage(int state) {
+                        switch (state) {
+                        }
+                    }
+
+                    @Override
+                    public void clickText() {
+
+                    }
+                });
+            } else {
+                AppLogger.e("err:view is not the type");
+            }
+        }
     }
 
     @Override
@@ -225,6 +261,32 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
             showLandLayerView(false);
         }
         AppLogger.i("onConfigurationChanged");
+    }
+
+    /**
+     * 初始化流量
+     */
+    private void showFloatFlowView(boolean show, String content) {
+        View v = fLayoutLiveViewContainer.findViewById("flow".hashCode());
+        if (!show && v == null)
+            return;
+        if (v == null) {
+            if (tvFlowRef == null || tvFlowRef.get() == null) {
+                TextView textView = new TextView(getContext());
+                textView.setBackground(getResources().getDrawable(R.drawable.flow_bg));
+                textView.setId("flow".hashCode());
+                textView.setTextColor(getResources().getColor(R.color.color_white));
+                FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+                        ViewGroup.LayoutParams.WRAP_CONTENT,
+                        Gravity.END);
+                lp.topMargin = 10;
+                lp.setMarginEnd(10);
+                fLayoutLiveViewContainer.addView(textView, lp);
+                tvFlowRef = new WeakReference<>(textView);
+            }
+            v = tvFlowRef.get();
+        }
+        ((TextView) v).setText(content);
     }
 
     /**
@@ -389,16 +451,18 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
 
     @Override
     public void onLiveStop(int playType, int errId) {
-        showLoading(false);
+        if (getView() != null)
+            getView().setKeepScreenOn(false);
+        showFloatFlowView(false, null);
         switch (errId) {
             case JFGRules.PlayErr.ERR_NERWORK:
                 ToastUtil.showNegativeToast(getString(R.string.OFFLINE_ERR_1));
                 break;
             case JFGRules.PlayErr.ERR_UNKOWN:
-                ToastUtil.showNegativeToast("出错了");
+                showLoading(ILiveControl.STATE_LOADING_FAILED, "出错了");
                 break;
             case JFGRules.PlayErr.ERR_LOW_FRAME_RATE:
-                ToastUtil.showNegativeToast("帧率太低,不足以播放,重试");
+                showLoading(ILiveControl.STATE_LOADING_FAILED, "帧率太低,不足以播放,重试");
                 break;
             case JFGRules.PlayErr.ERR_DEVICE_OFFLINE:
                 ToastUtil.showNegativeToast(getString(R.string.OFFLINE_ERR));
@@ -408,11 +472,13 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
 
     @Override
     public void onRtcp(JFGMsgVideoRtcp rtcp) {
-
+        String content = String.format(Locale.getDefault(), "%sKb/s", rtcp.bitRate);
+        showFloatFlowView(true, content);
+        Log.d("onRtcp", "onRtcp: " + new Gson().toJson(rtcp));
     }
 
     @Override
-    public void onResolution(JFGMsgVideoResolution resolution) {
+    public void onResolution(JFGMsgVideoResolution resolution) throws JfgException {
         JfgCmdInsurance.getCmd().setRenderRemoteView((View) initVideoView());
         updateVideoViewLayoutParameters(resolution);
     }

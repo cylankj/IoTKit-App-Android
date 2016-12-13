@@ -2,6 +2,7 @@ package com.cylan.jiafeigou.n.mvp.impl.bell;
 
 import android.text.TextUtils;
 
+import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.contract.bell.BellSettingContract;
@@ -177,7 +178,11 @@ public class BellSettingPresenterImpl extends AbstractPresenter<BellSettingContr
                         RxEvent.UnbindJFGDevice deletion = new RxEvent.UnbindJFGDevice();
                         deletion.uuid = uuid;
                         RxBus.getCacheInstance().post(deletion);
-                        JfgCmdInsurance.getCmd().unBindDevice(uuid);
+                        try {
+                            JfgCmdInsurance.getCmd().unBindDevice(uuid);
+                        } catch (JfgException e) {
+                            e.printStackTrace();
+                        }
                         AppLogger.i("unbind uuid: " + uuid);
                     }
                 }, new Action1<Throwable>() {

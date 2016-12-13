@@ -9,7 +9,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewCompat;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,12 +23,13 @@ import com.bumptech.glide.request.target.Target;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.widget.LazyFragment;
 import com.cylan.photoview.PhotoView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class PicDetailsFragment extends Fragment {
+public class PicDetailsFragment extends LazyFragment {
 
     public static final String KEY_MEDIA_URL = "key_media_url";
     public static final String ARG_MEDIA_POSITION = "arg_media_position";
@@ -42,6 +42,12 @@ public class PicDetailsFragment extends Fragment {
     protected int mPosition;
     protected int mMediaType;//0:pic;1:video
     protected View mRootView;
+    protected String mAlbumImageUrl;
+
+    //是否可见
+    protected boolean isVisble;
+    // 标志位，标志Fragment已经初始化完成。
+    public boolean isPrepared = false;
 
     public static PicDetailsFragment newInstance(int position, int startingPosition, final String url) {
         Bundle args = new Bundle();
@@ -59,14 +65,26 @@ public class PicDetailsFragment extends Fragment {
         super.onCreate(savedInstanceState);
         mStartPosition = getArguments().getInt(ARG_MEDIA_START_POSITION);
         mPosition = getArguments().getInt(ARG_MEDIA_POSITION);
+        AppLogger.e("ASSSSSSSSSSSSSSSSSSSSSSSSSs");
     }
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, final Bundle savedInstanceState) {
-        mRootView = inflater.inflate(getLayoutID(), container, false);
-        ButterKnife.bind(this, mRootView);
+        if (mRootView == null) {
+            mRootView = inflater.inflate(getLayoutID(), container, false);
+            ButterKnife.bind(this, mRootView);
+            initView();
+        }
         return mRootView;
+    }
+
+    protected void initView() {
+
+    }
+
+    public void initData() {
+        loadMedia(mAlbumImageUrl);
     }
 
     protected int getLayoutID() {
@@ -78,8 +96,9 @@ public class PicDetailsFragment extends Fragment {
         //设置transition名字，这个名字需要对应前一个scene的ImageView的transitionName,
         ViewCompat.setTransitionName(getTransitionView(),
                 mPosition + JConstant.KEY_SHARED_ELEMENT_TRANSITION_NAME_SUFFIX);
-        final String albumImageUrl = getArguments().getString(KEY_MEDIA_URL);
-        loadMedia(albumImageUrl);
+        mAlbumImageUrl = getArguments().getString(KEY_MEDIA_URL);
+        isPrepared = true;
+        loadMedia(mAlbumImageUrl);
     }
 
     protected View getTransitionView() {
@@ -115,13 +134,15 @@ public class PicDetailsFragment extends Fragment {
                 public boolean onPreDraw() {
                     detailsAlbumImage.getViewTreeObserver().removeOnPreDrawListener(this);
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        getActivity().startPostponedEnterTransition();
+                        if (mStartPosition == mPosition)
+                            getActivity().startPostponedEnterTransition();
                     }
                     return true;
                 }
             });
         }
     }
+
 
     private RequestListener<String, GlideDrawable> requestListener = new RequestListener<String, GlideDrawable>() {
         @Override
@@ -157,4 +178,5 @@ public class PicDetailsFragment extends Fragment {
         container.getHitRect(containerBounds);
         return view.getLocalVisibleRect(containerBounds);
     }
+
 }

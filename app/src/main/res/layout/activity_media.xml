@@ -1,70 +1,148 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             android:layout_width="match_parent"
-             android:layout_height="match_parent"
-             android:background="@color/color_black">
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/act_media_root_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#000000">
 
-    <com.cylan.jiafeigou.misc.HackyViewPager
-        android:id="@+id/pager"
+    <!--<com.cylan.jiafeigou.widget.ShadowFrameLayout-->
+    <!--android:id="@+id/act_media_video_container"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:layout_gravity="center"-->
+    <!--android:visibility="invisible"-->
+    <!--hunt:fixSize="true">-->
+
+    <!--<SurfaceView-->
+    <!--android:id="@+id/act_media_video_view"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"/>-->
+
+    <!--<com.cylan.jiafeigou.widget.SimpleProgressBar-->
+    <!--android:id="@+id/act_media_video_loading_bar"-->
+    <!--android:layout_width="50dp"-->
+    <!--android:layout_height="50dp"-->
+    <!--android:layout_gravity="center"-->
+    <!--android:padding="10dp"-->
+    <!--android:visibility="gone"-->
+    <!--hunt:progress_point_radius="3dp"-->
+    <!--hunt:progress_stroke_color="@color/color_cecece"/>-->
+    <!--</com.cylan.jiafeigou.widget.ShadowFrameLayout>-->
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/act_media_pager"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="center"/>
+        android:layout_height="match_parent"/>
+
 
     <FrameLayout
-        android:id="@+id/fLayout_details_title"
+        android:id="@+id/act_media_header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:transitionGroup="true">
+        android:clickable="true"
+        android:visibility="invisible">
 
-        <ImageView
-            android:id="@+id/tv_big_pic_close"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="15dp"
-            android:src="@drawable/btn_login_nav_close"/>
+        <RelativeLayout style="@style/video_header_container">
 
-        <TextView
-            android:id="@+id/tv_big_pic_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="2016-09-06 16:26:10"
-            android:textColor="@color/color_white"
-            android:textSize="16sp"/>
+            <ImageView
+                android:id="@+id/act_media_header_back"
+                style="@style/video_header_back"/>
+
+            <TextView
+                android:id="@+id/act_media_header_title"
+                style="@style/video_header_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:textColor="#FFFFFF"
+                android:textSize="18sp"/>
+
+            <LinearLayout
+                android:id="@+id/act_media_header_opt_container"
+                style="@style/video_header_opt_container">
+
+                <ImageView
+                    android:id="@+id/act_media_header_opt_delete"
+                    style="@style/video_header_opt_delete"/>
+
+                <ImageView
+                    android:id="@+id/act_media_header_opt_download"
+                    style="@style/video_header_opt_download"/>
+
+                <ImageView
+                    android:id="@+id/act_media_header_opt_share"
+                    style="@style/video_header_opt_share"/>
+            </LinearLayout>
+        </RelativeLayout>
+
     </FrameLayout>
 
     <FrameLayout
-        android:id="@+id/fLayout_details_action_bar"
+        android:id="@+id/act_media_footer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:transitionGroup="true"
-        android:visibility="visible">
+        android:alpha="0.5"
+        android:background="#000000"
+        android:clickable="true"
+        android:visibility="invisible">
 
-        <ImageView
-            android:id="@+id/imgV_big_pic_download"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="25dp"
-            android:padding="15dp"
-            android:src="@drawable/icon_download"/>
+        <FrameLayout
+            android:id="@+id/act_media_pic_option"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_gravity="bottom"
+            android:visibility="gone">
 
-        <ImageView
-            android:id="@+id/imgV_big_pic_share"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_margin="25dp"
-            android:padding="15dp"
-            android:src="@drawable/icon_share"/>
+            <ImageView
+                android:id="@+id/act_media_picture_opt_download"
+                style="@style/picture_opt_download"/>
 
-        <ImageView
-            android:id="@+id/imgV_big_pic_collect"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end"
-            android:layout_margin="25dp"
-            android:padding="15dp"
-            android:src="@drawable/icon_collection"/>
+            <ImageView
+                android:id="@+id/act_media_picture_opt_share"
+                style="@style/picture_opt_share"/>
+
+            <ImageView
+                android:id="@+id/act_media_picture_opt_collection"
+                style="@style/picture_opt_collection"/>
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/act_media_video_option"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/video_footer_height">
+
+            <LinearLayout style="@style/video_opt_container">
+
+                <ImageView
+                    android:id="@+id/act_media_video_opt_play"
+                    style="@style/video_opt_play"/>
+
+                <TextView
+                    android:id="@+id/act_media_video_opt_play_time"
+                    style="@style/video_opt_play_time"
+                    android:text="00:00"/>
+
+                <SeekBar
+                    android:id="@+id/act_media_video_opt_seek_bar"
+                    style="@style/video_opt_seek_bar"/>
+
+                <TextView
+                    android:id="@+id/act_media_video_opt_total_time"
+                    style="@style/video_opt_total_time"
+                    android:text="00:00"/>
+
+                <ImageView
+                    android:id="@+id/act_media_video_opt_full_screen"
+                    style="@style/video_opt_full_screen"/>
+
+                <ImageView
+                    android:id="@+id/act_media_video_opt_more"
+                    style="@style/video_opt_more"/>
+            </LinearLayout>
+        </FrameLayout>
     </FrameLayout>
+
+
 </FrameLayout>
