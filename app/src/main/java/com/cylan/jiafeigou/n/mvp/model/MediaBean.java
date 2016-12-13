@@ -3,19 +3,30 @@ package com.cylan.jiafeigou.n.mvp.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.cylan.jiafeigou.dp.BaseDataPoint;
+
+import org.msgpack.annotation.Index;
+import org.msgpack.annotation.Message;
+
 /**
  * Created by chen on 6/6/16.
  */
-public class MediaBean implements Comparable<MediaBean>, Parcelable {
+@Message
+public class MediaBean extends BaseDataPoint implements Comparable<MediaBean>, Parcelable {
 
 
     public static final int TYPE_PIC = 0;
     public static final int TYPE_VIDEO = 1;
     public static final int TYPE_LOAD = 2;
+    @Index(0)
     public String cid;
+    @Index(1)
     public int time;
+    @Index(2)
     public int msgType;
+    @Index(3)
     public int regionType;
+    @Index(4)
     public String fileName;
 
     @Override
