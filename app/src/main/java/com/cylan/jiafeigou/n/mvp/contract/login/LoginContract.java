@@ -1,10 +1,12 @@
 package com.cylan.jiafeigou.n.mvp.contract.login;
 
 import android.app.Activity;
+import android.content.Intent;
 
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
 import com.cylan.jiafeigou.n.mvp.model.LoginAccountBean;
+import com.sina.weibo.sdk.auth.sso.SsoHandler;
 
 /**
  * Created by lxh on 16-6-24.
@@ -82,6 +84,11 @@ public interface LoginContract {
         void executeLogin(LoginAccountBean info);
 
         /**
+         * 执行第三方登录
+         */
+        void executeOpenLogin(String openId);
+
+        /**
          * 获取QQ的授权
          */
         void getQQAuthorize(Activity activity);
@@ -91,15 +98,25 @@ public interface LoginContract {
          */
         void startSinaAuthorize(Activity activity);
 
-
         void registerByPhone(String phone, String verificationCode);
 
         void getCodeByPhone(String phone);
 
         void verifyCode(String phone, String code, String token);
 
+        /**
+         * 拿到新浪回调对象
+         * @return
+         */
+        SsoHandler getSinaCallBack();
 
+        /**
+         * QQ登录在onactivity中的回调
+         * @param requestCode
+         * @param resultCode
+         * @param data
+         */
+        void onActivityResultData(int requestCode, int resultCode, Intent data);
     }
-
 
 }

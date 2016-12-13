@@ -46,7 +46,7 @@ public class MineDevicesShareManagerPresenterImp extends AbstractPresenter<MineD
             compositeSubscription.unsubscribe();
         } else {
             compositeSubscription = new CompositeSubscription();
-            //compositeSubscription.add(getHasShareListCallback());
+//            compositeSubscription.add(getHasShareListCallback());
             compositeSubscription.add(cancleShareCallBack());
         }
     }
