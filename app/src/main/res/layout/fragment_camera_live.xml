@@ -50,7 +50,7 @@
             android:src="@drawable/icon_speaker_selector" />
 
         <ImageView
-            android:id="@+id/imgV_cam_trigger_recorder"
+            android:id="@+id/imgV_cam_trigger_mic"
             style="@style/ripple_background"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

@@ -1,5 +1,6 @@
 package com.cylan.jiafeigou.n.mvp.impl.cam;
 
+import android.graphics.Bitmap;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -11,6 +12,7 @@ import com.cylan.ex.JfgException;
 import com.cylan.jfgapp.jni.JfgAppCmd;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.misc.Converter;
+import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamLiveContract;
@@ -23,12 +25,15 @@ import com.cylan.jiafeigou.rx.RxHelper;
 import com.cylan.jiafeigou.rx.RxUiEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.MiscUtils;
+import com.cylan.utils.BitmapUtil;
 import com.cylan.utils.NetUtils;
 import com.cylan.utils.RandomUtils;
 import com.google.gson.Gson;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import rx.Observable;
 import rx.Subscription;
@@ -36,8 +41,6 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
-
-import static com.cylan.jiafeigou.misc.JFGRules.PlayErr.ERR_STOP;
 
 /**
  * Created by cylan-hunt on 16-7-27.
@@ -49,6 +52,8 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
     private CompositeSubscription compositeSubscription;
     private boolean isRtcpSignal;
     private int playType = CamLiveContract.TYPE_LIVE;
+    private boolean speakerFlag, micFlag;
+    private int[] videoResolution = {0, 0};
     /**
      * 帧率记录
      */
@@ -115,6 +120,8 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe((JFGMsgVideoResolution resolution) -> {
                     isRtcpSignal = true;
+                    videoResolution[0] = resolution.width;
+                    videoResolution[1] = resolution.height;
                     try {
                         getView().onResolution(resolution);
                     } catch (JfgException e) {
@@ -190,7 +197,11 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                     final int net = NetUtils.getJfgNetType(getView().getContext());
                     AppLogger.i("play env state: " + net + " " + s);
                     if (net == 0) {
-                        getView().onLiveStop(playType, JFGRules.PlayErr.ERR_NERWORK);
+                        Observable.just(null)
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribe((Object o) -> {
+                                    getView().onLiveStop(playType, JFGRules.PlayErr.ERR_NERWORK);
+                                });
                         return false;
                     }
                     return !TextUtils.isEmpty(s);
@@ -282,6 +293,54 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
         if (this.beanCamInfo == null)
             this.beanCamInfo = Converter.convert(this.bean);
         return beanCamInfo;
+    }
+
+    @Override
+    public void switchSpeakerMic(final boolean local, final boolean speakerFlag,
+                                 final boolean micFlag) {
+        this.speakerFlag = speakerFlag;
+        this.micFlag = micFlag;
+        Observable.just(true)
+                .subscribeOn(Schedulers.newThread())
+                .subscribe((Boolean aBoolean) -> {
+                    JfgCmdInsurance.getCmd().setAudio(local, speakerFlag, micFlag);
+                    AppLogger.i(String.format(Locale.getDefault(), "local:%s,speaker:%s,mic:%s", local, speakerFlag, micFlag));
+                });
+    }
+
+    @Override
+    public void takeSnapShot() {
+        Observable.just(null)
+                .subscribeOn(Schedulers.newThread())
+                .subscribe((Object o) -> {
+                    byte[] data = JfgCmdInsurance.getCmd().screenshot(false);
+                    Bitmap bitmap = BitmapUtil.byte2bitmap(videoResolution[0], videoResolution[1], data);
+                    String filePath = JConstant.MEDIA_PATH + File.separator + System.currentTimeMillis() + ".png";
+                    BitmapUtil.saveBitmap2file(bitmap, filePath);
+                    snapshotResult(bitmap != null);
+                }, (Throwable throwable) -> {
+                    AppLogger.e("takeSnapshot: " + throwable.getLocalizedMessage());
+                });
+    }
+
+    private void snapshotResult(boolean bitmap) {
+        Log.d("takeSnapShot", "takeSnapShot: " + (bitmap));
+        Observable.just(bitmap)
+                .filter((Boolean bit) -> (getView() != null))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe((Boolean b) -> {
+                    getView().onTakeSnapShot(b != null && ((boolean) b));
+                });
+    }
+
+    @Override
+    public boolean getSpeakerFlag() {
+        return speakerFlag;
+    }
+
+    @Override
+    public boolean getMicFlag() {
+        return micFlag;
     }
 
     @Override

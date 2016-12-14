@@ -23,7 +23,7 @@ public class CamLiveLandTopBar extends FrameLayout {
     TextView imgVCamLiveLandNavBack;
     @BindView(R.id.imgV_cam_switch_speaker)
     ImageView imgVCamSwitchSpeaker;
-    @BindView(R.id.imgV_cam_trigger_recorder)
+    @BindView(R.id.imgV_cam_trigger_mic)
     ImageView imgVCamTriggerRecorder;
     @BindView(R.id.imgV_cam_trigger_capture)
     ImageView imgVCamTriggerCapture;
@@ -50,7 +50,7 @@ public class CamLiveLandTopBar extends FrameLayout {
         imgVCamTriggerCapture.setEnabled(beanTopBar.captureState != -1);
     }
 
-    @OnClick({R.id.imgV_cam_live_land_nav_back, R.id.imgV_cam_switch_speaker, R.id.imgV_cam_trigger_recorder, R.id.imgV_cam_trigger_capture})
+    @OnClick({R.id.imgV_cam_live_land_nav_back, R.id.imgV_cam_switch_speaker, R.id.imgV_cam_trigger_mic, R.id.imgV_cam_trigger_capture})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.imgV_cam_live_land_nav_back:
@@ -61,7 +61,7 @@ public class CamLiveLandTopBar extends FrameLayout {
                 if (topBarAction != null)
                     topBarAction.onSwitchSpeaker();
                 break;
-            case R.id.imgV_cam_trigger_recorder:
+            case R.id.imgV_cam_trigger_mic:
                 if (topBarAction != null)
                     topBarAction.onTriggerRecorder();
                 break;

@@ -39,6 +39,7 @@ import com.cylan.jiafeigou.widget.live.ILiveControl;
 import com.cylan.jiafeigou.widget.live.LivePlayControlView;
 import com.cylan.jiafeigou.widget.video.VideoViewFactory;
 import com.cylan.jiafeigou.widget.wheel.SDataStack;
+import com.cylan.utils.DensityUtils;
 import com.google.gson.Gson;
 
 import java.lang.ref.WeakReference;
@@ -69,8 +70,8 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
     TextView tvCamLive;
     @BindView(R.id.imgV_cam_switch_speaker)
     ImageView imgVCamSwitchSpeaker;
-    @BindView(R.id.imgV_cam_trigger_recorder)
-    ImageView imgVCamTriggerRecorder;
+    @BindView(R.id.imgV_cam_trigger_mic)
+    ImageView imgVCamTriggerMic;
     @BindView(R.id.imgV_cam_trigger_capture)
     ImageView imgVCamTriggerCapture;
     @BindView(R.id.imgV_cam_zoom_to_full_screen)
@@ -88,6 +89,9 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
     CamLivePortWheel swCamPortWheel;
 
     private WeakReference<View> fLayoutLandScapeControlLayerRef;
+    /**
+     * |安全防护|----直播|5/16 16:30|---|
+     */
     private WeakReference<LiveBottomBarAnimDelegate> liveBottomBarAnimDelegateWeakReference;
     private WeakReference<CamLandLiveLayerInterface> landLiveLayerViewActionWeakReference;
     private CamLandLiveLayerInterface camLandLiveLayerInterface;
@@ -141,6 +145,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
         super.onViewCreated(view, savedInstanceState);
         ViewUtils.updateViewHeight(fLayoutCamLiveView, 0.75f);
         animateBottomBar(true);
+        initBottomBtn(false);
     }
 
     @Override
@@ -173,6 +178,26 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
     public void onDestroyView() {
         super.onDestroyView();
     }
+
+    /**
+     * 初始化三个按钮{扬声器,mic,截图}
+     *
+     * @param enable
+     */
+    private void initBottomBtn(final boolean enable) {
+        imgVCamSwitchSpeaker.post(() -> {
+            imgVCamSwitchSpeaker.setEnabled(enable);
+            imgVCamTriggerMic.setEnabled(enable);
+            imgVCamTriggerCapture.setEnabled(enable);
+        });
+    }
+
+//    private void setUpBottomBtn(boolean local, boolean speakerFlag, boolean micFlag) {
+//        if (basePresenter != null)
+//            basePresenter.switchSpeakerMic(local, speakerFlag, micFlag);
+//        imgVCamSwitchSpeaker.setImageResource(speakerFlag ? R.drawable.btn_video_retry : R.drawable.icon_speaker_selector);
+//        imgVCamTriggerMic.setImageResource(speakerFlag ? R.drawable.btn_video_retry : R.drawable.icon_record);
+//    }
 
     /**
      * 根据 待机模式 ,分享用户模式设置一些view的状态
@@ -210,6 +235,9 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
         AppLogger.i("onLiveStarted");
         if (getView() != null)
             getView().setKeepScreenOn(true);
+        initBottomBtn(true);
+        imgVCamSwitchSpeaker.performClick();
+        imgVCamTriggerMic.performClick();
     }
 
     private void showLoading(int state, String content) {
@@ -298,9 +326,10 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
                 textView.setBackground(getResources().getDrawable(R.drawable.flow_bg));
                 textView.setId("flow".hashCode());
                 textView.setTextColor(getResources().getColor(R.color.color_white));
-                FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+                FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(DensityUtils.dip2px(60),
                         ViewGroup.LayoutParams.WRAP_CONTENT,
                         Gravity.END);
+                textView.setGravity(Gravity.CENTER);
                 lp.topMargin = 10;
                 lp.setMarginEnd(10);
                 fLayoutLiveViewContainer.addView(textView, lp);
@@ -410,7 +439,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
     }
 
     @OnClick({R.id.imgV_cam_switch_speaker,
-            R.id.imgV_cam_trigger_recorder,
+            R.id.imgV_cam_trigger_mic,
             R.id.imgV_cam_trigger_capture,
             R.id.imgV_cam_zoom_to_full_screen,
             R.id.tv_cam_show_timeline,
@@ -418,10 +447,19 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.imgV_cam_switch_speaker:
+                if (basePresenter != null) {
+                    basePresenter.switchSpeakerMic(false, !basePresenter.getSpeakerFlag(), basePresenter.getMicFlag());
+                    ((ImageView) view).setImageResource(basePresenter.getSpeakerFlag() ? R.drawable.btn_video_retry : R.drawable.icon_speaker_selector);
+                }
                 break;
-            case R.id.imgV_cam_trigger_recorder:
+            case R.id.imgV_cam_trigger_mic:
+                if (basePresenter != null) {
+                    basePresenter.switchSpeakerMic(false, basePresenter.getSpeakerFlag(), !basePresenter.getMicFlag());
+                    ((ImageView) view).setImageResource(basePresenter.getMicFlag() ? R.drawable.btn_video_retry : R.drawable.icon_record);
+                }
                 break;
             case R.id.imgV_cam_trigger_capture:
+                if (basePresenter != null) basePresenter.takeSnapShot();
                 break;
             case R.id.imgV_cam_zoom_to_full_screen:
                 ViewUtils.setRequestedOrientation(getActivity(), ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
@@ -508,6 +546,15 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
             default:
                 showLoading(ILiveControl.STATE_STOP, null);
                 break;
+        }
+    }
+
+    @Override
+    public void onTakeSnapShot(boolean state) {
+        if (state) {
+            ToastUtil.showPositiveToast(getString(R.string.SAVED_PHOTOS));
+        } else {
+            ToastUtil.showPositiveToast(getString(R.string.set_failed));
         }
     }
 
