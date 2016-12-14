@@ -125,6 +125,7 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
     private int mCurrentViewType;
     private MediaBean mCurrentMediaBean;
     private static final String STATE_CURRENT_PAGE_POSITION = "state_current_page_position";
+    private static final String STATE_ENTER_ANIMATION_FINISHED = "state_enter_animation_finished";
     private MediaDetailPagerAdapter mAdapter;
     private View mPhotoView;
     private View mPagerContentView;
@@ -138,6 +139,11 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
     private enum PERMISSION {
         PERMISSION_DOWNLOAD,
         PERMISSION_DELETE
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
     }
 
     @Override
@@ -157,6 +163,7 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
         mCurrentViewType = mCurrentMediaBean.msgType;
         if (savedInstanceState != null) {
             mCurrentPosition = savedInstanceState.getInt(STATE_CURRENT_PAGE_POSITION);
+            mEnterAnimationFinished = savedInstanceState.getBoolean(STATE_ENTER_ANIMATION_FINISHED, false);
         }
         initViewAndListener();
     }
@@ -165,6 +172,7 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt(STATE_CURRENT_PAGE_POSITION, mCurrentPosition);
+        outState.putBoolean(STATE_ENTER_ANIMATION_FINISHED, mEnterAnimationFinished);
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
@@ -225,7 +233,12 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
             }
         };
         mMediaPager.setPageMargin((int) getResources().getDimension(R.dimen.video_pager_page_margin));
-        mAdapter.setOnInitFinishListener(this::startPostponedEnterTransition);
+        mAdapter.setOnInitFinishListener(() -> {
+            if (mEnterAnimationFinished)
+                animateHeaderAndFooter(true, true);
+            else
+                startPostponedEnterTransition();
+        });
         mMediaPager.setAdapter(mAdapter);
         mMediaPager.setCurrentItem(mStartPosition);
         mMediaPager.addOnPageChangeListener(this);
