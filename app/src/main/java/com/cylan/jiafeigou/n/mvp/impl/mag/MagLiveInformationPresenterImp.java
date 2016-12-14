@@ -7,6 +7,7 @@ import android.os.Environment;
 import android.telephony.TelephonyManager;
 import android.util.Pair;
 
+import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.dp.DpUtils;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
@@ -141,15 +142,23 @@ public class MagLiveInformationPresenterImp extends AbstractPresenter<MagLiveInf
                         update.version = System.currentTimeMillis();
                         RxBus.getCacheInstance().post(update);
                         if (id == DpMsgMap.ID_2000003_BASE_ALIAS) {
-                            JfgCmdInsurance.getCmd().setAliasByCid(beanMagInfo.deviceBase.uuid,
-                                    beanMagInfo.deviceBase.alias);
+                            try {
+                                JfgCmdInsurance.getCmd().setAliasByCid(beanMagInfo.deviceBase.uuid,
+                                        beanMagInfo.deviceBase.alias);
+                            } catch (JfgException e) {
+                                e.printStackTrace();
+                            }
                             AppLogger.i("update alias: " + new Gson().toJson(beanMagInfo));
                             return;
                         }
-                        JfgCmdInsurance.getCmd().robotSetData(beanMagInfo.deviceBase.uuid,
-                                DpUtils.getList(id,
-                                        beanMagInfoIntegerPair.first.getByte(id)
-                                        , System.currentTimeMillis()));
+                        try {
+                            JfgCmdInsurance.getCmd().robotSetData(beanMagInfo.deviceBase.uuid,
+                                    DpUtils.getList(id,
+                                            beanMagInfoIntegerPair.first.getByte(id)
+                                            , System.currentTimeMillis()));
+                        } catch (JfgException e) {
+                            e.printStackTrace();
+                        }
                         AppLogger.i("update camInfo: " + new Gson().toJson(beanMagInfo));
                     }
                 });

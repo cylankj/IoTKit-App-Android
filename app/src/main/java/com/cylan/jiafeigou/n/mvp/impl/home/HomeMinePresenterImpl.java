@@ -280,8 +280,8 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
                     @Override
                     public void call(RobotoGetDataRsp robotoGetDataRsp) {
                         if (robotoGetDataRsp != null && robotoGetDataRsp instanceof RobotoGetDataRsp){
-                            int size = robotoGetDataRsp.map.get(0).size();
-                            getView().setMesgNumber(size);
+//                            int size = robotoGetDataRsp.map.get(0).size();
+//                            getView().setMesgNumber(size);
                         }
                     }
                 });

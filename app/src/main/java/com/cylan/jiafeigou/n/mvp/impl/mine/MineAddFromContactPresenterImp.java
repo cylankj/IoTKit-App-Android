@@ -109,7 +109,11 @@ public class MineAddFromContactPresenterImp extends AbstractPresenter<MineAddFro
                 .subscribe(new Action1<String>() {
                     @Override
                     public void call(String s) {
-                        JfgCmdInsurance.getCmd().checkFriendAccount(s);
+                        try {
+                            JfgCmdInsurance.getCmd().checkFriendAccount(s);
+                        } catch (JfgException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }, new Action1<Throwable>() {
                     @Override
