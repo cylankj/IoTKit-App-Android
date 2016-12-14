@@ -137,6 +137,7 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
 
     /**
      * 我的亲友
+     *
      * @param view
      */
     public void friendItem(View view) {
@@ -145,9 +146,9 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
             return;
         }
 
-        if (basePresenter.checkOpenLogIn()){
-            if(TextUtils.isEmpty(basePresenter.getUserInfoBean().getEmail()) &&
-                    TextUtils.isEmpty(basePresenter.getUserInfoBean().getPhone())){
+        if (basePresenter.checkOpenLogIn()) {
+            if (TextUtils.isEmpty(basePresenter.getUserInfoBean().getEmail()) &&
+                    TextUtils.isEmpty(basePresenter.getUserInfoBean().getPhone())) {
                 showBindPhoneOrEmailDialog();
                 return;
             }
@@ -287,7 +288,7 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
 
     @OnClick({R.id.home_mine_item_friend, R.id.home_mine_item_share,
             R.id.home_mine_item_help, R.id.home_mine_item_settings,
-            R.id.shadow_layout, R.id.tv_home_mine_nick,R.id.tv_home_mine_msg_count})
+            R.id.shadow_layout, R.id.tv_home_mine_nick, R.id.tv_home_mine_msg_count})
     public void onButterKnifeClick(View view) {
         switch (view.getId()) {
             case R.id.home_mine_item_friend:
@@ -338,6 +339,7 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
 
     /**
      * 帮助与反馈
+     *
      * @param view
      */
     private void helpItem(View view) {
@@ -399,7 +401,7 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
      */
     private void jump2SetPhoneFragment() {
         Bundle bundle = new Bundle();
-        bundle.putSerializable("userinfo",basePresenter.getUserInfoBean());
+        bundle.putSerializable("userinfo", basePresenter.getUserInfoBean());
         bindPhoneFragment = MineInfoBindPhoneFragment.newInstance(bundle);
         getFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right

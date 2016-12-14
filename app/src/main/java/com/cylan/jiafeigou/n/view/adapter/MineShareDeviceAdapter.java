@@ -22,11 +22,11 @@ public class MineShareDeviceAdapter extends SuperAdapter<DeviceBean> {
 
     private OnShareClickListener listener;
 
-    public interface OnShareClickListener{
+    public interface OnShareClickListener {
         void onShare(SuperViewHolder holder, int viewType, int layoutPosition, DeviceBean item);
     }
 
-    public void setOnShareClickListener(OnShareClickListener listener){
+    public void setOnShareClickListener(OnShareClickListener listener) {
         this.listener = listener;
     }
 
@@ -43,13 +43,13 @@ public class MineShareDeviceAdapter extends SuperAdapter<DeviceBean> {
         //图标
         holder.setImageDrawable(R.id.iv_share_device_icon, getContext().getResources().getDrawable(iconRes));
         //已分享数
-        holder.setText(R.id.tv_has_share_num,"5/"+item.hasShareCount);
+        holder.setText(R.id.tv_has_share_num, "5/" + item.hasShareCount);
 
         holder.setOnClickListener(R.id.tv_share_device_btn, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (listener != null){
-                    listener.onShare(holder,viewType,layoutPosition,item);
+                if (listener != null) {
+                    listener.onShare(holder, viewType, layoutPosition, item);
                 }
             }
         });

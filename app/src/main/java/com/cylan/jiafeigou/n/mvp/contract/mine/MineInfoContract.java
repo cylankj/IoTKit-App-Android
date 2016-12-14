@@ -3,7 +3,6 @@ package com.cylan.jiafeigou.n.mvp.contract.mine;
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
-import com.cylan.jiafeigou.n.mvp.model.UserInfoBean;
 
 import rx.Subscription;
 
@@ -32,6 +31,7 @@ public interface MineInfoContract {
     interface Presenter extends BasePresenter {
 
         void bindPersonEmail();                 //绑定邮箱
+
         /**
          * 退出登录
          */
@@ -39,12 +39,14 @@ public interface MineInfoContract {
 
         /**
          * 退出登录回调
+         *
          * @return
          */
         Subscription logOutCallBack();
 
         /**
          * 检查文件是否存在
+         *
          * @param path
          * @return
          */
@@ -52,27 +54,32 @@ public interface MineInfoContract {
 
         /**
          * 检测是否存在相机
+         *
          * @return
          */
         boolean checkHasCamera();
 
         /**
          * 检测相机是否可用
+         *
          * @return
          */
         boolean cameraIsCanUse();
 
         /**
          * 检测相机的权限
+         *
          * @return
          */
         boolean checkCameraPermission();
 
         /**
          * 检测存储权限
+         *
          * @return
          */
         boolean checkExternalStorePermission();
+
         /**
          * 获取到用户信息
          */
@@ -80,6 +87,7 @@ public interface MineInfoContract {
 
         /**
          * 判断是否是三方登录
+         *
          * @return
          */
         boolean checkOpenLogin();

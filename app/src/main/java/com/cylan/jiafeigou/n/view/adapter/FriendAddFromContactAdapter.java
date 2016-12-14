@@ -24,7 +24,7 @@ public class FriendAddFromContactAdapter extends SuperAdapter<RelAndFriendBean> 
     private onContactItemClickListener listener;
 
     public interface onContactItemClickListener {
-        void onAddClick(View view, int position,RelAndFriendBean item);
+        void onAddClick(View view, int position, RelAndFriendBean item);
     }
 
     public void setOnContactItemClickListener(onContactItemClickListener listener) {
@@ -37,11 +37,11 @@ public class FriendAddFromContactAdapter extends SuperAdapter<RelAndFriendBean> 
 
     @Override
     public void onBind(final SuperViewHolder holder, int viewType, final int layoutPosition, final RelAndFriendBean item) {
-        holder.setText(R.id.tv_contactname,item.alias);
-        holder.setText(R.id.tv_contactphone,item.account);
+        holder.setText(R.id.tv_contactname, item.alias);
+        holder.setText(R.id.tv_contactphone, item.account);
 
         TextView addBtn = holder.getView(R.id.tv_contactadd);
-        if (item.isCheckFlag == 1){
+        if (item.isCheckFlag == 1) {
             addBtn.setText(ContextUtils.getContext().getString(R.string.Tap3_Added));
             addBtn.setEnabled(false);
             addBtn.setTextColor(Color.parseColor("#ADADAD"));
@@ -50,8 +50,8 @@ public class FriendAddFromContactAdapter extends SuperAdapter<RelAndFriendBean> 
         holder.setOnClickListener(R.id.tv_contactadd, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (listener != null){
-                    listener.onAddClick(holder.getView(layoutPosition),layoutPosition,item);
+                if (listener != null) {
+                    listener.onAddClick(holder.getView(layoutPosition), layoutPosition, item);
                 }
             }
         });

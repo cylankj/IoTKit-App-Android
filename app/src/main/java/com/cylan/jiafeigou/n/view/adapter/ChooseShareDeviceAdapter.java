@@ -24,11 +24,11 @@ public class ChooseShareDeviceAdapter extends SuperAdapter<DeviceBean> {
 
     private OnCheckClickListener listener;
 
-    public interface OnCheckClickListener{
+    public interface OnCheckClickListener {
         void onCheckClick(DeviceBean item);
     }
 
-    public void setOnCheckClickListener(OnCheckClickListener listener){
+    public void setOnCheckClickListener(OnCheckClickListener listener) {
         this.listener = listener;
     }
 
@@ -47,18 +47,18 @@ public class ChooseShareDeviceAdapter extends SuperAdapter<DeviceBean> {
         holder.setImageDrawable(R.id.iv_device_icon, getContext().getResources().getDrawable(iconRes));
         //已分享数
         final TextView hasShareNum = holder.getView(R.id.tv_share_device_number);
-        hasShareNum.setText(item.hasShareCount+"/5");
+        hasShareNum.setText(item.hasShareCount + "/5");
 
         CheckBox checkBox = holder.getView(R.id.cbx_share_isCheck);
 
         checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                item.isChooseFlag = isChecked ? 1:0;
-                item.hasShareCount = isChecked ? item.hasShareCount+1:item.hasShareCount-1;
-                hasShareNum.setText(item.hasShareCount+"/5");
+                item.isChooseFlag = isChecked ? 1 : 0;
+                item.hasShareCount = isChecked ? item.hasShareCount + 1 : item.hasShareCount - 1;
+                hasShareNum.setText(item.hasShareCount + "/5");
 
-                if (listener != null){
+                if (listener != null) {
                     listener.onCheckClick(item);
                 }
             }

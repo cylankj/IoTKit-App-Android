@@ -2,7 +2,9 @@ package com.cylan.jiafeigou.widget.video;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.os.SystemClock;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 import android.view.SurfaceView;
 
 import com.cylan.panorama.CameraParam;
@@ -65,5 +67,26 @@ public class SurfaceView_Ext extends SurfaceView implements VideoViewFactory.IVi
     @Override
     public void takeSnapshot() {
 
+    }
+
+    @Override
+    public void performTouch() {
+        // Obtain MotionEvent object
+        long downTime = SystemClock.uptimeMillis();
+        long eventTime = SystemClock.uptimeMillis() + 100;
+        float x = 0.0f;
+        float y = 0.0f;
+        // List of meta states found here: developer.android.com/reference/android/view/KeyEvent.html#getMetaState()
+        int metaState = 0;
+        MotionEvent motionEvent = MotionEvent.obtain(
+                downTime,
+                eventTime,
+                MotionEvent.ACTION_UP,
+                x,
+                y,
+                metaState
+        );
+        // Dispatch touch event to view
+        dispatchTouchEvent(motionEvent);
     }
 }

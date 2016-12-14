@@ -4,7 +4,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
@@ -16,8 +15,6 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
@@ -102,12 +99,12 @@ public class MineShareToContactFragment extends Fragment implements MineShareToC
      * desc；监听搜索输入的变化
      */
     @OnTextChanged(R.id.et_search_contact)
-    public void initEditListener(CharSequence s, int start, int before, int count){
+    public void initEditListener(CharSequence s, int start, int before, int count) {
         presenter.handlerSearchResult(s.toString().trim());
     }
 
     private void initPresenter() {
-        presenter = new MineShareToContactPresenterImp(this,hasSharefriend);
+        presenter = new MineShareToContactPresenterImp(this, hasSharefriend);
     }
 
     @Override
@@ -186,9 +183,9 @@ public class MineShareToContactFragment extends Fragment implements MineShareToC
                     getView().postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            presenter.handlerShareClick(deviceinfo.uuid,account);
+                            presenter.handlerShareClick(deviceinfo.uuid, account);
                         }
-                    },2000);
+                    }, 2000);
                 }
             }
         });
@@ -203,7 +200,7 @@ public class MineShareToContactFragment extends Fragment implements MineShareToC
 
     @Override
     public void showShareingProHint() {
-        LoadingDialog.showLoading(getFragmentManager(),getString(R.string.LOADING));
+        LoadingDialog.showLoading(getFragmentManager(), getString(R.string.LOADING));
     }
 
     @Override
@@ -222,31 +219,32 @@ public class MineShareToContactFragment extends Fragment implements MineShareToC
 
     @Override
     public void startSendMesgActivity(String account) {
-        Uri smsToUri = Uri.parse("smsto:"+account);
-        Intent mIntent = new Intent(Intent.ACTION_SENDTO, smsToUri );
+        Uri smsToUri = Uri.parse("smsto:" + account);
+        Intent mIntent = new Intent(Intent.ACTION_SENDTO, smsToUri);
         mIntent.putExtra("sms_body", getString(R.string.Tap1_share_tips));
-        startActivity( mIntent );
+        startActivity(mIntent);
     }
 
     /**
      * 分享结果的处理
+     *
      * @param requtestId
      */
     @Override
     public void handlerCheckRegister(int requtestId, String item) {
-        switch (requtestId){
+        switch (requtestId) {
             case JError.ErrorOK:                                           //分享成功
                 ToastUtil.showPositiveToast(getString(R.string.Tap3_ShareDevice_SuccessTips));
                 break;
 
             case JError.ErrorShareExceedsLimit:                             //已注册 未分享但人数达到5人
-                if (getView() != null){
+                if (getView() != null) {
                     showPersonOverDialog(getString(R.string.SHARE_ERR));
                 }
                 break;
 
             case JError.ErrorShareAlready:                                    //已注册 已分享
-                if (getView() != null){
+                if (getView() != null) {
                     showPersonOverDialog(getString(R.string.RET_ESHARE_REPEAT));
                 }
                 break;
@@ -255,7 +253,7 @@ public class MineShareToContactFragment extends Fragment implements MineShareToC
                 break;
 
             case JError.ErrorShareToSelf:                                     //不能分享给自己
-                if (getView() != null){
+                if (getView() != null) {
                     showPersonOverDialog(getString(R.string.RET_ESHARE_NOT_YOURSELF));
                 }
                 break;
@@ -264,6 +262,7 @@ public class MineShareToContactFragment extends Fragment implements MineShareToC
 
     /**
      * 点击分享按钮
+     *
      * @param item
      */
     @Override

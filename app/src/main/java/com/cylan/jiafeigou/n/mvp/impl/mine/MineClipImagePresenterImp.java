@@ -2,13 +2,12 @@ package com.cylan.jiafeigou.n.mvp.impl.mine;
 
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.ex.JfgException;
-import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineClipImageContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
+import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.rx.RxBus;
 
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -33,6 +32,7 @@ public class MineClipImagePresenterImp extends AbstractPresenter<MineClipImageCo
 
     /**
      * 上传用户的头像
+     *
      * @param path
      */
     @Override
@@ -66,7 +66,7 @@ public class MineClipImagePresenterImp extends AbstractPresenter<MineClipImageCo
                 .subscribe(new Action1<RxEvent.GetHttpDoneResult>() {
                     @Override
                     public void call(RxEvent.GetHttpDoneResult getHttpDoneResult) {
-                        if (getHttpDoneResult != null && getHttpDoneResult instanceof RxEvent.GetHttpDoneResult){
+                        if (getHttpDoneResult != null && getHttpDoneResult instanceof RxEvent.GetHttpDoneResult) {
                             getView().hideUpLoadPro();
                             handlerUploadImage(getHttpDoneResult);
                             getView().upLoadResultView(getHttpDoneResult.jfgMsgHttpResult.requestId);
@@ -77,10 +77,11 @@ public class MineClipImagePresenterImp extends AbstractPresenter<MineClipImageCo
 
     /**
      * 处理上传头像文件后
+     *
      * @param getHttpDoneResult
      */
     private void handlerUploadImage(RxEvent.GetHttpDoneResult getHttpDoneResult) {
-        if (getHttpDoneResult.jfgMsgHttpResult.requestId == 1){
+        if (getHttpDoneResult.jfgMsgHttpResult.requestId == 1) {
             sendResetUrl();
         }
     }
@@ -94,7 +95,7 @@ public class MineClipImagePresenterImp extends AbstractPresenter<MineClipImageCo
                 .subscribe(new Action1<Object>() {
                     @Override
                     public void call(Object o) {
-                        if (jfgAccount != null){
+                        if (jfgAccount != null) {
                             jfgAccount.setPhoto(true);
                             try {
                                 JfgCmdInsurance.getCmd().setAccount(jfgAccount);
@@ -106,7 +107,7 @@ public class MineClipImagePresenterImp extends AbstractPresenter<MineClipImageCo
                 }, new Action1<Throwable>() {
                     @Override
                     public void call(Throwable throwable) {
-                        AppLogger.e("sendResetUrl"+throwable.getLocalizedMessage());
+                        AppLogger.e("sendResetUrl" + throwable.getLocalizedMessage());
                     }
                 });
     }
@@ -121,7 +122,7 @@ public class MineClipImagePresenterImp extends AbstractPresenter<MineClipImageCo
                 .subscribe(new Action1<RxEvent.GetUserInfo>() {
                     @Override
                     public void call(RxEvent.GetUserInfo getUserInfo) {
-                        if (getUserInfo != null && getUserInfo instanceof RxEvent.GetUserInfo){
+                        if (getUserInfo != null && getUserInfo instanceof RxEvent.GetUserInfo) {
                             jfgAccount = getUserInfo.jfgAccount;
                         }
                     }
@@ -130,9 +131,9 @@ public class MineClipImagePresenterImp extends AbstractPresenter<MineClipImageCo
 
     @Override
     public void start() {
-        if (subscription != null && !subscription.isUnsubscribed()){
+        if (subscription != null && !subscription.isUnsubscribed()) {
             subscription.unsubscribe();
-        }else {
+        } else {
             subscription = new CompositeSubscription();
             subscription.add(getAccount());
             subscription.add(getUpLoadResult());
@@ -141,7 +142,7 @@ public class MineClipImagePresenterImp extends AbstractPresenter<MineClipImageCo
 
     @Override
     public void stop() {
-        if (subscription != null && !subscription.isUnsubscribed()){
+        if (subscription != null && !subscription.isUnsubscribed()) {
             subscription.unsubscribe();
         }
     }

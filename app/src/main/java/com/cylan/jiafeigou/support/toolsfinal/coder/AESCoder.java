@@ -48,9 +48,8 @@ public final class AESCoder {
     /**
      * Encrypt and encode message using 256-bit AES with key generated from password.
      *
-     *
      * @param password used to generated key
-     * @param message the thing you want to encrypt assumed String UTF-8
+     * @param message  the thing you want to encrypt assumed String UTF-8
      * @return Base64 encoded CipherText
      * @throws GeneralSecurityException if problems occur during encryption
      */
@@ -71,8 +70,9 @@ public final class AESCoder {
 
     /**
      * More flexible AES encrypt that doesn't encode
-     * @param key AES key typically 128, 192 or 256 bit
-     * @param iv Initiation Vector
+     *
+     * @param key     AES key typically 128, 192 or 256 bit
+     * @param iv      Initiation Vector
      * @param message in bytes (assumed it's already been decoded)
      * @return Encrypted cipher text (not encoded)
      * @throws GeneralSecurityException if something goes wrong during encryption
@@ -91,7 +91,7 @@ public final class AESCoder {
     /**
      * Decrypt and decode ciphertext using 256-bit AES with key generated from password
      *
-     * @param password used to generated key
+     * @param password                used to generated key
      * @param base64EncodedCipherText the encrpyted message encoded with base64
      * @return message in Plain text (String UTF-8)
      * @throws GeneralSecurityException if there's an issue decrypting
@@ -114,8 +114,8 @@ public final class AESCoder {
     /**
      * More flexible AES decrypt that doesn't encode
      *
-     * @param key AES key typically 128, 192 or 256 bit
-     * @param iv Initiation Vector
+     * @param key               AES key typically 128, 192 or 256 bit
+     * @param iv                Initiation Vector
      * @param decodedCipherText in bytes (assumed it's already been decoded)
      * @return Decrypted message cipher text (not encoded)
      * @throws GeneralSecurityException if something goes wrong during encryption

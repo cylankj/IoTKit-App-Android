@@ -16,6 +16,7 @@ public class DESCoder {
 
     /**
      * 加密
+     *
      * @param data
      * @param password
      * @return
@@ -43,11 +44,12 @@ public class DESCoder {
 
     /**
      * DES
+     *
      * @param src
      * @param password
      * @return
      */
-    public static byte[] decrypt(byte []src, String password) {
+    public static byte[] decrypt(byte[] src, String password) {
         try {
             // DES算法要求有一个可信任的随机数源
             SecureRandom random = new SecureRandom();

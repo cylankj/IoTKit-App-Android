@@ -316,7 +316,7 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
     @Override
     public void saveIntoDb(CloudLiveBaseDbBean bean) {
         try {
-            if (base_db == null)return;
+            if (base_db == null) return;
             base_db.save(bean);
         } catch (DbException e) {
             e.printStackTrace();
@@ -328,7 +328,7 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
         List<CloudLiveBaseDbBean> allData = new ArrayList<>();
         try {
             List<CloudLiveBaseDbBean> tempAll = base_db.findAll(CloudLiveBaseDbBean.class);
-            if (tempAll != null && tempAll.size() > 0 ){
+            if (tempAll != null && tempAll.size() > 0) {
                 allData.addAll(tempAll);
             }
         } catch (DbException e) {
@@ -439,7 +439,7 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
                 list.add(newBean);
             }
         }
-        if (getView() != null){
+        if (getView() != null) {
             handlerDataResult(list);
         }
     }
@@ -460,13 +460,14 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
 
     /**
      * 处理数据的结果
+     *
      * @param list
      */
     private void handlerDataResult(List<CloudLiveBaseBean> list) {
-        if (list.size()==0){
+        if (list.size() == 0) {
             getView().showNoMesg();
             getView().initRecycleView(list);
-        }else {
+        } else {
             getView().hideNoMesg();
             getView().initRecycleView(list);
         }

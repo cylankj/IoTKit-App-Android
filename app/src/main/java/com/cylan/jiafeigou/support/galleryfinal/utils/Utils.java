@@ -43,6 +43,7 @@ public class Utils {
 
     /**
      * 保存Bitmap到文件
+     *
      * @param bitmap
      * @param format
      * @param target
@@ -117,11 +118,12 @@ public class Utils {
 
     /**
      * 取某个范围的任意数
+     *
      * @param min
      * @param max
      * @return
      */
-    public static int getRandom(int min, int max){
+    public static int getRandom(int min, int max) {
         Random random = new Random();
         int s = random.nextInt(max) % (max - min + 1) + min;
         return s;

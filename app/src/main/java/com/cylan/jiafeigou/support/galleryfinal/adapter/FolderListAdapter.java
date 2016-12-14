@@ -24,7 +24,6 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.support.galleryfinal.FunctionConfig;
 import com.cylan.jiafeigou.support.galleryfinal.GalleryFinal;
@@ -74,7 +73,7 @@ public class FolderListAdapter extends ViewHolderAdapter<FolderListAdapter.Folde
 
         holder.mTvFolderName.setText(photoFolderInfo.getFolderName());
         int size = 0;
-        if ( photoFolderInfo.getPhotoList() != null ) {
+        if (photoFolderInfo.getPhotoList() != null) {
             size = photoFolderInfo.getPhotoList().size();
         }
         holder.mTvPhotoCount.setText(mActivity.getString(R.string.folder_photo_size, size));
@@ -104,6 +103,7 @@ public class FolderListAdapter extends ViewHolderAdapter<FolderListAdapter.Folde
         TextView mTvFolderName;
         TextView mTvPhotoCount;
         View mView;
+
         public FolderViewHolder(View view) {
             super(view);
             this.mView = view;

@@ -9,10 +9,9 @@ import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineBindPhoneContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
+import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.rx.RxBus;
-import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 
 import java.util.concurrent.TimeUnit;
@@ -28,7 +27,7 @@ import rx.subscriptions.CompositeSubscription;
  * 创建时间：2016/11/14
  * 描述：
  */
-public class MineBindPhonePresenterImp extends AbstractPresenter<MineBindPhoneContract.View> implements MineBindPhoneContract.Presenter{
+public class MineBindPhonePresenterImp extends AbstractPresenter<MineBindPhoneContract.View> implements MineBindPhoneContract.Presenter {
 
     private CompositeSubscription compositeSubscription;
     private JFGAccount jfgAccount;
@@ -40,11 +39,11 @@ public class MineBindPhonePresenterImp extends AbstractPresenter<MineBindPhoneCo
 
     @Override
     public void isBindOrChange(JFGAccount userinfo) {
-        if (getView() != null && userinfo != null){
-            if ("".equals(userinfo.getPhone())){
+        if (getView() != null && userinfo != null) {
+            if ("".equals(userinfo.getPhone())) {
                 //绑定手机号
                 getView().initToolbarTitle(getView().getContext().getString(R.string.Tap0_BindPhoneNo));
-            }else {
+            } else {
                 //修改手机号
                 getView().initToolbarTitle(getView().getContext().getString(R.string.CHANGE_PHONE_NUM));
             }
@@ -53,6 +52,7 @@ public class MineBindPhonePresenterImp extends AbstractPresenter<MineBindPhoneCo
 
     /**
      * 获取到验证码
+     *
      * @param phone
      */
     @Override
@@ -68,7 +68,7 @@ public class MineBindPhonePresenterImp extends AbstractPresenter<MineBindPhoneCo
                 }, new Action1<Throwable>() {
                     @Override
                     public void call(Throwable throwable) {
-                        AppLogger.e("getcheckcode"+throwable.getLocalizedMessage());
+                        AppLogger.e("getcheckcode" + throwable.getLocalizedMessage());
                     }
                 });
     }
@@ -84,21 +84,22 @@ public class MineBindPhonePresenterImp extends AbstractPresenter<MineBindPhoneCo
                     @Override
                     public void call(String s) {
                         try {
-                        JfgCmdInsurance.getCmd().checkFriendAccount(s);
+                            JfgCmdInsurance.getCmd().checkFriendAccount(s);
                         } catch (JfgException e) {
                             e.printStackTrace();
-                    }
+                        }
                     }
                 }, new Action1<Throwable>() {
                     @Override
                     public void call(Throwable throwable) {
-                        AppLogger.e("checkphoneisbind"+throwable.getLocalizedMessage());
+                        AppLogger.e("checkphoneisbind" + throwable.getLocalizedMessage());
                     }
                 });
     }
 
     /**
      * 获取到检测账号的回调
+     *
      * @return
      */
     @Override
@@ -108,8 +109,8 @@ public class MineBindPhonePresenterImp extends AbstractPresenter<MineBindPhoneCo
                 .subscribe(new Action1<RxEvent.CheckAccountCallback>() {
                     @Override
                     public void call(RxEvent.CheckAccountCallback checkAccountCallback) {
-                        if (checkAccountCallback != null && checkAccountCallback instanceof RxEvent.CheckAccountCallback){
-                            if (getView() != null){
+                        if (checkAccountCallback != null && checkAccountCallback instanceof RxEvent.CheckAccountCallback) {
+                            if (getView() != null) {
                                 getView().handlerCheckPhoneResult(checkAccountCallback);
                             }
                         }
@@ -127,23 +128,25 @@ public class MineBindPhonePresenterImp extends AbstractPresenter<MineBindPhoneCo
                 .subscribe(new Action1<JFGAccount>() {
                     @Override
                     public void call(JFGAccount account) {
-                        account.resetFlag();
-                        account.setPhone(getView().getInputPhone(),getView().getInputCheckCode());
-                        JfgCmdInsurance.getCmd().setAccount(account);
+                        try {
+                            account.resetFlag();
+                            account.setPhone(getView().getInputPhone(), getView().getInputCheckCode());
+                            JfgCmdInsurance.getCmd().setAccount(account);
                         } catch (JfgException e) {
                             e.printStackTrace();
-                    }
+                        }
                     }
                 }, new Action1<Throwable>() {
                     @Override
                     public void call(Throwable throwable) {
-                        AppLogger.e("sendChangePhoneReq"+throwable.getLocalizedMessage());
+                        AppLogger.e("sendChangePhoneReq" + throwable.getLocalizedMessage());
                     }
                 });
     }
 
     /**
      * 获取到验证码的回调
+     *
      * @return
      */
     @Override
@@ -154,9 +157,9 @@ public class MineBindPhonePresenterImp extends AbstractPresenter<MineBindPhoneCo
                 .subscribe(new Action1<RxEvent.SmsCodeResult>() {
                     @Override
                     public void call(RxEvent.SmsCodeResult smsCodeResult) {
-                        if (smsCodeResult != null && smsCodeResult instanceof RxEvent.SmsCodeResult){
-                            if (smsCodeResult.error == JError.ErrorOK){
-                                AppLogger.d("jjjjjjjjjjj"+smsCodeResult.token);
+                        if (smsCodeResult != null && smsCodeResult instanceof RxEvent.SmsCodeResult) {
+                            if (smsCodeResult.error == JError.ErrorOK) {
+                                AppLogger.d("jjjjjjjjjjj" + smsCodeResult.token);
                                 PreferencesUtils.putString(JConstant.KEY_REGISTER_SMS_TOKEN, smsCodeResult.token);
                             }
                         }
@@ -166,6 +169,7 @@ public class MineBindPhonePresenterImp extends AbstractPresenter<MineBindPhoneCo
 
     /**
      * 获取到用户信息
+     *
      * @return
      */
     @Override
@@ -175,7 +179,7 @@ public class MineBindPhonePresenterImp extends AbstractPresenter<MineBindPhoneCo
                 .subscribe(new Action1<RxEvent.GetUserInfo>() {
                     @Override
                     public void call(RxEvent.GetUserInfo getUserInfo) {
-                        if (getView()!= null && getUserInfo != null && getUserInfo instanceof RxEvent.GetUserInfo){
+                        if (getView() != null && getUserInfo != null && getUserInfo instanceof RxEvent.GetUserInfo) {
                             jfgAccount = getUserInfo.jfgAccount;
                             getView().handlerResetPhoneResult(getUserInfo);
                         }
@@ -185,6 +189,7 @@ public class MineBindPhonePresenterImp extends AbstractPresenter<MineBindPhoneCo
 
     /**
      * 短信校验的结果回调
+     *
      * @return
      */
     @Override
@@ -194,8 +199,8 @@ public class MineBindPhonePresenterImp extends AbstractPresenter<MineBindPhoneCo
                 .subscribe(new Action1<RxEvent.ResultVerifyCode>() {
                     @Override
                     public void call(RxEvent.ResultVerifyCode resultVerifyCode) {
-                        if (resultVerifyCode != null && resultVerifyCode instanceof RxEvent.ResultVerifyCode){
-                            if (getView() != null){
+                        if (resultVerifyCode != null && resultVerifyCode instanceof RxEvent.ResultVerifyCode) {
+                            if (getView() != null) {
                                 getView().handlerCheckCodeResult(resultVerifyCode);
                             }
                         }
@@ -205,6 +210,7 @@ public class MineBindPhonePresenterImp extends AbstractPresenter<MineBindPhoneCo
 
     /**
      * 校验短信验证码
+     *
      * @param code
      */
     @Override
@@ -214,21 +220,25 @@ public class MineBindPhonePresenterImp extends AbstractPresenter<MineBindPhoneCo
                 .subscribe(new Action1<String>() {
                     @Override
                     public void call(String code) {
-                        JfgCmdInsurance.getCmd().verifySMS(jfgAccount.getAccount(),inputCode,code);
+                        try {
+                            JfgCmdInsurance.getCmd().verifySMS(jfgAccount.getAccount(), inputCode, code);
+                        } catch (JfgException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }, new Action1<Throwable>() {
                     @Override
                     public void call(Throwable throwable) {
-                        AppLogger.e("CheckVerifyCode"+throwable.getLocalizedMessage());
+                        AppLogger.e("CheckVerifyCode" + throwable.getLocalizedMessage());
                     }
                 });
     }
 
     @Override
     public void start() {
-        if (compositeSubscription != null && !compositeSubscription.isUnsubscribed()){
+        if (compositeSubscription != null && !compositeSubscription.isUnsubscribed()) {
             compositeSubscription.unsubscribe();
-        }else {
+        } else {
             compositeSubscription = new CompositeSubscription();
             compositeSubscription.add(getAccountCallBack());
             compositeSubscription.add(getCheckPhoneCallback());
@@ -239,7 +249,7 @@ public class MineBindPhonePresenterImp extends AbstractPresenter<MineBindPhoneCo
 
     @Override
     public void stop() {
-        if (compositeSubscription != null && !compositeSubscription.isUnsubscribed()){
+        if (compositeSubscription != null && !compositeSubscription.isUnsubscribed()) {
             compositeSubscription.unsubscribe();
         }
     }

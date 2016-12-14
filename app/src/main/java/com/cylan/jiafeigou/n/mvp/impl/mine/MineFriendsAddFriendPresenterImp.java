@@ -12,7 +12,7 @@ import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
  * 创建时间：2016/11/26
  * 描述：
  */
-public class MineFriendsAddFriendPresenterImp extends AbstractPresenter<MineFriendsAddFriendContract.View> implements MineFriendsAddFriendContract.Presenter{
+public class MineFriendsAddFriendPresenterImp extends AbstractPresenter<MineFriendsAddFriendContract.View> implements MineFriendsAddFriendContract.Presenter {
 
     public MineFriendsAddFriendPresenterImp(MineFriendsAddFriendContract.View view) {
         super(view);
@@ -21,6 +21,7 @@ public class MineFriendsAddFriendPresenterImp extends AbstractPresenter<MineFrie
 
     /**
      * 检测联系人权限
+     *
      * @return
      */
     @Override
@@ -29,7 +30,7 @@ public class MineFriendsAddFriendPresenterImp extends AbstractPresenter<MineFrie
                 Manifest.permission.READ_CONTACTS)
                 != PackageManager.PERMISSION_GRANTED) {
             return false;
-        }else{
+        } else {
             return true;
         }
     }

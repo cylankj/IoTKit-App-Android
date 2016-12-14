@@ -8,7 +8,6 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.support.wechat.WechatShare;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.utils.PackageUtils;
 import com.google.gson.Gson;

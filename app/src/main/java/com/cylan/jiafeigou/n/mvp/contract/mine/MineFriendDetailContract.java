@@ -30,6 +30,7 @@ public interface MineFriendDetailContract {
     interface Presenter extends BasePresenter {
         /**
          * 发送删除好友请求
+         *
          * @param account
          */
         void sendDeleteFriendReq(String account);

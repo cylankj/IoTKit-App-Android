@@ -3,7 +3,6 @@ package com.cylan.jiafeigou.n.mvp.contract.mine;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
 import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
-import com.cylan.jiafeigou.n.view.adapter.MineHasShareAdapter;
 
 import java.util.ArrayList;
 
@@ -64,6 +63,7 @@ public interface MineDevicesShareManagerContract {
 
         /**
          * 显示顶部标题头
+         *
          * @param name
          */
         void setTopTitle(String name);
@@ -73,12 +73,14 @@ public interface MineDevicesShareManagerContract {
 
         /**
          * 获取已分享的好友
+         *
          * @param cid
          */
         void getHasShareList(String cid);
 
         /**
          * 获取到到已分享好友的回调
+         *
          * @return
          */
         Subscription getHasShareListCallback();
@@ -90,9 +92,10 @@ public interface MineDevicesShareManagerContract {
 
         /**
          * desc：取消分享
+         *
          * @param bean
          */
-        void cancleShare(String cid,RelAndFriendBean bean);
+        void cancleShare(String cid, RelAndFriendBean bean);
 
         /**
          * 取消分享的回调

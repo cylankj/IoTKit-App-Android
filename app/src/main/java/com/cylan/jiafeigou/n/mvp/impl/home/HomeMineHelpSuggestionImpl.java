@@ -1,9 +1,6 @@
 package com.cylan.jiafeigou.n.mvp.impl.home;
 
-import android.content.Context;
-
 import com.cylan.entity.jniCall.JFGAccount;
-import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.db.DataBaseUtil;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeMineHelpSuggestionContract;
@@ -13,7 +10,6 @@ import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.db.DbManager;
 import com.cylan.jiafeigou.support.db.ex.DbException;
-import com.cylan.jiafeigou.support.download.utils.L;
 import com.cylan.jiafeigou.support.log.AppLogger;
 
 import java.util.ArrayList;
@@ -51,9 +47,9 @@ public class HomeMineHelpSuggestionImpl extends AbstractPresenter<HomeMineHelpSu
 
     @Override
     public void start() {
-        if (compositeSubscription != null && !compositeSubscription.isUnsubscribed()){
+        if (compositeSubscription != null && !compositeSubscription.isUnsubscribed()) {
             compositeSubscription.unsubscribe();
-        }else {
+        } else {
             compositeSubscription = new CompositeSubscription();
             compositeSubscription.add(getAccountInfo());
         }
@@ -74,12 +70,12 @@ public class HomeMineHelpSuggestionImpl extends AbstractPresenter<HomeMineHelpSu
                     @Override
                     public Observable<ArrayList<MineHelpSuggestionBean>> call(Object o) {
                         ArrayList<MineHelpSuggestionBean> tempList = new ArrayList<MineHelpSuggestionBean>();
-                        if (dbManager == null){
+                        if (dbManager == null) {
                             return Observable.just(tempList);
                         }
                         try {
                             List<MineHelpSuggestionBean> list = dbManager.findAll(MineHelpSuggestionBean.class);
-                            if (list != null && list.size() != 0){
+                            if (list != null && list.size() != 0) {
                                 tempList.addAll(list);
                             }
                         } catch (DbException e) {
@@ -92,7 +88,7 @@ public class HomeMineHelpSuggestionImpl extends AbstractPresenter<HomeMineHelpSu
                 .subscribe(new Action1<ArrayList<MineHelpSuggestionBean>>() {
                     @Override
                     public void call(ArrayList<MineHelpSuggestionBean> list) {
-                        if (getView() != null){
+                        if (getView() != null) {
                             getView().initRecycleView(list);
                         }
                     }
@@ -121,7 +117,7 @@ public class HomeMineHelpSuggestionImpl extends AbstractPresenter<HomeMineHelpSu
                 .subscribe(new Action1<RxEvent.GetUserInfo>() {
                     @Override
                     public void call(RxEvent.GetUserInfo userInfo) {
-                        if (userInfo != null && userInfo instanceof RxEvent.GetUserInfo){
+                        if (userInfo != null && userInfo instanceof RxEvent.GetUserInfo) {
                             userInfomation = userInfo.jfgAccount;
                             dbManager = DataBaseUtil.getInstance(userInfo.jfgAccount.getAccount()).dbManager;
                             initData();
@@ -132,6 +128,7 @@ public class HomeMineHelpSuggestionImpl extends AbstractPresenter<HomeMineHelpSu
 
     /**
      * 保存到本地数据库
+     *
      * @param bean
      */
     @Override
@@ -148,38 +145,40 @@ public class HomeMineHelpSuggestionImpl extends AbstractPresenter<HomeMineHelpSu
      */
     @Override
     public String getUserPhotoUrl() {
-        if (userInfomation == null){
+        if (userInfomation == null) {
             return "";
-        }else {
+        } else {
             return userInfomation.getPhotoUrl();
         }
     }
 
     /**
      * 检测是否超时5分钟
+     *
      * @return
      */
     @Override
     public boolean checkOverTime(String time) {
         long lastItemTime = Long.parseLong(time);
-        if (System.currentTimeMillis() - lastItemTime > 5*60*1000){
+        if (System.currentTimeMillis() - lastItemTime > 5 * 60 * 1000) {
             return true;
-        }else {
+        } else {
             return false;
         }
     }
 
     /**
      * 检测是否超过20s
+     *
      * @param time
      * @return
      */
     @Override
     public boolean checkOver20Min(String time) {
         long lastItemTime = Long.parseLong(time);
-        if (System.currentTimeMillis() - lastItemTime > 2*60*1000){
+        if (System.currentTimeMillis() - lastItemTime > 2 * 60 * 1000) {
             return true;
-        }else {
+        } else {
             return false;
         }
     }
@@ -199,7 +198,7 @@ public class HomeMineHelpSuggestionImpl extends AbstractPresenter<HomeMineHelpSu
                 }, new Action1<Throwable>() {
                     @Override
                     public void call(Throwable throwable) {
-                        AppLogger.d("sendFeedBack"+throwable.getLocalizedMessage());
+                        AppLogger.d("sendFeedBack" + throwable.getLocalizedMessage());
                     }
                 });
     }

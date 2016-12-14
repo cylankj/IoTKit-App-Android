@@ -18,21 +18,26 @@ public interface MineFriendAddFromContactContract {
     interface View extends BaseView<Presenter> {
         /**
          * 初始化联系人列表
+         *
          * @param list
          */
         void initContactRecycleView(ArrayList<RelAndFriendBean> list);
+
         /**
          * 跳转到发送添加请求界面
          */
         void jump2SendAddMesgFragment();
+
         /**
          * 显示联系人为空视图
          */
         void showNoContactView();
+
         /**
          * 隐藏联系人为空视图
          */
         void hideNoContactView();
+
         /**
          * 显示进度浮层
          */
@@ -53,17 +58,21 @@ public interface MineFriendAddFromContactContract {
     interface Presenter extends BasePresenter {
         /**
          * 过滤数据
+         *
          * @param filterStr
          */
         void filterPhoneData(String filterStr);
+
         /**
          * 获取好友列表的数据
+         *
          * @return
          */
         void getFriendListData();
 
         /**
          * 获取好友的列表的回调
+         *
          * @return
          */
         Subscription getFriendListDataCallBack();
@@ -75,12 +84,14 @@ public interface MineFriendAddFromContactContract {
 
         /**
          * 检测账号的回调
+         *
          * @return
          */
         Subscription checkFriendAccountCallBack();
 
         /**
          * 检测短信权限
+         *
          * @return
          */
         boolean checkSmsPermission();

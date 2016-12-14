@@ -17,7 +17,8 @@ public class DES3Coder {
 
     /**
      * 加密方法
-     * @param src 源数据的字节数组
+     *
+     * @param src      源数据的字节数组
      * @param password
      * @return
      */
@@ -39,7 +40,8 @@ public class DES3Coder {
 
     /**
      * 解密函数
-     * @param src 密文的字节数组
+     *
+     * @param src      密文的字节数组
      * @param password
      * @return
      */
@@ -74,10 +76,10 @@ public class DES3Coder {
          * 执行数组拷贝
          * System.arraycopy(源数组，从源数组哪里开始拷贝，目标数组，拷贝多少位)
          */
-        if(key.length > temp.length){
+        if (key.length > temp.length) {
             //如果temp不够24位，则拷贝temp数组整个长度的内容到key数组中
             System.arraycopy(temp, 0, key, 0, temp.length);
-        }else{
+        } else {
             //如果temp大于24位，则拷贝temp数组24个长度的内容到key数组中
             System.arraycopy(temp, 0, key, 0, key.length);
         }

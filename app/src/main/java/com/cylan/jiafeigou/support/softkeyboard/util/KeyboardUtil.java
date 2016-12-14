@@ -345,6 +345,7 @@ public class KeyboardUtil {
         }
 
         private int maxOverlayLayoutHeight;
+
         private void calculateKeyboardShowing(final int displayHeight) {
 
             boolean isKeyboardShowing;

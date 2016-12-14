@@ -9,7 +9,7 @@ import com.cylan.jiafeigou.support.db.annotation.Table;
  * 描述	      ${用来存放  magActivity页面所需要的数据的来源}
  */
 @Table(name = "MagBean")
-public class MagBean{
+public class MagBean {
 
     @Column(name = "id", isId = true)
     public int id;

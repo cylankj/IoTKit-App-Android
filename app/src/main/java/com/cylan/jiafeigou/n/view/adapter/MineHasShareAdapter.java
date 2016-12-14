@@ -28,11 +28,11 @@ public class MineHasShareAdapter extends SuperAdapter<RelAndFriendBean> {
     private OnCancleShareListenter listenter;
     private RoundedImageView userImag;
 
-    public interface OnCancleShareListenter{
+    public interface OnCancleShareListenter {
         void onCancleShare(RelAndFriendBean item);
     }
 
-    public void setOnCancleShareListenter(OnCancleShareListenter listenter){
+    public void setOnCancleShareListenter(OnCancleShareListenter listenter) {
         this.listenter = listenter;
     }
 
@@ -43,12 +43,12 @@ public class MineHasShareAdapter extends SuperAdapter<RelAndFriendBean> {
 
     @Override
     public void onBind(SuperViewHolder holder, int viewType, int layoutPosition, final RelAndFriendBean item) {
-        holder.setText(R.id.tv_username,item.alias);
-        holder.setText(R.id.tv_friend_account,item.account);
+        holder.setText(R.id.tv_username, item.alias);
+        holder.setText(R.id.tv_friend_account, item.account);
         holder.setOnClickListener(R.id.tv_btn_cancle_share, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (listenter != null){
+                if (listenter != null) {
                     listenter.onCancleShare(item);
                 }
             }

@@ -10,7 +10,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
@@ -25,7 +24,6 @@ import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-
 
 
 /**
@@ -69,7 +67,7 @@ public class SuggestionChatFragment extends Fragment implements SuggestionChatCo
 
     private void initRecycleView() {
         rvHomeMineSuggestion.setLayoutManager(new LinearLayoutManager(getContext()));
-        adapter = new HomeMineHelpSuggestionAdapter(getContext(),mData,null);
+        adapter = new HomeMineHelpSuggestionAdapter(getContext(), mData, null);
         rvHomeMineSuggestion.setAdapter(adapter);
     }
 
@@ -112,10 +110,10 @@ public class SuggestionChatFragment extends Fragment implements SuggestionChatCo
         suggestionBean.setIcon("");
         String time = System.currentTimeMillis() + "";
         suggestionBean.setDate(time);
-        suggestionBean.isShowTime =true;
+        suggestionBean.isShowTime = true;
 
         adapter.add(suggestionBean);
         adapter.notifyDataSetHasChanged();
-        rvHomeMineSuggestion.scrollToPosition(adapter.getItemCount()-1);
+        rvHomeMineSuggestion.scrollToPosition(adapter.getItemCount() - 1);
     }
 }

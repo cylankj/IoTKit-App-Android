@@ -90,16 +90,17 @@ public class DeviceUtils {
 
     /**
      * 获取本机IP地址
+     *
      * @return
      */
     public static String getLocalIPAddress() {
 
         try {
             for (Enumeration<NetworkInterface> en = NetworkInterface
-                    .getNetworkInterfaces(); en.hasMoreElements();) {
+                    .getNetworkInterfaces(); en.hasMoreElements(); ) {
                 NetworkInterface intf = en.nextElement();
                 for (Enumeration<InetAddress> enumIpAddr = intf
-                        .getInetAddresses(); enumIpAddr.hasMoreElements();) {
+                        .getInetAddresses(); enumIpAddr.hasMoreElements(); ) {
                     InetAddress inetAddress = enumIpAddr.nextElement();
                     if (!inetAddress.isLoopbackAddress()) {
                         return inetAddress.getHostAddress().toString();
@@ -114,6 +115,7 @@ public class DeviceUtils {
 
     /**
      * 多个SD卡时 取外置SD卡
+     *
      * @return
      */
     public static String getExternalStorageDirectory() {
@@ -134,10 +136,11 @@ public class DeviceUtils {
 
     /**
      * 获取可用空间大小
+     *
      * @return
      */
-    public static long getAvailaleSize(){
-        if ( !existSDCard() ) {
+    public static long getAvailaleSize() {
+        if (!existSDCard()) {
             return 0l;
         }
         File path = Environment.getExternalStorageDirectory(); //取得sdcard文件路径
@@ -149,10 +152,11 @@ public class DeviceUtils {
 
     /**
      * 获取SD大小
+     *
      * @return
      */
-    public static long getAllSize(){
-        if ( !existSDCard() ) {
+    public static long getAllSize() {
+        if (!existSDCard()) {
             return 0l;
         }
         File path = Environment.getExternalStorageDirectory();
@@ -176,11 +180,12 @@ public class DeviceUtils {
 
     /**
      * 服务是否运行
+     *
      * @param mContext
      * @param className
      * @return
      */
-    public static boolean isServiceRunning(Context mContext,String className) {
+    public static boolean isServiceRunning(Context mContext, String className) {
         boolean isRunning = false;
         ActivityManager activityManager = (ActivityManager)
                 mContext.getSystemService(Context.ACTIVITY_SERVICE);
@@ -189,7 +194,7 @@ public class DeviceUtils {
         if (serviceList.size() == 0) {
             return false;
         }
-        for (int i=0; i<serviceList.size(); i++) {
+        for (int i = 0; i < serviceList.size(); i++) {
             if (serviceList.get(i).service.getClassName().equals(className) == true) {
                 isRunning = true;
                 break;
@@ -218,13 +223,14 @@ public class DeviceUtils {
 
     /**
      * 获取IMEI
+     *
      * @param context
      * @return
      */
     public static String getIMEI(Context context) {
         TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
         String imei = tm.getDeviceId();
-        if ( StringUtils.isEmpty(imei) ) {
+        if (StringUtils.isEmpty(imei)) {
             imei = "";
         }
 
@@ -233,6 +239,7 @@ public class DeviceUtils {
 
     /**
      * 获取MAC地址
+     *
      * @param context
      * @return
      */
@@ -241,7 +248,7 @@ public class DeviceUtils {
                 .getSystemService(Context.WIFI_SERVICE);
         WifiInfo info = wifi.getConnectionInfo();
         String mac = info.getMacAddress();
-        if ( StringUtils.isEmpty(mac) ) {
+        if (StringUtils.isEmpty(mac)) {
             mac = "";
         }
         return mac;
@@ -249,6 +256,7 @@ public class DeviceUtils {
 
     /**
      * 获取UDID
+     *
      * @param context
      * @return
      */
@@ -261,7 +269,7 @@ public class DeviceUtils {
             udid = new BigInteger(64, random).toString(16);
         }
 
-        if ( StringUtils.isEmpty(udid) ) {
+        if (StringUtils.isEmpty(udid)) {
             udid = "";
         }
 
@@ -270,6 +278,7 @@ public class DeviceUtils {
 
     /**
      * 震动
+     *
      * @param context
      * @param duration
      */
@@ -283,18 +292,19 @@ public class DeviceUtils {
 
     /**
      * 获取最后一次拍照的图片
+     *
      * @param context
      * @return
      */
     public static String getLatestCameraPicture(Context context) {
 
-        if ( !existSDCard() ) {
+        if (!existSDCard()) {
             return null;
         }
 
-        String[] projection = new String[] { MediaStore.Images.ImageColumns._ID, MediaStore.Images.ImageColumns.DATA,
+        String[] projection = new String[]{MediaStore.Images.ImageColumns._ID, MediaStore.Images.ImageColumns.DATA,
                 MediaStore.Images.ImageColumns.BUCKET_DISPLAY_NAME, MediaStore.Images.ImageColumns.DATE_TAKEN,
-                MediaStore.Images.ImageColumns.MIME_TYPE };
+                MediaStore.Images.ImageColumns.MIME_TYPE};
         Cursor cursor = context.getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, projection, null, null,
                 MediaStore.Images.ImageColumns.DATE_TAKEN + " DESC");
         if (cursor.moveToFirst()) {
@@ -324,6 +334,7 @@ public class DeviceUtils {
 
     /**
      * 复制到剪切板
+     *
      * @param context
      * @param content
      */
@@ -331,17 +342,18 @@ public class DeviceUtils {
     public static void coptyToClipBoard(Context context, String content) {
         int currentapiVersion = android.os.Build.VERSION.SDK_INT;
         if (currentapiVersion >= android.os.Build.VERSION_CODES.HONEYCOMB) {
-            ClipboardManager clipboard = (ClipboardManager)context.getSystemService(Context.CLIPBOARD_SERVICE);
+            ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
             ClipData clip = ClipData.newPlainText("label", content);
             clipboard.setPrimaryClip(clip);
         } else {
-            android.text.ClipboardManager clipboard = (android.text.ClipboardManager)context.getSystemService(Context.CLIPBOARD_SERVICE);
+            android.text.ClipboardManager clipboard = (android.text.ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
             clipboard.setText(content);
         }
     }
 
     /**
      * 获取非系统应用包名
+     *
      * @param context
      * @return
      */
@@ -349,7 +361,7 @@ public class DeviceUtils {
         List<String> packList = new ArrayList<>();
         PackageManager pm = context.getPackageManager();
         List<PackageInfo> packinfos = pm.getInstalledPackages(0);
-        for(PackageInfo packinfo:packinfos){
+        for (PackageInfo packinfo : packinfos) {
             String packname = packinfo.packageName;
             packList.add(packname);
         }
@@ -359,11 +371,12 @@ public class DeviceUtils {
 
     /**
      * 判断某个应用是否已经安装
-     * @param context 上下文
+     *
+     * @param context     上下文
      * @param packageName 包名
      * @return 是否已经安装
      */
-    public static boolean isAppInstall(Context context,String packageName){
+    public static boolean isAppInstall(Context context, String packageName) {
         // 获取packagemanager
         final PackageManager packageManager = context.getPackageManager();
         // 获取所有已安装程序的包信息
@@ -381,18 +394,19 @@ public class DeviceUtils {
         return packageNames.contains(packageName);
     }
 
-    public static int dip2px(Context context, float dipValue){
+    public static int dip2px(Context context, float dipValue) {
         final float scale = context.getResources().getDisplayMetrics().density;
-        return (int)(dipValue * scale + 0.5f);
+        return (int) (dipValue * scale + 0.5f);
     }
 
-    public static int px2dip(Context context, float pxValue){
+    public static int px2dip(Context context, float pxValue) {
         final float scale = context.getResources().getDisplayMetrics().density;
-        return (int)(pxValue / scale + 0.5f);
+        return (int) (pxValue / scale + 0.5f);
     }
 
     /**
      * 判断是否有软控制键（手机底部几个按钮）
+     *
      * @param activity
      * @return
      */
@@ -415,12 +429,13 @@ public class DeviceUtils {
 
     /**
      * 获取statusbar高度
+     *
      * @param context
      * @return
      */
-    public static int getStatusBarHeight(Context context){
+    public static int getStatusBarHeight(Context context) {
         int height = 0;
-        int resourceId= context.getResources().getIdentifier("status_bar_height", "dimen", "android");
+        int resourceId = context.getResources().getIdentifier("status_bar_height", "dimen", "android");
         if (resourceId > 0) {
             height = context.getResources().getDimensionPixelSize(resourceId);
         }
@@ -430,6 +445,7 @@ public class DeviceUtils {
 
     /**
      * 获取navigationbar高度
+     *
      * @param context
      * @return
      */
@@ -438,7 +454,7 @@ public class DeviceUtils {
         Resources resources = context.getResources();
         int resourceId = resources.getIdentifier("navigation_bar_height", "dimen", "android");
         //获取NavigationBar的高度
-        if(resourceId > 0) {
+        if (resourceId > 0) {
             height = resources.getDimensionPixelSize(resourceId);
         }
         return height;
@@ -447,6 +463,7 @@ public class DeviceUtils {
     /**
      * 获取状态栏高度＋标题栏(ActionBar)高度
      * (注意，如果没有ActionBar，那么获取的高度将和上面的是一样的，只有状态栏的高度)
+     *
      * @param activity
      * @return
      */
@@ -457,19 +474,18 @@ public class DeviceUtils {
 
 
     /**
-     *
-     * @Title: startActivityForPackage
-     * @Description: TODO(通过)
      * @param @param context
      * @param @param packageName   包名
      * @return void    返回类型
      * @throws
+     * @Title: startActivityForPackage
+     * @Description: TODO(通过)
      */
     @SuppressLint("NewApi")
-    public static boolean startActivityForPackage(Context context,String packageName){
+    public static boolean startActivityForPackage(Context context, String packageName) {
         PackageInfo pi = null;
         try {
-            pi =context. getPackageManager().getPackageInfo(packageName, 0);
+            pi = context.getPackageManager().getPackageInfo(packageName, 0);
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
             return false;
@@ -484,13 +500,13 @@ public class DeviceUtils {
         List<ResolveInfo> apps = context.getPackageManager().queryIntentActivities(resolveIntent, 0);
 
         ResolveInfo ri = apps.iterator().next();
-        if (ri != null ) {
+        if (ri != null) {
             String packageName1 = ri.activityInfo.packageName;
             String className = ri.activityInfo.name;
 
             Intent intent = new Intent(Intent.ACTION_MAIN);
             intent.addCategory(Intent.CATEGORY_LAUNCHER);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
 
             ComponentName cn = new ComponentName(packageName1, className);
 
@@ -504,9 +520,10 @@ public class DeviceUtils {
     /**
      * 隐藏键盘
      * ：强制隐藏
+     *
      * @param context
      */
-    public static void hideInputSoftFromWindowMethod(Context context,View view){
+    public static void hideInputSoftFromWindowMethod(Context context, View view) {
         try {
             InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
@@ -517,10 +534,11 @@ public class DeviceUtils {
 
     /**
      * 显示输入法
+     *
      * @param context
      * @param view
      */
-    public static void showInputSoftFromWindowMethod(Context context,View view){
+    public static void showInputSoftFromWindowMethod(Context context, View view) {
         try {
             InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.showSoftInput(view, InputMethodManager.SHOW_FORCED);
@@ -531,6 +549,7 @@ public class DeviceUtils {
 
     /**
      * 判断输入负是否处于激活状态
+     *
      * @param context
      * @return
      */
@@ -541,6 +560,7 @@ public class DeviceUtils {
 
     /**
      * 主动回到Home，后台运行
+     *
      * @param context
      */
     public static void goHome(Context context) {
@@ -557,6 +577,7 @@ public class DeviceUtils {
      * PHONE_TYPE_GSM :1 手机制式为GSM，移动和联通
      * PHONE_TYPE_CDMA :2 手机制式为CDMA，电信
      * PHONE_TYPE_SIP:3
+     *
      * @param context
      * @return
      */
@@ -569,6 +590,7 @@ public class DeviceUtils {
     /**
      * 判断手机连接的网络类型(wifi,2G,3G,4G)
      * 联通的3G为UMTS或HSDPA，移动和联通的2G为GPRS或EGDE，电信的2G为CDMA，电信的3G为EVDO
+     *
      * @param context
      * @return
      */
@@ -593,7 +615,7 @@ public class DeviceUtils {
                     case TelephonyManager.NETWORK_TYPE_CDMA:
                     case TelephonyManager.NETWORK_TYPE_1xRTT:
                     case TelephonyManager.NETWORK_TYPE_IDEN:
-                        return  NETWORK_CLASS_2_G;
+                        return NETWORK_CLASS_2_G;
                     case TelephonyManager.NETWORK_TYPE_UMTS:
                     case TelephonyManager.NETWORK_TYPE_EVDO_0:
                     case TelephonyManager.NETWORK_TYPE_EVDO_A:
@@ -618,6 +640,7 @@ public class DeviceUtils {
 
     /**
      * 拨打电话
+     *
      * @param context
      * @param phoneNumber 电话号码
      */
@@ -627,6 +650,7 @@ public class DeviceUtils {
 
     /**
      * 跳转至拨号界面
+     *
      * @param context
      * @param phoneNumber 电话号码电话号码
      */
@@ -636,12 +660,13 @@ public class DeviceUtils {
 
     /**
      * 发送短信
+     *
      * @param context
      * @param phoneNumber
      * @param content
      */
     public static void sendSms(Context context, String phoneNumber,
-            String content) {
+                               String content) {
         Uri uri = Uri.parse("smsto:"
                 + (TextUtils.isEmpty(phoneNumber) ? "" : phoneNumber));
         Intent intent = new Intent(Intent.ACTION_SENDTO, uri);
@@ -651,6 +676,7 @@ public class DeviceUtils {
 
     /**
      * 判断当前设备是否为手机
+     *
      * @param context
      * @return
      */

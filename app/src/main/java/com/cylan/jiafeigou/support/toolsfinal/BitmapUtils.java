@@ -14,7 +14,6 @@ import android.graphics.drawable.Drawable;
 import android.media.ExifInterface;
 import android.util.Base64;
 
-
 import com.cylan.jiafeigou.support.toolsfinal.io.FileUtils;
 
 import java.io.ByteArrayInputStream;
@@ -33,6 +32,7 @@ public class BitmapUtils {
 
     /**
      * convert Bitmap to byte array
+     *
      * @param b
      * @return
      */
@@ -44,6 +44,7 @@ public class BitmapUtils {
 
     /**
      * convert byte array to Bitmap
+     *
      * @param b
      * @return
      */
@@ -53,6 +54,7 @@ public class BitmapUtils {
 
     /**
      * 把bitmap转换成Base64编码String
+     *
      * @param bitmap
      * @return
      */
@@ -62,6 +64,7 @@ public class BitmapUtils {
 
     /**
      * convert Drawable to Bitmap
+     *
      * @param drawable
      * @return
      */
@@ -71,6 +74,7 @@ public class BitmapUtils {
 
     /**
      * convert Bitmap to Drawable
+     *
      * @param bitmap
      * @return
      */
@@ -80,6 +84,7 @@ public class BitmapUtils {
 
     /**
      * scale image
+     *
      * @param org
      * @param newWidth
      * @param newHeight
@@ -91,6 +96,7 @@ public class BitmapUtils {
 
     /**
      * scale image
+     *
      * @param src
      * @param scaleWidth
      * @param scaleHeight
@@ -107,6 +113,7 @@ public class BitmapUtils {
 
     /**
      * 圆bitmap
+     *
      * @param bitmap
      * @return
      */
@@ -131,10 +138,11 @@ public class BitmapUtils {
 
     /**
      * 生成bitmap缩略图
+     *
      * @param bitmap
      * @param needRecycle 是否释放bitmap原图
-     * @param newHeight 目标宽度
-     * @param newWidth 目标高度
+     * @param newHeight   目标宽度
+     * @param newWidth    目标高度
      * @return
      */
     public static Bitmap createBitmapThumbnail(Bitmap bitmap, boolean needRecycle, int newHeight, int newWidth) {
@@ -155,6 +163,7 @@ public class BitmapUtils {
 
     /**
      * 保存Bitmap到文件
+     *
      * @param bitmap
      * @param target
      */
@@ -174,6 +183,7 @@ public class BitmapUtils {
 
     /**
      * 保存Bitmap到文件
+     *
      * @param bitmap
      * @param quality 保存质量 0..100
      * @param target
@@ -194,6 +204,7 @@ public class BitmapUtils {
 
     /**
      * 压缩bitmp到目标大小（质量压缩）
+     *
      * @param bitmap
      * @param needRecycle
      * @param maxSize
@@ -203,14 +214,14 @@ public class BitmapUtils {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
         int options = 100;
-        while (baos.toByteArray().length  > maxSize) {
+        while (baos.toByteArray().length > maxSize) {
             baos.reset();//重置baos即清空baos
             bitmap.compress(Bitmap.CompressFormat.JPEG, options, baos);
             options -= 10;//每次都减少10
         }
         ByteArrayInputStream isBm = new ByteArrayInputStream(baos.toByteArray());
         Bitmap bm = BitmapFactory.decodeStream(isBm, null, null);
-        if(needRecycle) {
+        if (needRecycle) {
             bitmap.recycle();
         }
         bitmap = bm;
@@ -219,6 +230,7 @@ public class BitmapUtils {
 
     /**
      * 等比压缩（宽高等比缩放）
+     *
      * @param bitmap
      * @param needRecycle
      * @param targetWidth
@@ -268,10 +280,10 @@ public class BitmapUtils {
             inSampleSize = 1;
         }
         options.inSampleSize = inSampleSize;
-        Bitmap bitmap =  BitmapFactory.decodeFile(imageFile, options);//加载真正bitmap
+        Bitmap bitmap = BitmapFactory.decodeFile(imageFile, options);//加载真正bitmap
 
         bitmap = compressBitmap(bitmap, false, targetWidth, targeHeight); //等比缩放
-        if(qualityCompress) {
+        if (qualityCompress) {
             bitmap = compressBitmap(bitmap, true, maxSize); //压缩质量
         }
 
@@ -289,10 +301,11 @@ public class BitmapUtils {
 
     /**
      * 压缩某张图片(执行步骤sampleSize压缩->等比压缩->质量压缩)
+     *
      * @param imageFile
-     * @param targetFile 保存目标，为空表示源地址保存
+     * @param targetFile      保存目标，为空表示源地址保存
      * @param qualityCompress 是否做质量压缩
-     * @param maxSize 目标图片大小
+     * @param maxSize         目标图片大小
      * @param targetWidth
      * @param targeHeight
      */
@@ -307,6 +320,7 @@ public class BitmapUtils {
 
     /**
      * 图片缩放-尺寸缩放
+     *
      * @param imageFile
      * @param targetWidth
      * @param targeHeight
@@ -317,10 +331,10 @@ public class BitmapUtils {
 
     /**
      * 图片缩放-尺寸缩放
+     *
      * @param imageFile
      * @param targetWidth
      * @param targeHeight
-     * @return
      * @return
      */
     public static Bitmap compressBitmap(String imageFile, int targetWidth, int targeHeight) {
@@ -329,8 +343,9 @@ public class BitmapUtils {
 
     /**
      * 图片缩放-尺寸缩放
+     *
      * @param imageFile
-     * @param scale 图片缩小倍速
+     * @param scale     图片缩小倍速
      */
     public static void compressImageSmall(String imageFile, int scale) {
         BitmapFactory.Options options = new BitmapFactory.Options();
@@ -343,8 +358,9 @@ public class BitmapUtils {
 
     /**
      * 图片缩放-尺寸缩放
+     *
      * @param imageFile
-     * @param scale 图片缩小倍速
+     * @param scale     图片缩小倍速
      * @return
      */
     public static Bitmap compressBitmapSmall(String imageFile, int scale) {
@@ -358,8 +374,9 @@ public class BitmapUtils {
 
     /**
      * 图片缩放-尺寸缩放
+     *
      * @param imageFile
-     * @param scale 图片放大倍速
+     * @param scale     图片放大倍速
      */
     public static void compressImageBig(String imageFile, int scale) {
         BitmapFactory.Options options = new BitmapFactory.Options();
@@ -372,8 +389,9 @@ public class BitmapUtils {
 
     /**
      * 图片缩放-尺寸缩放
+     *
      * @param imageFile
-     * @param scale 图片放大倍速
+     * @param scale     图片放大倍速
      * @return
      */
     public static Bitmap compressBitmapBig(String imageFile, int scale) {
@@ -387,6 +405,7 @@ public class BitmapUtils {
 
     /**
      * 质量压缩图片
+     *
      * @param imageFile
      * @param targetFile
      * @param qualityCompress
@@ -403,6 +422,7 @@ public class BitmapUtils {
 
     /**
      * 质量压缩图片
+     *
      * @param imageFile
      * @param qualityCompress
      * @param maxSize
@@ -413,6 +433,7 @@ public class BitmapUtils {
 
     /**
      * 质量压缩图片
+     *
      * @param imageFile
      * @param qualityCompress
      * @param maxSize
@@ -429,6 +450,7 @@ public class BitmapUtils {
 
     /**
      * 质量压缩图片-压缩在maxSize以内
+     *
      * @param imageFile
      * @param maxSize
      */
@@ -438,6 +460,7 @@ public class BitmapUtils {
 
     /**
      * 质量压缩图片-压缩在maxSize以内
+     *
      * @param imageFile
      * @param maxSize
      * @return
@@ -448,25 +471,28 @@ public class BitmapUtils {
 
     /**
      * 质量压缩图片-压缩在1M以内
+     *
      * @param imageFile
      */
     public static void compressImage(String imageFile) {
-        compressImage(imageFile, true, (long)(1 * FileUtils.MB));
+        compressImage(imageFile, true, (long) (1 * FileUtils.MB));
     }
 
     /**
      * 质量压缩图片-压缩在1M以内
+     *
      * @param imageFile
      * @return
      */
     public static Bitmap compressBitmap(String imageFile) {
-        return compressBitmap(imageFile, true, (long)(1 * FileUtils.MB));
+        return compressBitmap(imageFile, true, (long) (1 * FileUtils.MB));
     }
 
     /**
      * 旋转bitmap
+     *
      * @param bitmap
-     * @param degress 旋转角度
+     * @param degress     旋转角度
      * @param needRecycle
      * @return
      */
@@ -474,7 +500,7 @@ public class BitmapUtils {
         Matrix m = new Matrix();
         m.postRotate(degress);
         Bitmap bm = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), m, true);
-        if(needRecycle) {
+        if (needRecycle) {
             bitmap.recycle();
         }
         return bm;
@@ -482,6 +508,7 @@ public class BitmapUtils {
 
     /**
      * 根据path
+     *
      * @param path
      * @return
      */

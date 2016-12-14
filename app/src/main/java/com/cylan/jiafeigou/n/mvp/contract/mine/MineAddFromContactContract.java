@@ -34,16 +34,18 @@ public interface MineAddFromContactContract {
 
     interface Presenter extends BasePresenter {
 
-        void sendRequest(String account,String mesg);
+        void sendRequest(String account, String mesg);
 
         /**
          * 获取到昵称
+         *
          * @return
          */
         Subscription getAccountAlids();
 
         /**
          * 获取到用户的昵称
+         *
          * @return
          */
         String getUserAlias();

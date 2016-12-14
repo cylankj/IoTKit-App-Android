@@ -16,7 +16,7 @@ public final class Logger {
     }
 
     public static LoggerPrinter getDefaultLogger() {
-        if ( loggerPrinter == null) {
+        if (loggerPrinter == null) {
             loggerPrinter = LoggerFactory.getFactory(DEFAULT_TAG, debug);
         }
         return loggerPrinter;

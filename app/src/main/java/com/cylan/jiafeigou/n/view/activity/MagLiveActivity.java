@@ -19,7 +19,6 @@ import com.cylan.jiafeigou.n.mvp.model.MagBean;
 import com.cylan.jiafeigou.n.view.adapter.MagActivityAdapter;
 import com.cylan.jiafeigou.n.view.mag.MagLiveFragment;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 
 import java.text.SimpleDateFormat;
@@ -121,6 +120,7 @@ public class MagLiveActivity extends BaseFullScreenFragmentActivity implements M
 
     /**
      * 获得当前日期的方法
+     *
      * @param
      */
     public String getDate() {
@@ -213,7 +213,7 @@ public class MagLiveActivity extends BaseFullScreenFragmentActivity implements M
             adapter = new MagActivityAdapter(getContext(), list, null);
             adapter.setCurrentState(presenter.getDoorCurrentState());
             RvMagState.setAdapter(adapter);
-        }else {
+        } else {
             List<MagBean> magBeanList = new ArrayList<>();
             LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
             RvMagState.setLayoutManager(layoutManager);

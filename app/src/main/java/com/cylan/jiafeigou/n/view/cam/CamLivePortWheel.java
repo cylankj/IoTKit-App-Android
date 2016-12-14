@@ -9,7 +9,6 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.widget.SimpleProgressBar;
 import com.cylan.jiafeigou.widget.wheel.SDataStack;
 import com.cylan.jiafeigou.widget.wheel.SuperWheel;
 
@@ -24,7 +23,7 @@ public class CamLivePortWheel extends FrameLayout implements SuperWheel.WheelRol
 
     @BindView(R.id.sw_cam_live_wheel)
     SuperWheel swCamLiveWheel;
-//    @BindView(R.id.pb_loading_history)
+    //    @BindView(R.id.pb_loading_history)
 //    SimpleProgressBar pbLoadingHistory;
     @BindView(R.id.tv_cam_live_port_live)
     TextView tvCamLivePortLive;

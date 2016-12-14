@@ -12,8 +12,6 @@ import android.os.Process;
 import android.provider.MediaStore;
 import android.util.DisplayMetrics;
 import android.view.ActionMode;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
@@ -49,7 +47,7 @@ public class ImageSelectActivity extends HelperActivity {
     private Handler handler;
     private Thread thread;
 
-    private final String[] projection = new String[]{ MediaStore.Images.Media._ID, MediaStore.Images.Media.DISPLAY_NAME, MediaStore.Images.Media.DATA };
+    private final String[] projection = new String[]{MediaStore.Images.Media._ID, MediaStore.Images.Media.DISPLAY_NAME, MediaStore.Images.Media.DATA};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,9 +69,9 @@ public class ImageSelectActivity extends HelperActivity {
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                LoadingDialog.showLoading(getSupportFragmentManager(),getString(R.string.LOADING));
+                LoadingDialog.showLoading(getSupportFragmentManager(), getString(R.string.LOADING));
                 Intent intent = new Intent();
-                intent.putExtra(Constants.INTENT_EXTRA_IMAGES,images.get(position).path);
+                intent.putExtra(Constants.INTENT_EXTRA_IMAGES, images.get(position).path);
                 setResult(RESULT_OK, intent);
                 finish();
             }
@@ -297,7 +295,7 @@ public class ImageSelectActivity extends HelperActivity {
             }
 
             Cursor cursor = getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, projection,
-                    MediaStore.Images.Media.BUCKET_DISPLAY_NAME + " =?", new String[]{ album }, MediaStore.Images.Media.DATE_ADDED);
+                    MediaStore.Images.Media.BUCKET_DISPLAY_NAME + " =?", new String[]{album}, MediaStore.Images.Media.DATE_ADDED);
             if (cursor == null) {
                 sendMessage(Constants.ERROR);
                 return;

@@ -14,6 +14,7 @@ public class ManifestUtils {
 
     /**
      * 获取Manifest Meta Data
+     *
      * @param context
      * @param metaKey
      * @return
@@ -39,6 +40,7 @@ public class ManifestUtils {
 
     /**
      * 获得渠道号
+     *
      * @param context
      * @param channelKey
      * @return
@@ -49,6 +51,7 @@ public class ManifestUtils {
 
     /**
      * 获得apk版本号
+     *
      * @param context
      * @return
      */
@@ -75,6 +78,7 @@ public class ManifestUtils {
 
     /**
      * 获得apk版本号
+     *
      * @param context
      * @return
      */

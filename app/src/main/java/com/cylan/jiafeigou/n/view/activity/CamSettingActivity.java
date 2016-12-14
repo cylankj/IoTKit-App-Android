@@ -19,7 +19,6 @@ import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamSettingContract;
 import com.cylan.jiafeigou.n.mvp.impl.cam.CamSettingPresenterImpl;
 import com.cylan.jiafeigou.n.mvp.model.BeanCamInfo;
-import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
 import com.cylan.jiafeigou.n.view.cam.DeviceInfoDetailFragment;
 import com.cylan.jiafeigou.n.view.cam.SafeProtectionFragment;
 import com.cylan.jiafeigou.n.view.cam.VideoAutoRecordFragment;
@@ -91,7 +90,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
             return;
         }
         basePresenter = new CamSettingPresenterImpl(this,
-                (DeviceBean) bundle.getParcelable(JConstant.KEY_DEVICE_ITEM_BUNDLE));
+                bundle.getParcelable(JConstant.KEY_DEVICE_ITEM_BUNDLE));
         initTopBar();
         initStandbyBtn();
         init110VVoltageBtn();
@@ -193,7 +192,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
                     @Override
                     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                         BeanCamInfo info = basePresenter.getCamInfoBean();
-                        info.deviceCameraRotate = isChecked;
+                        info.deviceCameraRotate = isChecked ? 1 : 0;
                         basePresenter.saveCamInfoBean(info, DpMsgMap.ID_304_DEVICE_CAMERA_ROTATE);
                         AppLogger.i("save id:" + DpMsgMap.ID_304_DEVICE_CAMERA_ROTATE);
                         AppLogger.i("save value:" + info.deviceCameraRotate);
@@ -331,7 +330,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         svSettingDeviceWifi.setTvSubTitle(camInfoBean.net != null && camInfoBean.net.ssid != null ? camInfoBean.net.ssid : getString(R.string.OFF_LINE));
         svSettingDeviceMobileNetwork.setSwitchButtonState(camInfoBean.deviceMobileNetPriority);
         svSettingDeviceIndicator.setSwitchButtonState(camInfoBean.ledIndicator);
-        svSettingDeviceRotate.setSwitchButtonState(camInfoBean.deviceCameraRotate);
+        svSettingDeviceRotate.setSwitchButtonState(camInfoBean.deviceCameraRotate == 1);
         svSettingDeviceStandbyMode.setSwitchButtonState(camInfoBean.cameraStandbyFlag);
         svSettingSafeProtection.setTvSubTitle(basePresenter.getAlarmSubTitle(getContext()));
         svSettingDeviceAutoRecord.setTvSubTitle(basePresenter.getAutoRecordTitle(getContext()));

@@ -9,6 +9,7 @@ import android.graphics.Matrix;
 import android.graphics.PixelFormat;
 import android.graphics.drawable.Drawable;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 
@@ -238,6 +239,10 @@ public class BitmapUtil {
         int quality = 50;
         boolean isSave;
         try {
+            File file = new File(filename);
+            if (!file.getParentFile().exists()) {
+                file.getParentFile().mkdirs();
+            }
             OutputStream stream = new FileOutputStream(filename);
             isSave = bmp.compress(format, quality, stream);
             stream.flush();

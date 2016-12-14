@@ -70,6 +70,7 @@ public class MediaScanner {
 
     /**
      * 扫描文件标签信息
+     *
      * @param filePath 文件路径
      * @param fileType 文件类型
      */
@@ -83,7 +84,7 @@ public class MediaScanner {
 
     /**
      * @param filePaths 文件路径
-     * @param fileType 文件类型
+     * @param fileType  文件类型
      */
     public void scanFile(String[] filePaths, String fileType) {
         this.filePaths = filePaths;
@@ -91,7 +92,7 @@ public class MediaScanner {
         mediaScanConn.connect();
     }
 
-    public void unScanFile(){
+    public void unScanFile() {
         mediaScanConn.disconnect();
     }
 

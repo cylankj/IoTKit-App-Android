@@ -72,7 +72,7 @@ public class MineFriendAddByNumFragment extends Fragment implements MineFriendAd
     @Override
     public void onStart() {
         super.onStart();
-        if (presenter != null)presenter.start();
+        if (presenter != null) presenter.start();
     }
 
     private void initPresenter() {
@@ -140,7 +140,7 @@ public class MineFriendAddByNumFragment extends Fragment implements MineFriendAd
 
     @Override
     public void showFindLoading() {
-        LoadingDialog.showLoading(getFragmentManager(),getString(R.string.LOADING));
+        LoadingDialog.showLoading(getFragmentManager(), getString(R.string.LOADING));
     }
 
     @Override
@@ -166,17 +166,17 @@ public class MineFriendAddByNumFragment extends Fragment implements MineFriendAd
     }
 
     @Override
-    public void setFindResult(boolean isFrom,MineAddReqBean bean) {
-            Bundle bundle = new Bundle();
-            bundle.putBoolean("isFrom",isFrom);
-            bundle.putSerializable("addRequestItems", bean);
-            MineFriendAddReqDetailFragment addReqDetailFragment = MineFriendAddReqDetailFragment.newInstance(bundle);
-            getFragmentManager().beginTransaction()
-                    .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
-                            , R.anim.slide_in_left, R.anim.slide_out_right)
-                    .add(android.R.id.content, addReqDetailFragment, "addReqDetailFragment")
-                    .addToBackStack("mineHelpFragment")
-                    .commit();
+    public void setFindResult(boolean isFrom, MineAddReqBean bean) {
+        Bundle bundle = new Bundle();
+        bundle.putBoolean("isFrom", isFrom);
+        bundle.putSerializable("addRequestItems", bean);
+        MineFriendAddReqDetailFragment addReqDetailFragment = MineFriendAddReqDetailFragment.newInstance(bundle);
+        getFragmentManager().beginTransaction()
+                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
+                        , R.anim.slide_in_left, R.anim.slide_out_right)
+                .add(android.R.id.content, addReqDetailFragment, "addReqDetailFragment")
+                .addToBackStack("mineHelpFragment")
+                .commit();
     }
 
     @Override

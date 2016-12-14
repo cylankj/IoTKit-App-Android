@@ -22,12 +22,12 @@ public interface MineFriendScanAddContract {
         void showQrCode(Bitmap bitmap);
 
         /**
-         *跳转到添加人详情页
+         * 跳转到添加人详情页
          */
-        void jump2FriendDetailFragment(boolean isFrom,MineAddReqBean bean);
+        void jump2FriendDetailFragment(boolean isFrom, MineAddReqBean bean);
 
         /**
-         *已经是好友
+         * 已经是好友
          */
         void isMineFriendResult();
 
@@ -52,14 +52,17 @@ public interface MineFriendScanAddContract {
         Bitmap encodeAsBitmap(String contents, int dimension);      //生成二维码
 
         int getDimension();
+
         /**
          * 检测扫描结果
+         *
          * @param account
          */
         void checkScanAccount(String account);
 
         /**
          * 扫描结果的回调
+         *
          * @return
          */
         Subscription checkAccountCallBack();
@@ -71,6 +74,7 @@ public interface MineFriendScanAddContract {
 
         /**
          * 开始扫描
+         *
          * @return
          */
         Subscription beginScan();

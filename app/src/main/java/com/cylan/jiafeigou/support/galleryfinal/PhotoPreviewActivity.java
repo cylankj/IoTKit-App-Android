@@ -7,7 +7,6 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.support.galleryfinal.adapter.PhotoPreviewAdapter;
 import com.cylan.jiafeigou.support.galleryfinal.model.PhotoInfo;
@@ -21,7 +20,7 @@ import java.util.List;
  * Author:pengjianbo
  * Date:2015/12/29 0029 14:43
  */
-public class PhotoPreviewActivity extends PhotoBaseActivity implements ViewPager.OnPageChangeListener{
+public class PhotoPreviewActivity extends PhotoBaseActivity implements ViewPager.OnPageChangeListener {
 
     static final String PHOTO_LIST = "photo_list";
 
@@ -35,12 +34,13 @@ public class PhotoPreviewActivity extends PhotoBaseActivity implements ViewPager
     private PhotoPreviewAdapter mPhotoPreviewAdapter;
 
     private ThemeConfig mThemeConfig;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mThemeConfig = GalleryFinal.getGalleryTheme();
 
-        if ( mThemeConfig == null) {
+        if (mThemeConfig == null) {
             resultFailureDelayed(getString(R.string.please_reopen_gf), true);
         } else {
             setContentView(R.layout.gf_activity_photo_preview);
@@ -76,7 +76,7 @@ public class PhotoPreviewActivity extends PhotoBaseActivity implements ViewPager
 
         mTitleBar.setBackgroundColor(mThemeConfig.getTitleBarBgColor());
         mTvTitle.setTextColor(mThemeConfig.getTitleBarTextColor());
-        if(mThemeConfig.getPreviewBg() != null) {
+        if (mThemeConfig.getPreviewBg() != null) {
             mVpPager.setBackgroundDrawable(mThemeConfig.getPreviewBg());
         }
     }

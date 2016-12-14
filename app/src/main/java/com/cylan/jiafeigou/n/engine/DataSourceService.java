@@ -29,8 +29,8 @@ import com.cylan.entity.jniCall.RobotoGetDataRsp;
 import com.cylan.ex.JfgException;
 import com.cylan.jfgapp.interfases.AppCallBack;
 import com.cylan.jfgapp.jni.JfgAppCmd;
-import com.cylan.jiafeigou.cache.JCache;
 import com.cylan.jiafeigou.cache.CacheParser;
+import com.cylan.jiafeigou.cache.JCache;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JResultEvent;
@@ -151,7 +151,7 @@ public class DataSourceService extends Service implements AppCallBack {
 
     @Override
     public void OnLogoutByServer(int i) {
-        AppLogger.d("OnLocalMessage :"+i);
+        AppLogger.d("OnLocalMessage :" + i);
         RxBus.getCacheInstance().post(i);
     }
 
@@ -173,7 +173,7 @@ public class DataSourceService extends Service implements AppCallBack {
 
     @Override
     public void OnHttpDone(JFGMsgHttpResult jfgMsgHttpResult) {
-        AppLogger.d("OnLocalMessage :"+new Gson().toJson(jfgMsgHttpResult));
+        AppLogger.d("OnLocalMessage :" + new Gson().toJson(jfgMsgHttpResult));
         if (RxBus.getCacheInstance().hasObservers())
             RxBus.getCacheInstance().post(new RxEvent.GetHttpDoneResult(jfgMsgHttpResult));
     }
@@ -302,8 +302,8 @@ public class DataSourceService extends Service implements AppCallBack {
 
     @Override
     public void OnGetFriendInfoRsp(int i, JFGFriendAccount jfgFriendAccount) {
-        AppLogger.d("OnLocalMessage :"+new Gson().toJson(jfgFriendAccount));
-        RxBus.getCacheInstance().post(new RxEvent.GetFriendInfoCall(i,jfgFriendAccount));
+        AppLogger.d("OnLocalMessage :" + new Gson().toJson(jfgFriendAccount));
+        RxBus.getCacheInstance().post(new RxEvent.GetFriendInfoCall(i, jfgFriendAccount));
     }
 
     @Override

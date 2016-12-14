@@ -4,11 +4,9 @@ import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineAddFromContactContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
+import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.rx.RxBus;
-
-import java.util.concurrent.TimeUnit;
 
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -34,7 +32,7 @@ public class MineAddFromContactPresenterImp extends AbstractPresenter<MineAddFro
 
     @Override
     public void start() {
-        if (compositeSubscription != null && !compositeSubscription.isUnsubscribed()){
+        if (compositeSubscription != null && !compositeSubscription.isUnsubscribed()) {
             compositeSubscription.unsubscribe();
         }else {
             compositeSubscription = new CompositeSubscription();
@@ -50,28 +48,29 @@ public class MineAddFromContactPresenterImp extends AbstractPresenter<MineAddFro
 
     @Override
     public void sendRequest(final String account, final String mesg) {
-        rx.Observable.just(account,mesg)
-            .subscribeOn(Schedulers.newThread())
-            .subscribe(new Action1<String>() {
-                @Override
-                public void call(String s) {
-                    try {
-                        JfgCmdInsurance.getCmd().addFriend(account,mesg);
-                    } catch (JfgException e) {
-                        e.printStackTrace();
+        rx.Observable.just(account, mesg)
+                .subscribeOn(Schedulers.newThread())
+                .subscribe(new Action1<String>() {
+                    @Override
+                    public void call(String s) {
+                        try {
+                            JfgCmdInsurance.getCmd().addFriend(account, mesg);
+                        } catch (JfgException e) {
+                            e.printStackTrace();
+                        }
                     }
-                }
-            }, new Action1<Throwable>() {
-                @Override
-                public void call(Throwable throwable) {
-                    AppLogger.e("sendRequest"+throwable.getLocalizedMessage());
-                }
-            });
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        AppLogger.e("sendRequest" + throwable.getLocalizedMessage());
+                    }
+                });
 
     }
 
     /**
      * 获取到账号昵称
+     *
      * @return
      */
     @Override
@@ -81,8 +80,9 @@ public class MineAddFromContactPresenterImp extends AbstractPresenter<MineAddFro
                 .subscribe(new Action1<RxEvent.GetUserInfo>() {
                     @Override
                     public void call(RxEvent.GetUserInfo getUserInfo) {
-                        if (getUserInfo != null && getUserInfo instanceof RxEvent.GetUserInfo){
-                            if (getView() != null)getView().initEditText(getUserInfo.jfgAccount.getAlias());
+                        if (getUserInfo != null && getUserInfo instanceof RxEvent.GetUserInfo) {
+                            if (getView() != null)
+                                getView().initEditText(getUserInfo.jfgAccount.getAlias());
                             userAlids = getUserInfo.jfgAccount.getAlias();
                         }
                     }
@@ -91,6 +91,7 @@ public class MineAddFromContactPresenterImp extends AbstractPresenter<MineAddFro
 
     /**
      * 获取到用户的昵称
+     *
      * @return
      */
     @Override
@@ -109,7 +110,11 @@ public class MineAddFromContactPresenterImp extends AbstractPresenter<MineAddFro
                 .subscribe(new Action1<String>() {
                     @Override
                     public void call(String s) {
-                        JfgCmdInsurance.getCmd().checkFriendAccount(s);
+                        try {
+                            JfgCmdInsurance.getCmd().checkFriendAccount(s);
+                        } catch (JfgException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }, new Action1<Throwable>() {
                     @Override

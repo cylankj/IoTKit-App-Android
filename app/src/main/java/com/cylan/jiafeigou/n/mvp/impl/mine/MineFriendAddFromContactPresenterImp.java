@@ -16,9 +16,9 @@ import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendAddFromContactContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
+import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.rx.RxBus;
 
 import java.util.ArrayList;
 
@@ -40,6 +40,7 @@ public class MineFriendAddFromContactPresenterImp extends AbstractPresenter<Mine
     private ArrayList<RelAndFriendBean> filterDateList;
     private CompositeSubscription compositeSubscription;
     private ArrayList<RelAndFriendBean> allContactBean = new ArrayList<RelAndFriendBean>();
+
     public MineFriendAddFromContactPresenterImp(MineFriendAddFromContactContract.View view) {
         super(view);
         view.setPresenter(this);
@@ -47,9 +48,9 @@ public class MineFriendAddFromContactPresenterImp extends AbstractPresenter<Mine
 
     @Override
     public void start() {
-        if (compositeSubscription != null && !compositeSubscription.isUnsubscribed()){
+        if (compositeSubscription != null && !compositeSubscription.isUnsubscribed()) {
             compositeSubscription.unsubscribe();
-        }else {
+        } else {
             compositeSubscription = new CompositeSubscription();
             compositeSubscription.add(getFriendListDataCallBack());
             compositeSubscription.add(checkFriendAccountCallBack());
@@ -58,7 +59,7 @@ public class MineFriendAddFromContactPresenterImp extends AbstractPresenter<Mine
 
     @Override
     public void stop() {
-        if (compositeSubscription != null && !compositeSubscription.isUnsubscribed()){
+        if (compositeSubscription != null && !compositeSubscription.isUnsubscribed()) {
             compositeSubscription.unsubscribe();
         }
     }
@@ -66,23 +67,25 @@ public class MineFriendAddFromContactPresenterImp extends AbstractPresenter<Mine
 
     /**
      * desc：处理获取到的联系人数据
+     *
      * @param arrayList
      */
     private void handlerDataResult(ArrayList<RelAndFriendBean> arrayList) {
-        if (arrayList != null){
-            if (arrayList.size() != 0 && getView() != null){
+        if (arrayList != null) {
+            if (arrayList.size() != 0 && getView() != null) {
                 getView().initContactRecycleView(arrayList);
                 getView().hideNoContactView();
-            }else {
+            } else {
                 getView().showNoContactView();
             }
-        }else {
+        } else {
             getView().showNoContactView();
         }
     }
 
     /**
      * 获取到过滤后的所有的联系人
+     *
      * @return
      */
     @NonNull
@@ -106,14 +109,14 @@ public class MineFriendAddFromContactPresenterImp extends AbstractPresenter<Mine
                 String name = cursor.getString(0);
                 friendBean.account = contact_phone;
                 friendBean.alias = name;
-                if (name != null){
-                    if (friendBean.account.startsWith("+86")){
+                if (name != null) {
+                    if (friendBean.account.startsWith("+86")) {
                         friendBean.account = friendBean.account.substring(3);
-                    }else if (friendBean.account.startsWith("86")){
+                    } else if (friendBean.account.startsWith("86")) {
                         friendBean.account = friendBean.account.substring(2);
                     }
 
-                    if (JConstant.PHONE_REG.matcher(friendBean.account).find()){
+                    if (JConstant.PHONE_REG.matcher(friendBean.account).find()) {
                         list.add(friendBean);
                     }
                 }
@@ -127,7 +130,7 @@ public class MineFriendAddFromContactPresenterImp extends AbstractPresenter<Mine
     @Override
     public void filterPhoneData(String filterStr) {
         filterDateList = new ArrayList<>();
-        if (allContactBean.size() != 0){
+        if (allContactBean.size() != 0) {
             if (TextUtils.isEmpty(filterStr)) {
                 filterDateList.clear();
                 filterDateList.addAll(allContactBean);
@@ -147,6 +150,7 @@ public class MineFriendAddFromContactPresenterImp extends AbstractPresenter<Mine
 
     /**
      * 获取好友列表的数据
+     *
      * @return
      */
     @Override
@@ -161,13 +165,14 @@ public class MineFriendAddFromContactPresenterImp extends AbstractPresenter<Mine
                 }, new Action1<Throwable>() {
                     @Override
                     public void call(Throwable throwable) {
-                        AppLogger.e("getFriendListData"+throwable.getLocalizedMessage());
+                        AppLogger.e("getFriendListData" + throwable.getLocalizedMessage());
                     }
                 });
     }
 
     /**
      * 获取好友列表的回调
+     *
      * @return
      */
     @Override
@@ -176,13 +181,13 @@ public class MineFriendAddFromContactPresenterImp extends AbstractPresenter<Mine
                 .flatMap(new Func1<RxEvent.GetFriendList, Observable<ArrayList<RelAndFriendBean>>>() {
                     @Override
                     public Observable<ArrayList<RelAndFriendBean>> call(RxEvent.GetFriendList getFriendList) {
-                        if (getFriendList != null && getFriendList instanceof RxEvent.GetFriendList){
-                            if (getFriendList.arrayList.size() != 0){
+                        if (getFriendList != null && getFriendList instanceof RxEvent.GetFriendList) {
+                            if (getFriendList.arrayList.size() != 0) {
                                 return Observable.just(converData(getFriendList.arrayList));
-                            }else {
+                            } else {
                                 return Observable.just(getAllContactList());
                             }
-                        }else {
+                        } else {
                             return Observable.just(getAllContactList());
                         }
                     }
@@ -199,6 +204,7 @@ public class MineFriendAddFromContactPresenterImp extends AbstractPresenter<Mine
 
     /**
      * 检测好友的账号是否已经注册
+     *
      * @param account
      */
     @Override
@@ -217,13 +223,14 @@ public class MineFriendAddFromContactPresenterImp extends AbstractPresenter<Mine
                 }, new Action1<Throwable>() {
                     @Override
                     public void call(Throwable throwable) {
-                        AppLogger.e("checkFriendAccount"+throwable.getLocalizedMessage());
+                        AppLogger.e("checkFriendAccount" + throwable.getLocalizedMessage());
                     }
                 });
     }
 
     /**
      * 检测好友的账号是否已经注册回调
+     *
      * @return
      */
     @Override
@@ -233,7 +240,7 @@ public class MineFriendAddFromContactPresenterImp extends AbstractPresenter<Mine
                 .subscribe(new Action1<RxEvent.CheckAccountCallback>() {
                     @Override
                     public void call(RxEvent.CheckAccountCallback checkAccountCallback) {
-                        if (checkAccountCallback != null && checkAccountCallback instanceof RxEvent.CheckAccountCallback){
+                        if (checkAccountCallback != null && checkAccountCallback instanceof RxEvent.CheckAccountCallback) {
                             getView().hideLoadingPro();
                             handlerCheckAccountResult(checkAccountCallback);
                         }
@@ -243,6 +250,7 @@ public class MineFriendAddFromContactPresenterImp extends AbstractPresenter<Mine
 
     /**
      * 检测短信权限
+     *
      * @return
      */
     @Override
@@ -251,21 +259,22 @@ public class MineFriendAddFromContactPresenterImp extends AbstractPresenter<Mine
                 Manifest.permission.SEND_SMS)
                 != PackageManager.PERMISSION_GRANTED) {
             return false;
-        }else{
+        } else {
             return true;
         }
     }
 
     /**
      * 处理检测账号的结果
+     *
      * @param checkAccountCallback
      */
     private void handlerCheckAccountResult(RxEvent.CheckAccountCallback checkAccountCallback) {
-        if (getView() != null){
-            if (checkAccountCallback.i == 240){
+        if (getView() != null) {
+            if (checkAccountCallback.i == 240) {
                 //未注册发送短信
                 getView().openSendSms();
-            }else if (checkAccountCallback.i == 0){
+            } else if (checkAccountCallback.i == 0) {
                 //已注册
                 getView().jump2SendAddMesgFragment();
             }
@@ -274,16 +283,17 @@ public class MineFriendAddFromContactPresenterImp extends AbstractPresenter<Mine
 
     /**
      * 数据的转换 标记已添加和未添加
+     *
      * @param arrayList
      * @return
      */
     private ArrayList<RelAndFriendBean> converData(ArrayList<JFGFriendAccount> arrayList) {
         ArrayList<RelAndFriendBean> list = new ArrayList<>();
-        for (RelAndFriendBean contract:getAllContactList()){
-            for (JFGFriendAccount friend:arrayList){
-                if (friend.account.equals(contract.account)){
+        for (RelAndFriendBean contract : getAllContactList()) {
+            for (JFGFriendAccount friend : arrayList) {
+                if (friend.account.equals(contract.account)) {
                     contract.isCheckFlag = 1;
-                }else {
+                } else {
                     contract.isCheckFlag = 0;
                 }
             }

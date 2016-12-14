@@ -2,7 +2,6 @@ package com.cylan.jiafeigou.n.mvp.impl.cam;
 
 import android.util.Pair;
 
-import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.dp.DpUtils;

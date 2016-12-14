@@ -6,9 +6,7 @@ import android.os.CountDownTimer;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
-import android.text.Editable;
 import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -78,11 +76,11 @@ public class MineInfoBindPhoneFragment extends Fragment implements MineBindPhone
      */
     @OnTextChanged(R.id.et_verification_input)
     public void initCheckCodeListener(CharSequence s, int start, int before, int count) {
-         if (TextUtils.isEmpty(s)){
-             tvGetCheckNumber.setEnabled(false);
-         }else {
-             tvGetCheckNumber.setEnabled(true);
-         }
+        if (TextUtils.isEmpty(s)) {
+            tvGetCheckNumber.setEnabled(false);
+        } else {
+            tvGetCheckNumber.setEnabled(true);
+        }
     }
 
     private void initCountDownTime() {
@@ -123,7 +121,7 @@ public class MineInfoBindPhoneFragment extends Fragment implements MineBindPhone
     @Override
     public void onStart() {
         super.onStart();
-        if (presenter != null){
+        if (presenter != null) {
             presenter.isBindOrChange(userinfo);
         }
     }
@@ -153,24 +151,24 @@ public class MineInfoBindPhoneFragment extends Fragment implements MineBindPhone
 
     }
 
-    @OnClick({R.id.tv_get_checkNumber, R.id.iv_top_bar_left,R.id.tv_meter_get_code})
+    @OnClick({R.id.tv_get_checkNumber, R.id.iv_top_bar_left, R.id.tv_meter_get_code})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.tv_get_checkNumber:
-                if (tvGetCheckNumber.getText().equals(getString(R.string.GET_CODE))){
+                if (tvGetCheckNumber.getText().equals(getString(R.string.GET_CODE))) {
                     //获取验证码点击
                     if (JConstant.PHONE_REG.matcher(getInputPhone()).find()) {
                         presenter.checkPhoneIsBind(getInputPhone());
                     } else {
                         ToastUtil.showToast(getString(R.string.PHONE_NUMBER_2));
                     }
-                }else {
+                } else {
                     //继续点击
-                    if (getInputCheckCode().length() != 6){
+                    if (getInputCheckCode().length() != 6) {
                         ToastUtil.showToast(getString(R.string.Tap0_wrongcode));
-                    }else {
+                    } else {
 
-                        presenter.CheckVerifyCode(getInputCheckCode(),PreferencesUtils.getString(JConstant.KEY_REGISTER_SMS_TOKEN));
+                        presenter.CheckVerifyCode(getInputCheckCode(), PreferencesUtils.getString(JConstant.KEY_REGISTER_SMS_TOKEN));
                     }
                 }
                 break;
@@ -200,12 +198,39 @@ public class MineInfoBindPhoneFragment extends Fragment implements MineBindPhone
         // TODO　跳转到设置密码界面
     }
 
+    /**
+     * 处理绑定者更改手机号
+     */
+    private void handlerChangeOrBindPhone() {
+        //绑定手机号
+        if (tvGetCheckNumber.getText().equals(getString(R.string.GET_CODE))) {
+            if (JConstant.PHONE_REG.matcher(getInputPhone()).find()) {
+                presenter.checkPhoneIsBind(getInputPhone());
+            } else {
+                ToastUtil.showToast(getString(R.string.PHONE_NUMBER_2));
+            }
+        } else {
+            // 发送修改用户属性请求
+            if (getInputPhone().equals(PreferencesUtils.getString(JConstant.KEY_REGISTER_SMS_TOKEN))) {
+                if (!tvMeterGetCode.getText().toString().equals(getString(R.string.Button_ReObtain))) {
+                    userinfo.setPhone(getInputPhone(), getInputCheckCode());
+                    userinfo.resetFlag();
+                    presenter.sendChangePhoneReq();
+                } else {
+                    ToastUtil.showToast(getString(R.string.Tap0_invaildcode));
+                }
+            } else {
+                ToastUtil.showToast(getString(R.string.Tap0_wrongcode));
+            }
+        }
+    }
+
     @Override
     public void initToolbarTitle(String title) {
         tvTopBarCenter.setText(title);
-        if (title.equals(getString(R.string.CHANGE_PHONE_NUM))){
+        if (title.equals(getString(R.string.CHANGE_PHONE_NUM))) {
             isBindOrChange = false;
-        }else {
+        } else {
             isBindOrChange = true;
         }
     }
@@ -217,6 +242,7 @@ public class MineInfoBindPhoneFragment extends Fragment implements MineBindPhone
 
     /**
      * 获取到输入的验证码
+     *
      * @return
      */
     @Override
@@ -246,9 +272,9 @@ public class MineInfoBindPhoneFragment extends Fragment implements MineBindPhone
             fLayoutVerificationCodeInputBox.setVisibility(View.VISIBLE);
             countDownTimer.start();
             tvMeterGetCode.setEnabled(false);
-            if (isBindOrChange){
+            if (isBindOrChange) {
                 tvGetCheckNumber.setText(getString(R.string.CARRY_ON));
-            }else {
+            } else {
                 tvGetCheckNumber.setText(getString(R.string.FINISHED));
             }
             tvGetCheckNumber.setEnabled(false);
@@ -259,13 +285,14 @@ public class MineInfoBindPhoneFragment extends Fragment implements MineBindPhone
 
     /**
      * 校验短信验证码的结果
+     *
      * @param resultVerifyCode
      */
     @Override
     public void handlerCheckCodeResult(RxEvent.ResultVerifyCode resultVerifyCode) {
-        if (resultVerifyCode.code == JError.ErrorOK){
-            if (isBindOrChange){
-                if (false){
+        if (resultVerifyCode.code == JError.ErrorOK) {
+            if (isBindOrChange) {
+                if (false) {
                     //是三方登录
                     jump2SetpassFragment(userinfo.getAccount());
                     return;
@@ -273,7 +300,7 @@ public class MineInfoBindPhoneFragment extends Fragment implements MineBindPhone
             }
             showLoadingDialog();
             presenter.sendChangePhoneReq();
-        }else {
+        } else {
             hideLoadingDialog();
             ToastUtil.showNegativeToast(getString(R.string.RET_ESMS_CODE_FALSE));
         }
@@ -281,23 +308,24 @@ public class MineInfoBindPhoneFragment extends Fragment implements MineBindPhone
 
     /**
      * 处理修改结果
+     *
      * @param getUserInfo
      */
     @Override
     public void handlerResetPhoneResult(RxEvent.GetUserInfo getUserInfo) {
         hideLoadingDialog();
-        if (!TextUtils.isEmpty(getInputPhone())){
-            if (getInputPhone().equals(getUserInfo.jfgAccount.getPhone())){
+        if (!TextUtils.isEmpty(getInputPhone())) {
+            if (getInputPhone().equals(getUserInfo.jfgAccount.getPhone())) {
                 ToastUtil.showPositiveToast(getString(R.string.SCENE_SAVED));
-                if (getView()!= null){
+                if (getView() != null) {
                     getView().postDelayed(new Runnable() {
                         @Override
                         public void run() {
                             getFragmentManager().popBackStack();
                         }
-                    },2000);
+                    }, 2000);
                 }
-            }else {
+            } else {
                 ToastUtil.showPositiveToast(getString(R.string.SUBMIT_FAIL));
             }
         }
@@ -308,7 +336,7 @@ public class MineInfoBindPhoneFragment extends Fragment implements MineBindPhone
      */
     @Override
     public void showLoadingDialog() {
-        LoadingDialog.showLoading(getFragmentManager(),getString(R.string.LOADING));
+        LoadingDialog.showLoading(getFragmentManager(), getString(R.string.LOADING));
     }
 
     /**
@@ -326,6 +354,6 @@ public class MineInfoBindPhoneFragment extends Fragment implements MineBindPhone
             tvMeterGetCode.setVisibility(View.INVISIBLE);
             countDownTimer.onFinish();
         }
-        if (presenter != null)presenter.stop();
+        if (presenter != null) presenter.stop();
     }
 }

@@ -33,7 +33,8 @@ public class PhotoInfo implements Serializable {
     private int width;
     private int height;
 
-    public PhotoInfo() {}
+    public PhotoInfo() {
+    }
 
     public int getWidth() {
         return width;
@@ -78,7 +79,7 @@ public class PhotoInfo implements Serializable {
 
     @Override
     public boolean equals(Object o) {
-        if ( o == null || !(o instanceof PhotoInfo)) {
+        if (o == null || !(o instanceof PhotoInfo)) {
             return false;
         }
         PhotoInfo info = (PhotoInfo) o;

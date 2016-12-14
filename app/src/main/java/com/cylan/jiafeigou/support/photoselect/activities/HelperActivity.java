@@ -22,7 +22,7 @@ public class HelperActivity extends AppCompatActivity {
     protected View view;
 
     private final int maxLines = 4;
-    private final String[] permissions = new String[]{ Manifest.permission.WRITE_EXTERNAL_STORAGE };
+    private final String[] permissions = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
 
     protected void checkPermission() {
         if (ContextCompat.checkSelfPermission(this,
@@ -102,14 +102,16 @@ public class HelperActivity extends AppCompatActivity {
         }
     }
 
-    protected void permissionGranted() {}
+    protected void permissionGranted() {
+    }
 
     private void permissionDenied() {
         hideViews();
         requestPermission();
     }
 
-    protected void hideViews() {}
+    protected void hideViews() {
+    }
 
     protected void setView(View view) {
         this.view = view;

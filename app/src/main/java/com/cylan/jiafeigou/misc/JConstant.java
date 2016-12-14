@@ -126,6 +126,7 @@ public class JConstant {
     public static final String CRASH_PATH = ROOT_DIR + File.separator + "crash";
     public static final String DAEMON_DIR = ROOT_DIR + File.separator + "daemon";
     public static final String LOG_PATH = ROOT_DIR + File.separator + "log";
+    public static final String MEDIA_PATH = ROOT_DIR + File.separator + "media";
     public static final String USER_IMAGE_HEAD_URL = "";                  //用户头像
     public static final String MEDIA_DETAIL_PICTURE_DOWNLOAD_DIR = ROOT_DIR + File.separator + "images";
     public static final String MEDIA_DETAIL_VIDEO_DOWNLOAD_DIR = ROOT_DIR + File.separator + "videos";

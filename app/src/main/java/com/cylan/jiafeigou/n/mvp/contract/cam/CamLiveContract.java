@@ -54,6 +54,8 @@ public interface CamLiveContract {
          */
         void onLiveStop(int type, int errId);
 
+        void onTakeSnapShot(boolean state);
+
     }
 
     interface Presenter extends BasePresenter {
@@ -90,6 +92,14 @@ public interface CamLiveContract {
         void stopPlayVideo(int type);
 
         BeanCamInfo getCamInfo();
+
+        void switchSpeakerMic(final boolean local, final boolean speakerFlag, final boolean micFlag);
+
+        void takeSnapShot();
+
+        boolean getSpeakerFlag();
+
+        boolean getMicFlag();
     }
 }
 

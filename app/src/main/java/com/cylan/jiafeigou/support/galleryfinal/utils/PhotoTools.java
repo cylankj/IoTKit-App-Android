@@ -20,7 +20,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.provider.MediaStore;
 
-
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.support.galleryfinal.GalleryFinal;
 import com.cylan.jiafeigou.support.galleryfinal.model.PhotoFolderInfo;
@@ -40,6 +39,7 @@ public class PhotoTools {
 
     /**
      * 获取所有图片
+     *
      * @param context
      * @return
      */
@@ -81,7 +81,7 @@ public class PhotoTools {
                     final String path = cursor.getString(dataColumn);
                     //final String thumb = cursor.getString(thumbImageColumn);
                     File file = new File(path);
-                    if ( (filterList == null || !filterList.contains(path)) && file.exists() && file.length() > 0 ) {
+                    if ((filterList == null || !filterList.contains(path)) && file.exists() && file.length() > 0) {
                         final PhotoInfo photoInfo = new PhotoInfo();
                         photoInfo.setPhotoId(imageId);
                         photoInfo.setPhotoPath(path);

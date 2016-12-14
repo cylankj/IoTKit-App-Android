@@ -127,7 +127,7 @@ public class HomeSettingFragment extends Fragment implements HomeSettingContract
 
     @Override
     public void showClearingCacheProgress() {
-        LoadingDialog.showLoading(getFragmentManager(),getString(R.string.LOADING));
+        LoadingDialog.showLoading(getFragmentManager(), getString(R.string.LOADING));
     }
 
     @Override

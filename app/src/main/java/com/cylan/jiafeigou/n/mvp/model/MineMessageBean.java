@@ -11,7 +11,7 @@ import java.io.Serializable;
  * 描述：
  */
 @Table(name = "MineMessageBean")
-public class MineMessageBean implements Serializable{
+public class MineMessageBean implements Serializable {
 
     @Column(name = "id", isId = true)
     public int id;
@@ -24,7 +24,8 @@ public class MineMessageBean implements Serializable{
     @Column(name = "name")
     public String name;
 
-    public MineMessageBean(){}
+    public MineMessageBean() {
+    }
 
     public MineMessageBean(String content, int type, String time) {
         this.content = content;

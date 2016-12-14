@@ -166,7 +166,7 @@ public class MineInfoSetPassWordFragment extends Fragment implements MineInfoSet
             return;
         }
 
-        presenter.sendChangePassReq(userinfo.getAccount(),getOldPassword(),getNewPassword());
+        presenter.sendChangePassReq(userinfo.getAccount(), getOldPassword(), getNewPassword());
 
         ToastUtil.showToast(getString(R.string.PWD_OK_1));
         getFragmentManager().popBackStack();

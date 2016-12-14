@@ -111,6 +111,12 @@ public class JFGRules {
         }
     }
 
+    /**
+     * 判断是否全景
+     *
+     * @param pid
+     * @return
+     */
     public static boolean isNeedPanoramicView(int pid) {
         switch (pid) {
             case JConstant.OS_CAMERA_PANORAMA_HAISI:
@@ -124,6 +130,7 @@ public class JFGRules {
     public static class PlayErr {
 
         public static final int ERR_UNKOWN = -2;
+        public static final int ERR_STOP = -1;
         /**
          * 网络
          */

@@ -16,6 +16,7 @@ public class MD5Coder {
 
     /**
      * 返回形式为数字跟字符串
+     *
      * @param bByte
      * @return
      */
@@ -31,6 +32,7 @@ public class MD5Coder {
 
     /**
      * 返回形式只为数字
+     *
      * @param bByte
      * @return
      */
@@ -44,6 +46,7 @@ public class MD5Coder {
 
     /**
      * 转换字节数组为16进制字串
+     *
      * @param bByte
      * @return
      */
@@ -57,6 +60,7 @@ public class MD5Coder {
 
     /**
      * 获取MD5编码
+     *
      * @param source
      * @return
      */

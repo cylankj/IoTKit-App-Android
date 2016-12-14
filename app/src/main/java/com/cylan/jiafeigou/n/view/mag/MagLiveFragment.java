@@ -8,7 +8,6 @@ import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
@@ -212,7 +211,7 @@ public class MagLiveFragment extends Fragment implements HomeMagLiveContract.Vie
      */
     @Override
     public void showClearProgress() {
-        LoadingDialog.showLoading(getFragmentManager(),"清除中...");
+        LoadingDialog.showLoading(getFragmentManager(), "清除中...");
     }
 
     /**

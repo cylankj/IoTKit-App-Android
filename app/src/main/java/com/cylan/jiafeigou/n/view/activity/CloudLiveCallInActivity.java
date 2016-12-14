@@ -25,7 +25,7 @@ import butterknife.OnClick;
  * 创建时间：2016/10/18
  * 描述：
  */
-public class CloudLiveCallInActivity extends AppCompatActivity implements CloudLiveCallInContract.View{
+public class CloudLiveCallInActivity extends AppCompatActivity implements CloudLiveCallInContract.View {
 
     @BindView(R.id.iv_call_user_image_head)
     ImageView ivCallUserImageHead;
@@ -59,8 +59,8 @@ public class CloudLiveCallInActivity extends AppCompatActivity implements CloudL
                 break;
             case R.id.tv_ignore_call:
                 Intent backIntent = new Intent();
-                backIntent.putExtra("ignore",getString(R.string.EFAMILY_MISSED_CALL));
-                setResult(1,backIntent);
+                backIntent.putExtra("ignore", getString(R.string.EFAMILY_MISSED_CALL));
+                setResult(1, backIntent);
                 finish();
                 break;
             case R.id.tv_accept_call:

@@ -220,7 +220,7 @@ android {
                                     AUTHORITY          : "",
                                     QQ_APP_KEY         : "1103156296",
                                     weChat_APP_ID      : "wx3081bcdae8a842cf",
-                                    VKEY               : "Cd6DEgRvX92xAXRIkUexWDPxzTwKqHK3",
+                                    VKEY               : "tVN2fxGbUn6Hw1FNq9TFWJdQ4ClqH4Hb",
                                     VID                : "0001",
                                     NICELY_SINA_APP_KEY: "1315129656"]
         }
@@ -229,8 +229,8 @@ android {
             manifestPlaceholders = [NICELY_VALUE       : "yf.jfgou.com:443",
                                     MAT_VALUE          : getMtaAppKey("yf"),
                                     AUTHORITY          : ".yf",
-                                    VKEY               : "sXQHsCIxIOmOEX7k0nBxf0FNbbetSVRK",
-                                    VID                : "0001",
+                                    VKEY               : "tVN2fxGbUn6Hw1FNq9TFWJdQ4ClqH4Hb",
+                                    VID                : "\\ 0001",
                                     QQ_APP_KEY         : "xxx",
                                     weChat_APP_ID      : "xxx",
                                     NICELY_SINA_APP_KEY: "xxx"]
@@ -243,7 +243,7 @@ android {
                                     AUTHORITY          : ".zhongxing",
                                     QQ_APP_KEY         : "xxx",
                                     weChat_APP_ID      : "wx382033a16e5cc4a5",
-                                    VKEY               : "Cd6DEgRvX92xAXRIkUexWDPxzTwKqHK3",
+                                    VKEY               : "tVN2fxGbUn6Hw1FNq9TFWJdQ4ClqH4Hb",
                                     VID                : "0001",
                                     NICELY_SINA_APP_KEY: "xxx"]
         }

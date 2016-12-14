@@ -82,6 +82,7 @@ public class MineFriendAddFromContactFragment extends Fragment implements MineFr
         initPresenter();
         return view;
     }
+
     @OnTextChanged(R.id.et_add_phone_number)
     public void initEditTextListenter(CharSequence s, int start, int before, int count) {
         presenter.filterPhoneData(s.toString());
@@ -157,7 +158,7 @@ public class MineFriendAddFromContactFragment extends Fragment implements MineFr
      */
     @Override
     public void showLoadingPro() {
-        LoadingDialog.showLoading(getFragmentManager(),getString(R.string.getting));
+        LoadingDialog.showLoading(getFragmentManager(), getString(R.string.getting));
     }
 
     /**
@@ -173,9 +174,9 @@ public class MineFriendAddFromContactFragment extends Fragment implements MineFr
      */
     @Override
     public void openSendSms() {
-        if (presenter.checkSmsPermission()){
+        if (presenter.checkSmsPermission()) {
             sendSms();
-        }else {
+        } else {
             //申请权限
             ActivityCompat.requestPermissions(getActivity(),
                     new String[]{Manifest.permission.SEND_SMS},
@@ -211,14 +212,14 @@ public class MineFriendAddFromContactFragment extends Fragment implements MineFr
                 public void run() {
                     presenter.checkFriendAccount(item.account);
                 }
-            },2000);
+            }, 2000);
         }
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == 1){
+        if (requestCode == 1) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 sendSms();
             } else {

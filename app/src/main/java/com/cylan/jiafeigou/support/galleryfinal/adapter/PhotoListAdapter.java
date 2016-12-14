@@ -24,7 +24,6 @@ import android.view.animation.AnimationUtils;
 import android.widget.AbsListView;
 import android.widget.ImageView;
 
-
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.support.galleryfinal.GalleryFinal;
 import com.cylan.jiafeigou.support.galleryfinal.model.PhotoInfo;
@@ -50,7 +49,7 @@ public class PhotoListAdapter extends ViewHolderAdapter<PhotoListAdapter.PhotoVi
         super(activity, list);
         this.mSelectList = selectList;
         this.mScreenWidth = screenWidth;
-        this.mRowWidth = mScreenWidth/3;
+        this.mRowWidth = mScreenWidth / 3;
         this.mActivity = activity;
     }
 
@@ -78,7 +77,7 @@ public class PhotoListAdapter extends ViewHolderAdapter<PhotoListAdapter.PhotoVi
             holder.mView.setAnimation(AnimationUtils.loadAnimation(mActivity, GalleryFinal.getCoreConfig().getAnimation()));
         }
         holder.mIvCheck.setImageResource(GalleryFinal.getGalleryTheme().getIconCheck());
-        if ( GalleryFinal.getFunctionConfig().isMutiSelect() ) {
+        if (GalleryFinal.getFunctionConfig().isMutiSelect()) {
             holder.mIvCheck.setVisibility(View.VISIBLE);
             if (mSelectList.contains(photoInfo)) {
                 holder.mIvCheck.setBackgroundColor(GalleryFinal.getGalleryTheme().getCheckSelectedColor());
@@ -100,6 +99,7 @@ public class PhotoListAdapter extends ViewHolderAdapter<PhotoListAdapter.PhotoVi
         public GFImageView mIvThumb;
         public ImageView mIvCheck;
         View mView;
+
         public PhotoViewHolder(View view) {
             super(view);
             mView = view;

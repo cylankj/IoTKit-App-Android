@@ -4,8 +4,6 @@ package com.cylan.jiafeigou.n.mvp.model;
 import com.cylan.jiafeigou.support.db.annotation.Column;
 import com.cylan.jiafeigou.support.db.annotation.Table;
 
-import java.util.ArrayList;
-
 /**
  * 创建者     谢坤
  * 创建时间   2016/8/18 15:44

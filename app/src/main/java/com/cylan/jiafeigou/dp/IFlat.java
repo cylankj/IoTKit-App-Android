@@ -1,6 +1,5 @@
 package com.cylan.jiafeigou.dp;
 
-import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.jiafeigou.n.mvp.model.BaseBean;
 
 import java.util.ArrayList;

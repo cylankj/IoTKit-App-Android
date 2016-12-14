@@ -9,20 +9,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
-import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.mvp.contract.cloud.CloudLiveSettingContract;
-import com.cylan.jiafeigou.n.mvp.impl.cam.CamSettingPresenterImpl;
 import com.cylan.jiafeigou.n.mvp.impl.cloud.CloudLiveSettingPresenterImp;
 import com.cylan.jiafeigou.n.mvp.model.BeanCloudInfo;
 import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
+import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.LoadingDialog;
@@ -92,7 +89,7 @@ public class CloudLiveSettingFragment extends Fragment implements CloudLiveSetti
     private void initPresenter() {
         Bundle bundle = getArguments();
         DeviceBean deviceBean = (DeviceBean) bundle.getParcelable(JConstant.KEY_DEVICE_ITEM_BUNDLE);
-        presenter = new CloudLiveSettingPresenterImp(this,deviceBean);
+        presenter = new CloudLiveSettingPresenterImp(this, deviceBean);
     }
 
     @Override
@@ -237,7 +234,7 @@ public class CloudLiveSettingFragment extends Fragment implements CloudLiveSetti
 
     @Override
     public void showClearRecordProgress() {
-        LoadingDialog.showLoading(getFragmentManager(),"清除中...");
+        LoadingDialog.showLoading(getFragmentManager(), "清除中...");
     }
 
     @Override
@@ -246,7 +243,8 @@ public class CloudLiveSettingFragment extends Fragment implements CloudLiveSetti
     }
 
     /**
-     *设置设备名称
+     * 设置设备名称
+     *
      * @param beanCloudInfo
      */
     @Override

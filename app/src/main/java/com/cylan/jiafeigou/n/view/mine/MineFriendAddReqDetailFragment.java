@@ -88,9 +88,9 @@ public class MineFriendAddReqDetailFragment extends Fragment implements MineFrie
         Bundle arguments = getArguments();
         boolean isFrome = arguments.getBoolean("isFrom");
         addRequestItems = (MineAddReqBean) arguments.getSerializable("addRequestItems");
-        if ("".equals(addRequestItems.alias)){
+        if ("".equals(addRequestItems.alias)) {
             tvRelativeAndFriendName.setText("sjd172");
-        }else {
+        } else {
             tvRelativeAndFriendName.setText(addRequestItems.alias);
         }
         tvRelativeAndFriendLikeName.setText(addRequestItems.account);
@@ -144,8 +144,8 @@ public class MineFriendAddReqDetailFragment extends Fragment implements MineFrie
                 jump2LookBigImage();
                 break;
             case R.id.tv_add_as_relative_and_friend:            //添加为亲友
-                if (presenter != null){
-                   presenter.start();
+                if (presenter != null) {
+                    presenter.start();
                 }
                 break;
         }
@@ -168,9 +168,9 @@ public class MineFriendAddReqDetailFragment extends Fragment implements MineFrie
 
     @Override
     public void showOrHideReqMesg(boolean isFrom) {
-        if (isFrom){
+        if (isFrom) {
             rlAddRequestMesg.setVisibility(View.VISIBLE);
-        }else {
+        } else {
             rlAddRequestMesg.setVisibility(View.INVISIBLE);
         }
     }
@@ -200,10 +200,10 @@ public class MineFriendAddReqDetailFragment extends Fragment implements MineFrie
 
     @Override
     public void showSendAddReqResult(boolean flag) {
-        if(flag){
+        if (flag) {
             getFragmentManager().popBackStack();
             ToastUtil.showPositiveToast(getString(R.string.Tap3_FriendsAdd_Contacts_InvitedTips));
-        }else {
+        } else {
             getFragmentManager().popBackStack();
             ToastUtil.showNegativeToast("请求发送失败");
         }
@@ -213,7 +213,7 @@ public class MineFriendAddReqDetailFragment extends Fragment implements MineFrie
     public void showAddedReult(boolean flag) {
         if (flag) {
             ToastUtil.showPositiveToast(getString(R.string.Tap3_FriendsAdd_Success));
-        }else {
+        } else {
             ToastUtil.showNegativeToast("添加失败");
         }
     }
@@ -224,7 +224,7 @@ public class MineFriendAddReqDetailFragment extends Fragment implements MineFrie
     @Override
     public void jump2AddReqFragment() {
         Bundle addReqBundle = new Bundle();
-        addReqBundle.putString("account",addRequestItems.account);
+        addReqBundle.putString("account", addRequestItems.account);
         addReqFragment = MineAddFromContactFragment.newInstance(addReqBundle);
         getFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
@@ -236,19 +236,20 @@ public class MineFriendAddReqDetailFragment extends Fragment implements MineFrie
 
     /**
      * 是否存在该账号的结果
+     *
      * @param getAddReqList
      */
     @Override
     public void isHasAccountResult(RxEvent.GetAddReqList getAddReqList) {
-        for (JFGFriendRequest bean:getAddReqList.arrayList){
-            if (bean.account.equals(addRequestItems.account)){
+        for (JFGFriendRequest bean : getAddReqList.arrayList) {
+            if (bean.account.equals(addRequestItems.account)) {
                 // 向我发送过请求
                 MineAddReqBean addReqBean = new MineAddReqBean();
                 addReqBean.account = bean.account;
                 addReqBean.time = bean.time;
                 presenter.checkAddReqOutTime(addReqBean);
                 return;
-            }else {
+            } else {
                 //未向我发送过请求
                 jump2AddReqFragment();
             }

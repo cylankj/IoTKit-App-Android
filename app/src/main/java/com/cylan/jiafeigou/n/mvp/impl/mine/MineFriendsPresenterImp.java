@@ -9,9 +9,9 @@ import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendsContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.n.mvp.model.MineAddReqBean;
 import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
+import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.rx.RxBus;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -62,10 +62,10 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
 
         ArrayList list = new ArrayList<MineAddReqBean>();
 
-        for (JFGFriendRequest jfgFriendRequest:addReqList.arrayList){
+        for (JFGFriendRequest jfgFriendRequest : addReqList.arrayList) {
             MineAddReqBean emMessage = new MineAddReqBean();
             try {
-                emMessage.iconUrl = JfgCmdInsurance.getCmd().getCloudUrlByType(JfgEnum.JFG_URL.PORTRAIT,0,jfgFriendRequest.account+".jpg","");
+                emMessage.iconUrl = JfgCmdInsurance.getCmd().getCloudUrlByType(JfgEnum.JFG_URL.PORTRAIT, 0, jfgFriendRequest.account + ".jpg", "");
             } catch (JfgException e) {
                 e.printStackTrace();
             }
@@ -82,10 +82,10 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
     @Override
     public ArrayList<RelAndFriendBean> initRelativatesAndFriendsData(RxEvent.GetFriendList friendList) {
         ArrayList list = new ArrayList<RelAndFriendBean>();
-        for (JFGFriendAccount account:friendList.arrayList) {
+        for (JFGFriendAccount account : friendList.arrayList) {
             RelAndFriendBean emMessage = new RelAndFriendBean();
             try {
-                emMessage.iconUrl = JfgCmdInsurance.getCmd().getCloudUrlByType(JfgEnum.JFG_URL.PORTRAIT,0,account.account+".jpg","");
+                emMessage.iconUrl = JfgCmdInsurance.getCmd().getCloudUrlByType(JfgEnum.JFG_URL.PORTRAIT, 0, account.account + ".jpg", "");
             } catch (JfgException e) {
                 e.printStackTrace();
             }
@@ -150,7 +150,7 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
                 .subscribe(new Action1<RxEvent.GetFriendList>() {
                     @Override
                     public void call(RxEvent.GetFriendList o) {
-                        if (o != null && o instanceof RxEvent.GetFriendList){
+                        if (o != null && o instanceof RxEvent.GetFriendList) {
                             handleInitFriendListDataResult(o);
                         }
                     }
@@ -167,7 +167,7 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
                 .subscribe(new Action1<RxEvent.GetAddReqList>() {
                     @Override
                     public void call(RxEvent.GetAddReqList o) {
-                        if(o != null && o instanceof RxEvent.GetAddReqList){
+                        if (o != null && o instanceof RxEvent.GetAddReqList) {
                             handleInitAddReqListDataResult(o);
                         }
                     }
@@ -188,6 +188,7 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
 
     /**
      * 启动获取添加请求的SDK
+     *
      * @return
      */
     @Override
@@ -209,6 +210,7 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
 
     /**
      * 启动获取好友列表的SDK
+     *
      * @return
      */
     @Override
@@ -239,7 +241,7 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
                     @Override
                     public void call(Object o) {
                         try {
-                            JfgCmdInsurance.getCmd().addFriend(account,"");
+                            JfgCmdInsurance.getCmd().addFriend(account, "");
                         } catch (JfgException e) {
                             e.printStackTrace();
                         }
@@ -283,7 +285,7 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
      * @param addReqList
      */
     private void handleInitAddReqListDataResult(final RxEvent.GetAddReqList addReqList) {
-        if (getView() != null){
+        if (getView() != null) {
             if (addReqList.arrayList.size() != 0) {
                 getView().showAddReqListTitle();
                 getView().initAddReqRecyList(initAddRequestData(addReqList));
@@ -301,7 +303,7 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
      * @param friendList
      */
     private void handleInitFriendListDataResult(final RxEvent.GetFriendList friendList) {
-        if (getView() != null){
+        if (getView() != null) {
             if (friendList.arrayList.size() != 0) {
                 getView().showFriendListTitle();
                 getView().initFriendRecyList(initRelativatesAndFriendsData(friendList));

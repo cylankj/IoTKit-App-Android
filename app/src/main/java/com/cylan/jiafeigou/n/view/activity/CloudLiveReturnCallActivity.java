@@ -109,7 +109,7 @@ public class CloudLiveReturnCallActivity extends AppCompatActivity implements Cl
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.iv_hang_up:
-                RxBus.getCacheInstance().postSticky(new RxEvent.HangUpVideoTalk(true,tvVideoTime.getText().toString().trim()));
+                RxBus.getCacheInstance().postSticky(new RxEvent.HangUpVideoTalk(true, tvVideoTime.getText().toString().trim()));
                 finish();
                 break;
         }

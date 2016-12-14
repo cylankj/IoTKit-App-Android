@@ -100,7 +100,7 @@ public class MineFriendsFragment extends Fragment implements MineFriendsContract
     @Override
     public void jump2AddReqDetailFragment(int position, MineAddReqBean bean) {
         Bundle bundle = new Bundle();
-        bundle.putBoolean("isFrom",true);
+        bundle.putBoolean("isFrom", true);
         bundle.putSerializable("addRequestItems", bean);
         addReqDetailFragment = MineFriendAddReqDetailFragment.newInstance(bundle);
         getFragmentManager().beginTransaction()
@@ -144,6 +144,7 @@ public class MineFriendsFragment extends Fragment implements MineFriendsContract
 
     /**
      * 添加请求列表删除一个条目
+     *
      * @param position
      * @param bean
      */
@@ -151,19 +152,20 @@ public class MineFriendsFragment extends Fragment implements MineFriendsContract
     public void addReqDeleteItem(int position, MineAddReqBean bean) {
         addReqListAdater.remove(bean);
         addReqListAdater.notifyDataSetHasChanged();
-        if (addReqListAdater.getItemCount()==0){
+        if (addReqListAdater.getItemCount() == 0) {
             hideAddReqListTitle();
         }
     }
 
     /**
      * 好友列表添加一个条目
+     *
      * @param position
      * @param bean
      */
     @Override
     public void friendlistAddItem(int position, RelAndFriendBean bean) {
-        friendsListAdapter.add(0,bean);
+        friendsListAdapter.add(0, bean);
         friendsListAdapter.notifyDataSetHasChanged();
     }
 
@@ -172,12 +174,12 @@ public class MineFriendsFragment extends Fragment implements MineFriendsContract
      */
     @Override
     public void showLoadingDialog() {
-        LoadingDialog.showLoading(getFragmentManager(),getString(R.string.LOADING));
+        LoadingDialog.showLoading(getFragmentManager(), getString(R.string.LOADING));
     }
 
     /**
      * 隐藏加载进度
-      */
+     */
     @Override
     public void hideLoadingDialog() {
         LoadingDialog.dismissLoading(getFragmentManager());
@@ -189,7 +191,7 @@ public class MineFriendsFragment extends Fragment implements MineFriendsContract
         builder.setPositiveButton(getString(R.string.DELETE), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                addReqDeleteItem(position,bean);
+                addReqDeleteItem(position, bean);
                 // TODO 删除添加请求
                 dialog.dismiss();
             }
@@ -238,7 +240,7 @@ public class MineFriendsFragment extends Fragment implements MineFriendsContract
     public void initFriendRecyList(ArrayList<RelAndFriendBean> list) {
         hideLoadingDialog();
         recyclerviewRelativesandfriendsList.setLayoutManager(new LinearLayoutManager(getContext()));
-        friendsListAdapter = new RelativesAndFriendsAdapter(getContext(),list,null);
+        friendsListAdapter = new RelativesAndFriendsAdapter(getContext(), list, null);
         recyclerviewRelativesandfriendsList.setAdapter(friendsListAdapter);
         initFriendAdaListener();
     }
@@ -250,8 +252,8 @@ public class MineFriendsFragment extends Fragment implements MineFriendsContract
         friendsListAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(View itemView, int viewType, int position) {
-                if (getView() != null){
-                    jump2FriendDetailFragment(position,friendsListAdapter.getList().get(position));
+                if (getView() != null) {
+                    jump2FriendDetailFragment(position, friendsListAdapter.getList().get(position));
                 }
             }
         });
@@ -261,7 +263,7 @@ public class MineFriendsFragment extends Fragment implements MineFriendsContract
     public void initAddReqRecyList(ArrayList<MineAddReqBean> list) {
         hideLoadingDialog();
         recyclerviewRequestAdd.setLayoutManager(new LinearLayoutManager(getContext()));
-        addReqListAdater = new AddRelativesAndFriendsAdapter(getView().getContext(),list,null);
+        addReqListAdater = new AddRelativesAndFriendsAdapter(getView().getContext(), list, null);
         recyclerviewRequestAdd.setAdapter(addReqListAdater);
         initAddReqAdaListener();
     }
@@ -274,8 +276,8 @@ public class MineFriendsFragment extends Fragment implements MineFriendsContract
         addReqListAdater.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(View itemView, int viewType, int position) {
-                if (getView() != null){
-                    jump2AddReqDetailFragment(position,addReqListAdater.getList().get(position));
+                if (getView() != null) {
+                    jump2AddReqDetailFragment(position, addReqListAdater.getList().get(position));
                 }
             }
         });
@@ -283,8 +285,8 @@ public class MineFriendsFragment extends Fragment implements MineFriendsContract
         addReqListAdater.setOnItemLongClickListener(new OnItemLongClickListener() {
             @Override
             public void onItemLongClick(View itemView, int viewType, int position) {
-                if (getView() != null){
-                    showLongClickDialog(position,addReqListAdater.getList().get(position));
+                if (getView() != null) {
+                    showLongClickDialog(position, addReqListAdater.getList().get(position));
                 }
             }
         });
@@ -344,6 +346,7 @@ public class MineFriendsFragment extends Fragment implements MineFriendsContract
 
     /**
      * desc:点击同意按钮
+     *
      * @param holder
      * @param viewType
      * @param layoutPosition
@@ -351,9 +354,9 @@ public class MineFriendsFragment extends Fragment implements MineFriendsContract
      */
     @Override
     public void onAccept(SuperViewHolder holder, int viewType, int layoutPosition, MineAddReqBean item) {
-        if (presenter.checkAddRequestOutTime(item)){
-                showReqOutTimeDialog(item);
-        }else {
+        if (presenter.checkAddRequestOutTime(item)) {
+            showReqOutTimeDialog(item);
+        } else {
             //调用添加成功
             presenter.acceptAddSDK(item.account);
             ToastUtil.showPositiveToast(getString(R.string.Tap3_FriendsAdd_Success));
@@ -363,14 +366,14 @@ public class MineFriendsFragment extends Fragment implements MineFriendsContract
             account.account = item.account;
             account.alias = item.alias;
             account.markName = "";
-            friendlistAddItem(layoutPosition,account);
-            addReqDeleteItem(layoutPosition,item);
+            friendlistAddItem(layoutPosition, account);
+            addReqDeleteItem(layoutPosition, item);
         }
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        if (presenter != null)presenter.stop();
+        if (presenter != null) presenter.stop();
     }
 }

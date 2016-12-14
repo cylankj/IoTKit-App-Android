@@ -7,14 +7,13 @@ import android.os.Environment;
 import android.telephony.TelephonyManager;
 import android.util.Pair;
 
+import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.dp.DpUtils;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.contract.mag.MagLiveInformationContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
-import com.cylan.jiafeigou.n.mvp.model.BeanCamInfo;
 import com.cylan.jiafeigou.n.mvp.model.BeanMagInfo;
-import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -37,7 +36,7 @@ public class MagLiveInformationPresenterImp extends AbstractPresenter<MagLiveInf
     private BeanMagInfo beanMagInfo;
 
 
-    public MagLiveInformationPresenterImp(MagLiveInformationContract.View view,BeanMagInfo bean) {
+    public MagLiveInformationPresenterImp(MagLiveInformationContract.View view, BeanMagInfo bean) {
         super(view);
         view.setPresenter(this);
         this.beanMagInfo = bean;
@@ -113,6 +112,7 @@ public class MagLiveInformationPresenterImp extends AbstractPresenter<MagLiveInf
 
     /**
      * 获取到门磁的信息
+     *
      * @return
      */
     @Override
@@ -141,15 +141,23 @@ public class MagLiveInformationPresenterImp extends AbstractPresenter<MagLiveInf
                         update.version = System.currentTimeMillis();
                         RxBus.getCacheInstance().post(update);
                         if (id == DpMsgMap.ID_2000003_BASE_ALIAS) {
-                            JfgCmdInsurance.getCmd().setAliasByCid(beanMagInfo.deviceBase.uuid,
-                                    beanMagInfo.deviceBase.alias);
+                            try {
+                                JfgCmdInsurance.getCmd().setAliasByCid(beanMagInfo.deviceBase.uuid,
+                                        beanMagInfo.deviceBase.alias);
+                            } catch (JfgException e) {
+                                e.printStackTrace();
+                            }
                             AppLogger.i("update alias: " + new Gson().toJson(beanMagInfo));
                             return;
                         }
-                        JfgCmdInsurance.getCmd().robotSetData(beanMagInfo.deviceBase.uuid,
-                                DpUtils.getList(id,
-                                        beanMagInfoIntegerPair.first.getByte(id)
-                                        , System.currentTimeMillis()));
+                        try {
+                            JfgCmdInsurance.getCmd().robotSetData(beanMagInfo.deviceBase.uuid,
+                                    DpUtils.getList(id,
+                                            beanMagInfoIntegerPair.first.getByte(id)
+                                            , System.currentTimeMillis()));
+                        } catch (JfgException e) {
+                            e.printStackTrace();
+                        }
                         AppLogger.i("update camInfo: " + new Gson().toJson(beanMagInfo));
                     }
                 });

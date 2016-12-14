@@ -230,30 +230,27 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
     }
 
     @Override
-    public void saveCamInfoBean(final BeanCamInfo camInfoBean, int id) {
+    public void saveCamInfoBean(final BeanCamInfo camInfoBean, int index) {
         this.camInfoBean = camInfoBean;
-        Observable.just(new Pair<>(camInfoBean, id))
+        Observable.just(new Pair<>(camInfoBean, index))
                 .subscribeOn(Schedulers.io())
-                .subscribe(new Action1<Pair<BeanCamInfo, Integer>>() {
-                    @Override
-                    public void call(Pair<BeanCamInfo, Integer> beanCamInfoIntegerPair) {
-                        int id = beanCamInfoIntegerPair.second;
-                        RxEvent.JFGAttributeUpdate update = new RxEvent.JFGAttributeUpdate();
-                        update.uuid = camInfoBean.deviceBase.uuid;
-                        update.o = beanCamInfoIntegerPair.first.getObject(id);
-                        update.msgId = id;
-                        update.version = System.currentTimeMillis();
-                        RxBus.getCacheInstance().post(update);
-                        try {
-                            JfgCmdInsurance.getCmd().robotSetData(camInfoBean.deviceBase.uuid,
-                                    DpUtils.getList(id,
-                                            beanCamInfoIntegerPair.first.getByte(id)
-                                            , System.currentTimeMillis()));
-                        } catch (JfgException e) {
-                            e.printStackTrace();
-                        }
-                        AppLogger.i("save bean Cam info");
+                .subscribe((Pair<BeanCamInfo, Integer> beanCamInfoIntegerPair) -> {
+                    int id = beanCamInfoIntegerPair.second;
+                    RxEvent.JFGAttributeUpdate update = new RxEvent.JFGAttributeUpdate();
+                    update.uuid = camInfoBean.deviceBase.uuid;
+                    update.o = beanCamInfoIntegerPair.first.getObject(id);
+                    update.msgId = id;
+                    update.version = System.currentTimeMillis();
+                    RxBus.getCacheInstance().post(update);
+                    try {
+                        JfgCmdInsurance.getCmd().robotSetData(camInfoBean.deviceBase.uuid,
+                                DpUtils.getList(id,
+                                        beanCamInfoIntegerPair.first.getByte(id)
+                                        , System.currentTimeMillis()));
+                    } catch (JfgException e) {
+                        e.printStackTrace();
                     }
+                    AppLogger.i("save bean Cam info");
                 });
     }
 
@@ -261,25 +258,19 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
     public void unbindDevice() {
         Observable.just(null)
                 .subscribeOn(Schedulers.newThread())
-                .subscribe(new Action1<Object>() {
-                    @Override
-                    public void call(Object o) {
-                        String uuid = camInfoBean.deviceBase.uuid;
-                        RxEvent.UnbindJFGDevice deletion = new RxEvent.UnbindJFGDevice();
-                        deletion.uuid = uuid;
-                        RxBus.getCacheInstance().post(deletion);
-                        try {
-                            JfgCmdInsurance.getCmd().unBindDevice(uuid);
-                        } catch (JfgException e) {
-                            e.printStackTrace();
-                        }
-                        AppLogger.i("unbind uuid: " + uuid);
+                .subscribe((Object o) -> {
+                    String uuid = camInfoBean.deviceBase.uuid;
+                    RxEvent.UnbindJFGDevice deletion = new RxEvent.UnbindJFGDevice();
+                    deletion.uuid = uuid;
+                    RxBus.getCacheInstance().post(deletion);
+                    try {
+                        JfgCmdInsurance.getCmd().unBindDevice(uuid);
+                    } catch (JfgException e) {
+                        e.printStackTrace();
                     }
-                }, new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                        AppLogger.e("delete uuid failed: " + throwable.getLocalizedMessage());
-                    }
+                    AppLogger.i("unbind uuid: " + uuid);
+                }, (Throwable throwable) -> {
+                    AppLogger.e("delete uuid failed: " + throwable.getLocalizedMessage());
                 });
     }
 }
