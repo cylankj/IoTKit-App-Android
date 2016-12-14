@@ -830,4 +830,5 @@
   <string name="maxsize_zero_tip">maxsize 应该大于0</string>
   <!--每日精彩-->
   <string name="Tips_Delete_Msg">您是否确定删除？</string>
+  <string name="permission_download">获取SD卡权限失败,取消下载</string>
 </resources>

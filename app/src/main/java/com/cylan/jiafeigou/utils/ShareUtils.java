@@ -40,7 +40,7 @@ public class ShareUtils {
                 .into(new SimpleTarget<Bitmap>(150, 150) {
                     @Override
                     public void onResourceReady(Bitmap resource, GlideAnimation glideAnimation) {
-                        shareContent.bitmap = Bitmap.createBitmap(resource);
+                        shareContent.bitmap = resource;
                         shareContent.shareWay = WechatShare.WEIXIN_SHARE_WAY_PIC;
                         wechatShare.shareByWX(shareContent);
                     }

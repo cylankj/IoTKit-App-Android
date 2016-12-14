@@ -341,7 +341,7 @@ public class WechatShare {
         WXMediaMessage msg = new WXMediaMessage();
         msg.mediaObject = imgObj;
         Bitmap thumbBmp = Bitmap.createScaledBitmap(bmp, THUMB_SIZE, THUMB_SIZE, true);
-        bmp.recycle();
+//        bmp.recycle();Glide会自己管理它的bitmap对象,所以不用手动recycle
         msg.thumbData = WechatUtils.bmpToByteArray(thumbBmp, true);  //设置缩略图
         SendMessageToWX.Req req = new SendMessageToWX.Req();
         req.transaction = buildTransaction("img");

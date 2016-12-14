@@ -1,14 +1,18 @@
 package com.cylan.jiafeigou.n.view.activity;
 
+import android.Manifest;
 import android.annotation.TargetApi;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.SurfaceTexture;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.SharedElementCallback;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -69,6 +73,7 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
     private static final int PLAY_STATE_READY_TO_PLAY = 3;
     private static final int PLAY_STATE_LOADING_START = 4;
     private static final int PLAY_STATE_LOADING_FINISH = 5;
+    private static final int REQ_DOWNLOAD = 0X8001;
 
     @BindView(R.id.act_media_pager)
     HackyViewPager mMediaPager;
@@ -516,12 +521,32 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
 
     }
 
-    private void verifyPermission(PERMISSION permission) {
+    @OnClick({R.id.act_media_header_opt_download, R.id.act_media_picture_opt_download})
+    public void download() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+            downloadFile();//已经获得了授权
+        } else if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+            //需要重新提示用户授权
+            Toast.makeText(this, "下载文件需要权限,请手动开启", Toast.LENGTH_SHORT).show();
+        } else {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQ_DOWNLOAD);
+        }
 
     }
 
-    @OnClick({R.id.act_media_header_opt_download, R.id.act_media_picture_opt_download})
-    public void download() {
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == REQ_DOWNLOAD) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                downloadFile();
+            } else {
+                Toast.makeText(this, getString(R.string.permission_download), Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    private void downloadFile() {
         if (mCurrentViewType == MediaBean.TYPE_PIC) {
             mDownloadFile = new File(JConstant.MEDIA_DETAIL_PICTURE_DOWNLOAD_DIR, mCurrentMediaBean.fileName);
         } else if (mCurrentViewType == MediaBean.TYPE_VIDEO) {
