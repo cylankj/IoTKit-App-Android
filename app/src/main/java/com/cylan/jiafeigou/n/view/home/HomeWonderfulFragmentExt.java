@@ -63,14 +63,10 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-import static com.tencent.mm.sdk.modelmsg.SendMessageToWX.Req.WXSceneSession;
-import static com.tencent.mm.sdk.modelmsg.SendMessageToWX.Req.WXSceneTimeline;
-
 public class HomeWonderfulFragmentExt extends Fragment implements
         HomeWonderfulContract.View, SwipeRefreshLayout.OnRefreshListener,
         HomeWonderfulAdapter.WonderfulItemClickListener,
         HomeWonderfulAdapter.WonderfulItemLongClickListener,
-        ShareDialogFragment.ShareToListener,
         BaseDialog.BaseDialogAction,
         AppBarLayout.OnOffsetChangedListener,
         SharedElementCallBackListener,
@@ -282,7 +278,7 @@ public class HomeWonderfulFragmentExt extends Fragment implements
                         if ((visibleItemCount + pastVisibleItems) >= totalItemCount) {
                             endlessLoading = false;
                             if (presenter != null)
-                                presenter.startRefresh();
+                                presenter.startLoadMore();
                             AppLogger.v("Last Item Wow !");
                             //Do pagination.. i.e. fetch new data
                         }
@@ -447,11 +443,11 @@ public class HomeWonderfulFragmentExt extends Fragment implements
                     Toast.makeText(getActivity(), "微信没有安装", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                ShareDialogFragment fragment = initShareDialog();
+                MediaBean bean = homeWonderAdapter.getItem(position);
                 Bundle bundle = new Bundle();
-                bundle.putParcelable(ShareDialogFragment.KEY_PARCEL_, homeWonderAdapter.getItem(position));
+                bundle.putParcelable(ShareDialogFragment.KEY_MEDIA_CONTENT, bean);
+                ShareDialogFragment fragment = initShareDialog();
                 fragment.setArguments(bundle);
-                fragment.setShareToListener(this);
                 fragment.show(getActivity().getSupportFragmentManager(), "ShareDialogFragment");
                 break;
             case R.id.tv_wonderful_item_delete:
@@ -560,28 +556,6 @@ public class HomeWonderfulFragmentExt extends Fragment implements
 //        if (textView != null) textView.setText(TimeUtils.getDateStyle_0(timeInLong));
 //    }
 
-    @Override
-    public void share(int id, Object o) {
-        if (o == null || !(o instanceof MediaBean)) {
-            AppLogger.i("err");
-            return;
-        }
-        int type = -1;
-        switch (id) {
-            case R.id.tv_share_to_wechat_friends:
-                type = WXSceneSession;
-                break;
-            case R.id.tv_share_to_timeline:
-                type = WXSceneTimeline;
-                break;
-            default:
-                type = 0;
-                break;
-        }
-        if (presenter != null) {
-            presenter.shareToWechat((MediaBean) o, type);
-        }
-    }
 
     @Override
     public void onDialogAction(int id, Object value) {

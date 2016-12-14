@@ -193,7 +193,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
                     @Override
                     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                         BeanCamInfo info = basePresenter.getCamInfoBean();
-                        info.deviceCameraRotate = isChecked;
+                        info.deviceCameraRotate = isChecked ? 1 : 0;
                         basePresenter.saveCamInfoBean(info, DpMsgMap.ID_304_DEVICE_CAMERA_ROTATE);
                         AppLogger.i("save id:" + DpMsgMap.ID_304_DEVICE_CAMERA_ROTATE);
                         AppLogger.i("save value:" + info.deviceCameraRotate);
@@ -331,7 +331,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         svSettingDeviceWifi.setTvSubTitle(camInfoBean.net != null && camInfoBean.net.ssid != null ? camInfoBean.net.ssid : getString(R.string.OFF_LINE));
         svSettingDeviceMobileNetwork.setSwitchButtonState(camInfoBean.deviceMobileNetPriority);
         svSettingDeviceIndicator.setSwitchButtonState(camInfoBean.ledIndicator);
-        svSettingDeviceRotate.setSwitchButtonState(camInfoBean.deviceCameraRotate);
+        svSettingDeviceRotate.setSwitchButtonState(camInfoBean.deviceCameraRotate != 0);
         svSettingDeviceStandbyMode.setSwitchButtonState(camInfoBean.cameraStandbyFlag);
         svSettingSafeProtection.setTvSubTitle(basePresenter.getAlarmSubTitle(getContext()));
         svSettingDeviceAutoRecord.setTvSubTitle(basePresenter.getAutoRecordTitle(getContext()));

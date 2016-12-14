@@ -5,6 +5,7 @@ import android.os.Parcelable;
 
 import com.cylan.jiafeigou.dp.BaseDataPoint;
 
+import org.msgpack.annotation.Ignore;
 import org.msgpack.annotation.Index;
 import org.msgpack.annotation.Message;
 
@@ -18,6 +19,10 @@ public class MediaBean extends BaseDataPoint implements Comparable<MediaBean>, P
     public static final int TYPE_PIC = 0;
     public static final int TYPE_VIDEO = 1;
     public static final int TYPE_LOAD = 2;
+
+    @Ignore
+    public long version;
+
     @Index(0)
     public String cid;
     @Index(1)
@@ -30,6 +35,7 @@ public class MediaBean extends BaseDataPoint implements Comparable<MediaBean>, P
     public String fileName;
     @Index(5)
     public String place;
+
 
     @Override
     public boolean equals(Object o) {

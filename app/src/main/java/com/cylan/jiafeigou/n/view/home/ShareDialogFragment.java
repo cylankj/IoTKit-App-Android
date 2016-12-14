@@ -26,7 +26,7 @@ import static com.tencent.mm.sdk.modelmsg.SendMessageToWX.Req.WXSceneTimeline;
 public class ShareDialogFragment extends BaseDialog {
 
     public final static String KEY_PARCEL_ = "key_parcel";
-    private static final String KEY_MEDIA_CONTENT = "key_media_content";
+    public static final String KEY_MEDIA_CONTENT = "key_media_content";
 
     @BindView(R.id.lLayout_dialog_share_wonderful)
     CardView lLayoutDialogShareWonderful;
@@ -39,7 +39,7 @@ public class ShareDialogFragment extends BaseDialog {
 
     public static ShareDialogFragment newInstance(Bundle bundle) {
         ShareDialogFragment fragment = new ShareDialogFragment();
-        fragment.setArguments(bundle);
+        if (bundle != null) fragment.setArguments(bundle);
         return fragment;
     }
 
@@ -70,10 +70,10 @@ public class ShareDialogFragment extends BaseDialog {
         dismiss();
         switch (view.getId()) {
             case R.id.tv_share_to_timeline:
-                ShareUtils.shareToWechat(getActivity(), mMediaBean, WXSceneSession);
+                ShareUtils.shareToWechat(getActivity(), mMediaBean, WXSceneTimeline);
                 break;
             case R.id.tv_share_to_wechat_friends:
-                ShareUtils.shareToWechat(getActivity(), mMediaBean, WXSceneTimeline);
+                ShareUtils.shareToWechat(getActivity(), mMediaBean, WXSceneSession);
                 break;
         }
     }

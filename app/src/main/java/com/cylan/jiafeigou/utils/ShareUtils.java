@@ -31,7 +31,7 @@ public class ShareUtils {
         final int mimeType = RandomUtils.getRandom(2);//0:picture,1:url
 //        if (mimeType == 0) {
         Glide.with(ContextUtils.getContext())
-                .load(mediaBean.fileName)
+                .load(new WonderGlideURL(mediaBean))
                 .asBitmap()
                 .into(new SimpleTarget<Bitmap>(150, 150) {
                     @Override

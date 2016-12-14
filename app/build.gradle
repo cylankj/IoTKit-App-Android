@@ -222,7 +222,7 @@ android {
                                     QQ_APP_KEY         : "1103156296",
                                     weChat_APP_ID      : "wx3081bcdae8a842cf",
                                     VKEY               : "Cd6DEgRvX92xAXRIkUexWDPxzTwKqHK3",
-                                    VID                : "00PZ",
+                                    VID                : "\\ 0001",
                                     NICELY_SINA_APP_KEY: "1315129656"]
         }
         _yf {
@@ -232,8 +232,8 @@ android {
                                     AUTHORITY          : ".yf",
                                     VKEY               : "tVN2fxGbUn6Hw1FNq9TFWJdQ4ClqH4Hb",
                                     VID                : "\\ 0001",
-                                    QQ_APP_KEY         : "xxx",
-                                    weChat_APP_ID      : "xxx",
+                                    QQ_APP_KEY         : "1103156296",
+                                    weChat_APP_ID      : "wx3081bcdae8a842cf",
                                     NICELY_SINA_APP_KEY: "xxx"]
         }
         //中性包

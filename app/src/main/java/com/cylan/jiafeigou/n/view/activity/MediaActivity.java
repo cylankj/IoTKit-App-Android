@@ -40,6 +40,7 @@ import com.cylan.jiafeigou.utils.AnimatorUtils;
 import com.cylan.jiafeigou.utils.FileUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;
+import com.cylan.jiafeigou.utils.WonderGlideURL;
 import com.cylan.jiafeigou.widget.SimpleProgressBar;
 import com.cylan.jiafeigou.widget.dialog.VideoMoreDialog;
 
@@ -133,6 +134,11 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
     private File mDownloadFile;
     private int mCurrentPlayState = PLAY_STATE_RESET;
     private static final long HEADER_AND_FOOTER_SHOW_TIME = 3000;
+
+    private enum PERMISSION {
+        PERMISSION_DOWNLOAD,
+        PERMISSION_DELETE
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -490,11 +496,14 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
 
     @OnClick({R.id.act_media_header_opt_delete})
     public void delete() {
-
     }
 
     @OnClick(R.id.act_media_picture_opt_collection)
     public void collection() {
+
+    }
+
+    private void verifyPermission(PERMISSION permission) {
 
     }
 
@@ -513,7 +522,7 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
             return;
         }
 
-        Glide.with(this).load(mCurrentMediaBean.fileName).
+        Glide.with(this).load(new WonderGlideURL(mCurrentMediaBean)).
                 downloadOnly(new SimpleTarget<File>() {
                     @Override
                     public void onResourceReady(File resource, GlideAnimation<? super File> glideAnimation) {
