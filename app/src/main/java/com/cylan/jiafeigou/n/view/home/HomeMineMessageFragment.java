@@ -65,13 +65,13 @@ public class HomeMineMessageFragment extends Fragment implements HomeMineMessage
     @Override
     public void onStart() {
         super.onStart();
-        if (presenter != null)presenter.start();
+        if (presenter != null) presenter.start();
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        if (presenter != null)presenter.stop();
+        if (presenter != null) presenter.stop();
     }
 
     /**

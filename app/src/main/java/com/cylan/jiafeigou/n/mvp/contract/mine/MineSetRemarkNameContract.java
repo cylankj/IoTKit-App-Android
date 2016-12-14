@@ -44,12 +44,14 @@ public interface MineSetRemarkNameContract {
 
         /**
          * 发送修改备注名的请求
+         *
          * @param friendBean
          */
-        void sendSetmarkNameReq(String newName,RelAndFriendBean friendBean);
+        void sendSetmarkNameReq(String newName, RelAndFriendBean friendBean);
 
         /**
          * 设置好友备注名回调
+         *
          * @return
          */
         Subscription getFriendRemarkNameCallBack();

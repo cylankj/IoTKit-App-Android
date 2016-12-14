@@ -4,10 +4,10 @@ import com.cylan.jiafeigou.n.db.DataBaseUtil;
 import com.cylan.jiafeigou.n.mvp.contract.mag.HomeMagLiveContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.n.mvp.model.MagBean;
+import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.db.DbManager;
 import com.cylan.jiafeigou.support.db.ex.DbException;
-import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 
 import java.util.concurrent.TimeUnit;
@@ -37,9 +37,9 @@ public class HomeMagLivePresenterImp extends AbstractPresenter<HomeMagLiveContra
 
     @Override
     public void start() {
-        if (compositeSubscription != null && !compositeSubscription.isUnsubscribed()){
+        if (compositeSubscription != null && !compositeSubscription.isUnsubscribed()) {
             compositeSubscription.unsubscribe();
-        }else {
+        } else {
             compositeSubscription = new CompositeSubscription();
             compositeSubscription.add(getAccount());
         }
@@ -47,7 +47,7 @@ public class HomeMagLivePresenterImp extends AbstractPresenter<HomeMagLiveContra
 
     @Override
     public void stop() {
-        if (compositeSubscription != null && !compositeSubscription.isUnsubscribed()){
+        if (compositeSubscription != null && !compositeSubscription.isUnsubscribed()) {
             compositeSubscription.unsubscribe();
         }
     }
@@ -55,7 +55,7 @@ public class HomeMagLivePresenterImp extends AbstractPresenter<HomeMagLiveContra
     @Override
     public void clearOpenAndCloseRecord() {
         try {
-            if (dbManager.findAll(MagBean.class).size() == 0){
+            if (dbManager.findAll(MagBean.class).size() == 0) {
                 getView().showNoMesg();
                 return;
             }
@@ -63,7 +63,7 @@ public class HomeMagLivePresenterImp extends AbstractPresenter<HomeMagLiveContra
             e.printStackTrace();
         }
 
-        if (getView() != null){
+        if (getView() != null) {
             getView().showClearProgress();
         }
 
@@ -116,9 +116,9 @@ public class HomeMagLivePresenterImp extends AbstractPresenter<HomeMagLiveContra
                 .subscribe(new Action1<RxEvent.GetUserInfo>() {
                     @Override
                     public void call(RxEvent.GetUserInfo getUserInfo) {
-                        if (getUserInfo != null && getUserInfo instanceof RxEvent.GetUserInfo){
+                        if (getUserInfo != null && getUserInfo instanceof RxEvent.GetUserInfo) {
                             if (dbManager == null)
-                            dbManager = DataBaseUtil.getInstance(getUserInfo.jfgAccount.getAccount()).dbManager;
+                                dbManager = DataBaseUtil.getInstance(getUserInfo.jfgAccount.getAccount()).dbManager;
                         }
                     }
                 });

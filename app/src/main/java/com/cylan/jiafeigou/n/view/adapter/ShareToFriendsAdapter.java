@@ -16,11 +16,12 @@ import java.util.List;
 public class ShareToFriendsAdapter extends SuperAdapter<RelAndFriendBean> {
 
     private OnShareCheckListener listener;
-    public interface OnShareCheckListener{
-        void onCheck(boolean isCheck,SuperViewHolder holder,RelAndFriendBean item);
+
+    public interface OnShareCheckListener {
+        void onCheck(boolean isCheck, SuperViewHolder holder, RelAndFriendBean item);
     }
 
-    public void setOnShareCheckListener(OnShareCheckListener listener){
+    public void setOnShareCheckListener(OnShareCheckListener listener) {
         this.listener = listener;
     }
 
@@ -31,15 +32,15 @@ public class ShareToFriendsAdapter extends SuperAdapter<RelAndFriendBean> {
     @Override
     public void onBind(final SuperViewHolder holder, int viewType, final int layoutPosition, final RelAndFriendBean item) {
         //如果没有备注名就显示别人昵称
-        holder.setText(R.id.tv_friend_name,(item.markName==null || item.markName.equals(""))?item.alias :item.markName);
-        holder.setText(R.id.tv_friend_account,item.account);
+        holder.setText(R.id.tv_friend_name, (item.markName == null || item.markName.equals("")) ? item.alias : item.markName);
+        holder.setText(R.id.tv_friend_account, item.account);
         CheckBox checkBox = (CheckBox) holder.itemView.findViewById(R.id.checkbox_is_share_check);
         checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                item.isCheckFlag = isChecked?1:2;
-                if (listener != null){
-                    listener.onCheck(isChecked,holder,item);
+                item.isCheckFlag = isChecked ? 1 : 2;
+                if (listener != null) {
+                    listener.onCheck(isChecked, holder, item);
                 }
             }
         });

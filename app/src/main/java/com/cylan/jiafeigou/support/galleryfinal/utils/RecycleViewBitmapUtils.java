@@ -10,7 +10,7 @@ import android.widget.ImageView;
 /**
  * Desction:释放imageview bitmap
  * Author:pengjianbo
- *
+ * <p>
  * Date:2015/12/24 0024 18:43
  */
 public class RecycleViewBitmapUtils {

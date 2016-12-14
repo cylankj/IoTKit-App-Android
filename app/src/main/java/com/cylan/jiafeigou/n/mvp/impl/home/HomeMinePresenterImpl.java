@@ -60,11 +60,11 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
                             getView().onPortraitUpdate(PreferencesUtils.getString(JConstant.USER_IMAGE_HEAD_URL, ""));
                     }
                 });*/
-        if(subscription != null && !subscription.isUnsubscribed()){
+        if (subscription != null && !subscription.isUnsubscribed()) {
             subscription.unsubscribe();
         }
-            subscription = new CompositeSubscription();
-            subscription.add(initData());
+        subscription = new CompositeSubscription();
+        subscription.add(initData());
     }
 
     @Override
@@ -199,11 +199,11 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
                 .subscribe(new Action1<RxEvent.GetUserInfo>() {
                     @Override
                     public void call(RxEvent.GetUserInfo getUserInfo) {
-                        if (getUserInfo != null && getUserInfo instanceof RxEvent.GetUserInfo){
+                        if (getUserInfo != null && getUserInfo instanceof RxEvent.GetUserInfo) {
                             userInfo = getUserInfo.jfgAccount;
-                            if (getView() != null){
+                            if (getView() != null) {
                                 getView().setUserImageHead(userInfo.getPhotoUrl());
-                                if (userInfo.getAlias() == null | "".equals(userInfo.getAlias())){
+                                if (userInfo.getAlias() == null | "".equals(userInfo.getAlias())) {
                                     userInfo.setAlias(createRandomName());
                                 }
                                 getView().setAliasName(userInfo.getAlias());
@@ -216,6 +216,7 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
 
     /**
      * 获取到用户信息
+     *
      * @return
      */
     @Override
@@ -225,6 +226,7 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
 
     /**
      * 判断是否是三方的登录
+     *
      * @return
      */
     @Override

@@ -96,7 +96,7 @@ public class SubmitBindingInfoFragment extends BaseTitleFragment<SubmitBindingIn
             SetDeviceAliasFragment fragment = SetDeviceAliasFragment.newInstance(getArguments());
             ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(),
                     fragment, android.R.id.content);
-            if(basePresenter!=null)
+            if (basePresenter != null)
                 basePresenter.stop();
         }
     }

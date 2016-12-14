@@ -49,6 +49,7 @@ public class MineInfoSetPassWordPresenterImp extends AbstractPresenter<MineInfoS
 
     /**
      * 发送修改密码请求
+     *
      * @param account
      */
     @Override
@@ -59,7 +60,7 @@ public class MineInfoSetPassWordPresenterImp extends AbstractPresenter<MineInfoS
                     @Override
                     public void call(String s) {
                         try {
-                            JfgCmdInsurance.getCmd().resetPassword(account,oldPass,newPass);
+                            JfgCmdInsurance.getCmd().resetPassword(account, oldPass, newPass);
                         } catch (JfgException e) {
                             e.printStackTrace();
                         }
@@ -67,7 +68,7 @@ public class MineInfoSetPassWordPresenterImp extends AbstractPresenter<MineInfoS
                 }, new Action1<Throwable>() {
                     @Override
                     public void call(Throwable throwable) {
-                        AppLogger.e("sendChangePassReq"+throwable.getLocalizedMessage());
+                        AppLogger.e("sendChangePassReq" + throwable.getLocalizedMessage());
                     }
                 });
     }

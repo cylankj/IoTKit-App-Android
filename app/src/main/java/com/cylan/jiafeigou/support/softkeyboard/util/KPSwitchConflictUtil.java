@@ -126,7 +126,7 @@ public class KPSwitchConflictUtil {
      */
     public static void attach(final View panelLayout,
                               final View focusView,
-                              /** Nullable **/ final SwitchClickListener switchClickListener,
+                              /** Nullable **/final SwitchClickListener switchClickListener,
                               SubPanelAndTrigger... subPanelAndTriggers) {
         final Activity activity = (Activity) panelLayout.getContext();
 

@@ -75,7 +75,7 @@ public class LivePlayControlView extends LinearLayout implements ILiveControl, V
                 simpleProgressBar.setVisibility(GONE);
                 break;
             case STATE_STOP:
-                toDismiss(0);
+                toDismiss(1);
                 if (!imageView.isShown())
                     imageView.setVisibility(VISIBLE);
                 imageView.setImageResource(R.drawable.btn_video_stop);

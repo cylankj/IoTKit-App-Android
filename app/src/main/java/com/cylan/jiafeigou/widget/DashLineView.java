@@ -21,12 +21,12 @@ public class DashLineView extends View {
     private Path dashPath;
 
     public DashLineView(Context context) {
-        this(context,null);
+        this(context, null);
         init();
     }
 
     public DashLineView(Context context, AttributeSet attrs) {
-        this(context, attrs,0);
+        this(context, attrs, 0);
         init();
     }
 

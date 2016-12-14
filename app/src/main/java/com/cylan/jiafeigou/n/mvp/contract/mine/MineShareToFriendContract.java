@@ -20,6 +20,7 @@ public interface MineShareToFriendContract {
     interface View extends BaseView<Presenter> {
         /**
          * 初始化列表显示
+         *
          * @param list
          */
         void initRecycleView(ArrayList<RelAndFriendBean> list);
@@ -31,9 +32,10 @@ public interface MineShareToFriendContract {
 
         /**
          * 设置以分享的亲友的人数
+         *
          * @param number
          */
-        void setHasShareFriendNum(boolean isChange,int number);
+        void setHasShareFriendNum(boolean isChange, int number);
 
         /**
          * 全部分享成功结果显示
@@ -77,7 +79,7 @@ public interface MineShareToFriendContract {
         /**
          * 点击确定发送分享请求给服务器
          */
-        void sendShareToFriendReq(String cid,ArrayList<RelAndFriendBean> list);
+        void sendShareToFriendReq(String cid, ArrayList<RelAndFriendBean> list);
 
         /**
          * 检测是否有网络
@@ -86,6 +88,7 @@ public interface MineShareToFriendContract {
 
         /**
          * 检测分享人数是否已达到5人
+         *
          * @return
          */
         void checkShareNumIsOver(SuperViewHolder holder, boolean isChange, int number);
@@ -97,12 +100,14 @@ public interface MineShareToFriendContract {
 
         /**
          * 获取到所有的亲友的回调
+         *
          * @return
          */
         Subscription getAllShareFriendCallBack();
 
         /**
          * 分享设备的回调
+         *
          * @return
          */
         Subscription shareDeviceCallBack();

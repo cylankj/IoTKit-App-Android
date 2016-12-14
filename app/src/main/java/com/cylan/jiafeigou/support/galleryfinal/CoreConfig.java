@@ -20,7 +20,6 @@ import android.content.Context;
 import android.os.Environment;
 import android.widget.AbsListView;
 
-
 import com.cylan.jiafeigou.R;
 
 import java.io.File;
@@ -47,21 +46,21 @@ public class CoreConfig {
         this.editPhotoCacheFolder = builder.editPhotoCacheFolder;
         this.themeConfig = builder.themeConfig;
         this.functionConfig = builder.functionConfig;
-        if(builder.noAnimcation) {
+        if (builder.noAnimcation) {
             this.animRes = -1;
         } else {
             this.animRes = builder.animRes;
         }
         this.onScrollListener = builder.onScrollListener;
 
-        if ( takePhotoFolder == null ) {
+        if (takePhotoFolder == null) {
             takePhotoFolder = new File(Environment.getExternalStorageDirectory(), "/DCIM/" + "GalleryFinal/");
         }
-        if(!takePhotoFolder.exists()) {
+        if (!takePhotoFolder.exists()) {
             takePhotoFolder.mkdirs();
         }
 
-        if ( editPhotoCacheFolder == null ) {
+        if (editPhotoCacheFolder == null) {
             editPhotoCacheFolder = new File(Environment.getExternalStorageDirectory() + "/GalleryFinal/edittemp/");
         }
         if (!editPhotoCacheFolder.exists()) {
@@ -108,7 +107,8 @@ public class CoreConfig {
         }
 
         /**
-         *  禁止动画
+         * 禁止动画
+         *
          * @return
          */
         public Builder setNoAnimcation(boolean noAnimcation) {
@@ -118,6 +118,7 @@ public class CoreConfig {
 
         /**
          * 添加滑动事件用于优化图片加载，只有停止滑动了才去加载图片
+         *
          * @param listener
          * @return
          */

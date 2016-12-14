@@ -57,7 +57,7 @@ import com.sina.weibo.sdk.utils.LogUtil;
     }
 
     protected String requestSync(Context context,
-                               String url, WeiboParameters params, String httpMethod) {
+                                 String url, WeiboParameters params, String httpMethod) {
         if (null == mAccessToken || TextUtils.isEmpty(url) || null == params || TextUtils.isEmpty(httpMethod)) {
             LogUtil.e(TAG, "Argument error!");
             return "";

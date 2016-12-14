@@ -128,7 +128,7 @@ public class DpMsgConstant {
     public static final String DEVICE_AUTO_VIDEO_RECORD = null;//303
 
     @ForDevice(device = Device.CAMERA, targetBeanName = CAM_BEAN_NAME)
-    @DpAnnotation(msgId = 304, clazz = boolean.class)
+    @DpAnnotation(msgId = 304, clazz = int.class)
     public static final String DEVICE_CAMERA_ROTATE = null;//304
 
     @ForDevice(device = {Device.BELL}, targetBeanName = BELL_BEAN_NAME)

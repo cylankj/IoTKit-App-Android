@@ -168,7 +168,7 @@ abstract class ImageViewTouchBase extends ImageView {
     public void setImageRotateBitmapResetBase(final RotateBitmap bitmap, final boolean resetSupp) {
         final int viewWidth = getWidth();
 
-        if (viewWidth <= 0)  {
+        if (viewWidth <= 0) {
             onLayoutRunnable = new Runnable() {
                 public void run() {
                     setImageRotateBitmapResetBase(bitmap, resetSupp);
@@ -206,7 +206,7 @@ abstract class ImageViewTouchBase extends ImageView {
         m.mapRect(rect);
 
         float height = rect.height();
-        float width  = rect.width();
+        float width = rect.width();
 
         float deltaX = 0, deltaY = 0;
 
@@ -277,7 +277,7 @@ abstract class ImageViewTouchBase extends ImageView {
             matrix.postConcat(bitmap.getRotateMatrix());
         }
         matrix.postScale(scale, scale);
-        matrix.postTranslate((viewWidth  - w * scale) / 2F, (viewHeight - h * scale) / 2F);
+        matrix.postTranslate((viewWidth - w * scale) / 2F, (viewHeight - h * scale) / 2F);
     }
 
     // Combine the base matrix and the supp matrix to make the final matrix
@@ -289,7 +289,7 @@ abstract class ImageViewTouchBase extends ImageView {
         return displayMatrix;
     }
 
-    public Matrix getUnrotatedMatrix(){
+    public Matrix getUnrotatedMatrix() {
         Matrix unrotated = new Matrix();
         getProperBaseMatrix(bitmapDisplayed, unrotated, false);
         unrotated.postConcat(suppMatrix);
@@ -301,7 +301,7 @@ abstract class ImageViewTouchBase extends ImageView {
             return 1F;
         }
 
-        float fw = (float) bitmapDisplayed.getWidth()  / (float) thisWidth;
+        float fw = (float) bitmapDisplayed.getWidth() / (float) thisWidth;
         float fh = (float) bitmapDisplayed.getHeight() / (float) thisHeight;
         return Math.max(fw, fh) * 4; // 400%
     }

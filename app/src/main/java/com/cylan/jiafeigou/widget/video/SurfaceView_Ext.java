@@ -68,6 +68,7 @@ public class SurfaceView_Ext extends SurfaceView implements VideoViewFactory.IVi
     public void takeSnapshot() {
 
     }
+
     @Override
     public void performTouch() {
         // Obtain MotionEvent object

@@ -18,7 +18,6 @@ package com.cylan.jiafeigou.support.galleryfinal.widget.crop;
 
 import android.os.Bundle;
 
-
 import com.cylan.jiafeigou.support.galleryfinal.PhotoBaseActivity;
 
 import java.util.ArrayList;
@@ -32,16 +31,26 @@ abstract class MonitoredActivity extends PhotoBaseActivity {
 
     public static interface LifeCycleListener {
         public void onActivityCreated(MonitoredActivity activity);
+
         public void onActivityDestroyed(MonitoredActivity activity);
+
         public void onActivityStarted(MonitoredActivity activity);
+
         public void onActivityStopped(MonitoredActivity activity);
     }
 
     public static class LifeCycleAdapter implements LifeCycleListener {
-        public void onActivityCreated(MonitoredActivity activity) {}
-        public void onActivityDestroyed(MonitoredActivity activity) {}
-        public void onActivityStarted(MonitoredActivity activity) {}
-        public void onActivityStopped(MonitoredActivity activity) {}
+        public void onActivityCreated(MonitoredActivity activity) {
+        }
+
+        public void onActivityDestroyed(MonitoredActivity activity) {
+        }
+
+        public void onActivityStarted(MonitoredActivity activity) {
+        }
+
+        public void onActivityStopped(MonitoredActivity activity) {
+        }
     }
 
     public void addLifeCycleListener(LifeCycleListener listener) {

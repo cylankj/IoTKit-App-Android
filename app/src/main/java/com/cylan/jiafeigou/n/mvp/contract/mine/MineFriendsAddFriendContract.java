@@ -17,6 +17,7 @@ public interface MineFriendsAddFriendContract {
     interface Presenter extends BasePresenter {
         /**
          * 检测联系人权限
+         *
          * @return
          */
         boolean checkPermission();

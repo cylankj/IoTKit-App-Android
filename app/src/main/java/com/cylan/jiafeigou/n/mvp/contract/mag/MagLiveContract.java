@@ -2,10 +2,8 @@ package com.cylan.jiafeigou.n.mvp.contract.mag;
 
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
-import com.cylan.jiafeigou.n.mvp.model.CloudLiveBaseDbBean;
 import com.cylan.jiafeigou.n.mvp.model.MagBean;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import rx.Subscription;
@@ -17,7 +15,7 @@ import rx.Subscription;
  */
 public interface MagLiveContract {
 
-    interface View extends BaseView<Presenter>{
+    interface View extends BaseView<Presenter> {
 
         /**
          * 初始化消息列表显示
@@ -41,9 +39,10 @@ public interface MagLiveContract {
 
     }
 
-    interface Presenter extends BasePresenter{
+    interface Presenter extends BasePresenter {
         /**
-         *获取当前的门磁的状态
+         * 获取当前的门磁的状态
+         *
          * @return
          */
         boolean getDoorCurrentState();
@@ -70,12 +69,14 @@ public interface MagLiveContract {
 
         /**
          * 保存到数据库
+         *
          * @param bean
          */
         void saveIntoDb(MagBean bean);
 
         /**
          * 拿到数据库中的所有数据
+         *
          * @return
          */
         List<MagBean> findFromAllDb();

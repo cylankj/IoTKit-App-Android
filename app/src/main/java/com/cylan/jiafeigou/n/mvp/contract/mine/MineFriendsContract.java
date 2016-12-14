@@ -62,17 +62,19 @@ public interface MineFriendsContract {
 
         /**
          * desc：删除添加请求条目
+         *
          * @param position
          * @param bean
          */
-        void addReqDeleteItem(int position,MineAddReqBean bean);
+        void addReqDeleteItem(int position, MineAddReqBean bean);
 
         /**
          * desc：好友列表添加条目
+         *
          * @param position
          * @param bean
          */
-        void friendlistAddItem(int position,RelAndFriendBean bean);
+        void friendlistAddItem(int position, RelAndFriendBean bean);
 
         /**
          * 显示加载进度
@@ -90,6 +92,7 @@ public interface MineFriendsContract {
 
         /**
          * 加载添加请求列表数据
+         *
          * @param addReqList
          * @return
          */
@@ -97,12 +100,14 @@ public interface MineFriendsContract {
 
         /**
          * 加载亲友列表数据
+         *
          * @param friendList
          * @return
          */
         ArrayList<RelAndFriendBean> initRelativatesAndFriendsData(RxEvent.GetFriendList friendList);
 
         boolean checkAddRequestOutTime(MineAddReqBean bean);        //检测添加请求是否超时
+
         /**
          * desc：初始化处理好友列表
          */
@@ -125,6 +130,7 @@ public interface MineFriendsContract {
 
         /**
          * 启动获取好友列表的SDK
+         *
          * @return
          */
         Subscription getFriendList();

@@ -11,10 +11,11 @@ public class JsonFormatUtils {
 
     /**
      * json字符串的格式化
+     *
      * @param json 需要格式的json串
      * @return
      */
-    public static String formatJson(String json ) {
+    public static String formatJson(String json) {
         //每一层之前的占位符号比如空格 制表符
         String fillStringUnit = "\t";
         if (json == null || json.trim().length() == 0) {
@@ -99,7 +100,7 @@ public class JsonFormatUtils {
             if (i < tokenList.size() - 1 && tokenList.get(i + 1).equals(":")) {
                 int fillLength = fixedLenth - token.getBytes().length;
                 if (fillLength > 0) {
-                    for(int j = 0; j < fillLength; j++) {
+                    for (int j = 0; j < fillLength; j++) {
                         buf.append(" ");
                     }
                 }

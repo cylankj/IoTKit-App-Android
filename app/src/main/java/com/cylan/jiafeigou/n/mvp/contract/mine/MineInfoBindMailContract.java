@@ -42,12 +42,14 @@ public interface MineInfoBindMailContract {
 
         /**
          * 获取输入内容
+         *
          * @return
          */
         String getEditText();
 
         /**
          * 标题修改
+         *
          * @param account
          */
         void getUserAccountData(JFGAccount account);
@@ -58,8 +60,10 @@ public interface MineInfoBindMailContract {
         boolean checkEmail(String email);               //检查邮箱的合法性
 
         void checkEmailIsBinded(String email);       //检验邮箱是否已经绑定过
+
         /**
          * 检验账号是否手机号
+         *
          * @param account
          * @return
          */
@@ -72,6 +76,7 @@ public interface MineInfoBindMailContract {
 
         /**
          * 接收到检验邮箱是否已经注册过
+         *
          * @return
          */
         Subscription getCheckAccountCallBack();
@@ -83,6 +88,7 @@ public interface MineInfoBindMailContract {
 
         /**
          * 拿到用户的账号
+         *
          * @return
          */
         JFGAccount getUserAccount();

@@ -22,7 +22,6 @@ import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
-
 import com.cylan.jiafeigou.R;
 
 import java.io.IOException;
@@ -385,7 +384,6 @@ public class ClipViewLayout extends RelativeLayout {
         imageView.destroyDrawingCache();
         return zoomedCropBitmap;
     }
-
 
 
     /**

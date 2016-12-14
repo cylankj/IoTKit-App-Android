@@ -37,12 +37,12 @@ public class ShareToContactAdapter extends SuperAdapter<RelAndFriendBean> {
 
     @Override
     public void onBind(final SuperViewHolder holder, int viewType, final int layoutPosition, final RelAndFriendBean item) {
-        holder.setText(R.id.tv_contactname,"".equals(item.alias)?"":item.alias);
-        holder.setText(R.id.tv_contactphone,item.account);
+        holder.setText(R.id.tv_contactname, "".equals(item.alias) ? "" : item.alias);
+        holder.setText(R.id.tv_contactphone, item.account);
 
         TextView shareBtn = holder.getView(R.id.tv_contactshare);
 
-        if (item.isCheckFlag == 1){
+        if (item.isCheckFlag == 1) {
             shareBtn.setTextColor(Color.parseColor("#ADADAD"));
             shareBtn.setText(ContextUtils.getContext().getString(R.string.Tap3_ShareDevice_Shared));
             shareBtn.setBackground(null);
@@ -51,7 +51,7 @@ public class ShareToContactAdapter extends SuperAdapter<RelAndFriendBean> {
         holder.setOnClickListener(R.id.tv_contactshare, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (lisenter != null){
+                if (lisenter != null) {
                     lisenter.isShare(item);
                 }
             }

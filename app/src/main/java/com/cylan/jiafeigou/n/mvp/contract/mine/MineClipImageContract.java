@@ -1,7 +1,5 @@
 package com.cylan.jiafeigou.n.mvp.contract.mine;
 
-import android.view.View;
-
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
 
@@ -14,7 +12,7 @@ import rx.Subscription;
  */
 public interface MineClipImageContract {
 
-    interface View extends BaseView<Presenter>{
+    interface View extends BaseView<Presenter> {
 
         /**
          * 显示上传的进度
@@ -28,16 +26,18 @@ public interface MineClipImageContract {
 
         /**
          * 上传的结果
+         *
          * @param code
          */
         void upLoadResultView(int code);
 
     }
 
-    interface Presenter extends BasePresenter{
+    interface Presenter extends BasePresenter {
 
         /**
          * 上传用户头像
+         *
          * @param path
          */
         void upLoadUserHeadImag(String path);

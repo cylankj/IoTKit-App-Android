@@ -11,9 +11,9 @@ import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendScanAddContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.n.mvp.model.MineAddReqBean;
+import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.rx.RxBus;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.EncodeHintType;
 import com.google.zxing.MultiFormatWriter;
@@ -50,9 +50,9 @@ public class MineFriendScanAddPresenterImp extends AbstractPresenter<MineFriendS
 
     @Override
     public void start() {
-        if (compositeSubscription != null && !compositeSubscription.isUnsubscribed()){
+        if (compositeSubscription != null && !compositeSubscription.isUnsubscribed()) {
             compositeSubscription.unsubscribe();
-        }else {
+        } else {
             compositeSubscription = new CompositeSubscription();
             compositeSubscription.add(beginScan());
             compositeSubscription.add(getUserInfo());
@@ -62,7 +62,7 @@ public class MineFriendScanAddPresenterImp extends AbstractPresenter<MineFriendS
 
     @Override
     public void stop() {
-        if (compositeSubscription != null && !compositeSubscription.isUnsubscribed()){
+        if (compositeSubscription != null && !compositeSubscription.isUnsubscribed()) {
             compositeSubscription.unsubscribe();
         }
     }
@@ -130,6 +130,7 @@ public class MineFriendScanAddPresenterImp extends AbstractPresenter<MineFriendS
 
     /**
      * 检测扫描结果
+     *
      * @param account
      */
     @Override
@@ -148,13 +149,14 @@ public class MineFriendScanAddPresenterImp extends AbstractPresenter<MineFriendS
                 }, new Action1<Throwable>() {
                     @Override
                     public void call(Throwable throwable) {
-                        AppLogger.e("checkScanAccount"+throwable.getLocalizedMessage());
+                        AppLogger.e("checkScanAccount" + throwable.getLocalizedMessage());
                     }
                 });
     }
 
     /**
      * 扫描结果的回调
+     *
      * @return
      */
     @Override
@@ -164,7 +166,7 @@ public class MineFriendScanAddPresenterImp extends AbstractPresenter<MineFriendS
                 .subscribe(new Action1<RxEvent.CheckAccountCallback>() {
                     @Override
                     public void call(RxEvent.CheckAccountCallback checkAccountCallback) {
-                        if (checkAccountCallback != null && checkAccountCallback instanceof RxEvent.CheckAccountCallback){
+                        if (checkAccountCallback != null && checkAccountCallback instanceof RxEvent.CheckAccountCallback) {
                             handlerCheckResult(checkAccountCallback);
                         }
                     }
@@ -173,6 +175,7 @@ public class MineFriendScanAddPresenterImp extends AbstractPresenter<MineFriendS
 
     /**
      * 获取到用户的信息用于产生二维码
+     *
      * @return
      */
     @Override
@@ -182,9 +185,9 @@ public class MineFriendScanAddPresenterImp extends AbstractPresenter<MineFriendS
                 .subscribe(new Action1<RxEvent.GetUserInfo>() {
                     @Override
                     public void call(RxEvent.GetUserInfo getUserInfo) {
-                        if (getUserInfo != null && getUserInfo instanceof RxEvent.GetUserInfo){
-                            if (getView() != null){
-                                getView().showQrCode(encodeAsBitmap(getUserInfo.jfgAccount.getAccount(),getDimension()));
+                        if (getUserInfo != null && getUserInfo instanceof RxEvent.GetUserInfo) {
+                            if (getView() != null) {
+                                getView().showQrCode(encodeAsBitmap(getUserInfo.jfgAccount.getAccount(), getDimension()));
                             }
                         }
                     }
@@ -193,6 +196,7 @@ public class MineFriendScanAddPresenterImp extends AbstractPresenter<MineFriendS
 
     /**
      * 开始扫描
+     *
      * @return
      */
     @Override
@@ -209,21 +213,22 @@ public class MineFriendScanAddPresenterImp extends AbstractPresenter<MineFriendS
 
     /**
      * 处理检测的结果
+     *
      * @param checkAccountCallback
      */
     private void handlerCheckResult(RxEvent.CheckAccountCallback checkAccountCallback) {
-        if (getView() != null){
+        if (getView() != null) {
             getView().hideLoadingPro();
-            if (checkAccountCallback.i == 0){
+            if (checkAccountCallback.i == 0) {
                 // 已注册
                 MineAddReqBean resutBean = new MineAddReqBean();
                 resutBean.account = checkAccountCallback.s;
                 resutBean.alias = checkAccountCallback.s1;
-                getView().jump2FriendDetailFragment(false,resutBean);
-            }else if (checkAccountCallback.i == 241){
+                getView().jump2FriendDetailFragment(false, resutBean);
+            } else if (checkAccountCallback.i == 241) {
                 // 已经是好友了
                 getView().isMineFriendResult();
-            } else{
+            } else {
                 // 未注册
                 getView().scanNoResult();
             }

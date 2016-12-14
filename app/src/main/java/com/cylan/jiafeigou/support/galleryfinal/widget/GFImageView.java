@@ -33,15 +33,18 @@ public class GFImageView extends ImageView {
 
     public static interface OnImageViewListener {
         public void onDetach();
+
         public void onAttach();
-        public boolean verifyDrawable(Drawable dr) ;
+
+        public boolean verifyDrawable(Drawable dr);
+
         public void onDraw(Canvas canvas);
     }
 
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        if(mOnImageViewListener != null) {
+        if (mOnImageViewListener != null) {
             mOnImageViewListener.onDetach();
         }
     }
@@ -49,14 +52,14 @@ public class GFImageView extends ImageView {
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        if(mOnImageViewListener != null) {
+        if (mOnImageViewListener != null) {
             mOnImageViewListener.onAttach();
         }
     }
 
     @Override
     protected boolean verifyDrawable(Drawable dr) {
-        if(mOnImageViewListener != null) {
+        if (mOnImageViewListener != null) {
             if (mOnImageViewListener.verifyDrawable(dr)) {
                 return true;
             }
@@ -67,7 +70,7 @@ public class GFImageView extends ImageView {
     @Override
     public void onStartTemporaryDetach() {
         super.onStartTemporaryDetach();
-        if(mOnImageViewListener != null) {
+        if (mOnImageViewListener != null) {
             mOnImageViewListener.onDetach();
         }
     }
@@ -75,7 +78,7 @@ public class GFImageView extends ImageView {
     @Override
     public void onFinishTemporaryDetach() {
         super.onFinishTemporaryDetach();
-        if(mOnImageViewListener != null) {
+        if (mOnImageViewListener != null) {
             mOnImageViewListener.onAttach();
         }
     }
@@ -83,7 +86,7 @@ public class GFImageView extends ImageView {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        if(mOnImageViewListener != null) {
+        if (mOnImageViewListener != null) {
             mOnImageViewListener.onDraw(canvas);
         }
     }

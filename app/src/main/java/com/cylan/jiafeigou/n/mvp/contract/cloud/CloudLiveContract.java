@@ -1,16 +1,12 @@
 package com.cylan.jiafeigou.n.mvp.contract.cloud;
 
-import android.content.Context;
-
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
 import com.cylan.jiafeigou.n.mvp.model.CloudLiveBaseBean;
-
 import com.cylan.jiafeigou.n.mvp.model.CloudLiveBaseDbBean;
+
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
-import com.cylan.jiafeigou.support.db.DbManager;
 
 import rx.Subscription;
 
@@ -42,6 +38,7 @@ public interface CloudLiveContract {
 
         /**
          * 初始化消息列表
+         *
          * @param list
          */
         void initRecycleView(List<CloudLiveBaseBean> list);
@@ -94,6 +91,7 @@ public interface CloudLiveContract {
         void handlerVideoTalk();                            //处理视频通话
 
         void handlerLeveaMesg();                            //处理语音留言
+
         /**
          * 获取到账号的信息用于创建数据库
          */

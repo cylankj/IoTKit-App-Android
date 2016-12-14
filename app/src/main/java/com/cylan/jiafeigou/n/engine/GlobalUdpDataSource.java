@@ -2,10 +2,10 @@ package com.cylan.jiafeigou.n.engine;
 
 import android.text.TextUtils;
 
-import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.misc.bind.UdpConstant;
-import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.rx.RxBus;
+import com.cylan.jiafeigou.rx.RxEvent;
+import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.udpMsgPack.JfgUdpMsg;
 import com.google.gson.Gson;
 

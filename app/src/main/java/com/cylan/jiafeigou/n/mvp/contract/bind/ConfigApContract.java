@@ -84,6 +84,6 @@ public interface ConfigApContract {
 
         boolean isConnectDog();
 
-        void  finish();
+        void finish();
     }
 }

@@ -180,6 +180,7 @@ public class BindUtils {
         // e.g. "1.2.3" = "1.2.3" or "1.2.3" < "1.2.3.4"
         return Integer.signum(vals1.length - vals2.length);
     }
+
     //update by hunt 2016-08-05
     public static boolean isUcos(String cid) {
         //

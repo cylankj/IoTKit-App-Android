@@ -10,10 +10,10 @@ import com.cylan.jiafeigou.n.mvp.BaseView;
  */
 public interface CloudLiveCallInContract {
 
-    interface View extends BaseView<Presenter>{
+    interface View extends BaseView<Presenter> {
 
     }
 
-    interface Presenter extends BasePresenter{
+    interface Presenter extends BasePresenter {
     }
 }

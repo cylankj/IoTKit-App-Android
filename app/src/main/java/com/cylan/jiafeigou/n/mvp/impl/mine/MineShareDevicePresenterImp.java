@@ -2,7 +2,6 @@ package com.cylan.jiafeigou.n.mvp.impl.mine;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 
 import com.cylan.entity.JfgEnum;
@@ -15,9 +14,9 @@ import com.cylan.jiafeigou.n.mvp.contract.mine.MineShareDeviceContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
 import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
+import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.rx.RxBus;
 
 import java.util.ArrayList;
 
@@ -69,7 +68,7 @@ public class MineShareDevicePresenterImp extends AbstractPresenter<MineShareDevi
                 .flatMap(new Func1<RxEvent.DeviceList, Observable<ArrayList<DeviceBean>>>() {
                     @Override
                     public Observable<ArrayList<DeviceBean>> call(RxEvent.DeviceList deviceList) {
-                        if (deviceList == null || deviceList.jfgDevices == null){
+                        if (deviceList == null || deviceList.jfgDevices == null) {
                             return null;
                         }
                         return Observable.just(getShareDeviceList(deviceList));
@@ -79,15 +78,15 @@ public class MineShareDevicePresenterImp extends AbstractPresenter<MineShareDevi
                 .subscribe(new Action1<ArrayList<DeviceBean>>() {
                     @Override
                     public void call(ArrayList<DeviceBean> deviceList) {
-                        if (getView() != null && deviceList != null){
+                        if (getView() != null && deviceList != null) {
                             allDevice.clear();
                             allDevice.addAll(deviceList);
                             ArrayList<String> cidList = new ArrayList<String>();
-                            for (DeviceBean bean:deviceList){
+                            for (DeviceBean bean : deviceList) {
                                 cidList.add(bean.uuid);
                             }
                             getDeviceInfo(cidList);
-                        }else {
+                        } else {
                             getView().hideLoadingDialog();
                             getView().showNoDeviceView();
                         }
@@ -98,13 +97,13 @@ public class MineShareDevicePresenterImp extends AbstractPresenter<MineShareDevi
     @Override
     public ArrayList<RelAndFriendBean> getJFGInfo(int position) {
         ArrayList<RelAndFriendBean> list = new ArrayList<>();
-        if (hasShareFriendList != null && hasShareFriendList.size()!= 0){
-            for (JFGFriendAccount info:hasShareFriendList.get(position).friends){
+        if (hasShareFriendList != null && hasShareFriendList.size() != 0) {
+            for (JFGFriendAccount info : hasShareFriendList.get(position).friends) {
                 RelAndFriendBean relAndFriendBean = new RelAndFriendBean();
                 relAndFriendBean.account = info.account;
                 relAndFriendBean.alias = info.alias;
                 try {
-                    relAndFriendBean.iconUrl = JfgCmdInsurance.getCmd().getCloudUrlByType(JfgEnum.JFG_URL.PORTRAIT,0,info.account+".jpg","");
+                    relAndFriendBean.iconUrl = JfgCmdInsurance.getCmd().getCloudUrlByType(JfgEnum.JFG_URL.PORTRAIT, 0, info.account + ".jpg", "");
                 } catch (JfgException e) {
                     e.printStackTrace();
                 }
@@ -169,6 +168,7 @@ public class MineShareDevicePresenterImp extends AbstractPresenter<MineShareDevi
 
     /**
      * 获取到设备已分享的亲友数
+     *
      * @param cid
      */
     @Override
@@ -178,20 +178,21 @@ public class MineShareDevicePresenterImp extends AbstractPresenter<MineShareDevi
                 .subscribe(new Action1<ArrayList<String>>() {
                     @Override
                     public void call(ArrayList<String> cid) {
-                        if (cid != null && cid.size() != 0){
+                        if (cid != null && cid.size() != 0) {
                             JfgCmdInsurance.getCmd().getShareList(cid);
                         }
                     }
                 }, new Action1<Throwable>() {
                     @Override
                     public void call(Throwable throwable) {
-                        AppLogger.e("getDeviceInfo"+throwable.getLocalizedMessage());
+                        AppLogger.e("getDeviceInfo" + throwable.getLocalizedMessage());
                     }
                 });
     }
 
     /**
      * 获取到已经分享的亲友数的回调
+     *
      * @return
      */
     @Override
@@ -200,22 +201,22 @@ public class MineShareDevicePresenterImp extends AbstractPresenter<MineShareDevi
                 .flatMap(new Func1<RxEvent.GetShareListCallBack, Observable<ArrayList<DeviceBean>>>() {
                     @Override
                     public Observable<ArrayList<DeviceBean>> call(RxEvent.GetShareListCallBack getShareListCallBack) {
-                        if (getShareListCallBack != null && getShareListCallBack instanceof RxEvent.GetShareListCallBack){
-                            if (getShareListCallBack.i == 0 && getShareListCallBack.arrayList.size() != 0){
+                        if (getShareListCallBack != null && getShareListCallBack instanceof RxEvent.GetShareListCallBack) {
+                            if (getShareListCallBack.i == 0 && getShareListCallBack.arrayList.size() != 0) {
                                 //每个设备已分享的亲友集合
                                 hasShareFriendList.clear();
                                 hasShareFriendList.addAll(getShareListCallBack.arrayList);
                                 //该设备以分享的亲友数赋值
-                                for (int i = 0;i<allDevice.size();i++){
-                                    if (allDevice.get(i).uuid.equals(getShareListCallBack.arrayList.get(i).cid)){
+                                for (int i = 0; i < allDevice.size(); i++) {
+                                    if (allDevice.get(i).uuid.equals(getShareListCallBack.arrayList.get(i).cid)) {
                                         allDevice.get(i).hasShareCount = getShareListCallBack.arrayList.get(i).friends.size();
                                     }
                                 }
                                 return Observable.just(allDevice);
-                            }else {
+                            } else {
                                 return Observable.just(allDevice);
                             }
-                        }else {
+                        } else {
                             return Observable.just(allDevice);
                         }
                     }
@@ -238,7 +239,7 @@ public class MineShareDevicePresenterImp extends AbstractPresenter<MineShareDevi
                 Manifest.permission.READ_CONTACTS)
                 != PackageManager.PERMISSION_GRANTED) {
             return false;
-        }else{
+        } else {
             return true;
         }
     }

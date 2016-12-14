@@ -10,8 +10,9 @@ import android.content.Context;
 public class ResourceUtils {
     /**
      * 获取 layout 布局文件
+     *
      * @param context Context
-     * @param resName  layout xml 的文件名
+     * @param resName layout xml 的文件名
      * @return layout
      */
     public static int getLayoutId(Context context, String resName) {
@@ -21,8 +22,9 @@ public class ResourceUtils {
 
     /**
      * 获取 string 值
-     * @param context  Context
-     * @param resName   string name的名称
+     *
+     * @param context Context
+     * @param resName string name的名称
      * @return string
      */
     public static int getStringId(Context context, String resName) {
@@ -32,7 +34,8 @@ public class ResourceUtils {
 
     /**
      * 获取 drawable
-     * @param context  Context
+     *
+     * @param context Context
      * @param resName drawable 的名称
      * @return drawable
      */
@@ -43,6 +46,7 @@ public class ResourceUtils {
 
     /**
      * 获取 mipmap
+     *
      * @param context
      * @param resName
      * @return
@@ -55,8 +59,9 @@ public class ResourceUtils {
 
     /**
      * 获取 style
+     *
      * @param context Context
-     * @param resName  style的名称
+     * @param resName style的名称
      * @return style
      */
     public static int getStyleId(Context context, String resName) {
@@ -66,11 +71,12 @@ public class ResourceUtils {
 
     /**
      * 获取 styleable
-     * @param context  Context
-     * @param resName  styleable 的名称
+     *
+     * @param context Context
+     * @param resName styleable 的名称
      * @return styleable
      */
-    public static Object getStyleableId(Context context, String resName){
+    public static Object getStyleableId(Context context, String resName) {
         return context.getResources().getIdentifier(resName, "styleable",
                 context.getPackageName());
     }
@@ -78,8 +84,9 @@ public class ResourceUtils {
 
     /**
      * 获取 anim
-     * @param context  Context
-     * @param resName  anim xml 文件名称
+     *
+     * @param context Context
+     * @param resName anim xml 文件名称
      * @return anim
      */
     public static int getAnimId(Context context, String resName) {
@@ -89,6 +96,7 @@ public class ResourceUtils {
 
     /**
      * 获取 id
+     *
      * @param context Context
      * @param resName id 的名称
      * @return
@@ -100,8 +108,9 @@ public class ResourceUtils {
 
     /**
      * color
-     * @param context  Context
-     * @param resName  color 名称
+     *
+     * @param context Context
+     * @param resName color 名称
      * @return
      */
     public static int getColorId(Context context, String resName) {

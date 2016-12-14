@@ -703,7 +703,7 @@ public class FileUtils {
      *
      * @param files the files to convert, must not be {@code null}
      * @return an array of URLs matching the input
-     * @throws IOException  if a file cannot be converted
+     * @throws IOException          if a file cannot be converted
      * @throws NullPointerException if the parameter is null
      */
     public static URL[] toURLs(File[] files) throws IOException {
@@ -734,8 +734,8 @@ public class FileUtils {
      * @param srcFile an existing file to copy, must not be {@code null}
      * @param destDir the directory to place the copy in, must not be {@code null}
      * @throws NullPointerException if source or destination is null
-     * @throws IOException  if source or destination is invalid
-     * @throws IOException  if an IO error occurs during copying
+     * @throws IOException          if source or destination is invalid
+     * @throws IOException          if an IO error occurs during copying
      * @see #copyFile(File, File, boolean)
      */
     public static void copyFileToDirectory(File srcFile, File destDir) throws IOException {
@@ -761,8 +761,8 @@ public class FileUtils {
      * @param preserveFileDate true if the file date of the copy
      *                         should be the same as the original
      * @throws NullPointerException if source or destination is {@code null}
-     * @throws IOException  if source or destination is invalid
-     * @throws IOException  if an IO error occurs during copying
+     * @throws IOException          if source or destination is invalid
+     * @throws IOException          if an IO error occurs during copying
      * @see #copyFile(File, File, boolean)
      * @since 1.3
      */
@@ -793,8 +793,8 @@ public class FileUtils {
      * @param srcFile  an existing file to copy, must not be {@code null}
      * @param destFile the new file, must not be {@code null}
      * @throws NullPointerException if source or destination is {@code null}
-     * @throws IOException  if source or destination is invalid
-     * @throws IOException  if an IO error occurs during copying
+     * @throws IOException          if source or destination is invalid
+     * @throws IOException          if an IO error occurs during copying
      * @see #copyFileToDirectory(File, File)
      */
     public static void copyFile(File srcFile, File destFile) throws IOException {
@@ -820,8 +820,8 @@ public class FileUtils {
      * @param preserveFileDate true if the file date of the copy
      *                         should be the same as the original
      * @throws NullPointerException if source or destination is {@code null}
-     * @throws IOException  if source or destination is invalid
-     * @throws IOException  if an IO error occurs during copying
+     * @throws IOException          if source or destination is invalid
+     * @throws IOException          if an IO error occurs during copying
      * @see #copyFileToDirectory(File, File, boolean)
      */
     public static void copyFile(File srcFile, File destFile,
@@ -863,7 +863,7 @@ public class FileUtils {
      * @param output the <code>OutputStream</code> to write to
      * @return the number of bytes copied
      * @throws NullPointerException if the input or output is null
-     * @throws IOException  if an I/O error occurs
+     * @throws IOException          if an I/O error occurs
      * @since 2.1
      */
     public static long copyFile(File input, OutputStream output) throws IOException {
@@ -940,8 +940,8 @@ public class FileUtils {
      * @param srcDir  an existing directory to copy, must not be {@code null}
      * @param destDir the directory to place the copy in, must not be {@code null}
      * @throws NullPointerException if source or destination is {@code null}
-     * @throws IOException  if source or destination is invalid
-     * @throws IOException  if an IO error occurs during copying
+     * @throws IOException          if source or destination is invalid
+     * @throws IOException          if an IO error occurs during copying
      * @since 1.2
      */
     public static void copyDirectoryToDirectory(File srcDir, File destDir) throws IOException {
@@ -979,8 +979,8 @@ public class FileUtils {
      * @param srcDir  an existing directory to copy, must not be {@code null}
      * @param destDir the new directory, must not be {@code null}
      * @throws NullPointerException if source or destination is {@code null}
-     * @throws IOException  if source or destination is invalid
-     * @throws IOException  if an IO error occurs during copying
+     * @throws IOException          if source or destination is invalid
+     * @throws IOException          if an IO error occurs during copying
      * @since 1.1
      */
     public static void copyDirectory(File srcDir, File destDir) throws IOException {
@@ -1008,8 +1008,8 @@ public class FileUtils {
      * @param preserveFileDate true if the file date of the copy
      *                         should be the same as the original
      * @throws NullPointerException if source or destination is {@code null}
-     * @throws IOException  if source or destination is invalid
-     * @throws IOException  if an IO error occurs during copying
+     * @throws IOException          if source or destination is invalid
+     * @throws IOException          if an IO error occurs during copying
      * @since 1.1
      */
     public static void copyDirectory(File srcDir, File destDir,
@@ -1037,7 +1037,7 @@ public class FileUtils {
      *  // only copy the directory structure
      *  FileUtils.copyDirectory(srcDir, destDir, DirectoryFileFilter.DIRECTORY);
      *  </pre>
-     *
+     * <p>
      * <h4>Example: Copy directories and txt files</h4>
      * <pre>
      *  // Create a filter for ".txt" files
@@ -1056,8 +1056,8 @@ public class FileUtils {
      * @param filter  the filter to apply, null means copy all directories and files
      *                should be the same as the original
      * @throws NullPointerException if source or destination is {@code null}
-     * @throws IOException  if source or destination is invalid
-     * @throws IOException  if an IO error occurs during copying
+     * @throws IOException          if source or destination is invalid
+     * @throws IOException          if an IO error occurs during copying
      * @since 1.4
      */
     public static void copyDirectory(File srcDir, File destDir,
@@ -1086,7 +1086,7 @@ public class FileUtils {
      *  // only copy the directory structure
      *  FileUtils.copyDirectory(srcDir, destDir, DirectoryFileFilter.DIRECTORY, false);
      *  </pre>
-     *
+     * <p>
      * <h4>Example: Copy directories and txt files</h4>
      * <pre>
      *  // Create a filter for ".txt" files
@@ -1106,8 +1106,8 @@ public class FileUtils {
      * @param preserveFileDate true if the file date of the copy
      *                         should be the same as the original
      * @throws NullPointerException if source or destination is {@code null}
-     * @throws IOException  if source or destination is invalid
-     * @throws IOException  if an IO error occurs during copying
+     * @throws IOException          if source or destination is invalid
+     * @throws IOException          if an IO error occurs during copying
      * @since 1.4
      */
     public static void copyDirectory(File srcDir, File destDir,
@@ -1428,7 +1428,7 @@ public class FileUtils {
      * @param file     the file to read, must not be {@code null}
      * @param encoding the encoding to use, {@code null} means platform default
      * @return the file contents, never {@code null}
-     * @throws IOException                          in case of an I/O error
+     * @throws IOException                                  in case of an I/O error
      * @throws java.nio.charset.UnsupportedCharsetException thrown instead of {@link UnsupportedEncodingException} in version 2.2 if the encoding is not
      *                                                      supported.
      * @since 2.3
@@ -1496,7 +1496,7 @@ public class FileUtils {
      * @param file     the file to read, must not be {@code null}
      * @param encoding the encoding to use, {@code null} means platform default
      * @return the list of Strings representing each line in the file, never {@code null}
-     * @throws IOException                          in case of an I/O error
+     * @throws IOException                                  in case of an I/O error
      * @throws java.nio.charset.UnsupportedCharsetException thrown instead of {@link UnsupportedEncodingException} in version 2.2 if the encoding is not
      *                                                      supported.
      * @since 1.1
@@ -1583,7 +1583,7 @@ public class FileUtils {
      * @param encoding the encoding to use, {@code null} means platform default
      * @param append   if {@code true}, then the String will be added to the
      *                 end of the file rather than overwriting
-     * @throws IOException                          in case of an I/O error
+     * @throws IOException                                  in case of an I/O error
      * @throws java.nio.charset.UnsupportedCharsetException thrown instead of {@link UnsupportedEncodingException} in version 2.2 if the encoding is not
      *                                                      supported by the VM
      * @since 2.1
@@ -1694,7 +1694,7 @@ public class FileUtils {
      * @param encoding the encoding to use, {@code null} means platform default
      * @param append   if {@code true}, then the data will be added to the
      *                 end of the file rather than overwriting
-     * @throws IOException                          in case of an I/O error
+     * @throws IOException                                  in case of an I/O error
      * @throws java.nio.charset.UnsupportedCharsetException thrown instead of {@link UnsupportedEncodingException} in version 2.2 if the encoding is not
      *                                                      supported by the VM
      * @since IO 2.1
@@ -1902,7 +1902,7 @@ public class FileUtils {
      * </ul>
      *
      * @param file file or directory to delete, must not be {@code null}
-     * @throws NullPointerException          if the directory is {@code null}
+     * @throws NullPointerException  if the directory is {@code null}
      * @throws FileNotFoundException if the file was not found
      * @throws IOException           in case deletion is unsuccessful
      */
@@ -1928,7 +1928,7 @@ public class FileUtils {
      *
      * @param file file or directory to delete, must not be {@code null}
      * @throws NullPointerException if the file is {@code null}
-     * @throws IOException  in case deletion is unsuccessful
+     * @throws IOException          in case deletion is unsuccessful
      */
     public static void forceDeleteOnExit(File file) throws IOException {
         if (file.isDirectory()) {
@@ -1943,7 +1943,7 @@ public class FileUtils {
      *
      * @param directory directory to delete, must not be {@code null}
      * @throws NullPointerException if the directory is {@code null}
-     * @throws IOException  in case deletion is unsuccessful
+     * @throws IOException          in case deletion is unsuccessful
      */
     private static void deleteDirectoryOnExit(File directory) throws IOException {
         if (!directory.exists()) {
@@ -1961,7 +1961,7 @@ public class FileUtils {
      *
      * @param directory directory to clean, must not be {@code null}
      * @throws NullPointerException if the directory is {@code null}
-     * @throws IOException  in case cleaning is unsuccessful
+     * @throws IOException          in case cleaning is unsuccessful
      */
     private static void cleanDirectoryOnExit(File directory) throws IOException {
         if (!directory.exists()) {
@@ -2002,7 +2002,7 @@ public class FileUtils {
      *
      * @param directory directory to create, must not be {@code null}
      * @throws NullPointerException if the directory is {@code null}
-     * @throws IOException  if the directory cannot be created or the file already exists but is not a directory
+     * @throws IOException          if the directory cannot be created or the file already exists but is not a directory
      */
     public static void forceMkdir(File directory) throws IOException {
         if (directory.exists()) {
@@ -2031,7 +2031,7 @@ public class FileUtils {
         try {
             forceMkdir(directory);
             return true;
-        } catch (IOException e){
+        } catch (IOException e) {
         }
         return false;
     }
@@ -2322,8 +2322,8 @@ public class FileUtils {
      * @param destDir the destination directory
      * @throws NullPointerException if source or destination is {@code null}
      * @throws FileExistsException  if the destination directory exists
-     * @throws IOException  if source or destination is invalid
-     * @throws IOException  if an IO error occurs moving the file
+     * @throws IOException          if source or destination is invalid
+     * @throws IOException          if an IO error occurs moving the file
      * @since 1.4
      */
     public static void moveDirectory(File srcDir, File destDir) throws IOException {
@@ -2365,8 +2365,8 @@ public class FileUtils {
      *                      otherwise if {@code false} throw an IOException
      * @throws NullPointerException if source or destination is {@code null}
      * @throws FileExistsException  if the directory exists in the destination directory
-     * @throws IOException  if source or destination is invalid
-     * @throws IOException  if an IO error occurs moving the file
+     * @throws IOException          if source or destination is invalid
+     * @throws IOException          if an IO error occurs moving the file
      * @since 1.4
      */
     public static void moveDirectoryToDirectory(File src, File destDir, boolean createDestDir) throws IOException {
@@ -2399,8 +2399,8 @@ public class FileUtils {
      * @param destFile the destination file
      * @throws NullPointerException if source or destination is {@code null}
      * @throws FileExistsException  if the destination file exists
-     * @throws IOException  if source or destination is invalid
-     * @throws IOException  if an IO error occurs moving the file
+     * @throws IOException          if source or destination is invalid
+     * @throws IOException          if an IO error occurs moving the file
      * @since 1.4
      */
     public static void moveFile(File srcFile, File destFile) throws IOException {
@@ -2441,8 +2441,8 @@ public class FileUtils {
      * @param createDestDir If {@code true} create the destination directory,
      *                      otherwise if {@code false} throw an IOException
      * @throws NullPointerException if source or destination is {@code null}
-     * @throws IOException  if source or destination is invalid
-     * @throws IOException  if an IO error occurs moving the file
+     * @throws IOException          if source or destination is invalid
+     * @throws IOException          if an IO error occurs moving the file
      * @since 1.4
      */
     public static void moveFileToDirectory(File srcFile, File destDir, boolean createDestDir) throws IOException {
@@ -2475,8 +2475,8 @@ public class FileUtils {
      * @param createDestDir If {@code true} create the destination directory,
      *                      otherwise if {@code false} throw an IOException
      * @throws NullPointerException if source or destination is {@code null}
-     * @throws IOException  if source or destination is invalid
-     * @throws IOException  if an IO error occurs moving the file
+     * @throws IOException          if source or destination is invalid
+     * @throws IOException          if an IO error occurs moving the file
      * @since 1.4
      */
     public static void moveToDirectory(File src, File destDir, boolean createDestDir) throws IOException {

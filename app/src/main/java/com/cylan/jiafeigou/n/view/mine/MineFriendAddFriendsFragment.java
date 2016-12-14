@@ -95,9 +95,9 @@ public class MineFriendAddFriendsFragment extends Fragment implements MineFriend
                 if (getView() != null)
                     ViewUtils.deBounceClick(getView().findViewById(R.id.tv_add_from_contract));
                 AppLogger.d("tv_add_from_contract");
-                if (presenter.checkPermission()){
+                if (presenter.checkPermission()) {
                     jump2AddFromContactFragment();
-                }else {
+                } else {
                     ActivityCompat.requestPermissions(getActivity(),
                             new String[]{Manifest.permission.READ_CONTACTS},
                             1);
@@ -144,7 +144,7 @@ public class MineFriendAddFriendsFragment extends Fragment implements MineFriend
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == 1){
+        if (requestCode == 1) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 jump2AddFromContactFragment();
             } else {

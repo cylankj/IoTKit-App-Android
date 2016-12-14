@@ -22,18 +22,21 @@ public interface MineBindPhoneContract {
 
         /**
          * 获取到输入号码
+         *
          * @return
          */
         String getInputPhone();
 
         /**
          * 获取到输入的验证码
+         *
          * @return
          */
         String getInputCheckCode();
 
         /**
          * 检测账号的是否已经注册的结果
+         *
          * @param checkAccountCallback
          */
         void handlerCheckPhoneResult(RxEvent.CheckAccountCallback checkAccountCallback);
@@ -42,6 +45,7 @@ public interface MineBindPhoneContract {
     interface Presenter extends BasePresenter {
         /**
          * 判断是绑定还是修改
+         *
          * @param userinfo
          */
         void isBindOrChange(JFGAccount userinfo);
@@ -58,6 +62,7 @@ public interface MineBindPhoneContract {
 
         /**
          * 获取到检测账号的回调
+         *
          * @return
          */
         Subscription getCheckPhoneCallback();
@@ -69,6 +74,7 @@ public interface MineBindPhoneContract {
 
         /**
          * 获取验证码的回调
+         *
          * @return
          */
         Subscription getCheckCodeCallback();

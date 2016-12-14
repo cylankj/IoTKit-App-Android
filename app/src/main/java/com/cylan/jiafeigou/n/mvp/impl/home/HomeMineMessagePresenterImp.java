@@ -8,7 +8,6 @@ import com.cylan.jiafeigou.n.mvp.model.MineMessageBean;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.support.db.DbManager;
 import com.cylan.jiafeigou.support.db.ex.DbException;
-import com.cylan.jiafeigou.support.download.utils.L;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,9 +37,9 @@ public class HomeMineMessagePresenterImp extends AbstractPresenter<HomeMineMessa
 
     @Override
     public void start() {
-        if (compositeSubscription != null && !compositeSubscription.isUnsubscribed()){
+        if (compositeSubscription != null && !compositeSubscription.isUnsubscribed()) {
             compositeSubscription.unsubscribe();
-        }else {
+        } else {
             compositeSubscription = new CompositeSubscription();
             compositeSubscription.add(getAccount());
         }
@@ -48,7 +47,7 @@ public class HomeMineMessagePresenterImp extends AbstractPresenter<HomeMineMessa
 
     @Override
     public void stop() {
-        if (compositeSubscription != null && !compositeSubscription.isUnsubscribed()){
+        if (compositeSubscription != null && !compositeSubscription.isUnsubscribed()) {
             compositeSubscription.unsubscribe();
         }
     }
@@ -78,14 +77,15 @@ public class HomeMineMessagePresenterImp extends AbstractPresenter<HomeMineMessa
 
     /**
      * 处理数据的显示
+     *
      * @param list
      */
     private void handlerDataResult(ArrayList<MineMessageBean> list) {
-        if (getView() != null){
-            if (list.size() != 0){
+        if (getView() != null) {
+            if (list.size() != 0) {
                 getView().hideNoMesgView();
                 getView().initRecycleView(list);
-            }else {
+            } else {
                 getView().showNoMesgView();
             }
         }
@@ -93,6 +93,7 @@ public class HomeMineMessagePresenterImp extends AbstractPresenter<HomeMineMessa
 
     /**
      * 拿到数据库的操作对象
+     *
      * @return
      */
     @Override
@@ -102,7 +103,7 @@ public class HomeMineMessagePresenterImp extends AbstractPresenter<HomeMineMessa
                 .subscribe(new Action1<JFGAccount>() {
                     @Override
                     public void call(JFGAccount account) {
-                        if (account != null && account instanceof JFGAccount){
+                        if (account != null && account instanceof JFGAccount) {
                             // 加载数据库数据
                             dbManager = DataBaseUtil.getInstance(account.getAccount()).dbManager;
                             initMesgData();
@@ -113,15 +114,16 @@ public class HomeMineMessagePresenterImp extends AbstractPresenter<HomeMineMessa
 
     /**
      * 获取到本地数据库中的所有消息记录
+     *
      * @return
      */
     @Override
     public List<MineMessageBean> findAllFromDb() {
         List<MineMessageBean> tempList = new ArrayList<>();
-        if (dbManager != null){
+        if (dbManager != null) {
             try {
                 List<MineMessageBean> allData = dbManager.findAll(MineMessageBean.class);
-                if (allData != null){
+                if (allData != null) {
                     tempList.addAll(allData);
                 }
             } catch (DbException e) {
@@ -145,6 +147,7 @@ public class HomeMineMessagePresenterImp extends AbstractPresenter<HomeMineMessa
 
     /**
      * 消息保存到数据库
+     *
      * @param bean
      */
     @Override

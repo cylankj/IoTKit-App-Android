@@ -9,12 +9,9 @@ import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineClipImageContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineClipImagePresenterImp;
 import com.cylan.jiafeigou.utils.ToastUtil;
@@ -28,7 +25,7 @@ import java.io.OutputStream;
 /**
  * 头像裁剪Activity
  */
-public class ClipImageActivity extends AppCompatActivity implements MineClipImageContract.View,View.OnClickListener {
+public class ClipImageActivity extends AppCompatActivity implements MineClipImageContract.View, View.OnClickListener {
     private ClipViewLayout clipViewLayout1;
     private ClipViewLayout clipViewLayout2;
     private TextView btnCancel;
@@ -55,7 +52,7 @@ public class ClipImageActivity extends AppCompatActivity implements MineClipImag
     @Override
     protected void onStart() {
         super.onStart();
-        if (presenter != null)presenter.start();
+        if (presenter != null) presenter.start();
     }
 
     /**
@@ -135,21 +132,21 @@ public class ClipImageActivity extends AppCompatActivity implements MineClipImag
                 }
             }
 
-            if (presenter != null){
+            if (presenter != null) {
                 showUpLoadPro();
                 handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         presenter.upLoadUserHeadImag(mSaveUri.getPath());
                     }
-                },2000);
+                }, 2000);
             }
         }
     }
 
     @Override
     public void showUpLoadPro() {
-        LoadingDialog.showLoading(getSupportFragmentManager(),getString(R.string.Tap3_Uploading));
+        LoadingDialog.showLoading(getSupportFragmentManager(), getString(R.string.Tap3_Uploading));
     }
 
     @Override
@@ -159,14 +156,14 @@ public class ClipImageActivity extends AppCompatActivity implements MineClipImag
 
     @Override
     public void upLoadResultView(int code) {
-        if (code == 1){
+        if (code == 1) {
             Intent intent = new Intent();
             intent.setData(mSaveUri);
             setResult(RESULT_OK, intent);
-        }else {
+        } else {
             ToastUtil.showNegativeToast(getString(R.string.Tap3_UploadingFailed));
         }
-         finish();
+        finish();
     }
 
     @Override
@@ -182,6 +179,6 @@ public class ClipImageActivity extends AppCompatActivity implements MineClipImag
     @Override
     protected void onStop() {
         super.onStop();
-        if (presenter != null)presenter.stop();
+        if (presenter != null) presenter.stop();
     }
 }

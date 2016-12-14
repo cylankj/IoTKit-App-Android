@@ -1,11 +1,7 @@
 package com.cylan.jiafeigou.n.view.adapter;
 
 import android.content.Context;
-import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.model.MineMessageBean;
@@ -14,12 +10,11 @@ import com.cylan.superadapter.SuperAdapter;
 import com.cylan.superadapter.internal.SuperViewHolder;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 
-public class HomeMineMessageAdapter extends SuperAdapter<MineMessageBean>{
+public class HomeMineMessageAdapter extends SuperAdapter<MineMessageBean> {
 
 
     public HomeMineMessageAdapter(Context context, List<MineMessageBean> items, IMulItemViewType<MineMessageBean> mulItemViewType) {
@@ -29,14 +24,14 @@ public class HomeMineMessageAdapter extends SuperAdapter<MineMessageBean>{
     @Override
     public void onBind(SuperViewHolder holder, int viewType, int layoutPosition, MineMessageBean item) {
         //处理消息时间
-        holder.setText(R.id.message_item_time,parseTime(item.getTime()));
+        holder.setText(R.id.message_item_time, parseTime(item.getTime()));
         if (layoutPosition == 0 | compareTime(getItem(getItemCount() - 1).getTime(), item.getTime())) {
-            holder.setVisibility(R.id.message_item_time,View.VISIBLE);
+            holder.setVisibility(R.id.message_item_time, View.VISIBLE);
         } else {
-            holder.setVisibility(R.id.message_item_time,View.GONE);
+            holder.setVisibility(R.id.message_item_time, View.GONE);
         }
         //处理消息显示
-        holder.setText(R.id.message_item_msg,item.getContent());
+        holder.setText(R.id.message_item_msg, item.getContent());
 
         //TODO
     }

@@ -196,7 +196,7 @@ public class MineFriendDetailFragment extends Fragment implements MineFriendDeta
 
     @Override
     public void showDeleteProgress() {
-        LoadingDialog.showLoading(getFragmentManager(),getString(R.string.DELETEING));
+        LoadingDialog.showLoading(getFragmentManager(), getString(R.string.DELETEING));
     }
 
     @Override
@@ -209,7 +209,7 @@ public class MineFriendDetailFragment extends Fragment implements MineFriendDeta
      */
     private void jump2LookBigImageFragment() {
         Bundle bundle = new Bundle();
-        bundle.putString("imageUrl",frienditembean.iconUrl);
+        bundle.putString("imageUrl", frienditembean.iconUrl);
         mineLookBigImageFragment = MineLookBigImageFragment.newInstance(bundle);
         getFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
@@ -224,7 +224,7 @@ public class MineFriendDetailFragment extends Fragment implements MineFriendDeta
      */
     private void jump2SetRemarkNameFragment() {
         Bundle bundle = new Bundle();
-        bundle.putParcelable("friendBean",frienditembean);
+        bundle.putParcelable("friendBean", frienditembean);
         mineSetRemarkNameFragment = MineSetRemarkNameFragment.newInstance(bundle);
         getFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
@@ -237,7 +237,7 @@ public class MineFriendDetailFragment extends Fragment implements MineFriendDeta
 
     private void jump2ShareDeviceFragment() {
         Bundle bundle = new Bundle();
-        bundle.putParcelable("shareDeviceBean",frienditembean);
+        bundle.putParcelable("shareDeviceBean", frienditembean);
         mineShareDeviceFragment = MineFriendsListShareDevicesFragment.newInstance(bundle);
         getFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
@@ -250,7 +250,7 @@ public class MineFriendDetailFragment extends Fragment implements MineFriendDeta
     @Override
     public void onStop() {
         super.onStop();
-        if (presenter != null){
+        if (presenter != null) {
             presenter.stop();
         }
     }

@@ -25,7 +25,7 @@ import java.util.Map;
  * Author:pengjianbo
  * Date:15/10/31 上午9:08
  */
-public class CrashHandler implements Thread.UncaughtExceptionHandler{
+public class CrashHandler implements Thread.UncaughtExceptionHandler {
 
     private Thread.UncaughtExceptionHandler mDefaultHandler;// 系统默认的UncaughtException处理类
     private final static CrashHandler INSTANCE = new CrashHandler();// CrashHandler实例
@@ -44,10 +44,12 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler{
     /**
      * 保证只有一个CrashHandler实例
      */
-    private CrashHandler() {}
+    private CrashHandler() {
+    }
 
     /**
      * 获取CrashHandler实例 ,单例模式
+     *
      * @return
      */
     public static CrashHandler getInstance() {
@@ -58,6 +60,7 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler{
      * 初始化
      * 获取系统默认的UncaughtException处理器,
      * 设置该CrashHandler为程序的默认处理器
+     *
      * @param context
      * @return
      */
@@ -114,14 +117,14 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler{
         new Thread() {
             public void run() {
                 Looper.prepare();
-                if(mOnCrashListener != null) {
+                if (mOnCrashListener != null) {
                     mOnCrashListener.onCrash(mContext, crashMsg);
                 }
                 Looper.loop();
             }
         }.start();
 
-        if ( mCrashSave ) {
+        if (mCrashSave) {
             // 收集设备参数信息
             collectDeviceInfo(mContext);
             // 保存日志文件
@@ -132,6 +135,7 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler{
 
     /**
      * 设置Crash事件回调
+     *
      * @param listener
      * @return
      */
@@ -142,16 +146,18 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler{
 
     /**
      * 设置是否保存crash
+     *
      * @param isSave
      * @return
      */
     public CrashHandler setCrashSave(boolean isSave) {
-        this.mCrashSave  = isSave;
+        this.mCrashSave = isSave;
         return this;
     }
 
     /**
      * 自定义crash保存目标文件夹
+     *
      * @param targetFolder
      * @return
      */
@@ -196,6 +202,7 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler{
 
     /**
      * 保存crash信息
+     *
      * @param crashMsg
      * @return
      */
@@ -217,7 +224,7 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler{
                 Environment.MEDIA_MOUNTED)) {
             try {
                 File dir;
-                if( StringUtils.isEmpty(mCrashSaveTargetFolder) ) {
+                if (StringUtils.isEmpty(mCrashSaveTargetFolder)) {
                     dir = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "crash");
                 } else {
                     dir = new File(mCrashSaveTargetFolder);
@@ -239,7 +246,7 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler{
         return null;
     }
 
-    public interface OnCrashListener{
+    public interface OnCrashListener {
         void onCrash(Context context, String errorMsg);
     }
 }

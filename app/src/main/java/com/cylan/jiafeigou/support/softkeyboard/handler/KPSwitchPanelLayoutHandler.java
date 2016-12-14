@@ -67,6 +67,7 @@ public class KPSwitchPanelLayoutHandler implements IPanelConflictLayout {
      * If the value is true, the panel's height will not be follow the height of the keyboard.
      * <p/>
      * Default is false.
+     *
      * @attr ref cn.dreamtobe.kpswitch.R.styleable#KPSwitchPanelLayout_ignore_recommend_height
      */
     @SuppressWarnings("JavaDoc")
@@ -196,8 +197,8 @@ public class KPSwitchPanelLayoutHandler implements IPanelConflictLayout {
     /**
      * @param ignoreRecommendHeight Whether ignore the recommend panel height, what would be equal
      *                              to the height of keyboard in most situations.
-     * @see #resetToRecommendPanelHeight(int)
      * @attr ref cn.dreamtobe.kpswitch.R.styleable#KPSwitchPanelLayout_ignore_recommend_height
+     * @see #resetToRecommendPanelHeight(int)
      */
     @SuppressWarnings("JavaDoc")
     public void setIgnoreRecommendHeight(boolean ignoreRecommendHeight) {

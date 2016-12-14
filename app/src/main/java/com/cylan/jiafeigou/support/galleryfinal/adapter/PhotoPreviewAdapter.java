@@ -6,7 +6,6 @@ import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.ViewGroup;
 
-
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.support.galleryfinal.GalleryFinal;
 import com.cylan.jiafeigou.support.galleryfinal.model.PhotoInfo;
@@ -47,11 +46,12 @@ public class PhotoPreviewAdapter extends ViewHolderRecyclingPagerAdapter<PhotoPr
         }
         holder.mImageView.setImageResource(R.drawable.ic_gf_default_photo);
         Drawable defaultDrawable = mActivity.getResources().getDrawable(R.drawable.ic_gf_default_photo);
-        GalleryFinal.getCoreConfig().getImageLoader().displayImage(mActivity, path, holder.mImageView, defaultDrawable, mDisplayMetrics.widthPixels/2, mDisplayMetrics.heightPixels/2);
+        GalleryFinal.getCoreConfig().getImageLoader().displayImage(mActivity, path, holder.mImageView, defaultDrawable, mDisplayMetrics.widthPixels / 2, mDisplayMetrics.heightPixels / 2);
     }
 
-    static class PreviewViewHolder extends ViewHolderRecyclingPagerAdapter.ViewHolder{
+    static class PreviewViewHolder extends ViewHolderRecyclingPagerAdapter.ViewHolder {
         PhotoView mImageView;
+
         public PreviewViewHolder(View view) {
             super(view);
             mImageView = (PhotoView) view;

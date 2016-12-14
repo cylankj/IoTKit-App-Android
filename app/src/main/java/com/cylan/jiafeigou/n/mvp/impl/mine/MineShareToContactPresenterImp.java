@@ -13,9 +13,9 @@ import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineShareToContactContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
+import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.rx.RxBus;
 
 import java.util.ArrayList;
 
@@ -40,7 +40,7 @@ public class MineShareToContactPresenterImp extends AbstractPresenter<MineShareT
     private ArrayList<RelAndFriendBean> allCoverData = new ArrayList<>();
     private ArrayList<RelAndFriendBean> hasShareFriend;
 
-    public MineShareToContactPresenterImp(MineShareToContactContract.View view,ArrayList<RelAndFriendBean> hasShareFiend) {
+    public MineShareToContactPresenterImp(MineShareToContactContract.View view, ArrayList<RelAndFriendBean> hasShareFiend) {
         super(view);
         view.setPresenter(this);
         this.hasShareFriend = hasShareFiend;
@@ -49,19 +49,19 @@ public class MineShareToContactPresenterImp extends AbstractPresenter<MineShareT
     @Override
     public void start() {
 
-        if (hasShareFriend != null && hasShareFriend.size() != 0){
+        if (hasShareFriend != null && hasShareFriend.size() != 0) {
             ArrayList<RelAndFriendBean> list = converData2(hasShareFriend);
             allCoverData.addAll(list);
             handlerContactDataResult(list);
-        }else {
+        } else {
             ArrayList<RelAndFriendBean> list = getAllContactList();
             allCoverData.addAll(list);
             handlerContactDataResult(list);
         }
 
-        if (compositeSubscription != null && !compositeSubscription.isUnsubscribed()){
+        if (compositeSubscription != null && !compositeSubscription.isUnsubscribed()) {
             compositeSubscription.unsubscribe();
-        }else {
+        } else {
             compositeSubscription = new CompositeSubscription();
 //            compositeSubscription.add(getHasShareContractCallBack());
             compositeSubscription.add(shareDeviceCallBack());
@@ -70,7 +70,7 @@ public class MineShareToContactPresenterImp extends AbstractPresenter<MineShareT
 
     @Override
     public void stop() {
-        if (compositeSubscription != null && !compositeSubscription.isUnsubscribed()){
+        if (compositeSubscription != null && !compositeSubscription.isUnsubscribed()) {
             compositeSubscription.unsubscribe();
         }
 
@@ -103,7 +103,7 @@ public class MineShareToContactPresenterImp extends AbstractPresenter<MineShareT
                     @Override
                     public void call(String account) {
                         try {
-                            JfgCmdInsurance.getCmd().shareDevice(cid,account);
+                            JfgCmdInsurance.getCmd().shareDevice(cid, account);
                         } catch (JfgException e) {
                             e.printStackTrace();
                         }
@@ -111,13 +111,14 @@ public class MineShareToContactPresenterImp extends AbstractPresenter<MineShareT
                 }, new Action1<Throwable>() {
                     @Override
                     public void call(Throwable throwable) {
-                        AppLogger.e("handlerShareClick"+throwable.getLocalizedMessage());
+                        AppLogger.e("handlerShareClick" + throwable.getLocalizedMessage());
                     }
                 });
     }
 
     /**
      * 获取到已经分享的亲友数
+     *
      * @param cid
      * @return
      */
@@ -137,13 +138,14 @@ public class MineShareToContactPresenterImp extends AbstractPresenter<MineShareT
                 }, new Action1<Throwable>() {
                     @Override
                     public void call(Throwable throwable) {
-                        AppLogger.e("getHasShareContract"+throwable.getLocalizedMessage());
+                        AppLogger.e("getHasShareContract" + throwable.getLocalizedMessage());
                     }
                 });
     }
 
     /**
      * 获取到已经分享好友的回调
+     *
      * @return
      */
     @Override
@@ -152,14 +154,14 @@ public class MineShareToContactPresenterImp extends AbstractPresenter<MineShareT
                 .flatMap(new Func1<RxEvent.GetHasShareFriendCallBack, Observable<ArrayList<RelAndFriendBean>>>() {
                     @Override
                     public Observable<ArrayList<RelAndFriendBean>> call(RxEvent.GetHasShareFriendCallBack getHasShareFriendCallBack) {
-                        if (getHasShareFriendCallBack != null && getHasShareFriendCallBack instanceof RxEvent.GetHasShareFriendCallBack){
+                        if (getHasShareFriendCallBack != null && getHasShareFriendCallBack instanceof RxEvent.GetHasShareFriendCallBack) {
 
-                            if (getHasShareFriendCallBack.arrayList.size() != 0){
+                            if (getHasShareFriendCallBack.arrayList.size() != 0) {
                                 return Observable.just(converData(getHasShareFriendCallBack.arrayList));
-                            }else {
+                            } else {
                                 return Observable.just(getAllContactList());
                             }
-                        }else {
+                        } else {
                             return Observable.just(getAllContactList());
                         }
                     }
@@ -176,6 +178,7 @@ public class MineShareToContactPresenterImp extends AbstractPresenter<MineShareT
 
     /**
      * 分享设备的回调
+     *
      * @return
      */
     @Override
@@ -185,10 +188,10 @@ public class MineShareToContactPresenterImp extends AbstractPresenter<MineShareT
                 .subscribe(new Action1<RxEvent.ShareDeviceCallBack>() {
                     @Override
                     public void call(RxEvent.ShareDeviceCallBack shareDeviceCallBack) {
-                        if (shareDeviceCallBack != null && shareDeviceCallBack instanceof RxEvent.ShareDeviceCallBack){
-                            if (getView() != null){
+                        if (shareDeviceCallBack != null && shareDeviceCallBack instanceof RxEvent.ShareDeviceCallBack) {
+                            if (getView() != null) {
                                 getView().hideShareingProHint();
-                                getView().handlerCheckRegister(shareDeviceCallBack.requestId,shareDeviceCallBack.account);
+                                getView().handlerCheckRegister(shareDeviceCallBack.requestId, shareDeviceCallBack.account);
                             }
                         }
                     }
@@ -197,16 +200,17 @@ public class MineShareToContactPresenterImp extends AbstractPresenter<MineShareT
 
     /**
      * 数据的转换 标记已分享和未分享
+     *
      * @param arrayList
      * @return
      */
     private ArrayList<RelAndFriendBean> converData(ArrayList<JFGFriendAccount> arrayList) {
         ArrayList<RelAndFriendBean> list = new ArrayList<>();
-        for (RelAndFriendBean contract:getAllContactList()){
-            for (JFGFriendAccount friend:arrayList){
-                if (friend.account.equals(contract.account)){
+        for (RelAndFriendBean contract : getAllContactList()) {
+            for (JFGFriendAccount friend : arrayList) {
+                if (friend.account.equals(contract.account)) {
                     contract.isCheckFlag = 1;
-                }else {
+                } else {
                     contract.isCheckFlag = 0;
                 }
             }
@@ -218,16 +222,17 @@ public class MineShareToContactPresenterImp extends AbstractPresenter<MineShareT
 
     /**
      * 数据的转换 标记已分享和未分享
+     *
      * @param arrayList
      * @return
      */
     private ArrayList<RelAndFriendBean> converData2(ArrayList<RelAndFriendBean> arrayList) {
         ArrayList<RelAndFriendBean> list = new ArrayList<>();
-        for (RelAndFriendBean contract:getAllContactList()){
-            for (RelAndFriendBean friend:arrayList){
-                if (friend.account.equals(contract.account)){
+        for (RelAndFriendBean contract : getAllContactList()) {
+            for (RelAndFriendBean friend : arrayList) {
+                if (friend.account.equals(contract.account)) {
                     contract.isCheckFlag = 1;
-                }else {
+                } else {
                     contract.isCheckFlag = 0;
                 }
             }
@@ -239,12 +244,13 @@ public class MineShareToContactPresenterImp extends AbstractPresenter<MineShareT
 
     /**
      * desc:处理得到的数据结果
+     *
      * @param list
      */
     private void handlerContactDataResult(ArrayList<RelAndFriendBean> list) {
-        if (getView() != null && list != null && list.size() != 0){
+        if (getView() != null && list != null && list.size() != 0) {
             getView().initContactReclyView(list);
-        }else {
+        } else {
             getView().showNoContactNullView();
         }
     }
@@ -270,14 +276,14 @@ public class MineShareToContactPresenterImp extends AbstractPresenter<MineShareT
                 String name = cursor.getString(0);
                 friendBean.account = contact_phone;
                 friendBean.alias = name;
-                if (name != null){
-                    if (friendBean.account.startsWith("+86")){
+                if (name != null) {
+                    if (friendBean.account.startsWith("+86")) {
                         friendBean.account = friendBean.account.substring(3);
-                    }else if (friendBean.account.startsWith("86")){
+                    } else if (friendBean.account.startsWith("86")) {
                         friendBean.account = friendBean.account.substring(2);
                     }
 
-                    if (JConstant.PHONE_REG.matcher(friendBean.account).find()){
+                    if (JConstant.PHONE_REG.matcher(friendBean.account).find()) {
                         list.add(friendBean);
                     }
                 }

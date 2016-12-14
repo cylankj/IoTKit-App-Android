@@ -2,7 +2,6 @@ package com.cylan.jiafeigou.support.toolsfinal;
 
 import android.content.Context;
 
-
 import com.cylan.jiafeigou.support.toolsfinal.coder.MD5Coder;
 import com.cylan.jiafeigou.support.toolsfinal.io.FileUtils;
 
@@ -38,7 +37,7 @@ public class AppCacheUtils {
     private static Map<String, AppCacheUtils> mCacheUtilsMap = new HashMap<>();
 
     private AppCacheUtils(File cacheFile) {
-        mCacheFile =  cacheFile;
+        mCacheFile = cacheFile;
         FileUtils.mkdirs(cacheFile);
     }
 
@@ -86,7 +85,7 @@ public class AppCacheUtils {
     /**
      * 保存 String数据 到 缓存中
      *
-     * @param key 保存的key
+     * @param key   保存的key
      * @param value 保存的String数据
      */
     public void put(String key, String value) {
@@ -95,7 +94,7 @@ public class AppCacheUtils {
             return;
         }
 
-        if ( StringUtils.isEmpty(value) ) {
+        if (StringUtils.isEmpty(value)) {
             value = "";
         }
         File file = newFile(key);
@@ -116,14 +115,15 @@ public class AppCacheUtils {
             }
         }
     }
+
     /**
      * 保存 byte数据 到 缓存中
      *
-     * @param key 保存的key
+     * @param key   保存的key
      * @param value 保存的数据
      */
     public void put(String key, byte[] value) {
-        if(value == null || value.length == 0 || StringUtils.isEmpty(key)){
+        if (value == null || value.length == 0 || StringUtils.isEmpty(key)) {
             return;
         }
         File file = newFile(key);
@@ -148,11 +148,11 @@ public class AppCacheUtils {
     /**
      * 保存 JSONArray数据 到 缓存中
      *
-     * @param key 保存的key
+     * @param key   保存的key
      * @param value 保存的JSONArray数据
      */
     public void put(String key, JSONArray value) {
-        if(value == null){
+        if (value == null) {
             return;
         }
         put(key, value.toString());
@@ -161,11 +161,11 @@ public class AppCacheUtils {
     /**
      * 保存 JSONObject数据 到 缓存中
      *
-     * @param key 保存的key
+     * @param key   保存的key
      * @param value 保存的JSON数据
      */
     public void put(String key, JSONObject value) {
-        if(value == null){
+        if (value == null) {
             return;
         }
         put(key, value.toString());
@@ -174,11 +174,11 @@ public class AppCacheUtils {
     /**
      * 保存 Serializable数据到 缓存中
      *
-     * @param key 保存的key
+     * @param key   保存的key
      * @param value 保存的value
      */
     public void put(String key, Serializable value) {
-        if(StringUtils.isEmpty(key) || value == null) {
+        if (StringUtils.isEmpty(key) || value == null) {
             return;
         }
         ByteArrayOutputStream baos = null;
@@ -270,7 +270,7 @@ public class AppCacheUtils {
      * @return String 数据
      */
     public String getString(String key) {
-        if(StringUtils.isEmpty(key)) {
+        if (StringUtils.isEmpty(key)) {
             return null;
         }
         File file = newFile(key);
@@ -306,7 +306,7 @@ public class AppCacheUtils {
      * @return Serializable 数据
      */
     public Object getObject(String key) {
-        if ( StringUtils.isEmpty(key) ) {
+        if (StringUtils.isEmpty(key)) {
             return null;
         }
         byte[] data = getBinary(key);
@@ -323,12 +323,16 @@ public class AppCacheUtils {
                 return null;
             } finally {
                 try {
-                    if (bais != null) { bais.close(); }
+                    if (bais != null) {
+                        bais.close();
+                    }
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
                 try {
-                    if (ois != null) { ois.close(); }
+                    if (ois != null) {
+                        ois.close();
+                    }
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -343,17 +347,19 @@ public class AppCacheUtils {
      * @return byte 数据
      */
     public byte[] getBinary(String key) {
-        if ( StringUtils.isEmpty(key) ) {
+        if (StringUtils.isEmpty(key)) {
             return null;
         }
         RandomAccessFile rAFile = null;
         byte[] byteArray = null;
         try {
             File file = newFile(key);
-            if (!file.exists()) { return null; }
+            if (!file.exists()) {
+                return null;
+            }
             rAFile = new RandomAccessFile(file, "r");
             long fLength = rAFile.length();
-            if ( fLength != 0 ) {
+            if (fLength != 0) {
                 byteArray = new byte[(int) rAFile.length()];
                 rAFile.read(byteArray);
             }
@@ -409,11 +415,13 @@ public class AppCacheUtils {
 
     /**
      * 移除缓存
+     *
      * @param key
      */
     public void remove(String key) {
         try {
             newFile(key).delete();
-        } catch (Exception e){}
+        } catch (Exception e) {
+        }
     }
 }

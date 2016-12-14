@@ -78,10 +78,10 @@ public class ViewUtil {
     }
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-    static boolean isFitsSystemWindows(final Activity activity){
+    static boolean isFitsSystemWindows(final Activity activity) {
         //noinspection SimplifiableIfStatement
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            return ((ViewGroup)activity.findViewById(android.R.id.content)).getChildAt(0).
+            return ((ViewGroup) activity.findViewById(android.R.id.content)).getChildAt(0).
                     getFitsSystemWindows();
         }
 

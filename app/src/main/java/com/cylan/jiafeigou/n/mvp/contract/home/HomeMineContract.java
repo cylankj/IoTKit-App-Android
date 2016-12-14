@@ -7,7 +7,6 @@ import android.support.annotation.UiThread;
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
-import com.cylan.jiafeigou.n.mvp.model.UserInfoBean;
 
 import rx.Subscription;
 
@@ -26,14 +25,17 @@ public interface HomeMineContract {
         void onBlur(Drawable drawable);
 
         void setUserImageHead(Drawable drawable);
+
         /**
          * 设置昵称
+         *
          * @param name
          */
         void setAliasName(String name);
 
         /**
          * 通过URL设置头像
+         *
          * @param url
          */
         void setUserImageHead(String url);
@@ -47,20 +49,24 @@ public interface HomeMineContract {
     interface Presenter extends BasePresenter {
 
         void requestLatestPortrait();
+
         /**
          * 设置头像的背景
+         *
          * @param id
          */
         void portraitBlur(@DrawableRes int id);
 
         /**
          * 设置头像
+         *
          * @param url
          */
         void portraitUpdateByUrl(String url);
 
         /**
          * 产生随机的昵称
+         *
          * @return
          */
         String createRandomName();
@@ -72,12 +78,14 @@ public interface HomeMineContract {
 
         /**
          * 获取到登录用户的bean
+         *
          * @return
          */
         JFGAccount getUserInfoBean();
 
         /**
          * 判断是否是三方登录
+         *
          * @return
          */
         boolean checkOpenLogIn();

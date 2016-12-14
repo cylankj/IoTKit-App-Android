@@ -52,7 +52,6 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 
-
 /**
  * 创建者     谢坤
  * 创建时间   2016/8/9 10:02
@@ -135,11 +134,11 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
         int way = LocaleUtils.getLanguageType(getActivity());
         if (way != JConstant.LOCALE_SIMPLE_CN) {
             mRlayout_setPersonPhone.setVisibility(View.GONE);
-        }else {
+        } else {
             mRlayout_setPersonPhone.setVisibility(View.VISIBLE);
         }
 
-        if (presenter.checkOpenLogin()){
+        if (presenter.checkOpenLogin()) {
             rlChangePassword.setVisibility(View.GONE);
         }
 
@@ -148,7 +147,7 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
     @Override
     public void onResume() {
         super.onResume();
-        if (presenter != null)presenter.start();
+        if (presenter != null) presenter.start();
     }
 
     private void initPresenter() {
@@ -158,7 +157,7 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
     @Override
     public void onStop() {
         super.onStop();
-        if (presenter != null)presenter.stop();
+        if (presenter != null) presenter.stop();
     }
 
     @OnClick({R.id.iv_home_mine_personal_back, R.id.btn_home_mine_personal_information,
@@ -219,7 +218,7 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
      */
     private void jump2ChangePasswordFragment() {
         Bundle bundle = new Bundle();
-        bundle.putSerializable("userinfo",argumentData);
+        bundle.putSerializable("userinfo", argumentData);
         setPassWordFragment = MineInfoSetPassWordFragment.newInstance(bundle);
         getFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
@@ -234,7 +233,7 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
      */
     private void jump2SetUserNameFragment() {
         Bundle bundle = new Bundle();
-        bundle.putSerializable("userinfo",argumentData);
+        bundle.putSerializable("userinfo", argumentData);
         setUserNameFragment = MineSetUserNameFragment.newInstance(bundle);
         getFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
@@ -258,7 +257,7 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
      */
     private void lookBigImageHead() {
         Bundle bundle = new Bundle();
-        bundle.putString("imageUrl",argumentData.getPhotoUrl());
+        bundle.putString("imageUrl", argumentData.getPhotoUrl());
         bigHeadFragment = MineUserInfoLookBigHeadFragment.newInstance(bundle);
         getFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
@@ -270,11 +269,11 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
 
     @Override
     public void initPersonalInformation(JFGAccount bean) {
-        if (bean != null){
+        if (bean != null) {
             argumentData = bean;
             //头像的回显
             String photoUrl = bean.getPhotoUrl();
-            if ("".equals(bean.getPhotoUrl())){
+            if ("".equals(bean.getPhotoUrl())) {
                 photoUrl = PreferencesUtils.getString("UserImageUrl");
             }
 
@@ -295,18 +294,18 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
 
             tvUserName.setText(bean.getAlias());
 
-            if (bean.getEmail() == null | "".equals(bean.getEmail())){
+            if (bean.getEmail() == null | "".equals(bean.getEmail())) {
                 mTvMailBox.setText(getString(R.string.NO_SET));
-            }else {
+            } else {
                 mTvMailBox.setText(bean.getEmail());
             }
 
-            if(bean.getPhone() == null && "".equals(bean.getPhone())){
+            if (bean.getPhone() == null && "".equals(bean.getPhone())) {
                 tvHomeMinePersonalPhone.setText(getString(R.string.NO_SET));
-            }else {
+            } else {
                 tvHomeMinePersonalPhone.setText(bean.getPhone());
             }
-        }else {
+        } else {
             Glide.with(getContext()).load(PreferencesUtils.getString("UserImageUrl"))
                     .asBitmap().centerCrop()
                     .error(R.drawable.icon_mine_head_normal)
@@ -326,7 +325,7 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
     @Override
     public void jump2SetEmailFragment() {
         Bundle bundle = new Bundle();
-        bundle.putSerializable("userinfo",argumentData);
+        bundle.putSerializable("userinfo", argumentData);
         mailBoxFragment = HomeMineInfoMailBoxFragment.newInstance(bundle);
         getFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
@@ -353,25 +352,25 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
             @Override
             public void onClick(View v) {
                 //打开相机
-                if (presenter.checkHasCamera()){
+                if (presenter.checkHasCamera()) {
 
-                    if(presenter.checkCameraPermission()){
+                    if (presenter.checkCameraPermission()) {
 
-                        if (presenter.cameraIsCanUse()){
+                        if (presenter.cameraIsCanUse()) {
                             openCamera();
                             alertDialog.dismiss();
-                        }else {
+                        } else {
                             ToastUtil.showToast("相机不可用");
                         }
 
-                    }else {
+                    } else {
                         //申请权限
                         ActivityCompat.requestPermissions(getActivity(),
                                 new String[]{Manifest.permission.CAMERA},
                                 1);
                     }
 
-                }else {
+                } else {
                     ToastUtil.showToast("没有相机");
                 }
             }
@@ -380,9 +379,9 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
         view.findViewById(R.id.tv_pick_from_grallery).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (presenter.checkExternalStorePermission()){
+                if (presenter.checkExternalStorePermission()) {
                     openGallery();
-                }else {
+                } else {
                     //申请权限
                     ActivityCompat.requestPermissions(getActivity(),
                             new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
@@ -421,12 +420,12 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
         intent.putExtra(MediaStore.EXTRA_OUTPUT, outPutUri);
-        startActivityForResult(intent,OPEN_CAMERA);
+        startActivityForResult(intent, OPEN_CAMERA);
     }
 
     private void jump2SetPhoneFragment() {
         Bundle bundle = new Bundle();
-        bundle.putSerializable("userinfo",argumentData);
+        bundle.putSerializable("userinfo", argumentData);
         bindPhoneFragment = MineInfoBindPhoneFragment.newInstance(bundle);
         getFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
@@ -450,13 +449,13 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
 //                LoadingDialog.showLoading(getFragmentManager(),"正在退出...");
-                if (getView() != null){
+                if (getView() != null) {
                     getView().postDelayed(new Runnable() {
                         @Override
                         public void run() {
                             presenter.logOut();
                         }
-                    },2000);
+                    }, 2000);
                 }
 
             }
@@ -475,9 +474,9 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
     @Override
     public void logOutResult(int logout) {
         LoadingDialog.dismissLoading(getFragmentManager());
-        if (logout == JError.ErrorOK){
+        if (logout == JError.ErrorOK) {
             getFragmentManager().popBackStack();
-        }else {
+        } else {
             ToastUtil.showNegativeToast("退出登录失败");
         }
     }
@@ -487,14 +486,14 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == Constants.REQUEST_CODE && data != null) {
             gotoClipActivity(Uri.parse(data.getStringExtra(Constants.INTENT_EXTRA_IMAGES)));
-        }else if (requestCode == REQUEST_CROP_PHOTO && data != null){
+        } else if (requestCode == REQUEST_CROP_PHOTO && data != null) {
             final Uri uri = data.getData();
             if (uri == null) {
                 return;
             }
             String cropImagePath = getRealFilePathFromUri(getContext(), uri);
-            PreferencesUtils.putString("UserImageUrl",cropImagePath);
-        }else if (requestCode == OPEN_CAMERA){
+            PreferencesUtils.putString("UserImageUrl", cropImagePath);
+        } else if (requestCode == OPEN_CAMERA) {
             if (resultCode == getActivity().RESULT_OK) {
                 gotoClipActivity(outPutUri);
             }
@@ -562,13 +561,13 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == 1){
+        if (requestCode == 1) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 openCamera();
             } else {
                 ToastUtil.showNegativeToast(getString(R.string.Tap0_Authorizationfailed));
             }
-        }else if (requestCode == 2){
+        } else if (requestCode == 2) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 openGallery();
             } else {

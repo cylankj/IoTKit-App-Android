@@ -6,10 +6,9 @@ import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendAddReqDetailContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.n.mvp.model.MineAddReqBean;
+import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.rx.RxBus;
-
 
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -33,7 +32,7 @@ public class MineFriendAddReqDetailPresenterImp extends AbstractPresenter<MineFr
 
     @Override
     public void start() {
-        if (compositeSubscription != null && !compositeSubscription.isUnsubscribed()){
+        if (compositeSubscription != null && !compositeSubscription.isUnsubscribed()) {
             compositeSubscription.unsubscribe();
         }
         compositeSubscription = new CompositeSubscription();
@@ -43,8 +42,8 @@ public class MineFriendAddReqDetailPresenterImp extends AbstractPresenter<MineFr
 
     @Override
     public void stop() {
-        if (compositeSubscription != null){
-            if (!compositeSubscription.isUnsubscribed()){
+        if (compositeSubscription != null) {
+            if (!compositeSubscription.isUnsubscribed()) {
                 unSubscribe(compositeSubscription);
             }
         }
@@ -69,30 +68,32 @@ public class MineFriendAddReqDetailPresenterImp extends AbstractPresenter<MineFr
                 }, new Action1<Throwable>() {
                     @Override
                     public void call(Throwable throwable) {
-                        AppLogger.e("handlerAddAsFriend"+throwable.getLocalizedMessage());
+                        AppLogger.e("handlerAddAsFriend" + throwable.getLocalizedMessage());
                     }
                 });
     }
 
     /**
      * 判断添加请求是否过期
+     *
      * @param addRequestItems
      * @return
      */
     @Override
     public void checkAddReqOutTime(MineAddReqBean addRequestItems) {
         //true 过期 false未过期
-        if ((System.currentTimeMillis() - addRequestItems.time) > 30*24*60*1000 ){
-            if (getView() != null){
+        if ((System.currentTimeMillis() - addRequestItems.time) > 30 * 24 * 60 * 1000) {
+            if (getView() != null) {
                 getView().showReqOutTimeDialog();
             }
-        }else {
+        } else {
             handlerAddAsFriend(addRequestItems.account);
         }
     }
 
     /**
      * 发送好友添加请求
+     *
      * @param addRequestItems
      */
     @Override
@@ -103,7 +104,7 @@ public class MineFriendAddReqDetailPresenterImp extends AbstractPresenter<MineFr
                     @Override
                     public void call(MineAddReqBean mineAddReqBean) {
                         try {
-                            JfgCmdInsurance.getCmd().addFriend(mineAddReqBean.account,"");
+                            JfgCmdInsurance.getCmd().addFriend(mineAddReqBean.account, "");
                         } catch (JfgException e) {
                             e.printStackTrace();
                         }
@@ -111,13 +112,14 @@ public class MineFriendAddReqDetailPresenterImp extends AbstractPresenter<MineFr
                 }, new Action1<Throwable>() {
                     @Override
                     public void call(Throwable throwable) {
-                        AppLogger.e("sendAddReq"+throwable.getLocalizedMessage());
+                        AppLogger.e("sendAddReq" + throwable.getLocalizedMessage());
                     }
                 });
     }
 
     /**
      * 判断是否向我发送过添加请求
+     *
      * @return
      */
     @Override
@@ -127,11 +129,11 @@ public class MineFriendAddReqDetailPresenterImp extends AbstractPresenter<MineFr
                 .subscribe(new Action1<RxEvent.GetAddReqList>() {
                     @Override
                     public void call(RxEvent.GetAddReqList getAddReqList) {
-                        if (getAddReqList != null && getAddReqList instanceof RxEvent.GetAddReqList){
-                            if (getAddReqList.arrayList.size() == 0){
+                        if (getAddReqList != null && getAddReqList instanceof RxEvent.GetAddReqList) {
+                            if (getAddReqList.arrayList.size() == 0) {
                                 // 未向我发送过请求
-                                if (getView() != null)getView().jump2AddReqFragment();
-                            }else {
+                                if (getView() != null) getView().jump2AddReqFragment();
+                            } else {
                                 // 判断是否包含该账号
                                 if (getView() != null) getView().isHasAccountResult(getAddReqList);
                             }
@@ -156,7 +158,7 @@ public class MineFriendAddReqDetailPresenterImp extends AbstractPresenter<MineFr
                 }, new Action1<Throwable>() {
                     @Override
                     public void call(Throwable throwable) {
-                        AppLogger.e("excuteGetAddReqlistData"+throwable.getLocalizedMessage());
+                        AppLogger.e("excuteGetAddReqlistData" + throwable.getLocalizedMessage());
                     }
                 });
     }

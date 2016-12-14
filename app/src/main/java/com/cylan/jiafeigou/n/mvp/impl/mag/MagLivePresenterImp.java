@@ -155,7 +155,7 @@ public class MagLivePresenterImp extends AbstractPresenter<MagLiveContract.View>
         } catch (DbException e) {
             e.printStackTrace();
         }
-        Collections.sort(allData,new SortComparator());
+        Collections.sort(allData, new SortComparator());
         return allData;
     }
 
@@ -188,7 +188,7 @@ public class MagLivePresenterImp extends AbstractPresenter<MagLiveContract.View>
     /**
      * 按时间排序
      */
-    public class SortComparator implements Comparator<MagBean>{
+    public class SortComparator implements Comparator<MagBean> {
         @Override
         public int compare(MagBean lhs, MagBean rhs) {
             return (int) (rhs.magTime - lhs.magTime);
