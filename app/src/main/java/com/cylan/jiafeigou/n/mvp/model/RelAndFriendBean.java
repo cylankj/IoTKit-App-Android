@@ -31,7 +31,6 @@ public class RelAndFriendBean implements Parcelable {
         dest.writeString(this.account);
         dest.writeString(this.markName);
         dest.writeInt(this.isCheckFlag);
-
     }
 
     protected RelAndFriendBean(Parcel in) {

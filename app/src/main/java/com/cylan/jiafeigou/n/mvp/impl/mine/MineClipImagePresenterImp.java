@@ -95,8 +95,9 @@ public class MineClipImagePresenterImp extends AbstractPresenter<MineClipImageCo
                     @Override
                     public void call(Object o) {
                         if (jfgAccount != null){
-                            jfgAccount.setPhoto(true);
                             try {
+                                jfgAccount.resetFlag();
+                                jfgAccount.setPhoto(true);
                                 JfgCmdInsurance.getCmd().setAccount(jfgAccount);
                             } catch (JfgException e) {
                                 e.printStackTrace();

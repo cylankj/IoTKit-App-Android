@@ -26,7 +26,6 @@ import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.support.photoselect.adapters.CustomImageSelectAdapter;
 import com.cylan.jiafeigou.support.photoselect.helpers.Constants;
 import com.cylan.jiafeigou.support.photoselect.models.Image;
-import com.cylan.jiafeigou.widget.LoadingDialog;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -71,7 +70,6 @@ public class ImageSelectActivity extends HelperActivity {
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                LoadingDialog.showLoading(getSupportFragmentManager(),getString(R.string.LOADING));
                 Intent intent = new Intent();
                 intent.putExtra(Constants.INTENT_EXTRA_IMAGES,images.get(position).path);
                 setResult(RESULT_OK, intent);
@@ -166,7 +164,6 @@ public class ImageSelectActivity extends HelperActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        LoadingDialog.dismissLoading(getSupportFragmentManager());
         images = null;
         if (adapter != null) {
             adapter.releaseResources();

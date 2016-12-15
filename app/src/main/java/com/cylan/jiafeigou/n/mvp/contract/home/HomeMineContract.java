@@ -7,7 +7,10 @@ import android.support.annotation.UiThread;
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
+import com.cylan.jiafeigou.n.mvp.model.MineMessageBean;
 import com.cylan.jiafeigou.n.mvp.model.UserInfoBean;
+
+import java.util.ArrayList;
 
 import rx.Subscription;
 
@@ -93,5 +96,16 @@ public interface HomeMineContract {
          */
         Subscription getMesgDpDataCallBack();
 
+        /**
+         * 获取的消息的所有的数据
+         * @return
+         */
+        ArrayList<MineMessageBean> getMesgAllData();
+
+        /**
+         * 获取是否三方登录的回调
+         * @return
+         */
+        Subscription checkIsOpenLoginCallBack();
     }
 }

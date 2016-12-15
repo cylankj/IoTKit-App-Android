@@ -276,7 +276,7 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
             argumentData = bean;
             //头像的回显
             String photoUrl = bean.getPhotoUrl();
-            if ("".equals(bean.getPhotoUrl())){
+            if (TextUtils.isEmpty(bean.getPhotoUrl())){
                 photoUrl = PreferencesUtils.getString("UserImageUrl");
             }
 
@@ -300,13 +300,13 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
 
             tvUserName.setText(TextUtils.isEmpty(bean.getAlias())? getString(R.string.NO_SET) : bean.getAlias());
 
-            if (bean.getEmail() == null | "".equals(bean.getEmail())){
+            if (bean.getEmail() == null | TextUtils.isEmpty(bean.getEmail())){
                 mTvMailBox.setText(getString(R.string.NO_SET));
             }else {
                 mTvMailBox.setText(bean.getEmail());
             }
 
-            if("".equals(bean.getPhone())){
+            if(TextUtils.isEmpty(bean.getPhone())){
                 tvHomeMinePersonalPhone.setText(getString(R.string.NO_SET));
             }else {
                 tvHomeMinePersonalPhone.setText(bean.getPhone());
@@ -371,7 +371,7 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
 
                     }else {
                         //申请权限
-                        ActivityCompat.requestPermissions(getActivity(),
+                        HomeMineInfoFragment.this.requestPermissions(
                                 new String[]{Manifest.permission.CAMERA},
                                 1);
                     }
@@ -389,7 +389,7 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
                     openGallery();
                 }else {
                     //申请权限
-                    ActivityCompat.requestPermissions(getActivity(),
+                    HomeMineInfoFragment.this.requestPermissions(
                             new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
                             2);
                 }
@@ -490,18 +490,20 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == Constants.REQUEST_CODE && data != null) {
-            gotoClipActivity(Uri.parse(data.getStringExtra(Constants.INTENT_EXTRA_IMAGES)));
-        }else if (requestCode == REQUEST_CROP_PHOTO && data != null){
-            final Uri uri = data.getData();
-            if (uri == null) {
-                return;
-            }
-            String cropImagePath = getRealFilePathFromUri(getContext(), uri);
-            PreferencesUtils.putString("UserImageUrl",cropImagePath);
-        }else if (requestCode == OPEN_CAMERA){
-            if (resultCode == getActivity().RESULT_OK) {
-                gotoClipActivity(outPutUri);
+        if (resultCode != getActivity().RESULT_CANCELED){
+            if (requestCode == Constants.REQUEST_CODE && data != null) {
+                gotoClipActivity(Uri.parse(data.getStringExtra(Constants.INTENT_EXTRA_IMAGES)));
+            }else if (requestCode == REQUEST_CROP_PHOTO && data != null){
+                final Uri uri = data.getData();
+                if (uri == null) {
+                    return;
+                }
+                String cropImagePath = getRealFilePathFromUri(getContext(), uri);
+                PreferencesUtils.putString("UserImageUrl",cropImagePath);
+            }else if (requestCode == OPEN_CAMERA){
+                if (resultCode == getActivity().RESULT_OK) {
+                    gotoClipActivity(outPutUri);
+                }
             }
         }
     }

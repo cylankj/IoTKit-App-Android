@@ -358,7 +358,6 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
      */
     @Override
     public void handlerVideoTalk() {
-        getView().showReconnetProgress();
         checkDeviceOnLineSub = Observable.just(null)
                 .map(new Func1<Object, Boolean>() {
                     @Override
@@ -372,7 +371,6 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
                 .subscribe(new Action1<Boolean>() {
                     @Override
                     public void call(Boolean aBoolean) {
-                        getView().hideReconnetProgress();
                         getView().handlerVideoTalkResult(aBoolean);
                     }
                 });
@@ -383,7 +381,6 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
      */
     @Override
     public void handlerLeveaMesg() {
-        getView().showReconnetProgress();
         leaveMesgSub = Observable.just(null)
                 .delay(1000, TimeUnit.MILLISECONDS)
                 .map(new Func1<Object, Boolean>() {
@@ -398,7 +395,6 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
                 .subscribe(new Action1<Boolean>() {
                     @Override
                     public void call(Boolean aBoolean) {
-                        getView().hideReconnetProgress();
                         getView().showVoiceTalkDialog(aBoolean);
                     }
                 });

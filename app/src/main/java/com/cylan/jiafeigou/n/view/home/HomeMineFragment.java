@@ -1,9 +1,11 @@
 package com.cylan.jiafeigou.n.view.home;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -78,9 +80,8 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
         super.onCreate(savedInstanceState);
         this.basePresenter = new HomeMinePresenterImpl(this);
         mineHelpFragment = HomeMineHelpFragment.newInstance(new Bundle());
-
         homeSettingFragment = HomeSettingFragment.newInstance();
-        homeMineMessageFragment = HomeMineMessageFragment.newInstance();
+
         mineShareDeviceFragment = MineShareDeviceFragment.newInstance();
         mineRelativesandFriendsFragment = MineFriendsFragment.newInstance();
     }
@@ -158,7 +159,7 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
                         , R.anim.slide_in_left, R.anim.slide_out_right)
                 .add(android.R.id.content, mineRelativesandFriendsFragment,
                         "mineRelativesandFriendsFragment")
-                .addToBackStack("mineHelpFragment")
+                .addToBackStack("HomeMineFragment")
                 .commit();
     }
 
@@ -193,7 +194,7 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
                         , R.anim.slide_in_left, R.anim.slide_out_right)
                 .add(android.R.id.content, homeSettingFragment,
                         "homeSettingFragment")
-                .addToBackStack("mineHelpFragment")
+                .addToBackStack("HomeMineFragment")
                 .commit();
     }
 
@@ -206,7 +207,7 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                         , R.anim.slide_in_left, R.anim.slide_out_right)
                 .add(android.R.id.content, mineShareDeviceFragment, "mineShareDeviceFragment")
-                .addToBackStack("mineHelpFragment")
+                .addToBackStack("HomeMineFragment")
                 .commit();
     }
 
@@ -349,9 +350,8 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                         , R.anim.slide_in_left, R.anim.slide_out_right)
                 .add(android.R.id.content, mineHelpFragment, "mineHelpFragment")
-                .addToBackStack("mineHelpFragment")
+                .addToBackStack("HomeMineFragment")
                 .commit();
-
     }
 
     /**
@@ -362,11 +362,14 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
             needStartLoginFragment();
             return;
         }
+        Bundle bundle = new Bundle();
+        bundle.putParcelableArrayList("mesgdata",basePresenter.getMesgAllData());
+        homeMineMessageFragment = HomeMineMessageFragment.newInstance(bundle);
         getFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                         , R.anim.slide_in_left, R.anim.slide_out_right)
                 .add(android.R.id.content, homeMineMessageFragment, "homeMineMessageFragment")
-                .addToBackStack("personalInformationFragment")
+                .addToBackStack("HomeMineFragment")
                 .commit();
     }
 
@@ -390,7 +393,7 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                         , R.anim.slide_in_left, R.anim.slide_out_right)
                 .add(android.R.id.content, personalInformationFragment, "personalInformationFragment")
-                .addToBackStack("personalInformationFragment")
+                .addToBackStack("HomeMineFragment")
                 .commit();
     }
 
@@ -405,7 +408,14 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                         , R.anim.slide_in_left, R.anim.slide_out_right)
                 .add(android.R.id.content, bindPhoneFragment, "bindPhoneFragment")
-                .addToBackStack("personalInformationFragment")
+                .addToBackStack("HomeMineFragment")
                 .commit();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Fragment mineInfoFragment = getFragmentManager().findFragmentByTag("personalInformationFragment");
+        mineInfoFragment.onActivityResult(requestCode,resultCode,data);
     }
 }

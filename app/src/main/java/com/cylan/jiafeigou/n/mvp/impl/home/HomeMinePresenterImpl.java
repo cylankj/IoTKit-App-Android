@@ -5,6 +5,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.DrawableRes;
+import android.text.TextUtils;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
@@ -13,16 +14,22 @@ import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.entity.jniCall.RobotoGetDataRsp;
 import com.cylan.ex.JfgException;
+import com.cylan.jiafeigou.dp.DpUtils;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeMineContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
+import com.cylan.jiafeigou.n.mvp.model.MineMessageBean;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.utils.BitmapUtil;
 import com.cylan.utils.FastBlurUtil;
 
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.Random;
 
 import rx.Observable;
@@ -47,6 +54,8 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
     private Subscription onLoadUserHeadSubscribtion;
     private CompositeSubscription subscription;
     private JFGAccount userInfo;                          //用户信息bean
+    private ArrayList<MineMessageBean> results = new ArrayList<MineMessageBean>();
+    private boolean isOpenLogin = false;
 
     public HomeMinePresenterImpl(HomeMineContract.View view) {
         super(view);
@@ -70,9 +79,10 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
             subscription.unsubscribe();
         }
             subscription = new CompositeSubscription();
+            subscription.add(checkIsOpenLoginCallBack());
             subscription.add(initData());
-            subscription.add(getMesgDpDataCallBack());
             subscription.add(getMesgDpData());
+            subscription.add(getMesgDpDataCallBack());
     }
 
     @Override
@@ -211,7 +221,7 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
                             userInfo = getUserInfo.jfgAccount;
                             if (getView() != null){
                                 getView().setUserImageHead(userInfo.getPhotoUrl());
-                                if (userInfo.getAlias() == null | "".equals(userInfo.getAlias())){
+                                if (userInfo.getAlias() == null | TextUtils.isEmpty(userInfo.getAlias())){
                                     userInfo.setAlias(createRandomName());
                                 }
                                 getView().setAliasName(userInfo.getAlias());
@@ -236,8 +246,7 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
      */
     @Override
     public boolean checkOpenLogIn() {
-        // TODO
-        return false;
+        return isOpenLogin;
     }
 
     /**
@@ -254,7 +263,7 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
                             ArrayList<JFGDPMsg> dp = new ArrayList<>();
                             JFGDPMsg msg = new JFGDPMsg(601, 0);
                             dp.add(msg);
-                            long seq = JfgCmdInsurance.getCmd().getInstance().robotGetData("", dp, 20, false, 0);
+                            long seq = JfgCmdInsurance.getCmd().getInstance().robotGetData("",dp,0,false, 0);
                             AppLogger.d("getMesgDpData"+seq);
                         } catch (JfgException e) {
                             e.printStackTrace();
@@ -275,16 +284,73 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
     @Override
     public Subscription getMesgDpDataCallBack() {
         return RxBus.getCacheInstance().toObservable(RobotoGetDataRsp.class)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<RobotoGetDataRsp>() {
+                .subscribeOn(Schedulers.io())
+                .map(new Func1<RobotoGetDataRsp, ArrayList<MineMessageBean>>() {
                     @Override
-                    public void call(RobotoGetDataRsp robotoGetDataRsp) {
+                    public ArrayList<MineMessageBean> call(RobotoGetDataRsp robotoGetDataRsp) {
                         if (robotoGetDataRsp != null && robotoGetDataRsp instanceof RobotoGetDataRsp){
-//                            int size = robotoGetDataRsp.map.get(0).size();
-//                            getView().setMesgNumber(size);
+                            results.clear();
+                            ArrayList<JFGDPMsg> jfgdpMsgs = robotoGetDataRsp.map.get(601);
+                            results.addAll(convertData(jfgdpMsgs));
+                        }
+                        return results;
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<ArrayList<MineMessageBean>>() {
+                    @Override
+                    public void call(ArrayList<MineMessageBean> list) {
+                        if (list.size() != 0){
+                            getView().setMesgNumber(list.size());
                         }
                     }
                 });
+
+    }
+
+    /**
+     * 拿到消息的所有的数据
+     * @return
+     */
+    @Override
+    public ArrayList<MineMessageBean> getMesgAllData() {
+        return results;
+    }
+
+    /**
+     * 是否三方登录的回调
+     * @return
+     */
+    @Override
+    public Subscription checkIsOpenLoginCallBack() {
+        return RxBus.getCacheInstance().toObservableSticky(Boolean.class)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<Boolean>() {
+                    @Override
+                    public void call(Boolean aBoolean) {
+                        isOpenLogin = aBoolean;
+                    }
+                });
+    }
+
+    /**
+     * 解析转换数据
+     * @param jfgdpMsgs
+     */
+    private ArrayList<MineMessageBean> convertData(ArrayList<JFGDPMsg> jfgdpMsgs) {
+        MineMessageBean bean;
+        ArrayList<MineMessageBean> results = new ArrayList<MineMessageBean>();
+        if (jfgdpMsgs != null){
+            for (JFGDPMsg jfgdpMsg:jfgdpMsgs){
+                try {
+                    bean = DpUtils.unpackData(jfgdpMsg.packValue,MineMessageBean.class);
+                    results.add(bean);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return results;
     }
 
 }

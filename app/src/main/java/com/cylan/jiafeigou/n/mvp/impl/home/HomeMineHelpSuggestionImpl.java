@@ -3,6 +3,7 @@ package com.cylan.jiafeigou.n.mvp.impl.home;
 import android.content.Context;
 
 import com.cylan.entity.jniCall.JFGAccount;
+import com.cylan.entity.jniCall.JFGFeedbackInfo;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.db.DataBaseUtil;
@@ -56,6 +57,7 @@ public class HomeMineHelpSuggestionImpl extends AbstractPresenter<HomeMineHelpSu
         }else {
             compositeSubscription = new CompositeSubscription();
             compositeSubscription.add(getAccountInfo());
+            compositeSubscription.add(getSystemAutoReplyCallBack());
         }
     }
 
@@ -203,4 +205,46 @@ public class HomeMineHelpSuggestionImpl extends AbstractPresenter<HomeMineHelpSu
                     }
                 });
     }
+
+    /**
+     * 获取系统的自动回复
+     */
+    @Override
+    public void getSystemAutoReply() {
+        rx.Observable.just(null)
+            .subscribeOn(Schedulers.newThread())
+            .subscribe(new Action1<Object>() {
+                @Override
+                public void call(Object o) {
+//                    JfgCmdInsurance.getCmd().getFeedbackList();
+                }
+            }, new Action1<Throwable>() {
+                @Override
+                public void call(Throwable throwable) {
+                    AppLogger.e("getSystemAutoReply"+throwable.getLocalizedMessage());
+                }
+            });
+    }
+
+    /**
+     * 获取系统自动回复的回调
+     * @return
+     */
+    @Override
+    public Subscription getSystemAutoReplyCallBack() {
+        return RxBus.getCacheInstance().toObservable(RxEvent.GetFeedBackRsp.class)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<RxEvent.GetFeedBackRsp>() {
+                    @Override
+                    public void call(RxEvent.GetFeedBackRsp getFeedBackRsp) {
+                        if (getFeedBackRsp != null && getFeedBackRsp instanceof RxEvent.GetFeedBackRsp){
+                            if(getView() != null && getFeedBackRsp.arrayList.size() != 0){
+                                JFGFeedbackInfo jfgFeedbackInfo = getFeedBackRsp.arrayList.get(0);
+                                getView().addSystemAutoReply(jfgFeedbackInfo.time,jfgFeedbackInfo.msg);
+                            }
+                        }
+                    }
+                });
+    }
+
 }

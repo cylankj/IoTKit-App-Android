@@ -19,7 +19,13 @@ public interface MineFriendsAddFriendContract {
          * 检测联系人权限
          * @return
          */
-        boolean checkPermission();
+        boolean checkContractPermission();
+
+        /**
+         * 检测相机的权限
+         * @return
+         */
+        boolean checkCameraPermission();
     }
 
 }

@@ -16,6 +16,7 @@ import com.cylan.jiafeigou.n.mvp.impl.mine.MineFriendScanAddPresenterImp;
 import com.cylan.jiafeigou.n.mvp.model.MineAddReqBean;
 import com.cylan.jiafeigou.support.zscan.ZXingScannerView;
 import com.cylan.jiafeigou.utils.ToastUtil;
+import com.cylan.jiafeigou.widget.LoadingDialog;
 import com.google.zxing.Result;
 
 import butterknife.BindView;
@@ -58,7 +59,6 @@ public class MineFriendScanAddFragment extends Fragment implements ZXingScannerV
         View view = inflater.inflate(R.layout.fragment_mine_friend_scan_add, container, false);
         ButterKnife.bind(this, view);
         initView();
-//        showQrCode(presenter.encodeAsBitmap("1234", presenter.getDimension()));
         return view;
     }
 
@@ -140,7 +140,7 @@ public class MineFriendScanAddFragment extends Fragment implements ZXingScannerV
      */
     @Override
     public void showLoadingPro() {
-        rlSendProHint.setVisibility(View.VISIBLE);
+        LoadingDialog.showLoading(getFragmentManager(),getString(R.string.LOADING));
     }
 
     /**
@@ -148,7 +148,7 @@ public class MineFriendScanAddFragment extends Fragment implements ZXingScannerV
      */
     @Override
     public void hideLoadingPro() {
-        rlSendProHint.setVisibility(View.INVISIBLE);
+        LoadingDialog.dismissLoading(getFragmentManager());
     }
 
     @Override

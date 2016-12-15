@@ -3,6 +3,7 @@ package com.cylan.jiafeigou.n.view.home;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -44,9 +45,19 @@ public class HomeMineMessageFragment extends Fragment implements HomeMineMessage
 
     private HomeMineMessageContract.Presenter presenter;
     private HomeMineMessageAdapter messageAdapter;
+    private ArrayList<MineMessageBean> mesgdata;
 
-    public static HomeMineMessageFragment newInstance() {
-        return new HomeMineMessageFragment();
+    public static HomeMineMessageFragment newInstance(Bundle bundle) {
+        HomeMineMessageFragment fragment = new HomeMineMessageFragment();
+        fragment.setArguments(bundle);
+        return fragment;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Bundle arguments = getArguments();
+        mesgdata = arguments.getParcelableArrayList("mesgdata");
     }
 
     @Nullable
@@ -59,7 +70,7 @@ public class HomeMineMessageFragment extends Fragment implements HomeMineMessage
     }
 
     private void initPresenter() {
-        presenter = new HomeMineMessagePresenterImp(this);
+        presenter = new HomeMineMessagePresenterImp(this,mesgdata);
     }
 
     @Override

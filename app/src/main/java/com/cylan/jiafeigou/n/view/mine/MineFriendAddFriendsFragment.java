@@ -5,7 +5,6 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -88,21 +87,26 @@ public class MineFriendAddFriendsFragment extends Fragment implements MineFriend
                 if (getView() != null)
                     ViewUtils.deBounceClick(getView().findViewById(R.id.tv_scan_add));
                 AppLogger.d("tv_scan_add");
-                jump2ScanAddFragment();
+                if (presenter.checkCameraPermission()){
+                    jump2ScanAddFragment();
+                }else {
+                    MineFriendAddFriendsFragment.this.requestPermissions(
+                            new String[]{Manifest.permission.CAMERA},
+                            2);
+                }
                 break;
 
             case R.id.tv_add_from_contract:                             //从通讯录添加
                 if (getView() != null)
                     ViewUtils.deBounceClick(getView().findViewById(R.id.tv_add_from_contract));
                 AppLogger.d("tv_add_from_contract");
-                if (presenter.checkPermission()){
+                if (presenter.checkContractPermission()){
                     jump2AddFromContactFragment();
                 }else {
-                    ActivityCompat.requestPermissions(getActivity(),
+                    MineFriendAddFriendsFragment.this.requestPermissions(
                             new String[]{Manifest.permission.READ_CONTACTS},
                             1);
                 }
-
                 break;
 
             case R.id.et_friend_phonenumber:                            //根据对方账号添加
@@ -134,9 +138,9 @@ public class MineFriendAddFriendsFragment extends Fragment implements MineFriend
 
     private void jump2ScanAddFragment() {
         getFragmentManager().beginTransaction()
-//                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
-//                        , R.anim.slide_in_left, R.anim.slide_out_right)
-                .add(android.R.id.content, scanAddFragment, "scanAddFragment")
+                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
+                        , R.anim.slide_in_left, R.anim.slide_out_right)
+                .add(android.R.id.content, scanAddFragment,"scanAddFragment")
                 .addToBackStack("mineHelpFragment")
                 .commit();
     }
@@ -147,6 +151,12 @@ public class MineFriendAddFriendsFragment extends Fragment implements MineFriend
         if (requestCode == 1){
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 jump2AddFromContactFragment();
+            } else {
+                ToastUtil.showNegativeToast(getString(R.string.Tap0_Authorizationfailed));
+            }
+        }else if (requestCode == 2){
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                jump2ScanAddFragment();
             } else {
                 ToastUtil.showNegativeToast(getString(R.string.Tap0_Authorizationfailed));
             }

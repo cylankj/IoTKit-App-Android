@@ -78,20 +78,17 @@ public class MineUserInfoLookBigHeadFragment extends Fragment implements MineUse
                     @Override
                     public void onLoadStarted(Drawable placeholder) {
                         super.onLoadStarted(placeholder);
-                        showLoadImageProgress();
                     }
 
                     @Override
                     public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
                         super.onResourceReady(resource, glideAnimation);
-                        hideLoadImageProgress();
                         loadResult = true;
                     }
 
                     @Override
                     public void onLoadFailed(Exception e, Drawable errorDrawable) {
                         super.onLoadFailed(e, errorDrawable);
-                        hideLoadImageProgress();
                         loadResult = false;
                         ToastUtil.showNegativeToast(getString(R.string.Item_LoadFail));
                     }
