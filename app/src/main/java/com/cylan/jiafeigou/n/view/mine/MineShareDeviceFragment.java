@@ -124,7 +124,7 @@ public class MineShareDeviceFragment extends Fragment implements MineShareDevice
                 if(presenter.checkPermission()){
                     jump2ShareToContractFragment();
                 }else {
-                    ActivityCompat.requestPermissions(getActivity(),
+                    MineShareDeviceFragment.this.requestPermissions(
                             new String[]{Manifest.permission.READ_CONTACTS},
                             1);
                 }

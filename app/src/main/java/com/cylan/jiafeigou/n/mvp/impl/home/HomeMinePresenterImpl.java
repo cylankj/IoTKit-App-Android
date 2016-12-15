@@ -220,7 +220,7 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
                         if (getUserInfo != null && getUserInfo instanceof RxEvent.GetUserInfo){
                             userInfo = getUserInfo.jfgAccount;
                             if (getView() != null){
-                                getView().setUserImageHead(userInfo.getPhotoUrl());
+                                getView().setUserImageHeadByUrl(userInfo.getPhotoUrl());
                                 if (userInfo.getAlias() == null | TextUtils.isEmpty(userInfo.getAlias())){
                                     userInfo.setAlias(createRandomName());
                                 }

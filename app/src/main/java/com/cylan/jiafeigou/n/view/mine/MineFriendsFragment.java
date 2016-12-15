@@ -219,7 +219,7 @@ public class MineFriendsFragment extends Fragment implements MineFriendsContract
             case R.id.tv_home_mine_relativesandfriends_add:
                 if (getView() != null)
                     ViewUtils.deBounceClick(getView().findViewById(R.id.tv_home_mine_relativesandfriends_add));
-                AppLogger.e("tv_home_mine_relativesandfriends_add");
+                AppLogger.d("tv_home_mine_relativesandfriends_add");
                 jump2AddReAndFriendFragment();
                 break;
         }
@@ -362,6 +362,7 @@ public class MineFriendsFragment extends Fragment implements MineFriendsContract
             RelAndFriendBean account = new RelAndFriendBean();
             account.account = item.account;
             account.alias = item.alias;
+            account.iconUrl = item.iconUrl;
             account.markName = "";
             friendlistAddItem(layoutPosition,account);
             addReqDeleteItem(layoutPosition,item);

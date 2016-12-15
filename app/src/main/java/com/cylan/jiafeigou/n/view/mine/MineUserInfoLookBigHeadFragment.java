@@ -9,20 +9,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineUserInfoLookBigHeadContract;
-import com.cylan.jiafeigou.n.mvp.impl.mine.MineUserInfoLookBigHeadPresenterIMpl;
-import com.cylan.jiafeigou.support.photoselect.models.Image;
-import com.cylan.jiafeigou.utils.PreferencesUtils;
+import com.cylan.jiafeigou.n.mvp.impl.mine.MineUserInfoLookBigHeadPresenterImpl;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.widget.LoadingDialog;
-import com.cylan.photoview.PhotoView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -96,7 +91,7 @@ public class MineUserInfoLookBigHeadFragment extends Fragment implements MineUse
     }
 
     private void initPresenter() {
-        presenter = new MineUserInfoLookBigHeadPresenterIMpl(this);
+        presenter = new MineUserInfoLookBigHeadPresenterImpl(this);
     }
 
     @OnClick(R.id.iv_userinfo_big_image)

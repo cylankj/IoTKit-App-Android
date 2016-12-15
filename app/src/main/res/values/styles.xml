@@ -410,4 +410,10 @@
 
     <item name="video_opt_play_drawable" type="drawable">@drawable/icon_play</item>
     <item name="video_opt_pause_drawable" type="drawable">@drawable/icon_suspend</item>
+
+    <!--头像选择弹窗动画-->
+    <style name="PopupWindow">
+        <item name="android:windowEnterAnimation">@anim/popupwindow_in</item>
+        <item name="android:windowExitAnimation">@anim/popupwindow_out</item>
+    </style>
 </resources>

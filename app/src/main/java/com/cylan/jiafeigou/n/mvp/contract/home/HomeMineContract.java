@@ -39,7 +39,7 @@ public interface HomeMineContract {
          * 通过URL设置头像
          * @param url
          */
-        void setUserImageHead(String url);
+        void setUserImageHeadByUrl(String url);
 
         /**
          * 设置新消息的数量

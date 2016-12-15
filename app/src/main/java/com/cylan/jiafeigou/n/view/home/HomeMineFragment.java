@@ -257,7 +257,7 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
     }
 
     @Override
-    public void setUserImageHead(String url) {
+    public void setUserImageHeadByUrl(String url) {
         Glide.with(getContext()).load(url)
                 .error(R.drawable.icon_mine_head_normal)
                 .centerCrop()

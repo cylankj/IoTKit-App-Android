@@ -1,9 +1,12 @@
 package com.cylan.jiafeigou.n.mvp.impl.mine;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 
 import com.cylan.entity.jniCall.JFGFriendAccount;
@@ -192,6 +195,21 @@ public class MineShareToContactPresenterImp extends AbstractPresenter<MineShareT
                         }
                     }
                 });
+    }
+
+    /**
+     * 检测发送短信权限
+     * @return
+     */
+    @Override
+    public boolean checkSendSmsPermission() {
+        if (ContextCompat.checkSelfPermission(getView().getContext(),
+                Manifest.permission.SEND_SMS)
+                != PackageManager.PERMISSION_GRANTED) {
+            return false;
+        }else{
+            return true;
+        }
     }
 
     /**
