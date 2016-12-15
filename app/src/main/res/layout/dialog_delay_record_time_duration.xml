@@ -11,6 +11,7 @@
         android:minWidth="280dp"
         android:orientation="vertical"
         android:paddingLeft="24dp"
+        android:paddingRight="24dp"
         android:paddingTop="24dp">
 
         <TextView
@@ -21,9 +22,12 @@
             android:textSize="16sp"/>
 
         <com.aigestudio.wheelpicker.WheelPicker
+            android:id="@+id/dialog_record_duration_picker"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            app:wheel_atmospheric="true"
             app:wheel_indicator="true"
+            app:wheel_indicator_color="#00F"
             app:wheel_visible_item_count="3"/>
 
 
@@ -33,21 +37,19 @@
             android:layout_gravity="right"
             android:orientation="horizontal">
 
-            <Button
+            <TextView
+                android:id="@+id/dialog_record_duration_cancel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="right"
-                android:background="@null"
                 android:text="取消"
                 android:textColor="#4B9FD5"
                 android:textSize="14sp"/>
 
-            <Button
+            <TextView
+                android:id="@+id/dialog_record_duration_ok"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="right"
-                android:background="@null"
-                android:text="取消"
+                android:text="确定"
                 android:textColor="#4B9FD5"
                 android:textSize="14sp"/>
         </LinearLayout>

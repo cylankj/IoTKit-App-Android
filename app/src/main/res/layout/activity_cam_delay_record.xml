@@ -39,6 +39,7 @@
         app:cardBackgroundColor="#FFF"
         app:cardCornerRadius="20px">
 
+
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="198dp">
@@ -48,14 +49,25 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"/>
 
-            <ImageView
+            <View
+                android:id="@+id/act_delay_record_video_overlay"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:alpha="0.6"
+                android:background="#000000"/>
+
+
+            <TextView
+                android:id="@+id/act_delay_record_play"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:src="@drawable/btn_play"/>
+                android:background="@drawable/act_delay_record_play_drawable"
+                android:enabled="true"/>
         </FrameLayout>
 
         <TextView
+            android:id="@+id/act_delay_record_information"
             android:layout_width="match_parent"
             android:layout_height="32dp"
             android:layout_gravity="bottom"
