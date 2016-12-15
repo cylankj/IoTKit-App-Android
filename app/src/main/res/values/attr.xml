@@ -104,20 +104,20 @@
     </declare-styleable>
 
     <declare-styleable name="SimpleProgressStyle">
-        <attr name="progress_stroke_width" format="dimension" />
-        <attr name="progress_stroke_color" format="reference|color" />
-        <attr name="progress_point_radius" format="dimension" />
-        <attr name="progress_swipe_degree" format="integer" />
-        <attr name="progress_radius" format="dimension" />
+        <attr name="progress_stroke_width" format="dimension"/>
+        <attr name="progress_stroke_color" format="reference|color"/>
+        <attr name="progress_point_radius" format="dimension"/>
+        <attr name="progress_swipe_degree" format="integer"/>
+        <attr name="progress_radius" format="dimension"/>
     </declare-styleable>
     <declare-styleable name="SettingItemViewStyle">
-        <attr name="sv_title" format="string|reference" />
-        <attr name="sv_sub_title" format="string|reference" />
-        <attr name="sv_sub_title_max_len" format="integer" />
-        <attr name="sv_image_src" format="reference" />
-        <attr name="sv_visibility" format="boolean" />
-        <attr name="sv_v_divider" format="boolean" />
-        <attr name="sv_v_image_show" format="boolean" />
+        <attr name="sv_title" format="string|reference"/>
+        <attr name="sv_sub_title" format="string|reference"/>
+        <attr name="sv_sub_title_max_len" format="integer"/>
+        <attr name="sv_image_src" format="reference"/>
+        <attr name="sv_visibility" format="boolean"/>
+        <attr name="sv_v_divider" format="boolean"/>
+        <attr name="sv_v_image_show" format="boolean"/>
     </declare-styleable>
 
     <declare-styleable name="LLViewStyle">
@@ -219,5 +219,11 @@
     </declare-styleable>
     <declare-styleable name="ShadowFrameLayout">
         <attr name="fixSize" format="boolean"/>
+    </declare-styleable>
+    <declare-styleable name="RoundedTextureView">
+        <attr name="lt_radius" format="dimension|float|reference"/>
+        <attr name="rt_radius" format="dimension|float|reference"/>
+        <attr name="lb_radius" format="dimension|float|reference"/>
+        <attr name="rb_radius" format="dimension|float|reference"/>
     </declare-styleable>
 </resources>

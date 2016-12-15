@@ -480,6 +480,7 @@ public class HomeWonderfulFragmentExt extends Fragment implements
 
     @OnClick(R.id.fLayout_date_head_wonder)
     public void onClick() {
+        if (true) return;//doNothing
         final TimeWheelView view = getWheelView();
         if (view != null && !ListUtils.isEmpty(homeWonderAdapter.getList())) {
             if (!view.isShown()) {
@@ -509,17 +510,6 @@ public class HomeWonderfulFragmentExt extends Fragment implements
         tvDateItemHeadWonder.setBackgroundToRight();
     }
 
-//    /**
-//     * 整个{@link WheelView}的父viewGroup
-//     *
-//     * @return
-//     */
-//    private View getWheelViewContainer() {
-//        if (getActivity() != null) {
-//            return getActivity().findViewById(R.id.fLayout_wonderful_timeline);
-//        }
-//        return null;
-//    }
 
     /**
      * {@link WheelView}
@@ -546,15 +536,6 @@ public class HomeWonderfulFragmentExt extends Fragment implements
         //do something presenter.xxx
         isShowTimeLine = false;
     }
-
-//    @Override
-//    public void onItemChanged(int position, long timeInLong, String dateInStr) {
-//        AppLogger.d("date: " + TimeUtils.getDateStyle_0(timeInLong));
-//        if (getActivity() == null)
-//            return;
-//        TextView textView = (TextView) getActivity().findViewById(R.id.tv_time_line_pop);
-//        if (textView != null) textView.setText(TimeUtils.getDateStyle_0(timeInLong));
-//    }
 
 
     @Override

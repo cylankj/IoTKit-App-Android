@@ -1,6 +1,7 @@
 package com.cylan.jiafeigou.n.view.activity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
@@ -20,6 +21,7 @@ import com.cylan.jiafeigou.n.mvp.contract.cam.CamSettingContract;
 import com.cylan.jiafeigou.n.mvp.impl.cam.CamSettingPresenterImpl;
 import com.cylan.jiafeigou.n.mvp.model.BeanCamInfo;
 import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
+import com.cylan.jiafeigou.n.view.cam.CamDelayRecordActivity;
 import com.cylan.jiafeigou.n.view.cam.DeviceInfoDetailFragment;
 import com.cylan.jiafeigou.n.view.cam.SafeProtectionFragment;
 import com.cylan.jiafeigou.n.view.cam.VideoAutoRecordFragment;
@@ -77,6 +79,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
     private WeakReference<DeviceInfoDetailFragment> informationWeakReference;
     private WeakReference<SafeProtectionFragment> safeProtectionFragmentWeakReference;
     private WeakReference<VideoAutoRecordFragment> videoAutoRecordFragmentWeakReference;
+    private WeakReference<CamDelayRecordActivity> mDelayRecordFragmentWeakReference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -211,8 +214,9 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
 
     @OnClick({R.id.sv_setting_device_detail,
             R.id.sv_setting_device_auto_record,
+            R.id.sv_setting_safe_protection,
             R.id.tv_setting_unbind,
-            R.id.sv_setting_safe_protection
+            R.id.sv_setting_device_delay_capture
     })
     public void onClick(View view) {
         ViewUtils.deBounceClick(view);
@@ -276,8 +280,14 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
                 });
             }
             break;
+            case R.id.sv_setting_device_delay_capture: {
+                Intent intent = new Intent(this, CamDelayRecordActivity.class);
+                startActivity(intent);
+            }
+            break;
         }
     }
+
 
     /**
      * 开启待机模式的时候,其余所有选项都不能点击.

@@ -43,7 +43,6 @@ import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.AnimatorUtils;
 import com.cylan.jiafeigou.utils.FileUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
-import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.utils.WonderGlideURL;
 import com.cylan.jiafeigou.widget.SimpleProgressBar;
 import com.cylan.jiafeigou.widget.dialog.VideoMoreDialog;
@@ -74,6 +73,7 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
     private static final int PLAY_STATE_LOADING_START = 4;
     private static final int PLAY_STATE_LOADING_FINISH = 5;
     private static final int REQ_DOWNLOAD = 0X8001;
+    private static final long NETWORK_ERROR_WAIT_TIME = 15000;
 
     @BindView(R.id.act_media_pager)
     HackyViewPager mMediaPager;
@@ -141,11 +141,6 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
     private int mCurrentPlayState = PLAY_STATE_RESET;
     private static final long HEADER_AND_FOOTER_SHOW_TIME = 3000;
 
-    private enum PERMISSION {
-        PERMISSION_DOWNLOAD,
-        PERMISSION_DELETE
-    }
-
     @Override
     protected void onRestart() {
         super.onRestart();
@@ -210,8 +205,6 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
         mFormatBuilder = new StringBuilder();
         mFormatter = new Formatter(mFormatBuilder, Locale.getDefault());
 
-        ViewUtils.setViewMarginStatusBar(mHeaderContainer);
-
         mMediaPlayer = new IjkExoMediaPlayer(this);
 
         mVideoSeekBar.setOnSeekBarChangeListener(this);
@@ -239,10 +232,13 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
         };
         mMediaPager.setPageMargin((int) getResources().getDimension(R.dimen.video_pager_page_margin));
         mAdapter.setOnInitFinishListener(() -> {
-            if (mEnterAnimationFinished)
+            if (mEnterAnimationFinished) {
                 animateHeaderAndFooter(true, true);
-            else
+            } else {
+                mHeaderContainer.setVisibility(View.GONE);
+                mFooterContainer.setVisibility(View.GONE);
                 startPostponedEnterTransition();
+            }
         });
         mMediaPager.setAdapter(mAdapter);
         mMediaPager.setCurrentItem(mStartPosition);
@@ -354,7 +350,6 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
     }
 
     private void setPortraitLayout() {
-        ViewUtils.setViewMarginStatusBar(mContentRootView);
         setStatusBarProperty();
 
         mHeaderOptContainer.setVisibility(View.GONE);
@@ -398,7 +393,6 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
     }
 
     private void setLandScapeLayout() {
-        ViewUtils.clearViewMarginStatusBar(mContentRootView);
         setStatusBarProperty();
         mHeaderOptContainer.setVisibility(View.VISIBLE);
         Resources resources = getResources();
@@ -459,6 +453,8 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
             mMediaPlayer.seekTo(mVideoPlayPosition);
             mVideoPlayPosition = 0;
             mCurrentPlayState = PLAY_STATE_PLAYING;
+        } else {
+            mMediaPlayer.seekTo(100);//这是为了防止首播黑屏的问题，没法
         }
         int duration = (int) mMediaPlayer.getDuration();
         mVideoTotalTime.setText(stringForTime(duration));
@@ -656,19 +652,24 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
         }
     }
 
+    private Runnable mBufferDelayCallback = () -> {
+        //显示网络连接失败视图
+    };
+
     @Override
     public boolean onInfo(IMediaPlayer iMediaPlayer, int what, int extra) {
         switch (what) {
             case IjkMediaPlayer.MEDIA_INFO_BUFFERING_START:
-//                mCurrentPlayState = PLAY_STATE_LOADING_START;
                 mVideoLoadingBar.setVisibility(View.VISIBLE);
-//                updatePlayState();
+                mContentRootView.postDelayed(mBufferDelayCallback, NETWORK_ERROR_WAIT_TIME);
                 break;
             case IjkMediaPlayer.MEDIA_INFO_BUFFERING_END:
-//                mCurrentPlayState = PLAY_STATE_LOADING_FINISH;
+                mContentRootView.removeCallbacks(mBufferDelayCallback);
                 mVideoLoadingBar.setVisibility(View.INVISIBLE);
-//                updatePlayState();
                 break;
+            case IjkMediaPlayer.MEDIA_INFO_NETWORK_BANDWIDTH:
+                break;
+
 //            case IjkMediaPlayer.MEDIA_INFO_VIDEO_ROTATION_CHANGED:
 //                if (mVideoView != null)
 //                    mVideoView.setRotation(extra);
@@ -681,6 +682,7 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
         iMediaPlayer.pause();
         iMediaPlayer.seekTo(0);
         mCurrentPlayState = PLAY_STATE_PAUSED;
+        mCurrentPosition = 0;
         updatePlayState();
     }
 
@@ -725,7 +727,9 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
     private void startPlayVideo() {
         mVideoView.setVisibility(View.VISIBLE);
         mVideoLoadingBar.setVisibility(View.VISIBLE);
-        String url = mCurrentMediaBean.fileName;
+//        String url = mCurrentMediaBean.fileName;
+
+        String url = "http://yf.cylan.com.cn:82/Garfield/1045020208160b9706425470.mp4";
         mCurrentPlayState = PLAY_STATE_RESET;
         mMediaPlayer.reset();
         String proxyUrl = BaseApplication.getProxy(this).getProxyUrl(url);

@@ -1,35 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/act_media_root_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#000000">
-
-    <!--<com.cylan.jiafeigou.widget.ShadowFrameLayout-->
-        <!--android:id="@+id/act_media_video_container"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent"-->
-        <!--android:layout_gravity="center"-->
-        <!--android:visibility="visible"-->
-        <!--app:fixSize="true">-->
-
-        <!--<SurfaceView-->
-            <!--android:id="@+id/act_media_video_view"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="match_parent"/>-->
-
-        <!--<com.cylan.jiafeigou.widget.SimpleProgressBar-->
-            <!--android:id="@+id/act_media_video_loading_bar"-->
-            <!--android:layout_width="50dp"-->
-            <!--android:layout_height="50dp"-->
-            <!--android:layout_gravity="center"-->
-            <!--android:padding="10dp"-->
-            <!--android:visibility="gone"-->
-            <!--app:progress_point_radius="3dp"-->
-            <!--app:progress_stroke_color="@color/color_cecece"/>-->
-    <!--</com.cylan.jiafeigou.widget.ShadowFrameLayout>-->
 
     <com.cylan.jiafeigou.misc.HackyViewPager
         android:id="@+id/act_media_pager"
@@ -41,8 +16,7 @@
         android:id="@+id/act_media_header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:clickable="true"
-        android:visibility="invisible">
+        android:clickable="true">
 
         <RelativeLayout style="@style/video_header_container">
 
@@ -86,8 +60,7 @@
         android:layout_gravity="bottom"
         android:alpha="0.5"
         android:background="#000000"
-        android:clickable="true"
-        android:visibility="invisible">
+        android:clickable="true">
 
         <FrameLayout
             android:id="@+id/act_media_pic_option"
