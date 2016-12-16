@@ -804,4 +804,18 @@
   <string name="Tap1_Camera_Overlook">Overlook</string>
   <string name="Tap1_Camera_FrontTips">La visualizzazione con angolo orizzontale ha bisogno di mantenere un\'ampia visione davanti alla macchina fotografica</string>
   <string name="Tap1_Camera_OverlookTips">Guarda con l\'angolo si affaccia deve posizionare la fotocamera in alto</string>
+
+  <string name="Tap3_ShareDevice_CancelShareTips">Annulla la condivisione fallito</string>
+  <string name="Tap3_FriendsAdd_SendButton">Invia richiesta</string>
+  <string name="Tap3_FriendsAdd_NoContacts">Nessun contatto</string>
+  <string name="Tap3_SavePic">Salva foto</string>
+  <string name="Tap1_iHome_Associated">Associated</string>
+  <string name="Tap1_iHome_NotAssociated">Non Associated</string>
+  <string name="Tap1_iHome_ClearRecord">Cancellare il record</string>
+  <string name="Tap3_FriendsAdd_RequestContents">voglia aggiungere come amico</string>
+  <string name="Tap3_Friends_NoBindTips">Utilizzando questa funzione deve binding e-mail prima.</string>
+  <string name="Tap3_FriendsAdd_StuffContents">Sono %@</string>
+  <string name="Tap3_Userinfo_NoCamera">La fotocamera non è possibile utilizzare</string>
+  <string name="ClearingTips">Clearing…</string>
+  <string name="CancelingTips">Annullando…</string>
 </resources>

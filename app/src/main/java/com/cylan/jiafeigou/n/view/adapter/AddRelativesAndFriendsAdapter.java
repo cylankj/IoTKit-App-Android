@@ -11,6 +11,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.model.MineAddReqBean;
+import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.widget.roundedimageview.RoundedImageView;
 import com.cylan.superadapter.IMulItemViewType;
 import com.cylan.superadapter.SuperAdapter;
@@ -41,7 +42,7 @@ public class AddRelativesAndFriendsAdapter extends SuperAdapter<MineAddReqBean> 
     public void onBind(final SuperViewHolder holder, final int viewType, final int layoutPosition, final MineAddReqBean item) {
         holder.setText(R.id.tv_username, item.alias);
         if(item.sayHi == null || "".equals(item.sayHi)){
-            holder.setText(R.id.tv_add_message, item.alias+"想添加你为好友");
+            holder.setText(R.id.tv_add_message,item.alias+ContextUtils.getContext().getString(R.string.Tap3_FriendsAdd_RequestContents));
         }else {
             holder.setText(R.id.tv_add_message, item.sayHi);
         }

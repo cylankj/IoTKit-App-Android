@@ -806,4 +806,18 @@
   <string name="Tap1_Camera_Overlook">Overlook</string>
   <string name="Tap1_Camera_FrontTips">Melihat dengan sudut horizontal perlu menjaga visi yang luas di depan kamera</string>
   <string name="Tap1_Camera_OverlookTips">Melihat dengan sudut menghadap perlu menempatkan kamera pada tinggi</string>
+
+  <string name="Tap3_ShareDevice_CancelShareTips">Batalkan berbagi gagal</string>
+  <string name="Tap3_FriendsAdd_SendButton">kirimkan permintaan</string>
+  <string name="Tap3_FriendsAdd_NoContacts">Tidak ada kontak</string>
+  <string name="Tap3_SavePic">Simpan Pics</string>
+  <string name="Tap1_iHome_Associated">Associated</string>
+  <string name="Tap1_iHome_NotAssociated">Not Associated</string>
+  <string name="Tap1_iHome_ClearRecord">Hapus catatan</string>
+  <string name="Tap3_FriendsAdd_RequestContents">ingin menambahkan Anda sebagai teman</string>
+  <string name="Tap3_Friends_NoBindTips">Menggunakan fungsi ini perlu untuk mengikat email pertama.</string>
+  <string name="Tap3_FriendsAdd_StuffContents">Saya %@</string>
+  <string name="Tap3_Userinfo_NoCamera">Kamera tidak dapat menggunakan</string>
+  <string name="ClearingTips">Kliring…</string>
+  <string name="CancelingTips">Membatalkan…</string>
 </resources>

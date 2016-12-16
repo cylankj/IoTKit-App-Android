@@ -79,7 +79,6 @@ public class ClipImageActivity extends AppCompatActivity implements MineClipImag
             clipViewLayout2.setVisibility(View.GONE);
             //设置图片资源
             clipViewLayout1.setImageSrc(getIntent().getData());
-
         } else {
             clipViewLayout2.setVisibility(View.VISIBLE);
             clipViewLayout1.setVisibility(View.GONE);

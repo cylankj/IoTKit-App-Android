@@ -120,7 +120,7 @@ public class MineShareToFriendFragment extends Fragment implements MineShareToFr
                 if (presenter.checkNetConnetion()){
                     presenter.sendShareToFriendReq(deviceinfo.uuid,isChooseToShareList);
                 }else {
-                    ToastUtil.showNegativeToast("网络不可用");
+                    ToastUtil.showNegativeToast(getString(R.string.Item_ConnectionFail));
                 }
                 break;
         }

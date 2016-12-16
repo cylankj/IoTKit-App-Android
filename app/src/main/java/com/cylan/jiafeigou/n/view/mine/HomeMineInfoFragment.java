@@ -431,7 +431,7 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
                         if (presenter.cameraIsCanUse()){
                             openCamera();
                         }else {
-                            ToastUtil.showToast("相机不可用");
+                            ToastUtil.showToast(getString(R.string.Tap3_Userinfo_NoCamera));
                         }
 
                     }else {
@@ -442,7 +442,7 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
                     }
 
                 }else {
-                    ToastUtil.showToast("没有相机");
+                    ToastUtil.showToast(getString(R.string.Tap3_Userinfo_NoCamera));
                 }
                 popupWindow.dismiss();
             }
@@ -512,8 +512,6 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
     public void setPresenter(MineInfoContract.Presenter presenter) {
 
     }
-
-
 
     @Override
     public void showLogOutDialog() {

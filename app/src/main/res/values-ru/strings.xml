@@ -803,4 +803,18 @@
   <string name="Tap1_Camera_Overlook">Верхняя</string>
   <string name="Tap1_Camera_FrontTips">Просмотр с горизонтальным углом должен держать широкий видение перед камерой</string>
   <string name="Tap1_Camera_OverlookTips">Просмотр с видом угла нужно поместить камеру высоко</string>
+
+  <string name="Tap3_ShareDevice_CancelShareTips">Отменить общий доступ не удалось</string>
+  <string name="Tap3_FriendsAdd_SendButton">Послать запрос</string>
+  <string name="Tap3_FriendsAdd_NoContacts">Нет контактов</string>
+  <string name="Tap3_SavePic">Сохранить фотки</string>
+  <string name="Tap1_iHome_Associated">ассоциированный</string>
+  <string name="Tap1_iHome_NotAssociated">Не ассоциированный</string>
+  <string name="Tap1_iHome_ClearRecord">Очистить отчет</string>
+  <string name="Tap3_FriendsAdd_RequestContents"> хочет добавить вас в друзья</string>
+  <string name="Tap3_Friends_NoBindTips">С помощью этой функции необходимо связать электронную почту в первую очередь.</string>
+  <string name="Tap3_FriendsAdd_StuffContents">Я %@</string>
+  <string name="Tap3_Userinfo_NoCamera">Камера не может использовать</string>
+  <string name="ClearingTips">Clearing…</string>
+  <string name="CancelingTips">Отмена…</string>
 </resources>

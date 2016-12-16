@@ -93,22 +93,15 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
     }
 
     @Override
-    public void requestLatestPortrait() {
-
-    }
-
-    @Override
-    public void portraitBlur(@DrawableRes int id) {
-        onBlurSubscribtion = Observable.just(id)
+    public void portraitBlur(Bitmap bitmap) {
+        onBlurSubscribtion = Observable.just(bitmap)
                 .subscribeOn(Schedulers.computation())
-                .map(new Func1<Integer, Bitmap>() {
+                .map(new Func1<Bitmap, Bitmap>() {
                     @Override
-                    public Bitmap call(Integer integer) {
+                    public Bitmap call(Bitmap bm) {
                         if (getView() == null) {
                             return null;
                         }
-                        Bitmap bm = BitmapFactory.decodeResource(getView().getContext().getResources(),
-                                integer);
                         Bitmap b = BitmapUtil.zoomBitmap(bm, 160, 160);
                         return FastBlurUtil.blur(b, 20, 2);
                     }
@@ -130,47 +123,6 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
                         if (getView() == null || drawable == null)
                             return;
                         getView().onBlur(drawable);
-                    }
-                });
-    }
-
-    @Override
-    public void portraitUpdateByUrl(String url) {
-        onLoadUserHeadSubscribtion = Observable.just(url)
-                .subscribeOn(Schedulers.computation())
-                .map(new Func1<String, Bitmap>() {
-                    @Override
-                    public Bitmap call(String url) {
-                        if (getView() == null) {
-                            return null;
-                        }
-                        final Bitmap[] bit = new Bitmap[1];
-                        Glide.with(getView().getContext())
-                                .load(url).asBitmap().into(new SimpleTarget<Bitmap>() {
-                            @Override
-                            public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-                                bit[0] = resource;
-                                bit[0] = BitmapUtil.zoomBitmap(bit[0], 160, 160);
-                            }
-                        });
-                        return FastBlurUtil.blur(bit[0], 20, 2);
-                    }
-                })
-                .map(new Func1<Bitmap, Drawable>() {
-                    @Override
-                    public Drawable call(Bitmap bitmap) {
-                        if (getView() == null
-                                || getView().getContext() == null
-                                || getView().getContext().getResources() == null)
-                            return null;
-                        return new BitmapDrawable(getView().getContext().getResources(), bitmap);
-                    }
-                })
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<Drawable>() {
-                    @Override
-                    public void call(Drawable drawable) {
-                        getView().setUserImageHead(drawable);
                     }
                 });
     }

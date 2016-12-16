@@ -1,5 +1,6 @@
 package com.cylan.jiafeigou.n.mvp.contract.home;
 
+import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.UiThread;
@@ -28,7 +29,6 @@ public interface HomeMineContract {
 
         void onBlur(Drawable drawable);
 
-        void setUserImageHead(Drawable drawable);
         /**
          * 设置昵称
          * @param name
@@ -49,18 +49,11 @@ public interface HomeMineContract {
 
     interface Presenter extends BasePresenter {
 
-        void requestLatestPortrait();
         /**
          * 设置头像的背景
-         * @param id
+         * @param bitmap
          */
-        void portraitBlur(@DrawableRes int id);
-
-        /**
-         * 设置头像
-         * @param url
-         */
-        void portraitUpdateByUrl(String url);
+        void portraitBlur(Bitmap bitmap);
 
         /**
          * 产生随机的昵称

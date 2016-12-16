@@ -200,7 +200,7 @@ public class MineDevicesShareManagerPresenterImp extends AbstractPresenter<MineD
                 getView().deleteItems();
                 getView().showUnShareResult(getView().getContext().getString(R.string.Tap3_ShareDevice_DeleteSucces));
             } else {
-                getView().showUnShareResult(getView().getContext().getString(R.string.SUBMIT_FAIL));
+                getView().showUnShareResult(getView().getContext().getString(R.string.Tap3_ShareDevice_CancelShareTips));
             }
         }
     }

@@ -85,7 +85,7 @@ public class MineLookBigImageFragment extends Fragment implements MineLookBigIma
      */
     private void showSaveImageDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        builder.setPositiveButton("保存图片", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(getString(R.string.Tap3_SavePic), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
