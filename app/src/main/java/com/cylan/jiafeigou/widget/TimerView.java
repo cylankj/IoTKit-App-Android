@@ -7,13 +7,13 @@ import android.graphics.Paint;
 import android.graphics.RectF;
 import android.text.TextPaint;
 import android.util.AttributeSet;
-import android.widget.RadioButton;
+import android.view.View;
 
 /**
  * Created by yzd on 16-12-19.
  */
 
-public class RecordControllerView extends RadioButton {
+public class TimerView extends View {
     private float mCX;
     private float mCY;
     private float mRadius;
@@ -22,16 +22,16 @@ public class RecordControllerView extends RadioButton {
     private float mSweepAngle;
     private Paint mNormalPaint;
     private RectF mArcOval;
-    private STATE mState = STATE.RESTORE;
+    private STATE mState;
     private float mRestoreRadius;
     private RectF mRecordRect;
     private float mRecordRadius;
 
-    public RecordControllerView(Context context) {
+    public TimerView(Context context) {
         this(context, null);
     }
 
-    public RecordControllerView(Context context, AttributeSet attrs) {
+    public TimerView(Context context, AttributeSet attrs) {
         super(context, attrs);
         init();
     }
@@ -44,24 +44,33 @@ public class RecordControllerView extends RadioButton {
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         mCX = w / 2;
         mCY = h / 2;
-        mArcOval = new RectF(0, 0, w, h);
+
     }
 
     private void init() {
-        mNormalPaint = new TextPaint();
-        mNormalPaint.setStyle(Paint.Style.STROKE);
-        mNormalPaint.setColor(Color.WHITE);
-        mNormalPaint.setStrokeWidth(5);
-        mNormalPaint.setAntiAlias(true);
-        mStartAngle = -90;
-        mSweepAngle = 90;
-
+        mBackgroundPaint = new TextPaint();
+        mBackgroundPaint.setAntiAlias(true);
+        mBackgroundPaint.setColor(Color.parseColor("#FFFFFF"));
+        mBackgroundPaint.setAlpha((int) (255 * 0.34f));
+        mBackgroundPaint.setStyle(Paint.Style.STROKE);
+        mNormalPaint = new TextPaint(mBackgroundPaint);
+        mNormalPaint.setAlpha(255);
     }
 
 
     @Override
     protected void onDraw(Canvas canvas) {
-        canvas.drawArc(mArcOval, -90, 90, false, mNormalPaint);
+        //先画外圈背景圆
+        canvas.drawCircle(mCX, mCY, mRadius, mBackgroundPaint);
+        //再画外圈进度
+        canvas.drawArc(mArcOval, mStartAngle, mSweepAngle, false, mNormalPaint);
+        //再根据当前state画内圈圆
+        if (mState == STATE.RESTORE) {
+            canvas.drawCircle(mCX, mCY, mRestoreRadius, mNormalPaint);
+        } else {
+            canvas.drawRoundRect(mRecordRect, mRecordRadius, mRecordRadius, mNormalPaint);
+        }
+        if (mState == STATE.RECORD) postDelayed(this::invalidate, 200);
     }
 
     public void setMaxTime(int time) {

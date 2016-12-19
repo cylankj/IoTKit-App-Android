@@ -6,28 +6,33 @@
                                     android:orientation="vertical">
 
     <LinearLayout
-        android:layout_width="match_parent"
+        android:layout_width="280dp"
         android:layout_height="wrap_content"
-        android:minWidth="280dp"
-        android:orientation="vertical"
-        android:paddingLeft="24dp"
-        android:paddingRight="24dp"
-        android:paddingTop="24dp">
+        android:orientation="vertical">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:paddingLeft="24dp"
+            android:paddingTop="24dp"
             android:text="循环播放"
             android:textColor="#000000"
-            android:textSize="16sp"/>
+            android:textSize="18sp"/>
 
-        <com.aigestudio.wheelpicker.WheelPicker
+        <com.cylan.jiafeigou.widget.pick.WheelPicker
             android:id="@+id/dialog_record_duration_picker"
-            android:layout_width="match_parent"
+            android:layout_width="232dp"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
             app:wheel_atmospheric="true"
             app:wheel_indicator="true"
-            app:wheel_indicator_color="#00F"
+            app:wheel_indicator_color="#4B9FD5"
+            app:wheel_indicator_size="1dp"
+            app:wheel_item_space="43dp"
+            app:wheel_item_text_color="#999999"
+            app:wheel_item_text_size="16sp"
+            app:wheel_selected_item_text_color="#4B9FD5"
+            app:wheel_selected_item_text_size="20dp"
             app:wheel_visible_item_count="3"/>
 
 
@@ -41,6 +46,10 @@
                 android:id="@+id/dialog_record_duration_cancel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:paddingBottom="27dp"
+                android:paddingLeft="32dp"
+                android:paddingRight="16dp"
+                android:paddingTop="20dp"
                 android:text="取消"
                 android:textColor="#4B9FD5"
                 android:textSize="14sp"/>
@@ -49,12 +58,14 @@
                 android:id="@+id/dialog_record_duration_ok"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:paddingBottom="27dp"
+                android:paddingLeft="16dp"
+                android:paddingRight="32dp"
+                android:paddingTop="20dp"
                 android:text="确定"
                 android:textColor="#4B9FD5"
                 android:textSize="14sp"/>
         </LinearLayout>
-
-
     </LinearLayout>
 
 </android.support.v7.widget.CardView>

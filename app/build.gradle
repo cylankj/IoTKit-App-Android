@@ -323,6 +323,6 @@ dependencies {
     compile 'tv.danmaku.ijk.media:ijkplayer-java:0.7.5'
     compile 'tv.danmaku.ijk.media:ijkplayer-armv7a:0.7.5'
     compile 'tv.danmaku.ijk.media:ijkplayer-exo:0.7.5'
-    compile 'cn.aigestudio.wheelpicker:WheelPicker:1.1.2'
+//    compile 'cn.aigestudio.wheelpicker:WheelPicker:1.1.2'
 }
 

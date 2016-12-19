@@ -835,4 +835,8 @@
     <string name="Tap1_Camera_Overlook">Overlook</string>
     <string name="Tap1_Camera_FrontTips">Viewing with horizontal angle needs to keep a wide vision in front of camera</string>
     <string name="Tap1_Camera_OverlookTips">Viewing with overlooking angle needs to place the camera on high</string>
+
+
+    <string name="delay_record_guide_hint">日出日落、云彩变幻、家庭生活、\nBaby成长…每天都有精彩和成长，\n每一刻都值得被记录。</string>
+    <string name="delay_record_guide">延时摄影</string>
 </resources>

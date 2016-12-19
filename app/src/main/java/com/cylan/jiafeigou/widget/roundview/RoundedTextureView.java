@@ -67,7 +67,7 @@ public class RoundedTextureView extends GLTextureView {
         glRenderer.setSurfaceProvider(provider);
     }
 
-    private static class GLRenderer
+    public static class GLRenderer
             implements Renderer, SurfaceTexture.OnFrameAvailableListener {
 
         private static String TAG = GLRenderer.class.getSimpleName();

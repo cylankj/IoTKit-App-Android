@@ -167,10 +167,10 @@ public class HomeWonderfulPresenterImpl extends AbstractPresenter<HomeWonderfulC
         boolean asc = false;
         if (mWeakMediaLists != null && mWeakMediaLists.get() != null && mWeakMediaLists.get().size() > 0) {
             if (refresh) {
-                version = mWeakMediaLists.get().get(0).version;
+                version = mWeakMediaLists.get().get(0).version * 1000L;
                 asc = true;
             } else {
-                version = mWeakMediaLists.get().get(mWeakMediaLists.get().size() - 1).version;
+                version = mWeakMediaLists.get().get(mWeakMediaLists.get().size() - 1).version * 1000L;
                 asc = false;
             }
         }
@@ -373,7 +373,7 @@ public class HomeWonderfulPresenterImpl extends AbstractPresenter<HomeWonderfulC
                             bean = DpUtils.unpackData(msg.packValue, MediaBean.class);
                             if (bean != null && !TextUtils.isEmpty(bean.cid)) {
                                 bean.version = msg.version;
-                                bean.msgType = 1;
+//                                bean.msgType = 1;
                                 results.add(bean);
                             }
                         } catch (IOException e) {

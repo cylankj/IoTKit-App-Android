@@ -22,10 +22,13 @@ import com.cylan.jiafeigou.n.mvp.impl.cam.CamSettingPresenterImpl;
 import com.cylan.jiafeigou.n.mvp.model.BeanCamInfo;
 import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
 import com.cylan.jiafeigou.n.view.cam.CamDelayRecordActivity;
+import com.cylan.jiafeigou.n.view.cam.DelayRecordGuideFragment;
 import com.cylan.jiafeigou.n.view.cam.DeviceInfoDetailFragment;
 import com.cylan.jiafeigou.n.view.cam.SafeProtectionFragment;
 import com.cylan.jiafeigou.n.view.cam.VideoAutoRecordFragment;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.ActivityUtils;
+import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.LoadingDialog;
@@ -47,6 +50,7 @@ import static com.cylan.jiafeigou.utils.ActivityUtils.loadFragment;
 public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettingContract.Presenter>
         implements CamSettingContract.View {
 
+    private static final int REQ_DELAY_RECORD = 122;
     @BindView(R.id.imgV_top_bar_center)
     TextView imgVTopBarCenter;
     @BindView(R.id.fLayout_top_bar_container)
@@ -79,7 +83,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
     private WeakReference<DeviceInfoDetailFragment> informationWeakReference;
     private WeakReference<SafeProtectionFragment> safeProtectionFragmentWeakReference;
     private WeakReference<VideoAutoRecordFragment> videoAutoRecordFragmentWeakReference;
-    private WeakReference<CamDelayRecordActivity> mDelayRecordFragmentWeakReference;
+    private WeakReference<DelayRecordGuideFragment> mGuideFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,6 +110,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
     @Override
     protected void onStart() {
         super.onStart();
+
     }
 
     @Override
@@ -281,13 +286,26 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
             }
             break;
             case R.id.sv_setting_device_delay_capture: {
-                Intent intent = new Intent(this, CamDelayRecordActivity.class);
-                startActivity(intent);
+                if (PreferencesUtils.getBoolean(JConstant.KEY_DELAY_RECORD_GUIDE, true)) {
+                    initUserGuideFragment();
+                    ActivityUtils.loadFragment(android.R.id.content, getSupportFragmentManager(), mGuideFragment.get());
+                } else {
+                    Intent intent = new Intent(this, CamDelayRecordActivity.class);
+                    startActivity(intent);
+                }
             }
             break;
         }
     }
 
+    private void initUserGuideFragment() {
+        if (mGuideFragment == null || mGuideFragment.get() == null) {
+            BeanCamInfo camInfoBean = basePresenter.getCamInfoBean();
+            Bundle bundle = new Bundle();
+            bundle.putParcelable(DelayRecordGuideFragment.KEY_DEVICE_INFO, camInfoBean);
+            mGuideFragment = new WeakReference<>(DelayRecordGuideFragment.newInstance(bundle));
+        }
+    }
 
     /**
      * 开启待机模式的时候,其余所有选项都不能点击.
@@ -376,5 +394,13 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
     @Override
     public Context getContext() {
         return getApplicationContext();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQ_DELAY_RECORD) {
+
+        }
     }
 }

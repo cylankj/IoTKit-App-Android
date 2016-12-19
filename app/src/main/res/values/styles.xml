@@ -412,8 +412,6 @@
     <item name="video_opt_pause_drawable" type="drawable">@drawable/icon_suspend</item>
 
     <style name="delay_record_dialog_style" parent="@android:style/Theme.Holo.Light.Dialog">
-        <item name="windowFixedWidthMajor">280dp</item>
-        <item name="windowFixedHeightMajor">180dp</item>
         <item name="android:windowIsFloating">true</item>
         <item name="android:windowBackground">@android:color/transparent</item>
     </style>

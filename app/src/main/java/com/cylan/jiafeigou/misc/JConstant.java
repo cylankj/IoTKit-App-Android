@@ -79,6 +79,7 @@ public class JConstant {
 
     public static final String KEY_FRESH = "is_you_fresh";
 
+    public static final String KEY_DELAY_RECORD_GUIDE="delay_record_guide";
 
     public static int ConfigApState = 0;
 

@@ -93,9 +93,23 @@
             android:src="@drawable/delay_icon_60time"/>
 
         <com.cylan.jiafeigou.widget.RecordControllerView
+            android:id="@+id/act_delay_record_controller"
             android:layout_width="62dp"
             android:layout_height="62dp"
-            android:layout_centerHorizontal="true"/>
+            android:layout_centerHorizontal="true"
+            android:background="@drawable/delay_record_play_drawable"
+            android:checked="true"
+            />
+
+        <Button
+            android:id="@+id/act_delay_record_again"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:background="@drawable/delay_record_guide_btn_drawable"
+            android:text="再拍一个"
+            android:textColor="#FFFFFF"
+            android:visibility="gone"/>
 
         <ImageView
             android:id="@+id/act_delay_record_time_duration"
@@ -107,4 +121,5 @@
             android:src="@drawable/delay_ico_photography"/>
 
     </RelativeLayout>
+
 </RelativeLayout>

@@ -1,24 +1,25 @@
 package com.cylan.jiafeigou.n.view.cam;
 
-import android.app.AlertDialog;
 import android.content.Context;
 import android.graphics.SurfaceTexture;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.Surface;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.RadioGroup;
 import android.widget.TextView;
 
-import com.aigestudio.wheelpicker.WheelPicker;
+import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamDelayRecordContract;
+import com.cylan.jiafeigou.n.mvp.model.BeanCamInfo;
+import com.cylan.jiafeigou.widget.RecordControllerView;
 import com.cylan.jiafeigou.widget.roundview.RoundedTextureView;
 
 import java.lang.ref.WeakReference;
-import java.util.Arrays;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -45,13 +46,16 @@ public class CamDelayRecordActivity extends BaseFullScreenFragmentActivity<CamDe
     ImageView mRecordTimeIntervalOpt;
     @BindView(R.id.act_delay_record_time_duration)
     ImageView mRecordTimeDurationOpt;
+    @BindView(R.id.act_delay_record_controller)
+    RecordControllerView mControllerView;
+    @BindView(R.id.act_delay_record_again)
+    Button mRecordAgain;
 
     private IjkExoMediaPlayer mMediaPlayer;
-    private WeakReference<AlertDialog> mTimeIntervalDialog;
-    private WeakReference<AlertDialog> mTimeDurationDialog;
-    private int[] mPickItems = new int[]{};
-    private int mPickSelection = 0;
-    private WheelPicker mPicker;
+    private WeakReference<DelayRecordTimeIntervalDialog> mTimeIntervalDialog;
+    private WeakReference<DelayRecordTimeDurationDialog> mTimeDurationDialog;
+    private int mRecordMode = 0;
+    private BeanCamInfo mCamInfo;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -62,11 +66,42 @@ public class CamDelayRecordActivity extends BaseFullScreenFragmentActivity<CamDe
     }
 
     private void initViewAndListener() {
+        mCamInfo = getIntent().getParcelableExtra(DelayRecordGuideFragment.KEY_DEVICE_INFO);
+        if (mCamInfo.cameraTimeLapsePhotography != null)
+            mRecordMode = mCamInfo.cameraTimeLapsePhotography.timePeriod;
         mMediaPlayer = new IjkExoMediaPlayer(this);
         mRoundedTextureView.setSurfaceProvider(this);
-
         initTimeIntervalDialog();
         initTimeDurationDialog();
+        checkDeviceState();
+    }
+
+    /**
+     * 检查设备是否处于待机状态,未处于待机状态则进行直播预览画面
+     */
+    private void checkDeviceState() {
+        if (mCamInfo.cameraTimeLapsePhotography != null && !mCamInfo.cameraStandbyFlag) {
+            startPlayLiveVideo();//设备未处于待机状态,则进行直播预览
+        }
+    }
+
+    /**
+     * 还没有开始延时摄影,先显示实时摄像头数据
+     */
+    private void startPlayLiveVideo() {
+        try {
+            JfgCmdInsurance.getCmd().setRenderRemoteView(mRoundedTextureView);
+            JfgCmdInsurance.getCmd().playVideo(mCamInfo.deviceBase.uuid);
+        } catch (JfgException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 已经开始延时摄影,显示最新的拍照图片
+     */
+    private void startShowNewPicture() {
+
     }
 
     @Override
@@ -98,68 +133,74 @@ public class CamDelayRecordActivity extends BaseFullScreenFragmentActivity<CamDe
     @OnClick(R.id.act_delay_record_time_interval)
     public void selectTimeInterval() {
         initTimeIntervalDialog();
-        mTimeIntervalDialog.get().show();
+        DelayRecordTimeIntervalDialog dialog = mTimeIntervalDialog.get();
+        dialog.setValue(mRecordMode);
+        dialog.show(getSupportFragmentManager(), DelayRecordTimeIntervalDialog.class.getName());
     }
 
     @OnClick(R.id.act_delay_record_time_duration)
     public void selectTimeDuration() {
         initTimeDurationDialog();
-        mTimeDurationDialog.get().show();
+        DelayRecordTimeDurationDialog dialog = mTimeDurationDialog.get();
+        dialog.setValue(mRecordMode);
+        dialog.show(getSupportFragmentManager(), DelayRecordTimeDurationDialog.class.getName());
+    }
+
+    @OnClick(R.id.act_delay_record_controller)
+    public void controller() {
+        if (mControllerView.isChecked()) {
+            //结束或者还没开始录制视频
+            mRecordTimeIntervalOpt.setVisibility(View.VISIBLE);
+            mRecordTimeDurationOpt.setVisibility(View.VISIBLE);
+        } else {
+            //开始录制视频
+            mRecordTimeIntervalOpt.setVisibility(View.GONE);
+            mRecordTimeDurationOpt.setVisibility(View.GONE);
+        }
+        mControllerView.setChecked(!mControllerView.isChecked());
     }
 
     private void initTimeIntervalDialog() {
         if (mTimeIntervalDialog == null || mTimeIntervalDialog.get() == null) {
             //初始化
-            View contentView = View.inflate(this, R.layout.dialog_delay_record_time_interval, null);
-            RadioGroup option = (RadioGroup) contentView.findViewById(R.id.dialog_record_rg_option);
-            option.setOnCheckedChangeListener((group, checkedId) -> {
-                switch (checkedId) {
-                    case R.id.dialog_record_rb_20s: {
-                        mPickItems = new int[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16};
-                        mPickSelection = 7;//默认是8小时
-                        mRecordTimeIntervalOpt.setImageResource(R.drawable.delay_icon_20time);
-                    }
-                    break;
-                    case R.id.dialog_record_rb_60s: {
-                        mPickItems = new int[]{4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24};
-                        mPickSelection = 4;//默认是8小时
-                        mRecordTimeIntervalOpt.setImageResource(R.drawable.delay_icon_60time);
-                    }
-                    break;
-                }
-            });
-            contentView.findViewById(R.id.dialog_record_time_interval_cancel).setOnClickListener(view -> {
-                mTimeIntervalDialog.get().dismiss();
-            });
-            AlertDialog alertDialog = new AlertDialog.Builder(this)
-                    .setCancelable(false)
-                    .setView(contentView)
-                    .create();
-
-            mTimeIntervalDialog = new WeakReference<>(alertDialog);
+            DelayRecordTimeIntervalDialog dialog = DelayRecordTimeIntervalDialog.newInstance(null);
+            dialog.setAction(this::setTimeIntervalOption);
+            mTimeIntervalDialog = new WeakReference<>(dialog);
         }
-
     }
 
     private void initTimeDurationDialog() {
         if (mTimeDurationDialog == null || mTimeDurationDialog.get() == null) {
-            View contentView = View.inflate(this, R.layout.dialog_delay_record_time_duration, null);
-            contentView.findViewById(R.id.dialog_record_duration_cancel).setOnClickListener(v -> {
 
-            });
-            mPicker = (WheelPicker) contentView.findViewById(R.id.dialog_record_duration_picker);
-            contentView.findViewById(R.id.dialog_record_duration_ok).setOnClickListener(v -> {
-                int position = mPicker.getSelectedItemPosition();
-
-
-            });
-            AlertDialog alertDialog = new AlertDialog.Builder(this, R.style.delay_record_dialog_style)
-                    .setCancelable(false)
-                    .setView(contentView)
-                    .create();
-            mTimeDurationDialog = new WeakReference<>(alertDialog);
+            DelayRecordTimeDurationDialog dialog = DelayRecordTimeDurationDialog.newInstance(null);
+            dialog.setAction(this::setTimeDurationOK);
+            mTimeDurationDialog = new WeakReference<>(dialog);
         }
-        mPicker.setData(Arrays.asList(mPickItems));
-        mPicker.setSelectedItemPosition(mPickSelection);
+    }
+
+    private void setTimeDurationOK(int id, Object value) {
+    }
+
+    private void setTimeIntervalOption(int id, Object value) {
+        switch (id) {
+            case R.id.dialog_record_rb_20s: {
+                mRecordTimeIntervalOpt.setImageResource(R.drawable.delay_icon_20time);
+                mRecordMode = 1;
+            }
+            break;
+            case R.id.dialog_record_rb_60s: {
+                mRecordTimeIntervalOpt.setImageResource(R.drawable.delay_icon_60time);
+                mRecordMode = 0;
+            }
+            break;
+        }
+    }
+
+    public void onRecordFinished() {
+        mRecordAgain.setVisibility(View.VISIBLE);
+        mRecordTimeIntervalOpt.setVisibility(View.GONE);
+        mRecordTimeDurationOpt.setVisibility(View.GONE);
+        mControllerView.setVisibility(View.GONE);
+
     }
 }
