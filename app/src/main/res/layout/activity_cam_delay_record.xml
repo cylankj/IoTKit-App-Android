@@ -44,7 +44,7 @@
             android:layout_width="match_parent"
             android:layout_height="198dp">
 
-            <com.cylan.jiafeigou.widget.roundview.RoundedTextureView
+            <SurfaceView
                 android:id="@+id/act_delay_record_video_view"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"/>
@@ -54,7 +54,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:alpha="0.6"
-                android:background="#000000"/>
+                android:background="#000000"
+                android:visibility="gone"/>
 
 
             <TextView

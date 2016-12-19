@@ -5,6 +5,8 @@ import android.graphics.SurfaceTexture;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.Surface;
+import android.view.SurfaceHolder;
+import android.view.SurfaceView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -32,10 +34,10 @@ import tv.danmaku.ijk.media.player.IMediaPlayer;
  */
 
 public class CamDelayRecordActivity extends BaseFullScreenFragmentActivity<CamDelayRecordContract.Presenter>
-        implements CamDelayRecordContract.View, IMediaPlayer.OnPreparedListener, RoundedTextureView.SurfaceProvider {
+        implements CamDelayRecordContract.View, IMediaPlayer.OnPreparedListener, RoundedTextureView.SurfaceProvider, SurfaceHolder.Callback {
 
     @BindView(R.id.act_delay_record_video_view)
-    RoundedTextureView mRoundedTextureView;
+    SurfaceView mRoundedTextureView;
     @BindView(R.id.act_delay_record_information)
     TextView mRecordInformation;
     @BindView(R.id.act_delay_record_play)
@@ -70,7 +72,8 @@ public class CamDelayRecordActivity extends BaseFullScreenFragmentActivity<CamDe
         if (mCamInfo.cameraTimeLapsePhotography != null)
             mRecordMode = mCamInfo.cameraTimeLapsePhotography.timePeriod;
         mMediaPlayer = new IjkExoMediaPlayer(this);
-        mRoundedTextureView.setSurfaceProvider(this);
+//        mRoundedTextureView.setSurfaceProvider(this);
+        mRoundedTextureView.getHolder().addCallback(this);
         initTimeIntervalDialog();
         initTimeDurationDialog();
         checkDeviceState();
@@ -201,6 +204,25 @@ public class CamDelayRecordActivity extends BaseFullScreenFragmentActivity<CamDe
         mRecordTimeIntervalOpt.setVisibility(View.GONE);
         mRecordTimeDurationOpt.setVisibility(View.GONE);
         mControllerView.setVisibility(View.GONE);
+
+    }
+
+    @Override
+    public void surfaceCreated(SurfaceHolder holder) {
+
+    }
+
+    @Override
+    public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+        mMediaPlayer.reset();
+        mMediaPlayer.setDisplay(holder);
+        mMediaPlayer.setOnPreparedListener(this);
+        mMediaPlayer.setDataSource("http://yf.cylan.com.cn:82/Garfield/1045020208160b9706425470.mp4");
+        mMediaPlayer.prepareAsync();
+    }
+
+    @Override
+    public void surfaceDestroyed(SurfaceHolder holder) {
 
     }
 }
