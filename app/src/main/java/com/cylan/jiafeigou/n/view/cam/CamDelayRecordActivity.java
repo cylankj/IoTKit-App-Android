@@ -12,19 +12,25 @@ import android.text.TextPaint;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.cylan.entity.jniCall.JFGMsgVideoResolution;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamDelayRecordContract;
 import com.cylan.jiafeigou.n.mvp.model.BeanCamInfo;
+import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.TimeUtils;
 import com.cylan.jiafeigou.widget.RecordControllerView;
+import com.cylan.jiafeigou.widget.video.VideoViewFactory;
 
 import java.lang.ref.WeakReference;
 
@@ -39,8 +45,8 @@ import butterknife.OnClick;
 public class CamDelayRecordActivity extends BaseFullScreenFragmentActivity<CamDelayRecordContract.Presenter>
         implements CamDelayRecordContract.View, SurfaceHolder.Callback {
 
-    @BindView(R.id.act_delay_record_video_view)
-    SurfaceView mRoundedTextureView;
+    @BindView(R.id.act_delay_record_video_view_container)
+    FrameLayout mVideoViewContainer;
     @BindView(R.id.act_delay_record_information)
     TextView mRecordInformation;
     @BindView(R.id.act_delay_record_play)
@@ -56,6 +62,7 @@ public class CamDelayRecordActivity extends BaseFullScreenFragmentActivity<CamDe
     @BindView(R.id.act_delay_record_again)
     Button mRecordAgain;
 
+    SurfaceView mRoundedTextureView;
     private WeakReference<DelayRecordTimeIntervalDialog> mTimeIntervalDialog;
     private WeakReference<DelayRecordTimeDurationDialog> mTimeDurationDialog;
     private int mRecordMode = 0;
@@ -78,17 +85,20 @@ public class CamDelayRecordActivity extends BaseFullScreenFragmentActivity<CamDe
     }
 
     private void initViewAndListener() {
+        mCamInfo = getIntent().getExtras().getParcelable(JConstant.KEY_DEVICE_ITEM_BUNDLE);
         basePresenter = new CamDelayRecordContract.Presenter(this);
+        if (mCamInfo != null) {
+            basePresenter.setCamInfo(mCamInfo);
+            mCamInfo.deviceBase = getIntent().getParcelableExtra(DelayRecordGuideFragment.KEY_DEVICE_INFO);
+            if (mCamInfo.cameraTimeLapsePhotography != null) {
+                mRecordMode = mCamInfo.cameraTimeLapsePhotography.timePeriod;
+                mRecordStartTime = mCamInfo.cameraTimeLapsePhotography.timeStart;
+                mRecordDuration = mCamInfo.cameraTimeLapsePhotography.timeDuration;
+            }
+        }
         mPreviewPaint = new TextPaint();
         mPreviewPaint.setColor(Color.WHITE);
-        mCamInfo = getIntent().getParcelableExtra(DelayRecordGuideFragment.KEY_DEVICE_INFO);
-        basePresenter.setCamInfo(mCamInfo);
-        if (mCamInfo != null && mCamInfo.cameraTimeLapsePhotography != null) {
-            mRecordMode = mCamInfo.cameraTimeLapsePhotography.timePeriod;
-            mRecordStartTime = mCamInfo.cameraTimeLapsePhotography.timeStart;
-            mRecordDuration = mCamInfo.cameraTimeLapsePhotography.timeDuration;
-        }
-        mRoundedTextureView.getHolder().addCallback(this);
+        initVideoView();
         initTimeIntervalDialog();
         initTimeDurationDialog();
         checkDeviceState();
@@ -99,7 +109,7 @@ public class CamDelayRecordActivity extends BaseFullScreenFragmentActivity<CamDe
      * 检查设备是否处于待机状态,未处于待机状态则进行直播预览画面
      */
     private void checkDeviceState() {
-        if (mCamInfo != null && mCamInfo.cameraTimeLapsePhotography != null && !mCamInfo.cameraStandbyFlag) {
+        if (mCamInfo != null && !mCamInfo.cameraStandbyFlag) {
             startPlayLiveVideo();//设备未处于待机状态,则进行直播预览
         }
     }
@@ -191,8 +201,10 @@ public class CamDelayRecordActivity extends BaseFullScreenFragmentActivity<CamDe
             //还没有开始录制,则现在当前设置的模式
             mRecordInformation.setText(getString(R.string.delay_record_hint_information_0, mRecordMode == 0 ? 60 : 20, mRecordTime));
         } else if (time == DELAY_RECORD_FINISH) {
+            //录制并合成完成视频
             mRecordInformation.setText(R.string.delay_record_hint_information_2);
         } else if (time == DELAY_RECORD_PROCESS) {
+            //已完成录制,正在进行视频合成
             mRecordInformation.setText(R.string.delay_record_hint_information_3);
         }
     }
@@ -304,13 +316,41 @@ public class CamDelayRecordActivity extends BaseFullScreenFragmentActivity<CamDe
      * 这个方法必须在holder已经创建了之后才能调用
      */
     public void setDefaultPreview() {
-        SurfaceHolder holder = mRoundedTextureView.getHolder();
-        int width = holder.getSurfaceFrame().right - holder.getSurfaceFrame().left;
-        int height = holder.getSurfaceFrame().bottom - holder.getSurfaceFrame().top;
-        Canvas canvas = holder.lockCanvas();
-        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.delay_record_overlay);
-        canvas.drawColor(Color.WHITE);
-        canvas.drawBitmap(bitmap, new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight()), new Rect(0, 0, width, height), mPreviewPaint);
-        holder.unlockCanvasAndPost(canvas);
+        new Thread() {
+            @Override
+            public void run() {
+                SurfaceHolder holder = mRoundedTextureView.getHolder();
+                int width = holder.getSurfaceFrame().right - holder.getSurfaceFrame().left;
+                int height = holder.getSurfaceFrame().bottom - holder.getSurfaceFrame().top;
+                Canvas canvas = holder.lockCanvas();
+                canvas.save();
+                Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.delay_record_overlay);
+                canvas.drawColor(Color.WHITE);
+                canvas.drawBitmap(bitmap, new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight()), new Rect(0, 0, width, height), mPreviewPaint);
+                canvas.restore();
+                holder.unlockCanvasAndPost(canvas);
+            }
+        }.start();
+
+    }
+
+    /**
+     * 初始化videoView
+     *
+     * @return
+     */
+    private void initVideoView() {
+        if (mRoundedTextureView == null) {
+            int pid = basePresenter.getCamInfo().deviceBase.pid;
+            mRoundedTextureView = (SurfaceView) VideoViewFactory.CreateRendererExt(JFGRules.isNeedPanoramicView(pid),
+                    getContext(), true);
+            mRoundedTextureView.setId("IVideoView".hashCode());
+            mRoundedTextureView.getHolder().addCallback(this);
+            ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+            mRoundedTextureView.setLayoutParams(params);
+            mVideoViewContainer.removeAllViews();
+            mVideoViewContainer.addView(mRoundedTextureView);
+        }
+        AppLogger.i("initVideoView");
     }
 }

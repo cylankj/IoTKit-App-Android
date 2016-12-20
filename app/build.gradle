@@ -230,8 +230,8 @@ android {
             manifestPlaceholders = [NICELY_VALUE       : "yf.jfgou.com:443",
                                     MAT_VALUE          : getMtaAppKey("yf"),
                                     AUTHORITY          : ".yf",
-                                    VKEY               : "tVN2fxGbUn6Hw1FNq9TFWJdQ4ClqH4Hb",
-                                    VID                : "\\ 0001",
+                                    VKEY               : "DOHMVTgJCr0vSE0S5bBB2B3usOgnkbYz",
+                                    VID                : "003H",
                                     QQ_APP_KEY         : "1103156296",
                                     weChat_APP_ID      : "wx3081bcdae8a842cf",
                                     NICELY_SINA_APP_KEY: "xxx"]

@@ -44,15 +44,20 @@
             android:layout_width="match_parent"
             android:layout_height="198dp">
 
-            <SurfaceView
-                android:id="@+id/act_delay_record_video_view"
+            <!--<com.cylan.jiafeigou.widget.video.ViEAndroidGLES20_Ext-->
+            <!--android:id="@+id/act_delay_record_video_view"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent"/>-->
+            <FrameLayout
+                android:id="@+id/act_delay_record_video_view_container"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"/>
 
-            <View
+            <ImageView
                 android:id="@+id/act_delay_record_video_overlay"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+
                 android:alpha="0.6"
                 android:background="#000000"/>
 

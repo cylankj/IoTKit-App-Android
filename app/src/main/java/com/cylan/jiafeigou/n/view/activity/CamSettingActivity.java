@@ -288,6 +288,9 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
             case R.id.sv_setting_device_delay_capture: {
                 if (PreferencesUtils.getBoolean(JConstant.KEY_DELAY_RECORD_GUIDE, true)) {
                     initUserGuideFragment();
+                    Bundle bundle = new Bundle();
+                    bundle.putParcelable(JConstant.KEY_DEVICE_ITEM_BUNDLE, basePresenter.getCamInfoBean());
+                    mGuideFragment.get().setArguments(bundle);
                     ActivityUtils.loadFragment(android.R.id.content, getSupportFragmentManager(), mGuideFragment.get());
                 } else {
                     Intent intent = new Intent(this, CamDelayRecordActivity.class);
@@ -302,7 +305,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         if (mGuideFragment == null || mGuideFragment.get() == null) {
             BeanCamInfo camInfoBean = basePresenter.getCamInfoBean();
             Bundle bundle = new Bundle();
-            bundle.putParcelable(DelayRecordGuideFragment.KEY_DEVICE_INFO, camInfoBean);
+            bundle.putParcelable(JConstant.KEY_DEVICE_ITEM_BUNDLE, camInfoBean);
             mGuideFragment = new WeakReference<>(DelayRecordGuideFragment.newInstance(bundle));
         }
     }
@@ -368,6 +371,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
     @Override
     public void isSharedDevice() {
         //分享账号 隐藏
+        if (true) return;//doNothing
         final int count = lLayoutSettingItemContainer.getChildCount();
         for (int i = 2; i < count - 1; i++) {
             View v = lLayoutSettingItemContainer.getChildAt(i);

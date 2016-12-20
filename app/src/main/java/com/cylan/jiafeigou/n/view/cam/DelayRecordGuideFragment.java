@@ -20,6 +20,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+import static com.cylan.jiafeigou.misc.JConstant.KEY_DEVICE_ITEM_BUNDLE;
+
 /**
  * Created by yzd on 16-12-16.
  */
@@ -44,7 +46,7 @@ public class DelayRecordGuideFragment extends IBaseFragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mBean = getArguments().getParcelable(KEY_DEVICE_INFO);
+        mBean = getArguments().getParcelable(KEY_DEVICE_ITEM_BUNDLE);
     }
 
 
@@ -70,7 +72,8 @@ public class DelayRecordGuideFragment extends IBaseFragment {
         } else {
             getActivity().getSupportFragmentManager().popBackStack();
             Intent intent = new Intent(getContext(), CamDelayRecordActivity.class);
-            intent.putExtra(KEY_DEVICE_INFO, mBean);
+            intent.putExtras(getArguments());
+            intent.putExtra(KEY_DEVICE_INFO, mBean.deviceBase);
             startActivity(intent);
         }
     }

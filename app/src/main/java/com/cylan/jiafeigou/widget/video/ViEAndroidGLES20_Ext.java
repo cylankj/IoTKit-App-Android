@@ -2,6 +2,7 @@ package com.cylan.jiafeigou.widget.video;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.util.AttributeSet;
 
 import com.cylan.panorama.CameraParam;
 
@@ -14,6 +15,11 @@ import org.webrtc.videoengine.ViEAndroidGLES20;
 public class ViEAndroidGLES20_Ext extends ViEAndroidGLES20 implements VideoViewFactory.IVideoView {
 
     public ViEAndroidGLES20_Ext(Context context) {
+        super(context);
+    }
+
+
+    public ViEAndroidGLES20_Ext(Context context, AttributeSet attr) {
         super(context);
     }
 
