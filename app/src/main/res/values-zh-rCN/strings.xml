@@ -833,5 +833,8 @@
     <string name="permission_download">获取SD卡权限失败,取消下载</string>
     <string name="delay_record_guide_hint">日出日落、云彩变幻、家庭生活、\nBaby成长…每天都有精彩和成长，\n每一刻都值得被记录。</string>
     <string name="delay_record_guide">延时摄影</string>
+    <string name="delay_record_hint_information_0">间隔时间%1$dS 拍摄时长%2$d小时</string>
+    <string name="delay_record_hint_information_1">剩余时间:%1$s</string>
+    <string name="delay_record_hint_information_2">视频已合并完成</string>
 
 </resources>

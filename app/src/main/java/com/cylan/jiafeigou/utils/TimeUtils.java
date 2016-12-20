@@ -67,4 +67,13 @@ public class TimeUtils {
     public static String getHH_MM(long time) {
         return getSimpleDateFormatHHMM.get().format(new Date(time));
     }
+
+    public static String getHH_MM_Remain(long timeMs) {
+        int totalMinutes = (int) (timeMs / 1000 / 60);
+        int minutes = totalMinutes % 60;
+        int hours = totalMinutes / 60;
+        String str_hour = hours > 9 ? "" + hours : "0" + hours;
+        String str_minute = minutes > 9 ? "" + minutes : "0" + minutes;
+        return str_hour + ":" + str_minute;
+    }
 }

@@ -54,8 +54,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:alpha="0.6"
-                android:background="#000000"
-                android:visibility="gone"/>
+                android:background="#000000"/>
 
 
             <TextView

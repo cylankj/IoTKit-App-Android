@@ -52,17 +52,32 @@ public class DelayRecordTimeDurationDialog extends BaseDialog<Integer> {
     }
 
     private void initView() {
+        int position = 0;
         if (value == 0) {
             options = getResources().getStringArray(R.array.delay_redord_60s_option);
+            position = options.length - 1;
         } else if (value == 1) {
             options = getResources().getStringArray(R.array.delay_redord_20s_option);
+            position = 7;
         }
         mPicker.setData(Arrays.asList(options));
+        mPicker.setSelectedItemPosition(position);
     }
 
     @OnClick({R.id.dialog_record_duration_cancel, R.id.dialog_record_duration_ok})
     public void onClick(View view) {
         dismiss();
-        if (action != null) action.onDialogAction(view.getId(), view);
+        if (action != null && view.getId() == R.id.dialog_record_duration_ok) {
+            action.onDialogAction(view.getId(), getDuration());
+        }
+    }
+
+    public int getDuration() {
+        if (value == 0) {
+            return mPicker.getCurrentItemPosition() + 4;
+        } else if (value == 1) {
+            return mPicker.getCurrentItemPosition() + 1;
+        }
+        return 1;
     }
 }
