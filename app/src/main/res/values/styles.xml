@@ -416,4 +416,9 @@
         <item name="android:windowEnterAnimation">@anim/popupwindow_in</item>
         <item name="android:windowExitAnimation">@anim/popupwindow_out</item>
     </style>
+
+    <!--checkbox样式-->
+    <style name="CustomCheckboxTheme" parent="@android:style/Widget.CompoundButton.CheckBox">
+        <item name="android:button">@drawable/share_to_friend_check_box_seclector</item>
+    </style>
 </resources>

@@ -24,7 +24,6 @@ public interface HomeMineMessageContract {
          */
         void initRecycleView(ArrayList<MineMessageBean> list);
 
-        void showClearDialog();
         /**
          * 消息为空显示
          */

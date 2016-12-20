@@ -5,6 +5,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
@@ -21,6 +23,18 @@ import java.util.List;
 
 public class HomeMineMessageAdapter extends SuperAdapter<MineMessageBean>{
 
+    public boolean isShowCheck;
+    public boolean checkAll;
+
+    public OnDeleteCheckChangeListener listener;
+
+    public interface OnDeleteCheckChangeListener{
+        public void deleteCheck(boolean isCheck,MineMessageBean item);
+    }
+
+    public void setOnDeleteCheckChangeListener(OnDeleteCheckChangeListener listener){
+        this.listener = listener;
+    }
 
     public HomeMineMessageAdapter(Context context, List<MineMessageBean> items, IMulItemViewType<MineMessageBean> mulItemViewType) {
         super(context, items, mulItemViewType);
@@ -35,6 +49,29 @@ public class HomeMineMessageAdapter extends SuperAdapter<MineMessageBean>{
         } else {
             holder.setVisibility(R.id.message_item_time,View.GONE);
         }
+
+        if (isShowCheck){
+            holder.setVisibility(R.id.delete_check,View.VISIBLE);
+        }else {
+            holder.setVisibility(R.id.delete_check,View.GONE);
+        }
+
+        CheckBox deleteCheck = holder.getView(R.id.delete_check);
+        deleteCheck.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (listener != null){
+                    listener.deleteCheck(isChecked,item);
+                }
+            }
+        });
+
+        if (checkAll){
+            deleteCheck.setChecked(true);
+        }else {
+            deleteCheck.setChecked(false);
+        }
+
         //处理消息显示
         holder.setText(R.id.message_item_msg,item.getContent());
 

@@ -25,6 +25,7 @@ import com.cylan.jiafeigou.n.view.adapter.ShareToFriendsAdapter;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.widget.LoadingDialog;
+import com.cylan.superadapter.OnItemClickListener;
 import com.cylan.superadapter.internal.SuperViewHolder;
 
 import java.util.ArrayList;
@@ -51,7 +52,6 @@ public class MineShareToFriendFragment extends Fragment implements MineShareToFr
     LinearLayout llNoFriend;
 
     private MineShareToFriendContract.Presenter presenter;
-
     private ShareToFriendsAdapter shareToFriendsAdapter;
     private int hasShareNum;
 
@@ -269,6 +269,7 @@ public class MineShareToFriendFragment extends Fragment implements MineShareToFr
                 presenter.checkShareNumIsOver(holder,numIsChange,hasShareNum);
             }
         });
+
     }
 
     @Override

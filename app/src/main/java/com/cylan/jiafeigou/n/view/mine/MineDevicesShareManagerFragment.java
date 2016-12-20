@@ -55,6 +55,16 @@ public class MineDevicesShareManagerFragment extends Fragment implements MineDev
     private RelAndFriendBean tempBean;
     private ArrayList<RelAndFriendBean> hasShareFriendlist;
 
+    private OnUnShareChangeListener listener;
+
+    public interface OnUnShareChangeListener{
+        void unShareChange();
+    }
+
+    public void setOncancleChangeListener(OnUnShareChangeListener listener){
+        this.listener = listener;
+    }
+
     public static MineDevicesShareManagerFragment newInstance(Bundle bundle) {
         MineDevicesShareManagerFragment fragment = new MineDevicesShareManagerFragment();
         fragment.setArguments(bundle);
@@ -199,6 +209,9 @@ public class MineDevicesShareManagerFragment extends Fragment implements MineDev
     @Override
     public void showUnShareResult(String result) {
         ToastUtil.showToast(result);
+        if (result.equals(getString(R.string.Tap3_ShareDevice_DeleteSucces))){
+            if (listener != null)listener.unShareChange();
+        }
         if (hasShareAdapter.getItemCount() == 0){
             hideHasShareListTitle();
             showNoHasShareFriendNullView();

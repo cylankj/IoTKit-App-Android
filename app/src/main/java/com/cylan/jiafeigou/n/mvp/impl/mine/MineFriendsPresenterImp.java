@@ -1,5 +1,7 @@
 package com.cylan.jiafeigou.n.mvp.impl.mine;
 
+import android.os.SystemClock;
+
 import com.cylan.entity.JfgEnum;
 import com.cylan.entity.jniCall.JFGFriendAccount;
 import com.cylan.entity.jniCall.JFGFriendRequest;
@@ -12,6 +14,7 @@ import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.rx.RxBus;
+import com.sina.weibo.sdk.utils.LogUtil;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -100,7 +103,7 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
     @Override
     public boolean checkAddRequestOutTime(MineAddReqBean bean) {
         long oneMount = 30 * 24 * 60 * 60 * 1000L;
-        return (System.currentTimeMillis() - Long.parseLong(bean.time + "")) > oneMount;
+        return (oneMount - bean.time) < 0;
     }
 
     /**
@@ -309,6 +312,7 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
                 friendListNull = true;
                 checkAllNull();
                 getView().hideFriendListTitle();
+                getView().initFriendRecyList(new ArrayList<RelAndFriendBean>());
             }
         }
     }

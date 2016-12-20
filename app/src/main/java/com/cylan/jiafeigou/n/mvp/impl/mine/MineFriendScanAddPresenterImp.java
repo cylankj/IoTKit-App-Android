@@ -6,6 +6,7 @@ import android.graphics.Point;
 import android.view.Display;
 import android.view.WindowManager;
 
+import com.cylan.entity.JfgEnum;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendScanAddContract;
@@ -22,6 +23,7 @@ import com.google.zxing.common.BitMatrix;
 
 import java.util.EnumMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
 import rx.Subscription;
@@ -219,6 +221,11 @@ public class MineFriendScanAddPresenterImp extends AbstractPresenter<MineFriendS
                 MineAddReqBean resutBean = new MineAddReqBean();
                 resutBean.account = checkAccountCallback.s;
                 resutBean.alias = checkAccountCallback.s1;
+                try {
+                    resutBean.iconUrl = JfgCmdInsurance.getCmd().getCloudUrlByType(JfgEnum.JFG_URL.PORTRAIT,0,checkAccountCallback.s+".jpg","");
+                } catch (JfgException e) {
+                    e.printStackTrace();
+                }
                 getView().jump2FriendDetailFragment(false,resutBean);
             }else if (checkAccountCallback.i == 241){
                 // 已经是好友了

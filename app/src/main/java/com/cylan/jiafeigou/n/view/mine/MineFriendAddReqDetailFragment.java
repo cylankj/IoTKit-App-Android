@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.app.AlertDialog;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -89,7 +90,7 @@ public class MineFriendAddReqDetailFragment extends Fragment implements MineFrie
         Bundle arguments = getArguments();
         boolean isFrome = arguments.getBoolean("isFrom");
         addRequestItems = (MineAddReqBean) arguments.getSerializable("addRequestItems");
-        if ("".equals(addRequestItems.alias)){
+        if (TextUtils.isEmpty(addRequestItems.alias)){
             tvRelativeAndFriendName.setText("sjd172");
         }else {
             tvRelativeAndFriendName.setText(addRequestItems.alias);

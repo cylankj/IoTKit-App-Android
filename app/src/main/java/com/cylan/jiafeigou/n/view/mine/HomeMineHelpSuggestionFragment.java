@@ -239,6 +239,9 @@ public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMine
      */
     @Override
     public void initRecycleView(ArrayList<MineHelpSuggestionBean> list) {
+        for (MineHelpSuggestionBean bean:list){
+            bean.icon = presenter.getUserPhotoUrl();
+        }
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         mRvMineSuggestion.setLayoutManager(layoutManager);
         suggestionAdapter = new HomeMineHelpSuggestionAdapter(getContext(), list, null);

@@ -134,7 +134,6 @@ public class MineFriendsFragment extends Fragment implements MineFriendsContract
                 dialog.dismiss();
             }
         }).show();
-
     }
 
     @Override

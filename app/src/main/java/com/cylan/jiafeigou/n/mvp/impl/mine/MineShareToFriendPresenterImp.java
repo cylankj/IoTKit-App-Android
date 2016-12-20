@@ -1,5 +1,6 @@
 package com.cylan.jiafeigou.n.mvp.impl.mine;
 
+import com.cylan.entity.JfgEnum;
 import com.cylan.entity.jniCall.JFGFriendAccount;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
@@ -203,6 +204,11 @@ public class MineShareToFriendPresenterImp extends AbstractPresenter<MineShareTo
             bean.account = friendAccount.account;
             bean.alias = friendAccount.alias;
             bean.markName = friendAccount.markName;
+            try {
+                bean.iconUrl = JfgCmdInsurance.getCmd().getCloudUrlByType(JfgEnum.JFG_URL.PORTRAIT,0,friendAccount.account+".jpg","");
+            } catch (JfgException e) {
+                e.printStackTrace();
+            }
             list.add(bean);
         }
         return list;

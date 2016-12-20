@@ -141,7 +141,6 @@ public class MineDevicesShareManagerPresenterImp extends AbstractPresenter<MineD
 
     /**
      * 取消分享设备
-     *
      * @param cid
      * @param bean
      */

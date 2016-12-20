@@ -10,7 +10,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
@@ -40,6 +42,8 @@ public class MineFriendAddFriendsFragment extends Fragment implements MineFriend
     TextView tvScanAdd;
     @BindView(R.id.tv_add_from_contract)
     TextView tvAddFromContract;
+    @BindView(R.id.fragment_container)
+    FrameLayout fragmentContainer;
 
     private MineFriendScanAddFragment scanAddFragment;
     private MineFriendAddFromContactFragment addFromContactFragment;
@@ -87,9 +91,9 @@ public class MineFriendAddFriendsFragment extends Fragment implements MineFriend
                 if (getView() != null)
                     ViewUtils.deBounceClick(getView().findViewById(R.id.tv_scan_add));
                 AppLogger.d("tv_scan_add");
-                if (presenter.checkCameraPermission()){
+                if (presenter.checkCameraPermission()) {
                     jump2ScanAddFragment();
-                }else {
+                } else {
                     MineFriendAddFriendsFragment.this.requestPermissions(
                             new String[]{Manifest.permission.CAMERA},
                             2);
@@ -100,9 +104,9 @@ public class MineFriendAddFriendsFragment extends Fragment implements MineFriend
                 if (getView() != null)
                     ViewUtils.deBounceClick(getView().findViewById(R.id.tv_add_from_contract));
                 AppLogger.d("tv_add_from_contract");
-                if (presenter.checkContractPermission()){
+                if (presenter.checkContractPermission()) {
                     jump2AddFromContactFragment();
-                }else {
+                } else {
                     MineFriendAddFriendsFragment.this.requestPermissions(
                             new String[]{Manifest.permission.READ_CONTACTS},
                             1);
@@ -138,23 +142,24 @@ public class MineFriendAddFriendsFragment extends Fragment implements MineFriend
 
     private void jump2ScanAddFragment() {
         getFragmentManager().beginTransaction()
-                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
+                .setCustomAnimations(0, 0
                         , R.anim.slide_in_left, R.anim.slide_out_right)
-                .add(android.R.id.content, scanAddFragment,"scanAddFragment")
+                .replace(R.id.fragment_container, scanAddFragment, "scanAddFragment")
                 .addToBackStack("mineHelpFragment")
                 .commit();
+
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == 1){
+        if (requestCode == 1) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 jump2AddFromContactFragment();
             } else {
                 ToastUtil.showNegativeToast(getString(R.string.Tap0_Authorizationfailed));
             }
-        }else if (requestCode == 2){
+        } else if (requestCode == 2) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 jump2ScanAddFragment();
             } else {

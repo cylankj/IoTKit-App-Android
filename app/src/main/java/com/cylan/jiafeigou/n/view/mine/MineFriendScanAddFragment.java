@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
@@ -31,7 +32,7 @@ import rx.schedulers.Schedulers;
  * 创建时间：2016/9/6
  * 描述：
  */
-public class MineFriendScanAddFragment extends Fragment implements ZXingScannerView.ResultHandler, MineFriendScanAddContract.View {
+public class MineFriendScanAddFragment extends Fragment implements ZXingScannerView.ResultHandler, MineFriendScanAddContract.View{
 
     @BindView(R.id.iv_home_mine_relativesandfriends_scan_add_back)
     ImageView ivHomeMineRelativesandfriendsScanAddBack;
@@ -179,11 +180,15 @@ public class MineFriendScanAddFragment extends Fragment implements ZXingScannerV
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+        if (presenter != null)presenter.start();
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
         zxVScanAddRelativesandfriend.setResultHandler(MineFriendScanAddFragment.this);
-        if (presenter != null)
-            presenter.start();
     }
 
     @Override
@@ -204,4 +209,5 @@ public class MineFriendScanAddFragment extends Fragment implements ZXingScannerV
         super.onStop();
         if (presenter != null) presenter.stop();
     }
+
 }

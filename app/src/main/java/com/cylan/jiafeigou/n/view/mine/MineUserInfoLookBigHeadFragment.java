@@ -1,5 +1,6 @@
 package com.cylan.jiafeigou.n.view.mine;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -8,11 +9,15 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
+import com.bumptech.glide.request.target.Target;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineUserInfoLookBigHeadContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineUserInfoLookBigHeadPresenterImpl;
@@ -44,6 +49,7 @@ public class MineUserInfoLookBigHeadFragment extends Fragment implements MineUse
         return fragment;
     }
 
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -51,8 +57,23 @@ public class MineUserInfoLookBigHeadFragment extends Fragment implements MineUse
         ButterKnife.bind(this, view);
         getArgumentData();
         initPresenter();
+        initImageViewSize();
+        showLoadImageProgress();
         loadBigImage(iamgeUrl);
         return view;
+    }
+
+    /**
+     * 初始化大图大小
+     */
+    private void initImageViewSize() {
+        WindowManager wm = (WindowManager)getActivity()
+                .getSystemService(Context.WINDOW_SERVICE);
+        int height = wm.getDefaultDisplay().getHeight();
+        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(ivUserinfoBigImage.getLayoutParams());
+        lp.height = (int) (height*0.47);
+        lp.setMargins(0, (int) (height*0.23), 0, 0);
+        ivUserinfoBigImage.setLayoutParams(lp);
     }
 
     /**
@@ -67,27 +88,27 @@ public class MineUserInfoLookBigHeadFragment extends Fragment implements MineUse
         Glide.with(getContext())
                 .load(url)
                 .asBitmap()
-                .error(R.drawable.icon_mine_head_normal)
                 .centerCrop()
-                .into(new BitmapImageViewTarget(ivUserinfoBigImage) {
+                .skipMemoryCache(true)
+                .error(R.drawable.icon_mine_head_normal)
+                .listener(new RequestListener<String, Bitmap>() {
                     @Override
-                    public void onLoadStarted(Drawable placeholder) {
-                        super.onLoadStarted(placeholder);
-                    }
-
-                    @Override
-                    public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-                        super.onResourceReady(resource, glideAnimation);
-                        loadResult = true;
-                    }
-
-                    @Override
-                    public void onLoadFailed(Exception e, Drawable errorDrawable) {
-                        super.onLoadFailed(e, errorDrawable);
+                    public boolean onException(Exception e, String model, Target<Bitmap> target, boolean isFirstResource) {
+                        hideLoadImageProgress();
                         loadResult = false;
                         ToastUtil.showNegativeToast(getString(R.string.Item_LoadFail));
+                        return false;
                     }
-                });
+
+                    @Override
+                    public boolean onResourceReady(Bitmap resource, String model, Target<Bitmap> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                        loadResult = true;
+                        hideLoadImageProgress();
+                        return false;
+                    }
+                })
+                .into(ivUserinfoBigImage);
+
     }
 
     private void initPresenter() {

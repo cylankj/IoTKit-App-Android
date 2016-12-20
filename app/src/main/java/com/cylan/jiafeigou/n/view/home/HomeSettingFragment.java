@@ -152,16 +152,6 @@ public class HomeSettingFragment extends Fragment implements HomeSettingContract
     }
 
     @Override
-    public boolean switchVoice() {
-        return presenter.getNegation();
-    }
-
-    @Override
-    public boolean switchShake() {
-        return presenter.getNegation();
-    }
-
-    @Override
     public void initSwitchState(final RxEvent.GetUserInfo userInfo) {
         btnItemSwitchAccessMes.setChecked(userInfo.jfgAccount.isEnablePush());
         btnItemSwitchVoide.setChecked(userInfo.jfgAccount.isEnableSound());
