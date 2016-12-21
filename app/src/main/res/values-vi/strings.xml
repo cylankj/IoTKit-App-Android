@@ -805,4 +805,18 @@
   <string name="Tap1_Camera_Overlook">Bỏ qua</string>
   <string name="Tap1_Camera_FrontTips">Xem với góc ngang cần phải giữ một tầm nhìn rộng ở phía trước của máy ảnh</string>
   <string name="Tap1_Camera_OverlookTips">Xem với góc nhìn ra cần đặt máy ảnh lên cao</string>
+
+  <string name="Tap3_ShareDevice_CancelShareTips">Hủy bỏ việc chia sẻ thất bại</string>
+  <string name="Tap3_FriendsAdd_SendButton">Gửi yêu cầu</string>
+  <string name="Tap3_FriendsAdd_NoContacts">không có danh bạ</string>
+  <string name="Tap3_SavePic">lưu bức ảnh</string>
+  <string name="Tap1_iHome_Associated">Associated</string>
+  <string name="Tap1_iHome_NotAssociated">Not Associated</string>
+  <string name="Tap1_iHome_ClearRecord">Dọn bản ghi</string>
+  <string name="Tap3_FriendsAdd_RequestContents"> Muốn thêm bạn như một người bạn</string>
+  <string name="Tap3_Friends_NoBindTips">Sử dụng chức năng này cần để ràng buộc email đầu tiên.</string>
+  <string name="Tap3_FriendsAdd_StuffContents">Tôi là %@</string>
+  <string name="Tap3_Userinfo_NoCamera">Máy ảnh không thể sử dụng</string>
+  <string name="ClearingTips">Clearing…</string>
+  <string name="CancelingTips">Hủy…</string>
 </resources>

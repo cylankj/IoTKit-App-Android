@@ -122,7 +122,7 @@ public class MineFriendAddFromContactFragment extends Fragment implements MineFr
         contactListAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(View itemView, int viewType, int position) {
-                //TODO 跳转到联系人的详情界面去
+                //跳转到联系人的详情界面去
             }
         });
     }
@@ -170,6 +170,18 @@ public class MineFriendAddFromContactFragment extends Fragment implements MineFr
     }
 
     /**
+     * 网络状态变化
+     * @param state
+     */
+    @Override
+    public void onNetStateChanged(int state) {
+        if (state == -1){
+            hideLoadingPro();
+            ToastUtil.showNegativeToast(getString(R.string.NO_NETWORK_1));
+        }
+    }
+
+    /**
      * 发送短信邀请
      */
     @Override
@@ -178,7 +190,7 @@ public class MineFriendAddFromContactFragment extends Fragment implements MineFr
             sendSms();
         } else {
             //申请权限
-            ActivityCompat.requestPermissions(getActivity(),
+            MineFriendAddFromContactFragment.this.requestPermissions(
                     new String[]{Manifest.permission.SEND_SMS},
                     1);
         }

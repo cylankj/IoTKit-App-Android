@@ -17,12 +17,12 @@ import com.cylan.jiafeigou.utils.PreferencesUtils;
  * 创建时间：2016/9/2
  * 描述：
  */
-public class MineUserInfoLookBigHeadPresenterIMpl implements MineUserInfoLookBigHeadContract.Presenter {
+public class MineUserInfoLookBigHeadPresenterImpl implements MineUserInfoLookBigHeadContract.Presenter {
 
     private MineUserInfoLookBigHeadContract.View view;
     private Context context;
 
-    public MineUserInfoLookBigHeadPresenterIMpl(MineUserInfoLookBigHeadContract.View view) {
+    public MineUserInfoLookBigHeadPresenterImpl(MineUserInfoLookBigHeadContract.View view) {
         this.view = view;
         view.setPresenter(this);
     }
@@ -30,24 +30,6 @@ public class MineUserInfoLookBigHeadPresenterIMpl implements MineUserInfoLookBig
     @Override
     public void loadImage(ImageView imageView) {
 
-        Glide.with(view.getContext())
-                .load(PreferencesUtils.getString(JConstant.USER_IMAGE_HEAD_URL, ""))
-                .asBitmap()
-                .centerCrop()
-                .into(new BitmapImageViewTarget(imageView) {
-                    @Override
-                    public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-                        super.onResourceReady(resource, glideAnimation);
-
-                    }
-
-                    @Override
-                    public void onLoadFailed(Exception e, Drawable errorDrawable) {
-                        super.onLoadFailed(e, errorDrawable);
-
-                    }
-
-                });
     }
 
     @Override

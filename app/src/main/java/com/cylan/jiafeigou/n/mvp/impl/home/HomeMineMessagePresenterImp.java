@@ -30,9 +30,10 @@ public class HomeMineMessagePresenterImp extends AbstractPresenter<HomeMineMessa
 
     private DbManager dbManager;
 
-    public HomeMineMessagePresenterImp(HomeMineMessageContract.View view) {
+    public HomeMineMessagePresenterImp(HomeMineMessageContract.View view,ArrayList<MineMessageBean> list) {
         super(view);
         view.setPresenter(this);
+        this.list = list;
     }
 
     @Override
@@ -52,10 +53,6 @@ public class HomeMineMessagePresenterImp extends AbstractPresenter<HomeMineMessa
         }
     }
 
-    @Override
-    public void addMessageItem() {
-
-    }
 
     /**
      * 加载消息数据
@@ -63,11 +60,17 @@ public class HomeMineMessagePresenterImp extends AbstractPresenter<HomeMineMessa
     @Override
     public void initMesgData() {
 
-        list = new ArrayList<MineMessageBean>();
+        if (list == null){
+            list = new ArrayList<MineMessageBean>();
+        }
+
+        list.clear();
 
         MineMessageBean emMessage = new MineMessageBean("亲爱的用户,客户端将进行系统维护升级,期间对设备正常使用将会造成一定影响，对您造成的不便之处敬请谅解。再次感谢您对加菲狗的支持！", 1, System.currentTimeMillis() + "");
+        MineMessageBean emMessage2 = new MineMessageBean("设备已被删除", 1, System.currentTimeMillis() + "");
 
         list.add(emMessage);
+        list.add(emMessage2);
 
         list.addAll(findAllFromDb());
 

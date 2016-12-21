@@ -46,10 +46,11 @@ android:layout_height="67dp">
 
 <CheckBox
     android:id="@+id/cbx_share_isCheck"
-    android:layout_marginRight="15dp"
     android:gravity="center"
-    android:background="@drawable/share_to_friend_check_box_seclector"
-    android:button="@null"
+    style="@style/CustomCheckboxTheme"
+    android:paddingRight="15dp"
+    android:paddingTop="15dp"
+    android:paddingBottom="15dp"
     android:layout_centerVertical="true"
     android:layout_alignParentRight="true"
     android:layout_width="wrap_content"

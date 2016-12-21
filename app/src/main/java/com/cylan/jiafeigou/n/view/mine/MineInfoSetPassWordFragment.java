@@ -80,8 +80,8 @@ public class MineInfoSetPassWordFragment extends Fragment implements MineInfoSet
 
     @OnTextChanged(R.id.et_mine_personal_information_old_password)
     public void onOldPwdUpdate(CharSequence s, int start, int before, int count) {
-        boolean isEmpty = TextUtils.isEmpty(s);
-        if (isEmpty || TextUtils.isEmpty(getNewPassword())) {
+        boolean isEmpty = s.length()<6;
+        if (isEmpty || getNewPassword().trim().length()<6) {
             ivMinePersonalSetpasswordBind.setImageDrawable(getResources().getDrawable(R.drawable.icon_finish_disable));
             ivMinePersonalSetpasswordBind.setEnabled(false);
             ivMinePersonalSetpasswordBind.setClickable(false);
@@ -96,8 +96,8 @@ public class MineInfoSetPassWordFragment extends Fragment implements MineInfoSet
 
     @OnTextChanged(R.id.et_mine_personal_information_new_password)
     public void onNewPwdUpdate(CharSequence s, int start, int before, int count) {
-        boolean isEmpty = TextUtils.isEmpty(s);
-        if (isEmpty || TextUtils.isEmpty(getOldPassword())) {
+        boolean isEmpty = s.length()<6;
+        if (isEmpty || getOldPassword().trim().length()<6) {
             ivMinePersonalSetpasswordBind.setImageDrawable(getResources().getDrawable(R.drawable.icon_finish_disable));
             ivMinePersonalSetpasswordBind.setClickable(false);
             ivMinePersonalSetpasswordBind.setEnabled(false);

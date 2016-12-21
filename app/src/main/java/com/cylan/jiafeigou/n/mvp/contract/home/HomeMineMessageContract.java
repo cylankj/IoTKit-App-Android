@@ -25,7 +25,6 @@ public interface HomeMineMessageContract {
          */
         void initRecycleView(ArrayList<MineMessageBean> list);
 
-        void showClearDialog();
 
         /**
          * 消息为空显示
@@ -40,7 +39,6 @@ public interface HomeMineMessageContract {
 
     interface Presenter extends BasePresenter {
 
-        void addMessageItem();
 
         /**
          * 加载消息数据
@@ -70,6 +68,7 @@ public interface HomeMineMessageContract {
          * @param bean
          */
         void saveIntoDb(MineMessageBean bean);
+
     }
 
 }

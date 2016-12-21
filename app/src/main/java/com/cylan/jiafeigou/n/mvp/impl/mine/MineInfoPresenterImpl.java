@@ -8,11 +8,16 @@ import android.os.Build;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 
+import com.cylan.entity.jniCall.JFGAccount;
+import com.cylan.ex.JfgException;
+import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineInfoContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
+import com.cylan.jiafeigou.support.log.AppLogger;
 
 import java.io.File;
 
@@ -53,25 +58,11 @@ public class MineInfoPresenterImpl extends AbstractPresenter<MineInfoContract.Vi
                     public void call(Object o) {
                         JfgCmdInsurance.getCmd().logout();
                     }
-                });
-    }
-
-    /**
-     * 退出登录的回调
-     *
-     * @return
-     */
+                }, new Action1<Throwable>() {
     @Override
-    public Subscription logOutCallBack() {
-        return RxBus.getCacheInstance().toObservable(Integer.class)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<Integer>() {
-                    @Override
-                    public void call(Integer integer) {
-                        if (getView() != null) {
-                            getView().logOutResult(integer);
+                    public void call(Throwable throwable) {
+                        AppLogger.e("logOut"+throwable.getLocalizedMessage());
                         }
-                    }
                 });
     }
 
@@ -194,7 +185,6 @@ public class MineInfoPresenterImpl extends AbstractPresenter<MineInfoContract.Vi
         } else {
             compositeSubscription = new CompositeSubscription();
             compositeSubscription.add(getAccount());
-//            compositeSubscription.add(logOutCallBack());
         }
     }
 

@@ -804,4 +804,18 @@
   <string name="Tap1_Camera_Overlook">俯瞰</string>
   <string name="Tap1_Camera_FrontTips">ヘッドの斜視図では、必要がカメラの前で視力を維持するために、</string>
   <string name="Tap1_Camera_OverlookTips">トップダウンビューの観点から順に、カメラが高い上に配置される必要があります</string>
+
+  <string name="Tap3_ShareDevice_CancelShareTips">失敗した共有をキャンセル</string>
+  <string name="Tap3_FriendsAdd_SendButton">リクエストを送信する</string>
+  <string name="Tap3_FriendsAdd_NoContacts">連絡先なし</string>
+  <string name="Tap3_SavePic">写真を保存</string>
+  <string name="Tap1_iHome_Associated">関連する</string>
+  <string name="Tap1_iHome_NotAssociated">未関連</string>
+  <string name="Tap1_iHome_ClearRecord">レコードをクリア</string>
+  <string name="Tap3_FriendsAdd_RequestContents">はあなたを友達として追加したい</string>
+  <string name="Tap3_Friends_NoBindTips">この関数を使用すると、電子メールを最初にバインドする必要があります。</string>
+  <string name="Tap3_FriendsAdd_StuffContents">私は％@</string>
+  <string name="Tap3_Userinfo_NoCamera">カメラは使用できません</string>
+  <string name="ClearingTips">クリア…</string>
+  <string name="CancelingTips">キャンセル中…</string>
 </resources>

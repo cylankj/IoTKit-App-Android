@@ -86,6 +86,8 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
                             e.printStackTrace();
                         }
                         AppLogger.i("LoginAccountBean: " + new Gson().toJson(login));
+                        //非三方登录的标记
+                        RxBus.getCacheInstance().postSticky(false);
                         return o;
                     }
                 })
@@ -108,6 +110,8 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
                         } catch (JfgException e) {
                             e.printStackTrace();
                         }
+                        //第三方登录的标记
+                        RxBus.getCacheInstance().postSticky(true);
                     }
                 }, new Action1<Throwable>() {
                     @Override
@@ -246,7 +250,6 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
                 .subscribe(new Action1<RxEvent.LoginPopBack>() {
                     @Override
                     public void call(RxEvent.LoginPopBack loginPopBack) {
-
                         getView().updateAccount(loginPopBack.account);
                     }
                 }, new Action1<Throwable>() {
@@ -441,7 +444,6 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
             String openID = response.getString("openid");
             String accessToken = response.getString("access_token");
             String expires = response.getString("expires_in");
-
             //执行登录
             executeOpenLogin(accessToken);
 

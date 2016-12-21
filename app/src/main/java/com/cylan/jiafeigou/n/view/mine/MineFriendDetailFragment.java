@@ -87,6 +87,12 @@ public class MineFriendDetailFragment extends Fragment implements MineFriendDeta
         return view;
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (presenter != null)presenter.start();
+    }
+
     /**
      * desc:获取到传过来的数据
      */
@@ -248,6 +254,19 @@ public class MineFriendDetailFragment extends Fragment implements MineFriendDeta
                 .addToBackStack("mineHelpFragment")
                 .commit();
     }
+
+    /**
+     * 网络状态变化
+     * @param state
+     */
+    @Override
+    public void onNetStateChanged(int state) {
+        if (state == -1){
+            hideDeleteProgress();
+            ToastUtil.showNegativeToast(getString(R.string.NO_NETWORK_1));
+        }
+    }
+
 
     @Override
     public void onStop() {

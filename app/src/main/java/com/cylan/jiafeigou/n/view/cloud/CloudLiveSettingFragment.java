@@ -143,7 +143,7 @@ public class CloudLiveSettingFragment extends Fragment implements CloudLiveSetti
      */
     private void showClearDeviceDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle("确认删除大门口门铃及其相关数据吗？");
+        builder.setTitle(String.format(getString(R.string.SURE_DELETE_1),presenter.getDeviceName()));
         builder.setPositiveButton(getString(R.string.OK), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -151,7 +151,7 @@ public class CloudLiveSettingFragment extends Fragment implements CloudLiveSetti
                 if (RxBus.getCacheInstance().hasObservers()) {
                     RxBus.getCacheInstance().post(new RxEvent.CloudLiveDelete());
                 }
-                ToastUtil.showToast("正在删除中...");
+                ToastUtil.showToast(getString(R.string.DELETEING));
             }
         });
         builder.setNegativeButton(getString(R.string.CANCEL), new DialogInterface.OnClickListener() {
@@ -234,7 +234,7 @@ public class CloudLiveSettingFragment extends Fragment implements CloudLiveSetti
 
     @Override
     public void showClearRecordProgress() {
-        LoadingDialog.showLoading(getFragmentManager(), "清除中...");
+        LoadingDialog.showLoading(getFragmentManager(),getString(R.string.ClearingTips));
     }
 
     @Override

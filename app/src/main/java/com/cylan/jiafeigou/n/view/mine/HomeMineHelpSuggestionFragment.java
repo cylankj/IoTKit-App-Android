@@ -114,9 +114,11 @@ public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMine
                 if (suggestionAdapter.getItemCount() != 1) {
                     if (presenter.checkOverTime(suggestionAdapter.getItem(suggestionAdapter.getItemCount() - 1).getDate())) {
                         addAutoReply();
+                        presenter.getSystemAutoReply();
                     }
                 } else {
                     addAutoReply();
+                    presenter.getSystemAutoReply();
                 }
                 mRvMineSuggestion.scrollToPosition(suggestionAdapter.getItemCount() - 1); //滚动到集合最后一条显示；
                 mEtSuggestion.setText("");
@@ -215,12 +217,31 @@ public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMine
     }
 
     /**
+     * 系统的回复
+     * @param time
+     * @param content
+     */
+    @Override
+    public void addSystemAutoReply(long time, String content) {
+        MineHelpSuggestionBean autoReplyBean = new MineHelpSuggestionBean();
+        autoReplyBean.setType(0);
+        autoReplyBean.setText(content);
+        autoReplyBean.setDate(time + "");
+        suggestionAdapter.add(autoReplyBean);
+        suggestionAdapter.notifyDataSetHasChanged();
+        presenter.saveIntoDb(autoReplyBean);
+    }
+
+    /**
      * 初始化显示列表
      *
      * @param list
      */
     @Override
     public void initRecycleView(ArrayList<MineHelpSuggestionBean> list) {
+        for (MineHelpSuggestionBean bean:list){
+            bean.icon = presenter.getUserPhotoUrl();
+        }
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         mRvMineSuggestion.setLayoutManager(layoutManager);
         suggestionAdapter = new HomeMineHelpSuggestionAdapter(getContext(), list, null);

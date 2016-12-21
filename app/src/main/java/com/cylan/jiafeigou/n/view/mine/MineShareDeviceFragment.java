@@ -88,6 +88,20 @@ public class MineShareDeviceFragment extends Fragment implements MineShareDevice
         }
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (mineDevicesShareManagerFragment != null){
+            mineDevicesShareManagerFragment.setOncancleChangeListener(
+                    new MineDevicesShareManagerFragment.OnUnShareChangeListener() {
+                        @Override
+                        public void unShareChange() {
+                            onStart();
+                        }
+                    });
+        }
+    }
+
     private void initPresenter() {
         presenter = new MineShareDevicePresenterImp(this);
     }
@@ -122,7 +136,7 @@ public class MineShareDeviceFragment extends Fragment implements MineShareDevice
                 if (presenter.checkPermission()) {
                     jump2ShareToContractFragment();
                 } else {
-                    ActivityCompat.requestPermissions(getActivity(),
+                    MineShareDeviceFragment.this.requestPermissions(
                             new String[]{Manifest.permission.READ_CONTACTS},
                             1);
                 }
@@ -216,6 +230,8 @@ public class MineShareDeviceFragment extends Fragment implements MineShareDevice
                 .add(android.R.id.content, mineDevicesShareManagerFragment, "mineDevicesShareManagerFragment")
                 .addToBackStack("mineShareDeviceFragment")
                 .commit();
+
+
     }
 
     @Override

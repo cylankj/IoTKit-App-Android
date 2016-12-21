@@ -46,11 +46,12 @@
 
         <CheckBox
             android:id="@+id/checkbox_is_share_check"
-            android:layout_marginRight="15dp"
             android:layout_centerVertical="true"
             android:layout_alignParentRight="true"
-            android:background="@drawable/share_to_friend_check_box_seclector"
-            android:button="@null"
+            style="@style/CustomCheckboxTheme"
+            android:paddingRight="15dp"
+            android:paddingTop="15dp"
+            android:paddingBottom="15dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 

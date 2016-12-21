@@ -49,7 +49,7 @@
             android:layout_marginRight="15dp"
             android:layout_centerVertical="true"
             android:layout_alignParentRight="true"
-            android:text="取消分享"
+            android:text="@string/Tap3_ShareDevice_Delete"
             android:background="@drawable/btn_cancle_relative_doorbell_shape"
             android:textSize="13sp"
             android:gravity="center"

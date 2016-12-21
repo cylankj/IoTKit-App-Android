@@ -805,4 +805,18 @@
   <string name="Tap1_Camera_Overlook">Overlook</string>
   <string name="Tap1_Camera_FrontTips">Yatay açı ile görüntülenen kamera önünde geniş bir vizyon tutmak gerekiyor</string>
   <string name="Tap1_Camera_OverlookTips">bakan açı ile görüntüleniyor yüksek kamerayı yerleştirmek gerekiyor</string>
+
+  <string name="Tap3_ShareDevice_CancelShareTips">Paylaşımı iptal etme başarısız oldu</string>
+  <string name="Tap3_FriendsAdd_SendButton">İstek gönder</string>
+  <string name="Tap3_FriendsAdd_NoContacts">Iletişim yok</string>
+  <string name="Tap3_SavePic">Resimleri kaydet</string>
+  <string name="Tap1_iHome_Associated">Ilişkili</string>
+  <string name="Tap1_iHome_NotAssociated">Ilişkili değil</string>
+  <string name="Tap1_iHome_ClearRecord">kayıt temizleyin</string>
+  <string name="Tap3_FriendsAdd_RequestContents"> sizi arkadaş olarak eklemek istiyor</string>
+  <string name="Tap3_Friends_NoBindTips">Bu işlevi kullanmak, önce e-postayı bağlamak zorundadır.</string>
+  <string name="Tap3_FriendsAdd_StuffContents">Ben %@</string>
+  <string name="Tap3_Userinfo_NoCamera">Kamera kullanamaz</string>
+  <string name="ClearingTips">Takas…</string>
+  <string name="CancelingTips">İptal…</string>
 </resources>

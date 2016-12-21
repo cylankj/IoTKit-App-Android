@@ -25,6 +25,7 @@ import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.widget.LoadingDialog;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -71,8 +72,8 @@ public class MineFriendsListShareDevicesFragment extends Fragment implements Min
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_mine_friend_share_devices, container, false);
         ButterKnife.bind(this, view);
-        initPresenter();
         getArgumentData();
+        initPresenter();
         initTitleView(shareDeviceBean);
         showLoadingDialog();
         return view;
@@ -99,7 +100,7 @@ public class MineFriendsListShareDevicesFragment extends Fragment implements Min
     }
 
     private void initPresenter() {
-        presenter = new MineFriendListShareDevicesPresenterImp(this);
+        presenter = new MineFriendListShareDevicesPresenterImp(shareDeviceBean.account,this);
     }
 
     @Override
@@ -175,12 +176,25 @@ public class MineFriendsListShareDevicesFragment extends Fragment implements Min
     }
 
     /**
-     * 可分享设备为无
+     * 可分享设备为有
      */
     @Override
     public void hideNoDeviceView() {
         llNoDevice.setVisibility(View.INVISIBLE);
         tvChooseDeviceTitle.setVisibility(View.VISIBLE);
+    }
+
+    /**
+     * 网络状态变化
+     * @param state
+     */
+    @Override
+    public void onNetStateChanged(int state) {
+        if (state == -1){
+            hideLoadingDialog();
+            hideSendReqProgress();
+            ToastUtil.showNegativeToast(getString(R.string.NO_NETWORK_1));
+        }
     }
 
     /**
@@ -220,20 +234,20 @@ public class MineFriendsListShareDevicesFragment extends Fragment implements Min
      */
     @Override
     public void showSendReqFinishReuslt(ArrayList<RxEvent.ShareDeviceCallBack> callBacks) {
-        for (int i = 0; i < callBacks.size(); i++) {
+        for (int i =callBacks.size()-1; i >= 0 ; i--) {
             if (callBacks.get(i).requestId == JError.ErrorOK
                     || callBacks.get(i).requestId == JError.ErrorShareAlready
                     || callBacks.get(i).requestId == JError.ErrorShareExceedsLimit) {
-                chooseList.remove(i);
+                callBacks.remove(callBacks.get(i));
             }
         }
 
-        if (chooseList.size() == 0) {
+        if (callBacks.size() == 0) {
             ToastUtil.showPositiveToast(getString(R.string.Tap3_ShareDevice_SuccessTips));
-        } else if (chooseList.size() != 0) {
+            getFragmentManager().popBackStack();
+        } else if (callBacks.size() != 0) {
             ToastUtil.showPositiveToast(getString(R.string.Tap3_ShareDevice_FailTips));
         }
-
     }
 
     /**

@@ -67,6 +67,11 @@ public interface MineDevicesShareManagerContract {
          * @param name
          */
         void setTopTitle(String name);
+
+        /**
+         * 网络状态变化
+         */
+        void onNetStateChanged(int state);
     }
 
     interface Presenter extends BasePresenter {
@@ -101,6 +106,16 @@ public interface MineDevicesShareManagerContract {
          * 取消分享的回调
          */
         Subscription cancleShareCallBack();
+
+        /**
+         * 注册网络监听
+         */
+        void registerNetworkMonitor();
+
+        /**
+         * 移除网络监听
+         */
+        void unregisterNetworkMonitor();
 
     }
 

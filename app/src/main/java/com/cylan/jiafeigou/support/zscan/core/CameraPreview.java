@@ -25,7 +25,8 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
     private boolean mAutoFocus = true;
     private boolean mSurfaceCreated = false;
     private Camera.PreviewCallback mPreviewCallback;
-
+    //强制全屏显示
+    private boolean enforceMatchParent;
     public CameraPreview(Context context, Camera camera, Camera.PreviewCallback previewCallback) {
         super(context);
         init(camera, previewCallback);
@@ -46,6 +47,10 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
     public void setCamera(Camera camera, Camera.PreviewCallback previewCallback) {
         mCamera = camera;
         mPreviewCallback = previewCallback;
+    }
+
+    public void setEnforceMatchParent(boolean enforceMatchParent) {
+        this.enforceMatchParent = enforceMatchParent;
     }
 
     @Override
@@ -127,7 +132,10 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         Point previewSize = convertSizeToLandscapeOrientation(new Point(getWidth(), getHeight()));
         float cameraRatio = ((float) cameraSize.width) / cameraSize.height;
         float screenRatio = ((float) previewSize.x) / previewSize.y;
-
+        if(enforceMatchParent){
+            setViewSize(previewSize.x,previewSize.y);
+            return;
+        }
         if (screenRatio > cameraRatio) {
             setViewSize((int) (previewSize.y * cameraRatio), previewSize.y);
         } else {

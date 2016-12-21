@@ -76,14 +76,14 @@ public class MineAddFromContactFragment extends Fragment implements MineAddFromC
 
     @Override
     public void initEditText(String alids) {
-        etMineAddContactMesg.setText("我是" + alids);
+        etMineAddContactMesg.setText(getString(R.string.Tap3_FriendsAdd_StuffContents)+alids);
     }
 
     @Override
     public String getSendMesg() {
         String mesg = etMineAddContactMesg.getText().toString();
         if (TextUtils.isEmpty(mesg)) {
-            return "我是" + presenter.getUserAlias();
+            return getString(R.string.Tap3_FriendsAdd_StuffContents)+presenter.getUserAlias();
         } else {
             return mesg;
         }
@@ -111,6 +111,18 @@ public class MineAddFromContactFragment extends Fragment implements MineAddFromC
     @Override
     public void hideSendReqHint() {
         LoadingDialog.dismissLoading(getFragmentManager());
+    }
+
+    /**
+     * 网络状态变化
+     * @param state
+     */
+    @Override
+    public void onNetStateChanged(int state) {
+        if (state == -1){
+            hideSendReqHint();
+            ToastUtil.showNegativeToast(getString(R.string.NO_NETWORK_1));
+        }
     }
 
     @Override

@@ -172,6 +172,18 @@ public class MineSetRemarkNameFragment extends Fragment implements MineSetRemark
         LoadingDialog.dismissLoading(getFragmentManager());
     }
 
+    /**
+     * 网络状态变化
+     * @param state
+     */
+    @Override
+    public void onNetStateChanged(int state) {
+        if (state == -1){
+            hideSendReqPro();
+            ToastUtil.showNegativeToast(getString(R.string.NO_NETWORK_1));
+        }
+    }
+
     @Override
     public void onResume() {
         super.onResume();

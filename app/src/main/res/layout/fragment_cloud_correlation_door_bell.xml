@@ -43,7 +43,7 @@
                 android:id="@+id/tv_relative_door_bell"
                 android:layout_marginLeft="15dp"
                 android:layout_marginTop="19dp"
-                android:text="已关联"
+                android:text="@string/Tap1_iHome_Associated"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 
@@ -59,7 +59,7 @@
                 android:id="@+id/tv_unrelative_door_bell"
                 android:layout_marginTop="19dp"
                 android:layout_marginLeft="15dp"
-                android:text="未关联"
+                android:text="@string/Tap1_iHome_NotAssociated"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 

@@ -23,7 +23,6 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
@@ -41,7 +40,6 @@ import com.cylan.jiafeigou.n.view.cloud.CloudVideoChatCallInFragment;
 import com.cylan.jiafeigou.n.view.cloud.CloudVideoChatCallOutFragment;
 import com.cylan.jiafeigou.n.view.cloud.LayoutIdMapCache;
 import com.cylan.jiafeigou.n.view.cloud.ViewTypeMapCache;
-import com.cylan.jiafeigou.support.photoselect.models.Image;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
@@ -85,10 +83,10 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
     private CloudLiveContract.Presenter presenter;
     private CloudLiveMesgListAdapter cloudLiveMesgAdapter;
     private CloudLiveSettingFragment cloudLiveSettingFragment;
-    private CloudVideoChatCallInFragment cloudVideoChatConnetionFragment;
+    private CloudVideoChatCallInFragment cloudVideoChatCallInFragment;
     private Dialog dialog;
     private ImageView iv_cancle;
-    private CloudVideoChatCallOutFragment cloudVideoChatConettionOkFragment;
+    private CloudVideoChatCallOutFragment cloudVideoChatCallOutFragment;
     private AnimationDrawable animationDrawable;
     private ImageView iv_play_voice;
 
@@ -120,7 +118,7 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
             }
         });
 
-        cloudVideoChatConnetionFragment.setOnIgnoreClickListener(new CloudVideoChatCallInFragment.OnIgnoreClickListener() {
+        cloudVideoChatCallInFragment.setOnIgnoreClickListener(new CloudVideoChatCallInFragment.OnIgnoreClickListener() {
             @Override
             public void onIgnore() {
                 CloudLiveBaseBean newBean = presenter.creatMesgBean();
@@ -170,7 +168,7 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
     private void initFragment() {
         cloudLiveSettingFragment = CloudLiveSettingFragment.newInstance(getIntent().getBundleExtra(JConstant.KEY_DEVICE_ITEM_BUNDLE));
         Bundle videoBundle = new Bundle();
-        cloudVideoChatConnetionFragment = CloudVideoChatCallInFragment.newInstance(videoBundle);
+        cloudVideoChatCallInFragment = CloudVideoChatCallInFragment.newInstance(videoBundle);
     }
 
     @Override
@@ -232,8 +230,8 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
                 .beginTransaction()
                 .setCustomAnimations(0, R.anim.slide_down_out
                         , R.anim.slide_in_left, R.anim.slide_out_right)
-                .add(android.R.id.content, cloudVideoChatConnetionFragment)
-                .addToBackStack("cloudVideoChatConnetionFragment")
+                .add(android.R.id.content, cloudVideoChatCallInFragment)
+                .addToBackStack("cloudVideoChatCallInFragment")
                 .commit();
     }
 
@@ -399,12 +397,12 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
      * 跳转到连接成功界面
      */
     private void jump2ConnectOkFragment() {
-        cloudVideoChatConettionOkFragment = new CloudVideoChatCallOutFragment();
+        cloudVideoChatCallOutFragment = new CloudVideoChatCallOutFragment();
         getSupportFragmentManager()
                 .beginTransaction()
                 .setCustomAnimations(0, R.anim.slide_down_out
                         , R.anim.slide_in_left, R.anim.slide_out_right)
-                .add(android.R.id.content, cloudVideoChatConettionOkFragment, "cloudVideoChatConettionOkFragment")
+                .add(android.R.id.content, cloudVideoChatCallOutFragment, "cloudVideoChatCallOutFragment")
                 .addToBackStack("CloudVideoChatCallInFragment")
                 .commit();
     }

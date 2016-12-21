@@ -76,7 +76,6 @@ public class ClipImageActivity extends AppCompatActivity implements MineClipImag
             clipViewLayout2.setVisibility(View.GONE);
             //设置图片资源
             clipViewLayout1.setImageSrc(getIntent().getData());
-
         } else {
             clipViewLayout2.setVisibility(View.VISIBLE);
             clipViewLayout1.setVisibility(View.GONE);
@@ -174,6 +173,18 @@ public class ClipImageActivity extends AppCompatActivity implements MineClipImag
     @Override
     public Context getContext() {
         return null;
+    }
+
+    /**
+     * 网络状态变化
+     * @param state
+     */
+    @Override
+    public void onNetStateChanged(int state) {
+        if (state == -1){
+            hideUpLoadPro();
+            ToastUtil.showNegativeToast(getString(R.string.NO_NETWORK_1));
+        }
     }
 
     @Override

@@ -1,7 +1,7 @@
 package com.cylan.jiafeigou.support.photoselect.helpers;
 
 /**
- * Created by Darshan on 5/26/2015.
+ * Created by zsl on 9/26/2016.
  */
 public class Constants {
     public static final int PERMISSION_REQUEST_CODE = 1000;

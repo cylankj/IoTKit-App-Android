@@ -347,6 +347,18 @@ public class MineInfoBindPhoneFragment extends Fragment implements MineBindPhone
         LoadingDialog.dismissLoading(getFragmentManager());
     }
 
+    /**
+     * 网络状态变化
+     * @param state
+     */
+    @Override
+    public void onNetStateChanged(int state) {
+        if (state == -1){
+            hideLoadingDialog();
+            ToastUtil.showNegativeToast(getString(R.string.NO_NETWORK_1));
+        }
+    }
+
     @Override
     public void onStop() {
         super.onStop();
