@@ -41,6 +41,11 @@ public interface HomeMineHelpSuggestionContract {
          * 隐藏加载进度的提示框
          */
         void hideLoadingDialog();
+
+        /**
+         * 系统的自动回复
+         */
+        void addSystemAutoReply(long time,String content);
     }
 
     interface Presenter extends BasePresenter {
@@ -91,5 +96,16 @@ public interface HomeMineHelpSuggestionContract {
          * 上传意见反馈
          */
         void sendFeedBack(MineHelpSuggestionBean bean);
+
+        /**
+         * 获取系统的自动回复
+         */
+        void getSystemAutoReply();
+
+        /**
+         * 获取系统的自动回复回调
+         * @return
+         */
+        Subscription getSystemAutoReplyCallBack();
     }
 }

@@ -2,11 +2,11 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:hunt="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:orientation="vertical"
     android:background="@color/color_white"
     android:clickable="true"
-    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     tools:context=".n.view.mine.MineFriendScanAddFragment">
 
     <RelativeLayout
@@ -20,8 +20,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:clickable="true"
             android:padding="15dp"
+            android:clickable="true"
             android:src="@drawable/icon_nav_back_white" />
 
         <TextView
@@ -36,63 +36,63 @@
     </RelativeLayout>
 
     <FrameLayout
-        android:id="@+id/fLayout_scan_rect"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <com.cylan.jiafeigou.support.zscan.ZXingScannerView
-            android:id="@+id/zxV_scan_add_relativesandfriend"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_marginTop="30dp"
             android:layout_gravity="center"
-            android:layout_margin="30dp"
-            hunt:hint="" />
+            android:id="@+id/zxV_scan_add_relativesandfriend"
+            android:layout_width="350dp"
+            android:layout_height="350dp"
+            hunt:hint=""
+            />
 
         <RelativeLayout
+            android:visibility="gone"
             android:id="@+id/rl_send_pro_hint"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
             android:layout_marginTop="120dp"
-            android:visibility="invisible">
+            android:layout_gravity="center_horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
 
             <ProgressBar
+                android:layout_centerHorizontal="true"
                 android:id="@+id/pro_send_hint"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true" />
+                android:layout_height="wrap_content" />
 
             <TextView
+                android:textColor="@color/color_black"
+                android:text="loading..."
+                android:layout_below="@id/pro_send_hint"
                 android:id="@+id/tv_send_hint"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/pro_send_hint"
-                android:text="loading..."
-                android:textColor="@color/color_black" />
+                android:layout_height="wrap_content" />
         </RelativeLayout>
 
     </FrameLayout>
 
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="20dp"
-        android:text="@string/Tap3_FriendsAdd_QR_Tips"
         android:textColor="@color/color_333333"
-        android:textSize="16sp" />
+        android:textSize="16sp"
+        android:text="@string/Tap3_FriendsAdd_QR_Tips"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 
     <ImageView
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="50dp"
         android:id="@+id/iv_erweima"
         android:layout_width="150dp"
-        android:layout_height="150dp"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="50dp" />
+        android:layout_height="150dp" />
 
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:text="@string/Tap3_MyQRCode" />
+        android:text="@string/Tap3_MyQRCode"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 
 </LinearLayout>

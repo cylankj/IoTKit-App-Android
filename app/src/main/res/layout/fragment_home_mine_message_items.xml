@@ -17,16 +17,37 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-        <ImageView
-            android:id="@+id/iv_mine_message_server"
+
+
+        <RelativeLayout
             android:layout_marginTop="22dp"
-            android:layout_marginLeft="10dp"
-            android:src="@drawable/pic_head"
-            android:layout_width="40dp"
-            android:layout_height="40dp" />
+            android:layout_marginLeft="15dp"
+            android:id="@+id/rl_mine_message_server"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <CheckBox
+                android:visibility="gone"
+                android:layout_centerVertical="true"
+                android:id="@+id/delete_check"
+                android:background="@drawable/share_to_friend_check_box_seclector"
+                android:button="@null"
+                android:layout_marginRight="15dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+
+            <ImageView
+                android:layout_toRightOf="@id/delete_check"
+                android:id="@+id/iv_mine_message_server"
+                android:src="@drawable/pic_head"
+                android:layout_width="40dp"
+                android:layout_height="40dp" />
+
+        </RelativeLayout>
 
         <LinearLayout
-            android:layout_toRightOf="@id/iv_mine_message_server"
+            android:layout_toRightOf="@id/rl_mine_message_server"
             android:orientation="vertical"
             android:layout_width="230dp"
             android:layout_marginTop="26dp"
@@ -69,5 +90,8 @@
                     android:layout_height="wrap_content" />
             </LinearLayout>
         </LinearLayout>
+
+
     </RelativeLayout>
+
 </LinearLayout>

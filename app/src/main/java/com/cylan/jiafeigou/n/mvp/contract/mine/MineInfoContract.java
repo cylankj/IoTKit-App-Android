@@ -19,11 +19,7 @@ public interface MineInfoContract {
 
         void jump2SetEmailFragment();                           //更改邮箱
 
-        void showChooseImageDialog();                           //更改头像
-
         void showLogOutDialog();                                //退出登录提示框
-
-        void logOutResult(int logout);                          //退出登录结果
 
     }
 
@@ -36,13 +32,6 @@ public interface MineInfoContract {
          * 退出登录
          */
         void logOut();
-
-        /**
-         * 退出登录回调
-         *
-         * @return
-         */
-        Subscription logOutCallBack();
 
         /**
          * 检查文件是否存在

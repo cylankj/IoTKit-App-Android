@@ -1,9 +1,15 @@
 package com.cylan.jiafeigou.n.view.home;
 
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -14,6 +20,12 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.Request;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.BitmapImageViewTarget;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.target.SizeReadyCallback;
+import com.bumptech.glide.request.target.Target;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.cache.JCache;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
@@ -78,9 +90,7 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
         super.onCreate(savedInstanceState);
         this.basePresenter = new HomeMinePresenterImpl(this);
         mineHelpFragment = HomeMineHelpFragment.newInstance(new Bundle());
-
         homeSettingFragment = HomeSettingFragment.newInstance();
-        homeMineMessageFragment = HomeMineMessageFragment.newInstance();
         mineShareDeviceFragment = MineShareDeviceFragment.newInstance();
         mineRelativesandFriendsFragment = MineFriendsFragment.newInstance();
     }
@@ -101,12 +111,13 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
 
     @Override
     public void onStart() {
-        super.onStart();
         if (!JCache.isOnline()) {
             //访客状态
-            basePresenter.portraitBlur(R.drawable.clouds);
+            Bitmap bm = BitmapFactory.decodeResource(getResources(),R.drawable.clouds);
+            basePresenter.portraitBlur(bm);
             setAliasName(getString(R.string.Tap3_LogIn));
         }
+        super.onStart();
     }
 
     @Override
@@ -159,7 +170,7 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
                         , R.anim.slide_in_left, R.anim.slide_out_right)
                 .add(android.R.id.content, mineRelativesandFriendsFragment,
                         "mineRelativesandFriendsFragment")
-                .addToBackStack("mineHelpFragment")
+                .addToBackStack("HomeMineFragment")
                 .commit();
     }
 
@@ -168,7 +179,7 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
      */
     private void showBindPhoneOrEmailDialog() {
         AlertDialog.Builder b = new AlertDialog.Builder(getContext());
-        b.setTitle("使用亲友功能需要绑定手机号/邮箱");
+        b.setTitle(getString(R.string.Tap3_Friends_NoBindTips));
         b.setPositiveButton(getString(R.string.Tap2_Index_Open_NoDeviceOption), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -194,7 +205,7 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
                         , R.anim.slide_in_left, R.anim.slide_out_right)
                 .add(android.R.id.content, homeSettingFragment,
                         "homeSettingFragment")
-                .addToBackStack("mineHelpFragment")
+                .addToBackStack("HomeMineFragment")
                 .commit();
     }
 
@@ -207,7 +218,7 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                         , R.anim.slide_in_left, R.anim.slide_out_right)
                 .add(android.R.id.content, mineShareDeviceFragment, "mineShareDeviceFragment")
-                .addToBackStack("mineHelpFragment")
+                .addToBackStack("HomeMineFragment")
                 .commit();
     }
 
@@ -223,27 +234,22 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
 
     @Override
     public void onPortraitUpdate(String url) {
-        if (getActivity() != null) {
-            ivHomeMinePortrait.setImageResource(R.drawable.clouds);
-            if (basePresenter != null) basePresenter.portraitBlur(R.drawable.clouds);
-            tvHomeMineMsgCount.post(new Runnable() {
-                @Override
-                public void run() {
-                    tvHomeMineMsgCount.setText("99+");
-                }
-            });
-        }
+//        if (getActivity() != null) {
+//            ivHomeMinePortrait.setImageResource(R.drawable.clouds);
+//            if (basePresenter != null) basePresenter.portraitBlur(R.drawable.clouds);
+//            tvHomeMineMsgCount.post(new Runnable() {
+//                @Override
+//                public void run() {
+//                    tvHomeMineMsgCount.setText("99+");
+//                }
+//            });
+//        }
     }
 
     @Override
     public void onBlur(Drawable drawable) {
         long time = System.currentTimeMillis();
         rLayoutHomeMineTop.setBackground(drawable);
-    }
-
-    @Override
-    public void setUserImageHead(Drawable drawable) {
-        ivHomeMinePortrait.setImageDrawable(drawable);
     }
 
     /**
@@ -257,12 +263,21 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
     }
 
     @Override
-    public void setUserImageHead(String url) {
+    public void setUserImageHeadByUrl(String url) {
+
         Glide.with(getContext()).load(url)
+                .asBitmap()
                 .error(R.drawable.icon_mine_head_normal)
-                .centerCrop()
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .into(ivHomeMinePortrait);
+                .into(new SimpleTarget<Bitmap>() {
+                    @Override
+                    public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                        ivHomeMinePortrait.setImageBitmap(resource);
+                        Bitmap bitmap = Bitmap.createBitmap(resource);
+                        basePresenter.portraitBlur(bitmap);
+                    }
+                });
+
     }
 
     /**
@@ -351,9 +366,8 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                         , R.anim.slide_in_left, R.anim.slide_out_right)
                 .add(android.R.id.content, mineHelpFragment, "mineHelpFragment")
-                .addToBackStack("mineHelpFragment")
+                .addToBackStack("HomeMineFragment")
                 .commit();
-
     }
 
     /**
@@ -364,11 +378,14 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
             needStartLoginFragment();
             return;
         }
+        Bundle bundle = new Bundle();
+        bundle.putParcelableArrayList("mesgdata",basePresenter.getMesgAllData());
+        homeMineMessageFragment = HomeMineMessageFragment.newInstance(bundle);
         getFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                         , R.anim.slide_in_left, R.anim.slide_out_right)
                 .add(android.R.id.content, homeMineMessageFragment, "homeMineMessageFragment")
-                .addToBackStack("personalInformationFragment")
+                .addToBackStack("HomeMineFragment")
                 .commit();
     }
 
@@ -392,7 +409,7 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                         , R.anim.slide_in_left, R.anim.slide_out_right)
                 .add(android.R.id.content, personalInformationFragment, "personalInformationFragment")
-                .addToBackStack("personalInformationFragment")
+                .addToBackStack("HomeMineFragment")
                 .commit();
     }
 
@@ -407,7 +424,14 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                         , R.anim.slide_in_left, R.anim.slide_out_right)
                 .add(android.R.id.content, bindPhoneFragment, "bindPhoneFragment")
-                .addToBackStack("personalInformationFragment")
+                .addToBackStack("HomeMineFragment")
                 .commit();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Fragment mineInfoFragment = getFragmentManager().findFragmentByTag("personalInformationFragment");
+        mineInfoFragment.onActivityResult(requestCode,resultCode,data);
     }
 }

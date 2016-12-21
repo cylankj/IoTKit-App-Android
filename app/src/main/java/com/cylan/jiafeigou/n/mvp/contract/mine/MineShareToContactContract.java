@@ -95,6 +95,12 @@ public interface MineShareToContactContract {
          */
         Subscription shareDeviceCallBack();
 
+        /**
+         * 检测发送短信权限
+         * @return
+         */
+        boolean checkSendSmsPermission();
+
     }
 
 }

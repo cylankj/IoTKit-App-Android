@@ -177,7 +177,7 @@ public class ForgetPwdFragment extends Fragment implements ForgetPwdContract.Vie
 
 
     private void initView(View view) {
-        etForgetUsername.setEnabled(false);
+        etForgetUsername.setEnabled(true);
         ViewUtils.setChineseExclude(etNewPwdInput, JConstant.PWD_LEN_MAX);
         if (acceptType == 1) {
             etForgetUsername.setHint("please input email address");

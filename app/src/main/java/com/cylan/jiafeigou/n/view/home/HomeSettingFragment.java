@@ -127,7 +127,7 @@ public class HomeSettingFragment extends Fragment implements HomeSettingContract
 
     @Override
     public void showClearingCacheProgress() {
-        LoadingDialog.showLoading(getFragmentManager(), getString(R.string.LOADING));
+        LoadingDialog.showLoading(getFragmentManager(),getString(R.string.ClearingTips));
     }
 
     @Override
@@ -148,16 +148,6 @@ public class HomeSettingFragment extends Fragment implements HomeSettingContract
 
     @Override
     public boolean switchAcceptMesg() {
-        return presenter.getNegation();
-    }
-
-    @Override
-    public boolean switchVoice() {
-        return presenter.getNegation();
-    }
-
-    @Override
-    public boolean switchShake() {
         return presenter.getNegation();
     }
 

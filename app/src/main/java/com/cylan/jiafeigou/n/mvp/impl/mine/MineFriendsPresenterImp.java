@@ -1,5 +1,14 @@
 package com.cylan.jiafeigou.n.mvp.impl.mine;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.ConnectivityManager;
+import android.net.wifi.WifiManager;
+import android.os.SystemClock;
+import android.text.TextUtils;
+
 import com.cylan.entity.JfgEnum;
 import com.cylan.entity.jniCall.JFGFriendAccount;
 import com.cylan.entity.jniCall.JFGFriendRequest;
@@ -8,18 +17,25 @@ import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendsContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.n.mvp.model.MineAddReqBean;
+import com.cylan.jiafeigou.n.mvp.model.MineMessageBean;
 import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.support.network.ConnectivityStatus;
+import com.cylan.jiafeigou.support.network.ReactiveNetwork;
+import com.cylan.jiafeigou.utils.ContextUtils;
+import com.sina.weibo.sdk.utils.LogUtil;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
+import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
@@ -33,6 +49,7 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
     private CompositeSubscription compositeSubscription;
     private boolean addReqNull;
     private boolean friendListNull;
+    private Network network;
 
     public MineFriendsPresenterImp(MineFriendsContract.View view) {
         super(view);
@@ -60,19 +77,19 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
     @Override
     public ArrayList<MineAddReqBean> initAddRequestData(RxEvent.GetAddReqList addReqList) {
 
-        ArrayList list = new ArrayList<MineAddReqBean>();
+        ArrayList<MineAddReqBean> list = new ArrayList<MineAddReqBean>();
 
         for (JFGFriendRequest jfgFriendRequest : addReqList.arrayList) {
             MineAddReqBean emMessage = new MineAddReqBean();
+            emMessage.alias = jfgFriendRequest.alias;
+            emMessage.sayHi = jfgFriendRequest.sayHi;
+            emMessage.account = jfgFriendRequest.account;
+            emMessage.time = jfgFriendRequest.time;
             try {
                 emMessage.iconUrl = JfgCmdInsurance.getCmd().getCloudUrlByType(JfgEnum.JFG_URL.PORTRAIT, 0, jfgFriendRequest.account + ".jpg", "");
             } catch (JfgException e) {
                 e.printStackTrace();
             }
-            emMessage.alias = jfgFriendRequest.alias;
-            emMessage.sayHi = jfgFriendRequest.sayHi;
-            emMessage.account = jfgFriendRequest.account;
-            emMessage.time = jfgFriendRequest.time;
             list.add(emMessage);
         }
         sortAddReqList(list);
@@ -81,17 +98,17 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
 
     @Override
     public ArrayList<RelAndFriendBean> initRelativatesAndFriendsData(RxEvent.GetFriendList friendList) {
-        ArrayList list = new ArrayList<RelAndFriendBean>();
+        ArrayList<RelAndFriendBean> list = new ArrayList<RelAndFriendBean>();
         for (JFGFriendAccount account : friendList.arrayList) {
             RelAndFriendBean emMessage = new RelAndFriendBean();
+            emMessage.markName = account.markName;
+            emMessage.account = account.account;
+            emMessage.alias = account.alias;
             try {
                 emMessage.iconUrl = JfgCmdInsurance.getCmd().getCloudUrlByType(JfgEnum.JFG_URL.PORTRAIT, 0, account.account + ".jpg", "");
             } catch (JfgException e) {
                 e.printStackTrace();
             }
-            emMessage.markName = account.markName;
-            emMessage.account = account.account;
-            emMessage.alias = account.alias;
             list.add(emMessage);
         }
         return list;
@@ -100,7 +117,7 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
     @Override
     public boolean checkAddRequestOutTime(MineAddReqBean bean) {
         long oneMount = 30 * 24 * 60 * 60 * 1000L;
-        return (System.currentTimeMillis() - Long.parseLong(bean.time + "")) > oneMount;
+        return (oneMount - bean.time) < 0;
     }
 
     /**
@@ -146,12 +163,28 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
     @Override
     public Subscription initFriendRecyListData() {
         return RxBus.getCacheInstance().toObservable(RxEvent.GetFriendList.class)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<RxEvent.GetFriendList>() {
+                .flatMap(new Func1<RxEvent.GetFriendList, Observable<ArrayList<RelAndFriendBean>>>() {
                     @Override
-                    public void call(RxEvent.GetFriendList o) {
-                        if (o != null && o instanceof RxEvent.GetFriendList) {
-                            handleInitFriendListDataResult(o);
+                    public Observable<ArrayList<RelAndFriendBean>> call(RxEvent.GetFriendList getFriendList) {
+                        if (getFriendList != null && getFriendList instanceof RxEvent.GetFriendList){
+                            return Observable.just(initRelativatesAndFriendsData(getFriendList));
+                        }else {
+                            return Observable.just(null);
+                        }
+
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<ArrayList<RelAndFriendBean>>() {
+                    @Override
+                    public void call(ArrayList<RelAndFriendBean> list) {
+                        if (list != null && list.size() !=0){
+                            handleInitFriendListDataResult(list);
+                        }else {
+                            friendListNull = true;
+                            checkAllNull();
+                            getView().hideFriendListTitle();
+                            getView().initFriendRecyList(new ArrayList<RelAndFriendBean>());
                         }
                     }
                 });
@@ -302,17 +335,75 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
      *
      * @param friendList
      */
-    private void handleInitFriendListDataResult(final RxEvent.GetFriendList friendList) {
+    private void handleInitFriendListDataResult(ArrayList<RelAndFriendBean> friendList) {
         if (getView() != null) {
-            if (friendList.arrayList.size() != 0) {
+            if (friendList.size() != 0) {
                 getView().showFriendListTitle();
-                getView().initFriendRecyList(initRelativatesAndFriendsData(friendList));
+                getView().initFriendRecyList(friendList);
             } else {
                 friendListNull = true;
                 checkAllNull();
                 getView().hideFriendListTitle();
+                getView().initFriendRecyList(new ArrayList<RelAndFriendBean>());
             }
         }
+    }
+
+    @Override
+    public void registerNetworkMonitor() {
+        try {
+            if (network == null) {
+                network = new Network();
+                final IntentFilter filter = new IntentFilter();
+                filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
+                filter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);
+                ContextUtils.getContext().registerReceiver(network, filter);
+            }
+        } catch (Exception e) {
+            AppLogger.e("registerNetworkMonitor"+e.getLocalizedMessage());
+        }
+    }
+
+    @Override
+    public void unregisterNetworkMonitor() {
+        if (network != null) {
+            ContextUtils.getContext().unregisterReceiver(network);
+            network = null;
+        }
+    }
+
+    /**
+     * 监听网络状态
+     */
+    private class Network extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            final String action = intent.getAction();
+            if (TextUtils.equals(action, ConnectivityManager.CONNECTIVITY_ACTION)) {
+                ConnectivityStatus status = ReactiveNetwork.getConnectivityStatus(context);
+                updateConnectivityStatus(status.state);
+            }
+        }
+    }
+
+    /**
+     * 连接状态变化
+     */
+    private void updateConnectivityStatus(int network) {
+        Observable.just(network)
+                .filter(new Func1<Integer, Boolean>() {
+                    @Override
+                    public Boolean call(Integer integer) {
+                        return getView() != null;
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<Integer>() {
+                    @Override
+                    public void call(Integer integer) {
+                        getView().onNetStateChanged(integer);
+                    }
+                });
     }
 
 }

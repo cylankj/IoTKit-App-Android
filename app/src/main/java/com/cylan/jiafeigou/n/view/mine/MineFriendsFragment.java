@@ -90,8 +90,8 @@ public class MineFriendsFragment extends Fragment implements MineFriendsContract
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
+    public void onResume() {
+        super.onResume();
         if (presenter != null) {
             presenter.start();
         }
@@ -134,7 +134,6 @@ public class MineFriendsFragment extends Fragment implements MineFriendsContract
                 dialog.dismiss();
             }
         }).show();
-
     }
 
     @Override
@@ -175,6 +174,18 @@ public class MineFriendsFragment extends Fragment implements MineFriendsContract
     @Override
     public void showLoadingDialog() {
         LoadingDialog.showLoading(getFragmentManager(), getString(R.string.LOADING));
+    }
+
+    /**
+     * 网络状态变化
+     * @param state
+     */
+    @Override
+    public void onNetStateChanged(int state) {
+        if (state == -1){
+            hideLoadingDialog();
+            ToastUtil.showNegativeToast(getString(R.string.NO_NETWORK_1));
+        }
     }
 
     /**
@@ -221,7 +232,7 @@ public class MineFriendsFragment extends Fragment implements MineFriendsContract
             case R.id.tv_home_mine_relativesandfriends_add:
                 if (getView() != null)
                     ViewUtils.deBounceClick(getView().findViewById(R.id.tv_home_mine_relativesandfriends_add));
-                AppLogger.e("tv_home_mine_relativesandfriends_add");
+                AppLogger.d("tv_home_mine_relativesandfriends_add");
                 jump2AddReAndFriendFragment();
                 break;
         }
@@ -365,6 +376,7 @@ public class MineFriendsFragment extends Fragment implements MineFriendsContract
             RelAndFriendBean account = new RelAndFriendBean();
             account.account = item.account;
             account.alias = item.alias;
+            account.iconUrl = item.iconUrl;
             account.markName = "";
             friendlistAddItem(layoutPosition, account);
             addReqDeleteItem(layoutPosition, item);

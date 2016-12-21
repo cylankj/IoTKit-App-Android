@@ -32,8 +32,8 @@ public abstract class BarcodeScannerView extends FrameLayout implements Camera.P
 
     public final void setupLayout(Camera camera) {
         removeAllViews();
-
         mPreview = new CameraPreview(getContext(), camera, this);
+        mPreview.setEnforceMatchParent(true);
         RelativeLayout relativeLayout = new RelativeLayout(getContext());
         relativeLayout.setGravity(Gravity.CENTER);
         relativeLayout.setBackgroundColor(Color.BLACK);
@@ -130,7 +130,6 @@ public abstract class BarcodeScannerView extends FrameLayout implements Camera.P
             rect.right = rect.right * previewWidth / viewFinderViewWidth;
             rect.top = rect.top * previewHeight / viewFinderViewHeight;
             rect.bottom = rect.bottom * previewHeight / viewFinderViewHeight;
-
             mFramingRectInPreview = rect;
         }
         return mFramingRectInPreview;

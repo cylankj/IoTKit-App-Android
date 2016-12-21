@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -53,6 +54,16 @@ public class MineDevicesShareManagerFragment extends Fragment implements MineDev
     private RelAndFriendBean tempBean;
     private ArrayList<RelAndFriendBean> hasShareFriendlist;
 
+    private OnUnShareChangeListener listener;
+
+    public interface OnUnShareChangeListener{
+        void unShareChange();
+    }
+
+    public void setOncancleChangeListener(OnUnShareChangeListener listener){
+        this.listener = listener;
+    }
+
     public static MineDevicesShareManagerFragment newInstance(Bundle bundle) {
         MineDevicesShareManagerFragment fragment = new MineDevicesShareManagerFragment();
         fragment.setArguments(bundle);
@@ -73,7 +84,6 @@ public class MineDevicesShareManagerFragment extends Fragment implements MineDev
     public void onResume() {
         super.onResume();
         if (presenter != null) {
-//            presenter.getHasShareList(devicebean.uuid);
             presenter.start();
         }
     }
@@ -100,7 +110,7 @@ public class MineDevicesShareManagerFragment extends Fragment implements MineDev
         Bundle arguments = getArguments();
         devicebean = arguments.getParcelable("devicebean");
         hasShareFriendlist = arguments.getParcelableArrayList("friendlist");
-        setTopTitle("".equals(devicebean.alias) ? devicebean.uuid : devicebean.alias);
+        setTopTitle(TextUtils.isEmpty(devicebean.alias)?devicebean.uuid:devicebean.alias);
     }
 
     @Override
@@ -199,7 +209,10 @@ public class MineDevicesShareManagerFragment extends Fragment implements MineDev
     @Override
     public void showUnShareResult(String result) {
         ToastUtil.showToast(result);
-        if (hasShareAdapter.getItemCount() == 0) {
+        if (result.equals(getString(R.string.Tap3_ShareDevice_DeleteSucces))){
+            if (listener != null)listener.unShareChange();
+        }
+        if (hasShareAdapter.getItemCount() == 0){
             hideHasShareListTitle();
             showNoHasShareFriendNullView();
         }
@@ -213,6 +226,18 @@ public class MineDevicesShareManagerFragment extends Fragment implements MineDev
     @Override
     public void setTopTitle(String name) {
         tvHomeMineShareDevicesName.setText(name);
+    }
+
+    /**
+     * 网络状态变化
+     * @param state
+     */
+    @Override
+    public void onNetStateChanged(int state) {
+        if (state == -1){
+            hideCancleShareProgress();
+            ToastUtil.showNegativeToast(getString(R.string.NO_NETWORK_1));
+        }
     }
 
 }

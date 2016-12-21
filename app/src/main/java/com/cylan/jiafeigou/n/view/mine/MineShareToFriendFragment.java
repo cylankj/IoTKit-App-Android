@@ -24,6 +24,7 @@ import com.cylan.jiafeigou.n.view.adapter.ShareToFriendsAdapter;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.widget.LoadingDialog;
+import com.cylan.superadapter.OnItemClickListener;
 import com.cylan.superadapter.internal.SuperViewHolder;
 
 import java.util.ArrayList;
@@ -50,7 +51,6 @@ public class MineShareToFriendFragment extends Fragment implements MineShareToFr
     LinearLayout llNoFriend;
 
     private MineShareToFriendContract.Presenter presenter;
-
     private ShareToFriendsAdapter shareToFriendsAdapter;
     private int hasShareNum;
 
@@ -119,7 +119,7 @@ public class MineShareToFriendFragment extends Fragment implements MineShareToFr
                 if (presenter.checkNetConnetion()) {
                     presenter.sendShareToFriendReq(deviceinfo.uuid, isChooseToShareList);
                 } else {
-                    ToastUtil.showNegativeToast("网络不可用");
+                    ToastUtil.showNegativeToast(getString(R.string.Item_ConnectionFail));
                 }
                 break;
         }
@@ -127,14 +127,6 @@ public class MineShareToFriendFragment extends Fragment implements MineShareToFr
 
     @Override
     public void initRecycleView(ArrayList<RelAndFriendBean> list) {
-        //过滤掉已分享的亲友
-//        for (RelAndFriendBean bean:list){
-//            for (RelAndFriendBean hasBean:hasSharefriend){
-//                if (bean.account.equals(hasBean.account)){
-//                    list.remove(bean);
-//                }
-//            }
-//        }
         rcyMineShareToRelativeAndFriendList.setLayoutManager(new LinearLayoutManager(getContext()));
         shareToFriendsAdapter = new ShareToFriendsAdapter(getContext(), list, null);
         rcyMineShareToRelativeAndFriendList.setAdapter(shareToFriendsAdapter);
@@ -202,8 +194,8 @@ public class MineShareToFriendFragment extends Fragment implements MineShareToFr
      */
     @Override
     public void handlerAfterSendShareReq(ArrayList<RxEvent.ShareDeviceCallBack> callbackList) {
+        hideSendProgress();
         int totalFriend = isChooseToShareList.size();
-
         for (RelAndFriendBean friendBean : isChooseToShareList) {
             for (RxEvent.ShareDeviceCallBack callBack : callbackList) {
                 if (friendBean.account.equals(callBack.account)) {
@@ -269,6 +261,7 @@ public class MineShareToFriendFragment extends Fragment implements MineShareToFr
                 presenter.checkShareNumIsOver(holder, numIsChange, hasShareNum);
             }
         });
+
     }
 
     @Override

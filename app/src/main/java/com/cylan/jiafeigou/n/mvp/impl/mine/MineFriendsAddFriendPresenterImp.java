@@ -25,12 +25,27 @@ public class MineFriendsAddFriendPresenterImp extends AbstractPresenter<MineFrie
      * @return
      */
     @Override
-    public boolean checkPermission() {
+    public boolean checkContractPermission() {
         if (ContextCompat.checkSelfPermission(getView().getContext(),
                 Manifest.permission.READ_CONTACTS)
                 != PackageManager.PERMISSION_GRANTED) {
             return false;
         } else {
+            return true;
+        }
+    }
+
+    /**
+     * 检测相机的权限
+     * @return
+     */
+    @Override
+    public boolean checkCameraPermission() {
+        if (ContextCompat.checkSelfPermission(getView().getContext(),
+                Manifest.permission.CAMERA)
+                != PackageManager.PERMISSION_GRANTED) {
+            return false;
+        }else{
             return true;
         }
     }

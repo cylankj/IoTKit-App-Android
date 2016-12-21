@@ -830,4 +830,20 @@
   <string name="maxsize_zero_tip">maxsize 应该大于0</string>
   <!--每日精彩-->
   <string name="Tips_Delete_Msg">您是否确定删除？</string>
+
+  <!--新加-->
+  <string name="Tap3_ShareDevice_CancelShareTips">取消分享失败</string>
+  <string name="Tap3_FriendsAdd_SendButton">发送请求</string>
+  <string name="Tap3_FriendsAdd_NoContacts">暂无联系人</string>
+  <string name="Tap3_SavePic">保存图片</string>
+  <string name="Tap1_iHome_Associated">已关联</string>
+  <string name="Tap1_iHome_NotAssociated">未关联</string>
+  <string name="Tap1_iHome_ClearRecord">清空消息记录</string>
+  <string name="Tap3_FriendsAdd_RequestContents">想加你为好友</string>
+  <string name="Tap3_Friends_NoBindTips">使用亲友功能需要绑定手机/邮箱</string>
+  <string name="Tap3_FriendsAdd_StuffContents">我是</string>
+  <string name="Tap3_Userinfo_NoCamera">相机无法使用</string>
+  <string name="ClearingTips">清除中…</string>
+  <string name="CancelingTips">正在取消…</string>
+
 </resources>

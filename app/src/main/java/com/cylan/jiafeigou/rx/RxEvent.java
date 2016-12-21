@@ -5,6 +5,7 @@ import android.os.Bundle;
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.entity.jniCall.JFGDevice;
+import com.cylan.entity.jniCall.JFGFeedbackInfo;
 import com.cylan.entity.jniCall.JFGFriendAccount;
 import com.cylan.entity.jniCall.JFGFriendRequest;
 import com.cylan.entity.jniCall.JFGMsgHttpResult;
@@ -474,5 +475,18 @@ public class RxEvent {
      * 历史录像数据响应
      */
     public static final class JFGHistoryVideoRsp {
+    }
+
+    /**
+     * 系统反馈回复
+     */
+    public static final class GetFeedBackRsp {
+        public int i;
+        public ArrayList<JFGFeedbackInfo> arrayList;
+
+        public GetFeedBackRsp(int i, ArrayList<JFGFeedbackInfo> arrayList) {
+            this.i = i;
+            this.arrayList = arrayList;
+        }
     }
 }

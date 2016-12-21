@@ -804,4 +804,18 @@
   <string name="Tap1_Camera_Overlook">Overlook</string>
   <string name="Tap1_Camera_FrontTips">La visualización con ángulo horizontal necesita mantener una visión amplia frente a la cámara</string>
   <string name="Tap1_Camera_OverlookTips">La visualización con ángulo de visión debe colocar la cámara en alto</string>
+
+  <string name="Tap3_ShareDevice_CancelShareTips">Cancelar el intercambio fallido</string>
+  <string name="Tap3_FriendsAdd_SendButton">Enviar petición</string>
+  <string name="Tap3_FriendsAdd_NoContacts">No hay contactos</string>
+  <string name="Tap3_SavePic">Guardar fotos</string>
+  <string name="Tap1_iHome_Associated">Asociado</string>
+  <string name="Tap1_iHome_NotAssociated">No asociado</string>
+  <string name="Tap1_iHome_ClearRecord">Borrar el registro</string>
+  <string name="Tap3_FriendsAdd_RequestContents">Quiere agregarte como amigo</string>
+  <string name="Tap3_Friends_NoBindTips">El uso de esta función necesita unirse correo electrónico en primer lugar.</string>
+  <string name="Tap3_FriendsAdd_StuffContents">Yo soy %@</string>
+  <string name="Tap3_Userinfo_NoCamera">La cámara no puede utilizar</string>
+  <string name="ClearingTips">Claro…</string>
+  <string name="CancelingTips">Cancelado…</string>
 </resources>

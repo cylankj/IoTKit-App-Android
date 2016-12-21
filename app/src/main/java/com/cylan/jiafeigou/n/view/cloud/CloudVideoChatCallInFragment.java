@@ -35,7 +35,7 @@ public class CloudVideoChatCallInFragment extends Fragment implements CloudLiveC
     @BindView(R.id.tv_accept_call)
     TextView tvAcceptCall;
 
-    private CloudVideoChatCallOutFragment cloudVideoChatConettionOkFragment;
+    private CloudVideoChatCallOutFragment cloudVideoChatCallOutFragment;
 
     private OnIgnoreClickListener igNoreListener;
 
@@ -56,7 +56,7 @@ public class CloudVideoChatCallInFragment extends Fragment implements CloudLiveC
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        cloudVideoChatConettionOkFragment = CloudVideoChatCallOutFragment.newInstance(new Bundle());
+        cloudVideoChatCallOutFragment = CloudVideoChatCallOutFragment.newInstance(new Bundle());
     }
 
     @Nullable
@@ -97,8 +97,8 @@ public class CloudVideoChatCallInFragment extends Fragment implements CloudLiveC
         getFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                         , R.anim.slide_in_left, R.anim.slide_out_right)
-                .add(android.R.id.content, cloudVideoChatConettionOkFragment, "cloudVideoChatConettionOkFragment")
-                .addToBackStack("cloudVideoChatConettionFragment")
+                .add(android.R.id.content, cloudVideoChatCallOutFragment, "cloudVideoChatCallOutFragment")
+                .addToBackStack("cloudVideoChatCallInFragment")
                 .commit();
     }
 

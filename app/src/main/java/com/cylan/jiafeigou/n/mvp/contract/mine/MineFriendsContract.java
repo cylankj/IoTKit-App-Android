@@ -86,6 +86,11 @@ public interface MineFriendsContract {
          */
         void hideLoadingDialog();
 
+        /**
+         * 网络状态变化
+         */
+        void onNetStateChanged(int state);
+
     }
 
     interface Presenter extends BasePresenter {
@@ -144,6 +149,16 @@ public interface MineFriendsContract {
          * 同意添加成功后调用SDK
          */
         void acceptAddSDK(String account);
+
+        /**
+         * 注册网络监听
+         */
+        void registerNetworkMonitor();
+
+        /**
+         * 移除网络监听
+         */
+        void unregisterNetworkMonitor();
 
     }
 

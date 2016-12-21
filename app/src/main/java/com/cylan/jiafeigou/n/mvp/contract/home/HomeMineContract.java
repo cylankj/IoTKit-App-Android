@@ -1,5 +1,6 @@
 package com.cylan.jiafeigou.n.mvp.contract.home;
 
+import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.UiThread;
@@ -7,6 +8,10 @@ import android.support.annotation.UiThread;
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
+import com.cylan.jiafeigou.n.mvp.model.MineMessageBean;
+import com.cylan.jiafeigou.n.mvp.model.UserInfoBean;
+
+import java.util.ArrayList;
 
 import rx.Subscription;
 
@@ -24,7 +29,6 @@ public interface HomeMineContract {
 
         void onBlur(Drawable drawable);
 
-        void setUserImageHead(Drawable drawable);
 
         /**
          * 设置昵称
@@ -38,7 +42,7 @@ public interface HomeMineContract {
          *
          * @param url
          */
-        void setUserImageHead(String url);
+        void setUserImageHeadByUrl(String url);
 
         /**
          * 设置新消息的数量
@@ -48,21 +52,12 @@ public interface HomeMineContract {
 
     interface Presenter extends BasePresenter {
 
-        void requestLatestPortrait();
 
         /**
          * 设置头像的背景
-         *
-         * @param id
+         * @param bitmap
          */
-        void portraitBlur(@DrawableRes int id);
-
-        /**
-         * 设置头像
-         *
-         * @param url
-         */
-        void portraitUpdateByUrl(String url);
+        void portraitBlur(Bitmap bitmap);
 
         /**
          * 产生随机的昵称
@@ -90,5 +85,27 @@ public interface HomeMineContract {
          */
         boolean checkOpenLogIn();
 
+        /**
+         * Dp获取消息记录数据
+         */
+        Subscription getMesgDpData();
+
+        /**
+         * Dp获取消息记录数据回调
+         * @return
+         */
+        Subscription getMesgDpDataCallBack();
+
+        /**
+         * 获取的消息的所有的数据
+         * @return
+         */
+        ArrayList<MineMessageBean> getMesgAllData();
+
+        /**
+         * 获取是否三方登录的回调
+         * @return
+         */
+        Subscription checkIsOpenLoginCallBack();
     }
 }

@@ -31,10 +31,6 @@ public interface HomeSettingContract {
 
         boolean switchAcceptMesg();
 
-        boolean switchVoice();
-
-        boolean switchShake();
-
         void initSwitchState(RxEvent.GetUserInfo userInfo);
     }
 

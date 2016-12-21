@@ -45,6 +45,10 @@ public interface MineFriendScanAddContract {
          * 隐藏加载进度
          */
         void hideLoadingPro();
+        /**
+         * 网络状态变化
+         */
+        void onNetStateChanged(int state);
     }
 
     interface Presenter extends BasePresenter {
@@ -78,6 +82,16 @@ public interface MineFriendScanAddContract {
          * @return
          */
         Subscription beginScan();
+
+        /**
+         * 注册网络监听
+         */
+        void registerNetworkMonitor();
+
+        /**
+         * 移除网络监听
+         */
+        void unregisterNetworkMonitor();
 
     }
 

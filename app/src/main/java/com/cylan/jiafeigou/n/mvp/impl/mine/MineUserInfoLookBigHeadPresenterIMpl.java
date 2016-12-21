@@ -30,24 +30,6 @@ public class MineUserInfoLookBigHeadPresenterIMpl implements MineUserInfoLookBig
     @Override
     public void loadImage(ImageView imageView) {
 
-        Glide.with(view.getContext())
-                .load(PreferencesUtils.getString(JConstant.USER_IMAGE_HEAD_URL, ""))
-                .asBitmap()
-                .centerCrop()
-                .into(new BitmapImageViewTarget(imageView) {
-                    @Override
-                    public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-                        super.onResourceReady(resource, glideAnimation);
-
-                    }
-
-                    @Override
-                    public void onLoadFailed(Exception e, Drawable errorDrawable) {
-                        super.onLoadFailed(e, errorDrawable);
-
-                    }
-
-                });
     }
 
     @Override

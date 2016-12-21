@@ -7,7 +7,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
+import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
@@ -17,7 +17,7 @@ import com.cylan.jiafeigou.n.mvp.impl.mine.MineFriendScanAddPresenterImp;
 import com.cylan.jiafeigou.n.mvp.model.MineAddReqBean;
 import com.cylan.jiafeigou.support.zscan.ZXingScannerView;
 import com.cylan.jiafeigou.utils.ToastUtil;
-import com.cylan.jiafeigou.utils.ViewUtils;
+import com.cylan.jiafeigou.widget.LoadingDialog;
 import com.google.zxing.Result;
 
 import butterknife.BindView;
@@ -32,7 +32,7 @@ import rx.schedulers.Schedulers;
  * 创建时间：2016/9/6
  * 描述：
  */
-public class MineFriendScanAddFragment extends Fragment implements ZXingScannerView.ResultHandler, MineFriendScanAddContract.View {
+public class MineFriendScanAddFragment extends Fragment implements ZXingScannerView.ResultHandler, MineFriendScanAddContract.View{
 
     @BindView(R.id.iv_home_mine_relativesandfriends_scan_add_back)
     ImageView ivHomeMineRelativesandfriendsScanAddBack;
@@ -42,8 +42,6 @@ public class MineFriendScanAddFragment extends Fragment implements ZXingScannerV
     ImageView ivErweima;
     @BindView(R.id.rl_send_pro_hint)
     RelativeLayout rlSendProHint;
-    @BindView(R.id.fLayout_scan_rect)
-    FrameLayout fLayoutScanRect;
     private MineFriendScanAddContract.Presenter presenter;
 
     public static MineFriendScanAddFragment newInstance() {
@@ -62,7 +60,6 @@ public class MineFriendScanAddFragment extends Fragment implements ZXingScannerV
         View view = inflater.inflate(R.layout.fragment_mine_friend_scan_add, container, false);
         ButterKnife.bind(this, view);
         initView();
-//        showQrCode(presenter.encodeAsBitmap("1234", presenter.getDimension()));
         return view;
     }
 
@@ -144,15 +141,26 @@ public class MineFriendScanAddFragment extends Fragment implements ZXingScannerV
      */
     @Override
     public void showLoadingPro() {
-        rlSendProHint.setVisibility(View.VISIBLE);
+        LoadingDialog.showLoading(getFragmentManager(),getString(R.string.LOADING));
     }
 
+    /**
+     * 网络状态变化
+     * @param state
+     */
+    @Override
+    public void onNetStateChanged(int state) {
+        if (state == -1){
+            hideLoadingPro();
+            ToastUtil.showNegativeToast(getString(R.string.NO_NETWORK_1));
+        }
+    }
     /**
      * 隐藏加载进度
      */
     @Override
     public void hideLoadingPro() {
-        rlSendProHint.setVisibility(View.INVISIBLE);
+        LoadingDialog.dismissLoading(getFragmentManager());
     }
 
     @Override
@@ -183,11 +191,15 @@ public class MineFriendScanAddFragment extends Fragment implements ZXingScannerV
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+        if (presenter != null)presenter.start();
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
         zxVScanAddRelativesandfriend.setResultHandler(MineFriendScanAddFragment.this);
-        if (presenter != null)
-            presenter.start();
     }
 
     @Override
@@ -208,4 +220,5 @@ public class MineFriendScanAddFragment extends Fragment implements ZXingScannerV
         super.onStop();
         if (presenter != null) presenter.stop();
     }
+
 }
