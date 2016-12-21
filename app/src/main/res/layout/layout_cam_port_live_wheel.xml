@@ -18,7 +18,10 @@
             android:layout_gravity="bottom"
             android:clickable="true"
             android:visibility="visible"
-            hunt:sw_markerColor="@color/color_36BDFF" />
+            hunt:sw_lineColor="@color/color_FFDEDEDE"
+            hunt:sw_markerColor="@color/color_36BDFF"
+            hunt:sw_maskColor="@color/color_CCE1F0FF"
+            hunt:sw_textColor="@color/color_FFAAAAAA" />
 
         <View
             android:id="@+id/v_flag"

@@ -100,6 +100,9 @@ public class SuperWheelExt extends View {
         lineIntervalPx = pixelsInSecond * 10 * 60;
         TypedArray at = context.obtainStyledAttributes(attrs, R.styleable.SWheelViewStyle);
         int markerColor = at.getColor(R.styleable.SWheelViewStyle_sw_markerColor, Color.BLUE);
+        int maskColor = at.getColor(R.styleable.SWheelViewStyle_sw_maskColor, Color.BLUE);
+        int lineColor = at.getColor(R.styleable.SWheelViewStyle_sw_lineColor, Color.BLUE);
+        int textColor = at.getColor(R.styleable.SWheelViewStyle_sw_textColor, Color.BLUE);
         at.recycle();
         touchHandler = new ITouchHandler(this);
         markerPaint.setAntiAlias(true);
@@ -108,13 +111,14 @@ public class SuperWheelExt extends View {
         markerPaint.setStrokeWidth(defaultLineWidth);
 
         naturalDateLinePaint.setAntiAlias(true);
-        naturalDateLinePaint.setColor(Color.GRAY);
+        naturalDateLinePaint.setColor(lineColor);
         naturalDateLinePaint.setStrokeWidth(defaultLineWidth);
 
         dataMaskPaint.setAntiAlias(true);
-        dataMaskPaint.setColor(0x44eee000);
+        dataMaskPaint.setColor(maskColor);
 
         naturalDateTextPaint.setAntiAlias(true);
+        naturalDateTextPaint.setColor(textColor);
         naturalDateTextPaint.setTextSize(dateTextSize);
         textRect = new Rect();
         naturalDateTextPaint.getTextBounds(DATE_IN_NORMAL, 0, DATE_IN_NORMAL.length(), textRect);
@@ -221,6 +225,9 @@ public class SuperWheelExt extends View {
         if (DEBUG)
             Log.d(TAG, "drawNaturalDateSet: " + size);
         int c = canvas.save();
+        drawDataMask(canvas, timeList);
+        canvas.restoreToCount(c);
+        c = canvas.save();
         for (int i = 0; i < size; i++) {
             float pos = getPosition(timeList[i]);
             if (DEBUG)
@@ -233,7 +240,6 @@ public class SuperWheelExt extends View {
             drawDateText(canvas, pos, timeList[i]);
         }
         canvas.restoreToCount(c);
-        drawDataMask(canvas, timeList);
     }
 
     private RectF rect = new RectF();
@@ -303,6 +309,17 @@ public class SuperWheelExt extends View {
     }
 
     /**
+     * 计算当前的时间.
+     *
+     * @return
+     */
+    private long getCurrentFocusTime() {
+        int scrollX = getScrollX();
+        long timeDelta = (int) (scrollX / pixelsInSecond) * 1000L;
+        return iDataProvider.getFlattenMaxTime() + timeDelta;
+    }
+
+    /**
      * fling,松手后调用
      *
      * @param newState
@@ -312,15 +329,12 @@ public class SuperWheelExt extends View {
         if (wheelRollListener != null && iDataProvider != null) {
             //通过
             boolean idle = newState == ITouchHandler.SCROLL_STATE_IDLE;//判断当前的位置是否是热区,即:mask区域.
-            int scrollX = getScrollX();
-            long timeDelta = (int) (scrollX / pixelsInSecond) * 1000L;
-            long timeCurrent = iDataProvider.getFlattenMaxTime() + timeDelta;
+            long timeCurrent = getCurrentFocusTime();
             long timeTarget = iDataProvider.getNextFocusTime(timeCurrent, moveDirection);
             if (moveDirection != -1 && idle) {
                 //开始吸附过程
                 wheelRollListener.onTimeUpdate(timeTarget, STATE_ADSORB);
-                float deltaDx = (timeTarget - timeCurrent) / 1000L * pixelsInSecond;
-                touchHandler.startSmoothScroll(getScrollX(), (int) deltaDx);
+                setPositionByTime(timeTarget);
                 wheelRollListener.onTimeUpdate(timeTarget, STATE_FINISH);
             } else {
                 if (notifyAlways && !idle) {
@@ -339,7 +353,8 @@ public class SuperWheelExt extends View {
                             float deltaDx = (timeTarget - timeCurrent) / 1000L * pixelsInSecond;
                             touchHandler.startSmoothScroll(getScrollX(), (int) deltaDx);
                         }
-                        Log.d(TAG, "need to reset; " + simpleDateFormat.format(new Date(timeCurrent)));
+                        if (DEBUG)
+                            Log.d(TAG, "need to reset; " + simpleDateFormat.format(new Date(timeCurrent)));
                     }
                 }
             }
@@ -359,6 +374,23 @@ public class SuperWheelExt extends View {
         autoSettle(newState, -1);
     }
 
+    /**
+     * 通过时间来定位
+     *
+     * @param timeTarget
+     */
+    public void setPositionByTime(long timeTarget) {
+        long timeCurrent = getCurrentFocusTime();
+        float deltaDx = (timeTarget - timeCurrent) / 1000L * pixelsInSecond;
+        touchHandler.startSmoothScroll(getScrollX(), (int) deltaDx);
+    }
+
+    /**
+     * 通过时间计算位置
+     *
+     * @param time
+     * @return
+     */
     private float getMinPos(long time) {
         if (minPosition > 0) return minPosition;
         return minPosition = getPosition(time);
