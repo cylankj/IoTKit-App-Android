@@ -40,18 +40,18 @@
 
         <ImageView
             android:id="@+id/imgV_cam_switch_speaker"
-            style="@style/ripple_background"
+            android:background="?attr/selectableItemBackgroundBorderless"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="30dp"
             android:layout_marginRight="30dp"
             android:padding="20dp"
-            android:src="@drawable/icon_speaker_selector" />
+            android:src="@drawable/icon_speaker_normal_port_on" />
 
         <ImageView
             android:id="@+id/imgV_cam_trigger_mic"
-            style="@style/ripple_background"
+            android:background="?attr/selectableItemBackgroundBorderless"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"

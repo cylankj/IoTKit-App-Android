@@ -5,9 +5,11 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 
+import com.cylan.entity.jniCall.JFGHistoryVideo;
 import com.cylan.entity.jniCall.JFGMsgVideoDisconn;
 import com.cylan.entity.jniCall.JFGMsgVideoResolution;
 import com.cylan.entity.jniCall.JFGMsgVideoRtcp;
+import com.cylan.entity.jniCall.JFGVideo;
 import com.cylan.ex.JfgException;
 import com.cylan.jfgapp.jni.JfgAppCmd;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
@@ -25,6 +27,9 @@ import com.cylan.jiafeigou.rx.RxHelper;
 import com.cylan.jiafeigou.rx.RxUiEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.MiscUtils;
+import com.cylan.jiafeigou.widget.wheel.DataProviderImpl;
+import com.cylan.jiafeigou.widget.wheel.ex.DataExt;
+import com.cylan.jiafeigou.widget.wheel.ex.IData;
 import com.cylan.utils.BitmapUtil;
 import com.cylan.utils.NetUtils;
 import com.cylan.utils.RandomUtils;
@@ -32,6 +37,8 @@ import com.google.gson.Gson;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 
@@ -54,6 +61,7 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
     private int playType = CamLiveContract.TYPE_LIVE;
     private boolean speakerFlag, micFlag;
     private int[] videoResolution = {0, 0};
+    private ArrayList<JFGVideo> simpleCache = new ArrayList<>();
     /**
      * 帧率记录
      */
@@ -352,7 +360,40 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
         compositeSubscription.add(videoDisconnectSub());
         compositeSubscription.add(robotDataSync());
         compositeSubscription.add(fetchCamInfo());
+        compositeSubscription.add(historyDataListSub());
     }
+
+    /**
+     * 接受历史录像数据
+     *
+     * @return
+     */
+    private Subscription historyDataListSub() {
+        return RxBus.getCacheInstance().toObservable(JFGHistoryVideo.class)
+                .subscribeOn(Schedulers.computation())
+                .map((JFGHistoryVideo jfgHistoryVideo) -> {
+                    long time = System.currentTimeMillis();
+                    simpleCache.addAll(jfgHistoryVideo.list);
+                    simpleCache = new ArrayList<>(new HashSet<>(simpleCache));
+                    Collections.sort(simpleCache);
+                    if (simpleCache.size() == 0)
+                        return null;
+                    AppLogger.d(String.format("performance:%s", (System.currentTimeMillis() - time)));
+                    AppLogger.i("historyDataListSub:" + new Gson().toJson(jfgHistoryVideo));
+                    IData data = new DataExt();
+                    data.flattenData(simpleCache);
+                    return data;
+                })
+                .filter((IData dataStack) -> (getView() != null && dataStack != null))
+                .observeOn(AndroidSchedulers.mainThread())
+                .map((IData dataStack) -> {
+                    getView().onHistoryDataRsp(dataStack);
+                    return null;
+                })
+                .retry(new RxHelper.ExceptionFun<>("historyDataListSub"))
+                .subscribe();
+    }
+
 
     private Subscription robotDataSync() {
         return RxBus.getCacheInstance().toObservable(RxEvent.JFGRobotSyncData.class)

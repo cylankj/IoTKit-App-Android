@@ -30,7 +30,7 @@
             android:layout_gravity="center_vertical"
             android:paddingLeft="18dp"
             android:paddingRight="18dp"
-            android:src="@drawable/icon_speaker_pressed" />
+            android:src="@drawable/icon_speaker_land_on" />
 
         <ImageView
             android:id="@+id/imgV_cam_trigger_mic"

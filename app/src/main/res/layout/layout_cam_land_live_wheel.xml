@@ -20,7 +20,7 @@
         android:textColor="@color/color_white"
         android:textSize="11sp" />
 
-    <com.cylan.jiafeigou.widget.wheel.SuperWheel
+    <com.cylan.jiafeigou.widget.wheel.ex.SuperWheelExt
         android:id="@+id/sw_cam_live_wheel"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

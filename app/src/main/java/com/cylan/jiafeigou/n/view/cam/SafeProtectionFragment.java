@@ -75,7 +75,7 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
     public void onAttach(Context context) {
         super.onAttach(context);
         basePresenter = new SafeInfoPresenterImpl(this,
-                (BeanCamInfo) getArguments().getParcelable(JConstant.KEY_DEVICE_ITEM_BUNDLE));
+                getArguments().getParcelable(JConstant.KEY_DEVICE_ITEM_BUNDLE));
     }
 
     /**
@@ -111,14 +111,11 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
         ViewUtils.setViewPaddingStatusBar(fLayoutTopBarContainer);
         updateDetails();
         ((SwitchButton) swMotionDetection.findViewById(R.id.btn_item_switch))
-                .setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                    @Override
-                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                        BeanCamInfo info = basePresenter.getBeanCamInfo();
-                        info.cameraAlarmFlag = isChecked;
-                        basePresenter.saveCamInfoBean(info, DpMsgMap.ID_501_CAMERA_ALARM_FLAG);
-                        showDetail(isChecked);
-                    }
+                .setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
+                    BeanCamInfo info = basePresenter.getBeanCamInfo();
+                    info.cameraAlarmFlag = isChecked;
+                    basePresenter.saveCamInfoBean(info, DpMsgMap.ID_501_CAMERA_ALARM_FLAG);
+                    showDetail(isChecked);
                 });
         showDetail(basePresenter.getBeanCamInfo().cameraAlarmFlag);
     }
@@ -177,16 +174,13 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
                 break;
             case R.id.fLayout_protection_sensitivity: {
                 SetSensitivityDialogFragment fragment = SetSensitivityDialogFragment.newInstance(getArguments());
-                fragment.setAction(new BaseDialog.BaseDialogAction() {
-                    @Override
-                    public void onDialogAction(int id, Object value) {
-                        if (value != null && value instanceof Integer) {
-                            int level = (int) value;
-                            BeanCamInfo info = basePresenter.getBeanCamInfo();
-                            info.cameraAlarmSensitivity = level;
-                            basePresenter.saveCamInfoBean(info, DpMsgMap.ID_503_CAMERA_ALARM_SENSITIVITY);
-                            updateDetails();
-                        }
+                fragment.setAction((int id, Object value) -> {
+                    if (value != null && value instanceof Integer) {
+                        int level = (int) value;
+                        BeanCamInfo info = basePresenter.getBeanCamInfo();
+                        info.cameraAlarmSensitivity = level;
+                        basePresenter.saveCamInfoBean(info, DpMsgMap.ID_503_CAMERA_ALARM_SENSITIVITY);
+                        updateDetails();
                     }
                 });
                 fragment.setArguments(getArguments());
@@ -196,11 +190,8 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
             case R.id.fLayout_protection_warn_effect: {
                 initWarnEffectFragment();
                 AlarmSoundEffectFragment fragment = warnEffectFragmentWeakReference.get();
-                fragment.setCallBack(new CallBack() {
-                    @Override
-                    public void callBack(Object o) {
-                        updateDetails();
-                    }
+                fragment.setCallBack((Object o) -> {
+                    updateDetails();
                 });
                 fragment.setArguments(getArguments());
                 loadFragment(android.R.id.content, fragment);
@@ -210,17 +201,14 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
                 initTimePickDialogFragment();
                 timePickDialogFragment.setArguments(getBundle(getString(R.string.FROME)));
                 timePickDialogFragment.show(getActivity().getSupportFragmentManager(), "timePickDialogFragmentStart");
-                timePickDialogFragment.setAction(new BaseDialog.BaseDialogAction() {
-                    @Override
-                    public void onDialogAction(int id, Object value) {
-                        if (value != null && value instanceof Integer) {
-                            BeanCamInfo info = basePresenter.getBeanCamInfo();
-                            if (info.cameraAlarmInfo.timeStart != (int) value) {
-                                info.cameraAlarmInfo.timeStart = (int) value;
-                                basePresenter.saveCamInfoBean(info, DpMsgMap.ID_502_CAMERA_ALARM_INFO);
-                            }
-                            updateDetails();
+                timePickDialogFragment.setAction((int id, Object value) -> {
+                    if (value != null && value instanceof Integer) {
+                        BeanCamInfo info = basePresenter.getBeanCamInfo();
+                        if (info.cameraAlarmInfo.timeStart != (int) value) {
+                            info.cameraAlarmInfo.timeStart = (int) value;
+                            basePresenter.saveCamInfoBean(info, DpMsgMap.ID_502_CAMERA_ALARM_INFO);
                         }
+                        updateDetails();
                     }
                 });
             }
@@ -229,17 +217,14 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
                 initTimePickDialogFragment();
                 timePickDialogFragment.setArguments(getBundle(getString(R.string.TO)));
                 timePickDialogFragment.show(getActivity().getSupportFragmentManager(), "timePickDialogFragmentEnd");
-                timePickDialogFragment.setAction(new BaseDialog.BaseDialogAction() {
-                    @Override
-                    public void onDialogAction(int id, Object value) {
-                        if (value != null && value instanceof Integer) {
-                            BeanCamInfo info = basePresenter.getBeanCamInfo();
-                            if (info.cameraAlarmInfo.timeEnd != (int) value) {
-                                info.cameraAlarmInfo.timeEnd = (int) value;
-                                basePresenter.saveCamInfoBean(info, DpMsgMap.ID_502_CAMERA_ALARM_INFO);
-                            }
-                            updateDetails();
+                timePickDialogFragment.setAction((int id, Object value) -> {
+                    if (value != null && value instanceof Integer) {
+                        BeanCamInfo info = basePresenter.getBeanCamInfo();
+                        if (info.cameraAlarmInfo.timeEnd != (int) value) {
+                            info.cameraAlarmInfo.timeEnd = (int) value;
+                            basePresenter.saveCamInfoBean(info, DpMsgMap.ID_502_CAMERA_ALARM_INFO);
                         }
+                        updateDetails();
                     }
                 });
             }
@@ -247,20 +232,17 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
             case R.id.fLayout_protection_repeat_period: {
                 BaseDialog fragment = CapturePeriodDialogFragment.newInstance(getArguments());
                 fragment.setArguments(getArguments());
-                fragment.setAction(new BaseDialog.BaseDialogAction() {
-                    @Override
-                    public void onDialogAction(int id, Object value) {
-                        if (value != null && value instanceof Integer) {
-                            int result = (int) value;
-                            BeanCamInfo info = basePresenter.getBeanCamInfo();
-                            DpMsgDefine.AlarmInfo alarmInfo = info.cameraAlarmInfo == null ? new DpMsgDefine.AlarmInfo() : info.cameraAlarmInfo;
-                            if (alarmInfo.day != result) {
-                                alarmInfo.day = result;
-                                info.cameraAlarmInfo = alarmInfo;
-                                basePresenter.saveCamInfoBean(info, DpMsgMap.ID_502_CAMERA_ALARM_INFO);
-                            }
-                            updateDetails();
+                fragment.setAction((int id, Object value) -> {
+                    if (value != null && value instanceof Integer) {
+                        int result = (int) value;
+                        BeanCamInfo info = basePresenter.getBeanCamInfo();
+                        DpMsgDefine.AlarmInfo alarmInfo = info.cameraAlarmInfo == null ? new DpMsgDefine.AlarmInfo() : info.cameraAlarmInfo;
+                        if (alarmInfo.day != result) {
+                            alarmInfo.day = result;
+                            info.cameraAlarmInfo = alarmInfo;
+                            basePresenter.saveCamInfoBean(info, DpMsgMap.ID_502_CAMERA_ALARM_INFO);
                         }
+                        updateDetails();
                     }
                 });
                 showFragment(fragment);

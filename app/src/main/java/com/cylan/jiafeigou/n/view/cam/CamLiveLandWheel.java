@@ -11,6 +11,8 @@ import android.widget.TextView;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.widget.wheel.SDataStack;
 import com.cylan.jiafeigou.widget.wheel.SuperWheel;
+import com.cylan.jiafeigou.widget.wheel.ex.IData;
+import com.cylan.jiafeigou.widget.wheel.ex.SuperWheelExt;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -22,11 +24,11 @@ import butterknife.ButterKnife;
 /**
  * Created by cylan-hunt on 16-7-27.
  */
-public class CamLiveLandWheel extends FrameLayout implements SuperWheel.WheelRollListener {
+public class CamLiveLandWheel extends FrameLayout implements SuperWheelExt.WheelRollListener {
     @BindView(R.id.tv_cam_live_land_date_pop)
     TextView tvCamLiveLandDatePop;
     @BindView(R.id.sw_cam_live_wheel)
-    SuperWheel swCamLiveWheel;
+    SuperWheelExt swCamLiveWheel;
     SimpleDateFormat simpleDateFormat = new SimpleDateFormat("M/dd HH:mm", Locale.getDefault());
 
     public CamLiveLandWheel(Context context) {
@@ -44,14 +46,14 @@ public class CamLiveLandWheel extends FrameLayout implements SuperWheel.WheelRol
         swCamLiveWheel.setWheelRollListener(this);
     }
 
-    public void setupHistoryData(SDataStack dataStack) {
+    public void setupHistoryData(IData dataStack) {
         final long time = System.currentTimeMillis();
-        swCamLiveWheel.setDataStack(dataStack);
+        swCamLiveWheel.setDataProvider(dataStack);
         Log.d("performance", "CamLivePortWheel performance: " + (System.currentTimeMillis() - time));
     }
 
     @Override
-    public void onTimeUpdate(final long time) {
+    public void onTimeUpdate(final long time, int state) {
         if (tvCamLiveLandDatePop != null) {
             tvCamLiveLandDatePop.post(new Runnable() {
                 @Override
@@ -62,19 +64,19 @@ public class CamLiveLandWheel extends FrameLayout implements SuperWheel.WheelRol
         }
     }
 
-    @Override
-    public void onSettleFinish(final long time) {
-        if (tvCamLiveLandDatePop != null) {
-            tvCamLiveLandDatePop.post(new Runnable() {
-                @Override
-                public void run() {
-                    tvCamLiveLandDatePop.setText(simpleDateFormat.format(new Date(time)));
-                }
-            });
-        }
-        if (wheelUpdateListener != null)
-            wheelUpdateListener.onSettleFinish();
-    }
+//    @Override
+//    public void onSettleFinish(final long time) {
+//        if (tvCamLiveLandDatePop != null) {
+//            tvCamLiveLandDatePop.post(new Runnable() {
+//                @Override
+//                public void run() {
+//                    tvCamLiveLandDatePop.setText(simpleDateFormat.format(new Date(time)));
+//                }
+//            });
+//        }
+//        if (wheelUpdateListener != null)
+//            wheelUpdateListener.onSettleFinish();
+//    }
 
     private WheelUpdateListener wheelUpdateListener;
 

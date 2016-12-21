@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
@@ -16,6 +17,7 @@ import com.cylan.jiafeigou.n.mvp.impl.mine.MineFriendScanAddPresenterImp;
 import com.cylan.jiafeigou.n.mvp.model.MineAddReqBean;
 import com.cylan.jiafeigou.support.zscan.ZXingScannerView;
 import com.cylan.jiafeigou.utils.ToastUtil;
+import com.cylan.jiafeigou.utils.ViewUtils;
 import com.google.zxing.Result;
 
 import butterknife.BindView;
@@ -40,6 +42,8 @@ public class MineFriendScanAddFragment extends Fragment implements ZXingScannerV
     ImageView ivErweima;
     @BindView(R.id.rl_send_pro_hint)
     RelativeLayout rlSendProHint;
+    @BindView(R.id.fLayout_scan_rect)
+    FrameLayout fLayoutScanRect;
     private MineFriendScanAddContract.Presenter presenter;
 
     public static MineFriendScanAddFragment newInstance() {

@@ -1,6 +1,5 @@
 package com.cylan.jiafeigou.widget.dialog;
 
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
@@ -65,7 +64,6 @@ public class BaseDialog<T> extends DialogFragment {
     public interface BaseDialogAction {
         void onDialogAction(int id, Object value);
     }
-
 
 
 }

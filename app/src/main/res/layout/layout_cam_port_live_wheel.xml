@@ -11,11 +11,12 @@
         android:orientation="horizontal">
 
 
-        <com.cylan.jiafeigou.widget.wheel.SuperWheel
+        <com.cylan.jiafeigou.widget.wheel.ex.SuperWheelExt
             android:id="@+id/sw_cam_live_wheel"
             android:layout_width="match_parent"
             android:layout_height="52dp"
             android:layout_gravity="bottom"
+            android:clickable="true"
             android:visibility="visible"
             hunt:sw_markerColor="@color/color_36BDFF" />
 

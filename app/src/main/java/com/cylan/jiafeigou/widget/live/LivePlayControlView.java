@@ -92,6 +92,9 @@ public class LivePlayControlView extends LinearLayout implements ILiveControl, V
                     textView.setVisibility(VISIBLE);
                 textView.setText(content);
                 break;
+            case STATE_IDLE:
+                setVisibility(GONE);
+                break;
         }
         Log.d("setState", "setState: " + state);
     }

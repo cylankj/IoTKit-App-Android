@@ -1,6 +1,7 @@
 package com.cylan.jiafeigou.n.view.cam;
 
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
@@ -12,6 +13,7 @@ import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewStub;
@@ -30,6 +32,7 @@ import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamLiveContract;
 import com.cylan.jiafeigou.n.mvp.impl.cam.CamLivePresenterImpl;
+import com.cylan.jiafeigou.n.view.activity.CameraLiveActivity;
 import com.cylan.jiafeigou.n.view.misc.LandLiveBarAnimDelegate;
 import com.cylan.jiafeigou.n.view.misc.LiveBottomBarAnimDelegate;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -38,7 +41,7 @@ import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.live.ILiveControl;
 import com.cylan.jiafeigou.widget.live.LivePlayControlView;
 import com.cylan.jiafeigou.widget.video.VideoViewFactory;
-import com.cylan.jiafeigou.widget.wheel.SDataStack;
+import com.cylan.jiafeigou.widget.wheel.ex.IData;
 import com.cylan.utils.DensityUtils;
 import com.google.gson.Gson;
 
@@ -50,6 +53,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 import static com.cylan.jiafeigou.misc.JFGRules.PlayErr.ERR_STOP;
+import static com.cylan.jiafeigou.widget.live.ILiveControl.STATE_IDLE;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -146,6 +150,16 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
         ViewUtils.updateViewHeight(fLayoutCamLiveView, 0.75f);
         animateBottomBar(true);
         initBottomBtn(false);
+        swCamPortWheel.setViewHandleListener((int action) -> {
+            if (swCamPortWheel.getDataProvider() != null && swCamPortWheel.getDataProvider().getDataCount() > 0) {
+                //有数据
+                Activity activity = getActivity();
+                if (activity != null && activity instanceof CameraLiveActivity) {
+                    ((CameraLiveActivity) activity).enableViewPagerScroll(action == MotionEvent.ACTION_UP
+                            || action == MotionEvent.ACTION_CANCEL);
+                }
+            }
+        });
     }
 
     @Override
@@ -204,6 +218,8 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
      */
     @Override
     public void onDeviceStandBy(boolean flag) {
+        showLoading(STATE_IDLE, null);
+        showFloatFlowView(false, null);
         //进入待机模式
         View v = fLayoutLiveViewContainer.findViewById("showSceneView".hashCode());
         if (v == null && !flag) {
@@ -346,6 +362,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
      * @return
      */
     private VideoViewFactory.IVideoView initVideoView() {
+        AppLogger.i("initVideoView:" + (videoView == null));
         if (videoView == null) {
             int pid = basePresenter.getCamInfo().deviceBase.pid;
             videoView = VideoViewFactory.CreateRendererExt(JFGRules.isNeedPanoramicView(pid),
@@ -367,7 +384,6 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
                 }
             });
         }
-        AppLogger.i("initVideoView");
         return videoView;
     }
 
@@ -449,7 +465,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
             case R.id.imgV_cam_switch_speaker:
                 if (basePresenter != null) {
                     basePresenter.switchSpeakerMic(false, !basePresenter.getSpeakerFlag(), basePresenter.getMicFlag());
-                    ((ImageView) view).setImageResource(basePresenter.getSpeakerFlag() ? R.drawable.btn_video_retry : R.drawable.icon_speaker_selector);
+                    ((ImageView) view).setImageResource(basePresenter.getSpeakerFlag() ? R.drawable.icon_speaker_normal_port_off : R.drawable.icon_speaker_normal_port_on);
                 }
                 break;
             case R.id.imgV_cam_trigger_mic:
@@ -520,7 +536,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
     }
 
     @Override
-    public void onHistoryDataRsp(SDataStack dataStack) {
+    public void onHistoryDataRsp(IData dataStack) {
         swCamPortWheel.setupHistoryData(dataStack);
         setCamLandLiveHistory(dataStack);
     }
@@ -571,7 +587,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
         updateVideoViewLayoutParameters(resolution);
     }
 
-    private void setCamLandLiveHistory(SDataStack dataStack) {
+    private void setCamLandLiveHistory(IData dataStack) {
         if (fLayoutLandScapeControlLayerRef == null)
             return;
         landLiveLayerViewActionWeakReference.get().setupHistoryTimeSet(dataStack);
@@ -647,7 +663,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
         }
 
         @Override
-        public void setupHistoryTimeSet(SDataStack dataStack) {
+        public void setupHistoryTimeSet(IData dataStack) {
             if (camLiveLandWheel != null)
                 camLiveLandWheel.setupHistoryData(dataStack);
         }
@@ -714,7 +730,7 @@ interface CamLandLiveLayerInterface {
 
     void setCamLandLiveAction(CamLandLiveAction action);
 
-    void setupHistoryTimeSet(SDataStack timeSet);
+    void setupHistoryTimeSet(IData timeSet);
 
     void destroy();
 }

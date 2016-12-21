@@ -86,11 +86,8 @@ public class CapturePeriodDialogFragment extends BaseDialog {
             final int index = i;
             CheckBox view = (CheckBox) lLayoutWeek.getChildAt(i);
             view.setChecked((checkedSerial >> (checkBoxCount - 1 - i) & 1) == 1);
-            view.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    checkedSerial ^= (1 << (6 - index));//按位取反
-                }
+            view.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
+                checkedSerial ^= (1 << (6 - index));//按位取反
             });
         }
     }

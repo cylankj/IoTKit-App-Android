@@ -85,6 +85,10 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
         });
     }
 
+    public void enableViewPagerScroll(boolean enable) {
+        vpCameraLive.setPagingEnabled(enable);
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
