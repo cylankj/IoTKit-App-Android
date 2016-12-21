@@ -32,6 +32,12 @@ public interface MineClipImageContract {
          */
         void upLoadResultView(int code);
 
+
+        /**
+         * 网络状态变化
+         */
+        void onNetStateChanged(int state);
+
     }
 
     interface Presenter extends BasePresenter{
@@ -51,5 +57,16 @@ public interface MineClipImageContract {
          * 获取到用户的信息
          */
         Subscription getAccount();
+
+
+        /**
+         * 注册网络监听
+         */
+        void registerNetworkMonitor();
+
+        /**
+         * 移除网络监听
+         */
+        void unregisterNetworkMonitor();
     }
 }

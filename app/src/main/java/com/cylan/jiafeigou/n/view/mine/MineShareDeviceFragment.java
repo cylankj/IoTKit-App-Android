@@ -63,20 +63,6 @@ public class MineShareDeviceFragment extends Fragment implements MineShareDevice
         return new MineShareDeviceFragment();
     }
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (mineDevicesShareManagerFragment != null){
-            mineDevicesShareManagerFragment.setOncancleChangeListener(
-                    new MineDevicesShareManagerFragment.OnUnShareChangeListener() {
-                        @Override
-                        public void unShareChange() {
-                            onStart();
-                        }
-                    });
-        }
-    }
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -101,6 +87,20 @@ public class MineShareDeviceFragment extends Fragment implements MineShareDevice
         super.onStart();
         if (presenter != null) {
             presenter.start();
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (mineDevicesShareManagerFragment != null){
+            mineDevicesShareManagerFragment.setOncancleChangeListener(
+                    new MineDevicesShareManagerFragment.OnUnShareChangeListener() {
+                        @Override
+                        public void unShareChange() {
+                            onStart();
+                        }
+                    });
         }
     }
 

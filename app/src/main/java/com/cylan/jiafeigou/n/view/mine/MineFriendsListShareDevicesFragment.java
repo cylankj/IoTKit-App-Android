@@ -187,6 +187,19 @@ public class MineFriendsListShareDevicesFragment extends Fragment implements Min
     }
 
     /**
+     * 网络状态变化
+     * @param state
+     */
+    @Override
+    public void onNetStateChanged(int state) {
+        if (state == -1){
+            hideLoadingDialog();
+            hideSendReqProgress();
+            ToastUtil.showNegativeToast(getString(R.string.NO_NETWORK_1));
+        }
+    }
+
+    /**
      * 显示完成按钮
      */
     @Override

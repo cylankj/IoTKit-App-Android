@@ -270,6 +270,18 @@ public class HomeMineInfoMailBoxFragment extends Fragment implements MineInfoBin
     }
 
     /**
+     * 网络状态变化
+     * @param state
+     */
+    @Override
+    public void onNetStateChanged(int state) {
+        if (state == -1){
+            hideSendReqHint();
+            ToastUtil.showNegativeToast(getString(R.string.NO_NETWORK_1));
+        }
+    }
+
+    /**
      * 跳转到设置密码界面
      */
     private void jump2SetPasswordFragment(String account) {

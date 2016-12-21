@@ -28,7 +28,7 @@
         android:background="@drawable/long_btn_bg_shape_4b9fd5"
         android:clickable="true"
         android:gravity="center"
-        android:text="登 陆"
+        android:text="@string/LOGIN"
         android:textColor="@color/color_white"
         android:textSize="17sp" />
 
@@ -45,7 +45,7 @@
         android:background="@drawable/long_btn_bg_shape_f4f4f4"
         android:clickable="true"
         android:gravity="center"
-        android:text="注 册"
+        android:text="@string/Tap0_register"
         android:textColor="@color/color_7c7c7c"
         android:textSize="17sp" />
 
@@ -58,7 +58,7 @@
         android:layout_gravity="center_horizontal"
         android:clickable="true"
         android:padding="24dp"
-        android:text="随便看看"
+        android:text="@string/Tap0_WelcomeTourist"
         android:textColor="@color/color_7c7c7c"
         android:textSize="13sp" />
 </RelativeLayout>

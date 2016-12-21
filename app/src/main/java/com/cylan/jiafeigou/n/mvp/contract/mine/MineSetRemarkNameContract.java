@@ -36,6 +36,11 @@ public interface MineSetRemarkNameContract {
          * 隐藏正在修改的进度提示
          */
         void hideSendReqPro();
+
+        /**
+         * 网络状态变化
+         */
+        void onNetStateChanged(int state);
     }
 
     interface Presenter extends BasePresenter {
@@ -53,5 +58,15 @@ public interface MineSetRemarkNameContract {
          * @return
          */
         Subscription getFriendRemarkNameCallBack();
+
+        /**
+         * 注册网络监听
+         */
+        void registerNetworkMonitor();
+
+        /**
+         * 移除网络监听
+         */
+        void unregisterNetworkMonitor();
     }
 }

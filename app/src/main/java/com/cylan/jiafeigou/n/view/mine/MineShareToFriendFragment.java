@@ -128,14 +128,6 @@ public class MineShareToFriendFragment extends Fragment implements MineShareToFr
 
     @Override
     public void initRecycleView(ArrayList<RelAndFriendBean> list) {
-        //过滤掉已分享的亲友
-//        for (RelAndFriendBean bean:list){
-//            for (RelAndFriendBean hasBean:hasSharefriend){
-//                if (bean.account.equals(hasBean.account)){
-//                    list.remove(bean);
-//                }
-//            }
-//        }
         rcyMineShareToRelativeAndFriendList.setLayoutManager(new LinearLayoutManager(getContext()));
         shareToFriendsAdapter = new ShareToFriendsAdapter(getContext(), list, null);
         rcyMineShareToRelativeAndFriendList.setAdapter(shareToFriendsAdapter);
@@ -202,8 +194,8 @@ public class MineShareToFriendFragment extends Fragment implements MineShareToFr
      */
     @Override
     public void handlerAfterSendShareReq(ArrayList<RxEvent.ShareDeviceCallBack> callbackList) {
+        hideSendProgress();
         int totalFriend = isChooseToShareList.size();
-
         for (RelAndFriendBean friendBean:isChooseToShareList){
             for (RxEvent.ShareDeviceCallBack callBack:callbackList){
                 if (friendBean.account.equals(callBack.account)){

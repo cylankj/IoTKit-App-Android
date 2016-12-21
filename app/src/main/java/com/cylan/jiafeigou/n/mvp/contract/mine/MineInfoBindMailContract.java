@@ -51,6 +51,11 @@ public interface MineInfoBindMailContract {
          * @param account
          */
         void getUserAccountData(JFGAccount account);
+
+        /**
+         * 网络状态变化
+         */
+        void onNetStateChanged(int state);
     }
 
     interface Presenter extends BasePresenter {
@@ -86,6 +91,16 @@ public interface MineInfoBindMailContract {
          * @return
          */
         JFGAccount getUserAccount();
+
+        /**
+         * 注册网络监听
+         */
+        void registerNetworkMonitor();
+
+        /**
+         * 移除网络监听
+         */
+        void unregisterNetworkMonitor();
 
     }
 }

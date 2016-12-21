@@ -57,6 +57,11 @@ public interface MineBindPhoneContract {
          * 隐藏loading
          */
         void hideLoadingDialog();
+
+        /**
+         * 网络状态变化
+         */
+        void onNetStateChanged(int state);
     }
 
     interface Presenter extends BasePresenter {
@@ -110,6 +115,16 @@ public interface MineBindPhoneContract {
          * @return
          */
         Subscription checkVerifyCodeCallBack();
+
+        /**
+         * 注册网络监听
+         */
+        void registerNetworkMonitor();
+
+        /**
+         * 移除网络监听
+         */
+        void unregisterNetworkMonitor();
     }
 
 }

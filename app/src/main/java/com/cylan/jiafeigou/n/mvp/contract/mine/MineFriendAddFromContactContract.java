@@ -48,6 +48,12 @@ public interface MineFriendAddFromContactContract {
          */
         void openSendSms();
 
+        /**
+         * 网络状态变化
+         */
+        void onNetStateChanged(int state);
+
+
     }
 
     interface Presenter extends BasePresenter {
@@ -84,6 +90,16 @@ public interface MineFriendAddFromContactContract {
          * @return
          */
         boolean checkSmsPermission();
+
+        /**
+         * 注册网络监听
+         */
+        void registerNetworkMonitor();
+
+        /**
+         * 移除网络监听
+         */
+        void unregisterNetworkMonitor();
     }
 
 }

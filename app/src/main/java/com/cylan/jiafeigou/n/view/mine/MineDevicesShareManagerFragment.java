@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -85,7 +86,6 @@ public class MineDevicesShareManagerFragment extends Fragment implements MineDev
     public void onResume() {
         super.onResume();
         if (presenter != null) {
-//            presenter.getHasShareList(devicebean.uuid);
             presenter.start();
         }
     }
@@ -112,7 +112,7 @@ public class MineDevicesShareManagerFragment extends Fragment implements MineDev
         Bundle arguments = getArguments();
         devicebean = arguments.getParcelable("devicebean");
         hasShareFriendlist = arguments.getParcelableArrayList("friendlist");
-        setTopTitle("".equals(devicebean.alias)?devicebean.uuid:devicebean.alias);
+        setTopTitle(TextUtils.isEmpty(devicebean.alias)?devicebean.uuid:devicebean.alias);
     }
 
     @Override
@@ -225,6 +225,18 @@ public class MineDevicesShareManagerFragment extends Fragment implements MineDev
     @Override
     public void setTopTitle(String name) {
         tvHomeMineShareDevicesName.setText(name);
+    }
+
+    /**
+     * 网络状态变化
+     * @param state
+     */
+    @Override
+    public void onNetStateChanged(int state) {
+        if (state == -1){
+            hideCancleShareProgress();
+            ToastUtil.showNegativeToast(getString(R.string.NO_NETWORK_1));
+        }
     }
 
 }

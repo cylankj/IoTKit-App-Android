@@ -19,7 +19,7 @@
         android:id="@+id/tv_top_bar_center"
         style="@style/text_base_singleLine"
         android:layout_gravity="center"
-        android:text="登录"
+        android:text="@string/LOGIN"
         android:textColor="@color/color_444444"
         android:textSize="22sp" />
 
@@ -31,7 +31,7 @@
         android:gravity="center"
         android:paddingLeft="15dp"
         android:paddingRight="15dp"
-        android:text="注册"
+        android:text="@string/Tap0_register"
         android:textColor="@color/color_4b9fd5"
         android:textSize="14sp"
         android:visibility="gone" />

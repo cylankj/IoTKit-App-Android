@@ -90,8 +90,8 @@ public class MineFriendsFragment extends Fragment implements MineFriendsContract
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
+    public void onResume() {
+        super.onResume();
         if (presenter != null) {
             presenter.start();
         }
@@ -172,6 +172,18 @@ public class MineFriendsFragment extends Fragment implements MineFriendsContract
     @Override
     public void showLoadingDialog() {
         LoadingDialog.showLoading(getFragmentManager(),getString(R.string.LOADING));
+    }
+
+    /**
+     * 网络状态变化
+     * @param state
+     */
+    @Override
+    public void onNetStateChanged(int state) {
+        if (state == -1){
+            hideLoadingDialog();
+            ToastUtil.showNegativeToast(getString(R.string.NO_NETWORK_1));
+        }
     }
 
     /**

@@ -145,6 +145,17 @@ public class MineFriendScanAddFragment extends Fragment implements ZXingScannerV
     }
 
     /**
+     * 网络状态变化
+     * @param state
+     */
+    @Override
+    public void onNetStateChanged(int state) {
+        if (state == -1){
+            hideLoadingPro();
+            ToastUtil.showNegativeToast(getString(R.string.NO_NETWORK_1));
+        }
+    }
+    /**
      * 隐藏加载进度
      */
     @Override

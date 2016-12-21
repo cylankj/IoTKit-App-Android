@@ -178,6 +178,18 @@ public class ClipImageActivity extends AppCompatActivity implements MineClipImag
         return null;
     }
 
+    /**
+     * 网络状态变化
+     * @param state
+     */
+    @Override
+    public void onNetStateChanged(int state) {
+        if (state == -1){
+            hideUpLoadPro();
+            ToastUtil.showNegativeToast(getString(R.string.NO_NETWORK_1));
+        }
+    }
+
     @Override
     protected void onStop() {
         super.onStop();
