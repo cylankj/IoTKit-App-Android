@@ -105,6 +105,9 @@ public class ITouchHandler extends GestureDetector.SimpleOnGestureListener {
                 mLastMotionX = mInitialMotionX = event.getX();
                 break;
             case MotionEvent.ACTION_MOVE:
+                if (superWheel.getParent() != null) {
+                    superWheel.getParent().requestDisallowInterceptTouchEvent(true);
+                }
                 mActivePointerId = MotionEventCompat.getPointerId(event, 0);
                 final int activePointerId = mActivePointerId;
                 if (activePointerId == INVALID_POINTER) {

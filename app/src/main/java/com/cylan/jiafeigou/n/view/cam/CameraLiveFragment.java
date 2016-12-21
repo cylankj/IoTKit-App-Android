@@ -1,7 +1,6 @@
 package com.cylan.jiafeigou.n.view.cam;
 
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
@@ -13,7 +12,6 @@ import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewStub;
@@ -32,7 +30,6 @@ import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamLiveContract;
 import com.cylan.jiafeigou.n.mvp.impl.cam.CamLivePresenterImpl;
-import com.cylan.jiafeigou.n.view.activity.CameraLiveActivity;
 import com.cylan.jiafeigou.n.view.misc.LandLiveBarAnimDelegate;
 import com.cylan.jiafeigou.n.view.misc.LiveBottomBarAnimDelegate;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -150,16 +147,6 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
         ViewUtils.updateViewHeight(fLayoutCamLiveView, 0.75f);
         animateBottomBar(true);
         initBottomBtn(false);
-        swCamPortWheel.setViewHandleListener((int action) -> {
-            if (swCamPortWheel.getDataProvider() != null && swCamPortWheel.getDataProvider().getDataCount() > 0) {
-                //有数据
-                Activity activity = getActivity();
-                if (activity != null && activity instanceof CameraLiveActivity) {
-                    ((CameraLiveActivity) activity).enableViewPagerScroll(action == MotionEvent.ACTION_UP
-                            || action == MotionEvent.ACTION_CANCEL);
-                }
-            }
-        });
     }
 
     @Override
