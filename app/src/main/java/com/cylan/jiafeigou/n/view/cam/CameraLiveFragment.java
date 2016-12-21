@@ -75,8 +75,8 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
     ImageView imgVCamTriggerMic;
     @BindView(R.id.imgV_cam_trigger_capture)
     ImageView imgVCamTriggerCapture;
-    @BindView(R.id.imgV_cam_zoom_to_full_screen)
-    ImageView imgVCamZoomToFullScreen;
+//    @BindView(R.id.imgV_cam_zoom_to_full_screen)
+//    ImageView imgVCamZoomToFullScreen;
     @BindView(R.id.tv_cam_show_timeline)
     TextView tvCamShowTimeline;
     @BindView(R.id.fLayout_cam_live_view)
@@ -93,7 +93,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
     /**
      * |安全防护|----直播|5/16 16:30|---|
      */
-    private WeakReference<LiveBottomBarAnimDelegate> liveBottomBarAnimDelegateWeakReference;
+    private WeakReference<LiveBottomBarAnimDelegate> portLiveBottomBarDelegateRef;
     private WeakReference<CamLandLiveLayerInterface> landLiveLayerViewActionWeakReference;
     private CamLandLiveLayerInterface camLandLiveLayerInterface;
 
@@ -145,7 +145,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         ViewUtils.updateViewHeight(fLayoutCamLiveView, 0.75f);
-        animateBottomBar(true);
+//        animateBottomBar(true);
         initBottomBtn(false);
     }
 
@@ -241,6 +241,8 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
         initBottomBtn(true);
         imgVCamSwitchSpeaker.performClick();
         imgVCamTriggerMic.performClick();
+        //展示
+        checkBottomAnimation();
     }
 
     private void showLoading(int state, String content) {
@@ -444,7 +446,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
     @OnClick({R.id.imgV_cam_switch_speaker,
             R.id.imgV_cam_trigger_mic,
             R.id.imgV_cam_trigger_capture,
-            R.id.imgV_cam_zoom_to_full_screen,
+//            R.id.imgV_cam_zoom_to_full_screen,
             R.id.tv_cam_show_timeline,
             R.id.fLayout_cam_live_view})
     public void onClick(View view) {
@@ -464,14 +466,11 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
             case R.id.imgV_cam_trigger_capture:
                 if (basePresenter != null) basePresenter.takeSnapShot();
                 break;
-            case R.id.imgV_cam_zoom_to_full_screen:
-                ViewUtils.setRequestedOrientation(getActivity(), ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-                break;
             case R.id.tv_cam_show_timeline:
 
                 break;
             case R.id.fLayout_cam_live_view:
-                animateBottomBar(false);
+//                animateBottomBar(false);
                 if (videoView != null)
                     videoView.performTouch();
                 break;
@@ -482,15 +481,15 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
      * 检查
      */
     private void checkBottomAnimation() {
-        if (liveBottomBarAnimDelegateWeakReference == null || liveBottomBarAnimDelegateWeakReference.get() == null)
-            liveBottomBarAnimDelegateWeakReference = new WeakReference<>(new LiveBottomBarAnimDelegate(fLayoutLiveBottomHandleBar));
+        if (portLiveBottomBarDelegateRef == null || portLiveBottomBarDelegateRef.get() == null)
+            portLiveBottomBarDelegateRef = new WeakReference<>(new LiveBottomBarAnimDelegate(fLayoutLiveBottomHandleBar));
     }
 
-    private void animateBottomBar(boolean auto) {
-        checkBottomAnimation();
-        liveBottomBarAnimDelegateWeakReference.get()
-                .startAnimation(auto);
-    }
+//    private void animateBottomBar(boolean auto) {
+//        checkBottomAnimation();
+//        liveBottomBarAnimDelegateWeakReference.get()
+//                .startAnimation(auto);
+//    }
 
     @Override
     public void onClickLive() {
@@ -550,6 +549,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
                 showLoading(ILiveControl.STATE_STOP, null);
                 break;
         }
+//        animateBottomBar(true);
     }
 
     @Override

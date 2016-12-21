@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="39dp"
-    android:layout_gravity="bottom"
     android:id="@+id/fLayout_live_port_bottom_control_bar"
-    android:background="@color/color_cam_live_handle_bar_background">
+    android:layout_width="match_parent"
+    android:layout_height="39dp">
 
     <LinearLayout
+        android:id="@+id/lLayout_protection"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:paddingLeft="15dp"
@@ -42,6 +41,7 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/lLayout_live_time"
         style="@style/ripple_background"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
