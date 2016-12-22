@@ -6,7 +6,6 @@ import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
 import com.cylan.jiafeigou.n.mvp.model.BeanCamInfo;
-import com.cylan.jiafeigou.widget.wheel.SDataStack;
 import com.cylan.jiafeigou.widget.wheel.ex.IData;
 
 /**
@@ -17,8 +16,12 @@ public interface CamLiveContract {
     /**
      * 默认直播
      */
-    int TYPE_LIVE = 0;
-    int TYPE_HISTURY = 1;
+    int TYPE_NONE = 0;
+    int TYPE_LIVE = 1;
+    int TYPE_HISTORY = 2;
+    int PLAY_STATE_IDLE = 0;
+    int PLAY_STATE_PREPARE = 1;
+    int PLAY_STATE_PLAYING = 2;
 
     interface View extends BaseView<Presenter> {
 
@@ -57,6 +60,14 @@ public interface CamLiveContract {
 
         void onTakeSnapShot(boolean state);
 
+        void onBeanInfoUpdate(BeanCamInfo info);
+
+        /**
+         * 历史录像播放结束状态
+         *
+         * @param state
+         */
+        void onHistoryLiveStop(int state);
     }
 
     interface Presenter extends BasePresenter {
@@ -80,10 +91,19 @@ public interface CamLiveContract {
          */
         void fetchHistoryDataList();
 
+        boolean isShareDevice();
+
         /**
          * 开始播放历史录像或者开始直播
          */
         void startPlayVideo(int type);
+
+        /**
+         * 开始播放历史录像
+         *
+         * @param time
+         */
+        void startPlayHistory(long time);
 
         /**
          * 停止播放历史录像或者直播
@@ -101,6 +121,8 @@ public interface CamLiveContract {
         boolean getSpeakerFlag();
 
         boolean getMicFlag();
+
+        void saveAlarmFlag(boolean flag);
     }
 }
 

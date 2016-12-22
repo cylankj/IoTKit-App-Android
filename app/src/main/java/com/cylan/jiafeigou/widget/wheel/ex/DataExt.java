@@ -42,7 +42,8 @@ public class DataExt implements IData {
             for (long i = timeMax; i >= timeMin; ) {
                 flattenDataList.add(i);
                 fillMap(i);
-                System.out.println("i:" + size + " " + simpleDateFormat.format(new Date(i)));
+                if (DEBUG)
+                    Log.d(TAG, "i:" + size + " " + simpleDateFormat.format(new Date(i)));
                 size++;
                 i -= 10 * 60 * 1000L;
             }

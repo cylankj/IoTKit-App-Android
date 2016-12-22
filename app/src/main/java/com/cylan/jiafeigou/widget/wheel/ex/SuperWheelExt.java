@@ -352,6 +352,7 @@ public class SuperWheelExt extends View {
                         if (timeCurrent > iDataProvider.getFlattenMaxTime() || timeCurrent < iDataProvider.getFlattenMinTime()) {
                             float deltaDx = (timeTarget - timeCurrent) / 1000L * pixelsInSecond;
                             touchHandler.startSmoothScroll(getScrollX(), (int) deltaDx);
+                            return;
                         }
                         if (DEBUG)
                             Log.d(TAG, "need to reset; " + simpleDateFormat.format(new Date(timeCurrent)));

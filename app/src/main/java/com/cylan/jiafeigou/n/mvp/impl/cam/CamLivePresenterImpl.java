@@ -27,7 +27,6 @@ import com.cylan.jiafeigou.rx.RxHelper;
 import com.cylan.jiafeigou.rx.RxUiEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.MiscUtils;
-import com.cylan.jiafeigou.widget.wheel.DataProviderImpl;
 import com.cylan.jiafeigou.widget.wheel.ex.DataExt;
 import com.cylan.jiafeigou.widget.wheel.ex.IData;
 import com.cylan.utils.BitmapUtil;
@@ -61,6 +60,7 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
     private int playType = CamLiveContract.TYPE_LIVE;
     private boolean speakerFlag, micFlag;
     private int[] videoResolution = {0, 0};
+    private int playState = CamLiveContract.PLAY_STATE_IDLE;
     private ArrayList<JFGVideo> simpleCache = new ArrayList<>();
     /**
      * 帧率记录
@@ -136,6 +136,7 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                         e.printStackTrace();
                     }
                     getView().onLiveStarted(playType);
+                    playState = CamLiveContract.PLAY_STATE_PLAYING;
                     AppLogger.i("ResolutionNotifySub: " + new Gson().toJson(resolution));
                 }, (Throwable throwable) -> {
                     AppLogger.e("resolution err: " + throwable.getLocalizedMessage());
@@ -169,7 +170,7 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
 
     @Override
     public int getPlayState() {
-        return 0;
+        return playState;
     }
 
     @Override
@@ -196,8 +197,15 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
     }
 
     @Override
+    public boolean isShareDevice() {
+        return beanCamInfo != null && beanCamInfo.deviceBase != null && !TextUtils.isEmpty(beanCamInfo.deviceBase.shareAccount);
+    }
+
+    @Override
     public void startPlayVideo(int type) {
         getView().onLivePrepare(type);
+        playState = CamLiveContract.PLAY_STATE_PREPARE;
+        playType = CamLiveContract.TYPE_LIVE;
         Observable.just(getCamInfo().deviceBase.uuid)
                 .subscribeOn(Schedulers.newThread())
                 .filter((String s) -> {
@@ -209,6 +217,7 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                                 .observeOn(AndroidSchedulers.mainThread())
                                 .subscribe((Object o) -> {
                                     getView().onLiveStop(playType, JFGRules.PlayErr.ERR_NERWORK);
+                                    playState = CamLiveContract.PLAY_STATE_IDLE;
                                 });
                         return false;
                     }
@@ -225,7 +234,28 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
     }
 
     @Override
+    public void startPlayHistory(long time) {
+        Observable.just(time)
+                .subscribeOn(Schedulers.newThread())
+                .subscribe((Long aLong) -> {
+                    try {
+                        //先停止播放
+                        if (playState != CamLiveContract.PLAY_STATE_IDLE && playType == CamLiveContract.TYPE_LIVE)
+                            JfgCmdInsurance.getCmd().stopPlay(getCamInfo().deviceBase.uuid);
+                        playType = CamLiveContract.TYPE_HISTORY;
+                        playState = CamLiveContract.PLAY_STATE_PREPARE;
+                        JfgCmdInsurance.getCmd().playHistoryVideo(getCamInfo().deviceBase.uuid, time);
+                    } catch (JfgException e) {
+                        AppLogger.e("err:" + e.getLocalizedMessage());
+                    }
+                }, (Throwable throwable) -> {
+                    AppLogger.e("err:" + throwable.getLocalizedMessage());
+                });
+    }
+
+    @Override
     public void stopPlayVideo(int type) {
+        playState = CamLiveContract.PLAY_STATE_IDLE;
         Observable.just(getCamInfo().deviceBase.uuid)
                 .subscribeOn(Schedulers.newThread())
                 .filter((String s) -> {
@@ -236,6 +266,7 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                 .subscribe((String s) -> {
                     try {
                         JfgCmdInsurance.getCmd().stopPlay(s);
+                        playType = CamLiveContract.TYPE_NONE;
                     } catch (JfgException e) {
                         e.printStackTrace();
                     }
@@ -352,6 +383,11 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
     }
 
     @Override
+    public void saveAlarmFlag(boolean flag) {
+        Log.d("saveAlarmFlag", "saveAlarmFlag: " + flag);
+    }
+
+    @Override
     public void start() {
         unSubscribe(compositeSubscription);
         compositeSubscription = new CompositeSubscription();
@@ -361,6 +397,7 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
         compositeSubscription.add(robotDataSync());
         compositeSubscription.add(fetchCamInfo());
         compositeSubscription.add(historyDataListSub());
+        getView().onBeanInfoUpdate(getCamInfo());
     }
 
     /**

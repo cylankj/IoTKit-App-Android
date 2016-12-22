@@ -9,6 +9,7 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -30,6 +31,7 @@ import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamLiveContract;
 import com.cylan.jiafeigou.n.mvp.impl.cam.CamLivePresenterImpl;
+import com.cylan.jiafeigou.n.mvp.model.BeanCamInfo;
 import com.cylan.jiafeigou.n.view.misc.LandLiveBarAnimDelegate;
 import com.cylan.jiafeigou.n.view.misc.LiveBottomBarAnimDelegate;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -40,6 +42,7 @@ import com.cylan.jiafeigou.widget.live.LivePlayControlView;
 import com.cylan.jiafeigou.widget.video.VideoViewFactory;
 import com.cylan.jiafeigou.widget.wheel.ex.IData;
 import com.cylan.utils.DensityUtils;
+import com.cylan.utils.NetUtils;
 import com.google.gson.Gson;
 
 import java.lang.ref.WeakReference;
@@ -63,26 +66,24 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
     FrameLayout fLayoutLiveViewContainer;
     @BindView(R.id.vs_progress)
     ViewStub vs_control;//中间loading那个view
-    @BindView(R.id.fLayout_cam_live_protection_flip)
-    FrameLayout fLayoutCamLiveProtectionFlip;
-    @BindView(R.id.tv_cam_live_protection)
-    TextView tvCamLiveProtection;
-    @BindView(R.id.tv_cam_live)
-    TextView tvCamLive;
     @BindView(R.id.imgV_cam_switch_speaker)
     ImageView imgVCamSwitchSpeaker;
     @BindView(R.id.imgV_cam_trigger_mic)
     ImageView imgVCamTriggerMic;
     @BindView(R.id.imgV_cam_trigger_capture)
     ImageView imgVCamTriggerCapture;
-//    @BindView(R.id.imgV_cam_zoom_to_full_screen)
-//    ImageView imgVCamZoomToFullScreen;
-    @BindView(R.id.tv_cam_show_timeline)
-    TextView tvCamShowTimeline;
+    //    @BindView(R.id.tv_cam_show_timeline)
+//    TextView tvCamShowTimeline;
     @BindView(R.id.fLayout_cam_live_view)
     FrameLayout fLayoutCamLiveView;
+    //
+    // 安全防护   直播|5/16 12:30   全屏
+    //
     @BindView(R.id.fLayout_live_port_bottom_control_bar)
     FrameLayout fLayoutLiveBottomHandleBar;
+    //
+    // 扬声器 mic 截图
+    //
     @BindView(R.id.fLayout_cam_live_menu)
     FrameLayout fLayoutCamLiveMenu;
 
@@ -145,8 +146,8 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         ViewUtils.updateViewHeight(fLayoutCamLiveView, 0.75f);
-//        animateBottomBar(true);
         initBottomBtn(false);
+        swCamPortWheel.setPresenter(basePresenter);
     }
 
     @Override
@@ -193,12 +194,6 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
         });
     }
 
-//    private void setUpBottomBtn(boolean local, boolean speakerFlag, boolean micFlag) {
-//        if (basePresenter != null)
-//            basePresenter.switchSpeakerMic(local, speakerFlag, micFlag);
-//        imgVCamSwitchSpeaker.setImageResource(speakerFlag ? R.drawable.btn_video_retry : R.drawable.icon_speaker_selector);
-//        imgVCamTriggerMic.setImageResource(speakerFlag ? R.drawable.btn_video_retry : R.drawable.icon_record);
-//    }
 
     /**
      * 根据 待机模式 ,分享用户模式设置一些view的状态
@@ -243,6 +238,8 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
         imgVCamTriggerMic.performClick();
         //展示
         checkBottomAnimation();
+        portLiveBottomBarDelegateRef.get().showLiveTimeRect(true);
+        swCamPortWheel.setLiveType(basePresenter.getPlayType());
     }
 
     private void showLoading(int state, String content) {
@@ -335,7 +332,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
                         ViewGroup.LayoutParams.WRAP_CONTENT,
                         Gravity.END);
                 textView.setGravity(Gravity.CENTER);
-                lp.topMargin = 10;
+                lp.setMargins(10, 10, 10, 10);
                 lp.setMarginEnd(10);
                 fLayoutLiveViewContainer.addView(textView, lp);
                 tvFlowRef = new WeakReference<>(textView);
@@ -447,7 +444,6 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
             R.id.imgV_cam_trigger_mic,
             R.id.imgV_cam_trigger_capture,
 //            R.id.imgV_cam_zoom_to_full_screen,
-            R.id.tv_cam_show_timeline,
             R.id.fLayout_cam_live_view})
     public void onClick(View view) {
         switch (view.getId()) {
@@ -466,11 +462,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
             case R.id.imgV_cam_trigger_capture:
                 if (basePresenter != null) basePresenter.takeSnapShot();
                 break;
-            case R.id.tv_cam_show_timeline:
-
-                break;
             case R.id.fLayout_cam_live_view:
-//                animateBottomBar(false);
                 if (videoView != null)
                     videoView.performTouch();
                 break;
@@ -482,14 +474,35 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
      */
     private void checkBottomAnimation() {
         if (portLiveBottomBarDelegateRef == null || portLiveBottomBarDelegateRef.get() == null)
-            portLiveBottomBarDelegateRef = new WeakReference<>(new LiveBottomBarAnimDelegate(fLayoutLiveBottomHandleBar));
-    }
+            portLiveBottomBarDelegateRef = new WeakReference<>(new LiveBottomBarAnimDelegate(getActivity(),
+                    fLayoutLiveBottomHandleBar, basePresenter));
+        portLiveBottomBarDelegateRef.get().setLiveTimeRectListener(new LiveBottomBarAnimDelegate.LiveTimeRectListener() {
+            @Override
+            public void click() {
+                if (basePresenter.getPlayState() == CamLiveContract.PLAY_STATE_IDLE) {
+                    AppLogger.d("not playing");
+                    return;//还没开始播放
+                }
+                if (NetUtils.getJfgNetType(getContext()) == 0) {
+                    AppLogger.d("no net work");
+                    return;
+                }
+                if (basePresenter.getCamInfo() != null && basePresenter.getCamInfo().net != null &&
+                        basePresenter.getCamInfo().net.net == 0) {
+                    AppLogger.d("device is offline");
+                    return;
+                }
+                if (basePresenter.getCamInfo() != null && !basePresenter.getCamInfo().sdcardState) {
+                    //没有sd卡
+                    ToastUtil.showToast(getString(R.string.Tap1_Camera_NoSDCardTips));
+                    AppLogger.d("no sdcard");
+                    return;
+                }
 
-//    private void animateBottomBar(boolean auto) {
-//        checkBottomAnimation();
-//        liveBottomBarAnimDelegateWeakReference.get()
-//                .startAnimation(auto);
-//    }
+//                swCamPortWheel.setVisibility(swCamPortWheel.isShown() ? View.INVISIBLE : View.VISIBLE);
+            }
+        });
+    }
 
     @Override
     public void onClickLive() {
@@ -549,6 +562,8 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
                 showLoading(ILiveControl.STATE_STOP, null);
                 break;
         }
+        checkBottomAnimation();
+        portLiveBottomBarDelegateRef.get().showLiveTimeRect(false);
 //        animateBottomBar(true);
     }
 
@@ -562,9 +577,33 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
     }
 
     @Override
+    public void onBeanInfoUpdate(final BeanCamInfo info) {
+        if (getView() != null && isResumed()) {
+            getView().post(() -> {
+                checkBottomAnimation();
+                portLiveBottomBarDelegateRef.get().setProtectionState(info.cameraAlarmFlag);
+            });
+            if (info.deviceBase != null && !TextUtils.isEmpty(info.deviceBase.shareAccount)) {
+                //分享账号,不显示
+                fLayoutLiveBottomHandleBar.findViewById(R.id.tv_live_time).setVisibility(View.GONE);
+            }
+        }
+    }
+
+    @Override
+    public void onHistoryLiveStop(int state) {
+
+    }
+
+    @Override
     public void onRtcp(JFGMsgVideoRtcp rtcp) {
         String content = String.format(Locale.getDefault(), "%sKb/s", rtcp.bitRate);
         showFloatFlowView(true, content);
+        checkBottomAnimation();
+        if (!basePresenter.isShareDevice())
+            portLiveBottomBarDelegateRef.get().setLiveTime(basePresenter.getPlayType(),
+                    basePresenter.getPlayType() == CamLiveContract.TYPE_LIVE ? System.currentTimeMillis()
+                            : rtcp.timestamp * 1000L);
         Log.d("onRtcp", "onRtcp: " + new Gson().toJson(rtcp));
     }
 

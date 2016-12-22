@@ -11,6 +11,7 @@ import java.util.Locale;
 public class TimeUtils {
 
     public static SimpleDateFormat simpleDateFormat_1 = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+    private static final SimpleDateFormat simpleTestDataFormat = new SimpleDateFormat("yyyyMMdd HH:mm:ss", Locale.getDefault());
 
     public static String getDateStyle_0(final long time) {
         return simpleDateFormat_1.format(new Date(time));
@@ -53,5 +54,9 @@ public class TimeUtils {
     public static String getDayString(long time) {
         return new SimpleDateFormat("yyyy.MM.dd", Locale.getDefault())
                 .format(time);
+    }
+
+    public static String getTestTime(long time) {
+        return simpleTestDataFormat.format(new Date(time));
     }
 }

@@ -9,12 +9,18 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.n.mvp.contract.cam.CamLiveContract;
+import com.cylan.jiafeigou.utils.TimeUtils;
 import com.cylan.jiafeigou.widget.wheel.ex.IData;
 import com.cylan.jiafeigou.widget.wheel.ex.SuperWheelExt;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+
+import static com.cylan.jiafeigou.widget.wheel.ex.SuperWheelExt.STATE_ADSORB;
+import static com.cylan.jiafeigou.widget.wheel.ex.SuperWheelExt.STATE_DRAGGING;
+import static com.cylan.jiafeigou.widget.wheel.ex.SuperWheelExt.STATE_FINISH;
 
 /**
  * Created by cylan-hunt on 16-7-27.
@@ -26,6 +32,7 @@ public class CamLivePortWheel extends FrameLayout implements SuperWheelExt.Wheel
     @BindView(R.id.tv_cam_live_port_live)
     TextView tvCamLivePortLive;
     private IData iDataProvider;
+    private CamLiveContract.Presenter presenter;
 
     public CamLivePortWheel(Context context) {
         this(context, null);
@@ -52,6 +59,25 @@ public class CamLivePortWheel extends FrameLayout implements SuperWheelExt.Wheel
         Log.d("performance", "CamLivePortWheel performance: " + (System.currentTimeMillis() - time));
     }
 
+    /**
+     * 改变播放类型文字:{直播,返回}
+     *
+     * @param liveType
+     */
+    public void setLiveType(int liveType) {
+        tvCamLivePortLive.setText(getResources().getString(liveType == CamLiveContract.TYPE_LIVE ? R.string.Tap1_Camera_VideoLive : R.string.BACK));
+    }
+
+    public void setPresenter(CamLiveContract.Presenter presenter) {
+        this.presenter = presenter;
+    }
+
+    /**
+     * @param time :定位到某个时间
+     */
+    public void setNav2Time(long time) {
+
+    }
 
     @OnClick(R.id.tv_cam_live_port_live)
     public void onClick() {
@@ -60,6 +86,18 @@ public class CamLivePortWheel extends FrameLayout implements SuperWheelExt.Wheel
 
     @Override
     public void onTimeUpdate(long time, int state) {
-
+        switch (state) {
+            case STATE_DRAGGING:
+                Log.d("onTimeUpdate", "STATE_DRAGGING :" + TimeUtils.getTestTime(time));
+                break;
+            case STATE_ADSORB:
+                Log.d("onTimeUpdate", "STATE_ADSORB :" + TimeUtils.getTestTime(time));
+                break;
+            case STATE_FINISH:
+                Log.d("onTimeUpdate", "STATE_FINISH :" + TimeUtils.getTestTime(time));
+                if (presenter != null)
+                    presenter.startPlayHistory(time);
+                break;
+        }
     }
 }
