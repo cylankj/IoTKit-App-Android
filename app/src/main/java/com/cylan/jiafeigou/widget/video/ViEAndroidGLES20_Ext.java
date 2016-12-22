@@ -67,4 +67,9 @@ public class ViEAndroidGLES20_Ext extends ViEAndroidGLES20 implements VideoViewF
     public void takeSnapshot() {
 
     }
+
+    @Override
+    public void performTouch() {
+
+    }
 }
