@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+
+    >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:paddingLeft="24dp"
+        android:paddingTop="24dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="间隔时间"
+            android:textColor="#000000"
+            android:textSize="18sp"/>
+
+        <RadioGroup
+            android:id="@+id/dialog_record_rg_option"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp">
+
+            <RadioButton
+                android:id="@+id/dialog_record_rb_20s"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="24dp"
+                android:button="@null"
+                android:drawableLeft="@drawable/custom_radio_button_drawable"
+                android:drawablePadding="10dp"
+                android:text="20s"/>
+
+            <RadioButton
+                android:id="@+id/dialog_record_rb_60s"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:button="@null"
+                android:drawableLeft="@drawable/custom_radio_button_drawable"
+                android:drawablePadding="10dp"
+                android:text="60s"/>
+        </RadioGroup>
+
+        <Button
+            android:id="@+id/dialog_record_time_interval_cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:background="@null"
+            android:text="取消"
+            android:textColor="#4B9FD5"
+            android:textSize="14sp"/>
+
+    </LinearLayout>
+</android.support.v7.widget.CardView>

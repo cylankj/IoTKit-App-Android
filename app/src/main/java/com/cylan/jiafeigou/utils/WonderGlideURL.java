@@ -15,7 +15,7 @@ import java.net.URL;
  */
 
 public class WonderGlideURL extends GlideUrl {
-    private MediaBean mBean;
+    protected MediaBean mBean;
 
     public WonderGlideURL(MediaBean bean) {
         super("http://www.cylan.com.cn", Headers.DEFAULT);

@@ -104,20 +104,20 @@
     </declare-styleable>
 
     <declare-styleable name="SimpleProgressStyle">
-        <attr name="progress_stroke_width" format="dimension" />
-        <attr name="progress_stroke_color" format="reference|color" />
-        <attr name="progress_point_radius" format="dimension" />
-        <attr name="progress_swipe_degree" format="integer" />
-        <attr name="progress_radius" format="dimension" />
+        <attr name="progress_stroke_width" format="dimension"/>
+        <attr name="progress_stroke_color" format="reference|color"/>
+        <attr name="progress_point_radius" format="dimension"/>
+        <attr name="progress_swipe_degree" format="integer"/>
+        <attr name="progress_radius" format="dimension"/>
     </declare-styleable>
     <declare-styleable name="SettingItemViewStyle">
-        <attr name="sv_title" format="string|reference" />
-        <attr name="sv_sub_title" format="string|reference" />
-        <attr name="sv_sub_title_max_len" format="integer" />
-        <attr name="sv_image_src" format="reference" />
-        <attr name="sv_visibility" format="boolean" />
-        <attr name="sv_v_divider" format="boolean" />
-        <attr name="sv_v_image_show" format="boolean" />
+        <attr name="sv_title" format="string|reference"/>
+        <attr name="sv_sub_title" format="string|reference"/>
+        <attr name="sv_sub_title_max_len" format="integer"/>
+        <attr name="sv_image_src" format="reference"/>
+        <attr name="sv_visibility" format="boolean"/>
+        <attr name="sv_v_divider" format="boolean"/>
+        <attr name="sv_v_image_show" format="boolean"/>
     </declare-styleable>
 
     <declare-styleable name="LLViewStyle">
@@ -219,5 +219,49 @@
     </declare-styleable>
     <declare-styleable name="ShadowFrameLayout">
         <attr name="fixSize" format="boolean"/>
+    </declare-styleable>
+    <declare-styleable name="RoundedTextureView">
+        <attr name="lt_radius" format="dimension|float|reference"/>
+        <attr name="rt_radius" format="dimension|float|reference"/>
+        <attr name="lb_radius" format="dimension|float|reference"/>
+        <attr name="rb_radius" format="dimension|float|reference"/>
+    </declare-styleable>
+
+    <declare-styleable name="WheelPicker">
+        <attr name="wheel_data" format="reference"/>
+        <attr name="wheel_selected_item_position" format="integer"/>
+        <attr name="wheel_item_text_size" format="dimension"/>
+        <attr name="wheel_item_text_color" format="color"/>
+        <attr name="wheel_selected_item_text_color" format="color"/>
+        <attr name="wheel_same_width" format="boolean"/>
+        <attr name="wheel_maximum_width_text" format="string"/>
+        <attr name="wheel_maximum_width_text_position" format="integer"/>
+        <attr name="wheel_visible_item_count" format="integer"/>
+        <attr name="wheel_item_space" format="dimension"/>
+        <attr name="wheel_cyclic" format="boolean"/>
+        <attr name="wheel_indicator" format="boolean"/>
+        <attr name="wheel_indicator_color" format="color"/>
+        <attr name="wheel_indicator_size" format="dimension"/>
+        <attr name="wheel_curtain" format="boolean"/>
+        <attr name="wheel_curtain_color" format="color"/>
+        <attr name="wheel_atmospheric" format="boolean"/>
+        <attr name="wheel_curved" format="boolean"/>
+        <attr name="wheel_item_align" format="enum">
+            <enum name="center" value="0"/>
+            <enum name="left" value="1"/>
+            <enum name="right" value="2"/>
+        </attr>
+        <attr name="wheel_selected_item_text_size" format="dimension"/>
+    </declare-styleable>
+
+    <declare-styleable name="TimerView">
+        <attr name="record_radius" format="dimension"/>
+        <attr name="circle_width" format="dimension"/>
+        <attr name="circle_radius" format="dimension"/>
+        <attr name="restore_radius" format="dimension"/>
+        <attr name="color_background" format="color"/>
+        <attr name="color_normal" format="color"/>
+        <attr name="alpha_background" format="float"/>
+
     </declare-styleable>
 </resources>

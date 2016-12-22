@@ -227,6 +227,16 @@
             android:theme="@style/MediaActivityTransition"
             android:windowSoftInputMode="adjustPan|stateHidden"/>
 
+        <activity
+            android:name=".n.view.cam.CamDelayRecordActivity"
+            android:theme="@style/CamDelayRecordStyle">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
+
         <service
             android:name=".n.engine.DownloadService"
             android:enabled="true"

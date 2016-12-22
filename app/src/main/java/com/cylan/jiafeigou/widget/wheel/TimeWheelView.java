@@ -473,6 +473,7 @@ public class TimeWheelView extends View implements ValueAnimator.AnimatorUpdateL
     }
 
     public void showTimeLinePopWindow() {
+        if (true) return;
         if (!mTimeLinePopWindow.isShowing()) {
             mTimeLineChanged = true;
             mTimeLinePopWindow.showAsDropDown(this, mMiddleX - mTimeLinePopWindow.getWidth() / 2, -mTimeLinePopWindow.getHeight() - mViewHeight - mPopWindowMargin);
@@ -518,6 +519,7 @@ public class TimeWheelView extends View implements ValueAnimator.AnimatorUpdateL
     }
 
     private void hideTimeLinePopWindow(long delay) {
+        if (true) return;
         if (mHasHideAction) {
             removeCallbacks(mHidePopWindowCallback);
         }

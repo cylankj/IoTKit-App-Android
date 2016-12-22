@@ -153,8 +153,13 @@ public class HomeWonderfulPresenterImpl extends AbstractPresenter<HomeWonderfulC
     public void startRefresh() {
         Observable.create(subscriber -> {
             load(true);
+            subscriber.onNext(null);
             subscriber.onCompleted();
-        }).subscribeOn(Schedulers.io()).subscribe();
+        }).delay(5, TimeUnit.SECONDS).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(delay -> {
+                    if (getView() != null) getView().onMediaListRsp(null);
+                });
     }
 
     private void load(boolean refresh) {
@@ -162,10 +167,10 @@ public class HomeWonderfulPresenterImpl extends AbstractPresenter<HomeWonderfulC
         boolean asc = false;
         if (mWeakMediaLists != null && mWeakMediaLists.get() != null && mWeakMediaLists.get().size() > 0) {
             if (refresh) {
-                version = mWeakMediaLists.get().get(0).version;
+                version = mWeakMediaLists.get().get(0).version * 1000L;
                 asc = true;
             } else {
-                version = mWeakMediaLists.get().get(mWeakMediaLists.get().size() - 1).version;
+                version = mWeakMediaLists.get().get(mWeakMediaLists.get().size() - 1).version * 1000L;
                 asc = false;
             }
         }
@@ -368,6 +373,7 @@ public class HomeWonderfulPresenterImpl extends AbstractPresenter<HomeWonderfulC
                             bean = DpUtils.unpackData(msg.packValue, MediaBean.class);
                             if (bean != null && !TextUtils.isEmpty(bean.cid)) {
                                 bean.version = msg.version;
+//                                bean.msgType = 1;
                                 results.add(bean);
                             }
                         } catch (IOException e) {

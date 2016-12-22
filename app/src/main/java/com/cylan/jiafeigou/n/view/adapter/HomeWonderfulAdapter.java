@@ -13,6 +13,7 @@ import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.mvp.model.MediaBean;
 import com.cylan.jiafeigou.utils.TimeUtils;
 import com.cylan.jiafeigou.utils.WonderGlideURL;
+import com.cylan.jiafeigou.utils.WonderGlideVideoThumbURL;
 import com.cylan.superadapter.IMulItemViewType;
 import com.cylan.superadapter.SuperAdapter;
 import com.cylan.superadapter.internal.SuperViewHolder;
@@ -77,11 +78,17 @@ public class HomeWonderfulAdapter extends SuperAdapter<MediaBean> {
             holder.setText(R.id.tv_wonderful_item_device_name, bean.place);
             holder.setVisibility(R.id.tv_wonderful_item_device_name, View.VISIBLE);
         }
-
-        Glide.with(getContext()).load(new WonderGlideURL(bean))
-                .placeholder(R.drawable.wonderful_pic_place_holder)
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .into((ImageView) holder.getView(R.id.iv_wonderful_item_content));
+        if (bean.msgType == MediaBean.TYPE_PIC) {
+            Glide.with(getContext()).load(new WonderGlideURL(bean))
+                    .placeholder(R.drawable.wonderful_pic_place_holder)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .into((ImageView) holder.getView(R.id.iv_wonderful_item_content));
+        } else if (bean.msgType == MediaBean.TYPE_VIDEO) {
+            Glide.with(getContext()).load(new WonderGlideVideoThumbURL(bean))
+                    .placeholder(R.drawable.wonderful_pic_place_holder)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .into((ImageView) holder.getView(R.id.iv_wonderful_item_content));
+        }
     }
 
     @Override
