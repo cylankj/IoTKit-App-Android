@@ -33,6 +33,8 @@ public class RecordControllerView extends View {
     private float mDegree;
     private long mMaxTime;
     private long mRecordTime;
+    private boolean isDemo;
+    private float mDemoDegree;
     private static final int UPDATE_TIME_INTERVAL = 1000 * 20;//每20秒更新一次,因为不显示秒,所以可以慢一点更新
 
     public RecordControllerView(Context context) {
@@ -69,7 +71,7 @@ public class RecordControllerView extends View {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        if (mIsRecording) canvas.drawArc(mArcOval, -90, mDegree, false, mNormalPaint);
+        canvas.drawArc(mArcOval, -90, isDemo ? mDemoDegree : mDegree, false, mNormalPaint);
     }
 
     public void setMaxTime(long time) {
@@ -78,12 +80,12 @@ public class RecordControllerView extends View {
 
     public void setRecordTime(long time) {
         mRecordTime = time;
-        mDegree = mRecordTime / mMaxTime * 360F;
+        mDegree = 360 * mRecordTime / mMaxTime;
         invalidate();
     }
 
     public void startRecord() {
-        if (mMaxTime > mRecordTime) {
+        if (mMaxTime > mRecordTime && !mIsRecording) {
             mIsRecording = true;
             setBackgroundResource(R.drawable.delay_icon_pause);
             demo();
@@ -91,34 +93,22 @@ public class RecordControllerView extends View {
     }
 
     public void restoreRecord() {
-        mIsRecording = false;
-        setBackgroundResource(R.drawable.delay_icon_play);
+        if (mIsRecording) {
+            mIsRecording = false;
+            setBackgroundResource(R.drawable.delay_icon_play);
+        }
     }
 
     public void demo() {
-        mDegree += (360 / 30);
-        invalidate();
-        if (mDegree < 360) postDelayed(this::demo, (1000 / 30));
-    }
-
-
-    private void updateRecordTime(int inc) {
-
-        if (inc == -1 && mDegree < 360) {
-            mDegree += (360 / 30);
-            invalidate();
-
-        } else if (inc == -1 && mDegree > 360) {
-            mDegree = 0;
-            updateRecordTime(UPDATE_TIME_INTERVAL);
+        mDemoDegree += (360 / 30);
+        if (mDemoDegree < 360) {
+            isDemo = true;
+            postDelayed(this::demo, (1000 / 30));
         } else {
-            postDelayed(() -> {
-                mRecordTime += inc;
-                mDegree = ((float) mRecordTime) / mMaxTime * 360;
-                invalidate();
-                if (mIsRecording) updateRecordTime(UPDATE_TIME_INTERVAL);
-            }, UPDATE_TIME_INTERVAL);
+            isDemo = false;
+            mDemoDegree = 0;
         }
+        invalidate();
     }
 
 

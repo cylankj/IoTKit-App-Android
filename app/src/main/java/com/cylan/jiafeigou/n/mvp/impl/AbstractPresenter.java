@@ -2,8 +2,6 @@ package com.cylan.jiafeigou.n.mvp.impl;
 
 import com.cylan.jiafeigou.BuildConfig;
 
-import java.lang.ref.SoftReference;
-
 import rx.Subscription;
 
 /**
@@ -13,14 +11,14 @@ import rx.Subscription;
 public abstract class AbstractPresenter<T> {
 
     protected final String TAG = this.getClass().getSimpleName();
-    protected SoftReference<T> weakReference;
+    protected T mView;//弱引用会被强制释放,我们的view需要我们手动释放,不适合弱引用
 
-    public AbstractPresenter(T t) {
-        weakReference = new SoftReference<>(t);
+    public AbstractPresenter(T view) {
+        mView = view;
     }
 
     public T getView() {
-        return weakReference == null ? null : weakReference.get();
+        return mView;
     }
 
     protected void unSubscribe(Subscription... subscriptions) {

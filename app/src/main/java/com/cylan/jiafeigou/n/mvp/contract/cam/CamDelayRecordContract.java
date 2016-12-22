@@ -1,6 +1,5 @@
 package com.cylan.jiafeigou.n.mvp.contract.cam;
 
-import android.os.SystemClock;
 import android.text.TextUtils;
 
 import com.cylan.entity.jniCall.JFGMsgVideoResolution;
@@ -56,7 +55,7 @@ public interface CamDelayRecordContract {
 
         @Override
         public void stop() {
-
+            unSubscribe(compositeSubscription);
         }
 
         private Subscription resolutionNotifySub() {
@@ -72,6 +71,7 @@ public interface CamDelayRecordContract {
                         }
                         return filter;
                     })
+                    .throttleFirst(1, TimeUnit.SECONDS)//滤波器
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(resolution -> {
 //                            isRtcpSignal = true;
@@ -102,14 +102,15 @@ public interface CamDelayRecordContract {
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(time -> {
-                        long progress = SystemClock.currentThreadTimeMillis() - mRecordStartTime;
-                        if (duration < mRecordDuration) {
+                        long progress = System.currentTimeMillis() - mRecordStartTime;
+                        if (progress < mRecordDuration) {
                             getView().refreshRecordTime(progress);
                         } else {
                             getView().onRecordFinished();
                         }
                     });
-            mockRecordFinished();
+            compositeSubscription.add(mSubscribe);
+//            mockRecordFinished();
         }
 
         public void mockRecordFinished() {
