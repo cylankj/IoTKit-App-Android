@@ -19,7 +19,7 @@ public abstract class ViewHolderRecyclingPagerAdapter<VH extends ViewHolderRecyc
 
     public ViewHolderRecyclingPagerAdapter(Context context, List<T> list) {
         this.mContext = context;
-        this.mList= list;
+        this.mList = list;
         this.mInflater = LayoutInflater.from(mContext);
     }
 

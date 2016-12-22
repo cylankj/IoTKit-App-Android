@@ -19,6 +19,7 @@ public interface BellDetailContract {
 
     interface Presenter extends BasePresenter {
         BeanBellInfo getBellInfo();
+
         void saveBellInfo(BeanBellInfo info, int id);
     }
 }

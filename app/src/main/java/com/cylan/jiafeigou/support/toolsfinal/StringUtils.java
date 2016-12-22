@@ -14,7 +14,7 @@ public class StringUtils {
 
     /**
      * is null or its length is 0 or it is made by space
-     *
+     * <p>
      * <pre>
      * isBlank(null) = true;
      * isBlank(&quot;&quot;) = true;
@@ -34,7 +34,7 @@ public class StringUtils {
 
     /**
      * is null or its length is 0
-     *
+     * <p>
      * <pre>
      * isEmpty(null) = true;
      * isEmpty(&quot;&quot;) = true;
@@ -50,7 +50,7 @@ public class StringUtils {
 
     /**
      * get length of CharSequence
-     *
+     * <p>
      * <pre>
      * length(null) = 0;
      * length(\"\") = 0;
@@ -66,7 +66,7 @@ public class StringUtils {
 
     /**
      * null Object to empty string
-     *
+     * <p>
      * <pre>
      * nullStrToEmpty(null) = &quot;&quot;;
      * nullStrToEmpty(&quot;&quot;) = &quot;&quot;;
@@ -77,12 +77,12 @@ public class StringUtils {
      * @return
      */
     public static String nullStrToEmpty(Object str) {
-        return (str == null ? "" : (str instanceof String ? (String)str : str.toString()));
+        return (str == null ? "" : (str instanceof String ? (String) str : str.toString()));
     }
 
     /**
      * capitalize first letter
-     *
+     * <p>
      * <pre>
      * capitalizeFirstLetter(null)     =   null;
      * capitalizeFirstLetter("")       =   "";
@@ -107,7 +107,7 @@ public class StringUtils {
 
     /**
      * encoded in utf-8
-     *
+     * <p>
      * <pre>
      * utf8Encode(null)        =   null
      * utf8Encode("")          =   "";
@@ -150,7 +150,7 @@ public class StringUtils {
 
     /**
      * get innerHtml from href
-     *
+     * <p>
      * <pre>
      * getHrefInnerHtml(null)                                  = ""
      * getHrefInnerHtml("")                                    = ""
@@ -168,10 +168,10 @@ public class StringUtils {
      *
      * @param href
      * @return <ul>
-     *         <li>if href is null, return ""</li>
-     *         <li>if not match regx, return source</li>
-     *         <li>return the last string that match regx</li>
-     *         </ul>
+     * <li>if href is null, return ""</li>
+     * <li>if not match regx, return source</li>
+     * <li>return the last string that match regx</li>
+     * </ul>
      */
     public static String getHrefInnerHtml(String href) {
         if (isEmpty(href)) {
@@ -189,7 +189,7 @@ public class StringUtils {
 
     /**
      * process special char in html
-     *
+     * <p>
      * <pre>
      * htmlEscapeCharsToString(null) = null;
      * htmlEscapeCharsToString("") = "";
@@ -211,7 +211,7 @@ public class StringUtils {
 
     /**
      * transform half width char to full width char
-     *
+     * <p>
      * <pre>
      * fullWidthToHalfWidth(null) = null;
      * fullWidthToHalfWidth("") = "";
@@ -234,7 +234,7 @@ public class StringUtils {
                 // } else if (source[i] == 12290) {
                 // source[i] = '.';
             } else if (source[i] >= 65281 && source[i] <= 65374) {
-                source[i] = (char)(source[i] - 65248);
+                source[i] = (char) (source[i] - 65248);
             } else {
                 source[i] = source[i];
             }
@@ -244,7 +244,7 @@ public class StringUtils {
 
     /**
      * transform full width char to half width char
-     *
+     * <p>
      * <pre>
      * halfWidthToFullWidth(null) = null;
      * halfWidthToFullWidth("") = "";
@@ -263,11 +263,11 @@ public class StringUtils {
         char[] source = s.toCharArray();
         for (int i = 0; i < source.length; i++) {
             if (source[i] == ' ') {
-                source[i] = (char)12288;
+                source[i] = (char) 12288;
                 // } else if (source[i] == '.') {
                 // source[i] = (char)12290;
             } else if (source[i] >= 33 && source[i] <= 126) {
-                source[i] = (char)(source[i] + 65248);
+                source[i] = (char) (source[i] + 65248);
             } else {
                 source[i] = source[i];
             }
@@ -277,16 +277,17 @@ public class StringUtils {
 
     /**
      * 数据库字符转义
+     *
      * @param keyWord
      * @return
      */
-    public static String sqliteEscape(String keyWord){
+    public static String sqliteEscape(String keyWord) {
         keyWord = keyWord.replace("/", "//");
         keyWord = keyWord.replace("'", "''");
         keyWord = keyWord.replace("[", "/[");
         keyWord = keyWord.replace("]", "/]");
         keyWord = keyWord.replace("%", "/%");
-        keyWord = keyWord.replace("&","/&");
+        keyWord = keyWord.replace("&", "/&");
         keyWord = keyWord.replace("_", "/_");
         keyWord = keyWord.replace("(", "/(");
         keyWord = keyWord.replace(")", "/)");

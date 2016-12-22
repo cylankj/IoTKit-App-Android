@@ -2,18 +2,17 @@ package com.cylan.jiafeigou.n.view.mine;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
@@ -55,6 +54,16 @@ public class MineDevicesShareManagerFragment extends Fragment implements MineDev
     private RelAndFriendBean tempBean;
     private ArrayList<RelAndFriendBean> hasShareFriendlist;
 
+    private OnUnShareChangeListener listener;
+
+    public interface OnUnShareChangeListener{
+        void unShareChange();
+    }
+
+    public void setOncancleChangeListener(OnUnShareChangeListener listener){
+        this.listener = listener;
+    }
+
     public static MineDevicesShareManagerFragment newInstance(Bundle bundle) {
         MineDevicesShareManagerFragment fragment = new MineDevicesShareManagerFragment();
         fragment.setArguments(bundle);
@@ -75,13 +84,12 @@ public class MineDevicesShareManagerFragment extends Fragment implements MineDev
     public void onResume() {
         super.onResume();
         if (presenter != null) {
-//            presenter.getHasShareList(devicebean.uuid);
             presenter.start();
         }
     }
 
     private void initPresenter() {
-        presenter = new MineDevicesShareManagerPresenterImp(this,hasShareFriendlist);
+        presenter = new MineDevicesShareManagerPresenterImp(this, hasShareFriendlist);
     }
 
     @Override
@@ -102,7 +110,7 @@ public class MineDevicesShareManagerFragment extends Fragment implements MineDev
         Bundle arguments = getArguments();
         devicebean = arguments.getParcelable("devicebean");
         hasShareFriendlist = arguments.getParcelableArrayList("friendlist");
-        setTopTitle("".equals(devicebean.alias)?devicebean.uuid:devicebean.alias);
+        setTopTitle(TextUtils.isEmpty(devicebean.alias)?devicebean.uuid:devicebean.alias);
     }
 
     @Override
@@ -119,12 +127,13 @@ public class MineDevicesShareManagerFragment extends Fragment implements MineDev
 
     /**
      * desc:初始化列表显示
+     *
      * @param list
      */
     @Override
     public void initHasShareFriendRecyView(ArrayList<RelAndFriendBean> list) {
         recyclerHadShareRelativesAndFriend.setLayoutManager(new LinearLayoutManager(getContext()));
-        hasShareAdapter = new MineHasShareAdapter(getView().getContext(),list,null);
+        hasShareAdapter = new MineHasShareAdapter(getView().getContext(), list, null);
         recyclerHadShareRelativesAndFriend.setAdapter(hasShareAdapter);
         initAdaListener();
     }
@@ -149,7 +158,7 @@ public class MineDevicesShareManagerFragment extends Fragment implements MineDev
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
-                presenter.cancleShare(devicebean.uuid,bean);
+                presenter.cancleShare(devicebean.uuid, bean);
             }
         });
         builder.setNegativeButton(getString(R.string.CANCEL), new DialogInterface.OnClickListener() {
@@ -162,7 +171,7 @@ public class MineDevicesShareManagerFragment extends Fragment implements MineDev
 
     @Override
     public void showCancleShareProgress() {
-        LoadingDialog.showLoading(getFragmentManager(),getString(R.string.LOADING));
+        LoadingDialog.showLoading(getFragmentManager(), getString(R.string.LOADING));
     }
 
     @Override
@@ -173,7 +182,7 @@ public class MineDevicesShareManagerFragment extends Fragment implements MineDev
     @Override
     public void onStop() {
         super.onStop();
-        if (presenter != null){
+        if (presenter != null) {
             presenter.stop();
         }
     }
@@ -181,7 +190,7 @@ public class MineDevicesShareManagerFragment extends Fragment implements MineDev
     @Override
     public void onCancleShare(RelAndFriendBean item) {
         tempBean = item;
-        if (getView() != null){
+        if (getView() != null) {
             showCancleShareDialog(item);
         }
     }
@@ -194,24 +203,41 @@ public class MineDevicesShareManagerFragment extends Fragment implements MineDev
 
     /**
      * 取消分享的结果
+     *
      * @param result
      */
     @Override
     public void showUnShareResult(String result) {
         ToastUtil.showToast(result);
+        if (result.equals(getString(R.string.Tap3_ShareDevice_DeleteSucces))){
+            if (listener != null)listener.unShareChange();
+        }
         if (hasShareAdapter.getItemCount() == 0){
             hideHasShareListTitle();
             showNoHasShareFriendNullView();
         }
     }
-    
+
     /**
      * 顶部标题
+     *
      * @param name
      */
     @Override
     public void setTopTitle(String name) {
         tvHomeMineShareDevicesName.setText(name);
+    }
+
+    /**
+     * 网络状态变化
+     * @param state
+     */
+    @Override
+    public void onNetStateChanged(int state) {
+        if (state == -1){
+            hideCancleShareProgress();
+            ToastUtil.showNegativeToast(getString(R.string.NO_NETWORK_1));
+        }
     }
 
 }

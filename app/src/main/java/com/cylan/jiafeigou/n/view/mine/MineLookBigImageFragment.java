@@ -11,7 +11,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -85,12 +84,12 @@ public class MineLookBigImageFragment extends Fragment implements MineLookBigIma
      */
     private void showSaveImageDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        builder.setPositiveButton("保存图片", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(getString(R.string.Tap3_SavePic), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
                 ToastUtil.showToast(getString(R.string.SAVED_PHOTOS));
-                if (presenter != null){
+                if (presenter != null) {
                     presenter.saveImage(bitmapSource);
                 }
             }
@@ -138,6 +137,7 @@ public class MineLookBigImageFragment extends Fragment implements MineLookBigIma
                     public void onLoadStarted(Drawable placeholder) {
                         super.onLoadStarted(placeholder);
                     }
+
                     @Override
                     public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
                         super.onResourceReady(resource, glideAnimation);
@@ -187,7 +187,7 @@ public class MineLookBigImageFragment extends Fragment implements MineLookBigIma
 
     @Override
     public void showLoadImageProgress() {
-        LoadingDialog.showLoading(getFragmentManager(),getString(R.string.LOADING));
+        LoadingDialog.showLoading(getFragmentManager(), getString(R.string.LOADING));
     }
 
     @Override

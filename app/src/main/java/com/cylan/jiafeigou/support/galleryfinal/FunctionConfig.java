@@ -18,7 +18,6 @@ package com.cylan.jiafeigou.support.galleryfinal;
 
 import android.support.annotation.IntRange;
 
-
 import com.cylan.jiafeigou.support.galleryfinal.model.PhotoInfo;
 
 import java.util.ArrayList;
@@ -29,7 +28,7 @@ import java.util.Collection;
  * Author:pengjianbo
  * Date:15/12/2 上午10:45
  */
-public class FunctionConfig implements Cloneable{
+public class FunctionConfig implements Cloneable {
 
     protected boolean mutiSelect;
     protected int maxSize;
@@ -115,12 +114,12 @@ public class FunctionConfig implements Cloneable{
             return this;
         }
 
-        public Builder setCropWidth(@IntRange(from = 1, to = Integer.MAX_VALUE)int width) {
+        public Builder setCropWidth(@IntRange(from = 1, to = Integer.MAX_VALUE) int width) {
             this.cropWidth = width;
             return this;
         }
 
-        public Builder setCropHeight(@IntRange(from = 1, to = Integer.MAX_VALUE)int height) {
+        public Builder setCropHeight(@IntRange(from = 1, to = Integer.MAX_VALUE) int height) {
             this.cropHeight = height;
             return this;
         }
@@ -138,9 +137,9 @@ public class FunctionConfig implements Cloneable{
         }
 
         public Builder setSelected(Collection<PhotoInfo> selectedList) {
-            if ( selectedList != null ) {
+            if (selectedList != null) {
                 ArrayList<String> list = new ArrayList<>();
-                for(PhotoInfo info:selectedList) {
+                for (PhotoInfo info : selectedList) {
                     if (info != null) {
                         list.add(info.getPhotoPath());
                     }
@@ -152,16 +151,16 @@ public class FunctionConfig implements Cloneable{
         }
 
         public Builder setFilter(ArrayList<String> filterList) {
-            if ( filterList != null ) {
+            if (filterList != null) {
                 this.filterList = (ArrayList<String>) filterList.clone();
             }
             return this;
         }
 
         public Builder setFilter(Collection<PhotoInfo> filterList) {
-            if ( filterList != null ) {
+            if (filterList != null) {
                 ArrayList<String> list = new ArrayList<>();
-                for(PhotoInfo info:filterList) {
+                for (PhotoInfo info : filterList) {
                     if (info != null) {
                         list.add(info.getPhotoPath());
                     }
@@ -174,6 +173,7 @@ public class FunctionConfig implements Cloneable{
 
         /**
          * 设置旋转后是否替换原图
+         *
          * @param rotateReplaceSource
          * @return
          */
@@ -184,6 +184,7 @@ public class FunctionConfig implements Cloneable{
 
         /**
          * 设置裁剪后是否替换原图
+         *
          * @param cropReplaceSource
          * @return
          */
@@ -194,6 +195,7 @@ public class FunctionConfig implements Cloneable{
 
         /**
          * 强制裁剪
+         *
          * @param forceCrop
          * @return
          */
@@ -204,6 +206,7 @@ public class FunctionConfig implements Cloneable{
 
         /**
          * 强制裁剪后是否可以对图片编辑，默认不可编辑
+         *
          * @param forceCropEdit
          * @return
          */
@@ -214,6 +217,7 @@ public class FunctionConfig implements Cloneable{
 
         /**
          * 是否开启预览功能
+         *
          * @param preview
          * @return
          */
@@ -287,7 +291,7 @@ public class FunctionConfig implements Cloneable{
         return filterList;
     }
 
-    public boolean isEnablePreview(){
+    public boolean isEnablePreview() {
         return preview;
     }
 

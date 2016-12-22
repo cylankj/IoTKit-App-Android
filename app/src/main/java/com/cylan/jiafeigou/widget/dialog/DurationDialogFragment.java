@@ -13,7 +13,6 @@ import android.widget.TextView;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.widget.pick.AbstractWheel;
 import com.cylan.jiafeigou.widget.pick.OnWheelChangedListener;
-import com.cylan.jiafeigou.widget.pick.OnWheelScrollListener;
 import com.cylan.jiafeigou.widget.pick.WheelVerticalView;
 import com.cylan.jiafeigou.widget.pick.adapters.AbstractWheelTextAdapter;
 

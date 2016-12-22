@@ -17,9 +17,11 @@ public interface HomeMineHelpSuggestionContract {
     interface View extends BaseView<Presenter> {
         /**
          * 初始化显示列表
+         *
          * @param list
          */
         void initRecycleView(ArrayList<MineHelpSuggestionBean> list);
+
         /**
          * 添加自动回复条目
          */
@@ -39,6 +41,11 @@ public interface HomeMineHelpSuggestionContract {
          * 隐藏加载进度的提示框
          */
         void hideLoadingDialog();
+
+        /**
+         * 系统的自动回复
+         */
+        void addSystemAutoReply(long time,String content);
     }
 
     interface Presenter extends BasePresenter {
@@ -47,10 +54,12 @@ public interface HomeMineHelpSuggestionContract {
          * 获取列表的数据
          */
         void initData();
+
         /**
          * 清空记录
          */
         void onClearAllTalk();
+
         /**
          * 获取到用户的信息拿到数据库对象
          */
@@ -58,6 +67,7 @@ public interface HomeMineHelpSuggestionContract {
 
         /**
          * 保存到本地数据库
+         *
          * @param bean
          */
         void saveIntoDb(MineHelpSuggestionBean bean);
@@ -69,12 +79,14 @@ public interface HomeMineHelpSuggestionContract {
 
         /**
          * 检测是否超过5分钟
+         *
          * @return
          */
         boolean checkOverTime(String time);
 
         /**
          * 检测是否超过2分钟
+         *
          * @param time
          * @return
          */
@@ -84,5 +96,16 @@ public interface HomeMineHelpSuggestionContract {
          * 上传意见反馈
          */
         void sendFeedBack(MineHelpSuggestionBean bean);
+
+        /**
+         * 获取系统的自动回复
+         */
+        void getSystemAutoReply();
+
+        /**
+         * 获取系统的自动回复回调
+         * @return
+         */
+        Subscription getSystemAutoReplyCallBack();
     }
 }

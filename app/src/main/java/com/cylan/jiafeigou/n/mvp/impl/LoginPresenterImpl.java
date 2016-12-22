@@ -2,10 +2,13 @@ package com.cylan.jiafeigou.n.mvp.impl;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.widget.Toast;
 
 import com.cylan.entity.JfgEnum;
+import com.cylan.jiafeigou.R;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.cache.JCache;
 import com.cylan.jiafeigou.misc.JConstant;
@@ -16,21 +19,30 @@ import com.cylan.jiafeigou.n.mvp.model.LoginAccountBean;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.support.qqLogIn.Constants;
+import com.cylan.jiafeigou.support.qqLogIn.TencentInstance;
 import com.cylan.jiafeigou.support.sina.AccessTokenKeeper;
 import com.cylan.jiafeigou.support.sina.SinaLogin;
 import com.cylan.jiafeigou.support.sina.UsersAPI;
+import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
+import com.cylan.jiafeigou.utils.ToastUtil;
 import com.google.gson.Gson;
 import com.sina.weibo.sdk.auth.Oauth2AccessToken;
 import com.sina.weibo.sdk.auth.WeiboAuthListener;
+import com.sina.weibo.sdk.auth.sso.SsoHandler;
 import com.sina.weibo.sdk.exception.WeiboException;
 import com.sina.weibo.sdk.net.RequestListener;
+import com.tencent.connect.UserInfo;
 import com.tencent.tauth.IUiListener;
+import com.tencent.tauth.Tencent;
 import com.tencent.tauth.UiError;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.msgpack.util.json.JSON;
 
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
@@ -39,7 +51,6 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
 import rx.functions.Action1;
 import rx.functions.Func1;
-import rx.observers.SafeSubscriber;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
@@ -52,6 +63,9 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
 
     private Context ctx;
     private CompositeSubscription subscription;
+    private SinaLogin sinaUtil;
+    private TencentInstance tencentInstance;
+    private QQAuthrizeListener qqAuthrizeListener;
 
     public LoginPresenterImpl(LoginContract.View view) {
         super(view);
@@ -67,15 +81,45 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
                     @Override
                     public LoginAccountBean call(LoginAccountBean o) {
                         try {
-                            JfgCmdInsurance.getCmd().login(o.userName, o.pwd);
+                        JfgCmdInsurance.getCmd().login(o.userName, o.pwd);
                         } catch (JfgException e) {
                             e.printStackTrace();
                         }
                         AppLogger.i("LoginAccountBean: " + new Gson().toJson(login));
+                        //非三方登录的标记
+                        RxBus.getCacheInstance().postSticky(false);
                         return o;
                     }
                 })
                 .subscribe();
+    }
+
+    /**
+     * 执行第三方登录
+     * @param openId
+     */
+    @Override
+    public void executeOpenLogin(final String openId) {
+        rx.Observable.just(null)
+                .subscribeOn(Schedulers.newThread())
+                .subscribe(new Action1<Object>() {
+                    @Override
+                    public void call(Object o) {
+                        try {
+                            JfgCmdInsurance.getCmd().openLogin(openId,"www.cylan.com");
+                        } catch (JfgException e) {
+                            e.printStackTrace();
+                        }
+                        //第三方登录的标记
+                        RxBus.getCacheInstance().postSticky(true);
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        AppLogger.e("executeOpenLogin"+new Gson().toJson(openId));
+                    }
+                });
+
     }
 
     @Override
@@ -206,7 +250,6 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
                 .subscribe(new Action1<RxEvent.LoginPopBack>() {
                     @Override
                     public void call(RxEvent.LoginPopBack loginPopBack) {
-
                         getView().updateAccount(loginPopBack.account);
                     }
                 }, new Action1<Throwable>() {
@@ -225,13 +268,14 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
 
     @Override
     public void getQQAuthorize(Activity activity) {
-//        TenCentLoginUtils qqUtils = new TenCentLoginUtils(activity);
-//        qqUtils.login(activity, new QQAuthorizeListener());
+        tencentInstance = new TencentInstance();
+        qqAuthrizeListener = new QQAuthrizeListener();
+        tencentInstance.logIn(activity,Constants.SCOPE, qqAuthrizeListener);
     }
 
     @Override
     public void startSinaAuthorize(Activity activity) {
-        SinaLogin sinaUtil = new SinaLogin(activity);
+        sinaUtil = new SinaLogin(activity);
         sinaUtil.login(activity, new SinaAuthorizeListener());
     }
 
@@ -266,10 +310,10 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
                     @Override
                     public void call(Object o) {
                         try {
-                            JfgCmdInsurance.getCmd().verifySMS(phone, code, token);
+                        JfgCmdInsurance.getCmd().verifySMS(phone, code, token);
                         } catch (JfgException e) {
                             e.printStackTrace();
-                        }
+                    }
                     }
                 }, new Action1<Throwable>() {
                     @Override
@@ -279,49 +323,21 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
                 });
     }
 
-    /**
-     * QQ授权的监听器
-     */
-    private class QQAuthorizeListener implements IUiListener {
-
-        @Override
-        public void onComplete(Object response) {
-            if (null == response) {
-                if (getView() != null) {
-                    getView().onQQAuthorizeResult(LoginContract.AUTHORIZE_ERROR);
-                }
-                return;
-            }
-            JSONObject jsonResponse = (JSONObject) response;
-            String alias = "";
-            try {
-                if (jsonResponse.has("nickname")) {
-                    alias = jsonResponse.getString("nickname");
-                }
-//                PreferencesUtils.setThirDswLoginPicUrl( jsonResponse.getString("figureurl_qq_1"));
-//                cmd.openLogin(name, "", "QQ", ""); // 接口没测
-            } catch (JSONException e) {
-                AppLogger.e(e.toString());
-            }
-
-
-        }
-
-        @Override
-        public void onError(UiError uiError) {
-            if (getView() != null) {
-                getView().onQQAuthorizeResult(LoginContract.AUTHORIZE_ERROR);
-            }
-        }
-
-        @Override
-        public void onCancel() {
-            if (getView() != null) {
-                getView().onQQAuthorizeResult(LoginContract.AUTHORIZE_CANCLE);
-            }
-        }
+    @Override
+    public SsoHandler getSinaCallBack() {
+        return sinaUtil.mSsoHandler;
     }
 
+    /**
+     * QQ登录在OnActivity中的回调
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
+    @Override
+    public void onActivityResultData(int requestCode, int resultCode, Intent data) {
+        Tencent.onActivityResultData(requestCode,resultCode,data,qqAuthrizeListener);
+    }
 
     /**
      * 新浪微博的授权
@@ -331,12 +347,10 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
         public void onComplete(Bundle values) {
             Oauth2AccessToken accessToken = Oauth2AccessToken.parseAccessToken(values);
             if (accessToken != null && accessToken.isSessionValid()) {
-                AccessTokenKeeper.writeAccessToken(ctx, accessToken);
-                Oauth2AccessToken mAccessToken = AccessTokenKeeper.readAccessToken(ctx);
-                UsersAPI mUsersAPI = new UsersAPI(mAccessToken, getView().getContext());
-                long uid = Long.parseLong(mAccessToken.getUid());
-                mUsersAPI.show(uid, sinaRequestListener);
-
+                executeOpenLogin(accessToken.getToken());
+            }else {
+                String code = values.getString("code", "");
+                AppLogger.d("sina_code"+code);
             }
         }
 
@@ -354,9 +368,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
                 getView().onSinaAuthorizeResult(LoginContract.AUTHORIZE_CANCLE);
             }
         }
-
     }
-
 
     /**
      * 新浪权限检查的监听器
@@ -367,8 +379,10 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
             try {
                 if (!TextUtils.isEmpty(response)) {
                     String strId = new JSONObject(response).getString("idstr");
+                    ToastUtil.showToast(strId);
 //                    PreferencesUtils.setThirDswLoginPicUrl(ctx, new JSONObject(response).getString("profile_image_url"));
 //                    cmd.openLogin(strId, "", "SINA", ""); // 接口没测
+                    executeOpenLogin(strId);
                 }
             } catch (JSONException e) {
                 AppLogger.e(e.toString());
@@ -384,5 +398,58 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
             AppLogger.e(e.toString());
         }
     };
+
+    /**
+     * QQ授权回调
+     */
+    private class QQAuthrizeListener implements IUiListener{
+
+        @Override
+        public void onComplete(Object response) {
+            if (null == response) {
+                if (getView() != null) {
+                    getView().onQQAuthorizeResult(LoginContract.AUTHORIZE_ERROR);
+                }
+                return;
+            }
+            JSONObject jsonResponse = (JSONObject) response;
+            if (null != jsonResponse && jsonResponse.length() == 0) {
+                ToastUtil.showNegativeToast("授权失败");
+                return;
+            }
+            doComplete((JSONObject)response);
+        }
+
+        @Override
+        public void onError(UiError uiError) {
+            if (getView() != null) {
+                getView().onQQAuthorizeResult(LoginContract.AUTHORIZE_ERROR);
+            }
+        }
+
+        @Override
+        public void onCancel() {
+            if (getView() != null) {
+                getView().onQQAuthorizeResult(LoginContract.AUTHORIZE_CANCLE);
+            }
+        }
+    }
+
+    /**
+     * QQ登录回调解析token
+     * @param response
+     */
+    private void doComplete(JSONObject response) {
+        try {
+            String openID = response.getString("openid");
+            String accessToken = response.getString("access_token");
+            String expires = response.getString("expires_in");
+            //执行登录
+            executeOpenLogin(accessToken);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
 
 }

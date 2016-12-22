@@ -56,10 +56,11 @@ public interface MineShareToContactContract {
 
         /**
          * 分享结果处理
+         *
          * @param requtestId
          * @param account
          */
-        void handlerCheckRegister(int requtestId,String account);
+        void handlerCheckRegister(int requtestId, String account);
 
     }
 
@@ -70,10 +71,11 @@ public interface MineShareToContactContract {
         /**
          * 处理点击按钮
          */
-        void handlerShareClick(String cid,String account);
+        void handlerShareClick(String cid, String account);
 
         /**
          * 获取到已经分享给的亲友数
+         *
          * @param cid
          * @return
          */
@@ -81,15 +83,23 @@ public interface MineShareToContactContract {
 
         /**
          * 获取以分享好友的回调
+         *
          * @return
          */
         Subscription getHasShareContractCallBack();
 
         /**
          * 分享设备的回调
+         *
          * @return
          */
         Subscription shareDeviceCallBack();
+
+        /**
+         * 检测发送短信权限
+         * @return
+         */
+        boolean checkSendSmsPermission();
 
     }
 

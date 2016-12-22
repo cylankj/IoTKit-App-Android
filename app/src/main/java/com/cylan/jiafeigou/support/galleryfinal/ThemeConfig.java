@@ -28,7 +28,7 @@ import java.io.Serializable;
  * Author:pengjianbo
  * Date:15/12/16 下午2:49
  */
-public class ThemeConfig implements Serializable{
+public class ThemeConfig implements Serializable {
 
     //默认主题
     public static ThemeConfig DEFAULT = new Builder().build();

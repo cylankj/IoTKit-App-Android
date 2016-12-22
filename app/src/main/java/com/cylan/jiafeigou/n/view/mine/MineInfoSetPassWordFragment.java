@@ -21,6 +21,7 @@ import com.cylan.jiafeigou.utils.ToastUtil;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.OnTextChanged;
 
 /**
  * 作者：zsl
@@ -46,7 +47,6 @@ public class MineInfoSetPassWordFragment extends Fragment implements MineInfoSet
     @BindView(R.id.iv_mine_personal_information_new_password_clear)
     ImageView ivMinePersonalInformationNewPasswordClear;
 
-
     private MineInfoSetPassWordContract.Presenter presenter;
     private JFGAccount userinfo;
 
@@ -63,7 +63,6 @@ public class MineInfoSetPassWordFragment extends Fragment implements MineInfoSet
         ButterKnife.bind(this, view);
         initPresenter();
         getArgumentData();
-        initEditLisenter();
         return view;
     }
 
@@ -79,65 +78,36 @@ public class MineInfoSetPassWordFragment extends Fragment implements MineInfoSet
         presenter = new MineInfoSetPassWordPresenterImp(this);
     }
 
-    private void initEditLisenter() {
+    @OnTextChanged(R.id.et_mine_personal_information_old_password)
+    public void onOldPwdUpdate(CharSequence s, int start, int before, int count) {
+        boolean isEmpty = s.length()<6;
+        if (isEmpty || getNewPassword().trim().length()<6) {
+            ivMinePersonalSetpasswordBind.setImageDrawable(getResources().getDrawable(R.drawable.icon_finish_disable));
+            ivMinePersonalSetpasswordBind.setEnabled(false);
+            ivMinePersonalSetpasswordBind.setClickable(false);
+        } else {
+            ivMinePersonalSetpasswordBind.setImageDrawable(getResources().getDrawable(R.drawable.icon_finish));
+            ivMinePersonalSetpasswordBind.setEnabled(true);
+            ivMinePersonalSetpasswordBind.setClickable(true);
+        }
+        ivMinePersonalInformationOldPasswordClear.setVisibility(isEmpty ? View.GONE : View.VISIBLE);
+        viewMinePersonalInformationOldPasswordLine.setBackgroundColor(isEmpty ? getResources().getColor(R.color.color_f2f2f2) : getResources().getColor(R.color.color_36bdff));
+    }
 
-        etMinePersonalInformationOldPassword.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                boolean isEmpty = TextUtils.isEmpty(s);
-                if (isEmpty || TextUtils.isEmpty(getNewPassword())) {
-                    ivMinePersonalSetpasswordBind.setImageDrawable(getResources().getDrawable(R.drawable.icon_finish_disable));
-                    ivMinePersonalSetpasswordBind.setEnabled(false);
-                    ivMinePersonalSetpasswordBind.setClickable(false);
-                } else {
-                    ivMinePersonalSetpasswordBind.setImageDrawable(getResources().getDrawable(R.drawable.icon_finish));
-                    ivMinePersonalSetpasswordBind.setEnabled(true);
-                    ivMinePersonalSetpasswordBind.setClickable(true);
-                }
-                ivMinePersonalInformationOldPasswordClear.setVisibility(isEmpty ? View.GONE : View.VISIBLE);
-                viewMinePersonalInformationOldPasswordLine.setBackgroundColor(isEmpty ? getResources().getColor(R.color.color_f2f2f2) : getResources().getColor(R.color.color_36bdff));
-
-            }
-        });
-
-        etMinePersonalInformationNewPassword.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                boolean isEmpty = TextUtils.isEmpty(s);
-                if (isEmpty || TextUtils.isEmpty(getOldPassword())) {
-                    ivMinePersonalSetpasswordBind.setImageDrawable(getResources().getDrawable(R.drawable.icon_finish_disable));
-                    ivMinePersonalSetpasswordBind.setClickable(false);
-                    ivMinePersonalSetpasswordBind.setEnabled(false);
-                } else {
-                    ivMinePersonalSetpasswordBind.setImageDrawable(getResources().getDrawable(R.drawable.icon_finish));
-                    ivMinePersonalSetpasswordBind.setClickable(true);
-                    ivMinePersonalSetpasswordBind.setEnabled(true);
-                }
-                ivMinePersonalInformationNewPasswordClear.setVisibility(isEmpty ? View.GONE : View.VISIBLE);
-                viewMinePersonalInformationNewPasswordLine.setBackgroundColor(isEmpty ? getResources().getColor(R.color.color_f2f2f2) : getResources().getColor(R.color.color_36bdff));
-
-            }
-        });
+    @OnTextChanged(R.id.et_mine_personal_information_new_password)
+    public void onNewPwdUpdate(CharSequence s, int start, int before, int count) {
+        boolean isEmpty = s.length()<6;
+        if (isEmpty || getOldPassword().trim().length()<6) {
+            ivMinePersonalSetpasswordBind.setImageDrawable(getResources().getDrawable(R.drawable.icon_finish_disable));
+            ivMinePersonalSetpasswordBind.setClickable(false);
+            ivMinePersonalSetpasswordBind.setEnabled(false);
+        } else {
+            ivMinePersonalSetpasswordBind.setImageDrawable(getResources().getDrawable(R.drawable.icon_finish));
+            ivMinePersonalSetpasswordBind.setClickable(true);
+            ivMinePersonalSetpasswordBind.setEnabled(true);
+        }
+        ivMinePersonalInformationNewPasswordClear.setVisibility(isEmpty ? View.GONE : View.VISIBLE);
+        viewMinePersonalInformationNewPasswordLine.setBackgroundColor(isEmpty ? getResources().getColor(R.color.color_f2f2f2) : getResources().getColor(R.color.color_36bdff));
     }
 
     @Override
@@ -196,7 +166,7 @@ public class MineInfoSetPassWordFragment extends Fragment implements MineInfoSet
             return;
         }
 
-        presenter.sendChangePassReq(userinfo.getAccount(),getOldPassword(),getNewPassword());
+        presenter.sendChangePassReq(userinfo.getAccount(), getOldPassword(), getNewPassword());
 
         ToastUtil.showToast(getString(R.string.PWD_OK_1));
         getFragmentManager().popBackStack();

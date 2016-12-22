@@ -20,6 +20,7 @@ import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendAddByNumContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineFriendAddByNumPresenterImp;
 import com.cylan.jiafeigou.n.mvp.model.MineAddReqBean;
+import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.widget.LoadingDialog;
 import com.cylan.jiafeigou.widget.roundedimageview.RoundedImageView;
 
@@ -72,7 +73,7 @@ public class MineFriendAddByNumFragment extends Fragment implements MineFriendAd
     @Override
     public void onStart() {
         super.onStart();
-        if (presenter != null)presenter.start();
+        if (presenter != null) presenter.start();
     }
 
     private void initPresenter() {
@@ -140,7 +141,7 @@ public class MineFriendAddByNumFragment extends Fragment implements MineFriendAd
 
     @Override
     public void showFindLoading() {
-        LoadingDialog.showLoading(getFragmentManager(),getString(R.string.LOADING));
+        LoadingDialog.showLoading(getFragmentManager(), getString(R.string.LOADING));
     }
 
     @Override
@@ -166,17 +167,29 @@ public class MineFriendAddByNumFragment extends Fragment implements MineFriendAd
     }
 
     @Override
-    public void setFindResult(boolean isFrom,MineAddReqBean bean) {
-            Bundle bundle = new Bundle();
-            bundle.putBoolean("isFrom",isFrom);
-            bundle.putSerializable("addRequestItems", bean);
-            MineFriendAddReqDetailFragment addReqDetailFragment = MineFriendAddReqDetailFragment.newInstance(bundle);
-            getFragmentManager().beginTransaction()
-                    .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
-                            , R.anim.slide_in_left, R.anim.slide_out_right)
-                    .add(android.R.id.content, addReqDetailFragment, "addReqDetailFragment")
-                    .addToBackStack("mineHelpFragment")
-                    .commit();
+    public void setFindResult(boolean isFrom, MineAddReqBean bean) {
+        Bundle bundle = new Bundle();
+        bundle.putBoolean("isFrom", isFrom);
+        bundle.putSerializable("addRequestItems", bean);
+        MineFriendAddReqDetailFragment addReqDetailFragment = MineFriendAddReqDetailFragment.newInstance(bundle);
+        getFragmentManager().beginTransaction()
+                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
+                        , R.anim.slide_in_left, R.anim.slide_out_right)
+                .add(android.R.id.content, addReqDetailFragment, "addReqDetailFragment")
+                .addToBackStack("mineHelpFragment")
+                .commit();
+    }
+
+    /**
+     * 网络状态变化
+     * @param state
+     */
+    @Override
+    public void onNetStateChanged(int state) {
+        if (state == -1){
+            hideFindLoading();
+            ToastUtil.showNegativeToast(getString(R.string.NO_NETWORK_1));
+        }
     }
 
     @Override

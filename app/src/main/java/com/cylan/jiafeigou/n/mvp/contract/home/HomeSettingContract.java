@@ -31,10 +31,6 @@ public interface HomeSettingContract {
 
         boolean switchAcceptMesg();
 
-        boolean switchVoice();
-
-        boolean switchShake();
-
         void initSwitchState(RxEvent.GetUserInfo userInfo);
     }
 
@@ -52,12 +48,14 @@ public interface HomeSettingContract {
 
         /**
          * 取反
+         *
          * @return
          */
         boolean getNegation();
 
         /**
          * 保存开关状态
+         *
          * @param isChick
          * @param key
          */

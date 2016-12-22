@@ -111,12 +111,6 @@
                 android:layout_height="wrap_content" />
         </LinearLayout>
 
-        <ProgressBar
-            android:visibility="invisible"
-            android:id="@+id/progress_re_connet"
-            android:layout_gravity="center"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
     </FrameLayout>
 
 </RelativeLayout>

@@ -22,7 +22,6 @@ import com.cylan.jiafeigou.n.mvp.contract.mine.MineInfoBindMailContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineInfoBineMailPresenterImp;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.utils.IMEUtils;
-import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.widget.LoadingDialog;
 
@@ -86,7 +85,7 @@ public class HomeMineInfoMailBoxFragment extends Fragment implements MineInfoBin
      */
     @Override
     public void showSendReqResult(RxEvent.GetUserInfo getUserInfo) {
-        if (!TextUtils.isEmpty(getEditText())){
+        if (!TextUtils.isEmpty(getEditText())) {
             hideSendReqHint();
             if (getEditText().equals(getUserInfo.jfgAccount.getEmail())) {
                 //绑定成功
@@ -106,7 +105,7 @@ public class HomeMineInfoMailBoxFragment extends Fragment implements MineInfoBin
     @Override
     public void getUserAccountData(JFGAccount account) {
         userinfo = account;
-        if (userinfo != null){
+        if (userinfo != null) {
             if ("".equals(userinfo.getEmail()) || userinfo.getEmail() == null) {
                 bindOrChange = true;
             } else {
@@ -138,7 +137,7 @@ public class HomeMineInfoMailBoxFragment extends Fragment implements MineInfoBin
     @Override
     public void onStart() {
         super.onStart();
-        if (presenter != null){
+        if (presenter != null) {
             presenter.start();
         }
     }
@@ -172,7 +171,6 @@ public class HomeMineInfoMailBoxFragment extends Fragment implements MineInfoBin
     private void initPresenter() {
         presenter = new MineInfoBineMailPresenterImp(this);
     }
-
 
 
     @OnTextChanged(R.id.et_mine_personal_information_mailbox)
@@ -252,7 +250,7 @@ public class HomeMineInfoMailBoxFragment extends Fragment implements MineInfoBin
 
     @Override
     public void showSendReqHint() {
-        LoadingDialog.showLoading(getFragmentManager(),getString(R.string.upload));
+        LoadingDialog.showLoading(getFragmentManager(), getString(R.string.upload));
     }
 
     @Override
@@ -262,11 +260,24 @@ public class HomeMineInfoMailBoxFragment extends Fragment implements MineInfoBin
 
     /**
      * 获取到输入的内容
+     *
      * @return
      */
     @Override
     public String getEditText() {
         return mETMailBox.getText().toString();
+    }
+
+    /**
+     * 网络状态变化
+     * @param state
+     */
+    @Override
+    public void onNetStateChanged(int state) {
+        if (state == -1){
+            hideSendReqHint();
+            ToastUtil.showNegativeToast(getString(R.string.NO_NETWORK_1));
+        }
     }
 
     /**

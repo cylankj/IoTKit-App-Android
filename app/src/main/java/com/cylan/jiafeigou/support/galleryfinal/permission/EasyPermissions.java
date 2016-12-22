@@ -26,7 +26,6 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 
-
 import com.cylan.jiafeigou.support.galleryfinal.utils.ILogger;
 
 import java.lang.reflect.InvocationTargetException;
@@ -85,7 +84,7 @@ public class EasyPermissions {
      * @param perms       a set of permissions to be requested.
      */
     public static void requestPermissions(final Object object, String rationale,
-            final int requestCode, final String... perms) {
+                                          final int requestCode, final String... perms) {
         requestPermissions(object, rationale,
                 android.R.string.ok,
                 android.R.string.cancel,
@@ -107,9 +106,9 @@ public class EasyPermissions {
      * @param perms          a set of permissions to be requested.
      */
     public static void requestPermissions(final Object object, String rationale,
-            @StringRes int positiveButton,
-            @StringRes int negativeButton,
-            final int requestCode, final String... perms) {
+                                          @StringRes int positiveButton,
+                                          @StringRes int negativeButton,
+                                          final int requestCode, final String... perms) {
 
         checkCallingObjectSuitability(object);
 
@@ -132,7 +131,7 @@ public class EasyPermissions {
                         public void onClick(DialogInterface dialog, int which) {
                             // Do nothing, user does not want to request
                             PermissionCallbacks callbacks = (PermissionCallbacks) object;
-                            if(callbacks != null) {
+                            if (callbacks != null) {
                                 callbacks.onPermissionsDenied(new ArrayList<String>());
                             }
                         }
@@ -160,7 +159,7 @@ public class EasyPermissions {
      *                                  {@link PermissionCallbacks}.
      */
     public static void onRequestPermissionsResult(int requestCode, String[] permissions,
-            int[] grantResults, Object object) {
+                                                  int[] grantResults, Object object) {
 
         checkCallingObjectSuitability(object);
         PermissionCallbacks callbacks = (PermissionCallbacks) object;

@@ -22,7 +22,11 @@ public class RSACoder {
     /**
      * 填充方式
      */
-    public static enum PADDING { NoPadding, PKCS1Padding };
+    public static enum PADDING {
+        NoPadding, PKCS1Padding
+    }
+
+    ;
     /**
      * 算法
      */
@@ -39,7 +43,7 @@ public class RSACoder {
     /**
      * 65537 or 0x010001
      */
-    public static final byte[] PUBLIC_EXPONENT = { 1, 0, 1 };
+    public static final byte[] PUBLIC_EXPONENT = {1, 0, 1};
 
     /**
      * 生成密钥对
@@ -61,6 +65,7 @@ public class RSACoder {
 
     /**
      * 生成公钥
+     *
      * @param modulus
      * @param publicExponent
      * @return
@@ -103,15 +108,13 @@ public class RSACoder {
     /**
      * 加密
      *
-     * @param key
-     *            加密的密钥
-     * @param data
-     *            待加密的明文数据
+     * @param key  加密的密钥
+     * @param data 待加密的明文数据
      * @return 加密后的数据
      */
     private static byte[] encrypt(Key key, byte[] data, PADDING padding) {
         try {
-            Cipher cipher = Cipher.getInstance(CHIPER_ALGORITHM+(padding==null? PADDING.NoPadding:padding));
+            Cipher cipher = Cipher.getInstance(CHIPER_ALGORITHM + (padding == null ? PADDING.NoPadding : padding));
             cipher.init(Cipher.ENCRYPT_MODE, key);
             return cipher.doFinal(data);
         } catch (Exception e) {
@@ -131,7 +134,7 @@ public class RSACoder {
         // 得到公钥
         RSAPublicKey key = generateRSAPublicKey(publicKey, PUBLIC_EXPONENT);
         // 加密
-        return encrypt(key, data,padding);
+        return encrypt(key, data, padding);
     }
 
     /**
@@ -146,21 +149,19 @@ public class RSACoder {
         // 得到私钥
         RSAPrivateKey key = generateRSAPrivateKey(publicKey, privateKey);
         // 加密
-        return encrypt(key, data,padding);
+        return encrypt(key, data, padding);
     }
 
     /**
      * 解密
      *
-     * @param key
-     *            解密的密钥
-     * @param data
-     *            已经加密的数据
+     * @param key  解密的密钥
+     * @param data 已经加密的数据
      * @return 解密后的明文
      */
     private static byte[] decrypt(Key key, byte[] data, PADDING padding) {
         try {
-            Cipher cipher = Cipher.getInstance(CHIPER_ALGORITHM+(padding==null? PADDING.NoPadding:padding));
+            Cipher cipher = Cipher.getInstance(CHIPER_ALGORITHM + (padding == null ? PADDING.NoPadding : padding));
             cipher.init(Cipher.DECRYPT_MODE, key);
             return cipher.doFinal(data);
         } catch (Exception e) {
@@ -180,7 +181,7 @@ public class RSACoder {
         // 得到公钥
         RSAPublicKey key = generateRSAPublicKey(publicKey, PUBLIC_EXPONENT);
         // 解密
-        return decrypt(key, data,padding);
+        return decrypt(key, data, padding);
     }
 
     /**
@@ -195,6 +196,6 @@ public class RSACoder {
         // 得到私钥
         RSAPrivateKey key = generateRSAPrivateKey(publicKey, privateKey);
         // 解密
-        return decrypt(key, data,padding);
+        return decrypt(key, data, padding);
     }
 }

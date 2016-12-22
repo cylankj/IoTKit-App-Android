@@ -1,11 +1,8 @@
 package com.cylan.jiafeigou.n.mvp.contract.mine;
 
-import com.cylan.entity.jniCall.JFGFriendRequest;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
 import com.cylan.jiafeigou.n.mvp.model.MineAddReqBean;
-import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
-import com.cylan.jiafeigou.n.mvp.model.UserInfoBean;
 
 import rx.Subscription;
 
@@ -47,7 +44,12 @@ public interface MineFriendAddByNumContract {
          * isFrom:是否从添加请求界面点击进入
          * hasSendToMe：是否已向我发送请求过
          */
-        void setFindResult(boolean isFrom,MineAddReqBean bean);
+        void setFindResult(boolean isFrom, MineAddReqBean bean);
+
+        /**
+         * 网络状态变化
+         */
+        void onNetStateChanged(int state);
 
     }
 
@@ -65,8 +67,19 @@ public interface MineFriendAddByNumContract {
 
         /**
          * 检测好友的回调
+         *
          * @return
          */
         Subscription checkFriendAccountCallBack();
+
+        /**
+         * 注册网络监听
+         */
+        void registerNetworkMonitor();
+
+        /**
+         * 移除网络监听
+         */
+        void unregisterNetworkMonitor();
     }
 }

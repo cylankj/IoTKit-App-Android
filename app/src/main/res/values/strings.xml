@@ -835,4 +835,18 @@
     <string name="Tap1_Camera_Overlook">Overlook</string>
     <string name="Tap1_Camera_FrontTips">Viewing with horizontal angle needs to keep a wide vision in front of camera</string>
     <string name="Tap1_Camera_OverlookTips">Viewing with overlooking angle needs to place the camera on high</string>
+
+    <string name="Tap3_ShareDevice_CancelShareTips">Cancel the sharing failed</string>
+    <string name="Tap3_FriendsAdd_SendButton">Send request</string>
+    <string name="Tap3_FriendsAdd_NoContacts">No contacts</string>
+    <string name="Tap3_SavePic">Save pics</string>
+    <string name="Tap1_iHome_Associated">Associated</string>
+    <string name="Tap1_iHome_NotAssociated">Not associated</string>
+    <string name="Tap1_iHome_ClearRecord">Clear the record</string>
+    <string name="Tap3_FriendsAdd_RequestContents">wants to add you as a friend</string>
+    <string name="Tap3_Friends_NoBindTips">Using this function needs to bind email first.</string>
+    <string name="Tap3_FriendsAdd_StuffContents">I am %@</string>
+    <string name="Tap3_Userinfo_NoCamera">Camera can not use</string>
+    <string name="ClearingTips">Clearing...</string>
+    <string name="CancelingTips">Canceling...</string>
 </resources>

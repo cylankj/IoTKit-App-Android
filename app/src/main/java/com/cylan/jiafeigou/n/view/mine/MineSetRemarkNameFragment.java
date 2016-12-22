@@ -1,18 +1,14 @@
 package com.cylan.jiafeigou.n.view.mine;
 
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.text.Editable;
 import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.JError;
@@ -79,13 +75,13 @@ public class MineSetRemarkNameFragment extends Fragment implements MineSetRemark
     @Override
     public void onStart() {
         super.onStart();
-        if (presenter != null)presenter.start();
+        if (presenter != null) presenter.start();
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        if (presenter != null)presenter.stop();
+        if (presenter != null) presenter.stop();
     }
 
     private void initPresenter() {
@@ -118,8 +114,8 @@ public class MineSetRemarkNameFragment extends Fragment implements MineSetRemark
                 getFragmentManager().popBackStack();
                 break;
             case R.id.iv_mine_set_remarkname_bind:
-                if (presenter != null){
-                    presenter.sendSetmarkNameReq(getEditName(),friendBean);
+                if (presenter != null) {
+                    presenter.sendSetmarkNameReq(getEditName(), friendBean);
                 }
                 break;
             case R.id.iv_mine_personal_set_remarkname_clear:
@@ -148,13 +144,13 @@ public class MineSetRemarkNameFragment extends Fragment implements MineSetRemark
      */
     @Override
     public void showFinishResult(RxEvent.GetFriendInfoCall getFriendInfoCall) {
-        if (getFriendInfoCall.i == JError.ErrorOK && getEditName().equals(getFriendInfoCall.jfgFriendAccount.markName)){
+        if (getFriendInfoCall.i == JError.ErrorOK && getEditName().equals(getFriendInfoCall.jfgFriendAccount.markName)) {
             ToastUtil.showPositiveToast(getString(R.string.PWD_OK_2));
             if (listener != null) {
                 listener.remarkNameChange(getEditName());
             }
             getFragmentManager().popBackStack();
-        }else {
+        } else {
             ToastUtil.showPositiveToast(getString(R.string.SUBMIT_FAIL));
         }
 
@@ -165,7 +161,7 @@ public class MineSetRemarkNameFragment extends Fragment implements MineSetRemark
      */
     @Override
     public void showSendReqPro() {
-        LoadingDialog.showLoading(getFragmentManager(),getString(R.string.is_creating));
+        LoadingDialog.showLoading(getFragmentManager(), getString(R.string.is_creating));
     }
 
     /**
@@ -174,6 +170,18 @@ public class MineSetRemarkNameFragment extends Fragment implements MineSetRemark
     @Override
     public void hideSendReqPro() {
         LoadingDialog.dismissLoading(getFragmentManager());
+    }
+
+    /**
+     * 网络状态变化
+     * @param state
+     */
+    @Override
+    public void onNetStateChanged(int state) {
+        if (state == -1){
+            hideSendReqPro();
+            ToastUtil.showNegativeToast(getString(R.string.NO_NETWORK_1));
+        }
     }
 
     @Override

@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.app.AlertDialog;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +17,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.cylan.entity.jniCall.JFGFriendRequest;
 import com.cylan.jiafeigou.R;
@@ -87,9 +90,9 @@ public class MineFriendAddReqDetailFragment extends Fragment implements MineFrie
         Bundle arguments = getArguments();
         boolean isFrome = arguments.getBoolean("isFrom");
         addRequestItems = (MineAddReqBean) arguments.getSerializable("addRequestItems");
-        if ("".equals(addRequestItems.alias)){
+        if (TextUtils.isEmpty(addRequestItems.alias)){
             tvRelativeAndFriendName.setText("sjd172");
-        }else {
+        } else {
             tvRelativeAndFriendName.setText(addRequestItems.alias);
         }
         tvRelativeAndFriendLikeName.setText(addRequestItems.account);
@@ -100,10 +103,12 @@ public class MineFriendAddReqDetailFragment extends Fragment implements MineFrie
                 .asBitmap()
                 .centerCrop()
                 .placeholder(R.drawable.icon_mine_head_normal)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .error(R.drawable.icon_mine_head_normal)
                 .into(new BitmapImageViewTarget(ivDetailUserHead) {
                     @Override
-                    protected void setResource(Bitmap resource) {
+                    public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                        super.onResourceReady(resource, glideAnimation);
                         RoundedBitmapDrawable circularBitmapDrawable =
                                 RoundedBitmapDrawableFactory.create(getContext().getResources(), resource);
                         circularBitmapDrawable.setCircular(true);
@@ -142,8 +147,8 @@ public class MineFriendAddReqDetailFragment extends Fragment implements MineFrie
                 jump2LookBigImage();
                 break;
             case R.id.tv_add_as_relative_and_friend:            //添加为亲友
-                if (presenter != null){
-                   presenter.start();
+                if (presenter != null) {
+                    presenter.start();
                 }
                 break;
         }
@@ -166,9 +171,9 @@ public class MineFriendAddReqDetailFragment extends Fragment implements MineFrie
 
     @Override
     public void showOrHideReqMesg(boolean isFrom) {
-        if (isFrom){
+        if (isFrom) {
             rlAddRequestMesg.setVisibility(View.VISIBLE);
-        }else {
+        } else {
             rlAddRequestMesg.setVisibility(View.INVISIBLE);
         }
     }
@@ -198,20 +203,19 @@ public class MineFriendAddReqDetailFragment extends Fragment implements MineFrie
 
     @Override
     public void showSendAddReqResult(boolean flag) {
-        if(flag){
-            getFragmentManager().popBackStack();
+        if (flag) {
             ToastUtil.showPositiveToast(getString(R.string.Tap3_FriendsAdd_Contacts_InvitedTips));
-        }else {
-            getFragmentManager().popBackStack();
+        } else {
             ToastUtil.showNegativeToast("请求发送失败");
         }
+        getFragmentManager().popBackStack();
     }
 
     @Override
     public void showAddedReult(boolean flag) {
         if (flag) {
             ToastUtil.showPositiveToast(getString(R.string.Tap3_FriendsAdd_Success));
-        }else {
+        } else {
             ToastUtil.showNegativeToast("添加失败");
         }
     }
@@ -222,7 +226,7 @@ public class MineFriendAddReqDetailFragment extends Fragment implements MineFrie
     @Override
     public void jump2AddReqFragment() {
         Bundle addReqBundle = new Bundle();
-        addReqBundle.putString("account",addRequestItems.account);
+        addReqBundle.putString("account", addRequestItems.account);
         addReqFragment = MineAddFromContactFragment.newInstance(addReqBundle);
         getFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
@@ -234,19 +238,20 @@ public class MineFriendAddReqDetailFragment extends Fragment implements MineFrie
 
     /**
      * 是否存在该账号的结果
+     *
      * @param getAddReqList
      */
     @Override
     public void isHasAccountResult(RxEvent.GetAddReqList getAddReqList) {
-        for (JFGFriendRequest bean:getAddReqList.arrayList){
-            if (bean.account.equals(addRequestItems.account)){
+        for (JFGFriendRequest bean : getAddReqList.arrayList) {
+            if (bean.account.equals(addRequestItems.account)) {
                 // 向我发送过请求
                 MineAddReqBean addReqBean = new MineAddReqBean();
                 addReqBean.account = bean.account;
                 addReqBean.time = bean.time;
                 presenter.checkAddReqOutTime(addReqBean);
                 return;
-            }else {
+            } else {
                 //未向我发送过请求
                 jump2AddReqFragment();
             }

@@ -69,7 +69,7 @@ public class HomeSettingAboutFragment extends Fragment implements HomeSettingAbo
             case R.id.rLayout_home_setting_hotphone:
                 intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + getHotPhone()));
                 if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions((Activity) view.getContext(),
+                    HomeSettingAboutFragment.this.requestPermissions(
                             new String[]{Manifest.permission.CALL_PHONE},
                             MY_PERMISSIONS_REQUEST_CALL_PHONE);
                     return;
@@ -96,7 +96,7 @@ public class HomeSettingAboutFragment extends Fragment implements HomeSettingAbo
                     getContext().startActivity(intent);
                 } else {
                     // 未获取到授权
-                    ToastUtil.showToast("权限未授予");
+                    ToastUtil.showToast(getString(R.string.Tap0_Authorizationfailed));
                 }
                 break;
         }

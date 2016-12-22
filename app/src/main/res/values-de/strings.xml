@@ -804,4 +804,18 @@
   <string name="Tap1_Camera_Overlook">Übersehen</string>
   <string name="Tap1_Camera_FrontTips">Die Betrachtung mit horizontalem Winkel muss ein breites Sehvermögen vor der Kamera beibehalten</string>
   <string name="Tap1_Camera_OverlookTips">Anzeigen mit Blick auf Winkel muss die Kamera auf hoch zu platzieren</string>
+
+  <string name="Tap3_ShareDevice_CancelShareTips">Abbrechen der Freigabe fehlgeschlagen</string>
+  <string name="Tap3_FriendsAdd_SendButton">Anfrage senden</string>
+  <string name="Tap3_FriendsAdd_NoContacts">Keine Kontakte</string>
+  <string name="Tap3_SavePic">Bild speichern</string>
+  <string name="Tap1_iHome_Associated">Dazugehörigen</string>
+  <string name="Tap1_iHome_NotAssociated">Nicht dazugehörigen</string>
+  <string name="Tap1_iHome_ClearRecord">Löschen Sie den Datensatz</string>
+  <string name="Tap3_FriendsAdd_RequestContents">möchte Sie als Freund hinzufügen</string>
+  <string name="Tap3_Friends_NoBindTips">Mit dieser Funktion muss zuerst die E-Mail gebunden werden.</string>
+  <string name="Tap3_FriendsAdd_StuffContents">Ich bin %@</string>
+  <string name="Tap3_Userinfo_NoCamera">Kamera kann nicht verwendet werden</string>
+  <string name="ClearingTips">Clearing…</string>
+  <string name="CancelingTips">Abbrechen…</string>
 </resources>

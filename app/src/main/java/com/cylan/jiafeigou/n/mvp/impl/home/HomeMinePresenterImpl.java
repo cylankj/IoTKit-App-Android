@@ -5,18 +5,31 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.DrawableRes;
+import android.text.TextUtils;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.cylan.entity.jniCall.JFGAccount;
+import com.cylan.entity.jniCall.JFGDPMsg;
+import com.cylan.entity.jniCall.RobotoGetDataRsp;
+import com.cylan.ex.JfgException;
+import com.cylan.jiafeigou.dp.DpUtils;
+import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeMineContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
+import com.cylan.jiafeigou.n.mvp.model.MineMessageBean;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
+import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.utils.BitmapUtil;
 import com.cylan.utils.FastBlurUtil;
 
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.Random;
 
 import rx.Observable;
@@ -41,6 +54,8 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
     private Subscription onLoadUserHeadSubscribtion;
     private CompositeSubscription subscription;
     private JFGAccount userInfo;                          //用户信息bean
+    private ArrayList<MineMessageBean> results = new ArrayList<MineMessageBean>();
+    private boolean isOpenLogin = false;
 
     public HomeMinePresenterImpl(HomeMineContract.View view) {
         super(view);
@@ -60,11 +75,14 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
                             getView().onPortraitUpdate(PreferencesUtils.getString(JConstant.USER_IMAGE_HEAD_URL, ""));
                     }
                 });*/
-        if(subscription != null && !subscription.isUnsubscribed()){
+        if (subscription != null && !subscription.isUnsubscribed()) {
             subscription.unsubscribe();
         }
-            subscription = new CompositeSubscription();
-            subscription.add(initData());
+        subscription = new CompositeSubscription();
+            subscription.add(checkIsOpenLoginCallBack());
+        subscription.add(initData());
+            subscription.add(getMesgDpData());
+            subscription.add(getMesgDpDataCallBack());
     }
 
     @Override
@@ -75,22 +93,15 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
     }
 
     @Override
-    public void requestLatestPortrait() {
-
-    }
-
-    @Override
-    public void portraitBlur(@DrawableRes int id) {
-        onBlurSubscribtion = Observable.just(id)
+    public void portraitBlur(Bitmap bitmap) {
+        onBlurSubscribtion = Observable.just(bitmap)
                 .subscribeOn(Schedulers.computation())
-                .map(new Func1<Integer, Bitmap>() {
+                .map(new Func1<Bitmap, Bitmap>() {
                     @Override
-                    public Bitmap call(Integer integer) {
+                    public Bitmap call(Bitmap bm) {
                         if (getView() == null) {
                             return null;
                         }
-                        Bitmap bm = BitmapFactory.decodeResource(getView().getContext().getResources(),
-                                integer);
                         Bitmap b = BitmapUtil.zoomBitmap(bm, 160, 160);
                         return FastBlurUtil.blur(b, 20, 2);
                     }
@@ -112,47 +123,6 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
                         if (getView() == null || drawable == null)
                             return;
                         getView().onBlur(drawable);
-                    }
-                });
-    }
-
-    @Override
-    public void portraitUpdateByUrl(String url) {
-        onLoadUserHeadSubscribtion = Observable.just(url)
-                .subscribeOn(Schedulers.io())
-                .map(new Func1<String, Bitmap>() {
-                    @Override
-                    public Bitmap call(String url) {
-                        if (getView() == null) {
-                            return null;
-                        }
-                        final Bitmap[] bit = new Bitmap[1];
-                        Glide.with(getView().getContext())
-                                .load(url).asBitmap().into(new SimpleTarget<Bitmap>() {
-                            @Override
-                            public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-                                bit[0] = resource;
-                                bit[0] = BitmapUtil.zoomBitmap(bit[0], 160, 160);
-                            }
-                        });
-                        return FastBlurUtil.blur(bit[0], 20, 2);
-                    }
-                })
-                .map(new Func1<Bitmap, Drawable>() {
-                    @Override
-                    public Drawable call(Bitmap bitmap) {
-                        if (getView() == null
-                                || getView().getContext() == null
-                                || getView().getContext().getResources() == null)
-                            return null;
-                        return new BitmapDrawable(getView().getContext().getResources(), bitmap);
-                    }
-                })
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<Drawable>() {
-                    @Override
-                    public void call(Drawable drawable) {
-                        getView().setUserImageHead(drawable);
                     }
                 });
     }
@@ -199,15 +169,14 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
                 .subscribe(new Action1<RxEvent.GetUserInfo>() {
                     @Override
                     public void call(RxEvent.GetUserInfo getUserInfo) {
-                        if (getUserInfo != null && getUserInfo instanceof RxEvent.GetUserInfo){
+                        if (getUserInfo != null && getUserInfo instanceof RxEvent.GetUserInfo) {
                             userInfo = getUserInfo.jfgAccount;
-                            if (getView() != null){
-                                getView().setUserImageHead(userInfo.getPhotoUrl());
-                                if (userInfo.getAlias() == null | "".equals(userInfo.getAlias())){
+                            if (getView() != null) {
+                                getView().setUserImageHeadByUrl(userInfo.getPhotoUrl());
+                                if (userInfo.getAlias() == null | TextUtils.isEmpty(userInfo.getAlias())){
                                     userInfo.setAlias(createRandomName());
                                 }
                                 getView().setAliasName(userInfo.getAlias());
-                                getView().setMesgNumber(99);
                             }
                         }
                     }
@@ -216,6 +185,7 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
 
     /**
      * 获取到用户信息
+     *
      * @return
      */
     @Override
@@ -225,12 +195,116 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
 
     /**
      * 判断是否是三方的登录
+     *
      * @return
      */
     @Override
     public boolean checkOpenLogIn() {
-        // TODO
-        return false;
+        return isOpenLogin;
+    }
+
+    /**
+     * Dp获取到消息记录
+     */
+    @Override
+    public Subscription getMesgDpData() {
+        return rx.Observable.just(null)
+                .subscribeOn(Schedulers.newThread())
+                .subscribe(new Action1<Object>() {
+                    @Override
+                    public void call(Object o) {
+                        try {
+                            ArrayList<JFGDPMsg> dp = new ArrayList<>();
+                            JFGDPMsg msg = new JFGDPMsg(601, 0);
+                            dp.add(msg);
+                            long seq = JfgCmdInsurance.getCmd().getInstance().robotGetData("",dp,0,false, 0);
+                            AppLogger.d("getMesgDpData"+seq);
+                        } catch (JfgException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        AppLogger.e("getMesgDpData"+throwable.getLocalizedMessage());
+                    }
+                });
+    }
+
+    /**
+     * Dp获取消息记录的回调
+     * @return
+     */
+    @Override
+    public Subscription getMesgDpDataCallBack() {
+        return RxBus.getCacheInstance().toObservable(RobotoGetDataRsp.class)
+                .subscribeOn(Schedulers.io())
+                .map(new Func1<RobotoGetDataRsp, ArrayList<MineMessageBean>>() {
+                    @Override
+                    public ArrayList<MineMessageBean> call(RobotoGetDataRsp robotoGetDataRsp) {
+                        if (robotoGetDataRsp != null && robotoGetDataRsp instanceof RobotoGetDataRsp){
+                            results.clear();
+                            ArrayList<JFGDPMsg> jfgdpMsgs = robotoGetDataRsp.map.get(601);
+                            results.addAll(convertData(jfgdpMsgs));
+                        }
+                        return results;
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<ArrayList<MineMessageBean>>() {
+                    @Override
+                    public void call(ArrayList<MineMessageBean> list) {
+                        if (list.size() != 0){
+                            getView().setMesgNumber(list.size());
+                        }
+                    }
+                });
+
+    }
+
+    /**
+     * 拿到消息的所有的数据
+     * @return
+     */
+    @Override
+    public ArrayList<MineMessageBean> getMesgAllData() {
+        return results;
+    }
+
+    /**
+     * 是否三方登录的回调
+     * @return
+     */
+    @Override
+    public Subscription checkIsOpenLoginCallBack() {
+        return RxBus.getCacheInstance().toObservableSticky(Boolean.class)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<Boolean>() {
+                    @Override
+                    public void call(Boolean aBoolean) {
+                        isOpenLogin = aBoolean;
+                    }
+                });
+    }
+
+    /**
+     * 解析转换数据
+     * @param jfgdpMsgs
+     */
+    private ArrayList<MineMessageBean> convertData(ArrayList<JFGDPMsg> jfgdpMsgs) {
+        MineMessageBean bean;
+        ArrayList<MineMessageBean> results = new ArrayList<MineMessageBean>();
+        if (jfgdpMsgs != null){
+            for (JFGDPMsg jfgdpMsg:jfgdpMsgs){
+                try {
+                    bean = DpUtils.unpackData(jfgdpMsg.packValue,MineMessageBean.class);
+                    results.add(bean);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return results;
     }
 
 }

@@ -29,8 +29,8 @@ import com.cylan.entity.jniCall.RobotoGetDataRsp;
 import com.cylan.ex.JfgException;
 import com.cylan.jfgapp.interfases.AppCallBack;
 import com.cylan.jfgapp.jni.JfgAppCmd;
-import com.cylan.jiafeigou.cache.JCache;
 import com.cylan.jiafeigou.cache.CacheParser;
+import com.cylan.jiafeigou.cache.JCache;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JResultEvent;
@@ -100,7 +100,6 @@ public class DataSourceService extends Service implements AppCallBack {
         }).start();
     }
 
-
     @Override
     public void OnLocalMessage(String s, int i, byte[] bytes) {
         AppLogger.d("OnLocalMessage :" + s + ",i:" + i);
@@ -145,7 +144,6 @@ public class DataSourceService extends Service implements AppCallBack {
         AppLogger.d("OnUpdateHistoryErrorCode :");
     }
 
-
     @Override
     public void OnServerConfig(JFGServerCfg jfgServerCfg) {
         AppLogger.d("OnServerConfig :");
@@ -153,7 +151,7 @@ public class DataSourceService extends Service implements AppCallBack {
 
     @Override
     public void OnLogoutByServer(int i) {
-        AppLogger.d("OnLocalMessage :"+i);
+        AppLogger.d("OnLocalMessage :" + i);
         RxBus.getCacheInstance().post(i);
     }
 
@@ -175,7 +173,7 @@ public class DataSourceService extends Service implements AppCallBack {
 
     @Override
     public void OnHttpDone(JFGMsgHttpResult jfgMsgHttpResult) {
-        AppLogger.d("OnLocalMessage :"+new Gson().toJson(jfgMsgHttpResult));
+        AppLogger.d("OnLocalMessage :" + new Gson().toJson(jfgMsgHttpResult));
         if (RxBus.getCacheInstance().hasObservers())
             RxBus.getCacheInstance().post(new RxEvent.GetHttpDoneResult(jfgMsgHttpResult));
     }
@@ -288,7 +286,7 @@ public class DataSourceService extends Service implements AppCallBack {
 
     @Override
     public void OnGetFriendListRsp(int i, ArrayList<JFGFriendAccount> arrayList) {
-        AppLogger.d("OnLocalMessage :");
+        AppLogger.d("OnLocalMessage :"+arrayList.size());
         if (RxBus.getCacheInstance() != null && RxBus.getCacheInstance().hasObservers()) {
             RxBus.getCacheInstance().post(new RxEvent.GetFriendList(i, arrayList));
         }
@@ -296,7 +294,7 @@ public class DataSourceService extends Service implements AppCallBack {
 
     @Override
     public void OnGetFriendRequestListRsp(int i, ArrayList<JFGFriendRequest> arrayList) {
-        AppLogger.d("OnLocalMessage :");
+        AppLogger.d("OnLocalMessage:"+arrayList.size());
         if (RxBus.getCacheInstance() != null && RxBus.getCacheInstance().hasObservers()) {
             RxBus.getCacheInstance().post(new RxEvent.GetAddReqList(i, arrayList));
         }
@@ -304,8 +302,8 @@ public class DataSourceService extends Service implements AppCallBack {
 
     @Override
     public void OnGetFriendInfoRsp(int i, JFGFriendAccount jfgFriendAccount) {
-        AppLogger.d("OnLocalMessage :"+new Gson().toJson(jfgFriendAccount));
-        RxBus.getCacheInstance().post(new RxEvent.GetFriendInfoCall(i,jfgFriendAccount));
+        AppLogger.d("OnLocalMessage :" + new Gson().toJson(jfgFriendAccount));
+        RxBus.getCacheInstance().post(new RxEvent.GetFriendInfoCall(i, jfgFriendAccount));
     }
 
     @Override
@@ -336,8 +334,8 @@ public class DataSourceService extends Service implements AppCallBack {
 
     @Override
     public void OnGetUnShareListByCidRsp(int i, ArrayList<JFGFriendAccount> arrayList) {
-        AppLogger.d("OnGetUnShareListByCidRsp :" + arrayList.get(0));
-//        RxBus.getCacheInstance().post(new RxEvent.GetHasShareFriendCallBack(i,arrayList));
+        AppLogger.d("OnGetUnShareListByCidRsp :");
+        RxBus.getCacheInstance().post(new RxEvent.GetHasShareFriendCallBack(i,arrayList));
     }
 
     @Override
@@ -366,6 +364,9 @@ public class DataSourceService extends Service implements AppCallBack {
     @Override
     public void OnGetFeedbackRsp(int i, ArrayList<JFGFeedbackInfo> arrayList) {
         AppLogger.d("OnGetFeedbackRsp :");
+        if (RxBus.getCacheInstance().hasObservers()) {
+            RxBus.getCacheInstance().post(new RxEvent.GetFeedBackRsp(i,arrayList));
+        }
     }
 
     @Override

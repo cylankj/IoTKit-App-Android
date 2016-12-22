@@ -1,8 +1,7 @@
 package com.cylan.jiafeigou.n.mvp.impl.home;
 
-import android.content.Context;
-
 import com.cylan.entity.jniCall.JFGAccount;
+import com.cylan.entity.jniCall.JFGFeedbackInfo;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.db.DataBaseUtil;
@@ -13,7 +12,6 @@ import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.db.DbManager;
 import com.cylan.jiafeigou.support.db.ex.DbException;
-import com.cylan.jiafeigou.support.download.utils.L;
 import com.cylan.jiafeigou.support.log.AppLogger;
 
 import java.util.ArrayList;
@@ -51,11 +49,12 @@ public class HomeMineHelpSuggestionImpl extends AbstractPresenter<HomeMineHelpSu
 
     @Override
     public void start() {
-        if (compositeSubscription != null && !compositeSubscription.isUnsubscribed()){
+        if (compositeSubscription != null && !compositeSubscription.isUnsubscribed()) {
             compositeSubscription.unsubscribe();
-        }else {
+        } else {
             compositeSubscription = new CompositeSubscription();
             compositeSubscription.add(getAccountInfo());
+            compositeSubscription.add(getSystemAutoReplyCallBack());
         }
     }
 
@@ -74,12 +73,12 @@ public class HomeMineHelpSuggestionImpl extends AbstractPresenter<HomeMineHelpSu
                     @Override
                     public Observable<ArrayList<MineHelpSuggestionBean>> call(Object o) {
                         ArrayList<MineHelpSuggestionBean> tempList = new ArrayList<MineHelpSuggestionBean>();
-                        if (dbManager == null){
+                        if (dbManager == null) {
                             return Observable.just(tempList);
                         }
                         try {
                             List<MineHelpSuggestionBean> list = dbManager.findAll(MineHelpSuggestionBean.class);
-                            if (list != null && list.size() != 0){
+                            if (list != null && list.size() != 0) {
                                 tempList.addAll(list);
                             }
                         } catch (DbException e) {
@@ -92,7 +91,7 @@ public class HomeMineHelpSuggestionImpl extends AbstractPresenter<HomeMineHelpSu
                 .subscribe(new Action1<ArrayList<MineHelpSuggestionBean>>() {
                     @Override
                     public void call(ArrayList<MineHelpSuggestionBean> list) {
-                        if (getView() != null){
+                        if (getView() != null) {
                             getView().initRecycleView(list);
                         }
                     }
@@ -121,7 +120,7 @@ public class HomeMineHelpSuggestionImpl extends AbstractPresenter<HomeMineHelpSu
                 .subscribe(new Action1<RxEvent.GetUserInfo>() {
                     @Override
                     public void call(RxEvent.GetUserInfo userInfo) {
-                        if (userInfo != null && userInfo instanceof RxEvent.GetUserInfo){
+                        if (userInfo != null && userInfo instanceof RxEvent.GetUserInfo) {
                             userInfomation = userInfo.jfgAccount;
                             dbManager = DataBaseUtil.getInstance(userInfo.jfgAccount.getAccount()).dbManager;
                             initData();
@@ -132,6 +131,7 @@ public class HomeMineHelpSuggestionImpl extends AbstractPresenter<HomeMineHelpSu
 
     /**
      * 保存到本地数据库
+     *
      * @param bean
      */
     @Override
@@ -148,38 +148,40 @@ public class HomeMineHelpSuggestionImpl extends AbstractPresenter<HomeMineHelpSu
      */
     @Override
     public String getUserPhotoUrl() {
-        if (userInfomation == null){
+        if (userInfomation == null) {
             return "";
-        }else {
+        } else {
             return userInfomation.getPhotoUrl();
         }
     }
 
     /**
      * 检测是否超时5分钟
+     *
      * @return
      */
     @Override
     public boolean checkOverTime(String time) {
         long lastItemTime = Long.parseLong(time);
-        if (System.currentTimeMillis() - lastItemTime > 5*60*1000){
+        if (System.currentTimeMillis() - lastItemTime > 5 * 60 * 1000) {
             return true;
-        }else {
+        } else {
             return false;
         }
     }
 
     /**
      * 检测是否超过20s
+     *
      * @param time
      * @return
      */
     @Override
     public boolean checkOver20Min(String time) {
         long lastItemTime = Long.parseLong(time);
-        if (System.currentTimeMillis() - lastItemTime > 2*60*1000){
+        if (System.currentTimeMillis() - lastItemTime > 2 * 60 * 1000) {
             return true;
-        }else {
+        } else {
             return false;
         }
     }
@@ -199,8 +201,50 @@ public class HomeMineHelpSuggestionImpl extends AbstractPresenter<HomeMineHelpSu
                 }, new Action1<Throwable>() {
                     @Override
                     public void call(Throwable throwable) {
-                        AppLogger.d("sendFeedBack"+throwable.getLocalizedMessage());
+                        AppLogger.d("sendFeedBack" + throwable.getLocalizedMessage());
                     }
                 });
     }
+
+    /**
+     * 获取系统的自动回复
+     */
+    @Override
+    public void getSystemAutoReply() {
+        rx.Observable.just(null)
+            .subscribeOn(Schedulers.newThread())
+            .subscribe(new Action1<Object>() {
+                @Override
+                public void call(Object o) {
+//                    JfgCmdInsurance.getCmd().getFeedbackList();
+                }
+            }, new Action1<Throwable>() {
+                @Override
+                public void call(Throwable throwable) {
+                    AppLogger.e("getSystemAutoReply"+throwable.getLocalizedMessage());
+                }
+            });
+    }
+
+    /**
+     * 获取系统自动回复的回调
+     * @return
+     */
+    @Override
+    public Subscription getSystemAutoReplyCallBack() {
+        return RxBus.getCacheInstance().toObservable(RxEvent.GetFeedBackRsp.class)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<RxEvent.GetFeedBackRsp>() {
+                    @Override
+                    public void call(RxEvent.GetFeedBackRsp getFeedBackRsp) {
+                        if (getFeedBackRsp != null && getFeedBackRsp instanceof RxEvent.GetFeedBackRsp){
+                            if(getView() != null && getFeedBackRsp.arrayList.size() != 0){
+                                JFGFeedbackInfo jfgFeedbackInfo = getFeedBackRsp.arrayList.get(0);
+                                getView().addSystemAutoReply(jfgFeedbackInfo.time,jfgFeedbackInfo.msg);
+                            }
+                        }
+                    }
+                });
+    }
+
 }

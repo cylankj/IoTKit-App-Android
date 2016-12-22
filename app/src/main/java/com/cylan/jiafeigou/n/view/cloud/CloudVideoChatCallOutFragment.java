@@ -127,7 +127,7 @@ public class CloudVideoChatCallOutFragment extends Fragment implements CloudVide
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.iv_hang_up:               //挂断
-                RxBus.getCacheInstance().post(new RxEvent.HangUpVideoTalk(true,tvVideoTime.getText().toString().trim()));
+                RxBus.getCacheInstance().post(new RxEvent.HangUpVideoTalk(true, tvVideoTime.getText().toString().trim()));
                 getFragmentManager().popBackStack();
                 break;
         }

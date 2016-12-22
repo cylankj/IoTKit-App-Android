@@ -16,6 +16,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendDetailContract;
@@ -86,6 +87,12 @@ public class MineFriendDetailFragment extends Fragment implements MineFriendDeta
         return view;
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (presenter != null)presenter.start();
+    }
+
     /**
      * desc:获取到传过来的数据
      */
@@ -97,9 +104,10 @@ public class MineFriendDetailFragment extends Fragment implements MineFriendDeta
         //头像显示
         Glide.with(getContext()).load(frienditembean.iconUrl)
                 .asBitmap()
-                .centerCrop()
                 .placeholder(R.drawable.icon_mine_head_normal)
                 .error(R.drawable.icon_mine_head_normal)
+                .centerCrop()
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(new BitmapImageViewTarget(ivDetailUserHead) {
                     @Override
                     protected void setResource(Bitmap resource) {
@@ -196,7 +204,7 @@ public class MineFriendDetailFragment extends Fragment implements MineFriendDeta
 
     @Override
     public void showDeleteProgress() {
-        LoadingDialog.showLoading(getFragmentManager(),getString(R.string.DELETEING));
+        LoadingDialog.showLoading(getFragmentManager(), getString(R.string.DELETEING));
     }
 
     @Override
@@ -209,7 +217,7 @@ public class MineFriendDetailFragment extends Fragment implements MineFriendDeta
      */
     private void jump2LookBigImageFragment() {
         Bundle bundle = new Bundle();
-        bundle.putString("imageUrl",frienditembean.iconUrl);
+        bundle.putString("imageUrl", frienditembean.iconUrl);
         mineLookBigImageFragment = MineLookBigImageFragment.newInstance(bundle);
         getFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
@@ -224,7 +232,7 @@ public class MineFriendDetailFragment extends Fragment implements MineFriendDeta
      */
     private void jump2SetRemarkNameFragment() {
         Bundle bundle = new Bundle();
-        bundle.putParcelable("friendBean",frienditembean);
+        bundle.putParcelable("friendBean", frienditembean);
         mineSetRemarkNameFragment = MineSetRemarkNameFragment.newInstance(bundle);
         getFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
@@ -237,7 +245,7 @@ public class MineFriendDetailFragment extends Fragment implements MineFriendDeta
 
     private void jump2ShareDeviceFragment() {
         Bundle bundle = new Bundle();
-        bundle.putParcelable("shareDeviceBean",frienditembean);
+        bundle.putParcelable("shareDeviceBean", frienditembean);
         mineShareDeviceFragment = MineFriendsListShareDevicesFragment.newInstance(bundle);
         getFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
@@ -247,10 +255,23 @@ public class MineFriendDetailFragment extends Fragment implements MineFriendDeta
                 .commit();
     }
 
+    /**
+     * 网络状态变化
+     * @param state
+     */
+    @Override
+    public void onNetStateChanged(int state) {
+        if (state == -1){
+            hideDeleteProgress();
+            ToastUtil.showNegativeToast(getString(R.string.NO_NETWORK_1));
+        }
+    }
+
+
     @Override
     public void onStop() {
         super.onStop();
-        if (presenter != null){
+        if (presenter != null) {
             presenter.stop();
         }
     }

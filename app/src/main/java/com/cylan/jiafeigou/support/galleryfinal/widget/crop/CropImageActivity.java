@@ -31,7 +31,6 @@ import android.os.Handler;
 import android.view.Window;
 import android.view.WindowManager;
 
-
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.support.galleryfinal.GalleryFinal;
 import com.cylan.jiafeigou.support.galleryfinal.utils.ILogger;
@@ -106,7 +105,7 @@ public abstract class CropImageActivity extends MonitoredActivity {
     }
 
     public void setSourceUri(Uri sourceUri) {
-        if(rotateBitmap != null) {
+        if (rotateBitmap != null) {
             rotateBitmap.recycle();
             rotateBitmap = null;
         }
@@ -211,7 +210,7 @@ public abstract class CropImageActivity extends MonitoredActivity {
 
     public void setCropEnabled(boolean enabled) {
         this.cropEnabled = enabled;
-        if ( enabled ) {
+        if (enabled) {
             startCrop();
         }
     }
@@ -266,9 +265,10 @@ public abstract class CropImageActivity extends MonitoredActivity {
 
     /**
      * 保存裁剪图片
+     *
      * @param saveFile
      */
-    public void onSaveClicked( File saveFile) {
+    public void onSaveClicked(File saveFile) {
         if (cropView == null || isSaving) {
             return;
         }
@@ -386,7 +386,7 @@ public abstract class CropImageActivity extends MonitoredActivity {
                 if (outputStream != null) {
                     String ext = FilenameUtils.getExtension(saveFile.getAbsolutePath());
                     Bitmap.CompressFormat format;
-                    if ( ext.equalsIgnoreCase("jpg") || ext.equalsIgnoreCase("jpeg") ) {
+                    if (ext.equalsIgnoreCase("jpg") || ext.equalsIgnoreCase("jpeg")) {
                         format = Bitmap.CompressFormat.JPEG;
                         croppedImage.compress(format, 90, outputStream);
                     } else {

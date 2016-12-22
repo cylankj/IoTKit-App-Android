@@ -9,16 +9,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
-import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.mvp.contract.cloud.CloudLiveSettingContract;
 import com.cylan.jiafeigou.n.mvp.impl.cloud.CloudLiveSettingPresenterImp;
+import com.cylan.jiafeigou.n.mvp.model.BeanCloudInfo;
+import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
+import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.LoadingDialog;
@@ -27,6 +28,8 @@ import com.cylan.jiafeigou.widget.SettingItemView2;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+
+import static com.cylan.jiafeigou.misc.JConstant.KEY_DEVICE_ITEM_BUNDLE;
 
 /**
  * 作者：zsl
@@ -71,7 +74,6 @@ public class CloudLiveSettingFragment extends Fragment implements CloudLiveSetti
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        cloudLiveDeviceInfoFragment = CloudLiveDeviceInfoFragment.newInstance(new Bundle());
         cloudCorrelationDoorBellFragment = CloudCorrelationDoorBellFragment.newInstance(new Bundle());
     }
 
@@ -81,22 +83,13 @@ public class CloudLiveSettingFragment extends Fragment implements CloudLiveSetti
         View view = inflater.inflate(R.layout.fragment_cloud_live_setting, container, false);
         ButterKnife.bind(this, view);
         initPresenter();
-        initListener();
         return view;
     }
 
-    private void initListener() {
-        cloudLiveDeviceInfoFragment.setOnChangeNameListener(new CloudLiveDeviceInfoFragment.OnChangeNameListener() {
-            @Override
-            public void changeName(String name) {
-                tvBellDetail.setTvSubTitle(name);
-                //TODO 名称上传服务器保存
-            }
-        });
-    }
-
     private void initPresenter() {
-        presenter = new CloudLiveSettingPresenterImp(this);
+        Bundle bundle = getArguments();
+        DeviceBean deviceBean = (DeviceBean) bundle.getParcelable(JConstant.KEY_DEVICE_ITEM_BUNDLE);
+        presenter = new CloudLiveSettingPresenterImp(this, deviceBean);
     }
 
     @Override
@@ -149,9 +142,8 @@ public class CloudLiveSettingFragment extends Fragment implements CloudLiveSetti
      * desc：删除设备弹出框
      */
     private void showClearDeviceDialog() {
-
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle("确认删除大门口门铃及其相关数据吗？");
+        builder.setTitle(String.format(getString(R.string.SURE_DELETE_1),presenter.getDeviceName()));
         builder.setPositiveButton(getString(R.string.OK), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -159,7 +151,7 @@ public class CloudLiveSettingFragment extends Fragment implements CloudLiveSetti
                 if (RxBus.getCacheInstance().hasObservers()) {
                     RxBus.getCacheInstance().post(new RxEvent.CloudLiveDelete());
                 }
-                ToastUtil.showToast("正在删除中...");
+                ToastUtil.showToast(getString(R.string.DELETEING));
             }
         });
         builder.setNegativeButton(getString(R.string.CANCEL), new DialogInterface.OnClickListener() {
@@ -181,12 +173,28 @@ public class CloudLiveSettingFragment extends Fragment implements CloudLiveSetti
     }
 
     private void jump2DeviceInfoFragment() {
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(KEY_DEVICE_ITEM_BUNDLE, presenter.getCloudInfoBean());
+        cloudLiveDeviceInfoFragment = CloudLiveDeviceInfoFragment.newInstance(bundle);
         getFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                         , R.anim.slide_in_left, R.anim.slide_out_right)
                 .add(android.R.id.content, cloudLiveDeviceInfoFragment, "cloudLiveDeviceInfoFragment")
                 .addToBackStack("cloudVideoChatConettionFragment")
                 .commit();
+        initListener();
+    }
+
+    /**
+     * 设置设备别名回调监听
+     */
+    private void initListener() {
+        cloudLiveDeviceInfoFragment.setOnChangeNameListener(new CloudLiveDeviceInfoFragment.OnChangeNameListener() {
+            @Override
+            public void changeName(String name) {
+                tvBellDetail.setTvSubTitle(name);
+            }
+        });
     }
 
     @Override
@@ -226,12 +234,22 @@ public class CloudLiveSettingFragment extends Fragment implements CloudLiveSetti
 
     @Override
     public void showClearRecordProgress() {
-        LoadingDialog.showLoading(getFragmentManager(),"清除中...");
+        LoadingDialog.showLoading(getFragmentManager(),getString(R.string.ClearingTips));
     }
 
     @Override
     public void hideClearRecordProgress() {
         LoadingDialog.dismissLoading(getFragmentManager());
+    }
+
+    /**
+     * 设置设备名称
+     *
+     * @param beanCloudInfo
+     */
+    @Override
+    public void onCloudInfoRsp(BeanCloudInfo beanCloudInfo) {
+        tvBellDetail.setTvSubTitle(presenter.getDeviceName());
     }
 
     @Override

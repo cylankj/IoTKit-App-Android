@@ -37,11 +37,11 @@ public class CloudVideoChatCallOutPresenterImp extends AbstractPresenter<CloudVi
 
     @Override
     public void stop() {
-        if (loadVideoSub != null){
+        if (loadVideoSub != null) {
             loadVideoSub.unsubscribe();
         }
 
-        if(loadProAnimSub != null){
+        if (loadProAnimSub != null) {
             loadProAnimSub.unsubscribe();
         }
     }
@@ -63,7 +63,7 @@ public class CloudVideoChatCallOutPresenterImp extends AbstractPresenter<CloudVi
                     @Override
                     public void call(Object o) {
                         getView().hideLoadingView();
-                        if (loadProAnimSub != null){
+                        if (loadProAnimSub != null) {
                             loadProAnimSub.unsubscribe();
                         }
                     }
@@ -72,20 +72,20 @@ public class CloudVideoChatCallOutPresenterImp extends AbstractPresenter<CloudVi
 
     @Override
     public void handlerHangUp(String time) {
-        RxBus.getCacheInstance().post(new RxEvent.HangUpVideoTalk(true,time));
+        RxBus.getCacheInstance().post(new RxEvent.HangUpVideoTalk(true, time));
     }
 
-    public void showLoadProgressAnim(){
-        loadProAnimSub = Observable.interval(500,300, TimeUnit.MILLISECONDS)
+    public void showLoadProgressAnim() {
+        loadProAnimSub = Observable.interval(500, 300, TimeUnit.MILLISECONDS)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<Long>() {
                     @Override
                     public void call(Long aLong) {
-                        String[] loadContext = {".","..","...",};
+                        String[] loadContext = {".", "..", "...",};
                         getView().showLoadingView();
                         getView().setLoadingText(loadContext[loadNum++]);
-                        if (loadNum == 3){
+                        if (loadNum == 3) {
                             loadNum = 0;
                         }
                     }

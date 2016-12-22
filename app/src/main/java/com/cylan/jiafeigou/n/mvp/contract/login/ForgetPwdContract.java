@@ -33,6 +33,7 @@ public interface ForgetPwdContract {
 
         /**
          * 手机号，忘记密码，手机号+验证码
+         *
          * @param account
          * @param code
          */

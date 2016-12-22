@@ -160,6 +160,9 @@ package com.cylan.jiafeigou.support.log;
  * <p>
  * User: modified by hunt
  * Date: 15-01-04
+ * <p>
+ * User: modified by hunt
+ * Date: 15-01-04
  */
 
 /**
@@ -174,7 +177,6 @@ import android.util.Log;
 import com.cylan.jiafeigou.misc.JConstant;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.UnknownFormatConversionException;
 
 /**

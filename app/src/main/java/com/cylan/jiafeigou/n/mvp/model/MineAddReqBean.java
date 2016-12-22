@@ -7,7 +7,7 @@ import java.io.Serializable;
  * 创建时间：2016/11/1
  * 描述：添加亲友请求类
  */
-public class MineAddReqBean implements Serializable{
+public class MineAddReqBean implements Serializable {
 
     public String iconUrl;              //头像
     public String account;              //账号

@@ -4,4 +4,5 @@
     android:drawable="@drawable/icon_selected" /><!--选中时效果-->
 <item android:state_checked="false"
     android:drawable="@drawable/icon_not_selected" /><!--未选中时效果-->
+<item android:drawable="@drawable/icon_not_selected"/>
 </selector>

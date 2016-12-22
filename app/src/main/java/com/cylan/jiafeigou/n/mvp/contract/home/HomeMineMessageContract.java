@@ -20,11 +20,12 @@ public interface HomeMineMessageContract {
 
         /**
          * 初始化消息列表
+         *
          * @param list
          */
         void initRecycleView(ArrayList<MineMessageBean> list);
 
-        void showClearDialog();
+
         /**
          * 消息为空显示
          */
@@ -38,7 +39,7 @@ public interface HomeMineMessageContract {
 
     interface Presenter extends BasePresenter {
 
-        void addMessageItem();
+
         /**
          * 加载消息数据
          */
@@ -51,6 +52,7 @@ public interface HomeMineMessageContract {
 
         /**
          * 获取本地数据库中的所有消息记录
+         *
          * @return
          */
         List<MineMessageBean> findAllFromDb();
@@ -62,9 +64,11 @@ public interface HomeMineMessageContract {
 
         /**
          * 消息保存到数据库
+         *
          * @param bean
          */
         void saveIntoDb(MineMessageBean bean);
+
     }
 
 }

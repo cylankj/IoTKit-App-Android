@@ -8,7 +8,6 @@ import com.cylan.jiafeigou.n.mvp.model.MineMessageBean;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.support.db.DbManager;
 import com.cylan.jiafeigou.support.db.ex.DbException;
-import com.cylan.jiafeigou.support.download.utils.L;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,16 +30,17 @@ public class HomeMineMessagePresenterImp extends AbstractPresenter<HomeMineMessa
 
     private DbManager dbManager;
 
-    public HomeMineMessagePresenterImp(HomeMineMessageContract.View view) {
+    public HomeMineMessagePresenterImp(HomeMineMessageContract.View view,ArrayList<MineMessageBean> list) {
         super(view);
         view.setPresenter(this);
+        this.list = list;
     }
 
     @Override
     public void start() {
-        if (compositeSubscription != null && !compositeSubscription.isUnsubscribed()){
+        if (compositeSubscription != null && !compositeSubscription.isUnsubscribed()) {
             compositeSubscription.unsubscribe();
-        }else {
+        } else {
             compositeSubscription = new CompositeSubscription();
             compositeSubscription.add(getAccount());
         }
@@ -48,15 +48,11 @@ public class HomeMineMessagePresenterImp extends AbstractPresenter<HomeMineMessa
 
     @Override
     public void stop() {
-        if (compositeSubscription != null && !compositeSubscription.isUnsubscribed()){
+        if (compositeSubscription != null && !compositeSubscription.isUnsubscribed()) {
             compositeSubscription.unsubscribe();
         }
     }
 
-    @Override
-    public void addMessageItem() {
-
-    }
 
     /**
      * 加载消息数据
@@ -64,11 +60,17 @@ public class HomeMineMessagePresenterImp extends AbstractPresenter<HomeMineMessa
     @Override
     public void initMesgData() {
 
-        list = new ArrayList<MineMessageBean>();
+        if (list == null){
+            list = new ArrayList<MineMessageBean>();
+        }
+
+        list.clear();
 
         MineMessageBean emMessage = new MineMessageBean("亲爱的用户,客户端将进行系统维护升级,期间对设备正常使用将会造成一定影响，对您造成的不便之处敬请谅解。再次感谢您对加菲狗的支持！", 1, System.currentTimeMillis() + "");
+        MineMessageBean emMessage2 = new MineMessageBean("设备已被删除", 1, System.currentTimeMillis() + "");
 
         list.add(emMessage);
+        list.add(emMessage2);
 
         list.addAll(findAllFromDb());
 
@@ -78,14 +80,15 @@ public class HomeMineMessagePresenterImp extends AbstractPresenter<HomeMineMessa
 
     /**
      * 处理数据的显示
+     *
      * @param list
      */
     private void handlerDataResult(ArrayList<MineMessageBean> list) {
-        if (getView() != null){
-            if (list.size() != 0){
+        if (getView() != null) {
+            if (list.size() != 0) {
                 getView().hideNoMesgView();
                 getView().initRecycleView(list);
-            }else {
+            } else {
                 getView().showNoMesgView();
             }
         }
@@ -93,6 +96,7 @@ public class HomeMineMessagePresenterImp extends AbstractPresenter<HomeMineMessa
 
     /**
      * 拿到数据库的操作对象
+     *
      * @return
      */
     @Override
@@ -102,7 +106,7 @@ public class HomeMineMessagePresenterImp extends AbstractPresenter<HomeMineMessa
                 .subscribe(new Action1<JFGAccount>() {
                     @Override
                     public void call(JFGAccount account) {
-                        if (account != null && account instanceof JFGAccount){
+                        if (account != null && account instanceof JFGAccount) {
                             // 加载数据库数据
                             dbManager = DataBaseUtil.getInstance(account.getAccount()).dbManager;
                             initMesgData();
@@ -113,15 +117,16 @@ public class HomeMineMessagePresenterImp extends AbstractPresenter<HomeMineMessa
 
     /**
      * 获取到本地数据库中的所有消息记录
+     *
      * @return
      */
     @Override
     public List<MineMessageBean> findAllFromDb() {
         List<MineMessageBean> tempList = new ArrayList<>();
-        if (dbManager != null){
+        if (dbManager != null) {
             try {
                 List<MineMessageBean> allData = dbManager.findAll(MineMessageBean.class);
-                if (allData != null){
+                if (allData != null) {
                     tempList.addAll(allData);
                 }
             } catch (DbException e) {
@@ -145,6 +150,7 @@ public class HomeMineMessagePresenterImp extends AbstractPresenter<HomeMineMessa
 
     /**
      * 消息保存到数据库
+     *
      * @param bean
      */
     @Override

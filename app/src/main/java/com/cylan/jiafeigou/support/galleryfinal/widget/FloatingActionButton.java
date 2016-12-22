@@ -173,7 +173,7 @@ public class FloatingActionButton extends ImageButton {
         final RectF circleRect = new RectF(circleLeft, circleTop, circleLeft + mCircleSize, circleTop + mCircleSize);
 
         LayerDrawable layerDrawable = new LayerDrawable(
-                new Drawable[] {
+                new Drawable[]{
                         new BitmapDrawable(getResources()),
                         createFillDrawable(circleRect),
                         new BitmapDrawable(getResources()),
@@ -201,8 +201,8 @@ public class FloatingActionButton extends ImageButton {
 
     private StateListDrawable createFillDrawable(RectF circleRect) {
         StateListDrawable drawable = new StateListDrawable();
-        drawable.addState(new int[] { android.R.attr.state_pressed }, createCircleDrawable(circleRect, mColorPressed));
-        drawable.addState(new int[] {}, createCircleDrawable(circleRect, mColorNormal));
+        drawable.addState(new int[]{android.R.attr.state_pressed}, createCircleDrawable(circleRect, mColorPressed));
+        drawable.addState(new int[]{}, createCircleDrawable(circleRect, mColorNormal));
         return drawable;
     }
 

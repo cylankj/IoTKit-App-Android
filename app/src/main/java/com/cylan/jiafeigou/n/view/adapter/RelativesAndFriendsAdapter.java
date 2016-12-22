@@ -20,9 +20,6 @@ import java.util.List;
 
 public class RelativesAndFriendsAdapter extends SuperAdapter<RelAndFriendBean> {
 
-
-    private RoundedImageView userImag;
-
     public RelativesAndFriendsAdapter(Context context, List<RelAndFriendBean> items, IMulItemViewType<RelAndFriendBean> mulItemViewType) {
         super(context, items, mulItemViewType);
     }
@@ -32,13 +29,14 @@ public class RelativesAndFriendsAdapter extends SuperAdapter<RelAndFriendBean> {
         //如果没有备注名就显示别人昵称或者账号
         holder.setText(R.id.tv_username, (item.markName == null || item.markName.equals("")) ? item.alias : item.markName);
         holder.setText(R.id.tv_add_message, item.account);
-        userImag = holder.getView(R.id.iv_userhead);
-
+        RoundedImageView userImag = holder.getView(R.id.iv_userhead);
         //头像
         Glide.with(getContext()).load(item.iconUrl)
-                .asBitmap().centerCrop()
+                .asBitmap()
                 .error(R.drawable.icon_mine_head_normal)
                 .placeholder(R.drawable.icon_mine_head_normal)
+                .centerCrop()
+                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                 .into(new BitmapImageViewTarget(userImag) {
                     @Override
                     protected void setResource(Bitmap resource) {

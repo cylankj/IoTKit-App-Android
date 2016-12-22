@@ -7,7 +7,6 @@ import android.widget.ImageView;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.model.MagBean;
 import com.cylan.jiafeigou.utils.ContextUtils;
-import com.cylan.jiafeigou.widget.FateLineView;
 import com.cylan.superadapter.IMulItemViewType;
 import com.cylan.superadapter.SuperAdapter;
 import com.cylan.superadapter.internal.SuperViewHolder;
@@ -42,7 +41,7 @@ public class MagActivityAdapter extends SuperAdapter<MagBean> {
         super(context, items, mulItemViewType);
     }
 
-    public void setCurrentState(boolean currentState){
+    public void setCurrentState(boolean currentState) {
         this.currentState = currentState;
     }
 
@@ -78,25 +77,25 @@ public class MagActivityAdapter extends SuperAdapter<MagBean> {
         //每条的第一个设置内外圈颜色
         ImageView view = (ImageView) holder.getView(R.id.iv_mag_live);
         if (bean.isFirst) {
-            if (currentState){
+            if (currentState) {
                 view.setImageDrawable(getContext().getResources().getDrawable(R.drawable.icon_dot_red));
-            }else {
+            } else {
                 view.setImageDrawable(getContext().getResources().getDrawable(R.drawable.icon_dot_green));
             }
-        }else {
+        } else {
             view.setImageDrawable(getContext().getResources().getDrawable(R.drawable.icon_dot_gary));
         }
 
-        if (layoutPosition == 0){
-            if (checkIsToday(bean.getMagTime())){
+        if (layoutPosition == 0) {
+            if (checkIsToday(bean.getMagTime())) {
                 holder.setText(R.id.tv_mag_live_day, ContextUtils.getContext().getString(R.string.DOOR_TODAY));
-            }else {
+            } else {
                 holder.setText(R.id.tv_mag_live_day, getDate(bean.magTime) + ContextUtils.getContext().getString(R.string.MONTHS));
             }
-        }else {
-            if (checkSame(bean.magTime,getList().get(layoutPosition-1).magTime)){
+        } else {
+            if (checkSame(bean.magTime, getList().get(layoutPosition - 1).magTime)) {
                 holder.setText(R.id.tv_mag_live_day, "");
-            }else {
+            } else {
                 holder.setText(R.id.tv_mag_live_day, getDate(bean.magTime) + ContextUtils.getContext().getString(R.string.MONTHS));
             }
         }
@@ -110,6 +109,7 @@ public class MagActivityAdapter extends SuperAdapter<MagBean> {
 
     /**
      * 检测是否是今天
+     *
      * @param magTime
      * @return
      */
@@ -136,9 +136,10 @@ public class MagActivityAdapter extends SuperAdapter<MagBean> {
 
     /**
      * 检测是否和前一天相等
+     *
      * @return
      */
-    public boolean checkSame(long thisTime,long lastTime) {
+    public boolean checkSame(long thisTime, long lastTime) {
         Calendar pre = Calendar.getInstance();
         Date predate = new Date(thisTime);
         pre.setTime(predate);

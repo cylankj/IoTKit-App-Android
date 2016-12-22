@@ -1,16 +1,14 @@
 package com.cylan.jiafeigou.n.mvp.contract.cloud;
 
-import android.content.Context;
+import android.widget.ImageView;
 
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
 import com.cylan.jiafeigou.n.mvp.model.CloudLiveBaseBean;
-
 import com.cylan.jiafeigou.n.mvp.model.CloudLiveBaseDbBean;
+
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
-import com.cylan.jiafeigou.support.db.DbManager;
 
 import rx.Subscription;
 
@@ -39,9 +37,9 @@ public interface CloudLiveContract {
         void hideReconnetProgress();
 
         void scrollToLast();                               //滚动到最后一条
-
         /**
          * 初始化消息列表
+         *
          * @param list
          */
         void initRecycleView(List<CloudLiveBaseBean> list);
@@ -55,13 +53,24 @@ public interface CloudLiveContract {
          * 隐藏空视图
          */
         void hideNoMesg();
+
+        /**
+         * 播放录音动画
+         * @param view
+         */
+        void startPlayVoiceAnim(ImageView view);
+
+        /**
+         * 停止播放录音动画
+         */
+        void stopPlayVoiceAnim();
     }
 
     interface Presenter extends BasePresenter {
 
         String startRecord();
 
-        void startTalk();
+        void startTalkAnimation();
 
         void stopRecord();
 
@@ -87,13 +96,14 @@ public interface CloudLiveContract {
 
         void saveIntoDb(CloudLiveBaseDbBean bean);          //保存到数据库
 
-        List<CloudLiveBaseDbBean> findFromAllDb();          //查询数据库
+        List<CloudLiveBaseDbBean> findAllFromDb();          //查询数据库
 
         Subscription refreshHangUpView();                   //更新挂断结果
 
         void handlerVideoTalk();                            //处理视频通话
 
         void handlerLeveaMesg();                            //处理语音留言
+
         /**
          * 获取到账号的信息用于创建数据库
          */
@@ -103,5 +113,10 @@ public interface CloudLiveContract {
          * 初始化消息列表的数据
          */
         void initData();
+
+        /**
+         * 检测录音的权限
+         */
+        boolean checkRecordPermission();
     }
 }

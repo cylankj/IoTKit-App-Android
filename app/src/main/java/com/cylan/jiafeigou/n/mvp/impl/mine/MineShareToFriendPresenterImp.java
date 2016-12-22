@@ -1,14 +1,15 @@
 package com.cylan.jiafeigou.n.mvp.impl.mine;
 
+import com.cylan.entity.JfgEnum;
 import com.cylan.entity.jniCall.JFGFriendAccount;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineShareToFriendContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
+import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.superadapter.internal.SuperViewHolder;
 
 import java.util.ArrayList;
@@ -42,9 +43,9 @@ public class MineShareToFriendPresenterImp extends AbstractPresenter<MineShareTo
 
     @Override
     public void start() {
-        if (compositeSubscription != null && !compositeSubscription.isUnsubscribed()){
+        if (compositeSubscription != null && !compositeSubscription.isUnsubscribed()) {
             compositeSubscription.unsubscribe();
-        }else {
+        } else {
             compositeSubscription = new CompositeSubscription();
             compositeSubscription.add(getAllShareFriendCallBack());
             compositeSubscription.add(shareDeviceCallBack());
@@ -54,7 +55,7 @@ public class MineShareToFriendPresenterImp extends AbstractPresenter<MineShareTo
 
     @Override
     public void stop() {
-        if (compositeSubscription != null && !compositeSubscription.isUnsubscribed()){
+        if (compositeSubscription != null && !compositeSubscription.isUnsubscribed()) {
             compositeSubscription.unsubscribe();
         }
     }
@@ -64,7 +65,7 @@ public class MineShareToFriendPresenterImp extends AbstractPresenter<MineShareTo
      */
     @Override
     public void sendShareToFriendReq(final String cid, ArrayList<RelAndFriendBean> list) {
-        if (getView() != null){
+        if (getView() != null) {
             getView().showSendProgress();
         }
         ShareTotalFriend = list.size();
@@ -73,9 +74,9 @@ public class MineShareToFriendPresenterImp extends AbstractPresenter<MineShareTo
                 .subscribe(new Action1<ArrayList<RelAndFriendBean>>() {
                     @Override
                     public void call(ArrayList<RelAndFriendBean> list) {
-                        for (RelAndFriendBean bean:list){
+                        for (RelAndFriendBean bean : list) {
                             try {
-                                JfgCmdInsurance.getCmd().shareDevice(cid,bean.account);
+                                JfgCmdInsurance.getCmd().shareDevice(cid, bean.account);
                             } catch (JfgException e) {
                                 e.printStackTrace();
                             }
@@ -84,7 +85,7 @@ public class MineShareToFriendPresenterImp extends AbstractPresenter<MineShareTo
                 }, new Action1<Throwable>() {
                     @Override
                     public void call(Throwable throwable) {
-                        AppLogger.e("sendShareToFriendReq"+throwable.getLocalizedMessage());
+                        AppLogger.e("sendShareToFriendReq" + throwable.getLocalizedMessage());
                     }
                 });
     }
@@ -97,15 +98,16 @@ public class MineShareToFriendPresenterImp extends AbstractPresenter<MineShareTo
 
     /**
      * 判断分享人数是否已超过5人
+     *
      * @param number
      * @return
      */
     @Override
     public void checkShareNumIsOver(SuperViewHolder holder, boolean isChange, int number) {
-        if(number > 5 && getView() != null){
+        if (number > 5 && getView() != null) {
             getView().showNumIsOverDialog(holder);
-        }else {
-            getView().setHasShareFriendNum(isChange,number);
+        } else {
+            getView().setHasShareFriendNum(isChange, number);
         }
     }
 
@@ -128,13 +130,14 @@ public class MineShareToFriendPresenterImp extends AbstractPresenter<MineShareTo
                 }, new Action1<Throwable>() {
                     @Override
                     public void call(Throwable throwable) {
-                        AppLogger.e("getAllShareFriend"+throwable.getLocalizedMessage());
+                        AppLogger.e("getAllShareFriend" + throwable.getLocalizedMessage());
                     }
                 });
     }
 
     /**
      * 获取到未分享亲友的回调
+     *
      * @return
      */
     @Override
@@ -143,13 +146,13 @@ public class MineShareToFriendPresenterImp extends AbstractPresenter<MineShareTo
                 .flatMap(new Func1<RxEvent.GetHasShareFriendCallBack, Observable<ArrayList<RelAndFriendBean>>>() {
                     @Override
                     public Observable<ArrayList<RelAndFriendBean>> call(RxEvent.GetHasShareFriendCallBack getFriendList) {
-                        if (getFriendList != null && getFriendList instanceof RxEvent.GetHasShareFriendCallBack){
-                            if (getFriendList.i == 0 && getFriendList.arrayList.size() != 0){
+                        if (getFriendList != null && getFriendList instanceof RxEvent.GetHasShareFriendCallBack) {
+                            if (getFriendList.i == 0 && getFriendList.arrayList.size() != 0) {
                                 return Observable.just(converData(getFriendList.arrayList));
-                            }else {
+                            } else {
                                 return Observable.just(null);
                             }
-                        }else {
+                        } else {
                             return Observable.just(null);
                         }
                     }
@@ -158,9 +161,9 @@ public class MineShareToFriendPresenterImp extends AbstractPresenter<MineShareTo
                 .subscribe(new Action1<ArrayList<RelAndFriendBean>>() {
                     @Override
                     public void call(ArrayList<RelAndFriendBean> list) {
-                        if (list != null){
+                        if (list != null) {
                             handlerDataResult(list);
-                        }else {
+                        } else {
                             getView().showNoFriendNullView();
                         }
                     }
@@ -169,6 +172,7 @@ public class MineShareToFriendPresenterImp extends AbstractPresenter<MineShareTo
 
     /**
      * 分享设备的回调
+     *
      * @return
      */
     @Override
@@ -178,12 +182,12 @@ public class MineShareToFriendPresenterImp extends AbstractPresenter<MineShareTo
                 .subscribe(new Action1<RxEvent.ShareDeviceCallBack>() {
                     @Override
                     public void call(RxEvent.ShareDeviceCallBack shareDeviceCallBack) {
-                        if (shareDeviceCallBack != null && shareDeviceCallBack instanceof RxEvent.ShareDeviceCallBack){
+                        if (shareDeviceCallBack != null && shareDeviceCallBack instanceof RxEvent.ShareDeviceCallBack) {
                             callbackList.add(shareDeviceCallBack);
                         }
 
-                        if (callbackList.size() == ShareTotalFriend){
-                            if (getView() != null){
+                        if (callbackList.size() == ShareTotalFriend) {
+                            if (getView() != null) {
                                 getView().handlerAfterSendShareReq(callbackList);
                             }
                         }
@@ -193,16 +197,22 @@ public class MineShareToFriendPresenterImp extends AbstractPresenter<MineShareTo
 
     /**
      * 数据的转换
+     *
      * @param friendList
      * @return
      */
     private ArrayList<RelAndFriendBean> converData(ArrayList<JFGFriendAccount> friendList) {
         ArrayList<RelAndFriendBean> list = new ArrayList<>();
-        for (JFGFriendAccount friendAccount:friendList){
+        for (JFGFriendAccount friendAccount : friendList) {
             RelAndFriendBean bean = new RelAndFriendBean();
             bean.account = friendAccount.account;
             bean.alias = friendAccount.alias;
             bean.markName = friendAccount.markName;
+            try {
+                bean.iconUrl = JfgCmdInsurance.getCmd().getCloudUrlByType(JfgEnum.JFG_URL.PORTRAIT,0,friendAccount.account+".jpg","");
+            } catch (JfgException e) {
+                e.printStackTrace();
+            }
             list.add(bean);
         }
         return list;
@@ -210,16 +220,17 @@ public class MineShareToFriendPresenterImp extends AbstractPresenter<MineShareTo
 
     /**
      * 处理返回数据
+     *
      * @param relAndFriendBeen
      */
     private void handlerDataResult(ArrayList<RelAndFriendBean> relAndFriendBeen) {
-        if (relAndFriendBeen != null){
-            if (getView() != null && relAndFriendBeen.size() != 0){
+        if (relAndFriendBeen != null) {
+            if (getView() != null && relAndFriendBeen.size() != 0) {
                 getView().initRecycleView(relAndFriendBeen);
-            }else {
+            } else {
                 getView().showNoFriendNullView();
             }
-        }else {
+        } else {
             getView().showNoFriendNullView();
         }
     }

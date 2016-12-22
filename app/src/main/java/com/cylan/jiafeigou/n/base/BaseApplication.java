@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.multidex.MultiDexApplication;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -30,7 +31,7 @@ import com.squareup.leakcanary.LeakCanary;
 /**
  * Created by hunt on 16-5-14.
  */
-public class BaseApplication extends Application implements Application.ActivityLifecycleCallbacks {
+public class BaseApplication extends MultiDexApplication implements Application.ActivityLifecycleCallbacks {
 
     private static final String TAG = "BaseApplication";
     private HttpProxyCacheServer proxy;

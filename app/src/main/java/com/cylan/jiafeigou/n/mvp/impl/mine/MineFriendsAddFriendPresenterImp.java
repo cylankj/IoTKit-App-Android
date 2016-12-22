@@ -12,7 +12,7 @@ import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
  * 创建时间：2016/11/26
  * 描述：
  */
-public class MineFriendsAddFriendPresenterImp extends AbstractPresenter<MineFriendsAddFriendContract.View> implements MineFriendsAddFriendContract.Presenter{
+public class MineFriendsAddFriendPresenterImp extends AbstractPresenter<MineFriendsAddFriendContract.View> implements MineFriendsAddFriendContract.Presenter {
 
     public MineFriendsAddFriendPresenterImp(MineFriendsAddFriendContract.View view) {
         super(view);
@@ -21,12 +21,28 @@ public class MineFriendsAddFriendPresenterImp extends AbstractPresenter<MineFrie
 
     /**
      * 检测联系人权限
+     *
      * @return
      */
     @Override
-    public boolean checkPermission() {
+    public boolean checkContractPermission() {
         if (ContextCompat.checkSelfPermission(getView().getContext(),
                 Manifest.permission.READ_CONTACTS)
+                != PackageManager.PERMISSION_GRANTED) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    /**
+     * 检测相机的权限
+     * @return
+     */
+    @Override
+    public boolean checkCameraPermission() {
+        if (ContextCompat.checkSelfPermission(getView().getContext(),
+                Manifest.permission.CAMERA)
                 != PackageManager.PERMISSION_GRANTED) {
             return false;
         }else{

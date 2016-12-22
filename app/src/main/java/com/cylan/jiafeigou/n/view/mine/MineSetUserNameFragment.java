@@ -3,15 +3,12 @@ package com.cylan.jiafeigou.n.view.mine;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.text.Editable;
 import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.jiafeigou.R;
@@ -79,7 +76,7 @@ public class MineSetUserNameFragment extends Fragment implements MineInfoSetName
     @Override
     public void onStart() {
         super.onStart();
-        if (presenter != null)presenter.start();
+        if (presenter != null) presenter.start();
     }
 
     /**
@@ -117,7 +114,7 @@ public class MineSetUserNameFragment extends Fragment implements MineInfoSetName
 
     @Override
     public void showSendHint() {
-        LoadingDialog.showLoading(getFragmentManager(),getString(R.string.LOADING));
+        LoadingDialog.showLoading(getFragmentManager(), getString(R.string.LOADING));
     }
 
     @Override
@@ -126,7 +123,20 @@ public class MineSetUserNameFragment extends Fragment implements MineInfoSetName
     }
 
     /**
+     * 网络状态变化
+     * @param state
+     */
+    @Override
+    public void onNetStateChanged(int state) {
+        if (state == -1){
+            hideSendHint();
+            ToastUtil.showNegativeToast(getString(R.string.NO_NETWORK_1));
+        }
+    }
+
+    /**
      * 处理互调的结果
+     *
      * @param getUserInfo
      */
     @Override
@@ -182,6 +192,6 @@ public class MineSetUserNameFragment extends Fragment implements MineInfoSetName
     public void onStop() {
         super.onStop();
         hideSendHint();
-        if (presenter != null)presenter.stop();
+        if (presenter != null) presenter.stop();
     }
 }

@@ -75,7 +75,6 @@ public class GlideNetVideoUtils {
     }
 
 
-
     public static Bitmap createVideoThumbnail(String filePath) {
         Bitmap bitmap = null;
         MediaMetadataRetriever retriever = new MediaMetadataRetriever();

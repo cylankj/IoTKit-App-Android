@@ -11,6 +11,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
 import com.cylan.jiafeigou.n.mvp.contract.mag.MagLiveContract;
 import com.cylan.jiafeigou.n.mvp.impl.mag.MagLivePresenterImp;
@@ -18,7 +19,6 @@ import com.cylan.jiafeigou.n.mvp.model.MagBean;
 import com.cylan.jiafeigou.n.view.adapter.MagActivityAdapter;
 import com.cylan.jiafeigou.n.view.mag.MagLiveFragment;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 
 import java.text.SimpleDateFormat;
@@ -59,19 +59,19 @@ public class MagLiveActivity extends BaseFullScreenFragmentActivity implements M
     private MagLiveFragment magLiveFragment;
     private MagActivityAdapter adapter;
     private MagLiveContract.Presenter presenter;
+    private Bundle bundleExtra = new Bundle();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mag_live);
-        //实例化msgLiveFragment
-        magLiveFragment = MagLiveFragment.newInstance(new Bundle());
         ButterKnife.bind(this);
+        bundleExtra = getIntent().getBundleExtra(JConstant.KEY_DEVICE_ITEM_BUNDLE);
         initPresenter();
         //用来存放，所需要的bean对象
         initTopBar();
         initDoorState(presenter.getDoorCurrentState());
-        initMagLiveFragmentLisenter();
+
     }
 
     @Override
@@ -120,6 +120,7 @@ public class MagLiveActivity extends BaseFullScreenFragmentActivity implements M
 
     /**
      * 获得当前日期的方法
+     *
      * @param
      */
     public String getDate() {
@@ -151,7 +152,10 @@ public class MagLiveActivity extends BaseFullScreenFragmentActivity implements M
      */
     @OnClick(R.id.imgV_msg_title_top_setting)
     public void onClickSetting() {
+        //实例化msgLiveFragment
+        magLiveFragment = MagLiveFragment.newInstance(bundleExtra);
         loadFragment(android.R.id.content, magLiveFragment);
+        initMagLiveFragmentLisenter();
     }
 
     @OnClick(R.id.imgV_msg_title_top_door)
@@ -209,7 +213,7 @@ public class MagLiveActivity extends BaseFullScreenFragmentActivity implements M
             adapter = new MagActivityAdapter(getContext(), list, null);
             adapter.setCurrentState(presenter.getDoorCurrentState());
             RvMagState.setAdapter(adapter);
-        }else {
+        } else {
             List<MagBean> magBeanList = new ArrayList<>();
             LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
             RvMagState.setLayoutManager(layoutManager);

@@ -48,6 +48,9 @@ import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.LoginButton;
 import com.cylan.jiafeigou.widget.dialog.BaseDialog;
 import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
+import com.sina.weibo.sdk.auth.sso.SsoHandler;
+import com.tencent.connect.common.Constants;
+import com.tencent.tauth.Tencent;
 
 import java.lang.ref.WeakReference;
 
@@ -132,7 +135,6 @@ public class LoginFragment extends android.support.v4.app.Fragment
     LinearLayout lLayoutAgreement;
     @BindView(R.id.tv_agreement)
     TextView tvAgreement;
-
 
     private VerificationCodeLogic verificationCodeLogic;
     private int registerWay = JConstant.REGISTER_BY_PHONE;
@@ -271,7 +273,6 @@ public class LoginFragment extends android.support.v4.app.Fragment
         AnimatorUtils.onSimpleBounceUpIn(vsLayoutSwitcher, 1000, 20);
         AnimatorUtils.onSimpleBounceUpIn(rLayoutLoginThirdParty, 200, 400);
     }
-
 
     /**
      * 初始化view
@@ -876,5 +877,19 @@ public class LoginFragment extends android.support.v4.app.Fragment
         }
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
+        SsoHandler sinaCallBack = presenter.getSinaCallBack();
+        if (sinaCallBack != null){
+            sinaCallBack.authorizeCallBack(requestCode, resultCode, data);
+        }
+
+        if (requestCode == Constants.REQUEST_LOGIN ||
+                requestCode == Constants.REQUEST_APPBAR) {
+            presenter.onActivityResultData(requestCode,resultCode,data);
+        }
+
+        super.onActivityResult(requestCode, resultCode, data);
+    }
 }

@@ -9,7 +9,6 @@ import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.entity.jniCall.RobotoGetDataRsp;
 import com.cylan.ex.JfgException;
-import com.cylan.jfgapp.jni.JfgAppCmd;
 import com.cylan.jiafeigou.cache.JCache;
 import com.cylan.jiafeigou.misc.Converter;
 import com.cylan.jiafeigou.misc.JConstant;

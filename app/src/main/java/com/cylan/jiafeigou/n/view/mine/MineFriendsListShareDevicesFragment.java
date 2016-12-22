@@ -11,7 +11,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
@@ -22,11 +21,11 @@ import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
 import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
 import com.cylan.jiafeigou.n.view.adapter.ChooseShareDeviceAdapter;
 import com.cylan.jiafeigou.rx.RxEvent;
-import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.widget.LoadingDialog;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -73,8 +72,8 @@ public class MineFriendsListShareDevicesFragment extends Fragment implements Min
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_mine_friend_share_devices, container, false);
         ButterKnife.bind(this, view);
-        initPresenter();
         getArgumentData();
+        initPresenter();
         initTitleView(shareDeviceBean);
         showLoadingDialog();
         return view;
@@ -101,7 +100,7 @@ public class MineFriendsListShareDevicesFragment extends Fragment implements Min
     }
 
     private void initPresenter() {
-        presenter = new MineFriendListShareDevicesPresenterImp(this);
+        presenter = new MineFriendListShareDevicesPresenterImp(shareDeviceBean.account,this);
     }
 
     @Override
@@ -129,9 +128,9 @@ public class MineFriendsListShareDevicesFragment extends Fragment implements Min
     @Override
     public void initTitleView(RelAndFriendBean bean) {
         if (TextUtils.isEmpty(bean.markName.trim())) {
-            tvShareTo.setText(getString(R.string.Tap3_Friends_Share)+bean.alias);
+            tvShareTo.setText(getString(R.string.Tap3_Friends_Share) + bean.alias);
         } else {
-            tvShareTo.setText(getString(R.string.Tap3_Friends_Share)+bean.markName);
+            tvShareTo.setText(getString(R.string.Tap3_Friends_Share) + bean.markName);
         }
     }
 
@@ -177,12 +176,25 @@ public class MineFriendsListShareDevicesFragment extends Fragment implements Min
     }
 
     /**
-     * 可分享设备为无
+     * 可分享设备为有
      */
     @Override
     public void hideNoDeviceView() {
         llNoDevice.setVisibility(View.INVISIBLE);
         tvChooseDeviceTitle.setVisibility(View.VISIBLE);
+    }
+
+    /**
+     * 网络状态变化
+     * @param state
+     */
+    @Override
+    public void onNetStateChanged(int state) {
+        if (state == -1){
+            hideLoadingDialog();
+            hideSendReqProgress();
+            ToastUtil.showNegativeToast(getString(R.string.NO_NETWORK_1));
+        }
     }
 
     /**
@@ -206,7 +218,7 @@ public class MineFriendsListShareDevicesFragment extends Fragment implements Min
      */
     @Override
     public void showSendReqProgress() {
-        LoadingDialog.showLoading(getFragmentManager(),getString(R.string.LOADING));
+        LoadingDialog.showLoading(getFragmentManager(), getString(R.string.LOADING));
     }
 
     /**
@@ -222,20 +234,20 @@ public class MineFriendsListShareDevicesFragment extends Fragment implements Min
      */
     @Override
     public void showSendReqFinishReuslt(ArrayList<RxEvent.ShareDeviceCallBack> callBacks) {
-        for (int i = 0; i < callBacks.size(); i++) {
+        for (int i =callBacks.size()-1; i >= 0 ; i--) {
             if (callBacks.get(i).requestId == JError.ErrorOK
                     || callBacks.get(i).requestId == JError.ErrorShareAlready
                     || callBacks.get(i).requestId == JError.ErrorShareExceedsLimit) {
-                chooseList.remove(i);
+                callBacks.remove(callBacks.get(i));
             }
         }
 
-        if (chooseList.size() == 0) {
+        if (callBacks.size() == 0) {
             ToastUtil.showPositiveToast(getString(R.string.Tap3_ShareDevice_SuccessTips));
-        } else if (chooseList.size() != 0) {
+            getFragmentManager().popBackStack();
+        } else if (callBacks.size() != 0) {
             ToastUtil.showPositiveToast(getString(R.string.Tap3_ShareDevice_FailTips));
         }
-
     }
 
     /**
@@ -243,7 +255,7 @@ public class MineFriendsListShareDevicesFragment extends Fragment implements Min
      */
     @Override
     public void showLoadingDialog() {
-        LoadingDialog.showLoading(getFragmentManager(),getString(R.string.LOADING));
+        LoadingDialog.showLoading(getFragmentManager(), getString(R.string.LOADING));
     }
 
     /**

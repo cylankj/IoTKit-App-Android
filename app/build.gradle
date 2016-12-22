@@ -2,7 +2,6 @@ apply plugin: 'com.android.application'
 apply plugin: 'com.neenbedankt.android-apt'
 apply plugin: 'me.tatarka.retrolambda'
 
-
 def releaseTime() {
     return new Date().format("yyyyMMddHHmm")
 }
@@ -81,8 +80,8 @@ android {
                                 AUTHORITY          : "com.cylan.jiafeigou",
                                 QQ_APP_KEY         : "1103156296",
                                 weChat_APP_ID      : "wx3081bcdae8a842cf",
-                                VKEY               : "Cd6DEgRvX92xAXRIkUexWDPxzTwKqHK3",
-                                VID                : "003J",
+                                VKEY               : "tVN2fxGbUn6Hw1FNq9TFWJdQ4ClqH4Hb",
+                                VID                : "\\ 0001",
                                 NICELY_SINA_APP_KEY: "1315129656"]
         customVersionCode
         versionName "1.0"
@@ -209,8 +208,8 @@ android {
                                     AUTHORITY          : ".test",
                                     QQ_APP_KEY         : "xxx",
                                     weChat_APP_ID      : "xxx",
-                                    VKEY               : "kjSle3yL8XPYlobnG4GstpeI8rwNKGj9",
-                                    VID                : "0H7A",
+                                    VKEY               : "tVN2fxGbUn6Hw1FNq9TFWJdQ4ClqH4Hb",
+                                    VID                : "\\ 0001",
                                     NICELY_SINA_APP_KEY: "xxx"]
         }
 
@@ -221,7 +220,7 @@ android {
                                     AUTHORITY          : "",
                                     QQ_APP_KEY         : "1103156296",
                                     weChat_APP_ID      : "wx3081bcdae8a842cf",
-                                    VKEY               : "Cd6DEgRvX92xAXRIkUexWDPxzTwKqHK3",
+                                    VKEY               : "tVN2fxGbUn6Hw1FNq9TFWJdQ4ClqH4Hb",
                                     VID                : "\\ 0001",
                                     NICELY_SINA_APP_KEY: "1315129656"]
         }
@@ -230,10 +229,10 @@ android {
             manifestPlaceholders = [NICELY_VALUE       : "yf.jfgou.com:443",
                                     MAT_VALUE          : getMtaAppKey("yf"),
                                     AUTHORITY          : ".yf",
-                                    VKEY               : "tVN2fxGbUn6Hw1FNq9TFWJdQ4ClqH4Hb",
-                                    VID                : "\\ 0001",
-                                    QQ_APP_KEY         : "1103156296",
-                                    weChat_APP_ID      : "wx3081bcdae8a842cf",
+                                    VKEY               : "DOHMVTgJCr0vSE0S5bBB2B3usOgnkbYz",
+                                    VID                : "\\ 003H",
+                                    QQ_APP_KEY         : "xxx",
+                                    weChat_APP_ID      : "xxx",
                                     NICELY_SINA_APP_KEY: "xxx"]
         }
         //中性包
@@ -244,8 +243,8 @@ android {
                                     AUTHORITY          : ".zhongxing",
                                     QQ_APP_KEY         : "xxx",
                                     weChat_APP_ID      : "wx382033a16e5cc4a5",
-                                    VKEY               : "Cd6DEgRvX92xAXRIkUexWDPxzTwKqHK3",
-                                    VID                : "003J",
+                                    VKEY               : "tVN2fxGbUn6Hw1FNq9TFWJdQ4ClqH4Hb",
+                                    VID                : "\\ 0001",
                                     NICELY_SINA_APP_KEY: "xxx"]
         }
     }
@@ -323,5 +322,6 @@ dependencies {
     compile 'tv.danmaku.ijk.media:ijkplayer-java:0.7.5'
     compile 'tv.danmaku.ijk.media:ijkplayer-armv7a:0.7.5'
     compile 'tv.danmaku.ijk.media:ijkplayer-exo:0.7.5'
+    compile 'com.android.support:multidex:1.0.0'
 }
 

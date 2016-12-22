@@ -1,36 +1,29 @@
 package com.cylan.jiafeigou.n.mvp.impl.mine;
 
 import android.Manifest;
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.hardware.Camera;
 import android.os.Build;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
-import android.widget.Toast;
 
 import com.cylan.entity.jniCall.JFGAccount;
+import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineInfoContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
-import com.cylan.jiafeigou.n.mvp.model.UserInfoBean;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
-import com.cylan.jiafeigou.support.galleryfinal.FunctionConfig;
-
+import com.cylan.jiafeigou.support.log.AppLogger;
 
 import java.io.File;
-import java.util.List;
 
-import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
-import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
@@ -65,29 +58,17 @@ public class MineInfoPresenterImpl extends AbstractPresenter<MineInfoContract.Vi
                     public void call(Object o) {
                         JfgCmdInsurance.getCmd().logout();
                     }
-                });
-    }
-
-    /**
-     * 退出登录的回调
-     * @return
-     */
+                }, new Action1<Throwable>() {
     @Override
-    public Subscription logOutCallBack() {
-        return RxBus.getCacheInstance().toObservable(Integer.class)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<Integer>() {
-                    @Override
-                    public void call(Integer integer) {
-                        if (getView() != null){
-                            getView().logOutResult(integer);
+                    public void call(Throwable throwable) {
+                        AppLogger.e("logOut"+throwable.getLocalizedMessage());
                         }
-                    }
                 });
     }
 
     /**
      * 检查文件是否存在
+     *
      * @param dirPath
      * @return
      */
@@ -105,6 +86,7 @@ public class MineInfoPresenterImpl extends AbstractPresenter<MineInfoContract.Vi
 
     /**
      * 检验是否存在相机
+     *
      * @return
      */
     @Override
@@ -119,6 +101,7 @@ public class MineInfoPresenterImpl extends AbstractPresenter<MineInfoContract.Vi
 
     /**
      * 检测相机是否可用
+     *
      * @return
      */
     @Override
@@ -146,6 +129,7 @@ public class MineInfoPresenterImpl extends AbstractPresenter<MineInfoContract.Vi
 
     /**
      * 检测相机的权限
+     *
      * @return
      */
     @Override
@@ -154,13 +138,14 @@ public class MineInfoPresenterImpl extends AbstractPresenter<MineInfoContract.Vi
                 Manifest.permission.CAMERA)
                 != PackageManager.PERMISSION_GRANTED) {
             return false;
-        }else{
+        } else {
             return true;
         }
     }
 
     /**
      * 检测存储权限
+     *
      * @return
      */
     @Override
@@ -169,7 +154,7 @@ public class MineInfoPresenterImpl extends AbstractPresenter<MineInfoContract.Vi
                 Manifest.permission.READ_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED) {
             return false;
-        }else{
+        } else {
             return true;
         }
     }
@@ -184,8 +169,9 @@ public class MineInfoPresenterImpl extends AbstractPresenter<MineInfoContract.Vi
                 .subscribe(new Action1<RxEvent.GetUserInfo>() {
                     @Override
                     public void call(RxEvent.GetUserInfo getUserInfo) {
-                        if (getUserInfo != null && getUserInfo instanceof RxEvent.GetUserInfo){
-                            if (getView() != null)getView().initPersonalInformation(getUserInfo.jfgAccount);
+                        if (getUserInfo != null && getUserInfo instanceof RxEvent.GetUserInfo) {
+                            if (getView() != null)
+                                getView().initPersonalInformation(getUserInfo.jfgAccount);
                         }
                     }
                 });
@@ -194,18 +180,18 @@ public class MineInfoPresenterImpl extends AbstractPresenter<MineInfoContract.Vi
 
     @Override
     public void start() {
-        if (compositeSubscription != null && !compositeSubscription.isUnsubscribed()){
+        if (compositeSubscription != null && !compositeSubscription.isUnsubscribed()) {
             compositeSubscription.unsubscribe();
-        }else {
+        } else {
             compositeSubscription = new CompositeSubscription();
             compositeSubscription.add(getAccount());
-//            compositeSubscription.add(logOutCallBack());
         }
     }
 
 
     /**
      * 判断是否是三方登录
+     *
      * @return
      */
     @Override
@@ -215,7 +201,7 @@ public class MineInfoPresenterImpl extends AbstractPresenter<MineInfoContract.Vi
 
     @Override
     public void stop() {
-        if (compositeSubscription != null && !compositeSubscription.isUnsubscribed()){
+        if (compositeSubscription != null && !compositeSubscription.isUnsubscribed()) {
             compositeSubscription.unsubscribe();
         }
     }

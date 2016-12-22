@@ -1,5 +1,6 @@
 package com.cylan.jiafeigou.n.view.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 
@@ -92,5 +93,10 @@ public class NeedLoginActivity extends BaseFullScreenFragmentActivity {
         super.onStop();
         if (_subscriptions != null && !_subscriptions.isUnsubscribed())
             _subscriptions.unsubscribe();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
     }
 }

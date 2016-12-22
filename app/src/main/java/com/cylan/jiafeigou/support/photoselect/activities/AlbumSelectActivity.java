@@ -48,7 +48,7 @@ public class AlbumSelectActivity extends HelperActivity {
     private final String[] projection = new String[]{
             MediaStore.Images.Media.BUCKET_ID,
             MediaStore.Images.Media.BUCKET_DISPLAY_NAME,
-            MediaStore.Images.Media.DATA };
+            MediaStore.Images.Media.DATA};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -311,6 +311,7 @@ public class AlbumSelectActivity extends HelperActivity {
         message.what = Constants.PERMISSION_GRANTED;
         message.sendToTarget();
     }
+
     @Override
     protected void hideViews() {
         progressBar.setVisibility(View.INVISIBLE);

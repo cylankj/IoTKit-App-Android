@@ -19,7 +19,7 @@ public interface MineShareDeviceContract {
 
     interface View extends BaseView<Presenter> {
 
-        void showShareDialog(int layoutPosition,DeviceBean item);
+        void showShareDialog(int layoutPosition, DeviceBean item);
 
         /**
          * desc:初始化分享的设备列表
@@ -29,7 +29,7 @@ public interface MineShareDeviceContract {
         /**
          * desc：跳转条设备分享管理界面
          */
-        void jump2ShareDeviceMangerFragment(DeviceBean bean,int position);
+        void jump2ShareDeviceMangerFragment(DeviceBean bean, int position);
 
         /**
          * desc：无分享设备显示null视图
@@ -52,29 +52,35 @@ public interface MineShareDeviceContract {
 
         /**
          * 获取分享设备列表的数据
+         *
          * @return
          */
         Subscription initData();
+
         /**
          * 获取设备中已经分享的好友
+         *
          * @return
          */
         ArrayList<RelAndFriendBean> getJFGInfo(int position);
 
         /**
          * 获取到已分享的亲友的数据
+         *
          * @return
          */
         ArrayList<RelAndFriendBean> getHasShareRelAndFriendList(JFGShareListInfo info);
 
         /**
          * 获取到设备已分享的亲友数
+         *
          * @param cid
          */
         void getDeviceInfo(ArrayList<String> cid);
 
         /**
          * 获取设备已分享的亲友数的回调
+         *
          * @return
          */
         Subscription getDeviceInfoCallBack();

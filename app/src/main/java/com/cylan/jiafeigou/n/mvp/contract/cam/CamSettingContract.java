@@ -17,6 +17,7 @@ public interface CamSettingContract {
         void onCamInfoRsp(BeanCamInfo timeSet);
 
         void isSharedDevice();
+
         void unbindDeviceRsp(int state);
     }
 

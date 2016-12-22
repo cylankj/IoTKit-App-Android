@@ -805,4 +805,18 @@
   <string name="Tap1_Camera_Overlook">俯視</string>
   <string name="Tap1_Camera_FrontTips">以平視的視角查看，需要保持攝像頭前方視野開闊</string>
   <string name="Tap1_Camera_OverlookTips">以從上往下的視角查看，需要將攝像頭放置於高處</string>
+
+  <string name="Tap3_ShareDevice_CancelShareTips">取消分享失敗</string>
+  <string name="Tap3_FriendsAdd_SendButton">發送請求</string>
+  <string name="Tap3_FriendsAdd_NoContacts">暫無聯繫人</string>
+  <string name="Tap3_SavePic">保存圖片</string>
+  <string name="Tap1_iHome_Associated">已關聯</string>
+  <string name="Tap1_iHome_NotAssociated">未關聯</string>
+  <string name="Tap1_iHome_ClearRecord">清空消息記錄</string>
+  <string name="Tap3_FriendsAdd_RequestContents">想加你為好友</string>
+  <string name="Tap3_Friends_NoBindTips">使用親友功能需要綁定手機/郵箱</string>
+  <string name="Tap3_FriendsAdd_StuffContents">我是%@</string>
+  <string name="Tap3_Userinfo_NoCamera">相機無法使用</string>
+  <string name="ClearingTips">清除中…</string>
+  <string name="CancelingTips">正在取消…</string>
 </resources>

@@ -7,7 +7,7 @@ import java.io.Serializable;
  * Author:pengjianbo
  * Date:2016/1/20 0020 20:22
  */
-public class PhotoTempModel implements Serializable{
+public class PhotoTempModel implements Serializable {
     private int orientation;
     private String sourcePath;
 

@@ -2,7 +2,6 @@ package com.cylan.jiafeigou.rx;
 
 import android.util.Log;
 
-import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.support.log.AppLogger;
 
 import java.util.concurrent.TimeUnit;

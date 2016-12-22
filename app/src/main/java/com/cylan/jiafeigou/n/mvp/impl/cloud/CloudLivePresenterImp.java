@@ -1,8 +1,11 @@
 package com.cylan.jiafeigou.n.mvp.impl.cloud;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.os.Environment;
+import android.support.v4.content.ContextCompat;
 
 import com.cylan.jiafeigou.n.db.DataBaseUtil;
 import com.cylan.jiafeigou.n.mvp.contract.cloud.CloudLiveContract;
@@ -94,20 +97,16 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
         stopPlayRecord();
     }
 
+    /**
+     * 录音动画
+     */
     @Override
-    public void startTalk() {
+    public void startTalkAnimation() {
         rx.Observable.interval(500, 200, TimeUnit.MILLISECONDS)
-                .subscribeOn(Schedulers.newThread())
-                .map(new Func1<Long, Double>() {
-                    @Override
-                    public Double call(Long aLong) {
-                        return null;
-                    }
-                })
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<Double>() {
+                .subscribe(new Action1<Object>() {
                     @Override
-                    public void call(Double value) {
+                    public void call(Object value) {
                         int val = updateMicStatus();
                         val1 = val + 12;
                         val2 = val;
@@ -117,6 +116,10 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
                 });
     }
 
+    /**
+     * 开始录音
+     * @return
+     */
     @Override
     public String startRecord() {
 
@@ -158,6 +161,9 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
         return voiceVal;
     }
 
+    /**
+     * 停止录音
+     */
     @Override
     public void stopRecord() {
         if (mMediaRecorder == null)
@@ -169,6 +175,10 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
         mMediaRecorder = null;
     }
 
+    /**
+     * 播放录音
+     * @param mFileName
+     */
     @Override
     public void playRecord(String mFileName) {
         mPlayer = new MediaPlayer();
@@ -176,11 +186,20 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
             mPlayer.setDataSource(mFileName);
             mPlayer.prepare();
             mPlayer.start();
+            mPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                @Override
+                public void onCompletion(MediaPlayer mp) {
+                    getView().stopPlayVoiceAnim();
+                }
+            });
         } catch (IOException e) {
 
         }
     }
 
+    /**
+     * 停止播放录音
+     */
     @Override
     public void stopPlayRecord() {
         if (mPlayer == null) {
@@ -192,6 +211,10 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
         mPlayer = null;
     }
 
+    /**
+     * 检测SD卡能用否
+     * @return
+     */
     @Override
     public boolean checkSDCard() {
         if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED))
@@ -215,6 +238,10 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
         return new CloudLiveBaseBean();
     }
 
+    /**
+     * 获取录音的时长
+     * @return
+     */
     @Override
     public String getLeaveMesgLength() {
         String timeLength = "";
@@ -244,6 +271,11 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
         base_db = DataBaseUtil.getInstance(dbName).dbManager;
     }
 
+    /**
+     * 类转换成字节
+     * @param s
+     * @return
+     */
     @Override
     public byte[] getSerializedObject(Serializable s) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -260,6 +292,11 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
         return result;
     }
 
+    /**
+     * 字节转换成类
+     * @param in
+     * @return
+     */
     @Override
     public Object readSerializedObject(byte[] in) {
         Object result = null;
@@ -279,7 +316,7 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
     @Override
     public void saveIntoDb(CloudLiveBaseDbBean bean) {
         try {
-            if (base_db == null)return;
+            if (base_db == null) return;
             base_db.save(bean);
         } catch (DbException e) {
             e.printStackTrace();
@@ -287,11 +324,11 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
     }
 
     @Override
-    public List<CloudLiveBaseDbBean> findFromAllDb() {
+    public List<CloudLiveBaseDbBean> findAllFromDb() {
         List<CloudLiveBaseDbBean> allData = new ArrayList<>();
         try {
             List<CloudLiveBaseDbBean> tempAll = base_db.findAll(CloudLiveBaseDbBean.class);
-            if (tempAll != null && tempAll.size() > 0 ){
+            if (tempAll != null && tempAll.size() > 0) {
                 allData.addAll(tempAll);
             }
         } catch (DbException e) {
@@ -300,9 +337,14 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
         return allData;
     }
 
+    /**
+     * 更新列表显示
+     * @return
+     */
     @Override
     public Subscription refreshHangUpView() {
         return RxBus.getCacheInstance().toObservable(RxEvent.HangUpVideoTalk.class)
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<RxEvent.HangUpVideoTalk>() {
                     @Override
                     public void call(RxEvent.HangUpVideoTalk o) {
@@ -311,9 +353,11 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
                 });
     }
 
+    /**
+     * 点击视频通话处理
+     */
     @Override
     public void handlerVideoTalk() {
-        getView().showReconnetProgress();
         checkDeviceOnLineSub = Observable.just(null)
                 .map(new Func1<Object, Boolean>() {
                     @Override
@@ -327,15 +371,16 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
                 .subscribe(new Action1<Boolean>() {
                     @Override
                     public void call(Boolean aBoolean) {
-                        getView().hideReconnetProgress();
                         getView().handlerVideoTalkResult(aBoolean);
                     }
                 });
     }
 
+    /**
+     * 点击语音留言处理
+     */
     @Override
     public void handlerLeveaMesg() {
-        getView().showReconnetProgress();
         leaveMesgSub = Observable.just(null)
                 .delay(1000, TimeUnit.MILLISECONDS)
                 .map(new Func1<Object, Boolean>() {
@@ -350,7 +395,6 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
                 .subscribe(new Action1<Boolean>() {
                     @Override
                     public void call(Boolean aBoolean) {
-                        getView().hideReconnetProgress();
                         getView().showVoiceTalkDialog(aBoolean);
                     }
                 });
@@ -382,7 +426,7 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
     @Override
     public void initData() {
         List<CloudLiveBaseBean> list = new ArrayList<>();
-        List<CloudLiveBaseDbBean> fromAllDb = findFromAllDb();
+        List<CloudLiveBaseDbBean> fromAllDb = findAllFromDb();
         if (fromAllDb != null && fromAllDb.size() > 0) {
             for (CloudLiveBaseDbBean dBbean : fromAllDb) {
                 CloudLiveBaseBean newBean = new CloudLiveBaseBean();
@@ -391,20 +435,35 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
                 list.add(newBean);
             }
         }
-        if (getView() != null){
+        if (getView() != null) {
             handlerDataResult(list);
         }
     }
 
     /**
+     * 检测录音的权限
+     */
+    @Override
+    public boolean checkRecordPermission() {
+        if (ContextCompat.checkSelfPermission(getView().getContext(),
+                Manifest.permission.RECORD_AUDIO)
+                != PackageManager.PERMISSION_GRANTED) {
+            return false;
+        }else{
+            return true;
+        }
+    }
+
+    /**
      * 处理数据的结果
+     *
      * @param list
      */
     private void handlerDataResult(List<CloudLiveBaseBean> list) {
-        if (list.size()==0){
+        if (list.size() == 0) {
             getView().showNoMesg();
             getView().initRecycleView(list);
-        }else {
+        } else {
             getView().hideNoMesg();
             getView().initRecycleView(list);
         }

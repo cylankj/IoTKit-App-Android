@@ -19,7 +19,6 @@ package com.cylan.jiafeigou.support.galleryfinal;
 import android.app.Activity;
 import android.graphics.drawable.Drawable;
 
-
 import com.cylan.jiafeigou.support.galleryfinal.widget.GFImageView;
 
 import java.io.Serializable;
@@ -30,7 +29,8 @@ import java.io.Serializable;
  * Author:pengjianbo
  * Date:15/10/10 下午5:27
  */
-public interface ImageLoader extends Serializable{
+public interface ImageLoader extends Serializable {
     void displayImage(Activity activity, String path, GFImageView imageView, Drawable defaultDrawable, int width, int height);
+
     void clearMemoryCache();
 }

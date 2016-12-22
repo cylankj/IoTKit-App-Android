@@ -22,11 +22,9 @@ import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
-
 import com.cylan.jiafeigou.R;
 
 import java.io.IOException;
-
 
 /**
  * 头像上传原图裁剪容器
@@ -385,7 +383,6 @@ public class ClipViewLayout extends RelativeLayout {
         imageView.destroyDrawingCache();
         return zoomedCropBitmap;
     }
-
 
 
     /**

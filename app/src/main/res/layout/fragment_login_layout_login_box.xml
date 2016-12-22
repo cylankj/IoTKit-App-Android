@@ -77,7 +77,7 @@
             android:focusable="true"
             android:focusableInTouchMode="true"
             android:gravity="center"
-            android:hint="请输入密码"
+            android:hint="@string/ENTER_PWD_1"
             android:inputType="textPassword"
             android:maxLength="12"
             android:paddingLeft="40dp"
@@ -139,7 +139,7 @@
         android:enabled="false"
         android:gravity="center"
         android:maxLines="1"
-        android:text="登录"
+        android:text="@string/LOGIN"
         android:textColor="@color/common_btn_color_state"
         android:textSize="17sp"
         tim:lb_stroke_color="@color/color_d8d8d8" />
@@ -153,7 +153,7 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="10dp"
         android:padding="10dp"
-        android:text="忘记密码？"
+        android:text="@string/FORGOT_PWD_1"
         android:textColor="@color/color_999999"
         android:textSize="12sp" />
 
@@ -174,7 +174,7 @@
             android:layout_toLeftOf="@+id/view_third_party_center"
             android:drawableLeft="@drawable/icon_login_qq"
             android:padding="10dp"
-            android:text="QQ登录" />
+            android:text="@string/LOGIN_QQ" />
 
         <View
             android:id="@+id/view_third_party_center"
@@ -190,7 +190,7 @@
             android:layout_toRightOf="@+id/view_third_party_center"
             android:drawableLeft="@drawable/icon_login_weibo"
             android:padding="10dp"
-            android:text="微博登录" />
+            android:text="@string/LOGIN_WEIBO" />
     </RelativeLayout>
 </RelativeLayout><!--</LinearLayout>-->
 

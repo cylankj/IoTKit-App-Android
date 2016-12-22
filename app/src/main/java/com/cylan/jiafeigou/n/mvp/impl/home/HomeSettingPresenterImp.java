@@ -34,7 +34,7 @@ import rx.subscriptions.CompositeSubscription;
 public class HomeSettingPresenterImp extends AbstractPresenter<HomeSettingContract.View> implements HomeSettingContract.Presenter {
 
     private CompositeSubscription compositeSubscription;
-    private boolean isChick;
+    private boolean isCheck;
     private JFGAccount userInfo;
 
     public HomeSettingPresenterImp(HomeSettingContract.View view) {
@@ -61,11 +61,7 @@ public class HomeSettingPresenterImp extends AbstractPresenter<HomeSettingContra
                     @Override
                     public Object call(Object o) {
                         File directory = getCacheDirectory(getView().getContext(), "");
-                        if (directory != null && directory.exists() && directory.isDirectory()) {
-                            for (File item : directory.listFiles()) {
-                                item.delete();
-                            }
-                        }
+                        deleteCacheFile(directory);
                         return null;
                     }
                 })
@@ -85,6 +81,22 @@ public class HomeSettingPresenterImp extends AbstractPresenter<HomeSettingContra
                 });
     }
 
+    /**
+     * 删除所有的缓存文件
+     * @param directory
+     */
+    private void deleteCacheFile(File directory) {
+        if (directory != null && directory.exists() && directory.isDirectory()) {
+            for (File item : directory.listFiles()) {
+                if (item.isDirectory()){
+                    deleteCacheFile(item);
+                }else {
+                    item.delete();
+                }
+            }
+        }
+    }
+
     @Override
     public void calculateCacheSize() {
         rx.Observable.just(null)
@@ -92,7 +104,6 @@ public class HomeSettingPresenterImp extends AbstractPresenter<HomeSettingContra
                 .map(new Func1<Object, String>() {
                     @Override
                     public String call(Object o) {
-
                         getView().showLoadCacheSizeProgress();
                         long cacheSize = 0l;
                         File directory = getCacheDirectory(getView().getContext(), "");
@@ -120,8 +131,8 @@ public class HomeSettingPresenterImp extends AbstractPresenter<HomeSettingContra
 
     @Override
     public boolean getNegation() {
-        isChick = !isChick;
-        return isChick;
+        isCheck = !isCheck;
+        return isCheck;
     }
 
     /**

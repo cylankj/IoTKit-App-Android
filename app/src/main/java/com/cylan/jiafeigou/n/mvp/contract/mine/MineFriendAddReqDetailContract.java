@@ -18,6 +18,7 @@ public interface MineFriendAddReqDetailContract {
 
         /**
          * 显示或隐藏添加请求信息
+         *
          * @param isFrome
          */
         void showOrHideReqMesg(boolean isFrome);
@@ -56,25 +57,29 @@ public interface MineFriendAddReqDetailContract {
 
         /**
          * 判断添加请求是否过期
+         *
          * @param addRequestItems
          * @return
          */
         void checkAddReqOutTime(MineAddReqBean addRequestItems);
+
         /**
          * 发送添加请求
+         *
          * @param addRequestItems
          */
         void sendAddReq(MineAddReqBean addRequestItems);
 
         /**
          * 获取到好友添加请求的列表，用户判断是否向我发送过添加请求
+         *
          * @return
          */
         Subscription getAddReqListDataCall();
 
         /**
          * 执行请求数据
-          */
+         */
         Subscription excuteGetAddReqlistData();
     }
 

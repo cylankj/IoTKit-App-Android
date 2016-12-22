@@ -85,4 +85,5 @@ public class LoadingDialog extends BaseDialog {
     protected int getCustomWidth() {
         return DensityUtils.getScreenWidth() / 3;
     }
+
 }

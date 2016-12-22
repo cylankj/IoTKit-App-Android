@@ -82,6 +82,7 @@ public class MineFriendAddFromContactFragment extends Fragment implements MineFr
         initPresenter();
         return view;
     }
+
     @OnTextChanged(R.id.et_add_phone_number)
     public void initEditTextListenter(CharSequence s, int start, int before, int count) {
         presenter.filterPhoneData(s.toString());
@@ -121,7 +122,7 @@ public class MineFriendAddFromContactFragment extends Fragment implements MineFr
         contactListAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(View itemView, int viewType, int position) {
-                //TODO 跳转到联系人的详情界面去
+                //跳转到联系人的详情界面去
             }
         });
     }
@@ -157,7 +158,7 @@ public class MineFriendAddFromContactFragment extends Fragment implements MineFr
      */
     @Override
     public void showLoadingPro() {
-        LoadingDialog.showLoading(getFragmentManager(),getString(R.string.getting));
+        LoadingDialog.showLoading(getFragmentManager(), getString(R.string.getting));
     }
 
     /**
@@ -169,15 +170,27 @@ public class MineFriendAddFromContactFragment extends Fragment implements MineFr
     }
 
     /**
+     * 网络状态变化
+     * @param state
+     */
+    @Override
+    public void onNetStateChanged(int state) {
+        if (state == -1){
+            hideLoadingPro();
+            ToastUtil.showNegativeToast(getString(R.string.NO_NETWORK_1));
+        }
+    }
+
+    /**
      * 发送短信邀请
      */
     @Override
     public void openSendSms() {
-        if (presenter.checkSmsPermission()){
+        if (presenter.checkSmsPermission()) {
             sendSms();
-        }else {
+        } else {
             //申请权限
-            ActivityCompat.requestPermissions(getActivity(),
+            MineFriendAddFromContactFragment.this.requestPermissions(
                     new String[]{Manifest.permission.SEND_SMS},
                     1);
         }
@@ -211,14 +224,14 @@ public class MineFriendAddFromContactFragment extends Fragment implements MineFr
                 public void run() {
                     presenter.checkFriendAccount(item.account);
                 }
-            },2000);
+            }, 2000);
         }
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == 1){
+        if (requestCode == 1) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 sendSms();
             } else {
