@@ -186,7 +186,7 @@ public class CamLiveControlLayer extends FrameLayout implements
     /**
      * 根据播放状态更新
      */
-    public void updateVisibilityState() {
+    public void updateVisibilityState(boolean show) {
         if (presenterRef != null && presenterRef.get() != null) {
             int count = iDataProvider == null ? 0 : iDataProvider.getDataCount();
             if (count == 0) {
@@ -207,7 +207,7 @@ public class CamLiveControlLayer extends FrameLayout implements
                     AppLogger.i("设备离线");
                     return;
                 }
-                setVisibility(isShown() ? INVISIBLE : VISIBLE);
+                setVisibility(show ? VISIBLE : INVISIBLE);
             }
         }
     }
@@ -321,6 +321,7 @@ public class CamLiveControlLayer extends FrameLayout implements
                     //do work here
                     imgVCamLiveLandPlay.setImageResource(R.drawable.icon_landscape_stop);
                 }
+                updateVisibilityState(false);
                 break;
             case PLAY_STATE_PREPARE:
             case PLAY_STATE_PLAYING:
