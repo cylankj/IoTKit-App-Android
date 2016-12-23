@@ -19,7 +19,9 @@ import com.cylan.jiafeigou.widget.flip.FlipImageView;
 import com.cylan.jiafeigou.widget.flip.FlipLayout;
 
 import java.lang.ref.WeakReference;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 
 //
@@ -126,11 +128,14 @@ public class LiveBottomBarAnimDelegate implements FlipImageView.OnFlipListener {
             return;
         String content = String.format(vLiveTime.getContext().getString(
                 state == 1 ? R.string.Tap1_Camera_VideoLive : R.string.Tap1_Camera_Playback)
-                + "|%s", TimeUtils.simpleDateFormat0.format(new Date(time)));
+                + "|%s", state == 1 ? dateFormat.format(new Date(time)) :
+                TimeUtils.simpleDateFormat0.format(new Date(time)));
         if (!vLiveTime.isShown()) vLiveTime.setVisibility(View.VISIBLE);
         vLiveTime.setText(content);
     }
 
+    private SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd HH:mm",
+            Locale.getDefault());
 
     private boolean check() {
         return weakReference != null && weakReference.get() != null && activityWeakReference != null && activityWeakReference.get() != null;

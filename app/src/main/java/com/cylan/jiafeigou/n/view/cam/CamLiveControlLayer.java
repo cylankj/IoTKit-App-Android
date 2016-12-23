@@ -18,6 +18,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.listener.LiveListener;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamLiveContract;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -60,7 +61,10 @@ public class CamLiveControlLayer extends FrameLayout implements
         CamLiveLandTopBar.TopBarAction,
         FlipImageView.OnFlipListener,
         LiveListener {
-
+    /**
+     * 显示状态:0:隐藏,1:显示,2:淡入,3:淡出,4:slide_out_up,5:slide_out_down
+     */
+    private int showState;
     private WeakReference<Activity> activityWeakReference;
 
     @BindView(R.id.lLayout_cam_history_wheel)
@@ -179,6 +183,28 @@ public class CamLiveControlLayer extends FrameLayout implements
     }
 
     /**
+     * 根据播放状态更新
+     */
+    public void updateVisibilityState() {
+        if (presenterRef != null && presenterRef.get() != null) {
+            int count = iDataProvider == null ? 0 : iDataProvider.getDataCount();
+            if (count == 0) {
+                AppLogger.i("没有历史视频数据,或者没准备好");
+                return;
+            }
+            boolean deviceState = JFGRules.isDeviceOnline(presenterRef.get().getCamInfo().net);
+            //播放状态
+            int playState = presenterRef.get().getPlayState();
+            int orientation = this.getResources().getConfiguration().orientation;
+            if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                //横屏 slide_out_up  slide_in_up
+            } else {
+                //竖屏 ,淡入淡出,
+            }
+        }
+    }
+
+    /**
      * 设置安全防护状态
      *
      * @param state
@@ -240,17 +266,24 @@ public class CamLiveControlLayer extends FrameLayout implements
             presenterRef.get().takeSnapShot();
     }
 
-    @OnClick(R.id.imgV_cam_live_land_play)
-    public void onClick() {
-        if (presenterRef != null && presenterRef.get() != null) {
-            if (presenterRef.get().getPlayType() == CamLiveContract.TYPE_LIVE) {
-                presenterRef.get().startPlayVideo(presenterRef.get().getPlayType());
-                AppLogger.i(String.format("land play history: %s", "live"));
-            } else {
-                long time = swCamLiveWheel.getCurrentFocusTime();
-                presenterRef.get().startPlayHistory(time);
-                AppLogger.i(String.format("land play history: %s", time));
-            }
+    @OnClick({R.id.imgV_cam_live_land_play,
+            R.id.tv_cam_live_port_live})
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.tv_cam_live_port_live:
+                break;
+            case R.id.imgV_cam_live_land_play:
+                if (presenterRef != null && presenterRef.get() != null) {
+                    if (presenterRef.get().getPlayType() == CamLiveContract.TYPE_LIVE) {
+                        presenterRef.get().startPlayVideo(presenterRef.get().getPlayType());
+                        AppLogger.i(String.format("land play history: %s", "live"));
+                    } else {
+                        long time = swCamLiveWheel.getCurrentFocusTime();
+                        presenterRef.get().startPlayHistory(time);
+                        AppLogger.i(String.format("land play history: %s", time));
+                    }
+                }
+                break;
         }
         AppLogger.i(String.format("onClick land play: %s", (presenterRef != null && presenterRef.get() != null)));
     }

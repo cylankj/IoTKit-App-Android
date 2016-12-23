@@ -3,9 +3,7 @@
     android:id="@+id/lLayout_flip"
     android:layout_width="wrap_content"
     android:layout_height="match_parent"
-    android:layout_alignParentEnd="true"
-    android:paddingLeft="11dp"
-    android:paddingRight="11dp">
+    android:layout_alignParentEnd="true">
 
     <com.cylan.jiafeigou.widget.flip.FlipImageView
         android:id="@+id/flip_image"

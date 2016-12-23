@@ -83,6 +83,9 @@ public class TimeUtils {
     public static final SimpleDateFormat simpleDateFormat1;
     public static final SimpleDateFormat simpleDateFormat2;
 
+    /**
+     * 如果改变系统时区,app没有重启,就不能同步更新了.
+     */
     static {
         simpleDateFormat0 = new SimpleDateFormat("MM/dd HH:mm",
                 Locale.getDefault());

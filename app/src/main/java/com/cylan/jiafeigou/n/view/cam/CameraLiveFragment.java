@@ -373,6 +373,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
                     Log.d("InterActListener", "InterActListener:onSingleTap");
                     if (iLiveActionViewRef != null && iLiveActionViewRef.get() != null)
                         showLoading(iLiveActionViewRef.get().getState(), null);
+                    swCamLiveControlLayer.updateVisibilityState();
                     return true;
                 }
 
@@ -529,8 +530,8 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
             portLiveBottomBarDelegate.showLiveTimeRect(true);
             portLiveBottomBarDelegate.setLiveTime(basePresenter.getPlayType(), System.currentTimeMillis());
         }
-        if (!swCamLiveControlLayer.isShown() && basePresenter.needShowHistoryWheelView())
-            swCamLiveControlLayer.setVisibility(View.VISIBLE);
+//        if (!swCamLiveControlLayer.isShown() && basePresenter.needShowHistoryWheelView())
+//            swCamLiveControlLayer.setVisibility(View.VISIBLE);
         swCamLiveControlLayer.setupHistoryData(dataStack);
     }
 
