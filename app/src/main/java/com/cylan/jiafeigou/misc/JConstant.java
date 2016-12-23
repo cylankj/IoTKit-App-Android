@@ -267,4 +267,9 @@ public class JConstant {
     public static final String BIND_DEVICE_BELL = "bell";
     public static final String BIND_DEVICE_CLOUD = "cloud";
     public static final String BIND_DEVICE_MAG = "mag";
+
+
+    public static final int PLAY_STATE_IDLE = 1;
+    public static final int PLAY_STATE_PREPARE = 2;
+    public static final int PLAY_STATE_PLAYING = 3;
 }

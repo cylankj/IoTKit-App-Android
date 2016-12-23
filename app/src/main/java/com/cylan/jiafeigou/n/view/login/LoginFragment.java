@@ -527,7 +527,7 @@ public class LoginFragment extends android.support.v4.app.Fragment
         Fragment f = getActivity().getSupportFragmentManager().findFragmentByTag("dialogFragment");
         if (f == null) {
             Bundle bundle = new Bundle();
-            bundle.putString(SimpleDialogFragment.KEY_TITLE, title);
+            bundle.putString(BaseDialog.KEY_TITLE, title);
             bundle.putString(SimpleDialogFragment.KEY_LEFT_CONTENT, lContent);
             bundle.putString(SimpleDialogFragment.KEY_RIGHT_CONTENT, rContent);
             bundle.putBoolean(SimpleDialogFragment.KEY_TOUCH_OUT_SIDE_DISMISS, dismiss);

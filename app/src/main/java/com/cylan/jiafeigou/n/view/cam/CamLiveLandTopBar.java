@@ -42,14 +42,6 @@ public class CamLiveLandTopBar extends FrameLayout {
         ButterKnife.bind(view);
     }
 
-
-    public void setAllElementsState(CameraLiveFragment.CamLandLiveLayerViewBundle beanTopBar) {
-        imgVCamLiveLandNavBack.setText(beanTopBar.title);
-        imgVCamSwitchSpeaker.setEnabled(beanTopBar.speakerState != -1);
-        imgVCamTriggerRecorder.setEnabled(beanTopBar.recorderState != -1);
-        imgVCamTriggerCapture.setEnabled(beanTopBar.captureState != -1);
-    }
-
     @OnClick({R.id.imgV_cam_live_land_nav_back, R.id.imgV_cam_switch_speaker, R.id.imgV_cam_trigger_mic, R.id.imgV_cam_trigger_capture})
     public void onClick(View view) {
         switch (view.getId()) {
