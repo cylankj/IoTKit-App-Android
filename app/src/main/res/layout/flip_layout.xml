@@ -1,0 +1,31 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:hunt="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/lLayout_flip"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    android:layout_alignParentEnd="true">
+
+    <com.cylan.jiafeigou.widget.flip.FlipImageView
+        android:id="@+id/flip_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:scaleType="center"
+        android:src="@drawable/icon_cam_protection_on"
+        hunt:flipDrawable="@drawable/icon_cam_protection_off"
+        hunt:flipDuration="5000"
+        hunt:flipInterpolator="@android:anim/bounce_interpolator"
+        hunt:flipRotations="y|x|z"
+        hunt:reverseRotation="true" />
+
+    <TextView
+        android:id="@+id/tv_flip_content"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_marginEnd="4dp"
+        android:layout_marginStart="4dp"
+        android:gravity="center_vertical"
+        android:text="@string/SECURE"
+        android:textColor="@color/color_white"
+        android:textSize="11sp" />
+</LinearLayout>

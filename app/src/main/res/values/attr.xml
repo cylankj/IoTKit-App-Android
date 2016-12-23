@@ -49,6 +49,9 @@
         <attr name="sw_lineWidth" format="float|dimension"/>
         <attr name="sw_dateTextSize" format="integer"/>
         <attr name="sw_markerColor" format="color|reference"/>
+        <attr name="sw_maskColor" format="color|reference"/>
+        <attr name="sw_lineColor" format="color|reference"/>
+        <attr name="sw_textColor" format="color|reference"/>
         <!--<attr name="markerLineHeight" format="float|dimension" />-->
     </declare-styleable>
     <declare-styleable name="ZXingScannerViewStyle">

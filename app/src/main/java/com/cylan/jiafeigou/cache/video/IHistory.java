@@ -8,7 +8,7 @@ import com.cylan.jiafeigou.dp.IParser;
 
 public interface IHistory extends IParser {
 
-    String IHistory = "IHistory:";
+    String IHistory = "IHistory:%s";
 
     /**
      * 清空历史数据

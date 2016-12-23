@@ -14,7 +14,6 @@ import java.util.Collections;
 import java.util.HashSet;
 
 import rx.Subscription;
-import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 /**
@@ -49,24 +48,17 @@ public class History implements IHistory {
     private Subscription onDataList() {
         return RxBus.getCacheInstance().toObservable(JFGHistoryVideo.class)
                 .subscribeOn(Schedulers.computation())
-                .map(new Func1<JFGHistoryVideo, ArrayList<JFGVideo>>() {
-                    @Override
-                    public ArrayList<JFGVideo> call(JFGHistoryVideo jfgHistoryVideo) {
-                        return jfgHistoryVideo.list;
+                .map((JFGHistoryVideo jfgHistoryVideo) -> (jfgHistoryVideo.list))
+                .map((ArrayList<JFGVideo> list) -> {
+                    synchronized (object) {
+                        if (dataList == null)
+                            dataList = new ArrayList<>();
+                        dataList.addAll(list);
+                        dataList = new ArrayList<>(new HashSet<>(dataList));
+                        Collections.sort(dataList);
+                        AppLogger.i(String.format(IHistory, dataList.size()));
                     }
-                })
-                .map(new Func1<ArrayList<JFGVideo>, Object>() {
-                    @Override
-                    public Object call(ArrayList<JFGVideo> list) {
-                        synchronized (object) {
-                            if (dataList == null)
-                                dataList = new ArrayList<>();
-                            dataList.addAll(list);
-                            dataList = new ArrayList<>(new HashSet<>(dataList));
-                            Collections.sort(dataList);
-                        }
-                        return null;
-                    }
+                    return null;
                 })
                 .retry(new RxHelper.ExceptionFun<>("onDataList"))
                 .subscribe();
@@ -80,17 +72,14 @@ public class History implements IHistory {
     private Subscription onQueryDataList() {
         return RxBus.getCacheInstance().toObservable(RxEvent.JFGHistoryVideoReq.class)
                 .subscribeOn(Schedulers.newThread())
-                .map(new Func1<RxEvent.JFGHistoryVideoReq, Object>() {
-                    @Override
-                    public Object call(RxEvent.JFGHistoryVideoReq jfgHistoryVideoReq) {
-                        try {
-                            JfgCmdInsurance.getCmd().getVideoList(jfgHistoryVideoReq.uuid);
-                        } catch (JfgException e) {
-                            e.printStackTrace();
-                        }
-                        AppLogger.i(IHistory + jfgHistoryVideoReq.uuid);
-                        return null;
+                .map((RxEvent.JFGHistoryVideoReq jfgHistoryVideoReq) -> {
+                    try {
+                        JfgCmdInsurance.getCmd().getVideoList(jfgHistoryVideoReq.uuid);
+                    } catch (JfgException e) {
+                        e.printStackTrace();
                     }
+                    AppLogger.i(String.format(IHistory, jfgHistoryVideoReq.uuid));
+                    return null;
                 })
                 .retry(new RxHelper.ExceptionFun<>("onQueryDataList"))
                 .subscribe();

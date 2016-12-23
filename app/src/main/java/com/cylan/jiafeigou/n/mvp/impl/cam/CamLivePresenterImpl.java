@@ -5,13 +5,16 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 
+import com.cylan.entity.jniCall.JFGHistoryVideo;
 import com.cylan.entity.jniCall.JFGMsgVideoDisconn;
 import com.cylan.entity.jniCall.JFGMsgVideoResolution;
 import com.cylan.entity.jniCall.JFGMsgVideoRtcp;
+import com.cylan.entity.jniCall.JFGVideo;
 import com.cylan.ex.JfgException;
 import com.cylan.jfgapp.jni.JfgAppCmd;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.misc.Converter;
+import com.cylan.jiafeigou.misc.HistoryDateFlatten;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
@@ -25,6 +28,8 @@ import com.cylan.jiafeigou.rx.RxHelper;
 import com.cylan.jiafeigou.rx.RxUiEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.MiscUtils;
+import com.cylan.jiafeigou.widget.wheel.ex.DataExt;
+import com.cylan.jiafeigou.widget.wheel.ex.IData;
 import com.cylan.utils.BitmapUtil;
 import com.cylan.utils.NetUtils;
 import com.cylan.utils.RandomUtils;
@@ -32,8 +37,11 @@ import com.google.gson.Gson;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import rx.Observable;
 import rx.Subscription;
@@ -41,6 +49,10 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
+
+import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_IDLE;
+import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_PLAYING;
+import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_PREPARE;
 
 /**
  * Created by cylan-hunt on 16-7-27.
@@ -54,6 +66,10 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
     private int playType = CamLiveContract.TYPE_LIVE;
     private boolean speakerFlag, micFlag;
     private int[] videoResolution = {0, 0};
+    private int playState = PLAY_STATE_IDLE;
+    private ArrayList<JFGVideo> simpleCache = new ArrayList<>();
+    private HistoryDateFlatten historyDateFlatten = new HistoryDateFlatten();
+    private IData historyDataProvider;
     /**
      * 帧率记录
      */
@@ -93,7 +109,7 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                         }
                     }
                     getView().onRtcp(rtcp);
-                    Log.d(TAG, "rtcp: " + new Gson().toJson(rtcp));
+//                    Log.d(TAG, "rtcp: " + new Gson().toJson(rtcp));
                 }, (Throwable throwable) -> {
                     AppLogger.e("rtcp err: " + throwable.getLocalizedMessage());
                 });
@@ -128,6 +144,7 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                         e.printStackTrace();
                     }
                     getView().onLiveStarted(playType);
+                    playState = PLAY_STATE_PLAYING;
                     AppLogger.i("ResolutionNotifySub: " + new Gson().toJson(resolution));
                 }, (Throwable throwable) -> {
                     AppLogger.e("resolution err: " + throwable.getLocalizedMessage());
@@ -161,7 +178,7 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
 
     @Override
     public int getPlayState() {
-        return 0;
+        return playState;
     }
 
     @Override
@@ -188,19 +205,27 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
     }
 
     @Override
+    public boolean isShareDevice() {
+        return beanCamInfo != null && beanCamInfo.deviceBase != null && !TextUtils.isEmpty(beanCamInfo.deviceBase.shareAccount);
+    }
+
+    @Override
     public void startPlayVideo(int type) {
         getView().onLivePrepare(type);
+        playState = PLAY_STATE_PREPARE;
+        playType = CamLiveContract.TYPE_LIVE;
         Observable.just(getCamInfo().deviceBase.uuid)
                 .subscribeOn(Schedulers.newThread())
                 .filter((String s) -> {
                     //判断网络状况
                     final int net = NetUtils.getJfgNetType(getView().getContext());
-                    AppLogger.i("play env state: " + net + " " + s);
+                    AppLogger.i("play start live " + net + " " + s);
                     if (net == 0) {
                         Observable.just(null)
                                 .observeOn(AndroidSchedulers.mainThread())
                                 .subscribe((Object o) -> {
                                     getView().onLiveStop(playType, JFGRules.PlayErr.ERR_NERWORK);
+                                    playState = PLAY_STATE_IDLE;
                                 });
                         return false;
                     }
@@ -217,17 +242,49 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
     }
 
     @Override
+    public void startPlayHistory(long time) {
+        playType = CamLiveContract.TYPE_HISTORY;
+        playState = PLAY_STATE_PREPARE;
+        if (NetUtils.getJfgNetType(getView().getContext()) == 0) {
+            //断网了
+            stopPlayVideo(getPlayType());
+            getView().onLiveStop(getPlayType(), JFGRules.PlayErr.ERR_NERWORK);
+            return;
+        }
+        Observable.just(time)
+                .subscribeOn(Schedulers.newThread())
+                .subscribe((Long aLong) -> {
+                    try {
+                        //先停止播放{历史录像,直播都需要停止播放}
+                        if (playState != PLAY_STATE_IDLE) {
+                            JfgCmdInsurance.getCmd().stopPlay(getCamInfo().deviceBase.uuid);
+                            AppLogger.i("stop play history");
+                        }
+
+                        JfgCmdInsurance.getCmd().playHistoryVideo(getCamInfo().deviceBase.uuid, time / 1000L);
+                        AppLogger.i(String.format("play history video:%s,%s ", getCamInfo().deviceBase, time / 1000L));
+                    } catch (JfgException e) {
+                        AppLogger.e("err:" + e.getLocalizedMessage());
+                    }
+                }, (Throwable throwable) -> {
+                    AppLogger.e("err:" + throwable.getLocalizedMessage());
+                });
+    }
+
+    @Override
     public void stopPlayVideo(int type) {
         Observable.just(getCamInfo().deviceBase.uuid)
                 .subscribeOn(Schedulers.newThread())
                 .filter((String s) -> {
                     //判断网络状况
-                    AppLogger.i("stop play env state:" + s);
-                    return !TextUtils.isEmpty(s);
+                    AppLogger.i("stopPlayVideo:" + s);
+                    return !TextUtils.isEmpty(s) && playState != PLAY_STATE_IDLE;
                 })
                 .subscribe((String s) -> {
                     try {
                         JfgCmdInsurance.getCmd().stopPlay(s);
+                        playType = CamLiveContract.TYPE_NONE;
+                        playState = PLAY_STATE_IDLE;
                     } catch (JfgException e) {
                         e.printStackTrace();
                     }
@@ -344,6 +401,27 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
     }
 
     @Override
+    public void saveAlarmFlag(boolean flag) {
+        Log.d("saveAlarmFlag", "saveAlarmFlag: " + flag);
+    }
+
+    @Override
+    public Map<Long, Long> getFlattenDateMap() {
+        return historyDateFlatten.getFlattenMap();
+    }
+
+    @Override
+    public IData getHistoryDataProvider() {
+        return historyDataProvider;
+    }
+
+    @Override
+    public boolean needShowHistoryWheelView() {
+        return beanCamInfo != null && JFGRules.isDeviceOnline(beanCamInfo.net)
+                && NetUtils.getJfgNetType(getView().getContext()) != 0;
+    }
+
+    @Override
     public void start() {
         unSubscribe(compositeSubscription);
         compositeSubscription = new CompositeSubscription();
@@ -352,7 +430,42 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
         compositeSubscription.add(videoDisconnectSub());
         compositeSubscription.add(robotDataSync());
         compositeSubscription.add(fetchCamInfo());
+        compositeSubscription.add(historyDataListSub());
+        getView().onBeanInfoUpdate(getCamInfo());
     }
+
+    /**
+     * 接受历史录像数据
+     *
+     * @return
+     */
+    private Subscription historyDataListSub() {
+        return RxBus.getCacheInstance().toObservable(JFGHistoryVideo.class)
+                .subscribeOn(Schedulers.computation())
+                .map((JFGHistoryVideo jfgHistoryVideo) -> {
+                    long time = System.currentTimeMillis();
+                    simpleCache.addAll(jfgHistoryVideo.list);
+                    simpleCache = new ArrayList<>(new HashSet<>(simpleCache));
+                    Collections.sort(simpleCache);
+                    if (simpleCache.size() == 0)
+                        return null;
+                    AppLogger.d(String.format("performance:%s", (System.currentTimeMillis() - time)));
+                    AppLogger.i("historyDataListSub:" + new Gson().toJson(jfgHistoryVideo));
+                    IData data = new DataExt();
+                    data.flattenData(simpleCache);
+                    historyDateFlatten.flat(simpleCache);
+                    return historyDataProvider = data;
+                })
+                .filter((IData dataStack) -> (getView() != null && dataStack != null))
+                .observeOn(AndroidSchedulers.mainThread())
+                .map((IData dataStack) -> {
+                    getView().onHistoryDataRsp(dataStack);
+                    return null;
+                })
+                .retry(new RxHelper.ExceptionFun<>("historyDataListSub"))
+                .subscribe();
+    }
+
 
     private Subscription robotDataSync() {
         return RxBus.getCacheInstance().toObservable(RxEvent.JFGRobotSyncData.class)
