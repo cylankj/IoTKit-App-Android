@@ -128,6 +128,7 @@ public class CamLiveControlLayer extends FrameLayout implements
     }
 
     public void setupHistoryData(IData dataProvider) {
+        this.iDataProvider = dataProvider;
         final long time = System.currentTimeMillis();
         swCamLiveWheel.setDataProvider(dataProvider);
         Log.d("performance", "CamLivePortWheel performance: " + (System.currentTimeMillis() - time));
@@ -193,6 +194,7 @@ public class CamLiveControlLayer extends FrameLayout implements
                 return;
             }
             boolean deviceState = JFGRules.isDeviceOnline(presenterRef.get().getCamInfo().net);
+
             //播放状态
             int playState = presenterRef.get().getPlayState();
             int orientation = this.getResources().getConfiguration().orientation;
@@ -200,6 +202,12 @@ public class CamLiveControlLayer extends FrameLayout implements
                 //横屏 slide_out_up  slide_in_up
             } else {
                 //竖屏 ,淡入淡出,
+                if (!deviceState) {
+                    //设备离线
+                    AppLogger.i("设备离线");
+                    return;
+                }
+                setVisibility(isShown() ? INVISIBLE : VISIBLE);
             }
         }
     }

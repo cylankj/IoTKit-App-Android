@@ -371,8 +371,13 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
                 @Override
                 public boolean onSingleTap(float x, float y) {
                     Log.d("InterActListener", "InterActListener:onSingleTap");
-                    if (iLiveActionViewRef != null && iLiveActionViewRef.get() != null)
-                        showLoading(iLiveActionViewRef.get().getState(), null);
+                    if (iLiveActionViewRef != null && iLiveActionViewRef.get() != null) {
+                        int state = iLiveActionViewRef.get().getState();
+                        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                            state = STATE_IDLE;
+                        }
+                        showLoading(state, null);
+                    }
                     swCamLiveControlLayer.updateVisibilityState();
                     return true;
                 }
