@@ -380,7 +380,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
                         showLoading(state, null);
                         show = iLiveActionViewRef.get() instanceof View && ((View) iLiveActionViewRef.get()).isShown();
                     }
-                    swCamLiveControlLayer.updateVisibilityState(show);
+                    swCamLiveControlLayer.updateVisibilityState(!show);
                     return true;
                 }
 
