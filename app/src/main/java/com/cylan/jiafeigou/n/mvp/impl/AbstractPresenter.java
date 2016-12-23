@@ -35,4 +35,5 @@ public abstract class AbstractPresenter<T> {
             throw new NullPointerException("view is null");
     }
 
+
 }

@@ -1,32 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/fLayout_bell_after_live"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_marginLeft="51dp"
-    android:layout_marginRight="51dp"
-    android:visibility="gone">
+             android:id="@+id/fLayout_bell_after_live"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             android:layout_marginLeft="51dp"
+             android:layout_marginRight="51dp"
+             android:visibility="gone">
 
     <ImageView
         android:id="@+id/imgv_bell_live_capture"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        android:src="@drawable/icon_capture_photo" />
+        android:src="@drawable/icon_capture_photo"/>
 
     <ImageView
         android:id="@+id/imgv_bell_live_hang_up"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:src="@drawable/icon_bell_hang_up" />
+        android:src="@drawable/icon_bell_hang_up"/>
 
     <ImageView
         android:id="@+id/imgv_bell_live_speaker"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical|end"
-        android:src="@drawable/bell_live_port_mic" />
+        android:src="@drawable/icon_mic_on"/>
 
 
 </FrameLayout>

@@ -1,17 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:hunt="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context=".n.view.bell.BellLiveActivity">
+              xmlns:hunt="http://schemas.android.com/apk/res-auto"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+              tools:context=".n.view.bell.BellLiveActivity">
 
     <FrameLayout
         android:id="@+id/fLayout_bell_live_holder"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/color_4b9fd5">
+
+        <FrameLayout
+            android:id="@+id/act_bell_live_video_view_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+        </FrameLayout>
 
         <TextView
             android:id="@+id/tv_bell_live_flow"
@@ -27,7 +34,7 @@
             android:paddingTop="5dp"
             android:text="295kb/s"
             android:textColor="@color/color_white"
-            android:textSize="13sp" />
+            android:textSize="13sp"/>
 
         <ImageView
             android:id="@+id/imgv_bell_live_switch_to_land"
@@ -36,7 +43,7 @@
             android:layout_gravity="bottom|end"
             android:layout_margin="10dp"
             android:padding="10dp"
-            android:src="@drawable/icon_live_zoom_full_screen" />
+            android:src="@drawable/icon_live_zoom_full_screen"/>
     </FrameLayout>
 
 
@@ -44,9 +51,9 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <include layout="@layout/layout_bell_pre_live_hot_seat" />
+        <include layout="@layout/layout_bell_pre_live_hot_seat"/>
 
-        <include layout="@layout/layout_bell_after_live_hot_seat" />
+        <include layout="@layout/layout_bell_after_live_hot_seat"/>
 
     </FrameLayout>
 
@@ -64,7 +71,7 @@
             hunt:ll_big_inner_radius="5dp"
             hunt:ll_big_outer_radius="10dp"
             hunt:ll_small_interval="10dp"
-            hunt:ll_small_radius="3dp" />
+            hunt:ll_small_radius="3dp"/>
 
         <com.cylan.jiafeigou.widget.bell.LLView
             android:layout_width="wrap_content"
@@ -74,12 +81,12 @@
             hunt:ll_big_outer_radius="10dp"
             hunt:ll_reverse="true"
             hunt:ll_small_interval="10dp"
-            hunt:ll_small_radius="3dp" />
+            hunt:ll_small_radius="3dp"/>
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:src="@mipmap/ic_launcher" />
+            android:src="@mipmap/ic_launcher"/>
     </com.cylan.jiafeigou.widget.bell.DragLayout>
 </LinearLayout>

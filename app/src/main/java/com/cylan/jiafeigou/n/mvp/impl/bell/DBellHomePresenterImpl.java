@@ -4,7 +4,10 @@ import android.os.Environment;
 
 import com.cylan.jiafeigou.n.mvp.contract.bell.DoorBellHomeContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
+import com.cylan.jiafeigou.n.mvp.model.BaseBean;
+import com.cylan.jiafeigou.n.mvp.model.BeanBellInfo;
 import com.cylan.jiafeigou.n.mvp.model.BellCallRecordBean;
+import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -44,6 +47,8 @@ public class DBellHomePresenterImpl extends AbstractPresenter<DoorBellHomeContra
      */
     private static final long todayInMidNight = TimeUtils.getTodayStartTime();
     private static final long yesterdayInMidNight = todayInMidNight - 24 * 60 * 60 * 1000L;
+
+    private BeanBellInfo mBellInfo;
 
     @Override
     public void start() {
@@ -151,6 +156,32 @@ public class DBellHomePresenterImpl extends AbstractPresenter<DoorBellHomeContra
     @Override
     public void fetchBellRecordsList() {
         onBellCallListSubscription();
+    }
+
+    @Override
+    public int getDeviceNetState() {
+        return mBellInfo.net.net;
+    }
+
+    @Override
+    public void setBellInfo(DeviceBean bean) {
+        wrapBellInfo(bean);
+    }
+
+    @Override
+    public BeanBellInfo getBellInfo() {
+        return mBellInfo;
+    }
+
+    private void wrapBellInfo(DeviceBean base) {
+        mBellInfo = new BeanBellInfo();
+        mBellInfo.deviceBase = new BaseBean();
+        mBellInfo.deviceBase.uuid = base.uuid;
+        mBellInfo.deviceBase.alias = base.alias;
+        mBellInfo.deviceBase.pid = base.pid;
+        mBellInfo.deviceBase.shareAccount = base.shareAccount;
+        mBellInfo.deviceBase.sn = base.sn;
+        mBellInfo.convert(mBellInfo.deviceBase,base.dataList);
     }
 
     private static final String[] pics = {

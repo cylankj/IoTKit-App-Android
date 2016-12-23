@@ -26,6 +26,7 @@ import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
 import com.cylan.jiafeigou.n.mvp.contract.bell.DoorBellHomeContract;
 import com.cylan.jiafeigou.n.mvp.impl.bell.DBellHomePresenterImpl;
 import com.cylan.jiafeigou.n.mvp.model.BellCallRecordBean;
+import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
 import com.cylan.jiafeigou.n.view.adapter.BellCallRecordListAdapter;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.AnimatorUtils;
@@ -33,7 +34,6 @@ import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.BellTopBackgroundView;
 import com.cylan.jiafeigou.widget.ImageViewTip;
 import com.cylan.jiafeigou.widget.LoadingDialog;
-import com.cylan.utils.RandomUtils;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -83,16 +83,24 @@ public class DoorBellHomeActivity extends BaseFullScreenFragmentActivity
         setContentView(R.layout.activity_door_bell);
 //        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
         ButterKnife.bind(this);
+        initPresenter();
         initAdapter();
         initToolbar();
         initTopBackground();
     }
 
+    private void initPresenter() {
+        presenter = new DBellHomePresenterImpl(this);
+        DeviceBean bean = getIntent().getBundleExtra(JConstant.KEY_DEVICE_ITEM_BUNDLE).getParcelable(JConstant.KEY_DEVICE_ITEM_BUNDLE);
+        presenter.setBellInfo(bean);
+    }
+
     @Override
     protected void onStart() {
         super.onStart();
-        if (presenter == null)
-            presenter = new DBellHomePresenterImpl(this);
+        if (presenter == null) {
+            initAdapter();
+        }
         presenter.start();
     }
 
@@ -160,7 +168,8 @@ public class DoorBellHomeActivity extends BaseFullScreenFragmentActivity
     }
 
     private void initTopBackground() {
-        cvBellHomeBackground.setState(RandomUtils.getRandom(3));
+
+        cvBellHomeBackground.setState(presenter.getDeviceNetState());
         cvBellHomeBackground.setActionInterface(this);
     }
 
@@ -327,6 +336,9 @@ public class DoorBellHomeActivity extends BaseFullScreenFragmentActivity
     public void onMakeCall() {
         Intent intent = new Intent(this, BellLiveActivity.class);
         intent.putExtra("text", "nihao");
+        intent.putExtra(JConstant.BELL_CALL_WAY, JConstant.BELL_CALL_WAY_VIEWER);
+        intent.putExtra(JConstant.KEY_DEVICE_ITEM_BUNDLE, presenter.getBellInfo());
+        intent.putExtra("extra", presenter.getBellInfo().deviceBase);
         startActivity(intent);
     }
 

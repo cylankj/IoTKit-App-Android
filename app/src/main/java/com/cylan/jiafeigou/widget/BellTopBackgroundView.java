@@ -50,8 +50,8 @@ public class BellTopBackgroundView extends FrameLayout {
         });
     }
 
-    public static final int STATE_BELL_ONLINE = 0;
-    public static final int STATE_BELL_OFFLINE = 1;
+    public static final int STATE_BELL_OFFLINE = 0;
+    public static final int STATE_BELL_ONLINE = 1;
     public static final int STATE_BAD_NETWORK = 2;
 
     public int state = 0;
@@ -64,7 +64,7 @@ public class BellTopBackgroundView extends FrameLayout {
             if (vsBellHomeTop.getCurrentView() != fLayoutBellTopPre) {
                 vsBellHomeTop.showPrevious();
             }
-            if (state == 0) {
+            if (state == 1) {
                 tvStartCalling.setVisibility(VISIBLE);
                 fLayoutBellTopPre.setBackground(getResources().getDrawable(R.drawable.bg_bell_home_online));
             } else {

@@ -6,20 +6,30 @@ import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.SurfaceView;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.cylan.entity.jniCall.JFGMsgVideoResolution;
+import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.misc.JFGRules;
+import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.contract.bell.BellLiveContract;
 import com.cylan.jiafeigou.n.mvp.impl.bell.BellLivePresenterImpl;
+import com.cylan.jiafeigou.n.mvp.model.BeanBellInfo;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.bell.DragLayout;
+import com.cylan.jiafeigou.widget.video.VideoViewFactory;
 
 import java.lang.ref.WeakReference;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -46,18 +56,23 @@ public class BellLiveActivity extends ProcessActivity
     @BindView(R.id.fLayout_bell_after_live)
     FrameLayout fLayoutBellAfterLive;
 
+    @BindView(R.id.act_bell_live_video_view_container)
+    FrameLayout mVideoViewContainer;
+
     /**
      * 水平方向的view
      */
     private WeakReference<View> fLayoutLandHolderRef;
 
     private BellLiveContract.Presenter presenter;
+    private SurfaceView mSurfaceView;
+    private BeanBellInfo mBellInfo;
+    private boolean mIsMikeOn = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bell_live);
-
         ButterKnife.bind(this);
         initPresenter();
         initView();
@@ -67,6 +82,14 @@ public class BellLiveActivity extends ProcessActivity
     @Override
     protected void onResume() {
         super.onResume();
+        presenter.start();
+        showListenOrViewerView();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        presenter.stop();
     }
 
     @Override
@@ -145,7 +168,11 @@ public class BellLiveActivity extends ProcessActivity
     }
 
     private void initPresenter() {
-        presenter = new BellLivePresenterImpl(this);
+        basePresenter = new BellLivePresenterImpl(this);
+        mBellInfo = getIntent().getParcelableExtra(JConstant.KEY_DEVICE_ITEM_BUNDLE);
+        mBellInfo.deviceBase = getIntent().getParcelableExtra("extra");
+        presenter.setBellInfo(mBellInfo);
+
     }
 
     /**
@@ -206,6 +233,7 @@ public class BellLiveActivity extends ProcessActivity
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.imgv_bell_live_capture:
+                presenter.onCapture();
                 break;
             case R.id.imgv_bell_live_hang_up:
                 if (presenter != null)
@@ -213,6 +241,9 @@ public class BellLiveActivity extends ProcessActivity
                 finishExt();
                 break;
             case R.id.imgv_bell_live_speaker:
+                mIsMikeOn = !mIsMikeOn;
+                imgvBellLiveSpeaker.setImageResource(mIsMikeOn ? R.drawable.icon_mic_on : R.drawable.icon_mic_off);
+                presenter.onMike(mIsMikeOn ? 1 : 0);
                 break;
             case R.id.imgv_bell_live_switch_to_land:
                 initLandView();
@@ -222,6 +253,7 @@ public class BellLiveActivity extends ProcessActivity
             case R.id.imgv_bell_live_land_mic:
                 break;
             case R.id.imgv_bell_live_land_capture:
+                presenter.onCapture();
                 break;
             case R.id.imgv_bell_live_land_hangup:
                 Toast.makeText(getContext(), "hangup", Toast.LENGTH_SHORT).show();
@@ -229,4 +261,55 @@ public class BellLiveActivity extends ProcessActivity
                 break;
         }
     }
+
+    public void showListenOrViewerView() {
+        String callWay = getIntent().getStringExtra(JConstant.BELL_CALL_WAY);
+        switch (callWay) {
+            case JConstant.BELL_CALL_WAY_VIEWER: {
+                dLayoutBellHotSeat.setVisibility(View.GONE);
+                fLayoutBellAfterLive.setVisibility(View.VISIBLE);
+                presenter.onPickup();
+            }
+            break;
+            case JConstant.BELL_CALL_WAY_LISTEN: {
+                dLayoutBellHotSeat.setVisibility(View.VISIBLE);
+                fLayoutBellAfterLive.setVisibility(View.GONE);
+            }
+            break;
+        }
+
+    }
+
+    @Override
+    public void onResolution(JFGMsgVideoResolution resolution) throws JfgException {
+        initVideoView();
+        JfgCmdInsurance.getCmd().setRenderRemoteView(mSurfaceView);
+        presenter.onMike(mIsMikeOn ? 1 : 0);
+    }
+
+    @Override
+    public void onFlowSpeedRefresh(int speed) {
+        tvBellLiveFlow.setText(String.format(Locale.getDefault(), "%sKb/s", speed));
+    }
+
+    /**
+     * 初始化videoView
+     *
+     * @return
+     */
+    private void initVideoView() {
+        if (mSurfaceView == null) {
+            int pid = presenter.getBellInfo().deviceBase.pid;
+            mSurfaceView = (SurfaceView) VideoViewFactory.CreateRendererExt(JFGRules.isNeedPanoramicView(pid),
+                    getContext(), true);
+            mSurfaceView.setId("IVideoView".hashCode());
+            ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+            mSurfaceView.setLayoutParams(params);
+            mVideoViewContainer.removeAllViews();
+            mVideoViewContainer.addView(mSurfaceView);
+        }
+        AppLogger.i("initVideoView");
+    }
+
+
 }
