@@ -40,7 +40,6 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
 
     @Override
     public void start() {
-        unSubscribe(compositeSubscription);
         compositeSubscription = new CompositeSubscription();
         compositeSubscription.add(messageListSub());
     }
@@ -61,13 +60,10 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
                     }
                 })
                 .observeOn(AndroidSchedulers.mainThread())
-                .filter(new RxHelper.Filter<ArrayList<CamMessageBean>>("messageListSub()=null?", getView() != null))
-                .map(new Func1<ArrayList<CamMessageBean>, Object>() {
-                    @Override
-                    public Object call(ArrayList<CamMessageBean> jfgdpMsgs) {
-                        getView().onMessageListRsp(jfgdpMsgs);
-                        return null;
-                    }
+                .filter(new RxHelper.Filter<>("messageListSub()=null?", getView() != null))
+                .map((ArrayList<CamMessageBean> jfgdpMsgs) -> {
+                    getView().onMessageListRsp(jfgdpMsgs);
+                    return null;
                 })
                 .retry(new RxHelper.RxException<>("messageListSub"))
                 .subscribe();
@@ -82,6 +78,7 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
                     public ArrayList<CamMessageBean> call(Object o) {
                         ArrayList<JFGDPMsg> dps = new ArrayList<>();
                         dps.add(new JFGDPMsg(DpMsgMap.ID_505_CAMERA_ALARM_MSG, 0));
+                        dps.add(new JFGDPMsg(DpMsgMap.ID_204_SDCARD_STORAGE, 0));
                         try {
                             JfgCmdInsurance.getCmd().robotGetData(info.deviceBase.uuid,
                                     dps, 20, false, 0);
