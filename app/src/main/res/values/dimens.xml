@@ -112,4 +112,11 @@
     <dimen name="video_option_play_margin_right">14dp</dimen>
 
     <dimen name="video_pager_page_margin">4dp</dimen>
+
+    <dimen name="dialog_delay_record_width">280dp</dimen>
+
+    <dimen name="WheelItemTextSize">24sp</dimen>
+    <dimen name="WheelItemSpace">12dp</dimen>
+    <dimen name="WheelIndicatorSize">2dp</dimen>
+    <dimen name="WheelMargins">8dp</dimen>
 </resources>

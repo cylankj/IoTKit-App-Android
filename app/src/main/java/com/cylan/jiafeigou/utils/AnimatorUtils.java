@@ -46,11 +46,11 @@ public class AnimatorUtils {
     }
 
 
-    public interface OnStart {
-        void onStart();
+    public interface OnFinish {
+        void onFinish();
     }
 
-    public static void slide(View target, boolean down, OnStart listener) {
+    public static void slide(View target, boolean down, OnFinish listener) {
 
         int height = target.getHeight();
         if (height == 0) height = 300;
@@ -72,7 +72,7 @@ public class AnimatorUtils {
             public void onAnimationEnd(Animator animator) {
                 if (shouldGone)
                     target.setVisibility(View.INVISIBLE);
-                if (listener != null) listener.onStart();
+                if (listener != null) listener.onFinish();
             }
         });
         set.start();

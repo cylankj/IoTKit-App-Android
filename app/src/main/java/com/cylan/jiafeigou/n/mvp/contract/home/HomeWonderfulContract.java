@@ -35,7 +35,7 @@ public interface HomeWonderfulContract {
     interface Presenter extends BasePresenter {
         void startRefresh();
 
-        void startLoadMore(long startTime);
+        void startLoadMore();
 
         /**
          * 删除每日精彩条目

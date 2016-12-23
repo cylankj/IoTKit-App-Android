@@ -1,20 +1,24 @@
 package com.cylan.jiafeigou.n.view.activity;
 
+import android.Manifest;
 import android.annotation.TargetApi;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.graphics.SurfaceTexture;
 import android.graphics.drawable.Drawable;
-import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.SharedElementCallback;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.transition.Transition;
-import android.view.SurfaceHolder;
-import android.view.SurfaceView;
+import android.view.Surface;
+import android.view.TextureView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -28,6 +32,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.misc.HackyViewPager;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.model.MediaBean;
@@ -38,7 +43,7 @@ import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.AnimatorUtils;
 import com.cylan.jiafeigou.utils.FileUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
-import com.cylan.jiafeigou.utils.ViewUtils;
+import com.cylan.jiafeigou.utils.WonderGlideURL;
 import com.cylan.jiafeigou.widget.SimpleProgressBar;
 import com.cylan.jiafeigou.widget.dialog.VideoMoreDialog;
 
@@ -55,9 +60,10 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import tv.danmaku.ijk.media.exo.IjkExoMediaPlayer;
 import tv.danmaku.ijk.media.player.IMediaPlayer;
+import tv.danmaku.ijk.media.player.IjkMediaPlayer;
 
 
-public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnPreparedListener, IMediaPlayer.OnInfoListener, IMediaPlayer.OnCompletionListener, SeekBar.OnSeekBarChangeListener, ViewPager.OnPageChangeListener, IMediaPlayer.OnErrorListener {
+public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnPreparedListener, IMediaPlayer.OnInfoListener, IMediaPlayer.OnCompletionListener, SeekBar.OnSeekBarChangeListener, ViewPager.OnPageChangeListener, IMediaPlayer.OnErrorListener, IMediaPlayer.OnVideoSizeChangedListener {
 
 
     private static final int PLAY_STATE_RESET = 0;
@@ -66,9 +72,11 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
     private static final int PLAY_STATE_READY_TO_PLAY = 3;
     private static final int PLAY_STATE_LOADING_START = 4;
     private static final int PLAY_STATE_LOADING_FINISH = 5;
+    private static final int REQ_DOWNLOAD = 0X8001;
+    private static final long NETWORK_ERROR_WAIT_TIME = 15000;
 
     @BindView(R.id.act_media_pager)
-    ViewPager mMediaPager;
+    HackyViewPager mMediaPager;
     @BindView(R.id.act_media_header_title)
     TextView mHeaderTitle;
     @BindView(R.id.act_media_header_opt_delete)
@@ -109,7 +117,7 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
     FrameLayout mContentRootView;
     @BindView(R.id.act_media_header_back)
     ImageView mHeaderBack;
-    SurfaceView mVideoView;
+    TextureView mVideoView;
     SimpleProgressBar mVideoLoadingBar;
     private IjkExoMediaPlayer mMediaPlayer;
     private StringBuilder mFormatBuilder;
@@ -122,6 +130,7 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
     private int mCurrentViewType;
     private MediaBean mCurrentMediaBean;
     private static final String STATE_CURRENT_PAGE_POSITION = "state_current_page_position";
+    private static final String STATE_ENTER_ANIMATION_FINISHED = "state_enter_animation_finished";
     private MediaDetailPagerAdapter mAdapter;
     private View mPhotoView;
     private View mPagerContentView;
@@ -130,6 +139,12 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
     private WeakReference<ShareDialogFragment> mShareDialog;
     private File mDownloadFile;
     private int mCurrentPlayState = PLAY_STATE_RESET;
+    private static final long HEADER_AND_FOOTER_SHOW_TIME = 3000;
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -145,9 +160,10 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
         mCurrentPosition = mStartPosition = getIntent().getIntExtra(JConstant.KEY_SHARED_ELEMENT_STARTED_POSITION, 0);
         mMediaList = getIntent().getParcelableArrayListExtra(JConstant.KEY_SHARED_ELEMENT_LIST);
         mCurrentMediaBean = mMediaList.get(mStartPosition);
-        mCurrentViewType = mCurrentMediaBean.mediaType;
+        mCurrentViewType = mCurrentMediaBean.msgType;
         if (savedInstanceState != null) {
             mCurrentPosition = savedInstanceState.getInt(STATE_CURRENT_PAGE_POSITION);
+            mEnterAnimationFinished = savedInstanceState.getBoolean(STATE_ENTER_ANIMATION_FINISHED, false);
         }
         initViewAndListener();
     }
@@ -156,6 +172,7 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt(STATE_CURRENT_PAGE_POSITION, mCurrentPosition);
+        outState.putBoolean(STATE_ENTER_ANIMATION_FINISHED, mEnterAnimationFinished);
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
@@ -188,9 +205,8 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
         mFormatBuilder = new StringBuilder();
         mFormatter = new Formatter(mFormatBuilder, Locale.getDefault());
 
-        ViewUtils.setViewMarginStatusBar(mHeaderContainer);
-
         mMediaPlayer = new IjkExoMediaPlayer(this);
+
         mVideoSeekBar.setOnSeekBarChangeListener(this);
         mAdapter = new MediaDetailPagerAdapter(mMediaList, mStartPosition) {
             @Override
@@ -202,11 +218,11 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
                     mPhotoView = holder.mPhotoView;
                     mVideoLoadingBar = holder.mProgressBar;
                     if (mVideoView != null) {
-                        mVideoView.getHolder().removeCallback(mSurfaceCallback);
+                        mVideoView.setSurfaceTextureListener(null);
                         mMediaPlayer.reset();
                     }
                     mVideoView = holder.mSurfaceView;
-                    mVideoView.getHolder().addCallback(mSurfaceCallback);
+                    mVideoView.setSurfaceTextureListener(mSurfaceTextureListener);
                     if (mEnterAnimationFinished) startPlayVideo();
                 } else if (mCurrentViewType == MediaBean.TYPE_PIC && mPhotoView != object) {
                     mPhotoView = (View) object;
@@ -215,29 +231,55 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
             }
         };
         mMediaPager.setPageMargin((int) getResources().getDimension(R.dimen.video_pager_page_margin));
-        mAdapter.setOnInitFinishListener(this::startPostponedEnterTransition);
+        mAdapter.setOnInitFinishListener(() -> {
+            if (mEnterAnimationFinished) {
+                animateHeaderAndFooter(true, true);
+            } else {
+                mHeaderContainer.setVisibility(View.GONE);
+                mFooterContainer.setVisibility(View.GONE);
+                startPostponedEnterTransition();
+            }
+        });
         mMediaPager.setAdapter(mAdapter);
         mMediaPager.setCurrentItem(mStartPosition);
         mMediaPager.addOnPageChangeListener(this);
+        mMediaPager.setOnLockModeTouchListener((view, event) -> {
+            if (!mFooterContainer.isShown() && !mHeaderContainer.isShown()) {
+                mContentRootView.removeCallbacks(mHideHeaderAndFooterCallback);
+                animateHeaderAndFooter(true, true, () -> mContentRootView.postDelayed(mHideHeaderAndFooterCallback, HEADER_AND_FOOTER_SHOW_TIME));
+            }
+            return false;
+        });
     }
 
-    private SurfaceHolder.Callback mSurfaceCallback = new SurfaceHolder.Callback() {
+    private TextureView.SurfaceTextureListener mSurfaceTextureListener = new TextureView.SurfaceTextureListener() {
         @Override
-        public void surfaceCreated(SurfaceHolder holder) {
+        public void onSurfaceTextureAvailable(SurfaceTexture surface, int width, int height) {
+            Surface videoSurface = new Surface(surface);
+            mMediaPlayer.setSurface(videoSurface);
         }
 
         @Override
-        public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-            mMediaPlayer.setDisplay(holder);
+        public void onSurfaceTextureSizeChanged(SurfaceTexture surface, int width, int height) {
+
         }
 
         @Override
-        public void surfaceDestroyed(SurfaceHolder holder) {
+        public boolean onSurfaceTextureDestroyed(SurfaceTexture surface) {
+            return true;
+        }
+
+        @Override
+        public void onSurfaceTextureUpdated(SurfaceTexture surface) {
+
         }
     };
 
-
     private void animateHeaderAndFooter(boolean showHeader, boolean showFooter) {
+        animateHeaderAndFooter(showHeader, showFooter, null);
+    }
+
+    private void animateHeaderAndFooter(boolean showHeader, boolean showFooter, AnimatorUtils.OnFinish finish) {
         AppLogger.d("animateHeaderAndFooter");
         if (showHeader && mHeaderContainer.isShown()) {
             //需要显示Footer,但此时Footer已经显示，则先隐藏再显示
@@ -259,15 +301,15 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
             //需要显示Footer,但此时Footer已经显示，则先隐藏再显示
             AnimatorUtils.slide(mFooterContainer, true, () -> {
                 setFooterContent();
-                AnimatorUtils.slide(mFooterContainer, true, null);
+                AnimatorUtils.slide(mFooterContainer, true, finish);
             });
         } else if (showFooter && !mFooterContainer.isShown()) {
             //需要显示Footer,但此时Footer还没显示，则直接显示
             setFooterContent();
-            AnimatorUtils.slide(mFooterContainer, true, null);
+            AnimatorUtils.slide(mFooterContainer, true, finish);
         } else if (!showFooter && mFooterContainer.isShown()) {
             //需要隐藏Footer,但此时Footer已经显示，则直接隐藏
-            AnimatorUtils.slide(mFooterContainer, true, null);
+            AnimatorUtils.slide(mFooterContainer, true, finish);
         }
     }
 
@@ -285,25 +327,29 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
 
     private void setHeaderContent() {
         if (mCurrentViewType == MediaBean.TYPE_VIDEO) {
-            mHeaderTitle.setText(TimeUtils.getMediaVideoTimeInString(mCurrentMediaBean.time));
+            mHeaderTitle.setText(TimeUtils.getMediaVideoTimeInString(mCurrentMediaBean.time * 1000L));
         } else if (mCurrentViewType == MediaBean.TYPE_PIC) {
-            mHeaderTitle.setText(TimeUtils.getMediaPicTimeInString(mCurrentMediaBean.time));
+            mHeaderTitle.setText(TimeUtils.getMediaPicTimeInString(mCurrentMediaBean.time * 1000L));
         }
+
     }
+
+    private Runnable mHideHeaderAndFooterCallback = () -> animateHeaderAndFooter(false, false);
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
+        mContentRootView.removeCallbacks(mHideHeaderAndFooterCallback);
         if (newConfig.orientation == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE | newConfig.orientation == ActivityInfo.SCREEN_ORIENTATION_USER) {
             setLandScapeLayout();
+            animateHeaderAndFooter(true, true, () -> mContentRootView.postDelayed(mHideHeaderAndFooterCallback, HEADER_AND_FOOTER_SHOW_TIME));
         } else if (newConfig.orientation == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
             setPortraitLayout();
+            animateHeaderAndFooter(true, true);
         }
-        animateHeaderAndFooter(true, true);
     }
 
     private void setPortraitLayout() {
-        ViewUtils.setViewMarginStatusBar(mContentRootView);
         setStatusBarProperty();
 
         mHeaderOptContainer.setVisibility(View.GONE);
@@ -328,7 +374,8 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
         mVideoFullScreen.setImageResource(R.drawable.icon_full_screen);
         mHeaderBack.setImageResource(R.drawable.btn_close);
         mVideoMore.setVisibility(View.VISIBLE);
-
+        mMediaPager.setLocked(false);
+        updatePlayState();
     }
 
     private void setStatusBarProperty() {
@@ -346,7 +393,6 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
     }
 
     private void setLandScapeLayout() {
-        ViewUtils.clearViewMarginStatusBar(mContentRootView);
         setStatusBarProperty();
         mHeaderOptContainer.setVisibility(View.VISIBLE);
         Resources resources = getResources();
@@ -369,6 +415,7 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
         mVideoFullScreen.setImageResource(R.drawable.landscape_icon_screen);
         mHeaderBack.setImageResource(R.drawable.icon_arrow_back);
         mVideoMore.setVisibility(View.GONE);
+        mMediaPager.setLocked(true);
         updatePlayState();
     }
 
@@ -406,10 +453,13 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
             mMediaPlayer.seekTo(mVideoPlayPosition);
             mVideoPlayPosition = 0;
             mCurrentPlayState = PLAY_STATE_PLAYING;
+        } else {
+            mMediaPlayer.seekTo(100);//这是为了防止首播黑屏的问题，没法
         }
         int duration = (int) mMediaPlayer.getDuration();
         mVideoTotalTime.setText(stringForTime(duration));
         mVideoSeekBar.setMax(duration);
+        mCurrentPlayState = PLAY_STATE_PLAYING;
         startUpdateTime();
         updatePlayState();
         mPhotoView.setVisibility(View.INVISIBLE);
@@ -433,7 +483,7 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
         if (mCurrentPlayState == PLAY_STATE_PLAYING) {
             mCurrentPlayState = PLAY_STATE_PAUSED;
             mMediaPlayer.pause();
-        } else if (mCurrentPlayState == PLAY_STATE_READY_TO_PLAY) {
+        } else if (mCurrentPlayState == PLAY_STATE_READY_TO_PLAY || mCurrentPlayState == PLAY_STATE_PAUSED) {
             mCurrentPlayState = PLAY_STATE_PLAYING;
             mMediaPlayer.start();
             startUpdateTime();
@@ -446,13 +496,13 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
     private void updatePlayState() {
         switch (mCurrentPlayState) {
             case PLAY_STATE_PLAYING:
-            case PLAY_STATE_LOADING_FINISH:
+//            case PLAY_STATE_LOADING_START:
+//            case PLAY_STATE_LOADING_FINISH:
                 mVideoPlay.setImageResource(R.drawable.video_opt_pause_drawable);
                 break;
             case PLAY_STATE_PAUSED:
             case PLAY_STATE_RESET:
             case PLAY_STATE_READY_TO_PLAY:
-            case PLAY_STATE_LOADING_START:
                 mVideoPlay.setImageResource(R.drawable.video_opt_play_drawable);
                 break;
         }
@@ -460,7 +510,6 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
 
     @OnClick({R.id.act_media_header_opt_delete})
     public void delete() {
-
     }
 
     @OnClick(R.id.act_media_picture_opt_collection)
@@ -470,10 +519,34 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
 
     @OnClick({R.id.act_media_header_opt_download, R.id.act_media_picture_opt_download})
     public void download() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+            downloadFile();//已经获得了授权
+        } else if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+            //需要重新提示用户授权
+            Toast.makeText(this, "下载文件需要权限,请手动开启", Toast.LENGTH_SHORT).show();
+        } else {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQ_DOWNLOAD);
+        }
+
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == REQ_DOWNLOAD) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                downloadFile();
+            } else {
+                Toast.makeText(this, getString(R.string.permission_download), Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    private void downloadFile() {
         if (mCurrentViewType == MediaBean.TYPE_PIC) {
-            mDownloadFile = new File(JConstant.MEDIA_DETAIL_PICTURE_DOWNLOAD_DIR, mCurrentMediaBean.srcUrl);
+            mDownloadFile = new File(JConstant.MEDIA_DETAIL_PICTURE_DOWNLOAD_DIR, mCurrentMediaBean.fileName);
         } else if (mCurrentViewType == MediaBean.TYPE_VIDEO) {
-            mDownloadFile = new File(JConstant.MEDIA_DETAIL_VIDEO_DOWNLOAD_DIR, mCurrentMediaBean.srcUrl);
+            mDownloadFile = new File(JConstant.MEDIA_DETAIL_VIDEO_DOWNLOAD_DIR, mCurrentMediaBean.fileName);
         } else {
             return;
         }
@@ -483,7 +556,7 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
             return;
         }
 
-        Glide.with(this).load(mCurrentMediaBean.srcUrl).
+        Glide.with(this).load(new WonderGlideURL(mCurrentMediaBean)).
                 downloadOnly(new SimpleTarget<File>() {
                     @Override
                     public void onResourceReady(File resource, GlideAnimation<? super File> glideAnimation) {
@@ -547,16 +620,15 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
     @OnClick(R.id.act_media_header_back)
     public void onBackPressed() {
         int orientation = getRequestedOrientation();
-        if (orientation != ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
-            cleanUpForExit();
-            mContentRootView.postDelayed(super::onBackPressed, 400);
-        } else {
+        if (orientation == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
             rotateScreen();
+        } else {
+            cleanUpForExit(super::onBackPressed);
         }
     }
 
-    private void cleanUpForExit() {
-        animateHeaderAndFooter(false, false);
+    private void cleanUpForExit(AnimatorUtils.OnFinish finish) {
+        animateHeaderAndFooter(false, false, finish);
         if (mCurrentViewType == MediaBean.TYPE_VIDEO) {
             mMediaPlayer.reset();
             if (mVideoView != null) mVideoView.setVisibility(View.GONE);
@@ -580,28 +652,37 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
         }
     }
 
+    private Runnable mBufferDelayCallback = () -> {
+        //显示网络连接失败视图
+    };
+
     @Override
-    public boolean onInfo(IMediaPlayer iMediaPlayer, int what, int i1) {
+    public boolean onInfo(IMediaPlayer iMediaPlayer, int what, int extra) {
         switch (what) {
-            case MediaPlayer.MEDIA_INFO_BUFFERING_START:
-                mCurrentPlayState = PLAY_STATE_LOADING_START;
+            case IjkMediaPlayer.MEDIA_INFO_BUFFERING_START:
                 mVideoLoadingBar.setVisibility(View.VISIBLE);
-                updatePlayState();
+                mContentRootView.postDelayed(mBufferDelayCallback, NETWORK_ERROR_WAIT_TIME);
                 break;
-            case MediaPlayer.MEDIA_INFO_BUFFERING_END:
-                mCurrentPlayState = PLAY_STATE_LOADING_FINISH;
+            case IjkMediaPlayer.MEDIA_INFO_BUFFERING_END:
+                mContentRootView.removeCallbacks(mBufferDelayCallback);
                 mVideoLoadingBar.setVisibility(View.INVISIBLE);
-                updatePlayState();
                 break;
+            case IjkMediaPlayer.MEDIA_INFO_NETWORK_BANDWIDTH:
+                break;
+
+//            case IjkMediaPlayer.MEDIA_INFO_VIDEO_ROTATION_CHANGED:
+//                if (mVideoView != null)
+//                    mVideoView.setRotation(extra);
         }
         return false;
     }
 
     @Override
     public void onCompletion(IMediaPlayer iMediaPlayer) {
-        iMediaPlayer.seekTo(0);
         iMediaPlayer.pause();
+        iMediaPlayer.seekTo(0);
         mCurrentPlayState = PLAY_STATE_PAUSED;
+        mCurrentPosition = 0;
         updatePlayState();
     }
 
@@ -624,7 +705,7 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
 
     @Override
     public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-        mMediaPlayer.pause();
+//        mMediaPlayer.pause();
     }
 
 
@@ -632,7 +713,7 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
     public void onPageSelected(int position) {
         mCurrentPosition = position;
         mCurrentMediaBean = mMediaList.get(position);
-        int type = mCurrentMediaBean.mediaType;
+        int type = mCurrentMediaBean.msgType;
         boolean change = type != mCurrentViewType;
         mCurrentViewType = type;
         if (change) {
@@ -646,7 +727,9 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
     private void startPlayVideo() {
         mVideoView.setVisibility(View.VISIBLE);
         mVideoLoadingBar.setVisibility(View.VISIBLE);
-        String url = mCurrentMediaBean.srcUrl;
+//        String url = mCurrentMediaBean.fileName;
+
+        String url = "http://yf.cylan.com.cn:82/Garfield/1045020208160b9706425470.mp4";
         mCurrentPlayState = PLAY_STATE_RESET;
         mMediaPlayer.reset();
         String proxyUrl = BaseApplication.getProxy(this).getProxyUrl(url);
@@ -655,8 +738,13 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
         mMediaPlayer.setOnPreparedListener(this);
         mMediaPlayer.setOnCompletionListener(this);
         mMediaPlayer.setOnErrorListener(this);
-        mMediaPlayer.setDisplay(mVideoView.getHolder());
+        mMediaPlayer.setOnVideoSizeChangedListener(this);
+        if (mVideoView != null && mVideoView.isAvailable()) {
+            mMediaPlayer.setSurface(new Surface(mVideoView.getSurfaceTexture()));
+        }
         mMediaPlayer.prepareAsync();
+        mCurrentPlayState = PLAY_STATE_PLAYING;
+        updatePlayState();
     }
 
     private void startUpdateTime() {
@@ -676,5 +764,18 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
         mCurrentPlayState = PLAY_STATE_RESET;
         mMediaPlayer.reset();
         return false;
+    }
+
+    @Override
+    public void onVideoSizeChanged(IMediaPlayer iMediaPlayer, int width, int height, int i2, int i3) {
+//        if (mVideoView != null) {
+//            int videoWidth = mVideoView.getWidth();
+//            int videoHeight = mVideoView.getHeight();
+//            mVideoView.setScaleX(videoWidth / height);
+//            mVideoView.setScaleY(videoHeight / width);
+//            Matrix transform = mVideoView.getTransform(null);
+//            transform.setScale(height / videoWidth, width / videoHeight);
+//            mVideoView.setTransform(transform);
+//        }
     }
 }

@@ -3,6 +3,7 @@ package com.cylan.jiafeigou.dp;
 import com.cylan.annotation.Device;
 import com.cylan.annotation.DpAnnotation;
 import com.cylan.annotation.ForDevice;
+import com.cylan.jiafeigou.n.mvp.model.MediaBean;
 
 /**
  * Created by cylan-hunt on 16-11-8.
@@ -120,7 +121,7 @@ public class DpMsgConstant {
     public static final String DEVICE_MIC = null;//301
 
     @ForDevice(device = {Device.CAMERA, Device.BELL}, targetBeanName = {CAM_BEAN_NAME, BELL_BEAN_NAME})
-    @DpAnnotation(msgId = 302, clazz = boolean.class)
+    @DpAnnotation(msgId = 302, clazz = int.class)
     public static final String DEVICE_SPEAKER = null;//302
 
     @ForDevice(device = Device.CAMERA, targetBeanName = CAM_BEAN_NAME)
@@ -178,7 +179,7 @@ public class DpMsgConstant {
     @DpAnnotation(msgId = 601, clazz = String.class)
     public static final String ACCOUNT_STATE = null;//绑定、解绑消息
 
-    @DpAnnotation(msgId = 602, clazz = String.class)
+    @DpAnnotation(msgId = 602, clazz = MediaBean.class)
     public static final String ACCOUNT_WONDERFUL_MSG = null;//每日精彩消息
 
     @DpAnnotation(msgId = 701, clazz = boolean.class)

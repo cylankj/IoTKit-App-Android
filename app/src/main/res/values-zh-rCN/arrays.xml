@@ -77,7 +77,7 @@
     </string-array>
     <string-array name="error_msg">
         <item>"数据库错误"</item>
-        <item />
+        <item/>
         <item>错误</item>
         <item>会话超时</item>
         <item>CID不存在</item>
@@ -113,7 +113,7 @@
         <item>无法连接，您没有权限</item>
         <item>设备离线了</item>
         <!--33-->
-        <item />
+        <item/>
         <!--34-->
         <item>CID与SN不匹配</item>
         <item>帐号不在线</item>
@@ -160,4 +160,46 @@
         <item>高</item>
     </string-array>
 
+    <string-array name="delay_redord_20s_option">
+        <item>1小时</item>
+        <item>2小时</item>
+        <item>3小时</item>
+        <item>4小时</item>
+        <item>5小时</item>
+        <item>6小时</item>
+        <item>7小时</item>
+        <item>8小时</item>
+        <item>9小时</item>
+        <item>10小时</item>
+        <item>11小时</item>
+        <item>12小时</item>
+        <item>13小时</item>
+        <item>14小时</item>
+        <item>15小时</item>
+        <item>16小时</item>
+    </string-array>
+
+    <string-array name="delay_redord_60s_option">
+        <item>4小时</item>
+        <item>5小时</item>
+        <item>6小时</item>
+        <item>7小时</item>
+        <item>8小时</item>
+        <item>9小时</item>
+        <item>10小时</item>
+        <item>11小时</item>
+        <item>12小时</item>
+        <item>13小时</item>
+        <item>14小时</item>
+        <item>15小时</item>
+        <item>16小时</item>
+        <item>17小时</item>
+        <item>18小时</item>
+        <item>19小时</item>
+        <item>20小时</item>
+        <item>21小时</item>
+        <item>22小时</item>
+        <item>23小时</item>
+        <item>24小时</item>
+    </string-array>
 </resources>
