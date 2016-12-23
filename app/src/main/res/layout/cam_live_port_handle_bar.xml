@@ -1,42 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/fLayout_live_port_bottom_control_bar"
     android:layout_width="match_parent"
     android:layout_height="39dp"
     android:layout_gravity="bottom">
 
-    <LinearLayout
+    <com.cylan.jiafeigou.widget.flip.FlipLayout
         android:id="@+id/lLayout_protection"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:paddingLeft="15dp"
-        android:paddingRight="15dp">
-
-        <com.cylan.jiafeigou.widget.FlipImageView
-            android:id="@+id/flip_image"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:scaleType="center"
-            android:src="@drawable/icon_cam_protection_on"
-            app:flipDrawable="@drawable/icon_cam_protection_off"
-            app:flipDuration="5000"
-            app:flipInterpolator="@android:anim/bounce_interpolator"
-            app:flipRotations="y|x|z"
-            app:reverseRotation="true" />
-
-        <TextView
-            android:id="@+id/tv_cam_live_protection"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_marginEnd="4dp"
-            android:layout_marginStart="4dp"
-            android:gravity="center_vertical"
-            android:text="@string/SECURE"
-            android:textColor="@color/color_white"
-            android:textSize="11sp" />
-    </LinearLayout>
+        android:paddingRight="15dp" />
 
     <TextView
         android:id="@+id/tv_live_time"

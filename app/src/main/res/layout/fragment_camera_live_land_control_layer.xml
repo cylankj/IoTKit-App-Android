@@ -35,7 +35,7 @@
             android:layout_marginTop="30dp"
             android:paddingLeft="38dp"
             android:paddingRight="38dp"
-            android:src="@drawable/icon_landscape_play" />
+            android:src="@drawable/icon_landscape_stop" />
 
         <com.cylan.jiafeigou.n.view.cam.CamLiveLandWheel
             android:id="@+id/cv_cam_land_live_wheel"

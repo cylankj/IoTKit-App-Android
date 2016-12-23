@@ -1,4 +1,4 @@
-package com.cylan.jiafeigou.widget;
+package com.cylan.jiafeigou.widget.flip;
 
 import android.content.Context;
 import android.content.res.TypedArray;

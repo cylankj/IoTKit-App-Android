@@ -4,13 +4,12 @@ import android.util.Log;
 
 import com.cylan.BuildConfig;
 import com.cylan.entity.jniCall.JFGVideo;
+import com.cylan.jiafeigou.utils.TimeUtils;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -29,7 +28,7 @@ public class DataExt implements IData {
     private Map<Long, Integer> timeWithType = new HashMap<>();
 
     private Map<Long, String> dateFormatMap = new HashMap<>();
-    private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
+
 
     @Override
     public void flattenData(ArrayList<JFGVideo> list) {
@@ -43,7 +42,7 @@ public class DataExt implements IData {
                 flattenDataList.add(i);
                 fillMap(i);
                 if (DEBUG)
-                    Log.d(TAG, "i:" + size + " " + simpleDateFormat.format(new Date(i)));
+                    Log.d(TAG, "i:" + size + " " + TimeUtils.simpleDateFormat2.format(new Date(i)));
                 size++;
                 i -= 10 * 60 * 1000L;
             }
@@ -58,7 +57,7 @@ public class DataExt implements IData {
     private void fillMap(long time) {
         if (time / 1000L % 3600 == 0) {
             timeWithType.put(time, 1);
-            dateFormatMap.put(time, simpleDateFormat.format(new Date(time)));
+            dateFormatMap.put(time, TimeUtils.simpleDateFormat2.format(new Date(time)));
         }
     }
 
@@ -211,7 +210,7 @@ public class DataExt implements IData {
             return false;//超出范围
         }
         if (DEBUG)
-            Log.d(TAG, "index: " + i + " " + simpleDateFormat.format(new Date(time)));
+            Log.d(TAG, "index: " + i + " " + TimeUtils.simpleDateFormat2.format(new Date(time)));
         v = rawList.get(i);
         return v.beginTime * 1000L <= time && (v.beginTime + v.duration) * 1000L >= time;
     }

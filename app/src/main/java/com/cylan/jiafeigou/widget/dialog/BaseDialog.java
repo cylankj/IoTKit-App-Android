@@ -14,6 +14,7 @@ import com.cylan.utils.DensityUtils;
 public class BaseDialog<T> extends DialogFragment {
 
     public static final String KEY_TITLE = "key_title";
+    public static final String KEY_TOUCH_OUT_SIDE_DISMISS = "key_touch_outside";
     private static final float MIN_HEIGHT = 0.17F;
     private static final float MAX_HEIGHT = 0.475F;
     private int minHeight = 0;

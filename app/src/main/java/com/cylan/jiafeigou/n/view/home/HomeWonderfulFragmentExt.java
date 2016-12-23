@@ -204,7 +204,7 @@ public class HomeWonderfulFragmentExt extends Fragment implements
         if (deleteDialogFragmentWeakReference == null || deleteDialogFragmentWeakReference.get() == null) {
             //为删除dialog设置提示信息
             Bundle args = new Bundle();
-            args.putString(SimpleDialogFragment.KEY_TITLE, "");
+            args.putString(BaseDialog.KEY_TITLE, "");
             args.putString(SimpleDialogFragment.KEY_LEFT_CONTENT, "");
             args.putString(SimpleDialogFragment.KEY_RIGHT_CONTENT, "");
             args.putString(SimpleDialogFragment.KEY_CONTENT_CONTENT, this.getString(R.string.Tips_Delete_Msg));

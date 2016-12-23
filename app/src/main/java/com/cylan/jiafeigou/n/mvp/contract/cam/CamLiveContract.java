@@ -8,6 +8,8 @@ import com.cylan.jiafeigou.n.mvp.BaseView;
 import com.cylan.jiafeigou.n.mvp.model.BeanCamInfo;
 import com.cylan.jiafeigou.widget.wheel.ex.IData;
 
+import java.util.Map;
+
 /**
  * Created by cylan-hunt on 16-6-29.
  */
@@ -19,15 +21,12 @@ public interface CamLiveContract {
     int TYPE_NONE = 0;
     int TYPE_LIVE = 1;
     int TYPE_HISTORY = 2;
-    int PLAY_STATE_IDLE = 0;
-    int PLAY_STATE_PREPARE = 1;
-    int PLAY_STATE_PLAYING = 2;
+
 
     interface View extends BaseView<Presenter> {
 
 
         void onHistoryDataRsp(IData dataProvider);
-
 
         void onRtcp(JFGMsgVideoRtcp rtcp);
 
@@ -114,6 +113,11 @@ public interface CamLiveContract {
 
         BeanCamInfo getCamInfo();
 
+        /**
+         * @param local       :true:加菲狗客户端,false:设备端
+         * @param speakerFlag :true:开 false:关
+         * @param micFlag     :true:开 false:关
+         */
         void switchSpeakerMic(final boolean local, final boolean speakerFlag, final boolean micFlag);
 
         void takeSnapShot();
@@ -122,7 +126,26 @@ public interface CamLiveContract {
 
         boolean getMicFlag();
 
+        /**
+         * 保存标志
+         *
+         * @param flag
+         */
         void saveAlarmFlag(boolean flag);
+
+        /**
+         * @return <Integer:天数,Long:时间戳>
+         */
+        Map<Long, Long> getFlattenDateMap();
+
+        IData getHistoryDataProvider();
+
+        /**
+         * //默认隐藏.没网络时候,也不显示,设备离线也不显示
+         *
+         * @return
+         */
+        boolean needShowHistoryWheelView();
     }
 }
 

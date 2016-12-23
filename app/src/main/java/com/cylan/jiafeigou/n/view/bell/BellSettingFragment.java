@@ -116,7 +116,7 @@ public class BellSettingFragment extends IBaseFragment<BellSettingContract.Prese
                 ViewUtils.deBounceClick(view);
                 if (simpleDialogFragment == null) {
                     Bundle bundle = new Bundle();
-                    bundle.putString(SimpleDialogFragment.KEY_TITLE, getString(R.string.DELETE_CID));
+                    bundle.putString(BaseDialog.KEY_TITLE, getString(R.string.DELETE_CID));
                     simpleDialogFragment = SimpleDialogFragment.newInstance(bundle);
                 }
                 simpleDialogFragment.setAction(this);

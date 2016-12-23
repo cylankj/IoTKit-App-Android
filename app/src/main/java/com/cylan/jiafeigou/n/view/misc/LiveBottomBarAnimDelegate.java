@@ -13,13 +13,13 @@ import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamLiveContract;
+import com.cylan.jiafeigou.utils.TimeUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;
-import com.cylan.jiafeigou.widget.FlipImageView;
+import com.cylan.jiafeigou.widget.flip.FlipImageView;
+import com.cylan.jiafeigou.widget.flip.FlipLayout;
 
 import java.lang.ref.WeakReference;
-import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Locale;
 
 
 //
@@ -32,40 +32,22 @@ import java.util.Locale;
 public class LiveBottomBarAnimDelegate implements FlipImageView.OnFlipListener {
     private WeakReference<ViewGroup> weakReference;
     private WeakReference<Activity> activityWeakReference;
-    private TextView vLiveTime;
-    private FlipImageView flipImageView;
-    private TextView tvProtection;
     private CamLiveContract.Presenter presenter;
+    private TextView vLiveTime;
+    private FlipLayout vProtection;
 
     public LiveBottomBarAnimDelegate(Activity activity, ViewGroup view, CamLiveContract.Presenter presenter) {
         weakReference = new WeakReference<>(view);
         activityWeakReference = new WeakReference<>(activity);
         this.presenter = presenter;
-        initView();
+        vLiveTime = (TextView) weakReference.get().findViewById(R.id.tv_live_time);
+        initFlipLayout();
+        initZoomLayout();
     }
 
-    private void initView() {
+    private void initZoomLayout() {
         if (weakReference == null || weakReference.get() == null)
             return;
-        View vProtection = weakReference.get().findViewById(R.id.lLayout_protection);
-        tvProtection = (TextView) weakReference.get().findViewById(R.id.tv_cam_live_protection);
-        flipImageView = (FlipImageView) vProtection.findViewById(R.id.flip_image);
-        //设置切换动画
-        flipImageView.setRotationXEnabled(true);
-        flipImageView.setDuration(200);
-        flipImageView.setInterpolator(new DecelerateInterpolator());
-        flipImageView.setOnFlipListener(this);
-        //初始状态
-        if (presenter.getCamInfo() != null) {
-            if (!presenter.getCamInfo().cameraAlarmFlag) {
-                flipImageView.setFlipped(true);
-            }
-        }
-        //大区域
-        vProtection.setOnClickListener((View v) -> {
-            flipImageView.performClick();
-        });
-        vLiveTime = (TextView) weakReference.get().findViewById(R.id.tv_live_time);
         View vZoomFullScreen = weakReference.get().findViewById(R.id.imgV_cam_zoom_to_full_screen);
         //设置全屏点击
         vZoomFullScreen.setOnClickListener((View v) -> {
@@ -76,8 +58,32 @@ public class LiveBottomBarAnimDelegate implements FlipImageView.OnFlipListener {
                     ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         });
         vLiveTime.setOnClickListener((View v) -> {
-            if (liveTimeRectListener != null) liveTimeRectListener.click();
+            if (liveTimeRectListener != null) liveTimeRectListener.click(v);
         });
+    }
+
+    /**
+     * 安全防护
+     */
+    private void initFlipLayout() {
+        if (weakReference == null || weakReference.get() == null)
+            return;
+        vProtection = (FlipLayout) weakReference.get().findViewById(R.id.lLayout_protection);
+        //偷懒,这些都应该封装在FlipLayout内部的.
+        //设置切换动画
+        vProtection.getFlipImageView().setRotationXEnabled(true);
+        vProtection.getFlipImageView().setDuration(200);
+        vProtection.getFlipImageView().setInterpolator(new DecelerateInterpolator());
+        vProtection.getFlipImageView().setOnFlipListener(this);
+        //初始状态
+        if (presenter.getCamInfo() != null) {
+            if (!presenter.getCamInfo().cameraAlarmFlag) {
+                vProtection.getFlipImageView().setFlipped(true);
+            }
+        }
+        //大区域
+        vProtection.setOnClickListener((View v) ->
+                vProtection.getFlipImageView().performClick());
     }
 
     /**
@@ -101,14 +107,13 @@ public class LiveBottomBarAnimDelegate implements FlipImageView.OnFlipListener {
     public void setProtectionState(boolean state) {
         if (!check())
             return;
-        if (flipImageView != null) {
-            boolean isFlipped = flipImageView.isFlipped();//切换到背面
-            if ((isFlipped && state) || (!state && !isFlipped)) flipImageView.performClick();
-            tvProtection.setText(state ? tvProtection.getContext().getString(R.string.SECURE) : "");
+        if (vProtection.getFlipImageView() != null) {
+            boolean isFlipped = vProtection.getFlipImageView().isFlipped();//切换到背面
+            if ((isFlipped && state) || (!state && !isFlipped))
+                vProtection.getFlipImageView().performClick();
+            vProtection.getTextView().setText(state ? vProtection.getContext().getString(R.string.SECURE) : "");
         }
     }
-
-    private static final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM/dd HH:mm", Locale.getDefault());
 
     /**
      * 更新播放时间
@@ -121,7 +126,7 @@ public class LiveBottomBarAnimDelegate implements FlipImageView.OnFlipListener {
             return;
         String content = String.format(vLiveTime.getContext().getString(
                 state == 1 ? R.string.Tap1_Camera_VideoLive : R.string.Tap1_Camera_Playback)
-                + "|%s", simpleDateFormat.format(new Date(time)));
+                + "|%s", TimeUtils.simpleDateFormat0.format(new Date(time)));
         if (!vLiveTime.isShown()) vLiveTime.setVisibility(View.VISIBLE);
         vLiveTime.setText(content);
     }
@@ -153,6 +158,6 @@ public class LiveBottomBarAnimDelegate implements FlipImageView.OnFlipListener {
     }
 
     public interface LiveTimeRectListener {
-        void click();
+        void click(View v);
     }
 }

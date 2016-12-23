@@ -16,10 +16,7 @@ import android.view.View;
 import com.cylan.entity.jniCall.JFGVideo;
 import com.cylan.jiafeigou.R;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.Locale;
 
 /**
  * Created by cylan-hunt on 16-7-12.
@@ -28,7 +25,7 @@ public class SuperWheelExt extends View {
     public static final int STATE_DRAGGING = 0;
     public static final int STATE_ADSORB = 1;//吸附
     public static final int STATE_FINISH = 2;
-    public static boolean DEBUG = true;
+    public static boolean DEBUG = false;
 
     public static final String TAG = "SuperWheelExt";
 
@@ -313,7 +310,7 @@ public class SuperWheelExt extends View {
      *
      * @return
      */
-    private long getCurrentFocusTime() {
+    public long getCurrentFocusTime() {
         int scrollX = getScrollX();
         long timeDelta = (int) (scrollX / pixelsInSecond) * 1000L;
         return iDataProvider.getFlattenMaxTime() + timeDelta;
@@ -354,8 +351,6 @@ public class SuperWheelExt extends View {
                             touchHandler.startSmoothScroll(getScrollX(), (int) deltaDx);
                             return;
                         }
-                        if (DEBUG)
-                            Log.d(TAG, "need to reset; " + simpleDateFormat.format(new Date(timeCurrent)));
                     }
                 }
             }
@@ -363,8 +358,6 @@ public class SuperWheelExt extends View {
                 Log.d(TAG, String.format("idle:%s,direction:%s", idle, moveDirection));
         }
     }
-
-    private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMdd-HH:mm", Locale.getDefault());
 
     /**
      * drag拖动过程
