@@ -1,0 +1,473 @@
+package com.cylan.jiafeigou.n.view.cam;
+
+import android.content.Context;
+import android.content.pm.ActivityInfo;
+import android.content.res.Configuration;
+import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
+import android.util.Log;
+import android.view.View;
+
+import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.misc.JFGRules;
+import com.cylan.jiafeigou.misc.listener.LiveListener;
+import com.cylan.jiafeigou.n.mvp.contract.cam.CamLiveContract;
+import com.cylan.jiafeigou.n.mvp.model.BeanCamInfo;
+import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.TimeUtils;
+import com.cylan.jiafeigou.utils.ToastUtil;
+import com.cylan.jiafeigou.utils.ViewUtils;
+import com.cylan.jiafeigou.widget.LiveTimeSetter;
+import com.cylan.jiafeigou.widget.dialog.BaseDialog;
+import com.cylan.jiafeigou.widget.dialog.DatePickerDialogFragment;
+import com.cylan.jiafeigou.widget.flip.FlipImageView;
+import com.cylan.jiafeigou.widget.flip.ISafeStateSetter;
+import com.cylan.jiafeigou.widget.live.ILiveControl;
+import com.cylan.jiafeigou.widget.wheel.ex.IData;
+import com.cylan.jiafeigou.widget.wheel.ex.SuperWheelExt;
+import com.cylan.utils.NetUtils;
+
+import java.lang.ref.WeakReference;
+
+import butterknife.OnClick;
+
+import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_IDLE;
+import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_PLAYING;
+import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_PREPARE;
+import static com.cylan.jiafeigou.widget.live.ILiveControl.STATE_IDLE;
+import static com.cylan.jiafeigou.widget.wheel.ex.SuperWheelExt.STATE_ADSORB;
+import static com.cylan.jiafeigou.widget.wheel.ex.SuperWheelExt.STATE_DRAGGING;
+import static com.cylan.jiafeigou.widget.wheel.ex.SuperWheelExt.STATE_FINISH;
+
+/**
+ * 此类包含了所有 控制view播放的按钮{中间loading区域,安全防护,直播时间,全屏切换,}
+ * Created by cylan-hunt on 16-12-23.
+ */
+
+public class CamLiveController implements
+        SuperWheelExt.WheelRollListener,
+        CamLiveLandTopBar.TopBarAction,
+        FlipImageView.OnFlipListener,
+        LiveListener,
+        View.OnClickListener {
+    private WeakReference<FragmentActivity> activityWeakReference;
+    private WeakReference<DatePickerDialogFragment> datePickerRef;
+    private IData iDataProvider;
+    //横屏竖屏的时候,不一样,需要切换.
+    private ISafeStateSetter iSafeStateSetterPort, iSafeStateSetterLand;
+    private LiveTimeSetter liveTimeSetterPort, liveTimeSetterLand;
+    private WeakReference<CamLiveContract.Presenter> presenterRef;
+    //    /**
+//     * 播放,暂停,loading,播放失败提示按钮.
+//     */
+    private WeakReference<ILiveControl> iLiveActionViewRef;
+
+    //播放控制层面.
+    private CamLiveControlLayer camLiveControlLayer;
+    private Context context;
+
+    public CamLiveController(Context context) {
+        this.context = context;
+    }
+
+    public void setCamLiveControlLayer(CamLiveControlLayer camLiveControlLayer) {
+        this.camLiveControlLayer = camLiveControlLayer;
+        this.camLiveControlLayer.setTopBarAction(this);
+    }
+
+    public IData getDataProvider() {
+        return iDataProvider;
+    }
+
+    public void setActivity(FragmentActivity activity) {
+        this.activityWeakReference = new WeakReference<>(activity);
+    }
+
+    /**
+     * 中间 loading 区域
+     *
+     * @param iLiveAction
+     */
+    public void setLiveAction(ILiveControl iLiveAction) {
+        this.iLiveActionViewRef = new WeakReference<>(iLiveAction);
+        initLiveControlView();
+    }
+
+    /**
+     * 中间白色 loading 播放 暂停 按钮
+     */
+    private void initLiveControlView() {
+        iLiveActionViewRef.get().setAction(new ILiveControl.Action() {
+            @Override
+            public void clickImage(int curState) {
+                switch (curState) {
+                    case ILiveControl.STATE_LOADING_FAILED:
+                    case ILiveControl.STATE_STOP:
+                        //下一步playing
+                        if (presenterRef != null && presenterRef.get() != null)
+                            presenterRef.get().startPlayVideo(presenterRef.get().getPlayType());
+                        break;
+                    case ILiveControl.STATE_PLAYING:
+                        //下一步stop
+                        if (presenterRef != null && presenterRef.get() != null) {
+                            presenterRef.get().stopPlayVideo(presenterRef.get().getPlayType());
+                            presenterRef.get().stopPlayVideo(presenterRef.get().getPlayType());
+                        }
+                        break;
+                }
+                AppLogger.i("clickImage:" + curState);
+            }
+
+            @Override
+            public void clickText() {
+
+            }
+        });
+    }
+
+    /**
+     * |图标|安全防护
+     *
+     * @param setter
+     */
+    public void setPortSafeSetter(ISafeStateSetter setter) {
+        this.iSafeStateSetterPort = setter;
+    }
+
+    /**
+     * |图标|安全防护
+     *
+     * @param setter
+     */
+    private void setLandSafeSetter(ISafeStateSetter setter) {
+        this.iSafeStateSetterLand = setter;
+    }
+
+    /**
+     * 中间黑色半透明区域 |直播|5/16 23:30|
+     *
+     * @param setter
+     */
+    public void setPortLiveTimeSetter(LiveTimeSetter setter) {
+        liveTimeSetterPort = setter;
+        ((View) liveTimeSetterPort).setOnClickListener(this);
+    }
+
+    /**
+     * 横屏
+     *
+     * @param setter
+     */
+    private void setLandLiveTimeSetter(LiveTimeSetter setter) {
+        this.liveTimeSetterLand = setter;
+    }
+
+    public void setupHistoryData(IData dataProvider) {
+        this.iDataProvider = dataProvider;
+        final long time = System.currentTimeMillis();
+        camLiveControlLayer.getSwCamLiveWheel().setDataProvider(dataProvider);
+        Log.d("performance", "CamLivePortWheel performance: " + (System.currentTimeMillis() - time));
+    }
+
+    /**
+     * loading区域
+     *
+     * @param state
+     * @param content
+     */
+    public void setLoadingState(int state, String content) {
+        if (iLiveActionViewRef != null && iLiveActionViewRef.get() != null)
+            iLiveActionViewRef.get().setState(state, content);
+    }
+
+    /**
+     * 改变播放类型文字:{直播,返回}
+     *
+     * @param liveType
+     */
+    public void setLiveType(int liveType) {
+        camLiveControlLayer.getTvCamLivePortLive().setText(context.getResources()
+                .getString(liveType == CamLiveContract.TYPE_LIVE ? R.string.Tap1_Camera_VideoLive : R.string.BACK));
+    }
+
+    /**
+     * 屏幕方向改变.
+     */
+    public void notifyOrientationChange(final int orientation) {
+        camLiveControlLayer.setOrientation(orientation);
+        boolean land = orientation == Configuration.ORIENTATION_LANDSCAPE;
+        if (land && liveTimeSetterLand == null) {
+            liveTimeSetterLand = camLiveControlLayer.getLiveTimeLayout();
+        }
+        if (land && iSafeStateSetterLand == null) {
+            iSafeStateSetterLand = camLiveControlLayer.getlLayoutProtection();
+        }//显示或者隐藏
+        if (liveTimeSetterLand != null) liveTimeSetterLand.setVisibility(land);
+        if (iSafeStateSetterLand != null) iSafeStateSetterLand.setVisibility(land);
+        if (liveTimeSetterPort != null) liveTimeSetterPort.setVisibility(!land);
+        if (iSafeStateSetterPort != null) iSafeStateSetterPort.setVisibility(!land);
+    }
+
+    public void setPresenterRef(CamLiveContract.Presenter presenterRef) {
+        this.presenterRef = new WeakReference<>(presenterRef);
+    }
+
+    /**
+     * @param time :定位到某个时间
+     */
+    public void setNav2Time(long time) {
+        camLiveControlLayer.getSwCamLiveWheel().setPositionByTime(time);
+    }
+
+    private long getWheelCurrentFocusTime() {
+        return camLiveControlLayer.getSwCamLiveWheel().getCurrentFocusTime();
+    }
+
+    public void determineLayout() {
+        boolean show = false;
+        if (iLiveActionViewRef != null && iLiveActionViewRef.get() != null) {
+            int state = iLiveActionViewRef.get().getState();
+            if (context.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                state = STATE_IDLE;
+            }
+            setLoadingState(state, null);
+            show = iLiveActionViewRef.get() instanceof View && ((View) iLiveActionViewRef.get()).isShown();
+//            iLiveActionViewRef.get().setState();
+        }
+    }
+
+    /**
+     * 根据播放状态更新
+     */
+    public void updateVisibilityState(boolean show) {
+        if (presenterRef != null && presenterRef.get() != null) {
+            int count = iDataProvider == null ? 0 : iDataProvider.getDataCount();
+            if (count == 0) {
+                AppLogger.i("没有历史视频数据,或者没准备好");
+                return;
+            }
+            boolean deviceState = JFGRules.isDeviceOnline(presenterRef.get().getCamInfo().net);
+            //播放状态
+            int playState = presenterRef.get().getPlayState();
+            int orientation = context.getResources().getConfiguration().orientation;
+            if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                //横屏 slide_out_up  slide_in_up
+            } else {
+                //竖屏 ,淡入淡出,
+                if (!deviceState) {
+                    //设备离线
+                    AppLogger.i("设备离线");
+                    return;
+                }
+
+            }
+        }
+    }
+
+    /**
+     * 设置安全防护状态
+     *
+     * @param state
+     */
+    public void setProtectionState(boolean state) {
+        if (!check())
+            return;
+        //这个state可根据不同模式
+        if (iSafeStateSetterPort != null) iSafeStateSetterPort.setState(state);
+        if (iSafeStateSetterLand != null) iSafeStateSetterLand.setState(state);
+    }
+
+    /**
+     * @param time
+     */
+    public void setLiveTime(long time) {
+        if (activityWeakReference != null && activityWeakReference.get() != null) {
+            int playType = presenterRef.get().getPlayType();
+            boolean land = context.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
+            boolean show = !presenterRef.get().isShareDevice() && playType != CamLiveContract.TYPE_NONE;
+            if (land) {
+                if (liveTimeSetterLand != null)
+                    liveTimeSetterLand.setVisibility(show);
+                if (liveTimeSetterLand != null) liveTimeSetterLand.setContent(playType,
+                        playType == CamLiveContract.TYPE_LIVE ? System.currentTimeMillis() : time);
+            } else {
+                if (liveTimeSetterPort != null)
+                    liveTimeSetterPort.setVisibility(show);
+                if (liveTimeSetterPort != null)
+                    liveTimeSetterPort.setContent(playType,
+                            playType == CamLiveContract.TYPE_LIVE ? System.currentTimeMillis() : time);
+            }
+        }
+    }
+
+    /**
+     * 横竖屏幕切换
+     */
+    public void setScreenZoomer(View view) {
+        view.setOnClickListener(this);
+    }
+
+    private boolean check() {
+        return activityWeakReference != null && activityWeakReference.get() != null;
+    }
+
+    @Override
+    public void onTimeUpdate(long time, int state) {
+        switch (state) {
+            case STATE_DRAGGING:
+                Log.d("onTimeUpdate", "STATE_DRAGGING :" + TimeUtils.getTestTime(time));
+                break;
+            case STATE_ADSORB:
+                Log.d("onTimeUpdate", "STATE_ADSORB :" + TimeUtils.getTestTime(time));
+                break;
+            case STATE_FINISH:
+                Log.d("onTimeUpdate", "STATE_FINISH :" + TimeUtils.getTestTime(time));
+                if (presenterRef != null && presenterRef.get() != null)
+                    presenterRef.get().startPlayHistory(time);
+                break;
+        }
+    }
+
+    @Override
+    public void onBack() {
+        if (activityWeakReference != null && activityWeakReference.get() != null)
+            ViewUtils.setRequestedOrientation(activityWeakReference.get(),
+                    ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+    }
+
+    @Override
+    public void onSwitchSpeaker() {
+        if (presenterRef != null && presenterRef.get() != null)
+            presenterRef.get().switchSpeakerMic(false, false, false);
+    }
+
+    @Override
+    public void onTriggerRecorder() {
+        if (presenterRef != null && presenterRef.get() != null)
+            presenterRef.get().switchSpeakerMic(false, false, false);
+    }
+
+    @Override
+    public void onTriggerCapture() {
+        if (presenterRef != null && presenterRef.get() != null)
+            presenterRef.get().takeSnapShot();
+    }
+
+    @OnClick({R.id.imgV_cam_live_land_play,
+            R.id.live_time_layout,
+            R.id.imgV_cam_zoom_to_full_screen,
+            R.id.tv_cam_live_port_live})
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.tv_cam_live_port_live:
+                break;
+            case R.id.imgV_cam_live_land_play:
+                if (presenterRef != null && presenterRef.get() != null) {
+                    if (presenterRef.get().getPlayType() == CamLiveContract.TYPE_LIVE) {
+                        presenterRef.get().startPlayVideo(presenterRef.get().getPlayType());
+                        AppLogger.i(String.format("land play history: %s", "live"));
+                    } else {
+                        long time = camLiveControlLayer.getSwCamLiveWheel()
+                                .getCurrentFocusTime();
+                        presenterRef.get().startPlayHistory(time);
+                        AppLogger.i(String.format("land play history: %s", time));
+                    }
+                }
+            case R.id.live_time_layout:
+                clickLiveTimeRect(view);
+                break;
+            case R.id.imgV_cam_zoom_to_full_screen://全屏
+                if (activityWeakReference != null && activityWeakReference.get() != null) {
+                    if (presenterRef.get().getPlayState() == JConstant.PLAY_STATE_IDLE)
+                        return;
+                    ViewUtils.setRequestedOrientation(activityWeakReference.get(),
+                            ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+                }
+                break;
+        }
+        AppLogger.i(String.format("onClick land play: %s", (presenterRef != null && presenterRef.get() != null)));
+    }
+
+    @Override
+    public void onClick(FlipImageView view) {
+        if (presenterRef != null && presenterRef.get() != null)
+            presenterRef.get().saveAlarmFlag(!view.isFlipped());
+    }
+
+    @Override
+    public void onFlipStart(FlipImageView view) {
+
+    }
+
+    @Override
+    public void onFlipEnd(FlipImageView view) {
+
+    }
+
+    @Override
+    public void onLiveState(int state) {
+        switch (state) {
+            case PLAY_STATE_IDLE:
+                if (camLiveControlLayer.getImgVCamLiveLandPlay().getDrawable()
+                        != context.getResources().getDrawable(R.drawable.icon_landscape_stop)) {
+                    //do work here
+                    camLiveControlLayer.getImgVCamLiveLandPlay().setImageResource(R.drawable.icon_landscape_stop);
+                }
+                updateVisibilityState(false);
+                break;
+            case PLAY_STATE_PREPARE:
+            case PLAY_STATE_PLAYING:
+                if (camLiveControlLayer.getImgVCamLiveLandPlay().getDrawable()
+                        != context.getResources().getDrawable(R.drawable.icon_landscape_playing)) {
+                    //do work here
+                    camLiveControlLayer.getImgVCamLiveLandPlay().setImageResource(R.drawable.icon_landscape_playing);
+                }
+                break;
+        }
+    }
+
+    /**
+     * 检查
+     */
+    private void clickLiveTimeRect(View v) {
+        ViewUtils.deBounceClick(v);
+        if (NetUtils.getJfgNetType(context) == 0 || presenterRef.get() == null) {
+            AppLogger.d("no net work");
+            return;
+        }
+        BeanCamInfo info = presenterRef.get().getCamInfo();
+        if (info != null && info.net != null &&
+                info.net.net == 0) {
+            AppLogger.d("device is offline");
+            return;
+        }
+        if (info != null && !info.sdcardState) {
+            //没有sd卡
+            ToastUtil.showToast(context.getString(R.string.Tap1_Camera_NoSDCardTips));
+            AppLogger.d("no sdcard");
+            return;
+        }
+        if (iDataProvider == null || iDataProvider.getDataCount() == 0) {
+            AppLogger.d("history data is not prepared");
+            return;
+        }
+        if (datePickerRef == null || datePickerRef.get() == null) {
+            Bundle bundle = new Bundle();
+            bundle.putString(BaseDialog.KEY_TITLE, "时间选择");
+            DatePickerDialogFragment.newInstance(bundle);
+            datePickerRef = new WeakReference<>(DatePickerDialogFragment.newInstance(bundle));
+            datePickerRef.get().setAction((int id, Object value) -> {
+                if (value != null && value instanceof Long) {
+                    AppLogger.d("date pick: " + TimeUtils.getSpecifiedDate((Long) value));
+                    setNav2Time((Long) value);
+                    presenterRef.get().startPlayHistory((Long) value);
+                }
+            });
+        }
+        datePickerRef.get().setTimeFocus(getWheelCurrentFocusTime());
+        datePickerRef.get().setDateMap(presenterRef.get().getFlattenDateMap());
+        datePickerRef.get().show(activityWeakReference.get().getSupportFragmentManager(),
+                "DatePickerDialogFragment");
+    }
+}
