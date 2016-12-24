@@ -24,5 +24,5 @@
         style="@style/login_model_commit_style"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="37dp"
-        android:text="继续" />
+        android:text="@string/CARRY_ON" />
 </LinearLayout>

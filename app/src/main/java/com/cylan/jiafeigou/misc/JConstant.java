@@ -61,6 +61,12 @@ public class JConstant {
      */
     public static final String KEY_ACCOUNT_TO_SEND = "key_to_send_account";
     public static final String KEY_PWD_TO_SEND = "key_to_send_pwd";
+
+    public static final String AUTO_LOGIN_ACCOUNT = "auto_login_account";
+    public static final String AUTO_LOGIN_PWD = "auto_login_pwd";
+    public static final String SAVE_TEMP_ACCOUNT ="save_temp_account";
+    public static final String SAVE_TEMP_CODE ="save_temp_code";
+    public static final String OPEN_LOGIN_TO_BIND_PHONE ="open_login_to_bind_phone";
     /**
      * verification code
      */

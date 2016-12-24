@@ -88,10 +88,11 @@ public class BeforeLoginFragment extends android.support.v4.app.Fragment {
     @OnClick(R.id.btn_to_register)
     public void toRegister(View view) {
         if (getView() != null)
-            ViewUtils.deBounceClick(getView().findViewById(R.id.btn_to_login));
+            ViewUtils.deBounceClick(getView().findViewById(R.id.btn_to_register));
         Bundle bundle = new Bundle();
         bundle.putString(RxEvent.NeedLoginEvent.KEY, RxEvent.NeedLoginEvent.KEY);
         bundle.putBoolean(JConstant.KEY_SHOW_LOGIN_FRAGMENT_EXTRA, true);
+        bundle.putBoolean(JConstant.OPEN_LOGIN_TO_BIND_PHONE, false);
         RxBus.getCacheInstance().post(new RxEvent.NeedLoginEvent(bundle));
     }
 

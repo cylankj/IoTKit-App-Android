@@ -22,7 +22,6 @@ import java.util.List;
 
 public class AddRelativesAndFriendsAdapter extends SuperAdapter<MineAddReqBean> {
 
-
     private OnAcceptClickLisenter lisenter;
     private RoundedImageView headImag;
 

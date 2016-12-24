@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.CheckBox;
@@ -22,6 +23,7 @@ import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.IMEUtils;
+import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 
 import butterknife.BindView;
@@ -99,7 +101,7 @@ public class SetupPwdFragment extends Fragment implements SetupPwdContract.View 
         FrameLayout layout = (FrameLayout) getView().findViewById(R.id.rLayout_login_top);
         layout.findViewById(R.id.tv_top_bar_right).setVisibility(android.view.View.GONE);
         TextView tvTitle = (TextView) layout.findViewById(R.id.tv_top_bar_center);
-        tvTitle.setText("密码");
+        tvTitle.setText(getString(R.string.PASSWORD));
         ivLoginTopLeft.setImageResource(R.drawable.icon_nav_back_gray);
         initNavigateBack();
     }
@@ -115,16 +117,16 @@ public class SetupPwdFragment extends Fragment implements SetupPwdContract.View 
 
     private void setupInputBox() {
         EditText editText = (EditText) getView().findViewById(R.id.et_input_box);
+        CheckBox checkBox = (CheckBox) getView().findViewById(R.id.cb_show_input_box);
         editText.setHint(getString(R.string.ENTER_PWD));
         editText.setInputType(EditorInfo.TYPE_TEXT_VARIATION_PASSWORD);
         ViewUtils.setChineseExclude(editText, JConstant.PWD_LEN_MAX);
+        ViewUtils.showPwd(etInputBox, checkBox.isChecked());
     }
 
     @OnTextChanged(R.id.et_input_box)
     public void onInputBoxTextChanged(CharSequence s, int start, int before, int count) {
-        final boolean validPws = !TextUtils.isEmpty(s)
-                && s.length() >= JConstant.PWD_LEN_MIN
-                && s.length() <= JConstant.PWD_LEN_MAX;
+        final boolean validPws = !TextUtils.isEmpty(s);
         ivInputBoxClear.setVisibility(validPws ? android.view.View.VISIBLE : android.view.View.GONE);
         tvRegisterPwdSubmit.setEnabled(validPws);
     }
@@ -145,6 +147,10 @@ public class SetupPwdFragment extends Fragment implements SetupPwdContract.View 
             case R.id.cb_show_input_box:
                 break;
             case R.id.tv_register_pwd_submit:
+                if (etInputBox.getText().toString().trim().length()<6){
+                    ToastUtil.showToast(getString(R.string.PASSWORD_LESSTHAN_SIX));
+                    return;
+                }
                 Bundle bundle = getArguments();
                 if (bundle == null) {
                     AppLogger.e("bundle is null");
@@ -177,4 +183,16 @@ public class SetupPwdFragment extends Fragment implements SetupPwdContract.View 
     public void submitResult(RxEvent.ResultRegister register) {
 
     }
+
+    @Override
+    public void loginResult(int code) {
+
+    }
+
+    @Override
+    public boolean isLoginViewVisible() {
+        return false;
+    }
+
+
 }

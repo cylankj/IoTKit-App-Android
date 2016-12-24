@@ -28,6 +28,7 @@ import com.bumptech.glide.request.target.SizeReadyCallback;
 import com.bumptech.glide.request.target.Target;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.cache.JCache;
+import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeMineContract;
 import com.cylan.jiafeigou.n.mvp.impl.home.HomeMinePresenterImpl;
@@ -157,12 +158,15 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
             return;
         }
 
-        if (basePresenter.checkOpenLogIn()) {
-            if (TextUtils.isEmpty(basePresenter.getUserInfoBean().getEmail()) &&
-                    TextUtils.isEmpty(basePresenter.getUserInfoBean().getPhone())) {
-                showBindPhoneOrEmailDialog();
-                return;
-            }
+//        if (basePresenter.checkOpenLogIn()) {
+        if (true) {
+//            if (TextUtils.isEmpty(basePresenter.getUserInfoBean().getEmail()) &&
+//                    TextUtils.isEmpty(basePresenter.getUserInfoBean().getPhone())) {
+//                showBindPhoneOrEmailDialog();
+//                return;
+//            }
+            showBindPhoneOrEmailDialog();
+            return;
         }
 
         getFragmentManager().beginTransaction()
@@ -418,14 +422,10 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
      */
     private void jump2SetPhoneFragment() {
         Bundle bundle = new Bundle();
-        bundle.putSerializable("userinfo", basePresenter.getUserInfoBean());
-        bindPhoneFragment = MineInfoBindPhoneFragment.newInstance(bundle);
-        getFragmentManager().beginTransaction()
-                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
-                        , R.anim.slide_in_left, R.anim.slide_out_right)
-                .add(android.R.id.content, bindPhoneFragment, "bindPhoneFragment")
-                .addToBackStack("HomeMineFragment")
-                .commit();
+        bundle.putString(RxEvent.NeedLoginEvent.KEY, RxEvent.NeedLoginEvent.KEY);
+        bundle.putBoolean(JConstant.KEY_SHOW_LOGIN_FRAGMENT_EXTRA, true);
+        bundle.putBoolean(JConstant.OPEN_LOGIN_TO_BIND_PHONE, true);
+        RxBus.getCacheInstance().post(new RxEvent.NeedLoginEvent(bundle));
     }
 
     @Override
