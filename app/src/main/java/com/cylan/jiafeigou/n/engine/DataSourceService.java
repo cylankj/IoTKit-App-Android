@@ -57,6 +57,7 @@ public class DataSourceService extends Service implements AppCallBack {
         super.onCreate();
         CacheParser.getDpParser().registerDpParser();
         GlobalUdpDataSource.getInstance().register();
+        GlobalBellCallSource.getInstance().register();
     }
 
     @Override
@@ -64,6 +65,7 @@ public class DataSourceService extends Service implements AppCallBack {
         super.onDestroy();
         CacheParser.getDpParser().unregisterDpParser();
         GlobalUdpDataSource.getInstance().unregister();
+        GlobalBellCallSource.getInstance().unRegister();
     }
 
     @Override
@@ -163,6 +165,7 @@ public class DataSourceService extends Service implements AppCallBack {
 
     @Override
     public void OnVideoNotifyResolution(JFGMsgVideoResolution jfgMsgVideoResolution) {
+        AppLogger.d("OnVideoNotifyResolution" + jfgMsgVideoResolution.peer);
         RxBus.getCacheInstance().post(jfgMsgVideoResolution);
     }
 
@@ -249,7 +252,8 @@ public class DataSourceService extends Service implements AppCallBack {
 
     @Override
     public void OnDoorBellCall(JFGDoorBellCaller jfgDoorBellCaller) {
-        AppLogger.d("OnLocalMessage :");
+        AppLogger.d("OnDoorBellCall :");
+        RxBus.getCacheInstance().post(new RxEvent.BellCallEvent(jfgDoorBellCaller));
     }
 
     @Override
@@ -286,7 +290,7 @@ public class DataSourceService extends Service implements AppCallBack {
 
     @Override
     public void OnGetFriendListRsp(int i, ArrayList<JFGFriendAccount> arrayList) {
-        AppLogger.d("OnLocalMessage :"+arrayList.size());
+        AppLogger.d("OnLocalMessage :" + arrayList.size());
         if (RxBus.getCacheInstance() != null && RxBus.getCacheInstance().hasObservers()) {
             RxBus.getCacheInstance().post(new RxEvent.GetFriendList(i, arrayList));
         }
@@ -294,7 +298,7 @@ public class DataSourceService extends Service implements AppCallBack {
 
     @Override
     public void OnGetFriendRequestListRsp(int i, ArrayList<JFGFriendRequest> arrayList) {
-        AppLogger.d("OnLocalMessage:"+arrayList.size());
+        AppLogger.d("OnLocalMessage:" + arrayList.size());
         if (RxBus.getCacheInstance() != null && RxBus.getCacheInstance().hasObservers()) {
             RxBus.getCacheInstance().post(new RxEvent.GetAddReqList(i, arrayList));
         }
@@ -335,7 +339,7 @@ public class DataSourceService extends Service implements AppCallBack {
     @Override
     public void OnGetUnShareListByCidRsp(int i, ArrayList<JFGFriendAccount> arrayList) {
         AppLogger.d("OnGetUnShareListByCidRsp :");
-        RxBus.getCacheInstance().post(new RxEvent.GetHasShareFriendCallBack(i,arrayList));
+        RxBus.getCacheInstance().post(new RxEvent.GetHasShareFriendCallBack(i, arrayList));
     }
 
     @Override
@@ -365,7 +369,7 @@ public class DataSourceService extends Service implements AppCallBack {
     public void OnGetFeedbackRsp(int i, ArrayList<JFGFeedbackInfo> arrayList) {
         AppLogger.d("OnGetFeedbackRsp :");
         if (RxBus.getCacheInstance().hasObservers()) {
-            RxBus.getCacheInstance().post(new RxEvent.GetFeedBackRsp(i,arrayList));
+            RxBus.getCacheInstance().post(new RxEvent.GetFeedBackRsp(i, arrayList));
         }
     }
 

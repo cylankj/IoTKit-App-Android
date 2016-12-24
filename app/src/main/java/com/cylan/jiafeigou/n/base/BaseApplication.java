@@ -111,7 +111,7 @@ public class BaseApplication extends MultiDexApplication implements Application.
             case ComponentCallbacks2.TRIM_MEMORY_UI_HIDDEN:
                 //should release some resource
                 Log.d(TAG, "onTrimMemory: " + level);
-                shouldKillBellCallProcess();
+//                shouldKillBellCallProcess();
                 break;
         }
     }

@@ -338,7 +338,7 @@ public class DoorBellHomeActivity extends BaseFullScreenFragmentActivity
         intent.putExtra("text", "nihao");
         intent.putExtra(JConstant.BELL_CALL_WAY, JConstant.BELL_CALL_WAY_VIEWER);
         intent.putExtra(JConstant.KEY_DEVICE_ITEM_BUNDLE, presenter.getBellInfo());
-        intent.putExtra("extra", presenter.getBellInfo().deviceBase);
+        intent.putExtra(JConstant.BELL_CALL_WAY_EXTRA, presenter.getBellInfo().deviceBase);
         startActivity(intent);
     }
 

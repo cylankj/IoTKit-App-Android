@@ -102,7 +102,6 @@
             android:value="${weChat_APP_ID}"/>
 
 
-
         <activity
             android:name=".SmartcallActivity"
             android:configChanges="locale|orientation|keyboardHidden"

@@ -21,6 +21,21 @@ public interface BellLiveContract {
 
         void onFlowSpeedRefresh(int speed);
 
+        /**
+         * 直播或者历史录像
+         *
+         * @param errId : 失败 0:网络失败
+         */
+        void onLiveStop(int errId);
+
+        //新的门铃呼叫到来,且现在没有已接听的门铃
+        void onListen(String URL);
+
+        //客户端主动查看门铃
+        void onViewer();
+
+        //新的门铃到来,且此时已有一个存在的门铃呼叫
+        void onProcess(String person);
     }
 
     interface Presenter extends BasePresenter {
@@ -42,6 +57,12 @@ public interface BellLiveContract {
         BeanBellInfo getBellInfo();
 
         void setBellInfo(BeanBellInfo info);
+
+        void processCall();
+
+        void onBellCall(String callWay, Object extra, Object extra1);
+
+        void onBellPaused();
     }
 }
 

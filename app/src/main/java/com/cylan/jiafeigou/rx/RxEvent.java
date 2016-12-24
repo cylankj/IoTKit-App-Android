@@ -5,6 +5,7 @@ import android.os.Bundle;
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.entity.jniCall.JFGDevice;
+import com.cylan.entity.jniCall.JFGDoorBellCaller;
 import com.cylan.entity.jniCall.JFGFeedbackInfo;
 import com.cylan.entity.jniCall.JFGFriendAccount;
 import com.cylan.entity.jniCall.JFGFriendRequest;
@@ -487,6 +488,23 @@ public class RxEvent {
         public GetFeedBackRsp(int i, ArrayList<JFGFeedbackInfo> arrayList) {
             this.i = i;
             this.arrayList = arrayList;
+        }
+    }
+
+    public static final class BellCallEvent {
+
+        public final JFGDoorBellCaller caller;
+
+        public BellCallEvent(JFGDoorBellCaller jfgDoorBellCaller) {
+            this.caller = jfgDoorBellCaller;
+        }
+    }
+
+    public static class BellLiveEvent {
+        public boolean hold;
+
+        public BellLiveEvent(boolean hold) {
+            this.hold = hold;
         }
     }
 }

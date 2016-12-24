@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.SurfaceView;
 import android.view.View;
@@ -14,15 +16,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.cylan.entity.jniCall.JFGMsgVideoResolution;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.JConstant;
-import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.contract.bell.BellLiveContract;
 import com.cylan.jiafeigou.n.mvp.impl.bell.BellLivePresenterImpl;
-import com.cylan.jiafeigou.n.mvp.model.BeanBellInfo;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.bell.DragLayout;
@@ -55,6 +56,8 @@ public class BellLiveActivity extends ProcessActivity
     ImageView imgvBellLiveSpeaker;
     @BindView(R.id.fLayout_bell_after_live)
     FrameLayout fLayoutBellAfterLive;
+    @BindView(R.id.act_bell_live_video_picture)
+    ImageView mBellLiveVideoPicture;
 
     @BindView(R.id.act_bell_live_video_view_container)
     FrameLayout mVideoViewContainer;
@@ -66,8 +69,8 @@ public class BellLiveActivity extends ProcessActivity
 
     private BellLiveContract.Presenter presenter;
     private SurfaceView mSurfaceView;
-    private BeanBellInfo mBellInfo;
     private boolean mIsMikeOn = true;
+    private AlertDialog mAlertDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,21 +83,34 @@ public class BellLiveActivity extends ProcessActivity
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+        presenter.start();
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
-        presenter.start();
-        showListenOrViewerView();
+        //大大的蛋疼
+        String callWay = getIntent().getStringExtra(JConstant.BELL_CALL_WAY);
+        Object extra = getIntent().getParcelableExtra(JConstant.BELL_CALL_WAY_EXTRA);
+        if (extra == null) extra = getIntent().getSerializableExtra(JConstant.BELL_CALL_WAY_EXTRA);
+        Object extra1 = getIntent().getParcelableExtra(JConstant.KEY_DEVICE_ITEM_BUNDLE);
+        presenter.onBellCall(callWay, extra, extra1);
+
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        presenter.stop();
     }
 
     @Override
     protected void onStop() {
         super.onStop();
+        presenter.stop();
+        mVideoViewContainer.removeAllViews();
+        mSurfaceView = null;
     }
 
     @Override
@@ -169,10 +185,6 @@ public class BellLiveActivity extends ProcessActivity
 
     private void initPresenter() {
         basePresenter = new BellLivePresenterImpl(this);
-        mBellInfo = getIntent().getParcelableExtra(JConstant.KEY_DEVICE_ITEM_BUNDLE);
-        mBellInfo.deviceBase = getIntent().getParcelableExtra("extra");
-        presenter.setBellInfo(mBellInfo);
-
     }
 
     /**
@@ -280,16 +292,53 @@ public class BellLiveActivity extends ProcessActivity
 
     }
 
+
     @Override
     public void onResolution(JFGMsgVideoResolution resolution) throws JfgException {
         initVideoView();
         JfgCmdInsurance.getCmd().setRenderRemoteView(mSurfaceView);
         presenter.onMike(mIsMikeOn ? 1 : 0);
+        mBellLiveVideoPicture.setVisibility(View.GONE);
     }
 
     @Override
     public void onFlowSpeedRefresh(int speed) {
         tvBellLiveFlow.setText(String.format(Locale.getDefault(), "%sKb/s", speed));
+    }
+
+    @Override
+    public void onLiveStop(int errId) {
+
+    }
+
+    @Override
+    public void onListen(String URL) {
+        Log.e("ABC", "onListen: " + URL);
+        dLayoutBellHotSeat.setVisibility(View.VISIBLE);
+        fLayoutBellAfterLive.setVisibility(View.GONE);
+        mBellLiveVideoPicture.setVisibility(View.VISIBLE);
+        Glide.with(this).load(URL).into(mBellLiveVideoPicture);
+    }
+
+    public void onViewer() {
+        dLayoutBellHotSeat.setVisibility(View.GONE);
+        fLayoutBellAfterLive.setVisibility(View.VISIBLE);
+        mBellLiveVideoPicture.setVisibility(View.GONE);
+    }
+
+    public void onProcess(String person) {
+        if (mAlertDialog == null) {
+            mAlertDialog = new AlertDialog.Builder(this)
+                    .setTitle("有朋友来访")
+                    .setPositiveButton("接听", (dialog, which) -> {
+                        mSurfaceView = null;
+                        presenter.onPickup();
+                    })
+                    .setNegativeButton("忽略", null)
+                    .create();
+        }
+        mAlertDialog.setMessage(person + ":有访客呼叫你");
+        mAlertDialog.show();
     }
 
     /**
@@ -299,8 +348,7 @@ public class BellLiveActivity extends ProcessActivity
      */
     private void initVideoView() {
         if (mSurfaceView == null) {
-            int pid = presenter.getBellInfo().deviceBase.pid;
-            mSurfaceView = (SurfaceView) VideoViewFactory.CreateRendererExt(JFGRules.isNeedPanoramicView(pid),
+            mSurfaceView = (SurfaceView) VideoViewFactory.CreateRendererExt(false,
                     getContext(), true);
             mSurfaceView.setId("IVideoView".hashCode());
             ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
