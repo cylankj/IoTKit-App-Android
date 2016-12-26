@@ -238,6 +238,24 @@ public class DataSourceService extends Service implements AppCallBack {
             case JResultEvent.JFG_RESULT_UNBINDDEV:
                 RxBus.getCacheInstance().postSticky(new RxEvent.UnBindDeviceEvent(jfgResult));
                 break;
+            case JResultEvent.JFG_RESULT_CHANGE_PASS:
+                RxBus.getCacheInstance().post(new RxEvent.ChangePwdBack(jfgResult));
+                break;
+            case JResultEvent.JFG_RESULT_RESET_PASS:
+                RxBus.getCacheInstance().post(new RxEvent.ResetPwdBack(jfgResult));
+                break;
+            case JResultEvent.JFG_RESULT_ADD_FRIEND:
+                RxBus.getCacheInstance().post(new RxEvent.AddFriendBack(jfgResult));
+                break;
+            case JResultEvent.JFG_RESULT_CONSENT_ADD_FRIEND:
+                RxBus.getCacheInstance().post(new RxEvent.ConsentAddFriendBack(jfgResult));
+                break;
+            case JResultEvent.JFG_RESULT_DEL_FRIEND:
+                RxBus.getCacheInstance().post(new RxEvent.DelFriendBack(jfgResult));
+                break;
+            case JResultEvent.JFG_RESULT_SETPWD_WITH_BINDACCOUNT:
+                RxBus.getCacheInstance().post(new RxEvent.OpenLogInSetPwdBack(jfgResult));
+                break;
         }
         if (login) {
             AfterLoginService.startGetAccountAction(getApplicationContext());

@@ -4,10 +4,15 @@ import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineInfoSetPassWordContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
+import com.cylan.jiafeigou.rx.RxBus;
+import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
+import rx.subscriptions.CompositeSubscription;
 
 /**
  * 作者：zsl
@@ -16,6 +21,7 @@ import rx.schedulers.Schedulers;
  */
 public class MineInfoSetPassWordPresenterImp extends AbstractPresenter<MineInfoSetPassWordContract.View> implements MineInfoSetPassWordContract.Presenter {
 
+    private CompositeSubscription subscription;
     public MineInfoSetPassWordPresenterImp(MineInfoSetPassWordContract.View view) {
         super(view);
         view.setPresenter(this);
@@ -23,17 +29,24 @@ public class MineInfoSetPassWordPresenterImp extends AbstractPresenter<MineInfoS
 
     @Override
     public void start() {
-
+        if (subscription != null && !subscription.isUnsubscribed()){
+            subscription.unsubscribe();
+        }else {
+            subscription = new CompositeSubscription();
+            subscription.add(changePwdBack());
+        }
     }
 
     @Override
     public void stop() {
-
+        if (subscription != null && !subscription.isUnsubscribed()){
+            subscription.unsubscribe();
+        }
     }
 
     @Override
     public boolean checkOldPassword(String inputPass) {
-        String oldPass = "123456";
+        String oldPass = "111111";
         return inputPass.equals(oldPass);
     }
 
@@ -60,7 +73,7 @@ public class MineInfoSetPassWordPresenterImp extends AbstractPresenter<MineInfoS
                     @Override
                     public void call(String s) {
                         try {
-                            JfgCmdInsurance.getCmd().resetPassword(account, oldPass, newPass);
+                            JfgCmdInsurance.getCmd().changePassword(account, oldPass, newPass);
                         } catch (JfgException e) {
                             e.printStackTrace();
                         }
@@ -69,6 +82,26 @@ public class MineInfoSetPassWordPresenterImp extends AbstractPresenter<MineInfoS
                     @Override
                     public void call(Throwable throwable) {
                         AppLogger.e("sendChangePassReq" + throwable.getLocalizedMessage());
+                    }
+                });
+    }
+
+    /**
+     * 修改密码的回调
+     * @return
+     */
+    @Override
+    public Subscription changePwdBack() {
+        return RxBus.getCacheInstance().toObservable(RxEvent.ChangePwdBack.class)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<RxEvent.ChangePwdBack>() {
+                    @Override
+                    public void call(RxEvent.ChangePwdBack changePwdBack) {
+                        if (changePwdBack != null && changePwdBack instanceof RxEvent.ChangePwdBack){
+                            if (getView()!= null){
+                                getView().changePwdResult(changePwdBack.jfgResult);
+                            }
+                        }
                     }
                 });
     }

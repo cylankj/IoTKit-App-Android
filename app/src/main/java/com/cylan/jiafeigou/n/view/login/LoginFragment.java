@@ -547,8 +547,17 @@ public class LoginFragment extends android.support.v4.app.Fragment
                 return;
             }
             getContext().startActivity(new Intent(getContext(), NewHomeActivity.class));
+        }else if (code == 162){
 
-        } else {
+            if (!(getActivity() instanceof NewHomeActivity))
+                getActivity().finish();
+            else {
+                getActivity().getSupportFragmentManager().popBackStack();
+                return;
+            }
+            getContext().startActivity(new Intent(getContext(), NewHomeActivity.class));
+
+        }else {
             resetView();
             if (code == JError.ErrorAccountNotExist) {
                 //账号未注册
@@ -750,7 +759,7 @@ public class LoginFragment extends android.support.v4.app.Fragment
             if (verificationCodeLogic == null)
                 verificationCodeLogic = new VerificationCodeLogic(tvMeterGetCode);
             verificationCodeLogic.start();
-            Toast.makeText(getActivity(), "获取验证码", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), getString(R.string.GET_CODE), Toast.LENGTH_SHORT).show();
             //获取验证码
             if (presenter != null)
                 presenter.getCodeByPhone(ViewUtils.getTextViewContent(etRegisterInputBox));

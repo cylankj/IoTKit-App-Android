@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.net.wifi.WifiManager;
+import android.os.SystemClock;
 import android.text.TextUtils;
 
 import com.cylan.ex.JfgException;
@@ -82,6 +83,7 @@ public class MineSetRemarkNamePresenterImp extends AbstractPresenter<MineSetRema
                     public void call(RelAndFriendBean bean) {
                         try {
                             JfgCmdInsurance.getCmd().setFriendMarkName(friendBean.account, newName);
+                            SystemClock.sleep(500);
                             JfgCmdInsurance.getCmd().getFriendInfo(friendBean.account);
                         } catch (JfgException e) {
                             e.printStackTrace();

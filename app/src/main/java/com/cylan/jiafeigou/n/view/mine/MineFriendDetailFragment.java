@@ -1,17 +1,22 @@
 package com.cylan.jiafeigou.n.view.mine;
 
+import android.Manifest;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.app.AlertDialog;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -61,7 +66,8 @@ public class MineFriendDetailFragment extends Fragment implements MineFriendDeta
     private MineLookBigImageFragment mineLookBigImageFragment;
 
     private MineFriendDetailContract.Presenter presenter;
-
+    private PopupWindow popupWindow;
+    private int navigationHeight;
     public OnDeleteClickLisenter lisenter;
     private RelAndFriendBean frienditembean;
 
@@ -85,8 +91,17 @@ public class MineFriendDetailFragment extends Fragment implements MineFriendDeta
         View view = inflater.inflate(R.layout.fragment_mine_friend_detail, container, false);
         ButterKnife.bind(this, view);
         initPresenter();
+        getNavigationHeigth();
         initData();
         return view;
+    }
+
+    /**
+     * 导航栏高度
+     */
+    private void getNavigationHeigth() {
+        int resourceId = getResources().getIdentifier("navigation_bar_height", "dimen", "android");
+        navigationHeight = getResources().getDimensionPixelSize(resourceId);
     }
 
     @Override
@@ -156,7 +171,7 @@ public class MineFriendDetailFragment extends Fragment implements MineFriendDeta
                 if (getView() != null)
                     ViewUtils.deBounceClick(getView().findViewById(R.id.rl_delete_relativeandfriend));
                 AppLogger.e("rl_delete_relativeandfriend");
-                showDeleteDialog(frienditembean);
+                showDelFriendDialog(view,frienditembean);
                 break;
             case R.id.tv_share_device:
                 if (getView() != null)
@@ -173,27 +188,73 @@ public class MineFriendDetailFragment extends Fragment implements MineFriendDeta
         }
     }
 
-    private void showDeleteDialog(final RelAndFriendBean bean) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        builder.setTitle(getString(R.string.Tap3_Friends_DeleteFriends));
-        builder.setPositiveButton(getString(R.string.OK), new DialogInterface.OnClickListener() {
+    /**
+     * 删除亲友对话框
+     * @param bean
+     */
+    public void showDelFriendDialog(View v,RelAndFriendBean bean){
+        if (popupWindow != null && popupWindow.isShowing()) {
+            return;
+        }
+        //设置PopupWindow的View
+        View view = LayoutInflater.from(getContext()).inflate(R.layout.layout_del_friend_popupwindow, null);
+        popupWindow = new PopupWindow(view, RelativeLayout.LayoutParams.MATCH_PARENT,
+                RelativeLayout.LayoutParams.WRAP_CONTENT);
+        //设置背景
+        popupWindow.setBackgroundDrawable(new BitmapDrawable());
+        //设置点击弹窗外隐藏自身
+        popupWindow.setFocusable(true);
+        popupWindow.setOutsideTouchable(true);
+        //设置动画
+        popupWindow.setAnimationStyle(R.style.PopupWindow);
+        //设置位置
+        popupWindow.showAtLocation(v, Gravity.BOTTOM, 0, navigationHeight-50);
+        //设置消失监听
+        popupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
+            public void onDismiss() {
+                setBackgroundAlpha(1);
+            }
+        });
+        //设置PopupWindow的View点击事件
+        setOnPopupViewClick(view,bean);
+        //设置背景色
+        setBackgroundAlpha(0.4f);
+    }
+
+    private void setOnPopupViewClick(View view,RelAndFriendBean bean) {
+        TextView tv_pick_zone, tv_cancel;
+        tv_pick_zone = (TextView) view.findViewById(R.id.tv_del_friend);
+        tv_cancel = (TextView) view.findViewById(R.id.tv_cancel);
+
+        tv_pick_zone.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
                 if (NetUtils.getNetType(ContextUtils.getContext()) == -1){
                     ToastUtil.showToast(getString(R.string.NO_NETWORK_4));
                     return;
                 }
                 presenter.sendDeleteFriendReq(bean.account);
                 handlerDelCallBack();
-                dialog.dismiss();
+                popupWindow.dismiss();
             }
         });
-        builder.setNegativeButton(getString(R.string.CANCEL), new DialogInterface.OnClickListener() {
+
+        tv_cancel.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
+            public void onClick(View v) {
+                popupWindow.dismiss();
             }
-        }).show();
+        });
+
+    }
+
+
+    //设置屏幕背景透明效果
+    public void setBackgroundAlpha(float alpha) {
+        WindowManager.LayoutParams lp = getActivity().getWindow().getAttributes();
+        lp.alpha = alpha;
+        getActivity().getWindow().setAttributes(lp);
     }
 
     @Override

@@ -19,8 +19,6 @@ public interface MineInfoContract {
 
         void jump2SetEmailFragment();                           //更改邮箱
 
-        void showLogOutDialog();                                //退出登录提示框
-
     }
 
 

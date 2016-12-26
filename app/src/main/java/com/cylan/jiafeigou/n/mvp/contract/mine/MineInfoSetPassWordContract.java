@@ -1,7 +1,10 @@
 package com.cylan.jiafeigou.n.mvp.contract.mine;
 
+import com.cylan.entity.jniCall.JFGResult;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
+
+import rx.Subscription;
 
 /**
  * 作者：zsl
@@ -15,6 +18,8 @@ public interface MineInfoSetPassWordContract {
         String getOldPassword();
 
         String getNewPassword();
+
+        void changePwdResult(JFGResult jfgResult);
     }
 
     interface Presenter extends BasePresenter {
@@ -37,6 +42,12 @@ public interface MineInfoSetPassWordContract {
          * @param account
          */
         void sendChangePassReq(String account, String oldPass, String newPass);
+
+        /**
+         * 修改密码的回调
+         * @return
+         */
+        Subscription changePwdBack();
     }
 
 }
