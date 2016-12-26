@@ -4,6 +4,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.TimeZone;
 
 /**
  * Created by cylan-hunt on 16-7-4.
@@ -11,14 +12,28 @@ import java.util.Locale;
 public class TimeUtils {
 
     public static SimpleDateFormat simpleDateFormat_1 = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+    private static final SimpleDateFormat simpleTestDataFormat = new SimpleDateFormat("yyyyMMdd HH:mm:ss", Locale.getDefault());
 
-    public static String getDateStyle_0(final long time) {
-        return simpleDateFormat_1.format(new Date(time));
-    }
-//    public static void main(String[] args) {
-//        System.out.println(getDayMiddleNight(System.currentTimeMillis()));
-//    }
+    private static final ThreadLocal<SimpleDateFormat> getSimpleDateFormat_1 = new ThreadLocal<SimpleDateFormat>() {
+        @Override
+        protected SimpleDateFormat initialValue() {
+            return new SimpleDateFormat("yyyy.MM.dd HH:mm", Locale.getDefault());
+        }
+    };
 
+    private static final ThreadLocal<SimpleDateFormat> getSimpleDateFormatVideo = new ThreadLocal<SimpleDateFormat>() {
+        @Override
+        protected SimpleDateFormat initialValue() {
+            return new SimpleDateFormat("MM.dd-HH:mm", Locale.getDefault());
+        }
+    };
+
+    private static final ThreadLocal<SimpleDateFormat> getSimpleDateFormatHHMM = new ThreadLocal<SimpleDateFormat>() {
+        @Override
+        protected SimpleDateFormat initialValue() {
+            return new SimpleDateFormat("HH:mm", Locale.getDefault());
+        }
+    };
 
     /**
      * 获取当天0点时间戳
@@ -33,16 +48,13 @@ public class TimeUtils {
         return calendar.getTimeInMillis();
     }
 
-    private static final SimpleDateFormat getSimpleDateFormat_1 = new SimpleDateFormat("yyyy.MM.dd HH:mm", Locale.getDefault());
-
     public static String getMediaPicTimeInString(final long time) {
-        return getSimpleDateFormat_1.format(new Date(time));
+        return getSimpleDateFormat_1.get().format(new Date(time));
     }
 
-    private static final SimpleDateFormat getSimpleDateFormatVideo = new SimpleDateFormat("MM.dd-HH:mm", Locale.getDefault());
 
     public static String getMediaVideoTimeInString(final long time) {
-        return getSimpleDateFormatVideo.format(new Date(time));
+        return getSimpleDateFormatVideo.get().format(new Date(time));
     }
 
     public static String getTodayString() {
@@ -52,6 +64,60 @@ public class TimeUtils {
 
     public static String getDayString(long time) {
         return new SimpleDateFormat("yyyy.MM.dd", Locale.getDefault())
-                .format(time);
+                .format(new Date(time));
+    }
+
+    public static String getHH_MM(long time) {
+        return getSimpleDateFormatHHMM.get().format(new Date(time));
+    }
+
+    public static String getHH_MM_Remain(long timeMs) {
+        int totalMinutes = (int) (timeMs / 1000 / 60);
+        int minutes = totalMinutes % 60;
+        int hours = totalMinutes / 60;
+        String str_hour = hours > 9 ? "" + hours : "0" + hours;
+        String str_minute = minutes > 9 ? "" + minutes : "0" + minutes;
+        return str_hour + ":" + str_minute;
+    }
+
+    public static String getTestTime(long time) {
+        return simpleTestDataFormat.format(new Date(time));
+    }
+
+    public static long getTimeStart(long time) {
+        return (time / 3600 / 24 / 1000) * 1000L * 3600 * 24;
+    }
+
+    public static String getSpecifiedDate(long time) {
+        return simpleDateFormat_1.format(new Date(time));
+    }
+
+    public static long startOfDay(long time) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTimeInMillis(time);
+        cal.set(Calendar.HOUR_OF_DAY, 0); //set hours to zero
+        cal.set(Calendar.MINUTE, 0); // set minutes to zero
+        cal.set(Calendar.SECOND, 0); //set seconds to zero
+        return cal.getTimeInMillis();
+    }
+
+
+    public static final SimpleDateFormat simpleDateFormat0;
+    public static final SimpleDateFormat simpleDateFormat1;
+    public static final SimpleDateFormat simpleDateFormat2;
+
+    /**
+     * 如果改变系统时区,app没有重启,就不能同步更新了.
+     */
+    static {
+        simpleDateFormat0 = new SimpleDateFormat("MM/dd HH:mm",
+                Locale.getDefault());
+        simpleDateFormat1 = new SimpleDateFormat("yyyyMMdd",
+                Locale.getDefault());
+        simpleDateFormat2 = new SimpleDateFormat("HH:mm",
+                Locale.getDefault());
+        simpleDateFormat0.setTimeZone(TimeZone.getTimeZone("GMT"));
+        simpleDateFormat1.setTimeZone(TimeZone.getTimeZone("GMT"));
+        simpleDateFormat2.setTimeZone(TimeZone.getTimeZone("GMT"));
     }
 }

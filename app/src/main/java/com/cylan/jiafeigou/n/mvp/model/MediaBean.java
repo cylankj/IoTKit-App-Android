@@ -3,20 +3,39 @@ package com.cylan.jiafeigou.n.mvp.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.cylan.jiafeigou.dp.BaseDataPoint;
+
+import org.msgpack.annotation.Ignore;
+import org.msgpack.annotation.Index;
+import org.msgpack.annotation.Message;
+
 /**
  * Created by chen on 6/6/16.
  */
-public class MediaBean implements Comparable<MediaBean>, Parcelable {
+@Message
+public class MediaBean extends BaseDataPoint implements Comparable<MediaBean>, Parcelable {
 
 
     public static final int TYPE_PIC = 0;
     public static final int TYPE_VIDEO = 1;
     public static final int TYPE_LOAD = 2;
-    public long time;
-    public int mediaType;
-    public String srcUrl;
-    public String deviceName;
-    public String timeInStr;
+
+    @Ignore
+    public long version;
+
+    @Index(0)
+    public String cid;
+    @Index(1)
+    public int time;
+    @Index(2)
+    public int msgType;
+    @Index(3)
+    public int regionType;
+    @Index(4)
+    public String fileName;
+    @Index(5)
+    public String place;
+
 
     @Override
     public boolean equals(Object o) {
@@ -31,13 +50,13 @@ public class MediaBean implements Comparable<MediaBean>, Parcelable {
 
     @Override
     public int hashCode() {
-        return (int) (time ^ (time >>> 32));
+        return time ^ (time >>> 32);
     }
 
 
     @Override
     public int compareTo(MediaBean another) {
-        return another != null ? (int) (another.time - this.time) : 0;
+        return another != null ? another.time - this.time : 0;
     }
 
     @Override
@@ -47,22 +66,24 @@ public class MediaBean implements Comparable<MediaBean>, Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeLong(this.time);
-        dest.writeInt(this.mediaType);
-        dest.writeString(this.srcUrl);
-        dest.writeString(this.deviceName);
-        dest.writeString(this.timeInStr);
+        dest.writeString(this.cid);
+        dest.writeInt(this.time);
+        dest.writeInt(this.msgType);
+        dest.writeInt(this.regionType);
+        dest.writeString(this.fileName);
+        dest.writeString(this.place);
     }
 
     public MediaBean() {
     }
 
     protected MediaBean(Parcel in) {
-        this.time = in.readLong();
-        this.mediaType = in.readInt();
-        this.srcUrl = in.readString();
-        this.deviceName = in.readString();
-        this.timeInStr = in.readString();
+        this.cid = in.readString();
+        this.time = in.readInt();
+        this.msgType = in.readInt();
+        this.regionType = in.readInt();
+        this.fileName = in.readString();
+        this.place = in.readString();
     }
 
     public static final Creator<MediaBean> CREATOR = new Creator<MediaBean>() {
@@ -80,12 +101,13 @@ public class MediaBean implements Comparable<MediaBean>, Parcelable {
     @Override
     public String toString() {
         return "MediaBean{" +
-                "time=" + time +
-                ", mediaType=" + mediaType +
-                ", srcUrl='" + srcUrl + '\'' +
-                ", deviceName='" + deviceName + '\'' +
-                ", timeInStr='" + timeInStr + '\'' +
-                '}' + "\n";
+                "cid='" + cid + '\'' +
+                ", time=" + time +
+                ", msgType=" + msgType +
+                ", regionType=" + regionType +
+                ", fileName='" + fileName + '\'' +
+                ", place='" + place + '\'' +
+                '}';
     }
 
     private static MediaBean loadBean = new MediaBean();
@@ -93,7 +115,7 @@ public class MediaBean implements Comparable<MediaBean>, Parcelable {
     public static MediaBean getEmptyLoadTypeBean() {
         if (loadBean == null)
             loadBean = new MediaBean();
-        loadBean.mediaType = TYPE_LOAD;
+        loadBean.msgType = TYPE_LOAD;
         return loadBean;
     }
 }

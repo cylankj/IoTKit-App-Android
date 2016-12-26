@@ -85,6 +85,7 @@ public class JConstant {
 
     public static final String KEY_FRESH = "is_you_fresh";
 
+    public static final String KEY_DELAY_RECORD_GUIDE="delay_record_guide";
 
     public static int ConfigApState = 0;
 
@@ -272,4 +273,9 @@ public class JConstant {
     public static final String BIND_DEVICE_BELL = "bell";
     public static final String BIND_DEVICE_CLOUD = "cloud";
     public static final String BIND_DEVICE_MAG = "mag";
+
+
+    public static final int PLAY_STATE_IDLE = 1;
+    public static final int PLAY_STATE_PREPARE = 2;
+    public static final int PLAY_STATE_PLAYING = 3;
 }

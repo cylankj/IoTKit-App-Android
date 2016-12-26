@@ -58,7 +58,7 @@ public class ViewUtils {
      * @param r
      * @param b
      */
-    public static void setMargins(View v, int l, int t, int r, int b) {
+    public static void increaseMargins(View v, int l, int t, int r, int b) {
         if (v.getLayoutParams() instanceof ViewGroup.MarginLayoutParams) {
             ViewGroup.MarginLayoutParams p = (ViewGroup.MarginLayoutParams) v.getLayoutParams();
             p.setMargins(p.leftMargin + l, p.topMargin + t, p.rightMargin + r, p.bottomMargin + b);
@@ -66,9 +66,24 @@ public class ViewUtils {
         }
     }
 
+    /**
+     * @param v
+     * @param l
+     * @param t
+     * @param r
+     * @param b
+     */
+    public static void setMargins(View v, int l, int t, int r, int b) {
+        if (v.getLayoutParams() instanceof ViewGroup.MarginLayoutParams) {
+            ViewGroup.MarginLayoutParams p = (ViewGroup.MarginLayoutParams) v.getLayoutParams();
+            p.setMargins(l, t, r, b);
+            v.requestLayout();
+        }
+    }
+
     public static void setViewMarginStatusBar(View v) {
         final int height = getCompatStatusBarHeight(v.getContext());
-        setMargins(v, 0, height, 0, 0);
+        increaseMargins(v, 0, height, 0, 0);
     }
 
     /**
@@ -78,7 +93,7 @@ public class ViewUtils {
      */
     public static void clearViewMarginStatusBar(View v) {
         final int height = getCompatStatusBarHeight(v.getContext());
-        setMargins(v, 0, -height, 0, 0);
+        increaseMargins(v, 0, -height, 0, 0);
     }
 
     public static void setViewPaddingStatusBar(View v) {

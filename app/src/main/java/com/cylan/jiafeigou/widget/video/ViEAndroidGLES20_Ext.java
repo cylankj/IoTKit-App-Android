@@ -2,8 +2,7 @@ package com.cylan.jiafeigou.widget.video;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.os.SystemClock;
-import android.view.MotionEvent;
+import android.util.AttributeSet;
 
 import com.cylan.panorama.CameraParam;
 
@@ -14,9 +13,13 @@ import org.webrtc.videoengine.ViEAndroidGLES20;
  */
 
 public class ViEAndroidGLES20_Ext extends ViEAndroidGLES20 implements VideoViewFactory.IVideoView {
-    private VideoViewFactory.InterActListener interActListener;
 
     public ViEAndroidGLES20_Ext(Context context) {
+        super(context);
+    }
+
+
+    public ViEAndroidGLES20_Ext(Context context, AttributeSet attr) {
         super(context);
     }
 
@@ -37,18 +40,7 @@ public class ViEAndroidGLES20_Ext extends ViEAndroidGLES20 implements VideoViewF
 
     @Override
     public void setInterActListener(VideoViewFactory.InterActListener interActListener) {
-        this.interActListener = interActListener;
-        setEventListener(new EventListener() {
-            @Override
-            public boolean onSingleTap(MotionEvent motionEvent) {
-                return interActListener != null && interActListener.onSingleTap(motionEvent.getX(), motionEvent.getY());
-            }
 
-            @Override
-            public void onSnapshot(Bitmap bitmap, boolean b) {
-                if (interActListener != null) interActListener.onSnapshot(bitmap, b);
-            }
-        });
     }
 
     @Override
@@ -63,7 +55,7 @@ public class ViEAndroidGLES20_Ext extends ViEAndroidGLES20 implements VideoViewF
 
     @Override
     public void release() {
-        this.interActListener = null;
+
     }
 
     @Override
@@ -78,22 +70,6 @@ public class ViEAndroidGLES20_Ext extends ViEAndroidGLES20 implements VideoViewF
 
     @Override
     public void performTouch() {
-        // Obtain MotionEvent object
-        long downTime = SystemClock.uptimeMillis();
-        long eventTime = SystemClock.uptimeMillis() + 100;
-        float x = 0.0f;
-        float y = 0.0f;
-        // List of meta states found here: developer.android.com/reference/android/view/KeyEvent.html#getMetaState()
-        int metaState = 0;
-        MotionEvent motionEvent = MotionEvent.obtain(
-                downTime,
-                eventTime,
-                MotionEvent.ACTION_UP,
-                x,
-                y,
-                metaState
-        );
-        // Dispatch touch event to view
-        dispatchTouchEvent(motionEvent);
+
     }
 }

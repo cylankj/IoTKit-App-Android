@@ -3,6 +3,7 @@ package com.cylan.jiafeigou.widget.live;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -90,7 +91,11 @@ public class LivePlayControlView extends LinearLayout implements ILiveControl, V
                 simpleProgressBar.setVisibility(GONE);
                 if (!textView.isShown())
                     textView.setVisibility(VISIBLE);
-                textView.setText(content);
+                if (!TextUtils.isEmpty(content))
+                    textView.setText(content);
+                break;
+            case STATE_IDLE:
+                setVisibility(GONE);
                 break;
         }
         Log.d("setState", "setState: " + state);

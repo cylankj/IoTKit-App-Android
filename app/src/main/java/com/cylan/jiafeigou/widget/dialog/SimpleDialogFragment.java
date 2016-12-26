@@ -25,11 +25,10 @@ public class SimpleDialogFragment extends BaseDialog {
     TextView tvDialogContent;
     private Object cache;
 
-    public static final String KEY_TITLE = "key_title";
     public static final String KEY_LEFT_CONTENT = "key_left";
     public static final String KEY_RIGHT_CONTENT = "key_right";
     public static final String KEY_CONTENT_CONTENT = "key_content";
-    public static final String KEY_TOUCH_OUT_SIDE_DISMISS = "key_touch_outside";
+
     @BindView(R.id.tv_dialog_title)
     TextView tvDialogTitle;
     @BindView(R.id.tv_dialog_btn_left)

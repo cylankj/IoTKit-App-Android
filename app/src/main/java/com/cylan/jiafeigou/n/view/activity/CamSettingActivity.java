@@ -1,6 +1,7 @@
 package com.cylan.jiafeigou.n.view.activity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
@@ -19,10 +20,15 @@ import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamSettingContract;
 import com.cylan.jiafeigou.n.mvp.impl.cam.CamSettingPresenterImpl;
 import com.cylan.jiafeigou.n.mvp.model.BeanCamInfo;
+import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
+import com.cylan.jiafeigou.n.view.cam.CamDelayRecordActivity;
+import com.cylan.jiafeigou.n.view.cam.DelayRecordGuideFragment;
 import com.cylan.jiafeigou.n.view.cam.DeviceInfoDetailFragment;
 import com.cylan.jiafeigou.n.view.cam.SafeProtectionFragment;
 import com.cylan.jiafeigou.n.view.cam.VideoAutoRecordFragment;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.ActivityUtils;
+import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.LoadingDialog;
@@ -44,6 +50,7 @@ import static com.cylan.jiafeigou.utils.ActivityUtils.loadFragment;
 public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettingContract.Presenter>
         implements CamSettingContract.View {
 
+    private static final int REQ_DELAY_RECORD = 122;
     @BindView(R.id.imgV_top_bar_center)
     TextView imgVTopBarCenter;
     @BindView(R.id.fLayout_top_bar_container)
@@ -76,6 +83,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
     private WeakReference<DeviceInfoDetailFragment> informationWeakReference;
     private WeakReference<SafeProtectionFragment> safeProtectionFragmentWeakReference;
     private WeakReference<VideoAutoRecordFragment> videoAutoRecordFragmentWeakReference;
+    private WeakReference<DelayRecordGuideFragment> mGuideFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,7 +98,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
             return;
         }
         basePresenter = new CamSettingPresenterImpl(this,
-                bundle.getParcelable(JConstant.KEY_DEVICE_ITEM_BUNDLE));
+                (DeviceBean) bundle.getParcelable(JConstant.KEY_DEVICE_ITEM_BUNDLE));
         initTopBar();
         initStandbyBtn();
         init110VVoltageBtn();
@@ -102,6 +110,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
     @Override
     protected void onStart() {
         super.onStart();
+
     }
 
     @Override
@@ -210,8 +219,9 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
 
     @OnClick({R.id.sv_setting_device_detail,
             R.id.sv_setting_device_auto_record,
+            R.id.sv_setting_safe_protection,
             R.id.tv_setting_unbind,
-            R.id.sv_setting_safe_protection
+            R.id.sv_setting_device_delay_capture
     })
     public void onClick(View view) {
         ViewUtils.deBounceClick(view);
@@ -233,7 +243,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
             break;
             case R.id.tv_setting_unbind: {
                 Bundle bundle = new Bundle();
-                bundle.putString(SimpleDialogFragment.KEY_TITLE, getString(R.string.DELETE_CID));
+                bundle.putString(BaseDialog.KEY_TITLE, getString(R.string.DELETE_CID));
                 SimpleDialogFragment simpleDialogFragment = SimpleDialogFragment.newInstance(bundle);
                 simpleDialogFragment.setAction(new BaseDialog.BaseDialogAction() {
                     @Override
@@ -275,6 +285,28 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
                 });
             }
             break;
+            case R.id.sv_setting_device_delay_capture: {
+                if (PreferencesUtils.getBoolean(JConstant.KEY_DELAY_RECORD_GUIDE, true)) {
+                    initUserGuideFragment();
+                    Bundle bundle = new Bundle();
+                    bundle.putParcelable(JConstant.KEY_DEVICE_ITEM_BUNDLE, basePresenter.getCamInfoBean());
+                    mGuideFragment.get().setArguments(bundle);
+                    ActivityUtils.loadFragment(android.R.id.content, getSupportFragmentManager(), mGuideFragment.get());
+                } else {
+                    Intent intent = new Intent(this, CamDelayRecordActivity.class);
+                    startActivity(intent);
+                }
+            }
+            break;
+        }
+    }
+
+    private void initUserGuideFragment() {
+        if (mGuideFragment == null || mGuideFragment.get() == null) {
+            BeanCamInfo camInfoBean = basePresenter.getCamInfoBean();
+            Bundle bundle = new Bundle();
+            bundle.putParcelable(JConstant.KEY_DEVICE_ITEM_BUNDLE, camInfoBean);
+            mGuideFragment = new WeakReference<>(DelayRecordGuideFragment.newInstance(bundle));
         }
     }
 
@@ -330,7 +362,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         svSettingDeviceWifi.setTvSubTitle(camInfoBean.net != null && camInfoBean.net.ssid != null ? camInfoBean.net.ssid : getString(R.string.OFF_LINE));
         svSettingDeviceMobileNetwork.setSwitchButtonState(camInfoBean.deviceMobileNetPriority);
         svSettingDeviceIndicator.setSwitchButtonState(camInfoBean.ledIndicator);
-        svSettingDeviceRotate.setSwitchButtonState(camInfoBean.deviceCameraRotate == 1);
+        svSettingDeviceRotate.setSwitchButtonState(camInfoBean.deviceCameraRotate != 0);
         svSettingDeviceStandbyMode.setSwitchButtonState(camInfoBean.cameraStandbyFlag);
         svSettingSafeProtection.setTvSubTitle(basePresenter.getAlarmSubTitle(getContext()));
         svSettingDeviceAutoRecord.setTvSubTitle(basePresenter.getAutoRecordTitle(getContext()));
@@ -339,6 +371,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
     @Override
     public void isSharedDevice() {
         //分享账号 隐藏
+        if (true) return;//doNothing
         final int count = lLayoutSettingItemContainer.getChildCount();
         for (int i = 2; i < count - 1; i++) {
             View v = lLayoutSettingItemContainer.getChildAt(i);
@@ -365,5 +398,13 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
     @Override
     public Context getContext() {
         return getApplicationContext();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQ_DELAY_RECORD) {
+
+        }
     }
 }

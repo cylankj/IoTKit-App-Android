@@ -11,7 +11,7 @@ import java.io.ByteArrayOutputStream;
 public class WechatUtils {
     public static byte[] bmpToByteArray(final Bitmap bmp, final boolean needRecycle) {
         ByteArrayOutputStream output = new ByteArrayOutputStream();
-        bmp.compress(Bitmap.CompressFormat.PNG, 100, output);
+        bmp.compress(Bitmap.CompressFormat.JPEG, 85, output);
         if (needRecycle) {
             bmp.recycle();
         }

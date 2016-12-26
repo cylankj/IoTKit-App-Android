@@ -3,6 +3,7 @@ package com.cylan.jiafeigou.misc;
 import android.content.Context;
 import android.text.TextUtils;
 
+import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.utils.TimeUtils;
 
 import java.util.Locale;
@@ -150,5 +151,9 @@ public class JFGRules {
          */
         public static final int ERR_DEVICE_OFFLINE = 3;
 
+    }
+
+    public static boolean isDeviceOnline(DpMsgDefine.MsgNet net) {
+        return net != null && net.net != 0;
     }
 }

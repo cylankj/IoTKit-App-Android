@@ -2,19 +2,21 @@ package com.cylan.jiafeigou.n.view.adapter;
 
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewCompat;
-import android.view.SurfaceView;
+import android.view.TextureView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.mvp.model.MediaBean;
-import com.cylan.jiafeigou.utils.GlideNetVideoUtils;
+import com.cylan.jiafeigou.utils.WonderGlideURL;
+import com.cylan.jiafeigou.utils.WonderGlideVideoThumbURL;
 import com.cylan.jiafeigou.widget.SimpleProgressBar;
 import com.cylan.photoview.PhotoView;
 
@@ -52,28 +54,25 @@ public class MediaDetailPagerAdapter extends PagerAdapter {
         View contentView;
         MediaBean bean = mMediaBeanList.get(position);
         ImageView photoView;
-        if (bean.mediaType == MediaBean.TYPE_VIDEO) {
+        if (bean.msgType == MediaBean.TYPE_VIDEO) {
             contentView = View.inflate(container.getContext(), R.layout.view_video_detail, null);
             ViewHolder holder = new ViewHolder(contentView);
             photoView = holder.mPhotoView;
             contentView.setTag(holder);
             ViewCompat.setTransitionName(photoView, position + JConstant.KEY_SHARED_ELEMENT_TRANSITION_NAME_SUFFIX);
-            GlideNetVideoUtils.loadNetVideo(container.getContext(), bean.srcUrl, photoView, () -> {
-                if (mFirstLoad && mReadToShow != null) {
-                    mReadToShow.onReady();
-                }
-                mFirstLoad = false;
-            });
+            Glide.with(container.getContext())
+                    .load(new WonderGlideVideoThumbURL(bean))
+                    .listener((mFirstLoad && position == mStartPosition) ? mListener : null)
+                    .into(photoView);
         } else {
             photoView = new PhotoView(container.getContext());
             contentView = photoView;
             ViewCompat.setTransitionName(photoView, position + JConstant.KEY_SHARED_ELEMENT_TRANSITION_NAME_SUFFIX);
             Glide.with(container.getContext())
-                    .load(bean.srcUrl)
+                    .load(new WonderGlideURL(bean))
                     .listener((mFirstLoad && position == mStartPosition) ? mListener : null)
                     .into(photoView);
         }
-
         container.addView(contentView);
         return contentView;
     }
@@ -83,9 +82,9 @@ public class MediaDetailPagerAdapter extends PagerAdapter {
         container.removeView((View) object);
     }
 
-    private RequestListener<String, GlideDrawable> mListener = new RequestListener<String, GlideDrawable>() {
+    private RequestListener<GlideUrl, GlideDrawable> mListener = new RequestListener<GlideUrl, GlideDrawable>() {
         @Override
-        public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+        public boolean onException(Exception e, GlideUrl model, Target<GlideDrawable> target, boolean isFirstResource) {
             if (mFirstLoad && mReadToShow != null) {
                 mReadToShow.onReady();
             }
@@ -94,7 +93,7 @@ public class MediaDetailPagerAdapter extends PagerAdapter {
         }
 
         @Override
-        public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+        public boolean onResourceReady(GlideDrawable resource, GlideUrl model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
             if (mFirstLoad && mReadToShow != null) {
                 mReadToShow.onReady();
             }
@@ -118,12 +117,12 @@ public class MediaDetailPagerAdapter extends PagerAdapter {
 
     public static class ViewHolder {
         public ImageView mPhotoView;
-        public SurfaceView mSurfaceView;
+        public TextureView mSurfaceView;
         public SimpleProgressBar mProgressBar;
 
         public ViewHolder(View root) {
             mPhotoView = (ImageView) root.findViewById(R.id.view_video_picture);
-            mSurfaceView = (SurfaceView) root.findViewById(R.id.view_media_video_view);
+            mSurfaceView = (TextureView) root.findViewById(R.id.view_media_video_view);
             mProgressBar = (SimpleProgressBar) root.findViewById(R.id.view_media_video_loading_bar);
         }
     }

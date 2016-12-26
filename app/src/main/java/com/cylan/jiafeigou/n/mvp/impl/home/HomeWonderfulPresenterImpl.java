@@ -6,12 +6,19 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Environment;
+import android.text.TextUtils;
 import android.webkit.MimeTypeMap;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
+import com.cylan.entity.jniCall.JFGDPMsg;
+import com.cylan.entity.jniCall.RobotoGetDataRsp;
+import com.cylan.ex.JfgException;
+import com.cylan.jiafeigou.dp.DpMsgMap;
+import com.cylan.jiafeigou.dp.DpUtils;
 import com.cylan.jiafeigou.misc.JFGRules;
+import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeWonderfulContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.n.mvp.model.MediaBean;
@@ -21,9 +28,9 @@ import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.wechat.WechatShare;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.utils.RandomUtils;
-import com.google.gson.Gson;
 
 import java.io.File;
+import java.io.IOException;
 import java.lang.ref.SoftReference;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -37,8 +44,6 @@ import java.util.concurrent.TimeUnit;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
-import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
@@ -49,13 +54,11 @@ import rx.subscriptions.CompositeSubscription;
  */
 public class HomeWonderfulPresenterImpl extends AbstractPresenter<HomeWonderfulContract.View>
         implements HomeWonderfulContract.Presenter {
-
-    private SoftReference<List<MediaBean>> weakReferenceList;
-    private Subscription onRefreshSubscription;
-    private Subscription onTimeLineSubscription;
-    private CompositeSubscription _timeTickSubscriptions;//这个类是一次性的必须每次重新创建，否则就不能正常订阅
-    private long lastTime;
+    private static final int LOAD_PAGE_COUNT = 20;
+    private SoftReference<List<MediaBean>> mWeakMediaLists;
+    private CompositeSubscription mSubscriptions;//这个类是一次性的必须每次重新创建，否则就不能正常订阅
     private WechatShare wechatShare;
+    private ArrayList<Long> mSeqList = new ArrayList<>(16);
 
     public HomeWonderfulPresenterImpl(HomeWonderfulContract.View view) {
         super(view);
@@ -65,9 +68,10 @@ public class HomeWonderfulPresenterImpl extends AbstractPresenter<HomeWonderfulC
     @Override
     public void start() {
         //注册1
-        _timeTickSubscriptions = new CompositeSubscription();
-        _timeTickSubscriptions.add(getTimeTickEventSub());
-        _timeTickSubscriptions.add(getPageScrolledSub());
+        mSubscriptions = new CompositeSubscription();
+        mSubscriptions.add(getTimeTickEventSub());
+        mSubscriptions.add(getPageScrolledSub());
+        mSubscriptions.add(getRobotDataRspSub());
     }
 
     private Subscription getTimeTickEventSub() {
@@ -75,66 +79,26 @@ public class HomeWonderfulPresenterImpl extends AbstractPresenter<HomeWonderfulC
                 .subscribeOn(Schedulers.newThread())
                 .throttleFirst(1000, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<RxEvent.TimeTickEvent>() {
-                    @Override
-                    public void call(RxEvent.TimeTickEvent timeTickEvent) {
-                        if (getView() != null) {
-                            getView().onTimeTick(JFGRules.getTimeRule());
-                        }
+                .subscribe(timeTickEvent -> {
+                    if (getView() != null) {
+                        getView().onTimeTick(JFGRules.getTimeRule());
                     }
                 });
     }
 
     private Subscription getPageScrolledSub() {
         return RxBus.getCacheInstance().toObservable(RxEvent.PageScrolled.class)
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .throttleFirst(1000, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<RxEvent.PageScrolled>() {
-                    @Override
-                    public void call(RxEvent.PageScrolled timeTickEvent) {
-                        //6:00 am - 17:59 pm
-                        //18:00 pm-5:59 am
-                        if (getView() != null)
-                            getView().onPageScrolled();
-                    }
+                .subscribe(timeTickEvent -> {
+                    if (getView() != null) getView().onPageScrolled();
                 });
     }
 
     @Override
     public void stop() {
-        unSubscribe(onTimeLineSubscription, onRefreshSubscription, _timeTickSubscriptions);
-    }
-
-
-    /**
-     * 计算过程.
-     *
-     * @return
-     */
-    private List<MediaBean> requestList() {
-        int count = 10;
-        List<MediaBean> list = new ArrayList<>();
-        long currentTime = lastTime == 0 ? System.currentTimeMillis() : lastTime;
-        for (int i = 0; i < count; i++) {
-            final long time = currentTime - (i * i) * 3600 * 24L * 1000;
-            MediaBean baseBean = new MediaBean();
-            baseBean.time = time;
-            baseBean.timeInStr = getDate(time);
-            baseBean.deviceName = "南湖";
-            baseBean.mediaType = RandomUtils.getRandom(2);
-            if (baseBean.mediaType == MediaBean.TYPE_PIC)
-                baseBean.srcUrl = pics[RandomUtils.getRandom(pics.length)];
-            else {
-                baseBean.srcUrl = videos[RandomUtils.getRandom(videos.length)];
-            }
-            list.add(baseBean);
-            if (i == count - 1) {
-                lastTime = time;
-            }
-        }
-        AppLogger.d("rawList: " + (new Gson().toJson(list)));
-        return list;
+        unSubscribe(mSubscriptions);
     }
 
     /**
@@ -145,22 +109,22 @@ public class HomeWonderfulPresenterImpl extends AbstractPresenter<HomeWonderfulC
     private synchronized void updateCache(List<MediaBean> list) {
         if (list == null || list.size() == 0)
             return;
-        if (weakReferenceList == null) {
-            weakReferenceList = new SoftReference<>(list);
+        if (mWeakMediaLists == null) {
+            mWeakMediaLists = new SoftReference<>(list);
             return;
         }
-        if (weakReferenceList.get() == null) {
-            weakReferenceList = new SoftReference<>(list);
+        if (mWeakMediaLists.get() == null) {
+            mWeakMediaLists = new SoftReference<>(list);
             return;
         }
-        if (weakReferenceList != null && weakReferenceList.get() != null) {
-            List<MediaBean> rawList = weakReferenceList.get();
+        if (mWeakMediaLists != null && mWeakMediaLists.get() != null) {
+            List<MediaBean> rawList = mWeakMediaLists.get();
             rawList.addAll(list);
             //remove the same one by time
             rawList = new ArrayList<>(new HashSet<>(rawList));
             Collections.sort(rawList);
             //retain them again
-            weakReferenceList = new SoftReference<>(rawList);
+            mWeakMediaLists = new SoftReference<>(rawList);
         }
     }
 
@@ -172,12 +136,9 @@ public class HomeWonderfulPresenterImpl extends AbstractPresenter<HomeWonderfulC
      * @return
      */
     private List<Long> assembleTimeLineData(List<MediaBean> list) {
-//        TimeLineAssembler timeLineAssemble = new TimeLineAssembler();
-//        timeLineAssemble.setMediaBeanLinkedList(new LinkedList<>(list));
-//        return timeLineAssemble.generateDataSet();
         ArrayList<Long> result = new ArrayList<>(1024);
         for (MediaBean bean : list) {
-            result.add(bean.time);
+            result.add((long) bean.time * 1000);
         }
         return result;
     }
@@ -188,63 +149,48 @@ public class HomeWonderfulPresenterImpl extends AbstractPresenter<HomeWonderfulC
         return dateFormat.format(new Date(time));
     }
 
-    private void wrapTimeLineDataSet() {
-        onTimeLineSubscription = Observable.just(weakReferenceList)
-                .subscribeOn(Schedulers.newThread())
-                .flatMap(new Func1<SoftReference<List<MediaBean>>, Observable<List<Long>>>() {
-                    @Override
-                    public Observable<List<Long>> call(SoftReference<List<MediaBean>> listWeakReference) {
-                        if (listWeakReference == null || listWeakReference.get() == null)
-                            return null;
-                        return Observable.just(assembleTimeLineData(listWeakReference.get()));
-                    }
-                })
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<List<Long>>() {
-                    @Override
-                    public void call(List<Long> wheelViewDataSet) {
-                        if (wheelViewDataSet == null)
-                            return;
-                        if (getView() != null) getView().onTimeLineDataUpdate(wheelViewDataSet);
-                    }
-                });
-    }
-
     @Override
     public void startRefresh() {
-
-        final int testDelay = RandomUtils.getRandom(3);
-        onRefreshSubscription = Observable.just("")
-                .subscribeOn(Schedulers.newThread())
-                .delay(testDelay * 1000L, TimeUnit.MILLISECONDS)
-                .map(new Func1<String, List<MediaBean>>() {
-                    @Override
-                    public List<MediaBean> call(String s) {
-                        List<MediaBean> list = requestList();
-                        updateCache(new ArrayList<>(list));
-                        wrapTimeLineDataSet();
-                        return list;
-                    }
-                })
+        Observable.create(subscriber -> {
+            load(true);
+            subscriber.onNext(null);
+            subscriber.onCompleted();
+        }).delay(5, TimeUnit.SECONDS).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<List<MediaBean>>() {
-                    @Override
-                    public void call(List<MediaBean> list) {
-                        if (getView() != null) getView().onMediaListRsp(list);
-
-                    }
-                }, new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-
-                    }
+                .subscribe(delay -> {
+                    if (getView() != null) getView().onMediaListRsp(null);
                 });
+    }
 
+    private void load(boolean refresh) {
+        long version = 0;
+        boolean asc = false;
+        if (mWeakMediaLists != null && mWeakMediaLists.get() != null && mWeakMediaLists.get().size() > 0) {
+            if (refresh) {
+                version = mWeakMediaLists.get().get(0).version * 1000L;
+                asc = true;
+            } else {
+                version = mWeakMediaLists.get().get(mWeakMediaLists.get().size() - 1).version * 1000L;
+                asc = false;
+            }
+        }
+        ArrayList<JFGDPMsg> params = new ArrayList<>();
+        JFGDPMsg msg = new JFGDPMsg(DpMsgMap.ID_602_ACCOUNT_WONDERFUL_MSG, version);
+        params.add(msg);
+        try {
+            long seq = JfgCmdInsurance.getCmd().robotGetData("", params, LOAD_PAGE_COUNT, asc, 0);
+            mSeqList.add(seq);
+        } catch (JfgException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
-    public void startLoadMore(long startTime) {
-
+    public void startLoadMore() {
+        Observable.create(subscriber -> {
+            load(false);
+            subscriber.onCompleted();
+        }).subscribeOn(Schedulers.io()).subscribe();
     }
 
     @Override
@@ -305,7 +251,7 @@ public class HomeWonderfulPresenterImpl extends AbstractPresenter<HomeWonderfulC
         final int mimeType = RandomUtils.getRandom(2);//0:picture,1:url
 //        if (mimeType == 0) {
         Glide.with(ContextUtils.getContext())
-                .load(mediaBean.srcUrl)
+                .load(mediaBean.fileName)
                 .asBitmap()
                 .into(new SimpleTarget<Bitmap>(150, 150) {
                     @Override
@@ -332,7 +278,7 @@ public class HomeWonderfulPresenterImpl extends AbstractPresenter<HomeWonderfulC
     private static int getMimeType(MediaBean mediaBean) {
         // url = file path or whatever suitable URL you want.
         String type = null;
-        String extension = MimeTypeMap.getFileExtensionFromUrl(mediaBean.srcUrl);
+        String extension = MimeTypeMap.getFileExtensionFromUrl(mediaBean.fileName);
         if (extension != null) {
             type = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
         }
@@ -412,10 +358,39 @@ public class HomeWonderfulPresenterImpl extends AbstractPresenter<HomeWonderfulC
     };
 
     public static final String videos[] = {
-//            Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "111.mp4",
-//            Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "demo.mp4",
-//            Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "d.mp4",
             "http://yf.cylan.com.cn:82/Garfield/1045020208160b9706425470.mp4"
     };
+
+    private Subscription getRobotDataRspSub() {
+        return RxBus.getCacheInstance().toObservable(RobotoGetDataRsp.class).subscribeOn(Schedulers.io())
+                .filter(robotoGetDataRsp -> mSeqList.remove(robotoGetDataRsp.seq))
+                .map(robotoRsp -> {
+                    List<MediaBean> results = new ArrayList<>();
+                    ArrayList<JFGDPMsg> msgs = robotoRsp.map.get(DpMsgMap.ID_602_ACCOUNT_WONDERFUL_MSG);
+                    MediaBean bean;
+                    for (JFGDPMsg msg : msgs) {
+                        try {
+                            bean = DpUtils.unpackData(msg.packValue, MediaBean.class);
+                            if (bean != null && !TextUtils.isEmpty(bean.cid)) {
+                                bean.version = msg.version;
+//                                bean.msgType = 1;
+                                results.add(bean);
+                            }
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    updateCache(results);
+                    return results;
+                }).observeOn(AndroidSchedulers.mainThread())
+                .subscribe(results -> {
+                    if (getView() != null) {
+                        getView().onMediaListRsp(results);
+                        List<Long> times = assembleTimeLineData(results);
+                        getView().onTimeLineDataUpdate(times);
+                    }
+
+                }, Throwable::printStackTrace);
+    }
 }
 

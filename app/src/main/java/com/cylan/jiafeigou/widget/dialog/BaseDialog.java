@@ -1,9 +1,10 @@
 package com.cylan.jiafeigou.widget.dialog;
 
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 
 import com.cylan.jiafeigou.R;
@@ -15,10 +16,12 @@ import com.cylan.utils.DensityUtils;
 public class BaseDialog<T> extends DialogFragment {
 
     public static final String KEY_TITLE = "key_title";
+    public static final String KEY_TOUCH_OUT_SIDE_DISMISS = "key_touch_outside";
     private static final float MIN_HEIGHT = 0.17F;
     private static final float MAX_HEIGHT = 0.475F;
     private int minHeight = 0;
     private int maxWidth;
+    private View mContentView;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -66,6 +69,19 @@ public class BaseDialog<T> extends DialogFragment {
         void onDialogAction(int id, Object value);
     }
 
+    public void setContentView(View contentView) {
+        mContentView = contentView;
+    }
 
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        return mContentView;
+    }
 
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        if (mContentView != null) ((ViewGroup) mContentView.getParent()).removeView(mContentView);
+    }
 }

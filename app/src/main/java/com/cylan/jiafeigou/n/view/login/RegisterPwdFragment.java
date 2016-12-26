@@ -155,7 +155,7 @@ public class RegisterPwdFragment extends SetupPwdFragment
         Fragment f = getActivity().getSupportFragmentManager().findFragmentByTag(DIALOG_KEY);
         if (f == null) {
             Bundle bundle = new Bundle();
-            bundle.putString(SimpleDialogFragment.KEY_TITLE, title);
+            bundle.putString(BaseDialog.KEY_TITLE, title);
             bundle.putString(SimpleDialogFragment.KEY_LEFT_CONTENT, lContent);
             bundle.putString(SimpleDialogFragment.KEY_RIGHT_CONTENT, rContent);
             bundle.putBoolean(SimpleDialogFragment.KEY_TOUCH_OUT_SIDE_DISMISS, dismiss);

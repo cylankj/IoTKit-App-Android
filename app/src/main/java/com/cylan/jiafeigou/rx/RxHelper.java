@@ -1,7 +1,10 @@
 package com.cylan.jiafeigou.rx;
 
+import android.text.TextUtils;
 import android.util.Log;
 
+import com.cylan.jiafeigou.dp.DpMsgDefine;
+import com.cylan.jiafeigou.n.mvp.model.BeanCamInfo;
 import com.cylan.jiafeigou.support.log.AppLogger;
 
 import java.util.concurrent.TimeUnit;
@@ -10,6 +13,7 @@ import rx.Observable;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.functions.Func2;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by cylan-hunt on 16-11-11.
@@ -125,5 +129,34 @@ public class RxHelper {
             AppLogger.i(tag + ":" + enable);
             return enable;
         }
+    }
+
+    public static Observable<BeanCamInfo> filter(final BeanCamInfo beanCamInfo) {
+        return RxBus.getUiInstance().toObservableSticky(RxUiEvent.BulkDeviceList.class)
+                .subscribeOn(Schedulers.computation())
+                .filter((RxUiEvent.BulkDeviceList list) ->
+                        (list != null
+                                && list.allDevices != null
+                                && beanCamInfo != null
+                                && beanCamInfo.deviceBase != null))
+                .flatMap(new Func1<RxUiEvent.BulkDeviceList, Observable<DpMsgDefine.DpWrap>>() {
+                    @Override
+                    public Observable<DpMsgDefine.DpWrap> call(RxUiEvent.BulkDeviceList list) {
+                        for (DpMsgDefine.DpWrap wrap : list.allDevices) {
+                            if (wrap.baseDpDevice != null
+                                    && TextUtils.equals(wrap.baseDpDevice.uuid, beanCamInfo.deviceBase.uuid)) {
+                                return Observable.just(wrap);
+                            }
+                        }
+                        return null;
+                    }
+                })
+                .filter((DpMsgDefine.DpWrap dpWrap) ->
+                        (dpWrap != null && dpWrap.baseDpDevice != null))
+                .map((DpMsgDefine.DpWrap dpWrap) -> {
+                    BeanCamInfo info = new BeanCamInfo();
+                    info.convert(dpWrap.baseDpDevice, dpWrap.baseDpMsgList);
+                    return info;
+                });
     }
 }

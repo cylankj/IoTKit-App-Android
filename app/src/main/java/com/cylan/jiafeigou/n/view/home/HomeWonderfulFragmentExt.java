@@ -29,7 +29,6 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DecodeFormat;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
@@ -44,7 +43,6 @@ import com.cylan.jiafeigou.n.view.misc.HomeEmptyView;
 import com.cylan.jiafeigou.n.view.misc.IEmptyView;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.AnimatorUtils;
-import com.cylan.jiafeigou.utils.GlideNetVideoUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.ShadowFrameLayout;
@@ -65,17 +63,12 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-import static com.tencent.mm.sdk.modelmsg.SendMessageToWX.Req.WXSceneSession;
-import static com.tencent.mm.sdk.modelmsg.SendMessageToWX.Req.WXSceneTimeline;
-
 public class HomeWonderfulFragmentExt extends Fragment implements
         HomeWonderfulContract.View, SwipeRefreshLayout.OnRefreshListener,
         HomeWonderfulAdapter.WonderfulItemClickListener,
         HomeWonderfulAdapter.WonderfulItemLongClickListener,
-        ShareDialogFragment.ShareToListener,
         BaseDialog.BaseDialogAction,
         AppBarLayout.OnOffsetChangedListener,
-        HomeWonderfulAdapter.LoadMediaListener,
         SharedElementCallBackListener,
         OnActivityReenterListener, TimeWheelView.OnTimeLineChangeListener {
 
@@ -157,7 +150,6 @@ public class HomeWonderfulFragmentExt extends Fragment implements
         homeWonderAdapter = new HomeWonderfulAdapter(getContext(), null, null);
         homeWonderAdapter.setWonderfulItemClickListener(this);
         homeWonderAdapter.setWonderfulItemLongClickListener(this);
-        homeWonderAdapter.setLoadMediaListener(this);
         initEmptyViewState(context);
     }
 
@@ -190,13 +182,10 @@ public class HomeWonderfulFragmentExt extends Fragment implements
 
         initSomeViewMargin();
 
-        srLayoutMainContentHolder.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                emptyViewState.setEmptyViewState(fLayoutWonderfulEmptyContainer,
-                        fLayoutHomeHeaderContainer.getBottom());
-                emptyViewState.determineEmptyViewState(homeWonderAdapter.getCount());
-            }
+        srLayoutMainContentHolder.postDelayed(() -> {
+            emptyViewState.setEmptyViewState(fLayoutWonderfulEmptyContainer,
+                    fLayoutHomeHeaderContainer.getBottom());
+            emptyViewState.determineEmptyViewState(homeWonderAdapter.getCount());
         }, 20);
     }
 
@@ -204,7 +193,7 @@ public class HomeWonderfulFragmentExt extends Fragment implements
         if (deleteDialogFragmentWeakReference == null || deleteDialogFragmentWeakReference.get() == null) {
             //为删除dialog设置提示信息
             Bundle args = new Bundle();
-            args.putString(SimpleDialogFragment.KEY_TITLE, "");
+            args.putString(BaseDialog.KEY_TITLE, "");
             args.putString(SimpleDialogFragment.KEY_LEFT_CONTENT, "");
             args.putString(SimpleDialogFragment.KEY_RIGHT_CONTENT, "");
             args.putString(SimpleDialogFragment.KEY_CONTENT_CONTENT, this.getString(R.string.Tips_Delete_Msg));
@@ -242,7 +231,6 @@ public class HomeWonderfulFragmentExt extends Fragment implements
     @Override
     public void onStop() {
         super.onStop();
-
         if (presenter != null)
             presenter.stop();
     }
@@ -290,7 +278,7 @@ public class HomeWonderfulFragmentExt extends Fragment implements
                         if ((visibleItemCount + pastVisibleItems) >= totalItemCount) {
                             endlessLoading = false;
                             if (presenter != null)
-                                presenter.startRefresh();
+                                presenter.startLoadMore();
                             AppLogger.v("Last Item Wow !");
                             //Do pagination.. i.e. fetch new data
                         }
@@ -304,8 +292,8 @@ public class HomeWonderfulFragmentExt extends Fragment implements
                 int position = mLinearLayoutManager.findFirstCompletelyVisibleItemPosition();
                 if (newState == RecyclerView.SCROLL_STATE_IDLE && position != -1) {
                     MediaBean item = homeWonderAdapter.getItem(position);
-                    getWheelView().updateDay(item.time);
-                    tvDateItemHeadWonder.setText(TimeUtils.getDayString(item.time));
+                    getWheelView().updateDay(item.time * 1000L);//蛋疼
+                    tvDateItemHeadWonder.setText(TimeUtils.getDayString(item.time * 1000L));
 
                 }
             }
@@ -313,12 +301,7 @@ public class HomeWonderfulFragmentExt extends Fragment implements
     }
 
     private void initHeaderView() {
-        tvDateItemHeadWonder.post(new Runnable() {
-            @Override
-            public void run() {
-                tvDateItemHeadWonder.setText(TimeUtils.getTodayString());
-            }
-        });
+        tvDateItemHeadWonder.post(() -> tvDateItemHeadWonder.setText(TimeUtils.getTodayString()));
     }
 
 
@@ -340,7 +323,7 @@ public class HomeWonderfulFragmentExt extends Fragment implements
         endlessLoading = true;
         srLayoutMainContentHolder.setRefreshing(false);
         if (resultList == null || resultList.size() == 0) {
-            homeWonderAdapter.clear();
+//            homeWonderAdapter.clear();
             return;
         }
         handleFootView();
@@ -352,7 +335,7 @@ public class HomeWonderfulFragmentExt extends Fragment implements
 
     private void handleFootView() {
         final int itemCount = homeWonderAdapter.getItemCount();
-        if (itemCount > 0 && homeWonderAdapter.getItem(itemCount - 1).mediaType == MediaBean.TYPE_LOAD) {
+        if (itemCount > 0 && homeWonderAdapter.getItem(itemCount - 1).msgType == MediaBean.TYPE_LOAD) {
             homeWonderAdapter.remove(itemCount - 1);
         }
     }
@@ -372,13 +355,13 @@ public class HomeWonderfulFragmentExt extends Fragment implements
         if (view == null)
             return;
         ((TimeWheelView) view).append(wheelViewDataSet);
-//        ((WheelView) view).setOnItemChangedListener(this);
         ((TimeWheelView) view).addTimeLineListener(this);
     }
 
     @SuppressWarnings("deprecation")
     @Override
     public void onTimeTick(int dayTime) {
+
         //需要优化
         int drawableId = dayTime == JFGRules.RULE_DAY_TIME
                 ? R.drawable.bg_wonderful_daytime : R.drawable.bg_wonderful_night;
@@ -447,8 +430,6 @@ public class HomeWonderfulFragmentExt extends Fragment implements
                     mParent.adjustSize(true);
                     ActivityOptionsCompat compat = ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity(), v, v.getTransitionName());
                     startActivity(intent, compat.toBundle());
-//                    startActivity(intent);
-
                 } else {
                     startActivity(intent);
                 }
@@ -462,11 +443,11 @@ public class HomeWonderfulFragmentExt extends Fragment implements
                     Toast.makeText(getActivity(), "微信没有安装", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                ShareDialogFragment fragment = initShareDialog();
+                MediaBean bean = homeWonderAdapter.getItem(position);
                 Bundle bundle = new Bundle();
-                bundle.putParcelable(ShareDialogFragment.KEY_PARCEL_, homeWonderAdapter.getItem(position));
+                bundle.putParcelable(ShareDialogFragment.KEY_MEDIA_CONTENT, bean);
+                ShareDialogFragment fragment = initShareDialog();
                 fragment.setArguments(bundle);
-                fragment.setShareToListener(this);
                 fragment.show(getActivity().getSupportFragmentManager(), "ShareDialogFragment");
                 break;
             case R.id.tv_wonderful_item_delete:
@@ -499,6 +480,7 @@ public class HomeWonderfulFragmentExt extends Fragment implements
 
     @OnClick(R.id.fLayout_date_head_wonder)
     public void onClick() {
+        if (true) return;//doNothing
         final TimeWheelView view = getWheelView();
         if (view != null && !ListUtils.isEmpty(homeWonderAdapter.getList())) {
             if (!view.isShown()) {
@@ -528,17 +510,6 @@ public class HomeWonderfulFragmentExt extends Fragment implements
         tvDateItemHeadWonder.setBackgroundToRight();
     }
 
-//    /**
-//     * 整个{@link WheelView}的父viewGroup
-//     *
-//     * @return
-//     */
-//    private View getWheelViewContainer() {
-//        if (getActivity() != null) {
-//            return getActivity().findViewById(R.id.fLayout_wonderful_timeline);
-//        }
-//        return null;
-//    }
 
     /**
      * {@link WheelView}
@@ -566,37 +537,6 @@ public class HomeWonderfulFragmentExt extends Fragment implements
         isShowTimeLine = false;
     }
 
-//    @Override
-//    public void onItemChanged(int position, long timeInLong, String dateInStr) {
-//        AppLogger.d("date: " + TimeUtils.getDateStyle_0(timeInLong));
-//        if (getActivity() == null)
-//            return;
-//        TextView textView = (TextView) getActivity().findViewById(R.id.tv_time_line_pop);
-//        if (textView != null) textView.setText(TimeUtils.getDateStyle_0(timeInLong));
-//    }
-
-    @Override
-    public void share(int id, Object o) {
-        if (o == null || !(o instanceof MediaBean)) {
-            AppLogger.i("err");
-            return;
-        }
-        int type = -1;
-        switch (id) {
-            case R.id.tv_share_to_wechat_friends:
-                type = WXSceneSession;
-                break;
-            case R.id.tv_share_to_timeline:
-                type = WXSceneTimeline;
-                break;
-            default:
-                type = 0;
-                break;
-        }
-        if (presenter != null) {
-            presenter.shareToWechat((MediaBean) o, type);
-        }
-    }
 
     @Override
     public void onDialogAction(int id, Object value) {
@@ -622,24 +562,6 @@ public class HomeWonderfulFragmentExt extends Fragment implements
         final float alpha = 1.0f - ratio;
         if (imgWonderfulTitleCover.getAlpha() != alpha) {
             imgWonderfulTitleCover.setAlpha(alpha);
-        }
-    }
-
-    @Override
-    public void loadMedia(int mediaType, final String srcUrl, final ImageView imageView) {
-        //图标
-        if (mediaType == MediaBean.TYPE_PIC) {
-            Glide.with(this)
-                    .load(srcUrl)
-                    .placeholder(R.drawable.wonderful_pic_place_holder)
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .into(imageView);
-        } else if (mediaType == MediaBean.TYPE_VIDEO) {
-            if (srcUrl.startsWith("http://") || srcUrl.startsWith("https://")) {
-                GlideNetVideoUtils.loadNetVideo(getContext(), srcUrl, imageView, null);
-            } else {
-                Glide.with(this).load(srcUrl).into(imageView);
-            }
         }
     }
 
@@ -733,7 +655,7 @@ public class HomeWonderfulFragmentExt extends Fragment implements
     public void onTimeLineChanged(long newTime) {
         List<MediaBean> list = homeWonderAdapter.getList();
         for (MediaBean bean : list) {
-            if (bean.time == newTime) {
+            if (bean.time == newTime / 1000) {
                 int index = list.indexOf(bean);
                 int position = mLinearLayoutManager.findFirstVisibleItemPosition();
                 rVDevicesList.smoothScrollToPosition(index > position ? index + 1 : index);

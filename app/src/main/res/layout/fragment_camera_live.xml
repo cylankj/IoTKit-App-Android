@@ -1,8 +1,7 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     tools:context="com.cylan.jiafeigou.n.view.cam.CameraLiveFragment">
 
     <FrameLayout
@@ -27,34 +26,36 @@
 
     </FrameLayout>
 
+    <com.cylan.jiafeigou.n.view.cam.CamLiveControlLayer
+        android:id="@+id/sw_cam_port_wheel"
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:layout_below="@+id/fLayout_cam_live_view"
+        android:visibility="invisible" />
+
     <FrameLayout
         android:id="@+id/fLayout_cam_live_menu"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_below="@+id/fLayout_cam_live_view"
         android:layout_gravity="bottom">
-
-        <com.cylan.jiafeigou.n.view.cam.CamLivePortWheel
-            android:id="@+id/sw_cam_port_wheel"
-            android:layout_width="match_parent"
-            android:layout_height="52dp" />
 
         <ImageView
             android:id="@+id/imgV_cam_switch_speaker"
-            style="@style/ripple_background"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="30dp"
             android:layout_marginRight="30dp"
-            android:padding="20dp"
-            android:src="@drawable/icon_speaker_selector" />
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/icon_speaker_normal_port_on" />
 
         <ImageView
             android:id="@+id/imgV_cam_trigger_mic"
-            style="@style/ripple_background"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:background="?attr/selectableItemBackgroundBorderless"
             android:padding="10dp"
             android:src="@drawable/icon_record" />
 
@@ -69,4 +70,4 @@
             android:padding="20dp"
             android:src="@drawable/icon_capture_selector" />
     </FrameLayout>
-</LinearLayout>
+</RelativeLayout>
