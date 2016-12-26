@@ -15,10 +15,10 @@
         android:visibility="gone" />
 
     <LinearLayout
+        android:id="@+id/fLayout_cam_live_land_bottom_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:layout_marginBottom="100dp"
         android:orientation="vertical">
 
         <com.cylan.jiafeigou.widget.LiveTimeLayout

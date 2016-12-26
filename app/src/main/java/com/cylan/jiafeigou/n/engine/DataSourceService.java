@@ -249,7 +249,7 @@ public class DataSourceService extends Service implements AppCallBack {
 
     @Override
     public void OnDoorBellCall(JFGDoorBellCaller jfgDoorBellCaller) {
-        AppLogger.d("OnLocalMessage :");
+        AppLogger.d("OnDoorBellCall :");
     }
 
     @Override

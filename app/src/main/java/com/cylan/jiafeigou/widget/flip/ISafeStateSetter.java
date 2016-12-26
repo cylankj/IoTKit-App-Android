@@ -14,5 +14,6 @@ public interface ISafeStateSetter {
 
     void setVisibility(boolean show);
 
+    void setFlipListener(FlipImageView.OnFlipListener listener);
 
 }

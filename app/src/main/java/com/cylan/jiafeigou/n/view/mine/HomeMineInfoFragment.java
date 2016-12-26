@@ -16,7 +16,6 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
@@ -37,7 +36,6 @@ import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.JConstant;
-import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineInfoContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineInfoPresenterImpl;
 import com.cylan.jiafeigou.n.view.splash.BeforeLoginFragment;
@@ -49,7 +47,6 @@ import com.cylan.jiafeigou.utils.LocaleUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
-import com.cylan.jiafeigou.widget.LoadingDialog;
 import com.cylan.jiafeigou.widget.roundedimageview.RoundedImageView;
 
 import java.io.File;
@@ -290,7 +287,7 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
             argumentData = bean;
             //头像的回显
             String photoUrl = bean.getPhotoUrl();
-            if (TextUtils.isEmpty(bean.getPhotoUrl())){
+            if (TextUtils.isEmpty(bean.getPhotoUrl())) {
                 photoUrl = PreferencesUtils.getString("UserImageUrl");
             }
 
@@ -303,6 +300,7 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
                     .into(new BitmapImageViewTarget(userImageHead) {
                         @Override
                         protected void setResource(Bitmap resource) {
+                            if (getContext() == null) return;
                             RoundedBitmapDrawable circularBitmapDrawable =
                                     RoundedBitmapDrawableFactory.create(getContext().getResources(), resource);
                             circularBitmapDrawable.setCircular(true);
@@ -312,15 +310,15 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
 
             tvUserAccount.setText(bean.getAccount());
 
-            tvUserName.setText(TextUtils.isEmpty(bean.getAlias())? getString(R.string.NO_SET) : bean.getAlias());
+            tvUserName.setText(TextUtils.isEmpty(bean.getAlias()) ? getString(R.string.NO_SET) : bean.getAlias());
 
-            if (bean.getEmail() == null | TextUtils.isEmpty(bean.getEmail())){
+            if (bean.getEmail() == null | TextUtils.isEmpty(bean.getEmail())) {
                 mTvMailBox.setText(getString(R.string.NO_SET));
             } else {
                 mTvMailBox.setText(bean.getEmail());
             }
 
-            if(TextUtils.isEmpty(bean.getPhone())){
+            if (TextUtils.isEmpty(bean.getPhone())) {
                 tvHomeMinePersonalPhone.setText(getString(R.string.NO_SET));
             } else {
                 tvHomeMinePersonalPhone.setText(bean.getPhone());
@@ -364,9 +362,9 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
     }
 
     /**
-     *弹出选择头像的对话框
+     * 弹出选择头像的对话框
      */
-    private void pickImageDialog(View v){
+    private void pickImageDialog(View v) {
         if (popupWindow != null && popupWindow.isShowing()) {
             return;
         }
@@ -382,10 +380,10 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
         //设置动画
         popupWindow.setAnimationStyle(R.style.PopupWindow);
         //设置位置
-        popupWindow.showAtLocation(v, Gravity.BOTTOM, 0, navigationHeight-50);
+        popupWindow.showAtLocation(v, Gravity.BOTTOM, 0, navigationHeight - 50);
         //设置消失监听
         popupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
-    @Override
+            @Override
             public void onDismiss() {
                 setBackgroundAlpha(1);
             }
@@ -398,6 +396,7 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
 
     /**
      * popupwindow条目点击
+     *
      * @param view
      */
     private void setOnPopupViewClick(View view) {
@@ -408,9 +407,9 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
         tv_pick_phone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (presenter.checkExternalStorePermission()){
+                if (presenter.checkExternalStorePermission()) {
                     openGallery();
-                }else {
+                } else {
                     //申请权限
                     HomeMineInfoFragment.this.requestPermissions(
                             new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
@@ -451,16 +450,16 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
             @Override
             public void onClick(View v) {
                 popupWindow.dismiss();
-                }
-        });
             }
+        });
+    }
 
     //设置屏幕背景透明效果
     public void setBackgroundAlpha(float alpha) {
         WindowManager.LayoutParams lp = getActivity().getWindow().getAttributes();
         lp.alpha = alpha;
         getActivity().getWindow().setAttributes(lp);
-            }
+    }
 
 
     /**
@@ -521,10 +520,10 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
                 if (getView() != null) {
-                            presenter.logOut();
+                    presenter.logOut();
                     jump2LoginFragment();
                     getFragmentManager().popBackStack();
-                        }
+                }
 
             }
         });
@@ -539,22 +538,22 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode != getActivity().RESULT_CANCELED){
-        if (requestCode == Constants.REQUEST_CODE && data != null) {
-            gotoClipActivity(Uri.parse(data.getStringExtra(Constants.INTENT_EXTRA_IMAGES)));
-        } else if (requestCode == REQUEST_CROP_PHOTO && data != null) {
-            final Uri uri = data.getData();
-            if (uri == null) {
-                return;
-            }
-            String cropImagePath = getRealFilePathFromUri(getContext(), uri);
-            PreferencesUtils.putString("UserImageUrl", cropImagePath);
-        } else if (requestCode == OPEN_CAMERA) {
-            if (resultCode == getActivity().RESULT_OK) {
-                gotoClipActivity(outPutUri);
+        if (resultCode != getActivity().RESULT_CANCELED) {
+            if (requestCode == Constants.REQUEST_CODE && data != null) {
+                gotoClipActivity(Uri.parse(data.getStringExtra(Constants.INTENT_EXTRA_IMAGES)));
+            } else if (requestCode == REQUEST_CROP_PHOTO && data != null) {
+                final Uri uri = data.getData();
+                if (uri == null) {
+                    return;
+                }
+                String cropImagePath = getRealFilePathFromUri(getContext(), uri);
+                PreferencesUtils.putString("UserImageUrl", cropImagePath);
+            } else if (requestCode == OPEN_CAMERA) {
+                if (resultCode == getActivity().RESULT_OK) {
+                    gotoClipActivity(outPutUri);
+                }
             }
         }
-    }
     }
 
     /**

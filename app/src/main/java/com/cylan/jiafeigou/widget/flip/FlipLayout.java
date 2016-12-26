@@ -20,7 +20,7 @@ public class FlipLayout extends LinearLayout implements ISafeStateSetter,
 
     private FlipImageView flipImageView;
     private TextView textView;
-    private IClicker clicker;
+    private FlipImageView.OnFlipListener clicker;
 
     public FlipLayout(Context context) {
         this(context, null);
@@ -32,6 +32,7 @@ public class FlipLayout extends LinearLayout implements ISafeStateSetter,
 
     public FlipLayout(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        setOrientation(HORIZONTAL);
         View view = LayoutInflater.from(context).inflate(R.layout.flip_layout, this);
         flipImageView = (FlipImageView) view.findViewById(R.id.flip_image);
         textView = (TextView) view.findViewById(R.id.tv_flip_content);
@@ -65,14 +66,15 @@ public class FlipLayout extends LinearLayout implements ISafeStateSetter,
         setVisibility(show ? VISIBLE : INVISIBLE);
     }
 
-    public void setClicker(IClicker clicker) {
-        this.clicker = clicker;
+    @Override
+    public void setFlipListener(FlipImageView.OnFlipListener listener) {
+        this.clicker = listener;
     }
 
     @Override
     public void onClick(FlipImageView view) {
         if (clicker != null) {
-            clicker.click(view);
+            clicker.onClick(view);
         }
         Log.d("onClick", "onClick");
     }

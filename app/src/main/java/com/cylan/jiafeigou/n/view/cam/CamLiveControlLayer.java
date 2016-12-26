@@ -46,14 +46,16 @@ public class CamLiveControlLayer extends FrameLayout {
     SuperWheelExt swCamLiveWheel;
     @BindView(R.id.tv_cam_live_port_live)
     TextView tvCamLivePortLive;
-    @BindView(R.id.fLayout_cam_live_land_top_bar)
-    CamLiveLandTopBar fLayoutCamLiveLandTopBar;
     @BindView(R.id.imgV_cam_live_land_play)
     ImageView imgVCamLiveLandPlay;
     @BindView(R.id.lLayout_protection)
     FlipLayout lLayoutProtection;
     @BindView(R.id.live_time_layout)
     LiveTimeLayout liveTimeLayout;
+    @BindView(R.id.fLayout_cam_live_land_top_bar)
+    CamLiveLandTopBar fLayoutCamLiveLandTopBar;
+    @BindView(R.id.fLayout_cam_live_land_bottom_bar)
+    LinearLayout fLayoutCamLiveLandBottomBar;
 
     public CamLiveControlLayer(Context context) {
         this(context, null);
@@ -68,6 +70,10 @@ public class CamLiveControlLayer extends FrameLayout {
         View view = LayoutInflater.from(context).inflate(R.layout.layout_cam_live_control_layer, this, true);
         ButterKnife.bind(view);
 
+    }
+
+    public LinearLayout getLiveLandBottomBar() {
+        return fLayoutCamLiveLandBottomBar;
     }
 
     public LiveTimeLayout getLiveTimeLayout() {
@@ -94,7 +100,7 @@ public class CamLiveControlLayer extends FrameLayout {
         return imgVCamLiveLandPlay;
     }
 
-    public FlipLayout getlLayoutProtection() {
+    public FlipLayout getFlipLayout() {
         return lLayoutProtection;
     }
 
@@ -102,10 +108,13 @@ public class CamLiveControlLayer extends FrameLayout {
         post(new Runnable() {
             @Override
             public void run() {
+                setVisibility(VISIBLE);
                 fLayoutCamLiveLandTopBar.setVisibility(orientation == Configuration.ORIENTATION_LANDSCAPE ? VISIBLE : GONE);
                 findViewById(R.id.imgV_cam_live_land_play).setVisibility(orientation == Configuration.ORIENTATION_LANDSCAPE ? VISIBLE : GONE);
                 findViewById(R.id.v_divider).setVisibility(orientation == Configuration.ORIENTATION_LANDSCAPE ? VISIBLE : GONE);
                 findViewById(R.id.lLayout_protection).setVisibility(orientation == Configuration.ORIENTATION_LANDSCAPE ? VISIBLE : GONE);
+                fLayoutCamLiveLandTopBar.setVisibility(orientation == Configuration.ORIENTATION_LANDSCAPE ? VISIBLE : GONE);
+                fLayoutCamLiveLandBottomBar.setVisibility(orientation == Configuration.ORIENTATION_LANDSCAPE ? VISIBLE : GONE);
                 lLayoutCamHistoryWheel.setBackgroundColor(orientation == Configuration.ORIENTATION_LANDSCAPE ? getResources().getColor(R.color.color_4C000000) : Color.TRANSPARENT);
                 RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) getLayoutParams();
                 if (orientation == Configuration.ORIENTATION_LANDSCAPE) {

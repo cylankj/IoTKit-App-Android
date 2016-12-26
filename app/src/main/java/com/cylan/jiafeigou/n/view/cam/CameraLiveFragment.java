@@ -26,9 +26,10 @@ import com.cylan.entity.jniCall.JFGMsgVideoRtcp;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
-import com.cylan.jiafeigou.misc.listener.LiveListener;
+import com.cylan.jiafeigou.misc.listener.ILiveStateListener;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamLiveContract;
 import com.cylan.jiafeigou.n.mvp.impl.cam.CamLivePresenterImpl;
@@ -51,10 +52,6 @@ import java.util.Locale;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-
-import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_IDLE;
-import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_PLAYING;
-import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_PREPARE;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -98,10 +95,10 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
     ImageView imgVCamZoomToFullScreen;
 
     private CamLiveController camLiveController;
-//    /**
+    //    /**
 //     * 直播状态监听
 //     */
-//    private LiveListener liveListener;
+    private ILiveStateListener liveListener;
     /**
      * |安全防护|----直播|5/16 16:30|---|
      */
@@ -158,6 +155,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
         camLiveController.setPortLiveTimeSetter(liveTimeLayout);
         camLiveController.setPresenterRef(basePresenter);
         camLiveController.setActivity(getActivity());
+        liveListener = camLiveController.getLiveStateListener();
     }
 
     @Override
@@ -233,7 +231,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
     public void onLivePrepare(int type) {
         camLiveController.setLoadingState(ILiveControl.STATE_LOADING, null);
         AppLogger.i("onLivePrepare");
-//        if (liveListener != null) liveListener.onLiveState(PLAY_STATE_PREPARE);
+        if (liveListener != null) liveListener.liveStateChange();
     }
 
     @Override
@@ -246,7 +244,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
         imgVCamSwitchSpeaker.performClick();
         imgVCamTriggerMic.performClick();
         camLiveController.setLiveType(basePresenter.getPlayType());
-//        if (liveListener != null) liveListener.onLiveState(PLAY_STATE_PLAYING);
+        if (liveListener != null) liveListener.liveStateChange();
     }
 
     @Override
@@ -317,7 +315,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
 
                 @Override
                 public boolean onSingleTap(float x, float y) {
-                    camLiveController.determineLayout();
+                    camLiveController.tapVideoViewAction();
                     return true;
                 }
 
@@ -425,6 +423,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
         if (getView() != null)
             getView().setKeepScreenOn(false);
         showFloatFlowView(false, null);
+        camLiveController.setLiveTime(0);
         switch (errId) {
             case JFGRules.PlayErr.ERR_NERWORK:
                 ToastUtil.showNegativeToast(getString(R.string.OFFLINE_ERR_1));
@@ -436,13 +435,15 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
                 camLiveController.setLoadingState(ILiveControl.STATE_LOADING_FAILED, "\"帧率太低,不足以播放,重试\"");
                 break;
             case JFGRules.PlayErr.ERR_DEVICE_OFFLINE:
+            case JError.ErrorVideoPeerNotExist:
                 ToastUtil.showNegativeToast(getString(R.string.OFFLINE_ERR));
+                camLiveController.setLoadingState(ILiveControl.STATE_LOADING_FAILED, getString(R.string.OFFLINE_ERR));
                 break;
             default:
                 camLiveController.setLoadingState(ILiveControl.STATE_STOP, null);
                 break;
         }
-//        if (liveListener != null) liveListener.onLiveState(PLAY_STATE_IDLE);
+        if (liveListener != null) liveListener.liveStateChange();
     }
 
     @Override
