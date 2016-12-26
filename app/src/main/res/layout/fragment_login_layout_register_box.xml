@@ -133,10 +133,11 @@
             android:orientation="horizontal">
 
             <TextView
+                android:id="@+id/tv_before_agreement"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="点击按钮,表示你已同意" />
+                android:text="@string/AGREE" />
 
             <TextView
                 android:id="@+id/tv_agreement"
@@ -144,6 +145,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:autoLink="web"
+                android:textColor="@color/color_4b9fd5"
                 android:text="@string/TERM_OF_USE" />
         </LinearLayout>
 

@@ -250,6 +250,7 @@ public class MineFriendAddReqDetailFragment extends Fragment implements MineFrie
                 addReqBean.account = bean.account;
                 addReqBean.time = bean.time;
                 presenter.checkAddReqOutTime(addReqBean);
+                getFragmentManager().popBackStack();
                 return;
             } else {
                 //未向我发送过请求

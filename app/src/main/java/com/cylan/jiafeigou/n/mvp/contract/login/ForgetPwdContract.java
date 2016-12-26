@@ -4,6 +4,8 @@ import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
 import com.cylan.jiafeigou.n.mvp.model.RequestResetPwdBean;
 
+import rx.Subscription;
+
 /**
  * Created by cylan-hunt on 16-6-29.
  */
@@ -19,7 +21,10 @@ public interface ForgetPwdContract {
          */
         void submitResult(RequestResetPwdBean bean);
 
-
+        /**
+         * 校验短信验证码结果
+         */
+        void checkSmsCodeResult(int code);
     }
 
     interface Presenter extends BasePresenter {
@@ -39,7 +44,16 @@ public interface ForgetPwdContract {
          */
         void submitPhoneNumAndCode(final String account, final String code);
 
+        /**
+         * 短信验证码的回调
+         * @return
+         */
+        Subscription checkSmsCodeBack();
 
+        /**
+         *重置密码
+         */
+        void resetPassword(String newPassword);
     }
 }
 

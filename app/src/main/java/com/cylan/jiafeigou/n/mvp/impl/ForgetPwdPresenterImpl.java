@@ -3,11 +3,14 @@ package com.cylan.jiafeigou.n.mvp.impl;
 import com.cylan.entity.JfgEnum;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.contract.login.ForgetPwdContract;
 import com.cylan.jiafeigou.n.mvp.model.RequestResetPwdBean;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
+import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.support.sp.core.Preferences;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 
 import rx.Observable;
@@ -27,6 +30,7 @@ public class ForgetPwdPresenterImpl extends AbstractPresenter<ForgetPwdContract.
 
     private Subscription subscription;
     private CompositeSubscription compositeSubscription;
+    private boolean isRegister;
 
     public ForgetPwdPresenterImpl(ForgetPwdContract.View view) {
         super(view);
@@ -68,6 +72,8 @@ public class ForgetPwdPresenterImpl extends AbstractPresenter<ForgetPwdContract.
                     @Override
                     public void call(String s) {
                         try {
+                            PreferencesUtils.putString(JConstant.SAVE_TEMP_ACCOUNT,account);
+                            PreferencesUtils.putString(JConstant.SAVE_TEMP_CODE,code);
                             JfgCmdInsurance.getCmd().verifySMS(account, code, PreferencesUtils.getString(JConstant.KEY_REGISTER_SMS_TOKEN));
                         } catch (JfgException e) {
                             e.printStackTrace();
@@ -76,11 +82,15 @@ public class ForgetPwdPresenterImpl extends AbstractPresenter<ForgetPwdContract.
                 });
     }
 
+
+
+
     @Override
     public void start() {
         compositeSubscription = new CompositeSubscription();
         compositeSubscription.add(getForgetPwdByMailSub());
         compositeSubscription.add(getSmsCodeResultSub());
+        compositeSubscription.add(checkSmsCodeBack());
     }
 
     private Subscription getForgetPwdByMailSub() {
@@ -110,6 +120,51 @@ public class ForgetPwdPresenterImpl extends AbstractPresenter<ForgetPwdContract.
                         }
                     }
                 });
+    }
+
+    /**
+     * 短信验证码的回调
+     * @return
+     */
+    @Override
+    public Subscription checkSmsCodeBack() {
+        return RxBus.getCacheInstance().toObservable(RxEvent.ResultVerifyCode.class)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<RxEvent.ResultVerifyCode>() {
+                    @Override
+                    public void call(RxEvent.ResultVerifyCode resultVerifyCode) {
+                        if (resultVerifyCode != null && resultVerifyCode instanceof RxEvent.ResultVerifyCode){
+                            getView().checkSmsCodeResult(resultVerifyCode.code);
+                        }
+                    }
+                });
+    }
+
+    /**
+     * 重置密码
+     * @param newPassword
+     */
+    @Override
+    public void resetPassword(String newPassword) {
+        rx.Observable.just(newPassword)
+            .subscribeOn(Schedulers.newThread())
+            .subscribe(new Action1<String>() {
+                @Override
+                public void call(String s) {
+                    String account = PreferencesUtils.getString(JConstant.SAVE_TEMP_ACCOUNT);
+                    String code = PreferencesUtils.getString(JConstant.SAVE_TEMP_CODE);
+                    try {
+                        JfgCmdInsurance.getCmd().resetPassword(account,s,code);
+                    } catch (JfgException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }, new Action1<Throwable>() {
+                @Override
+                public void call(Throwable throwable) {
+                    AppLogger.e("resetPassword"+throwable.getLocalizedMessage());
+                }
+            });
     }
 
     @Override

@@ -82,7 +82,8 @@ public class MineFriendAddReqDetailPresenterImp extends AbstractPresenter<MineFr
     @Override
     public void checkAddReqOutTime(MineAddReqBean addRequestItems) {
         //true 过期 false未过期
-        if ((System.currentTimeMillis() - addRequestItems.time) > 30 * 24 * 60 * 1000) {
+        long oneMount = 30 * 24 * 60 * 60 * 1000L;
+        if ( oneMount - addRequestItems.time < 0) {
             if (getView() != null) {
                 getView().showReqOutTimeDialog();
             }
