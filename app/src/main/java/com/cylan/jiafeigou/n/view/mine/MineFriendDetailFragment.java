@@ -23,10 +23,12 @@ import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendDetailContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineFriendDetailPresenterImp;
 import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.LoadingDialog;
 import com.cylan.jiafeigou.widget.roundedimageview.RoundedImageView;
+import com.cylan.utils.NetUtils;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -177,8 +179,11 @@ public class MineFriendDetailFragment extends Fragment implements MineFriendDeta
         builder.setPositiveButton(getString(R.string.OK), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                if (NetUtils.getNetType(ContextUtils.getContext()) == -1){
+                    ToastUtil.showToast(getString(R.string.NO_NETWORK_4));
+                    return;
+                }
                 presenter.sendDeleteFriendReq(bean.account);
-                hideDeleteProgress();
                 handlerDelCallBack();
                 dialog.dismiss();
             }

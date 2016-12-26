@@ -22,12 +22,14 @@ import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
 import com.cylan.jiafeigou.n.view.adapter.AddRelativesAndFriendsAdapter;
 import com.cylan.jiafeigou.n.view.adapter.RelativesAndFriendsAdapter;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.LoadingDialog;
 import com.cylan.superadapter.OnItemClickListener;
 import com.cylan.superadapter.OnItemLongClickListener;
 import com.cylan.superadapter.internal.SuperViewHolder;
+import com.cylan.utils.NetUtils;
 
 import java.util.ArrayList;
 
@@ -369,6 +371,10 @@ public class MineFriendsFragment extends Fragment implements MineFriendsContract
             showReqOutTimeDialog(item);
         } else {
             //调用添加成功
+            if (NetUtils.getNetType(ContextUtils.getContext()) == -1){
+                ToastUtil.showToast(getString(R.string.NO_NETWORK_4));
+                return;
+            }
             presenter.acceptAddSDK(item.account);
             ToastUtil.showPositiveToast(getString(R.string.Tap3_FriendsAdd_Success));
 
