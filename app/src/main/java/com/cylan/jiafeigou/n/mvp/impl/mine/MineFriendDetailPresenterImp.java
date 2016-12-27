@@ -54,9 +54,7 @@ public class MineFriendDetailPresenterImp extends AbstractPresenter<MineFriendDe
      */
     @Override
     public void sendDeleteFriendReq(final String account) {
-        if (getView() != null) {
-            getView().showDeleteProgress();
-        }
+
         rx.Observable.just(account)
                 .subscribeOn(Schedulers.newThread())
                 .subscribe(new Action1<String>() {

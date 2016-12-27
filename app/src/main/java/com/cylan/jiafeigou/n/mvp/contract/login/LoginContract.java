@@ -8,6 +8,8 @@ import com.cylan.jiafeigou.n.mvp.BaseView;
 import com.cylan.jiafeigou.n.mvp.model.LoginAccountBean;
 import com.sina.weibo.sdk.auth.sso.SsoHandler;
 
+import rx.Subscription;
+
 /**
  * Created by lxh on 16-6-24.
  */
@@ -73,6 +75,11 @@ public interface LoginContract {
          * 登陆超时
          */
         void loginTimeout();
+
+        /**
+         * 注册跳转到设置密码页
+         */
+        void jump2NextPage();
     }
 
     interface Presenter extends BasePresenter {
@@ -117,6 +124,7 @@ public interface LoginContract {
          * @param data
          */
         void onActivityResultData(int requestCode, int resultCode, Intent data);
+
     }
 
 }

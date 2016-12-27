@@ -127,7 +127,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
         unSubscribe(subscription);
         subscription = new CompositeSubscription();
         subscription.add(resultLoginSub());
-        subscription.add(resultRegisterSub());
+//        subscription.add(resultRegisterSub());
         subscription.add(resultVerifyCodeSub());
         subscription.add(smsCodeResultSub());
         subscription.add(switchBoxSub());
@@ -210,7 +210,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
                     @Override
                     public void call(RxEvent.SmsCodeResult smsCodeResult) {
                         if (getView().isLoginViewVisible() && JCache.isSmsAction) {
-                            getView().registerResult(smsCodeResult.error);
+//                            getView().registerResult(smsCodeResult.error);
                             if (smsCodeResult.error == 0) {
                                 //store the token .
                                 PreferencesUtils.putString(JConstant.KEY_REGISTER_SMS_TOKEN, smsCodeResult.token);
@@ -240,7 +240,6 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
                         AppLogger.e("" + throwable.getLocalizedMessage());
                     }
                 });
-
     }
 
     private Subscription loginPopBackSub() {
@@ -451,5 +450,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
             e.printStackTrace();
         }
     }
+
+
 
 }
