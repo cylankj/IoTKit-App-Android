@@ -704,4 +704,43 @@ public class DpMsgDefine {
             }
         };
     }
+
+    public static class MsgBattery  implements Parcelable{
+        public int id;
+        public long time;
+        public int battery;
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeInt(this.id);
+            dest.writeLong(this.time);
+            dest.writeInt(this.battery);
+        }
+
+        public MsgBattery() {
+        }
+
+        protected MsgBattery(Parcel in) {
+            this.id = in.readInt();
+            this.time = in.readLong();
+            this.battery = in.readInt();
+        }
+
+        public static final Creator<MsgBattery> CREATOR = new Creator<MsgBattery>() {
+            @Override
+            public MsgBattery createFromParcel(Parcel source) {
+                return new MsgBattery(source);
+            }
+
+            @Override
+            public MsgBattery[] newArray(int size) {
+                return new MsgBattery[size];
+            }
+        };
+    }
 }

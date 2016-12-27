@@ -276,7 +276,7 @@ public class DataSourceService extends Service implements AppCallBack {
         AppLogger.d("OnRobotSyncData :" + b + " " + s + " " + arrayList);
         RxEvent.JFGRobotSyncData data = new RxEvent.JFGRobotSyncData();
         data.state = b;
-        data.identity = "200000000472";
+        data.identity = s;
         data.dataList = arrayList;
         RxBus.getCacheInstance().post(data);
     }

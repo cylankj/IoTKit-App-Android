@@ -289,25 +289,6 @@ public class BellLiveActivity extends ProcessActivity
         }
     }
 
-    public void showListenOrViewerView() {
-        String callWay = getIntent().getStringExtra(JConstant.BELL_CALL_WAY);
-        switch (callWay) {
-            case JConstant.BELL_CALL_WAY_VIEWER: {
-                dLayoutBellHotSeat.setVisibility(View.GONE);
-                fLayoutBellAfterLive.setVisibility(View.VISIBLE);
-                presenter.onPickup();
-            }
-            break;
-            case JConstant.BELL_CALL_WAY_LISTEN: {
-                dLayoutBellHotSeat.setVisibility(View.VISIBLE);
-                fLayoutBellAfterLive.setVisibility(View.GONE);
-            }
-            break;
-        }
-
-    }
-
-
     @Override
     public void onResolution(JFGMsgVideoResolution resolution) throws JfgException {
         initVideoView();

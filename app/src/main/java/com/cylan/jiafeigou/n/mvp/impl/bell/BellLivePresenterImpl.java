@@ -52,6 +52,8 @@ public class BellLivePresenterImpl extends AbstractPresenter<BellLiveContract.Vi
     private String mInHoldCallCid = null;
     private Subscription mRetrySubscription;
 
+    private boolean isInViewer = false;
+
     public BellLivePresenterImpl(BellLiveContract.View view) {
         super(view);
         view.setPresenter(this);
@@ -143,6 +145,7 @@ public class BellLivePresenterImpl extends AbstractPresenter<BellLiveContract.Vi
     public void onBellCall(String callWay, Object extra, Object extra1) {
         switch (callWay) {
             case JConstant.BELL_CALL_WAY_LISTEN:
+                if (isInViewer) return;
                 mCaller = (JFGDoorBellCaller) extra;
                 mBellCid = String.copyValueOf(mCaller.cid.toCharArray());
                 mURL = String.copyValueOf(mCaller.url.toCharArray());
@@ -160,6 +163,7 @@ public class BellLivePresenterImpl extends AbstractPresenter<BellLiveContract.Vi
                 mBellInfo = (BeanBellInfo) extra1;
                 mBellInfo.deviceBase = (BaseBean) extra;
                 mBellCid = mBellInfo.deviceBase.uuid;
+                isInViewer = true;
                 onWatchLive();
                 break;
         }
@@ -189,6 +193,7 @@ public class BellLivePresenterImpl extends AbstractPresenter<BellLiveContract.Vi
     public void stop() {
         unSubscribe(mCompositeSubscription);
         onBellPaused();
+        unSubscribe(mRetrySubscription);
     }
 
     private Subscription resolutionNotifySub() {
@@ -196,7 +201,6 @@ public class BellLivePresenterImpl extends AbstractPresenter<BellLiveContract.Vi
                 .filter(resolution -> TextUtils.equals(mInHoldCallCid, resolution.peer))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(resolution -> {
-                    Log.e(TAG, "resolutionNotifySub: ssssssssssssssssssss");
                     unSubscribe(mRetrySubscription);
                     try {
                         mView.onResolution(resolution);
