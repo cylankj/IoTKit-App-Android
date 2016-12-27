@@ -135,13 +135,17 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
         if (currentPosition == position)
             return;
         currentPosition = position;
-        AppLogger.d("fPos: " + position);
         if (getView() != null) getView().post(new Runnable() {
             @Override
             public void run() {
-                tvCamMessageListDate.setText(TimeUtils.getSuperString(camMessageListAdapter.getItem(currentPosition).time * 1000L));
+                long time = camMessageListAdapter.getList().get(0).time;
+                boolean isToday = TimeUtils.isToday(time);
+                String content = String.format(TimeUtils.getSuperString(time) + "%s", isToday ? getString(R.string.DOOR_TODAY) : "");
+                tvCamMessageListDate.setText(content);
+                tvCamMessageListDate.setText(TimeUtils.getSuperString(camMessageListAdapter.getItem(currentPosition).time));
             }
         });
+        AppLogger.d("fPos: " + position);
     }
 
 
@@ -154,12 +158,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
             return;
         }
         camMessageListAdapter.addAll(beanArrayList);
-        srLayoutCamListRefresh.post(() -> {
-            long time = beanArrayList.get(0).time * 1000L;
-            boolean isToday = TimeUtils.isToday(time);
-            String content = String.format(TimeUtils.getSuperString(time) + "%s", isToday ? getString(R.string.DOOR_TODAY) : "");
-            tvCamMessageListDate.setText(content);
-        });
+        setCurrentPosition(0);
     }
 
     @Override
