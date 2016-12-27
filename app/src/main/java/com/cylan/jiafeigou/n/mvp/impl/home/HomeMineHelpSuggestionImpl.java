@@ -7,6 +7,7 @@ import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.db.DataBaseUtil;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeMineHelpSuggestionContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
+import com.cylan.jiafeigou.n.mvp.model.MagBean;
 import com.cylan.jiafeigou.n.mvp.model.MineHelpSuggestionBean;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
@@ -15,6 +16,8 @@ import com.cylan.jiafeigou.support.db.ex.DbException;
 import com.cylan.jiafeigou.support.log.AppLogger;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import rx.Observable;
@@ -55,6 +58,7 @@ public class HomeMineHelpSuggestionImpl extends AbstractPresenter<HomeMineHelpSu
             compositeSubscription = new CompositeSubscription();
             compositeSubscription.add(getAccountInfo());
             compositeSubscription.add(getSystemAutoReplyCallBack());
+            compositeSubscription.add(sendFeedBackReq());
         }
     }
 
@@ -80,6 +84,7 @@ public class HomeMineHelpSuggestionImpl extends AbstractPresenter<HomeMineHelpSu
                             List<MineHelpSuggestionBean> list = dbManager.findAll(MineHelpSuggestionBean.class);
                             if (list != null && list.size() != 0) {
                                 tempList.addAll(list);
+                                Collections.sort(tempList, new SortComparator());
                             }
                         } catch (DbException e) {
                             e.printStackTrace();
@@ -245,6 +250,43 @@ public class HomeMineHelpSuggestionImpl extends AbstractPresenter<HomeMineHelpSu
                         }
                     }
                 });
+    }
+
+    /**
+     * 发送反馈的回调
+     * @return
+     */
+    @Override
+    public Subscription sendFeedBackReq() {
+        return RxBus.getCacheInstance().toObservable(RxEvent.SendFeekBack.class)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<RxEvent.SendFeekBack>() {
+                    @Override
+                    public void call(RxEvent.SendFeekBack sendFeekBack) {
+                        if (sendFeekBack != null && sendFeekBack instanceof RxEvent.SendFeekBack){
+                            getView().refrshRecycleView(sendFeekBack.jfgResult.code);
+                        }
+                    }
+                });
+    }
+
+    @Override
+    public void deleteOnItemFromDb(MineHelpSuggestionBean bean) {
+        try {
+            dbManager.delete(bean);
+        } catch (DbException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 按时间排序
+     */
+    public class SortComparator implements Comparator<MineHelpSuggestionBean> {
+        @Override
+        public int compare(MineHelpSuggestionBean lhs, MineHelpSuggestionBean rhs) {
+            return (int) (Long.parseLong(lhs.getDate())-Long.parseLong(rhs.getDate()));
+        }
     }
 
 }

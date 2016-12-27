@@ -507,4 +507,93 @@ public class RxEvent {
             this.hold = hold;
         }
     }
+
+    /**
+     * 修改密码的返回
+     */
+    public static final class ChangePwdBack{
+       public JFGResult jfgResult;
+
+        public ChangePwdBack(JFGResult jfgResult) {
+            this.jfgResult = jfgResult;
+        }
+    }
+
+    /**
+     * 修改密码的返回
+     */
+    public static final class ResetPwdBack{
+        public JFGResult jfgResult;
+
+        public ResetPwdBack(JFGResult jfgResult) {
+            this.jfgResult = jfgResult;
+        }
+    }
+
+    /**
+     *添加亲友的返回
+     */
+    public static final class AddFriendBack{
+        public JFGResult jfgResult;
+
+        public AddFriendBack(JFGResult jfgResult) {
+            this.jfgResult = jfgResult;
+        }
+    }
+
+    /**
+     *删除亲友的返回
+     */
+    public static final class DelFriendBack{
+        public JFGResult jfgResult;
+
+        public DelFriendBack(JFGResult jfgResult) {
+            this.jfgResult = jfgResult;
+        }
+    }
+
+    /**
+     *同意添加亲友的返回
+     */
+    public static final class ConsentAddFriendBack{
+        public JFGResult jfgResult;
+
+        public ConsentAddFriendBack(JFGResult jfgResult) {
+            this.jfgResult = jfgResult;
+        }
+    }
+
+    /**
+     *同意添加亲友的返回
+     */
+    public static final class SetFriendAliasBack{
+        public JFGResult jfgResult;
+
+        public SetFriendAliasBack(JFGResult jfgResult) {
+            this.jfgResult = jfgResult;
+        }
+    }
+
+    /**
+     *发送反馈的返回
+     */
+    public static final class SendFeekBack{
+        public JFGResult jfgResult;
+
+        public SendFeekBack(JFGResult jfgResult) {
+            this.jfgResult = jfgResult;
+        }
+    }
+
+    /**
+     *三方绑定手机设置密码时的返回
+     */
+    public static final class OpenLogInSetPwdBack{
+        public JFGResult jfgResult;
+
+        public OpenLogInSetPwdBack(JFGResult jfgResult) {
+            this.jfgResult = jfgResult;
+        }
+    }
+
 }

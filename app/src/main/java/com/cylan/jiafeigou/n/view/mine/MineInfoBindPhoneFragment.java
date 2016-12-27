@@ -167,7 +167,6 @@ public class MineInfoBindPhoneFragment extends Fragment implements MineBindPhone
                     if (getInputCheckCode().length() != 6) {
                         ToastUtil.showToast(getString(R.string.Tap0_wrongcode));
                     } else {
-
                         presenter.CheckVerifyCode(getInputCheckCode(), PreferencesUtils.getString(JConstant.KEY_REGISTER_SMS_TOKEN));
                     }
                 }

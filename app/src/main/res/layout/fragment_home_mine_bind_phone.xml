@@ -116,7 +116,7 @@
                 </FrameLayout>
 
                 <TextView
-                    android:enabled="true"
+                    android:enabled="false"
                     style="@style/login_model_commit_style"
                     android:layout_gravity="center_horizontal"
                     android:layout_marginTop="37dp"

@@ -255,7 +255,6 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
 
     /**
      * 设置昵称
-     *
      * @param name
      */
     @Override
@@ -277,6 +276,7 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
                         Bitmap bitmap = Bitmap.createBitmap(resource);
                         basePresenter.portraitBlur(bitmap);
                     }
+
                 });
 
     }

@@ -53,6 +53,7 @@ public class MineAddFromContactPresenterImp extends AbstractPresenter<MineAddFro
             compositeSubscription = new CompositeSubscription();
             compositeSubscription.add(getAccountAlids());
             compositeSubscription.add(checkAccountCallBack());
+            compositeSubscription.add(sendAddFriendRep());
         }
         registerNetworkMonitor();
     }
@@ -182,6 +183,24 @@ public class MineAddFromContactPresenterImp extends AbstractPresenter<MineAddFro
             ContextUtils.getContext().unregisterReceiver(network);
             network = null;
         }
+    }
+
+    /**
+     * 发送添加请求的回调
+     * @return
+     */
+    @Override
+    public Subscription sendAddFriendRep() {
+        return RxBus.getCacheInstance().toObservable(RxEvent.AddFriendBack.class)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<RxEvent.AddFriendBack>() {
+                    @Override
+                    public void call(RxEvent.AddFriendBack addFriendBack) {
+                        if (addFriendBack != null && addFriendBack instanceof RxEvent.AddFriendBack){
+                            getView().sendReqBack(addFriendBack.jfgResult.code);
+                        }
+                    }
+                });
     }
 
     /**

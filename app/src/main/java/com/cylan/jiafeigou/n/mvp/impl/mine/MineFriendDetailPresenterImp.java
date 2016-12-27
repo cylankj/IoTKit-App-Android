@@ -8,20 +8,25 @@ import android.net.ConnectivityManager;
 import android.net.wifi.WifiManager;
 import android.text.TextUtils;
 
+import com.cylan.annotation.Device;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendDetailContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
+import com.cylan.jiafeigou.rx.RxBus;
+import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.network.ConnectivityStatus;
 import com.cylan.jiafeigou.support.network.ReactiveNetwork;
 import com.cylan.jiafeigou.utils.ContextUtils;
 
 import rx.Observable;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
+import rx.subscriptions.CompositeSubscription;
 
 /**
  * 作者：zsl
@@ -30,7 +35,7 @@ import rx.schedulers.Schedulers;
  */
 public class MineFriendDetailPresenterImp extends AbstractPresenter<MineFriendDetailContract.View> implements MineFriendDetailContract.Presenter {
 
-
+    private CompositeSubscription subscription;
     private Network network;
 
     public MineFriendDetailPresenterImp(MineFriendDetailContract.View view) {
@@ -39,11 +44,20 @@ public class MineFriendDetailPresenterImp extends AbstractPresenter<MineFriendDe
 
     @Override
     public void start() {
+        if (subscription != null && !subscription.isUnsubscribed()){
+            subscription.unsubscribe();
+        }else {
+            subscription = new CompositeSubscription();
+            subscription.add(delFriendBack());
+        }
         registerNetworkMonitor();
     }
 
     @Override
     public void stop() {
+        if (subscription != null && !subscription.isUnsubscribed()){
+            subscription.unsubscribe();
+        }
         unregisterNetworkMonitor();
     }
 
@@ -95,6 +109,24 @@ public class MineFriendDetailPresenterImp extends AbstractPresenter<MineFriendDe
             ContextUtils.getContext().unregisterReceiver(network);
             network = null;
         }
+    }
+
+    /**
+     * 删除好友的回调
+     * @return
+     */
+    @Override
+    public Subscription delFriendBack() {
+        return RxBus.getCacheInstance().toObservable(RxEvent.DelFriendBack.class)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<RxEvent.DelFriendBack>() {
+                    @Override
+                    public void call(RxEvent.DelFriendBack delFriendBack) {
+                        if (delFriendBack != null && delFriendBack instanceof RxEvent.DelFriendBack){
+                            getView().handlerDelCallBack(delFriendBack.jfgResult.code);
+                        }
+                    }
+                });
     }
 
     /**

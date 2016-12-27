@@ -3,6 +3,8 @@ package com.cylan.jiafeigou.n.mvp.contract.mine;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
 
+import rx.Subscription;
+
 /**
  * 作者：zsl
  * 创建时间：2016/9/21
@@ -14,7 +16,7 @@ public interface MineFriendDetailContract {
         /**
          * 处理删除的回调
          */
-        void handlerDelCallBack();
+        void handlerDelCallBack(int code);
 
         /**
          * 显示删除进度
@@ -50,5 +52,11 @@ public interface MineFriendDetailContract {
          * 移除网络监听
          */
         void unregisterNetworkMonitor();
+
+        /**
+         * 删除好友度的回调
+         * @return
+         */
+        Subscription delFriendBack();
     }
 }
