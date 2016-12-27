@@ -1,10 +1,15 @@
 package com.cylan.jiafeigou.n.mvp.impl.bell;
 
 import android.graphics.Bitmap;
+import android.os.SystemClock;
 import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.cylan.entity.jniCall.JFGDoorBellCaller;
 import com.cylan.entity.jniCall.JFGMsgVideoDisconn;
 import com.cylan.entity.jniCall.JFGMsgVideoResolution;
@@ -18,9 +23,10 @@ import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.n.mvp.model.BaseBean;
 import com.cylan.jiafeigou.n.mvp.model.BeanBellInfo;
 import com.cylan.jiafeigou.rx.RxBus;
-import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.utils.BitmapUtil;
+import com.cylan.utils.HandlerThreadUtils;
 
 import java.io.File;
 import java.util.concurrent.TimeUnit;
@@ -43,9 +49,8 @@ public class BellLivePresenterImpl extends AbstractPresenter<BellLiveContract.Vi
     private JFGDoorBellCaller mCaller;
     private CompositeSubscription mCompositeSubscription;
     private boolean isHold = false;
-    private boolean isPaused = false;
-
-    private Subscription mRetryBellLiveSubscription;
+    private String mInHoldCallCid = null;
+    private Subscription mRetrySubscription;
 
     public BellLivePresenterImpl(BellLiveContract.View view) {
         super(view);
@@ -54,13 +59,34 @@ public class BellLivePresenterImpl extends AbstractPresenter<BellLiveContract.Vi
 
     @Override
     public void onPickup() {
-        retryBellLive();
+        waitBellPictureReady(mURL, this::onWatchLive);
+    }
+
+    @Override
+    public void onWatchLive() {
+        try {
+            if (mInHoldCallCid != null) JfgCmdInsurance.getCmd().stopPlay(mInHoldCallCid);
+            mInHoldCallCid = String.copyValueOf(mBellCid.toCharArray());
+            isHold = true;
+            mView.onViewer();
+            HandlerThreadUtils.postDelay(() -> {
+                try {
+                    JfgCmdInsurance.getCmd().playVideo(mInHoldCallCid);
+                    mCompositeSubscription.add(bellRetrySubscription());
+                } catch (JfgException e) {
+                    e.printStackTrace();
+                }
+            }, 1000);
+        } catch (JfgException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void onDismiss() {
         try {
             JfgCmdInsurance.getCmd().stopPlay(mBellCid);
+            mInHoldCallCid = null;
             isHold = false;
         } catch (JfgException e) {
             e.printStackTrace();
@@ -118,33 +144,36 @@ public class BellLivePresenterImpl extends AbstractPresenter<BellLiveContract.Vi
         switch (callWay) {
             case JConstant.BELL_CALL_WAY_LISTEN:
                 mCaller = (JFGDoorBellCaller) extra;
-                mBellCid = mCaller.cid;
-                mURL = mCaller.url;
-                if (isPaused) {
-                    mView.onViewer();
-                    onPickup();
-                }
-                if (isHold) {
+                mBellCid = String.copyValueOf(mCaller.cid.toCharArray());
+                mURL = String.copyValueOf(mCaller.url.toCharArray());
+                Log.e(TAG, "onBellCall: " + mCaller.cid);
+                if (isHold && TextUtils.equals(mInHoldCallCid, mBellCid)) {
+                    onWatchLive();
+                } else if (isHold) {
                     mView.onProcess(mBellCid);
                 } else {
-                    mView.onListen(mURL);
+                    mView.onListen();
+                    waitBellPictureReady(mURL, () -> mView.onPreviewPicture(mURL));
                 }
                 break;
             case JConstant.BELL_CALL_WAY_VIEWER:
                 mBellInfo = (BeanBellInfo) extra1;
                 mBellInfo.deviceBase = (BaseBean) extra;
                 mBellCid = mBellInfo.deviceBase.uuid;
-                mView.onViewer();
-                onPickup();
+                onWatchLive();
                 break;
         }
     }
 
     @Override
     public void onBellPaused() {
-        onDismiss();
-        isPaused = true;
-        isHold = true;
+        if (isHold) {
+            try {
+                JfgCmdInsurance.getCmd().stopPlay(mInHoldCallCid);
+            } catch (JfgException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @Override
@@ -154,7 +183,6 @@ public class BellLivePresenterImpl extends AbstractPresenter<BellLiveContract.Vi
         mCompositeSubscription.add(resolutionNotifySub());
         mCompositeSubscription.add(flowNotifySub());
         mCompositeSubscription.add(videoDisconnectSub());
-        mCompositeSubscription.add(holdInProcessCall());
     }
 
     @Override
@@ -165,11 +193,12 @@ public class BellLivePresenterImpl extends AbstractPresenter<BellLiveContract.Vi
 
     private Subscription resolutionNotifySub() {
         return RxBus.getCacheInstance().toObservable(JFGMsgVideoResolution.class)
+                .filter(resolution -> TextUtils.equals(mInHoldCallCid, resolution.peer))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(resolution -> {
                     Log.e(TAG, "resolutionNotifySub: ssssssssssssssssssss");
+                    unSubscribe(mRetrySubscription);
                     try {
-                        unSubscribe(mRetryBellLiveSubscription);
                         mView.onResolution(resolution);
                     } catch (JfgException e) {
                         e.printStackTrace();
@@ -207,28 +236,41 @@ public class BellLivePresenterImpl extends AbstractPresenter<BellLiveContract.Vi
                 });
     }
 
-    private Subscription holdInProcessCall() {
-        return RxBus.getCacheInstance().toObservable(RxEvent.BellCallEvent.class)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(bellCallEvent -> {
-//                    mView.onInProcessCall(bellCallEvent.caller);
-                });
-    }
-
-    private void retryBellLive() {
-        mRetryBellLiveSubscription = Observable.interval(0, 2, TimeUnit.SECONDS)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(time -> {
+    private Subscription bellRetrySubscription() {
+        unSubscribe(mRetrySubscription);
+        return mRetrySubscription = Observable.interval(15, 15, TimeUnit.SECONDS)
+                .observeOn(Schedulers.io())
+                .subscribe(aLong -> {
                     try {
-                        Log.e(TAG, "onPickup: " + mBellCid);
-                        JfgCmdInsurance.getCmd().playVideo(mBellCid);
-                        isHold = true;
+                        JfgCmdInsurance.getCmd().stopPlay(mInHoldCallCid);
+                        SystemClock.sleep(1000);
+                        JfgCmdInsurance.getCmd().playVideo(mInHoldCallCid);
                     } catch (JfgException e) {
                         e.printStackTrace();
                     }
                 });
+    }
+
+    interface L {
+        void l();
+    }
+
+    private void waitBellPictureReady(String url, L l) {
+        Glide.with(ContextUtils.getContext()).load(url).
+                listener(new RequestListener<String, GlideDrawable>() {
+                    @Override
+                    public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+                        SystemClock.sleep(200);
+                        waitBellPictureReady(url, l);
+                        return false;
+                    }
+
+                    @Override
+                    public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                        if (l != null) l.l();
+                        return false;
+                    }
+                }).preload();
     }
 
 }

@@ -19,6 +19,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
+import com.cylan.entity.JfgEnum;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.SpacesItemDecoration;
@@ -30,6 +31,7 @@ import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
 import com.cylan.jiafeigou.n.view.adapter.BellCallRecordListAdapter;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.AnimatorUtils;
+import com.cylan.jiafeigou.utils.JFGGlideURL;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.BellTopBackgroundView;
 import com.cylan.jiafeigou.widget.ImageViewTip;
@@ -37,6 +39,7 @@ import com.cylan.jiafeigou.widget.LoadingDialog;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -107,6 +110,9 @@ public class DoorBellHomeActivity extends BaseFullScreenFragmentActivity
     @Override
     protected void onResume() {
         super.onResume();
+        if (bellCallRecordListAdapter.getList() == null || bellCallRecordListAdapter.getList().size() == 0) {
+            startLoadData();
+        }
     }
 
 
@@ -159,7 +165,7 @@ public class DoorBellHomeActivity extends BaseFullScreenFragmentActivity
     private void startLoadData() {
         LoadingDialog.showLoading(getSupportFragmentManager(), "加载中...", true);
         if (presenter != null)
-            presenter.fetchBellRecordsList();
+            presenter.fetchBellRecordsList(false, 0);
     }
 
     private void initToolbar() {
@@ -272,6 +278,8 @@ public class DoorBellHomeActivity extends BaseFullScreenFragmentActivity
 
     @Override
     public boolean onLongClick(View v) {
+        if (!TextUtils.isEmpty(presenter.getBellInfo().deviceBase.shareAccount))//共享账号不可操作
+            return true;
         final int position = ViewUtils.getParentAdapterPosition(rvBellList, v, R.id.cv_bell_call_item);
         if (position < 0 || position >= bellCallRecordListAdapter.getCount()) {
             AppLogger.d("position is invalid");
@@ -328,6 +336,8 @@ public class DoorBellHomeActivity extends BaseFullScreenFragmentActivity
                 break;
             case R.id.tv_bell_home_list_delete:
                 bellCallRecordListAdapter.remove();
+                List<BellCallRecordBean> list = bellCallRecordListAdapter.getSelectedList();
+                presenter.deleteBellCallRecord(list);
                 break;
         }
     }
@@ -335,7 +345,6 @@ public class DoorBellHomeActivity extends BaseFullScreenFragmentActivity
     @Override
     public void onMakeCall() {
         Intent intent = new Intent(this, BellLiveActivity.class);
-        intent.putExtra("text", "nihao");
         intent.putExtra(JConstant.BELL_CALL_WAY, JConstant.BELL_CALL_WAY_VIEWER);
         intent.putExtra(JConstant.KEY_DEVICE_ITEM_BUNDLE, presenter.getBellInfo());
         intent.putExtra(JConstant.BELL_CALL_WAY_EXTRA, presenter.getBellInfo().deviceBase);
@@ -345,7 +354,7 @@ public class DoorBellHomeActivity extends BaseFullScreenFragmentActivity
     @Override
     public void loadMedia(final BellCallRecordBean item, final ImageView imageView) {
         Glide.with(this)
-                .load(item.url)
+                .load(new JFGGlideURL(JfgEnum.JFG_URL.WARNING, item.type, item.timeInLong / 1000 + ".jpg", presenter.getBellInfo().deviceBase.uuid))
                 .asBitmap()
                 .placeholder(R.drawable.icon_bell_call_place_holder)
                 .centerCrop()

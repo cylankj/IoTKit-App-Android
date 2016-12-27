@@ -29,7 +29,9 @@ public interface BellLiveContract {
         void onLiveStop(int errId);
 
         //新的门铃呼叫到来,且现在没有已接听的门铃
-        void onListen(String URL);
+        void onListen();
+
+        void onPreviewPicture(String URL);
 
         //客户端主动查看门铃
         void onViewer();
@@ -44,6 +46,8 @@ public interface BellLiveContract {
          * 接听
          */
         void onPickup();
+
+        void onWatchLive();
 
         /**
          * 挂断

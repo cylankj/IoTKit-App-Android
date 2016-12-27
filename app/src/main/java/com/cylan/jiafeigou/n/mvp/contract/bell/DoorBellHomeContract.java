@@ -7,6 +7,7 @@ import com.cylan.jiafeigou.n.mvp.model.BellCallRecordBean;
 import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by cylan-hunt on 16-6-29.
@@ -29,13 +30,15 @@ public interface DoorBellHomeContract {
 
     interface Presenter extends BasePresenter {
 
-        void fetchBellRecordsList();
+        void fetchBellRecordsList(boolean asc, long time);
 
         int getDeviceNetState();
 
         void setBellInfo(DeviceBean bean);
 
         BeanBellInfo getBellInfo();
+
+        void deleteBellCallRecord(List<BellCallRecordBean> list);
     }
 }
 

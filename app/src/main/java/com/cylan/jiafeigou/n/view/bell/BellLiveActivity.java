@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
+import android.graphics.PixelFormat;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
@@ -58,7 +59,6 @@ public class BellLiveActivity extends ProcessActivity
     FrameLayout fLayoutBellAfterLive;
     @BindView(R.id.act_bell_live_video_picture)
     ImageView mBellLiveVideoPicture;
-
     @BindView(R.id.act_bell_live_video_view_container)
     FrameLayout mVideoViewContainer;
 
@@ -89,6 +89,12 @@ public class BellLiveActivity extends ProcessActivity
     }
 
     @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent);
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
         //大大的蛋疼
@@ -96,9 +102,11 @@ public class BellLiveActivity extends ProcessActivity
         Object extra = getIntent().getParcelableExtra(JConstant.BELL_CALL_WAY_EXTRA);
         if (extra == null) extra = getIntent().getSerializableExtra(JConstant.BELL_CALL_WAY_EXTRA);
         Object extra1 = getIntent().getParcelableExtra(JConstant.KEY_DEVICE_ITEM_BUNDLE);
+        Log.e("ABC", "onResume: " + extra + extra1);
         presenter.onBellCall(callWay, extra, extra1);
 
     }
+
 
     @Override
     protected void onPause() {
@@ -109,8 +117,6 @@ public class BellLiveActivity extends ProcessActivity
     protected void onStop() {
         super.onStop();
         presenter.stop();
-        mVideoViewContainer.removeAllViews();
-        mSurfaceView = null;
     }
 
     @Override
@@ -156,19 +162,23 @@ public class BellLiveActivity extends ProcessActivity
 
 
     private void handleScreenUpdate(final boolean port) {
+        initLandView();
+        fLayoutLandHolderRef.get()
+                .setVisibility(port ? View.GONE : View.VISIBLE);
         if (port) {
             ViewUtils.updateViewHeight(fLayoutBellLiveHolder, 0.75f);
             ViewUtils.setViewMarginStatusBar(tvBellLiveFlow);
             imgvBellLiveSwitchToLand.setVisibility(View.VISIBLE);
+            imgvBellLiveSpeaker.setImageResource(mIsMikeOn ? R.drawable.icon_mic_on : R.drawable.icon_mic_off);
         } else {
             ViewUtils.updateViewMatchScreenHeight(fLayoutBellLiveHolder);
             ViewUtils.clearViewMarginStatusBar(tvBellLiveFlow);
             tvBellLiveFlow.bringToFront();
             imgvBellLiveSwitchToLand.setVisibility(View.GONE);
+            ((TextView) fLayoutBellLiveHolder.findViewById(R.id.tv_bell_live_land_back)).setText(presenter.getBellInfo().deviceBase.alias + "的房间");
+            ((ImageView) fLayoutBellLiveHolder.findViewById(R.id.imgv_bell_live_land_mic)).setImageResource(mIsMikeOn ? R.drawable.icon_mic_on : R.drawable.icon_mic_off);
         }
-        initLandView();
-        fLayoutLandHolderRef.get()
-                .setVisibility(port ? View.GONE : View.VISIBLE);
+
     }
 
     private void initView() {
@@ -202,12 +212,14 @@ public class BellLiveActivity extends ProcessActivity
                         .setOnClickListener(this);
                 view.findViewById(R.id.imgv_bell_live_land_mic)
                         .setOnClickListener(this);
+
             }
         }
         View v = fLayoutBellLiveHolder.findViewById(R.id.fLayout_bell_live_land_layer);
         if (v == null) {
             fLayoutBellLiveHolder.addView(fLayoutLandHolderRef.get());
         }
+
     }
 
     @Override
@@ -263,6 +275,9 @@ public class BellLiveActivity extends ProcessActivity
                         ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
                 break;
             case R.id.imgv_bell_live_land_mic:
+                mIsMikeOn = !mIsMikeOn;
+                ((ImageView) view.findViewById(R.id.imgv_bell_live_land_mic)).setImageResource(mIsMikeOn ? R.drawable.icon_mic_on : R.drawable.icon_mic_off);
+                presenter.onMike(mIsMikeOn ? 1 : 0);
                 break;
             case R.id.imgv_bell_live_land_capture:
                 presenter.onCapture();
@@ -298,6 +313,7 @@ public class BellLiveActivity extends ProcessActivity
         initVideoView();
         JfgCmdInsurance.getCmd().setRenderRemoteView(mSurfaceView);
         presenter.onMike(mIsMikeOn ? 1 : 0);
+        imgvBellLiveSpeaker.setImageResource(mIsMikeOn ? R.drawable.icon_mic_on : R.drawable.icon_mic_off);
         mBellLiveVideoPicture.setVisibility(View.GONE);
     }
 
@@ -312,18 +328,22 @@ public class BellLiveActivity extends ProcessActivity
     }
 
     @Override
-    public void onListen(String URL) {
-        Log.e("ABC", "onListen: " + URL);
+    public void onListen() {
         dLayoutBellHotSeat.setVisibility(View.VISIBLE);
         fLayoutBellAfterLive.setVisibility(View.GONE);
+        mBellLiveVideoPicture.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void onPreviewPicture(String URL) {
         mBellLiveVideoPicture.setVisibility(View.VISIBLE);
         Glide.with(this).load(URL).into(mBellLiveVideoPicture);
     }
 
+
     public void onViewer() {
         dLayoutBellHotSeat.setVisibility(View.GONE);
         fLayoutBellAfterLive.setVisibility(View.VISIBLE);
-        mBellLiveVideoPicture.setVisibility(View.GONE);
     }
 
     public void onProcess(String person) {
@@ -331,7 +351,6 @@ public class BellLiveActivity extends ProcessActivity
             mAlertDialog = new AlertDialog.Builder(this)
                     .setTitle("有朋友来访")
                     .setPositiveButton("接听", (dialog, which) -> {
-                        mSurfaceView = null;
                         presenter.onPickup();
                     })
                     .setNegativeButton("忽略", null)
@@ -357,6 +376,8 @@ public class BellLiveActivity extends ProcessActivity
             mVideoViewContainer.addView(mSurfaceView);
         }
         AppLogger.i("initVideoView");
+        mSurfaceView.getHolder().setFormat(PixelFormat.TRANSPARENT);
+        mSurfaceView.getHolder().setFormat(PixelFormat.OPAQUE);
     }
 
 

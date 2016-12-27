@@ -41,13 +41,12 @@ public class GlobalBellCallSource {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(bellCallEvent -> {
                     mHolderBellCall = bellCallEvent;
-                    waitBellPictureReady(bellCallEvent.caller.url, this::launchBellLive);
+                    launchBellLive();
                 });
-
     }
 
     private void launchBellLive() {
-        Log.e("ABC", "launchBellLive: ");
+        Log.e("ABC", "launchBellLive: " + mHolderBellCall.caller.cid);
         Intent intent = new Intent(ContextUtils.getContext(), BellLiveActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.putExtra(JConstant.BELL_CALL_WAY, JConstant.BELL_CALL_WAY_LISTEN);

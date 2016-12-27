@@ -1,7 +1,15 @@
 package com.cylan.jiafeigou.n.mvp.impl.bell;
 
 import android.os.Environment;
+import android.util.Log;
 
+import com.cylan.entity.jniCall.JFGDPMsg;
+import com.cylan.entity.jniCall.RobotoGetDataRsp;
+import com.cylan.ex.JfgException;
+import com.cylan.jiafeigou.dp.DpMsgDefine;
+import com.cylan.jiafeigou.dp.DpMsgMap;
+import com.cylan.jiafeigou.dp.DpUtils;
+import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.contract.bell.DoorBellHomeContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.n.mvp.model.BaseBean;
@@ -10,15 +18,16 @@ import com.cylan.jiafeigou.n.mvp.model.BellCallRecordBean;
 import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
-import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.TimeUtils;
 import com.cylan.utils.RandomUtils;
 
 import java.io.File;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
@@ -49,37 +58,44 @@ public class DBellHomePresenterImpl extends AbstractPresenter<DoorBellHomeContra
     private static final long yesterdayInMidNight = todayInMidNight - 24 * 60 * 60 * 1000L;
 
     private BeanBellInfo mBellInfo;
+    private List<Long> mSeqList = new ArrayList<>(32);
 
     @Override
     public void start() {
-        compositeSubscription.add(onBellCallListSubscription());
         compositeSubscription.add(onLogStateSubscription());
         compositeSubscription.add(onBellBatteryState());
+        compositeSubscription.add(onBellCallListSubscription());
     }
 
     private Subscription onBellCallListSubscription() {
-        return Observable.just(null)
+        return RxBus.getCacheInstance().toObservable(RobotoGetDataRsp.class)
                 .subscribeOn(Schedulers.io())
-                .delay(RandomUtils.getRandom(3) * 1000L + 100, TimeUnit.MICROSECONDS)
-                .map(new Func1<Object, ArrayList<BellCallRecordBean>>() {
-                    @Override
-                    public ArrayList<BellCallRecordBean> call(Object o) {
-                        return testList();
-                    }
-                })
+                .filter(rsp -> mSeqList.remove(rsp.seq))
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<ArrayList<BellCallRecordBean>>() {
-                    @Override
-                    public void call(ArrayList<BellCallRecordBean> bellInfoBeen) {
-                        if (getView() != null) {
-                            getView().onRecordsListRsp(bellInfoBeen);
+                .map(response -> {
+                    ArrayList<JFGDPMsg> msgs = response.map.get(DpMsgMap.ID_401_BELL_CALL_STATE);
+                    ArrayList<BellCallRecordBean> result = new ArrayList<>(32);
+                    BellCallRecordBean callRecord;
+                    DpMsgDefine.BellCallState bell;
+                    for (JFGDPMsg msg : msgs) {
+                        try {
+                            bell = DpUtils.unpackData(msg.packValue, DpMsgDefine.BellCallState.class);
+                            callRecord = new BellCallRecordBean();
+                            callRecord.answerState = bell.isOK;
+                            callRecord.timeInLong = bell.time * 1000L;
+                            callRecord.timeStr = TimeUtils.getHH_MM(bell.time * 1000L);
+                            callRecord.date = TimeUtils.getMM_DD(bell.time * 1000L);
+                            callRecord.type = bell.type;
+                            callRecord.version = msg.version;
+                            result.add(callRecord);
+                        } catch (IOException e) {
+                            e.printStackTrace();
                         }
                     }
-                }, new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                        AppLogger.e("what the err: " + throwable.getLocalizedMessage());
-                    }
+                    return result;
+                })
+                .subscribe(results -> {
+                    mView.onRecordsListRsp(results);
                 });
     }
 
@@ -154,8 +170,17 @@ public class DBellHomePresenterImpl extends AbstractPresenter<DoorBellHomeContra
     }
 
     @Override
-    public void fetchBellRecordsList() {
-        onBellCallListSubscription();
+    public void fetchBellRecordsList(boolean asc, long time) {
+        Log.e(TAG, "fetchBellRecordsList: ");
+        try {
+            JFGDPMsg request = new JFGDPMsg(DpMsgMap.ID_401_BELL_CALL_STATE, time);
+            ArrayList<JFGDPMsg> params = new ArrayList<>();
+            params.add(request);
+            long seq = JfgCmdInsurance.getCmd().robotGetData(mBellInfo.deviceBase.uuid, params, 20, asc, 0);
+            mSeqList.add(seq);
+        } catch (JfgException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -173,6 +198,17 @@ public class DBellHomePresenterImpl extends AbstractPresenter<DoorBellHomeContra
         return mBellInfo;
     }
 
+    @Override
+    public void deleteBellCallRecord(List<BellCallRecordBean> list) {
+        ArrayList<JFGDPMsg> params = new ArrayList<>(32);
+        JFGDPMsg msg;
+        for (BellCallRecordBean bean : list) {
+            msg = new JFGDPMsg(DpMsgMap.ID_401_BELL_CALL_STATE, bean.version);
+            params.add(msg);
+        }
+        JfgCmdInsurance.getCmd().robotDelData(mBellInfo.deviceBase.uuid, params, 0);
+    }
+
     private void wrapBellInfo(DeviceBean base) {
         mBellInfo = new BeanBellInfo();
         mBellInfo.deviceBase = new BaseBean();
@@ -181,7 +217,7 @@ public class DBellHomePresenterImpl extends AbstractPresenter<DoorBellHomeContra
         mBellInfo.deviceBase.pid = base.pid;
         mBellInfo.deviceBase.shareAccount = base.shareAccount;
         mBellInfo.deviceBase.sn = base.sn;
-        mBellInfo.convert(mBellInfo.deviceBase,base.dataList);
+        mBellInfo.convert(mBellInfo.deviceBase, base.dataList);
     }
 
     private static final String[] pics = {

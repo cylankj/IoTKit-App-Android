@@ -67,6 +67,11 @@ public class TimeUtils {
                 .format(new Date(time));
     }
 
+    public static String getMM_DD(long time) {
+        return new SimpleDateFormat("MM月dd日", Locale.getDefault())
+                .format(new Date(time));
+    }
+
     public static String getHH_MM(long time) {
         return getSimpleDateFormatHHMM.get().format(new Date(time));
     }

@@ -9,6 +9,9 @@ public class BellCallRecordBean implements Comparable<BellCallRecordBean> {
     public String date, timeStr;
     public long timeInLong;
     public int answerState;
+    public int type;
+
+    public long version;
 
     /**
      * 1：选中  0：默认

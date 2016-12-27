@@ -521,7 +521,7 @@ public class DpMsgDefine {
     public static final class BellCallState extends BaseDataPoint implements Parcelable {
 
         @Index(0)
-        public int state;
+        public int isOK;
 
         @Index(1)
         public int time;
@@ -542,14 +542,14 @@ public class DpMsgDefine {
 
         @Override
         public void writeToParcel(Parcel dest, int flags) {
-            dest.writeInt(this.state);
+            dest.writeInt(this.isOK);
             dest.writeInt(this.time);
             dest.writeInt(this.duration);
             dest.writeInt(this.type);
         }
 
         protected BellCallState(Parcel in) {
-            this.state = in.readInt();
+            this.isOK = in.readInt();
             this.time = in.readInt();
             this.duration = in.readInt();
             this.type = in.readInt();
@@ -570,7 +570,7 @@ public class DpMsgDefine {
         @Override
         public String toString() {
             return "BellCallState{" +
-                    "state=" + state +
+                    "state=" + isOK +
                     ", time=" + time +
                     ", duration=" + duration +
                     ", type=" + type +

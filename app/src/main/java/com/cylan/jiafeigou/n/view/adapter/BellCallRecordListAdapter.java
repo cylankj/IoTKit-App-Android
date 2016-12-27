@@ -13,6 +13,7 @@ import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.superadapter.SuperAdapter;
 import com.cylan.superadapter.internal.SuperViewHolder;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -28,6 +29,8 @@ public class BellCallRecordListAdapter extends SuperAdapter<BellCallRecordBean> 
 
     private int itemWidth;
     private int itemHeight;
+
+    private List<BellCallRecordBean> mRemovedList = new ArrayList<>(32);
 
     public BellCallRecordListAdapter(Context context, List<BellCallRecordBean> items,
                                      final int layoutId, LoadImageListener loadImageListener) {
@@ -104,11 +107,14 @@ public class BellCallRecordListAdapter extends SuperAdapter<BellCallRecordBean> 
 
     public void remove() {
         synchronized (object) {
+            mRemovedList.clear();
             for (int i = getCount() - 1; i >= 0; i--) {
                 BellCallRecordBean bean = getItem(i);
                 if (!bean.selected)
                     continue;
+                mRemovedList.add(bean);
                 remove(i);
+
             }
         }
     }
@@ -164,6 +170,10 @@ public class BellCallRecordListAdapter extends SuperAdapter<BellCallRecordBean> 
 
     public void setSimpleClickListener(SimpleClickListener simpleClickListener) {
         this.simpleClickListener = simpleClickListener;
+    }
+
+    public List<BellCallRecordBean> getSelectedList() {
+        return mRemovedList;
     }
 
     public interface SimpleLongClickListener extends View.OnLongClickListener {
