@@ -22,8 +22,11 @@ import com.cylan.superadapter.internal.SuperViewHolder;
 import com.cylan.utils.DensityUtils;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -139,8 +142,10 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
         }
 //        }
         holder.setText(R.id.tv_cam_message_item_date, getFinalContent(item));
+        Log.d("simpleDateFormat", "simpleDateFormat: " + simpleDateFormat.format(new Date(item.time)));
     }
 
+    private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMdd-HH:mm:ss", Locale.getDefault());
     private View.OnClickListener onClickListener;
 
     public void setOnclickListener(View.OnClickListener onclickListener) {

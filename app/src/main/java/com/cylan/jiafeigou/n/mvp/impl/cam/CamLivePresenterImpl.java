@@ -49,7 +49,6 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
-import rx.subscriptions.CompositeSubscription;
 
 import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_IDLE;
 import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_PLAYING;
@@ -62,7 +61,6 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
     private static final String TAG = "CamLivePresenterImpl";
     private DeviceBean bean;
     private BeanCamInfo beanCamInfo;
-    private CompositeSubscription compositeSubscription;
     private boolean isRtcpSignal;
     private int playType = CamLiveContract.TYPE_LIVE;
     private boolean speakerFlag, micFlag;
@@ -425,16 +423,15 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
     }
 
     @Override
-    public void start() {
-        unSubscribe(compositeSubscription);
-        compositeSubscription = new CompositeSubscription();
-        compositeSubscription.add(rtcpNotifySub());
-        compositeSubscription.add(resolutionNotifySub());
-        compositeSubscription.add(videoDisconnectSub());
-        compositeSubscription.add(robotDataSync());
-        compositeSubscription.add(fetchCamInfo());
-        compositeSubscription.add(historyDataListSub());
+    protected Subscription[] register() {
         getView().onBeanInfoUpdate(getCamInfo());
+        return new Subscription[]{
+                rtcpNotifySub(),
+                resolutionNotifySub(),
+                videoDisconnectSub(),
+                robotDataSync(),
+                fetchCamInfo(),
+                historyDataListSub()};
     }
 
     /**
@@ -485,12 +482,5 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                 })
                 .retry(new RxHelper.RxException<>("robotDataSync"))
                 .subscribe();
-    }
-
-    @Override
-    public void stop() {
-        frameRateList.clear();
-        unSubscribe(compositeSubscription);
-        compositeSubscription = null;
     }
 }

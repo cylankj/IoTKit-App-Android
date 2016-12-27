@@ -25,7 +25,6 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
-import rx.subscriptions.CompositeSubscription;
 
 /**
  * Created by cylan-hunt on 16-7-13.
@@ -35,7 +34,6 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
 
     private String uuid;
     private long querySeq;
-    private CompositeSubscription compositeSubscription;
 
     public CamMessageListPresenterImpl(CamMessageListContract.View view, String uuid) {
         super(view);
@@ -44,11 +42,8 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
     }
 
     @Override
-    public void start() {
-        unSubscribe(compositeSubscription);
-        compositeSubscription = new CompositeSubscription();
-        compositeSubscription.add(messageListSub());
-        compositeSubscription.add(sdcardStatusSub());
+    protected Subscription[] register() {
+        return new Subscription[]{messageListSub(), sdcardStatusSub()};
     }
 
     /**
@@ -79,10 +74,6 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
                 });
     }
 
-    @Override
-    public void stop() {
-        unSubscribe(compositeSubscription);
-    }
 
     private Subscription messageListSub() {
         return RxBus.getCacheInstance().toObservable(Long.class)
