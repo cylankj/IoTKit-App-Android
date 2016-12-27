@@ -24,6 +24,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendDetailContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineFriendDetailPresenterImp;
 import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
@@ -235,7 +236,6 @@ public class MineFriendDetailFragment extends Fragment implements MineFriendDeta
                     return;
                 }
                 presenter.sendDeleteFriendReq(bean.account);
-                handlerDelCallBack();
                 popupWindow.dismiss();
             }
         });
@@ -258,7 +258,11 @@ public class MineFriendDetailFragment extends Fragment implements MineFriendDeta
     }
 
     @Override
-    public void handlerDelCallBack() {
+    public void handlerDelCallBack(int code) {
+        if (code != JError.ErrorOK){
+            ToastUtil.showToast(getString(R.string.Tips_DeleteFail));
+            return;
+        }
         if (lisenter != null) {
             Bundle arguments = getArguments();
             int position = arguments.getInt("position");

@@ -82,15 +82,13 @@ public class ForgetPwdPresenterImpl extends AbstractPresenter<ForgetPwdContract.
                 });
     }
 
-
-
-
     @Override
     public void start() {
         compositeSubscription = new CompositeSubscription();
         compositeSubscription.add(getForgetPwdByMailSub());
         compositeSubscription.add(getSmsCodeResultSub());
         compositeSubscription.add(checkSmsCodeBack());
+        compositeSubscription.add(resetPwdBack());
     }
 
     private Subscription getForgetPwdByMailSub() {
@@ -165,6 +163,24 @@ public class ForgetPwdPresenterImpl extends AbstractPresenter<ForgetPwdContract.
                     AppLogger.e("resetPassword"+throwable.getLocalizedMessage());
                 }
             });
+    }
+
+    /**
+     * 重置密码的回调
+     * @return
+     */
+    @Override
+    public Subscription resetPwdBack() {
+        return RxBus.getCacheInstance().toObservable(RxEvent.ResetPwdBack.class)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<RxEvent.ResetPwdBack>() {
+                    @Override
+                    public void call(RxEvent.ResetPwdBack resetPwdBack) {
+                        if (resetPwdBack != null && resetPwdBack instanceof RxEvent.ResetPwdBack){
+                            getView().resetPwdResult(resetPwdBack.jfgResult.code);
+                        }
+                    }
+                });
     }
 
     @Override

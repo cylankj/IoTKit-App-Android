@@ -25,6 +25,12 @@ public interface ForgetPwdContract {
          * 校验短信验证码结果
          */
         void checkSmsCodeResult(int code);
+
+        /**
+         * 重置密码的结果
+         * @param code
+         */
+        void resetPwdResult(int code);
     }
 
     interface Presenter extends BasePresenter {
@@ -54,6 +60,12 @@ public interface ForgetPwdContract {
          *重置密码
          */
         void resetPassword(String newPassword);
+
+        /**
+         * 重置密码的回调
+         * @return
+         */
+        Subscription resetPwdBack();
     }
 }
 

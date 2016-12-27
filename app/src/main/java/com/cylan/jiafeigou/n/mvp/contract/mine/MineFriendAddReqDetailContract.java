@@ -47,6 +47,8 @@ public interface MineFriendAddReqDetailContract {
          * 是否存在该账号的结果
          */
         void isHasAccountResult(RxEvent.GetAddReqList getAddReqList);
+
+
     }
 
     interface Presenter extends BasePresenter {
@@ -81,6 +83,18 @@ public interface MineFriendAddReqDetailContract {
          * 执行请求数据
          */
         Subscription excuteGetAddReqlistData();
+
+        /**
+         * 添加好友的回调
+         * @return
+         */
+        Subscription sendAddFriendReqBack();
+
+        /**
+         * 同意添加好友的回调
+         * @return
+         */
+        Subscription consentAddFriendBack();
     }
 
 }

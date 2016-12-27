@@ -98,8 +98,6 @@ public class MineAddFromContactFragment extends Fragment implements MineAddFromC
             ToastUtil.showToast("不能添加自己为好友");
         }else {
             presenter.sendRequest(contactItem, getSendMesg());
-            ToastUtil.showToast(getString(R.string.Tap3_FriendsAdd_Contacts_InvitedTips));
-            getFragmentManager().popBackStack();
         }
     }
 
@@ -122,6 +120,20 @@ public class MineAddFromContactFragment extends Fragment implements MineAddFromC
         if (state == -1){
             hideSendReqHint();
             ToastUtil.showNegativeToast(getString(R.string.NO_NETWORK_1));
+        }
+    }
+
+    /**
+     * 发送添加请求的结果
+     * @param code
+     */
+    @Override
+    public void sendReqBack(int code) {
+        if (code == JError.ErrorOK){
+            ToastUtil.showToast(getString(R.string.Tap3_FriendsAdd_Contacts_InvitedTips));
+            getFragmentManager().popBackStack();
+        }else {
+            ToastUtil.showToast("请求发送失败");
         }
     }
 

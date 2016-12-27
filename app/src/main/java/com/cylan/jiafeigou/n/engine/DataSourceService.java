@@ -256,6 +256,9 @@ public class DataSourceService extends Service implements AppCallBack {
             case JResultEvent.JFG_RESULT_SETPWD_WITH_BINDACCOUNT:
                 RxBus.getCacheInstance().post(new RxEvent.OpenLogInSetPwdBack(jfgResult));
                 break;
+            case JResultEvent.JFG_RESULT_SEND_FEEDBACK:
+                RxBus.getCacheInstance().post(new RxEvent.SendFeekBack(jfgResult));
+                break;
         }
         if (login) {
             AfterLoginService.startGetAccountAction(getApplicationContext());

@@ -546,12 +546,12 @@ public class RxEvent {
     }
 
     /**
-     *设置亲友备注的返回
+     *同意添加亲友的返回
      */
-    public static final class SetFriendMarkNameBack{
+    public static final class SetFriendAliasBack{
         public JFGResult jfgResult;
 
-        public SetFriendMarkNameBack(JFGResult jfgResult) {
+        public SetFriendAliasBack(JFGResult jfgResult) {
             this.jfgResult = jfgResult;
         }
     }
@@ -566,7 +566,6 @@ public class RxEvent {
             this.jfgResult = jfgResult;
         }
     }
-
 
     /**
      *三方绑定手机设置密码时的返回

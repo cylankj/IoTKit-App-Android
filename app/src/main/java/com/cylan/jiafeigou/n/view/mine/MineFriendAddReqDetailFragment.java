@@ -22,6 +22,7 @@ import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.cylan.entity.jniCall.JFGFriendRequest;
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendAddReqDetailContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineFriendAddReqDetailPresenterImp;
 import com.cylan.jiafeigou.n.mvp.model.MineAddReqBean;
@@ -190,7 +191,6 @@ public class MineFriendAddReqDetailFragment extends Fragment implements MineFrie
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
                 presenter.sendAddReq(addRequestItems);
-                showSendAddReqResult(true);
             }
         });
         builder.setNegativeButton(getString(R.string.CANCEL), new DialogInterface.OnClickListener() {
@@ -205,18 +205,19 @@ public class MineFriendAddReqDetailFragment extends Fragment implements MineFrie
     public void showSendAddReqResult(boolean flag) {
         if (flag) {
             ToastUtil.showPositiveToast(getString(R.string.Tap3_FriendsAdd_Contacts_InvitedTips));
+            getFragmentManager().popBackStack();
         } else {
             ToastUtil.showNegativeToast("请求发送失败");
         }
-        getFragmentManager().popBackStack();
     }
 
     @Override
     public void showAddedReult(boolean flag) {
         if (flag) {
             ToastUtil.showPositiveToast(getString(R.string.Tap3_FriendsAdd_Success));
+            getFragmentManager().popBackStack();
         } else {
-            ToastUtil.showNegativeToast("添加失败");
+            ToastUtil.showNegativeToast(getString(R.string.ADD_FAILED));
         }
     }
 
@@ -250,7 +251,6 @@ public class MineFriendAddReqDetailFragment extends Fragment implements MineFrie
                 addReqBean.account = bean.account;
                 addReqBean.time = bean.time;
                 presenter.checkAddReqOutTime(addReqBean);
-                getFragmentManager().popBackStack();
                 return;
             } else {
                 //未向我发送过请求
