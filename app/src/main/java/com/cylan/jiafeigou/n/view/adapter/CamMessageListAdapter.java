@@ -101,6 +101,13 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
     }
 
     /**
+     * 来自一个全局的通知消息
+     */
+    public void notifySdcardStatus() {
+
+    }
+
+    /**
      * sd卡状态消息
      *
      * @param holder
@@ -113,24 +120,24 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
 
     private void handlePicsLayout(SuperViewHolder holder,
                                   CamMessageBean item) {
-        if (!isEditMode()) {
-            final int count = item.urlList.size();
-            //根据图片总数,设置view的Gone属性
-            for (int i = 2; i >= 0; i--) {
-                holder.setVisibility(R.id.imgV_cam_message_pic_0 + i,
-                        count - 1 >= i ? View.VISIBLE : View.GONE);
-            }
-            for (int i = 0; i < item.urlList.size(); i++) {
-                Glide.with(getContext())
-                        .load(item.urlList.get(i))
-                        .placeholder(R.drawable.wonderful_pic_place_holder)
-                        .override(pic_container_width / count, pic_container_height)
-                        .diskCacheStrategy(DiskCacheStrategy.ALL)
-                        .centerCrop()
-                        .listener(loadListener)
-                        .into((ImageView) holder.getView(R.id.imgV_cam_message_pic_0 + i));
-            }
+//        if (!isEditMode()) {
+        final int count = item.urlList.size();
+        //根据图片总数,设置view的Gone属性
+        for (int i = 2; i >= 0; i--) {
+            holder.setVisibility(R.id.imgV_cam_message_pic_0 + i,
+                    count - 1 >= i ? View.VISIBLE : View.GONE);
         }
+        for (int i = 0; i < item.urlList.size(); i++) {
+            Glide.with(getContext())
+                    .load(item.urlList.get(i))
+                    .placeholder(R.drawable.wonderful_pic_place_holder)
+                    .override(pic_container_width / count, pic_container_height)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .centerCrop()
+                    .listener(loadListener)
+                    .into((ImageView) holder.getView(R.id.imgV_cam_message_pic_0 + i));
+        }
+//        }
         holder.setText(R.id.tv_cam_message_item_date, getFinalContent(item));
     }
 

@@ -52,6 +52,7 @@ public class DataPointManager implements IParser, IDataPoint {
     static {
         mapObject.put(505L, 505);
         mapObject.put(204L, 204);
+        mapObject.put(222L, 222);
     }
 
     public static DataPointManager getInstance() {

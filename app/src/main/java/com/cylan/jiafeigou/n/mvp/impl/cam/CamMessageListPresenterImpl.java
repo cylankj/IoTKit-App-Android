@@ -1,5 +1,7 @@
 package com.cylan.jiafeigou.n.mvp.impl.cam;
 
+import android.text.TextUtils;
+
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.cache.pool.GlobalDataPool;
@@ -10,6 +12,7 @@ import com.cylan.jiafeigou.n.mvp.contract.cam.CamMessageListContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.n.mvp.model.CamMessageBean;
 import com.cylan.jiafeigou.rx.RxBus;
+import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.rx.RxHelper;
 import com.cylan.jiafeigou.support.log.AppLogger;
 
@@ -45,6 +48,35 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
         unSubscribe(compositeSubscription);
         compositeSubscription = new CompositeSubscription();
         compositeSubscription.add(messageListSub());
+        compositeSubscription.add(sdcardStatusSub());
+    }
+
+    /**
+     * sd卡状态更新
+     *
+     * @return
+     */
+    private Subscription sdcardStatusSub() {
+        return RxBus.getCacheInstance().toObservable(RxEvent.JFGRobotSyncData.class)
+                .filter((RxEvent.JFGRobotSyncData data) -> (getView() != null && TextUtils.equals(uuid, data.identity)))
+                .subscribeOn(Schedulers.io())
+                .map(new Func1<RxEvent.JFGRobotSyncData, Boolean>() {
+                    @Override
+                    public Boolean call(RxEvent.JFGRobotSyncData jfgRobotSyncData) {
+                        ArrayList<JFGDPMsg> list = jfgRobotSyncData.dataList;
+                        for (int i = 0; i < list.size(); i++) {
+                            JFGDPMsg dp = list.get(i);
+                            if (dp.id == DpMsgMap.ID_201_NET) {
+
+                            }
+                        }
+                        return null;
+                    }
+                })
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .subscribe((Boolean aBoolean) -> {
+                    getView().updateSdStatus(aBoolean);
+                });
     }
 
     @Override

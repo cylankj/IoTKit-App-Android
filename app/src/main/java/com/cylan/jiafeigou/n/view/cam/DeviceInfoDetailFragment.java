@@ -119,14 +119,14 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
             tvDeviceTimeZone.setText(p.deviceTimeZone != null
                     && !TextUtils.isEmpty(p.deviceTimeZone.timezone)
                     ? p.deviceTimeZone.timezone : "");
-            tvDeviceSdcardState.setText(getSdcardState(p.sdcardState, p.sdcardStorage));
+            tvDeviceSdcardState.setText(getSdcardState(p.sdcardStorage));
             tvDeviceAlias.setText(p.deviceBase.alias);
             tvDeviceCid.setText(p.deviceBase.uuid);
             tvDeviceMac.setText(p.mac);
             tvDeviceBatteryLevel.setText(p.battery + "");
             tvDeviceSoftVersion.setText(p.deviceVersion);
             tvDeviceSystemVersion.setText(p.deviceSysVersion);
-            if (p.sdcardStorage == null || !p.sdcardState) {
+            if (p.sdcardStorage == null || !p.sdcardStorage.hasSdcard) {
                 tvDeviceStorage.setText(getString(R.string.SD_NO));
             } else {
                 if (p.sdcardStorage == null) {
@@ -149,15 +149,15 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
 
     }
 
-    private String getSdcardState(boolean sd, DpMsgDefine.SdStatus sdStatus) {
+    private String getSdcardState(DpMsgDefine.SdStatus sdStatus) {
         //sd卡状态
         if (sdStatus != null) {
-            if (sd && sdStatus.err != 0) {
+            if (!sdStatus.hasSdcard && sdStatus.err != 0) {
                 //sd初始化失败时候显示
                 return getString(R.string.NO_SDCARD);
             }
         }
-        if (!sd) {
+        if (sdStatus != null && !sdStatus.hasSdcard) {
             return getString(R.string.SD_ERR_1);
         }
         return sdStatus != null ? getString(R.string.SD_NORMAL) : "";

@@ -178,6 +178,52 @@ public class DpMsgDefine {
         }
     }
 
+    //系统消息使用
+    @Message
+    public static final class SdcardSummary extends BaseDataPoint implements Parcelable {
+        @Index(0)
+        public boolean hasSdcard;
+        @Index(1)
+        public int errCode;
+
+
+        protected SdcardSummary(Parcel in) {
+            hasSdcard = in.readByte() != 0;
+            errCode = in.readInt();
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeByte((byte) (hasSdcard ? 1 : 0));
+            dest.writeInt(errCode);
+        }
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        public static final Creator<SdcardSummary> CREATOR = new Creator<SdcardSummary>() {
+            @Override
+            public SdcardSummary createFromParcel(Parcel in) {
+                return new SdcardSummary(in);
+            }
+
+            @Override
+            public SdcardSummary[] newArray(int size) {
+                return new SdcardSummary[size];
+            }
+        };
+
+        @Override
+        public String toString() {
+            return "SdcardSummary{" +
+                    "hasSdcard=" + hasSdcard +
+                    ", errCode=" + errCode +
+                    '}';
+        }
+    }
+
     @Message
     public static final class SdStatus extends BaseDataPoint implements Parcelable {
         @Index(0)
@@ -186,6 +232,21 @@ public class DpMsgDefine {
         public long used;
         @Index(2)
         public int err;
+        @Index(3)
+        public boolean hasSdcard;
+
+        public SdStatus() {
+        }
+
+        @Override
+        public String toString() {
+            return "SdStatus{" +
+                    "total=" + total +
+                    ", used=" + used +
+                    ", err=" + err +
+                    ", hasSdcard=" + hasSdcard +
+                    '}';
+        }
 
         @Override
         public int describeContents() {
@@ -197,15 +258,14 @@ public class DpMsgDefine {
             dest.writeLong(this.total);
             dest.writeLong(this.used);
             dest.writeInt(this.err);
-        }
-
-        public SdStatus() {
+            dest.writeByte(this.hasSdcard ? (byte) 1 : (byte) 0);
         }
 
         protected SdStatus(Parcel in) {
             this.total = in.readLong();
             this.used = in.readLong();
             this.err = in.readInt();
+            this.hasSdcard = in.readByte() != 0;
         }
 
         public static final Creator<SdStatus> CREATOR = new Creator<SdStatus>() {
@@ -219,15 +279,6 @@ public class DpMsgDefine {
                 return new SdStatus[size];
             }
         };
-
-        @Override
-        public String toString() {
-            return "SdStatus{" +
-                    "total=" + total +
-                    ", used=" + used +
-                    ", err=" + err +
-                    '}';
-        }
     }
 
     @Message

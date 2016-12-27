@@ -168,6 +168,11 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
     }
 
     @Override
+    public void updateSdStatus(boolean status) {
+
+    }
+
+    @Override
     public void setPresenter(CamMessageListContract.Presenter presenter) {
         this.basePresenter = presenter;
     }

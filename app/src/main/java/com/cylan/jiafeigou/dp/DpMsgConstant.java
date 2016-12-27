@@ -45,13 +45,17 @@ public class DpMsgConstant {
     @DpAnnotation(msgId = 202, clazz = String.class)
     public static final String MAC = null;
 
-    @ForDevice(device = Device.CAMERA, targetBeanName = CAM_BEAN_NAME)
-    @DpAnnotation(msgId = 203, clazz = boolean.class)
-    public static final String SDCARD_STATE = null;
+//    @ForDevice(device = Device.CAMERA, targetBeanName = CAM_BEAN_NAME)
+//    @DpAnnotation(msgId = 203, clazz = boolean.class)
+//    public static final String SDCARD_STATE = null;
 
     @ForDevice(device = Device.CAMERA, targetBeanName = CAM_BEAN_NAME)
     @DpAnnotation(msgId = 204, clazz = DpMsgDefine.SdStatus.class)
     public static final String SDCARD_STORAGE = null;
+
+    @ForDevice(device = Device.CAMERA, targetBeanName = CAM_BEAN_NAME)
+    @DpAnnotation(msgId = 222, clazz = DpMsgDefine.SdcardSummary.class)
+    public static final String SDCARD_SUMMARY = null;
 
     @ForDevice(device = {Device.CAMERA, Device.BELL, Device.CLOUD},
             targetBeanName = {CAM_BEAN_NAME, BELL_BEAN_NAME, CLOUD_BEAN_NAME})

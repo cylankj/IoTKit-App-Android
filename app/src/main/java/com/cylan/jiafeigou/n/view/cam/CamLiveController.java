@@ -429,7 +429,7 @@ public class CamLiveController implements
             AppLogger.d("device is offline");
             return;
         }
-        if (info != null && !info.sdcardState) {
+        if (info != null && info.sdcardStorage != null && !info.sdcardStorage.hasSdcard) {
             //没有sd卡
             ToastUtil.showToast(context.getString(R.string.Tap1_Camera_NoSDCardTips));
             AppLogger.d("no sdcard");
