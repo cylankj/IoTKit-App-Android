@@ -16,10 +16,13 @@ public interface CamMessageListContract {
 
         void onMessageListRsp(ArrayList<CamMessageBean> beanArrayList);
 
+        ArrayList<CamMessageBean> getList();
     }
 
     interface Presenter extends BasePresenter {
         void fetchMessageList();
+
+        void removeItem(CamMessageBean bean);
     }
 }
 

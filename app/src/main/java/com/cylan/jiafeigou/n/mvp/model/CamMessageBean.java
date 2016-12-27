@@ -1,5 +1,7 @@
 package com.cylan.jiafeigou.n.mvp.model;
 
+import com.cylan.jiafeigou.dp.DpMsgDefine;
+
 import java.util.ArrayList;
 
 /**
@@ -7,18 +9,46 @@ import java.util.ArrayList;
  */
 public class CamMessageBean {
 
-    public int id = 0;
-
+    public long id = 0;
     /**
      * 直接类型，不需要转型。
      */
-    public ArrayList<String> urlList;
-
+    public ArrayList<String> urlList;//最终的url
+    public DpMsgDefine.SdStatus content;//204消息
     public long time;
-
-    public String content;
+    public long version;
 
     public int viewType = 0;
 
+    @Override
+    public String toString() {
+        return "CamMessageBean{" +
+                "id=" + id +
+                ", urlList=" + urlList +
+                ", time=" + time +
+                ", content='" + content + '\'' +
+                ", viewType=" + viewType +
+                '}';
+    }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        CamMessageBean that = (CamMessageBean) o;
+
+        if (id != that.id) return false;
+        if (time != that.time) return false;
+        return version == that.version;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = (int) (id ^ (id >>> 32));
+        result = 31 * result + (int) (time ^ (time >>> 32));
+        result = 31 * result + (int) (version ^ (version >>> 32));
+        return result;
+    }
 }

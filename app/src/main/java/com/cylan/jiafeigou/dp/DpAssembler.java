@@ -10,6 +10,7 @@ import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.entity.jniCall.RobotoGetDataRsp;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.cache.JCache;
+import com.cylan.jiafeigou.cache.pool.GlobalDataPool;
 import com.cylan.jiafeigou.misc.Converter;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
@@ -277,6 +278,7 @@ public class DpAssembler implements IParser {
                     public Object call(List<JFGDevice> list) {
                         HashMap<String, Long> map = new HashMap<>();
                         for (int i = 0; i < list.size(); i++) {
+                            GlobalDataPool.getInstance().cacheDevice(list.get(i));
                             assembleBase(list.get(i));
                             final int pid = list.get(i).pid;
                             BaseParam baseParam = merger(pid);
@@ -348,11 +350,11 @@ public class DpAssembler implements IParser {
                             JFGDPMsg dp = entry.getValue() != null
                                     && entry.getValue().size() > 0 ? entry.getValue().get(0) : null;
                             final int keyId = entry.getKey();
-                            if (keyId == DpMsgMap.ID_505_CAMERA_ALARM_MSG || dp == null) {
-                                //报警消息
-                                assembleCamAlarmMsg(identity, entry.getValue());
-                                continue;
-                            }
+//                            if (keyId == DpMsgMap.ID_505_CAMERA_ALARM_MSG || dp == null) {
+//                                //报警消息
+//                                assembleCamAlarmMsg(identity, entry.getValue());
+//                                continue;
+//                            }
                             assembleMiscMsg(identity, dp, keyId);
                         }
                         //这次请求是,设备更新
@@ -364,38 +366,6 @@ public class DpAssembler implements IParser {
                 //此retry能跳过当前一次的exception
                 .retry(new RxHelper.RxException<>(TAG + "deviceDpSub"))
                 .subscribe();
-    }
-
-    /**
-     * 摄像头的报警图片是批量返回的.
-     *
-     * @param uuid
-     * @param msgs
-     */
-    private void assembleCamAlarmMsg(String uuid, ArrayList<JFGDPMsg> msgs) {
-        RxEvent.JfgAlarmMsg msg = new RxEvent.JfgAlarmMsg();
-        msg.uuid = uuid;
-        if (msg.jfgdpMsgs == null)
-            msg.jfgdpMsgs = new ArrayList<>();
-        if (msgs == null) {
-            RxBus.getCacheInstance().post(msg);
-            return;
-        }
-        for (JFGDPMsg jfgdpMsg : msgs) {
-            try {
-                DpMsgDefine.AlarmMsg o = DpUtils.unpackData(jfgdpMsg.packValue,
-                        DpMsgDefine.AlarmMsg.class);
-                DpMsgDefine.DpMsg dpMsg = new DpMsgDefine.DpMsg();
-                dpMsg.msgId = (int) jfgdpMsg.id;
-                dpMsg.version = jfgdpMsg.version;
-                dpMsg.o = o;
-                msg.jfgdpMsgs.add(dpMsg);
-            } catch (Exception e) {
-                AppLogger.e("assembleCamAlarmMsg: " + e.getLocalizedMessage());
-            }
-        }
-        flatMsg.cache(JCache.getAccountCache().getAccount(), uuid, msg.jfgdpMsgs);
-        RxBus.getCacheInstance().post(msg);
     }
 
     /**

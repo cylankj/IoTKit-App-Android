@@ -424,7 +424,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
             getView().setKeepScreenOn(false);
         showFloatFlowView(false, null);
         camLiveController.setLiveTime(0);
-        switch (errId) {
+        switch (errId) {//这些errCode 应当写在一个map中.Map<Integer,String>
             case JFGRules.PlayErr.ERR_NERWORK:
                 ToastUtil.showNegativeToast(getString(R.string.OFFLINE_ERR_1));
                 break;
@@ -438,6 +438,10 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
             case JError.ErrorVideoPeerNotExist:
                 ToastUtil.showNegativeToast(getString(R.string.OFFLINE_ERR));
                 camLiveController.setLoadingState(ILiveControl.STATE_LOADING_FAILED, getString(R.string.OFFLINE_ERR));
+                break;
+            case JError.ErrorVideoPeerInConnect:
+                //正在直播...
+                ToastUtil.showNegativeToast("直播中...");
                 break;
             default:
                 camLiveController.setLoadingState(ILiveControl.STATE_STOP, null);

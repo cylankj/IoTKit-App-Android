@@ -36,6 +36,17 @@ public class TimeUtils {
     };
 
     /**
+     * 摄像头消息顶部时间显示格式
+     */
+    private static final ThreadLocal<SimpleDateFormat> getDateFormatSuper = new ThreadLocal<SimpleDateFormat>() {
+
+        @Override
+        protected SimpleDateFormat initialValue() {
+            return new SimpleDateFormat("MM-dd", Locale.getDefault());
+        }
+    };
+
+    /**
      * 获取当天0点时间戳
      *
      * @return
@@ -119,5 +130,18 @@ public class TimeUtils {
         simpleDateFormat0.setTimeZone(TimeZone.getTimeZone("GMT"));
         simpleDateFormat1.setTimeZone(TimeZone.getTimeZone("GMT"));
         simpleDateFormat2.setTimeZone(TimeZone.getTimeZone("GMT"));
+    }
+
+    public static boolean isToday(long time) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(new Date(time));
+        Calendar calendar1 = Calendar.getInstance();
+        calendar.setTime(new Date(System.currentTimeMillis()));
+        return calendar.get(Calendar.YEAR) == calendar1.get(Calendar.YEAR) &&
+                calendar.get(Calendar.DAY_OF_YEAR) == calendar1.get(Calendar.DAY_OF_YEAR);
+    }
+
+    public static String getSuperString(long time) {
+        return getDateFormatSuper.get().format(new Date(time));
     }
 }

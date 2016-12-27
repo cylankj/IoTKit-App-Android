@@ -16,6 +16,7 @@ import com.cylan.jiafeigou.n.mvp.contract.cam.CamLiveContract;
 import com.cylan.jiafeigou.n.mvp.model.BeanCamInfo;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.AnimatorUtils;
+import com.cylan.jiafeigou.utils.Test;
 import com.cylan.jiafeigou.utils.TimeUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
@@ -235,18 +236,19 @@ public class CamLiveController implements
     public void tapVideoViewAction() {
         boolean show = false;
         if (iLiveActionViewRef != null && iLiveActionViewRef.get() != null) {
-            int state = iLiveActionViewRef.get().getState();
+//            int state = iLiveActionViewRef.get().getState();
             boolean land = context.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
             if (land) {//横屏不显示?
-                state = STATE_IDLE;
+//                state = STATE_IDLE;
                 //上下滑动,进场动画.
-                AnimatorUtils.slide(camLiveControlLayer.getLiveLandBottomBar(), true, null);
-                AnimatorUtils.slide(camLiveControlLayer.getfLayoutCamLiveLandTopBar(), false, null);
-                setLoadingState(state, null);
+                Test.getInstance().autoHide(camLiveControlLayer.getLiveLandBottomBar(), false, 3000);
+                Test.getInstance().autoHide(camLiveControlLayer.getfLayoutCamLiveLandTopBar(), true, 3000);
+                setLoadingState(STATE_IDLE, null);
             } else {
                 //某些限制条件,不需要显示
                 if (presenterRef.get().needShowHistoryWheelView()) {
-                    if (!camLiveControlLayer.isShown()) camLiveControlLayer.setVisibility(View.VISIBLE);
+                    if (!camLiveControlLayer.isShown())
+                        camLiveControlLayer.setVisibility(View.VISIBLE);
                     show = iLiveActionViewRef.get() instanceof View && ((View) iLiveActionViewRef.get()).isShown();
                     camLiveControlLayer.getLiveLandBottomBar().setVisibility(!show ? View.VISIBLE : View.INVISIBLE);
                 }
@@ -505,6 +507,7 @@ public class CamLiveController implements
                     }
                     break;
             }
+            AppLogger.i("state: " + state);
         }
     };
 

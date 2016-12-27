@@ -285,6 +285,7 @@ public class HomeWonderfulPresenterImpl extends AbstractPresenter<HomeWonderfulC
         return 1;
     }
 
+    @Deprecated
     public static final String[] pics = {
             "http://imgsrc.baidu.com/forum/w%3D580/sign=294db374d462853592e0d229a0ee76f2/e732c895d143ad4b630e8f4683025aafa40f0611.jpg",
             "http://imgsrc.baidu.com/forum/w%3D580/sign=941c6a9596dda144da096cba82b6d009/e889d43f8794a4c2e5d529ad0ff41bd5ac6e3947.jpg",

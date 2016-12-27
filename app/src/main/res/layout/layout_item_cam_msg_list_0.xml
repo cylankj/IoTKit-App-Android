@@ -1,54 +1,88 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:hunt="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/lLayout_cam_msg_container"
     android:layout_width="match_parent"
-    android:layout_height="85dp"
+    android:layout_height="wrap_content"
     android:background="@color/color_white"
     android:clickable="true"
     android:orientation="horizontal"
     android:paddingLeft="10dp"
     android:paddingRight="10dp">
 
-    <com.cylan.jiafeigou.widget.FateLineView
-        android:id="@+id/fl_item_time_line"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:paddingLeft="2dp"
-        android:paddingRight="2dp"
-        hunt:dashLineColor="@color/color_e8e8e8"
-        hunt:dashLineWidth="2dp"
-        hunt:innerCircleColor="@color/color_white"
-        hunt:innerCircleRadius="6dp"
-        hunt:outerCircleColor="@color/color_e8e8e8"
-        hunt:outerCircleRadius="10dp"
-        hunt:outerCircleStrokeWidth="4dp"
-        hunt:outerCircleY="10dp" />
-
     <FrameLayout
-        android:id="@+id/rLayout_cam_message"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent">
+
+        <com.cylan.jiafeigou.widget.FateLineView
+            android:id="@+id/fl_item_time_line"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_horizontal"
+            android:paddingLeft="2dp"
+            android:paddingRight="2dp"
+            hunt:dashLineColor="@color/color_e8e8e8"
+            hunt:dashLineWidth="2dp"
+            hunt:innerCircleColor="@color/color_white"
+            hunt:innerCircleRadius="6dp"
+            hunt:outerCircleColor="@color/color_e8e8e8"
+            hunt:outerCircleRadius="10dp"
+            hunt:outerCircleStrokeWidth="4dp"
+            hunt:outerCircleY="10dp" />
+
+        <RadioButton
+            android:id="@+id/rbtn_item_check"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center" />
+    </FrameLayout>
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginLeft="4dp"
-        android:layout_marginTop="5dp"
         android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/tv_cam_message_item_date"
-            android:layout_width="wrap_content"
-            android:layout_height="26dp"
-            android:gravity="center"
-            android:textColor="@color/color_666666"
-            android:textSize="13sp" />
 
-        <TextView
-            android:id="@+id/tv_cam_message_list_content"
+        <LinearLayout
+            android:id="@+id/rLayout_cam_message"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical" />
+            android:layout_height="match_parent"
+            android:layout_marginEnd="4dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="5dp"
+            android:orientation="vertical">
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_gravity="bottom"
-            android:background="@color/color_e8e8e8" />
-    </FrameLayout>
+            <TextView
+                android:id="@+id/tv_cam_message_item_date"
+                android:layout_width="wrap_content"
+                android:layout_height="26dp"
+                android:gravity="center"
+                android:text="fadfadfa"
+                android:textColor="@color/color_666666"
+                android:textSize="13sp" />
+
+            <TextView
+                android:id="@+id/tv_cam_message_list_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:text="fadfadfa" />
+
+            <TextView
+                android:id="@+id/tv_cam_message_item_delete"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+                android:gravity="center_vertical"
+                android:padding="10dp"
+                android:text="@string/DELETE"
+                android:textColor="@color/color_4b9fd5"
+                android:textSize="11sp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_gravity="bottom"
+                android:background="@color/color_e8e8e8" />
+        </LinearLayout>
+
+    </LinearLayout>
 </LinearLayout>

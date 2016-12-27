@@ -50,6 +50,38 @@ public class AnimatorUtils {
         void onFinish();
     }
 
+    public static void slideIn(View target, boolean down, boolean autoHide) {
+
+        int height = target.getHeight();
+        if (height == 0) height = 300;
+        final float start = target.isShown() ? 0.0f : (down ? height : -height);
+        final float end = target.isShown() ? (down ? height : -height) : 0.0f;
+        final boolean shouldGone = target.isShown();
+        if (autoHide && target.isShown()) {
+            ObjectAnimator autoShowAnim = ObjectAnimator.ofFloat(target, "translationY", down ? height : -height,
+                    0.0f);
+            autoShowAnim.setStartDelay(3000);
+            autoShowAnim.setInterpolator(new AccelerateInterpolator());
+        }
+        ObjectAnimator o = ObjectAnimator.ofFloat(target, "translationY", start, end);
+        o.setDuration(200);
+        o.setInterpolator(new AccelerateInterpolator());
+        o.addListener(new SimpleAnimationListener() {
+            @Override
+            public void onAnimationStart(Animator animator) {
+                if (!target.isShown())
+                    target.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animator) {
+                if (shouldGone)
+                    target.setVisibility(View.INVISIBLE);
+            }
+        });
+        o.start();
+    }
+
     public static void slide(View target, boolean down, OnFinish listener) {
 
         int height = target.getHeight();
