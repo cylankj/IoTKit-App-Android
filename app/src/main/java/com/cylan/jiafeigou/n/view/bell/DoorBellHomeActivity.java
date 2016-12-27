@@ -15,6 +15,7 @@ import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -111,7 +112,7 @@ public class DoorBellHomeActivity extends BaseFullScreenFragmentActivity
     protected void onResume() {
         super.onResume();
         if (bellCallRecordListAdapter.getList() == null || bellCallRecordListAdapter.getList().size() == 0) {
-            startLoadData();
+            startLoadData(false, 0);
         }
     }
 
@@ -154,7 +155,9 @@ public class DoorBellHomeActivity extends BaseFullScreenFragmentActivity
                     if (endlessLoading) {
                         if ((visibleItemCount + pastVisibleItems) >= totalItemCount) {
                             endlessLoading = false;
-                            startLoadData();
+                            List<BellCallRecordBean> list = bellCallRecordListAdapter.getList();
+                            BellCallRecordBean bean = list.get(list.size() - 1);
+                            startLoadData(false, bean.version);
                         }
                     }
                 }
@@ -162,10 +165,10 @@ public class DoorBellHomeActivity extends BaseFullScreenFragmentActivity
         });
     }
 
-    private void startLoadData() {
+    private void startLoadData(boolean asc, long version) {
         LoadingDialog.showLoading(getSupportFragmentManager(), "加载中...", true);
         if (presenter != null)
-            presenter.fetchBellRecordsList(false, 0);
+            presenter.fetchBellRecordsList(asc, version);
     }
 
     private void initToolbar() {
@@ -243,6 +246,10 @@ public class DoorBellHomeActivity extends BaseFullScreenFragmentActivity
 
     @Override
     public void onLoginState(boolean state) {
+        if (!state) {
+            LoadingDialog.dismissLoading(getSupportFragmentManager());
+            Toast.makeText(this, "还未登录", Toast.LENGTH_SHORT).show();
+        }
     }
 
 
@@ -264,6 +271,9 @@ public class DoorBellHomeActivity extends BaseFullScreenFragmentActivity
     public void onRecordsListRsp(ArrayList<BellCallRecordBean> beanArrayList) {
         bellCallRecordListAdapter.addAll(beanArrayList);
         LoadingDialog.dismissLoading(getSupportFragmentManager());
+        if (bellCallRecordListAdapter.getList().size() == 0) {//show empty view
+            Toast.makeText(this, "暂无数据", Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
