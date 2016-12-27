@@ -459,9 +459,9 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
             @Override
             public void onClick(View v) {
                 popupWindow.dismiss();
-                }
-        });
             }
+        });
+    }
 
     /**
      * 打开相册
@@ -589,21 +589,21 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode != getActivity().RESULT_CANCELED){
-        if (requestCode == Constants.REQUEST_CODE && data != null) {
-            gotoClipActivity(Uri.parse(data.getStringExtra(Constants.INTENT_EXTRA_IMAGES)));
-        } else if (requestCode == REQUEST_CROP_PHOTO && data != null) {
-            final Uri uri = data.getData();
-            if (uri == null) {
-                return;
-            }
-            String cropImagePath = getRealFilePathFromUri(getContext(), uri);
-            PreferencesUtils.putString("UserImageUrl", cropImagePath);
-        } else if (requestCode == OPEN_CAMERA) {
-            if (resultCode == getActivity().RESULT_OK) {
-                gotoClipActivity(outPutUri);
+            if (requestCode == Constants.REQUEST_CODE && data != null) {
+                gotoClipActivity(Uri.parse(data.getStringExtra(Constants.INTENT_EXTRA_IMAGES)));
+            } else if (requestCode == REQUEST_CROP_PHOTO && data != null) {
+                final Uri uri = data.getData();
+                if (uri == null) {
+                    return;
+                }
+                String cropImagePath = getRealFilePathFromUri(getContext(), uri);
+                PreferencesUtils.putString("UserImageUrl", cropImagePath);
+            } else if (requestCode == OPEN_CAMERA) {
+                if (resultCode == getActivity().RESULT_OK) {
+                    gotoClipActivity(outPutUri);
+                }
             }
         }
-    }
     }
 
     /**

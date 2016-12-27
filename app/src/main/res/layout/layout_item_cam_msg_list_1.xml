@@ -1,5 +1,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:hunt="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/lLayout_cam_msg_container"
     android:layout_width="match_parent"
     android:layout_height="225dp"
     android:background="@color/color_white"
@@ -8,20 +9,34 @@
     android:paddingLeft="10dp"
     android:paddingRight="10dp">
 
-    <com.cylan.jiafeigou.widget.FateLineView
-        android:id="@+id/fl_item_time_line"
+    <FrameLayout
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:paddingLeft="2dp"
-        android:paddingRight="2dp"
-        hunt:dashLineColor="@color/color_e8e8e8"
-        hunt:dashLineWidth="2dp"
-        hunt:innerCircleColor="@color/color_white"
-        hunt:innerCircleRadius="6dp"
-        hunt:outerCircleColor="@color/color_e8e8e8"
-        hunt:outerCircleRadius="10dp"
-        hunt:outerCircleStrokeWidth="4dp"
-        hunt:outerCircleY="10dp" />
+        android:layout_height="match_parent">
+
+        <com.cylan.jiafeigou.widget.FateLineView
+            android:id="@+id/fl_item_time_line"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_horizontal"
+            android:paddingLeft="2dp"
+            android:paddingRight="2dp"
+            hunt:dashLineColor="@color/color_e8e8e8"
+            hunt:dashLineWidth="2dp"
+            hunt:innerCircleColor="@color/color_white"
+            hunt:innerCircleRadius="6dp"
+            hunt:outerCircleColor="@color/color_e8e8e8"
+            hunt:outerCircleRadius="10dp"
+            hunt:outerCircleStrokeWidth="4dp"
+            hunt:outerCircleY="10dp" />
+
+        <RadioButton
+            android:id="@+id/rbtn_item_check"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:clickable="false" />
+    </FrameLayout>
+
 
     <RelativeLayout
         android:id="@+id/rLayout_cam_message"
@@ -55,7 +70,7 @@
                 android:layout_marginStart="2dp"
                 android:layout_weight="1"
                 android:scaleType="fitXY"
-                android:src="@mipmap/ic_launcher" />
+                android:src="@drawable/wonderful_pic_place_holder" />
 
             <ImageView
                 android:id="@+id/imgV_cam_message_pic_1"
@@ -65,7 +80,7 @@
                 android:layout_marginStart="2dp"
                 android:layout_weight="1"
                 android:scaleType="fitXY"
-                android:src="@mipmap/ic_launcher" />
+                android:src="@drawable/wonderful_pic_place_holder" />
 
             <ImageView
                 android:id="@+id/imgV_cam_message_pic_2"
@@ -75,7 +90,7 @@
                 android:layout_marginStart="2dp"
                 android:layout_weight="1"
                 android:scaleType="fitXY"
-                android:src="@mipmap/ic_launcher" />
+                android:src="@drawable/wonderful_pic_place_holder" />
         </LinearLayout>
 
         <FrameLayout

@@ -18,7 +18,7 @@ public class CamParam extends BaseParam {
     public ArrayList<JFGDPMsg> queryParameters(Map<Integer, Long> mapVersion) {
         DpParameters.Builder builder = new DpParameters.Builder();
         builder.addParam(DpMsgMap.NAME_2_ID_MAP.get(DpMsgMap.NET_201), getVersion(mapVersion, 201));
-        builder.addParam(DpMsgMap.NAME_2_ID_MAP.get(DpMsgMap.SDCARD_STATE_203), getVersion(mapVersion, 203));
+        builder.addParam(DpMsgMap.NAME_2_ID_MAP.get(DpMsgMap.SDCARD_SUMMARY_222), getVersion(mapVersion, 203));
         builder.addParam(DpMsgMap.NAME_2_ID_MAP.get(DpMsgMap.SDCARD_STORAGE_204), getVersion(mapVersion, 204));
         builder.addParam(DpMsgMap.NAME_2_ID_MAP.get(DpMsgMap.CHARGING_205), getVersion(mapVersion, 205));
         builder.addParam(DpMsgMap.NAME_2_ID_MAP.get(DpMsgMap.BATTERY_206), getVersion(mapVersion, 206));

@@ -26,22 +26,20 @@ import com.cylan.entity.jniCall.JFGMsgVideoRtcp;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
-import com.cylan.jiafeigou.misc.listener.LiveListener;
+import com.cylan.jiafeigou.misc.listener.ILiveStateListener;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamLiveContract;
 import com.cylan.jiafeigou.n.mvp.impl.cam.CamLivePresenterImpl;
 import com.cylan.jiafeigou.n.mvp.model.BeanCamInfo;
-import com.cylan.jiafeigou.n.view.misc.LiveBottomBarAnimDelegate;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.utils.TimeUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
-import com.cylan.jiafeigou.widget.dialog.BaseDialog;
-import com.cylan.jiafeigou.widget.dialog.DatePickerDialogFragment;
+import com.cylan.jiafeigou.widget.LiveTimeLayout;
+import com.cylan.jiafeigou.widget.flip.FlipLayout;
 import com.cylan.jiafeigou.widget.live.ILiveControl;
-import com.cylan.jiafeigou.widget.live.LivePlayControlView;
 import com.cylan.jiafeigou.widget.video.VideoViewFactory;
 import com.cylan.jiafeigou.widget.wheel.ex.IData;
 import com.cylan.utils.DensityUtils;
@@ -54,12 +52,6 @@ import java.util.Locale;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-
-import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_IDLE;
-import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_PLAYING;
-import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_PREPARE;
-import static com.cylan.jiafeigou.misc.JFGRules.PlayErr.ERR_STOP;
-import static com.cylan.jiafeigou.widget.live.ILiveControl.STATE_IDLE;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -94,17 +86,22 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
     @BindView(R.id.sw_cam_port_wheel)
     CamLiveControlLayer swCamLiveControlLayer;
 
-    /**
-     * 直播状态监听
-     */
-    private LiveListener liveListener;
+
+    @BindView(R.id.lLayout_protection)
+    FlipLayout portFlipLayout;
+    @BindView(R.id.live_time_layout)
+    LiveTimeLayout liveTimeLayout;
+    @BindView(R.id.imgV_cam_zoom_to_full_screen)
+    ImageView imgVCamZoomToFullScreen;
+
+    private CamLiveController camLiveController;
+    //    /**
+//     * 直播状态监听
+//     */
+    private ILiveStateListener liveListener;
     /**
      * |安全防护|----直播|5/16 16:30|---|
      */
-    private LiveBottomBarAnimDelegate portLiveBottomBarDelegate;
-    //    private WeakReference<CamLandLiveLayerInterface> landLiveLayerViewActionWeakReference;
-//    private CamLandLiveLayerInterface camLandLiveLayerInterface;
-
     private VideoViewFactory.IVideoView videoView;
     //流量显示
     private WeakReference<TextView> tvFlowRef;
@@ -113,12 +110,6 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
      */
     private WeakReference<View> viewStandbyRef;
 
-    /**
-     * 播放,暂停,loading,播放失败提示按钮.
-     */
-    private WeakReference<ILiveControl> iLiveActionViewRef;
-
-    private WeakReference<DatePickerDialogFragment> datePickerRef;
 
     public CameraLiveFragment() {
         // Required empty public constructor
@@ -156,9 +147,15 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
         super.onViewCreated(view, savedInstanceState);
         ViewUtils.updateViewHeight(fLayoutCamLiveView, 0.75f);
         initBottomBtn(false);
-        swCamLiveControlLayer.setPresenterRef(basePresenter);
-        swCamLiveControlLayer.setActivity(getActivity());
-        liveListener = swCamLiveControlLayer;
+        camLiveController = new CamLiveController(getContext());
+        camLiveController.setLiveAction((ILiveControl) vs_control.inflate());
+        camLiveController.setCamLiveControlLayer(swCamLiveControlLayer);
+        camLiveController.setScreenZoomer(imgVCamZoomToFullScreen);
+        camLiveController.setPortSafeSetter(portFlipLayout);
+        camLiveController.setPortLiveTimeSetter(liveTimeLayout);
+        camLiveController.setPresenterRef(basePresenter);
+        camLiveController.setActivity(getActivity());
+        liveListener = camLiveController.getLiveStateListener();
     }
 
     @Override
@@ -166,8 +163,6 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
         super.onPause();
         if (basePresenter != null)
             basePresenter.stopPlayVideo(basePresenter.getPlayType());
-//        if (camLandLiveLayerInterface != null)
-//            camLandLiveLayerInterface.destroy();
     }
 
     @Override
@@ -211,7 +206,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
      */
     @Override
     public void onDeviceStandBy(boolean flag) {
-        showLoading(STATE_IDLE, null);
+        camLiveController.setLoadingState(ILiveControl.STATE_IDLE, null);
         showFloatFlowView(false, null);
         //进入待机模式
         View v = fLayoutLiveViewContainer.findViewById("showSceneView".hashCode());
@@ -234,72 +229,22 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
 
     @Override
     public void onLivePrepare(int type) {
-        showLoading(ILiveControl.STATE_LOADING, null);
+        camLiveController.setLoadingState(ILiveControl.STATE_LOADING, null);
         AppLogger.i("onLivePrepare");
-        if (liveListener != null) liveListener.onLiveState(PLAY_STATE_PREPARE);
+        if (liveListener != null) liveListener.liveStateChange();
     }
 
     @Override
     public void onLiveStarted(int type) {
-        showLoading(ILiveControl.STATE_PLAYING, null);
+        camLiveController.setLoadingState(ILiveControl.STATE_PLAYING, null);
         AppLogger.i("onLiveStarted");
         if (getView() != null)
             getView().setKeepScreenOn(true);
         initBottomBtn(true);
         imgVCamSwitchSpeaker.performClick();
         imgVCamTriggerMic.performClick();
-        //展示
-        checkBottomAnimation();
-        portLiveBottomBarDelegate.showLiveTimeRect(true);
-        swCamLiveControlLayer.setLiveType(basePresenter.getPlayType());
-        if (liveListener != null) liveListener.onLiveState(PLAY_STATE_PLAYING);
-    }
-
-    private void showLoading(int state, String content) {
-        initLiveControlView();
-        iLiveActionViewRef.get().setState(state, content);
-        AppLogger.i("showLoading:" + state);
-    }
-
-    /**
-     * 中间白色 loading 播放 暂停 按钮
-     */
-    private void initLiveControlView() {
-        if (iLiveActionViewRef == null || iLiveActionViewRef.get() == null) {
-            View view = vs_control.inflate();
-            if (view != null && view instanceof LivePlayControlView) {
-                ILiveControl control = (ILiveControl) view;
-                iLiveActionViewRef = new WeakReference<>(control);
-                control.setAction(new ILiveControl.Action() {
-                    @Override
-                    public void clickImage(int curState) {
-                        switch (curState) {
-                            case ILiveControl.STATE_LOADING_FAILED:
-                            case ILiveControl.STATE_STOP:
-                                //下一步playing
-                                if (basePresenter != null)
-                                    basePresenter.startPlayVideo(basePresenter.getPlayType());
-                                break;
-                            case ILiveControl.STATE_PLAYING:
-                                //下一步stop
-                                if (basePresenter != null) {
-                                    onLiveStop(basePresenter.getPlayType(), ERR_STOP);//
-                                    basePresenter.stopPlayVideo(basePresenter.getPlayType());
-                                }
-                                break;
-                        }
-                        AppLogger.i("clickImage:" + curState);
-                    }
-
-                    @Override
-                    public void clickText() {
-
-                    }
-                });
-            } else {
-                AppLogger.e("err:view is not the type");
-            }
-        }
+        camLiveController.setLiveType(basePresenter.getPlayType());
+        if (liveListener != null) liveListener.liveStateChange();
     }
 
     @Override
@@ -316,7 +261,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
             fLayoutLiveBottomHandleBar.setVisibility(View.VISIBLE);
             ViewUtils.updateViewHeight(fLayoutCamLiveView, 0.75f);
         }
-        swCamLiveControlLayer.notifyOrientationChange(this.getResources().getConfiguration().orientation);
+        camLiveController.notifyOrientationChange(this.getResources().getConfiguration().orientation);
         AppLogger.i("onConfigurationChanged");
     }
 
@@ -370,17 +315,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
 
                 @Override
                 public boolean onSingleTap(float x, float y) {
-                    Log.d("InterActListener", "InterActListener:onSingleTap");
-                    boolean show = false;
-                    if (iLiveActionViewRef != null && iLiveActionViewRef.get() != null) {
-                        int state = iLiveActionViewRef.get().getState();
-                        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                            state = STATE_IDLE;
-                        }
-                        showLoading(state, null);
-                        show = iLiveActionViewRef.get() instanceof View && ((View) iLiveActionViewRef.get()).isShown();
-                    }
-                    swCamLiveControlLayer.updateVisibilityState(!show);
+                    camLiveController.tapVideoViewAction();
                     return true;
                 }
 
@@ -415,7 +350,6 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
     @OnClick({R.id.imgV_cam_switch_speaker,
             R.id.imgV_cam_trigger_mic,
             R.id.imgV_cam_trigger_capture,
-//            R.id.imgV_cam_zoom_to_full_screen,
             R.id.fLayout_cam_live_view})
     public void onClick(View view) {
         if (NetUtils.getJfgNetType(getContext()) == 0)
@@ -444,60 +378,6 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
         }
     }
 
-    /**
-     * 检查
-     */
-    private void checkBottomAnimation() {
-        if (portLiveBottomBarDelegate == null) {
-            portLiveBottomBarDelegate = new LiveBottomBarAnimDelegate(getActivity(),
-                    fLayoutLiveBottomHandleBar, basePresenter);
-            portLiveBottomBarDelegate.setLiveTimeRectListener(new LiveBottomBarAnimDelegate.LiveTimeRectListener() {
-                @Override
-                public void click(View v) {
-                    ViewUtils.deBounceClick(v);
-//                    if (basePresenter.getPlayState() == CamLiveContract.PLAY_STATE_IDLE) {
-//                        AppLogger.d("not playing");
-//                        return;//还没开始播放
-//                    }
-                    if (NetUtils.getJfgNetType(getContext()) == 0) {
-                        AppLogger.d("no net work");
-                        return;
-                    }
-                    if (basePresenter.getCamInfo() != null && basePresenter.getCamInfo().net != null &&
-                            basePresenter.getCamInfo().net.net == 0) {
-                        AppLogger.d("device is offline");
-                        return;
-                    }
-                    if (basePresenter.getCamInfo() != null && !basePresenter.getCamInfo().sdcardState) {
-                        //没有sd卡
-                        ToastUtil.showToast(getString(R.string.Tap1_Camera_NoSDCardTips));
-                        AppLogger.d("no sdcard");
-                        return;
-                    }
-                    if (basePresenter.getHistoryDataProvider() == null || basePresenter.getHistoryDataProvider().getDataCount() == 0) {
-                        AppLogger.d("history data is not prepared");
-                        return;
-                    }
-                    if (datePickerRef == null || datePickerRef.get() == null) {
-                        Bundle bundle = new Bundle();
-                        bundle.putString(BaseDialog.KEY_TITLE, "时间选择");
-                        DatePickerDialogFragment.newInstance(bundle);
-                        datePickerRef = new WeakReference<>(DatePickerDialogFragment.newInstance(bundle));
-                        datePickerRef.get().setAction((int id, Object value) -> {
-                            if (value != null && value instanceof Long) {
-                                AppLogger.d("date pick: " + TimeUtils.getSpecifiedDate((Long) value));
-                                swCamLiveControlLayer.setNav2Time((Long) value);
-                                basePresenter.startPlayHistory((Long) value);
-                            }
-                        });
-                    }
-                    datePickerRef.get().setTimeFocus(swCamLiveControlLayer.getWheelCurrentFocusTime());
-                    datePickerRef.get().setDateMap(basePresenter.getFlattenDateMap());
-                    datePickerRef.get().show(getActivity().getSupportFragmentManager(), "DatePickerDialogFragment");
-                }
-            });
-        }
-    }
 
     @Override
     public void onClickLive() {
@@ -533,13 +413,9 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
     public void onHistoryDataRsp(IData dataStack) {
         if (dataStack.getDataCount() > 0) {
             //显示按钮
-            checkBottomAnimation();
-            portLiveBottomBarDelegate.showLiveTimeRect(true);
-            portLiveBottomBarDelegate.setLiveTime(basePresenter.getPlayType(), System.currentTimeMillis());
+            camLiveController.setLiveTime(System.currentTimeMillis());
         }
-//        if (!swCamLiveControlLayer.isShown() && basePresenter.needShowHistoryWheelView())
-//            swCamLiveControlLayer.setVisibility(View.VISIBLE);
-        swCamLiveControlLayer.setupHistoryData(dataStack);
+        camLiveController.setupHistoryData(dataStack);
     }
 
     @Override
@@ -547,26 +423,31 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
         if (getView() != null)
             getView().setKeepScreenOn(false);
         showFloatFlowView(false, null);
-        switch (errId) {
+        camLiveController.setLiveTime(0);
+        switch (errId) {//这些errCode 应当写在一个map中.Map<Integer,String>
             case JFGRules.PlayErr.ERR_NERWORK:
                 ToastUtil.showNegativeToast(getString(R.string.OFFLINE_ERR_1));
                 break;
             case JFGRules.PlayErr.ERR_UNKOWN:
-                showLoading(ILiveControl.STATE_LOADING_FAILED, "出错了");
+                camLiveController.setLoadingState(ILiveControl.STATE_LOADING_FAILED, "出错了");
                 break;
             case JFGRules.PlayErr.ERR_LOW_FRAME_RATE:
-                showLoading(ILiveControl.STATE_LOADING_FAILED, "帧率太低,不足以播放,重试");
+                camLiveController.setLoadingState(ILiveControl.STATE_LOADING_FAILED, "\"帧率太低,不足以播放,重试\"");
                 break;
             case JFGRules.PlayErr.ERR_DEVICE_OFFLINE:
+            case JError.ErrorVideoPeerNotExist:
                 ToastUtil.showNegativeToast(getString(R.string.OFFLINE_ERR));
+                camLiveController.setLoadingState(ILiveControl.STATE_LOADING_FAILED, getString(R.string.OFFLINE_ERR));
+                break;
+            case JError.ErrorVideoPeerInConnect:
+                //正在直播...
+                ToastUtil.showNegativeToast("直播中...");
                 break;
             default:
-                showLoading(ILiveControl.STATE_STOP, null);
+                camLiveController.setLoadingState(ILiveControl.STATE_STOP, null);
                 break;
         }
-        checkBottomAnimation();
-        portLiveBottomBarDelegate.showLiveTimeRect(false);
-        if (liveListener != null) liveListener.onLiveState(PLAY_STATE_IDLE);
+        if (liveListener != null) liveListener.liveStateChange();
     }
 
     @Override
@@ -582,13 +463,12 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
     public void onBeanInfoUpdate(final BeanCamInfo info) {
         if (getView() != null && isResumed()) {
             getView().post(() -> {
-                checkBottomAnimation();
-                portLiveBottomBarDelegate.setProtectionState(info.cameraAlarmFlag);
-                swCamLiveControlLayer.setProtectionState(info.cameraAlarmFlag);
+                camLiveController.setProtectionState(info.cameraAlarmFlag);
+                camLiveController.setProtectionState(info.cameraAlarmFlag);
             });
             if (info.deviceBase != null && !TextUtils.isEmpty(info.deviceBase.shareAccount)) {
                 //分享账号,不显示
-                fLayoutLiveBottomHandleBar.findViewById(R.id.tv_live_time).setVisibility(View.GONE);
+                camLiveController.setLiveTime(0);
             }
         }
     }
@@ -602,10 +482,8 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
     public void onRtcp(JFGMsgVideoRtcp rtcp) {
         String content = String.format(Locale.getDefault(), "%sKb/s", rtcp.bitRate);
         showFloatFlowView(true, content);
-        checkBottomAnimation();
         if (!basePresenter.isShareDevice())
-            portLiveBottomBarDelegate.setLiveTime(basePresenter.getPlayType(),
-                    rtcp.timestamp == 0 ? System.currentTimeMillis() : rtcp.timestamp * 1000L);
+            camLiveController.setLiveTime(rtcp.timestamp == 0 ? System.currentTimeMillis() : rtcp.timestamp * 1000L);
         Log.d("onRtcp", "onRtcp: " + new Gson().toJson(rtcp));
     }
 

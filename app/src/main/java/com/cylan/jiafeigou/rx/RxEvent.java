@@ -423,10 +423,10 @@ public class RxEvent {
         public DpMsgDefine.DpMsg dpMsg;
     }
 
-    public static final class JfgAlarmMsg {
-        public String uuid;
-        public ArrayList<DpMsgDefine.DpMsg> jfgdpMsgs;
-    }
+//    public static final class JfgAlarmMsg {
+//        public String uuid;
+//        public ArrayList<DpMsgDefine.DpMsg> jfgdpMsgs;
+//    }
 
     public static final class JFGRobotSyncData {
         public String identity;

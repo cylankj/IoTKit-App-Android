@@ -16,10 +16,15 @@ public interface CamMessageListContract {
 
         void onMessageListRsp(ArrayList<CamMessageBean> beanArrayList);
 
+        ArrayList<CamMessageBean> getList();
+
+        void updateSdStatus(boolean status);
     }
 
     interface Presenter extends BasePresenter {
         void fetchMessageList();
+
+        void removeItem(CamMessageBean bean);
     }
 }
 

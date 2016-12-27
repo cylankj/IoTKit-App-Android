@@ -171,7 +171,7 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
     public String getDetailsSubTitle(Context context) {
         //sd卡状态
         if (camInfoBean.sdcardStorage != null) {
-            if (camInfoBean.sdcardState && camInfoBean.sdcardStorage.err != 0) {
+            if (camInfoBean.sdcardStorage.hasSdcard && camInfoBean.sdcardStorage.err != 0) {
                 //sd初始化失败时候显示
                 return context.getString(R.string.NO_SDCARD);
             }

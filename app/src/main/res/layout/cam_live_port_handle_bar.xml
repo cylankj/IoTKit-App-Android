@@ -12,17 +12,12 @@
         android:paddingLeft="15dp"
         android:paddingRight="15dp" />
 
-    <TextView
-        android:id="@+id/tv_live_time"
+    <com.cylan.jiafeigou.widget.LiveTimeLayout
+        android:id="@+id/live_time_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:background="@drawable/flow_bg"
-        android:gravity="center_vertical"
-        android:padding="5dp"
-        android:textColor="@color/color_white"
-        android:textSize="11sp"
-        android:visibility="invisible" />
+        android:visibility="gone" />
 
     <ImageView
         android:id="@+id/imgV_cam_zoom_to_full_screen"

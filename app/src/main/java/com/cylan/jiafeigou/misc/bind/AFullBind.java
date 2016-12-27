@@ -15,7 +15,7 @@ public abstract class AFullBind implements IFullBind {
     }
 
     protected IBindResult iBindResult;
-
+    protected String bindCode;
     private String currentBindUUID = "";
     /**
      * ping fping流程.

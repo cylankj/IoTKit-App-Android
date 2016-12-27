@@ -52,7 +52,6 @@ public class JFGRules {
     public static final int LANGUAGE_TYPE_SIMPLE_CHINESE = 0;
     public static final int LANGUAGE_TYPE_ENGLISH = 1;
     public static final int LANGUAGE_TYPE_RU = 2;
-    //add by hunt
     public static final int LANGUAGE_TYPE_POR = 3;
     public static final int LANGUAGE_TYPE_SPANISH = 4;
     public static final int LANGUAGE_TYPE_JAPAN = 5;

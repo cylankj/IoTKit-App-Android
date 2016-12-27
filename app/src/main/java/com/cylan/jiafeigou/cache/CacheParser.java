@@ -1,6 +1,8 @@
 package com.cylan.jiafeigou.cache;
 
+import com.cylan.jiafeigou.cache.pool.GlobalDataPool;
 import com.cylan.jiafeigou.cache.video.History;
+import com.cylan.jiafeigou.dp.DataPointManager;
 import com.cylan.jiafeigou.dp.DpAssembler;
 import com.cylan.jiafeigou.dp.IParser;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -29,9 +31,14 @@ public class CacheParser {
      */
     private IParser historyCache;
 
+    private IParser dataPoint;
+
     private CacheParser() {
         deviceDpParser = DpAssembler.getInstance();
         historyCache = History.getHistory();
+        DataPointManager manager = DataPointManager.getInstance();
+        dataPoint = manager;
+        GlobalDataPool.getInstance().setDataPointManager(manager);
     }
 
     public static CacheParser getDpParser() {
@@ -59,6 +66,12 @@ public class CacheParser {
                 compositeSubscription.add(s);
             }
         }
+        sub = dataPoint.register();
+        if (sub != null) {
+            for (Subscription s : sub) {
+                compositeSubscription.add(s);
+            }
+        }
     }
 
 
@@ -70,6 +83,8 @@ public class CacheParser {
             historyCache.clear();
         if (deviceDpParser != null)
             deviceDpParser.clear();
+        if (dataPoint != null)
+            dataPoint.clear();
     }
 
 

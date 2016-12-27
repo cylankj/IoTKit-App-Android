@@ -1,10 +1,9 @@
 package com.cylan.jiafeigou.cache;
 
 import com.cylan.entity.jniCall.JFGAccount;
+import com.cylan.jiafeigou.cache.pool.GlobalDataPool;
 import com.cylan.jiafeigou.n.mvp.model.LoginAccountBean;
 import com.cylan.jiafeigou.n.mvp.model.TimeZoneBean;
-import com.cylan.jiafeigou.support.log.AppLogger;
-import com.google.gson.Gson;
 
 import java.util.List;
 
@@ -14,7 +13,7 @@ import java.util.List;
 
 public class JCache {
 
-    public static JFGAccount jfgAccount;
+//    public static JFGAccount jfgAccount;
     /**
      * 非常坑爹啊，需要客户端记录标记。
      * 注册，忘记密码时候，都需要验证码，页面也换，就有不同的提示语{注册成功}
@@ -23,25 +22,20 @@ public class JCache {
      */
     public static boolean isSmsAction = false;
 
-
+    @Deprecated
     public static boolean isOnline() {
-        return onLineStatus && jfgAccount != null;
+        return onLineStatus && GlobalDataPool.getInstance().getJfgAccount() != null;
     }
 
     public static boolean onLineStatus = false;
 
     /**
-     * 应该是两级缓存
-     *
-     * @param jfgAccount
+     * @return
+     * @see GlobalDataPool#getInstance()#getAccountCache()
      */
-    public static void setAccountCache(JFGAccount jfgAccount) {
-        JCache.jfgAccount = jfgAccount;
-        AppLogger.d("setAccountCache: " + new Gson().toJson(jfgAccount));
-    }
-
+    @Deprecated
     public static JFGAccount getAccountCache() {
-        return JCache.jfgAccount;
+        return GlobalDataPool.getInstance().getJfgAccount();
     }
 
     public static LoginAccountBean tmpAccount;
