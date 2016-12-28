@@ -27,7 +27,7 @@
     </FrameLayout>
 
     <com.cylan.jiafeigou.n.view.cam.CamLiveControlLayer
-        android:id="@+id/sw_cam_port_wheel"
+        android:id="@+id/cam_live_control_layout"
         android:layout_width="match_parent"
         android:layout_height="52dp"
         android:layout_below="@+id/fLayout_cam_live_view"

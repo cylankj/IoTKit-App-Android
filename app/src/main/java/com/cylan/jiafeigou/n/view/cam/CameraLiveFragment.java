@@ -83,7 +83,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
     @BindView(R.id.fLayout_cam_live_menu)
     FrameLayout fLayoutCamLiveMenu;
 
-    @BindView(R.id.sw_cam_port_wheel)
+    @BindView(R.id.cam_live_control_layout)
     CamLiveControlLayer swCamLiveControlLayer;
 
 
