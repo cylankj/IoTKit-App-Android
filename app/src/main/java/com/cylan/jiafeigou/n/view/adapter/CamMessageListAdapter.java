@@ -223,9 +223,10 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
         DpMsgDefine.SdStatus sdStatus = bean.content;
         switch (sdStatus.err) {
             case 0:
-                return getContext().getString(R.string.permission_ok);
+                return getContext().getString(R.string.MSG_SD_ON);
+            default:
+                return getContext().getString(R.string.MSG_SD_ON_1);
         }
-        return "";
     }
 
     @Override
