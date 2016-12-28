@@ -34,6 +34,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:background="@drawable/custom_rtbn_style1"
+            android:button="@null"
             android:clickable="false" />
     </FrameLayout>
 
@@ -57,7 +59,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="26dp"
                 android:gravity="center"
-                android:text="fadfadfa"
                 android:textColor="@color/color_666666"
                 android:textSize="13sp" />
 
@@ -66,7 +67,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:text="fadfadfa" />
+                android:textColor="@color/color_666666"
+                android:textSize="14sp" />
 
             <TextView
                 android:id="@+id/tv_cam_message_item_delete"

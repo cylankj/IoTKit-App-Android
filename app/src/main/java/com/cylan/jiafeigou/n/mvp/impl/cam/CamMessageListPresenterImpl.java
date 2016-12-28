@@ -19,11 +19,12 @@ import com.cylan.jiafeigou.support.log.AppLogger;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
@@ -135,21 +136,25 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
     }
 
     @Override
-    public void removeItem(CamMessageBean bean) {
-        Observable.just(bean)
+    public void removeItems(ArrayList<CamMessageBean> beanList) {
+        Observable.just(beanList)
                 .subscribeOn(Schedulers.computation())
-                .subscribe(new Action1<CamMessageBean>() {
-                    @Override
-                    public void call(CamMessageBean bean) {
-                        long id = bean.id;
-                        long version = bean.version;
-                        GlobalDataPool.getInstance().delete(uuid, id, version);
+                .subscribe((ArrayList<CamMessageBean> list) -> {
+                    Map<Long, ArrayList<Long>> map = new HashMap<>();
+                    for (CamMessageBean bean : list) {
+                        ArrayList<Long> arrayList = map.get(bean.id);
+                        if (arrayList == null) {
+                            arrayList = new ArrayList<>();
+                            map.put(bean.id, arrayList);
+                        }
+                        arrayList.add(bean.time);
                     }
-                }, new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                        AppLogger.e(":" + throwable.getLocalizedMessage());
+                    for (long id : map.keySet()) {
+                        boolean result = GlobalDataPool.getInstance().deleteAll(uuid, id, map.get(id));
+                        AppLogger.i("delete: " + result + " id:" + id);
                     }
+                }, (Throwable throwable) -> {
+                    AppLogger.e(":" + throwable.getLocalizedMessage());
                 });
     }
 }

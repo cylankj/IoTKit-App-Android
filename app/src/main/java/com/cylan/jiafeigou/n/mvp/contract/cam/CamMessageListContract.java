@@ -30,7 +30,7 @@ public interface CamMessageListContract {
     interface Presenter extends BasePresenter {
         void fetchMessageList();
 
-        void removeItem(CamMessageBean bean);
+        void removeItems(ArrayList<CamMessageBean> beanList);
     }
 }
 

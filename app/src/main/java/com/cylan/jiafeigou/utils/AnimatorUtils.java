@@ -410,4 +410,56 @@ public class AnimatorUtils {
         setRight.addListener(animatorListener);
         return setRight;
     }
+
+    /**
+     * 切出屏幕
+     *
+     * @param view
+     * @param fromTop
+     */
+    public static void slideOut(View view, boolean fromTop) {
+        Object o = view.getTag();
+        if (o != null && o instanceof ObjectAnimator) {
+            ObjectAnimator animator = (ObjectAnimator) o;
+            if (animator.isRunning() || animator.isStarted())
+                animator.cancel();
+        }
+        int start = 0, end = fromTop ? -view.getHeight() : view.getHeight();
+        ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(view, "translationY", start, end);
+        objectAnimator.setDuration(250);
+        objectAnimator.addListener(new SimpleAnimationListener() {
+            @Override
+            public void onAnimationStart(Animator animator) {
+                if (!view.isShown()) view.setVisibility(View.VISIBLE);
+            }
+        });
+        view.setTag(objectAnimator);
+        objectAnimator.start();
+    }
+
+    /**
+     * 切出屏幕
+     *
+     * @param view
+     * @param fromTop
+     */
+    public static void slideIn(final View view, boolean fromTop) {
+        Object o = view.getTag();
+        if (o != null && o instanceof ObjectAnimator) {
+            ObjectAnimator animator = (ObjectAnimator) o;
+            if (animator.isRunning() || animator.isStarted())
+                animator.cancel();
+        }
+        int end = 0, start = fromTop ? -view.getHeight() : view.getHeight();
+        ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(view, "translationY", start, end);
+        objectAnimator.setDuration(250);
+        objectAnimator.addListener(new SimpleAnimationListener() {
+            @Override
+            public void onAnimationStart(Animator animator) {
+                if (!view.isShown()) view.setVisibility(View.VISIBLE);
+            }
+        });
+        view.setTag(objectAnimator);
+        objectAnimator.start();
+    }
 }

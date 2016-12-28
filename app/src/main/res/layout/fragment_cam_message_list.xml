@@ -13,13 +13,13 @@
         android:layout_height="42dp">
 
         <TextView
-            android:gravity="center_vertical"
             android:id="@+id/tv_cam_message_list_date"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_gravity="center"
             android:drawablePadding="10dp"
             android:drawableRight="@drawable/icon_date_downtag_wonderful"
+            android:gravity="center_vertical"
             android:text="2015-06-12" />
 
         <TextView
@@ -104,4 +104,39 @@
 
         </RelativeLayout>
     </RelativeLayout>
+
+    <FrameLayout
+        android:id="@+id/fLayout_cam_msg_edit_bar"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_alignParentBottom="true"
+        android:background="@color/color_f6f9fa"
+        android:visibility="invisible">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/color_d2d2d2" />
+
+        <TextView
+            android:id="@+id/tv_msg_full_select"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:paddingEnd="28dp"
+            android:paddingStart="28dp"
+            android:text="@string/EDIT_THEME"
+            android:textColor="@color/color_4b9fd5" />
+
+        <TextView
+            android:id="@+id/tv_msg_delete"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="end"
+            android:gravity="center_vertical"
+            android:paddingEnd="28dp"
+            android:paddingStart="28dp"
+            android:text="@string/DELETE"
+            android:textColor="@color/color_4b9fd5" />
+    </FrameLayout>
 </RelativeLayout>
