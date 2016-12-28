@@ -462,4 +462,19 @@ public class AnimatorUtils {
         view.setTag(objectAnimator);
         objectAnimator.start();
     }
+
+    /**
+     * 自动呼入呼出
+     * 1.view的初始状态是Invisible
+     * 2.view移动距离是view的高度
+     *
+     * @param view
+     * @param fromTop:紧贴顶部,false:紧贴底部
+     */
+    public static void slideAuto(final View view, boolean fromTop) {
+        if (!view.isShown() || view.getBottom() == view.getY())
+            AnimatorUtils.slideIn(view, fromTop);
+        else if (view.isShown() && view.getTop() == view.getY())
+            AnimatorUtils.slideOut(view, fromTop);
+    }
 }

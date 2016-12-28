@@ -15,6 +15,14 @@ public interface IDataPoint {
 
     boolean update(String uuid, BaseValue baseValue);
 
+    /**
+     * 删除和这个uuid相关的所有数据
+     *
+     * @param uuid
+     * @return
+     */
+    boolean deleteAll(String uuid);
+
     Object delete(String uuid, long id);
 
     /**

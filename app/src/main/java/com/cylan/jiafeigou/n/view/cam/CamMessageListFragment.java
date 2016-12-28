@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -69,6 +70,8 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
     RelativeLayout fLayoutCamMessageListTimeline;
     @BindView(R.id.fLayout_cam_msg_edit_bar)
     FrameLayout fLayoutCamMsgEditBar;
+    @BindView(R.id.lLayout_no_message)
+    LinearLayout lLayoutNoMessage;
 
     private SimpleDialogFragment simpleDialogFragment;
     /**
@@ -166,8 +169,11 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
     @Override
     public void onMessageListRsp(ArrayList<CamMessageBean> beanArrayList) {
         srLayoutCamListRefresh.setRefreshing(false);
-        if (beanArrayList == null || beanArrayList.size() == 0) {
-//            ToastUtil.showNegativeToast("没有数据");
+        final int count = beanArrayList == null ? 0 : beanArrayList.size();
+        lLayoutNoMessage.post(() -> {
+            lLayoutNoMessage.setVisibility(count > 0 ? View.GONE : View.VISIBLE);
+        });
+        if (count == 0) {
             AppLogger.i("没有数据");
             return;
         }
@@ -224,9 +230,8 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
         switch (view.getId()) {
             case R.id.tv_cam_message_list_date:
                 if (camMessageListAdapter.getCount() == 0)
-                    return;
-                boolean show = fLayoutCamMessageListTimeline.isShown();
-                fLayoutCamMessageListTimeline.setVisibility(show ? View.GONE : View.VISIBLE);
+                    return;//呼入呼出
+                AnimatorUtils.slideAuto(fLayoutCamMessageListTimeline, false);
                 break;
             case R.id.tv_cam_message_list_edit:
                 if (camMessageListAdapter.getCount() == 0) return;
@@ -252,6 +257,9 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
                         camMessageListAdapter.removeAll(list);
                         if (basePresenter != null)
                             basePresenter.removeItems(list);
+                        camMessageListAdapter.reverseMode(false, camMessageListAdapter.getCount());
+                        AnimatorUtils.slideOut(fLayoutCamMsgEditBar, false);
+                        tvCamMessageListEdit.setText(getString(R.string.EDIT_THEME));
                     });
                 }
                 break;

@@ -88,6 +88,11 @@ public class GlobalDataPool implements IDataPool {
     }
 
     @Override
+    public boolean deleteAll(String uuid) {
+        return dataPointManager.deleteAll(uuid);
+    }
+
+    @Override
     public Object delete(String uuid, long id) {
         return dataPointManager.delete(uuid, id);
     }

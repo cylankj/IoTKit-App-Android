@@ -152,6 +152,7 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
             holder.setOnClickListener(R.id.tv_cam_message_item_delete, onClickListener);
         holder.setVisibility(R.id.fl_item_time_line, isEditMode() ? View.INVISIBLE : View.VISIBLE);
         holder.setVisibility(R.id.rbtn_item_check, isEditMode() ? View.VISIBLE : View.INVISIBLE);
+        holder.setVisibility(R.id.fLayout_cam_message_item_bottom, !isEditMode() ? View.VISIBLE : View.INVISIBLE);
         if (isEditMode())
             holder.setChecked(R.id.rbtn_item_check, selectedMap.containsKey(layoutPosition));
     }

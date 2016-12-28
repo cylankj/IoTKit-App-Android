@@ -227,6 +227,30 @@ public class DataPointManager implements IParser, IDataPoint {
     }
 
     @Override
+    public boolean deleteAll(String uuid) {
+        boolean remove = false;
+        Set<String> set0 = bundleMap.keySet();
+        for (String s : set0) {
+            if (s.contains(uuid)) {
+                remove |= bundleMap.remove(s) != null;
+            }
+        }
+        set0 = bundleSetMap.keySet();
+        for (String s : set0) {
+            if (s.contains(uuid)) {
+                remove |= bundleSetMap.remove(s) != null;
+            }
+        }
+        try {
+            remove |= JfgCmdInsurance.getCmd().unBindDevice(uuid) == 0;
+        } catch (JfgException e) {
+            remove = false;
+            AppLogger.e("" + e.getLocalizedMessage());
+        }
+        return remove;
+    }
+
+    @Override
     public Object delete(String uuid, long id) {
         return removeId(uuid, id);
     }

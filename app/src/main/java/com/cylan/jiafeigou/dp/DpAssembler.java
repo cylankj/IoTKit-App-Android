@@ -349,6 +349,7 @@ public class DpAssembler implements IParser {
                         for (Map.Entry<Integer, ArrayList<JFGDPMsg>> entry : dpDataRsp.map.entrySet()) {
                             JFGDPMsg dp = entry.getValue() != null
                                     && entry.getValue().size() > 0 ? entry.getValue().get(0) : null;
+                            if (dp == null || dp.packValue == null) continue;
                             final int keyId = entry.getKey();
 //                            if (keyId == DpMsgMap.ID_505_CAMERA_ALARM_MSG || dp == null) {
 //                                //报警消息
@@ -376,23 +377,15 @@ public class DpAssembler implements IParser {
      * @param keyId
      */
     private void assembleMiscMsg(String identity, JFGDPMsg dp, int keyId) {
-        if (dp == null) {
-            AppLogger.e("dp is null: " + keyId);
-            return;
-        }
         try {
             Class<?> clazz = ID_2_CLASS_MAP.get(keyId);
             Object o = DpUtils.unpackData(dp.packValue, clazz);
-            if (o == null) {
-                AppLogger.e("o is null" + keyId);
-                return;
-            }
             flatMsg.cache(JCache.getAccountCache().getAccount(),
                     identity,
                     Converter.convert(o, keyId, dp.version));
             Log.d(TAG, "superParser: " + keyId + " " + o);
         } catch (Exception e) {
-            AppLogger.e(TAG + keyId + " " + e.getLocalizedMessage());
+            AppLogger.e(TAG + keyId + " " + identity + " " + e.getLocalizedMessage());
         }
     }
 

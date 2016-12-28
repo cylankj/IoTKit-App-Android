@@ -44,7 +44,6 @@
         android:id="@+id/srLayout_cam_list_refresh"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/fLayout_cam_message_list_timeline"
         android:layout_below="@+id/rLayout_cam_message_list_top">
 
         <android.support.v7.widget.RecyclerView
@@ -53,13 +52,35 @@
             android:layout_height="match_parent" />
     </android.support.v4.widget.SwipeRefreshLayout>
 
+    <LinearLayout
+        android:id="@+id/lLayout_no_message"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="147dp"
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:src="@drawable/icon_no_message" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="16dp"
+            android:text="@string/NO_CONTENTS_1"
+            android:textColor="#aaaaaa"
+            android:textSize="15sp" />
+    </LinearLayout>
+
     <RelativeLayout
         android:id="@+id/fLayout_cam_message_list_timeline"
         android:layout_width="match_parent"
         android:layout_height="80dp"
         android:layout_alignParentBottom="true"
-        android:visibility="gone">
-
+        android:visibility="invisible">
 
         <TextView
             android:id="@+id/tv_time_line_pop"
@@ -125,7 +146,7 @@
             android:gravity="center_vertical"
             android:paddingEnd="28dp"
             android:paddingStart="28dp"
-            android:text="@string/EDIT_THEME"
+            android:text="@string/SELECT_ALL"
             android:textColor="@color/color_4b9fd5" />
 
         <TextView
