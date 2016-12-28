@@ -47,7 +47,7 @@ public class HomeMineHelpSuggestionAdapter extends SuperAdapter<MineHelpSuggesti
     private OnResendFeedBackListener resendFeedBack;
 
     public interface OnResendFeedBackListener {
-        void onResend(SuperViewHolder holder,MineHelpSuggestionBean item);
+        void onResend(SuperViewHolder holder,MineHelpSuggestionBean item,int position);
     }
 
     public void setOnResendFeedBack(OnResendFeedBackListener resendFeedBack){
@@ -105,7 +105,7 @@ public class HomeMineHelpSuggestionAdapter extends SuperAdapter<MineHelpSuggesti
                 @Override
                 public void onClick(View v) {
                     if (resendFeedBack != null){
-                        resendFeedBack.onResend(holder,item);
+                        resendFeedBack.onResend(holder,item,layoutPosition);
                     }
                 }
             });

@@ -99,14 +99,14 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
      * @param openId
      */
     @Override
-    public void executeOpenLogin(final String openId) {
+    public void executeOpenLogin(final String openId,int type) {
         rx.Observable.just(null)
                 .subscribeOn(Schedulers.newThread())
                 .subscribe(new Action1<Object>() {
                     @Override
                     public void call(Object o) {
                         try {
-                            JfgCmdInsurance.getCmd().openLogin(openId,"www.cylan.com");
+                            JfgCmdInsurance.getCmd().openLogin(openId,"www.cylan.com",type);
                         } catch (JfgException e) {
                             e.printStackTrace();
                         }
@@ -264,7 +264,6 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
         unSubscribe(subscription);
     }
 
-
     @Override
     public void getQQAuthorize(Activity activity) {
         tencentInstance = new TencentInstance();
@@ -345,8 +344,11 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
         @Override
         public void onComplete(Bundle values) {
             Oauth2AccessToken accessToken = Oauth2AccessToken.parseAccessToken(values);
+            UsersAPI usersAPI = new UsersAPI(accessToken, getView().getContext());
+            Long uid = Long.parseLong(accessToken.getUid());
+            usersAPI.show(uid,sinaRequestListener);
             if (accessToken != null && accessToken.isSessionValid()) {
-                executeOpenLogin(accessToken.getToken());
+                executeOpenLogin(accessToken.getToken(),4);
             }else {
                 String code = values.getString("code", "");
                 AppLogger.d("sina_code"+code);
@@ -380,8 +382,8 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
                     String strId = new JSONObject(response).getString("idstr");
                     ToastUtil.showToast(strId);
 //                    PreferencesUtils.setThirDswLoginPicUrl(ctx, new JSONObject(response).getString("profile_image_url"));
-//                    cmd.openLogin(strId, "", "SINA", ""); // 接口没测
-                    executeOpenLogin(strId);
+
+
                 }
             } catch (JSONException e) {
                 AppLogger.e(e.toString());
@@ -444,13 +446,11 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
             String accessToken = response.getString("access_token");
             String expires = response.getString("expires_in");
             //执行登录
-            executeOpenLogin(accessToken);
+            executeOpenLogin(accessToken,3);
 
         } catch (JSONException e) {
             e.printStackTrace();
         }
     }
-
-
 
 }

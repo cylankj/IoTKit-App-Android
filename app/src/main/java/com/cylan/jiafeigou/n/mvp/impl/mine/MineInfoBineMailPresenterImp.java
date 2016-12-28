@@ -42,6 +42,7 @@ public class MineInfoBineMailPresenterImp extends AbstractPresenter<MineInfoBind
     private CompositeSubscription compositeSubscription;
     private JFGAccount jfgAccount;
     private Network network;
+    private boolean isOpenLogin;
 
     public MineInfoBineMailPresenterImp(MineInfoBindMailContract.View view) {
         super(view);
@@ -205,6 +206,27 @@ public class MineInfoBineMailPresenterImp extends AbstractPresenter<MineInfoBind
             ContextUtils.getContext().unregisterReceiver(network);
             network = null;
         }
+    }
+
+    /**
+     * 是否上方登录
+     * @return
+     */
+    @Override
+    public Subscription isOpenLoginBack() {
+        return RxBus.getCacheInstance().toObservableSticky(Boolean.class)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<Boolean>() {
+                    @Override
+                    public void call(Boolean aBoolean) {
+                        isOpenLogin = aBoolean;
+                    }
+                });
+    }
+
+    @Override
+    public boolean isOpenLogin() {
+        return isOpenLogin;
     }
 
     /**

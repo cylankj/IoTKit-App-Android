@@ -34,6 +34,7 @@ import com.cylan.superadapter.internal.SuperViewHolder;
 import com.cylan.utils.NetUtils;
 
 import java.util.ArrayList;
+import java.util.TreeMap;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -69,6 +70,8 @@ public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMine
     private HomeMineHelpSuggestionAdapter suggestionAdapter;
     private String suggestion;
     private HomeMineHelpSuggestionContract.Presenter presenter;
+    private int itemPosition;
+    private boolean resendFlag;
 
     public static HomeMineHelpSuggestionFragment newInstance(Bundle bundle) {
         HomeMineHelpSuggestionFragment fragment = new HomeMineHelpSuggestionFragment();
@@ -137,7 +140,6 @@ public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMine
             presenter.getSystemAutoReply();
         }
     };
-
 
     /**
      * 弹出对话框
@@ -210,6 +212,10 @@ public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMine
         if (NetUtils.getNetType(ContextUtils.getContext()) == -1){
             suggestionBean.pro_falag = 1;
             presenter.saveIntoDb(suggestionBean);
+            suggestionAdapter.add(suggestionBean);
+            suggestionAdapter.notifyDataSetHasChanged();
+            mRvMineSuggestion.scrollToPosition(suggestionAdapter.getItemCount() - 1);
+            return;
         }else {
             suggestionBean.pro_falag = 0;
         }
@@ -250,12 +256,25 @@ public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMine
     @Override
     public void refrshRecycleView(int code) {
         if (code != JError.ErrorOK){
-            suggestionAdapter.getItem(suggestionAdapter.getItemCount() - 1).pro_falag = 1;
-            mRvMineSuggestion.setAdapter(suggestionAdapter);
-            presenter.saveIntoDb(suggestionAdapter.getItem(suggestionAdapter.getItemCount() - 1));
+            if (resendFlag){
+                suggestionAdapter.getItem(itemPosition).pro_falag = 1;
+                resendFlag = false;
+                mRvMineSuggestion.setAdapter(suggestionAdapter);
+                presenter.saveIntoDb(suggestionAdapter.getItem(itemPosition));
+            }else {
+                suggestionAdapter.getItem(suggestionAdapter.getItemCount() - 1).pro_falag = 1;
+                mRvMineSuggestion.setAdapter(suggestionAdapter);
+                presenter.saveIntoDb(suggestionAdapter.getItem(suggestionAdapter.getItemCount() - 1));
+            }
         }else {
-            suggestionAdapter.getItem(suggestionAdapter.getItemCount() - 1).pro_falag = 2;
-            presenter.saveIntoDb(suggestionAdapter.getItem(suggestionAdapter.getItemCount() - 1));
+            if (resendFlag){
+                suggestionAdapter.getItem(itemPosition).pro_falag = 2;
+                presenter.saveIntoDb(suggestionAdapter.getItem(itemPosition));
+                resendFlag = false;
+            }else {
+                suggestionAdapter.getItem(suggestionAdapter.getItemCount() - 1).pro_falag = 2;
+                presenter.saveIntoDb(suggestionAdapter.getItem(suggestionAdapter.getItemCount() - 1));
+            }
             autoReply();
             mRvMineSuggestion.setAdapter(suggestionAdapter);
         }
@@ -278,11 +297,13 @@ public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMine
         mRvMineSuggestion.setAdapter(suggestionAdapter);
         suggestionAdapter.setOnResendFeedBack(new HomeMineHelpSuggestionAdapter.OnResendFeedBackListener() {
             @Override
-            public void onResend(SuperViewHolder holder, MineHelpSuggestionBean item) {
+            public void onResend(SuperViewHolder holder, MineHelpSuggestionBean item,int position) {
                 if (NetUtils.getNetType(ContextUtils.getContext()) == -1){
                     ToastUtil.showToast(getString(R.string.NO_NETWORK_4));
                     return;
                 }
+                itemPosition = position;
+                resendFlag = true;
                 ImageView send_pro = (ImageView) holder.itemView.findViewById(R.id.iv_send_pro);
                 send_pro.setImageDrawable(getContext().getResources().getDrawable(R.drawable.listview_loading));
                 presenter.sendFeedBack(item);

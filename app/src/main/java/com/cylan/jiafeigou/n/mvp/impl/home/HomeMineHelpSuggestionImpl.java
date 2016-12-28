@@ -162,7 +162,6 @@ public class HomeMineHelpSuggestionImpl extends AbstractPresenter<HomeMineHelpSu
 
     /**
      * 检测是否超时5分钟
-     *
      * @return
      */
     @Override
