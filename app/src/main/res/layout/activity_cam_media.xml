@@ -1,24 +1,44 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_cam_media"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_gravity="center"
-    tools:ignore="ContentDescription">
+    tools:context="com.cylan.jiafeigou.n.view.media.CamMediaActivity">
 
-    <com.cylan.photoview.PhotoView
-        android:id="@+id/details_album_image"
+
+    <com.cylan.jiafeigou.misc.HackyViewPager
+        android:id="@+id/vp_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="center"
-        android:scaleType="fitCenter" />
+        android:layout_height="match_parent" />
 
     <FrameLayout
-        android:id="@+id/fLayout_details_action_bar"
+        android:id="@+id/fLayout_details_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:transitionGroup="true"
-        android:visibility="visible">
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/tv_big_pic_close"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="15dp"
+            android:src="@drawable/btn_login_nav_close" />
+
+        <TextView
+            android:id="@+id/tv_big_pic_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textColor="@color/color_white"
+            android:textSize="16sp" />
+    </FrameLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_gravity="bottom">
 
         <ImageView
             android:id="@+id/imgV_big_pic_download"
@@ -46,4 +66,4 @@
             android:padding="15dp"
             android:src="@drawable/icon_collection" />
     </FrameLayout>
-</FrameLayout>
+</RelativeLayout>

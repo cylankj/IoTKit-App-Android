@@ -215,6 +215,9 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
         holder.setText(R.id.tv_cam_message_item_date, getFinalTimeContent(item));
         holder.setVisibility(R.id.tv_to_live, showLiveBtn(item.time) ? View.VISIBLE : View.INVISIBLE);
         holder.setOnClickListener(R.id.tv_to_live, onClickListener);
+        holder.setOnClickListener(R.id.imgV_cam_message_pic_0, onClickListener);
+        holder.setOnClickListener(R.id.imgV_cam_message_pic_1, onClickListener);
+        holder.setOnClickListener(R.id.imgV_cam_message_pic_2, onClickListener);
         holder.setEnabled(R.id.tv_to_live, deviceOnlineState);
     }
 
