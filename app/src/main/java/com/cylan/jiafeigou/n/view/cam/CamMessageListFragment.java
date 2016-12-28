@@ -8,9 +8,11 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -25,6 +27,7 @@ import com.cylan.jiafeigou.n.mvp.model.CamMessageBean;
 import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
 import com.cylan.jiafeigou.n.view.adapter.CamMessageListAdapter;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.AnimatorUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
@@ -60,6 +63,8 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
     WheelView wvWonderfulTimeline;
     @BindView(R.id.fLayout_cam_message_list_timeline)
     RelativeLayout fLayoutCamMessageListTimeline;
+    @BindView(R.id.fLayout_cam_msg_edit_bar)
+    FrameLayout fLayoutCamMsgEditBar;
     /**
      * 列表第一条可见item的position,用户刷新timeLine控件的位置。
      */
@@ -199,8 +204,13 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
     }
 
     @OnClick({R.id.tv_cam_message_list_date,
-            R.id.tv_cam_message_list_edit})
+            R.id.tv_cam_message_list_edit,
+            R.id.tv_msg_full_select,
+            R.id.tv_msg_delete})
     public void onBindClick(View view) {
+//        ViewUtils.deBounceClick(view);
+        final int lPos = ((LinearLayoutManager) rvCamMessageList.getLayoutManager())
+                .findLastVisibleItemPosition();
         switch (view.getId()) {
             case R.id.tv_cam_message_list_date:
                 if (camMessageListAdapter.getCount() == 0)
@@ -209,9 +219,23 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
                 fLayoutCamMessageListTimeline.setVisibility(show ? View.GONE : View.VISIBLE);
                 break;
             case R.id.tv_cam_message_list_edit:
-                final int lPos = ((LinearLayoutManager) rvCamMessageList.getLayoutManager())
-                        .findLastVisibleItemPosition();
-                camMessageListAdapter.reverseMode(lPos);
+                String content = ((TextView) view).getText().toString();
+                boolean toEdit = TextUtils.equals(content, getString(R.string.EDIT_THEME));
+                camMessageListAdapter.reverseMode(toEdit, lPos);
+                if (camMessageListAdapter.isEditMode())
+                    AnimatorUtils.slideIn(fLayoutCamMsgEditBar, false);
+                else {
+                    AnimatorUtils.slideOut(fLayoutCamMsgEditBar, false);
+                }
+                ((TextView) view).setText(getString(toEdit ? R.string.CANCEL
+                        : R.string.EDIT_THEME));
+                break;
+            case R.id.tv_msg_full_select://全选
+                camMessageListAdapter.markAllAsSelected(true, lPos);
+                break;
+            case R.id.tv_msg_delete://删除
+                if (basePresenter != null)
+                    basePresenter.removeItems(camMessageListAdapter.getSelectedItems());
                 break;
         }
     }
@@ -219,13 +243,20 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.tv_cam_message_item_delete: {
-                int position = ViewUtils.getParentAdapterPosition(rvCamMessageList, v, R.id.lLayout_cam_msg_container);
-                ToastUtil.showNegativeToast("delete:?" + position);
+            case R.id.tv_cam_message_item_delete: {//删除选中
+                int position = ViewUtils.getParentAdapterPosition(rvCamMessageList, v,
+                        R.id.lLayout_cam_msg_container);
+                ArrayList<CamMessageBean> list = new ArrayList<>();
+                CamMessageBean bean = camMessageListAdapter.getItem(position);
+                list.add(bean);
+                if (basePresenter != null)
+                    basePresenter.removeItems(list);
             }
             break;
-            case R.id.lLayout_cam_msg_container: {
-                int position = ViewUtils.getParentAdapterPosition(rvCamMessageList, v, R.id.lLayout_cam_msg_container);
+            case R.id.lLayout_cam_msg_container: {//点击item,选中
+                if (!camMessageListAdapter.isEditMode()) return;
+                int position = ViewUtils.getParentAdapterPosition(rvCamMessageList, v,
+                        R.id.lLayout_cam_msg_container);
                 camMessageListAdapter.markItemSelected(position);
             }
             break;

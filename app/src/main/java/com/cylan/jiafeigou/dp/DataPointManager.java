@@ -5,6 +5,7 @@ import android.util.Log;
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.entity.jniCall.RobotoGetDataRsp;
 import com.cylan.ex.JfgException;
+import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
@@ -27,7 +28,7 @@ import rx.schedulers.Schedulers;
  */
 
 public class DataPointManager implements IParser, IDataPoint {
-
+    private static boolean DEBUG = BuildConfig.DEBUG;
     private static final String TAG = "DataPointManager";
 
     private static DataPointManager instance;
@@ -81,6 +82,7 @@ public class DataPointManager implements IParser, IDataPoint {
 
     @Override
     public void clear() {
+        if (DEBUG) Log.d(TAG, "clear: ");
         bundleMap.clear();
     }
 
@@ -128,6 +130,7 @@ public class DataPointManager implements IParser, IDataPoint {
             o = set;
         }
         bundleMap.put(uuid, o);
+        if (DEBUG) Log.d(TAG, "putHashSetValue: " + uuid + " " + o);
         return true;
     }
 
@@ -152,6 +155,7 @@ public class DataPointManager implements IParser, IDataPoint {
     }
 
     private Object removeId(String uuid, long id) {
+        if (DEBUG) Log.d(TAG, "removeId: " + uuid + " " + id);
         return bundleMap.remove(uuid + id);
     }
 
@@ -230,7 +234,7 @@ public class DataPointManager implements IParser, IDataPoint {
         } else {
             return bundleMap.remove(uuid + id);
         }
-        AppLogger.i("delete: " + id + ",version:" + version);
+        if (DEBUG) Log.d(TAG, "delete: " + uuid + " " + id);
         return null;
     }
 
@@ -242,6 +246,28 @@ public class DataPointManager implements IParser, IDataPoint {
             AppLogger.e(String.format("id:%s is not registered in DataPointManager#mapObject,%s", id, c.getLocalizedMessage()));
             return null;
         }
+    }
+
+    @Override
+    public boolean deleteAll(String uuid, long id, ArrayList<Long> versions) {
+        Object result = bundleMap.remove(uuid + id);
+        if (DEBUG) Log.d(TAG, "deleteAll: " + uuid + " " + id + " " + (result == null));
+        deleteRobot(uuid, id, versions);
+        return result != null;
+    }
+
+    private void deleteRobot(String uuid, long id, ArrayList<Long> versions) {
+        if (versions == null || versions.size() == 0)
+            return;
+        ArrayList<JFGDPMsg> msgs = new ArrayList<>();
+        for (long version : versions) {
+            JFGDPMsg msg = new JFGDPMsg();
+            msg.id = id;
+            msg.version = version;
+            msgs.add(msg);
+        }
+        long req = JfgCmdInsurance.getCmd().robotDelData(uuid, msgs, 0);
+        if (DEBUG) Log.d(TAG, "deleteRobot: " + req);
     }
 
     @Override

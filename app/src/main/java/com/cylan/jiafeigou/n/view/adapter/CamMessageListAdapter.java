@@ -24,6 +24,7 @@ import com.cylan.superadapter.internal.SuperViewHolder;
 import com.cylan.utils.DensityUtils;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -77,10 +78,39 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
      *
      * @param lastVisiblePosition
      */
-    public void reverseMode(final int lastVisiblePosition) {
-        this.editMode = !this.editMode;
+    public void reverseMode(boolean reverse, final int lastVisiblePosition) {
+        this.editMode = reverse;
         if (!editMode) selectedMap.clear();
         updateItemFrom(lastVisiblePosition);
+    }
+
+    /**
+     * 全选或者反选
+     *
+     * @param mark
+     */
+    public void markAllAsSelected(boolean mark, int lastPosition) {
+        if (mark) {
+            for (int i = 0; i < getCount(); i++) {
+                selectedMap.put(i, i);
+            }
+        } else {
+            selectedMap.clear();
+        }
+        updateItemFrom(lastPosition);
+    }
+
+    /**
+     * 收集已经选中的
+     *
+     * @return
+     */
+    public ArrayList<CamMessageBean> getSelectedItems() {
+        ArrayList<CamMessageBean> list = new ArrayList<>();
+        for (int index : selectedMap.keySet()) {
+            list.add(getList().get(index));
+        }
+        return list;
     }
 
     /**

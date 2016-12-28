@@ -36,6 +36,8 @@ public interface IDataPoint {
      */
     BaseValue fetchLocal(String uuid, long id);
 
+    boolean deleteAll(String uuid, long id, ArrayList<Long> versions);
+
     /**
      * * 拉取本地数据
      *

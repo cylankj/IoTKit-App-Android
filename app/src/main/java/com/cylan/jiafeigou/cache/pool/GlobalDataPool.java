@@ -103,6 +103,11 @@ public class GlobalDataPool implements IDataPool {
     }
 
     @Override
+    public boolean deleteAll(String uuid, long id, ArrayList<Long> versions) {
+        return false;
+    }
+
+    @Override
     public ArrayList<BaseValue> fetchLocalList(String uuid, long id) {
         return dataPointManager.fetchLocalList(uuid, id);
     }
