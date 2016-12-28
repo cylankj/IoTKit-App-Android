@@ -113,7 +113,6 @@ public class MineInfoBindPhoneFragment extends Fragment implements MineBindPhone
         }
     }
 
-
     private void initPresenter() {
         presenter = new MineBindPhonePresenterImp(this);
     }
