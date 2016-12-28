@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
+import android.view.View;
 import android.view.WindowManager;
 import android.widget.Toast;
 
@@ -104,21 +105,46 @@ public class BaseFullScreenFragmentActivity<T extends BasePresenter> extends Fra
     protected void handleSystemBar(boolean port, final long delay) {
         WindowManager.LayoutParams attrs = getWindow().getAttributes();
         if (port) {
-            attrs.flags ^= WindowManager.LayoutParams.FLAG_FULLSCREEN;
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                attrs.flags ^= WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION;
-            }
+            showSystemUI();
+//            attrs.flags ^= WindowManager.LayoutParams.FLAG_FULLSCREEN;
+//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+//                attrs.flags ^= WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION;
+//            }
         } else {
-            attrs.flags |= WindowManager.LayoutParams.FLAG_FULLSCREEN;
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                attrs.flags |= WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION;
-            }
+            hideSystemUI();
+//            attrs.flags |= WindowManager.LayoutParams.FLAG_FULLSCREEN;
+//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+//                attrs.flags |= WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION;
+//            }
         }
         getWindow().setAttributes(attrs);
         checkSystemHider();
         showSystemBar(port, delay);
         //状态栏的背景色
         setSystemBarTintEnable(port);
+    }
+
+    // This snippet hides the system bars.
+    private void hideSystemUI() {
+        // Set the IMMERSIVE flag.
+        // Set the content to appear under the system bars so that the content
+        // doesn't resize when the system bars hide and show.
+        getWindow().getDecorView().setSystemUiVisibility(
+                View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                        | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                        | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION // hide nav bar
+                        | View.SYSTEM_UI_FLAG_FULLSCREEN // hide status bar
+                        | View.SYSTEM_UI_FLAG_IMMERSIVE);
+    }
+
+    // This snippet shows the system bars. It does this by removing all the flags
+// except for the ones that make the content appear under the system bars.
+    private void showSystemUI() {
+        getWindow().getDecorView().setSystemUiVisibility(
+                View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                        | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                        | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
     }
 
     protected void setSystemBarTintEnable(boolean enable) {

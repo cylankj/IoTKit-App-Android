@@ -280,7 +280,7 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
                     public Object call(Boolean aBoolean) {
                         //发送给DpDeviceAssembler
 //
-                        JfgCmdInsurance.getCmd().refreshDevList();//刷新列表.
+//                        JfgCmdInsurance.getCmd().refreshDevList();//刷新列表.
                         return null;
                     }
                 })

@@ -12,8 +12,6 @@ import java.util.List;
  */
 
 public class JCache {
-
-//    public static JFGAccount jfgAccount;
     /**
      * 非常坑爹啊，需要客户端记录标记。
      * 注册，忘记密码时候，都需要验证码，页面也换，就有不同的提示语{注册成功}
@@ -24,10 +22,8 @@ public class JCache {
 
     @Deprecated
     public static boolean isOnline() {
-        return onLineStatus && GlobalDataPool.getInstance().getJfgAccount() != null;
+        return GlobalDataPool.getInstance().isOnline() && GlobalDataPool.getInstance().getJfgAccount() != null;
     }
-
-    public static boolean onLineStatus = false;
 
     /**
      * @return

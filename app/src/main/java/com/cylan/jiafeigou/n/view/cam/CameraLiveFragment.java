@@ -259,10 +259,11 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
             // 加入竖屏要处理的代码
             fLayoutCamLiveMenu.setVisibility(View.VISIBLE);
             fLayoutLiveBottomHandleBar.setVisibility(View.VISIBLE);
-            ViewUtils.updateViewHeight(fLayoutCamLiveView, 0.75f);
+//            ViewUtils.updateViewHeight(fLayoutCamLiveView, 0.75f);
         }
         camLiveController.notifyOrientationChange(this.getResources().getConfiguration().orientation);
         AppLogger.i("onConfigurationChanged");
+        updateVideoViewLayoutParameters(null);
     }
 
     /**
@@ -334,14 +335,23 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
      * @param resolution
      */
     private void updateVideoViewLayoutParameters(JFGMsgVideoResolution resolution) {
+        if (resolution != null) fLayoutLiveViewContainer.setTag(resolution);
+        if (resolution == null) {
+            Object o = fLayoutLiveViewContainer.getTag();
+            if (o != null && o instanceof JFGMsgVideoResolution) {
+                resolution = (JFGMsgVideoResolution) o;
+            } else return;//要是resolution为空,就没必要设置了.
+        }
+        int height = getResources().getConfiguration().orientation == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+                ? ViewGroup.LayoutParams.MATCH_PARENT : (int) (Resources.getSystem().getDisplayMetrics().widthPixels * resolution.height / (float) resolution.width);
         FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                (int) (Resources.getSystem().getDisplayMetrics().widthPixels * resolution.height / (float) resolution.width));
+                ViewGroup.LayoutParams.MATCH_PARENT, height);
         View view = fLayoutLiveViewContainer.findViewById("IVideoView".hashCode());
         if (view == null) {
             fLayoutLiveViewContainer.addView((View) videoView, 0, lp);
         } else {
             view.setLayoutParams(lp);
+            ViewUtils.updateViewHeight(fLayoutCamLiveView, resolution.height / (float) resolution.width);
         }
         AppLogger.i("updateVideoViewLayoutParameters:" + (view == null));
     }
@@ -441,7 +451,8 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
                 break;
             case JError.ErrorVideoPeerInConnect:
                 //正在直播...
-                ToastUtil.showNegativeToast("直播中...");
+                ToastUtil.showToast(getString(R.string.CONNECTING));
+                camLiveController.setLoadingState(ILiveControl.STATE_IDLE, null);
                 break;
             default:
                 camLiveController.setLoadingState(ILiveControl.STATE_STOP, null);
