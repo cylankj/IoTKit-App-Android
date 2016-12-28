@@ -15,6 +15,8 @@ import android.util.Log;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.engine.DaemonService;
 import com.cylan.jiafeigou.n.engine.DataSourceService;
+import com.cylan.jiafeigou.rx.RxBus;
+import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.DebugOptionsImpl;
 import com.cylan.jiafeigou.support.block.impl.BlockCanary;
 import com.cylan.jiafeigou.support.block.impl.BlockCanaryContext;
@@ -52,6 +54,7 @@ public class BaseApplication extends MultiDexApplication implements Application.
         initLeakCanary();
         registerActivityLifecycleCallbacks(this);
     }
+
 
     private void initLeakCanary() {
         HandlerThreadUtils.post(new Runnable() {
@@ -112,6 +115,7 @@ public class BaseApplication extends MultiDexApplication implements Application.
                 //should release some resource
                 Log.d(TAG, "onTrimMemory: " + level);
 //                shouldKillBellCallProcess();
+                RxBus.getCacheInstance().post(new RxEvent.AppHideEvent());
                 break;
         }
     }

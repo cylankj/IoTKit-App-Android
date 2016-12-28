@@ -507,4 +507,7 @@ public class RxEvent {
             this.hold = hold;
         }
     }
+
+    public static class AppHideEvent {
+    }
 }

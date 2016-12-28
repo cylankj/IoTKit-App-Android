@@ -854,4 +854,5 @@
     <string name="Tap3_Userinfo_NoCamera">Camera can not use</string>
     <string name="ClearingTips">Clearing...</string>
     <string name="CancelingTips">Canceling...</string>
+    <string name="Msg_LoadDialog">加载中</string>
 </resources>
