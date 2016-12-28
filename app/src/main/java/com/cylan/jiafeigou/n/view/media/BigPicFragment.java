@@ -75,7 +75,17 @@ public class BigPicFragment extends Fragment {
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(imgVShowPic);
         imgVShowPic.setOnViewTapListener((View v, float x, float y) -> {
-            getActivity().finish();
+            if (callBack != null) callBack.click();
         });
+    }
+
+    private CallBack callBack;
+
+    public void setCallBack(CallBack callBack) {
+        this.callBack = callBack;
+    }
+
+    public interface CallBack {
+        void click();
     }
 }

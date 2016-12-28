@@ -424,7 +424,13 @@ public class AnimatorUtils {
             if (animator.isRunning() || animator.isStarted())
                 animator.cancel();
         }
-        int start = 0, end = fromTop ? -view.getHeight() : view.getHeight();
+        int start = 0, end;
+        if (!fromTop) {
+            ViewGroup parent = (ViewGroup) view.getParent();
+            end = parent.getHeight() - view.getTop();
+        } else {
+            end = -view.getBottom();
+        }
         ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(view, "translationY", start, end);
         objectAnimator.setDuration(250);
         objectAnimator.addListener(new SimpleAnimationListener() {
@@ -450,7 +456,13 @@ public class AnimatorUtils {
             if (animator.isRunning() || animator.isStarted())
                 animator.cancel();
         }
-        int end = 0, start = fromTop ? -view.getHeight() : view.getHeight();
+        int start, end = 0;
+        if (!fromTop) {
+            ViewGroup parent = (ViewGroup) view.getParent();
+            start = parent.getHeight() - view.getTop();
+        } else {
+            start = -(view.getTop() + view.getHeight());
+        }
         ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(view, "translationY", start, end);
         objectAnimator.setDuration(250);
         objectAnimator.addListener(new SimpleAnimationListener() {
@@ -472,9 +484,19 @@ public class AnimatorUtils {
      * @param fromTop:紧贴顶部,false:紧贴底部
      */
     public static void slideAuto(final View view, boolean fromTop) {
-        if (!view.isShown() || view.getBottom() == view.getY())
-            AnimatorUtils.slideIn(view, fromTop);
-        else if (view.isShown() && view.getTop() == view.getY())
-            AnimatorUtils.slideOut(view, fromTop);
+        if (fromTop) {
+            if (view.getBottom() == view.getTop() - view.getY())
+                slideIn(view, true);
+            if (view.getY() == view.getTop())
+                slideOut(view, true);
+        }
+        if (!fromTop) {
+            ViewGroup parent = (ViewGroup) view.getParent();
+            int end = parent.getHeight() - view.getTop();
+            if (end + view.getTop() == view.getY())
+                slideIn(view, false);
+            if (view.getTop() == view.getY())
+                slideOut(view, false);
+        }
     }
 }
