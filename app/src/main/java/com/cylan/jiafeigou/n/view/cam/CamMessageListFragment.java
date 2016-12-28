@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.dp.DpMsgDefine;
+import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamMessageListContract;
@@ -28,7 +31,10 @@ import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.wheel.WheelView;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -61,7 +67,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
     /**
      * 列表第一条可见item的position,用户刷新timeLine控件的位置。
      */
-    private int currentPosition = 0;
+    private int currentPosition = -1;
     private CamMessageListAdapter camMessageListAdapter;
     private String uuid;
 
@@ -100,6 +106,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        srLayoutCamListRefresh.setColorSchemeColors(R.color.COLOR_CACACA);
         srLayoutCamListRefresh.setOnRefreshListener(this);
         camMessageListAdapter = new CamMessageListAdapter(this.uuid, getContext(), null, null);
         rvCamMessageList.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false));
@@ -132,22 +139,20 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
      * @param position
      */
     private void setCurrentPosition(int position) {
-        if (currentPosition == position)
+        if (currentPosition == position && position < 0 || position > camMessageListAdapter.getCount() - 1)
             return;
         currentPosition = position;
-        if (getView() != null) getView().post(new Runnable() {
-            @Override
-            public void run() {
-                long time = camMessageListAdapter.getList().get(0).time;
-                boolean isToday = TimeUtils.isToday(time);
-                String content = String.format(TimeUtils.getSuperString(time) + "%s", isToday ? getString(R.string.DOOR_TODAY) : "");
-                tvCamMessageListDate.setText(content);
-                tvCamMessageListDate.setText(TimeUtils.getSuperString(camMessageListAdapter.getItem(currentPosition).time));
-            }
+        if (getView() != null) getView().post(() -> {
+            long time = camMessageListAdapter.getList().get(currentPosition).time;
+            boolean isToday = TimeUtils.isToday(time);
+            String content = String.format(TimeUtils.getSuperString(time) + "%s", isToday ? "(" + getString(R.string.DOOR_TODAY) + ")" : "");
+            tvCamMessageListDate.setText(content);
+            Log.d("simpleDateFormat", "simpleDateFormat: " + simpleDateFormat.format(new Date(time)));
         });
         AppLogger.d("fPos: " + position);
     }
 
+    private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMdd-HH:mm:ss", Locale.getDefault());
 
     @Override
     public void onMessageListRsp(ArrayList<CamMessageBean> beanArrayList) {
@@ -167,7 +172,23 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
     }
 
     @Override
-    public void updateSdStatus(boolean status) {
+    public void deviceInfoChanged(int id, Object o) {
+        final int lPos = ((LinearLayoutManager) rvCamMessageList.getLayoutManager())
+                .findLastVisibleItemPosition();
+        switch (id) {
+            case DpMsgMap.ID_204_SDCARD_STORAGE:
+                camMessageListAdapter.notifySdcardStatus(o != null && ((DpMsgDefine.SdStatus) o).hasSdcard,
+                        lPos);
+                break;
+            case DpMsgMap.ID_222_SDCARD_SUMMARY:
+                camMessageListAdapter.notifySdcardStatus(o != null && ((DpMsgDefine.SdcardSummary) o).hasSdcard,
+                        lPos);
+                break;
+            case DpMsgMap.ID_201_NET:
+                camMessageListAdapter.notifyDeviceOnlineState(o != null && ((DpMsgDefine.MsgNet) o).net != 0,
+                        lPos);
+                break;
+        }
 
     }
 
@@ -214,6 +235,9 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
                 camMessageListAdapter.markItemSelected(position);
             }
             break;
+            case R.id.tv_to_live:
+                ToastUtil.showToast("直播?");
+                break;
         }
     }
 }

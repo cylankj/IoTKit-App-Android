@@ -6,6 +6,7 @@ import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.cache.pool.GlobalDataPool;
 import com.cylan.jiafeigou.dp.BaseValue;
+import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.Converter;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamMessageListContract;
@@ -52,26 +53,27 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
      * @return
      */
     private Subscription sdcardStatusSub() {
-        return RxBus.getCacheInstance().toObservable(RxEvent.JFGRobotSyncData.class)
-                .filter((RxEvent.JFGRobotSyncData data) -> (getView() != null && TextUtils.equals(uuid, data.identity)))
-                .subscribeOn(Schedulers.io())
-                .map(new Func1<RxEvent.JFGRobotSyncData, Boolean>() {
+        return RxBus.getCacheInstance().toObservable(RxEvent.DataPoolUpdate.class)
+                .filter((RxEvent.DataPoolUpdate data) -> (getView() != null && TextUtils.equals(uuid, data.uuid)))
+                .observeOn(AndroidSchedulers.mainThread())
+                .map(new Func1<RxEvent.DataPoolUpdate, Boolean>() {
                     @Override
-                    public Boolean call(RxEvent.JFGRobotSyncData jfgRobotSyncData) {
-                        ArrayList<JFGDPMsg> list = jfgRobotSyncData.dataList;
-                        for (int i = 0; i < list.size(); i++) {
-                            JFGDPMsg dp = list.get(i);
-                            if (dp.id == DpMsgMap.ID_201_NET) {
-
-                            }
+                    public Boolean call(RxEvent.DataPoolUpdate update) {
+                        if (update.id == DpMsgMap.ID_204_SDCARD_STORAGE) {
+                            DpMsgDefine.SdStatus sdStatus = GlobalDataPool.getInstance().getValue(uuid, DpMsgMap.ID_204_SDCARD_STORAGE);
+                            getView().deviceInfoChanged(update.id, sdStatus);
+                        } else if (update.id == DpMsgMap.ID_222_SDCARD_SUMMARY) {
+                            DpMsgDefine.SdcardSummary sdcardSummary = GlobalDataPool.getInstance().getValue(uuid, DpMsgMap.ID_222_SDCARD_SUMMARY);
+                            getView().deviceInfoChanged(update.id, sdcardSummary);
+                        } else if (update.id == DpMsgMap.ID_201_NET) {
+                            DpMsgDefine.MsgNet net = GlobalDataPool.getInstance().getValue(uuid, DpMsgMap.ID_201_NET);
+                            getView().deviceInfoChanged(update.id, net);
                         }
                         return null;
                     }
                 })
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .subscribe((Boolean aBoolean) -> {
-                    getView().updateSdStatus(aBoolean);
-                });
+                .retry(new RxHelper.RxException<>("sdcardStatusSub"))
+                .subscribe();
     }
 
 

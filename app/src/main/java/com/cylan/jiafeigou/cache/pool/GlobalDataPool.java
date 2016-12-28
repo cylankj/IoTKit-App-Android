@@ -108,7 +108,25 @@ public class GlobalDataPool implements IDataPool {
     }
 
     @Override
+    public boolean isArrayType(int id) {
+        return dataPointManager.isArrayType(id);
+    }
+
+    @Override
     public long robotGetData(String peer, ArrayList<JFGDPMsg> queryDps, int limit, boolean asc, int timeoutMs) throws JfgException {
         return dataPointManager.robotGetData(peer, queryDps, limit, asc, timeoutMs);
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T> T getValue(String uuid, int id) {
+        if (isArrayType(id)) {
+            throw new IllegalArgumentException(String.format("id:%s is an array type in the map", id));
+        }
+        try {
+            BaseValue base = dataPointManager.fetchLocal(uuid, id);
+            return base == null || base.getValue() == null ? null : (T) base.getValue();
+        } catch (ClassCastException c) {
+            return null;
+        }
     }
 }

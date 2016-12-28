@@ -141,7 +141,7 @@ public class TimeUtils {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(new Date(time));
         Calendar calendar1 = Calendar.getInstance();
-        calendar.setTime(new Date(System.currentTimeMillis()));
+        calendar1.setTime(new Date(System.currentTimeMillis()));
         return calendar.get(Calendar.YEAR) == calendar1.get(Calendar.YEAR) &&
                 calendar.get(Calendar.DAY_OF_YEAR) == calendar1.get(Calendar.DAY_OF_YEAR);
     }

@@ -13,6 +13,8 @@ import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.cache.pool.GlobalDataPool;
+import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.n.mvp.model.CamMessageBean;
 import com.cylan.jiafeigou.utils.TimeUtils;
@@ -22,11 +24,8 @@ import com.cylan.superadapter.internal.SuperViewHolder;
 import com.cylan.utils.DensityUtils;
 
 import java.io.File;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -48,6 +47,8 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
     private final int pic_container_height;
     private Map<Integer, Integer> selectedMap = new HashMap<>();
     private Map<Integer, Integer> loadFailedMap = new HashMap<>();
+    private boolean hasStatus;
+    private boolean deviceOnlineState;
 
     public CamMessageListAdapter(String uiid, Context context, List<CamMessageBean> items, IMulItemViewType<CamMessageBean> mulItemViewType) {
         super(context, items, mulItemViewType);
@@ -55,18 +56,42 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
         pic_container_width = Resources.getSystem().getDisplayMetrics().widthPixels - DensityUtils.dip2px(40);
         pic_container_height = DensityUtils.dip2px(225 - 48 - 36 - 5);
         this.uuid = uiid;
+        fetchSdcardStatus();
+    }
+
+    private void fetchSdcardStatus() {
+        DpMsgDefine.SdcardSummary sdcardSummary = GlobalDataPool.getInstance().getValue(uuid, DpMsgMap.ID_204_SDCARD_STORAGE);
+        DpMsgDefine.SdStatus status = GlobalDataPool.getInstance().getValue(uuid, DpMsgMap.ID_204_SDCARD_STORAGE);
+        this.hasStatus |= status != null && status.hasSdcard;
+        this.hasStatus |= sdcardSummary != null && sdcardSummary.hasSdcard;
+        DpMsgDefine.MsgNet net = GlobalDataPool.getInstance().getValue(this.uuid, DpMsgMap.ID_201_NET);
+        deviceOnlineState = net != null && net.net != 0;
     }
 
     public boolean isEditMode() {
         return editMode;
     }
 
+    /**
+     * 翻转
+     *
+     * @param lastVisiblePosition
+     */
     public void reverseMode(final int lastVisiblePosition) {
         this.editMode = !this.editMode;
         if (!editMode) selectedMap.clear();
+        updateItemFrom(lastVisiblePosition);
+    }
+
+    /**
+     * 更新部分item
+     *
+     * @param position
+     */
+    private void updateItemFrom(int position) {
         synchronized (CamMessageListAdapter.class) {
             for (int i = 0; i < getCount(); i++) {
-                if (i <= lastVisiblePosition)//没必要全部
+                if (i <= position)//没必要全部
                     notifyItemChanged(i);
             }
         }
@@ -104,10 +129,26 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
     }
 
     /**
+     * 显示直播按钮
+     *
+     * @param time
+     * @return
+     */
+    private boolean showLiveBtn(long time) {
+        return System.currentTimeMillis() - time >= 30 * 60 * 1000L && this.hasStatus;
+    }
+
+    /**
      * 来自一个全局的通知消息
      */
-    public void notifySdcardStatus() {
+    public void notifySdcardStatus(boolean status, int position) {
+        this.hasStatus = status;
+        updateItemFrom(position);
+    }
 
+    public void notifyDeviceOnlineState(boolean online, int position) {
+        this.deviceOnlineState = online;
+        updateItemFrom(position);
     }
 
     /**
@@ -118,7 +159,8 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
      */
     private void handleTextContentLayout(SuperViewHolder holder,
                                          CamMessageBean item) {
-        holder.setText(R.id.tv_cam_message_item_date, getFinalContent(item));
+        holder.setText(R.id.tv_cam_message_item_date, getFinalTimeContent(item));
+        holder.setText(R.id.tv_cam_message_list_content, getFinalSdcardContent(item));
     }
 
     private void handlePicsLayout(SuperViewHolder holder,
@@ -141,24 +183,49 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
                     .into((ImageView) holder.getView(R.id.imgV_cam_message_pic_0 + i));
         }
 //        }
-        holder.setText(R.id.tv_cam_message_item_date, getFinalContent(item));
-        Log.d("simpleDateFormat", "simpleDateFormat: " + simpleDateFormat.format(new Date(item.time)));
+        holder.setText(R.id.tv_cam_message_item_date, getFinalTimeContent(item));
+        holder.setVisibility(R.id.tv_to_live, showLiveBtn(item.time) ? View.VISIBLE : View.INVISIBLE);
+        holder.setOnClickListener(R.id.tv_to_live, onClickListener);
+        holder.setEnabled(R.id.tv_to_live, deviceOnlineState);
     }
 
-    private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMdd-HH:mm:ss", Locale.getDefault());
+
     private View.OnClickListener onClickListener;
 
     public void setOnclickListener(View.OnClickListener onclickListener) {
         this.onClickListener = onclickListener;
     }
 
-    private String getFinalContent(CamMessageBean bean) {
+    /**
+     * 时间
+     *
+     * @param bean
+     * @return
+     */
+    private String getFinalTimeContent(CamMessageBean bean) {
         long id = bean.id;
-        String tContent = TimeUtils.getHH_MM(bean.time * 1000L);
+        String tContent = TimeUtils.getHH_MM(bean.time);
         if (id == DpMsgMap.ID_505_CAMERA_ALARM_MSG) {
             return tContent + " 有新的发现";
         }
         return tContent;
+    }
+
+    /**
+     * sd卡内容
+     *
+     * @param bean
+     * @return
+     */
+    private String getFinalSdcardContent(CamMessageBean bean) {
+        if (bean.id != DpMsgMap.ID_204_SDCARD_STORAGE || bean.content == null)
+            return "";
+        DpMsgDefine.SdStatus sdStatus = bean.content;
+        switch (sdStatus.err) {
+            case 0:
+                return getContext().getString(R.string.permission_ok);
+        }
+        return "";
     }
 
     @Override

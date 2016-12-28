@@ -196,7 +196,8 @@ public class HomeWonderfulFragmentExt extends Fragment implements
             args.putString(BaseDialog.KEY_TITLE, "");
             args.putString(SimpleDialogFragment.KEY_LEFT_CONTENT, "");
             args.putString(SimpleDialogFragment.KEY_RIGHT_CONTENT, "");
-            args.putString(SimpleDialogFragment.KEY_CONTENT_CONTENT, this.getString(R.string.Tips_Delete_Msg));
+            args.putString(SimpleDialogFragment.KEY_CONTENT_CONTENT,
+                    this.getString(R.string.Tips_SureDelete));
             deleteDialogFragmentWeakReference = new WeakReference<>(SimpleDialogFragment.newInstance(null));
             deleteDialogFragmentWeakReference.get().setAction(this);
         }
@@ -309,7 +310,7 @@ public class HomeWonderfulFragmentExt extends Fragment implements
      * 初始化,progressBar的位置.
      */
     private void initProgressBarPosition() {
-        srLayoutMainContentHolder.setColorSchemeColors(R.color.color_36bdff);
+        srLayoutMainContentHolder.setColorSchemeColors(R.color.COLOR_CACACA);
     }
 
     @Override

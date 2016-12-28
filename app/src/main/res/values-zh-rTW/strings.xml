@@ -279,7 +279,7 @@
   <string name="MSG_VIDEO">看直播</string>
   <string name="MSG_WARNING">有新的發現</string>
   <string name="MSG_WARN_OFF">位移偵測已關閉，可以再次開啟</string>
-  <string name="MSG_WARN_ON">已開啟位移偵測，偵測到異常時，將即時發送訊息給您</string>
+  <string name="MSG_WARN_ON"></string>
   <string name="MUTE">靜音</string>
   <string name="MY_HOME">家</string>
   <string name="NAME">名稱</string>
@@ -612,7 +612,7 @@
   <string name="Tap1_Tosetup">設定</string>
   <string name="Tap1_device_deleted">此設備已被刪除</string>
   <string name="Tap1_iHome_Associate">關聯</string>
-  <string name="Tap1_iHome_Associated">已關聯</string>
+  <string name="Tap1_iHome_Associated">已关联</string>
   <string name="Tap1_iHome_CallDuration">通話時長：%s</string>
   <string name="Tap1_iHome_ClearRecord">清空消息記錄</string>
   <string name="Tap1_iHome_NotAssociated">未關聯</string>

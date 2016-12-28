@@ -25,7 +25,7 @@
                 android:drawableLeft="@drawable/icon_nav_back_white"
                 android:drawablePadding="15dp"
                 android:padding="15dp"
-                android:text="@string/delay_record_guide"
+                android:text="@string/Tap2_TitleName"
                 android:textColor="@color/color_white"
                 android:textSize="16sp"/>
         </FrameLayout>
@@ -42,7 +42,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:gravity="center"
-        android:text="@string/delay_record_guide_hint"
+        android:text="@string/Tap1_Camera_Greetings"
         android:textColor="#AAAAAA"
         android:textSize="15sp"/>
 

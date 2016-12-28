@@ -195,14 +195,19 @@ public class CamDelayRecordActivity extends BaseFullScreenFragmentActivity<CamDe
     public void refreshRecordTime(long time) {
         if (time > 0) {
             //已经开始录制了,则显示剩余时间
-            mRecordInformation.setText(getString(R.string.delay_record_hint_information_1, TimeUtils.getHH_MM_Remain(mRecordDuration - time)));
+            String remain = getString(R.string.Tap1_CameraFun_Timelapse_Countdown) +
+                    TimeUtils.getHH_MM_Remain(mRecordDuration - time);
+            mRecordInformation.setText(remain);
             mControllerView.setRecordTime(time);
         } else if (time == DELAY_RECORD_SETTING || time == DELAY_RECORD_PREVIEW) {
             //还没有开始录制,则现在当前设置的模式
-            mRecordInformation.setText(getString(R.string.delay_record_hint_information_0, mRecordMode == 0 ? 60 : 20, mRecordTime));
+            String content = getString(R.string.Tap1_CameraFun_Timelapse_Interval) + (mRecordMode == 0 ? 60 : 20)
+                    + " " +
+                    getString(R.string.Tap1_CameraFun_Timelapse_RecordTime) + (mRecordTime);
+            mRecordInformation.setText(content);
         } else if (time == DELAY_RECORD_FINISH) {
             //录制并合成完成视频
-            mRecordInformation.setText(R.string.delay_record_hint_information_2);
+            mRecordInformation.setText(R.string.Tap1_CameraFun_Timelapse_SynthesisTips);
         } else if (time == DELAY_RECORD_PROCESS) {
             //已完成录制,正在进行视频合成
             mRecordInformation.setText(R.string.delay_record_hint_information_3);
@@ -369,8 +374,8 @@ public class CamDelayRecordActivity extends BaseFullScreenFragmentActivity<CamDe
     private void refreshSurfaceView() {
         switch (mDelayRecordState) {
             case DELAY_RECORD_SETTING: {
-                    setDefaultPreview();
-                    showPreviewOrRecord();
+                setDefaultPreview();
+                showPreviewOrRecord();
             }
             break;
         }

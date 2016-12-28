@@ -12,6 +12,7 @@ import com.cylan.entity.jniCall.JFGFriendRequest;
 import com.cylan.entity.jniCall.JFGMsgHttpResult;
 import com.cylan.entity.jniCall.JFGResult;
 import com.cylan.entity.jniCall.JFGShareListInfo;
+import com.cylan.jiafeigou.dp.BaseValue;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 
 import java.util.ArrayList;
@@ -434,6 +435,12 @@ public class RxEvent {
         public ArrayList<JFGDPMsg> dataList;
     }
 
+    public static final class DataPoolUpdate {
+        public String uuid;
+        public int id;
+//        public BaseValue value;
+    }
+
     /**
      * 修改设备属性
      */
@@ -511,8 +518,8 @@ public class RxEvent {
     /**
      * 修改密码的返回
      */
-    public static final class ChangePwdBack{
-       public JFGResult jfgResult;
+    public static final class ChangePwdBack {
+        public JFGResult jfgResult;
 
         public ChangePwdBack(JFGResult jfgResult) {
             this.jfgResult = jfgResult;
@@ -522,7 +529,7 @@ public class RxEvent {
     /**
      * 修改密码的返回
      */
-    public static final class ResetPwdBack{
+    public static final class ResetPwdBack {
         public JFGResult jfgResult;
 
         public ResetPwdBack(JFGResult jfgResult) {
@@ -531,9 +538,9 @@ public class RxEvent {
     }
 
     /**
-     *添加亲友的返回
+     * 添加亲友的返回
      */
-    public static final class AddFriendBack{
+    public static final class AddFriendBack {
         public JFGResult jfgResult;
 
         public AddFriendBack(JFGResult jfgResult) {
@@ -542,9 +549,9 @@ public class RxEvent {
     }
 
     /**
-     *删除亲友的返回
+     * 删除亲友的返回
      */
-    public static final class DelFriendBack{
+    public static final class DelFriendBack {
         public JFGResult jfgResult;
 
         public DelFriendBack(JFGResult jfgResult) {
@@ -553,9 +560,9 @@ public class RxEvent {
     }
 
     /**
-     *同意添加亲友的返回
+     * 同意添加亲友的返回
      */
-    public static final class ConsentAddFriendBack{
+    public static final class ConsentAddFriendBack {
         public JFGResult jfgResult;
 
         public ConsentAddFriendBack(JFGResult jfgResult) {
@@ -564,9 +571,9 @@ public class RxEvent {
     }
 
     /**
-     *同意添加亲友的返回
+     * 同意添加亲友的返回
      */
-    public static final class SetFriendAliasBack{
+    public static final class SetFriendAliasBack {
         public JFGResult jfgResult;
 
         public SetFriendAliasBack(JFGResult jfgResult) {
@@ -575,9 +582,9 @@ public class RxEvent {
     }
 
     /**
-     *发送反馈的返回
+     * 发送反馈的返回
      */
-    public static final class SendFeekBack{
+    public static final class SendFeekBack {
         public JFGResult jfgResult;
 
         public SendFeekBack(JFGResult jfgResult) {
@@ -586,9 +593,9 @@ public class RxEvent {
     }
 
     /**
-     *三方绑定手机设置密码时的返回
+     * 三方绑定手机设置密码时的返回
      */
-    public static final class OpenLogInSetPwdBack{
+    public static final class OpenLogInSetPwdBack {
         public JFGResult jfgResult;
 
         public OpenLogInSetPwdBack(JFGResult jfgResult) {

@@ -58,7 +58,6 @@ import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_PREPARE;
  * Created by cylan-hunt on 16-7-27.
  */
 public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View> implements CamLiveContract.Presenter {
-    private static final String TAG = "CamLivePresenterImpl";
     private DeviceBean bean;
     private BeanCamInfo beanCamInfo;
     private boolean isRtcpSignal;

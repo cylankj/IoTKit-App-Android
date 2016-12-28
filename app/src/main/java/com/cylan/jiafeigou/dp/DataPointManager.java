@@ -7,9 +7,11 @@ import com.cylan.entity.jniCall.RobotoGetDataRsp;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.rx.RxBus;
+import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.rx.RxHelper;
 import com.cylan.jiafeigou.support.log.AppLogger;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -33,7 +35,48 @@ public class DataPointManager implements IParser, IDataPoint {
 
     @Override
     public Subscription[] register() {
-        return new Subscription[]{fullDataPointAssembler()};
+        return new Subscription[]{fullDataPointAssembler(),
+                robotDataSyncSub()};
+    }
+
+    /**
+     * robot同步数据
+     *
+     * @return
+     */
+    private Subscription robotDataSyncSub() {
+        return RxBus.getCacheInstance().toObservable(RxEvent.JFGRobotSyncData.class)
+                .subscribeOn(Schedulers.newThread())
+                .map((RxEvent.JFGRobotSyncData jfgRobotSyncData) -> {
+                    String uuid = jfgRobotSyncData.identity;
+                    Map<String, BaseValue> updatedItems = new HashMap<>();
+                    for (JFGDPMsg jfg : jfgRobotSyncData.dataList) {
+                        try {
+                            BaseValue base = new BaseValue();
+                            base.setId(jfg.id);
+                            base.setVersion(jfg.version);
+                            base.setValue(DpUtils.unpackData(jfg.packValue, DpMsgMap.ID_2_CLASS_MAP.get((int) jfg.id)));
+                            boolean result = update(uuid, base);
+                            if (result) updatedItems.put(jfgRobotSyncData.identity, base);
+                        } catch (IOException e) {
+                            AppLogger.e("" + e.getLocalizedMessage());
+                        }
+                    }
+                    AppLogger.i("robotSyc:" + updatedItems.keySet());
+                    return updatedItems;
+                })
+                .filter((Map<String, BaseValue> map) -> (map.size() > 0))
+                .map((Map<String, BaseValue> map) -> {
+                    for (String uuid : map.keySet()) {
+                        RxEvent.DataPoolUpdate data = new RxEvent.DataPoolUpdate();
+                        data.id = (int) map.get(uuid).getId();
+                        data.uuid = uuid;
+                        RxBus.getCacheInstance().post(data);
+                    }
+                    return null;
+                })
+                .retry(new RxHelper.RxException<>("robotDataSyncSub:"))
+                .subscribe();
     }
 
     @Override
@@ -214,6 +257,11 @@ public class DataPointManager implements IParser, IDataPoint {
             return null;
         }
         return null;
+    }
+
+    @Override
+    public boolean isArrayType(int id) {
+        return mapObject.containsKey(id);
     }
 
     @Override
