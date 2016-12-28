@@ -323,25 +323,28 @@ public class SuperWheelExt extends View {
      * @param moveDirection
      */
     public void autoSettle(int newState, int moveDirection) {
-        if (wheelRollListener != null && iDataProvider != null) {
+        if (iDataProvider != null) {
             //通过
             boolean idle = newState == ITouchHandler.SCROLL_STATE_IDLE;//判断当前的位置是否是热区,即:mask区域.
             long timeCurrent = getCurrentFocusTime();
             long timeTarget = iDataProvider.getNextFocusTime(timeCurrent, moveDirection);
             if (moveDirection != -1 && idle) {
                 //开始吸附过程
-                wheelRollListener.onTimeUpdate(timeTarget, STATE_ADSORB);
+                if (wheelRollListener != null)
+                    wheelRollListener.onWheelTimeUpdate(timeTarget, STATE_ADSORB);
                 setPositionByTime(timeTarget);
-                wheelRollListener.onTimeUpdate(timeTarget, STATE_FINISH);
+                if (wheelRollListener != null)
+                    wheelRollListener.onWheelTimeUpdate(timeTarget, STATE_FINISH);
             } else {
-                if (notifyAlways && !idle) {
-                    wheelRollListener.onTimeUpdate(timeCurrent, STATE_DRAGGING);
+                if (notifyAlways && !idle && (wheelRollListener != null)) {
+                    wheelRollListener.onWheelTimeUpdate(timeCurrent, STATE_DRAGGING);
                 } else {
                     if (!idle)
                         return;
                     if (iDataProvider.isHotRect(timeCurrent)) {
                         //拖拽停止.
-                        wheelRollListener.onTimeUpdate(timeTarget, STATE_FINISH);
+                        if (wheelRollListener != null)
+                            wheelRollListener.onWheelTimeUpdate(timeTarget, STATE_FINISH);
                         if (DEBUG)
                             Log.d(TAG, "hit");
                     } else {
@@ -400,7 +403,7 @@ public class SuperWheelExt extends View {
         /**
          * @param time: 移动后，
          */
-        void onTimeUpdate(long time, int state);
+        void onWheelTimeUpdate(long time, int state);
     }
 }
 

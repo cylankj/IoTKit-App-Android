@@ -46,6 +46,13 @@ public interface HomeMineHelpSuggestionContract {
          * 系统的自动回复
          */
         void addSystemAutoReply(long time,String content);
+
+        /**
+         * 更新列表显示
+         * @param code
+         */
+        void refrshRecycleView(int code);
+
     }
 
     interface Presenter extends BasePresenter {
@@ -107,5 +114,13 @@ public interface HomeMineHelpSuggestionContract {
          * @return
          */
         Subscription getSystemAutoReplyCallBack();
+
+        /**
+         * 发送反馈的回调
+         * @return
+         */
+        Subscription sendFeedBackReq();
+
+        void deleteOnItemFromDb(MineHelpSuggestionBean bean);
     }
 }

@@ -35,22 +35,30 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.cylan.entity.jniCall.JFGAccount;
+import com.cylan.jiafeigou.NewHomeActivity;
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.SmartcallActivity;
+import com.cylan.jiafeigou.cache.JCache;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineInfoContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineInfoPresenterImpl;
+import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
 import com.cylan.jiafeigou.n.view.splash.BeforeLoginFragment;
+import com.cylan.jiafeigou.rx.RxBus;
+import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.photoselect.ClipImageActivity;
 import com.cylan.jiafeigou.support.photoselect.activities.AlbumSelectActivity;
 import com.cylan.jiafeigou.support.photoselect.helpers.Constants;
+import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.LocaleUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.LoadingDialog;
 import com.cylan.jiafeigou.widget.roundedimageview.RoundedImageView;
+import com.cylan.utils.NetUtils;
 
 import java.io.File;
 
@@ -189,7 +197,7 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
                 break;
             //点击退出做相应的逻辑
             case R.id.btn_home_mine_personal_information:
-                showLogOutDialog();
+                showLogOutDialog(view);
                 break;
             //点击邮箱跳转到相应的页面
             case R.id.lLayout_home_mine_personal_mailbox:
@@ -385,7 +393,7 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
         popupWindow.showAtLocation(v, Gravity.BOTTOM, 0, navigationHeight-50);
         //设置消失监听
         popupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
-    @Override
+            @Override
             public void onDismiss() {
                 setBackgroundAlpha(1);
             }
@@ -451,17 +459,9 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
             @Override
             public void onClick(View v) {
                 popupWindow.dismiss();
-                }
+            }
         });
-            }
-
-    //设置屏幕背景透明效果
-    public void setBackgroundAlpha(float alpha) {
-        WindowManager.LayoutParams lp = getActivity().getWindow().getAttributes();
-        lp.alpha = alpha;
-        getActivity().getWindow().setAttributes(lp);
-            }
-
+    }
 
     /**
      * 打开相册
@@ -501,10 +501,9 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
      */
     private void jump2LoginFragment() {
         //进入登陆页 login page
-        getFragmentManager()
-                .beginTransaction()
-                .add(android.R.id.content, BeforeLoginFragment.newInstance(null))
-                .commitAllowingStateLoss();
+        JCache.onLineStatus = false;
+        getActivity().startActivity(new Intent(getContext(), SmartcallActivity.class));
+        getActivity().finish();
     }
 
     @Override
@@ -512,49 +511,99 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
 
     }
 
-    @Override
-    public void showLogOutDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        builder.setTitle(getString(R.string.LOGOUT_INFO));
-        builder.setPositiveButton(getString(R.string.LOGOUT), new DialogInterface.OnClickListener() {
+    /**
+     * 删除亲友对话框
+     */
+    public void showLogOutDialog(View v){
+        if (popupWindow != null && popupWindow.isShowing()) {
+            return;
+        }
+        //设置PopupWindow的View
+        View view = LayoutInflater.from(getContext()).inflate(R.layout.layout_del_friend_popupwindow, null);
+        popupWindow = new PopupWindow(view, RelativeLayout.LayoutParams.MATCH_PARENT,
+                RelativeLayout.LayoutParams.WRAP_CONTENT);
+        //设置背景
+        popupWindow.setBackgroundDrawable(new BitmapDrawable());
+        //设置点击弹窗外隐藏自身
+        popupWindow.setFocusable(true);
+        popupWindow.setOutsideTouchable(true);
+        //设置动画
+        popupWindow.setAnimationStyle(R.style.PopupWindow);
+        //设置位置
+        popupWindow.showAtLocation(v, Gravity.BOTTOM, 0, navigationHeight-50);
+        //设置消失监听
+        popupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-                if (getView() != null) {
-                            presenter.logOut();
-                    jump2LoginFragment();
-                    getFragmentManager().popBackStack();
-                        }
-
+            public void onDismiss() {
+                setBackgroundAlpha(1);
             }
         });
-        builder.setNegativeButton(getString(R.string.CANCEL), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        }).show();
+        //设置PopupWindow的View点击事件
+        setOnLogoutClick(view);
+        //设置背景色
+        setBackgroundAlpha(0.4f);
     }
+
+    private void setOnLogoutClick(View view) {
+        TextView tv_is_del,tv_pick_zone, tv_cancel;
+        tv_is_del = (TextView) view.findViewById(R.id.tv_is_del_frined);
+        tv_pick_zone = (TextView) view.findViewById(R.id.tv_del_friend);
+        tv_cancel = (TextView) view.findViewById(R.id.tv_cancel);
+
+        tv_is_del.setTextSize(14);
+        tv_is_del.setText(getString(R.string.LOGOUT_INFO));
+
+        tv_pick_zone.setText(getString(R.string.LOGOUT));
+
+        tv_pick_zone.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                popupWindow.dismiss();
+                if (getView() != null) {
+                    presenter.logOut();
+                    jump2LoginFragment();
+                }
+            }
+        });
+
+        tv_cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                popupWindow.dismiss();
+            }
+        });
+
+    }
+
+
+    //设置屏幕背景透明效果
+    public void setBackgroundAlpha(float alpha) {
+        WindowManager.LayoutParams lp = getActivity().getWindow().getAttributes();
+        lp.alpha = alpha;
+        getActivity().getWindow().setAttributes(lp);
+    }
+
+
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode != getActivity().RESULT_CANCELED){
-        if (requestCode == Constants.REQUEST_CODE && data != null) {
-            gotoClipActivity(Uri.parse(data.getStringExtra(Constants.INTENT_EXTRA_IMAGES)));
-        } else if (requestCode == REQUEST_CROP_PHOTO && data != null) {
-            final Uri uri = data.getData();
-            if (uri == null) {
-                return;
-            }
-            String cropImagePath = getRealFilePathFromUri(getContext(), uri);
-            PreferencesUtils.putString("UserImageUrl", cropImagePath);
-        } else if (requestCode == OPEN_CAMERA) {
-            if (resultCode == getActivity().RESULT_OK) {
-                gotoClipActivity(outPutUri);
+            if (requestCode == Constants.REQUEST_CODE && data != null) {
+                gotoClipActivity(Uri.parse(data.getStringExtra(Constants.INTENT_EXTRA_IMAGES)));
+            } else if (requestCode == REQUEST_CROP_PHOTO && data != null) {
+                final Uri uri = data.getData();
+                if (uri == null) {
+                    return;
+                }
+                String cropImagePath = getRealFilePathFromUri(getContext(), uri);
+                PreferencesUtils.putString("UserImageUrl", cropImagePath);
+            } else if (requestCode == OPEN_CAMERA) {
+                if (resultCode == getActivity().RESULT_OK) {
+                    gotoClipActivity(outPutUri);
+                }
             }
         }
-    }
     }
 
     /**

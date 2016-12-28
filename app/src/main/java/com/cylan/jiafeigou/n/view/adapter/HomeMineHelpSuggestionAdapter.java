@@ -6,6 +6,8 @@ import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -42,6 +44,16 @@ public class HomeMineHelpSuggestionAdapter extends SuperAdapter<MineHelpSuggesti
 
     private ImageView clientImage;
 
+    private OnResendFeedBackListener resendFeedBack;
+
+    public interface OnResendFeedBackListener {
+        void onResend(SuperViewHolder holder,MineHelpSuggestionBean item,int position);
+    }
+
+    public void setOnResendFeedBack(OnResendFeedBackListener resendFeedBack){
+        this.resendFeedBack = resendFeedBack;
+    }
+
     public HomeMineHelpSuggestionAdapter(Context context,
                                          List<MineHelpSuggestionBean> items,
                                          IMulItemViewType<MineHelpSuggestionBean> mulItemViewType) {
@@ -70,6 +82,33 @@ public class HomeMineHelpSuggestionAdapter extends SuperAdapter<MineHelpSuggesti
             } else {
                 holder.setVisibility(R.id.tv_mine_suggestion_client_time, View.INVISIBLE);
             }
+
+            ImageView iv_send_pro = holder.getView(R.id.iv_send_pro);
+
+            if (item.pro_falag == 0){
+                //显示正在发送
+                iv_send_pro.setVisibility(View.VISIBLE);
+                iv_send_pro.setImageDrawable(getContext().getResources().getDrawable(R.drawable.listview_loading));
+                Animation animation = AnimationUtils.loadAnimation(getContext(), R.anim.loading_progress_rotate);
+                iv_send_pro.startAnimation(animation);
+
+            }else if (item.pro_falag == 1){
+                //显示发送失败
+                holder.setImageDrawable(R.id.iv_send_pro,getContext().getResources().getDrawable(R.drawable.icon_caution));
+            }else {
+                //显示发送成功
+                holder.setVisibility(R.id.iv_send_pro, View.GONE);
+                iv_send_pro.clearAnimation();
+            }
+
+            holder.setOnClickListener(R.id.iv_send_pro, new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (resendFeedBack != null){
+                        resendFeedBack.onResend(holder,item,layoutPosition);
+                    }
+                }
+            });
 
             clientImage = holder.getView(R.id.iv_mine_suggestion_client);
             Glide.with(getContext()).load(item.getIcon())

@@ -93,7 +93,7 @@ public interface LoginContract {
         /**
          * 执行第三方登录
          */
-        void executeOpenLogin(String openId);
+        void executeOpenLogin(String openId,int type);
 
         /**
          * 获取QQ的授权

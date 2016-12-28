@@ -419,7 +419,7 @@
 
     <!--checkbox样式-->
     <style name="CustomCheckboxTheme" parent="@android:style/Widget.CompoundButton.CheckBox">
-        <item name="android:button">@drawable/share_to_friend_check_box_seclector</item>
+        <item name="android:button">@drawable/custom_rtbn_style1</item>
     </style>
 
     <style name="delay_record_dialog_style" parent="@android:style/Theme.Holo.Light.Dialog">

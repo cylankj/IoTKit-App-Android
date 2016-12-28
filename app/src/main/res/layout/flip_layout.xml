@@ -1,4 +1,4 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:hunt="http://schemas.android.com/apk/res-auto"
     android:id="@+id/lLayout_flip"
     android:layout_width="wrap_content"
@@ -28,4 +28,4 @@
         android:text="@string/SECURE"
         android:textColor="@color/color_white"
         android:textSize="11sp" />
-</LinearLayout>
+</merge>

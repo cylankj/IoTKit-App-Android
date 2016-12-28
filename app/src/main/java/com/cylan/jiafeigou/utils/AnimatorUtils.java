@@ -50,6 +50,38 @@ public class AnimatorUtils {
         void onFinish();
     }
 
+    public static void slideIn(View target, boolean down, boolean autoHide) {
+
+        int height = target.getHeight();
+        if (height == 0) height = 300;
+        final float start = target.isShown() ? 0.0f : (down ? height : -height);
+        final float end = target.isShown() ? (down ? height : -height) : 0.0f;
+        final boolean shouldGone = target.isShown();
+        if (autoHide && target.isShown()) {
+            ObjectAnimator autoShowAnim = ObjectAnimator.ofFloat(target, "translationY", down ? height : -height,
+                    0.0f);
+            autoShowAnim.setStartDelay(3000);
+            autoShowAnim.setInterpolator(new AccelerateInterpolator());
+        }
+        ObjectAnimator o = ObjectAnimator.ofFloat(target, "translationY", start, end);
+        o.setDuration(200);
+        o.setInterpolator(new AccelerateInterpolator());
+        o.addListener(new SimpleAnimationListener() {
+            @Override
+            public void onAnimationStart(Animator animator) {
+                if (!target.isShown())
+                    target.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animator) {
+                if (shouldGone)
+                    target.setVisibility(View.INVISIBLE);
+            }
+        });
+        o.start();
+    }
+
     public static void slide(View target, boolean down, OnFinish listener) {
 
         int height = target.getHeight();
@@ -377,5 +409,72 @@ public class AnimatorUtils {
         setRight.setDuration(1000);
         setRight.addListener(animatorListener);
         return setRight;
+    }
+
+    /**
+     * 切出屏幕
+     *
+     * @param view
+     * @param fromTop
+     */
+    public static void slideOut(View view, boolean fromTop) {
+        Object o = view.getTag();
+        if (o != null && o instanceof ObjectAnimator) {
+            ObjectAnimator animator = (ObjectAnimator) o;
+            if (animator.isRunning() || animator.isStarted())
+                animator.cancel();
+        }
+        int start = 0, end = fromTop ? -view.getHeight() : view.getHeight();
+        ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(view, "translationY", start, end);
+        objectAnimator.setDuration(250);
+        objectAnimator.addListener(new SimpleAnimationListener() {
+            @Override
+            public void onAnimationStart(Animator animator) {
+                if (!view.isShown()) view.setVisibility(View.VISIBLE);
+            }
+        });
+        view.setTag(objectAnimator);
+        objectAnimator.start();
+    }
+
+    /**
+     * 切出屏幕
+     *
+     * @param view
+     * @param fromTop
+     */
+    public static void slideIn(final View view, boolean fromTop) {
+        Object o = view.getTag();
+        if (o != null && o instanceof ObjectAnimator) {
+            ObjectAnimator animator = (ObjectAnimator) o;
+            if (animator.isRunning() || animator.isStarted())
+                animator.cancel();
+        }
+        int end = 0, start = fromTop ? -view.getHeight() : view.getHeight();
+        ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(view, "translationY", start, end);
+        objectAnimator.setDuration(250);
+        objectAnimator.addListener(new SimpleAnimationListener() {
+            @Override
+            public void onAnimationStart(Animator animator) {
+                if (!view.isShown()) view.setVisibility(View.VISIBLE);
+            }
+        });
+        view.setTag(objectAnimator);
+        objectAnimator.start();
+    }
+
+    /**
+     * 自动呼入呼出
+     * 1.view的初始状态是Invisible
+     * 2.view移动距离是view的高度
+     *
+     * @param view
+     * @param fromTop:紧贴顶部,false:紧贴底部
+     */
+    public static void slideAuto(final View view, boolean fromTop) {
+        if (!view.isShown() || view.getBottom() == view.getY())
+            AnimatorUtils.slideIn(view, fromTop);
+        else if (view.isShown() && view.getTop() == view.getY())
+            AnimatorUtils.slideOut(view, fromTop);
     }
 }

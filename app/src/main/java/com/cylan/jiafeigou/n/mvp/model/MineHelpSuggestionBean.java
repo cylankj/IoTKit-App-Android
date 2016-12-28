@@ -27,6 +27,8 @@ public class MineHelpSuggestionBean {
     public int type;
     @Column(name = "isShowTime")
     public boolean isShowTime;
+    @Column(name = "pro_falag")
+    public int pro_falag;
 
     public void setIsShowTime(boolean isShowTime) {
         this.isShowTime = isShowTime;
@@ -74,5 +76,13 @@ public class MineHelpSuggestionBean {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public int getPro_falag() {
+        return pro_falag;
+    }
+
+    public void setPro_falag(int pro_falag) {
+        this.pro_falag = pro_falag;
     }
 }

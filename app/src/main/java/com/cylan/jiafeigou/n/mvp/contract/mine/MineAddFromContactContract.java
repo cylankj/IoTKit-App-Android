@@ -35,6 +35,12 @@ public interface MineAddFromContactContract {
          * 网络状态变化
          */
         void onNetStateChanged(int state);
+
+        /**
+         * 发送添加求的结果
+         * @param code
+         */
+        void sendReqBack(int code);
     }
 
     interface Presenter extends BasePresenter {
@@ -76,6 +82,12 @@ public interface MineAddFromContactContract {
          * 移除网络监听
          */
         void unregisterNetworkMonitor();
+
+        /**
+         * 发送添加请求的回调
+         * @return
+         */
+        Subscription sendAddFriendRep();
     }
 
 }

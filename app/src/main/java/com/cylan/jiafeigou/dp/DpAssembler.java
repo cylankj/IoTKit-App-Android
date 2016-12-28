@@ -10,6 +10,7 @@ import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.entity.jniCall.RobotoGetDataRsp;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.cache.JCache;
+import com.cylan.jiafeigou.cache.pool.GlobalDataPool;
 import com.cylan.jiafeigou.misc.Converter;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
@@ -277,6 +278,7 @@ public class DpAssembler implements IParser {
                     public Object call(List<JFGDevice> list) {
                         HashMap<String, Long> map = new HashMap<>();
                         for (int i = 0; i < list.size(); i++) {
+                            GlobalDataPool.getInstance().cacheDevice(list.get(i));
                             assembleBase(list.get(i));
                             final int pid = list.get(i).pid;
                             BaseParam baseParam = merger(pid);
@@ -347,12 +349,13 @@ public class DpAssembler implements IParser {
                         for (Map.Entry<Integer, ArrayList<JFGDPMsg>> entry : dpDataRsp.map.entrySet()) {
                             JFGDPMsg dp = entry.getValue() != null
                                     && entry.getValue().size() > 0 ? entry.getValue().get(0) : null;
+                            if (dp == null || dp.packValue == null) continue;
                             final int keyId = entry.getKey();
-                            if (keyId == DpMsgMap.ID_505_CAMERA_ALARM_MSG || dp == null) {
-                                //报警消息
-                                assembleCamAlarmMsg(identity, entry.getValue());
-                                continue;
-                            }
+//                            if (keyId == DpMsgMap.ID_505_CAMERA_ALARM_MSG || dp == null) {
+//                                //报警消息
+//                                assembleCamAlarmMsg(identity, entry.getValue());
+//                                continue;
+//                            }
                             assembleMiscMsg(identity, dp, keyId);
                         }
                         //这次请求是,设备更新
@@ -367,38 +370,6 @@ public class DpAssembler implements IParser {
     }
 
     /**
-     * 摄像头的报警图片是批量返回的.
-     *
-     * @param uuid
-     * @param msgs
-     */
-    private void assembleCamAlarmMsg(String uuid, ArrayList<JFGDPMsg> msgs) {
-        RxEvent.JfgAlarmMsg msg = new RxEvent.JfgAlarmMsg();
-        msg.uuid = uuid;
-        if (msg.jfgdpMsgs == null)
-            msg.jfgdpMsgs = new ArrayList<>();
-        if (msgs == null) {
-            RxBus.getCacheInstance().post(msg);
-            return;
-        }
-        for (JFGDPMsg jfgdpMsg : msgs) {
-            try {
-                DpMsgDefine.AlarmMsg o = DpUtils.unpackData(jfgdpMsg.packValue,
-                        DpMsgDefine.AlarmMsg.class);
-                DpMsgDefine.DpMsg dpMsg = new DpMsgDefine.DpMsg();
-                dpMsg.msgId = (int) jfgdpMsg.id;
-                dpMsg.version = jfgdpMsg.version;
-                dpMsg.o = o;
-                msg.jfgdpMsgs.add(dpMsg);
-            } catch (Exception e) {
-                AppLogger.e("assembleCamAlarmMsg: " + e.getLocalizedMessage());
-            }
-        }
-        flatMsg.cache(JCache.getAccountCache().getAccount(), uuid, msg.jfgdpMsgs);
-        RxBus.getCacheInstance().post(msg);
-    }
-
-    /**
      * 组装零散的消息
      *
      * @param identity
@@ -406,23 +377,15 @@ public class DpAssembler implements IParser {
      * @param keyId
      */
     private void assembleMiscMsg(String identity, JFGDPMsg dp, int keyId) {
-        if (dp == null) {
-            AppLogger.e("dp is null: " + keyId);
-            return;
-        }
         try {
             Class<?> clazz = ID_2_CLASS_MAP.get(keyId);
             Object o = DpUtils.unpackData(dp.packValue, clazz);
-            if (o == null) {
-                AppLogger.e("o is null" + keyId);
-                return;
-            }
             flatMsg.cache(JCache.getAccountCache().getAccount(),
                     identity,
                     Converter.convert(o, keyId, dp.version));
             Log.d(TAG, "superParser: " + keyId + " " + o);
         } catch (Exception e) {
-            AppLogger.e(TAG + keyId + " " + e.getLocalizedMessage());
+            AppLogger.e(TAG + keyId + " " + identity + " " + e.getLocalizedMessage());
         }
     }
 

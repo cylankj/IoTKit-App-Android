@@ -26,6 +26,7 @@ import android.widget.ViewSwitcher;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.cache.JCache;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.n.mvp.contract.login.ForgetPwdContract;
 import com.cylan.jiafeigou.n.mvp.model.RequestResetPwdBean;
 import com.cylan.jiafeigou.rx.RxBus;
@@ -274,7 +275,6 @@ public class ForgetPwdFragment extends Fragment implements ForgetPwdContract.Vie
                             return;
                         }
                     }
-
                     getArguments().putString(LoginFragment.KEY_TEMP_ACCOUNT, etForgetUsername.getText().toString());
                     if (presenter != null)
                         presenter.submitPhoneNumAndCode(etForgetUsername.getText().toString(), ViewUtils.getTextViewContent(etVerificationInput));
@@ -434,16 +434,7 @@ public class ForgetPwdFragment extends Fragment implements ForgetPwdContract.Vie
                     return;
                 }
                 presenter.resetPassword(newPwd);
-                ToastUtil.showToast(getString(R.string.PWD_OK));
-                if (getView()!=null){
-                    getView().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            RxBus.getCacheInstance().post(new RxEvent.LoginPopBack(PreferencesUtils.getString(JConstant.SAVE_TEMP_ACCOUNT)));
-                            ActivityUtils.justPop(getActivity());
-                        }
-                    },500);
-                }
+
             }
         });
 
@@ -499,6 +490,28 @@ public class ForgetPwdFragment extends Fragment implements ForgetPwdContract.Vie
                 return;
             }
             preparePhoneView();
+        }
+    }
+
+    /**
+     * 重置密码的结果
+     * @param code
+     */
+    @Override
+    public void resetPwdResult(int code) {
+        if (code != JError.ErrorOK){
+            ToastUtil.showToast("重置密码失败");
+            return;
+        }
+        ToastUtil.showToast(getString(R.string.PWD_OK));
+        if (getView()!=null){
+            getView().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    RxBus.getCacheInstance().post(new RxEvent.LoginPopBack(PreferencesUtils.getString(JConstant.SAVE_TEMP_ACCOUNT)));
+                    ActivityUtils.justPop(getActivity());
+                }
+            },500);
         }
     }
 

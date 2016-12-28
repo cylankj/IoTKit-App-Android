@@ -55,7 +55,7 @@ public class MineBindPhonePresenterImp extends AbstractPresenter<MineBindPhoneCo
     @Override
     public void isBindOrChange(JFGAccount userinfo) {
         if (getView() != null && userinfo != null) {
-            if ("".equals(userinfo.getPhone())) {
+            if (TextUtils.isEmpty(userinfo.getPhone())) {
                 //绑定手机号
                 getView().initToolbarTitle(getView().getContext().getString(R.string.Tap0_BindPhoneNo));
             } else {
@@ -77,7 +77,6 @@ public class MineBindPhonePresenterImp extends AbstractPresenter<MineBindPhoneCo
                 .subscribe(new Action1<String>() {
                     @Override
                     public void call(String s) {
-                        //TODO sendCheckCode（String account,int event）event 传入 ？？？
                         JfgCmdInsurance.getCmd().sendCheckCode(phone, JfgEnum.JFG_SMS_REGISTER);
                     }
                 }, new Action1<Throwable>() {

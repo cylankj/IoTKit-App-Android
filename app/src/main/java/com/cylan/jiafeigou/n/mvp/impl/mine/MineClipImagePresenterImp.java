@@ -83,7 +83,7 @@ public class MineClipImagePresenterImp extends AbstractPresenter<MineClipImageCo
                         if (getHttpDoneResult != null && getHttpDoneResult instanceof RxEvent.GetHttpDoneResult) {
                             getView().hideUpLoadPro();
                             handlerUploadImage(getHttpDoneResult);
-                            getView().upLoadResultView(getHttpDoneResult.jfgMsgHttpResult.requestId);
+                            getView().upLoadResultView(getHttpDoneResult.jfgMsgHttpResult.ret);
                         }
                     }
                 });

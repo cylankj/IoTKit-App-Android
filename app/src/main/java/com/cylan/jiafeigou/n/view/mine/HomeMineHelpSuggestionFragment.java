@@ -20,6 +20,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeMineHelpSuggestionContract;
 import com.cylan.jiafeigou.n.mvp.impl.home.HomeMineHelpSuggestionImpl;
 import com.cylan.jiafeigou.n.mvp.model.MineHelpSuggestionBean;
@@ -27,9 +28,13 @@ import com.cylan.jiafeigou.n.view.adapter.HomeMineHelpSuggestionAdapter;
 import com.cylan.jiafeigou.support.softkeyboard.util.KPSwitchConflictUtil;
 import com.cylan.jiafeigou.support.softkeyboard.util.KeyboardUtil;
 import com.cylan.jiafeigou.support.softkeyboard.widget.KPSwitchFSPanelLinearLayout;
+import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
+import com.cylan.superadapter.internal.SuperViewHolder;
+import com.cylan.utils.NetUtils;
 
 import java.util.ArrayList;
+import java.util.TreeMap;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -65,7 +70,8 @@ public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMine
     private HomeMineHelpSuggestionAdapter suggestionAdapter;
     private String suggestion;
     private HomeMineHelpSuggestionContract.Presenter presenter;
-
+    private int itemPosition;
+    private boolean resendFlag;
 
     public static HomeMineHelpSuggestionFragment newInstance(Bundle bundle) {
         HomeMineHelpSuggestionFragment fragment = new HomeMineHelpSuggestionFragment();
@@ -107,24 +113,33 @@ public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMine
                 showDialog();
                 break;
             case R.id.tv_home_mine_suggestion:
-                addInputItem();
-                if (suggestionAdapter.getItemCount() == 0) {
+                if (mEtSuggestion.getText().toString().length()<10){
+                    ToastUtil.showNegativeToast(getString(R.string.Tap3_Feedback_TextFail));
                     return;
                 }
-                if (suggestionAdapter.getItemCount() != 1) {
-                    if (presenter.checkOverTime(suggestionAdapter.getItem(suggestionAdapter.getItemCount() - 1).getDate())) {
-                        addAutoReply();
-                        presenter.getSystemAutoReply();
-                    }
-                } else {
-                    addAutoReply();
-                    presenter.getSystemAutoReply();
-                }
-                mRvMineSuggestion.scrollToPosition(suggestionAdapter.getItemCount() - 1); //滚动到集合最后一条显示；
+                addInputItem();
                 mEtSuggestion.setText("");
                 break;
         }
     }
+
+    /**
+     * 自动回复
+     */
+    private void autoReply(){
+        if (suggestionAdapter.getItemCount() == 0) {
+            return;
+        }
+        if (suggestionAdapter.getItemCount() != 1) {
+            if (presenter.checkOverTime(suggestionAdapter.getItem(suggestionAdapter.getItemCount() - 1).getDate())) {
+                addAutoReply();
+                presenter.getSystemAutoReply();
+            }
+        } else {
+            addAutoReply();
+            presenter.getSystemAutoReply();
+        }
+    };
 
     /**
      * 弹出对话框
@@ -166,7 +181,6 @@ public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMine
         autoReplyBean.setText(getString(R.string.Tap3_Feedback_AutoReply));
         autoReplyBean.setDate(System.currentTimeMillis() + "");
         suggestionAdapter.add(autoReplyBean);
-        suggestionAdapter.notifyDataSetHasChanged();
         presenter.saveIntoDb(autoReplyBean);
     }
 
@@ -176,31 +190,38 @@ public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMine
     @Override
     public void addInputItem() {
         suggestion = mEtSuggestion.getText().toString();
-        if (suggestion.length() >= 10) {
-            MineHelpSuggestionBean suggestionBean = new MineHelpSuggestionBean();
-            suggestionBean.setType(1);
-            suggestionBean.setText(suggestion);
-            suggestionBean.setIcon(presenter.getUserPhotoUrl());
-            String time = System.currentTimeMillis() + "";
-            suggestionBean.setDate(time);
 
-            if (suggestionAdapter.getItemCount() != 0) {
-                if (presenter.checkOver20Min(suggestionAdapter.getList().get(suggestionAdapter.getItemCount() - 1).getDate())) {
-                    suggestionBean.isShowTime = true;
-                } else {
-                    suggestionBean.isShowTime = false;
-                }
-            } else {
+        MineHelpSuggestionBean suggestionBean = new MineHelpSuggestionBean();
+        suggestionBean.setType(1);
+
+        suggestionBean.setText(suggestion);
+        suggestionBean.setIcon(presenter.getUserPhotoUrl());
+        String time = System.currentTimeMillis() + "";
+        suggestionBean.setDate(time);
+
+        if (suggestionAdapter.getItemCount() != 0) {
+            if (presenter.checkOver20Min(suggestionAdapter.getList().get(suggestionAdapter.getItemCount() - 1).getDate())) {
                 suggestionBean.isShowTime = true;
+            } else {
+                suggestionBean.isShowTime = false;
             }
+        } else {
+            suggestionBean.isShowTime = true;
+        }
+
+        if (NetUtils.getNetType(ContextUtils.getContext()) == -1){
+            suggestionBean.pro_falag = 1;
+            presenter.saveIntoDb(suggestionBean);
             suggestionAdapter.add(suggestionBean);
             suggestionAdapter.notifyDataSetHasChanged();
-            presenter.saveIntoDb(suggestionBean);
-            presenter.sendFeedBack(suggestionBean);
-        } else {
-            ToastUtil.showNegativeToast(getString(R.string.Tap3_Feedback_TextFail));
+            mRvMineSuggestion.scrollToPosition(suggestionAdapter.getItemCount() - 1);
             return;
+        }else {
+            suggestionBean.pro_falag = 0;
         }
+        suggestionAdapter.add(suggestionBean);
+        suggestionAdapter.notifyDataSetHasChanged();
+        presenter.sendFeedBack(suggestionBean);
     }
 
     @Override
@@ -232,6 +253,34 @@ public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMine
         presenter.saveIntoDb(autoReplyBean);
     }
 
+    @Override
+    public void refrshRecycleView(int code) {
+        if (code != JError.ErrorOK){
+            if (resendFlag){
+                suggestionAdapter.getItem(itemPosition).pro_falag = 1;
+                resendFlag = false;
+                mRvMineSuggestion.setAdapter(suggestionAdapter);
+                presenter.saveIntoDb(suggestionAdapter.getItem(itemPosition));
+            }else {
+                suggestionAdapter.getItem(suggestionAdapter.getItemCount() - 1).pro_falag = 1;
+                mRvMineSuggestion.setAdapter(suggestionAdapter);
+                presenter.saveIntoDb(suggestionAdapter.getItem(suggestionAdapter.getItemCount() - 1));
+            }
+        }else {
+            if (resendFlag){
+                suggestionAdapter.getItem(itemPosition).pro_falag = 2;
+                presenter.saveIntoDb(suggestionAdapter.getItem(itemPosition));
+                resendFlag = false;
+            }else {
+                suggestionAdapter.getItem(suggestionAdapter.getItemCount() - 1).pro_falag = 2;
+                presenter.saveIntoDb(suggestionAdapter.getItem(suggestionAdapter.getItemCount() - 1));
+            }
+            autoReply();
+            mRvMineSuggestion.setAdapter(suggestionAdapter);
+        }
+        mRvMineSuggestion.scrollToPosition(suggestionAdapter.getItemCount() - 1); //滚动到集合最后一条显示；
+    }
+
     /**
      * 初始化显示列表
      *
@@ -246,6 +295,21 @@ public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMine
         mRvMineSuggestion.setLayoutManager(layoutManager);
         suggestionAdapter = new HomeMineHelpSuggestionAdapter(getContext(), list, null);
         mRvMineSuggestion.setAdapter(suggestionAdapter);
+        suggestionAdapter.setOnResendFeedBack(new HomeMineHelpSuggestionAdapter.OnResendFeedBackListener() {
+            @Override
+            public void onResend(SuperViewHolder holder, MineHelpSuggestionBean item,int position) {
+                if (NetUtils.getNetType(ContextUtils.getContext()) == -1){
+                    ToastUtil.showToast(getString(R.string.NO_NETWORK_4));
+                    return;
+                }
+                itemPosition = position;
+                resendFlag = true;
+                ImageView send_pro = (ImageView) holder.itemView.findViewById(R.id.iv_send_pro);
+                send_pro.setImageDrawable(getContext().getResources().getDrawable(R.drawable.listview_loading));
+                presenter.sendFeedBack(item);
+                presenter.deleteOnItemFromDb(item);
+            }
+        });
     }
 
     @Override

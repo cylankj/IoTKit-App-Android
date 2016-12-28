@@ -30,7 +30,7 @@ import com.cylan.ex.JfgException;
 import com.cylan.jfgapp.interfases.AppCallBack;
 import com.cylan.jfgapp.jni.JfgAppCmd;
 import com.cylan.jiafeigou.cache.CacheParser;
-import com.cylan.jiafeigou.cache.JCache;
+import com.cylan.jiafeigou.cache.pool.GlobalDataPool;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JResultEvent;
@@ -42,6 +42,8 @@ import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+
+//import com.cylan.jiafeigou.cache.JCache;
 
 
 public class DataSourceService extends Service implements AppCallBack {
@@ -119,9 +121,9 @@ public class DataSourceService extends Service implements AppCallBack {
     public void OnReportJfgDevices(JFGDevice[] jfgDevices) {
         AppLogger.i("OnReportJfgDevices:" + (jfgDevices == null ? 0 : jfgDevices.length));
         RxBus.getCacheInstance().postSticky(new RxEvent.DeviceRawList(jfgDevices));
-        if (JCache.getAccountCache() != null) {
+        if (GlobalDataPool.getInstance().getJfgAccount() != null) {
             //如果JFGAccount不为空的话,也发送一个
-            RxBus.getCacheInstance().postSticky(JCache.getAccountCache());
+            RxBus.getCacheInstance().postSticky(GlobalDataPool.getInstance().getJfgAccount());
         }
         if (jfgDevices != null) {
             RxBus.getCacheInstance().postSticky(new RxEvent.DeviceList(Arrays.asList(jfgDevices)));
@@ -130,7 +132,7 @@ public class DataSourceService extends Service implements AppCallBack {
 
     @Override
     public void OnUpdateAccount(JFGAccount jfgAccount) {
-        JCache.setAccountCache(jfgAccount);
+        GlobalDataPool.getInstance().setJfgAccount(jfgAccount);
         RxBus.getCacheInstance().postSticky(jfgAccount);
         RxBus.getCacheInstance().postSticky(new RxEvent.GetUserInfo(jfgAccount));
     }
@@ -215,7 +217,7 @@ public class DataSourceService extends Service implements AppCallBack {
     @Override
     public void OnlineStatus(boolean b) {
         AppLogger.d("OnlineStatus :" + b);
-        JCache.onLineStatus = b;
+        GlobalDataPool.getInstance().setOnline(b);
         RxBus.getCacheInstance().post(new RxEvent.LoginRsp(b));
     }
 
@@ -240,6 +242,27 @@ public class DataSourceService extends Service implements AppCallBack {
                 break;
             case JResultEvent.JFG_RESULT_UNBINDDEV:
                 RxBus.getCacheInstance().postSticky(new RxEvent.UnBindDeviceEvent(jfgResult));
+                break;
+            case JResultEvent.JFG_RESULT_CHANGE_PASS:
+                RxBus.getCacheInstance().post(new RxEvent.ChangePwdBack(jfgResult));
+                break;
+            case JResultEvent.JFG_RESULT_RESET_PASS:
+                RxBus.getCacheInstance().post(new RxEvent.ResetPwdBack(jfgResult));
+                break;
+            case JResultEvent.JFG_RESULT_ADD_FRIEND:
+                RxBus.getCacheInstance().post(new RxEvent.AddFriendBack(jfgResult));
+                break;
+            case JResultEvent.JFG_RESULT_CONSENT_ADD_FRIEND:
+                RxBus.getCacheInstance().post(new RxEvent.ConsentAddFriendBack(jfgResult));
+                break;
+            case JResultEvent.JFG_RESULT_DEL_FRIEND:
+                RxBus.getCacheInstance().post(new RxEvent.DelFriendBack(jfgResult));
+                break;
+            case JResultEvent.JFG_RESULT_SETPWD_WITH_BINDACCOUNT:
+                RxBus.getCacheInstance().post(new RxEvent.OpenLogInSetPwdBack(jfgResult));
+                break;
+            case JResultEvent.JFG_RESULT_SEND_FEEDBACK:
+                RxBus.getCacheInstance().post(new RxEvent.SendFeekBack(jfgResult));
                 break;
         }
         if (login) {
@@ -268,7 +291,7 @@ public class DataSourceService extends Service implements AppCallBack {
 
     @Override
     public void OnRobotDelDataRsp(long l, String s, int i) {
-        AppLogger.d("OnLocalMessage :");
+        AppLogger.d("OnRobotDelDataRsp :" + l + " uuid:" + s + " i:" + i);
     }
 
     @Override
@@ -375,6 +398,11 @@ public class DataSourceService extends Service implements AppCallBack {
 
     @Override
     public void OnCheckDevVersionRsp(boolean b, String s, String s1, String s2, String s3) {
+
+    }
+
+    @Override
+    public void OnNotifyStorageType(int i) {
 
     }
 

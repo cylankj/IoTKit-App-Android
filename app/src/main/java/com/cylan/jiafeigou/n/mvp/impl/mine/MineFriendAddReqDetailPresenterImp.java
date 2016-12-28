@@ -38,6 +38,8 @@ public class MineFriendAddReqDetailPresenterImp extends AbstractPresenter<MineFr
         compositeSubscription = new CompositeSubscription();
         compositeSubscription.add(excuteGetAddReqlistData());
         compositeSubscription.add(getAddReqListDataCall());
+        compositeSubscription.add(sendAddFriendReqBack());
+        compositeSubscription.add(consentAddFriendBack());
     }
 
     @Override
@@ -160,6 +162,42 @@ public class MineFriendAddReqDetailPresenterImp extends AbstractPresenter<MineFr
                     @Override
                     public void call(Throwable throwable) {
                         AppLogger.e("excuteGetAddReqlistData" + throwable.getLocalizedMessage());
+                    }
+                });
+    }
+
+    /**
+     * 添加好友的回调
+     * @return
+     */
+    @Override
+    public Subscription sendAddFriendReqBack() {
+        return RxBus.getCacheInstance().toObservable(RxEvent.AddFriendBack.class)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<RxEvent.AddFriendBack>() {
+                    @Override
+                    public void call(RxEvent.AddFriendBack addFriendBack) {
+                        if (addFriendBack != null && addFriendBack instanceof RxEvent.AddFriendBack){
+                            getView(). showSendAddReqResult(addFriendBack.jfgResult.code == 0 ? true:false);
+                        }
+                    }
+                });
+    }
+
+    /**
+     * 同意添加好友的回调
+     * @return
+     */
+    @Override
+    public Subscription consentAddFriendBack() {
+        return RxBus.getCacheInstance().toObservable(RxEvent.ConsentAddFriendBack.class)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<RxEvent.ConsentAddFriendBack>() {
+                    @Override
+                    public void call(RxEvent.ConsentAddFriendBack consentAddFriendBack) {
+                        if (consentAddFriendBack != null && consentAddFriendBack instanceof RxEvent.ConsentAddFriendBack){
+                            getView().showAddedReult(consentAddFriendBack.jfgResult.code == 0 ? true:false);
+                        }
                     }
                 });
     }

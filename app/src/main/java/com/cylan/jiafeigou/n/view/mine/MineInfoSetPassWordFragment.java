@@ -13,7 +13,9 @@ import android.widget.EditText;
 import android.widget.ImageView;
 
 import com.cylan.entity.jniCall.JFGAccount;
+import com.cylan.entity.jniCall.JFGResult;
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineInfoSetPassWordContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineInfoSetPassWordPresenterImp;
 import com.cylan.jiafeigou.utils.ToastUtil;
@@ -78,6 +80,18 @@ public class MineInfoSetPassWordFragment extends Fragment implements MineInfoSet
         presenter = new MineInfoSetPassWordPresenterImp(this);
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (presenter != null)presenter.start();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (presenter != null)presenter.stop();
+    }
+
     @OnTextChanged(R.id.et_mine_personal_information_old_password)
     public void onOldPwdUpdate(CharSequence s, int start, int before, int count) {
         boolean isEmpty = s.length()<6;
@@ -90,8 +104,8 @@ public class MineInfoSetPassWordFragment extends Fragment implements MineInfoSet
             ivMinePersonalSetpasswordBind.setEnabled(true);
             ivMinePersonalSetpasswordBind.setClickable(true);
         }
-        ivMinePersonalInformationOldPasswordClear.setVisibility(isEmpty ? View.GONE : View.VISIBLE);
-        viewMinePersonalInformationOldPasswordLine.setBackgroundColor(isEmpty ? getResources().getColor(R.color.color_f2f2f2) : getResources().getColor(R.color.color_36bdff));
+        ivMinePersonalInformationOldPasswordClear.setVisibility(TextUtils.isEmpty(s) ? View.GONE : View.VISIBLE);
+        viewMinePersonalInformationOldPasswordLine.setBackgroundColor(TextUtils.isEmpty(s) ? getResources().getColor(R.color.color_f2f2f2) : getResources().getColor(R.color.color_36bdff));
     }
 
     @OnTextChanged(R.id.et_mine_personal_information_new_password)
@@ -106,8 +120,8 @@ public class MineInfoSetPassWordFragment extends Fragment implements MineInfoSet
             ivMinePersonalSetpasswordBind.setClickable(true);
             ivMinePersonalSetpasswordBind.setEnabled(true);
         }
-        ivMinePersonalInformationNewPasswordClear.setVisibility(isEmpty ? View.GONE : View.VISIBLE);
-        viewMinePersonalInformationNewPasswordLine.setBackgroundColor(isEmpty ? getResources().getColor(R.color.color_f2f2f2) : getResources().getColor(R.color.color_36bdff));
+        ivMinePersonalInformationNewPasswordClear.setVisibility(TextUtils.isEmpty(s) ? View.GONE : View.VISIBLE);
+        viewMinePersonalInformationNewPasswordLine.setBackgroundColor(TextUtils.isEmpty(s) ? getResources().getColor(R.color.color_f2f2f2) : getResources().getColor(R.color.color_36bdff));
     }
 
     @Override
@@ -132,7 +146,6 @@ public class MineInfoSetPassWordFragment extends Fragment implements MineInfoSet
             case R.id.iv_mine_personal_setpassword_back:
                 getFragmentManager().popBackStack();
                 break;
-
             case R.id.iv_mine_personal_information_old_password_clear:
                 etMinePersonalInformationOldPassword.setText("");
                 break;
@@ -151,10 +164,6 @@ public class MineInfoSetPassWordFragment extends Fragment implements MineInfoSet
      * desc：保存新密码
      */
     private void saveNewPassword() {
-        if (!presenter.checkOldPassword(getOldPassword())) {
-            ToastUtil.showToast(getString(R.string.RET_ECHANGEPASS_OLDPASS_ERROR));
-            return;
-        }
 
         if (presenter.checkNewPassword(getOldPassword(), getNewPassword())) {
             ToastUtil.showToast(getString(R.string.RET_ECHANGEPASS_SAME));
@@ -168,8 +177,6 @@ public class MineInfoSetPassWordFragment extends Fragment implements MineInfoSet
 
         presenter.sendChangePassReq(userinfo.getAccount(), getOldPassword(), getNewPassword());
 
-        ToastUtil.showToast(getString(R.string.PWD_OK_1));
-        getFragmentManager().popBackStack();
     }
 
     @Override
@@ -180,5 +187,21 @@ public class MineInfoSetPassWordFragment extends Fragment implements MineInfoSet
     @Override
     public String getNewPassword() {
         return etMinePersonalInformationNewPassword.getText().toString();
+    }
+
+    /**
+     * 修改密码的结果
+     * @param jfgResult
+     */
+    @Override
+    public void changePwdResult(JFGResult jfgResult) {
+        if (jfgResult.code == JError.ErrorInvalidPass){
+            ToastUtil.showToast(getString(R.string.RET_ECHANGEPASS_OLDPASS_ERROR));
+        }else if (jfgResult.code == JError.ErrorSamePass){
+            ToastUtil.showToast(getString(R.string.RET_ECHANGEPASS_SAME));
+        }else if (jfgResult.code == JError.ErrorOK){
+            ToastUtil.showToast(getString(R.string.PWD_OK_1));
+            getFragmentManager().popBackStack();
+        }
     }
 }

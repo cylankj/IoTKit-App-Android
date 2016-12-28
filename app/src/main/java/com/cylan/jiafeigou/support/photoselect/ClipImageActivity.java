@@ -155,7 +155,7 @@ public class ClipImageActivity extends AppCompatActivity implements MineClipImag
 
     @Override
     public void upLoadResultView(int code) {
-        if (code == 1) {
+        if (code == 200) {
             Intent intent = new Intent();
             intent.setData(mSaveUri);
             setResult(RESULT_OK, intent);

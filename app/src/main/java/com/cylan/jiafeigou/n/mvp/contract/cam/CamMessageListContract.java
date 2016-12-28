@@ -14,12 +14,30 @@ public interface CamMessageListContract {
 
     interface View extends BaseView<Presenter> {
 
+        void setRefresh(boolean refresh);
+
         void onMessageListRsp(ArrayList<CamMessageBean> beanArrayList);
 
+        ArrayList<CamMessageBean> getList();
+
+        /**
+         * 设备信息{在线,sd卡,电量.....所有信息}
+         *
+         * @param id:消息id
+         * @param o:      {@link com.cylan.jiafeigou.dp.DpMsgConstant}
+         */
+        void deviceInfoChanged(int id, Object o);
     }
 
     interface Presenter extends BasePresenter {
-        void fetchMessageList();
+        /**
+         * @param manually
+         */
+        void fetchMessageList(boolean manually);
+
+        void loadMore();
+
+        void removeItems(ArrayList<CamMessageBean> beanList);
     }
 }
 

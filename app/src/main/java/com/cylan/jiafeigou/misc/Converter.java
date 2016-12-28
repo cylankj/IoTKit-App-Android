@@ -1,12 +1,15 @@
 package com.cylan.jiafeigou.misc;
 
+import com.cylan.entity.JfgEnum;
+import com.cylan.ex.JfgException;
+import com.cylan.jiafeigou.dp.BaseValue;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
-import com.cylan.jiafeigou.n.mvp.impl.home.HomeWonderfulPresenterImpl;
+import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.n.mvp.model.BaseBean;
 import com.cylan.jiafeigou.n.mvp.model.BeanCamInfo;
 import com.cylan.jiafeigou.n.mvp.model.CamMessageBean;
 import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
-import com.cylan.utils.RandomUtils;
+import com.cylan.jiafeigou.support.log.AppLogger;
 
 import java.util.ArrayList;
 
@@ -36,19 +39,25 @@ public class Converter {
         return base;
     }
 
-    public static ArrayList<CamMessageBean> convert(String uuid, ArrayList<DpMsgDefine.DpMsg> dpMsgList) {
+    public static ArrayList<CamMessageBean> convert(String uuid, ArrayList<BaseValue> baseValueList) {
         ArrayList<CamMessageBean> beanArrayList = new ArrayList<>();
-        if (dpMsgList == null)
+        if (baseValueList == null)
             return beanArrayList;
-        for (DpMsgDefine.DpMsg dpMsg : dpMsgList) {
+        for (BaseValue base : baseValueList) {
             CamMessageBean bean = new CamMessageBean();
-            bean.time = dpMsg.version;
-            DpMsgDefine.AlarmMsg msg = (DpMsgDefine.AlarmMsg) dpMsg.o;
-            bean.urlList = getUrlList(uuid,
-                    dpMsg.version,
-                    msg.type,
-                    msg.fileIndex);
-            bean.viewType = bean.urlList.size() > 0 ? 1 : 0;
+            bean.time = base.getVersion();
+            bean.id = base.getId();
+            bean.version = base.getVersion();
+            if (base.getId() == DpMsgMap.ID_505_CAMERA_ALARM_MSG && base.getValue() != null) {
+                DpMsgDefine.AlarmMsg msg = (DpMsgDefine.AlarmMsg) base.getValue();
+                bean.urlList = getUrlList(uuid,
+                        msg.time,
+                        msg.type,
+                        msg.fileIndex);
+                bean.viewType = bean.urlList.size() > 0 ? 1 : 0;
+            } else if (base.getId() == DpMsgMap.ID_222_SDCARD_SUMMARY) {
+                bean.content = (DpMsgDefine.SdcardSummary) base.getValue();
+            }
             beanArrayList.add(bean);
         }
         return beanArrayList;
@@ -56,18 +65,20 @@ public class Converter {
 
     private static ArrayList<String> getUrlList(String uuid, long time, int type, int index) {
         ArrayList<String> list = new ArrayList<>();
-        int randomCount = RandomUtils.getRandom(7);
         for (int i = 0; i < 3; i++) {
-            if ((randomCount >> i & 0x01) == 1) {
+            if ((index >> i & 0x01) == 1) {
                 StringBuilder builder = new StringBuilder();
                 builder.append(time)
                         .append("_")
                         .append(i + 1)
                         .append(".jpg");
-//                String url = JfgCmdInsurance.getCmd().getCloudUrlByType(JfgEnum.JFG_URL.WARNING, type, builder.toString(), uuid);
-                int len = HomeWonderfulPresenterImpl.pics.length;
-                String url = HomeWonderfulPresenterImpl.pics[RandomUtils.getRandom(len)];
-                list.add(url);
+                try {
+                    String url = JfgCmdInsurance.getCmd().getCloudUrlByType(JfgEnum.JFG_URL.WARNING,
+                            type, builder.toString(), uuid);
+                    list.add(url);
+                } catch (JfgException e) {
+                    AppLogger.e(String.format("err:%s", e.getLocalizedMessage()));
+                }
             }
         }
         return list;

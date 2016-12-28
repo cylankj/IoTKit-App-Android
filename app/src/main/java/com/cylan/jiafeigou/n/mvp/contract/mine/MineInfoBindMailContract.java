@@ -65,7 +65,6 @@ public interface MineInfoBindMailContract {
         boolean checkEmail(String email);               //检查邮箱的合法性
 
         void checkEmailIsBinded(String email);       //检验邮箱是否已经绑定过
-
         /**
          * 检验账号是否手机号
          *
@@ -108,5 +107,16 @@ public interface MineInfoBindMailContract {
          */
         void unregisterNetworkMonitor();
 
+        /**
+         * 三方登录回调
+         * @return
+         */
+        Subscription isOpenLoginBack();
+
+        /**
+         * 获取是否三方登录
+         * @return
+         */
+        boolean isOpenLogin();
     }
 }
