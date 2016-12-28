@@ -14,7 +14,7 @@ public class CamMessageBean {
      * 直接类型，不需要转型。
      */
     public ArrayList<String> urlList;//最终的url
-    public DpMsgDefine.SdStatus content;//204消息
+    public DpMsgDefine.SdcardSummary content;//204消息
     public long time;
     public long version;
 

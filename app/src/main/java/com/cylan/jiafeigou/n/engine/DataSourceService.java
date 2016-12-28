@@ -291,7 +291,7 @@ public class DataSourceService extends Service implements AppCallBack {
 
     @Override
     public void OnRobotDelDataRsp(long l, String s, int i) {
-        AppLogger.d("OnLocalMessage :");
+        AppLogger.d("OnRobotDelDataRsp :" + l + " uuid:" + s + " i:" + i);
     }
 
     @Override

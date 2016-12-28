@@ -47,7 +47,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
-;
+
 
 /**
  * Created by hunt on 16-5-23.
@@ -67,6 +67,7 @@ public class HomeWonderfulPresenterImpl extends AbstractPresenter<HomeWonderfulC
 
     @Override
     public void start() {
+        super.start();
         //注册1
         mSubscriptions = new CompositeSubscription();
         mSubscriptions.add(getTimeTickEventSub());
@@ -98,6 +99,7 @@ public class HomeWonderfulPresenterImpl extends AbstractPresenter<HomeWonderfulC
 
     @Override
     public void stop() {
+        super.stop();
         unSubscribe(mSubscriptions);
     }
 

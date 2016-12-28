@@ -15,7 +15,6 @@ import com.cylan.jiafeigou.misc.listener.ILiveStateListener;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamLiveContract;
 import com.cylan.jiafeigou.n.mvp.model.BeanCamInfo;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.utils.AnimatorUtils;
 import com.cylan.jiafeigou.utils.Test;
 import com.cylan.jiafeigou.utils.TimeUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
@@ -31,8 +30,6 @@ import com.cylan.jiafeigou.widget.wheel.ex.SuperWheelExt;
 import com.cylan.utils.NetUtils;
 
 import java.lang.ref.WeakReference;
-
-import butterknife.OnClick;
 
 import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_IDLE;
 import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_PLAYING;
@@ -75,6 +72,9 @@ public class CamLiveController implements
     public void setCamLiveControlLayer(CamLiveControlLayer camLiveControlLayer) {
         this.camLiveControlLayer = camLiveControlLayer;
         this.camLiveControlLayer.setTopBarAction(this);
+        this.camLiveControlLayer.getImgVCamLiveLandPlay().setOnClickListener(this);
+        this.camLiveControlLayer.getLiveTimeLayout().setOnClickListener(this);
+        this.camLiveControlLayer.getTvCamLivePortLive().setOnClickListener(this);
     }
 
     public IData getDataProvider() {
@@ -378,10 +378,11 @@ public class CamLiveController implements
             presenterRef.get().takeSnapShot();
     }
 
-    @OnClick({R.id.imgV_cam_live_land_play,
-            R.id.live_time_layout,
-            R.id.imgV_cam_zoom_to_full_screen,
-            R.id.tv_cam_live_port_live})
+    //    @OnClick({R.id.imgV_cam_live_land_play,
+//            R.id.live_time_layout,
+//            R.id.imgV_cam_zoom_to_full_screen,
+//            R.id.tv_cam_live_port_live})
+    @Override
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.tv_cam_live_port_live:

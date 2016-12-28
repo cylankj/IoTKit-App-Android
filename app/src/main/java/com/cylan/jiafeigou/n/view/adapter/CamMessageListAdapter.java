@@ -61,10 +61,8 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
     }
 
     private void fetchSdcardStatus() {
-        DpMsgDefine.SdcardSummary sdcardSummary = GlobalDataPool.getInstance().getValue(uuid, DpMsgMap.ID_204_SDCARD_STORAGE);
         DpMsgDefine.SdStatus status = GlobalDataPool.getInstance().getValue(uuid, DpMsgMap.ID_204_SDCARD_STORAGE);
         this.hasStatus |= status != null && status.hasSdcard;
-        this.hasStatus |= sdcardSummary != null && sdcardSummary.hasSdcard;
         DpMsgDefine.MsgNet net = GlobalDataPool.getInstance().getValue(this.uuid, DpMsgMap.ID_201_NET);
         deviceOnlineState = net != null && net.net != 0;
     }
@@ -250,8 +248,8 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
     private String getFinalSdcardContent(CamMessageBean bean) {
         if (bean.id != DpMsgMap.ID_204_SDCARD_STORAGE || bean.content == null)
             return "";
-        DpMsgDefine.SdStatus sdStatus = bean.content;
-        switch (sdStatus.err) {
+        DpMsgDefine.SdcardSummary sdStatus = bean.content;
+        switch (sdStatus.errCode) {
             case 0:
                 return getContext().getString(R.string.MSG_SD_ON);
             default:

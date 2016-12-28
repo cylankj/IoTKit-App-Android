@@ -336,7 +336,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
     private void updateVideoViewLayoutParameters(JFGMsgVideoResolution resolution) {
         FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
-                Resources.getSystem().getDisplayMetrics().widthPixels);
+                (int) (Resources.getSystem().getDisplayMetrics().widthPixels * resolution.height / (float) resolution.width));
         View view = fLayoutLiveViewContainer.findViewById("IVideoView".hashCode());
         if (view == null) {
             fLayoutLiveViewContainer.addView((View) videoView, 0, lp);

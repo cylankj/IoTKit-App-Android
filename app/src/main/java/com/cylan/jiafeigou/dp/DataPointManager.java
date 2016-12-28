@@ -87,6 +87,7 @@ public class DataPointManager implements IParser, IDataPoint {
     }
 
     /**
+     * String----->uuid+id
      * object: 可以是BaseValue
      */
     private HashMap<String, BaseValue> bundleMap = new HashMap<>();
@@ -100,7 +101,7 @@ public class DataPointManager implements IParser, IDataPoint {
 
     static {
         mapObject.put(505L, 505);
-        mapObject.put(204L, 204);
+//        mapObject.put(204L, 204);
         mapObject.put(222L, 222);
     }
 
@@ -130,13 +131,13 @@ public class DataPointManager implements IParser, IDataPoint {
             AppLogger.e("you go the wrong way: " + baseValue.getId());
             return false;
         }
-        HashSet<BaseValue> set = bundleSetMap.get(uuid);
+        HashSet<BaseValue> set = bundleSetMap.get(uuid + baseValue.getId());
         if (set == null) {
             set = new HashSet<>();
-            bundleSetMap.put(uuid + baseValue.getId(), set);
         }
         if (set.contains(baseValue)) return false;//已经包含.id和version相同
         set.add(baseValue);
+        bundleSetMap.put(uuid + baseValue.getId(), set);
         if (DEBUG) Log.d(TAG, "putHashSetValue: " + uuid + " " + baseValue);
         return true;
     }
@@ -193,7 +194,7 @@ public class DataPointManager implements IParser, IDataPoint {
                                     value.setId(dp.id);
                                     value.setVersion(dp.version);
                                     value.setValue(o);
-                                    boolean changed = putValue(identity + dp.id, value);
+                                    boolean changed = putValue(identity, value);
                                     needNotify |= changed;
                                     Log.d(TAG, "put: " + dp.id + " " + changed + " " + needNotify);
                                 } catch (Exception e) {
@@ -201,8 +202,9 @@ public class DataPointManager implements IParser, IDataPoint {
                                 }
                             }
                         }
-                        if (needNotify && querySeqMap.containsKey(dpDataRsp.seq)) {
-                            Log.e(TAG, "file update: " + dpDataRsp.seq);
+//                        if (needNotify && querySeqMap.containsKey(dpDataRsp.seq)) {
+                        if (needNotify || querySeqMap.containsKey(dpDataRsp.seq)) {
+                            if (DEBUG) Log.e(TAG, "file update: " + dpDataRsp.seq);
                             querySeqMap.remove(dpDataRsp.seq);
                             RxBus.getCacheInstance().post(dpDataRsp.seq);
                         }
@@ -278,7 +280,7 @@ public class DataPointManager implements IParser, IDataPoint {
             msgs.add(msg);
         }
         long req = JfgCmdInsurance.getCmd().robotDelData(uuid, msgs, 0);
-        if (DEBUG) Log.d(TAG, "deleteRobot: " + req);
+        if (DEBUG) Log.d(TAG, "deleteRobot: " + req + " " + msgs);
     }
 
     @Override

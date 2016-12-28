@@ -29,8 +29,8 @@ import com.cylan.jiafeigou.n.view.adapter.CamMessageListAdapter;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.AnimatorUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
-import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
+import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
 import com.cylan.jiafeigou.widget.wheel.WheelView;
 
 import java.util.ArrayList;
@@ -38,6 +38,10 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+
+import static com.cylan.jiafeigou.widget.dialog.BaseDialog.KEY_TITLE;
+import static com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment.KEY_LEFT_CONTENT;
+import static com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment.KEY_RIGHT_CONTENT;
 
 ;
 
@@ -65,6 +69,8 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
     RelativeLayout fLayoutCamMessageListTimeline;
     @BindView(R.id.fLayout_cam_msg_edit_bar)
     FrameLayout fLayoutCamMsgEditBar;
+
+    private SimpleDialogFragment simpleDialogFragment;
     /**
      * 列表第一条可见item的position,用户刷新timeLine控件的位置。
      */
@@ -131,7 +137,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
     @Override
     public void onStart() {
         super.onStart();
-        if (basePresenter != null) basePresenter.fetchMessageList();
+        if (basePresenter != null) basePresenter.fetchMessageList(false);
     }
 
     /**
@@ -149,9 +155,13 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
             String content = String.format(TimeUtils.getSuperString(time) + "%s", isToday ? "(" + getString(R.string.DOOR_TODAY) + ")" : "");
             tvCamMessageListDate.setText(content);
         });
-        AppLogger.d("fPos: " + position);
     }
 
+
+    @Override
+    public void setRefresh(boolean refresh) {
+        srLayoutCamListRefresh.setRefreshing(refresh);
+    }
 
     @Override
     public void onMessageListRsp(ArrayList<CamMessageBean> beanArrayList) {
@@ -200,7 +210,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
     public void onRefresh() {
         srLayoutCamListRefresh.setRefreshing(true);
         if (basePresenter != null)
-            basePresenter.fetchMessageList();
+            basePresenter.fetchMessageList(true);
     }
 
     @OnClick({R.id.tv_cam_message_list_date,
@@ -219,6 +229,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
                 fLayoutCamMessageListTimeline.setVisibility(show ? View.GONE : View.VISIBLE);
                 break;
             case R.id.tv_cam_message_list_edit:
+                if (camMessageListAdapter.getCount() == 0) return;
                 String content = ((TextView) view).getText().toString();
                 boolean toEdit = TextUtils.equals(content, getString(R.string.EDIT_THEME));
                 camMessageListAdapter.reverseMode(toEdit, lPos);
@@ -234,23 +245,52 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
                 camMessageListAdapter.markAllAsSelected(true, lPos);
                 break;
             case R.id.tv_msg_delete://删除
-                if (basePresenter != null)
-                    basePresenter.removeItems(camMessageListAdapter.getSelectedItems());
+                if (initDialog()) {
+                    simpleDialogFragment.show(getActivity().getSupportFragmentManager(), "simpleDialogFragment");
+                    simpleDialogFragment.setAction((int id, Object value) -> {
+                        ArrayList<CamMessageBean> list = new ArrayList<>(camMessageListAdapter.getSelectedItems());
+                        camMessageListAdapter.removeAll(list);
+                        if (basePresenter != null)
+                            basePresenter.removeItems(list);
+                    });
+                }
                 break;
         }
+    }
+
+    /**
+     * 初始化对话框
+     *
+     * @return
+     */
+    private boolean initDialog() {
+        if (simpleDialogFragment == null) {
+            Bundle bundle = new Bundle();
+            bundle.putString(KEY_TITLE, getString(R.string.Tips_SureDelete));
+            bundle.putString(KEY_RIGHT_CONTENT, getString(R.string.CANCEL));
+            bundle.putString(KEY_LEFT_CONTENT, getString(R.string.OK));
+            simpleDialogFragment = SimpleDialogFragment.newInstance(bundle);
+        }
+        return !simpleDialogFragment.isResumed();
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.tv_cam_message_item_delete: {//删除选中
-                int position = ViewUtils.getParentAdapterPosition(rvCamMessageList, v,
-                        R.id.lLayout_cam_msg_container);
-                ArrayList<CamMessageBean> list = new ArrayList<>();
-                CamMessageBean bean = camMessageListAdapter.getItem(position);
-                list.add(bean);
-                if (basePresenter != null)
-                    basePresenter.removeItems(list);
+                if (initDialog()) {
+                    final int pos = ViewUtils.getParentAdapterPosition(rvCamMessageList, v,
+                            R.id.lLayout_cam_msg_container);
+                    simpleDialogFragment.show(getActivity().getSupportFragmentManager(), "simpleDialogFragment");
+                    simpleDialogFragment.setAction((int id, Object value) -> {
+                        camMessageListAdapter.remove(pos);
+                        ArrayList<CamMessageBean> list = new ArrayList<>();
+                        CamMessageBean bean = camMessageListAdapter.getItem(pos);
+                        list.add(bean);
+                        if (basePresenter != null)
+                            basePresenter.removeItems(list);
+                    });
+                }
             }
             break;
             case R.id.lLayout_cam_msg_container: {//点击item,选中
@@ -261,7 +301,6 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
             }
             break;
             case R.id.tv_to_live:
-                ToastUtil.showToast("直播?");
                 break;
         }
     }

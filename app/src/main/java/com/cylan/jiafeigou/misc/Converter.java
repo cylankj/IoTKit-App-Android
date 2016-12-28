@@ -55,8 +55,8 @@ public class Converter {
                         msg.type,
                         msg.fileIndex);
                 bean.viewType = bean.urlList.size() > 0 ? 1 : 0;
-            } else if (base.getId() == DpMsgMap.ID_204_SDCARD_STORAGE) {
-                bean.content = (DpMsgDefine.SdStatus) base.getValue();
+            } else if (base.getId() == DpMsgMap.ID_222_SDCARD_SUMMARY) {
+                bean.content = (DpMsgDefine.SdcardSummary) base.getValue();
             }
             beanArrayList.add(bean);
         }
