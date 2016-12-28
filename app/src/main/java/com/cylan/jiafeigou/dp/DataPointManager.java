@@ -87,9 +87,13 @@ public class DataPointManager implements IParser, IDataPoint {
     }
 
     /**
-     * object: 可以是HashSet<BaseValue>,可以是BaseValue
+     * object: 可以是BaseValue
      */
-    private HashMap<String, Object> bundleMap = new HashMap<>();
+    private HashMap<String, BaseValue> bundleMap = new HashMap<>();
+    /**
+     * 可以是HashSet<BaseValue>,
+     */
+    private HashMap<String, HashSet<BaseValue>> bundleSetMap = new HashMap<>();
     //硬编码,注册list类型的id
     private static final HashMap<Long, Integer> mapObject = new HashMap<>();
 
@@ -113,37 +117,42 @@ public class DataPointManager implements IParser, IDataPoint {
     private DataPointManager() {
     }
 
+    /**
+     * 存放Set类型
+     *
+     * @param uuid
+     * @param baseValue
+     * @return
+     */
     private boolean putHashSetValue(String uuid, BaseValue baseValue) {
-        boolean isSet = mapObject.containsKey(baseValue.getId());
+        boolean isSet = isSetType(baseValue.getId());
         if (!isSet) {
             AppLogger.e("you go the wrong way: " + baseValue.getId());
             return false;
         }
-        Object o = bundleMap.get(uuid);
-        HashSet<BaseValue> set;
-        if (o != null && o instanceof HashSet) {
-            set = cast(o);
-            set.add(baseValue);
-        } else {
+        HashSet<BaseValue> set = bundleSetMap.get(uuid);
+        if (set == null) {
             set = new HashSet<>();
-            set.add(baseValue);
-            o = set;
+            bundleSetMap.put(uuid + baseValue.getId(), set);
         }
-        bundleMap.put(uuid, o);
-        if (DEBUG) Log.d(TAG, "putHashSetValue: " + uuid + " " + o);
+        if (set.contains(baseValue)) return false;//已经包含.id和version相同
+        set.add(baseValue);
+        if (DEBUG) Log.d(TAG, "putHashSetValue: " + uuid + " " + baseValue);
         return true;
     }
 
     private boolean putValue(String uuid, BaseValue baseValue) {
         boolean update = false;
         synchronized (DataPointManager.class) {
-            boolean isSetType = mapObject.containsKey(baseValue.getId());
+            boolean isSetType = isSetType(baseValue.getId());
+            if (DEBUG) Log.d(TAG, "value: " + isSetType + " " + baseValue.getId());
             if (isSetType) {
                 return putHashSetValue(uuid, baseValue);
             } else {
-                Object o = bundleMap.get(uuid);
-                if (o != null && o instanceof BaseValue) {
-                    if (((BaseValue) o).getVersion() < baseValue.getVersion()) {
+                BaseValue o = bundleMap.get(uuid);
+                if (o != null) {
+                    if (o.getVersion() < baseValue.getVersion()) {
+                        //如果是
                         bundleMap.remove(uuid);
                         update = true;
                     }
@@ -155,7 +164,8 @@ public class DataPointManager implements IParser, IDataPoint {
     }
 
     private Object removeId(String uuid, long id) {
-        if (DEBUG) Log.d(TAG, "removeId: " + uuid + " " + id);
+        if (DEBUG) Log.d(TAG, "removeId: " + uuid + " " + id + " set:" + mapObject.containsKey(id));
+        if (isSetType(id)) return bundleSetMap.remove(uuid + id);
         return bundleMap.remove(uuid + id);
     }
 
@@ -221,11 +231,10 @@ public class DataPointManager implements IParser, IDataPoint {
 
     @Override
     public Object delete(String uuid, long id, long version) {
-        boolean isSet = mapObject.containsKey(id);
+        boolean isSet = isSetType(id);
         if (isSet) {
-            Object o = bundleMap.get(uuid + id);
-            if (o != null && o instanceof HashSet) {
-                HashSet<BaseValue> set = cast(o);
+            HashSet<BaseValue> set = bundleSetMap.get(uuid + id);
+            if (set != null) {
                 BaseValue value = new BaseValue();
                 value.setId(id);
                 value.setVersion(version);
@@ -234,24 +243,26 @@ public class DataPointManager implements IParser, IDataPoint {
         } else {
             return bundleMap.remove(uuid + id);
         }
-        if (DEBUG) Log.d(TAG, "delete: " + uuid + " " + id);
+        if (DEBUG) Log.d(TAG, "delete: " + uuid + " " + id + " set:" + isSet);
         return null;
     }
 
     @Override
     public BaseValue fetchLocal(String uuid, long id) {
         try {
-            return (BaseValue) bundleMap.get(uuid + id);
+            if (isSetType(id)) AppLogger.e("this id is ArrayType: " + id);
+            return bundleMap.get(uuid + id);
         } catch (ClassCastException c) {
-            AppLogger.e(String.format("id:%s is not registered in DataPointManager#mapObject,%s", id, c.getLocalizedMessage()));
+            AppLogger.e(String.format("id:%s %s", id, c.getLocalizedMessage()));
             return null;
         }
     }
 
     @Override
     public boolean deleteAll(String uuid, long id, ArrayList<Long> versions) {
-        Object result = bundleMap.remove(uuid + id);
-        if (DEBUG) Log.d(TAG, "deleteAll: " + uuid + " " + id + " " + (result == null));
+        if (!isSetType(id)) AppLogger.e("this id is not ArrayType: " + id);
+        Object result = bundleSetMap.remove(uuid + id);
+        if (DEBUG) Log.d(TAG, "deleteAll: " + uuid + " " + id + " " + (result != null));
         deleteRobot(uuid, id, versions);
         return result != null;
     }
@@ -273,9 +284,8 @@ public class DataPointManager implements IParser, IDataPoint {
     @Override
     public ArrayList<BaseValue> fetchLocalList(String uuid, long id) {
         try {
-            Object o = bundleMap.get(uuid + id);
-            if (o != null && o instanceof HashSet) {
-                HashSet<BaseValue> set = cast(o);//bundleMap中存的是HashSet,set的key不会重复.
+            HashSet<BaseValue> set = bundleSetMap.get(uuid + id);
+            if (set != null) {
                 return new ArrayList<>(set);
             }
         } catch (ClassCastException c) {
@@ -286,7 +296,7 @@ public class DataPointManager implements IParser, IDataPoint {
     }
 
     @Override
-    public boolean isArrayType(int id) {
+    public boolean isSetType(long id) {
         return mapObject.containsKey(id);
     }
 

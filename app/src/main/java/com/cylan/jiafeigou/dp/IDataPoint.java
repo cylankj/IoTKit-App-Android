@@ -47,7 +47,7 @@ public interface IDataPoint {
      */
     ArrayList<BaseValue> fetchLocalList(String uuid, long id);
 
-    boolean isArrayType(int id);
+    boolean isSetType(long id);
 
     /**
      * 请求

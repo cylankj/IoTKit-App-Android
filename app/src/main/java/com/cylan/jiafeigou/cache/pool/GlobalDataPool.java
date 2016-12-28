@@ -104,7 +104,7 @@ public class GlobalDataPool implements IDataPool {
 
     @Override
     public boolean deleteAll(String uuid, long id, ArrayList<Long> versions) {
-        return false;
+        return dataPointManager.deleteAll(uuid, id, versions);
     }
 
     @Override
@@ -113,8 +113,8 @@ public class GlobalDataPool implements IDataPool {
     }
 
     @Override
-    public boolean isArrayType(int id) {
-        return dataPointManager.isArrayType(id);
+    public boolean isSetType(long id) {
+        return dataPointManager.isSetType(id);
     }
 
     @Override
@@ -123,8 +123,8 @@ public class GlobalDataPool implements IDataPool {
     }
 
     @SuppressWarnings("unchecked")
-    public <T> T getValue(String uuid, int id) {
-        if (isArrayType(id)) {
+    public <T> T getValue(String uuid, long id) {
+        if (isSetType(id)) {
             throw new IllegalArgumentException(String.format("id:%s is an array type in the map", id));
         }
         try {
