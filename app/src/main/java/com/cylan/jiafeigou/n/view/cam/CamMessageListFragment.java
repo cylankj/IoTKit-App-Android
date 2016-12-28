@@ -72,6 +72,8 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
     FrameLayout fLayoutCamMsgEditBar;
     @BindView(R.id.lLayout_no_message)
     LinearLayout lLayoutNoMessage;
+    @BindView(R.id.rLayout_cam_message_list_top)
+    FrameLayout rLayoutCamMessageListTop;
 
     private SimpleDialogFragment simpleDialogFragment;
     /**
@@ -172,6 +174,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
         final int count = beanArrayList == null ? 0 : beanArrayList.size();
         lLayoutNoMessage.post(() -> {
             lLayoutNoMessage.setVisibility(count > 0 ? View.GONE : View.VISIBLE);
+            rLayoutCamMessageListTop.setVisibility(count == 0 ? View.GONE : View.VISIBLE);
         });
         if (count == 0) {
             AppLogger.i("没有数据");
