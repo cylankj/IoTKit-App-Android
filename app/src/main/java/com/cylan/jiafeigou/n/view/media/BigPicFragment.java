@@ -13,6 +13,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.utils.CamWarnGlideURL;
 import com.cylan.photoview.PhotoView;
 
 import butterknife.BindView;
@@ -26,7 +27,8 @@ import butterknife.ButterKnife;
 public class BigPicFragment extends Fragment {
 
     public static final String KEY_TITLE = "KEY_TITLE";
-    //    public static final String KEY_URL = "key_url";
+    public static final String KEY_INDEX = "key_index";
+    public static final String KEY_UUID = "key_uuid";
     @BindView(R.id.imgV_show_pic)
     PhotoView imgVShowPic;
 
@@ -69,8 +71,11 @@ public class BigPicFragment extends Fragment {
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        int index = getArguments().getInt(KEY_INDEX);
+        String uuid = getArguments().getString(KEY_UUID);
         Glide.with(this)
-                .load(getArguments().getString(JConstant.KEY_SHARED_ELEMENT_LIST))
+                .load(new CamWarnGlideURL(getArguments().getParcelable(JConstant.KEY_SHARED_ELEMENT_LIST),
+                        index, uuid))
                 .placeholder(R.drawable.wonderful_pic_place_holder)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(imgVShowPic);

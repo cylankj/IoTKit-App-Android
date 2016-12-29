@@ -13,16 +13,20 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.misc.HackyViewPager;
 import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamMediaContract;
 import com.cylan.jiafeigou.n.mvp.impl.cam.CamMediaPresenterImpl;
+import com.cylan.jiafeigou.n.view.home.ShareDialogFragment;
 import com.cylan.jiafeigou.utils.AnimatorUtils;
+import com.cylan.jiafeigou.utils.CamWarnGlideURL;
+import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 
-import java.util.ArrayList;
+import java.lang.ref.WeakReference;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -36,6 +40,8 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
     public static final String KEY_BUNDLE = "key_bundle";
     public static final String KEY_TIME = "key_time";
     public static final String KEY_INDEX = "key_index";
+    public static final String KEY_UUID = "key_uuid";
+
     @BindView(R.id.vp_container)
     HackyViewPager vpContainer;
     @BindView(R.id.tv_big_pic_title)
@@ -45,9 +51,9 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
     @BindView(R.id.fLayout_cam_handle_bar)
     FrameLayout fLayoutCamHandleBar;
 
-    private long time;
-    private ArrayList<String> urlList;
     private int currentIndex = -1;
+    private DpMsgDefine.AlarmMsg alarmMsg;
+    private String uuid;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,10 +64,10 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
         setContentView(R.layout.activity_cam_media);
         ButterKnife.bind(this);
         basePresenter = new CamMediaPresenterImpl(this);
-        urlList = getIntent().getStringArrayListExtra(KEY_BUNDLE);
+        alarmMsg = getIntent().getParcelableExtra(KEY_BUNDLE);
+        uuid = getIntent().getStringExtra(KEY_UUID);
         CustomAdapter customAdapter = new CustomAdapter(getSupportFragmentManager());
-        customAdapter.setContents(urlList);
-        this.time = getIntent().getLongExtra(KEY_TIME, 0);
+        customAdapter.setContents(alarmMsg);
         vpContainer.setAdapter(customAdapter);
         vpContainer.setCurrentItem(currentIndex = getIntent().getIntExtra(KEY_INDEX, 0));
         ViewUtils.setViewMarginStatusBar(fLayoutBigPicTitle);
@@ -90,7 +96,7 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
     @Override
     protected void onResume() {
         super.onResume();
-        tvBigPicTitle.setText(TimeUtils.getMediaPicTimeInString(time));
+        tvBigPicTitle.setText(TimeUtils.getMediaPicTimeInString(alarmMsg.time * 1000L));
     }
 
     @OnClick({R.id.imgV_big_pic_download,
@@ -100,17 +106,30 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.imgV_big_pic_download:
-                if (basePresenter != null) basePresenter.saveImage(urlList.get(currentIndex));
+                if (basePresenter != null)
+                    basePresenter.saveImage(new CamWarnGlideURL(alarmMsg, currentIndex, uuid));
                 break;
             case R.id.imgV_big_pic_share:
+                ShareDialogFragment fragment = initShareDialog();
+                fragment.setGlideUrl(new CamWarnGlideURL(alarmMsg, currentIndex, uuid));
+                fragment.show(getSupportFragmentManager(), "ShareDialogFragment");
                 break;
             case R.id.imgV_big_pic_collect:
-                if (basePresenter != null) basePresenter.collect(time);
+                if (basePresenter != null) basePresenter.collect(alarmMsg.time);
                 break;
             case R.id.tv_big_pic_close:
                 finish();
                 break;
         }
+    }
+
+    private WeakReference<ShareDialogFragment> shareDialogFragmentWeakReference;
+
+    private ShareDialogFragment initShareDialog() {
+        if (shareDialogFragmentWeakReference == null || shareDialogFragmentWeakReference.get() == null) {
+            shareDialogFragmentWeakReference = new WeakReference<>(ShareDialogFragment.newInstance((Bundle) null));
+        }
+        return shareDialogFragmentWeakReference.get();
     }
 
     @Override
@@ -124,17 +143,26 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
     }
 
     @Override
-    public void savePic(boolean state) {
+    public void savePicResult(boolean state) {
         if (state) {
             ToastUtil.showPositiveToast(getString(R.string.SAVED_PHOTOS));
         } else ToastUtil.showNegativeToast(getString(R.string.set_failed));
     }
 
+    @Override
+    public void onErr(int err) {
+        switch (err) {
+            case 1:
+                ToastUtil.showNegativeToast(getString(R.string.Tap2_share_unabletoshare));
+                break;
+        }
+    }
+
     private class CustomAdapter extends FragmentPagerAdapter {
-        private ArrayList<String> contents;
+        private DpMsgDefine.AlarmMsg contents;
         private BigPicFragment.CallBack callBack;
 
-        public void setContents(ArrayList<String> contents) {
+        public void setContents(DpMsgDefine.AlarmMsg contents) {
             this.contents = contents;
         }
 
@@ -145,7 +173,9 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
         @Override
         public Fragment getItem(int position) {
             Bundle bundle = new Bundle();
-            bundle.putString(KEY_SHARED_ELEMENT_LIST, contents.get(position));
+            bundle.putParcelable(KEY_SHARED_ELEMENT_LIST, contents);
+            bundle.putInt(KEY_INDEX, position);
+            bundle.putString(KEY_UUID, uuid);
             BigPicFragment fragment = BigPicFragment.newInstance(bundle);
             fragment.setCallBack(this.callBack);
             return fragment;
@@ -153,7 +183,7 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
 
         @Override
         public int getCount() {
-            return this.contents.size();
+            return MiscUtils.getCount(contents.fileIndex);
         }
 
         private void setCallback(BigPicFragment.CallBack callback) {

@@ -186,6 +186,8 @@ public class DpMsgDefine {
         @Index(1)
         public int errCode;
 
+        public SdcardSummary() {
+        }
 
         protected SdcardSummary(Parcel in) {
             hasSdcard = in.readByte() != 0;
