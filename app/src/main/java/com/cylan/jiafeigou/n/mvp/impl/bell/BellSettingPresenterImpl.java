@@ -23,7 +23,6 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
-import rx.subscriptions.CompositeSubscription;
 
 /**
  * Created by cylan-hunt on 16-8-3.
@@ -31,7 +30,7 @@ import rx.subscriptions.CompositeSubscription;
 public class BellSettingPresenterImpl extends AbstractPresenter<BellSettingContract.View>
         implements BellSettingContract.Presenter {
     private BeanBellInfo beanBellInfo;
-    private CompositeSubscription compositeSubscription = new CompositeSubscription();
+//    private CompositeSubscription compositeSubscription = new CompositeSubscription();
 
     public BellSettingPresenterImpl(BellSettingContract.View view, DeviceBean bean) {
         super(view);
@@ -49,14 +48,12 @@ public class BellSettingPresenterImpl extends AbstractPresenter<BellSettingContr
         beanBellInfo.convert(baseBean, bean.dataList);
     }
 
-
     @Override
-    public void start() {
-        unSubscribe(compositeSubscription);
-        compositeSubscription = new CompositeSubscription();
-        compositeSubscription.add(onBellInfoSubscription());
-        compositeSubscription.add(onLoginStateSubscription());
-        compositeSubscription.add(unbindDevSub());
+    protected Subscription[] register() {
+        return new Subscription[]{
+                onBellInfoSubscription(),
+                onLoginStateSubscription(),
+                unbindDevSub()};
     }
 
     /**
@@ -154,11 +151,6 @@ public class BellSettingPresenterImpl extends AbstractPresenter<BellSettingContr
                             getView().onLoginState(o.state);
                     }
                 });
-    }
-
-    @Override
-    public void stop() {
-        unSubscribe(compositeSubscription);
     }
 
 

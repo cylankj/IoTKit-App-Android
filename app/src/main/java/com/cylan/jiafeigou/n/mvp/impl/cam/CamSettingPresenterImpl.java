@@ -37,7 +37,7 @@ import rx.subscriptions.CompositeSubscription;
 public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContract.View> implements
         CamSettingContract.Presenter {
 
-    private CompositeSubscription subscription;
+//    private CompositeSubscription compositeSubscription;
 
     private BeanCamInfo camInfoBean;
     private static final int[] periodResId = {R.string.MON_1, R.string.TUE_1,
@@ -67,17 +67,25 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
     }
 
     @Override
-    public void start() {
-        unSubscribe(subscription);
-        subscription = new CompositeSubscription();
-        subscription.add(fetchCamInfo());
-        subscription.add(unbindDevSub());
+    protected Subscription[] register() {
+        return new Subscription[]{
+                fetchCamInfo(),
+                unbindDevSub()
+        };
     }
 
-    @Override
-    public void stop() {
-        unSubscribe(subscription);
-    }
+//    @Override
+//    public void start() {
+//        unSubscribe(compositeSubscription);
+//        compositeSubscription = new CompositeSubscription();
+//        compositeSubscription.add(fetchCamInfo());
+//        compositeSubscription.add(unbindDevSub());
+//    }
+//
+//    @Override
+//    public void stop() {
+//        unSubscribe(compositeSubscription);
+//    }
 
     /**
      * 解绑设备

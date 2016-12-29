@@ -63,13 +63,4 @@ public class CamAlarmPresenterImpl extends AbstractPresenter<CamWarnContract.Vie
         return beanCamInfo;
     }
 
-    @Override
-    public void start() {
-
-    }
-
-    @Override
-    public void stop() {
-
-    }
 }

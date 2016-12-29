@@ -84,16 +84,6 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
     }
 
     @Override
-    public void onBackPressed() {
-        finish();
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-    }
-
-    @Override
     protected void onResume() {
         super.onResume();
         tvBigPicTitle.setText(TimeUtils.getMediaPicTimeInString(alarmMsg.time * 1000L));
@@ -118,7 +108,7 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
                 if (basePresenter != null) basePresenter.collect(alarmMsg.time);
                 break;
             case R.id.tv_big_pic_close:
-                finish();
+                onBackPressed();
                 break;
         }
     }

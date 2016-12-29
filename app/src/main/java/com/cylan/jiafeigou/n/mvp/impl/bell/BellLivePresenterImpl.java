@@ -47,7 +47,7 @@ public class BellLivePresenterImpl extends AbstractPresenter<BellLiveContract.Vi
     private String mBellCid;
     private String mURL;
     private JFGDoorBellCaller mCaller;
-    private CompositeSubscription mCompositeSubscription;
+    private CompositeSubscription compositeSubscription;
     private boolean isHold = false;
     private String mInHoldCallCid = null;
     private Subscription mRetrySubscription;
@@ -74,7 +74,7 @@ public class BellLivePresenterImpl extends AbstractPresenter<BellLiveContract.Vi
             HandlerThreadUtils.postDelay(() -> {
                 try {
                     JfgCmdInsurance.getCmd().playVideo(mInHoldCallCid);
-                    mCompositeSubscription.add(bellRetrySubscription());
+                    compositeSubscription.add(bellRetrySubscription());
                 } catch (JfgException e) {
                     e.printStackTrace();
                 }
@@ -181,19 +181,29 @@ public class BellLivePresenterImpl extends AbstractPresenter<BellLiveContract.Vi
     }
 
     @Override
-    public void start() {
-        unSubscribe(mCompositeSubscription);
-        mCompositeSubscription = new CompositeSubscription();
-        mCompositeSubscription.add(resolutionNotifySub());
-        mCompositeSubscription.add(flowNotifySub());
-        mCompositeSubscription.add(videoDisconnectSub());
+    protected Subscription[] register() {
+        return new Subscription[]{
+                resolutionNotifySub(),
+                flowNotifySub(),
+                videoDisconnectSub()
+        };
     }
+
+//    @Override
+//    public void start() {
+//        unSubscribe(compositeSubscription);
+//        compositeSubscription = new CompositeSubscription();
+//        compositeSubscription.add(resolutionNotifySub());
+//        compositeSubscription.add(flowNotifySub());
+//        compositeSubscription.add(videoDisconnectSub());
+//    }
 
     @Override
     public void stop() {
-        unSubscribe(mCompositeSubscription);
+        super.stop();
+//        unSubscribe(compositeSubscription);
         onBellPaused();
-        unSubscribe(mRetrySubscription);
+//        unSubscribe(mRetrySubscription);
     }
 
     private Subscription resolutionNotifySub() {

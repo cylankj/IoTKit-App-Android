@@ -80,14 +80,4 @@ public class DeviceInfoDetailPresenterImpl extends AbstractPresenter<CamInfoCont
         }
         return beanCamInfo;
     }
-
-    @Override
-    public void start() {
-
-    }
-
-    @Override
-    public void stop() {
-
-    }
 }
