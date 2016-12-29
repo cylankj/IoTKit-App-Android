@@ -1,7 +1,7 @@
 package com.cylan.jiafeigou.cache;
 
 import com.cylan.entity.jniCall.JFGAccount;
-import com.cylan.jiafeigou.cache.pool.GlobalDataPool;
+import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
 import com.cylan.jiafeigou.n.mvp.model.LoginAccountBean;
 import com.cylan.jiafeigou.n.mvp.model.TimeZoneBean;
 
@@ -22,16 +22,16 @@ public class JCache {
 
     @Deprecated
     public static boolean isOnline() {
-        return GlobalDataPool.getInstance().isOnline() && GlobalDataPool.getInstance().getJfgAccount() != null;
+        return GlobalDataProxy.getInstance().isOnline() && GlobalDataProxy.getInstance().getJfgAccount() != null;
     }
 
     /**
      * @return
-     * @see GlobalDataPool#getInstance()#getAccountCache()
+     * @see GlobalDataProxy#getInstance()#getAccountCache()
      */
     @Deprecated
     public static JFGAccount getAccountCache() {
-        return GlobalDataPool.getInstance().getJfgAccount();
+        return GlobalDataProxy.getInstance().getJfgAccount();
     }
 
     public static LoginAccountBean tmpAccount;

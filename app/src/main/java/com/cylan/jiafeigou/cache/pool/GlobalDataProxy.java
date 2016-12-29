@@ -1,6 +1,7 @@
 package com.cylan.jiafeigou.cache.pool;
 
 import android.text.TextUtils;
+import android.util.Pair;
 
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.entity.jniCall.JFGDPMsg;
@@ -18,21 +19,21 @@ import java.util.HashMap;
  * Created by cylan-hunt on 16-12-26.
  */
 
-public class GlobalDataPool implements IDataPool {
+public class GlobalDataProxy implements IDataPool {
 
     private HashMap<String, JFGDevice> jfgDeviceMap = new HashMap<>();
-    private static GlobalDataPool instance;
+    private static GlobalDataProxy instance;
     private JFGAccount jfgAccount;
     private IDataPoint dataPointManager;
     private boolean isOnline;
 
-    private GlobalDataPool() {
+    private GlobalDataProxy() {
     }
 
-    public static GlobalDataPool getInstance() {
+    public static GlobalDataProxy getInstance() {
         if (instance == null) {
-            synchronized (GlobalDataPool.class) {
-                if (instance == null) instance = new GlobalDataPool();
+            synchronized (GlobalDataProxy.class) {
+                if (instance == null) instance = new GlobalDataProxy();
             }
         }
         return instance;
@@ -120,6 +121,16 @@ public class GlobalDataPool implements IDataPool {
     @Override
     public boolean isSetType(long id) {
         return dataPointManager.isSetType(id);
+    }
+
+    @Override
+    public Pair<Long, Long> fetchUnreadCount(String uuid, long id) throws JfgException {
+        return dataPointManager.fetchUnreadCount(uuid, id);
+    }
+
+    @Override
+    public boolean markAsRead(String uuid, long id) throws JfgException {
+        return dataPointManager.markAsRead(uuid, id);
     }
 
     @Override

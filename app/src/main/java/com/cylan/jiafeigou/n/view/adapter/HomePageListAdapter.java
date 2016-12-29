@@ -9,6 +9,7 @@ import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
+import com.cylan.jiafeigou.utils.TimeUtils;
 import com.cylan.superadapter.IMulItemViewType;
 import com.cylan.superadapter.SuperAdapter;
 import com.cylan.superadapter.internal.SuperViewHolder;
@@ -57,18 +58,6 @@ public class HomePageListAdapter extends SuperAdapter<DeviceBean> {
         handleState(holder, item);
     }
 
-
-    private String getMessageContent(DeviceBean bean) {
-        final int deviceType = bean.pid;
-//        final int msgCount = bean.msgCount;
-        final int msgCount = 0;
-        return String.format(Locale.getDefault(),
-                getContext().getString(msgContentRes[0]), msgCount);
-    }
-
-    private String convertTime(DeviceBean bean) {
-        return "";
-    }
 
     private void setItemState(SuperViewHolder holder, DeviceBean bean, DpMsgDefine.MsgNet net) {
         //0 net type 网络类型
@@ -128,12 +117,20 @@ public class HomePageListAdapter extends SuperAdapter<DeviceBean> {
         holder.setText(R.id.tv_device_alias, TextUtils.isEmpty(bean.alias) ? bean.uuid : bean.alias);
         //图标
         holder.setBackgroundResource(R.id.img_device_icon, iconRes);
-        //消息数
-        holder.setText(R.id.tv_device_msg_count, getMessageContent(bean));
-        //时间
-        holder.setText(R.id.tv_device_msg_time, convertTime(bean));
+        handleMsgCountTime(holder, bean);
         //右下角状态
         setItemState(holder, bean, net);
+    }
+
+    private void handleMsgCountTime(SuperViewHolder holder, DeviceBean bean) {
+        final int msgCount = bean.msgCountPair == null ? 0 : bean.msgCountPair.first;
+        long time = bean.msgCountPair == null ? 0 : bean.msgCountPair.second;
+        String msgContent = msgCount == 0 ? getContext().getString(R.string.Tap1_NoMessages) :
+                String.format(Locale.getDefault(), getContext().getString(msgContentRes[0]), msgCount);
+        //消息数
+        holder.setText(R.id.tv_device_msg_count, msgContent);
+        //时间
+        holder.setText(R.id.tv_device_msg_time, TimeUtils.getHomeItemTime(getContext(), time));
     }
 
     @Override

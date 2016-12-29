@@ -352,7 +352,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
     @Override
     public void onRefresh() {
         if (basePresenter != null)
-            basePresenter.fetchDeviceList();
+            basePresenter.fetchDeviceList(true);
         //不使用post,因为会泄露
         srLayoutMainContentHolder.setRefreshing(true);
     }

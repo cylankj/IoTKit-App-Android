@@ -1,5 +1,7 @@
 package com.cylan.jiafeigou.dp;
 
+import android.util.Pair;
+
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.ex.JfgException;
 
@@ -56,6 +58,24 @@ public interface IDataPoint {
     ArrayList<BaseValue> fetchLocalList(String uuid, long id);
 
     boolean isSetType(long id);
+
+    /**
+     * 未读消息个数
+     *
+     * @param uuid
+     * @param id
+     * @return
+     */
+    Pair<Long, Long> fetchUnreadCount(String uuid, long id) throws JfgException;
+
+    /**
+     * 消息已经读
+     *
+     * @param uuid
+     * @param id
+     * @return
+     */
+    boolean markAsRead(String uuid, long id) throws JfgException;
 
     /**
      * 请求

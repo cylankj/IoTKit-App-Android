@@ -8,7 +8,6 @@ import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.jiafeigou.cache.JCache;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.misc.JFGRules;
-import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.misc.br.TimeTickBroadcast;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomePageListContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
@@ -32,7 +31,6 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
-import rx.subscriptions.CompositeSubscription;
 
 /**
  * Created by hunt on 16-5-23.
@@ -42,9 +40,6 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
 
     private static final String TAG = "HomePageListPresenterImpl:";
     private TimeTickBroadcast timeTickBroadcast;
-    //    private Subscription onRefreshSubscription;
-    private CompositeSubscription bulkSubscriptions;
-    private Subscription onGreetSubscription;
 
     public HomePageListPresenterImpl(HomePageListContract.View view) {
         super(view);
@@ -52,24 +47,14 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
     }
 
     @Override
-    public void start() {
-        AppLogger.i("start");
-        //注意事项
-        unSubscribe(bulkSubscriptions);
-        bulkSubscriptions = new CompositeSubscription();
-        //注册1
-        bulkSubscriptions
-                .add(getDevicesList());
-        bulkSubscriptions
-                .add(getTimeTickEventSub());
-        bulkSubscriptions
-                .add(getLoginRspSub());
-        bulkSubscriptions
-                .add(subDeviceList());
-        bulkSubscriptions
-                .add(singleDeviceSub());
-        bulkSubscriptions
-                .add(JFGAccountUpdate());
+    protected Subscription[] register() {
+        return new Subscription[]{
+                getDevicesList(),
+                getTimeTickEventSub(),
+                getLoginRspSub(),
+                subDeviceList(),
+                singleDeviceSub(),
+                JFGAccountUpdate()};
     }
 
     /**
@@ -84,7 +69,6 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
                     @Override
                     public void call(String s) {
                         RxBus.getCacheInstance().post(new RxUiEvent.QueryBulkDevice());
-                        JfgCmdInsurance.getCmd().refreshDevList();
                     }
                 });
     }
@@ -196,14 +180,7 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
      */
     private Subscription subDeviceList() {
         return RxBus.getUiInstance().toObservableSticky(RxUiEvent.BulkDeviceList.class)
-                .filter(new Func1<RxUiEvent.BulkDeviceList, Boolean>() {
-                    @Override
-                    public Boolean call(RxUiEvent.BulkDeviceList list) {
-                        boolean notNull = getView() != null && list.allDevices != null;
-                        AppLogger.i("notNull: " + notNull);
-                        return notNull;
-                    }
-                })
+                .filter((RxUiEvent.BulkDeviceList list) -> (getView() != null && list.allDevices != null))
                 .flatMap(new Func1<RxUiEvent.BulkDeviceList, Observable<List<DeviceBean>>>() {
                     @Override
                     public Observable<List<DeviceBean>> call(RxUiEvent.BulkDeviceList list) {
@@ -237,60 +214,39 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
                 .subscribe();
     }
 
-    @Override
-    public void stop() {
-        AppLogger.i("stop");
-        unSubscribe(bulkSubscriptions,
-                onGreetSubscription);
-    }
-
 
     @Override
     public void fetchGreet() {
-        onGreetSubscription = Observable.just(null)
+        Observable.just(null)
                 .subscribeOn(Schedulers.io())
                 .map(new Func1<Object, GreetBean>() {
                     @Override
                     public GreetBean call(Object o) {
                         return null;
                     }
-                })
+                }).filter(new RxHelper.Filter<>("", getView() != null))
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<GreetBean>() {
-                    @Override
-                    public void call(GreetBean greetBean) {
-                        if (getView() != null && JCache.getAccountCache() != null) {
-                            getView().onAccountUpdate(JCache.getAccountCache());
-                        }
-                    }
+                .subscribe((GreetBean greetBean) -> {
+                    getView().onAccountUpdate(JCache.getAccountCache());
                 });
-
     }
 
     @Override
-    public void fetchDeviceList() {
+    public void fetchDeviceList(boolean manually) {
         if (!JCache.isOnline()) {
             getView().onLoginState(false);
             getView().onRefreshFinish();
         }
-        Observable.just(JCache.isOnline())
+        Observable.just(manually)
                 .subscribeOn(Schedulers.newThread())
-                .map(new Func1<Boolean, Object>() {
-                    @Override
-                    public Object call(Boolean aBoolean) {
-                        //发送给DpDeviceAssembler
-//
-//                        JfgCmdInsurance.getCmd().refreshDevList();//刷新列表.
-                        return null;
-                    }
+                .map((Boolean aBoolean) -> {
+                    AppLogger.e("还没实现,刷新列表");
+                    return null;
                 })
                 .delay(2000, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<Object>() {
-                    @Override
-                    public void call(Object aBoolean) {
-                        if (getView() != null) getView().onRefreshFinish();
-                    }
+                .subscribe((Object aBoolean) -> {
+                    if (getView() != null) getView().onRefreshFinish();
                 });
     }
 

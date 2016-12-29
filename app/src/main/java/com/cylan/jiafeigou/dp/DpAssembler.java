@@ -10,9 +10,10 @@ import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.entity.jniCall.RobotoGetDataRsp;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.cache.JCache;
-import com.cylan.jiafeigou.cache.pool.GlobalDataPool;
+import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
 import com.cylan.jiafeigou.misc.Converter;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.model.BaseBean;
 import com.cylan.jiafeigou.n.mvp.model.param.BaseParam;
@@ -278,7 +279,8 @@ public class DpAssembler implements IParser {
                     public Object call(List<JFGDevice> list) {
                         HashMap<String, Long> map = new HashMap<>();
                         for (int i = 0; i < list.size(); i++) {
-                            GlobalDataPool.getInstance().cacheDevice(list.get(i));
+                            GlobalDataProxy.getInstance().cacheDevice(list.get(i));
+                            getUnreadMsg(list.get(i));
                             assembleBase(list.get(i));
                             final int pid = list.get(i).pid;
                             BaseParam baseParam = merger(pid);
@@ -297,6 +299,15 @@ public class DpAssembler implements IParser {
                 })
                 .retry(new RxHelper.RxException<>(TAG + " deviceListSub"))
                 .subscribe();
+    }
+
+    private void getUnreadMsg(JFGDevice device) {
+        if (JFGRules.isCamera(device.pid))
+            try {
+                GlobalDataProxy.getInstance().fetchUnreadCount(device.uuid, DpMsgMap.ID_505_CAMERA_ALARM_MSG * 1L);
+            } catch (JfgException e) {
+                AppLogger.e("" + e.getLocalizedMessage());
+            }
     }
 
     /**

@@ -1,8 +1,11 @@
 package com.cylan.jiafeigou.dp;
 
+import android.os.Looper;
 import android.util.Log;
+import android.util.Pair;
 
 import com.cylan.entity.jniCall.JFGDPMsg;
+import com.cylan.entity.jniCall.JFGDPMsgCount;
 import com.cylan.entity.jniCall.RobotoGetDataRsp;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.BuildConfig;
@@ -33,10 +36,29 @@ public class DataPointManager implements IParser, IDataPoint {
 
     private static DataPointManager instance;
     private Map<Long, Long> querySeqMap = new HashMap<>();
+    /**
+     * String----->uuid+id
+     * object: 可以是BaseValue
+     */
+    private HashMap<String, BaseValue> bundleMap = new HashMap<>();
+    /**
+     * 可以是HashSet<BaseValue>,
+     */
+    private HashMap<String, HashSet<BaseValue>> bundleSetMap = new HashMap<>();
+    //硬编码,注册list类型的id
+    private static final HashMap<Long, Integer> mapObject = new HashMap<>();
+
+    /**
+     * 未读消息书存放地方,UnreadCount的list存放的是同一个id
+     * String:uuid+id.
+     * Pair<time(时间),count(条数)>
+     */
+    private HashMap<String, Pair<Long, Long>> unreadMap = new HashMap<>();
 
     @Override
     public Subscription[] register() {
         return new Subscription[]{fullDataPointAssembler(),
+                handleUnreadMessageCount(),
                 robotDataSyncSub()};
     }
 
@@ -85,18 +107,6 @@ public class DataPointManager implements IParser, IDataPoint {
         if (DEBUG) Log.d(TAG, "clear: ");
         bundleMap.clear();
     }
-
-    /**
-     * String----->uuid+id
-     * object: 可以是BaseValue
-     */
-    private HashMap<String, BaseValue> bundleMap = new HashMap<>();
-    /**
-     * 可以是HashSet<BaseValue>,
-     */
-    private HashMap<String, HashSet<BaseValue>> bundleSetMap = new HashMap<>();
-    //硬编码,注册list类型的id
-    private static final HashMap<Long, Integer> mapObject = new HashMap<>();
 
 
     static {
@@ -216,6 +226,29 @@ public class DataPointManager implements IParser, IDataPoint {
                 .subscribe();
     }
 
+    /**
+     * 未读消息数,只是一个数字.
+     * 应该在报警消息池中取,如果没有新的报警消息,需要重新获取.
+     *
+     * @return
+     */
+    private Subscription handleUnreadMessageCount() {
+        return RxBus.getCacheInstance().toObservable(RxEvent.UnreadCount.class)
+                .subscribeOn(Schedulers.newThread())
+                .map((RxEvent.UnreadCount unreadCount) -> {
+                    int count = 0;
+                    Log.d(TAG, "还没实现....");
+                    for (JFGDPMsgCount msg : unreadCount.msgList) {
+                        int id = msg.id;
+                        count += msg.count;
+                    }
+                    Log.d(TAG, "handleUnreadMessageCount:" + count);
+                    return null;
+                })
+                .retry(new RxHelper.RxException<>("handleUnreadMessageCount"))
+                .subscribe();
+    }
+
     @Override
     public boolean insert(String uuid, BaseValue baseValue) {
         return putValue(uuid, baseValue);
@@ -327,9 +360,45 @@ public class DataPointManager implements IParser, IDataPoint {
     }
 
     @Override
+    public Pair<Long, Long> fetchUnreadCount(String uuid, long id) {
+        Pair<Long, Long> pair = unreadMap.get(uuid + id);
+        //如果有数据,直接返回,没有数据做检查,异步响应.
+        if (pair == null) {
+            //为空,尝试一次新的请求.
+            ArrayList<JFGDPMsg> list = new ArrayList<>();
+            JFGDPMsg msg = new JFGDPMsg((int) id, 0);//取最新的.
+            list.add(msg);
+            ArrayList<Long> idList = new ArrayList<>();
+            idList.add(id);
+            try {
+                Log.d(TAG, "robotCountData: " + idList);
+//                JfgCmdInsurance.getCmd().robotCountData(uuid, idList, 0);
+                robotGetData(uuid, list, Integer.MAX_VALUE, false, 0);
+            } catch (JfgException e) {
+                AppLogger.e("" + e.getLocalizedMessage());
+            }
+            if (Looper.getMainLooper() == Looper.myLooper()) {
+                throw new IllegalThreadStateException("在Io线程操作");
+            }
+            Log.d("fetchUnreadCount", "fetchUnreadCount:" + id);
+            return null;
+        }
+        return unreadMap.get(uuid + id);
+    }
+
+    @Override
+    public boolean markAsRead(String uuid, long id) throws JfgException {
+        ArrayList<Long> idList = new ArrayList<>();
+        idList.add(id);
+        JfgCmdInsurance.getCmd().robotCountDataClear(uuid, idList, 0);
+        return unreadMap.remove(uuid + id) != null;
+    }
+
+    @Override
     public long robotGetData(String peer, ArrayList<JFGDPMsg> queryDps, int limit, boolean asc, int timeoutMs) throws JfgException {
         long seq = JfgCmdInsurance.getCmd().robotGetData(peer, queryDps, limit, asc, timeoutMs);
         querySeqMap.put(seq, seq);
+        Log.d("robotGetData", "robotGetData....此处可以简化,版本管理在这里做.,传一个List<Long(id)>");
         return seq;
     }
 
