@@ -102,6 +102,7 @@ public class DataPointManager implements IParser, IDataPoint {
                         RxEvent.DataPoolUpdate data = new RxEvent.DataPoolUpdate();
                         data.id = (int) map.get(uuid).getId();
                         data.uuid = uuid;
+                        data.value = map.get(uuid);
                         RxBus.getCacheInstance().post(data);
                     }
                     return null;
@@ -164,7 +165,7 @@ public class DataPointManager implements IParser, IDataPoint {
         boolean update = false;
         synchronized (DataPointManager.class) {
             boolean isSetType = isSetType(baseValue.getId());
-            if (DEBUG) Log.d(TAG, "value: " + isSetType + " " + baseValue.getId());
+            if (DEBUG) Log.d(TAG, "isSetType: " + isSetType + " " + baseValue);
             if (isSetType) {
                 return putHashSetValue(uuid, baseValue);
             } else {

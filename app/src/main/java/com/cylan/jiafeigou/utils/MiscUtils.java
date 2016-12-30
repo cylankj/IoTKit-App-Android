@@ -70,4 +70,13 @@ public class MiscUtils {
         }
         return count;
     }
+
+    @SuppressWarnings("unchecked")
+    public static <T> T cast(Object object, T defaultValue) {
+        try {
+            return object == null ? defaultValue : (T) object;
+        } catch (ClassCastException e) {
+            return defaultValue;
+        }
+    }
 }

@@ -21,10 +21,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.entity.jniCall.JFGMsgVideoResolution;
 import com.cylan.entity.jniCall.JFGMsgVideoRtcp;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
+import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JFGRules;
@@ -34,6 +37,7 @@ import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamLiveContract;
 import com.cylan.jiafeigou.n.mvp.impl.cam.CamLivePresenterImpl;
 import com.cylan.jiafeigou.n.mvp.model.BeanCamInfo;
+import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
@@ -110,6 +114,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
      */
     private WeakReference<View> viewStandbyRef;
 
+    private String uuid;
 
     public CameraLiveFragment() {
         // Required empty public constructor
@@ -124,7 +129,9 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        basePresenter = new CamLivePresenterImpl(this, getArguments().getParcelable(JConstant.KEY_DEVICE_ITEM_BUNDLE));
+        DeviceBean bean = getArguments().getParcelable(JConstant.KEY_DEVICE_ITEM_BUNDLE);
+        this.uuid = bean.uuid;
+        basePresenter = new CamLivePresenterImpl(this, bean.uuid);
     }
 
     @Override
@@ -171,8 +178,11 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
         if (basePresenter != null) {
             basePresenter.fetchHistoryDataList();
             //非待机模式
-            if (!basePresenter.getCamInfo().cameraStandbyFlag) {
+            boolean flag = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_508_CAMERA_STANDBY_FLAG, false);
+            if (!flag) {
                 basePresenter.startPlayVideo(basePresenter.getPlayType());
+            } else {
+                onDeviceStandBy(true);
             }
         }
     }
@@ -308,7 +318,13 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
     private VideoViewFactory.IVideoView initVideoView() {
         AppLogger.i("initVideoView:" + (videoView == null));
         if (videoView == null) {
-            int pid = basePresenter.getCamInfo().deviceBase.pid;
+            JFGDevice device = GlobalDataProxy.getInstance().fetch(uuid);
+            if (device == null) {
+                AppLogger.e("device is null");
+                getActivity().finish();
+                return null;
+            }
+            int pid = device.pid;
             videoView = VideoViewFactory.CreateRendererExt(JFGRules.isNeedPanoramicView(pid),
                     getContext(), true);
             ((View) videoView).setId("IVideoView".hashCode());
