@@ -67,6 +67,8 @@ public class JConstant {
     public static final String SAVE_TEMP_ACCOUNT ="save_temp_account";
     public static final String SAVE_TEMP_CODE ="save_temp_code";
     public static final String OPEN_LOGIN_TO_BIND_PHONE ="open_login_to_bind_phone";
+    public static final String OPEN_LOGIN_USER_ICON ="open_login_user_icon";
+    public static final String OPEN_LOGIN_USER_ALIAS ="open_login_user_alias";
     /**
      * verification code
      */

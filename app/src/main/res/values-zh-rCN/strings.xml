@@ -674,7 +674,7 @@
   <string name="Tap3_Friends_Details">详细资料</string>
   <string name="Tap3_Friends_Myaccount">我的账号</string>
   <string name="Tap3_Friends_NoBindTips">使用亲友功能需要绑定手机/邮箱</string>
-  <string name="Tap3_Friends_Share">分享设备给%s</string>
+  <string name="Tap3_Friends_Share">分享设备给</string>
   <string name="Tap3_Friends_Tips">无论多远，挂念从未中断，添加亲友，彼此就在身边</string>
   <string name="Tap3_Friends_UserInfo">个人信息</string>
   <string name="Tap3_Friends_UserInfo_Add">添加为亲友</string>

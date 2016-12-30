@@ -79,6 +79,12 @@ public interface MineInfoContract {
          */
         boolean checkOpenLogin();
 
+        /**
+         * 三方登录回调
+         * @return
+         */
+        Subscription isOpenLoginBack();
+
     }
 
 }

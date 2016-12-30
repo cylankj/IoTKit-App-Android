@@ -131,6 +131,18 @@ public interface MineBindPhoneContract {
          * 移除网络监听
          */
         void unregisterNetworkMonitor();
+
+        /**
+         * 三方登录的回调
+         * @return
+         */
+        Subscription openLoginBack();
+
+        /**
+         * 是否三方登录
+         * @return
+         */
+        boolean isOpenLogin();
     }
 
 }

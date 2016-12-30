@@ -121,6 +121,17 @@ public interface HomeMineHelpSuggestionContract {
          */
         Subscription sendFeedBackReq();
 
+        /**
+         * 数据库中删除一条数据
+         * @param bean
+         */
         void deleteOnItemFromDb(MineHelpSuggestionBean bean);
+
+        /**
+         * 三方登录回调
+         * @return
+         */
+        Subscription isOpenLogin();
+
     }
 }

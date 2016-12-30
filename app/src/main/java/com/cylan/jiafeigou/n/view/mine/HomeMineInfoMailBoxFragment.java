@@ -106,7 +106,7 @@ public class HomeMineInfoMailBoxFragment extends Fragment implements MineInfoBin
     public void getUserAccountData(JFGAccount account) {
         userinfo = account;
         if (userinfo != null) {
-            if ("".equals(userinfo.getEmail()) || userinfo.getEmail() == null) {
+            if (TextUtils.isEmpty(userinfo.getEmail()) || userinfo.getEmail() == null) {
                 bindOrChange = true;
             } else {
                 bindOrChange = false;
@@ -172,7 +172,6 @@ public class HomeMineInfoMailBoxFragment extends Fragment implements MineInfoBin
         presenter = new MineInfoBineMailPresenterImp(this);
     }
 
-
     @OnTextChanged(R.id.et_mine_personal_information_mailbox)
     public void onEditChange(CharSequence s, int start, int before, int count) {
         boolean isEmpty = TextUtils.isEmpty(s);
@@ -237,13 +236,13 @@ public class HomeMineInfoMailBoxFragment extends Fragment implements MineInfoBin
      */
     @Override
     public void showAccountUnReg() {
-        if (presenter.checkAccoutIsPhone(userinfo.getAccount())) {
-            //是手机号登录
+        if (!presenter.isOpenLogin()){
             presenter.sendSetAccountReq(getEditText());
-        } else {
-            // 三方登录 未绑定邮箱和手机号跳转到设置密码界面
-            if ("".equals(userinfo.getEmail()) && "".equals(userinfo.getPhone())) {
+        }else {
+            if (TextUtils.isEmpty(presenter.getUserAccount().getEmail()) && TextUtils.isEmpty(presenter.getUserAccount().getPhone())){
                 jump2SetPasswordFragment(getEditText());
+            }else {
+                presenter.sendSetAccountReq(getEditText());
             }
         }
     }
@@ -284,6 +283,15 @@ public class HomeMineInfoMailBoxFragment extends Fragment implements MineInfoBin
      * 跳转到设置密码界面
      */
     private void jump2SetPasswordFragment(String account) {
-        //TODO
+        Bundle bundle = new Bundle();
+        bundle.putString("useraccount", account);
+        bundle.putString("token", "");
+        MineInfoSetNewPwdFragment fragment = MineInfoSetNewPwdFragment.newInstance(bundle);
+        getFragmentManager().beginTransaction()
+                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
+                        , R.anim.slide_in_left, R.anim.slide_out_right)
+                .add(android.R.id.content, fragment, "mailBoxFragment")
+                .addToBackStack("personalInformationFragment")
+                .commit();
     }
 }

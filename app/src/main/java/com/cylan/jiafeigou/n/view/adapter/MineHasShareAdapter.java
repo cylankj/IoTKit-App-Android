@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
+import android.text.TextUtils;
 import android.view.View;
 
 import com.bumptech.glide.Glide;
@@ -43,7 +44,7 @@ public class MineHasShareAdapter extends SuperAdapter<RelAndFriendBean> {
 
     @Override
     public void onBind(SuperViewHolder holder, int viewType, int layoutPosition, final RelAndFriendBean item) {
-        holder.setText(R.id.tv_username, item.alias);
+        holder.setText(R.id.tv_username, TextUtils.isEmpty(item.markName)?item.alias:item.markName);
         holder.setText(R.id.tv_friend_account, item.account);
         holder.setOnClickListener(R.id.tv_btn_cancle_share, new View.OnClickListener() {
             @Override

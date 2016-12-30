@@ -20,7 +20,7 @@ public class TencentInstance {
 
     public static String APP_KEY;
 
-    private Tencent mTencent;
+    public Tencent mTencent;
 
     public TencentInstance(){
         APP_KEY = "1103156296";

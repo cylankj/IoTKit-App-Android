@@ -131,7 +131,7 @@ public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMine
             return;
         }
         if (suggestionAdapter.getItemCount() != 1) {
-            if (presenter.checkOverTime(suggestionAdapter.getItem(suggestionAdapter.getItemCount() - 1).getDate())) {
+            if (presenter.checkOverTime(suggestionAdapter.getItem(suggestionAdapter.getItemCount() - 2).getDate())) {
                 addAutoReply();
                 presenter.getSystemAutoReply();
             }

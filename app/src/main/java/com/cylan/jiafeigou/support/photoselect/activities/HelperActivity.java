@@ -14,6 +14,7 @@ import android.view.View;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.support.photoselect.helpers.Constants;
+import com.cylan.jiafeigou.utils.ContextUtils;
 
 /**
  * Created by darshan on 26/9/16.
@@ -73,7 +74,8 @@ public class HelperActivity extends AppCompatActivity {
                     public void onClick(View v) {
                         Uri uri = Uri.fromParts(
                                 getString(R.string.permission_package),
-                                HelperActivity.this.getPackageName(),
+//                                HelperActivity.this.getPackageName(),
+                                ContextUtils.getContext().getPackageName(),
                                 null);
 
                         Intent intent = new Intent();

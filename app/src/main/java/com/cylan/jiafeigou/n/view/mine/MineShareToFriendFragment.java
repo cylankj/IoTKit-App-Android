@@ -26,8 +26,10 @@ import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.widget.LoadingDialog;
 import com.cylan.superadapter.OnItemClickListener;
 import com.cylan.superadapter.internal.SuperViewHolder;
+import com.squareup.haha.guava.collect.Iterators;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -141,13 +143,15 @@ public class MineShareToFriendFragment extends Fragment implements MineShareToFr
     @Override
     public void setHasShareFriendNum(boolean isChange, int number) {
         if (number == 0) {
+            tvMineShareToRelativeFriendTrue.setClickable(false);
             tvMineShareToRelativeFriendTrue.setText(getString(R.string.OK) + "（0/5）");
-            tvMineShareToRelativeFriendTrue.setTextColor(Color.GRAY);
+            tvMineShareToRelativeFriendTrue.setTextColor(Color.parseColor("#d8d8d8"));
         } else if (isChange) {
             tvMineShareToRelativeFriendTrue.setTextColor(Color.WHITE);
             tvMineShareToRelativeFriendTrue.setText(getString(R.string.OK) + "（" + number + "/5）");
         } else {
-            tvMineShareToRelativeFriendTrue.setTextColor(Color.GRAY);
+            tvMineShareToRelativeFriendTrue.setClickable(false);
+            tvMineShareToRelativeFriendTrue.setTextColor(Color.parseColor("#d8d8d8"));
             tvMineShareToRelativeFriendTrue.setText(getString(R.string.OK) + "（" + number + "/5）");
         }
     }
@@ -196,10 +200,12 @@ public class MineShareToFriendFragment extends Fragment implements MineShareToFr
     public void handlerAfterSendShareReq(ArrayList<RxEvent.ShareDeviceCallBack> callbackList) {
         hideSendProgress();
         int totalFriend = isChooseToShareList.size();
-        for (RelAndFriendBean friendBean : isChooseToShareList) {
+        Iterator iterators = isChooseToShareList.iterator();
+        while(iterators.hasNext()){
+            RelAndFriendBean friendBean = (RelAndFriendBean) iterators.next();
             for (RxEvent.ShareDeviceCallBack callBack : callbackList) {
-                if (friendBean.account.equals(callBack.account)) {
-                    isChooseToShareList.remove(friendBean);
+                if (friendBean.account.equals(callBack.account) && callBack.requestId == 0) {
+                    iterators.remove();
                 }
             }
         }

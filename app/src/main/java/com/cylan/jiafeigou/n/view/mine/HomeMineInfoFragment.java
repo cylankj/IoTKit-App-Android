@@ -294,14 +294,15 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
 
     @Override
     public void initPersonalInformation(JFGAccount bean) {
+        String photoUrl = "";
         if (bean != null) {
             argumentData = bean;
             //头像的回显
-            String photoUrl = bean.getPhotoUrl();
-            if (TextUtils.isEmpty(bean.getPhotoUrl())){
-                photoUrl = PreferencesUtils.getString("UserImageUrl");
-            }
+            photoUrl = bean.getPhotoUrl();
 
+            if (presenter.checkOpenLogin()) {
+                photoUrl = PreferencesUtils.getString(JConstant.OPEN_LOGIN_USER_ICON);
+            }
             Glide.with(getContext()).load(photoUrl)
                     .asBitmap()
                     .centerCrop()
@@ -320,7 +321,12 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
 
             tvUserAccount.setText(bean.getAccount());
 
-            tvUserName.setText(TextUtils.isEmpty(bean.getAlias())? getString(R.string.NO_SET) : bean.getAlias());
+            if (presenter.checkOpenLogin()) {
+                String alias = PreferencesUtils.getString(JConstant.OPEN_LOGIN_USER_ALIAS);
+                tvUserName.setText(TextUtils.isEmpty(alias)? getString(R.string.NO_SET) : alias);
+            }else {
+                tvUserName.setText(TextUtils.isEmpty(bean.getAlias())? getString(R.string.NO_SET) : bean.getAlias());
+            }
 
             if (bean.getEmail() == null | TextUtils.isEmpty(bean.getEmail())){
                 mTvMailBox.setText(getString(R.string.NO_SET));
@@ -333,20 +339,6 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
             } else {
                 tvHomeMinePersonalPhone.setText(bean.getPhone());
             }
-        } else {
-            Glide.with(getContext()).load(PreferencesUtils.getString("UserImageUrl"))
-                    .asBitmap().centerCrop()
-                    .error(R.drawable.icon_mine_head_normal)
-                    .into(new BitmapImageViewTarget(userImageHead) {
-                        @Override
-                        protected void setResource(Bitmap resource) {
-                            RoundedBitmapDrawable circularBitmapDrawable =
-                                    RoundedBitmapDrawableFactory.create(getContext().getResources(), resource);
-                            circularBitmapDrawable.setCircular(true);
-                            userImageHead.setImageDrawable(circularBitmapDrawable);
-                        }
-                    });
-
         }
     }
 

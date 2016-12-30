@@ -15,6 +15,7 @@ import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.entity.jniCall.RobotoGetDataRsp;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.dp.DpUtils;
+import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeMineContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
@@ -22,6 +23,7 @@ import com.cylan.jiafeigou.n.mvp.model.MineMessageBean;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.utils.BitmapUtil;
 import com.cylan.utils.FastBlurUtil;
 
@@ -80,7 +82,6 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
         }
         subscription = new CompositeSubscription();
             subscription.add(checkIsOpenLoginCallBack());
-        subscription.add(initData());
             subscription.add(getMesgDpData());
             subscription.add(getMesgDpDataCallBack());
     }
@@ -163,7 +164,7 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
      * 初始化界面的数据
      */
     @Override
-    public Subscription initData() {
+    public Subscription initData(boolean isOpenLogin) {
         return RxBus.getCacheInstance().toObservableSticky(RxEvent.GetUserInfo.class)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<RxEvent.GetUserInfo>() {
@@ -171,6 +172,12 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
                     public void call(RxEvent.GetUserInfo getUserInfo) {
                         if (getUserInfo != null && getUserInfo instanceof RxEvent.GetUserInfo) {
                             userInfo = getUserInfo.jfgAccount;
+                            if (isOpenLogin){
+                                getView().setUserImageHeadByUrl(PreferencesUtils.getString(JConstant.OPEN_LOGIN_USER_ICON));
+                                String userAlias = PreferencesUtils.getString(JConstant.OPEN_LOGIN_USER_ALIAS);
+                                getView().setAliasName(TextUtils.isEmpty(userAlias)?createRandomName():userAlias);
+                                return;
+                            }
                             if (getView() != null) {
                                 getView().setUserImageHeadByUrl(userInfo.getPhotoUrl());
                                 if (userInfo.getAlias() == null | TextUtils.isEmpty(userInfo.getAlias())){
@@ -283,6 +290,7 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
                     @Override
                     public void call(Boolean aBoolean) {
                         isOpenLogin = aBoolean;
+                        subscription.add(initData(aBoolean));
                     }
                 });
     }

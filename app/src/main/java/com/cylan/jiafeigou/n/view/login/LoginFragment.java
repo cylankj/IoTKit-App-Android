@@ -554,6 +554,8 @@ public class LoginFragment extends android.support.v4.app.Fragment
                 showSimpleDialog(getString(R.string.RET_EFORGETPASS_ACCOUNT_NOT_EXIST), " ", getString(R.string.OK), false);
             } else if (code == JError.ErrorLoginInvalidPass) {
                 ToastUtil.showNegativeToast(getString(R.string.RET_ELOGIN_ERROR));
+            } else if (code == 162){
+                ToastUtil.showNegativeToast("登录失败：accend_token_error");
             }
         }
     }
@@ -689,7 +691,6 @@ public class LoginFragment extends android.support.v4.app.Fragment
 
     /**
      * 手机号和验证码是否准备,或者注册类型{手机，邮箱}
-     *
      * @return
      */
     @Override

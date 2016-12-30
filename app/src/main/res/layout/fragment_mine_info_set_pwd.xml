@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:clickable="true"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/color_white">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="73dp"
+        android:background="@color/color_0ba8cf">
+
+        <ImageView
+            android:id="@+id/iv_mine_set_newpwd_back"
+            android:clickable="true"
+            android:layout_alignParentBottom="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="15dp"
+            android:src="@drawable/icon_nav_back_white" />
+
+        <TextView
+            android:id="@+id/tv_top_title"
+            android:layout_marginBottom="12dp"
+            android:layout_alignParentBottom="true"
+            android:layout_marginLeft="48dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/SET_PWD"
+            android:textSize="18sp"
+            android:textColor="@color/color_white" />
+
+        <ImageView
+            android:visibility="visible"
+            android:id="@+id/iv_mine_info_set_newpwd_able"
+            android:layout_marginBottom="2dp"
+            android:padding="15dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:clickable="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/icon_finish_disable" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_marginTop="8dp"
+        android:layout_width="match_parent"
+        android:layout_height="54dp">
+
+        <EditText
+            android:id="@+id/et_mine_set_newpwd"
+            android:textColor="@color/color_333333"
+            android:textSize="16sp"
+            android:layout_centerVertical="true"
+            android:hint="@string/ENTER_PWD_2"
+            android:maxLength="65"
+            android:inputType="textPassword"
+            android:background="@null"
+            android:layout_marginRight="20dp"
+            android:layout_marginLeft="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <View
+            android:id="@+id/view_mine_set_newpwd_line"
+            android:layout_marginBottom="8dp"
+            android:layout_alignParentBottom="true"
+            android:layout_marginRight="20dp"
+            android:layout_marginLeft="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/color_f2f2f2" />
+
+        <LinearLayout
+            android:layout_marginRight="20dp"
+            android:layout_alignParentRight="true"
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:visibility="gone"
+                android:id="@+id/iv_mine_new_pwd_clear"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:layout_gravity="center_vertical"
+                android:src="@drawable/btn_login_clear_text" />
+
+            <CheckBox
+                android:id="@+id/cb_new_pwd_show"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:background="@drawable/icon_common_show_pwd_selector"
+                android:button="@null"
+                android:checked="false" />
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</LinearLayout>

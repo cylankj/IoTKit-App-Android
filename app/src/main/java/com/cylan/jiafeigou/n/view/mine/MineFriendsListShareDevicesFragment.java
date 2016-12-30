@@ -202,6 +202,7 @@ public class MineFriendsListShareDevicesFragment extends Fragment implements Min
      */
     @Override
     public void showFinishBtn() {
+        ivMineFriendsShareDevicesOk.setClickable(true);
         ivMineFriendsShareDevicesOk.setImageDrawable(getResources().getDrawable(R.drawable.icon_finish));
     }
 
@@ -210,6 +211,7 @@ public class MineFriendsListShareDevicesFragment extends Fragment implements Min
      */
     @Override
     public void hideFinishBtn() {
+        ivMineFriendsShareDevicesOk.setClickable(false);
         ivMineFriendsShareDevicesOk.setImageDrawable(getResources().getDrawable(R.drawable.icon_finish_disable));
     }
 
@@ -234,19 +236,31 @@ public class MineFriendsListShareDevicesFragment extends Fragment implements Min
      */
     @Override
     public void showSendReqFinishReuslt(ArrayList<RxEvent.ShareDeviceCallBack> callBacks) {
-        for (int i =callBacks.size()-1; i >= 0 ; i--) {
-            if (callBacks.get(i).requestId == JError.ErrorOK
-                    || callBacks.get(i).requestId == JError.ErrorShareAlready
-                    || callBacks.get(i).requestId == JError.ErrorShareExceedsLimit) {
-                callBacks.remove(callBacks.get(i));
+//        for (int i =callBacks.size()-1; i >= 0 ; i--) {
+//            if (callBacks.get(i).requestId == JError.ErrorOK
+//                    || callBacks.get(i).requestId == JError.ErrorShareAlready
+//                    || callBacks.get(i).requestId == JError.ErrorShareExceedsLimit) {
+//                callBacks.remove(callBacks.get(i));
+//            }
+//        }
+        int totalFriend = chooseList.size();
+        Iterator iterators = chooseList.iterator();
+        while(iterators.hasNext()){
+            RelAndFriendBean friendBean = (RelAndFriendBean) iterators.next();
+            for (RxEvent.ShareDeviceCallBack callBack : callBacks) {
+                if (friendBean.account.equals(callBack.account) && callBack.requestId == 0) {
+                    iterators.remove();
+                }
             }
         }
 
-        if (callBacks.size() == 0) {
+        if (chooseList.size() == 0) {
             ToastUtil.showPositiveToast(getString(R.string.Tap3_ShareDevice_SuccessTips));
             getFragmentManager().popBackStack();
-        } else if (callBacks.size() != 0) {
+        } else if (chooseList.size() == totalFriend) {
             ToastUtil.showPositiveToast(getString(R.string.Tap3_ShareDevice_FailTips));
+        }else {
+            ToastUtil.showPositiveToast(String.format(getString(R.string.Tap3_ShareDevice_Friends_FailTips),chooseList.size()));
         }
     }
 
