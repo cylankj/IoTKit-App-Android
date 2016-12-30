@@ -126,7 +126,6 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
         onTimeTick(JFGRules.getTimeRule());
         if (basePresenter != null) {
             basePresenter.fetchGreet();
-//            basePresenter.fetchDeviceList();
         }
     }
 
@@ -312,8 +311,8 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
     public void onAccountUpdate(JFGAccount greetBean) {
         tvHeaderNickName.setText(String.format("Hi,%s",
                 greetBean.getAccount()));
-        tvHeaderPoet.setText(JFGRules.getTimeRule() == JFGRules.RULE_DAY_TIME ? "每天都给自己一点小期待"
-                : "每次的歇息，总会带来新的向往");
+        tvHeaderPoet.setText(JFGRules.getTimeRule() == JFGRules.RULE_DAY_TIME ? getString(R.string.Tap1_Index_DayGreetings)
+                : getString(R.string.Tap1_Index_NightGreetings));
     }
 
     @SuppressWarnings("deprecation")

@@ -162,6 +162,7 @@ public class TimeUtils {
     }
 
     public static String getHomeItemTime(Context context, long time) {
+        if (time == 0) return "";
         if (System.currentTimeMillis() - time <= 5 * 60 * 1000L)
             return context.getString(R.string.JUST_NOW);
         if (startOfDay(System.currentTimeMillis()) < time)//今天的早些时候

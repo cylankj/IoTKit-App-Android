@@ -17,8 +17,10 @@ import com.cylan.jiafeigou.support.log.AppLogger;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -32,7 +34,7 @@ import rx.schedulers.Schedulers;
 
 public class DataPointManager implements IParser, IDataPoint {
     private static boolean DEBUG = BuildConfig.DEBUG;
-    private static final String TAG = "DataPointManager";
+    private static final String TAG = "DataPointManager:";
 
     private static DataPointManager instance;
     private Map<Long, Long> querySeqMap = new HashMap<>();
@@ -49,11 +51,15 @@ public class DataPointManager implements IParser, IDataPoint {
     private static final HashMap<Long, Integer> mapObject = new HashMap<>();
 
     /**
+     * 未读消息查询序列
+     */
+//    private HashMap<Long, Long> unreadSeqMap = new HashMap<>();
+    /**
      * 未读消息书存放地方,UnreadCount的list存放的是同一个id
      * String:uuid+id.
-     * Pair<time(时间),count(条数)>
+     * Pair<count(条数),时间>
      */
-    private HashMap<String, Pair<Long, Long>> unreadMap = new HashMap<>();
+    private HashMap<String, Pair<Integer, BaseValue>> unreadMap = new HashMap<>();
 
     @Override
     public Subscription[] register() {
@@ -79,7 +85,7 @@ public class DataPointManager implements IParser, IDataPoint {
                             base.setId(jfg.id);
                             base.setVersion(jfg.version);
                             base.setValue(DpUtils.unpackData(jfg.packValue, DpMsgMap.ID_2_CLASS_MAP.get((int) jfg.id)));
-                            boolean result = update(uuid, base);
+                            boolean result = update(uuid, base, false);
                             if (result) updatedItems.put(jfgRobotSyncData.identity, base);
                         } catch (IOException e) {
                             AppLogger.e("" + e.getLocalizedMessage());
@@ -236,18 +242,25 @@ public class DataPointManager implements IParser, IDataPoint {
         return RxBus.getCacheInstance().toObservable(RxEvent.UnreadCount.class)
                 .subscribeOn(Schedulers.newThread())
                 .map((RxEvent.UnreadCount unreadCount) -> {
-                    int count = 0;
-                    Log.d(TAG, "还没实现....");
+                    String uuid = unreadCount.uuid;
                     for (JFGDPMsgCount msg : unreadCount.msgList) {
                         int id = msg.id;
-                        count += msg.count;
+                        BaseValue base = fetchLocal(uuid, id, true);
+                        if (base == null) {
+                            AppLogger.e(String.format(Locale.getDefault(), "no id:%d BaseValue", id));
+                            continue;
+                        }
+                        if (msg.count == 0) continue;
+                        Pair<Integer, BaseValue> pair = new Pair<>(msg.count, base);
+                        unreadMap.put(uuid + id, pair);
+                        Log.d(TAG, "handleUnreadMessageCount:" + pair);
                     }
-                    Log.d(TAG, "handleUnreadMessageCount:" + count);
                     return null;
                 })
                 .retry(new RxHelper.RxException<>("handleUnreadMessageCount"))
                 .subscribe();
     }
+
 
     @Override
     public boolean insert(String uuid, BaseValue baseValue) {
@@ -255,8 +268,26 @@ public class DataPointManager implements IParser, IDataPoint {
     }
 
     @Override
-    public boolean update(String uuid, BaseValue baseValue) {
-        return putValue(uuid, baseValue);
+    public boolean update(String uuid, BaseValue baseValue, boolean sync) {
+        boolean result = putValue(uuid, baseValue);
+        if (sync) {
+            try {
+                byte[] data = null;
+                Object value = baseValue.getValue();
+                if (value != null && value instanceof BaseDataPoint)
+                    data = ((BaseDataPoint) value).toBytes();
+                else data = DpUtils.pack(value);
+                JfgCmdInsurance.getCmd().robotSetData(uuid,
+                        DpUtils.getList((int) baseValue.getId(),
+                                data,
+                                baseValue.getVersion()));
+
+                if (DEBUG && sync) Log.d(TAG, "update: " + value);
+            } catch (Exception e) {
+                AppLogger.e("" + e.getLocalizedMessage());
+            }
+        }
+        return result;
     }
 
     @Override
@@ -317,6 +348,21 @@ public class DataPointManager implements IParser, IDataPoint {
         }
     }
 
+    private BaseValue fetchLocal(String uuid, long id, boolean topOne) {
+        if (!topOne) return fetchLocal(uuid, id);
+        boolean isArray = mapObject.containsKey(id);
+        if (isArray) {
+            HashSet<BaseValue> set = bundleSetMap.get(uuid + id);
+            if (set == null || set.size() == 0)
+                return null;
+            else {
+                ArrayList<BaseValue> list = new ArrayList<>(set);
+                Collections.sort(list);
+                return list.get(0);
+            }
+        } else return bundleMap.get(uuid + id);
+    }
+
     @Override
     public boolean deleteAll(String uuid, long id, ArrayList<Long> versions) {
         if (!isSetType(id)) AppLogger.e("this id is not ArrayType: " + id);
@@ -360,8 +406,8 @@ public class DataPointManager implements IParser, IDataPoint {
     }
 
     @Override
-    public Pair<Long, Long> fetchUnreadCount(String uuid, long id) {
-        Pair<Long, Long> pair = unreadMap.get(uuid + id);
+    public Pair<Integer, BaseValue> fetchUnreadCount(String uuid, long id) {
+        Pair<Integer, BaseValue> pair = unreadMap.get(uuid + id);
         //如果有数据,直接返回,没有数据做检查,异步响应.
         if (pair == null) {
             //为空,尝试一次新的请求.
@@ -371,16 +417,18 @@ public class DataPointManager implements IParser, IDataPoint {
             ArrayList<Long> idList = new ArrayList<>();
             idList.add(id);
             try {
-                Log.d(TAG, "robotCountData: " + idList);
-//                JfgCmdInsurance.getCmd().robotCountData(uuid, idList, 0);
-                robotGetData(uuid, list, Integer.MAX_VALUE, false, 0);
+                //先查询数据,这里默认响应的顺序也是  robotGetDataRsp再到RobotCountDataRsp,接到
+                //RobotCountDataRsp,就可以做消息数广播了.
+                robotGetData(uuid, list, 1, false, 0);
+                long req0 = JfgCmdInsurance.getCmd().robotCountData(uuid, idList, 0);
+//                unreadSeqMap.put(req0, req0);
             } catch (JfgException e) {
                 AppLogger.e("" + e.getLocalizedMessage());
             }
             if (Looper.getMainLooper() == Looper.myLooper()) {
                 throw new IllegalThreadStateException("在Io线程操作");
             }
-            Log.d("fetchUnreadCount", "fetchUnreadCount:" + id);
+            AppLogger.i(TAG + ",fetchUnreadCount:" + id);
             return null;
         }
         return unreadMap.get(uuid + id);

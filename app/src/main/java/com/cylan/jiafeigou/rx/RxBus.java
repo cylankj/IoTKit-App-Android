@@ -100,6 +100,10 @@ public class RxBus implements IEventBus {
         post(event);
     }
 
+    public boolean hasStickyEvent(Class<?> clazz) {
+        return mStickyEventMap.containsKey(clazz);
+    }
+
     /**
      * 根据传递的 eventType 类型返回特定类型(eventType)的 被观察者
      */

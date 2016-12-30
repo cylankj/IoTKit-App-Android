@@ -293,17 +293,17 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
 
     public Subscription fetchCamInfo() {
         //查询设备列表
-        return RxBus.getUiInstance().toObservableSticky(RxUiEvent.BulkDeviceList.class)
+        return RxBus.getUiInstance().toObservableSticky(RxUiEvent.BulkDeviceListRsp.class)
                 .subscribeOn(Schedulers.computation())
-                .filter((RxUiEvent.BulkDeviceList list) ->
+                .filter((RxUiEvent.BulkDeviceListRsp list) ->
                         (getView() != null
                                 && list != null
                                 && list.allDevices != null
                                 && beanCamInfo != null
                                 && beanCamInfo.deviceBase != null))
-                .flatMap(new Func1<RxUiEvent.BulkDeviceList, Observable<DpMsgDefine.DpWrap>>() {
+                .flatMap(new Func1<RxUiEvent.BulkDeviceListRsp, Observable<DpMsgDefine.DpWrap>>() {
                     @Override
-                    public Observable<DpMsgDefine.DpWrap> call(RxUiEvent.BulkDeviceList list) {
+                    public Observable<DpMsgDefine.DpWrap> call(RxUiEvent.BulkDeviceListRsp list) {
                         for (DpMsgDefine.DpWrap wrap : list.allDevices) {
                             if (wrap.baseDpDevice != null
                                     && TextUtils.equals(wrap.baseDpDevice.uuid, beanCamInfo.deviceBase.uuid)) {

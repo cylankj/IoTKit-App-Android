@@ -5,6 +5,7 @@ import android.os.Parcelable;
 import android.text.TextUtils;
 import android.util.Pair;
 
+import com.cylan.jiafeigou.dp.BaseValue;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 
 import java.util.ArrayList;
@@ -25,7 +26,7 @@ public class DeviceBean implements Parcelable {
     /**
      * 未读消息数量,时间戳
      */
-    public Pair<Integer, Long> msgCountPair;
+    public Pair<Integer, BaseValue> msgCountPair;
     public List<DpMsgDefine.DpMsg> dataList;
 
     public DeviceBean() {

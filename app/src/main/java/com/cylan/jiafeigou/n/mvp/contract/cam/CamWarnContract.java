@@ -16,12 +16,18 @@ public interface CamWarnContract {
     }
 
     interface Presenter extends BasePresenter {
+//        /**
+//         * 刷新BeanCamInfo
+//         *
+//         * @param info
+//         */
+//        void saveCamInfoBean(BeanCamInfo info, int id);
+
         /**
-         * 刷新BeanCamInfo
-         *
-         * @param info
+         * @param value {@link com.cylan.jiafeigou.dp.BaseValue#setValue(Object)}  }
+         * @param id
          */
-        void saveCamInfoBean(BeanCamInfo info, int id);
+        void updateInfoReq(Object value, long id);
 
         BeanCamInfo getBeanCamInfo();
     }

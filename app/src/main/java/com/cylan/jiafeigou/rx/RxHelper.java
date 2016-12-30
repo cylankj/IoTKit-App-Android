@@ -132,16 +132,16 @@ public class RxHelper {
     }
 
     public static Observable<BeanCamInfo> filter(final BeanCamInfo beanCamInfo) {
-        return RxBus.getUiInstance().toObservableSticky(RxUiEvent.BulkDeviceList.class)
+        return RxBus.getUiInstance().toObservableSticky(RxUiEvent.BulkDeviceListRsp.class)
                 .subscribeOn(Schedulers.computation())
-                .filter((RxUiEvent.BulkDeviceList list) ->
+                .filter((RxUiEvent.BulkDeviceListRsp list) ->
                         (list != null
                                 && list.allDevices != null
                                 && beanCamInfo != null
                                 && beanCamInfo.deviceBase != null))
-                .flatMap(new Func1<RxUiEvent.BulkDeviceList, Observable<DpMsgDefine.DpWrap>>() {
+                .flatMap(new Func1<RxUiEvent.BulkDeviceListRsp, Observable<DpMsgDefine.DpWrap>>() {
                     @Override
-                    public Observable<DpMsgDefine.DpWrap> call(RxUiEvent.BulkDeviceList list) {
+                    public Observable<DpMsgDefine.DpWrap> call(RxUiEvent.BulkDeviceListRsp list) {
                         for (DpMsgDefine.DpWrap wrap : list.allDevices) {
                             if (wrap.baseDpDevice != null
                                     && TextUtils.equals(wrap.baseDpDevice.uuid, beanCamInfo.deviceBase.uuid)) {

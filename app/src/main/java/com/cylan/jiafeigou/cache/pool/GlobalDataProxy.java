@@ -84,8 +84,8 @@ public class GlobalDataProxy implements IDataPool {
     }
 
     @Override
-    public boolean update(String uuid, BaseValue baseValue) {
-        return dataPointManager.update(uuid, baseValue);
+    public boolean update(String uuid, BaseValue baseValue, boolean sync) {
+        return dataPointManager.update(uuid, baseValue, sync);
     }
 
     @Override
@@ -124,7 +124,7 @@ public class GlobalDataProxy implements IDataPool {
     }
 
     @Override
-    public Pair<Long, Long> fetchUnreadCount(String uuid, long id) throws JfgException {
+    public Pair<Integer, BaseValue> fetchUnreadCount(String uuid, long id) throws JfgException {
         return dataPointManager.fetchUnreadCount(uuid, id);
     }
 

@@ -2,12 +2,12 @@ package com.cylan.jiafeigou.n.mvp.impl.cam;
 
 import android.content.Context;
 import android.text.TextUtils;
-import android.util.Pair;
 
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
+import com.cylan.jiafeigou.dp.BaseValue;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
-import com.cylan.jiafeigou.dp.DpUtils;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamSettingContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
@@ -29,7 +29,6 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
-import rx.subscriptions.CompositeSubscription;
 
 /**
  * Created by cylan-hunt on 16-7-27.
@@ -40,6 +39,7 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
 //    private CompositeSubscription compositeSubscription;
 
     private BeanCamInfo camInfoBean;
+    private String uuid;
     private static final int[] periodResId = {R.string.MON_1, R.string.TUE_1,
             R.string.WED_1, R.string.THU_1,
             R.string.FRI_1, R.string.SAT_1, R.string.SUN_1};
@@ -56,6 +56,7 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
     }
 
     private void fillData(DeviceBean bean) {
+        this.uuid = bean.uuid;
         camInfoBean = new BeanCamInfo();
         BaseBean baseBean = new BaseBean();
         baseBean.alias = bean.alias;
@@ -119,17 +120,17 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
 
     private Subscription fetchCamInfo() {
         //查询设备列表
-        return RxBus.getUiInstance().toObservableSticky(RxUiEvent.BulkDeviceList.class)
+        return RxBus.getUiInstance().toObservableSticky(RxUiEvent.BulkDeviceListRsp.class)
                 .subscribeOn(Schedulers.computation())
-                .filter(new Func1<RxUiEvent.BulkDeviceList, Boolean>() {
+                .filter(new Func1<RxUiEvent.BulkDeviceListRsp, Boolean>() {
                     @Override
-                    public Boolean call(RxUiEvent.BulkDeviceList list) {
+                    public Boolean call(RxUiEvent.BulkDeviceListRsp list) {
                         return getView() != null && list.allDevices != null && camInfoBean != null;
                     }
                 })
-                .flatMap(new Func1<RxUiEvent.BulkDeviceList, Observable<DpMsgDefine.DpWrap>>() {
+                .flatMap(new Func1<RxUiEvent.BulkDeviceListRsp, Observable<DpMsgDefine.DpWrap>>() {
                     @Override
-                    public Observable<DpMsgDefine.DpWrap> call(RxUiEvent.BulkDeviceList list) {
+                    public Observable<DpMsgDefine.DpWrap> call(RxUiEvent.BulkDeviceListRsp list) {
                         for (DpMsgDefine.DpWrap wrap : list.allDevices) {
                             if (wrap.baseDpDevice != null
                                     && TextUtils.equals(wrap.baseDpDevice.uuid, camInfoBean.deviceBase.uuid)) {
@@ -238,27 +239,17 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
     }
 
     @Override
-    public void saveCamInfoBean(final BeanCamInfo camInfoBean, int index) {
-        this.camInfoBean = camInfoBean;
-        Observable.just(new Pair<>(camInfoBean, index))
+    public void updateInfoReq(Object value, long id) {
+        Observable.just(value)
                 .subscribeOn(Schedulers.io())
-                .subscribe((Pair<BeanCamInfo, Integer> beanCamInfoIntegerPair) -> {
-                    int id = beanCamInfoIntegerPair.second;
-                    RxEvent.JFGAttributeUpdate update = new RxEvent.JFGAttributeUpdate();
-                    update.uuid = camInfoBean.deviceBase.uuid;
-                    update.o = beanCamInfoIntegerPair.first.getObject(id);
-                    update.msgId = id;
-                    update.version = System.currentTimeMillis();
-                    RxBus.getCacheInstance().post(update);
-                    try {
-                        JfgCmdInsurance.getCmd().robotSetData(camInfoBean.deviceBase.uuid,
-                                DpUtils.getList(id,
-                                        beanCamInfoIntegerPair.first.getByte(id)
-                                        , System.currentTimeMillis()));
-                    } catch (JfgException e) {
-                        e.printStackTrace();
-                    }
-                    AppLogger.i("save bean Cam info");
+                .subscribe((Object o) -> {
+                    BaseValue baseValue = new BaseValue();
+                    baseValue.setId(id);
+                    baseValue.setVersion(System.currentTimeMillis());
+                    baseValue.setValue(o);
+                    GlobalDataProxy.getInstance().update(uuid, baseValue, true);
+                }, (Throwable throwable) -> {
+                    AppLogger.e(throwable.getLocalizedMessage());
                 });
     }
 

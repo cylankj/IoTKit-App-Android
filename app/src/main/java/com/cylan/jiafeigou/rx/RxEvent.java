@@ -13,6 +13,7 @@ import com.cylan.entity.jniCall.JFGFriendRequest;
 import com.cylan.entity.jniCall.JFGMsgHttpResult;
 import com.cylan.entity.jniCall.JFGResult;
 import com.cylan.entity.jniCall.JFGShareListInfo;
+import com.cylan.jiafeigou.dp.BaseValue;
 import com.cylan.jiafeigou.dp.DataPointManager;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 
@@ -445,12 +446,15 @@ public class RxEvent {
     /**
      * 修改设备属性
      */
+    /**
+     * @Deprecated use {@link com.cylan.jiafeigou.cache.pool.GlobalDataProxy#update(String, BaseValue)}
+     */
+    @Deprecated
     public static final class JFGAttributeUpdate extends DpMsgDefine.DpMsg {
         public String uuid;
     }
 
     /**
-     * <<<<<<< HEAD
      * 获取好友的信息回调
      */
     public static final class GetFriendInfoCall {

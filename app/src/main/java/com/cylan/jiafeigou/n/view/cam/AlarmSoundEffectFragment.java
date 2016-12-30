@@ -79,7 +79,7 @@ public class AlarmSoundEffectFragment extends IBaseFragment<CamWarnContract.Pres
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        basePresenter = new CamAlarmPresenterImpl(this, (BeanCamInfo) getArguments().getParcelable(JConstant.KEY_DEVICE_ITEM_BUNDLE));
+        basePresenter = new CamAlarmPresenterImpl(this, getArguments().getParcelable(JConstant.KEY_DEVICE_ITEM_BUNDLE));
     }
 
     @Override
@@ -111,7 +111,7 @@ public class AlarmSoundEffectFragment extends IBaseFragment<CamWarnContract.Pres
                     if (isChecked) {
                         notificationInfo.notification = index;
                         info.cameraAlarmNotification = notificationInfo;
-                        basePresenter.saveCamInfoBean(info, DpMsgMap.ID_504_CAMERA_ALARM_NOTIFICATION);
+                        basePresenter.updateInfoReq(info.cameraAlarmNotification, DpMsgMap.ID_504_CAMERA_ALARM_NOTIFICATION);
                     }
                 }
             });
@@ -145,7 +145,7 @@ public class AlarmSoundEffectFragment extends IBaseFragment<CamWarnContract.Pres
                         tvWarnRepeatMode.setText(String.format(Locale.getDefault(), "%ss", value));
                         notificationInfo.duration = (int) value;
                         info.cameraAlarmNotification = notificationInfo;
-                        basePresenter.saveCamInfoBean(info, DpMsgMap.ID_504_CAMERA_ALARM_NOTIFICATION);
+                        basePresenter.updateInfoReq(info.cameraAlarmNotification, DpMsgMap.ID_504_CAMERA_ALARM_NOTIFICATION);
                     }
                 });
                 durationDialogFragment.show(getActivity().getSupportFragmentManager(), "durationDialogFragment");

@@ -15,7 +15,14 @@ public interface IDataPoint {
 
     boolean insert(String uuid, BaseValue baseValue);
 
-    boolean update(String uuid, BaseValue baseValue);
+    /**
+     *
+     * @param uuid
+     * @param baseValue
+     * @param sync 同步到服务器
+     * @return
+     */
+    boolean update(String uuid, BaseValue baseValue, boolean sync);
 
     /**
      * 删除和这个uuid相关的所有数据
@@ -66,7 +73,7 @@ public interface IDataPoint {
      * @param id
      * @return
      */
-    Pair<Long, Long> fetchUnreadCount(String uuid, long id) throws JfgException;
+    Pair<Integer, BaseValue> fetchUnreadCount(String uuid, long id) throws JfgException;
 
     /**
      * 消息已经读

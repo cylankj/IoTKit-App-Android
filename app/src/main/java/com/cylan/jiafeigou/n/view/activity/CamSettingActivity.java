@@ -145,7 +145,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
                     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                         BeanCamInfo info = basePresenter.getCamInfoBean();
                         info.cameraStandbyFlag = !info.cameraStandbyFlag;
-                        basePresenter.saveCamInfoBean(info, DpMsgMap.ID_508_CAMERA_STANDBY_FLAG);
+                        basePresenter.updateInfoReq(info.cameraStandbyFlag, DpMsgMap.ID_508_CAMERA_STANDBY_FLAG);
                         AppLogger.i("save id:" + DpMsgMap.ID_508_CAMERA_STANDBY_FLAG);
                         AppLogger.i("save value:" + info.cameraStandbyFlag);
                         switchBtn(lLayoutSettingItemContainer, !isChecked);
@@ -160,7 +160,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
                     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                         BeanCamInfo info = basePresenter.getCamInfoBean();
                         info.deviceMobileNetPriority = isChecked;
-                        basePresenter.saveCamInfoBean(info, DpMsgMap.ID_217_DEVICE_MOBILE_NET_PRIORITY);
+                        basePresenter.updateInfoReq(isChecked, DpMsgMap.ID_217_DEVICE_MOBILE_NET_PRIORITY);
                         AppLogger.i("save id:" + DpMsgMap.ID_217_DEVICE_MOBILE_NET_PRIORITY);
                         AppLogger.i("save value:" + info.deviceMobileNetPriority);
                     }
@@ -174,7 +174,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
                     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                         BeanCamInfo info = basePresenter.getCamInfoBean();
                         info.deviceVoltage = isChecked;
-                        basePresenter.saveCamInfoBean(info, DpMsgMap.ID_216_DEVICE_VOLTAGE);
+                        basePresenter.updateInfoReq(isChecked, DpMsgMap.ID_216_DEVICE_VOLTAGE);
                         AppLogger.i("save id:" + DpMsgMap.ID_216_DEVICE_VOLTAGE);
                         AppLogger.i("save value:" + info.deviceVoltage);
                     }
@@ -188,7 +188,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
                     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                         BeanCamInfo info = basePresenter.getCamInfoBean();
                         info.ledIndicator = isChecked;
-                        basePresenter.saveCamInfoBean(info, DpMsgMap.ID_209_LED_INDICATOR);
+                        basePresenter.updateInfoReq(isChecked, DpMsgMap.ID_209_LED_INDICATOR);
                         AppLogger.i("save id:" + DpMsgMap.ID_209_LED_INDICATOR);
                         AppLogger.i("save value:" + info.ledIndicator);
                     }
@@ -202,7 +202,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
                     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                         BeanCamInfo info = basePresenter.getCamInfoBean();
                         info.deviceCameraRotate = isChecked ? 1 : 0;
-                        basePresenter.saveCamInfoBean(info, DpMsgMap.ID_304_DEVICE_CAMERA_ROTATE);
+                        basePresenter.updateInfoReq(info.deviceCameraRotate, DpMsgMap.ID_304_DEVICE_CAMERA_ROTATE);
                         AppLogger.i("save id:" + DpMsgMap.ID_304_DEVICE_CAMERA_ROTATE);
                         AppLogger.i("save value:" + info.deviceCameraRotate);
                     }

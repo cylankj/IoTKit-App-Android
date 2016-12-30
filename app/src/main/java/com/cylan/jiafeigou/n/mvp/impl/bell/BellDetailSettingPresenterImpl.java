@@ -48,17 +48,17 @@ public class BellDetailSettingPresenterImpl extends AbstractPresenter<BellDetail
 
     private Subscription onBellInfoSubscription() {
         //查询设备列表
-        return RxBus.getUiInstance().toObservableSticky(RxUiEvent.BulkDeviceList.class)
+        return RxBus.getUiInstance().toObservableSticky(RxUiEvent.BulkDeviceListRsp.class)
                 .subscribeOn(Schedulers.computation())
-                .filter(new Func1<RxUiEvent.BulkDeviceList, Boolean>() {
+                .filter(new Func1<RxUiEvent.BulkDeviceListRsp, Boolean>() {
                     @Override
-                    public Boolean call(RxUiEvent.BulkDeviceList list) {
+                    public Boolean call(RxUiEvent.BulkDeviceListRsp list) {
                         return getView() != null && list != null && list.allDevices != null;
                     }
                 })
-                .flatMap(new Func1<RxUiEvent.BulkDeviceList, Observable<DpMsgDefine.DpWrap>>() {
+                .flatMap(new Func1<RxUiEvent.BulkDeviceListRsp, Observable<DpMsgDefine.DpWrap>>() {
                     @Override
-                    public Observable<DpMsgDefine.DpWrap> call(RxUiEvent.BulkDeviceList list) {
+                    public Observable<DpMsgDefine.DpWrap> call(RxUiEvent.BulkDeviceListRsp list) {
                         for (DpMsgDefine.DpWrap wrap : list.allDevices) {
                             if (beanBellInfo.deviceBase == null || wrap.baseDpDevice == null)
                                 continue;

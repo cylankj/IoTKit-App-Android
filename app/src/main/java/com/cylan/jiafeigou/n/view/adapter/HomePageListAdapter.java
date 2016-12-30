@@ -8,14 +8,14 @@ import android.view.View;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
 import com.cylan.jiafeigou.utils.TimeUtils;
+import com.cylan.jiafeigou.widget.ImageViewTip;
 import com.cylan.superadapter.IMulItemViewType;
 import com.cylan.superadapter.SuperAdapter;
 import com.cylan.superadapter.internal.SuperViewHolder;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -27,17 +27,13 @@ import static com.cylan.jiafeigou.misc.JConstant.NET_TYPE_RES;
 
 public class HomePageListAdapter extends SuperAdapter<DeviceBean> {
 
-    private final static int[] msgContentRes = {R.string.receive_new_news,
+    private final static int[] msgContentRes = {
+            R.string.receive_new_news,
             R.string.receive_new_news,
             R.string.receive_new_news,
             R.string.receive_new_news};
     private DeviceItemClickListener deviceItemClickListener;
     private DeviceItemLongClickListener deviceItemLongClickListener;
-
-    private static final SimpleDateFormat format_0 = new SimpleDateFormat("HH:mm", Locale.getDefault());
-    private static final SimpleDateFormat format_1 = new SimpleDateFormat("yy/M/d", Locale.getDefault());
-
-    private static final Date date = new Date();
 
     public HomePageListAdapter(Context context, List<DeviceBean> items, IMulItemViewType<DeviceBean> mulItemViewType) {
         super(context, items, mulItemViewType);
@@ -124,13 +120,26 @@ public class HomePageListAdapter extends SuperAdapter<DeviceBean> {
 
     private void handleMsgCountTime(SuperViewHolder holder, DeviceBean bean) {
         final int msgCount = bean.msgCountPair == null ? 0 : bean.msgCountPair.first;
-        long time = bean.msgCountPair == null ? 0 : bean.msgCountPair.second;
-        String msgContent = msgCount == 0 ? getContext().getString(R.string.Tap1_NoMessages) :
-                String.format(Locale.getDefault(), getContext().getString(msgContentRes[0]), msgCount);
+        long time = bean.msgCountPair == null || bean.msgCountPair.second == null
+                ? 0 : bean.msgCountPair.second.getVersion();
         //消息数
-        holder.setText(R.id.tv_device_msg_count, msgContent);
+        holder.setText(R.id.tv_device_msg_count, getLastWarnContent(bean));
         //时间
         holder.setText(R.id.tv_device_msg_time, TimeUtils.getHomeItemTime(getContext(), time));
+        ((ImageViewTip) holder.getView(R.id.img_device_icon)).setShowDot(msgCount > 0);
+    }
+
+    private String getLastWarnContent(DeviceBean bean) {
+        final int msgCount = bean.msgCountPair == null ? 0 : bean.msgCountPair.first;
+        if (msgCount == 0)
+            return getContext().getString(R.string.Tap1_NoMessages);
+        if (JFGRules.isCamera(bean.pid)) {
+            return String.format(Locale.getDefault(), "[%s]" + getContext().getString(R.string.MSG_WARNING), msgCount > 99 ? "99+" : msgCount);
+        }
+        if (JFGRules.isBell(bean.pid)) {
+            return String.format(Locale.getDefault(), "[%s]" + getContext().getString(R.string.someone_call), msgCount > 99 ? "99+" : msgCount);
+        }
+        return "";
     }
 
     @Override
