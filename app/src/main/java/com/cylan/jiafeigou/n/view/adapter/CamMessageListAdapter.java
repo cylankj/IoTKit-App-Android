@@ -249,12 +249,12 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
 
     /**
      * sd卡内容
-     *
+     *1489
      * @param bean
      * @return
      */
     private String getFinalSdcardContent(CamMessageBean bean) {
-        if (bean.id != DpMsgMap.ID_204_SDCARD_STORAGE || bean.content == null)
+        if (bean.id != DpMsgMap.ID_222_SDCARD_SUMMARY || bean.content == null)
             return "";
         DpMsgDefine.SdcardSummary sdStatus = bean.content;
         switch (sdStatus.errCode) {
