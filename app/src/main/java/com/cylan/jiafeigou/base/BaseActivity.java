@@ -1,5 +1,6 @@
 package com.cylan.jiafeigou.base;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.ActivityInfo;
@@ -14,13 +15,15 @@ import android.widget.Toast;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.widget.LoadingDialog;
 
+import java.util.UUID;
+
 import butterknife.ButterKnife;
 
 /**
  * Created by yzd on 16-12-28.
  */
 
-public abstract class BaseActivity<P extends JFGPresenter<V>, V extends JFGView> extends AppCompatActivity implements JFGView {
+public abstract class BaseActivity<P extends JFGPresenter> extends AppCompatActivity implements JFGView {
     protected P mPresenter;
 
     private static AlertDialog mAlertDialog;
@@ -28,7 +31,12 @@ public abstract class BaseActivity<P extends JFGPresenter<V>, V extends JFGView>
     private static Toast sToast;
 
     @Override
-    public Context getViewContext() {
+    public Context getAppContext() {
+        return getApplicationContext();
+    }
+
+    @Override
+    public Activity getActivityContext() {
         return this;
     }
 
@@ -39,6 +47,7 @@ public abstract class BaseActivity<P extends JFGPresenter<V>, V extends JFGView>
         ButterKnife.bind(this);
         if (mPresenter == null) {
             mPresenter = onCreatePresenter();
+
         }
         initViewAndListener();
     }
@@ -47,7 +56,7 @@ public abstract class BaseActivity<P extends JFGPresenter<V>, V extends JFGView>
     protected void onStart() {
         super.onStart();
         if (mPresenter != null) {
-            mPresenter.onViewAttached((V) this);
+            mPresenter.onViewAttached(this);
             mPresenter.onStart();
         }
     }
@@ -65,7 +74,7 @@ public abstract class BaseActivity<P extends JFGPresenter<V>, V extends JFGView>
 
     @Override
     public void showLoading() {
-        showLoadingMsg(getResources().getString(R.string.Msg_LoadDialog));
+        showLoadingMsg(getResources().getString(R.string.LOADING));
     }
 
     @Override
@@ -74,23 +83,25 @@ public abstract class BaseActivity<P extends JFGPresenter<V>, V extends JFGView>
     }
 
     @Override
-    public void showAlert(String title, String msg, String ok, String cancel) {
+    public String showAlert(String title, String msg, String ok, String cancel) {
         if (mAlertDialog == null) {
             mAlertDialog = new AlertDialog.Builder(this).create();
         }
+        String handle = UUID.randomUUID().toString();
         if (!TextUtils.isEmpty(title)) mAlertDialog.setTitle(title);
         if (!TextUtils.isEmpty(msg)) mAlertDialog.setMessage(msg);
         if (!TextUtils.isEmpty(ok)) {
             mAlertDialog.setButton(DialogInterface.BUTTON_POSITIVE, ok, (dialog, which) -> {
-                mPresenter.onViewAction(JFGView.VIEW_ACTION_OK, null);
+                mPresenter.onViewAction(JFGView.VIEW_ACTION_OK, handle, null);
             });
         }
         if (!TextUtils.isEmpty(cancel)) {
             mAlertDialog.setButton(DialogInterface.BUTTON_NEGATIVE, cancel, (dialog, which) -> {
-                mPresenter.onViewAction(JFGView.VIEW_ACTION_CANCEL, null);
+                mPresenter.onViewAction(JFGView.VIEW_ACTION_CANCEL, handle, null);
             });
         }
         mAlertDialog.show();
+        return handle;
     }
 
     protected abstract int getContentViewID();
@@ -127,25 +138,19 @@ public abstract class BaseActivity<P extends JFGPresenter<V>, V extends JFGView>
             return;
         }
 
-        boolean exit = true;
-        if (mPresenter instanceof BasePresenter) {
-            exit = ((BasePresenter) mPresenter).hasReadyForExit();
-        }
-
+        boolean exit = ((BasePresenter) mPresenter).hasReadyForExit();
         if (exit) {
-            onPrepareToExit(super::onBackPressed);
+            if (shouldExit()) onPrepareToExit(super::onBackPressed);
         } else {
             showToast(getString(R.string.click_back_again_exit));
         }
-
     }
 
     @Override
     public void showToast(String msg) {
         if (sToast == null) {
-            sToast = new Toast(this);
+            sToast = Toast.makeText(getAppContext(), "", Toast.LENGTH_SHORT);//toast会持有view对象,所以用applicationContext避免内存泄露
         }
-        sToast.setDuration(Toast.LENGTH_SHORT);
         sToast.setText(msg);
         sToast.show();
     }
@@ -156,5 +161,7 @@ public abstract class BaseActivity<P extends JFGPresenter<V>, V extends JFGView>
     protected void onPrepareToExit(Action action) {
     }
 
-
+    protected boolean shouldExit() {
+        return true;
+    }
 }

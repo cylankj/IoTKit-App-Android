@@ -1,22 +1,17 @@
 package com.cylan.jiafeigou.n.mvp.impl.setting;
 
 import android.content.Context;
-import android.util.Pair;
 
-import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.dp.DpUtils;
-import com.cylan.jiafeigou.misc.JfgCmdInsurance;
+import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
+import com.cylan.jiafeigou.dp.BaseValue;
+import com.cylan.jiafeigou.dp.DpMsgDefine;
+import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.n.mvp.contract.setting.SafeInfoContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
-import com.cylan.jiafeigou.n.mvp.model.BeanCamInfo;
-import com.cylan.jiafeigou.rx.RxBus;
-import com.cylan.jiafeigou.rx.RxEvent;
-import com.cylan.jiafeigou.rx.RxHelper;
 import com.cylan.jiafeigou.support.log.AppLogger;
 
 import rx.Observable;
-import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 /**
@@ -25,58 +20,43 @@ import rx.schedulers.Schedulers;
 
 public class SafeInfoPresenterImpl extends AbstractPresenter<SafeInfoContract.View>
         implements SafeInfoContract.Presenter {
-
-    private BeanCamInfo beanCamInfo;
+    private String uuid;
     private static final int[] periodResId = {R.string.MON_1, R.string.TUE_1,
             R.string.WED_1, R.string.THU_1,
             R.string.FRI_1, R.string.SAT_1, R.string.SUN_1};
 
-    public SafeInfoPresenterImpl(SafeInfoContract.View view, BeanCamInfo beanCamInfo) {
+    public SafeInfoPresenterImpl(SafeInfoContract.View view, String uuid) {
         super(view);
-        this.beanCamInfo = beanCamInfo;
+        this.uuid = uuid;
         view.setPresenter(this);
     }
 
+
     @Override
-    public void saveCamInfoBean(final BeanCamInfo beanCamInfo, int id) {
-        this.beanCamInfo = beanCamInfo;
-        Observable.just(new Pair<>(beanCamInfo, id))
-                .filter(new RxHelper.Filter<Pair<BeanCamInfo, Integer>>("", id > 0))
+    public void updateInfoReq(Object value, long id) {
+        Observable.just(value)
                 .subscribeOn(Schedulers.io())
-                .subscribe(new Action1<Pair<BeanCamInfo, Integer>>() {
-                    @Override
-                    public void call(Pair<BeanCamInfo, Integer> beanCamInfoIntegerPair) {
-                        int id = beanCamInfoIntegerPair.second;
-                        RxEvent.JFGAttributeUpdate update = new RxEvent.JFGAttributeUpdate();
-                        update.uuid = beanCamInfoIntegerPair.first.deviceBase.uuid;
-                        update.o = beanCamInfoIntegerPair.first.getObject(id);
-                        update.msgId = id;
-                        update.version = System.currentTimeMillis();
-                        RxBus.getCacheInstance().post(update);
-                        try {
-                            JfgCmdInsurance.getCmd().robotSetData(beanCamInfoIntegerPair.first.deviceBase.uuid,
-                                    DpUtils.getList(id,
-                                            beanCamInfoIntegerPair.first.getByte(id)
-                                            , System.currentTimeMillis()));
-                        } catch (JfgException e) {
-                            e.printStackTrace();
-                        }
-                        AppLogger.i("save bean Cam info");
-                    }
+                .subscribe((Object o) -> {
+                    AppLogger.i("save start: " + id + " " + value);
+                    BaseValue baseValue = new BaseValue();
+                    baseValue.setId(id);
+                    baseValue.setVersion(System.currentTimeMillis());
+                    baseValue.setValue(o);
+                    GlobalDataProxy.getInstance().update(uuid, baseValue, true);
+                    AppLogger.i("save end: " + id + " " + value);
+                }, (Throwable throwable) -> {
+                    AppLogger.e(throwable.getLocalizedMessage());
                 });
     }
 
     @Override
-    public BeanCamInfo getBeanCamInfo() {
-        return beanCamInfo;
-    }
-
-    @Override
     public String getRepeatMode(Context context) {
-        if (!beanCamInfo.cameraAlarmFlag || beanCamInfo.cameraAlarmInfo == null) {
+        boolean flag = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_501_CAMERA_ALARM_FLAG, false);
+        if (!flag) {
             return getView().getContext().getString(R.string.MAGNETISM_OFF);
         }
-        int day = beanCamInfo.cameraAlarmInfo.day;
+        DpMsgDefine.AlarmInfo info = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_502_CAMERA_ALARM_INFO, null);
+        int day = info == null ? 0 : info.day;
         StringBuilder builder = new StringBuilder();
         for (int i = 0; i < 7; i++) {
             if (((day >> (7 - 1 - i)) & 0x01) == 1) {
@@ -95,15 +75,5 @@ public class SafeInfoPresenterImpl extends AbstractPresenter<SafeInfoContract.Vi
             builder.append(context.getString(R.string.WEEKDAYS));
         }
         return builder.toString();
-    }
-
-    @Override
-    public void start() {
-
-    }
-
-    @Override
-    public void stop() {
-
     }
 }

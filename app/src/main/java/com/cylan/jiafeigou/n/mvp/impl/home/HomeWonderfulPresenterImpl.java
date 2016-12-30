@@ -249,7 +249,7 @@ public class HomeWonderfulPresenterImpl extends AbstractPresenter<HomeWonderfulC
         //find bitmap from glide
         final WechatShare.ShareContent shareContent = new WechatShare.ShareContentImpl();
         //朋友圈，微信
-        shareContent.shareType = type;
+        shareContent.shareScene = type;
         final int mimeType = RandomUtils.getRandom(2);//0:picture,1:url
 //        if (mimeType == 0) {
         Glide.with(ContextUtils.getContext())
@@ -259,7 +259,7 @@ public class HomeWonderfulPresenterImpl extends AbstractPresenter<HomeWonderfulC
                     @Override
                     public void onResourceReady(Bitmap resource, GlideAnimation glideAnimation) {
                         shareContent.bitmap = resource;
-                        shareContent.shareWay = WechatShare.WEIXIN_SHARE_WAY_PIC;
+                        shareContent.shareContent = WechatShare.WEIXIN_SHARE_CONTENT_PIC;
                         wechatShare.shareByWX(shareContent);
                     }
 

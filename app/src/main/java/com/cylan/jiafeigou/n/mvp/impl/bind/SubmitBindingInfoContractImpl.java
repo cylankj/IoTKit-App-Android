@@ -73,7 +73,7 @@ public class SubmitBindingInfoContractImpl extends
         compositeSubscription.add(bindResultSub());
         compositeSubscription.add(monitorBulkDeviceList());
         //查询
-        RxBus.getCacheInstance().post(new RxUiEvent.QueryBulkDevice());
+        RxBus.getCacheInstance().post(new RxUiEvent.BulkDeviceListReq());
     }
 
     /**
@@ -113,18 +113,18 @@ public class SubmitBindingInfoContractImpl extends
      * @return
      */
     private Subscription monitorBulkDeviceList() {
-        return RxBus.getUiInstance().toObservableSticky(RxUiEvent.BulkDeviceList.class)
-                .filter(new Func1<RxUiEvent.BulkDeviceList, Boolean>() {
+        return RxBus.getCacheInstance().toObservableSticky(RxUiEvent.BulkDeviceListRsp.class)
+                .filter(new Func1<RxUiEvent.BulkDeviceListRsp, Boolean>() {
                     @Override
-                    public Boolean call(RxUiEvent.BulkDeviceList deviceList) {
+                    public Boolean call(RxUiEvent.BulkDeviceListRsp deviceList) {
                         return getView() != null
                                 && deviceList != null
                                 && !ListUtils.isEmpty(deviceList.allDevices);
                     }
                 })
-                .flatMap(new Func1<RxUiEvent.BulkDeviceList, Observable<Boolean>>() {
+                .flatMap(new Func1<RxUiEvent.BulkDeviceListRsp, Observable<Boolean>>() {
                     @Override
-                    public Observable<Boolean> call(RxUiEvent.BulkDeviceList deviceList) {
+                    public Observable<Boolean> call(RxUiEvent.BulkDeviceListRsp deviceList) {
                         AppLogger.i("monitorBulkDeviceList: " + deviceList.allDevices);
                         final int count = deviceList.allDevices.size();
                         for (int i = 0; i < count; i++) {
@@ -153,7 +153,7 @@ public class SubmitBindingInfoContractImpl extends
      * @return
      */
     private Subscription bindTimeoutSub() {
-        return RxBus.getUiInstance().toObservable(RxUiEvent.SingleDevice.class)
+        return RxBus.getCacheInstance().toObservable(RxUiEvent.SingleDevice.class)
                 .filter(new Func1<RxUiEvent.SingleDevice, Boolean>() {
                     @Override
                     public Boolean call(RxUiEvent.SingleDevice singleDevice) {

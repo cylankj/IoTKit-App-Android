@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.entity.jniCall.JFGDPMsg;
+import com.cylan.entity.jniCall.JFGDPMsgCount;
 import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.entity.jniCall.JFGDoorBellCaller;
 import com.cylan.entity.jniCall.JFGFeedbackInfo;
@@ -13,6 +14,7 @@ import com.cylan.entity.jniCall.JFGMsgHttpResult;
 import com.cylan.entity.jniCall.JFGResult;
 import com.cylan.entity.jniCall.JFGShareListInfo;
 import com.cylan.jiafeigou.dp.BaseValue;
+import com.cylan.jiafeigou.dp.DataPointManager;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 
 import java.util.ArrayList;
@@ -435,6 +437,9 @@ public class RxEvent {
         public ArrayList<JFGDPMsg> dataList;
     }
 
+    /**
+     * {@link DataPointManager}消息池,消息已经变化.
+     */
     public static final class DataPoolUpdate {
         public String uuid;
         public int id;
@@ -444,12 +449,15 @@ public class RxEvent {
     /**
      * 修改设备属性
      */
+    /**
+     * @Deprecated use {@link com.cylan.jiafeigou.cache.pool.GlobalDataProxy#update(String, BaseValue)}
+     */
+    @Deprecated
     public static final class JFGAttributeUpdate extends DpMsgDefine.DpMsg {
         public String uuid;
     }
 
     /**
-     * <<<<<<< HEAD
      * 获取好友的信息回调
      */
     public static final class GetFriendInfoCall {
@@ -468,6 +476,34 @@ public class RxEvent {
      */
     public static final class UnbindJFGDevice {
         public String uuid;
+    }
+
+    /**
+     * 这个消息从{@link com.cylan.jiafeigou.n.engine.DataSourceService#OnRobotCountDataRsp(long, String, ArrayList)}
+     * 传到{@link DataPointManager#handleUnreadMessageCount()}
+     */
+    public static final class UnreadCount {
+        public String uuid;
+        public long seq;
+        public ArrayList<JFGDPMsgCount> msgList;
+
+        public UnreadCount() {
+        }
+
+        public UnreadCount(String uuid, long seq, ArrayList<JFGDPMsgCount> counts) {
+            this.uuid = uuid;
+            this.seq = seq;
+            this.msgList = counts;
+        }
+    }
+
+    /**
+     * 未读消息数响应,以uuid为单位
+     */
+    public static final class UnreadCountRsp {
+        public String uuid;
+        public long time;
+        public int count;
     }
 
     /**

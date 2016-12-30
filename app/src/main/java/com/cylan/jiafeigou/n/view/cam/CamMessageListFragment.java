@@ -2,6 +2,7 @@ package com.cylan.jiafeigou.n.view.cam;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -9,6 +10,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,6 +29,7 @@ import com.cylan.jiafeigou.n.mvp.impl.cam.CamMessageListPresenterImpl;
 import com.cylan.jiafeigou.n.mvp.model.CamMessageBean;
 import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
 import com.cylan.jiafeigou.n.view.adapter.CamMessageListAdapter;
+import com.cylan.jiafeigou.n.view.media.CamMediaActivity;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.AnimatorUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
@@ -40,6 +43,10 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+import static com.cylan.jiafeigou.n.view.media.CamMediaActivity.KEY_BUNDLE;
+import static com.cylan.jiafeigou.n.view.media.CamMediaActivity.KEY_INDEX;
+import static com.cylan.jiafeigou.n.view.media.CamMediaActivity.KEY_TIME;
+import static com.cylan.jiafeigou.n.view.media.CamMediaActivity.KEY_UUID;
 import static com.cylan.jiafeigou.widget.dialog.BaseDialog.KEY_TITLE;
 import static com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment.KEY_LEFT_CONTENT;
 import static com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment.KEY_RIGHT_CONTENT;
@@ -172,16 +179,16 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
     public void onMessageListRsp(ArrayList<CamMessageBean> beanArrayList) {
         srLayoutCamListRefresh.setRefreshing(false);
         final int count = beanArrayList == null ? 0 : beanArrayList.size();
-        lLayoutNoMessage.post(() -> {
-            lLayoutNoMessage.setVisibility(count > 0 ? View.GONE : View.VISIBLE);
-            rLayoutCamMessageListTop.setVisibility(count == 0 ? View.GONE : View.VISIBLE);
-        });
         if (count == 0) {
             AppLogger.i("没有数据");
             return;
         }
         camMessageListAdapter.addAll(beanArrayList);
         setCurrentPosition(0);
+        lLayoutNoMessage.post(() -> {
+            lLayoutNoMessage.setVisibility(camMessageListAdapter.getCount() > 0 ? View.GONE : View.VISIBLE);
+            rLayoutCamMessageListTop.setVisibility(camMessageListAdapter.getCount() == 0 ? View.GONE : View.VISIBLE);
+        });
     }
 
     @Override
@@ -287,16 +294,16 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
 
     @Override
     public void onClick(View v) {
+        int position = ViewUtils.getParentAdapterPosition(rvCamMessageList, v,
+                R.id.lLayout_cam_msg_container);
         switch (v.getId()) {
             case R.id.tv_cam_message_item_delete: {//删除选中
                 if (initDialog()) {
-                    final int pos = ViewUtils.getParentAdapterPosition(rvCamMessageList, v,
-                            R.id.lLayout_cam_msg_container);
                     simpleDialogFragment.show(getActivity().getSupportFragmentManager(), "simpleDialogFragment");
                     simpleDialogFragment.setAction((int id, Object value) -> {
-                        camMessageListAdapter.remove(pos);
+                        camMessageListAdapter.remove(position);
                         ArrayList<CamMessageBean> list = new ArrayList<>();
-                        CamMessageBean bean = camMessageListAdapter.getItem(pos);
+                        CamMessageBean bean = camMessageListAdapter.getItem(position);
                         list.add(bean);
                         if (basePresenter != null)
                             basePresenter.removeItems(list);
@@ -306,13 +313,30 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
             break;
             case R.id.lLayout_cam_msg_container: {//点击item,选中
                 if (!camMessageListAdapter.isEditMode()) return;
-                int position = ViewUtils.getParentAdapterPosition(rvCamMessageList, v,
-                        R.id.lLayout_cam_msg_container);
                 camMessageListAdapter.markItemSelected(position);
             }
             break;
+            case R.id.imgV_cam_message_pic_0:
+                startActivity(getIntent(position, 0));
+                break;
+            case R.id.imgV_cam_message_pic_1:
+                startActivity(getIntent(position, 1));
+                break;
+            case R.id.imgV_cam_message_pic_2:
+                startActivity(getIntent(position, 2));
+                break;
             case R.id.tv_to_live:
                 break;
         }
+    }
+
+    private Intent getIntent(int position, int index) {
+        Intent intent = new Intent(getActivity(), CamMediaActivity.class);
+        intent.putExtra(KEY_INDEX, index);
+        intent.putExtra(KEY_BUNDLE, camMessageListAdapter.getItem(position).alarmMsg);
+        intent.putExtra(KEY_TIME, camMessageListAdapter.getItem(position).time);
+        intent.putExtra(KEY_UUID, uuid);
+        Log.d("imgV_cam_message_pic_0", "imgV_cam_:" + position + " " + camMessageListAdapter.getItem(position).alarmMsg);
+        return intent;
     }
 }

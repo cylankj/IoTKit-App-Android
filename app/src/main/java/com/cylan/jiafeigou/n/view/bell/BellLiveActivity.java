@@ -3,6 +3,7 @@ package com.cylan.jiafeigou.n.view.bell;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.PixelFormat;
+import android.opengl.GLSurfaceView;
 import android.view.LayoutInflater;
 import android.view.SurfaceView;
 import android.view.View;
@@ -32,7 +33,7 @@ import java.util.Locale;
 import butterknife.BindView;
 import butterknife.OnClick;
 
-public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Presenter, BellLiveContract.View>
+public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Presenter>
         implements DragLayout.OnDragReleaseListener, View.OnClickListener
         , BellLiveContract.View {
 
@@ -97,6 +98,20 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
         if (extra == null) extra = getIntent().getSerializableExtra(JConstant.BELL_CALL_WAY_EXTRA);
         Object extra1 = getIntent().getParcelableExtra(JConstant.KEY_DEVICE_ITEM_BUNDLE);
         mPresenter.onBellCall(callWay, extra, extra1);
+
+        if (mSurfaceView != null && mSurfaceView instanceof GLSurfaceView) {
+            ((GLSurfaceView) mSurfaceView).onResume();
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (mSurfaceView != null && mSurfaceView instanceof GLSurfaceView) {
+            ((GLSurfaceView) mSurfaceView).onPause();
+            mVideoViewContainer.removeAllViews();
+            mSurfaceView = null;
+        }
     }
 
     @Override
@@ -107,6 +122,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
 
     @Override
     protected void onPrepareToExit(Action action) {
+        mPresenter.onDismiss();
         finishExt();
         action.actionDone();
     }
@@ -134,7 +150,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
      */
     private void initLandView() {
         if (fLayoutLandHolderRef == null || fLayoutLandHolderRef.get() == null) {
-            View view = LayoutInflater.from(getApplicationContext())
+            View view = LayoutInflater.from(getAppContext())
                     .inflate(R.layout.layout_bell_live_land_layer, null);
             if (view != null) {
                 fLayoutLandHolderRef = new WeakReference<>(view);
@@ -200,7 +216,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
                 mPresenter.onCapture();
                 break;
             case R.id.imgv_bell_live_land_hangup:
-                Toast.makeText(getViewContext(), "hangup", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getAppContext(), "hangup", Toast.LENGTH_SHORT).show();
                 finishExt();
                 break;
         }
@@ -215,6 +231,9 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
 
     @Override
     public void onFlowSpeed(int speed) {
+        if (tvBellLiveFlow.getVisibility() != View.VISIBLE) {
+            tvBellLiveFlow.setVisibility(View.VISIBLE);
+        }
         tvBellLiveFlow.setText(String.format(Locale.getDefault(), "%sKb/s", speed));
     }
 
@@ -257,7 +276,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
     private void initVideoView() {
         if (mSurfaceView == null) {
             mSurfaceView = (SurfaceView) VideoViewFactory.CreateRendererExt(false,
-                    getViewContext(), true);
+                    getAppContext(), true);
             mSurfaceView.setId("IVideoView".hashCode());
             ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             mSurfaceView.setLayoutParams(params);

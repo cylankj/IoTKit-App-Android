@@ -42,6 +42,7 @@ public class BellLivePresenterImpl extends BasePresenter<BellLiveContract.View> 
     private boolean mIsInViewMode = false;//是否是查看门铃模式
     private boolean isInLive = false;//是否正在直播中
 
+    private String mNewBellCallHandle;
 
     public BellLivePresenterImpl() {
     }
@@ -58,7 +59,7 @@ public class BellLivePresenterImpl extends BasePresenter<BellLiveContract.View> 
             mInLiveCid = mBellCid;
             isInLive = true;
             mView.onViewer();
-            onStartResolutionRetry();
+            listenResolution();
             JfgCmdInsurance.getCmd().playVideo(mInLiveCid);
         } catch (JfgException e) {
             e.printStackTrace();
@@ -72,9 +73,9 @@ public class BellLivePresenterImpl extends BasePresenter<BellLiveContract.View> 
 
     @Override
     public void onDismiss() {
+        stopLive();
         mInLiveCid = null;
         isInLive = false;
-        stopLive();
     }
 
     @Override
@@ -94,14 +95,14 @@ public class BellLivePresenterImpl extends BasePresenter<BellLiveContract.View> 
         JfgCmdInsurance.getCmd().screenshot(false, new CallBack<Bitmap>() {
             @Override
             public void onSucceed(Bitmap bitmap) {
-                Toast.makeText(mView.getViewContext(), "截图成功", Toast.LENGTH_SHORT).show();
+                Toast.makeText(mView.getAppContext(), "截图成功", Toast.LENGTH_SHORT).show();
                 String filePath = JConstant.MEDIA_PATH + File.separator + System.currentTimeMillis() + ".png";
                 BitmapUtil.saveBitmap2file(bitmap, filePath);
             }
 
             @Override
             public void onFailure(String s) {
-                Toast.makeText(mView.getViewContext(), "截图失败", Toast.LENGTH_SHORT).show();
+                Toast.makeText(mView.getAppContext(), "截图失败", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -124,7 +125,7 @@ public class BellLivePresenterImpl extends BasePresenter<BellLiveContract.View> 
                 if (isInLive && TextUtils.equals(mInLiveCid, mBellCid)) {
                     onWatchLive();
                 } else if (isInLive) {
-                    mView.showAlert("有新访客", "有新的访客" + mBellCid, "接听", "忽略");
+                    mNewBellCallHandle = mView.showAlert("有新访客", "有新的访客" + mBellCid, "接听", "忽略");
                 } else {
                     mView.onListen();
                     waitBellPictureReady(mURL, () -> mView.onPreviewPicture(mURL));
@@ -156,19 +157,26 @@ public class BellLivePresenterImpl extends BasePresenter<BellLiveContract.View> 
     @Override
     public void onStop() {
         super.onStop();
+        if (mInLiveCid != null) {
+            mBellCid = mInLiveCid;
+        }
         stopLive();
     }
 
     @Override
-    public void onViewAction(int action, Object extra) {
+    public void onViewAction(int action, String handle, Object extra) {
         switch (action) {
             case JFGView.VIEW_ACTION_OK: {
-
+                if (TextUtils.equals(mNewBellCallHandle, handle)) {
+                    onPickup();
+                }
             }
             break;
 
             case JFGView.VIEW_ACTION_CANCEL: {
+                if (TextUtils.equals(mNewBellCallHandle, handle)) {
 
+                }
             }
             break;
         }
@@ -194,7 +202,7 @@ public class BellLivePresenterImpl extends BasePresenter<BellLiveContract.View> 
     }
 
     @Override
-    protected int onResolveViewFeatures() {
+    protected long onResolveViewFeatures() {
         return BasePresenter.FEATURE_VIDEO_FLOW_RSP | BasePresenter.FEATURE_VIDEO_RESOLUTION;
     }
 

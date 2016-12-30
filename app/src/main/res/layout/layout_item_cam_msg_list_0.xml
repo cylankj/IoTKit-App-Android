@@ -70,15 +70,23 @@
                 android:textColor="@color/color_666666"
                 android:textSize="14sp" />
 
-            <TextView
-                android:id="@+id/tv_cam_message_item_delete"
-                android:layout_width="wrap_content"
+            <FrameLayout
+                android:id="@+id/fLayout_cam_message_item_bottom"
+                android:layout_width="match_parent"
                 android:layout_height="48dp"
-                android:gravity="center_vertical"
-                android:padding="10dp"
-                android:text="@string/DELETE"
-                android:textColor="@color/color_4b9fd5"
-                android:textSize="11sp" />
+                android:layout_gravity="bottom"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:id="@+id/tv_cam_message_item_delete"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:padding="10dp"
+                    android:text="@string/DELETE"
+                    android:textColor="@color/color_4b9fd5"
+                    android:textSize="11sp" />
+            </FrameLayout>
 
             <View
                 android:layout_width="match_parent"

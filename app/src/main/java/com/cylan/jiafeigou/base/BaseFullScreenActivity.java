@@ -23,7 +23,7 @@ import static com.cylan.jiafeigou.misc.INotify.KEY_NEED_EMPTY_NOTIFICATION;
  * Created by yzd on 16-12-28.
  */
 
-public abstract class BaseFullScreenActivity<P extends JFGPresenter<V>, V extends JFGView> extends BaseActivity<P, V> {
+public abstract class BaseFullScreenActivity<P extends JFGPresenter> extends BaseActivity<P> {
 
     private SystemBarTintManager tintManager;
     private WeakReference<SystemUiHider> systemUiHiderWeakReference;

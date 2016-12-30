@@ -1,6 +1,8 @@
 package com.cylan.jiafeigou.support.wechat;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.text.TextUtils;
 import android.util.Log;
@@ -71,15 +73,15 @@ public class WechatShare {
     /**
      * 文字
      */
-    public static final int WEIXIN_SHARE_WAY_TEXT = 1;
+    public static final int WEIXIN_SHARE_CONTENT_TEXT = 1;
     /**
      * 图片
      */
-    public static final int WEIXIN_SHARE_WAY_PIC = 2;
+    public static final int WEIXIN_SHARE_CONTENT_PIC = 2;
     /**
      * 链接
      */
-    public static final int WEIXIN_SHARE_WAY_WEBPAGE = 3;
+    public static final int WEIXIN_SHARE_CONTENT_WEBPAGE = 3;
     /**
      * 会话
      */
@@ -97,36 +99,47 @@ public class WechatShare {
      *                     分享的类型（朋友圈，会话）
      */
     public void shareByWX(ShareContent shareContent) {
-        switch (shareContent.getShareWay()) {
-            case WEIXIN_SHARE_WAY_TEXT:
-                shareText(shareContent.getShareType(), shareContent);
+        switch (shareContent.getShareContent()) {
+            case WEIXIN_SHARE_CONTENT_TEXT:
+                shareText(shareContent.getShareScene(), shareContent);
                 break;
-            case WEIXIN_SHARE_WAY_PIC:
-                sharePicture(shareContent.getShareType(), shareContent);
+            case WEIXIN_SHARE_CONTENT_PIC:
+                sharePicture(shareContent.getShareScene(), shareContent);
                 break;
-            case WEIXIN_SHARE_WAY_WEBPAGE:
-                shareWebPage(shareContent.getShareType(), shareContent);
+            case WEIXIN_SHARE_CONTENT_WEBPAGE:
+                shareWebPage(shareContent.getShareScene(), shareContent);
                 break;
+        }
+    }
+
+    public boolean isWeChatInstalled(Context context) {
+        try {
+            return context
+                    .getPackageManager()
+                    .getPackageInfo("com.tencent.mm", PackageManager.GET_SIGNATURES) != null;
+        } catch (PackageManager.NameNotFoundException e) {
+            return false;
         }
     }
 
     public static abstract class ShareContent {
 
-        /**
-         * 朋友圈，微信
-         */
-        public int shareWay;
+
         /**
          * 文字，图片，链接
          */
-        public int shareType;
+        public int shareContent;
+        /**
+         * 朋友圈，微信
+         */
+        public int shareScene;
         public String content;
         public String title;
         public String url;
         public Bitmap bitmap;
 
 
-        protected abstract int getShareWay();
+        protected abstract int getShareContent();
 
         /**
          * 分享内容描述
@@ -158,14 +171,14 @@ public class WechatShare {
          *
          * @return
          */
-        protected abstract int getShareType();
+        protected abstract int getShareScene();
 
     }
 
     public static class ShareContentImpl extends ShareContent {
         @Override
-        public int getShareWay() {
-            return shareWay;
+        public int getShareContent() {
+            return shareContent;
         }
 
         @Override
@@ -189,8 +202,8 @@ public class WechatShare {
         }
 
         @Override
-        protected int getShareType() {
-            return shareType;
+        protected int getShareScene() {
+            return shareScene;
         }
     }
 
@@ -221,13 +234,13 @@ public class WechatShare {
         }
 
         @Override
-        protected int getShareType() {
-            return shareType;
+        protected int getShareScene() {
+            return shareScene;
         }
 
         @Override
-        protected int getShareWay() {
-            return WEIXIN_SHARE_WAY_TEXT;
+        protected int getShareContent() {
+            return WEIXIN_SHARE_CONTENT_TEXT;
         }
 
     }
@@ -260,13 +273,13 @@ public class WechatShare {
         }
 
         @Override
-        protected int getShareType() {
-            return shareType;
+        protected int getShareScene() {
+            return shareScene;
         }
 
         @Override
-        protected int getShareWay() {
-            return WEIXIN_SHARE_WAY_PIC;
+        protected int getShareContent() {
+            return WEIXIN_SHARE_CONTENT_PIC;
         }
     }
 
@@ -299,13 +312,13 @@ public class WechatShare {
         }
 
         @Override
-        protected int getShareType() {
-            return shareType;
+        protected int getShareScene() {
+            return shareScene;
         }
 
         @Override
-        protected int getShareWay() {
-            return WEIXIN_SHARE_WAY_WEBPAGE;
+        protected int getShareContent() {
+            return WEIXIN_SHARE_CONTENT_WEBPAGE;
         }
 
     }
@@ -313,7 +326,7 @@ public class WechatShare {
     /*
      * 分享文字
      */
-    private void shareText(int shareType, ShareContent shareContent) {
+    private void shareText(int shareScene, ShareContent shareContent) {
         String text = shareContent.getContent();
         //初始化一个WXTextObject对象
         WXTextObject textObj = new WXTextObject();
@@ -328,7 +341,7 @@ public class WechatShare {
         req.transaction = buildTransaction("text");
         req.message = msg;
         //发送的目标场景， 可以选择发送到会话 WXSceneSession 或者朋友圈 WXSceneTimeline。 默认发送到会话。
-        req.scene = shareType;
+        req.scene = shareScene;
         wxApi.sendReq(req);
     }
 

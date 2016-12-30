@@ -64,9 +64,9 @@ public class JConstant {
 
     public static final String AUTO_LOGIN_ACCOUNT = "auto_login_account";
     public static final String AUTO_LOGIN_PWD = "auto_login_pwd";
-    public static final String SAVE_TEMP_ACCOUNT ="save_temp_account";
-    public static final String SAVE_TEMP_CODE ="save_temp_code";
-    public static final String OPEN_LOGIN_TO_BIND_PHONE ="open_login_to_bind_phone";
+    public static final String SAVE_TEMP_ACCOUNT = "save_temp_account";
+    public static final String SAVE_TEMP_CODE = "save_temp_code";
+    public static final String OPEN_LOGIN_TO_BIND_PHONE = "open_login_to_bind_phone";
     /**
      * verification code
      */
@@ -107,6 +107,7 @@ public class JConstant {
      */
     public static final String KEY_DEVICE_ITEM_BUNDLE = "key_bundle_item";
 
+    public static final String KEY_DEVICE_ITEM_UUID = "key_device_uuid";
 
     /**
      * 保存了 {@link BellLiveActivity}的进程id

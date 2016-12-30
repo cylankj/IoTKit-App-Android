@@ -53,7 +53,7 @@ public interface HomePageListContract {
     interface Presenter extends BasePresenter {
         void fetchGreet();
 
-        void fetchDeviceList();
+        void fetchDeviceList(boolean manually);
 
         void deleteItem(DeviceBean deviceBean);
 

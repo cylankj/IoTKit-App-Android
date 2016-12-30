@@ -1,6 +1,6 @@
 package com.cylan.jiafeigou.cache;
 
-import com.cylan.jiafeigou.cache.pool.GlobalDataPool;
+import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
 import com.cylan.jiafeigou.cache.video.History;
 import com.cylan.jiafeigou.dp.DataPointManager;
 import com.cylan.jiafeigou.dp.DpAssembler;
@@ -38,7 +38,7 @@ public class CacheParser {
         historyCache = History.getHistory();
         DataPointManager manager = DataPointManager.getInstance();
         dataPoint = manager;
-        GlobalDataPool.getInstance().setDataPointManager(manager);
+        GlobalDataProxy.getInstance().setDataPointManager(manager);
     }
 
     public static CacheParser getDpParser() {

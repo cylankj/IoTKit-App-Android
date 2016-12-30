@@ -4,9 +4,9 @@ package com.cylan.jiafeigou.base;
  * Created by yzd on 16-12-28.
  */
 
-public interface JFGPresenter<V extends JFGView> {
+public interface JFGPresenter {
 
-    void onViewAttached(V view);
+    void onViewAttached(JFGView view);
 
     void onStart();
 
@@ -14,7 +14,7 @@ public interface JFGPresenter<V extends JFGView> {
 
     void onViewDetached();
 
-    void onViewAction(int action, Object extra);
+    void onViewAction(int action, String handle, Object extra);
 
     void onScreenRotationChanged(boolean land);
 }

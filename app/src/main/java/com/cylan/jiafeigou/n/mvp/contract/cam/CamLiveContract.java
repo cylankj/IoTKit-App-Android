@@ -113,6 +113,8 @@ public interface CamLiveContract {
 
         BeanCamInfo getCamInfo();
 
+        String getUuid();
+
         /**
          * @param local       :true:加菲狗客户端,false:设备端
          * @param speakerFlag :true:开 false:关
@@ -146,6 +148,14 @@ public interface CamLiveContract {
          * @return
          */
         boolean needShowHistoryWheelView();
+
+        /**
+         * 修改摄像头配置属性
+         *
+         * @param value
+         * @param id
+         */
+        void updateInfoReq(Object value, long id);
     }
 }
 

@@ -56,7 +56,7 @@ public interface BellLiveContract {
         void onSpeaker(boolean on);
     }
 
-    interface Presenter extends JFGPresenter<View> {
+    interface Presenter extends JFGPresenter {
 
         /**
          * 接听

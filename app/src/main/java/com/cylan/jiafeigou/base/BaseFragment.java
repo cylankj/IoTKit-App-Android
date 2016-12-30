@@ -1,5 +1,6 @@
 package com.cylan.jiafeigou.base;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -18,13 +19,18 @@ import butterknife.ButterKnife;
  * Created by yzd on 16-12-28.
  */
 
-public abstract class BaseFragment<T extends JFGPresenter<V>, V extends JFGView> extends Fragment implements JFGView {
+public abstract class BaseFragment<T extends JFGPresenter> extends Fragment implements JFGView {
     protected T mPresenter;
 
     private static Toast sToast;
 
     @Override
-    public Context getViewContext() {
+    public Context getAppContext() {
+        return getActivity().getApplicationContext();
+    }
+
+    @Override
+    public Activity getActivityContext() {
         return getActivity();
     }
 
@@ -49,7 +55,7 @@ public abstract class BaseFragment<T extends JFGPresenter<V>, V extends JFGView>
     public void onStart() {
         super.onStart();
         if (mPresenter != null) {
-            mPresenter.onViewAttached((V) this);
+            mPresenter.onViewAttached(this);
             mPresenter.onStart();
         }
     }
@@ -63,11 +69,12 @@ public abstract class BaseFragment<T extends JFGPresenter<V>, V extends JFGView>
         }
     }
 
+
     protected abstract T onCreatePresenter();
 
     @Override
     public void showLoading() {
-        showLoadingMsg(getResources().getString(R.string.Msg_LoadDialog));
+        showLoadingMsg(getResources().getString(R.string.LOADING));
     }
 
 
@@ -77,14 +84,14 @@ public abstract class BaseFragment<T extends JFGPresenter<V>, V extends JFGView>
     }
 
     @Override
-    public void showAlert(String title, String msg, String ok, String cancel) {
-
+    public String showAlert(String title, String msg, String ok, String cancel) {
+        return null;
     }
 
     @Override
     public void showToast(String msg) {
         if (sToast == null) {
-            sToast = new Toast(getActivity());
+            sToast = Toast.makeText(getActivity().getApplicationContext(), "", Toast.LENGTH_SHORT);
         }
         sToast.setDuration(Toast.LENGTH_SHORT);
         sToast.setText(msg);
@@ -94,5 +101,10 @@ public abstract class BaseFragment<T extends JFGPresenter<V>, V extends JFGView>
     protected abstract int getContentViewID();
 
     protected void initViewAndListener() {
+    }
+
+    @Override
+    public void onScreenRotationChanged(boolean land) {
+
     }
 }

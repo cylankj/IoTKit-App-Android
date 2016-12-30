@@ -13,10 +13,13 @@ import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.cache.pool.GlobalDataPool;
+import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.n.mvp.model.CamMessageBean;
+import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.CamWarnGlideURL;
+import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
 import com.cylan.superadapter.IMulItemViewType;
 import com.cylan.superadapter.SuperAdapter;
@@ -24,6 +27,7 @@ import com.cylan.superadapter.internal.SuperViewHolder;
 import com.cylan.utils.DensityUtils;
 
 import java.io.File;
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -61,9 +65,9 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
     }
 
     private void fetchSdcardStatus() {
-        DpMsgDefine.SdStatus status = GlobalDataPool.getInstance().getValue(uuid, DpMsgMap.ID_204_SDCARD_STORAGE);
+        DpMsgDefine.SdStatus status = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_204_SDCARD_STORAGE, null);
         this.hasStatus |= status != null && status.hasSdcard;
-        DpMsgDefine.MsgNet net = GlobalDataPool.getInstance().getValue(this.uuid, DpMsgMap.ID_201_NET);
+        DpMsgDefine.MsgNet net = GlobalDataProxy.getInstance().getValue(this.uuid, DpMsgMap.ID_201_NET, null);
         deviceOnlineState = net != null && net.net != 0;
     }
 
@@ -195,15 +199,15 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
     private void handlePicsLayout(SuperViewHolder holder,
                                   CamMessageBean item) {
 //        if (!isEditMode()) {
-        final int count = item.urlList.size();
+        final int count = MiscUtils.getCount(item.alarmMsg.fileIndex);
         //根据图片总数,设置view的Gone属性
         for (int i = 2; i >= 0; i--) {
             holder.setVisibility(R.id.imgV_cam_message_pic_0 + i,
                     count - 1 >= i ? View.VISIBLE : View.GONE);
         }
-        for (int i = 0; i < item.urlList.size(); i++) {
+        for (int i = 0; i < count; i++) {
             Glide.with(getContext())
-                    .load(item.urlList.get(i))
+                    .load(new CamWarnGlideURL(item.alarmMsg, i, uuid))
                     .placeholder(R.drawable.wonderful_pic_place_holder)
                     .override(pic_container_width / count, pic_container_height)
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
@@ -215,6 +219,9 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
         holder.setText(R.id.tv_cam_message_item_date, getFinalTimeContent(item));
         holder.setVisibility(R.id.tv_to_live, showLiveBtn(item.time) ? View.VISIBLE : View.INVISIBLE);
         holder.setOnClickListener(R.id.tv_to_live, onClickListener);
+        holder.setOnClickListener(R.id.imgV_cam_message_pic_0, onClickListener);
+        holder.setOnClickListener(R.id.imgV_cam_message_pic_1, onClickListener);
+        holder.setOnClickListener(R.id.imgV_cam_message_pic_2, onClickListener);
         holder.setEnabled(R.id.tv_to_live, deviceOnlineState);
     }
 
@@ -242,12 +249,13 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
 
     /**
      * sd卡内容
+     * 1489
      *
      * @param bean
      * @return
      */
     private String getFinalSdcardContent(CamMessageBean bean) {
-        if (bean.id != DpMsgMap.ID_204_SDCARD_STORAGE || bean.content == null)
+        if (bean.id != DpMsgMap.ID_222_SDCARD_SUMMARY || bean.content == null)
             return "";
         DpMsgDefine.SdcardSummary sdStatus = bean.content;
         switch (sdStatus.errCode) {
@@ -268,7 +276,7 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
 
             @Override
             public int getItemViewType(int position, CamMessageBean camMessageBean) {
-                return camMessageBean.viewType;
+                return camMessageBean.alarmMsg != null && camMessageBean.alarmMsg.fileIndex > 0 && camMessageBean.content == null ? 1 : 0;
             }
 
             @Override
@@ -285,23 +293,31 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
         };
     }
 
-    private RequestListener<String, GlideDrawable> loadListener = new RequestListener<String, GlideDrawable>() {
+    private RequestListener<CamWarnGlideURL, GlideDrawable> loadListener = new RequestListener<CamWarnGlideURL, GlideDrawable>() {
         @Override
         public boolean onException(Exception e,
-                                   String model,
+                                   CamWarnGlideURL model,
                                    Target<GlideDrawable> target,
                                    boolean isFirstResource) {
-            int position = getPositionByModel(model);
-            loadFailedMap.put(position, position);//标记load失败的position
-            Log.d("onException", "onException: " + position);
+            try {
+                int position = getPositionByModel(model.toURL().toString());
+                loadFailedMap.put(position, position);//标记load失败的position
+                Log.d("onException", "onException: " + position);
+            } catch (MalformedURLException e1) {
+                AppLogger.e("onException:" + e1.getLocalizedMessage());
+            }
             return false;
         }
 
         @Override
-        public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-            int position = getPositionByModel(model);
-            loadFailedMap.remove(position);
-            Log.d("onResourceReady", "onResourceReady: " + position);
+        public boolean onResourceReady(GlideDrawable resource, CamWarnGlideURL model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+            try {
+                int position = getPositionByModel(model.toURL().toString());
+                loadFailedMap.remove(position);
+                Log.d("onResourceReady", "onResourceReady: " + position);
+            } catch (MalformedURLException e) {
+                AppLogger.e("onException:" + e.getLocalizedMessage());
+            }
             return false;
         }
     };

@@ -10,9 +10,10 @@ import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.entity.jniCall.RobotoGetDataRsp;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.cache.JCache;
-import com.cylan.jiafeigou.cache.pool.GlobalDataPool;
+import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
 import com.cylan.jiafeigou.misc.Converter;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.model.BaseBean;
 import com.cylan.jiafeigou.n.mvp.model.param.BaseParam;
@@ -36,7 +37,6 @@ import java.util.Map;
 import rx.Observable;
 import rx.Subscription;
 import rx.functions.Func1;
-import rx.functions.Func2;
 import rx.schedulers.Schedulers;
 
 import static com.cylan.jiafeigou.dp.DpMsgMap.ID_2_CLASS_MAP;
@@ -90,33 +90,26 @@ public class DpAssembler implements IParser {
     private Subscription attributeUpdate() {
         return RxBus.getCacheInstance().toObservable(RxEvent.JFGAttributeUpdate.class)
                 .subscribeOn(Schedulers.newThread())
-                .filter(new Func1<RxEvent.JFGAttributeUpdate, Boolean>() {
-                    @Override
-                    public Boolean call(RxEvent.JFGAttributeUpdate jfgAttributeUpdate) {
-                        return JCache.getAccountCache() != null && JCache.getAccountCache().getAccount() != null;
-                    }
-                })
-                .map(new Func1<RxEvent.JFGAttributeUpdate, Object>() {
-                    @Override
-                    public Object call(RxEvent.JFGAttributeUpdate jfgAttributeUpdate) {
-                        if (jfgAttributeUpdate.msgId == DpMsgMap.ID_2000003_BASE_ALIAS) {
-                            DpMsgDefine.DpWrap wrap = flatMsg.getDevice(JCache.getAccountCache().getAccount(),
-                                    jfgAttributeUpdate.uuid);
-                            wrap.baseDpDevice.alias = (String) jfgAttributeUpdate.o;
-                            flatMsg.cache(JCache.getAccountCache().getAccount(),
-                                    wrap.baseDpDevice);
-                            AppLogger.i("update alias: " + jfgAttributeUpdate.o);
-                            return null;
-                        }
-                        String uuid = jfgAttributeUpdate.uuid;
-                        String account = JCache.getAccountCache().getAccount();
-                        DpMsgDefine.DpMsg dp = new DpMsgDefine.DpMsg();
-                        dp.msgId = jfgAttributeUpdate.msgId;
-                        dp.o = jfgAttributeUpdate.o;
-                        dp.version = jfgAttributeUpdate.version;
-                        flatMsg.update(account, uuid, dp);
+                .filter((RxEvent.JFGAttributeUpdate jfgAttributeUpdate) ->
+                        (JCache.getAccountCache() != null && JCache.getAccountCache().getAccount() != null))
+                .map((RxEvent.JFGAttributeUpdate jfgAttributeUpdate) -> {
+                    if (jfgAttributeUpdate.msgId == DpMsgMap.ID_2000003_BASE_ALIAS) {
+                        DpMsgDefine.DpWrap wrap = flatMsg.getDevice(JCache.getAccountCache().getAccount(),
+                                jfgAttributeUpdate.uuid);
+                        wrap.baseDpDevice.alias = (String) jfgAttributeUpdate.o;
+                        flatMsg.cache(JCache.getAccountCache().getAccount(),
+                                wrap.baseDpDevice);
+                        AppLogger.i("update alias: " + jfgAttributeUpdate.o);
                         return null;
                     }
+                    String uuid = jfgAttributeUpdate.uuid;
+                    String account = JCache.getAccountCache().getAccount();
+                    DpMsgDefine.DpMsg dp = new DpMsgDefine.DpMsg();
+                    dp.msgId = jfgAttributeUpdate.msgId;
+                    dp.o = jfgAttributeUpdate.o;
+                    dp.version = jfgAttributeUpdate.version;
+                    flatMsg.update(account, uuid, dp);
+                    return null;
                 })
                 .retry(new RxHelper.RxException<>("attributeUpdate"))
                 .subscribe();
@@ -131,7 +124,7 @@ public class DpAssembler implements IParser {
 
         return RxBus.getCacheInstance().toObservable(RxEvent.JfgDpMsgUpdate.class)
                 .subscribeOn(Schedulers.computation())
-                .filter(new RxHelper.Filter<RxEvent.JfgDpMsgUpdate>(TAG + "updateDpMsg",
+                .filter(new RxHelper.Filter<>(TAG + "updateDpMsg",
                         JCache.getAccountCache() != null && !TextUtils.isEmpty(JCache.getAccountCache().getAccount())))
                 .flatMap(new Func1<RxEvent.JfgDpMsgUpdate, Observable<Pair<DpMsgDefine.DpMsg, String>>>() {
                     @Override
@@ -139,28 +132,25 @@ public class DpAssembler implements IParser {
                         return Observable.just(new Pair<>(jfgDpMsgUpdate.dpMsg, jfgDpMsgUpdate.uuid));
                     }
                 })
-                .map(new Func1<Pair<DpMsgDefine.DpMsg, String>, Object>() {
-                    @Override
-                    public Object call(Pair<DpMsgDefine.DpMsg, String> arrayListStringPair) {
-                        //拿出对应uuid的所有属性
-                        DpMsgDefine.DpWrap deviceDetailsCache = flatMsg.getDevice(JCache.getAccountCache().getAccount(),
-                                arrayListStringPair.second);
-                        if (deviceDetailsCache == null || deviceDetailsCache.baseDpMsgList == null) {
-                            AppLogger.e("deviceDetailsCache is null");
-                            return null;
-                        }
-                        for (DpMsgDefine.DpMsg dpMsg : deviceDetailsCache.baseDpMsgList) {
-                            if (dpMsg.msgId == arrayListStringPair.first.msgId) {
-                                //hit
-                                if (arrayListStringPair.first.version > dpMsg.version) {
-
-                                    AppLogger.i("update attr: " + dpMsg + " -->" + arrayListStringPair.first);
-                                    break;
-                                }
-                            }
-                        }
+                .map((Pair<DpMsgDefine.DpMsg, String> arrayListStringPair) -> {
+                    //拿出对应uuid的所有属性
+                    DpMsgDefine.DpWrap deviceDetailsCache = flatMsg.getDevice(JCache.getAccountCache().getAccount(),
+                            arrayListStringPair.second);
+                    if (deviceDetailsCache == null || deviceDetailsCache.baseDpMsgList == null) {
+                        AppLogger.e("deviceDetailsCache is null");
                         return null;
                     }
+                    for (DpMsgDefine.DpMsg dpMsg : deviceDetailsCache.baseDpMsgList) {
+                        if (dpMsg.msgId == arrayListStringPair.first.msgId) {
+                            //hit
+                            if (arrayListStringPair.first.version > dpMsg.version) {
+
+                                AppLogger.i("update attr: " + dpMsg + " -->" + arrayListStringPair.first);
+                                break;
+                            }
+                        }
+                    }
+                    return null;
                 })
                 .retry(new RxHelper.ExceptionFun<>(TAG + "updateDpMsg"))
                 .subscribe();
@@ -173,23 +163,17 @@ public class DpAssembler implements IParser {
      * @return
      */
     private Subscription simpleBulkSubSend2Ui() {
-        return RxBus.getCacheInstance().toObservable(RxUiEvent.QueryBulkDevice.class)
-                .filter(new Func1<RxUiEvent.QueryBulkDevice, Boolean>() {
-                    @Override
-                    public Boolean call(RxUiEvent.QueryBulkDevice queryBulkDevice) {
-                        AppLogger.i(TAG + " simpleBulkSubSend2Ui: " + (JCache.getAccountCache() != null));
-                        return JCache.getAccountCache() != null;
-                    }
+        return RxBus.getCacheInstance().toObservable(RxUiEvent.BulkDeviceListReq.class)
+                .filter((RxUiEvent.BulkDeviceListReq queryBulkDevice) -> {
+                    AppLogger.i(TAG + " simpleBulkSubSend2Ui: " + (JCache.getAccountCache() != null));
+                    return JCache.getAccountCache() != null;
                 })
-                .map(new Func1<RxUiEvent.QueryBulkDevice, Object>() {
-                    @Override
-                    public Object call(RxUiEvent.QueryBulkDevice queryBulkDevice) {
-                        RxUiEvent.BulkDeviceList cacheList = new RxUiEvent.BulkDeviceList();
-                        cacheList.allDevices = flatMsg.getAllDevices(JCache.getAccountCache().getAccount());
-                        RxBus.getUiInstance().postSticky(cacheList);
-                        AppLogger.i("BulkDeviceList: " + (cacheList.allDevices != null ? cacheList.allDevices.size() : 0));
-                        return null;
-                    }
+                .map((RxUiEvent.BulkDeviceListReq queryBulkDevice) -> {
+                    RxUiEvent.BulkDeviceListRsp cacheList = new RxUiEvent.BulkDeviceListRsp();
+                    cacheList.allDevices = flatMsg.getAllDevices(JCache.getAccountCache().getAccount());
+                    RxBus.getCacheInstance().postSticky(cacheList);
+                    AppLogger.i("BulkDeviceListRsp: " + (cacheList.allDevices != null ? cacheList.allDevices.size() : 0));
+                    return null;
                 }).subscribe();
     }
 
@@ -208,10 +192,9 @@ public class DpAssembler implements IParser {
                         if (!TextUtils.isEmpty(uuid)) {
                             flatMsg.rm(JCache.getAccountCache().getAccount(), uuid);
                             AppLogger.i("delete device: " + uuid);
-                            RxBus.getCacheInstance().removeStickyEvent(RxUiEvent.BulkDeviceList.class);
-                            RxBus.getUiInstance().removeStickyEvent(RxUiEvent.BulkDeviceList.class);
+                            RxBus.getCacheInstance().removeStickyEvent(RxUiEvent.BulkDeviceListRsp.class);
                             //触发更新数据
-                            RxBus.getCacheInstance().post(new RxUiEvent.QueryBulkDevice());
+                            RxBus.getCacheInstance().post(new RxUiEvent.BulkDeviceListReq());
                         }
                         return null;
                     }
@@ -265,38 +248,42 @@ public class DpAssembler implements IParser {
      */
     private Subscription deviceListSub() {
         return Observable.zip(monitorJFGAccount(), monitorDeviceRawList(),
-                new Func2<JFGAccount, RxEvent.DeviceRawList, List<JFGDevice>>() {
-                    @Override
-                    public List<JFGDevice> call(JFGAccount account, RxEvent.DeviceRawList deviceRawList) {
-                        AppLogger.i(TAG + " yes jfgAccount is ready and deviceList is ready too");
-                        return Arrays.asList(deviceRawList.devices);
-                    }
+                (JFGAccount account, RxEvent.DeviceRawList deviceRawList) -> {
+                    AppLogger.i(TAG + " yes jfgAccount is ready and deviceList is ready too");
+                    return Arrays.asList(deviceRawList.devices);
                 })
                 .subscribeOn(Schedulers.newThread())
-                .map(new Func1<List<JFGDevice>, Object>() {
-                    @Override
-                    public Object call(List<JFGDevice> list) {
-                        HashMap<String, Long> map = new HashMap<>();
-                        for (int i = 0; i < list.size(); i++) {
-                            GlobalDataPool.getInstance().cacheDevice(list.get(i));
-                            assembleBase(list.get(i));
-                            final int pid = list.get(i).pid;
-                            BaseParam baseParam = merger(pid);
-                            long seq = 0;
-                            try {
-                                seq = JfgCmdInsurance.getCmd().robotGetData(list.get(i).uuid, baseParam.queryParameters(null), 1, false, 0);
-                            } catch (JfgException e) {
-                                e.printStackTrace();
-                            }
-                            map.put(list.get(i).uuid, seq);
-                            AppLogger.i(TAG + " req: " + list.get(i).uuid);
+                .map((List<JFGDevice> list) -> {
+                    HashMap<String, Long> map = new HashMap<>();
+                    for (int i = 0; i < list.size(); i++) {
+                        GlobalDataProxy.getInstance().cacheDevice(list.get(i).uuid, list.get(i));
+                        getUnreadMsg(list.get(i));
+                        assembleBase(list.get(i));
+                        final int pid = list.get(i).pid;
+                        BaseParam baseParam = merger(pid);
+                        long seq = 0;
+                        try {
+                            seq = JfgCmdInsurance.getCmd().robotGetData(list.get(i).uuid, baseParam.queryParameters(null), 1, false, 0);
+                        } catch (JfgException e) {
+                            e.printStackTrace();
                         }
-                        seqMap.put("deviceListSub", map);
-                        return null;
+                        map.put(list.get(i).uuid, seq);
+                        AppLogger.i(TAG + " req: " + list.get(i).uuid);
                     }
+                    seqMap.put("deviceListSub", map);
+                    return null;
                 })
                 .retry(new RxHelper.RxException<>(TAG + " deviceListSub"))
                 .subscribe();
+    }
+
+    private void getUnreadMsg(JFGDevice device) {
+        if (JFGRules.isCamera(device.pid))
+            try {
+                GlobalDataProxy.getInstance().fetchUnreadCount(device.uuid, DpMsgMap.ID_505_CAMERA_ALARM_MSG * 1L);
+            } catch (JfgException e) {
+                AppLogger.e("" + e.getLocalizedMessage());
+            }
     }
 
     /**
@@ -408,7 +395,7 @@ public class DpAssembler implements IParser {
                 dpRspSeq.clear();
                 seqMap.remove(key);
                 AppLogger.i("hit: ");
-                RxBus.getCacheInstance().post(new RxUiEvent.QueryBulkDevice());
+                RxBus.getCacheInstance().post(new RxUiEvent.BulkDeviceListReq());
             }
         }
     }
