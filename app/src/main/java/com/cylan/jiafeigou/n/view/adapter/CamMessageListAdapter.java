@@ -65,9 +65,9 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
     }
 
     private void fetchSdcardStatus() {
-        DpMsgDefine.SdStatus status = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_204_SDCARD_STORAGE);
+        DpMsgDefine.SdStatus status = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_204_SDCARD_STORAGE, null);
         this.hasStatus |= status != null && status.hasSdcard;
-        DpMsgDefine.MsgNet net = GlobalDataProxy.getInstance().getValue(this.uuid, DpMsgMap.ID_201_NET);
+        DpMsgDefine.MsgNet net = GlobalDataProxy.getInstance().getValue(this.uuid, DpMsgMap.ID_201_NET, null);
         deviceOnlineState = net != null && net.net != 0;
     }
 
@@ -249,7 +249,8 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
 
     /**
      * sd卡内容
-     *1489
+     * 1489
+     *
      * @param bean
      * @return
      */

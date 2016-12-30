@@ -4,7 +4,6 @@ import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
 import com.cylan.jiafeigou.dp.BaseValue;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamWarnContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
-import com.cylan.jiafeigou.n.mvp.model.BeanCamInfo;
 import com.cylan.jiafeigou.support.log.AppLogger;
 
 import rx.Observable;
@@ -16,14 +15,12 @@ import rx.schedulers.Schedulers;
 
 public class CamAlarmPresenterImpl extends AbstractPresenter<CamWarnContract.View> implements
         CamWarnContract.Presenter {
-    private BeanCamInfo beanCamInfo;
     private String uuid;
 
-    public CamAlarmPresenterImpl(CamWarnContract.View view, BeanCamInfo info) {
+    public CamAlarmPresenterImpl(CamWarnContract.View view, String uuid) {
         super(view);
         view.setPresenter(this);
-        this.beanCamInfo = info;
-        this.uuid = info.deviceBase.uuid;
+        this.uuid = uuid;
     }
 
     @Override
@@ -41,9 +38,5 @@ public class CamAlarmPresenterImpl extends AbstractPresenter<CamWarnContract.Vie
                 });
     }
 
-    @Override
-    public BeanCamInfo getBeanCamInfo() {
-        return beanCamInfo;
-    }
 
 }

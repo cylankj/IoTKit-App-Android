@@ -256,7 +256,7 @@ public class DpAssembler implements IParser {
                 .map((List<JFGDevice> list) -> {
                     HashMap<String, Long> map = new HashMap<>();
                     for (int i = 0; i < list.size(); i++) {
-                        GlobalDataProxy.getInstance().cacheDevice(list.get(i));
+                        GlobalDataProxy.getInstance().cacheDevice(list.get(i).uuid, list.get(i));
                         getUnreadMsg(list.get(i));
                         assembleBase(list.get(i));
                         final int pid = list.get(i).pid;

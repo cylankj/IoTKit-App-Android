@@ -14,8 +14,9 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
+import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.JConstant;
-import com.cylan.jiafeigou.n.mvp.model.BeanCamInfo;
 import com.cylan.jiafeigou.widget.dialog.BaseDialog;
 
 import butterknife.BindView;
@@ -39,6 +40,7 @@ public class SetSensitivityDialogFragment extends BaseDialog {
     RadioGroup rgSensitivity;
     @BindView(R.id.tv_cancel)
     TextView tvCancel;
+    private String uuid;
 
     public SetSensitivityDialogFragment() {
         // Required empty public constructor
@@ -60,6 +62,7 @@ public class SetSensitivityDialogFragment extends BaseDialog {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        this.uuid = getArguments().getString(JConstant.KEY_DEVICE_ITEM_UUID);
     }
 
     @Override
@@ -74,21 +77,16 @@ public class SetSensitivityDialogFragment extends BaseDialog {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         getDialog().setCanceledOnTouchOutside(false);
-        final BeanCamInfo beanCamInfo = getArguments().getParcelable(JConstant.KEY_DEVICE_ITEM_BUNDLE);
-        int level = beanCamInfo.cameraAlarmSensitivity;
+        int level = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_503_CAMERA_ALARM_SENSITIVITY, 0);
         final int count = rgSensitivity.getChildCount();
         for (int i = 0; i < count; i++) {
             final int index = i;
             RadioButton box = (RadioButton) rgSensitivity.getChildAt(i);
             box.setChecked(level == (2 - i));
-            box.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    if (isChecked) {
-                        beanCamInfo.cameraAlarmSensitivity = index;
-                        if (action != null) action.onDialogAction(0, 2 - index);
-                        dismiss();
-                    }
+            box.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
+                if (isChecked) {
+                    if (action != null) action.onDialogAction(0, 2 - index);
+                    dismiss();
                 }
             });
         }

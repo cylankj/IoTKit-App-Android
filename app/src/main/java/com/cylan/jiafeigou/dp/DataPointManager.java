@@ -6,6 +6,7 @@ import android.util.Pair;
 
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.entity.jniCall.JFGDPMsgCount;
+import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.entity.jniCall.RobotoGetDataRsp;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.BuildConfig;
@@ -37,6 +38,7 @@ public class DataPointManager implements IParser, IDataPoint {
     private static final String TAG = "DataPointManager:";
 
     private static DataPointManager instance;
+    private HashMap<String, JFGDevice> jfgDeviceMap = new HashMap<>();
     private Map<Long, Long> querySeqMap = new HashMap<>();
     /**
      * String----->uuid+id
@@ -166,15 +168,15 @@ public class DataPointManager implements IParser, IDataPoint {
             if (isSetType) {
                 return putHashSetValue(uuid, baseValue);
             } else {
-                BaseValue o = bundleMap.get(uuid);
+                BaseValue o = bundleMap.get(uuid + baseValue.getId());
                 if (o != null) {
                     if (o.getVersion() < baseValue.getVersion()) {
                         //如果是
-                        bundleMap.remove(uuid);
+                        bundleMap.remove(uuid + baseValue.getId());
                         update = true;
                     }
                 }
-                bundleMap.put(uuid, baseValue);
+                bundleMap.put(uuid + baseValue.getId(), baseValue);
             }
         }
         return update;
@@ -263,6 +265,16 @@ public class DataPointManager implements IParser, IDataPoint {
 
 
     @Override
+    public void cacheDevice(String uuid, JFGDevice jfgDevice) {
+        jfgDeviceMap.put(uuid, jfgDevice);
+    }
+
+    @Override
+    public JFGDevice fetch(String uuid) {
+        return jfgDeviceMap.get(uuid);
+    }
+
+    @Override
     public boolean insert(String uuid, BaseValue baseValue) {
         return putValue(uuid, baseValue);
     }
@@ -341,6 +353,7 @@ public class DataPointManager implements IParser, IDataPoint {
     public BaseValue fetchLocal(String uuid, long id) {
         try {
             if (isSetType(id)) AppLogger.e("this id is ArrayType: " + id);
+            Log.d(TAG, "contains: " + bundleMap.get(uuid + id));
             return bundleMap.get(uuid + id);
         } catch (ClassCastException c) {
             AppLogger.e(String.format("id:%s %s", id, c.getLocalizedMessage()));

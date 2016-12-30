@@ -15,15 +15,14 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamWarnContract;
 import com.cylan.jiafeigou.n.mvp.impl.cam.CamAlarmPresenterImpl;
-import com.cylan.jiafeigou.n.mvp.model.BeanCamInfo;
 import com.cylan.jiafeigou.utils.ViewUtils;
-import com.cylan.jiafeigou.widget.dialog.BaseDialog;
 import com.cylan.jiafeigou.widget.dialog.DurationDialogFragment;
 
 import java.util.Locale;
@@ -55,8 +54,7 @@ public class AlarmSoundEffectFragment extends IBaseFragment<CamWarnContract.Pres
     LinearLayout lLayoutWarnRepeatMode;
     @BindView(R.id.rg_warn_effect)
     RadioGroup rgWarnEffect;
-    private BeanCamInfo info;
-    private DpMsgDefine.NotificationInfo notificationInfo;
+    private String uuid;
 
     public AlarmSoundEffectFragment() {
         // Required empty public constructor
@@ -79,7 +77,8 @@ public class AlarmSoundEffectFragment extends IBaseFragment<CamWarnContract.Pres
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        basePresenter = new CamAlarmPresenterImpl(this, getArguments().getParcelable(JConstant.KEY_DEVICE_ITEM_BUNDLE));
+        this.uuid = getArguments().getString(JConstant.KEY_DEVICE_ITEM_UUID);
+        basePresenter = new CamAlarmPresenterImpl(this, uuid);
     }
 
     @Override
@@ -96,23 +95,17 @@ public class AlarmSoundEffectFragment extends IBaseFragment<CamWarnContract.Pres
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         imgVTopBarCenter.setText(getString(R.string.SOUNDS));
         ViewUtils.setViewPaddingStatusBar(fLayoutTopBarContainer);
-        info = basePresenter.getBeanCamInfo();
-        notificationInfo = info.cameraAlarmNotification == null ?
-                new DpMsgDefine.NotificationInfo() : info.cameraAlarmNotification;
+        DpMsgDefine.NotificationInfo notificationInfo = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_504_CAMERA_ALARM_NOTIFICATION, null);
         int effect = notificationInfo.notification;
         final int count = rgWarnEffect.getChildCount();
         for (int i = 0; i < count; i++) {
             final int index = i;
             RadioButton box = (RadioButton) rgWarnEffect.getChildAt(i);
             box.setChecked(i == effect);
-            box.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    if (isChecked) {
-                        notificationInfo.notification = index;
-                        info.cameraAlarmNotification = notificationInfo;
-                        basePresenter.updateInfoReq(info.cameraAlarmNotification, DpMsgMap.ID_504_CAMERA_ALARM_NOTIFICATION);
-                    }
+            box.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
+                if (isChecked) {
+                    notificationInfo.notification = index;
+                    basePresenter.updateInfoReq(notificationInfo, DpMsgMap.ID_504_CAMERA_ALARM_NOTIFICATION);
                 }
             });
         }
@@ -124,7 +117,8 @@ public class AlarmSoundEffectFragment extends IBaseFragment<CamWarnContract.Pres
     public void onDetach() {
         super.onDetach();
         if (callBack != null) {
-            callBack.callBack(info.cameraAlarmNotification);
+            DpMsgDefine.NotificationInfo notificationInfo = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_504_CAMERA_ALARM_NOTIFICATION, null);
+            callBack.callBack(notificationInfo);
         }
     }
 
@@ -136,17 +130,14 @@ public class AlarmSoundEffectFragment extends IBaseFragment<CamWarnContract.Pres
                 break;
             case R.id.lLayout_warn_repeat_mode:
                 ViewUtils.deBounceClick(view);
+                DpMsgDefine.NotificationInfo notificationInfo = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_504_CAMERA_ALARM_NOTIFICATION, null);
                 DurationDialogFragment durationDialogFragment = DurationDialogFragment.newInstance(null);
-                durationDialogFragment.setValue(info.cameraAlarmNotification.duration);
-                durationDialogFragment.setAction(new BaseDialog.BaseDialogAction() {
-
-                    @Override
-                    public void onDialogAction(int id, Object value) {
-                        tvWarnRepeatMode.setText(String.format(Locale.getDefault(), "%ss", value));
-                        notificationInfo.duration = (int) value;
-                        info.cameraAlarmNotification = notificationInfo;
-                        basePresenter.updateInfoReq(info.cameraAlarmNotification, DpMsgMap.ID_504_CAMERA_ALARM_NOTIFICATION);
-                    }
+                durationDialogFragment.setValue(notificationInfo.duration);
+                durationDialogFragment.setAction((int id, Object value) -> {
+                    tvWarnRepeatMode.setText(String.format(Locale.getDefault(), "%ss", value));
+                    DpMsgDefine.NotificationInfo info = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_504_CAMERA_ALARM_NOTIFICATION, null);
+                    info.duration = (int) value;
+                    basePresenter.updateInfoReq(info, DpMsgMap.ID_504_CAMERA_ALARM_NOTIFICATION);
                 });
                 durationDialogFragment.show(getActivity().getSupportFragmentManager(), "durationDialogFragment");
                 break;

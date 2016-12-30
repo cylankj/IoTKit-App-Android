@@ -12,6 +12,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
@@ -45,6 +46,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 import static com.cylan.jiafeigou.misc.JConstant.KEY_DEVICE_ITEM_BUNDLE;
+import static com.cylan.jiafeigou.misc.JConstant.KEY_DEVICE_ITEM_UUID;
 import static com.cylan.jiafeigou.utils.ActivityUtils.loadFragment;
 
 public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettingContract.Presenter>
@@ -79,7 +81,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
     LinearLayout lLayoutSettingItemContainer;
     @BindView(R.id.sbtn_setting_110v)
     SettingItemView0 sbtnSetting110v;
-
+    private String uuid;
     private WeakReference<DeviceInfoDetailFragment> informationWeakReference;
     private WeakReference<SafeProtectionFragment> safeProtectionFragmentWeakReference;
     private WeakReference<VideoAutoRecordFragment> videoAutoRecordFragmentWeakReference;
@@ -97,8 +99,10 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
             finish();
             return;
         }
+        DeviceBean bean = bundle.getParcelable(JConstant.KEY_DEVICE_ITEM_BUNDLE);
         basePresenter = new CamSettingPresenterImpl(this,
-                (DeviceBean) bundle.getParcelable(JConstant.KEY_DEVICE_ITEM_BUNDLE));
+                bean);
+        this.uuid = bean.uuid;
         initTopBar();
         initStandbyBtn();
         init110VVoltageBtn();
@@ -138,74 +142,42 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
      * 待机模式按钮,关联到其他按钮
      */
     private void initStandbyBtn() {
-        switchBtn(lLayoutSettingItemContainer, !basePresenter.getCamInfoBean().cameraStandbyFlag);
+        boolean state = GlobalDataProxy.getInstance().getValue(this.uuid, DpMsgMap.ID_508_CAMERA_STANDBY_FLAG, false);
+        switchBtn(lLayoutSettingItemContainer, state);
         ((SwitchButton) svSettingDeviceStandbyMode.findViewById(R.id.btn_item_switch))
-                .setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                    @Override
-                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                        BeanCamInfo info = basePresenter.getCamInfoBean();
-                        info.cameraStandbyFlag = !info.cameraStandbyFlag;
-                        basePresenter.updateInfoReq(info.cameraStandbyFlag, DpMsgMap.ID_508_CAMERA_STANDBY_FLAG);
-                        AppLogger.i("save id:" + DpMsgMap.ID_508_CAMERA_STANDBY_FLAG);
-                        AppLogger.i("save value:" + info.cameraStandbyFlag);
-                        switchBtn(lLayoutSettingItemContainer, !isChecked);
-                    }
+                .setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
+                    basePresenter.updateInfoReq(isChecked, DpMsgMap.ID_508_CAMERA_STANDBY_FLAG);
+                    AppLogger.i("save id:" + DpMsgMap.ID_508_CAMERA_STANDBY_FLAG);
+                    AppLogger.i("save value:" + isChecked);
+                    switchBtn(lLayoutSettingItemContainer, !isChecked);
                 });
     }
 
     private void initMobileNetBtn() {
         ((SwitchButton) svSettingDeviceMobileNetwork.findViewById(R.id.btn_item_switch))
-                .setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                    @Override
-                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                        BeanCamInfo info = basePresenter.getCamInfoBean();
-                        info.deviceMobileNetPriority = isChecked;
-                        basePresenter.updateInfoReq(isChecked, DpMsgMap.ID_217_DEVICE_MOBILE_NET_PRIORITY);
-                        AppLogger.i("save id:" + DpMsgMap.ID_217_DEVICE_MOBILE_NET_PRIORITY);
-                        AppLogger.i("save value:" + info.deviceMobileNetPriority);
-                    }
+                .setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
+                    basePresenter.updateInfoReq(isChecked, DpMsgMap.ID_217_DEVICE_MOBILE_NET_PRIORITY);
                 });
     }
 
     private void init110VVoltageBtn() {
         ((SwitchButton) sbtnSetting110v.findViewById(R.id.btn_item_switch))
-                .setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                    @Override
-                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                        BeanCamInfo info = basePresenter.getCamInfoBean();
-                        info.deviceVoltage = isChecked;
-                        basePresenter.updateInfoReq(isChecked, DpMsgMap.ID_216_DEVICE_VOLTAGE);
-                        AppLogger.i("save id:" + DpMsgMap.ID_216_DEVICE_VOLTAGE);
-                        AppLogger.i("save value:" + info.deviceVoltage);
-                    }
+                .setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
+                    basePresenter.updateInfoReq(isChecked, DpMsgMap.ID_216_DEVICE_VOLTAGE);
                 });
     }
 
     private void initLedIndicatorBtn() {
         ((SwitchButton) svSettingDeviceIndicator.findViewById(R.id.btn_item_switch))
-                .setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                    @Override
-                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                        BeanCamInfo info = basePresenter.getCamInfoBean();
-                        info.ledIndicator = isChecked;
-                        basePresenter.updateInfoReq(isChecked, DpMsgMap.ID_209_LED_INDICATOR);
-                        AppLogger.i("save id:" + DpMsgMap.ID_209_LED_INDICATOR);
-                        AppLogger.i("save value:" + info.ledIndicator);
-                    }
+                .setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
+                    basePresenter.updateInfoReq(isChecked, DpMsgMap.ID_209_LED_INDICATOR);
                 });
     }
 
     private void initRotateBtn() {
         ((SwitchButton) svSettingDeviceRotate.findViewById(R.id.btn_item_switch))
-                .setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                    @Override
-                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                        BeanCamInfo info = basePresenter.getCamInfoBean();
-                        info.deviceCameraRotate = isChecked ? 1 : 0;
-                        basePresenter.updateInfoReq(info.deviceCameraRotate, DpMsgMap.ID_304_DEVICE_CAMERA_ROTATE);
-                        AppLogger.i("save id:" + DpMsgMap.ID_304_DEVICE_CAMERA_ROTATE);
-                        AppLogger.i("save value:" + info.deviceCameraRotate);
-                    }
+                .setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
+                    basePresenter.updateInfoReq(isChecked ? 1 : 0, DpMsgMap.ID_304_DEVICE_CAMERA_ROTATE);
                 });
     }
 
@@ -229,14 +201,11 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
             case R.id.sv_setting_device_detail: {
                 initInfoDetailFragment();
                 DeviceInfoDetailFragment fragment = informationWeakReference.get();
-                fragment.setCallBack(new IBaseFragment.CallBack() {
-                    @Override
-                    public void callBack(Object t) {
-                        onCamInfoRsp(basePresenter.getCamInfoBean());
-                    }
+                fragment.setCallBack((Object t) -> {
+                    onCamInfoRsp(null);
                 });
                 Bundle bundle = new Bundle();
-                bundle.putParcelable(KEY_DEVICE_ITEM_BUNDLE, basePresenter.getCamInfoBean());
+                bundle.putString(KEY_DEVICE_ITEM_UUID, uuid);
                 fragment.setArguments(bundle);
                 loadFragment(android.R.id.content, getSupportFragmentManager(), fragment);
             }
@@ -245,12 +214,9 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
                 Bundle bundle = new Bundle();
                 bundle.putString(BaseDialog.KEY_TITLE, getString(R.string.DELETE_CID));
                 SimpleDialogFragment simpleDialogFragment = SimpleDialogFragment.newInstance(bundle);
-                simpleDialogFragment.setAction(new BaseDialog.BaseDialogAction() {
-                    @Override
-                    public void onDialogAction(int id, Object value) {
-                        basePresenter.unbindDevice();
-                        LoadingDialog.showLoading(getSupportFragmentManager(), getString(R.string.DELETEING));
-                    }
+                simpleDialogFragment.setAction((int id, Object value) -> {
+                    basePresenter.unbindDevice();
+                    LoadingDialog.showLoading(getSupportFragmentManager(), getString(R.string.DELETEING));
                 });
                 simpleDialogFragment.show(getSupportFragmentManager(), "simpleDialogFragment");
             }
@@ -258,21 +224,18 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
             case R.id.sv_setting_device_auto_record: {
                 initVideoAutoRecordFragment();
                 Bundle bundle = new Bundle();
-                bundle.putParcelable(KEY_DEVICE_ITEM_BUNDLE, basePresenter.getCamInfoBean());
+                bundle.putString(KEY_DEVICE_ITEM_UUID, uuid);
                 VideoAutoRecordFragment fragment = videoAutoRecordFragmentWeakReference.get();
                 fragment.setArguments(bundle);
                 loadFragment(android.R.id.content, getSupportFragmentManager(), fragment);
-                fragment.setCallBack(new IBaseFragment.CallBack() {
-                    @Override
-                    public void callBack(Object t) {
-                        onCamInfoRsp(basePresenter.getCamInfoBean());//刷新
-                    }
+                fragment.setCallBack((Object t) -> {
+                    onCamInfoRsp(null);//刷新
                 });
             }
             break;
             case R.id.sv_setting_safe_protection: {
                 Bundle bundle = new Bundle();
-                bundle.putParcelable(KEY_DEVICE_ITEM_BUNDLE, basePresenter.getCamInfoBean());
+                bundle.putString(KEY_DEVICE_ITEM_BUNDLE, uuid);
                 initSafeProtectionFragment();
                 SafeProtectionFragment fragment = safeProtectionFragmentWeakReference.get();
                 fragment.setArguments(bundle);
@@ -280,7 +243,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
                 fragment.setCallBack(new IBaseFragment.CallBack() {
                     @Override
                     public void callBack(Object t) {
-                        onCamInfoRsp(basePresenter.getCamInfoBean());//刷新
+                        onCamInfoRsp(null);//刷新
                     }
                 });
             }
@@ -289,7 +252,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
                 if (PreferencesUtils.getBoolean(JConstant.KEY_DELAY_RECORD_GUIDE, true)) {
                     initUserGuideFragment();
                     Bundle bundle = new Bundle();
-                    bundle.putParcelable(JConstant.KEY_DEVICE_ITEM_BUNDLE, basePresenter.getCamInfoBean());
+                    bundle.putString(JConstant.KEY_DEVICE_ITEM_BUNDLE, uuid);
                     mGuideFragment.get().setArguments(bundle);
                     ActivityUtils.loadFragment(android.R.id.content, getSupportFragmentManager(), mGuideFragment.get());
                 } else {
@@ -303,10 +266,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
 
     private void initUserGuideFragment() {
         if (mGuideFragment == null || mGuideFragment.get() == null) {
-            BeanCamInfo camInfoBean = basePresenter.getCamInfoBean();
-            Bundle bundle = new Bundle();
-            bundle.putParcelable(JConstant.KEY_DEVICE_ITEM_BUNDLE, camInfoBean);
-            mGuideFragment = new WeakReference<>(DelayRecordGuideFragment.newInstance(bundle));
+            mGuideFragment = new WeakReference<>(DelayRecordGuideFragment.newInstance(null));
         }
     }
 

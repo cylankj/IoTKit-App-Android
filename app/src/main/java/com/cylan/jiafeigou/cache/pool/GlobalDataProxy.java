@@ -13,7 +13,6 @@ import com.cylan.jiafeigou.dp.IDataPoint;
 import com.cylan.jiafeigou.support.log.AppLogger;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 /**
  * Created by cylan-hunt on 16-12-26.
@@ -21,7 +20,6 @@ import java.util.HashMap;
 
 public class GlobalDataProxy implements IDataPool {
 
-    private HashMap<String, JFGDevice> jfgDeviceMap = new HashMap<>();
     private static GlobalDataProxy instance;
     private JFGAccount jfgAccount;
     private IDataPoint dataPointManager;
@@ -61,15 +59,15 @@ public class GlobalDataProxy implements IDataPool {
     }
 
     @Override
-    public void cacheDevice(JFGDevice jfgDevice) {
+    public void cacheDevice(String uuid, JFGDevice jfgDevice) {
         checkAccount();
-        jfgDeviceMap.put(jfgAccount.getAccount() + jfgDevice.uuid, jfgDevice);
+        dataPointManager.cacheDevice(jfgAccount.getAccount() + uuid, jfgDevice);
     }
 
     @Override
     public JFGDevice fetch(String uuid) {
         checkAccount();
-        return jfgDeviceMap.get(jfgAccount.getAccount() + uuid);
+        return dataPointManager.fetch(jfgAccount.getAccount() + uuid);
     }
 
     private void checkAccount() {
@@ -140,13 +138,13 @@ public class GlobalDataProxy implements IDataPool {
     }
 
     @SuppressWarnings("unchecked")
-    public <T> T getValue(String uuid, long id) {
+    public <T> T getValue(String uuid, long id, T defaultValue) {
         if (isSetType(id)) {
             throw new IllegalArgumentException(String.format("id:%s is an array type in the map", id));
         }
         try {
             BaseValue base = dataPointManager.fetchLocal(uuid, id);
-            return base == null || base.getValue() == null ? null : (T) base.getValue();
+            return base == null || base.getValue() == null ? defaultValue : (T) base.getValue();
         } catch (ClassCastException c) {
             return null;
         }

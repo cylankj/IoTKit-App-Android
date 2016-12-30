@@ -3,6 +3,7 @@ package com.cylan.jiafeigou.dp;
 import android.util.Pair;
 
 import com.cylan.entity.jniCall.JFGDPMsg;
+import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.ex.JfgException;
 
 import java.util.ArrayList;
@@ -12,14 +13,27 @@ import java.util.ArrayList;
  */
 
 public interface IDataPoint {
+    /**
+     * Map<account+uuid,JFGDevice>
+     *
+     * @param jfgDevice
+     */
+    void cacheDevice(String uuid, JFGDevice jfgDevice);
+
+    /**
+     * 内部转换 Map<account+uuid,JFGDevice>
+     *
+     * @param uuid
+     * @return
+     */
+    JFGDevice fetch(String uuid);
 
     boolean insert(String uuid, BaseValue baseValue);
 
     /**
-     *
      * @param uuid
      * @param baseValue
-     * @param sync 同步到服务器
+     * @param sync      同步到服务器
      * @return
      */
     boolean update(String uuid, BaseValue baseValue, boolean sync);

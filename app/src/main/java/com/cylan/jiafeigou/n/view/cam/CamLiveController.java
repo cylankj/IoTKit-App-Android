@@ -66,6 +66,7 @@ public class CamLiveController implements
     //播放控制层面.
     private CamLiveControlLayer camLiveControlLayer;
     private Context context;
+    private static final String TAG = "CamLiveController";
 
     public CamLiveController(Context context) {
         this.context = context;
@@ -136,8 +137,9 @@ public class CamLiveController implements
     public void setPortSafeSetter(ISafeStateSetter setter) {
         this.iSafeStateSetterPort = setter;
         iSafeStateSetterPort.setFlipListener(this);
-        Object safe = GlobalDataProxy.getInstance().getValue(presenterRef.get().getUuid(), DpMsgMap.ID_501_CAMERA_ALARM_FLAG);
-        iSafeStateSetterPort.setFlipped((safe != null && (boolean) safe));
+        boolean safe = GlobalDataProxy.getInstance().getValue(presenterRef.get().getUuid(), DpMsgMap.ID_501_CAMERA_ALARM_FLAG, false);
+        iSafeStateSetterPort.setFlipped(safe);
+        Log.d(TAG, "setFlip: " + safe);
     }
 
     /**
@@ -210,7 +212,7 @@ public class CamLiveController implements
             //安全防护
             setLandSafeSetter(camLiveControlLayer.getFlipLayout());
             iSafeStateSetterLand.setFlipListener(this);
-            boolean safe = GlobalDataProxy.getInstance().getValue(presenterRef.get().getUuid(), DpMsgMap.ID_501_CAMERA_ALARM_FLAG);
+            boolean safe = GlobalDataProxy.getInstance().getValue(presenterRef.get().getUuid(), DpMsgMap.ID_501_CAMERA_ALARM_FLAG, false);
             iSafeStateSetterLand.setFlipped(safe);
         }//显示或者隐藏
         if (liveTimeSetterLand != null) liveTimeSetterLand.setVisibility(land);

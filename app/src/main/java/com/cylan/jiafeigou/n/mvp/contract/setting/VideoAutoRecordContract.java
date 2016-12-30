@@ -15,8 +15,12 @@ public interface VideoAutoRecordContract {
     }
 
     interface Presenter extends BasePresenter {
-        void saveCamInfoBean(BeanCamInfo beanCamInfo, int id);
 
-        BeanCamInfo getBeanCamInfo();
+        /**
+         * @param value {@link com.cylan.jiafeigou.dp.BaseValue#setValue(Object)}  }
+         * @param id
+         */
+        void updateInfoReq(Object value, long id);
+
     }
 }

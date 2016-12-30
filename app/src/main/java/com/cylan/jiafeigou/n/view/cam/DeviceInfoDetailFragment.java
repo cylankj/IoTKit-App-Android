@@ -4,21 +4,21 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamInfoContract;
 import com.cylan.jiafeigou.n.mvp.impl.cam.DeviceInfoDetailPresenterImpl;
-import com.cylan.jiafeigou.n.mvp.model.BeanCamInfo;
 import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.dialog.EditFragmentDialog;
@@ -29,7 +29,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-import static com.cylan.jiafeigou.misc.JConstant.KEY_DEVICE_ITEM_BUNDLE;
+import static com.cylan.jiafeigou.misc.JConstant.KEY_DEVICE_ITEM_UUID;
 import static com.cylan.jiafeigou.widget.dialog.EditFragmentDialog.KEY_LEFT_CONTENT;
 import static com.cylan.jiafeigou.widget.dialog.EditFragmentDialog.KEY_RIGHT_CONTENT;
 import static com.cylan.jiafeigou.widget.dialog.EditFragmentDialog.KEY_TITLE;
@@ -71,7 +71,7 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
     TextView tvDeviceBatteryLevel;
     @BindView(R.id.tv_device_storage)
     TextView tvDeviceStorage;
-
+    private String uuid;
     private EditFragmentDialog editDialogFragment;
 
     public static DeviceInfoDetailFragment newInstance(Bundle bundle) {
@@ -83,8 +83,8 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        BeanCamInfo bean = getArguments().getParcelable(KEY_DEVICE_ITEM_BUNDLE);
-        basePresenter = new DeviceInfoDetailPresenterImpl(this, bean);
+        this.uuid = getArguments().getString(KEY_DEVICE_ITEM_UUID);
+        basePresenter = new DeviceInfoDetailPresenterImpl(this, uuid);
     }
 
     @Override
@@ -114,39 +114,35 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
     }
 
     private void updateDetails() {
-        BeanCamInfo p = basePresenter.getBeanCamInfo();
-        if (p != null) {
-            tvDeviceTimeZone.setText(p.deviceTimeZone != null
-                    && !TextUtils.isEmpty(p.deviceTimeZone.timezone)
-                    ? p.deviceTimeZone.timezone : "");
-            tvDeviceSdcardState.setText(getSdcardState(p.sdcardStorage));
-            tvDeviceAlias.setText(p.deviceBase.alias);
-            tvDeviceCid.setText(p.deviceBase.uuid);
-            tvDeviceMac.setText(p.mac);
-            tvDeviceBatteryLevel.setText(p.battery + "");
-            tvDeviceSoftVersion.setText(p.deviceVersion);
-            tvDeviceSystemVersion.setText(p.deviceSysVersion);
-            if (p.sdcardStorage == null || !p.sdcardStorage.hasSdcard) {
+        DpMsgDefine.MsgTimeZone zone = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_214_DEVICE_TIME_ZONE, null);
+        tvDeviceTimeZone.setText(zone != null && !TextUtils.isEmpty(zone.timezone) ? zone.timezone : "");
+        DpMsgDefine.SdStatus status = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_204_SDCARD_STORAGE, null);
+        tvDeviceSdcardState.setText(getSdcardState(status));
+        JFGDevice device = GlobalDataProxy.getInstance().fetch(uuid);
+        tvDeviceAlias.setText(device == null ? "" : TextUtils.isEmpty(device.alias) ? device.alias : device.uuid);
+        tvDeviceCid.setText(device != null && TextUtils.isEmpty(device.uuid) ? device.uuid : "");
+        String mac = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_202_MAC, "");
+        tvDeviceMac.setText(mac);
+        int battery = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_206_BATTERY, 0);
+        tvDeviceBatteryLevel.setText(battery + "");
+        String version = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_207_DEVICE_VERSION, "");
+        tvDeviceSoftVersion.setText(version);
+        String sVersion = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_208_DEVICE_SYS_VERSION, "");
+        tvDeviceSystemVersion.setText(sVersion);
+        if (status == null || !status.hasSdcard) {
+            tvDeviceStorage.setText(getString(R.string.SD_NO));
+        } else {
+            if (status.err != 0) {
+                //未初始化
                 tvDeviceStorage.setText(getString(R.string.SD_NO));
             } else {
-                if (p.sdcardStorage == null) {
-                    tvDeviceStorage.setText(getString(R.string.SD_NO));
-                    return;
-                }
-                if (p.sdcardStorage.err != 0) {
-                    //未初始化
-                    tvDeviceStorage.setText(getString(R.string.SD_NO));
-                } else {
-                    if (p.sdcardStorage.total != 0) {
-                        String content = new DecimalFormat("#0.00").format(((float) p.sdcardStorage.used / p.sdcardStorage.total));
-                        tvDeviceStorage.setText(
-                                String.format(getString(R.string.REMAIN_SPACE), content));
-                    }
+                if (status.total != 0) {
+                    String content = new DecimalFormat("#0.00").format(((float) status.used / status.total));
+                    tvDeviceStorage.setText(
+                            String.format(getString(R.string.REMAIN_SPACE), content));
                 }
             }
-
         }
-
     }
 
     private String getSdcardState(DpMsgDefine.SdStatus sdStatus) {
@@ -183,21 +179,17 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
      */
     private void toEditTimezone() {
         Bundle bundle = new Bundle();
-        bundle.putParcelable(JConstant.KEY_DEVICE_ITEM_BUNDLE, basePresenter.getBeanCamInfo());
+        bundle.putString(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
         DeviceTimeZoneFragment timeZoneFragment = DeviceTimeZoneFragment.newInstance(bundle);
-        timeZoneFragment.setCallBack(new CallBack() {
-            @Override
-            public void callBack(Object zone) {
-                if (!(zone instanceof DpMsgDefine.MsgTimeZone)) {
-                    return;
-                }
-                BeanCamInfo info = basePresenter.getBeanCamInfo();
-                info.deviceTimeZone = (DpMsgDefine.MsgTimeZone) zone;
-                //更新ui
-                updateDetails();
-                basePresenter.saveCamInfoBean(info, DpMsgMap.ID_214_DEVICE_TIME_ZONE);
-                Log.d("CYLAN_TAG", "timezone: " + info.deviceTimeZone);
+        timeZoneFragment.setCallBack((Object o) -> {
+            if (!(o instanceof DpMsgDefine.MsgTimeZone)) {
+                return;
             }
+            DpMsgDefine.MsgTimeZone zone = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_214_DEVICE_TIME_ZONE, null);
+            //更新ui
+            updateDetails();
+            basePresenter.updateInfoReq(zone, DpMsgMap.ID_214_DEVICE_TIME_ZONE);
+
         });
         ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(),
                 timeZoneFragment, android.R.id.content);
@@ -222,14 +214,7 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
             @Override
             public void onDialogAction(int id, String value) {
                 if (basePresenter != null) {
-                    BeanCamInfo info = basePresenter.getBeanCamInfo();
-                    if (!TextUtils.isEmpty(value)
-                            && !TextUtils.equals(info.deviceBase.alias, value)) {
-                        tvDeviceAlias.setText(value);
-                        info.deviceBase.alias = value;
-                        updateDetails();
-                        basePresenter.saveCamInfoBean(info, DpMsgMap.ID_2000003_BASE_ALIAS);
-                    }
+                    updateDetails();
                 }
             }
         });
