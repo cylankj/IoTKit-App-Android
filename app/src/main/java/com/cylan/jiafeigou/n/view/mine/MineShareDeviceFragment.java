@@ -20,6 +20,7 @@ import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineShareDeviceContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineShareDevicePresenterImp;
 import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
+import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
 import com.cylan.jiafeigou.n.view.adapter.MineShareDeviceAdapter;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ToastUtil;
@@ -56,6 +57,7 @@ public class MineShareDeviceFragment extends Fragment implements MineShareDevice
     private MineShareDeviceAdapter adapter;
     private DeviceBean whichClick;
     private int position;
+    private boolean dataHasChange;
 
     public static MineShareDeviceFragment newInstance() {
         return new MineShareDeviceFragment();
@@ -91,15 +93,6 @@ public class MineShareDeviceFragment extends Fragment implements MineShareDevice
     @Override
     public void onResume() {
         super.onResume();
-        if (mineDevicesShareManagerFragment != null){
-            mineDevicesShareManagerFragment.setOncancleChangeListener(
-                    new MineDevicesShareManagerFragment.OnUnShareChangeListener() {
-                        @Override
-                        public void unShareChange() {
-                            onStart();
-                        }
-                    });
-        }
     }
 
     private void initPresenter() {
@@ -179,6 +172,16 @@ public class MineShareDeviceFragment extends Fragment implements MineShareDevice
                 .add(android.R.id.content, shareToRelativeAndFriendFragment, "shareToRelativeAndFriendFragment")
                 .addToBackStack("mineShareDeviceFragment")
                 .commit();
+
+        shareToRelativeAndFriendFragment.setOnShareSucceedListener(new MineShareToFriendFragment.OnShareSucceedListener() {
+            @Override
+            public void shareSucceed(int num, ArrayList<RelAndFriendBean> list) {
+                if (num == 0)return;
+                adapter.getItem(position).hasShareCount += num;
+                adapter.notifyDataSetChanged();
+                presenter.shareSucceedAdd(list);
+            }
+        });
     }
 
     @Override
@@ -231,7 +234,16 @@ public class MineShareDeviceFragment extends Fragment implements MineShareDevice
                 .addToBackStack("mineShareDeviceFragment")
                 .commit();
 
-
+        mineDevicesShareManagerFragment.setOncancleChangeListener(
+                new MineDevicesShareManagerFragment.OnUnShareChangeListener() {
+                    @Override
+                    public void unShareChange(int num,ArrayList<String> arrayList) {
+                        if(num==0)return;
+                        adapter.getItem(position).hasShareCount -= num;
+                        adapter.notifyDataSetChanged();
+                        presenter.unShareSucceedDel(position,arrayList);
+                    }
+                });
     }
 
     @Override
@@ -257,6 +269,7 @@ public class MineShareDeviceFragment extends Fragment implements MineShareDevice
 
     @OnClick(R.id.iv_home_mine_sharedevices_back)
     public void onClick() {
+        presenter.clearData();
         getFragmentManager().popBackStack();
     }
 
@@ -266,6 +279,12 @@ public class MineShareDeviceFragment extends Fragment implements MineShareDevice
         if (presenter != null) {
             presenter.stop();
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        presenter.clearData();
     }
 
     @Override

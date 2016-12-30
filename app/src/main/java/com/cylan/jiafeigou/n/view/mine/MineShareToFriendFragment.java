@@ -55,10 +55,22 @@ public class MineShareToFriendFragment extends Fragment implements MineShareToFr
     private MineShareToFriendContract.Presenter presenter;
     private ShareToFriendsAdapter shareToFriendsAdapter;
     private int hasShareNum;
+    private int shareSucceedNum;
+    private ArrayList<RelAndFriendBean> shareSucceedFriend = new ArrayList<>();
 
     private ArrayList<RelAndFriendBean> isChooseToShareList = new ArrayList<>();
     private DeviceBean deviceinfo;
     private ArrayList<RelAndFriendBean> hasSharefriend;
+
+    private OnShareSucceedListener listener;
+
+    public interface OnShareSucceedListener{
+        void shareSucceed(int num,ArrayList<RelAndFriendBean> list);
+    }
+
+    public void setOnShareSucceedListener(OnShareSucceedListener listener){
+        this.listener = listener;
+    }
 
     public static MineShareToFriendFragment newInstance(Bundle bundle) {
         MineShareToFriendFragment fragment = new MineShareToFriendFragment();
@@ -115,6 +127,9 @@ public class MineShareToFriendFragment extends Fragment implements MineShareToFr
         switch (view.getId()) {
             case R.id.iv_mine_share_to_relative_friend_back:
                 getFragmentManager().popBackStack();
+                if (listener != null){
+                    listener.shareSucceed(shareSucceedNum,shareSucceedFriend);
+                }
                 break;
 
             case R.id.tv_mine_share_to_relative_friend_true:
@@ -147,6 +162,7 @@ public class MineShareToFriendFragment extends Fragment implements MineShareToFr
             tvMineShareToRelativeFriendTrue.setText(getString(R.string.OK) + "（0/5）");
             tvMineShareToRelativeFriendTrue.setTextColor(Color.parseColor("#d8d8d8"));
         } else if (isChange) {
+            tvMineShareToRelativeFriendTrue.setClickable(true);
             tvMineShareToRelativeFriendTrue.setTextColor(Color.WHITE);
             tvMineShareToRelativeFriendTrue.setText(getString(R.string.OK) + "（" + number + "/5）");
         } else {
@@ -206,6 +222,8 @@ public class MineShareToFriendFragment extends Fragment implements MineShareToFr
             for (RxEvent.ShareDeviceCallBack callBack : callbackList) {
                 if (friendBean.account.equals(callBack.account) && callBack.requestId == 0) {
                     iterators.remove();
+                    shareSucceedNum ++;
+                    shareSucceedFriend.add(friendBean);
                 }
             }
         }
@@ -275,6 +293,10 @@ public class MineShareToFriendFragment extends Fragment implements MineShareToFr
         super.onStop();
         if (presenter != null) {
             presenter.stop();
+        }
+
+        if (listener != null){
+            listener.shareSucceed(shareSucceedNum,shareSucceedFriend);
         }
     }
 }

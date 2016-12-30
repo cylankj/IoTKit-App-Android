@@ -115,6 +115,7 @@ public class MineFriendsListShareDevicesFragment extends Fragment implements Min
                 getFragmentManager().popBackStack();
                 break;
             case R.id.iv_mine_friends_share_devices_ok:
+                if (chooseList.size() == 0)return;
                 presenter.sendShareToReq(chooseList, shareDeviceBean);
                 break;
         }
@@ -236,19 +237,13 @@ public class MineFriendsListShareDevicesFragment extends Fragment implements Min
      */
     @Override
     public void showSendReqFinishReuslt(ArrayList<RxEvent.ShareDeviceCallBack> callBacks) {
-//        for (int i =callBacks.size()-1; i >= 0 ; i--) {
-//            if (callBacks.get(i).requestId == JError.ErrorOK
-//                    || callBacks.get(i).requestId == JError.ErrorShareAlready
-//                    || callBacks.get(i).requestId == JError.ErrorShareExceedsLimit) {
-//                callBacks.remove(callBacks.get(i));
-//            }
-//        }
+
         int totalFriend = chooseList.size();
         Iterator iterators = chooseList.iterator();
         while(iterators.hasNext()){
-            RelAndFriendBean friendBean = (RelAndFriendBean) iterators.next();
+            DeviceBean friendBean = (DeviceBean) iterators.next();
             for (RxEvent.ShareDeviceCallBack callBack : callBacks) {
-                if (friendBean.account.equals(callBack.account) && callBack.requestId == 0) {
+                if (friendBean.uuid.equals(callBack.cid) && callBack.requestId == 0) {
                     iterators.remove();
                 }
             }
