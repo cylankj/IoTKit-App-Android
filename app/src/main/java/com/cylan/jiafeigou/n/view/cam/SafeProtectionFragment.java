@@ -143,7 +143,7 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
         //移动侦测
         swMotionDetection.setSwitchButtonState(flag);
         //提示音
-        DpMsgDefine.NotificationInfo notificationInfo = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_502_CAMERA_ALARM_INFO, null);
+        DpMsgDefine.NotificationInfo notificationInfo = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_504_CAMERA_ALARM_NOTIFICATION, null);
         if (notificationInfo != null) {
             tvProtectionNotification.setText(getString(notificationInfo.notification == 0
                     ? R.string.MUTE : (notificationInfo.notification == 1

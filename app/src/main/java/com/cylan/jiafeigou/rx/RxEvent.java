@@ -443,7 +443,7 @@ public class RxEvent {
     public static final class DataPoolUpdate {
         public String uuid;
         public int id;
-//        public BaseValue value;
+        public BaseValue value;
     }
 
     /**

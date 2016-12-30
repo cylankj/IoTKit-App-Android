@@ -111,7 +111,7 @@ public interface CamLiveContract {
          */
         void stopPlayVideo(int type);
 
-        BeanCamInfo getCamInfo();
+//        BeanCamInfo getCamInfo();
 
         String getUuid();
 

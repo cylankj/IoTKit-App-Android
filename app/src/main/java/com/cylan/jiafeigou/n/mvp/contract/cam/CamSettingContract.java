@@ -2,9 +2,9 @@ package com.cylan.jiafeigou.n.mvp.contract.cam;
 
 import android.content.Context;
 
+import com.cylan.jiafeigou.dp.BaseValue;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
-import com.cylan.jiafeigou.n.mvp.model.BeanCamInfo;
 
 /**
  * Created by cylan-hunt on 16-6-29.
@@ -14,7 +14,13 @@ public interface CamSettingContract {
 
     interface View extends BaseView<Presenter> {
 
-        void onCamInfoRsp(BeanCamInfo timeSet);
+        /**
+         * 设备属性更新了
+         *
+         * @param id
+         * @param value
+         */
+        void onInfoUpdate(int id, BaseValue value);
 
         void isSharedDevice();
 

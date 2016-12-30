@@ -10,6 +10,7 @@ import android.view.View;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
+import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
@@ -32,6 +33,8 @@ import com.cylan.jiafeigou.widget.wheel.ex.SuperWheelExt;
 import com.cylan.utils.NetUtils;
 
 import java.lang.ref.WeakReference;
+
+import javax.microedition.khronos.opengles.GL;
 
 import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_IDLE;
 import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_PLAYING;
@@ -275,7 +278,9 @@ public class CamLiveController implements
                 AppLogger.i("没有历史视频数据,或者没准备好");
                 return;
             }
-            boolean deviceState = JFGRules.isDeviceOnline(presenterRef.get().getCamInfo().net);
+            DpMsgDefine.MsgNet net = GlobalDataProxy.getInstance().getValue(presenterRef.get().getUuid(),
+                    DpMsgMap.ID_201_NET, null);
+            boolean deviceState = JFGRules.isDeviceOnline(net);
             //播放状态
             int playState = presenterRef.get().getPlayState();
             int orientation = context.getResources().getConfiguration().orientation;
@@ -431,13 +436,16 @@ public class CamLiveController implements
             AppLogger.d("no net work");
             return;
         }
-        BeanCamInfo info = presenterRef.get().getCamInfo();
-        if (info != null && info.net != null &&
-                info.net.net == 0) {
+        DpMsgDefine.MsgNet net = GlobalDataProxy.getInstance().getValue(presenterRef.get().getUuid(),
+                DpMsgMap.ID_201_NET, null);
+        if (net != null &&
+                net.net == 0) {
             AppLogger.d("device is offline");
             return;
         }
-        if (info != null && info.sdcardStorage != null && !info.sdcardStorage.hasSdcard) {
+        DpMsgDefine.SdStatus status = GlobalDataProxy.getInstance().getValue(presenterRef.get().getUuid(),
+                DpMsgMap.ID_204_SDCARD_STORAGE, null);
+        if (status != null && !status.hasSdcard) {
             //没有sd卡
             ToastUtil.showToast(context.getString(R.string.Tap1_Camera_NoSDCardTips));
             AppLogger.d("no sdcard");
