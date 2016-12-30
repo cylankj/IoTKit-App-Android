@@ -113,7 +113,7 @@ public class SubmitBindingInfoContractImpl extends
      * @return
      */
     private Subscription monitorBulkDeviceList() {
-        return RxBus.getUiInstance().toObservableSticky(RxUiEvent.BulkDeviceListRsp.class)
+        return RxBus.getCacheInstance().toObservableSticky(RxUiEvent.BulkDeviceListRsp.class)
                 .filter(new Func1<RxUiEvent.BulkDeviceListRsp, Boolean>() {
                     @Override
                     public Boolean call(RxUiEvent.BulkDeviceListRsp deviceList) {
@@ -153,7 +153,7 @@ public class SubmitBindingInfoContractImpl extends
      * @return
      */
     private Subscription bindTimeoutSub() {
-        return RxBus.getUiInstance().toObservable(RxUiEvent.SingleDevice.class)
+        return RxBus.getCacheInstance().toObservable(RxUiEvent.SingleDevice.class)
                 .filter(new Func1<RxUiEvent.SingleDevice, Boolean>() {
                     @Override
                     public Boolean call(RxUiEvent.SingleDevice singleDevice) {

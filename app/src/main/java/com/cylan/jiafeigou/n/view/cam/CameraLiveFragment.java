@@ -148,12 +148,12 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
         ViewUtils.updateViewHeight(fLayoutCamLiveView, 0.75f);
         initBottomBtn(false);
         camLiveController = new CamLiveController(getContext());
+        camLiveController.setPresenterRef(basePresenter);
         camLiveController.setLiveAction((ILiveControl) vs_control.inflate());
         camLiveController.setCamLiveControlLayer(swCamLiveControlLayer);
         camLiveController.setScreenZoomer(imgVCamZoomToFullScreen);
         camLiveController.setPortSafeSetter(portFlipLayout);
         camLiveController.setPortLiveTimeSetter(liveTimeLayout);
-        camLiveController.setPresenterRef(basePresenter);
         camLiveController.setActivity(getActivity());
         liveListener = camLiveController.getLiveStateListener();
     }
@@ -290,7 +290,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
                         ViewGroup.LayoutParams.WRAP_CONTENT,
                         Gravity.END);
                 textView.setGravity(Gravity.CENTER);
-                lp.setMargins(10, 10, 10, 10);
+                lp.setMargins(10, 60, 10, 10);
                 lp.setMarginEnd(10);
                 fLayoutLiveViewContainer.addView(textView, lp);
                 tvFlowRef = new WeakReference<>(textView);

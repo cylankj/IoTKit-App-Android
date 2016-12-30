@@ -11,12 +11,14 @@ import android.text.TextUtils;
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineInfoContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
+import com.cylan.jiafeigou.rx.RxUiEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 
 import java.io.File;
@@ -56,13 +58,16 @@ public class MineInfoPresenterImpl extends AbstractPresenter<MineInfoContract.Vi
                 .subscribe(new Action1<Object>() {
                     @Override
                     public void call(Object o) {
+                        GlobalDataProxy.getInstance().setJfgAccount(null);
+                        GlobalDataProxy.getInstance().setOnline(false);
+                        RxBus.getCacheInstance().removeStickyEvent(RxUiEvent.BulkDeviceListRsp.class);
                         JfgCmdInsurance.getCmd().logout();
                     }
                 }, new Action1<Throwable>() {
-    @Override
+                    @Override
                     public void call(Throwable throwable) {
-                        AppLogger.e("logOut"+throwable.getLocalizedMessage());
-                        }
+                        AppLogger.e("logOut" + throwable.getLocalizedMessage());
+                    }
                 });
     }
 
@@ -180,6 +185,7 @@ public class MineInfoPresenterImpl extends AbstractPresenter<MineInfoContract.Vi
 
     @Override
     public void start() {
+        super.start();
         if (compositeSubscription != null && !compositeSubscription.isUnsubscribed()) {
             compositeSubscription.unsubscribe();
         } else {
@@ -201,6 +207,7 @@ public class MineInfoPresenterImpl extends AbstractPresenter<MineInfoContract.Vi
 
     @Override
     public void stop() {
+        super.stop();
         if (compositeSubscription != null && !compositeSubscription.isUnsubscribed()) {
             compositeSubscription.unsubscribe();
         }

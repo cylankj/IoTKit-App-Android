@@ -49,6 +49,7 @@ public class GlobalDataProxy implements IDataPool {
 
     public void setJfgAccount(JFGAccount jfgAccount) {
         this.jfgAccount = jfgAccount;
+        AppLogger.i("setJfgAccount:" + (jfgAccount == null));
     }
 
     public JFGAccount getJfgAccount() {

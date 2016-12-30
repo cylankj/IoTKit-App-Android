@@ -132,7 +132,7 @@ public class RxHelper {
     }
 
     public static Observable<BeanCamInfo> filter(final BeanCamInfo beanCamInfo) {
-        return RxBus.getUiInstance().toObservableSticky(RxUiEvent.BulkDeviceListRsp.class)
+        return RxBus.getCacheInstance().toObservableSticky(RxUiEvent.BulkDeviceListRsp.class)
                 .subscribeOn(Schedulers.computation())
                 .filter((RxUiEvent.BulkDeviceListRsp list) ->
                         (list != null

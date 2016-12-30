@@ -49,6 +49,7 @@ public class RxBus implements IEventBus {
      *
      * @return
      */
+    @Deprecated
     public static RxBus getUiInstance() {
         if (mUiInstance == null) {
             synchronized (RxBus.class) {

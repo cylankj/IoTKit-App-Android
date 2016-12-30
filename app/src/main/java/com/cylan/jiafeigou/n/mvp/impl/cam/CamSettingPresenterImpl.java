@@ -120,7 +120,7 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
 
     private Subscription fetchCamInfo() {
         //查询设备列表
-        return RxBus.getUiInstance().toObservableSticky(RxUiEvent.BulkDeviceListRsp.class)
+        return RxBus.getCacheInstance().toObservableSticky(RxUiEvent.BulkDeviceListRsp.class)
                 .subscribeOn(Schedulers.computation())
                 .filter(new Func1<RxUiEvent.BulkDeviceListRsp, Boolean>() {
                     @Override

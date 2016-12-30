@@ -87,7 +87,7 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
      * @return
      */
     private Subscription singleDeviceSub() {
-        return RxBus.getUiInstance().toObservable(RxUiEvent.SingleDevice.class)
+        return RxBus.getCacheInstance().toObservable(RxUiEvent.SingleDevice.class)
                 .throttleFirst(500, TimeUnit.MILLISECONDS)
                 .filter(new Func1<RxUiEvent.SingleDevice, Boolean>() {
                     @Override
@@ -187,7 +187,7 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
      * @return
      */
     private Subscription subDeviceList() {
-        return RxBus.getUiInstance().toObservableSticky(RxUiEvent.BulkDeviceListRsp.class)
+        return RxBus.getCacheInstance().toObservableSticky(RxUiEvent.BulkDeviceListRsp.class)
                 .subscribeOn(Schedulers.io())
                 .filter((RxUiEvent.BulkDeviceListRsp list) -> (getView() != null && list.allDevices != null))
                 .flatMap(new Func1<RxUiEvent.BulkDeviceListRsp, Observable<List<DeviceBean>>>() {

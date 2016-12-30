@@ -12,6 +12,8 @@ import com.cylan.entity.jniCall.JFGMsgVideoRtcp;
 import com.cylan.entity.jniCall.JFGVideo;
 import com.cylan.ex.JfgException;
 import com.cylan.jfgapp.jni.JfgAppCmd;
+import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
+import com.cylan.jiafeigou.dp.BaseValue;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.misc.Converter;
 import com.cylan.jiafeigou.misc.HistoryDateFlatten;
@@ -293,7 +295,7 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
 
     public Subscription fetchCamInfo() {
         //查询设备列表
-        return RxBus.getUiInstance().toObservableSticky(RxUiEvent.BulkDeviceListRsp.class)
+        return RxBus.getCacheInstance().toObservableSticky(RxUiEvent.BulkDeviceListRsp.class)
                 .subscribeOn(Schedulers.computation())
                 .filter((RxUiEvent.BulkDeviceListRsp list) ->
                         (getView() != null
@@ -350,6 +352,11 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
         if (this.beanCamInfo == null)
             this.beanCamInfo = Converter.convert(this.bean);
         return beanCamInfo;
+    }
+
+    @Override
+    public String getUuid() {
+        return bean.uuid;
     }
 
     @Override
@@ -419,6 +426,21 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
     public boolean needShowHistoryWheelView() {
         return beanCamInfo != null && JFGRules.isDeviceOnline(beanCamInfo.net)
                 && NetUtils.getJfgNetType(getView().getContext()) != 0;
+    }
+
+    @Override
+    public void updateInfoReq(Object value, long id) {
+        Observable.just(value)
+                .subscribeOn(Schedulers.io())
+                .subscribe((Object o) -> {
+                    BaseValue baseValue = new BaseValue();
+                    baseValue.setId(id);
+                    baseValue.setVersion(System.currentTimeMillis());
+                    baseValue.setValue(o);
+                    GlobalDataProxy.getInstance().update(bean.uuid, baseValue, true);
+                }, (Throwable throwable) -> {
+                    AppLogger.e(throwable.getLocalizedMessage());
+                });
     }
 
     @Override

@@ -37,7 +37,6 @@ import java.util.Map;
 import rx.Observable;
 import rx.Subscription;
 import rx.functions.Func1;
-import rx.functions.Func2;
 import rx.schedulers.Schedulers;
 
 import static com.cylan.jiafeigou.dp.DpMsgMap.ID_2_CLASS_MAP;
@@ -172,7 +171,7 @@ public class DpAssembler implements IParser {
                 .map((RxUiEvent.BulkDeviceListReq queryBulkDevice) -> {
                     RxUiEvent.BulkDeviceListRsp cacheList = new RxUiEvent.BulkDeviceListRsp();
                     cacheList.allDevices = flatMsg.getAllDevices(JCache.getAccountCache().getAccount());
-                    RxBus.getUiInstance().postSticky(cacheList);
+                    RxBus.getCacheInstance().postSticky(cacheList);
                     AppLogger.i("BulkDeviceListRsp: " + (cacheList.allDevices != null ? cacheList.allDevices.size() : 0));
                     return null;
                 }).subscribe();
@@ -194,7 +193,6 @@ public class DpAssembler implements IParser {
                             flatMsg.rm(JCache.getAccountCache().getAccount(), uuid);
                             AppLogger.i("delete device: " + uuid);
                             RxBus.getCacheInstance().removeStickyEvent(RxUiEvent.BulkDeviceListRsp.class);
-                            RxBus.getUiInstance().removeStickyEvent(RxUiEvent.BulkDeviceListRsp.class);
                             //触发更新数据
                             RxBus.getCacheInstance().post(new RxUiEvent.BulkDeviceListReq());
                         }
@@ -250,36 +248,30 @@ public class DpAssembler implements IParser {
      */
     private Subscription deviceListSub() {
         return Observable.zip(monitorJFGAccount(), monitorDeviceRawList(),
-                new Func2<JFGAccount, RxEvent.DeviceRawList, List<JFGDevice>>() {
-                    @Override
-                    public List<JFGDevice> call(JFGAccount account, RxEvent.DeviceRawList deviceRawList) {
-                        AppLogger.i(TAG + " yes jfgAccount is ready and deviceList is ready too");
-                        return Arrays.asList(deviceRawList.devices);
-                    }
+                (JFGAccount account, RxEvent.DeviceRawList deviceRawList) -> {
+                    AppLogger.i(TAG + " yes jfgAccount is ready and deviceList is ready too");
+                    return Arrays.asList(deviceRawList.devices);
                 })
                 .subscribeOn(Schedulers.newThread())
-                .map(new Func1<List<JFGDevice>, Object>() {
-                    @Override
-                    public Object call(List<JFGDevice> list) {
-                        HashMap<String, Long> map = new HashMap<>();
-                        for (int i = 0; i < list.size(); i++) {
-                            GlobalDataProxy.getInstance().cacheDevice(list.get(i));
-                            getUnreadMsg(list.get(i));
-                            assembleBase(list.get(i));
-                            final int pid = list.get(i).pid;
-                            BaseParam baseParam = merger(pid);
-                            long seq = 0;
-                            try {
-                                seq = JfgCmdInsurance.getCmd().robotGetData(list.get(i).uuid, baseParam.queryParameters(null), 1, false, 0);
-                            } catch (JfgException e) {
-                                e.printStackTrace();
-                            }
-                            map.put(list.get(i).uuid, seq);
-                            AppLogger.i(TAG + " req: " + list.get(i).uuid);
+                .map((List<JFGDevice> list) -> {
+                    HashMap<String, Long> map = new HashMap<>();
+                    for (int i = 0; i < list.size(); i++) {
+                        GlobalDataProxy.getInstance().cacheDevice(list.get(i));
+                        getUnreadMsg(list.get(i));
+                        assembleBase(list.get(i));
+                        final int pid = list.get(i).pid;
+                        BaseParam baseParam = merger(pid);
+                        long seq = 0;
+                        try {
+                            seq = JfgCmdInsurance.getCmd().robotGetData(list.get(i).uuid, baseParam.queryParameters(null), 1, false, 0);
+                        } catch (JfgException e) {
+                            e.printStackTrace();
                         }
-                        seqMap.put("deviceListSub", map);
-                        return null;
+                        map.put(list.get(i).uuid, seq);
+                        AppLogger.i(TAG + " req: " + list.get(i).uuid);
                     }
+                    seqMap.put("deviceListSub", map);
+                    return null;
                 })
                 .retry(new RxHelper.RxException<>(TAG + " deviceListSub"))
                 .subscribe();

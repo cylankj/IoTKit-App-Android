@@ -437,6 +437,9 @@ public class RxEvent {
         public ArrayList<JFGDPMsg> dataList;
     }
 
+    /**
+     * {@link DataPointManager}消息池,消息已经变化.
+     */
     public static final class DataPoolUpdate {
         public String uuid;
         public int id;

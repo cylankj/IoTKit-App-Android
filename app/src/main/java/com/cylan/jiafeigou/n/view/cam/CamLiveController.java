@@ -9,13 +9,15 @@ import android.util.Log;
 import android.view.View;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
+import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.listener.ILiveStateListener;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamLiveContract;
 import com.cylan.jiafeigou.n.mvp.model.BeanCamInfo;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.utils.Test;
+import com.cylan.jiafeigou.utils.AnimatorUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
@@ -134,6 +136,8 @@ public class CamLiveController implements
     public void setPortSafeSetter(ISafeStateSetter setter) {
         this.iSafeStateSetterPort = setter;
         iSafeStateSetterPort.setFlipListener(this);
+        Object safe = GlobalDataProxy.getInstance().getValue(presenterRef.get().getUuid(), DpMsgMap.ID_501_CAMERA_ALARM_FLAG);
+        iSafeStateSetterPort.setFlipped((safe != null && (boolean) safe));
     }
 
     /**
@@ -204,8 +208,10 @@ public class CamLiveController implements
         }
         if (land && iSafeStateSetterLand == null) {
             //安全防护
-            iSafeStateSetterLand = camLiveControlLayer.getFlipLayout();
+            setLandSafeSetter(camLiveControlLayer.getFlipLayout());
             iSafeStateSetterLand.setFlipListener(this);
+            boolean safe = GlobalDataProxy.getInstance().getValue(presenterRef.get().getUuid(), DpMsgMap.ID_501_CAMERA_ALARM_FLAG);
+            iSafeStateSetterLand.setFlipped(safe);
         }//显示或者隐藏
         if (liveTimeSetterLand != null) liveTimeSetterLand.setVisibility(land);
         if (iSafeStateSetterLand != null) iSafeStateSetterLand.setVisibility(land);
@@ -241,16 +247,15 @@ public class CamLiveController implements
             if (land) {//横屏不显示?
 //                state = STATE_IDLE;
                 //上下滑动,进场动画.
-                Test.getInstance().autoHide(camLiveControlLayer.getLiveLandBottomBar(), false, 3000);
-                Test.getInstance().autoHide(camLiveControlLayer.getfLayoutCamLiveLandTopBar(), true, 3000);
+                AnimatorUtils.slideAuto(camLiveControlLayer.getLiveLandBottomBar(), false);
+                AnimatorUtils.slideAuto(camLiveControlLayer.getfLayoutCamLiveLandTopBar(), true);
                 setLoadingState(STATE_IDLE, null);
             } else {
                 //某些限制条件,不需要显示
                 if (presenterRef.get().needShowHistoryWheelView()) {
-                    if (!camLiveControlLayer.isShown())
-                        camLiveControlLayer.setVisibility(View.VISIBLE);
-                    show = iLiveActionViewRef.get() instanceof View && ((View) iLiveActionViewRef.get()).isShown();
-                    camLiveControlLayer.getLiveLandBottomBar().setVisibility(!show ? View.VISIBLE : View.INVISIBLE);
+                    camLiveControlLayer.setVisibility(camLiveControlLayer.isShown() ? View.VISIBLE : View.INVISIBLE);
+//                    show = iLiveActionViewRef.get() instanceof View && ((View) iLiveActionViewRef.get()).isShown();
+//                    camLiveControlLayer.getLiveLandBottomBar().setVisibility(!show ? View.VISIBLE : View.INVISIBLE);
                 }
                 setLoadingState(iLiveActionViewRef.get().getState(), null);
             }
@@ -438,6 +443,7 @@ public class CamLiveController implements
         }
         if (iDataProvider == null || iDataProvider.getDataCount() == 0) {
             AppLogger.d("history data is not prepared");
+            ToastUtil.showToast("没有历史视频...自己加的,,,别点了");
             return;
         }
 
@@ -464,7 +470,9 @@ public class CamLiveController implements
     @Override
     public void onClick(FlipImageView view) {
         boolean land = view.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
-        AppLogger.i("land: " + land + "" + (view == null));
+        AppLogger.i("land: " + land + " " + (!view.isFlipped()));
+        if (presenterRef != null && presenterRef.get() != null)
+            presenterRef.get().updateInfoReq(!view.isFlipped(), DpMsgMap.ID_501_CAMERA_ALARM_FLAG);
     }
 
     @Override
