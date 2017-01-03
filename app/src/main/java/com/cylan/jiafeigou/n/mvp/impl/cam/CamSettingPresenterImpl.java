@@ -13,7 +13,6 @@ import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamSettingContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
-import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.rx.RxHelper;
@@ -24,7 +23,6 @@ import java.util.Locale;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 /**
@@ -52,16 +50,22 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
         this.uuid = uuid;
     }
 
-    private void fillData(DeviceBean bean) {
-        this.uuid = bean.uuid;
-    }
-
     @Override
     protected Subscription[] register() {
         return new Subscription[]{
                 robotDataSync(),
                 unbindDevSub()
         };
+    }
+
+    @Override
+    public void start() {
+        super.start();
+        getView().onInfoUpdate(GlobalDataProxy.getInstance().fetchLocal(uuid, DpMsgMap.ID_201_NET));
+        getView().onInfoUpdate(GlobalDataProxy.getInstance().fetchLocal(uuid, DpMsgMap.ID_217_DEVICE_MOBILE_NET_PRIORITY));
+        getView().onInfoUpdate(GlobalDataProxy.getInstance().fetchLocal(uuid, DpMsgMap.ID_209_LED_INDICATOR));
+        getView().onInfoUpdate(GlobalDataProxy.getInstance().fetchLocal(uuid, DpMsgMap.ID_304_DEVICE_CAMERA_ROTATE));
+        getView().onInfoUpdate(GlobalDataProxy.getInstance().fetchLocal(uuid, DpMsgMap.ID_508_CAMERA_STANDBY_FLAG));
     }
 
     /**
@@ -72,23 +76,17 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
     private Subscription unbindDevSub() {
         return RxBus.getCacheInstance().toObservableSticky(RxEvent.UnBindDeviceEvent.class)
                 .subscribeOn(Schedulers.newThread())
-                .filter(new Func1<RxEvent.UnBindDeviceEvent, Boolean>() {
-                    @Override
-                    public Boolean call(RxEvent.UnBindDeviceEvent unBindDeviceEvent) {
-                        return getView() != null;
-                    }
+                .filter((RxEvent.UnBindDeviceEvent unBindDeviceEvent) -> {
+                    return getView() != null;
                 })
                 .observeOn(AndroidSchedulers.mainThread())
-                .map(new Func1<RxEvent.UnBindDeviceEvent, Object>() {
-                    @Override
-                    public Object call(RxEvent.UnBindDeviceEvent unBindDeviceEvent) {
-                        getView().unbindDeviceRsp(unBindDeviceEvent.jfgResult.code);
-                        if (unBindDeviceEvent.jfgResult.code == 0) {
-                            //清理这个订阅
-                            RxBus.getCacheInstance().removeStickyEvent(RxEvent.UnBindDeviceEvent.class);
-                        }
-                        return null;
+                .map((RxEvent.UnBindDeviceEvent unBindDeviceEvent) -> {
+                    getView().unbindDeviceRsp(unBindDeviceEvent.jfgResult.code);
+                    if (unBindDeviceEvent.jfgResult.code == 0) {
+                        //清理这个订阅
+                        RxBus.getCacheInstance().removeStickyEvent(RxEvent.UnBindDeviceEvent.class);
                     }
+                    return null;
                 })
                 .retry(new RxHelper.RxException<>("unbindDevSub"))
                 .subscribe();
@@ -106,7 +104,7 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
                 ))
                 .observeOn(AndroidSchedulers.mainThread())
                 .map((RxEvent.DataPoolUpdate update) -> {
-                    getView().onInfoUpdate(update.id, update.value);
+                    getView().onInfoUpdate(update.value);
                     return null;
                 })
                 .retry(new RxHelper.RxException<>("robotDataSync"))

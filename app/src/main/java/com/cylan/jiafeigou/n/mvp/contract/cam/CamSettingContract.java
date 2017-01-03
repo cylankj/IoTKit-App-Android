@@ -17,10 +17,9 @@ public interface CamSettingContract {
         /**
          * 设备属性更新了
          *
-         * @param id
          * @param value
          */
-        void onInfoUpdate(int id, BaseValue value);
+        void onInfoUpdate(BaseValue value);
 
         void isSharedDevice();
 

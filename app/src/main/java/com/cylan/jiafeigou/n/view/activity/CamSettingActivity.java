@@ -211,8 +211,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
                 initInfoDetailFragment();
                 DeviceInfoDetailFragment fragment = informationWeakReference.get();
                 fragment.setCallBack((Object t) -> {
-//                    onCamInfoUpdate(null);
-                    AppLogger.e("修改了");
+                    onInfoUpdate(null);
                 });
                 Bundle bundle = new Bundle();
                 bundle.putString(KEY_DEVICE_ITEM_UUID, uuid);
@@ -239,22 +238,19 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
                 fragment.setArguments(bundle);
                 loadFragment(android.R.id.content, getSupportFragmentManager(), fragment);
                 fragment.setCallBack((Object t) -> {
-//                    onCamInfoUpdate(null);//刷新
-                    AppLogger.e("修改了");
+                    onInfoUpdate(null);
                 });
             }
             break;
             case R.id.sv_setting_safe_protection: {
                 Bundle bundle = new Bundle();
-                bundle.putString(KEY_DEVICE_ITEM_BUNDLE, uuid);
+                bundle.putString(KEY_DEVICE_ITEM_UUID, uuid);
                 initSafeProtectionFragment();
                 SafeProtectionFragment fragment = safeProtectionFragmentWeakReference.get();
                 fragment.setArguments(bundle);
                 loadFragment(android.R.id.content, getSupportFragmentManager(), safeProtectionFragmentWeakReference.get());
                 fragment.setCallBack((Object t) -> {
-//                        onCamInfoUpdate(null);//刷新
-                    AppLogger.e("修改了");
-
+                    onInfoUpdate(null);
                 });
             }
             break;
@@ -294,6 +290,15 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
             if (view.getId() == R.id.sv_setting_device_standby_mode) {
                 continue;
             }
+            if (view.getId() == R.id.sv_setting_device_mobile_network) {
+                continue;
+            }
+            if (view.getId() == R.id.sv_setting_device_detail) {
+                continue;
+            }
+            if (view.getId() == R.id.sv_setting_safe_protection) {
+                continue;
+            }
             if (view.getId() == R.id.tv_setting_unbind) {
                 continue;//解绑按钮
             }
@@ -327,8 +332,8 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
     }
 
     @Override
-    public void onInfoUpdate(int id, BaseValue value) {
-        svSettingDeviceDetail.setTvSubTitle(basePresenter.getDetailsSubTitle(getContext()));
+    public void onInfoUpdate(BaseValue value) {
+        int id = value == null ? 0 : (int) value.getId();
         if (id == DpMsgMap.ID_201_NET) {
             DpMsgDefine.MsgNet net = MiscUtils.cast(value.getValue(), null);
             svSettingDeviceWifi.setTvSubTitle(net != null && !TextUtils.isEmpty(net.ssid) ? net.ssid : getString(R.string.OFF_LINE));
@@ -349,6 +354,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
             boolean flag = MiscUtils.cast(value.getValue(), false);
             svSettingDeviceStandbyMode.setSwitchButtonState(flag);
         }
+        svSettingDeviceDetail.setTvSubTitle(basePresenter.getDetailsSubTitle(getContext()));
         svSettingSafeProtection.setTvSubTitle(basePresenter.getAlarmSubTitle(getContext()));
         svSettingDeviceAutoRecord.setTvSubTitle(basePresenter.getAutoRecordTitle(getContext()));
     }

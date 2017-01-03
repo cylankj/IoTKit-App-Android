@@ -95,8 +95,8 @@ public class AlarmSoundEffectFragment extends IBaseFragment<CamWarnContract.Pres
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         imgVTopBarCenter.setText(getString(R.string.SOUNDS));
         ViewUtils.setViewPaddingStatusBar(fLayoutTopBarContainer);
-        DpMsgDefine.NotificationInfo notificationInfo = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_504_CAMERA_ALARM_NOTIFICATION, null);
-        int effect = notificationInfo == null ? 0 : notificationInfo.notification;
+        DpMsgDefine.NotificationInfo notificationInfo = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_504_CAMERA_ALARM_NOTIFICATION, new DpMsgDefine.NotificationInfo());
+        int effect = notificationInfo.notification;
         final int count = rgWarnEffect.getChildCount();
         for (int i = 0; i < count; i++) {
             final int index = i;

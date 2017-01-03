@@ -75,7 +75,7 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        this.uuid = getArguments().getString(JConstant.KEY_DEVICE_ITEM_BUNDLE);
+        this.uuid = getArguments().getString(JConstant.KEY_DEVICE_ITEM_UUID);
         basePresenter = new SafeInfoPresenterImpl(this, uuid);
     }
 
@@ -110,13 +110,16 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         ViewUtils.setViewPaddingStatusBar(fLayoutTopBarContainer);
-        updateDetails();
         ((SwitchButton) swMotionDetection.findViewById(R.id.btn_item_switch))
                 .setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
-                    showDetail(isChecked);
                     basePresenter.updateInfoReq(isChecked, DpMsgMap.ID_501_CAMERA_ALARM_FLAG);
+                    showDetail(isChecked);
+                    updateDetails();
                 });
-        showDetail(GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_501_CAMERA_ALARM_FLAG, false));
+        boolean alarm = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_501_CAMERA_ALARM_FLAG, false);
+        showDetail(alarm);
+        if (alarm)
+            updateDetails();
     }
 
     private void showDetail(boolean show) {
@@ -154,7 +157,7 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
         tvProtectionSensitivity.setText(sensitivity == 0 ? getString(R.string.SENSITIVI_LOW)
                 : (sensitivity == 1 ? getString(R.string.SENSITIVI_STANDARD) : getString(R.string.SENSITIVI_HIGHT)));
         //报警周期
-        DpMsgDefine.AlarmInfo info = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_502_CAMERA_ALARM_INFO, null);
+        DpMsgDefine.AlarmInfo info = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_502_CAMERA_ALARM_INFO, new DpMsgDefine.AlarmInfo());
         tvProtectionRepeatPeriod.setText(basePresenter.getRepeatMode(getContext()));
         if (info != null) {
             tvProtectionStartTime.setText(MiscUtils.parse2Time(info.timeStart));
