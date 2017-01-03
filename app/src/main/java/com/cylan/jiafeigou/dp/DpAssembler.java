@@ -185,19 +185,16 @@ public class DpAssembler implements IParser {
     private Subscription deviceDeleteSub() {
         return RxBus.getCacheInstance().toObservable(RxEvent.UnbindJFGDevice.class)
                 .subscribeOn(Schedulers.newThread())
-                .map(new Func1<RxEvent.UnbindJFGDevice, Object>() {
-                    @Override
-                    public Object call(RxEvent.UnbindJFGDevice jfgDeviceDeletion) {
-                        String uuid = jfgDeviceDeletion.uuid;
-                        if (!TextUtils.isEmpty(uuid)) {
-                            flatMsg.rm(JCache.getAccountCache().getAccount(), uuid);
-                            AppLogger.i("delete device: " + uuid);
-                            RxBus.getCacheInstance().removeStickyEvent(RxUiEvent.BulkDeviceListRsp.class);
-                            //触发更新数据
-                            RxBus.getCacheInstance().post(new RxUiEvent.BulkDeviceListReq());
-                        }
-                        return null;
+                .map((RxEvent.UnbindJFGDevice jfgDeviceDeletion) -> {
+                    String uuid = jfgDeviceDeletion.uuid;
+                    if (!TextUtils.isEmpty(uuid)) {
+                        flatMsg.rm(JCache.getAccountCache().getAccount(), uuid);
+                        AppLogger.i("delete device: " + uuid);
+                        RxBus.getCacheInstance().removeStickyEvent(RxUiEvent.BulkDeviceListRsp.class);
+                        //触发更新数据
+                        RxBus.getCacheInstance().post(new RxUiEvent.BulkDeviceListReq());
                     }
+                    return null;
                 })
                 .retry(new RxHelper.RxException<>(""))
                 .subscribe();
@@ -231,12 +228,9 @@ public class DpAssembler implements IParser {
 
     private Observable<RxEvent.DeviceRawList> monitorDeviceRawList() {
         return RxBus.getCacheInstance().toObservable(RxEvent.DeviceRawList.class)
-                .map(new Func1<RxEvent.DeviceRawList, RxEvent.DeviceRawList>() {
-                    @Override
-                    public RxEvent.DeviceRawList call(RxEvent.DeviceRawList deviceRawList) {
-                        AppLogger.i("DeviceRawList.class");
-                        return deviceRawList;
-                    }
+                .map((RxEvent.DeviceRawList deviceRawList) -> {
+                    AppLogger.i("DeviceRawList.class: ");
+                    return deviceRawList;
                 });
     }
 

@@ -21,6 +21,14 @@ public interface IDataPoint {
     void cacheDevice(String uuid, JFGDevice jfgDevice);
 
     /**
+     * 删除对应的JFGDevice
+     *
+     * @param uuid
+     * @return
+     */
+    boolean remove(String uuid);
+
+    /**
      * 内部转换 Map<account+uuid,JFGDevice>
      *
      * @param uuid

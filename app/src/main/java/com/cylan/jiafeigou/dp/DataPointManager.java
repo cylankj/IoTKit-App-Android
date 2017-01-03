@@ -271,6 +271,13 @@ public class DataPointManager implements IParser, IDataPoint {
     }
 
     @Override
+    public boolean remove(String uuid) {
+        boolean result = jfgDeviceMap.remove(uuid) != null;
+        AppLogger.i("delete jfgDevice: " + uuid + " " + result);
+        return result;
+    }
+
+    @Override
     public JFGDevice fetch(String uuid) {
         return jfgDeviceMap.get(uuid);
     }

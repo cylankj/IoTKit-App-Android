@@ -200,15 +200,13 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
         Observable.just(null)
                 .subscribeOn(Schedulers.newThread())
                 .subscribe((Object o) -> {
-                    RxEvent.UnbindJFGDevice deletion = new RxEvent.UnbindJFGDevice();
-                    deletion.uuid = uuid;
-                    RxBus.getCacheInstance().post(deletion);
+                    boolean result = GlobalDataProxy.getInstance().remove(uuid);
                     try {
                         JfgCmdInsurance.getCmd().unBindDevice(uuid);
                     } catch (JfgException e) {
-                        e.printStackTrace();
+                        AppLogger.e("" + e.getLocalizedMessage());
                     }
-                    AppLogger.i("unbind uuid: " + uuid);
+                    AppLogger.i("unbind uuid: " + uuid + " " + result);
                 }, (Throwable throwable) -> {
                     AppLogger.e("delete uuid failed: " + throwable.getLocalizedMessage());
                 });

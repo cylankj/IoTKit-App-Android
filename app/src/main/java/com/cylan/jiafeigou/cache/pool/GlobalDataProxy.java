@@ -65,6 +65,12 @@ public class GlobalDataProxy implements IDataPool {
     }
 
     @Override
+    public boolean remove(String uuid) {
+        checkAccount();
+        return dataPointManager.remove(jfgAccount.getAccount() + uuid);
+    }
+
+    @Override
     public JFGDevice fetch(String uuid) {
         checkAccount();
         return dataPointManager.fetch(jfgAccount.getAccount() + uuid);

@@ -1,6 +1,5 @@
 package com.cylan.jiafeigou.cache.pool;
 
-import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.jiafeigou.dp.IDataPoint;
 
 /**
