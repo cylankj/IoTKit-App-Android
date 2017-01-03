@@ -642,4 +642,9 @@ public class RxEvent {
 
     public static class AppHideEvent {
     }
+
+    public static class EFamilyMsgpack {
+        public int msgId;
+        public byte[] data;
+    }
 }

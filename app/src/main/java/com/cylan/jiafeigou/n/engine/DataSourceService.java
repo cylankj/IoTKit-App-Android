@@ -34,6 +34,7 @@ import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JResultEvent;
+import com.cylan.jiafeigou.misc.efamily.MsgpackMsg;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -373,7 +374,16 @@ public class DataSourceService extends Service implements AppCallBack {
 
     @Override
     public void OnEfamilyMsg(byte[] bytes) {
-        AppLogger.d("OnEfamilyMsg :");
+        MsgpackMsg.MsgHeader header = MsgpackMsg.fromBytes(bytes);
+        if (header == null) {
+            AppLogger.e("err: header is null");
+            return;
+        }
+        RxEvent.EFamilyMsgpack eFamilyMsgpack = new RxEvent.EFamilyMsgpack();
+        eFamilyMsgpack.msgId = header.msgId;
+        eFamilyMsgpack.data = bytes;
+        RxBus.getCacheInstance().post(eFamilyMsgpack);
+        AppLogger.d("OnEfamilyMsg :" + header.msgId);
     }
 
     @Override

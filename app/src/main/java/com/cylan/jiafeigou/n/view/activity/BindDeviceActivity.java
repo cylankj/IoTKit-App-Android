@@ -119,8 +119,7 @@ public class BindDeviceActivity extends BaseFullScreenFragmentActivity implement
         switch (view.getId()) {
             case R.id.v_to_scan_qrcode: {
                 ViewUtils.deBounceClick(findViewById(R.id.v_to_scan_qrcode));
-                Bundle bundle = new Bundle();
-                BindScanFragment fragment = BindScanFragment.newInstance(bundle);
+                BindScanFragment fragment = BindScanFragment.newInstance(null);
                 getSupportFragmentManager()
                         .beginTransaction()
                         .setCustomAnimations(0, R.anim.slide_down_out
@@ -128,7 +127,6 @@ public class BindDeviceActivity extends BaseFullScreenFragmentActivity implement
                         .replace(android.R.id.content, fragment)
                         .addToBackStack("BindScanFragment")
                         .commit();
-                new ScanContractImpl(fragment);
                 break;
             }
             case R.id.v_to_bind_camera: {

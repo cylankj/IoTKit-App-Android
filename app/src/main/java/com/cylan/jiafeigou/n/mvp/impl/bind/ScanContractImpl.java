@@ -1,11 +1,24 @@
 package com.cylan.jiafeigou.n.mvp.impl.bind;
 
+import android.os.Bundle;
+import android.text.TextUtils;
+import android.util.Log;
+
+import com.cylan.jiafeigou.dp.DpUtils;
+import com.cylan.jiafeigou.misc.JfgCmdInsurance;
+import com.cylan.jiafeigou.misc.efamily.MsgBindCidReq;
+import com.cylan.jiafeigou.misc.efamily.RspMsgHeader;
 import com.cylan.jiafeigou.n.mvp.contract.bind.ScanContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
+import com.cylan.jiafeigou.rx.RxBus;
+import com.cylan.jiafeigou.rx.RxEvent;
+import com.cylan.jiafeigou.rx.RxHelper;
+import com.cylan.jiafeigou.support.log.AppLogger;
 
-import rx.Observable;
+import java.io.IOException;
+import java.util.TimeZone;
+
 import rx.Subscription;
-import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 /**
@@ -13,7 +26,6 @@ import rx.schedulers.Schedulers;
  */
 public class ScanContractImpl extends AbstractPresenter<ScanContract.View> implements ScanContract.Presenter {
 
-    Subscription subscription;
 
     public ScanContractImpl(ScanContract.View v) {
         super(v);
@@ -21,20 +33,53 @@ public class ScanContractImpl extends AbstractPresenter<ScanContract.View> imple
     }
 
     @Override
-    public void start() {
-        subscription = Observable.just(null)
-                .subscribeOn(Schedulers.io())
-                .subscribe(new Action1<Object>() {
-                    @Override
-                    public void call(Object o) {
-                        getView().onStartScan();
+    protected Subscription[] register() {
+        return new Subscription[]{scanResult()};
+    }
+
+    private Subscription scanResult() {
+        return RxBus.getCacheInstance().toObservable(RxEvent.EFamilyMsgpack.class)
+                .subscribeOn(Schedulers.newThread())
+                .map((RxEvent.EFamilyMsgpack eFamilyMsgpack) -> {
+                    try {
+                        switch (eFamilyMsgpack.msgId) {
+                            case 16219:
+                                RspMsgHeader rspHeader = DpUtils.unpackData(eFamilyMsgpack.data, RspMsgHeader.class);
+                                if (rspHeader != null && TextUtils.equals(getView().getUuid(), rspHeader.caller))
+                                    getView().onScanRsp(rspHeader.ret);
+                                Log.d(TAG, "rspHeader: " + rspHeader);
+                                break;
+                        }
+                    } catch (Exception e) {
+                        AppLogger.e("" + e.getLocalizedMessage());
                     }
-                });
+                    return null;
+                })
+                .retry(new RxHelper.RxException<>("scanResult"))
+                .subscribe();
     }
 
     @Override
-    public void stop() {
-        unSubscribe(subscription);
-    }
+    public void submit(Bundle bundle) {
+        String cid = bundle.getString("cid");
+        String mac = bundle.getString("mac");
+        String alias = bundle.getString("alias");
+        int way = bundle.getInt("bindWay");
+        MsgBindCidReq mMsgBindCidReq = new MsgBindCidReq(cid);
+        mMsgBindCidReq.cid = cid;
+        mMsgBindCidReq.is_rebind = way;
+        mMsgBindCidReq.timezone = TimeZone.getDefault().getID();
+        mMsgBindCidReq.alias = alias;
+        mMsgBindCidReq.mac = mac;
+        byte[] data = DpUtils.pack(mMsgBindCidReq);
+        JfgCmdInsurance.getCmd().sendEfamilyMsg(data);
 
+//        try {
+//            Object o = DpUtils.unpackData(data, MsgBindCidReq.class);
+//            Log.d(TAG, "unpack: " + o);
+//        } catch (IOException e) {
+//            Log.e(TAG, "E: " + e.getLocalizedMessage());
+//        }
+
+    }
 }

@@ -1,5 +1,7 @@
 package com.cylan.jiafeigou.n.mvp.contract.bind;
 
+import android.os.Bundle;
+
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
 
@@ -20,6 +22,8 @@ public interface ScanContract {
          * 开始扫描
          */
         void onStartScan();
+
+        String getUuid();
     }
 
     interface Presenter extends BasePresenter {
@@ -28,6 +32,6 @@ public interface ScanContract {
          * 扫描附近设备
          */
 //        void startScan();
-
+        void submit(Bundle bundle);
     }
 }

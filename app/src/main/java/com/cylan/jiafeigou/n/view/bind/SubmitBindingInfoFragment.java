@@ -11,7 +11,7 @@ import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.misc.bind.UdpConstant;
+import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.mvp.contract.bind.SubmitBindingInfoContract;
 import com.cylan.jiafeigou.n.mvp.impl.bind.SubmitBindingInfoContractImpl;
 import com.cylan.jiafeigou.n.view.BaseTitleFragment;
@@ -48,8 +48,7 @@ public class SubmitBindingInfoFragment extends BaseTitleFragment<SubmitBindingIn
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        UdpConstant.UdpDevicePortrait portrait = getArguments().getParcelable(UdpConstant.KEY_BIND_DEVICE_PORTRAIT);
-        this.basePresenter = new SubmitBindingInfoContractImpl(this, portrait);
+        this.basePresenter = new SubmitBindingInfoContractImpl(this, getArguments().getString(JConstant.KEY_DEVICE_ITEM_UUID));
     }
 
     @Override

@@ -149,6 +149,14 @@ public class ViewFinderView extends View implements IViewFinder {
     }
 
     @Override
+    public void stop() {
+        if (laserAnimation != null && laserAnimation.isRunning()) {
+            laserAnimation.end();
+            laserAnimation.cancel();
+        }
+    }
+
+    @Override
     public void onDraw(Canvas canvas) {
         if (mFramingRect == null) {
             return;
