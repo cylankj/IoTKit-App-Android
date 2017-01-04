@@ -90,6 +90,21 @@ public interface MineShareDeviceContract {
          */
         boolean checkPermission();
 
+        /**
+         * 取消分享成功后列表中删除该亲友
+         * @param arrayList
+         */
+        void unShareSucceedDel(int position,ArrayList<String> arrayList);
+
+        /**
+         * 分享成功后列表中添加一条数据
+         */
+        void shareSucceedAdd(ArrayList<RelAndFriendBean> list);
+
+        /**
+         * fragment销毁时清除临时数据
+         */
+        void clearData();
     }
 
 }

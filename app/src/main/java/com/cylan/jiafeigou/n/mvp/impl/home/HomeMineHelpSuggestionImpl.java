@@ -3,6 +3,7 @@ package com.cylan.jiafeigou.n.mvp.impl.home;
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.entity.jniCall.JFGFeedbackInfo;
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.db.DataBaseUtil;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeMineHelpSuggestionContract;
@@ -14,6 +15,7 @@ import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.db.DbManager;
 import com.cylan.jiafeigou.support.db.ex.DbException;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.PreferencesUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -44,6 +46,7 @@ public class HomeMineHelpSuggestionImpl extends AbstractPresenter<HomeMineHelpSu
     private ArrayList<MineHelpSuggestionBean> list;
     private DbManager dbManager;
     private JFGAccount userInfomation;
+    private boolean isOpenLogin;
 
     public HomeMineHelpSuggestionImpl(HomeMineHelpSuggestionContract.View view) {
         super(view);
@@ -56,6 +59,7 @@ public class HomeMineHelpSuggestionImpl extends AbstractPresenter<HomeMineHelpSu
             compositeSubscription.unsubscribe();
         } else {
             compositeSubscription = new CompositeSubscription();
+            compositeSubscription.add(isOpenLogin());
             compositeSubscription.add(getAccountInfo());
             compositeSubscription.add(getSystemAutoReplyCallBack());
             compositeSubscription.add(sendFeedBackReq());
@@ -153,6 +157,9 @@ public class HomeMineHelpSuggestionImpl extends AbstractPresenter<HomeMineHelpSu
      */
     @Override
     public String getUserPhotoUrl() {
+        if (isOpenLogin){
+            return PreferencesUtils.getString(JConstant.OPEN_LOGIN_USER_ICON);
+        }
         if (userInfomation == null) {
             return "";
         } else {
@@ -276,6 +283,22 @@ public class HomeMineHelpSuggestionImpl extends AbstractPresenter<HomeMineHelpSu
         } catch (DbException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * 是否三方登录
+     * @return
+     */
+    @Override
+    public Subscription isOpenLogin() {
+        return RxBus.getCacheInstance().toObservableSticky(Boolean.class)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<Boolean>() {
+                    @Override
+                    public void call(Boolean aBoolean) {
+                        isOpenLogin = aBoolean;
+                    }
+                });
     }
 
     /**

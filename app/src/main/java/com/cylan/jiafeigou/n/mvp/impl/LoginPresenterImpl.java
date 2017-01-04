@@ -81,7 +81,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
                     @Override
                     public LoginAccountBean call(LoginAccountBean o) {
                         try {
-                        JfgCmdInsurance.getCmd().login(o.userName, o.pwd);
+                            JfgCmdInsurance.getCmd().login(o.userName, o.pwd);
                         } catch (JfgException e) {
                             e.printStackTrace();
                         }
@@ -96,17 +96,17 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
 
     /**
      * 执行第三方登录
-     * @param openId
+     * @param accend_token
      */
     @Override
-    public void executeOpenLogin(final String openId,int type) {
+    public void executeOpenLogin(final String accend_token,int type) {
         rx.Observable.just(null)
                 .subscribeOn(Schedulers.newThread())
                 .subscribe(new Action1<Object>() {
                     @Override
                     public void call(Object o) {
                         try {
-                            JfgCmdInsurance.getCmd().openLogin(openId,"www.cylan.com",type);
+                            JfgCmdInsurance.getCmd().openLogin(accend_token,"www.cylan.com",type);
                         } catch (JfgException e) {
                             e.printStackTrace();
                         }
@@ -116,10 +116,9 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
                 }, new Action1<Throwable>() {
                     @Override
                     public void call(Throwable throwable) {
-                        AppLogger.e("executeOpenLogin"+new Gson().toJson(openId));
+                        AppLogger.e("executeOpenLogin"+new Gson().toJson(accend_token));
                     }
                 });
-
     }
 
     @Override
@@ -267,12 +266,25 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
     @Override
     public void getQQAuthorize(Activity activity) {
         tencentInstance = new TencentInstance();
+        if (tencentInstance.mTencent.isSessionValid()){
+            executeOpenLogin(tencentInstance.mTencent.getAccessToken(),3);
+            return;
+        }
         qqAuthrizeListener = new QQAuthrizeListener();
         tencentInstance.logIn(activity,Constants.SCOPE, qqAuthrizeListener);
     }
 
     @Override
     public void startSinaAuthorize(Activity activity) {
+        Oauth2AccessToken accessToken = AccessTokenKeeper.readAccessToken(getView().getContext());
+        if (accessToken != null && accessToken.isSessionValid()) {
+            executeOpenLogin(accessToken.getToken(),4);
+            UsersAPI usersAPI = new UsersAPI(accessToken, getView().getContext());
+            Long uid = Long.parseLong(accessToken.getUid());
+            usersAPI.show(uid,sinaRequestListener);
+            return;
+        }
+
         sinaUtil = new SinaLogin(activity);
         sinaUtil.login(activity, new SinaAuthorizeListener());
     }
@@ -311,7 +323,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
                         JfgCmdInsurance.getCmd().verifySMS(phone, code, token);
                         } catch (JfgException e) {
                             e.printStackTrace();
-                    }
+                        }
                     }
                 }, new Action1<Throwable>() {
                     @Override
@@ -323,7 +335,11 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
 
     @Override
     public SsoHandler getSinaCallBack() {
-        return sinaUtil.mSsoHandler;
+        if(sinaUtil == null){
+            return null;
+        }else {
+            return sinaUtil.mSsoHandler;
+        }
     }
 
     /**
@@ -349,6 +365,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
             usersAPI.show(uid,sinaRequestListener);
             if (accessToken != null && accessToken.isSessionValid()) {
                 executeOpenLogin(accessToken.getToken(),4);
+                AccessTokenKeeper.writeAccessToken(getView().getContext(), accessToken);
             }else {
                 String code = values.getString("code", "");
                 AppLogger.d("sina_code"+code);
@@ -380,15 +397,14 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
             try {
                 if (!TextUtils.isEmpty(response)) {
                     String strId = new JSONObject(response).getString("idstr");
-                    ToastUtil.showToast(strId);
-//                    PreferencesUtils.setThirDswLoginPicUrl(ctx, new JSONObject(response).getString("profile_image_url"));
-
-
+                    String profile_image_url = new JSONObject(response).getString("profile_image_url");
+                    String userAlias = new JSONObject(response).getString("screen_name");
+                    PreferencesUtils.putString(JConstant.OPEN_LOGIN_USER_ICON,profile_image_url);
+                    PreferencesUtils.putString(JConstant.OPEN_LOGIN_USER_ALIAS,userAlias);
                 }
             } catch (JSONException e) {
                 AppLogger.e(e.toString());
             }
-
         }
 
         @Override
@@ -418,7 +434,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
                 ToastUtil.showNegativeToast("授权失败");
                 return;
             }
-            doComplete((JSONObject)response);
+            doComplete(jsonResponse);
         }
 
         @Override
@@ -442,15 +458,54 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
      */
     private void doComplete(JSONObject response) {
         try {
-            String openID = response.getString("openid");
-            String accessToken = response.getString("access_token");
-            String expires = response.getString("expires_in");
-            //执行登录
-            executeOpenLogin(accessToken,3);
+            if (response.getInt("ret") == 0){
+                String openID = response.getString("openid");
+                String accessToken = response.getString("access_token");
+                String expires = response.getString("expires_in");
+                tencentInstance.mTencent.setOpenId(openID);
+                tencentInstance.mTencent.setAccessToken(accessToken, expires);
+                getuserInfo();
+                //执行登录
+                executeOpenLogin(accessToken,3);
+            }
 
         } catch (JSONException e) {
             e.printStackTrace();
         }
     }
+
+    private void getuserInfo() {
+        UserInfo qqInfo = new UserInfo(getView().getContext(),tencentInstance.mTencent.getQQToken());
+        qqInfo.getUserInfo(getQQinfoListener);
+    }
+
+    /**
+     * 获取用户信息
+     */
+    private IUiListener getQQinfoListener = new IUiListener() {
+        @Override
+        public void onComplete(Object response) {
+            try {
+                JSONObject jsonObject = (JSONObject) response;
+                String nickname = jsonObject.getString("nickname");
+                String figureurl = jsonObject.getString("figureurl");
+                PreferencesUtils.putString(JConstant.OPEN_LOGIN_USER_ICON,figureurl);
+                PreferencesUtils.putString(JConstant.OPEN_LOGIN_USER_ALIAS,nickname);
+                //处理自己需要的信息
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        @Override
+        public void onError(UiError uiError) {
+
+        }
+
+        @Override
+        public void onCancel() {
+
+        }
+    };
 
 }

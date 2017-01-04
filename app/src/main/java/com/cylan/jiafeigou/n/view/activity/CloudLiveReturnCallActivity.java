@@ -42,7 +42,6 @@ public class CloudLiveReturnCallActivity extends AppCompatActivity implements Cl
     @BindView(R.id.ll_myself_video)
     LinearLayout llMyselfVideo;
 
-
     private CloudVideoChatConnectOkContract.Presenter presenter;
 
     @Override

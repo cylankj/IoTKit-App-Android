@@ -11,7 +11,7 @@
         android:id="@+id/rLayout_mag_live_top_bar"
         android:layout_width="match_parent"
         android:layout_height="181dp"
-        android:background="#66bb6a">
+        android:background="@drawable/bg_magnetometer_top_close">
 
         <ImageView
             android:id="@+id/imgV_msg_title_top_back"
@@ -38,8 +38,7 @@
             android:layout_centerHorizontal="true"
             android:layout_marginBottom="12dp"
             android:layout_marginTop="62dp"
-            android:src="@drawable/icon_close" />
-
+            android:src="@drawable/icon_magnetometer_top_close" />
 
         <ImageView
             android:id="@+id/imgV_msg_title_top_setting"

@@ -7,49 +7,48 @@
 
     <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:orientation="horizontal">
 
         <TextView
             android:id="@+id/tv_mag_live_day"
             android:layout_width="117dp"
             android:layout_height="wrap_content"
-            android:gravity="end"
+            android:gravity="center_vertical|end"
             android:text="@string/DOOR_TODAY"
             android:textColor="@color/color_333333"
             android:textSize="17sp" />
 
-        <LinearLayout
-            android:layout_gravity="center_vertical"
-            android:orientation="vertical"
+        <RelativeLayout
             android:layout_marginLeft="12dp"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent">
 
             <ImageView
                 android:id="@+id/iv_mag_live"
-                android:layout_gravity="center_horizontal"
+                android:layout_gravity="center_vertical"
                 android:src="@drawable/icon_dot_gary"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 
             <com.cylan.jiafeigou.widget.DashLineView
-                android:layout_gravity="center_horizontal"
+                android:layout_centerInParent="true"
+                android:layout_below="@id/iv_mag_live"
                 android:layout_width="wrap_content"
-                android:layout_height="24dp">
+                android:layout_height="21dp">
             </com.cylan.jiafeigou.widget.DashLineView>
 
-        </LinearLayout>
+            <TextView
+                android:id="@+id/tv_mag_live_time"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/iv_mag_live"
+                android:layout_marginLeft="11dp"
+                android:text="15:05:20 打开"
+                android:textColor="@color/color_333333"
+                android:textSize="17sp" />
+        </RelativeLayout>
 
     </LinearLayout>
-
-    <TextView
-        android:id="@+id/tv_mag_live_time"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="11dp"
-        android:text="15:05:20 打开"
-        android:textColor="@color/color_333333"
-        android:textSize="16sp" />
 
 </LinearLayout>

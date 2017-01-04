@@ -19,6 +19,7 @@ import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import rx.Observable;
 import rx.Subscription;
@@ -38,6 +39,8 @@ public class MineShareDevicePresenterImp extends AbstractPresenter<MineShareDevi
     private ArrayList<JFGShareListInfo> hasShareFriendList = new ArrayList<>();
     private CompositeSubscription subscription;
     private ArrayList<DeviceBean> allDevice = new ArrayList<>();
+    private ArrayList<RelAndFriendBean> hasShareFriendData = new ArrayList<>();
+    private ArrayList<RelAndFriendBean> shareSucceedData = new ArrayList<>();
 
     public MineShareDevicePresenterImp(MineShareDeviceContract.View view) {
         super(view);
@@ -96,21 +99,23 @@ public class MineShareDevicePresenterImp extends AbstractPresenter<MineShareDevi
 
     @Override
     public ArrayList<RelAndFriendBean> getJFGInfo(int position) {
-        ArrayList<RelAndFriendBean> list = new ArrayList<>();
-        if (hasShareFriendList != null && hasShareFriendList.size() != 0) {
-            for (JFGFriendAccount info : hasShareFriendList.get(position).friends) {
+        hasShareFriendData.clear();
+        hasShareFriendData.addAll(shareSucceedData);
+        if (this.hasShareFriendList != null && this.hasShareFriendList.size() != 0) {
+            for (JFGFriendAccount info : this.hasShareFriendList.get(position).friends) {
                 RelAndFriendBean relAndFriendBean = new RelAndFriendBean();
                 relAndFriendBean.account = info.account;
                 relAndFriendBean.alias = info.alias;
+                relAndFriendBean.markName = info.markName;
                 try {
                     relAndFriendBean.iconUrl = JfgCmdInsurance.getCmd().getCloudUrlByType(JfgEnum.JFG_URL.PORTRAIT, 0, info.account + ".jpg", "");
                 } catch (JfgException e) {
                     e.printStackTrace();
                 }
-                list.add(relAndFriendBean);
+                hasShareFriendData.add(relAndFriendBean);
             }
         }
-        return list;
+        return hasShareFriendData;
     }
 
     /**
@@ -242,6 +247,30 @@ public class MineShareDevicePresenterImp extends AbstractPresenter<MineShareDevi
         } else {
             return true;
         }
+    }
+
+    @Override
+    public void unShareSucceedDel(int position,ArrayList<String> arrayList) {
+        Iterator iterator = hasShareFriendList.get(position).friends.iterator();
+        while (iterator.hasNext()){
+            JFGFriendAccount friend = (JFGFriendAccount) iterator.next();
+            for (String str:arrayList){
+                if (friend.account.equals(str)){
+                    iterator.remove();
+                }
+            }
+        }
+    }
+
+    @Override
+    public void shareSucceedAdd(ArrayList<RelAndFriendBean> list) {
+        shareSucceedData.clear();
+        shareSucceedData.addAll(list);
+    }
+
+    @Override
+    public void clearData() {
+        shareSucceedData.clear();
     }
 
 }

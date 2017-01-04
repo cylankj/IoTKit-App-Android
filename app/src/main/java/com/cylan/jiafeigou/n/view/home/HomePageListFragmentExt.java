@@ -27,6 +27,7 @@ import com.bumptech.glide.load.DecodeFormat;
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.cache.JCache;
+import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
@@ -240,7 +241,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
 
     @OnClick(R.id.imgV_add_devices)
     void onClickAddDevice() {
-        if (!JCache.isOnline()) {
+        if (!GlobalDataProxy.getInstance().isOnline()) {
             if (RxBus.getCacheInstance().hasObservers())
                 RxBus.getCacheInstance().post(new RxEvent.NeedLoginEvent(null));
             return;

@@ -95,8 +95,6 @@ public class HomeMineHelpFragment extends Fragment {
                         .add(android.R.id.content, homeMineHelpSuggestionFragment, "homeMineHelpSuggestionFragment")
                         .addToBackStack("mineHelpFragment")
                         .commit();
-                //Intent intent = new Intent(getActivity(),SuggestionChatContainerActivity.class);
-                //startActivity(intent);
                 break;
         }
     }

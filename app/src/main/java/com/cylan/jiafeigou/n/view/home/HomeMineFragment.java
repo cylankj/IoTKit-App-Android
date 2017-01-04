@@ -28,6 +28,7 @@ import com.bumptech.glide.request.target.SizeReadyCallback;
 import com.bumptech.glide.request.target.Target;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.cache.JCache;
+import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeMineContract;
@@ -112,7 +113,7 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
 
     @Override
     public void onStart() {
-        if (!JCache.isOnline()) {
+        if (!GlobalDataProxy.getInstance().isOnline()) {
             //访客状态
             Bitmap bm = BitmapFactory.decodeResource(getResources(),R.drawable.clouds);
             basePresenter.portraitBlur(bm);
@@ -140,7 +141,7 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
      * 点击个人头像
      */
     public void portrait() {
-        if (!JCache.isOnline()) {
+        if (!GlobalDataProxy.getInstance().isOnline()) {
             needStartLoginFragment();
             return;
         }
@@ -153,7 +154,7 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
      * @param view
      */
     public void friendItem(View view) {
-        if (!JCache.isOnline()) {
+        if (!GlobalDataProxy.getInstance().isOnline()) {
             needStartLoginFragment();
             return;
         }
@@ -197,7 +198,7 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
     }
 
     public void settingsItem(View view) {
-        if (!JCache.isOnline()) {
+        if (!GlobalDataProxy.getInstance().isOnline()) {
             needStartLoginFragment();
             return;
         }
@@ -211,7 +212,7 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
     }
 
     public void shareItem(View view) {
-        if (!JCache.isOnline()) {
+        if (!GlobalDataProxy.getInstance().isOnline()) {
             needStartLoginFragment();
             return;
         }
@@ -295,7 +296,7 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
     }
 
     private boolean needStartLoginFragment() {
-        if (!JCache.isOnline() && RxBus.getCacheInstance().hasObservers()) {
+        if (!GlobalDataProxy.getInstance().isOnline() && RxBus.getCacheInstance().hasObservers()) {
             RxBus.getCacheInstance().post(new RxEvent.NeedLoginEvent(null));
             return true;
         }
@@ -359,7 +360,8 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
      * @param view
      */
     private void helpItem(View view) {
-        if (!JCache.isOnline()) {
+//        if (!JCache.isOnline()) {
+        if (!GlobalDataProxy.getInstance().isOnline()) {
             needStartLoginFragment();
             return;
         }
@@ -375,7 +377,7 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
      * 跳转到消息界面
      */
     private void jump2MesgFragment() {
-        if (!JCache.isOnline()) {
+        if (!GlobalDataProxy.getInstance().isOnline()) {
             needStartLoginFragment();
             return;
         }
@@ -394,7 +396,7 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
      * 点击个人昵称
      */
     private void jump2UserInfo() {
-        if (!JCache.isOnline()) {
+        if (!GlobalDataProxy.getInstance().isOnline()) {
             needStartLoginFragment();
             return;
         }

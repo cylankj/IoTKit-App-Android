@@ -19,6 +19,9 @@ import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeSettingAboutContract;
+import com.cylan.jiafeigou.n.view.login.AgreementFragment;
+import com.cylan.jiafeigou.utils.ActivityUtils;
+import com.cylan.jiafeigou.utils.IMEUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 
 import butterknife.BindView;
@@ -38,6 +41,9 @@ public class HomeSettingAboutFragment extends Fragment implements HomeSettingAbo
     RelativeLayout rLayoutHomeSettingHotphone;
     @BindView(R.id.tv_hotphone)
     TextView tvHotphone;
+    @BindView(R.id.tv_user_agreement)
+    TextView tvUserAgreement;
+
 
     private HomeSettingAboutContract.Presenter presenter;
     private Intent intent;
@@ -59,7 +65,7 @@ public class HomeSettingAboutFragment extends Fragment implements HomeSettingAbo
         this.presenter = presenter;
     }
 
-    @OnClick({R.id.iv_home_setting_about_back, R.id.rLayout_home_setting_hotphone})
+    @OnClick({R.id.iv_home_setting_about_back, R.id.rLayout_home_setting_hotphone,R.id.tv_user_agreement})
     public void onClick(View view) {
 
         switch (view.getId()) {
@@ -75,6 +81,13 @@ public class HomeSettingAboutFragment extends Fragment implements HomeSettingAbo
                     return;
                 }
                 getContext().startActivity(intent);
+                break;
+
+            case R.id.tv_user_agreement:
+                IMEUtils.hide(getActivity());
+                AgreementFragment fragment = AgreementFragment.getInstance(null);
+                ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(),
+                        fragment, android.R.id.content);
                 break;
         }
     }

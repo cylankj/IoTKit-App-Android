@@ -8,6 +8,7 @@ import android.support.annotation.UiThread;
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
+import com.cylan.jiafeigou.n.mvp.model.MineHelpSuggestionBean;
 import com.cylan.jiafeigou.n.mvp.model.MineMessageBean;
 import com.cylan.jiafeigou.n.mvp.model.UserInfoBean;
 
@@ -69,7 +70,7 @@ public interface HomeMineContract {
         /**
          * 初始化界面的数据
          */
-        Subscription initData();
+        Subscription initData(boolean isOpenLogin);
 
         /**
          * 获取到登录用户的bean
@@ -107,5 +108,6 @@ public interface HomeMineContract {
          * @return
          */
         Subscription checkIsOpenLoginCallBack();
+
     }
 }

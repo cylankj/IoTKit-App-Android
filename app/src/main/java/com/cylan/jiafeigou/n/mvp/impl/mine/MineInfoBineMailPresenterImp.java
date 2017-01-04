@@ -20,6 +20,7 @@ import com.cylan.jiafeigou.support.network.ConnectivityStatus;
 import com.cylan.jiafeigou.support.network.ReactiveNetwork;
 import com.cylan.jiafeigou.utils.ContextUtils;
 
+import java.util.Comparator;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -270,6 +271,7 @@ public class MineInfoBineMailPresenterImp extends AbstractPresenter<MineInfoBind
             compositeSubscription.unsubscribe();
         } else {
             compositeSubscription = new CompositeSubscription();
+            compositeSubscription.add(isOpenLoginBack());
             compositeSubscription.add(getChangeAccountCallBack());
             compositeSubscription.add(getCheckAccountCallBack());
         }

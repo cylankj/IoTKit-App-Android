@@ -20,29 +20,31 @@
             android:padding="15dp"
             android:src="@drawable/icon_nav_back_white" />
 
-        <TextView
-            android:id="@+id/tv_share_to"
-            android:layout_marginBottom="12dp"
-            android:layout_alignParentBottom="true"
-            android:layout_marginLeft="48dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="分享设备给多多"
-            android:textSize="18sp"
-            android:textColor="@color/color_white" />
+            <TextView
+                android:layout_toRightOf="@id/iv_mine_friends_share_devices_back"
+                android:id="@+id/tv_share_to"
+                android:layout_alignParentBottom="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="分享设备给多多"
+                android:maxLength="14"
+                android:singleLine="true"
+                android:ellipsize="end"
+                android:paddingBottom="12dp"
+                android:textSize="18sp"
+                android:textColor="@color/color_white" />
 
-        <ImageView
-            android:id="@+id/iv_mine_friends_share_devices_ok"
-            android:layout_marginBottom="2dp"
-            android:padding="15dp"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentRight="true"
-            android:clickable="true"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/icon_finish_disable" />
-
-    </RelativeLayout>
+            <ImageView
+                android:id="@+id/iv_mine_friends_share_devices_ok"
+                android:layout_marginBottom="2dp"
+                android:padding="15dp"
+                android:clickable="false"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentBottom="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/icon_finish_disable" />
+        </RelativeLayout>
 
     <FrameLayout
         android:layout_width="match_parent"

@@ -209,12 +209,7 @@ public class MineDevicesShareManagerPresenterImp extends AbstractPresenter<MineD
     private void handlerUnShareCallback(RxEvent.UnshareDeviceCallBack unshareDeviceCallBack) {
         if (getView() != null) {
             getView().hideCancleShareProgress();
-            if (unshareDeviceCallBack.i == JError.ErrorOK) {
-                getView().deleteItems();
-                getView().showUnShareResult(getView().getContext().getString(R.string.Tap3_ShareDevice_DeleteSucces));
-            } else {
-                getView().showUnShareResult(getView().getContext().getString(R.string.Tap3_ShareDevice_CancelShareTips));
-            }
+            getView().showUnShareResult(unshareDeviceCallBack);
         }
     }
 

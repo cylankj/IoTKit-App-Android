@@ -20,6 +20,8 @@ import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.rx.RxUiEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.support.qqLogIn.TencentInstance;
+import com.cylan.jiafeigou.support.sina.AccessTokenKeeper;
 
 import java.io.File;
 
@@ -37,6 +39,7 @@ import rx.subscriptions.CompositeSubscription;
 public class MineInfoPresenterImpl extends AbstractPresenter<MineInfoContract.View> implements MineInfoContract.Presenter {
 
     private CompositeSubscription compositeSubscription;
+    private boolean isOpenLogin;
 
     public MineInfoPresenterImpl(MineInfoContract.View view, Context context) {
         super(view);
@@ -62,6 +65,13 @@ public class MineInfoPresenterImpl extends AbstractPresenter<MineInfoContract.Vi
                         GlobalDataProxy.getInstance().setOnline(false);
                         RxBus.getCacheInstance().removeStickyEvent(RxUiEvent.BulkDeviceListRsp.class);
                         JfgCmdInsurance.getCmd().logout();
+                        if (isOpenLogin){
+                            AccessTokenKeeper.clear(getView().getContext());
+//                            TencentInstance tencentInstance = new TencentInstance();
+//                            if (tencentInstance.mTencent.isSessionValid()){
+//                                tencentInstance.mTencent.logout(getView().getContext());
+//                            }
+                        }
                     }
                 }, new Action1<Throwable>() {
                     @Override
@@ -190,6 +200,7 @@ public class MineInfoPresenterImpl extends AbstractPresenter<MineInfoContract.Vi
             compositeSubscription.unsubscribe();
         } else {
             compositeSubscription = new CompositeSubscription();
+            compositeSubscription.add(isOpenLoginBack());
             compositeSubscription.add(getAccount());
         }
     }
@@ -202,7 +213,23 @@ public class MineInfoPresenterImpl extends AbstractPresenter<MineInfoContract.Vi
      */
     @Override
     public boolean checkOpenLogin() {
-        return false;
+        return isOpenLogin;
+    }
+
+    /**
+     * 三方登录的回调
+     * @return
+     */
+    @Override
+    public Subscription isOpenLoginBack() {
+        return RxBus.getCacheInstance().toObservableSticky(Boolean.class)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<Boolean>() {
+                    @Override
+                    public void call(Boolean aBoolean) {
+                        isOpenLogin = aBoolean;
+                    }
+                });
     }
 
     @Override
