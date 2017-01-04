@@ -18,7 +18,7 @@ import java.util.ArrayList;
  * Created by cylan-hunt on 16-12-26.
  */
 
-public class GlobalDataProxy implements IDataPool {
+public class GlobalDataProxy implements IDataProxy {
 
     private static GlobalDataProxy instance;
     private JFGAccount jfgAccount;
@@ -74,6 +74,12 @@ public class GlobalDataProxy implements IDataPool {
     public JFGDevice fetch(String uuid) {
         checkAccount();
         return dataPointManager.fetch(jfgAccount.getAccount() + uuid);
+    }
+
+    @Override
+    public ArrayList<JFGDevice> fetchAll() {
+        if (jfgAccount == null) return null;
+        return dataPointManager.fetchAll(jfgAccount.getAccount());
     }
 
     private void checkAccount() {

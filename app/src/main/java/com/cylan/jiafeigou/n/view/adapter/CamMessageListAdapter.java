@@ -52,7 +52,7 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
     private final int pic_container_height;
     private Map<Integer, Integer> selectedMap = new HashMap<>();
     private Map<Integer, Integer> loadFailedMap = new HashMap<>();
-    private boolean hasStatus;
+    private boolean hasSdcard;
     private boolean deviceOnlineState;
 
     public CamMessageListAdapter(String uiid, Context context, List<CamMessageBean> items, IMulItemViewType<CamMessageBean> mulItemViewType) {
@@ -66,7 +66,7 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
 
     private void fetchSdcardStatus() {
         DpMsgDefine.SdStatus status = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_204_SDCARD_STORAGE, null);
-        this.hasStatus |= status != null && status.hasSdcard;
+        this.hasSdcard |= status != null && status.hasSdcard;
         DpMsgDefine.MsgNet net = GlobalDataProxy.getInstance().getValue(this.uuid, DpMsgMap.ID_201_NET, null);
         deviceOnlineState = net != null && net.net != 0;
     }
@@ -168,14 +168,14 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
      * @return
      */
     private boolean showLiveBtn(long time) {
-        return System.currentTimeMillis() - time >= 30 * 60 * 1000L && this.hasStatus;
+        return System.currentTimeMillis() - time >= 30 * 60 * 1000L && this.hasSdcard && deviceOnlineState;
     }
 
     /**
      * 来自一个全局的通知消息
      */
     public void notifySdcardStatus(boolean status, int position) {
-        this.hasStatus = status;
+        this.hasSdcard = status;
         updateItemFrom(position);
     }
 

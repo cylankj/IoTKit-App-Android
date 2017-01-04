@@ -25,6 +25,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DecodeFormat;
 import com.cylan.entity.jniCall.JFGAccount;
+import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.cache.JCache;
 import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
@@ -33,7 +34,6 @@ import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomePageListContract;
 import com.cylan.jiafeigou.n.mvp.impl.home.HomePageListPresenterImpl;
-import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
 import com.cylan.jiafeigou.n.view.activity.BindDeviceActivity;
 import com.cylan.jiafeigou.n.view.activity.CameraLiveActivity;
 import com.cylan.jiafeigou.n.view.activity.CloudLiveActivity;
@@ -278,7 +278,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
 
     @UiThread
     @Override
-    public void onItemsInsert(List<DeviceBean> resultList) {
+    public void onItemsInsert(List<String> resultList) {
         srLayoutMainContentHolder.setRefreshing(false);
         if (resultList == null || resultList.size() == 0) {
             homePageListAdapter.clear();
@@ -304,8 +304,8 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
     }
 
     @Override
-    public ArrayList<DeviceBean> getDeviceList() {
-        return homePageListAdapter == null ? null : (ArrayList<DeviceBean>) homePageListAdapter.getList();
+    public ArrayList<String> getUuidList() {
+        return homePageListAdapter == null ? null : (ArrayList<String>) homePageListAdapter.getList();
     }
 
     @Override
@@ -366,22 +366,24 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
             AppLogger.d("woo,position is invalid: " + position);
             return;
         }
-        DeviceBean bean = homePageListAdapter.getItem(position);
-        if (bean != null) {
+        String uuid = homePageListAdapter.getItem(position);
+        JFGDevice device = GlobalDataProxy.getInstance().fetch(uuid);
+        int pid = device == null ? 0 : device.pid;
+        if (uuid != null) {
             Bundle bundle = new Bundle();
-            bundle.putParcelable(JConstant.KEY_DEVICE_ITEM_BUNDLE, bean);
-            if (JConstant.isCamera(bean.pid)) {
+            bundle.putString(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
+            if (JConstant.isCamera(pid)) {
                 startActivity(new Intent(getActivity(), CameraLiveActivity.class)
-                        .putExtra(JConstant.KEY_DEVICE_ITEM_BUNDLE, bundle));
-            } else if (JConstant.isMag(bean.pid)) {
+                        .putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid));
+            } else if (JConstant.isMag(pid)) {
                 startActivity(new Intent(getActivity(), MagLiveActivity.class)
-                        .putExtra(JConstant.KEY_DEVICE_ITEM_BUNDLE, bundle));
-            } else if (JConstant.isBell(bean.pid)) {
+                        .putExtra(JConstant.KEY_DEVICE_ITEM_UUID, bundle));
+            } else if (JConstant.isBell(pid)) {
                 startActivity(new Intent(getActivity(), DoorBellHomeActivity.class)
-                        .putExtra(JConstant.KEY_DEVICE_ITEM_BUNDLE, bundle));
-            } else if (JConstant.isEFamily(bean.pid)) {
+                        .putExtra(JConstant.KEY_DEVICE_ITEM_UUID, bundle));
+            } else if (JConstant.isEFamily(pid)) {
                 startActivity(new Intent(getActivity(), CloudLiveActivity.class)
-                        .putExtra(JConstant.KEY_DEVICE_ITEM_BUNDLE, bundle));
+                        .putExtra(JConstant.KEY_DEVICE_ITEM_UUID, bundle));
             }
         }
     }

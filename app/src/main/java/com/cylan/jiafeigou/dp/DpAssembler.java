@@ -163,15 +163,21 @@ public class DpAssembler implements IParser {
      * @return
      */
     private Subscription simpleBulkSubSend2Ui() {
-        return RxBus.getCacheInstance().toObservable(RxUiEvent.BulkDeviceListReq.class)
-                .filter((RxUiEvent.BulkDeviceListReq queryBulkDevice) -> {
+        return RxBus.getCacheInstance().toObservable(RxUiEvent.BulkUUidListReq.class)
+                .filter((RxUiEvent.BulkUUidListReq queryBulkDevice) -> {
                     AppLogger.i(TAG + " simpleBulkSubSend2Ui: " + (JCache.getAccountCache() != null));
                     return JCache.getAccountCache() != null;
                 })
-                .map((RxUiEvent.BulkDeviceListReq queryBulkDevice) -> {
+                .map((RxUiEvent.BulkUUidListReq queryBulkDevice) -> {
                     RxUiEvent.BulkDeviceListRsp cacheList = new RxUiEvent.BulkDeviceListRsp();
                     cacheList.allDevices = flatMsg.getAllDevices(JCache.getAccountCache().getAccount());
+                    RxUiEvent.BulkUUidListRsp listRsp = new RxUiEvent.BulkUUidListRsp();
+                    listRsp.allList = new ArrayList<>();
+                    for (DpMsgDefine.DpWrap wrap : cacheList.allDevices) {
+                        listRsp.allList.add(wrap.baseDpDevice.uuid);
+                    }
                     RxBus.getCacheInstance().postSticky(cacheList);
+                    RxBus.getCacheInstance().postSticky(listRsp);
                     AppLogger.i("BulkDeviceListRsp: " + (cacheList.allDevices != null ? cacheList.allDevices.size() : 0));
                     return null;
                 }).subscribe();
@@ -192,7 +198,7 @@ public class DpAssembler implements IParser {
                         AppLogger.i("delete device: " + uuid);
                         RxBus.getCacheInstance().removeStickyEvent(RxUiEvent.BulkDeviceListRsp.class);
                         //触发更新数据
-                        RxBus.getCacheInstance().post(new RxUiEvent.BulkDeviceListReq());
+                        RxBus.getCacheInstance().post(new RxUiEvent.BulkUUidListReq());
                     }
                     return null;
                 })
@@ -389,7 +395,7 @@ public class DpAssembler implements IParser {
                 dpRspSeq.clear();
                 seqMap.remove(key);
                 AppLogger.i("hit: ");
-                RxBus.getCacheInstance().post(new RxUiEvent.BulkDeviceListReq());
+                RxBus.getCacheInstance().post(new RxUiEvent.BulkUUidListReq());
             }
         }
     }

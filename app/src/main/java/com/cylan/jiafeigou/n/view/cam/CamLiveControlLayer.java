@@ -3,6 +3,7 @@ package com.cylan.jiafeigou.n.view.cam;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Color;
+import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -56,6 +57,10 @@ public class CamLiveControlLayer extends FrameLayout {
     CamLiveLandTopBar fLayoutCamLiveLandTopBar;
     @BindView(R.id.fLayout_cam_live_land_bottom_bar)
     LinearLayout fLayoutCamLiveLandBottomBar;
+    @BindView(R.id.rv_land_date_list)
+    RecyclerView rvLandDateList;
+    @BindView(R.id.fLayout_land_date_container)
+    FrameLayout fLayoutLandDateContainer;
 
     public CamLiveControlLayer(Context context) {
         this(context, null);
@@ -70,6 +75,14 @@ public class CamLiveControlLayer extends FrameLayout {
         View view = LayoutInflater.from(context).inflate(R.layout.layout_cam_live_control_layer, this, true);
         ButterKnife.bind(view);
 
+    }
+
+    public RecyclerView getRvLandDateList() {
+        return rvLandDateList;
+    }
+
+    public FrameLayout getLandDateContainer() {
+        return fLayoutLandDateContainer;
     }
 
     public LinearLayout getLiveLandBottomBar() {

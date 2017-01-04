@@ -37,7 +37,6 @@ import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamLiveContract;
 import com.cylan.jiafeigou.n.mvp.impl.cam.CamLivePresenterImpl;
 import com.cylan.jiafeigou.n.mvp.model.BeanCamInfo;
-import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
@@ -129,15 +128,13 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        DeviceBean bean = getArguments().getParcelable(JConstant.KEY_DEVICE_ITEM_BUNDLE);
-        this.uuid = bean.uuid;
-        basePresenter = new CamLivePresenterImpl(this, bean.uuid);
+        this.uuid = getArguments().getString(JConstant.KEY_DEVICE_ITEM_UUID);
+        basePresenter = new CamLivePresenterImpl(this, uuid);
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
     }
 
     @Override
@@ -154,7 +151,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
         super.onViewCreated(view, savedInstanceState);
         ViewUtils.updateViewHeight(fLayoutCamLiveView, 0.75f);
         initBottomBtn(false);
-        camLiveController = new CamLiveController(getContext());
+        camLiveController = new CamLiveController(getContext(), uuid);
         camLiveController.setPresenterRef(basePresenter);
         camLiveController.setLiveAction((ILiveControl) vs_control.inflate());
         camLiveController.setCamLiveControlLayer(swCamLiveControlLayer);

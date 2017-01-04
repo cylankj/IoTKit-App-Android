@@ -4,25 +4,25 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
+import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
-import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
 import com.cylan.jiafeigou.n.view.cam.CamMessageListFragment;
 import com.cylan.jiafeigou.n.view.cam.CameraLiveFragment;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -57,11 +57,7 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_camera_live);
-        Parcelable parcelable = getIntent().getBundleExtra(JConstant.KEY_DEVICE_ITEM_BUNDLE)
-                .getParcelable(JConstant.KEY_DEVICE_ITEM_BUNDLE);
-        if (parcelable != null && parcelable instanceof DeviceBean) {
-            this.uuid = ((DeviceBean) parcelable).uuid;
-        }
+        this.uuid = getIntent().getStringExtra(JConstant.KEY_DEVICE_ITEM_UUID);
         ButterKnife.bind(this);
         initTopBar();
         initAdapter();
@@ -83,13 +79,10 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         final boolean isLandScape = this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
-        getWindow().getDecorView().post(new Runnable() {
-            @Override
-            public void run() {
-                handleSystemBar(!isLandScape, 1000);
-                rLayoutCameraLiveTopBar.setVisibility(isLandScape ? View.GONE : View.VISIBLE);
-                vpCameraLive.setPagingEnabled(!isLandScape);
-            }
+        getWindow().getDecorView().post(() -> {
+            handleSystemBar(!isLandScape, 1000);
+            rLayoutCameraLiveTopBar.setVisibility(isLandScape ? View.GONE : View.VISIBLE);
+            vpCameraLive.setPagingEnabled(!isLandScape);
         });
     }
 
@@ -106,7 +99,7 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
 
     private void initAdapter() {
         SimpleAdapterPager simpleAdapterPager = new SimpleAdapterPager(getSupportFragmentManager(),
-                getIntent().getBundleExtra(JConstant.KEY_DEVICE_ITEM_BUNDLE));
+                uuid);
         vpCameraLive.setAdapter(simpleAdapterPager);
         vIndicator.setViewPager(vpCameraLive);
         vIndicator.setOnPageChangeListener(simpleListener);
@@ -143,9 +136,8 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
     @OnClick(R.id.imgV_camera_title_top_setting)
     public void onClickSetting() {
         Intent intent = new Intent(this, CamSettingActivity.class);
-        intent.putExtra(JConstant.KEY_DEVICE_ITEM_BUNDLE, getIntent().getBundleExtra(JConstant.KEY_DEVICE_ITEM_BUNDLE));
-        startActivityForResult(intent,
-                REQUEST_CODE,
+        intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
+        startActivityForResult(intent, REQUEST_CODE,
                 ActivityOptionsCompat.makeCustomAnimation(getApplicationContext(),
                         R.anim.slide_in_right, R.anim.slide_out_left).toBundle());
     }
@@ -187,15 +179,17 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
 
 class SimpleAdapterPager extends FragmentPagerAdapter {
 
-    private Bundle bundle;
+    private String uuid;
 
-    public SimpleAdapterPager(FragmentManager fm, Bundle bundle) {
+    public SimpleAdapterPager(FragmentManager fm, String uuid) {
         super(fm);
-        this.bundle = bundle;
+        this.uuid = uuid;
     }
 
     @Override
     public Fragment getItem(int position) {
+        Bundle bundle = new Bundle();
+        bundle.putString(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
         if (position == 0) {
             return CameraLiveFragment.newInstance(bundle);
         } else {
@@ -209,15 +203,14 @@ class SimpleAdapterPager extends FragmentPagerAdapter {
 
     @Override
     public int getCount() {
-        DeviceBean bean = bundle.getParcelable(JConstant.KEY_DEVICE_ITEM_BUNDLE);
-        return bean != null && !TextUtils.isEmpty(bean.shareAccount)
-                ? 1 : 2;
+        JFGDevice device = GlobalDataProxy.getInstance().fetch(uuid);
+        String shareAccount = device == null ? "" : device.shareAccount;
+        return !TextUtils.isEmpty(shareAccount) ? 1 : 2;
     }
 
 
     @Override
     public CharSequence getPageTitle(int position) {
-        return position == 0 ? ContextUtils.getContext().getString(R.string.Tap1_Camera_Video) :
-                ContextUtils.getContext().getString(R.string.Tap1_Camera_Messages);
+        return position == 0 ? ContextUtils.getContext().getString(R.string.Tap1_Camera_Video) : ContextUtils.getContext().getString(R.string.Tap1_Camera_Messages);
     }
 }

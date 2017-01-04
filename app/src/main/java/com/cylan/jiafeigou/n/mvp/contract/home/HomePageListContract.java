@@ -5,7 +5,6 @@ import android.support.annotation.UiThread;
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
-import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +17,7 @@ public interface HomePageListContract {
     interface View extends BaseView<Presenter> {
 
         @UiThread
-        void onItemsInsert(List<DeviceBean> resultList);
+        void onItemsInsert(List<String> uuidList);
 
         /**
          * 对单个设备操作
@@ -29,7 +28,7 @@ public interface HomePageListContract {
 
         void onItemDelete(int index);
 
-        ArrayList<DeviceBean> getDeviceList();
+        ArrayList<String> getUuidList();
 
         /**
          * @param greetBean: 从presenter处理后返回.
@@ -55,7 +54,7 @@ public interface HomePageListContract {
 
         void fetchDeviceList(boolean manually);
 
-        void deleteItem(DeviceBean deviceBean);
+        void deleteItem(String uuid);
 
         void registerWorker();
 

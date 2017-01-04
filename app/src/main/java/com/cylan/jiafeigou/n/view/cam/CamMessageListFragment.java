@@ -27,7 +27,6 @@ import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamMessageListContract;
 import com.cylan.jiafeigou.n.mvp.impl.cam.CamMessageListPresenterImpl;
 import com.cylan.jiafeigou.n.mvp.model.CamMessageBean;
-import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
 import com.cylan.jiafeigou.n.view.adapter.CamMessageListAdapter;
 import com.cylan.jiafeigou.n.view.media.CamMediaActivity;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -51,7 +50,6 @@ import static com.cylan.jiafeigou.widget.dialog.BaseDialog.KEY_TITLE;
 import static com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment.KEY_LEFT_CONTENT;
 import static com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment.KEY_RIGHT_CONTENT;
 
-;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -108,9 +106,8 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        DeviceBean bean = getArguments().getParcelable(JConstant.KEY_DEVICE_ITEM_BUNDLE);
-        this.uuid = bean.uuid;
-        basePresenter = new CamMessageListPresenterImpl(this, bean.uuid);
+        this.uuid = getArguments().getString(JConstant.KEY_DEVICE_ITEM_UUID);
+        basePresenter = new CamMessageListPresenterImpl(this, uuid);
     }
 
     @Override

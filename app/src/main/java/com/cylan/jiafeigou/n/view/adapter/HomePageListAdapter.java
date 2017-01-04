@@ -3,13 +3,19 @@ package com.cylan.jiafeigou.n.view.adapter;
 import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
+import android.util.Pair;
 import android.view.View;
 
+import com.cylan.entity.jniCall.JFGDevice;
+import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
+import com.cylan.jiafeigou.dp.BaseValue;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
+import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
-import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
+import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.TimeUtils;
 import com.cylan.jiafeigou.widget.ImageViewTip;
 import com.cylan.superadapter.IMulItemViewType;
@@ -19,23 +25,19 @@ import com.cylan.superadapter.internal.SuperViewHolder;
 import java.util.List;
 import java.util.Locale;
 
+import static android.view.View.VISIBLE;
 import static com.cylan.jiafeigou.misc.JConstant.NET_TYPE_RES;
 
 /**
  * Created by hunt on 16-5-24.
  */
 
-public class HomePageListAdapter extends SuperAdapter<DeviceBean> {
+public class HomePageListAdapter extends SuperAdapter<String> {
 
-    private final static int[] msgContentRes = {
-            R.string.receive_new_news,
-            R.string.receive_new_news,
-            R.string.receive_new_news,
-            R.string.receive_new_news};
     private DeviceItemClickListener deviceItemClickListener;
     private DeviceItemLongClickListener deviceItemLongClickListener;
 
-    public HomePageListAdapter(Context context, List<DeviceBean> items, IMulItemViewType<DeviceBean> mulItemViewType) {
+    public HomePageListAdapter(Context context, List<String> items, IMulItemViewType<String> mulItemViewType) {
         super(context, items, mulItemViewType);
     }
 
@@ -48,24 +50,27 @@ public class HomePageListAdapter extends SuperAdapter<DeviceBean> {
     }
 
     @Override
-    public void onBind(SuperViewHolder holder, int viewType, int layoutPosition, DeviceBean item) {
+    public void onBind(SuperViewHolder holder, int viewType, int layoutPosition, String item) {
         holder.setOnClickListener(R.id.rLayout_device_item, deviceItemClickListener);
         holder.setOnLongClickListener(R.id.rLayout_device_item, deviceItemLongClickListener);
         handleState(holder, item);
     }
 
 
-    private void setItemState(SuperViewHolder holder, DeviceBean bean, DpMsgDefine.MsgNet net) {
+    private void setItemState(SuperViewHolder holder, String uuid, int pid, String shareAccount, DpMsgDefine.MsgNet net) {
         //0 net type 网络类型
         int resIdNet = net == null ? -1 : NET_TYPE_RES.get(net.net);
-        if (resIdNet != -1)
+        if (resIdNet != -1) {
+            holder.setVisibility(R.id.img_device_state_0, VISIBLE);
             holder.setImageResource(R.id.img_device_state_0, resIdNet);
+        }
         //1 分享
-        if (!TextUtils.isEmpty(bean.shareAccount)) {
+        if (!TextUtils.isEmpty(shareAccount)) {
+            holder.setVisibility(R.id.img_device_state_1, VISIBLE);
             holder.setImageResource(R.id.img_device_state_1, R.drawable.icon_home_share);
         }
         //2 电量
-        if (bean.pid == JConstant.OS_DOOR_BELL) {
+        if (pid == JConstant.OS_DOOR_BELL) {
 
         }
         //3 延时摄影
@@ -84,74 +89,74 @@ public class HomePageListAdapter extends SuperAdapter<DeviceBean> {
      * |NET_3G      |  3 | #3G网络 |
      * |NET_4G      |  4 | #4G网络  |
      * |NET_5G      |  5 | #5G网络  |
-     *
-     * @param bean
-     * @return
      */
-    private DpMsgDefine.MsgNet determineNet(DeviceBean bean) {
-        if (bean.dataList != null) {
-            for (DpMsgDefine.DpMsg dp : bean.dataList) {
-                if (dp.msgId == 201) {
-                    if (dp.o != null && (dp.o instanceof DpMsgDefine.MsgNet)) {
-                        return (DpMsgDefine.MsgNet) dp.o;
-                    }
-                }
-            }
-        }
-        return null;
-    }
 
-    private void handleState(SuperViewHolder holder, DeviceBean bean) {
-        DpMsgDefine.MsgNet net = determineNet(bean);
+    private void handleState(SuperViewHolder holder, String uuid) {
+        DpMsgDefine.MsgNet net = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_201_NET, new DpMsgDefine.MsgNet());
+        JFGDevice device = GlobalDataProxy.getInstance().fetch(uuid);
+        int pid = device == null ? 0 : device.pid;
+        String alias = device == null ? "" : device.alias;
+        String shareAccount = device == null ? "" : device.shareAccount;
         //门磁一直在线状态
-        final int onLineState = net != null ? net.net : (bean.pid == JConstant.OS_MAGNET ? 1 : 0);
+        final int onLineState = net != null ? net.net : (pid == JConstant.OS_MAGNET ? 1 : 0);
 //        final int deviceType = bean.pid;
-        Log.d("handleState", "handleState: " + bean.uuid + " " + net);
-        int iconRes = (onLineState != 0 && onLineState != -1) ? JConstant.onLineIconMap.get(bean.pid)
-                : JConstant.offLineIconMap.get(bean.pid);
+        Log.d("handleState", "handleState: " + uuid + " " + net);
+        int iconRes = (onLineState != 0 && onLineState != -1) ? JConstant.onLineIconMap.get(pid)
+                : JConstant.offLineIconMap.get(pid);
         //昵称
-        holder.setText(R.id.tv_device_alias, TextUtils.isEmpty(bean.alias) ? bean.uuid : bean.alias);
+        holder.setText(R.id.tv_device_alias, TextUtils.isEmpty(alias) ? uuid : alias);
         //图标
         holder.setBackgroundResource(R.id.img_device_icon, iconRes);
-        handleMsgCountTime(holder, bean);
+        handleMsgCountTime(holder, uuid, pid);
         //右下角状态
-        setItemState(holder, bean, net);
+        setItemState(holder, uuid, pid, shareAccount, net);
     }
 
-    private void handleMsgCountTime(SuperViewHolder holder, DeviceBean bean) {
-        final int msgCount = bean.msgCountPair == null ? 0 : bean.msgCountPair.first;
-        long time = bean.msgCountPair == null || bean.msgCountPair.second == null
-                ? 0 : bean.msgCountPair.second.getVersion();
+    private void handleMsgCountTime(SuperViewHolder holder, String uuid, int pid) {
+        Pair<Integer, BaseValue> msgCountPair = getPair(uuid);
+        final int msgCount = msgCountPair == null ? 0 : msgCountPair.first;
+        long time = msgCountPair == null || msgCountPair.second == null
+                ? 0 : msgCountPair.second.getVersion();
         //消息数
-        holder.setText(R.id.tv_device_msg_count, getLastWarnContent(bean));
+        holder.setText(R.id.tv_device_msg_count, getLastWarnContent(msgCountPair, pid));
         //时间
         holder.setText(R.id.tv_device_msg_time, TimeUtils.getHomeItemTime(getContext(), time));
         ((ImageViewTip) holder.getView(R.id.img_device_icon)).setShowDot(msgCount > 0);
     }
 
-    private String getLastWarnContent(DeviceBean bean) {
-        final int msgCount = bean.msgCountPair == null ? 0 : bean.msgCountPair.first;
+    private Pair<Integer, BaseValue> getPair(String uuid) {
+        try {
+            return GlobalDataProxy.getInstance()
+                    .fetchUnreadCount(uuid, DpMsgMap.ID_505_CAMERA_ALARM_MSG);
+        } catch (JfgException e) {
+            AppLogger.e("" + e.getLocalizedMessage());
+        }
+        return null;
+    }
+
+    private String getLastWarnContent(Pair<Integer, BaseValue> msgCountPair, int pid) {
+        final int msgCount = msgCountPair == null ? 0 : msgCountPair.first;
         if (msgCount == 0)
             return getContext().getString(R.string.Tap1_NoMessages);
-        if (JFGRules.isCamera(bean.pid)) {
+        if (JFGRules.isCamera(pid)) {
             return String.format(Locale.getDefault(), "[%s]" + getContext().getString(R.string.MSG_WARNING), msgCount > 99 ? "99+" : msgCount);
         }
-        if (JFGRules.isBell(bean.pid)) {
+        if (JFGRules.isBell(pid)) {
             return String.format(Locale.getDefault(), "[%s]" + getContext().getString(R.string.someone_call), msgCount > 99 ? "99+" : msgCount);
         }
         return "";
     }
 
     @Override
-    protected IMulItemViewType<DeviceBean> offerMultiItemViewType() {
-        return new IMulItemViewType<DeviceBean>() {
+    protected IMulItemViewType<String> offerMultiItemViewType() {
+        return new IMulItemViewType<String>() {
             @Override
             public int getViewTypeCount() {
                 return 1;
             }
 
             @Override
-            public int getItemViewType(int position, DeviceBean DeviceBean) {
+            public int getItemViewType(int position, String uuid) {
                 return 0;
             }
 

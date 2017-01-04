@@ -10,13 +10,17 @@ import java.util.ArrayList;
 
 public class RxUiEvent {
 
-    public static final class BulkDeviceListReq {
+    public static final class BulkUUidListReq {
         @Override
         public String toString() {
-            return "BulkDeviceListReq";
+            return "BulkUUidListReq";
         }
     }
 
+    /**
+     * @Deprecated
+     */
+    @Deprecated
     public static final class BulkDeviceListRsp {
         public ArrayList<DpMsgDefine.DpWrap> allDevices;
 
@@ -28,15 +32,26 @@ public class RxUiEvent {
         }
     }
 
-
-    public static final class SingleDevice {
-        public DpMsgDefine.DpWrap dpMsg;
+    public static final class BulkUUidListRsp {
+        public ArrayList<String> allList;
 
         @Override
         public String toString() {
-            return "SingleDevice{" +
-                    "dpMsg=" + dpMsg +
+            return "BulkDeviceListRsp{" +
+                    "allDevices=" + allList +
                     '}';
         }
     }
+
+
+//    public static final class SingleDevice {
+//        public DpMsgDefine.DpWrap dpMsg;
+//
+//        @Override
+//        public String toString() {
+//            return "SingleDevice{" +
+//                    "dpMsg=" + dpMsg +
+//                    '}';
+//        }
+//    }
 }

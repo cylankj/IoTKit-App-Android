@@ -67,9 +67,11 @@ public class CamLiveController implements
     private CamLiveControlLayer camLiveControlLayer;
     private Context context;
     private static final String TAG = "CamLiveController";
+    private String uuid;
 
-    public CamLiveController(Context context) {
+    public CamLiveController(Context context, String uuid) {
         this.context = context;
+        this.uuid = uuid;
     }
 
     public void setCamLiveControlLayer(CamLiveControlLayer camLiveControlLayer) {
@@ -137,10 +139,10 @@ public class CamLiveController implements
     public void setPortSafeSetter(ISafeStateSetter setter) {
         this.iSafeStateSetterPort = setter;
         iSafeStateSetterPort.setFlipListener(this);
-        boolean safe = GlobalDataProxy.getInstance().getValue(presenterRef.get().getUuid(), DpMsgMap.ID_501_CAMERA_ALARM_FLAG, false);
+        boolean safe = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_501_CAMERA_ALARM_FLAG, false);
         //true:绿色,false:setFlipped(true)
         iSafeStateSetterPort.setFlipped(!safe);
-        Log.d(TAG, "setFlip: " + safe);
+        Log.d(TAG, "setFlip: " + safe + " " + uuid);
     }
 
     /**
@@ -213,7 +215,7 @@ public class CamLiveController implements
             //安全防护
             setLandSafeSetter(camLiveControlLayer.getFlipLayout());
             iSafeStateSetterLand.setFlipListener(this);
-            boolean safe = GlobalDataProxy.getInstance().getValue(presenterRef.get().getUuid(), DpMsgMap.ID_501_CAMERA_ALARM_FLAG, false);
+            boolean safe = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_501_CAMERA_ALARM_FLAG, false);
             iSafeStateSetterLand.setFlipped(safe);
         }//显示或者隐藏
         if (liveTimeSetterLand != null) liveTimeSetterLand.setVisibility(land);
@@ -276,7 +278,7 @@ public class CamLiveController implements
                 AppLogger.i("没有历史视频数据,或者没准备好");
                 return;
             }
-            DpMsgDefine.MsgNet net = GlobalDataProxy.getInstance().getValue(presenterRef.get().getUuid(),
+            DpMsgDefine.MsgNet net = GlobalDataProxy.getInstance().getValue(uuid,
                     DpMsgMap.ID_201_NET, null);
             boolean deviceState = JFGRules.isDeviceOnline(net);
             //播放状态
@@ -434,14 +436,14 @@ public class CamLiveController implements
             AppLogger.d("no net work");
             return;
         }
-        DpMsgDefine.MsgNet net = GlobalDataProxy.getInstance().getValue(presenterRef.get().getUuid(),
+        DpMsgDefine.MsgNet net = GlobalDataProxy.getInstance().getValue(uuid,
                 DpMsgMap.ID_201_NET, null);
         if (net != null &&
                 net.net == 0) {
             AppLogger.d("device is offline");
             return;
         }
-        DpMsgDefine.SdStatus status = GlobalDataProxy.getInstance().getValue(presenterRef.get().getUuid(),
+        DpMsgDefine.SdStatus status = GlobalDataProxy.getInstance().getValue(uuid,
                 DpMsgMap.ID_204_SDCARD_STORAGE, null);
         if (status != null && !status.hasSdcard) {
             //没有sd卡
@@ -456,11 +458,11 @@ public class CamLiveController implements
         }
         boolean land = context.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
         //竖屏显示对话框,横屏显示测推
-        if (land) showLandDataPicker();
-        else showPortDataPicker();
+        if (land) showLandDatePicker();
+        else showPortDatePicker();
     }
 
-    private void showPortDataPicker() {
+    private void showPortDatePicker() {
         if (datePickerRef == null || datePickerRef.get() == null) {
             Bundle bundle = new Bundle();
             bundle.putString(BaseDialog.KEY_TITLE, context.getString(R.string.TIME));
@@ -480,8 +482,20 @@ public class CamLiveController implements
                 "DatePickerDialogFragment");
     }
 
-    private void showLandDataPicker() {
-
+    private void showLandDatePicker() {
+        int visibility = camLiveControlLayer.getLandDateContainer().getVisibility();
+        if (visibility == View.GONE) {
+            camLiveControlLayer.getLandDateContainer().setVisibility(View.INVISIBLE);
+        }
+        float x = camLiveControlLayer.getLandDateContainer().getX();
+        float left = camLiveControlLayer.getLandDateContainer().getLeft();
+        float translateX = camLiveControlLayer.getLandDateContainer().getTranslationX();
+        if (x == left && camLiveControlLayer.getLandDateContainer().isShown())
+            AnimatorUtils.slideOutRight(camLiveControlLayer.getLandDateContainer());
+        else if (translateX + left == x
+                || x == left + translateX
+                || !camLiveControlLayer.getLandDateContainer().isShown())
+            AnimatorUtils.slideInRight(camLiveControlLayer.getLandDateContainer());
     }
 
     @Override

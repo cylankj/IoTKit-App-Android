@@ -1,10 +1,11 @@
-package com.cylan.jiafeigou.dp;
+package com.cylan.jiafeigou.cache.pool;
 
 import android.util.Pair;
 
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.ex.JfgException;
+import com.cylan.jiafeigou.dp.BaseValue;
 
 import java.util.ArrayList;
 
@@ -12,7 +13,7 @@ import java.util.ArrayList;
  * Created by cylan-hunt on 16-12-26.
  */
 
-public interface IDataPoint {
+public interface IDataProxy {
     /**
      * Map<account+uuid,JFGDevice>
      *
@@ -36,7 +37,7 @@ public interface IDataPoint {
      */
     JFGDevice fetch(String uuid);
 
-    ArrayList<JFGDevice> fetchAll(String account);
+    ArrayList<JFGDevice> fetchAll();
 
     boolean insert(String uuid, BaseValue baseValue);
 
@@ -114,4 +115,5 @@ public interface IDataPoint {
      * @return long req
      */
     long robotGetData(String peer, ArrayList<JFGDPMsg> queryDps, int limit, boolean asc, int timeoutMs) throws JfgException;
+
 }

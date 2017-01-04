@@ -17,8 +17,6 @@ import com.cylan.jiafeigou.rx.RxUiEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.utils.ListUtils;
 
-import java.util.concurrent.TimeUnit;
-
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -64,7 +62,6 @@ public class SubmitBindingInfoContractImpl extends
     protected Subscription[] register() {
         return new Subscription[]{
                 robotSyncDataSub(),
-                bindTimeoutSub(),
                 bindResultSub(),
                 monitorBulkDeviceList()
         };
@@ -74,7 +71,7 @@ public class SubmitBindingInfoContractImpl extends
     public void start() {
         super.start();
         //查询
-        RxBus.getCacheInstance().post(new RxUiEvent.BulkDeviceListReq());
+        RxBus.getCacheInstance().post(new RxUiEvent.BulkUUidListReq());
     }
 
     /**
@@ -135,52 +132,6 @@ public class SubmitBindingInfoContractImpl extends
                 .subscribe();
     }
 
-    /**
-     * 开始接受绑定结果
-     *
-     * @return
-     */
-    private Subscription bindTimeoutSub() {
-        return RxBus.getCacheInstance().toObservable(RxUiEvent.SingleDevice.class)
-                .filter((RxUiEvent.SingleDevice singleDevice) -> {
-                    boolean filter = singleDevice.dpMsg != null
-                            && singleDevice.dpMsg.baseDpDevice != null
-                            && TextUtils.equals(uuid, singleDevice.dpMsg.baseDpDevice.uuid);
-                    AppLogger.i(TAG + ":filter: " + filter);
-                    return filter;
-
-                })
-                .flatMap(new Func1<RxUiEvent.SingleDevice, Observable<Integer>>() {
-                    @Override
-                    public Observable<Integer> call(RxUiEvent.SingleDevice singleDevice) {
-                        for (DpMsgDefine.DpMsg msg : singleDevice.dpMsg.baseDpMsgList) {
-                            if (msg.msgId == DpMsgMap.ID_201_NET) {
-                                AppLogger.i(TAG + " msg: " + msg);
-                                if (msg.o instanceof DpMsgDefine.MsgNet) {
-                                    return Observable.just(((DpMsgDefine.MsgNet) msg.o).net);
-                                }
-                            }
-                        }
-                        return Observable.just(-1);
-                    }
-                })
-                .observeOn(AndroidSchedulers.mainThread())
-                .timeout(90, TimeUnit.SECONDS, Observable.just(-1)
-                        .subscribeOn(AndroidSchedulers.mainThread())
-                        .filter(new RxHelper.Filter<>("bind timeout:", !success))
-                        .map((Integer state) -> {
-                            AppLogger.i(TAG + " bind timeout: " + state);
-                            getView().bindState(state);
-                            return null;
-                        }))
-                .retry(new RxHelper.RxException<>("bingResultMonitor"))
-                .subscribe((Integer state) -> {
-                    AppLogger.i("bind success: " + state);
-                    success = true;
-                    if (simulatePercent != null)
-                        simulatePercent.boost();
-                });
-    }
 
     /**
      * 某些设备上线下面,各种状态变化,都是通过{@link com.cylan.jiafeigou.rx.RxEvent.JFGRobotSyncData}
