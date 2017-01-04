@@ -9,7 +9,7 @@ import org.msgpack.annotation.Message;
 
 @Message
 public class MsgBindCidRsp extends RspMsgHeader {
-    @Index(5)
+    @Index(6)
     public String cid;
 }
 

@@ -14,8 +14,8 @@ import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.rx.RxHelper;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.MiscUtils;
 
-import java.io.IOException;
 import java.util.TimeZone;
 
 import rx.Subscription;
@@ -24,10 +24,10 @@ import rx.schedulers.Schedulers;
 /**
  * Created by cylan-hunt on 16-7-7.
  */
-public class ScanContractImpl extends AbstractPresenter<ScanContract.View> implements ScanContract.Presenter {
+public class ScanPresenterImpl extends AbstractPresenter<ScanContract.View> implements ScanContract.Presenter {
 
 
-    public ScanContractImpl(ScanContract.View v) {
+    public ScanPresenterImpl(ScanContract.View v) {
         super(v);
         v.setPresenter(this);
     }
@@ -71,15 +71,9 @@ public class ScanContractImpl extends AbstractPresenter<ScanContract.View> imple
         mMsgBindCidReq.timezone = TimeZone.getDefault().getID();
         mMsgBindCidReq.alias = alias;
         mMsgBindCidReq.mac = mac;
+        mMsgBindCidReq.seq = 20011L;
         byte[] data = DpUtils.pack(mMsgBindCidReq);
         JfgCmdInsurance.getCmd().sendEfamilyMsg(data);
-
-//        try {
-//            Object o = DpUtils.unpackData(data, MsgBindCidReq.class);
-//            Log.d(TAG, "unpack: " + o);
-//        } catch (IOException e) {
-//            Log.e(TAG, "E: " + e.getLocalizedMessage());
-//        }
-
+        Log.d(TAG, String.format("unpack: %s", MiscUtils.bytesToHex(data)));
     }
 }

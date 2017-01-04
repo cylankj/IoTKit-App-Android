@@ -9,9 +9,9 @@ import org.msgpack.annotation.Message;
 
 @Message
 public class RspMsgHeader extends MsgpackMsg.MsgHeader {
-    @Index(3)
-    public int ret;
     @Index(4)
+    public int ret;
+    @Index(5)
     public String msg;
 
     @Override

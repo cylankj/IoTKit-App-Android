@@ -3,15 +3,13 @@ package com.cylan.jiafeigou.misc.efamily;
 import org.msgpack.annotation.Index;
 import org.msgpack.annotation.Message;
 
-import java.io.Serializable;
-
 /**
  * 兼容中控绑定
  * Created by cylan-hunt on 17-1-3.
  */
 
 @Message
-public class MsgBindCidReq extends MsgpackMsg.MsgHeader implements Serializable {
+public class MsgBindCidReq extends MsgpackMsg.MsgHeader {
 
     public MsgBindCidReq() {
     }
@@ -21,15 +19,15 @@ public class MsgBindCidReq extends MsgpackMsg.MsgHeader implements Serializable 
         this.msgId = 16218;
     }
 
-    @Index(3)
-    public String cid;
     @Index(4)
-    public int is_rebind;
+    public String cid;
     @Index(5)
-    public String timezone;
+    public int is_rebind;
     @Index(6)
-    public String alias;
+    public String timezone;
     @Index(7)
+    public String alias;
+    @Index(8)
     public String mac;
 
     @Override

@@ -8,15 +8,15 @@ import org.msgpack.annotation.Ignore;
 import org.msgpack.annotation.Index;
 import org.msgpack.annotation.Message;
 
-import java.io.IOException;
-
 /**
  * Created by cylan-hunt on 17-1-3.
  */
 
 public class MsgpackMsg {
+
     @Message
     public static class MsgHeader {
+
         public MsgHeader() {
             msgId = -1;
             callee = "";
@@ -25,19 +25,11 @@ public class MsgpackMsg {
         @Index(0)
         public int msgId;
         @Index(1)
-        public String caller;
+        public String caller = "";
         @Index(2)
-        public String callee;
-
-        @Ignore
-        public byte[] toBytes() {
-            try {
-                MessagePack msgpack = new MessagePack();
-                return msgpack.write(this);
-            } catch (IOException ex) {
-                return null;
-            }
-        }
+        public String callee = "";
+        @Index(3)
+        public long seq;
 
         @Ignore
         public String toString() {

@@ -15,12 +15,14 @@ import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.bind.ScanContract;
-import com.cylan.jiafeigou.n.mvp.impl.bind.ScanContractImpl;
+import com.cylan.jiafeigou.n.mvp.impl.bind.ScanPresenterImpl;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.zscan.ZXingScannerView;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.LoadingDialog;
+import com.cylan.jiafeigou.widget.dialog.BaseDialog;
+import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
 import com.google.zxing.Result;
 
 import butterknife.BindView;
@@ -44,6 +46,8 @@ public class BindScanFragment extends IBaseFragment<ScanContract.Presenter> impl
     @BindView(R.id.fLayout_top_bar)
     FrameLayout fLayoutTopBar;
     private String uuid;
+    private SimpleDialogFragment rebindDialog;
+    private Bundle bindBundle;
 
     public BindScanFragment() {
         // Required empty public constructor
@@ -58,7 +62,7 @@ public class BindScanFragment extends IBaseFragment<ScanContract.Presenter> impl
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.basePresenter = new ScanContractImpl(this);
+        this.basePresenter = new ScanPresenterImpl(this);
     }
 
     @Override
@@ -101,14 +105,14 @@ public class BindScanFragment extends IBaseFragment<ScanContract.Presenter> impl
                 String cid = tmp.substring(indexCid + 4, indexCid + 16);
                 String mac = tmp.substring(indexMac + 4, tmp.length());
                 uuid = cid;
-                Bundle bundle = new Bundle();
-                bundle.putString("cid", cid);
-                bundle.putString("mac", mac);
-                bundle.putInt("bindWay", 0);
-                bundle.putString("alias", getString(R.string.DOOR_MAGNET_NAME));
-                basePresenter.submit(bundle);
+                bindBundle = new Bundle();
+                bindBundle.putString("cid", cid);
+                bindBundle.putString("mac", mac);
+                bindBundle.putInt("bindWay", 0);
+                bindBundle.putString("alias", getString(R.string.DOOR_MAGNET_NAME));
+                basePresenter.submit(bindBundle);
                 zxVScan.stop();
-                bundle.putString(JConstant.KEY_DEVICE_ITEM_UUID, cid);
+                bindBundle.putString(JConstant.KEY_DEVICE_ITEM_UUID, cid);
                 LoadingDialog.showLoading(getActivity().getSupportFragmentManager(),
                         getString(R.string.PLEASE_WAIT_2), true);
                 AppLogger.i("" + rawResult.getText());
@@ -134,11 +138,25 @@ public class BindScanFragment extends IBaseFragment<ScanContract.Presenter> impl
     public void onScanRsp(int state) {
         LoadingDialog.dismissLoading(getActivity().getSupportFragmentManager());
         Log.d(this.getClass().getSimpleName(), "bindResult: " + state);
-        if (state == 0) {
-
+        if (state == 0 && getActivity() != null) {
+            ToastUtil.showPositiveToast(getString(R.string.Added_successfully));
+            getActivity().getSupportFragmentManager().popBackStack();
         } else if (state == 8) {
             //需要重复绑定
-
+            if (rebindDialog != null && rebindDialog.isResumed())
+                return;
+            Bundle bundle = new Bundle();
+            bundle.putString(BaseDialog.KEY_TITLE, "");
+            bundle.putString(SimpleDialogFragment.KEY_LEFT_CONTENT, "");
+            bundle.putString(SimpleDialogFragment.KEY_RIGHT_CONTENT, "");
+            bundle.putString(SimpleDialogFragment.KEY_CONTENT_CONTENT,
+                    this.getString(R.string.Tips_SureDelete));
+            rebindDialog = SimpleDialogFragment.newInstance(bundle);
+            rebindDialog.setAction((int id, Object value) -> {
+                bindBundle.putInt("bindWay", 1);
+                basePresenter.submit(bindBundle);
+            });
+            rebindDialog.show(getActivity().getSupportFragmentManager(), "rebindDialog");
         }
     }
 
