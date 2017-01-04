@@ -14,12 +14,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
-import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.setting.TimezoneContract;
 import com.cylan.jiafeigou.n.mvp.impl.setting.TimezonePresenterImpl;
-import com.cylan.jiafeigou.n.mvp.model.BeanCamInfo;
 import com.cylan.jiafeigou.n.mvp.model.TimeZoneBean;
 import com.cylan.jiafeigou.n.view.adapter.DeviceTimeZoneAdapter;
 import com.cylan.jiafeigou.utils.ViewUtils;
@@ -32,6 +32,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnTextChanged;
+
+import static com.cylan.jiafeigou.misc.JConstant.KEY_DEVICE_ITEM_UUID;
 
 
 /**
@@ -59,6 +61,7 @@ public class DeviceTimeZoneFragment extends IBaseFragment<TimezoneContract.Prese
     TextView tvTimezoneNoResult;
     private DeviceTimeZoneAdapter adapter;
     private SimpleDialogFragment simpleDialog;
+    private String uuid;
 
     @Override
     public void timezoneList(List<TimeZoneBean> list) {
@@ -86,8 +89,8 @@ public class DeviceTimeZoneFragment extends IBaseFragment<TimezoneContract.Prese
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        basePresenter = new TimezonePresenterImpl(this,
-                (BeanCamInfo) getArguments().getParcelable(JConstant.KEY_DEVICE_ITEM_BUNDLE));
+        this.uuid = getArguments().getString(KEY_DEVICE_ITEM_UUID);
+        basePresenter = new TimezonePresenterImpl(this, uuid);
     }
 
     @Nullable
@@ -116,8 +119,8 @@ public class DeviceTimeZoneFragment extends IBaseFragment<TimezoneContract.Prese
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity().getApplicationContext(), LinearLayoutManager.VERTICAL, false);
         lvTimezoneDetail.setLayoutManager(layoutManager);
         adapter = new DeviceTimeZoneAdapter(getActivity().getApplicationContext());
-        BeanCamInfo info = basePresenter.getInfo();
-        String timeZoneId = info.deviceTimeZone == null ? "" : info.deviceTimeZone.timezone;
+        DpMsgDefine.MsgTimeZone info = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_214_DEVICE_TIME_ZONE, null);
+        String timeZoneId = info == null ? "" : info.timezone;
         adapter.setChooseId(timeZoneId);
         lvTimezoneDetail.setAdapter(adapter);
         adapter.setOnCLick(new DeviceTimeZoneAdapter.OnCLick() {
@@ -133,8 +136,7 @@ public class DeviceTimeZoneFragment extends IBaseFragment<TimezoneContract.Prese
                     @Override
                     public void onDialogAction(int id, Object value) {
                         if (value != null && value instanceof TimeZoneBean) {
-                            BeanCamInfo info = basePresenter.getInfo();
-                            DpMsgDefine.MsgTimeZone timeZone = info.deviceTimeZone = info.deviceTimeZone == null ? new DpMsgDefine.MsgTimeZone() : info.deviceTimeZone;
+                            DpMsgDefine.MsgTimeZone timeZone = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_214_DEVICE_TIME_ZONE, null);
                             int offset = timeZone.offset;
                             if (offset != ((TimeZoneBean) value).getOffset()) {
                                 timeZone.timezone = ((TimeZoneBean) value).getName();

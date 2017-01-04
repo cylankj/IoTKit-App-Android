@@ -259,9 +259,8 @@ public class ConfigApFragment extends BaseTitleFragment<ConfigApContract.Present
 
     @Override
     public void onSetWifiFinished(UdpConstant.UdpDevicePortrait o) {
-        ToastUtil.showPositiveToast("wth good");
         Bundle bundle = getArguments();
-        bundle.putParcelable(UdpConstant.KEY_BIND_DEVICE_PORTRAIT, o);
+        bundle.putString(JConstant.KEY_DEVICE_ITEM_UUID, o.uuid);
         SubmitBindingInfoFragment fragment = SubmitBindingInfoFragment.newInstance(bundle);
         ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(),
                 fragment, android.R.id.content);

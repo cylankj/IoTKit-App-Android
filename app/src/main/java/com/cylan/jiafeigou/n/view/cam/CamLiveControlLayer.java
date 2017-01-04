@@ -80,7 +80,7 @@ public class CamLiveControlLayer extends FrameLayout {
         return liveTimeLayout;
     }
 
-    public LinearLayout getlLayoutCamHistoryWheel() {
+    public LinearLayout getCamHistoryWheel() {
         return lLayoutCamHistoryWheel;
     }
 
@@ -92,7 +92,7 @@ public class CamLiveControlLayer extends FrameLayout {
         return tvCamLivePortLive;
     }
 
-    public CamLiveLandTopBar getfLayoutCamLiveLandTopBar() {
+    public CamLiveLandTopBar getCamLiveLandTopBar() {
         return fLayoutCamLiveLandTopBar;
     }
 

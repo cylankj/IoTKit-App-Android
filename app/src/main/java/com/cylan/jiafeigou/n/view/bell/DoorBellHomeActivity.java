@@ -79,7 +79,8 @@ public class DoorBellHomeActivity extends BaseFullScreenFragmentActivity
     /**
      * 加载更多
      */
-    private boolean endlessLoading = true;
+    private boolean endlessLoading = false;
+    private boolean mIsLastLoadFinish = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -152,9 +153,8 @@ public class DoorBellHomeActivity extends BaseFullScreenFragmentActivity
                     visibleItemCount = linearLayoutManager.getChildCount();
                     totalItemCount = linearLayoutManager.getItemCount();
                     pastVisibleItems = linearLayoutManager.findFirstVisibleItemPosition();
-                    if (endlessLoading) {
+                    if (!endlessLoading && mIsLastLoadFinish) {
                         if ((visibleItemCount + pastVisibleItems) >= totalItemCount) {
-                            endlessLoading = false;
                             List<BellCallRecordBean> list = bellCallRecordListAdapter.getList();
                             BellCallRecordBean bean = list.get(list.size() - 1);
                             startLoadData(false, bean.version);
@@ -167,6 +167,7 @@ public class DoorBellHomeActivity extends BaseFullScreenFragmentActivity
 
     private void startLoadData(boolean asc, long version) {
         LoadingDialog.showLoading(getSupportFragmentManager(), "加载中...", true);
+        mIsLastLoadFinish = false;
         if (presenter != null)
             presenter.fetchBellRecordsList(asc, version);
     }
@@ -269,8 +270,10 @@ public class DoorBellHomeActivity extends BaseFullScreenFragmentActivity
 
     @Override
     public void onRecordsListRsp(ArrayList<BellCallRecordBean> beanArrayList) {
+        if (beanArrayList.size() < 20) endlessLoading = true;
         bellCallRecordListAdapter.addAll(beanArrayList);
         LoadingDialog.dismissLoading(getSupportFragmentManager());
+        mIsLastLoadFinish = true;
         if (bellCallRecordListAdapter.getList().size() == 0) {//show empty view
             Toast.makeText(this, "暂无数据", Toast.LENGTH_SHORT).show();
         }

@@ -493,7 +493,6 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
      */
     private void jump2LoginFragment() {
         //进入登陆页 login page
-        JCache.onLineStatus = false;
         getActivity().startActivity(new Intent(getContext(), SmartcallActivity.class));
         getActivity().finish();
     }

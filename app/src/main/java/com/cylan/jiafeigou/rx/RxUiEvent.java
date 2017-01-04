@@ -10,19 +10,19 @@ import java.util.ArrayList;
 
 public class RxUiEvent {
 
-    public static final class QueryBulkDevice {
+    public static final class BulkDeviceListReq {
         @Override
         public String toString() {
-            return "QueryBulkDevice";
+            return "BulkDeviceListReq";
         }
     }
 
-    public static final class BulkDeviceList {
+    public static final class BulkDeviceListRsp {
         public ArrayList<DpMsgDefine.DpWrap> allDevices;
 
         @Override
         public String toString() {
-            return "BulkDeviceList{" +
+            return "BulkDeviceListRsp{" +
                     "allDevices=" + allDevices +
                     '}';
         }

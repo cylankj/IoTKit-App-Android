@@ -65,7 +65,7 @@ public class DpUtils {
     public static byte[] pack(Object o) {
         try {
             return mp.write(o);
-        } catch (IOException e) {
+        } catch (Exception e) {
             AppLogger.e("msgpack err: " + e.getLocalizedMessage());
             return null;
         }

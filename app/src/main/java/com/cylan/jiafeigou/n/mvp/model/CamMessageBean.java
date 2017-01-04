@@ -2,8 +2,6 @@ package com.cylan.jiafeigou.n.mvp.model;
 
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 
-import java.util.ArrayList;
-
 /**
  * Created by hunt on 16-5-14.
  */
@@ -13,21 +11,22 @@ public class CamMessageBean {
     /**
      * 直接类型，不需要转型。
      */
-    public ArrayList<String> urlList;//最终的url
-    public DpMsgDefine.SdStatus content;//204消息
+    public DpMsgDefine.AlarmMsg alarmMsg;
+//    public ArrayList<String> urlList;//最终的url
+    public DpMsgDefine.SdcardSummary content;//204消息
     public long time;
     public long version;
 
-    public int viewType = 0;
+//    public int viewType = 0;
 
     @Override
     public String toString() {
         return "CamMessageBean{" +
                 "id=" + id +
-                ", urlList=" + urlList +
+                ", alarmMsgs=" + alarmMsg +
+                ", content=" + content +
                 ", time=" + time +
-                ", content='" + content + '\'' +
-                ", viewType=" + viewType +
+                ", version=" + version +
                 '}';
     }
 

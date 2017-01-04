@@ -410,4 +410,93 @@ public class AnimatorUtils {
         setRight.addListener(animatorListener);
         return setRight;
     }
+
+    /**
+     * 切出屏幕
+     *
+     * @param view
+     * @param fromTop
+     */
+    public static void slideOut(View view, boolean fromTop) {
+        Object o = view.getTag();
+        if (o != null && o instanceof ObjectAnimator) {
+            ObjectAnimator animator = (ObjectAnimator) o;
+            if (animator.isRunning() || animator.isStarted())
+                animator.cancel();
+        }
+        int start = 0, end;
+        if (!fromTop) {
+            ViewGroup parent = (ViewGroup) view.getParent();
+            end = parent.getHeight() - view.getTop();
+        } else {
+            end = -view.getBottom();
+        }
+        ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(view, "translationY", start, end);
+        objectAnimator.setDuration(250);
+        objectAnimator.addListener(new SimpleAnimationListener() {
+            @Override
+            public void onAnimationStart(Animator animator) {
+                if (!view.isShown()) view.setVisibility(View.VISIBLE);
+            }
+        });
+        view.setTag(objectAnimator);
+        objectAnimator.start();
+    }
+
+    /**
+     * 切出屏幕
+     *
+     * @param view
+     * @param fromTop
+     */
+    public static void slideIn(final View view, boolean fromTop) {
+        Object o = view.getTag();
+        if (o != null && o instanceof ObjectAnimator) {
+            ObjectAnimator animator = (ObjectAnimator) o;
+            if (animator.isRunning() || animator.isStarted())
+                animator.cancel();
+        }
+        int start, end = 0;
+        if (!fromTop) {
+            ViewGroup parent = (ViewGroup) view.getParent();
+            start = parent.getHeight() - view.getTop();
+        } else {
+            start = -(view.getTop() + view.getHeight());
+        }
+        ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(view, "translationY", start, end);
+        objectAnimator.setDuration(250);
+        objectAnimator.addListener(new SimpleAnimationListener() {
+            @Override
+            public void onAnimationStart(Animator animator) {
+                if (!view.isShown()) view.setVisibility(View.VISIBLE);
+            }
+        });
+        view.setTag(objectAnimator);
+        objectAnimator.start();
+    }
+
+    /**
+     * 自动呼入呼出
+     * 1.view的初始状态是Invisible
+     * 2.view移动距离是view的高度
+     *
+     * @param view
+     * @param fromTop:紧贴顶部,false:紧贴底部
+     */
+    public static void slideAuto(final View view, boolean fromTop) {
+        if (fromTop) {
+            if (view.getBottom() == view.getTop() - view.getY())
+                slideIn(view, true);
+            if (view.getY() == view.getTop())
+                slideOut(view, true);
+        }
+        if (!fromTop) {
+            ViewGroup parent = (ViewGroup) view.getParent();
+            int end = parent.getHeight() - view.getTop();
+            if (end + view.getTop() == view.getY())
+                slideIn(view, false);
+            if (view.getTop() == view.getY())
+                slideOut(view, false);
+        }
+    }
 }

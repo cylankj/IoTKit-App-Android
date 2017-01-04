@@ -15,13 +15,13 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.setting.SafeInfoContract;
 import com.cylan.jiafeigou.n.mvp.impl.setting.SafeInfoPresenterImpl;
-import com.cylan.jiafeigou.n.mvp.model.BeanCamInfo;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;
@@ -66,6 +66,7 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
     LinearLayout lLayoutSafeContainer;
     private WeakReference<AlarmSoundEffectFragment> warnEffectFragmentWeakReference;
     private TimePickDialogFragment timePickDialogFragment;
+    private String uuid;
 
     public SafeProtectionFragment() {
         // Required empty public constructor
@@ -74,8 +75,8 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        basePresenter = new SafeInfoPresenterImpl(this,
-                getArguments().getParcelable(JConstant.KEY_DEVICE_ITEM_BUNDLE));
+        this.uuid = getArguments().getString(JConstant.KEY_DEVICE_ITEM_UUID);
+        basePresenter = new SafeInfoPresenterImpl(this, uuid);
     }
 
     /**
@@ -109,15 +110,17 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         ViewUtils.setViewPaddingStatusBar(fLayoutTopBarContainer);
-        updateDetails();
+        boolean alarm = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_501_CAMERA_ALARM_FLAG, false);
+        ((SwitchButton) swMotionDetection.findViewById(R.id.btn_item_switch)).setChecked(alarm);
         ((SwitchButton) swMotionDetection.findViewById(R.id.btn_item_switch))
                 .setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
-                    BeanCamInfo info = basePresenter.getBeanCamInfo();
-                    info.cameraAlarmFlag = isChecked;
-                    basePresenter.saveCamInfoBean(info, DpMsgMap.ID_501_CAMERA_ALARM_FLAG);
+                    basePresenter.updateInfoReq(isChecked, DpMsgMap.ID_501_CAMERA_ALARM_FLAG);
                     showDetail(isChecked);
+                    updateDetails();
                 });
-        showDetail(basePresenter.getBeanCamInfo().cameraAlarmFlag);
+        showDetail(alarm);
+        if (alarm)
+            updateDetails();
     }
 
     private void showDetail(boolean show) {
@@ -139,25 +142,27 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
     }
 
     private void updateDetails() {
-        BeanCamInfo info = basePresenter.getBeanCamInfo();
+        boolean flag = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_501_CAMERA_ALARM_FLAG, false);
         imgVTopBarCenter.setText(R.string.SECURE);
         //移动侦测
-        swMotionDetection.setSwitchButtonState(info.cameraAlarmFlag);
+        swMotionDetection.setSwitchButtonState(flag);
         //提示音
-        DpMsgDefine.NotificationInfo notificationInfo = info.cameraAlarmNotification;
+        DpMsgDefine.NotificationInfo notificationInfo = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_504_CAMERA_ALARM_NOTIFICATION, null);
         if (notificationInfo != null) {
             tvProtectionNotification.setText(getString(notificationInfo.notification == 0
                     ? R.string.MUTE : (notificationInfo.notification == 1
                     ? R.string.BARKING : R.string.ALARM)));
         }
         //灵敏度
-        tvProtectionSensitivity.setText(info.cameraAlarmSensitivity == 0 ? getString(R.string.SENSITIVI_LOW)
-                : (info.cameraAlarmSensitivity == 1 ? getString(R.string.SENSITIVI_STANDARD) : getString(R.string.SENSITIVI_HIGHT)));
+        int sensitivity = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_503_CAMERA_ALARM_SENSITIVITY, 0);
+        tvProtectionSensitivity.setText(sensitivity == 0 ? getString(R.string.SENSITIVI_LOW)
+                : (sensitivity == 1 ? getString(R.string.SENSITIVI_STANDARD) : getString(R.string.SENSITIVI_HIGHT)));
         //报警周期
+        DpMsgDefine.AlarmInfo info = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_502_CAMERA_ALARM_INFO, new DpMsgDefine.AlarmInfo());
         tvProtectionRepeatPeriod.setText(basePresenter.getRepeatMode(getContext()));
-        if (info.cameraAlarmInfo != null) {
-            tvProtectionStartTime.setText(MiscUtils.parse2Time(info.cameraAlarmInfo.timeStart));
-            tvProtectionEndTime.setText(MiscUtils.parse2Time(info.cameraAlarmInfo.timeEnd));
+        if (info != null) {
+            tvProtectionStartTime.setText(MiscUtils.parse2Time(info.timeStart));
+            tvProtectionEndTime.setText(MiscUtils.parse2Time(info.timeEnd));
         }
     }
 
@@ -177,9 +182,7 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
                 fragment.setAction((int id, Object value) -> {
                     if (value != null && value instanceof Integer) {
                         int level = (int) value;
-                        BeanCamInfo info = basePresenter.getBeanCamInfo();
-                        info.cameraAlarmSensitivity = level;
-                        basePresenter.saveCamInfoBean(info, DpMsgMap.ID_503_CAMERA_ALARM_SENSITIVITY);
+                        basePresenter.updateInfoReq(level, DpMsgMap.ID_503_CAMERA_ALARM_SENSITIVITY);
                         updateDetails();
                     }
                 });
@@ -203,10 +206,10 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
                 timePickDialogFragment.show(getActivity().getSupportFragmentManager(), "timePickDialogFragmentStart");
                 timePickDialogFragment.setAction((int id, Object value) -> {
                     if (value != null && value instanceof Integer) {
-                        BeanCamInfo info = basePresenter.getBeanCamInfo();
-                        if (info.cameraAlarmInfo.timeStart != (int) value) {
-                            info.cameraAlarmInfo.timeStart = (int) value;
-                            basePresenter.saveCamInfoBean(info, DpMsgMap.ID_502_CAMERA_ALARM_INFO);
+                        DpMsgDefine.AlarmInfo info = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_502_CAMERA_ALARM_INFO, null);
+                        if (info.timeStart != (int) value) {
+                            info.timeStart = (int) value;
+                            basePresenter.updateInfoReq(info, DpMsgMap.ID_502_CAMERA_ALARM_INFO);
                         }
                         updateDetails();
                     }
@@ -219,10 +222,10 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
                 timePickDialogFragment.show(getActivity().getSupportFragmentManager(), "timePickDialogFragmentEnd");
                 timePickDialogFragment.setAction((int id, Object value) -> {
                     if (value != null && value instanceof Integer) {
-                        BeanCamInfo info = basePresenter.getBeanCamInfo();
-                        if (info.cameraAlarmInfo.timeEnd != (int) value) {
-                            info.cameraAlarmInfo.timeEnd = (int) value;
-                            basePresenter.saveCamInfoBean(info, DpMsgMap.ID_502_CAMERA_ALARM_INFO);
+                        DpMsgDefine.AlarmInfo info = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_502_CAMERA_ALARM_INFO, null);
+                        if (info.timeEnd != (int) value) {
+                            info.timeEnd = (int) value;
+                            basePresenter.updateInfoReq(info, DpMsgMap.ID_502_CAMERA_ALARM_INFO);
                         }
                         updateDetails();
                     }
@@ -235,12 +238,12 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
                 fragment.setAction((int id, Object value) -> {
                     if (value != null && value instanceof Integer) {
                         int result = (int) value;
-                        BeanCamInfo info = basePresenter.getBeanCamInfo();
-                        DpMsgDefine.AlarmInfo alarmInfo = info.cameraAlarmInfo == null ? new DpMsgDefine.AlarmInfo() : info.cameraAlarmInfo;
+                        DpMsgDefine.AlarmInfo info = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_502_CAMERA_ALARM_INFO, null);
+                        DpMsgDefine.AlarmInfo alarmInfo = info == null ? new DpMsgDefine.AlarmInfo() : info;
                         if (alarmInfo.day != result) {
                             alarmInfo.day = result;
-                            info.cameraAlarmInfo = alarmInfo;
-                            basePresenter.saveCamInfoBean(info, DpMsgMap.ID_502_CAMERA_ALARM_INFO);
+                            info = alarmInfo;
+                            basePresenter.updateInfoReq(info, DpMsgMap.ID_502_CAMERA_ALARM_INFO);
                         }
                         updateDetails();
                     }
@@ -296,8 +299,7 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
     }
 
     @Override
-    public void beanUpdate(BeanCamInfo info) {
-        basePresenter.saveCamInfoBean(info, -1);
+    public void beanUpdate() {
         updateDetails();
     }
 

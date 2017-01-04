@@ -1,5 +1,9 @@
 package com.cylan.jiafeigou.utils;
 
+import android.content.Context;
+
+import com.cylan.jiafeigou.R;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -32,6 +36,13 @@ public class TimeUtils {
         @Override
         protected SimpleDateFormat initialValue() {
             return new SimpleDateFormat("HH:mm", Locale.getDefault());
+        }
+    };
+
+    private static final ThreadLocal<SimpleDateFormat> getSimpleDateFormatYYYYHHMM = new ThreadLocal<SimpleDateFormat>() {
+        @Override
+        protected SimpleDateFormat initialValue() {
+            return new SimpleDateFormat("yy/MM/dd", Locale.getDefault());
         }
     };
 
@@ -148,5 +159,18 @@ public class TimeUtils {
 
     public static String getSuperString(long time) {
         return getDateFormatSuper.get().format(new Date(time));
+    }
+
+    public static String getHomeItemTime(Context context, long time) {
+        if (time == 0) return "";
+        if (System.currentTimeMillis() - time <= 5 * 60 * 1000L)
+            return context.getString(R.string.JUST_NOW);
+        if (startOfDay(System.currentTimeMillis()) < time)//今天的早些时候
+            return getSimpleDateFormatHHMM.get().format(new Date(time));
+        return getSimpleDateFormatYYYYHHMM.get().format(new Date(time));
+    }
+
+    public static void main(String[] args) {
+
     }
 }

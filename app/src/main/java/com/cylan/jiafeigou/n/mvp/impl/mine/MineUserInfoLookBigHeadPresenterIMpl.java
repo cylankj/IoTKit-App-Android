@@ -1,16 +1,9 @@
 package com.cylan.jiafeigou.n.mvp.impl.mine;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
 import android.widget.ImageView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.BitmapImageViewTarget;
-import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineUserInfoLookBigHeadContract;
-import com.cylan.jiafeigou.utils.PreferencesUtils;
 
 /**
  * 作者：zsl

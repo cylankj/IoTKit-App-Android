@@ -8,23 +8,29 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.bind.ScanContract;
-import com.cylan.jiafeigou.n.mvp.impl.bind.ScanContractImpl;
+import com.cylan.jiafeigou.n.mvp.impl.bind.ScanPresenterImpl;
+import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.zscan.ZXingScannerView;
+import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
+import com.cylan.jiafeigou.widget.LoadingDialog;
+import com.cylan.jiafeigou.widget.dialog.BaseDialog;
+import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
 import com.google.zxing.Result;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import rx.Observable;
-import rx.functions.Action1;
-import rx.schedulers.Schedulers;
+
+import static com.cylan.jiafeigou.misc.JConstant.EFAMILY_QR_CODE_REG;
+import static com.cylan.jiafeigou.misc.JConstant.EFAMILY_URL_PREFIX;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -37,6 +43,11 @@ public class BindScanFragment extends IBaseFragment<ScanContract.Presenter> impl
     ZXingScannerView zxVScan;
     @BindView(R.id.imgV_nav_back)
     ImageView imgVNavBack;
+    @BindView(R.id.fLayout_top_bar)
+    FrameLayout fLayoutTopBar;
+    private String uuid;
+    private SimpleDialogFragment rebindDialog;
+    private Bundle bindBundle;
 
     public BindScanFragment() {
         // Required empty public constructor
@@ -51,32 +62,21 @@ public class BindScanFragment extends IBaseFragment<ScanContract.Presenter> impl
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.basePresenter = new ScanContractImpl(this);
+        this.basePresenter = new ScanPresenterImpl(this);
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
+    public void onStart() {
+        super.onStart();
+        zxVScan.startCamera();
         zxVScan.setResultHandler(BindScanFragment.this);
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        Observable.just(null)
-                .subscribeOn(Schedulers.io())
-                .subscribe(new Action1<Object>() {
-                    @Override
-                    public void call(Object o) {
-                        Log.d("onResume", "onResume: " + Thread.currentThread().getId());
-                        zxVScan.stopCamera();
-                    }
-                });
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
+        Log.d("onResume", "onResume: " + Thread.currentThread().getId());
+        zxVScan.stopCamera();
     }
 
     @Override
@@ -88,25 +88,43 @@ public class BindScanFragment extends IBaseFragment<ScanContract.Presenter> impl
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        ViewUtils.setViewMarginStatusBar(imgVNavBack);
+        ViewUtils.setViewMarginStatusBar(fLayoutTopBar);
     }
 
 
     @Override
-    public void handleResult(Result rawResult) {
-        Toast.makeText(getActivity(), "Contents = " + rawResult.getText() +
-                ", Format = " + rawResult.getBarcodeFormat().name(), Toast.LENGTH_SHORT).show();
-        // Note:
+    public void handleResult(Result rawResult) {// Note:
         // * Wait 2 seconds to resume the preview.
         // * On older devices continuously stopping and resuming camera preview can result in freezing the app.
         // * I don't know why this is the case but I don't have the time to figure out.
-        if (getView() != null)
-            getView().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    zxVScan.resumeCameraPreview(BindScanFragment.this);
-                }
+        if (EFAMILY_QR_CODE_REG.matcher(rawResult.getText().replace(JConstant.EFAMILY_URL_PREFIX, "")).find()) {
+            try {
+                String tmp = rawResult.getText().replace(EFAMILY_URL_PREFIX, "").replace("&", "");
+                int indexCid = tmp.indexOf("cid=");
+                int indexMac = tmp.indexOf("mac=");
+                String cid = tmp.substring(indexCid + 4, indexCid + 16);
+                String mac = tmp.substring(indexMac + 4, tmp.length());
+                uuid = cid;
+                bindBundle = new Bundle();
+                bindBundle.putString("cid", cid);
+                bindBundle.putString("mac", mac);
+                bindBundle.putInt("bindWay", 0);
+                bindBundle.putString("alias", getString(R.string.DOOR_MAGNET_NAME));
+                basePresenter.submit(bindBundle);
+                zxVScan.stop();
+                bindBundle.putString(JConstant.KEY_DEVICE_ITEM_UUID, cid);
+                LoadingDialog.showLoading(getActivity().getSupportFragmentManager(),
+                        getString(R.string.PLEASE_WAIT_2), true);
+                AppLogger.i("" + rawResult.getText());
+            } catch (Exception e) {
+                AppLogger.e("" + e.getLocalizedMessage());
+            }
+        } else if (getView() != null) {
+            ToastUtil.showNegativeToast(getString(R.string.EFAMILY_INVALID_DEVICE));
+            getView().postDelayed(() -> {
+                zxVScan.resumeCameraPreview(BindScanFragment.this);
             }, 2000);
+        }
     }
 
 
@@ -118,12 +136,38 @@ public class BindScanFragment extends IBaseFragment<ScanContract.Presenter> impl
 
     @Override
     public void onScanRsp(int state) {
-
+        LoadingDialog.dismissLoading(getActivity().getSupportFragmentManager());
+        Log.d(this.getClass().getSimpleName(), "bindResult: " + state);
+        if (state == 0 && getActivity() != null) {
+            ToastUtil.showPositiveToast(getString(R.string.Added_successfully));
+            getActivity().getSupportFragmentManager().popBackStack();
+        } else if (state == 8) {
+            //需要重复绑定
+            if (rebindDialog != null && rebindDialog.isResumed())
+                return;
+            Bundle bundle = new Bundle();
+            bundle.putString(BaseDialog.KEY_TITLE, "");
+            bundle.putString(SimpleDialogFragment.KEY_LEFT_CONTENT, "");
+            bundle.putString(SimpleDialogFragment.KEY_RIGHT_CONTENT, "");
+            bundle.putString(SimpleDialogFragment.KEY_CONTENT_CONTENT,
+                    this.getString(R.string.Tips_SureDelete));
+            rebindDialog = SimpleDialogFragment.newInstance(bundle);
+            rebindDialog.setAction((int id, Object value) -> {
+                bindBundle.putInt("bindWay", 1);
+                basePresenter.submit(bindBundle);
+            });
+            rebindDialog.show(getActivity().getSupportFragmentManager(), "rebindDialog");
+        }
     }
 
     @Override
     public void onStartScan() {
         zxVScan.startCamera();
+    }
+
+    @Override
+    public String getUuid() {
+        return uuid;
     }
 
     @Override

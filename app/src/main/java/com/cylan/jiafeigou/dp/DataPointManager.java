@@ -1,10 +1,15 @@
 package com.cylan.jiafeigou.dp;
 
+import android.os.Looper;
 import android.util.Log;
+import android.util.Pair;
 
 import com.cylan.entity.jniCall.JFGDPMsg;
+import com.cylan.entity.jniCall.JFGDPMsgCount;
+import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.entity.jniCall.RobotoGetDataRsp;
 import com.cylan.ex.JfgException;
+import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
@@ -13,8 +18,10 @@ import com.cylan.jiafeigou.support.log.AppLogger;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -27,15 +34,39 @@ import rx.schedulers.Schedulers;
  */
 
 public class DataPointManager implements IParser, IDataPoint {
-
-    private static final String TAG = "DataPointManager";
+    private static boolean DEBUG = BuildConfig.DEBUG;
+    private static final String TAG = "DataPointManager:";
 
     private static DataPointManager instance;
+    private HashMap<String, JFGDevice> jfgDeviceMap = new HashMap<>();
     private Map<Long, Long> querySeqMap = new HashMap<>();
+    /**
+     * String----->uuid+id
+     * object: 可以是BaseValue
+     */
+    private HashMap<String, BaseValue> bundleMap = new HashMap<>();
+    /**
+     * 可以是HashSet<BaseValue>,
+     */
+    private HashMap<String, HashSet<BaseValue>> bundleSetMap = new HashMap<>();
+    //硬编码,注册list类型的id
+    private static final HashMap<Long, Integer> mapObject = new HashMap<>();
+
+    /**
+     * 未读消息查询序列
+     */
+//    private HashMap<Long, Long> unreadSeqMap = new HashMap<>();
+    /**
+     * 未读消息书存放地方,UnreadCount的list存放的是同一个id
+     * String:uuid+id.
+     * Pair<count(条数),时间>
+     */
+    private HashMap<String, Pair<Integer, BaseValue>> unreadMap = new HashMap<>();
 
     @Override
     public Subscription[] register() {
         return new Subscription[]{fullDataPointAssembler(),
+                handleUnreadMessageCount(),
                 robotDataSyncSub()};
     }
 
@@ -56,7 +87,7 @@ public class DataPointManager implements IParser, IDataPoint {
                             base.setId(jfg.id);
                             base.setVersion(jfg.version);
                             base.setValue(DpUtils.unpackData(jfg.packValue, DpMsgMap.ID_2_CLASS_MAP.get((int) jfg.id)));
-                            boolean result = update(uuid, base);
+                            boolean result = update(uuid, base, false);
                             if (result) updatedItems.put(jfgRobotSyncData.identity, base);
                         } catch (IOException e) {
                             AppLogger.e("" + e.getLocalizedMessage());
@@ -71,6 +102,7 @@ public class DataPointManager implements IParser, IDataPoint {
                         RxEvent.DataPoolUpdate data = new RxEvent.DataPoolUpdate();
                         data.id = (int) map.get(uuid).getId();
                         data.uuid = uuid;
+                        data.value = map.get(uuid);
                         RxBus.getCacheInstance().post(data);
                     }
                     return null;
@@ -81,20 +113,14 @@ public class DataPointManager implements IParser, IDataPoint {
 
     @Override
     public void clear() {
+        if (DEBUG) Log.d(TAG, "clear: ");
         bundleMap.clear();
     }
-
-    /**
-     * object: 可以是HashSet<BaseValue>,可以是BaseValue
-     */
-    private HashMap<String, Object> bundleMap = new HashMap<>();
-    //硬编码,注册list类型的id
-    private static final HashMap<Long, Integer> mapObject = new HashMap<>();
 
 
     static {
         mapObject.put(505L, 505);
-        mapObject.put(204L, 204);
+//        mapObject.put(204L, 204);
         mapObject.put(222L, 222);
     }
 
@@ -111,47 +137,55 @@ public class DataPointManager implements IParser, IDataPoint {
     private DataPointManager() {
     }
 
+    /**
+     * 存放Set类型
+     *
+     * @param uuid
+     * @param baseValue
+     * @return
+     */
     private boolean putHashSetValue(String uuid, BaseValue baseValue) {
-        boolean isSet = mapObject.containsKey(baseValue.getId());
+        boolean isSet = isSetType(baseValue.getId());
         if (!isSet) {
             AppLogger.e("you go the wrong way: " + baseValue.getId());
             return false;
         }
-        Object o = bundleMap.get(uuid);
-        HashSet<BaseValue> set;
-        if (o != null && o instanceof HashSet) {
-            set = cast(o);
-            set.add(baseValue);
-        } else {
+        HashSet<BaseValue> set = bundleSetMap.get(uuid + baseValue.getId());
+        if (set == null) {
             set = new HashSet<>();
-            set.add(baseValue);
-            o = set;
         }
-        bundleMap.put(uuid, o);
+        if (set.contains(baseValue)) return false;//已经包含.id和version相同
+        set.add(baseValue);
+        bundleSetMap.put(uuid + baseValue.getId(), set);
+        if (DEBUG) Log.d(TAG, "putHashSetValue: " + uuid + " " + baseValue);
         return true;
     }
 
     private boolean putValue(String uuid, BaseValue baseValue) {
         boolean update = false;
         synchronized (DataPointManager.class) {
-            boolean isSetType = mapObject.containsKey(baseValue.getId());
+            boolean isSetType = isSetType(baseValue.getId());
+            if (DEBUG) Log.d(TAG, "isSetType: " + isSetType + " " + baseValue);
             if (isSetType) {
                 return putHashSetValue(uuid, baseValue);
             } else {
-                Object o = bundleMap.get(uuid);
-                if (o != null && o instanceof BaseValue) {
-                    if (((BaseValue) o).getVersion() < baseValue.getVersion()) {
-                        bundleMap.remove(uuid);
+                BaseValue o = bundleMap.get(uuid + baseValue.getId());
+                if (o != null) {
+                    if (o.getVersion() < baseValue.getVersion()) {
+                        //如果是
+                        bundleMap.remove(uuid + baseValue.getId());
                         update = true;
                     }
                 }
-                bundleMap.put(uuid, baseValue);
+                bundleMap.put(uuid + baseValue.getId(), baseValue);
             }
         }
         return update;
     }
 
     private Object removeId(String uuid, long id) {
+        if (DEBUG) Log.d(TAG, "removeId: " + uuid + " " + id + " set:" + mapObject.containsKey(id));
+        if (isSetType(id)) return bundleSetMap.remove(uuid + id);
         return bundleMap.remove(uuid + id);
     }
 
@@ -179,7 +213,7 @@ public class DataPointManager implements IParser, IDataPoint {
                                     value.setId(dp.id);
                                     value.setVersion(dp.version);
                                     value.setValue(o);
-                                    boolean changed = putValue(identity + dp.id, value);
+                                    boolean changed = putValue(identity, value);
                                     needNotify |= changed;
                                     Log.d(TAG, "put: " + dp.id + " " + changed + " " + needNotify);
                                 } catch (Exception e) {
@@ -187,8 +221,9 @@ public class DataPointManager implements IParser, IDataPoint {
                                 }
                             }
                         }
-                        if (needNotify && querySeqMap.containsKey(dpDataRsp.seq)) {
-                            Log.e(TAG, "file update: " + dpDataRsp.seq);
+//                        if (needNotify && querySeqMap.containsKey(dpDataRsp.seq)) {
+                        if (needNotify || querySeqMap.containsKey(dpDataRsp.seq)) {
+                            if (DEBUG) Log.e(TAG, "file update: " + dpDataRsp.seq);
                             querySeqMap.remove(dpDataRsp.seq);
                             RxBus.getCacheInstance().post(dpDataRsp.seq);
                         }
@@ -200,14 +235,103 @@ public class DataPointManager implements IParser, IDataPoint {
                 .subscribe();
     }
 
+    /**
+     * 未读消息数,只是一个数字.
+     * 应该在报警消息池中取,如果没有新的报警消息,需要重新获取.
+     *
+     * @return
+     */
+    private Subscription handleUnreadMessageCount() {
+        return RxBus.getCacheInstance().toObservable(RxEvent.UnreadCount.class)
+                .subscribeOn(Schedulers.newThread())
+                .map((RxEvent.UnreadCount unreadCount) -> {
+                    String uuid = unreadCount.uuid;
+                    for (JFGDPMsgCount msg : unreadCount.msgList) {
+                        int id = msg.id;
+                        BaseValue base = fetchLocal(uuid, id, true);
+                        if (base == null) {
+                            AppLogger.e(String.format(Locale.getDefault(), "no id:%d BaseValue", id));
+                            continue;
+                        }
+                        if (msg.count == 0) continue;
+                        Pair<Integer, BaseValue> pair = new Pair<>(msg.count, base);
+                        unreadMap.put(uuid + id, pair);
+                        Log.d(TAG, "handleUnreadMessageCount:" + pair);
+                    }
+                    return null;
+                })
+                .retry(new RxHelper.RxException<>("handleUnreadMessageCount"))
+                .subscribe();
+    }
+
+
+    @Override
+    public void cacheDevice(String uuid, JFGDevice jfgDevice) {
+        jfgDeviceMap.put(uuid, jfgDevice);
+    }
+
+    @Override
+    public boolean remove(String uuid) {
+        boolean result = jfgDeviceMap.remove(uuid) != null;
+        AppLogger.i("delete jfgDevice: " + uuid + " " + result);
+        return result;
+    }
+
+    @Override
+    public JFGDevice fetch(String uuid) {
+        return jfgDeviceMap.get(uuid);
+    }
+
     @Override
     public boolean insert(String uuid, BaseValue baseValue) {
         return putValue(uuid, baseValue);
     }
 
     @Override
-    public boolean update(String uuid, BaseValue baseValue) {
-        return putValue(uuid, baseValue);
+    public boolean update(String uuid, BaseValue baseValue, boolean sync) {
+        boolean result = putValue(uuid, baseValue);
+        if (sync) {
+            try {
+                byte[] data = null;
+                Object value = baseValue.getValue();
+                if (value != null && value instanceof BaseDataPoint)
+                    data = ((BaseDataPoint) value).toBytes();
+                else data = DpUtils.pack(value);
+                JfgCmdInsurance.getCmd().robotSetData(uuid,
+                        DpUtils.getList((int) baseValue.getId(),
+                                data,
+                                baseValue.getVersion()));
+
+                if (DEBUG && sync) Log.d(TAG, "update: " + value);
+            } catch (Exception e) {
+                AppLogger.e("" + e.getLocalizedMessage());
+            }
+        }
+        return result;
+    }
+
+    @Override
+    public boolean deleteAll(String uuid) {
+        boolean remove = false;
+        Set<String> set0 = bundleMap.keySet();
+        for (String s : set0) {
+            if (s.contains(uuid)) {
+                remove |= bundleMap.remove(s) != null;
+            }
+        }
+        set0 = bundleSetMap.keySet();
+        for (String s : set0) {
+            if (s.contains(uuid)) {
+                remove |= bundleSetMap.remove(s) != null;
+            }
+        }
+        try {
+            remove |= JfgCmdInsurance.getCmd().unBindDevice(uuid) == 0;
+        } catch (JfgException e) {
+            remove = false;
+            AppLogger.e("" + e.getLocalizedMessage());
+        }
+        return remove;
     }
 
     @Override
@@ -217,11 +341,10 @@ public class DataPointManager implements IParser, IDataPoint {
 
     @Override
     public Object delete(String uuid, long id, long version) {
-        boolean isSet = mapObject.containsKey(id);
+        boolean isSet = isSetType(id);
         if (isSet) {
-            Object o = bundleMap.get(uuid + id);
-            if (o != null && o instanceof HashSet) {
-                HashSet<BaseValue> set = cast(o);
+            HashSet<BaseValue> set = bundleSetMap.get(uuid + id);
+            if (set != null) {
                 BaseValue value = new BaseValue();
                 value.setId(id);
                 value.setVersion(version);
@@ -230,26 +353,65 @@ public class DataPointManager implements IParser, IDataPoint {
         } else {
             return bundleMap.remove(uuid + id);
         }
-        AppLogger.i("delete: " + id + ",version:" + version);
+        if (DEBUG) Log.d(TAG, "delete: " + uuid + " " + id + " set:" + isSet);
         return null;
     }
 
     @Override
     public BaseValue fetchLocal(String uuid, long id) {
         try {
-            return (BaseValue) bundleMap.get(uuid + id);
+            if (isSetType(id)) AppLogger.e("this id is ArrayType: " + id);
+            Log.d(TAG, "contains: " + bundleMap.get(uuid + id));
+            return bundleMap.get(uuid + id);
         } catch (ClassCastException c) {
-            AppLogger.e(String.format("id:%s is not registered in DataPointManager#mapObject,%s", id, c.getLocalizedMessage()));
+            AppLogger.e(String.format("id:%s %s", id, c.getLocalizedMessage()));
             return null;
         }
+    }
+
+    private BaseValue fetchLocal(String uuid, long id, boolean topOne) {
+        if (!topOne) return fetchLocal(uuid, id);
+        boolean isArray = mapObject.containsKey(id);
+        if (isArray) {
+            HashSet<BaseValue> set = bundleSetMap.get(uuid + id);
+            if (set == null || set.size() == 0)
+                return null;
+            else {
+                ArrayList<BaseValue> list = new ArrayList<>(set);
+                Collections.sort(list);
+                return list.get(0);
+            }
+        } else return bundleMap.get(uuid + id);
+    }
+
+    @Override
+    public boolean deleteAll(String uuid, long id, ArrayList<Long> versions) {
+        if (!isSetType(id)) AppLogger.e("this id is not ArrayType: " + id);
+        Object result = bundleSetMap.remove(uuid + id);
+        if (DEBUG) Log.d(TAG, "deleteAll: " + uuid + " " + id + " " + (result != null));
+        deleteRobot(uuid, id, versions);
+        return result != null;
+    }
+
+    private void deleteRobot(String uuid, long id, ArrayList<Long> versions) {
+        if (versions == null || versions.size() == 0)
+            return;
+        ArrayList<JFGDPMsg> msgs = new ArrayList<>();
+        for (long version : versions) {
+            JFGDPMsg msg = new JFGDPMsg();
+            msg.id = id;
+            msg.version = version;
+            msgs.add(msg);
+        }
+        long req = JfgCmdInsurance.getCmd().robotDelData(uuid, msgs, 0);
+        if (DEBUG) Log.d(TAG, "deleteRobot: " + req + " " + msgs);
     }
 
     @Override
     public ArrayList<BaseValue> fetchLocalList(String uuid, long id) {
         try {
-            Object o = bundleMap.get(uuid + id);
-            if (o != null && o instanceof HashSet) {
-                HashSet<BaseValue> set = cast(o);//bundleMap中存的是HashSet,set的key不会重复.
+            HashSet<BaseValue> set = bundleSetMap.get(uuid + id);
+            if (set != null) {
                 return new ArrayList<>(set);
             }
         } catch (ClassCastException c) {
@@ -260,14 +422,52 @@ public class DataPointManager implements IParser, IDataPoint {
     }
 
     @Override
-    public boolean isArrayType(int id) {
+    public boolean isSetType(long id) {
         return mapObject.containsKey(id);
+    }
+
+    @Override
+    public Pair<Integer, BaseValue> fetchUnreadCount(String uuid, long id) {
+        Pair<Integer, BaseValue> pair = unreadMap.get(uuid + id);
+        //如果有数据,直接返回,没有数据做检查,异步响应.
+        if (pair == null) {
+            //为空,尝试一次新的请求.
+            ArrayList<JFGDPMsg> list = new ArrayList<>();
+            JFGDPMsg msg = new JFGDPMsg((int) id, 0);//取最新的.
+            list.add(msg);
+            ArrayList<Long> idList = new ArrayList<>();
+            idList.add(id);
+            try {
+                //先查询数据,这里默认响应的顺序也是  robotGetDataRsp再到RobotCountDataRsp,接到
+                //RobotCountDataRsp,就可以做消息数广播了.
+                robotGetData(uuid, list, 1, false, 0);
+                long req0 = JfgCmdInsurance.getCmd().robotCountData(uuid, idList, 0);
+//                unreadSeqMap.put(req0, req0);
+            } catch (JfgException e) {
+                AppLogger.e("" + e.getLocalizedMessage());
+            }
+            if (Looper.getMainLooper() == Looper.myLooper()) {
+                throw new IllegalThreadStateException("在Io线程操作");
+            }
+            AppLogger.i(TAG + ",fetchUnreadCount:" + id);
+            return null;
+        }
+        return unreadMap.get(uuid + id);
+    }
+
+    @Override
+    public boolean markAsRead(String uuid, long id) throws JfgException {
+        ArrayList<Long> idList = new ArrayList<>();
+        idList.add(id);
+        JfgCmdInsurance.getCmd().robotCountDataClear(uuid, idList, 0);
+        return unreadMap.remove(uuid + id) != null;
     }
 
     @Override
     public long robotGetData(String peer, ArrayList<JFGDPMsg> queryDps, int limit, boolean asc, int timeoutMs) throws JfgException {
         long seq = JfgCmdInsurance.getCmd().robotGetData(peer, queryDps, limit, asc, timeoutMs);
         querySeqMap.put(seq, seq);
+        Log.d("robotGetData", "robotGetData....此处可以简化,版本管理在这里做.,传一个List<Long(id)>");
         return seq;
     }
 

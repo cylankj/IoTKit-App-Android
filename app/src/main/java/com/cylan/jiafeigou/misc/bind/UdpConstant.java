@@ -19,11 +19,7 @@ public class UdpConstant {
     public static final String F_PING_ACK = "f_ping_ack";
     public static final String UPGRADE_VERSION = "0.0.0.0";
     public static final String BIND_TAG = "bindTag:";
-    /**
-     * 绑定的设备画像
-     */
-    public static final String KEY_BIND_DEVICE_PORTRAIT = "key_bind_device_portrait";
-    public static final Map<Class<?>, Object> udpObjectMap = new HashMap<>();
+
 
     public static final class PingAckT {
         public long time;
@@ -50,7 +46,7 @@ public class UdpConstant {
      */
     public static final class UdpDevicePortrait implements Parcelable {
         public String mac;
-        public String cid;
+        public String uuid;
         public String version;
         public int net;
 
@@ -58,7 +54,7 @@ public class UdpConstant {
         public String toString() {
             return "UdpDevicePortrait{" +
                     "mac='" + mac + '\'' +
-                    ", cid='" + cid + '\'' +
+                    ", uuid='" + uuid + '\'' +
                     ", version='" + version + '\'' +
                     ", net=" + net +
                     '}';
@@ -72,7 +68,7 @@ public class UdpConstant {
         @Override
         public void writeToParcel(Parcel dest, int flags) {
             dest.writeString(this.mac);
-            dest.writeString(this.cid);
+            dest.writeString(this.uuid);
             dest.writeString(this.version);
             dest.writeInt(this.net);
         }
@@ -82,7 +78,7 @@ public class UdpConstant {
 
         protected UdpDevicePortrait(Parcel in) {
             this.mac = in.readString();
-            this.cid = in.readString();
+            this.uuid = in.readString();
             this.version = in.readString();
             this.net = in.readInt();
         }

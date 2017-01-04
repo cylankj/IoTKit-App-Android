@@ -103,7 +103,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="72dp"
                     hunt:sv_image_src="@drawable/icon_setting_safe"
-                    hunt:sv_sub_title="000d0d0d"
                     hunt:sv_title="@string/SECURE"
                     hunt:sv_v_divider="true" />
 

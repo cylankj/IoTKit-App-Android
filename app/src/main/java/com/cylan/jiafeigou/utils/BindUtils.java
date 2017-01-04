@@ -143,7 +143,7 @@ public class BindUtils {
 
     public static UdpConstant.UdpDevicePortrait assemble(JfgUdpMsg.PingAck pingAck, JfgUdpMsg.FPingAck fPingAck) {
         UdpConstant.UdpDevicePortrait devicePortrait = new UdpConstant.UdpDevicePortrait();
-        devicePortrait.cid = pingAck.cid;
+        devicePortrait.uuid = pingAck.cid;
         devicePortrait.mac = fPingAck.mac;
         devicePortrait.version = fPingAck.version;
         devicePortrait.net = pingAck.net;

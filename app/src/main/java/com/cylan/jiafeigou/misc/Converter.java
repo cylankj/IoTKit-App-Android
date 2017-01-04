@@ -1,7 +1,5 @@
 package com.cylan.jiafeigou.misc;
 
-import com.cylan.entity.JfgEnum;
-import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.dp.BaseValue;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
@@ -9,7 +7,6 @@ import com.cylan.jiafeigou.n.mvp.model.BaseBean;
 import com.cylan.jiafeigou.n.mvp.model.BeanCamInfo;
 import com.cylan.jiafeigou.n.mvp.model.CamMessageBean;
 import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
-import com.cylan.jiafeigou.support.log.AppLogger;
 
 import java.util.ArrayList;
 
@@ -49,39 +46,13 @@ public class Converter {
             bean.id = base.getId();
             bean.version = base.getVersion();
             if (base.getId() == DpMsgMap.ID_505_CAMERA_ALARM_MSG && base.getValue() != null) {
-                DpMsgDefine.AlarmMsg msg = (DpMsgDefine.AlarmMsg) base.getValue();
-                bean.urlList = getUrlList(uuid,
-                        msg.time,
-                        msg.type,
-                        msg.fileIndex);
-                bean.viewType = bean.urlList.size() > 0 ? 1 : 0;
-            } else if (base.getId() == DpMsgMap.ID_204_SDCARD_STORAGE) {
-                bean.content = (DpMsgDefine.SdStatus) base.getValue();
+                bean.alarmMsg = (DpMsgDefine.AlarmMsg) base.getValue();
+            } else if (base.getId() == DpMsgMap.ID_222_SDCARD_SUMMARY) {
+                bean.content = (DpMsgDefine.SdcardSummary) base.getValue();
             }
             beanArrayList.add(bean);
         }
         return beanArrayList;
-    }
-
-    private static ArrayList<String> getUrlList(String uuid, long time, int type, int index) {
-        ArrayList<String> list = new ArrayList<>();
-        for (int i = 0; i < 3; i++) {
-            if ((index >> i & 0x01) == 1) {
-                StringBuilder builder = new StringBuilder();
-                builder.append(time)
-                        .append("_")
-                        .append(i + 1)
-                        .append(".jpg");
-                try {
-                    String url = JfgCmdInsurance.getCmd().getCloudUrlByType(JfgEnum.JFG_URL.WARNING,
-                            type, builder.toString(), uuid);
-                    list.add(url);
-                } catch (JfgException e) {
-                    AppLogger.e(String.format("err:%s", e.getLocalizedMessage()));
-                }
-            }
-        }
-        return list;
     }
 
 }

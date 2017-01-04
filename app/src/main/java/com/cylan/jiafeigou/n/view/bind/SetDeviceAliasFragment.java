@@ -13,7 +13,6 @@ import android.widget.ImageView;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.JConstant;
-import com.cylan.jiafeigou.misc.bind.UdpConstant;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.bind.SetDeviceAliasContract;
 import com.cylan.jiafeigou.n.mvp.impl.bind.SetDeviceAliasPresenterImpl;
@@ -62,7 +61,7 @@ public class SetDeviceAliasFragment extends IBaseFragment<SetDeviceAliasContract
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         basePresenter = new SetDeviceAliasPresenterImpl(this,
-                (UdpConstant.UdpDevicePortrait) getArguments().getParcelable(UdpConstant.KEY_BIND_DEVICE_PORTRAIT));
+                getArguments().getString(JConstant.KEY_DEVICE_ITEM_UUID));
     }
 
     @Override

@@ -581,8 +581,9 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
     @OnClick({R.id.act_media_header_opt_share, R.id.act_media_picture_opt_share})
     public void share() {
         if (mShareDialog == null || mShareDialog.get() == null) {
-            mShareDialog = new WeakReference<>(ShareDialogFragment.newInstance(mCurrentMediaBean));
+            mShareDialog = new WeakReference<>(ShareDialogFragment.newInstance());
         }
+        mShareDialog.get().setGlideUrl(new WonderGlideURL(mCurrentMediaBean));
         mShareDialog.get().show(getSupportFragmentManager(), ShareDialogFragment.class.getName());
     }
 

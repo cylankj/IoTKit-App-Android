@@ -8,21 +8,16 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.JConstant;
-import com.cylan.jiafeigou.utils.ViewUtils;
+import com.cylan.jiafeigou.utils.CamWarnGlideURL;
 import com.cylan.photoview.PhotoView;
-import com.cylan.photoview.PhotoViewAttacher;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -31,20 +26,12 @@ import butterknife.OnClick;
  */
 public class BigPicFragment extends Fragment {
 
+    public static final String KEY_TITLE = "KEY_TITLE";
+    public static final String KEY_INDEX = "key_index";
+    public static final String KEY_UUID = "key_uuid";
     @BindView(R.id.imgV_show_pic)
     PhotoView imgVShowPic;
-    @BindView(R.id.tv_big_pic_close)
-    ImageView tvBigPicClose;
-    @BindView(R.id.tv_big_pic_title)
-    TextView tvBigPicTitle;
-    @BindView(R.id.fLayout_details_title)
-    FrameLayout fLayoutBigPicTitle;
-    @BindView(R.id.imgV_big_pic_download)
-    ImageView imgVBigPicDownload;
-    @BindView(R.id.imgV_big_pic_share)
-    ImageView imgVBigPicShare;
-    @BindView(R.id.imgV_big_pic_collect)
-    ImageView imgVBigPicCollect;
+
 
     public BigPicFragment() {
         // Required empty public constructor
@@ -84,37 +71,26 @@ public class BigPicFragment extends Fragment {
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        ViewUtils.setViewMarginStatusBar(fLayoutBigPicTitle);
+        int index = getArguments().getInt(KEY_INDEX);
+        String uuid = getArguments().getString(KEY_UUID);
         Glide.with(this)
-                .load(getArguments().getString(JConstant.KEY_SHARED_ELEMENT_LIST))
+                .load(new CamWarnGlideURL(getArguments().getParcelable(JConstant.KEY_SHARED_ELEMENT_LIST),
+                        index, uuid))
                 .placeholder(R.drawable.wonderful_pic_place_holder)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(imgVShowPic);
-        imgVShowPic.setOnViewTapListener(new PhotoViewAttacher.OnViewTapListener() {
-            @Override
-            public void onViewTap(View view, float x, float y) {
-                getActivity().getSupportFragmentManager().popBackStack();
-            }
+        imgVShowPic.setOnViewTapListener((View v, float x, float y) -> {
+            if (callBack != null) callBack.click();
         });
-
     }
 
-    @OnClick(R.id.tv_big_pic_close)
-    public void onClick() {
+    private CallBack callBack;
+
+    public void setCallBack(CallBack callBack) {
+        this.callBack = callBack;
     }
 
-    @OnClick({R.id.imgV_big_pic_download, R.id.imgV_big_pic_share, R.id.imgV_big_pic_collect
-            , R.id.tv_big_pic_close})
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.imgV_big_pic_download:
-                break;
-            case R.id.imgV_big_pic_share:
-                break;
-            case R.id.imgV_big_pic_collect:
-                break;
-            case R.id.tv_big_pic_close:
-                break;
-        }
+    public interface CallBack {
+        void click();
     }
 }

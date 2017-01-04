@@ -64,12 +64,12 @@ public class MineUserInfoLookBigHeadFragment extends Fragment implements MineUse
      * 初始化大图大小
      */
     private void initImageViewSize() {
-        WindowManager wm = (WindowManager)getActivity()
+        WindowManager wm = (WindowManager) getActivity()
                 .getSystemService(Context.WINDOW_SERVICE);
         int height = wm.getDefaultDisplay().getHeight();
         RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(ivUserinfoBigImage.getLayoutParams());
-        lp.height = (int) (height*0.47);
-        lp.setMargins(0, (int) (height*0.23), 0, 0);
+        lp.height = (int) (height * 0.47);
+        lp.setMargins(0, (int) (height * 0.23), 0, 0);
         ivUserinfoBigImage.setLayoutParams(lp);
     }
 
@@ -106,7 +106,7 @@ public class MineUserInfoLookBigHeadFragment extends Fragment implements MineUse
                 })
                 .into(ivUserinfoBigImage);
 
-                    }
+    }
 
     private void initPresenter() {
         presenter = new MineUserInfoLookBigHeadPresenterIMpl(this);

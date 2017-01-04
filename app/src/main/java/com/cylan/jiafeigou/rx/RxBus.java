@@ -49,6 +49,7 @@ public class RxBus implements IEventBus {
      *
      * @return
      */
+    @Deprecated
     public static RxBus getUiInstance() {
         if (mUiInstance == null) {
             synchronized (RxBus.class) {
@@ -98,6 +99,10 @@ public class RxBus implements IEventBus {
             mStickyEventMap.put(event.getClass(), event);
         }
         post(event);
+    }
+
+    public boolean hasStickyEvent(Class<?> clazz) {
+        return mStickyEventMap.containsKey(clazz);
     }
 
     /**

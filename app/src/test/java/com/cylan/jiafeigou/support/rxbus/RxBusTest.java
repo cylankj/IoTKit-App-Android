@@ -1,5 +1,7 @@
 package com.cylan.jiafeigou.support.rxbus;
 
+import android.os.SystemClock;
+
 import com.cylan.jiafeigou.rx.RxBus;
 
 import org.junit.Test;
@@ -231,5 +233,44 @@ public class RxBusTest {
         RxBus.getCacheInstance().post(35);
         RxBus.getCacheInstance().post(45);
         Thread.sleep(2000);
+    }
+
+    @Test
+    public void testBlock() {
+        RxBus.getCacheInstance().toObservable(String.class)
+                .zipWith(RxBus.getCacheInstance().toObservable(Integer.class)
+                        .map(new Func1<Integer, Integer>() {
+                            @Override
+                            public Integer call(Integer integer) {
+                                System.out.println("what: " + integer);
+                                return integer;
+                            }
+                        }), new Func2<String, Integer, Pair<Integer, String>>() {
+                    @Override
+                    public Pair<Integer, String> call(String s, Integer integer) {
+                        return new Pair<>(integer, s);
+                    }
+                })
+                .subscribe(new Action1<Pair<Integer, String>>() {
+                    @Override
+                    public void call(Pair<Integer, String> integerStringPair) {
+                        System.out.println("pair: " + integerStringPair.first + " ..." + integerStringPair.second);
+                    }
+                });
+        RxBus.getCacheInstance().toObservable(Long.class)
+                .subscribe(new Action1<Long>() {
+                    @Override
+                    public void call(Long aLong) {
+                        System.out.println("long:" + aLong);
+                    }
+                });
+        RxBus.getCacheInstance().post("4nihao");
+        RxBus.getCacheInstance().post(5L);
+//        RxBus.getCacheInstance().post(5);
+//        RxBus.getCacheInstance().post(15);
+//        RxBus.getCacheInstance().post(25);
+//        RxBus.getCacheInstance().post(35);
+//        RxBus.getCacheInstance().post(45);
+        SystemClock.sleep(2000);
     }
 }

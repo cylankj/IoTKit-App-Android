@@ -27,7 +27,7 @@ import com.bumptech.glide.load.DecodeFormat;
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.cache.JCache;
-import com.cylan.jiafeigou.cache.pool.GlobalDataPool;
+import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
@@ -127,7 +127,6 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
         onTimeTick(JFGRules.getTimeRule());
         if (basePresenter != null) {
             basePresenter.fetchGreet();
-//            basePresenter.fetchDeviceList();
         }
     }
 
@@ -242,7 +241,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
 
     @OnClick(R.id.imgV_add_devices)
     void onClickAddDevice() {
-        if (!GlobalDataPool.getInstance().isOnline()) {
+        if (!GlobalDataProxy.getInstance().isOnline()) {
             if (RxBus.getCacheInstance().hasObservers())
                 RxBus.getCacheInstance().post(new RxEvent.NeedLoginEvent(null));
             return;
@@ -313,8 +312,8 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
     public void onAccountUpdate(JFGAccount greetBean) {
         tvHeaderNickName.setText(String.format("Hi,%s",
                 greetBean.getAccount()));
-        tvHeaderPoet.setText(JFGRules.getTimeRule() == JFGRules.RULE_DAY_TIME ? "每天都给自己一点小期待"
-                : "每次的歇息，总会带来新的向往");
+        tvHeaderPoet.setText(JFGRules.getTimeRule() == JFGRules.RULE_DAY_TIME ? getString(R.string.Tap1_Index_DayGreetings)
+                : getString(R.string.Tap1_Index_NightGreetings));
     }
 
     @SuppressWarnings("deprecation")
@@ -353,7 +352,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
     @Override
     public void onRefresh() {
         if (basePresenter != null)
-            basePresenter.fetchDeviceList();
+            basePresenter.fetchDeviceList(true);
         //不使用post,因为会泄露
         srLayoutMainContentHolder.setRefreshing(true);
     }

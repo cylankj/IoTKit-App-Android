@@ -3,7 +3,9 @@ package com.cylan.jiafeigou.n.mvp.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
+import android.util.Pair;
 
+import com.cylan.jiafeigou.dp.BaseValue;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 
 import java.util.ArrayList;
@@ -21,6 +23,10 @@ public class DeviceBean implements Parcelable {
     public int isChooseFlag;
     public int hasShareCount;
 
+    /**
+     * 未读消息数量,时间戳
+     */
+    public Pair<Integer, BaseValue> msgCountPair;
     public List<DpMsgDefine.DpMsg> dataList;
 
     public DeviceBean() {

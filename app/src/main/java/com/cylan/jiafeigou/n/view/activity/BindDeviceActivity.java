@@ -9,7 +9,6 @@ import android.widget.TextView;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
-import com.cylan.jiafeigou.n.mvp.impl.bind.ScanContractImpl;
 import com.cylan.jiafeigou.n.view.bind.BindCameraFragment;
 import com.cylan.jiafeigou.n.view.bind.BindDoorBellFragment;
 import com.cylan.jiafeigou.n.view.bind.BindScanFragment;
@@ -119,8 +118,7 @@ public class BindDeviceActivity extends BaseFullScreenFragmentActivity implement
         switch (view.getId()) {
             case R.id.v_to_scan_qrcode: {
                 ViewUtils.deBounceClick(findViewById(R.id.v_to_scan_qrcode));
-                Bundle bundle = new Bundle();
-                BindScanFragment fragment = BindScanFragment.newInstance(bundle);
+                BindScanFragment fragment = BindScanFragment.newInstance(null);
                 getSupportFragmentManager()
                         .beginTransaction()
                         .setCustomAnimations(0, R.anim.slide_down_out
@@ -128,7 +126,6 @@ public class BindDeviceActivity extends BaseFullScreenFragmentActivity implement
                         .replace(android.R.id.content, fragment)
                         .addToBackStack("BindScanFragment")
                         .commit();
-                new ScanContractImpl(fragment);
                 break;
             }
             case R.id.v_to_bind_camera: {
