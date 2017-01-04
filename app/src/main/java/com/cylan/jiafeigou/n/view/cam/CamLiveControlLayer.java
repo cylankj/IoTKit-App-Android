@@ -3,6 +3,7 @@ package com.cylan.jiafeigou.n.view.cam;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Color;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -15,6 +16,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.n.view.adapter.CamLandHistoryDateAdapter;
 import com.cylan.jiafeigou.widget.LiveTimeLayout;
 import com.cylan.jiafeigou.widget.flip.FlipLayout;
 import com.cylan.jiafeigou.widget.wheel.ex.SuperWheelExt;
@@ -85,6 +87,14 @@ public class CamLiveControlLayer extends FrameLayout {
         return fLayoutLandDateContainer;
     }
 
+    public void setDateAdapter(CamLandHistoryDateAdapter adapter) {
+        if (rvLandDateList.getLayoutManager() == null) {
+            LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+            rvLandDateList.setLayoutManager(layoutManager);
+        }
+        rvLandDateList.setAdapter(adapter);
+    }
+
     public LinearLayout getLiveLandBottomBar() {
         return fLayoutCamLiveLandBottomBar;
     }
@@ -118,28 +128,25 @@ public class CamLiveControlLayer extends FrameLayout {
     }
 
     public void setOrientation(int orientation) {
-        post(new Runnable() {
-            @Override
-            public void run() {
-                setVisibility(VISIBLE);
-                fLayoutCamLiveLandTopBar.setVisibility(orientation == Configuration.ORIENTATION_LANDSCAPE ? VISIBLE : GONE);
-                findViewById(R.id.imgV_cam_live_land_play).setVisibility(orientation == Configuration.ORIENTATION_LANDSCAPE ? VISIBLE : GONE);
-                findViewById(R.id.v_divider).setVisibility(orientation == Configuration.ORIENTATION_LANDSCAPE ? VISIBLE : GONE);
-                findViewById(R.id.lLayout_protection).setVisibility(orientation == Configuration.ORIENTATION_LANDSCAPE ? VISIBLE : GONE);
-                liveTimeLayout.setVisibility(orientation == Configuration.ORIENTATION_LANDSCAPE ? VISIBLE : GONE);
-                fLayoutCamLiveLandTopBar.setVisibility(orientation == Configuration.ORIENTATION_LANDSCAPE ? VISIBLE : GONE);
-                fLayoutCamLiveLandBottomBar.setVisibility(orientation == Configuration.ORIENTATION_LANDSCAPE ? VISIBLE : GONE);
-                lLayoutCamHistoryWheel.setBackgroundColor(orientation == Configuration.ORIENTATION_LANDSCAPE ? getResources().getColor(R.color.color_4C000000) : Color.TRANSPARENT);
-                RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) getLayoutParams();
-                if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                    layoutParams.removeRule(BELOW);
-                    layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT;
-                } else {
-                    layoutParams.addRule(BELOW, R.id.fLayout_cam_live_view);
-                    layoutParams.height = DensityUtils.dip2px(52);
-                }
-                setLayoutParams(layoutParams);
+        post(() -> {
+            setVisibility(VISIBLE);
+            fLayoutCamLiveLandTopBar.setVisibility(orientation == Configuration.ORIENTATION_LANDSCAPE ? VISIBLE : GONE);
+            findViewById(R.id.imgV_cam_live_land_play).setVisibility(orientation == Configuration.ORIENTATION_LANDSCAPE ? VISIBLE : GONE);
+            findViewById(R.id.v_divider).setVisibility(orientation == Configuration.ORIENTATION_LANDSCAPE ? VISIBLE : GONE);
+            findViewById(R.id.lLayout_protection).setVisibility(orientation == Configuration.ORIENTATION_LANDSCAPE ? VISIBLE : GONE);
+            liveTimeLayout.setVisibility(orientation == Configuration.ORIENTATION_LANDSCAPE ? VISIBLE : GONE);
+            fLayoutCamLiveLandTopBar.setVisibility(orientation == Configuration.ORIENTATION_LANDSCAPE ? VISIBLE : GONE);
+            fLayoutCamLiveLandBottomBar.setVisibility(orientation == Configuration.ORIENTATION_LANDSCAPE ? VISIBLE : GONE);
+            lLayoutCamHistoryWheel.setBackgroundColor(orientation == Configuration.ORIENTATION_LANDSCAPE ? getResources().getColor(R.color.color_4C000000) : Color.TRANSPARENT);
+            RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) getLayoutParams();
+            if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                layoutParams.removeRule(BELOW);
+                layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT;
+            } else {
+                layoutParams.addRule(BELOW, R.id.fLayout_cam_live_view);
+                layoutParams.height = DensityUtils.dip2px(52);
             }
+            setLayoutParams(layoutParams);
         });
     }
 

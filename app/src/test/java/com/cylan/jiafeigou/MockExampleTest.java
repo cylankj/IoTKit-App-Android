@@ -72,7 +72,7 @@ public class MockExampleTest {
 
     @Test//验证行为是否发生。
     public void testVerify() {
-        List list = Mockito.mock(List.class);
+        List<Integer> list = Mockito.mock(List.class);
         list.add(0);
         //验证行为是否发生。
         verify(list).add(0);
@@ -103,7 +103,7 @@ public class MockExampleTest {
     //参数匹配
     @Test
     public void test_withArgument() {
-        Comparable comparable = mock(Comparable.class);
+        Comparable<String> comparable = mock(Comparable.class);
         //预设根据不同的参数返回不同的结果
         when(comparable.compareTo("Test")).thenReturn(1);
         when(comparable.compareTo("Omg")).thenReturn(2);
@@ -136,7 +136,7 @@ public class MockExampleTest {
     //验证确切的调用次数
     @Test
     public void verifying_number_of_invocations() {
-        List list = mock(List.class);
+        List<Integer> list = mock(List.class);
         list.add(1);
         list.add(2);
         list.add(2);
@@ -163,7 +163,7 @@ public class MockExampleTest {
     //模拟方法体抛出异常
     @Test(expected = RuntimeException.class)
     public void doThrow_when() {
-        List list = mock(List.class);
+        List<Integer> list = mock(List.class);
         doThrow(new RuntimeException()).when(list).add(1);
         list.add(1);
     }

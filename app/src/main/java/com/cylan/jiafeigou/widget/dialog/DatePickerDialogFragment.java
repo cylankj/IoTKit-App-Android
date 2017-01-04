@@ -109,8 +109,9 @@ public class DatePickerDialogFragment extends BaseDialog {
     }
 
     public void setDateMap(Map<Long, Long> dateMap) {
+        if (dateMap == null || dateMap.size() == 0) return;
         this.dateMap = dateMap;
-        AppLogger.i("count" + (dateMap == null));
+        AppLogger.i("count" + (dateMap.size()));
         long time = System.currentTimeMillis();
         Set<Long> set = dateMap.keySet();
         dateStartList = new ArrayList<>(new HashSet<>(set));

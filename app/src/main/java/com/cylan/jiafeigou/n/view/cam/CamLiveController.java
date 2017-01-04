@@ -16,6 +16,7 @@ import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.listener.ILiveStateListener;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamLiveContract;
+import com.cylan.jiafeigou.n.view.adapter.CamLandHistoryDateAdapter;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.AnimatorUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
@@ -32,6 +33,10 @@ import com.cylan.jiafeigou.widget.wheel.ex.SuperWheelExt;
 import com.cylan.utils.NetUtils;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_IDLE;
 import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_PLAYING;
@@ -216,13 +221,14 @@ public class CamLiveController implements
             setLandSafeSetter(camLiveControlLayer.getFlipLayout());
             iSafeStateSetterLand.setFlipListener(this);
             boolean safe = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_501_CAMERA_ALARM_FLAG, false);
-            iSafeStateSetterLand.setFlipped(safe);
+            iSafeStateSetterLand.setFlipped(!safe);
         }//显示或者隐藏
         if (liveTimeSetterLand != null) liveTimeSetterLand.setVisibility(land);
         if (iSafeStateSetterLand != null) iSafeStateSetterLand.setVisibility(land);
         if (liveTimeSetterPort != null && presenterRef.get().getPlayState() == PLAY_STATE_PLAYING)
             liveTimeSetterPort.setVisibility(!land);
         if (iSafeStateSetterPort != null) iSafeStateSetterPort.setVisibility(!land);
+        if (!land) camLiveControlLayer.getLandDateContainer().setVisibility(View.GONE);
         AppLogger.i("orientation: " + orientation);
     }
 
@@ -258,9 +264,7 @@ public class CamLiveController implements
             } else {
                 //某些限制条件,不需要显示
                 if (presenterRef.get().needShowHistoryWheelView()) {
-                    camLiveControlLayer.setVisibility(camLiveControlLayer.isShown() ? View.VISIBLE : View.INVISIBLE);
-//                    show = iLiveActionViewRef.get() instanceof View && ((View) iLiveActionViewRef.get()).isShown();
-//                    camLiveControlLayer.getLiveLandBottomBar().setVisibility(!show ? View.VISIBLE : View.INVISIBLE);
+                    camLiveControlLayer.setVisibility(!camLiveControlLayer.isShown() ? View.VISIBLE : View.INVISIBLE);
                 }
                 setLoadingState(iLiveActionViewRef.get().getState(), null);
             }
@@ -422,6 +426,14 @@ public class CamLiveController implements
                             ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
                 }
                 break;
+            case R.id.tv_item_content:
+                Object tag = view.getTag();
+                Log.d(TAG, "land click: " + tag);
+                if (tag != null && tag instanceof Long && adapter != null) {
+                    adapter.setCurrentFocusTime((Long) tag);
+                    setNav2Time((Long) tag);
+                }
+                break;
         }
         AppLogger.i(String.format("onClick land play: %s", (presenterRef != null && presenterRef.get() != null)));
     }
@@ -482,6 +494,8 @@ public class CamLiveController implements
                 "DatePickerDialogFragment");
     }
 
+    private CamLandHistoryDateAdapter adapter;
+
     private void showLandDatePicker() {
         int visibility = camLiveControlLayer.getLandDateContainer().getVisibility();
         if (visibility == View.GONE) {
@@ -496,6 +510,19 @@ public class CamLiveController implements
                 || x == left + translateX
                 || !camLiveControlLayer.getLandDateContainer().isShown())
             AnimatorUtils.slideInRight(camLiveControlLayer.getLandDateContainer());
+        if (presenterRef == null || presenterRef.get() == null || presenterRef.get().getFlattenDateMap() == null ||
+                presenterRef.get().getFlattenDateMap().isEmpty()) return;
+        if (adapter == null)
+            adapter = new CamLandHistoryDateAdapter(context, null, R.layout.layout_cam_history_land_list);
+        adapter.clear();
+        Set<Long> set = presenterRef.get().getFlattenDateMap().keySet();
+        ArrayList<Long> dateStartList = new ArrayList<>(new HashSet<>(set));
+        Collections.sort(dateStartList, Collections.reverseOrder());//来一个降序
+        Log.d(TAG, "sort: " + dateStartList);
+        adapter.addAll(dateStartList);
+        adapter.setItemClickListener(this);
+        adapter.setCurrentFocusTime(getWheelCurrentFocusTime());
+        camLiveControlLayer.setDateAdapter(adapter);
     }
 
     @Override
