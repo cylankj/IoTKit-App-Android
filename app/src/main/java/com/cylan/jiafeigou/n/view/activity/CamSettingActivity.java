@@ -48,7 +48,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-import static com.cylan.jiafeigou.misc.JConstant.KEY_DEVICE_ITEM_BUNDLE;
 import static com.cylan.jiafeigou.misc.JConstant.KEY_DEVICE_ITEM_UUID;
 import static com.cylan.jiafeigou.utils.ActivityUtils.loadFragment;
 
@@ -300,6 +299,9 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
                 continue;
             }
             if (view.getId() == R.id.tv_setting_unbind) {
+                continue;//解绑按钮
+            }
+            if (view.getId() == R.id.sv_setting_device_auto_record) {
                 continue;//解绑按钮
             }
             if (view instanceof ViewGroup) {

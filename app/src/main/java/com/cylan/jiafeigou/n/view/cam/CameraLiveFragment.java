@@ -181,9 +181,8 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
             boolean flag = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_508_CAMERA_STANDBY_FLAG, false);
             if (!flag) {
                 basePresenter.startPlayVideo(basePresenter.getPlayType());
-            } else {
-                onDeviceStandBy(true);
             }
+            onDeviceStandBy(flag);
         }
     }
 

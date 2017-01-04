@@ -16,7 +16,6 @@ import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.listener.ILiveStateListener;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamLiveContract;
-import com.cylan.jiafeigou.n.mvp.model.BeanCamInfo;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.AnimatorUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
@@ -33,8 +32,6 @@ import com.cylan.jiafeigou.widget.wheel.ex.SuperWheelExt;
 import com.cylan.utils.NetUtils;
 
 import java.lang.ref.WeakReference;
-
-import javax.microedition.khronos.opengles.GL;
 
 import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_IDLE;
 import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_PLAYING;
@@ -141,7 +138,8 @@ public class CamLiveController implements
         this.iSafeStateSetterPort = setter;
         iSafeStateSetterPort.setFlipListener(this);
         boolean safe = GlobalDataProxy.getInstance().getValue(presenterRef.get().getUuid(), DpMsgMap.ID_501_CAMERA_ALARM_FLAG, false);
-        iSafeStateSetterPort.setFlipped(safe);
+        //true:绿色,false:setFlipped(true)
+        iSafeStateSetterPort.setFlipped(!safe);
         Log.d(TAG, "setFlip: " + safe);
     }
 
@@ -253,7 +251,7 @@ public class CamLiveController implements
 //                state = STATE_IDLE;
                 //上下滑动,进场动画.
                 AnimatorUtils.slideAuto(camLiveControlLayer.getLiveLandBottomBar(), false);
-                AnimatorUtils.slideAuto(camLiveControlLayer.getfLayoutCamLiveLandTopBar(), true);
+                AnimatorUtils.slideAuto(camLiveControlLayer.getCamLiveLandTopBar(), true);
                 setLoadingState(STATE_IDLE, null);
             } else {
                 //某些限制条件,不需要显示
@@ -456,11 +454,16 @@ public class CamLiveController implements
             ToastUtil.showToast("没有历史视频...自己加的,,,别点了");
             return;
         }
-
+        boolean land = context.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
         //竖屏显示对话框,横屏显示测推
+        if (land) showLandDataPicker();
+        else showPortDataPicker();
+    }
+
+    private void showPortDataPicker() {
         if (datePickerRef == null || datePickerRef.get() == null) {
             Bundle bundle = new Bundle();
-            bundle.putString(BaseDialog.KEY_TITLE, "时间选择");
+            bundle.putString(BaseDialog.KEY_TITLE, context.getString(R.string.TIME));
             DatePickerDialogFragment.newInstance(bundle);
             datePickerRef = new WeakReference<>(DatePickerDialogFragment.newInstance(bundle));
             datePickerRef.get().setAction((int id, Object value) -> {
@@ -475,6 +478,10 @@ public class CamLiveController implements
         datePickerRef.get().setDateMap(presenterRef.get().getFlattenDateMap());
         datePickerRef.get().show(activityWeakReference.get().getSupportFragmentManager(),
                 "DatePickerDialogFragment");
+    }
+
+    private void showLandDataPicker() {
+
     }
 
     @Override

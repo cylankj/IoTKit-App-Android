@@ -19,11 +19,7 @@ public class UdpConstant {
     public static final String F_PING_ACK = "f_ping_ack";
     public static final String UPGRADE_VERSION = "0.0.0.0";
     public static final String BIND_TAG = "bindTag:";
-    /**
-     * 绑定的设备画像
-     */
-    public static final String KEY_BIND_DEVICE_PORTRAIT = "key_bind_device_portrait";
-    public static final Map<Class<?>, Object> udpObjectMap = new HashMap<>();
+
 
     public static final class PingAckT {
         public long time;

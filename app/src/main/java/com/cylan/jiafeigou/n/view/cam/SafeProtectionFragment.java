@@ -110,13 +110,14 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         ViewUtils.setViewPaddingStatusBar(fLayoutTopBarContainer);
+        boolean alarm = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_501_CAMERA_ALARM_FLAG, false);
+        ((SwitchButton) swMotionDetection.findViewById(R.id.btn_item_switch)).setChecked(alarm);
         ((SwitchButton) swMotionDetection.findViewById(R.id.btn_item_switch))
                 .setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
                     basePresenter.updateInfoReq(isChecked, DpMsgMap.ID_501_CAMERA_ALARM_FLAG);
                     showDetail(isChecked);
                     updateDetails();
                 });
-        boolean alarm = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_501_CAMERA_ALARM_FLAG, false);
         showDetail(alarm);
         if (alarm)
             updateDetails();
