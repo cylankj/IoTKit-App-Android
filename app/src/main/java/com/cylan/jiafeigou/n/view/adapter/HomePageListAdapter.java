@@ -25,6 +25,7 @@ import com.cylan.superadapter.internal.SuperViewHolder;
 import java.util.List;
 import java.util.Locale;
 
+import static android.view.View.VISIBLE;
 import static com.cylan.jiafeigou.misc.JConstant.NET_TYPE_RES;
 
 /**
@@ -59,10 +60,13 @@ public class HomePageListAdapter extends SuperAdapter<String> {
     private void setItemState(SuperViewHolder holder, String uuid, int pid, String shareAccount, DpMsgDefine.MsgNet net) {
         //0 net type 网络类型
         int resIdNet = net == null ? -1 : NET_TYPE_RES.get(net.net);
-        if (resIdNet != -1)
+        if (resIdNet != -1) {
+            holder.setVisibility(R.id.img_device_state_0, VISIBLE);
             holder.setImageResource(R.id.img_device_state_0, resIdNet);
+        }
         //1 分享
         if (!TextUtils.isEmpty(shareAccount)) {
+            holder.setVisibility(R.id.img_device_state_1, VISIBLE);
             holder.setImageResource(R.id.img_device_state_1, R.drawable.icon_home_share);
         }
         //2 电量

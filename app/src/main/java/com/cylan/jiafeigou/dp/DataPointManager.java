@@ -1,6 +1,5 @@
 package com.cylan.jiafeigou.dp;
 
-import android.os.Looper;
 import android.util.Log;
 import android.util.Pair;
 
@@ -25,6 +24,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
+import rx.Observable;
 import rx.Subscription;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
@@ -38,6 +38,9 @@ public class DataPointManager implements IParser, IDataPoint {
     private static final String TAG = "DataPointManager:";
 
     private static DataPointManager instance;
+    /**
+     * account+uuid
+     */
     private HashMap<String, JFGDevice> jfgDeviceMap = new HashMap<>();
     private Map<Long, Long> querySeqMap = new HashMap<>();
     /**
@@ -283,6 +286,11 @@ public class DataPointManager implements IParser, IDataPoint {
     }
 
     @Override
+    public ArrayList<JFGDevice> fetchAll(String account) {
+        return null;
+    }
+
+    @Override
     public boolean insert(String uuid, BaseValue baseValue) {
         return putValue(uuid, baseValue);
     }
@@ -431,28 +439,33 @@ public class DataPointManager implements IParser, IDataPoint {
         Pair<Integer, BaseValue> pair = unreadMap.get(uuid + id);
         //如果有数据,直接返回,没有数据做检查,异步响应.
         if (pair == null) {
-            //为空,尝试一次新的请求.
-            ArrayList<JFGDPMsg> list = new ArrayList<>();
-            JFGDPMsg msg = new JFGDPMsg((int) id, 0);//取最新的.
-            list.add(msg);
-            ArrayList<Long> idList = new ArrayList<>();
-            idList.add(id);
-            try {
-                //先查询数据,这里默认响应的顺序也是  robotGetDataRsp再到RobotCountDataRsp,接到
-                //RobotCountDataRsp,就可以做消息数广播了.
-                robotGetData(uuid, list, 1, false, 0);
-                long req0 = JfgCmdInsurance.getCmd().robotCountData(uuid, idList, 0);
-//                unreadSeqMap.put(req0, req0);
-            } catch (JfgException e) {
-                AppLogger.e("" + e.getLocalizedMessage());
-            }
-            if (Looper.getMainLooper() == Looper.myLooper()) {
-                throw new IllegalThreadStateException("在Io线程操作");
-            }
-            AppLogger.i(TAG + ",fetchUnreadCount:" + id);
+            unreadReq(uuid, id);
             return null;
         }
         return unreadMap.get(uuid + id);
+    }
+
+    private void unreadReq(String uuid, long id) {
+        Observable.just(null)
+                .subscribeOn(Schedulers.io())
+                .subscribe((Object o) -> {
+                    //为空,尝试一次新的请求.
+                    ArrayList<JFGDPMsg> list = new ArrayList<>();
+                    JFGDPMsg msg = new JFGDPMsg((int) id, 0);//取最新的.
+                    list.add(msg);
+                    ArrayList<Long> idList = new ArrayList<>();
+                    idList.add(id);
+                    try {
+                        //先查询数据,这里默认响应的顺序也是  robotGetDataRsp再到RobotCountDataRsp,接到
+                        //RobotCountDataRsp,就可以做消息数广播了.
+                        robotGetData(uuid, list, 1, false, 0);
+                        JfgCmdInsurance.getCmd().robotCountData(uuid, idList, 0);
+                    } catch (JfgException e) {
+                        AppLogger.e("" + e.getLocalizedMessage());
+                    }
+                    AppLogger.i(TAG + ",fetchUnreadCount:" + id);
+
+                });
     }
 
     @Override
