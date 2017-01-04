@@ -23,7 +23,7 @@ import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamSettingContract;
 import com.cylan.jiafeigou.n.mvp.impl.cam.CamSettingPresenterImpl;
-import com.cylan.jiafeigou.n.view.record.CamDelayRecordActivity;
+import com.cylan.jiafeigou.n.view.record.DelayRecordMainFragment;
 import com.cylan.jiafeigou.n.view.record.DelayRecordGuideFragment;
 import com.cylan.jiafeigou.n.view.cam.DeviceInfoDetailFragment;
 import com.cylan.jiafeigou.n.view.cam.SafeProtectionFragment;
@@ -258,7 +258,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
                     mGuideFragment.get().setArguments(bundle);
                     ActivityUtils.loadFragment(android.R.id.content, getSupportFragmentManager(), mGuideFragment.get());
                 } else {
-                    Intent intent = new Intent(this, CamDelayRecordActivity.class);
+                    Intent intent = new Intent(this, DelayRecordMainFragment.class);
                     startActivity(intent);
                 }
             }

@@ -1,14 +1,11 @@
 package com.cylan.jiafeigou.n.view.record;
 
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.graphics.Rect;
-import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.text.TextPaint;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -22,12 +19,9 @@ import android.widget.TextView;
 import com.cylan.entity.jniCall.JFGMsgVideoResolution;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.misc.JConstant;
-import com.cylan.jiafeigou.misc.JFGRules;
+import com.cylan.jiafeigou.base.wrapper.BaseFragment;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
-import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamDelayRecordContract;
-import com.cylan.jiafeigou.n.mvp.model.BeanCamInfo;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.TimeUtils;
 import com.cylan.jiafeigou.widget.RecordControllerView;
@@ -36,14 +30,13 @@ import com.cylan.jiafeigou.widget.video.VideoViewFactory;
 import java.lang.ref.WeakReference;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 /**
  * Created by yzd on 16-12-15.
  */
 
-public class CamDelayRecordActivity extends BaseFullScreenFragmentActivity<CamDelayRecordContract.Presenter>
+public class DelayRecordMainFragment extends BaseFragment<CamDelayRecordContract.Presenter>
         implements CamDelayRecordContract.View, SurfaceHolder.Callback {
 
     @BindView(R.id.act_delay_record_video_view_container)
@@ -71,7 +64,6 @@ public class CamDelayRecordActivity extends BaseFullScreenFragmentActivity<CamDe
     private int mRecordTime = 24;
     private long mRecordStartTime = -1;
     private long mRecordDuration = -1;
-    private BeanCamInfo mCamInfo;
     private TextPaint mPreviewPaint;
 
     private static final int DELAY_RECORD_SETTING = -1;
@@ -84,25 +76,16 @@ public class CamDelayRecordActivity extends BaseFullScreenFragmentActivity<CamDe
     private int mDelayRecordState = DELAY_RECORD_SETTING;
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_cam_delay_record);
-        ButterKnife.bind(this);
-        initViewAndListener();
+    protected CamDelayRecordContract.Presenter onCreatePresenter() {
+        return null;
     }
 
-    private void initViewAndListener() {
-        mCamInfo = getIntent().getExtras().getParcelable(JConstant.KEY_DEVICE_ITEM_BUNDLE);
-        basePresenter = new CamDelayRecordContract.Presenter(this);
-        if (mCamInfo != null) {
-            basePresenter.setCamInfo(mCamInfo);
-            mCamInfo.deviceBase = getIntent().getParcelableExtra(DelayRecordGuideFragment.KEY_DEVICE_INFO);
-            if (mCamInfo.cameraTimeLapsePhotography != null) {
-                mRecordMode = mCamInfo.cameraTimeLapsePhotography.timePeriod;
-                mRecordStartTime = mCamInfo.cameraTimeLapsePhotography.timeStart;
-                mRecordDuration = mCamInfo.cameraTimeLapsePhotography.timeDuration;
-            }
-        }
+    @Override
+    protected int getContentViewID() {
+        return R.layout.activity_cam_delay_record;
+    }
+
+    protected void initViewAndListener() {
         mPreviewPaint = new TextPaint();
         mPreviewPaint.setColor(Color.WHITE);
         initTimeIntervalDialog();
@@ -115,36 +98,13 @@ public class CamDelayRecordActivity extends BaseFullScreenFragmentActivity<CamDe
      * 检查设备是否处于待机状态,未处于待机状态则进行直播预览画面
      */
     private void showPreviewOrRecord() {
-        if (mCamInfo != null && !mCamInfo.cameraStandbyFlag
-                && (mDelayRecordState == DELAY_RECORD_SETTING || mDelayRecordState == DELAY_RECORD_PREVIEW) && mRecordStartTime == -1) {
-            startPreview();//设备未处于待机状态,且未开始延时摄影,则进行直播预览
-        } else if (mCamInfo != null && !mCamInfo.cameraStandbyFlag
-                && (mDelayRecordState == DELAY_RECORD_SETTING || mDelayRecordState == DELAY_RECORD_RECORDING) && mRecordStartTime != -1) {
-            startPreview();//因为现在没有数据,所以暂时显示直播预览画面
+        if ((mDelayRecordState == DELAY_RECORD_SETTING || mDelayRecordState == DELAY_RECORD_PREVIEW) && mRecordStartTime == -1) {
+            mPresenter.startViewer();//设备未处于待机状态,且未开始延时摄影,则进行直播预览
+        } else if ((mDelayRecordState == DELAY_RECORD_SETTING || mDelayRecordState == DELAY_RECORD_RECORDING) && mRecordStartTime != -1) {
+            mPresenter.startViewer();//因为现在没有数据,所以暂时显示直播预览画面
+            mPresenter.startRecord();
             startRecord();//现在还没有数据
         }
-    }
-
-    /**
-     * 还没有开始延时摄影,先显示实时摄像头数据
-     */
-    private void startPreview() {
-        try {
-            JfgCmdInsurance.getCmd().playVideo(mCamInfo.deviceBase.uuid);
-        } catch (JfgException e) {
-            e.printStackTrace();
-        }
-    }
-
-
-    @Override
-    public void setPresenter(CamDelayRecordContract.Presenter presenter) {
-        basePresenter = presenter;
-    }
-
-    @Override
-    public Context getContext() {
-        return this;
     }
 
     @Override
@@ -158,7 +118,7 @@ public class CamDelayRecordActivity extends BaseFullScreenFragmentActivity<CamDe
         initTimeIntervalDialog();
         DelayRecordTimeIntervalDialog dialog = mTimeIntervalDialog.get();
         dialog.setValue(mRecordMode);
-        dialog.show(getSupportFragmentManager(), DelayRecordTimeIntervalDialog.class.getName());
+        dialog.show(getChildFragmentManager(), DelayRecordTimeIntervalDialog.class.getName());
     }
 
     @OnClick(R.id.act_delay_record_time_duration)
@@ -166,7 +126,7 @@ public class CamDelayRecordActivity extends BaseFullScreenFragmentActivity<CamDe
         initTimeDurationDialog();
         DelayRecordTimeDurationDialog dialog = mTimeDurationDialog.get();
         dialog.setValue(mRecordMode);
-        dialog.show(getSupportFragmentManager(), DelayRecordTimeDurationDialog.class.getName());
+        dialog.show(getChildFragmentManager(), DelayRecordTimeDurationDialog.class.getName());
     }
 
     @OnClick(R.id.act_delay_record_controller)
@@ -174,11 +134,10 @@ public class CamDelayRecordActivity extends BaseFullScreenFragmentActivity<CamDe
         if (!mControllerView.isRecording()) {
             //开始录制视频
             startRecord();
-
         } else {
             //结束或者还没开始录制视频
-            startPreview();
-            basePresenter.restoreRecord();
+            mPresenter.startViewer();
+            mPresenter.restoreRecord();
         }
     }
 
@@ -219,7 +178,7 @@ public class CamDelayRecordActivity extends BaseFullScreenFragmentActivity<CamDe
     private void initTimeIntervalDialog() {
         if (mTimeIntervalDialog == null || mTimeIntervalDialog.get() == null) {
             DelayRecordTimeIntervalDialog dialog = DelayRecordTimeIntervalDialog.newInstance(null);
-            dialog.setAction(this::setTimeIntervalOption);
+            dialog.setAction((id, value) -> mPresenter.onViewAction(id, HANDLE_TIME_INTERVAL, value));
             mTimeIntervalDialog = new WeakReference<>(dialog);
         }
     }
@@ -227,7 +186,7 @@ public class CamDelayRecordActivity extends BaseFullScreenFragmentActivity<CamDe
     private void initTimeDurationDialog() {
         if (mTimeDurationDialog == null || mTimeDurationDialog.get() == null) {
             DelayRecordTimeDurationDialog dialog = DelayRecordTimeDurationDialog.newInstance(null);
-            dialog.setAction(this::setTimeDurationOK);
+            dialog.setAction((id, value) -> mPresenter.onViewAction(id, HANDLE_TIME_DURATION, value));
             mTimeDurationDialog = new WeakReference<>(dialog);
         }
     }
@@ -235,6 +194,10 @@ public class CamDelayRecordActivity extends BaseFullScreenFragmentActivity<CamDe
     private void setTimeDurationOK(int id, Object value) {
         mRecordTime = (int) value;
         refreshRecordTime(DELAY_RECORD_SETTING);
+    }
+
+    public void onMarkRecordInformation(int interval, int recordDuration, int remainTime) {
+
     }
 
     private void setTimeIntervalOption(int id, Object value) {
@@ -324,9 +287,24 @@ public class CamDelayRecordActivity extends BaseFullScreenFragmentActivity<CamDe
         if (mRecordStartTime == -1) mRecordStartTime = System.currentTimeMillis();
         mControllerView.setRecordTime(System.currentTimeMillis() - mRecordStartTime);
         mControllerView.startRecord();
-        basePresenter.startRecord(mRecordMode, mRecordStartTime, mRecordDuration);
+//        mPresenter.startRecord(mRecordMode, mRecordStartTime, mRecordDuration);
     }
 
+
+    @Override
+    public void onViewer() {
+
+    }
+
+    @Override
+    public void onDismiss() {
+
+    }
+
+    @Override
+    public void onSpeaker(boolean on) {
+
+    }
 
     @Override
     public void onResolution(JFGMsgVideoResolution resolution) throws JfgException {
@@ -335,6 +313,11 @@ public class CamDelayRecordActivity extends BaseFullScreenFragmentActivity<CamDe
         mRoundedTextureView.getHolder().setFormat(PixelFormat.TRANSPARENT);
         mRoundedTextureView.getHolder().setFormat(PixelFormat.OPAQUE);
         JfgCmdInsurance.getCmd().setRenderRemoteView(mRoundedTextureView);
+    }
+
+    @Override
+    public void onFlowSpeed(int speed) {
+
     }
 
     /**
@@ -358,9 +341,7 @@ public class CamDelayRecordActivity extends BaseFullScreenFragmentActivity<CamDe
      */
     private void initVideoView() {
         if (mRoundedTextureView == null) {
-            int pid = basePresenter.getCamInfo().deviceBase.pid;
-            mRoundedTextureView = (SurfaceView) VideoViewFactory.CreateRendererExt(JFGRules.isNeedPanoramicView(pid),
-                    getContext(), true);
+            mRoundedTextureView = (SurfaceView) VideoViewFactory.CreateRendererExt(false, getContext(), true);
             mRoundedTextureView.getHolder().addCallback(this);
             mRoundedTextureView.setId("IVideoView".hashCode());
             ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
@@ -382,29 +363,29 @@ public class CamDelayRecordActivity extends BaseFullScreenFragmentActivity<CamDe
     }
 
     @Override
-    protected void onPause() {
+    public void onPause() {
         super.onPause();
         stopPreviewAndRedord();
     }
 
     @Override
-    protected void onResume() {
+    public void onResume() {
         super.onResume();
         refreshLayout(DELAY_RECORD_SETTING);
     }
 
-    private void stopPreview() {
-        if (mCamInfo != null && mCamInfo.deviceBase != null) {
-            try {
-                JfgCmdInsurance.getCmd().stopPlay(mCamInfo.deviceBase.uuid);
-            } catch (JfgException e) {
-                e.printStackTrace();
-            }
-        }
-    }
+//    private void stopPreview() {
+//        if (mCamInfo != null && mCamInfo.deviceBase != null) {
+//            try {
+//                JfgCmdInsurance.getCmd().stopPlay(mCamInfo.deviceBase.uuid);
+//            } catch (JfgException e) {
+//                e.printStackTrace();
+//            }
+//        }
+//    }
 
     private void stopPreviewAndRedord() {
-        stopPreview();
+//        stopPreview();
     }
 
     @Override
