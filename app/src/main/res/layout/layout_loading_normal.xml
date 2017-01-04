@@ -7,11 +7,12 @@
     android:orientation="vertical">
 
     <com.cylan.jiafeigou.widget.SimpleProgressBar
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:padding="10dp"
         hunt:progress_point_radius="3dp"
+        hunt:progress_radius="20dp"
         hunt:progress_stroke_color="@color/color_cecece" />
 
     <TextView

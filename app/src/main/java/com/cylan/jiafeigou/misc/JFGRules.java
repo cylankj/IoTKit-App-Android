@@ -111,6 +111,15 @@ public class JFGRules {
         }
     }
 
+    public static boolean isBell(int pid) {
+        switch (pid) {
+            case JConstant.OS_DOOR_BELL:
+            case JConstant.OS_DOOR_BELL_V2:
+                return true;
+        }
+        return false;
+    }
+
     /**
      * 判断是否全景
      *

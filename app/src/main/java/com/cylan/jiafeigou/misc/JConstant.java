@@ -33,10 +33,13 @@ public class JConstant {
     public final static Pattern PHONE_REG = Pattern.compile("^1[3|4|5|7|8]\\d{9}$");
     public final static Pattern EMAIL_REG = Patterns.EMAIL_ADDRESS;
 
-    public static final int JFG_DEVICE_BELL = 0;
-    public static final int JFG_DEVICE_CAMERA = 1;
-    public static final int JFG_DEVICE_ALBUM = 2;
-    public static final int JFG_DEVICE_MAG = 3;
+    public static final Pattern MAC_REG = Pattern.compile("([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$");
+    public static final String EFAMILY_URL_PREFIX = "http://www.jfgou.com/app/download.html?";
+    public static final Pattern EFAMILY_QR_CODE_REG = Pattern.compile(
+            "cid=7\\d{11}" +
+                    "&" +
+                    "mac=([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$");
+
 
     //看JConstantTest单元测试
     public static final Pattern JFG_DOG_DEVICE_REG = Pattern.compile("DOG-[a-zA-Z0-9]{6}");
@@ -64,9 +67,9 @@ public class JConstant {
 
     public static final String AUTO_LOGIN_ACCOUNT = "auto_login_account";
     public static final String AUTO_LOGIN_PWD = "auto_login_pwd";
-    public static final String SAVE_TEMP_ACCOUNT ="save_temp_account";
-    public static final String SAVE_TEMP_CODE ="save_temp_code";
-    public static final String OPEN_LOGIN_TO_BIND_PHONE ="open_login_to_bind_phone";
+    public static final String SAVE_TEMP_ACCOUNT = "save_temp_account";
+    public static final String SAVE_TEMP_CODE = "save_temp_code";
+    public static final String OPEN_LOGIN_TO_BIND_PHONE = "open_login_to_bind_phone";
     /**
      * verification code
      */
@@ -107,6 +110,7 @@ public class JConstant {
      */
     public static final String KEY_DEVICE_ITEM_BUNDLE = "key_bundle_item";
 
+    public static final String KEY_DEVICE_ITEM_UUID = "key_device_uuid";
 
     /**
      * 保存了 {@link BellLiveActivity}的进程id

@@ -1,7 +1,7 @@
 package com.cylan.jiafeigou.cache;
 
 import com.cylan.entity.jniCall.JFGAccount;
-import com.cylan.jiafeigou.cache.pool.GlobalDataPool;
+import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
 import com.cylan.jiafeigou.n.mvp.model.LoginAccountBean;
 import com.cylan.jiafeigou.n.mvp.model.TimeZoneBean;
 
@@ -12,8 +12,6 @@ import java.util.List;
  */
 
 public class JCache {
-
-//    public static JFGAccount jfgAccount;
     /**
      * 非常坑爹啊，需要客户端记录标记。
      * 注册，忘记密码时候，都需要验证码，页面也换，就有不同的提示语{注册成功}
@@ -24,18 +22,16 @@ public class JCache {
 
     @Deprecated
     public static boolean isOnline() {
-        return onLineStatus && GlobalDataPool.getInstance().getJfgAccount() != null;
+        return GlobalDataProxy.getInstance().isOnline() && GlobalDataProxy.getInstance().getJfgAccount() != null;
     }
-
-    public static boolean onLineStatus = false;
 
     /**
      * @return
-     * @see GlobalDataPool#getInstance()#getAccountCache()
+     * @see GlobalDataProxy#getInstance()#getAccountCache()
      */
     @Deprecated
     public static JFGAccount getAccountCache() {
-        return GlobalDataPool.getInstance().getJfgAccount();
+        return GlobalDataProxy.getInstance().getJfgAccount();
     }
 
     public static LoginAccountBean tmpAccount;

@@ -15,8 +15,8 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
 import com.cylan.jiafeigou.dp.DpMsgMap;
-import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.setting.VideoAutoRecordContract;
 import com.cylan.jiafeigou.n.mvp.impl.setting.VideoAutoRecordPresenterImpl;
@@ -26,6 +26,8 @@ import com.cylan.jiafeigou.utils.ViewUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+
+import static com.cylan.jiafeigou.misc.JConstant.KEY_DEVICE_ITEM_UUID;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -48,11 +50,12 @@ public class VideoAutoRecordFragment extends IBaseFragment<VideoAutoRecordContra
     RadioButton rb24Hours;
     @BindView(R.id.rb_never)
     RadioButton rbNever;
+    private String uuid;
 
     public void onAttach(Context context) {
         super.onAttach(context);
-        basePresenter = new VideoAutoRecordPresenterImpl(this,
-                (BeanCamInfo) getArguments().getParcelable(JConstant.KEY_DEVICE_ITEM_BUNDLE));
+        this.uuid = getArguments().getString(KEY_DEVICE_ITEM_UUID);
+        basePresenter = new VideoAutoRecordPresenterImpl(this, uuid);
     }
 
     /**
@@ -86,7 +89,7 @@ public class VideoAutoRecordFragment extends IBaseFragment<VideoAutoRecordContra
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         imgVTopBarCenter.setText(R.string.SETTING_RECORD);
-        int focus = basePresenter.getBeanCamInfo().deviceAutoVideoRecord;
+        int focus = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_303_DEVICE_AUTO_VIDEO_RECORD, 0);
         rbMotion.setChecked(focus == 0);
         rbMotion.setOnCheckedChangeListener(this);
         rb24Hours.setOnCheckedChangeListener(this);
@@ -132,25 +135,24 @@ public class VideoAutoRecordFragment extends IBaseFragment<VideoAutoRecordContra
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         if (!isChecked)
             return;
-        BeanCamInfo info = basePresenter.getBeanCamInfo();
+        int focus = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_303_DEVICE_AUTO_VIDEO_RECORD, 0);
         switch (buttonView.getId()) {
             case R.id.rb_motion:
-                if (info.deviceAutoVideoRecord == 0)
+                if (focus == 0)
                     return;
-                info.deviceAutoVideoRecord = 0;
+                focus = 0;
                 break;
             case R.id.rb_24_hours:
-                if (info.deviceAutoVideoRecord == 1)
+                if (focus == 1)
                     return;
-                info.deviceAutoVideoRecord = 1;
+                focus = 1;
                 break;
             case R.id.rb_never:
-                if (info.deviceAutoVideoRecord == 2)
+                if (focus == 2)
                     return;
-                info.deviceAutoVideoRecord = 2;
+                focus = 2;
                 break;
         }
-        basePresenter.saveCamInfoBean(info, DpMsgMap.ID_303_DEVICE_AUTO_VIDEO_RECORD);
-
+        basePresenter.updateInfoReq(focus, DpMsgMap.ID_303_DEVICE_AUTO_VIDEO_RECORD);
     }
 }

@@ -3,12 +3,17 @@ package com.cylan.jiafeigou.n.mvp.impl.home;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.util.Log;
+import android.util.Pair;
 
 import com.cylan.entity.jniCall.JFGAccount;
+import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.cache.JCache;
+import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
+import com.cylan.jiafeigou.dp.BaseValue;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
+import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.JFGRules;
-import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.misc.br.TimeTickBroadcast;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomePageListContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
@@ -32,7 +37,6 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
-import rx.subscriptions.CompositeSubscription;
 
 /**
  * Created by hunt on 16-5-23.
@@ -40,11 +44,7 @@ import rx.subscriptions.CompositeSubscription;
 public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListContract.View>
         implements HomePageListContract.Presenter {
 
-    private static final String TAG = "HomePageListPresenterImpl:";
     private TimeTickBroadcast timeTickBroadcast;
-    //    private Subscription onRefreshSubscription;
-    private CompositeSubscription bulkSubscriptions;
-    private Subscription onGreetSubscription;
 
     public HomePageListPresenterImpl(HomePageListContract.View view) {
         super(view);
@@ -52,24 +52,14 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
     }
 
     @Override
-    public void start() {
-        AppLogger.i("start");
-        //注意事项
-        unSubscribe(bulkSubscriptions);
-        bulkSubscriptions = new CompositeSubscription();
-        //注册1
-        bulkSubscriptions
-                .add(getDevicesList());
-        bulkSubscriptions
-                .add(getTimeTickEventSub());
-        bulkSubscriptions
-                .add(getLoginRspSub());
-        bulkSubscriptions
-                .add(subDeviceList());
-        bulkSubscriptions
-                .add(singleDeviceSub());
-        bulkSubscriptions
-                .add(JFGAccountUpdate());
+    protected Subscription[] register() {
+        return new Subscription[]{
+                getDevicesList(),
+                getTimeTickEventSub(),
+                getLoginRspSub(),
+                subDeviceList(),
+                singleDeviceSub(),
+                JFGAccountUpdate()};
     }
 
     /**
@@ -83,8 +73,10 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
                 .subscribe(new Action1<String>() {
                     @Override
                     public void call(String s) {
-                        RxBus.getCacheInstance().post(new RxUiEvent.QueryBulkDevice());
-                        JfgCmdInsurance.getCmd().refreshDevList();
+                        if (!RxBus.getCacheInstance().hasStickyEvent(RxUiEvent.BulkDeviceListRsp.class)) {
+                            RxBus.getCacheInstance().post(new RxUiEvent.BulkDeviceListReq());
+                            Log.d(TAG, "getDevicesList getDevicesList");
+                        }
                     }
                 });
     }
@@ -95,7 +87,7 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
      * @return
      */
     private Subscription singleDeviceSub() {
-        return RxBus.getUiInstance().toObservable(RxUiEvent.SingleDevice.class)
+        return RxBus.getCacheInstance().toObservable(RxUiEvent.SingleDevice.class)
                 .throttleFirst(500, TimeUnit.MILLISECONDS)
                 .filter(new Func1<RxUiEvent.SingleDevice, Boolean>() {
                     @Override
@@ -195,18 +187,12 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
      * @return
      */
     private Subscription subDeviceList() {
-        return RxBus.getUiInstance().toObservableSticky(RxUiEvent.BulkDeviceList.class)
-                .filter(new Func1<RxUiEvent.BulkDeviceList, Boolean>() {
+        return RxBus.getCacheInstance().toObservableSticky(RxUiEvent.BulkDeviceListRsp.class)
+                .subscribeOn(Schedulers.io())
+                .filter((RxUiEvent.BulkDeviceListRsp list) -> (getView() != null && list.allDevices != null))
+                .flatMap(new Func1<RxUiEvent.BulkDeviceListRsp, Observable<List<DeviceBean>>>() {
                     @Override
-                    public Boolean call(RxUiEvent.BulkDeviceList list) {
-                        boolean notNull = getView() != null && list.allDevices != null;
-                        AppLogger.i("notNull: " + notNull);
-                        return notNull;
-                    }
-                })
-                .flatMap(new Func1<RxUiEvent.BulkDeviceList, Observable<List<DeviceBean>>>() {
-                    @Override
-                    public Observable<List<DeviceBean>> call(RxUiEvent.BulkDeviceList list) {
+                    public Observable<List<DeviceBean>> call(RxUiEvent.BulkDeviceListRsp list) {
                         AppLogger.i("get devices list: " + list.allDevices);
                         List<DeviceBean> beanList = new ArrayList<>();
                         List<DpMsgDefine.DpWrap> oList = list.allDevices;
@@ -214,6 +200,13 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
                             if (wrap.baseDpDevice == null) continue;
                             DeviceBean bean = new DeviceBean();
                             bean.fillData(wrap.baseDpDevice, wrap.baseDpMsgList);
+                            try {
+                                Pair<Integer, BaseValue> pair = GlobalDataProxy.getInstance()
+                                        .fetchUnreadCount(bean.uuid, DpMsgMap.ID_505_CAMERA_ALARM_MSG);
+                                if (pair != null) bean.msgCountPair = pair;
+                            } catch (JfgException e) {
+                                AppLogger.e("" + e.getLocalizedMessage());
+                            }
                             beanList.add(bean);
                         }
                         return Observable.just(beanList);
@@ -237,17 +230,10 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
                 .subscribe();
     }
 
-    @Override
-    public void stop() {
-        AppLogger.i("stop");
-        unSubscribe(bulkSubscriptions,
-                onGreetSubscription);
-    }
-
 
     @Override
     public void fetchGreet() {
-        onGreetSubscription = Observable.just(null)
+        Observable.just(null)
                 .subscribeOn(Schedulers.io())
                 .map(new Func1<Object, GreetBean>() {
                     @Override
@@ -255,43 +241,45 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
                         return null;
                     }
                 })
+                .filter(new RxHelper.Filter<>("", getView() != null && GlobalDataProxy.getInstance().getJfgAccount() != null))
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<GreetBean>() {
-                    @Override
-                    public void call(GreetBean greetBean) {
-                        if (getView() != null && JCache.getAccountCache() != null) {
-                            getView().onAccountUpdate(JCache.getAccountCache());
-                        }
-                    }
+                .subscribe((GreetBean greetBean) -> {
+                    getView().onAccountUpdate(JCache.getAccountCache());
                 });
-
     }
 
     @Override
-    public void fetchDeviceList() {
+    public void fetchDeviceList(boolean manually) {
         if (!JCache.isOnline()) {
             getView().onLoginState(false);
             getView().onRefreshFinish();
         }
-        Observable.just(JCache.isOnline())
+        Observable.just(manually)
                 .subscribeOn(Schedulers.newThread())
-                .map(new Func1<Boolean, Object>() {
-                    @Override
-                    public Object call(Boolean aBoolean) {
-                        //发送给DpDeviceAssembler
-//
-                        JfgCmdInsurance.getCmd().refreshDevList();//刷新列表.
-                        return null;
+                .map((Boolean aBoolean) -> {
+                    ArrayList<DeviceBean> aList = aList();
+                    if (aList != null) {
+                        for (DeviceBean bean : aList)
+                            try {
+                                GlobalDataProxy.getInstance().fetchUnreadCount(bean.uuid, DpMsgMap.ID_505_CAMERA_ALARM_MSG);
+                            } catch (JfgException e) {
+                                AppLogger.e("" + e.getLocalizedMessage());
+                            }
                     }
+                    RxBus.getCacheInstance().post(new RxUiEvent.BulkDeviceListReq());
+                    Log.d(TAG, "fetchDeviceList fetchDeviceList");
+                    return null;
                 })
                 .delay(2000, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<Object>() {
-                    @Override
-                    public void call(Object aBoolean) {
-                        if (getView() != null) getView().onRefreshFinish();
-                    }
+                .subscribe((Object aBoolean) -> {
+                    if (getView() != null) getView().onRefreshFinish();
                 });
+    }
+
+    private ArrayList<DeviceBean> aList() {
+        if (getView() == null) return null;
+        return getView().getDeviceList();
     }
 
     @Override

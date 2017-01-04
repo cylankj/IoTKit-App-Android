@@ -46,4 +46,6 @@ public interface IViewFinder {
      * @param content
      */
     void setupHint(String content);
+
+    void stop();
 }

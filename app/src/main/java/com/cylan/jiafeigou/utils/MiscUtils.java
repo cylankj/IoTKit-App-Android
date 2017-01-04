@@ -50,12 +50,41 @@ public class MiscUtils {
         return "Kb";
     }
 
-    public static void main(String[] args) {
-        System.out.println(getBit(1024 * 1024 + 1));
-        System.out.println(getBit(1024 * 1024));
-        System.out.println(getBit(1024 * 1024 - 1));
-        System.out.println(getBit(1025));
-        System.out.println(getBit(1024));
-        System.out.println(getBit(1023));
+//    public static void main(String[] args) {
+//        System.out.println(getBit(1024 * 1024 + 1));
+//        System.out.println(getBit(1024 * 1024));
+//        System.out.println(getBit(1024 * 1024 - 1));
+//        System.out.println(getBit(1025));
+//        System.out.println(getBit(1024));
+//        System.out.println(getBit(1023));
+//        System.out.println(getCount(1));
+//        System.out.println(getCount(1));
+//        System.out.println(getCount(1));
+//        System.out.println(getCount(1));
+//    }
+
+    public static int getCount(int sum) {
+        int count = 0;
+        for (int i = 0; i < 3; i++) {
+            if ((sum >> i & 0x01) == 1) count++;
+        }
+        return count;
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T> T cast(Object object, T defaultValue) {
+        try {
+            return object == null ? defaultValue : (T) object;
+        } catch (ClassCastException e) {
+            return defaultValue;
+        }
+    }
+
+    public static String bytesToHex(byte[] in) {
+        final StringBuilder builder = new StringBuilder();
+        for (byte b : in) {
+            builder.append(String.format("%02x", b));
+        }
+        return builder.toString();
     }
 }

@@ -6,9 +6,9 @@
     android:orientation="horizontal">
 
     <!--<View-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="1dp"-->
-        <!--android:background="@color/color_e8e8e8" />-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="1dp"-->
+    <!--android:background="@color/color_e8e8e8" />-->
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -18,9 +18,10 @@
 
         <com.cylan.jiafeigou.widget.SimpleProgressBar
             android:id="@+id/v_simple_38line"
-            android:layout_width="35dp"
-            android:layout_height="35dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:padding="5dp"
+            hunt:progress_radius="35dp"
             hunt:progress_stroke_color="@color/color_4b9fd5" />
 
         <TextView

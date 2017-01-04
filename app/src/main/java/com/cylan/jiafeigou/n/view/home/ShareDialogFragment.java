@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.bumptech.glide.load.model.GlideUrl;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.model.MediaBean;
 import com.cylan.jiafeigou.utils.ShareUtils;
@@ -25,7 +26,6 @@ import static com.tencent.mm.sdk.modelmsg.SendMessageToWX.Req.WXSceneTimeline;
  */
 public class ShareDialogFragment extends BaseDialog {
 
-    public final static String KEY_PARCEL_ = "key_parcel";
     public static final String KEY_MEDIA_CONTENT = "key_media_content";
 
     @BindView(R.id.lLayout_dialog_share_wonderful)
@@ -35,7 +35,9 @@ public class ShareDialogFragment extends BaseDialog {
     @BindView(R.id.tv_share_to_wechat_friends)
     TextView tvShareToWechat;
 
-    private MediaBean mMediaBean;
+//    private MediaBean mMediaBean;
+
+    private GlideUrl glideUrl;
 
     public static ShareDialogFragment newInstance(Bundle bundle) {
         ShareDialogFragment fragment = new ShareDialogFragment();
@@ -43,18 +45,17 @@ public class ShareDialogFragment extends BaseDialog {
         return fragment;
     }
 
-    public static ShareDialogFragment newInstance(MediaBean bean) {
-        ShareDialogFragment fragment = new ShareDialogFragment();
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(KEY_MEDIA_CONTENT, bean);
-        fragment.setArguments(bundle);
-        return fragment;
+    public static ShareDialogFragment newInstance() {
+        return new ShareDialogFragment();
+    }
+
+    public void setGlideUrl(GlideUrl glideUrl) {
+        this.glideUrl = glideUrl;
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mMediaBean = getArguments().getParcelable(KEY_MEDIA_CONTENT);
     }
 
     @Nullable
@@ -70,21 +71,11 @@ public class ShareDialogFragment extends BaseDialog {
         dismiss();
         switch (view.getId()) {
             case R.id.tv_share_to_timeline:
-                ShareUtils.shareToWechat(getActivity(), mMediaBean, WXSceneTimeline);
+                ShareUtils.shareToWechat(getActivity(), glideUrl, WXSceneTimeline);
                 break;
             case R.id.tv_share_to_wechat_friends:
-                ShareUtils.shareToWechat(getActivity(), mMediaBean, WXSceneSession);
+                ShareUtils.shareToWechat(getActivity(), glideUrl, WXSceneSession);
                 break;
         }
-    }
-
-    public void setShareToListener(ShareToListener shareToListener) {
-        this.shareToListener = shareToListener;
-    }
-
-    private ShareToListener shareToListener;
-
-    public interface ShareToListener {
-        void share(int id, Object t);
     }
 }

@@ -8,11 +8,8 @@ import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.cache.JCache;
 import com.cylan.jiafeigou.n.mvp.contract.setting.TimezoneContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
-import com.cylan.jiafeigou.n.mvp.model.BeanCamInfo;
 import com.cylan.jiafeigou.n.mvp.model.TimeZoneBean;
-import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.BindUtils;
-import com.google.gson.Gson;
 
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -33,15 +30,16 @@ import rx.schedulers.Schedulers;
 public class TimezonePresenterImpl extends AbstractPresenter<TimezoneContract.View>
         implements TimezoneContract.Presenter {
     private static final String TAG = "TimezonePresenterImpl";
-    private BeanCamInfo info;
+    private String uuid;
 
-    public TimezonePresenterImpl(TimezoneContract.View view, BeanCamInfo info) {
+    public TimezonePresenterImpl(TimezoneContract.View view, String uuid) {
         super(view);
-        this.info = info;
+        this.uuid = uuid;
     }
 
     @Override
     public void start() {
+        super.start();
         Observable.just(R.xml.timezones)
                 .subscribeOn(Schedulers.computation())
                 .flatMap(new Func1<Integer, Observable<List<TimeZoneBean>>>() {
@@ -92,10 +90,6 @@ public class TimezonePresenterImpl extends AbstractPresenter<TimezoneContract.Vi
                 });
     }
 
-    @Override
-    public void stop() {
-
-    }
 
     @Override
     public void onSearch(String content) {
@@ -112,27 +106,4 @@ public class TimezonePresenterImpl extends AbstractPresenter<TimezoneContract.Vi
         getView().timezoneList(newList);
     }
 
-    @Override
-    public void saveCamInfoBean(final BeanCamInfo info, int id) {
-        AppLogger.i(TAG + "save info: " + new Gson().toJson(info));
-//        Observable.just(null)
-//                .subscribeOn(Schedulers.newThread())
-//                .subscribe(new Action1<Object>() {
-//                    @Override
-//                    public void call(Object o) {
-//                        RxEvent.JfgDpMsgUpdate msgUpdate = new RxEvent.JfgDpMsgUpdate();
-//                        msgUpdate.uuid = info.deviceBase.uuid;
-//                        DpMsgDefine.DpMsg dpMsg = new DpMsgDefine.DpMsg();
-//                        //
-//
-//                        AppLogger.i("xuyao 修改");
-//                        RxBus.getCacheInstance().post(msgUpdate);
-//                    }
-//                });
-    }
-
-    @Override
-    public BeanCamInfo getInfo() {
-        return info;
-    }
 }

@@ -62,7 +62,7 @@ public class SimpleBindFlow extends AFullBind {
                     @Override
                     public Boolean call(UdpConstant.UdpDevicePortrait udpDevicePortrait) {
                         boolean needUpdate = BindUtils.versionCompare(UPGRADE_VERSION, udpDevicePortrait.version) > 0
-                                && BindUtils.isUcos(udpDevicePortrait.cid);
+                                && BindUtils.isUcos(udpDevicePortrait.uuid);
                         //是否需要升级
                         if (needUpdate)
                             iBindResult.needToUpgrade();
@@ -121,7 +121,7 @@ public class SimpleBindFlow extends AFullBind {
                     public Boolean call(JfgUdpMsg.FPingAck fPingAck) {
                         //hit target
                         return isDogUpgrading
-                                && TextUtils.equals(fPingAck.cid, devicePortrait.cid)
+                                && TextUtils.equals(fPingAck.cid, devicePortrait.uuid)
                                 && TextUtils.equals(fPingAck.mac, devicePortrait.mac);
                     }
                 })
@@ -197,12 +197,12 @@ public class SimpleBindFlow extends AFullBind {
         int port = Integer.parseInt(serverDetails[1]);
         //设置语言
         JfgUdpMsg.SetLanguage setLanguage = new JfgUdpMsg.SetLanguage(
-                udpDevicePortrait.cid,
+                udpDevicePortrait.uuid,
                 udpDevicePortrait.mac,
                 JFGRules.getLanguageType(ContextUtils.getContext()));
         //设置服务器
         JfgUdpMsg.SetServer setServer =
-                new JfgUdpMsg.SetServer(udpDevicePortrait.cid,
+                new JfgUdpMsg.SetServer(udpDevicePortrait.uuid,
                         udpDevicePortrait.mac,
                         address,
                         port,
@@ -212,7 +212,7 @@ public class SimpleBindFlow extends AFullBind {
         //增加绑定随机数.
         bindCode = JCache.getAccountCache().getAccount() + System.currentTimeMillis();
         JfgUdpMsg.FBindDeviceCode code = new JfgUdpMsg.FBindDeviceCode(
-                udpDevicePortrait.cid, udpDevicePortrait.mac, bindCode);
+                udpDevicePortrait.uuid, udpDevicePortrait.mac, bindCode);
         try {
             JfgCmdInsurance.getCmd().sendLocalMessage(UdpConstant.IP, UdpConstant.PORT, code.toBytes());
         } catch (JfgException e) {
@@ -291,7 +291,7 @@ public class SimpleBindFlow extends AFullBind {
                 .map(new Func1<Object, Object>() {
                     @Override
                     public Object call(Object o) {
-                        JfgUdpMsg.DoSetWifi setWifi = new JfgUdpMsg.DoSetWifi(devicePortrait.cid,
+                        JfgUdpMsg.DoSetWifi setWifi = new JfgUdpMsg.DoSetWifi(devicePortrait.uuid,
                                 devicePortrait.mac,
                                 ssid, pwd);
                         setWifi.security = type;
@@ -307,9 +307,9 @@ public class SimpleBindFlow extends AFullBind {
 
 
                         //此时,设备还没恢复连接,需要加入队列
-                        int key = ("JfgCmdInsurance.getCmd().bindDevice" + devicePortrait.cid).hashCode();
+                        int key = ("JfgCmdInsurance.getCmd().bindDevice" + devicePortrait.uuid).hashCode();
                         OfflineTaskQueue.getInstance().enqueue(key, new Runnable() {
-                            private String cid = devicePortrait.cid;
+                            private String cid = devicePortrait.uuid;
 
                             @Override
                             public void run() {

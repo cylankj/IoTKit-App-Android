@@ -72,6 +72,11 @@ public class FlipLayout extends LinearLayout implements ISafeStateSetter,
     }
 
     @Override
+    public void setFlipped(boolean flipped) {
+        flipImageView.setFlipped(flipped);
+    }
+
+    @Override
     public void onClick(FlipImageView view) {
         if (clicker != null) {
             clicker.onClick(view);

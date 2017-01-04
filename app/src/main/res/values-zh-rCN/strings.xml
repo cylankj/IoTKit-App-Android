@@ -833,9 +833,6 @@
   <string name="selected">已选(%1$s/%2$s)</string>
   <string name="permission_info">App requires permission to Storage to view images.</string>
   <string name="permission_force">App requires permission to Storage to view images. Tap Settings and go to Permissions to grant permission.</string>
-  <string name="permission_ok">OK</string>
-  <string name="permission_settings">Settings</string>
-  <string name="permission_package">package</string>
   <!--每日精彩-->
   <string name="permission_download">获取SD卡权限失败,取消下载</string>
 

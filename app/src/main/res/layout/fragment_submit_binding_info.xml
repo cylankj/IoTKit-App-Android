@@ -25,10 +25,11 @@
 
             <com.cylan.jiafeigou.widget.SimpleProgressBar
                 android:id="@+id/progress_loading"
-                android:layout_width="200dp"
-                android:layout_height="200dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:padding="10dp"
+                hunt:progress_radius="100dp"
                 hunt:progress_point_radius="5dp"
                 hunt:progress_stroke_color="@color/color_4b9fd5"
                 hunt:progress_swipe_degree="330" />

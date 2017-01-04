@@ -9,8 +9,9 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
+import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
-import com.cylan.jiafeigou.n.mvp.model.BeanCamInfo;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.dialog.BaseDialog;
 
@@ -20,7 +21,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-import static com.cylan.jiafeigou.misc.JConstant.KEY_DEVICE_ITEM_BUNDLE;
+import static com.cylan.jiafeigou.misc.JConstant.KEY_DEVICE_ITEM_UUID;
 
 /**
  * Created by yzd on 16-12-16.
@@ -30,7 +31,8 @@ public class DelayRecordGuideFragment extends IBaseFragment {
 
     public static final String KEY_DEVICE_INFO = "key_device_info";
 
-    private BeanCamInfo mBean;
+    //    private BeanCamInfo mBean;
+    private String uuid;
 
     public static DelayRecordGuideFragment newInstance(Bundle bundle) {
         DelayRecordGuideFragment fragment = new DelayRecordGuideFragment();
@@ -46,7 +48,7 @@ public class DelayRecordGuideFragment extends IBaseFragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mBean = getArguments().getParcelable(KEY_DEVICE_ITEM_BUNDLE);
+        this.uuid = getArguments().getString(KEY_DEVICE_ITEM_UUID);
     }
 
 
@@ -73,13 +75,13 @@ public class DelayRecordGuideFragment extends IBaseFragment {
             getActivity().getSupportFragmentManager().popBackStack();
             Intent intent = new Intent(getContext(), CamDelayRecordActivity.class);
             intent.putExtras(getArguments());
-            intent.putExtra(KEY_DEVICE_INFO, mBean.deviceBase);
+            intent.putExtra(KEY_DEVICE_ITEM_UUID, uuid);
             startActivity(intent);
         }
     }
 
     private boolean isDeviceSleeping() {
-        return mBean.cameraStandbyFlag;
+        return GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_508_CAMERA_STANDBY_FLAG, false);
     }
 
     private void initDeviceEnableDialog() {

@@ -1,6 +1,7 @@
 package com.cylan.jiafeigou.cache.pool;
 
 import android.text.TextUtils;
+import android.util.Pair;
 
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.entity.jniCall.JFGDPMsg;
@@ -12,27 +13,25 @@ import com.cylan.jiafeigou.dp.IDataPoint;
 import com.cylan.jiafeigou.support.log.AppLogger;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 /**
  * Created by cylan-hunt on 16-12-26.
  */
 
-public class GlobalDataPool implements IDataPool {
+public class GlobalDataProxy implements IDataPool {
 
-    private HashMap<String, JFGDevice> jfgDeviceMap = new HashMap<>();
-    private static GlobalDataPool instance;
+    private static GlobalDataProxy instance;
     private JFGAccount jfgAccount;
     private IDataPoint dataPointManager;
     private boolean isOnline;
 
-    private GlobalDataPool() {
+    private GlobalDataProxy() {
     }
 
-    public static GlobalDataPool getInstance() {
+    public static GlobalDataProxy getInstance() {
         if (instance == null) {
-            synchronized (GlobalDataPool.class) {
-                if (instance == null) instance = new GlobalDataPool();
+            synchronized (GlobalDataProxy.class) {
+                if (instance == null) instance = new GlobalDataProxy();
             }
         }
         return instance;
@@ -48,6 +47,7 @@ public class GlobalDataPool implements IDataPool {
 
     public void setJfgAccount(JFGAccount jfgAccount) {
         this.jfgAccount = jfgAccount;
+        AppLogger.i("setJfgAccount:" + (jfgAccount == null));
     }
 
     public JFGAccount getJfgAccount() {
@@ -59,15 +59,21 @@ public class GlobalDataPool implements IDataPool {
     }
 
     @Override
-    public void cacheDevice(JFGDevice jfgDevice) {
+    public void cacheDevice(String uuid, JFGDevice jfgDevice) {
         checkAccount();
-        jfgDeviceMap.put(jfgAccount.getAccount() + jfgDevice.uuid, jfgDevice);
+        dataPointManager.cacheDevice(jfgAccount.getAccount() + uuid, jfgDevice);
+    }
+
+    @Override
+    public boolean remove(String uuid) {
+        checkAccount();
+        return dataPointManager.remove(jfgAccount.getAccount() + uuid);
     }
 
     @Override
     public JFGDevice fetch(String uuid) {
         checkAccount();
-        return jfgDeviceMap.get(jfgAccount.getAccount() + uuid);
+        return dataPointManager.fetch(jfgAccount.getAccount() + uuid);
     }
 
     private void checkAccount() {
@@ -83,8 +89,13 @@ public class GlobalDataPool implements IDataPool {
     }
 
     @Override
-    public boolean update(String uuid, BaseValue baseValue) {
-        return dataPointManager.update(uuid, baseValue);
+    public boolean update(String uuid, BaseValue baseValue, boolean sync) {
+        return dataPointManager.update(uuid, baseValue, sync);
+    }
+
+    @Override
+    public boolean deleteAll(String uuid) {
+        return dataPointManager.deleteAll(uuid);
     }
 
     @Override
@@ -103,13 +114,28 @@ public class GlobalDataPool implements IDataPool {
     }
 
     @Override
+    public boolean deleteAll(String uuid, long id, ArrayList<Long> versions) {
+        return dataPointManager.deleteAll(uuid, id, versions);
+    }
+
+    @Override
     public ArrayList<BaseValue> fetchLocalList(String uuid, long id) {
         return dataPointManager.fetchLocalList(uuid, id);
     }
 
     @Override
-    public boolean isArrayType(int id) {
-        return dataPointManager.isArrayType(id);
+    public boolean isSetType(long id) {
+        return dataPointManager.isSetType(id);
+    }
+
+    @Override
+    public Pair<Integer, BaseValue> fetchUnreadCount(String uuid, long id) throws JfgException {
+        return dataPointManager.fetchUnreadCount(uuid, id);
+    }
+
+    @Override
+    public boolean markAsRead(String uuid, long id) throws JfgException {
+        return dataPointManager.markAsRead(uuid, id);
     }
 
     @Override
@@ -118,13 +144,13 @@ public class GlobalDataPool implements IDataPool {
     }
 
     @SuppressWarnings("unchecked")
-    public <T> T getValue(String uuid, int id) {
-        if (isArrayType(id)) {
+    public <T> T getValue(String uuid, long id, T defaultValue) {
+        if (isSetType(id)) {
             throw new IllegalArgumentException(String.format("id:%s is an array type in the map", id));
         }
         try {
             BaseValue base = dataPointManager.fetchLocal(uuid, id);
-            return base == null || base.getValue() == null ? null : (T) base.getValue();
+            return base == null || base.getValue() == null ? defaultValue : (T) base.getValue();
         } catch (ClassCastException c) {
             return null;
         }

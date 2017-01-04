@@ -13,13 +13,15 @@ import com.cylan.jiafeigou.n.mvp.model.BeanCamInfo;
 public interface SafeInfoContract {
 
     interface View extends BaseView<Presenter> {
-        void beanUpdate(BeanCamInfo info);
+        void beanUpdate();
     }
 
     interface Presenter extends BasePresenter {
-        void saveCamInfoBean(BeanCamInfo beanCamInfo, int id);
-
-        BeanCamInfo getBeanCamInfo();
+        /**
+         * @param value {@link com.cylan.jiafeigou.dp.BaseValue#setValue(Object)}  }
+         * @param id
+         */
+        void updateInfoReq(Object value, long id);
 
         String getRepeatMode(Context context);
     }

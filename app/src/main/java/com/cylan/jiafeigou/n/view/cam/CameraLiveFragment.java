@@ -21,10 +21,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.entity.jniCall.JFGMsgVideoResolution;
 import com.cylan.entity.jniCall.JFGMsgVideoRtcp;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
+import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JFGRules;
@@ -34,6 +37,7 @@ import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamLiveContract;
 import com.cylan.jiafeigou.n.mvp.impl.cam.CamLivePresenterImpl;
 import com.cylan.jiafeigou.n.mvp.model.BeanCamInfo;
+import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
@@ -83,7 +87,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
     @BindView(R.id.fLayout_cam_live_menu)
     FrameLayout fLayoutCamLiveMenu;
 
-    @BindView(R.id.sw_cam_port_wheel)
+    @BindView(R.id.cam_live_control_layout)
     CamLiveControlLayer swCamLiveControlLayer;
 
 
@@ -110,6 +114,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
      */
     private WeakReference<View> viewStandbyRef;
 
+    private String uuid;
 
     public CameraLiveFragment() {
         // Required empty public constructor
@@ -124,7 +129,9 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        basePresenter = new CamLivePresenterImpl(this, getArguments().getParcelable(JConstant.KEY_DEVICE_ITEM_BUNDLE));
+        DeviceBean bean = getArguments().getParcelable(JConstant.KEY_DEVICE_ITEM_BUNDLE);
+        this.uuid = bean.uuid;
+        basePresenter = new CamLivePresenterImpl(this, bean.uuid);
     }
 
     @Override
@@ -148,12 +155,12 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
         ViewUtils.updateViewHeight(fLayoutCamLiveView, 0.75f);
         initBottomBtn(false);
         camLiveController = new CamLiveController(getContext());
+        camLiveController.setPresenterRef(basePresenter);
         camLiveController.setLiveAction((ILiveControl) vs_control.inflate());
         camLiveController.setCamLiveControlLayer(swCamLiveControlLayer);
         camLiveController.setScreenZoomer(imgVCamZoomToFullScreen);
         camLiveController.setPortSafeSetter(portFlipLayout);
         camLiveController.setPortLiveTimeSetter(liveTimeLayout);
-        camLiveController.setPresenterRef(basePresenter);
         camLiveController.setActivity(getActivity());
         liveListener = camLiveController.getLiveStateListener();
     }
@@ -171,9 +178,11 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
         if (basePresenter != null) {
             basePresenter.fetchHistoryDataList();
             //非待机模式
-            if (!basePresenter.getCamInfo().cameraStandbyFlag) {
+            boolean flag = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_508_CAMERA_STANDBY_FLAG, false);
+            if (!flag) {
                 basePresenter.startPlayVideo(basePresenter.getPlayType());
             }
+            onDeviceStandBy(flag);
         }
     }
 
@@ -259,10 +268,11 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
             // 加入竖屏要处理的代码
             fLayoutCamLiveMenu.setVisibility(View.VISIBLE);
             fLayoutLiveBottomHandleBar.setVisibility(View.VISIBLE);
-            ViewUtils.updateViewHeight(fLayoutCamLiveView, 0.75f);
+//            ViewUtils.updateViewHeight(fLayoutCamLiveView, 0.75f);
         }
         camLiveController.notifyOrientationChange(this.getResources().getConfiguration().orientation);
         AppLogger.i("onConfigurationChanged");
+        updateVideoViewLayoutParameters(null);
     }
 
     /**
@@ -289,7 +299,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
                         ViewGroup.LayoutParams.WRAP_CONTENT,
                         Gravity.END);
                 textView.setGravity(Gravity.CENTER);
-                lp.setMargins(10, 10, 10, 10);
+                lp.setMargins(10, 60, 10, 10);
                 lp.setMarginEnd(10);
                 fLayoutLiveViewContainer.addView(textView, lp);
                 tvFlowRef = new WeakReference<>(textView);
@@ -307,7 +317,13 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
     private VideoViewFactory.IVideoView initVideoView() {
         AppLogger.i("initVideoView:" + (videoView == null));
         if (videoView == null) {
-            int pid = basePresenter.getCamInfo().deviceBase.pid;
+            JFGDevice device = GlobalDataProxy.getInstance().fetch(uuid);
+            if (device == null) {
+                AppLogger.e("device is null");
+                getActivity().finish();
+                return null;
+            }
+            int pid = device.pid;
             videoView = VideoViewFactory.CreateRendererExt(JFGRules.isNeedPanoramicView(pid),
                     getContext(), true);
             ((View) videoView).setId("IVideoView".hashCode());
@@ -334,14 +350,23 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
      * @param resolution
      */
     private void updateVideoViewLayoutParameters(JFGMsgVideoResolution resolution) {
+        if (resolution != null) fLayoutLiveViewContainer.setTag(resolution);
+        if (resolution == null) {
+            Object o = fLayoutLiveViewContainer.getTag();
+            if (o != null && o instanceof JFGMsgVideoResolution) {
+                resolution = (JFGMsgVideoResolution) o;
+            } else return;//要是resolution为空,就没必要设置了.
+        }
+        int height = getResources().getConfiguration().orientation == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+                ? ViewGroup.LayoutParams.MATCH_PARENT : (int) (Resources.getSystem().getDisplayMetrics().widthPixels * resolution.height / (float) resolution.width);
         FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                Resources.getSystem().getDisplayMetrics().widthPixels);
+                ViewGroup.LayoutParams.MATCH_PARENT, height);
         View view = fLayoutLiveViewContainer.findViewById("IVideoView".hashCode());
         if (view == null) {
             fLayoutLiveViewContainer.addView((View) videoView, 0, lp);
         } else {
             view.setLayoutParams(lp);
+            ViewUtils.updateViewHeight(fLayoutCamLiveView, resolution.height / (float) resolution.width);
         }
         AppLogger.i("updateVideoViewLayoutParameters:" + (view == null));
     }
@@ -441,7 +466,8 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
                 break;
             case JError.ErrorVideoPeerInConnect:
                 //正在直播...
-                ToastUtil.showNegativeToast("直播中...");
+                ToastUtil.showToast(getString(R.string.CONNECTING));
+                camLiveController.setLoadingState(ILiveControl.STATE_IDLE, null);
                 break;
             default:
                 camLiveController.setLoadingState(ILiveControl.STATE_STOP, null);

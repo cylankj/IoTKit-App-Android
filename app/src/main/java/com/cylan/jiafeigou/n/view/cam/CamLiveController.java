@@ -9,14 +9,15 @@ import android.util.Log;
 import android.view.View;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
+import com.cylan.jiafeigou.dp.DpMsgDefine;
+import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.listener.ILiveStateListener;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamLiveContract;
-import com.cylan.jiafeigou.n.mvp.model.BeanCamInfo;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.AnimatorUtils;
-import com.cylan.jiafeigou.utils.Test;
 import com.cylan.jiafeigou.utils.TimeUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
@@ -31,8 +32,6 @@ import com.cylan.jiafeigou.widget.wheel.ex.SuperWheelExt;
 import com.cylan.utils.NetUtils;
 
 import java.lang.ref.WeakReference;
-
-import butterknife.OnClick;
 
 import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_IDLE;
 import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_PLAYING;
@@ -67,6 +66,7 @@ public class CamLiveController implements
     //播放控制层面.
     private CamLiveControlLayer camLiveControlLayer;
     private Context context;
+    private static final String TAG = "CamLiveController";
 
     public CamLiveController(Context context) {
         this.context = context;
@@ -75,6 +75,9 @@ public class CamLiveController implements
     public void setCamLiveControlLayer(CamLiveControlLayer camLiveControlLayer) {
         this.camLiveControlLayer = camLiveControlLayer;
         this.camLiveControlLayer.setTopBarAction(this);
+        this.camLiveControlLayer.getImgVCamLiveLandPlay().setOnClickListener(this);
+        this.camLiveControlLayer.getLiveTimeLayout().setOnClickListener(this);
+        this.camLiveControlLayer.getTvCamLivePortLive().setOnClickListener(this);
     }
 
     public IData getDataProvider() {
@@ -134,6 +137,10 @@ public class CamLiveController implements
     public void setPortSafeSetter(ISafeStateSetter setter) {
         this.iSafeStateSetterPort = setter;
         iSafeStateSetterPort.setFlipListener(this);
+        boolean safe = GlobalDataProxy.getInstance().getValue(presenterRef.get().getUuid(), DpMsgMap.ID_501_CAMERA_ALARM_FLAG, false);
+        //true:绿色,false:setFlipped(true)
+        iSafeStateSetterPort.setFlipped(!safe);
+        Log.d(TAG, "setFlip: " + safe);
     }
 
     /**
@@ -204,8 +211,10 @@ public class CamLiveController implements
         }
         if (land && iSafeStateSetterLand == null) {
             //安全防护
-            iSafeStateSetterLand = camLiveControlLayer.getFlipLayout();
+            setLandSafeSetter(camLiveControlLayer.getFlipLayout());
             iSafeStateSetterLand.setFlipListener(this);
+            boolean safe = GlobalDataProxy.getInstance().getValue(presenterRef.get().getUuid(), DpMsgMap.ID_501_CAMERA_ALARM_FLAG, false);
+            iSafeStateSetterLand.setFlipped(safe);
         }//显示或者隐藏
         if (liveTimeSetterLand != null) liveTimeSetterLand.setVisibility(land);
         if (iSafeStateSetterLand != null) iSafeStateSetterLand.setVisibility(land);
@@ -241,16 +250,15 @@ public class CamLiveController implements
             if (land) {//横屏不显示?
 //                state = STATE_IDLE;
                 //上下滑动,进场动画.
-                Test.getInstance().autoHide(camLiveControlLayer.getLiveLandBottomBar(), false, 3000);
-                Test.getInstance().autoHide(camLiveControlLayer.getfLayoutCamLiveLandTopBar(), true, 3000);
+                AnimatorUtils.slideAuto(camLiveControlLayer.getLiveLandBottomBar(), false);
+                AnimatorUtils.slideAuto(camLiveControlLayer.getCamLiveLandTopBar(), true);
                 setLoadingState(STATE_IDLE, null);
             } else {
                 //某些限制条件,不需要显示
                 if (presenterRef.get().needShowHistoryWheelView()) {
-                    if (!camLiveControlLayer.isShown())
-                        camLiveControlLayer.setVisibility(View.VISIBLE);
-                    show = iLiveActionViewRef.get() instanceof View && ((View) iLiveActionViewRef.get()).isShown();
-                    camLiveControlLayer.getLiveLandBottomBar().setVisibility(!show ? View.VISIBLE : View.INVISIBLE);
+                    camLiveControlLayer.setVisibility(camLiveControlLayer.isShown() ? View.VISIBLE : View.INVISIBLE);
+//                    show = iLiveActionViewRef.get() instanceof View && ((View) iLiveActionViewRef.get()).isShown();
+//                    camLiveControlLayer.getLiveLandBottomBar().setVisibility(!show ? View.VISIBLE : View.INVISIBLE);
                 }
                 setLoadingState(iLiveActionViewRef.get().getState(), null);
             }
@@ -268,7 +276,9 @@ public class CamLiveController implements
                 AppLogger.i("没有历史视频数据,或者没准备好");
                 return;
             }
-            boolean deviceState = JFGRules.isDeviceOnline(presenterRef.get().getCamInfo().net);
+            DpMsgDefine.MsgNet net = GlobalDataProxy.getInstance().getValue(presenterRef.get().getUuid(),
+                    DpMsgMap.ID_201_NET, null);
+            boolean deviceState = JFGRules.isDeviceOnline(net);
             //播放状态
             int playState = presenterRef.get().getPlayState();
             int orientation = context.getResources().getConfiguration().orientation;
@@ -378,10 +388,11 @@ public class CamLiveController implements
             presenterRef.get().takeSnapShot();
     }
 
-    @OnClick({R.id.imgV_cam_live_land_play,
-            R.id.live_time_layout,
-            R.id.imgV_cam_zoom_to_full_screen,
-            R.id.tv_cam_live_port_live})
+    //    @OnClick({R.id.imgV_cam_live_land_play,
+//            R.id.live_time_layout,
+//            R.id.imgV_cam_zoom_to_full_screen,
+//            R.id.tv_cam_live_port_live})
+    @Override
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.tv_cam_live_port_live:
@@ -423,13 +434,16 @@ public class CamLiveController implements
             AppLogger.d("no net work");
             return;
         }
-        BeanCamInfo info = presenterRef.get().getCamInfo();
-        if (info != null && info.net != null &&
-                info.net.net == 0) {
+        DpMsgDefine.MsgNet net = GlobalDataProxy.getInstance().getValue(presenterRef.get().getUuid(),
+                DpMsgMap.ID_201_NET, null);
+        if (net != null &&
+                net.net == 0) {
             AppLogger.d("device is offline");
             return;
         }
-        if (info != null && info.sdcardStorage != null && !info.sdcardStorage.hasSdcard) {
+        DpMsgDefine.SdStatus status = GlobalDataProxy.getInstance().getValue(presenterRef.get().getUuid(),
+                DpMsgMap.ID_204_SDCARD_STORAGE, null);
+        if (status != null && !status.hasSdcard) {
             //没有sd卡
             ToastUtil.showToast(context.getString(R.string.Tap1_Camera_NoSDCardTips));
             AppLogger.d("no sdcard");
@@ -437,13 +451,19 @@ public class CamLiveController implements
         }
         if (iDataProvider == null || iDataProvider.getDataCount() == 0) {
             AppLogger.d("history data is not prepared");
+            ToastUtil.showToast("没有历史视频...自己加的,,,别点了");
             return;
         }
-
+        boolean land = context.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
         //竖屏显示对话框,横屏显示测推
+        if (land) showLandDataPicker();
+        else showPortDataPicker();
+    }
+
+    private void showPortDataPicker() {
         if (datePickerRef == null || datePickerRef.get() == null) {
             Bundle bundle = new Bundle();
-            bundle.putString(BaseDialog.KEY_TITLE, "时间选择");
+            bundle.putString(BaseDialog.KEY_TITLE, context.getString(R.string.TIME));
             DatePickerDialogFragment.newInstance(bundle);
             datePickerRef = new WeakReference<>(DatePickerDialogFragment.newInstance(bundle));
             datePickerRef.get().setAction((int id, Object value) -> {
@@ -460,10 +480,16 @@ public class CamLiveController implements
                 "DatePickerDialogFragment");
     }
 
+    private void showLandDataPicker() {
+
+    }
+
     @Override
     public void onClick(FlipImageView view) {
         boolean land = view.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
-        AppLogger.i("land: " + land + "" + (view == null));
+        AppLogger.i("land: " + land + " " + (!view.isFlipped()));
+        if (presenterRef != null && presenterRef.get() != null)
+            presenterRef.get().updateInfoReq(!view.isFlipped(), DpMsgMap.ID_501_CAMERA_ALARM_FLAG);
     }
 
     @Override

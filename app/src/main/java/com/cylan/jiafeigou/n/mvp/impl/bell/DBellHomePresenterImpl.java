@@ -131,20 +131,30 @@ public class DBellHomePresenterImpl extends AbstractPresenter<DoorBellHomeContra
     private Subscription onBellBatteryState() {
         return RxBus.getCacheInstance().toObservable(RxEvent.JFGRobotSyncData.class)
                 .subscribeOn(Schedulers.io())
-                .filter(rsp -> rsp.dataList.get(DpMsgMap.ID_206_BATTERY) != null && TextUtils.equals(mBellInfo.deviceBase.uuid, rsp.identity))
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(rsp -> {
-                    JFGDPMsg msg = rsp.dataList.get(DpMsgMap.ID_206_BATTERY);
-                    try {
-                        DpMsgDefine.MsgBattery battery = DpUtils.unpackData(msg.packValue, DpMsgDefine.MsgBattery.class);
-                        mBellInfo.battery = battery.battery;
-                        if (mBellInfo.battery < 20) {
-                            mView.onBellBatteryDrainOut();
+                .map(rsp -> {
+                    if (!TextUtils.equals(mBellInfo.deviceBase.uuid, rsp.identity)) return null;
+                    for (JFGDPMsg msg : rsp.dataList) {
+                        if (msg.id == DpMsgMap.ID_206_BATTERY) {
+                            return msg;
                         }
-                    } catch (IOException e) {
-                        e.printStackTrace();
                     }
-                });
+                    return null;
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(msg -> {
+                            if (msg == null) return;
+                            try {
+                                DpMsgDefine.MsgBattery battery = DpUtils.unpackData(msg.packValue, DpMsgDefine.MsgBattery.class);
+                                mBellInfo.battery = battery.battery;
+                                if (mBellInfo.battery < 20) {
+                                    mView.onBellBatteryDrainOut();
+                                }
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }
+
+                );
 
     }
 

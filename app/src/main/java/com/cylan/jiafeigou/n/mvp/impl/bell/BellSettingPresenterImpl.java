@@ -23,7 +23,6 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
-import rx.subscriptions.CompositeSubscription;
 
 /**
  * Created by cylan-hunt on 16-8-3.
@@ -31,7 +30,7 @@ import rx.subscriptions.CompositeSubscription;
 public class BellSettingPresenterImpl extends AbstractPresenter<BellSettingContract.View>
         implements BellSettingContract.Presenter {
     private BeanBellInfo beanBellInfo;
-    private CompositeSubscription compositeSubscription = new CompositeSubscription();
+//    private CompositeSubscription compositeSubscription = new CompositeSubscription();
 
     public BellSettingPresenterImpl(BellSettingContract.View view, DeviceBean bean) {
         super(view);
@@ -49,14 +48,12 @@ public class BellSettingPresenterImpl extends AbstractPresenter<BellSettingContr
         beanBellInfo.convert(baseBean, bean.dataList);
     }
 
-
     @Override
-    public void start() {
-        unSubscribe(compositeSubscription);
-        compositeSubscription = new CompositeSubscription();
-        compositeSubscription.add(onBellInfoSubscription());
-        compositeSubscription.add(onLoginStateSubscription());
-        compositeSubscription.add(unbindDevSub());
+    protected Subscription[] register() {
+        return new Subscription[]{
+                onBellInfoSubscription(),
+                onLoginStateSubscription(),
+                unbindDevSub()};
     }
 
     /**
@@ -91,17 +88,17 @@ public class BellSettingPresenterImpl extends AbstractPresenter<BellSettingContr
 
     private Subscription onBellInfoSubscription() {
         //查询设备列表
-        return RxBus.getUiInstance().toObservableSticky(RxUiEvent.BulkDeviceList.class)
+        return RxBus.getCacheInstance().toObservableSticky(RxUiEvent.BulkDeviceListRsp.class)
                 .subscribeOn(Schedulers.computation())
-                .filter(new Func1<RxUiEvent.BulkDeviceList, Boolean>() {
+                .filter(new Func1<RxUiEvent.BulkDeviceListRsp, Boolean>() {
                     @Override
-                    public Boolean call(RxUiEvent.BulkDeviceList list) {
+                    public Boolean call(RxUiEvent.BulkDeviceListRsp list) {
                         return getView() != null && list != null && list.allDevices != null;
                     }
                 })
-                .flatMap(new Func1<RxUiEvent.BulkDeviceList, Observable<DpMsgDefine.DpWrap>>() {
+                .flatMap(new Func1<RxUiEvent.BulkDeviceListRsp, Observable<DpMsgDefine.DpWrap>>() {
                     @Override
-                    public Observable<DpMsgDefine.DpWrap> call(RxUiEvent.BulkDeviceList list) {
+                    public Observable<DpMsgDefine.DpWrap> call(RxUiEvent.BulkDeviceListRsp list) {
                         for (DpMsgDefine.DpWrap wrap : list.allDevices) {
                             if (beanBellInfo.deviceBase == null || wrap.baseDpDevice == null)
                                 continue;
@@ -154,11 +151,6 @@ public class BellSettingPresenterImpl extends AbstractPresenter<BellSettingContr
                             getView().onLoginState(o.state);
                     }
                 });
-    }
-
-    @Override
-    public void stop() {
-        unSubscribe(compositeSubscription);
     }
 
 

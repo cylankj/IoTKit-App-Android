@@ -48,7 +48,7 @@ public class HelperActivity extends AppCompatActivity {
                 view,
                 getString(R.string.permission_info),
                 Snackbar.LENGTH_INDEFINITE)
-                .setAction(getString(R.string.permission_ok), new View.OnClickListener() {
+                .setAction(getString(R.string.OK), new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         ActivityCompat.requestPermissions(
@@ -68,11 +68,11 @@ public class HelperActivity extends AppCompatActivity {
                 view,
                 getString(R.string.permission_force),
                 Snackbar.LENGTH_INDEFINITE)
-                .setAction(getString(R.string.permission_settings), new View.OnClickListener() {
+                .setAction(getString(R.string.SETTINGS), new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         Uri uri = Uri.fromParts(
-                                getString(R.string.permission_package),
+                                "package",
                                 HelperActivity.this.getPackageName(),
                                 null);
 

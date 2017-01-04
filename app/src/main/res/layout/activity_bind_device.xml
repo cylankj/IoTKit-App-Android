@@ -35,7 +35,7 @@
                     android:id="@+id/imgV_top_bar_center"
                     style="@style/text_base_singleLine"
                     android:layout_gravity="center"
-                    android:text="添加设备"
+                    android:text="@string/DEVICES_TITLE"
                     android:textColor="@color/color_white"
                     android:textSize="16sp" />
             </FrameLayout>

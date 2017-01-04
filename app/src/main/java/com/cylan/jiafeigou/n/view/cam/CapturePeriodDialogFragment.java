@@ -14,9 +14,10 @@ import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
+import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.JConstant;
-import com.cylan.jiafeigou.n.mvp.model.BeanCamInfo;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.widget.dialog.BaseDialog;
 
@@ -74,9 +75,9 @@ public class CapturePeriodDialogFragment extends BaseDialog {
     }
 
     private void initView() {
-        BeanCamInfo info = getArguments().getParcelable(JConstant.KEY_DEVICE_ITEM_BUNDLE);
-        DpMsgDefine.AlarmInfo alarmInfo = info == null ? null : info.cameraAlarmInfo;
-        if (info == null || alarmInfo == null) {
+        String uuid = getArguments().getString(JConstant.KEY_DEVICE_ITEM_UUID);
+        DpMsgDefine.AlarmInfo alarmInfo = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_502_CAMERA_ALARM_INFO, null);
+        if (alarmInfo == null) {
             AppLogger.e("should not happen");
             return;
         }

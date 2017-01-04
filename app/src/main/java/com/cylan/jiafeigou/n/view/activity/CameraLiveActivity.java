@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -15,7 +16,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
+import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
+import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
 import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
@@ -45,7 +49,7 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
     CustomViewPager vpCameraLive;
     @BindView(R.id.imgV_camera_title_top_setting)
     ImageView imgVCameraTitleTopSetting;
-
+    private String uuid;
     private SimplePageListener simpleListener = new SimplePageListener();
 
 
@@ -53,7 +57,11 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_camera_live);
-//        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+        Parcelable parcelable = getIntent().getBundleExtra(JConstant.KEY_DEVICE_ITEM_BUNDLE)
+                .getParcelable(JConstant.KEY_DEVICE_ITEM_BUNDLE);
+        if (parcelable != null && parcelable instanceof DeviceBean) {
+            this.uuid = ((DeviceBean) parcelable).uuid;
+        }
         ButterKnife.bind(this);
         initTopBar();
         initAdapter();
@@ -161,7 +169,13 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
 
         @Override
         public void onPageSelected(int position) {
-
+            if (position == 1) {
+                try {
+                    GlobalDataProxy.getInstance().markAsRead(uuid, DpMsgMap.ID_505_CAMERA_ALARM_MSG);
+                } catch (JfgException e) {
+                    AppLogger.e("err: " + e.getLocalizedMessage());
+                }
+            }
         }
 
         @Override

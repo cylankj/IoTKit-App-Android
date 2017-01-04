@@ -1,6 +1,7 @@
 package com.cylan.jiafeigou.widget.dialog;
 
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -12,9 +13,10 @@ import android.view.animation.AnticipateOvershootInterpolator;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
+import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.JConstant;
-import com.cylan.jiafeigou.n.mvp.model.BeanCamInfo;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.widget.pick.AbstractWheel;
 import com.cylan.jiafeigou.widget.pick.OnWheelChangedListener;
@@ -43,7 +45,7 @@ public class TimePickDialogFragment extends BaseDialog<Integer> {
     WheelVerticalView wheelHourPick;
     @BindView(R.id.wheel_minute_pick)
     WheelVerticalView wheelMinutePick;
-
+    private String uuid;
     private int newHour;
     private int newMinute;
 
@@ -63,6 +65,12 @@ public class TimePickDialogFragment extends BaseDialog<Integer> {
     }
 
     @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        this.uuid = getArguments().getString(JConstant.KEY_DEVICE_ITEM_UUID);
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
@@ -75,9 +83,7 @@ public class TimePickDialogFragment extends BaseDialog<Integer> {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         String title = getArguments().getString(KEY_TITLE);
         tvDialogTitle.setText(title);
-        BeanCamInfo info = getArguments().getParcelable(JConstant.KEY_DEVICE_ITEM_BUNDLE);
-        DpMsgDefine.AlarmInfo alarmInfo = info.cameraAlarmInfo == null ?
-                new DpMsgDefine.AlarmInfo() : info.cameraAlarmInfo;
+        DpMsgDefine.AlarmInfo alarmInfo = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_502_CAMERA_ALARM_INFO, new DpMsgDefine.AlarmInfo());
         boolean isStart = TextUtils.equals(title, getString(R.string.FROME));
         newHour = isStart ? alarmInfo.timeStart >> 8 : alarmInfo.timeEnd >> 8;
         newMinute = isStart ? ((byte) alarmInfo.timeStart << 8) >> 8 : ((byte) alarmInfo.timeEnd << 8) >> 8;

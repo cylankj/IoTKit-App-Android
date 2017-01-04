@@ -2,8 +2,8 @@ package com.cylan.jiafeigou.n.mvp.contract.bell;
 
 import com.cylan.entity.jniCall.JFGMsgVideoResolution;
 import com.cylan.ex.JfgException;
-import com.cylan.jiafeigou.n.mvp.BasePresenter;
-import com.cylan.jiafeigou.n.mvp.BaseView;
+import com.cylan.jiafeigou.base.JFGPresenter;
+import com.cylan.jiafeigou.base.JFGView;
 import com.cylan.jiafeigou.n.mvp.model.BeanBellInfo;
 
 /**
@@ -12,14 +12,21 @@ import com.cylan.jiafeigou.n.mvp.model.BeanBellInfo;
 public interface BellLiveContract {
 
 
-    interface View extends BaseView<Presenter> {
+    interface View extends JFGView {
 
 
         void onLoginState(int state);
 
+
+        /**
+         * 设备响应分辨率消息
+         */
         void onResolution(JFGMsgVideoResolution resolution) throws JfgException;
 
-        void onFlowSpeedRefresh(int speed);
+        /**
+         * 更新流量信息
+         */
+        void onFlowSpeed(int speed);
 
         /**
          * 直播或者历史录像
@@ -28,45 +35,57 @@ public interface BellLiveContract {
          */
         void onLiveStop(int errId);
 
-        //新的门铃呼叫到来,且现在没有已接听的门铃
+        /**
+         * 新的门铃呼叫到来,且现在没有已接听的门铃
+         */
         void onListen();
 
+        /**
+         * 显示门铃预览图
+         */
         void onPreviewPicture(String URL);
 
-        //客户端主动查看门铃
+        /**
+         * 客户端主动查看门铃
+         */
         void onViewer();
 
-        //新的门铃到来,且此时已有一个存在的门铃呼叫
-        void onProcess(String person);
+        /**
+         * 设置当前麦克风状态
+         */
+        void onSpeaker(boolean on);
     }
 
-    interface Presenter extends BasePresenter {
+    interface Presenter extends JFGPresenter {
 
         /**
          * 接听
          */
         void onPickup();
 
-        void onWatchLive();
-
         /**
          * 挂断
          */
         void onDismiss();
 
-        void onMike(int on);
+        /**
+         * 切换speaker
+         */
+        void onSwitchSpeaker();
 
+        /**
+         * 截屏
+         */
         void onCapture();
 
         BeanBellInfo getBellInfo();
 
-        void setBellInfo(BeanBellInfo info);
-
-        void processCall();
-
+        /**
+         * 当view创建的时候会调用这个方法,以后会优化
+         */
         void onBellCall(String callWay, Object extra, Object extra1);
 
-        void onBellPaused();
+        void onScreenRotationChanged(boolean land);
     }
 }
 
