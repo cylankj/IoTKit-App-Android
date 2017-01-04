@@ -267,4 +267,11 @@
         <attr name="alpha_background" format="float"/>
 
     </declare-styleable>
+
+    <declare-styleable name="MagLiveLine">
+        <attr name="isShowUpLine" format="boolean"/>
+        <attr name="lineIcon" format="reference"/>
+        <attr name="lineLength" format="dimension"/>
+    </declare-styleable>
+
 </resources>

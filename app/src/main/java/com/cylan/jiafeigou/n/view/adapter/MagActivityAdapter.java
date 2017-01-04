@@ -1,8 +1,18 @@
 package com.cylan.jiafeigou.n.view.adapter;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
+import android.text.style.AbsoluteSizeSpan;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.StyleSpan;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.model.MagBean;
@@ -49,28 +59,22 @@ public class MagActivityAdapter extends SuperAdapter<MagBean> {
     public void onBind(SuperViewHolder holder, int viewType, int layoutPosition, MagBean item) {
 
         if (viewType == TYPE_VISIBLE) {
-            //initVisible(holder, layoutPosition);
             handleVisibleState(holder, layoutPosition, item);
         } else if (viewType == TYPE_INVISIBLE) {
-            //initInvisible(holder, layoutPosition);
+            handleInVisibleState(holder, layoutPosition, item);
         }
     }
 
-    private void initVisible(SuperViewHolder holder, final int layoutPosition) {
-        setupPosition2View(holder, R.id.tv_mag_live_day, layoutPosition);
-        setupPosition2View(holder, R.id.tv_mag_live_time, layoutPosition);
-        setupPosition2View(holder, R.id.iv_mag_live, layoutPosition);
-    }
-
-    private void initInvisible(SuperViewHolder holder, final int layoutPosition) {
-        setupPosition2View(holder, R.id.flv_mag_live_invisible, layoutPosition);
-    }
-
-    private void setupPosition2View(SuperViewHolder holder, final int viewId, final int position) {
-        final View view = holder.getView(viewId);
-        if (view != null) {
-            view.setTag(position);
-        }
+    private void handleInVisibleState(SuperViewHolder holder, int layoutPosition, MagBean item) {
+        Drawable drawable = getContext().getResources().getDrawable(R.drawable.icon_dot_gary);
+        int intrinsicWidth = drawable.getIntrinsicWidth();
+        ImageView view = (ImageView) holder.getView(R.id.iv_mag_live);
+        int width = view.getWidth();
+        LinearLayout ll_container = holder.getView(R.id.ll_icon_container);
+        ViewGroup.LayoutParams layoutParams = ll_container.getLayoutParams();
+        layoutParams.width = intrinsicWidth;
+        ll_container.setLayoutParams(layoutParams);
+        view.setVisibility(View.GONE);
     }
 
     private void handleVisibleState(SuperViewHolder holder, int layoutPosition, MagBean bean) {
@@ -78,26 +82,29 @@ public class MagActivityAdapter extends SuperAdapter<MagBean> {
         ImageView view = (ImageView) holder.getView(R.id.iv_mag_live);
         if (bean.isFirst) {
             if (currentState) {
-                view.setImageDrawable(getContext().getResources().getDrawable(R.drawable.icon_dot_red));
+                view.setImageDrawable(getContext().getResources().getDrawable(R.drawable.pic_magnetometer_dot_red));
             } else {
-                view.setImageDrawable(getContext().getResources().getDrawable(R.drawable.icon_dot_green));
+                view.setImageDrawable(getContext().getResources().getDrawable(R.drawable.pic_magnetometer_dot_blue));
             }
         } else {
             view.setImageDrawable(getContext().getResources().getDrawable(R.drawable.icon_dot_gary));
         }
 
-        if (layoutPosition == 0) {
+        if (layoutPosition == 1) {
             if (checkIsToday(bean.getMagTime())) {
                 holder.setText(R.id.tv_mag_live_day, ContextUtils.getContext().getString(R.string.DOOR_TODAY));
             } else {
-                holder.setText(R.id.tv_mag_live_day, getDate(bean.magTime) + ContextUtils.getContext().getString(R.string.MONTHS));
+                holder.setText(R.id.tv_mag_live_day, converStr(getDate(bean.magTime) + ContextUtils.getContext().getString(R.string.MONTHS)));
             }
-        } else {
+        } else if(layoutPosition > 1){
             if (checkSame(bean.magTime, getList().get(layoutPosition - 1).magTime)) {
                 holder.setText(R.id.tv_mag_live_day, "");
             } else {
-                holder.setText(R.id.tv_mag_live_day, getDate(bean.magTime) + ContextUtils.getContext().getString(R.string.MONTHS));
+                holder.setText(R.id.tv_mag_live_day, converStr(getDate(bean.magTime) + ContextUtils.getContext().getString(R.string.MONTHS)));
             }
+        }else {
+            holder.setText(R.id.tv_mag_live_day, "");
+            holder.setText(R.id.tv_mag_live_time, "");
         }
 
         if (bean.isOpen) {
@@ -186,10 +193,17 @@ public class MagActivityAdapter extends SuperAdapter<MagBean> {
      *
      * @param magDate
      */
-    public String getDate(long magDate) {
+    public String  getDate(long magDate) {
         SimpleDateFormat sdf = new SimpleDateFormat("dd/M");
         String nowDate = sdf.format(new Date(magDate));
         return nowDate;
+    }
+
+    public Spannable converStr(String str){
+        Spannable sb = new SpannableString(str);
+        sb.setSpan(new AbsoluteSizeSpan(17,true), 0, 3, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+        sb.setSpan(new AbsoluteSizeSpan(12,true), 3, str.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+        return sb;
     }
 
     /**
