@@ -456,11 +456,11 @@ public class CamLiveController implements
         }
         boolean land = context.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
         //竖屏显示对话框,横屏显示测推
-        if (land) showLandDataPicker();
-        else showPortDataPicker();
+        if (land) showLandDatePicker();
+        else showPortDatePicker();
     }
 
-    private void showPortDataPicker() {
+    private void showPortDatePicker() {
         if (datePickerRef == null || datePickerRef.get() == null) {
             Bundle bundle = new Bundle();
             bundle.putString(BaseDialog.KEY_TITLE, context.getString(R.string.TIME));
@@ -480,8 +480,20 @@ public class CamLiveController implements
                 "DatePickerDialogFragment");
     }
 
-    private void showLandDataPicker() {
-
+    private void showLandDatePicker() {
+        int visibility = camLiveControlLayer.getLandDateContainer().getVisibility();
+        if (visibility == View.GONE) {
+            camLiveControlLayer.getLandDateContainer().setVisibility(View.INVISIBLE);
+        }
+        float x = camLiveControlLayer.getLandDateContainer().getX();
+        float left = camLiveControlLayer.getLandDateContainer().getLeft();
+        float translateX = camLiveControlLayer.getLandDateContainer().getTranslationX();
+        if (x == left && camLiveControlLayer.getLandDateContainer().isShown())
+            AnimatorUtils.slideOutRight(camLiveControlLayer.getLandDateContainer());
+        else if (translateX + left == x
+                || x == left + translateX
+                || !camLiveControlLayer.getLandDateContainer().isShown())
+            AnimatorUtils.slideInRight(camLiveControlLayer.getLandDateContainer());
     }
 
     @Override

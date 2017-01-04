@@ -34,7 +34,6 @@ import java.util.concurrent.TimeUnit;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
@@ -59,6 +58,7 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
                 getLoginRspSub(),
                 subDeviceList(),
                 singleDeviceSub(),
+                sdcardStatusSub(),
                 JFGAccountUpdate()};
     }
 
@@ -70,15 +70,38 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
     private Subscription getDevicesList() {
         return Observable.just("null")
                 .subscribeOn(Schedulers.newThread())
-                .subscribe(new Action1<String>() {
-                    @Override
-                    public void call(String s) {
-                        if (!RxBus.getCacheInstance().hasStickyEvent(RxUiEvent.BulkDeviceListRsp.class)) {
-                            RxBus.getCacheInstance().post(new RxUiEvent.BulkDeviceListReq());
-                            Log.d(TAG, "getDevicesList getDevicesList");
-                        }
+                .subscribe((String s) -> {
+                    if (!RxBus.getCacheInstance().hasStickyEvent(RxUiEvent.BulkDeviceListRsp.class)) {
+                        RxBus.getCacheInstance().post(new RxUiEvent.BulkDeviceListReq());
+                        Log.d(TAG, "getDevicesList getDevicesList");
                     }
                 });
+    }
+
+    /**
+     * sd卡状态更新
+     *
+     * @return
+     */
+    private Subscription sdcardStatusSub() {
+        return RxBus.getCacheInstance().toObservable(RxEvent.DataPoolUpdate.class)
+                .filter((RxEvent.DataPoolUpdate data) -> (getView() != null))
+                .observeOn(AndroidSchedulers.mainThread())
+                .map(new Func1<RxEvent.DataPoolUpdate, Boolean>() {
+                    @Override
+                    public Boolean call(RxEvent.DataPoolUpdate update) {
+                        if (update.id == DpMsgMap.ID_204_SDCARD_STORAGE) {
+                            DpMsgDefine.SdStatus sdStatus = (DpMsgDefine.SdStatus) update.value.getValue();
+                        } else if (update.id == DpMsgMap.ID_222_SDCARD_SUMMARY) {
+                            DpMsgDefine.SdcardSummary sdcardSummary = (DpMsgDefine.SdcardSummary) update.value.getValue();
+                        } else if (update.id == DpMsgMap.ID_201_NET) {
+                            DpMsgDefine.MsgNet net = (DpMsgDefine.MsgNet) update.value.getValue();
+                        }
+                        return null;
+                    }
+                })
+                .retry(new RxHelper.RxException<>("sdcardStatusSub"))
+                .subscribe();
     }
 
     /**
@@ -89,13 +112,10 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
     private Subscription singleDeviceSub() {
         return RxBus.getCacheInstance().toObservable(RxUiEvent.SingleDevice.class)
                 .throttleFirst(500, TimeUnit.MILLISECONDS)
-                .filter(new Func1<RxUiEvent.SingleDevice, Boolean>() {
-                    @Override
-                    public Boolean call(RxUiEvent.SingleDevice singleDevice) {
-                        boolean notNull = getView() != null && singleDevice != null && singleDevice.dpMsg != null;
-                        AppLogger.i("notNull: " + notNull);
-                        return notNull;
-                    }
+                .filter((RxUiEvent.SingleDevice singleDevice) -> {
+                    boolean notNull = getView() != null && singleDevice != null && singleDevice.dpMsg != null;
+                    AppLogger.i("notNull: " + notNull);
+                    return notNull;
                 })
                 .flatMap(new Func1<RxUiEvent.SingleDevice, Observable<DeviceBean>>() {
                     @Override
@@ -110,11 +130,8 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
                 .map(new Func1<DeviceBean, DeviceBean>() {
                     @Override
                     public DeviceBean call(DeviceBean bean) {
-//                        if (bean.uuid.equals("200000000472")) {//测试分享账号显示
-//                            bean.shareAccount = "what";
-//                        }
                         //已经展示的列表
-                        List<DeviceBean> vList = getView().getDeviceList();
+                        List<DeviceBean> vList = getView().getUuidList();
                         //新列表
                         final int index = vList == null ? -1 : vList.indexOf(bean);
                         if (MiscUtils.isInRange(0, 1, index)) {
@@ -138,14 +155,12 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
         return RxBus.getCacheInstance().toObservableSticky(RxEvent.TimeTickEvent.class)
                 .throttleFirst(1000, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<RxEvent.TimeTickEvent>() {
-                    @Override
-                    public void call(RxEvent.TimeTickEvent o) {
-                        //6:00 am - 17:59 pm
-                        //18:00 pm-5:59 am
-                        if (getView() != null) {
-                            getView().onTimeTick(JFGRules.getTimeRule());
-                        }
+                .subscribe((RxEvent.TimeTickEvent o) -> {
+                    //6:00 am - 17:59 pm
+                    //18:00 pm-5:59 am
+                    if (getView() != null) {
+                        getView().onTimeTick(JFGRules.getTimeRule());
+
                     }
                 });
 
@@ -155,14 +170,11 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
         return RxBus.getCacheInstance().toObservable(RxEvent.LoginRsp.class)
                 .throttleFirst(1000, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<RxEvent.LoginRsp>() {
-                    @Override
-                    public void call(RxEvent.LoginRsp o) {
-                        if (getView() != null)
-                            getView().onLoginState(JCache.isOnline());
-                        if (JCache.getAccountCache() != null)
-                            getView().onAccountUpdate(JCache.getAccountCache());
-                    }
+                .subscribe((RxEvent.LoginRsp o) -> {
+                    if (getView() != null)
+                        getView().onLoginState(JCache.isOnline());
+                    if (JCache.getAccountCache() != null)
+                        getView().onAccountUpdate(JCache.getAccountCache());
                 });
     }
 
@@ -170,12 +182,9 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
         return RxBus.getCacheInstance().toObservableSticky(JFGAccount.class)
                 .filter(new RxHelper.Filter<>(TAG + "JFGAccountUpdate", (getView() != null && JCache.isOnline())))
                 .observeOn(AndroidSchedulers.mainThread())
-                .map(new Func1<JFGAccount, Object>() {
-                    @Override
-                    public Object call(JFGAccount jfgAccount) {
-                        getView().onAccountUpdate(jfgAccount);
-                        return null;
-                    }
+                .map((JFGAccount jfgAccount) -> {
+                    getView().onAccountUpdate(jfgAccount);
+                    return null;
                 })
                 .retry(new RxHelper.RxException<>("JFGAccount"))
                 .subscribe();
@@ -279,7 +288,7 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
 
     private ArrayList<DeviceBean> aList() {
         if (getView() == null) return null;
-        return getView().getDeviceList();
+        return getView().getUuidList();
     }
 
     @Override

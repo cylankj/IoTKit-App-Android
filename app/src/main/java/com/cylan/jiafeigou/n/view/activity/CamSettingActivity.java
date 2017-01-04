@@ -23,7 +23,6 @@ import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamSettingContract;
 import com.cylan.jiafeigou.n.mvp.impl.cam.CamSettingPresenterImpl;
-import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
 import com.cylan.jiafeigou.n.view.cam.CamDelayRecordActivity;
 import com.cylan.jiafeigou.n.view.cam.DelayRecordGuideFragment;
 import com.cylan.jiafeigou.n.view.cam.DeviceInfoDetailFragment;
@@ -95,15 +94,15 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         setContentView(R.layout.activity_cam_setting);
         ButterKnife.bind(this);
         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-        Bundle bundle = getIntent().getBundleExtra(JConstant.KEY_DEVICE_ITEM_BUNDLE);
+        Bundle bundle = getIntent().getBundleExtra(JConstant.KEY_DEVICE_ITEM_UUID);
         if (bundle == null) {
             AppLogger.e("bundle is null");
             finish();
             return;
         }
-        DeviceBean bean = bundle.getParcelable(JConstant.KEY_DEVICE_ITEM_BUNDLE);
-        basePresenter = new CamSettingPresenterImpl(this, bean.uuid);
-        this.uuid = bean.uuid;
+        this.uuid = getIntent().getBundleExtra(JConstant.KEY_DEVICE_ITEM_UUID)
+                .getString(JConstant.KEY_DEVICE_ITEM_UUID);
+        basePresenter = new CamSettingPresenterImpl(this, uuid);
     }
 
     @Override
@@ -257,7 +256,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
                 if (PreferencesUtils.getBoolean(JConstant.KEY_DELAY_RECORD_GUIDE, true)) {
                     initUserGuideFragment();
                     Bundle bundle = new Bundle();
-                    bundle.putString(JConstant.KEY_DEVICE_ITEM_BUNDLE, uuid);
+                    bundle.putString(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
                     mGuideFragment.get().setArguments(bundle);
                     ActivityUtils.loadFragment(android.R.id.content, getSupportFragmentManager(), mGuideFragment.get());
                 } else {

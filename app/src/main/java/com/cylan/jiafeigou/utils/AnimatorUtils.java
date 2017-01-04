@@ -335,7 +335,8 @@ public class AnimatorUtils {
         return null;
     }
 
-    public static Animator slideInRight(View target) {
+    public static Animator slideRight(View target) {
+
         int right = 200;
         ObjectAnimator animator = ObjectAnimator.ofFloat(target, "translationX", right, 0);
         animator.setDuration(600);
@@ -344,10 +345,30 @@ public class AnimatorUtils {
         return animator;
     }
 
+    public static void slideInRight(View target) {
+        if (!target.isShown()) target.setVisibility(View.VISIBLE);
+        ViewGroup parent = (ViewGroup) target.getParent();
+        int distance = parent.getWidth() - target.getLeft();
+        ObjectAnimator animator = ObjectAnimator.ofFloat(target, "translationX", (float) distance, 0.0F);
+        animator.setDuration(250);
+        animator.setInterpolator(new DecelerateInterpolator());
+        animator.start();
+    }
+
+    public static void slideOutRight(final View target) {
+        if (target.getLeft() != target.getX()) return;
+        if (!target.isShown()) target.setVisibility(View.VISIBLE);
+        ViewGroup parent = (ViewGroup) target.getParent();
+        int distance = parent.getWidth() - target.getLeft();
+        ObjectAnimator animator = ObjectAnimator.ofFloat(target, "translationX", 0.0F, (float) distance);
+        animator.setDuration(250);
+        animator.setInterpolator(new DecelerateInterpolator());
+        animator.start();
+    }
 
     public static Animator onHandMoveAndFlash(final View hand, final View redot,
                                               final ImageView flash) {
-        Animator slideIn = slideInRight(hand);
+        Animator slideIn = slideRight(hand);
         slideIn.setStartDelay(1000);
         slideIn.setDuration(500);
         slideIn.addListener(new SimpleAnimationListener() {
