@@ -92,10 +92,10 @@ public class JConstant {
     public static final String KEY_FRESH = "is_you_fresh";
 
     public static final String KEY_DELAY_RECORD_GUIDE = "delay_record_guide";
-    public static final String BELL_CALL_WAY = "bell_call_way";
-    public static final String BELL_CALL_WAY_VIEWER = "BELL_CALL_WAY_VIEWER";
-    public static final String BELL_CALL_WAY_LISTEN = "BELL_CALL_WAY_LISTEN";
-    public static final String BELL_CALL_WAY_EXTRA = "BELL_CALL_WAY_EXTRA";
+    public static final String VIEW_CALL_WAY = "bell_call_way";
+    public static final String VIEW_CALL_WAY_VIEWER = "VIEW_CALL_WAY_VIEWER";
+    public static final String VIEW_CALL_WAY_LISTEN = "VIEW_CALL_WAY_LISTEN";
+    public static final String VIEW_CALL_WAY_EXTRA = "VIEW_CALL_WAY_EXTRA";
 
     public static int ConfigApState = 0;
 

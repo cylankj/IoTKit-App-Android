@@ -4,12 +4,12 @@ import android.text.TextUtils;
 import android.util.Pair;
 
 import com.cylan.ex.JfgException;
+import com.cylan.jiafeigou.base.wrapper.BasePresenter;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.dp.DpUtils;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.contract.bell.BellDetailContract;
-import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.n.mvp.model.BeanBellInfo;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
@@ -27,18 +27,10 @@ import rx.schedulers.Schedulers;
 /**
  * Created by cylan-hunt on 16-8-3.
  */
-public class BellDetailSettingPresenterImpl extends AbstractPresenter<BellDetailContract.View>
+public class BellDetailSettingPresenterImpl extends BasePresenter<BellDetailContract.View>
         implements BellDetailContract.Presenter {
     private BeanBellInfo beanBellInfo;
-//    private CompositeSubscription compositeSubscription = new CompositeSubscription();
 
-    public BellDetailSettingPresenterImpl(BellDetailContract.View view, BeanBellInfo bean) {
-        super(view);
-        view.setPresenter(this);
-        this.beanBellInfo = bean;
-    }
-
-    @Override
     protected Subscription[] register() {
         return new Subscription[]{
                 onBellInfoSubscription(),
@@ -53,17 +45,16 @@ public class BellDetailSettingPresenterImpl extends AbstractPresenter<BellDetail
                 .filter(new Func1<RxUiEvent.BulkDeviceListRsp, Boolean>() {
                     @Override
                     public Boolean call(RxUiEvent.BulkDeviceListRsp list) {
-                        return getView() != null && list != null && list.allDevices != null;
+                        return list != null && list.allDevices != null;
                     }
                 })
                 .flatMap(new Func1<RxUiEvent.BulkDeviceListRsp, Observable<DpMsgDefine.DpWrap>>() {
                     @Override
                     public Observable<DpMsgDefine.DpWrap> call(RxUiEvent.BulkDeviceListRsp list) {
                         for (DpMsgDefine.DpWrap wrap : list.allDevices) {
-                            if (beanBellInfo.deviceBase == null || wrap.baseDpDevice == null)
+                            if (wrap.baseDpDevice == null)
                                 continue;
-                            if (TextUtils.equals(wrap.baseDpDevice.uuid,
-                                    beanBellInfo.deviceBase.uuid)) {
+                            if (TextUtils.equals(wrap.baseDpDevice.uuid, mUUID)) {
                                 return Observable.just(wrap);
                             }
                         }
@@ -91,7 +82,7 @@ public class BellDetailSettingPresenterImpl extends AbstractPresenter<BellDetail
                     @Override
                     public void call(BeanBellInfo beanBellInfo) {
                         //刷新
-                        getView().onSettingInfoRsp(beanBellInfo);
+                        mView.onSettingInfoRsp(beanBellInfo);
                     }
                 });
     }

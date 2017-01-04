@@ -647,4 +647,8 @@ public class RxEvent {
         public int msgId;
         public byte[] data;
     }
+
+    public static class CallAnswerd {
+
+    }
 }

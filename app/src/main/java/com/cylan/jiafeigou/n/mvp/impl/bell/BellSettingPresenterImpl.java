@@ -3,10 +3,10 @@ package com.cylan.jiafeigou.n.mvp.impl.bell;
 import android.text.TextUtils;
 
 import com.cylan.ex.JfgException;
+import com.cylan.jiafeigou.base.wrapper.BasePresenter;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.contract.bell.BellSettingContract;
-import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.n.mvp.model.BaseBean;
 import com.cylan.jiafeigou.n.mvp.model.BeanBellInfo;
 import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
@@ -27,16 +27,10 @@ import rx.schedulers.Schedulers;
 /**
  * Created by cylan-hunt on 16-8-3.
  */
-public class BellSettingPresenterImpl extends AbstractPresenter<BellSettingContract.View>
+public class BellSettingPresenterImpl extends BasePresenter<BellSettingContract.View>
         implements BellSettingContract.Presenter {
     private BeanBellInfo beanBellInfo;
 //    private CompositeSubscription compositeSubscription = new CompositeSubscription();
-
-    public BellSettingPresenterImpl(BellSettingContract.View view, DeviceBean bean) {
-        super(view);
-        view.setPresenter(this);
-        fillData(bean);
-    }
 
     private void fillData(DeviceBean bean) {
         beanBellInfo = new BeanBellInfo();
@@ -48,7 +42,6 @@ public class BellSettingPresenterImpl extends AbstractPresenter<BellSettingContr
         beanBellInfo.convert(baseBean, bean.dataList);
     }
 
-    @Override
     protected Subscription[] register() {
         return new Subscription[]{
                 onBellInfoSubscription(),
@@ -64,17 +57,11 @@ public class BellSettingPresenterImpl extends AbstractPresenter<BellSettingContr
     private Subscription unbindDevSub() {
         return RxBus.getCacheInstance().toObservableSticky(RxEvent.UnBindDeviceEvent.class)
                 .subscribeOn(Schedulers.newThread())
-                .filter(new Func1<RxEvent.UnBindDeviceEvent, Boolean>() {
-                    @Override
-                    public Boolean call(RxEvent.UnBindDeviceEvent unBindDeviceEvent) {
-                        return getView() != null;
-                    }
-                })
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(new Func1<RxEvent.UnBindDeviceEvent, Object>() {
                     @Override
                     public Object call(RxEvent.UnBindDeviceEvent unBindDeviceEvent) {
-                        getView().unbindDeviceRsp(unBindDeviceEvent.jfgResult.code);
+                        mView.unbindDeviceRsp(unBindDeviceEvent.jfgResult.code);
                         if (unBindDeviceEvent.jfgResult.code == 0) {
                             //清理这个订阅
                             RxBus.getCacheInstance().removeStickyEvent(RxEvent.UnBindDeviceEvent.class);
@@ -93,7 +80,7 @@ public class BellSettingPresenterImpl extends AbstractPresenter<BellSettingContr
                 .filter(new Func1<RxUiEvent.BulkDeviceListRsp, Boolean>() {
                     @Override
                     public Boolean call(RxUiEvent.BulkDeviceListRsp list) {
-                        return getView() != null && list != null && list.allDevices != null;
+                        return list != null && list.allDevices != null;
                     }
                 })
                 .flatMap(new Func1<RxUiEvent.BulkDeviceListRsp, Observable<DpMsgDefine.DpWrap>>() {
@@ -131,7 +118,7 @@ public class BellSettingPresenterImpl extends AbstractPresenter<BellSettingContr
                     @Override
                     public void call(BeanBellInfo beanBellInfo) {
                         //刷新
-                        getView().onSettingInfoRsp(beanBellInfo);
+                        mView.onSettingInfoRsp(beanBellInfo);
                     }
                 });
     }
@@ -147,16 +134,9 @@ public class BellSettingPresenterImpl extends AbstractPresenter<BellSettingContr
                 .subscribe(new Action1<RxEvent.LoginRsp>() {
                     @Override
                     public void call(RxEvent.LoginRsp o) {
-                        if (getView() != null)
-                            getView().onLoginState(o.state);
+                        mView.onLoginState(o.state);
                     }
                 });
-    }
-
-
-    @Override
-    public BeanBellInfo getBellInfo() {
-        return beanBellInfo;
     }
 
     @Override
@@ -183,5 +163,10 @@ public class BellSettingPresenterImpl extends AbstractPresenter<BellSettingContr
                         AppLogger.e("delete uuid failed: " + throwable.getLocalizedMessage());
                     }
                 });
+    }
+
+    @Override
+    public BeanBellInfo getBellInfo() {
+        return null;
     }
 }

@@ -1,4 +1,4 @@
-package com.cylan.jiafeigou.base;
+package com.cylan.jiafeigou.base.wrapper;
 
 import android.app.Activity;
 import android.content.Context;
@@ -13,6 +13,9 @@ import android.text.TextUtils;
 import android.widget.Toast;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.base.view.JFGPresenter;
+import com.cylan.jiafeigou.base.view.JFGView;
+import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.widget.LoadingDialog;
 
 import java.util.UUID;
@@ -26,9 +29,10 @@ import butterknife.ButterKnife;
 public abstract class BaseActivity<P extends JFGPresenter> extends AppCompatActivity implements JFGView {
     protected P mPresenter;
 
-    private static AlertDialog mAlertDialog;
+    protected String mUUID;
+    private AlertDialog mAlertDialog;
 
-    private static Toast sToast;
+    private Toast mToast;
 
     @Override
     public Context getAppContext() {
@@ -47,7 +51,8 @@ public abstract class BaseActivity<P extends JFGPresenter> extends AppCompatActi
         ButterKnife.bind(this);
         if (mPresenter == null) {
             mPresenter = onCreatePresenter();
-
+            mUUID = getIntent().getStringExtra(JConstant.KEY_DEVICE_ITEM_UUID);
+            mPresenter.onSetViewUUID(mUUID);
         }
         initViewAndListener();
     }
@@ -68,13 +73,17 @@ public abstract class BaseActivity<P extends JFGPresenter> extends AppCompatActi
             mPresenter.onStop();
             mPresenter.onViewDetached();
         }
+        if (mAlertDialog != null && mAlertDialog.isShowing()) {
+            mAlertDialog.dismiss();
+            mAlertDialog = null;
+        }
+        mToast = null;
     }
 
     protected abstract P onCreatePresenter();
 
     @Override
     public void showLoading() {
-        showLoadingMsg(getResources().getString(R.string.LOADING));
     }
 
     @Override
@@ -92,17 +101,21 @@ public abstract class BaseActivity<P extends JFGPresenter> extends AppCompatActi
         if (!TextUtils.isEmpty(msg)) mAlertDialog.setMessage(msg);
         if (!TextUtils.isEmpty(ok)) {
             mAlertDialog.setButton(DialogInterface.BUTTON_POSITIVE, ok, (dialog, which) -> {
-                mPresenter.onViewAction(JFGView.VIEW_ACTION_OK, handle, null);
+                onViewAction(JFGView.VIEW_ACTION_OK, handle, null);
             });
         }
         if (!TextUtils.isEmpty(cancel)) {
             mAlertDialog.setButton(DialogInterface.BUTTON_NEGATIVE, cancel, (dialog, which) -> {
-                mPresenter.onViewAction(JFGView.VIEW_ACTION_CANCEL, handle, null);
+                onViewAction(JFGView.VIEW_ACTION_CANCEL, handle, null);
             });
         }
         mAlertDialog.show();
         return handle;
     }
+
+    protected void onViewAction(int action, String handler, Object extra) {
+    }
+
 
     protected abstract int getContentViewID();
 
@@ -148,11 +161,11 @@ public abstract class BaseActivity<P extends JFGPresenter> extends AppCompatActi
 
     @Override
     public void showToast(String msg) {
-        if (sToast == null) {
-            sToast = Toast.makeText(getAppContext(), "", Toast.LENGTH_SHORT);//toast会持有view对象,所以用applicationContext避免内存泄露
+        if (mToast == null) {
+            mToast = Toast.makeText(getAppContext(), "", Toast.LENGTH_SHORT);//toast会持有view对象,所以用applicationContext避免内存泄露
         }
-        sToast.setText(msg);
-        sToast.show();
+        mToast.setText(msg);
+        mToast.show();
     }
 
     /**
@@ -164,4 +177,5 @@ public abstract class BaseActivity<P extends JFGPresenter> extends AppCompatActi
     protected boolean shouldExit() {
         return true;
     }
+
 }

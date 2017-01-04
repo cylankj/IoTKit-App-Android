@@ -1,4 +1,4 @@
-package com.cylan.jiafeigou.base;
+package com.cylan.jiafeigou.base.view;
 
 import android.app.Activity;
 import android.content.Context;
@@ -26,6 +26,8 @@ public interface JFGView {
     void showToast(String msg);
 
     void onScreenRotationChanged(boolean land);
+
+    String onResolveViewLaunchType();
 
     interface Action {
         void actionDone();

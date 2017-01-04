@@ -1,10 +1,8 @@
 package com.cylan.jiafeigou.n.mvp.contract.bell;
 
-import com.cylan.jiafeigou.n.mvp.BasePresenter;
-import com.cylan.jiafeigou.n.mvp.BaseView;
-import com.cylan.jiafeigou.n.mvp.model.BeanBellInfo;
+import com.cylan.jiafeigou.base.view.JFGPresenter;
+import com.cylan.jiafeigou.base.view.JFGView;
 import com.cylan.jiafeigou.n.mvp.model.BellCallRecordBean;
-import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +13,7 @@ import java.util.List;
 public interface DoorBellHomeContract {
 
 
-    interface View extends BaseView<Presenter> {
+    interface View extends JFGView {
 
         void onLoginState(boolean state);
 
@@ -28,15 +26,11 @@ public interface DoorBellHomeContract {
 
     }
 
-    interface Presenter extends BasePresenter {
+    interface Presenter extends JFGPresenter {
 
         void fetchBellRecordsList(boolean asc, long time);
 
         int getDeviceNetState();
-
-        void setBellInfo(DeviceBean bean);
-
-        BeanBellInfo getBellInfo();
 
         void deleteBellCallRecord(List<BellCallRecordBean> list);
     }

@@ -1,4 +1,4 @@
-package com.cylan.jiafeigou.base;
+package com.cylan.jiafeigou.base.wrapper;
 
 import android.os.SystemClock;
 import android.support.annotation.CallSuper;
@@ -10,6 +10,9 @@ import com.cylan.entity.jniCall.JFGMsgVideoResolution;
 import com.cylan.entity.jniCall.JFGMsgVideoRtcp;
 import com.cylan.entity.jniCall.RobotoGetDataRsp;
 import com.cylan.ex.JfgException;
+import com.cylan.jiafeigou.base.view.JFGPresenter;
+import com.cylan.jiafeigou.base.view.JFGSourceManager;
+import com.cylan.jiafeigou.base.view.JFGView;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.dp.DpUtils;
@@ -35,6 +38,8 @@ import rx.subscriptions.CompositeSubscription;
 
 public abstract class BasePresenter<V extends JFGView> implements JFGPresenter {
     protected String TAG = getClass().getName();
+
+    protected String mUUID;
 
     protected static JFGSourceManager sSourceManager;
     private static CompositeSubscription sSubscriptions;
@@ -172,9 +177,10 @@ public abstract class BasePresenter<V extends JFGView> implements JFGPresenter {
 
 
     /**
-     * 这个
-     * */
+     * 全局注册方式,推荐使用onRegisterSubscription的方式注册
+     */
     @CallSuper
+    @Deprecated
     protected void onRegisterObserver() {
         if (sSubscriptions == null) {
             sSubscriptions = new CompositeSubscription();
@@ -384,6 +390,11 @@ public abstract class BasePresenter<V extends JFGView> implements JFGPresenter {
      */
     protected String onResolveViewIdentify() {
         return "This Method Should Be Override If The View Should Use The Identify To Filter";
+    }
+
+    @Override
+    public void onSetViewUUID(String uuid) {
+        mUUID = uuid;
     }
 
     protected Subscription onStartTaskSchedule() {//定时调用的timer

@@ -27,7 +27,6 @@ import com.bumptech.glide.load.DecodeFormat;
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.cache.JCache;
 import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
@@ -380,7 +379,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
                         .putExtra(JConstant.KEY_DEVICE_ITEM_UUID, bundle));
             } else if (JConstant.isBell(pid)) {
                 startActivity(new Intent(getActivity(), DoorBellHomeActivity.class)
-                        .putExtra(JConstant.KEY_DEVICE_ITEM_UUID, bundle));
+                        .putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid));
             } else if (JConstant.isEFamily(pid)) {
                 startActivity(new Intent(getActivity(), CloudLiveActivity.class)
                         .putExtra(JConstant.KEY_DEVICE_ITEM_UUID, bundle));

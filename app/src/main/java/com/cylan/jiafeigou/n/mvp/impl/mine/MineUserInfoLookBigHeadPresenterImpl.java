@@ -10,12 +10,12 @@ import com.cylan.jiafeigou.n.mvp.contract.mine.MineUserInfoLookBigHeadContract;
  * 创建时间：2016/9/2
  * 描述：
  */
-public class MineUserInfoLookBigHeadPresenterIMpl implements MineUserInfoLookBigHeadContract.Presenter {
+public class MineUserInfoLookBigHeadPresenterImpl implements MineUserInfoLookBigHeadContract.Presenter {
 
     private MineUserInfoLookBigHeadContract.View view;
     private Context context;
 
-    public MineUserInfoLookBigHeadPresenterIMpl(MineUserInfoLookBigHeadContract.View view) {
+    public MineUserInfoLookBigHeadPresenterImpl(MineUserInfoLookBigHeadContract.View view) {
         this.view = view;
         view.setPresenter(this);
     }

@@ -1,4 +1,4 @@
-package com.cylan.jiafeigou.base;
+package com.cylan.jiafeigou.base.wrapper;
 
 import android.app.Activity;
 import android.content.Context;
@@ -11,6 +11,10 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.base.view.JFGPresenter;
+import com.cylan.jiafeigou.base.view.JFGView;
+import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.widget.LoadingDialog;
 
 import butterknife.ButterKnife;
@@ -21,6 +25,8 @@ import butterknife.ButterKnife;
 
 public abstract class BaseFragment<T extends JFGPresenter> extends Fragment implements JFGView {
     protected T mPresenter;
+
+    protected String mUUID;
 
     private static Toast sToast;
 
@@ -45,6 +51,8 @@ public abstract class BaseFragment<T extends JFGPresenter> extends Fragment impl
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        mUUID = getArguments().getString(JConstant.KEY_DEVICE_ITEM_UUID);//在基類裏獲取uuid,便於統一管理
+        mPresenter.onSetViewUUID(mUUID);
         View contentView = inflater.inflate(getContentViewID(), container, false);
         ButterKnife.bind(this, contentView);
         initViewAndListener();
@@ -106,5 +114,15 @@ public abstract class BaseFragment<T extends JFGPresenter> extends Fragment impl
     @Override
     public void onScreenRotationChanged(boolean land) {
 
+    }
+
+    protected boolean onBackPressed() {
+        return false;
+    }
+
+    public IBaseFragment.CallBack callBack;
+
+    public void setCallBack(IBaseFragment.CallBack callBack) {
+        this.callBack = callBack;
     }
 }

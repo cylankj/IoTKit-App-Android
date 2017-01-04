@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.PixelFormat;
 import android.opengl.GLSurfaceView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.SurfaceView;
 import android.view.View;
@@ -11,13 +12,13 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.cylan.entity.jniCall.JFGMsgVideoResolution;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.BaseFullScreenActivity;
+import com.cylan.jiafeigou.base.view.CallablePresenter;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.contract.bell.BellLiveContract;
@@ -66,6 +67,10 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
 
     private SurfaceView mSurfaceView;
 
+    private Intent mSaveIntent;
+
+    private String mNewCallHandle;
+
     @Override
     protected int getContentViewID() {
         return R.layout.activity_bell_live;
@@ -86,6 +91,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
+        mSaveIntent = getIntent();
         setIntent(intent);
     }
 
@@ -93,20 +99,20 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
     protected void onResume() {
         super.onResume();
         //大大的蛋疼
-        String callWay = getIntent().getStringExtra(JConstant.BELL_CALL_WAY);
-        Object extra = getIntent().getParcelableExtra(JConstant.BELL_CALL_WAY_EXTRA);
-        if (extra == null) extra = getIntent().getSerializableExtra(JConstant.BELL_CALL_WAY_EXTRA);
-        Object extra1 = getIntent().getParcelableExtra(JConstant.KEY_DEVICE_ITEM_BUNDLE);
-        mPresenter.onBellCall(callWay, extra, extra1);
-
+        String callWay = getIntent().getStringExtra(JConstant.VIEW_CALL_WAY);
+        String extra = getIntent().getStringExtra(JConstant.VIEW_CALL_WAY_EXTRA);
+        CallablePresenter.Caller caller = new CallablePresenter.Caller();
+        caller.caller = mUUID;
+        caller.picture = extra;
+        mPresenter.newCall(caller);
         if (mSurfaceView != null && mSurfaceView instanceof GLSurfaceView) {
             ((GLSurfaceView) mSurfaceView).onResume();
         }
     }
 
     @Override
-    protected void onPause() {
-        super.onPause();
+    protected void onStop() {
+        super.onStop();
         if (mSurfaceView != null && mSurfaceView instanceof GLSurfaceView) {
             ((GLSurfaceView) mSurfaceView).onPause();
             mVideoViewContainer.removeAllViews();
@@ -122,7 +128,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
 
     @Override
     protected void onPrepareToExit(Action action) {
-        mPresenter.onDismiss();
+        mPresenter.dismiss();
         finishExt();
         action.actionDone();
     }
@@ -172,15 +178,11 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
 
     @Override
     public void onRelease(int side) {
-        AppLogger.d("pick up? " + (side == 1));
         if (side == 0) {
-            mPresenter.onDismiss();
-            finishExt();
-            return;
+            mPresenter.dismiss();
+        } else {
+            mPresenter.pickup();
         }
-        dLayoutBellHotSeat.setVisibility(View.GONE);
-        fLayoutBellAfterLive.setVisibility(View.VISIBLE);
-        mPresenter.onPickup();
     }
 
     @Override
@@ -196,28 +198,22 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.imgv_bell_live_capture:
-                mPresenter.onCapture();
+            case R.id.imgv_bell_live_land_capture:
+                mPresenter.capture();
                 break;
+            case R.id.imgv_bell_live_speaker:
+            case R.id.imgv_bell_live_land_mic:
+                mPresenter.switchSpeaker();
+                break;
+            case R.id.imgv_bell_live_land_hangup:
             case R.id.imgv_bell_live_hang_up:
-                if (mPresenter != null)
-                    mPresenter.onDismiss();
-                finishExt();
+                mPresenter.dismiss();
+
                 break;
             case R.id.imgv_bell_live_switch_to_land:
                 initLandView();
                 ViewUtils.setRequestedOrientation(this,
                         ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-                break;
-            case R.id.imgv_bell_live_speaker:
-            case R.id.imgv_bell_live_land_mic:
-                mPresenter.onSwitchSpeaker();
-                break;
-            case R.id.imgv_bell_live_land_capture:
-                mPresenter.onCapture();
-                break;
-            case R.id.imgv_bell_live_land_hangup:
-                Toast.makeText(getAppContext(), "hangup", Toast.LENGTH_SHORT).show();
-                finishExt();
                 break;
         }
     }
@@ -268,6 +264,11 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
         imgvBellLiveSpeaker.setImageResource(on ? R.drawable.icon_mic_on : R.drawable.icon_mic_off);
     }
 
+    @Override
+    public String onResolveViewLaunchType() {
+        return getIntent().getStringExtra(JConstant.VIEW_CALL_WAY);
+    }
+
     /**
      * 初始化videoView
      *
@@ -289,4 +290,38 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
     }
 
 
+    @Override
+    public void onPickup() {
+        dLayoutBellHotSeat.setVisibility(View.GONE);
+        fLayoutBellAfterLive.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void onDismiss() {
+        finishExt();
+    }
+
+    @Override
+    public void onCallAnswerInOther() {
+        showToast("通话已在其他端处理");
+    }
+
+    @Override
+    public void onNewCallWhenInLive(String person) {
+        mNewCallHandle = showAlert("有新朋友来访", "有新的朋友:" + person + "来访,是否接听", "接听", "忽略");
+    }
+
+    @Override
+    protected void onViewAction(int action, String handler, Object extra) {
+        if (TextUtils.equals(mNewCallHandle, handler)) {
+            switch (action) {
+                case VIEW_ACTION_OK:
+                    mPresenter.pickup();
+                    break;
+                case VIEW_ACTION_CANCEL:
+                    setIntent(mSaveIntent);
+                    break;
+            }
+        }
+    }
 }
