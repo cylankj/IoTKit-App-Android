@@ -374,7 +374,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
             bundle.putString(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
             if (JConstant.isCamera(pid)) {
                 startActivity(new Intent(getActivity(), CameraLiveActivity.class)
-                        .putExtra(JConstant.KEY_DEVICE_ITEM_UUID, bundle));
+                        .putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid));
             } else if (JConstant.isMag(pid)) {
                 startActivity(new Intent(getActivity(), MagLiveActivity.class)
                         .putExtra(JConstant.KEY_DEVICE_ITEM_UUID, bundle));

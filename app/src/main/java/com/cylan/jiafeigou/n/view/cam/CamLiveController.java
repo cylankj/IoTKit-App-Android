@@ -67,9 +67,11 @@ public class CamLiveController implements
     private CamLiveControlLayer camLiveControlLayer;
     private Context context;
     private static final String TAG = "CamLiveController";
+    private String uuid;
 
-    public CamLiveController(Context context) {
+    public CamLiveController(Context context, String uuid) {
         this.context = context;
+        this.uuid = uuid;
     }
 
     public void setCamLiveControlLayer(CamLiveControlLayer camLiveControlLayer) {
@@ -137,10 +139,10 @@ public class CamLiveController implements
     public void setPortSafeSetter(ISafeStateSetter setter) {
         this.iSafeStateSetterPort = setter;
         iSafeStateSetterPort.setFlipListener(this);
-        boolean safe = GlobalDataProxy.getInstance().getValue(presenterRef.get().getUuid(), DpMsgMap.ID_501_CAMERA_ALARM_FLAG, false);
+        boolean safe = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_501_CAMERA_ALARM_FLAG, false);
         //true:绿色,false:setFlipped(true)
         iSafeStateSetterPort.setFlipped(!safe);
-        Log.d(TAG, "setFlip: " + safe);
+        Log.d(TAG, "setFlip: " + safe + " " + uuid);
     }
 
     /**
@@ -213,7 +215,7 @@ public class CamLiveController implements
             //安全防护
             setLandSafeSetter(camLiveControlLayer.getFlipLayout());
             iSafeStateSetterLand.setFlipListener(this);
-            boolean safe = GlobalDataProxy.getInstance().getValue(presenterRef.get().getUuid(), DpMsgMap.ID_501_CAMERA_ALARM_FLAG, false);
+            boolean safe = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_501_CAMERA_ALARM_FLAG, false);
             iSafeStateSetterLand.setFlipped(safe);
         }//显示或者隐藏
         if (liveTimeSetterLand != null) liveTimeSetterLand.setVisibility(land);
@@ -276,7 +278,7 @@ public class CamLiveController implements
                 AppLogger.i("没有历史视频数据,或者没准备好");
                 return;
             }
-            DpMsgDefine.MsgNet net = GlobalDataProxy.getInstance().getValue(presenterRef.get().getUuid(),
+            DpMsgDefine.MsgNet net = GlobalDataProxy.getInstance().getValue(uuid,
                     DpMsgMap.ID_201_NET, null);
             boolean deviceState = JFGRules.isDeviceOnline(net);
             //播放状态
@@ -434,14 +436,14 @@ public class CamLiveController implements
             AppLogger.d("no net work");
             return;
         }
-        DpMsgDefine.MsgNet net = GlobalDataProxy.getInstance().getValue(presenterRef.get().getUuid(),
+        DpMsgDefine.MsgNet net = GlobalDataProxy.getInstance().getValue(uuid,
                 DpMsgMap.ID_201_NET, null);
         if (net != null &&
                 net.net == 0) {
             AppLogger.d("device is offline");
             return;
         }
-        DpMsgDefine.SdStatus status = GlobalDataProxy.getInstance().getValue(presenterRef.get().getUuid(),
+        DpMsgDefine.SdStatus status = GlobalDataProxy.getInstance().getValue(uuid,
                 DpMsgMap.ID_204_SDCARD_STORAGE, null);
         if (status != null && !status.hasSdcard) {
             //没有sd卡

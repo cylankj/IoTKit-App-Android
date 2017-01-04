@@ -128,14 +128,13 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        this.uuid = getArguments().getParcelable(JConstant.KEY_DEVICE_ITEM_UUID);
+        this.uuid = getArguments().getString(JConstant.KEY_DEVICE_ITEM_UUID);
         basePresenter = new CamLivePresenterImpl(this, uuid);
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
     }
 
     @Override
@@ -152,7 +151,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
         super.onViewCreated(view, savedInstanceState);
         ViewUtils.updateViewHeight(fLayoutCamLiveView, 0.75f);
         initBottomBtn(false);
-        camLiveController = new CamLiveController(getContext());
+        camLiveController = new CamLiveController(getContext(), uuid);
         camLiveController.setPresenterRef(basePresenter);
         camLiveController.setLiveAction((ILiveControl) vs_control.inflate());
         camLiveController.setCamLiveControlLayer(swCamLiveControlLayer);
