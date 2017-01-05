@@ -1,5 +1,6 @@
 package com.cylan.jiafeigou.n.view.record;
 
+import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import com.cylan.jiafeigou.R;
@@ -8,6 +9,7 @@ import com.cylan.jiafeigou.base.wrapper.BaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.record.DelayRecordContract;
 import com.cylan.jiafeigou.n.mvp.impl.record.DelayRecordPresenterImpl;
 import com.cylan.jiafeigou.utils.ActivityUtils;
+import com.cylan.jiafeigou.utils.ViewUtils;
 
 import butterknife.BindView;
 
@@ -15,6 +17,10 @@ public class DelayRecordActivity extends BaseActivity<DelayRecordContract.Presen
 
     @BindView(R.id.act_delay_record_content)
     FrameLayout mContentContainer;
+    @BindView(R.id.act_delay_record_header)
+    ViewGroup mRecordHeader;
+    @BindView(R.id.activity_delay_record)
+    ViewGroup mRootContent;
     private BaseFragment mRecordMainFrag;
     private BaseFragment mRecordGuideFrag;
     private BaseFragment mRecordDeviceFrag;
@@ -31,6 +37,7 @@ public class DelayRecordActivity extends BaseActivity<DelayRecordContract.Presen
 
     @Override
     protected void initViewAndListener() {
+        ViewUtils.setViewMarginStatusBar(mRecordHeader);
     }
 
     @Override
@@ -38,6 +45,7 @@ public class DelayRecordActivity extends BaseActivity<DelayRecordContract.Presen
         if (mRecordMainFrag == null) {
             mRecordMainFrag = DelayRecordMainFragment.newInstance(mUUID);
         }
+        mRootContent.setBackgroundResource(R.drawable.delay_record_bg);
         ActivityUtils.loadFragmentNoAnimation(R.id.act_delay_record_content, getSupportFragmentManager(), mRecordMainFrag);
     }
 
@@ -46,6 +54,7 @@ public class DelayRecordActivity extends BaseActivity<DelayRecordContract.Presen
         if (mRecordGuideFrag == null) {
             mRecordGuideFrag = DelayRecordGuideFragment.newInstance(mUUID);
         }
+        mRootContent.setBackgroundResource(R.color.color_0ba8cf);
         ActivityUtils.loadFragmentNoAnimation(R.id.act_delay_record_content, getSupportFragmentManager(), mRecordGuideFrag);
     }
 

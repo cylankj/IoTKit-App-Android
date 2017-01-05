@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_delay_record"
@@ -8,8 +8,31 @@
     android:orientation="vertical"
     tools:context="com.cylan.jiafeigou.n.view.record.DelayRecordActivity">
 
+
+    <RelativeLayout
+        android:id="@+id/act_delay_record_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="15dp">
+
+        <ImageView
+            android:id="@+id/act_delay_record_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/icon_arrow_back"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:fontFamily="SourceHanSansCN"
+            android:text="@string/Tap2_Timelapse_title"
+            android:textColor="#FFFFFF"
+            android:textSize="18sp"/>
+    </RelativeLayout>
+
     <FrameLayout
         android:id="@+id/act_delay_record_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
-</FrameLayout>
+</LinearLayout>
