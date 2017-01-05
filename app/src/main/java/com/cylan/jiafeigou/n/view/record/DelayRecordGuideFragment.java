@@ -1,38 +1,30 @@
-package com.cylan.jiafeigou.n.view.cam;
+package com.cylan.jiafeigou.n.view.record;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.base.view.JFGPresenter;
+import com.cylan.jiafeigou.base.view.JFGView;
+import com.cylan.jiafeigou.base.wrapper.BaseFragment;
+import com.cylan.jiafeigou.base.wrapper.BasePresenter;
 import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
 import com.cylan.jiafeigou.dp.DpMsgMap;
-import com.cylan.jiafeigou.n.base.IBaseFragment;
+import com.cylan.jiafeigou.n.mvp.contract.record.DelayRecordContract;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.dialog.BaseDialog;
 
 import java.lang.ref.WeakReference;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
-
-import static com.cylan.jiafeigou.misc.JConstant.KEY_DEVICE_ITEM_UUID;
 
 /**
  * Created by yzd on 16-12-16.
  */
 
-public class DelayRecordGuideFragment extends IBaseFragment {
-
-    public static final String KEY_DEVICE_INFO = "key_device_info";
-
-    //    private BeanCamInfo mBean;
-    private String uuid;
+public class DelayRecordGuideFragment extends BaseFragment {
 
     public static DelayRecordGuideFragment newInstance(Bundle bundle) {
         DelayRecordGuideFragment fragment = new DelayRecordGuideFragment();
@@ -46,42 +38,35 @@ public class DelayRecordGuideFragment extends IBaseFragment {
     private WeakReference<BaseDialog> mEnableDeviceDialog;
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        this.uuid = getArguments().getString(KEY_DEVICE_ITEM_UUID);
-    }
-
-
-    @Nullable
-    @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_delay_record_guide, container, false);
-        ButterKnife.bind(this, view);
-        return view;
+    protected JFGPresenter onCreatePresenter() {
+        return new BasePresenter<JFGView>() {
+            //有些view过于简单则不必使用presenter,但任然保留此接口,以便以后维护
+        };
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    protected int getContentViewID() {
+        return R.layout.fragment_delay_record_guide;
+    }
+
+    @Override
+    protected void initViewAndListener() {
         ViewUtils.setViewPaddingStatusBar(mTopBarContainer);
     }
 
     @OnClick(R.id.fragment_delay_record_start_now)
     public void startNow() {
         if (isDeviceSleeping()) {
+            //TODO:关闭设备待机模式,需要跳转另一个activity,以后有时间再写
             initDeviceEnableDialog();
             mEnableDeviceDialog.get().show(getChildFragmentManager(), BaseDialog.class.getName());
         } else {
-            getActivity().getSupportFragmentManager().popBackStack();
-            Intent intent = new Intent(getContext(), CamDelayRecordActivity.class);
-            intent.putExtras(getArguments());
-            intent.putExtra(KEY_DEVICE_ITEM_UUID, uuid);
-            startActivity(intent);
+            onViewActionToActivity(JFGView.VIEW_ACTION_OK, DelayRecordContract.View.VIEW_HANDLER_GUIDE_START_NOW, null);
         }
     }
 
     private boolean isDeviceSleeping() {
-        return GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_508_CAMERA_STANDBY_FLAG, false);
+        return GlobalDataProxy.getInstance().getValue(mUUID, DpMsgMap.ID_508_CAMERA_STANDBY_FLAG, false);
     }
 
     private void initDeviceEnableDialog() {

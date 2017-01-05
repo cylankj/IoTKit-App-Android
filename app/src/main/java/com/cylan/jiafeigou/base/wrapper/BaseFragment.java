@@ -14,7 +14,6 @@ import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.view.JFGPresenter;
 import com.cylan.jiafeigou.base.view.JFGView;
 import com.cylan.jiafeigou.misc.JConstant;
-import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.widget.LoadingDialog;
 
 import butterknife.ButterKnife;
@@ -55,8 +54,13 @@ public abstract class BaseFragment<T extends JFGPresenter> extends Fragment impl
         mPresenter.onSetViewUUID(mUUID);
         View contentView = inflater.inflate(getContentViewID(), container, false);
         ButterKnife.bind(this, contentView);
-        initViewAndListener();
         return contentView;
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        initViewAndListener();
     }
 
     @Override
@@ -116,13 +120,34 @@ public abstract class BaseFragment<T extends JFGPresenter> extends Fragment impl
 
     }
 
-    protected boolean onBackPressed() {
-        return false;
+    protected void onBackPressed() {
     }
 
-    public IBaseFragment.CallBack callBack;
+    protected CallBack callBack;
 
-    public void setCallBack(IBaseFragment.CallBack callBack) {
+    public void setCallBack(CallBack callBack) {
         this.callBack = callBack;
+    }
+
+    public interface CallBack {
+        void callBack(Object t);
+    }
+
+    @Override
+    public String onResolveViewLaunchType() {
+        return getArguments().getString(JConstant.VIEW_CALL_WAY);
+    }
+
+    protected void onViewAction(int action, String handler, Object extra) {
+
+    }
+
+    /**
+     * fragment回调activity的方法,可以通过此方法像activity传递信息
+     */
+    protected void onViewActionToActivity(int action, String handler, Object extra) {
+        if (getActivity() != null && getActivity() instanceof BaseActivity) {
+            ((BaseActivity) getActivity()).onViewAction(action, handler, extra);
+        }
     }
 }

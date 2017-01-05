@@ -12,6 +12,7 @@ public interface JFGView {
     int VIEW_ACTION_OK = 0;
     int VIEW_ACTION_CANCEL = 1;
 
+
     //获取Context对象,该Context一定是可以开启Activity的
     Context getAppContext();
 

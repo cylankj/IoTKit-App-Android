@@ -1,16 +1,8 @@
 package com.cylan.jiafeigou.n.mvp.contract.cam;
 
-import android.text.TextUtils;
 
-import com.cylan.entity.jniCall.JFGMsgVideoResolution;
-import com.cylan.ex.JfgException;
-import com.cylan.jiafeigou.n.mvp.BasePresenter;
-import com.cylan.jiafeigou.n.mvp.BaseView;
-import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
-import com.cylan.jiafeigou.n.mvp.model.BeanCamInfo;
-import com.cylan.jiafeigou.rx.RxBus;
-import com.cylan.jiafeigou.support.log.AppLogger;
-import com.google.gson.Gson;
+import com.cylan.jiafeigou.base.view.ViewableView;
+import com.cylan.jiafeigou.base.wrapper.BaseViewablePresenter;
 
 import java.util.concurrent.TimeUnit;
 
@@ -18,7 +10,6 @@ import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
-import rx.subscriptions.CompositeSubscription;
 
 /**
  * Created by yzd on 16-12-15.
@@ -26,98 +17,52 @@ import rx.subscriptions.CompositeSubscription;
 
 public interface CamDelayRecordContract {
 
-    interface View extends BaseView<Presenter> {
-
-        void onResolution(JFGMsgVideoResolution resolution) throws JfgException;
+    interface View extends ViewableView {
+        String HANDLE_TIME_INTERVAL = "HANDLE_TIME_INTERVAL";
+        String HANDLE_TIME_DURATION = "HANDLE_TIME_DURATION";
 
         void refreshRecordTime(long time);
+
+        void onMarkRecordInformation(int interval, int recordDuration, int remainTime);
 
         void onRecordFinished();
     }
 
-    class Presenter extends AbstractPresenter<View> implements BasePresenter {
-        private CompositeSubscription compositeSubscription;
-        private BeanCamInfo mCamInfo;
+    class Presenter extends BaseViewablePresenter<View> {
         private Subscription mSubscribe;
-        private long mRecordStartTime;
-        private long mRecordDuration;
 
-        public Presenter(View view) {
-            super(view);
-        }
+        private int mRecordMode = 0;
+        private int mRecordTime = 24;
+        private int mRecordRemainTime;
+        private long mRecordStartTime = -1;
+        private long mRecordDuration = -1;
+
 
         @Override
-        public void start() {
-            unSubscribe(compositeSubscription);
-            compositeSubscription = new CompositeSubscription();
-            compositeSubscription.add(resolutionNotifySub());
+        public void onViewAction(int action, String handle, Object extra) {
+            switch (handle) {
+                case View.HANDLE_TIME_INTERVAL:
+
+                    break;
+                case View.HANDLE_TIME_DURATION:
+                    break;
+            }
+            mView.onMarkRecordInformation(mRecordMode, mRecordTime, mRecordRemainTime);
         }
 
-        @Override
-        public void stop() {
-            unSubscribe(compositeSubscription);
-        }
-
-        private Subscription resolutionNotifySub() {
-            return RxBus.getCacheInstance().toObservable(JFGMsgVideoResolution.class)
-                    .filter(jfgMsgVideoResolution -> {
-                        boolean filter = getCamInfo() != null
-                                && getCamInfo().deviceBase != null
-                                && TextUtils.equals(getCamInfo().deviceBase.uuid, jfgMsgVideoResolution.peer)
-                                && getView() != null;
-                        if (!filter) {
-                            AppLogger.e("getView(): " + (getView() != null));
-                            AppLogger.e("this peer is out date: " + jfgMsgVideoResolution.peer);
-                        }
-                        return filter;
-                    })
-                    .throttleFirst(1, TimeUnit.SECONDS)//滤波器
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(resolution -> {
-//                            isRtcpSignal = true;
-                        try {
-                            getView().onResolution(resolution);
-                        } catch (JfgException e) {
-                            e.printStackTrace();
-                        }
-                        AppLogger.i("ResolutionNotifySub: " + new Gson().toJson(resolution));
-                    }, throwable -> {
-                        AppLogger.e("resolution err: " + throwable.getLocalizedMessage());
-                    });
-        }
-
-
-        public BeanCamInfo getCamInfo() {
-            return mCamInfo;
-        }
-
-        public void setCamInfo(BeanCamInfo camInfo) {
-            mCamInfo = camInfo;
-        }
-
-        public void startRecord(int recordMode, long start, long duration) {
-            mRecordStartTime = start;
-            mRecordDuration = duration;
-            mSubscribe = Observable.interval(1, recordMode == 0 ? 60 : 20, TimeUnit.SECONDS)
+        public void startRecord() {
+            mSubscribe = Observable.interval(1, mRecordMode == 0 ? 60 : 20, TimeUnit.SECONDS)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(time -> {
                         long progress = System.currentTimeMillis() - mRecordStartTime;
                         if (progress < mRecordDuration) {
-                            getView().refreshRecordTime(progress);
+                            mView.refreshRecordTime(progress);
                         } else {
-                            getView().onRecordFinished();
+                            mView.onRecordFinished();
                         }
                     });
-            compositeSubscription.add(mSubscribe);
-//            mockRecordFinished();
-        }
-
-        public void mockRecordFinished() {
-            restoreRecord();
-            Observable.just("just for test").delay(10, TimeUnit.SECONDS).subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(s -> getView().onRecordFinished());
+            mSubscriptions.add(mSubscribe);
         }
 
         public void restoreRecord() {

@@ -101,19 +101,23 @@ public abstract class BaseActivity<P extends JFGPresenter> extends AppCompatActi
         if (!TextUtils.isEmpty(msg)) mAlertDialog.setMessage(msg);
         if (!TextUtils.isEmpty(ok)) {
             mAlertDialog.setButton(DialogInterface.BUTTON_POSITIVE, ok, (dialog, which) -> {
-                onViewAction(JFGView.VIEW_ACTION_OK, handle, null);
+                mPresenter.onViewAction(JFGView.VIEW_ACTION_OK, handle, null);
             });
         }
         if (!TextUtils.isEmpty(cancel)) {
             mAlertDialog.setButton(DialogInterface.BUTTON_NEGATIVE, cancel, (dialog, which) -> {
-                onViewAction(JFGView.VIEW_ACTION_CANCEL, handle, null);
+                mPresenter.onViewAction(JFGView.VIEW_ACTION_CANCEL, handle, null);
             });
         }
         mAlertDialog.show();
         return handle;
     }
 
+    /**
+     * 默认是将viewAction转发到presenter中进行处理,子类也可以复写此方法自己处理
+     */
     protected void onViewAction(int action, String handler, Object extra) {
+        mPresenter.onViewAction(action, handler, extra);
     }
 
 
@@ -178,4 +182,8 @@ public abstract class BaseActivity<P extends JFGPresenter> extends AppCompatActi
         return true;
     }
 
+    @Override
+    public String onResolveViewLaunchType() {
+        return getIntent().getStringExtra(JConstant.VIEW_CALL_WAY);
+    }
 }
