@@ -50,8 +50,6 @@ public abstract class BaseFragment<T extends JFGPresenter> extends Fragment impl
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        mUUID = getArguments().getString(JConstant.KEY_DEVICE_ITEM_UUID);//在基類裏獲取uuid,便於統一管理
-        mPresenter.onSetViewUUID(mUUID);
         View contentView = inflater.inflate(getContentViewID(), container, false);
         ButterKnife.bind(this, contentView);
         return contentView;
@@ -60,7 +58,21 @@ public abstract class BaseFragment<T extends JFGPresenter> extends Fragment impl
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        if (getArguments() != null) {
+            mUUID = getArguments().getString(JConstant.KEY_DEVICE_ITEM_UUID);//在基類裏獲取uuid,便於統一管理
+        }
+        if (mPresenter != null) {
+            mPresenter.onSetViewUUID(mUUID);
+        }
         initViewAndListener();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (mPresenter != null) {
+            mPresenter.onSetContentView();//有些view会根据一定的条件显示不同的view,可以在这个方法中进行条件判断
+        }
     }
 
     @Override
@@ -143,7 +155,7 @@ public abstract class BaseFragment<T extends JFGPresenter> extends Fragment impl
     }
 
     /**
-     * fragment回调activity的方法,可以通过此方法像activity传递信息
+     * fragment回调activity的方法,可以通过此方法向activity传递信息
      */
     protected void onViewActionToActivity(int action, String handler, Object extra) {
         if (getActivity() != null && getActivity() instanceof BaseActivity) {

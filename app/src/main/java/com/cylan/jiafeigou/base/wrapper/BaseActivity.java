@@ -16,6 +16,7 @@ import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.view.JFGPresenter;
 import com.cylan.jiafeigou.base.view.JFGView;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.n.mvp.contract.record.DelayRecordContract;
 import com.cylan.jiafeigou.widget.LoadingDialog;
 
 import java.util.UUID;
@@ -49,20 +50,31 @@ public abstract class BaseActivity<P extends JFGPresenter> extends AppCompatActi
         super.onCreate(savedInstanceState);
         setContentView(getContentViewID());
         ButterKnife.bind(this);
+        mUUID = getIntent().getStringExtra(JConstant.KEY_DEVICE_ITEM_UUID);
+        if (TextUtils.isEmpty(mUUID)) {
+            mUUID = "500000000247";
+        }
         if (mPresenter == null) {
             mPresenter = onCreatePresenter();
-            mUUID = getIntent().getStringExtra(JConstant.KEY_DEVICE_ITEM_UUID);
             mPresenter.onSetViewUUID(mUUID);
         }
-        initViewAndListener();
     }
 
     @Override
     protected void onStart() {
         super.onStart();
+        initViewAndListener();
         if (mPresenter != null) {
             mPresenter.onViewAttached(this);
             mPresenter.onStart();
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (mPresenter != null) {
+            mPresenter.onSetContentView();//有些view需要根据一定的条件来显示不同的view,可以在这个方法中来选择
         }
     }
 
@@ -176,6 +188,7 @@ public abstract class BaseActivity<P extends JFGPresenter> extends AppCompatActi
      * 退出之前做一些清理或准备工作
      */
     protected void onPrepareToExit(Action action) {
+        action.actionDone();
     }
 
     protected boolean shouldExit() {
@@ -184,6 +197,10 @@ public abstract class BaseActivity<P extends JFGPresenter> extends AppCompatActi
 
     @Override
     public String onResolveViewLaunchType() {
-        return getIntent().getStringExtra(JConstant.VIEW_CALL_WAY);
+        String way = getIntent().getStringExtra(JConstant.VIEW_CALL_WAY);
+        if (TextUtils.isEmpty(way)) {
+            way = DelayRecordContract.View.VIEW_LAUNCH_WAY_SETTING;
+        }
+        return way;
     }
 }

@@ -234,14 +234,15 @@ public abstract class BasePresenter<V extends JFGView> implements JFGPresenter {
             mHasRegisterFeatures |= FEATURE_VIDEO_RESOLUTION;
             Subscription subscribe = RxBus.getCacheInstance().toObservable(JFGMsgVideoResolution.class)
                     .subscribeOn(Schedulers.io())
-                    .filter(resolutionRsp -> accept(resolutionRsp.peer))
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(videoResolutionRsp -> {
                         for (BasePresenter presenter : sPresenters) {
                             if ((presenter.mViewRequestFeatures & FEATURE_VIDEO_RESOLUTION) == FEATURE_VIDEO_RESOLUTION) {
                                 if ((presenter.mViewHiddenFeature & FEATURE_VIDEO_RESOLUTION) == FEATURE_VIDEO_RESOLUTION || presenter.isActive) {
-                                    presenter.mHasResolution = true;
-                                    presenter.onVideoResolution(videoResolutionRsp);
+                                    if (TextUtils.equals(presenter.onResolveViewIdentify(), videoResolutionRsp.peer)) {
+                                        presenter.mHasResolution = true;
+                                        presenter.onVideoResolution(videoResolutionRsp);
+                                    }
                                 }
                             }
                         }
@@ -274,13 +275,14 @@ public abstract class BasePresenter<V extends JFGView> implements JFGPresenter {
             mHasRegisterFeatures |= FEATURE_VIDEO_DISCONNECT;
             Subscription subscribe = RxBus.getCacheInstance().toObservable(JFGMsgVideoDisconn.class)
                     .subscribeOn(Schedulers.io())
-                    .filter(disconnectRsp -> accept(disconnectRsp.remote))
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(disconnectRsp -> {
                         for (BasePresenter presenter : sPresenters) {
                             if ((presenter.mViewRequestFeatures & FEATURE_VIDEO_DISCONNECT) == FEATURE_VIDEO_DISCONNECT) {
                                 if ((presenter.mViewHiddenFeature & FEATURE_VIDEO_DISCONNECT) == FEATURE_VIDEO_DISCONNECT || presenter.isActive) {
-                                    presenter.onVideoDisconnected(disconnectRsp);
+                                    if (TextUtils.equals(presenter.onResolveViewIdentify(), disconnectRsp.remote)) {
+                                        presenter.onVideoDisconnected(disconnectRsp);
+                                    }
                                 }
                             }
                         }
@@ -369,6 +371,9 @@ public abstract class BasePresenter<V extends JFGView> implements JFGPresenter {
     protected void onResolveGetDataResponseCompleted() {
     }
 
+    /**
+     * 在UI线程调用
+     */
     protected void onResolveGetDataResponse(String identity, Integer key, ArrayList<JFGDPMsg> value) {
     }
 
@@ -402,14 +407,14 @@ public abstract class BasePresenter<V extends JFGView> implements JFGPresenter {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(count -> {
-                    for (BasePresenter presenter : sPresenters) {
-                        if ((presenter.mViewRequestFeatures & FEATURE_VIDEO_RESOLUTION) == FEATURE_VIDEO_RESOLUTION && !presenter.mHasResolution) {
-                            presenter.onResolutionTask();
-                        }
-                        if ((presenter.mViewRequestFeatures & FEATURE_VIDEO_FLOW_RSP) == FEATURE_VIDEO_FLOW_RSP) {
-                            onFlowRtcpTask();
-                        }
-                    }
+//                    for (BasePresenter presenter : sPresenters) {
+//                        if ((presenter.mViewRequestFeatures & FEATURE_VIDEO_RESOLUTION) == FEATURE_VIDEO_RESOLUTION && !presenter.mHasResolution) {
+//                            presenter.onResolutionTask();
+//                        }
+//                        if ((presenter.mViewRequestFeatures & FEATURE_VIDEO_FLOW_RSP) == FEATURE_VIDEO_FLOW_RSP) {
+//                            onFlowRtcpTask();
+//                        }
+//                    }
 
                 }, Throwable::printStackTrace);
     }
@@ -449,6 +454,9 @@ public abstract class BasePresenter<V extends JFGView> implements JFGPresenter {
     public void onScreenRotationChanged(boolean land) {
     }
 
+    @Override
+    public void onSetContentView() {
+    }
 
     /**
      * 工作在非UI线程,可以简化rxjava的使用

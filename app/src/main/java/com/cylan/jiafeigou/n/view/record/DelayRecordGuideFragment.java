@@ -2,7 +2,6 @@ package com.cylan.jiafeigou.n.view.record;
 
 import android.os.Bundle;
 import android.view.View;
-import android.widget.FrameLayout;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.view.JFGPresenter;
@@ -11,13 +10,12 @@ import com.cylan.jiafeigou.base.wrapper.BaseFragment;
 import com.cylan.jiafeigou.base.wrapper.BasePresenter;
 import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
 import com.cylan.jiafeigou.dp.DpMsgMap;
+import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.mvp.contract.record.DelayRecordContract;
-import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.dialog.BaseDialog;
 
 import java.lang.ref.WeakReference;
 
-import butterknife.BindView;
 import butterknife.OnClick;
 
 /**
@@ -26,14 +24,13 @@ import butterknife.OnClick;
 
 public class DelayRecordGuideFragment extends BaseFragment {
 
-    public static DelayRecordGuideFragment newInstance(Bundle bundle) {
+    public static DelayRecordGuideFragment newInstance(String uuid) {
         DelayRecordGuideFragment fragment = new DelayRecordGuideFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
         fragment.setArguments(bundle);
         return fragment;
     }
-
-    @BindView(R.id.fLayout_top_bar_container)
-    FrameLayout mTopBarContainer;
 
     private WeakReference<BaseDialog> mEnableDeviceDialog;
 
@@ -51,7 +48,6 @@ public class DelayRecordGuideFragment extends BaseFragment {
 
     @Override
     protected void initViewAndListener() {
-        ViewUtils.setViewPaddingStatusBar(mTopBarContainer);
     }
 
     @OnClick(R.id.fragment_delay_record_start_now)

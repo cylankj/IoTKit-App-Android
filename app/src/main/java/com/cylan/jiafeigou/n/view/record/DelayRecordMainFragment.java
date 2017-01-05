@@ -4,9 +4,9 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.PixelFormat;
+import android.graphics.Paint;
 import android.graphics.Rect;
-import android.text.TextPaint;
+import android.os.Bundle;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
@@ -20,7 +20,7 @@ import com.cylan.entity.jniCall.JFGMsgVideoResolution;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.wrapper.BaseFragment;
-import com.cylan.jiafeigou.misc.JfgCmdInsurance;
+import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamDelayRecordContract;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.TimeUtils;
@@ -64,7 +64,6 @@ public class DelayRecordMainFragment extends BaseFragment<CamDelayRecordContract
     private int mRecordTime = 24;
     private long mRecordStartTime = -1;
     private long mRecordDuration = -1;
-    private TextPaint mPreviewPaint;
 
     private static final int DELAY_RECORD_SETTING = -1;
     private static final int DELAY_RECORD_PROCESS = -2;
@@ -75,19 +74,26 @@ public class DelayRecordMainFragment extends BaseFragment<CamDelayRecordContract
 
     private int mDelayRecordState = DELAY_RECORD_SETTING;
 
+    public static DelayRecordMainFragment newInstance(String uuid) {
+        DelayRecordMainFragment fragment = new DelayRecordMainFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
+        fragment.setArguments(bundle);
+        return fragment;
+    }
+
     @Override
     protected CamDelayRecordContract.Presenter onCreatePresenter() {
-        return null;
+        return new CamDelayRecordContract.Presenter();
     }
+
 
     @Override
     protected int getContentViewID() {
-        return R.layout.activity_cam_delay_record;
+        return R.layout.fragment_delay_record;
     }
 
     protected void initViewAndListener() {
-        mPreviewPaint = new TextPaint();
-        mPreviewPaint.setColor(Color.WHITE);
         initTimeIntervalDialog();
         initTimeDurationDialog();
         initVideoView();
@@ -105,12 +111,6 @@ public class DelayRecordMainFragment extends BaseFragment<CamDelayRecordContract
             mPresenter.startRecord();
             startRecord();//现在还没有数据
         }
-    }
-
-    @Override
-    @OnClick(R.id.act_delay_record_back)
-    public void onBackPressed() {
-        super.onBackPressed();
     }
 
     @OnClick(R.id.act_delay_record_time_interval)
@@ -136,7 +136,7 @@ public class DelayRecordMainFragment extends BaseFragment<CamDelayRecordContract
             startRecord();
         } else {
             //结束或者还没开始录制视频
-            mPresenter.startViewer();
+//            mPresenter.startViewer();
             mPresenter.restoreRecord();
         }
     }
@@ -308,11 +308,11 @@ public class DelayRecordMainFragment extends BaseFragment<CamDelayRecordContract
 
     @Override
     public void onResolution(JFGMsgVideoResolution resolution) throws JfgException {
-        if (mDelayRecordState != DELAY_RECORD_RECORDING)//just for test
-            refreshLayout(DELAY_RECORD_PREVIEW);
-        mRoundedTextureView.getHolder().setFormat(PixelFormat.TRANSPARENT);
-        mRoundedTextureView.getHolder().setFormat(PixelFormat.OPAQUE);
-        JfgCmdInsurance.getCmd().setRenderRemoteView(mRoundedTextureView);
+//        if (mDelayRecordState != DELAY_RECORD_RECORDING)//just for test
+//            refreshLayout(DELAY_RECORD_PREVIEW);
+//        mRoundedTextureView.getHolder().setFormat(PixelFormat.TRANSPARENT);
+//        mRoundedTextureView.getHolder().setFormat(PixelFormat.OPAQUE);
+//        JfgCmdInsurance.getCmd().setRenderRemoteView(mRoundedTextureView);
     }
 
     @Override
@@ -330,7 +330,7 @@ public class DelayRecordMainFragment extends BaseFragment<CamDelayRecordContract
         Canvas canvas = holder.lockCanvas();
         Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.delay_record_overlay);
         canvas.drawColor(Color.WHITE);
-        canvas.drawBitmap(bitmap, new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight()), new Rect(0, 0, width, height), mPreviewPaint);
+        canvas.drawBitmap(bitmap, new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight()), new Rect(0, 0, width, height), new Paint());
         holder.unlockCanvasAndPost(canvas);
     }
 
@@ -341,7 +341,7 @@ public class DelayRecordMainFragment extends BaseFragment<CamDelayRecordContract
      */
     private void initVideoView() {
         if (mRoundedTextureView == null) {
-            mRoundedTextureView = (SurfaceView) VideoViewFactory.CreateRendererExt(false, getContext(), true);
+            mRoundedTextureView = (SurfaceView) VideoViewFactory.CreateRendererExt(false, getActivityContext(), true);
             mRoundedTextureView.getHolder().addCallback(this);
             mRoundedTextureView.setId("IVideoView".hashCode());
             ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
@@ -355,8 +355,8 @@ public class DelayRecordMainFragment extends BaseFragment<CamDelayRecordContract
     private void refreshSurfaceView() {
         switch (mDelayRecordState) {
             case DELAY_RECORD_SETTING: {
-                setDefaultPreview();
-                showPreviewOrRecord();
+//                setDefaultPreview();
+//                showPreviewOrRecord();
             }
             break;
         }

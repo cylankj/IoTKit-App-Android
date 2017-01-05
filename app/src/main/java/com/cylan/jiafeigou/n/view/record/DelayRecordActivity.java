@@ -3,16 +3,21 @@ package com.cylan.jiafeigou.n.view.record;
 import android.widget.FrameLayout;
 
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.base.BaseFullScreenActivity;
+import com.cylan.jiafeigou.base.wrapper.BaseActivity;
+import com.cylan.jiafeigou.base.wrapper.BaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.record.DelayRecordContract;
 import com.cylan.jiafeigou.n.mvp.impl.record.DelayRecordPresenterImpl;
+import com.cylan.jiafeigou.utils.ActivityUtils;
 
 import butterknife.BindView;
 
-public class DelayRecordActivity extends BaseFullScreenActivity<DelayRecordContract.Presenter> implements DelayRecordContract.View {
+public class DelayRecordActivity extends BaseActivity<DelayRecordContract.Presenter> implements DelayRecordContract.View {
 
     @BindView(R.id.act_delay_record_content)
     FrameLayout mContentContainer;
+    private BaseFragment mRecordMainFrag;
+    private BaseFragment mRecordGuideFrag;
+    private BaseFragment mRecordDeviceFrag;
 
     @Override
     protected DelayRecordContract.Presenter onCreatePresenter() {
@@ -25,22 +30,40 @@ public class DelayRecordActivity extends BaseFullScreenActivity<DelayRecordContr
     }
 
     @Override
-    public void onShowRecordMainView() {
+    protected void initViewAndListener() {
+    }
 
+    @Override
+    public void onShowRecordMainView() {
+        if (mRecordMainFrag == null) {
+            mRecordMainFrag = DelayRecordMainFragment.newInstance(mUUID);
+        }
+        ActivityUtils.loadFragmentNoAnimation(R.id.act_delay_record_content, getSupportFragmentManager(), mRecordMainFrag);
     }
 
     @Override
     public void onShowRecordGuideView() {
-
+        if (mRecordGuideFrag == null) {
+            mRecordGuideFrag = DelayRecordGuideFragment.newInstance(mUUID);
+        }
+        ActivityUtils.loadFragmentNoAnimation(R.id.act_delay_record_content, getSupportFragmentManager(), mRecordGuideFrag);
     }
 
     @Override
     public void onShowRecordDeviceView() {
-
+        if (mRecordDeviceFrag == null) {
+            mRecordDeviceFrag = DelayRecordDeviceFragment.newInstance(null);
+        }
+        ActivityUtils.loadFragmentNoBackStack(R.id.act_delay_record_content, getSupportFragmentManager(), mRecordDeviceFrag);
     }
 
     @Override
     public void onShowDeviceSettingView() {
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
     }
 }

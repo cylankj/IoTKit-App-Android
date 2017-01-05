@@ -114,4 +114,34 @@ public class ActivityUtils {
                 .addToBackStack(fragment.getClass().getSimpleName())
                 .commit();
     }
+
+    /**
+     * 用来加载fragment的方法。
+     */
+    public static void loadFragmentNoBackStack(int id, FragmentManager fragmentManager, Fragment fragment) {
+        fragmentManager.beginTransaction()
+                //如果需要动画，可以把动画添加进来
+                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
+                        , R.anim.slide_in_left, R.anim.slide_out_right)
+                .add(id, fragment, fragment.getClass().getSimpleName())
+                .commit();
+    }
+
+    /**
+     * 用来加载fragment的方法。
+     */
+    public static void loadFragmentNoAnimation(int id, FragmentManager fragmentManager, Fragment fragment) {
+        fragmentManager.beginTransaction()
+                .add(id, fragment, fragment.getClass().getSimpleName())
+                .commit();
+    }
+
+    /**
+     * 用来加载fragment的方法。
+     */
+    public static void replaceFragment(int id, FragmentManager fragmentManager, Fragment fragment) {
+        fragmentManager.beginTransaction()
+                .replace(id, fragment, fragment.getClass().getSimpleName())
+                .commit();
+    }
 }

@@ -255,7 +255,7 @@ public class DpAssembler implements IParser {
                 .subscribeOn(Schedulers.newThread())
                 .map((List<JFGDevice> list) -> {
                     HashMap<String, Long> map = new HashMap<>();
-                    for (int i = 0; i < list.size(); i++) {
+                    for (int i = 1; i < list.size(); i++) {
                         GlobalDataProxy.getInstance().cacheDevice(list.get(i).uuid, list.get(i));
                         getUnreadMsg(list.get(i));
                         assembleBase(list.get(i));

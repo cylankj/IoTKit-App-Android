@@ -112,10 +112,6 @@ public abstract class BaseFullScreenActivity<P extends JFGPresenter> extends Bas
 
     @Override
     public void onBackPressed() {
-        if (checkExtraChildFragment()) {
-            return;
-        } else if (checkExtraFragment())
-            return;
         super.onBackPressed();
     }
 

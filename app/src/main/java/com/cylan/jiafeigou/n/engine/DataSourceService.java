@@ -201,6 +201,11 @@ public class DataSourceService extends Service implements AppCallBack {
     }
 
     @Override
+    public void OnRobotGetDataExRsp(long l, String s, ArrayList<JFGDPMsg> arrayList) {
+
+    }
+
+    @Override
     public void OnRobotSetDataRsp(long l, ArrayList<JFGDPMsgRet> arrayList) {
         AppLogger.d("OnRobotSetDataRsp :" + l + new Gson().toJson(arrayList));
     }
