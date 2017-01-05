@@ -9,9 +9,9 @@ import android.content.Context;
 
 public interface JFGView {
 
-    int VIEW_ACTION_OK = 0;
-    int VIEW_ACTION_CANCEL = 1;
-
+    int VIEW_ACTION_OK = -80000000;
+    int VIEW_ACTION_CANCEL = -80000001;
+    int VIEW_ACTION_OFFER = -80000002;
 
     //获取Context对象,该Context一定是可以开启Activity的
     Context getAppContext();
@@ -29,6 +29,8 @@ public interface JFGView {
     void onScreenRotationChanged(boolean land);
 
     String onResolveViewLaunchType();
+
+    void onViewAction(int action, String handler, Object extra);
 
     interface Action {
         void actionDone();

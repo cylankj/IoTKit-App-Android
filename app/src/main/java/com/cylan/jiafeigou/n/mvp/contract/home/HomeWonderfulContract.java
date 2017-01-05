@@ -13,6 +13,10 @@ public interface HomeWonderfulContract {
 
     interface View extends JFGView {
 
+        int VIEW_TYPE_HIDE = -1;
+        int VIEW_TYPE_EMPTY = 0;
+        int VIEW_TYPE_GUIDE = 1;
+
         void onMediaListRsp(List<MediaBean> list);
 
         void onHeadBackgroundChang(int daytime);

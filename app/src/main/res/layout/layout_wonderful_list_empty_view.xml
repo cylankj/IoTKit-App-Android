@@ -1,16 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/lLayout_wonderful_list_empty_view"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+              android:id="@+id/lLayout_wonderful_list_empty_view"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+              android:weightSum="3">
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
 
     <ImageView
         android:id="@+id/imgv_empty_layout_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:src="@drawable/icon_no_message" />
+        android:src="@drawable/icon_no_message"/>
 
     <TextView
         android:id="@+id/tv_empty_layout_content"
@@ -20,6 +26,6 @@
         android:layout_marginTop="20dp"
         android:text="暂无消息"
         android:textColor="@color/color_888888"
-        android:textSize="16sp" />
+        android:textSize="16sp"/>
 
 </LinearLayout>

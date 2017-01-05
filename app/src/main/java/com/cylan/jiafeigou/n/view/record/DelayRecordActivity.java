@@ -11,6 +11,8 @@ import com.cylan.jiafeigou.n.mvp.impl.record.DelayRecordPresenterImpl;
 import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;
 
+import java.util.List;
+
 import butterknife.BindView;
 
 public class DelayRecordActivity extends BaseActivity<DelayRecordContract.Presenter> implements DelayRecordContract.View {
@@ -41,25 +43,25 @@ public class DelayRecordActivity extends BaseActivity<DelayRecordContract.Presen
     }
 
     @Override
-    public void onShowRecordMainView() {
+    public void onShowRecordMainView(String uuid) {
         if (mRecordMainFrag == null) {
-            mRecordMainFrag = DelayRecordMainFragment.newInstance(mUUID);
+            mRecordMainFrag = DelayRecordMainFragment.newInstance(uuid);
         }
         mRootContent.setBackgroundResource(R.drawable.delay_record_bg);
         ActivityUtils.replaceFragment(R.id.act_delay_record_content, getSupportFragmentManager(), mRecordMainFrag);
     }
 
     @Override
-    public void onShowRecordGuideView() {
+    public void onShowRecordGuideView(String uuid) {
         if (mRecordGuideFrag == null) {
-            mRecordGuideFrag = DelayRecordGuideFragment.newInstance(mUUID);
+            mRecordGuideFrag = DelayRecordGuideFragment.newInstance(uuid);
         }
         mRootContent.setBackgroundResource(R.color.color_0ba8cf);
         ActivityUtils.loadFragmentNoAnimation(R.id.act_delay_record_content, getSupportFragmentManager(), mRecordGuideFrag);
     }
 
     @Override
-    public void onShowRecordDeviceView() {
+    public void onShowRecordDeviceView(List devices) {
         if (mRecordDeviceFrag == null) {
             mRecordDeviceFrag = DelayRecordDeviceFragment.newInstance(null);
         }
@@ -67,8 +69,20 @@ public class DelayRecordActivity extends BaseActivity<DelayRecordContract.Presen
     }
 
     @Override
-    public void onShowDeviceSettingView() {
+    public void onShowDeviceSettingView(String uuid) {
 
+    }
+
+    @Override
+    public void onShowNoDeviceView() {
+
+    }
+
+    @Override
+    public void onUsableDeviceRsp(List devices) {
+        if (mRecordDeviceFrag != null && mRecordDeviceFrag.isVisible()) {//当前设备选择列表对用户可见
+            mRecordDeviceFrag.onViewAction(VIEW_ACTION_OFFER, , devices);
+        }
     }
 
     @Override

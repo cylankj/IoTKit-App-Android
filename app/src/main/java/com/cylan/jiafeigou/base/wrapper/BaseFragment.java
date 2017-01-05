@@ -150,8 +150,10 @@ public abstract class BaseFragment<T extends JFGPresenter> extends Fragment impl
         return getArguments().getString(JConstant.VIEW_CALL_WAY);
     }
 
-    protected void onViewAction(int action, String handler, Object extra) {
-
+    public void onViewAction(int action, String handler, Object extra) {
+        if (mPresenter != null) {
+            mPresenter.onViewAction(action, handler, extra);
+        }
     }
 
     /**

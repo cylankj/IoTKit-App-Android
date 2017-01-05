@@ -22,7 +22,7 @@ public class DelayRecordDeviceFragment extends BaseFragment {
     }
 
     @Override
-    protected JFGPresenter onCreatePresenter() {
+    protected JFGPresenter onCreatePresenter() {//保留此接口,此view所需数据简单的由父activity提供
         return null;
     }
 

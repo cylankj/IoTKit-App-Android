@@ -36,6 +36,7 @@ import com.cylan.jiafeigou.n.mvp.impl.home.HomeWonderfulPresenterImpl;
 import com.cylan.jiafeigou.n.mvp.model.MediaBean;
 import com.cylan.jiafeigou.n.view.activity.MediaActivity;
 import com.cylan.jiafeigou.n.view.adapter.HomeWonderfulAdapter;
+import com.cylan.jiafeigou.n.view.record.DelayRecordActivity;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.AnimatorUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
@@ -56,6 +57,8 @@ import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+
+import static com.cylan.jiafeigou.n.mvp.contract.record.DelayRecordContract.View.VIEW_LAUNCH_WAY_WONDERFUL;
 
 public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract.Presenter> implements
         HomeWonderfulContract.View, SwipeRefreshLayout.OnRefreshListener,
@@ -88,7 +91,11 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
     @BindView(R.id.tv_title_head_wonder)
     TextView tvTitleHeadWonder;
     @BindView(R.id.fLayout_empty_view_container)
-    FrameLayout fLayoutWonderfulEmptyContainer;
+    FrameLayout mWonderfulEmptyViewContainer;
+    @BindView(R.id.fragment_wonderful_empty)
+    ViewGroup mWonderfulEmptyContainer;
+    @BindView(R.id.fragment_wonderful_guide)
+    ViewGroup mWonderfulGuideContainer;
 
     private WeakReference<TimeWheelView> wheelViewWeakReference;
     private WeakReference<ShareDialogFragment> shareDialogFragmentWeakReference;
@@ -115,7 +122,6 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
     private View mContentView;
     private ShadowFrameLayout mParent;
 
-    private EmptyViewHolder mEmptyViewHolder;
 
     public static HomeWonderfulFragmentExt newInstance(Bundle bundle) {
         HomeWonderfulFragmentExt fragment = new HomeWonderfulFragmentExt();
@@ -126,10 +132,6 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-    }
-
-    private void initEmptyView() {
-        mEmptyViewHolder = new EmptyViewHolder(fLayoutWonderfulEmptyContainer);
     }
 
     @Override
@@ -146,7 +148,6 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
         initHeaderView();
 
         initSomeViewMargin();
-        initEmptyView();
     }
 
     private SimpleDialogFragment initDeleteDialog() {
@@ -349,9 +350,34 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
 
     }
 
+    @OnClick(R.id.item_wonderful_to_start)
+    public void openWonderful() {
+        Intent intent = new Intent(getActivityContext(), DelayRecordActivity.class);
+        intent.putExtra(JConstant.VIEW_CALL_WAY, VIEW_LAUNCH_WAY_WONDERFUL);
+        intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, mUUID);
+        startActivity(intent);
+    }
+
     @Override
     public void chooseEmptyView(int type) {
-        mEmptyViewHolder.chooseEmptyView(type);
+        switch (type) {
+            case VIEW_TYPE_HIDE: {//hide
+                mWonderfulEmptyViewContainer.setVisibility(View.GONE);
+            }
+            break;
+            case VIEW_TYPE_EMPTY: {//empty
+                mWonderfulEmptyViewContainer.setVisibility(View.VISIBLE);
+                mWonderfulEmptyContainer.setVisibility(View.VISIBLE);
+                mWonderfulGuideContainer.setVisibility(View.GONE);
+            }
+            break;
+            case VIEW_TYPE_GUIDE: {//guide
+                mWonderfulEmptyViewContainer.setVisibility(View.VISIBLE);
+                mWonderfulGuideContainer.setVisibility(View.VISIBLE);
+                mWonderfulEmptyContainer.setVisibility(View.GONE);
+            }
+            break;
+        }
     }
 
     @Override
@@ -608,43 +634,6 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
                 int position = mLinearLayoutManager.findFirstVisibleItemPosition();
                 rVDevicesList.smoothScrollToPosition(index > position ? index + 1 : index);
                 break;
-            }
-        }
-    }
-
-    private static class EmptyViewHolder {
-
-        public static final int TYPE_HIDE = -1;//隐藏所有
-        public static final int TYPE_EMPTY = 0;//默认的emptyView
-        public static final int TYPE_GUIDE = 1;//用户引导页的view
-        private ViewGroup mViewGroup;
-        private final View mWonderful;
-        private final View mEmptyView;
-
-        public EmptyViewHolder(ViewGroup container) {
-            mWonderful = View.inflate(container.getContext(), R.layout.item_wonderful_guide, null);
-            mEmptyView = View.inflate(container.getContext(), R.layout.layout_wonderful_list_empty_view, null);
-            mWonderful.setVisibility(View.GONE);
-            mEmptyView.setVisibility(View.GONE);
-            container.addView(mWonderful);
-            container.addView(mEmptyView);
-            mViewGroup = container;
-        }
-
-        public void chooseEmptyView(int type) {
-            mViewGroup.setVisibility(View.VISIBLE);
-            switch (type) {
-                case TYPE_HIDE:
-                    mViewGroup.setVisibility(View.GONE);
-                    break;
-                case TYPE_EMPTY:
-                    mWonderful.setVisibility(View.GONE);
-                    mEmptyView.setVisibility(View.VISIBLE);
-                    break;
-                case TYPE_GUIDE:
-                    mEmptyView.setVisibility(View.GONE);
-                    mWonderful.setVisibility(View.VISIBLE);
-                    break;
             }
         }
     }

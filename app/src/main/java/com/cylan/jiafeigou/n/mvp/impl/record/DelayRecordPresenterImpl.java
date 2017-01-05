@@ -21,7 +21,7 @@ import rx.Subscription;
  */
 public class DelayRecordPresenterImpl extends BasePresenter<DelayRecordContract.View> implements DelayRecordContract.Presenter {
 
-    private List mRecordDevices;
+    private List mUsableDevices;
 
     @Override
     public void onSetContentView() {
@@ -51,15 +51,22 @@ public class DelayRecordPresenterImpl extends BasePresenter<DelayRecordContract.
                 //通过设置页进入该页面
                 if (isFirstEnter(false)) {
                     //第一次进入则显示向导页
-                    mView.onShowRecordGuideView();
+                    mView.onShowRecordGuideView(mUUID);
                 } else {
                     //不是第一次进入则直接进入预览页
-                    mView.onShowRecordMainView();
+                    mView.onShowRecordMainView(mUUID);
                 }
             }
             break;
             case DelayRecordContract.View.VIEW_LAUNCH_WAY_WONDERFUL: {
                 //通过每日精彩页进入该页面
+                if (mUsableDevices != null && mUsableDevices.size() > 1) {//有多于一个可用的设备,则显示设备选择页面
+                    mView.onShowRecordDeviceView(mUsableDevices);
+                } else if (mUsableDevices != null && mUsableDevices.size() == 1) {//只有一个可用的设备,则直接进入延时摄影主页
+                    mView.onShowRecordMainView((String) mUsableDevices.get(0));
+                } else {
+                    mView.onShowNoDeviceView();
+                }
             }
             break;
         }
@@ -80,11 +87,11 @@ public class DelayRecordPresenterImpl extends BasePresenter<DelayRecordContract.
         switch (handle) {
             case DelayRecordContract.View.VIEW_HANDLER_GUIDE_START_NOW:
                 //这里进入预览页
-                mView.onShowRecordMainView();
+                mView.onShowRecordMainView(mUUID);
                 break;
             case DelayRecordContract.View.VIEW_HANDLER_GUIDE_ENABLE_DEVICE:
                 //这里需要跳转到设备设置activity,比较复杂,以后再慢慢写
-                mView.onShowDeviceSettingView();
+                mView.onShowDeviceSettingView(mUUID);
                 break;
         }
     }

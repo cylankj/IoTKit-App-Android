@@ -41,6 +41,10 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
+import static com.cylan.jiafeigou.n.mvp.contract.home.HomeWonderfulContract.View.VIEW_TYPE_EMPTY;
+import static com.cylan.jiafeigou.n.mvp.contract.home.HomeWonderfulContract.View.VIEW_TYPE_GUIDE;
+import static com.cylan.jiafeigou.n.mvp.contract.home.HomeWonderfulContract.View.VIEW_TYPE_HIDE;
+
 
 /**
  * Created by hunt on 16-5-23.
@@ -61,7 +65,7 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
     @Override
     public void onSetContentView() {
         if (showGuidePage()) {
-            mView.chooseEmptyView(1);
+            mView.chooseEmptyView(VIEW_TYPE_GUIDE);
         } else {
             startLoadMore();
         }
@@ -262,9 +266,10 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
                 }
             }
             updateCache(results);
-            mView.onMediaListRsp(results);
             List<Long> times = assembleTimeLineData(results);
+            mView.onMediaListRsp(results);
             mView.onTimeLineDataUpdate(times);
+            mView.chooseEmptyView(results.size() > 0 ? VIEW_TYPE_HIDE : VIEW_TYPE_EMPTY);
         }
     }
 }

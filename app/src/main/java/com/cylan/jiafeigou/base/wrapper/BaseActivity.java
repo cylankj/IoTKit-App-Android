@@ -128,7 +128,7 @@ public abstract class BaseActivity<P extends JFGPresenter> extends AppCompatActi
     /**
      * 默认是将viewAction转发到presenter中进行处理,子类也可以复写此方法自己处理
      */
-    protected void onViewAction(int action, String handler, Object extra) {
+    public void onViewAction(int action, String handler, Object extra) {
         mPresenter.onViewAction(action, handler, extra);
     }
 
