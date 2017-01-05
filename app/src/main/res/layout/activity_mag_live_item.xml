@@ -14,7 +14,7 @@
             android:id="@+id/tv_mag_live_day"
             android:layout_width="117dp"
             android:layout_height="wrap_content"
-            android:gravity="end"
+            android:gravity="top|end"
             android:text="@string/DOOR_TODAY"
             android:textColor="@color/color_333333"
             android:textSize="17sp" />
@@ -47,6 +47,7 @@
         android:id="@+id/tv_mag_live_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:gravity="top"
         android:layout_marginLeft="11dp"
         android:text="15:05:20 打开"
         android:textColor="@color/color_333333"

@@ -76,14 +76,14 @@ public class MineAddFromContactFragment extends Fragment implements MineAddFromC
 
     @Override
     public void initEditText(String alids) {
-        etMineAddContactMesg.setText(getString(R.string.Tap3_FriendsAdd_StuffContents)+alids);
+        etMineAddContactMesg.setText(String.format(getString(R.string.Tap3_FriendsAdd_StuffContents),alids));
     }
 
     @Override
     public String getSendMesg() {
         String mesg = etMineAddContactMesg.getText().toString();
         if (TextUtils.isEmpty(mesg)) {
-            return getString(R.string.Tap3_FriendsAdd_StuffContents)+presenter.getUserAlias();
+            return String.format(getString(R.string.Tap3_FriendsAdd_StuffContents),presenter.getUserAlias());
         } else {
             return mesg;
         }
