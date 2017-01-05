@@ -51,10 +51,10 @@ public class DelayRecordPresenterImpl extends BasePresenter<DelayRecordContract.
                 //通过设置页进入该页面
                 if (isFirstEnter(false)) {
                     //第一次进入则显示向导页
-                    mView.onShowRecordMainView();
-//                    mView.onShowRecordGuideView();
+                    mView.onShowRecordGuideView();
                 } else {
                     //不是第一次进入则直接进入预览页
+                    mView.onShowRecordMainView();
                 }
             }
             break;

@@ -46,7 +46,7 @@ public class DelayRecordActivity extends BaseActivity<DelayRecordContract.Presen
             mRecordMainFrag = DelayRecordMainFragment.newInstance(mUUID);
         }
         mRootContent.setBackgroundResource(R.drawable.delay_record_bg);
-        ActivityUtils.loadFragmentNoAnimation(R.id.act_delay_record_content, getSupportFragmentManager(), mRecordMainFrag);
+        ActivityUtils.replaceFragment(R.id.act_delay_record_content, getSupportFragmentManager(), mRecordMainFrag);
     }
 
     @Override

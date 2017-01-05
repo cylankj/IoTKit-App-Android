@@ -141,6 +141,8 @@ public class ActivityUtils {
      */
     public static void replaceFragment(int id, FragmentManager fragmentManager, Fragment fragment) {
         fragmentManager.beginTransaction()
+                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left
+                        , R.anim.slide_in_left, R.anim.slide_out_right)
                 .replace(id, fragment, fragment.getClass().getSimpleName())
                 .commit();
     }

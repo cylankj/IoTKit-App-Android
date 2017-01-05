@@ -407,14 +407,14 @@ public abstract class BasePresenter<V extends JFGView> implements JFGPresenter {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(count -> {
-                    for (BasePresenter presenter : sPresenters) {
-                        if ((presenter.mViewRequestFeatures & FEATURE_VIDEO_RESOLUTION) == FEATURE_VIDEO_RESOLUTION && !presenter.mHasResolution) {
-                            presenter.onResolutionTask();
-                        }
-                        if ((presenter.mViewRequestFeatures & FEATURE_VIDEO_FLOW_RSP) == FEATURE_VIDEO_FLOW_RSP && presenter.mHasResolution) {
-                            presenter.onFlowRtcpTask();
-                        }
-                    }
+//                    for (BasePresenter presenter : sPresenters) {
+//                        if ((presenter.mViewRequestFeatures & FEATURE_VIDEO_RESOLUTION) == FEATURE_VIDEO_RESOLUTION && !presenter.mHasResolution) {
+//                            presenter.onResolutionTask();
+//                        }
+//                        if ((presenter.mViewRequestFeatures & FEATURE_VIDEO_FLOW_RSP) == FEATURE_VIDEO_FLOW_RSP && presenter.mHasResolution) {
+//                            presenter.onFlowRtcpTask();
+//                        }
+//                    }
 
                 }, Throwable::printStackTrace);
     }
