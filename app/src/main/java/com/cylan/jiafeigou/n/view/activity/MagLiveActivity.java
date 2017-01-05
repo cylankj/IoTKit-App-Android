@@ -71,7 +71,6 @@ public class MagLiveActivity extends BaseFullScreenFragmentActivity implements M
         //用来存放，所需要的bean对象
         initTopBar();
         initDoorState(presenter.getDoorCurrentState());
-
     }
 
     @Override

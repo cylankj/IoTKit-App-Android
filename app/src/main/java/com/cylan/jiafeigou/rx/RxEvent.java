@@ -639,6 +639,16 @@ public class RxEvent {
         }
     }
 
+    /**
+     * 删除好友添加请求
+     */
+    public static final class DeleteAddReqBack{
+        public JFGResult jfgResult;
+
+        public DeleteAddReqBack(JFGResult jfgResult) {
+            this.jfgResult = jfgResult;
+        }
+    }
 
     public static class AppHideEvent {
     }
