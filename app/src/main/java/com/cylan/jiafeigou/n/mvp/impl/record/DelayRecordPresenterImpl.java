@@ -2,14 +2,20 @@ package com.cylan.jiafeigou.n.mvp.impl.record;
 
 import android.text.TextUtils;
 
+import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.jiafeigou.base.wrapper.BasePresenter;
+import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.mvp.contract.record.DelayRecordContract;
+import com.cylan.jiafeigou.rx.RxBus;
+import com.cylan.jiafeigou.rx.RxUiEvent;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
 
 /*
  *  @项目名：  JFGAndroid 
@@ -21,7 +27,7 @@ import rx.Subscription;
  */
 public class DelayRecordPresenterImpl extends BasePresenter<DelayRecordContract.View> implements DelayRecordContract.Presenter {
 
-    private List mUsableDevices;
+    private List<String> mUsableDevices;
 
     @Override
     public void onSetContentView() {
@@ -32,7 +38,40 @@ public class DelayRecordPresenterImpl extends BasePresenter<DelayRecordContract.
      * 刚进来时主动刷新一次设备列表
      */
     private Subscription getFetchDeviceListSub() {
-        return null;
+        ArrayList<JFGDevice> devices = GlobalDataProxy.getInstance().fetchAll();
+        mUsableDevices = new ArrayList<>();
+        if (devices != null) {
+            for (JFGDevice device : devices) {
+                if (1017 == device.pid) {//3G狗设备,只有3G狗设备才能开启延时摄影
+                    mUsableDevices.add(device.uuid);
+                }
+            }
+        }
+        if (mUsableDevices != null && mUsableDevices.size() > 1) {//有多于一个可用的设备,则显示设备选择页面
+            mView.onShowRecordDeviceView(mUsableDevices);
+        } else if (mUsableDevices != null && mUsableDevices.size() == 1) {//只有一个可用的设备,则直接进入延时摄影主页
+            mView.onShowRecordMainView(mUsableDevices.get(0));
+        } else {
+            mView.onShowNoDeviceView();
+        }
+        return RxBus.getCacheInstance().toObservableSticky(RxUiEvent.BulkUUidListRsp.class)
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .subscribe(rsp -> {
+                    if (rsp != null && rsp.allList != null) {
+                        for (String s : rsp.allList) {
+                            if (GlobalDataProxy.getInstance().fetch(s).pid == 1017 && !mUsableDevices.contains(s)) {
+                                mUsableDevices.add(s);
+                            }
+                        }
+                        if (mUsableDevices != null && mUsableDevices.size() > 1) {//有多于一个可用的设备,则显示设备选择页面
+                            mView.onShowRecordDeviceView(mUsableDevices);
+                        } else if (mUsableDevices != null && mUsableDevices.size() == 1) {//只有一个可用的设备,则直接进入延时摄影主页
+                            mView.onShowRecordMainView(mUsableDevices.get(0));
+                        } else {
+                            mView.onShowNoDeviceView();
+                        }
+                    }
+                });
     }
 
 
@@ -60,13 +99,7 @@ public class DelayRecordPresenterImpl extends BasePresenter<DelayRecordContract.
             break;
             case DelayRecordContract.View.VIEW_LAUNCH_WAY_WONDERFUL: {
                 //通过每日精彩页进入该页面
-                if (mUsableDevices != null && mUsableDevices.size() > 1) {//有多于一个可用的设备,则显示设备选择页面
-                    mView.onShowRecordDeviceView(mUsableDevices);
-                } else if (mUsableDevices != null && mUsableDevices.size() == 1) {//只有一个可用的设备,则直接进入延时摄影主页
-                    mView.onShowRecordMainView((String) mUsableDevices.get(0));
-                } else {
-                    mView.onShowNoDeviceView();
-                }
+                mSubscriptions.add(getFetchDeviceListSub());
             }
             break;
         }

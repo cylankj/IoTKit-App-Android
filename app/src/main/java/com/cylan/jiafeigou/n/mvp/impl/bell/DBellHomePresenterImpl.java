@@ -10,10 +10,7 @@ import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.dp.DpUtils;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.contract.bell.DoorBellHomeContract;
-import com.cylan.jiafeigou.n.mvp.model.BaseBean;
-import com.cylan.jiafeigou.n.mvp.model.BeanBellInfo;
 import com.cylan.jiafeigou.n.mvp.model.BellCallRecordBean;
-import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.utils.TimeUtils;
 
@@ -38,7 +35,7 @@ public class DBellHomePresenterImpl extends BasePresenter<DoorBellHomeContract.V
 
 
     private void checkBatteryAndNotifyFirst() {
-        if ( isFirst) {
+        if (isFirst) {
             mView.onBellBatteryDrainOut();
             isFirst = false;
         }
@@ -47,12 +44,11 @@ public class DBellHomePresenterImpl extends BasePresenter<DoorBellHomeContract.V
     @Override
     public void onStart() {
         super.onStart();
+        registerResponseParser(DpMsgMap.ID_401_BELL_CALL_STATE, this::onBellCallRecordRsp);
         checkBatteryAndNotifyFirst();
     }
 
-    @Override
-    protected void onResolveGetDataResponse(String identity, Integer key, ArrayList<JFGDPMsg> value) {
-        if (key != DpMsgMap.ID_401_BELL_CALL_STATE) return;
+    protected void onBellCallRecordRsp(String identity, JFGDPMsg... value) {
         ArrayList<BellCallRecordBean> result = new ArrayList<>(32);
         BellCallRecordBean callRecord;
         DpMsgDefine.BellCallState bell;
@@ -75,11 +71,6 @@ public class DBellHomePresenterImpl extends BasePresenter<DoorBellHomeContract.V
         mView.onRecordsListRsp(result);
     }
 
-    @Override
-    protected void onResolveGetDataResponseCompleted() {
-        mView.onRecordsListRsp(null);
-    }
-
     private static final SimpleDateFormat getSimpleDateFormat
             = new SimpleDateFormat("MM月dd日", Locale.getDefault());
 
@@ -88,18 +79,6 @@ public class DBellHomePresenterImpl extends BasePresenter<DoorBellHomeContract.V
                 : (time < todayInMidNight && time > yesterdayInMidNight ? "昨天" : getSimpleDateFormat.format(new Date(time)));
     }
 
-
-    @Override
-    protected long onResolveViewFeatures() {
-        return BasePresenter.FEATURE_LOGIN_STATE | BasePresenter.FEATURE_DEVICE_BATTERY_STATE;
-    }
-
-    @Override
-    protected void onDeviceBatteryStateChanged(DpMsgDefine.MsgBattery battery) {
-        if (battery.battery < 20) {
-            mView.onBellBatteryDrainOut();
-        }
-    }
 
     @Override
     protected void onLoginStateChanged(RxEvent.LoginRsp loginState) {

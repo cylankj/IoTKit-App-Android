@@ -150,6 +150,10 @@ public abstract class BaseFragment<T extends JFGPresenter> extends Fragment impl
         return getArguments().getString(JConstant.VIEW_CALL_WAY);
     }
 
+
+    /**
+     * 一个回调接口,可以向view中传递数据
+     */
     public void onViewAction(int action, String handler, Object extra) {
         if (mPresenter != null) {
             mPresenter.onViewAction(action, handler, extra);

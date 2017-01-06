@@ -58,6 +58,9 @@ public interface HomeWonderfulContract {
         void unregisterWechat();
 
         void shareToWechat(MediaBean mediaBean, int type);
+
+        void removeGuideAnymore();
+
     }
 
 }

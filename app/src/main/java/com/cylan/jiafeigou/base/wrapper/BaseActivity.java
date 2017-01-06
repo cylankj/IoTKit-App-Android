@@ -58,12 +58,12 @@ public abstract class BaseActivity<P extends JFGPresenter> extends AppCompatActi
             mPresenter = onCreatePresenter();
             mPresenter.onSetViewUUID(mUUID);
         }
+        initViewAndListener();
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        initViewAndListener();
         if (mPresenter != null) {
             mPresenter.onViewAttached(this);
             mPresenter.onStart();

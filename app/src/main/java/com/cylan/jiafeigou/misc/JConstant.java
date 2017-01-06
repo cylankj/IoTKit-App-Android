@@ -96,6 +96,8 @@ public class JConstant {
     public static final String VIEW_CALL_WAY_VIEWER = "VIEW_CALL_WAY_VIEWER";
     public static final String VIEW_CALL_WAY_LISTEN = "VIEW_CALL_WAY_LISTEN";
     public static final String VIEW_CALL_WAY_EXTRA = "VIEW_CALL_WAY_EXTRA";
+    public static final String KEY_WONDERFUL_GUIDE = "KEY_WONDERFUL_GUIDE";
+    public static final String VIEW_CALL_WAY_TIME = "VIEW_CALL_WAY_TIME";
 
     public static int ConfigApState = 0;
 

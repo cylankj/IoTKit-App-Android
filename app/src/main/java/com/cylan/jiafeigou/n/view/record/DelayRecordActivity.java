@@ -4,6 +4,7 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.base.view.JFGView;
 import com.cylan.jiafeigou.base.wrapper.BaseActivity;
 import com.cylan.jiafeigou.base.wrapper.BaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.record.DelayRecordContract;
@@ -57,15 +58,16 @@ public class DelayRecordActivity extends BaseActivity<DelayRecordContract.Presen
             mRecordGuideFrag = DelayRecordGuideFragment.newInstance(uuid);
         }
         mRootContent.setBackgroundResource(R.color.color_0ba8cf);
-        ActivityUtils.loadFragmentNoAnimation(R.id.act_delay_record_content, getSupportFragmentManager(), mRecordGuideFrag);
+        ActivityUtils.replaceFragmentNoAnimation(R.id.act_delay_record_content, getSupportFragmentManager(), mRecordGuideFrag);
     }
 
     @Override
-    public void onShowRecordDeviceView(List devices) {
+    public void onShowRecordDeviceView(List<String> devices) {
         if (mRecordDeviceFrag == null) {
-            mRecordDeviceFrag = DelayRecordDeviceFragment.newInstance(null);
+            mRecordDeviceFrag = DelayRecordDeviceFragment.newInstance(devices);
         }
-        ActivityUtils.loadFragmentNoBackStack(R.id.act_delay_record_content, getSupportFragmentManager(), mRecordDeviceFrag);
+        mRootContent.setBackgroundResource(R.color.color_0ba8cf);
+        ActivityUtils.replaceFragmentNoAnimation(R.id.act_delay_record_content, getSupportFragmentManager(), mRecordDeviceFrag);
     }
 
     @Override
@@ -75,13 +77,17 @@ public class DelayRecordActivity extends BaseActivity<DelayRecordContract.Presen
 
     @Override
     public void onShowNoDeviceView() {
-
+        if (mRecordDeviceFrag == null) {
+            onShowRecordDeviceView(null);
+        } else {
+            mRecordDeviceFrag.onViewAction(JFGView.VIEW_ACTION_OFFER, "empty", null);
+        }
     }
 
     @Override
-    public void onUsableDeviceRsp(List devices) {
+    public void onUsableDeviceRsp(List<String> devices) {
         if (mRecordDeviceFrag != null && mRecordDeviceFrag.isVisible()) {//当前设备选择列表对用户可见
-            mRecordDeviceFrag.onViewAction(VIEW_ACTION_OFFER, , devices);
+            mRecordDeviceFrag.onViewAction(VIEW_ACTION_OFFER, "devices", devices);
         }
     }
 

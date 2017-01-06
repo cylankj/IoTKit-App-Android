@@ -27,6 +27,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DecodeFormat;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.wrapper.BaseFragment;
+import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.OnActivityReenterListener;
@@ -37,6 +38,8 @@ import com.cylan.jiafeigou.n.mvp.model.MediaBean;
 import com.cylan.jiafeigou.n.view.activity.MediaActivity;
 import com.cylan.jiafeigou.n.view.adapter.HomeWonderfulAdapter;
 import com.cylan.jiafeigou.n.view.record.DelayRecordActivity;
+import com.cylan.jiafeigou.rx.RxBus;
+import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.AnimatorUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
@@ -352,10 +355,33 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
 
     @OnClick(R.id.item_wonderful_to_start)
     public void openWonderful() {
-        Intent intent = new Intent(getActivityContext(), DelayRecordActivity.class);
-        intent.putExtra(JConstant.VIEW_CALL_WAY, VIEW_LAUNCH_WAY_WONDERFUL);
-        intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, mUUID);
-        startActivity(intent);
+        if (GlobalDataProxy.getInstance().isOnline()) {//在线表示已登录
+            Intent intent = new Intent(getActivityContext(), DelayRecordActivity.class);
+            intent.putExtra(JConstant.VIEW_CALL_WAY, VIEW_LAUNCH_WAY_WONDERFUL);
+            intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, mUUID);
+            startActivity(intent);
+        } else {//不在线表示还未登录
+            RxBus.getCacheInstance().post(new RxEvent.NeedLoginEvent(null));
+        }
+    }
+
+    @OnClick(R.id.tv_wonderful_item_share)
+    public void shareWonderful() {//分享官方演示视频
+        MediaBean bean = MediaBean.getGuideBean();
+        onShareWonderfulContent(bean);
+    }
+
+    @OnClick(R.id.iv_wonderful_item_content)
+    public void viewWonderful(View view) {
+        MediaBean bean = MediaBean.getGuideBean();
+        ArrayList<Parcelable> list = new ArrayList<>();
+        list.add(bean);
+        onEnterWonderfulContent(list, 0, view);
+    }
+
+    @OnClick(R.id.tv_wonderful_item_delete)
+    public void removeAnymore() {
+        mPresenter.removeGuideAnymore();
     }
 
     @Override
@@ -367,14 +393,14 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
             break;
             case VIEW_TYPE_EMPTY: {//empty
                 mWonderfulEmptyViewContainer.setVisibility(View.VISIBLE);
-                mWonderfulEmptyContainer.setVisibility(View.VISIBLE);
                 mWonderfulGuideContainer.setVisibility(View.GONE);
+                mWonderfulEmptyContainer.setVisibility(View.VISIBLE);
             }
             break;
             case VIEW_TYPE_GUIDE: {//guide
                 mWonderfulEmptyViewContainer.setVisibility(View.VISIBLE);
-                mWonderfulGuideContainer.setVisibility(View.VISIBLE);
                 mWonderfulEmptyContainer.setVisibility(View.GONE);
+                mWonderfulGuideContainer.setVisibility(View.VISIBLE);
             }
             break;
         }
@@ -387,6 +413,44 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
         srLayoutMainContentHolder.setRefreshing(true);
     }
 
+    private void onEnterWonderfulContent(ArrayList<? extends Parcelable> list, int position, View v) {
+        final Intent intent = new Intent(getActivity(), MediaActivity.class);
+        // Pass data object in the bundle and populate details activity.
+        intent.putParcelableArrayListExtra(JConstant.KEY_SHARED_ELEMENT_LIST, list);
+        intent.putExtra(JConstant.KEY_SHARED_ELEMENT_STARTED_POSITION, position);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            mParent = (ShadowFrameLayout) v.getParent();
+            mParent.adjustSize(true);
+            ActivityOptionsCompat compat = ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity(), v, v.getTransitionName());
+            startActivity(intent, compat.toBundle());
+        } else {
+            startActivity(intent);
+        }
+        AppLogger.d("transition:getName " + ViewCompat.getTransitionName(v));
+
+    }
+
+    private void onShareWonderfulContent(MediaBean bean) {
+        boolean installed = false;
+        installed = mPresenter.checkWechat();
+        if (!installed) {
+            Toast.makeText(getActivity(), "微信没有安装", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(ShareDialogFragment.KEY_MEDIA_CONTENT, bean);
+        ShareDialogFragment fragment = initShareDialog();
+        fragment.setArguments(bundle);
+        fragment.show(getActivity().getSupportFragmentManager(), "ShareDialogFragment");
+    }
+
+    private void onDeleteWonderfulContent(MediaBean bean, int position) {
+        SimpleDialogFragment deleteF = initDeleteDialog();
+        deleteF.setValue(position);
+        deleteF.setArguments(new Bundle());
+        deleteF.show(getActivity().getSupportFragmentManager(), "deleteDialogFragment");
+    }
+
     @Override
     public void onClick(final View v) {
         final int position = ViewUtils.getParentAdapterPosition(rVDevicesList, v, R.id.lLayout_item_wonderful);
@@ -396,39 +460,15 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
         }
         switch (v.getId()) {
             case R.id.iv_wonderful_item_content:
-                final Intent intent = new Intent(getActivity(), MediaActivity.class);
-                // Pass data object in the bundle and populate details activity.
-                intent.putParcelableArrayListExtra(JConstant.KEY_SHARED_ELEMENT_LIST, (ArrayList<? extends Parcelable>) homeWonderAdapter.getList());
-                intent.putExtra(JConstant.KEY_SHARED_ELEMENT_STARTED_POSITION, position);
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    mParent = (ShadowFrameLayout) v.getParent();
-                    mParent.adjustSize(true);
-                    ActivityOptionsCompat compat = ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity(), v, v.getTransitionName());
-                    startActivity(intent, compat.toBundle());
-                } else {
-                    startActivity(intent);
-                }
-                AppLogger.d("transition:getName " + ViewCompat.getTransitionName(v));
+                ArrayList<? extends Parcelable> list = (ArrayList<? extends Parcelable>) homeWonderAdapter.getList();
+                onEnterWonderfulContent(list, position, v);
                 break;
             case R.id.tv_wonderful_item_share:
-                boolean installed = false;
-                installed = mPresenter.checkWechat();
-                if (!installed) {
-                    Toast.makeText(getActivity(), "微信没有安装", Toast.LENGTH_SHORT).show();
-                    return;
-                }
                 MediaBean bean = homeWonderAdapter.getItem(position);
-                Bundle bundle = new Bundle();
-                bundle.putParcelable(ShareDialogFragment.KEY_MEDIA_CONTENT, bean);
-                ShareDialogFragment fragment = initShareDialog();
-                fragment.setArguments(bundle);
-                fragment.show(getActivity().getSupportFragmentManager(), "ShareDialogFragment");
+                onShareWonderfulContent(bean);
                 break;
             case R.id.tv_wonderful_item_delete:
-                SimpleDialogFragment deleteF = initDeleteDialog();
-                deleteF.setValue(position);
-                deleteF.setArguments(new Bundle());
-                deleteF.show(getActivity().getSupportFragmentManager(), "deleteDialogFragment");
+                onDeleteWonderfulContent(null, position);
                 break;
         }
     }
@@ -552,8 +592,12 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
             // so that the correct one falls into place.
             String newTransitionName = currentPosition + JConstant.KEY_SHARED_ELEMENT_TRANSITION_NAME_SUFFIX;
             SuperViewHolder holder = (SuperViewHolder) rVDevicesList.findViewHolderForAdapterPosition(currentPosition);
-            holder.getView(R.id.iv_wonderful_item_content);
-            View newSharedElement = holder.getView(R.id.iv_wonderful_item_content);
+            View newSharedElement;
+            if (holder != null) {
+                newSharedElement = holder.getView(R.id.iv_wonderful_item_content);
+            } else {
+                newSharedElement = mWonderfulGuideContainer.findViewById(R.id.iv_wonderful_item_content);
+            }
             ShadowFrameLayout parent = (ShadowFrameLayout) newSharedElement.getParent();
             if (mParent != parent) {
                 mParent.adjustSize(false);

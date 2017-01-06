@@ -165,20 +165,20 @@ public class FlattenMsgDp implements IFlat {
 
     @Override
     public ArrayList<DpMsgDefine.DpWrap> getAllDevices(String account) {
+        ArrayList<DpMsgDefine.DpWrap> result = new ArrayList<>();
         if (TextUtils.isEmpty(account)) {
             AppLogger.i("account is null");
-            return null;
+            return result;
         }
-        ArrayList<DpMsgDefine.DpWrap> finalList = new ArrayList<>();
         ArrayList<String> uuidList = accountUUidMap.get(account);
         if (uuidList == null) {
             AppLogger.e("uuidList is null: " + account);
-            return null;
+            return result;
         }
         for (String uuid : uuidList) {
-            finalList.add(getDevice(account, uuid));
+            result.add(getDevice(account, uuid));
         }
-        return finalList;
+        return result;
     }
 
     private void exception(String account, String uuid) {

@@ -19,6 +19,7 @@ public class MediaBean extends BaseDataPoint implements Comparable<MediaBean>, P
     public static final int TYPE_PIC = 0;
     public static final int TYPE_VIDEO = 1;
     public static final int TYPE_LOAD = 2;
+    private static MediaBean guideBean;
 
     @Ignore
     public long version;
@@ -117,6 +118,17 @@ public class MediaBean extends BaseDataPoint implements Comparable<MediaBean>, P
             loadBean = new MediaBean();
         loadBean.msgType = TYPE_LOAD;
         return loadBean;
+    }
+
+    public static MediaBean getGuideBean() {
+        if (guideBean == null) {
+            guideBean = new MediaBean();
+            guideBean.msgType = TYPE_VIDEO;
+            guideBean.fileName = "http://yf.cylan.com.cn:82/Garfield/1045020208160b9706425470.mp4";
+            guideBean.cid = "www.cylan.com";
+        }
+        guideBean.time = (int) (System.currentTimeMillis() / 1000);
+        return guideBean;
     }
 }
 

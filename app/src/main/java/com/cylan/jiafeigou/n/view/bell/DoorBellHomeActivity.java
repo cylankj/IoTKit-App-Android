@@ -87,6 +87,7 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
     @Override
     protected void onResume() {
         super.onResume();
+
         if (bellCallRecordListAdapter.getList() == null || bellCallRecordListAdapter.getList().size() == 0) {
             startLoadData(false, 0);
         }

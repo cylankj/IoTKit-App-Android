@@ -99,11 +99,12 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
     protected void onResume() {
         super.onResume();
         //大大的蛋疼
-        String callWay = getIntent().getStringExtra(JConstant.VIEW_CALL_WAY);
         String extra = getIntent().getStringExtra(JConstant.VIEW_CALL_WAY_EXTRA);
+        long time = getIntent().getLongExtra(JConstant.VIEW_CALL_WAY_TIME, System.currentTimeMillis());
         CallablePresenter.Caller caller = new CallablePresenter.Caller();
         caller.caller = mUUID;
         caller.picture = extra;
+        caller.callTime = time;
         mPresenter.newCall(caller);
         if (mSurfaceView != null && mSurfaceView instanceof GLSurfaceView) {
             ((GLSurfaceView) mSurfaceView).onResume();
@@ -166,7 +167,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
                         .setOnClickListener(this);
                 mLandBellLiveSpeaker = (ImageView) view.findViewById(R.id.imgv_bell_live_land_mic);
                 mLandBellLiveSpeaker.setOnClickListener(this);
-
+                view.findViewById(R.id.tv_bell_live_land_back).setOnClickListener(this);
             }
         }
         View v = fLayoutBellLiveHolder.findViewById(R.id.fLayout_bell_live_land_layer);
@@ -194,7 +195,8 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
     @OnClick({R.id.imgv_bell_live_capture,
             R.id.imgv_bell_live_hang_up,
             R.id.imgv_bell_live_speaker,
-            R.id.imgv_bell_live_switch_to_land})
+            R.id.imgv_bell_live_switch_to_land,
+    })
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.imgv_bell_live_capture:
@@ -215,6 +217,8 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
                 ViewUtils.setRequestedOrientation(this,
                         ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
                 break;
+            case R.id.tv_bell_live_land_back:
+                super.onBackPressed();
         }
     }
 
@@ -312,7 +316,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
     }
 
     @Override
-    protected void onViewAction(int action, String handler, Object extra) {
+    public void onViewAction(int action, String handler, Object extra) {
         if (TextUtils.equals(mNewCallHandle, handler)) {
             switch (action) {
                 case VIEW_ACTION_OK:

@@ -146,4 +146,13 @@ public class ActivityUtils {
                 .replace(id, fragment, fragment.getClass().getSimpleName())
                 .commit();
     }
+
+    /**
+     * 用来加载fragment的方法。
+     */
+    public static void replaceFragmentNoAnimation(int id, FragmentManager fragmentManager, Fragment fragment) {
+        fragmentManager.beginTransaction()
+                .replace(id, fragment, fragment.getClass().getSimpleName())
+                .commit();
+    }
 }

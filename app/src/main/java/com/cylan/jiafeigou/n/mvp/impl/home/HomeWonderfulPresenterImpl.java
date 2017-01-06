@@ -14,6 +14,7 @@ import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.base.wrapper.BasePresenter;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.dp.DpUtils;
+import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeWonderfulContract;
@@ -23,6 +24,7 @@ import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.wechat.WechatShare;
 import com.cylan.jiafeigou.utils.ContextUtils;
+import com.cylan.jiafeigou.utils.PreferencesUtils;
 
 import java.io.IOException;
 import java.lang.ref.SoftReference;
@@ -72,7 +74,7 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
     }
 
     private boolean showGuidePage() {
-        return true;
+        return PreferencesUtils.getBoolean(JConstant.KEY_WONDERFUL_GUIDE, true);
     }
 
 
@@ -250,27 +252,36 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
     }
 
     @Override
-    protected void onResolveGetDataResponse(String identity, Integer key, ArrayList<JFGDPMsg> value) {
-        if (TextUtils.equals(identity, mUUID) && key == DpMsgMap.ID_602_ACCOUNT_WONDERFUL_MSG) {
-            List<MediaBean> results = new ArrayList<>();
-            MediaBean bean;
-            for (JFGDPMsg msg : value) {
-                try {
-                    bean = DpUtils.unpackData(msg.packValue, MediaBean.class);
-                    if (bean != null && !TextUtils.isEmpty(bean.cid)) {
-                        bean.version = msg.version;
-                        results.add(bean);
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
+    public void removeGuideAnymore() {
+        PreferencesUtils.putBoolean(JConstant.KEY_WONDERFUL_GUIDE, false);
+        mView.chooseEmptyView(VIEW_TYPE_EMPTY);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        registerResponseParser(DpMsgMap.ID_602_ACCOUNT_WONDERFUL_MSG, this::onWonderfulAccountRsp);
+    }
+
+    private void onWonderfulAccountRsp(String identity, JFGDPMsg... value) {
+        List<MediaBean> results = new ArrayList<>();
+        MediaBean bean;
+        for (JFGDPMsg msg : value) {
+            try {
+                bean = DpUtils.unpackData(msg.packValue, MediaBean.class);
+                if (bean != null && !TextUtils.isEmpty(bean.cid)) {
+                    bean.version = msg.version;
+                    results.add(bean);
                 }
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-            updateCache(results);
-            List<Long> times = assembleTimeLineData(results);
-            mView.onMediaListRsp(results);
-            mView.onTimeLineDataUpdate(times);
-            mView.chooseEmptyView(results.size() > 0 ? VIEW_TYPE_HIDE : VIEW_TYPE_EMPTY);
         }
+        updateCache(results);
+        List<Long> times = assembleTimeLineData(results);
+        mView.onMediaListRsp(results);
+        mView.onTimeLineDataUpdate(times);
+        mView.chooseEmptyView(results.size() > 0 ? VIEW_TYPE_HIDE : VIEW_TYPE_EMPTY);
     }
 }
 
