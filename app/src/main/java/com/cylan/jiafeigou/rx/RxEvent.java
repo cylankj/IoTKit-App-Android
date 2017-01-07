@@ -651,4 +651,10 @@ public class RxEvent {
     public static class CallAnswerd {
 
     }
+
+    public static class GetDataResponse {
+        public long seq;
+        public long msgId;
+        public boolean changed;
+    }
 }

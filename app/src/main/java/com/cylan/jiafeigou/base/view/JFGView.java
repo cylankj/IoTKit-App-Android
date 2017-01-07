@@ -3,6 +3,8 @@ package com.cylan.jiafeigou.base.view;
 import android.app.Activity;
 import android.content.Context;
 
+import com.cylan.jiafeigou.dp.BaseValue;
+
 /**
  * Created by yzd on 16-12-28.
  */
@@ -29,6 +31,10 @@ public interface JFGView {
     void onScreenRotationChanged(boolean land);
 
     String onResolveViewLaunchType();
+
+    void onLoginStateChanged(boolean online);
+
+    void onDeviceSyncRsp(BaseValue response);
 
     void onViewAction(int action, String handler, Object extra);
 

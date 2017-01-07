@@ -5,17 +5,17 @@ import android.support.annotation.CallSuper;
 import android.support.v4.util.LongSparseArray;
 import android.text.TextUtils;
 
-import com.cylan.entity.jniCall.JFGDPMsg;
-import com.cylan.entity.jniCall.RobotoGetDataRsp;
 import com.cylan.jiafeigou.base.view.JFGPresenter;
-import com.cylan.jiafeigou.base.view.JFGSourceManager;
 import com.cylan.jiafeigou.base.view.JFGView;
+import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
+import com.cylan.jiafeigou.dp.BaseValue;
+import com.cylan.jiafeigou.dp.DataPointManager;
+import com.cylan.jiafeigou.dp.IDataPoint;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.utils.HandlerThreadUtils;
 
 import java.util.ArrayList;
-import java.util.Map;
 
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -31,10 +31,10 @@ public abstract class BasePresenter<V extends JFGView> implements JFGPresenter {
 
     protected String mUUID;
 
-    protected static JFGSourceManager sSourceManager;
+    protected IDataPoint mDataPointManager;
 
     protected CompositeSubscription mSubscriptions;
-    protected LongSparseArray<ResponseParser> mResponseParserMap = new LongSparseArray<>(32);
+    private LongSparseArray<ResponseParser> mResponseParserMap = new LongSparseArray<>(32);
 
     protected V mView;
     protected ArrayList<Long> mRequestSeqs = new ArrayList<>(32);
@@ -53,6 +53,7 @@ public abstract class BasePresenter<V extends JFGView> implements JFGPresenter {
 
     @Override
     public void onViewAttached(JFGView view) {
+        mDataPointManager = DataPointManager.getInstance();
         mView = (V) view;
     }
 
@@ -60,6 +61,7 @@ public abstract class BasePresenter<V extends JFGView> implements JFGPresenter {
     @CallSuper
     public void onStart() {
         onRegisterSubscription(mSubscriptions = new CompositeSubscription());
+        onRegisterResponseParser();
     }
 
     @CallSuper
@@ -68,6 +70,11 @@ public abstract class BasePresenter<V extends JFGView> implements JFGPresenter {
         subscriptions.add(getLoginStateSub());
         subscriptions.add(getQueryDataRspSub());
     }
+
+    @CallSuper
+    protected void onRegisterResponseParser() {
+    }
+
 
     /**
      * 如果不需要在onStop中进行反注册,可以重写这个方法,然后在自定义的地方反注册
@@ -86,47 +93,65 @@ public abstract class BasePresenter<V extends JFGView> implements JFGPresenter {
     @Override
     public void onViewDetached() {
         mView = null;
+        mDataPointManager = null;
     }
 
     protected void onLoginStateChanged(RxEvent.LoginRsp loginState) {
+        mView.onLoginStateChanged(loginState.state);
     }
 
-    protected Subscription getLoginStateSub() {
+
+    /**
+     * 监听登录状态的变化时基本的功能,所以提取到基类中
+     */
+    private Subscription getLoginStateSub() {
         return RxBus.getCacheInstance().toObservableSticky(RxEvent.LoginRsp.class)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(this::onLoginStateChanged, Throwable::printStackTrace);
     }
 
-
-    protected Subscription getDeviceSyncSub() {
-        return RxBus.getCacheInstance().toObservable(RxEvent.JFGRobotSyncData.class)
+    /**
+     * 监听设备同步消息是基本功能,所以提取到基类中
+     */
+    private Subscription getDeviceSyncSub() {
+        return RxBus.getCacheInstance().toObservable(RxEvent.DataPoolUpdate.class)
                 .subscribeOn(Schedulers.io())
-                .filter(robotSyncData -> TextUtils.equals(onResolveViewIdentify(), robotSyncData.identity))
+                .filter(update -> accept(update.uuid))
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(response -> {
-                    for (JFGDPMsg msg : response.dataList) {
-                        ResponseParser parser = mResponseParserMap.get(msg.id);
-                        if (parser != null) {
-                            parser.onParseResponse(response.identity, msg);
-                        }
+                .subscribe(update -> {
+                    //这里既直接通知View也通知presenter,因为presenter可能会对一些同步数据有特殊处理
+                    mView.onDeviceSyncRsp(update.value);
+                    ResponseParser parser = mResponseParserMap.get(update.id);
+                    if (parser != null) {
+                        parser.onParseResponse(update.value);
                     }
                 }, Throwable::printStackTrace);
     }
 
+    /**
+     * 监听请求数据的响应是基本功能,提取到基类
+     */
     private Subscription getQueryDataRspSub() {
-        return RxBus.getCacheInstance().toObservable(RobotoGetDataRsp.class)
+        return RxBus.getCacheInstance().toObservable(RxEvent.GetDataResponse.class)
                 .subscribeOn(Schedulers.io())
                 .filter(response -> mRequestSeqs.remove(response.seq))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(response -> {
-                    for (Map.Entry<Integer, ArrayList<JFGDPMsg>> entry : response.map.entrySet()) {
-                        ResponseParser parser = mResponseParserMap.get(entry.getKey());
-                        if (parser != null) {
-                            parser.onParseResponse(response.identity, (JFGDPMsg[]) entry.getValue().toArray());
+                            ResponseParser parser = mResponseParserMap.get(response.msgId);
+                            if (parser != null) {
+                                Object value = GlobalDataProxy.getInstance().getValue(mUUID, response.msgId);
+                                if (GlobalDataProxy.getInstance().isSetType(response.msgId)) {
+                                    ArrayList<BaseValue> set = (ArrayList<BaseValue>) value;
+                                    parser.onParseResponse(set.toArray(new BaseValue[set.size()]));
+                                } else {
+                                    parser.onParseResponse((BaseValue) value);
+                                }
+                                value = null;
+                            }
                         }
-                    }
-                }, Throwable::printStackTrace);
+
+                        , Throwable::printStackTrace);
     }
 
 
@@ -139,7 +164,10 @@ public abstract class BasePresenter<V extends JFGView> implements JFGPresenter {
 
     /**
      * 获取代表当前view的cid有些feature需要这个cid属性来进行过滤
+     *
+     * @deprecated 现在view会自动设置uuid到presenter中, 因此这个方法也就意义不大了
      */
+    @Deprecated
     protected String onResolveViewIdentify() {
         return "This Method Should Be Override If The View Should Use The Identify To Filter";
     }
@@ -162,6 +190,13 @@ public abstract class BasePresenter<V extends JFGView> implements JFGPresenter {
     }
 
     /**
+     * 用户判断当前uuid是否是自己需要的
+     */
+    protected boolean accept(String uuid) {
+        return TextUtils.equals(mUUID, uuid);
+    }
+
+    /**
      * 工作在非UI线程,可以简化rxjava的使用
      */
     protected void post(Runnable action) {
@@ -177,6 +212,10 @@ public abstract class BasePresenter<V extends JFGView> implements JFGPresenter {
     }
 
     public interface ResponseParser {
-        void onParseResponse(String identity, JFGDPMsg... value);
+        /**
+         * @param response 可能为BaseValue或者HashSet<BaseValue> 取决于消息类型,需要自己强转
+         */
+        void onParseResponse(BaseValue... response);
     }
+
 }

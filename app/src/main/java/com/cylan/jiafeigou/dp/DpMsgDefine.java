@@ -47,6 +47,34 @@ public class DpMsgDefine {
                     '}';
         }
 
+        public static String getNormalString(MsgNet net) {
+            String result = null;
+            switch (net.net) {
+                case -1:
+                    result = "绑定后的连接中";
+                    break;
+                case 0:
+                    result = "不在线";
+                    break;
+                case 1:
+                    result = net.ssid;
+                    break;
+                case 2:
+                    result = "2G网络";
+                    break;
+                case 3:
+                    result = "3G网络";
+                    break;
+                case 4:
+                    result = "4G网络";
+                    break;
+                case 5:
+                    result = "5G网络";
+                    break;
+            }
+            return result;
+        }
+
         @Override
         public int describeContents() {
             return 0;

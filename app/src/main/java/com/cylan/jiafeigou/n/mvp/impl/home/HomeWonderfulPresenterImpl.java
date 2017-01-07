@@ -12,11 +12,10 @@ import com.bumptech.glide.request.target.SimpleTarget;
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.base.wrapper.BasePresenter;
+import com.cylan.jiafeigou.dp.BaseValue;
 import com.cylan.jiafeigou.dp.DpMsgMap;
-import com.cylan.jiafeigou.dp.DpUtils;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
-import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeWonderfulContract;
 import com.cylan.jiafeigou.n.mvp.model.MediaBean;
 import com.cylan.jiafeigou.rx.RxBus;
@@ -26,7 +25,6 @@ import com.cylan.jiafeigou.support.wechat.WechatShare;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 
-import java.io.IOException;
 import java.lang.ref.SoftReference;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -176,7 +174,7 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
         JFGDPMsg msg = new JFGDPMsg(DpMsgMap.ID_602_ACCOUNT_WONDERFUL_MSG, version);
         params.add(msg);
         try {
-            long seq = JfgCmdInsurance.getCmd().robotGetData("", params, LOAD_PAGE_COUNT, asc, 0);
+            long seq = mDataPointManager.robotGetData("", params, LOAD_PAGE_COUNT, asc, 0);
             mRequestSeqs.add(seq);
         } catch (JfgException e) {
             e.printStackTrace();
@@ -258,23 +256,19 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
+    protected void onRegisterResponseParser() {
+        super.onRegisterResponseParser();
         registerResponseParser(DpMsgMap.ID_602_ACCOUNT_WONDERFUL_MSG, this::onWonderfulAccountRsp);
     }
 
-    private void onWonderfulAccountRsp(String identity, JFGDPMsg... value) {
+    private void onWonderfulAccountRsp(BaseValue... values) {
         List<MediaBean> results = new ArrayList<>();
         MediaBean bean;
-        for (JFGDPMsg msg : value) {
-            try {
-                bean = DpUtils.unpackData(msg.packValue, MediaBean.class);
-                if (bean != null && !TextUtils.isEmpty(bean.cid)) {
-                    bean.version = msg.version;
-                    results.add(bean);
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
+        for (BaseValue value : values) {
+            bean = value.getValue();
+            if (bean != null && !TextUtils.isEmpty(bean.cid)) {
+                bean.version = value.getVersion();
+                results.add(bean);
             }
         }
         updateCache(results);

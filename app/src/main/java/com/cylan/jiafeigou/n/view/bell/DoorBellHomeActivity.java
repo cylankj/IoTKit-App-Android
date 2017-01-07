@@ -21,6 +21,8 @@ import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.cylan.entity.JfgEnum;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.BaseFullScreenActivity;
+import com.cylan.jiafeigou.dp.BaseValue;
+import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.SpacesItemDecoration;
 import com.cylan.jiafeigou.n.mvp.contract.bell.DoorBellHomeContract;
@@ -41,6 +43,9 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+
+import static com.cylan.jiafeigou.dp.DpMsgMap.ID_201_NET;
+import static com.cylan.jiafeigou.dp.DpMsgMap.ID_206_BATTERY;
 
 public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeContract.Presenter>
         implements DoorBellHomeContract.View,
@@ -75,19 +80,17 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
      */
     private boolean endlessLoading = false;
     private boolean mIsLastLoadFinish = true;
+    private boolean isFirst = true;
 
     @Override
     protected void initViewAndListener() {
         initAdapter();
         initToolbar();
-        initTopBackground();
     }
-
 
     @Override
     protected void onResume() {
         super.onResume();
-
         if (bellCallRecordListAdapter.getList() == null || bellCallRecordListAdapter.getList().size() == 0) {
             startLoadData(false, 0);
         }
@@ -155,11 +158,6 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
         ViewUtils.setViewMarginStatusBar(fLayoutTopBarContainer);
     }
 
-    private void initTopBackground() {
-        cvBellHomeBackground.setState(mPresenter.getDeviceNetState());
-        cvBellHomeBackground.setActionInterface(this);
-    }
-
     @OnClick({R.id.tv_top_bar_left, R.id.imgv_toolbar_right})
     public void onElementClick(View v) {
         switch (v.getId()) {
@@ -217,13 +215,33 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
     }
 
     @Override
-    public void onLoginState(boolean state) {
-        if (!state) {
+    public void onLoginStateChanged(boolean online) {
+        if (!online) {
             LoadingDialog.dismissLoading(getSupportFragmentManager());
             Toast.makeText(this, "还未登录", Toast.LENGTH_SHORT).show();
         }
     }
 
+    @Override
+    public void onDeviceSyncRsp(BaseValue response) {
+        super.onDeviceSyncRsp(response);
+        switch ((int) response.getId()) {
+            case ID_206_BATTERY:
+                int battery = response.getValue();
+                if (battery < 20) {
+                    onBellBatteryDrainOut();
+                } else if (battery < 80 && isFirst) {
+                    onBellBatteryDrainOut();
+                    isFirst = false;
+                }
+                break;
+            case ID_201_NET:
+                DpMsgDefine.MsgNet net = response.getValue();
+                cvBellHomeBackground.setState(net.net);
+                cvBellHomeBackground.setActionInterface(this);
+                break;
+        }
+    }
 
     @Override
     public void onBellBatteryDrainOut() {
@@ -356,10 +374,5 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
             bellCallRecordListAdapter.setItemWidth(w);
             rvBellList.getViewTreeObserver().removeOnGlobalLayoutListener(this);
         }
-    }
-
-    @Override
-    public String onResolveViewLaunchType() {
-        return null;
     }
 }

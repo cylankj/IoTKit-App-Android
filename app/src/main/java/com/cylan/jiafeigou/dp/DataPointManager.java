@@ -125,6 +125,7 @@ public class DataPointManager implements IParser, IDataPoint {
         mapObject.put(505L, 505);
 //        mapObject.put(204L, 204);
         mapObject.put(222L, 222);
+        mapObject.put(401L, DpMsgMap.ID_401_BELL_CALL_STATE);//门铃呼叫历史记录,List类型
     }
 
     public static DataPointManager getInstance() {
@@ -217,14 +218,20 @@ public class DataPointManager implements IParser, IDataPoint {
                                     value.setVersion(dp.version);
                                     value.setValue(o);
                                     boolean changed = putValue(identity, value);
-                                    needNotify |= changed;
+                                    needNotify = changed;
                                     Log.d(TAG, "put: " + dp.id + " " + changed + " " + needNotify);
                                 } catch (Exception e) {
                                     AppLogger.i("dp is null: " + dp.id + ".." + e.getLocalizedMessage());
                                 }
                             }
+
+                            //每一个响应都需要被通知,即使没有数据变化,以免客户端无限等待
+                            RxEvent.GetDataResponse response = new RxEvent.GetDataResponse();
+                            response.changed = needNotify;
+                            response.seq = dpDataRsp.seq;
+                            response.msgId = entry.getKey();
+                            RxBus.getCacheInstance().post(response);
                         }
-//                        if (needNotify && querySeqMap.containsKey(dpDataRsp.seq)) {
                         if (needNotify || querySeqMap.containsKey(dpDataRsp.seq)) {
                             if (DEBUG) Log.e(TAG, "file update: " + dpDataRsp.seq);
                             querySeqMap.remove(dpDataRsp.seq);
