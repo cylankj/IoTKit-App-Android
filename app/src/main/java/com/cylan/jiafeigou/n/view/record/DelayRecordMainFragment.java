@@ -5,6 +5,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.PixelFormat;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.view.SurfaceHolder;
@@ -21,6 +22,7 @@ import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.wrapper.BaseFragment;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamDelayRecordContract;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.TimeUtils;
@@ -308,11 +310,11 @@ public class DelayRecordMainFragment extends BaseFragment<CamDelayRecordContract
 
     @Override
     public void onResolution(JFGMsgVideoResolution resolution) throws JfgException {
-//        if (mDelayRecordState != DELAY_RECORD_RECORDING)//just for test
-//            refreshLayout(DELAY_RECORD_PREVIEW);
-//        mRoundedTextureView.getHolder().setFormat(PixelFormat.TRANSPARENT);
-//        mRoundedTextureView.getHolder().setFormat(PixelFormat.OPAQUE);
-//        JfgCmdInsurance.getCmd().setRenderRemoteView(mRoundedTextureView);
+        if (mDelayRecordState != DELAY_RECORD_RECORDING)//just for test
+            refreshLayout(DELAY_RECORD_PREVIEW);
+        mRoundedTextureView.getHolder().setFormat(PixelFormat.TRANSPARENT);
+        mRoundedTextureView.getHolder().setFormat(PixelFormat.OPAQUE);
+        JfgCmdInsurance.getCmd().setRenderRemoteView(mRoundedTextureView);
     }
 
     @Override
@@ -355,8 +357,8 @@ public class DelayRecordMainFragment extends BaseFragment<CamDelayRecordContract
     private void refreshSurfaceView() {
         switch (mDelayRecordState) {
             case DELAY_RECORD_SETTING: {
-//                setDefaultPreview();
-//                showPreviewOrRecord();
+                setDefaultPreview();
+                showPreviewOrRecord();
             }
             break;
         }

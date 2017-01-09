@@ -134,7 +134,7 @@ public class CloudLiveDeviceInfoPresenterImp extends AbstractPresenter<CloudLive
                             } catch (JfgException e) {
                                 e.printStackTrace();
                             }
-                            AppLogger.i("update alias: " + new Gson().toJson(beanCloudInfo));
+                            AppLogger.i("setDevice alias: " + new Gson().toJson(beanCloudInfo));
                             return;
                         }
                         try {
@@ -145,7 +145,7 @@ public class CloudLiveDeviceInfoPresenterImp extends AbstractPresenter<CloudLive
                         } catch (JfgException e) {
                             e.printStackTrace();
                         }
-                        AppLogger.i("update camInfo: " + new Gson().toJson(beanCloudInfo));
+                        AppLogger.i("setDevice camInfo: " + new Gson().toJson(beanCloudInfo));
                     }
                 });
     }

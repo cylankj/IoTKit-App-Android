@@ -588,7 +588,7 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
 
 //            if (startingPosition != currentPosition) {
             // If startingPosition != currentPosition the user must have swiped to activity_cloud_live_mesg_video_talk_item
-            // different page in the DetailsActivity. We must update the shared element
+            // different page in the DetailsActivity. We must setDevice the shared element
             // so that the correct one falls into place.
             String newTransitionName = currentPosition + JConstant.KEY_SHARED_ELEMENT_TRANSITION_NAME_SUFFIX;
             SuperViewHolder holder = (SuperViewHolder) rVDevicesList.findViewHolderForAdapterPosition(currentPosition);

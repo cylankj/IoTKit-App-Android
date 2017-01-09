@@ -122,7 +122,7 @@ public class SqliteHelper {
     }
 
     /**
-     * Tries to insert the values. If it fails because the item already exists it tries to update
+     * Tries to insert the values. If it fails because the item already exists it tries to setDevice
      * the item.
      *
      * @param sqlDb                  database to work with. has to be writable
@@ -131,8 +131,8 @@ public class SqliteHelper {
      * @param selectionArgs          keys of the contentValues. there values will be used as the
      *                               selectionArgs for the param selection
      * @param values                 the values to insert
-     * @param excludeFieldsForUpdate contentValues keys which should be deleted before the update
-     * @return 1 for insert, 0 for update and -1 if something goes wrong
+     * @param excludeFieldsForUpdate contentValues keys which should be deleted before the setDevice
+     * @return 1 for insert, 0 for setDevice and -1 if something goes wrong
      */
     public static int insertOrUpdate(@Nullable SQLiteDatabase sqlDb, String table,
                                      @Nullable String selection, String[] selectionArgs, @NonNull final ContentValues values,
@@ -153,7 +153,7 @@ public class SqliteHelper {
             // success, inserted
             return 1;
         } else {
-            // update existing item
+            // setDevice existing item
 
             if (excludeFieldsForUpdate != null) {
                 for (String excludeField : excludeFieldsForUpdate) {
@@ -163,9 +163,9 @@ public class SqliteHelper {
 
             sqlDb.update(table, values, selection, selectionArgs);
 
-            // handling the update error is not needed. All possible errors are thrown by the
+            // handling the setDevice error is not needed. All possible errors are thrown by the
             // DatabaseUtils.queryNumEntries() (which uses the same params).
-            // a wrong selection results only in an insert. update will never called then.
+            // a wrong selection results only in an insert. setDevice will never called then.
             return 0;
         }
     }

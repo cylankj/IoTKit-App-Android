@@ -20,9 +20,9 @@ import com.google.gson.Gson;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
+import rx.subscriptions.CompositeSubscription;
 
 /**
  * Created by cylan-hunt on 16-8-3.
@@ -31,23 +31,24 @@ public class BellDetailSettingPresenterImpl extends BasePresenter<BellDetailCont
         implements BellDetailContract.Presenter {
     private BeanBellInfo beanBellInfo;
 
-    protected Subscription[] register() {
-        return new Subscription[]{
-                onBellInfoSubscription(),
-                onLoginStateSubscription()
-        };
+    @Override
+    protected void onRegisterSubscription(CompositeSubscription subscriptions) {
+        super.onRegisterSubscription(subscriptions);
+        subscriptions.add(onBellInfoSubscription());
+    }
+
+    @Override
+    public void onSetContentView() {
+        super.onSetContentView();
+        mView.onDeviceSyncRsp(mSourceManager.getJFGDevice(mUUID));
+
     }
 
     private Subscription onBellInfoSubscription() {
         //查询设备列表
         return RxBus.getCacheInstance().toObservableSticky(RxUiEvent.BulkDeviceListRsp.class)
                 .subscribeOn(Schedulers.computation())
-                .filter(new Func1<RxUiEvent.BulkDeviceListRsp, Boolean>() {
-                    @Override
-                    public Boolean call(RxUiEvent.BulkDeviceListRsp list) {
-                        return list != null && list.allDevices != null;
-                    }
-                })
+                .filter(list -> list != null && list.allDevices != null)
                 .flatMap(new Func1<RxUiEvent.BulkDeviceListRsp, Observable<DpMsgDefine.DpWrap>>() {
                     @Override
                     public Observable<DpMsgDefine.DpWrap> call(RxUiEvent.BulkDeviceListRsp list) {
@@ -61,12 +62,7 @@ public class BellDetailSettingPresenterImpl extends BasePresenter<BellDetailCont
                         return null;
                     }
                 })
-                .filter(new Func1<DpMsgDefine.DpWrap, Boolean>() {
-                    @Override
-                    public Boolean call(DpMsgDefine.DpWrap dpWrap) {
-                        return dpWrap != null && dpWrap.baseDpDevice != null;
-                    }
-                })
+                .filter(dpWrap -> dpWrap != null && dpWrap.baseDpDevice != null)
                 .flatMap(new Func1<DpMsgDefine.DpWrap, Observable<BeanBellInfo>>() {
                     @Override
                     public Observable<BeanBellInfo> call(DpMsgDefine.DpWrap dpWrap) {
@@ -78,27 +74,9 @@ public class BellDetailSettingPresenterImpl extends BasePresenter<BellDetailCont
                     }
                 })
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<BeanBellInfo>() {
-                    @Override
-                    public void call(BeanBellInfo beanBellInfo) {
-                        //刷新
-                        mView.onSettingInfoRsp(beanBellInfo);
-                    }
-                });
-    }
-
-    /**
-     * 查询登陆状态
-     *
-     * @return
-     */
-    private Subscription onLoginStateSubscription() {
-        return RxBus.getCacheInstance().toObservable(RxEvent.LoginRsp.class)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<RxEvent.LoginRsp>() {
-                    @Override
-                    public void call(RxEvent.LoginRsp o) {
-                    }
+                .subscribe(beanBellInfo1 -> {
+                    //刷新
+                    mView.onSettingInfoRsp(beanBellInfo1);
                 });
     }
 
@@ -112,38 +90,35 @@ public class BellDetailSettingPresenterImpl extends BasePresenter<BellDetailCont
         this.beanBellInfo = info;
         Observable.just(new Pair<>(info, id))
                 .subscribeOn(Schedulers.io())
-                .subscribe(new Action1<Pair<BeanBellInfo, Integer>>() {
-                    @Override
-                    public void call(Pair<BeanBellInfo, Integer> beanCamInfoIntegerPair) {
-                        int id = beanCamInfoIntegerPair.second;
-                        RxEvent.JFGAttributeUpdate update = new RxEvent.JFGAttributeUpdate();
-                        update.uuid = beanBellInfo.deviceBase.uuid;
-                        if (id == DpMsgMap.ID_2000003_BASE_ALIAS)
-                            update.o = beanCamInfoIntegerPair.first.deviceBase.alias;
-                        else update.o = beanCamInfoIntegerPair.first.getObject(id);
-                        update.msgId = id;
-                        update.version = System.currentTimeMillis();
-                        RxBus.getCacheInstance().post(update);
-                        if (id == DpMsgMap.ID_2000003_BASE_ALIAS) {
-                            try {
-                                JfgCmdInsurance.getCmd().setAliasByCid(beanBellInfo.deviceBase.uuid,
-                                        beanBellInfo.deviceBase.alias);
-                            } catch (JfgException e) {
-                                e.printStackTrace();
-                            }
-                            AppLogger.i("update alias: " + new Gson().toJson(beanBellInfo));
-                            return;
-                        }
+                .subscribe(beanCamInfoIntegerPair -> {
+                    int id1 = beanCamInfoIntegerPair.second;
+                    RxEvent.JFGAttributeUpdate update = new RxEvent.JFGAttributeUpdate();
+                    update.uuid = beanBellInfo.deviceBase.uuid;
+                    if (id1 == DpMsgMap.ID_2000003_BASE_ALIAS)
+                        update.o = beanCamInfoIntegerPair.first.deviceBase.alias;
+                    else update.o = beanCamInfoIntegerPair.first.getObject(id1);
+                    update.msgId = id1;
+                    update.version = System.currentTimeMillis();
+                    RxBus.getCacheInstance().post(update);
+                    if (id1 == DpMsgMap.ID_2000003_BASE_ALIAS) {
                         try {
-                            JfgCmdInsurance.getCmd().robotSetData(beanBellInfo.deviceBase.uuid,
-                                    DpUtils.getList(id,
-                                            beanCamInfoIntegerPair.first.getByte(id)
-                                            , System.currentTimeMillis()));
+                            JfgCmdInsurance.getCmd().setAliasByCid(beanBellInfo.deviceBase.uuid,
+                                    beanBellInfo.deviceBase.alias);
                         } catch (JfgException e) {
                             e.printStackTrace();
                         }
-                        AppLogger.i("update camInfo: " + new Gson().toJson(beanBellInfo));
+                        AppLogger.i("setDevice alias: " + new Gson().toJson(beanBellInfo));
+                        return;
                     }
+                    try {
+                        JfgCmdInsurance.getCmd().robotSetData(beanBellInfo.deviceBase.uuid,
+                                DpUtils.getList(id1,
+                                        beanCamInfoIntegerPair.first.getByte(id1)
+                                        , System.currentTimeMillis()));
+                    } catch (JfgException e) {
+                        e.printStackTrace();
+                    }
+                    AppLogger.i("setDevice camInfo: " + new Gson().toJson(beanBellInfo));
                 });
     }
 

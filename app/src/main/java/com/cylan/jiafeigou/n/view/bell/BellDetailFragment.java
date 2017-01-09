@@ -9,6 +9,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.base.module.BellDevice;
+import com.cylan.jiafeigou.base.module.JFGDevice;
 import com.cylan.jiafeigou.base.wrapper.BaseFragment;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.n.mvp.contract.bell.BellDetailContract;
@@ -139,5 +141,10 @@ public class BellDetailFragment extends BaseFragment<BellDetailContract.Presente
     @Override
     public String onResolveViewLaunchType() {
         return null;
+    }
+
+    @Override
+    public void onDeviceSyncRsp(JFGDevice response) {
+        BellDevice device = (BellDevice) response;
     }
 }

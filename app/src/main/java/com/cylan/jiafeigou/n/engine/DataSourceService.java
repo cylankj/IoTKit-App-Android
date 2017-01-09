@@ -35,6 +35,7 @@ import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JResultEvent;
 import com.cylan.jiafeigou.misc.efamily.MsgpackMsg;
+import com.cylan.jiafeigou.provider.DataSourceManager;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -129,6 +130,8 @@ public class DataSourceService extends Service implements AppCallBack {
         if (jfgDevices != null) {
             RxBus.getCacheInstance().postSticky(new RxEvent.DeviceList(Arrays.asList(jfgDevices)));
         }
+
+        DataSourceManager.getInstance().cacheJFGDevices(jfgDevices);//缓存设备
     }
 
     @Override
@@ -136,6 +139,8 @@ public class DataSourceService extends Service implements AppCallBack {
         GlobalDataProxy.getInstance().setJfgAccount(jfgAccount);
         RxBus.getCacheInstance().postSticky(jfgAccount);
         RxBus.getCacheInstance().postSticky(new RxEvent.GetUserInfo(jfgAccount));
+
+        DataSourceManager.getInstance().cacheJFGAccount(jfgAccount);//缓存账号信息
     }
 
     @Override
@@ -198,6 +203,7 @@ public class DataSourceService extends Service implements AppCallBack {
     public void OnRobotGetDataRsp(RobotoGetDataRsp robotoGetDataRsp) {
         AppLogger.d("OnLocalMessage :" + new Gson().toJson(robotoGetDataRsp));
         RxBus.getCacheInstance().post(robotoGetDataRsp);
+        DataSourceManager.getInstance().cacheRobotoGetDataRsp(robotoGetDataRsp);
     }
 
     @Override
@@ -225,6 +231,8 @@ public class DataSourceService extends Service implements AppCallBack {
         AppLogger.d("OnlineStatus :" + b);
         GlobalDataProxy.getInstance().setOnline(b);
         RxBus.getCacheInstance().post(new RxEvent.LoginRsp(b));
+
+        DataSourceManager.getInstance().setOnline(b);//设置用户在线信息
     }
 
     @Override
@@ -309,6 +317,8 @@ public class DataSourceService extends Service implements AppCallBack {
         data.identity = s;
         data.dataList = arrayList;
         RxBus.getCacheInstance().post(data);
+
+        DataSourceManager.getInstance().cacheRobotoSyncData(b, s, arrayList);
     }
 
     @Override

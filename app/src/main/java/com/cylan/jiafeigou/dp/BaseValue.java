@@ -45,8 +45,8 @@ public class BaseValue implements Comparable<BaseValue> {
         return version;
     }
 
-    public Object getValue() {
-        return value;
+    public <T> T getValue() {
+        return (T) value;
     }
 
     public void setId(long id) {
@@ -64,6 +64,14 @@ public class BaseValue implements Comparable<BaseValue> {
     @Override
     public int compareTo(BaseValue another) {
         return version > another.version ? -1 : 1;//降序
+    }
+
+
+    /**
+     *
+     */
+    public static BaseValue getEmpty() {
+        return null;
     }
 
 }

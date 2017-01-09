@@ -21,6 +21,8 @@ import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.cylan.entity.JfgEnum;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.BaseFullScreenActivity;
+import com.cylan.jiafeigou.base.module.BellDevice;
+import com.cylan.jiafeigou.base.module.JFGDevice;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.SpacesItemDecoration;
 import com.cylan.jiafeigou.n.mvp.contract.bell.DoorBellHomeContract;
@@ -75,19 +77,17 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
      */
     private boolean endlessLoading = false;
     private boolean mIsLastLoadFinish = true;
+    private boolean isFirst = true;
 
     @Override
     protected void initViewAndListener() {
         initAdapter();
         initToolbar();
-        initTopBackground();
     }
-
 
     @Override
     protected void onResume() {
         super.onResume();
-
         if (bellCallRecordListAdapter.getList() == null || bellCallRecordListAdapter.getList().size() == 0) {
             startLoadData(false, 0);
         }
@@ -155,11 +155,6 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
         ViewUtils.setViewMarginStatusBar(fLayoutTopBarContainer);
     }
 
-    private void initTopBackground() {
-        cvBellHomeBackground.setState(mPresenter.getDeviceNetState());
-        cvBellHomeBackground.setActionInterface(this);
-    }
-
     @OnClick({R.id.tv_top_bar_left, R.id.imgv_toolbar_right})
     public void onElementClick(View v) {
         switch (v.getId()) {
@@ -217,13 +212,28 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
     }
 
     @Override
-    public void onLoginState(boolean state) {
-        if (!state) {
+    public void onLoginStateChanged(boolean online) {
+        if (!online) {
             LoadingDialog.dismissLoading(getSupportFragmentManager());
             Toast.makeText(this, "还未登录", Toast.LENGTH_SHORT).show();
         }
     }
 
+    @Override
+    public void onDeviceSyncRsp(JFGDevice response) {
+        super.onDeviceSyncRsp(response);
+        BellDevice device = (BellDevice) response;
+        int battery = device.battery.value;
+        if (battery < 20) {
+            onBellBatteryDrainOut();
+        } else if (battery < 80 && isFirst) {
+            onBellBatteryDrainOut();
+            isFirst = false;
+        }
+        cvBellHomeBackground.setState(device.net.net);
+        cvBellHomeBackground.setActionInterface(this);
+
+    }
 
     @Override
     public void onBellBatteryDrainOut() {
@@ -264,7 +274,7 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
         if (bellCallRecordListAdapter.getMode() == 0) {
             AppLogger.d("enter edition mode");
             bellCallRecordListAdapter.setMode(1);
-//            bellCallRecordListAdapter.reverseItemSelectedState(position);
+            bellCallRecordListAdapter.reverseItemSelectedState(position);
             tvBellHomeListSelectAll.setText(getString(R.string.SELECT_ALL));
             showEditBar(true);
         }
@@ -356,10 +366,5 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
             bellCallRecordListAdapter.setItemWidth(w);
             rvBellList.getViewTreeObserver().removeOnGlobalLayoutListener(this);
         }
-    }
-
-    @Override
-    public String onResolveViewLaunchType() {
-        return null;
     }
 }

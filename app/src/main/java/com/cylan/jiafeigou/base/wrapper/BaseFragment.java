@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.base.module.JFGDevice;
 import com.cylan.jiafeigou.base.view.JFGPresenter;
 import com.cylan.jiafeigou.base.view.JFGView;
 import com.cylan.jiafeigou.misc.JConstant;
@@ -42,8 +43,12 @@ public abstract class BaseFragment<T extends JFGPresenter> extends Fragment impl
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (mPresenter == null) {
-            mPresenter = onCreatePresenter();
+        if (getArguments() != null) {
+            mUUID = getArguments().getString(JConstant.KEY_DEVICE_ITEM_UUID);//在基類裏獲取uuid,便於統一管理
+        }
+        mPresenter = onCreatePresenter();
+        if (mPresenter != null) {
+            mPresenter.onSetViewUUID(mUUID);
         }
     }
 
@@ -58,12 +63,8 @@ public abstract class BaseFragment<T extends JFGPresenter> extends Fragment impl
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        if (getArguments() != null) {
-            mUUID = getArguments().getString(JConstant.KEY_DEVICE_ITEM_UUID);//在基類裏獲取uuid,便於統一管理
-        }
-        if (mPresenter != null) {
-            mPresenter.onSetViewUUID(mUUID);
-        }
+
+
         initViewAndListener();
     }
 
@@ -93,6 +94,9 @@ public abstract class BaseFragment<T extends JFGPresenter> extends Fragment impl
         }
     }
 
+    @Override
+    public void onDeviceSyncRsp(JFGDevice response) {
+    }
 
     protected abstract T onCreatePresenter();
 
@@ -150,6 +154,10 @@ public abstract class BaseFragment<T extends JFGPresenter> extends Fragment impl
         return getArguments().getString(JConstant.VIEW_CALL_WAY);
     }
 
+    @Override
+    public void onLoginStateChanged(boolean online) {
+        showToast("还未登录");
+    }
 
     /**
      * 一个回调接口,可以向view中传递数据

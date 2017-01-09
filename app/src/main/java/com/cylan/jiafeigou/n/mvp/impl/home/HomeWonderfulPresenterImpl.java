@@ -12,8 +12,8 @@ import com.bumptech.glide.request.target.SimpleTarget;
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.base.wrapper.BasePresenter;
+import com.cylan.jiafeigou.dp.DP;
 import com.cylan.jiafeigou.dp.DpMsgMap;
-import com.cylan.jiafeigou.dp.DpUtils;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
@@ -26,7 +26,6 @@ import com.cylan.jiafeigou.support.wechat.WechatShare;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 
-import java.io.IOException;
 import java.lang.ref.SoftReference;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -258,23 +257,18 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
+    protected void onRegisterResponseParser() {
+        super.onRegisterResponseParser();
         registerResponseParser(DpMsgMap.ID_602_ACCOUNT_WONDERFUL_MSG, this::onWonderfulAccountRsp);
     }
 
-    private void onWonderfulAccountRsp(String identity, JFGDPMsg... value) {
+    private void onWonderfulAccountRsp(DP... values) {
         List<MediaBean> results = new ArrayList<>();
         MediaBean bean;
-        for (JFGDPMsg msg : value) {
-            try {
-                bean = DpUtils.unpackData(msg.packValue, MediaBean.class);
-                if (bean != null && !TextUtils.isEmpty(bean.cid)) {
-                    bean.version = msg.version;
-                    results.add(bean);
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
+        for (MediaBean value : (MediaBean[]) values) {
+            bean = value;
+            if (bean != null && !TextUtils.isEmpty(bean.cid)) {
+                results.add(bean);
             }
         }
         updateCache(results);

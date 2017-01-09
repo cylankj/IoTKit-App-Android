@@ -339,7 +339,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
             onRefreshFinish();
             Toast.makeText(getContext(), "还没登陆", Toast.LENGTH_SHORT).show();
         } else {
-            //update online view
+            //setDevice online view
         }
     }
 

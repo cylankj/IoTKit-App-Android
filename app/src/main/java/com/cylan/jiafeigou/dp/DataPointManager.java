@@ -19,10 +19,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 
 import rx.Observable;
 import rx.Subscription;
@@ -49,9 +49,9 @@ public class DataPointManager implements IParser, IDataPoint {
      */
     private HashMap<String, BaseValue> bundleMap = new HashMap<>();
     /**
-     * 可以是HashSet<BaseValue>,
+     * 可以是HashSet<BaseValue>,HashSet是无序的
      */
-    private HashMap<String, HashSet<BaseValue>> bundleSetMap = new HashMap<>();
+    private HashMap<String, TreeSet<BaseValue>> bundleSetMap = new HashMap<>();
     //硬编码,注册list类型的id
     private static final HashMap<Long, Integer> mapObject = new HashMap<>();
 
@@ -125,6 +125,7 @@ public class DataPointManager implements IParser, IDataPoint {
         mapObject.put(505L, 505);
 //        mapObject.put(204L, 204);
         mapObject.put(222L, 222);
+        mapObject.put(401L, DpMsgMap.ID_401_BELL_CALL_STATE);//门铃呼叫历史记录,List类型
     }
 
     public static DataPointManager getInstance() {
@@ -147,20 +148,20 @@ public class DataPointManager implements IParser, IDataPoint {
      * @param baseValue
      * @return
      */
-    private boolean putHashSetValue(String uuid, BaseValue baseValue) {
+    private boolean putSetValue(String uuid, BaseValue baseValue) {
         boolean isSet = isSetType(baseValue.getId());
         if (!isSet) {
             AppLogger.e("you go the wrong way: " + baseValue.getId());
             return false;
         }
-        HashSet<BaseValue> set = bundleSetMap.get(uuid + baseValue.getId());
+        TreeSet<BaseValue> set = bundleSetMap.get(uuid + baseValue.getId());
         if (set == null) {
-            set = new HashSet<>();
+            set = new TreeSet<>();
         }
         if (set.contains(baseValue)) return false;//已经包含.id和version相同
         set.add(baseValue);
         bundleSetMap.put(uuid + baseValue.getId(), set);
-        if (DEBUG) Log.d(TAG, "putHashSetValue: " + uuid + " " + baseValue);
+        if (DEBUG) Log.d(TAG, "putSetValue: " + uuid + " " + baseValue);
         return true;
     }
 
@@ -170,7 +171,7 @@ public class DataPointManager implements IParser, IDataPoint {
             boolean isSetType = isSetType(baseValue.getId());
             if (DEBUG) Log.d(TAG, "isSetType: " + isSetType + " " + baseValue);
             if (isSetType) {
-                return putHashSetValue(uuid, baseValue);
+                return putSetValue(uuid, baseValue);
             } else {
                 BaseValue o = bundleMap.get(uuid + baseValue.getId());
                 if (o != null) {
@@ -223,10 +224,16 @@ public class DataPointManager implements IParser, IDataPoint {
                                     AppLogger.i("dp is null: " + dp.id + ".." + e.getLocalizedMessage());
                                 }
                             }
+
+//                            //每一个响应都需要被通知,即使没有数据变化,以免客户端无限等待
+//                            RxEvent.GetDataResponse response = new RxEvent.GetDataResponse();
+//                            response.changed = needNotify;
+//                            response.seq = dpDataRsp.seq;
+//                            response.msgId = entry.getKey();
+//                            RxBus.getCacheInstance().post(response);
                         }
-//                        if (needNotify && querySeqMap.containsKey(dpDataRsp.seq)) {
                         if (needNotify || querySeqMap.containsKey(dpDataRsp.seq)) {
-                            if (DEBUG) Log.e(TAG, "file update: " + dpDataRsp.seq);
+                            if (DEBUG) Log.e(TAG, "file setDevice: " + dpDataRsp.seq);
                             querySeqMap.remove(dpDataRsp.seq);
                             RxBus.getCacheInstance().post(dpDataRsp.seq);
                         }
@@ -286,6 +293,11 @@ public class DataPointManager implements IParser, IDataPoint {
     }
 
     @Override
+    public <T extends com.cylan.jiafeigou.base.module.JFGDevice> T fetchDevice(String uuid) {
+        return null;
+    }
+
+    @Override
     public ArrayList<JFGDevice> fetchAll(String account) {
         return null;
     }
@@ -302,15 +314,15 @@ public class DataPointManager implements IParser, IDataPoint {
             try {
                 byte[] data = null;
                 Object value = baseValue.getValue();
-                if (value != null && value instanceof BaseDataPoint)
-                    data = ((BaseDataPoint) value).toBytes();
+                if (value != null && value instanceof DP)
+                    data = ((DP) value).toBytes();
                 else data = DpUtils.pack(value);
                 JfgCmdInsurance.getCmd().robotSetData(uuid,
                         DpUtils.getList((int) baseValue.getId(),
                                 data,
                                 baseValue.getVersion()));
 
-                if (DEBUG && sync) Log.d(TAG, "update: " + value);
+                if (DEBUG && sync) Log.d(TAG, "setDevice: " + value);
             } catch (Exception e) {
                 AppLogger.e("" + e.getLocalizedMessage());
             }
@@ -351,7 +363,7 @@ public class DataPointManager implements IParser, IDataPoint {
     public Object delete(String uuid, long id, long version) {
         boolean isSet = isSetType(id);
         if (isSet) {
-            HashSet<BaseValue> set = bundleSetMap.get(uuid + id);
+            TreeSet<BaseValue> set = bundleSetMap.get(uuid + id);
             if (set != null) {
                 BaseValue value = new BaseValue();
                 value.setId(id);
@@ -381,7 +393,7 @@ public class DataPointManager implements IParser, IDataPoint {
         if (!topOne) return fetchLocal(uuid, id);
         boolean isArray = mapObject.containsKey(id);
         if (isArray) {
-            HashSet<BaseValue> set = bundleSetMap.get(uuid + id);
+            TreeSet<BaseValue> set = bundleSetMap.get(uuid + id);
             if (set == null || set.size() == 0)
                 return null;
             else {
@@ -418,7 +430,7 @@ public class DataPointManager implements IParser, IDataPoint {
     @Override
     public ArrayList<BaseValue> fetchLocalList(String uuid, long id) {
         try {
-            HashSet<BaseValue> set = bundleSetMap.get(uuid + id);
+            TreeSet<BaseValue> set = bundleSetMap.get(uuid + id);
             if (set != null) {
                 return new ArrayList<>(set);
             }

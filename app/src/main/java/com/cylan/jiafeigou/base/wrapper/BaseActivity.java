@@ -3,6 +3,7 @@ package com.cylan.jiafeigou.base.wrapper;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -13,6 +14,7 @@ import android.text.TextUtils;
 import android.widget.Toast;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.base.module.JFGDevice;
 import com.cylan.jiafeigou.base.view.JFGPresenter;
 import com.cylan.jiafeigou.base.view.JFGView;
 import com.cylan.jiafeigou.misc.JConstant;
@@ -51,14 +53,23 @@ public abstract class BaseActivity<P extends JFGPresenter> extends AppCompatActi
         setContentView(getContentViewID());
         ButterKnife.bind(this);
         mUUID = getIntent().getStringExtra(JConstant.KEY_DEVICE_ITEM_UUID);
+        mPresenter = onCreatePresenter();
         if (TextUtils.isEmpty(mUUID)) {
             mUUID = "500000000247";
         }
-        if (mPresenter == null) {
-            mPresenter = onCreatePresenter();
+        if (mPresenter != null) {
             mPresenter.onSetViewUUID(mUUID);
         }
         initViewAndListener();
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        mUUID = getIntent().getStringExtra(JConstant.KEY_DEVICE_ITEM_UUID);
+        if (mPresenter != null) {
+            mPresenter.onSetViewUUID(mUUID);
+        }
     }
 
     @Override
@@ -125,6 +136,11 @@ public abstract class BaseActivity<P extends JFGPresenter> extends AppCompatActi
         return handle;
     }
 
+    @Override
+    public void onLoginStateChanged(boolean online) {
+        showToast("还未登录");
+    }
+
     /**
      * 默认是将viewAction转发到presenter中进行处理,子类也可以复写此方法自己处理
      */
@@ -173,6 +189,11 @@ public abstract class BaseActivity<P extends JFGPresenter> extends AppCompatActi
         } else {
             showToast(getString(R.string.click_back_again_exit));
         }
+    }
+
+    @Override
+    public void onDeviceSyncRsp(JFGDevice response) {
+        //do nothing
     }
 
     @Override

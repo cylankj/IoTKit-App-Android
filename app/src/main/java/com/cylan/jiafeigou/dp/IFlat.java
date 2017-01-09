@@ -1,5 +1,6 @@
 package com.cylan.jiafeigou.dp;
 
+import com.cylan.jiafeigou.base.module.JFGDevice;
 import com.cylan.jiafeigou.n.mvp.model.BaseBean;
 
 import java.util.ArrayList;
@@ -19,6 +20,8 @@ public interface IFlat {
     void cache(String account, String uuid);
 
     void cache(String account, BaseBean dpDevice);
+
+    void cacheJFGDevice(String account, JFGDevice device);
 
     /**
      * 缓存报警消息
@@ -58,12 +61,17 @@ public interface IFlat {
      */
     ArrayList<String> getUuidList(String account);
 
-
     DpMsgDefine.DpWrap removeMsg(String account, String uuid);
 
+    DpMsgDefine.JFGDeviceWrap removeJFGMsg(String account, String uuid);
+
     DpMsgDefine.DpWrap getDevice(String account, String uuid);
+
+    DpMsgDefine.JFGDeviceWrap getJFGDevice(String account, String uuid);
 
     void cache(String account, String uuid, DpMsgDefine.DpMsg msg);
 
     ArrayList<DpMsgDefine.DpWrap> getAllDevices(String account);
+
+    ArrayList<DpMsgDefine.JFGDeviceWrap> getAllJFGDevices(String account);
 }

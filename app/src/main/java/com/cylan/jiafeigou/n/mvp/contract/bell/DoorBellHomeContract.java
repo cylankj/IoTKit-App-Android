@@ -15,8 +15,6 @@ public interface DoorBellHomeContract {
 
     interface View extends JFGView {
 
-        void onLoginState(boolean state);
-
         /**
          * 电量提醒
          */
@@ -29,8 +27,6 @@ public interface DoorBellHomeContract {
     interface Presenter extends JFGPresenter {
 
         void fetchBellRecordsList(boolean asc, long time);
-
-        int getDeviceNetState();
 
         void deleteBellCallRecord(List<BellCallRecordBean> list);
     }

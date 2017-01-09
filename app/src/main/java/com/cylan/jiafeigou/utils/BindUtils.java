@@ -181,7 +181,7 @@ public class BindUtils {
         return Integer.signum(vals1.length - vals2.length);
     }
 
-    //update by hunt 2016-08-05
+    //setDevice by hunt 2016-08-05
     public static boolean isUcos(String cid) {
         //
         if (!TextUtils.isEmpty(cid) && cid.length() == 12 && cid.startsWith("6001"))

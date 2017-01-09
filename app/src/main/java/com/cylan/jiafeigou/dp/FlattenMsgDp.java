@@ -3,6 +3,7 @@ package com.cylan.jiafeigou.dp;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.cylan.jiafeigou.base.module.JFGDevice;
 import com.cylan.jiafeigou.n.mvp.model.BaseBean;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.google.gson.Gson;
@@ -28,6 +29,8 @@ public class FlattenMsgDp implements IFlat {
      * <account+uuid,基本信息></>
      */
     private Map<String, BaseBean> baseDpDeviceMap = new HashMap<>();
+
+    private Map<String, JFGDevice> mBaseDeviceMap = new HashMap<>();
     /**
      * account+uuid,msgId,Object
      */
@@ -65,6 +68,21 @@ public class FlattenMsgDp implements IFlat {
     }
 
     @Override
+    public void cacheJFGDevice(String account, JFGDevice device) {
+        //某个账号下所有的uuid
+        ArrayList<String> uuidList = accountUUidMap.get(account);
+        if (uuidList == null) {
+            uuidList = new ArrayList<>();
+        }
+        if (!uuidList.contains(device.uuid)) {
+            uuidList.add(device.uuid);
+            accountUUidMap.put(account, uuidList);
+        }
+        mBaseDeviceMap.put(account + device.uuid, device);
+    }
+
+
+    @Override
     public void cache(String account, String uuid, ArrayList<DpMsgDefine.DpMsg> jfgdpMsgs) {
         exception(account, uuid);
         alarmMsg.put(account + uuid, jfgdpMsgs);
@@ -81,6 +99,7 @@ public class FlattenMsgDp implements IFlat {
             for (String uuid : uuidList) {
                 simpleMap.remove(account + uuid);
                 baseDpDeviceMap.remove(account + uuid);
+                mBaseDeviceMap.remove(account + uuid);
                 alarmMsg.remove(account + uuid);
             }
         }
@@ -92,6 +111,7 @@ public class FlattenMsgDp implements IFlat {
         exception(account, uuid);
         simpleMap.remove(account + uuid);
         baseDpDeviceMap.remove(account + uuid);
+        mBaseDeviceMap.remove(account + uuid);
         alarmMsg.remove(account + uuid);
     }
 
@@ -99,6 +119,7 @@ public class FlattenMsgDp implements IFlat {
     public void clean() {
         accountUUidMap.clear();
         baseDpDeviceMap.clear();
+        mBaseDeviceMap.clear();
         simpleMap.clear();
         alarmMsg.clear();
     }
@@ -116,7 +137,7 @@ public class FlattenMsgDp implements IFlat {
         } else {
             list.add(msg);
         }
-        Log.d("FlattenMsgDp", "update?: " + (index != -1) + "," + new Gson().toJson(msg));
+        Log.d("FlattenMsgDp", "setDevice?: " + (index != -1) + "," + new Gson().toJson(msg));
         simpleMap.put(account + uuid, list);
     }
 
@@ -133,6 +154,11 @@ public class FlattenMsgDp implements IFlat {
     }
 
     @Override
+    public DpMsgDefine.JFGDeviceWrap removeJFGMsg(String account, String uuid) {
+        return null;
+    }
+
+    @Override
     public DpMsgDefine.DpWrap removeMsg(String account, String uuid) {
         return null;
     }
@@ -145,6 +171,17 @@ public class FlattenMsgDp implements IFlat {
         ArrayList<DpMsgDefine.DpMsg> dpMsgList = simpleMap.get(account + uuid);
         DpMsgDefine.DpWrap wrap = new DpMsgDefine.DpWrap();
         wrap.baseDpDevice = baseDpDevice;
+        wrap.baseDpMsgList = dpMsgList;
+        return wrap;
+    }
+
+    @Override
+    public DpMsgDefine.JFGDeviceWrap getJFGDevice(String account, String uuid) {
+        exception(account, uuid);
+        JFGDevice device = mBaseDeviceMap.get(account + uuid);
+        ArrayList<DpMsgDefine.DpMsg> dpMsgList = simpleMap.get(account + uuid);
+        DpMsgDefine.JFGDeviceWrap wrap = new DpMsgDefine.JFGDeviceWrap();
+        wrap.device = device;
         wrap.baseDpMsgList = dpMsgList;
         return wrap;
     }
@@ -177,6 +214,24 @@ public class FlattenMsgDp implements IFlat {
         }
         for (String uuid : uuidList) {
             result.add(getDevice(account, uuid));
+        }
+        return result;
+    }
+
+    @Override
+    public ArrayList<DpMsgDefine.JFGDeviceWrap> getAllJFGDevices(String account) {
+        ArrayList<DpMsgDefine.JFGDeviceWrap> result = new ArrayList<>();
+        if (TextUtils.isEmpty(account)) {
+            AppLogger.i("account is null");
+            return result;
+        }
+        ArrayList<String> uuidList = accountUUidMap.get(account);
+        if (uuidList == null) {
+            AppLogger.e("uuidList is null: " + account);
+            return result;
+        }
+        for (String uuid : uuidList) {
+            result.add(getJFGDevice(account, uuid));
         }
         return result;
     }

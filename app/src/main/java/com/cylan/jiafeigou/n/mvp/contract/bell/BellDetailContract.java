@@ -13,8 +13,6 @@ public interface BellDetailContract {
     interface View extends JFGView {
 
         void onSettingInfoRsp(BeanBellInfo bellInfoBean);
-
-
     }
 
     interface Presenter extends JFGPresenter {
