@@ -201,6 +201,11 @@ public class DataSourceService extends Service implements AppCallBack {
     }
 
     @Override
+    public void OnRobotGetDataExRsp(long l, String s, ArrayList<JFGDPMsg> arrayList) {
+
+    }
+
+    @Override
     public void OnRobotSetDataRsp(long l, ArrayList<JFGDPMsgRet> arrayList) {
         AppLogger.d("OnRobotSetDataRsp :" + l + new Gson().toJson(arrayList));
     }
@@ -264,6 +269,9 @@ public class DataSourceService extends Service implements AppCallBack {
                 break;
             case JResultEvent.JFG_RESULT_SEND_FEEDBACK:
                 RxBus.getCacheInstance().post(new RxEvent.SendFeekBack(jfgResult));
+                break;
+            case JResultEvent.JFG_RESULT_DEL_FRIEND_ADD_REQ:
+                RxBus.getCacheInstance().post(new RxEvent.DeleteAddReqBack(jfgResult));
                 break;
         }
         if (login) {

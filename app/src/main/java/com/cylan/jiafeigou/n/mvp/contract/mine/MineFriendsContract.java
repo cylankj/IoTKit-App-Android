@@ -62,11 +62,14 @@ public interface MineFriendsContract {
 
         /**
          * desc：删除添加请求条目
-         *
-         * @param position
          * @param bean
          */
-        void addReqDeleteItem(int position, MineAddReqBean bean);
+        void addReqDeleteItem(MineAddReqBean bean);
+
+        /**
+         * desc：长按删除添加请求条目
+         */
+        void longClickDeleteItem(int code);
 
         /**
          * desc：好友列表添加条目
@@ -159,6 +162,17 @@ public interface MineFriendsContract {
          * 移除网络监听
          */
         void unregisterNetworkMonitor();
+
+        /**
+         * 删除好友请求
+         */
+        void deleteAddReq(String account);
+
+        /**
+         * 删除好友请求的回调
+         * @return
+         */
+        Subscription deleteAddReqBack();
 
     }
 

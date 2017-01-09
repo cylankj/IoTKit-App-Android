@@ -15,9 +15,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendsContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineFriendsPresenterImp;
 import com.cylan.jiafeigou.n.mvp.model.MineAddReqBean;
+import com.cylan.jiafeigou.n.mvp.model.MineMessageBean;
 import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
 import com.cylan.jiafeigou.n.view.adapter.AddRelativesAndFriendsAdapter;
 import com.cylan.jiafeigou.n.view.adapter.RelativesAndFriendsAdapter;
@@ -70,6 +72,7 @@ public class MineFriendsFragment extends Fragment implements MineFriendsContract
     private MineFriendAddReqDetailFragment addReqDetailFragment;
     private AddRelativesAndFriendsAdapter addReqListAdater;
     private RelativesAndFriendsAdapter friendsListAdapter;
+    private MineAddReqBean tempReqBean;
 
     public static MineFriendsFragment newInstance() {
         return new MineFriendsFragment();
@@ -145,16 +148,33 @@ public class MineFriendsFragment extends Fragment implements MineFriendsContract
 
     /**
      * 添加请求列表删除一个条目
-     *
-     * @param position
      * @param bean
      */
     @Override
-    public void addReqDeleteItem(int position, MineAddReqBean bean) {
+    public void addReqDeleteItem(MineAddReqBean bean) {
         addReqListAdater.remove(bean);
         addReqListAdater.notifyDataSetHasChanged();
         if (addReqListAdater.getItemCount() == 0) {
             hideAddReqListTitle();
+        }
+    }
+
+    /**
+     * 长按删除添加请求条目
+     */
+    @Override
+    public void longClickDeleteItem(int code) {
+        if (code != JError.ErrorOK){
+            ToastUtil.showToast(getString(R.string.Tips_DeleteFail));
+            return;
+        }
+        addReqListAdater.remove(tempReqBean);
+        addReqListAdater.notifyDataSetHasChanged();
+        if (addReqListAdater.getItemCount() == 0) {
+            hideAddReqListTitle();
+            if(friendsListAdapter.getItemCount()==0){
+                showNullView();
+            }
         }
     }
 
@@ -166,6 +186,9 @@ public class MineFriendsFragment extends Fragment implements MineFriendsContract
      */
     @Override
     public void friendlistAddItem(int position, RelAndFriendBean bean) {
+        if (friendsListAdapter.getItemCount()==0){
+            showFriendListTitle();
+        }
         friendsListAdapter.add(0, bean);
         friendsListAdapter.notifyDataSetHasChanged();
     }
@@ -204,8 +227,8 @@ public class MineFriendsFragment extends Fragment implements MineFriendsContract
         builder.setPositiveButton(getString(R.string.DELETE), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                addReqDeleteItem(position, bean);
-                // TODO 删除添加请求
+                tempReqBean = bean;
+                presenter.deleteAddReq(bean.account);
                 dialog.dismiss();
             }
         }).setNegativeButton(getString(R.string.CANCEL), new DialogInterface.OnClickListener() {
@@ -353,6 +376,12 @@ public class MineFriendsFragment extends Fragment implements MineFriendsContract
             public void onDelete(int position) {
                 friendsListAdapter.remove(position);
                 friendsListAdapter.notifyDataSetHasChanged();
+                if (friendsListAdapter.getItemCount() == 0){
+                    hideFriendListTitle();
+                    if (addReqListAdater.getItemCount() == 0){
+                        showNullView();
+                    }
+                }
             }
         });
     }
@@ -385,7 +414,7 @@ public class MineFriendsFragment extends Fragment implements MineFriendsContract
             account.iconUrl = item.iconUrl;
             account.markName = "";
             friendlistAddItem(layoutPosition, account);
-            addReqDeleteItem(layoutPosition, item);
+            addReqDeleteItem(item);
         }
     }
 

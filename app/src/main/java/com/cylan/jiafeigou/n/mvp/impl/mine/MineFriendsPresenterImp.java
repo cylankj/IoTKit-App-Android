@@ -66,6 +66,7 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
             compositeSubscription.add(getFriendList());
             compositeSubscription.add(initAddReqRecyListData());
             compositeSubscription.add(initFriendRecyListData());
+            compositeSubscription.add(deleteAddReqBack());
         }
     }
 
@@ -314,7 +315,6 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
 
     /**
      * desc:处理请求列表数据
-     *
      * @param addReqList
      */
     private void handleInitAddReqListDataResult(final RxEvent.GetAddReqList addReqList) {
@@ -332,7 +332,6 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
 
     /**
      * desc:处理列表数据
-     *
      * @param friendList
      */
     private void handleInitFriendListDataResult(ArrayList<RelAndFriendBean> friendList) {
@@ -370,6 +369,49 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
             ContextUtils.getContext().unregisterReceiver(network);
             network = null;
         }
+    }
+
+    /**
+     * 删除好友添加请求
+     * @param account
+     */
+    @Override
+    public void deleteAddReq(String account) {
+        rx.Observable.just(account)
+                .subscribeOn(Schedulers.newThread())
+                .subscribe(new Action1<String>() {
+                    @Override
+                    public void call(String s) {
+                        try {
+                            JfgCmdInsurance.getCmd().delAddFriendMsg(account);
+                        } catch (JfgException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        AppLogger.e("deleteAddReq"+throwable.getLocalizedMessage());
+                    }
+                });
+    }
+
+    /**
+     * 删除好友添加请求的回调
+     * @return
+     */
+    @Override
+    public Subscription deleteAddReqBack() {
+        return RxBus.getCacheInstance().toObservable(RxEvent.DeleteAddReqBack.class)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<RxEvent.DeleteAddReqBack>() {
+                    @Override
+                    public void call(RxEvent.DeleteAddReqBack deleteAddReqBack) {
+                        if (deleteAddReqBack != null && deleteAddReqBack instanceof RxEvent.DeleteAddReqBack){
+                            getView().longClickDeleteItem(deleteAddReqBack.jfgResult.code);
+                        }
+                    }
+                });
     }
 
     /**

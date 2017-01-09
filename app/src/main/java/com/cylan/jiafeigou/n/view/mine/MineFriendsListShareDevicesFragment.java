@@ -129,9 +129,9 @@ public class MineFriendsListShareDevicesFragment extends Fragment implements Min
     @Override
     public void initTitleView(RelAndFriendBean bean) {
         if (TextUtils.isEmpty(bean.markName.trim())) {
-            tvShareTo.setText(getString(R.string.Tap3_Friends_Share) + bean.alias);
+            tvShareTo.setText(String.format(getString(R.string.Tap3_Friends_Share),bean.alias));
         } else {
-            tvShareTo.setText(getString(R.string.Tap3_Friends_Share) + bean.markName);
+            tvShareTo.setText(String.format(getString(R.string.Tap3_Friends_Share),bean.markName));
         }
     }
 
