@@ -53,6 +53,7 @@ public class MagLiveFragment extends Fragment implements HomeMagLiveContract.Vie
     private WeakReference<MagLiveInformationFragment> informationWeakReference;
     private HomeMagLiveContract.Presenter presenter;
     private OnClearDoorOpenRecordLisenter listener;
+    private String uuid;
 
     public interface OnClearDoorOpenRecordLisenter {
         void onClear();
@@ -80,8 +81,8 @@ public class MagLiveFragment extends Fragment implements HomeMagLiveContract.Vie
 
     private void initPresenter() {
         Bundle bundle = getArguments();
-        DeviceBean deviceBean = (DeviceBean) bundle.getParcelable(JConstant.KEY_DEVICE_ITEM_BUNDLE);
-        presenter = new HomeMagLivePresenterImp(this,deviceBean);
+        uuid = bundle.getString(JConstant.KEY_DEVICE_ITEM_UUID);
+        presenter = new HomeMagLivePresenterImp(this, uuid);
     }
 
     /**
@@ -114,7 +115,7 @@ public class MagLiveFragment extends Fragment implements HomeMagLiveContract.Vie
             }
         });
         Bundle bundle = new Bundle();
-        bundle.putParcelable(KEY_DEVICE_ITEM_BUNDLE, presenter.getMagInfoBean());
+        bundle.putString(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
         fragment.setArguments(bundle);
         loadFragment(android.R.id.content, fragment);
         fragment.setListener(new MagLiveInformationFragment.OnMagLiveDataChangeListener() {
@@ -223,7 +224,6 @@ public class MagLiveFragment extends Fragment implements HomeMagLiveContract.Vie
     }
 
     private void initInfoDetailFragment() {
-        //should load
         if (informationWeakReference == null || informationWeakReference.get() == null) {
             informationWeakReference = new WeakReference<>(MagLiveInformationFragment.newInstance(null));
         }

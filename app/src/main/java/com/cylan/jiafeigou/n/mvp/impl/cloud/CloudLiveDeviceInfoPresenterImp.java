@@ -8,6 +8,8 @@ import android.telephony.TelephonyManager;
 import android.util.Pair;
 
 import com.cylan.ex.JfgException;
+import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
+import com.cylan.jiafeigou.dp.BaseValue;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.dp.DpUtils;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
@@ -35,11 +37,11 @@ public class CloudLiveDeviceInfoPresenterImp extends AbstractPresenter<CloudLive
     public static final int SD_UNINSTALL = 1;
     public static final int SD_FAIL_RW = 2;
 
-    private BeanCloudInfo beanCloudInfo;
+    private String uuid;
 
-    public CloudLiveDeviceInfoPresenterImp(CloudLiveDeviceInfoContract.View view, BeanCloudInfo bean) {
+    public CloudLiveDeviceInfoPresenterImp(CloudLiveDeviceInfoContract.View view, String uuid) {
         super(view);
-        this.beanCloudInfo = bean;
+        this.uuid = uuid;
     }
 
     @Override
@@ -109,57 +111,21 @@ public class CloudLiveDeviceInfoPresenterImp extends AbstractPresenter<CloudLive
         return result;
     }
 
-
     @Override
-    public void saveCloudInfoBean(BeanCloudInfo info, int id) {
-        this.beanCloudInfo = info;
-        Observable.just(new Pair<>(info, id))
+    public void saveCloudInfoBean(Object value, int id) {
+        Observable.just(value)
                 .subscribeOn(Schedulers.io())
-                .subscribe(new Action1<Pair<BeanCloudInfo, Integer>>() {
-                    @Override
-                    public void call(Pair<BeanCloudInfo, Integer> beanCloudInfoIntegerPair) {
-                        int id = beanCloudInfoIntegerPair.second;
-                        RxEvent.JFGAttributeUpdate update = new RxEvent.JFGAttributeUpdate();
-                        update.uuid = beanCloudInfo.deviceBase.uuid;
-                        if (id == DpMsgMap.ID_2000003_BASE_ALIAS)
-                            update.o = beanCloudInfoIntegerPair.first.deviceBase.alias;
-                        else update.o = beanCloudInfoIntegerPair.first.getObject(id);
-                        update.msgId = id;
-                        update.version = System.currentTimeMillis();
-                        RxBus.getCacheInstance().post(update);
-                        if (id == DpMsgMap.ID_2000003_BASE_ALIAS) {
-                            try {
-                                JfgCmdInsurance.getCmd().setAliasByCid(beanCloudInfo.deviceBase.uuid,
-                                        beanCloudInfo.deviceBase.alias);
-                            } catch (JfgException e) {
-                                e.printStackTrace();
-                            }
-                            AppLogger.i("update alias: " + new Gson().toJson(beanCloudInfo));
-                            return;
-                        }
-                        try {
-                            JfgCmdInsurance.getCmd().robotSetData(beanCloudInfo.deviceBase.uuid,
-                                    DpUtils.getList(id,
-                                            beanCloudInfoIntegerPair.first.getByte(id)
-                                            , System.currentTimeMillis()));
-                        } catch (JfgException e) {
-                            e.printStackTrace();
-                        }
-                        AppLogger.i("update camInfo: " + new Gson().toJson(beanCloudInfo));
-                    }
+                .subscribe((Object o) -> {
+                    AppLogger.i("save start: " + id + " " + value);
+                    BaseValue baseValue = new BaseValue();
+                    baseValue.setId(id);
+                    baseValue.setVersion(System.currentTimeMillis());
+                    baseValue.setValue(o);
+                    GlobalDataProxy.getInstance().update(uuid, baseValue, true);
+                    AppLogger.i("save end: " + id + " " + value);
+                }, (Throwable throwable) -> {
+                    AppLogger.e(throwable.getLocalizedMessage());
                 });
     }
 
-    /**
-     * 获取的到设备信息
-     * @return
-     */
-    @Override
-    public BeanCloudInfo getCloudInfoBean() {
-        if (beanCloudInfo != null){
-            return beanCloudInfo;
-        }else {
-            return new BeanCloudInfo();
-        }
-    }
 }

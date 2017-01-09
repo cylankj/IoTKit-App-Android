@@ -203,7 +203,6 @@
         <activity
             android:name=".n.view.activity.CloudLiveActivity"
             android:configChanges="locale|orientation|keyboardHidden|navigation|screenSize"
-            android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/CamActivityTheme"
             android:windowSoftInputMode="adjustPan|stateHidden" />
@@ -242,8 +241,6 @@
             android:configChanges="keyboardHidden|orientation"
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
-        <activity android:name=".n.view.activity.CloudLiveReturnCallActivity" />
-        <activity android:name=".n.view.activity.CloudLiveCallInActivity" />
         <!--
             将WXEntryActivity设置为透明 android:theme="@android:style/Theme.Translucent"
             这样就解决了，微信分享成功后，跳转到指定WXEntryActivity，显示微信分享信息，
@@ -277,6 +274,11 @@
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/CamActivityTheme"
+            android:windowSoftInputMode="adjustPan|stateHidden" />
+
+        <activity android:name=".n.view.cloud.CloudLiveCallActivity"
+            android:configChanges="locale|orientation|keyboardHidden|navigation|screenSize"
+            android:launchMode="singleTask"
             android:windowSoftInputMode="adjustPan|stateHidden" />
     </application>
 

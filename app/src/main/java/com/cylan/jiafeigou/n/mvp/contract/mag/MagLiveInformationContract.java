@@ -23,10 +23,12 @@ public interface MagLiveInformationContract {
 
         String getWifiState();              //获取WiFi的状态
 
-        BeanMagInfo getMagInfoBean();
-
-        void saveMagInfoBean(BeanMagInfo info, int id);
-
+        /**
+         * 保存设备昵称信息
+         * @param value
+         * @param id
+         */
+        void saveMagInfoBean(Object value, long id);
     }
 
 }

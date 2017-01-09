@@ -11,13 +11,19 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
+import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
+import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.mvp.contract.cloud.CloudLiveDeviceInfoContract;
 import com.cylan.jiafeigou.n.mvp.impl.cloud.CloudLiveDeviceInfoPresenterImp;
 import com.cylan.jiafeigou.n.mvp.model.BeanCloudInfo;
 import com.cylan.jiafeigou.n.mvp.model.BeanMagInfo;
 import com.cylan.jiafeigou.widget.dialog.EditFragmentDialog;
+
+import java.text.DecimalFormat;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -57,6 +63,7 @@ public class CloudLiveDeviceInfoFragment extends Fragment implements CloudLiveDe
     @BindView(R.id.tv_soft_version)
     TextView tvSoftVersion;
 
+    private String uuid;
     private EditFragmentDialog editDialogFragment;
     private CloudLiveDeviceInfoContract.Presenter presenter;
     public OnChangeNameListener listener;
@@ -90,8 +97,8 @@ public class CloudLiveDeviceInfoFragment extends Fragment implements CloudLiveDe
     }
 
     private void initPresenter() {
-        BeanCloudInfo beanCloudInfo = getArguments().getParcelable(KEY_DEVICE_ITEM_BUNDLE);
-        presenter = new CloudLiveDeviceInfoPresenterImp(this, beanCloudInfo);
+        uuid = getArguments().getString(JConstant.KEY_DEVICE_ITEM_UUID);
+        presenter = new CloudLiveDeviceInfoPresenterImp(this, uuid);
     }
 
     @Override
@@ -101,16 +108,32 @@ public class CloudLiveDeviceInfoFragment extends Fragment implements CloudLiveDe
     }
 
     private void updateDetails() {
-        BeanCloudInfo p = presenter.getCloudInfoBean();
-        if (p != null) {
-            tvInformationFacilityName.setText(p.deviceBase.alias);
-            tvDeviceCid.setText(p.deviceBase.uuid);
-            tvDeviceMac.setText(p.mac);
-//            tvDeviceBatteryLevel.setText(p.battery + "");
-//            tvSoftVersion.setText(p.deviceVersion);
-//            tvSystemVersion.setText(p.deviceSysVersion);
+        String mac = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_202_MAC, "");
+        tvDeviceMac.setText(mac);
+        String version = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_207_DEVICE_VERSION, "");
+        tvSoftVersion.setText(version);
+        String sVersion = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_208_DEVICE_SYS_VERSION, "");
+        tvSystemVersion.setText(sVersion);
+        JFGDevice device = GlobalDataProxy.getInstance().fetch(uuid);
+        if (device != null) {
+            tvInformationFacilityName.setText(TextUtils.isEmpty(device.alias)? device.uuid:device.alias);
+            tvDeviceCid.setText(device.uuid);
         }
-
+        DpMsgDefine.SdStatus status = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_204_SDCARD_STORAGE, null);
+        if (status == null || !status.hasSdcard) {
+            tvDeviceStorage.setText(getString(R.string.SD_NO));
+        } else {
+            if (status.err != 0) {
+                //未初始化
+                tvDeviceStorage.setText(getString(R.string.SD_NO));
+            } else {
+                if (status.total != 0) {
+                    String content = new DecimalFormat("#0.00").format(((float) status.used / status.total));
+                    tvDeviceStorage.setText(
+                            String.format(getString(R.string.REMAIN_SPACE), content));
+                }
+            }
+        }
     }
 
     @Override
@@ -149,13 +172,13 @@ public class CloudLiveDeviceInfoFragment extends Fragment implements CloudLiveDe
             @Override
             public void onDialogAction(int id, String value) {
                 if (presenter != null) {
-                    BeanCloudInfo info = presenter.getCloudInfoBean();
+                    JFGDevice device = GlobalDataProxy.getInstance().fetch(uuid);
                     if (!TextUtils.isEmpty(value)
-                            && !TextUtils.equals(info.deviceBase.alias, value)) {
+                            && !TextUtils.equals(device.alias, value)) {
                         tvInformationFacilityName.setText(value);
-                        info.deviceBase.alias = value;
+                        device.alias = value;
                         updateDetails();
-                        presenter.saveCloudInfoBean(info, DpMsgMap.ID_2000003_BASE_ALIAS);
+                        presenter.saveCloudInfoBean(device, DpMsgMap.ID_2000003_BASE_ALIAS);
 
                         if (listener != null){
                             listener.changeName(value);
