@@ -161,4 +161,20 @@ public class GlobalDataProxy implements IDataProxy {
             return null;
         }
     }
+
+    @SuppressWarnings("unchecked")
+    public <T> T getValue(String uuid, long id) {
+        try {
+            T result;
+            if (isSetType(id)) {
+                result = (T) dataPointManager.fetchLocalList(uuid, id);
+            } else {
+                result = (T) dataPointManager.fetchLocal(uuid, id);
+            }
+            return result;
+        } catch (ClassCastException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 }

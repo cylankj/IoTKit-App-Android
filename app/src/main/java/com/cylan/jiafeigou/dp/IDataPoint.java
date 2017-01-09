@@ -36,6 +36,8 @@ public interface IDataPoint {
      */
     JFGDevice fetch(String uuid);
 
+    <T extends com.cylan.jiafeigou.base.module.JFGDevice> T fetchDevice(String uuid);
+
     ArrayList<JFGDevice> fetchAll(String account);
 
     boolean insert(String uuid, BaseValue baseValue);

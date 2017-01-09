@@ -405,7 +405,7 @@ public abstract class AbstractWheel extends View {
             invalidate();
         }
 
-        // update offset
+        // setDevice offset
         int baseDimension = getBaseDimension();
         mScrollingOffset = offset - count * itemDimension;
         if (mScrollingOffset > baseDimension) {

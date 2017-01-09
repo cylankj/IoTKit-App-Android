@@ -38,9 +38,9 @@
             android:paddingLeft="8dp"
             android:paddingRight="8dp"
             android:paddingTop="5dp"
-            android:text="295kb/s"
             android:textColor="@color/color_white"
-            android:textSize="13sp"/>
+            android:textSize="13sp"
+            android:visibility="invisible"/>
 
         <ImageView
             android:id="@+id/imgv_bell_live_switch_to_land"

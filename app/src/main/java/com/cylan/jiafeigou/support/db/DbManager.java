@@ -68,7 +68,7 @@ public interface DbManager extends Closeable {
 
     int delete(Class<?> entityType, WhereBuilder whereBuilder) throws DbException;
 
-    ///////////// update
+    ///////////// setDevice
     void update(Object entity, String... updateColumnNames) throws DbException;
 
     int update(Class<?> entityType, WhereBuilder whereBuilder, KeyValue... nameValuePairs) throws DbException;

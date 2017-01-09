@@ -147,7 +147,7 @@ public class MagLiveInformationPresenterImp extends AbstractPresenter<MagLiveInf
                             } catch (JfgException e) {
                                 e.printStackTrace();
                             }
-                            AppLogger.i("update alias: " + new Gson().toJson(beanMagInfo));
+                            AppLogger.i("setDevice alias: " + new Gson().toJson(beanMagInfo));
                             return;
                         }
                         try {
@@ -158,7 +158,7 @@ public class MagLiveInformationPresenterImp extends AbstractPresenter<MagLiveInf
                         } catch (JfgException e) {
                             e.printStackTrace();
                         }
-                        AppLogger.i("update camInfo: " + new Gson().toJson(beanMagInfo));
+                        AppLogger.i("setDevice camInfo: " + new Gson().toJson(beanMagInfo));
                     }
                 });
     }

@@ -5,7 +5,7 @@ import android.graphics.Rect;
 public interface IViewFinder {
     /**
      * Method that executes when Camera preview is starting.
-     * It is recommended to update framing rect here and invalidate view after that. <br/>
+     * It is recommended to setDevice framing rect here and invalidate view after that. <br/>
      * For example see: {@link ViewFinderView#setupViewFinder()}
      */
     void setupViewFinder();

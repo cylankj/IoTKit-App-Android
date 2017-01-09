@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -22,16 +23,14 @@ import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamSettingContract;
+import com.cylan.jiafeigou.n.mvp.contract.record.DelayRecordContract;
 import com.cylan.jiafeigou.n.mvp.impl.cam.CamSettingPresenterImpl;
-import com.cylan.jiafeigou.n.view.cam.CamDelayRecordActivity;
-import com.cylan.jiafeigou.n.view.cam.DelayRecordGuideFragment;
 import com.cylan.jiafeigou.n.view.cam.DeviceInfoDetailFragment;
 import com.cylan.jiafeigou.n.view.cam.SafeProtectionFragment;
 import com.cylan.jiafeigou.n.view.cam.VideoAutoRecordFragment;
+import com.cylan.jiafeigou.n.view.record.DelayRecordActivity;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
-import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.LoadingDialog;
@@ -86,7 +85,6 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
     private WeakReference<DeviceInfoDetailFragment> informationWeakReference;
     private WeakReference<SafeProtectionFragment> safeProtectionFragmentWeakReference;
     private WeakReference<VideoAutoRecordFragment> videoAutoRecordFragmentWeakReference;
-    private WeakReference<DelayRecordGuideFragment> mGuideFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,6 +110,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         initLedIndicatorBtn();
         initMobileNetBtn();
         initRotateBtn();
+        svSettingDeviceDelayCapture.setEnabled(true);
     }
 
     @Override
@@ -251,24 +250,16 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
             }
             break;
             case R.id.sv_setting_device_delay_capture: {
-                if (PreferencesUtils.getBoolean(JConstant.KEY_DELAY_RECORD_GUIDE, true)) {
-                    initUserGuideFragment();
-                    Bundle bundle = new Bundle();
-                    bundle.putString(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
-                    mGuideFragment.get().setArguments(bundle);
-                    ActivityUtils.loadFragment(android.R.id.content, getSupportFragmentManager(), mGuideFragment.get());
-                } else {
-                    Intent intent = new Intent(this, CamDelayRecordActivity.class);
-                    startActivity(intent);
-                }
+                Intent intent = new Intent(this, DelayRecordActivity.class);
+                intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
+                intent.putExtra(JConstant.VIEW_CALL_WAY, DelayRecordContract.View.VIEW_LAUNCH_WAY_SETTING);
+//                startActivity(intent);
+                startActivity(intent,
+
+                        ActivityOptionsCompat.makeCustomAnimation(getApplicationContext(),
+                                R.anim.slide_in_right, R.anim.slide_out_left).toBundle());
             }
             break;
-        }
-    }
-
-    private void initUserGuideFragment() {
-        if (mGuideFragment == null || mGuideFragment.get() == null) {
-            mGuideFragment = new WeakReference<>(DelayRecordGuideFragment.newInstance(null));
         }
     }
 

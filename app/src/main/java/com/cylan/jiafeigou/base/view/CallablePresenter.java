@@ -19,5 +19,6 @@ public interface CallablePresenter extends ViewablePresenter {
     class Caller {
         public String caller;//呼叫者
         public String picture;//呼叫者的图像
+        public long callTime;
     }
 }

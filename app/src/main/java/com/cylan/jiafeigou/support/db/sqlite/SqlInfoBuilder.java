@@ -29,7 +29,7 @@ import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * Build "insert", "replace",，"update", "delete" and "create" sql.
+ * Build "insert", "replace",，"setDevice", "delete" and "create" sql.
  */
 public final class SqlInfoBuilder {
 
@@ -165,7 +165,7 @@ public final class SqlInfoBuilder {
         return new SqlInfo(builder.toString());
     }
 
-    //*********************************************** update sql ***********************************************
+    //*********************************************** setDevice sql ***********************************************
 
     public static SqlInfo buildUpdateSqlInfo(TableEntity<?> table, Object entity, String... updateColumnNames) throws DbException {
 

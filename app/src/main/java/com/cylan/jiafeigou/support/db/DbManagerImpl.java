@@ -77,7 +77,7 @@ public final class DbManagerImpl extends DbBase {
             dao.daoConfig = daoConfig;
         }
 
-        // update the database if needed
+        // setDevice the database if needed
         SQLiteDatabase database = dao.database;
         int oldVersion = database.getVersion();
         int newVersion = daoConfig.getDbVersion();
