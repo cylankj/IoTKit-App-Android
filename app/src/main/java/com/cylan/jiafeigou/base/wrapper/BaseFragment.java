@@ -14,6 +14,7 @@ import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.module.JFGDevice;
 import com.cylan.jiafeigou.base.view.JFGPresenter;
 import com.cylan.jiafeigou.base.view.JFGView;
+import com.cylan.jiafeigou.dp.BaseValue;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.widget.LoadingDialog;
 
@@ -166,6 +167,11 @@ public abstract class BaseFragment<T extends JFGPresenter> extends Fragment impl
         if (mPresenter != null) {
             mPresenter.onViewAction(action, handler, extra);
         }
+    }
+
+    @Override
+    public void onDeviceSyncRsp(BaseValue response) {
+        //do nothing
     }
 
     /**
