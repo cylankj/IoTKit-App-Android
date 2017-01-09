@@ -2,7 +2,9 @@ package com.cylan.jiafeigou.n.mvp.impl.cloud;
 
 import android.text.TextUtils;
 
+import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
 import com.cylan.jiafeigou.n.db.DataBaseUtil;
 import com.cylan.jiafeigou.n.mvp.contract.cloud.CloudLiveSettingContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
@@ -38,18 +40,18 @@ public class CloudLiveSettingPresenterImp extends AbstractPresenter<CloudLiveSet
     private DbManager dbManager = null;
     private CompositeSubscription subscription;
     private BeanCloudInfo cloudInfoBean;
-    private DeviceBean bean;
+    private String uuid;
 
 
-    public CloudLiveSettingPresenterImp(CloudLiveSettingContract.View view, DeviceBean bean) {
+    public CloudLiveSettingPresenterImp(CloudLiveSettingContract.View view, String uuid) {
         super(view);
         view.setPresenter(this);
-        this.bean = bean;
+        this.uuid = uuid;
     }
 
     @Override
     public void start() {
-        fillData(bean);
+        fillData();
         if (getView() != null) {
             getView().initSomeViewVisible(isHasBeenShareUser());
         }
@@ -71,15 +73,9 @@ public class CloudLiveSettingPresenterImp extends AbstractPresenter<CloudLiveSet
         }
     }
 
-    private void fillData(DeviceBean bean) {
-        cloudInfoBean = new BeanCloudInfo();
-        BaseBean baseBean = new BaseBean();
-        baseBean.alias = bean.alias;
-        baseBean.pid = bean.pid;
-        baseBean.uuid = bean.uuid;
-        baseBean.sn = bean.sn;
-        cloudInfoBean.convert(baseBean, bean.dataList);
-        getView().onCloudInfoRsp(cloudInfoBean);
+    private void fillData() {
+        JFGDevice device = GlobalDataProxy.getInstance().fetch(uuid);
+        getView().onCloudInfoRsp(TextUtils.isEmpty(device.alias)? device.uuid:device.alias);
     }
 
 

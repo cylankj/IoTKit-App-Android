@@ -25,10 +25,10 @@ public interface CloudLiveSettingContract {
 
         /**
          * 初始化显示设备名称
-         * @param beanCloudInfo
+         * @param alias
          * @return
          */
-        void onCloudInfoRsp(BeanCloudInfo beanCloudInfo);
+        void onCloudInfoRsp(String alias);
     }
 
     interface Presenter extends BasePresenter {

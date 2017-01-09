@@ -90,13 +90,13 @@ public class HomeMineMessagePresenterImp extends AbstractPresenter<HomeMineMessa
                 getView().initRecycleView(list);
             } else {
                 getView().showNoMesgView();
+                getView().initRecycleView(new ArrayList<>());
             }
         }
     }
 
     /**
      * 拿到数据库的操作对象
-     *
      * @return
      */
     @Override

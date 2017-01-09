@@ -51,6 +51,7 @@ public class CloudLiveSettingFragment extends Fragment implements CloudLiveSetti
     @BindView(R.id.tv_door_bell)
     TextView tvDoorBell;
 
+    private String uuid;
     private CloudLiveDeviceInfoFragment cloudLiveDeviceInfoFragment;
     private CloudCorrelationDoorBellFragment cloudCorrelationDoorBellFragment;
     private CloudLiveSettingContract.Presenter presenter;
@@ -88,8 +89,8 @@ public class CloudLiveSettingFragment extends Fragment implements CloudLiveSetti
 
     private void initPresenter() {
         Bundle bundle = getArguments();
-        DeviceBean deviceBean = (DeviceBean) bundle.getParcelable(JConstant.KEY_DEVICE_ITEM_BUNDLE);
-        presenter = new CloudLiveSettingPresenterImp(this, deviceBean);
+        uuid = bundle.getString(JConstant.KEY_DEVICE_ITEM_UUID);
+        presenter = new CloudLiveSettingPresenterImp(this, uuid);
     }
 
     @Override
@@ -174,7 +175,7 @@ public class CloudLiveSettingFragment extends Fragment implements CloudLiveSetti
 
     private void jump2DeviceInfoFragment() {
         Bundle bundle = new Bundle();
-        bundle.putParcelable(KEY_DEVICE_ITEM_BUNDLE, presenter.getCloudInfoBean());
+        bundle.putString(JConstant.KEY_DEVICE_ITEM_UUID,uuid);
         cloudLiveDeviceInfoFragment = CloudLiveDeviceInfoFragment.newInstance(bundle);
         getFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
@@ -245,11 +246,11 @@ public class CloudLiveSettingFragment extends Fragment implements CloudLiveSetti
     /**
      * 设置设备名称
      *
-     * @param beanCloudInfo
+     * @param alias
      */
     @Override
-    public void onCloudInfoRsp(BeanCloudInfo beanCloudInfo) {
-        tvBellDetail.setTvSubTitle(presenter.getDeviceName());
+    public void onCloudInfoRsp(String alias) {
+        tvBellDetail.setTvSubTitle(alias);
     }
 
     @Override
