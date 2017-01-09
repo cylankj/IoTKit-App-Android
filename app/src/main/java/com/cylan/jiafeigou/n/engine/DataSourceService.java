@@ -296,6 +296,7 @@ public class DataSourceService extends Service implements AppCallBack {
     @Override
     public void OnOtherClientAnswerCall() {
         AppLogger.d("OnLocalMessage :");
+        RxBus.getCacheInstance().post(new RxEvent.CallAnswerd());
     }
 
     @Override

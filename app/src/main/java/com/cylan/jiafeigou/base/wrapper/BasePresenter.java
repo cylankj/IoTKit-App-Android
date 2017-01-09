@@ -1,6 +1,5 @@
 package com.cylan.jiafeigou.base.wrapper;
 
-import android.os.SystemClock;
 import android.support.annotation.CallSuper;
 import android.support.v4.util.LongSparseArray;
 import android.text.TextUtils;
@@ -9,7 +8,8 @@ import com.cylan.jiafeigou.base.module.JFGDevice;
 import com.cylan.jiafeigou.base.view.JFGPresenter;
 import com.cylan.jiafeigou.base.view.JFGSourceManager;
 import com.cylan.jiafeigou.base.view.JFGView;
-import com.cylan.jiafeigou.dp.DP;
+import com.cylan.jiafeigou.base.view.PropertyView;
+import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.provider.DataSourceManager;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
@@ -39,8 +39,6 @@ public abstract class BasePresenter<V extends JFGView> implements JFGPresenter {
 
     protected V mView;
     protected ArrayList<Long> mRequestSeqs = new ArrayList<>(32);
-
-    private static long mLastClickedTime;
 
     protected void unSubscribe(Subscription... subscriptions) {
         if (subscriptions != null) {
@@ -121,9 +119,14 @@ public abstract class BasePresenter<V extends JFGView> implements JFGPresenter {
                 .filter(rsp -> accept(rsp.uuid))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(rsp -> {
-                    //这里既直接通知View也通知presenter,因为presenter可能会对一些同步数据有特殊处理
-                    mView.onDeviceSyncRsp(mSourceManager.getJFGDevice(rsp.uuid));
+                    if (mView != null && mView instanceof PropertyView) {
+                        ((PropertyView) mView).onShowProperty(mSourceManager.getJFGDevice(mUUID));
+                    }
+                    onDeviceSync();
                 }, Throwable::printStackTrace);
+    }
+
+    protected void onDeviceSync() {
     }
 
     /**
@@ -139,23 +142,24 @@ public abstract class BasePresenter<V extends JFGView> implements JFGPresenter {
                             if (parser != null) {
                                 Object value = mSourceManager.getValue(mUUID, response.msgId, response.seq);
                                 if (JFGDevice.isSetType(response.msgId) && value != null) {
-                                    Set<DP> set = (Set<DP>) value;
-                                    parser.onParseResponse(set.toArray(new DP[set.size()]));
+                                    Set<DataPoint> set = (Set<DataPoint>) value;
+                                    parser.onParseResponse(set.toArray(new DataPoint[set.size()]));
                                 } else {
-                                    parser.onParseResponse((DP) value);
+                                    parser.onParseResponse((DataPoint) value);
                                 }
                             }
                         }
-
                         , Throwable::printStackTrace);
     }
 
 
     public boolean hasReadyForExit() {
-        long clickedTime = SystemClock.uptimeMillis();
-        long duration = clickedTime - mLastClickedTime;
-        mLastClickedTime = clickedTime;
-        return duration < 1500;
+        return true;
+//        long clickedTime = SystemClock.uptimeMillis();
+
+//        long duration = clickedTime - mLastClickedTime;
+//        mLastClickedTime = clickedTime;
+//        return duration < 1500;
     }
 
     /**
@@ -211,7 +215,7 @@ public abstract class BasePresenter<V extends JFGView> implements JFGPresenter {
         /**
          * @param response 可能为BaseValue或者HashSet<BaseValue> 取决于消息类型,需要自己强转
          */
-        void onParseResponse(DP... response);
+        void onParseResponse(DataPoint... response);
     }
 
 }

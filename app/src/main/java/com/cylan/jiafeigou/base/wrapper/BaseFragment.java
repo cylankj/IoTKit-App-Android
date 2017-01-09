@@ -11,10 +11,8 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.base.module.JFGDevice;
 import com.cylan.jiafeigou.base.view.JFGPresenter;
 import com.cylan.jiafeigou.base.view.JFGView;
-import com.cylan.jiafeigou.dp.BaseValue;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.widget.LoadingDialog;
 
@@ -24,8 +22,8 @@ import butterknife.ButterKnife;
  * Created by yzd on 16-12-28.
  */
 
-public abstract class BaseFragment<T extends JFGPresenter> extends Fragment implements JFGView {
-    protected T mPresenter;
+public abstract class BaseFragment<P extends JFGPresenter> extends Fragment implements JFGView {
+    protected P mPresenter;
 
     protected String mUUID;
 
@@ -46,6 +44,7 @@ public abstract class BaseFragment<T extends JFGPresenter> extends Fragment impl
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             mUUID = getArguments().getString(JConstant.KEY_DEVICE_ITEM_UUID);//在基類裏獲取uuid,便於統一管理
+            if (mUUID == null) mUUID = "300000008496";
         }
         mPresenter = onCreatePresenter();
         if (mPresenter != null) {
@@ -64,8 +63,6 @@ public abstract class BaseFragment<T extends JFGPresenter> extends Fragment impl
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-
         initViewAndListener();
     }
 
@@ -95,11 +92,7 @@ public abstract class BaseFragment<T extends JFGPresenter> extends Fragment impl
         }
     }
 
-    @Override
-    public void onDeviceSyncRsp(JFGDevice response) {
-    }
-
-    protected abstract T onCreatePresenter();
+    protected abstract P onCreatePresenter();
 
     @Override
     public void showLoading() {
@@ -167,11 +160,6 @@ public abstract class BaseFragment<T extends JFGPresenter> extends Fragment impl
         if (mPresenter != null) {
             mPresenter.onViewAction(action, handler, extra);
         }
-    }
-
-    @Override
-    public void onDeviceSyncRsp(BaseValue response) {
-        //do nothing
     }
 
     /**

@@ -1,6 +1,5 @@
 package com.cylan.jiafeigou.n.view.record;
 
-import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import com.cylan.jiafeigou.R;
@@ -10,7 +9,6 @@ import com.cylan.jiafeigou.base.wrapper.BaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.record.DelayRecordContract;
 import com.cylan.jiafeigou.n.mvp.impl.record.DelayRecordPresenterImpl;
 import com.cylan.jiafeigou.utils.ActivityUtils;
-import com.cylan.jiafeigou.utils.ViewUtils;
 
 import java.util.List;
 
@@ -20,10 +18,6 @@ public class DelayRecordActivity extends BaseActivity<DelayRecordContract.Presen
 
     @BindView(R.id.act_delay_record_content)
     FrameLayout mContentContainer;
-    @BindView(R.id.act_delay_record_header)
-    ViewGroup mRecordHeader;
-    @BindView(R.id.activity_delay_record)
-    ViewGroup mRootContent;
     private BaseFragment mRecordMainFrag;
     private BaseFragment mRecordGuideFrag;
     private BaseFragment mRecordDeviceFrag;
@@ -38,17 +32,12 @@ public class DelayRecordActivity extends BaseActivity<DelayRecordContract.Presen
         return R.layout.activity_delay_record;
     }
 
-    @Override
-    protected void initViewAndListener() {
-        ViewUtils.setViewMarginStatusBar(mRecordHeader);
-    }
 
     @Override
     public void onShowRecordMainView(String uuid) {
         if (mRecordMainFrag == null) {
             mRecordMainFrag = DelayRecordMainFragment.newInstance(uuid);
         }
-        mRootContent.setBackgroundResource(R.drawable.delay_record_bg);
         ActivityUtils.replaceFragment(R.id.act_delay_record_content, getSupportFragmentManager(), mRecordMainFrag);
     }
 
@@ -57,7 +46,6 @@ public class DelayRecordActivity extends BaseActivity<DelayRecordContract.Presen
         if (mRecordGuideFrag == null) {
             mRecordGuideFrag = DelayRecordGuideFragment.newInstance(uuid);
         }
-        mRootContent.setBackgroundResource(R.color.color_0ba8cf);
         ActivityUtils.replaceFragmentNoAnimation(R.id.act_delay_record_content, getSupportFragmentManager(), mRecordGuideFrag);
     }
 
@@ -66,7 +54,6 @@ public class DelayRecordActivity extends BaseActivity<DelayRecordContract.Presen
         if (mRecordDeviceFrag == null) {
             mRecordDeviceFrag = DelayRecordDeviceFragment.newInstance(devices);
         }
-        mRootContent.setBackgroundResource(R.color.color_0ba8cf);
         ActivityUtils.replaceFragmentNoAnimation(R.id.act_delay_record_content, getSupportFragmentManager(), mRecordDeviceFrag);
     }
 

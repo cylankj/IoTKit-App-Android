@@ -22,7 +22,6 @@ import com.cylan.entity.JfgEnum;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.BaseFullScreenActivity;
 import com.cylan.jiafeigou.base.module.BellDevice;
-import com.cylan.jiafeigou.base.module.JFGDevice;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.SpacesItemDecoration;
 import com.cylan.jiafeigou.n.mvp.contract.bell.DoorBellHomeContract;
@@ -220,22 +219,6 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
     }
 
     @Override
-    public void onDeviceSyncRsp(JFGDevice response) {
-        super.onDeviceSyncRsp(response);
-        BellDevice device = (BellDevice) response;
-        int battery = device.battery.value;
-        if (battery < 20) {
-            onBellBatteryDrainOut();
-        } else if (battery < 80 && isFirst) {
-            onBellBatteryDrainOut();
-            isFirst = false;
-        }
-        cvBellHomeBackground.setState(device.net.net);
-        cvBellHomeBackground.setActionInterface(this);
-
-    }
-
-    @Override
     public void onBellBatteryDrainOut() {
         initBatteryDialog();
         LBatteryWarnDialog dialog = lBatteryWarnDialog.get();
@@ -366,5 +349,18 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
             bellCallRecordListAdapter.setItemWidth(w);
             rvBellList.getViewTreeObserver().removeOnGlobalLayoutListener(this);
         }
+    }
+
+    @Override
+    public void onShowProperty(BellDevice device) {
+        int battery = device.battery.value;
+        if (battery < 20) {
+            onBellBatteryDrainOut();
+        } else if (battery < 80 && isFirst) {
+            onBellBatteryDrainOut();
+            isFirst = false;
+        }
+        cvBellHomeBackground.setState(device.net.net);
+        cvBellHomeBackground.setActionInterface(this);
     }
 }

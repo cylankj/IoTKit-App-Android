@@ -14,7 +14,6 @@ import android.text.TextUtils;
 import android.widget.Toast;
 
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.base.module.JFGDevice;
 import com.cylan.jiafeigou.base.view.JFGPresenter;
 import com.cylan.jiafeigou.base.view.JFGView;
 import com.cylan.jiafeigou.misc.JConstant;
@@ -189,11 +188,6 @@ public abstract class BaseActivity<P extends JFGPresenter> extends AppCompatActi
         } else {
             showToast(getString(R.string.click_back_again_exit));
         }
-    }
-
-    @Override
-    public void onDeviceSyncRsp(JFGDevice response) {
-        //do nothing
     }
 
     @Override

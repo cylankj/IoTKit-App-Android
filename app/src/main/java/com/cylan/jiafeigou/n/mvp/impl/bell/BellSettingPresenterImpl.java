@@ -29,7 +29,7 @@ public class BellSettingPresenterImpl extends BasePresenter<BellSettingContract.
     @Override
     public void onSetContentView() {
         super.onSetContentView();
-        mView.onDeviceSyncRsp(mSourceManager.getJFGDevice(mUUID));
+        mView.onShowProperty(mSourceManager.getJFGDevice(mUUID));
     }
 
     /**

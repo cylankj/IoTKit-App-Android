@@ -14,7 +14,7 @@ import com.cylan.jiafeigou.base.module.EfamilyDevice;
 import com.cylan.jiafeigou.base.module.JFGDevice;
 import com.cylan.jiafeigou.base.module.MagDevice;
 import com.cylan.jiafeigou.base.view.JFGSourceManager;
-import com.cylan.jiafeigou.dp.DP;
+import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 
@@ -56,7 +56,7 @@ public class DataSourceManager implements JFGSourceManager {
      * 只缓存当前账号下的数据,一旦注销将会清空所有的缓存,内存缓存方式
      */
     private Map<String, JFGDevice> mCachedDeviceMap = new HashMap<>();//和uuid相关的数据缓存
-    private LongSparseArray<DP> mCachedGenericMap = new LongSparseArray<>();//和uuid无关,和当前账号相关的数据缓存
+    private LongSparseArray<DataPoint> mCachedGenericMap = new LongSparseArray<>();//和uuid无关,和当前账号相关的数据缓存
     private JFGAccount mJFGAccount;
     private static DataSourceManager mDataSourceManager;
 
@@ -97,6 +97,11 @@ public class DataSourceManager implements JFGSourceManager {
             result.add(entry.getValue());
         }
         return result;
+    }
+
+    public List<JFGDevice> getJFGDeviceByPid(int... pid) {
+        // Arrays.asList(pid);
+        return null;
     }
 
     @Override

@@ -1,11 +1,9 @@
 package com.cylan.jiafeigou.n.mvp.impl.bell;
 
-import android.text.TextUtils;
 import android.util.Pair;
 
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.base.wrapper.BasePresenter;
-import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.dp.DpUtils;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
@@ -13,14 +11,10 @@ import com.cylan.jiafeigou.n.mvp.contract.bell.BellDetailContract;
 import com.cylan.jiafeigou.n.mvp.model.BeanBellInfo;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
-import com.cylan.jiafeigou.rx.RxUiEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.google.gson.Gson;
 
 import rx.Observable;
-import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
@@ -34,51 +28,14 @@ public class BellDetailSettingPresenterImpl extends BasePresenter<BellDetailCont
     @Override
     protected void onRegisterSubscription(CompositeSubscription subscriptions) {
         super.onRegisterSubscription(subscriptions);
-        subscriptions.add(onBellInfoSubscription());
     }
 
     @Override
     public void onSetContentView() {
         super.onSetContentView();
-        mView.onDeviceSyncRsp(mSourceManager.getJFGDevice(mUUID));
-
+        mView.onShowProperty(mSourceManager.getJFGDevice(mUUID));
     }
 
-    private Subscription onBellInfoSubscription() {
-        //查询设备列表
-        return RxBus.getCacheInstance().toObservableSticky(RxUiEvent.BulkDeviceListRsp.class)
-                .subscribeOn(Schedulers.computation())
-                .filter(list -> list != null && list.allDevices != null)
-                .flatMap(new Func1<RxUiEvent.BulkDeviceListRsp, Observable<DpMsgDefine.DpWrap>>() {
-                    @Override
-                    public Observable<DpMsgDefine.DpWrap> call(RxUiEvent.BulkDeviceListRsp list) {
-                        for (DpMsgDefine.DpWrap wrap : list.allDevices) {
-                            if (wrap.baseDpDevice == null)
-                                continue;
-                            if (TextUtils.equals(wrap.baseDpDevice.uuid, mUUID)) {
-                                return Observable.just(wrap);
-                            }
-                        }
-                        return null;
-                    }
-                })
-                .filter(dpWrap -> dpWrap != null && dpWrap.baseDpDevice != null)
-                .flatMap(new Func1<DpMsgDefine.DpWrap, Observable<BeanBellInfo>>() {
-                    @Override
-                    public Observable<BeanBellInfo> call(DpMsgDefine.DpWrap dpWrap) {
-                        BeanBellInfo info = new BeanBellInfo();
-                        info.convert(dpWrap.baseDpDevice, dpWrap.baseDpMsgList);
-                        beanBellInfo = info;
-                        AppLogger.i("BeanCamInfo: " + new Gson().toJson(info));
-                        return Observable.just(info);
-                    }
-                })
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(beanBellInfo1 -> {
-                    //刷新
-                    mView.onSettingInfoRsp(beanBellInfo1);
-                });
-    }
 
     @Override
     public BeanBellInfo getBellInfo() {
@@ -121,5 +78,4 @@ public class BellDetailSettingPresenterImpl extends BasePresenter<BellDetailCont
                     AppLogger.i("setDevice camInfo: " + new Gson().toJson(beanBellInfo));
                 });
     }
-
 }

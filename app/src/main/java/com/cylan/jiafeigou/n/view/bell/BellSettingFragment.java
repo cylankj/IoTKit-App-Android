@@ -10,7 +10,6 @@ import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.module.BellDevice;
-import com.cylan.jiafeigou.base.module.JFGDevice;
 import com.cylan.jiafeigou.base.wrapper.BaseFragment;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.misc.JConstant;
@@ -121,22 +120,6 @@ public class BellSettingFragment extends BaseFragment<BellSettingContract.Presen
     }
 
     @Override
-    public void onDeviceSyncRsp(JFGDevice response) {
-        super.onDeviceSyncRsp(response);
-        BellDevice device = (BellDevice) response;
-        svSettingDeviceDetail.setTvSubTitle(TextUtils.isEmpty(device.alias)
-                ? device.uuid : device.alias);
-        if (!TextUtils.isEmpty(device.shareAccount)) {
-            final int count = lLayoutSettingContainer.getChildCount();
-            for (int i = 3; i < count - 2; i++) {
-                View v = lLayoutSettingContainer.getChildAt(i);
-                v.setVisibility(View.GONE);
-            }
-        }
-        svSettingDeviceWifi.setTvSubTitle(DpMsgDefine.MsgNet.getNormalString(device.net));
-    }
-
-    @Override
     public void unbindDeviceRsp(int state) {
         if (state == JError.ErrorOK) {
             LoadingDialog.dismissLoading(getActivity().getSupportFragmentManager());
@@ -154,5 +137,19 @@ public class BellSettingFragment extends BaseFragment<BellSettingContract.Presen
                 break;
         }
 
+    }
+
+    @Override
+    public void onShowProperty(BellDevice device) {
+        svSettingDeviceDetail.setTvSubTitle(TextUtils.isEmpty(device.alias)
+                ? device.uuid : device.alias);
+        if (!TextUtils.isEmpty(device.shareAccount)) {
+            final int count = lLayoutSettingContainer.getChildCount();
+            for (int i = 3; i < count - 2; i++) {
+                View v = lLayoutSettingContainer.getChildAt(i);
+                v.setVisibility(View.GONE);
+            }
+        }
+        svSettingDeviceWifi.setTvSubTitle(DpMsgDefine.MsgNet.getNormalString(device.net));
     }
 }

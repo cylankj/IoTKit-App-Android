@@ -1,7 +1,8 @@
 package com.cylan.jiafeigou.n.mvp.contract.bell;
 
+import com.cylan.jiafeigou.base.module.BellDevice;
 import com.cylan.jiafeigou.base.view.JFGPresenter;
-import com.cylan.jiafeigou.base.view.JFGView;
+import com.cylan.jiafeigou.base.view.PropertyView;
 import com.cylan.jiafeigou.n.mvp.model.BellCallRecordBean;
 
 import java.util.ArrayList;
@@ -13,7 +14,7 @@ import java.util.List;
 public interface DoorBellHomeContract {
 
 
-    interface View extends JFGView {
+    interface View extends PropertyView<BellDevice> {
 
         /**
          * 电量提醒

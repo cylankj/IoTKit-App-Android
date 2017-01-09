@@ -16,6 +16,9 @@ import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.widget.video.VideoViewFactory;
 
+import java.util.concurrent.TimeUnit;
+
+import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -32,6 +35,8 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
     protected boolean mIsSpeakerOn = false;
 
     protected boolean mHasResolution = false;
+
+    protected Subscription mResolutionRetrySub;
 
     @Override
     protected void onRegisterSubscription(CompositeSubscription subscriptions) {
@@ -77,33 +82,39 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
 
     @Override
     public void startViewer() {
-        mInViewCallWay = mView.onResolveViewLaunchType();
+        if (mResolutionRetrySub != null && mResolutionRetrySub.isUnsubscribed()) {
+            mResolutionRetrySub.unsubscribe();
+        }
         mView.onViewer();
         mHasResolution = false;
-        listenResolution(0);
+        mInViewCallWay = mView.onResolveViewLaunchType();
+        mSubscriptions.add(getResolutionRetrySub());
     }
 
-    /**
-     * 每3秒发送一次play,每9秒发送一次stop
-     */
-    protected void listenResolution(final int count) {
-        if (!mHasResolution) {
-            try {
-                if (!TextUtils.isEmpty(mInViewIdentify) && count % 3 == 0) {
+    protected Subscription getResolutionRetrySub() {
+        return mResolutionRetrySub = Observable.interval(0, 10, TimeUnit.SECONDS)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(count -> {
+                    try {
+                        if (mHasResolution) {
+                            unSubscribe(mResolutionRetrySub);
+                            return;
+                        }
 
-                    JfgCmdInsurance.getCmd().stopPlay(mInViewIdentify);
-                    SystemClock.sleep(2000);
-                }
-                if (TextUtils.isEmpty(mInViewIdentify)) {
-                    mInViewIdentify = onResolveViewIdentify();
-                }
-                AppLogger.d("正在进行第" + count + "次重试");
-                JfgCmdInsurance.getCmd().playVideo(mInViewIdentify);
-            } catch (JfgException e) {
-                e.printStackTrace();
-            }
-            postDelay(() -> listenResolution(count + 1), 3000);
-        }
+                        if (!TextUtils.isEmpty(mInViewIdentify)) {
+                            JfgCmdInsurance.getCmd().stopPlay(mInViewIdentify);
+                            SystemClock.sleep(2000);
+                        }
+                        if (TextUtils.isEmpty(mInViewIdentify)) {
+                            mInViewIdentify = onResolveViewIdentify();
+                        }
+                        AppLogger.d("正在进行第" + count + "次重试");
+                        JfgCmdInsurance.getCmd().playVideo(mInViewIdentify);
+                    } catch (JfgException e) {
+                        e.printStackTrace();
+                    }
+                }, Throwable::printStackTrace);
     }
 
     /**
@@ -124,12 +135,18 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
 
     protected void onVideoResolution(JFGMsgVideoResolution resolution) {
         try {
+            mHasResolution = true;
+            unSubscribe(mResolutionRetrySub);
             mView.onResolution(resolution);
         } catch (JfgException e) {
             e.printStackTrace();
         }
     }
 
+    @Override
+    protected String onResolveViewIdentify() {
+        return mUUID;
+    }
 
     @Override
     public void onScreenRotationChanged(boolean land) {

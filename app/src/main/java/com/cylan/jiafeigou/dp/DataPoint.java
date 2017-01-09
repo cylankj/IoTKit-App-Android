@@ -14,7 +14,7 @@ import java.io.IOException;
  * Created by cylan-hunt on 16-12-2.
  */
 
-public abstract class DP implements Parcelable, Comparable<DP> {
+public abstract class DataPoint implements Parcelable, Comparable<DataPoint> {
     @Ignore
     public long id;
     @Ignore
@@ -46,10 +46,10 @@ public abstract class DP implements Parcelable, Comparable<DP> {
         dest.writeLong(this.version);
     }
 
-    public DP() {
+    public DataPoint() {
     }
 
-    protected DP(Parcel in) {
+    protected DataPoint(Parcel in) {
         this.id = in.readLong();
         this.version = in.readLong();
     }
@@ -60,7 +60,7 @@ public abstract class DP implements Parcelable, Comparable<DP> {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        DP value = (DP) o;
+        DataPoint value = (DataPoint) o;
 
         if (id != value.id) return false;
         return version == value.version && seq == value.seq;
@@ -77,14 +77,13 @@ public abstract class DP implements Parcelable, Comparable<DP> {
 
     @Ignore
     @Override
-    public int compareTo(DP another) {
+    public int compareTo(DataPoint another) {
         return version > another.version ? -1 : 1;//降序
     }
 
     @Ignore
-    public static DP getEmpty() {
-        return new DP() {
+    public static DataPoint getEmpty() {
+        return new DataPoint() {
         };
     }
-
 }

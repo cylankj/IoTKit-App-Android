@@ -7,10 +7,9 @@ import android.text.TextUtils;
 
 import com.cylan.annotation.DPProperty;
 import com.cylan.entity.jniCall.JFGDPMsg;
-import com.cylan.jiafeigou.dp.DP;
+import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
-import com.cylan.jiafeigou.support.log.AppLogger;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
@@ -90,16 +89,15 @@ public abstract class JFGDevice implements Parcelable {
             Field field = getFieldByMsgId(msg.id);
             if (field == null) return false;
             DPProperty dpProperty = field.getAnnotation(DPProperty.class);
-            AppLogger.e("正在给MsgId为" + msg.id + "赋值");
-            DP value;
+            DataPoint value;
             Class<?> type;
             if (dpProperty.isSetType()) {
                 Set setValue = (Set) field.get(this);
                 if (setValue == null) setValue = new TreeSet();
                 field.set(this, setValue);
                 type = (Class<?>) ((ParameterizedType) field.getGenericType()).getActualTypeArguments()[0];
-                if (DP.class.isAssignableFrom(type) && !(DpMsgDefine.DPPrimary.class.isAssignableFrom(type))) {
-                    value = (DP) unpackData(msg.packValue, type);
+                if (DataPoint.class.isAssignableFrom(type) && !(DpMsgDefine.DPPrimary.class.isAssignableFrom(type))) {
+                    value = (DataPoint) unpackData(msg.packValue, type);
                     value.version = msg.version;
                     value.id = msg.id;
                     value.seq = seq;
@@ -114,11 +112,11 @@ public abstract class JFGDevice implements Parcelable {
                 return setValue.add(primary);
 
             } else {//不是SetType
-                value = (DP) field.get(this);
+                value = (DataPoint) field.get(this);
                 if (value == null || value.version < msg.version) {//数据需要更新了
                     type = field.getType();
-                    if (DP.class.isAssignableFrom(type) && !(DpMsgDefine.DPPrimary.class.isAssignableFrom(type))) {
-                        value = (DP) unpackData(msg.packValue, type);
+                    if (DataPoint.class.isAssignableFrom(type) && !(DpMsgDefine.DPPrimary.class.isAssignableFrom(type))) {
+                        value = (DataPoint) unpackData(msg.packValue, type);
                         value.version = msg.version;
                         value.id = msg.id;
                         value.seq = seq;
@@ -158,9 +156,9 @@ public abstract class JFGDevice implements Parcelable {
             if (value == null || seq == -1) return (T) value;
 
             if (isSetType(msgId)) {
-                Set<DP> result = new TreeSet<>();
-                Set<DP> temp = (Set<DP>) value;
-                for (DP point : temp) {
+                Set<DataPoint> result = new TreeSet<>();
+                Set<DataPoint> temp = (Set<DataPoint>) value;
+                for (DataPoint point : temp) {
                     if (point.seq == seq) result.add(point);
                 }
                 return (T) result;

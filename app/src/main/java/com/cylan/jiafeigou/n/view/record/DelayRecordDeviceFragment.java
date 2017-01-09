@@ -13,6 +13,7 @@ import com.cylan.jiafeigou.base.view.JFGPresenter;
 import com.cylan.jiafeigou.base.view.JFGView;
 import com.cylan.jiafeigou.base.wrapper.BaseFragment;
 import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
+import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.superadapter.SuperAdapter;
 import com.cylan.superadapter.internal.SuperViewHolder;
 
@@ -20,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
+import butterknife.OnClick;
 
 /**
  * Created by yzd on 17-1-5.
@@ -36,6 +38,8 @@ public class DelayRecordDeviceFragment extends BaseFragment {
     @BindView(R.id.fragment_delay_record_empty)
     ViewGroup mDeviceEmptyView;
 
+    @BindView(R.id.header_delay_record_container)
+    ViewGroup mHeaderContainer;
     private SuperAdapter<String> mDeviceAdapter;
 
     //// TODO: 17-1-5 获取类型为3G狗的在线设备，目前不知道怎么获取
@@ -50,6 +54,18 @@ public class DelayRecordDeviceFragment extends BaseFragment {
     @Override
     protected JFGPresenter onCreatePresenter() {//保留此接口,此view所需数据简单的由父activity提供
         return null;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        ViewUtils.setViewMarginStatusBar(mHeaderContainer);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        ViewUtils.clearViewMarginStatusBar(mHeaderContainer);
     }
 
     @Override
@@ -73,6 +89,11 @@ public class DelayRecordDeviceFragment extends BaseFragment {
                 mDeviceEmptyView.setVisibility(View.VISIBLE);
             }
         }
+    }
+
+    @OnClick(R.id.header_delay_record_back)
+    public void back() {
+        getActivity().onBackPressed();
     }
 
     @Override

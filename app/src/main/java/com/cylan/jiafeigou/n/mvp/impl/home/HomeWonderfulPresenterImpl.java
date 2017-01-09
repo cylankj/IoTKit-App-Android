@@ -12,7 +12,7 @@ import com.bumptech.glide.request.target.SimpleTarget;
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.base.wrapper.BasePresenter;
-import com.cylan.jiafeigou.dp.DP;
+import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
@@ -262,7 +262,7 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
         registerResponseParser(DpMsgMap.ID_602_ACCOUNT_WONDERFUL_MSG, this::onWonderfulAccountRsp);
     }
 
-    private void onWonderfulAccountRsp(DP... values) {
+    private void onWonderfulAccountRsp(DataPoint... values) {
         List<MediaBean> results = new ArrayList<>();
         MediaBean bean;
         for (MediaBean value : (MediaBean[]) values) {

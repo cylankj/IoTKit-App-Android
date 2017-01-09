@@ -314,8 +314,8 @@ public class DataPointManager implements IParser, IDataPoint {
             try {
                 byte[] data = null;
                 Object value = baseValue.getValue();
-                if (value != null && value instanceof DP)
-                    data = ((DP) value).toBytes();
+                if (value != null && value instanceof DataPoint)
+                    data = ((DataPoint) value).toBytes();
                 else data = DpUtils.pack(value);
                 JfgCmdInsurance.getCmd().robotSetData(uuid,
                         DpUtils.getList((int) baseValue.getId(),

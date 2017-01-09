@@ -3,7 +3,7 @@ package com.cylan.jiafeigou.n.mvp.impl.bell;
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.base.wrapper.BasePresenter;
-import com.cylan.jiafeigou.dp.DP;
+import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
@@ -32,7 +32,7 @@ public class DBellHomePresenterImpl extends BasePresenter<DoorBellHomeContract.V
     @Override
     public void onSetContentView() {
         super.onSetContentView();
-        mView.onDeviceSyncRsp(mSourceManager.getJFGDevice(mUUID));
+        mView.onShowProperty(mSourceManager.getJFGDevice(mUUID));
     }
 
     @Override
@@ -42,7 +42,7 @@ public class DBellHomePresenterImpl extends BasePresenter<DoorBellHomeContract.V
     }
 
 
-    protected void onBellCallRecordRsp(DP... response) {
+    protected void onBellCallRecordRsp(DataPoint... response) {
         if (response == null) {
             mView.onRecordsListRsp(null);
             return;
@@ -50,7 +50,7 @@ public class DBellHomePresenterImpl extends BasePresenter<DoorBellHomeContract.V
         ArrayList<BellCallRecordBean> result = new ArrayList<>(32);
         BellCallRecordBean callRecord;
         DpMsgDefine.BellCallState bell;
-        for (DP value : response) {
+        for (DataPoint value : response) {
             if (!(value instanceof DpMsgDefine.BellCallState)) continue;
             bell = (DpMsgDefine.BellCallState) value;
             callRecord = new BellCallRecordBean();

@@ -2,6 +2,7 @@ package com.cylan.jiafeigou.n.view.record;
 
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewGroup;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.view.JFGPresenter;
@@ -12,10 +13,12 @@ import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.mvp.contract.record.DelayRecordContract;
+import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.dialog.BaseDialog;
 
 import java.lang.ref.WeakReference;
 
+import butterknife.BindView;
 import butterknife.OnClick;
 
 /**
@@ -23,6 +26,9 @@ import butterknife.OnClick;
  */
 
 public class DelayRecordGuideFragment extends BaseFragment {
+
+    @BindView(R.id.header_delay_record_container)
+    ViewGroup mHeaderContainer;
 
     public static DelayRecordGuideFragment newInstance(String uuid) {
         DelayRecordGuideFragment fragment = new DelayRecordGuideFragment();
@@ -42,12 +48,29 @@ public class DelayRecordGuideFragment extends BaseFragment {
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+        ViewUtils.setViewMarginStatusBar(mHeaderContainer);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        ViewUtils.clearViewMarginStatusBar(mHeaderContainer);
+    }
+
+    @Override
     protected int getContentViewID() {
         return R.layout.fragment_delay_record_guide;
     }
 
     @Override
     protected void initViewAndListener() {
+    }
+
+    @OnClick(R.id.header_delay_record_back)
+    public void back() {
+        getActivity().onBackPressed();
     }
 
     @OnClick(R.id.fragment_delay_record_start_now)

@@ -3,7 +3,7 @@ package com.cylan.jiafeigou.n.mvp.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.cylan.jiafeigou.dp.DP;
+import com.cylan.jiafeigou.dp.DataPoint;
 
 import org.msgpack.annotation.Ignore;
 import org.msgpack.annotation.Index;
@@ -13,7 +13,7 @@ import org.msgpack.annotation.Message;
  * Created by chen on 6/6/16.
  */
 @Message
-public class MediaBean extends DP implements Parcelable {
+public class MediaBean extends DataPoint implements Parcelable {
 
 
     public static final int TYPE_PIC = 0;
@@ -56,7 +56,7 @@ public class MediaBean extends DP implements Parcelable {
 
 
     @Override
-    public int compareTo(DP another) {
+    public int compareTo(DataPoint another) {
         return (another != null && another instanceof MediaBean) ? ((MediaBean) another).time - time : 0;
     }
 

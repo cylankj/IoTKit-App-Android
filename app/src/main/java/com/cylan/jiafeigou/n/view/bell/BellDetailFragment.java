@@ -10,7 +10,6 @@ import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.module.BellDevice;
-import com.cylan.jiafeigou.base.module.JFGDevice;
 import com.cylan.jiafeigou.base.wrapper.BaseFragment;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.n.mvp.contract.bell.BellDetailContract;
@@ -79,22 +78,6 @@ public class BellDetailFragment extends BaseFragment<BellDetailContract.Presente
         ViewUtils.setViewPaddingStatusBar(fLayoutTopBarContainer);
     }
 
-
-    @Override
-    public void onSettingInfoRsp(BeanBellInfo bellInfoBean) {
-        String alias = TextUtils.isEmpty(bellInfoBean.deviceBase.alias)
-                ? bellInfoBean.deviceBase.uuid : bellInfoBean.deviceBase.alias;
-        svSettingDeviceAlias.setTvSubTitle(alias);
-        svSettingDeviceCid.setTvSubTitle(bellInfoBean.deviceBase.uuid);
-        svSettingDeviceMac.setTvSubTitle(bellInfoBean.mac == null ? "" : bellInfoBean.mac);
-        svSettingDeviceSysVersion.setTvSubTitle(bellInfoBean.deviceSysVersion == null ? "" : bellInfoBean.deviceSysVersion);
-        svSettingDeviceVersion.setTvSubTitle(bellInfoBean.deviceVersion == null ? "" : bellInfoBean.deviceVersion);
-        svSettingDeviceBattery.setTvSubTitle(bellInfoBean.battery + "");
-        String ssid = bellInfoBean.net == null || bellInfoBean.net.ssid == null ?
-                getString(R.string.OFF_LINE) : bellInfoBean.net.ssid;
-        svSettingDeviceWifi.setTvSubTitle(ssid);
-    }
-
     @Override
     public void onDialogAction(int id, Object value) {
 
@@ -143,8 +126,17 @@ public class BellDetailFragment extends BaseFragment<BellDetailContract.Presente
         return null;
     }
 
+
     @Override
-    public void onDeviceSyncRsp(JFGDevice response) {
-        BellDevice device = (BellDevice) response;
+    public void onShowProperty(BellDevice device) {
+        String alias = TextUtils.isEmpty(device.alias) ? device.uuid : device.alias;
+        svSettingDeviceAlias.setTvSubTitle(alias);
+        svSettingDeviceCid.setTvSubTitle(device.uuid);
+        svSettingDeviceMac.setTvSubTitle(device.mac == null ? "" : device.mac.value);
+        svSettingDeviceSysVersion.setTvSubTitle(device.device_sys_version == null ? "" : device.device_sys_version.value);
+        svSettingDeviceVersion.setTvSubTitle(device.device_version == null ? "" : device.device_version.value);
+        svSettingDeviceBattery.setTvSubTitle(device.battery == null ? "" : device.battery.value + "");
+        String ssid = device.net == null || TextUtils.isEmpty(device.net.ssid) ? getString(R.string.OFF_LINE) : device.net.ssid;
+        svSettingDeviceWifi.setTvSubTitle(ssid);
     }
 }

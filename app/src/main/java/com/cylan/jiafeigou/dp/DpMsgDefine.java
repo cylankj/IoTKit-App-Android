@@ -2,6 +2,7 @@ package com.cylan.jiafeigou.dp;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.cylan.annotation.DpBase;
@@ -26,7 +27,7 @@ public class DpMsgDefine {
 
 
     @Message
-    public static final class MsgNet extends DP {
+    public static final class MsgNet extends DataPoint {
         /**
          * |NET_CONNECT | -1 | #绑定后的连接中 |
          * |NET_OFFLINE |  0 | #不在线 |
@@ -56,10 +57,10 @@ public class DpMsgDefine {
                     result = "绑定后的连接中";
                     break;
                 case 0:
-                    result = "不在线";
+                    result = "设备离线中";
                     break;
                 case 1:
-                    result = net.ssid;
+                    result = TextUtils.isEmpty(net.ssid) ? "WiFi未开启" : net.ssid;
                     break;
                 case 2:
                     result = "2G网络";
@@ -121,7 +122,7 @@ public class DpMsgDefine {
     }
 
     @Message
-    public static final class MsgTimeZone extends DP {
+    public static final class MsgTimeZone extends DataPoint {
         @Index(0)
         public String timezone;
         @Index(1)
@@ -178,7 +179,7 @@ public class DpMsgDefine {
     }
 
     @Message
-    public static final class BindLog extends DP {
+    public static final class BindLog extends DataPoint {
         @Index(0)
         public boolean isBind;
         @Index(1)
@@ -242,7 +243,7 @@ public class DpMsgDefine {
 
     //系统消息使用
     @Message
-    public static final class SdcardSummary extends DP implements Parcelable {
+    public static final class SdcardSummary extends DataPoint implements Parcelable {
         @Index(0)
         public boolean hasSdcard;
         @Index(1)
@@ -299,7 +300,7 @@ public class DpMsgDefine {
     }
 
     @Message
-    public static final class SdStatus extends DP implements Parcelable {
+    public static final class SdStatus extends DataPoint implements Parcelable {
         @Index(0)
         public long total;
         @Index(1)
@@ -368,7 +369,7 @@ public class DpMsgDefine {
     }
 
     @Message
-    public static final class AlarmInfo extends DP implements Parcelable {
+    public static final class AlarmInfo extends DataPoint implements Parcelable {
         @Index(0)
         public int timeStart;
         @Index(1)
@@ -434,7 +435,7 @@ public class DpMsgDefine {
     }
 
     @Message
-    public static final class AlarmMsg extends DP implements Parcelable {//505 报警消息
+    public static final class AlarmMsg extends DataPoint implements Parcelable {//505 报警消息
         @Index(0)
         public int time;
         @Index(1)
@@ -496,7 +497,7 @@ public class DpMsgDefine {
     }
 
     @Message//504
-    public static final class NotificationInfo extends DP implements Parcelable {
+    public static final class NotificationInfo extends DataPoint implements Parcelable {
         @Index(0)
         public int notification;
         @Index(1)
@@ -567,7 +568,7 @@ public class DpMsgDefine {
     }
 
     @Message
-    public static final class TimeLapse extends DP implements Parcelable {
+    public static final class TimeLapse extends DataPoint implements Parcelable {
         @Index(0)
         public int timeStart;
         @Index(1)
@@ -629,7 +630,7 @@ public class DpMsgDefine {
     }
 
     @Message
-    public static final class CamCoord extends DP implements Parcelable {
+    public static final class CamCoord extends DataPoint implements Parcelable {
         @Index(0)
         public int x;
         @Index(1)
@@ -686,7 +687,7 @@ public class DpMsgDefine {
     }
 
     @Message
-    public static final class BellCallState extends DP implements Parcelable {
+    public static final class BellCallState extends DataPoint implements Parcelable {
 
         @Index(0)
         public int isOK;
@@ -914,7 +915,7 @@ public class DpMsgDefine {
         };
     }
 
-    public static class MsgBattery extends DP implements Parcelable {
+    public static class MsgBattery extends DataPoint implements Parcelable {
         public int id;
         public long time;
         public int battery;
@@ -956,7 +957,7 @@ public class DpMsgDefine {
     }
 
 
-    public static class DPPrimary<T> extends DP {
+    public static class DPPrimary<T> extends DataPoint {
         public T value;
 
         @Override

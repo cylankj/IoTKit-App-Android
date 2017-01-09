@@ -1,7 +1,8 @@
 package com.cylan.jiafeigou.n.mvp.contract.bell;
 
+import com.cylan.jiafeigou.base.module.BellDevice;
 import com.cylan.jiafeigou.base.view.JFGPresenter;
-import com.cylan.jiafeigou.base.view.JFGView;
+import com.cylan.jiafeigou.base.view.PropertyView;
 
 /**
  * Created by cylan-hunt on 16-6-29.
@@ -9,7 +10,7 @@ import com.cylan.jiafeigou.base.view.JFGView;
 public interface BellSettingContract {
 
 
-    interface View extends JFGView {
+    interface View extends PropertyView<BellDevice> {
         /**
          * 解绑设备回调
          *
