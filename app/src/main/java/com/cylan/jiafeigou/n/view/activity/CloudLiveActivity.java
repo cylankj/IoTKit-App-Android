@@ -44,6 +44,7 @@ import com.cylan.jiafeigou.n.mvp.model.CloudLiveVideoTalkBean;
 import com.cylan.jiafeigou.n.view.adapter.CloudLiveMesgListAdapter;
 import com.cylan.jiafeigou.n.view.cloud.CloudLiveCallActivity;
 import com.cylan.jiafeigou.n.view.cloud.CloudLiveSettingFragment;
+import com.cylan.jiafeigou.n.view.cloud.CloudMesgBackListener;
 import com.cylan.jiafeigou.n.view.cloud.LayoutIdMapCache;
 import com.cylan.jiafeigou.n.view.cloud.ViewTypeMapCache;
 import com.cylan.jiafeigou.utils.ContextUtils;
@@ -64,7 +65,7 @@ import butterknife.OnClick;
  * 创建时间：2016/9/26
  * 描述：
  */
-public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements CloudLiveContract.View {
+public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements CloudMesgBackListener,CloudLiveContract.View {
 
     @BindView(R.id.imgV_nav_back)
     ImageView imgVNavBack;
@@ -107,17 +108,13 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
         initTitle();
         initFragment();
         initPresenter();
+        if (presenter != null) presenter.start();
     }
 
     private void initTitle() {
         JFGDevice jfgDevice = GlobalDataProxy.getInstance().fetch(uuid);
         tvDeviceName.setText(TextUtils.isEmpty(jfgDevice.alias)?jfgDevice.uuid:jfgDevice.alias);
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        if (presenter != null) presenter.start();
+        CloudLiveCallActivity.setOnCloudMesgBackListener(this);
     }
 
     /**
@@ -186,7 +183,7 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
                 break;
             case R.id.iv_cloud_share_pic:                               //分享图片
                 ViewUtils.deBounceClick(findViewById(R.id.iv_cloud_share_pic));
-                ToastUtil.showToast("即将推出");
+                ToastUtil.showToast("别点了，没有");
                 break;
             case R.id.iv_cloud_videochat:                               //视频通话
                 ViewUtils.deBounceClick(findViewById(R.id.iv_cloud_videochat));
@@ -225,7 +222,6 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
                 .add(android.R.id.content, cloudLiveSettingFragment)
                 .addToBackStack("CloudLiveSettingFragment")
                 .commit();
-
     }
 
     @Override
@@ -251,7 +247,6 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
 
     /**
      * 语音留言对话框
-     *
      * @param isOnLine
      */
     @Override
@@ -348,7 +343,7 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
         if (cloudLiveMesgAdapter != null) {
             hideNoMesg();
             cloudLiveMesgAdapter.add(bean);
-            cloudLiveMesgAdapter.notifyDataSetChanged();
+            cloudLiveMesgAdapter.notifyDataSetHasChanged();
         }
     }
 
@@ -543,5 +538,14 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
                 presenter.saveIntoDb(dbBean);
             }
         }
+    }
+
+    /**
+     * 添加一条消息
+     * @param bean
+     */
+    @Override
+    public void onCloudMesgBack(CloudLiveBaseBean bean) {
+        refreshRecycleView(bean);
     }
 }

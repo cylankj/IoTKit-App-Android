@@ -409,14 +409,13 @@ public class DataSourceService extends Service implements AppCallBack {
         AppLogger.d("OnEfamilyMsg :" + header.msgId);
 
         //暂try try
-        if (!TextUtils.isEmpty(header.caller)){
+        if ((!TextUtils.isEmpty(header.caller)) && header.msgId == 2529){
             Intent intent = new Intent(ContextUtils.getContext(), CloudLiveCallActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, header.caller);
             intent.putExtra("call_in_or_out", true);
             startActivity(intent);
         }
-
     }
 
     @Override
