@@ -22,7 +22,6 @@ import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
-import rx.subscriptions.CompositeSubscription;
 
 /**
  * Created by yzd on 16-12-30.
@@ -39,11 +38,13 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
     protected Subscription mResolutionRetrySub;
 
     @Override
-    protected void onRegisterSubscription(CompositeSubscription subscriptions) {
-        super.onRegisterSubscription(subscriptions);
-        subscriptions.add(getVideoDisconnectedSub());
-        subscriptions.add(getResolutionSub());
-        subscriptions.add(getVideoFlowRspSub());
+    protected void onRegisterSubscription() {
+        super.onRegisterSubscription();
+        registerSubscription(
+                getVideoDisconnectedSub(),
+                getResolutionSub(),
+                getVideoFlowRspSub()
+        );
     }
 
     protected Subscription getVideoDisconnectedSub() {
@@ -88,7 +89,7 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
         mView.onViewer();
         mHasResolution = false;
         mInViewCallWay = mView.onResolveViewLaunchType();
-        mSubscriptions.add(getResolutionRetrySub());
+        registerSubscription(getResolutionRetrySub());
     }
 
     protected Subscription getResolutionRetrySub() {
@@ -133,6 +134,7 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
         }
     }
 
+
     protected void onVideoResolution(JFGMsgVideoResolution resolution) {
         try {
             mHasResolution = true;
@@ -157,6 +159,14 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
     public void onStop() {
         super.onStop();
         stopViewer();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (!TextUtils.isEmpty(mInViewIdentify)) {
+            startViewer();
+        }
     }
 
     @Override

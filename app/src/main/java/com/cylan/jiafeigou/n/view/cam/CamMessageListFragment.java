@@ -199,15 +199,15 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
                 .findLastVisibleItemPosition();
         switch (id) {
             case DpMsgMap.ID_204_SDCARD_STORAGE:
-                camMessageListAdapter.notifySdcardStatus(o != null && ((DpMsgDefine.SdStatus) o).hasSdcard,
+                camMessageListAdapter.notifySdcardStatus(o != null && ((DpMsgDefine.DPSdStatus) o).hasSdcard,
                         lPos);
                 break;
             case DpMsgMap.ID_222_SDCARD_SUMMARY:
-                camMessageListAdapter.notifySdcardStatus(o != null && ((DpMsgDefine.SdcardSummary) o).hasSdcard,
+                camMessageListAdapter.notifySdcardStatus(o != null && ((DpMsgDefine.DPSdcardSummary) o).hasSdcard,
                         lPos);
                 break;
             case DpMsgMap.ID_201_NET:
-                camMessageListAdapter.notifyDeviceOnlineState(o != null && ((DpMsgDefine.MsgNet) o).net != 0,
+                camMessageListAdapter.notifyDeviceOnlineState(o != null && ((DpMsgDefine.DPNet) o).net != 0,
                         lPos);
                 break;
         }

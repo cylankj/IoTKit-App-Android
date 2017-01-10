@@ -10,13 +10,13 @@ import com.cylan.jiafeigou.base.view.JFGSourceManager;
 import com.cylan.jiafeigou.base.view.JFGView;
 import com.cylan.jiafeigou.base.view.PropertyView;
 import com.cylan.jiafeigou.dp.DataPoint;
+import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.provider.DataSourceManager;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.utils.HandlerThreadUtils;
 
 import java.util.ArrayList;
-import java.util.Set;
 
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -34,7 +34,7 @@ public abstract class BasePresenter<V extends JFGView> implements JFGPresenter {
 
     protected JFGSourceManager mSourceManager;
 
-    protected CompositeSubscription mSubscriptions;
+    private CompositeSubscription mSubscriptions;
     private LongSparseArray<ResponseParser> mResponseParserMap = new LongSparseArray<>(32);
 
     protected V mView;
@@ -50,6 +50,7 @@ public abstract class BasePresenter<V extends JFGView> implements JFGPresenter {
         }
     }
 
+
     @Override
     public void onViewAttached(JFGView view) {
         mSourceManager = DataSourceManager.getInstance();
@@ -59,15 +60,13 @@ public abstract class BasePresenter<V extends JFGView> implements JFGPresenter {
     @Override
     @CallSuper
     public void onStart() {
-        onRegisterSubscription(mSubscriptions = new CompositeSubscription());
+        onRegisterSubscription();
         onRegisterResponseParser();
     }
 
     @CallSuper
-    protected void onRegisterSubscription(CompositeSubscription subscriptions) {
-        subscriptions.add(getDeviceSyncSub());
-        subscriptions.add(getLoginStateSub());
-        subscriptions.add(getQueryDataRspSub());
+    protected void onRegisterSubscription() {
+        registerSubscription(getDeviceSyncSub(), getLoginStateSub(), getQueryDataRspSub());
     }
 
     @CallSuper
@@ -81,6 +80,7 @@ public abstract class BasePresenter<V extends JFGView> implements JFGPresenter {
     protected void onUnRegisterSubscription() {
         unSubscribe(mSubscriptions);
         mRequestSeqs.clear();//清空请求队列
+        mSubscriptions = null;
     }
 
     @Override
@@ -141,9 +141,10 @@ public abstract class BasePresenter<V extends JFGView> implements JFGPresenter {
                             ResponseParser parser = mResponseParserMap.get(response.msgId);
                             if (parser != null) {
                                 Object value = mSourceManager.getValue(mUUID, response.msgId, response.seq);
-                                if (JFGDevice.isSetType(response.msgId) && value != null) {
-                                    Set<DataPoint> set = (Set<DataPoint>) value;
-                                    parser.onParseResponse(set.toArray(new DataPoint[set.size()]));
+                                if (value != null && value instanceof DpMsgDefine.DPSet) {
+                                    DpMsgDefine.DPSet<DataPoint> set = (DpMsgDefine.DPSet<DataPoint>) value;
+                                    if (set.value != null)
+                                        parser.onParseResponse(set.value.toArray(new DataPoint[set.value.size()]));
                                 } else {
                                     parser.onParseResponse((DataPoint) value);
                                 }
@@ -187,6 +188,10 @@ public abstract class BasePresenter<V extends JFGView> implements JFGPresenter {
 
     @Override
     public void onSetContentView() {
+        if (mView != null && mView instanceof PropertyView) {
+            JFGDevice device = mSourceManager.getJFGDevice(mUUID);
+            if (device != null) ((PropertyView) mView).onShowProperty(device);
+        }
     }
 
     /**
@@ -216,6 +221,21 @@ public abstract class BasePresenter<V extends JFGView> implements JFGPresenter {
          * @param response 可能为BaseValue或者HashSet<BaseValue> 取决于消息类型,需要自己强转
          */
         void onParseResponse(DataPoint... response);
+    }
+
+    protected void registerSubscription(Subscription... subscriptions) {
+        if (mSubscriptions == null) {
+            synchronized (this) {
+                if (mSubscriptions == null) {
+                    mSubscriptions = new CompositeSubscription();
+                }
+            }
+        }
+        if (subscriptions != null) {
+            for (Subscription subscription : subscriptions) {
+                mSubscriptions.add(subscription);
+            }
+        }
     }
 
 }

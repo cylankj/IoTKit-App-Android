@@ -57,7 +57,7 @@ public class HomePageListAdapter extends SuperAdapter<String> {
     }
 
 
-    private void setItemState(SuperViewHolder holder, String uuid, int pid, String shareAccount, DpMsgDefine.MsgNet net) {
+    private void setItemState(SuperViewHolder holder, String uuid, int pid, String shareAccount, DpMsgDefine.DPNet net) {
         //0 net type 网络类型
         int resIdNet = net == null ? -1 : NET_TYPE_RES.get(net.net);
         if (resIdNet != -1) {
@@ -92,7 +92,7 @@ public class HomePageListAdapter extends SuperAdapter<String> {
      */
 
     private void handleState(SuperViewHolder holder, String uuid) {
-        DpMsgDefine.MsgNet net = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_201_NET, new DpMsgDefine.MsgNet());
+        DpMsgDefine.DPNet net = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_201_NET, new DpMsgDefine.DPNet());
         JFGDevice device = GlobalDataProxy.getInstance().fetch(uuid);
         int pid = device == null ? 0 : device.pid;
         String alias = device == null ? "" : device.alias;

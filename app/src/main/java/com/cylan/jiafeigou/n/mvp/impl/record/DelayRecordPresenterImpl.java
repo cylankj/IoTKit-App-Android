@@ -2,20 +2,12 @@ package com.cylan.jiafeigou.n.mvp.impl.record;
 
 import android.text.TextUtils;
 
-import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.jiafeigou.base.wrapper.BasePresenter;
-import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.mvp.contract.record.DelayRecordContract;
-import com.cylan.jiafeigou.rx.RxBus;
-import com.cylan.jiafeigou.rx.RxUiEvent;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 
-import java.util.ArrayList;
 import java.util.List;
-
-import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
 
 /*
  *  @项目名：  JFGAndroid 
@@ -27,7 +19,7 @@ import rx.android.schedulers.AndroidSchedulers;
  */
 public class DelayRecordPresenterImpl extends BasePresenter<DelayRecordContract.View> implements DelayRecordContract.Presenter {
 
-    private List<String> mUsableDevices;
+    private String mLaunchType;
 
     @Override
     public void onSetContentView() {
@@ -35,57 +27,16 @@ public class DelayRecordPresenterImpl extends BasePresenter<DelayRecordContract.
     }
 
     /**
-     * 刚进来时主动刷新一次设备列表
-     */
-    private Subscription getFetchDeviceListSub() {
-        ArrayList<JFGDevice> devices = GlobalDataProxy.getInstance().fetchAll();
-        mUsableDevices = new ArrayList<>();
-        if (devices != null) {
-            for (JFGDevice device : devices) {
-                if (1017 == device.pid) {//3G狗设备,只有3G狗设备才能开启延时摄影
-                    mUsableDevices.add(device.uuid);
-                }
-            }
-        }
-        if (mUsableDevices != null && mUsableDevices.size() > 1) {//有多于一个可用的设备,则显示设备选择页面
-            mView.onShowRecordDeviceView(mUsableDevices);
-        } else if (mUsableDevices != null && mUsableDevices.size() == 1) {//只有一个可用的设备,则直接进入延时摄影主页
-            mView.onShowRecordMainView(mUsableDevices.get(0));
-        } else {
-            mView.onShowNoDeviceView();
-        }
-        return RxBus.getCacheInstance().toObservableSticky(RxUiEvent.BulkUUidListRsp.class)
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .subscribe(rsp -> {
-                    if (rsp != null && rsp.allList != null) {
-                        for (String s : rsp.allList) {
-                            if (GlobalDataProxy.getInstance().fetch(s).pid == 1017 && !mUsableDevices.contains(s)) {
-                                mUsableDevices.add(s);
-                            }
-                        }
-                        if (mUsableDevices != null && mUsableDevices.size() > 1) {//有多于一个可用的设备,则显示设备选择页面
-                            mView.onShowRecordDeviceView(mUsableDevices);
-                        } else if (mUsableDevices != null && mUsableDevices.size() == 1) {//只有一个可用的设备,则直接进入延时摄影主页
-                            mView.onShowRecordMainView(mUsableDevices.get(0));
-                        } else {
-                            mView.onShowNoDeviceView();
-                        }
-                    }
-                });
-    }
-
-
-    /**
      * 在获取到设备列表后根据launchViewType设置显示页
      */
     private void setupLaunchView() {
-        String launchType = mView.onResolveViewLaunchType();
-        if (TextUtils.isEmpty(launchType)) {
+        mLaunchType = mView.onResolveViewLaunchType();
+        if (TextUtils.isEmpty(mLaunchType)) {
             //在这里设置默认的view
             return;
         }
 
-        switch (launchType) {
+        switch (mLaunchType) {
             case DelayRecordContract.View.VIEW_LAUNCH_WAY_SETTING: {
                 //通过设置页进入该页面
                 if (isFirstEnter(false)) {
@@ -99,7 +50,12 @@ public class DelayRecordPresenterImpl extends BasePresenter<DelayRecordContract.
             break;
             case DelayRecordContract.View.VIEW_LAUNCH_WAY_WONDERFUL: {
                 //通过每日精彩页进入该页面
-                mSubscriptions.add(getFetchDeviceListSub());
+                List<String> list = mSourceManager.getJFGDeviceUUIDByPid(JConstant.OS_CAMERA_ANDROID);
+                if (list != null && list.size() == 1) {
+                    mView.onShowRecordMainView(list.get(0));
+                } else {
+                    mView.onShowRecordDeviceView(list);
+                }
             }
             break;
         }
@@ -118,13 +74,13 @@ public class DelayRecordPresenterImpl extends BasePresenter<DelayRecordContract.
     @Override
     public void onViewAction(int action, String handle, Object extra) {
         switch (handle) {
-            case DelayRecordContract.View.VIEW_HANDLER_GUIDE_START_NOW:
+            case DelayRecordContract.View.VIEW_HANDLER_TO_MAIN_VIEW:
                 //这里进入预览页
-                mView.onShowRecordMainView(mUUID);
+                mView.onShowRecordMainView((String) extra);
                 break;
-            case DelayRecordContract.View.VIEW_HANDLER_GUIDE_ENABLE_DEVICE:
+            case DelayRecordContract.View.VIEW_HANDLER_ENABLE_DEVICE:
                 //这里需要跳转到设备设置activity,比较复杂,以后再慢慢写
-                mView.onShowDeviceSettingView(mUUID);
+                mView.onShowDeviceSettingView((String) extra);
                 break;
         }
     }

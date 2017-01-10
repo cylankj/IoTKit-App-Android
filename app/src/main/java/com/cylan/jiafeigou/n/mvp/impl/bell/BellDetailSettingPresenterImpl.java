@@ -16,7 +16,6 @@ import com.google.gson.Gson;
 
 import rx.Observable;
 import rx.schedulers.Schedulers;
-import rx.subscriptions.CompositeSubscription;
 
 /**
  * Created by cylan-hunt on 16-8-3.
@@ -24,11 +23,6 @@ import rx.subscriptions.CompositeSubscription;
 public class BellDetailSettingPresenterImpl extends BasePresenter<BellDetailContract.View>
         implements BellDetailContract.Presenter {
     private BeanBellInfo beanBellInfo;
-
-    @Override
-    protected void onRegisterSubscription(CompositeSubscription subscriptions) {
-        super.onRegisterSubscription(subscriptions);
-    }
 
     @Override
     public void onSetContentView() {

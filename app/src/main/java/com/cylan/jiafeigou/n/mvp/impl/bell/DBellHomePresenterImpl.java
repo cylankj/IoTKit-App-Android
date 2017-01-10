@@ -49,10 +49,10 @@ public class DBellHomePresenterImpl extends BasePresenter<DoorBellHomeContract.V
         }
         ArrayList<BellCallRecordBean> result = new ArrayList<>(32);
         BellCallRecordBean callRecord;
-        DpMsgDefine.BellCallState bell;
+        DpMsgDefine.DPBellCallRecord bell;
         for (DataPoint value : response) {
-            if (!(value instanceof DpMsgDefine.BellCallState)) continue;
-            bell = (DpMsgDefine.BellCallState) value;
+            if (!(value instanceof DpMsgDefine.DPBellCallRecord)) continue;
+            bell = (DpMsgDefine.DPBellCallRecord) value;
             callRecord = new BellCallRecordBean();
             callRecord.answerState = bell.isOK;
             callRecord.timeInLong = bell.time * 1000L;

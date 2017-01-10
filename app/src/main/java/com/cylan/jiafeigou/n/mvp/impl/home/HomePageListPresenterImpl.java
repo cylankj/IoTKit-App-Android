@@ -87,11 +87,11 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
                     @Override
                     public Boolean call(RxEvent.DataPoolUpdate update) {
                         if (update.id == DpMsgMap.ID_204_SDCARD_STORAGE) {
-                            DpMsgDefine.SdStatus sdStatus = (DpMsgDefine.SdStatus) update.value.getValue();
+                            DpMsgDefine.DPSdStatus sdStatus = (DpMsgDefine.DPSdStatus) update.value.getValue();
                         } else if (update.id == DpMsgMap.ID_222_SDCARD_SUMMARY) {
-                            DpMsgDefine.SdcardSummary sdcardSummary = (DpMsgDefine.SdcardSummary) update.value.getValue();
+                            DpMsgDefine.DPSdcardSummary sdcardSummary = (DpMsgDefine.DPSdcardSummary) update.value.getValue();
                         } else if (update.id == DpMsgMap.ID_201_NET) {
-                            DpMsgDefine.MsgNet net = (DpMsgDefine.MsgNet) update.value.getValue();
+                            DpMsgDefine.DPNet net = (DpMsgDefine.DPNet) update.value.getValue();
                         }
                         return null;
                     }

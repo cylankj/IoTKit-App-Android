@@ -33,25 +33,7 @@ public abstract class DataPoint implements Parcelable, Comparable<DataPoint> {
         }
     }
 
-    @Ignore
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Ignore
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeLong(this.id);
-        dest.writeLong(this.version);
-    }
-
     public DataPoint() {
-    }
-
-    protected DataPoint(Parcel in) {
-        this.id = in.readLong();
-        this.version = in.readLong();
     }
 
     @Ignore
@@ -85,5 +67,26 @@ public abstract class DataPoint implements Parcelable, Comparable<DataPoint> {
     public static DataPoint getEmpty() {
         return new DataPoint() {
         };
+    }
+
+    @Ignore
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Ignore
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(this.id);
+        dest.writeLong(this.version);
+        dest.writeLong(this.seq);
+    }
+
+
+    protected DataPoint(Parcel in) {
+        this.id = in.readLong();
+        this.version = in.readLong();
+        this.seq = in.readLong();
     }
 }

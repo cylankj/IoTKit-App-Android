@@ -40,7 +40,6 @@ import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
-import rx.subscriptions.CompositeSubscription;
 
 import static com.cylan.jiafeigou.n.mvp.contract.home.HomeWonderfulContract.View.VIEW_TYPE_EMPTY;
 import static com.cylan.jiafeigou.n.mvp.contract.home.HomeWonderfulContract.View.VIEW_TYPE_GUIDE;
@@ -57,10 +56,9 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
     private WechatShare wechatShare;
 
     @Override
-    protected void onRegisterSubscription(CompositeSubscription subscriptions) {
-        super.onRegisterSubscription(subscriptions);
-        subscriptions.add(getTimeTickEventSub());
-        subscriptions.add(getPageScrolledSub());
+    protected void onRegisterSubscription() {
+        super.onRegisterSubscription();
+        registerSubscription(getTimeTickEventSub(), getPageScrolledSub());
     }
 
     @Override

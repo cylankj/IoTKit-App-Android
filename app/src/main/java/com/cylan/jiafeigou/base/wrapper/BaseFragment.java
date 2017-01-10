@@ -8,6 +8,8 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Toast;
 
 import com.cylan.jiafeigou.R;
@@ -50,6 +52,7 @@ public abstract class BaseFragment<P extends JFGPresenter> extends Fragment impl
         if (mPresenter != null) {
             mPresenter.onSetViewUUID(mUUID);
         }
+
     }
 
     @Nullable
@@ -63,6 +66,9 @@ public abstract class BaseFragment<P extends JFGPresenter> extends Fragment impl
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        if (mPresenter != null) {
+            mPresenter.onViewAttached(this);
+        }
         initViewAndListener();
     }
 
@@ -78,16 +84,48 @@ public abstract class BaseFragment<P extends JFGPresenter> extends Fragment impl
     public void onStart() {
         super.onStart();
         if (mPresenter != null) {
-            mPresenter.onViewAttached(this);
             mPresenter.onStart();
         }
     }
+
+    @Override
+    public Animation onCreateAnimation(int transit, boolean enter, int nextAnim) {
+        if (!enter || nextAnim == 0) return null;
+
+        final Animation animator = AnimationUtils.loadAnimation(getActivityContext(), nextAnim);
+        animator.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                animation.setAnimationListener(null);
+                onEnterAnimationFinished();
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+        return animator;
+    }
+
 
     @Override
     public void onStop() {
         super.onStop();
         if (mPresenter != null) {
             mPresenter.onStop();
+        }
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        if (mPresenter != null) {
             mPresenter.onViewDetached();
         }
     }
@@ -138,6 +176,12 @@ public abstract class BaseFragment<P extends JFGPresenter> extends Fragment impl
     public void setCallBack(CallBack callBack) {
         this.callBack = callBack;
     }
+
+
+    protected void onEnterAnimationFinished() {
+
+    }
+
 
     public interface CallBack {
         void callBack(Object t);

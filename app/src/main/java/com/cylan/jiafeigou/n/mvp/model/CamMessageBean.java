@@ -11,9 +11,9 @@ public class CamMessageBean {
     /**
      * 直接类型，不需要转型。
      */
-    public DpMsgDefine.AlarmMsg alarmMsg;
+    public DpMsgDefine.DPAlarm alarmMsg;
 //    public ArrayList<String> urlList;//最终的url
-    public DpMsgDefine.SdcardSummary content;//204消息
+    public DpMsgDefine.DPSdcardSummary content;//204消息
     public long time;
     public long version;
 

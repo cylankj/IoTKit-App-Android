@@ -37,7 +37,7 @@ public class DpMsgConstant {
     //设备归属,需要按照顺序{Camera,Bell,Cloud,Mag}
     @ForDevice(device = {Device.CAMERA, Device.BELL, Device.CLOUD},
             targetBeanName = {CAM_BEAN_NAME, BELL_BEAN_NAME, CLOUD_BEAN_NAME})
-    @DpAnnotation(msgId = 201, clazz = DpMsgDefine.MsgNet.class)
+    @DpAnnotation(msgId = 201, clazz = DpMsgDefine.DPNet.class)
     public static final String NET = null;//201
 
     @ForDevice(device = {Device.CAMERA, Device.BELL, Device.CLOUD, Device.MAG},
@@ -50,11 +50,11 @@ public class DpMsgConstant {
 //    public static final String SDCARD_STATE = null;
 
     @ForDevice(device = Device.CAMERA, targetBeanName = CAM_BEAN_NAME)
-    @DpAnnotation(msgId = 204, clazz = DpMsgDefine.SdStatus.class)
+    @DpAnnotation(msgId = 204, clazz = DpMsgDefine.DPSdStatus.class)
     public static final String SDCARD_STORAGE = null;
 
     @ForDevice(device = Device.CAMERA, targetBeanName = CAM_BEAN_NAME)
-    @DpAnnotation(msgId = 222, clazz = DpMsgDefine.SdcardSummary.class)
+    @DpAnnotation(msgId = 222, clazz = DpMsgDefine.DPSdcardSummary.class)
     public static final String SDCARD_SUMMARY = null;
 
     @ForDevice(device = {Device.CAMERA, Device.BELL, Device.CLOUD},
@@ -96,7 +96,7 @@ public class DpMsgConstant {
 
     @ForDevice(device = {Device.CAMERA, Device.BELL, Device.CLOUD},
             targetBeanName = {CAM_BEAN_NAME, BELL_BEAN_NAME, CLOUD_BEAN_NAME})
-    @DpAnnotation(msgId = 214, clazz = DpMsgDefine.MsgTimeZone.class)
+    @DpAnnotation(msgId = 214, clazz = DpMsgDefine.DPTimeZone.class)
     public static final String DEVICE_TIME_ZONE = null;
 
     @DpAnnotation(msgId = 215, clazz = boolean.class)
@@ -114,7 +114,7 @@ public class DpMsgConstant {
     public static final String DEVICE_FORMAT_SDCARD = null;
 
     @ForDevice(device = {Device.CAMERA, Device.BELL}, targetBeanName = {CAM_BEAN_NAME, BELL_BEAN_NAME})
-    @DpAnnotation(msgId = 219, clazz = DpMsgDefine.BindLog.class)
+    @DpAnnotation(msgId = 219, clazz = DpMsgDefine.DPBindLog.class)
     public static final String DEVICE_BIND_LOG = null;
 
     @DpAnnotation(msgId = 220, clazz = String.class)
@@ -137,7 +137,7 @@ public class DpMsgConstant {
     public static final String DEVICE_CAMERA_ROTATE = null;//304
 
     @ForDevice(device = {Device.BELL}, targetBeanName = BELL_BEAN_NAME)
-    @DpAnnotation(msgId = 401, clazz = DpMsgDefine.BellCallState.class)
+    @DpAnnotation(msgId = 401, clazz = DpMsgDefine.DPBellCallRecord.class)
     public static final String BELL_CALL_STATE = null;//门铃呼叫状态
 
     @ForDevice(device = {Device.BELL}, targetBeanName = BELL_BEAN_NAME)
@@ -149,7 +149,7 @@ public class DpMsgConstant {
     public static final String CAMERA_ALARM_FLAG = null;
 
     @ForDevice(device = Device.CAMERA, targetBeanName = CAM_BEAN_NAME)
-    @DpAnnotation(msgId = 502, clazz = DpMsgDefine.AlarmInfo.class)
+    @DpAnnotation(msgId = 502, clazz = DpMsgDefine.DPAlarmInfo.class)
     public static final String CAMERA_ALARM_INFO = null;
 
     @ForDevice(device = Device.CAMERA, targetBeanName = CAM_BEAN_NAME)
@@ -157,15 +157,15 @@ public class DpMsgConstant {
     public static final String CAMERA_ALARM_SENSITIVITY = null;
 
     @ForDevice(device = Device.CAMERA, targetBeanName = CAM_BEAN_NAME)
-    @DpAnnotation(msgId = 504, clazz = DpMsgDefine.NotificationInfo.class)
+    @DpAnnotation(msgId = 504, clazz = DpMsgDefine.DPNotificationInfo.class)
     public static final String CAMERA_ALARM_NOTIFICATION = null;//报警音效
 
     //    @ForDevice(device = Device.CAMERA, targetBeanName = CAM_BEAN_NAME)暂时去掉,这是一个列表消息.可能包含大量的数据
-    @DpAnnotation(msgId = 505, clazz = DpMsgDefine.AlarmMsg.class)
+    @DpAnnotation(msgId = 505, clazz = DpMsgDefine.DPAlarm.class)
     public static final String CAMERA_ALARM_MSG = null;//
 
     @ForDevice(device = Device.CAMERA, targetBeanName = CAM_BEAN_NAME)
-    @DpAnnotation(msgId = 506, clazz = DpMsgDefine.TimeLapse.class)
+    @DpAnnotation(msgId = 506, clazz = DpMsgDefine.DPTimeLapse.class)
     public static final String CAMERA_TIME_LAPSE_PHOTOGRAPHY = null;//
 
     @ForDevice(device = Device.CAMERA, targetBeanName = CAM_BEAN_NAME)

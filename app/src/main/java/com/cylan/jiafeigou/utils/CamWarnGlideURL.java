@@ -18,11 +18,11 @@ import java.net.URL;
  */
 
 public class CamWarnGlideURL extends GlideUrl {
-    protected DpMsgDefine.AlarmMsg mBean;
+    protected DpMsgDefine.DPAlarm mBean;
     private String uuid;
     private int index;
 
-    public CamWarnGlideURL(DpMsgDefine.AlarmMsg bean, int index, String uuid) {
+    public CamWarnGlideURL(DpMsgDefine.DPAlarm bean, int index, String uuid) {
         super("http://www.cylan.com.cn", Headers.DEFAULT);
         if (bean == null)
             throw new IllegalArgumentException("MediaBean is Not Completed!");

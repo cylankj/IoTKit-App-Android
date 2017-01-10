@@ -3,14 +3,7 @@ package com.cylan.jiafeigou.base.module;
 import android.os.Parcel;
 
 import com.cylan.annotation.DPProperty;
-import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
-import com.cylan.jiafeigou.dp.DpMsgMap;
-import com.cylan.jiafeigou.dp.DpParameters;
-import com.cylan.jiafeigou.support.log.AppLogger;
-
-import java.util.ArrayList;
-import java.util.Map;
 
 import static com.cylan.jiafeigou.dp.DpMsgMap.ID_201_NET;
 import static com.cylan.jiafeigou.dp.DpMsgMap.ID_401_BELL_CALL_STATE;
@@ -26,24 +19,13 @@ import static com.cylan.jiafeigou.dp.DpMsgMap.ID_402_BELL_VOICE_MSG;
  */
 public class EfamilyDevice extends JFGDevice {
     @DPProperty(msgId = ID_201_NET)
-    public DpMsgDefine.MsgNet net;
-    @DPProperty(msgId = ID_401_BELL_CALL_STATE, isSetType = true)
-    public DpMsgDefine.BellCallState bell_call_state;
+    public DpMsgDefine.DPNet net;
+    @DPProperty(msgId = ID_401_BELL_CALL_STATE)
+    public DpMsgDefine.DPSet<DpMsgDefine.DPBellCallRecord> bell_call_state;
     @DPProperty(msgId = ID_402_BELL_VOICE_MSG)
     public DpMsgDefine.DPPrimary<Integer> bell_voice_msg;
 
     public EfamilyDevice() {
-    }
-
-    @Override
-    public ArrayList<JFGDPMsg> queryParameters(Map<Integer, Long> mapVersion) {
-        DpParameters.Builder builder = new DpParameters.Builder();
-        builder.addAll(super.queryParameters(mapVersion));
-        builder.addParam(DpMsgMap.NAME_2_ID_MAP.get(DpMsgMap.NET_201), getVersion(mapVersion, 201));
-        builder.addParam(DpMsgMap.NAME_2_ID_MAP.get(DpMsgMap.BELL_CALL_STATE_401), getVersion(mapVersion, 401));
-        builder.addParam(DpMsgMap.NAME_2_ID_MAP.get(DpMsgMap.BELL_VOICE_MSG_402), getVersion(mapVersion, 402));
-        AppLogger.i("req:" + builder.toString());
-        return builder.build();
     }
 
     @Override
@@ -60,8 +42,8 @@ public class EfamilyDevice extends JFGDevice {
 
     protected EfamilyDevice(Parcel in) {
         super(in);
-        this.net = in.readParcelable(DpMsgDefine.MsgNet.class.getClassLoader());
-        this.bell_call_state = in.readParcelable(DpMsgDefine.BellCallState.class.getClassLoader());
+        this.net = in.readParcelable(DpMsgDefine.DPNet.class.getClassLoader());
+        this.bell_call_state = in.readParcelable(DpMsgDefine.DPBellCallRecord.class.getClassLoader());
     }
 
     public static final Creator<EfamilyDevice> CREATOR = new Creator<EfamilyDevice>() {

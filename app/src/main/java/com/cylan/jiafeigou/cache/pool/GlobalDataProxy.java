@@ -48,6 +48,7 @@ public class GlobalDataProxy implements IDataProxy {
     public void setJfgAccount(JFGAccount jfgAccount) {
         this.jfgAccount = jfgAccount;
         AppLogger.i("setJfgAccount:" + (jfgAccount == null));
+
     }
 
     public JFGAccount getJfgAccount() {

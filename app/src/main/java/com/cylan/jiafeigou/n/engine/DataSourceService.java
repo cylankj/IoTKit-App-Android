@@ -203,6 +203,7 @@ public class DataSourceService extends Service implements AppCallBack {
     public void OnRobotGetDataRsp(RobotoGetDataRsp robotoGetDataRsp) {
         AppLogger.d("OnLocalMessage :" + new Gson().toJson(robotoGetDataRsp));
         RxBus.getCacheInstance().post(robotoGetDataRsp);
+
         DataSourceManager.getInstance().cacheRobotoGetDataRsp(robotoGetDataRsp);
     }
 

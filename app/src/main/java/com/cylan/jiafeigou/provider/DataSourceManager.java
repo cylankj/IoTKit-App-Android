@@ -3,11 +3,11 @@ package com.cylan.jiafeigou.provider;
 
 import android.support.v4.util.LongSparseArray;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.entity.jniCall.RobotoGetDataRsp;
+import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.base.module.BellDevice;
 import com.cylan.jiafeigou.base.module.CameraDevice;
 import com.cylan.jiafeigou.base.module.EfamilyDevice;
@@ -15,6 +15,7 @@ import com.cylan.jiafeigou.base.module.JFGDevice;
 import com.cylan.jiafeigou.base.module.MagDevice;
 import com.cylan.jiafeigou.base.view.JFGSourceManager;
 import com.cylan.jiafeigou.dp.DataPoint;
+import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 
@@ -99,9 +100,33 @@ public class DataSourceManager implements JFGSourceManager {
         return result;
     }
 
-    public List<JFGDevice> getJFGDeviceByPid(int... pid) {
-        // Arrays.asList(pid);
-        return null;
+    public List<JFGDevice> getJFGDeviceByPid(int... pids) {
+        if (pids == null) return null;
+
+        List<JFGDevice> result = new ArrayList<>();
+        for (Map.Entry<String, JFGDevice> device : mCachedDeviceMap.entrySet()) {
+            for (int pid : pids) {
+                if (device.getValue().pid == pid) {
+                    result.add(device.getValue());
+                    break;
+                }
+            }
+        }
+        return result;
+    }
+
+    public List<String> getJFGDeviceUUIDByPid(int... pids) {
+        if (pids == null) return null;
+        List<String> result = new ArrayList<>();
+        for (Map.Entry<String, JFGDevice> device : mCachedDeviceMap.entrySet()) {
+            for (int pid : pids) {
+                if (device.getValue() != null && device.getValue().pid == pid) {
+                    result.add(device.getValue().uuid);
+                    break;
+                }
+            }
+        }
+        return result;
     }
 
     @Override
@@ -111,7 +136,31 @@ public class DataSourceManager implements JFGSourceManager {
             if (temp != null) {//已经存在了,则更新即可
                 temp.setDevice(device);
             } else {//不存在,则添加
-                mCachedDeviceMap.put(device.uuid, create(device));
+                JFGDevice jfgDevice = create(device);
+                if (jfgDevice != null) mCachedDeviceMap.put(device.uuid, jfgDevice);
+            }
+        }
+        syncAllJFGDeviceProperty();
+    }
+
+
+    //主动发起请求,来获取设备所有的属性
+    public void syncAllJFGDeviceProperty() {
+        if (mCachedDeviceMap.size() == 0) return;
+        for (Map.Entry<String, JFGDevice> entry : mCachedDeviceMap.entrySet()) {
+            syncJFGDeviceProperty(entry.getKey());
+        }
+    }
+
+    public void syncJFGDeviceProperty(String uuid) {
+        if (TextUtils.isEmpty(uuid) || mJFGAccount == null) return;
+        JFGDevice device = mCachedDeviceMap.get(uuid);
+        if (device != null) {
+            ArrayList<JFGDPMsg> parameters = device.getQueryParameters(false);
+            try {
+                JfgCmdInsurance.getCmd().robotGetData(uuid, parameters, 1, false, 0);
+            } catch (JfgException e) {
+                e.printStackTrace();
             }
         }
     }
@@ -119,6 +168,7 @@ public class DataSourceManager implements JFGSourceManager {
     @Override
     public void cacheJFGAccount(JFGAccount account) {
         mJFGAccount = account;
+        syncAllJFGDeviceProperty();
     }
 
     @Override
@@ -129,7 +179,6 @@ public class DataSourceManager implements JFGSourceManager {
     @Override
     public void cacheRobotoGetDataRsp(RobotoGetDataRsp dataRsp) {
         final String identity = dataRsp.identity;
-        Log.d(TAG, "fullDataPointAssembler: " + identity);
         for (Map.Entry<Integer, ArrayList<JFGDPMsg>> entry : dataRsp.map.entrySet()) {
             if (entry.getValue() == null) continue;
             boolean changed = false;
@@ -232,6 +281,9 @@ public class DataSourceManager implements JFGSourceManager {
                 break;
             case OS_DOOR_BELL_V2:
                 break;
+            default:
+                result = new JFGDevice() {
+                };
         }
         return result;
     }

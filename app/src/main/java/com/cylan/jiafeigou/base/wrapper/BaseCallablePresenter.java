@@ -19,7 +19,6 @@ import com.cylan.jiafeigou.utils.ContextUtils;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
-import rx.subscriptions.CompositeSubscription;
 
 /**
  * Created by yzd on 16-12-30.
@@ -30,9 +29,9 @@ public abstract class BaseCallablePresenter<V extends CallableView> extends Base
 
     @Override
     @CallSuper
-    protected void onRegisterSubscription(CompositeSubscription subscriptions) {
-        super.onRegisterSubscription(subscriptions);
-        subscriptions.add(onRegisterCallAnswerObserverSub());
+    protected void onRegisterSubscription() {
+        super.onRegisterSubscription();
+        registerSubscription(getCallAnswerObserverSub());
     }
 
 
@@ -41,7 +40,7 @@ public abstract class BaseCallablePresenter<V extends CallableView> extends Base
         return mCaller == null ? "" : mCaller.caller + "";
     }
 
-    protected Subscription onRegisterCallAnswerObserverSub() {
+    protected Subscription getCallAnswerObserverSub() {
         return RxBus.getCacheInstance().toObservable(RxEvent.CallAnswerd.class)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -69,9 +68,7 @@ public abstract class BaseCallablePresenter<V extends CallableView> extends Base
                 }
                 mIsSpeakerOn = true;//接听门铃默认打开麦克风
 
-                if (TextUtils.equals(mCaller.caller, mInViewIdentify)) {
-                    startViewer();
-                } else if (!TextUtils.isEmpty(mInViewIdentify)) {
+                if (!TextUtils.isEmpty(mInViewIdentify)) {
                     mView.onNewCallWhenInLive(mCaller.caller);
                 } else {
                     mView.onListen();
