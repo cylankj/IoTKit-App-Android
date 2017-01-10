@@ -3,6 +3,7 @@ package com.cylan.jiafeigou.base.wrapper;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -16,6 +17,7 @@ import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.view.JFGPresenter;
 import com.cylan.jiafeigou.base.view.JFGView;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.n.mvp.contract.record.DelayRecordContract;
 import com.cylan.jiafeigou.widget.LoadingDialog;
 
 import java.util.UUID;
@@ -49,12 +51,24 @@ public abstract class BaseActivity<P extends JFGPresenter> extends AppCompatActi
         super.onCreate(savedInstanceState);
         setContentView(getContentViewID());
         ButterKnife.bind(this);
-        if (mPresenter == null) {
-            mPresenter = onCreatePresenter();
-            mUUID = getIntent().getStringExtra(JConstant.KEY_DEVICE_ITEM_UUID);
+        mUUID = getIntent().getStringExtra(JConstant.KEY_DEVICE_ITEM_UUID);
+        mPresenter = onCreatePresenter();
+        if (TextUtils.isEmpty(mUUID)) {
+            mUUID = "500000000247";
+        }
+        if (mPresenter != null) {
             mPresenter.onSetViewUUID(mUUID);
         }
         initViewAndListener();
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        mUUID = getIntent().getStringExtra(JConstant.KEY_DEVICE_ITEM_UUID);
+        if (mPresenter != null) {
+            mPresenter.onSetViewUUID(mUUID);
+        }
     }
 
     @Override
@@ -63,6 +77,14 @@ public abstract class BaseActivity<P extends JFGPresenter> extends AppCompatActi
         if (mPresenter != null) {
             mPresenter.onViewAttached(this);
             mPresenter.onStart();
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (mPresenter != null) {
+            mPresenter.onSetContentView();//有些view需要根据一定的条件来显示不同的view,可以在这个方法中来选择
         }
     }
 
@@ -101,19 +123,28 @@ public abstract class BaseActivity<P extends JFGPresenter> extends AppCompatActi
         if (!TextUtils.isEmpty(msg)) mAlertDialog.setMessage(msg);
         if (!TextUtils.isEmpty(ok)) {
             mAlertDialog.setButton(DialogInterface.BUTTON_POSITIVE, ok, (dialog, which) -> {
-                onViewAction(JFGView.VIEW_ACTION_OK, handle, null);
+                mPresenter.onViewAction(JFGView.VIEW_ACTION_OK, handle, null);
             });
         }
         if (!TextUtils.isEmpty(cancel)) {
             mAlertDialog.setButton(DialogInterface.BUTTON_NEGATIVE, cancel, (dialog, which) -> {
-                onViewAction(JFGView.VIEW_ACTION_CANCEL, handle, null);
+                mPresenter.onViewAction(JFGView.VIEW_ACTION_CANCEL, handle, null);
             });
         }
         mAlertDialog.show();
         return handle;
     }
 
-    protected void onViewAction(int action, String handler, Object extra) {
+    @Override
+    public void onLoginStateChanged(boolean online) {
+        showToast("还未登录");
+    }
+
+    /**
+     * 默认是将viewAction转发到presenter中进行处理,子类也可以复写此方法自己处理
+     */
+    public void onViewAction(int action, String handler, Object extra) {
+        mPresenter.onViewAction(action, handler, extra);
     }
 
 
@@ -172,10 +203,19 @@ public abstract class BaseActivity<P extends JFGPresenter> extends AppCompatActi
      * 退出之前做一些清理或准备工作
      */
     protected void onPrepareToExit(Action action) {
+        action.actionDone();
     }
 
     protected boolean shouldExit() {
         return true;
     }
 
+    @Override
+    public String onResolveViewLaunchType() {
+        String way = getIntent().getStringExtra(JConstant.VIEW_CALL_WAY);
+        if (TextUtils.isEmpty(way)) {
+            way = DelayRecordContract.View.VIEW_LAUNCH_WAY_SETTING;
+        }
+        return way;
+    }
 }

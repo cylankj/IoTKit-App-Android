@@ -1,7 +1,7 @@
 package com.cylan.jiafeigou.n.mvp.contract.home;
 
-import com.cylan.jiafeigou.n.mvp.BasePresenter;
-import com.cylan.jiafeigou.n.mvp.BaseView;
+import com.cylan.jiafeigou.base.view.JFGPresenter;
+import com.cylan.jiafeigou.base.view.JFGView;
 import com.cylan.jiafeigou.n.mvp.model.MediaBean;
 
 import java.util.List;
@@ -11,7 +11,11 @@ import java.util.List;
  */
 public interface HomeWonderfulContract {
 
-    interface View extends BaseView<Presenter> {
+    interface View extends JFGView {
+
+        int VIEW_TYPE_HIDE = -1;
+        int VIEW_TYPE_EMPTY = 0;
+        int VIEW_TYPE_GUIDE = 1;
 
         void onMediaListRsp(List<MediaBean> list);
 
@@ -30,9 +34,11 @@ public interface HomeWonderfulContract {
         void onPageScrolled();
 
         void onWechatCheckRsp(boolean installed);
+
+        void chooseEmptyView(int type);//type:0:empty:1:guide:-1:hide
     }
 
-    interface Presenter extends BasePresenter {
+    interface Presenter extends JFGPresenter {
         void startRefresh();
 
         void startLoadMore();
@@ -52,6 +58,9 @@ public interface HomeWonderfulContract {
         void unregisterWechat();
 
         void shareToWechat(MediaBean mediaBean, int type);
+
+        void removeGuideAnymore();
+
     }
 
 }

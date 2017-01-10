@@ -10,6 +10,8 @@ public interface JFGPresenter {
 
     void onStart();
 
+    void onSetContentView();
+
     void onStop();
 
     void onViewDetached();

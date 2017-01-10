@@ -51,10 +51,13 @@ public abstract class BaseCallablePresenter<V extends CallableView> extends Base
     }
 
     public void pickup() {
+        mView.onViewer();
         waitForPicture(mCaller.picture, this::startViewer);
     }
 
     protected void callAnswerInOther() {
+        mHasResolution = true;
+        mView.onCallAnswerInOther();
     }
 
     public void newCall(Caller caller) {
@@ -72,7 +75,9 @@ public abstract class BaseCallablePresenter<V extends CallableView> extends Base
                     mView.onNewCallWhenInLive(mCaller.caller);
                 } else {
                     mView.onListen();
-                    waitForPicture(mCaller.picture, () -> mView.onPreviewPicture(mCaller.picture));
+                    waitForPicture(mCaller.picture, () -> {
+                        if (mView != null) mView.onPreviewPicture(mCaller.picture);
+                    });
                 }
                 break;
             case JConstant.VIEW_CALL_WAY_VIEWER:
@@ -80,7 +85,9 @@ public abstract class BaseCallablePresenter<V extends CallableView> extends Base
                 startViewer();
                 break;
         }
+
         setSpeaker(mIsSpeakerOn);
+
         mView.onSpeaker(mIsSpeakerOn);
     }
 

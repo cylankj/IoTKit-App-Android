@@ -17,7 +17,7 @@ import com.cylan.jiafeigou.utils.PreferencesUtils;
  * An {@link IntentService} subclass for handling asynchronous task requests in
  * a service on a separate handler thread.
  * <p>
- * TODO: Customize class - update intent actions, extra parameters and static
+ * TODO: Customize class - setDevice intent actions, extra parameters and static
  * helper methods.
  * 登陆成功后，需要刷新一些缓存，数据，都在这里做。
  */

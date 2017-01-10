@@ -196,7 +196,7 @@ public class TrayContentProvider extends ContentProvider {
 
         } else if (status == -1) {
             //throw new SQLiteException("An error occurred while saving preference.");
-            TrayLog.w("Couldn't update or insert data. Uri: " + uri);
+            TrayLog.w("Couldn't setDevice or insert data. Uri: " + uri);
         } else {
             TrayLog.w("unknown SQLite error");
         }
@@ -295,7 +295,7 @@ public class TrayContentProvider extends ContentProvider {
 
         // this is a standard implementation (but untested at the moment).
         // Perhaps useful in the future. The current implementation doesn't require a an
-        // update mechanism other than multiple calls to {@link #insert} which results
+        // setDevice mechanism other than multiple calls to {@link #insert} which results
         // in an {@link #insertOrUpdate} call
 
         /*final int match = sURIMatcher.match(uri);
@@ -310,7 +310,7 @@ public class TrayContentProvider extends ContentProvider {
         }
 
         final int rows = mUserDbHelper.getWritableDatabase()
-                .update(getTable(uri), values, selection, selectionArgs);
+                .setDevice(getTable(uri), values, selection, selectionArgs);
 
         // Don't force an UI refresh if nothing has changed
         if (rows > 0) {

@@ -94,12 +94,17 @@ public class DpAssembler implements IParser {
                         (JCache.getAccountCache() != null && JCache.getAccountCache().getAccount() != null))
                 .map((RxEvent.JFGAttributeUpdate jfgAttributeUpdate) -> {
                     if (jfgAttributeUpdate.msgId == DpMsgMap.ID_2000003_BASE_ALIAS) {
+
                         DpMsgDefine.DpWrap wrap = flatMsg.getDevice(JCache.getAccountCache().getAccount(),
                                 jfgAttributeUpdate.uuid);
                         wrap.baseDpDevice.alias = (String) jfgAttributeUpdate.o;
                         flatMsg.cache(JCache.getAccountCache().getAccount(),
                                 wrap.baseDpDevice);
-                        AppLogger.i("update alias: " + jfgAttributeUpdate.o);
+
+                        DpMsgDefine.JFGDeviceWrap jfgDevice = flatMsg.getJFGDevice(GlobalDataProxy.getInstance().getJfgAccount().getAccount(), jfgAttributeUpdate.uuid);
+                        jfgDevice.device.alias = (String) jfgAttributeUpdate.o;
+                        flatMsg.cacheJFGDevice(GlobalDataProxy.getInstance().getJfgAccount().getAccount(), jfgDevice.device);
+                        AppLogger.i("setDevice alias: " + jfgAttributeUpdate.o);
                         return null;
                     }
                     String uuid = jfgAttributeUpdate.uuid;
@@ -136,20 +141,24 @@ public class DpAssembler implements IParser {
                     //拿出对应uuid的所有属性
                     DpMsgDefine.DpWrap deviceDetailsCache = flatMsg.getDevice(JCache.getAccountCache().getAccount(),
                             arrayListStringPair.second);
-                    if (deviceDetailsCache == null || deviceDetailsCache.baseDpMsgList == null) {
+                    DpMsgDefine.JFGDeviceWrap jfgDevice = flatMsg.getJFGDevice(GlobalDataProxy.getInstance().getJfgAccount().getAccount(), arrayListStringPair.second);
+                    if (deviceDetailsCache == null || deviceDetailsCache.baseDpMsgList == null || jfgDevice == null || jfgDevice.baseDpMsgList == null) {
                         AppLogger.e("deviceDetailsCache is null");
                         return null;
                     }
                     for (DpMsgDefine.DpMsg dpMsg : deviceDetailsCache.baseDpMsgList) {
                         if (dpMsg.msgId == arrayListStringPair.first.msgId) {
                             //hit
+
                             if (arrayListStringPair.first.version > dpMsg.version) {
 
-                                AppLogger.i("update attr: " + dpMsg + " -->" + arrayListStringPair.first);
+                                AppLogger.i("setDevice attr: " + dpMsg + " -->" + arrayListStringPair.first);
                                 break;
                             }
                         }
                     }
+
+
                     return null;
                 })
                 .retry(new RxHelper.ExceptionFun<>(TAG + "updateDpMsg"))
@@ -219,6 +228,9 @@ public class DpAssembler implements IParser {
         dpDevice.sn = device.sn;
         dpDevice.uuid = device.uuid;
         flatMsg.cache(JCache.getAccountCache().getAccount(), dpDevice);
+
+//        com.cylan.jiafeigou.base.module.JFGDevice jfgDevice = new com.cylan.jiafeigou.base.module.JFGDevice().setDevice(device);
+//        flatMsg.cacheJFGDevice(GlobalDataProxy.getInstance().getJfgAccount().getAccount(), jfgDevice);
     }
 
     private Observable<JFGAccount> monitorJFGAccount() {
@@ -256,6 +268,7 @@ public class DpAssembler implements IParser {
                 .map((List<JFGDevice> list) -> {
                     HashMap<String, Long> map = new HashMap<>();
                     for (int i = 0; i < list.size(); i++) {
+                        if (merger(list.get(i).pid) == null) continue;
                         GlobalDataProxy.getInstance().cacheDevice(list.get(i).uuid, list.get(i));
                         getUnreadMsg(list.get(i));
                         assembleBase(list.get(i));

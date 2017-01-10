@@ -1,16 +1,28 @@
 package com.cylan.jiafeigou.base.wrapper;
 
+import android.os.SystemClock;
 import android.text.TextUtils;
 import android.view.SurfaceView;
 import android.view.ViewGroup;
 
+import com.cylan.entity.jniCall.JFGMsgVideoDisconn;
 import com.cylan.entity.jniCall.JFGMsgVideoResolution;
 import com.cylan.entity.jniCall.JFGMsgVideoRtcp;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.base.view.ViewablePresenter;
 import com.cylan.jiafeigou.base.view.ViewableView;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
+import com.cylan.jiafeigou.rx.RxBus;
+import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.widget.video.VideoViewFactory;
+
+import java.util.concurrent.TimeUnit;
+
+import rx.Observable;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
+import rx.subscriptions.CompositeSubscription;
 
 /**
  * Created by yzd on 16-12-30.
@@ -22,23 +34,87 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
     protected String mInViewCallWay = null;
     protected boolean mIsSpeakerOn = false;
 
+    protected boolean mHasResolution = false;
+
+    protected Subscription mResolutionRetrySub;
+
     @Override
-    protected long onResolveViewFeatures() {
-        return BasePresenter.FEATURE_VIDEO_FLOW_RSP | BasePresenter.FEATURE_VIDEO_RESOLUTION;
+    protected void onRegisterSubscription(CompositeSubscription subscriptions) {
+        super.onRegisterSubscription(subscriptions);
+        subscriptions.add(getVideoDisconnectedSub());
+        subscriptions.add(getResolutionSub());
+        subscriptions.add(getVideoFlowRspSub());
     }
+
+    protected Subscription getVideoDisconnectedSub() {
+        return RxBus.getCacheInstance().toObservable(JFGMsgVideoDisconn.class)
+                .subscribeOn(Schedulers.io())
+                .filter(disconnectRsp -> TextUtils.equals(disconnectRsp.remote, onResolveViewIdentify()))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(this::onVideoDisconnected, Throwable::printStackTrace);
+    }
+
+    protected Subscription getResolutionSub() {
+        return RxBus.getCacheInstance().toObservable(JFGMsgVideoResolution.class)
+                .subscribeOn(Schedulers.io())
+                .filter(videoResolutionRsp -> TextUtils.equals(onResolveViewIdentify(), videoResolutionRsp.peer))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(videoResolutionRsp -> {
+                    mHasResolution = true;
+                    onVideoResolution(videoResolutionRsp);
+                }, Throwable::printStackTrace);
+    }
+
+    protected Subscription getVideoFlowRspSub() {
+        return RxBus.getCacheInstance().toObservable(JFGMsgVideoRtcp.class)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(this::onVideoFlowRsp, Throwable::printStackTrace);
+    }
+
+    protected void onVideoDisconnected(JFGMsgVideoDisconn disconnect) {
+    }
+
+    protected void onVideoFlowRsp(JFGMsgVideoRtcp flowRsp) {
+        mView.onFlowSpeed(flowRsp.bitRate);
+    }
+
 
     @Override
     public void startViewer() {
-        try {
-            if (mInViewIdentify != null) JfgCmdInsurance.getCmd().stopPlay(mInViewIdentify);
-            mInViewCallWay = mView.onResolveViewLaunchType();
-            mInViewIdentify = onResolveViewIdentify();
-            mView.onViewer();
-            listenResolution();
-            JfgCmdInsurance.getCmd().playVideo(mInViewIdentify);
-        } catch (JfgException e) {
-            e.printStackTrace();
+        if (mResolutionRetrySub != null && mResolutionRetrySub.isUnsubscribed()) {
+            mResolutionRetrySub.unsubscribe();
         }
+        mView.onViewer();
+        mHasResolution = false;
+        mInViewCallWay = mView.onResolveViewLaunchType();
+        mSubscriptions.add(getResolutionRetrySub());
+    }
+
+    protected Subscription getResolutionRetrySub() {
+        return mResolutionRetrySub = Observable.interval(0, 10, TimeUnit.SECONDS)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(count -> {
+                    try {
+                        if (mHasResolution) {
+                            unSubscribe(mResolutionRetrySub);
+                            return;
+                        }
+
+                        if (!TextUtils.isEmpty(mInViewIdentify)) {
+                            JfgCmdInsurance.getCmd().stopPlay(mInViewIdentify);
+                            SystemClock.sleep(2000);
+                        }
+                        if (TextUtils.isEmpty(mInViewIdentify)) {
+                            mInViewIdentify = onResolveViewIdentify();
+                        }
+                        AppLogger.d("正在进行第" + count + "次重试");
+                        JfgCmdInsurance.getCmd().playVideo(mInViewIdentify);
+                    } catch (JfgException e) {
+                        e.printStackTrace();
+                    }
+                }, Throwable::printStackTrace);
     }
 
     /**
@@ -49,6 +125,7 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
     protected void stopViewer() {
         if (!TextUtils.isEmpty(mInViewIdentify)) {
             try {
+                mHasResolution = false;
                 JfgCmdInsurance.getCmd().stopPlay(mInViewIdentify);
             } catch (JfgException e) {
                 e.printStackTrace();
@@ -56,9 +133,10 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
         }
     }
 
-    @Override
     protected void onVideoResolution(JFGMsgVideoResolution resolution) {
         try {
+            mHasResolution = true;
+            unSubscribe(mResolutionRetrySub);
             mView.onResolution(resolution);
         } catch (JfgException e) {
             e.printStackTrace();
@@ -66,8 +144,8 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
     }
 
     @Override
-    protected void onVideoFlowRsp(JFGMsgVideoRtcp flowRsp) {
-        mView.onFlowSpeed(flowRsp.bitRate);
+    protected String onResolveViewIdentify() {
+        return mUUID;
     }
 
     @Override
@@ -85,6 +163,7 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
     public void dismiss() {
         stopViewer();
         mInViewIdentify = null;
+        mHasResolution = true;
         mView.onDismiss();
     }
 

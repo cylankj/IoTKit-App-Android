@@ -3,7 +3,7 @@ package com.cylan.jiafeigou.n.mvp.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.cylan.jiafeigou.dp.BaseDataPoint;
+import com.cylan.jiafeigou.dp.DataPoint;
 
 import org.msgpack.annotation.Ignore;
 import org.msgpack.annotation.Index;
@@ -13,12 +13,13 @@ import org.msgpack.annotation.Message;
  * Created by chen on 6/6/16.
  */
 @Message
-public class MediaBean extends BaseDataPoint implements Comparable<MediaBean>, Parcelable {
+public class MediaBean extends DataPoint implements Parcelable {
 
 
     public static final int TYPE_PIC = 0;
     public static final int TYPE_VIDEO = 1;
     public static final int TYPE_LOAD = 2;
+    private static MediaBean guideBean;
 
     @Ignore
     public long version;
@@ -55,8 +56,8 @@ public class MediaBean extends BaseDataPoint implements Comparable<MediaBean>, P
 
 
     @Override
-    public int compareTo(MediaBean another) {
-        return another != null ? another.time - this.time : 0;
+    public int compareTo(DataPoint another) {
+        return (another != null && another instanceof MediaBean) ? ((MediaBean) another).time - time : 0;
     }
 
     @Override
@@ -117,6 +118,17 @@ public class MediaBean extends BaseDataPoint implements Comparable<MediaBean>, P
             loadBean = new MediaBean();
         loadBean.msgType = TYPE_LOAD;
         return loadBean;
+    }
+
+    public static MediaBean getGuideBean() {
+        if (guideBean == null) {
+            guideBean = new MediaBean();
+            guideBean.msgType = TYPE_VIDEO;
+            guideBean.fileName = "http://yf.cylan.com.cn:82/Garfield/1045020208160b9706425470.mp4";
+            guideBean.cid = "www.cylan.com";
+        }
+        guideBean.time = (int) (System.currentTimeMillis() / 1000);
+        return guideBean;
     }
 }
 
