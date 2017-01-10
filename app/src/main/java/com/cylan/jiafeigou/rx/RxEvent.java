@@ -657,4 +657,23 @@ public class RxEvent {
         public int msgId;
         public byte[] data;
     }
+
+    public static class CallAnswerd {
+
+    }
+
+    public static class GetDataResponse {
+        public long seq;
+        public long msgId;
+        public boolean changed;
+    }
+
+    public static class DeviceSyncRsp {
+        public DeviceSyncRsp setUuid(String uuid) {
+            this.uuid = uuid;
+            return this;
+        }
+
+        public String uuid;
+    }
 }

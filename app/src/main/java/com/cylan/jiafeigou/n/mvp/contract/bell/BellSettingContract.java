@@ -1,8 +1,8 @@
 package com.cylan.jiafeigou.n.mvp.contract.bell;
 
-import com.cylan.jiafeigou.n.mvp.BasePresenter;
-import com.cylan.jiafeigou.n.mvp.BaseView;
-import com.cylan.jiafeigou.n.mvp.model.BeanBellInfo;
+import com.cylan.jiafeigou.base.module.BellDevice;
+import com.cylan.jiafeigou.base.view.JFGPresenter;
+import com.cylan.jiafeigou.base.view.PropertyView;
 
 /**
  * Created by cylan-hunt on 16-6-29.
@@ -10,17 +10,7 @@ import com.cylan.jiafeigou.n.mvp.model.BeanBellInfo;
 public interface BellSettingContract {
 
 
-    interface View extends BaseView<Presenter> {
-
-        void onSettingInfoRsp(BeanBellInfo bellInfoBean);
-
-        /**
-         * 账号登录状态
-         *
-         * @param state
-         */
-        void onLoginState(boolean state);
-
+    interface View extends PropertyView<BellDevice> {
         /**
          * 解绑设备回调
          *
@@ -30,10 +20,7 @@ public interface BellSettingContract {
 
     }
 
-    interface Presenter extends BasePresenter {
-        BeanBellInfo getBellInfo();
-
-
+    interface Presenter extends JFGPresenter {
         /**
          * 解绑设备
          */

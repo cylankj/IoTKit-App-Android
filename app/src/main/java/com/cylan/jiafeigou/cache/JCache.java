@@ -31,8 +31,10 @@ public class JCache {
      */
     @Deprecated
     public static JFGAccount getAccountCache() {
+
         return GlobalDataProxy.getInstance().getJfgAccount();
     }
+
 
     public static LoginAccountBean tmpAccount;
 

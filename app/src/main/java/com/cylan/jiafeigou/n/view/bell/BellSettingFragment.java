@@ -3,21 +3,19 @@ package com.cylan.jiafeigou.n.view.bell;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.base.module.BellDevice;
+import com.cylan.jiafeigou.base.wrapper.BaseFragment;
+import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
-import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.bell.BellSettingContract;
 import com.cylan.jiafeigou.n.mvp.impl.bell.BellSettingPresenterImpl;
-import com.cylan.jiafeigou.n.mvp.model.BeanBellInfo;
-import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.LoadingDialog;
@@ -26,12 +24,11 @@ import com.cylan.jiafeigou.widget.dialog.BaseDialog;
 import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 import static com.cylan.jiafeigou.utils.ActivityUtils.loadFragment;
 
-public class BellSettingFragment extends IBaseFragment<BellSettingContract.Presenter>
+public class BellSettingFragment extends BaseFragment<BellSettingContract.Presenter>
         implements BellSettingContract.View,
         BaseDialog.BaseDialogAction {
 
@@ -59,19 +56,22 @@ public class BellSettingFragment extends IBaseFragment<BellSettingContract.Prese
         return fragment;
     }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        DeviceBean bean = getArguments().getParcelable(JConstant.KEY_DEVICE_ITEM_BUNDLE);
-        basePresenter = new BellSettingPresenterImpl(this, bean);
+    public static BellSettingFragment newInstance(String uuid) {
+        BellSettingFragment fragment = new BellSettingFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
+        fragment.setArguments(bundle);
+        return fragment;
     }
 
-    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.layout_fragment_bell_setting, container, false);
-        ButterKnife.bind(this, view);
-        return view;
+    protected BellSettingContract.Presenter onCreatePresenter() {
+        return new BellSettingPresenterImpl();
+    }
+
+    @Override
+    protected int getContentViewID() {
+        return R.layout.layout_fragment_bell_setting;
     }
 
     @Override
@@ -94,14 +94,8 @@ public class BellSettingFragment extends IBaseFragment<BellSettingContract.Prese
             case R.id.sv_setting_device_detail: {
                 BellDetailFragment fragment = BellDetailFragment.newInstance(null);
                 Bundle bundle = new Bundle();
-                bundle.putParcelable(JConstant.KEY_DEVICE_ITEM_BUNDLE, basePresenter.getBellInfo());
+                bundle.putString(JConstant.KEY_DEVICE_ITEM_UUID, mUUID);
                 fragment.setArguments(bundle);
-                fragment.setCallBack(new IBaseFragment.CallBack() {
-                    @Override
-                    public void callBack(Object t) {
-                        onSettingInfoRsp(basePresenter.getBellInfo());
-                    }
-                });
                 loadFragment(android.R.id.content, getActivity().getSupportFragmentManager(), fragment);
             }
             break;
@@ -126,36 +120,6 @@ public class BellSettingFragment extends IBaseFragment<BellSettingContract.Prese
     }
 
     @Override
-    public void onSettingInfoRsp(BeanBellInfo bellInfoBean) {
-        if (bellInfoBean.deviceBase != null && !TextUtils.isEmpty(bellInfoBean.deviceBase.shareAccount)) {
-            //分享账号
-            final int count = lLayoutSettingContainer.getChildCount();
-            for (int i = 3; i < count; i++) {
-                View v = lLayoutSettingContainer.getChildAt(i);
-                if (v != null) {
-                    v.setVisibility(View.GONE);
-                }
-            }
-        }
-        svSettingDeviceDetail.setTvSubTitle(TextUtils.isEmpty(bellInfoBean.deviceBase.alias)
-                ? bellInfoBean.deviceBase.uuid : bellInfoBean.deviceBase.alias);
-        String ssid = bellInfoBean.net == null || TextUtils.isEmpty(bellInfoBean.net.ssid)
-                ? getString(R.string.OFF_LINE) : bellInfoBean.net.ssid;
-        svSettingDeviceWifi.setTvSubTitle(ssid);
-        if (!TextUtils.isEmpty(bellInfoBean.deviceBase.shareAccount)) {
-            final int count = lLayoutSettingContainer.getChildCount();
-            for (int i = 3; i < count - 2; i++) {
-                View v = lLayoutSettingContainer.getChildAt(i);
-                v.setVisibility(View.GONE);
-            }
-        }
-    }
-
-    @Override
-    public void onLoginState(boolean state) {
-    }
-
-    @Override
     public void unbindDeviceRsp(int state) {
         if (state == JError.ErrorOK) {
             LoadingDialog.dismissLoading(getActivity().getSupportFragmentManager());
@@ -165,18 +129,27 @@ public class BellSettingFragment extends IBaseFragment<BellSettingContract.Prese
     }
 
     @Override
-    public void setPresenter(BellSettingContract.Presenter presenter) {
-        this.basePresenter = presenter;
-    }
-
-    @Override
     public void onDialogAction(int id, Object value) {
         switch (id) {
             case R.id.tv_dialog_btn_left:
-                basePresenter.unbindDevice();
+                mPresenter.unbindDevice();
                 LoadingDialog.showLoading(getActivity().getSupportFragmentManager(), getString(R.string.DELETEING));
                 break;
         }
 
+    }
+
+    @Override
+    public void onShowProperty(BellDevice device) {
+        svSettingDeviceDetail.setTvSubTitle(TextUtils.isEmpty(device.alias)
+                ? device.uuid : device.alias);
+        if (!TextUtils.isEmpty(device.shareAccount)) {
+            final int count = lLayoutSettingContainer.getChildCount();
+            for (int i = 3; i < count - 2; i++) {
+                View v = lLayoutSettingContainer.getChildAt(i);
+                v.setVisibility(View.GONE);
+            }
+        }
+        svSettingDeviceWifi.setTvSubTitle(DpMsgDefine.MsgNet.getNormalString(device.net));
     }
 }

@@ -1,4 +1,4 @@
-package com.cylan.jiafeigou.n.view.cam;
+package com.cylan.jiafeigou.n.view.record;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
