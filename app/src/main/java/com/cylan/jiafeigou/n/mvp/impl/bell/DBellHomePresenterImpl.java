@@ -1,15 +1,12 @@
 package com.cylan.jiafeigou.n.mvp.impl.bell;
 
 import com.cylan.entity.jniCall.JFGDPMsg;
-import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.base.wrapper.BasePresenter;
 import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
-import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.contract.bell.DoorBellHomeContract;
 import com.cylan.jiafeigou.n.mvp.model.BellCallRecordBean;
-import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.TimeUtils;
 
 import java.text.SimpleDateFormat;
@@ -76,16 +73,10 @@ public class DBellHomePresenterImpl extends BasePresenter<DoorBellHomeContract.V
 
     @Override
     public void fetchBellRecordsList(boolean asc, long time) {
-        AppLogger.d("fetchBellRecordsList:" + asc + time);
-        try {
-            JFGDPMsg request = new JFGDPMsg(DpMsgMap.ID_401_BELL_CALL_STATE, time);
-            ArrayList<JFGDPMsg> params = new ArrayList<>();
-            params.add(request);
-            long seq = JfgCmdInsurance.getCmd().robotGetData(mUUID, params, 20, asc, 0);
-            mRequestSeqs.add(seq);
-        } catch (JfgException e) {
-            e.printStackTrace();
-        }
+        JFGDPMsg request = new JFGDPMsg(DpMsgMap.ID_401_BELL_CALL_STATE, time);
+        ArrayList<JFGDPMsg> params = new ArrayList<>();
+        params.add(request);
+        robotGetData(mUUID, params, 20, asc, 0);
     }
 
     @Override
@@ -96,6 +87,6 @@ public class DBellHomePresenterImpl extends BasePresenter<DoorBellHomeContract.V
             msg = new JFGDPMsg(DpMsgMap.ID_401_BELL_CALL_STATE, bean.version);
             params.add(msg);
         }
-        JfgCmdInsurance.getCmd().robotDelData(mUUID, params, 0);
+        robotDelData(mUUID, params, 0);
     }
 }

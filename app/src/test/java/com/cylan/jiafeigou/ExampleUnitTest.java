@@ -23,4 +23,10 @@ public class ExampleUnitTest {
     public void testYou() {
         System.out.println("good");
     }
+
+    @Test
+    public void testMe() {
+        String ss=null;
+        System.out.print(ss);
+    }
 }

@@ -80,6 +80,10 @@ public class DataSourceManager implements JFGSourceManager {
 
     public void setOnline(boolean online) {
         isOnline = online;
+        if (!isOnline) {//没有登录的话则清除所有的缓存
+            mCachedDeviceMap.clear();
+            mCachedGenericMap.clear();
+        }
     }
 
     public boolean isOnline() {
@@ -88,16 +92,18 @@ public class DataSourceManager implements JFGSourceManager {
 
     @Override
     public <T extends JFGDevice> T getJFGDevice(String uuid) {
-        return (T) mCachedDeviceMap.get(uuid);
+        JFGDevice device = mCachedDeviceMap.get(uuid);
+        if (device == null) throw new IllegalArgumentException("天啊,它真的发生了,你是不是又在乱传参数???");
+        return getValueWithAccountCheck((T) device.$());
     }
 
     @Override
     public List<JFGDevice> getAllJFGDevice() {
         List<JFGDevice> result = new ArrayList<>(mCachedDeviceMap.size());
         for (Map.Entry<String, ? extends JFGDevice> entry : mCachedDeviceMap.entrySet()) {
-            result.add(entry.getValue());
+            result.add(getJFGDevice(entry.getKey()));
         }
-        return result;
+        return getValueWithAccountCheck(result);
     }
 
     public List<JFGDevice> getJFGDeviceByPid(int... pids) {
@@ -107,12 +113,12 @@ public class DataSourceManager implements JFGSourceManager {
         for (Map.Entry<String, JFGDevice> device : mCachedDeviceMap.entrySet()) {
             for (int pid : pids) {
                 if (device.getValue().pid == pid) {
-                    result.add(device.getValue());
+                    result.add(getJFGDevice(device.getKey()));
                     break;
                 }
             }
         }
-        return result;
+        return getValueWithAccountCheck(result);
     }
 
     public List<String> getJFGDeviceUUIDByPid(int... pids) {
@@ -126,7 +132,7 @@ public class DataSourceManager implements JFGSourceManager {
                 }
             }
         }
-        return result;
+        return getValueWithAccountCheck(result);
     }
 
     @Override
@@ -225,10 +231,22 @@ public class DataSourceManager implements JFGSourceManager {
     public <T> T getValue(String uuid, long msgId, long seq) {
         JFGDevice device = mCachedDeviceMap.get(uuid);
         if (device != null) {
-            return device.getValue(msgId, seq);
+            return getValueWithAccountCheck(device.$().getValue(msgId, seq));
         }
         return null;
     }
+
+    public <T> T getValueWithAccountCheck(T value) {
+        if (mJFGAccount == null || !isOnline) {
+            return null;
+        }
+        return value;
+    }
+
+    public void addPropertyObserver() {
+
+    }
+
 
     private JFGDevice create(com.cylan.entity.jniCall.JFGDevice device) {
         JFGDevice result = null;

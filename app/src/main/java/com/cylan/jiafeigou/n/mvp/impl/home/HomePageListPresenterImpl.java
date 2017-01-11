@@ -155,7 +155,7 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
         }
         return RxBus.getCacheInstance().toObservableSticky(RxUiEvent.BulkUUidListRsp.class)
                 .subscribeOn(Schedulers.io())
-                .filter((RxUiEvent.BulkUUidListRsp list) -> (getView() != null && list.allList != null))
+                .filter((RxUiEvent.BulkUUidListRsp list) -> (getView() != null && list.allList != null && GlobalDataProxy.getInstance().isOnline()))
                 .flatMap(new Func1<RxUiEvent.BulkUUidListRsp, Observable<List<String>>>() {
                     @Override
                     public Observable<List<String>> call(RxUiEvent.BulkUUidListRsp list) {

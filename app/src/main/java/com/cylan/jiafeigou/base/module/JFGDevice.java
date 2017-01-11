@@ -9,6 +9,7 @@ import com.cylan.annotation.DPProperty;
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
+import com.cylan.jiafeigou.support.log.AppLogger;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
@@ -30,7 +31,7 @@ import static com.cylan.jiafeigou.dp.DpUtils.unpackData;
  *  @创建时间:  2017/1/8 11:03
  *  @描述：    TODO
  */
-public abstract class JFGDevice implements Parcelable {
+public abstract class JFGDevice extends DataPoint<JFGDevice> implements Parcelable {
     public String uuid;
     public String sn;
     public String alias;
@@ -70,12 +71,12 @@ public abstract class JFGDevice implements Parcelable {
         return mDPPropertyArray;
     }
 
-
     public final boolean setValue(JFGDPMsg msg) {
         return setValue(msg, -1);
     }
 
     public final boolean setValue(JFGDPMsg msg, long seq) {
+        AppLogger.d("真在解析消息ID为:" + msg.id + "的DP消息");
         try {
             Field field = getProperties().get(msg.id);
             if (field == null) return false;
@@ -141,12 +142,14 @@ public abstract class JFGDevice implements Parcelable {
                 for (DataPoint point : temp) {
                     if (point.seq == seq) origin.add(point);
                 }
-                DataPoint first = origin.first();
                 DpMsgDefine.DPSet<DataPoint> result = new DpMsgDefine.DPSet<>();
-                result.seq = first.seq;
-                result.id = first.id;
-                result.version = first.version;
                 result.value = origin;
+                if (origin.size() > 0) {
+                    DataPoint first = origin.first();
+                    result.seq = first.seq;
+                    result.id = first.id;
+                    result.version = first.version;
+                }
                 return (T) result;
             }
             return (T) value;
@@ -168,16 +171,6 @@ public abstract class JFGDevice implements Parcelable {
         }
 
         return (T) value;
-    }
-
-
-    public final JFGDevice setDevice(com.cylan.entity.jniCall.JFGDevice device) {
-        this.alias = device.alias;
-        this.uuid = device.uuid;
-        this.sn = device.sn;
-        this.shareAccount = device.shareAccount;
-        this.pid = device.pid;
-        return this;
     }
 
     /**
@@ -203,6 +196,17 @@ public abstract class JFGDevice implements Parcelable {
         }
         return result;
     }
+
+
+    public final JFGDevice setDevice(com.cylan.entity.jniCall.JFGDevice device) {
+        this.alias = device.alias;
+        this.uuid = device.uuid;
+        this.sn = device.sn;
+        this.shareAccount = device.shareAccount;
+        this.pid = device.pid;
+        return this;
+    }
+
 
     @Override
     public boolean equals(Object o) {

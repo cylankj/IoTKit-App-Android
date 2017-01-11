@@ -220,10 +220,10 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
 
     @Override
     public void onBellBatteryDrainOut() {
+        if (true) return;
         initBatteryDialog();
         LBatteryWarnDialog dialog = lBatteryWarnDialog.get();
-        if (dialog.isResumed())
-            return;
+        dialog.dismiss();
         dialog.show(getSupportFragmentManager(), "lBattery");
     }
 
@@ -353,14 +353,14 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
 
     @Override
     public void onShowProperty(BellDevice device) {
-        int battery = device.battery.value;
+        int battery = device.battery.$();
         if (battery < 20) {
             onBellBatteryDrainOut();
         } else if (battery < 80 && isFirst) {
             onBellBatteryDrainOut();
             isFirst = false;
         }
-        cvBellHomeBackground.setState(device.net.net);
+        cvBellHomeBackground.setState(device.net.$().net);
         cvBellHomeBackground.setActionInterface(this);
     }
 }

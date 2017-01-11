@@ -1,29 +1,28 @@
 package com.cylan.jiafeigou;
 
-import android.app.Application;
-import android.test.ApplicationTestCase;
-import android.util.Log;
-
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.jiafeigou.base.module.BellDevice;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpUtils;
 
+import org.junit.Test;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 /**
- * <activity_cloud_live_mesg_video_talk_item href="http://d.android.com/tools/testing/testing_android.html">Testing Fundamentals</activity_cloud_live_mesg_video_talk_item>
+ * Created by yzd on 17-1-11.
  */
-public class ApplicationTest extends ApplicationTestCase<Application> {
-    public ApplicationTest() {
-        super(Application.class);
-    }
 
 
-    public void testMy() {
+public class MyTest {
+
+
+    @Test
+    public void testMe() {
+
         JFGDevice jfgDevice = new JFGDevice();
         jfgDevice.pid = 5;
         jfgDevice.alias = "摄像头88";
@@ -50,12 +49,12 @@ public class ApplicationTest extends ApplicationTestCase<Application> {
             msg.packValue = pack;
             list.add(msg);
         }
-        Log.e("AAAAA", "开始解析了.......");
+        System.out.println("开始解析了.......");
         long start = System.currentTimeMillis();
         for (JFGDPMsg jfgdpMsg : list) {
             device.setValue(jfgdpMsg);
         }
         long end = System.currentTimeMillis();
-        Log.e("AAAAA", "解析100000条数据共耗时" + (end - start) + "毫秒");
+        System.out.println("解析100000条数据共耗时" + (end - start) / 1000 + "秒");
     }
 }

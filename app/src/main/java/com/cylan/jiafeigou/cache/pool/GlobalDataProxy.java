@@ -7,7 +7,6 @@ import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.ex.JfgException;
-import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.dp.BaseValue;
 import com.cylan.jiafeigou.dp.IDataPoint;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -61,33 +60,37 @@ public class GlobalDataProxy implements IDataProxy {
 
     @Override
     public void cacheDevice(String uuid, JFGDevice jfgDevice) {
-        checkAccount();
-        dataPointManager.cacheDevice(jfgAccount.getAccount() + uuid, jfgDevice);
+        if (checkAccount())
+            dataPointManager.cacheDevice(jfgAccount.getAccount() + uuid, jfgDevice);
     }
 
     @Override
     public boolean remove(String uuid) {
-        checkAccount();
+        if (!checkAccount()) return false;
         return dataPointManager.remove(jfgAccount.getAccount() + uuid);
     }
 
     @Override
     public JFGDevice fetch(String uuid) {
-        checkAccount();
+        if (!checkAccount()) return null;
         return dataPointManager.fetch(jfgAccount.getAccount() + uuid);
     }
 
     @Override
     public ArrayList<JFGDevice> fetchAll() {
-        if (jfgAccount == null) return null;
+        if (!checkAccount()) return null;
         return dataPointManager.fetchAll(jfgAccount.getAccount());
     }
 
-    private void checkAccount() {
+    private boolean checkAccount() {
         if (jfgAccount == null || TextUtils.isEmpty(jfgAccount.getAccount())) {
-            if (BuildConfig.DEBUG) throw new IllegalArgumentException("account is null");
+//            if (BuildConfig.DEBUG) throw new IllegalArgumentException("account is null");
+            //we just clear the cache if the account is null
+            dataPointManager.clearAll();
             AppLogger.e("account is null");
+            return false;
         }
+        return true;
     }
 
     @Override

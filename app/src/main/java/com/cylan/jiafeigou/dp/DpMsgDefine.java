@@ -28,7 +28,7 @@ public class DpMsgDefine {
 
 
     @Message
-    public static final class DPNet extends DataPoint {
+    public static final class DPNet extends DataPoint<DPNet> {
         /**
          * |NET_CONNECT | -1 | #绑定后的连接中 |
          * |NET_OFFLINE |  0 | #不在线 |
@@ -123,7 +123,7 @@ public class DpMsgDefine {
     }
 
     @Message
-    public static final class DPTimeZone extends DataPoint {
+    public static final class DPTimeZone extends DataPoint<DPTimeZone> {
         @Index(0)
         public String timezone;
         @Index(1)
@@ -180,7 +180,7 @@ public class DpMsgDefine {
     }
 
     @Message
-    public static final class DPBindLog extends DataPoint {
+    public static final class DPBindLog extends DataPoint<DPBindLog> {
         @Index(0)
         public boolean isBind;
         @Index(1)
@@ -244,7 +244,7 @@ public class DpMsgDefine {
 
     //系统消息使用
     @Message
-    public static final class DPSdcardSummary extends DataPoint implements Parcelable {
+    public static final class DPSdcardSummary extends DataPoint<DPSdcardSummary> implements Parcelable {
         @Index(0)
         public boolean hasSdcard;
         @Index(1)
@@ -301,7 +301,7 @@ public class DpMsgDefine {
     }
 
     @Message
-    public static final class DPSdStatus extends DataPoint implements Parcelable {
+    public static final class DPSdStatus extends DataPoint<DPSdStatus> implements Parcelable {
         @Index(0)
         public long total;
         @Index(1)
@@ -370,7 +370,7 @@ public class DpMsgDefine {
     }
 
     @Message
-    public static final class DPAlarmInfo extends DataPoint implements Parcelable {
+    public static final class DPAlarmInfo extends DataPoint<DPAlarmInfo> implements Parcelable {
         @Index(0)
         public int timeStart;
         @Index(1)
@@ -436,7 +436,7 @@ public class DpMsgDefine {
     }
 
     @Message
-    public static final class DPAlarm extends DataPoint implements Parcelable {//505 报警消息
+    public static final class DPAlarm extends DataPoint<DPAlarm> implements Parcelable {//505 报警消息
         @Index(0)
         public int time;
         @Index(1)
@@ -498,7 +498,7 @@ public class DpMsgDefine {
     }
 
     @Message//504
-    public static final class DPNotificationInfo extends DataPoint implements Parcelable {
+    public static final class DPNotificationInfo extends DataPoint<DPNotificationInfo> implements Parcelable {
         @Index(0)
         public int notification;
         @Index(1)
@@ -569,7 +569,7 @@ public class DpMsgDefine {
     }
 
     @Message
-    public static final class DPTimeLapse extends DataPoint implements Parcelable {
+    public static final class DPTimeLapse extends DataPoint<DPTimeLapse> implements Parcelable {
         @Index(0)
         public int timeStart;
         @Index(1)
@@ -631,7 +631,7 @@ public class DpMsgDefine {
     }
 
     @Message
-    public static final class DPCamCoord extends DataPoint implements Parcelable {
+    public static final class DPCamCoord extends DataPoint<DPCamCoord> implements Parcelable {
         @Index(0)
         public int x;
         @Index(1)
@@ -688,7 +688,7 @@ public class DpMsgDefine {
     }
 
     @Message
-    public static final class DPBellCallRecord extends DataPoint implements Parcelable {
+    public static final class DPBellCallRecord extends DataPoint<DPBellCallRecord> implements Parcelable {
 
         @Index(0)
         public int isOK;
@@ -880,7 +880,7 @@ public class DpMsgDefine {
     }
 
 
-    public static class DPPrimary<T> extends DataPoint {
+    public static class DPPrimary<T> extends DataPoint<T> {
         public T value;
 
         @Override
@@ -896,6 +896,7 @@ public class DpMsgDefine {
 
         public DPPrimary() {
         }
+
 
         protected DPPrimary(Parcel in) {
             super(in);
@@ -915,13 +916,14 @@ public class DpMsgDefine {
         };
     }
 
-    public static class DPSet<T> extends DataPoint {
+    public static class DPSet<T> extends DataPoint<TreeSet<T>> {
         public TreeSet<T> value;
 
         @Override
         public int describeContents() {
             return 0;
         }
+
 
         @Override
         public void writeToParcel(Parcel dest, int flags) {

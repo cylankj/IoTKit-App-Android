@@ -297,7 +297,6 @@ public class DelayRecordMainFragment extends BaseFragment<CamDelayRecordContract
 
     @Override
     public void onFlowSpeed(int speed) {
-
     }
 
     @Override

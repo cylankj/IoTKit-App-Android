@@ -48,11 +48,9 @@ public abstract class BaseFragment<P extends JFGPresenter> extends Fragment impl
             mUUID = getArguments().getString(JConstant.KEY_DEVICE_ITEM_UUID);//在基類裏獲取uuid,便於統一管理
             if (mUUID == null) mUUID = "300000008496";
         }
-        mPresenter = onCreatePresenter();
         if (mPresenter != null) {
             mPresenter.onSetViewUUID(mUUID);
         }
-
     }
 
     @Nullable
@@ -64,11 +62,25 @@ public abstract class BaseFragment<P extends JFGPresenter> extends Fragment impl
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mPresenter = onCreatePresenter();
         if (mPresenter != null) {
             mPresenter.onViewAttached(this);
         }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        if (mPresenter != null) {
+            mPresenter.onViewDetached();
+        }
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         initViewAndListener();
     }
 
@@ -79,6 +91,7 @@ public abstract class BaseFragment<P extends JFGPresenter> extends Fragment impl
             mPresenter.onSetContentView();//有些view会根据一定的条件显示不同的view,可以在这个方法中进行条件判断
         }
     }
+
 
     @Override
     public void onStart() {

@@ -4,6 +4,8 @@ import android.support.annotation.CallSuper;
 import android.support.v4.util.LongSparseArray;
 import android.text.TextUtils;
 
+import com.cylan.entity.jniCall.JFGDPMsg;
+import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.base.module.JFGDevice;
 import com.cylan.jiafeigou.base.view.JFGPresenter;
 import com.cylan.jiafeigou.base.view.JFGSourceManager;
@@ -11,6 +13,7 @@ import com.cylan.jiafeigou.base.view.JFGView;
 import com.cylan.jiafeigou.base.view.PropertyView;
 import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
+import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.provider.DataSourceManager;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
@@ -236,6 +239,28 @@ public abstract class BasePresenter<V extends JFGView> implements JFGPresenter {
                 mSubscriptions.add(subscription);
             }
         }
+    }
+
+    /**
+     * 不在主线程中请求数据,因为可能卡住
+     */
+    protected void robotGetData(String peer, ArrayList<JFGDPMsg> queryDps, int limit, boolean asc, int timeoutMs) {
+        post(() -> {
+            try {
+                long seq = JfgCmdInsurance.getCmd().robotGetData(peer, queryDps, limit, asc, timeoutMs);
+                mRequestSeqs.add(seq);
+            } catch (JfgException e) {
+                e.printStackTrace();
+            }
+        });
+    }
+
+    protected void robotDelData(String peer, ArrayList<JFGDPMsg> dps, int timeoutMs) {
+        post(() -> {
+            long seq = JfgCmdInsurance.getCmd().robotDelData(peer, dps, timeoutMs);
+            mRequestSeqs.add(seq);
+        });
+
     }
 
 }
