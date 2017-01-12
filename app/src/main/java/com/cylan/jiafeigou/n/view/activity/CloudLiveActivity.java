@@ -5,9 +5,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
-import android.content.res.Configuration;
 import android.graphics.drawable.AnimationDrawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -39,8 +37,9 @@ import com.cylan.jiafeigou.n.mvp.contract.cloud.CloudLiveContract;
 import com.cylan.jiafeigou.n.mvp.impl.cloud.CloudLivePresenterImp;
 import com.cylan.jiafeigou.n.mvp.model.CloudLiveBaseBean;
 import com.cylan.jiafeigou.n.mvp.model.CloudLiveBaseDbBean;
+import com.cylan.jiafeigou.n.mvp.model.CloudLiveCallOutBean;
 import com.cylan.jiafeigou.n.mvp.model.CloudLiveLeaveMesBean;
-import com.cylan.jiafeigou.n.mvp.model.CloudLiveVideoTalkBean;
+import com.cylan.jiafeigou.n.mvp.model.CloudLiveCallInBean;
 import com.cylan.jiafeigou.n.view.adapter.CloudLiveMesgListAdapter;
 import com.cylan.jiafeigou.n.view.cloud.CloudLiveCallActivity;
 import com.cylan.jiafeigou.n.view.cloud.CloudLiveSettingFragment;
@@ -96,7 +95,6 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
     private ImageView iv_cancle;
     private AnimationDrawable animationDrawable;
     private ImageView iv_play_voice;
-
     private String uuid;
 
     @Override
@@ -141,9 +139,9 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
                         presenter.playRecord(data.getLeaveMesgUrl());
                         break;
                     case 1:
-                        CloudLiveVideoTalkBean bean = (CloudLiveVideoTalkBean) cloudLiveMesgAdapter.getItem(position).getData();
+                        CloudLiveCallInBean bean = (CloudLiveCallInBean) cloudLiveMesgAdapter.getItem(position).getData();
                         if (!bean.isHasConnet()) {
-                            jump2ConnectOkFragment();
+                            jump2CallOut();
                         }
                         break;
                 }
@@ -205,7 +203,7 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
      * 启动视频连接
      */
     private void jump2CallOut() {
-        Intent intent = new Intent(CloudLiveActivity.this, CloudLiveCallActivity.class);
+        Intent intent = new Intent(ContextUtils.getContext(), CloudLiveCallActivity.class);
         intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
         intent.putExtra("call_in_or_out", false);
         startActivity(intent);
@@ -300,9 +298,8 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
                             newLeaveBean.setLeaveMesgLength(presenter.getLeaveMesgLength());
                             newLeaveBean.setLeaveMesgUrl(leaveMesgUrl);
                             newLeaveBean.setRead(false);
-                            newLeaveBean.setLeveMesgTime(presenter.parseTime(System.currentTimeMillis() + ""));
+                            newLeaveBean.setLeveMesgTime(presenter.parseTime(System.currentTimeMillis()));
                             newBean.setData(newLeaveBean);
-                            // presenter.addMesgItem(newBean);
                             refreshRecycleView(newBean);
 
                             //保存到数据库
@@ -348,46 +345,16 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
     }
 
     /**
-     * desc:挂断更新界面
-     */
-    @Override
-    public void hangUpRefreshView(String result) {
-        CloudLiveBaseBean newBean = presenter.creatMesgBean();
-        newBean.setType(1);
-        CloudLiveVideoTalkBean newLeaveBean = new CloudLiveVideoTalkBean();
-        newLeaveBean.setVideoLength(result);
-        newLeaveBean.setHasConnet(true);
-        newLeaveBean.setVideoTime(presenter.parseTime(System.currentTimeMillis() + ""));
-        newBean.setData(newLeaveBean);
-        //presenter.addMesgItem(newBean);
-        refreshRecycleView(newBean);
-
-        //添加到数据库
-        CloudLiveBaseDbBean dbBean = new CloudLiveBaseDbBean();
-        dbBean.setType(1);
-        dbBean.setData(presenter.getSerializedObject(newLeaveBean));
-        presenter.saveIntoDb(dbBean);
-    }
-
-    /**
      * 视频通话处理
-     *
      * @param isOnline
      */
     @Override
     public void handlerVideoTalkResult(boolean isOnline) {
         if (isOnline) {
-            jump2ConnectOkFragment();
+            jump2CallOut();
         } else {
             showDeviceDisOnlineDialog(1);
         }
-    }
-
-    /**
-     * 跳转到连接成功界面
-     */
-    private void jump2ConnectOkFragment() {
-
     }
 
     @Override
@@ -410,7 +377,6 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
 
     /**
      * 初始化列表显示
-     *
      * @param list
      */
     @Override
@@ -426,12 +392,14 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
         cloudLiveMesgAdapter = new CloudLiveMesgListAdapter(this, list, null);
         ViewTypeMapCache viewTypeMapCache = new ViewTypeMapCache();
         viewTypeMapCache.registerType(CloudLiveLeaveMesBean.class, 0);
-        viewTypeMapCache.registerType(CloudLiveVideoTalkBean.class, 1);
+        viewTypeMapCache.registerType(CloudLiveCallInBean.class, 1);
+        viewTypeMapCache.registerType(CloudLiveCallOutBean.class, 2);
         cloudLiveMesgAdapter.setViewTypeCache(viewTypeMapCache);
 
         LayoutIdMapCache layoutIdMapCache = new LayoutIdMapCache();
         layoutIdMapCache.registerType(0, R.layout.activity_cloud_live_mesg_voice_item);
-        layoutIdMapCache.registerType(1, R.layout.activity_cloud_live_mesg_video_talk_item);
+        layoutIdMapCache.registerType(1, R.layout.activity_cloud_live_mesg_call_in_item);
+        layoutIdMapCache.registerType(2, R.layout.activity_cloud_live_mesg_call_out_item);
         cloudLiveMesgAdapter.setLayoutIdMapCache(layoutIdMapCache);
         rcyCloudMesgList.setLayoutManager(new LinearLayoutManager(this));
         rcyCloudMesgList.setAdapter(cloudLiveMesgAdapter);
@@ -477,7 +445,6 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
 
     /**
      * 设备不在线提示框
-     *
      * @param whichshow
      */
     private void showDeviceDisOnlineDialog(final int whichshow) {
@@ -504,7 +471,6 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
         }).show();
     }
 
-
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -513,29 +479,6 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
                 presenter.handlerLeveaMesg();
             } else {
                 ToastUtil.showNegativeToast(getString(R.string.Tap0_Authorizationfailed));
-            }
-        }
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == 1){
-            if (data != null){
-                Uri videoChatTime = data.getData();
-                CloudLiveBaseBean newBean = presenter.creatMesgBean();
-                newBean.setType(1);
-                CloudLiveVideoTalkBean newLeaveBean = new CloudLiveVideoTalkBean();
-                newLeaveBean.setVideoLength(videoChatTime.toString());
-                newLeaveBean.setHasConnet(false);
-                newLeaveBean.setVideoTime(presenter.parseTime(System.currentTimeMillis() + ""));
-                newBean.setData(newLeaveBean);
-                refreshRecycleView(newBean);
-
-                //添加到数据库
-                CloudLiveBaseDbBean dbBean = new CloudLiveBaseDbBean();
-                dbBean.setType(1);
-                dbBean.setData(presenter.getSerializedObject(newLeaveBean));
-                presenter.saveIntoDb(dbBean);
             }
         }
     }

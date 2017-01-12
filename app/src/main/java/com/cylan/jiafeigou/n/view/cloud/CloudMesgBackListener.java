@@ -1,7 +1,6 @@
 package com.cylan.jiafeigou.n.view.cloud;
 
 import com.cylan.jiafeigou.n.mvp.model.CloudLiveBaseBean;
-import com.cylan.jiafeigou.n.mvp.model.CloudLiveVideoTalkBean;
 
 /**
  * 作者：zsl

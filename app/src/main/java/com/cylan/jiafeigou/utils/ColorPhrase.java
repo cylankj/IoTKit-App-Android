@@ -26,7 +26,7 @@ import java.util.Stack;
  * <li>Surround keys with curly braces; use two {{ to escape.</li>
  * <li>Fails fast on any mismatched keys.</li>
  * </ul>
- * The constructor parses the original pattern into activity_cloud_live_mesg_video_talk_item doubly-linked list of {@link Token}s.
+ * The constructor parses the original pattern into activity_cloud_live_mesg_call_out_item doubly-linked list of {@link Token}s.
  * These tokens do not modify the original pattern, thus preserving any spans.
  * <p/>
  * The {@link #format()} method iterates over the tokens, replacing and coloring the text as it iterates. The
@@ -167,7 +167,7 @@ public class ColorPhrase {
         Token prev = null;
         Token next;
         while ((next = token(prev)) != null) {
-            // Creates activity_cloud_live_mesg_video_talk_item doubly-linked list of tokens starting with head.
+            // Creates activity_cloud_live_mesg_call_out_item doubly-linked list of tokens starting with head.
             if (head == null)
                 head = next;
             prev = next;
@@ -282,7 +282,7 @@ public class ColorPhrase {
     }
 
     /**
-     * Consumes and returns activity_cloud_live_mesg_video_talk_item token for activity_cloud_live_mesg_video_talk_item sequence of text.
+     * Consumes and returns activity_cloud_live_mesg_call_out_item token for activity_cloud_live_mesg_call_out_item sequence of text.
      */
     private OuterToken outer(Token prev) {
         int startIndex = curCharIndex;
@@ -294,7 +294,7 @@ public class ColorPhrase {
     }
 
     /**
-     * Consumes and returns activity_cloud_live_mesg_video_talk_item token representing two consecutive curly brackets.
+     * Consumes and returns activity_cloud_live_mesg_call_out_item token representing two consecutive curly brackets.
      */
     private LeftSeparatorToken leftSeparator(Token prev) {
         consume();
@@ -312,7 +312,7 @@ public class ColorPhrase {
     /**
      * Advances the current character position without any error checking.
      * Consuming beyond the end of the string can only happen if this parser
-     * contains activity_cloud_live_mesg_video_talk_item bug.
+     * contains activity_cloud_live_mesg_call_out_item bug.
      */
     private void consume() {
         curCharIndex++;

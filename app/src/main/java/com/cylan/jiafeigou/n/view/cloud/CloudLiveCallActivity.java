@@ -1,13 +1,12 @@
 package com.cylan.jiafeigou.n.view.cloud;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.PixelFormat;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.SystemClock;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,8 +28,8 @@ import com.cylan.jiafeigou.n.mvp.contract.cloud.CloudLiveCallContract;
 import com.cylan.jiafeigou.n.mvp.impl.cloud.CloudLiveCallPresenterImp;
 import com.cylan.jiafeigou.n.mvp.model.CloudLiveBaseBean;
 import com.cylan.jiafeigou.n.mvp.model.CloudLiveBaseDbBean;
-import com.cylan.jiafeigou.n.mvp.model.CloudLiveVideoTalkBean;
-import com.cylan.jiafeigou.n.view.activity.CloudLiveActivity;
+import com.cylan.jiafeigou.n.mvp.model.CloudLiveCallInBean;
+import com.cylan.jiafeigou.n.mvp.model.CloudLiveCallOutBean;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
@@ -121,7 +120,7 @@ public class CloudLiveCallActivity extends AppCompatActivity implements CloudLiv
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.tv_ignore_call:
-                finish();
+                handlerCallingReuslt(JConstant.CLOUD_IN_CONNECT_FAILED);
                 break;
             case R.id.tv_accept_call:
                 rlCallInContainer.setVisibility(View.GONE);
@@ -129,9 +128,8 @@ public class CloudLiveCallActivity extends AppCompatActivity implements CloudLiv
                 presenter.onCloudCallConnettion();
                 break;
             case R.id.iv_hang_up:
-                handlerHangUpResultData();
                 presenter.stopPlayVideo();
-                finish();
+                handlerHangUpResultData();
                 break;
         }
     }
@@ -142,18 +140,18 @@ public class CloudLiveCallActivity extends AppCompatActivity implements CloudLiv
     private void handlerHangUpResultData() {
         if (presenter.getIsConnectOk()){
             if (isCallIn){
-                // 呼入连接成功
+                // 呼入连接成功挂断
                 handlerCallingReuslt(JConstant.CLOUD_IN_CONNECT_OK);
             }else {
-                // 呼出连接成功
+                // 呼出连接成功挂断
                 handlerCallingReuslt(JConstant.CLOUD_OUT_CONNECT_OK);
             }
         }else {
             if (isCallIn){
-                // 呼入连接失败
+                // 呼入连接失败挂断
                 handlerCallingReuslt(JConstant.CLOUD_IN_CONNECT_FAILED);
             }else {
-                // 呼出连接失败
+                // 呼出连接失败挂断
                 handlerCallingReuslt(JConstant.CLOUD_OUT_CONNECT_FAILED);
             }
         }
@@ -169,11 +167,28 @@ public class CloudLiveCallActivity extends AppCompatActivity implements CloudLiv
     private CloudLiveBaseBean createCloudBackBean(int type, String videoLength, boolean hasConnet) {
         CloudLiveBaseBean newBean = new CloudLiveBaseBean();
         newBean.setType(type);
-        CloudLiveVideoTalkBean newLeaveBean = new CloudLiveVideoTalkBean();
-        newLeaveBean.setVideoLength(videoLength);
-        newLeaveBean.setHasConnet(hasConnet);
-        newLeaveBean.setVideoTime(presenter.parseTime(System.currentTimeMillis()));
-        newBean.setData(newLeaveBean);
+        //添加到数据库
+        CloudLiveBaseDbBean outDbBean = new CloudLiveBaseDbBean();
+        outDbBean.setType(type);
+        switch (type){
+            case 1:
+                CloudLiveCallInBean inLeaveBean = new CloudLiveCallInBean();
+                inLeaveBean.setVideoLength(videoLength);
+                inLeaveBean.setHasConnet(hasConnet);
+                inLeaveBean.setVideoTime(presenter.parseTime(System.currentTimeMillis()));
+                newBean.setData(inLeaveBean);
+                outDbBean.setData(presenter.getSerializedObject(inLeaveBean));
+                break;
+            case 2:
+                CloudLiveCallOutBean outLeaveBean = new CloudLiveCallOutBean();
+                outLeaveBean.setVideoLength(videoLength);
+                outLeaveBean.setHasConnet(hasConnet);
+                outLeaveBean.setVideoTime(presenter.parseTime(System.currentTimeMillis()));
+                newBean.setData(outLeaveBean);
+                outDbBean.setData(presenter.getSerializedObject(outLeaveBean));
+                break;
+        }
+        presenter.saveIntoDb(outDbBean);
         return newBean;
     }
 
@@ -187,8 +202,10 @@ public class CloudLiveCallActivity extends AppCompatActivity implements CloudLiv
         hideLoadingView();
         initLocalVideoView();
         initRenderVideoView();
-        JfgCmdInsurance.getCmd().setRenderLocalView(mLocalSurfaceView);
-        JfgCmdInsurance.getCmd().setRenderRemoteView(mRenderSurfaceView);
+        JfgCmdInsurance.getCmd().enableCamera(true,true);
+        JfgCmdInsurance.getCmd().enableRenderLocalView(true,mLocalSurfaceView);
+        JfgCmdInsurance.getCmd().enableRenderRemoteView(true,mRenderSurfaceView);
+
     }
 
     /**
@@ -199,23 +216,19 @@ public class CloudLiveCallActivity extends AppCompatActivity implements CloudLiv
     public void handlerCallingReuslt(int msgId) {
         switch(msgId){
             case JConstant.CLOUD_IN_CONNECT_TIME_OUT:          // 中控呼入app无应答
+                CloudLiveBaseBean inBeanTimeOut = createCloudBackBean(1,"",false);
                 if (callBack != null){
-                    CloudLiveBaseBean newBean = new CloudLiveBaseBean();
-                    newBean.setType(1);
-                    CloudLiveVideoTalkBean newLeaveBean = new CloudLiveVideoTalkBean();
-                    newLeaveBean.setVideoLength("");
-                    newLeaveBean.setHasConnet(false);
-                    newLeaveBean.setVideoTime("");
-                    newBean.setData(newLeaveBean);
-                    callBack.onCloudMesgBack(newBean);
+                    callBack.onCloudMesgBack(inBeanTimeOut);
                 }
                 ToastUtil.showToast("未接通");
-                finish();
                 break;
 
             case JConstant.CLOUD_OUT_CONNECT_TIME_OUT:            // 呼出超时
+                CloudLiveBaseBean outBeanTimeOut = createCloudBackBean(2,tvVideoTime.getText().toString(),false);
+                if (callBack != null){
+                    callBack.onCloudMesgBack(outBeanTimeOut);
+                }
                 ToastUtil.showToast("连接超时");
-                finish();
                 break;
 
             case JConstant.CLOUD_IN_CONNECT_OK: //呼入连接成功 点击挂断按钮
@@ -223,16 +236,6 @@ public class CloudLiveCallActivity extends AppCompatActivity implements CloudLiv
                 if (callBack != null){
                     callBack.onCloudMesgBack(newBean);
                 }
-                //添加到数据库
-                CloudLiveBaseDbBean dbBean = new CloudLiveBaseDbBean();
-                dbBean.setType(1);
-                dbBean.setData(presenter.getSerializedObject((Serializable) newBean.getData()));
-                presenter.saveIntoDb(dbBean);
-
-                // TODO　判断当前CloudActivity是否已经启动
-                // 可能要延时
-//                startActivity(new Intent(ContextUtils.getContext(), CloudLiveActivity.class)
-//                        .putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid));
                 break;
 
             case JConstant.CLOUD_IN_CONNECT_FAILED:
@@ -240,44 +243,23 @@ public class CloudLiveCallActivity extends AppCompatActivity implements CloudLiv
                 if (callBack != null){
                     callBack.onCloudMesgBack(newBeanF);
                 }
-                //添加到数据库
-                CloudLiveBaseDbBean dbBeanF = new CloudLiveBaseDbBean();
-                dbBeanF.setType(1);
-                dbBeanF.setData(presenter.getSerializedObject((Serializable) newBeanF.getData()));
-                presenter.saveIntoDb(dbBeanF);
-
-                // TODO　判断当前CloudActivity是否已经启动
-                // 可能要延时
-//                new Handler().postDelayed(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        startActivity(new Intent(ContextUtils.getContext(), CloudLiveActivity.class)
-//                                .putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid));
-//                    }
-//                },500);
-
                 break;
 
             case JConstant.CLOUD_OUT_CONNECT_OK:
-                CloudLiveBaseBean outBean = createCloudBackBean(1,tvVideoTime.getText().toString(),true);
-                callBack.onCloudMesgBack(outBean);
-                //添加到数据库
-                CloudLiveBaseDbBean outDbBean = new CloudLiveBaseDbBean();
-                outDbBean.setType(1);
-                outDbBean.setData(presenter.getSerializedObject((Serializable) outBean.getData()));
-                presenter.saveIntoDb(outDbBean);
+                CloudLiveBaseBean outBean = createCloudBackBean(2,tvVideoTime.getText().toString(),true);
+                if (callBack != null){
+                    callBack.onCloudMesgBack(outBean);
+                }
                 break;
 
             case JConstant.CLOUD_OUT_CONNECT_FAILED:
-                CloudLiveBaseBean outBeanF = createCloudBackBean(1,"",false);
-                callBack.onCloudMesgBack(outBeanF);
-                //添加到数据库
-                CloudLiveBaseDbBean outDbBeanF = new CloudLiveBaseDbBean();
-                outDbBeanF.setType(1);
-                outDbBeanF.setData(presenter.getSerializedObject((Serializable) outBeanF.getData()));
-                presenter.saveIntoDb(outDbBeanF);
+                CloudLiveBaseBean outBeanF = createCloudBackBean(2,"",false);
+                if (callBack != null){
+                    callBack.onCloudMesgBack(outBeanF);
+                }
                 break;
         }
+        finish();
     }
 
     private void initLocalVideoView() {

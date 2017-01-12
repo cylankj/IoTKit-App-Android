@@ -7,6 +7,7 @@ import android.media.MediaRecorder;
 import android.os.Environment;
 import android.support.v4.content.ContextCompat;
 
+import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
 import com.cylan.jiafeigou.n.db.DataBaseUtil;
 import com.cylan.jiafeigou.n.mvp.contract.cloud.CloudLiveContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
@@ -78,7 +79,6 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
         } else {
             subscription = new CompositeSubscription();
             subscription.add(getAccount());
-            subscription.add(refreshHangUpView());
         }
     }
 
@@ -255,9 +255,8 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
     }
 
     @Override
-    public String parseTime(String times) {
-        long timem = Long.parseLong(times);
-        Date time = new Date(timem);
+    public String parseTime(long times) {
+        Date time = new Date(times);
         SimpleDateFormat formatter = new SimpleDateFormat("MM/dd HH:mm");
         String dateString = formatter.format(time);
         return dateString;
@@ -337,21 +336,7 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
         return allData;
     }
 
-    /**
-     * 更新列表显示
-     * @return
-     */
-    @Override
-    public Subscription refreshHangUpView() {
-        return RxBus.getCacheInstance().toObservable(RxEvent.HangUpVideoTalk.class)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<RxEvent.HangUpVideoTalk>() {
-                    @Override
-                    public void call(RxEvent.HangUpVideoTalk o) {
-                        getView().hangUpRefreshView(o.talkTime);
-                    }
-                });
-    }
+
 
     /**
      * 点击视频通话处理
@@ -382,7 +367,6 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
     @Override
     public void handlerLeveaMesg() {
         leaveMesgSub = Observable.just(null)
-                .delay(1000, TimeUnit.MILLISECONDS)
                 .map(new Func1<Object, Boolean>() {
                     @Override
                     public Boolean call(Object o) {

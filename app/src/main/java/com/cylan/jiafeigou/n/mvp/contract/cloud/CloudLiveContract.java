@@ -28,7 +28,6 @@ public interface CloudLiveContract {
 
         void refreshRecycleView(CloudLiveBaseBean bean);
 
-        void hangUpRefreshView(String result);
 
         void handlerVideoTalkResult(boolean isOnline);
 
@@ -86,7 +85,7 @@ public interface CloudLiveContract {
 
         String getLeaveMesgLength();
 
-        String parseTime(String times);
+        String parseTime(long times);
 
         void getDBManger(String dbName);
 
@@ -97,8 +96,6 @@ public interface CloudLiveContract {
         void saveIntoDb(CloudLiveBaseDbBean bean);          //保存到数据库
 
         List<CloudLiveBaseDbBean> findAllFromDb();          //查询数据库
-
-        Subscription refreshHangUpView();                   //更新挂断结果
 
         void handlerVideoTalk();                            //处理视频通话
 

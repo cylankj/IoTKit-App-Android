@@ -217,7 +217,7 @@ public class AppLogger {
     }
 
     /**
-     * Send activity_cloud_live_mesg_video_talk_item VERBOSE log message.
+     * Send activity_cloud_live_mesg_call_out_item VERBOSE log message.
      *
      * @param msg The message you would like logged.
      */
@@ -229,7 +229,7 @@ public class AppLogger {
     }
 
 //    /**
-//     * Send activity_cloud_live_mesg_video_talk_item VERBOSE log message.
+//     * Send activity_cloud_live_mesg_call_out_item VERBOSE log message.
 //     *
 //     * @param filePath :作为一个标志
 //     * @param msg The message you would like logged.
@@ -242,7 +242,7 @@ public class AppLogger {
 //    }
 
 //    /**
-//     * Send activity_cloud_live_mesg_video_talk_item VERBOSE log message and log the exception.
+//     * Send activity_cloud_live_mesg_call_out_item VERBOSE log message and log the exception.
 //     *
 //     * @param msg The message you would like logged.
 //     * @param thr An exception to log
@@ -255,7 +255,7 @@ public class AppLogger {
 //    }
 
     /**
-     * Send activity_cloud_live_mesg_video_talk_item DEBUG log message.
+     * Send activity_cloud_live_mesg_call_out_item DEBUG log message.
      *
      * @param msg
      */
@@ -267,7 +267,7 @@ public class AppLogger {
     }
 
 //    /**
-//     * Send activity_cloud_live_mesg_video_talk_item DEBUG log message.
+//     * Send activity_cloud_live_mesg_call_out_item DEBUG log message.
 //     *
 //     * @param msg
 //     */
@@ -279,7 +279,7 @@ public class AppLogger {
 //    }
 
 //    /**
-//     * Send activity_cloud_live_mesg_video_talk_item DEBUG log message and log the exception.
+//     * Send activity_cloud_live_mesg_call_out_item DEBUG log message and log the exception.
 //     *
 //     * @param msg The message you would like logged.
 //     * @param thr An exception to log
@@ -316,7 +316,7 @@ public class AppLogger {
 //    }
 
 //    /**
-//     * Send activity_cloud_live_mesg_video_talk_item INFO log message and log the exception.
+//     * Send activity_cloud_live_mesg_call_out_item INFO log message and log the exception.
 //     *
 //     * @param msg The message you would like logged.
 //     * @param thr An exception to log
@@ -352,7 +352,7 @@ public class AppLogger {
 //    }
 
     /**
-     * Send activity_cloud_live_mesg_video_talk_item WARN log message
+     * Send activity_cloud_live_mesg_call_out_item WARN log message
      *
      * @param msg The message you would like logged.
      */
@@ -363,7 +363,7 @@ public class AppLogger {
     }
 
 //    /**
-//     * Send activity_cloud_live_mesg_video_talk_item WARN log message
+//     * Send activity_cloud_live_mesg_call_out_item WARN log message
 //     *
 //     * @param msg The message you would like logged.
 //     */
@@ -375,7 +375,7 @@ public class AppLogger {
 //    }
 
 //    /**
-//     * Send activity_cloud_live_mesg_video_talk_item WARN log message and log the exception.
+//     * Send activity_cloud_live_mesg_call_out_item WARN log message and log the exception.
 //     *
 //     * @param msg The message you would like logged.
 //     * @param thr An exception to log

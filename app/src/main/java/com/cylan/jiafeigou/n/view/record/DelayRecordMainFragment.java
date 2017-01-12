@@ -328,7 +328,7 @@ public class DelayRecordMainFragment extends BaseFragment<CamDelayRecordContract
             refreshLayout(DELAY_RECORD_PREVIEW);
         mRoundedTextureView.getHolder().setFormat(PixelFormat.TRANSPARENT);
         mRoundedTextureView.getHolder().setFormat(PixelFormat.OPAQUE);
-        JfgCmdInsurance.getCmd().setRenderRemoteView(mRoundedTextureView);
+        JfgCmdInsurance.getCmd().enableRenderRemoteView(true,mRoundedTextureView);
     }
 
     @Override

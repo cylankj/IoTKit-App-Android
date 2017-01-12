@@ -400,7 +400,7 @@ public class LoginFragment extends android.support.v4.app.Fragment
                 break;
             case R.id.iv_top_bar_left:
                 if (getActivity() != null && getActivity() instanceof SmartcallActivity) {
-                    getActivity().finish();
+                    getActivity().onBackPressed();
                 } else if (getActivity() != null && getActivity() instanceof NewHomeActivity) {
                     getActivity().onBackPressed();
                 }

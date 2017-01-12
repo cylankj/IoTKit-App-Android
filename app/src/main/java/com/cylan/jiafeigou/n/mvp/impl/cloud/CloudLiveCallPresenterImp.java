@@ -152,7 +152,6 @@ public class CloudLiveCallPresenterImp extends AbstractPresenter<CloudLiveCallCo
 
     /**
      * 视频断开连接
-     *
      * @return
      */
     private Subscription videoDisconnectSub() {
@@ -185,8 +184,9 @@ public class CloudLiveCallPresenterImp extends AbstractPresenter<CloudLiveCallCo
                     try {
                         AppLogger.i("stopPlayVideo:" + s);
                         JfgCmdInsurance.getCmd().stopPlay(s);
-                        JfgCmdInsurance.getCmd().removeRenderLocalView();
-                        JfgCmdInsurance.getCmd().removeRenderRemoteView();
+                        JfgCmdInsurance.getCmd().enableCamera(false,false);
+                        JfgCmdInsurance.getCmd().enableRenderLocalView(false,null);
+                        JfgCmdInsurance.getCmd().enableRenderRemoteView(false,null);
                     } catch (JfgException e) {
                         e.printStackTrace();
                     }
