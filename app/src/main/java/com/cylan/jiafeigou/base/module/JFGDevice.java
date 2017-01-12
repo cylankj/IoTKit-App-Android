@@ -9,7 +9,6 @@ import com.cylan.annotation.DPProperty;
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
-import com.cylan.jiafeigou.support.log.AppLogger;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
@@ -49,10 +48,10 @@ public abstract class JFGDevice extends DataPoint<JFGDevice> implements Parcelab
 
     private LongSparseArray<Field> mDPPropertyArray;
 
-    public JFGDevice() {
+    JFGDevice() {
     }
 
-    private LongSparseArray<Field> getProperties() {
+    final LongSparseArray<Field> getProperties() {
         if (mDPPropertyArray == null) {
             synchronized (this) {
                 if (mDPPropertyArray == null) {
@@ -71,12 +70,11 @@ public abstract class JFGDevice extends DataPoint<JFGDevice> implements Parcelab
         return mDPPropertyArray;
     }
 
-    public final boolean setValue(JFGDPMsg msg) {
+    final boolean setValue(JFGDPMsg msg) {
         return setValue(msg, -1);
     }
 
-    public final boolean setValue(JFGDPMsg msg, long seq) {
-        AppLogger.d("真在解析消息ID为:" + msg.id + "的DP消息");
+    final boolean setValue(JFGDPMsg msg, long seq) {
         try {
             Field field = getProperties().get(msg.id);
             if (field == null) return false;
@@ -89,18 +87,16 @@ public abstract class JFGDevice extends DataPoint<JFGDevice> implements Parcelab
                 if (setValue.value == null) setValue.value = new TreeSet<>();
                 field.set(this, setValue);
                 Class<?> paramType = (Class<?>) ((ParameterizedType) field.getGenericType()).getActualTypeArguments()[0];
-                if (!(DpMsgDefine.DPPrimary.class.isAssignableFrom(paramType))) {
-                    value = (DataPoint) unpackData(msg.packValue, paramType);
-                    value.version = msg.version;
-                    value.id = msg.id;
-                    value.seq = seq;
-                    boolean add = setValue.value.add(value);
-                    DataPoint first = setValue.value.first();
-                    setValue.version = first.version;
-                    setValue.seq = first.seq;
-                    setValue.id = first.id;
-                    return add;
-                }
+                value = (DataPoint) unpackData(msg.packValue, paramType);
+                value.version = msg.version;
+                value.id = msg.id;
+                value.seq = seq;
+                boolean add = setValue.value.add(value);
+                DataPoint first = setValue.value.first();
+                setValue.version = first.version;
+                setValue.seq = first.seq;
+                setValue.id = first.id;
+                return add;
             }
 
             if (value != null && value.version > msg.version) return false;//数据已是最新的,无需更新了
@@ -159,7 +155,7 @@ public abstract class JFGDevice extends DataPoint<JFGDevice> implements Parcelab
         return null;
     }
 
-    public static <T> T getValue(Object value) {
+    public static final <T> T getValue(Object value) {
         if (value == null) return null;
 
         if (value instanceof DpMsgDefine.DPSet) {
@@ -198,12 +194,16 @@ public abstract class JFGDevice extends DataPoint<JFGDevice> implements Parcelab
     }
 
 
-    public final JFGDevice setDevice(com.cylan.entity.jniCall.JFGDevice device) {
+    final JFGDevice setDevice(com.cylan.entity.jniCall.JFGDevice device) {
         this.alias = device.alias;
         this.uuid = device.uuid;
         this.sn = device.sn;
         this.shareAccount = device.shareAccount;
         this.pid = device.pid;
+
+        //因为JFGDevice也被当做DataPoint对待的,所以把JFGDevice的pid当做他的id,
+        // 把最后对他的修改当做他的version,seq暂时无用
+        this.id = device.pid;
         return this;
     }
 
@@ -231,7 +231,7 @@ public abstract class JFGDevice extends DataPoint<JFGDevice> implements Parcelab
         dest.writeInt(this.pid);
     }
 
-    protected JFGDevice(Parcel in) {
+    JFGDevice(Parcel in) {
         this.uuid = in.readString();
         this.sn = in.readString();
         this.alias = in.readString();

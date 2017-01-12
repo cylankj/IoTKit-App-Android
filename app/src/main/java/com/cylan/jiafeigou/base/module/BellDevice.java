@@ -36,7 +36,7 @@ public class BellDevice extends JFGDevice {
     public DpMsgDefine.DPPrimary<Integer> battery;//DpMsgMap.BATTERY_206
 
 
-    public BellDevice() {
+    BellDevice() {
     }
 
     @Override
@@ -49,9 +49,8 @@ public class BellDevice extends JFGDevice {
         super.writeToParcel(dest, flags);
     }
 
-    protected BellDevice(Parcel in) {
+    BellDevice(Parcel in) {
         super(in);
-
     }
 
     public static final Creator<BellDevice> CREATOR = new Creator<BellDevice>() {

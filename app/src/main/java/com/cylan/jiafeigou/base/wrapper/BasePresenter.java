@@ -14,7 +14,7 @@ import com.cylan.jiafeigou.base.view.PropertyView;
 import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
-import com.cylan.jiafeigou.provider.DataSourceManager;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.utils.HandlerThreadUtils;
@@ -56,15 +56,15 @@ public abstract class BasePresenter<V extends JFGView> implements JFGPresenter {
 
     @Override
     public void onViewAttached(JFGView view) {
-        mSourceManager = DataSourceManager.getInstance();
         mView = (V) view;
+        onRegisterResponseParser();
+        mSourceManager = DataSourceManager.getInstance();
     }
 
     @Override
     @CallSuper
     public void onStart() {
         onRegisterSubscription();
-        onRegisterResponseParser();
     }
 
     @CallSuper

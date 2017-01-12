@@ -4,8 +4,8 @@ import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.load.model.Headers;
 import com.cylan.entity.JfgEnum;
 import com.cylan.ex.JfgException;
+import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
-import com.cylan.jiafeigou.n.mvp.model.MediaBean;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -15,12 +15,12 @@ import java.net.URL;
  */
 
 public class WonderGlideURL extends GlideUrl {
-    protected MediaBean mBean;
+    protected DpMsgDefine.DPWonderItem mBean;
 
-    public WonderGlideURL(MediaBean bean) {
+    public WonderGlideURL(DpMsgDefine.DPWonderItem bean) {
         super("http://www.cylan.com.cn", Headers.DEFAULT);
         if (bean == null || bean.fileName == null || bean.cid == null)
-            throw new IllegalArgumentException("MediaBean is Not Completed!");
+            throw new IllegalArgumentException("DPWonderItem is Not Completed!");
         mBean = bean;
     }
 

@@ -2,7 +2,7 @@ package com.cylan.jiafeigou.n.mvp.contract.home;
 
 import com.cylan.jiafeigou.base.view.JFGPresenter;
 import com.cylan.jiafeigou.base.view.JFGView;
-import com.cylan.jiafeigou.n.mvp.model.MediaBean;
+import com.cylan.jiafeigou.dp.DpMsgDefine;
 
 import java.util.List;
 
@@ -17,7 +17,7 @@ public interface HomeWonderfulContract {
         int VIEW_TYPE_EMPTY = 0;
         int VIEW_TYPE_GUIDE = 1;
 
-        void onMediaListRsp(List<MediaBean> list);
+        void onMediaListRsp(List<DpMsgDefine.DPWonderItem> list);
 
         void onHeadBackgroundChang(int daytime);
 
@@ -57,7 +57,7 @@ public interface HomeWonderfulContract {
 
         void unregisterWechat();
 
-        void shareToWechat(MediaBean mediaBean, int type);
+        void shareToWechat(DpMsgDefine.DPWonderItem mediaBean, int type);
 
         void removeGuideAnymore();
 

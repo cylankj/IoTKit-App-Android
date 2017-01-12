@@ -25,7 +25,7 @@ public class CamWarnGlideURL extends GlideUrl {
     public CamWarnGlideURL(DpMsgDefine.DPAlarm bean, int index, String uuid) {
         super("http://www.cylan.com.cn", Headers.DEFAULT);
         if (bean == null)
-            throw new IllegalArgumentException("MediaBean is Not Completed!");
+            throw new IllegalArgumentException("DPWonderItem is Not Completed!");
         mBean = bean;
         this.index = index;
         this.uuid = uuid;

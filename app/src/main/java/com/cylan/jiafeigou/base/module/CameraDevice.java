@@ -33,6 +33,7 @@ import static com.cylan.jiafeigou.dp.DpMsgMap.ID_501_CAMERA_ALARM_FLAG;
 import static com.cylan.jiafeigou.dp.DpMsgMap.ID_502_CAMERA_ALARM_INFO;
 import static com.cylan.jiafeigou.dp.DpMsgMap.ID_503_CAMERA_ALARM_SENSITIVITY;
 import static com.cylan.jiafeigou.dp.DpMsgMap.ID_504_CAMERA_ALARM_NOTIFICATION;
+import static com.cylan.jiafeigou.dp.DpMsgMap.ID_505_CAMERA_ALARM_MSG;
 import static com.cylan.jiafeigou.dp.DpMsgMap.ID_506_CAMERA_TIME_LAPSE_PHOTOGRAPHY;
 import static com.cylan.jiafeigou.dp.DpMsgMap.ID_508_CAMERA_STANDBY_FLAG;
 import static com.cylan.jiafeigou.dp.DpMsgMap.ID_509_CAMERA_MOUNT_MODE;
@@ -48,7 +49,7 @@ public class CameraDevice extends JFGDevice {
     @DPProperty(msgId = ID_206_BATTERY)
     public DpMsgDefine.DPPrimary<Integer> battery;//DpMsgMap.BATTERY_206
     @DPProperty(msgId = ID_209_LED_INDICATOR)
-    public DpMsgDefine.DPPrimary<Integer> led_indicator;//DpMsgMap.LED_INDICATOR_209
+    public DpMsgDefine.DPPrimary<Boolean> led_indicator;//DpMsgMap.LED_INDICATOR_209
     @DPProperty(msgId = ID_210_UP_TIME)
     public DpMsgDefine.DPPrimary<Integer> up_time;//DpMsgMap.UP_TIME_210
     @DPProperty(msgId = ID_214_DEVICE_TIME_ZONE)
@@ -75,6 +76,8 @@ public class CameraDevice extends JFGDevice {
     public DpMsgDefine.DPPrimary<Integer> camera_alarm_sensitivity;//DpMsgMap.CAMERA_ALARM_SENSITIVITY_503
     @DPProperty(msgId = ID_504_CAMERA_ALARM_NOTIFICATION)
     public DpMsgDefine.DPNotificationInfo camera_alarm_notification;//DpMsgMap.CAMERA_ALARM_NOTIFICATION_504
+    @DPProperty(msgId = ID_505_CAMERA_ALARM_MSG)
+    public DpMsgDefine.DPSet<DpMsgDefine.DPAlarm> camera_alarm_msg;
     @DPProperty(msgId = ID_506_CAMERA_TIME_LAPSE_PHOTOGRAPHY)
     public DpMsgDefine.DPTimeLapse camera_time_lapse_photography;//DpMsgMap.CAMERA_TIME_LAPSE_PHOTOGRAPHY_506
     @DPProperty(msgId = ID_508_CAMERA_STANDBY_FLAG)
@@ -95,11 +98,11 @@ public class CameraDevice extends JFGDevice {
 
     }
 
-    public CameraDevice() {
+    CameraDevice() {
         super();
     }
 
-    protected CameraDevice(Parcel in) {
+    CameraDevice(Parcel in) {
         super(in);
     }
 

@@ -22,7 +22,6 @@ public abstract class DataPoint<T> implements Parcelable, Comparable<DataPoint> 
     @Ignore
     private boolean isNull = false;
 
-    @Ignore
     public boolean isNull() {
         return isNull;
     }
@@ -38,7 +37,6 @@ public abstract class DataPoint<T> implements Parcelable, Comparable<DataPoint> 
     @Ignore
     public long seq;
 
-    @Ignore
     public byte[] toBytes() {
         try {
             MessagePack msgpack = new MessagePack();
@@ -54,7 +52,6 @@ public abstract class DataPoint<T> implements Parcelable, Comparable<DataPoint> 
     }
 
 
-    @Ignore
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -67,7 +64,6 @@ public abstract class DataPoint<T> implements Parcelable, Comparable<DataPoint> 
 
     }
 
-    @Ignore
     @Override
     public int hashCode() {
         int result = (int) (id ^ (id >>> 32));
@@ -75,19 +71,16 @@ public abstract class DataPoint<T> implements Parcelable, Comparable<DataPoint> 
         return result;
     }
 
-    @Ignore
     @Override
     public int compareTo(DataPoint another) {
         return version > another.version ? -1 : 1;//降序
     }
 
-    @Ignore
     @Override
     public int describeContents() {
         return 0;
     }
 
-    @Ignore
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeLong(this.id);
@@ -103,7 +96,6 @@ public abstract class DataPoint<T> implements Parcelable, Comparable<DataPoint> 
     }
 
 
-    @Ignore
     protected Object getInstance() {
         if (instance == null) {
             synchronized (this) {
@@ -126,7 +118,6 @@ public abstract class DataPoint<T> implements Parcelable, Comparable<DataPoint> 
      * 避免检查空指针,只针对DataPoint,只针对获取值的情,
      * 因为返回的是原对象的一份拷贝,因此对返回的对象进行写入操作不会影响真正的值
      */
-    @Ignore
     public T $() {
         Object value;
         for (Field field : getClass().getFields()) {
@@ -162,7 +153,6 @@ public abstract class DataPoint<T> implements Parcelable, Comparable<DataPoint> 
         return (T) getInstance();
     }
 
-    @Ignore
     private Object getPrimaryValue(Class clz) {
         if (Integer.class.equals(clz)) {
             return 0;

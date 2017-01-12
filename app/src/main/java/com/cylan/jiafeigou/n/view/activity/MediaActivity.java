@@ -32,10 +32,10 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.misc.HackyViewPager;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.base.BaseApplication;
-import com.cylan.jiafeigou.n.mvp.model.MediaBean;
 import com.cylan.jiafeigou.n.view.adapter.MediaDetailPagerAdapter;
 import com.cylan.jiafeigou.n.view.adapter.TransitionListenerAdapter;
 import com.cylan.jiafeigou.n.view.home.ShareDialogFragment;
@@ -61,6 +61,8 @@ import butterknife.OnClick;
 import tv.danmaku.ijk.media.exo.IjkExoMediaPlayer;
 import tv.danmaku.ijk.media.player.IMediaPlayer;
 import tv.danmaku.ijk.media.player.IjkMediaPlayer;
+
+import static com.cylan.jiafeigou.dp.DpMsgDefine.DPWonderItem;
 
 
 public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnPreparedListener, IMediaPlayer.OnInfoListener, IMediaPlayer.OnCompletionListener, SeekBar.OnSeekBarChangeListener, ViewPager.OnPageChangeListener, IMediaPlayer.OnErrorListener, IMediaPlayer.OnVideoSizeChangedListener {
@@ -126,9 +128,9 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
     private long mVideoPlayPosition;
     private int mStartPosition;
     private int mCurrentPosition;
-    private ArrayList<MediaBean> mMediaList;
+    private ArrayList<DPWonderItem> mMediaList;
     private int mCurrentViewType;
-    private MediaBean mCurrentMediaBean;
+    private DPWonderItem mCurrentMediaBean;
     private static final String STATE_CURRENT_PAGE_POSITION = "state_current_page_position";
     private static final String STATE_ENTER_ANIMATION_FINISHED = "state_enter_animation_finished";
     private MediaDetailPagerAdapter mAdapter;
@@ -183,7 +185,7 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
                 getWindow().getSharedElementEnterTransition().removeListener(this);
                 mEnterAnimationFinished = true;
                 animateHeaderAndFooter(true, true);
-                if (mCurrentViewType == MediaBean.TYPE_VIDEO) {
+                if (mCurrentViewType == DPWonderItem.TYPE_VIDEO) {
                     startPlayVideo();
                 }
             }
@@ -212,7 +214,7 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
             @Override
             public void setPrimaryItem(ViewGroup container, int position, Object object) {
                 super.setPrimaryItem(container, position, object);
-                if (mCurrentViewType == MediaBean.TYPE_VIDEO && mPagerContentView != object) {
+                if (mCurrentViewType == DPWonderItem.TYPE_VIDEO && mPagerContentView != object) {
                     mPagerContentView = (View) object;
                     ViewHolder holder = (ViewHolder) mPagerContentView.getTag();
                     mPhotoView = holder.mPhotoView;
@@ -224,7 +226,7 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
                     mVideoView = holder.mSurfaceView;
                     mVideoView.setSurfaceTextureListener(mSurfaceTextureListener);
                     if (mEnterAnimationFinished) startPlayVideo();
-                } else if (mCurrentViewType == MediaBean.TYPE_PIC && mPhotoView != object) {
+                } else if (mCurrentViewType == DPWonderItem.TYPE_PIC && mPhotoView != object) {
                     mPhotoView = (View) object;
                 }
 
@@ -314,11 +316,11 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
     }
 
     private void setFooterContent() {
-        if (mCurrentViewType == MediaBean.TYPE_VIDEO) {
+        if (mCurrentViewType == DPWonderItem.TYPE_VIDEO) {
             mVideoFooterContainer.setVisibility(View.VISIBLE);
             mPictureFooterContainer.setVisibility(View.GONE);
             updatePlayState();
-        } else if (mCurrentViewType == MediaBean.TYPE_PIC) {
+        } else if (mCurrentViewType == DPWonderItem.TYPE_PIC) {
             mPictureFooterContainer.setVisibility(View.VISIBLE);
             mVideoFooterContainer.setVisibility(View.GONE);
         }
@@ -326,9 +328,9 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
 
 
     private void setHeaderContent() {
-        if (mCurrentViewType == MediaBean.TYPE_VIDEO) {
+        if (mCurrentViewType == DPWonderItem.TYPE_VIDEO) {
             mHeaderTitle.setText(TimeUtils.getMediaVideoTimeInString(mCurrentMediaBean.time * 1000L));
-        } else if (mCurrentViewType == MediaBean.TYPE_PIC) {
+        } else if (mCurrentViewType == DPWonderItem.TYPE_PIC) {
             mHeaderTitle.setText(TimeUtils.getMediaPicTimeInString(mCurrentMediaBean.time * 1000L));
         }
 
@@ -433,7 +435,7 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
     @Override
     protected void onResume() {
         super.onResume();
-        if (mCurrentViewType == MediaBean.TYPE_VIDEO && mVideoPlayPosition > 0) {
+        if (mCurrentViewType == DPWonderItem.TYPE_VIDEO && mVideoPlayPosition > 0) {
             startPlayVideo();
         }
     }
@@ -543,9 +545,9 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
     }
 
     private void downloadFile() {
-        if (mCurrentViewType == MediaBean.TYPE_PIC) {
+        if (mCurrentViewType == DPWonderItem.TYPE_PIC) {
             mDownloadFile = new File(JConstant.MEDIA_DETAIL_PICTURE_DOWNLOAD_DIR, mCurrentMediaBean.fileName);
-        } else if (mCurrentViewType == MediaBean.TYPE_VIDEO) {
+        } else if (mCurrentViewType == DPWonderItem.TYPE_VIDEO) {
             mDownloadFile = new File(JConstant.MEDIA_DETAIL_VIDEO_DOWNLOAD_DIR, mCurrentMediaBean.fileName);
         } else {
             return;
@@ -630,7 +632,7 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
 
     private void cleanUpForExit(AnimatorUtils.OnFinish finish) {
         animateHeaderAndFooter(false, false, finish);
-        if (mCurrentViewType == MediaBean.TYPE_VIDEO) {
+        if (mCurrentViewType == DPWonderItem.TYPE_VIDEO) {
             mMediaPlayer.reset();
             if (mVideoView != null) mVideoView.setVisibility(View.GONE);
             if (mVideoLoadingBar != null) mVideoLoadingBar.setVisibility(View.GONE);

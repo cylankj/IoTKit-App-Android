@@ -3,7 +3,6 @@ package com.cylan.jiafeigou.dp;
 import com.cylan.annotation.Device;
 import com.cylan.annotation.DpAnnotation;
 import com.cylan.annotation.ForDevice;
-import com.cylan.jiafeigou.n.mvp.model.MediaBean;
 
 /**
  * Created by cylan-hunt on 16-11-8.
@@ -183,7 +182,7 @@ public class DpMsgConstant {
     @DpAnnotation(msgId = 601, clazz = String.class)
     public static final String ACCOUNT_STATE = null;//绑定、解绑消息
 
-    @DpAnnotation(msgId = 602, clazz = MediaBean.class)
+    @DpAnnotation(msgId = 602, clazz = DpMsgDefine.DPWonderItem.class)
     public static final String ACCOUNT_WONDERFUL_MSG = null;//每日精彩消息
 
     @DpAnnotation(msgId = 701, clazz = boolean.class)

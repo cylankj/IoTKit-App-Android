@@ -28,7 +28,7 @@ public class DpMsgDefine {
 
 
     @Message
-    public static final class DPNet extends DataPoint<DPNet> {
+    public static final class DPNet extends DPSingle<DPNet> {
         /**
          * |NET_CONNECT | -1 | #绑定后的连接中 |
          * |NET_OFFLINE |  0 | #不在线 |
@@ -123,7 +123,7 @@ public class DpMsgDefine {
     }
 
     @Message
-    public static final class DPTimeZone extends DataPoint<DPTimeZone> {
+    public static final class DPTimeZone extends DPSingle<DPTimeZone> {
         @Index(0)
         public String timezone;
         @Index(1)
@@ -244,7 +244,7 @@ public class DpMsgDefine {
 
     //系统消息使用
     @Message
-    public static final class DPSdcardSummary extends DataPoint<DPSdcardSummary> implements Parcelable {
+    public static final class DPSdcardSummary extends DPSingle<DPSdcardSummary> implements Parcelable {
         @Index(0)
         public boolean hasSdcard;
         @Index(1)
@@ -301,7 +301,7 @@ public class DpMsgDefine {
     }
 
     @Message
-    public static final class DPSdStatus extends DataPoint<DPSdStatus> implements Parcelable {
+    public static final class DPSdStatus extends DPSingle<DPSdStatus> implements Parcelable {
         @Index(0)
         public long total;
         @Index(1)
@@ -436,7 +436,7 @@ public class DpMsgDefine {
     }
 
     @Message
-    public static final class DPAlarm extends DataPoint<DPAlarm> implements Parcelable {//505 报警消息
+    public static final class DPAlarm extends DPSingle<DPAlarm> implements Parcelable {//505 报警消息
         @Index(0)
         public int time;
         @Index(1)
@@ -498,7 +498,7 @@ public class DpMsgDefine {
     }
 
     @Message//504
-    public static final class DPNotificationInfo extends DataPoint<DPNotificationInfo> implements Parcelable {
+    public static final class DPNotificationInfo extends DPSingle<DPNotificationInfo> implements Parcelable {
         @Index(0)
         public int notification;
         @Index(1)
@@ -569,7 +569,7 @@ public class DpMsgDefine {
     }
 
     @Message
-    public static final class DPTimeLapse extends DataPoint<DPTimeLapse> implements Parcelable {
+    public static final class DPTimeLapse extends DPSingle<DPTimeLapse> implements Parcelable {
         @Index(0)
         public int timeStart;
         @Index(1)
@@ -631,7 +631,7 @@ public class DpMsgDefine {
     }
 
     @Message
-    public static final class DPCamCoord extends DataPoint<DPCamCoord> implements Parcelable {
+    public static final class DPCamCoord extends DPSingle<DPCamCoord> implements Parcelable {
         @Index(0)
         public int x;
         @Index(1)
@@ -688,7 +688,7 @@ public class DpMsgDefine {
     }
 
     @Message
-    public static final class DPBellCallRecord extends DataPoint<DPBellCallRecord> implements Parcelable {
+    public static final class DPBellCallRecord extends DPMulti<DPBellCallRecord> implements Parcelable {
 
         @Index(0)
         public int isOK;
@@ -880,7 +880,7 @@ public class DpMsgDefine {
     }
 
 
-    public static class DPPrimary<T> extends DataPoint<T> {
+    public static final class DPPrimary<T> extends DataPoint<T> {
         public T value;
 
         @Override
@@ -916,7 +916,7 @@ public class DpMsgDefine {
         };
     }
 
-    public static class DPSet<T> extends DataPoint<TreeSet<T>> {
+    public static final class DPSet<T> extends DataPoint<TreeSet<T>> {
         public TreeSet<T> value;
 
         @Override
@@ -952,5 +952,150 @@ public class DpMsgDefine {
                 return new DPSet[size];
             }
         };
+    }
+
+    public static abstract class DPSingle<T> extends DataPoint<T> {
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            super.writeToParcel(dest, flags);
+        }
+
+        public DPSingle() {
+        }
+
+        protected DPSingle(Parcel in) {
+            super(in);
+        }
+    }
+
+    public static abstract class DPMulti<T> extends DataPoint<T> {
+        @Ignore
+        public boolean isRead;
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            super.writeToParcel(dest, flags);
+            dest.writeByte(this.isRead ? (byte) 1 : (byte) 0);
+        }
+
+        public DPMulti() {
+        }
+
+        protected DPMulti(Parcel in) {
+            super(in);
+            this.isRead = in.readByte() != 0;
+        }
+    }
+
+    @Message
+    public static final class DPWonderItem extends DPMulti<DPWonderItem> implements Parcelable {
+
+        public static final int TYPE_PIC = 0;
+        public static final int TYPE_VIDEO = 1;
+        public static final int TYPE_LOAD = 2;
+        private static DPWonderItem guideBean;
+
+        @Index(0)
+        public String cid;
+        @Index(1)
+        public int time;
+        @Index(2)
+        public int msgType;
+        @Index(3)
+        public int regionType;
+        @Index(4)
+        public String fileName;
+        @Index(5)
+        public String place;
+
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            DPWonderItem mediaBean = (DPWonderItem) o;
+            return time == mediaBean.time;
+        }
+
+        @Override
+        public int hashCode() {
+            return time ^ (time >>> 32);
+        }
+
+
+        @Override
+        public int compareTo(DataPoint another) {
+            return (another != null && another instanceof DPWonderItem) ? ((DPWonderItem) another).time - time : 0;
+        }
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeString(this.cid);
+            dest.writeInt(this.time);
+            dest.writeInt(this.msgType);
+            dest.writeInt(this.regionType);
+            dest.writeString(this.fileName);
+            dest.writeString(this.place);
+        }
+
+        public DPWonderItem() {
+        }
+
+        protected DPWonderItem(Parcel in) {
+            this.cid = in.readString();
+            this.time = in.readInt();
+            this.msgType = in.readInt();
+            this.regionType = in.readInt();
+            this.fileName = in.readString();
+            this.place = in.readString();
+        }
+
+        public static final Creator<DPWonderItem> CREATOR = new Creator<DPWonderItem>() {
+            @Override
+            public DPWonderItem createFromParcel(Parcel source) {
+                return new DPWonderItem(source);
+            }
+
+            @Override
+            public DPWonderItem[] newArray(int size) {
+                return new DPWonderItem[size];
+            }
+        };
+
+        private static DPWonderItem loadBean = new DPWonderItem();
+
+        public static DPWonderItem getEmptyLoadTypeBean() {
+            if (loadBean == null)
+                loadBean = new DPWonderItem();
+            loadBean.msgType = TYPE_LOAD;
+            return loadBean;
+        }
+
+        public static DPWonderItem getGuideBean() {
+            if (guideBean == null) {
+                guideBean = new DPWonderItem();
+                guideBean.msgType = TYPE_VIDEO;
+                guideBean.fileName = "http://yf.cylan.com.cn:82/Garfield/1045020208160b9706425470.mp4";
+                guideBean.cid = "www.cylan.com";
+            }
+            guideBean.time = (int) (System.currentTimeMillis() / 1000);
+            return guideBean;
+        }
     }
 }
