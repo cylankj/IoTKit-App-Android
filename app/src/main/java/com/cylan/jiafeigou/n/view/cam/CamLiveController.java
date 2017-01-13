@@ -278,7 +278,7 @@ public class CamLiveController implements
                 AppLogger.i("没有历史视频数据,或者没准备好");
                 return;
             }
-            DpMsgDefine.MsgNet net = GlobalDataProxy.getInstance().getValue(uuid,
+            DpMsgDefine.DPNet net = GlobalDataProxy.getInstance().getValue(uuid,
                     DpMsgMap.ID_201_NET, null);
             boolean deviceState = JFGRules.isDeviceOnline(net);
             //播放状态
@@ -436,14 +436,14 @@ public class CamLiveController implements
             AppLogger.d("no net work");
             return;
         }
-        DpMsgDefine.MsgNet net = GlobalDataProxy.getInstance().getValue(uuid,
+        DpMsgDefine.DPNet net = GlobalDataProxy.getInstance().getValue(uuid,
                 DpMsgMap.ID_201_NET, null);
         if (net != null &&
                 net.net == 0) {
             AppLogger.d("device is offline");
             return;
         }
-        DpMsgDefine.SdStatus status = GlobalDataProxy.getInstance().getValue(uuid,
+        DpMsgDefine.DPSdStatus status = GlobalDataProxy.getInstance().getValue(uuid,
                 DpMsgMap.ID_204_SDCARD_STORAGE, null);
         if (status != null && !status.hasSdcard) {
             //没有sd卡

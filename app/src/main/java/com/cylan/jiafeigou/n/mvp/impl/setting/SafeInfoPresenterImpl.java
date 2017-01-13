@@ -55,7 +55,7 @@ public class SafeInfoPresenterImpl extends AbstractPresenter<SafeInfoContract.Vi
         if (!flag) {
             return getView().getContext().getString(R.string.MAGNETISM_OFF);
         }
-        DpMsgDefine.AlarmInfo info = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_502_CAMERA_ALARM_INFO, null);
+        DpMsgDefine.DPAlarmInfo info = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_502_CAMERA_ALARM_INFO, null);
         int day = info == null ? 0 : info.day;
         StringBuilder builder = new StringBuilder();
         for (int i = 0; i < 7; i++) {

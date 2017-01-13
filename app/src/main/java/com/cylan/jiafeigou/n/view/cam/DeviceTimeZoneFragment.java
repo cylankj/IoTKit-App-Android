@@ -119,7 +119,7 @@ public class DeviceTimeZoneFragment extends IBaseFragment<TimezoneContract.Prese
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity().getApplicationContext(), LinearLayoutManager.VERTICAL, false);
         lvTimezoneDetail.setLayoutManager(layoutManager);
         adapter = new DeviceTimeZoneAdapter(getActivity().getApplicationContext());
-        DpMsgDefine.MsgTimeZone info = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_214_DEVICE_TIME_ZONE, null);
+        DpMsgDefine.DPTimeZone info = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_214_DEVICE_TIME_ZONE, null);
         String timeZoneId = info == null ? "" : info.timezone;
         adapter.setChooseId(timeZoneId);
         lvTimezoneDetail.setAdapter(adapter);
@@ -136,7 +136,7 @@ public class DeviceTimeZoneFragment extends IBaseFragment<TimezoneContract.Prese
                     @Override
                     public void onDialogAction(int id, Object value) {
                         if (value != null && value instanceof TimeZoneBean) {
-                            DpMsgDefine.MsgTimeZone timeZone = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_214_DEVICE_TIME_ZONE, null);
+                            DpMsgDefine.DPTimeZone timeZone = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_214_DEVICE_TIME_ZONE, null);
                             int offset = timeZone.offset;
                             if (offset != ((TimeZoneBean) value).getOffset()) {
                                 timeZone.timezone = ((TimeZoneBean) value).getName();

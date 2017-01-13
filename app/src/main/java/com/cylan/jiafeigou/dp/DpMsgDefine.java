@@ -7,7 +7,6 @@ import android.util.Log;
 
 import com.cylan.annotation.DpBase;
 import com.cylan.jiafeigou.BuildConfig;
-import com.cylan.jiafeigou.base.module.JFGDevice;
 import com.cylan.jiafeigou.n.mvp.model.BaseBean;
 import com.cylan.jiafeigou.utils.ParcelableUtils;
 import com.google.gson.Gson;
@@ -17,6 +16,8 @@ import org.msgpack.annotation.Index;
 import org.msgpack.annotation.Message;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.TreeSet;
 
 /**
  * Created by cylan-hunt on 16-11-9.
@@ -27,7 +28,7 @@ public class DpMsgDefine {
 
 
     @Message
-    public static final class MsgNet extends DataPoint {
+    public static final class DPNet extends DPSingle<DPNet> {
         /**
          * |NET_CONNECT | -1 | #绑定后的连接中 |
          * |NET_OFFLINE |  0 | #不在线 |
@@ -44,13 +45,13 @@ public class DpMsgDefine {
 
         @Override
         public String toString() {
-            return "MsgNet{" +
+            return "DPNet{" +
                     "net=" + net +
                     ", ssid='" + ssid + '\'' +
                     '}';
         }
 
-        public static String getNormalString(MsgNet net) {
+        public static String getNormalString(DPNet net) {
             String result = null;
             switch (net.net) {
                 case -1:
@@ -90,11 +91,11 @@ public class DpMsgDefine {
             dest.writeString(this.ssid);
         }
 
-        public MsgNet() {
+        public DPNet() {
         }
 
         @Ignore
-        public static MsgNet empty = new MsgNet();
+        public static DPNet empty = new DPNet();
 
         static {
             empty.net = 0;
@@ -102,34 +103,34 @@ public class DpMsgDefine {
         }
 
 
-        protected MsgNet(Parcel in) {
+        protected DPNet(Parcel in) {
             super(in);
             this.net = in.readInt();
             this.ssid = in.readString();
         }
 
-        public static final Creator<MsgNet> CREATOR = new Creator<MsgNet>() {
+        public static final Creator<DPNet> CREATOR = new Creator<DPNet>() {
             @Override
-            public MsgNet createFromParcel(Parcel source) {
-                return new MsgNet(source);
+            public DPNet createFromParcel(Parcel source) {
+                return new DPNet(source);
             }
 
             @Override
-            public MsgNet[] newArray(int size) {
-                return new MsgNet[size];
+            public DPNet[] newArray(int size) {
+                return new DPNet[size];
             }
         };
     }
 
     @Message
-    public static final class MsgTimeZone extends DataPoint {
+    public static final class DPTimeZone extends DPSingle<DPTimeZone> {
         @Index(0)
         public String timezone;
         @Index(1)
         public int offset;
 
         @Ignore
-        public static MsgTimeZone empty = new MsgTimeZone();
+        public static DPTimeZone empty = new DPTimeZone();
 
         static {
             empty.timezone = "北京时间";
@@ -138,7 +139,7 @@ public class DpMsgDefine {
 
         @Override
         public String toString() {
-            return "MsgTimeZone{" +
+            return "DPTimeZone{" +
                     "timezone='" + timezone + '\'' +
                     ", offset=" + offset +
                     '}';
@@ -156,30 +157,30 @@ public class DpMsgDefine {
             dest.writeInt(this.offset);
         }
 
-        public MsgTimeZone() {
+        public DPTimeZone() {
         }
 
-        protected MsgTimeZone(Parcel in) {
+        protected DPTimeZone(Parcel in) {
             super(in);
             this.timezone = in.readString();
             this.offset = in.readInt();
         }
 
-        public static final Creator<MsgTimeZone> CREATOR = new Creator<MsgTimeZone>() {
+        public static final Creator<DPTimeZone> CREATOR = new Creator<DPTimeZone>() {
             @Override
-            public MsgTimeZone createFromParcel(Parcel source) {
-                return new MsgTimeZone(source);
+            public DPTimeZone createFromParcel(Parcel source) {
+                return new DPTimeZone(source);
             }
 
             @Override
-            public MsgTimeZone[] newArray(int size) {
-                return new MsgTimeZone[size];
+            public DPTimeZone[] newArray(int size) {
+                return new DPTimeZone[size];
             }
         };
     }
 
     @Message
-    public static final class BindLog extends DataPoint {
+    public static final class DPBindLog extends DataPoint<DPBindLog> {
         @Index(0)
         public boolean isBind;
         @Index(1)
@@ -188,7 +189,7 @@ public class DpMsgDefine {
         public String oldAccount;
 
         @Ignore
-        public static BindLog empty = new BindLog();
+        public static DPBindLog empty = new DPBindLog();
 
         static {
             empty.isBind = false;
@@ -209,31 +210,31 @@ public class DpMsgDefine {
             dest.writeString(this.oldAccount);
         }
 
-        public BindLog() {
+        public DPBindLog() {
         }
 
-        protected BindLog(Parcel in) {
+        protected DPBindLog(Parcel in) {
             super(in);
             this.isBind = in.readByte() != 0;
             this.account = in.readString();
             this.oldAccount = in.readString();
         }
 
-        public static final Creator<BindLog> CREATOR = new Creator<BindLog>() {
+        public static final Creator<DPBindLog> CREATOR = new Creator<DPBindLog>() {
             @Override
-            public BindLog createFromParcel(Parcel source) {
-                return new BindLog(source);
+            public DPBindLog createFromParcel(Parcel source) {
+                return new DPBindLog(source);
             }
 
             @Override
-            public BindLog[] newArray(int size) {
-                return new BindLog[size];
+            public DPBindLog[] newArray(int size) {
+                return new DPBindLog[size];
             }
         };
 
         @Override
         public String toString() {
-            return "BindLog{" +
+            return "DPBindLog{" +
                     "isBind=" + isBind +
                     ", account='" + account + '\'' +
                     ", oldAccount='" + oldAccount + '\'' +
@@ -243,24 +244,24 @@ public class DpMsgDefine {
 
     //系统消息使用
     @Message
-    public static final class SdcardSummary extends DataPoint implements Parcelable {
+    public static final class DPSdcardSummary extends DPSingle<DPSdcardSummary> implements Parcelable {
         @Index(0)
         public boolean hasSdcard;
         @Index(1)
         public int errCode;
 
         @Ignore
-        public static SdcardSummary empty = new SdcardSummary();
+        public static DPSdcardSummary empty = new DPSdcardSummary();
 
         static {
             empty.hasSdcard = false;
             empty.errCode = 0;
         }
 
-        public SdcardSummary() {
+        public DPSdcardSummary() {
         }
 
-        protected SdcardSummary(Parcel in) {
+        protected DPSdcardSummary(Parcel in) {
             super(in);
             hasSdcard = in.readByte() != 0;
             errCode = in.readInt();
@@ -278,21 +279,21 @@ public class DpMsgDefine {
             return 0;
         }
 
-        public static final Creator<SdcardSummary> CREATOR = new Creator<SdcardSummary>() {
+        public static final Creator<DPSdcardSummary> CREATOR = new Creator<DPSdcardSummary>() {
             @Override
-            public SdcardSummary createFromParcel(Parcel in) {
-                return new SdcardSummary(in);
+            public DPSdcardSummary createFromParcel(Parcel in) {
+                return new DPSdcardSummary(in);
             }
 
             @Override
-            public SdcardSummary[] newArray(int size) {
-                return new SdcardSummary[size];
+            public DPSdcardSummary[] newArray(int size) {
+                return new DPSdcardSummary[size];
             }
         };
 
         @Override
         public String toString() {
-            return "SdcardSummary{" +
+            return "DPSdcardSummary{" +
                     "hasSdcard=" + hasSdcard +
                     ", errCode=" + errCode +
                     '}';
@@ -300,7 +301,7 @@ public class DpMsgDefine {
     }
 
     @Message
-    public static final class SdStatus extends DataPoint implements Parcelable {
+    public static final class DPSdStatus extends DPSingle<DPSdStatus> implements Parcelable {
         @Index(0)
         public long total;
         @Index(1)
@@ -311,7 +312,7 @@ public class DpMsgDefine {
         public boolean hasSdcard;
 
         @Ignore
-        public static SdStatus empty = new SdStatus();
+        public static DPSdStatus empty = new DPSdStatus();
 
         static {
             empty.total = 0;
@@ -320,12 +321,12 @@ public class DpMsgDefine {
             empty.hasSdcard = false;
         }
 
-        public SdStatus() {
+        public DPSdStatus() {
         }
 
         @Override
         public String toString() {
-            return "SdStatus{" +
+            return "DPSdStatus{" +
                     "total=" + total +
                     ", used=" + used +
                     ", err=" + err +
@@ -347,7 +348,7 @@ public class DpMsgDefine {
             dest.writeByte(this.hasSdcard ? (byte) 1 : (byte) 0);
         }
 
-        protected SdStatus(Parcel in) {
+        protected DPSdStatus(Parcel in) {
             super(in);
             this.total = in.readLong();
             this.used = in.readLong();
@@ -355,21 +356,21 @@ public class DpMsgDefine {
             this.hasSdcard = in.readByte() != 0;
         }
 
-        public static final Creator<SdStatus> CREATOR = new Creator<SdStatus>() {
+        public static final Creator<DPSdStatus> CREATOR = new Creator<DPSdStatus>() {
             @Override
-            public SdStatus createFromParcel(Parcel source) {
-                return new SdStatus(source);
+            public DPSdStatus createFromParcel(Parcel source) {
+                return new DPSdStatus(source);
             }
 
             @Override
-            public SdStatus[] newArray(int size) {
-                return new SdStatus[size];
+            public DPSdStatus[] newArray(int size) {
+                return new DPSdStatus[size];
             }
         };
     }
 
     @Message
-    public static final class AlarmInfo extends DataPoint implements Parcelable {
+    public static final class DPAlarmInfo extends DataPoint<DPAlarmInfo> implements Parcelable {
         @Index(0)
         public int timeStart;
         @Index(1)
@@ -381,7 +382,7 @@ public class DpMsgDefine {
         public int day;
 
         @Ignore
-        public static AlarmInfo empty = new AlarmInfo();
+        public static DPAlarmInfo empty = new DPAlarmInfo();
 
         static {
             empty.timeStart = 0;
@@ -402,31 +403,31 @@ public class DpMsgDefine {
             dest.writeInt(this.day);
         }
 
-        public AlarmInfo() {
+        public DPAlarmInfo() {
         }
 
-        protected AlarmInfo(Parcel in) {
+        protected DPAlarmInfo(Parcel in) {
             super(in);
             this.timeStart = in.readInt();
             this.timeEnd = in.readInt();
             this.day = in.readInt();
         }
 
-        public static final Creator<AlarmInfo> CREATOR = new Creator<AlarmInfo>() {
+        public static final Creator<DPAlarmInfo> CREATOR = new Creator<DPAlarmInfo>() {
             @Override
-            public AlarmInfo createFromParcel(Parcel source) {
-                return new AlarmInfo(source);
+            public DPAlarmInfo createFromParcel(Parcel source) {
+                return new DPAlarmInfo(source);
             }
 
             @Override
-            public AlarmInfo[] newArray(int size) {
-                return new AlarmInfo[size];
+            public DPAlarmInfo[] newArray(int size) {
+                return new DPAlarmInfo[size];
             }
         };
 
         @Override
         public String toString() {
-            return "AlarmInfo{" +
+            return "DPAlarmInfo{" +
                     "timeStart=" + timeStart +
                     ", timeEnd=" + timeEnd +
                     ", duration=" + day +
@@ -435,7 +436,7 @@ public class DpMsgDefine {
     }
 
     @Message
-    public static final class AlarmMsg extends DataPoint implements Parcelable {//505 报警消息
+    public static final class DPAlarm extends DPSingle<DPAlarm> implements Parcelable {//505 报警消息
         @Index(0)
         public int time;
         @Index(1)
@@ -446,7 +447,7 @@ public class DpMsgDefine {
         public int type;
 
         @Ignore
-        public static AlarmMsg empty = new AlarmMsg();
+        public static DPAlarm empty = new DPAlarm();
 
         @Override
         public int describeContents() {
@@ -462,12 +463,12 @@ public class DpMsgDefine {
             dest.writeInt(this.type);
         }
 
-        public AlarmMsg() {
+        public DPAlarm() {
         }
 
         @Override
         public String toString() {
-            return "AlarmMsg{" +
+            return "DPAlarm{" +
                     "time=" + time +
                     ", isRecording=" + isRecording +
                     ", fileIndex=" + fileIndex +
@@ -475,7 +476,7 @@ public class DpMsgDefine {
                     '}';
         }
 
-        protected AlarmMsg(Parcel in) {
+        protected DPAlarm(Parcel in) {
             super(in);
             this.time = in.readInt();
             this.isRecording = in.readInt();
@@ -483,35 +484,35 @@ public class DpMsgDefine {
             this.type = in.readInt();
         }
 
-        public static final Creator<AlarmMsg> CREATOR = new Creator<AlarmMsg>() {
+        public static final Creator<DPAlarm> CREATOR = new Creator<DPAlarm>() {
             @Override
-            public AlarmMsg createFromParcel(Parcel source) {
-                return new AlarmMsg(source);
+            public DPAlarm createFromParcel(Parcel source) {
+                return new DPAlarm(source);
             }
 
             @Override
-            public AlarmMsg[] newArray(int size) {
-                return new AlarmMsg[size];
+            public DPAlarm[] newArray(int size) {
+                return new DPAlarm[size];
             }
         };
     }
 
     @Message//504
-    public static final class NotificationInfo extends DataPoint implements Parcelable {
+    public static final class DPNotificationInfo extends DPSingle<DPNotificationInfo> implements Parcelable {
         @Index(0)
         public int notification;
         @Index(1)
         public int duration;
 
         @Ignore
-        public static NotificationInfo empty = new NotificationInfo();
+        public static DPNotificationInfo empty = new DPNotificationInfo();
 
         @Override
         public boolean equals(Object o) {
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
 
-            NotificationInfo that = (NotificationInfo) o;
+            DPNotificationInfo that = (DPNotificationInfo) o;
 
             if (notification != that.notification) return false;
             return duration == that.duration;
@@ -539,36 +540,36 @@ public class DpMsgDefine {
 
         @Override
         public String toString() {
-            return "NotificationInfo{" +
+            return "DPNotificationInfo{" +
                     "notification=" + notification +
                     ", duration=" + duration +
                     '}';
         }
 
-        public NotificationInfo() {
+        public DPNotificationInfo() {
         }
 
-        protected NotificationInfo(Parcel in) {
+        protected DPNotificationInfo(Parcel in) {
             super(in);
             this.notification = in.readInt();
             this.duration = in.readInt();
         }
 
-        public static final Creator<NotificationInfo> CREATOR = new Creator<NotificationInfo>() {
+        public static final Creator<DPNotificationInfo> CREATOR = new Creator<DPNotificationInfo>() {
             @Override
-            public NotificationInfo createFromParcel(Parcel source) {
-                return new NotificationInfo(source);
+            public DPNotificationInfo createFromParcel(Parcel source) {
+                return new DPNotificationInfo(source);
             }
 
             @Override
-            public NotificationInfo[] newArray(int size) {
-                return new NotificationInfo[size];
+            public DPNotificationInfo[] newArray(int size) {
+                return new DPNotificationInfo[size];
             }
         };
     }
 
     @Message
-    public static final class TimeLapse extends DataPoint implements Parcelable {
+    public static final class DPTimeLapse extends DPSingle<DPTimeLapse> implements Parcelable {
         @Index(0)
         public int timeStart;
         @Index(1)
@@ -579,7 +580,7 @@ public class DpMsgDefine {
         public int status;
 
         @Ignore
-        public static TimeLapse empty = new TimeLapse();
+        public static DPTimeLapse empty = new DPTimeLapse();
 
         @Override
         public int describeContents() {
@@ -595,10 +596,10 @@ public class DpMsgDefine {
             dest.writeInt(this.status);
         }
 
-        public TimeLapse() {
+        public DPTimeLapse() {
         }
 
-        protected TimeLapse(Parcel in) {
+        protected DPTimeLapse(Parcel in) {
             super(in);
             this.timeStart = in.readInt();
             this.timePeriod = in.readInt();
@@ -606,21 +607,21 @@ public class DpMsgDefine {
             this.status = in.readInt();
         }
 
-        public static final Creator<TimeLapse> CREATOR = new Creator<TimeLapse>() {
+        public static final Creator<DPTimeLapse> CREATOR = new Creator<DPTimeLapse>() {
             @Override
-            public TimeLapse createFromParcel(Parcel source) {
-                return new TimeLapse(source);
+            public DPTimeLapse createFromParcel(Parcel source) {
+                return new DPTimeLapse(source);
             }
 
             @Override
-            public TimeLapse[] newArray(int size) {
-                return new TimeLapse[size];
+            public DPTimeLapse[] newArray(int size) {
+                return new DPTimeLapse[size];
             }
         };
 
         @Override
         public String toString() {
-            return "TimeLapse{" +
+            return "DPTimeLapse{" +
                     "timeStart=" + timeStart +
                     ", timePeriod=" + timePeriod +
                     ", timeDuration=" + timeDuration +
@@ -630,7 +631,7 @@ public class DpMsgDefine {
     }
 
     @Message
-    public static final class CamCoord extends DataPoint implements Parcelable {
+    public static final class DPCamCoord extends DPSingle<DPCamCoord> implements Parcelable {
         @Index(0)
         public int x;
         @Index(1)
@@ -639,7 +640,7 @@ public class DpMsgDefine {
         public int r;
 
         @Ignore
-        public static CamCoord empty = new CamCoord();
+        public static DPCamCoord empty = new DPCamCoord();
 
         @Override
         public int describeContents() {
@@ -654,31 +655,31 @@ public class DpMsgDefine {
             dest.writeInt(this.r);
         }
 
-        public CamCoord() {
+        public DPCamCoord() {
         }
 
-        protected CamCoord(Parcel in) {
+        protected DPCamCoord(Parcel in) {
             super(in);
             this.x = in.readInt();
             this.y = in.readInt();
             this.r = in.readInt();
         }
 
-        public static final Creator<CamCoord> CREATOR = new Creator<CamCoord>() {
+        public static final Creator<DPCamCoord> CREATOR = new Creator<DPCamCoord>() {
             @Override
-            public CamCoord createFromParcel(Parcel source) {
-                return new CamCoord(source);
+            public DPCamCoord createFromParcel(Parcel source) {
+                return new DPCamCoord(source);
             }
 
             @Override
-            public CamCoord[] newArray(int size) {
-                return new CamCoord[size];
+            public DPCamCoord[] newArray(int size) {
+                return new DPCamCoord[size];
             }
         };
 
         @Override
         public String toString() {
-            return "CamCoord{" +
+            return "DPCamCoord{" +
                     "x=" + x +
                     ", y=" + y +
                     ", r=" + r +
@@ -687,7 +688,7 @@ public class DpMsgDefine {
     }
 
     @Message
-    public static final class BellCallState extends DataPoint implements Parcelable {
+    public static final class DPBellCallRecord extends DPMulti<DPBellCallRecord> implements Parcelable {
 
         @Index(0)
         public int isOK;
@@ -702,9 +703,9 @@ public class DpMsgDefine {
         public int type;
 
         @Ignore
-        public static BellCallState empty = new BellCallState();
+        public static DPBellCallRecord empty = new DPBellCallRecord();
 
-        public BellCallState() {
+        public DPBellCallRecord() {
         }
 
         @Override
@@ -721,7 +722,7 @@ public class DpMsgDefine {
             dest.writeInt(this.type);
         }
 
-        protected BellCallState(Parcel in) {
+        protected DPBellCallRecord(Parcel in) {
             super(in);
             this.isOK = in.readInt();
             this.time = in.readInt();
@@ -729,21 +730,21 @@ public class DpMsgDefine {
             this.type = in.readInt();
         }
 
-        public static final Creator<BellCallState> CREATOR = new Creator<BellCallState>() {
+        public static final Creator<DPBellCallRecord> CREATOR = new Creator<DPBellCallRecord>() {
             @Override
-            public BellCallState createFromParcel(Parcel source) {
-                return new BellCallState(source);
+            public DPBellCallRecord createFromParcel(Parcel source) {
+                return new DPBellCallRecord(source);
             }
 
             @Override
-            public BellCallState[] newArray(int size) {
-                return new BellCallState[size];
+            public DPBellCallRecord[] newArray(int size) {
+                return new DPBellCallRecord[size];
             }
         };
 
         @Override
         public String toString() {
-            return "BellCallState{" +
+            return "DPBellCallRecord{" +
                     "state=" + isOK +
                     ", time=" + time +
                     ", duration=" + duration +
@@ -834,43 +835,6 @@ public class DpMsgDefine {
         };
     }
 
-
-    public static class JFGDeviceWrap implements Parcelable {
-        public JFGDevice device;
-        public ArrayList<DpMsg> baseDpMsgList;
-
-        @Override
-        public int describeContents() {
-            return 0;
-        }
-
-        @Override
-        public void writeToParcel(Parcel dest, int flags) {
-            dest.writeParcelable(this.device, flags);
-            dest.writeTypedList(this.baseDpMsgList);
-        }
-
-        public JFGDeviceWrap() {
-        }
-
-        protected JFGDeviceWrap(Parcel in) {
-            this.device = in.readParcelable(JFGDevice.class.getClassLoader());
-            this.baseDpMsgList = in.createTypedArrayList(DpMsg.CREATOR);
-        }
-
-        public static final Parcelable.Creator<JFGDeviceWrap> CREATOR = new Parcelable.Creator<JFGDeviceWrap>() {
-            @Override
-            public JFGDeviceWrap createFromParcel(Parcel source) {
-                return new JFGDeviceWrap(source);
-            }
-
-            @Override
-            public JFGDeviceWrap[] newArray(int size) {
-                return new JFGDeviceWrap[size];
-            }
-        };
-    }
-
     public static class DpWrap implements Parcelable {
         public BaseBean baseDpDevice;
         public ArrayList<DpMsg> baseDpMsgList;
@@ -915,49 +879,8 @@ public class DpMsgDefine {
         };
     }
 
-    public static class MsgBattery extends DataPoint implements Parcelable {
-        public int id;
-        public long time;
-        public int battery;
 
-        @Override
-        public int describeContents() {
-            return 0;
-        }
-
-        @Override
-        public void writeToParcel(Parcel dest, int flags) {
-            super.writeToParcel(dest, flags);
-            dest.writeInt(this.id);
-            dest.writeLong(this.time);
-            dest.writeInt(this.battery);
-        }
-
-        public MsgBattery() {
-        }
-
-        protected MsgBattery(Parcel in) {
-            super(in);
-            this.id = in.readInt();
-            this.time = in.readLong();
-            this.battery = in.readInt();
-        }
-
-        public static final Creator<MsgBattery> CREATOR = new Creator<MsgBattery>() {
-            @Override
-            public MsgBattery createFromParcel(Parcel source) {
-                return new MsgBattery(source);
-            }
-
-            @Override
-            public MsgBattery[] newArray(int size) {
-                return new MsgBattery[size];
-            }
-        };
-    }
-
-
-    public static class DPPrimary<T> extends DataPoint {
+    public static final class DPPrimary<T> extends DataPoint<T> {
         public T value;
 
         @Override
@@ -968,13 +891,16 @@ public class DpMsgDefine {
         @Override
         public void writeToParcel(Parcel dest, int flags) {
             super.writeToParcel(dest, flags);
+            dest.writeValue(value);
         }
 
         public DPPrimary() {
         }
 
+
         protected DPPrimary(Parcel in) {
             super(in);
+            this.value = (T) in.readValue(Object.class.getClassLoader());
         }
 
         public static final Creator<DPPrimary> CREATOR = new Creator<DPPrimary>() {
@@ -990,4 +916,186 @@ public class DpMsgDefine {
         };
     }
 
+    public static final class DPSet<T> extends DataPoint<TreeSet<T>> {
+        public TreeSet<T> value;
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            super.writeToParcel(dest, flags);
+            dest.writeList(new ArrayList<>(value));
+        }
+
+        public DPSet() {
+        }
+
+        protected DPSet(Parcel in) {
+            super(in);
+            List<T> list = new ArrayList<>();
+            in.readList(list, ArrayList.class.getClassLoader());
+            this.value = new TreeSet<>(list);
+        }
+
+        public static final Creator<DPSet> CREATOR = new Creator<DPSet>() {
+            @Override
+            public DPSet createFromParcel(Parcel source) {
+                return new DPSet(source);
+            }
+
+            @Override
+            public DPSet[] newArray(int size) {
+                return new DPSet[size];
+            }
+        };
+    }
+
+    public static abstract class DPSingle<T> extends DataPoint<T> {
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            super.writeToParcel(dest, flags);
+        }
+
+        public DPSingle() {
+        }
+
+        protected DPSingle(Parcel in) {
+            super(in);
+        }
+    }
+
+    public static abstract class DPMulti<T> extends DataPoint<T> {
+        @Ignore
+        public boolean isRead;
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            super.writeToParcel(dest, flags);
+            dest.writeByte(this.isRead ? (byte) 1 : (byte) 0);
+        }
+
+        public DPMulti() {
+        }
+
+        protected DPMulti(Parcel in) {
+            super(in);
+            this.isRead = in.readByte() != 0;
+        }
+    }
+
+    @Message
+    public static final class DPWonderItem extends DPMulti<DPWonderItem> implements Parcelable {
+
+        public static final int TYPE_PIC = 0;
+        public static final int TYPE_VIDEO = 1;
+        public static final int TYPE_LOAD = 2;
+        private static DPWonderItem guideBean;
+
+        @Index(0)
+        public String cid;
+        @Index(1)
+        public int time;
+        @Index(2)
+        public int msgType;
+        @Index(3)
+        public int regionType;
+        @Index(4)
+        public String fileName;
+        @Index(5)
+        public String place;
+
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            DPWonderItem mediaBean = (DPWonderItem) o;
+            return time == mediaBean.time;
+        }
+
+        @Override
+        public int hashCode() {
+            return time ^ (time >>> 32);
+        }
+
+
+        @Override
+        public int compareTo(DataPoint another) {
+            return (another != null && another instanceof DPWonderItem) ? ((DPWonderItem) another).time - time : 0;
+        }
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeString(this.cid);
+            dest.writeInt(this.time);
+            dest.writeInt(this.msgType);
+            dest.writeInt(this.regionType);
+            dest.writeString(this.fileName);
+            dest.writeString(this.place);
+        }
+
+        public DPWonderItem() {
+        }
+
+        protected DPWonderItem(Parcel in) {
+            this.cid = in.readString();
+            this.time = in.readInt();
+            this.msgType = in.readInt();
+            this.regionType = in.readInt();
+            this.fileName = in.readString();
+            this.place = in.readString();
+        }
+
+        public static final Creator<DPWonderItem> CREATOR = new Creator<DPWonderItem>() {
+            @Override
+            public DPWonderItem createFromParcel(Parcel source) {
+                return new DPWonderItem(source);
+            }
+
+            @Override
+            public DPWonderItem[] newArray(int size) {
+                return new DPWonderItem[size];
+            }
+        };
+
+        private static DPWonderItem loadBean = new DPWonderItem();
+
+        public static DPWonderItem getEmptyLoadTypeBean() {
+            if (loadBean == null)
+                loadBean = new DPWonderItem();
+            loadBean.msgType = TYPE_LOAD;
+            return loadBean;
+        }
+
+        public static DPWonderItem getGuideBean() {
+            if (guideBean == null) {
+                guideBean = new DPWonderItem();
+                guideBean.msgType = TYPE_VIDEO;
+                guideBean.fileName = "http://yf.cylan.com.cn:82/Garfield/1045020208160b9706425470.mp4";
+                guideBean.cid = "www.cylan.com";
+            }
+            guideBean.time = (int) (System.currentTimeMillis() / 1000);
+            return guideBean;
+        }
+    }
 }

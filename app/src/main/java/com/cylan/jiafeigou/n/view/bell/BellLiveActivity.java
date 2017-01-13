@@ -67,7 +67,6 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
 
     private SurfaceView mSurfaceView;
 
-    private Intent mSaveIntent;
 
     private String mNewCallHandle;
 
@@ -81,6 +80,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
         ViewUtils.updateViewHeight(fLayoutBellLiveHolder, 0.75f);
         ViewUtils.setViewMarginStatusBar(tvBellLiveFlow);
         dLayoutBellHotSeat.setOnDragReleaseListener(this);
+        newCall();
     }
 
     @Override
@@ -91,14 +91,11 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        mSaveIntent = getIntent();
         setIntent(intent);
+        newCall();
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        //大大的蛋疼
+    private void newCall() {
         String extra = getIntent().getStringExtra(JConstant.VIEW_CALL_WAY_EXTRA);
         long time = getIntent().getLongExtra(JConstant.VIEW_CALL_WAY_TIME, System.currentTimeMillis());
         CallablePresenter.Caller caller = new CallablePresenter.Caller();
@@ -323,7 +320,6 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
                     mPresenter.pickup();
                     break;
                 case VIEW_ACTION_CANCEL:
-                    setIntent(mSaveIntent);
                     break;
             }
         }

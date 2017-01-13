@@ -1,15 +1,7 @@
 package com.cylan.jiafeigou.n.view.record;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.PixelFormat;
-import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
-import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,15 +13,14 @@ import android.widget.TextView;
 import com.cylan.entity.jniCall.JFGMsgVideoResolution;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.base.module.CameraDevice;
 import com.cylan.jiafeigou.base.wrapper.BaseFragment;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamDelayRecordContract;
-import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.TimeUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.RecordControllerView;
-import com.cylan.jiafeigou.widget.video.VideoViewFactory;
 
 import java.lang.ref.WeakReference;
 
@@ -41,10 +32,7 @@ import butterknife.OnClick;
  */
 
 public class DelayRecordMainFragment extends BaseFragment<CamDelayRecordContract.Presenter>
-        implements CamDelayRecordContract.View, SurfaceHolder.Callback {
-
-
-    SurfaceView mRoundedTextureView;
+        implements CamDelayRecordContract.View {
     @BindView(R.id.header_delay_record_back)
     ImageView mHeaderBack;
     @BindView(R.id.fragment_delay_record_video_view_container)
@@ -65,15 +53,19 @@ public class DelayRecordMainFragment extends BaseFragment<CamDelayRecordContract
     Button mPlayAgain;
     @BindView(R.id.fragment_delay_record_time_duration)
     ImageView mTimeDuration;
+    @BindView(R.id.fragment_delay_record_video_overlay)
+    View mVideoOverlay;
 
     @BindView(R.id.header_delay_record_container)
     ViewGroup mHeaderContainer;
     private WeakReference<DelayRecordTimeIntervalDialog> mTimeIntervalDialog;
     private WeakReference<DelayRecordTimeDurationDialog> mTimeDurationDialog;
-    private int mRecordMode = 0;
-    private int mRecordTime = 24;
-    private long mRecordStartTime = -1;
-    private long mRecordDuration = -1;
+    private int mRecordBeginTime = -1;
+    private int mRecordTimeCycle = -1;
+    private int mRecordTimeDuration = -1;
+    private int mRecordStatus = -1;
+
+    private boolean isStandBy = false;
 
     private static final int DELAY_RECORD_SETTING = -1;
     private static final int DELAY_RECORD_PROCESS = -2;
@@ -97,7 +89,6 @@ public class DelayRecordMainFragment extends BaseFragment<CamDelayRecordContract
         return new CamDelayRecordContract.Presenter();
     }
 
-
     @Override
     protected int getContentViewID() {
         return R.layout.fragment_delay_record;
@@ -106,29 +97,15 @@ public class DelayRecordMainFragment extends BaseFragment<CamDelayRecordContract
     protected void initViewAndListener() {
         initTimeIntervalDialog();
         initTimeDurationDialog();
-        initVideoView();
         ViewUtils.setViewMarginStatusBar(mHeaderContainer);
     }
 
-
-    /**
-     * 检查设备是否处于待机状态,未处于待机状态则进行直播预览画面
-     */
-    private void showPreviewOrRecord() {
-        if ((mDelayRecordState == DELAY_RECORD_SETTING || mDelayRecordState == DELAY_RECORD_PREVIEW) && mRecordStartTime == -1) {
-            mPresenter.startViewer();//设备未处于待机状态,且未开始延时摄影,则进行直播预览
-        } else if ((mDelayRecordState == DELAY_RECORD_SETTING || mDelayRecordState == DELAY_RECORD_RECORDING) && mRecordStartTime != -1) {
-            mPresenter.startViewer();//因为现在没有数据,所以暂时显示直播预览画面
-            mPresenter.startRecord();
-            startRecord();//现在还没有数据
-        }
-    }
 
     @OnClick(R.id.fragment_delay_record_time_interval)
     public void selectTimeInterval() {
         initTimeIntervalDialog();
         DelayRecordTimeIntervalDialog dialog = mTimeIntervalDialog.get();
-        dialog.setValue(mRecordMode);
+        dialog.setValue(mRecordTimeCycle);
         dialog.show(getChildFragmentManager(), DelayRecordTimeIntervalDialog.class.getName());
     }
 
@@ -136,7 +113,7 @@ public class DelayRecordMainFragment extends BaseFragment<CamDelayRecordContract
     public void selectTimeDuration() {
         initTimeDurationDialog();
         DelayRecordTimeDurationDialog dialog = mTimeDurationDialog.get();
-        dialog.setValue(mRecordMode);
+        dialog.setValue(mRecordTimeCycle);
         dialog.show(getChildFragmentManager(), DelayRecordTimeDurationDialog.class.getName());
     }
 
@@ -159,7 +136,7 @@ public class DelayRecordMainFragment extends BaseFragment<CamDelayRecordContract
 
     @OnClick(R.id.fragment_delay_record_again)
     public void recordAgain() {
-        refreshLayout(DELAY_RECORD_PREVIEW);
+        refreshLayout();
     }
 
 
@@ -171,14 +148,14 @@ public class DelayRecordMainFragment extends BaseFragment<CamDelayRecordContract
         if (time > 0) {
             //已经开始录制了,则显示剩余时间
             String remain = getString(R.string.Tap1_CameraFun_Timelapse_Countdown) +
-                    TimeUtils.getHH_MM_Remain(mRecordDuration - time);
+                    TimeUtils.getHH_MM_Remain(mRecordTimeDuration - time);
             mInformationText.setText(remain);
             mController.setRecordTime(time);
         } else if (time == DELAY_RECORD_SETTING || time == DELAY_RECORD_PREVIEW) {
             //还没有开始录制,则现在当前设置的模式
-            String content = getString(R.string.Tap1_CameraFun_Timelapse_Interval) + (mRecordMode == 0 ? 60 : 20)
+            String content = getString(R.string.Tap1_CameraFun_Timelapse_Interval) + mRecordTimeCycle
                     + " " +
-                    getString(R.string.Tap1_CameraFun_Timelapse_RecordTime) + (mRecordTime);
+                    getString(R.string.Tap1_CameraFun_Timelapse_RecordTime) + (mRecordTimeDuration / 3600);
             mInformationText.setText(content);
         } else if (time == DELAY_RECORD_FINISH) {
             //录制并合成完成视频
@@ -194,7 +171,7 @@ public class DelayRecordMainFragment extends BaseFragment<CamDelayRecordContract
     private void initTimeIntervalDialog() {
         if (mTimeIntervalDialog == null || mTimeIntervalDialog.get() == null) {
             DelayRecordTimeIntervalDialog dialog = DelayRecordTimeIntervalDialog.newInstance(null);
-            dialog.setAction((id, value) -> mPresenter.onViewAction(id, HANDLE_TIME_INTERVAL, value));
+            dialog.setAction(this::setTimeIntervalOption);
             mTimeIntervalDialog = new WeakReference<>(dialog);
         }
     }
@@ -202,13 +179,13 @@ public class DelayRecordMainFragment extends BaseFragment<CamDelayRecordContract
     private void initTimeDurationDialog() {
         if (mTimeDurationDialog == null || mTimeDurationDialog.get() == null) {
             DelayRecordTimeDurationDialog dialog = DelayRecordTimeDurationDialog.newInstance(null);
-            dialog.setAction((id, value) -> mPresenter.onViewAction(id, HANDLE_TIME_DURATION, value));
+            dialog.setAction(this::setTimeDurationOK);
             mTimeDurationDialog = new WeakReference<>(dialog);
         }
     }
 
     private void setTimeDurationOK(int id, Object value) {
-        mRecordTime = (int) value;
+        mRecordTimeDuration = (int) value * 3600;
         refreshRecordTime(DELAY_RECORD_SETTING);
     }
 
@@ -220,15 +197,15 @@ public class DelayRecordMainFragment extends BaseFragment<CamDelayRecordContract
         switch (id) {
             case R.id.dialog_record_rb_20s: {
                 mTimeInterval.setImageResource(R.drawable.delay_icon_20time);
-                mRecordMode = 1;
-                mRecordTime = 8;
+                mRecordTimeCycle = 20;
+                mRecordTimeDuration = 8 * 60 * 60;
                 refreshRecordTime(DELAY_RECORD_SETTING);
             }
             break;
             case R.id.dialog_record_rb_60s: {
                 mTimeDuration.setImageResource(R.drawable.delay_icon_60time);
-                mRecordMode = 0;
-                mRecordTime = 24;
+                mRecordTimeCycle = 60;
+                mRecordTimeDuration = 24 * 60 * 60;
                 refreshRecordTime(DELAY_RECORD_SETTING);
             }
             break;
@@ -237,73 +214,59 @@ public class DelayRecordMainFragment extends BaseFragment<CamDelayRecordContract
 
     @Override
     public void onRecordFinished() {
-        refreshLayout(DELAY_RECORD_PROCESS);
+        refreshLayout();
     }
 
-    public void refreshLayout(int state) {
-        switch (mDelayRecordState = state) {
-            case DELAY_RECORD_FINISH: {
-                mPlayAgain.setVisibility(View.VISIBLE);
-                mTimeInterval.setVisibility(View.GONE);
-                mTimeInterval.setVisibility(View.GONE);
-                mController.setVisibility(View.GONE);
-                mPlayAgain.setVisibility(View.VISIBLE);
-                mVideoPreview.setVisibility(View.VISIBLE);
-                refreshRecordTime(DELAY_RECORD_FINISH);
-            }
-            break;
-            case DELAY_RECORD_SETTING: {
-                mPlayAgain.setVisibility(View.GONE);
-                mTimeInterval.setVisibility(View.VISIBLE);
-                mTimeDuration.setVisibility(View.VISIBLE);
-                mController.setVisibility(View.VISIBLE);
-                mController.restoreRecord();
-                mPlay.setVisibility(View.VISIBLE);
-                mVideoPreview.setVisibility(View.VISIBLE);
-                refreshRecordTime(DELAY_RECORD_SETTING);
-            }
-            break;
-            case DELAY_RECORD_PROCESS: {
-                mPlayAgain.setVisibility(View.GONE);
-                mTimeInterval.setVisibility(View.GONE);
-                mTimeDuration.setVisibility(View.GONE);
-                mController.setVisibility(View.GONE);
-                mPlay.setVisibility(View.VISIBLE);
-                mVideoPreview.setVisibility(View.VISIBLE);
-                refreshRecordTime(DELAY_RECORD_PROCESS);
-            }
-            break;
-            case DELAY_RECORD_PREVIEW: {
-                mPlayAgain.setVisibility(View.GONE);
-                mTimeInterval.setVisibility(View.VISIBLE);
-                mTimeDuration.setVisibility(View.VISIBLE);
-                mController.setVisibility(View.VISIBLE);
-                mPlay.setVisibility(View.GONE);
-                mVideoPreview.setVisibility(View.GONE);
-                refreshRecordTime(DELAY_RECORD_PREVIEW);
-            }
-            break;
-            case DELAY_RECORD_RECORDING: {
-                mPlayAgain.setVisibility(View.GONE);
-                mTimeInterval.setVisibility(View.GONE);
-                mTimeDuration.setVisibility(View.GONE);
-                mController.setVisibility(View.VISIBLE);
-                mPlay.setVisibility(View.GONE);
-                mVideoPreview.setVisibility(View.GONE);
-                refreshRecordTime(DELAY_RECORD_RECORDING);
-            }
-            break;
+    public void refreshLayout() {
+        if (mRecordStatus == 2) {//视频已经合成完成
+            mPlayAgain.setVisibility(View.VISIBLE);
+            mTimeInterval.setVisibility(View.GONE);
+            mTimeInterval.setVisibility(View.GONE);
+            mController.setVisibility(View.GONE);
+            mPlay.setVisibility(View.GONE);
+            mVideoPreview.setVisibility(View.VISIBLE);
+            mVideoOverlay.setVisibility(View.VISIBLE);
+            refreshRecordTime(DELAY_RECORD_FINISH);
+        } else if (mRecordStatus == 1 && (mRecordBeginTime + mRecordTimeDuration) * 1000L < System.currentTimeMillis()) {//正在合成视频
+            mPlayAgain.setVisibility(View.GONE);
+            mTimeInterval.setVisibility(View.GONE);
+            mTimeDuration.setVisibility(View.GONE);
+            mController.setVisibility(View.GONE);
+            mPlay.setVisibility(View.VISIBLE);
+            mVideoPreview.setVisibility(View.VISIBLE);
+            mVideoOverlay.setVisibility(View.VISIBLE);
+            refreshRecordTime(DELAY_RECORD_PROCESS);
+
+        } else if (mRecordStatus == 1) {//正在录制中
+            mPlayAgain.setVisibility(View.GONE);
+            mTimeInterval.setVisibility(View.GONE);
+            mTimeDuration.setVisibility(View.GONE);
+            mController.setVisibility(View.VISIBLE);
+            mPlay.setVisibility(View.GONE);
+            mVideoPreview.setVisibility(View.VISIBLE);
+            mVideoOverlay.setVisibility(View.GONE);
+            refreshRecordTime(DELAY_RECORD_RECORDING);
+        } else if (mRecordStatus == 0) {//视频被终止
+
+        } else if (mRecordStatus == -2) {//未开始且未待机
+            mPlayAgain.setVisibility(View.GONE);
+            mTimeInterval.setVisibility(View.VISIBLE);
+            mTimeDuration.setVisibility(View.VISIBLE);
+            mController.setVisibility(View.VISIBLE);
+            mPlay.setVisibility(View.GONE);
+            mVideoPreview.setVisibility(View.GONE);
+            mVideoOverlay.setVisibility(View.GONE);
+            mController.restoreRecord();
+            refreshRecordTime(DELAY_RECORD_PREVIEW);
         }
     }
 
     private void startRecord() {
-        refreshLayout(DELAY_RECORD_RECORDING);
-        if (mRecordDuration == -1) mRecordDuration = mRecordTime * 60 * 60 * 1000;
-        mController.setMaxTime(mRecordDuration);
-        if (mRecordStartTime == -1) mRecordStartTime = System.currentTimeMillis();
-        mController.setRecordTime(System.currentTimeMillis() - mRecordStartTime);
+        mController.setMaxTime(mRecordTimeDuration);
+        mController.setRecordTime(System.currentTimeMillis() / 1000 - mRecordBeginTime);
         mController.startRecord();
-//        mPresenter.startRecord(mRecordMode, mRecordStartTime, mRecordDuration);
+        mPresenter.startRecord(mRecordTimeCycle, (int) (System.currentTimeMillis() / 1000), mRecordTimeDuration);
+        refreshLayout();
     }
 
 
@@ -324,103 +287,49 @@ public class DelayRecordMainFragment extends BaseFragment<CamDelayRecordContract
 
     @Override
     public void onResolution(JFGMsgVideoResolution resolution) throws JfgException {
-        if (mDelayRecordState != DELAY_RECORD_RECORDING)//just for test
-            refreshLayout(DELAY_RECORD_PREVIEW);
-        mRoundedTextureView.getHolder().setFormat(PixelFormat.TRANSPARENT);
-        mRoundedTextureView.getHolder().setFormat(PixelFormat.OPAQUE);
-        JfgCmdInsurance.getCmd().setRenderRemoteView(mRoundedTextureView);
+        SurfaceView surfaceView = mPresenter.getViewerInstance();
+        mVideoViewContainer.removeAllViews();
+        mVideoViewContainer.addView(surfaceView);
+        JfgCmdInsurance.getCmd().setRenderRemoteView(surfaceView);
+        mRecordStatus = -2;
+        refreshLayout();
     }
 
     @Override
     public void onFlowSpeed(int speed) {
-
-    }
-
-    /**
-     * 这个方法必须在holder已经创建了之后才能调用
-     */
-    public void setDefaultPreview() {
-        SurfaceHolder holder = mRoundedTextureView.getHolder();
-        int width = holder.getSurfaceFrame().right - holder.getSurfaceFrame().left;
-        int height = holder.getSurfaceFrame().bottom - holder.getSurfaceFrame().top;
-        Canvas canvas = holder.lockCanvas();
-        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.delay_record_overlay);
-        canvas.drawColor(Color.WHITE);
-        canvas.drawBitmap(bitmap, new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight()), new Rect(0, 0, width, height), new Paint());
-        holder.unlockCanvasAndPost(canvas);
-    }
-
-    /**
-     * 初始化videoView
-     *
-     * @return
-     */
-    private void initVideoView() {
-        if (mRoundedTextureView == null) {
-            mRoundedTextureView = (SurfaceView) VideoViewFactory.CreateRendererExt(false, getActivityContext(), true);
-            mRoundedTextureView.getHolder().addCallback(this);
-            mRoundedTextureView.setId("IVideoView".hashCode());
-            ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-            mRoundedTextureView.setLayoutParams(params);
-            mVideoViewContainer.removeAllViews();
-            mVideoViewContainer.addView(mRoundedTextureView);
-        }
-        AppLogger.i("initVideoView");
-    }
-
-    private void refreshSurfaceView() {
-        switch (mDelayRecordState) {
-            case DELAY_RECORD_SETTING: {
-                setDefaultPreview();
-                showPreviewOrRecord();
-            }
-            break;
-        }
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        stopPreviewAndRedord();
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        refreshLayout(DELAY_RECORD_SETTING);
-    }
-
-//    private void stopPreview() {
-//        if (mCamInfo != null && mCamInfo.deviceBase != null) {
-//            try {
-//                JfgCmdInsurance.getCmd().stopPlay(mCamInfo.deviceBase.uuid);
-//            } catch (JfgException e) {
-//                e.printStackTrace();
-//            }
-//        }
-//    }
-
-    private void stopPreviewAndRedord() {
-//        stopPreview();
+        refreshLayout();
     }
 
     @Override
-    public void surfaceCreated(SurfaceHolder holder) {
-        refreshSurfaceView();
-    }
-
-    @Override
-    public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-    }
-
-    @Override
-    public void surfaceDestroyed(SurfaceHolder holder) {
-
+    protected void onEnterAnimationFinished() {
+        refreshLayout();
     }
 
     @Override
     public void onStop() {
         super.onStop();
         ViewUtils.clearViewMarginStatusBar(mHeaderContainer);
+    }
+
+    @Override
+    public void onShowProperty(CameraDevice device) {
+        if (device.camera_time_lapse_photography != null) {
+            mRecordBeginTime = device.camera_time_lapse_photography.timeStart;
+            mRecordTimeCycle = device.camera_time_lapse_photography.timePeriod;
+            mRecordTimeDuration = device.camera_time_lapse_photography.timeDuration;
+            mRecordStatus = device.camera_time_lapse_photography.status;
+        }
+        if (device.camera_standby_flag != null) {
+            isStandBy = device.camera_standby_flag.value;
+        }
+        refreshLayout();
+        if (!isStandBy && mRecordStatus < 1) {
+            mPresenter.startViewer();
+        }
     }
 }

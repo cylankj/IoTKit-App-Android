@@ -37,7 +37,7 @@ import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JResultEvent;
 import com.cylan.jiafeigou.misc.efamily.MsgpackMsg;
 import com.cylan.jiafeigou.n.view.cloud.CloudLiveCallActivity;
-import com.cylan.jiafeigou.provider.DataSourceManager;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -207,6 +207,7 @@ public class DataSourceService extends Service implements AppCallBack {
     public void OnRobotGetDataRsp(RobotoGetDataRsp robotoGetDataRsp) {
         AppLogger.d("OnLocalMessage :" + new Gson().toJson(robotoGetDataRsp));
         RxBus.getCacheInstance().post(robotoGetDataRsp);
+
         DataSourceManager.getInstance().cacheRobotoGetDataRsp(robotoGetDataRsp);
     }
 
@@ -309,7 +310,7 @@ public class DataSourceService extends Service implements AppCallBack {
     @Override
     public void OnRobotCountDataRsp(long l, String s, ArrayList<JFGDPMsgCount> arrayList) {
         RxBus.getCacheInstance().post(new RxEvent.UnreadCount(s, l, arrayList));
-        AppLogger.d("OnLocalMessage :");
+        AppLogger.d("OnRobotCountDataRsp :");
     }
 
     @Override

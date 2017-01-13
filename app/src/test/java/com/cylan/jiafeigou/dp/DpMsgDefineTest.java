@@ -23,7 +23,7 @@ public class DpMsgDefineTest {
 
     @Test
     public void testObject() {
-        DpMsgDefine.MsgNet net = new DpMsgDefine.MsgNet();
+        DpMsgDefine.DPNet net = new DpMsgDefine.DPNet();
         net.net = 2;
         net.ssid = "so good";
         Intent intent = new Intent();

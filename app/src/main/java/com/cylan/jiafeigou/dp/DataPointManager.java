@@ -496,4 +496,11 @@ public class DataPointManager implements IParser, IDataPoint {
         return seq;
     }
 
+    @Override
+    public void clearAll() {
+        bundleMap.clear();
+        bundleSetMap.clear();
+        querySeqMap.clear();
+    }
+
 }

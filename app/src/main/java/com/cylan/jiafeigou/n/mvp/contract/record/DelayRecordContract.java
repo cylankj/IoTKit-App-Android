@@ -19,8 +19,8 @@ public interface DelayRecordContract {
         String VIEW_LAUNCH_WAY_SETTING = "VIEW_LAUNCH_WAY_SETTING";
         String VIEW_LAUNCH_WAY_WONDERFUL = "VIEW_LAUNCH_WAY_WONDERFUL";
 
-        String VIEW_HANDLER_GUIDE_START_NOW = "VIEW_HANDLER_GUIDE_START_NOW";
-        String VIEW_HANDLER_GUIDE_ENABLE_DEVICE = "VIEW_HANDLER_GUIDE_ENABLE_DEVICE";
+        String VIEW_HANDLER_TO_MAIN_VIEW = "VIEW_HANDLER_TO_MAIN_VIEW";
+        String VIEW_HANDLER_ENABLE_DEVICE = "VIEW_HANDLER_ENABLE_DEVICE";
 
         void onShowRecordMainView(String uuid);//显示延时摄影主页面
 
@@ -29,10 +29,6 @@ public interface DelayRecordContract {
         void onShowRecordDeviceView(List<String> devices);//显示可用设备选择列表界面
 
         void onShowDeviceSettingView(String uuid);//进入设备设置页,用于关闭待机模式
-
-        void onShowNoDeviceView();//无任何可用设备
-
-        void onUsableDeviceRsp(List<String> devices);//可用设备列表发生了变化,则刷新可用设备列表
 
     }
 

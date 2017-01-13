@@ -150,9 +150,9 @@ public class SubmitBindingInfoContractImpl extends
                     @Override
                     public Observable<Integer> call(RxEvent.JFGRobotSyncData jfgRobotSyncData) {
                         if (jfgRobotSyncData.dataList != null) {
-                            DpMsgDefine.MsgNet net = DpUtils.getMsg(jfgRobotSyncData.dataList,
+                            DpMsgDefine.DPNet net = DpUtils.getMsg(jfgRobotSyncData.dataList,
                                     DpMsgMap.ID_201_NET,
-                                    DpMsgDefine.MsgNet.class);
+                                    DpMsgDefine.DPNet.class);
                             AppLogger.i("yes hit net: " + net);
                             if (net != null)
                                 return Observable.just(net.net);

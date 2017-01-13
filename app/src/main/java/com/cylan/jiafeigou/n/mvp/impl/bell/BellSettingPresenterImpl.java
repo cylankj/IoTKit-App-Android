@@ -21,9 +21,9 @@ public class BellSettingPresenterImpl extends BasePresenter<BellSettingContract.
         implements BellSettingContract.Presenter {
 
     @Override
-    protected void onRegisterSubscription(CompositeSubscription subscriptions) {
-        super.onRegisterSubscription(subscriptions);
-        subscriptions.add(getUnbindDevSub());
+    protected void onRegisterSubscription() {
+        super.onRegisterSubscription();
+        registerSubscription(getUnbindDevSub());
     }
 
     @Override

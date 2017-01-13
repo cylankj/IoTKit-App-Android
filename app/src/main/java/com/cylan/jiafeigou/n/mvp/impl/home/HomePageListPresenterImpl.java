@@ -17,6 +17,7 @@ import com.cylan.jiafeigou.misc.br.TimeTickBroadcast;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomePageListContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.n.mvp.model.GreetBean;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.rx.RxHelper;
@@ -87,11 +88,11 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
                     @Override
                     public Boolean call(RxEvent.DataPoolUpdate update) {
                         if (update.id == DpMsgMap.ID_204_SDCARD_STORAGE) {
-                            DpMsgDefine.SdStatus sdStatus = (DpMsgDefine.SdStatus) update.value.getValue();
+                            DpMsgDefine.DPSdStatus sdStatus = (DpMsgDefine.DPSdStatus) update.value.getValue();
                         } else if (update.id == DpMsgMap.ID_222_SDCARD_SUMMARY) {
-                            DpMsgDefine.SdcardSummary sdcardSummary = (DpMsgDefine.SdcardSummary) update.value.getValue();
+                            DpMsgDefine.DPSdcardSummary sdcardSummary = (DpMsgDefine.DPSdcardSummary) update.value.getValue();
                         } else if (update.id == DpMsgMap.ID_201_NET) {
-                            DpMsgDefine.MsgNet net = (DpMsgDefine.MsgNet) update.value.getValue();
+                            DpMsgDefine.DPNet net = (DpMsgDefine.DPNet) update.value.getValue();
                         }
                         return null;
                     }
@@ -155,7 +156,7 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
         }
         return RxBus.getCacheInstance().toObservableSticky(RxUiEvent.BulkUUidListRsp.class)
                 .subscribeOn(Schedulers.io())
-                .filter((RxUiEvent.BulkUUidListRsp list) -> (getView() != null && list.allList != null))
+                .filter((RxUiEvent.BulkUUidListRsp list) -> (getView() != null && list.allList != null && GlobalDataProxy.getInstance().isOnline()))
                 .flatMap(new Func1<RxUiEvent.BulkUUidListRsp, Observable<List<String>>>() {
                     @Override
                     public Observable<List<String>> call(RxUiEvent.BulkUUidListRsp list) {
@@ -197,7 +198,7 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
 
     @Override
     public void fetchDeviceList(boolean manually) {
-        if (!JCache.isOnline()) {
+        if (!DataSourceManager.getInstance().isOnline()) {
             getView().onLoginState(false);
             getView().onRefreshFinish();
         }

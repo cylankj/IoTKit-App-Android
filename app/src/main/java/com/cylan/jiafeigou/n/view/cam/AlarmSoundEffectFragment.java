@@ -95,7 +95,7 @@ public class AlarmSoundEffectFragment extends IBaseFragment<CamWarnContract.Pres
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         imgVTopBarCenter.setText(getString(R.string.SOUNDS));
         ViewUtils.setViewPaddingStatusBar(fLayoutTopBarContainer);
-        DpMsgDefine.NotificationInfo notificationInfo = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_504_CAMERA_ALARM_NOTIFICATION, new DpMsgDefine.NotificationInfo());
+        DpMsgDefine.DPNotificationInfo notificationInfo = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_504_CAMERA_ALARM_NOTIFICATION, new DpMsgDefine.DPNotificationInfo());
         int effect = notificationInfo.notification;
         final int count = rgWarnEffect.getChildCount();
         for (int i = 0; i < count; i++) {
@@ -117,7 +117,7 @@ public class AlarmSoundEffectFragment extends IBaseFragment<CamWarnContract.Pres
     public void onDetach() {
         super.onDetach();
         if (callBack != null) {
-            DpMsgDefine.NotificationInfo notificationInfo = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_504_CAMERA_ALARM_NOTIFICATION, null);
+            DpMsgDefine.DPNotificationInfo notificationInfo = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_504_CAMERA_ALARM_NOTIFICATION, null);
             callBack.callBack(notificationInfo);
         }
     }
@@ -130,12 +130,12 @@ public class AlarmSoundEffectFragment extends IBaseFragment<CamWarnContract.Pres
                 break;
             case R.id.lLayout_warn_repeat_mode:
                 ViewUtils.deBounceClick(view);
-                DpMsgDefine.NotificationInfo notificationInfo = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_504_CAMERA_ALARM_NOTIFICATION, null);
+                DpMsgDefine.DPNotificationInfo notificationInfo = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_504_CAMERA_ALARM_NOTIFICATION, null);
                 DurationDialogFragment durationDialogFragment = DurationDialogFragment.newInstance(null);
                 durationDialogFragment.setValue(notificationInfo.duration);
                 durationDialogFragment.setAction((int id, Object value) -> {
                     tvWarnRepeatMode.setText(String.format(Locale.getDefault(), "%ss", value));
-                    DpMsgDefine.NotificationInfo info = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_504_CAMERA_ALARM_NOTIFICATION, null);
+                    DpMsgDefine.DPNotificationInfo info = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_504_CAMERA_ALARM_NOTIFICATION, null);
                     info.duration = (int) value;
                     basePresenter.updateInfoReq(info, DpMsgMap.ID_504_CAMERA_ALARM_NOTIFICATION);
                 });

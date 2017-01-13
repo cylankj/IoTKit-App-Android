@@ -1,20 +1,16 @@
-package com.cylan.jiafeigou.provider;
+package com.cylan.jiafeigou.base.module;
 
 
 import android.support.v4.util.LongSparseArray;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.entity.jniCall.RobotoGetDataRsp;
-import com.cylan.jiafeigou.base.module.BellDevice;
-import com.cylan.jiafeigou.base.module.CameraDevice;
-import com.cylan.jiafeigou.base.module.EfamilyDevice;
-import com.cylan.jiafeigou.base.module.JFGDevice;
-import com.cylan.jiafeigou.base.module.MagDevice;
+import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.base.view.JFGSourceManager;
 import com.cylan.jiafeigou.dp.DataPoint;
+import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 
@@ -79,6 +75,10 @@ public class DataSourceManager implements JFGSourceManager {
 
     public void setOnline(boolean online) {
         isOnline = online;
+        if (!isOnline) {//没有登录的话则清除所有的缓存
+            mCachedDeviceMap.clear();
+            mCachedGenericMap.clear();
+        }
     }
 
     public boolean isOnline() {
@@ -87,21 +87,47 @@ public class DataSourceManager implements JFGSourceManager {
 
     @Override
     public <T extends JFGDevice> T getJFGDevice(String uuid) {
-        return (T) mCachedDeviceMap.get(uuid);
+        JFGDevice device = mCachedDeviceMap.get(uuid);
+        if (device == null) throw new IllegalArgumentException("天啊,它真的发生了,你是不是又在乱传参数???");
+        return getValueWithAccountCheck((T) device.$());
     }
 
     @Override
     public List<JFGDevice> getAllJFGDevice() {
         List<JFGDevice> result = new ArrayList<>(mCachedDeviceMap.size());
         for (Map.Entry<String, ? extends JFGDevice> entry : mCachedDeviceMap.entrySet()) {
-            result.add(entry.getValue());
+            result.add(getJFGDevice(entry.getKey()));
         }
-        return result;
+        return getValueWithAccountCheck(result);
     }
 
-    public List<JFGDevice> getJFGDeviceByPid(int... pid) {
-        // Arrays.asList(pid);
-        return null;
+    public List<JFGDevice> getJFGDeviceByPid(int... pids) {
+        if (pids == null) return null;
+
+        List<JFGDevice> result = new ArrayList<>();
+        for (Map.Entry<String, JFGDevice> device : mCachedDeviceMap.entrySet()) {
+            for (int pid : pids) {
+                if (device.getValue().pid == pid) {
+                    result.add(getJFGDevice(device.getKey()));
+                    break;
+                }
+            }
+        }
+        return getValueWithAccountCheck(result);
+    }
+
+    public List<String> getJFGDeviceUUIDByPid(int... pids) {
+        if (pids == null) return null;
+        List<String> result = new ArrayList<>();
+        for (Map.Entry<String, JFGDevice> device : mCachedDeviceMap.entrySet()) {
+            for (int pid : pids) {
+                if (device.getValue() != null && device.getValue().pid == pid) {
+                    result.add(device.getValue().$().uuid);
+                    break;
+                }
+            }
+        }
+        return getValueWithAccountCheck(result);
     }
 
     @Override
@@ -111,7 +137,31 @@ public class DataSourceManager implements JFGSourceManager {
             if (temp != null) {//已经存在了,则更新即可
                 temp.setDevice(device);
             } else {//不存在,则添加
-                mCachedDeviceMap.put(device.uuid, create(device));
+                JFGDevice jfgDevice = create(device);
+                if (jfgDevice != null) mCachedDeviceMap.put(device.uuid, jfgDevice);
+            }
+        }
+        syncAllJFGDeviceProperty();
+    }
+
+
+    //主动发起请求,来获取设备所有的属性
+    public void syncAllJFGDeviceProperty() {
+        if (mCachedDeviceMap.size() == 0) return;
+        for (Map.Entry<String, JFGDevice> entry : mCachedDeviceMap.entrySet()) {
+            syncJFGDeviceProperty(entry.getKey());
+        }
+    }
+
+    public void syncJFGDeviceProperty(String uuid) {
+        if (TextUtils.isEmpty(uuid) || mJFGAccount == null) return;
+        JFGDevice device = mCachedDeviceMap.get(uuid);
+        if (device != null) {
+            ArrayList<JFGDPMsg> parameters = device.getQueryParameters(false);
+            try {
+                JfgCmdInsurance.getCmd().robotGetData(uuid, parameters, 1, false, 0);
+            } catch (JfgException e) {
+                e.printStackTrace();
             }
         }
     }
@@ -119,6 +169,7 @@ public class DataSourceManager implements JFGSourceManager {
     @Override
     public void cacheJFGAccount(JFGAccount account) {
         mJFGAccount = account;
+        syncAllJFGDeviceProperty();
     }
 
     @Override
@@ -129,19 +180,16 @@ public class DataSourceManager implements JFGSourceManager {
     @Override
     public void cacheRobotoGetDataRsp(RobotoGetDataRsp dataRsp) {
         final String identity = dataRsp.identity;
-        Log.d(TAG, "fullDataPointAssembler: " + identity);
+        JFGDevice device = mCachedDeviceMap.get(identity);
+        boolean changed = false;
         for (Map.Entry<Integer, ArrayList<JFGDPMsg>> entry : dataRsp.map.entrySet()) {
             if (entry.getValue() == null) continue;
-            boolean changed = false;
+            changed = false;
             for (JFGDPMsg dp : entry.getValue()) {
-                if (TextUtils.isEmpty(identity)) {//账号相关数据,
-                    // TODO: 2017/1/8 账号相关数据的处理
-
-                } else {//uuid相关数据
-                    JFGDevice device = mCachedDeviceMap.get(identity);
-                    if (device != null) {
-                        changed |= device.setValue(dp, dataRsp.seq);
-                    }
+                if (device != null) {
+                    changed |= device.setValue(dp, dataRsp.seq);
+                } else {
+                    // TODO: 17-1-12 账号相关的数据
                 }
             }
 
@@ -152,6 +200,7 @@ public class DataSourceManager implements JFGSourceManager {
             response.msgId = entry.getKey();
             RxBus.getCacheInstance().post(response);
         }
+        if (changed) device.version = System.currentTimeMillis();
     }
 
     @Override
@@ -163,6 +212,7 @@ public class DataSourceManager implements JFGSourceManager {
                 changed |= device.setValue(msg);
             }
             if (changed) {
+                device.version = System.currentTimeMillis();
                 RxBus.getCacheInstance().postSticky(new RxEvent.DeviceSyncRsp().setUuid(s));
             }
         }
@@ -176,10 +226,22 @@ public class DataSourceManager implements JFGSourceManager {
     public <T> T getValue(String uuid, long msgId, long seq) {
         JFGDevice device = mCachedDeviceMap.get(uuid);
         if (device != null) {
-            return device.getValue(msgId, seq);
+            return getValueWithAccountCheck(device.$().getValue(msgId, seq));
         }
         return null;
     }
+
+    public <T> T getValueWithAccountCheck(T value) {
+        if (mJFGAccount == null || !isOnline) {
+            return null;
+        }
+        return value;
+    }
+
+    public void addPropertyObserver() {
+
+    }
+
 
     private JFGDevice create(com.cylan.entity.jniCall.JFGDevice device) {
         JFGDevice result = null;
@@ -214,7 +276,7 @@ public class DataSourceManager implements JFGSourceManager {
 
             //中控设备
             case OS_EFAML:
-                result = new EfamilyDevice().setDevice(device);
+                result = new EFamilyDevice().setDevice(device);
                 break;
             case OS_TEMP_HUMI:
                 break;
@@ -232,6 +294,9 @@ public class DataSourceManager implements JFGSourceManager {
                 break;
             case OS_DOOR_BELL_V2:
                 break;
+            default:
+                result = new JFGDevice() {
+                };
         }
         return result;
     }

@@ -1,6 +1,6 @@
 package com.cylan.jiafeigou.utils;
 
-import com.cylan.jiafeigou.n.mvp.model.MediaBean;
+import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.utils.PackageUtils;
 
 import java.net.MalformedURLException;
@@ -15,7 +15,7 @@ public class WonderGlideVideoThumbURL extends WonderGlideURL {
     private static final String VIDEO_PICTURE_URL = "http://jiafeigou-yf.oss-cn-hangzhou.aliyuncs.com/long/%s/%s/wonder/%s.jpg";
     private static final String VID = PackageUtils.getMetaString(ContextUtils.getContext(), "vid");
 
-    public WonderGlideVideoThumbURL(MediaBean bean) {
+    public WonderGlideVideoThumbURL(DpMsgDefine.DPWonderItem bean) {
         super(bean);
     }
 

@@ -14,6 +14,4 @@ import java.lang.annotation.Target;
 public @interface DPProperty {
 
     int msgId();//消息id
-
-    boolean isSetType() default false;//是否为集合类型
 }

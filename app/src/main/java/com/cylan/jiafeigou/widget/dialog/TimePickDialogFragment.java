@@ -83,7 +83,7 @@ public class TimePickDialogFragment extends BaseDialog<Integer> {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         String title = getArguments().getString(KEY_TITLE);
         tvDialogTitle.setText(title);
-        DpMsgDefine.AlarmInfo alarmInfo = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_502_CAMERA_ALARM_INFO, new DpMsgDefine.AlarmInfo());
+        DpMsgDefine.DPAlarmInfo alarmInfo = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_502_CAMERA_ALARM_INFO, new DpMsgDefine.DPAlarmInfo());
         boolean isStart = TextUtils.equals(title, getString(R.string.FROME));
         newHour = isStart ? alarmInfo.timeStart >> 8 : alarmInfo.timeEnd >> 8;
         newMinute = isStart ? ((byte) alarmInfo.timeStart << 8) >> 8 : ((byte) alarmInfo.timeEnd << 8) >> 8;

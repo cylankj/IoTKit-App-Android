@@ -100,10 +100,6 @@ public class DpAssembler implements IParser {
                         wrap.baseDpDevice.alias = (String) jfgAttributeUpdate.o;
                         flatMsg.cache(JCache.getAccountCache().getAccount(),
                                 wrap.baseDpDevice);
-
-                        DpMsgDefine.JFGDeviceWrap jfgDevice = flatMsg.getJFGDevice(GlobalDataProxy.getInstance().getJfgAccount().getAccount(), jfgAttributeUpdate.uuid);
-                        jfgDevice.device.alias = (String) jfgAttributeUpdate.o;
-                        flatMsg.cacheJFGDevice(GlobalDataProxy.getInstance().getJfgAccount().getAccount(), jfgDevice.device);
                         AppLogger.i("setDevice alias: " + jfgAttributeUpdate.o);
                         return null;
                     }
@@ -141,8 +137,7 @@ public class DpAssembler implements IParser {
                     //拿出对应uuid的所有属性
                     DpMsgDefine.DpWrap deviceDetailsCache = flatMsg.getDevice(JCache.getAccountCache().getAccount(),
                             arrayListStringPair.second);
-                    DpMsgDefine.JFGDeviceWrap jfgDevice = flatMsg.getJFGDevice(GlobalDataProxy.getInstance().getJfgAccount().getAccount(), arrayListStringPair.second);
-                    if (deviceDetailsCache == null || deviceDetailsCache.baseDpMsgList == null || jfgDevice == null || jfgDevice.baseDpMsgList == null) {
+                    if (deviceDetailsCache == null || deviceDetailsCache.baseDpMsgList == null ) {
                         AppLogger.e("deviceDetailsCache is null");
                         return null;
                     }
