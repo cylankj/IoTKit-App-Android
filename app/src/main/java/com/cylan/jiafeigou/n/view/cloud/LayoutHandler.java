@@ -58,6 +58,24 @@ public class LayoutHandler {
                 CloudLiveLeaveMesBean cc = (CloudLiveLeaveMesBean) o;
                 holder.setText(R.id.tv_voice_length, cc.getLeaveMesgLength());
                 holder.setText(R.id.tv_time, cc.getLeveMesgTime());
+                ImageView userHeadImag = holder.getView(R.id.iv_user_icon);
+                //头像
+                Glide.with(ContextUtils.getContext()).load(cc.userIcon)
+                        .asBitmap()
+                        .error(R.drawable.icon_mine_head_normal)
+                        .placeholder(R.drawable.icon_mine_head_normal)
+                        .centerCrop()
+                        .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                        .into(new BitmapImageViewTarget(userHeadImag) {
+                            @Override
+                            protected void setResource(Bitmap resource) {
+                                RoundedBitmapDrawable circularBitmapDrawable =
+                                        RoundedBitmapDrawableFactory.create(ContextUtils.getContext().getResources(), resource);
+                                circularBitmapDrawable.setCircular(true);
+                                userHeadImag.setImageDrawable(circularBitmapDrawable);
+                            }
+                        });
+
                 if (cc.isRead()) {
                     holder.setVisibility(R.id.tv_is_read, View.VISIBLE);
                 } else {
