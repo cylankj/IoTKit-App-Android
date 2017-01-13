@@ -15,8 +15,10 @@ import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendScanAddContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineFriendScanAddPresenterImp;
 import com.cylan.jiafeigou.n.mvp.model.MineAddReqBean;
+import com.cylan.jiafeigou.support.softkeyboard.util.ViewUtil;
 import com.cylan.jiafeigou.support.zscan.ZXingScannerView;
 import com.cylan.jiafeigou.utils.ToastUtil;
+import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.LoadingDialog;
 import com.google.zxing.Result;
 
@@ -73,8 +75,8 @@ public class MineFriendScanAddFragment extends Fragment implements ZXingScannerV
         zxVScanAddRelativesandfriend.setLayoutParams(scanlayoutParams);
         //二维码 qrCode
         ViewGroup.LayoutParams erWeimalayoutParams = ivErweima.getLayoutParams();
-        erWeimalayoutParams.height = (int) (screenHeight * 0.135 + 0.5);
-        erWeimalayoutParams.width = (int) (screenWidth * 0.24 + 0.5);
+        erWeimalayoutParams.height = ViewUtils.dp2px((int) (screenHeight * 0.135 + 0.5));
+        erWeimalayoutParams.width = ViewUtils.dp2px((int) (screenWidth * 0.24 + 0.5));
         ivErweima.setLayoutParams(erWeimalayoutParams);
     }
 

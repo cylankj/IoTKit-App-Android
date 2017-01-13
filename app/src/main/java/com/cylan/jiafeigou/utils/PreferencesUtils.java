@@ -26,7 +26,7 @@ import android.content.SharedPreferences;
  * <li>get boolean {@link #getBoolean(String)}, {@link #getBoolean(String, boolean)}</li>
  * </ul>
  *
- * @author <activity_cloud_live_mesg_video_talk_item href="http://www.trinea.cn" target="_blank">Trinea</activity_cloud_live_mesg_video_talk_item> 2013-3-6
+ * @author <activity_cloud_live_mesg_call_out_item href="http://www.trinea.cn" target="_blank">Trinea</activity_cloud_live_mesg_call_out_item> 2013-3-6
  */
 public class PreferencesUtils {
 
@@ -51,8 +51,8 @@ public class PreferencesUtils {
      * get string preferences
      *
      * @param key The name of the preference to retrieve
-     * @return The preference value if it exists, or null. Throws ClassCastException if there is activity_cloud_live_mesg_video_talk_item preference with this
-     * name that is not activity_cloud_live_mesg_video_talk_item string
+     * @return The preference value if it exists, or null. Throws ClassCastException if there is activity_cloud_live_mesg_call_out_item preference with this
+     * name that is not activity_cloud_live_mesg_call_out_item string
      * @see #getString(String, String)
      */
     public static String getString(String key) {
@@ -65,8 +65,8 @@ public class PreferencesUtils {
      *
      * @param key          The name of the preference to retrieve
      * @param defaultValue Value to return if this preference does not exist
-     * @return The preference value if it exists, or defValue. Throws ClassCastException if there is activity_cloud_live_mesg_video_talk_item preference with
-     * this name that is not activity_cloud_live_mesg_video_talk_item string
+     * @return The preference value if it exists, or defValue. Throws ClassCastException if there is activity_cloud_live_mesg_call_out_item preference with
+     * this name that is not activity_cloud_live_mesg_call_out_item string
      */
     public static String getString(String key, String defaultValue) {
         Context context = ContextUtils.getContext();
@@ -93,8 +93,8 @@ public class PreferencesUtils {
      * get int preferences
      *
      * @param key The name of the preference to retrieve
-     * @return The preference value if it exists, or -1. Throws ClassCastException if there is activity_cloud_live_mesg_video_talk_item preference with this
-     * name that is not activity_cloud_live_mesg_video_talk_item int
+     * @return The preference value if it exists, or -1. Throws ClassCastException if there is activity_cloud_live_mesg_call_out_item preference with this
+     * name that is not activity_cloud_live_mesg_call_out_item int
      * @see #getInt(String, int)
      */
     public static int getInt(String key) {
@@ -106,8 +106,8 @@ public class PreferencesUtils {
      *
      * @param key          The name of the preference to retrieve
      * @param defaultValue Value to return if this preference does not exist
-     * @return The preference value if it exists, or defValue. Throws ClassCastException if there is activity_cloud_live_mesg_video_talk_item preference with
-     * this name that is not activity_cloud_live_mesg_video_talk_item int
+     * @return The preference value if it exists, or defValue. Throws ClassCastException if there is activity_cloud_live_mesg_call_out_item preference with
+     * this name that is not activity_cloud_live_mesg_call_out_item int
      */
     public static int getInt(String key, int defaultValue) {
         Context context = ContextUtils.getContext();
@@ -134,8 +134,8 @@ public class PreferencesUtils {
      * get long preferences
      *
      * @param key The name of the preference to retrieve
-     * @return The preference value if it exists, or -1. Throws ClassCastException if there is activity_cloud_live_mesg_video_talk_item preference with this
-     * name that is not activity_cloud_live_mesg_video_talk_item long
+     * @return The preference value if it exists, or -1. Throws ClassCastException if there is activity_cloud_live_mesg_call_out_item preference with this
+     * name that is not activity_cloud_live_mesg_call_out_item long
      * @see #getLong(String, long)
      */
     public static long getLong(String key) {
@@ -147,8 +147,8 @@ public class PreferencesUtils {
      *
      * @param key          The name of the preference to retrieve
      * @param defaultValue Value to return if this preference does not exist
-     * @return The preference value if it exists, or defValue. Throws ClassCastException if there is activity_cloud_live_mesg_video_talk_item preference with
-     * this name that is not activity_cloud_live_mesg_video_talk_item long
+     * @return The preference value if it exists, or defValue. Throws ClassCastException if there is activity_cloud_live_mesg_call_out_item preference with
+     * this name that is not activity_cloud_live_mesg_call_out_item long
      */
     public static long getLong(String key, long defaultValue) {
         Context context = ContextUtils.getContext();
@@ -175,8 +175,8 @@ public class PreferencesUtils {
      * get float preferences
      *
      * @param key The name of the preference to retrieve
-     * @return The preference value if it exists, or -1. Throws ClassCastException if there is activity_cloud_live_mesg_video_talk_item preference with this
-     * name that is not activity_cloud_live_mesg_video_talk_item float
+     * @return The preference value if it exists, or -1. Throws ClassCastException if there is activity_cloud_live_mesg_call_out_item preference with this
+     * name that is not activity_cloud_live_mesg_call_out_item float
      * @see #getFloat(String, float)
      */
     public static float getFloat(String key) {
@@ -188,8 +188,8 @@ public class PreferencesUtils {
      *
      * @param key          The name of the preference to retrieve
      * @param defaultValue Value to return if this preference does not exist
-     * @return The preference value if it exists, or defValue. Throws ClassCastException if there is activity_cloud_live_mesg_video_talk_item preference with
-     * this name that is not activity_cloud_live_mesg_video_talk_item float
+     * @return The preference value if it exists, or defValue. Throws ClassCastException if there is activity_cloud_live_mesg_call_out_item preference with
+     * this name that is not activity_cloud_live_mesg_call_out_item float
      */
     public static float getFloat(String key, float defaultValue) {
         Context context = ContextUtils.getContext();
@@ -216,8 +216,8 @@ public class PreferencesUtils {
      * get boolean preferences, default is false
      *
      * @param key The name of the preference to retrieve
-     * @return The preference value if it exists, or false. Throws ClassCastException if there is activity_cloud_live_mesg_video_talk_item preference with this
-     * name that is not activity_cloud_live_mesg_video_talk_item boolean
+     * @return The preference value if it exists, or false. Throws ClassCastException if there is activity_cloud_live_mesg_call_out_item preference with this
+     * name that is not activity_cloud_live_mesg_call_out_item boolean
      * @see #getBoolean(String, boolean)
      */
     public static boolean getBoolean(String key) {
@@ -229,8 +229,8 @@ public class PreferencesUtils {
      *
      * @param key          The name of the preference to retrieve
      * @param defaultValue Value to return if this preference does not exist
-     * @return The preference value if it exists, or defValue. Throws ClassCastException if there is activity_cloud_live_mesg_video_talk_item preference with
-     * this name that is not activity_cloud_live_mesg_video_talk_item boolean
+     * @return The preference value if it exists, or defValue. Throws ClassCastException if there is activity_cloud_live_mesg_call_out_item preference with
+     * this name that is not activity_cloud_live_mesg_call_out_item boolean
      */
     public static boolean getBoolean(String key, boolean defaultValue) {
         Context context = ContextUtils.getContext();

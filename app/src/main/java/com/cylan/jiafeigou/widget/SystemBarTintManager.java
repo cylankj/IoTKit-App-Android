@@ -8,7 +8,7 @@ package com.cylan.jiafeigou.widget;
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * You may obtain activity_cloud_live_mesg_video_talk_item copy of the License at
+ * You may obtain activity_cloud_live_mesg_call_out_item copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
@@ -47,7 +47,7 @@ import java.lang.reflect.Method;
 public class SystemBarTintManager {
 
     static {
-        // Android allows activity_cloud_live_mesg_video_talk_item system property to override the presence of the navigation bar.
+        // Android allows activity_cloud_live_mesg_call_out_item system property to override the presence of the navigation bar.
         // Used by the emulator.
         // See https://github.com/android/platform_frameworks_base/blob/master/policy/src/com/android/internal/policy/impl/PhoneWindowManager.java#L1076
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
@@ -470,7 +470,7 @@ public class SystemBarTintManager {
         }
 
         /**
-         * Should activity_cloud_live_mesg_video_talk_item navigation bar appear at the bottom of the screen in the current
+         * Should activity_cloud_live_mesg_call_out_item navigation bar appear at the bottom of the screen in the current
          * device configuration? A navigation bar may appear on the right side of
          * the screen in certain configurations.
          *
@@ -499,7 +499,7 @@ public class SystemBarTintManager {
         }
 
         /**
-         * Does this device have activity_cloud_live_mesg_video_talk_item system navigation bar?
+         * Does this device have activity_cloud_live_mesg_call_out_item system navigation bar?
          *
          * @return True if this device uses soft key navigation, False otherwise.
          */

@@ -6,42 +6,34 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <RelativeLayout
-        android:id="@+id/rl_home_mine_message"
+    <FrameLayout
+        android:id="@+id/fLayout_top_bar_container"
         android:layout_width="match_parent"
-        android:layout_height="73dp"
-        android:background="#0BA8CF">
-
-        <ImageView
-            android:id="@+id/iv_home_mine_message_back"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:padding="15dp"
-            android:src="@drawable/icon_nav_back_white" />
+        android:layout_height="wrap_content"
+        android:background="@color/color_0ba8cf">
 
         <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_marginBottom="12dp"
-            android:layout_marginLeft="48dp"
-            android:text="@string/Tap3_UserMessage"
+            android:id="@+id/iv_home_mine_message_back"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:drawableLeft="@drawable/icon_nav_back_white"
+            android:drawablePadding="15dp"
+            android:padding="15dp"
+            android:text="@string/Tap1_Camera_Messages"
             android:textColor="@color/color_white"
-            android:textSize="18sp" />
+            android:textSize="16sp" />
 
         <TextView
             android:id="@+id/tv_home_mine_message_clear"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentRight="true"
+            android:layout_gravity="end|center_vertical"
             android:clickable="true"
             android:padding="15dp"
             android:text="@string/DELETE"
             android:textColor="@color/color_white"
             android:textSize="14sp" />
-    </RelativeLayout>
+    </FrameLayout>
 
     <RelativeLayout
         android:layout_width="match_parent"

@@ -9,7 +9,7 @@ import com.cylan.jiafeigou.support.sp.AppPreferences;
  * Created by cylan-hunt on 16-8-6.
  */
 public class SuperSpUtils {
-    // create activity_cloud_live_mesg_video_talk_item preference accessor. This is for global app preferences.
+    // create activity_cloud_live_mesg_call_out_item preference accessor. This is for global app preferences.
     private AppPreferences appPreferences;
 
     private static SuperSpUtils superSpUtils;

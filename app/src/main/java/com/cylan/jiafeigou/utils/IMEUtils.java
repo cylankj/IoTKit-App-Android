@@ -94,7 +94,7 @@ public class IMEUtils {
                         boolean servedViewAttached = servedView.getWindowVisibility() != View.GONE;
 
                         if (servedViewAttached) {
-                            // The view held by the IMM was replaced without activity_cloud_live_mesg_video_talk_item global focus change. Let's make
+                            // The view held by the IMM was replaced without activity_cloud_live_mesg_call_out_item global focus change. Let's make
                             // sure we get notified when that view detaches.
 
                             // Avoid double registration.
@@ -148,10 +148,10 @@ public class IMEUtils {
     /**
      * Fix for https://code.google.com/p/android/issues/detail?id=171190 .
      * <p/>
-     * When activity_cloud_live_mesg_video_talk_item view that has focus gets detached, we wait for the main thread to be idle and then
-     * check if the InputMethodManager is leaking activity_cloud_live_mesg_video_talk_item view. If yes, we tell it that the decor view got
+     * When activity_cloud_live_mesg_call_out_item view that has focus gets detached, we wait for the main thread to be idle and then
+     * check if the InputMethodManager is leaking activity_cloud_live_mesg_call_out_item view. If yes, we tell it that the decor view got
      * focus, which is what happens if you press home and come back from recent apps. This replaces
-     * the reference to the detached view with activity_cloud_live_mesg_video_talk_item reference to the decor view.
+     * the reference to the detached view with activity_cloud_live_mesg_call_out_item reference to the decor view.
      * <p/>
      * Should be called from {@link Activity#onCreate(android.os.Bundle)} )}.
      */

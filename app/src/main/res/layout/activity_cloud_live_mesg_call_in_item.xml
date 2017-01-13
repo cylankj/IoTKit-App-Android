@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:layout_centerHorizontal="true"
+        android:id="@+id/tv_call_in_time"
+        android:text="11/20 23:00"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <RelativeLayout
+        android:layout_marginTop="9dp"
+        android:layout_below="@id/tv_call_in_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:layout_marginLeft="10dp"
+            android:id="@+id/iv_cloud_icon"
+            android:src="@drawable/pic_head"
+            android:layout_width="40dp"
+            android:layout_height="40dp" />
+
+        <LinearLayout
+            android:layout_marginLeft="7dp"
+            android:id="@+id/ll_voice_container"
+            android:layout_toRightOf="@id/iv_cloud_icon"
+            android:background="@drawable/pic_container_white"
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="38dp">
+
+            <ImageView
+                android:id="@+id/iv_call_in_icon"
+                android:layout_marginLeft="15dp"
+                android:layout_gravity="center_vertical"
+                android:src="@drawable/icon_missed_call"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:textColor="@color/color_black"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="20dp"
+                android:id="@+id/tv_call_in_talk_length"
+                android:layout_gravity="center_vertical"
+                android:text="通话时长:10:30"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</RelativeLayout>

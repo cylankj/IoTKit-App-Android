@@ -72,19 +72,19 @@ public class StickyHeaderUtils {
                             final View header = headerReference.get();
 
                             if (!mDownEventDispatched) {
-                                // if moving, create activity_cloud_live_mesg_video_talk_item fake down event for the scrollingView to start the scroll. the y of the touch in the scrolling view is the y coordinate of the touch in the header + the translation of the header
+                                // if moving, create activity_cloud_live_mesg_call_out_item fake down event for the scrollingView to start the scroll. the y of the touch in the scrolling view is the y coordinate of the touch in the header + the translation of the header
                                 final MotionEvent downEvent = MotionEvent.obtain(event.getDownTime() - 1, event.getEventTime() - 1, MotionEvent.ACTION_DOWN, event.getX(), event.getY() + StickyCompat.getTranslationY(header), 0);
                                 scrollingView.dispatchTouchEvent(downEvent);
                                 mDownEventDispatched = true;
                             }
 
-                            //dispatching the move event. we need to create activity_cloud_live_mesg_video_talk_item fake motionEvent using activity_cloud_live_mesg_video_talk_item different y coordinate related to the scrolling view
+                            //dispatching the move event. we need to create activity_cloud_live_mesg_call_out_item fake motionEvent using activity_cloud_live_mesg_call_out_item different y coordinate related to the scrolling view
                             final MotionEvent moveEvent = MotionEvent.obtain(event.getDownTime(), event.getEventTime(), MotionEvent.ACTION_MOVE, event.getX(), event.getY() + StickyCompat.getTranslationY(header), 0);
                             scrollingView.dispatchTouchEvent(moveEvent);
 
                             break;
                         case MotionEvent.ACTION_UP:
-                            // when action up, dispatch an action cancel to avoid activity_cloud_live_mesg_video_talk_item possible click
+                            // when action up, dispatch an action cancel to avoid activity_cloud_live_mesg_call_out_item possible click
                             final MotionEvent cancelEvent = MotionEvent.obtain(event.getDownTime(), event.getEventTime(), MotionEvent.ACTION_CANCEL, event.getX(), event.getY(), 0);
                             scrollingView.dispatchTouchEvent(cancelEvent);
                             mDownEventDispatched = false;

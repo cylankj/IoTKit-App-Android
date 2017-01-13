@@ -8,7 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -18,7 +18,7 @@ import com.cylan.jiafeigou.n.mvp.contract.home.HomeMineMessageContract;
 import com.cylan.jiafeigou.n.mvp.impl.home.HomeMineMessagePresenterImp;
 import com.cylan.jiafeigou.n.mvp.model.MineMessageBean;
 import com.cylan.jiafeigou.n.view.adapter.HomeMineMessageAdapter;
-import com.cylan.jiafeigou.utils.ToastUtil;
+import com.cylan.jiafeigou.utils.ViewUtils;
 
 import java.util.ArrayList;
 
@@ -34,7 +34,7 @@ import butterknife.OnClick;
 public class HomeMineMessageFragment extends Fragment implements HomeMineMessageContract.View {
 
     @BindView(R.id.iv_home_mine_message_back)
-    ImageView ivHomeMineMessageBack;
+    TextView ivHomeMineMessageBack;
     @BindView(R.id.tv_home_mine_message_clear)
     TextView tvHomeMineMessageClear;
     @BindView(R.id.rcl_home_mine_message_recyclerview)
@@ -47,6 +47,8 @@ public class HomeMineMessageFragment extends Fragment implements HomeMineMessage
     TextView tvDelete;
     @BindView(R.id.rl_delete_dialog)
     RelativeLayout rlDeleteDialog;
+    @BindView(R.id.fLayout_top_bar_container)
+    FrameLayout fLayoutTopBarContainer;
     private boolean isCheckAll;
 
     private HomeMineMessageContract.Presenter presenter;
@@ -76,8 +78,18 @@ public class HomeMineMessageFragment extends Fragment implements HomeMineMessage
         return view;
     }
 
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        initTopBar();
+    }
+
     private void initPresenter() {
         presenter = new HomeMineMessagePresenterImp(this, mesgdata);
+    }
+
+    private void initTopBar() {
+        ViewUtils.setViewPaddingStatusBar(fLayoutTopBarContainer);
     }
 
     @Override
@@ -94,6 +106,7 @@ public class HomeMineMessageFragment extends Fragment implements HomeMineMessage
 
     /**
      * 初始化列表显示
+     *
      * @param list
      */
     @Override
@@ -126,14 +139,14 @@ public class HomeMineMessageFragment extends Fragment implements HomeMineMessage
 
     }
 
-    @OnClick({R.id.iv_home_mine_message_back, R.id.tv_home_mine_message_clear,R.id.tv_check_all, R.id.tv_delete})
+    @OnClick({R.id.iv_home_mine_message_back, R.id.tv_home_mine_message_clear, R.id.tv_check_all, R.id.tv_delete})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.iv_home_mine_message_back:        //返回
                 getFragmentManager().popBackStack();
                 break;
             case R.id.tv_home_mine_message_clear:       //删除
-                if (messageAdapter.getItemCount()==0)return;
+                if (messageAdapter.getItemCount() == 0) return;
                 if (tvHomeMineMessageClear.getText().equals(getString(R.string.CANCEL))) {
                     handleCancle();
                     return;
@@ -141,15 +154,15 @@ public class HomeMineMessageFragment extends Fragment implements HomeMineMessage
                 handleDelete();
                 break;
             case R.id.tv_check_all:
-                if (isCheckAll){
+                if (isCheckAll) {
                     messageAdapter.checkAll = true;
                     rclHomeMineMessageRecyclerview.setAdapter(messageAdapter);
-                    if (hasCheckData == null){
+                    if (hasCheckData == null) {
                         hasCheckData = new ArrayList<>();
                     }
                     hasCheckData.clear();
                     hasCheckData.addAll(messageAdapter.getList());
-                }else {
+                } else {
                     hasCheckData.clear();
                     messageAdapter.checkAll = false;
                     rclHomeMineMessageRecyclerview.setAdapter(messageAdapter);
@@ -158,15 +171,15 @@ public class HomeMineMessageFragment extends Fragment implements HomeMineMessage
                 break;
 
             case R.id.tv_delete:
-                if (hasCheckData.size()==0){
+                if (hasCheckData.size() == 0) {
                     return;
                 }
-                for (MineMessageBean bean:hasCheckData){
+                for (MineMessageBean bean : hasCheckData) {
                     messageAdapter.remove(bean);
                 }
                 hasCheckData.clear();
                 messageAdapter.notifyDataSetHasChanged();
-                if (messageAdapter.getItemCount()==0){
+                if (messageAdapter.getItemCount() == 0) {
                     showNoMesgView();
                     rlDeleteDialog.setVisibility(View.GONE);
                     tvHomeMineMessageClear.setText(getString(R.string.DELETE));
@@ -191,7 +204,7 @@ public class HomeMineMessageFragment extends Fragment implements HomeMineMessage
             @Override
             public void deleteCheck(boolean isCheck, MineMessageBean item) {
                 if (isCheck) {
-                    if (!hasCheckData.contains(item)){
+                    if (!hasCheckData.contains(item)) {
                         hasCheckData.add(item);
                     }
                 } else {

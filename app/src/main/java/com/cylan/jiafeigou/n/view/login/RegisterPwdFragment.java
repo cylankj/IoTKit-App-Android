@@ -39,7 +39,7 @@ public class RegisterPwdFragment extends SetupPwdFragment
     }
 
     /**
-     * Use this factory method to create activity_cloud_live_mesg_video_talk_item new instance of
+     * Use this factory method to create activity_cloud_live_mesg_call_out_item new instance of
      * this fragment using the provided parameters.
      *
      * @return A new instance of fragment SetupPwdFragment.
