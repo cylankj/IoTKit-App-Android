@@ -24,6 +24,7 @@ import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.contract.bell.BellLiveContract;
 import com.cylan.jiafeigou.n.mvp.impl.bell.BellLivePresenterImpl;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.bell.DragLayout;
 import com.cylan.jiafeigou.widget.video.VideoViewFactory;
@@ -258,6 +259,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
         fLayoutBellAfterLive.setVisibility(View.VISIBLE);
     }
 
+
     @Override
     public void onSpeaker(boolean on) {
         if (mLandBellLiveSpeaker != null)
@@ -304,12 +306,13 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
 
     @Override
     public void onCallAnswerInOther() {
-        showToast("通话已在其他端处理");
+        finishExt();
+        ToastUtil.showNegativeToast(getString(R.string.Tips_Call_Answer_In_Other));
     }
 
     @Override
     public void onNewCallWhenInLive(String person) {
-        mNewCallHandle = showAlert("有新朋友来访", "有新的朋友:" + person + "来访,是否接听", "接听", "忽略");
+        mNewCallHandle = showAlert(getString(R.string.Tips_New_Call_Coming), getString(R.string.Tips_New_Call_Come_Listen, person), getString(R.string.listen), getString(R.string.ignore));
     }
 
     @Override

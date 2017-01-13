@@ -25,7 +25,9 @@ public abstract class DataPoint<T> implements Parcelable, Comparable<DataPoint> 
     @Ignore
     private boolean isNull = false;
 
+    @Ignore
     public static final long MSG_ID_VIRTUAL_START = -888080;
+    @Ignore
     public static final long MSG_ID_VIRTUAL_END = 0;
 
     public boolean isNull() {
@@ -42,6 +44,7 @@ public abstract class DataPoint<T> implements Parcelable, Comparable<DataPoint> 
     @Ignore
     public long seq;
 
+    @Ignore
     private LongSparseArray<Field> mDPPropertyArray;
 
     public byte[] toBytes() {

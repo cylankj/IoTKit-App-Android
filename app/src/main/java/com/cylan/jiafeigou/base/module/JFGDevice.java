@@ -9,6 +9,7 @@ import com.cylan.annotation.DPProperty;
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
+import com.cylan.jiafeigou.support.log.AppLogger;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
@@ -127,7 +128,7 @@ public abstract class JFGDevice extends DataPoint<JFGDevice> implements Parcelab
                 field.set(this, value);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            AppLogger.e("给JFGDevice设置属性的过程发生了错误:" + e.getMessage());
         }
         return true;
     }
