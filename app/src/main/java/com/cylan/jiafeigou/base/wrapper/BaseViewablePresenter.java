@@ -95,7 +95,6 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
     protected Subscription getResolutionRetrySub() {
         return mResolutionRetrySub = Observable.interval(0, 10, TimeUnit.SECONDS)
                 .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(count -> {
                     try {
                         if (mHasResolution) {
@@ -124,14 +123,16 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
      * 而且还会清除播放状态
      */
     protected void stopViewer() {
-        if (!TextUtils.isEmpty(mInViewIdentify)) {
-            try {
-                mHasResolution = false;
-                JfgCmdInsurance.getCmd().stopPlay(mInViewIdentify);
-            } catch (JfgException e) {
-                e.printStackTrace();
+        post(() -> {
+            if (!TextUtils.isEmpty(mInViewIdentify)) {
+                try {
+                    mHasResolution = false;
+                    JfgCmdInsurance.getCmd().stopPlay(mInViewIdentify);
+                } catch (JfgException e) {
+                    e.printStackTrace();
+                }
             }
-        }
+        });
     }
 
 
@@ -184,13 +185,15 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
     }
 
     protected void setSpeaker(boolean on) {
-        if (on) {//当前是开启状态
-            JfgCmdInsurance.getCmd().setAudio(false, true, true);//开启设备的扬声器和麦克风
-            JfgCmdInsurance.getCmd().setAudio(true, true, true);//开启客户端的扬声器和麦克风
-        } else {//当前是关闭状态，则开启
-            JfgCmdInsurance.getCmd().setAudio(true, false, false);
-            JfgCmdInsurance.getCmd().setAudio(false, false, false);
-        }
+        post(() -> {
+            if (on) {//当前是开启状态
+                JfgCmdInsurance.getCmd().setAudio(false, true, true);//开启设备的扬声器和麦克风
+                JfgCmdInsurance.getCmd().setAudio(true, true, true);//开启客户端的扬声器和麦克风
+            } else {//当前是关闭状态，则开启
+                JfgCmdInsurance.getCmd().setAudio(true, false, false);
+                JfgCmdInsurance.getCmd().setAudio(false, false, false);
+            }
+        });
     }
 
     @Override

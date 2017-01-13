@@ -1019,26 +1019,6 @@ public class DpMsgDefine {
         @Index(5)
         public String place;
 
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            DPWonderItem mediaBean = (DPWonderItem) o;
-            return time == mediaBean.time;
-        }
-
-        @Override
-        public int hashCode() {
-            return time ^ (time >>> 32);
-        }
-
-
-        @Override
-        public int compareTo(DataPoint another) {
-            return (another != null && another instanceof DPWonderItem) ? ((DPWonderItem) another).time - time : 0;
-        }
-
         @Override
         public int describeContents() {
             return 0;

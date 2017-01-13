@@ -1,9 +1,10 @@
 package com.cylan.jiafeigou.base.view;
 
-import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.entity.jniCall.RobotoGetDataRsp;
+import com.cylan.jiafeigou.base.module.JFGAccount;
 import com.cylan.jiafeigou.base.module.JFGDevice;
+import com.cylan.jiafeigou.dp.DataPoint;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +21,7 @@ public interface JFGSourceManager {
 
     void cacheJFGDevices(com.cylan.entity.jniCall.JFGDevice... devices);
 
-    void cacheJFGAccount(JFGAccount account);
+    void cacheJFGAccount(com.cylan.entity.jniCall.JFGAccount account);
 
     JFGAccount getJFGAccount();
 
@@ -28,9 +29,9 @@ public interface JFGSourceManager {
 
     void cacheRobotoSyncData(boolean b, String s, ArrayList<JFGDPMsg> arrayList);
 
-    <T> T getValue(String uuid, long msgId);
+    <T extends DataPoint> T getValue(String uuid, long msgId);
 
-    <T> T getValue(String uuid, long msgId, long seq);
+    <T extends DataPoint> T getValue(String uuid, long msgId, long seq);
 
     List<JFGDevice> getJFGDeviceByPid(int... pids);
 

@@ -41,7 +41,7 @@ public abstract class BasePresenter<V extends JFGView> implements JFGPresenter {
     private LongSparseArray<ResponseParser> mResponseParserMap = new LongSparseArray<>(32);
 
     protected V mView;
-    protected ArrayList<Long> mRequestSeqs = new ArrayList<>(32);
+    private ArrayList<Long> mRequestSeqs = new ArrayList<>(32);
 
     protected void unSubscribe(Subscription... subscriptions) {
         if (subscriptions != null) {
