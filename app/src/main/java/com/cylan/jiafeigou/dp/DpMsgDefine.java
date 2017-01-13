@@ -752,6 +752,9 @@ public class DpMsgDefine {
         }
     }
 
+    /**
+     * @deprecated
+     */
     @DpBase
     public static class DpMsg implements Parcelable {
         public int msgId;
@@ -871,6 +874,9 @@ public class DpMsgDefine {
         };
     }
 
+    /**
+     * @deprecated
+     */
     public static class DpWrap implements Parcelable {
         public BaseBean baseDpDevice;
         public ArrayList<DpMsg> baseDpMsgList;

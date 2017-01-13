@@ -44,8 +44,10 @@ import static com.cylan.jiafeigou.dp.DpMsgMap.ID_2_CLASS_MAP;
 
 /**
  * Created by cylan-hunt on 16-11-16.
+ *
+ * @deprecated 请使用 {@link com.cylan.jiafeigou.cache.pool.GlobalDataProxy}
  */
-
+@Deprecated
 public class DpAssembler implements IParser {
     private static final String TAG = "DpAssembler:";
 
@@ -94,7 +96,6 @@ public class DpAssembler implements IParser {
                         (JCache.getAccountCache() != null && JCache.getAccountCache().getAccount() != null))
                 .map((RxEvent.JFGAttributeUpdate jfgAttributeUpdate) -> {
                     if (jfgAttributeUpdate.msgId == DpMsgMap.ID_2000003_BASE_ALIAS) {
-
                         DpMsgDefine.DpWrap wrap = flatMsg.getDevice(JCache.getAccountCache().getAccount(),
                                 jfgAttributeUpdate.uuid);
                         wrap.baseDpDevice.alias = (String) jfgAttributeUpdate.o;

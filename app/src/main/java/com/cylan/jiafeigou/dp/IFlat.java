@@ -7,6 +7,7 @@ import java.util.ArrayList;
 
 /**
  * Created by cylan-hunt on 16-11-17.
+ * @deprecated
  */
 
 public interface IFlat {

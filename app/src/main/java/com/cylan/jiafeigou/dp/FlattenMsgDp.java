@@ -16,8 +16,9 @@ import java.util.Map;
 
 /**
  * Created by cylan-hunt on 16-11-17.
+ * @deprecated 请使用 {@link com.cylan.jiafeigou.cache.pool.GlobalDataProxy}
  */
-
+@Deprecated
 public class FlattenMsgDp implements IFlat {
 
     /**
