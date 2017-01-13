@@ -150,7 +150,7 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
     }
 
     private void initPresenter() {
-        presenter = new CloudLivePresenterImp(this);
+        presenter = new CloudLivePresenterImp(this,uuid);
     }
 
     private void initFragment() {
@@ -298,6 +298,7 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
                             newLeaveBean.setLeaveMesgLength(presenter.getLeaveMesgLength());
                             newLeaveBean.setLeaveMesgUrl(leaveMesgUrl);
                             newLeaveBean.setRead(false);
+                            newLeaveBean.setUserIcon(presenter.getUserIcon());
                             newLeaveBean.setLeveMesgTime(presenter.parseTime(System.currentTimeMillis()));
                             newBean.setData(newLeaveBean);
                             refreshRecycleView(newBean);
@@ -305,6 +306,7 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
                             //保存到数据库
                             CloudLiveBaseDbBean dbBean = new CloudLiveBaseDbBean();
                             dbBean.setType(0);
+                            dbBean.setUuid(uuid);
                             dbBean.setData(presenter.getSerializedObject(newLeaveBean));
                             presenter.saveIntoDb(dbBean);
                             return true;
@@ -429,6 +431,10 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
      */
     @Override
     public void startPlayVoiceAnim(ImageView view) {
+        if (animationDrawable.isRunning()){
+            animationDrawable.stop();
+            animationDrawable = null;
+        }
         view.setBackgroundResource(R.drawable.play_voice_record);
         animationDrawable = (AnimationDrawable) view.getBackground();
         animationDrawable.start();

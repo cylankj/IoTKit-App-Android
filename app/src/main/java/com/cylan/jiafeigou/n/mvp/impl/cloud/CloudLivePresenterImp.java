@@ -6,6 +6,7 @@ import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.os.Environment;
 import android.support.v4.content.ContextCompat;
+import android.text.TextUtils;
 
 import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
 import com.cylan.jiafeigou.n.db.DataBaseUtil;
@@ -57,6 +58,7 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
     private File filePath;
     private long startTime;
     private long endTime;
+    private String uuid;
 
     private String output_Path = Environment.getExternalStorageDirectory().getAbsolutePath()
             + File.separator + System.currentTimeMillis() + "luyin.3gp";
@@ -66,10 +68,12 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
     private Subscription checkDeviceOnLineSub;
     private Subscription leaveMesgSub;
     private CompositeSubscription subscription;
+    private String userIcon;
 
-    public CloudLivePresenterImp(CloudLiveContract.View view) {
+    public CloudLivePresenterImp(CloudLiveContract.View view,String uuid) {
         super(view);
         view.setPresenter(this);
+        this.uuid = uuid;
     }
 
     @Override
@@ -397,7 +401,8 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
                         if (getUserInfo != null && getUserInfo instanceof RxEvent.GetUserInfo) {
                             if (getView() != null) {
                                 getDBManger(getUserInfo.jfgAccount.getAccount());
-                                initData();
+                                initData(getUserInfo.jfgAccount.getPhotoUrl());
+                                userIcon = getUserInfo.jfgAccount.getPhotoUrl();
                             }
                         }
                     }
@@ -408,15 +413,18 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
      * 初始化消息列表的数据
      */
     @Override
-    public void initData() {
+    public void initData(String userIcon) {
         List<CloudLiveBaseBean> list = new ArrayList<>();
         List<CloudLiveBaseDbBean> fromAllDb = findAllFromDb();
         if (fromAllDb != null && fromAllDb.size() > 0) {
             for (CloudLiveBaseDbBean dBbean : fromAllDb) {
-                CloudLiveBaseBean newBean = new CloudLiveBaseBean();
-                newBean.setType(dBbean.getType());
-                newBean.setData(readSerializedObject(dBbean.getData()));
-                list.add(newBean);
+                if (!TextUtils.isEmpty(dBbean.uuid) && uuid.equals(dBbean.uuid)){
+                    CloudLiveBaseBean newBean = new CloudLiveBaseBean();
+                    newBean.setType(dBbean.getType());
+                    newBean.setUserIcon(userIcon);
+                    newBean.setData(readSerializedObject(dBbean.getData()));
+                    list.add(newBean);
+                }
             }
         }
         if (getView() != null) {
@@ -438,9 +446,13 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
         }
     }
 
+    @Override
+    public String getUserIcon() {
+        return userIcon;
+    }
+
     /**
      * 处理数据的结果
-     *
      * @param list
      */
     private void handlerDataResult(List<CloudLiveBaseBean> list) {

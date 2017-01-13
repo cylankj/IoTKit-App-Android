@@ -109,11 +109,17 @@ public interface CloudLiveContract {
         /**
          * 初始化消息列表的数据
          */
-        void initData();
+        void initData(String userIcon);
 
         /**
          * 检测录音的权限
          */
         boolean checkRecordPermission();
+
+        /**
+         * 获取用户的头像
+         * @return
+         */
+        String getUserIcon();
     }
 }

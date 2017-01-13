@@ -49,6 +49,7 @@ public class CloudLiveCallPresenterImp extends AbstractPresenter<CloudLiveCallCo
     private int loadNum = 0;
     private CompositeSubscription subscription;
     private DbManager base_db;
+    private String userIcon;
 
     public CloudLiveCallPresenterImp(CloudLiveCallContract.View view, String uuid) {
         super(view);
@@ -94,7 +95,7 @@ public class CloudLiveCallPresenterImp extends AbstractPresenter<CloudLiveCallCo
         try {
             if (uuid != null) JfgCmdInsurance.getCmd().stopPlay(uuid);
             isConnectOk = false;
-            JfgCmdInsurance.getCmd().playVideo(uuid);
+              JfgCmdInsurance.getCmd().playVideo(uuid);
         } catch (JfgException e) {
             e.printStackTrace();
         }
@@ -252,6 +253,7 @@ public class CloudLiveCallPresenterImp extends AbstractPresenter<CloudLiveCallCo
                         if (getUserInfo != null && getUserInfo instanceof RxEvent.GetUserInfo) {
                             if (getView() != null) {
                                 base_db = DataBaseUtil.getInstance(getUserInfo.jfgAccount.getAccount()).dbManager;
+                                userIcon = getUserInfo.jfgAccount.getPhotoUrl();
                             }
                         }
                     }
@@ -289,6 +291,11 @@ public class CloudLiveCallPresenterImp extends AbstractPresenter<CloudLiveCallCo
         SimpleDateFormat formatter = new SimpleDateFormat("MM/dd HH:mm");
         String dateString = formatter.format(time);
         return dateString;
+    }
+
+    @Override
+    public String getUserIcon() {
+        return userIcon;
     }
 
 }

@@ -34,8 +34,17 @@ public class CloudLiveCallOutBean implements Serializable {
         this.videoTime = videoTime;
     }
 
+    public String getUserIcon() {
+        return userIcon;
+    }
+
+    public void setUserIcon(String userIcon) {
+        this.userIcon = userIcon;
+    }
+
     public String videoTime;
     public boolean hasConnet;
     public String videoLength;
+    public String userIcon;
 
 }

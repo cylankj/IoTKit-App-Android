@@ -1,10 +1,15 @@
 package com.cylan.jiafeigou.n.view.cloud;
 
+import android.Manifest;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.graphics.PixelFormat;
 import android.os.Bundle;
 import android.os.SystemClock;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.SurfaceView;
@@ -167,9 +172,11 @@ public class CloudLiveCallActivity extends AppCompatActivity implements CloudLiv
     private CloudLiveBaseBean createCloudBackBean(int type, String videoLength, boolean hasConnet) {
         CloudLiveBaseBean newBean = new CloudLiveBaseBean();
         newBean.setType(type);
+        newBean.setUserIcon(presenter.getUserIcon());
         //添加到数据库
         CloudLiveBaseDbBean outDbBean = new CloudLiveBaseDbBean();
         outDbBean.setType(type);
+        outDbBean.setUuid(uuid);
         switch (type){
             case 1:
                 CloudLiveCallInBean inLeaveBean = new CloudLiveCallInBean();
@@ -202,10 +209,7 @@ public class CloudLiveCallActivity extends AppCompatActivity implements CloudLiv
         hideLoadingView();
         initLocalVideoView();
         initRenderVideoView();
-        JfgCmdInsurance.getCmd().enableCamera(true,true);
-        JfgCmdInsurance.getCmd().enableRenderLocalView(true,mLocalSurfaceView);
-        JfgCmdInsurance.getCmd().enableRenderRemoteView(true,mRenderSurfaceView);
-
+        checkPermission();
     }
 
     /**
@@ -348,6 +352,43 @@ public class CloudLiveCallActivity extends AppCompatActivity implements CloudLiv
             case JError.ErrorVideoPeerNotExist:
                 ToastUtil.showNegativeToast(getString(R.string.OFFLINE_ERR));
                 break;
+        }
+    }
+
+    /**
+     * 检测权限
+     */
+    private void checkPermission() throws JfgException {
+        if (ContextCompat.checkSelfPermission(CloudLiveCallActivity.this,
+                Manifest.permission.CAMERA)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            if (ActivityCompat.shouldShowRequestPermissionRationale(CloudLiveCallActivity.this,
+                    Manifest.permission.CAMERA)) {
+            } else {
+                ActivityCompat.requestPermissions(CloudLiveCallActivity.this,
+                        new String[]{Manifest.permission.CAMERA},
+                        1);
+            }
+        }else {
+//            JfgCmdInsurance.getCmd().enableCamera(true,true);
+            JfgCmdInsurance.getCmd().enableRenderLocalView(true,mLocalSurfaceView);
+            JfgCmdInsurance.getCmd().enableRenderRemoteView(true,mRenderSurfaceView);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == 1){
+            try {
+//                JfgCmdInsurance.getCmd().enableCamera(true,true);
+                JfgCmdInsurance.getCmd().enableRenderLocalView(true,mLocalSurfaceView);
+                JfgCmdInsurance.getCmd().enableRenderRemoteView(true,mRenderSurfaceView);
+            } catch (JfgException e) {
+                e.printStackTrace();
+            }
+        }else {
+            ToastUtil.showToast("获取相机权限失败");
         }
     }
 

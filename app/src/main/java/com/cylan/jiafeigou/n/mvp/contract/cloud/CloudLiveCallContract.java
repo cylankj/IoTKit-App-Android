@@ -98,6 +98,12 @@ public interface CloudLiveCallContract {
          */
         String parseTime(long times);
 
+        /**
+         * 获取到用户的头像
+         * @return
+         */
+        String getUserIcon();
+
     }
 
 }

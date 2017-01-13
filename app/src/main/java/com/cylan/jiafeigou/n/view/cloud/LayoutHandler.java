@@ -1,9 +1,16 @@
 package com.cylan.jiafeigou.n.view.cloud;
 
+import android.graphics.Bitmap;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.model.CloudLiveBaseBean;
 import com.cylan.jiafeigou.n.mvp.model.CloudLiveCallOutBean;
@@ -61,6 +68,23 @@ public class LayoutHandler {
             case VIDEO_CALL_OUT_TYPE:
                 CloudLiveCallOutBean callOutvideoBean = (CloudLiveCallOutBean) o;
                 holder.setText(R.id.tv_time, callOutvideoBean.getVideoTime());
+                ImageView userImag = holder.getView(R.id.iv_user_icon);
+                //头像
+                Glide.with(ContextUtils.getContext()).load(callOutvideoBean.userIcon)
+                        .asBitmap()
+                        .error(R.drawable.icon_mine_head_normal)
+                        .placeholder(R.drawable.icon_mine_head_normal)
+                        .centerCrop()
+                        .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                        .into(new BitmapImageViewTarget(userImag) {
+                            @Override
+                            protected void setResource(Bitmap resource) {
+                                RoundedBitmapDrawable circularBitmapDrawable =
+                                        RoundedBitmapDrawableFactory.create(ContextUtils.getContext().getResources(), resource);
+                                circularBitmapDrawable.setCircular(true);
+                                userImag.setImageDrawable(circularBitmapDrawable);
+                            }
+                        });
 
                 if (callOutvideoBean.isHasConnet()) {
                     holder.setText(R.id.tv_voideo_talk_length, String.format(ContextUtils.getContext().getString(R.string.Tap1_iHome_CallDuration), callOutvideoBean.getVideoLength()));
