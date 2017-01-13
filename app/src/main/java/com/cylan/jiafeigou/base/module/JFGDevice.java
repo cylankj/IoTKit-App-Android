@@ -46,29 +46,39 @@ public abstract class JFGDevice extends DataPoint<JFGDevice> implements Parcelab
     @DPProperty(msgId = ID_205_CHARGING)
     public DpMsgDefine.DPPrimary<Boolean> charging;//DpMsgMap.CHARGING_205
 
-    private LongSparseArray<Field> mDPPropertyArray;
 
     JFGDevice() {
     }
 
-    final LongSparseArray<Field> getProperties() {
-        if (mDPPropertyArray == null) {
-            synchronized (this) {
-                if (mDPPropertyArray == null) {
-                    mDPPropertyArray = new LongSparseArray<>();
-                    Field[] fields = getClass().getFields();
-                    if (fields != null) {
-                        for (Field field : fields) {
-                            DPProperty dpProperty = field.getAnnotation(DPProperty.class);
-                            if (dpProperty == null) continue;
-                            mDPPropertyArray.put(dpProperty.msgId(), field);
-                        }
-                    }
+
+    /**
+     * @param init true:如果字段不为空,使用字段原来的version,false:使用0作为version
+     */
+    public final ArrayList<JFGDPMsg> getQueryParameters(boolean init) {
+        ArrayList<JFGDPMsg> result = new ArrayList<>();
+        LongSparseArray<Field> properties = getProperties();
+        try {
+            Field field;
+            DataPoint value;
+            long version = 0;
+            int msgId;
+            for (int i = 0; i < properties.size(); i++) {
+                msgId = (int) properties.keyAt(i);
+                if (msgId >= MSG_ID_VIRTUAL_START && msgId <= MSG_ID_VIRTUAL_END)
+                    continue;//说明当前是虚拟ID,则跳过
+                if (init) {
+                    field = properties.valueAt(i);
+                    value = (DataPoint) field.get(this);
+                    version = value != null ? value.version : version;
                 }
+                result.add(new JFGDPMsg((int) properties.keyAt(i), version));
             }
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
         }
-        return mDPPropertyArray;
+        return result;
     }
+
 
     final boolean setValue(JFGDPMsg msg) {
         return setValue(msg, -1);
@@ -167,30 +177,6 @@ public abstract class JFGDevice extends DataPoint<JFGDevice> implements Parcelab
         }
 
         return (T) value;
-    }
-
-    /**
-     * @param init true:如果字段不为空,使用字段原来的version,false:使用0作为version
-     */
-    public final ArrayList<JFGDPMsg> getQueryParameters(boolean init) {
-        ArrayList<JFGDPMsg> result = new ArrayList<>();
-        LongSparseArray<Field> properties = getProperties();
-        try {
-            Field field;
-            DataPoint value;
-            long version = 0;
-            for (int i = 0; i < properties.size(); i++) {
-                if (init) {
-                    field = properties.valueAt(i);
-                    value = (DataPoint) field.get(this);
-                    version = value != null ? value.version : version;
-                }
-                result.add(new JFGDPMsg((int) properties.keyAt(i), version));
-            }
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        }
-        return result;
     }
 
 

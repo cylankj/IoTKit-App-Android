@@ -2,13 +2,16 @@ package com.cylan.jiafeigou.dp;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.v4.util.LongSparseArray;
 
+import com.cylan.annotation.DPProperty;
 import com.cylan.jiafeigou.support.log.AppLogger;
 
 import org.msgpack.MessagePack;
 import org.msgpack.annotation.Ignore;
 
 import java.io.IOException;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
@@ -22,10 +25,12 @@ public abstract class DataPoint<T> implements Parcelable, Comparable<DataPoint> 
     @Ignore
     private boolean isNull = false;
 
+    public static final long MSG_ID_VIRTUAL_START = -888080;
+    public static final long MSG_ID_VIRTUAL_END = 0;
+
     public boolean isNull() {
         return isNull;
     }
-
 
     @Ignore
     private Object instance;
@@ -36,6 +41,8 @@ public abstract class DataPoint<T> implements Parcelable, Comparable<DataPoint> 
     public long version;
     @Ignore
     public long seq;
+
+    private LongSparseArray<Field> mDPPropertyArray;
 
     public byte[] toBytes() {
         try {
@@ -96,15 +103,15 @@ public abstract class DataPoint<T> implements Parcelable, Comparable<DataPoint> 
     }
 
 
-    protected Object getInstance() {
+    private Object getInstance() {
         if (instance == null) {
             synchronized (this) {
                 if (instance == null) {
                     try {
-                        instance = this.getClass().newInstance();
-                    } catch (InstantiationException e) {
-                        e.printStackTrace();
-                    } catch (IllegalAccessException e) {
+                        Constructor constructor = this.getClass().getDeclaredConstructor();
+                        constructor.setAccessible(true);
+                        instance = constructor.newInstance();
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }
@@ -117,14 +124,18 @@ public abstract class DataPoint<T> implements Parcelable, Comparable<DataPoint> 
     /**
      * 避免检查空指针,只针对DataPoint,只针对获取值的情,
      * 因为返回的是原对象的一份拷贝,因此对返回的对象进行写入操作不会影响真正的值
+     * 如果需要检查非空可调用isNull函数,
      */
     public T $() {
         Object value;
-        for (Field field : getClass().getFields()) {
+        Field field;
+        for (int i = 0; i < getProperties().size(); i++) {
+            field = getProperties().valueAt(i);
             try {
                 value = field.get(this);
                 if ((field.getModifiers() & Modifier.STATIC) == Modifier.STATIC) continue;
                 if ((field.getModifiers() & Modifier.FINAL) == Modifier.FINAL) continue;
+
                 if (value == null) {
                     value = field.getType().newInstance();
                     ((DataPoint) value).isNull = true;
@@ -172,5 +183,25 @@ public abstract class DataPoint<T> implements Parcelable, Comparable<DataPoint> 
             return false;
         }
         return null;
+    }
+
+    protected final LongSparseArray<Field> getProperties() {
+        if (mDPPropertyArray == null) {
+            synchronized (this) {
+                if (mDPPropertyArray == null) {
+                    mDPPropertyArray = new LongSparseArray<>();
+                    Field[] fields = getClass().getFields();
+                    if (fields != null) {
+                        long msgId;
+                        for (int i = 0; i < fields.length; i++) {
+                            DPProperty dpProperty = fields[i].getAnnotation(DPProperty.class);
+                            msgId = dpProperty != null ? dpProperty.msgId() : MSG_ID_VIRTUAL_START + i;
+                            mDPPropertyArray.put(msgId, fields[i]);
+                        }
+                    }
+                }
+            }
+        }
+        return mDPPropertyArray;
     }
 }

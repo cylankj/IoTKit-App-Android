@@ -303,7 +303,7 @@ public class DataSourceService extends Service implements AppCallBack {
     @Override
     public void OnRobotCountDataRsp(long l, String s, ArrayList<JFGDPMsgCount> arrayList) {
         RxBus.getCacheInstance().post(new RxEvent.UnreadCount(s, l, arrayList));
-        AppLogger.d("OnLocalMessage :");
+        AppLogger.d("OnRobotCountDataRsp :");
     }
 
     @Override
