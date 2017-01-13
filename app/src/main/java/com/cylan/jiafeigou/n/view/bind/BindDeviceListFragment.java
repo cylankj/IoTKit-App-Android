@@ -43,7 +43,7 @@ public class BindDeviceListFragment extends BaseTitleFragment implements ToBindD
     }
 
     /**
-     * Use this factory method to create activity_cloud_live_mesg_video_talk_item new instance of
+     * Use this factory method to create activity_cloud_live_mesg_call_out_item new instance of
      * this fragment using the provided parameters.
      *
      * @param bundle Parameter 2.
@@ -69,7 +69,7 @@ public class BindDeviceListFragment extends BaseTitleFragment implements ToBindD
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // TODO: inflate activity_cloud_live_mesg_video_talk_item fragment view
+        // TODO: inflate activity_cloud_live_mesg_call_out_item fragment view
         View rootView = super.onCreateView(inflater, container, savedInstanceState);
         ButterKnife.bind(this, rootView);
         return rootView;

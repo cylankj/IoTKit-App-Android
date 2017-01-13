@@ -6,7 +6,6 @@
     android:clickable="true"
     android:background="@color/color_white">
 
-
     <FrameLayout
         android:id="@+id/rLayout_home_mine_top"
         android:layout_width="match_parent"

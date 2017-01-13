@@ -43,7 +43,7 @@ public class MineShareDeviceAdapter extends SuperAdapter<DeviceBean> {
         //图标
         holder.setImageDrawable(R.id.iv_share_device_icon, getContext().getResources().getDrawable(iconRes));
         //已分享数
-        holder.setText(R.id.tv_has_share_num, "5/" + item.hasShareCount);
+        holder.setText(R.id.tv_has_share_num, item.hasShareCount+"/5");
 
         holder.setOnClickListener(R.id.tv_share_device_btn, new View.OnClickListener() {
             @Override

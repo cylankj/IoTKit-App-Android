@@ -296,4 +296,12 @@ public class JConstant {
     public static final int PLAY_STATE_IDLE = 1;
     public static final int PLAY_STATE_PREPARE = 2;
     public static final int PLAY_STATE_PLAYING = 3;
+
+    public static final int CLOUD_OUT_CONNECT_TIME_OUT = 0;
+    public static final int CLOUD_IN_CONNECT_TIME_OUT = 2531;
+    public static final int CLOUD_IN_CONNECT_OK = 1;
+    public static final int CLOUD_IN_CONNECT_FAILED = 2;
+    public static final int CLOUD_OUT_CONNECT_OK = 3;
+    public static final int CLOUD_OUT_CONNECT_FAILED = 4;
+
 }

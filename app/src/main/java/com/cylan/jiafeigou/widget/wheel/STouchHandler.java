@@ -92,7 +92,7 @@ public class STouchHandler extends GestureDetector.SimpleOnGestureListener {
                 mActivePointerId = MotionEventCompat.getPointerId(event, 0);
                 final int activePointerId = mActivePointerId;
                 if (activePointerId == INVALID_POINTER) {
-                    // If we don't have activity_cloud_live_mesg_video_talk_item valid id, the touch down wasn't on content.
+                    // If we don't have activity_cloud_live_mesg_call_out_item valid id, the touch down wasn't on content.
                     break;
                 }
                 final int pointerIndex = MotionEventCompat.findPointerIndex(event, activePointerId);

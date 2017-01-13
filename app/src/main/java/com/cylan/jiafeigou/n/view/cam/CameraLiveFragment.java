@@ -512,7 +512,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
 
     @Override
     public void onResolution(JFGMsgVideoResolution resolution) throws JfgException {
-        JfgCmdInsurance.getCmd().setRenderRemoteView((View) initVideoView());
+        JfgCmdInsurance.getCmd().enableRenderRemoteView(true,(View) initVideoView());
         updateVideoViewLayoutParameters(resolution);
     }
 

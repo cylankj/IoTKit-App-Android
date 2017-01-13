@@ -17,6 +17,7 @@ import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.db.DbManager;
 import com.cylan.jiafeigou.support.db.ex.DbException;
+import com.cylan.jiafeigou.support.db.sqlite.WhereBuilder;
 import com.cylan.jiafeigou.utils.ToastUtil;
 
 import java.util.concurrent.TimeUnit;
@@ -104,7 +105,7 @@ public class CloudLiveSettingPresenterImp extends AbstractPresenter<CloudLiveSet
                     @Override
                     public Object call(Object o) {
                         try {
-                            finalDbManager.delete(CloudLiveBaseDbBean.class);
+                            finalDbManager.delete(CloudLiveBaseDbBean.class,WhereBuilder.b("uuid","=",uuid));
                         } catch (DbException e) {
                             e.printStackTrace();
                         }
