@@ -122,15 +122,17 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe((RxEvent.LoginRsp o) -> {
                     if (getView() != null)
-                        getView().onLoginState(JCache.isOnline());
-                    if (JCache.getAccountCache() != null)
-                        getView().onAccountUpdate(JCache.getAccountCache());
+                        getView().onLoginState(GlobalDataProxy.getInstance().isOnline()
+                                && GlobalDataProxy.getInstance().getJfgAccount() != null);
+                    if (GlobalDataProxy.getInstance().getJfgAccount() != null)
+                        getView().onAccountUpdate(GlobalDataProxy.getInstance().getJfgAccount());
                 });
     }
 
     private Subscription JFGAccountUpdate() {
         return RxBus.getCacheInstance().toObservableSticky(JFGAccount.class)
-                .filter(new RxHelper.Filter<>(TAG + "JFGAccountUpdate", (getView() != null && JCache.isOnline())))
+                .filter(new RxHelper.Filter<>(TAG + "JFGAccountUpdate", (getView() != null && GlobalDataProxy.getInstance().isOnline()
+                        && GlobalDataProxy.getInstance().getJfgAccount() != null)))
                 .observeOn(AndroidSchedulers.mainThread())
                 .map((JFGAccount jfgAccount) -> {
                     getView().onAccountUpdate(jfgAccount);
@@ -192,7 +194,7 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
                 .filter(new RxHelper.Filter<>("", getView() != null && GlobalDataProxy.getInstance().getJfgAccount() != null))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe((GreetBean greetBean) -> {
-                    getView().onAccountUpdate(JCache.getAccountCache());
+                    getView().onAccountUpdate(GlobalDataProxy.getInstance().getJfgAccount());
                 });
     }
 

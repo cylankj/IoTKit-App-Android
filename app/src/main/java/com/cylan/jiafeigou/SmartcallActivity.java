@@ -19,6 +19,7 @@ import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import com.cylan.jiafeigou.cache.JCache;
+import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.mvp.contract.splash.SplashContract;
 import com.cylan.jiafeigou.n.mvp.impl.splash.SplashPresenterImpl;
@@ -159,7 +160,8 @@ public class SmartcallActivity extends NeedLoginActivity
 
 
     private boolean isLoginIn() {
-        return JCache.isOnline();
+        return GlobalDataProxy.getInstance().isOnline()
+                && GlobalDataProxy.getInstance().getJfgAccount() != null;
     }
 
     /**

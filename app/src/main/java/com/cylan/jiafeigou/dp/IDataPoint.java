@@ -36,6 +36,14 @@ public interface IDataPoint {
      */
     JFGDevice fetch(String uuid);
 
+    /**
+     * 更新
+     *
+     * @param device
+     * @return
+     */
+    boolean updateJFGDevice(String account, JFGDevice device);
+
     <T extends com.cylan.jiafeigou.base.module.JFGDevice> T fetchDevice(String uuid);
 
     ArrayList<JFGDevice> fetchAll(String account);

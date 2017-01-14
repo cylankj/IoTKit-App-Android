@@ -37,6 +37,14 @@ public interface IDataProxy {
      */
     JFGDevice fetch(String uuid);
 
+    /**
+     * 更新
+     *
+     * @param device
+     * @return
+     */
+    boolean updateJFGDevice(JFGDevice device);
+
     ArrayList<JFGDevice> fetchAll();
 
     boolean insert(String uuid, BaseValue baseValue);

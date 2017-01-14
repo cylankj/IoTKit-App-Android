@@ -17,7 +17,8 @@ public interface BellDetailContract {
     interface Presenter extends JFGPresenter {
         BeanBellInfo getBellInfo();
 
-        void saveBellInfo(BeanBellInfo info, int id);
+        //        void saveBellInfo(BeanBellInfo info, int id);
+        void updateInfoReq(String uuid, Object value, long id);
     }
 }
 

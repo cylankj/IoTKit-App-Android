@@ -293,6 +293,13 @@ public class DataPointManager implements IParser, IDataPoint {
     }
 
     @Override
+    public boolean updateJFGDevice(String account, JFGDevice device) {
+        String finalKey = account + device.uuid;
+        jfgDeviceMap.remove(finalKey);
+        return jfgDeviceMap.put(finalKey, device) != null;
+    }
+    
+    @Override
     public <T extends com.cylan.jiafeigou.base.module.JFGDevice> T fetchDevice(String uuid) {
         return null;
     }

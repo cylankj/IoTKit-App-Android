@@ -213,8 +213,13 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
         editDialogFragment.setAction(new EditFragmentDialog.DialogAction<String>() {
             @Override
             public void onDialogAction(int id, String value) {
-                if (basePresenter != null) {
-                    updateDetails();
+//                if (basePresenter != null) {
+//                    updateDetails();
+//                }
+                JFGDevice device = GlobalDataProxy.getInstance().fetch(uuid);
+                if (!TextUtils.isEmpty(value) && device != null && !TextUtils.equals(value, device.alias)) {
+                    device.alias = value;
+                    GlobalDataProxy.getInstance().updateJFGDevice(device);
                 }
             }
         });

@@ -838,6 +838,10 @@ public class DpMsgDefine {
         };
     }
 
+    /**
+     * will be removed
+     * @deprecated
+     */
     public static class DpWrap implements Parcelable {
         public BaseBean baseDpDevice;
         public ArrayList<DpMsg> baseDpMsgList;

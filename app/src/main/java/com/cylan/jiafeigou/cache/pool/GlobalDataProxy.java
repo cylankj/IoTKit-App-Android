@@ -9,6 +9,7 @@ import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.dp.BaseValue;
 import com.cylan.jiafeigou.dp.IDataPoint;
+import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.support.log.AppLogger;
 
 import java.util.ArrayList;
@@ -74,6 +75,19 @@ public class GlobalDataProxy implements IDataProxy {
     public JFGDevice fetch(String uuid) {
         if (!checkAccount()) return null;
         return dataPointManager.fetch(jfgAccount.getAccount() + uuid);
+    }
+
+    @Override
+    public boolean updateJFGDevice(JFGDevice device) {
+        boolean r = dataPointManager.updateJFGDevice(getJfgAccount().getAccount(), device);
+        //需要修改
+        try {
+            JfgCmdInsurance.getCmd().setAliasByCid(device.uuid, device.alias);
+        } catch (JfgException e) {
+            r = false;
+        }
+        AppLogger.i("r:" + r);
+        return r;
     }
 
     @Override

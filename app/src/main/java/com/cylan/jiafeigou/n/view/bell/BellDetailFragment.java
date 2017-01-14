@@ -8,9 +8,11 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.module.BellDevice;
 import com.cylan.jiafeigou.base.wrapper.BaseFragment;
+import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.n.mvp.contract.bell.BellDetailContract;
 import com.cylan.jiafeigou.n.mvp.impl.bell.BellDetailSettingPresenterImpl;
@@ -19,6 +21,8 @@ import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.SettingItemView0;
 import com.cylan.jiafeigou.widget.dialog.BaseDialog;
 import com.cylan.jiafeigou.widget.dialog.EditFragmentDialog;
+
+import javax.microedition.khronos.opengles.GL;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -108,13 +112,15 @@ public class BellDetailFragment extends BaseFragment<BellDetailContract.Presente
         editDialogFragment.setAction(new EditFragmentDialog.DialogAction<String>() {
             @Override
             public void onDialogAction(int id, String value) {
-
                 BeanBellInfo info = mPresenter.getBellInfo();
+                JFGDevice device = GlobalDataProxy.getInstance().fetch(mUUID);
                 if (!TextUtils.isEmpty(value)
-                        && !TextUtils.equals(info.deviceBase.alias, value)) {
+                        && device != null && !TextUtils.equals(device.alias, value)) {
+                    device.alias = value;
                     svSettingDeviceAlias.setTvSubTitle(value);
-                    info.deviceBase.alias = value;
-                    mPresenter.saveBellInfo(info, DpMsgMap.ID_2000003_BASE_ALIAS);
+//                    info.deviceBase.alias = value;
+//                    mPresenter.updateInfoReq(mUUID, value, DpMsgMap.ID_2000003_BASE_ALIAS);
+                    GlobalDataProxy.getInstance().updateJFGDevice(device);
                 }
 
             }
