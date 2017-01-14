@@ -216,9 +216,11 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
 //                if (basePresenter != null) {
 //                    updateDetails();
 //                }
+
                 JFGDevice device = GlobalDataProxy.getInstance().fetch(uuid);
                 if (!TextUtils.isEmpty(value) && device != null && !TextUtils.equals(value, device.alias)) {
                     device.alias = value;
+                    tvDeviceAlias.setText(value);
                     GlobalDataProxy.getInstance().updateJFGDevice(device);
                 }
             }

@@ -50,28 +50,12 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
     protected Subscription[] register() {
         subUuidList();
         return new Subscription[]{
-//                getDevicesList(),
                 getTimeTickEventSub(),
                 getLoginRspSub(),
                 sdcardStatusSub(),
                 JFGAccountUpdate()};
     }
 
-//    /**
-//     * 启动,就要获取设备列表
-//     *
-//     * @return
-//     */
-//    private Subscription getDevicesList() {
-//        return Observable.just("null")
-//                .subscribeOn(Schedulers.newThread())
-//                .subscribe((String s) -> {
-//                    if (!RxBus.getCacheInstance().hasStickyEvent(RxUiEvent.BulkDeviceListRsp.class)) {
-//                        RxBus.getCacheInstance().post(new RxUiEvent.BulkUUidListReq());
-//                        Log.d(TAG, "getDevicesList getDevicesList");
-//                    }
-//                });
-//    }
 
     /**
      * sd卡状态更新
@@ -86,11 +70,11 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
                     @Override
                     public Boolean call(RxEvent.DataPoolUpdate update) {
                         if (update.id == DpMsgMap.ID_204_SDCARD_STORAGE) {
-                            DpMsgDefine.DPSdStatus sdStatus = (DpMsgDefine.DPSdStatus) update.value.getValue();
+                            DpMsgDefine.DPSdStatus sdStatus = update.value.getValue();
                         } else if (update.id == DpMsgMap.ID_222_SDCARD_SUMMARY) {
-                            DpMsgDefine.DPSdcardSummary sdcardSummary = (DpMsgDefine.DPSdcardSummary) update.value.getValue();
+                            DpMsgDefine.DPSdcardSummary sdcardSummary = update.value.getValue();
                         } else if (update.id == DpMsgMap.ID_201_NET) {
-                            DpMsgDefine.DPNet net = (DpMsgDefine.DPNet) update.value.getValue();
+                            DpMsgDefine.DPNet net = update.value.getValue();
                         }
                         return null;
                     }
@@ -152,30 +136,9 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
             for (JFGDevice device : deviceList) {
                 uuidList.add(device.uuid);
             }
+            getView().onItemsInsert(null);//清空列表
             getView().onItemsInsert(uuidList);
         }
-//        return RxBus.getCacheInstance().toObservableSticky(RxUiEvent.BulkUUidListRsp.class)
-//                .subscribeOn(Schedulers.io())
-//                .filter((RxUiEvent.BulkUUidListRsp list) -> (getView() != null && list.allList != null && GlobalDataProxy.getInstance().isOnline()))
-//                .flatMap(new Func1<RxUiEvent.BulkUUidListRsp, Observable<List<String>>>() {
-//                    @Override
-//                    public Observable<List<String>> call(RxUiEvent.BulkUUidListRsp list) {
-//                        AppLogger.i("get devices list: " + list.allList);
-//                        return Observable.just(list.allList);
-//                    }
-//                })
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .map(new Func1<List<String>, String>() {
-//                    @Override
-//                    public String call(List<String> oList) {
-//                        //新列表
-//                        getView().onItemsInsert(null);//清空列表
-//                        getView().onItemsInsert(oList);
-//                        return null;
-//                    }
-//                })
-//                .retry(new RxHelper.ExceptionFun<>("subDeviceList:"))
-//                .subscribe();
     }
 
 
