@@ -1,21 +1,12 @@
 package com.cylan.jiafeigou.dp;
 
-import android.text.TextUtils;
-import android.util.Log;
-import android.util.Pair;
-
 import com.cylan.entity.jniCall.JFGAccount;
-import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.entity.jniCall.JFGDevice;
-import com.cylan.entity.jniCall.RobotoGetDataRsp;
 import com.cylan.ex.JfgException;
-import com.cylan.jiafeigou.cache.JCache;
 import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
-import com.cylan.jiafeigou.misc.Converter;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
-import com.cylan.jiafeigou.n.mvp.model.BaseBean;
 import com.cylan.jiafeigou.n.mvp.model.param.BaseParam;
 import com.cylan.jiafeigou.n.mvp.model.param.BellParam;
 import com.cylan.jiafeigou.n.mvp.model.param.CamParam;
@@ -24,22 +15,15 @@ import com.cylan.jiafeigou.n.mvp.model.param.MagParam;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.rx.RxHelper;
-import com.cylan.jiafeigou.rx.RxUiEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import rx.Observable;
 import rx.Subscription;
-import rx.functions.Func1;
 import rx.schedulers.Schedulers;
-
-import static com.cylan.jiafeigou.dp.DpMsgMap.ID_2_CLASS_MAP;
 
 
 /**
@@ -53,18 +37,12 @@ public class DpAssembler implements IParser {
 
     private static DpAssembler instance;
 
-    private IFlat flatMsg;
-    private static final Object lock = new Object();
 
     private DpAssembler() {
-        flatMsg = new FlattenMsgDp();
     }
 
     private HashMap<String, HashMap<String, Long>> seqMap = new HashMap<>();
-    /**
-     * 每一次的请求响应,都记录
-     */
-    private HashMap<String, Long> dpRspSeq = new HashMap<>();
+
 
     public static DpAssembler getInstance() {
         if (instance == null)
@@ -75,159 +53,10 @@ public class DpAssembler implements IParser {
     @Override
     public Subscription[] register() {
         return new Subscription[]{
-                simpleBulkSubSend2Ui(),
-                deviceListSub(),
-                deviceDpSub(),
-                updateDpMsg(),
-                deviceDeleteSub(),
-                attributeUpdate()
+                deviceListSub()
         };
     }
 
-    /**
-     * 设备修改属性
-     *
-     * @return
-     */
-    private Subscription attributeUpdate() {
-        return RxBus.getCacheInstance().toObservable(RxEvent.JFGAttributeUpdate.class)
-                .subscribeOn(Schedulers.newThread())
-                .filter((RxEvent.JFGAttributeUpdate jfgAttributeUpdate) ->
-                        (GlobalDataProxy.getInstance().getJfgAccount() != null && GlobalDataProxy.getInstance().getJfgAccount().getAccount() != null))
-                .map((RxEvent.JFGAttributeUpdate jfgAttributeUpdate) -> {
-                    if (jfgAttributeUpdate.msgId == DpMsgMap.ID_2000003_BASE_ALIAS) {
-                        DpMsgDefine.DpWrap wrap = flatMsg.getDevice(GlobalDataProxy.getInstance().getJfgAccount().getAccount(),
-                                jfgAttributeUpdate.uuid);
-                        wrap.baseDpDevice.alias = (String) jfgAttributeUpdate.o;
-                        flatMsg.cache(GlobalDataProxy.getInstance().getJfgAccount().getAccount(),
-                                wrap.baseDpDevice);
-                        AppLogger.i("setDevice alias: " + jfgAttributeUpdate.o);
-                        return null;
-                    }
-                    String uuid = jfgAttributeUpdate.uuid;
-                    String account = GlobalDataProxy.getInstance().getJfgAccount().getAccount();
-                    DpMsgDefine.DpMsg dp = new DpMsgDefine.DpMsg();
-                    dp.msgId = jfgAttributeUpdate.msgId;
-                    dp.o = jfgAttributeUpdate.o;
-                    dp.version = jfgAttributeUpdate.version;
-                    flatMsg.update(account, uuid, dp);
-                    return null;
-                })
-                .retry(new RxHelper.RxException<>("attributeUpdate"))
-                .subscribe();
-    }
-
-    /**
-     * 作为流水线的下游,更新所有的数据.
-     *
-     * @return
-     */
-    private Subscription updateDpMsg() {
-
-        return RxBus.getCacheInstance().toObservable(RxEvent.JfgDpMsgUpdate.class)
-                .subscribeOn(Schedulers.computation())
-                .filter(new RxHelper.Filter<>(TAG + "updateDpMsg",
-                        GlobalDataProxy.getInstance().getJfgAccount() != null && !TextUtils.isEmpty(GlobalDataProxy.getInstance().getJfgAccount().getAccount())))
-                .flatMap(new Func1<RxEvent.JfgDpMsgUpdate, Observable<Pair<DpMsgDefine.DpMsg, String>>>() {
-                    @Override
-                    public Observable<Pair<DpMsgDefine.DpMsg, String>> call(RxEvent.JfgDpMsgUpdate jfgDpMsgUpdate) {
-                        return Observable.just(new Pair<>(jfgDpMsgUpdate.dpMsg, jfgDpMsgUpdate.uuid));
-                    }
-                })
-                .map((Pair<DpMsgDefine.DpMsg, String> arrayListStringPair) -> {
-                    //拿出对应uuid的所有属性
-                    DpMsgDefine.DpWrap deviceDetailsCache = flatMsg.getDevice(GlobalDataProxy.getInstance().getJfgAccount().getAccount(),
-                            arrayListStringPair.second);
-                    if (deviceDetailsCache == null || deviceDetailsCache.baseDpMsgList == null ) {
-                        AppLogger.e("deviceDetailsCache is null");
-                        return null;
-                    }
-                    for (DpMsgDefine.DpMsg dpMsg : deviceDetailsCache.baseDpMsgList) {
-                        if (dpMsg.msgId == arrayListStringPair.first.msgId) {
-                            //hit
-
-                            if (arrayListStringPair.first.version > dpMsg.version) {
-
-                                AppLogger.i("setDevice attr: " + dpMsg + " -->" + arrayListStringPair.first);
-                                break;
-                            }
-                        }
-                    }
-
-
-                    return null;
-                })
-                .retry(new RxHelper.ExceptionFun<>(TAG + "updateDpMsg"))
-                .subscribe();
-    }
-
-    /**
-     * 由于一个账号绑定的设备量不是很多{0,100},100个设备也是逆天了.
-     * 批量请求,批量更新
-     *
-     * @return
-     */
-    private Subscription simpleBulkSubSend2Ui() {
-        return RxBus.getCacheInstance().toObservable(RxUiEvent.BulkUUidListReq.class)
-                .filter((RxUiEvent.BulkUUidListReq queryBulkDevice) -> {
-                    AppLogger.i(TAG + " simpleBulkSubSend2Ui: " + (GlobalDataProxy.getInstance().getJfgAccount() != null));
-                    return GlobalDataProxy.getInstance().getJfgAccount() != null;
-                })
-                .map((RxUiEvent.BulkUUidListReq queryBulkDevice) -> {
-                    RxUiEvent.BulkDeviceListRsp cacheList = new RxUiEvent.BulkDeviceListRsp();
-                    cacheList.allDevices = flatMsg.getAllDevices(GlobalDataProxy.getInstance().getJfgAccount().getAccount());
-                    RxUiEvent.BulkUUidListRsp listRsp = new RxUiEvent.BulkUUidListRsp();
-                    listRsp.allList = new ArrayList<>();
-                    for (DpMsgDefine.DpWrap wrap : cacheList.allDevices) {
-                        listRsp.allList.add(wrap.baseDpDevice.uuid);
-                    }
-                    RxBus.getCacheInstance().postSticky(cacheList);
-                    RxBus.getCacheInstance().postSticky(listRsp);
-                    AppLogger.i("BulkDeviceListRsp: " + (cacheList.allDevices != null ? cacheList.allDevices.size() : 0));
-                    return null;
-                }).subscribe();
-    }
-
-    /**
-     * 设备删除
-     *
-     * @return
-     */
-    private Subscription deviceDeleteSub() {
-        return RxBus.getCacheInstance().toObservable(RxEvent.UnbindJFGDevice.class)
-                .subscribeOn(Schedulers.newThread())
-                .map((RxEvent.UnbindJFGDevice jfgDeviceDeletion) -> {
-                    String uuid = jfgDeviceDeletion.uuid;
-                    if (!TextUtils.isEmpty(uuid)) {
-                        flatMsg.rm(GlobalDataProxy.getInstance().getJfgAccount().getAccount(), uuid);
-                        AppLogger.i("delete device: " + uuid);
-                        RxBus.getCacheInstance().removeStickyEvent(RxUiEvent.BulkDeviceListRsp.class);
-                        //触发更新数据
-                        RxBus.getCacheInstance().post(new RxUiEvent.BulkUUidListReq());
-                    }
-                    return null;
-                })
-                .retry(new RxHelper.RxException<>(""))
-                .subscribe();
-    }
-
-    /**
-     * 设备的基本属性,不按常规出牌.
-     *
-     * @param device
-     */
-    private void assembleBase(JFGDevice device) {
-        BaseBean dpDevice = new BaseBean();
-        dpDevice.alias = device.alias;
-        dpDevice.pid = device.pid;
-        dpDevice.shareAccount = device.shareAccount;
-        dpDevice.sn = device.sn;
-        dpDevice.uuid = device.uuid;
-        flatMsg.cache(GlobalDataProxy.getInstance().getJfgAccount().getAccount(), dpDevice);
-
-//        com.cylan.jiafeigou.base.module.JFGDevice jfgDevice = new com.cylan.jiafeigou.base.module.JFGDevice().setDevice(device);
-//        flatMsg.cacheJFGDevice(GlobalDataProxy.getInstance().getJfgAccount().getAccount(), jfgDevice);
-    }
 
     private void getHistoryData(String uuid) {
         RxEvent.JFGHistoryVideoReq req = new RxEvent.JFGHistoryVideoReq();
@@ -270,7 +99,6 @@ public class DpAssembler implements IParser {
                         if (merger(list.get(i).pid) == null) continue;
                         GlobalDataProxy.getInstance().cacheDevice(list.get(i).uuid, list.get(i));
                         getUnreadMsg(list.get(i));
-                        assembleBase(list.get(i));
                         getHistoryData(list.get(i).uuid);
                         final int pid = list.get(i).pid;
                         BaseParam baseParam = merger(pid);
@@ -293,7 +121,7 @@ public class DpAssembler implements IParser {
     private void getUnreadMsg(JFGDevice device) {
         if (JFGRules.isCamera(device.pid))
             try {
-                GlobalDataProxy.getInstance().fetchUnreadCount(device.uuid, DpMsgMap.ID_505_CAMERA_ALARM_MSG * 1L);
+                GlobalDataProxy.getInstance().fetchUnreadCount(device.uuid, DpMsgMap.ID_505_CAMERA_ALARM_MSG);
             } catch (JfgException e) {
                 AppLogger.e("" + e.getLocalizedMessage());
             }
@@ -332,110 +160,7 @@ public class DpAssembler implements IParser {
         return baseParam;
     }
 
-    /**
-     * 这个订阅者是设备所有的dp消息处理中心.
-     *
-     * @return
-     */
-    private Subscription deviceDpSub() {
-        return RxBus.getCacheInstance().toObservable(RobotoGetDataRsp.class)
-                .subscribeOn(Schedulers.computation())
-                .filter(notNullFunc)
-                .map(new Func1<RobotoGetDataRsp, Integer>() {
-                    @Override
-                    public Integer call(RobotoGetDataRsp dpDataRsp) {
-                        final String identity = dpDataRsp.identity;
-                        Log.d(TAG, "dpDataRsp: " + identity);
-                        for (Map.Entry<Integer, ArrayList<JFGDPMsg>> entry : dpDataRsp.map.entrySet()) {
-                            JFGDPMsg dp = entry.getValue() != null
-                                    && entry.getValue().size() > 0 ? entry.getValue().get(0) : null;
-                            if (dp == null || dp.packValue == null) continue;
-                            final int keyId = entry.getKey();
-//                            if (keyId == DpMsgMap.ID_505_CAMERA_ALARM_MSG || dp == null) {
-//                                //报警消息
-//                                assembleCamAlarmMsg(identity, entry.getValue());
-//                                continue;
-//                            }
-                            assembleMiscMsg(identity, dp, keyId);
-                        }
-                        //这次请求是,设备更新
-                        sendDeviceInfo(dpDataRsp.seq, identity);
-
-                        return null;
-                    }
-                })
-                //此retry能跳过当前一次的exception
-                .retry(new RxHelper.RxException<>(TAG + "deviceDpSub"))
-                .subscribe();
-    }
-
-    /**
-     * 组装零散的消息
-     *
-     * @param identity
-     * @param dp
-     * @param keyId
-     */
-    private void assembleMiscMsg(String identity, JFGDPMsg dp, int keyId) {
-        try {
-            Class<?> clazz = ID_2_CLASS_MAP.get(keyId);
-            Object o = DpUtils.unpackData(dp.packValue, clazz);
-            flatMsg.cache(GlobalDataProxy.getInstance().getJfgAccount().getAccount(),
-                    identity,
-                    Converter.convert(o, keyId, dp.version));
-            Log.d(TAG, "superParser: " + keyId + " " + o);
-        } catch (Exception e) {
-            AppLogger.e(TAG + keyId + " " + identity + " " + e.getLocalizedMessage());
-        }
-    }
-
-    private void sendDeviceInfo(long seq, String uuid) {
-        synchronized (lock) {
-            boolean hit = false;
-            String key = "";
-            dpRspSeq.put(uuid, seq);
-            Iterator<String> seqIterator = seqMap.keySet().iterator();
-            while (seqIterator.hasNext()) {
-                String seqString = seqIterator.next();
-                HashMap<String, Long> map = seqMap.get(seqString);
-                if (map.equals(dpRspSeq)) {
-                    hit = true;
-                    key = seqString;
-                    break;
-                }
-            }
-            if (hit) {
-                dpRspSeq.clear();
-                seqMap.remove(key);
-                AppLogger.i("hit: ");
-                RxBus.getCacheInstance().post(new RxUiEvent.BulkUUidListReq());
-            }
-        }
-    }
-
-    /**
-     * 非空过滤器
-     */
-    private Func1<RobotoGetDataRsp, Boolean> notNullFunc = new Func1<RobotoGetDataRsp, Boolean>() {
-        @Override
-        public Boolean call(RobotoGetDataRsp dpDataRsp) {
-
-            boolean good = (dpDataRsp != null
-//                    && seqMap.containsKey(dpDataRsp.seq)//包含了此次请求
-                    && GlobalDataProxy.getInstance().getJfgAccount() != null);
-            AppLogger.i(TAG + "false? " + (dpDataRsp != null) + " " + (GlobalDataProxy.getInstance().getJfgAccount() != null) + " " + good);
-            if (dpDataRsp != null) {
-//                seqMap.remove(dpDataRsp.seq);
-            }
-            //过滤
-            return good;
-        }
-    };
-
-
     @Override
     public void clear() {
-        if (flatMsg != null)
-            flatMsg.clean();
     }
 }

@@ -405,13 +405,13 @@ public class RxEvent {
     }
 
 
-    /**
-     * 只有一个属性,设置页面更新的某一个属性
-     */
-    public static final class JfgDpMsgUpdate {
-        public String uuid;
-        public DpMsgDefine.DpMsg dpMsg;
-    }
+//    /**
+//     * 只有一个属性,设置页面更新的某一个属性
+//     */
+//    public static final class JfgDpMsgUpdate {
+//        public String uuid;
+//        public DpMsgDefine.DpMsg dpMsg;
+//    }
 
 //    public static final class JfgAlarmMsg {
 //        public String uuid;
@@ -433,16 +433,16 @@ public class RxEvent {
         public BaseValue value;
     }
 
-    /**
-     * 修改设备属性
-     */
-    /**
-     * @Deprecated use {@link com.cylan.jiafeigou.cache.pool.GlobalDataProxy#update(String, BaseValue)}
-     */
-    @Deprecated
-    public static final class JFGAttributeUpdate extends DpMsgDefine.DpMsg {
-        public String uuid;
-    }
+//    /**
+//     * 修改设备属性
+//     */
+//    /**
+//     * @Deprecated use {@link com.cylan.jiafeigou.cache.pool.GlobalDataProxy#update(String, BaseValue)}
+//     */
+//    @Deprecated
+//    public static final class JFGAttributeUpdate extends DpMsgDefine.DpMsg {
+//        public String uuid;
+//    }
 
     /**
      * 获取好友的信息回调
@@ -458,12 +458,12 @@ public class RxEvent {
         public JFGFriendAccount jfgFriendAccount;
     }
 
-    /**
-     * 解绑设备
-     */
-    public static final class UnbindJFGDevice {
-        public String uuid;
-    }
+//    /**
+//     * 解绑设备
+//     */
+//    public static final class UnbindJFGDevice {
+//        public String uuid;
+//    }
 
     /**
      * 这个消息从{@link com.cylan.jiafeigou.n.engine.DataSourceService#OnRobotCountDataRsp(long, String, ArrayList)}

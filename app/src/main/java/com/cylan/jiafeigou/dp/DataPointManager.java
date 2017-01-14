@@ -371,6 +371,17 @@ public class DataPointManager implements IParser, IDataPoint {
     }
 
     @Override
+    public boolean deleteJFGDevice(String account, String uuid) {
+        boolean ret = jfgDeviceMap.remove(account + uuid) != null;
+        try {
+            JfgCmdInsurance.getCmd().unBindDevice(uuid);
+        } catch (JfgException e) {
+            ret = false;
+        }
+        return ret;
+    }
+
+    @Override
     public Object delete(String uuid, long id) {
         return removeId(uuid, id);
     }

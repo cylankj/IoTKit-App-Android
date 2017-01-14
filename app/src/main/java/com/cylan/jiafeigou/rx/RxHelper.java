@@ -131,32 +131,32 @@ public class RxHelper {
         }
     }
 
-    public static Observable<BeanCamInfo> filter(final BeanCamInfo beanCamInfo) {
-        return RxBus.getCacheInstance().toObservableSticky(RxUiEvent.BulkDeviceListRsp.class)
-                .subscribeOn(Schedulers.computation())
-                .filter((RxUiEvent.BulkDeviceListRsp list) ->
-                        (list != null
-                                && list.allDevices != null
-                                && beanCamInfo != null
-                                && beanCamInfo.deviceBase != null))
-                .flatMap(new Func1<RxUiEvent.BulkDeviceListRsp, Observable<DpMsgDefine.DpWrap>>() {
-                    @Override
-                    public Observable<DpMsgDefine.DpWrap> call(RxUiEvent.BulkDeviceListRsp list) {
-                        for (DpMsgDefine.DpWrap wrap : list.allDevices) {
-                            if (wrap.baseDpDevice != null
-                                    && TextUtils.equals(wrap.baseDpDevice.uuid, beanCamInfo.deviceBase.uuid)) {
-                                return Observable.just(wrap);
-                            }
-                        }
-                        return null;
-                    }
-                })
-                .filter((DpMsgDefine.DpWrap dpWrap) ->
-                        (dpWrap != null && dpWrap.baseDpDevice != null))
-                .map((DpMsgDefine.DpWrap dpWrap) -> {
-                    BeanCamInfo info = new BeanCamInfo();
-                    info.convert(dpWrap.baseDpDevice, dpWrap.baseDpMsgList);
-                    return info;
-                });
-    }
+//    public static Observable<BeanCamInfo> filter(final BeanCamInfo beanCamInfo) {
+//        return RxBus.getCacheInstance().toObservableSticky(RxUiEvent.BulkDeviceListRsp.class)
+//                .subscribeOn(Schedulers.computation())
+//                .filter((RxUiEvent.BulkDeviceListRsp list) ->
+//                        (list != null
+//                                && list.allDevices != null
+//                                && beanCamInfo != null
+//                                && beanCamInfo.deviceBase != null))
+//                .flatMap(new Func1<RxUiEvent.BulkDeviceListRsp, Observable<DpMsgDefine.DpWrap>>() {
+//                    @Override
+//                    public Observable<DpMsgDefine.DpWrap> call(RxUiEvent.BulkDeviceListRsp list) {
+//                        for (DpMsgDefine.DpWrap wrap : list.allDevices) {
+//                            if (wrap.baseDpDevice != null
+//                                    && TextUtils.equals(wrap.baseDpDevice.uuid, beanCamInfo.deviceBase.uuid)) {
+//                                return Observable.just(wrap);
+//                            }
+//                        }
+//                        return null;
+//                    }
+//                })
+//                .filter((DpMsgDefine.DpWrap dpWrap) ->
+//                        (dpWrap != null && dpWrap.baseDpDevice != null))
+//                .map((DpMsgDefine.DpWrap dpWrap) -> {
+//                    BeanCamInfo info = new BeanCamInfo();
+//                    info.convert(dpWrap.baseDpDevice, dpWrap.baseDpMsgList);
+//                    return info;
+//                });
+//    }
 }

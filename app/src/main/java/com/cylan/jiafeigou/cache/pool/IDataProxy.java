@@ -65,6 +65,8 @@ public interface IDataProxy {
      */
     boolean deleteAll(String uuid);
 
+    boolean deleteJFGDevice(String uuid);
+
     Object delete(String uuid, long id);
 
     /**

@@ -8,7 +8,7 @@ import android.util.Log;
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.ex.JfgException;
-import com.cylan.jiafeigou.cache.JCache;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
@@ -17,11 +17,9 @@ import com.cylan.jiafeigou.misc.br.TimeTickBroadcast;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomePageListContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.n.mvp.model.GreetBean;
-import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.rx.RxHelper;
-import com.cylan.jiafeigou.rx.RxUiEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
 
@@ -50,30 +48,30 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
 
     @Override
     protected Subscription[] register() {
+        subUuidList();
         return new Subscription[]{
-                getDevicesList(),
+//                getDevicesList(),
                 getTimeTickEventSub(),
                 getLoginRspSub(),
-                subUuidList(),
                 sdcardStatusSub(),
                 JFGAccountUpdate()};
     }
 
-    /**
-     * 启动,就要获取设备列表
-     *
-     * @return
-     */
-    private Subscription getDevicesList() {
-        return Observable.just("null")
-                .subscribeOn(Schedulers.newThread())
-                .subscribe((String s) -> {
-                    if (!RxBus.getCacheInstance().hasStickyEvent(RxUiEvent.BulkDeviceListRsp.class)) {
-                        RxBus.getCacheInstance().post(new RxUiEvent.BulkUUidListReq());
-                        Log.d(TAG, "getDevicesList getDevicesList");
-                    }
-                });
-    }
+//    /**
+//     * 启动,就要获取设备列表
+//     *
+//     * @return
+//     */
+//    private Subscription getDevicesList() {
+//        return Observable.just("null")
+//                .subscribeOn(Schedulers.newThread())
+//                .subscribe((String s) -> {
+//                    if (!RxBus.getCacheInstance().hasStickyEvent(RxUiEvent.BulkDeviceListRsp.class)) {
+//                        RxBus.getCacheInstance().post(new RxUiEvent.BulkUUidListReq());
+//                        Log.d(TAG, "getDevicesList getDevicesList");
+//                    }
+//                });
+//    }
 
     /**
      * sd卡状态更新
@@ -147,7 +145,7 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
      *
      * @return
      */
-    private Subscription subUuidList() {
+    private void subUuidList() {
         List<JFGDevice> deviceList = GlobalDataProxy.getInstance().fetchAll();
         if (deviceList != null) {
             ArrayList<String> uuidList = new ArrayList<>();
@@ -156,28 +154,28 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
             }
             getView().onItemsInsert(uuidList);
         }
-        return RxBus.getCacheInstance().toObservableSticky(RxUiEvent.BulkUUidListRsp.class)
-                .subscribeOn(Schedulers.io())
-                .filter((RxUiEvent.BulkUUidListRsp list) -> (getView() != null && list.allList != null && GlobalDataProxy.getInstance().isOnline()))
-                .flatMap(new Func1<RxUiEvent.BulkUUidListRsp, Observable<List<String>>>() {
-                    @Override
-                    public Observable<List<String>> call(RxUiEvent.BulkUUidListRsp list) {
-                        AppLogger.i("get devices list: " + list.allList);
-                        return Observable.just(list.allList);
-                    }
-                })
-                .observeOn(AndroidSchedulers.mainThread())
-                .map(new Func1<List<String>, String>() {
-                    @Override
-                    public String call(List<String> oList) {
-                        //新列表
-                        getView().onItemsInsert(null);//清空列表
-                        getView().onItemsInsert(oList);
-                        return null;
-                    }
-                })
-                .retry(new RxHelper.ExceptionFun<>("subDeviceList:"))
-                .subscribe();
+//        return RxBus.getCacheInstance().toObservableSticky(RxUiEvent.BulkUUidListRsp.class)
+//                .subscribeOn(Schedulers.io())
+//                .filter((RxUiEvent.BulkUUidListRsp list) -> (getView() != null && list.allList != null && GlobalDataProxy.getInstance().isOnline()))
+//                .flatMap(new Func1<RxUiEvent.BulkUUidListRsp, Observable<List<String>>>() {
+//                    @Override
+//                    public Observable<List<String>> call(RxUiEvent.BulkUUidListRsp list) {
+//                        AppLogger.i("get devices list: " + list.allList);
+//                        return Observable.just(list.allList);
+//                    }
+//                })
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .map(new Func1<List<String>, String>() {
+//                    @Override
+//                    public String call(List<String> oList) {
+//                        //新列表
+//                        getView().onItemsInsert(null);//清空列表
+//                        getView().onItemsInsert(oList);
+//                        return null;
+//                    }
+//                })
+//                .retry(new RxHelper.ExceptionFun<>("subDeviceList:"))
+//                .subscribe();
     }
 
 
@@ -216,13 +214,13 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
                                 AppLogger.e("" + e.getLocalizedMessage());
                             }
                     }
-                    RxBus.getCacheInstance().post(new RxUiEvent.BulkUUidListReq());
                     Log.d(TAG, "fetchDeviceList fetchDeviceList");
                     return null;
                 })
                 .delay(2000, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe((Object aBoolean) -> {
+                    subUuidList();
                     if (getView() != null) getView().onRefreshFinish();
                 });
     }

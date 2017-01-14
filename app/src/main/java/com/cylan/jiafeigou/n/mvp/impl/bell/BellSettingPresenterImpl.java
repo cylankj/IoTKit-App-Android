@@ -1,8 +1,7 @@
 package com.cylan.jiafeigou.n.mvp.impl.bell;
 
-import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.base.wrapper.BasePresenter;
-import com.cylan.jiafeigou.misc.JfgCmdInsurance;
+import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
 import com.cylan.jiafeigou.n.mvp.contract.bell.BellSettingContract;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
@@ -12,7 +11,6 @@ import com.cylan.jiafeigou.support.log.AppLogger;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
-import rx.subscriptions.CompositeSubscription;
 
 /**
  * Created by cylan-hunt on 16-8-3.
@@ -56,14 +54,7 @@ public class BellSettingPresenterImpl extends BasePresenter<BellSettingContract.
     @Override
     public void unbindDevice() {
         post(() -> {
-                    RxEvent.UnbindJFGDevice deletion = new RxEvent.UnbindJFGDevice();
-                    deletion.uuid = mUUID;
-                    RxBus.getCacheInstance().post(deletion);
-                    try {
-                        JfgCmdInsurance.getCmd().unBindDevice(mUUID);
-                    } catch (JfgException e) {
-                        e.printStackTrace();
-                    }
+                    GlobalDataProxy.getInstance().deleteJFGDevice(mUUID);
                     AppLogger.i("unbind uuid: " + mUUID);
                 }
         );

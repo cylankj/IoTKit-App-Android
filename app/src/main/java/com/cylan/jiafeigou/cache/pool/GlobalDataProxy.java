@@ -123,6 +123,11 @@ public class GlobalDataProxy implements IDataProxy {
     }
 
     @Override
+    public boolean deleteJFGDevice(String uuid) {
+        return dataPointManager.deleteJFGDevice(getJfgAccount().getAccount(), uuid);
+    }
+
+    @Override
     public Object delete(String uuid, long id) {
         return dataPointManager.delete(uuid, id);
     }

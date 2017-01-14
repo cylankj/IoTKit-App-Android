@@ -66,6 +66,8 @@ public interface IDataPoint {
      */
     boolean deleteAll(String uuid);
 
+    boolean deleteJFGDevice(String account, String uuid);
+
     Object delete(String uuid, long id);
 
     /**
