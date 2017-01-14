@@ -161,7 +161,7 @@ public class JFGRules {
 
     }
 
-    public static boolean isDeviceOnline(DpMsgDefine.MsgNet net) {
+    public static boolean isDeviceOnline(DpMsgDefine.DPNet net) {
         return net != null && net.net != 0;
     }
 }

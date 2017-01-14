@@ -7,29 +7,34 @@
               android:gravity="center_horizontal"
               android:orientation="vertical">
 
-    <LinearLayout
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:background="@color/color_0ba8cf">
 
-        <FrameLayout
-            android:id="@+id/fLayout_top_bar_container"
+        <RelativeLayout
+            android:id="@+id/header_delay_record_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/color_0ba8cf">
+
+            android:padding="15dp">
+
+            <ImageView
+                android:id="@+id/header_delay_record_back"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/icon_arrow_back"/>
 
             <TextView
-                android:id="@+id/imgV_top_bar_center"
                 android:layout_width="wrap_content"
-                android:layout_height="48dp"
-                android:drawableLeft="@drawable/icon_nav_back_white"
-                android:drawablePadding="15dp"
-                android:padding="15dp"
-                android:text="@string/Tap2_TitleName"
-                android:textColor="@color/color_white"
-                android:textSize="16sp"/>
-        </FrameLayout>
-    </LinearLayout>
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:fontFamily="SourceHanSansCN"
+                android:text="@string/Tap2_Timelapse_title"
+                android:textColor="#FFFFFF"
+                android:textSize="18sp"/>
+        </RelativeLayout>
+    </FrameLayout>
 
     <ImageView
         android:layout_width="wrap_content"

@@ -58,7 +58,7 @@
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <FrameLayout
-            android:id="@+id/fLayout_empty_view_container"
+
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@color/color_white">
@@ -67,6 +67,21 @@
                 android:id="@+id/rV_wonderful_list"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"/>
+
+            <FrameLayout
+                android:id="@+id/fLayout_empty_view_container"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/color_white">
+
+                <include
+                    android:id="@+id/fragment_wonderful_guide"
+                    layout="@layout/item_wonderful_guide"/>
+
+                <include
+                    android:id="@+id/fragment_wonderful_empty"
+                    layout="@layout/layout_wonderful_list_empty_view"/>
+            </FrameLayout>
         </FrameLayout>
 
     </android.support.v4.widget.SwipeRefreshLayout>

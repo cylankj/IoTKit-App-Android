@@ -1,10 +1,8 @@
 package com.cylan.jiafeigou.n.view.bell;
 
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
-import android.os.Bundle;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.widget.LinearLayoutManager;
@@ -22,13 +20,13 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.cylan.entity.JfgEnum;
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.base.BaseFullScreenActivity;
+import com.cylan.jiafeigou.base.module.BellDevice;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.SpacesItemDecoration;
-import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
 import com.cylan.jiafeigou.n.mvp.contract.bell.DoorBellHomeContract;
 import com.cylan.jiafeigou.n.mvp.impl.bell.DBellHomePresenterImpl;
 import com.cylan.jiafeigou.n.mvp.model.BellCallRecordBean;
-import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
 import com.cylan.jiafeigou.n.view.adapter.BellCallRecordListAdapter;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.AnimatorUtils;
@@ -43,17 +41,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class DoorBellHomeActivity extends BaseFullScreenFragmentActivity
+public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeContract.Presenter>
         implements DoorBellHomeContract.View,
         BellCallRecordListAdapter.SimpleLongClickListener,
         BellCallRecordListAdapter.SimpleClickListener,
         BellTopBackgroundView.ActionInterface,
         BellCallRecordListAdapter.LoadImageListener,
         ViewTreeObserver.OnGlobalLayoutListener {
-
     @BindView(R.id.tv_top_bar_left)
     TextView imgVTopBarCenter;
     @BindView(R.id.fLayout_top_bar_container)
@@ -72,7 +68,6 @@ public class DoorBellHomeActivity extends BaseFullScreenFragmentActivity
     FrameLayout fLayoutBellHomeListEdition;
     @BindView(R.id.cv_bell_home_background)
     BellTopBackgroundView cvBellHomeBackground;
-    private DoorBellHomeContract.Presenter presenter;
     private WeakReference<BellSettingFragment> fragmentWeakReference;
     private WeakReference<LBatteryWarnDialog> lBatteryWarnDialog;
     private BellCallRecordListAdapter bellCallRecordListAdapter;
@@ -81,32 +76,12 @@ public class DoorBellHomeActivity extends BaseFullScreenFragmentActivity
      */
     private boolean endlessLoading = false;
     private boolean mIsLastLoadFinish = true;
+    private boolean isFirst = true;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_door_bell);
-//        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-        ButterKnife.bind(this);
-        initPresenter();
+    protected void initViewAndListener() {
         initAdapter();
         initToolbar();
-        initTopBackground();
-    }
-
-    private void initPresenter() {
-        presenter = new DBellHomePresenterImpl(this);
-        DeviceBean bean = getIntent().getBundleExtra(JConstant.KEY_DEVICE_ITEM_BUNDLE).getParcelable(JConstant.KEY_DEVICE_ITEM_BUNDLE);
-        presenter.setBellInfo(bean);
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        if (presenter == null) {
-            initAdapter();
-        }
-        presenter.start();
     }
 
     @Override
@@ -121,8 +96,6 @@ public class DoorBellHomeActivity extends BaseFullScreenFragmentActivity
     @Override
     protected void onStop() {
         super.onStop();
-        if (presenter != null)
-            presenter.stop();
         if (lBatteryWarnDialog != null
                 && lBatteryWarnDialog.get() != null
                 && lBatteryWarnDialog.get().isResumed())
@@ -130,17 +103,22 @@ public class DoorBellHomeActivity extends BaseFullScreenFragmentActivity
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
+    protected DoorBellHomeContract.Presenter onCreatePresenter() {
+        return new DBellHomePresenterImpl();
+    }
+
+    @Override
+    protected int getContentViewID() {
+        return R.layout.activity_door_bell;
     }
 
     private void initAdapter() {
-        bellCallRecordListAdapter = new BellCallRecordListAdapter(getApplicationContext(),
+        bellCallRecordListAdapter = new BellCallRecordListAdapter(getAppContext(),
                 null, R.layout.layout_bell_call_list_item, this);
         bellCallRecordListAdapter.setSimpleClickListener(this);
         bellCallRecordListAdapter.setSimpleLongClickListener(this);
         rvBellList.setAdapter(bellCallRecordListAdapter);
-        final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
+        final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getAppContext(), LinearLayoutManager.HORIZONTAL, false);
         rvBellList.setLayoutManager(linearLayoutManager);
         rvBellList.addItemDecoration(new SpacesItemDecoration(new Rect(ViewUtils.dp2px(10), ViewUtils.dp2px(15), 0, 0)));
         rvBellList.getViewTreeObserver().addOnGlobalLayoutListener(this);
@@ -168,19 +146,12 @@ public class DoorBellHomeActivity extends BaseFullScreenFragmentActivity
     private void startLoadData(boolean asc, long version) {
         LoadingDialog.showLoading(getSupportFragmentManager(), "加载中...", true);
         mIsLastLoadFinish = false;
-        if (presenter != null)
-            presenter.fetchBellRecordsList(asc, version);
+        mPresenter.fetchBellRecordsList(asc, version);
     }
 
     private void initToolbar() {
         imgVTopBarCenter.setText("");
         ViewUtils.setViewMarginStatusBar(fLayoutTopBarContainer);
-    }
-
-    private void initTopBackground() {
-
-        cvBellHomeBackground.setState(presenter.getDeviceNetState());
-        cvBellHomeBackground.setActionInterface(this);
     }
 
     @OnClick({R.id.tv_top_bar_left, R.id.imgv_toolbar_right})
@@ -207,25 +178,19 @@ public class DoorBellHomeActivity extends BaseFullScreenFragmentActivity
 
     private void initSettingFragment() {
         if (fragmentWeakReference == null || fragmentWeakReference.get() == null) {
-            fragmentWeakReference = new WeakReference<>(BellSettingFragment.newInstance(null));
-        }
-        Bundle bundle = getIntent().getBundleExtra(JConstant.KEY_DEVICE_ITEM_BUNDLE);
-        if (bundle != null) {
-            fragmentWeakReference.get().setArguments(bundle);
-        } else {
-            AppLogger.d("item bundle not found");
+            fragmentWeakReference = new WeakReference<>(BellSettingFragment.newInstance(mUUID));
         }
     }
 
     @Override
-    public void onBackPressed() {
-        if (checkExtraChildFragment()) {
-            return;
-        } else if (checkExtraFragment())
-            return;
-        if (reverseEditionMode())
-            return;
+    protected boolean shouldExit() {
+        return !checkExtraChildFragment() && !checkExtraFragment() && !reverseEditionMode();
+    }
+
+    @Override
+    protected void onPrepareToExit(Action action) {
         finishExt();
+        action.actionDone();
     }
 
     /**
@@ -246,20 +211,19 @@ public class DoorBellHomeActivity extends BaseFullScreenFragmentActivity
     }
 
     @Override
-    public void onLoginState(boolean state) {
-        if (!state) {
+    public void onLoginStateChanged(boolean online) {
+        if (!online) {
             LoadingDialog.dismissLoading(getSupportFragmentManager());
             Toast.makeText(this, "还未登录", Toast.LENGTH_SHORT).show();
         }
     }
 
-
     @Override
     public void onBellBatteryDrainOut() {
+        if (true) return;
         initBatteryDialog();
         LBatteryWarnDialog dialog = lBatteryWarnDialog.get();
-        if (dialog.isResumed())
-            return;
+        dialog.dismiss();
         dialog.show(getSupportFragmentManager(), "lBattery");
     }
 
@@ -270,29 +234,20 @@ public class DoorBellHomeActivity extends BaseFullScreenFragmentActivity
 
     @Override
     public void onRecordsListRsp(ArrayList<BellCallRecordBean> beanArrayList) {
-        if (beanArrayList.size() < 20) endlessLoading = true;
-        bellCallRecordListAdapter.addAll(beanArrayList);
         LoadingDialog.dismissLoading(getSupportFragmentManager());
+        if (beanArrayList != null && beanArrayList.size() < 20) endlessLoading = true;
+        bellCallRecordListAdapter.addAll(beanArrayList);
         mIsLastLoadFinish = true;
-        if (bellCallRecordListAdapter.getList().size() == 0) {//show empty view
+        if (bellCallRecordListAdapter.getList().size() == 0) {//show empty startViewer
             Toast.makeText(this, "暂无数据", Toast.LENGTH_SHORT).show();
         }
     }
 
-    @Override
-    public void setPresenter(DoorBellHomeContract.Presenter presenter) {
-        this.presenter = presenter;
-    }
-
-    @Override
-    public Context getContext() {
-        return getApplicationContext();
-    }
 
     @Override
     public boolean onLongClick(View v) {
-        if (!TextUtils.isEmpty(presenter.getBellInfo().deviceBase.shareAccount))//共享账号不可操作
-            return true;
+//        if (!TextUtils.isEmpty(mPresenter.getBellInfo().deviceBase.shareAccount))//共享账号不可操作
+//            return true;
         final int position = ViewUtils.getParentAdapterPosition(rvBellList, v, R.id.cv_bell_call_item);
         if (position < 0 || position >= bellCallRecordListAdapter.getCount()) {
             AppLogger.d("position is invalid");
@@ -302,7 +257,7 @@ public class DoorBellHomeActivity extends BaseFullScreenFragmentActivity
         if (bellCallRecordListAdapter.getMode() == 0) {
             AppLogger.d("enter edition mode");
             bellCallRecordListAdapter.setMode(1);
-//            bellCallRecordListAdapter.reverseItemSelectedState(position);
+            bellCallRecordListAdapter.reverseItemSelectedState(position);
             tvBellHomeListSelectAll.setText(getString(R.string.SELECT_ALL));
             showEditBar(true);
         }
@@ -350,7 +305,7 @@ public class DoorBellHomeActivity extends BaseFullScreenFragmentActivity
             case R.id.tv_bell_home_list_delete:
                 bellCallRecordListAdapter.remove();
                 List<BellCallRecordBean> list = bellCallRecordListAdapter.getSelectedList();
-                presenter.deleteBellCallRecord(list);
+                mPresenter.deleteBellCallRecord(list);
                 break;
         }
     }
@@ -358,16 +313,15 @@ public class DoorBellHomeActivity extends BaseFullScreenFragmentActivity
     @Override
     public void onMakeCall() {
         Intent intent = new Intent(this, BellLiveActivity.class);
-        intent.putExtra(JConstant.BELL_CALL_WAY, JConstant.BELL_CALL_WAY_VIEWER);
-        intent.putExtra(JConstant.KEY_DEVICE_ITEM_BUNDLE, presenter.getBellInfo());
-        intent.putExtra(JConstant.BELL_CALL_WAY_EXTRA, presenter.getBellInfo().deviceBase);
+        intent.putExtra(JConstant.VIEW_CALL_WAY, JConstant.VIEW_CALL_WAY_VIEWER);
+        intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, mUUID);
         startActivity(intent);
     }
 
     @Override
     public void loadMedia(final BellCallRecordBean item, final ImageView imageView) {
         Glide.with(this)
-                .load(new JFGGlideURL(JfgEnum.JFG_URL.WARNING, item.type, item.timeInLong / 1000 + ".jpg", presenter.getBellInfo().deviceBase.uuid))
+                .load(new JFGGlideURL(JfgEnum.JFG_URL.WARNING, item.type, item.timeInLong / 1000 + ".jpg", mUUID))
                 .asBitmap()
                 .placeholder(R.drawable.icon_bell_call_place_holder)
                 .centerCrop()
@@ -376,7 +330,7 @@ public class DoorBellHomeActivity extends BaseFullScreenFragmentActivity
                     @Override
                     protected void setResource(Bitmap resource) {
                         RoundedBitmapDrawable circularBitmapDrawable =
-                                RoundedBitmapDrawableFactory.create(getContext().getResources(), resource);
+                                RoundedBitmapDrawableFactory.create(getAppContext().getResources(), resource);
                         circularBitmapDrawable.setCircular(true);
                         if (imageView instanceof ImageViewTip) {
                             //顺便实现了红点。
@@ -395,5 +349,18 @@ public class DoorBellHomeActivity extends BaseFullScreenFragmentActivity
             bellCallRecordListAdapter.setItemWidth(w);
             rvBellList.getViewTreeObserver().removeOnGlobalLayoutListener(this);
         }
+    }
+
+    @Override
+    public void onShowProperty(BellDevice device) {
+        int battery = device.battery.$();
+        if (battery < 20) {
+            onBellBatteryDrainOut();
+        } else if (battery < 80 && isFirst) {
+            onBellBatteryDrainOut();
+            isFirst = false;
+        }
+        cvBellHomeBackground.setState(device.net.$().net);
+        cvBellHomeBackground.setActionInterface(this);
     }
 }

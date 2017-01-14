@@ -43,7 +43,8 @@ public class HomeSettingAboutFragment extends Fragment implements HomeSettingAbo
     TextView tvHotphone;
     @BindView(R.id.tv_user_agreement)
     TextView tvUserAgreement;
-
+    @BindView(R.id.rLayout_home_setting_website)
+    RelativeLayout rl_website;
 
     private HomeSettingAboutContract.Presenter presenter;
     private Intent intent;
@@ -65,7 +66,7 @@ public class HomeSettingAboutFragment extends Fragment implements HomeSettingAbo
         this.presenter = presenter;
     }
 
-    @OnClick({R.id.iv_home_setting_about_back, R.id.rLayout_home_setting_hotphone,R.id.tv_user_agreement})
+    @OnClick({R.id.iv_home_setting_about_back, R.id.rLayout_home_setting_hotphone,R.id.tv_user_agreement,R.id.rLayout_home_setting_website})
     public void onClick(View view) {
 
         switch (view.getId()) {
@@ -82,7 +83,7 @@ public class HomeSettingAboutFragment extends Fragment implements HomeSettingAbo
                 }
                 getContext().startActivity(intent);
                 break;
-
+            case R.id.rLayout_home_setting_website:
             case R.id.tv_user_agreement:
                 IMEUtils.hide(getActivity());
                 AgreementFragment fragment = AgreementFragment.getInstance(null);

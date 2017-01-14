@@ -54,8 +54,8 @@ public class MineHasShareAdapter extends SuperAdapter<RelAndFriendBean> {
                 }
             }
         });
-
         userImag = holder.getView(R.id.iv_userhead);
+        holder.itemView.setTag(item.iconUrl);
         //头像
         Glide.with(getContext()).load(item.iconUrl)
                 .asBitmap().centerCrop()
@@ -65,10 +65,12 @@ public class MineHasShareAdapter extends SuperAdapter<RelAndFriendBean> {
                 .into(new BitmapImageViewTarget(userImag) {
                     @Override
                     protected void setResource(Bitmap resource) {
-                        RoundedBitmapDrawable circularBitmapDrawable =
-                                RoundedBitmapDrawableFactory.create(getContext().getResources(), resource);
-                        circularBitmapDrawable.setCircular(true);
-                        userImag.setImageDrawable(circularBitmapDrawable);
+                        if (item.iconUrl.equals(holder.itemView.getTag())){
+                            RoundedBitmapDrawable circularBitmapDrawable =
+                                    RoundedBitmapDrawableFactory.create(getContext().getResources(), resource);
+                            circularBitmapDrawable.setCircular(true);
+                            userImag.setImageDrawable(circularBitmapDrawable);
+                        }
                     }
                 });
     }

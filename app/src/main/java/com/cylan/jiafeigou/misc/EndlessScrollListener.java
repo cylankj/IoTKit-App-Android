@@ -32,8 +32,8 @@ public abstract class EndlessScrollListener implements AbsListView.OnScrollListe
     }
 
 
-    // This happens many times activity_cloud_live_mesg_video_talk_item second during activity_cloud_live_mesg_video_talk_item scroll, so be wary of the code you place here.
-    // We are given activity_cloud_live_mesg_video_talk_item few useful parameters to help us work out if we need to load some more data,
+    // This happens many times activity_cloud_live_mesg_call_out_item second during activity_cloud_live_mesg_call_out_item scroll, so be wary of the code you place here.
+    // We are given activity_cloud_live_mesg_call_out_item few useful parameters to help us work out if we need to load some more data,
     // but first we check if we are waiting for the previous load to finish.
     @Override
     public void onScroll(AbsListView view,
@@ -50,7 +50,7 @@ public abstract class EndlessScrollListener implements AbsListView.OnScrollListe
             }
         }
         // If it's still loading, we check to see if the dataset count has
-        // changed, if so we conclude it has finished loading and update the current page
+        // changed, if so we conclude it has finished loading and setDevice the current page
         // number and total item count.
         if (loading && (totalItemCount > previousTotalItemCount)) {
             loading = false;

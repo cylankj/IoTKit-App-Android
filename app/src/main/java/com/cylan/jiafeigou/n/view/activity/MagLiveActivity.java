@@ -30,6 +30,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+import static com.cylan.jiafeigou.misc.JConstant.KEY_DEVICE_ITEM_UUID;
+
 /**
  * 创建者     谢坤
  * 创建时间   2016/7/26 13:51
@@ -59,19 +61,18 @@ public class MagLiveActivity extends BaseFullScreenFragmentActivity implements M
     private MagLiveFragment magLiveFragment;
     private MagActivityAdapter adapter;
     private MagLiveContract.Presenter presenter;
-    private Bundle bundleExtra = new Bundle();
+    private String uuid ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mag_live);
         ButterKnife.bind(this);
-        bundleExtra = getIntent().getBundleExtra(JConstant.KEY_DEVICE_ITEM_BUNDLE);
+        this.uuid = getIntent().getStringExtra(JConstant.KEY_DEVICE_ITEM_UUID);
         initPresenter();
         //用来存放，所需要的bean对象
         initTopBar();
         initDoorState(presenter.getDoorCurrentState());
-
     }
 
     @Override
@@ -152,7 +153,9 @@ public class MagLiveActivity extends BaseFullScreenFragmentActivity implements M
     @OnClick(R.id.imgV_msg_title_top_setting)
     public void onClickSetting() {
         //实例化msgLiveFragment
-        magLiveFragment = MagLiveFragment.newInstance(bundleExtra);
+        Bundle bundle = new Bundle();
+        bundle.putString(KEY_DEVICE_ITEM_UUID, uuid);
+        magLiveFragment = MagLiveFragment.newInstance(bundle);
         loadFragment(android.R.id.content, magLiveFragment);
         initMagLiveFragmentLisenter();
     }

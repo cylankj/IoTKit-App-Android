@@ -114,7 +114,7 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
     @Override
     public String getDetailsSubTitle(Context context) {
         //sd卡状态
-        DpMsgDefine.SdStatus status = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_204_SDCARD_STORAGE, null);
+        DpMsgDefine.DPSdStatus status = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_204_SDCARD_STORAGE, null);
         if (status != null) {
             if (status.hasSdcard && status.err != 0) {
                 //sd初始化失败时候显示
@@ -132,7 +132,7 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
         if (!flag) {
             return getView().getContext().getString(R.string.MAGNETISM_OFF);
         }
-        DpMsgDefine.AlarmInfo info = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_502_CAMERA_ALARM_INFO, null);
+        DpMsgDefine.DPAlarmInfo info = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_502_CAMERA_ALARM_INFO, null);
         int day = info == null ? 0 : info.day;
         StringBuilder builder = new StringBuilder();
         for (int i = 0; i < 7; i++) {

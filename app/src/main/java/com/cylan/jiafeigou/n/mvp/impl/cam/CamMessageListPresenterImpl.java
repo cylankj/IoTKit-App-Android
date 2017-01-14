@@ -63,13 +63,13 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
                     @Override
                     public Boolean call(RxEvent.DataPoolUpdate update) {
                         if (update.id == DpMsgMap.ID_204_SDCARD_STORAGE) {
-                            DpMsgDefine.SdStatus sdStatus = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_204_SDCARD_STORAGE, null);
+                            DpMsgDefine.DPSdStatus sdStatus = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_204_SDCARD_STORAGE, null);
                             getView().deviceInfoChanged(update.id, sdStatus);
                         } else if (update.id == DpMsgMap.ID_222_SDCARD_SUMMARY) {
-                            DpMsgDefine.SdcardSummary sdcardSummary = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_222_SDCARD_SUMMARY, null);
+                            DpMsgDefine.DPSdcardSummary sdcardSummary = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_222_SDCARD_SUMMARY, null);
                             getView().deviceInfoChanged(update.id, sdcardSummary);
                         } else if (update.id == DpMsgMap.ID_201_NET) {
-                            DpMsgDefine.MsgNet net = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_201_NET, null);
+                            DpMsgDefine.DPNet net = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_201_NET, null);
                             getView().deviceInfoChanged(update.id, net);
                         }
                         return null;

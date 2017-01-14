@@ -1,6 +1,6 @@
 package com.cylan.jiafeigou.misc;
 
-import com.cylan.jiafeigou.n.mvp.model.MediaBean;
+import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.widget.wheel.WheelViewDataSet;
 
@@ -25,7 +25,7 @@ public class TimeLineAssembler {
 
     }
 
-    public void setMediaBeanLinkedList(LinkedList<MediaBean> mediaBeanLinkedList) {
+    public void setMediaBeanLinkedList(LinkedList<DpMsgDefine.DPWonderItem> mediaBeanLinkedList) {
         this.mediaBeanLinkedList = mediaBeanLinkedList;
     }
 
@@ -63,7 +63,7 @@ public class TimeLineAssembler {
         return dataSet;
     }
 
-    public LinkedList<MediaBean> mediaBeanLinkedList;
+    public LinkedList<DpMsgDefine.DPWonderItem> mediaBeanLinkedList;
 
     final static SimpleDateFormat simpleDate = new SimpleDateFormat("yyyyMMdd", Locale.getDefault());
     final static SimpleDateFormat simpleDateCNShort = new SimpleDateFormat("M月", Locale.getDefault());

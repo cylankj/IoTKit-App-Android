@@ -68,11 +68,11 @@ public class JConstant {
     public static final String AUTO_LOGIN_ACCOUNT = "auto_login_account";
     public static final String AUTO_LOGIN_PWD = "auto_login_pwd";
 
-    public static final String SAVE_TEMP_ACCOUNT ="save_temp_account";
-    public static final String SAVE_TEMP_CODE ="save_temp_code";
-    public static final String OPEN_LOGIN_TO_BIND_PHONE ="open_login_to_bind_phone";
-    public static final String OPEN_LOGIN_USER_ICON ="open_login_user_icon";
-    public static final String OPEN_LOGIN_USER_ALIAS ="open_login_user_alias";
+    public static final String SAVE_TEMP_ACCOUNT = "save_temp_account";
+    public static final String SAVE_TEMP_CODE = "save_temp_code";
+    public static final String OPEN_LOGIN_TO_BIND_PHONE = "open_login_to_bind_phone";
+    public static final String OPEN_LOGIN_USER_ICON = "open_login_user_icon";
+    public static final String OPEN_LOGIN_USER_ALIAS = "open_login_user_alias";
     /**
      * verification code
      */
@@ -91,11 +91,13 @@ public class JConstant {
 
     public static final String KEY_FRESH = "is_you_fresh";
 
-    public static final String KEY_DELAY_RECORD_GUIDE = "delay_record_guide";
-    public static final String BELL_CALL_WAY = "bell_call_way";
-    public static final String BELL_CALL_WAY_VIEWER = "BELL_CALL_WAY_VIEWER";
-    public static final String BELL_CALL_WAY_LISTEN = "BELL_CALL_WAY_LISTEN";
-    public static final String BELL_CALL_WAY_EXTRA = "BELL_CALL_WAY_EXTRA";
+    public static final String KEY_DELAY_RECORD_GUIDE = "KEY_DELAY_RECORD_GUIDE";
+    public static final String VIEW_CALL_WAY = "VIEW_CALL_WAY";
+    public static final String VIEW_CALL_WAY_VIEWER = "VIEW_CALL_WAY_VIEWER";
+    public static final String VIEW_CALL_WAY_LISTEN = "VIEW_CALL_WAY_LISTEN";
+    public static final String VIEW_CALL_WAY_EXTRA = "VIEW_CALL_WAY_EXTRA";
+    public static final String KEY_WONDERFUL_GUIDE = "KEY_WONDERFUL_GUIDE";
+    public static final String VIEW_CALL_WAY_TIME = "VIEW_CALL_WAY_TIME";
 
     public static int ConfigApState = 0;
 
@@ -178,6 +180,7 @@ public class JConstant {
     public static final int OS_CAMERA_PANORAMA_HAISI = 18;    //海思全景摄像头
     public static final int OS_CAMERA_PANORAMA_QIAOAN = 19;    //乔安全景摄像头
     public static final int OS_CAMERA_PANORAMA_GUOKE = 20;    //国科全景摄像头
+    public static final int OS_CAMERA_3G = 1071;    //3g狗
 
     public static final int OS_MAX_COUNT = OS_CAMERA_PANORAMA_GUOKE;
     public static Map<Integer, Integer> onLineIconMap = new HashMap<>();
@@ -210,6 +213,8 @@ public class JConstant {
         onLineIconMap.put(JConstant.OS_CAMERA_UCOS_V2, R.drawable.icon_home_camera_online);
         onLineIconMap.put(JConstant.OS_CAMERA_UCOS, R.drawable.icon_home_camera_online);
 
+        onLineIconMap.put(JConstant.OS_CAMERA_3G, R.drawable.icon_home_camera_online);
+
         //MAG
         onLineIconMap.put(JConstant.OS_MAGNET, R.drawable.icon_home_magnetic_online);
         //E_FAMILY
@@ -236,6 +241,8 @@ public class JConstant {
         offLineIconMap.put(JConstant.OS_CAMERA_UCOS_V3, R.drawable.icon_home_camera_offline);
         offLineIconMap.put(JConstant.OS_CAMERA_UCOS_V2, R.drawable.icon_home_camera_offline);
         offLineIconMap.put(JConstant.OS_CAMERA_UCOS, R.drawable.icon_home_camera_offline);
+
+        offLineIconMap.put(JConstant.OS_CAMERA_3G, R.drawable.icon_home_camera_offline);
 
         //MAG
         offLineIconMap.put(JConstant.OS_MAGNET, R.drawable.icon_home_magnetic_offline);
@@ -289,4 +296,12 @@ public class JConstant {
     public static final int PLAY_STATE_IDLE = 1;
     public static final int PLAY_STATE_PREPARE = 2;
     public static final int PLAY_STATE_PLAYING = 3;
+
+    public static final int CLOUD_OUT_CONNECT_TIME_OUT = 0;
+    public static final int CLOUD_IN_CONNECT_TIME_OUT = 2531;
+    public static final int CLOUD_IN_CONNECT_OK = 1;
+    public static final int CLOUD_IN_CONNECT_FAILED = 2;
+    public static final int CLOUD_OUT_CONNECT_OK = 3;
+    public static final int CLOUD_OUT_CONNECT_FAILED = 4;
+
 }

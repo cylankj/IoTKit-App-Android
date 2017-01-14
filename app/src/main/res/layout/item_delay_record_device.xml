@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/item_device_container"
+                style="@style/ripple_background"
+                android:layout_width="match_parent"
+                android:layout_height="77dp"
+                android:clickable="true">
+
+
+    <ImageView
+        android:id="@+id/item_device_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginStart="19dp"
+        android:src="@drawable/icon_home_camera_online"/>
+
+    <View
+        android:id="@+id/v_icon_base_line_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_centerInParent="true"/>
+
+    <TextView
+        android:id="@+id/item_device_alias"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/v_icon_base_line_bottom"
+        android:layout_marginStart="15dp"
+        android:layout_toEndOf="@+id/item_device_icon"
+        android:ellipsize="end"
+        android:lines="1"
+        android:maxLength="8"
+        android:maxLines="1"
+        android:text="wohegohe"
+        android:textColor="@color/color_333333"
+        android:textSize="16sp"/>
+
+    <TextView
+        android:id="@+id/item_device_open_state"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/v_icon_base_line_bottom"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="5dp"
+        android:layout_toEndOf="@+id/item_device_icon"
+        android:ellipsize="end"
+        android:lines="1"
+        android:maxLength="8"
+        android:maxLines="1"
+        android:text="hgeogh"
+        android:textColor="@color/color_777777"
+        android:textSize="14sp"/>
+
+    <ImageView
+        android:id="@+id/tv_device_msg_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:layout_marginEnd="19dp"
+        android:src="@drawable/icon_mine_arrow_next"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_alignLeft="@+id/item_device_open_state"
+        android:layout_alignParentBottom="true"
+        android:background="@color/color_e8e8e8"/>
+</RelativeLayout>

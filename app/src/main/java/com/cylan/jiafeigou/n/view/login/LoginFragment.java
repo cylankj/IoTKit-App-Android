@@ -53,7 +53,6 @@ import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
 import com.cylan.utils.NetUtils;
 import com.sina.weibo.sdk.auth.sso.SsoHandler;
 import com.tencent.connect.common.Constants;
-import com.tencent.tauth.Tencent;
 
 import java.lang.ref.WeakReference;
 
@@ -225,7 +224,7 @@ public class LoginFragment extends android.support.v4.app.Fragment
         /**
          * 第三方使用亲友功能跳转到绑定手机这
          */
-        if  (bundle != null && bundle.containsKey(RxEvent.NeedLoginEvent.KEY) && bundle.getBoolean(JConstant.OPEN_LOGIN_TO_BIND_PHONE)){
+        if (bundle != null && bundle.containsKey(RxEvent.NeedLoginEvent.KEY) && bundle.getBoolean(JConstant.OPEN_LOGIN_TO_BIND_PHONE)) {
             switchBoxBindPhone();
             return;
         }
@@ -303,7 +302,7 @@ public class LoginFragment extends android.support.v4.app.Fragment
      * 初始化view
      */
     private void initView() {
-        tvAgreement.setText("《"+getString(R.string.TERM_OF_USE)+"》");
+        tvAgreement.setText("《" + getString(R.string.TERM_OF_USE) + "》");
         if (getView() != null)
             getView().findViewById(R.id.tv_top_bar_right).setVisibility(View.VISIBLE);
         ViewUtils.setChineseExclude(etLoginPwd, JConstant.PWD_LEN_MAX);
@@ -312,7 +311,7 @@ public class LoginFragment extends android.support.v4.app.Fragment
         etLoginUsername.setHint(LocaleUtils.getLanguageType(getActivity()) == JConstant.LOCALE_SIMPLE_CN
                 ? getString(R.string.SHARE_E_MAIL) : getString(R.string.EMAIL));
 
-        if (!TextUtils.isEmpty(etLoginUsername.getText().toString().trim()) && !TextUtils.isEmpty(etLoginPwd.getText().toString().trim())){
+        if (!TextUtils.isEmpty(etLoginUsername.getText().toString().trim()) && !TextUtils.isEmpty(etLoginPwd.getText().toString().trim())) {
             lbLogin.setEnabled(true);
         }
     }
@@ -347,6 +346,7 @@ public class LoginFragment extends android.support.v4.app.Fragment
             lbLogin.setEnabled(true);
         }
     }
+
     /***
      * 账号变化
      *
@@ -400,7 +400,7 @@ public class LoginFragment extends android.support.v4.app.Fragment
                 break;
             case R.id.iv_top_bar_left:
                 if (getActivity() != null && getActivity() instanceof SmartcallActivity) {
-                    getActivity().finish();
+                    getActivity().onBackPressed();
                 } else if (getActivity() != null && getActivity() instanceof NewHomeActivity) {
                     getActivity().onBackPressed();
                 }
@@ -462,16 +462,16 @@ public class LoginFragment extends android.support.v4.app.Fragment
         login.userName = ViewUtils.getTextViewContent(etLoginUsername);
         login.pwd = ViewUtils.getTextViewContent(etLoginPwd);
         if (presenter != null) {
-            if (NetUtils.getNetType(ContextUtils.getContext()) != -1){
+            if (NetUtils.getNetType(ContextUtils.getContext()) != -1) {
                 presenter.executeLogin(login);
-            }else {
+            } else {
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         resetView();
                         ToastUtil.showNegativeToast(getString(R.string.NO_NETWORK_4));
                     }
-                },1000);
+                }, 1000);
                 return;
             }
         }
@@ -547,14 +547,14 @@ public class LoginFragment extends android.support.v4.app.Fragment
                 return;
             }
             getContext().startActivity(new Intent(getContext(), NewHomeActivity.class));
-        }else {
+        } else {
             resetView();
             if (code == JError.ErrorAccountNotExist) {
                 //账号未注册
                 showSimpleDialog(getString(R.string.RET_EFORGETPASS_ACCOUNT_NOT_EXIST), " ", getString(R.string.OK), false);
             } else if (code == JError.ErrorLoginInvalidPass) {
                 ToastUtil.showNegativeToast(getString(R.string.RET_ELOGIN_ERROR));
-            } else if (code == 162){
+            } else if (code == 162) {
                 ToastUtil.showNegativeToast("登录失败：accend_token_error");
             }
         }
@@ -691,6 +691,7 @@ public class LoginFragment extends android.support.v4.app.Fragment
 
     /**
      * 手机号和验证码是否准备,或者注册类型{手机，邮箱}
+     *
      * @return
      */
     @Override
@@ -920,13 +921,13 @@ public class LoginFragment extends android.support.v4.app.Fragment
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
         SsoHandler sinaCallBack = presenter.getSinaCallBack();
-        if (sinaCallBack != null){
+        if (sinaCallBack != null) {
             sinaCallBack.authorizeCallBack(requestCode, resultCode, data);
         }
 
         if (requestCode == Constants.REQUEST_LOGIN ||
                 requestCode == Constants.REQUEST_APPBAR) {
-            presenter.onActivityResultData(requestCode,resultCode,data);
+            presenter.onActivityResultData(requestCode, resultCode, data);
         }
 
         super.onActivityResult(requestCode, resultCode, data);

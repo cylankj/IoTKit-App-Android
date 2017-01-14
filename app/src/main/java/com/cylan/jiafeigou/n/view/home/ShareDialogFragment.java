@@ -10,7 +10,6 @@ import android.widget.TextView;
 
 import com.bumptech.glide.load.model.GlideUrl;
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.n.mvp.model.MediaBean;
 import com.cylan.jiafeigou.utils.ShareUtils;
 import com.cylan.jiafeigou.widget.dialog.BaseDialog;
 
@@ -35,7 +34,7 @@ public class ShareDialogFragment extends BaseDialog {
     @BindView(R.id.tv_share_to_wechat_friends)
     TextView tvShareToWechat;
 
-//    private MediaBean mMediaBean;
+//    private DPWonderItem mMediaBean;
 
     private GlideUrl glideUrl;
 

@@ -27,7 +27,6 @@ import com.bumptech.glide.load.DecodeFormat;
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.cache.JCache;
 import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
@@ -125,6 +124,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
         super.onResume();
         initWaveAnimation();
         onTimeTick(JFGRules.getTimeRule());
+        homePageListAdapter.notifyDataSetChanged();
         if (basePresenter != null) {
             basePresenter.fetchGreet();
         }
@@ -153,6 +153,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         //添加Handler
+        homePageListAdapter.clear();
         appbar.addOnOffsetChangedListener(this);
         srLayoutMainContentHolder.setOnRefreshListener(this);
         srLayoutMainContentHolder.setNestedScrollingEnabled(false);
@@ -340,7 +341,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
             onRefreshFinish();
             Toast.makeText(getContext(), "还没登陆", Toast.LENGTH_SHORT).show();
         } else {
-            //update online view
+            //setDevice online view
         }
     }
 
@@ -377,13 +378,13 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
                         .putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid));
             } else if (JConstant.isMag(pid)) {
                 startActivity(new Intent(getActivity(), MagLiveActivity.class)
-                        .putExtra(JConstant.KEY_DEVICE_ITEM_UUID, bundle));
+                        .putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid));
             } else if (JConstant.isBell(pid)) {
                 startActivity(new Intent(getActivity(), DoorBellHomeActivity.class)
-                        .putExtra(JConstant.KEY_DEVICE_ITEM_UUID, bundle));
+                        .putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid));
             } else if (JConstant.isEFamily(pid)) {
                 startActivity(new Intent(getActivity(), CloudLiveActivity.class)
-                        .putExtra(JConstant.KEY_DEVICE_ITEM_UUID, bundle));
+                        .putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid));
             }
         }
     }

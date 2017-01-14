@@ -49,8 +49,10 @@ public class GlobalBellCallSource {
         Log.e("ABC", "launchBellLive: " + mHolderBellCall.caller.cid);
         Intent intent = new Intent(ContextUtils.getContext(), BellLiveActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.putExtra(JConstant.BELL_CALL_WAY, JConstant.BELL_CALL_WAY_LISTEN);
-        intent.putExtra(JConstant.BELL_CALL_WAY_EXTRA, mHolderBellCall.caller);
+        intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, mHolderBellCall.caller.cid);
+        intent.putExtra(JConstant.VIEW_CALL_WAY, JConstant.VIEW_CALL_WAY_LISTEN);
+        intent.putExtra(JConstant.VIEW_CALL_WAY_EXTRA, mHolderBellCall.caller.url);
+        intent.putExtra(JConstant.VIEW_CALL_WAY_TIME,mHolderBellCall.caller.time);
         ContextUtils.getContext().startActivity(intent);
 
     }

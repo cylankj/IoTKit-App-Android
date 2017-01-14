@@ -18,6 +18,8 @@ public class CloudLiveBaseDbBean {
     public byte[] data;
     @Column(name = "userIcon")
     public String userIcon;
+    @Column(name = "uuid")
+    public String uuid;
 
     public byte[] getData() {
         return data;
@@ -49,5 +51,13 @@ public class CloudLiveBaseDbBean {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public String getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
     }
 }

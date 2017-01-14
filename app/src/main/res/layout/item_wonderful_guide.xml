@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:gravity="center_horizontal"
+              android:orientation="vertical">
+
+    <include layout="@layout/layout_item_vedio_wonderful"/>
+
+    <Button
+        android:id="@+id/item_wonderful_to_start"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="60dp"
+        android:background="@drawable/btn_again_normal"
+        android:text="@string/Tap2_Index_OpenTimelapse"
+        android:textColor="@color/delay_record_start_now_color"
+        android:textSize="17sp"/>
+
+
+</LinearLayout>

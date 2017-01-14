@@ -11,8 +11,12 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
+import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
+import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.mag.MagLiveInformationContract;
 import com.cylan.jiafeigou.n.mvp.impl.mag.MagLiveInformationPresenterImp;
@@ -60,6 +64,7 @@ public class MagLiveInformationFragment extends IBaseFragment<MagLiveInformation
     private MagLiveInformationContract.Presenter presenter;
 
     private OnMagLiveDataChangeListener mListener;
+    private String uuid;
 
     public void setListener(OnMagLiveDataChangeListener mListener) {
         this.mListener = mListener;
@@ -83,8 +88,8 @@ public class MagLiveInformationFragment extends IBaseFragment<MagLiveInformation
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        BeanMagInfo bean = getArguments().getParcelable(KEY_DEVICE_ITEM_BUNDLE);
-        presenter = new MagLiveInformationPresenterImp(this, bean);
+        this.uuid = getArguments().getString(JConstant.KEY_DEVICE_ITEM_UUID);
+        presenter = new MagLiveInformationPresenterImp(this, uuid);
     }
 
     @Override
@@ -116,12 +121,15 @@ public class MagLiveInformationFragment extends IBaseFragment<MagLiveInformation
     }
 
     private void updateDetails() {
-        BeanMagInfo p = presenter.getMagInfoBean();
-        if (p != null) {
-            tvDeviceAlias.setText(p.deviceBase.alias);
-            tvDeviceCid.setText(p.deviceBase.uuid);
-            tvDeviceMac.setText(p.mac);
-//            tvDeviceBatteryLevel.setText();
+        String mac = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_202_MAC, "");
+        tvDeviceMac.setText(mac);
+        int battery = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_206_BATTERY, 0);
+        tvDeviceBatteryLevel.setText(battery + "");
+
+        JFGDevice device = GlobalDataProxy.getInstance().fetch(uuid);
+        if (device != null) {
+            tvDeviceAlias.setText(TextUtils.isEmpty(device.alias)? device.uuid:device.alias);
+            tvDeviceCid.setText(device.uuid);
         }
     }
 
@@ -132,7 +140,6 @@ public class MagLiveInformationFragment extends IBaseFragment<MagLiveInformation
             case R.id.lLayout_information_facility_name:
                 toEditAlias();
                 break;
-
             case R.id.imgV_top_bar_center:
                 getFragmentManager().popBackStack();
                 break;
@@ -160,13 +167,13 @@ public class MagLiveInformationFragment extends IBaseFragment<MagLiveInformation
             @Override
             public void onDialogAction(int id, String value) {
                 if (presenter != null) {
-                    BeanMagInfo info = presenter.getMagInfoBean();
+                    JFGDevice device = GlobalDataProxy.getInstance().fetch(uuid);
                     if (!TextUtils.isEmpty(value)
-                            && !TextUtils.equals(info.deviceBase.alias, value)) {
+                            && !TextUtils.equals(device.alias, value)) {
                         tvDeviceAlias.setText(value);
-                        info.deviceBase.alias = value;
-                        updateDetails();
-                        presenter.saveMagInfoBean(info, DpMsgMap.ID_2000003_BASE_ALIAS);
+                        device.alias = value;
+//                        presenter.saveMagInfoBean(device, DpMsgMap.ID_2000003_BASE_ALIAS);
+//                        updateDetails();
 
                         if (mListener != null){
                             mListener.magLiveDataChange(value);

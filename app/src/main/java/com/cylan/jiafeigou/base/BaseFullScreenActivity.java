@@ -9,6 +9,8 @@ import android.support.v4.app.FragmentManager;
 import android.view.WindowManager;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.base.view.JFGPresenter;
+import com.cylan.jiafeigou.base.wrapper.BaseActivity;
 import com.cylan.jiafeigou.misc.NotifyManager;
 import com.cylan.jiafeigou.n.view.misc.SystemUiHider;
 import com.cylan.jiafeigou.widget.SystemBarTintManager;
@@ -110,10 +112,6 @@ public abstract class BaseFullScreenActivity<P extends JFGPresenter> extends Bas
 
     @Override
     public void onBackPressed() {
-        if (checkExtraChildFragment()) {
-            return;
-        } else if (checkExtraFragment())
-            return;
         super.onBackPressed();
     }
 

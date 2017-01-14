@@ -3,6 +3,7 @@ package com.cylan.jiafeigou.dp;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.cylan.jiafeigou.base.module.JFGDevice;
 import com.cylan.jiafeigou.n.mvp.model.BaseBean;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.google.gson.Gson;
@@ -28,6 +29,7 @@ public class FlattenMsgDp implements IFlat {
      * <account+uuid,基本信息></>
      */
     private Map<String, BaseBean> baseDpDeviceMap = new HashMap<>();
+
     /**
      * account+uuid,msgId,Object
      */
@@ -63,6 +65,20 @@ public class FlattenMsgDp implements IFlat {
         }
         baseDpDeviceMap.put(account + dpDevice.uuid, dpDevice);
     }
+
+    @Override
+    public void cacheJFGDevice(String account, JFGDevice device) {
+        //某个账号下所有的uuid
+        ArrayList<String> uuidList = accountUUidMap.get(account);
+        if (uuidList == null) {
+            uuidList = new ArrayList<>();
+        }
+        if (!uuidList.contains(device.uuid)) {
+            uuidList.add(device.uuid);
+            accountUUidMap.put(account, uuidList);
+        }
+    }
+
 
     @Override
     public void cache(String account, String uuid, ArrayList<DpMsgDefine.DpMsg> jfgdpMsgs) {
@@ -116,7 +132,7 @@ public class FlattenMsgDp implements IFlat {
         } else {
             list.add(msg);
         }
-        Log.d("FlattenMsgDp", "update?: " + (index != -1) + "," + new Gson().toJson(msg));
+        Log.d("FlattenMsgDp", "setDevice?: " + (index != -1) + "," + new Gson().toJson(msg));
         simpleMap.put(account + uuid, list);
     }
 
@@ -149,6 +165,8 @@ public class FlattenMsgDp implements IFlat {
         return wrap;
     }
 
+
+
     @Override
     public void cache(String account, String uuid, DpMsgDefine.DpMsg msg) {
         exception(account, uuid);
@@ -165,20 +183,20 @@ public class FlattenMsgDp implements IFlat {
 
     @Override
     public ArrayList<DpMsgDefine.DpWrap> getAllDevices(String account) {
+        ArrayList<DpMsgDefine.DpWrap> result = new ArrayList<>();
         if (TextUtils.isEmpty(account)) {
             AppLogger.i("account is null");
-            return null;
+            return result;
         }
-        ArrayList<DpMsgDefine.DpWrap> finalList = new ArrayList<>();
         ArrayList<String> uuidList = accountUUidMap.get(account);
         if (uuidList == null) {
             AppLogger.e("uuidList is null: " + account);
-            return null;
+            return result;
         }
         for (String uuid : uuidList) {
-            finalList.add(getDevice(account, uuid));
+            result.add(getDevice(account, uuid));
         }
-        return finalList;
+        return result;
     }
 
     private void exception(String account, String uuid) {

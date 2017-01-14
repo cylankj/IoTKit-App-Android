@@ -127,7 +127,7 @@ public class SmartcallActivity extends NeedLoginActivity
             //进入登陆页 login page
             getSupportFragmentManager().beginTransaction()
                     .add(android.R.id.content, BeforeLoginFragment.newInstance(null))
-//                    .addToBackStack(BeforeLoginFragment.class.getSimpleName())
+                    .addToBackStack(BeforeLoginFragment.class.getSimpleName())
                     .commitAllowingStateLoss();
         }
     }
@@ -214,7 +214,7 @@ public class SmartcallActivity extends NeedLoginActivity
 
     @OnPermissionDenied(Manifest.permission.CAMERA)
     public void onCameraDenied() {
-        // NOTE: Deal with activity_cloud_live_mesg_video_talk_item denied permission, e.g. by showing specific UI
+        // NOTE: Deal with activity_cloud_live_mesg_call_out_item denied permission, e.g. by showing specific UI
         // or disabling certain functionality
         Toast.makeText(this, R.string.SET_PHOTO_FAIL, Toast.LENGTH_SHORT).show();
         AppLogger.d(JConstant.LOG_TAG.PERMISSION + "onCameraDenied");
@@ -235,7 +235,7 @@ public class SmartcallActivity extends NeedLoginActivity
 
     @OnShowRationale(Manifest.permission.CAMERA)
     public void showRationaleForCamera(PermissionRequest request) {
-        // NOTE: Show activity_cloud_live_mesg_video_talk_item rationale to explain why the permission is needed, e.g. with activity_cloud_live_mesg_video_talk_item dialog.
+        // NOTE: Show activity_cloud_live_mesg_call_out_item rationale to explain why the permission is needed, e.g. with activity_cloud_live_mesg_call_out_item dialog.
         // Call proceed() or cancel() on the provided PermissionRequest to continue or abort
         showRationaleDialog(R.string.SET_PHOTO_FAIL, request);
         AppLogger.d(JConstant.LOG_TAG.PERMISSION + "showRationaleForCamera");

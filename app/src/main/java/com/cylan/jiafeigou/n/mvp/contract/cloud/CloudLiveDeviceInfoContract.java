@@ -25,16 +25,10 @@ public interface CloudLiveDeviceInfoContract {
 
         /**
          * 保存的设备的属性
-         * @param info
+         * @param value
          * @param id
          */
-        void saveCloudInfoBean(BeanCloudInfo info, int id);
-
-        /**
-         * 获取到设备的信息
-         * @return
-         */
-        BeanCloudInfo getCloudInfoBean();
+        void saveCloudInfoBean(Object value, int id);
 
     }
 

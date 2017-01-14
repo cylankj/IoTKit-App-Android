@@ -114,13 +114,13 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
     }
 
     private void updateDetails() {
-        DpMsgDefine.MsgTimeZone zone = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_214_DEVICE_TIME_ZONE, null);
+        DpMsgDefine.DPTimeZone zone = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_214_DEVICE_TIME_ZONE, null);
         tvDeviceTimeZone.setText(zone != null && !TextUtils.isEmpty(zone.timezone) ? zone.timezone : "");
-        DpMsgDefine.SdStatus status = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_204_SDCARD_STORAGE, null);
+        DpMsgDefine.DPSdStatus status = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_204_SDCARD_STORAGE, null);
         tvDeviceSdcardState.setText(getSdcardState(status));
         JFGDevice device = GlobalDataProxy.getInstance().fetch(uuid);
-        tvDeviceAlias.setText(device == null ? "" : TextUtils.isEmpty(device.alias) ? device.alias : device.uuid);
-        tvDeviceCid.setText(device != null && TextUtils.isEmpty(device.uuid) ? device.uuid : "");
+        tvDeviceAlias.setText(device == null ? "" : TextUtils.isEmpty(device.alias) ? device.uuid : device.alias);
+        tvDeviceCid.setText(device != null && TextUtils.isEmpty(device.uuid) ? "" : device.uuid);
         String mac = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_202_MAC, "");
         tvDeviceMac.setText(mac);
         int battery = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_206_BATTERY, 0);
@@ -145,7 +145,7 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
         }
     }
 
-    private String getSdcardState(DpMsgDefine.SdStatus sdStatus) {
+    private String getSdcardState(DpMsgDefine.DPSdStatus sdStatus) {
         //sd卡状态
         if (sdStatus != null) {
             if (!sdStatus.hasSdcard && sdStatus.err != 0) {
@@ -182,10 +182,10 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
         bundle.putString(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
         DeviceTimeZoneFragment timeZoneFragment = DeviceTimeZoneFragment.newInstance(bundle);
         timeZoneFragment.setCallBack((Object o) -> {
-            if (!(o instanceof DpMsgDefine.MsgTimeZone)) {
+            if (!(o instanceof DpMsgDefine.DPTimeZone)) {
                 return;
             }
-            DpMsgDefine.MsgTimeZone zone = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_214_DEVICE_TIME_ZONE, null);
+            DpMsgDefine.DPTimeZone zone = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_214_DEVICE_TIME_ZONE, null);
             //更新ui
             updateDetails();
             basePresenter.updateInfoReq(zone, DpMsgMap.ID_214_DEVICE_TIME_ZONE);
