@@ -221,14 +221,17 @@ public class DpAssembler implements IParser {
         flatMsg.cache(JCache.getAccountCache().getAccount(), dpDevice);
     }
 
+    private void getHistoryData(String uuid) {
+        RxEvent.JFGHistoryVideoReq req = new RxEvent.JFGHistoryVideoReq();
+        req.uuid = uuid;
+        RxBus.getCacheInstance().post(req);
+    }
+
     private Observable<JFGAccount> monitorJFGAccount() {
         return RxBus.getCacheInstance().toObservableSticky(JFGAccount.class)
-                .map(new Func1<JFGAccount, JFGAccount>() {
-                    @Override
-                    public JFGAccount call(JFGAccount account) {
-                        AppLogger.i("JFGAccount.class");
-                        return account;
-                    }
+                .map((JFGAccount account) -> {
+                    AppLogger.i("JFGAccount.class");
+                    return account;
                 });
     }
 
@@ -259,6 +262,7 @@ public class DpAssembler implements IParser {
                         GlobalDataProxy.getInstance().cacheDevice(list.get(i).uuid, list.get(i));
                         getUnreadMsg(list.get(i));
                         assembleBase(list.get(i));
+                        getHistoryData(list.get(i).uuid);
                         final int pid = list.get(i).pid;
                         BaseParam baseParam = merger(pid);
                         long seq = 0;
