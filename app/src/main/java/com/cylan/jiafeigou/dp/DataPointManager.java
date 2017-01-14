@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
@@ -298,7 +299,7 @@ public class DataPointManager implements IParser, IDataPoint {
         jfgDeviceMap.remove(finalKey);
         return jfgDeviceMap.put(finalKey, device) != null;
     }
-    
+
     @Override
     public <T extends com.cylan.jiafeigou.base.module.JFGDevice> T fetchDevice(String uuid) {
         return null;
@@ -306,7 +307,15 @@ public class DataPointManager implements IParser, IDataPoint {
 
     @Override
     public ArrayList<JFGDevice> fetchAll(String account) {
-        return null;
+        Iterator<String> keySet = jfgDeviceMap.keySet().iterator();
+        ArrayList<JFGDevice> allList = new ArrayList<>();
+        while (keySet.hasNext()) {
+            String key = keySet.next();
+            if (key.startsWith(account)) {
+                allList.add(jfgDeviceMap.get(key));
+            }
+        }
+        return allList;
     }
 
     @Override
