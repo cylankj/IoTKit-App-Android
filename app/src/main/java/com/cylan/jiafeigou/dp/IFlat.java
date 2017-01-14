@@ -64,15 +64,13 @@ public interface IFlat {
 
     DpMsgDefine.DpWrap removeMsg(String account, String uuid);
 
-    DpMsgDefine.JFGDeviceWrap removeJFGMsg(String account, String uuid);
-
     DpMsgDefine.DpWrap getDevice(String account, String uuid);
 
-    DpMsgDefine.JFGDeviceWrap getJFGDevice(String account, String uuid);
+
 
     void cache(String account, String uuid, DpMsgDefine.DpMsg msg);
 
     ArrayList<DpMsgDefine.DpWrap> getAllDevices(String account);
 
-    ArrayList<DpMsgDefine.JFGDeviceWrap> getAllJFGDevices(String account);
+
 }

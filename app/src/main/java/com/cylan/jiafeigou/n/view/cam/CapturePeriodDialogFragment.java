@@ -43,7 +43,7 @@ public class CapturePeriodDialogFragment extends BaseDialog {
     private int checkedSerial;
 
     /**
-     * Use this factory method to create activity_cloud_live_mesg_video_talk_item new instance of
+     * Use this factory method to create activity_cloud_live_mesg_call_out_item new instance of
      * this fragment using the provided parameters.
      *
      * @return A new instance of fragment SetSensitivityDialogFragment.
@@ -76,7 +76,7 @@ public class CapturePeriodDialogFragment extends BaseDialog {
 
     private void initView() {
         String uuid = getArguments().getString(JConstant.KEY_DEVICE_ITEM_UUID);
-        DpMsgDefine.AlarmInfo alarmInfo = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_502_CAMERA_ALARM_INFO, null);
+        DpMsgDefine.DPAlarmInfo alarmInfo = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_502_CAMERA_ALARM_INFO, null);
         if (alarmInfo == null) {
             AppLogger.e("should not happen");
             return;

@@ -116,4 +116,6 @@ public interface IDataPoint {
      * @return long req
      */
     long robotGetData(String peer, ArrayList<JFGDPMsg> queryDps, int limit, boolean asc, int timeoutMs) throws JfgException;
+
+    void clearAll();
 }

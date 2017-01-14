@@ -132,11 +132,11 @@ public class BellDetailFragment extends BaseFragment<BellDetailContract.Presente
         String alias = TextUtils.isEmpty(device.alias) ? device.uuid : device.alias;
         svSettingDeviceAlias.setTvSubTitle(alias);
         svSettingDeviceCid.setTvSubTitle(device.uuid);
-        svSettingDeviceMac.setTvSubTitle(device.mac == null ? "" : device.mac.value);
-        svSettingDeviceSysVersion.setTvSubTitle(device.device_sys_version == null ? "" : device.device_sys_version.value);
-        svSettingDeviceVersion.setTvSubTitle(device.device_version == null ? "" : device.device_version.value);
-        svSettingDeviceBattery.setTvSubTitle(device.battery == null ? "" : device.battery.value + "");
-        String ssid = device.net == null || TextUtils.isEmpty(device.net.ssid) ? getString(R.string.OFF_LINE) : device.net.ssid;
+        svSettingDeviceMac.setTvSubTitle(device.mac.$());
+        svSettingDeviceSysVersion.setTvSubTitle(device.device_sys_version.$());
+        svSettingDeviceVersion.setTvSubTitle(device.device_version.$());
+        svSettingDeviceBattery.setTvSubTitle(device.battery.$() + "");
+        String ssid = TextUtils.isEmpty(device.net.$().ssid) ? getString(R.string.OFF_LINE) : device.net.$().ssid;
         svSettingDeviceWifi.setTvSubTitle(ssid);
     }
 }

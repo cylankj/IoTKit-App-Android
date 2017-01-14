@@ -34,6 +34,7 @@
             android:layout_height="38dp">
 
             <ImageView
+                android:id="@+id/iv_call_out_icon"
                 android:layout_marginLeft="15dp"
                 android:layout_gravity="center_vertical"
                 android:src="@drawable/icon_call"

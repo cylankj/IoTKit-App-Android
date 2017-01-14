@@ -13,12 +13,12 @@ import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.base.wrapper.BasePresenter;
 import com.cylan.jiafeigou.dp.DataPoint;
+import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeWonderfulContract;
-import com.cylan.jiafeigou.n.mvp.model.MediaBean;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -40,7 +40,6 @@ import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
-import rx.subscriptions.CompositeSubscription;
 
 import static com.cylan.jiafeigou.n.mvp.contract.home.HomeWonderfulContract.View.VIEW_TYPE_EMPTY;
 import static com.cylan.jiafeigou.n.mvp.contract.home.HomeWonderfulContract.View.VIEW_TYPE_GUIDE;
@@ -53,14 +52,13 @@ import static com.cylan.jiafeigou.n.mvp.contract.home.HomeWonderfulContract.View
 public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContract.View>
         implements HomeWonderfulContract.Presenter {
     private static final int LOAD_PAGE_COUNT = 20;
-    private SoftReference<List<MediaBean>> mWeakMediaLists;
+    private SoftReference<List<DpMsgDefine.DPWonderItem>> mWeakMediaLists;
     private WechatShare wechatShare;
 
     @Override
-    protected void onRegisterSubscription(CompositeSubscription subscriptions) {
-        super.onRegisterSubscription(subscriptions);
-        subscriptions.add(getTimeTickEventSub());
-        subscriptions.add(getPageScrolledSub());
+    protected void onRegisterSubscription() {
+        super.onRegisterSubscription();
+        registerSubscription(getTimeTickEventSub(), getPageScrolledSub());
     }
 
     @Override
@@ -103,7 +101,7 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
      *
      * @param list
      */
-    private synchronized void updateCache(List<MediaBean> list) {
+    private synchronized void updateCache(List<DpMsgDefine.DPWonderItem> list) {
         if (list == null || list.size() == 0)
             return;
         if (mWeakMediaLists == null) {
@@ -115,7 +113,7 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
             return;
         }
         if (mWeakMediaLists != null && mWeakMediaLists.get() != null) {
-            List<MediaBean> rawList = mWeakMediaLists.get();
+            List<DpMsgDefine.DPWonderItem> rawList = mWeakMediaLists.get();
             rawList.addAll(list);
             //remove the same one by time
             rawList = new ArrayList<>(new HashSet<>(rawList));
@@ -132,9 +130,9 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
      * @param list
      * @return
      */
-    private List<Long> assembleTimeLineData(List<MediaBean> list) {
+    private List<Long> assembleTimeLineData(List<DpMsgDefine.DPWonderItem> list) {
         ArrayList<Long> result = new ArrayList<>(1024);
-        for (MediaBean bean : list) {
+        for (DpMsgDefine.DPWonderItem bean : list) {
             result.add((long) bean.time * 1000);
         }
         return result;
@@ -222,7 +220,7 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
     }
 
     @Override
-    public void shareToWechat(MediaBean mediaBean, final int type) {
+    public void shareToWechat(DpMsgDefine.DPWonderItem mediaBean, final int type) {
         if (mediaBean == null) {
             AppLogger.i("mediaBean is null");
             return;
@@ -263,9 +261,9 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
     }
 
     private void onWonderfulAccountRsp(DataPoint... values) {
-        List<MediaBean> results = new ArrayList<>();
-        MediaBean bean;
-        for (MediaBean value : (MediaBean[]) values) {
+        List<DpMsgDefine.DPWonderItem> results = new ArrayList<>();
+        DpMsgDefine.DPWonderItem bean;
+        for (DpMsgDefine.DPWonderItem value : (DpMsgDefine.DPWonderItem[]) values) {
             bean = value;
             if (bean != null && !TextUtils.isEmpty(bean.cid)) {
                 results.add(bean);

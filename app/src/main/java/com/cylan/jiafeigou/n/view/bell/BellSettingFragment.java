@@ -150,6 +150,6 @@ public class BellSettingFragment extends BaseFragment<BellSettingContract.Presen
                 v.setVisibility(View.GONE);
             }
         }
-        svSettingDeviceWifi.setTvSubTitle(DpMsgDefine.MsgNet.getNormalString(device.net));
+        svSettingDeviceWifi.setTvSubTitle(DpMsgDefine.DPNet.getNormalString(device.net));
     }
 }

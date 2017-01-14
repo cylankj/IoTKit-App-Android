@@ -1,15 +1,20 @@
 package com.cylan.jiafeigou.n.mvp.contract.cam;
 
 
+import com.cylan.entity.jniCall.JFGDPMsg;
+import com.cylan.ex.JfgException;
+import com.cylan.jiafeigou.base.module.CameraDevice;
+import com.cylan.jiafeigou.base.view.PropertyView;
 import com.cylan.jiafeigou.base.view.ViewableView;
 import com.cylan.jiafeigou.base.wrapper.BaseViewablePresenter;
+import com.cylan.jiafeigou.dp.DpMsgDefine;
+import com.cylan.jiafeigou.dp.DpMsgMap;
+import com.cylan.jiafeigou.dp.DpUtils;
+import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 
-import java.util.concurrent.TimeUnit;
+import java.util.ArrayList;
 
-import rx.Observable;
 import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 
 /**
  * Created by yzd on 16-12-15.
@@ -17,7 +22,7 @@ import rx.schedulers.Schedulers;
 
 public interface CamDelayRecordContract {
 
-    interface View extends ViewableView {
+    interface View extends ViewableView, PropertyView<CameraDevice> {
         String HANDLE_TIME_INTERVAL = "HANDLE_TIME_INTERVAL";
         String HANDLE_TIME_DURATION = "HANDLE_TIME_DURATION";
 
@@ -37,7 +42,6 @@ public interface CamDelayRecordContract {
         private long mRecordStartTime = -1;
         private long mRecordDuration = -1;
 
-
         @Override
         public void onViewAction(int action, String handle, Object extra) {
             switch (handle) {
@@ -50,19 +54,21 @@ public interface CamDelayRecordContract {
             mView.onMarkRecordInformation(mRecordMode, mRecordTime, mRecordRemainTime);
         }
 
-        public void startRecord() {
-            mSubscribe = Observable.interval(1, mRecordMode == 0 ? 60 : 20, TimeUnit.SECONDS)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(time -> {
-                        long progress = System.currentTimeMillis() - mRecordStartTime;
-                        if (progress < mRecordDuration) {
-                            mView.refreshRecordTime(progress);
-                        } else {
-                            mView.onRecordFinished();
-                        }
-                    });
-            mSubscriptions.add(mSubscribe);
+        public void startRecord(int cycle, int start, int duration) {
+            DpMsgDefine.DPTimeLapse lapse = new DpMsgDefine.DPTimeLapse();
+            lapse.timePeriod = cycle;
+            lapse.timeStart = start;
+            lapse.timeDuration = duration;
+            lapse.status = 1;
+            JFGDPMsg msg = new JFGDPMsg(DpMsgMap.ID_506_CAMERA_TIME_LAPSE_PHOTOGRAPHY, 0);
+            msg.packValue = DpUtils.pack(lapse);
+            ArrayList<JFGDPMsg> params = new ArrayList<>();
+            params.add(msg);
+            try {
+                JfgCmdInsurance.getCmd().robotSetData(mUUID, params);
+            } catch (JfgException e) {
+                e.printStackTrace();
+            }
         }
 
         public void restoreRecord() {

@@ -31,7 +31,9 @@
             android:hint="@string/SHARE_ACCOUNT"
             android:maxLength="65"
             android:inputType="textVisiblePassword"
+            android:textColor="#ffffff"
             android:textColorHint="#60ffffff"
+            android:textCursorDrawable="@drawable/search_friend_cursor_color"
             android:background="@null"
             android:textSize="18sp" />
     </RelativeLayout>

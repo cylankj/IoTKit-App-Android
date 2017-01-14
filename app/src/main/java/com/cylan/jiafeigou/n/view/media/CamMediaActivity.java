@@ -52,7 +52,7 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
     FrameLayout fLayoutCamHandleBar;
 
     private int currentIndex = -1;
-    private DpMsgDefine.AlarmMsg alarmMsg;
+    private DpMsgDefine.DPAlarm alarmMsg;
     private String uuid;
 
     @Override
@@ -113,6 +113,11 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        finishExt();
+    }
+
     private WeakReference<ShareDialogFragment> shareDialogFragmentWeakReference;
 
     private ShareDialogFragment initShareDialog() {
@@ -149,10 +154,10 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
     }
 
     private class CustomAdapter extends FragmentPagerAdapter {
-        private DpMsgDefine.AlarmMsg contents;
+        private DpMsgDefine.DPAlarm contents;
         private BigPicFragment.CallBack callBack;
 
-        public void setContents(DpMsgDefine.AlarmMsg contents) {
+        public void setContents(DpMsgDefine.DPAlarm contents) {
             this.contents = contents;
         }
 

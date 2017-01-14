@@ -88,7 +88,7 @@ public class ThreadPoolUtilsTest {
 
         // Make sure that the process was set.
         assertNotSame(-1, mLooperTid);
-        // Make sure that the onLooperPrepared() was called on activity_cloud_live_mesg_video_talk_item different thread.
+        // Make sure that the onLooperPrepared() was called on activity_cloud_live_mesg_call_out_item different thread.
 //        System.out.println(Process.myPid());
 //        System.out.println(mLooperTid);
 //        assertNotSame(Process.myTid(), mLooperTid);

@@ -9,8 +9,8 @@ import android.widget.ImageView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.misc.JConstant;
-import com.cylan.jiafeigou.n.mvp.model.MediaBean;
 import com.cylan.jiafeigou.utils.TimeUtils;
 import com.cylan.jiafeigou.utils.WonderGlideURL;
 import com.cylan.jiafeigou.utils.WonderGlideVideoThumbURL;
@@ -25,7 +25,7 @@ import java.util.List;
  */
 
 
-public class HomeWonderfulAdapter extends SuperAdapter<MediaBean> {
+public class HomeWonderfulAdapter extends SuperAdapter<DpMsgDefine.DPWonderItem> {
 
 
     private WonderfulItemClickListener deviceItemClickListener;
@@ -33,8 +33,8 @@ public class HomeWonderfulAdapter extends SuperAdapter<MediaBean> {
 
     private LoadMediaListener loadMediaListener;
 
-    public HomeWonderfulAdapter(Context context, List<MediaBean> items,
-                                IMulItemViewType<MediaBean> mulItemViewType) {
+    public HomeWonderfulAdapter(Context context, List<DpMsgDefine.DPWonderItem> items,
+                                IMulItemViewType<DpMsgDefine.DPWonderItem> mulItemViewType) {
         super(context, items, mulItemViewType);
 
     }
@@ -52,8 +52,8 @@ public class HomeWonderfulAdapter extends SuperAdapter<MediaBean> {
     }
 
     @Override
-    public void onBind(SuperViewHolder holder, int viewType, int layoutPosition, MediaBean item) {
-        if (viewType != MediaBean.TYPE_LOAD) {
+    public void onBind(SuperViewHolder holder, int viewType, int layoutPosition, DpMsgDefine.DPWonderItem item) {
+        if (viewType != DpMsgDefine.DPWonderItem.TYPE_LOAD) {
             initClickListener(holder, layoutPosition);
             handleState(holder, item);
         }
@@ -68,7 +68,7 @@ public class HomeWonderfulAdapter extends SuperAdapter<MediaBean> {
         holder.setOnLongClickListener(R.id.rLayout_wonderful_item_wonder, deviceItemLongClickListener);
     }
 
-    private void handleState(SuperViewHolder holder, MediaBean bean) {
+    private void handleState(SuperViewHolder holder, DpMsgDefine.DPWonderItem bean) {
         //时间
         holder.setText(R.id.tv_wonderful_item_date, TimeUtils.getHH_MM(bean.time * 1000));
         //来自摄像头
@@ -78,12 +78,12 @@ public class HomeWonderfulAdapter extends SuperAdapter<MediaBean> {
             holder.setText(R.id.tv_wonderful_item_device_name, bean.place);
             holder.setVisibility(R.id.tv_wonderful_item_device_name, View.VISIBLE);
         }
-        if (bean.msgType == MediaBean.TYPE_PIC) {
+        if (bean.msgType == DpMsgDefine.DPWonderItem.TYPE_PIC) {
             Glide.with(getContext()).load(new WonderGlideURL(bean))
                     .placeholder(R.drawable.wonderful_pic_place_holder)
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .into((ImageView) holder.getView(R.id.iv_wonderful_item_content));
-        } else if (bean.msgType == MediaBean.TYPE_VIDEO) {
+        } else if (bean.msgType == DpMsgDefine.DPWonderItem.TYPE_VIDEO) {
             Glide.with(getContext()).load(new WonderGlideVideoThumbURL(bean))
                     .placeholder(R.drawable.wonderful_pic_place_holder)
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
@@ -92,22 +92,22 @@ public class HomeWonderfulAdapter extends SuperAdapter<MediaBean> {
     }
 
     @Override
-    protected IMulItemViewType<MediaBean> offerMultiItemViewType() {
-        return new IMulItemViewType<MediaBean>() {
+    protected IMulItemViewType<DpMsgDefine.DPWonderItem> offerMultiItemViewType() {
+        return new IMulItemViewType<DpMsgDefine.DPWonderItem>() {
             @Override
             public int getViewTypeCount() {
                 return 3;
             }
 
             @Override
-            public int getItemViewType(int position, MediaBean mediaBean) {
+            public int getItemViewType(int position, DpMsgDefine.DPWonderItem mediaBean) {
                 return mediaBean.msgType;//0:image view  1:videoView
             }
 
             @Override
             public int getLayoutId(int viewType) {
-                return viewType == MediaBean.TYPE_PIC ?
-                        R.layout.layout_item_picture_wonderful : (viewType == MediaBean.TYPE_VIDEO ?
+                return viewType == DpMsgDefine.DPWonderItem.TYPE_PIC ?
+                        R.layout.layout_item_picture_wonderful : (viewType == DpMsgDefine.DPWonderItem.TYPE_VIDEO ?
                         R.layout.layout_item_vedio_wonderful : R.layout.layout_item_loading_wonderful);
             }
         };
@@ -122,6 +122,6 @@ public class HomeWonderfulAdapter extends SuperAdapter<MediaBean> {
     }
 
     public interface LoadMediaListener {
-        void loadMedia(MediaBean bean, ImageView imageView);
+        void loadMedia(DpMsgDefine.DPWonderItem bean, ImageView imageView);
     }
 }

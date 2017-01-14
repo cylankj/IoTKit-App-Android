@@ -7,7 +7,7 @@ import java.io.Serializable;
  * 创建时间：2016/10/8
  * 描述：
  */
-public class CloudLiveVideoTalkBean implements Serializable {
+public class CloudLiveCallInBean implements Serializable {
     public String getVideoLength() {
         return videoLength;
     }

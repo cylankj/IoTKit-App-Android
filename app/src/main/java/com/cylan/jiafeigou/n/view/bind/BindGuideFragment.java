@@ -74,7 +74,7 @@ public class BindGuideFragment extends BaseTitleFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // TODO: inflate activity_cloud_live_mesg_video_talk_item fragment view
+        // TODO: inflate activity_cloud_live_mesg_call_out_item fragment view
         View rootView = super.onCreateView(inflater, container, savedInstanceState);
         ButterKnife.bind(this, rootView);
         return rootView;

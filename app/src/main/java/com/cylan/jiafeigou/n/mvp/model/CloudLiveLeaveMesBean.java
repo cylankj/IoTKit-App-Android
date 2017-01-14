@@ -41,9 +41,18 @@ public class CloudLiveLeaveMesBean implements Serializable {
         this.leveMesgTime = leveMesgTime;
     }
 
+    public String getUserIcon() {
+        return userIcon;
+    }
+
+    public void setUserIcon(String userIcon) {
+        this.userIcon = userIcon;
+    }
+
     public String leaveMesgUrl;
     public boolean isRead;
     public String leaveMesgLength;
     public String leveMesgTime;
+    public String userIcon;
 
 }

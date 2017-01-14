@@ -80,7 +80,7 @@ public class DelayRecordGuideFragment extends BaseFragment {
             initDeviceEnableDialog();
             mEnableDeviceDialog.get().show(getChildFragmentManager(), BaseDialog.class.getName());
         } else {
-            onViewActionToActivity(JFGView.VIEW_ACTION_OK, DelayRecordContract.View.VIEW_HANDLER_GUIDE_START_NOW, null);
+            onViewActionToActivity(JFGView.VIEW_ACTION_OK, DelayRecordContract.View.VIEW_HANDLER_TO_MAIN_VIEW, mUUID);
         }
     }
 

@@ -58,6 +58,7 @@ public abstract class BaseActivity<P extends JFGPresenter> extends AppCompatActi
         }
         if (mPresenter != null) {
             mPresenter.onSetViewUUID(mUUID);
+            mPresenter.onViewAttached(this);
         }
         initViewAndListener();
     }
@@ -75,7 +76,7 @@ public abstract class BaseActivity<P extends JFGPresenter> extends AppCompatActi
     protected void onStart() {
         super.onStart();
         if (mPresenter != null) {
-            mPresenter.onViewAttached(this);
+
             mPresenter.onStart();
         }
     }
@@ -93,13 +94,20 @@ public abstract class BaseActivity<P extends JFGPresenter> extends AppCompatActi
         super.onStop();
         if (mPresenter != null) {
             mPresenter.onStop();
-            mPresenter.onViewDetached();
         }
         if (mAlertDialog != null && mAlertDialog.isShowing()) {
             mAlertDialog.dismiss();
             mAlertDialog = null;
         }
         mToast = null;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mPresenter != null) {
+            mPresenter.onViewDetached();
+        }
     }
 
     protected abstract P onCreatePresenter();

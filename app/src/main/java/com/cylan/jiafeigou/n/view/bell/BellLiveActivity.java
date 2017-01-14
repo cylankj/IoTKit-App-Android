@@ -24,6 +24,7 @@ import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.contract.bell.BellLiveContract;
 import com.cylan.jiafeigou.n.mvp.impl.bell.BellLivePresenterImpl;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.bell.DragLayout;
 import com.cylan.jiafeigou.widget.video.VideoViewFactory;
@@ -67,7 +68,6 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
 
     private SurfaceView mSurfaceView;
 
-    private Intent mSaveIntent;
 
     private String mNewCallHandle;
 
@@ -81,6 +81,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
         ViewUtils.updateViewHeight(fLayoutBellLiveHolder, 0.75f);
         ViewUtils.setViewMarginStatusBar(tvBellLiveFlow);
         dLayoutBellHotSeat.setOnDragReleaseListener(this);
+        newCall();
     }
 
     @Override
@@ -91,14 +92,11 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        mSaveIntent = getIntent();
         setIntent(intent);
+        newCall();
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        //大大的蛋疼
+    private void newCall() {
         String extra = getIntent().getStringExtra(JConstant.VIEW_CALL_WAY_EXTRA);
         long time = getIntent().getLongExtra(JConstant.VIEW_CALL_WAY_TIME, System.currentTimeMillis());
         CallablePresenter.Caller caller = new CallablePresenter.Caller();
@@ -225,7 +223,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
     @Override
     public void onResolution(JFGMsgVideoResolution resolution) throws JfgException {
         initVideoView();
-        JfgCmdInsurance.getCmd().setRenderRemoteView(mSurfaceView);
+        JfgCmdInsurance.getCmd().enableRenderRemoteView(true,mSurfaceView);
         mBellLiveVideoPicture.setVisibility(View.GONE);
     }
 
@@ -260,6 +258,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
         dLayoutBellHotSeat.setVisibility(View.GONE);
         fLayoutBellAfterLive.setVisibility(View.VISIBLE);
     }
+
 
     @Override
     public void onSpeaker(boolean on) {
@@ -307,12 +306,13 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
 
     @Override
     public void onCallAnswerInOther() {
-        showToast("通话已在其他端处理");
+        finishExt();
+        ToastUtil.showNegativeToast(getString(R.string.Tips_Call_Answer_In_Other));
     }
 
     @Override
     public void onNewCallWhenInLive(String person) {
-        mNewCallHandle = showAlert("有新朋友来访", "有新的朋友:" + person + "来访,是否接听", "接听", "忽略");
+        mNewCallHandle = showAlert(getString(R.string.Tips_New_Call_Coming), getString(R.string.Tips_New_Call_Come_Listen, person), getString(R.string.listen), getString(R.string.ignore));
     }
 
     @Override
@@ -323,7 +323,6 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
                     mPresenter.pickup();
                     break;
                 case VIEW_ACTION_CANCEL:
-                    setIntent(mSaveIntent);
                     break;
             }
         }

@@ -52,9 +52,15 @@
                 android:id="@+id/fragment_delay_record_video_preview"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:src="@drawable/delay_record_overlay"/>
+
+
+            <View
+                android:id="@+id/fragment_delay_record_video_overlay"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:alpha="0.6"
                 android:background="#000000"/>
-
 
             <TextView
                 android:id="@+id/fragment_delay_record_play"

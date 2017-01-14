@@ -101,10 +101,6 @@ public class DpAssembler implements IParser {
                         wrap.baseDpDevice.alias = (String) jfgAttributeUpdate.o;
                         flatMsg.cache(JCache.getAccountCache().getAccount(),
                                 wrap.baseDpDevice);
-
-                        DpMsgDefine.JFGDeviceWrap jfgDevice = flatMsg.getJFGDevice(GlobalDataProxy.getInstance().getJfgAccount().getAccount(), jfgAttributeUpdate.uuid);
-                        jfgDevice.device.alias = (String) jfgAttributeUpdate.o;
-                        flatMsg.cacheJFGDevice(GlobalDataProxy.getInstance().getJfgAccount().getAccount(), jfgDevice.device);
                         AppLogger.i("setDevice alias: " + jfgAttributeUpdate.o);
                         return null;
                     }
@@ -142,8 +138,7 @@ public class DpAssembler implements IParser {
                     //拿出对应uuid的所有属性
                     DpMsgDefine.DpWrap deviceDetailsCache = flatMsg.getDevice(JCache.getAccountCache().getAccount(),
                             arrayListStringPair.second);
-                    DpMsgDefine.JFGDeviceWrap jfgDevice = flatMsg.getJFGDevice(GlobalDataProxy.getInstance().getJfgAccount().getAccount(), arrayListStringPair.second);
-                    if (deviceDetailsCache == null || deviceDetailsCache.baseDpMsgList == null || jfgDevice == null || jfgDevice.baseDpMsgList == null) {
+                    if (deviceDetailsCache == null || deviceDetailsCache.baseDpMsgList == null ) {
                         AppLogger.e("deviceDetailsCache is null");
                         return null;
                     }
@@ -234,14 +229,17 @@ public class DpAssembler implements IParser {
 //        flatMsg.cacheJFGDevice(GlobalDataProxy.getInstance().getJfgAccount().getAccount(), jfgDevice);
     }
 
+    private void getHistoryData(String uuid) {
+        RxEvent.JFGHistoryVideoReq req = new RxEvent.JFGHistoryVideoReq();
+        req.uuid = uuid;
+        RxBus.getCacheInstance().post(req);
+    }
+
     private Observable<JFGAccount> monitorJFGAccount() {
         return RxBus.getCacheInstance().toObservableSticky(JFGAccount.class)
-                .map(new Func1<JFGAccount, JFGAccount>() {
-                    @Override
-                    public JFGAccount call(JFGAccount account) {
-                        AppLogger.i("JFGAccount.class");
-                        return account;
-                    }
+                .map((JFGAccount account) -> {
+                    AppLogger.i("JFGAccount.class");
+                    return account;
                 });
     }
 
@@ -273,6 +271,7 @@ public class DpAssembler implements IParser {
                         GlobalDataProxy.getInstance().cacheDevice(list.get(i).uuid, list.get(i));
                         getUnreadMsg(list.get(i));
                         assembleBase(list.get(i));
+                        getHistoryData(list.get(i).uuid);
                         final int pid = list.get(i).pid;
                         BaseParam baseParam = merger(pid);
                         long seq = 0;

@@ -1,19 +1,19 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/fLayout_home_page_list_header_container"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+             android:id="@+id/fLayout_home_page_list_header_container"
+             android:layout_width="match_parent"
+             android:layout_height="wrap_content">
 
     <ImageView
         android:id="@+id/img_home_page_header_bg"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/bg_home_title_daytime" />
+        android:background="@drawable/bg_home_title_daytime"/>
 
     <com.cylan.jiafeigou.widget.wave.SuperWaveView
         android:id="@+id/vWaveAnimation"
         android:layout_width="match_parent"
         android:layout_height="100dp"
-        android:layout_gravity="bottom" />
+        android:layout_gravity="bottom"/>
 
     <LinearLayout
         android:id="@+id/lLayout_home_greet"
@@ -33,9 +33,9 @@
             android:lines="1"
             android:maxLength="8"
             android:singleLine="true"
-            android:text="Hi xxx"
+            android:text="Hi"
             android:textColor="@android:color/white"
-            android:textSize="26sp" />
+            android:textSize="26sp"/>
 
         <TextView
             android:id="@+id/tvHeaderPoet"
@@ -45,7 +45,7 @@
             android:gravity="center"
             android:text="在这里开始美好的一天"
             android:textColor="@android:color/white"
-            android:textSize="16sp" />
+            android:textSize="16sp"/>
     </LinearLayout>
 </FrameLayout>
 

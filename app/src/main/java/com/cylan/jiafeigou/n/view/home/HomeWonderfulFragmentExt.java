@@ -34,7 +34,6 @@ import com.cylan.jiafeigou.misc.OnActivityReenterListener;
 import com.cylan.jiafeigou.misc.SharedElementCallBackListener;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeWonderfulContract;
 import com.cylan.jiafeigou.n.mvp.impl.home.HomeWonderfulPresenterImpl;
-import com.cylan.jiafeigou.n.mvp.model.MediaBean;
 import com.cylan.jiafeigou.n.view.activity.MediaActivity;
 import com.cylan.jiafeigou.n.view.adapter.HomeWonderfulAdapter;
 import com.cylan.jiafeigou.n.view.record.DelayRecordActivity;
@@ -62,7 +61,7 @@ import butterknife.BindView;
 import butterknife.OnClick;
 
 import static com.cylan.jiafeigou.n.mvp.contract.record.DelayRecordContract.View.VIEW_LAUNCH_WAY_WONDERFUL;
-
+import static com.cylan.jiafeigou.dp.DpMsgDefine.DPWonderItem;
 public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract.Presenter> implements
         HomeWonderfulContract.View, SwipeRefreshLayout.OnRefreshListener,
         HomeWonderfulAdapter.WonderfulItemClickListener,
@@ -244,7 +243,7 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
                 //同步更新时间轴的数据
                 int position = mLinearLayoutManager.findFirstCompletelyVisibleItemPosition();
                 if (newState == RecyclerView.SCROLL_STATE_IDLE && position != -1) {
-                    MediaBean item = homeWonderAdapter.getItem(position);
+                    DPWonderItem item = homeWonderAdapter.getItem(position);
                     getWheelView().updateDay(item.time * 1000L);//蛋疼
                     tvDateItemHeadWonder.setText(TimeUtils.getDayString(item.time * 1000L));
 
@@ -267,7 +266,7 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
 
     @UiThread
     @Override
-    public void onMediaListRsp(List<MediaBean> resultList) {
+    public void onMediaListRsp(List<DPWonderItem> resultList) {
         endlessLoading = true;
         srLayoutMainContentHolder.setRefreshing(false);
         if (resultList == null || resultList.size() == 0) {
@@ -283,13 +282,13 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
 
     private void handleFootView() {
         final int itemCount = homeWonderAdapter.getItemCount();
-        if (itemCount > 0 && homeWonderAdapter.getItem(itemCount - 1).msgType == MediaBean.TYPE_LOAD) {
+        if (itemCount > 0 && homeWonderAdapter.getItem(itemCount - 1).msgType == DPWonderItem.TYPE_LOAD) {
             homeWonderAdapter.remove(itemCount - 1);
         }
     }
 
     private void addFootView() {
-        homeWonderAdapter.add(MediaBean.getEmptyLoadTypeBean());
+        homeWonderAdapter.add(DPWonderItem.getEmptyLoadTypeBean());
     }
 
     @Override
@@ -367,13 +366,13 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
 
     @OnClick(R.id.tv_wonderful_item_share)
     public void shareWonderful() {//分享官方演示视频
-        MediaBean bean = MediaBean.getGuideBean();
+        DPWonderItem bean = DPWonderItem.getGuideBean();
         onShareWonderfulContent(bean);
     }
 
     @OnClick(R.id.iv_wonderful_item_content)
     public void viewWonderful(View view) {
-        MediaBean bean = MediaBean.getGuideBean();
+        DPWonderItem bean = DPWonderItem.getGuideBean();
         ArrayList<Parcelable> list = new ArrayList<>();
         list.add(bean);
         onEnterWonderfulContent(list, 0, view);
@@ -430,7 +429,7 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
 
     }
 
-    private void onShareWonderfulContent(MediaBean bean) {
+    private void onShareWonderfulContent(DPWonderItem bean) {
         boolean installed = false;
         installed = mPresenter.checkWechat();
         if (!installed) {
@@ -444,7 +443,7 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
         fragment.show(getActivity().getSupportFragmentManager(), "ShareDialogFragment");
     }
 
-    private void onDeleteWonderfulContent(MediaBean bean, int position) {
+    private void onDeleteWonderfulContent(DPWonderItem bean, int position) {
         SimpleDialogFragment deleteF = initDeleteDialog();
         deleteF.setValue(position);
         deleteF.setArguments(new Bundle());
@@ -464,7 +463,7 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
                 onEnterWonderfulContent(list, position, v);
                 break;
             case R.id.tv_wonderful_item_share:
-                MediaBean bean = homeWonderAdapter.getItem(position);
+                DPWonderItem bean = homeWonderAdapter.getItem(position);
                 onShareWonderfulContent(bean);
                 break;
             case R.id.tv_wonderful_item_delete:
@@ -587,7 +586,7 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
             int currentPosition = mTmpReenterState.getInt(JConstant.EXTRA_CURRENT_ALBUM_POSITION);
 
 //            if (startingPosition != currentPosition) {
-            // If startingPosition != currentPosition the user must have swiped to activity_cloud_live_mesg_video_talk_item
+            // If startingPosition != currentPosition the user must have swiped to activity_cloud_live_mesg_call_out_item
             // different page in the DetailsActivity. We must setDevice the shared element
             // so that the correct one falls into place.
             String newTransitionName = currentPosition + JConstant.KEY_SHARED_ELEMENT_TRANSITION_NAME_SUFFIX;
@@ -671,8 +670,8 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
 
     @Override
     public void onTimeLineChanged(long newTime) {
-        List<MediaBean> list = homeWonderAdapter.getList();
-        for (MediaBean bean : list) {
+        List<DPWonderItem> list = homeWonderAdapter.getList();
+        for (DPWonderItem bean : list) {
             if (bean.time == newTime / 1000) {
                 int index = list.indexOf(bean);
                 int position = mLinearLayoutManager.findFirstVisibleItemPosition();

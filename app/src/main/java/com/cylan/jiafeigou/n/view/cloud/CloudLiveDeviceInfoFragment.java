@@ -19,8 +19,6 @@ import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.mvp.contract.cloud.CloudLiveDeviceInfoContract;
 import com.cylan.jiafeigou.n.mvp.impl.cloud.CloudLiveDeviceInfoPresenterImp;
-import com.cylan.jiafeigou.n.mvp.model.BeanCloudInfo;
-import com.cylan.jiafeigou.n.mvp.model.BeanMagInfo;
 import com.cylan.jiafeigou.widget.dialog.EditFragmentDialog;
 
 import java.text.DecimalFormat;
@@ -29,7 +27,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-import static com.cylan.jiafeigou.misc.JConstant.KEY_DEVICE_ITEM_BUNDLE;
 import static com.cylan.jiafeigou.widget.dialog.EditFragmentDialog.KEY_LEFT_CONTENT;
 import static com.cylan.jiafeigou.widget.dialog.EditFragmentDialog.KEY_RIGHT_CONTENT;
 import static com.cylan.jiafeigou.widget.dialog.EditFragmentDialog.KEY_TITLE;
@@ -119,7 +116,7 @@ public class CloudLiveDeviceInfoFragment extends Fragment implements CloudLiveDe
             tvInformationFacilityName.setText(TextUtils.isEmpty(device.alias)? device.uuid:device.alias);
             tvDeviceCid.setText(device.uuid);
         }
-        DpMsgDefine.SdStatus status = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_204_SDCARD_STORAGE, null);
+        DpMsgDefine.DPSdStatus status = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_204_SDCARD_STORAGE, null);
         if (status == null || !status.hasSdcard) {
             tvDeviceStorage.setText(getString(R.string.SD_NO));
         } else {

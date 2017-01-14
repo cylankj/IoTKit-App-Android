@@ -124,6 +124,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
         super.onResume();
         initWaveAnimation();
         onTimeTick(JFGRules.getTimeRule());
+        homePageListAdapter.notifyDataSetChanged();
         if (basePresenter != null) {
             basePresenter.fetchGreet();
         }
@@ -152,6 +153,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         //添加Handler
+        homePageListAdapter.clear();
         appbar.addOnOffsetChangedListener(this);
         srLayoutMainContentHolder.setOnRefreshListener(this);
         srLayoutMainContentHolder.setNestedScrollingEnabled(false);

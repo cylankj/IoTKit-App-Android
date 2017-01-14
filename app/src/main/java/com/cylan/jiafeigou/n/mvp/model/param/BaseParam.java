@@ -24,7 +24,7 @@ public abstract class BaseParam {
 //
 //    public String mac;
 //
-//    public DpMsgDefine.MsgNet net;
+//    public DpMsgDefine.DPNet net;
 //
 //    public String version = "";
 //
@@ -33,7 +33,7 @@ public abstract class BaseParam {
 //    public boolean charging;
 //    public int battery;
 //
-//    public DpMsgDefine.MsgTimeZone timeZone;
+//    public DpMsgDefine.DPTimeZone timeZone;
 //
 //    public boolean micSwitch;
 //    public boolean speakerSwitch;

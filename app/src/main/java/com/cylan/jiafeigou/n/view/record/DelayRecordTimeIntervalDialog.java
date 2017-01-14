@@ -40,9 +40,9 @@ public class DelayRecordTimeIntervalDialog extends BaseDialog<Integer> {
     }
 
     private void initView() {
-        if (value == 0) {
+        if (value == 60) {
             mOption60S.setChecked(true);
-        } else if (value == 1) {
+        } else if (value == 20) {
             mOption20S.setChecked(true);
         }
     }

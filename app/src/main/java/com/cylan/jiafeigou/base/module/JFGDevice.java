@@ -9,13 +9,11 @@ import com.cylan.annotation.DPProperty;
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
-import com.cylan.jiafeigou.dp.DpMsgMap;
+import com.cylan.jiafeigou.support.log.AppLogger;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -23,7 +21,6 @@ import static com.cylan.jiafeigou.dp.DpMsgMap.ID_202_MAC;
 import static com.cylan.jiafeigou.dp.DpMsgMap.ID_205_CHARGING;
 import static com.cylan.jiafeigou.dp.DpMsgMap.ID_207_DEVICE_VERSION;
 import static com.cylan.jiafeigou.dp.DpMsgMap.ID_208_DEVICE_SYS_VERSION;
-import static com.cylan.jiafeigou.dp.DpMsgMap.ID_401_BELL_CALL_STATE;
 import static com.cylan.jiafeigou.dp.DpUtils.unpackData;
 
 /*
@@ -34,7 +31,7 @@ import static com.cylan.jiafeigou.dp.DpUtils.unpackData;
  *  @创建时间:  2017/1/8 11:03
  *  @描述：    TODO
  */
-public abstract class JFGDevice implements Parcelable {
+public abstract class JFGDevice extends DataPoint<JFGDevice> implements Parcelable {
     public String uuid;
     public String sn;
     public String alias;
@@ -50,99 +47,90 @@ public abstract class JFGDevice implements Parcelable {
     @DPProperty(msgId = ID_205_CHARGING)
     public DpMsgDefine.DPPrimary<Boolean> charging;//DpMsgMap.CHARGING_205
 
-    private LongSparseArray<Field> mDPPropertyArray;
 
-    private static List<Long> mSetTypeList = new ArrayList<>();
-
-    static {
-        mSetTypeList.add((long) ID_401_BELL_CALL_STATE);
+    JFGDevice() {
     }
 
-    public JFGDevice() {
-    }
 
-    private Field getFieldByMsgId(long msgId) {
-        if (mDPPropertyArray == null) {
-            synchronized (this) {
-                if (mDPPropertyArray == null) {
-                    mDPPropertyArray = new LongSparseArray<>();
-                    Field[] fields = getClass().getFields();
-                    if (fields != null) {
-                        for (Field field : fields) {
-                            DPProperty dpProperty = field.getAnnotation(DPProperty.class);
-                            if (dpProperty == null) continue;
-                            mDPPropertyArray.put(dpProperty.msgId(), field);
-                        }
-                    }
+    /**
+     * @param init true:如果字段不为空,使用字段原来的version,false:使用0作为version
+     */
+    public final ArrayList<JFGDPMsg> getQueryParameters(boolean init) {
+        ArrayList<JFGDPMsg> result = new ArrayList<>();
+        LongSparseArray<Field> properties = getProperties();
+        try {
+            Field field;
+            DataPoint value;
+            long version = 0;
+            int msgId;
+            for (int i = 0; i < properties.size(); i++) {
+                msgId = (int) properties.keyAt(i);
+                if (msgId >= MSG_ID_VIRTUAL_START && msgId <= MSG_ID_VIRTUAL_END)
+                    continue;//说明当前是虚拟ID,则跳过
+                if (init) {
+                    field = properties.valueAt(i);
+                    value = (DataPoint) field.get(this);
+                    version = value != null ? value.version : version;
                 }
+                result.add(new JFGDPMsg((int) properties.keyAt(i), version));
             }
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
         }
-        return mDPPropertyArray.get(msgId);
+        return result;
     }
 
-    public final boolean setValue(JFGDPMsg msg) {
+
+    final boolean setValue(JFGDPMsg msg) {
         return setValue(msg, -1);
     }
 
-    public final boolean setValue(JFGDPMsg msg, long seq) {
+    final boolean setValue(JFGDPMsg msg, long seq) {
         try {
-            Field field = getFieldByMsgId(msg.id);
+            Field field = getProperties().get(msg.id);
             if (field == null) return false;
-            DPProperty dpProperty = field.getAnnotation(DPProperty.class);
-            DataPoint value;
-            Class<?> type;
-            if (dpProperty.isSetType()) {
-                Set setValue = (Set) field.get(this);
-                if (setValue == null) setValue = new TreeSet();
+
+            DataPoint value = (DataPoint) field.get(this);
+            Class<?> type = field.getType();
+            if (DpMsgDefine.DPSet.class.isAssignableFrom(type)) {//setType
+                DpMsgDefine.DPSet<DataPoint> setValue = (DpMsgDefine.DPSet<DataPoint>) value;
+                if (setValue == null) setValue = new DpMsgDefine.DPSet<>();
+                if (setValue.value == null) setValue.value = new TreeSet<>();
                 field.set(this, setValue);
+                Class<?> paramType = (Class<?>) ((ParameterizedType) field.getGenericType()).getActualTypeArguments()[0];
+                value = (DataPoint) unpackData(msg.packValue, paramType);
+                value.version = msg.version;
+                value.id = msg.id;
+                value.seq = seq;
+                boolean add = setValue.value.add(value);
+                DataPoint first = setValue.value.first();
+                setValue.version = first.version;
+                setValue.seq = first.seq;
+                setValue.id = first.id;
+                return add;
+            }
+
+            if (value != null && value.version > msg.version) return false;//数据已是最新的,无需更新了
+
+            if ((DpMsgDefine.DPPrimary.class.isAssignableFrom(type))) {
                 type = (Class<?>) ((ParameterizedType) field.getGenericType()).getActualTypeArguments()[0];
-                if (DataPoint.class.isAssignableFrom(type) && !(DpMsgDefine.DPPrimary.class.isAssignableFrom(type))) {
-                    value = (DataPoint) unpackData(msg.packValue, type);
-                    value.version = msg.version;
-                    value.id = msg.id;
-                    value.seq = seq;
-                    return setValue.add(value);
-                }
-                //下面这段代码测试不通过,但基本不会走到这里
-                type = (Class<?>) ((ParameterizedType) type.getGenericSuperclass()).getActualTypeArguments()[0];
                 DpMsgDefine.DPPrimary primary = new DpMsgDefine.DPPrimary();
+                primary.value = unpackData(msg.packValue, type);
                 primary.version = msg.version;
                 primary.id = msg.id;
-                primary.value = unpackData(msg.packValue, type);
-                return setValue.add(primary);
-
-            } else {//不是SetType
-                value = (DataPoint) field.get(this);
-                if (value == null || value.version < msg.version) {//数据需要更新了
-                    type = field.getType();
-                    if (DataPoint.class.isAssignableFrom(type) && !(DpMsgDefine.DPPrimary.class.isAssignableFrom(type))) {
-                        value = (DataPoint) unpackData(msg.packValue, type);
-                        value.version = msg.version;
-                        value.id = msg.id;
-                        value.seq = seq;
-                        field.set(this, value);
-                    } else {
-                        DpMsgDefine.DPPrimary primary = new DpMsgDefine.DPPrimary();
-                        type = (Class<?>) ((ParameterizedType) field.getGenericType()).getActualTypeArguments()[0];
-                        primary.value = unpackData(msg.packValue, type);
-                        primary.version = msg.version;
-                        primary.id = msg.id;
-                        primary.seq = seq;
-                        field.set(this, primary);
-                    }
-                    return true;
-                }
-                //数据不需要更新
-                return false;
+                primary.seq = seq;
+                field.set(this, primary);
+            } else {
+                value = (DataPoint) unpackData(msg.packValue, type);
+                value.version = msg.version;
+                value.id = msg.id;
+                value.seq = seq;
+                field.set(this, value);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            AppLogger.e("给JFGDevice设置属性的过程发生了错误:" + e.getMessage());
         }
-        return false;
-    }
-
-    public static boolean isSetType(long msgId) {
-        return mSetTypeList.contains(msgId);
+        return true;
     }
 
     public final <T> T getValue(long msgId) {
@@ -151,15 +139,23 @@ public abstract class JFGDevice implements Parcelable {
 
     public final <T> T getValue(long msgId, long seq) {
         try {
-            Field field = getFieldByMsgId(msgId);
+            Field field = getProperties().get(msgId);
             Object value = field.get(this);
             if (value == null || seq == -1) return (T) value;
 
-            if (isSetType(msgId)) {
-                Set<DataPoint> result = new TreeSet<>();
-                Set<DataPoint> temp = (Set<DataPoint>) value;
+            if (value instanceof DpMsgDefine.DPSet) {
+                TreeSet<DataPoint> origin = new TreeSet<>();
+                Set<DataPoint> temp = getValue(value);
                 for (DataPoint point : temp) {
-                    if (point.seq == seq) result.add(point);
+                    if (point.seq == seq) origin.add(point);
+                }
+                DpMsgDefine.DPSet<DataPoint> result = new DpMsgDefine.DPSet<>();
+                result.value = origin;
+                if (origin.size() > 0) {
+                    DataPoint first = origin.first();
+                    result.seq = first.seq;
+                    result.id = first.id;
+                    result.version = first.version;
                 }
                 return (T) result;
             }
@@ -170,31 +166,34 @@ public abstract class JFGDevice implements Parcelable {
         return null;
     }
 
+    public static final <T> T getValue(Object value) {
+        if (value == null) return null;
 
-    public final JFGDevice setDevice(com.cylan.entity.jniCall.JFGDevice device) {
+        if (value instanceof DpMsgDefine.DPSet) {
+            return (T) ((DpMsgDefine.DPSet<DataPoint>) value).value;
+        }
+
+        if (value instanceof DpMsgDefine.DPPrimary) {
+            return (T) ((DpMsgDefine.DPPrimary) value).value;
+        }
+
+        return (T) value;
+    }
+
+
+    final JFGDevice setDevice(com.cylan.entity.jniCall.JFGDevice device) {
         this.alias = device.alias;
         this.uuid = device.uuid;
         this.sn = device.sn;
         this.shareAccount = device.shareAccount;
         this.pid = device.pid;
+
+        //因为JFGDevice也被当做DataPoint对待的,所以把JFGDevice的pid当做他的id,
+        // 把最后对他的修改当做他的version,seq暂时无用
+        this.id = device.pid;
         return this;
     }
 
-    /**
-     * 一种设备独有的属性
-     */
-    public ArrayList<JFGDPMsg> queryParameters(Map<Integer, Long> mapVersion) {
-        ArrayList<JFGDPMsg> baseList = new ArrayList<>();
-        baseList.add(new JFGDPMsg(DpMsgMap.NAME_2_ID_MAP.get(DpMsgMap.MAC_202), getVersion(mapVersion, 202)));
-        baseList.add(new JFGDPMsg(DpMsgMap.NAME_2_ID_MAP.get(DpMsgMap.DEVICE_VERSION_207), getVersion(mapVersion, 207)));
-        baseList.add(new JFGDPMsg(DpMsgMap.NAME_2_ID_MAP.get(DpMsgMap.DEVICE_SYS_VERSION_208), getVersion(mapVersion, 208)));
-        baseList.add(new JFGDPMsg(DpMsgMap.NAME_2_ID_MAP.get(DpMsgMap.CHARGING_205), getVersion(mapVersion, 205)));
-        return baseList;
-    }
-
-    protected long getVersion(Map<Integer, Long> map, int msgId) {
-        return map != null ? (map.containsKey(msgId) ? map.get(msgId) : 0L) : 0L;
-    }
 
     @Override
     public boolean equals(Object o) {
@@ -204,7 +203,6 @@ public abstract class JFGDevice implements Parcelable {
             return false;
         }
     }
-
 
     @Override
     public int describeContents() {
@@ -220,7 +218,7 @@ public abstract class JFGDevice implements Parcelable {
         dest.writeInt(this.pid);
     }
 
-    protected JFGDevice(Parcel in) {
+    JFGDevice(Parcel in) {
         this.uuid = in.readString();
         this.sn = in.readString();
         this.alias = in.readString();

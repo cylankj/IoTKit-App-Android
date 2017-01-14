@@ -10,17 +10,14 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.cylan.entity.jniCall.JFGDevice;
-import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
-import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
 import com.cylan.jiafeigou.n.view.cam.CamMessageListFragment;
@@ -112,10 +109,10 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
 
     @Override
     public void onBackPressed() {
-        if (checkExtraChildFragment()) {
-            return;
-        } else if (checkExtraFragment())
-            return;
+//        if (checkExtraChildFragment()) {
+//            return;
+//        } else if (checkExtraFragment())
+//            return;
         if (this.getResources().getConfiguration().orientation
                 == Configuration.ORIENTATION_LANDSCAPE) {
             ViewUtils.setRequestedOrientation(this,
@@ -161,13 +158,13 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
 
         @Override
         public void onPageSelected(int position) {
-            if (position == 1) {
-                try {
-                    GlobalDataProxy.getInstance().markAsRead(uuid, DpMsgMap.ID_505_CAMERA_ALARM_MSG);
-                } catch (JfgException e) {
-                    AppLogger.e("err: " + e.getLocalizedMessage());
-                }
-            }
+//            if (position == 1) {
+//                try {
+////                    GlobalDataProxy.getInstance().markAsRead(uuid, DpMsgMap.ID_505_CAMERA_ALARM_MSG);
+//                } catch (JfgException e) {
+//                    AppLogger.e("err: " + e.getLocalizedMessage());
+//                }
+//            }
         }
 
         @Override

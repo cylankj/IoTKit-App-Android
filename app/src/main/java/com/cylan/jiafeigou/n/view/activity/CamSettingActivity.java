@@ -325,7 +325,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
     public void onInfoUpdate(BaseValue value) {
         int id = value == null ? 0 : (int) value.getId();
         if (id == DpMsgMap.ID_201_NET) {
-            DpMsgDefine.MsgNet net = MiscUtils.cast(value.getValue(), null);
+            DpMsgDefine.DPNet net = MiscUtils.cast(value.getValue(), null);
             svSettingDeviceWifi.setTvSubTitle(net != null && !TextUtils.isEmpty(net.ssid) ? net.ssid : getString(R.string.OFF_LINE));
         }
         if (id == DpMsgMap.ID_217_DEVICE_MOBILE_NET_PRIORITY) {

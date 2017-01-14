@@ -31,4 +31,12 @@ public interface JFGSourceManager {
     <T> T getValue(String uuid, long msgId);
 
     <T> T getValue(String uuid, long msgId, long seq);
+
+    List<JFGDevice> getJFGDeviceByPid(int... pids);
+
+    List<String> getJFGDeviceUUIDByPid(int... pids);
+
+    void syncJFGDeviceProperty(String uuid);
+
+    void syncAllJFGDeviceProperty();
 }

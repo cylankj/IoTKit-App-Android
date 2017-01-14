@@ -1,13 +1,17 @@
 package com.cylan.jiafeigou.n.view.cloud;
 
+import android.Manifest;
 import android.content.Context;
-import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.PixelFormat;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.SystemClock;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,13 +31,17 @@ import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.contract.cloud.CloudLiveCallContract;
 import com.cylan.jiafeigou.n.mvp.impl.cloud.CloudLiveCallPresenterImp;
+import com.cylan.jiafeigou.n.mvp.model.CloudLiveBaseBean;
+import com.cylan.jiafeigou.n.mvp.model.CloudLiveBaseDbBean;
+import com.cylan.jiafeigou.n.mvp.model.CloudLiveCallInBean;
+import com.cylan.jiafeigou.n.mvp.model.CloudLiveCallOutBean;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.support.softkeyboard.util.ViewUtil;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
-import com.cylan.jiafeigou.widget.live.ILiveControl;
 import com.cylan.jiafeigou.widget.video.VideoViewFactory;
+
+import java.io.Serializable;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -75,7 +83,8 @@ public class CloudLiveCallActivity extends AppCompatActivity implements CloudLiv
     private SurfaceView mRenderSurfaceView;
     private SurfaceView mLocalSurfaceView;
     private String uuid;
-    private boolean callInOrOut = false;
+    private boolean isCallIn = false;
+    private static CloudMesgBackListener callBack;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -83,7 +92,7 @@ public class CloudLiveCallActivity extends AppCompatActivity implements CloudLiv
         setContentView(R.layout.fragment_cloud_live_videochat_connect);
         ButterKnife.bind(this);
         this.uuid = getIntent().getStringExtra(JConstant.KEY_DEVICE_ITEM_UUID);
-        this.callInOrOut = getIntent().getBooleanExtra("call_in_or_out", false);
+        this.isCallIn = getIntent().getBooleanExtra("call_in_or_out", false);
         initPresenter();
     }
 
@@ -96,18 +105,19 @@ public class CloudLiveCallActivity extends AppCompatActivity implements CloudLiv
         super.onStart();
         if (presenter != null) presenter.start();
         initView();
-        if (!callInOrOut){
-            presenter.onCloudCallOut();
+        if (!isCallIn){
+            presenter.onCloudCallConnettion();
         }
     }
 
     private void initView() {
-        if (callInOrOut) {
+        if (isCallIn) {
             rlCallInContainer.setVisibility(View.VISIBLE);
             rootFlVideoContainer.setVisibility(View.GONE);
         } else {
             rlCallInContainer.setVisibility(View.GONE);
             rootFlVideoContainer.setVisibility(View.VISIBLE);
+            presenter.countTime();
         }
     }
 
@@ -115,17 +125,78 @@ public class CloudLiveCallActivity extends AppCompatActivity implements CloudLiv
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.tv_ignore_call:
-                finish();
+                handlerCallingReuslt(JConstant.CLOUD_IN_CONNECT_FAILED);
                 break;
             case R.id.tv_accept_call:
                 rlCallInContainer.setVisibility(View.GONE);
                 rootFlVideoContainer.setVisibility(View.VISIBLE);
-                presenter.onCloudCallOut();
+                presenter.onCloudCallConnettion();
                 break;
             case R.id.iv_hang_up:
-                finish();
+                presenter.stopPlayVideo();
+                handlerHangUpResultData();
                 break;
         }
+    }
+
+    /**
+     * 各种点击挂断处理
+     */
+    private void handlerHangUpResultData() {
+        if (presenter.getIsConnectOk()){
+            if (isCallIn){
+                // 呼入连接成功挂断
+                handlerCallingReuslt(JConstant.CLOUD_IN_CONNECT_OK);
+            }else {
+                // 呼出连接成功挂断
+                handlerCallingReuslt(JConstant.CLOUD_OUT_CONNECT_OK);
+            }
+        }else {
+            if (isCallIn){
+                // 呼入连接失败挂断
+                handlerCallingReuslt(JConstant.CLOUD_IN_CONNECT_FAILED);
+            }else {
+                // 呼出连接失败挂断
+                handlerCallingReuslt(JConstant.CLOUD_OUT_CONNECT_FAILED);
+            }
+        }
+    }
+
+    /**
+     * 生成保存的消息bean
+     * @param type
+     * @param videoLength
+     * @param hasConnet
+     * @return
+     */
+    private CloudLiveBaseBean createCloudBackBean(int type, String videoLength, boolean hasConnet) {
+        CloudLiveBaseBean newBean = new CloudLiveBaseBean();
+        newBean.setType(type);
+        newBean.setUserIcon(presenter.getUserIcon());
+        //添加到数据库
+        CloudLiveBaseDbBean outDbBean = new CloudLiveBaseDbBean();
+        outDbBean.setType(type);
+        outDbBean.setUuid(uuid);
+        switch (type){
+            case 1:
+                CloudLiveCallInBean inLeaveBean = new CloudLiveCallInBean();
+                inLeaveBean.setVideoLength(videoLength);
+                inLeaveBean.setHasConnet(hasConnet);
+                inLeaveBean.setVideoTime(presenter.parseTime(System.currentTimeMillis()));
+                newBean.setData(inLeaveBean);
+                outDbBean.setData(presenter.getSerializedObject(inLeaveBean));
+                break;
+            case 2:
+                CloudLiveCallOutBean outLeaveBean = new CloudLiveCallOutBean();
+                outLeaveBean.setVideoLength(videoLength);
+                outLeaveBean.setHasConnet(hasConnet);
+                outLeaveBean.setVideoTime(presenter.parseTime(System.currentTimeMillis()));
+                newBean.setData(outLeaveBean);
+                outDbBean.setData(presenter.getSerializedObject(outLeaveBean));
+                break;
+        }
+        presenter.saveIntoDb(outDbBean);
+        return newBean;
     }
 
     /**
@@ -138,8 +209,61 @@ public class CloudLiveCallActivity extends AppCompatActivity implements CloudLiv
         hideLoadingView();
         initLocalVideoView();
         initRenderVideoView();
-        JfgCmdInsurance.getCmd().setRenderLocalView(mLocalSurfaceView);
-        JfgCmdInsurance.getCmd().setRenderRemoteView(mRenderSurfaceView);
+        checkPermission();
+    }
+
+    /**
+     * 呼叫的结果的处理
+     * @param msgId
+     */
+    @Override
+    public void handlerCallingReuslt(int msgId) {
+        switch(msgId){
+            case JConstant.CLOUD_IN_CONNECT_TIME_OUT:          // 中控呼入app无应答
+                CloudLiveBaseBean inBeanTimeOut = createCloudBackBean(1,"",false);
+                if (callBack != null){
+                    callBack.onCloudMesgBack(inBeanTimeOut);
+                }
+                ToastUtil.showToast("未接通");
+                break;
+
+            case JConstant.CLOUD_OUT_CONNECT_TIME_OUT:            // 呼出超时
+                CloudLiveBaseBean outBeanTimeOut = createCloudBackBean(2,tvVideoTime.getText().toString(),false);
+                if (callBack != null){
+                    callBack.onCloudMesgBack(outBeanTimeOut);
+                }
+                ToastUtil.showToast("连接超时");
+                break;
+
+            case JConstant.CLOUD_IN_CONNECT_OK: //呼入连接成功 点击挂断按钮
+                CloudLiveBaseBean newBean = createCloudBackBean(1,tvVideoTime.getText().toString(),true);
+                if (callBack != null){
+                    callBack.onCloudMesgBack(newBean);
+                }
+                break;
+
+            case JConstant.CLOUD_IN_CONNECT_FAILED:
+                CloudLiveBaseBean newBeanF = createCloudBackBean(1,"",false);
+                if (callBack != null){
+                    callBack.onCloudMesgBack(newBeanF);
+                }
+                break;
+
+            case JConstant.CLOUD_OUT_CONNECT_OK:
+                CloudLiveBaseBean outBean = createCloudBackBean(2,tvVideoTime.getText().toString(),true);
+                if (callBack != null){
+                    callBack.onCloudMesgBack(outBean);
+                }
+                break;
+
+            case JConstant.CLOUD_OUT_CONNECT_FAILED:
+                CloudLiveBaseBean outBeanF = createCloudBackBean(2,"",false);
+                if (callBack != null){
+                    callBack.onCloudMesgBack(outBeanF);
+                }
+                break;
+        }
+        finish();
     }
 
     private void initLocalVideoView() {
@@ -172,7 +296,10 @@ public class CloudLiveCallActivity extends AppCompatActivity implements CloudLiv
         AppLogger.i("initRenderVideoView");
         mRenderSurfaceView.getHolder().setFormat(PixelFormat.TRANSPARENT);
         mRenderSurfaceView.getHolder().setFormat(PixelFormat.OPAQUE);
+    }
 
+    public static void setOnCloudMesgBackListener(CloudMesgBackListener listener){
+        callBack = listener;
     }
 
     @Override
@@ -225,6 +352,43 @@ public class CloudLiveCallActivity extends AppCompatActivity implements CloudLiv
             case JError.ErrorVideoPeerNotExist:
                 ToastUtil.showNegativeToast(getString(R.string.OFFLINE_ERR));
                 break;
+        }
+    }
+
+    /**
+     * 检测权限
+     */
+    private void checkPermission() throws JfgException {
+        if (ContextCompat.checkSelfPermission(CloudLiveCallActivity.this,
+                Manifest.permission.CAMERA)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            if (ActivityCompat.shouldShowRequestPermissionRationale(CloudLiveCallActivity.this,
+                    Manifest.permission.CAMERA)) {
+            } else {
+                ActivityCompat.requestPermissions(CloudLiveCallActivity.this,
+                        new String[]{Manifest.permission.CAMERA},
+                        1);
+            }
+        }else {
+//            JfgCmdInsurance.getCmd().enableCamera(true,true);
+            JfgCmdInsurance.getCmd().enableRenderLocalView(true,mLocalSurfaceView);
+            JfgCmdInsurance.getCmd().enableRenderRemoteView(true,mRenderSurfaceView);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == 1){
+            try {
+//                JfgCmdInsurance.getCmd().enableCamera(true,true);
+                JfgCmdInsurance.getCmd().enableRenderLocalView(true,mLocalSurfaceView);
+                JfgCmdInsurance.getCmd().enableRenderRemoteView(true,mRenderSurfaceView);
+            } catch (JfgException e) {
+                e.printStackTrace();
+            }
+        }else {
+            ToastUtil.showToast("获取相机权限失败");
         }
     }
 

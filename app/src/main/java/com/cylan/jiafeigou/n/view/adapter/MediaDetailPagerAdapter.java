@@ -13,8 +13,8 @@ import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.misc.JConstant;
-import com.cylan.jiafeigou.n.mvp.model.MediaBean;
 import com.cylan.jiafeigou.utils.WonderGlideURL;
 import com.cylan.jiafeigou.utils.WonderGlideVideoThumbURL;
 import com.cylan.jiafeigou.widget.SimpleProgressBar;
@@ -22,19 +22,21 @@ import com.cylan.photoview.PhotoView;
 
 import java.util.List;
 
+import static com.cylan.jiafeigou.dp.DpMsgDefine.DPWonderItem;
+
 /**
  * Created by yzd on 16-12-7.
  */
 
 public class MediaDetailPagerAdapter extends PagerAdapter {
 
-    private List<MediaBean> mMediaBeanList;
+    private List<DPWonderItem> mMediaBeanList;
     private final int mStartPosition;
     private boolean mFirstLoad = true;
     private OnReadToShow mReadToShow;
 
 
-    public MediaDetailPagerAdapter(List<MediaBean> mediaBeanList, int startPosition) {
+    public MediaDetailPagerAdapter(List<DPWonderItem> mediaBeanList, int startPosition) {
         mMediaBeanList = mediaBeanList;
         mStartPosition = startPosition;
     }
@@ -52,9 +54,9 @@ public class MediaDetailPagerAdapter extends PagerAdapter {
     @Override
     public Object instantiateItem(ViewGroup container, int position) {
         View contentView;
-        MediaBean bean = mMediaBeanList.get(position);
+        DPWonderItem bean = mMediaBeanList.get(position);
         ImageView photoView;
-        if (bean.msgType == MediaBean.TYPE_VIDEO) {
+        if (bean.msgType == DPWonderItem.TYPE_VIDEO) {
             contentView = View.inflate(container.getContext(), R.layout.view_video_detail, null);
             ViewHolder holder = new ViewHolder(contentView);
             photoView = holder.mPhotoView;

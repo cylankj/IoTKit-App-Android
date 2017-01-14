@@ -80,7 +80,7 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
     }
 
     /**
-     * Use this factory method to create activity_cloud_live_mesg_video_talk_item new instance of
+     * Use this factory method to create activity_cloud_live_mesg_call_out_item new instance of
      * this fragment using the provided parameters.
      *
      * @param args Parameter 2.
@@ -147,7 +147,7 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
         //移动侦测
         swMotionDetection.setSwitchButtonState(flag);
         //提示音
-        DpMsgDefine.NotificationInfo notificationInfo = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_504_CAMERA_ALARM_NOTIFICATION, null);
+        DpMsgDefine.DPNotificationInfo notificationInfo = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_504_CAMERA_ALARM_NOTIFICATION, null);
         if (notificationInfo != null) {
             tvProtectionNotification.setText(getString(notificationInfo.notification == 0
                     ? R.string.MUTE : (notificationInfo.notification == 1
@@ -158,7 +158,7 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
         tvProtectionSensitivity.setText(sensitivity == 0 ? getString(R.string.SENSITIVI_LOW)
                 : (sensitivity == 1 ? getString(R.string.SENSITIVI_STANDARD) : getString(R.string.SENSITIVI_HIGHT)));
         //报警周期
-        DpMsgDefine.AlarmInfo info = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_502_CAMERA_ALARM_INFO, new DpMsgDefine.AlarmInfo());
+        DpMsgDefine.DPAlarmInfo info = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_502_CAMERA_ALARM_INFO, new DpMsgDefine.DPAlarmInfo());
         tvProtectionRepeatPeriod.setText(basePresenter.getRepeatMode(getContext()));
         if (info != null) {
             tvProtectionStartTime.setText(MiscUtils.parse2Time(info.timeStart));
@@ -206,7 +206,7 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
                 timePickDialogFragment.show(getActivity().getSupportFragmentManager(), "timePickDialogFragmentStart");
                 timePickDialogFragment.setAction((int id, Object value) -> {
                     if (value != null && value instanceof Integer) {
-                        DpMsgDefine.AlarmInfo info = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_502_CAMERA_ALARM_INFO, null);
+                        DpMsgDefine.DPAlarmInfo info = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_502_CAMERA_ALARM_INFO, null);
                         if (info.timeStart != (int) value) {
                             info.timeStart = (int) value;
                             basePresenter.updateInfoReq(info, DpMsgMap.ID_502_CAMERA_ALARM_INFO);
@@ -222,7 +222,7 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
                 timePickDialogFragment.show(getActivity().getSupportFragmentManager(), "timePickDialogFragmentEnd");
                 timePickDialogFragment.setAction((int id, Object value) -> {
                     if (value != null && value instanceof Integer) {
-                        DpMsgDefine.AlarmInfo info = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_502_CAMERA_ALARM_INFO, null);
+                        DpMsgDefine.DPAlarmInfo info = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_502_CAMERA_ALARM_INFO, null);
                         if (info.timeEnd != (int) value) {
                             info.timeEnd = (int) value;
                             basePresenter.updateInfoReq(info, DpMsgMap.ID_502_CAMERA_ALARM_INFO);
@@ -238,8 +238,8 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
                 fragment.setAction((int id, Object value) -> {
                     if (value != null && value instanceof Integer) {
                         int result = (int) value;
-                        DpMsgDefine.AlarmInfo info = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_502_CAMERA_ALARM_INFO, null);
-                        DpMsgDefine.AlarmInfo alarmInfo = info == null ? new DpMsgDefine.AlarmInfo() : info;
+                        DpMsgDefine.DPAlarmInfo info = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_502_CAMERA_ALARM_INFO, null);
+                        DpMsgDefine.DPAlarmInfo alarmInfo = info == null ? new DpMsgDefine.DPAlarmInfo() : info;
                         if (alarmInfo.day != result) {
                             alarmInfo.day = result;
                             info = alarmInfo;

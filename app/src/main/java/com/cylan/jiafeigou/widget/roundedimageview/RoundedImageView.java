@@ -419,7 +419,7 @@ public class RoundedImageView extends ImageView {
     }
 
     /**
-     * Get the corner radius of activity_cloud_live_mesg_video_talk_item specified corner.
+     * Get the corner radius of activity_cloud_live_mesg_call_out_item specified corner.
      *
      * @param corner the corner.
      * @return the radius.
@@ -429,7 +429,7 @@ public class RoundedImageView extends ImageView {
     }
 
     /**
-     * Set all the corner radii from activity_cloud_live_mesg_video_talk_item dimension resource id.
+     * Set all the corner radii from activity_cloud_live_mesg_call_out_item dimension resource id.
      *
      * @param resId dimension resource id of radii.
      */
@@ -439,7 +439,7 @@ public class RoundedImageView extends ImageView {
     }
 
     /**
-     * Set the corner radius of activity_cloud_live_mesg_video_talk_item specific corner from activity_cloud_live_mesg_video_talk_item dimension resource id.
+     * Set the corner radius of activity_cloud_live_mesg_call_out_item specific corner from activity_cloud_live_mesg_call_out_item dimension resource id.
      *
      * @param corner the corner to set.
      * @param resId  the dimension resource id of the corner radius.
@@ -458,7 +458,7 @@ public class RoundedImageView extends ImageView {
     }
 
     /**
-     * Set the corner radius of activity_cloud_live_mesg_video_talk_item specific corner in px.
+     * Set the corner radius of activity_cloud_live_mesg_call_out_item specific corner in px.
      *
      * @param corner the corner to set.
      * @param radius the corner radius to set in px.

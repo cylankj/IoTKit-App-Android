@@ -191,6 +191,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        if (videoView != null) ((View) videoView).setVisibility(View.GONE);
     }
 
     /**
@@ -358,12 +359,13 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
                 ? ViewGroup.LayoutParams.MATCH_PARENT : (int) (Resources.getSystem().getDisplayMetrics().widthPixels * resolution.height / (float) resolution.width);
         FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, height);
+        fLayoutLiveViewContainer.setLayoutParams(lp);
         View view = fLayoutLiveViewContainer.findViewById("IVideoView".hashCode());
         if (view == null) {
             fLayoutLiveViewContainer.addView((View) videoView, 0, lp);
         } else {
             view.setLayoutParams(lp);
-            ViewUtils.updateViewHeight(fLayoutCamLiveView, resolution.height / (float) resolution.width);
+//            ViewUtils.updateViewHeight(fLayoutCamLiveView, resolution.height / (float) resolution.width);
         }
         AppLogger.i("updateVideoViewLayoutParameters:" + (view == null));
     }
@@ -512,7 +514,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
 
     @Override
     public void onResolution(JFGMsgVideoResolution resolution) throws JfgException {
-        JfgCmdInsurance.getCmd().setRenderRemoteView((View) initVideoView());
+        JfgCmdInsurance.getCmd().enableRenderRemoteView(true,(View) initVideoView());
         updateVideoViewLayoutParameters(resolution);
     }
 

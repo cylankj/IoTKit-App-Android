@@ -21,9 +21,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.misc.HackyViewPager;
 import com.cylan.jiafeigou.misc.JConstant;
-import com.cylan.jiafeigou.n.mvp.model.MediaBean;
 import com.cylan.jiafeigou.n.view.media.PicDetailsFragment;
 import com.cylan.jiafeigou.n.view.media.VideoDetailsFragment;
 import com.cylan.jiafeigou.rx.RxBus;
@@ -62,7 +62,7 @@ public class MediaActivityOld extends FragmentActivity {
     FrameLayout fLayoutDetailsTitle;
     private PicDetailsFragment mCurrentDetailsFragment;
 
-    private ArrayList<MediaBean> beanArrayList;
+    private ArrayList<DpMsgDefine.DPWonderItem> beanArrayList;
     private View mNormalContentView;
     private HackyViewPager mPager;
     private DetailsFragmentPagerAdapter mAdapter;
@@ -89,7 +89,7 @@ public class MediaActivityOld extends FragmentActivity {
         } else {
             mCurrentPosition = savedInstanceState.getInt(STATE_CURRENT_PAGE_POSITION);
         }
-        ArrayList<MediaBean> list = getIntent().getParcelableArrayListExtra(JConstant.KEY_SHARED_ELEMENT_LIST);
+        ArrayList<DpMsgDefine.DPWonderItem> list = getIntent().getParcelableArrayListExtra(JConstant.KEY_SHARED_ELEMENT_LIST);
         beanArrayList = list;
         //this adapter fix 'java.lang.IllegalArgumentException: pointerIndex out of range'
         mPager = (HackyViewPager) findViewById(R.id.pager);
@@ -131,9 +131,9 @@ public class MediaActivityOld extends FragmentActivity {
         if (beanArrayList != null && index < beanArrayList.size()) {
             final int mediaType = beanArrayList.get(index).msgType;
             final long time = beanArrayList.get(index).time;
-            if (mediaType == MediaBean.TYPE_PIC)
+            if (mediaType == DpMsgDefine.DPWonderItem.TYPE_PIC)
                 tvBigPicTitle.setText(TimeUtils.getMediaPicTimeInString(time));
-            else if (mediaType == MediaBean.TYPE_VIDEO)
+            else if (mediaType == DpMsgDefine.DPWonderItem.TYPE_VIDEO)
                 tvBigPicTitle.setText(TimeUtils.getMediaVideoTimeInString(time));
         }
     }
@@ -161,7 +161,7 @@ public class MediaActivityOld extends FragmentActivity {
                         names.clear();
                         sharedElements.clear();
                     } else if (mStartingPosition != mCurrentPosition) {
-                        // If the user has swiped to activity_cloud_live_mesg_video_talk_item different ViewPager page, then we need to
+                        // If the user has swiped to activity_cloud_live_mesg_call_out_item different ViewPager page, then we need to
                         // remove the old shared element and replace it with the new shared element
                         // that should be transitioned instead.
                         final String transitionName = sharedElement.getTransitionName();
@@ -219,20 +219,20 @@ public class MediaActivityOld extends FragmentActivity {
     }
 
     private class DetailsFragmentPagerAdapter extends FragmentPagerAdapter {
-        ArrayList<MediaBean> list;
+        ArrayList<DpMsgDefine.DPWonderItem> list;
 
-        public DetailsFragmentPagerAdapter(FragmentManager fm, ArrayList<MediaBean> list) {
+        public DetailsFragmentPagerAdapter(FragmentManager fm, ArrayList<DpMsgDefine.DPWonderItem> list) {
             super(fm);
             this.list = list;
         }
 
         @Override
         public Fragment getItem(int position) {
-            if (list.get(position).msgType == MediaBean.TYPE_PIC) {
+            if (list.get(position).msgType == DpMsgDefine.DPWonderItem.TYPE_PIC) {
                 return PicDetailsFragment.newInstance(position,
                         mStartingPosition,
                         list.get(position).fileName);
-            } else if (list.get(position).msgType == MediaBean.TYPE_VIDEO) {
+            } else if (list.get(position).msgType == DpMsgDefine.DPWonderItem.TYPE_VIDEO) {
                 return newInstance(position,
                         mStartingPosition,
                         list.get(position).fileName);
