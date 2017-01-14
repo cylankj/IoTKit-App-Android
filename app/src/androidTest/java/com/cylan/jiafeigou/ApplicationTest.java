@@ -18,7 +18,7 @@ public class ApplicationTest extends ApplicationTestCase<Application> {
 //        jfgDevice.alias = "摄像头88";
 //        jfgDevice.shareAccount = "";
 //        jfgDevice.uuid = "2000000888";
-//        BellDevice device = new BellDevice();
+//        DoorBellDevice device = new DoorBellDevice();
 ////        device.setDevice(jfgDevice);
 //        Random random = new Random();
 //

@@ -15,12 +15,12 @@ import static com.cylan.jiafeigou.dp.DpMsgMap.ID_402_BELL_VOICE_MSG;
 /*
  *  @项目名：  JFGAndroid 
  *  @包名：    com.cylan.jiafeigou.base.module
- *  @文件名:   BellDevice
+ *  @文件名:   DoorBellDevice
  *  @创建者:   yanzhendong
  *  @创建时间:  2017/1/8 11:05
  *  @描述：    TODO
  */
-public class BellDevice extends JFGDevice {
+public class DoorBellDevice extends JFGDevice {
 
     @DPProperty(msgId = ID_201_NET)
     public DpMsgDefine.DPNet net;//DpMsgMap.NET_201
@@ -36,7 +36,7 @@ public class BellDevice extends JFGDevice {
     public DpMsgDefine.DPPrimary<Integer> battery;//DpMsgMap.BATTERY_206
 
 
-    BellDevice() {
+    DoorBellDevice() {
     }
 
     @Override
@@ -49,19 +49,19 @@ public class BellDevice extends JFGDevice {
         super.writeToParcel(dest, flags);
     }
 
-    BellDevice(Parcel in) {
+    DoorBellDevice(Parcel in) {
         super(in);
     }
 
-    public static final Creator<BellDevice> CREATOR = new Creator<BellDevice>() {
+    public static final Creator<DoorBellDevice> CREATOR = new Creator<DoorBellDevice>() {
         @Override
-        public BellDevice createFromParcel(Parcel source) {
-            return new BellDevice(source);
+        public DoorBellDevice createFromParcel(Parcel source) {
+            return new DoorBellDevice(source);
         }
 
         @Override
-        public BellDevice[] newArray(int size) {
-            return new BellDevice[size];
+        public DoorBellDevice[] newArray(int size) {
+            return new DoorBellDevice[size];
         }
     };
 }

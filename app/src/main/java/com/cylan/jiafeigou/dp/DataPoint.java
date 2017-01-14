@@ -12,7 +12,6 @@ import org.msgpack.MessagePack;
 import org.msgpack.annotation.Ignore;
 
 import java.io.IOException;
-import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
@@ -38,9 +37,6 @@ public abstract class DataPoint<T> implements Parcelable, Comparable<DataPoint> 
     public boolean isNull() {
         return isNull;
     }
-
-    @Ignore
-    private Object instance;
 
     @Ignore
     public long id;
@@ -107,41 +103,26 @@ public abstract class DataPoint<T> implements Parcelable, Comparable<DataPoint> 
     }
 
 
-    private Object getInstance() {
-        if (instance == null) {
-            synchronized (this) {
-                if (instance == null) {
-                    try {
-                        Constructor constructor = this.getClass().getDeclaredConstructor();
-                        constructor.setAccessible(true);
-                        instance = constructor.newInstance();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }
-        return instance;
-    }
-
-
     /**
      * 避免检查空指针,只针对DataPoint,只针对获取值的情,
-     * 因为返回的是原对象的一份拷贝,因此对返回的对象进行写入操作不会影响真正的值
      * 如果需要检查非空可调用isNull函数,
      */
     public T $() {
         Object value;
         Field field;
-        for (int i = 0; i < getProperties().size(); i++) {
-            field = getProperties().valueAt(i);
+        LongSparseArray<Field> properties = getProperties();
+        for (int i = 0; i < properties.size(); i++) {
+            field = properties.valueAt(i);
             try {
                 value = field.get(this);
                 if (value == null) {
                     value = field.getType().newInstance();
-                    ((DataPoint) value).isNull = true;
+                    DataPoint temp = (DataPoint) value;
+                    temp.isNull = true;
+                    temp.version = Long.MIN_VALUE;//自动生成的wrap使version最小以便随时覆盖
+                    temp.id = properties.keyAt(i);
                 }
-                field.set(getInstance(), value);
+                field.set(this, value);
                 if (DpMsgDefine.DPPrimary.class.isAssignableFrom(field.getType())) {
                     DpMsgDefine.DPPrimary primary = (DpMsgDefine.DPPrimary) value;
                     if (primary.value == null) {
@@ -157,12 +138,12 @@ public abstract class DataPoint<T> implements Parcelable, Comparable<DataPoint> 
                 e.printStackTrace();
             }
         }
-        if (getInstance() instanceof DpMsgDefine.DPPrimary) {
-            return (T) ((DpMsgDefine.DPPrimary) getInstance()).value;
-        } else if (getInstance() instanceof DpMsgDefine.DPSet) {
-            return (T) ((DpMsgDefine.DPSet) getInstance()).value;
+        if (this instanceof DpMsgDefine.DPPrimary) {
+            return (T) ((DpMsgDefine.DPPrimary) this).value;
+        } else if (this instanceof DpMsgDefine.DPSet) {
+            return (T) ((DpMsgDefine.DPSet) this).value;
         }
-        return (T) getInstance();
+        return (T) this;
     }
 
     private Object getPrimaryValue(Class clz) {
@@ -268,6 +249,7 @@ public abstract class DataPoint<T> implements Parcelable, Comparable<DataPoint> 
                 setValue.version = first.version;
                 setValue.seq = first.seq;
                 setValue.id = first.id;
+                ((DataPoint) setValue).isNull = false;
                 return add;
             }
 

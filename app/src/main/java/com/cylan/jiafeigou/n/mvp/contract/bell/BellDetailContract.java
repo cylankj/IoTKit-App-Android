@@ -1,6 +1,6 @@
 package com.cylan.jiafeigou.n.mvp.contract.bell;
 
-import com.cylan.jiafeigou.base.module.BellDevice;
+import com.cylan.jiafeigou.base.module.DoorBellDevice;
 import com.cylan.jiafeigou.base.view.JFGPresenter;
 import com.cylan.jiafeigou.base.view.PropertyView;
 import com.cylan.jiafeigou.n.mvp.model.BeanBellInfo;
@@ -11,7 +11,7 @@ import com.cylan.jiafeigou.n.mvp.model.BeanBellInfo;
 public interface BellDetailContract {
 
 
-    interface View extends PropertyView<BellDevice> {
+    interface View extends PropertyView<DoorBellDevice> {
     }
 
     interface Presenter extends JFGPresenter {

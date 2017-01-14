@@ -21,7 +21,7 @@ import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.cylan.entity.JfgEnum;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.BaseFullScreenActivity;
-import com.cylan.jiafeigou.base.module.BellDevice;
+import com.cylan.jiafeigou.base.module.DoorBellDevice;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.SpacesItemDecoration;
 import com.cylan.jiafeigou.n.mvp.contract.bell.DoorBellHomeContract;
@@ -352,7 +352,7 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
     }
 
     @Override
-    public void onShowProperty(BellDevice device) {
+    public void onShowProperty(DoorBellDevice device) {
         int battery = device.battery.$();
         if (battery < 20) {
             onBellBatteryDrainOut();

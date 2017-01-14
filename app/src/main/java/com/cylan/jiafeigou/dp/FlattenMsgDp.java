@@ -3,7 +3,6 @@ package com.cylan.jiafeigou.dp;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.cylan.jiafeigou.base.module.JFGDevice;
 import com.cylan.jiafeigou.n.mvp.model.BaseBean;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.google.gson.Gson;

@@ -277,7 +277,7 @@ public class DataSourceManager implements JFGSourceManager {
 
             //门铃设备
             case OS_DOOR_BELL:
-                result = new BellDevice().setDevice(device);
+                result = new DoorBellDevice().setDevice(device);
                 break;
 
             //中控设备

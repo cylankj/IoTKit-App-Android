@@ -9,7 +9,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.base.module.BellDevice;
+import com.cylan.jiafeigou.base.module.DoorBellDevice;
 import com.cylan.jiafeigou.base.wrapper.BaseFragment;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.n.mvp.contract.bell.BellDetailContract;
@@ -128,7 +128,7 @@ public class BellDetailFragment extends BaseFragment<BellDetailContract.Presente
 
 
     @Override
-    public void onShowProperty(BellDevice device) {
+    public void onShowProperty(DoorBellDevice device) {
         String alias = TextUtils.isEmpty(device.alias) ? device.uuid : device.alias;
         svSettingDeviceAlias.setTvSubTitle(alias);
         svSettingDeviceCid.setTvSubTitle(device.uuid);

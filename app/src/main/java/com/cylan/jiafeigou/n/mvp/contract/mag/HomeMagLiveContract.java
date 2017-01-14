@@ -2,7 +2,6 @@ package com.cylan.jiafeigou.n.mvp.contract.mag;
 
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
-import com.cylan.jiafeigou.n.mvp.model.BeanCamInfo;
 import com.cylan.jiafeigou.n.mvp.model.BeanMagInfo;
 
 import rx.Subscription;

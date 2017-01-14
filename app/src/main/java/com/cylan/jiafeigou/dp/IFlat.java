@@ -1,6 +1,5 @@
 package com.cylan.jiafeigou.dp;
 
-import com.cylan.jiafeigou.base.module.JFGDevice;
 import com.cylan.jiafeigou.n.mvp.model.BaseBean;
 
 import java.util.ArrayList;

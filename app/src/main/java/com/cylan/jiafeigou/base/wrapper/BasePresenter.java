@@ -6,7 +6,6 @@ import android.text.TextUtils;
 
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.ex.JfgException;
-import com.cylan.jiafeigou.base.module.JFGDevice;
 import com.cylan.jiafeigou.base.view.JFGPresenter;
 import com.cylan.jiafeigou.base.view.JFGSourceManager;
 import com.cylan.jiafeigou.base.view.JFGView;

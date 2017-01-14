@@ -263,18 +263,18 @@ dependencies {
     //////////////test///////////////////////
     //testCompile和androidTestCompile的区别在于，测试文件所在的目录。
     //前者在test/，后者在androidTest
-    testCompile rootProject.ext.testRobolectric
-    testCompile rootProject.ext.testAssertj
-    testCompile rootProject.ext.testJunit4
-    testCompile rootProject.ext.annotation
-    testCompile rootProject.ext.testMockio
-    androidTestCompile rootProject.ext.testRules
-    androidTestCompile rootProject.ext.testRunner
+//    testCompile rootProject.ext.testRobolectric
+//    testCompile rootProject.ext.testAssertj
+//    testCompile rootProject.ext.testJunit4
+//    testCompile rootProject.ext.annotation
+//    testCompile rootProject.ext.testMockio
+//    androidTestCompile rootProject.ext.testRules
+//    androidTestCompile rootProject.ext.testRunner
     //强制使用高版本，引用rootProject.ext.annotation，无效
-    androidTestCompile 'com.android.support:support-annotations:23.3.0'
-    androidTestCompile(rootProject.ext.testEspresso, {
-        exclude group: 'com.android.support', module: 'support-annotations'
-    })
+//    androidTestCompile 'com.android.support:support-annotations:23.3.0'
+//    androidTestCompile(rootProject.ext.testEspresso, {
+//        exclude group: 'com.android.support', module: 'support-annotations'
+//    })
     /////////////////android///////////////////////
     compile rootProject.ext.appcompat
     compile rootProject.ext.appSupport
@@ -307,7 +307,7 @@ dependencies {
     compile rootProject.ext.buglyNdk
     debugCompile rootProject.ext.leakcanaryAndroid
     releaseCompile rootProject.ext.leakcanaryAndroidNoOp
-    testCompile rootProject.ext.leakcanaryAndroidNoOp
+//    testCompile rootProject.ext.leakcanaryAndroidNoOp
     compile files('src/main/jniLibs/zbar.jar')
     //add by hunt 2016-08-01
     compile rootProject.ext.switchButton
@@ -317,8 +317,8 @@ dependencies {
     compile rootProject.ext.glide
     compile(name: rootProject.ext.cySdk, ext: 'aar')
     //自己写的 apt
-    compile project(':annotation')
-
+//    compile project(':annotation')
+    compile project(':compiler')
     compile 'com.danikula:videocache:2.6.4'
     compile 'tv.danmaku.ijk.media:ijkplayer-java:0.7.5'
     compile 'tv.danmaku.ijk.media:ijkplayer-armv7a:0.7.5'

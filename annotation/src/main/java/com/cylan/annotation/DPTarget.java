@@ -1,16 +1,19 @@
 package com.cylan.annotation;
 
-/**
- * Created by yzd on 17-1-13.
+/*
+ *  @项目名：  APT 
+ *  @包名：    com.annotation
+ *  @文件名:   DPTarget
+ *  @创建者:   yanzhendong
+ *  @创建时间:  2017/1/13 22:08
+ *  @描述：    TODO
  */
-
-public @interface DPTarget {
-
-    Device[] target();
-
-    Class<?> primary();//主要类型
-
-    Class<?> generic() default Void.class;//泛型类型
-
-    Class<?> parent();//继承的父类
+public enum DPTarget {
+    @DPInterface(name = "DataPoint")DATAPOINT,
+    @DPInterface(name = "JFGDevice")DEVICE,
+    @DPInterface(name = "JFGAccount")ACCOUNT,
+    @DPInterface(name = "JFGDoorBellDevice", parent = DEVICE)DOORBELL,
+    @DPInterface(name = "JFGCameraDevice", parent = DEVICE)CAMERA,
+    @DPInterface(name = "JFGEFamilyDevice", parent = DEVICE)EFAMILY,
+    @DPInterface(name = "JFGMagnetometerDevice", parent = DEVICE)MAGNETOMETER
 }
