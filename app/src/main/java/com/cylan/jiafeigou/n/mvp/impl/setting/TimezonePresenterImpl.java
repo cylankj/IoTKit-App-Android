@@ -5,7 +5,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.cache.JCache;
+import com.cylan.jiafeigou.cache.SimpleCache;
 import com.cylan.jiafeigou.n.mvp.contract.setting.TimezoneContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.n.mvp.model.TimeZoneBean;
@@ -14,6 +14,7 @@ import com.cylan.jiafeigou.utils.BindUtils;
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,8 +46,8 @@ public class TimezonePresenterImpl extends AbstractPresenter<TimezoneContract.Vi
                 .flatMap(new Func1<Integer, Observable<List<TimeZoneBean>>>() {
                     @Override
                     public Observable<List<TimeZoneBean>> call(Integer integer) {
-                        if (JCache.timeZoneBeenList != null) {
-                            return Observable.just(JCache.timeZoneBeenList);
+                        if (SimpleCache.getInstance().timeZoneBeenList != null) {
+                            return Observable.just(SimpleCache.getInstance().timeZoneBeenList.get());
                         }
                         XmlResourceParser xrp = getView().getContext().getResources().getXml(integer);
                         List<TimeZoneBean> list = new ArrayList<>();
@@ -72,7 +73,7 @@ public class TimezonePresenterImpl extends AbstractPresenter<TimezoneContract.Vi
                                 }
                                 xrp.next();
                             }
-                            JCache.timeZoneBeenList = list;
+                            SimpleCache.getInstance().timeZoneBeenList = new WeakReference<>(list);
                             Log.d(tag, "timezone: " + list);
                         } catch (XmlPullParserException e) {
                             e.printStackTrace();
@@ -93,10 +94,12 @@ public class TimezonePresenterImpl extends AbstractPresenter<TimezoneContract.Vi
 
     @Override
     public void onSearch(String content) {
-        final int count = JCache.timeZoneBeenList == null ? 0 : JCache.timeZoneBeenList.size();
+        List<TimeZoneBean> list = SimpleCache.getInstance().timeZoneBeenList == null ? null :
+                SimpleCache.getInstance().timeZoneBeenList.get();
+        final int count = list == null ? 0 : list.size();
         List<TimeZoneBean> newList = new ArrayList<>();
         for (int i = 0; i < count; i++) {
-            TimeZoneBean bean = JCache.timeZoneBeenList.get(i);
+            TimeZoneBean bean = list.get(i);
             if (bean.getGmt().contains(content)
                     || bean.getId().contains(content)
                     || bean.getName().contains(content)) {

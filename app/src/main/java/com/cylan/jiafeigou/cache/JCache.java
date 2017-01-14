@@ -1,10 +1,5 @@
 package com.cylan.jiafeigou.cache;
 
-import com.cylan.jiafeigou.n.mvp.model.LoginAccountBean;
-import com.cylan.jiafeigou.n.mvp.model.TimeZoneBean;
-
-import java.util.List;
-
 /**
  * Created by cylan-hunt on 16-9-28.
  */
@@ -18,8 +13,4 @@ public class JCache {
      */
     public static boolean isSmsAction = false;
 
-
-    public static LoginAccountBean tmpAccount;
-
-    public static List<TimeZoneBean> timeZoneBeenList;
 }

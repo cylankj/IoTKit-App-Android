@@ -93,8 +93,8 @@ public class DataPointManager implements IParser, IDataPoint {
                             base.setValue(DpUtils.unpackData(jfg.packValue, DpMsgMap.ID_2_CLASS_MAP.get((int) jfg.id)));
                             boolean result = update(uuid, base, false);
                             if (result) updatedItems.put(jfgRobotSyncData.identity, base);
-                        } catch (IOException e) {
-                            AppLogger.e("" + e.getLocalizedMessage());
+                        } catch (Exception e) {
+                            AppLogger.e("" + jfg.id + " " + e.getLocalizedMessage());
                         }
                     }
                     AppLogger.i("robotSyc:" + updatedItems.keySet());
@@ -234,7 +234,7 @@ public class DataPointManager implements IParser, IDataPoint {
 //                            RxBus.getCacheInstance().post(response);
                         }
                         if (needNotify || querySeqMap.containsKey(dpDataRsp.seq)) {
-                            if (DEBUG) Log.e(TAG, "file setDevice: " + dpDataRsp.seq);
+                            if (DEBUG) Log.i(TAG, "file setDevice: " + dpDataRsp.seq);
                             querySeqMap.remove(dpDataRsp.seq);
                             RxBus.getCacheInstance().post(dpDataRsp.seq);
                         }
@@ -297,7 +297,8 @@ public class DataPointManager implements IParser, IDataPoint {
     public boolean updateJFGDevice(String account, JFGDevice device) {
         String finalKey = account + device.uuid;
         jfgDeviceMap.remove(finalKey);
-        return jfgDeviceMap.put(finalKey, device) != null;
+        jfgDeviceMap.put(finalKey, device);
+        return device != null;
     }
 
     @Override
