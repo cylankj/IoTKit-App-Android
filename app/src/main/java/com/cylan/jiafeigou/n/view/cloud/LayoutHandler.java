@@ -13,9 +13,9 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.model.CloudLiveBaseBean;
+import com.cylan.jiafeigou.n.mvp.model.CloudLiveCallInBean;
 import com.cylan.jiafeigou.n.mvp.model.CloudLiveCallOutBean;
 import com.cylan.jiafeigou.n.mvp.model.CloudLiveLeaveMesBean;
-import com.cylan.jiafeigou.n.mvp.model.CloudLiveCallInBean;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.superadapter.internal.SuperViewHolder;
@@ -58,6 +58,24 @@ public class LayoutHandler {
                 CloudLiveLeaveMesBean cc = (CloudLiveLeaveMesBean) o;
                 holder.setText(R.id.tv_voice_length, cc.getLeaveMesgLength());
                 holder.setText(R.id.tv_time, cc.getLeveMesgTime());
+                ImageView userHeadImag = holder.getView(R.id.iv_user_icon);
+                //头像
+                Glide.with(ContextUtils.getContext()).load(cc.userIcon)
+                        .asBitmap()
+                        .error(R.drawable.icon_mine_head_normal)
+                        .placeholder(R.drawable.icon_mine_head_normal)
+                        .centerCrop()
+                        .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                        .into(new BitmapImageViewTarget(userHeadImag) {
+                            @Override
+                            protected void setResource(Bitmap resource) {
+                                RoundedBitmapDrawable circularBitmapDrawable =
+                                        RoundedBitmapDrawableFactory.create(ContextUtils.getContext().getResources(), resource);
+                                circularBitmapDrawable.setCircular(true);
+                                userHeadImag.setImageDrawable(circularBitmapDrawable);
+                            }
+                        });
+
                 if (cc.isRead()) {
                     holder.setVisibility(R.id.tv_is_read, View.VISIBLE);
                 } else {
@@ -88,10 +106,10 @@ public class LayoutHandler {
 
                 if (callOutvideoBean.isHasConnet()) {
                     holder.setText(R.id.tv_voideo_talk_length, String.format(ContextUtils.getContext().getString(R.string.Tap1_iHome_CallDuration), callOutvideoBean.getVideoLength()));
-                    holder.setImageDrawable(R.id.iv_call_out_icon,ContextUtils.getContext().getResources().getDrawable(R.drawable.icon_call));
+                    holder.setImageDrawable(R.id.iv_call_out_icon, ContextUtils.getContext().getResources().getDrawable(R.drawable.icon_call));
                 } else {
                     holder.setText(R.id.tv_voideo_talk_length, "未接通");
-                    holder.setImageDrawable(R.id.iv_call_out_icon,ContextUtils.getContext().getResources().getDrawable(R.drawable.icon_missed_call));
+                    holder.setImageDrawable(R.id.iv_call_out_icon, ContextUtils.getContext().getResources().getDrawable(R.drawable.icon_missed_call));
                 }
                 break;
 
@@ -101,10 +119,10 @@ public class LayoutHandler {
 
                 if (callInvideoBean.isHasConnet()) {
                     holder.setText(R.id.tv_call_in_talk_length, String.format(ContextUtils.getContext().getString(R.string.Tap1_iHome_CallDuration), callInvideoBean.getVideoLength()));
-                    holder.setImageDrawable(R.id.iv_call_in_icon,ContextUtils.getContext().getResources().getDrawable(R.drawable.icon_incoming_call));
+                    holder.setImageDrawable(R.id.iv_call_in_icon, ContextUtils.getContext().getResources().getDrawable(R.drawable.icon_incoming_call));
                 } else {
                     holder.setText(R.id.tv_call_in_talk_length, ContextUtils.getContext().getString(R.string.EFAMILY_MISSED_CALL));
-                    holder.setImageDrawable(R.id.iv_call_in_icon,ContextUtils.getContext().getResources().getDrawable(R.drawable.icon_missed_call));
+                    holder.setImageDrawable(R.id.iv_call_in_icon, ContextUtils.getContext().getResources().getDrawable(R.drawable.icon_missed_call));
                 }
 
                 break;

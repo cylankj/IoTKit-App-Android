@@ -6,15 +6,13 @@ import android.os.Parcelable;
 import com.cylan.jiafeigou.support.db.annotation.Column;
 import com.cylan.jiafeigou.support.db.annotation.Table;
 
-import java.io.Serializable;
-
 /**
  * 作者：zsl
  * 创建时间：2016/8/30
  * 描述：
  */
 @Table(name = "MineMessageBean")
-public class MineMessageBean implements Parcelable{
+public class MineMessageBean implements Parcelable {
 
     @Column(name = "id", isId = true)
     public int id;
@@ -31,7 +29,8 @@ public class MineMessageBean implements Parcelable{
     @Column(name = "isCheck")
     public int isCheck;
 
-    public MineMessageBean(){}
+    public MineMessageBean() {
+    }
 
     public MineMessageBean(String content, int type, String time) {
         this.content = content;
@@ -91,6 +90,7 @@ public class MineMessageBean implements Parcelable{
     public void setIsCheck(int isCheck) {
         this.isCheck = isCheck;
     }
+
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.name);

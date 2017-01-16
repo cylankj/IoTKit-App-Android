@@ -15,10 +15,10 @@ import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.rx.RxHelper;
 import com.cylan.jiafeigou.support.log.AppLogger;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
@@ -92,8 +92,8 @@ public class DataPointManager implements IParser, IDataPoint {
                             base.setValue(DpUtils.unpackData(jfg.packValue, DpMsgMap.ID_2_CLASS_MAP.get((int) jfg.id)));
                             boolean result = update(uuid, base, false);
                             if (result) updatedItems.put(jfgRobotSyncData.identity, base);
-                        } catch (IOException e) {
-                            AppLogger.e("" + e.getLocalizedMessage());
+                        } catch (Exception e) {
+                            AppLogger.e("" + jfg.id + " " + e.getLocalizedMessage());
                         }
                     }
                     AppLogger.i("robotSyc:" + updatedItems.keySet());
@@ -193,11 +193,6 @@ public class DataPointManager implements IParser, IDataPoint {
         return bundleMap.remove(uuid + id);
     }
 
-    @SuppressWarnings("unchecked")
-    public static <T extends Set<?>> T cast(Object obj) {
-        return (T) obj;
-    }
-
     private Subscription fullDataPointAssembler() {
         return RxBus.getCacheInstance().toObservable(RobotoGetDataRsp.class)
                 .subscribeOn(Schedulers.computation())
@@ -233,7 +228,7 @@ public class DataPointManager implements IParser, IDataPoint {
 //                            RxBus.getCacheInstance().post(response);
                         }
                         if (needNotify || querySeqMap.containsKey(dpDataRsp.seq)) {
-                            if (DEBUG) Log.e(TAG, "file setDevice: " + dpDataRsp.seq);
+                            if (DEBUG) Log.i(TAG, "file setDevice: " + dpDataRsp.seq);
                             querySeqMap.remove(dpDataRsp.seq);
                             RxBus.getCacheInstance().post(dpDataRsp.seq);
                         }
@@ -292,10 +287,30 @@ public class DataPointManager implements IParser, IDataPoint {
         return jfgDeviceMap.get(uuid);
     }
 
+    @Override
+    public boolean updateJFGDevice(String account, JFGDevice device) {
+        String finalKey = account + device.uuid;
+        jfgDeviceMap.remove(finalKey);
+        jfgDeviceMap.put(finalKey, device);
+        return device != null;
+    }
+
+    @Override
+    public <T extends com.cylan.jiafeigou.base.module.JFGDevice> T fetchDevice(String uuid) {
+        return null;
+    }
 
     @Override
     public ArrayList<JFGDevice> fetchAll(String account) {
-        return null;
+        Iterator<String> keySet = jfgDeviceMap.keySet().iterator();
+        ArrayList<JFGDevice> allList = new ArrayList<>();
+        while (keySet.hasNext()) {
+            String key = keySet.next();
+            if (key.startsWith(account)) {
+                allList.add(jfgDeviceMap.get(key));
+            }
+        }
+        return allList;
     }
 
     @Override
@@ -348,6 +363,17 @@ public class DataPointManager implements IParser, IDataPoint {
             AppLogger.e("" + e.getLocalizedMessage());
         }
         return remove;
+    }
+
+    @Override
+    public boolean deleteJFGDevice(String account, String uuid) {
+        boolean ret = jfgDeviceMap.remove(account + uuid) != null;
+        try {
+            JfgCmdInsurance.getCmd().unBindDevice(uuid);
+        } catch (JfgException e) {
+            ret = false;
+        }
+        return ret;
     }
 
     @Override
@@ -471,7 +497,7 @@ public class DataPointManager implements IParser, IDataPoint {
                     } catch (JfgException e) {
                         AppLogger.e("" + e.getLocalizedMessage());
                     }
-                    AppLogger.i(TAG + ",fetchUnreadCount:" + id);
+                    AppLogger.i(TAG + ",fetchUnreadCount:" + uuid + " " + id);
 
                 });
     }
@@ -488,7 +514,6 @@ public class DataPointManager implements IParser, IDataPoint {
     public long robotGetData(String peer, ArrayList<JFGDPMsg> queryDps, int limit, boolean asc, int timeoutMs) throws JfgException {
         long seq = JfgCmdInsurance.getCmd().robotGetData(peer, queryDps, limit, asc, timeoutMs);
         querySeqMap.put(seq, seq);
-        Log.d("robotGetData", "robotGetData....此处可以简化,版本管理在这里做.,传一个List<Long(id)>");
         return seq;
     }
 

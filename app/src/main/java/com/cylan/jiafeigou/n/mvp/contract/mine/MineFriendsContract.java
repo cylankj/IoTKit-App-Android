@@ -62,6 +62,7 @@ public interface MineFriendsContract {
 
         /**
          * desc：删除添加请求条目
+         *
          * @param bean
          */
         void addReqDeleteItem(MineAddReqBean bean);
@@ -170,6 +171,7 @@ public interface MineFriendsContract {
 
         /**
          * 删除好友请求的回调
+         *
          * @return
          */
         Subscription deleteAddReqBack();

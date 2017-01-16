@@ -5,10 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.widget.Toast;
 
 import com.cylan.entity.JfgEnum;
-import com.cylan.jiafeigou.R;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.cache.JCache;
 import com.cylan.jiafeigou.misc.JConstant;
@@ -24,7 +22,6 @@ import com.cylan.jiafeigou.support.qqLogIn.TencentInstance;
 import com.cylan.jiafeigou.support.sina.AccessTokenKeeper;
 import com.cylan.jiafeigou.support.sina.SinaLogin;
 import com.cylan.jiafeigou.support.sina.UsersAPI;
-import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.google.gson.Gson;
@@ -40,9 +37,7 @@ import com.tencent.tauth.UiError;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.msgpack.util.json.JSON;
 
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
@@ -50,9 +45,7 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
 import rx.functions.Action1;
-import rx.functions.Func1;
 import rx.schedulers.Schedulers;
-import rx.subscriptions.CompositeSubscription;
 
 
 /**
@@ -62,7 +55,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
         implements LoginContract.Presenter {
 
     private Context ctx;
-    private CompositeSubscription subscription;
+    //    private CompositeSubscription subscription;
     private SinaLogin sinaUtil;
     private TencentInstance tencentInstance;
     private QQAuthrizeListener qqAuthrizeListener;
@@ -77,60 +70,52 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
     public void executeLogin(final LoginAccountBean login) {
         Observable.just(login)
                 .subscribeOn(Schedulers.newThread())
-                .map(new Func1<LoginAccountBean, LoginAccountBean>() {
-                    @Override
-                    public LoginAccountBean call(LoginAccountBean o) {
-                        try {
-                            JfgCmdInsurance.getCmd().login(o.userName, o.pwd);
-                        } catch (JfgException e) {
-                            e.printStackTrace();
-                        }
-                        AppLogger.i("LoginAccountBean: " + new Gson().toJson(login));
-                        //非三方登录的标记
-                        RxBus.getCacheInstance().postSticky(false);
-                        return o;
+                .map((LoginAccountBean o) -> {
+                    try {
+                        JfgCmdInsurance.getCmd().login(o.userName, o.pwd);
+                    } catch (JfgException e) {
+                        e.printStackTrace();
                     }
+                    AppLogger.i("LoginAccountBean: " + new Gson().toJson(login));
+                    //非三方登录的标记
+                    RxBus.getCacheInstance().postSticky(false);
+                    return o;
                 })
                 .subscribe();
     }
 
     /**
      * 执行第三方登录
+     *
      * @param accend_token
      */
     @Override
-    public void executeOpenLogin(final String accend_token,int type) {
+    public void executeOpenLogin(final String accend_token, int type) {
         rx.Observable.just(null)
                 .subscribeOn(Schedulers.newThread())
-                .subscribe(new Action1<Object>() {
-                    @Override
-                    public void call(Object o) {
-                        try {
-                            JfgCmdInsurance.getCmd().openLogin(accend_token,"www.cylan.com",type);
-                        } catch (JfgException e) {
-                            e.printStackTrace();
-                        }
-                        //第三方登录的标记
-                        RxBus.getCacheInstance().postSticky(true);
+                .subscribe((Object o) -> {
+                    try {
+                        JfgCmdInsurance.getCmd().openLogin(accend_token, "www.cylan.com", type);
+                    } catch (JfgException e) {
+                        e.printStackTrace();
                     }
-                }, new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                        AppLogger.e("executeOpenLogin"+new Gson().toJson(accend_token));
-                    }
+                    //第三方登录的标记
+                    RxBus.getCacheInstance().postSticky(true);
+                }, (Throwable throwable) -> {
+                    AppLogger.e("executeOpenLogin" + new Gson().toJson(accend_token));
                 });
     }
 
     @Override
-    public void start() {
-        unSubscribe(subscription);
-        subscription = new CompositeSubscription();
-        subscription.add(resultLoginSub());
-//        subscription.add(resultRegisterSub());
-        subscription.add(resultVerifyCodeSub());
-        subscription.add(smsCodeResultSub());
-        subscription.add(switchBoxSub());
-        subscription.add(loginPopBackSub());
+    protected Subscription[] register() {
+        return new Subscription[]{
+                resultLoginSub(),
+                resultVerifyCodeSub(),
+                smsCodeResultSub(),
+                switchBoxSub(),
+                loginPopBackSub(),
+                resultRegisterSub()
+        };
     }
 
     private Subscription resultLoginSub() {
@@ -138,18 +123,12 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
         return RxBus.getCacheInstance().toObservable(RxEvent.ResultLogin.class)
                 .delay(500, TimeUnit.MILLISECONDS)//set a delay
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<RxEvent.ResultLogin>() {
-                    @Override
-                    public void call(RxEvent.ResultLogin resultLogin) {
-                        if (getView().isLoginViewVisible()) {
-                            getView().loginResult(resultLogin.code);
-                        }
+                .subscribe((RxEvent.ResultLogin resultLogin) -> {
+                    if (getView().isLoginViewVisible()) {
+                        getView().loginResult(resultLogin.code);
                     }
-                }, new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                        AppLogger.e("" + throwable);
-                    }
+                }, (Throwable throwable) -> {
+                    AppLogger.e("" + throwable);
                 });
     }
 
@@ -158,17 +137,14 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
                 .subscribeOn(Schedulers.newThread())
                 .delay(1000, TimeUnit.MILLISECONDS)//set a delay
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<RxEvent.ResultRegister>() {
-                    @Override
-                    public void call(RxEvent.ResultRegister register) {
-                        if (getView().isLoginViewVisible()) {
-                            getView().registerResult(register.code);
-                        }
-                        if (register.code == JError.ErrorOK) {
-                            //注册成功
-                            PreferencesUtils.putString(JConstant.KEY_REGISTER_SMS_TOKEN, "");
-                            getView().registerResult(register.code);
-                        }
+                .subscribe((RxEvent.ResultRegister register) -> {
+                    if (getView().isLoginViewVisible()) {
+                        getView().registerResult(register.code);
+                    }
+                    if (register.code == JError.ErrorOK) {
+                        //注册成功
+                        PreferencesUtils.putString(JConstant.KEY_REGISTER_SMS_TOKEN, "");
+                        getView().registerResult(register.code);
                     }
                 }, new Action1<Throwable>() {
                     @Override
@@ -205,22 +181,16 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
         return RxBus.getCacheInstance().toObservable(RxEvent.SmsCodeResult.class)
                 .delay(1000, TimeUnit.MILLISECONDS)//set a delay
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<RxEvent.SmsCodeResult>() {
-                    @Override
-                    public void call(RxEvent.SmsCodeResult smsCodeResult) {
-                        if (getView().isLoginViewVisible() && JCache.isSmsAction) {
+                .subscribe((RxEvent.SmsCodeResult smsCodeResult) -> {
+                    if (getView().isLoginViewVisible() && JCache.isSmsAction) {
 //                            getView().registerResult(smsCodeResult.error);
-                            if (smsCodeResult.error == 0) {
-                                //store the token .
-                                PreferencesUtils.putString(JConstant.KEY_REGISTER_SMS_TOKEN, smsCodeResult.token);
-                            }
+                        if (smsCodeResult.error == 0) {
+                            //store the token .
+                            PreferencesUtils.putString(JConstant.KEY_REGISTER_SMS_TOKEN, smsCodeResult.token);
                         }
                     }
-                }, new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                        AppLogger.e("" + throwable.getLocalizedMessage());
-                    }
+                }, (Throwable throwable) -> {
+                    AppLogger.e("" + throwable.getLocalizedMessage());
                 });
     }
 
@@ -258,30 +228,26 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
                 });
     }
 
-    @Override
-    public void stop() {
-        unSubscribe(subscription);
-    }
 
     @Override
     public void getQQAuthorize(Activity activity) {
         tencentInstance = new TencentInstance();
-        if (tencentInstance.mTencent.isSessionValid()){
-            executeOpenLogin(tencentInstance.mTencent.getAccessToken(),3);
+        if (tencentInstance.mTencent.isSessionValid()) {
+            executeOpenLogin(tencentInstance.mTencent.getAccessToken(), 3);
             return;
         }
         qqAuthrizeListener = new QQAuthrizeListener();
-        tencentInstance.logIn(activity,Constants.SCOPE, qqAuthrizeListener);
+        tencentInstance.logIn(activity, Constants.SCOPE, qqAuthrizeListener);
     }
 
     @Override
     public void startSinaAuthorize(Activity activity) {
         Oauth2AccessToken accessToken = AccessTokenKeeper.readAccessToken(getView().getContext());
         if (accessToken != null && accessToken.isSessionValid()) {
-            executeOpenLogin(accessToken.getToken(),4);
+            executeOpenLogin(accessToken.getToken(), 4);
             UsersAPI usersAPI = new UsersAPI(accessToken, getView().getContext());
             Long uid = Long.parseLong(accessToken.getUid());
-            usersAPI.show(uid,sinaRequestListener);
+            usersAPI.show(uid, sinaRequestListener);
             return;
         }
 
@@ -320,7 +286,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
                     @Override
                     public void call(Object o) {
                         try {
-                        JfgCmdInsurance.getCmd().verifySMS(phone, code, token);
+                            JfgCmdInsurance.getCmd().verifySMS(phone, code, token);
                         } catch (JfgException e) {
                             e.printStackTrace();
                         }
@@ -335,22 +301,23 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
 
     @Override
     public SsoHandler getSinaCallBack() {
-        if(sinaUtil == null){
+        if (sinaUtil == null) {
             return null;
-        }else {
+        } else {
             return sinaUtil.mSsoHandler;
         }
     }
 
     /**
      * QQ登录在OnActivity中的回调
+     *
      * @param requestCode
      * @param resultCode
      * @param data
      */
     @Override
     public void onActivityResultData(int requestCode, int resultCode, Intent data) {
-        Tencent.onActivityResultData(requestCode,resultCode,data,qqAuthrizeListener);
+        Tencent.onActivityResultData(requestCode, resultCode, data, qqAuthrizeListener);
     }
 
     /**
@@ -362,13 +329,13 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
             Oauth2AccessToken accessToken = Oauth2AccessToken.parseAccessToken(values);
             UsersAPI usersAPI = new UsersAPI(accessToken, getView().getContext());
             Long uid = Long.parseLong(accessToken.getUid());
-            usersAPI.show(uid,sinaRequestListener);
+            usersAPI.show(uid, sinaRequestListener);
             if (accessToken != null && accessToken.isSessionValid()) {
-                executeOpenLogin(accessToken.getToken(),4);
+                executeOpenLogin(accessToken.getToken(), 4);
                 AccessTokenKeeper.writeAccessToken(getView().getContext(), accessToken);
-            }else {
+            } else {
                 String code = values.getString("code", "");
-                AppLogger.d("sina_code"+code);
+                AppLogger.d("sina_code" + code);
             }
         }
 
@@ -399,8 +366,8 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
                     String strId = new JSONObject(response).getString("idstr");
                     String profile_image_url = new JSONObject(response).getString("profile_image_url");
                     String userAlias = new JSONObject(response).getString("screen_name");
-                    PreferencesUtils.putString(JConstant.OPEN_LOGIN_USER_ICON,profile_image_url);
-                    PreferencesUtils.putString(JConstant.OPEN_LOGIN_USER_ALIAS,userAlias);
+                    PreferencesUtils.putString(JConstant.OPEN_LOGIN_USER_ICON, profile_image_url);
+                    PreferencesUtils.putString(JConstant.OPEN_LOGIN_USER_ALIAS, userAlias);
                 }
             } catch (JSONException e) {
                 AppLogger.e(e.toString());
@@ -419,7 +386,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
     /**
      * QQ授权回调
      */
-    private class QQAuthrizeListener implements IUiListener{
+    private class QQAuthrizeListener implements IUiListener {
 
         @Override
         public void onComplete(Object response) {
@@ -454,11 +421,12 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
 
     /**
      * QQ登录回调解析token
+     *
      * @param response
      */
     private void doComplete(JSONObject response) {
         try {
-            if (response.getInt("ret") == 0){
+            if (response.getInt("ret") == 0) {
                 String openID = response.getString("openid");
                 String accessToken = response.getString("access_token");
                 String expires = response.getString("expires_in");
@@ -466,7 +434,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
                 tencentInstance.mTencent.setAccessToken(accessToken, expires);
                 getuserInfo();
                 //执行登录
-                executeOpenLogin(accessToken,3);
+                executeOpenLogin(accessToken, 3);
             }
 
         } catch (JSONException e) {
@@ -475,7 +443,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
     }
 
     private void getuserInfo() {
-        UserInfo qqInfo = new UserInfo(getView().getContext(),tencentInstance.mTencent.getQQToken());
+        UserInfo qqInfo = new UserInfo(getView().getContext(), tencentInstance.mTencent.getQQToken());
         qqInfo.getUserInfo(getQQinfoListener);
     }
 
@@ -489,8 +457,8 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
                 JSONObject jsonObject = (JSONObject) response;
                 String nickname = jsonObject.getString("nickname");
                 String figureurl = jsonObject.getString("figureurl");
-                PreferencesUtils.putString(JConstant.OPEN_LOGIN_USER_ICON,figureurl);
-                PreferencesUtils.putString(JConstant.OPEN_LOGIN_USER_ALIAS,nickname);
+                PreferencesUtils.putString(JConstant.OPEN_LOGIN_USER_ICON, figureurl);
+                PreferencesUtils.putString(JConstant.OPEN_LOGIN_USER_ALIAS, nickname);
                 //处理自己需要的信息
             } catch (Exception e) {
                 e.printStackTrace();

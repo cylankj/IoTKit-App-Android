@@ -4,7 +4,7 @@ package com.cylan.jiafeigou.n.mvp.impl.splash;
 import android.text.TextUtils;
 
 import com.cylan.ex.JfgException;
-import com.cylan.jiafeigou.cache.JCache;
+import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.contract.splash.SplashContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
@@ -42,12 +42,14 @@ public class SplashPresenterImpl extends AbstractPresenter<SplashContract.View>
 
     @Override
     public void resumeLogin() {
-        Observable.just(JCache.isOnline())
+        Observable.just(GlobalDataProxy.getInstance().isOnline()
+                && GlobalDataProxy.getInstance().getJfgAccount() != null)
                 .subscribeOn(Schedulers.newThread())
                 .filter(new Func1<Boolean, Boolean>() {
                     @Override
                     public Boolean call(Boolean aBoolean) {
-                        return !JCache.isOnline();
+                        return !GlobalDataProxy.getInstance().isOnline()
+                                && GlobalDataProxy.getInstance().getJfgAccount() != null;
                     }
                 })
                 .subscribe(new Action1<Boolean>() {

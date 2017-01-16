@@ -32,7 +32,6 @@ import com.google.zxing.common.BitMatrix;
 
 import java.util.EnumMap;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
 import rx.Subscription;
@@ -240,12 +239,12 @@ public class MineFriendScanAddPresenterImp extends AbstractPresenter<MineFriendS
                 resutBean.account = checkAccountCallback.s;
                 resutBean.alias = checkAccountCallback.s1;
                 try {
-                    resutBean.iconUrl = JfgCmdInsurance.getCmd().getCloudUrlByType(JfgEnum.JFG_URL.PORTRAIT,0,checkAccountCallback.s+".jpg","");
+                    resutBean.iconUrl = JfgCmdInsurance.getCmd().getCloudUrlByType(JfgEnum.JFG_URL.PORTRAIT, 0, checkAccountCallback.s + ".jpg", "");
                 } catch (JfgException e) {
                     e.printStackTrace();
                 }
-                getView().jump2FriendDetailFragment(false,resutBean);
-            }else if (checkAccountCallback.i == 241){
+                getView().jump2FriendDetailFragment(false, resutBean);
+            } else if (checkAccountCallback.i == 241) {
                 // 已经是好友了
                 getView().isMineFriendResult();
             } else {
@@ -266,7 +265,7 @@ public class MineFriendScanAddPresenterImp extends AbstractPresenter<MineFriendS
                 ContextUtils.getContext().registerReceiver(network, filter);
             }
         } catch (Exception e) {
-            AppLogger.e("registerNetworkMonitor"+e.getLocalizedMessage());
+            AppLogger.e("registerNetworkMonitor" + e.getLocalizedMessage());
         }
     }
 

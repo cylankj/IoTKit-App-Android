@@ -1,28 +1,21 @@
 package com.cylan.jiafeigou.n.mvp.impl.mag;
 
 import android.text.TextUtils;
-import android.util.Pair;
 
-import com.cylan.ex.JfgException;
-import com.cylan.jiafeigou.dp.DpUtils;
-import com.cylan.jiafeigou.misc.JfgCmdInsurance;
+import com.cylan.entity.jniCall.JFGDevice;
+import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
 import com.cylan.jiafeigou.n.db.DataBaseUtil;
 import com.cylan.jiafeigou.n.mvp.contract.mag.HomeMagLiveContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
-import com.cylan.jiafeigou.n.mvp.model.BaseBean;
-import com.cylan.jiafeigou.n.mvp.model.BeanMagInfo;
-import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
 import com.cylan.jiafeigou.n.mvp.model.MagBean;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.db.DbManager;
 import com.cylan.jiafeigou.support.db.ex.DbException;
-import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 
 import java.util.concurrent.TimeUnit;
 
-import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
@@ -40,10 +33,9 @@ public class HomeMagLivePresenterImp extends AbstractPresenter<HomeMagLiveContra
     private boolean isChick = false;
     private DbManager dbManager;
     private CompositeSubscription compositeSubscription;
-    private BeanMagInfo magInfoBean;
     private String uuid;
 
-    public HomeMagLivePresenterImp(HomeMagLiveContract.View view,String uuid) {
+    public HomeMagLivePresenterImp(HomeMagLiveContract.View view, String uuid) {
         super(view);
         view.setPresenter(this);
         this.uuid = uuid;
@@ -51,7 +43,8 @@ public class HomeMagLivePresenterImp extends AbstractPresenter<HomeMagLiveContra
 
     @Override
     public void start() {
-        if (compositeSubscription != null && !compositeSubscription.isUnsubscribed()){
+        super.start();
+        if (compositeSubscription != null && !compositeSubscription.isUnsubscribed()) {
             compositeSubscription.unsubscribe();
         } else {
             compositeSubscription = new CompositeSubscription();
@@ -61,6 +54,7 @@ public class HomeMagLivePresenterImp extends AbstractPresenter<HomeMagLiveContra
 
     @Override
     public void stop() {
+        super.stop();
         if (compositeSubscription != null && !compositeSubscription.isUnsubscribed()) {
             compositeSubscription.unsubscribe();
         }
@@ -138,57 +132,19 @@ public class HomeMagLivePresenterImp extends AbstractPresenter<HomeMagLiveContra
                 });
     }
 
-    /**
-     * 拿到门磁信息
-     * @return
-     */
-    @Override
-    public BeanMagInfo getMagInfoBean() {
-        if (magInfoBean == null)
-            magInfoBean = new BeanMagInfo();
-        return magInfoBean;
-    }
 
     /**
      * 获取到设备是名字
+     *
      * @return
      */
     @Override
     public String getDeviceName() {
-        return TextUtils.isEmpty(magInfoBean.deviceBase.alias) ?
-                magInfoBean.deviceBase.uuid : magInfoBean.deviceBase.alias;
-    }
-
-    /**
-     * 保存设备信息
-     * @param magInfoBean
-     * @param id
-     */
-    public void saveMagInfoBean(final BeanMagInfo magInfoBean, int id) {
-        this.magInfoBean = magInfoBean;
-        Observable.just(new Pair<>(magInfoBean, id))
-                .subscribeOn(Schedulers.io())
-                .subscribe(new Action1<Pair<BeanMagInfo, Integer>>() {
-                    @Override
-                    public void call(Pair<BeanMagInfo, Integer> beanMagInfoIntegerPair) {
-                        int id = beanMagInfoIntegerPair.second;
-                        RxEvent.JFGAttributeUpdate update = new RxEvent.JFGAttributeUpdate();
-                        update.uuid = magInfoBean.deviceBase.uuid;
-                        update.o = beanMagInfoIntegerPair.first.getObject(id);
-                        update.msgId = id;
-                        update.version = System.currentTimeMillis();
-                        RxBus.getCacheInstance().post(update);
-                        try {
-                            JfgCmdInsurance.getCmd().robotSetData(magInfoBean.deviceBase.uuid,
-                                    DpUtils.getList(id,
-                                            beanMagInfoIntegerPair.first.getByte(id)
-                                            , System.currentTimeMillis()));
-                        } catch (JfgException e) {
-                            e.printStackTrace();
-                        }
-                        AppLogger.i("save uuid Cam info");
-                    }
-                });
+        JFGDevice jfgDevice = GlobalDataProxy.getInstance().fetch(uuid);
+        if (jfgDevice == null)
+            return uuid;
+        return TextUtils.isEmpty(jfgDevice.alias) ?
+                uuid : jfgDevice.alias;
     }
 
 }

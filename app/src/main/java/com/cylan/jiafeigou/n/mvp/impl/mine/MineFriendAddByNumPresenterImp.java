@@ -129,7 +129,7 @@ public class MineFriendAddByNumPresenterImp extends AbstractPresenter<MineFriend
                 addReqBean.account = checkAccountCallback.s;
                 addReqBean.alias = checkAccountCallback.s1;
                 try {
-                    addReqBean.iconUrl = JfgCmdInsurance.getCmd().getCloudUrlByType(JfgEnum.JFG_URL.PORTRAIT,0,checkAccountCallback.s+".jpg","");
+                    addReqBean.iconUrl = JfgCmdInsurance.getCmd().getCloudUrlByType(JfgEnum.JFG_URL.PORTRAIT, 0, checkAccountCallback.s + ".jpg", "");
                 } catch (JfgException e) {
                     e.printStackTrace();
                 }
@@ -156,7 +156,7 @@ public class MineFriendAddByNumPresenterImp extends AbstractPresenter<MineFriend
                 ContextUtils.getContext().registerReceiver(network, filter);
             }
         } catch (Exception e) {
-            AppLogger.e("registerNetworkMonitor"+e.getLocalizedMessage());
+            AppLogger.e("registerNetworkMonitor" + e.getLocalizedMessage());
         }
     }
 

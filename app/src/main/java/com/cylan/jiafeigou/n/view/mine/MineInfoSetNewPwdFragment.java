@@ -82,15 +82,15 @@ public class MineInfoSetNewPwdFragment extends IBaseFragment implements MineInfo
     }
 
     @OnTextChanged(R.id.et_mine_set_newpwd)
-    public void onNewPwdChance(CharSequence s, int start, int before, int count){
+    public void onNewPwdChance(CharSequence s, int start, int before, int count) {
         boolean isEmpty = TextUtils.isEmpty(s);
-        ivMineNewPwdClear.setVisibility(isEmpty?View.GONE:View.VISIBLE);
-        ivMineInfoSetNewpwdAble.setImageDrawable(isEmpty?getResources().getDrawable(R.drawable.icon_finish_disable):getResources().getDrawable(R.drawable.icon_finish));
-        ivMineInfoSetNewpwdAble.setEnabled(isEmpty?false:true);
+        ivMineNewPwdClear.setVisibility(isEmpty ? View.GONE : View.VISIBLE);
+        ivMineInfoSetNewpwdAble.setImageDrawable(isEmpty ? getResources().getDrawable(R.drawable.icon_finish_disable) : getResources().getDrawable(R.drawable.icon_finish));
+        ivMineInfoSetNewpwdAble.setEnabled(isEmpty ? false : true);
     }
 
     @OnCheckedChanged(R.id.cb_new_pwd_show)
-    public void onPwdCheckChange(CompoundButton buttonView, boolean isChecked){
+    public void onPwdCheckChange(CompoundButton buttonView, boolean isChecked) {
         ViewUtils.showPwd(etMineSetNewpwd, isChecked);
         etMineSetNewpwd.setSelection(etMineSetNewpwd.length());
     }
@@ -102,12 +102,12 @@ public class MineInfoSetNewPwdFragment extends IBaseFragment implements MineInfo
                 getFragmentManager().popBackStack();
                 break;
             case R.id.iv_mine_info_set_newpwd_able:
-                if(getNewPwd().length()<6){
+                if (getNewPwd().length() < 6) {
                     ToastUtil.showToast(getString(R.string.PASSWORD_LESSTHAN_SIX));
                     return;
                 }
                 // TODO 调用SDK 注册?????
-                presenter.openLoginRegister(useraccount,getNewPwd(),token);
+                presenter.openLoginRegister(useraccount, getNewPwd(), token);
                 break;
             case R.id.iv_mine_new_pwd_clear:
                 etMineSetNewpwd.setText("");
@@ -118,19 +118,20 @@ public class MineInfoSetNewPwdFragment extends IBaseFragment implements MineInfo
     /**
      * 获取设置的密码
      */
-    public String getNewPwd(){
+    public String getNewPwd() {
         return etMineSetNewpwd.getText().toString().trim();
     }
 
     /**
      * 注册结果
+     *
      * @param code
      */
     @Override
     public void registerResult(int code) {
-        if (code == JError.ErrorOK){
+        if (code == JError.ErrorOK) {
             ToastUtil.showToast(getString(R.string.Added_successfully));
-        }else {
+        } else {
             ToastUtil.showToast(getString(R.string.Tips_Device_TimeoutRetry));
         }
     }

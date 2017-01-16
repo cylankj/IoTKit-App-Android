@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,7 @@ import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
+import com.cylan.jiafeigou.dp.BaseValue;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
@@ -25,6 +27,7 @@ import com.cylan.jiafeigou.n.view.adapter.DeviceTimeZoneAdapter;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.dialog.BaseDialog;
 import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
+import com.google.gson.Gson;
 
 import java.util.List;
 
@@ -96,7 +99,7 @@ public class DeviceTimeZoneFragment extends IBaseFragment<TimezoneContract.Prese
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_edit_timezone, null);
+        View view = inflater.inflate(R.layout.fragment_edit_timezone, container, false);
         ButterKnife.bind(this, view);
         return view;
     }
@@ -106,8 +109,8 @@ public class DeviceTimeZoneFragment extends IBaseFragment<TimezoneContract.Prese
             simpleDialog = new SimpleDialogFragment();
             Bundle bundle = new Bundle();
             bundle.putString(BaseDialog.KEY_TITLE, getString(R.string.TIMEZONE_CHOOSE));
-            bundle.putString(SimpleDialogFragment.KEY_LEFT_CONTENT, getString(R.string.CANCEL));
-            bundle.putString(SimpleDialogFragment.KEY_RIGHT_CONTENT, getString(R.string.OK));
+            bundle.putString(SimpleDialogFragment.KEY_RIGHT_CONTENT, getString(R.string.CANCEL));
+            bundle.putString(SimpleDialogFragment.KEY_LEFT_CONTENT, getString(R.string.OK));
             bundle.putString(SimpleDialogFragment.KEY_CONTENT_CONTENT, getString(R.string.TIMEZONE_INFO));
             simpleDialog.setArguments(bundle);
         }
@@ -122,35 +125,36 @@ public class DeviceTimeZoneFragment extends IBaseFragment<TimezoneContract.Prese
         DpMsgDefine.DPTimeZone info = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_214_DEVICE_TIME_ZONE, null);
         String timeZoneId = info == null ? "" : info.timezone;
         adapter.setChooseId(timeZoneId);
+        Log.d("onViewCreated", "offset: " + timeZoneId);
         lvTimezoneDetail.setAdapter(adapter);
-        adapter.setOnCLick(new DeviceTimeZoneAdapter.OnCLick() {
-            @Override
-            public void onClick(View v) {
-                initDialog();
-                if (simpleDialog.isVisible() || simpleDialog.isResumed()) {
-                    return;
-                }
-                int id = ViewUtils.getParentAdapterPosition(lvTimezoneDetail, v, R.id.lLayout_timezone_item);
-                simpleDialog.setValue(adapter.getItem(id));
-                simpleDialog.setAction(new BaseDialog.BaseDialogAction() {
-                    @Override
-                    public void onDialogAction(int id, Object value) {
-                        if (value != null && value instanceof TimeZoneBean) {
-                            DpMsgDefine.DPTimeZone timeZone = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_214_DEVICE_TIME_ZONE, null);
-                            int offset = timeZone.offset;
-                            if (offset != ((TimeZoneBean) value).getOffset()) {
-                                timeZone.timezone = ((TimeZoneBean) value).getName();
-                                if (callBack != null)
-                                    callBack.callBack(timeZone);
-                                getActivity().onBackPressed();
-                                //没必要设置
-                            }
-                        }
-                    }
-                });
-                simpleDialog.show(getChildFragmentManager(), "simpleDialog");
-                hideKeyboard(getView());
+        adapter.setOnCLick((View v) -> {
+            initDialog();
+            if (simpleDialog.isVisible() || simpleDialog.isResumed()) {
+                return;
             }
+            int position = ViewUtils.getParentAdapterPosition(lvTimezoneDetail, v, R.id.lLayout_timezone_item);
+            simpleDialog.setValue(adapter.getItem(position));
+            simpleDialog.setAction((int id, Object value) -> {
+                if (value != null && value instanceof TimeZoneBean) {
+                    DpMsgDefine.DPTimeZone timeZone = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_214_DEVICE_TIME_ZONE, DpMsgDefine.DPTimeZone.empty);
+                    int offset = timeZone.offset;
+                    if (offset != ((TimeZoneBean) value).getOffset()) {
+                        timeZone.timezone = ((TimeZoneBean) value).getId();
+                        timeZone.offset = ((TimeZoneBean) value).getOffset();
+                        BaseValue baseValue = new BaseValue();
+                        baseValue.setValue(timeZone);
+                        baseValue.setId(DpMsgMap.ID_214_DEVICE_TIME_ZONE);
+                        baseValue.setVersion(System.currentTimeMillis());
+                        GlobalDataProxy.getInstance().update(uuid, baseValue, true);
+                        if (callBack != null)
+                            callBack.callBack(timeZone);
+                        getActivity().onBackPressed();
+                        //没必要设置
+                    }
+                }
+            });
+            simpleDialog.show(getChildFragmentManager(), "simpleDialog");
+            hideKeyboard(getView());
         });
         lvTimezoneDetail.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -176,6 +180,7 @@ public class DeviceTimeZoneFragment extends IBaseFragment<TimezoneContract.Prese
      * 点击确认按钮之后，把软键盘进行隐藏
      */
     private void hideKeyboard(View view) {
+        if (view == null) return;
         InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
         inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }

@@ -11,7 +11,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,8 +39,6 @@ import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.video.VideoViewFactory;
-
-import java.io.Serializable;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -105,7 +102,7 @@ public class CloudLiveCallActivity extends AppCompatActivity implements CloudLiv
         super.onStart();
         if (presenter != null) presenter.start();
         initView();
-        if (!isCallIn){
+        if (!isCallIn) {
             presenter.onCloudCallConnettion();
         }
     }
@@ -143,19 +140,19 @@ public class CloudLiveCallActivity extends AppCompatActivity implements CloudLiv
      * 各种点击挂断处理
      */
     private void handlerHangUpResultData() {
-        if (presenter.getIsConnectOk()){
-            if (isCallIn){
+        if (presenter.getIsConnectOk()) {
+            if (isCallIn) {
                 // 呼入连接成功挂断
                 handlerCallingReuslt(JConstant.CLOUD_IN_CONNECT_OK);
-            }else {
+            } else {
                 // 呼出连接成功挂断
                 handlerCallingReuslt(JConstant.CLOUD_OUT_CONNECT_OK);
             }
-        }else {
-            if (isCallIn){
+        } else {
+            if (isCallIn) {
                 // 呼入连接失败挂断
                 handlerCallingReuslt(JConstant.CLOUD_IN_CONNECT_FAILED);
-            }else {
+            } else {
                 // 呼出连接失败挂断
                 handlerCallingReuslt(JConstant.CLOUD_OUT_CONNECT_FAILED);
             }
@@ -164,6 +161,7 @@ public class CloudLiveCallActivity extends AppCompatActivity implements CloudLiv
 
     /**
      * 生成保存的消息bean
+     *
      * @param type
      * @param videoLength
      * @param hasConnet
@@ -177,7 +175,7 @@ public class CloudLiveCallActivity extends AppCompatActivity implements CloudLiv
         CloudLiveBaseDbBean outDbBean = new CloudLiveBaseDbBean();
         outDbBean.setType(type);
         outDbBean.setUuid(uuid);
-        switch (type){
+        switch (type) {
             case 1:
                 CloudLiveCallInBean inLeaveBean = new CloudLiveCallInBean();
                 inLeaveBean.setVideoLength(videoLength);
@@ -201,12 +199,12 @@ public class CloudLiveCallActivity extends AppCompatActivity implements CloudLiv
 
     /**
      * 响应设备分辨率回调
+     *
      * @param resolution
      * @throws JfgException
      */
     @Override
     public void onResolution(JFGMsgVideoResolution resolution) throws JfgException {
-        hideLoadingView();
         initLocalVideoView();
         initRenderVideoView();
         checkPermission();
@@ -214,51 +212,52 @@ public class CloudLiveCallActivity extends AppCompatActivity implements CloudLiv
 
     /**
      * 呼叫的结果的处理
+     *
      * @param msgId
      */
     @Override
     public void handlerCallingReuslt(int msgId) {
-        switch(msgId){
+        switch (msgId) {
             case JConstant.CLOUD_IN_CONNECT_TIME_OUT:          // 中控呼入app无应答
-                CloudLiveBaseBean inBeanTimeOut = createCloudBackBean(1,"",false);
-                if (callBack != null){
+                CloudLiveBaseBean inBeanTimeOut = createCloudBackBean(1, "", false);
+                if (callBack != null) {
                     callBack.onCloudMesgBack(inBeanTimeOut);
                 }
                 ToastUtil.showToast("未接通");
                 break;
 
             case JConstant.CLOUD_OUT_CONNECT_TIME_OUT:            // 呼出超时
-                CloudLiveBaseBean outBeanTimeOut = createCloudBackBean(2,tvVideoTime.getText().toString(),false);
-                if (callBack != null){
+                CloudLiveBaseBean outBeanTimeOut = createCloudBackBean(2, tvVideoTime.getText().toString(), false);
+                if (callBack != null) {
                     callBack.onCloudMesgBack(outBeanTimeOut);
                 }
                 ToastUtil.showToast("连接超时");
                 break;
 
             case JConstant.CLOUD_IN_CONNECT_OK: //呼入连接成功 点击挂断按钮
-                CloudLiveBaseBean newBean = createCloudBackBean(1,tvVideoTime.getText().toString(),true);
-                if (callBack != null){
+                CloudLiveBaseBean newBean = createCloudBackBean(1, tvVideoTime.getText().toString(), true);
+                if (callBack != null) {
                     callBack.onCloudMesgBack(newBean);
                 }
                 break;
 
             case JConstant.CLOUD_IN_CONNECT_FAILED:
-                CloudLiveBaseBean newBeanF = createCloudBackBean(1,"",false);
-                if (callBack != null){
+                CloudLiveBaseBean newBeanF = createCloudBackBean(1, "", false);
+                if (callBack != null) {
                     callBack.onCloudMesgBack(newBeanF);
                 }
                 break;
 
             case JConstant.CLOUD_OUT_CONNECT_OK:
-                CloudLiveBaseBean outBean = createCloudBackBean(2,tvVideoTime.getText().toString(),true);
-                if (callBack != null){
+                CloudLiveBaseBean outBean = createCloudBackBean(2, tvVideoTime.getText().toString(), true);
+                if (callBack != null) {
                     callBack.onCloudMesgBack(outBean);
                 }
                 break;
 
             case JConstant.CLOUD_OUT_CONNECT_FAILED:
-                CloudLiveBaseBean outBeanF = createCloudBackBean(2,"",false);
-                if (callBack != null){
+                CloudLiveBaseBean outBeanF = createCloudBackBean(2, "", false);
+                if (callBack != null) {
                     callBack.onCloudMesgBack(outBeanF);
                 }
                 break;
@@ -267,7 +266,7 @@ public class CloudLiveCallActivity extends AppCompatActivity implements CloudLiv
     }
 
     private void initLocalVideoView() {
-        if (mLocalSurfaceView == null){
+        if (mLocalSurfaceView == null) {
             mLocalSurfaceView = (SurfaceView) VideoViewFactory.CreateRendererExt(false,
                     ContextUtils.getContext(), true);
             mLocalSurfaceView.setId("IVideoView".hashCode());
@@ -298,7 +297,7 @@ public class CloudLiveCallActivity extends AppCompatActivity implements CloudLiv
         mRenderSurfaceView.getHolder().setFormat(PixelFormat.OPAQUE);
     }
 
-    public static void setOnCloudMesgBackListener(CloudMesgBackListener listener){
+    public static void setOnCloudMesgBackListener(CloudMesgBackListener listener) {
         callBack = listener;
     }
 
@@ -338,7 +337,7 @@ public class CloudLiveCallActivity extends AppCompatActivity implements CloudLiv
 
     @Override
     public void onLiveStop(int code) {
-        switch (code){
+        switch (code) {
             case JFGRules.PlayErr.ERR_NERWORK:
                 ToastUtil.showNegativeToast(getString(R.string.OFFLINE_ERR_1));
                 break;
@@ -370,24 +369,26 @@ public class CloudLiveCallActivity extends AppCompatActivity implements CloudLiv
                         new String[]{Manifest.permission.CAMERA},
                         1);
             }
-        }else {
+        } else {
 //            JfgCmdInsurance.getCmd().enableCamera(true,true);
-            JfgCmdInsurance.getCmd().enableRenderLocalView(true,mLocalSurfaceView);
-            JfgCmdInsurance.getCmd().enableRenderRemoteView(true,mRenderSurfaceView);
+            JfgCmdInsurance.getCmd().enableRenderLocalView(true, mLocalSurfaceView);
+            JfgCmdInsurance.getCmd().enableRenderRemoteView(true, mRenderSurfaceView);
+            hideLoadingView();
         }
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (requestCode == 1){
+        if (requestCode == 1) {
             try {
 //                JfgCmdInsurance.getCmd().enableCamera(true,true);
-                JfgCmdInsurance.getCmd().enableRenderLocalView(true,mLocalSurfaceView);
-                JfgCmdInsurance.getCmd().enableRenderRemoteView(true,mRenderSurfaceView);
+                JfgCmdInsurance.getCmd().enableRenderLocalView(true, mLocalSurfaceView);
+                JfgCmdInsurance.getCmd().enableRenderRemoteView(true, mRenderSurfaceView);
+                hideLoadingView();
             } catch (JfgException e) {
                 e.printStackTrace();
             }
-        }else {
+        } else {
             ToastUtil.showToast("获取相机权限失败");
         }
     }
@@ -395,9 +396,27 @@ public class CloudLiveCallActivity extends AppCompatActivity implements CloudLiv
     @Override
     protected void onStop() {
         super.onStop();
-        if (presenter != null){
+        if (presenter != null) {
             presenter.stopPlayVideo();
             presenter.stop();
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        if (isCallIn) {
+            if (presenter.getIsConnectOk()) {
+                handlerCallingReuslt(JConstant.CLOUD_IN_CONNECT_OK);
+            } else {
+                handlerCallingReuslt(JConstant.CLOUD_IN_CONNECT_FAILED);
+            }
+        } else {
+            if (presenter.getIsConnectOk()) {
+                handlerCallingReuslt(JConstant.CLOUD_OUT_CONNECT_OK);
+            } else {
+                handlerCallingReuslt(JConstant.CLOUD_OUT_CONNECT_FAILED);
+            }
         }
     }
 }

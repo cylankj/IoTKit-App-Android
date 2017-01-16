@@ -1,7 +1,24 @@
 package com.cylan.jiafeigou.utils;
 
+import android.content.res.XmlResourceParser;
+import android.text.TextUtils;
+import android.util.Log;
+
+import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.cache.SimpleCache;
+import com.cylan.jiafeigou.n.mvp.model.TimeZoneBean;
+
+import org.xmlpull.v1.XmlPullParserException;
+
+import java.io.IOException;
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+
+import rx.Observable;
+import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by cylan-hunt on 16-11-16.
@@ -86,5 +103,51 @@ public class MiscUtils {
             builder.append(String.format("%02x", b));
         }
         return builder.toString();
+    }
+
+    public static Observable<List<TimeZoneBean>> loadTimeZoneList() {
+        return Observable.just(R.xml.timezones)
+                .subscribeOn(Schedulers.computation())
+                .flatMap(new Func1<Integer, Observable<List<TimeZoneBean>>>() {
+                    @Override
+                    public Observable<List<TimeZoneBean>> call(Integer integer) {
+                        WeakReference<List<TimeZoneBean>> weakReference = SimpleCache.getInstance().timeZoneCache;
+                        if (weakReference != null && weakReference.get() != null && weakReference.get().size() > 0) {
+                            return Observable.just(weakReference.get());
+                        }
+                        XmlResourceParser xrp = ContextUtils.getContext().getResources().getXml(integer);
+                        List<TimeZoneBean> list = new ArrayList<>();
+                        try {
+                            final String tag = "timezone";
+                            while (xrp.getEventType() != XmlResourceParser.END_DOCUMENT) {
+                                if (xrp.getEventType() == XmlResourceParser.START_TAG) {
+                                    TimeZoneBean bean = new TimeZoneBean();
+                                    final String name = xrp.getName();
+                                    if (TextUtils.equals(name, tag)) {
+                                        final String timeGmtName = xrp.getAttributeValue(0);
+                                        bean.setGmt(timeGmtName);
+                                        final String timeIdName = xrp.getAttributeValue(1);
+                                        bean.setId(timeIdName);
+                                        String region = xrp.nextText().replace("\n", "");
+                                        bean.setName(region);
+                                        int factor = timeGmtName.contains("+") ? 1 : -1;
+                                        String digitGmt = BindUtils.getDigitsString(timeGmtName);
+                                        int offset = factor * Integer.parseInt(digitGmt.substring(0, 2)) * 3600 +
+                                                factor * (timeGmtName.contains(":30") ? 3600 / 2 : 0);
+                                        bean.setOffset(offset);
+                                        list.add(bean);
+                                    }
+                                }
+                                xrp.next();
+                            }
+                            SimpleCache.getInstance().timeZoneCache = new WeakReference<>(list);
+                            Log.d(tag, "timezone: " + list);
+                        } catch (XmlPullParserException e) {
+                            e.printStackTrace();
+                        } catch (IOException e) {
+                        }
+                        return Observable.just(list);
+                    }
+                });
     }
 }

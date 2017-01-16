@@ -85,7 +85,7 @@ public class MineFriendAddReqDetailPresenterImp extends AbstractPresenter<MineFr
     public void checkAddReqOutTime(MineAddReqBean addRequestItems) {
         //true 过期 false未过期
         long oneMount = 30 * 24 * 60 * 60 * 1000L;
-        if ( oneMount - addRequestItems.time < 0) {
+        if (oneMount - addRequestItems.time < 0) {
             if (getView() != null) {
                 getView().showReqOutTimeDialog();
             }
@@ -168,6 +168,7 @@ public class MineFriendAddReqDetailPresenterImp extends AbstractPresenter<MineFr
 
     /**
      * 添加好友的回调
+     *
      * @return
      */
     @Override
@@ -177,8 +178,8 @@ public class MineFriendAddReqDetailPresenterImp extends AbstractPresenter<MineFr
                 .subscribe(new Action1<RxEvent.AddFriendBack>() {
                     @Override
                     public void call(RxEvent.AddFriendBack addFriendBack) {
-                        if (addFriendBack != null && addFriendBack instanceof RxEvent.AddFriendBack){
-                            getView(). showSendAddReqResult(addFriendBack.jfgResult.code == 0 ? true:false);
+                        if (addFriendBack != null && addFriendBack instanceof RxEvent.AddFriendBack) {
+                            getView().showSendAddReqResult(addFriendBack.jfgResult.code == 0 ? true : false);
                         }
                     }
                 });
@@ -186,6 +187,7 @@ public class MineFriendAddReqDetailPresenterImp extends AbstractPresenter<MineFr
 
     /**
      * 同意添加好友的回调
+     *
      * @return
      */
     @Override
@@ -195,8 +197,8 @@ public class MineFriendAddReqDetailPresenterImp extends AbstractPresenter<MineFr
                 .subscribe(new Action1<RxEvent.ConsentAddFriendBack>() {
                     @Override
                     public void call(RxEvent.ConsentAddFriendBack consentAddFriendBack) {
-                        if (consentAddFriendBack != null && consentAddFriendBack instanceof RxEvent.ConsentAddFriendBack){
-                            getView().showAddedReult(consentAddFriendBack.jfgResult.code == 0 ? true:false);
+                        if (consentAddFriendBack != null && consentAddFriendBack instanceof RxEvent.ConsentAddFriendBack) {
+                            getView().showAddedReult(consentAddFriendBack.jfgResult.code == 0 ? true : false);
                         }
                     }
                 });

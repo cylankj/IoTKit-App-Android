@@ -252,10 +252,10 @@ public class MineShareToContactFragment extends Fragment implements MineShareToC
                 }
                 break;
             case JError.ErrorShareInvalidAccount:                             //未注册
-                if (presenter.checkSendSmsPermission()){
-                startSendMesgActivity(contractPhone);
-                }else {
-                    MineShareToContactFragment.this.requestPermissions(new String[]{Manifest.permission.SEND_SMS},1);
+                if (presenter.checkSendSmsPermission()) {
+                    startSendMesgActivity(contractPhone);
+                } else {
+                    MineShareToContactFragment.this.requestPermissions(new String[]{Manifest.permission.SEND_SMS}, 1);
                 }
                 break;
 
@@ -281,7 +281,7 @@ public class MineShareToContactFragment extends Fragment implements MineShareToC
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == 1){
+        if (requestCode == 1) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 startSendMesgActivity(contractPhone);
             } else {

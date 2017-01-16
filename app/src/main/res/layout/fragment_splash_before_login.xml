@@ -3,7 +3,7 @@
     android:id="@+id/rLayout_before_login"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/color_white"
+    android:background="#fafafa"
     android:orientation="vertical">
 
     <ImageView
@@ -16,7 +16,6 @@
         android:layout_marginTop="170dp"
         android:src="@drawable/pci_sign_in" />
 
-
     <TextView
         android:id="@+id/btn_to_login"
         android:layout_width="match_parent"
@@ -27,8 +26,8 @@
         android:layout_marginStart="30dp"
         android:background="@drawable/long_btn_bg_shape_4b9fd5"
         android:clickable="true"
-        android:gravity="center"
         android:text="@string/LOGIN"
+        android:gravity="center"
         android:textColor="@color/color_white"
         android:textSize="17sp" />
 
@@ -46,7 +45,7 @@
         android:clickable="true"
         android:gravity="center"
         android:text="@string/Tap0_register"
-        android:textColor="@color/color_7c7c7c"
+        android:textColor="@color/color_4b9fd5"
         android:textSize="17sp" />
 
     <TextView
@@ -59,6 +58,6 @@
         android:clickable="true"
         android:padding="24dp"
         android:text="@string/Tap0_WelcomeTourist"
-        android:textColor="@color/color_7c7c7c"
+        android:textColor="#aaaaaa"
         android:textSize="13sp" />
 </RelativeLayout>

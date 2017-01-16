@@ -2,7 +2,6 @@ package com.cylan.jiafeigou.support.qqLogIn;
 
 import android.app.Activity;
 import android.content.Context;
-import android.support.v4.app.Fragment;
 
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.tencent.connect.UserInfo;
@@ -22,17 +21,18 @@ public class TencentInstance {
 
     public Tencent mTencent;
 
-    public TencentInstance(){
+    public TencentInstance() {
         APP_KEY = "1103156296";
         mTencent = Tencent.createInstance(APP_KEY, ContextUtils.getContext());
     }
 
     /**
      * 登录
+     *
      * @param scope
      * @param loginListener
      */
-    public void logIn(Activity activity, String scope, IUiListener loginListener){
+    public void logIn(Activity activity, String scope, IUiListener loginListener) {
         if (!mTencent.isSessionValid()) {
             mTencent.loginServerSide(activity, scope, loginListener);
             isServerSideLogin = true;
@@ -51,8 +51,8 @@ public class TencentInstance {
     /**
      * 获取到用户的信息
      */
-    public void getUserInfo(Context context){
-        UserInfo userInfo = new UserInfo(context,mTencent.getQQToken());
+    public void getUserInfo(Context context) {
+        UserInfo userInfo = new UserInfo(context, mTencent.getQQToken());
 //        userInfo.getUserInfo(new BaseUIListener(this,"get_simple_userinfo"));
     }
 }

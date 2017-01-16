@@ -33,7 +33,6 @@ public interface JFGView {
     void onLoginStateChanged(boolean online);
 
 
-
     void onViewAction(int action, String handler, Object extra);
 
     interface Action {

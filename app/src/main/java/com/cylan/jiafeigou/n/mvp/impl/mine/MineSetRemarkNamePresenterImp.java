@@ -131,7 +131,7 @@ public class MineSetRemarkNamePresenterImp extends AbstractPresenter<MineSetRema
                 ContextUtils.getContext().registerReceiver(network, filter);
             }
         } catch (Exception e) {
-            AppLogger.e("registerNetworkMonitor"+e.getLocalizedMessage());
+            AppLogger.e("registerNetworkMonitor" + e.getLocalizedMessage());
         }
     }
 

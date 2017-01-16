@@ -24,6 +24,7 @@ public interface MineFriendsAddFriendContract {
 
         /**
          * 检测相机的权限
+         *
          * @return
          */
         boolean checkCameraPermission();

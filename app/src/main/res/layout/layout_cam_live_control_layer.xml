@@ -111,7 +111,7 @@
 
     <FrameLayout
         android:id="@+id/fLayout_land_date_container"
-        android:layout_width="280dp"
+        android:layout_width="230dp"
         android:layout_height="match_parent"
         android:layout_gravity="end"
         android:background="@color/color_4C000000"

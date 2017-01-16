@@ -36,6 +36,7 @@ public interface CloudLiveContract {
         void hideReconnetProgress();
 
         void scrollToLast();                               //滚动到最后一条
+
         /**
          * 初始化消息列表
          *
@@ -55,6 +56,7 @@ public interface CloudLiveContract {
 
         /**
          * 播放录音动画
+         *
          * @param view
          */
         void startPlayVoiceAnim(ImageView view);
@@ -118,8 +120,16 @@ public interface CloudLiveContract {
 
         /**
          * 获取用户的头像
+         *
          * @return
          */
         String getUserIcon();
+
+        /**
+         * 设备是否在线
+         *
+         * @return
+         */
+        boolean isDeviceOnline();
     }
 }

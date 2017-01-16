@@ -5,13 +5,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.text.TextUtils;
 
-import com.cylan.jiafeigou.cache.JCache;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.engine.task.OfflineTaskQueue;
-import com.cylan.jiafeigou.n.mvp.model.LoginAccountBean;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
-import com.cylan.jiafeigou.utils.PreferencesUtils;
 
 /**
  * An {@link IntentService} subclass for handling asynchronous task requests in
@@ -65,14 +62,14 @@ public class AfterLoginService extends IntentService {
             final String action = intent.getStringExtra(TAG);
             AppLogger.i("AfterLoginService: " + action);
             if (TextUtils.equals(action, ACTION_SAVE_ACCOUNT)) {
-                LoginAccountBean l = JCache.tmpAccount;
-                if (l == null || TextUtils.isEmpty(l.userName) || TextUtils.isEmpty(l.pwd)) {
-                    AppLogger.i("do nothing");
-                    return;
-                }
-                PreferencesUtils.putString("wth_a", l.userName);
-                PreferencesUtils.putString("wth_p", l.pwd);
-                //
+//                LoginAccountBean l = JCache.tmpAccount;
+//                if (l == null || TextUtils.isEmpty(l.userName) || TextUtils.isEmpty(l.pwd)) {
+//                    AppLogger.i("do nothing");
+//                    return;
+//                }
+//                PreferencesUtils.putString("wth_a", l.userName);
+//                PreferencesUtils.putString("wth_p", l.pwd);
+//                //
             } else if (TextUtils.equals(action, ACTION_GET_ACCOUNT)) {
                 JfgCmdInsurance.getCmd().getAccount();
             } else if (TextUtils.equals(action, ACTION_SYN_OFFLINE_REQ)) {

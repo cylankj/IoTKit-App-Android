@@ -6,7 +6,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.CheckBox;
@@ -147,7 +146,7 @@ public class SetupPwdFragment extends Fragment implements SetupPwdContract.View 
             case R.id.cb_show_input_box:
                 break;
             case R.id.tv_register_pwd_submit:
-                if (etInputBox.getText().toString().trim().length()<6){
+                if (etInputBox.getText().toString().trim().length() < 6) {
                     ToastUtil.showToast(getString(R.string.PASSWORD_LESSTHAN_SIX));
                     return;
                 }

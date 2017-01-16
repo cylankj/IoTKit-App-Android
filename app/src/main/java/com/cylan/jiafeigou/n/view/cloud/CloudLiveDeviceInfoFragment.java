@@ -113,7 +113,7 @@ public class CloudLiveDeviceInfoFragment extends Fragment implements CloudLiveDe
         tvSystemVersion.setText(sVersion);
         JFGDevice device = GlobalDataProxy.getInstance().fetch(uuid);
         if (device != null) {
-            tvInformationFacilityName.setText(TextUtils.isEmpty(device.alias)? device.uuid:device.alias);
+            tvInformationFacilityName.setText(TextUtils.isEmpty(device.alias) ? device.uuid : device.alias);
             tvDeviceCid.setText(device.uuid);
         }
         DpMsgDefine.DPSdStatus status = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_204_SDCARD_STORAGE, null);
@@ -177,7 +177,7 @@ public class CloudLiveDeviceInfoFragment extends Fragment implements CloudLiveDe
                         updateDetails();
                         presenter.saveCloudInfoBean(device, DpMsgMap.ID_2000003_BASE_ALIAS);
 
-                        if (listener != null){
+                        if (listener != null) {
                             listener.changeName(value);
                         }
 

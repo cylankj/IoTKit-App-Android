@@ -14,13 +14,11 @@ import android.widget.TextView;
 import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
-import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.mag.MagLiveInformationContract;
 import com.cylan.jiafeigou.n.mvp.impl.mag.MagLiveInformationPresenterImp;
-import com.cylan.jiafeigou.n.mvp.model.BeanMagInfo;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.dialog.EditFragmentDialog;
 
@@ -28,7 +26,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-import static com.cylan.jiafeigou.misc.JConstant.KEY_DEVICE_ITEM_BUNDLE;
 import static com.cylan.jiafeigou.widget.dialog.EditFragmentDialog.KEY_LEFT_CONTENT;
 import static com.cylan.jiafeigou.widget.dialog.EditFragmentDialog.KEY_RIGHT_CONTENT;
 import static com.cylan.jiafeigou.widget.dialog.EditFragmentDialog.KEY_TITLE;
@@ -128,7 +125,7 @@ public class MagLiveInformationFragment extends IBaseFragment<MagLiveInformation
 
         JFGDevice device = GlobalDataProxy.getInstance().fetch(uuid);
         if (device != null) {
-            tvDeviceAlias.setText(TextUtils.isEmpty(device.alias)? device.uuid:device.alias);
+            tvDeviceAlias.setText(TextUtils.isEmpty(device.alias) ? device.uuid : device.alias);
             tvDeviceCid.setText(device.uuid);
         }
     }
@@ -136,7 +133,7 @@ public class MagLiveInformationFragment extends IBaseFragment<MagLiveInformation
 
     @OnClick(R.id.lLayout_information_facility_name)
     public void onClick(View view) {
-        switch (view.getId()){
+        switch (view.getId()) {
             case R.id.lLayout_information_facility_name:
                 toEditAlias();
                 break;
@@ -175,7 +172,7 @@ public class MagLiveInformationFragment extends IBaseFragment<MagLiveInformation
 //                        presenter.saveMagInfoBean(device, DpMsgMap.ID_2000003_BASE_ALIAS);
 //                        updateDetails();
 
-                        if (mListener != null){
+                        if (mListener != null) {
                             mListener.magLiveDataChange(value);
                         }
 

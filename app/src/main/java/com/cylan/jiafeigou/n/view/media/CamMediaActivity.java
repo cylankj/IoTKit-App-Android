@@ -113,6 +113,11 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        finishExt();
+    }
+
     private WeakReference<ShareDialogFragment> shareDialogFragmentWeakReference;
 
     private ShareDialogFragment initShareDialog() {

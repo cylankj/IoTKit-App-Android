@@ -48,7 +48,7 @@ public class MineFriendListShareDevicesPresenterImp extends AbstractPresenter<Mi
     private String relAndFriendBean;
     private Network network;
 
-    public MineFriendListShareDevicesPresenterImp(String relAndFriendBean,MineFriendListShareDevicesToContract.View view) {
+    public MineFriendListShareDevicesPresenterImp(String relAndFriendBean, MineFriendListShareDevicesToContract.View view) {
         super(view);
         view.setPresenter(this);
         this.relAndFriendBean = relAndFriendBean;
@@ -262,11 +262,11 @@ public class MineFriendListShareDevicesPresenterImp extends AbstractPresenter<Mi
                                 hasShareFriendList.clear();
                                 hasShareFriendList.addAll(getShareListCallBack.arrayList);
                                 //该设备以分享的亲友数赋值
-                                for (int i = allDevice.size()-1; i >= 0 ; i--) {
+                                for (int i = allDevice.size() - 1; i >= 0; i--) {
                                     if (allDevice.get(i).uuid.equals(getShareListCallBack.arrayList.get(i).cid)) {
                                         allDevice.get(i).hasShareCount = getShareListCallBack.arrayList.get(i).friends.size();
-                                        for (int j = getShareListCallBack.arrayList.get(i).friends.size()-1;j >= 0;j--){
-                                            if (getShareListCallBack.arrayList.get(i).friends.get(j).account.equals(relAndFriendBean)){
+                                        for (int j = getShareListCallBack.arrayList.get(i).friends.size() - 1; j >= 0; j--) {
+                                            if (getShareListCallBack.arrayList.get(i).friends.get(j).account.equals(relAndFriendBean)) {
                                                 allDevice.remove(allDevice.get(i));
                                             }
                                         }
@@ -301,7 +301,7 @@ public class MineFriendListShareDevicesPresenterImp extends AbstractPresenter<Mi
                 ContextUtils.getContext().registerReceiver(network, filter);
             }
         } catch (Exception e) {
-            AppLogger.e("registerNetworkMonitor"+e.getLocalizedMessage());
+            AppLogger.e("registerNetworkMonitor" + e.getLocalizedMessage());
         }
     }
 

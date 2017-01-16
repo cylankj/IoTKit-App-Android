@@ -359,6 +359,8 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
     @Override
     public boolean needShowHistoryWheelView() {
         DpMsgDefine.DPNet net = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_201_NET, null);
+        boolean show = net != null && JFGRules.isDeviceOnline(net);
+        AppLogger.i("show: " + show);
         return net != null && JFGRules.isDeviceOnline(net)
                 && NetUtils.getJfgNetType(getView().getContext()) != 0;
     }

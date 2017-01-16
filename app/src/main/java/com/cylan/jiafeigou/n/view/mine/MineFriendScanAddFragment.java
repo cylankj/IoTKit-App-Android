@@ -7,7 +7,6 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
@@ -15,10 +14,8 @@ import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendScanAddContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineFriendScanAddPresenterImp;
 import com.cylan.jiafeigou.n.mvp.model.MineAddReqBean;
-import com.cylan.jiafeigou.support.softkeyboard.util.ViewUtil;
 import com.cylan.jiafeigou.support.zscan.ZXingScannerView;
 import com.cylan.jiafeigou.utils.ToastUtil;
-import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.LoadingDialog;
 import com.google.zxing.Result;
 
@@ -34,7 +31,7 @@ import rx.schedulers.Schedulers;
  * 创建时间：2016/9/6
  * 描述：
  */
-public class MineFriendScanAddFragment extends Fragment implements ZXingScannerView.ResultHandler, MineFriendScanAddContract.View{
+public class MineFriendScanAddFragment extends Fragment implements ZXingScannerView.ResultHandler, MineFriendScanAddContract.View {
 
     @BindView(R.id.iv_home_mine_relativesandfriends_scan_add_back)
     ImageView ivHomeMineRelativesandfriendsScanAddBack;
@@ -75,8 +72,8 @@ public class MineFriendScanAddFragment extends Fragment implements ZXingScannerV
         zxVScanAddRelativesandfriend.setLayoutParams(scanlayoutParams);
         //二维码 qrCode
         ViewGroup.LayoutParams erWeimalayoutParams = ivErweima.getLayoutParams();
-        erWeimalayoutParams.height = ViewUtils.dp2px((int) (screenHeight * 0.135 + 0.5));
-        erWeimalayoutParams.width = ViewUtils.dp2px((int) (screenWidth * 0.24 + 0.5));
+        erWeimalayoutParams.height = (int) (screenHeight * 0.135 + 0.5);
+        erWeimalayoutParams.width = (int) (screenWidth * 0.24 + 0.5);
         ivErweima.setLayoutParams(erWeimalayoutParams);
     }
 
@@ -143,20 +140,22 @@ public class MineFriendScanAddFragment extends Fragment implements ZXingScannerV
      */
     @Override
     public void showLoadingPro() {
-        LoadingDialog.showLoading(getFragmentManager(),getString(R.string.LOADING));
+        LoadingDialog.showLoading(getFragmentManager(), getString(R.string.LOADING));
     }
 
     /**
      * 网络状态变化
+     *
      * @param state
      */
     @Override
     public void onNetStateChanged(int state) {
-        if (state == -1){
+        if (state == -1) {
             hideLoadingPro();
             ToastUtil.showNegativeToast(getString(R.string.NO_NETWORK_1));
         }
     }
+
     /**
      * 隐藏加载进度
      */
@@ -195,7 +194,7 @@ public class MineFriendScanAddFragment extends Fragment implements ZXingScannerV
     @Override
     public void onStart() {
         super.onStart();
-        if (presenter != null)presenter.start();
+        if (presenter != null) presenter.start();
     }
 
     @Override

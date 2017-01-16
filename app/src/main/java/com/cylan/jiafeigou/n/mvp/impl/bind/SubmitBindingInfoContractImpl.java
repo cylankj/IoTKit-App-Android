@@ -13,9 +13,7 @@ import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.rx.RxHelper;
-import com.cylan.jiafeigou.rx.RxUiEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.utils.ListUtils;
 
 import rx.Observable;
 import rx.Subscription;
@@ -71,7 +69,6 @@ public class SubmitBindingInfoContractImpl extends
     public void start() {
         super.start();
         //查询
-        RxBus.getCacheInstance().post(new RxUiEvent.BulkUUidListReq());
     }
 
     /**
@@ -105,31 +102,7 @@ public class SubmitBindingInfoContractImpl extends
      * @return
      */
     private Subscription monitorBulkDeviceList() {
-        return RxBus.getCacheInstance().toObservableSticky(RxUiEvent.BulkDeviceListRsp.class)
-                .filter((RxUiEvent.BulkDeviceListRsp deviceList) -> {
-                    return getView() != null
-                            && deviceList != null
-                            && !ListUtils.isEmpty(deviceList.allDevices);
-                })
-                .flatMap(new Func1<RxUiEvent.BulkDeviceListRsp, Observable<Boolean>>() {
-                    @Override
-                    public Observable<Boolean> call(RxUiEvent.BulkDeviceListRsp deviceList) {
-                        AppLogger.i("monitorBulkDeviceList: " + deviceList.allDevices);
-                        final int count = deviceList.allDevices.size();
-                        for (int i = 0; i < count; i++) {
-                            DpMsgDefine.DpWrap wrap = deviceList.allDevices.get(i);
-                            if (wrap == null || wrap.baseDpDevice == null) continue;
-                            if (TextUtils.equals(uuid,
-                                    wrap.baseDpDevice.uuid)) {
-                                //hit the binding cid
-                                return Observable.just(true);
-                            }
-                        }
-                        return Observable.just(false);
-                    }
-                })
-                .retry(new RxHelper.RxException<>("SubmitBindingInfoContractImpl"))
-                .subscribe();
+        return null;
     }
 
 

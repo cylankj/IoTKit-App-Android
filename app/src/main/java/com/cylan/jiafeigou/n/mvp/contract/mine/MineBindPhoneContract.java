@@ -106,18 +106,21 @@ public interface MineBindPhoneContract {
 
         /**
          * 获取到用户的信息
+         *
          * @return
          */
         Subscription getAccountCallBack();
 
         /**
          * 校验短信验证码
+         *
          * @param code
          */
-        void CheckVerifyCode(String inputcode,String code);
+        void CheckVerifyCode(String inputcode, String code);
 
         /**
          * 校验短信验证码的回调
+         *
          * @return
          */
         Subscription checkVerifyCodeCallBack();
@@ -134,12 +137,14 @@ public interface MineBindPhoneContract {
 
         /**
          * 三方登录的回调
+         *
          * @return
          */
         Subscription openLoginBack();
 
         /**
          * 是否三方登录
+         *
          * @return
          */
         boolean isOpenLogin();

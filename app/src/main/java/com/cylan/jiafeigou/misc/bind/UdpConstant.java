@@ -5,9 +5,6 @@ import android.os.Parcelable;
 
 import com.cylan.udpMsgPack.JfgUdpMsg;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * Created by cylan-hunt on 16-11-10.
  */

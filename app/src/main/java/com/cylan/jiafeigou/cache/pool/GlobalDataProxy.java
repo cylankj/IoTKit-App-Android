@@ -9,6 +9,7 @@ import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.dp.BaseValue;
 import com.cylan.jiafeigou.dp.IDataPoint;
+import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.support.log.AppLogger;
 
 import java.util.ArrayList;
@@ -60,25 +61,39 @@ public class GlobalDataProxy implements IDataProxy {
 
     @Override
     public void cacheDevice(String uuid, JFGDevice jfgDevice) {
-        if (checkAccount())
+        if (checkAccount() && dataPointManager != null)
             dataPointManager.cacheDevice(jfgAccount.getAccount() + uuid, jfgDevice);
     }
 
     @Override
     public boolean remove(String uuid) {
         if (!checkAccount()) return false;
-        return dataPointManager.remove(jfgAccount.getAccount() + uuid);
+        return dataPointManager != null && dataPointManager.remove(jfgAccount.getAccount() + uuid);
     }
 
     @Override
     public JFGDevice fetch(String uuid) {
-        if (!checkAccount()) return null;
+        if (!checkAccount() || dataPointManager == null) return null;
         return dataPointManager.fetch(jfgAccount.getAccount() + uuid);
     }
 
     @Override
+    public boolean updateJFGDevice(JFGDevice device) {
+        if (dataPointManager == null) return false;
+        boolean r = dataPointManager.updateJFGDevice(getJfgAccount().getAccount(), device);
+        //需要修改
+        try {
+            JfgCmdInsurance.getCmd().setAliasByCid(device.uuid, device.alias);
+        } catch (JfgException e) {
+            r = false;
+        }
+        AppLogger.i("r:" + r);
+        return r;
+    }
+
+    @Override
     public ArrayList<JFGDevice> fetchAll() {
-        if (!checkAccount()) return null;
+        if (!checkAccount() || dataPointManager == null) return null;
         return dataPointManager.fetchAll(jfgAccount.getAccount());
     }
 
@@ -86,7 +101,7 @@ public class GlobalDataProxy implements IDataProxy {
         if (jfgAccount == null || TextUtils.isEmpty(jfgAccount.getAccount())) {
 //            if (BuildConfig.DEBUG) throw new IllegalArgumentException("account is null");
             //we just clear the cache if the account is null
-            dataPointManager.clearAll();
+//            if (dataPointManager != null) dataPointManager.clearAll();
             AppLogger.e("account is null");
             return false;
         }
@@ -95,61 +110,72 @@ public class GlobalDataProxy implements IDataProxy {
 
     @Override
     public boolean insert(String uuid, BaseValue baseValue) {
-        return dataPointManager.insert(uuid, baseValue);
+        return dataPointManager != null && dataPointManager.insert(uuid, baseValue);
     }
 
     @Override
     public boolean update(String uuid, BaseValue baseValue, boolean sync) {
-        return dataPointManager.update(uuid, baseValue, sync);
+        return dataPointManager != null && dataPointManager.update(uuid, baseValue, sync);
     }
 
     @Override
     public boolean deleteAll(String uuid) {
-        return dataPointManager.deleteAll(uuid);
+        return dataPointManager != null && dataPointManager.deleteAll(uuid);
+    }
+
+    @Override
+    public boolean deleteJFGDevice(String uuid) {
+        return dataPointManager != null && dataPointManager.deleteJFGDevice(getJfgAccount().getAccount(), uuid);
     }
 
     @Override
     public Object delete(String uuid, long id) {
+        if (dataPointManager == null) return null;
         return dataPointManager.delete(uuid, id);
     }
 
     @Override
     public Object delete(String uuid, long id, long version) {
+        if (dataPointManager == null) return null;
         return dataPointManager.delete(uuid, id, version);
     }
 
     @Override
     public BaseValue fetchLocal(String uuid, long id) {
+        if (dataPointManager == null) return null;
         return dataPointManager.fetchLocal(uuid, id);
     }
 
     @Override
     public boolean deleteAll(String uuid, long id, ArrayList<Long> versions) {
-        return dataPointManager.deleteAll(uuid, id, versions);
+        return dataPointManager != null && dataPointManager.deleteAll(uuid, id, versions);
     }
 
     @Override
     public ArrayList<BaseValue> fetchLocalList(String uuid, long id) {
+        if (dataPointManager == null) return null;
         return dataPointManager.fetchLocalList(uuid, id);
     }
 
     @Override
     public boolean isSetType(long id) {
-        return dataPointManager.isSetType(id);
+        return dataPointManager != null && dataPointManager.isSetType(id);
     }
 
     @Override
     public Pair<Integer, BaseValue> fetchUnreadCount(String uuid, long id) throws JfgException {
+        if (dataPointManager == null) return null;
         return dataPointManager.fetchUnreadCount(uuid, id);
     }
 
     @Override
     public boolean markAsRead(String uuid, long id) throws JfgException {
-        return dataPointManager.markAsRead(uuid, id);
+        return dataPointManager != null && dataPointManager.markAsRead(uuid, id);
     }
 
     @Override
     public long robotGetData(String peer, ArrayList<JFGDPMsg> queryDps, int limit, boolean asc, int timeoutMs) throws JfgException {
+        if (dataPointManager == null) return -1;
         return dataPointManager.robotGetData(peer, queryDps, limit, asc, timeoutMs);
     }
 
@@ -159,6 +185,7 @@ public class GlobalDataProxy implements IDataProxy {
             throw new IllegalArgumentException(String.format("id:%s is an array type in the map", id));
         }
         try {
+            if (dataPointManager == null) return null;
             BaseValue base = dataPointManager.fetchLocal(uuid, id);
             return base == null || base.getValue() == null ? defaultValue : (T) base.getValue();
         } catch (ClassCastException c) {
@@ -169,6 +196,7 @@ public class GlobalDataProxy implements IDataProxy {
     @SuppressWarnings("unchecked")
     public <T> T getValue(String uuid, long id) {
         try {
+            if (dataPointManager == null) return null;
             T result;
             if (isSetType(id)) {
                 result = (T) dataPointManager.fetchLocalList(uuid, id);

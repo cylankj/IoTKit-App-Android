@@ -8,8 +8,6 @@ import com.cylan.jiafeigou.n.mvp.BaseView;
 import com.cylan.jiafeigou.n.mvp.model.LoginAccountBean;
 import com.sina.weibo.sdk.auth.sso.SsoHandler;
 
-import rx.Subscription;
-
 /**
  * Created by lxh on 16-6-24.
  */
@@ -93,7 +91,7 @@ public interface LoginContract {
         /**
          * 执行第三方登录
          */
-        void executeOpenLogin(String openId,int type);
+        void executeOpenLogin(String openId, int type);
 
         /**
          * 获取QQ的授权
@@ -113,12 +111,14 @@ public interface LoginContract {
 
         /**
          * 拿到新浪回调对象
+         *
          * @return
          */
         SsoHandler getSinaCallBack();
 
         /**
          * QQ登录在onactivity中的回调
+         *
          * @param requestCode
          * @param resultCode
          * @param data

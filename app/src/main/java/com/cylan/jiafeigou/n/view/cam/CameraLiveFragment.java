@@ -9,7 +9,6 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -36,7 +35,6 @@ import com.cylan.jiafeigou.misc.listener.ILiveStateListener;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamLiveContract;
 import com.cylan.jiafeigou.n.mvp.impl.cam.CamLivePresenterImpl;
-import com.cylan.jiafeigou.n.mvp.model.BeanCamInfo;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
@@ -191,6 +189,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        if (videoView != null) ((View) videoView).setVisibility(View.GONE);
     }
 
     /**
@@ -358,12 +357,13 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
                 ? ViewGroup.LayoutParams.MATCH_PARENT : (int) (Resources.getSystem().getDisplayMetrics().widthPixels * resolution.height / (float) resolution.width);
         FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, height);
+        fLayoutLiveViewContainer.setLayoutParams(lp);
         View view = fLayoutLiveViewContainer.findViewById("IVideoView".hashCode());
         if (view == null) {
             fLayoutLiveViewContainer.addView((View) videoView, 0, lp);
         } else {
             view.setLayoutParams(lp);
-            ViewUtils.updateViewHeight(fLayoutCamLiveView, resolution.height / (float) resolution.width);
+//            ViewUtils.updateViewHeight(fLayoutCamLiveView, resolution.height / (float) resolution.width);
         }
         AppLogger.i("updateVideoViewLayoutParameters:" + (view == null));
     }
@@ -483,20 +483,6 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
     }
 
     @Override
-    public void onBeanInfoUpdate(final BeanCamInfo info) {
-        if (getView() != null && isResumed()) {
-            getView().post(() -> {
-                camLiveController.setProtectionState(info.cameraAlarmFlag);
-                camLiveController.setProtectionState(info.cameraAlarmFlag);
-            });
-            if (info.deviceBase != null && !TextUtils.isEmpty(info.deviceBase.shareAccount)) {
-                //分享账号,不显示
-                camLiveController.setLiveTime(0);
-            }
-        }
-    }
-
-    @Override
     public void onHistoryLiveStop(int state) {
 
     }
@@ -512,7 +498,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
 
     @Override
     public void onResolution(JFGMsgVideoResolution resolution) throws JfgException {
-        JfgCmdInsurance.getCmd().enableRenderRemoteView(true,(View) initVideoView());
+        JfgCmdInsurance.getCmd().enableRenderRemoteView(true, (View) initVideoView());
         updateVideoViewLayoutParameters(resolution);
     }
 

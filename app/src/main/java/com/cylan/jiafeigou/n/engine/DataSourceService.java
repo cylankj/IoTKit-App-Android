@@ -30,6 +30,7 @@ import com.cylan.entity.jniCall.RobotoGetDataRsp;
 import com.cylan.ex.JfgException;
 import com.cylan.jfgapp.interfases.AppCallBack;
 import com.cylan.jfgapp.jni.JfgAppCmd;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.CacheParser;
 import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
 import com.cylan.jiafeigou.misc.JConstant;
@@ -37,7 +38,6 @@ import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JResultEvent;
 import com.cylan.jiafeigou.misc.efamily.MsgpackMsg;
 import com.cylan.jiafeigou.n.view.cloud.CloudLiveCallActivity;
-import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -144,7 +144,7 @@ public class DataSourceService extends Service implements AppCallBack {
         RxBus.getCacheInstance().postSticky(new RxEvent.GetUserInfo(jfgAccount));
 
         DataSourceManager.getInstance().cacheJFGAccount(jfgAccount);//缓存账号信息
-        AppLogger.d("OnUpdateAccount :"+jfgAccount.getPhotoUrl());
+        AppLogger.d("OnUpdateAccount :" + jfgAccount.getPhotoUrl());
     }
 
     @Override
@@ -410,7 +410,7 @@ public class DataSourceService extends Service implements AppCallBack {
         AppLogger.d("OnEfamilyMsg :" + header.msgId);
 
         //暂try try
-        if ((!TextUtils.isEmpty(header.caller)) && header.msgId == 2529){
+        if ((!TextUtils.isEmpty(header.caller)) && header.msgId == 2529) {
             Intent intent = new Intent(ContextUtils.getContext(), CloudLiveCallActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, header.caller);

@@ -2,7 +2,6 @@ package com.cylan.jiafeigou.n.mvp.contract.cloud;
 
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
-import com.cylan.jiafeigou.n.mvp.model.BeanCloudInfo;
 
 /**
  * 作者：zsl
@@ -25,6 +24,7 @@ public interface CloudLiveDeviceInfoContract {
 
         /**
          * 保存的设备的属性
+         *
          * @param value
          * @param id
          */

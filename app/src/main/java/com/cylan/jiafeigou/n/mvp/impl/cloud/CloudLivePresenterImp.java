@@ -9,6 +9,9 @@ import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 
 import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
+import com.cylan.jiafeigou.dp.DpMsgDefine;
+import com.cylan.jiafeigou.dp.DpMsgMap;
+import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.n.db.DataBaseUtil;
 import com.cylan.jiafeigou.n.mvp.contract.cloud.CloudLiveContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
@@ -19,6 +22,7 @@ import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.db.DbManager;
 import com.cylan.jiafeigou.support.db.ex.DbException;
 import com.cylan.utils.CloseUtils;
+import com.cylan.utils.NetUtils;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -70,7 +74,7 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
     private CompositeSubscription subscription;
     private String userIcon;
 
-    public CloudLivePresenterImp(CloudLiveContract.View view,String uuid) {
+    public CloudLivePresenterImp(CloudLiveContract.View view, String uuid) {
         super(view);
         view.setPresenter(this);
         this.uuid = uuid;
@@ -122,6 +126,7 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
 
     /**
      * 开始录音
+     *
      * @return
      */
     @Override
@@ -181,6 +186,7 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
 
     /**
      * 播放录音
+     *
      * @param mFileName
      */
     @Override
@@ -217,6 +223,7 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
 
     /**
      * 检测SD卡能用否
+     *
      * @return
      */
     @Override
@@ -244,6 +251,7 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
 
     /**
      * 获取录音的时长
+     *
      * @return
      */
     @Override
@@ -276,6 +284,7 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
 
     /**
      * 类转换成字节
+     *
      * @param s
      * @return
      */
@@ -297,6 +306,7 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
 
     /**
      * 字节转换成类
+     *
      * @param in
      * @return
      */
@@ -339,7 +349,6 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
         }
         return allData;
     }
-
 
 
     /**
@@ -418,7 +427,7 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
         List<CloudLiveBaseDbBean> fromAllDb = findAllFromDb();
         if (fromAllDb != null && fromAllDb.size() > 0) {
             for (CloudLiveBaseDbBean dBbean : fromAllDb) {
-                if (!TextUtils.isEmpty(dBbean.uuid) && uuid.equals(dBbean.uuid)){
+                if (!TextUtils.isEmpty(dBbean.uuid) && uuid.equals(dBbean.uuid)) {
                     CloudLiveBaseBean newBean = new CloudLiveBaseBean();
                     newBean.setType(dBbean.getType());
                     newBean.setUserIcon(userIcon);
@@ -441,7 +450,7 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
                 Manifest.permission.RECORD_AUDIO)
                 != PackageManager.PERMISSION_GRANTED) {
             return false;
-        }else{
+        } else {
             return true;
         }
     }
@@ -452,7 +461,20 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
     }
 
     /**
+     * 设备是否在线
+     *
+     * @return
+     */
+    @Override
+    public boolean isDeviceOnline() {
+        DpMsgDefine.DPNet net = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_201_NET, null);
+        return net != null && JFGRules.isDeviceOnline(net)
+                && NetUtils.getJfgNetType(getView().getContext()) != 0;
+    }
+
+    /**
      * 处理数据的结果
+     *
      * @param list
      */
     private void handlerDataResult(List<CloudLiveBaseBean> list) {

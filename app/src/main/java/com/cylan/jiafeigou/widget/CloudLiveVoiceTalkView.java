@@ -44,7 +44,7 @@ public class CloudLiveVoiceTalkView extends View {
     Paint paint = new Paint();
 
     private void init(Context context) {
-        paint.setColor(Color.GREEN);
+        paint.setColor(Color.parseColor("#36bdff"));
         paint.setStyle(Paint.Style.STROKE);
         paint.setStrokeWidth(dip2px(context, 3));
         paint.setStrokeCap(Paint.Cap.ROUND);
@@ -61,7 +61,7 @@ public class CloudLiveVoiceTalkView extends View {
     }
 
     /**
-     * 这里是为了实现点击一下控件就停止
+     * 实现点击一下控件就停止
      * 拿到控件的状态
      *
      * @return
@@ -95,6 +95,7 @@ public class CloudLiveVoiceTalkView extends View {
         for (int i = 0; i < 7; i++) {
             float startY = i % 2 != 0 ? getHeight() / 2 - longLineLen / 2 : getHeight() / 2 - shortLineLen / 2;
             float endY = i % 2 != 0 ? getHeight() / 2 + longLineLen / 2 : getHeight() / 2 + shortLineLen / 2;
+            paint.setColor(i % 2 != 0 ? Color.parseColor("#36bdff") : Color.parseColor("#5036bdff"));
             canvas.drawLine((18 * i) + getWidth() / 4, startY, (18 * i) + getWidth() / 4, endY, paint);
         }
     }

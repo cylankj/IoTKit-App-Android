@@ -8,19 +8,13 @@ import android.os.Build;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 
-import com.cylan.entity.jniCall.JFGAccount;
-import com.cylan.ex.JfgException;
-import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
-import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineInfoContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
-import com.cylan.jiafeigou.rx.RxUiEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.support.qqLogIn.TencentInstance;
 import com.cylan.jiafeigou.support.sina.AccessTokenKeeper;
 
 import java.io.File;
@@ -63,9 +57,8 @@ public class MineInfoPresenterImpl extends AbstractPresenter<MineInfoContract.Vi
                     public void call(Object o) {
                         GlobalDataProxy.getInstance().setJfgAccount(null);
                         GlobalDataProxy.getInstance().setOnline(false);
-                        RxBus.getCacheInstance().removeStickyEvent(RxUiEvent.BulkDeviceListRsp.class);
                         JfgCmdInsurance.getCmd().logout();
-                        if (isOpenLogin){
+                        if (isOpenLogin) {
                             AccessTokenKeeper.clear(getView().getContext());
 //                            TencentInstance tencentInstance = new TencentInstance();
 //                            if (tencentInstance.mTencent.isSessionValid()){
@@ -218,6 +211,7 @@ public class MineInfoPresenterImpl extends AbstractPresenter<MineInfoContract.Vi
 
     /**
      * 三方登录的回调
+     *
      * @return
      */
     @Override

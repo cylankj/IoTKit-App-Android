@@ -151,7 +151,7 @@ public class MineInfoBindPhoneFragment extends Fragment implements MineBindPhone
 
     }
 
-    @OnClick({R.id.iv_mine_bind_phone_back, R.id.tv_meter_get_code, R.id.iv_mine_bind_phone_clear,R.id.iv_mine_info_bind_phone})
+    @OnClick({R.id.iv_mine_bind_phone_back, R.id.tv_meter_get_code, R.id.iv_mine_bind_phone_clear, R.id.iv_mine_info_bind_phone})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.tv_meter_get_code:

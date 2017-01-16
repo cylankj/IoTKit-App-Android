@@ -47,10 +47,10 @@ public class HomeMineHelpSuggestionAdapter extends SuperAdapter<MineHelpSuggesti
     private OnResendFeedBackListener resendFeedBack;
 
     public interface OnResendFeedBackListener {
-        void onResend(SuperViewHolder holder,MineHelpSuggestionBean item,int position);
+        void onResend(SuperViewHolder holder, MineHelpSuggestionBean item, int position);
     }
 
-    public void setOnResendFeedBack(OnResendFeedBackListener resendFeedBack){
+    public void setOnResendFeedBack(OnResendFeedBackListener resendFeedBack) {
         this.resendFeedBack = resendFeedBack;
     }
 
@@ -85,17 +85,17 @@ public class HomeMineHelpSuggestionAdapter extends SuperAdapter<MineHelpSuggesti
 
             ImageView iv_send_pro = holder.getView(R.id.iv_send_pro);
 
-            if (item.pro_falag == 0){
+            if (item.pro_falag == 0) {
                 //显示正在发送
                 iv_send_pro.setVisibility(View.VISIBLE);
                 iv_send_pro.setImageDrawable(getContext().getResources().getDrawable(R.drawable.listview_loading));
                 Animation animation = AnimationUtils.loadAnimation(getContext(), R.anim.loading_progress_rotate);
                 iv_send_pro.startAnimation(animation);
 
-            }else if (item.pro_falag == 1){
+            } else if (item.pro_falag == 1) {
                 //显示发送失败
-                holder.setImageDrawable(R.id.iv_send_pro,getContext().getResources().getDrawable(R.drawable.icon_caution));
-            }else {
+                holder.setImageDrawable(R.id.iv_send_pro, getContext().getResources().getDrawable(R.drawable.icon_caution));
+            } else {
                 //显示发送成功
                 holder.setVisibility(R.id.iv_send_pro, View.GONE);
                 iv_send_pro.clearAnimation();
@@ -104,8 +104,8 @@ public class HomeMineHelpSuggestionAdapter extends SuperAdapter<MineHelpSuggesti
             holder.setOnClickListener(R.id.iv_send_pro, new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (resendFeedBack != null){
-                        resendFeedBack.onResend(holder,item,layoutPosition);
+                    if (resendFeedBack != null) {
+                        resendFeedBack.onResend(holder, item, layoutPosition);
                     }
                 }
             });

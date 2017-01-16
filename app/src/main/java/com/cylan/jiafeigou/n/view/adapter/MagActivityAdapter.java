@@ -1,14 +1,10 @@
 package com.cylan.jiafeigou.n.view.adapter;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.text.Spannable;
 import android.text.SpannableString;
-import android.text.SpannableStringBuilder;
 import android.text.style.AbsoluteSizeSpan;
-import android.text.style.ForegroundColorSpan;
-import android.text.style.StyleSpan;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -96,13 +92,13 @@ public class MagActivityAdapter extends SuperAdapter<MagBean> {
             } else {
                 holder.setText(R.id.tv_mag_live_day, converStr(getDate(bean.magTime) + ContextUtils.getContext().getString(R.string.MONTHS)));
             }
-        } else if(layoutPosition > 1){
+        } else if (layoutPosition > 1) {
             if (checkSame(bean.magTime, getList().get(layoutPosition - 1).magTime)) {
                 holder.setText(R.id.tv_mag_live_day, "");
             } else {
                 holder.setText(R.id.tv_mag_live_day, converStr(getDate(bean.magTime) + ContextUtils.getContext().getString(R.string.MONTHS)));
             }
-        }else {
+        } else {
             holder.setText(R.id.tv_mag_live_day, "");
             holder.setText(R.id.tv_mag_live_time, "");
         }
@@ -193,16 +189,16 @@ public class MagActivityAdapter extends SuperAdapter<MagBean> {
      *
      * @param magDate
      */
-    public String  getDate(long magDate) {
+    public String getDate(long magDate) {
         SimpleDateFormat sdf = new SimpleDateFormat("dd/M");
         String nowDate = sdf.format(new Date(magDate));
         return nowDate;
     }
 
-    public Spannable converStr(String str){
+    public Spannable converStr(String str) {
         Spannable sb = new SpannableString(str);
-        sb.setSpan(new AbsoluteSizeSpan(17,true), 0, 3, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
-        sb.setSpan(new AbsoluteSizeSpan(12,true), 3, str.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+        sb.setSpan(new AbsoluteSizeSpan(17, true), 0, 3, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+        sb.setSpan(new AbsoluteSizeSpan(12, true), 3, str.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
         return sb;
     }
 

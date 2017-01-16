@@ -45,6 +45,7 @@ public interface MineFriendScanAddContract {
          * 隐藏加载进度
          */
         void hideLoadingPro();
+
         /**
          * 网络状态变化
          */

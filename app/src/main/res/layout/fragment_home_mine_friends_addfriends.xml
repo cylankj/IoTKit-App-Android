@@ -47,26 +47,44 @@
             android:hint="@string/SHARE_ACCOUNT"
             android:textSize="16sp"
             android:inputType="phone"
+            android:background="@null"
             android:textColorHint="@color/color_cecece"
             android:layout_width="match_parent"
-            android:layout_height="54dp" />
+            android:layout_height="53dp" />
+
+        <View
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#36bdff"
+            />
 
         <TextView
+            android:layout_marginTop="8dp"
             android:id="@+id/tv_scan_add"
             android:layout_marginLeft="20dp"
             android:gravity="center_vertical"
             android:text="@string/Tap3_FriendsAdd_QR"
-            android:drawableLeft="@drawable/ico_scan_qrcode"
+            android:drawableLeft="@drawable/me_icon_scan_code"
             android:drawablePadding="15dp"
             android:layout_width="match_parent"
             android:layout_height="67dp" />
+
+
+        <View
+            android:layout_marginLeft="15dp"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#f2f2f2"
+            />
 
         <TextView
             android:id="@+id/tv_add_from_contract"
             android:layout_marginLeft="20dp"
             android:gravity="center_vertical"
             android:text="@string/Tap3_FriendsAdd_Contacts"
-            android:drawableLeft="@drawable/icon_setting_information"
+            android:drawableLeft="@drawable/me_icon_tongxunlu"
             android:drawablePadding="15dp"
             android:layout_width="match_parent"
             android:layout_height="67dp" />
