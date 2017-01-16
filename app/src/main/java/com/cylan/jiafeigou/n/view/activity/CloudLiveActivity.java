@@ -185,6 +185,10 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
                 break;
             case R.id.iv_cloud_videochat:                               //视频通话
                 ViewUtils.deBounceClick(findViewById(R.id.iv_cloud_videochat));
+                if (!presenter.isDeviceOnline()){
+                    ToastUtil.showToast(getString(R.string.NOT_ONLINE));
+                    return;
+                }
                 jump2CallOut();
                 break;
             case R.id.iv_cloud_talk:                                    //语音留言
@@ -275,7 +279,6 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
                     switch (event.getAction()) {
-
                         case MotionEvent.ACTION_DOWN: {
                             if (!presenter.checkSDCard()) {
                                 ToastUtil.showToast("未检测到SD卡");
@@ -431,10 +434,13 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
      */
     @Override
     public void startPlayVoiceAnim(ImageView view) {
-        if (animationDrawable.isRunning()){
-            animationDrawable.stop();
-            animationDrawable = null;
+        if(animationDrawable != null) {
+            if (animationDrawable.isRunning()) {
+                animationDrawable.stop();
+                animationDrawable = null;
+            }
         }
+        view.setImageDrawable(null);
         view.setBackgroundResource(R.drawable.play_voice_record);
         animationDrawable = (AnimationDrawable) view.getBackground();
         animationDrawable.start();
@@ -446,6 +452,7 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
     @Override
     public void stopPlayVoiceAnim() {
         animationDrawable.stop();
+        iv_play_voice.clearAnimation();
         iv_play_voice.setImageDrawable(getResources().getDrawable(R.drawable.sound3));
     }
 

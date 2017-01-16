@@ -28,6 +28,7 @@
             android:layout_alignParentBottom="true"
             android:layout_marginBottom="12dp"
             android:layout_marginLeft="48dp"
+            android:textCursorDrawable="@drawable/search_friend_cursor_color"
             android:hint="@string/Search"
             android:textColorHint="#60ffffff"
             android:background="@null"

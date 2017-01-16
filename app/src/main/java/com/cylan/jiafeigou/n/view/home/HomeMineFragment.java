@@ -279,6 +279,13 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
                         basePresenter.portraitBlur(bitmap);
                     }
 
+                    @Override
+                    public void onLoadFailed(Exception e, Drawable errorDrawable) {
+                        super.onLoadFailed(e, errorDrawable);
+                        Bitmap bm = BitmapFactory.decodeResource(getResources(),R.drawable.clouds);
+                        basePresenter.portraitBlur(bm);
+                    }
+
                 });
 
     }
