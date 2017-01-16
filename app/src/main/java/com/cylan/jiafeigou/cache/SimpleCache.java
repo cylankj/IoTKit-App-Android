@@ -27,7 +27,7 @@ public class SimpleCache {
         return weakScanResult;
     }
 
-    public WeakReference<List<TimeZoneBean>> timeZoneBeenList;
+    public WeakReference<List<TimeZoneBean>> timeZoneCache;
 
     public void setWeakScanResult(List<ScanResult> weakScanResult) {
         if (weakScanResult == null)

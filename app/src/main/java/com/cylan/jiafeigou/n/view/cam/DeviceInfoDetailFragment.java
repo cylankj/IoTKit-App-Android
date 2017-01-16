@@ -19,15 +19,20 @@ import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamInfoContract;
 import com.cylan.jiafeigou.n.mvp.impl.cam.DeviceInfoDetailPresenterImpl;
+import com.cylan.jiafeigou.n.mvp.model.TimeZoneBean;
 import com.cylan.jiafeigou.utils.ActivityUtils;
+import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.dialog.EditFragmentDialog;
 
 import java.text.DecimalFormat;
+import java.util.List;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import rx.android.schedulers.AndroidSchedulers;
 
 import static com.cylan.jiafeigou.misc.JConstant.KEY_DEVICE_ITEM_UUID;
 import static com.cylan.jiafeigou.widget.dialog.EditFragmentDialog.KEY_LEFT_CONTENT;
@@ -114,17 +119,28 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
     }
 
     private void updateDetails() {
-        DpMsgDefine.DPTimeZone zone = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_214_DEVICE_TIME_ZONE, null);
-        tvDeviceTimeZone.setText(zone != null && !TextUtils.isEmpty(zone.timezone) ? zone.timezone : "");
+        MiscUtils.loadTimeZoneList()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe((List<TimeZoneBean> list) -> {
+                    DpMsgDefine.DPTimeZone zone = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_214_DEVICE_TIME_ZONE, DpMsgDefine.DPTimeZone.empty);
+                    TimeZoneBean bean = new TimeZoneBean();
+                    bean.setId(zone.timezone);
+                    if (list != null) {
+                        int index = list.indexOf(bean);
+                        if (index > 0 && index < list.size()) {
+                            tvDeviceTimeZone.setText(list.get(index).getName());
+                        }
+                    }
+                });
         DpMsgDefine.DPSdStatus status = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_204_SDCARD_STORAGE, null);
         tvDeviceSdcardState.setText(getSdcardState(status));
         JFGDevice device = GlobalDataProxy.getInstance().fetch(uuid);
-        tvDeviceAlias.setText(device == null ? "" : TextUtils.isEmpty(device.alias) ? device.uuid : device.alias);
-        tvDeviceCid.setText(device != null && TextUtils.isEmpty(device.uuid) ? "" : device.uuid);
+        tvDeviceAlias.setText(device == null ? "" : TextUtils.isEmpty(device.alias) ? uuid : device.alias);
+        tvDeviceCid.setText(uuid);
         String mac = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_202_MAC, "");
         tvDeviceMac.setText(mac);
         int battery = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_206_BATTERY, 0);
-        tvDeviceBatteryLevel.setText(battery + "");
+        tvDeviceBatteryLevel.setText(String.format(Locale.getDefault(), "%s", battery));
         String version = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_207_DEVICE_VERSION, "");
         tvDeviceSoftVersion.setText(version);
         String sVersion = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_208_DEVICE_SYS_VERSION, "");
@@ -185,11 +201,10 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
             if (!(o instanceof DpMsgDefine.DPTimeZone)) {
                 return;
             }
-            DpMsgDefine.DPTimeZone zone = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_214_DEVICE_TIME_ZONE, null);
+//            DpMsgDefine.DPTimeZone zone = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_214_DEVICE_TIME_ZONE, null);
+//            basePresenter.updateInfoReq(zone, DpMsgMap.ID_214_DEVICE_TIME_ZONE);
             //更新ui
             updateDetails();
-            basePresenter.updateInfoReq(zone, DpMsgMap.ID_214_DEVICE_TIME_ZONE);
-
         });
         ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(),
                 timeZoneFragment, android.R.id.content);

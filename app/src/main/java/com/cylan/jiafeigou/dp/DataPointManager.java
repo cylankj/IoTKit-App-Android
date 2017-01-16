@@ -193,11 +193,6 @@ public class DataPointManager implements IParser, IDataPoint {
         return bundleMap.remove(uuid + id);
     }
 
-    @SuppressWarnings("unchecked")
-    public static <T extends Set<?>> T cast(Object obj) {
-        return (T) obj;
-    }
-
     private Subscription fullDataPointAssembler() {
         return RxBus.getCacheInstance().toObservable(RobotoGetDataRsp.class)
                 .subscribeOn(Schedulers.computation())
@@ -502,7 +497,7 @@ public class DataPointManager implements IParser, IDataPoint {
                     } catch (JfgException e) {
                         AppLogger.e("" + e.getLocalizedMessage());
                     }
-                    AppLogger.i(TAG + ",fetchUnreadCount:" + id);
+                    AppLogger.i(TAG + ",fetchUnreadCount:" + uuid + " " + id);
 
                 });
     }
@@ -519,7 +514,6 @@ public class DataPointManager implements IParser, IDataPoint {
     public long robotGetData(String peer, ArrayList<JFGDPMsg> queryDps, int limit, boolean asc, int timeoutMs) throws JfgException {
         long seq = JfgCmdInsurance.getCmd().robotGetData(peer, queryDps, limit, asc, timeoutMs);
         querySeqMap.put(seq, seq);
-        Log.d("robotGetData", "robotGetData....此处可以简化,版本管理在这里做.,传一个List<Long(id)>");
         return seq;
     }
 

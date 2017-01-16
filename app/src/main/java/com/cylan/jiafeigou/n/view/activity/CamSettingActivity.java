@@ -92,6 +92,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         setContentView(R.layout.activity_cam_setting);
         ButterKnife.bind(this);
         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+        initTopBar();
         this.uuid = getIntent().getStringExtra(JConstant.KEY_DEVICE_ITEM_UUID);
         if (TextUtils.isEmpty(uuid)) {
             AppLogger.e("uuid is null");
@@ -104,7 +105,6 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
     @Override
     protected void onStart() {
         super.onStart();
-        initTopBar();
         initStandbyBtn();
         init110VVoltageBtn();
         initLedIndicatorBtn();
