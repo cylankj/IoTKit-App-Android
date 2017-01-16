@@ -11,10 +11,13 @@
         android:layout_height="46dp">
 
         <ImageView
-            android:layout_marginLeft="15dp"
+            android:paddingLeft="15dp"
             android:id="@+id/iv_cancle"
             android:layout_centerVertical="true"
             android:src="@drawable/login_btn_close"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:paddingRight="15dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 

@@ -121,5 +121,11 @@ public interface CloudLiveContract {
          * @return
          */
         String getUserIcon();
+
+        /**
+         * 设备是否在线
+         * @return
+         */
+        boolean isDeviceOnline();
     }
 }

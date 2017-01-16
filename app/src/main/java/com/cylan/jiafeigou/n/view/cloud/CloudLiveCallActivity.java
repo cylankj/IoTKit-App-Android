@@ -206,7 +206,6 @@ public class CloudLiveCallActivity extends AppCompatActivity implements CloudLiv
      */
     @Override
     public void onResolution(JFGMsgVideoResolution resolution) throws JfgException {
-        hideLoadingView();
         initLocalVideoView();
         initRenderVideoView();
         checkPermission();
@@ -374,6 +373,7 @@ public class CloudLiveCallActivity extends AppCompatActivity implements CloudLiv
 //            JfgCmdInsurance.getCmd().enableCamera(true,true);
             JfgCmdInsurance.getCmd().enableRenderLocalView(true,mLocalSurfaceView);
             JfgCmdInsurance.getCmd().enableRenderRemoteView(true,mRenderSurfaceView);
+            hideLoadingView();
         }
     }
 
@@ -384,6 +384,7 @@ public class CloudLiveCallActivity extends AppCompatActivity implements CloudLiv
 //                JfgCmdInsurance.getCmd().enableCamera(true,true);
                 JfgCmdInsurance.getCmd().enableRenderLocalView(true,mLocalSurfaceView);
                 JfgCmdInsurance.getCmd().enableRenderRemoteView(true,mRenderSurfaceView);
+                hideLoadingView();
             } catch (JfgException e) {
                 e.printStackTrace();
             }
@@ -398,6 +399,24 @@ public class CloudLiveCallActivity extends AppCompatActivity implements CloudLiv
         if (presenter != null){
             presenter.stopPlayVideo();
             presenter.stop();
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        if (isCallIn){
+            if (presenter.getIsConnectOk()){
+                handlerCallingReuslt(JConstant.CLOUD_IN_CONNECT_OK);
+            }else {
+                handlerCallingReuslt(JConstant.CLOUD_IN_CONNECT_FAILED);
+            }
+        }else {
+            if (presenter.getIsConnectOk()){
+                handlerCallingReuslt(JConstant.CLOUD_OUT_CONNECT_OK);
+            }else {
+                handlerCallingReuslt(JConstant.CLOUD_OUT_CONNECT_FAILED);
+            }
         }
     }
 }

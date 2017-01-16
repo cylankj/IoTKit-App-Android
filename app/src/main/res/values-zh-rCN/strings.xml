@@ -240,7 +240,7 @@
   <string name="LOCATION_NAME_ERROR">请输入名称</string>
   <string name="LOCATION_SETTING">位置</string>
   <string name="LOG">版本号</string>
-  <string name="LOGIN">登录</string>
+  <string name="LOGIN">登 录</string>
   <string name="LOGIN_ERR">登录失败</string>
   <string name="LOGIN_QQ">QQ登录</string>
   <string name="LOGIN_WEIBO">微博登录</string>
@@ -519,7 +519,7 @@
   <string name="Tap0_WelcomeTourist">先去看看</string>
   <string name="Tap0_enterphoneoremail">请输入手机号码或邮箱</string>
   <string name="Tap0_invaildcode">无效的验证码</string>
-  <string name="Tap0_register">注册</string>
+  <string name="Tap0_register">注 册</string>
   <string name="Tap0_wrongcode">验证码错误</string>
   <string name="Tap1_AddDeviceTips">快点击右上角“+”添加设备吧</string>
   <string name="Tap1_AddDevice_CameraTips">等待蓝灯闪烁</string>

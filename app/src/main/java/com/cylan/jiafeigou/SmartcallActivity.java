@@ -63,7 +63,6 @@ public class SmartcallActivity extends NeedLoginActivity
 
     /**
      * 进入全屏模式
-     *
      * @param full
      */
     private void fullScreen(boolean full) {
@@ -75,6 +74,7 @@ public class SmartcallActivity extends NeedLoginActivity
         }
         getWindow().setAttributes(attrs);
     }
+
 
     @Override
     protected void onStart() {

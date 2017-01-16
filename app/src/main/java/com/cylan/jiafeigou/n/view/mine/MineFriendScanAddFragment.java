@@ -75,8 +75,8 @@ public class MineFriendScanAddFragment extends Fragment implements ZXingScannerV
         zxVScanAddRelativesandfriend.setLayoutParams(scanlayoutParams);
         //二维码 qrCode
         ViewGroup.LayoutParams erWeimalayoutParams = ivErweima.getLayoutParams();
-        erWeimalayoutParams.height = ViewUtils.dp2px((int) (screenHeight * 0.135 + 0.5));
-        erWeimalayoutParams.width = ViewUtils.dp2px((int) (screenWidth * 0.24 + 0.5));
+        erWeimalayoutParams.height = (int) (screenHeight * 0.135 + 0.5);
+        erWeimalayoutParams.width = (int) (screenWidth * 0.24 + 0.5);
         ivErweima.setLayoutParams(erWeimalayoutParams);
     }
 

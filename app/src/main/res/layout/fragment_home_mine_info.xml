@@ -247,7 +247,7 @@
         android:layout_marginTop="30dp"
         android:layout_marginEnd="30dp"
         android:layout_marginStart="30dp"
-        android:background="@drawable/long_btn_bg_shape_f4f4f4"
+        android:background="@drawable/long_btn_bg_shape_white"
         android:textColor="@color/color_ff3b30"
         android:textSize="16sp" />
 
