@@ -108,6 +108,7 @@ public class MineFriendAddFromContactFragment extends Fragment implements MineFr
 
     @Override
     public void initContactRecycleView(ArrayList<RelAndFriendBean> list) {
+        rcyContactList.setVisibility(View.VISIBLE);
         rcyContactList.setLayoutManager(new LinearLayoutManager(getContext()));
         contactListAdapter = new FriendAddFromContactAdapter(getView().getContext(), list, null);
         rcyContactList.setAdapter(contactListAdapter);
@@ -145,6 +146,7 @@ public class MineFriendAddFromContactFragment extends Fragment implements MineFr
      */
     @Override
     public void showNoContactView() {
+        rcyContactList.setVisibility(View.INVISIBLE);
         llNoContact.setVisibility(View.VISIBLE);
     }
 

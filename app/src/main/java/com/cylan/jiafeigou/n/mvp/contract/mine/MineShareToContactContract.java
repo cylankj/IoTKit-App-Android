@@ -21,6 +21,8 @@ public interface MineShareToContactContract {
 
         void showNoContactNullView();
 
+        void hideNoContactNullView();
+
         void hideTopTitle();
 
         void showSearchInputEdit();

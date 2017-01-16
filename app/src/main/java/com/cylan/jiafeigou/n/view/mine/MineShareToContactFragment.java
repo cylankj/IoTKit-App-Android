@@ -139,6 +139,7 @@ public class MineShareToContactFragment extends Fragment implements MineShareToC
 
     @Override
     public void initContactReclyView(ArrayList<RelAndFriendBean> list) {
+        rcyMineShareToContactList.setVisibility(View.VISIBLE);
         rcyMineShareToContactList.setLayoutManager(new LinearLayoutManager(getContext()));
         shareToContactAdapter = new ShareToContactAdapter(getView().getContext(), list, null);
         rcyMineShareToContactList.setAdapter(shareToContactAdapter);
@@ -154,7 +155,13 @@ public class MineShareToContactFragment extends Fragment implements MineShareToC
 
     @Override
     public void showNoContactNullView() {
+        rcyMineShareToContactList.setVisibility(View.INVISIBLE);
         llNoContact.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideNoContactNullView() {
+        llNoContact.setVisibility(View.INVISIBLE);
     }
 
     @Override

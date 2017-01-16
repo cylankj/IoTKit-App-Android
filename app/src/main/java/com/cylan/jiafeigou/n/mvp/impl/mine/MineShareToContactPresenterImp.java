@@ -266,6 +266,7 @@ public class MineShareToContactPresenterImp extends AbstractPresenter<MineShareT
      */
     private void handlerContactDataResult(ArrayList<RelAndFriendBean> list) {
         if (getView() != null && list != null && list.size() != 0) {
+            getView().hideNoContactNullView();
             getView().initContactReclyView(list);
         } else {
             getView().showNoContactNullView();
