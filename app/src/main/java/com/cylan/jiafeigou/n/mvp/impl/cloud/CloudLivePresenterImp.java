@@ -9,6 +9,9 @@ import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 
 import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
+import com.cylan.jiafeigou.dp.DpMsgDefine;
+import com.cylan.jiafeigou.dp.DpMsgMap;
+import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.n.db.DataBaseUtil;
 import com.cylan.jiafeigou.n.mvp.contract.cloud.CloudLiveContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
@@ -19,6 +22,7 @@ import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.db.DbManager;
 import com.cylan.jiafeigou.support.db.ex.DbException;
 import com.cylan.utils.CloseUtils;
+import com.cylan.utils.NetUtils;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -449,6 +453,17 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
     @Override
     public String getUserIcon() {
         return userIcon;
+    }
+
+    /**
+     * 设备是否在线
+     * @return
+     */
+    @Override
+    public boolean isDeviceOnline() {
+        DpMsgDefine.DPNet net = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_201_NET, null);
+        return net != null && JFGRules.isDeviceOnline(net)
+                && NetUtils.getJfgNetType(getView().getContext()) != 0;
     }
 
     /**

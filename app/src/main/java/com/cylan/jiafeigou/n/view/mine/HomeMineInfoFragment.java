@@ -10,6 +10,7 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -303,21 +304,25 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
             if (presenter.checkOpenLogin()) {
                 photoUrl = PreferencesUtils.getString(JConstant.OPEN_LOGIN_USER_ICON);
             }
-            Glide.with(getContext()).load(photoUrl)
-                    .asBitmap()
-                    .centerCrop()
-                    .placeholder(R.drawable.icon_mine_head_normal)
-                    .error(R.drawable.icon_mine_head_normal)
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .into(new BitmapImageViewTarget(userImageHead) {
-                        @Override
-                        protected void setResource(Bitmap resource) {
-                            RoundedBitmapDrawable circularBitmapDrawable =
-                                    RoundedBitmapDrawableFactory.create(getContext().getResources(), resource);
-                            circularBitmapDrawable.setCircular(true);
-                            userImageHead.setImageDrawable(circularBitmapDrawable);
-                        }
-                    });
+
+            if (!TextUtils.isEmpty(photoUrl)){
+                Glide.with(getContext()).load(photoUrl)
+                        .asBitmap()
+                        .centerCrop()
+                        .placeholder(R.drawable.icon_mine_head_normal)
+                        .error(R.drawable.icon_mine_head_normal)
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .into(new BitmapImageViewTarget(userImageHead) {
+                            @Override
+                            protected void setResource(Bitmap resource) {
+                                RoundedBitmapDrawable circularBitmapDrawable =
+                                        RoundedBitmapDrawableFactory.create(getContext().getResources(), resource);
+                                circularBitmapDrawable.setCircular(true);
+                                userImageHead.setImageDrawable(circularBitmapDrawable);
+                            }
+
+                        });
+            }
 
             tvUserAccount.setText(bean.getAccount());
 
@@ -573,8 +578,6 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
         lp.alpha = alpha;
         getActivity().getWindow().setAttributes(lp);
     }
-
-
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
