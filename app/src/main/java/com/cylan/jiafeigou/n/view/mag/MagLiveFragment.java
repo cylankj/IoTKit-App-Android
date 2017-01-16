@@ -15,7 +15,6 @@ import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.mag.HomeMagLiveContract;
 import com.cylan.jiafeigou.n.mvp.impl.mag.HomeMagLivePresenterImp;
-import com.cylan.jiafeigou.n.mvp.model.BeanMagInfo;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.widget.LoadingDialog;
 import com.kyleduo.switchbutton.SwitchButton;
@@ -106,7 +105,7 @@ public class MagLiveFragment extends Fragment implements HomeMagLiveContract.Vie
         fragment.setCallBack(new IBaseFragment.CallBack() {
             @Override
             public void callBack(Object t) {
-                onMagInfoRsp(presenter.getMagInfoBean());
+                onMagInfoRsp();
             }
         });
         Bundle bundle = new Bundle();
@@ -177,11 +176,9 @@ public class MagLiveFragment extends Fragment implements HomeMagLiveContract.Vie
 
     /**
      * 初始化界面显示
-     *
-     * @param magInfoBean
      */
     @Override
-    public void onMagInfoRsp(BeanMagInfo magInfoBean) {
+    public void onMagInfoRsp() {
         mFacilityName.setText(presenter.getDeviceName());
     }
 

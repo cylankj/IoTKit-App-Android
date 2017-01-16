@@ -2,7 +2,6 @@ package com.cylan.jiafeigou.n.mvp.contract.cloud;
 
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
-import com.cylan.jiafeigou.n.mvp.model.BeanCloudInfo;
 
 import rx.Subscription;
 
@@ -49,12 +48,5 @@ public interface CloudLiveSettingContract {
          * @return
          */
         String getDeviceName();
-
-        /**
-         * 获取到中控的信息
-         *
-         * @return
-         */
-        BeanCloudInfo getCloudInfoBean();
     }
 }

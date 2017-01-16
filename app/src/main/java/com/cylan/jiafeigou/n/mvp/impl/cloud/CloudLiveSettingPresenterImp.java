@@ -8,7 +8,6 @@ import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
 import com.cylan.jiafeigou.n.db.DataBaseUtil;
 import com.cylan.jiafeigou.n.mvp.contract.cloud.CloudLiveSettingContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
-import com.cylan.jiafeigou.n.mvp.model.BeanCloudInfo;
 import com.cylan.jiafeigou.n.mvp.model.CloudLiveBaseDbBean;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
@@ -37,7 +36,6 @@ public class CloudLiveSettingPresenterImp extends AbstractPresenter<CloudLiveSet
     private Subscription clearDbSub;
     private DbManager dbManager = null;
     private CompositeSubscription subscription;
-    private BeanCloudInfo cloudInfoBean;
     private String uuid;
 
 
@@ -49,6 +47,7 @@ public class CloudLiveSettingPresenterImp extends AbstractPresenter<CloudLiveSet
 
     @Override
     public void start() {
+        super.start();
         fillData();
         if (getView() != null) {
             getView().initSomeViewVisible(isHasBeenShareUser());
@@ -63,6 +62,7 @@ public class CloudLiveSettingPresenterImp extends AbstractPresenter<CloudLiveSet
 
     @Override
     public void stop() {
+        super.stop();
         if (subscription != null && !subscription.isUnsubscribed()) {
             subscription.unsubscribe();
         }
@@ -142,20 +142,11 @@ public class CloudLiveSettingPresenterImp extends AbstractPresenter<CloudLiveSet
      */
     @Override
     public String getDeviceName() {
-        return TextUtils.isEmpty(cloudInfoBean.deviceBase.alias) ?
-                cloudInfoBean.deviceBase.uuid : cloudInfoBean.deviceBase.alias;
-    }
-
-    /**
-     * 获取到中控设备的信息
-     *
-     * @return
-     */
-    @Override
-    public BeanCloudInfo getCloudInfoBean() {
-        if (cloudInfoBean == null)
-            cloudInfoBean = new BeanCloudInfo();
-        return cloudInfoBean;
+        JFGDevice jfgDevice = GlobalDataProxy.getInstance().fetch(uuid);
+        if (jfgDevice == null)
+            return uuid;
+        return TextUtils.isEmpty(jfgDevice.alias) ?
+                uuid : jfgDevice.alias;
     }
 
 }
