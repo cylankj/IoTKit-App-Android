@@ -32,6 +32,7 @@
             android:text="@string/Tap3_Feedback_Clear"
             android:textColor="@color/color_white"
             android:textSize="14sp" />
+
     </FrameLayout>
 
     <include layout="@layout/layout_suggestion_recycleview_list" />

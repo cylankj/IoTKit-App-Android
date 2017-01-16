@@ -35,7 +35,6 @@ public class BellDevice extends JFGDevice {
     @DPProperty(msgId = ID_206_BATTERY)
     public DpMsgDefine.DPPrimary<Integer> battery;//DpMsgMap.BATTERY_206
 
-
     BellDevice() {
     }
 

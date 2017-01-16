@@ -8,7 +8,6 @@
     android:clickable="true"
     android:orientation="vertical">
 
-
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="72dp"
@@ -34,221 +33,254 @@
             android:textSize="18sp" />
     </RelativeLayout>
 
-    <RelativeLayout
-        android:id="@+id/rLayout_home_mine_personal_pic"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="72dp">
+        android:layout_height="wrap_content">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="20dp"
-            android:text="@string/PROFILE_PHOTO"
-            android:textColor="@color/color_333333"
-            android:textSize="16sp" />
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-        <com.cylan.jiafeigou.widget.roundedimageview.RoundedImageView
-            android:id="@+id/user_ImageHead"
-            android:layout_width="49dp"
-            android:layout_height="49dp"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="20dp"
-            android:src="@drawable/icon_mine_head_normal"
-            hunt:riv_oval="true" />
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="72dp">
 
+                <TextView
+                    android:id="@+id/tv_my_id"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:paddingTop="15dp"
+                    android:text="@string/Tap3_Friends_Myaccount"
+                    android:textColor="@color/color_8c8c8c"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:id="@+id/tv_user_account"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/tv_my_id"
+                    android:layout_marginLeft="20dp"
+                    android:paddingTop="8dp"
+                    android:singleLine="true"
+                    android:text="15856562525"
+                    android:textColor="@color/color_333333"
+                    android:textSize="16sp" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dip"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
+                    android:background="@color/color_f2f2f2" />
+
+            </RelativeLayout>
+
+
+            <RelativeLayout
+                android:id="@+id/rLayout_home_mine_personal_pic"
+                android:layout_width="match_parent"
+                android:layout_height="72dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="20dp"
+                    android:text="@string/PROFILE_PHOTO"
+                    android:textColor="@color/color_333333"
+                    android:textSize="16sp" />
+
+                <com.cylan.jiafeigou.widget.roundedimageview.RoundedImageView
+                    android:id="@+id/user_ImageHead"
+                    android:layout_width="49dp"
+                    android:layout_height="49dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="20dp"
+                    android:src="@drawable/icon_mine_head_normal"
+                    hunt:riv_oval="true" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dip"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
+                    android:background="@color/color_f2f2f2" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/rl_my_QRCode"
+                android:layout_width="match_parent"
+                android:layout_height="54dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="20dp"
+                    android:text="@string/Tap3_MyQRCode"
+                    android:textColor="@color/color_333333"
+                    android:textSize="16sp" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dip"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
+                    android:background="@color/color_f2f2f2" />
+
+            </RelativeLayout>
+
+
+            <RelativeLayout
+                android:id="@+id/rLayout_home_mine_personal_name"
+                android:layout_width="match_parent"
+                android:layout_height="72dp">
+
+                <TextView
+                    android:id="@+id/tv_like_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:paddingTop="15dp"
+                    android:text="@string/ALIAS"
+                    android:textColor="@color/color_8c8c8c"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:id="@+id/tv_user_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/tv_like_name"
+                    android:layout_marginLeft="20dp"
+                    android:paddingTop="8dp"
+                    android:textColor="@color/color_333333"
+                    android:textSize="16sp" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dip"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
+                    android:background="@color/color_f2f2f2" />
+
+            </RelativeLayout>
+
+
+            <RelativeLayout
+                android:id="@+id/lLayout_home_mine_personal_mailbox"
+                android:layout_width="match_parent"
+                android:layout_height="72dp">
+
+                <TextView
+                    android:id="@+id/tv_my_message"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:paddingTop="15dp"
+                    android:text="@string/EMAIL"
+                    android:textColor="@color/color_8c8c8c"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:id="@+id/tv_home_mine_personal_mailbox"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/tv_my_message"
+                    android:layout_marginLeft="20dp"
+                    android:paddingTop="8dp"
+                    android:text="@string/NO_SET"
+                    android:textColor="@color/color_333333"
+                    android:textSize="16sp" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dip"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
+                    android:background="@color/color_f2f2f2" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/RLayout_home_mine_personal_phone"
+                android:layout_width="match_parent"
+                android:layout_height="72dp">
+
+                <TextView
+                    android:id="@+id/tv_my_number"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:paddingTop="15dp"
+                    android:text="@string/PHONE_NUMBER"
+                    android:textColor="@color/color_8c8c8c"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:id="@+id/tv_home_mine_personal_phone"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/tv_my_number"
+                    android:layout_marginLeft="20dp"
+                    android:paddingTop="8dp"
+                    android:text="@string/NO_SET"
+                    android:textColor="@color/color_333333"
+                    android:textSize="16sp" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dip"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
+                    android:background="@color/color_f2f2f2" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/rl_change_password"
+                android:layout_width="match_parent"
+                android:layout_height="54dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="20dp"
+                    android:text="@string/CHANGE_PWD"
+                    android:textColor="@color/color_333333"
+                    android:textSize="16sp" />
+
+            </RelativeLayout>
+
+            <TextView
+                android:id="@+id/btn_home_mine_personal_information"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_centerVertical="true"
+                android:padding="10dp"
+                android:text="@string/LOGOUT"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="30dp"
+                android:layout_marginStart="30dp"
+                android:background="@drawable/long_btn_bg_shape_white"
+                android:textColor="@color/color_ff3b30"
+                android:textSize="16sp" />
+        </LinearLayout>
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="1dip"
-            android:layout_alignParentBottom="true"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:background="@color/color_f2f2f2" />
-
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="72dp">
-
-        <TextView
-            android:id="@+id/tv_my_id"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:paddingTop="15dp"
-            android:text="@string/Tap3_Friends_Myaccount"
-            android:textColor="@color/color_8c8c8c"
-            android:textSize="12sp" />
-
-        <TextView
-            android:id="@+id/tv_user_account"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/tv_my_id"
-            android:layout_marginLeft="20dp"
-            android:paddingTop="8dp"
-            android:singleLine="true"
-            android:text="15856562525"
-            android:textColor="@color/color_333333"
-            android:textSize="16sp" />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dip"
-            android:layout_alignParentBottom="true"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:background="@color/color_f2f2f2" />
-
-    </RelativeLayout>
-
-
-    <RelativeLayout
-        android:id="@+id/rLayout_home_mine_personal_name"
-        android:layout_width="match_parent"
-        android:layout_height="72dp">
-
-        <TextView
-            android:id="@+id/tv_like_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:paddingTop="15dp"
-            android:text="@string/ALIAS"
-            android:textColor="@color/color_8c8c8c"
-            android:textSize="12sp" />
-
-        <TextView
-            android:id="@+id/tv_user_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/tv_like_name"
-            android:layout_marginLeft="20dp"
-            android:paddingTop="8dp"
-            android:textColor="@color/color_333333"
-            android:textSize="16sp" />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dip"
-            android:layout_alignParentBottom="true"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:background="@color/color_f2f2f2" />
-
-    </RelativeLayout>
-
-
-    <RelativeLayout
-        android:id="@+id/lLayout_home_mine_personal_mailbox"
-        android:layout_width="match_parent"
-        android:layout_height="72dp">
-
-        <TextView
-            android:id="@+id/tv_my_message"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:paddingTop="15dp"
-            android:text="@string/EMAIL"
-            android:textColor="@color/color_8c8c8c"
-            android:textSize="12sp" />
-
-        <TextView
-            android:id="@+id/tv_home_mine_personal_mailbox"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/tv_my_message"
-            android:layout_marginLeft="20dp"
-            android:paddingTop="8dp"
-            android:text="@string/NO_SET"
-            android:textColor="@color/color_333333"
-            android:textSize="16sp" />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dip"
-            android:layout_alignParentBottom="true"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:background="@color/color_f2f2f2" />
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:id="@+id/RLayout_home_mine_personal_phone"
-        android:layout_width="match_parent"
-        android:layout_height="72dp">
-
-        <TextView
-            android:id="@+id/tv_my_number"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:paddingTop="15dp"
-            android:text="@string/PHONE_NUMBER"
-            android:textColor="@color/color_8c8c8c"
-            android:textSize="12sp" />
-
-        <TextView
-            android:id="@+id/tv_home_mine_personal_phone"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/tv_my_number"
-            android:layout_marginLeft="20dp"
-            android:paddingTop="8dp"
-            android:text="@string/NO_SET"
-            android:textColor="@color/color_333333"
-            android:textSize="16sp" />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dip"
-            android:layout_alignParentBottom="true"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:background="@color/color_f2f2f2" />
-
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:id="@+id/rl_change_password"
-        android:layout_width="match_parent"
-        android:layout_height="54dp">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="20dp"
-            android:text="@string/CHANGE_PWD"
-            android:textColor="@color/color_333333"
-            android:textSize="16sp" />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dip"
-            android:layout_alignParentBottom="true"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:background="@color/color_f2f2f2" />
-    </RelativeLayout>
-
-    <TextView
-        android:id="@+id/btn_home_mine_personal_information"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:layout_centerVertical="true"
-        android:padding="10dp"
-        android:text="@string/LOGOUT"
-        android:layout_marginTop="30dp"
-        android:layout_marginEnd="30dp"
-        android:layout_marginStart="30dp"
-        android:background="@drawable/long_btn_bg_shape_white"
-        android:textColor="@color/color_ff3b30"
-        android:textSize="16sp" />
+            android:layout_height="10dp"
+            android:background="@drawable/little_shape" />
+    </FrameLayout>
 
 </LinearLayout>

@@ -44,8 +44,6 @@ public class HomeSettingFragment extends Fragment implements HomeSettingContract
     ProgressBar progressbarLoadCacheSize;
     @BindView(R.id.tv_cache_size)
     TextView tvCacheSize;
-    @BindView(R.id.progressbar_clearing_cache)
-    ProgressBar progressbarClearingCache;
     @BindView(R.id.btn_item_switch_accessMes)
     SwitchButton btnItemSwitchAccessMes;
     @BindView(R.id.btn_item_switch_voide)

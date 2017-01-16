@@ -32,32 +32,43 @@
             android:textColor="@color/color_white" />
 
     </RelativeLayout>
-    
-    <RelativeLayout
-        android:layout_below="@id/rl_home_mine_setting_title"
+
+    <FrameLayout
         android:id="@+id/rl_home_mine_setting_version"
+        android:layout_below="@id/rl_home_mine_setting_title"
         android:layout_width="match_parent"
-        android:layout_height="216dp">
+        android:layout_height="wrap_content">
 
-        <ImageView
-            android:id="@+id/iv_logon"
-            android:layout_marginTop="56dp"
-            android:layout_centerHorizontal="true"
-            android:src="@mipmap/ic_launcher"
-            android:layout_width="60dp"
-            android:layout_height="60dp" />
+        <RelativeLayout
 
-        <TextView
-            android:layout_marginTop="8dp"
-            android:layout_centerHorizontal="true"
-            android:layout_below="@id/iv_logon"
-            android:textColor="@color/color_33333"
-            android:textSize="16sp"
-            android:text="加菲狗3.0"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-        
-    </RelativeLayout>
+            android:layout_width="match_parent"
+            android:layout_height="216dp">
+
+            <ImageView
+                android:id="@+id/iv_logon"
+                android:layout_marginTop="56dp"
+                android:layout_centerHorizontal="true"
+                android:src="@mipmap/ic_launcher"
+                android:layout_width="60dp"
+                android:layout_height="60dp" />
+
+            <TextView
+                android:layout_marginTop="8dp"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@id/iv_logon"
+                android:textColor="@color/color_33333"
+                android:textSize="16sp"
+                android:text="加菲狗3.0"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="10dp"
+            android:background="@drawable/little_shape" />
+    </FrameLayout>
 
     <RelativeLayout
         android:layout_below="@id/rl_home_mine_setting_version"
