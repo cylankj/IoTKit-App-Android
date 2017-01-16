@@ -12,7 +12,6 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
@@ -92,7 +91,7 @@ public class MineFriendAddFriendsFragment extends Fragment implements MineFriend
                     ViewUtils.deBounceClick(getView().findViewById(R.id.tv_scan_add));
                 AppLogger.d("tv_scan_add");
                 if (presenter.checkCameraPermission()) {
-                jump2ScanAddFragment();
+                    jump2ScanAddFragment();
                 } else {
                     MineFriendAddFriendsFragment.this.requestPermissions(
                             new String[]{Manifest.permission.CAMERA},
@@ -164,7 +163,7 @@ public class MineFriendAddFriendsFragment extends Fragment implements MineFriend
                 jump2ScanAddFragment();
             } else {
                 ToastUtil.showNegativeToast(getString(R.string.Tap0_Authorizationfailed));
+            }
         }
-    }
     }
 }

@@ -19,7 +19,6 @@ import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendsContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineFriendsPresenterImp;
 import com.cylan.jiafeigou.n.mvp.model.MineAddReqBean;
-import com.cylan.jiafeigou.n.mvp.model.MineMessageBean;
 import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
 import com.cylan.jiafeigou.n.view.adapter.AddRelativesAndFriendsAdapter;
 import com.cylan.jiafeigou.n.view.adapter.RelativesAndFriendsAdapter;
@@ -148,6 +147,7 @@ public class MineFriendsFragment extends Fragment implements MineFriendsContract
 
     /**
      * 添加请求列表删除一个条目
+     *
      * @param bean
      */
     @Override
@@ -164,7 +164,7 @@ public class MineFriendsFragment extends Fragment implements MineFriendsContract
      */
     @Override
     public void longClickDeleteItem(int code) {
-        if (code != JError.ErrorOK){
+        if (code != JError.ErrorOK) {
             ToastUtil.showToast(getString(R.string.Tips_DeleteFail));
             return;
         }
@@ -172,7 +172,7 @@ public class MineFriendsFragment extends Fragment implements MineFriendsContract
         addReqListAdater.notifyDataSetHasChanged();
         if (addReqListAdater.getItemCount() == 0) {
             hideAddReqListTitle();
-            if(friendsListAdapter.getItemCount()==0){
+            if (friendsListAdapter.getItemCount() == 0) {
                 showNullView();
             }
         }
@@ -186,7 +186,7 @@ public class MineFriendsFragment extends Fragment implements MineFriendsContract
      */
     @Override
     public void friendlistAddItem(int position, RelAndFriendBean bean) {
-        if (friendsListAdapter.getItemCount()==0){
+        if (friendsListAdapter.getItemCount() == 0) {
             showFriendListTitle();
         }
         friendsListAdapter.add(0, bean);
@@ -203,11 +203,12 @@ public class MineFriendsFragment extends Fragment implements MineFriendsContract
 
     /**
      * 网络状态变化
+     *
      * @param state
      */
     @Override
     public void onNetStateChanged(int state) {
-        if (state == -1){
+        if (state == -1) {
             hideLoadingDialog();
             ToastUtil.showNegativeToast(getString(R.string.NO_NETWORK_1));
         }
@@ -376,9 +377,9 @@ public class MineFriendsFragment extends Fragment implements MineFriendsContract
             public void onDelete(int position) {
                 friendsListAdapter.remove(position);
                 friendsListAdapter.notifyDataSetHasChanged();
-                if (friendsListAdapter.getItemCount() == 0){
+                if (friendsListAdapter.getItemCount() == 0) {
                     hideFriendListTitle();
-                    if (addReqListAdater.getItemCount() == 0){
+                    if (addReqListAdater.getItemCount() == 0) {
                         showNullView();
                     }
                 }
@@ -400,7 +401,7 @@ public class MineFriendsFragment extends Fragment implements MineFriendsContract
             showReqOutTimeDialog(item);
         } else {
             //调用添加成功
-            if (NetUtils.getNetType(ContextUtils.getContext()) == -1){
+            if (NetUtils.getNetType(ContextUtils.getContext()) == -1) {
                 ToastUtil.showToast(getString(R.string.NO_NETWORK_4));
                 return;
             }

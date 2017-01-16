@@ -182,11 +182,12 @@ public class MineFriendAddByNumFragment extends Fragment implements MineFriendAd
 
     /**
      * 网络状态变化
+     *
      * @param state
      */
     @Override
     public void onNetStateChanged(int state) {
-        if (state == -1){
+        if (state == -1) {
             hideFindLoading();
             ToastUtil.showNegativeToast(getString(R.string.NO_NETWORK_1));
         }

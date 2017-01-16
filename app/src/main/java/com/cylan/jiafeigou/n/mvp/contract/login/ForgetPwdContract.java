@@ -28,6 +28,7 @@ public interface ForgetPwdContract {
 
         /**
          * 重置密码的结果
+         *
          * @param code
          */
         void resetPwdResult(int code);
@@ -52,17 +53,19 @@ public interface ForgetPwdContract {
 
         /**
          * 短信验证码的回调
+         *
          * @return
          */
         Subscription checkSmsCodeBack();
 
         /**
-         *重置密码
+         * 重置密码
          */
         void resetPassword(String newPassword);
 
         /**
          * 重置密码的回调
+         *
          * @return
          */
         Subscription resetPwdBack();

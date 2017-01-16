@@ -10,8 +10,6 @@ import android.text.TextUtils;
 
 import com.cylan.entity.jniCall.JFGFriendAccount;
 import com.cylan.ex.JfgException;
-import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineDevicesShareManagerContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
@@ -155,6 +153,7 @@ public class MineDevicesShareManagerPresenterImp extends AbstractPresenter<MineD
 
     /**
      * 取消分享设备
+     *
      * @param cid
      * @param bean
      */
@@ -224,7 +223,7 @@ public class MineDevicesShareManagerPresenterImp extends AbstractPresenter<MineD
                 ContextUtils.getContext().registerReceiver(network, filter);
             }
         } catch (Exception e) {
-            AppLogger.e("registerNetworkMonitor"+e.getLocalizedMessage());
+            AppLogger.e("registerNetworkMonitor" + e.getLocalizedMessage());
         }
     }
 

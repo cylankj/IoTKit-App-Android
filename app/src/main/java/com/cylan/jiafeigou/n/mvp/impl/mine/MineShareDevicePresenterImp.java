@@ -71,7 +71,7 @@ public class MineShareDevicePresenterImp extends AbstractPresenter<MineShareDevi
                 .flatMap(new Func1<RxEvent.DeviceList, Observable<ArrayList<DeviceBean>>>() {
                     @Override
                     public Observable<ArrayList<DeviceBean>> call(RxEvent.DeviceList deviceList) {
-                        if (deviceList == null || deviceList.jfgDevices == null){
+                        if (deviceList == null || deviceList.jfgDevices == null) {
                             return Observable.just(null);
                         }
                         return Observable.just(getShareDeviceList(deviceList));
@@ -81,7 +81,7 @@ public class MineShareDevicePresenterImp extends AbstractPresenter<MineShareDevi
                 .subscribe(new Action1<ArrayList<DeviceBean>>() {
                     @Override
                     public void call(ArrayList<DeviceBean> deviceList) {
-                        if (getView() != null && deviceList != null && deviceList.size() > 0){
+                        if (getView() != null && deviceList != null && deviceList.size() > 0) {
                             allDevice.clear();
                             allDevice.addAll(deviceList);
                             ArrayList<String> cidList = new ArrayList<String>();
@@ -250,12 +250,12 @@ public class MineShareDevicePresenterImp extends AbstractPresenter<MineShareDevi
     }
 
     @Override
-    public void unShareSucceedDel(int position,ArrayList<String> arrayList) {
+    public void unShareSucceedDel(int position, ArrayList<String> arrayList) {
         Iterator iterator = hasShareFriendList.get(position).friends.iterator();
-        while (iterator.hasNext()){
+        while (iterator.hasNext()) {
             JFGFriendAccount friend = (JFGFriendAccount) iterator.next();
-            for (String str:arrayList){
-                if (friend.account.equals(str)){
+            for (String str : arrayList) {
+                if (friend.account.equals(str)) {
                     iterator.remove();
                 }
             }

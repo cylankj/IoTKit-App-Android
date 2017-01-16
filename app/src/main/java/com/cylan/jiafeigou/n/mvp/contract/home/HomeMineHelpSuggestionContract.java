@@ -45,10 +45,11 @@ public interface HomeMineHelpSuggestionContract {
         /**
          * 系统的自动回复
          */
-        void addSystemAutoReply(long time,String content);
+        void addSystemAutoReply(long time, String content);
 
         /**
          * 更新列表显示
+         *
          * @param code
          */
         void refrshRecycleView(int code);
@@ -111,24 +112,28 @@ public interface HomeMineHelpSuggestionContract {
 
         /**
          * 获取系统的自动回复回调
+         *
          * @return
          */
         Subscription getSystemAutoReplyCallBack();
 
         /**
          * 发送反馈的回调
+         *
          * @return
          */
         Subscription sendFeedBackReq();
 
         /**
          * 数据库中删除一条数据
+         *
          * @param bean
          */
         void deleteOnItemFromDb(MineHelpSuggestionBean bean);
 
         /**
          * 三方登录回调
+         *
          * @return
          */
         Subscription isOpenLogin();

@@ -2,10 +2,8 @@ package com.cylan.jiafeigou.n.view.adapter;
 
 import android.content.Context;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.model.MineMessageBean;
@@ -25,11 +23,11 @@ public class HomeMineMessageAdapter extends SuperAdapter<MineMessageBean> {
 
     public OnDeleteCheckChangeListener listener;
 
-    public interface OnDeleteCheckChangeListener{
-        public void deleteCheck(boolean isCheck,MineMessageBean item);
+    public interface OnDeleteCheckChangeListener {
+        public void deleteCheck(boolean isCheck, MineMessageBean item);
     }
 
-    public void setOnDeleteCheckChangeListener(OnDeleteCheckChangeListener listener){
+    public void setOnDeleteCheckChangeListener(OnDeleteCheckChangeListener listener) {
         this.listener = listener;
     }
 
@@ -47,25 +45,25 @@ public class HomeMineMessageAdapter extends SuperAdapter<MineMessageBean> {
             holder.setVisibility(R.id.message_item_time, View.GONE);
         }
 
-        if (isShowCheck){
-            holder.setVisibility(R.id.delete_check,View.VISIBLE);
-        }else {
-            holder.setVisibility(R.id.delete_check,View.GONE);
+        if (isShowCheck) {
+            holder.setVisibility(R.id.delete_check, View.VISIBLE);
+        } else {
+            holder.setVisibility(R.id.delete_check, View.GONE);
         }
 
         CheckBox deleteCheck = holder.getView(R.id.delete_check);
         deleteCheck.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (listener != null){
-                    listener.deleteCheck(isChecked,item);
+                if (listener != null) {
+                    listener.deleteCheck(isChecked, item);
                 }
             }
         });
 
-        if (checkAll){
+        if (checkAll) {
             deleteCheck.setChecked(true);
-        }else {
+        } else {
             deleteCheck.setChecked(false);
         }
 

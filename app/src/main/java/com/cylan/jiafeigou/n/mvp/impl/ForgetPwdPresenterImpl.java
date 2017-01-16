@@ -3,14 +3,12 @@ package com.cylan.jiafeigou.n.mvp.impl;
 import com.cylan.entity.JfgEnum;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.misc.JConstant;
-import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.contract.login.ForgetPwdContract;
 import com.cylan.jiafeigou.n.mvp.model.RequestResetPwdBean;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.support.sp.core.Preferences;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 
 import rx.Observable;
@@ -72,8 +70,8 @@ public class ForgetPwdPresenterImpl extends AbstractPresenter<ForgetPwdContract.
                     @Override
                     public void call(String s) {
                         try {
-                            PreferencesUtils.putString(JConstant.SAVE_TEMP_ACCOUNT,account);
-                            PreferencesUtils.putString(JConstant.SAVE_TEMP_CODE,code);
+                            PreferencesUtils.putString(JConstant.SAVE_TEMP_ACCOUNT, account);
+                            PreferencesUtils.putString(JConstant.SAVE_TEMP_CODE, code);
                             JfgCmdInsurance.getCmd().verifySMS(account, code, PreferencesUtils.getString(JConstant.KEY_REGISTER_SMS_TOKEN));
                         } catch (JfgException e) {
                             e.printStackTrace();
@@ -122,6 +120,7 @@ public class ForgetPwdPresenterImpl extends AbstractPresenter<ForgetPwdContract.
 
     /**
      * 短信验证码的回调
+     *
      * @return
      */
     @Override
@@ -131,7 +130,7 @@ public class ForgetPwdPresenterImpl extends AbstractPresenter<ForgetPwdContract.
                 .subscribe(new Action1<RxEvent.ResultVerifyCode>() {
                     @Override
                     public void call(RxEvent.ResultVerifyCode resultVerifyCode) {
-                        if (resultVerifyCode != null && resultVerifyCode instanceof RxEvent.ResultVerifyCode){
+                        if (resultVerifyCode != null && resultVerifyCode instanceof RxEvent.ResultVerifyCode) {
                             getView().checkSmsCodeResult(resultVerifyCode.code);
                         }
                     }
@@ -140,33 +139,35 @@ public class ForgetPwdPresenterImpl extends AbstractPresenter<ForgetPwdContract.
 
     /**
      * 重置密码
+     *
      * @param newPassword
      */
     @Override
     public void resetPassword(String newPassword) {
         rx.Observable.just(newPassword)
-            .subscribeOn(Schedulers.newThread())
-            .subscribe(new Action1<String>() {
-                @Override
-                public void call(String s) {
-                    String account = PreferencesUtils.getString(JConstant.SAVE_TEMP_ACCOUNT);
-                    String code = PreferencesUtils.getString(JConstant.SAVE_TEMP_CODE);
-                    try {
-                        JfgCmdInsurance.getCmd().resetPassword(account,s,code);
-                    } catch (JfgException e) {
-                        e.printStackTrace();
+                .subscribeOn(Schedulers.newThread())
+                .subscribe(new Action1<String>() {
+                    @Override
+                    public void call(String s) {
+                        String account = PreferencesUtils.getString(JConstant.SAVE_TEMP_ACCOUNT);
+                        String code = PreferencesUtils.getString(JConstant.SAVE_TEMP_CODE);
+                        try {
+                            JfgCmdInsurance.getCmd().resetPassword(account, s, code);
+                        } catch (JfgException e) {
+                            e.printStackTrace();
+                        }
                     }
-                }
-            }, new Action1<Throwable>() {
-                @Override
-                public void call(Throwable throwable) {
-                    AppLogger.e("resetPassword"+throwable.getLocalizedMessage());
-                }
-            });
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        AppLogger.e("resetPassword" + throwable.getLocalizedMessage());
+                    }
+                });
     }
 
     /**
      * 重置密码的回调
+     *
      * @return
      */
     @Override
@@ -176,7 +177,7 @@ public class ForgetPwdPresenterImpl extends AbstractPresenter<ForgetPwdContract.
                 .subscribe(new Action1<RxEvent.ResetPwdBack>() {
                     @Override
                     public void call(RxEvent.ResetPwdBack resetPwdBack) {
-                        if (resetPwdBack != null && resetPwdBack instanceof RxEvent.ResetPwdBack){
+                        if (resetPwdBack != null && resetPwdBack instanceof RxEvent.ResetPwdBack) {
                             getView().resetPwdResult(resetPwdBack.jfgResult.code);
                         }
                     }

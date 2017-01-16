@@ -6,7 +6,6 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -176,7 +175,7 @@ public class MineShareDeviceFragment extends Fragment implements MineShareDevice
         shareToRelativeAndFriendFragment.setOnShareSucceedListener(new MineShareToFriendFragment.OnShareSucceedListener() {
             @Override
             public void shareSucceed(int num, ArrayList<RelAndFriendBean> list) {
-                if (num == 0)return;
+                if (num == 0) return;
                 adapter.getItem(position).hasShareCount += num;
                 adapter.notifyDataSetChanged();
                 presenter.shareSucceedAdd(list);
@@ -237,11 +236,11 @@ public class MineShareDeviceFragment extends Fragment implements MineShareDevice
         mineDevicesShareManagerFragment.setOncancleChangeListener(
                 new MineDevicesShareManagerFragment.OnUnShareChangeListener() {
                     @Override
-                    public void unShareChange(int num,ArrayList<String> arrayList) {
-                        if(num==0)return;
+                    public void unShareChange(int num, ArrayList<String> arrayList) {
+                        if (num == 0) return;
                         adapter.getItem(position).hasShareCount -= num;
                         adapter.notifyDataSetChanged();
-                        presenter.unShareSucceedDel(position,arrayList);
+                        presenter.unShareSucceedDel(position, arrayList);
                     }
                 });
     }

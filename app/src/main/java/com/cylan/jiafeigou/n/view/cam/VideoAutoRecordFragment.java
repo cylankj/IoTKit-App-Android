@@ -20,7 +20,6 @@ import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.setting.VideoAutoRecordContract;
 import com.cylan.jiafeigou.n.mvp.impl.setting.VideoAutoRecordPresenterImpl;
-import com.cylan.jiafeigou.n.mvp.model.BeanCamInfo;
 import com.cylan.jiafeigou.utils.ViewUtils;
 
 import butterknife.BindView;
@@ -106,10 +105,6 @@ public class VideoAutoRecordFragment extends IBaseFragment<VideoAutoRecordContra
             callBack.callBack(null);
     }
 
-    @Override
-    public void beanUpdate(BeanCamInfo info) {
-
-    }
 
     @Override
     public void setPresenter(VideoAutoRecordContract.Presenter presenter) {

@@ -38,6 +38,7 @@ public interface MineAddFromContactContract {
 
         /**
          * 发送添加求的结果
+         *
          * @param code
          */
         void sendReqBack(int code);
@@ -63,12 +64,14 @@ public interface MineAddFromContactContract {
 
         /**
          * 检测账号
+         *
          * @param account
          */
         void checkAccount(String account);
 
         /**
          * 检测账号的回调
+         *
          * @return
          */
         Subscription checkAccountCallBack();
@@ -85,6 +88,7 @@ public interface MineAddFromContactContract {
 
         /**
          * 发送添加请求的回调
+         *
          * @return
          */
         Subscription sendAddFriendRep();

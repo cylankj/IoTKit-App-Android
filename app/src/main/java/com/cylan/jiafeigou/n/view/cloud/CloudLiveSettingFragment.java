@@ -113,7 +113,7 @@ public class CloudLiveSettingFragment extends Fragment implements CloudLiveSetti
         ViewUtils.setViewPaddingStatusBar(fLayoutTopBarContainer);
     }
 
-    @OnClick({R.id.tv_setting_clear_, R.id.tv_bell_detail, R.id.tv_bell_detail2, R.id.tv_setting_unbind,R.id.imgV_top_bar_center})
+    @OnClick({R.id.tv_setting_clear_, R.id.tv_bell_detail, R.id.tv_bell_detail2, R.id.tv_setting_unbind, R.id.imgV_top_bar_center})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.tv_setting_clear_:

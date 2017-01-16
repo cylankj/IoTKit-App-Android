@@ -20,7 +20,6 @@ import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.support.network.ConnectivityStatus;
 import com.cylan.jiafeigou.support.network.ReactiveNetwork;
 import com.cylan.jiafeigou.utils.ContextUtils;
@@ -45,8 +44,8 @@ public class MineBindPhonePresenterImp extends AbstractPresenter<MineBindPhoneCo
 
     private CompositeSubscription compositeSubscription;
     private JFGAccount jfgAccount;
-    private  Network network;
-    private  boolean isOpenLogin;
+    private Network network;
+    private boolean isOpenLogin;
 
     public MineBindPhonePresenterImp(MineBindPhoneContract.View view) {
         super(view);
@@ -68,6 +67,7 @@ public class MineBindPhonePresenterImp extends AbstractPresenter<MineBindPhoneCo
 
     /**
      * 获取到验证码
+     *
      * @param phone
      */
     @Override
@@ -235,7 +235,7 @@ public class MineBindPhonePresenterImp extends AbstractPresenter<MineBindPhoneCo
                     @Override
                     public void call(String code) {
                         try {
-                            JfgCmdInsurance.getCmd().verifySMS(jfgAccount.getAccount(),inputCode,code);
+                            JfgCmdInsurance.getCmd().verifySMS(jfgAccount.getAccount(), inputCode, code);
                         } catch (JfgException e) {
                             e.printStackTrace();
                         }
@@ -282,7 +282,7 @@ public class MineBindPhonePresenterImp extends AbstractPresenter<MineBindPhoneCo
                 ContextUtils.getContext().registerReceiver(network, filter);
             }
         } catch (Exception e) {
-            AppLogger.e("registerNetworkMonitor"+e.getLocalizedMessage());
+            AppLogger.e("registerNetworkMonitor" + e.getLocalizedMessage());
         }
     }
 
@@ -296,6 +296,7 @@ public class MineBindPhonePresenterImp extends AbstractPresenter<MineBindPhoneCo
 
     /**
      * 三方登录的回调
+     *
      * @return
      */
     @Override
@@ -312,6 +313,7 @@ public class MineBindPhonePresenterImp extends AbstractPresenter<MineBindPhoneCo
 
     /**
      * 是否三方登录
+     *
      * @return
      */
     @Override

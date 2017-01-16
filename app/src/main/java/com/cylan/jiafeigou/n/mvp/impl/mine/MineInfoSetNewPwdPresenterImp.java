@@ -28,11 +28,12 @@ public class MineInfoSetNewPwdPresenterImp extends AbstractPresenter<MineInfoSet
 
     /**
      * 注册
+     *
      * @param account
      * @param pwd
      */
     @Override
-    public void openLoginRegister(String account, String pwd,String token) {
+    public void openLoginRegister(String account, String pwd, String token) {
         rx.Observable.just(null)
                 .subscribeOn(Schedulers.newThread())
                 .subscribe(new Action1<Object>() {
@@ -40,9 +41,9 @@ public class MineInfoSetNewPwdPresenterImp extends AbstractPresenter<MineInfoSet
                     public void call(Object o) {
                         try {
                             if (JConstant.PHONE_REG.matcher(account).find()) {
-                                JfgCmdInsurance.getCmd().register(account,pwd, JConstant.TYPE_PHONE,"");
-                            }else if(JConstant.EMAIL_REG.matcher(account).find()){
-                                JfgCmdInsurance.getCmd().register(account,pwd, JConstant.TYPE_EMAIL,"");
+                                JfgCmdInsurance.getCmd().register(account, pwd, JConstant.TYPE_PHONE, "");
+                            } else if (JConstant.EMAIL_REG.matcher(account).find()) {
+                                JfgCmdInsurance.getCmd().register(account, pwd, JConstant.TYPE_EMAIL, "");
                             }
 
                         } catch (JfgException e) {
@@ -52,13 +53,14 @@ public class MineInfoSetNewPwdPresenterImp extends AbstractPresenter<MineInfoSet
                 }, new Action1<Throwable>() {
                     @Override
                     public void call(Throwable throwable) {
-                        AppLogger.e("openLoginRegister"+throwable.getLocalizedMessage());
+                        AppLogger.e("openLoginRegister" + throwable.getLocalizedMessage());
                     }
                 });
     }
 
     /**
      * 注册回调
+     *
      * @return
      */
     @Override
@@ -68,8 +70,8 @@ public class MineInfoSetNewPwdPresenterImp extends AbstractPresenter<MineInfoSet
                 .subscribe(new Action1<RxEvent.ResultRegister>() {
                     @Override
                     public void call(RxEvent.ResultRegister resultRegister) {
-                        if (resultRegister != null && resultRegister instanceof RxEvent.ResultRegister){
-                            if (getView() != null)getView().registerResult(resultRegister.code);
+                        if (resultRegister != null && resultRegister instanceof RxEvent.ResultRegister) {
+                            if (getView() != null) getView().registerResult(resultRegister.code);
                         }
                     }
                 });

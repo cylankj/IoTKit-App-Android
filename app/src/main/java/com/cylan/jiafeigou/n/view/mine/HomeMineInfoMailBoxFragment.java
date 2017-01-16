@@ -236,12 +236,12 @@ public class HomeMineInfoMailBoxFragment extends Fragment implements MineInfoBin
      */
     @Override
     public void showAccountUnReg() {
-        if (!presenter.isOpenLogin()){
+        if (!presenter.isOpenLogin()) {
             presenter.sendSetAccountReq(getEditText());
-        }else {
-            if (TextUtils.isEmpty(presenter.getUserAccount().getEmail()) && TextUtils.isEmpty(presenter.getUserAccount().getPhone())){
+        } else {
+            if (TextUtils.isEmpty(presenter.getUserAccount().getEmail()) && TextUtils.isEmpty(presenter.getUserAccount().getPhone())) {
                 jump2SetPasswordFragment(getEditText());
-            }else {
+            } else {
                 presenter.sendSetAccountReq(getEditText());
             }
         }
@@ -269,11 +269,12 @@ public class HomeMineInfoMailBoxFragment extends Fragment implements MineInfoBin
 
     /**
      * 网络状态变化
+     *
      * @param state
      */
     @Override
     public void onNetStateChanged(int state) {
-        if (state == -1){
+        if (state == -1) {
             hideSendReqHint();
             ToastUtil.showNegativeToast(getString(R.string.NO_NETWORK_1));
         }

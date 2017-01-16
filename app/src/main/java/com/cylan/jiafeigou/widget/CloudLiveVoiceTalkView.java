@@ -95,7 +95,7 @@ public class CloudLiveVoiceTalkView extends View {
         for (int i = 0; i < 7; i++) {
             float startY = i % 2 != 0 ? getHeight() / 2 - longLineLen / 2 : getHeight() / 2 - shortLineLen / 2;
             float endY = i % 2 != 0 ? getHeight() / 2 + longLineLen / 2 : getHeight() / 2 + shortLineLen / 2;
-            paint.setColor( i%2 != 0 ? Color.parseColor("#36bdff"):Color.parseColor("#5036bdff"));
+            paint.setColor(i % 2 != 0 ? Color.parseColor("#36bdff") : Color.parseColor("#5036bdff"));
             canvas.drawLine((18 * i) + getWidth() / 4, startY, (18 * i) + getWidth() / 4, endY, paint);
         }
     }

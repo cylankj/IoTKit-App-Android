@@ -115,7 +115,7 @@ public class SetupPwdPresenterImpl extends AbstractPresenter<SetupPwdContract.Vi
                 .subscribe(new Action1<RxEvent.ResultLogin>() {
                     @Override
                     public void call(RxEvent.ResultLogin resultLogin) {
-                        if (getView()!=null) {
+                        if (getView() != null) {
                             getView().loginResult(resultLogin.code);
                         }
                     }

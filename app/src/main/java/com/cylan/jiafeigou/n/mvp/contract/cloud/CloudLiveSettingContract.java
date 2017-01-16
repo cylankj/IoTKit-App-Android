@@ -25,6 +25,7 @@ public interface CloudLiveSettingContract {
 
         /**
          * 初始化显示设备名称
+         *
          * @param alias
          * @return
          */
@@ -44,12 +45,14 @@ public interface CloudLiveSettingContract {
 
         /**
          * 获取设备名称
+         *
          * @return
          */
         String getDeviceName();
 
         /**
          * 获取到中控的信息
+         *
          * @return
          */
         BeanCloudInfo getCloudInfoBean();

@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.net.wifi.WifiManager;
 import android.text.TextUtils;
 
@@ -49,7 +48,7 @@ public class MineAddFromContactPresenterImp extends AbstractPresenter<MineAddFro
     public void start() {
         if (compositeSubscription != null && !compositeSubscription.isUnsubscribed()) {
             compositeSubscription.unsubscribe();
-        }else {
+        } else {
             compositeSubscription = new CompositeSubscription();
             compositeSubscription.add(getAccountAlids());
             compositeSubscription.add(checkAccountCallBack());
@@ -119,6 +118,7 @@ public class MineAddFromContactPresenterImp extends AbstractPresenter<MineAddFro
 
     /**
      * 检测账号
+     *
      * @param account
      */
     @Override
@@ -137,13 +137,14 @@ public class MineAddFromContactPresenterImp extends AbstractPresenter<MineAddFro
                 }, new Action1<Throwable>() {
                     @Override
                     public void call(Throwable throwable) {
-                        AppLogger.e("checkoutAccount"+throwable.getLocalizedMessage());
+                        AppLogger.e("checkoutAccount" + throwable.getLocalizedMessage());
                     }
                 });
     }
 
     /**
      * 检测账号的回调
+     *
      * @return
      */
     @Override
@@ -153,8 +154,8 @@ public class MineAddFromContactPresenterImp extends AbstractPresenter<MineAddFro
                 .subscribe(new Action1<RxEvent.CheckAccountCallback>() {
                     @Override
                     public void call(RxEvent.CheckAccountCallback checkAccountCallback) {
-                        if (checkAccountCallback != null && checkAccountCallback instanceof RxEvent.CheckAccountCallback){
-                            if (getView() != null){
+                        if (checkAccountCallback != null && checkAccountCallback instanceof RxEvent.CheckAccountCallback) {
+                            if (getView() != null) {
                                 getView().showResultDialog(checkAccountCallback);
                             }
                         }
@@ -173,7 +174,7 @@ public class MineAddFromContactPresenterImp extends AbstractPresenter<MineAddFro
                 ContextUtils.getContext().registerReceiver(network, filter);
             }
         } catch (Exception e) {
-            AppLogger.e("registerNetworkMonitor"+e.getLocalizedMessage());
+            AppLogger.e("registerNetworkMonitor" + e.getLocalizedMessage());
         }
     }
 
@@ -187,6 +188,7 @@ public class MineAddFromContactPresenterImp extends AbstractPresenter<MineAddFro
 
     /**
      * 发送添加请求的回调
+     *
      * @return
      */
     @Override
@@ -196,7 +198,7 @@ public class MineAddFromContactPresenterImp extends AbstractPresenter<MineAddFro
                 .subscribe(new Action1<RxEvent.AddFriendBack>() {
                     @Override
                     public void call(RxEvent.AddFriendBack addFriendBack) {
-                        if (addFriendBack != null && addFriendBack instanceof RxEvent.AddFriendBack){
+                        if (addFriendBack != null && addFriendBack instanceof RxEvent.AddFriendBack) {
                             getView().sendReqBack(addFriendBack.jfgResult.code);
                         }
                     }
@@ -210,7 +212,7 @@ public class MineAddFromContactPresenterImp extends AbstractPresenter<MineAddFro
         @Override
         public void onReceive(Context context, Intent intent) {
             final String action = intent.getAction();
-             if (TextUtils.equals(action, ConnectivityManager.CONNECTIVITY_ACTION)) {
+            if (TextUtils.equals(action, ConnectivityManager.CONNECTIVITY_ACTION)) {
                 ConnectivityStatus status = ReactiveNetwork.getConnectivityStatus(context);
                 updateConnectivityStatus(status.state);
             }

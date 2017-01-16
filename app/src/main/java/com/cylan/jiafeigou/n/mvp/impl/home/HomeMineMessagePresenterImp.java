@@ -30,7 +30,7 @@ public class HomeMineMessagePresenterImp extends AbstractPresenter<HomeMineMessa
 
     private DbManager dbManager;
 
-    public HomeMineMessagePresenterImp(HomeMineMessageContract.View view,ArrayList<MineMessageBean> list) {
+    public HomeMineMessagePresenterImp(HomeMineMessageContract.View view, ArrayList<MineMessageBean> list) {
         super(view);
         view.setPresenter(this);
         this.list = list;
@@ -60,7 +60,7 @@ public class HomeMineMessagePresenterImp extends AbstractPresenter<HomeMineMessa
     @Override
     public void initMesgData() {
 
-        if (list == null){
+        if (list == null) {
             list = new ArrayList<MineMessageBean>();
         }
 
@@ -97,6 +97,7 @@ public class HomeMineMessagePresenterImp extends AbstractPresenter<HomeMineMessa
 
     /**
      * 拿到数据库的操作对象
+     *
      * @return
      */
     @Override

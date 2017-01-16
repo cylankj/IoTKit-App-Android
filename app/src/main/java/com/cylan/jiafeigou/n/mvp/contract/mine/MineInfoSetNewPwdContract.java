@@ -15,16 +15,18 @@ public interface MineInfoSetNewPwdContract {
         void registerResult(int code);
     }
 
-    interface Presenter extends BasePresenter{
+    interface Presenter extends BasePresenter {
         /**
          * 注册
+         *
          * @param mail
          * @param pwd
          */
-        void openLoginRegister(String mail,String pwd,String token);
+        void openLoginRegister(String mail, String pwd, String token);
 
         /**
          * 注册回调
+         *
          * @return
          */
         Subscription registerBack();

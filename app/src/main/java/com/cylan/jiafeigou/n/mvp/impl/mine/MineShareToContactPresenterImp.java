@@ -202,6 +202,7 @@ public class MineShareToContactPresenterImp extends AbstractPresenter<MineShareT
 
     /**
      * 检测发送短信权限
+     *
      * @return
      */
     @Override
@@ -210,7 +211,7 @@ public class MineShareToContactPresenterImp extends AbstractPresenter<MineShareT
                 Manifest.permission.SEND_SMS)
                 != PackageManager.PERMISSION_GRANTED) {
             return false;
-        }else{
+        } else {
             return true;
         }
     }

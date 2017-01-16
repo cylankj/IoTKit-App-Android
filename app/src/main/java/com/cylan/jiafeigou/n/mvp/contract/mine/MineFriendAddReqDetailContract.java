@@ -86,12 +86,14 @@ public interface MineFriendAddReqDetailContract {
 
         /**
          * 添加好友的回调
+         *
          * @return
          */
         Subscription sendAddFriendReqBack();
 
         /**
          * 同意添加好友的回调
+         *
          * @return
          */
         Subscription consentAddFriendBack();

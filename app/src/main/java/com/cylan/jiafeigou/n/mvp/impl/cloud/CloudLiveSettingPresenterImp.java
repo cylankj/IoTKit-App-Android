@@ -8,11 +8,8 @@ import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
 import com.cylan.jiafeigou.n.db.DataBaseUtil;
 import com.cylan.jiafeigou.n.mvp.contract.cloud.CloudLiveSettingContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
-import com.cylan.jiafeigou.n.mvp.model.BaseBean;
-import com.cylan.jiafeigou.n.mvp.model.BeanCamInfo;
 import com.cylan.jiafeigou.n.mvp.model.BeanCloudInfo;
 import com.cylan.jiafeigou.n.mvp.model.CloudLiveBaseDbBean;
-import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.db.DbManager;
@@ -56,9 +53,9 @@ public class CloudLiveSettingPresenterImp extends AbstractPresenter<CloudLiveSet
         if (getView() != null) {
             getView().initSomeViewVisible(isHasBeenShareUser());
         }
-        if (subscription != null && !subscription.isUnsubscribed()){
+        if (subscription != null && !subscription.isUnsubscribed()) {
             subscription.unsubscribe();
-        }else {
+        } else {
             subscription = new CompositeSubscription();
             subscription.add(getAccount());
         }
@@ -66,7 +63,7 @@ public class CloudLiveSettingPresenterImp extends AbstractPresenter<CloudLiveSet
 
     @Override
     public void stop() {
-        if (subscription != null && !subscription.isUnsubscribed()){
+        if (subscription != null && !subscription.isUnsubscribed()) {
             subscription.unsubscribe();
         }
         if (clearDbSub != null) {
@@ -76,7 +73,7 @@ public class CloudLiveSettingPresenterImp extends AbstractPresenter<CloudLiveSet
 
     private void fillData() {
         JFGDevice device = GlobalDataProxy.getInstance().fetch(uuid);
-        getView().onCloudInfoRsp(TextUtils.isEmpty(device.alias)? device.uuid:device.alias);
+        getView().onCloudInfoRsp(TextUtils.isEmpty(device.alias) ? device.uuid : device.alias);
     }
 
 
@@ -105,7 +102,7 @@ public class CloudLiveSettingPresenterImp extends AbstractPresenter<CloudLiveSet
                     @Override
                     public Object call(Object o) {
                         try {
-                            finalDbManager.delete(CloudLiveBaseDbBean.class,WhereBuilder.b("uuid","=",uuid));
+                            finalDbManager.delete(CloudLiveBaseDbBean.class, WhereBuilder.b("uuid", "=", uuid));
                         } catch (DbException e) {
                             e.printStackTrace();
                         }
@@ -140,6 +137,7 @@ public class CloudLiveSettingPresenterImp extends AbstractPresenter<CloudLiveSet
 
     /**
      * 拿到设备的名称
+     *
      * @return
      */
     @Override
@@ -150,6 +148,7 @@ public class CloudLiveSettingPresenterImp extends AbstractPresenter<CloudLiveSet
 
     /**
      * 获取到中控设备的信息
+     *
      * @return
      */
     @Override

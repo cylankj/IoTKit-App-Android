@@ -17,7 +17,7 @@ import rx.Subscription;
  */
 public interface CloudLiveCallContract {
 
-    interface View extends BaseView<Presenter>{
+    interface View extends BaseView<Presenter> {
 
         void showLoadingView();
 
@@ -26,6 +26,7 @@ public interface CloudLiveCallContract {
         void setLoadingText(String text);
 
         void onLiveStop(int code);
+
         /**
          * 设备响应分辨率消息
          */
@@ -47,18 +48,20 @@ public interface CloudLiveCallContract {
 
         /**
          * 分辨率的回调
+         *
          * @return
          */
         Subscription resolutionNotifySub();
 
         /**
          * 停止播放
-          */
+         */
         void stopPlayVideo();
 
 
         /**
          * 呼叫的结果
+         *
          * @return
          */
         Subscription callingResult();
@@ -80,6 +83,7 @@ public interface CloudLiveCallContract {
 
         /**
          * 字符串转byte[]
+         *
          * @param s
          * @return
          */
@@ -87,12 +91,14 @@ public interface CloudLiveCallContract {
 
         /**
          * 是否连接成功
+         *
          * @return
          */
         boolean getIsConnectOk();
 
         /**
          * 系统时间转换
+         *
          * @param times
          * @return
          */
@@ -100,6 +106,7 @@ public interface CloudLiveCallContract {
 
         /**
          * 获取到用户的头像
+         *
          * @return
          */
         String getUserIcon();

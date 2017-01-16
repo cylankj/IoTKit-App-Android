@@ -2,7 +2,6 @@ package com.cylan.jiafeigou.n.mvp.contract.mag;
 
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
-import com.cylan.jiafeigou.n.mvp.model.BeanMagInfo;
 
 /**
  * 作者：zsl
@@ -25,6 +24,7 @@ public interface MagLiveInformationContract {
 
         /**
          * 保存设备昵称信息
+         *
          * @param value
          * @param id
          */

@@ -1,7 +1,6 @@
 package com.cylan.jiafeigou.n.view.home;
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -66,7 +65,7 @@ public class HomeSettingAboutFragment extends Fragment implements HomeSettingAbo
         this.presenter = presenter;
     }
 
-    @OnClick({R.id.iv_home_setting_about_back, R.id.rLayout_home_setting_hotphone,R.id.tv_user_agreement,R.id.rLayout_home_setting_website})
+    @OnClick({R.id.iv_home_setting_about_back, R.id.rLayout_home_setting_hotphone, R.id.tv_user_agreement, R.id.rLayout_home_setting_website})
     public void onClick(View view) {
 
         switch (view.getId()) {

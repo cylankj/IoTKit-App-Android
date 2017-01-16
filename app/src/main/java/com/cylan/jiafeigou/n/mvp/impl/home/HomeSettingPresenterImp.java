@@ -83,14 +83,15 @@ public class HomeSettingPresenterImp extends AbstractPresenter<HomeSettingContra
 
     /**
      * 删除所有的缓存文件
+     *
      * @param directory
      */
     private void deleteCacheFile(File directory) {
         if (directory != null && directory.exists() && directory.isDirectory()) {
             for (File item : directory.listFiles()) {
-                if (item.isDirectory()){
+                if (item.isDirectory()) {
                     deleteCacheFile(item);
-                }else {
+                } else {
                     item.delete();
                 }
             }

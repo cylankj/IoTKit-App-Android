@@ -44,12 +44,12 @@ public class MineShareDeviceAdapter extends SuperAdapter<DeviceBean> {
         //图标
         holder.setImageDrawable(R.id.iv_share_device_icon, getContext().getResources().getDrawable(iconRes));
         //已分享数
-        holder.setText(R.id.tv_has_share_num, item.hasShareCount+"/5");
+        holder.setText(R.id.tv_has_share_num, item.hasShareCount + "/5");
 
-        if (item.hasShareCount >= 5){
-            holder.setBackgroundResource(R.id.tv_share_device_btn,R.drawable.btn_accept_add_request_shape_gray);
+        if (item.hasShareCount >= 5) {
+            holder.setBackgroundResource(R.id.tv_share_device_btn, R.drawable.btn_accept_add_request_shape_gray);
             holder.setTextColor(R.id.tv_share_device_btn, Color.parseColor("#504b9fd5"));
-            holder.setEnabled(R.id.tv_share_device_btn,false);
+            holder.setEnabled(R.id.tv_share_device_btn, false);
         }
 
         holder.setOnClickListener(R.id.tv_share_device_btn, new View.OnClickListener() {

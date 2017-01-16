@@ -5,7 +5,6 @@ import com.cylan.entity.jniCall.JFGMsgVideoRtcp;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
-import com.cylan.jiafeigou.n.mvp.model.BeanCamInfo;
 import com.cylan.jiafeigou.widget.wheel.ex.IData;
 
 import java.util.Map;
@@ -59,8 +58,6 @@ public interface CamLiveContract {
 
         void onTakeSnapShot(boolean state);
 
-        void onBeanInfoUpdate(BeanCamInfo info);
-
         /**
          * 历史录像播放结束状态
          *
@@ -111,7 +108,6 @@ public interface CamLiveContract {
          */
         void stopPlayVideo(int type);
 
-//        BeanCamInfo getCamInfo();
 
         String getUuid();
 

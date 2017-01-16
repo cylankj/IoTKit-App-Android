@@ -2,7 +2,6 @@ package com.cylan.jiafeigou.n.mvp.contract.mag;
 
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
-import com.cylan.jiafeigou.n.mvp.model.BeanCamInfo;
 import com.cylan.jiafeigou.n.mvp.model.BeanMagInfo;
 
 import rx.Subscription;
@@ -18,6 +17,7 @@ public interface HomeMagLiveContract {
 
         /**
          * 初始化设备名称的设置
+         *
          * @param magInfoBean
          */
         void onMagInfoRsp(BeanMagInfo magInfoBean);
@@ -48,12 +48,14 @@ public interface HomeMagLiveContract {
 
         /**
          * 取反操作
+         *
          * @return
          */
         boolean getNegation();
 
         /**
          * 保存开关的状态
+         *
          * @param isChick
          * @param key
          */
@@ -61,6 +63,7 @@ public interface HomeMagLiveContract {
 
         /**
          * 获取的开关的的状态
+         *
          * @param key
          * @return
          */
@@ -73,12 +76,14 @@ public interface HomeMagLiveContract {
 
         /**
          * 拿到门磁信息
+         *
          * @return
          */
         BeanMagInfo getMagInfoBean();
 
         /**
          * 获取到设备的名字
+         *
          * @return
          */
         String getDeviceName();

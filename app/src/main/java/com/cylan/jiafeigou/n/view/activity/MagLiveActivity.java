@@ -61,7 +61,7 @@ public class MagLiveActivity extends BaseFullScreenFragmentActivity implements M
     private MagLiveFragment magLiveFragment;
     private MagActivityAdapter adapter;
     private MagLiveContract.Presenter presenter;
-    private String uuid ;
+    private String uuid;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -121,6 +121,7 @@ public class MagLiveActivity extends BaseFullScreenFragmentActivity implements M
 
     /**
      * 获得当前日期的方法
+     *
      * @param
      */
     public String getDate() {
@@ -213,7 +214,7 @@ public class MagLiveActivity extends BaseFullScreenFragmentActivity implements M
                     list.get(i).isFirst = false;
                 }
             }
-            list.add(0,nullBean);
+            list.add(0, nullBean);
             hideNoMesg();
             LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
             RvMagState.setLayoutManager(layoutManager);

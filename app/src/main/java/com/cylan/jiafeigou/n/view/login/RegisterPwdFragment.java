@@ -66,8 +66,8 @@ public class RegisterPwdFragment extends SetupPwdFragment
                 isPhone ? JConstant.TYPE_PHONE : JConstant.TYPE_EMAIL,
                 isPhone ? PreferencesUtils.getString(JConstant.KEY_REGISTER_SMS_TOKEN) : "");
 
-        PreferencesUtils.putString(JConstant.AUTO_LOGIN_ACCOUNT,account);
-        PreferencesUtils.putString(JConstant.AUTO_LOGIN_PWD,pwd);
+        PreferencesUtils.putString(JConstant.AUTO_LOGIN_ACCOUNT, account);
+        PreferencesUtils.putString(JConstant.AUTO_LOGIN_PWD, pwd);
     }
 
     @Override
@@ -101,11 +101,12 @@ public class RegisterPwdFragment extends SetupPwdFragment
     public void submitResult(RxEvent.ResultRegister register) {
         if (!isAdded() && getView() != null) {
             getView().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                switchResult(register);
-            }
-        },500);}else {
+                @Override
+                public void run() {
+                    switchResult(register);
+                }
+            }, 500);
+        } else {
             switchResult(register);
         }
     }
@@ -126,9 +127,9 @@ public class RegisterPwdFragment extends SetupPwdFragment
                 autoLogin();
                 break;
         }
-        if (register.code != JError.ErrorOK){
-            PreferencesUtils.putString(JConstant.AUTO_LOGIN_ACCOUNT,"");
-            PreferencesUtils.putString(JConstant.AUTO_LOGIN_PWD,"");
+        if (register.code != JError.ErrorOK) {
+            PreferencesUtils.putString(JConstant.AUTO_LOGIN_ACCOUNT, "");
+            PreferencesUtils.putString(JConstant.AUTO_LOGIN_PWD, "");
         }
     }
 
@@ -136,10 +137,10 @@ public class RegisterPwdFragment extends SetupPwdFragment
         LoginAccountBean login = new LoginAccountBean();
         login.userName = PreferencesUtils.getString(JConstant.AUTO_LOGIN_ACCOUNT);
         login.pwd = PreferencesUtils.getString(JConstant.AUTO_LOGIN_PWD);
-        if (!TextUtils.isEmpty(login.userName)|| !TextUtils.isEmpty(login.pwd)) {
-            if (NetUtils.getNetType(ContextUtils.getContext()) != -1){
+        if (!TextUtils.isEmpty(login.userName) || !TextUtils.isEmpty(login.pwd)) {
+            if (NetUtils.getNetType(ContextUtils.getContext()) != -1) {
                 pwdPresenter.executeLogin(login);
-            }else {
+            } else {
                 ToastUtil.showNegativeToast(getString(R.string.NO_NETWORK_4));
             }
         }
@@ -176,8 +177,8 @@ public class RegisterPwdFragment extends SetupPwdFragment
             }
             getContext().startActivity(new Intent(getContext(), NewHomeActivity.class));
 
-            PreferencesUtils.putString(JConstant.AUTO_LOGIN_ACCOUNT,"");
-            PreferencesUtils.putString(JConstant.AUTO_LOGIN_PWD,"");
+            PreferencesUtils.putString(JConstant.AUTO_LOGIN_ACCOUNT, "");
+            PreferencesUtils.putString(JConstant.AUTO_LOGIN_PWD, "");
         } else {
             ToastUtil.showToast("自动登录失败");
         }
@@ -205,6 +206,6 @@ public class RegisterPwdFragment extends SetupPwdFragment
     @Override
     public void onStop() {
         super.onStop();
-        if (pwdPresenter != null)pwdPresenter.stop();
+        if (pwdPresenter != null) pwdPresenter.stop();
     }
 }

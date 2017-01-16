@@ -9,7 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.JError;
@@ -76,14 +75,14 @@ public class MineAddFromContactFragment extends Fragment implements MineAddFromC
 
     @Override
     public void initEditText(String alids) {
-        etMineAddContactMesg.setText(String.format(getString(R.string.Tap3_FriendsAdd_StuffContents),alids));
+        etMineAddContactMesg.setText(String.format(getString(R.string.Tap3_FriendsAdd_StuffContents), alids));
     }
 
     @Override
     public String getSendMesg() {
         String mesg = etMineAddContactMesg.getText().toString();
         if (TextUtils.isEmpty(mesg)) {
-            return String.format(getString(R.string.Tap3_FriendsAdd_StuffContents),presenter.getUserAlias());
+            return String.format(getString(R.string.Tap3_FriendsAdd_StuffContents), presenter.getUserAlias());
         } else {
             return mesg;
         }
@@ -91,19 +90,19 @@ public class MineAddFromContactFragment extends Fragment implements MineAddFromC
 
     @Override
     public void showResultDialog(RxEvent.CheckAccountCallback callback) {
-        if (callback.i == JError.ErrorFriendAlready | callback.b){
+        if (callback.i == JError.ErrorFriendAlready | callback.b) {
             ToastUtil.showToast(getString(R.string.Tap3_Added));
             getFragmentManager().popBackStack();
-        }else if (callback.i == JError.ErrorFriendToSelf){
+        } else if (callback.i == JError.ErrorFriendToSelf) {
             ToastUtil.showToast("不能添加自己为好友");
-        }else {
+        } else {
             presenter.sendRequest(contactItem, getSendMesg());
         }
     }
 
     @Override
     public void showSendReqHint() {
-        LoadingDialog.showLoading(getFragmentManager(),getString(R.string.submiting));
+        LoadingDialog.showLoading(getFragmentManager(), getString(R.string.submiting));
     }
 
     @Override
@@ -113,11 +112,12 @@ public class MineAddFromContactFragment extends Fragment implements MineAddFromC
 
     /**
      * 网络状态变化
+     *
      * @param state
      */
     @Override
     public void onNetStateChanged(int state) {
-        if (state == -1){
+        if (state == -1) {
             hideSendReqHint();
             ToastUtil.showNegativeToast(getString(R.string.NO_NETWORK_1));
         }
@@ -125,14 +125,15 @@ public class MineAddFromContactFragment extends Fragment implements MineAddFromC
 
     /**
      * 发送添加请求的结果
+     *
      * @param code
      */
     @Override
     public void sendReqBack(int code) {
-        if (code == JError.ErrorOK){
+        if (code == JError.ErrorOK) {
             ToastUtil.showToast(getString(R.string.Tap3_FriendsAdd_Contacts_InvitedTips));
             getFragmentManager().popBackStack();
-        }else {
+        } else {
             ToastUtil.showToast("请求发送失败");
         }
     }
@@ -148,13 +149,13 @@ public class MineAddFromContactFragment extends Fragment implements MineAddFromC
         switch (view.getId()) {
             case R.id.iv_mine_add_from_contact_send:
                 showSendReqHint();
-                if (getView() != null){
+                if (getView() != null) {
                     getView().postDelayed(new Runnable() {
                         @Override
                         public void run() {
                             presenter.checkAccount(contactItem);
                         }
-                    },1000);
+                    }, 1000);
                 }
                 hideSendReqHint();
                 break;
