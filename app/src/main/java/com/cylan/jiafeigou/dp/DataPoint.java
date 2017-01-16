@@ -25,7 +25,7 @@ import static com.cylan.jiafeigou.dp.DpUtils.unpackData;
  * Created by cylan-hunt on 16-12-2.
  */
 
-public abstract class DataPoint<T> implements Parcelable, Comparable<DataPoint> {
+public abstract class DataPoint implements Parcelable, Comparable<DataPoint> {
     @Ignore
     private boolean isNull = false;
 
@@ -107,7 +107,7 @@ public abstract class DataPoint<T> implements Parcelable, Comparable<DataPoint> 
      * 避免检查空指针,只针对DataPoint,只针对获取值的情,
      * 如果需要检查非空可调用isNull函数,
      */
-    public T $() {
+    public Object $() {
         Object value;
         Field field;
         LongSparseArray<Field> properties = getProperties();
@@ -138,12 +138,7 @@ public abstract class DataPoint<T> implements Parcelable, Comparable<DataPoint> 
                 e.printStackTrace();
             }
         }
-        if (this instanceof DpMsgDefine.DPPrimary) {
-            return (T) ((DpMsgDefine.DPPrimary) this).value;
-        } else if (this instanceof DpMsgDefine.DPSet) {
-            return (T) ((DpMsgDefine.DPSet) this).value;
-        }
-        return (T) this;
+        return this;
     }
 
     private Object getPrimaryValue(Class clz) {

@@ -16,45 +16,49 @@ import javax.lang.model.element.Modifier;
  */
 
 public class JFGAccountGenerator extends JFGDeviceInstanceGenerator {
+
+
+    private String phone;
+    private String token;
+    private String alias;
+    private int enablePush;
+    private int enableSound;
+    private String email;
+    private int enableVibrate;
+    private int photo;
+    private String photoUrl;
+    private String account;
+
     @Override
     protected TypeSpec.Builder getClassBuilder(String clazzName, String parentName) {
         TypeSpec.Builder builder = super.getClassBuilder(clazzName, parentName);
         ClassName account = ClassName.get("com.cylan.entity.jniCall", "JFGAccount");
         ClassName string = ClassName.get(String.class);
-        builder.addField(FieldSpec.builder(account, "mAccount", Modifier.PRIVATE).build())
+        builder.addField(string, "phone", Modifier.PUBLIC)
+                .addField(string, "token", Modifier.PUBLIC)
+                .addField(string, "alias", Modifier.PUBLIC)
+                .addField(TypeName.BOOLEAN, "enablePush", Modifier.PUBLIC)
+                .addField(TypeName.BOOLEAN, "enableSound", Modifier.PUBLIC)
+                .addField(string, "email", Modifier.PUBLIC)
+                .addField(TypeName.BOOLEAN, "enableVibrate", Modifier.PUBLIC)
+                .addField(string, "photoUrl", Modifier.PUBLIC)
+                .addField(string, "account", Modifier.PUBLIC)
                 .addMethod(MethodSpec.methodBuilder("setAccount").addModifiers(Modifier.FINAL)
                         .addParameter(ParameterSpec.builder(account, "account").build())
                         .returns(ClassName.get(MODULE_PACKAGE, clazzName))
                         .addCode("$L", "" +
-                                "this.mAccount = account;\n" +
                                 "this.id = 888080;\n" +
+                                "this.phone= account.getPhone();\n" +
+                                "this.token=account.getToken();\n" +
+                                "this.alias=account.getAlias();\n" +
+                                "this.enablePush=account.isEnablePush();\n" +
+                                "this.enableSound=account.isEnableSound();\n" +
+                                "this.email=account.getEmail();\n" +
+                                "this.enableVibrate=account.isEnableVibrate();\n" +
+                                "this.photoUrl=account.getPhotoUrl();\n" +
+                                "this.account=account.getAccount();\n" +
                                 "return this;\n").build())
-                .addMethod(MethodSpec.methodBuilder("getPhone").addModifiers(Modifier.PUBLIC, Modifier.FINAL)
-                        .returns(string)
-                        .addCode("$L", " return this.mAccount.getPhone();\n").build())
-                .addMethod(MethodSpec.methodBuilder("getToken").addModifiers(Modifier.PUBLIC, Modifier.FINAL)
-                        .returns(string)
-                        .addCode("$L", "return this.mAccount.getToken();\n").build())
-                .addMethod(MethodSpec.methodBuilder("getAlias").addModifiers(Modifier.PUBLIC, Modifier.FINAL)
-                        .returns(string)
-                        .addCode("$L", "return this.mAccount.getAlias();\n").build())
-                .addMethod(MethodSpec.methodBuilder("isEnablePush").addModifiers(Modifier.PUBLIC, Modifier.FINAL)
-                        .returns(TypeName.BOOLEAN)
-                        .addCode("$L", "return this.mAccount.isEnablePush();\n").build())
-                .addMethod(MethodSpec.methodBuilder("isEnableSound").addModifiers(Modifier.PUBLIC, Modifier.FINAL)
-                        .returns(TypeName.BOOLEAN)
-                        .addCode("$L", "return this.mAccount.isEnableSound();\n").build())
-                .addMethod(MethodSpec.methodBuilder("getEmail").addModifiers(Modifier.PUBLIC, Modifier.FINAL)
-                        .returns(string)
-                        .addCode("$L", "return this.mAccount.getEmail();\n").build())
-                .addMethod(MethodSpec.methodBuilder("isEnableVibrate").addModifiers(Modifier.PUBLIC, Modifier.FINAL)
-                        .returns(TypeName.BOOLEAN)
-                        .addCode("$L", "return this.mAccount.isEnableVibrate();\n").build())
-                .addMethod(MethodSpec.methodBuilder("getPhotoUrl").addModifiers(Modifier.PUBLIC, Modifier.FINAL)
-                        .returns(string)
-                        .addCode("$L", "return this.mAccount.getPhotoUrl();\n").build())
-                .addMethod(MethodSpec.methodBuilder("getAccount").addModifiers(Modifier.PUBLIC, Modifier.FINAL)
-                        .returns(string).addCode("$L", "return this.mAccount.getAccount();\n").build());
+                .build();
         return builder;
     }
 }

@@ -292,10 +292,6 @@ public class DataPointManager implements IParser, IDataPoint {
         return jfgDeviceMap.get(uuid);
     }
 
-    @Override
-    public <T extends com.cylan.jiafeigou.base.module.JFGDevice> T fetchDevice(String uuid) {
-        return null;
-    }
 
     @Override
     public ArrayList<JFGDevice> fetchAll(String account) {

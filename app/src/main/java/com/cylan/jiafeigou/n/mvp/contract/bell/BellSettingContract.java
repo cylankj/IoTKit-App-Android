@@ -1,6 +1,6 @@
 package com.cylan.jiafeigou.n.mvp.contract.bell;
 
-import com.cylan.jiafeigou.base.module.DoorBellDevice;
+import com.cylan.jiafeigou.base.module.JFGDoorBellDevice;
 import com.cylan.jiafeigou.base.view.JFGPresenter;
 import com.cylan.jiafeigou.base.view.PropertyView;
 
@@ -10,7 +10,7 @@ import com.cylan.jiafeigou.base.view.PropertyView;
 public interface BellSettingContract {
 
 
-    interface View extends PropertyView<DoorBellDevice> {
+    interface View extends PropertyView<JFGDoorBellDevice> {
         /**
          * 解绑设备回调
          *

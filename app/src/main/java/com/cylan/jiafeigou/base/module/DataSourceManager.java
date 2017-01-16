@@ -49,8 +49,8 @@ public class DataSourceManager implements JFGSourceManager {
     /**
      * 只缓存当前账号下的数据,一旦注销将会清空所有的缓存,内存缓存方式
      */
-    private Map<String, JFGDevice> mCachedDeviceMap = new HashMap<>();//和uuid相关的数据缓存
-    private JFGAccount mJFGAccount;//账号相关的数据全部保存到这里面
+    private Map<String, JFGDPDevice> mCachedDeviceMap = new HashMap<>();//和uuid相关的数据缓存
+    private JFGDPAccount mJFGAccount;//账号相关的数据全部保存到这里面
     private static DataSourceManager mDataSourceManager;
     private boolean isOnline;
 
@@ -80,26 +80,26 @@ public class DataSourceManager implements JFGSourceManager {
     }
 
     @Override
-    public <T extends JFGDevice> T getJFGDevice(String uuid) {
-        JFGDevice device = mCachedDeviceMap.get(uuid);
+    public <T extends JFGDPDevice> T getJFGDevice(String uuid) {
+        JFGDPDevice device = mCachedDeviceMap.get(uuid);
         if (device == null) throw new IllegalArgumentException("天啊,它真的发生了,你是不是又在乱传参数???");
         return getValueWithAccountCheck((T) device.$());
     }
 
     @Override
-    public List<JFGDevice> getAllJFGDevice() {
-        List<JFGDevice> result = new ArrayList<>(mCachedDeviceMap.size());
+    public List<JFGDPDevice> getAllJFGDevice() {
+        List<JFGDPDevice> result = new ArrayList<>(mCachedDeviceMap.size());
         for (Map.Entry<String, ? extends DataPoint> entry : mCachedDeviceMap.entrySet()) {
             result.add(getJFGDevice(entry.getKey()));
         }
         return getValueWithAccountCheck(result);
     }
 
-    public List<JFGDevice> getJFGDeviceByPid(int... pids) {
+    public List<JFGDPDevice> getJFGDeviceByPid(int... pids) {
         if (pids == null) return null;
 
-        List<JFGDevice> result = new ArrayList<>();
-        for (Map.Entry<String, JFGDevice> device : mCachedDeviceMap.entrySet()) {
+        List<JFGDPDevice> result = new ArrayList<>();
+        for (Map.Entry<String, JFGDPDevice> device : mCachedDeviceMap.entrySet()) {
             for (int pid : pids) {
                 if (device.getValue().pid == pid) {
                     result.add(getJFGDevice(device.getKey()));
@@ -113,8 +113,8 @@ public class DataSourceManager implements JFGSourceManager {
     public List<String> getJFGDeviceUUIDByPid(int... pids) {
         if (pids == null) return null;
         List<String> result = new ArrayList<>();
-        List<JFGDevice> devices = getJFGDeviceByPid(pids);
-        for (JFGDevice device : devices) {
+        List<JFGDPDevice> devices = getJFGDeviceByPid(pids);
+        for (JFGDPDevice device : devices) {
             result.add(device.uuid);
         }
         return getValueWithAccountCheck(result);
@@ -123,11 +123,11 @@ public class DataSourceManager implements JFGSourceManager {
     @Override
     public void cacheJFGDevices(com.cylan.entity.jniCall.JFGDevice... devices) {
         for (com.cylan.entity.jniCall.JFGDevice device : devices) {
-            JFGDevice temp = mCachedDeviceMap.get(device.uuid);
+            JFGDPDevice temp = mCachedDeviceMap.get(device.uuid);
             if (temp != null) {//已经存在了,则更新即可
                 temp.setDevice(device);
             } else {//不存在,则添加
-                JFGDevice jfgDevice = create(device);
+                JFGDPDevice jfgDevice = create(device);
                 if (jfgDevice != null) mCachedDeviceMap.put(device.uuid, jfgDevice);
             }
         }
@@ -136,7 +136,7 @@ public class DataSourceManager implements JFGSourceManager {
 
     @Override
     public void cacheJFGAccount(com.cylan.entity.jniCall.JFGAccount account) {
-        mJFGAccount = new JFGAccount().setAccount(account);
+        mJFGAccount = new JFGDPAccount().setAccount(account);
         syncAllJFGDeviceProperty();
     }
 
@@ -144,14 +144,14 @@ public class DataSourceManager implements JFGSourceManager {
     //主动发起请求,来获取设备所有的属性
     public void syncAllJFGDeviceProperty() {
         if (mCachedDeviceMap.size() == 0) return;
-        for (Map.Entry<String, JFGDevice> entry : mCachedDeviceMap.entrySet()) {
+        for (Map.Entry<String, JFGDPDevice> entry : mCachedDeviceMap.entrySet()) {
             syncJFGDeviceProperty(entry.getKey());
         }
     }
 
     public void syncJFGDeviceProperty(String uuid) {
         if (TextUtils.isEmpty(uuid) || mJFGAccount == null) return;
-        JFGDevice device = mCachedDeviceMap.get(uuid);
+        JFGDPDevice device = mCachedDeviceMap.get(uuid);
         if (device != null) {
             ArrayList<JFGDPMsg> parameters = device.getQueryParameters(false);
             try {
@@ -164,14 +164,14 @@ public class DataSourceManager implements JFGSourceManager {
 
 
     @Override
-    public JFGAccount getJFGAccount() {
+    public JFGDPAccount getJFGAccount() {
         return mJFGAccount;
     }
 
     @Override
     public void cacheRobotoGetDataRsp(RobotoGetDataRsp dataRsp) {
         final String identity = dataRsp.identity;
-        JFGDevice device = mCachedDeviceMap.get(identity);
+        JFGDPDevice device = mCachedDeviceMap.get(identity);
         boolean changed = false;
         for (Map.Entry<Integer, ArrayList<JFGDPMsg>> entry : dataRsp.map.entrySet()) {
             if (entry.getValue() == null) continue;
@@ -209,7 +209,7 @@ public class DataSourceManager implements JFGSourceManager {
 
     @Override
     public void cacheRobotoSyncData(boolean b, String s, ArrayList<JFGDPMsg> arrayList) {
-        JFGDevice device = mCachedDeviceMap.get(s);
+        JFGDPDevice device = mCachedDeviceMap.get(s);
         if (device != null) {
             boolean changed = false;
             for (JFGDPMsg msg : arrayList) {
@@ -229,7 +229,7 @@ public class DataSourceManager implements JFGSourceManager {
 
     public <T extends DataPoint> T getValue(String uuid, long msgId, long seq) {
         T result = null;
-        JFGDevice device = mCachedDeviceMap.get(uuid);
+        JFGDPDevice device = mCachedDeviceMap.get(uuid);
         if (device != null) {
             //这里优先从根据UUID从device中获取数据
             result = device.$().getValue(msgId, seq);
@@ -249,8 +249,8 @@ public class DataSourceManager implements JFGSourceManager {
     }
 
 
-    private JFGDevice create(com.cylan.entity.jniCall.JFGDevice device) {
-        JFGDevice result = null;
+    private JFGDPDevice create(com.cylan.entity.jniCall.JFGDevice device) {
+        JFGDPDevice result = null;
         switch (device.pid) {
             case OS_SERVER:
                 break;
@@ -272,17 +272,17 @@ public class DataSourceManager implements JFGSourceManager {
             case OS_CAMERA_PANORAMA_GUOKE:
             case OS_CAMERA_UCOS_V2:
             case OS_CAMERA_UCOS_V3:
-                result = new CameraDevice().setDevice(device);
+                result = new JFGCameraDevice().setDevice(device);
                 break;
 
             //门铃设备
             case OS_DOOR_BELL:
-                result = new DoorBellDevice().setDevice(device);
+                result = new JFGDoorBellDevice().setDevice(device);
                 break;
 
             //中控设备
             case OS_EFAML:
-                result = new EFamilyDevice().setDevice(device);
+                result = new JFGEFamilyDevice().setDevice(device);
                 break;
             case OS_TEMP_HUMI:
                 break;
@@ -291,7 +291,7 @@ public class DataSourceManager implements JFGSourceManager {
 
             //门磁设备
             case OS_MAGNET:
-                result = new MagDevice().setDevice(device);
+                result = new JFGMagnetometerDevice().setDevice(device);
                 break;
             case OS_AIR_DETECTOR:
                 break;
@@ -301,7 +301,7 @@ public class DataSourceManager implements JFGSourceManager {
             case OS_DOOR_BELL_V2:
                 break;
             default:
-                result = new JFGDevice() {
+                result = new JFGDPDevice() {
                 };
         }
         return result;

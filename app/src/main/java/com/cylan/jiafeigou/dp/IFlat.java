@@ -20,7 +20,6 @@ public interface IFlat {
 
     void cache(String account, BaseBean dpDevice);
 
-    void cacheJFGDevice(String account, JFGDevice device);
 
     /**
      * 缓存报警消息
@@ -63,7 +62,6 @@ public interface IFlat {
     DpMsgDefine.DpWrap removeMsg(String account, String uuid);
 
     DpMsgDefine.DpWrap getDevice(String account, String uuid);
-
 
 
     void cache(String account, String uuid, DpMsgDefine.DpMsg msg);

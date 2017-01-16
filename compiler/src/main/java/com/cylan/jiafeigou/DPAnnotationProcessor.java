@@ -32,7 +32,6 @@ import javax.tools.Diagnostic;
 @AutoService(Processor.class)
 public class DPAnnotationProcessor extends AbstractProcessor {
     private Map<DPTarget, List<Element>> mResultMap = new HashMap<>();
-
     private List<DPTarget> mRequiredTarget = new ArrayList<>();
 
     @Override
@@ -48,12 +47,12 @@ public class DPAnnotationProcessor extends AbstractProcessor {
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
         processingEnv.getMessager().printMessage(Diagnostic.Kind.WARNING, "开始执行DP注解处理程序!!!!");
-        collected(roundEnv);
         resolve();
+        collected(roundEnv);
         generator();
         repair();
         processingEnv.getMessager().printMessage(Diagnostic.Kind.WARNING, "DP注解处理程序执行完毕!!!!");
-        return false;
+        return true;
     }
 
 
@@ -76,13 +75,11 @@ public class DPAnnotationProcessor extends AbstractProcessor {
     }
 
     private void resolve() {
-        DPTarget target;
-        DPTarget parent;
-        for (Map.Entry<DPTarget, List<Element>> entry : mResultMap.entrySet()) {
-            target = entry.getKey();
+        for (DPTarget target : DPTarget.values()) {
             try {
-                parent = target.getClass().getField(target.name()).getAnnotation(DPInterface.class).parent();
-                mRequiredTarget.add(parent);
+                DPTarget parent = target.getClass().getField(target.name()).getAnnotation(DPInterface.class).parent();
+                if (parent != DPTarget.DATAPOINT)
+                    mRequiredTarget.add(parent);
             } catch (NoSuchFieldException e) {
                 e.printStackTrace();
             }
@@ -100,20 +97,21 @@ public class DPAnnotationProcessor extends AbstractProcessor {
                 javaFile.writeTo(processingEnv.getFiler());
                 mRequiredTarget.remove(entry.getKey());
             } catch (Exception e) {
-                e.printStackTrace();
+//                e.printStackTrace();
             }
         }
     }
 
 
     private void repair() {
+        mRequiredTarget.remove(DPTarget.DATAPOINT);
         for (DPTarget target : mRequiredTarget) {
             try {
                 JavaFile javaFile = GeneratorFactory.getGeneratorInstance(target).generator(null);
                 if (javaFile == null) continue;
                 javaFile.writeTo(processingEnv.getFiler());
             } catch (Exception e) {
-                e.printStackTrace();
+//                e.printStackTrace();
             }
         }
     }

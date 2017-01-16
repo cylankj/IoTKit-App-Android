@@ -17,6 +17,7 @@ public class GeneratorFactory {
             case ACCOUNT:
                 result = new JFGAccountGenerator();
                 break;
+            case DATAPOINT:
             case DOORBELL:
             case CAMERA:
             case EFAMILY:
@@ -24,7 +25,6 @@ public class GeneratorFactory {
                 result = new JFGDeviceInstanceGenerator();
                 break;
         }
-
         result.setTarget(target);
         return result;
     }

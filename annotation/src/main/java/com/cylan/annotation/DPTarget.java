@@ -10,8 +10,8 @@ package com.cylan.annotation;
  */
 public enum DPTarget {
     @DPInterface(name = "DataPoint")DATAPOINT,
-    @DPInterface(name = "JFGDevice")DEVICE,
-    @DPInterface(name = "JFGAccount")ACCOUNT,
+    @DPInterface(name = "JFGDPDevice")DEVICE,
+    @DPInterface(name = "JFGDPAccount")ACCOUNT,
     @DPInterface(name = "JFGDoorBellDevice", parent = DEVICE)DOORBELL,
     @DPInterface(name = "JFGCameraDevice", parent = DEVICE)CAMERA,
     @DPInterface(name = "JFGEFamilyDevice", parent = DEVICE)EFAMILY,

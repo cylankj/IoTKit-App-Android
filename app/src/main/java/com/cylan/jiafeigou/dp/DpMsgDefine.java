@@ -180,7 +180,7 @@ public class DpMsgDefine {
     }
 
     @Message
-    public static final class DPBindLog extends DataPoint<DPBindLog> {
+    public static final class DPBindLog extends DPSingle<DPBindLog> {
         @Index(0)
         public boolean isBind;
         @Index(1)
@@ -370,7 +370,7 @@ public class DpMsgDefine {
     }
 
     @Message
-    public static final class DPAlarmInfo extends DataPoint<DPAlarmInfo> implements Parcelable {
+    public static final class DPAlarmInfo extends DPMulti<DPAlarmInfo> implements Parcelable {
         @Index(0)
         public int timeStart;
         @Index(1)
@@ -880,7 +880,7 @@ public class DpMsgDefine {
     }
 
 
-    public static final class DPPrimary<T> extends DataPoint<T> {
+    public static final class DPPrimary<T> extends DataPoint {
         public T value;
 
         @Override
@@ -897,6 +897,10 @@ public class DpMsgDefine {
         public DPPrimary() {
         }
 
+        @Override
+        public T $() {
+            return (T) ((DPPrimary) super.$()).value;
+        }
 
         protected DPPrimary(Parcel in) {
             super(in);
@@ -916,7 +920,7 @@ public class DpMsgDefine {
         };
     }
 
-    public static final class DPSet<T> extends DataPoint<TreeSet<T>> {
+    public static final class DPSet<T> extends DataPoint {
         public TreeSet<T> value;
 
         @Override
@@ -924,6 +928,10 @@ public class DpMsgDefine {
             return 0;
         }
 
+        @Override
+        public T $() {
+            return (T) ((DPSet) super.$()).value;
+        }
 
         @Override
         public void writeToParcel(Parcel dest, int flags) {
@@ -954,7 +962,12 @@ public class DpMsgDefine {
         };
     }
 
-    public static abstract class DPSingle<T> extends DataPoint<T> {
+    public static abstract class DPSingle<T extends DataPoint> extends DataPoint {
+
+        @Override
+        public T $() {
+            return (T) super.$();
+        }
 
         @Override
         public int describeContents() {
@@ -974,9 +987,15 @@ public class DpMsgDefine {
         }
     }
 
-    public static abstract class DPMulti<T> extends DataPoint<T> {
+    public static abstract class DPMulti<T extends DataPoint> extends DataPoint {
         @Ignore
         public boolean isRead;
+
+
+        @Override
+        public T $() {
+            return (T) super.$();
+        }
 
         @Override
         public int describeContents() {

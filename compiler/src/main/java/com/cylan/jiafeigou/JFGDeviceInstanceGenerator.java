@@ -9,6 +9,7 @@ import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.JavaFile;
+import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
@@ -39,7 +40,11 @@ public class JFGDeviceInstanceGenerator implements Generator {
         DPInterface parentType = mParentTarget.getClass().getField(mParentTarget.name()).getAnnotation(DPInterface.class);
         String parentName = parentType.name();
         TypeSpec.Builder classBuilder = getClassBuilder(clazzName, parentName);
-
+        classBuilder.addMethod(MethodSpec.methodBuilder("$")
+                .addAnnotation(Override.class)
+                .returns(ClassName.get("", clazzName))
+                .addModifiers(Modifier.PUBLIC)
+                .addCode("return ($L)super.$L();\n", clazzName, "$").build());
         if (fields != null) {
             DPType dpType;
             TypeName fieldType;
@@ -69,8 +74,8 @@ public class JFGDeviceInstanceGenerator implements Generator {
     protected TypeSpec.Builder getClassBuilder(String clazzName, String parentName) {
         String pkgName = "DataPoint".equals(parentName) ? TYPE_DEFINE_PACKAGE : MODULE_PACKAGE;
         return TypeSpec.classBuilder(clazzName)
-                .superclass(ParameterizedTypeName.get(ClassName.get(pkgName, parentName), TypeVariableName.get("T")))
-                .addModifiers(Modifier.PUBLIC).addTypeVariable(TypeVariableName.get("T", TypeVariableName.get(clazzName)));
+                .superclass(ClassName.get(pkgName, parentName))
+                .addModifiers(Modifier.PUBLIC);
     }
 
     protected TypeName getFieldType(DPType type, TypeMirror primaryType) {

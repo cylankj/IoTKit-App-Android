@@ -66,20 +66,6 @@ public class FlattenMsgDp implements IFlat {
     }
 
     @Override
-    public void cacheJFGDevice(String account, JFGDevice device) {
-        //某个账号下所有的uuid
-        ArrayList<String> uuidList = accountUUidMap.get(account);
-        if (uuidList == null) {
-            uuidList = new ArrayList<>();
-        }
-        if (!uuidList.contains(device.uuid)) {
-            uuidList.add(device.uuid);
-            accountUUidMap.put(account, uuidList);
-        }
-    }
-
-
-    @Override
     public void cache(String account, String uuid, ArrayList<DpMsgDefine.DpMsg> jfgdpMsgs) {
         exception(account, uuid);
         alarmMsg.put(account + uuid, jfgdpMsgs);
