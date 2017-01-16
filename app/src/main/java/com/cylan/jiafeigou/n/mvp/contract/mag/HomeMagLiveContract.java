@@ -82,13 +82,6 @@ public interface HomeMagLiveContract {
          */
         String getDeviceName();
 
-        /**
-         * 保存设备信息
-         * @param magInfoBean
-         * @param id
-         */
-        void saveMagInfoBean(BeanMagInfo magInfoBean, int id);
-
     }
 
 }

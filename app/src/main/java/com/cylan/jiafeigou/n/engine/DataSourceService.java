@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.IBinder;
 import android.os.Process;
+import android.text.TextUtils;
 
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.entity.jniCall.JFGDPMsg;
@@ -35,11 +36,13 @@ import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JResultEvent;
 import com.cylan.jiafeigou.misc.efamily.MsgpackMsg;
+import com.cylan.jiafeigou.n.view.cloud.CloudLiveCallActivity;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.stat.MtaManager;
+import com.cylan.jiafeigou.utils.ContextUtils;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
@@ -141,6 +144,7 @@ public class DataSourceService extends Service implements AppCallBack {
         RxBus.getCacheInstance().postSticky(new RxEvent.GetUserInfo(jfgAccount));
 
         DataSourceManager.getInstance().cacheJFGAccount(jfgAccount);//缓存账号信息
+        AppLogger.d("OnUpdateAccount :"+jfgAccount.getPhotoUrl());
     }
 
     @Override
@@ -279,6 +283,9 @@ public class DataSourceService extends Service implements AppCallBack {
             case JResultEvent.JFG_RESULT_SEND_FEEDBACK:
                 RxBus.getCacheInstance().post(new RxEvent.SendFeekBack(jfgResult));
                 break;
+            case JResultEvent.JFG_RESULT_DEL_FRIEND_ADD_REQ:
+                RxBus.getCacheInstance().post(new RxEvent.DeleteAddReqBack(jfgResult));
+                break;
         }
         if (login) {
             AfterLoginService.startGetAccountAction(getApplicationContext());
@@ -401,6 +408,15 @@ public class DataSourceService extends Service implements AppCallBack {
         eFamilyMsgpack.data = bytes;
         RxBus.getCacheInstance().post(eFamilyMsgpack);
         AppLogger.d("OnEfamilyMsg :" + header.msgId);
+
+        //暂try try
+        if ((!TextUtils.isEmpty(header.caller)) && header.msgId == 2529){
+            Intent intent = new Intent(ContextUtils.getContext(), CloudLiveCallActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, header.caller);
+            intent.putExtra("call_in_or_out", true);
+            startActivity(intent);
+        }
     }
 
     @Override

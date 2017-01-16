@@ -119,8 +119,8 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
         DpMsgDefine.DPSdStatus status = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_204_SDCARD_STORAGE, null);
         tvDeviceSdcardState.setText(getSdcardState(status));
         JFGDevice device = GlobalDataProxy.getInstance().fetch(uuid);
-        tvDeviceAlias.setText(device == null ? "" : TextUtils.isEmpty(device.alias) ? device.alias : device.uuid);
-        tvDeviceCid.setText(device != null && TextUtils.isEmpty(device.uuid) ? device.uuid : "");
+        tvDeviceAlias.setText(device == null ? "" : TextUtils.isEmpty(device.alias) ? device.uuid : device.alias);
+        tvDeviceCid.setText(device != null && TextUtils.isEmpty(device.uuid) ? "" : device.uuid);
         String mac = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_202_MAC, "");
         tvDeviceMac.setText(mac);
         int battery = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_206_BATTERY, 0);

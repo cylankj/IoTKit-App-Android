@@ -8,6 +8,8 @@ import android.telephony.TelephonyManager;
 import android.util.Pair;
 
 import com.cylan.ex.JfgException;
+import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
+import com.cylan.jiafeigou.dp.BaseValue;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.dp.DpUtils;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
@@ -33,13 +35,13 @@ public class MagLiveInformationPresenterImp extends AbstractPresenter<MagLiveInf
     public static final int SD_NORMAL = 0;
     public static final int SD_UNINSTALL = 1;
     public static final int SD_FAIL_RW = 2;
-    private BeanMagInfo beanMagInfo;
+    private String uuid;
 
 
-    public MagLiveInformationPresenterImp(MagLiveInformationContract.View view, BeanMagInfo bean) {
+    public MagLiveInformationPresenterImp(MagLiveInformationContract.View view, String uuid) {
         super(view);
         view.setPresenter(this);
-        this.beanMagInfo = bean;
+        this.uuid = uuid;
     }
 
     @Override
@@ -111,55 +113,24 @@ public class MagLiveInformationPresenterImp extends AbstractPresenter<MagLiveInf
     }
 
     /**
-     * 获取到门磁的信息
-     *
-     * @return
+     * 保存更新的设备昵称
+     * @param value
+     * @param id
      */
     @Override
-    public BeanMagInfo getMagInfoBean() {
-        if (this.beanMagInfo == null) {
-            AppLogger.e("should not happen");
-        }
-        return beanMagInfo;
-    }
-
-    @Override
-    public void saveMagInfoBean(BeanMagInfo info, int id) {
-        this.beanMagInfo = info;
-        Observable.just(new Pair<>(info, id))
+    public void saveMagInfoBean(Object value, long id) {
+        Observable.just(value)
                 .subscribeOn(Schedulers.io())
-                .subscribe(new Action1<Pair<BeanMagInfo, Integer>>() {
-                    @Override
-                    public void call(Pair<BeanMagInfo, Integer> beanMagInfoIntegerPair) {
-                        int id = beanMagInfoIntegerPair.second;
-                        RxEvent.JFGAttributeUpdate update = new RxEvent.JFGAttributeUpdate();
-                        update.uuid = beanMagInfo.deviceBase.uuid;
-                        if (id == DpMsgMap.ID_2000003_BASE_ALIAS)
-                            update.o = beanMagInfoIntegerPair.first.deviceBase.alias;
-                        else update.o = beanMagInfoIntegerPair.first.getObject(id);
-                        update.msgId = id;
-                        update.version = System.currentTimeMillis();
-                        RxBus.getCacheInstance().post(update);
-                        if (id == DpMsgMap.ID_2000003_BASE_ALIAS) {
-                            try {
-                                JfgCmdInsurance.getCmd().setAliasByCid(beanMagInfo.deviceBase.uuid,
-                                        beanMagInfo.deviceBase.alias);
-                            } catch (JfgException e) {
-                                e.printStackTrace();
-                            }
-                            AppLogger.i("setDevice alias: " + new Gson().toJson(beanMagInfo));
-                            return;
-                        }
-                        try {
-                            JfgCmdInsurance.getCmd().robotSetData(beanMagInfo.deviceBase.uuid,
-                                    DpUtils.getList(id,
-                                            beanMagInfoIntegerPair.first.getByte(id)
-                                            , System.currentTimeMillis()));
-                        } catch (JfgException e) {
-                            e.printStackTrace();
-                        }
-                        AppLogger.i("setDevice camInfo: " + new Gson().toJson(beanMagInfo));
-                    }
+                .subscribe((Object o) -> {
+                    AppLogger.i("save start: " + id + " " + value);
+                    BaseValue baseValue = new BaseValue();
+                    baseValue.setId(id);
+                    baseValue.setVersion(System.currentTimeMillis());
+                    baseValue.setValue(o);
+                    GlobalDataProxy.getInstance().update(uuid, baseValue, true);
+                    AppLogger.i("save end: " + id + " " + value);
+                }, (Throwable throwable) -> {
+                    AppLogger.e(throwable.getLocalizedMessage());
                 });
     }
 

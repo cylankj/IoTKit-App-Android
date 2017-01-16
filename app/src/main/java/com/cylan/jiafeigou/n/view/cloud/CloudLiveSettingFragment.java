@@ -15,8 +15,6 @@ import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.mvp.contract.cloud.CloudLiveSettingContract;
 import com.cylan.jiafeigou.n.mvp.impl.cloud.CloudLiveSettingPresenterImp;
-import com.cylan.jiafeigou.n.mvp.model.BeanCloudInfo;
-import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -28,8 +26,6 @@ import com.cylan.jiafeigou.widget.SettingItemView2;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-
-import static com.cylan.jiafeigou.misc.JConstant.KEY_DEVICE_ITEM_BUNDLE;
 
 /**
  * 作者：zsl
@@ -50,7 +46,10 @@ public class CloudLiveSettingFragment extends Fragment implements CloudLiveSetti
     TextView tvSettingUnbind;
     @BindView(R.id.tv_door_bell)
     TextView tvDoorBell;
+    @BindView(R.id.imgV_top_bar_center)
+    TextView imgVTopBarCenter;
 
+    private String uuid;
     private CloudLiveDeviceInfoFragment cloudLiveDeviceInfoFragment;
     private CloudCorrelationDoorBellFragment cloudCorrelationDoorBellFragment;
     private CloudLiveSettingContract.Presenter presenter;
@@ -88,8 +87,8 @@ public class CloudLiveSettingFragment extends Fragment implements CloudLiveSetti
 
     private void initPresenter() {
         Bundle bundle = getArguments();
-        DeviceBean deviceBean = (DeviceBean) bundle.getParcelable(JConstant.KEY_DEVICE_ITEM_BUNDLE);
-        presenter = new CloudLiveSettingPresenterImp(this, deviceBean);
+        uuid = bundle.getString(JConstant.KEY_DEVICE_ITEM_UUID);
+        presenter = new CloudLiveSettingPresenterImp(this, uuid);
     }
 
     @Override
@@ -114,7 +113,7 @@ public class CloudLiveSettingFragment extends Fragment implements CloudLiveSetti
         ViewUtils.setViewPaddingStatusBar(fLayoutTopBarContainer);
     }
 
-    @OnClick({R.id.tv_setting_clear_, R.id.tv_bell_detail, R.id.tv_bell_detail2, R.id.tv_setting_unbind})
+    @OnClick({R.id.tv_setting_clear_, R.id.tv_bell_detail, R.id.tv_bell_detail2, R.id.tv_setting_unbind,R.id.imgV_top_bar_center})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.tv_setting_clear_:
@@ -135,6 +134,9 @@ public class CloudLiveSettingFragment extends Fragment implements CloudLiveSetti
             case R.id.tv_setting_unbind:
                 showClearDeviceDialog();
                 break;
+            case R.id.imgV_top_bar_center:
+                getFragmentManager().popBackStack();
+                break;
         }
     }
 
@@ -143,7 +145,7 @@ public class CloudLiveSettingFragment extends Fragment implements CloudLiveSetti
      */
     private void showClearDeviceDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle(String.format(getString(R.string.SURE_DELETE_1),presenter.getDeviceName()));
+        builder.setTitle(String.format(getString(R.string.SURE_DELETE_1), presenter.getDeviceName()));
         builder.setPositiveButton(getString(R.string.OK), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -174,7 +176,7 @@ public class CloudLiveSettingFragment extends Fragment implements CloudLiveSetti
 
     private void jump2DeviceInfoFragment() {
         Bundle bundle = new Bundle();
-        bundle.putParcelable(KEY_DEVICE_ITEM_BUNDLE, presenter.getCloudInfoBean());
+        bundle.putString(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
         cloudLiveDeviceInfoFragment = CloudLiveDeviceInfoFragment.newInstance(bundle);
         getFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
@@ -234,7 +236,7 @@ public class CloudLiveSettingFragment extends Fragment implements CloudLiveSetti
 
     @Override
     public void showClearRecordProgress() {
-        LoadingDialog.showLoading(getFragmentManager(),getString(R.string.ClearingTips));
+        LoadingDialog.showLoading(getFragmentManager(), getString(R.string.ClearingTips));
     }
 
     @Override
@@ -245,11 +247,11 @@ public class CloudLiveSettingFragment extends Fragment implements CloudLiveSetti
     /**
      * 设置设备名称
      *
-     * @param beanCloudInfo
+     * @param alias
      */
     @Override
-    public void onCloudInfoRsp(BeanCloudInfo beanCloudInfo) {
-        tvBellDetail.setTvSubTitle(presenter.getDeviceName());
+    public void onCloudInfoRsp(String alias) {
+        tvBellDetail.setTvSubTitle(alias);
     }
 
     @Override

@@ -180,6 +180,7 @@ public class JConstant {
     public static final int OS_CAMERA_PANORAMA_HAISI = 18;    //海思全景摄像头
     public static final int OS_CAMERA_PANORAMA_QIAOAN = 19;    //乔安全景摄像头
     public static final int OS_CAMERA_PANORAMA_GUOKE = 20;    //国科全景摄像头
+    public static final int OS_CAMERA_3G = 1071;    //3g狗
 
     public static final int OS_MAX_COUNT = OS_CAMERA_PANORAMA_GUOKE;
     public static Map<Integer, Integer> onLineIconMap = new HashMap<>();
@@ -212,6 +213,8 @@ public class JConstant {
         onLineIconMap.put(JConstant.OS_CAMERA_UCOS_V2, R.drawable.icon_home_camera_online);
         onLineIconMap.put(JConstant.OS_CAMERA_UCOS, R.drawable.icon_home_camera_online);
 
+        onLineIconMap.put(JConstant.OS_CAMERA_3G, R.drawable.icon_home_camera_online);
+
         //MAG
         onLineIconMap.put(JConstant.OS_MAGNET, R.drawable.icon_home_magnetic_online);
         //E_FAMILY
@@ -238,6 +241,8 @@ public class JConstant {
         offLineIconMap.put(JConstant.OS_CAMERA_UCOS_V3, R.drawable.icon_home_camera_offline);
         offLineIconMap.put(JConstant.OS_CAMERA_UCOS_V2, R.drawable.icon_home_camera_offline);
         offLineIconMap.put(JConstant.OS_CAMERA_UCOS, R.drawable.icon_home_camera_offline);
+
+        offLineIconMap.put(JConstant.OS_CAMERA_3G, R.drawable.icon_home_camera_offline);
 
         //MAG
         offLineIconMap.put(JConstant.OS_MAGNET, R.drawable.icon_home_magnetic_offline);
@@ -291,4 +296,12 @@ public class JConstant {
     public static final int PLAY_STATE_IDLE = 1;
     public static final int PLAY_STATE_PREPARE = 2;
     public static final int PLAY_STATE_PLAYING = 3;
+
+    public static final int CLOUD_OUT_CONNECT_TIME_OUT = 0;
+    public static final int CLOUD_IN_CONNECT_TIME_OUT = 2531;
+    public static final int CLOUD_IN_CONNECT_OK = 1;
+    public static final int CLOUD_IN_CONNECT_FAILED = 2;
+    public static final int CLOUD_OUT_CONNECT_OK = 3;
+    public static final int CLOUD_OUT_CONNECT_FAILED = 4;
+
 }

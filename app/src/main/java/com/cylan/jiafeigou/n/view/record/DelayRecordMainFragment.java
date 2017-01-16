@@ -294,10 +294,11 @@ public class DelayRecordMainFragment extends BaseFragment<CamDelayRecordContract
 
     @Override
     public void onResolution(JFGMsgVideoResolution resolution) throws JfgException {
+
         SurfaceView surfaceView = mPresenter.getViewerInstance();
         mVideoViewContainer.removeAllViews();
         mVideoViewContainer.addView(surfaceView);
-        JfgCmdInsurance.getCmd().setRenderRemoteView(surfaceView);
+        JfgCmdInsurance.getCmd().enableRenderRemoteView(true,surfaceView);
         mRecordStatus = -2;
         refreshLayout();
     }

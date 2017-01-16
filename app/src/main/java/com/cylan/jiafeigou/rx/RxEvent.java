@@ -259,20 +259,7 @@ public class RxEvent {
         }
     }
 
-    /**
-     * 挂断视频通话挂断传递
-     */
-    public static final class HangUpVideoTalk {
 
-        public boolean isFinish;
-
-        public String talkTime;
-
-        public HangUpVideoTalk(boolean isFinish, String talkTime) {
-            this.isFinish = isFinish;
-            this.talkTime = talkTime;
-        }
-    }
 
     /**
      * 设备列表返回,粗糙数据,任然需要通过查询
@@ -639,6 +626,16 @@ public class RxEvent {
         }
     }
 
+    /**
+     * 删除好友添加请求
+     */
+    public static final class DeleteAddReqBack{
+        public JFGResult jfgResult;
+
+        public DeleteAddReqBack(JFGResult jfgResult) {
+            this.jfgResult = jfgResult;
+        }
+    }
 
     public static class AppHideEvent {
     }
