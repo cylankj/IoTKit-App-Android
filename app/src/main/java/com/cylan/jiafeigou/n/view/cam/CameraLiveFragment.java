@@ -9,6 +9,7 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.Layout;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -259,7 +260,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
             // 加入横屏要处理的代码
             fLayoutLiveBottomHandleBar.setVisibility(View.GONE);
             fLayoutCamLiveMenu.setVisibility(View.GONE);
-            ViewUtils.updateViewMatchScreenHeight(fLayoutCamLiveView);
+//            ViewUtils.updateViewMatchScreenHeight(fLayoutCamLiveView);
         } else if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
             // 加入竖屏要处理的代码
             fLayoutCamLiveMenu.setVisibility(View.VISIBLE);
@@ -363,8 +364,10 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
             fLayoutLiveViewContainer.addView((View) videoView, 0, lp);
         } else {
             view.setLayoutParams(lp);
-//            ViewUtils.updateViewHeight(fLayoutCamLiveView, resolution.height / (float) resolution.width);
         }
+        ViewGroup.LayoutParams camContainerLp = fLayoutCamLiveView.getLayoutParams();
+        camContainerLp.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+        fLayoutCamLiveView.setLayoutParams(camContainerLp);
         AppLogger.i("updateVideoViewLayoutParameters:" + (view == null));
     }
 

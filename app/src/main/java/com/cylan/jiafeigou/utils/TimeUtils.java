@@ -111,9 +111,9 @@ public class TimeUtils {
         return simpleTestDataFormat.format(new Date(time));
     }
 
-    public static long getTimeStart(long time) {
-        return (time / 3600 / 24 / 1000) * 1000L * 3600 * 24;
-    }
+//    public static long getTimeStart(long time) {
+//        return (time / 3600 / 24 / 1000) * 1000L * 3600 * 24;
+//    }
 
     public static String getSpecifiedDate(long time) {
         return simpleDateFormat_1.format(new Date(time));
