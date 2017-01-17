@@ -249,9 +249,9 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
             bundle.putSerializable("jfgaccount",argumentData);
             myQrcodeDialog = new WeakReference<>(MyQRCodeDialog.newInstance(bundle));
         }
-        MyQRCodeDialog myQRCodeDialog = myQrcodeDialog.get();
-        myQRCodeDialog.dismiss();
-        myQRCodeDialog.show(getFragmentManager(),"myqrcode");
+        MyQRCodeDialog qRCodeDialog = myQrcodeDialog.get();
+        qRCodeDialog.dismiss();
+        qRCodeDialog.show(getFragmentManager(),"myqrcode");
     }
 
     /**
