@@ -18,5 +18,7 @@ public interface Generator {
 
     JavaFile generator(List<Element> fields) throws Exception;
 
+    void doProcessChain(ProcessChain chain);
+
     void setTarget(DPTarget target);
 }

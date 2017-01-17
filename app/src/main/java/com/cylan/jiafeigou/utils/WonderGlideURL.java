@@ -34,7 +34,7 @@ public class WonderGlideURL extends GlideUrl {
         int flag = Integer.parseInt(mBean.fileName.split("_")[1].substring(0, 1));
         String url = "";
         try {
-            url = JfgCmdInsurance.getCmd().getCloudUrlByType(JfgEnum.JFG_URL.WONDER, flag, mBean.fileName, mBean.cid);
+            url = JfgCmdInsurance.getCmd().getCloudUrlByType(JfgEnum.JFG_URL.WONDER, flag, mBean.fileName, mBean.cid, "0001");
         } catch (JfgException e) {
             e.printStackTrace();
         }

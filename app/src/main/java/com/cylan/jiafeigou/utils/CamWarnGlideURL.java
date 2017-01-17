@@ -9,6 +9,7 @@ import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.utils.PackageUtils;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -47,7 +48,7 @@ public class CamWarnGlideURL extends GlideUrl {
         try {
             Log.d("toURL", "toURL: " + mBean + " uuid:" + uuid);
             url = JfgCmdInsurance.getCmd().getCloudUrlByType(JfgEnum.JFG_URL.WARNING,
-                    mBean.type, builder.toString(), uuid);
+                    mBean.type, builder.toString(), uuid, PackageUtils.getMetaString(ContextUtils.getContext(),"vid"));
         } catch (JfgException e) {
             AppLogger.e(String.format("err:%s", e.getLocalizedMessage()));
         }

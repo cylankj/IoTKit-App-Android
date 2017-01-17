@@ -117,12 +117,14 @@ public abstract class DataPoint implements Parcelable, Comparable<DataPoint> {
                 value = field.get(this);
                 if (value == null) {
                     value = field.getType().newInstance();
+                }
+                field.set(this, value);
+                if (value instanceof DataPoint) {
                     DataPoint temp = (DataPoint) value;
                     temp.isNull = true;
                     temp.version = Long.MIN_VALUE;//自动生成的wrap使version最小以便随时覆盖
                     temp.id = properties.keyAt(i);
                 }
-                field.set(this, value);
                 if (DpMsgDefine.DPPrimary.class.isAssignableFrom(field.getType())) {
                     DpMsgDefine.DPPrimary primary = (DpMsgDefine.DPPrimary) value;
                     if (primary.value == null) {

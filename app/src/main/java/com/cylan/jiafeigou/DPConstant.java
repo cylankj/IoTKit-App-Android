@@ -17,8 +17,6 @@ import static com.cylan.annotation.DPType.TYPE_SET;
  */
 
 public class DPConstant {
-    //设备归属,需要按照顺序{Camera,Bell,Cloud,Mag}
-
     @DPMessage(name = "net", primaryType = DpMsgDefine.DPNet.class, target = {CAMERA, DOORBELL, EFAMILY})
     public static final int NET = 201;
 
@@ -46,10 +44,10 @@ public class DPConstant {
     @DPMessage(name = "led_indicator", primaryType = Boolean.class, dpType = TYPE_PRIMARY)
     public static final int LED_INDICATOR = 209;
 
-    @DPMessage(name = "UP_TIME", primaryType = Integer.class, dpType = TYPE_PRIMARY, target = {CAMERA, DOORBELL, EFAMILY})
+    @DPMessage(name = "up_time", primaryType = Integer.class, dpType = TYPE_PRIMARY, target = {CAMERA, DOORBELL, EFAMILY})
     public static final int UP_TIME = 210;
 
-    @DPMessage(name = "APP_UPLOAD_LOG", primaryType = Integer.class, dpType = TYPE_PRIMARY, target = {DEVICE})
+    @DPMessage(name = "app_upload_log", primaryType = Integer.class, dpType = TYPE_PRIMARY, target = {DEVICE})
     public static final int APP_UPLOAD_LOG = 211;
 
     @DPMessage(name = "device_upload_log", primaryType = String.class, dpType = TYPE_PRIMARY, target = DEVICE)
@@ -61,7 +59,6 @@ public class DPConstant {
     @DPMessage(name = "device_time_zone", primaryType = DpMsgDefine.DPTimeZone.class, target = {CAMERA, DOORBELL, EFAMILY})
     public static final int DEVICE_TIME_ZONE = 214;
 
-    //    @DpAnnotation(msgId = 215, clazz = boolean.class)
     @DPMessage(name = "device_rtmp", primaryType = Boolean.class, dpType = TYPE_PRIMARY)
     public static final int DEVICE_RTMP = 215;
 
@@ -71,7 +68,6 @@ public class DPConstant {
     @DPMessage(name = "device_mobile_net_priority", primaryType = Boolean.class, dpType = TYPE_PRIMARY)
     public static final int DEVICE_MOBILE_NET_PRIORITY = 217;
 
-    //    @DpAnnotation(msgId = 218, clazz = Void.class)
     @DPMessage(name = "device_format_sdcard", primaryType = Void.class, dpType = TYPE_PRIMARY)
     public static final int DEVICE_FORMAT_SDCARD = 218;
 
@@ -134,5 +130,4 @@ public class DPConstant {
 
     @DPMessage(name = "sys_push_flag", primaryType = Boolean.class, dpType = TYPE_PRIMARY)
     public static final int SYS_PUSH_FLAG = 701;
-
 }

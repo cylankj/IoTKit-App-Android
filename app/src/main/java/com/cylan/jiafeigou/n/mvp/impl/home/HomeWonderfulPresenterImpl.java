@@ -2,13 +2,7 @@ package com.cylan.jiafeigou.n.mvp.impl.home;
 
 
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
-import android.text.TextUtils;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.SimpleTarget;
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.jiafeigou.base.wrapper.BasePresenter;
 import com.cylan.jiafeigou.dp.DataPoint;
@@ -21,18 +15,14 @@ import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.wechat.WechatShare;
-import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
+import com.cylan.jiafeigou.utils.TimeUtils;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 import java.util.TreeSet;
 import java.util.concurrent.TimeUnit;
 
-import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -50,6 +40,9 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
     private static final int LOAD_PAGE_COUNT = 20;
     private TreeSet<DpMsgDefine.DPWonderItem> mWonderItems;
     private WechatShare wechatShare;
+
+    private long mCurrentDayTimeStamp = 0;
+    private long mCurrentDayTimeEnd = 0;
 
     @Override
     protected void onRegisterSubscription() {
@@ -96,12 +89,11 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
      * @param list
      */
     private synchronized void updateCache(List<DpMsgDefine.DPWonderItem> list) {
+        if (mWonderItems == null) {
+            mWonderItems = new TreeSet<>();
+        }
         if (list == null || list.size() == 0)
             return;
-        if (mWonderItems == null) {
-            mWonderItems = new TreeSet<>(list);
-            return;
-        }
         mWonderItems.addAll(list);
     }
 
@@ -120,60 +112,27 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
         return result;
     }
 
-
-    private String getDate(final long time) {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("MM月dd", Locale.getDefault());
-        return dateFormat.format(new Date(time));
-    }
-
     @Override
     public void startRefresh() {
-        Observable.create(subscriber -> {
-            load(true);
-            subscriber.onNext(null);
-            subscriber.onCompleted();
-        }).delay(5, TimeUnit.SECONDS).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(delay -> {
-                    mView.onMediaListRsp(null);
-                });
+        load(mCurrentDayTimeStamp, false);
     }
 
-    private void load(boolean refresh) {
-        long version = 0;
-        boolean asc = false;
-        if (mWonderItems != null && mWonderItems.size() > 0) {
-            if (refresh) {
-                version = mWonderItems.first().version * 1000L;
-                asc = true;
-            } else {
-                version = mWonderItems.last().version * 1000L;
-                asc = false;
-            }
-        }
+    private void load(long version, boolean asc) {
         ArrayList<JFGDPMsg> params = new ArrayList<>();
         JFGDPMsg msg = new JFGDPMsg(DpMsgMap.ID_602_ACCOUNT_WONDERFUL_MSG, version);
         params.add(msg);
-        robotGetData("", params, 20, asc, 0);
+        AppLogger.e("version=" + version);
+        robotGetData("", params, 21, asc, 0);//多请求一条数据,用来判断是否是一天最后一条
     }
 
     @Override
     public void startLoadMore() {
-        Observable.create(subscriber -> {
-            load(false);
-            subscriber.onCompleted();
-        }).subscribeOn(Schedulers.io()).subscribe();
+        load(mWonderItems.last().version, false);
     }
 
     @Override
     public void deleteTimeline(long time) {
 
-    }
-
-    private void initWechatInstance() {
-        if (wechatShare == null || !wechatShare.isRegister()) {
-            wechatShare = new WechatShare(mView.getActivityContext());
-        }
     }
 
     @Override
@@ -189,46 +148,16 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
     }
 
     @Override
-    public void unregisterWechat() {
-        if (wechatShare != null) {
-            wechatShare.unregister();
-            wechatShare = null;
-        }
-    }
-
-    @Override
-    public void shareToWechat(DpMsgDefine.DPWonderItem mediaBean, final int type) {
-        if (mediaBean == null) {
-            AppLogger.i("mediaBean is null");
-            return;
-        }
-        initWechatInstance();
-        //find bitmap from glide
-        final WechatShare.ShareContent shareContent = new WechatShare.ShareContentImpl();
-        //朋友圈，微信
-        shareContent.shareScene = type;
-        Glide.with(ContextUtils.getContext())
-                .load(mediaBean.fileName)
-                .asBitmap()
-                .into(new SimpleTarget<Bitmap>(150, 150) {
-                    @Override
-                    public void onResourceReady(Bitmap resource, GlideAnimation glideAnimation) {
-                        shareContent.bitmap = resource;
-                        shareContent.shareContent = WechatShare.WEIXIN_SHARE_CONTENT_PIC;
-                        wechatShare.shareByWX(shareContent);
-                    }
-
-                    @Override
-                    public void onLoadFailed(Exception e, Drawable errorDrawable) {
-                        AppLogger.e("fxxx,load image failed: " + e.getLocalizedMessage());
-                    }
-                });
-    }
-
-    @Override
     public void removeGuideAnymore() {
         PreferencesUtils.putBoolean(JConstant.KEY_WONDERFUL_GUIDE, false);
         mView.chooseEmptyView(VIEW_TYPE_EMPTY);
+    }
+
+    @Override
+    public void loadSpecificDay(long timeStamp) {
+        mCurrentDayTimeStamp = timeStamp;
+        mCurrentDayTimeEnd = TimeUtils.getSpecificDayEndTime(timeStamp);
+        load(timeStamp, false);
     }
 
     @Override
@@ -238,19 +167,30 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
     }
 
     private void onWonderfulAccountRsp(DataPoint... values) {
-        List<DpMsgDefine.DPWonderItem> results = new ArrayList<>();
-        DpMsgDefine.DPWonderItem bean;
-        for (DataPoint value : values) {
-            bean = (DpMsgDefine.DPWonderItem) value;
-            if (bean != null && !TextUtils.isEmpty(bean.cid)) {
-                results.add(bean);
-            }
-        }
+        List<DpMsgDefine.DPWonderItem> results = filter(values);
         updateCache(results);
         List<Long> times = assembleTimeLineData(results);
+        mView.chooseEmptyView(mWonderItems.size() > 0 ? VIEW_TYPE_HIDE : VIEW_TYPE_EMPTY);
         mView.onMediaListRsp(results);
         mView.onTimeLineDataUpdate(times);
-        mView.chooseEmptyView(mWonderItems.size() > 0 ? VIEW_TYPE_HIDE : VIEW_TYPE_EMPTY);
+    }
+
+    private List<DpMsgDefine.DPWonderItem> filter(DataPoint... values) {
+        List<DpMsgDefine.DPWonderItem> result = new ArrayList<>(21);
+        DpMsgDefine.DPWonderItem wonderItem;
+        for (DataPoint value : values) {
+            wonderItem = (DpMsgDefine.DPWonderItem) value;
+            if (mCurrentDayTimeStamp == 0 || mCurrentDayTimeEnd == 0) {
+                mCurrentDayTimeStamp = TimeUtils.getSpecificDayStartTime(wonderItem.time * 1000L);
+                mCurrentDayTimeEnd = TimeUtils.getSpecificDayEndTime(wonderItem.time * 1000L);
+            }
+            if (wonderItem.time * 1000L >= mCurrentDayTimeStamp && wonderItem.time * 1000L < mCurrentDayTimeEnd) {
+                //说明是在同一天
+                AppLogger.e("是在同一天");
+                result.add(wonderItem);
+            }
+        }
+        return result;
     }
 }
 

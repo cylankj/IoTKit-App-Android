@@ -5,4 +5,6 @@ package com.cylan.jiafeigou;
  */
 
 public class ParcelableGenerator {
+
+
 }

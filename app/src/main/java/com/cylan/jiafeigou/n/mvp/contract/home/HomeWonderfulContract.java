@@ -43,23 +43,13 @@ public interface HomeWonderfulContract {
 
         void startLoadMore();
 
-        /**
-         * 删除每日精彩条目
-         *
-         * @param time
-         */
         void deleteTimeline(long time);
 
-        /**
-         * 检查微信是否已经安装
-         */
         boolean checkWechat();
 
-        void unregisterWechat();
-
-        void shareToWechat(DpMsgDefine.DPWonderItem mediaBean, int type);
-
         void removeGuideAnymore();
+
+        void loadSpecificDay(long timeStamp);
 
     }
 

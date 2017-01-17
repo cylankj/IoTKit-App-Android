@@ -296,11 +296,6 @@ public class DataPointManager implements IParser, IDataPoint {
     }
 
     @Override
-    public <T extends com.cylan.jiafeigou.base.module.JFGDevice> T fetchDevice(String uuid) {
-        return null;
-    }
-
-    @Override
     public ArrayList<JFGDevice> fetchAll(String account) {
         Iterator<String> keySet = jfgDeviceMap.keySet().iterator();
         ArrayList<JFGDevice> allList = new ArrayList<>();

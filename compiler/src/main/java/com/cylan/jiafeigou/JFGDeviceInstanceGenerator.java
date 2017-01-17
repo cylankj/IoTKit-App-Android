@@ -32,6 +32,7 @@ public class JFGDeviceInstanceGenerator implements Generator {
     protected DPTarget mTarget;
     protected DPTarget mParentTarget;
 
+
     @Override
     public JavaFile generator(List<Element> fields) throws Exception {
         DPInterface childType = mTarget.getClass().getField(mTarget.name()).getAnnotation(DPInterface.class);
@@ -71,12 +72,19 @@ public class JFGDeviceInstanceGenerator implements Generator {
                 .build();
     }
 
+    @Override
+    public void doProcessChain(ProcessChain chain) {
+
+
+    }
+
     protected TypeSpec.Builder getClassBuilder(String clazzName, String parentName) {
         String pkgName = "DataPoint".equals(parentName) ? TYPE_DEFINE_PACKAGE : MODULE_PACKAGE;
         return TypeSpec.classBuilder(clazzName)
                 .superclass(ClassName.get(pkgName, parentName))
                 .addModifiers(Modifier.PUBLIC);
     }
+
 
     protected TypeName getFieldType(DPType type, TypeMirror primaryType) {
         TypeName result = null;

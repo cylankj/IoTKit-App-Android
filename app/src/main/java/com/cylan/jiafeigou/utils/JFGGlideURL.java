@@ -4,6 +4,7 @@ import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.load.model.Headers;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
+import com.cylan.utils.PackageUtils;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -36,7 +37,7 @@ public class JFGGlideURL extends GlideUrl {
     public URL toURL() throws MalformedURLException {
         String url = "";
         try {
-            url = JfgCmdInsurance.getCmd().getCloudUrlByType(mType, mFlag, mFile, mPath);
+            url = JfgCmdInsurance.getCmd().getCloudUrlByType(mType, mFlag, mFile, mPath, PackageUtils.getMetaString(ContextUtils.getContext(),"vid"));
         } catch (JfgException e) {
             e.printStackTrace();
         }

@@ -107,8 +107,8 @@ public class HomeWonderfulAdapter extends SuperAdapter<DpMsgDefine.DPWonderItem>
             @Override
             public int getLayoutId(int viewType) {
                 return viewType == DpMsgDefine.DPWonderItem.TYPE_PIC ?
-                        R.layout.layout_item_picture_wonderful : (viewType == DpMsgDefine.DPWonderItem.TYPE_VIDEO ?
-                        R.layout.layout_item_vedio_wonderful : R.layout.layout_item_loading_wonderful);
+                        R.layout.layout_item_picture_wonderful :
+                        R.layout.layout_item_vedio_wonderful;
             }
         };
     }

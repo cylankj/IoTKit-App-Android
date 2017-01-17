@@ -44,8 +44,6 @@ public interface IDataPoint {
      */
     boolean updateJFGDevice(String account, JFGDevice device);
 
-    <T extends com.cylan.jiafeigou.base.module.JFGDevice> T fetchDevice(String uuid);
-
     ArrayList<JFGDevice> fetchAll(String account);
 
     boolean insert(String uuid, BaseValue baseValue);
