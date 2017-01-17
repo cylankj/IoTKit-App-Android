@@ -23,7 +23,7 @@
         android:orientation="horizontal">
 
         <ImageView
-            android:id="@+id/imgV_cam_switch_speaker"
+            android:id="@+id/imgV_land_cam_switch_speaker"
             style="@style/ripple_background"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
@@ -33,7 +33,7 @@
             android:src="@drawable/icon_speaker_land_on" />
 
         <ImageView
-            android:id="@+id/imgV_cam_trigger_mic"
+            android:id="@+id/imgV_land_cam_trigger_mic"
             style="@style/ripple_background"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
@@ -43,7 +43,7 @@
             android:src="@drawable/icon_recorder_pressed" />
 
         <ImageView
-            android:id="@+id/imgV_cam_trigger_capture"
+            android:id="@+id/imgV_land_cam_trigger_capture"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_gravity="end|center_vertical"

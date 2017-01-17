@@ -11,7 +11,7 @@
     <item android:id="@android:id/progress">
         <clip>
             <shape>
-                <gradient android:startColor="@color/color_36bdff" android:endColor="@color/color_36bdff" />
+                <gradient android:startColor="@color/color_36BDFF" android:endColor="@color/color_36BDFF" />
             </shape>
         </clip>
     </item>

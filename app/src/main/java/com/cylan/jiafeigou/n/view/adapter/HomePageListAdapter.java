@@ -123,6 +123,7 @@ public class HomePageListAdapter extends SuperAdapter<String> {
         holder.setText(R.id.tv_device_alias, TextUtils.isEmpty(alias) ? uuid : alias);
         if (!TextUtils.isEmpty(shareAccount))
             holder.setVisibility(R.id.tv_device_share_tag, VISIBLE);
+        else holder.setVisibility(R.id.tv_device_share_tag, GONE);
         //图标
         holder.setBackgroundResource(R.id.img_device_icon, iconRes);
         if (TextUtils.isEmpty(shareAccount))//被分享用户,不显示 消息数

@@ -103,7 +103,7 @@ public class MineInfoSetPassWordFragment extends Fragment implements MineInfoSet
             ivMinePersonalSetpasswordBind.setClickable(true);
         }
         ivMinePersonalInformationOldPasswordClear.setVisibility(TextUtils.isEmpty(s) ? View.GONE : View.VISIBLE);
-        viewMinePersonalInformationOldPasswordLine.setBackgroundColor(TextUtils.isEmpty(s) ? getResources().getColor(R.color.color_f2f2f2) : getResources().getColor(R.color.color_36bdff));
+        viewMinePersonalInformationOldPasswordLine.setBackgroundColor(TextUtils.isEmpty(s) ? getResources().getColor(R.color.color_f2f2f2) : getResources().getColor(R.color.color_36BDFF));
     }
 
     @OnTextChanged(R.id.et_mine_personal_information_new_password)
@@ -119,7 +119,7 @@ public class MineInfoSetPassWordFragment extends Fragment implements MineInfoSet
             ivMinePersonalSetpasswordBind.setEnabled(true);
         }
         ivMinePersonalInformationNewPasswordClear.setVisibility(TextUtils.isEmpty(s) ? View.GONE : View.VISIBLE);
-        viewMinePersonalInformationNewPasswordLine.setBackgroundColor(TextUtils.isEmpty(s) ? getResources().getColor(R.color.color_f2f2f2) : getResources().getColor(R.color.color_36bdff));
+        viewMinePersonalInformationNewPasswordLine.setBackgroundColor(TextUtils.isEmpty(s) ? getResources().getColor(R.color.color_f2f2f2) : getResources().getColor(R.color.color_36BDFF));
     }
 
     @Override

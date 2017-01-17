@@ -17,6 +17,8 @@ import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.ContextUtils;
+import com.cylan.utils.PackageUtils;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -49,6 +51,7 @@ public class MineShareDevicePresenterImp extends AbstractPresenter<MineShareDevi
 
     @Override
     public void start() {
+        super.start();
         if (subscription != null && !subscription.isUnsubscribed()) {
             subscription.unsubscribe();
         } else {
@@ -60,6 +63,7 @@ public class MineShareDevicePresenterImp extends AbstractPresenter<MineShareDevi
 
     @Override
     public void stop() {
+        super.stop();
         if (subscription != null && !subscription.isUnsubscribed()) {
             subscription.unsubscribe();
         }
@@ -108,7 +112,7 @@ public class MineShareDevicePresenterImp extends AbstractPresenter<MineShareDevi
                 relAndFriendBean.alias = info.alias;
                 relAndFriendBean.markName = info.markName;
                 try {
-                    relAndFriendBean.iconUrl = JfgCmdInsurance.getCmd().getCloudUrlByType(JfgEnum.JFG_URL.PORTRAIT, 0, info.account + ".jpg", "");
+                    relAndFriendBean.iconUrl = JfgCmdInsurance.getCmd().getCloudUrlByType(JfgEnum.JFG_URL.PORTRAIT, 0, info.account + ".jpg", "", PackageUtils.getMetaString(ContextUtils.getContext(), "vid"));
                 } catch (JfgException e) {
                     e.printStackTrace();
                 }

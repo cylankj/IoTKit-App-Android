@@ -13,6 +13,7 @@ import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.listener.ILiveStateListener;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamLiveContract;
@@ -122,6 +123,7 @@ public class CamLiveController implements
                     case ILiveControl.STATE_PLAYING:
                         //下一步stop
                         if (presenterRef != null && presenterRef.get() != null) {
+                            presenterRef.get().setStopReason(JError.STOP_MAUNALLY);
                             presenterRef.get().stopPlayVideo(presenterRef.get().getPlayType());
                         }
                         break;
@@ -395,10 +397,6 @@ public class CamLiveController implements
             presenterRef.get().takeSnapShot();
     }
 
-    //    @OnClick({R.id.imgV_cam_live_land_play,
-//            R.id.live_time_layout,
-//            R.id.imgV_cam_zoom_to_full_screen,
-//            R.id.tv_cam_live_port_live})
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
@@ -508,10 +506,10 @@ public class CamLiveController implements
         float translateX = camLiveControlLayer.getLandDateContainer().getTranslationX();
         if (x == left && camLiveControlLayer.getLandDateContainer().isShown())
             AnimatorUtils.slideOutRight(camLiveControlLayer.getLandDateContainer());
-        else if (translateX + left == x
-                || x == left + translateX
-                || !camLiveControlLayer.getLandDateContainer().isShown())
-            AnimatorUtils.slideInRight(camLiveControlLayer.getLandDateContainer());
+//        else if (translateX + left == x
+//                || x == left + translateX
+//                || !camLiveControlLayer.getLandDateContainer().isShown())
+//            AnimatorUtils.slideInRight(camLiveControlLayer.getLandDateContainer());
     }
 
     /**

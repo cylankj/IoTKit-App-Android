@@ -111,7 +111,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="1dip"
                     android:layout_marginTop="10dp"
-                    android:background="@color/color_f2f2f2" />
+                    android:background="@color/color_f2f2f2"
+                    android:visibility="gone" />
             </LinearLayout>
 
             <TextView
@@ -119,7 +120,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"
-                android:text="存储"
+                android:text="@string/VALID_STORAGE"
                 android:textColor="#4B9FD5"
                 android:textSize="14sp" />
 
@@ -151,7 +152,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="1dip"
                     android:layout_marginTop="10dp"
-                    android:background="@color/color_f2f2f2" />
+                    android:background="@color/color_f2f2f2"
+                    android:visibility="gone" />
             </LinearLayout>
 
             <!-- “网络”相关模块 -->
@@ -160,7 +162,7 @@
                 style="@style/information_item"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
+                android:layout_marginTop="15dp"
                 android:text="@string/NETWORK"
                 android:textColor="#4B9FD5"
                 android:textSize="14sp" />
@@ -222,7 +224,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="1dip"
                     android:layout_marginTop="10dp"
-                    android:background="@color/color_f2f2f2" />
+                    android:background="@color/color_f2f2f2"
+                    android:visibility="gone" />
             </LinearLayout>
 
             <!-- "信息"模块 -->
@@ -231,7 +234,7 @@
                 style="@style/information_item"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
+                android:layout_marginTop="15dp"
                 android:text="@string/Tap1_Setting_Cid"
                 android:textColor="#4B9FD5"
                 android:textSize="14sp" />
