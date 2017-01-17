@@ -89,11 +89,6 @@ public class MineShareDeviceFragment extends Fragment implements MineShareDevice
         }
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-    }
-
     private void initPresenter() {
         presenter = new MineShareDevicePresenterImp(this);
     }

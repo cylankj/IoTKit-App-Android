@@ -45,61 +45,71 @@
 
     </RelativeLayout>
 
-    <RelativeLayout
-        android:layout_marginTop="8dp"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="54dp">
+        android:layout_height="wrap_content">
 
-        <EditText
-            android:id="@+id/et_mine_set_newpwd"
-            android:textColor="@color/color_333333"
-            android:textSize="16sp"
-            android:layout_centerVertical="true"
-            android:hint="@string/ENTER_PWD_2"
-            android:maxLength="65"
-            android:inputType="textPassword"
-            android:background="@null"
-            android:layout_marginRight="20dp"
-            android:layout_marginLeft="20dp"
+        <RelativeLayout
+            android:layout_marginTop="8dp"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="54dp">
+
+            <EditText
+                android:id="@+id/et_mine_set_newpwd"
+                android:textColor="@color/color_333333"
+                android:textSize="16sp"
+                android:layout_centerVertical="true"
+                android:hint="@string/ENTER_PWD_2"
+                android:maxLength="65"
+                android:inputType="textPassword"
+                android:background="@null"
+                android:layout_marginRight="20dp"
+                android:layout_marginLeft="20dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <View
+                android:id="@+id/view_mine_set_newpwd_line"
+                android:layout_marginBottom="8dp"
+                android:layout_alignParentBottom="true"
+                android:layout_marginRight="20dp"
+                android:layout_marginLeft="20dp"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/color_f2f2f2" />
+
+            <LinearLayout
+                android:layout_marginRight="20dp"
+                android:layout_alignParentRight="true"
+                android:orientation="horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent">
+
+                <ImageView
+                    android:visibility="gone"
+                    android:id="@+id/iv_mine_new_pwd_clear"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="10dp"
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/btn_login_clear_text" />
+
+                <CheckBox
+                    android:id="@+id/cb_new_pwd_show"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:background="@drawable/icon_common_show_pwd_selector"
+                    android:button="@null"
+                    android:checked="false" />
+            </LinearLayout>
+
+        </RelativeLayout>
 
         <View
-            android:id="@+id/view_mine_set_newpwd_line"
-            android:layout_marginBottom="8dp"
-            android:layout_alignParentBottom="true"
-            android:layout_marginRight="20dp"
-            android:layout_marginLeft="20dp"
             android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/color_f2f2f2" />
-
-        <LinearLayout
-            android:layout_marginRight="20dp"
-            android:layout_alignParentRight="true"
-            android:orientation="horizontal"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent">
-
-            <ImageView
-                android:visibility="gone"
-                android:id="@+id/iv_mine_new_pwd_clear"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:padding="10dp"
-                android:layout_gravity="center_vertical"
-                android:src="@drawable/btn_login_clear_text" />
-
-            <CheckBox
-                android:id="@+id/cb_new_pwd_show"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:background="@drawable/icon_common_show_pwd_selector"
-                android:button="@null"
-                android:checked="false" />
-        </LinearLayout>
-
-    </RelativeLayout>
+            android:layout_height="10dp"
+            android:background="@drawable/little_shape" />
+    </FrameLayout>
 
 </LinearLayout>

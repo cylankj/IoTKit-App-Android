@@ -5,39 +5,41 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <RelativeLayout
+        android:id="@+id/rl_title_bar"
+        android:layout_width="match_parent"
+        android:layout_height="73dp"
+        android:background="@color/color_0ba8cf">
+
+        <ImageView
+            android:id="@+id/iv_top_bar_left_back"
+            android:clickable="true"
+            android:layout_alignParentBottom="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="15dp"
+            android:src="@drawable/icon_nav_back_white" />
+
+        <TextView
+            android:layout_marginBottom="12dp"
+            android:layout_alignParentBottom="true"
+            android:layout_marginLeft="48dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/Tap3_Friends_Details"
+            android:textSize="18sp"
+            android:textColor="@color/color_white" />
+
+    </RelativeLayout>
+
     <FrameLayout
+        android:layout_below="@id/rl_title_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="73dp"
-                android:background="@color/color_0ba8cf">
-
-                <ImageView
-                    android:id="@+id/iv_top_bar_left_back"
-                    android:clickable="true"
-                    android:layout_alignParentBottom="true"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:padding="15dp"
-                    android:src="@drawable/icon_nav_back_white" />
-
-                <TextView
-                    android:layout_marginBottom="12dp"
-                    android:layout_alignParentBottom="true"
-                    android:layout_marginLeft="48dp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/Tap3_Friends_Details"
-                    android:textSize="18sp"
-                    android:textColor="@color/color_white" />
-
-            </RelativeLayout>
 
             <com.cylan.jiafeigou.widget.roundedimageview.RoundedImageView
                 android:clickable="true"
@@ -116,6 +118,11 @@
             </RelativeLayout>
 
         </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="10dp"
+            android:background="@drawable/little_shape" />
 
     </FrameLayout>
     <TextView

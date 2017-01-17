@@ -24,6 +24,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -48,6 +49,7 @@ import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.roundedimageview.RoundedImageView;
 
 import java.io.File;
+import java.lang.ref.WeakReference;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -58,7 +60,7 @@ import butterknife.OnClick;
  * 创建者     谢坤
  * 创建时间   2016/8/9 10:02
  * 描述	      ${TODO}
- * <p/>
+ * <p>
  * 更新者     $Author$
  * 更新时间   $Date$
  * 更新描述   ${TODO}
@@ -85,6 +87,14 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
     TextView tvHomeMinePersonalPhone;
     @BindView(R.id.rl_change_password)
     RelativeLayout rlChangePassword;
+    @BindView(R.id.rl_my_QRCode)
+    RelativeLayout rlMyQRCode;
+    @BindView(R.id.tv_my_number)
+    TextView tvMyNumber;
+    @BindView(R.id.btn_home_mine_personal_information)
+    TextView btnHomeMinePersonalInformation;
+    @BindView(R.id.ll_container)
+    LinearLayout llContainer;
 
     private HomeMineInfoMailBoxFragment mailBoxFragment;
     private MineInfoBindPhoneFragment bindPhoneFragment;
@@ -97,6 +107,7 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
     private File tempFile;
     private PopupWindow popupWindow;
     private int navigationHeight;
+    private WeakReference<MyQRCodeDialog> myQrcodeDialog;
 
     public static HomeMineInfoFragment newInstance() {
         HomeMineInfoFragment fragment = new HomeMineInfoFragment();
@@ -175,7 +186,7 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
     @OnClick({R.id.iv_home_mine_personal_back, R.id.btn_home_mine_personal_information,
             R.id.lLayout_home_mine_personal_mailbox, R.id.rLayout_home_mine_personal_pic,
             R.id.RLayout_home_mine_personal_phone, R.id.user_ImageHead,
-            R.id.rLayout_home_mine_personal_name, R.id.rl_change_password})
+            R.id.rLayout_home_mine_personal_name, R.id.rl_change_password,R.id.rl_my_QRCode})
     public void onClick(View view) {
         switch (view.getId()) {
             //点击回退到Mine的fragment
@@ -222,7 +233,25 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
                 AppLogger.d("rl_change_password");
                 jump2ChangePasswordFragment();
                 break;
+
+            case R.id.rl_my_QRCode:                             //我的二维码
+                showMyQrcodeDialog();
+                break;
         }
+    }
+
+    /**
+     * 弹出我的二维码对话框
+     */
+    private void showMyQrcodeDialog() {
+        if (myQrcodeDialog == null || myQrcodeDialog.get() == null){
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("jfgaccount",argumentData);
+            myQrcodeDialog = new WeakReference<>(MyQRCodeDialog.newInstance(bundle));
+        }
+        MyQRCodeDialog myQRCodeDialog = myQrcodeDialog.get();
+        myQRCodeDialog.dismiss();
+        myQRCodeDialog.show(getFragmentManager(),"myqrcode");
     }
 
     /**
@@ -663,4 +692,7 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
         }
     }
 
+    @OnClick()
+    public void onClick() {
+    }
 }
