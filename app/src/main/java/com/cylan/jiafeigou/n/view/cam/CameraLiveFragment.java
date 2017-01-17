@@ -203,6 +203,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
             imgVCamSwitchSpeaker.setEnabled(enable);
             imgVCamTriggerMic.setEnabled(enable);
             imgVCamTriggerCapture.setEnabled(enable);
+            Log.d("initBottomBtn", "initBottomBtn: " + enable);
         });
     }
 

@@ -50,8 +50,10 @@ public class RxEvent {
         }
     }
 
-    public static class ActivityResult {
-        public Bundle bundle;
+    /**
+     * 分享账号,列表响应
+     */
+    public static class GetShareListRsp {
     }
 
     public static class CloudLiveDelete {

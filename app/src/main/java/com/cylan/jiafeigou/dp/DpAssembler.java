@@ -17,6 +17,7 @@ import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.rx.RxHelper;
 import com.cylan.jiafeigou.support.log.AppLogger;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -95,8 +96,10 @@ public class DpAssembler implements IParser {
                 .subscribeOn(Schedulers.newThread())
                 .map((List<JFGDevice> list) -> {
                     HashMap<String, Long> map = new HashMap<>();
+                    ArrayList<String> uuidList = new ArrayList<>();
                     for (int i = 0; i < list.size(); i++) {
                         if (merger(list.get(i).pid) == null) continue;
+                        uuidList.add(list.get(i).uuid);
                         GlobalDataProxy.getInstance().cacheDevice(list.get(i).uuid, list.get(i));
                         final int pid = list.get(i).pid;
                         if (JFGRules.isCamera(pid)) {
@@ -114,6 +117,8 @@ public class DpAssembler implements IParser {
                         AppLogger.i(TAG + " req: " + list.get(i).uuid);
                     }
                     seqMap.put("deviceListSub", map);
+                    JfgCmdInsurance.getCmd().getShareList(uuidList);
+                    AppLogger.i("getShareList: " + uuidList);
                     return null;
                 })
                 .retry(new RxHelper.RxException<>(TAG + " deviceListSub"))

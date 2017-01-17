@@ -64,8 +64,8 @@ public class HomePageListAdapter extends SuperAdapter<String> {
             holder.setVisibility(R.id.img_device_state_0, VISIBLE);
             holder.setImageResource(R.id.img_device_state_0, resIdNet);
         }
-        //1 分享
-        if (!TextUtils.isEmpty(shareAccount)) {
+        //1 已分享的设备,此设备分享给别的账号.
+        if (GlobalDataProxy.getInstance().isDeviceShared(uuid)) {
             holder.setVisibility(R.id.img_device_state_1, VISIBLE);
             holder.setImageResource(R.id.img_device_state_1, R.drawable.icon_home_share);
         }
@@ -105,6 +105,8 @@ public class HomePageListAdapter extends SuperAdapter<String> {
                 : JConstant.offLineIconMap.get(pid);
         //昵称
         holder.setText(R.id.tv_device_alias, TextUtils.isEmpty(alias) ? uuid : alias);
+        if (!TextUtils.isEmpty(shareAccount))
+            holder.setVisibility(R.id.tv_device_share_tag, VISIBLE);
         //图标
         holder.setBackgroundResource(R.id.img_device_icon, iconRes);
         handleMsgCountTime(holder, uuid, pid);

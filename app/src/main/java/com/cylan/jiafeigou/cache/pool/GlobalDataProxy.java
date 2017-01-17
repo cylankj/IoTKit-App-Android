@@ -6,13 +6,18 @@ import android.util.Pair;
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.entity.jniCall.JFGDevice;
+import com.cylan.entity.jniCall.JFGShareListInfo;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.dp.BaseValue;
 import com.cylan.jiafeigou.dp.IDataPoint;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
+import com.cylan.jiafeigou.rx.RxBus;
+import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by cylan-hunt on 16-12-26.
@@ -23,6 +28,11 @@ public class GlobalDataProxy implements IDataProxy {
     private static GlobalDataProxy instance;
     private JFGAccount jfgAccount;
     private IDataPoint dataPointManager;
+    /**
+     * <String(account),ArrayList<...></>></>
+     * 根据账号
+     */
+    private Map<String, ArrayList<JFGShareListInfo>> shareListMap = new HashMap<>();
     private boolean isOnline;
 
     private GlobalDataProxy() {
@@ -75,6 +85,36 @@ public class GlobalDataProxy implements IDataProxy {
     public JFGDevice fetch(String uuid) {
         if (!checkAccount() || dataPointManager == null) return null;
         return dataPointManager.fetch(jfgAccount.getAccount() + uuid);
+    }
+
+    @Override
+    public void cacheShareList(ArrayList<JFGShareListInfo> arrayList) {
+        if (checkAccount()) {
+            shareListMap.put(jfgAccount.getAccount(), arrayList);
+            RxBus.getCacheInstance().post(new RxEvent.GetShareListRsp());
+        }
+    }
+
+    @Override
+    public boolean isDeviceShared(String uuid) {
+        if (checkAccount()) {
+            ArrayList<JFGShareListInfo> listInfos = shareListMap.get(jfgAccount.getAccount());
+            int size = listInfos == null ? 0 : listInfos.size();
+            for (int i = 0; i < size; i++) {
+                JFGShareListInfo info = listInfos.get(i);
+                if (TextUtils.equals(uuid, info.cid)) {
+                    return info.friends != null && info.friends.size() > 0;
+                }
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public ArrayList<JFGShareListInfo> getShareList() {
+        if (jfgAccount == null || TextUtils.isEmpty(jfgAccount.getAccount()))
+            return null;
+        return this.shareListMap.get(jfgAccount.getAccount());
     }
 
     @Override

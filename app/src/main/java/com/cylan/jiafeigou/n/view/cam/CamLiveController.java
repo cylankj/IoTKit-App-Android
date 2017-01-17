@@ -261,6 +261,7 @@ public class CamLiveController implements
                 AnimatorUtils.slideAuto(camLiveControlLayer.getLiveLandBottomBar(), false);
                 AnimatorUtils.slideAuto(camLiveControlLayer.getCamLiveLandTopBar(), true);
                 setLoadingState(STATE_IDLE, null);
+                slideLandDatePickView();
             } else {
                 //某些限制条件,不需要显示
                 if (presenterRef.get().needShowHistoryWheelView()) {
@@ -470,8 +471,10 @@ public class CamLiveController implements
         }
         boolean land = context.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
         //竖屏显示对话框,横屏显示测推
-        if (land) showLandDatePicker();
-        else showPortDatePicker();
+        if (land) {
+            initLandDatePickerView();
+            slideLandDatePickView();
+        } else showPortDatePicker();
     }
 
     private void showPortDatePicker() {
@@ -496,11 +499,10 @@ public class CamLiveController implements
 
     private CamLandHistoryDateAdapter adapter;
 
-    private void showLandDatePicker() {
-        int visibility = camLiveControlLayer.getLandDateContainer().getVisibility();
-        if (visibility == View.GONE) {
-            camLiveControlLayer.getLandDateContainer().setVisibility(View.INVISIBLE);
-        }
+    /**
+     * 判断,slide_in 或者slide_out
+     */
+    private void slideLandDatePickView() {
         float x = camLiveControlLayer.getLandDateContainer().getX();
         float left = camLiveControlLayer.getLandDateContainer().getLeft();
         float translateX = camLiveControlLayer.getLandDateContainer().getTranslationX();
@@ -510,6 +512,16 @@ public class CamLiveController implements
                 || x == left + translateX
                 || !camLiveControlLayer.getLandDateContainer().isShown())
             AnimatorUtils.slideInRight(camLiveControlLayer.getLandDateContainer());
+    }
+
+    /**
+     * 视图初始化
+     */
+    private void initLandDatePickerView() {
+        int visibility = camLiveControlLayer.getLandDateContainer().getVisibility();
+        if (visibility == View.GONE) {
+            camLiveControlLayer.getLandDateContainer().setVisibility(View.INVISIBLE);
+        }
         if (presenterRef == null || presenterRef.get() == null || presenterRef.get().getFlattenDateMap() == null ||
                 presenterRef.get().getFlattenDateMap().isEmpty()) return;
         if (adapter == null)
