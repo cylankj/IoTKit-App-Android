@@ -12,7 +12,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        android:src="@drawable/icon_capture_photo"/>
+        android:src="@drawable/icon_port_capture_selector"/>
 
     <ImageView
         android:id="@+id/imgv_bell_live_hang_up"

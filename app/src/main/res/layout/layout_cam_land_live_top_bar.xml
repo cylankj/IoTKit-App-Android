@@ -30,7 +30,7 @@
             android:layout_gravity="center_vertical"
             android:paddingLeft="18dp"
             android:paddingRight="18dp"
-            android:src="@drawable/icon_speaker_land_on" />
+            android:src="@drawable/icon_land_speaker_on_selector" />
 
         <ImageView
             android:id="@+id/imgV_land_cam_trigger_mic"
@@ -40,7 +40,7 @@
             android:layout_gravity="center"
             android:paddingLeft="18dp"
             android:paddingRight="18dp"
-            android:src="@drawable/icon_recorder_pressed" />
+            android:src="@drawable/icon_land_mic_on_selector" />
 
         <ImageView
             android:id="@+id/imgV_land_cam_trigger_capture"
@@ -50,7 +50,7 @@
             android:background="?attr/selectableItemBackgroundBorderless"
             android:paddingLeft="18dp"
             android:paddingRight="18dp"
-            android:src="@drawable/icon_capture_pressed" />
+            android:src="@drawable/icon_land_capture_selector" />
     </LinearLayout>
 
 </merge>

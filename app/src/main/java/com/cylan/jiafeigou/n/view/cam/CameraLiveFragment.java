@@ -207,9 +207,9 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
      */
     private void initBottomBtn(final boolean enable) {
         imgVCamSwitchSpeaker.post(() -> {
-            imgVCamSwitchSpeaker.setClickable(enable);
-            imgVCamTriggerMic.setClickable(enable);
-            imgVCamTriggerCapture.setClickable(enable);
+            imgVCamSwitchSpeaker.setEnabled(enable);
+            imgVCamTriggerMic.setEnabled(enable);
+            imgVCamTriggerCapture.setEnabled(enable);
             Log.d("initBottomBtn", "setClickable: " + enable);
         });
     }
@@ -385,13 +385,16 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
             case R.id.imgV_cam_switch_speaker:
                 if (basePresenter != null) {
                     basePresenter.switchSpeakerMic(false, !basePresenter.getSpeakerFlag(), basePresenter.getMicFlag());
-                    ((ImageView) view).setImageResource(basePresenter.getSpeakerFlag() ? R.drawable.icon_speaker_normal_port_off : R.drawable.icon_speaker_normal_port_on);
+                    ((ImageView) view).setImageResource(basePresenter.getSpeakerFlag()
+                            ? R.drawable.icon_port_speaker_off_selector
+                            : R.drawable.icon_port_speaker_on_selector);
                 }
                 break;
             case R.id.imgV_cam_trigger_mic:
                 if (basePresenter != null) {
                     basePresenter.switchSpeakerMic(false, basePresenter.getSpeakerFlag(), !basePresenter.getMicFlag());
-                    ((ImageView) view).setImageResource(basePresenter.getMicFlag() ? R.drawable.btn_video_retry : R.drawable.icon_record);
+                    ((ImageView) view).setImageResource(basePresenter.getMicFlag() ?
+                            R.drawable.icon_port_mic_off_selector : R.drawable.icon_port_mic_on_selector);
                 }
                 break;
             case R.id.imgV_cam_trigger_capture:

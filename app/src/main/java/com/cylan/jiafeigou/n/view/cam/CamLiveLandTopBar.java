@@ -50,19 +50,19 @@ public class CamLiveLandTopBar extends FrameLayout {
         switch (view.getId()) {
             case R.id.imgV_cam_live_land_nav_back:
                 if (topBarAction != null)
-                    topBarAction.onBack();
+                    topBarAction.onBack(view);
                 break;
             case R.id.imgV_land_cam_switch_speaker:
                 if (topBarAction != null)
-                    topBarAction.onSwitchSpeaker();
+                    topBarAction.onSwitchSpeaker(view);
                 break;
             case R.id.imgV_land_cam_trigger_mic:
                 if (topBarAction != null)
-                    topBarAction.onTriggerRecorder();
+                    topBarAction.onTriggerMic(view);
                 break;
             case R.id.imgV_land_cam_trigger_capture:
                 if (topBarAction != null)
-                    topBarAction.onTriggerCapture();
+                    topBarAction.onTriggerCapture(view);
                 break;
         }
     }
@@ -74,12 +74,12 @@ public class CamLiveLandTopBar extends FrameLayout {
     }
 
     public interface TopBarAction {
-        void onBack();
+        void onBack(View view);
 
-        void onSwitchSpeaker();
+        void onSwitchSpeaker(View view);
 
-        void onTriggerRecorder();
+        void onTriggerMic(View view);
 
-        void onTriggerCapture();
+        void onTriggerCapture(View view);
     }
 }

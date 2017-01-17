@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
@@ -373,26 +374,34 @@ public class CamLiveController implements
     }
 
     @Override
-    public void onBack() {
+    public void onBack(View view) {
         if (activityWeakReference != null && activityWeakReference.get() != null)
             ViewUtils.setRequestedOrientation(activityWeakReference.get(),
                     ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
     }
 
     @Override
-    public void onSwitchSpeaker() {
-        if (presenterRef != null && presenterRef.get() != null)
-            presenterRef.get().switchSpeakerMic(false, false, false);
+    public void onSwitchSpeaker(View view) {
+        if (presenterRef != null && presenterRef.get() != null) {
+            boolean flag = presenterRef.get().getSpeakerFlag();
+            ((ImageView) view).setImageResource(flag ?
+                    R.drawable.icon_land_speaker_off_selector : R.drawable.icon_land_speaker_on_selector);
+            presenterRef.get().switchSpeakerMic(false, !presenterRef.get().getSpeakerFlag(), presenterRef.get().getMicFlag());
+        }
     }
 
     @Override
-    public void onTriggerRecorder() {
-        if (presenterRef != null && presenterRef.get() != null)
-            presenterRef.get().switchSpeakerMic(false, false, false);
+    public void onTriggerMic(View view) {
+        if (presenterRef != null && presenterRef.get() != null) {
+            boolean flag = presenterRef.get().getSpeakerFlag();
+            ((ImageView) view).setImageResource(flag ?
+                    R.drawable.icon_land_mic_off_selector : R.drawable.icon_land_mic_on_selector);
+            presenterRef.get().switchSpeakerMic(false, presenterRef.get().getSpeakerFlag(), !presenterRef.get().getMicFlag());
+        }
     }
 
     @Override
-    public void onTriggerCapture() {
+    public void onTriggerCapture(View view) {
         if (presenterRef != null && presenterRef.get() != null)
             presenterRef.get().takeSnapShot();
     }
