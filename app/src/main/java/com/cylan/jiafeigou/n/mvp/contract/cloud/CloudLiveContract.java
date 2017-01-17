@@ -131,5 +131,6 @@ public interface CloudLiveContract {
          * @return
          */
         boolean isDeviceOnline();
+
     }
 }

@@ -15,6 +15,7 @@ import com.cylan.entity.jniCall.JFGResult;
 import com.cylan.entity.jniCall.JFGShareListInfo;
 import com.cylan.jiafeigou.dp.BaseValue;
 import com.cylan.jiafeigou.dp.DataPointManager;
+import com.cylan.jiafeigou.n.mvp.model.CloudLiveBaseBean;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -661,4 +662,5 @@ public class RxEvent {
 
         public String uuid;
     }
+
 }

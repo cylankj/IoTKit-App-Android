@@ -114,7 +114,8 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
                 smsCodeResultSub(),
                 switchBoxSub(),
                 loginPopBackSub(),
-                resultRegisterSub()
+                resultRegisterSub(),
+                checkAccountBack()
         };
     }
 
@@ -475,5 +476,36 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
 
         }
     };
+
+
+    @Override
+    public void checkAccountIsReg(String account) {
+        rx.Observable.just(account)
+                .subscribeOn(Schedulers.newThread())
+                .subscribe(new Action1<String>() {
+                    @Override
+                    public void call(String s) {
+                        try {
+                            JfgCmdInsurance.getCmd().checkFriendAccount(s);
+                        } catch (JfgException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },throwable -> {
+                    AppLogger.e("checkAccountIsReg"+throwable.getLocalizedMessage());
+                });
+    }
+
+    @Override
+    public Subscription checkAccountBack() {
+        return RxBus.getCacheInstance().toObservable(RxEvent.CheckAccountCallback.class)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<RxEvent.CheckAccountCallback>() {
+                    @Override
+                    public void call(RxEvent.CheckAccountCallback checkAccountCallback) {
+                        getView().checkAccountResult(checkAccountCallback);
+                    }
+                });
+    }
 
 }

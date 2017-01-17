@@ -45,6 +45,8 @@ import com.cylan.jiafeigou.n.view.cloud.CloudLiveSettingFragment;
 import com.cylan.jiafeigou.n.view.cloud.CloudMesgBackListener;
 import com.cylan.jiafeigou.n.view.cloud.LayoutIdMapCache;
 import com.cylan.jiafeigou.n.view.cloud.ViewTypeMapCache;
+import com.cylan.jiafeigou.rx.RxBus;
+import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
@@ -52,6 +54,7 @@ import com.cylan.jiafeigou.widget.CloudLiveVoiceTalkView;
 import com.cylan.jiafeigou.widget.LoadingDialog;
 import com.cylan.superadapter.OnItemClickListener;
 
+import java.io.Serializable;
 import java.util.List;
 
 import butterknife.BindView;
@@ -111,7 +114,7 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
     private void initTitle() {
         JFGDevice jfgDevice = GlobalDataProxy.getInstance().fetch(uuid);
         tvDeviceName.setText(TextUtils.isEmpty(jfgDevice.alias) ? jfgDevice.uuid : jfgDevice.alias);
-        CloudLiveCallActivity.setOnCloudMesgBackListener(this);
+//        CloudLiveCallActivity.setOnCloudMesgBackListener(this);
     }
 
     /**
@@ -209,7 +212,7 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
         Intent intent = new Intent(ContextUtils.getContext(), CloudLiveCallActivity.class);
         intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
         intent.putExtra("call_in_or_out", false);
-        startActivity(intent);
+        startActivityForResult(intent,1);
     }
 
     /**
@@ -502,11 +505,19 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
 
     /**
      * 添加一条消息
-     *
      * @param bean
      */
     @Override
     public void onCloudMesgBack(CloudLiveBaseBean bean) {
         refreshRecycleView(bean);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == 1 && resultCode == 1 && data != null){
+            Bundle callback = data.getBundleExtra("callback");
+            CloudLiveBaseBean callbackBean = (CloudLiveBaseBean) callback.getSerializable("callbackBean");
+            refreshRecycleView(callbackBean);
+        }
     }
 }

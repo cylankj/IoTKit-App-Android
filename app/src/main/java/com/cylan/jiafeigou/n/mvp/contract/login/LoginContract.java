@@ -6,7 +6,10 @@ import android.content.Intent;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
 import com.cylan.jiafeigou.n.mvp.model.LoginAccountBean;
+import com.cylan.jiafeigou.rx.RxEvent;
 import com.sina.weibo.sdk.auth.sso.SsoHandler;
+
+import rx.Subscription;
 
 /**
  * Created by lxh on 16-6-24.
@@ -78,6 +81,12 @@ public interface LoginContract {
          * 注册跳转到设置密码页
          */
         void jump2NextPage();
+
+        /**
+         * 检测好友回调的结果
+         * @param callback
+         */
+        void checkAccountResult(RxEvent.CheckAccountCallback callback);
     }
 
     interface Presenter extends BasePresenter {
@@ -124,6 +133,18 @@ public interface LoginContract {
          * @param data
          */
         void onActivityResultData(int requestCode, int resultCode, Intent data);
+
+        /**
+         * 检测账号是否已经注册
+         * @param account
+         */
+        void checkAccountIsReg(String account);
+
+        /**
+         * 是否已注册的回调
+         * @return
+         */
+        Subscription checkAccountBack();
 
     }
 

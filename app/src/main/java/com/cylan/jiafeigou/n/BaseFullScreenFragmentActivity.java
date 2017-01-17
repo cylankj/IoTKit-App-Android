@@ -1,5 +1,7 @@
 package com.cylan.jiafeigou.n;
 
+import android.app.Activity;
+import android.app.ActivityGroup;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -235,4 +237,5 @@ public class BaseFullScreenFragmentActivity<T extends BasePresenter> extends Fra
             overridePendingTransition(R.anim.slide_in_left_without_interpolator, R.anim.slide_out_right_without_interpolator);
         }
     }
+
 }

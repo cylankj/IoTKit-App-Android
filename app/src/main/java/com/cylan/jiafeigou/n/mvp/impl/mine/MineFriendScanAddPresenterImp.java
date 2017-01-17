@@ -23,6 +23,7 @@ import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.network.ConnectivityStatus;
 import com.cylan.jiafeigou.support.network.ReactiveNetwork;
+import com.cylan.jiafeigou.support.zscan.Qrcode;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.utils.PackageUtils;
 import com.google.zxing.BarcodeFormat;
@@ -81,67 +82,6 @@ public class MineFriendScanAddPresenterImp extends AbstractPresenter<MineFriendS
         }
         unregisterNetworkMonitor();
     }
-
-    @Override
-    public Bitmap encodeAsBitmap(String contents, int dimension) {
-
-        String contentsToEncode = contents;
-        if (contentsToEncode == null) {
-            return null;
-        }
-        Map<EncodeHintType, Object> hints = null;
-        String encoding = guessAppropriateEncoding(contentsToEncode);
-        if (encoding != null) {
-            hints = new EnumMap<>(EncodeHintType.class);
-            hints.put(EncodeHintType.CHARACTER_SET, encoding);
-        }
-        BitMatrix result = null;
-        try {
-            result = new MultiFormatWriter().encode(contentsToEncode, BarcodeFormat.QR_CODE, dimension, dimension, hints);
-        } catch (IllegalArgumentException iae) {
-            // Unsupported format
-            return null;
-        } catch (WriterException e) {
-            e.printStackTrace();
-        }
-        int width = result.getWidth();
-        int height = result.getHeight();
-        int[] pixels = new int[width * height];
-        for (int y = 0; y < height; y++) {
-            int offset = y * width;
-            for (int x = 0; x < width; x++) {
-                pixels[offset + x] = result.get(x, y) ? BLACK : WHITE;
-            }
-        }
-
-        Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
-        bitmap.setPixels(pixels, 0, width, 0, 0, width, height);
-        return bitmap;
-    }
-
-    @Override
-    public int getDimension() {
-        WindowManager manager = (WindowManager) getView().getContext().getSystemService(Context.WINDOW_SERVICE);
-        Display display = manager.getDefaultDisplay();
-        Point displaySize = new Point();
-        display.getSize(displaySize);
-        int width = displaySize.x;
-        int height = displaySize.y;
-        int smallerDimension = width < height ? width : height;
-        smallerDimension = smallerDimension * 7 / 8;
-        return smallerDimension;
-    }
-
-    private static String guessAppropriateEncoding(CharSequence contents) {
-        // Very crude at the moment
-        for (int i = 0; i < contents.length(); i++) {
-            if (contents.charAt(i) > 0xFF) {
-                return "UTF-8";
-            }
-        }
-        return null;
-    }
-
 
     /**
      * 检测扫描结果
@@ -202,7 +142,7 @@ public class MineFriendScanAddPresenterImp extends AbstractPresenter<MineFriendS
                     public void call(RxEvent.GetUserInfo getUserInfo) {
                         if (getUserInfo != null && getUserInfo instanceof RxEvent.GetUserInfo) {
                             if (getView() != null) {
-                                getView().showQrCode(encodeAsBitmap(getUserInfo.jfgAccount.getAccount(), getDimension()));
+                                getView().showQrCode(getUserInfo.jfgAccount.getAccount());
                             }
                         }
                     }

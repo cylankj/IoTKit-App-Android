@@ -2,6 +2,7 @@ package com.cylan.jiafeigou.n.view.cloud;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.PixelFormat;
 import android.os.Bundle;
@@ -34,6 +35,8 @@ import com.cylan.jiafeigou.n.mvp.model.CloudLiveBaseBean;
 import com.cylan.jiafeigou.n.mvp.model.CloudLiveBaseDbBean;
 import com.cylan.jiafeigou.n.mvp.model.CloudLiveCallInBean;
 import com.cylan.jiafeigou.n.mvp.model.CloudLiveCallOutBean;
+import com.cylan.jiafeigou.rx.RxBus;
+import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
@@ -199,7 +202,6 @@ public class CloudLiveCallActivity extends AppCompatActivity implements CloudLiv
 
     /**
      * 响应设备分辨率回调
-     *
      * @param resolution
      * @throws JfgException
      */
@@ -212,7 +214,6 @@ public class CloudLiveCallActivity extends AppCompatActivity implements CloudLiv
 
     /**
      * 呼叫的结果的处理
-     *
      * @param msgId
      */
     @Override
@@ -220,49 +221,67 @@ public class CloudLiveCallActivity extends AppCompatActivity implements CloudLiv
         switch (msgId) {
             case JConstant.CLOUD_IN_CONNECT_TIME_OUT:          // 中控呼入app无应答
                 CloudLiveBaseBean inBeanTimeOut = createCloudBackBean(1, "", false);
-                if (callBack != null) {
-                    callBack.onCloudMesgBack(inBeanTimeOut);
-                }
+                callBackResult(inBeanTimeOut);
+//                if (callBack != null) {
+//                    callBack.onCloudMesgBack(inBeanTimeOut);
+//                }
                 ToastUtil.showToast("未接通");
                 break;
 
             case JConstant.CLOUD_OUT_CONNECT_TIME_OUT:            // 呼出超时
                 CloudLiveBaseBean outBeanTimeOut = createCloudBackBean(2, tvVideoTime.getText().toString(), false);
-                if (callBack != null) {
-                    callBack.onCloudMesgBack(outBeanTimeOut);
-                }
+                callBackResult(outBeanTimeOut);
+//                if (callBack != null) {
+//                    callBack.onCloudMesgBack(outBeanTimeOut);
+//                }
                 ToastUtil.showToast("连接超时");
                 break;
 
             case JConstant.CLOUD_IN_CONNECT_OK: //呼入连接成功 点击挂断按钮
                 CloudLiveBaseBean newBean = createCloudBackBean(1, tvVideoTime.getText().toString(), true);
-                if (callBack != null) {
-                    callBack.onCloudMesgBack(newBean);
-                }
+                callBackResult(newBean);
+//                if (callBack != null) {
+//                    callBack.onCloudMesgBack(newBean);
+//                }
                 break;
 
             case JConstant.CLOUD_IN_CONNECT_FAILED:
                 CloudLiveBaseBean newBeanF = createCloudBackBean(1, "", false);
-                if (callBack != null) {
-                    callBack.onCloudMesgBack(newBeanF);
-                }
+                callBackResult(newBeanF);
+//                if (callBack != null) {
+//                    callBack.onCloudMesgBack(newBeanF);
+//                }
                 break;
 
             case JConstant.CLOUD_OUT_CONNECT_OK:
                 CloudLiveBaseBean outBean = createCloudBackBean(2, tvVideoTime.getText().toString(), true);
-                if (callBack != null) {
-                    callBack.onCloudMesgBack(outBean);
-                }
+                callBackResult(outBean);
+//                if (callBack != null) {
+//                    callBack.onCloudMesgBack(outBean);
+//                }
                 break;
 
             case JConstant.CLOUD_OUT_CONNECT_FAILED:
                 CloudLiveBaseBean outBeanF = createCloudBackBean(2, "", false);
-                if (callBack != null) {
-                    callBack.onCloudMesgBack(outBeanF);
-                }
+                callBackResult(outBeanF);
+//                if (callBack != null) {
+//                    callBack.onCloudMesgBack(outBeanF);
+//                }
                 break;
         }
         finish();
+    }
+
+    /**
+     * 回调
+     * @param inBeanTimeOut
+     */
+    private void callBackResult(CloudLiveBaseBean inBeanTimeOut) {
+        Intent intent = new Intent();
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("callbackBean",inBeanTimeOut);
+        intent.putExtra("callback",bundle);
+        setResult(1,intent);
     }
 
     private void initLocalVideoView() {
