@@ -25,6 +25,7 @@ import com.cylan.superadapter.internal.SuperViewHolder;
 import java.util.List;
 import java.util.Locale;
 
+import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 import static com.cylan.jiafeigou.misc.JConstant.NET_TYPE_RES;
 
@@ -63,11 +64,13 @@ public class HomePageListAdapter extends SuperAdapter<String> {
         if (resIdNet != -1) {
             holder.setVisibility(R.id.img_device_state_0, VISIBLE);
             holder.setImageResource(R.id.img_device_state_0, resIdNet);
-        }
+        } else holder.setVisibility(R.id.img_device_state_0, GONE);
         //1 已分享的设备,此设备分享给别的账号.
         if (GlobalDataProxy.getInstance().isDeviceShared(uuid)) {
             holder.setVisibility(R.id.img_device_state_1, VISIBLE);
             holder.setImageResource(R.id.img_device_state_1, R.drawable.icon_home_share);
+        } else {
+            holder.setVisibility(R.id.img_device_state_1, GONE);
         }
         //2 电量
         if (pid == JConstant.OS_DOOR_BELL) {
@@ -75,7 +78,20 @@ public class HomePageListAdapter extends SuperAdapter<String> {
         }
         //3 延时摄影
 
-        //4 保护
+        //4 安全防护
+        boolean standby = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_508_CAMERA_STANDBY_FLAG, false);
+        boolean safe = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_501_CAMERA_ALARM_FLAG, false);
+        if (!standby && safe && JFGRules.isCamera(pid)) {
+            holder.setVisibility(R.id.img_device_state_3, VISIBLE);
+            holder.setImageResource(R.id.img_device_state_3, R.drawable.icon_home_security);
+        } else {
+            holder.setVisibility(R.id.img_device_state_3, GONE);
+        }
+        //5 安全待机
+        if (standby) {
+            holder.setVisibility(R.id.img_device_state_4, GONE);
+            holder.setImageResource(R.id.img_device_state_4, R.drawable.icon_home_standby);
+        } else holder.setVisibility(R.id.img_device_state_4, GONE);
 
     }
 
@@ -109,7 +125,8 @@ public class HomePageListAdapter extends SuperAdapter<String> {
             holder.setVisibility(R.id.tv_device_share_tag, VISIBLE);
         //图标
         holder.setBackgroundResource(R.id.img_device_icon, iconRes);
-        handleMsgCountTime(holder, uuid, pid);
+        if (TextUtils.isEmpty(shareAccount))//被分享用户,不显示 消息数
+            handleMsgCountTime(holder, uuid, pid);
         //右下角状态
         setItemState(holder, uuid, pid, shareAccount, net);
     }

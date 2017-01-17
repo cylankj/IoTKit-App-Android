@@ -162,7 +162,9 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
         public void onPageSelected(int position) {
             if (position == 1) {
                 try {
-                    GlobalDataProxy.getInstance().markAsRead(uuid, DpMsgMap.ID_505_CAMERA_ALARM_MSG);
+                    JFGDevice device = GlobalDataProxy.getInstance().fetch(uuid);
+                    if (device != null && TextUtils.isEmpty(device.shareAccount))//被分享用户,不操作.
+                        GlobalDataProxy.getInstance().markAsRead(uuid, DpMsgMap.ID_505_CAMERA_ALARM_MSG);
                 } catch (JfgException e) {
                     AppLogger.e("err: " + e.getLocalizedMessage());
                 }
