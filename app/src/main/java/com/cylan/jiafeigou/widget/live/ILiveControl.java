@@ -6,11 +6,11 @@ package com.cylan.jiafeigou.widget.live;
 
 public interface ILiveControl {
 
-    int STATE_IDLE = -1;
-    int STATE_PLAYING = 0;
-    int STATE_STOP = 1;
+    int STATE_LOADING_FAILED = -1;
+    int STATE_IDLE = 1;
     int STATE_LOADING = 2;
-    int STATE_LOADING_FAILED = 3;
+    int STATE_PLAYING = 3;
+    int STATE_STOP = 4;
 
     /**
      * 播放

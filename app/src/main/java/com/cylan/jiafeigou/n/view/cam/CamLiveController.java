@@ -270,10 +270,14 @@ public class CamLiveController implements
                 if (presenterRef.get().needShowHistoryWheelView()) {
                     camLiveControlLayer.setVisibility(!camLiveControlLayer.isShown() ? View.VISIBLE : View.INVISIBLE);
                 }
-                setLoadingState(iLiveActionViewRef.get().getState(), null);
+                int playState = presenterRef.get().getPlayState();
+                if (playState == PLAY_STATE_PLAYING)
+                    setLoadingState(PLAY_STATE_PLAYING, null);
+                else
+                    setLoadingState(iLiveActionViewRef.get().getState(), null);
             }
         }
-        AppLogger.i("tap");
+        AppLogger.i("tap: " + (iLiveActionViewRef == null || iLiveActionViewRef.get() == null));
     }
 
     /**
