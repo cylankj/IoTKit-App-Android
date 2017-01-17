@@ -75,7 +75,7 @@ public class RegisterPwdFragment extends SetupPwdFragment
         ivLoginTopLeft.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showSimpleDialog("是否确认退出?", "否", "是", false);
+                showSimpleDialog("是否确认退出?","是","否",false);
             }
         });
     }

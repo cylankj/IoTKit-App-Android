@@ -2,6 +2,7 @@ package com.cylan.jiafeigou.n.view.cloud;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.PixelFormat;
 import android.os.Bundle;
@@ -34,6 +35,8 @@ import com.cylan.jiafeigou.n.mvp.model.CloudLiveBaseBean;
 import com.cylan.jiafeigou.n.mvp.model.CloudLiveBaseDbBean;
 import com.cylan.jiafeigou.n.mvp.model.CloudLiveCallInBean;
 import com.cylan.jiafeigou.n.mvp.model.CloudLiveCallOutBean;
+import com.cylan.jiafeigou.rx.RxBus;
+import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
@@ -201,7 +204,6 @@ public class CloudLiveCallActivity extends AppCompatActivity implements CloudLiv
 
     /**
      * 响应设备分辨率回调
-     *
      * @param resolution
      * @throws JfgException
      */
@@ -214,7 +216,6 @@ public class CloudLiveCallActivity extends AppCompatActivity implements CloudLiv
 
     /**
      * 呼叫的结果的处理
-     *
      * @param msgId
      */
     @Override
@@ -265,6 +266,18 @@ public class CloudLiveCallActivity extends AppCompatActivity implements CloudLiv
                 break;
         }
         finish();
+    }
+
+    /**
+     * 回调
+     * @param inBeanTimeOut
+     */
+    private void callBackResult(CloudLiveBaseBean inBeanTimeOut) {
+        Intent intent = new Intent();
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("callbackBean",inBeanTimeOut);
+        intent.putExtra("callback",bundle);
+        setResult(1,intent);
     }
 
     private void initLocalVideoView() {

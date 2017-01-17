@@ -588,7 +588,6 @@ public class LoginFragment extends android.support.v4.app.Fragment
         enableEditTextCursor(true);
     }
 
-
     @Override
     public void setPresenter(LoginContract.Presenter presenter) {
         this.presenter = presenter;
@@ -714,6 +713,19 @@ public class LoginFragment extends android.support.v4.app.Fragment
     }
 
     /**
+     * 是否已注册结果
+     * @param callback
+     */
+    @Override
+    public void checkAccountResult(RxEvent.CheckAccountCallback callback) {
+        if (callback.i != 0 && TextUtils.isEmpty(callback.s)){
+            presenter.getCodeByPhone(ViewUtils.getTextViewContent(etRegisterInputBox));
+        }else {
+            ToastUtil.showToast("账号已注册");
+        }
+    }
+
+    /**
      * 验证码输入框
      *
      * @param show
@@ -752,14 +764,16 @@ public class LoginFragment extends android.support.v4.app.Fragment
                 verificationCodeLogic = new VerificationCodeLogic(tvMeterGetCode);
             verificationCodeLogic.start();
             Toast.makeText(getActivity(), getString(R.string.GET_CODE), Toast.LENGTH_SHORT).show();
+            IMEUtils.hide(getActivity());
             //获取验证码
             if (presenter != null)
-                presenter.getCodeByPhone(ViewUtils.getTextViewContent(etRegisterInputBox));
+//                presenter.getCodeByPhone(ViewUtils.getTextViewContent(etRegisterInputBox));
+            presenter.checkAccountIsReg(ViewUtils.getTextViewContent(etRegisterInputBox));
             //显示验证码输入框
-            handleVerificationCodeBox(true);
-            tvRegisterSubmit.setText(getString(R.string.CARRY_ON));
-            tvRegisterSubmit.setEnabled(false);
-            lLayoutAgreement.setVisibility(View.GONE);
+//            handleVerificationCodeBox(true);
+//            tvRegisterSubmit.setText(getString(R.string.CARRY_ON));
+//            tvRegisterSubmit.setEnabled(false);
+//            lLayoutAgreement.setVisibility(View.GONE);
         } else {
             final boolean isValidEmail = Patterns.EMAIL_ADDRESS.matcher(ViewUtils.getTextViewContent(etRegisterInputBox)).find();
             if (!isValidEmail) {
@@ -810,6 +824,7 @@ public class LoginFragment extends android.support.v4.app.Fragment
                 if (verificationCodeLogic != null)
                     verificationCodeLogic.start();
                 if (presenter != null)
+
                     presenter.getCodeByPhone(ViewUtils.getTextViewContent(etRegisterInputBox));
                 break;
             case R.id.tv_register_submit:

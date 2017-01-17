@@ -40,11 +40,11 @@
         android:layout_height="wrap_content">
 
         <com.cylan.jiafeigou.support.zscan.ZXingScannerView
-            android:layout_marginTop="30dp"
+            android:layout_marginTop="26dp"
             android:layout_gravity="center"
             android:id="@+id/zxV_scan_add_relativesandfriend"
-            android:layout_width="350dp"
-            android:layout_height="350dp"
+            android:layout_width="260dp"
+            android:layout_height="260dp"
             hunt:hint=""
             />
 
@@ -78,7 +78,7 @@
 
     <TextView
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="18dp"
         android:textColor="@color/color_333333"
         android:textSize="16sp"
         android:text="@string/Tap3_FriendsAdd_QR_Tips"
@@ -87,14 +87,19 @@
 
     <ImageView
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="63dp"
+        android:background="@drawable/my_qrcode_bg_shape"
         android:id="@+id/iv_erweima"
-        android:layout_width="150dp"
-        android:layout_height="150dp" />
+        android:padding="4dp"
+        android:layout_width="86dp"
+        android:layout_height="86dp" />
 
     <TextView
+        android:layout_marginTop="18dp"
         android:layout_gravity="center_horizontal"
         android:text="@string/Tap3_MyQRCode"
+        android:textSize="16sp"
+        android:textColor="@color/color_33333"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 

@@ -1,6 +1,5 @@
 package com.cylan.jiafeigou.n.view.mine;
 
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -14,8 +13,10 @@ import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendScanAddContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineFriendScanAddPresenterImp;
 import com.cylan.jiafeigou.n.mvp.model.MineAddReqBean;
+import com.cylan.jiafeigou.support.zscan.Qrcode;
 import com.cylan.jiafeigou.support.zscan.ZXingScannerView;
 import com.cylan.jiafeigou.utils.ToastUtil;
+import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.LoadingDialog;
 import com.google.zxing.Result;
 
@@ -58,7 +59,7 @@ public class MineFriendScanAddFragment extends Fragment implements ZXingScannerV
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_mine_friend_scan_add, container, false);
         ButterKnife.bind(this, view);
-        initView();
+//        initView();
         return view;
     }
 
@@ -98,8 +99,8 @@ public class MineFriendScanAddFragment extends Fragment implements ZXingScannerV
     }
 
     @Override
-    public void showQrCode(Bitmap bitmap) {
-        ivErweima.setImageBitmap(bitmap);
+    public void showQrCode(String account) {
+        ivErweima.setImageBitmap(Qrcode.createQRImage(account, ViewUtils.dp2px(78),ViewUtils.dp2px(78),null));
     }
 
     /**
