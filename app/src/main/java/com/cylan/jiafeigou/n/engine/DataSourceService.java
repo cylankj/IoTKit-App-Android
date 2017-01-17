@@ -383,6 +383,7 @@ public class DataSourceService extends Service implements AppCallBack {
     public void OnGetShareListRsp(int i, ArrayList<JFGShareListInfo> arrayList) {
         AppLogger.d("OnGetShareListRsp :");
         RxBus.getCacheInstance().post(new RxEvent.GetShareListCallBack(i, arrayList));
+        GlobalDataProxy.getInstance().cacheShareList(arrayList);
     }
 
     @Override

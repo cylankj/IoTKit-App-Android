@@ -8,7 +8,7 @@
         android:id="@+id/fLayout_cam_live_view"
         android:layout_width="match_parent"
         android:layout_height="100dp"
-        android:background="@drawable/bg_wonderful_daytime">
+        android:background="@drawable/default_cam_preview">
 
         <FrameLayout
             android:id="@+id/fLayout_live_view_container"
@@ -47,17 +47,18 @@
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="30dp"
             android:layout_marginRight="30dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:src="@drawable/icon_speaker_normal_port_on" />
+            android:clickable="true"
+            android:padding="20dp"
+            android:src="@drawable/icon_port_speaker_off_selector" />
 
         <ImageView
             android:id="@+id/imgV_cam_trigger_mic"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:background="?attr/selectableItemBackgroundBorderless"
+            android:clickable="true"
             android:padding="10dp"
-            android:src="@drawable/icon_record" />
+            android:src="@drawable/icon_port_mic_on_selector" />
 
         <ImageView
             android:id="@+id/imgV_cam_trigger_capture"
@@ -66,8 +67,8 @@
             android:layout_gravity="end|center_vertical"
             android:layout_marginLeft="30dp"
             android:layout_marginRight="30dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
+            android:clickable="true"
             android:padding="20dp"
-            android:src="@drawable/icon_capture_selector" />
+            android:src="@drawable/icon_port_capture_selector" />
     </FrameLayout>
 </RelativeLayout>

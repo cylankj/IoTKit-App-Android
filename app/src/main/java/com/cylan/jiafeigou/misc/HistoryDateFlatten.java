@@ -39,11 +39,11 @@ public class HistoryDateFlatten {
                 String dayEnd = TimeUtils.simpleDateFormat1.format(new Date(timeEnd * 1000L));
                 Log.i(TAG, "delta..." + timeStart + " " + dayStart + " " + dayEnd);
                 if (!map.containsKey(dayStart)) {//第一次出现
-                    flattenMap.put(TimeUtils.getTimeStart(timeStart * 1000L), timeStart * 1000L);
+                    flattenMap.put(TimeUtils.startOfDay(timeStart * 1000L), timeStart * 1000L);
                     map.put(dayStart, 0L);
                 }
                 if (!map.containsKey(dayEnd)) {//第一次出现
-                    long end = TimeUtils.getTimeStart(timeEnd * 1000L);
+                    long end = TimeUtils.startOfDay(timeEnd * 1000L);
                     flattenMap.put(end, end);
                     map.put(dayEnd, 0L);
                 }

@@ -50,7 +50,6 @@
     <color name="color_36BDFF">#36BDFF</color>
     <color name="color_f28080">#F28080</color>
     <color name="color_66bb6a">#66BB6A</color>
-    <color name="color_36bdff">#36BDFF</color>
     <color name="color_bae3bc">#BAE3BC</color>
     <color name="color_f8bfbf">#F8BFBF</color>
     <color name="color_8c8c8c">#8C8C8C</color>
@@ -105,4 +104,5 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
+    <color name="color_47C6A7">#47C6A7</color>
 </resources>

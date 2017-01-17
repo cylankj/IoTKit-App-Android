@@ -9,6 +9,7 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.PopupWindowCompat;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -17,9 +18,11 @@ import android.view.ViewGroup;
 import android.view.ViewStub;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.entity.jniCall.JFGMsgVideoResolution;
 import com.cylan.entity.jniCall.JFGMsgVideoRtcp;
@@ -41,10 +44,10 @@ import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.LiveTimeLayout;
 import com.cylan.jiafeigou.widget.flip.FlipLayout;
 import com.cylan.jiafeigou.widget.live.ILiveControl;
+import com.cylan.jiafeigou.widget.roundedimageview.RoundedImageView;
 import com.cylan.jiafeigou.widget.video.VideoViewFactory;
 import com.cylan.jiafeigou.widget.wheel.ex.IData;
 import com.cylan.utils.DensityUtils;
-import com.cylan.utils.NetUtils;
 import com.google.gson.Gson;
 
 import java.lang.ref.WeakReference;
@@ -52,13 +55,12 @@ import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
-        implements CamLandLiveAction, CamLiveContract.View {
+        implements CamLandLiveAction, CamLiveContract.View, View.OnClickListener {
 
 
     @BindView(R.id.fLayout_live_view_container)
@@ -147,8 +149,14 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        ViewUtils.updateViewHeight(fLayoutCamLiveView, 0.75f);
+        JFGDevice device = GlobalDataProxy.getInstance().fetch(uuid);
+        boolean isNormalView = device != null && !JFGRules.isNeedPanoramicView(device.pid);
+        ViewUtils.updateViewHeight(fLayoutCamLiveView, isNormalView ? 0.8f : 1.0f);//720*576
         initBottomBtn(false);
+        imgVCamSwitchSpeaker.setOnClickListener(this);
+        imgVCamTriggerMic.setOnClickListener(this);
+        imgVCamTriggerCapture.setOnClickListener(this);
+        fLayoutCamLiveView.setOnClickListener(this);
         camLiveController = new CamLiveController(getContext(), uuid);
         camLiveController.setPresenterRef(basePresenter);
         camLiveController.setLiveAction((ILiveControl) vs_control.inflate());
@@ -202,6 +210,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
             imgVCamSwitchSpeaker.setEnabled(enable);
             imgVCamTriggerMic.setEnabled(enable);
             imgVCamTriggerCapture.setEnabled(enable);
+            Log.d("initBottomBtn", "setClickable: " + enable);
         });
     }
 
@@ -259,7 +268,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
             // 加入横屏要处理的代码
             fLayoutLiveBottomHandleBar.setVisibility(View.GONE);
             fLayoutCamLiveMenu.setVisibility(View.GONE);
-            ViewUtils.updateViewMatchScreenHeight(fLayoutCamLiveView);
+//            ViewUtils.updateViewMatchScreenHeight(fLayoutCamLiveView);
         } else if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
             // 加入竖屏要处理的代码
             fLayoutCamLiveMenu.setVisibility(View.VISIBLE);
@@ -295,8 +304,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
                         ViewGroup.LayoutParams.WRAP_CONTENT,
                         Gravity.END);
                 textView.setGravity(Gravity.CENTER);
-                lp.setMargins(10, 60, 10, 10);
-                lp.setMarginEnd(10);
+                lp.setMargins(10, DensityUtils.px2dip(14), DensityUtils.px2dip(14), 10);
                 fLayoutLiveViewContainer.addView(textView, lp);
                 tvFlowRef = new WeakReference<>(textView);
             }
@@ -363,31 +371,30 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
             fLayoutLiveViewContainer.addView((View) videoView, 0, lp);
         } else {
             view.setLayoutParams(lp);
-//            ViewUtils.updateViewHeight(fLayoutCamLiveView, resolution.height / (float) resolution.width);
         }
+        ViewGroup.LayoutParams camContainerLp = fLayoutCamLiveView.getLayoutParams();
+        camContainerLp.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+        fLayoutCamLiveView.setLayoutParams(camContainerLp);
         AppLogger.i("updateVideoViewLayoutParameters:" + (view == null));
     }
 
 
-    @OnClick({R.id.imgV_cam_switch_speaker,
-            R.id.imgV_cam_trigger_mic,
-            R.id.imgV_cam_trigger_capture,
-            R.id.fLayout_cam_live_view})
+    @Override
     public void onClick(View view) {
-        if (NetUtils.getJfgNetType(getContext()) == 0)
-            return;
-        ViewUtils.deBounceClick(view);
         switch (view.getId()) {
             case R.id.imgV_cam_switch_speaker:
                 if (basePresenter != null) {
                     basePresenter.switchSpeakerMic(false, !basePresenter.getSpeakerFlag(), basePresenter.getMicFlag());
-                    ((ImageView) view).setImageResource(basePresenter.getSpeakerFlag() ? R.drawable.icon_speaker_normal_port_off : R.drawable.icon_speaker_normal_port_on);
+                    ((ImageView) view).setImageResource(basePresenter.getSpeakerFlag()
+                            ? R.drawable.icon_port_speaker_off_selector
+                            : R.drawable.icon_port_speaker_on_selector);
                 }
                 break;
             case R.id.imgV_cam_trigger_mic:
                 if (basePresenter != null) {
                     basePresenter.switchSpeakerMic(false, basePresenter.getSpeakerFlag(), !basePresenter.getMicFlag());
-                    ((ImageView) view).setImageResource(basePresenter.getMicFlag() ? R.drawable.btn_video_retry : R.drawable.icon_record);
+                    ((ImageView) view).setImageResource(basePresenter.getMicFlag() ?
+                            R.drawable.icon_port_mic_off_selector : R.drawable.icon_port_mic_on_selector);
                 }
                 break;
             case R.id.imgV_cam_trigger_capture:
@@ -445,6 +452,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
         if (getView() != null)
             getView().setKeepScreenOn(false);
         showFloatFlowView(false, null);
+        initBottomBtn(false);
         camLiveController.setLiveTime(0);
         switch (errId) {//这些errCode 应当写在一个map中.Map<Integer,String>
             case JFGRules.PlayErr.ERR_NERWORK:
@@ -466,6 +474,9 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
                 ToastUtil.showToast(getString(R.string.CONNECTING));
                 camLiveController.setLoadingState(ILiveControl.STATE_IDLE, null);
                 break;
+            case JError.STOP_MAUNALLY:
+                camLiveController.setLoadingState(ILiveControl.STATE_STOP, null);
+                break;
             default:
                 camLiveController.setLoadingState(ILiveControl.STATE_STOP, null);
                 break;
@@ -474,13 +485,37 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
     }
 
     @Override
-    public void onTakeSnapShot(boolean state) {
-        if (state) {
+    public void onTakeSnapShot(Bitmap bitmap) {
+        if (bitmap != null) {
             ToastUtil.showPositiveToast(getString(R.string.SAVED_PHOTOS));
+            showPopupWindow(bitmap);
         } else {
             ToastUtil.showPositiveToast(getString(R.string.set_failed));
         }
     }
+
+    private void showPopupWindow(Bitmap bitmap) {
+        try {
+            int width = bitmap.getWidth();
+            if (popupWindow == null) {
+                View layout = LayoutInflater.from(getContext())
+                        .inflate(R.layout.layout_capture_popup, null, false);
+                // create a 300px width and 470px height PopupWindow
+                popupWindow = new PopupWindow(layout, DensityUtils.px2dip(44), DensityUtils.px2dip(30), true);
+            }
+            PopupWindowCompat.showAsDropDown(popupWindow, imgVCamTriggerCapture,
+                    imgVCamTriggerCapture.getLeft() + (imgVCamTriggerCapture.getWidth() - width) / 2,
+                    -imgVCamTriggerCapture.getHeight() - bitmap.getHeight(), Gravity.CENTER);
+            RoundedImageView v = (RoundedImageView) popupWindow.getContentView().findViewById(R.id.imv_capture_popup);
+            Glide.with(this)
+                    .load(bitmap)
+                    .into(v);
+        } catch (Exception e) {
+            AppLogger.e("" + e.getLocalizedMessage());
+        }
+    }
+
+    private PopupWindow popupWindow;
 
     @Override
     public void onHistoryLiveStop(int state) {
@@ -506,6 +541,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
     public void setPresenter(CamLiveContract.Presenter basePresenter) {
         this.basePresenter = basePresenter;
     }
+
 }
 
 

@@ -108,6 +108,12 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
         if (presenter != null) presenter.start();
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        CloudLiveCallActivity.setOnCloudMesgBackListener(null);
+    }
+
     private void initTitle() {
         JFGDevice jfgDevice = GlobalDataProxy.getInstance().fetch(uuid);
         tvDeviceName.setText(TextUtils.isEmpty(jfgDevice.alias) ? jfgDevice.uuid : jfgDevice.alias);

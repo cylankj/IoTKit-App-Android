@@ -51,6 +51,7 @@ public class MineShareDevicePresenterImp extends AbstractPresenter<MineShareDevi
 
     @Override
     public void start() {
+        super.start();
         if (subscription != null && !subscription.isUnsubscribed()) {
             subscription.unsubscribe();
         } else {
@@ -62,6 +63,7 @@ public class MineShareDevicePresenterImp extends AbstractPresenter<MineShareDevi
 
     @Override
     public void stop() {
+        super.stop();
         if (subscription != null && !subscription.isUnsubscribed()) {
             subscription.unsubscribe();
         }
@@ -110,7 +112,7 @@ public class MineShareDevicePresenterImp extends AbstractPresenter<MineShareDevi
                 relAndFriendBean.alias = info.alias;
                 relAndFriendBean.markName = info.markName;
                 try {
-                    relAndFriendBean.iconUrl = JfgCmdInsurance.getCmd().getCloudUrlByType(JfgEnum.JFG_URL.PORTRAIT, 0, info.account + ".jpg", "", PackageUtils.getMetaString(ContextUtils.getContext(),"vid"));
+                    relAndFriendBean.iconUrl = JfgCmdInsurance.getCmd().getCloudUrlByType(JfgEnum.JFG_URL.PORTRAIT, 0, info.account + ".jpg", "", PackageUtils.getMetaString(ContextUtils.getContext(), "vid"));
                 } catch (JfgException e) {
                     e.printStackTrace();
                 }

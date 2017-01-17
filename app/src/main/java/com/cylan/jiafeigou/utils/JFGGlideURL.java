@@ -37,7 +37,8 @@ public class JFGGlideURL extends GlideUrl {
     public URL toURL() throws MalformedURLException {
         String url = "";
         try {
-            url = JfgCmdInsurance.getCmd().getCloudUrlByType(mType, mFlag, mFile, mPath, PackageUtils.getMetaString(ContextUtils.getContext(),"vid"));
+            url = JfgCmdInsurance.getCmd().getCloudUrlByType(mType, mFlag, mFile, mPath,
+                    PackageUtils.getMetaString(ContextUtils.getContext(), "vid"));
         } catch (JfgException e) {
             e.printStackTrace();
         }

@@ -9,6 +9,7 @@ public class JError {
     public static final int ErrorOK = 0;
 
 
+    public static final int STOP_MAUNALLY = -1;
     // P2P 错误码
 
     public static final int ErrorP2PDns = 1;

@@ -63,6 +63,7 @@ public class MineFriendScanAddPresenterImp extends AbstractPresenter<MineFriendS
 
     @Override
     public void start() {
+        super.start();
         if (compositeSubscription != null && !compositeSubscription.isUnsubscribed()) {
             compositeSubscription.unsubscribe();
         } else {
@@ -76,6 +77,7 @@ public class MineFriendScanAddPresenterImp extends AbstractPresenter<MineFriendS
 
     @Override
     public void stop() {
+        super.stop();
         if (compositeSubscription != null && !compositeSubscription.isUnsubscribed()) {
             compositeSubscription.unsubscribe();
         }

@@ -40,6 +40,8 @@ import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.video.VideoViewFactory;
 
+import java.lang.ref.WeakReference;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -81,7 +83,7 @@ public class CloudLiveCallActivity extends AppCompatActivity implements CloudLiv
     private SurfaceView mLocalSurfaceView;
     private String uuid;
     private boolean isCallIn = false;
-    private static CloudMesgBackListener callBack;
+    private static WeakReference<CloudMesgBackListener> callBackWeakRef;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -220,45 +222,45 @@ public class CloudLiveCallActivity extends AppCompatActivity implements CloudLiv
         switch (msgId) {
             case JConstant.CLOUD_IN_CONNECT_TIME_OUT:          // 中控呼入app无应答
                 CloudLiveBaseBean inBeanTimeOut = createCloudBackBean(1, "", false);
-                if (callBack != null) {
-                    callBack.onCloudMesgBack(inBeanTimeOut);
+                if (callBackWeakRef != null && callBackWeakRef.get() != null) {
+                    callBackWeakRef.get().onCloudMesgBack(inBeanTimeOut);
                 }
                 ToastUtil.showToast("未接通");
                 break;
 
             case JConstant.CLOUD_OUT_CONNECT_TIME_OUT:            // 呼出超时
                 CloudLiveBaseBean outBeanTimeOut = createCloudBackBean(2, tvVideoTime.getText().toString(), false);
-                if (callBack != null) {
-                    callBack.onCloudMesgBack(outBeanTimeOut);
+                if (callBackWeakRef != null && callBackWeakRef.get() != null) {
+                    callBackWeakRef.get().onCloudMesgBack(outBeanTimeOut);
                 }
                 ToastUtil.showToast("连接超时");
                 break;
 
             case JConstant.CLOUD_IN_CONNECT_OK: //呼入连接成功 点击挂断按钮
                 CloudLiveBaseBean newBean = createCloudBackBean(1, tvVideoTime.getText().toString(), true);
-                if (callBack != null) {
-                    callBack.onCloudMesgBack(newBean);
+                if (callBackWeakRef != null && callBackWeakRef.get() != null) {
+                    callBackWeakRef.get().onCloudMesgBack(newBean);
                 }
                 break;
 
             case JConstant.CLOUD_IN_CONNECT_FAILED:
                 CloudLiveBaseBean newBeanF = createCloudBackBean(1, "", false);
-                if (callBack != null) {
-                    callBack.onCloudMesgBack(newBeanF);
+                if (callBackWeakRef != null && callBackWeakRef.get() != null) {
+                    callBackWeakRef.get().onCloudMesgBack(newBeanF);
                 }
                 break;
 
             case JConstant.CLOUD_OUT_CONNECT_OK:
                 CloudLiveBaseBean outBean = createCloudBackBean(2, tvVideoTime.getText().toString(), true);
-                if (callBack != null) {
-                    callBack.onCloudMesgBack(outBean);
+                if (callBackWeakRef != null && callBackWeakRef.get() != null) {
+                    callBackWeakRef.get().onCloudMesgBack(outBean);
                 }
                 break;
 
             case JConstant.CLOUD_OUT_CONNECT_FAILED:
                 CloudLiveBaseBean outBeanF = createCloudBackBean(2, "", false);
-                if (callBack != null) {
-                    callBack.onCloudMesgBack(outBeanF);
+                if (callBackWeakRef != null && callBackWeakRef.get() != null) {
+                    callBackWeakRef.get().onCloudMesgBack(outBeanF);
                 }
                 break;
         }
@@ -298,7 +300,7 @@ public class CloudLiveCallActivity extends AppCompatActivity implements CloudLiv
     }
 
     public static void setOnCloudMesgBackListener(CloudMesgBackListener listener) {
-        callBack = listener;
+        callBackWeakRef = new WeakReference<>(listener);
     }
 
     @Override

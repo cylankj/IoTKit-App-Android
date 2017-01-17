@@ -19,6 +19,7 @@ import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.HistoryDateFlatten;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamLiveContract;
@@ -46,6 +47,7 @@ import java.util.concurrent.TimeUnit;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_IDLE;
@@ -67,6 +69,7 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
     private HistoryDateFlatten historyDateFlatten = new HistoryDateFlatten();
     private IData historyDataProvider;
     private String uuid;
+    private int stopReason = JError.STOP_MAUNALLY;//手动断开
     /**
      * 帧率记录
      */
@@ -80,7 +83,7 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
 
     /**
      * Rtcp和resolution的回调,
-     * 只有resolution回调之后,才能设置{@link JfgAppCmd#setRenderLocalView(View)}
+     * 只有resolution回调之后,才能设置{@link JfgAppCmd#enableRenderLocalView(boolean, View)} (View)}
      * 正常播放回调
      * 10s没有视频,直接断开
      *
@@ -99,10 +102,8 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                         if (isBad) {
                             frameRateList.clear();
                             AppLogger.e("is bad net work");
-                            playState = PLAY_STATE_IDLE;
-                            getView().onLiveStop(playType,
-                                    JFGRules.PlayErr.ERR_LOW_FRAME_RATE);
                             //暂停播放
+                            setStopReason(JFGRules.PlayErr.ERR_LOW_FRAME_RATE);
                             stopPlayVideo(playType);
                         }
                     }
@@ -210,6 +211,11 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
     }
 
     @Override
+    public void setStopReason(int stopReason) {
+        this.stopReason = stopReason;
+    }
+
+    @Override
     public void startPlayVideo(int type) {
         getView().onLivePrepare(type);
         playState = PLAY_STATE_PREPARE;
@@ -247,9 +253,8 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
         playState = PLAY_STATE_PREPARE;
         if (NetUtils.getJfgNetType(getView().getContext()) == 0) {
             //断网了
+            setStopReason(JFGRules.PlayErr.ERR_NERWORK);
             stopPlayVideo(getPlayType());
-            playState = PLAY_STATE_IDLE;
-            getView().onLiveStop(getPlayType(), JFGRules.PlayErr.ERR_NERWORK);
             return;
         }
         Observable.just(time)
@@ -276,7 +281,7 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
     public void stopPlayVideo(int type) {
         Observable.just(uuid)
                 .subscribeOn(Schedulers.newThread())
-                .subscribe((String s) -> {
+                .map((String s) -> {
                     try {
                         AppLogger.i("stopPlayVideo:" + s);
                         JfgCmdInsurance.getCmd().stopPlay(s);
@@ -284,6 +289,14 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                         playState = PLAY_STATE_IDLE;
                     } catch (JfgException e) {
                         e.printStackTrace();
+                    }
+                    return null;
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<Object>() {
+                    @Override
+                    public void call(Object o) {
+                        getView().onLiveStop(playType, stopReason);
                     }
                 });
     }
@@ -315,19 +328,19 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                     Bitmap bitmap = BitmapUtil.byte2bitmap(videoResolution[0], videoResolution[1], data);
                     String filePath = JConstant.MEDIA_PATH + File.separator + System.currentTimeMillis() + ".png";
                     BitmapUtil.saveBitmap2file(bitmap, filePath);
-                    snapshotResult(bitmap != null);
+                    snapshotResult(bitmap);
                 }, (Throwable throwable) -> {
                     AppLogger.e("takeSnapshot: " + throwable.getLocalizedMessage());
                 });
     }
 
-    private void snapshotResult(boolean bitmap) {
+    private void snapshotResult(Bitmap bitmap) {
         Log.d("takeSnapShot", "takeSnapShot: " + (bitmap));
         Observable.just(bitmap)
-                .filter((Boolean bit) -> (getView() != null))
+                .filter((Bitmap bit) -> (getView() != null))
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe((Boolean b) -> {
-                    getView().onTakeSnapShot(b != null && ((boolean) b));
+                .subscribe((Bitmap b) -> {
+                    getView().onTakeSnapShot(b);
                 });
     }
 

@@ -216,7 +216,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
             break;
             case R.id.tv_setting_unbind: {
                 Bundle bundle = new Bundle();
-                bundle.putString(BaseDialog.KEY_TITLE, getString(R.string.DELETE_CID));
+                bundle.putString(BaseDialog.KEY_TITLE, getString(R.string.DELETE_SURE));
                 SimpleDialogFragment simpleDialogFragment = SimpleDialogFragment.newInstance(bundle);
                 simpleDialogFragment.setAction((int id, Object value) -> {
                     basePresenter.unbindDevice();

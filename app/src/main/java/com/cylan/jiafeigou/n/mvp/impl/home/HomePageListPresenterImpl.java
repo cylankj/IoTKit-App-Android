@@ -13,6 +13,7 @@ import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.JFGRules;
+import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.misc.br.TimeTickBroadcast;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomePageListContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
@@ -52,8 +53,21 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
         return new Subscription[]{
                 getTimeTickEventSub(),
                 getLoginRspSub(),
+                getShareDevicesListRsp(),
                 sdcardStatusSub(),
                 JFGAccountUpdate()};
+    }
+
+    private Subscription getShareDevicesListRsp() {
+        return RxBus.getCacheInstance().toObservable(RxEvent.GetShareListRsp.class)
+                .observeOn(AndroidSchedulers.mainThread())
+                .filter(new RxHelper.Filter<>("getShareDevicesListRsp:", getView() != null))
+                .subscribe((RxEvent.GetShareListRsp getShareListRsp) -> {
+                    getView().onItemsInsert(getView().getUuidList());
+                    AppLogger.i("shareListRsp");
+                }, (Throwable throwable) -> {
+                    AppLogger.e("" + throwable.getLocalizedMessage());
+                });
     }
 
 
@@ -177,7 +191,10 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
                                 AppLogger.e("" + e.getLocalizedMessage());
                             }
                     }
-                    Log.d(TAG, "fetchDeviceList fetchDeviceList");
+                    if (aBoolean) {
+                        JfgCmdInsurance.getCmd().getShareList(getView().getUuidList());
+                    }
+                    AppLogger.i("fetchDeviceList: "+aBoolean);
                     return null;
                 })
                 .delay(2000, TimeUnit.MILLISECONDS)

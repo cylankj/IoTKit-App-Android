@@ -202,8 +202,12 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
             emptyViewState = new EmptyViewState(context, R.layout.layout_home_page_list_empty_view);
     }
 
-    private void initSimpleDialog() {
+    private void initDeleteItemDialog() {
         if (simpleDialogFragmentWeakReference == null || simpleDialogFragmentWeakReference.get() == null) {
+            Bundle bundle = new Bundle();
+            bundle.putString(BaseDialog.KEY_TITLE, getString(R.string.DELETE_CID));
+            bundle.putString(SimpleDialogFragment.KEY_RIGHT_CONTENT, getString(R.string.CANCEL));
+            bundle.putString(SimpleDialogFragment.KEY_LEFT_CONTENT, getString(R.string.OK));
             simpleDialogFragmentWeakReference = new WeakReference<>(SimpleDialogFragment.newInstance(null));
             simpleDialogFragmentWeakReference.get().setAction(this);
         }
@@ -235,7 +239,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
         rVDevicesList.post(new Runnable() {
             @Override
             public void run() {
-                srLayoutMainContentHolder.setColorSchemeColors(R.color.color_36bdff);
+                srLayoutMainContentHolder.setColorSchemeColors(R.color.color_36BDFF);
             }
         });
     }
@@ -402,7 +406,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
 
     //删除一个Item
     private void deleteItem(final int position) {
-        initSimpleDialog();
+        initDeleteItemDialog();
         SimpleDialogFragment fragment = simpleDialogFragmentWeakReference.get();
         fragment.setValue(position);
         fragment.show(getActivity().getSupportFragmentManager(), "ShareDialogFragment");

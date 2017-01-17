@@ -65,11 +65,12 @@
                     hunt:sv_image_src="@drawable/icon_setting_information"
                     hunt:sv_sub_title="@string/EQUIPMENT_INFO"
                     hunt:sv_title="@string/EQUIPMENT_INFO"
-                    hunt:sv_v_divider="true" />
+                    hunt:sv_v_divider="false" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
                     android:text="@string/NETWORK"
                     android:textColor="@color/color_4b9fd5"
                     android:textSize="15sp" />
@@ -89,11 +90,12 @@
                     android:layout_height="54dp"
                     hunt:sv_image_src="@drawable/icon_setting_3g"
                     hunt:sv_title="@string/MOBILE_DATA"
-                    hunt:sv_v_divider="true" />
+                    hunt:sv_v_divider="false" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
                     android:text="@string/SETTINGS_1"
                     android:textColor="@color/color_4b9fd5"
                     android:textSize="15sp" />

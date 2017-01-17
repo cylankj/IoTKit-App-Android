@@ -4,6 +4,7 @@ import android.util.Pair;
 
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.entity.jniCall.JFGDevice;
+import com.cylan.entity.jniCall.JFGShareListInfo;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.dp.BaseValue;
 
@@ -36,6 +37,23 @@ public interface IDataProxy {
      * @return
      */
     JFGDevice fetch(String uuid);
+
+    void cacheShareList(ArrayList<JFGShareListInfo> arrayList);
+
+    /**
+     * 该设备是否被分享
+     *
+     * @param uuid
+     * @return
+     */
+    boolean isDeviceShared(String uuid);
+
+    /**
+     * 依赖account
+     *
+     * @return
+     */
+    ArrayList<JFGShareListInfo> getShareList();
 
     /**
      * 更新

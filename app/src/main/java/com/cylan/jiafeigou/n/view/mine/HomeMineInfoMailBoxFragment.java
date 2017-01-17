@@ -178,7 +178,7 @@ public class HomeMineInfoMailBoxFragment extends Fragment implements MineInfoBin
         mIvMailBox.setVisibility(isEmpty ? View.GONE : View.VISIBLE);
         mIvMailBoxBind.setVisibility(isEmpty ? View.GONE : View.VISIBLE);
         mIvMailBoxBindDisable.setVisibility(isEmpty ? View.VISIBLE : View.GONE);
-        mViewMailBox.setBackgroundColor(isEmpty ? getResources().getColor(R.color.color_f2f2f2) : getResources().getColor(R.color.color_36bdff));
+        mViewMailBox.setBackgroundColor(isEmpty ? getResources().getColor(R.color.color_f2f2f2) : getResources().getColor(R.color.color_36BDFF));
         mIvMailBoxBindDisable.setClickable(false);
         mIvMailBoxBindDisable.setEnabled(false);
         mIvMailBoxBind.setClickable(true);

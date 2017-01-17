@@ -90,7 +90,7 @@ public class DatePickerDialogFragment extends BaseDialog {
     private int getIndexByTime() {
         //得到凌晨时间戳
         long time = SystemClock.currentThreadTimeMillis();
-        long timeStart = TimeUtils.getTimeStart(timeFocus);
+        long timeStart = TimeUtils.startOfDay(timeFocus);
         Log.d("getIndexByTime", "getIndexByTime: " + dateStartList);
         //由于dateStartList是降序,所以需要Collections.reverseOrder()
         int index = Collections.binarySearch(dateStartList, timeStart, Collections.reverseOrder());
@@ -111,7 +111,7 @@ public class DatePickerDialogFragment extends BaseDialog {
     public void setDateMap(Map<Long, Long> dateMap) {
         if (dateMap == null || dateMap.size() == 0) return;
         this.dateMap = dateMap;
-        AppLogger.i("count" + (dateMap.size()));
+        AppLogger.i("count:" + (dateMap.size()));
         long time = System.currentTimeMillis();
         Set<Long> set = dateMap.keySet();
         dateStartList = new ArrayList<>(new HashSet<>(set));

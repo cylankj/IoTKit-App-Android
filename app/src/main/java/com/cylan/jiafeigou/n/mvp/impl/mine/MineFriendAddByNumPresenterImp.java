@@ -49,6 +49,7 @@ public class MineFriendAddByNumPresenterImp extends AbstractPresenter<MineFriend
 
     @Override
     public void start() {
+        super.start();
         if (compositeSubscription != null && !compositeSubscription.isUnsubscribed()) {
             unSubscribe(compositeSubscription);
         }
@@ -59,6 +60,7 @@ public class MineFriendAddByNumPresenterImp extends AbstractPresenter<MineFriend
 
     @Override
     public void stop() {
+        super.stop();
         unSubscribe(compositeSubscription);
         unregisterNetworkMonitor();
     }
@@ -130,7 +132,7 @@ public class MineFriendAddByNumPresenterImp extends AbstractPresenter<MineFriend
                 addReqBean.account = checkAccountCallback.s;
                 addReqBean.alias = checkAccountCallback.s1;
                 try {
-                    addReqBean.iconUrl = JfgCmdInsurance.getCmd().getCloudUrlByType(JfgEnum.JFG_URL.PORTRAIT, 0, checkAccountCallback.s + ".jpg", "", PackageUtils.getMetaString(ContextUtils.getContext(),"vid"));
+                    addReqBean.iconUrl = JfgCmdInsurance.getCmd().getCloudUrlByType(JfgEnum.JFG_URL.PORTRAIT, 0, checkAccountCallback.s + ".jpg", "", PackageUtils.getMetaString(ContextUtils.getContext(), "vid"));
                 } catch (JfgException e) {
                     e.printStackTrace();
                 }

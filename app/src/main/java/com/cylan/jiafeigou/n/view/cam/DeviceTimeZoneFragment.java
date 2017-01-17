@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -138,7 +139,7 @@ public class DeviceTimeZoneFragment extends IBaseFragment<TimezoneContract.Prese
                 if (value != null && value instanceof TimeZoneBean) {
                     DpMsgDefine.DPTimeZone timeZone = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_214_DEVICE_TIME_ZONE, DpMsgDefine.DPTimeZone.empty);
                     int offset = timeZone.offset;
-                    if (offset != ((TimeZoneBean) value).getOffset()) {
+                    if (!TextUtils.equals(timeZone.timezone, ((TimeZoneBean) value).getId())) {
                         timeZone.timezone = ((TimeZoneBean) value).getId();
                         timeZone.offset = ((TimeZoneBean) value).getOffset();
                         BaseValue baseValue = new BaseValue();

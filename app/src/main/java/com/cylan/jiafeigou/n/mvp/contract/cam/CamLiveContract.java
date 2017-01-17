@@ -1,5 +1,7 @@
 package com.cylan.jiafeigou.n.mvp.contract.cam;
 
+import android.graphics.Bitmap;
+
 import com.cylan.entity.jniCall.JFGMsgVideoResolution;
 import com.cylan.entity.jniCall.JFGMsgVideoRtcp;
 import com.cylan.ex.JfgException;
@@ -56,7 +58,7 @@ public interface CamLiveContract {
          */
         void onLiveStop(int type, int errId);
 
-        void onTakeSnapShot(boolean state);
+        void onTakeSnapShot(Bitmap bitmap);
 
         /**
          * 历史录像播放结束状态
@@ -88,6 +90,8 @@ public interface CamLiveContract {
         void fetchHistoryDataList();
 
         boolean isShareDevice();
+
+        void setStopReason(int stopReason);
 
         /**
          * 开始播放历史录像或者开始直播

@@ -21,11 +21,11 @@ public class CamLiveLandTopBar extends FrameLayout {
 
     @BindView(R.id.imgV_cam_live_land_nav_back)
     TextView imgVCamLiveLandNavBack;
-    @BindView(R.id.imgV_cam_switch_speaker)
+    @BindView(R.id.imgV_land_cam_switch_speaker)
     ImageView imgVCamSwitchSpeaker;
-    @BindView(R.id.imgV_cam_trigger_mic)
+    @BindView(R.id.imgV_land_cam_trigger_mic)
     ImageView imgVCamTriggerRecorder;
-    @BindView(R.id.imgV_cam_trigger_capture)
+    @BindView(R.id.imgV_land_cam_trigger_capture)
     ImageView imgVCamTriggerCapture;
 
     public CamLiveLandTopBar(Context context) {
@@ -42,24 +42,27 @@ public class CamLiveLandTopBar extends FrameLayout {
         ButterKnife.bind(view);
     }
 
-    @OnClick({R.id.imgV_cam_live_land_nav_back, R.id.imgV_cam_switch_speaker, R.id.imgV_cam_trigger_mic, R.id.imgV_cam_trigger_capture})
+    @OnClick({R.id.imgV_cam_live_land_nav_back,
+            R.id.imgV_land_cam_switch_speaker,
+            R.id.imgV_land_cam_trigger_mic,
+            R.id.imgV_land_cam_trigger_capture})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.imgV_cam_live_land_nav_back:
                 if (topBarAction != null)
-                    topBarAction.onBack();
+                    topBarAction.onBack(view);
                 break;
-            case R.id.imgV_cam_switch_speaker:
+            case R.id.imgV_land_cam_switch_speaker:
                 if (topBarAction != null)
-                    topBarAction.onSwitchSpeaker();
+                    topBarAction.onSwitchSpeaker(view);
                 break;
-            case R.id.imgV_cam_trigger_mic:
+            case R.id.imgV_land_cam_trigger_mic:
                 if (topBarAction != null)
-                    topBarAction.onTriggerRecorder();
+                    topBarAction.onTriggerMic(view);
                 break;
-            case R.id.imgV_cam_trigger_capture:
+            case R.id.imgV_land_cam_trigger_capture:
                 if (topBarAction != null)
-                    topBarAction.onTriggerCapture();
+                    topBarAction.onTriggerCapture(view);
                 break;
         }
     }
@@ -71,12 +74,12 @@ public class CamLiveLandTopBar extends FrameLayout {
     }
 
     public interface TopBarAction {
-        void onBack();
+        void onBack(View view);
 
-        void onSwitchSpeaker();
+        void onSwitchSpeaker(View view);
 
-        void onTriggerRecorder();
+        void onTriggerMic(View view);
 
-        void onTriggerCapture();
+        void onTriggerCapture(View view);
     }
 }

@@ -38,8 +38,7 @@ public class CamLandHistoryDateAdapter extends SuperAdapter<Long> {
     private int getIndexByTime(long timeFocus) {
         //得到凌晨时间戳
         long time = SystemClock.currentThreadTimeMillis();
-        long timeStart = TimeUtils.getTimeStart(timeFocus);
-        Log.d("getIndexByTime", "getIndexByTime: " + getList());
+        long timeStart = TimeUtils.startOfDay(timeFocus);
         //由于dateStartList是降序,所以需要Collections.reverseOrder()
         int index = Collections.binarySearch(getList(), timeStart, Collections.reverseOrder());
         if (index < 0) {
@@ -48,6 +47,7 @@ public class CamLandHistoryDateAdapter extends SuperAdapter<Long> {
                 index = getList().size() - 1;
             }
         }
+        Log.d("getIndexByTime", "getIndexByTime: " + index + " " + getList());
         Log.d("getIndexByTime", "getIndexByTime: performance: " + (SystemClock.currentThreadTimeMillis() - time));
         return index;
     }

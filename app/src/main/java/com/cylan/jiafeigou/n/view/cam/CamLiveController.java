@@ -7,12 +7,14 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.listener.ILiveStateListener;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamLiveContract;
@@ -122,6 +124,7 @@ public class CamLiveController implements
                     case ILiveControl.STATE_PLAYING:
                         //下一步stop
                         if (presenterRef != null && presenterRef.get() != null) {
+                            presenterRef.get().setStopReason(JError.STOP_MAUNALLY);
                             presenterRef.get().stopPlayVideo(presenterRef.get().getPlayType());
                         }
                         break;
@@ -261,15 +264,20 @@ public class CamLiveController implements
                 AnimatorUtils.slideAuto(camLiveControlLayer.getLiveLandBottomBar(), false);
                 AnimatorUtils.slideAuto(camLiveControlLayer.getCamLiveLandTopBar(), true);
                 setLoadingState(STATE_IDLE, null);
+                slideLandDatePickView();
             } else {
                 //某些限制条件,不需要显示
                 if (presenterRef.get().needShowHistoryWheelView()) {
                     camLiveControlLayer.setVisibility(!camLiveControlLayer.isShown() ? View.VISIBLE : View.INVISIBLE);
                 }
-                setLoadingState(iLiveActionViewRef.get().getState(), null);
+                int playState = presenterRef.get().getPlayState();
+                if (playState == PLAY_STATE_PLAYING)
+                    setLoadingState(PLAY_STATE_PLAYING, null);
+                else
+                    setLoadingState(iLiveActionViewRef.get().getState(), null);
             }
         }
-        AppLogger.i("tap");
+        AppLogger.i("tap: " + (iLiveActionViewRef == null || iLiveActionViewRef.get() == null));
     }
 
     /**
@@ -370,34 +378,38 @@ public class CamLiveController implements
     }
 
     @Override
-    public void onBack() {
+    public void onBack(View view) {
         if (activityWeakReference != null && activityWeakReference.get() != null)
             ViewUtils.setRequestedOrientation(activityWeakReference.get(),
                     ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
     }
 
     @Override
-    public void onSwitchSpeaker() {
-        if (presenterRef != null && presenterRef.get() != null)
-            presenterRef.get().switchSpeakerMic(false, false, false);
+    public void onSwitchSpeaker(View view) {
+        if (presenterRef != null && presenterRef.get() != null) {
+            boolean flag = presenterRef.get().getSpeakerFlag();
+            ((ImageView) view).setImageResource(flag ?
+                    R.drawable.icon_land_speaker_off_selector : R.drawable.icon_land_speaker_on_selector);
+            presenterRef.get().switchSpeakerMic(false, !presenterRef.get().getSpeakerFlag(), presenterRef.get().getMicFlag());
+        }
     }
 
     @Override
-    public void onTriggerRecorder() {
-        if (presenterRef != null && presenterRef.get() != null)
-            presenterRef.get().switchSpeakerMic(false, false, false);
+    public void onTriggerMic(View view) {
+        if (presenterRef != null && presenterRef.get() != null) {
+            boolean flag = presenterRef.get().getSpeakerFlag();
+            ((ImageView) view).setImageResource(flag ?
+                    R.drawable.icon_land_mic_off_selector : R.drawable.icon_land_mic_on_selector);
+            presenterRef.get().switchSpeakerMic(false, presenterRef.get().getSpeakerFlag(), !presenterRef.get().getMicFlag());
+        }
     }
 
     @Override
-    public void onTriggerCapture() {
+    public void onTriggerCapture(View view) {
         if (presenterRef != null && presenterRef.get() != null)
             presenterRef.get().takeSnapShot();
     }
 
-    //    @OnClick({R.id.imgV_cam_live_land_play,
-//            R.id.live_time_layout,
-//            R.id.imgV_cam_zoom_to_full_screen,
-//            R.id.tv_cam_live_port_live})
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
@@ -470,8 +482,10 @@ public class CamLiveController implements
         }
         boolean land = context.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
         //竖屏显示对话框,横屏显示测推
-        if (land) showLandDatePicker();
-        else showPortDatePicker();
+        if (land) {
+            initLandDatePickerView();
+            slideLandDatePickView();
+        } else showPortDatePicker();
     }
 
     private void showPortDatePicker() {
@@ -496,20 +510,29 @@ public class CamLiveController implements
 
     private CamLandHistoryDateAdapter adapter;
 
-    private void showLandDatePicker() {
-        int visibility = camLiveControlLayer.getLandDateContainer().getVisibility();
-        if (visibility == View.GONE) {
-            camLiveControlLayer.getLandDateContainer().setVisibility(View.INVISIBLE);
-        }
+    /**
+     * 判断,slide_in 或者slide_out
+     */
+    private void slideLandDatePickView() {
         float x = camLiveControlLayer.getLandDateContainer().getX();
         float left = camLiveControlLayer.getLandDateContainer().getLeft();
         float translateX = camLiveControlLayer.getLandDateContainer().getTranslationX();
         if (x == left && camLiveControlLayer.getLandDateContainer().isShown())
             AnimatorUtils.slideOutRight(camLiveControlLayer.getLandDateContainer());
-        else if (translateX + left == x
-                || x == left + translateX
-                || !camLiveControlLayer.getLandDateContainer().isShown())
-            AnimatorUtils.slideInRight(camLiveControlLayer.getLandDateContainer());
+//        else if (translateX + left == x
+//                || x == left + translateX
+//                || !camLiveControlLayer.getLandDateContainer().isShown())
+//            AnimatorUtils.slideInRight(camLiveControlLayer.getLandDateContainer());
+    }
+
+    /**
+     * 视图初始化
+     */
+    private void initLandDatePickerView() {
+        int visibility = camLiveControlLayer.getLandDateContainer().getVisibility();
+        if (visibility == View.GONE) {
+            camLiveControlLayer.getLandDateContainer().setVisibility(View.INVISIBLE);
+        }
         if (presenterRef == null || presenterRef.get() == null || presenterRef.get().getFlattenDateMap() == null ||
                 presenterRef.get().getFlattenDateMap().isEmpty()) return;
         if (adapter == null)
