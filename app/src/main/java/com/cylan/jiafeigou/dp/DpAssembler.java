@@ -98,9 +98,11 @@ public class DpAssembler implements IParser {
                     for (int i = 0; i < list.size(); i++) {
                         if (merger(list.get(i).pid) == null) continue;
                         GlobalDataProxy.getInstance().cacheDevice(list.get(i).uuid, list.get(i));
-                        getUnreadMsg(list.get(i));
-                        getHistoryData(list.get(i).uuid);
                         final int pid = list.get(i).pid;
+                        if (JFGRules.isCamera(pid)) {
+                            getUnreadMsg(list.get(i));
+                            getHistoryData(list.get(i).uuid);
+                        }
                         BaseParam baseParam = merger(pid);
                         long seq = 0;
                         try {

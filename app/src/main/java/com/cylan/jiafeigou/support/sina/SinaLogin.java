@@ -6,7 +6,6 @@ import android.content.SharedPreferences;
 import android.text.TextUtils;
 
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.utils.PackageUtils;
 import com.sina.weibo.sdk.auth.AuthInfo;
 import com.sina.weibo.sdk.auth.Oauth2AccessToken;
 import com.sina.weibo.sdk.auth.WeiboAuthListener;

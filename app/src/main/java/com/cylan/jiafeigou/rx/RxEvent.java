@@ -15,7 +15,6 @@ import com.cylan.entity.jniCall.JFGResult;
 import com.cylan.entity.jniCall.JFGShareListInfo;
 import com.cylan.jiafeigou.dp.BaseValue;
 import com.cylan.jiafeigou.dp.DataPointManager;
-import com.cylan.jiafeigou.dp.DpMsgDefine;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -258,7 +257,6 @@ public class RxEvent {
             this.arrayList = arrayList;
         }
     }
-
 
 
     /**
@@ -629,7 +627,7 @@ public class RxEvent {
     /**
      * 删除好友添加请求
      */
-    public static final class DeleteAddReqBack{
+    public static final class DeleteAddReqBack {
         public JFGResult jfgResult;
 
         public DeleteAddReqBack(JFGResult jfgResult) {

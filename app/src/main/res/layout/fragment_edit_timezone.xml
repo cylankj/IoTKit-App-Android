@@ -52,7 +52,8 @@
         android:id="@+id/lv_timezone_detail"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/rLayout_timezone_list" />
+        android:layout_below="@+id/rLayout_timezone_list"
+        android:layout_margin="16dp" />
 
 
     <TextView

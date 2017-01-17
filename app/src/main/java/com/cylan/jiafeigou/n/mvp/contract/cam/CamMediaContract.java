@@ -1,7 +1,5 @@
 package com.cylan.jiafeigou.n.mvp.contract.cam;
 
-import android.app.Activity;
-
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
 import com.cylan.jiafeigou.utils.CamWarnGlideURL;
@@ -17,6 +15,7 @@ public interface CamMediaContract {
 
         /**
          * 1:微信未安装.
+         *
          * @param err
          */
         void onErr(int err);

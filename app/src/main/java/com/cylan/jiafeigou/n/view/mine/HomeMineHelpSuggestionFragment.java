@@ -34,7 +34,6 @@ import com.cylan.superadapter.internal.SuperViewHolder;
 import com.cylan.utils.NetUtils;
 
 import java.util.ArrayList;
-import java.util.TreeMap;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -113,7 +112,7 @@ public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMine
                 showDialog();
                 break;
             case R.id.tv_home_mine_suggestion:
-                if (mEtSuggestion.getText().toString().length()<10){
+                if (mEtSuggestion.getText().toString().length() < 10) {
                     ToastUtil.showNegativeToast(getString(R.string.Tap3_Feedback_TextFail));
                     return;
                 }
@@ -126,7 +125,7 @@ public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMine
     /**
      * 自动回复
      */
-    private void autoReply(){
+    private void autoReply() {
         if (suggestionAdapter.getItemCount() == 0) {
             return;
         }
@@ -139,7 +138,9 @@ public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMine
             addAutoReply();
             presenter.getSystemAutoReply();
         }
-    };
+    }
+
+    ;
 
     /**
      * 弹出对话框
@@ -209,14 +210,14 @@ public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMine
             suggestionBean.isShowTime = true;
         }
 
-        if (NetUtils.getNetType(ContextUtils.getContext()) == -1){
+        if (NetUtils.getNetType(ContextUtils.getContext()) == -1) {
             suggestionBean.pro_falag = 1;
             presenter.saveIntoDb(suggestionBean);
             suggestionAdapter.add(suggestionBean);
             suggestionAdapter.notifyDataSetHasChanged();
             mRvMineSuggestion.scrollToPosition(suggestionAdapter.getItemCount() - 1);
             return;
-        }else {
+        } else {
             suggestionBean.pro_falag = 0;
         }
         suggestionAdapter.add(suggestionBean);
@@ -239,6 +240,7 @@ public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMine
 
     /**
      * 系统的回复
+     *
      * @param time
      * @param content
      */
@@ -255,23 +257,23 @@ public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMine
 
     @Override
     public void refrshRecycleView(int code) {
-        if (code != JError.ErrorOK){
-            if (resendFlag){
+        if (code != JError.ErrorOK) {
+            if (resendFlag) {
                 suggestionAdapter.getItem(itemPosition).pro_falag = 1;
                 resendFlag = false;
                 mRvMineSuggestion.setAdapter(suggestionAdapter);
                 presenter.saveIntoDb(suggestionAdapter.getItem(itemPosition));
-            }else {
+            } else {
                 suggestionAdapter.getItem(suggestionAdapter.getItemCount() - 1).pro_falag = 1;
                 mRvMineSuggestion.setAdapter(suggestionAdapter);
                 presenter.saveIntoDb(suggestionAdapter.getItem(suggestionAdapter.getItemCount() - 1));
             }
-        }else {
-            if (resendFlag){
+        } else {
+            if (resendFlag) {
                 suggestionAdapter.getItem(itemPosition).pro_falag = 2;
                 presenter.saveIntoDb(suggestionAdapter.getItem(itemPosition));
                 resendFlag = false;
-            }else {
+            } else {
                 suggestionAdapter.getItem(suggestionAdapter.getItemCount() - 1).pro_falag = 2;
                 presenter.saveIntoDb(suggestionAdapter.getItem(suggestionAdapter.getItemCount() - 1));
             }
@@ -288,7 +290,7 @@ public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMine
      */
     @Override
     public void initRecycleView(ArrayList<MineHelpSuggestionBean> list) {
-        for (MineHelpSuggestionBean bean:list){
+        for (MineHelpSuggestionBean bean : list) {
             bean.icon = presenter.getUserPhotoUrl();
         }
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
@@ -297,8 +299,8 @@ public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMine
         mRvMineSuggestion.setAdapter(suggestionAdapter);
         suggestionAdapter.setOnResendFeedBack(new HomeMineHelpSuggestionAdapter.OnResendFeedBackListener() {
             @Override
-            public void onResend(SuperViewHolder holder, MineHelpSuggestionBean item,int position) {
-                if (NetUtils.getNetType(ContextUtils.getContext()) == -1){
+            public void onResend(SuperViewHolder holder, MineHelpSuggestionBean item, int position) {
+                if (NetUtils.getNetType(ContextUtils.getContext()) == -1) {
                     ToastUtil.showToast(getString(R.string.NO_NETWORK_4));
                     return;
                 }

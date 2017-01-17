@@ -111,8 +111,8 @@ public class MineClipImagePresenterImp extends AbstractPresenter<MineClipImageCo
                     public void call(Object o) {
                         if (jfgAccount != null) {
                             try {
-                            jfgAccount.resetFlag();
-                            jfgAccount.setPhoto(true);
+                                jfgAccount.resetFlag();
+                                jfgAccount.setPhoto(true);
                                 JfgCmdInsurance.getCmd().setAccount(jfgAccount);
                             } catch (JfgException e) {
                                 e.printStackTrace();
@@ -155,7 +155,7 @@ public class MineClipImagePresenterImp extends AbstractPresenter<MineClipImageCo
                 ContextUtils.getContext().registerReceiver(network, filter);
             }
         } catch (Exception e) {
-            AppLogger.e("registerNetworkMonitor"+e.getLocalizedMessage());
+            AppLogger.e("registerNetworkMonitor" + e.getLocalizedMessage());
         }
     }
 

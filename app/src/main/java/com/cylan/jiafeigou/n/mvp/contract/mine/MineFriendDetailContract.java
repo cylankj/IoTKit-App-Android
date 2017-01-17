@@ -55,6 +55,7 @@ public interface MineFriendDetailContract {
 
         /**
          * 删除好友度的回调
+         *
          * @return
          */
         Subscription delFriendBack();

@@ -5,25 +5,14 @@ import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Environment;
 import android.telephony.TelephonyManager;
-import android.util.Pair;
 
-import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
 import com.cylan.jiafeigou.dp.BaseValue;
-import com.cylan.jiafeigou.dp.DpMsgMap;
-import com.cylan.jiafeigou.dp.DpUtils;
-import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.contract.cloud.CloudLiveDeviceInfoContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
-import com.cylan.jiafeigou.n.mvp.model.BeanCamInfo;
-import com.cylan.jiafeigou.n.mvp.model.BeanCloudInfo;
-import com.cylan.jiafeigou.rx.RxBus;
-import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.google.gson.Gson;
 
 import rx.Observable;
-import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 /**

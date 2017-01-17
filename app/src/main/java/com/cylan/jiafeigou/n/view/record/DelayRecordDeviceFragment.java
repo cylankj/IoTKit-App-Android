@@ -9,11 +9,11 @@ import android.view.ViewGroup;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.module.CameraDevice;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.base.view.JFGPresenter;
 import com.cylan.jiafeigou.base.view.JFGView;
 import com.cylan.jiafeigou.base.wrapper.BaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.record.DelayRecordContract;
-import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.superadapter.OnItemClickListener;
 import com.cylan.superadapter.SuperAdapter;

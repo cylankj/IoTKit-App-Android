@@ -127,7 +127,7 @@ public class HomeSettingFragment extends Fragment implements HomeSettingContract
 
     @Override
     public void showClearingCacheProgress() {
-        LoadingDialog.showLoading(getFragmentManager(),getString(R.string.ClearingTips));
+        LoadingDialog.showLoading(getFragmentManager(), getString(R.string.ClearingTips));
     }
 
     @Override
@@ -181,7 +181,7 @@ public class HomeSettingFragment extends Fragment implements HomeSettingContract
 
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-        switch (buttonView.getId()){
+        switch (buttonView.getId()) {
             case R.id.btn_item_switch_accessMes:
                 presenter.savaSwitchState(isChecked, JConstant.RECEIVE_MESSAGE_NOTIFICATION);
                 break;

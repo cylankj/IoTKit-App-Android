@@ -3,10 +3,7 @@ package com.cylan.jiafeigou.misc;
 import com.cylan.jiafeigou.dp.BaseValue;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
-import com.cylan.jiafeigou.n.mvp.model.BaseBean;
-import com.cylan.jiafeigou.n.mvp.model.BeanCamInfo;
 import com.cylan.jiafeigou.n.mvp.model.CamMessageBean;
-import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
 
 import java.util.ArrayList;
 
@@ -16,17 +13,17 @@ import java.util.ArrayList;
 
 public class Converter {
 
-    public static BeanCamInfo convert(DeviceBean bean) {
-        BaseBean baseBean = new BaseBean();
-        baseBean.alias = bean.alias;
-        baseBean.shareAccount = bean.shareAccount;
-        baseBean.sn = bean.sn;
-        baseBean.uuid = bean.uuid;
-        baseBean.pid = bean.pid;
-        BeanCamInfo info = new BeanCamInfo();
-        info.convert(baseBean, bean.dataList);
-        return info;
-    }
+//    public static BeanCamInfo convert(DeviceBean bean) {
+//        BaseBean baseBean = new BaseBean();
+//        baseBean.alias = bean.alias;
+//        baseBean.shareAccount = bean.shareAccount;
+//        baseBean.sn = bean.sn;
+//        baseBean.uuid = bean.uuid;
+//        baseBean.pid = bean.pid;
+//        BeanCamInfo info = new BeanCamInfo();
+//        info.convert(baseBean, bean.dataList);
+//        return info;
+//    }
 
     public static DpMsgDefine.DpMsg convert(Object o, int msgId, long version) {
         DpMsgDefine.DpMsg base = new DpMsgDefine.DpMsg();

@@ -3,9 +3,7 @@ package com.cylan.jiafeigou.n.view.mine;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.text.Editable;
 import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -83,19 +81,19 @@ public class MineInfoSetPassWordFragment extends Fragment implements MineInfoSet
     @Override
     public void onStart() {
         super.onStart();
-        if (presenter != null)presenter.start();
+        if (presenter != null) presenter.start();
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        if (presenter != null)presenter.stop();
+        if (presenter != null) presenter.stop();
     }
 
     @OnTextChanged(R.id.et_mine_personal_information_old_password)
     public void onOldPwdUpdate(CharSequence s, int start, int before, int count) {
-        boolean isEmpty = s.length()<6;
-        if (isEmpty || getNewPassword().trim().length()<6) {
+        boolean isEmpty = s.length() < 6;
+        if (isEmpty || getNewPassword().trim().length() < 6) {
             ivMinePersonalSetpasswordBind.setImageDrawable(getResources().getDrawable(R.drawable.icon_finish_disable));
             ivMinePersonalSetpasswordBind.setEnabled(false);
             ivMinePersonalSetpasswordBind.setClickable(false);
@@ -110,8 +108,8 @@ public class MineInfoSetPassWordFragment extends Fragment implements MineInfoSet
 
     @OnTextChanged(R.id.et_mine_personal_information_new_password)
     public void onNewPwdUpdate(CharSequence s, int start, int before, int count) {
-        boolean isEmpty = s.length()<6;
-        if (isEmpty || getOldPassword().trim().length()<6) {
+        boolean isEmpty = s.length() < 6;
+        if (isEmpty || getOldPassword().trim().length() < 6) {
             ivMinePersonalSetpasswordBind.setImageDrawable(getResources().getDrawable(R.drawable.icon_finish_disable));
             ivMinePersonalSetpasswordBind.setClickable(false);
             ivMinePersonalSetpasswordBind.setEnabled(false);
@@ -191,15 +189,16 @@ public class MineInfoSetPassWordFragment extends Fragment implements MineInfoSet
 
     /**
      * 修改密码的结果
+     *
      * @param jfgResult
      */
     @Override
     public void changePwdResult(JFGResult jfgResult) {
-        if (jfgResult.code == JError.ErrorInvalidPass){
+        if (jfgResult.code == JError.ErrorInvalidPass) {
             ToastUtil.showToast(getString(R.string.RET_ECHANGEPASS_OLDPASS_ERROR));
-        }else if (jfgResult.code == JError.ErrorSamePass){
+        } else if (jfgResult.code == JError.ErrorSamePass) {
             ToastUtil.showToast(getString(R.string.RET_ECHANGEPASS_SAME));
-        }else if (jfgResult.code == JError.ErrorOK){
+        } else if (jfgResult.code == JError.ErrorOK) {
             ToastUtil.showToast(getString(R.string.PWD_OK_1));
             getFragmentManager().popBackStack();
         }

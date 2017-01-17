@@ -60,9 +60,9 @@ public class CloudLiveCallPresenterImp extends AbstractPresenter<CloudLiveCallCo
     @Override
     public void start() {
         super.start();
-        if (subscription != null && !subscription.isUnsubscribed()){
+        if (subscription != null && !subscription.isUnsubscribed()) {
             subscription.unsubscribe();
-        }else {
+        } else {
             subscription = new CompositeSubscription();
             subscription.add(resolutionNotifySub());
             subscription.add(videoDisconnectSub());
@@ -74,7 +74,7 @@ public class CloudLiveCallPresenterImp extends AbstractPresenter<CloudLiveCallCo
     @Override
     public void stop() {
         super.stop();
-        if (subscription != null && !subscription.isUnsubscribed()){
+        if (subscription != null && !subscription.isUnsubscribed()) {
             subscription.unsubscribe();
         }
     }
@@ -95,7 +95,7 @@ public class CloudLiveCallPresenterImp extends AbstractPresenter<CloudLiveCallCo
         try {
             if (uuid != null) JfgCmdInsurance.getCmd().stopPlay(uuid);
             isConnectOk = false;
-              JfgCmdInsurance.getCmd().playVideo(uuid);
+            JfgCmdInsurance.getCmd().playVideo(uuid);
         } catch (JfgException e) {
             e.printStackTrace();
         }
@@ -104,31 +104,31 @@ public class CloudLiveCallPresenterImp extends AbstractPresenter<CloudLiveCallCo
     @Override
     public Subscription resolutionNotifySub() {
         return RxBus.getCacheInstance().toObservable(JFGMsgVideoResolution.class)
-            .filter((JFGMsgVideoResolution jfgMsgVideoResolution) -> {
-                boolean filter =
-                        TextUtils.equals(uuid, jfgMsgVideoResolution.peer)
-                                && getView() != null;
-                if (!filter) {
-                    AppLogger.e("getView(): " + (getView() != null));
-                    AppLogger.e("this peer is out date: " + jfgMsgVideoResolution.peer);
-                }
-                return filter;
-            })
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe((JFGMsgVideoResolution resolution) -> {
-                        try {
-                            getView().onResolution(resolution);
-                            isConnectOk = true;
-                        } catch (JfgException e) {
-                            e.printStackTrace();
-                        }
-                        if (loadProAnimSub != null && !loadProAnimSub.isUnsubscribed()){
-                            loadProAnimSub.unsubscribe();
-                        }
-                        AppLogger.i("ResolutionNotifySub: " + new Gson().toJson(resolution));
-                    }, (Throwable throwable) -> {
-                        AppLogger.e("resolution err: " + throwable.getLocalizedMessage());
-                    });
+                .filter((JFGMsgVideoResolution jfgMsgVideoResolution) -> {
+                    boolean filter =
+                            TextUtils.equals(uuid, jfgMsgVideoResolution.peer)
+                                    && getView() != null;
+                    if (!filter) {
+                        AppLogger.e("getView(): " + (getView() != null));
+                        AppLogger.e("this peer is out date: " + jfgMsgVideoResolution.peer);
+                    }
+                    return filter;
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe((JFGMsgVideoResolution resolution) -> {
+                    try {
+                        getView().onResolution(resolution);
+                        isConnectOk = true;
+                    } catch (JfgException e) {
+                        e.printStackTrace();
+                    }
+                    if (loadProAnimSub != null && !loadProAnimSub.isUnsubscribed()) {
+                        loadProAnimSub.unsubscribe();
+                    }
+                    AppLogger.i("ResolutionNotifySub: " + new Gson().toJson(resolution));
+                }, (Throwable throwable) -> {
+                    AppLogger.e("resolution err: " + throwable.getLocalizedMessage());
+                });
     }
 
     /**
@@ -153,6 +153,7 @@ public class CloudLiveCallPresenterImp extends AbstractPresenter<CloudLiveCallCo
 
     /**
      * 视频断开连接
+     *
      * @return
      */
     private Subscription videoDisconnectSub() {
@@ -185,9 +186,9 @@ public class CloudLiveCallPresenterImp extends AbstractPresenter<CloudLiveCallCo
                     try {
                         AppLogger.i("stopPlayVideo:" + s);
                         JfgCmdInsurance.getCmd().stopPlay(s);
-                        JfgCmdInsurance.getCmd().enableCamera(false,false);
-                        JfgCmdInsurance.getCmd().enableRenderLocalView(false,null);
-                        JfgCmdInsurance.getCmd().enableRenderRemoteView(false,null);
+                        JfgCmdInsurance.getCmd().enableCamera(false, false);
+                        JfgCmdInsurance.getCmd().enableRenderLocalView(false, null);
+                        JfgCmdInsurance.getCmd().enableRenderRemoteView(false, null);
                     } catch (JfgException e) {
                         e.printStackTrace();
                     }
@@ -196,6 +197,7 @@ public class CloudLiveCallPresenterImp extends AbstractPresenter<CloudLiveCallCo
 
     /**
      * 呼叫的结果
+     *
      * @return
      */
     @Override
@@ -205,7 +207,7 @@ public class CloudLiveCallPresenterImp extends AbstractPresenter<CloudLiveCallCo
                 .subscribe(new Action1<RxEvent.EFamilyMsgpack>() {
                     @Override
                     public void call(RxEvent.EFamilyMsgpack eFamilyMsgpack) {
-                        if (getView() != null){
+                        if (getView() != null) {
                             getView().handlerCallingReuslt(eFamilyMsgpack.msgId);
                         }
                     }
@@ -219,13 +221,13 @@ public class CloudLiveCallPresenterImp extends AbstractPresenter<CloudLiveCallCo
     public void countTime() {
         rx.Observable.just(null)
                 .subscribeOn(Schedulers.newThread())
-                .delay(30000,TimeUnit.MILLISECONDS)
+                .delay(30000, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<Object>() {
                     @Override
                     public void call(Object o) {
-                        if (getView() != null){
-                            if (!isConnectOk){
+                        if (getView() != null) {
+                            if (!isConnectOk) {
                                 getView().handlerCallingReuslt(0);
                             }
                         }

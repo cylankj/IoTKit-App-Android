@@ -1,7 +1,5 @@
 package com.cylan.jiafeigou.n.view.mine;
 
-import android.Manifest;
-import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
@@ -9,7 +7,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
-import android.support.v7.app.AlertDialog;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -108,7 +105,7 @@ public class MineFriendDetailFragment extends Fragment implements MineFriendDeta
     @Override
     public void onStart() {
         super.onStart();
-        if (presenter != null)presenter.start();
+        if (presenter != null) presenter.start();
     }
 
     /**
@@ -172,7 +169,7 @@ public class MineFriendDetailFragment extends Fragment implements MineFriendDeta
                 if (getView() != null)
                     ViewUtils.deBounceClick(getView().findViewById(R.id.rl_delete_relativeandfriend));
                 AppLogger.e("rl_delete_relativeandfriend");
-                showDelFriendDialog(view,frienditembean);
+                showDelFriendDialog(view, frienditembean);
                 break;
             case R.id.tv_share_device:
                 if (getView() != null)
@@ -191,9 +188,10 @@ public class MineFriendDetailFragment extends Fragment implements MineFriendDeta
 
     /**
      * 删除亲友对话框
+     *
      * @param bean
      */
-    public void showDelFriendDialog(View v,RelAndFriendBean bean){
+    public void showDelFriendDialog(View v, RelAndFriendBean bean) {
         if (popupWindow != null && popupWindow.isShowing()) {
             return;
         }
@@ -209,7 +207,7 @@ public class MineFriendDetailFragment extends Fragment implements MineFriendDeta
         //设置动画
         popupWindow.setAnimationStyle(R.style.PopupWindow);
         //设置位置
-        popupWindow.showAtLocation(v, Gravity.BOTTOM, 0, navigationHeight-50);
+        popupWindow.showAtLocation(v, Gravity.BOTTOM, 0, navigationHeight - 50);
         //设置消失监听
         popupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
             @Override
@@ -218,12 +216,12 @@ public class MineFriendDetailFragment extends Fragment implements MineFriendDeta
             }
         });
         //设置PopupWindow的View点击事件
-        setOnPopupViewClick(view,bean);
+        setOnPopupViewClick(view, bean);
         //设置背景色
         setBackgroundAlpha(0.4f);
     }
 
-    private void setOnPopupViewClick(View view,RelAndFriendBean bean) {
+    private void setOnPopupViewClick(View view, RelAndFriendBean bean) {
         TextView tv_pick_zone, tv_cancel;
         tv_pick_zone = (TextView) view.findViewById(R.id.tv_del_friend);
         tv_cancel = (TextView) view.findViewById(R.id.tv_cancel);
@@ -231,7 +229,7 @@ public class MineFriendDetailFragment extends Fragment implements MineFriendDeta
         tv_pick_zone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (NetUtils.getNetType(ContextUtils.getContext()) == -1){
+                if (NetUtils.getNetType(ContextUtils.getContext()) == -1) {
                     ToastUtil.showToast(getString(R.string.NO_NETWORK_4));
                     return;
                 }
@@ -259,7 +257,7 @@ public class MineFriendDetailFragment extends Fragment implements MineFriendDeta
 
     @Override
     public void handlerDelCallBack(int code) {
-        if (code != JError.ErrorOK){
+        if (code != JError.ErrorOK) {
             ToastUtil.showToast(getString(R.string.Tips_DeleteFail));
             return;
         }
@@ -327,11 +325,12 @@ public class MineFriendDetailFragment extends Fragment implements MineFriendDeta
 
     /**
      * 网络状态变化
+     *
      * @param state
      */
     @Override
     public void onNetStateChanged(int state) {
-        if (state == -1){
+        if (state == -1) {
             hideDeleteProgress();
             ToastUtil.showNegativeToast(getString(R.string.NO_NETWORK_1));
         }

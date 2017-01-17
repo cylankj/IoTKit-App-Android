@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.net.wifi.WifiManager;
-import android.os.SystemClock;
 import android.text.TextUtils;
 
 import com.cylan.entity.JfgEnum;
@@ -17,7 +16,6 @@ import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendsContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.n.mvp.model.MineAddReqBean;
-import com.cylan.jiafeigou.n.mvp.model.MineMessageBean;
 import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
@@ -25,7 +23,6 @@ import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.network.ConnectivityStatus;
 import com.cylan.jiafeigou.support.network.ReactiveNetwork;
 import com.cylan.jiafeigou.utils.ContextUtils;
-import com.sina.weibo.sdk.utils.LogUtil;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -58,9 +55,9 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
 
     @Override
     public void start() {
-        if (compositeSubscription != null && !compositeSubscription.isUnsubscribed()){
+        if (compositeSubscription != null && !compositeSubscription.isUnsubscribed()) {
             compositeSubscription.unsubscribe();
-        }else {
+        } else {
             compositeSubscription = new CompositeSubscription();
             compositeSubscription.add(getAddRequest());
             compositeSubscription.add(getFriendList());
@@ -142,6 +139,7 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
 
     /**
      * desc：好友列表的排序
+     *
      * @param list
      * @return
      */
@@ -167,9 +165,9 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
                 .flatMap(new Func1<RxEvent.GetFriendList, Observable<ArrayList<RelAndFriendBean>>>() {
                     @Override
                     public Observable<ArrayList<RelAndFriendBean>> call(RxEvent.GetFriendList getFriendList) {
-                        if (getFriendList != null && getFriendList instanceof RxEvent.GetFriendList){
+                        if (getFriendList != null && getFriendList instanceof RxEvent.GetFriendList) {
                             return Observable.just(initRelativatesAndFriendsData(getFriendList));
-                        }else {
+                        } else {
                             return Observable.just(null);
                         }
 
@@ -179,9 +177,9 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
                 .subscribe(new Action1<ArrayList<RelAndFriendBean>>() {
                     @Override
                     public void call(ArrayList<RelAndFriendBean> list) {
-                        if (list != null && list.size() !=0){
+                        if (list != null && list.size() != 0) {
                             handleInitFriendListDataResult(list);
-                        }else {
+                        } else {
                             friendListNull = true;
                             checkAllNull();
                             getView().hideFriendListTitle();
@@ -315,6 +313,7 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
 
     /**
      * desc:处理请求列表数据
+     *
      * @param addReqList
      */
     private void handleInitAddReqListDataResult(final RxEvent.GetAddReqList addReqList) {
@@ -332,6 +331,7 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
 
     /**
      * desc:处理列表数据
+     *
      * @param friendList
      */
     private void handleInitFriendListDataResult(ArrayList<RelAndFriendBean> friendList) {
@@ -359,7 +359,7 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
                 ContextUtils.getContext().registerReceiver(network, filter);
             }
         } catch (Exception e) {
-            AppLogger.e("registerNetworkMonitor"+e.getLocalizedMessage());
+            AppLogger.e("registerNetworkMonitor" + e.getLocalizedMessage());
         }
     }
 
@@ -373,6 +373,7 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
 
     /**
      * 删除好友添加请求
+     *
      * @param account
      */
     @Override
@@ -391,13 +392,14 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
                 }, new Action1<Throwable>() {
                     @Override
                     public void call(Throwable throwable) {
-                        AppLogger.e("deleteAddReq"+throwable.getLocalizedMessage());
+                        AppLogger.e("deleteAddReq" + throwable.getLocalizedMessage());
                     }
                 });
     }
 
     /**
      * 删除好友添加请求的回调
+     *
      * @return
      */
     @Override
@@ -407,7 +409,7 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
                 .subscribe(new Action1<RxEvent.DeleteAddReqBack>() {
                     @Override
                     public void call(RxEvent.DeleteAddReqBack deleteAddReqBack) {
-                        if (deleteAddReqBack != null && deleteAddReqBack instanceof RxEvent.DeleteAddReqBack){
+                        if (deleteAddReqBack != null && deleteAddReqBack instanceof RxEvent.DeleteAddReqBack) {
                             getView().longClickDeleteItem(deleteAddReqBack.jfgResult.code);
                         }
                     }

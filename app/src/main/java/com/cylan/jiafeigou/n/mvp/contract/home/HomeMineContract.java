@@ -2,15 +2,12 @@ package com.cylan.jiafeigou.n.mvp.contract.home;
 
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
-import android.support.annotation.DrawableRes;
 import android.support.annotation.UiThread;
 
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
-import com.cylan.jiafeigou.n.mvp.model.MineHelpSuggestionBean;
 import com.cylan.jiafeigou.n.mvp.model.MineMessageBean;
-import com.cylan.jiafeigou.n.mvp.model.UserInfoBean;
 
 import java.util.ArrayList;
 
@@ -56,6 +53,7 @@ public interface HomeMineContract {
 
         /**
          * 设置头像的背景
+         *
          * @param bitmap
          */
         void portraitBlur(Bitmap bitmap);
@@ -93,18 +91,21 @@ public interface HomeMineContract {
 
         /**
          * Dp获取消息记录数据回调
+         *
          * @return
          */
         Subscription getMesgDpDataCallBack();
 
         /**
          * 获取的消息的所有的数据
+         *
          * @return
          */
         ArrayList<MineMessageBean> getMesgAllData();
 
         /**
          * 获取是否三方登录的回调
+         *
          * @return
          */
         Subscription checkIsOpenLoginCallBack();

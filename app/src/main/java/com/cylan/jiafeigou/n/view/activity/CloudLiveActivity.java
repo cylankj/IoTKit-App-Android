@@ -7,7 +7,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.AnimationDrawable;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -37,9 +36,9 @@ import com.cylan.jiafeigou.n.mvp.contract.cloud.CloudLiveContract;
 import com.cylan.jiafeigou.n.mvp.impl.cloud.CloudLivePresenterImp;
 import com.cylan.jiafeigou.n.mvp.model.CloudLiveBaseBean;
 import com.cylan.jiafeigou.n.mvp.model.CloudLiveBaseDbBean;
+import com.cylan.jiafeigou.n.mvp.model.CloudLiveCallInBean;
 import com.cylan.jiafeigou.n.mvp.model.CloudLiveCallOutBean;
 import com.cylan.jiafeigou.n.mvp.model.CloudLiveLeaveMesBean;
-import com.cylan.jiafeigou.n.mvp.model.CloudLiveCallInBean;
 import com.cylan.jiafeigou.n.view.adapter.CloudLiveMesgListAdapter;
 import com.cylan.jiafeigou.n.view.cloud.CloudLiveCallActivity;
 import com.cylan.jiafeigou.n.view.cloud.CloudLiveSettingFragment;
@@ -64,7 +63,7 @@ import butterknife.OnClick;
  * 创建时间：2016/9/26
  * 描述：
  */
-public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements CloudMesgBackListener,CloudLiveContract.View {
+public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements CloudMesgBackListener, CloudLiveContract.View {
 
     @BindView(R.id.imgV_nav_back)
     ImageView imgVNavBack;
@@ -111,7 +110,7 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
 
     private void initTitle() {
         JFGDevice jfgDevice = GlobalDataProxy.getInstance().fetch(uuid);
-        tvDeviceName.setText(TextUtils.isEmpty(jfgDevice.alias)?jfgDevice.uuid:jfgDevice.alias);
+        tvDeviceName.setText(TextUtils.isEmpty(jfgDevice.alias) ? jfgDevice.uuid : jfgDevice.alias);
         CloudLiveCallActivity.setOnCloudMesgBackListener(this);
     }
 
@@ -150,7 +149,7 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
     }
 
     private void initPresenter() {
-        presenter = new CloudLivePresenterImp(this,uuid);
+        presenter = new CloudLivePresenterImp(this, uuid);
     }
 
     private void initFragment() {
@@ -185,7 +184,7 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
                 break;
             case R.id.iv_cloud_videochat:                               //视频通话
                 ViewUtils.deBounceClick(findViewById(R.id.iv_cloud_videochat));
-                if (!presenter.isDeviceOnline()){
+                if (!presenter.isDeviceOnline()) {
                     ToastUtil.showToast(getString(R.string.NOT_ONLINE));
                     return;
                 }
@@ -249,6 +248,7 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
 
     /**
      * 语音留言对话框
+     *
      * @param isOnLine
      */
     @Override
@@ -351,6 +351,7 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
 
     /**
      * 视频通话处理
+     *
      * @param isOnline
      */
     @Override
@@ -382,6 +383,7 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
 
     /**
      * 初始化列表显示
+     *
      * @param list
      */
     @Override
@@ -430,11 +432,12 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
 
     /**
      * 播放录音动画
+     *
      * @param view
      */
     @Override
     public void startPlayVoiceAnim(ImageView view) {
-        if(animationDrawable != null) {
+        if (animationDrawable != null) {
             if (animationDrawable.isRunning()) {
                 animationDrawable.stop();
                 animationDrawable = null;
@@ -458,6 +461,7 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
 
     /**
      * 设备不在线提示框
+     *
      * @param whichshow
      */
     private void showDeviceDisOnlineDialog(final int whichshow) {
@@ -498,6 +502,7 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
 
     /**
      * 添加一条消息
+     *
      * @param bean
      */
     @Override

@@ -4,24 +4,20 @@ package com.cylan.jiafeigou.n.view.mine;
 import android.Manifest;
 import android.content.ContentResolver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
-import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -36,30 +32,20 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.cylan.entity.jniCall.JFGAccount;
-import com.cylan.jiafeigou.NewHomeActivity;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.SmartcallActivity;
-import com.cylan.jiafeigou.cache.JCache;
 import com.cylan.jiafeigou.misc.JConstant;
-import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineInfoContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineInfoPresenterImpl;
-import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
-import com.cylan.jiafeigou.n.view.splash.BeforeLoginFragment;
-import com.cylan.jiafeigou.rx.RxBus;
-import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.photoselect.ClipImageActivity;
 import com.cylan.jiafeigou.support.photoselect.activities.AlbumSelectActivity;
 import com.cylan.jiafeigou.support.photoselect.helpers.Constants;
-import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.LocaleUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
-import com.cylan.jiafeigou.widget.LoadingDialog;
 import com.cylan.jiafeigou.widget.roundedimageview.RoundedImageView;
-import com.cylan.utils.NetUtils;
 
 import java.io.File;
 
@@ -305,7 +291,7 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
                 photoUrl = PreferencesUtils.getString(JConstant.OPEN_LOGIN_USER_ICON);
             }
 
-            if (!TextUtils.isEmpty(photoUrl)){
+            if (!TextUtils.isEmpty(photoUrl)) {
                 Glide.with(getContext()).load(photoUrl)
                         .asBitmap()
                         .centerCrop()
@@ -328,18 +314,18 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
 
             if (presenter.checkOpenLogin()) {
                 String alias = PreferencesUtils.getString(JConstant.OPEN_LOGIN_USER_ALIAS);
-                tvUserName.setText(TextUtils.isEmpty(alias)? getString(R.string.NO_SET) : alias);
-            }else {
-                tvUserName.setText(TextUtils.isEmpty(bean.getAlias())? getString(R.string.NO_SET) : bean.getAlias());
+                tvUserName.setText(TextUtils.isEmpty(alias) ? getString(R.string.NO_SET) : alias);
+            } else {
+                tvUserName.setText(TextUtils.isEmpty(bean.getAlias()) ? getString(R.string.NO_SET) : bean.getAlias());
             }
 
-            if (bean.getEmail() == null | TextUtils.isEmpty(bean.getEmail())){
+            if (bean.getEmail() == null | TextUtils.isEmpty(bean.getEmail())) {
                 mTvMailBox.setText(getString(R.string.NO_SET));
             } else {
                 mTvMailBox.setText(bean.getEmail());
             }
 
-            if(TextUtils.isEmpty(bean.getPhone())){
+            if (TextUtils.isEmpty(bean.getPhone())) {
                 tvHomeMinePersonalPhone.setText(getString(R.string.NO_SET));
             } else {
                 tvHomeMinePersonalPhone.setText(bean.getPhone());
@@ -369,9 +355,9 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
     }
 
     /**
-     *弹出选择头像的对话框
+     * 弹出选择头像的对话框
      */
-    private void pickImageDialog(View v){
+    private void pickImageDialog(View v) {
         if (popupWindow != null && popupWindow.isShowing()) {
             return;
         }
@@ -387,7 +373,7 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
         //设置动画
         popupWindow.setAnimationStyle(R.style.PopupWindow);
         //设置位置
-        popupWindow.showAtLocation(v, Gravity.BOTTOM, 0, navigationHeight-50);
+        popupWindow.showAtLocation(v, Gravity.BOTTOM, 0, navigationHeight - 50);
         //设置消失监听
         popupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
             @Override
@@ -403,6 +389,7 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
 
     /**
      * popupwindow条目点击
+     *
      * @param view
      */
     private void setOnPopupViewClick(View view) {
@@ -413,9 +400,9 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
         tv_pick_phone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (presenter.checkExternalStorePermission()){
+                if (presenter.checkExternalStorePermission()) {
                     openGallery();
-                }else {
+                } else {
                     //申请权限
                     HomeMineInfoFragment.this.requestPermissions(
                             new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
@@ -510,7 +497,7 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
     /**
      * 删除亲友对话框
      */
-    public void showLogOutDialog(View v){
+    public void showLogOutDialog(View v) {
         if (popupWindow != null && popupWindow.isShowing()) {
             return;
         }
@@ -526,7 +513,7 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
         //设置动画
         popupWindow.setAnimationStyle(R.style.PopupWindow);
         //设置位置
-        popupWindow.showAtLocation(v, Gravity.BOTTOM, 0, navigationHeight-50);
+        popupWindow.showAtLocation(v, Gravity.BOTTOM, 0, navigationHeight - 50);
         //设置消失监听
         popupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
             @Override
@@ -541,7 +528,7 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
     }
 
     private void setOnLogoutClick(View view) {
-        TextView tv_is_del,tv_pick_zone, tv_cancel;
+        TextView tv_is_del, tv_pick_zone, tv_cancel;
         tv_is_del = (TextView) view.findViewById(R.id.tv_is_del_frined);
         tv_pick_zone = (TextView) view.findViewById(R.id.tv_del_friend);
         tv_cancel = (TextView) view.findViewById(R.id.tv_cancel);
@@ -582,7 +569,7 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode != getActivity().RESULT_CANCELED){
+        if (resultCode != getActivity().RESULT_CANCELED) {
             if (requestCode == Constants.REQUEST_CODE && data != null) {
                 gotoClipActivity(Uri.parse(data.getStringExtra(Constants.INTENT_EXTRA_IMAGES)));
             } else if (requestCode == REQUEST_CROP_PHOTO && data != null) {

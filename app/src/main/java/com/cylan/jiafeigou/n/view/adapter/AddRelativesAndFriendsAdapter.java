@@ -40,9 +40,9 @@ public class AddRelativesAndFriendsAdapter extends SuperAdapter<MineAddReqBean> 
     @Override
     public void onBind(final SuperViewHolder holder, final int viewType, final int layoutPosition, final MineAddReqBean item) {
         holder.setText(R.id.tv_username, item.alias);
-        if(item.sayHi == null || "".equals(item.sayHi)){
-            holder.setText(R.id.tv_add_message,item.alias+ContextUtils.getContext().getString(R.string.Tap3_FriendsAdd_RequestContents));
-        }else {
+        if (item.sayHi == null || "".equals(item.sayHi)) {
+            holder.setText(R.id.tv_add_message, item.alias + ContextUtils.getContext().getString(R.string.Tap3_FriendsAdd_RequestContents));
+        } else {
             holder.setText(R.id.tv_add_message, item.sayHi);
         }
 

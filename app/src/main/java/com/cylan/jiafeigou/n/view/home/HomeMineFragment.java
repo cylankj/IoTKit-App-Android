@@ -4,9 +4,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -20,14 +18,9 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.Request;
 import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.bumptech.glide.request.target.SimpleTarget;
-import com.bumptech.glide.request.target.SizeReadyCallback;
-import com.bumptech.glide.request.target.Target;
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.cache.JCache;
 import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
@@ -115,7 +108,7 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
     public void onStart() {
         if (!GlobalDataProxy.getInstance().isOnline()) {
             //访客状态
-            Bitmap bm = BitmapFactory.decodeResource(getResources(),R.drawable.clouds);
+            Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.clouds);
             basePresenter.portraitBlur(bm);
             setAliasName(getString(R.string.Tap3_LogIn));
         }
@@ -256,6 +249,7 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
 
     /**
      * 设置昵称
+     *
      * @param name
      */
     @Override
@@ -282,7 +276,7 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
                     @Override
                     public void onLoadFailed(Exception e, Drawable errorDrawable) {
                         super.onLoadFailed(e, errorDrawable);
-                        Bitmap bm = BitmapFactory.decodeResource(getResources(),R.drawable.clouds);
+                        Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.clouds);
                         basePresenter.portraitBlur(bm);
                     }
 
@@ -390,7 +384,7 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
             return;
         }
         Bundle bundle = new Bundle();
-        bundle.putParcelableArrayList("mesgdata",basePresenter.getMesgAllData());
+        bundle.putParcelableArrayList("mesgdata", basePresenter.getMesgAllData());
         homeMineMessageFragment = HomeMineMessageFragment.newInstance(bundle);
         getFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
@@ -439,6 +433,6 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         Fragment mineInfoFragment = getFragmentManager().findFragmentByTag("personalInformationFragment");
-        mineInfoFragment.onActivityResult(requestCode,resultCode,data);
+        mineInfoFragment.onActivityResult(requestCode, resultCode, data);
     }
 }

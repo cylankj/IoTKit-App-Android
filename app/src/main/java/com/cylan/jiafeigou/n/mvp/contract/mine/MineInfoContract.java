@@ -81,6 +81,7 @@ public interface MineInfoContract {
 
         /**
          * 三方登录回调
+         *
          * @return
          */
         Subscription isOpenLoginBack();

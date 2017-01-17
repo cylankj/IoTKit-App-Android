@@ -24,9 +24,7 @@ import com.cylan.jiafeigou.n.view.adapter.ShareToFriendsAdapter;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.widget.LoadingDialog;
-import com.cylan.superadapter.OnItemClickListener;
 import com.cylan.superadapter.internal.SuperViewHolder;
-import com.squareup.haha.guava.collect.Iterators;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -64,11 +62,11 @@ public class MineShareToFriendFragment extends Fragment implements MineShareToFr
 
     private OnShareSucceedListener listener;
 
-    public interface OnShareSucceedListener{
-        void shareSucceed(int num,ArrayList<RelAndFriendBean> list);
+    public interface OnShareSucceedListener {
+        void shareSucceed(int num, ArrayList<RelAndFriendBean> list);
     }
 
-    public void setOnShareSucceedListener(OnShareSucceedListener listener){
+    public void setOnShareSucceedListener(OnShareSucceedListener listener) {
         this.listener = listener;
     }
 
@@ -127,8 +125,8 @@ public class MineShareToFriendFragment extends Fragment implements MineShareToFr
         switch (view.getId()) {
             case R.id.iv_mine_share_to_relative_friend_back:
                 getFragmentManager().popBackStack();
-                if (listener != null){
-                    listener.shareSucceed(shareSucceedNum,shareSucceedFriend);
+                if (listener != null) {
+                    listener.shareSucceed(shareSucceedNum, shareSucceedFriend);
                 }
                 break;
 
@@ -217,12 +215,12 @@ public class MineShareToFriendFragment extends Fragment implements MineShareToFr
         hideSendProgress();
         int totalFriend = isChooseToShareList.size();
         Iterator iterators = isChooseToShareList.iterator();
-        while(iterators.hasNext()){
+        while (iterators.hasNext()) {
             RelAndFriendBean friendBean = (RelAndFriendBean) iterators.next();
             for (RxEvent.ShareDeviceCallBack callBack : callbackList) {
                 if (friendBean.account.equals(callBack.account) && callBack.requestId == 0) {
                     iterators.remove();
-                    shareSucceedNum ++;
+                    shareSucceedNum++;
                     shareSucceedFriend.add(friendBean);
                 }
             }
@@ -295,8 +293,8 @@ public class MineShareToFriendFragment extends Fragment implements MineShareToFr
             presenter.stop();
         }
 
-        if (listener != null){
-            listener.shareSucceed(shareSucceedNum,shareSucceedFriend);
+        if (listener != null) {
+            listener.shareSucceed(shareSucceedNum, shareSucceedFriend);
         }
     }
 }

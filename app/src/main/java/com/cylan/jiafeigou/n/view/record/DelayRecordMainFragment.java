@@ -291,7 +291,7 @@ public class DelayRecordMainFragment extends BaseFragment<CamDelayRecordContract
         SurfaceView surfaceView = mPresenter.getViewerInstance();
         mVideoViewContainer.removeAllViews();
         mVideoViewContainer.addView(surfaceView);
-        JfgCmdInsurance.getCmd().enableRenderRemoteView(true,surfaceView);
+        JfgCmdInsurance.getCmd().enableRenderRemoteView(true, surfaceView);
         mRecordStatus = -2;
         refreshLayout();
     }

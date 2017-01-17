@@ -1,15 +1,10 @@
 package com.cylan.jiafeigou.n.mvp.impl.home;
 
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.support.annotation.DrawableRes;
 import android.text.TextUtils;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.SimpleTarget;
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.entity.jniCall.RobotoGetDataRsp;
@@ -28,10 +23,7 @@ import com.cylan.utils.BitmapUtil;
 import com.cylan.utils.FastBlurUtil;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.Map;
 import java.util.Random;
 
 import rx.Observable;
@@ -81,9 +73,9 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
             subscription.unsubscribe();
         }
         subscription = new CompositeSubscription();
-            subscription.add(checkIsOpenLoginCallBack());
-            subscription.add(getMesgDpData());
-            subscription.add(getMesgDpDataCallBack());
+        subscription.add(checkIsOpenLoginCallBack());
+        subscription.add(getMesgDpData());
+        subscription.add(getMesgDpDataCallBack());
     }
 
     @Override
@@ -172,15 +164,15 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
                     public void call(RxEvent.GetUserInfo getUserInfo) {
                         if (getUserInfo != null && getUserInfo instanceof RxEvent.GetUserInfo) {
                             userInfo = getUserInfo.jfgAccount;
-                            if (isOpenLogin){
+                            if (isOpenLogin) {
                                 getView().setUserImageHeadByUrl(PreferencesUtils.getString(JConstant.OPEN_LOGIN_USER_ICON));
                                 String userAlias = PreferencesUtils.getString(JConstant.OPEN_LOGIN_USER_ALIAS);
-                                getView().setAliasName(TextUtils.isEmpty(userAlias)?createRandomName():userAlias);
+                                getView().setAliasName(TextUtils.isEmpty(userAlias) ? createRandomName() : userAlias);
                                 return;
                             }
                             if (getView() != null) {
                                 getView().setUserImageHeadByUrl(userInfo.getPhotoUrl());
-                                if (userInfo.getAlias() == null | TextUtils.isEmpty(userInfo.getAlias())){
+                                if (userInfo.getAlias() == null | TextUtils.isEmpty(userInfo.getAlias())) {
                                     userInfo.setAlias(createRandomName());
                                 }
                                 getView().setAliasName(userInfo.getAlias());
@@ -224,8 +216,8 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
                             ArrayList<JFGDPMsg> dp = new ArrayList<>();
                             JFGDPMsg msg = new JFGDPMsg(601, 0);
                             dp.add(msg);
-                            long seq = JfgCmdInsurance.getCmd().getInstance().robotGetData("",dp,0,false, 0);
-                            AppLogger.d("getMesgDpData"+seq);
+                            long seq = JfgCmdInsurance.getCmd().getInstance().robotGetData("", dp, 0, false, 0);
+                            AppLogger.d("getMesgDpData" + seq);
                         } catch (JfgException e) {
                             e.printStackTrace();
                         }
@@ -233,13 +225,14 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
                 }, new Action1<Throwable>() {
                     @Override
                     public void call(Throwable throwable) {
-                        AppLogger.e("getMesgDpData"+throwable.getLocalizedMessage());
+                        AppLogger.e("getMesgDpData" + throwable.getLocalizedMessage());
                     }
                 });
     }
 
     /**
      * Dp获取消息记录的回调
+     *
      * @return
      */
     @Override
@@ -249,7 +242,7 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
                 .map(new Func1<RobotoGetDataRsp, ArrayList<MineMessageBean>>() {
                     @Override
                     public ArrayList<MineMessageBean> call(RobotoGetDataRsp robotoGetDataRsp) {
-                        if (robotoGetDataRsp != null && robotoGetDataRsp instanceof RobotoGetDataRsp){
+                        if (robotoGetDataRsp != null && robotoGetDataRsp instanceof RobotoGetDataRsp) {
                             results.clear();
                             ArrayList<JFGDPMsg> jfgdpMsgs = robotoGetDataRsp.map.get(601);
                             results.addAll(convertData(jfgdpMsgs));
@@ -261,7 +254,7 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
                 .subscribe(new Action1<ArrayList<MineMessageBean>>() {
                     @Override
                     public void call(ArrayList<MineMessageBean> list) {
-                        if (list.size() != 0){
+                        if (list.size() != 0) {
                             getView().setMesgNumber(list.size());
                         }
                     }
@@ -271,6 +264,7 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
 
     /**
      * 拿到消息的所有的数据
+     *
      * @return
      */
     @Override
@@ -280,6 +274,7 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
 
     /**
      * 是否三方登录的回调
+     *
      * @return
      */
     @Override
@@ -297,15 +292,16 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
 
     /**
      * 解析转换数据
+     *
      * @param jfgdpMsgs
      */
     private ArrayList<MineMessageBean> convertData(ArrayList<JFGDPMsg> jfgdpMsgs) {
         MineMessageBean bean;
         ArrayList<MineMessageBean> results = new ArrayList<MineMessageBean>();
-        if (jfgdpMsgs != null){
-            for (JFGDPMsg jfgdpMsg:jfgdpMsgs){
+        if (jfgdpMsgs != null) {
+            for (JFGDPMsg jfgdpMsg : jfgdpMsgs) {
                 try {
-                    bean = DpUtils.unpackData(jfgdpMsg.packValue,MineMessageBean.class);
+                    bean = DpUtils.unpackData(jfgdpMsg.packValue, MineMessageBean.class);
                     results.add(bean);
                 } catch (IOException e) {
                     e.printStackTrace();

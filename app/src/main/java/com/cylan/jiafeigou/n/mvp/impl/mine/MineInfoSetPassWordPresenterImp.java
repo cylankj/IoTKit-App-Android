@@ -22,6 +22,7 @@ import rx.subscriptions.CompositeSubscription;
 public class MineInfoSetPassWordPresenterImp extends AbstractPresenter<MineInfoSetPassWordContract.View> implements MineInfoSetPassWordContract.Presenter {
 
     private CompositeSubscription subscription;
+
     public MineInfoSetPassWordPresenterImp(MineInfoSetPassWordContract.View view) {
         super(view);
         view.setPresenter(this);
@@ -29,9 +30,9 @@ public class MineInfoSetPassWordPresenterImp extends AbstractPresenter<MineInfoS
 
     @Override
     public void start() {
-        if (subscription != null && !subscription.isUnsubscribed()){
+        if (subscription != null && !subscription.isUnsubscribed()) {
             subscription.unsubscribe();
-        }else {
+        } else {
             subscription = new CompositeSubscription();
             subscription.add(changePwdBack());
         }
@@ -39,7 +40,7 @@ public class MineInfoSetPassWordPresenterImp extends AbstractPresenter<MineInfoS
 
     @Override
     public void stop() {
-        if (subscription != null && !subscription.isUnsubscribed()){
+        if (subscription != null && !subscription.isUnsubscribed()) {
             subscription.unsubscribe();
         }
     }
@@ -88,6 +89,7 @@ public class MineInfoSetPassWordPresenterImp extends AbstractPresenter<MineInfoS
 
     /**
      * 修改密码的回调
+     *
      * @return
      */
     @Override
@@ -97,8 +99,8 @@ public class MineInfoSetPassWordPresenterImp extends AbstractPresenter<MineInfoS
                 .subscribe(new Action1<RxEvent.ChangePwdBack>() {
                     @Override
                     public void call(RxEvent.ChangePwdBack changePwdBack) {
-                        if (changePwdBack != null && changePwdBack instanceof RxEvent.ChangePwdBack){
-                            if (getView()!= null){
+                        if (changePwdBack != null && changePwdBack instanceof RxEvent.ChangePwdBack) {
+                            if (getView() != null) {
                                 getView().changePwdResult(changePwdBack.jfgResult);
                             }
                         }

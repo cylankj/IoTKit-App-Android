@@ -840,6 +840,7 @@ public class DpMsgDefine {
 
     /**
      * will be removed
+     *
      * @deprecated
      */
     public static class DpWrap implements Parcelable {

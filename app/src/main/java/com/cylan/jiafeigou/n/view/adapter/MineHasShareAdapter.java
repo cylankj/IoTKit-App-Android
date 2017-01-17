@@ -44,7 +44,7 @@ public class MineHasShareAdapter extends SuperAdapter<RelAndFriendBean> {
 
     @Override
     public void onBind(SuperViewHolder holder, int viewType, int layoutPosition, final RelAndFriendBean item) {
-        holder.setText(R.id.tv_username, TextUtils.isEmpty(item.markName)?item.alias:item.markName);
+        holder.setText(R.id.tv_username, TextUtils.isEmpty(item.markName) ? item.alias : item.markName);
         holder.setText(R.id.tv_friend_account, item.account);
         holder.setOnClickListener(R.id.tv_btn_cancle_share, new View.OnClickListener() {
             @Override
@@ -65,7 +65,7 @@ public class MineHasShareAdapter extends SuperAdapter<RelAndFriendBean> {
                 .into(new BitmapImageViewTarget(userImag) {
                     @Override
                     protected void setResource(Bitmap resource) {
-                        if (item.iconUrl.equals(holder.itemView.getTag())){
+                        if (item.iconUrl.equals(holder.itemView.getTag())) {
                             RoundedBitmapDrawable circularBitmapDrawable =
                                     RoundedBitmapDrawableFactory.create(getContext().getResources(), resource);
                             circularBitmapDrawable.setCircular(true);

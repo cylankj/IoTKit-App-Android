@@ -14,7 +14,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendListShareDevicesToContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineFriendListShareDevicesPresenterImp;
 import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
@@ -100,7 +99,7 @@ public class MineFriendsListShareDevicesFragment extends Fragment implements Min
     }
 
     private void initPresenter() {
-        presenter = new MineFriendListShareDevicesPresenterImp(shareDeviceBean.account,this);
+        presenter = new MineFriendListShareDevicesPresenterImp(shareDeviceBean.account, this);
     }
 
     @Override
@@ -115,7 +114,7 @@ public class MineFriendsListShareDevicesFragment extends Fragment implements Min
                 getFragmentManager().popBackStack();
                 break;
             case R.id.iv_mine_friends_share_devices_ok:
-                if (chooseList.size() == 0)return;
+                if (chooseList.size() == 0) return;
                 presenter.sendShareToReq(chooseList, shareDeviceBean);
                 break;
         }
@@ -129,9 +128,9 @@ public class MineFriendsListShareDevicesFragment extends Fragment implements Min
     @Override
     public void initTitleView(RelAndFriendBean bean) {
         if (TextUtils.isEmpty(bean.markName.trim())) {
-            tvShareTo.setText(String.format(getString(R.string.Tap3_Friends_Share),bean.alias));
+            tvShareTo.setText(String.format(getString(R.string.Tap3_Friends_Share), bean.alias));
         } else {
-            tvShareTo.setText(String.format(getString(R.string.Tap3_Friends_Share),bean.markName));
+            tvShareTo.setText(String.format(getString(R.string.Tap3_Friends_Share), bean.markName));
         }
     }
 
@@ -187,11 +186,12 @@ public class MineFriendsListShareDevicesFragment extends Fragment implements Min
 
     /**
      * 网络状态变化
+     *
      * @param state
      */
     @Override
     public void onNetStateChanged(int state) {
-        if (state == -1){
+        if (state == -1) {
             hideLoadingDialog();
             hideSendReqProgress();
             ToastUtil.showNegativeToast(getString(R.string.NO_NETWORK_1));
@@ -240,7 +240,7 @@ public class MineFriendsListShareDevicesFragment extends Fragment implements Min
 
         int totalFriend = chooseList.size();
         Iterator iterators = chooseList.iterator();
-        while(iterators.hasNext()){
+        while (iterators.hasNext()) {
             DeviceBean friendBean = (DeviceBean) iterators.next();
             for (RxEvent.ShareDeviceCallBack callBack : callBacks) {
                 if (friendBean.uuid.equals(callBack.cid) && callBack.requestId == 0) {
@@ -254,8 +254,8 @@ public class MineFriendsListShareDevicesFragment extends Fragment implements Min
             getFragmentManager().popBackStack();
         } else if (chooseList.size() == totalFriend) {
             ToastUtil.showPositiveToast(getString(R.string.Tap3_ShareDevice_FailTips));
-        }else {
-            ToastUtil.showPositiveToast(String.format(getString(R.string.Tap3_ShareDevice_Friends_FailTips),chooseList.size()));
+        } else {
+            ToastUtil.showPositiveToast(String.format(getString(R.string.Tap3_ShareDevice_Friends_FailTips), chooseList.size()));
         }
     }
 

@@ -22,7 +22,6 @@ import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.cylan.entity.jniCall.JFGFriendRequest;
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendAddReqDetailContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineFriendAddReqDetailPresenterImp;
 import com.cylan.jiafeigou.n.mvp.model.MineAddReqBean;
@@ -91,7 +90,7 @@ public class MineFriendAddReqDetailFragment extends Fragment implements MineFrie
         Bundle arguments = getArguments();
         boolean isFrome = arguments.getBoolean("isFrom");
         addRequestItems = (MineAddReqBean) arguments.getSerializable("addRequestItems");
-        if (TextUtils.isEmpty(addRequestItems.alias)){
+        if (TextUtils.isEmpty(addRequestItems.alias)) {
             tvRelativeAndFriendName.setText("sjd172");
         } else {
             tvRelativeAndFriendName.setText(addRequestItems.alias);

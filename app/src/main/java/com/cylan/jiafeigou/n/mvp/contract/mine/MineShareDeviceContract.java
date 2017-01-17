@@ -92,9 +92,10 @@ public interface MineShareDeviceContract {
 
         /**
          * 取消分享成功后列表中删除该亲友
+         *
          * @param arrayList
          */
-        void unShareSucceedDel(int position,ArrayList<String> arrayList);
+        void unShareSucceedDel(int position, ArrayList<String> arrayList);
 
         /**
          * 分享成功后列表中添加一条数据

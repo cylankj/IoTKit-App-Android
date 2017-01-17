@@ -45,6 +45,7 @@ public interface MineInfoSetPassWordContract {
 
         /**
          * 修改密码的回调
+         *
          * @return
          */
         Subscription changePwdBack();

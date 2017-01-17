@@ -54,7 +54,7 @@ import butterknife.OnTextChanged;
  * Created by lxh on 16-6-14.
  */
 
-public class ForgetPwdFragment extends Fragment implements ForgetPwdContract.View{
+public class ForgetPwdFragment extends Fragment implements ForgetPwdContract.View {
 
 
     @BindView(R.id.et_forget_username)
@@ -219,7 +219,7 @@ public class ForgetPwdFragment extends Fragment implements ForgetPwdContract.Vie
         tvMeterGetCode.setEnabled(false);
         if (presenter != null)
             Toast.makeText(getActivity(), getString(R.string.Tap3_FriendsAdd_Contacts_Sent), Toast.LENGTH_SHORT).show();
-            presenter.submitAccount(ViewUtils.getTextViewContent(etForgetUsername));
+        presenter.submitAccount(ViewUtils.getTextViewContent(etForgetUsername));
     }
 
     @OnClick(R.id.iv_forget_clear_username)
@@ -394,6 +394,7 @@ public class ForgetPwdFragment extends Fragment implements ForgetPwdContract.Vie
 
     /**
      * 新密码设置界面
+     *
      * @param phoneNewPwdView
      */
     private void initNewPwdView(View phoneNewPwdView) {
@@ -415,9 +416,9 @@ public class ForgetPwdFragment extends Fragment implements ForgetPwdContract.Vie
 
             @Override
             public void afterTextChanged(Editable s) {
-                iv_Clear.setVisibility(TextUtils.isEmpty(s)? View.GONE:View.VISIBLE);
+                iv_Clear.setVisibility(TextUtils.isEmpty(s) ? View.GONE : View.VISIBLE);
                 iv_Clear.setClickable(true);
-                sureBtn.setEnabled(TextUtils.isEmpty(s) ? false:true);
+                sureBtn.setEnabled(TextUtils.isEmpty(s) ? false : true);
             }
         });
 
@@ -425,11 +426,11 @@ public class ForgetPwdFragment extends Fragment implements ForgetPwdContract.Vie
             @Override
             public void onClick(View v) {
                 String newPwd = et_newpass.getText().toString().trim();
-                if (newPwd.length()<6){
+                if (newPwd.length() < 6) {
                     ToastUtil.showToast(getString(R.string.PASSWORD_LESSTHAN_SIX));
                     return;
                 }
-                if (NetUtils.getNetType(ContextUtils.getContext()) == -1){
+                if (NetUtils.getNetType(ContextUtils.getContext()) == -1) {
                     ToastUtil.showToast(getString(R.string.NO_NETWORK_4));
                     return;
                 }
@@ -482,10 +483,10 @@ public class ForgetPwdFragment extends Fragment implements ForgetPwdContract.Vie
      */
     @Override
     public void checkSmsCodeResult(int code) {
-        if (code == 181){
+        if (code == 181) {
             ToastUtil.showToast(getString(R.string.INVALID_CODE));
-        }else if (code == 0){
-            if (!PreferencesUtils.getString(JConstant.SAVE_TEMP_ACCOUNT,"").equals(etForgetUsername.getText().toString().trim())){
+        } else if (code == 0) {
+            if (!PreferencesUtils.getString(JConstant.SAVE_TEMP_ACCOUNT, "").equals(etForgetUsername.getText().toString().trim())) {
                 ToastUtil.showToast(getString(R.string.Tap0_wrongcode));
                 return;
             }
@@ -495,23 +496,24 @@ public class ForgetPwdFragment extends Fragment implements ForgetPwdContract.Vie
 
     /**
      * 重置密码的结果
+     *
      * @param code
      */
     @Override
     public void resetPwdResult(int code) {
-        if (code != JError.ErrorOK){
+        if (code != JError.ErrorOK) {
             ToastUtil.showToast("重置密码失败");
             return;
         }
         ToastUtil.showToast(getString(R.string.PWD_OK));
-        if (getView()!=null){
+        if (getView() != null) {
             getView().postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     RxBus.getCacheInstance().post(new RxEvent.LoginPopBack(PreferencesUtils.getString(JConstant.SAVE_TEMP_ACCOUNT)));
                     ActivityUtils.justPop(getActivity());
                 }
-            },500);
+            }, 500);
         }
     }
 

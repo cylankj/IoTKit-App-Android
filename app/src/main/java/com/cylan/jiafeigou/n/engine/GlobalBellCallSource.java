@@ -52,7 +52,7 @@ public class GlobalBellCallSource {
         intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, mHolderBellCall.caller.cid);
         intent.putExtra(JConstant.VIEW_CALL_WAY, JConstant.VIEW_CALL_WAY_LISTEN);
         intent.putExtra(JConstant.VIEW_CALL_WAY_EXTRA, mHolderBellCall.caller.url);
-        intent.putExtra(JConstant.VIEW_CALL_WAY_TIME,mHolderBellCall.caller.time);
+        intent.putExtra(JConstant.VIEW_CALL_WAY_TIME, mHolderBellCall.caller.time);
         ContextUtils.getContext().startActivity(intent);
 
     }

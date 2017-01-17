@@ -15,7 +15,6 @@ import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.rx.RxHelper;
 import com.cylan.jiafeigou.support.log.AppLogger;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -192,11 +191,6 @@ public class DataPointManager implements IParser, IDataPoint {
         if (DEBUG) Log.d(TAG, "removeId: " + uuid + " " + id + " set:" + mapObject.containsKey(id));
         if (isSetType(id)) return bundleSetMap.remove(uuid + id);
         return bundleMap.remove(uuid + id);
-    }
-
-    @SuppressWarnings("unchecked")
-    public static <T extends Set<?>> T cast(Object obj) {
-        return (T) obj;
     }
 
     private Subscription fullDataPointAssembler() {
@@ -503,7 +497,7 @@ public class DataPointManager implements IParser, IDataPoint {
                     } catch (JfgException e) {
                         AppLogger.e("" + e.getLocalizedMessage());
                     }
-                    AppLogger.i(TAG + ",fetchUnreadCount:" + id);
+                    AppLogger.i(TAG + ",fetchUnreadCount:" + uuid + " " + id);
 
                 });
     }
@@ -520,7 +514,6 @@ public class DataPointManager implements IParser, IDataPoint {
     public long robotGetData(String peer, ArrayList<JFGDPMsg> queryDps, int limit, boolean asc, int timeoutMs) throws JfgException {
         long seq = JfgCmdInsurance.getCmd().robotGetData(peer, queryDps, limit, asc, timeoutMs);
         querySeqMap.put(seq, seq);
-        Log.d("robotGetData", "robotGetData....此处可以简化,版本管理在这里做.,传一个List<Long(id)>");
         return seq;
     }
 

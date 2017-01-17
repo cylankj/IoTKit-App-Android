@@ -2,10 +2,11 @@ package com.cylan.jiafeigou.n.mvp.impl.mag;
 
 import android.text.TextUtils;
 
+import com.cylan.entity.jniCall.JFGDevice;
+import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
 import com.cylan.jiafeigou.n.db.DataBaseUtil;
 import com.cylan.jiafeigou.n.mvp.contract.mag.HomeMagLiveContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
-import com.cylan.jiafeigou.n.mvp.model.BeanMagInfo;
 import com.cylan.jiafeigou.n.mvp.model.MagBean;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
@@ -32,7 +33,6 @@ public class HomeMagLivePresenterImp extends AbstractPresenter<HomeMagLiveContra
     private boolean isChick = false;
     private DbManager dbManager;
     private CompositeSubscription compositeSubscription;
-    private BeanMagInfo magInfoBean;
     private String uuid;
 
     public HomeMagLivePresenterImp(HomeMagLiveContract.View view, String uuid) {
@@ -43,6 +43,7 @@ public class HomeMagLivePresenterImp extends AbstractPresenter<HomeMagLiveContra
 
     @Override
     public void start() {
+        super.start();
         if (compositeSubscription != null && !compositeSubscription.isUnsubscribed()) {
             compositeSubscription.unsubscribe();
         } else {
@@ -53,6 +54,7 @@ public class HomeMagLivePresenterImp extends AbstractPresenter<HomeMagLiveContra
 
     @Override
     public void stop() {
+        super.stop();
         if (compositeSubscription != null && !compositeSubscription.isUnsubscribed()) {
             compositeSubscription.unsubscribe();
         }
@@ -130,17 +132,6 @@ public class HomeMagLivePresenterImp extends AbstractPresenter<HomeMagLiveContra
                 });
     }
 
-    /**
-     * 拿到门磁信息
-     *
-     * @return
-     */
-    @Override
-    public BeanMagInfo getMagInfoBean() {
-        if (magInfoBean == null)
-            magInfoBean = new BeanMagInfo();
-        return magInfoBean;
-    }
 
     /**
      * 获取到设备是名字
@@ -149,8 +140,11 @@ public class HomeMagLivePresenterImp extends AbstractPresenter<HomeMagLiveContra
      */
     @Override
     public String getDeviceName() {
-        return TextUtils.isEmpty(magInfoBean.deviceBase.alias) ?
-                magInfoBean.deviceBase.uuid : magInfoBean.deviceBase.alias;
+        JFGDevice jfgDevice = GlobalDataProxy.getInstance().fetch(uuid);
+        if (jfgDevice == null)
+            return uuid;
+        return TextUtils.isEmpty(jfgDevice.alias) ?
+                uuid : jfgDevice.alias;
     }
 
 }

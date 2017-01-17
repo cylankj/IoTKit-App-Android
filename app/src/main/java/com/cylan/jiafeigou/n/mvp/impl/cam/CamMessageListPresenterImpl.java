@@ -105,7 +105,7 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
                 .observeOn(AndroidSchedulers.mainThread())
                 .filter(new RxHelper.Filter<>("messageListSub()=null?", getView() != null))
                 .map((ArrayList<CamMessageBean> jfgdpMsgs) -> {
-                    getView().onMessageListRsp(jfgdpMsgs);
+//                    getView().onMessageListRsp(jfgdpMsgs);
                     AppLogger.i("messageListSub+" + jfgdpMsgs.size());
                     getView().setRefresh(false);
                     return null;

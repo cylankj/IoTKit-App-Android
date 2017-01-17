@@ -8,7 +8,6 @@ import android.net.ConnectivityManager;
 import android.net.wifi.WifiManager;
 import android.text.TextUtils;
 
-import com.cylan.annotation.Device;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendDetailContract;
@@ -44,9 +43,9 @@ public class MineFriendDetailPresenterImp extends AbstractPresenter<MineFriendDe
 
     @Override
     public void start() {
-        if (subscription != null && !subscription.isUnsubscribed()){
+        if (subscription != null && !subscription.isUnsubscribed()) {
             subscription.unsubscribe();
-        }else {
+        } else {
             subscription = new CompositeSubscription();
             subscription.add(delFriendBack());
         }
@@ -55,7 +54,7 @@ public class MineFriendDetailPresenterImp extends AbstractPresenter<MineFriendDe
 
     @Override
     public void stop() {
-        if (subscription != null && !subscription.isUnsubscribed()){
+        if (subscription != null && !subscription.isUnsubscribed()) {
             subscription.unsubscribe();
         }
         unregisterNetworkMonitor();
@@ -99,7 +98,7 @@ public class MineFriendDetailPresenterImp extends AbstractPresenter<MineFriendDe
                 ContextUtils.getContext().registerReceiver(network, filter);
             }
         } catch (Exception e) {
-            AppLogger.e("registerNetworkMonitor"+e.getLocalizedMessage());
+            AppLogger.e("registerNetworkMonitor" + e.getLocalizedMessage());
         }
     }
 
@@ -113,6 +112,7 @@ public class MineFriendDetailPresenterImp extends AbstractPresenter<MineFriendDe
 
     /**
      * 删除好友的回调
+     *
      * @return
      */
     @Override
@@ -122,7 +122,7 @@ public class MineFriendDetailPresenterImp extends AbstractPresenter<MineFriendDe
                 .subscribe(new Action1<RxEvent.DelFriendBack>() {
                     @Override
                     public void call(RxEvent.DelFriendBack delFriendBack) {
-                        if (delFriendBack != null && delFriendBack instanceof RxEvent.DelFriendBack){
+                        if (delFriendBack != null && delFriendBack instanceof RxEvent.DelFriendBack) {
                             getView().handlerDelCallBack(delFriendBack.jfgResult.code);
                         }
                     }

@@ -209,7 +209,7 @@ public class MineShareToFriendPresenterImp extends AbstractPresenter<MineShareTo
             bean.alias = friendAccount.alias;
             bean.markName = friendAccount.markName;
             try {
-                bean.iconUrl = JfgCmdInsurance.getCmd().getCloudUrlByType(JfgEnum.JFG_URL.PORTRAIT,0,friendAccount.account+".jpg","");
+                bean.iconUrl = JfgCmdInsurance.getCmd().getCloudUrlByType(JfgEnum.JFG_URL.PORTRAIT, 0, friendAccount.account + ".jpg", "");
             } catch (JfgException e) {
                 e.printStackTrace();
             }

@@ -4,7 +4,6 @@ import android.content.Context;
 
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
-import com.cylan.jiafeigou.n.mvp.model.BeanCamInfo;
 
 /**
  * Created by hunt on 16-5-26.

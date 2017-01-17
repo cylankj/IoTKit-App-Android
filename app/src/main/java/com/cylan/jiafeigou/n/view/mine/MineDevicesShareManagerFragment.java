@@ -27,7 +27,6 @@ import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.widget.LoadingDialog;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -61,11 +60,11 @@ public class MineDevicesShareManagerFragment extends Fragment implements MineDev
 
     private OnUnShareChangeListener listener;
 
-    public interface OnUnShareChangeListener{
-        void unShareChange(int number,ArrayList<String> account);
+    public interface OnUnShareChangeListener {
+        void unShareChange(int number, ArrayList<String> account);
     }
 
-    public void setOncancleChangeListener(OnUnShareChangeListener listener){
+    public void setOncancleChangeListener(OnUnShareChangeListener listener) {
         this.listener = listener;
     }
 
@@ -107,8 +106,8 @@ public class MineDevicesShareManagerFragment extends Fragment implements MineDev
         switch (view.getId()) {
             case R.id.iv_home_mine_share_devices_manager_back:
                 getFragmentManager().popBackStack();
-                if (listener != null){
-                    listener.unShareChange(unShareSucNum,unShareAccount);
+                if (listener != null) {
+                    listener.unShareChange(unShareSucNum, unShareAccount);
                 }
                 break;
         }
@@ -118,7 +117,7 @@ public class MineDevicesShareManagerFragment extends Fragment implements MineDev
         Bundle arguments = getArguments();
         devicebean = arguments.getParcelable("devicebean");
         hasShareFriendlist = arguments.getParcelableArrayList("friendlist");
-        setTopTitle(TextUtils.isEmpty(devicebean.alias)?devicebean.uuid:devicebean.alias);
+        setTopTitle(TextUtils.isEmpty(devicebean.alias) ? devicebean.uuid : devicebean.alias);
     }
 
     @Override
@@ -194,8 +193,8 @@ public class MineDevicesShareManagerFragment extends Fragment implements MineDev
             presenter.stop();
         }
 
-        if (listener != null){
-            listener.unShareChange(unShareSucNum,unShareAccount);
+        if (listener != null) {
+            listener.unShareChange(unShareSucNum, unShareAccount);
         }
     }
 
@@ -215,21 +214,22 @@ public class MineDevicesShareManagerFragment extends Fragment implements MineDev
 
     /**
      * 取消分享的结果
+     *
      * @param result
      */
     @Override
     public void showUnShareResult(RxEvent.UnshareDeviceCallBack result) {
-        if (result.i == JError.ErrorOK){
+        if (result.i == JError.ErrorOK) {
             ToastUtil.showToast(getString(R.string.Tap3_ShareDevice_DeleteSucces));
             deleteItems();
-            unShareSucNum ++;
+            unShareSucNum++;
             unShareAccount.add(result.account);
-        }else {
+        } else {
             ToastUtil.showToast(getString(R.string.Tap3_ShareDevice_CancelShareTips));
             return;
         }
 
-        if (hasShareAdapter.getItemCount() == 0){
+        if (hasShareAdapter.getItemCount() == 0) {
             hideHasShareListTitle();
             showNoHasShareFriendNullView();
         }
@@ -247,16 +247,16 @@ public class MineDevicesShareManagerFragment extends Fragment implements MineDev
 
     /**
      * 网络状态变化
+     *
      * @param state
      */
     @Override
     public void onNetStateChanged(int state) {
-        if (state == -1){
+        if (state == -1) {
             hideCancleShareProgress();
             ToastUtil.showNegativeToast(getString(R.string.NO_NETWORK_1));
         }
     }
-
 
 
 }

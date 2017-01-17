@@ -37,6 +37,7 @@ public class MineFriendsAddFriendPresenterImp extends AbstractPresenter<MineFrie
 
     /**
      * 检测相机的权限
+     *
      * @return
      */
     @Override
@@ -45,7 +46,7 @@ public class MineFriendsAddFriendPresenterImp extends AbstractPresenter<MineFrie
                 Manifest.permission.CAMERA)
                 != PackageManager.PERMISSION_GRANTED) {
             return false;
-        }else{
+        } else {
             return true;
         }
     }
