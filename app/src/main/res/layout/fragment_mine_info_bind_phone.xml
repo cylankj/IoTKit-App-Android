@@ -44,90 +44,107 @@
             android:src="@drawable/icon_finish_disable" />
     </RelativeLayout>
 
-    <RelativeLayout
-        android:layout_marginTop="8dp"
-        android:layout_width="match_parent"
-        android:layout_height="54dp">
-
-        <EditText
-            android:id="@+id/et_mine_bind_phone"
-            android:textColor="@color/color_333333"
-            android:textSize="16sp"
-            android:layout_centerVertical="true"
-            android:hint="@string/PHONE_NUMBER"
-            android:maxLength="11"
-            android:inputType="phone"
-            android:background="@null"
-            android:layout_marginRight="20dp"
-            android:layout_marginLeft="20dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-        <View
-            android:id="@+id/view_mine_personal_information_mailbox"
-            android:layout_marginBottom="8dp"
-            android:layout_alignParentBottom="true"
-            android:layout_marginRight="20dp"
-            android:layout_marginLeft="20dp"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/color_f2f2f2" />
-
-        <ImageView
-            android:id="@+id/iv_mine_bind_phone_clear"
-            android:visibility="gone"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="20dp"
-            android:layout_alignParentRight="true"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/btn_login_clear_text" />
-    </RelativeLayout>
-
     <FrameLayout
-        android:id="@+id/fLayout_verification_code_input_box"
         android:layout_width="match_parent"
-        android:layout_height="54dp">
+        android:layout_height="wrap_content">
 
-        <EditText
-            android:id="@+id/et_verification_input"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginBottom="5dp"
-            android:layout_marginTop="5dp"
-            android:background="@null"
-            android:focusable="true"
-            android:focusableInTouchMode="true"
-            android:hint="@string/ENTER_CODE"
-            android:inputType="numberDecimal"
-            android:maxLength="6"
-            android:paddingLeft="20dp"
-            android:paddingRight="20dp"
-            android:textCursorDrawable="@drawable/bg_common_cursor"
-            android:textColor="@color/color_333333"
-            android:textSize="16sp" />
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/tv_meter_get_code"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_gravity="end"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:text="@string/GET_CODE"
-            android:enabled="false"
-            android:gravity="center"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:textColor="@color/common_btn_color_state" />
+            <RelativeLayout
+                android:layout_marginTop="8dp"
+                android:layout_width="match_parent"
+                android:layout_height="54dp">
+
+                <EditText
+                    android:id="@+id/et_mine_bind_phone"
+                    android:textColor="@color/color_333333"
+                    android:textSize="16sp"
+                    android:layout_centerVertical="true"
+                    android:hint="@string/PHONE_NUMBER"
+                    android:maxLength="11"
+                    android:inputType="phone"
+                    android:background="@null"
+                    android:layout_marginRight="20dp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+                <View
+                    android:id="@+id/view_mine_personal_information_mailbox"
+                    android:layout_marginBottom="8dp"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginRight="20dp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/color_f2f2f2" />
+
+                <ImageView
+                    android:id="@+id/iv_mine_bind_phone_clear"
+                    android:visibility="gone"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="20dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/btn_login_clear_text" />
+            </RelativeLayout>
+
+            <FrameLayout
+                android:id="@+id/fLayout_verification_code_input_box"
+                android:layout_width="match_parent"
+                android:layout_height="54dp">
+
+                <EditText
+                    android:id="@+id/et_verification_input"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginTop="5dp"
+                    android:background="@null"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
+                    android:hint="@string/ENTER_CODE"
+                    android:inputType="numberDecimal"
+                    android:maxLength="6"
+                    android:paddingLeft="20dp"
+                    android:paddingRight="20dp"
+                    android:textCursorDrawable="@drawable/bg_common_cursor"
+                    android:textColor="@color/color_333333"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:id="@+id/tv_meter_get_code"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="end"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:text="@string/GET_CODE"
+                    android:enabled="false"
+                    android:gravity="center"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:textColor="@color/common_btn_color_state" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_gravity="bottom"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
+                    android:background="@color/color_f2f2f2" />
+            </FrameLayout>
+
+        </LinearLayout>
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_gravity="bottom"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:background="@color/color_f2f2f2" />
+            android:layout_height="10dp"
+            android:background="@drawable/little_shape" />
     </FrameLayout>
 
 </LinearLayout>

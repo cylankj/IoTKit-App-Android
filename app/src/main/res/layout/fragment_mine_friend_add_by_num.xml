@@ -110,6 +110,11 @@
                 android:layout_height="wrap_content" />
         </LinearLayout>
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="10dp"
+            android:background="@drawable/little_shape" />
+
     </FrameLayout>
 
 </LinearLayout>

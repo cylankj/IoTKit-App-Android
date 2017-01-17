@@ -14,15 +14,6 @@
         android:layout_height="73dp"
         android:background="#0BA8CF">
 
-        <!--<TextView
-            android:id="@+id/tv_mine_help_back"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_marginTop="26dp"
-            android:padding="15dp"
-            android:text="返回"
-            android:textColor="@color/color_white" />-->
-
         <ImageView
             android:id="@+id/iv_home_mine_help_back"
             android:layout_width="wrap_content"
@@ -68,15 +59,25 @@
         android:text="热门问题"
         android:visibility="gone" />
 
-    <com.cylan.jiafeigou.widget.HomeMineItemView
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:clickable="true"
-        hunt:rightDrawable="@drawable/icon_mine_arrow_next"
-        hunt:text="设备离线，或连接中"
-        hunt:textColor="@color/color_333333"
-        hunt:textSize="16sp" />
+        android:layout_height="wrap_content">
 
+        <com.cylan.jiafeigou.widget.HomeMineItemView
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:clickable="true"
+            hunt:rightDrawable="@drawable/icon_mine_arrow_next"
+            hunt:text="设备离线，或连接中"
+            hunt:textColor="@color/color_333333"
+            hunt:textSize="16sp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="10dp"
+            android:background="@drawable/little_shape" />
+
+    </FrameLayout>
 
     <com.cylan.jiafeigou.widget.HomeMineItemView
         android:layout_width="match_parent"
@@ -114,12 +115,14 @@
         hunt:textColor="@color/color_333333"
         hunt:textSize="16sp" />
 
+
+
     <WebView
         android:id="@+id/wv_mine_help"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="visible">
-
     </WebView>
+
 
 </LinearLayout>

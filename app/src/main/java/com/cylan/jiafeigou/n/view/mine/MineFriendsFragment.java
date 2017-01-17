@@ -89,8 +89,13 @@ public class MineFriendsFragment extends Fragment implements MineFriendsContract
         View view = inflater.inflate(R.layout.fragment_home_mine_friends, container, false);
         ButterKnife.bind(this, view);
         initPresenter();
-        showLoadingDialog();
         return view;
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+//        showLoadingDialog();
     }
 
     @Override
@@ -219,7 +224,7 @@ public class MineFriendsFragment extends Fragment implements MineFriendsContract
      */
     @Override
     public void hideLoadingDialog() {
-        LoadingDialog.dismissLoading(getFragmentManager());
+//        LoadingDialog.dismissLoading(getFragmentManager());
     }
 
     @Override
