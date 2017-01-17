@@ -8,8 +8,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.base.module.CameraDevice;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
+import com.cylan.jiafeigou.base.module.JFGCameraDevice;
 import com.cylan.jiafeigou.base.view.JFGPresenter;
 import com.cylan.jiafeigou.base.view.JFGView;
 import com.cylan.jiafeigou.base.wrapper.BaseFragment;
@@ -130,7 +130,7 @@ public class DelayRecordDeviceFragment extends BaseFragment implements OnItemCli
 
         @Override
         public void onBind(SuperViewHolder holder, int viewType, int layoutPosition, String item) {
-            CameraDevice device = DataSourceManager.getInstance().getJFGDevice(item);
+            JFGCameraDevice device = DataSourceManager.getInstance().getJFGDevice(item);
             boolean online = device.net != null && (device.net.net != 0 && device.net.net != -1);
             holder.setEnabled(R.id.item_device_container, online);
             holder.setText(R.id.item_device_alias, device.alias);

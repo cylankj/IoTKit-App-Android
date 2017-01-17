@@ -322,7 +322,7 @@ dependencies {
     compile rootProject.ext.glide
     compile(name: rootProject.ext.cySdk, ext: 'aar')
     //自己写的 apt
-    compile project(':annotation')
+//    compile project(':annotation')
     compile project(':compiler')
 
     compile 'com.danikula:videocache:2.6.4'

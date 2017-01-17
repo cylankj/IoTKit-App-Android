@@ -13,11 +13,12 @@ import android.widget.TextView;
 import com.cylan.entity.jniCall.JFGMsgVideoResolution;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.base.module.CameraDevice;
+import com.cylan.jiafeigou.base.module.JFGCameraDevice;
 import com.cylan.jiafeigou.base.wrapper.BaseFragment;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamDelayRecordContract;
+import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.RecordControllerView;
@@ -98,6 +99,12 @@ public class DelayRecordMainFragment extends BaseFragment<CamDelayRecordContract
         initTimeIntervalDialog();
         initTimeDurationDialog();
         ViewUtils.setViewMarginStatusBar(mHeaderContainer);
+        setPreferenceValues();
+    }
+
+    private void setPreferenceValues() {
+        //无论以哪种方式进入该页面,都不应该再显示引导页了
+        PreferencesUtils.putBoolean(JConstant.KEY_DELAY_RECORD_GUIDE, false);
     }
 
 
@@ -318,16 +325,15 @@ public class DelayRecordMainFragment extends BaseFragment<CamDelayRecordContract
     }
 
     @Override
-    public void onShowProperty(CameraDevice device) {
-        if (device.camera_time_lapse_photography != null) {
+    public void onShowProperty(JFGCameraDevice device) {
+        if (!device.camera_time_lapse_photography.isNull()) {
             mRecordBeginTime = device.camera_time_lapse_photography.timeStart;
             mRecordTimeCycle = device.camera_time_lapse_photography.timePeriod;
             mRecordTimeDuration = device.camera_time_lapse_photography.timeDuration;
             mRecordStatus = device.camera_time_lapse_photography.status;
         }
-        if (device.camera_standby_flag != null) {
-            isStandBy = device.camera_standby_flag.value;
-        }
+
+
         refreshLayout();
         if (!isStandBy && mRecordStatus < 1) {
             mPresenter.startViewer();

@@ -7,7 +7,7 @@ import android.text.TextUtils;
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
-import com.cylan.jiafeigou.base.module.JFGDevice;
+import com.cylan.jiafeigou.base.module.JFGDPDevice;
 import com.cylan.jiafeigou.base.view.JFGPresenter;
 import com.cylan.jiafeigou.base.view.JFGSourceManager;
 import com.cylan.jiafeigou.base.view.JFGView;
@@ -41,7 +41,7 @@ public abstract class BasePresenter<V extends JFGView> implements JFGPresenter {
     private LongSparseArray<ResponseParser> mResponseParserMap = new LongSparseArray<>(32);
 
     protected V mView;
-    protected ArrayList<Long> mRequestSeqs = new ArrayList<>(32);
+    private ArrayList<Long> mRequestSeqs = new ArrayList<>(32);
 
     protected void unSubscribe(Subscription... subscriptions) {
         if (subscriptions != null) {
@@ -192,7 +192,7 @@ public abstract class BasePresenter<V extends JFGView> implements JFGPresenter {
     @Override
     public void onSetContentView() {
         if (mView != null && mView instanceof PropertyView) {
-            JFGDevice device = mSourceManager.getJFGDevice(mUUID);
+            JFGDPDevice device = mSourceManager.getJFGDevice(mUUID);
             if (device != null) ((PropertyView) mView).onShowProperty(device);
         }
     }

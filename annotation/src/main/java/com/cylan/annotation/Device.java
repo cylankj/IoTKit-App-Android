@@ -9,8 +9,11 @@ public enum Device {
     CAMERA,//
     BELL,//
     MAG,//
+    EFamily,
     CLOUD;//
 //    ALL;//
+
+
 
     Device() {
     }

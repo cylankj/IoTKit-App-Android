@@ -180,7 +180,7 @@ public class DpMsgDefine {
     }
 
     @Message
-    public static final class DPBindLog extends DataPoint<DPBindLog> {
+    public static final class DPBindLog extends DPSingle<DPBindLog> {
         @Index(0)
         public boolean isBind;
         @Index(1)
@@ -370,7 +370,7 @@ public class DpMsgDefine {
     }
 
     @Message
-    public static final class DPAlarmInfo extends DataPoint<DPAlarmInfo> implements Parcelable {
+    public static final class DPAlarmInfo extends DPMulti<DPAlarmInfo> implements Parcelable {
         @Index(0)
         public int timeStart;
         @Index(1)
@@ -753,9 +753,6 @@ public class DpMsgDefine {
         }
     }
 
-    /**
-     * @deprecated
-     */
     @DpBase
     public static class DpMsg implements Parcelable {
         public int msgId;
@@ -838,11 +835,6 @@ public class DpMsgDefine {
         };
     }
 
-    /**
-     * will be removed
-     *
-     * @deprecated
-     */
     public static class DpWrap implements Parcelable {
         public BaseBean baseDpDevice;
         public ArrayList<DpMsg> baseDpMsgList;
@@ -887,7 +879,8 @@ public class DpMsgDefine {
         };
     }
 
-    public static final class DPPrimary<T> extends DataPoint<T> {
+
+    public static final class DPPrimary<T> extends DataPoint {
         public T value;
 
         @Override
@@ -904,6 +897,10 @@ public class DpMsgDefine {
         public DPPrimary() {
         }
 
+        @Override
+        public T $() {
+            return (T) ((DPPrimary) super.$()).value;
+        }
 
         protected DPPrimary(Parcel in) {
             super(in);
@@ -923,7 +920,7 @@ public class DpMsgDefine {
         };
     }
 
-    public static final class DPSet<T> extends DataPoint<TreeSet<T>> {
+    public static final class DPSet<T> extends DataPoint {
         public TreeSet<T> value;
 
         @Override
@@ -931,6 +928,10 @@ public class DpMsgDefine {
             return 0;
         }
 
+        @Override
+        public T $() {
+            return (T) ((DPSet) super.$()).value;
+        }
 
         @Override
         public void writeToParcel(Parcel dest, int flags) {
@@ -961,7 +962,12 @@ public class DpMsgDefine {
         };
     }
 
-    public static abstract class DPSingle<T> extends DataPoint<T> {
+    public static abstract class DPSingle<T extends DataPoint> extends DataPoint {
+
+        @Override
+        public T $() {
+            return (T) super.$();
+        }
 
         @Override
         public int describeContents() {
@@ -981,9 +987,15 @@ public class DpMsgDefine {
         }
     }
 
-    public static abstract class DPMulti<T> extends DataPoint<T> {
+    public static abstract class DPMulti<T extends DataPoint> extends DataPoint {
         @Ignore
         public boolean isRead;
+
+
+        @Override
+        public T $() {
+            return (T) super.$();
+        }
 
         @Override
         public int describeContents() {
@@ -1025,26 +1037,6 @@ public class DpMsgDefine {
         public String fileName;
         @Index(5)
         public String place;
-
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            DPWonderItem mediaBean = (DPWonderItem) o;
-            return time == mediaBean.time;
-        }
-
-        @Override
-        public int hashCode() {
-            return time ^ (time >>> 32);
-        }
-
-
-        @Override
-        public int compareTo(DataPoint another) {
-            return (another != null && another instanceof DPWonderItem) ? ((DPWonderItem) another).time - time : 0;
-        }
 
         @Override
         public int describeContents() {

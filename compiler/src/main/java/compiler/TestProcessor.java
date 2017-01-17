@@ -9,7 +9,6 @@ import java.util.Set;
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.Processor;
 import javax.annotation.processing.RoundEnvironment;
-import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.TypeElement;
 
@@ -19,7 +18,6 @@ import javax.lang.model.element.TypeElement;
  */
 
 @AutoService(Processor.class)
-@SupportedSourceVersion(SourceVersion.RELEASE_7)
 public class TestProcessor extends AbstractProcessor {
 
     @Override
@@ -38,6 +36,11 @@ public class TestProcessor extends AbstractProcessor {
             idMap.brewIdMap(roundEnv, processingEnv);
         }
         return true;
+    }
+
+    @Override
+    public SourceVersion getSupportedSourceVersion() {
+        return SourceVersion.latestSupported();
     }
 }
 

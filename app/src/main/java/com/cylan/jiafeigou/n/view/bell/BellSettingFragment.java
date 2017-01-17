@@ -9,7 +9,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.base.module.BellDevice;
+import com.cylan.jiafeigou.base.module.JFGDoorBellDevice;
 import com.cylan.jiafeigou.base.wrapper.BaseFragment;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.misc.JConstant;
@@ -140,7 +140,7 @@ public class BellSettingFragment extends BaseFragment<BellSettingContract.Presen
     }
 
     @Override
-    public void onShowProperty(BellDevice device) {
+    public void onShowProperty(JFGDoorBellDevice device) {
         svSettingDeviceDetail.setTvSubTitle(TextUtils.isEmpty(device.alias)
                 ? device.uuid : device.alias);
         if (!TextUtils.isEmpty(device.shareAccount)) {

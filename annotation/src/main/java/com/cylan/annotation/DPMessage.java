@@ -8,13 +8,19 @@ import java.lang.annotation.Target;
 /*
  *  @项目名：  APT 
  *  @包名：    com.annotation
- *  @文件名:   DPProperty
+ *  @文件名:   DPMessage
  *  @创建者:   yanzhendong
- *  @创建时间:  2017/1/13 22:16
+ *  @创建时间:  2017/1/13 22:19
  *  @描述：    TODO
  */
 @Target(ElementType.FIELD)
-@Retention(RetentionPolicy.RUNTIME)
-public @interface DPProperty {
-    int msgId() default 0;
+@Retention(RetentionPolicy.CLASS)
+public @interface DPMessage {
+    String name();
+
+    Class<?> primaryType();
+
+    DPType dpType() default DPType.TYPE_FIELD;
+
+    DPTarget[] target() default {DPTarget.CAMERA};
 }

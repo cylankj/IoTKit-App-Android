@@ -70,6 +70,32 @@ public class TimeUtils {
         return calendar.getTimeInMillis();
     }
 
+    public static long getTodayEndTime() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.HOUR_OF_DAY, 23);
+        calendar.set(Calendar.MINUTE, 59);
+        calendar.set(Calendar.SECOND, 59);
+        return calendar.getTimeInMillis();
+    }
+
+    public static long getSpecificDayEndTime(long time) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(time);
+        calendar.set(Calendar.HOUR_OF_DAY, 23);
+        calendar.set(Calendar.MINUTE, 59);
+        calendar.set(Calendar.SECOND, 59);
+        return calendar.getTimeInMillis();
+    }
+
+    public static long getSpecificDayStartTime(long time) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(time);
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        return calendar.getTimeInMillis();
+    }
+
     public static String getMediaPicTimeInString(final long time) {
         return getSimpleDateFormat_1.get().format(new Date(time));
     }

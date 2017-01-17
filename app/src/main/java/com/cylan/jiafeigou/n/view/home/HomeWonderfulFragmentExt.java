@@ -113,17 +113,15 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
     @BindView(R.id.appbar)
     AppBarLayout appbar;
 
-    /**
-     * 加载更多
-     */
-    private boolean endlessLoading = true;
-
-
     private HomeWonderfulAdapter homeWonderAdapter;
     public boolean isShowTimeLine;
     private LinearLayoutManager mLinearLayoutManager;
-    private View mContentView;
     private ShadowFrameLayout mParent;
+
+    private boolean mShouldLoadMore = true;
+    private View mSimple38;
+    private TextView mFooterText;
+    private View mInflate;
 
 
     public static HomeWonderfulFragmentExt newInstance(Bundle bundle) {
@@ -142,6 +140,9 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
         homeWonderAdapter = new HomeWonderfulAdapter(getContext(), null, null);
         homeWonderAdapter.setWonderfulItemClickListener(this);
         homeWonderAdapter.setWonderfulItemLongClickListener(this);
+        mInflate = View.inflate(getAppContext(), R.layout.layout_item_loading_wonderful, null);
+        mSimple38 = mInflate.findViewById(R.id.v_simple_38line);
+        mFooterText = (TextView) mInflate.findViewById(R.id.tv_simple_footer_text);
         appbar.addOnOffsetChangedListener(this);
         srLayoutMainContentHolder.setNestedScrollingEnabled(false);
         initView();
@@ -195,7 +196,6 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
     public void onDetach() {
         super.onDetach();
         dismissShareDialog();
-        mPresenter.unregisterWechat();
     }
 
     private void dismissShareDialog() {
@@ -228,14 +228,20 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
                 if (dy > 0) { //check for scroll down
                     visibleItemCount = mLinearLayoutManager.getChildCount();
                     totalItemCount = mLinearLayoutManager.getItemCount();
-                    if (endlessLoading) {
-                        if ((visibleItemCount + pastVisibleItems) >= totalItemCount) {
-                            endlessLoading = false;
+                    if ((visibleItemCount + pastVisibleItems) >= totalItemCount) {
+                        if (mShouldLoadMore) {
+                            mSimple38.setVisibility(View.VISIBLE);
+                            mFooterText.setText("加载中");
                             mPresenter.startLoadMore();
-                            AppLogger.v("Last Item Wow !");
-                            //Do pagination.. i.e. fetch new data
+                        } else {
+                            mSimple38.setVisibility(View.GONE);
+                            mFooterText.setText("没有更多了");
                         }
+
+                        AppLogger.v("Last Item Wow !");
+                        //Do pagination.. i.e. fetch new data
                     }
+
                 }
             }
 
@@ -268,28 +274,16 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
     @UiThread
     @Override
     public void onMediaListRsp(List<DPWonderItem> resultList) {
-        endlessLoading = true;
         srLayoutMainContentHolder.setRefreshing(false);
         if (resultList == null || resultList.size() == 0) {
-//            homeWonderAdapter.clear();
+            mShouldLoadMore = false;
             return;
         }
-        handleFootView();
+        if (resultList.size() < 20) mShouldLoadMore = false;
         homeWonderAdapter.addAll(resultList);
-        addFootView();
+        if (!homeWonderAdapter.hasFooterView())
+            homeWonderAdapter.addFooterView(mInflate);
         srLayoutMainContentHolder.setNestedScrollingEnabled(homeWonderAdapter.getCount() > 2);
-
-    }
-
-    private void handleFootView() {
-        final int itemCount = homeWonderAdapter.getItemCount();
-        if (itemCount > 0 && homeWonderAdapter.getItem(itemCount - 1).msgType == DPWonderItem.TYPE_LOAD) {
-            homeWonderAdapter.remove(itemCount - 1);
-        }
-    }
-
-    private void addFootView() {
-        homeWonderAdapter.add(DPWonderItem.getEmptyLoadTypeBean());
     }
 
     @Override
@@ -612,18 +606,6 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
                 sharedElements.put(newTransitionName, newSharedElement);
             }
             mTmpReenterState = null;
-        } else {
-            // If mTmpReenterState is null, then the activity is exiting.
-//            View navigationBar = findViewById(android.R.id.navigationBarBackground);
-//            View statusBar = findViewById(android.R.id.statusBarBackground);
-//            if (navigationBar != null) {
-//                names.add(navigationBar.getTransitionName());
-//                sharedElements.put(navigationBar.getTransitionName(), navigationBar);
-//            }
-//            if (statusBar != null) {
-//                names.add(statusBar.getTransitionName());
-//                sharedElements.put(statusBar.getTransitionName(), statusBar);
-//            }
         }
     }
 

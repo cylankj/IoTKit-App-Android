@@ -1,9 +1,9 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:hunt="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/lLayout_item_wonderful"
-    android:layout_width="match_parent"
-    android:layout_height="36dp"
-    android:orientation="horizontal">
+             xmlns:hunt="http://schemas.android.com/apk/res-auto"
+             android:id="@+id/lLayout_item_wonderful"
+             android:layout_width="match_parent"
+             android:layout_height="36dp"
+             android:orientation="horizontal">
 
     <!--<View-->
     <!--android:layout_width="match_parent"-->
@@ -21,17 +21,18 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="5dp"
-            hunt:progress_radius="35dp"
-            hunt:progress_stroke_color="@color/color_4b9fd5" />
+            hunt:progress_radius="10dp"
+            hunt:progress_stroke_color="@color/color_4b9fd5"/>
 
         <TextView
+            android:id="@+id/tv_simple_footer_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
             android:text="加载中..."
-            android:textSize="11sp" />
+            android:textSize="11sp"/>
     </LinearLayout>
 
 
@@ -39,5 +40,5 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_gravity="bottom"
-        android:background="@color/color_e8e8e8" />
+        android:background="@color/color_e8e8e8"/>
 </FrameLayout>

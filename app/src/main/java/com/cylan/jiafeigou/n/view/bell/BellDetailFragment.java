@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.base.module.BellDevice;
+import com.cylan.jiafeigou.base.module.JFGDoorBellDevice;
 import com.cylan.jiafeigou.base.wrapper.BaseFragment;
 import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
 import com.cylan.jiafeigou.n.mvp.contract.bell.BellDetailContract;
@@ -129,13 +129,13 @@ public class BellDetailFragment extends BaseFragment<BellDetailContract.Presente
 
 
     @Override
-    public void onShowProperty(BellDevice device) {
+    public void onShowProperty(JFGDoorBellDevice device) {
         String alias = TextUtils.isEmpty(device.alias) ? device.uuid : device.alias;
         svSettingDeviceAlias.setTvSubTitle(alias);
         svSettingDeviceCid.setTvSubTitle(device.uuid);
-        svSettingDeviceMac.setTvSubTitle(device.mac.$());
-        svSettingDeviceSysVersion.setTvSubTitle(device.device_sys_version.$());
-        svSettingDeviceVersion.setTvSubTitle(device.device_version.$());
+        svSettingDeviceMac.setTvSubTitle(device.mac.value);
+        svSettingDeviceSysVersion.setTvSubTitle(device.device_sys_version.value);
+        svSettingDeviceVersion.setTvSubTitle(device.device_version.value);
         svSettingDeviceBattery.setTvSubTitle(device.battery.$() + "");
         String ssid = TextUtils.isEmpty(device.net.$().ssid) ? getString(R.string.OFF_LINE) : device.net.$().ssid;
         svSettingDeviceWifi.setTvSubTitle(ssid);
