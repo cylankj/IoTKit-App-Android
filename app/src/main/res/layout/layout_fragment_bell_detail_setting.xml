@@ -16,17 +16,17 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/color_0ba8cf">
-
             <TextView
                 android:id="@+id/imgV_top_bar_center"
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/y48"
                 android:drawableLeft="@drawable/nav_tab_back_selector"
                 android:drawablePadding="@dimen/x15"
-                android:padding="@dimen/x15"
-                android:text="功能设置"
+                android:paddingLeft="@dimen/x15"
+                android:gravity="center_vertical"
+                android:text="@string/SETTINGS_1"
                 android:textColor="@color/color_white"
-                android:textSize="@dimen/sp16" />
+                android:textSize="@dimen/sp18" />
         </FrameLayout>
     </LinearLayout>
 
