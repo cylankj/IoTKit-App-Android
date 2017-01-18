@@ -59,6 +59,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
     private SinaLogin sinaUtil;
     private TencentInstance tencentInstance;
     private QQAuthrizeListener qqAuthrizeListener;
+    private boolean isLoginSucc;
 
     public LoginPresenterImpl(LoginContract.View view) {
         super(view);
@@ -127,6 +128,9 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
                 .subscribe((RxEvent.ResultLogin resultLogin) -> {
                     if (getView().isLoginViewVisible()) {
                         getView().loginResult(resultLogin.code);
+                        if (resultLogin.code == 0){
+                            isLoginSucc = true;
+                        }
                     }
                 }, (Throwable throwable) -> {
                     AppLogger.e("" + throwable);
@@ -486,7 +490,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
                     @Override
                     public void call(String s) {
                         try {
-                            JfgCmdInsurance.getCmd().checkFriendAccount(s);
+                            JfgCmdInsurance.getCmd().checkAccountRegState(s);
                         } catch (JfgException e) {
                             e.printStackTrace();
                         }
@@ -498,13 +502,28 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
 
     @Override
     public Subscription checkAccountBack() {
-        return RxBus.getCacheInstance().toObservable(RxEvent.CheckAccountCallback.class)
+        return RxBus.getCacheInstance().toObservable(RxEvent.CheckRegsiterBack.class)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<RxEvent.CheckAccountCallback>() {
+                .subscribe(new Action1<RxEvent.CheckRegsiterBack>() {
                     @Override
-                    public void call(RxEvent.CheckAccountCallback checkAccountCallback) {
-                        getView().checkAccountResult(checkAccountCallback);
+                    public void call(RxEvent.CheckRegsiterBack checkRegsiterBack) {
+                        getView().checkAccountResult(checkRegsiterBack);
                     }
+                });
+    }
+
+    /**
+     * 登录计时
+     */
+    @Override
+    public void loginCountTime() {
+        rx.Observable.just(null)
+                .delay(30000,TimeUnit.MILLISECONDS)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(o ->{
+                    if (getView() != null && !isLoginSucc)
+                        getView().loginResult(JError.ErrorConnect);
                 });
     }
 

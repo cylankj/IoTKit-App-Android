@@ -96,6 +96,10 @@ public class JResultEvent {
     public static final int JFG_RESULT_SETPWD_WITH_BINDACCOUNT = 17;
 
     /**
+     * 检测是否已注册
+     */
+    public static final int JFG_RESULT_CHECK_REGISTER = 18;
+    /**
      * 删除好友添加请求
      */
     public static final int JFG_RESULT_DEL_FRIEND_ADD_REQ = 19;

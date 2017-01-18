@@ -276,12 +276,10 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
                     @Override
                     public void onLoadFailed(Exception e, Drawable errorDrawable) {
                         super.onLoadFailed(e, errorDrawable);
-                        Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.clouds);
-                        basePresenter.portraitBlur(bm);
+                        rLayoutHomeMineTop.setBackground(getResources().getDrawable(R.drawable.bg_mine_top_default));
                     }
 
                 });
-
     }
 
     /**
