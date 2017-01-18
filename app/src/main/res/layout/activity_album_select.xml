@@ -15,9 +15,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:padding="@dimen/x15"
             android:clickable="true"
-            android:src="@drawable/icon_nav_back_white" />
+            android:padding="@dimen/x15"
+            android:src="@drawable/nav_tab_back_selector" />
 
         <TextView
             android:layout_width="match_parent"
@@ -27,31 +27,31 @@
             android:layout_marginLeft="@dimen/x48"
             android:text="选择相册"
             android:textColor="#ffffff"
-            android:textSize="@dimen/sp18" />
+            android:textSize="18sp" />
     </RelativeLayout>
 
     <ProgressBar
         android:id="@+id/progress_bar_album_select"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"/>
+        android:layout_centerInParent="true" />
 
     <TextView
         android:id="@+id/text_view_error"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:text="相册打开失败"/>
+        android:text="相册打开失败" />
 
     <GridView
-        android:layout_below="@id/rl_home_mine_select_gallery"
         android:id="@+id/grid_view_album_select"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="@dimen/y1"
+        android:layout_below="@id/rl_home_mine_select_gallery"
         android:paddingBottom="@dimen/y1"
         android:paddingLeft="@dimen/x1"
         android:paddingRight="@dimen/x1"
-        android:stretchMode="columnWidth"/>
+        android:paddingTop="@dimen/y1"
+        android:stretchMode="columnWidth" />
 
 </RelativeLayout>

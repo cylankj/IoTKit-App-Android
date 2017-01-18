@@ -20,12 +20,12 @@
                 android:id="@+id/imgV_top_bar_center"
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/y48"
-                android:drawableLeft="@drawable/icon_nav_back_white"
                 android:drawablePadding="@dimen/x15"
                 android:padding="@dimen/x15"
+                android:drawableLeft="@drawable/nav_tab_back_selector"
                 android:text="@string/EFAMILY_RELEVANCE_DOOR"
                 android:textColor="@color/color_white"
-                android:textSize="@dimen/sp16" />
+                android:textSize="@dimen/sp18" />
         </FrameLayout>
     </LinearLayout>
 

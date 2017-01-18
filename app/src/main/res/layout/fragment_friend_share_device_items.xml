@@ -22,6 +22,7 @@ android:layout_height="@dimen/y67">
     <TextView
         android:id="@+id/tv_device_name"
         android:textSize="@dimen/sp16"
+        android:maxLength="14"
         android:textColor="@color/color_333333"
         android:text="智能摄像头"
         android:layout_width="wrap_content"

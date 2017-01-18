@@ -12,7 +12,7 @@
         android:background="#0BA8CF">
 
         <TextView
-            android:drawableLeft="@drawable/icon_nav_back_white"
+            android:drawableLeft="@drawable/nav_tab_back_selector"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/FEEDBACK"
@@ -20,7 +20,7 @@
             android:drawablePadding="@dimen/x15"
             android:padding="@dimen/x15"
             android:textColor="@color/color_white"
-            android:textSize="@dimen/sp16" />
+            android:textSize="@dimen/sp18" />
 
         <TextView
             android:id="@+id/tv_mine_help_suggestion_clear"

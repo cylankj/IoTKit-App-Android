@@ -18,7 +18,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:padding="@dimen/x15"
-            android:src="@drawable/icon_nav_back_white" />
+            android:src="@drawable/nav_tab_back_selector" />
 
         <TextView
             android:layout_width="match_parent"

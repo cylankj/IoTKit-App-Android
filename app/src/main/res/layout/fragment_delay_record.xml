@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:app="http://schemas.android.com/apk/res-auto"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:background="@drawable/delay_record_bg"
-              android:gravity="center_horizontal"
-              android:orientation="vertical">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/delay_record_bg"
+    android:gravity="center_horizontal"
+    android:orientation="vertical">
 
     <RelativeLayout
         android:id="@+id/header_delay_record_container"
@@ -17,7 +17,7 @@
             android:id="@+id/header_delay_record_back"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/icon_nav_back_white"/>
+            android:src="@drawable/nav_tab_back_selector" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -26,7 +26,7 @@
             android:fontFamily="SourceHanSansCN"
             android:text="@string/Tap2_Timelapse_title"
             android:textColor="#FFFFFF"
-            android:textSize="@dimen/sp18"/>
+            android:textSize="@dimen/sp18" />
     </RelativeLayout>
 
     <android.support.v7.widget.CardView
@@ -46,13 +46,13 @@
             <FrameLayout
                 android:id="@+id/fragment_delay_record_video_view_container"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
+                android:layout_height="match_parent" />
 
             <ImageView
                 android:id="@+id/fragment_delay_record_video_preview"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:src="@drawable/delay_record_overlay"/>
+                android:src="@drawable/delay_record_overlay" />
 
 
             <View
@@ -60,7 +60,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:alpha="0.6"
-                android:background="#000000"/>
+                android:background="#000000" />
 
             <TextView
                 android:id="@+id/fragment_delay_record_play"
@@ -68,7 +68,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:background="@drawable/act_delay_record_play_drawable"
-                android:enabled="true"/>
+                android:enabled="true" />
         </FrameLayout>
 
         <TextView
@@ -79,7 +79,7 @@
             android:gravity="center"
             android:text="间隔时间20S拍摄时长8小时"
             android:textColor="#888888"
-            android:textSize="@dimen/sp12"/>
+            android:textSize="@dimen/sp12" />
     </android.support.v7.widget.CardView>
 
 
@@ -94,7 +94,7 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_marginLeft="@dimen/x52"
-            android:src="@drawable/delay_icon_60time"/>
+            android:src="@drawable/delay_icon_60time" />
 
         <com.cylan.jiafeigou.widget.RecordControllerView
             android:id="@+id/fragment_delay_record_controller"
@@ -102,8 +102,7 @@
             android:layout_height="@dimen/y62"
             android:layout_centerHorizontal="true"
             android:background="@drawable/delay_record_play_drawable"
-            android:checked="true"
-            />
+            android:checked="true" />
 
         <Button
             android:id="@+id/fragment_delay_record_again"
@@ -113,7 +112,7 @@
             android:background="@drawable/delay_record_guide_btn_drawable"
             android:text="再拍一个"
             android:textColor="#FFFFFF"
-            android:visibility="gone"/>
+            android:visibility="gone" />
 
         <ImageView
             android:id="@+id/fragment_delay_record_time_duration"
@@ -122,7 +121,7 @@
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_marginRight="@dimen/x52"
-            android:src="@drawable/delay_ico_photography"/>
+            android:src="@drawable/delay_ico_photography" />
 
     </RelativeLayout>
 

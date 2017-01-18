@@ -250,7 +250,7 @@ public class MineShareDeviceFragment extends Fragment implements MineShareDevice
      */
     @Override
     public void showLoadingDialog() {
-        LoadingDialog.showLoading(getFragmentManager(), getString(R.string.LOADING));
+//        LoadingDialog.showLoading(getFragmentManager(), getString(R.string.LOADING));
     }
 
     /**
@@ -258,7 +258,7 @@ public class MineShareDeviceFragment extends Fragment implements MineShareDevice
      */
     @Override
     public void hideLoadingDialog() {
-        LoadingDialog.dismissLoading(getFragmentManager());
+//        LoadingDialog.dismissLoading(getFragmentManager());
     }
 
     @OnClick(R.id.iv_home_mine_sharedevices_back)
