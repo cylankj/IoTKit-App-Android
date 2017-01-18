@@ -7,7 +7,6 @@
 
     <!-- 顶部栏 -->
     <RelativeLayout
-        android:paddingTop="10dp"
         android:layout_width="match_parent"
         android:layout_height="78dp"
         android:background="#0BA8CF">

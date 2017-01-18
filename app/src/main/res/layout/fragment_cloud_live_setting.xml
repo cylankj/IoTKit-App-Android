@@ -24,10 +24,11 @@
                 android:layout_height="48dp"
                 android:drawableLeft="@drawable/nav_tab_back_selector"
                 android:drawablePadding="15dp"
-                android:padding="15dp"
+                android:paddingLeft="15dp"
+                android:gravity="center_vertical"
                 android:text="@string/SETTINGS_1"
                 android:textColor="@color/color_white"
-                android:textSize="16sp" />
+                android:textSize="18sp" />
         </FrameLayout>
     </LinearLayout>
 
@@ -106,31 +107,18 @@
                 android:textColor="@color/color_black"
                 android:textSize="16sp" />
 
-            <View
-                android:layout_marginTop="10dp"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
-                android:background="@color/color_f2f2f2"
-                android:layout_width="match_parent"
-                android:layout_height="1dp"/>
-
             <TextView
+                android:layout_marginTop="10dp"
                 android:id="@+id/tv_setting_unbind"
                 android:layout_width="match_parent"
-                android:layout_height="54dp"
+                android:layout_height="42dp"
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="20dp"
+                android:background="@drawable/un_bind_device_btn_seletor"
                 android:gravity="center"
                 android:text="@string/DELETE_CID"
                 android:textColor="@color/color_FF3D32"
                 android:textSize="16sp" />
-
-            <View
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
-                android:background="@color/color_f2f2f2"
-                android:layout_width="match_parent"
-                android:layout_height="1dp"/>
 
         </LinearLayout>
 

@@ -25,7 +25,7 @@
                 android:padding="15dp"
                 android:text="@string/EFAMILY_RELEVANCE_DOOR"
                 android:textColor="@color/color_white"
-                android:textSize="16sp" />
+                android:textSize="18sp" />
         </FrameLayout>
     </LinearLayout>
 
