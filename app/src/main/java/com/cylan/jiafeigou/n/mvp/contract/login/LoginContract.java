@@ -86,7 +86,7 @@ public interface LoginContract {
          * 检测好友回调的结果
          * @param callback
          */
-        void checkAccountResult(RxEvent.CheckAccountCallback callback);
+        void checkAccountResult(RxEvent.CheckRegsiterBack callback);
     }
 
     interface Presenter extends BasePresenter {
@@ -146,6 +146,10 @@ public interface LoginContract {
          */
         Subscription checkAccountBack();
 
+        /**
+         * 登录计时
+         */
+        void loginCountTime();
     }
 
 }

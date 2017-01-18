@@ -286,6 +286,9 @@ public class DataSourceService extends Service implements AppCallBack {
             case JResultEvent.JFG_RESULT_DEL_FRIEND_ADD_REQ:
                 RxBus.getCacheInstance().post(new RxEvent.DeleteAddReqBack(jfgResult));
                 break;
+            case JResultEvent.JFG_RESULT_CHECK_REGISTER:
+                RxBus.getCacheInstance().post(new RxEvent.CheckRegsiterBack(jfgResult));
+                break;
         }
         if (login) {
             AfterLoginService.startGetAccountAction(getApplicationContext());
