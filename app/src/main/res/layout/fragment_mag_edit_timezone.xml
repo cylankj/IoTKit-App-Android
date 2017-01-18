@@ -17,7 +17,7 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:padding="@dimen/x15"
-            android:src="@drawable/icon_nav_back_white" />
+            android:src="@drawable/nav_tab_back_selector" />
 
         <EditText
             android:id="@+id/et_mag_information_timezone_find"

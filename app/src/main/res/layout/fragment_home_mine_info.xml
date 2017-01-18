@@ -20,7 +20,7 @@
             android:layout_alignParentBottom="true"
             android:clickable="true"
             android:padding="@dimen/x15"
-            android:src="@drawable/icon_nav_back_white" />
+            android:src="@drawable/nav_tab_back_selector" />
 
         <TextView
             android:layout_width="match_parent"
@@ -264,7 +264,7 @@
             <TextView
                 android:id="@+id/btn_home_mine_personal_information"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="42dp"
                 android:gravity="center"
                 android:layout_centerVertical="true"
                 android:padding="@dimen/x10"

@@ -23,12 +23,13 @@
                 android:id="@+id/imgV_top_bar_center"
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/y48"
-                android:drawableLeft="@drawable/icon_nav_back_white"
                 android:drawablePadding="@dimen/x15"
-                android:padding="@dimen/x15"
+                android:drawableLeft="@drawable/nav_tab_back_selector"
+                android:paddingLeft="@dimen/x15"
+                android:gravity="center_vertical"
                 android:text="@string/SETTINGS_1"
                 android:textColor="@color/color_white"
-                android:textSize="16sp" />
+                android:textSize="18sp" />
         </FrameLayout>
     </LinearLayout>
 
@@ -169,10 +170,10 @@
                 <TextView
                     android:id="@+id/tv_setting_unbind"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/y48"
+                    android:layout_height="@dimen/y42"
                     android:layout_marginBottom="@dimen/y20"
                     android:layout_marginTop="@dimen/y50"
-                    android:background="@color/color_f2f2f2"
+                    android:background="@drawable/un_bind_device_btn_seletor"
                     android:gravity="center"
                     android:text="@string/DELETE_CID"
                     android:textColor="@color/color_FF3D32"
