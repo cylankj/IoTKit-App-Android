@@ -8,25 +8,25 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="130dp"
+        android:layout_height="@dimen/y130"
         android:background="#000000">
     </RelativeLayout>
     <!--圆形裁剪框示例
-        app:clipBorderWidth="5dp"     ： 裁剪框边框宽度
+        app:clipBorderWidth="@dimen/x5"     ： 裁剪框边框宽度
         app:clipType="circle"         ： 裁剪框类型为圆形
-        app:mHorizontalPadding="30dp" ：裁剪框距离左右边距为30dp
+        app:mHorizontalPadding="@dimen/x30" ：裁剪框距离左右边距为30dp
      -->
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="@dimen/y0"
         android:layout_weight="1"
         >
         <com.cylan.jiafeigou.support.photoselect.ClipViewLayout
             android:id="@+id/clipViewLayout1"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:clipBorderWidth="0dp"
+            app:clipBorderWidth="@dimen/x0"
             app:clipType="circle"
             />
 
@@ -34,11 +34,11 @@
         <com.cylan.jiafeigou.support.photoselect.ClipViewLayout
             android:id="@+id/clipViewLayout2"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
+            android:layout_height="@dimen/y0"
             android:layout_weight="1"
-            app:clipBorderWidth="2dp"
+            app:clipBorderWidth="@dimen/x2"
             app:clipType="rectangle"
-            app:mHorizontalPadding="30dp"
+            app:mHorizontalPadding="@dimen/x30"
             android:visibility="gone"
             />
 
@@ -47,29 +47,29 @@
     <RelativeLayout
         android:id="@+id/bottom"
         android:layout_width="match_parent"
-        android:layout_height="130dp"
+        android:layout_height="@dimen/y130"
         android:background="#000000">
 
         <TextView
             android:id="@+id/btn_cancel"
-            android:layout_width="80dp"
+            android:layout_width="@dimen/x80"
             android:layout_height="match_parent"
             android:gravity="bottom"
-            android:paddingLeft="14dp"
+            android:paddingLeft="@dimen/x14"
             android:text="取消"
-            android:paddingBottom="24dp"
+            android:paddingBottom="@dimen/y24"
             android:textColor="#ffffff"
             android:textSize="16sp" />
 
         <TextView
             android:id="@+id/bt_ok"
-            android:layout_width="80dp"
+            android:layout_width="@dimen/x80"
             android:layout_height="match_parent"
             android:layout_alignParentRight="true"
             android:gravity="bottom|end"
             android:text="使用"
-            android:paddingRight="14dp"
-            android:paddingBottom="24dp"
+            android:paddingRight="@dimen/x14"
+            android:paddingBottom="@dimen/y24"
             android:textColor="#ffffff"
             android:textSize="16sp" />
     </RelativeLayout>

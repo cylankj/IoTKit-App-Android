@@ -13,7 +13,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="24dp"
+            android:layout_margin="@dimen/x24"
             android:text="重复"
             android:textColor="@color/color_black"
             android:textSize="16sp" />
@@ -23,14 +23,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="16dp"
+            android:layout_marginBottom="@dimen/y16"
             android:orientation="horizontal">
 
             <CheckBox
                 android:id="@+id/cb_capture_mon"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:layout_margin="5dp"
+                android:layout_width="@dimen/x25"
+                android:layout_height="@dimen/y25"
+                android:layout_margin="@dimen/x5"
                 android:background="@drawable/week_pick_selector"
                 android:button="@null"
                 android:checked="false"
@@ -41,9 +41,9 @@
 
             <CheckBox
                 android:id="@+id/cb_capture_tue"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:layout_margin="5dp"
+                android:layout_width="@dimen/x25"
+                android:layout_height="@dimen/y25"
+                android:layout_margin="@dimen/x5"
                 android:background="@drawable/week_pick_selector"
                 android:button="@null"
                 android:checked="false"
@@ -54,9 +54,9 @@
 
             <CheckBox
                 android:id="@+id/cb_capture_wed"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:layout_margin="5dp"
+                android:layout_width="@dimen/x25"
+                android:layout_height="@dimen/y25"
+                android:layout_margin="@dimen/x5"
                 android:background="@drawable/week_pick_selector"
                 android:button="@null"
                 android:checked="false"
@@ -67,9 +67,9 @@
 
             <CheckBox
                 android:id="@+id/cb_capture_thur"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:layout_margin="5dp"
+                android:layout_width="@dimen/x25"
+                android:layout_height="@dimen/y25"
+                android:layout_margin="@dimen/x5"
                 android:background="@drawable/week_pick_selector"
                 android:button="@null"
                 android:checked="false"
@@ -80,9 +80,9 @@
 
             <CheckBox
                 android:id="@+id/cb_capture_fri"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:layout_margin="5dp"
+                android:layout_width="@dimen/x25"
+                android:layout_height="@dimen/y25"
+                android:layout_margin="@dimen/x5"
                 android:background="@drawable/week_pick_selector"
                 android:button="@null"
                 android:checked="false"
@@ -93,9 +93,9 @@
 
             <CheckBox
                 android:id="@+id/cb_capture_sat"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:layout_margin="5dp"
+                android:layout_width="@dimen/x25"
+                android:layout_height="@dimen/y25"
+                android:layout_margin="@dimen/x5"
                 android:background="@drawable/week_pick_selector"
                 android:button="@null"
                 android:checked="false"
@@ -106,9 +106,9 @@
 
             <CheckBox
                 android:id="@+id/cb_capture_sun"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:layout_margin="5dp"
+                android:layout_width="@dimen/x25"
+                android:layout_height="@dimen/y25"
+                android:layout_margin="@dimen/x5"
                 android:background="@drawable/week_pick_selector"
                 android:button="@null"
                 android:checked="false"

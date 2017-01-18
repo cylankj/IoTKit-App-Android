@@ -12,7 +12,7 @@
 
         <TextView
             android:id="@+id/tv_mag_live_day"
-            android:layout_width="117dp"
+            android:layout_width="@dimen/x117"
             android:layout_height="wrap_content"
             android:gravity="center_vertical|end"
             android:text="@string/DOOR_TODAY"
@@ -20,7 +20,7 @@
             android:textSize="17sp" />
 
         <RelativeLayout
-            android:layout_marginLeft="12dp"
+            android:layout_marginLeft="@dimen/x12"
             android:layout_width="wrap_content"
             android:layout_height="match_parent">
 
@@ -35,7 +35,7 @@
                 android:layout_centerInParent="true"
                 android:layout_below="@id/iv_mag_live"
                 android:layout_width="wrap_content"
-                android:layout_height="21dp">
+                android:layout_height="@dimen/y21">
             </com.cylan.jiafeigou.widget.DashLineView>
 
             <TextView
@@ -43,7 +43,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_toRightOf="@id/iv_mag_live"
-                android:layout_marginLeft="11dp"
+                android:layout_marginLeft="@dimen/x11"
                 android:text="15:05:20 打开"
                 android:textColor="@color/color_333333"
                 android:textSize="17sp" />

@@ -9,7 +9,7 @@
     <RelativeLayout
         android:id="@+id/rl_home_mine_setting_title"
         android:layout_width="match_parent"
-        android:layout_height="73dp"
+        android:layout_height="@dimen/y73"
         android:background="@color/color_0ba8cf">
 
         <ImageView
@@ -18,13 +18,13 @@
             android:layout_alignParentBottom="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="15dp"
+            android:padding="@dimen/x15"
             android:src="@drawable/icon_nav_back_white" />
 
         <TextView
-            android:layout_marginBottom="12dp"
+            android:layout_marginBottom="@dimen/y12"
             android:layout_alignParentBottom="true"
-            android:layout_marginLeft="48dp"
+            android:layout_marginLeft="@dimen/x48"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/ABOUT"
@@ -42,18 +42,18 @@
         <RelativeLayout
 
             android:layout_width="match_parent"
-            android:layout_height="216dp">
+            android:layout_height="@dimen/y216">
 
             <ImageView
                 android:id="@+id/iv_logon"
-                android:layout_marginTop="56dp"
+                android:layout_marginTop="@dimen/y56"
                 android:layout_centerHorizontal="true"
                 android:src="@mipmap/ic_launcher"
-                android:layout_width="60dp"
-                android:layout_height="60dp" />
+                android:layout_width="@dimen/x60"
+                android:layout_height="@dimen/y60" />
 
             <TextView
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="@dimen/y8"
                 android:layout_centerHorizontal="true"
                 android:layout_below="@id/iv_logon"
                 android:textColor="@color/color_33333"
@@ -66,7 +66,7 @@
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="10dp"
+            android:layout_height="@dimen/y10"
             android:background="@drawable/little_shape" />
     </FrameLayout>
 
@@ -74,7 +74,7 @@
         android:layout_below="@id/rl_home_mine_setting_version"
         android:id="@+id/rLayout_home_setting_website"
         android:layout_width="match_parent"
-        android:layout_height="72dp">
+        android:layout_height="@dimen/y72">
 
         <LinearLayout
             android:layout_centerVertical="true"
@@ -83,7 +83,7 @@
             android:layout_height="wrap_content">
             <TextView
                 android:layout_centerVertical="true"
-                android:layout_marginLeft="20dp"
+                android:layout_marginLeft="@dimen/x20"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/WEB"
@@ -91,9 +91,9 @@
                 android:textColor="@color/color_33333" />
 
             <TextView
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="@dimen/y5"
                 android:layout_centerVertical="true"
-                android:layout_marginLeft="20dp"
+                android:layout_marginLeft="@dimen/x20"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="www.jfgou.com"
@@ -103,8 +103,8 @@
 
         <View
             android:layout_alignParentBottom="true"
-            android:layout_marginRight="20dp"
-            android:layout_marginLeft="20dp"
+            android:layout_marginRight="@dimen/x20"
+            android:layout_marginLeft="@dimen/x20"
             android:layout_width="match_parent"
             android:layout_height="1dip"
             android:background="@color/color_f2f2f2" />
@@ -115,7 +115,7 @@
         android:layout_below="@id/rLayout_home_setting_website"
         android:id="@+id/rLayout_home_setting_hotphone"
         android:layout_width="match_parent"
-        android:layout_height="72dp">
+        android:layout_height="@dimen/y72">
 
         <LinearLayout
             android:layout_centerVertical="true"
@@ -124,7 +124,7 @@
             android:layout_height="wrap_content">
             <TextView
                 android:layout_centerVertical="true"
-                android:layout_marginLeft="20dp"
+                android:layout_marginLeft="@dimen/x20"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/ABOUT_PHONE"
@@ -133,9 +133,9 @@
 
             <TextView
                 android:id="@+id/tv_hotphone"
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="@dimen/y5"
                 android:layout_centerVertical="true"
-                android:layout_marginLeft="20dp"
+                android:layout_marginLeft="@dimen/x20"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="400-716-3232"
@@ -146,7 +146,7 @@
     </RelativeLayout>
 
     <LinearLayout
-        android:paddingBottom="40dp"
+        android:paddingBottom="@dimen/y40"
         android:layout_alignParentBottom="true"
         android:orientation="vertical"
         android:layout_width="match_parent"

@@ -7,7 +7,7 @@
     <RelativeLayout
         android:id="@+id/rLayout_cloud_live_top_bar"
         android:layout_width="match_parent"
-        android:layout_height="73dp"
+        android:layout_height="@dimen/y73"
         android:background="@color/color_0ba8cf">
 
         <ImageView
@@ -16,13 +16,13 @@
             style="@style/ripple_background"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="15dp"
+            android:padding="@dimen/x15"
             android:src="@drawable/icon_nav_back_white" />
 
         <TextView
             android:id="@+id/tv_device_name"
             android:layout_alignParentBottom="true"
-            android:layout_marginBottom="12dp"
+            android:layout_marginBottom="@dimen/y12"
             android:textSize="18sp"
             android:textColor="@color/color_white"
             android:layout_toRightOf="@id/imgV_nav_back"
@@ -36,7 +36,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:padding="14dp"
+            android:padding="@dimen/x14"
             android:src="@drawable/icon_setting" />
         
     </RelativeLayout>
@@ -46,13 +46,13 @@
         android:gravity="center_vertical"
         android:layout_alignParentBottom="true"
         android:layout_width="match_parent"
-        android:layout_height="48dp">
+        android:layout_height="@dimen/y48">
 
         <ImageView
             android:layout_centerVertical="true"
             android:id="@+id/iv_cloud_share_pic"
-            android:paddingStart="42dp"
-            android:paddingEnd="42dp"
+            android:paddingStart="@dimen/x42"
+            android:paddingEnd="@dimen/x42"
             android:src="@drawable/icon_album_bottom_share_pic"
             android:layout_width="wrap_content"
             android:layout_height="match_parent" />
@@ -61,8 +61,8 @@
             android:layout_centerVertical="true"
             android:id="@+id/iv_cloud_videochat"
             android:layout_centerHorizontal="true"
-            android:paddingStart="42dp"
-            android:paddingEnd="42dp"
+            android:paddingStart="@dimen/x42"
+            android:paddingEnd="@dimen/x42"
             android:src="@drawable/icon_album_bottom_videochat"
             android:layout_width="wrap_content"
             android:layout_height="match_parent" />
@@ -71,8 +71,8 @@
             android:layout_centerVertical="true"
             android:id="@+id/iv_cloud_talk"
             android:layout_alignParentRight="true"
-            android:paddingStart="42dp"
-            android:paddingEnd="42dp"
+            android:paddingStart="@dimen/x42"
+            android:paddingEnd="@dimen/x42"
             android:src="@drawable/icon_album_bottom_talk"
             android:layout_width="wrap_content"
             android:layout_height="match_parent" />
@@ -92,7 +92,7 @@
         <LinearLayout
             android:visibility="gone"
             android:id="@+id/ll_no_mesg"
-            android:layout_marginTop="147dp"
+            android:layout_marginTop="@dimen/y147"
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -104,7 +104,7 @@
                 android:layout_height="wrap_content" />
 
             <TextView
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="@dimen/y16"
                 android:layout_gravity="center_horizontal"
                 android:text="@string/NO_CONTENTS_1"
                 android:textSize="15sp"

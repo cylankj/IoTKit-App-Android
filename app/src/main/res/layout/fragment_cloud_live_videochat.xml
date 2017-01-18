@@ -24,7 +24,7 @@
             android:visibility="invisible"
             android:id="@+id/tv_video_time"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="@dimen/y20"
             android:textColor="@color/color_white"
             android:format="%s"
             android:textSize="18sp"
@@ -54,7 +54,7 @@
         <ImageView
             android:id="@+id/iv_hang_up"
             android:layout_centerHorizontal="true"
-            android:layout_marginBottom="26dp"
+            android:layout_marginBottom="@dimen/y26"
             android:layout_alignParentBottom="true"
             android:src="@drawable/btn_hulue"
             android:layout_width="wrap_content"
@@ -65,16 +65,16 @@
             android:orientation="vertical"
             android:id="@+id/ll_myself_video"
             android:background="@color/color_white"
-            android:layout_marginBottom="6dp"
-            android:layout_marginRight="6dp"
+            android:layout_marginBottom="@dimen/y6"
+            android:layout_marginRight="@dimen/x6"
             android:layout_alignParentBottom="true"
             android:layout_alignParentRight="true"
             android:gravity="center"
-            android:layout_width="88dp"
-            android:layout_height="134dp">
+            android:layout_width="@dimen/x88"
+            android:layout_height="@dimen/y134">
             <VideoView
-                android:layout_width="86dp"
-                android:layout_height="132dp" />
+                android:layout_width="@dimen/x86"
+                android:layout_height="@dimen/y132" />
         </LinearLayout>
 
     </RelativeLayout>

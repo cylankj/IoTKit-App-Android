@@ -12,8 +12,8 @@
         android:id="@+id/rLayout_login_top"
         layout="@layout/layout_top_bar_item"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:layout_marginTop="60dp" />
+        android:layout_height="@dimen/y48"
+        android:layout_marginTop="@dimen/y60" />
 
     <ViewSwitcher
         android:id="@+id/vsLayout_login_box"

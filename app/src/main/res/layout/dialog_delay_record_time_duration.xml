@@ -6,29 +6,29 @@
                                     android:orientation="vertical">
 
     <LinearLayout
-        android:layout_width="280dp"
+        android:layout_width="@dimen/x280"
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingLeft="24dp"
-            android:paddingTop="24dp"
+            android:paddingLeft="@dimen/x24"
+            android:paddingTop="@dimen/y24"
             android:text="循环播放"
             android:textColor="#000000"
             android:textSize="18sp"/>
 
         <com.cylan.jiafeigou.widget.pick.WheelPicker
             android:id="@+id/dialog_record_duration_picker"
-            android:layout_width="232dp"
+            android:layout_width="@dimen/x232"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             app:wheel_atmospheric="true"
             app:wheel_indicator="true"
             app:wheel_indicator_color="#4B9FD5"
-            app:wheel_indicator_size="1dp"
-            app:wheel_item_space="43dp"
+            app:wheel_indicator_size="@dimen/x1"
+            app:wheel_item_space="@dimen/x43"
             app:wheel_item_text_color="#999999"
             app:wheel_item_text_size="16sp"
             app:wheel_selected_item_text_color="#4B9FD5"
@@ -46,10 +46,10 @@
                 android:id="@+id/dialog_record_duration_cancel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingBottom="27dp"
-                android:paddingLeft="32dp"
-                android:paddingRight="16dp"
-                android:paddingTop="20dp"
+                android:paddingBottom="@dimen/y27"
+                android:paddingLeft="@dimen/x32"
+                android:paddingRight="@dimen/x16"
+                android:paddingTop="@dimen/y20"
                 android:text="取消"
                 android:textColor="#4B9FD5"
                 android:textSize="14sp"/>
@@ -58,10 +58,10 @@
                 android:id="@+id/dialog_record_duration_ok"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingBottom="27dp"
-                android:paddingLeft="16dp"
-                android:paddingRight="32dp"
-                android:paddingTop="20dp"
+                android:paddingBottom="@dimen/y27"
+                android:paddingLeft="@dimen/x16"
+                android:paddingRight="@dimen/x32"
+                android:paddingTop="@dimen/y20"
                 android:text="确定"
                 android:textColor="#4B9FD5"
                 android:textSize="14sp"/>

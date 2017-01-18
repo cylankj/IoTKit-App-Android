@@ -7,10 +7,10 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginLeft="@dimen/x16"
+        android:layout_marginRight="@dimen/x16"
+        android:layout_marginTop="@dimen/y16"
+        android:layout_marginBottom="@dimen/y8"
         android:background="@drawable/popupwindow_shape"
         android:orientation="vertical">
 
@@ -19,14 +19,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:padding="8dp"
+            android:padding="@dimen/x8"
             android:text="@string/Tips_SureDelete"
             android:textColor="@color/color_black"
             android:textSize="16sp" />
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="1dp"
+            android:layout_height="@dimen/y1"
             android:background="#22000000" />
 
         <TextView
@@ -34,7 +34,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:padding="16dp"
+            android:padding="@dimen/x16"
             android:text="@string/DELETE"
             android:textColor="@color/color_red"
             android:textSize="18sp" />
@@ -43,10 +43,10 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="16dp"
+        android:layout_marginLeft="@dimen/x16"
+        android:layout_marginRight="@dimen/x16"
+        android:layout_marginTop="@dimen/y8"
+        android:layout_marginBottom="@dimen/y16"
         android:background="@drawable/popupwindow_shape">
 
         <TextView
@@ -54,7 +54,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:padding="16dp"
+            android:padding="@dimen/x16"
             android:text="@string/CANCEL"
             android:textColor="@color/color_4b9fd5"
             android:textSize="18sp"

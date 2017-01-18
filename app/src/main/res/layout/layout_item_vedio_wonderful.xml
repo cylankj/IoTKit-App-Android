@@ -5,36 +5,36 @@
               android:layout_height="wrap_content"
               android:clickable="true"
               android:orientation="horizontal"
-              android:paddingLeft="10dp"
-              android:paddingRight="10dp">
+              android:paddingLeft="@dimen/x10"
+              android:paddingRight="@dimen/x10">
 
     <com.cylan.jiafeigou.widget.FateLineView
         android:id="@+id/fl_wonderful_item_time_line"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_marginLeft="8dp"
-        android:paddingRight="2dp"
+        android:layout_marginLeft="@dimen/x8"
+        android:paddingRight="@dimen/x2"
         hunt:dashLineColor="@color/color_e8e8e8"
-        hunt:dashLineWidth="2dp"
+        hunt:dashLineWidth="@dimen/x2"
         hunt:innerCircleColor="@color/color_white"
-        hunt:innerCircleRadius="6dp"
+        hunt:innerCircleRadius="@dimen/x6"
         hunt:outerCircleColor="@color/color_e8e8e8"
-        hunt:outerCircleRadius="10dp"
-        hunt:outerCircleStrokeWidth="4dp"
-        hunt:outerCircleY="16dp"/>
+        hunt:outerCircleRadius="@dimen/x10"
+        hunt:outerCircleStrokeWidth="@dimen/x4"
+        hunt:outerCircleY="@dimen/y16"/>
 
     <RelativeLayout
         android:id="@+id/rLayout_wonderful_item_wonder"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="4dp"
-        android:layout_marginTop="5dp">
+        android:layout_marginLeft="@dimen/x4"
+        android:layout_marginTop="@dimen/y5">
 
         <TextView
             android:id="@+id/tv_wonderful_item_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="14dp"
+            android:layout_marginTop="@dimen/y14"
             android:gravity="center"
             android:text="Hi~"
             android:textColor="@color/color_666666"
@@ -45,7 +45,7 @@
             android:layout_width="match_parent"
             android:layout_height="1000000dp"
             android:layout_below="@+id/tv_wonderful_item_date"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="@dimen/y10"
             hunt:fixSize="true">
 
             <ImageView
@@ -66,7 +66,7 @@
         <RelativeLayout
             android:id="@+id/fLayout_wonderful_item_bottom"
             android:layout_width="match_parent"
-            android:layout_height="36dp"
+            android:layout_height="@dimen/y36"
             android:layout_below="@+id/ccccc"
             android:layout_gravity="bottom">
 
@@ -82,15 +82,15 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:gravity="center_vertical"
-                    android:paddingLeft="12dp"
-                    android:paddingRight="10dp"
+                    android:paddingLeft="@dimen/x12"
+                    android:paddingRight="@dimen/x10"
                     android:text="@string/DELETE"
                     android:textColor="@color/color_4b9fd5"
                     android:textSize="11sp"/>
 
                 <View
-                    android:layout_width="1dp"
-                    android:layout_height="10dp"
+                    android:layout_width="@dimen/x1"
+                    android:layout_height="@dimen/y10"
                     android:layout_gravity="center_vertical"
                     android:background="@color/color_e8e8e8"/>
 
@@ -100,8 +100,8 @@
                     android:layout_height="match_parent"
                     android:gravity="center_vertical"
                     android:maxLength="8"
-                    android:paddingLeft="10dp"
-                    android:paddingRight="10dp"
+                    android:paddingLeft="@dimen/x10"
+                    android:paddingRight="@dimen/x10"
                     android:text="@string/Tap2_Index_DemoVideo"
                     android:textColor="@color/color_909090"
                     android:textSize="11sp"/>
@@ -113,9 +113,9 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
-                android:layout_marginRight="12dp"
+                android:layout_marginRight="@dimen/x12"
                 android:drawableLeft="@drawable/icon_share_item_wonderful_selector"
-                android:drawablePadding="4dp"
+                android:drawablePadding="@dimen/x4"
                 android:drawableStart="@drawable/icon_share_item_wonderful_selector"
                 android:gravity="center"
                 android:text="@string/Tap3_ShareDevice_Button"
@@ -126,7 +126,7 @@
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="1dp"
+            android:layout_height="@dimen/y1"
             android:layout_below="@+id/fLayout_wonderful_item_bottom"
             android:layout_gravity="bottom"
             android:background="@color/color_e8e8e8"/>

@@ -9,9 +9,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="@dimen/y50"
         android:gravity="center"
-        android:lineSpacingExtra="10dp"
+        android:lineSpacingExtra="@dimen/x10"
         android:textColor="@color/color_7c7c7c"
         android:textSize="15sp" />
 
@@ -21,7 +21,7 @@
         android:layout_below="@+id/tv_send_email_content"
         android:layout_centerHorizontal="true"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="37dp"
+        android:layout_marginTop="@dimen/y37"
         android:text="确认" />
 
 </RelativeLayout>

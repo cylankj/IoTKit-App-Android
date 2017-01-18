@@ -5,23 +5,23 @@
 
     <RelativeLayout
 
-        android:layout_marginLeft="15dp"
+        android:layout_marginLeft="@dimen/x15"
         android:layout_width="match_parent"
-        android:layout_height="67dp">
+        android:layout_height="@dimen/y67">
 
         <com.cylan.jiafeigou.widget.roundedimageview.RoundedImageView
             android:layout_centerVertical="true"
             android:id="@+id/iv_userhead"
             android:src="@drawable/img_me_list_head"
-            android:layout_width="50dp"
-            android:layout_height="50dp" />
+            android:layout_width="@dimen/x50"
+            android:layout_height="@dimen/y50" />
 
         <RelativeLayout
             android:gravity="center_vertical"
             android:layout_toRightOf="@id/iv_userhead"
-            android:paddingLeft="15dp"
+            android:paddingLeft="@dimen/x15"
             android:layout_width="match_parent"
-            android:layout_height="67dp"
+            android:layout_height="@dimen/y67"
             >
             <TextView
                 android:id="@+id/tv_friend_name"
@@ -33,7 +33,7 @@
 
             <TextView
                 android:id="@+id/tv_friend_account"
-                android:paddingTop="8dp"
+                android:paddingTop="@dimen/y8"
                 android:layout_below="@id/tv_friend_name"
                 android:textSize="12sp"
                 android:textColor="@color/color_8c8c8c"
@@ -49,9 +49,9 @@
             android:layout_centerVertical="true"
             android:layout_alignParentRight="true"
             style="@style/CustomCheckboxTheme"
-            android:paddingRight="15dp"
-            android:paddingTop="15dp"
-            android:paddingBottom="15dp"
+            android:paddingRight="@dimen/x15"
+            android:paddingTop="@dimen/y15"
+            android:paddingBottom="@dimen/y15"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
@@ -60,7 +60,7 @@
             android:id="@+id/view_line"
             android:background="@color/color_f2f2f2"
             android:layout_width="match_parent"
-            android:layout_height="1dp"/>
+            android:layout_height="@dimen/y1"/>
     </RelativeLayout>
 
 </LinearLayout>

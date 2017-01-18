@@ -28,7 +28,7 @@
                     style="@style/ripple_background_borderless"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:padding="15dp"
+                    android:padding="@dimen/x15"
                     android:src="@drawable/icon_nav_back_white" />
 
                 <TextView
@@ -42,14 +42,14 @@
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="10dp"
+                android:layout_height="@dimen/y10"
                 android:background="@drawable/little_shape" />
         </LinearLayout>
 
         <com.cylan.jiafeigou.widget.HomeMineItemView
             android:id="@+id/v_to_scan_qrcode"
             android:layout_width="match_parent"
-            android:layout_height="67dp"
+            android:layout_height="@dimen/y67"
             android:background="@color/color_white"
             hunt:leftDrawable="@drawable/ico_scan_qrcode"
             hunt:rightDrawable="@drawable/icon_mine_arrow_next"
@@ -60,8 +60,8 @@
         <com.cylan.jiafeigou.widget.HomeMineItemView
             android:id="@+id/v_to_bind_camera"
             android:layout_width="match_parent"
-            android:layout_height="67dp"
-            android:layout_marginTop="25dp"
+            android:layout_height="@dimen/y67"
+            android:layout_marginTop="@dimen/y25"
             android:background="@color/color_white"
             hunt:leftDrawable="@drawable/icon_home_camera_online"
             hunt:rightDrawable="@drawable/icon_mine_arrow_next"
@@ -72,7 +72,7 @@
         <com.cylan.jiafeigou.widget.HomeMineItemView
             android:id="@+id/v_to_bind_doorbell"
             android:layout_width="match_parent"
-            android:layout_height="67dp"
+            android:layout_height="@dimen/y67"
             android:background="@color/color_white"
             hunt:leftDrawable="@drawable/icon_home_doorbell_online"
             hunt:rightDrawable="@drawable/icon_mine_arrow_next"
@@ -83,7 +83,7 @@
         <com.cylan.jiafeigou.widget.HomeMineItemView
             android:id="@+id/v_to_bind_cloud_album"
             android:layout_width="match_parent"
-            android:layout_height="67dp"
+            android:layout_height="@dimen/y67"
             android:background="@color/color_white"
             hunt:leftDrawable="@drawable/icon_home_album_online"
             hunt:rightDrawable="@drawable/icon_mine_arrow_next"

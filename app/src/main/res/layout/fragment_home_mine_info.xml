@@ -10,7 +10,7 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="72dp"
+        android:layout_height="@dimen/y72"
         android:background="@color/color_0ba8cf">
 
         <ImageView
@@ -19,15 +19,15 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:clickable="true"
-            android:padding="15dp"
+            android:padding="@dimen/x15"
             android:src="@drawable/icon_nav_back_white" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:layout_marginBottom="12dp"
-            android:layout_marginLeft="48dp"
+            android:layout_marginBottom="@dimen/y12"
+            android:layout_marginLeft="@dimen/x48"
             android:text="@string/Tap3_Friends_UserInfo"
             android:textColor="@color/color_white"
             android:textSize="18sp" />
@@ -44,14 +44,14 @@
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="72dp">
+                android:layout_height="@dimen/y72">
 
                 <TextView
                     android:id="@+id/tv_my_id"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
-                    android:paddingTop="15dp"
+                    android:layout_marginLeft="@dimen/x20"
+                    android:paddingTop="@dimen/y15"
                     android:text="@string/Tap3_Friends_Myaccount"
                     android:textColor="@color/color_8c8c8c"
                     android:textSize="12sp" />
@@ -61,8 +61,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/tv_my_id"
-                    android:layout_marginLeft="20dp"
-                    android:paddingTop="8dp"
+                    android:layout_marginLeft="@dimen/x20"
+                    android:paddingTop="@dimen/y8"
                     android:singleLine="true"
                     android:text="15856562525"
                     android:textColor="@color/color_333333"
@@ -72,8 +72,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="1dip"
                     android:layout_alignParentBottom="true"
-                    android:layout_marginLeft="20dp"
-                    android:layout_marginRight="20dp"
+                    android:layout_marginLeft="@dimen/x20"
+                    android:layout_marginRight="@dimen/x20"
                     android:background="@color/color_f2f2f2" />
 
             </RelativeLayout>
@@ -82,24 +82,24 @@
             <RelativeLayout
                 android:id="@+id/rLayout_home_mine_personal_pic"
                 android:layout_width="match_parent"
-                android:layout_height="72dp">
+                android:layout_height="@dimen/y72">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:layout_marginLeft="20dp"
+                    android:layout_marginLeft="@dimen/x20"
                     android:text="@string/PROFILE_PHOTO"
                     android:textColor="@color/color_333333"
                     android:textSize="16sp" />
 
                 <com.cylan.jiafeigou.widget.roundedimageview.RoundedImageView
                     android:id="@+id/user_ImageHead"
-                    android:layout_width="49dp"
-                    android:layout_height="49dp"
+                    android:layout_width="@dimen/x49"
+                    android:layout_height="@dimen/y49"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
-                    android:layout_marginRight="20dp"
+                    android:layout_marginRight="@dimen/x20"
                     android:src="@drawable/icon_mine_head_normal"
                     hunt:riv_oval="true" />
 
@@ -107,8 +107,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="1dip"
                     android:layout_alignParentBottom="true"
-                    android:layout_marginLeft="20dp"
-                    android:layout_marginRight="20dp"
+                    android:layout_marginLeft="@dimen/x20"
+                    android:layout_marginRight="@dimen/x20"
                     android:background="@color/color_f2f2f2" />
 
             </RelativeLayout>
@@ -116,13 +116,13 @@
             <RelativeLayout
                 android:id="@+id/rl_my_QRCode"
                 android:layout_width="match_parent"
-                android:layout_height="54dp">
+                android:layout_height="@dimen/y54">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:layout_marginLeft="20dp"
+                    android:layout_marginLeft="@dimen/x20"
                     android:text="@string/Tap3_MyQRCode"
                     android:textColor="@color/color_333333"
                     android:textSize="16sp" />
@@ -131,8 +131,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="1dip"
                     android:layout_alignParentBottom="true"
-                    android:layout_marginLeft="20dp"
-                    android:layout_marginRight="20dp"
+                    android:layout_marginLeft="@dimen/x20"
+                    android:layout_marginRight="@dimen/x20"
                     android:background="@color/color_f2f2f2" />
 
             </RelativeLayout>
@@ -141,14 +141,14 @@
             <RelativeLayout
                 android:id="@+id/rLayout_home_mine_personal_name"
                 android:layout_width="match_parent"
-                android:layout_height="72dp">
+                android:layout_height="@dimen/y72">
 
                 <TextView
                     android:id="@+id/tv_like_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
-                    android:paddingTop="15dp"
+                    android:layout_marginLeft="@dimen/x20"
+                    android:paddingTop="@dimen/y15"
                     android:text="@string/ALIAS"
                     android:textColor="@color/color_8c8c8c"
                     android:textSize="12sp" />
@@ -158,8 +158,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/tv_like_name"
-                    android:layout_marginLeft="20dp"
-                    android:paddingTop="8dp"
+                    android:layout_marginLeft="@dimen/x20"
+                    android:paddingTop="@dimen/y8"
                     android:textColor="@color/color_333333"
                     android:textSize="16sp" />
 
@@ -167,8 +167,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="1dip"
                     android:layout_alignParentBottom="true"
-                    android:layout_marginLeft="20dp"
-                    android:layout_marginRight="20dp"
+                    android:layout_marginLeft="@dimen/x20"
+                    android:layout_marginRight="@dimen/x20"
                     android:background="@color/color_f2f2f2" />
 
             </RelativeLayout>
@@ -177,14 +177,14 @@
             <RelativeLayout
                 android:id="@+id/lLayout_home_mine_personal_mailbox"
                 android:layout_width="match_parent"
-                android:layout_height="72dp">
+                android:layout_height="@dimen/y72">
 
                 <TextView
                     android:id="@+id/tv_my_message"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
-                    android:paddingTop="15dp"
+                    android:layout_marginLeft="@dimen/x20"
+                    android:paddingTop="@dimen/y15"
                     android:text="@string/EMAIL"
                     android:textColor="@color/color_8c8c8c"
                     android:textSize="12sp" />
@@ -194,8 +194,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/tv_my_message"
-                    android:layout_marginLeft="20dp"
-                    android:paddingTop="8dp"
+                    android:layout_marginLeft="@dimen/x20"
+                    android:paddingTop="@dimen/y8"
                     android:text="@string/NO_SET"
                     android:textColor="@color/color_333333"
                     android:textSize="16sp" />
@@ -204,22 +204,22 @@
                     android:layout_width="match_parent"
                     android:layout_height="1dip"
                     android:layout_alignParentBottom="true"
-                    android:layout_marginLeft="20dp"
-                    android:layout_marginRight="20dp"
+                    android:layout_marginLeft="@dimen/x20"
+                    android:layout_marginRight="@dimen/x20"
                     android:background="@color/color_f2f2f2" />
             </RelativeLayout>
 
             <RelativeLayout
                 android:id="@+id/RLayout_home_mine_personal_phone"
                 android:layout_width="match_parent"
-                android:layout_height="72dp">
+                android:layout_height="@dimen/y72">
 
                 <TextView
                     android:id="@+id/tv_my_number"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
-                    android:paddingTop="15dp"
+                    android:layout_marginLeft="@dimen/x20"
+                    android:paddingTop="@dimen/y15"
                     android:text="@string/PHONE_NUMBER"
                     android:textColor="@color/color_8c8c8c"
                     android:textSize="12sp" />
@@ -229,8 +229,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/tv_my_number"
-                    android:layout_marginLeft="20dp"
-                    android:paddingTop="8dp"
+                    android:layout_marginLeft="@dimen/x20"
+                    android:paddingTop="@dimen/y8"
                     android:text="@string/NO_SET"
                     android:textColor="@color/color_333333"
                     android:textSize="16sp" />
@@ -239,8 +239,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="1dip"
                     android:layout_alignParentBottom="true"
-                    android:layout_marginLeft="20dp"
-                    android:layout_marginRight="20dp"
+                    android:layout_marginLeft="@dimen/x20"
+                    android:layout_marginRight="@dimen/x20"
                     android:background="@color/color_f2f2f2" />
 
             </RelativeLayout>
@@ -248,13 +248,13 @@
             <RelativeLayout
                 android:id="@+id/rl_change_password"
                 android:layout_width="match_parent"
-                android:layout_height="54dp">
+                android:layout_height="@dimen/y54">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:layout_marginLeft="20dp"
+                    android:layout_marginLeft="@dimen/x20"
                     android:text="@string/CHANGE_PWD"
                     android:textColor="@color/color_333333"
                     android:textSize="16sp" />
@@ -267,11 +267,11 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:layout_centerVertical="true"
-                android:padding="10dp"
+                android:padding="@dimen/x10"
                 android:text="@string/LOGOUT"
-                android:layout_marginTop="10dp"
-                android:layout_marginEnd="30dp"
-                android:layout_marginStart="30dp"
+                android:layout_marginTop="@dimen/y10"
+                android:layout_marginEnd="@dimen/x30"
+                android:layout_marginStart="@dimen/x30"
                 android:background="@drawable/long_btn_bg_shape_white"
                 android:textColor="@color/color_ff3b30"
                 android:textSize="16sp" />
@@ -279,7 +279,7 @@
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="10dp"
+            android:layout_height="@dimen/y10"
             android:background="@drawable/little_shape" />
     </FrameLayout>
 

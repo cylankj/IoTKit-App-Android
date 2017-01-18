@@ -11,8 +11,8 @@
         android:id="@+id/rLayout_login_top"
         layout="@layout/layout_top_bar_item"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:layout_marginTop="60dp" />
+        android:layout_height="@dimen/y48"
+        android:layout_marginTop="@dimen/y60" />
 
     <ViewSwitcher
         android:inAnimation="@anim/slide_in_right_overshoot"
@@ -20,8 +20,8 @@
         android:id="@+id/vs_set_account_pwd"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginLeft="19dp"
-        android:layout_marginRight="19dp">
+        android:layout_marginLeft="@dimen/x19"
+        android:layout_marginRight="@dimen/x19">
 
         <FrameLayout
             android:id="@+id/fLayout_forget_container"
@@ -32,15 +32,15 @@
                 android:id="@+id/lLayout_register_input"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="44dp"
+                android:layout_marginTop="@dimen/y44"
                 android:animateLayoutChanges="true"
                 android:orientation="vertical">
 
                 <FrameLayout
                     android:id="@+id/fLayout_account_input_box"
                     android:layout_width="match_parent"
-                    android:layout_height="48dp"
-                    android:layout_marginTop="30dp">
+                    android:layout_height="@dimen/y48"
+                    android:layout_marginTop="@dimen/y30">
 
 
                     <EditText
@@ -48,8 +48,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_gravity="center"
-                        android:layout_marginBottom="5dp"
-                        android:layout_marginTop="5dp"
+                        android:layout_marginBottom="@dimen/y5"
+                        android:layout_marginTop="@dimen/y5"
                         android:background="@null"
                         android:focusable="true"
                         android:focusableInTouchMode="true"
@@ -71,7 +71,7 @@
 
                     <View
                         android:layout_width="match_parent"
-                        android:layout_height="1dp"
+                        android:layout_height="@dimen/y1"
                         android:layout_gravity="bottom"
                         android:background="@color/color_f2f2f2" />
                 </FrameLayout>
@@ -79,8 +79,8 @@
                 <FrameLayout
                     android:id="@+id/fLayout_verification_code_input_box"
                     android:layout_width="match_parent"
-                    android:layout_height="48dp"
-                    android:layout_marginTop="30dp"
+                    android:layout_height="@dimen/y48"
+                    android:layout_marginTop="@dimen/y30"
                     android:visibility="gone">
 
 
@@ -89,8 +89,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_gravity="center"
-                        android:layout_marginBottom="5dp"
-                        android:layout_marginTop="5dp"
+                        android:layout_marginBottom="@dimen/y5"
+                        android:layout_marginTop="@dimen/y5"
                         android:background="@null"
                         android:focusable="true"
                         android:focusableInTouchMode="true"
@@ -98,8 +98,8 @@
                         android:hint="@string/ENTER_CODE"
                         android:inputType="numberDecimal"
                         android:maxLength="6"
-                        android:paddingLeft="40dp"
-                        android:paddingRight="40dp"
+                        android:paddingLeft="@dimen/x40"
+                        android:paddingRight="@dimen/x40"
                         android:textColor="@color/color_666666"
                         android:textColorHint="@color/color_cecece"
                         android:textCursorDrawable="@drawable/bg_common_cursor"
@@ -113,14 +113,14 @@
                         android:layout_gravity="end"
                         android:enabled="false"
                         android:gravity="center"
-                        android:paddingLeft="10dp"
-                        android:paddingRight="10dp"
+                        android:paddingLeft="@dimen/x10"
+                        android:paddingRight="@dimen/x10"
                         android:textColor="@color/common_btn_color_state" />
 
 
                     <View
                         android:layout_width="match_parent"
-                        android:layout_height="1dp"
+                        android:layout_height="@dimen/y1"
                         android:layout_gravity="bottom"
                         android:background="@color/color_f2f2f2" />
                 </FrameLayout>
@@ -130,7 +130,7 @@
                     android:id="@+id/tv_forget_pwd_submit"
                     style="@style/login_model_commit_style"
                     android:layout_gravity="center_horizontal"
-                    android:layout_marginTop="37dp"
+                    android:layout_marginTop="@dimen/y37"
                     android:text="@string/CARRY_ON" />
             </LinearLayout>
         </FrameLayout>

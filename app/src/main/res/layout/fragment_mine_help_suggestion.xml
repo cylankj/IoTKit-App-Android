@@ -8,7 +8,7 @@
     <FrameLayout
         android:id="@+id/rl_home_mine_suggestion"
         android:layout_width="match_parent"
-        android:layout_height="73dp"
+        android:layout_height="@dimen/y73"
         android:background="#0BA8CF">
 
         <TextView
@@ -17,8 +17,8 @@
             android:layout_height="wrap_content"
             android:text="@string/FEEDBACK"
             android:layout_gravity="bottom"
-            android:drawablePadding="15dp"
-            android:padding="15dp"
+            android:drawablePadding="@dimen/x15"
+            android:padding="@dimen/x15"
             android:textColor="@color/color_white"
             android:textSize="16sp" />
 
@@ -28,7 +28,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="right|bottom"
             android:clickable="true"
-            android:padding="15dp"
+            android:padding="@dimen/x15"
             android:text="@string/Tap3_Feedback_Clear"
             android:textColor="@color/color_white"
             android:textSize="14sp" />
@@ -41,7 +41,7 @@
     <com.cylan.jiafeigou.support.softkeyboard.widget.KPSwitchFSPanelLinearLayout
         android:id="@+id/panel_root"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
+        android:layout_height="@dimen/y200"
         android:orientation="vertical"
         android:visibility="gone">
     </com.cylan.jiafeigou.support.softkeyboard.widget.KPSwitchFSPanelLinearLayout>

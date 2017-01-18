@@ -7,7 +7,7 @@
     <RelativeLayout
         android:id="@+id/rl_home_mine_select_gallery"
         android:layout_width="match_parent"
-        android:layout_height="73dp"
+        android:layout_height="@dimen/y73"
         android:background="#0BA8CF">
 
         <ImageView
@@ -15,7 +15,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:padding="15dp"
+            android:padding="@dimen/x15"
             android:clickable="true"
             android:src="@drawable/icon_arrow_back" />
 
@@ -23,8 +23,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:layout_marginBottom="12dp"
-            android:layout_marginLeft="48dp"
+            android:layout_marginBottom="@dimen/y12"
+            android:layout_marginLeft="@dimen/x48"
             android:text="选择相册"
             android:textColor="#ffffff"
             android:textSize="18sp" />
@@ -48,10 +48,10 @@
         android:id="@+id/grid_view_album_select"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="1dp"
-        android:paddingBottom="1dp"
-        android:paddingLeft="1dp"
-        android:paddingRight="1dp"
+        android:paddingTop="@dimen/y1"
+        android:paddingBottom="@dimen/y1"
+        android:paddingLeft="@dimen/x1"
+        android:paddingRight="@dimen/x1"
         android:stretchMode="columnWidth"/>
 
 </RelativeLayout>

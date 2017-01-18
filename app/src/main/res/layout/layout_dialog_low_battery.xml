@@ -28,9 +28,9 @@
         android:layout_height="wrap_content"
         android:background="@drawable/bottom_corner_pop_bg"
         android:orientation="vertical"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
-        android:paddingTop="17dp">
+        android:paddingLeft="@dimen/x10"
+        android:paddingRight="@dimen/x10"
+        android:paddingTop="@dimen/y17">
 
         <TextView
             android:layout_width="wrap_content"
@@ -43,24 +43,24 @@
             android:id="@+id/tv_low_battery_content"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="17dp"
+            android:layout_marginTop="@dimen/y17"
             android:text="@string/DOOR_LOW_BATTERY"
             android:textColor="@color/color_666666"
             android:textSize="15sp" />
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginTop="18dp"
+            android:layout_height="@dimen/y1"
+            android:layout_marginTop="@dimen/y18"
             android:background="@color/color_E1E1E1" />
 
         <TextView
             android:id="@+id/tv_low_battery_dismiss"
             android:layout_width="wrap_content"
-            android:layout_height="48dp"
+            android:layout_height="@dimen/y48"
             android:layout_gravity="end"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
+            android:layout_marginLeft="@dimen/x20"
+            android:layout_marginRight="@dimen/x20"
             android:gravity="center"
             android:text="知道了"
             android:textColor="@color/color_4b9fd5"
@@ -72,6 +72,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="36dp"
+        android:layout_marginTop="@dimen/y36"
         android:src="@drawable/btn_close_dialog" />
 </LinearLayout>

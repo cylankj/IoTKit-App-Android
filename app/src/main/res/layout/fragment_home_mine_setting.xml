@@ -8,7 +8,7 @@
     <RelativeLayout
         android:id="@+id/rl_title_bar"
         android:layout_width="match_parent"
-        android:layout_height="73dp"
+        android:layout_height="@dimen/y73"
         android:background="@color/color_0ba8cf">
 
         <ImageView
@@ -17,13 +17,13 @@
             android:layout_alignParentBottom="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="15dp"
+            android:padding="@dimen/x15"
             android:src="@drawable/icon_nav_back_white" />
 
         <TextView
-            android:layout_marginBottom="12dp"
+            android:layout_marginBottom="@dimen/y12"
             android:layout_alignParentBottom="true"
-            android:layout_marginLeft="48dp"
+            android:layout_marginLeft="@dimen/x48"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/SETTINGS"
@@ -46,11 +46,11 @@
             <RelativeLayout
                 android:id="@+id/rLayout_home_setting_accessMes"
                 android:layout_width="match_parent"
-                android:layout_height="54dp">
+                android:layout_height="@dimen/y54">
 
                 <TextView
                     android:layout_centerVertical="true"
-                    android:layout_marginLeft="20dp"
+                    android:layout_marginLeft="@dimen/x20"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/PUSH_MSG"
@@ -64,14 +64,14 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:paddingRight="26dp"
+                    android:paddingRight="@dimen/x26"
                     android:checked="false"
                     />
 
                 <View
                     android:layout_alignParentBottom="true"
-                    android:layout_marginRight="20dp"
-                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="@dimen/x20"
+                    android:layout_marginLeft="@dimen/x20"
                     android:layout_width="match_parent"
                     android:layout_height="1dip"
                     android:background="@color/color_f2f2f2" />
@@ -80,11 +80,11 @@
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="54dp">
+                android:layout_height="@dimen/y54">
 
                 <TextView
                     android:layout_centerVertical="true"
-                    android:layout_marginLeft="20dp"
+                    android:layout_marginLeft="@dimen/x20"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/IN_APP_SOUND"
@@ -98,14 +98,14 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:paddingRight="26dp"
+                    android:paddingRight="@dimen/x26"
                     android:checked="true"
                     />
 
                 <View
                     android:layout_alignParentBottom="true"
-                    android:layout_marginRight="20dp"
-                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="@dimen/x20"
+                    android:layout_marginLeft="@dimen/x20"
                     android:layout_width="match_parent"
                     android:layout_height="1dip"
                     android:background="@color/color_f2f2f2" />
@@ -114,11 +114,11 @@
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="54dp">
+                android:layout_height="@dimen/y54">
 
                 <TextView
                     android:layout_centerVertical="true"
-                    android:layout_marginLeft="20dp"
+                    android:layout_marginLeft="@dimen/x20"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/IN_APP_VIBRATE"
@@ -132,14 +132,14 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:paddingRight="26dp"
+                    android:paddingRight="@dimen/x26"
                     android:checked="true"
                     />
 
                 <View
                     android:layout_alignParentBottom="true"
-                    android:layout_marginRight="20dp"
-                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="@dimen/x20"
+                    android:layout_marginLeft="@dimen/x20"
                     android:layout_width="match_parent"
                     android:layout_height="1dip"
                     android:background="@color/color_f2f2f2" />
@@ -149,7 +149,7 @@
             <RelativeLayout
                 android:id="@+id/rl_home_setting_clear"
                 android:layout_width="match_parent"
-                android:layout_height="70dp">
+                android:layout_height="@dimen/y70">
 
                 <LinearLayout
                     android:layout_centerVertical="true"
@@ -158,7 +158,7 @@
                     android:layout_height="wrap_content">
                 <TextView
                     android:layout_centerVertical="true"
-                    android:layout_marginLeft="20dp"
+                    android:layout_marginLeft="@dimen/x20"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/CLEAR_DATA"
@@ -172,14 +172,14 @@
 
                     <ProgressBar
                         android:visibility="gone"
-                        android:layout_marginLeft="20dp"
+                        android:layout_marginLeft="@dimen/x20"
                         android:id="@+id/progressbar_load_cache_size"
-                        android:layout_width="20dp"
-                        android:layout_height="20dp" />
+                        android:layout_width="@dimen/x20"
+                        android:layout_height="@dimen/y20" />
 
                     <TextView
                         android:id="@+id/tv_cache_size"
-                        android:layout_marginLeft="20dp"
+                        android:layout_marginLeft="@dimen/x20"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="2.3M"
@@ -192,8 +192,8 @@
 
                 <View
                     android:layout_alignParentBottom="true"
-                    android:layout_marginRight="20dp"
-                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="@dimen/x20"
+                    android:layout_marginLeft="@dimen/x20"
                     android:layout_width="match_parent"
                     android:layout_height="1dip"
                     android:background="@color/color_f2f2f2" />
@@ -203,11 +203,11 @@
             <RelativeLayout
                 android:id="@+id/rl_home_setting_about"
                 android:layout_width="match_parent"
-                android:layout_height="54dp">
+                android:layout_height="@dimen/y54">
 
                 <TextView
                     android:layout_centerVertical="true"
-                    android:layout_marginLeft="20dp"
+                    android:layout_marginLeft="@dimen/x20"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/ABOUT"
@@ -220,7 +220,7 @@
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="10dp"
+            android:layout_height="@dimen/y10"
             android:background="@drawable/little_shape" />
     </FrameLayout>
 

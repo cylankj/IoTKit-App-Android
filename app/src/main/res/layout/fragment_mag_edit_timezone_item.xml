@@ -2,13 +2,13 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     style="@style/information_item"
     android:layout_width="match_parent"
-    android:layout_height="72dp"
+    android:layout_height="@dimen/y72"
     android:orientation="vertical"
     android:background="@color/color_white">
 
     <TextView
         android:id="@+id/tv_timezone_id"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="@dimen/y15"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="MAC"
@@ -16,7 +16,7 @@
         android:textSize="16sp" />
 
     <View
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="@dimen/y10"
         android:layout_width="match_parent"
         android:layout_height="1dip"
         android:background="#F3F3F3" />

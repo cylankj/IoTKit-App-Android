@@ -12,7 +12,7 @@
     <com.cylan.jiafeigou.widget.wave.SuperWaveView
         android:id="@+id/vWaveAnimation"
         android:layout_width="match_parent"
-        android:layout_height="100dp"
+        android:layout_height="@dimen/y100"
         android:layout_gravity="bottom"/>
 
     <LinearLayout
@@ -20,7 +20,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="61dp"
+        android:layout_marginTop="@dimen/y61"
         android:orientation="vertical">
 
         <TextView

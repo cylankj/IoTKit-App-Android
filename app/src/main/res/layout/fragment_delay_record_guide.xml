@@ -17,7 +17,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
 
-            android:padding="15dp">
+            android:padding="@dimen/x15">
 
             <ImageView
                 android:id="@+id/header_delay_record_back"
@@ -39,13 +39,13 @@
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="94dp"
+        android:layout_marginTop="@dimen/y94"
         android:src="@drawable/pic_none"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="@dimen/y20"
         android:gravity="center"
         android:text="@string/Tap1_Camera_Greetings"
         android:textColor="#AAAAAA"
@@ -55,7 +55,7 @@
         android:id="@+id/fragment_delay_record_start_now"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="88dp"
+        android:layout_marginTop="@dimen/y88"
         android:background="@drawable/btn_again_normal"
         android:text="立即开启"
         android:textColor="@color/delay_record_start_now_color"

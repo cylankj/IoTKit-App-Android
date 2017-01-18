@@ -11,7 +11,7 @@
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="10dp"
+        android:layout_height="@dimen/y10"
         android:background="@drawable/little_shape" />
 
     <FrameLayout
@@ -21,13 +21,13 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="24dp"
-            android:layout_marginRight="24dp"
+            android:layout_marginLeft="@dimen/x24"
+            android:layout_marginRight="@dimen/x24"
             android:orientation="vertical">
 
             <TextView
                 android:layout_width="wrap_content"
-                android:layout_height="54dp"
+                android:layout_height="@dimen/y54"
                 android:gravity="center_vertical"
                 android:text="静音"
                 android:textColor="@color/color_black"
@@ -35,12 +35,12 @@
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="1dp"
+                android:layout_height="@dimen/y1"
                 android:background="@color/color_e8e8e8" />
 
             <TextView
                 android:layout_width="wrap_content"
-                android:layout_height="54dp"
+                android:layout_height="@dimen/y54"
                 android:gravity="center_vertical"
                 android:text="汪汪声"
                 android:textColor="@color/color_black"
@@ -48,12 +48,12 @@
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="1dp"
+                android:layout_height="@dimen/y1"
                 android:background="@color/color_e8e8e8" />
 
             <TextView
                 android:layout_width="wrap_content"
-                android:layout_height="54dp"
+                android:layout_height="@dimen/y54"
                 android:gravity="center_vertical"
                 android:text="警报声"
                 android:textColor="@color/color_black"
@@ -61,31 +61,31 @@
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="1dp"
+                android:layout_height="@dimen/y1"
                 android:background="@color/color_e8e8e8" />
         </LinearLayout>
 
         <RadioGroup
             android:id="@+id/rg_warn_effect"
-            android:layout_width="54dp"
+            android:layout_width="@dimen/x54"
             android:layout_height="wrap_content"
             android:layout_gravity="end">
 
             <RadioButton
                 android:id="@+id/rb_warn_effect_silence"
                 android:layout_width="match_parent"
-                android:layout_height="54dp" />
+                android:layout_height="@dimen/y54" />
 
             <RadioButton
                 android:id="@+id/rb_warn_effect_dog_"
                 android:layout_width="match_parent"
-                android:layout_height="54dp" />
+                android:layout_height="@dimen/y54" />
 
 
             <RadioButton
                 android:id="@+id/rb_warn_effect_waring"
                 android:layout_width="match_parent"
-                android:layout_height="54dp" />
+                android:layout_height="@dimen/y54" />
 
         </RadioGroup>
     </FrameLayout>
@@ -94,15 +94,15 @@
     <LinearLayout
         android:id="@+id/lLayout_warn_repeat_mode"
         android:layout_width="match_parent"
-        android:layout_height="72dp">
+        android:layout_height="@dimen/y72">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:orientation="vertical"
-            android:paddingLeft="24dp"
-            android:paddingRight="24dp">
+            android:paddingLeft="@dimen/x24"
+            android:paddingRight="@dimen/x24">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -124,8 +124,8 @@
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginLeft="24dp"
-        android:layout_marginRight="24dp"
+        android:layout_height="@dimen/y1"
+        android:layout_marginLeft="@dimen/x24"
+        android:layout_marginRight="@dimen/x24"
         android:background="@color/color_e8e8e8" />
 </LinearLayout>

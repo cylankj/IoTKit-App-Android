@@ -19,7 +19,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="18dp"
+            android:layout_marginTop="@dimen/y18"
             android:text="每日精彩"
             android:textColor="@color/color_white"
             android:textSize="22sp" />
@@ -30,7 +30,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/tv_title_head_wonder"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="@dimen/y8"
             android:text="每一天的生活，都值得被记录"
             android:textColor="@color/color_white"
             android:textSize="15sp" />
@@ -48,8 +48,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal|bottom"
-        android:layout_marginBottom="5dp"
-        android:layout_marginTop="25dp"
+        android:layout_marginBottom="@dimen/y5"
+        android:layout_marginTop="@dimen/y25"
         android:descendantFocusability="blocksDescendants">
 
         <FrameLayout
@@ -64,7 +64,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:drawablePadding="5dp"
+            android:drawablePadding="@dimen/x5"
             android:drawableRight="@drawable/icon_date_downtag_wonderful"
             android:gravity="center"
             android:text="2016.05.02"

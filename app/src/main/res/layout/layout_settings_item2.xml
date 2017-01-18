@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="52dp">
+    android:layout_height="@dimen/y52">
 
     <TextView
         android:id="@+id/tv_settings_item_title"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="center_vertical"
-        android:drawablePadding="10dp"
+        android:drawablePadding="@dimen/x10"
         android:gravity="center"
         android:text="设备信息"
         android:textColor="@color/color_black"

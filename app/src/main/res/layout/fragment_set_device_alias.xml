@@ -11,7 +11,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="81dp"
+        android:layout_marginTop="@dimen/y81"
         android:text="@string/ADD_SUCC_1"
         android:textColor="@color/color_333333"
         android:textSize="26sp" />
@@ -20,15 +20,15 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="@dimen/y15"
         android:text="@string/Tap1_AddDevice_SetName"
         android:textColor="@color/color_333333"
         android:textSize="16sp" />
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:layout_marginTop="54dp">
+        android:layout_height="@dimen/y48"
+        android:layout_marginTop="@dimen/y54">
 
 
         <EditText
@@ -36,15 +36,15 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center"
-            android:layout_marginBottom="5dp"
-            android:layout_marginTop="5dp"
+            android:layout_marginBottom="@dimen/y5"
+            android:layout_marginTop="@dimen/y5"
             android:background="@null"
             android:focusable="true"
             android:focusableInTouchMode="true"
             android:gravity="center"
             android:maxLength="60"
-            android:paddingLeft="40dp"
-            android:paddingRight="40dp"
+            android:paddingLeft="@dimen/x40"
+            android:paddingRight="@dimen/x40"
             android:textColor="@color/color_666666"
             android:textColorHint="@color/color_cecece"
             android:textCursorDrawable="@drawable/bg_common_cursor"
@@ -55,27 +55,27 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_gravity="end"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
+            android:layout_marginLeft="@dimen/x10"
+            android:layout_marginRight="@dimen/x10"
+            android:paddingLeft="@dimen/x10"
+            android:paddingRight="@dimen/x10"
             android:src="@drawable/btn_login_clear_text" />
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="1dp"
+            android:layout_height="@dimen/y1"
             android:layout_gravity="bottom"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
+            android:layout_marginLeft="@dimen/x20"
+            android:layout_marginRight="@dimen/x20"
             android:background="@color/color_f2f2f2" />
     </FrameLayout>
 
     <com.cylan.jiafeigou.widget.LoginButton
         android:id="@+id/btn_bind_done"
-        android:layout_width="173dp"
-        android:layout_height="50dp"
+        android:layout_width="@dimen/x173"
+        android:layout_height="@dimen/y50"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="38dp"
+        android:layout_marginTop="@dimen/y38"
         android:gravity="center"
         android:text="@string/FINISHED"
         android:textColor="@color/color_4b9fd5"

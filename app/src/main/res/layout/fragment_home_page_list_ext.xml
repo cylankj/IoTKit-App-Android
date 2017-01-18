@@ -13,8 +13,8 @@
             android:id="@+id/collapsing_toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:expandedTitleMarginEnd="64dp"
-            app:expandedTitleMarginStart="48dp"
+            app:expandedTitleMarginEnd="@dimen/x64"
+            app:expandedTitleMarginStart="@dimen/x48"
             app:layout_scrollFlags="scroll|exitUntilCollapsed|enterAlways"
             app:statusBarScrim="@android:color/transparent">
 
@@ -23,10 +23,10 @@
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
-                android:layout_height="48dp"
+                android:layout_height="@dimen/y48"
                 android:layout_gravity="center_horizontal"
                 android:background="@android:color/transparent"
-                app:contentInsetStart="0dp"
+                app:contentInsetStart="@dimen/x0"
                 app:layout_collapseMode="pin">
 
                 <FrameLayout
@@ -36,7 +36,7 @@
                     <TextView
                         android:id="@+id/tvHeaderLastTitle"
                         android:layout_width="match_parent"
-                        android:layout_height="@dimen/dimens_48dp"
+                        android:layout_height="@dimen/y48"
                         android:layout_gravity="bottom|center_horizontal"
                         android:alpha="0"
                         android:gravity="center"
@@ -50,9 +50,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="end|center_vertical"
-                        android:layout_marginLeft="5dp"
-                        android:layout_marginRight="5dp"
-                        android:padding="10dp"
+                        android:layout_marginLeft="@dimen/x5"
+                        android:layout_marginRight="@dimen/x5"
+                        android:padding="@dimen/x10"
                         android:src="@drawable/btn_common_add" />
                 </FrameLayout>
             </android.support.v7.widget.Toolbar>

@@ -6,9 +6,9 @@
     android:layout_height="match_parent">
 
     <RelativeLayout
-        android:layout_marginTop="25dp"
+        android:layout_marginTop="@dimen/y25"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
+        android:layout_height="@dimen/y48"
         android:background="#0BA8CF">
 
         <ImageView
@@ -16,14 +16,14 @@
             android:layout_centerVertical="true"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:padding="15dp"
+            android:padding="@dimen/x15"
             android:src="@drawable/icon_nav_back_white" />
 
         <EditText
             android:id="@+id/et_mag_information_timezone_find"
             android:background="@null"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="48dp"
+            android:layout_marginLeft="@dimen/x48"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/Search"
@@ -34,7 +34,7 @@
         <TextView
             android:id="@+id/tv_mag_information_timezone_text"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="48dp"
+            android:layout_marginLeft="@dimen/x48"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/TIMEZONE_CHOOSE"
@@ -48,7 +48,7 @@
             android:id="@+id/iv_mag_information_timezone_search"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:padding="15dp"
+            android:padding="@dimen/x15"
             android:src="@drawable/icon_search" />
     </RelativeLayout>
 
@@ -63,7 +63,7 @@
             android:focusable="true"
             android:clickable="true"
             android:scrollbars="none"
-            android:layout_margin="10dp"
+            android:layout_margin="@dimen/x10"
             android:id="@+id/lv_mag_information_timezone_detail"
             android:layout_width="match_parent"
             android:layout_height="match_parent"></ListView>
@@ -71,7 +71,7 @@
         <TextView
             android:visibility="gone"
             android:id="@+id/tv_mag_information_timezone_noresult"
-            android:layout_marginTop="90dp"
+            android:layout_marginTop="@dimen/y90"
             android:layout_centerHorizontal="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

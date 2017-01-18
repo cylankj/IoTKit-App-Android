@@ -9,8 +9,8 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:drawableLeft="@drawable/icon_nav_back_white"
-        android:drawablePadding="15dp"
-        android:padding="15dp"
+        android:drawablePadding="@dimen/x15"
+        android:padding="@dimen/x15"
         android:textColor="@color/color_white"
         android:textSize="15sp" />
 
@@ -18,8 +18,8 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="end"
-        android:layout_marginLeft="12dp"
-        android:layout_marginRight="12dp"
+        android:layout_marginLeft="@dimen/x12"
+        android:layout_marginRight="@dimen/x12"
         android:orientation="horizontal">
 
         <ImageView
@@ -28,8 +28,8 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_gravity="center_vertical"
-            android:paddingLeft="18dp"
-            android:paddingRight="18dp"
+            android:paddingLeft="@dimen/x18"
+            android:paddingRight="@dimen/x18"
             android:src="@drawable/icon_land_speaker_on_selector" />
 
         <ImageView
@@ -38,8 +38,8 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_gravity="center"
-            android:paddingLeft="18dp"
-            android:paddingRight="18dp"
+            android:paddingLeft="@dimen/x18"
+            android:paddingRight="@dimen/x18"
             android:src="@drawable/icon_land_mic_on_selector" />
 
         <ImageView
@@ -48,8 +48,8 @@
             android:layout_height="match_parent"
             android:layout_gravity="end|center_vertical"
             android:background="?attr/selectableItemBackgroundBorderless"
-            android:paddingLeft="18dp"
-            android:paddingRight="18dp"
+            android:paddingLeft="@dimen/x18"
+            android:paddingRight="@dimen/x18"
             android:src="@drawable/icon_land_capture_selector" />
     </LinearLayout>
 

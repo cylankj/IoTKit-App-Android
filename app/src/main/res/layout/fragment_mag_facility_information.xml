@@ -20,10 +20,10 @@
             <TextView
                 android:id="@+id/imgV_top_bar_center"
                 android:layout_width="wrap_content"
-                android:layout_height="48dp"
+                android:layout_height="@dimen/y48"
                 android:drawableLeft="@drawable/icon_nav_back_white"
-                android:drawablePadding="15dp"
-                android:padding="15dp"
+                android:drawablePadding="@dimen/x15"
+                android:padding="@dimen/x15"
                 android:text="@string/EQUIPMENT_INFO"
                 android:textColor="@color/color_white"
                 android:textSize="16sp" />
@@ -47,7 +47,7 @@
                 style="@style/information_item"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
+                android:layout_marginTop="@dimen/y12"
                 android:text="@string/SETTINGS"
                 android:textColor="#4B9FD5"
                 android:textSize="14sp" />
@@ -56,13 +56,13 @@
                 android:id="@+id/lLayout_information_facility_name"
                 style="@style/information_item"
                 android:layout_width="match_parent"
-                android:layout_height="72dp"
+                android:layout_height="@dimen/y72"
                 android:orientation="vertical">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="15dp"
+                    android:layout_marginTop="@dimen/y15"
                     android:text="@string/EQUIPMENT_NAME"
                     android:textColor="#000000"
                     android:textSize="16sp" />
@@ -71,14 +71,14 @@
                     android:id="@+id/tv_device_alias"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="3dp"
+                    android:layout_marginTop="@dimen/y3"
                     android:textColor="#8C8C8C"
                     android:textSize="13sp" />
 
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dip"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="@dimen/y10"
                     android:background="@color/color_f2f2f2" />
             </LinearLayout>
 
@@ -87,7 +87,7 @@
                 style="@style/information_item"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
+                android:layout_marginTop="@dimen/y12"
                 android:text="@string/EQUIPMENT_INFO"
                 android:textColor="#4B9FD5"
                 android:textSize="14sp" />
@@ -103,7 +103,7 @@
             <LinearLayout
                 style="@style/information_item"
                 android:layout_width="match_parent"
-                android:layout_height="72dp"
+                android:layout_height="@dimen/y72"
                 android:orientation="vertical">
 
                 <TextView
@@ -117,14 +117,14 @@
                     android:id="@+id/tv_device_cid"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="3dp"
+                    android:layout_marginTop="@dimen/y3"
                     android:textColor="#8C8C8C"
                     android:textSize="13sp" />
 
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dip"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="@dimen/y10"
                     android:background="@color/color_f2f2f2" />
             </LinearLayout>
 
@@ -132,7 +132,7 @@
             <LinearLayout
                 style="@style/information_item"
                 android:layout_width="match_parent"
-                android:layout_height="72dp"
+                android:layout_height="@dimen/y72"
                 android:orientation="vertical">
 
                 <TextView
@@ -146,14 +146,14 @@
                     android:id="@+id/tv_device_mac"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="3dp"
+                    android:layout_marginTop="@dimen/y3"
                     android:textColor="#8C8C8C"
                     android:textSize="13sp" />
 
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dip"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="@dimen/y10"
                     android:background="@color/color_f2f2f2" />
             </LinearLayout>
 
@@ -162,7 +162,7 @@
             <LinearLayout
                 style="@style/information_item"
                 android:layout_width="match_parent"
-                android:layout_height="72dp"
+                android:layout_height="@dimen/y72"
                 android:orientation="vertical">
 
                 <TextView
@@ -176,7 +176,7 @@
                     android:id="@+id/tv_device_battery_level"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="3dp"
+                    android:layout_marginTop="@dimen/y3"
                     android:text="@string/CHARGING"
                     android:textColor="#8C8C8C"
                     android:textSize="13sp" />
@@ -184,7 +184,7 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dip"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="@dimen/y10"
                     android:background="@color/color_f2f2f2" />
             </LinearLayout>
 
@@ -192,7 +192,7 @@
             <LinearLayout
                 style="@style/information_item"
                 android:layout_width="match_parent"
-                android:layout_height="72dp"
+                android:layout_height="@dimen/y72"
                 android:orientation="vertical">
 
                 <TextView
@@ -206,14 +206,14 @@
                     android:id="@+id/tv_device_runtime"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="3dp"
+                    android:layout_marginTop="@dimen/y3"
                     android:textColor="#8C8C8C"
                     android:textSize="13sp" />
 
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dip"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="@dimen/y10"
                     android:background="@color/color_f2f2f2" />
             </LinearLayout>
         </LinearLayout>

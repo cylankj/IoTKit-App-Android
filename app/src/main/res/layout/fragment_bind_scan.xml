@@ -22,10 +22,10 @@
             android:id="@+id/imgV_nav_back"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
-            android:layout_marginTop="5dp"
-            android:padding="10dp"
+            android:layout_marginLeft="@dimen/x5"
+            android:layout_marginRight="@dimen/x5"
+            android:layout_marginTop="@dimen/y5"
+            android:padding="@dimen/x10"
             android:src="@drawable/icon_nav_back_white" />
 
         <TextView

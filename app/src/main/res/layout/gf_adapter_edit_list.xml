@@ -16,8 +16,8 @@
   -->
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="70dp"
-    android:layout_height="100dp"
+    android:layout_width="@dimen/x70"
+    android:layout_height="@dimen/y100"
     >
 
     <com.cylan.jiafeigou.support.galleryfinal.widget.GFImageView
@@ -25,8 +25,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:src="@drawable/ic_gf_default_photo"
-        android:padding="4dp"
-        android:layout_margin="4dp"
+        android:padding="@dimen/x4"
+        android:layout_margin="@dimen/x4"
         android:scaleType="centerCrop"
         />
 
@@ -36,7 +36,7 @@
         android:layout_height="wrap_content"
         android:src="@drawable/ic_delete_photo"
         android:layout_alignParentRight="true"
-        android:layout_marginTop="4dp"
+        android:layout_marginTop="@dimen/y4"
         />
 
 </RelativeLayout>

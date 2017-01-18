@@ -21,10 +21,10 @@
             <TextView
                 android:id="@+id/imgV_top_bar_center"
                 android:layout_width="wrap_content"
-                android:layout_height="48dp"
+                android:layout_height="@dimen/y48"
                 android:drawableLeft="@drawable/icon_nav_back_white"
-                android:drawablePadding="15dp"
-                android:padding="15dp"
+                android:drawablePadding="@dimen/x15"
+                android:padding="@dimen/x15"
                 android:text="待机"
                 android:textColor="@color/color_white"
                 android:textSize="16sp" />
@@ -33,10 +33,10 @@
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:layout_marginTop="10dp"
+        android:layout_height="@dimen/y48"
+        android:layout_marginTop="@dimen/y10"
         android:orientation="horizontal"
-        android:padding="10dp">
+        android:padding="@dimen/x10">
 
         <TextView
             android:layout_width="wrap_content"
@@ -55,16 +55,16 @@
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="1dp"
+        android:layout_height="@dimen/y1"
         android:layout_gravity="bottom"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
+        android:layout_marginLeft="@dimen/x10"
+        android:layout_marginRight="@dimen/x10"
         android:background="@color/color_e8e8e8" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="10dp"
+        android:padding="@dimen/x10"
         android:text="@string/Tap1_Camera_Video_DormantTips" />
 
 </LinearLayout>

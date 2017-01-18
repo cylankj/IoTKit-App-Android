@@ -14,25 +14,25 @@
             android:id="@+id/rl_home_mine_suggestion_bottom"
             android:layout_width="match_parent"
             android:layout_alignParentBottom="true"
-            android:layout_height="54dp"
+            android:layout_height="@dimen/y54"
             android:background="@color/color_f0f0f0"
             android:clickable="true">
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="1dp"
+                android:layout_height="@dimen/y1"
                 android:background="@color/color_e1e1e1"/>
 
             <EditText
                 android:id="@+id/et_home_mine_suggestion"
-                android:layout_width="288dp"
-                android:layout_height="32dp"
+                android:layout_width="@dimen/x288"
+                android:layout_height="@dimen/y32"
                 android:layout_centerVertical="true"
-                android:layout_marginLeft="15dp"
+                android:layout_marginLeft="@dimen/x15"
                 android:background="@drawable/home_mine_suggestion_shape"
                 android:hint="@string/Tap3_Feedback_TextTips"
                 android:maxLength="128"
-                android:paddingLeft="10dp"
+                android:paddingLeft="@dimen/x10"
                 android:textColorHint="@color/color_cecece"
                 android:textSize="13sp" />
 
@@ -42,8 +42,8 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
-                android:layout_marginRight="15dp"
-                android:layout_marginTop="19dp"
+                android:layout_marginRight="@dimen/x15"
+                android:layout_marginTop="@dimen/y19"
                 android:clickable="true"
                 android:contextClickable="true"
                 android:text="@string/Tap3_FriendsAdd_Send"
@@ -52,14 +52,14 @@
         </RelativeLayout>
 
         <android.support.v7.widget.RecyclerView
-            android:layout_marginTop="48dp"
+            android:layout_marginTop="@dimen/y48"
             android:id="@+id/rv_home_mine_suggestion"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_above="@id/rl_home_mine_suggestion_bottom"
             android:overScrollMode="never"
             android:gravity="bottom"
-            android:layout_marginBottom="4dp"
+            android:layout_marginBottom="@dimen/y4"
             android:scrollbars="none" />
 
     </RelativeLayout>
@@ -78,20 +78,20 @@
             <TextView
                 android:drawableLeft="@drawable/icon_nav_back_white"
                 android:layout_width="wrap_content"
-                android:layout_height="48dp"
+                android:layout_height="@dimen/y48"
                 android:text="@string/Tap3_Feedback"
-                android:drawablePadding="15dp"
-                android:padding="15dp"
+                android:drawablePadding="@dimen/x15"
+                android:padding="@dimen/x15"
                 android:textColor="@color/color_white"
                 android:textSize="16sp" />
 
             <TextView
                 android:id="@+id/tv_mine_help_suggestion_clear"
                 android:layout_width="wrap_content"
-                android:layout_height="48dp"
+                android:layout_height="@dimen/y48"
                 android:layout_gravity="right"
                 android:clickable="true"
-                android:padding="15dp"
+                android:padding="@dimen/x15"
                 android:text="@string/CLEAR"
                 android:textColor="@color/color_white"
                 android:textSize="14sp" />

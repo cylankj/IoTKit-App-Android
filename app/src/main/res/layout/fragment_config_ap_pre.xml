@@ -6,7 +6,7 @@
 
     <TextView
         android:layout_width="match_parent"
-        android:layout_height="48dp"
+        android:layout_height="@dimen/y48"
 
         android:gravity="center"
         android:text="@string/choose_connect_wifi"
@@ -17,10 +17,10 @@
         android:id="@+id/tv_config_ap_name"
         style="@style/ripple_background"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:layout_marginTop="55dp"
+        android:layout_height="@dimen/y48"
+        android:layout_marginLeft="@dimen/x20"
+        android:layout_marginRight="@dimen/x20"
+        android:layout_marginTop="@dimen/y55"
         android:drawableRight="@drawable/ico_drop_down"
         android:gravity="center"
         android:textColor="@color/color_333333"
@@ -28,25 +28,25 @@
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="1dp"
+        android:layout_height="@dimen/y1"
         android:layout_gravity="bottom"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
+        android:layout_marginLeft="@dimen/x20"
+        android:layout_marginRight="@dimen/x20"
         android:background="@color/color_f2f2f2" />
 
     <FrameLayout
         android:id="@+id/rLayout_wifi_pwd_input_box"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:layout_marginTop="29dp">
+        android:layout_height="@dimen/y48"
+        android:layout_marginTop="@dimen/y29">
 
         <EditText
             android:id="@+id/et_wifi_pwd"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center"
-            android:layout_marginBottom="5dp"
-            android:layout_marginTop="5dp"
+            android:layout_marginBottom="@dimen/y5"
+            android:layout_marginTop="@dimen/y5"
             android:background="@null"
             android:focusable="true"
             android:focusableInTouchMode="true"
@@ -54,8 +54,8 @@
             android:hint="@string/ENTER_WIFI_PWD"
             android:inputType="textPassword"
             android:maxLength="30"
-            android:paddingLeft="40dp"
-            android:paddingRight="40dp"
+            android:paddingLeft="@dimen/x40"
+            android:paddingRight="@dimen/x40"
             android:textColor="@color/color_666666"
             android:textColorHint="@color/color_cecece"
             android:textCursorDrawable="@drawable/bg_common_cursor"
@@ -72,8 +72,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_gravity="center_vertical"
-                android:paddingLeft="15dp"
-                android:paddingRight="7dp"
+                android:paddingLeft="@dimen/x15"
+                android:paddingRight="@dimen/x7"
                 android:src="@drawable/btn_login_clear_text"
                 android:visibility="gone" />
 
@@ -82,8 +82,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:layout_marginLeft="7dp"
-                android:layout_marginRight="20dp"
+                android:layout_marginLeft="@dimen/x7"
+                android:layout_marginRight="@dimen/x20"
                 android:background="@drawable/icon_common_show_pwd_selector"
                 android:button="@null"
                 android:checked="false" />
@@ -94,10 +94,10 @@
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="1dp"
+            android:layout_height="@dimen/y1"
             android:layout_gravity="bottom"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
+            android:layout_marginLeft="@dimen/x20"
+            android:layout_marginRight="@dimen/x20"
             android:background="@color/color_f2f2f2" />
 
     </FrameLayout>
@@ -106,17 +106,17 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="@dimen/y15"
         android:text="@string/WIFI_SET_5GTIPS"
         android:textColor="@color/color_4b9fd5"
         android:textSize="13sp" />
 
     <com.cylan.jiafeigou.widget.LoginButton
         android:id="@+id/tv_wifi_pwd_submit"
-        android:layout_width="173dp"
-        android:layout_height="50dp"
+        android:layout_width="@dimen/x173"
+        android:layout_height="@dimen/y50"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="37dp"
+        android:layout_marginTop="@dimen/y37"
         android:gravity="center"
         android:text="@string/NEXT"
         android:textColor="@color/color_4b9fd5"

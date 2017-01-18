@@ -8,7 +8,7 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="73dp"
+        android:layout_height="@dimen/y73"
         android:background="@color/color_0ba8cf">
 
         <ImageView
@@ -17,7 +17,7 @@
             android:layout_alignParentBottom="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="15dp"
+            android:padding="@dimen/x15"
             android:src="@drawable/icon_nav_back_white" />
 
             <TextView
@@ -30,14 +30,14 @@
                 android:maxLength="14"
                 android:singleLine="true"
                 android:ellipsize="end"
-                android:paddingBottom="12dp"
+                android:paddingBottom="@dimen/y12"
                 android:textSize="18sp"
                 android:textColor="@color/color_white" />
 
             <ImageView
                 android:id="@+id/iv_mine_friends_share_devices_ok"
-                android:layout_marginBottom="2dp"
-                android:padding="15dp"
+                android:layout_marginBottom="@dimen/y2"
+                android:padding="@dimen/x15"
                 android:clickable="false"
                 android:layout_alignParentRight="true"
                 android:layout_alignParentBottom="true"
@@ -56,9 +56,9 @@
             android:layout_height="wrap_content">
             <TextView
                 android:id="@+id/tv_choose_device_title"
-                android:layout_marginLeft="15dp"
-                android:layout_marginTop="19dp"
-                android:layout_marginBottom="8dp"
+                android:layout_marginLeft="@dimen/x15"
+                android:layout_marginTop="@dimen/y19"
+                android:layout_marginBottom="@dimen/y8"
                 android:text="@string/Tap3_Friends_UserInfo_ShareDevice_Select"
                 android:textSize="14sp"
                 android:visibility="invisible"
@@ -67,7 +67,7 @@
                 android:layout_height="wrap_content" />
 
             <android.support.v7.widget.RecyclerView
-                android:layout_marginLeft="15dp"
+                android:layout_marginLeft="@dimen/x15"
                 android:id="@+id/rcy_share_device_list"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
@@ -78,7 +78,7 @@
             android:id="@+id/ll_no_device"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="142dp"
+            android:layout_marginTop="@dimen/y142"
             android:gravity="center_horizontal"
             android:orientation="vertical"
             android:visibility="invisible">
@@ -91,7 +91,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="@dimen/y16"
                 android:text="@string/Tap3_Friends_UserInfo_ShareDevice_Fail"
                 android:textColor="#aaaaaa"
                 android:textSize="15sp" />
@@ -99,7 +99,7 @@
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="10dp"
+            android:layout_height="@dimen/y10"
             android:background="@drawable/little_shape" />
 
     </FrameLayout>

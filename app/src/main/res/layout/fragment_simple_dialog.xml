@@ -12,10 +12,10 @@
         <TextView
             android:id="@+id/tv_dialog_title"
             android:layout_width="wrap_content"
-            android:layout_height="48dp"
-            android:layout_marginLeft="25dp"
-            android:layout_marginRight="25dp"
-            android:layout_marginTop="20dp"
+            android:layout_height="@dimen/y48"
+            android:layout_marginLeft="@dimen/x25"
+            android:layout_marginRight="@dimen/x25"
+            android:layout_marginTop="@dimen/y20"
             android:gravity="center"
             android:textColor="@color/color_979797"
             android:textSize="16sp" />
@@ -24,14 +24,14 @@
             android:id="@+id/tv_dialog_content"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="25dp"
-            android:layout_marginRight="25dp" />
+            android:layout_marginLeft="@dimen/x25"
+            android:layout_marginRight="@dimen/x25" />
 
         <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="36dp"
+            android:layout_height="@dimen/y36"
             android:layout_gravity="bottom|end"
-            android:layout_margin="16dp"
+            android:layout_margin="@dimen/x16"
             android:orientation="horizontal">
 
             <TextView
@@ -40,7 +40,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:padding="10dp"
+                android:padding="@dimen/x10"
                 android:text="确定"
                 android:textColor="@color/color_4b9fd5"
                 android:textSize="14sp" />
@@ -51,7 +51,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:padding="10dp"
+                android:padding="@dimen/x10"
                 android:text="取消"
                 android:textColor="@color/color_4b9fd5"
                 android:textSize="14sp" />

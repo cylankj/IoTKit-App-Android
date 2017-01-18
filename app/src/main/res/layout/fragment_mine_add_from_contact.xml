@@ -9,7 +9,7 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="73dp"
+        android:layout_height="@dimen/y73"
         android:background="@color/color_0ba8cf">
 
         <ImageView
@@ -18,13 +18,13 @@
             android:layout_alignParentBottom="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="15dp"
+            android:padding="@dimen/x15"
             android:src="@drawable/icon_nav_back_white" />
 
         <TextView
-            android:layout_marginBottom="12dp"
+            android:layout_marginBottom="@dimen/y12"
             android:layout_alignParentBottom="true"
-            android:layout_marginLeft="48dp"
+            android:layout_marginLeft="@dimen/x48"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="发送请求"
@@ -34,8 +34,8 @@
         <ImageView
             android:visibility="visible"
             android:id="@+id/iv_mine_add_from_contact_send"
-            android:layout_marginBottom="2dp"
-            android:padding="15dp"
+            android:layout_marginBottom="@dimen/y2"
+            android:padding="@dimen/x15"
             android:layout_alignParentBottom="true"
             android:layout_alignParentRight="true"
             android:clickable="true"
@@ -46,8 +46,8 @@
         <ImageView
             android:visibility="gone"
             android:id="@+id/iv_mine_add_from_contact_send_disable"
-            android:layout_marginBottom="2dp"
-            android:padding="15dp"
+            android:layout_marginBottom="@dimen/y2"
+            android:padding="@dimen/x15"
             android:layout_alignParentBottom="true"
             android:layout_alignParentRight="true"
             android:clickable="true"
@@ -61,9 +61,9 @@
         android:layout_height="wrap_content">
 
         <RelativeLayout
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="@dimen/y8"
             android:layout_width="match_parent"
-            android:layout_height="54dp">
+            android:layout_height="@dimen/y54">
 
             <EditText
                 android:id="@+id/et_mine_add_contact_mesg"
@@ -73,26 +73,26 @@
                 android:hint="验证消息"
                 android:background="@null"
                 android:maxLength="20"
-                android:layout_marginRight="20dp"
-                android:layout_marginLeft="20dp"
+                android:layout_marginRight="@dimen/x20"
+                android:layout_marginLeft="@dimen/x20"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
             <View
                 android:id="@+id/view_mine_add_from_contact_line"
-                android:layout_marginBottom="8dp"
+                android:layout_marginBottom="@dimen/y8"
                 android:layout_alignParentBottom="true"
-                android:layout_marginRight="20dp"
-                android:layout_marginLeft="20dp"
+                android:layout_marginRight="@dimen/x20"
+                android:layout_marginLeft="@dimen/x20"
                 android:layout_width="match_parent"
-                android:layout_height="1dp"
+                android:layout_height="@dimen/y1"
                 android:background="@color/color_f2f2f2" />
 
             <ImageView
                 android:id="@+id/iv_mine_add_contact_clear_text"
                 android:visibility="gone"
                 android:layout_centerVertical="true"
-                android:layout_marginRight="20dp"
+                android:layout_marginRight="@dimen/x20"
                 android:layout_alignParentRight="true"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -102,7 +102,7 @@
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="10dp"
+            android:layout_height="@dimen/y10"
             android:background="@drawable/little_shape" />
 
     </FrameLayout>

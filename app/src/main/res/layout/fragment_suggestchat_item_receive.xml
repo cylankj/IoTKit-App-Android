@@ -14,26 +14,26 @@
 
     <ImageView
         android:id="@+id/iv_mine_suggestion_server"
-        android:layout_marginTop="22dp"
-        android:layout_marginLeft="10dp"
+        android:layout_marginTop="@dimen/y22"
+        android:layout_marginLeft="@dimen/x10"
         android:src="@drawable/pic_head"
-        android:layout_width="40dp"
-        android:layout_height="40dp" />
+        android:layout_width="@dimen/x40"
+        android:layout_height="@dimen/y40" />
 
     <TextView
         android:background="@drawable/pic_container_white"
         android:textColor="#333333"
         android:textSize="14sp"
         android:id="@+id/chat_item_msg"
-        android:paddingLeft="15dp"
-        android:paddingRight="12dp"
-        android:paddingBottom="10dp"
-        android:paddingTop="10dp"
+        android:paddingLeft="@dimen/x15"
+        android:paddingRight="@dimen/x12"
+        android:paddingBottom="@dimen/y10"
+        android:paddingTop="@dimen/y10"
         android:text="亲爱的用户,客户端将进行系统维护升级,期间对设备正常使用将会造成一定影响，对您造成的不便之处敬请谅解。再次感谢您对加菲狗的支持！"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="30dp"
+        android:layout_marginLeft="@dimen/x8"
+        android:layout_marginTop="@dimen/y30"
         android:layout_toRightOf="@id/iv_mine_suggestion_server"
-        android:layout_width="230dp"
+        android:layout_width="@dimen/x230"
         android:layout_height="wrap_content" />
 
 </RelativeLayout>

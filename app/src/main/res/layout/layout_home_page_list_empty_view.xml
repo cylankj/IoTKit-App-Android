@@ -17,7 +17,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="@dimen/y20"
         android:text="还没有设备哦"
         android:textColor="@color/color_33333"
         android:textSize="16sp" />
@@ -27,7 +27,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="13dp"
+        android:layout_marginTop="@dimen/y13"
         android:text="快点点击右上角 “+” 添加设备吧"
         android:textColor="@color/color_888888"
         android:textSize="14sp" />

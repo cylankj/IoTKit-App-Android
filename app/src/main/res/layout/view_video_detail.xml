@@ -29,10 +29,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:padding="10dp"
+            android:padding="@dimen/x10"
             android:visibility="invisible"
-            app:progress_point_radius="3dp"
+            app:progress_point_radius="@dimen/x3"
             app:progress_stroke_color="#CECECE"
-            hunt:progress_radius="50dp" />
+            hunt:progress_radius="@dimen/x50" />
     </com.cylan.jiafeigou.widget.ShadowFrameLayout>
 </FrameLayout>

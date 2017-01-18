@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources><dimen name="x1">2.4px</dimen>
+<resources><dimen name="x0">0.0px</dimen>
+<dimen name="x1">2.4px</dimen>
 <dimen name="x2">4.8px</dimen>
 <dimen name="x3">7.2px</dimen>
 <dimen name="x4">9.6px</dimen>

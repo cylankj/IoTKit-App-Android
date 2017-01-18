@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="0dp"
+    android:layout_height="@dimen/y0"
     android:layout_weight="1.0"
-    android:layout_marginBottom="4dp">
+    android:layout_marginBottom="@dimen/y4">
 
     <android.support.v7.widget.RecyclerView
         android:layout_width="match_parent"
@@ -16,7 +16,7 @@
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="10dp"
+        android:layout_height="@dimen/y10"
         android:background="@drawable/little_shape" />
 </FrameLayout>
 
@@ -24,7 +24,7 @@
 <!--<android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"-->
 <!--android:layout_width="match_parent"-->
 <!--android:id="@+id/rv_home_mine_suggestion"-->
-<!--android:layout_height="0dp"-->
+<!--android:layout_height="@dimen/y0"-->
 <!--android:layout_weight="1.0"-->
-<!--android:layout_marginBottom="4dp"-->
+<!--android:layout_marginBottom="@dimen/y4"-->
     <!--/>-->

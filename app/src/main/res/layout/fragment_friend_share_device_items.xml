@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
 android:id="@+id/rl_share_smartcamera"
-android:layout_marginLeft="15dp"
+android:layout_marginLeft="@dimen/x15"
 android:layout_width="match_parent"
-android:layout_height="67dp">
+android:layout_height="@dimen/y67">
 
 <ImageView
     android:layout_centerVertical="true"
@@ -15,9 +15,9 @@ android:layout_height="67dp">
 <RelativeLayout
     android:gravity="center_vertical"
     android:layout_toRightOf="@id/iv_device_icon"
-    android:paddingLeft="15dp"
+    android:paddingLeft="@dimen/x15"
     android:layout_width="match_parent"
-    android:layout_height="67dp"
+    android:layout_height="@dimen/y67"
     >
     <TextView
         android:id="@+id/tv_device_name"
@@ -28,7 +28,7 @@ android:layout_height="67dp">
         android:layout_height="wrap_content" />
 
     <TextView
-        android:paddingTop="8dp"
+        android:paddingTop="@dimen/y8"
         android:layout_below="@id/tv_device_name"
         android:textSize="12sp"
         android:textColor="@color/color_8c8c8c"
@@ -38,19 +38,19 @@ android:layout_height="67dp">
         android:layout_height="wrap_content" />
 </RelativeLayout>
 <View
-    android:layout_marginLeft="48dp"
+    android:layout_marginLeft="@dimen/x48"
     android:layout_alignParentBottom="true"
     android:background="@color/color_f2f2f2"
     android:layout_width="match_parent"
-    android:layout_height="1dp"/>
+    android:layout_height="@dimen/y1"/>
 
 <CheckBox
     android:id="@+id/cbx_share_isCheck"
     android:gravity="center"
     style="@style/CustomCheckboxTheme"
-    android:paddingRight="15dp"
-    android:paddingTop="15dp"
-    android:paddingBottom="15dp"
+    android:paddingRight="@dimen/x15"
+    android:paddingTop="@dimen/y15"
+    android:paddingBottom="@dimen/y15"
     android:layout_centerVertical="true"
     android:layout_alignParentRight="true"
     android:layout_width="wrap_content"

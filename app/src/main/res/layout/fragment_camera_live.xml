@@ -7,7 +7,7 @@
     <FrameLayout
         android:id="@+id/fLayout_cam_live_view"
         android:layout_width="match_parent"
-        android:layout_height="100dp"
+        android:layout_height="@dimen/y100"
         android:background="@drawable/default_cam_preview">
 
         <FrameLayout
@@ -29,7 +29,7 @@
     <com.cylan.jiafeigou.n.view.cam.CamLiveControlLayer
         android:id="@+id/cam_live_control_layout"
         android:layout_width="match_parent"
-        android:layout_height="52dp"
+        android:layout_height="@dimen/y52"
         android:layout_below="@+id/fLayout_cam_live_view"
         android:visibility="invisible" />
 
@@ -45,10 +45,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:layout_marginLeft="30dp"
-            android:layout_marginRight="30dp"
+            android:layout_marginLeft="@dimen/x30"
+            android:layout_marginRight="@dimen/x30"
             android:clickable="true"
-            android:padding="20dp"
+            android:padding="@dimen/x20"
             android:src="@drawable/icon_port_speaker_off_selector" />
 
         <ImageView
@@ -57,7 +57,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:clickable="true"
-            android:padding="10dp"
+            android:padding="@dimen/x10"
             android:src="@drawable/icon_port_mic_on_selector" />
 
         <ImageView
@@ -65,10 +65,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end|center_vertical"
-            android:layout_marginLeft="30dp"
-            android:layout_marginRight="30dp"
+            android:layout_marginLeft="@dimen/x30"
+            android:layout_marginRight="@dimen/x30"
             android:clickable="true"
-            android:padding="20dp"
+            android:padding="@dimen/x20"
             android:src="@drawable/icon_port_capture_selector" />
     </FrameLayout>
 </RelativeLayout>

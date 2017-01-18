@@ -1,24 +1,24 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="48dp"
+    android:layout_height="@dimen/y48"
     android:layout_below="@+id/fLayout_input_box"
-    android:layout_marginTop="29dp">
+    android:layout_marginTop="@dimen/y29">
 
     <EditText
         android:id="@+id/et_input_box"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center"
-        android:layout_marginBottom="5dp"
-        android:layout_marginTop="5dp"
+        android:layout_marginBottom="@dimen/y5"
+        android:layout_marginTop="@dimen/y5"
         android:background="@null"
         android:focusable="true"
         android:focusableInTouchMode="true"
         android:gravity="center"
         android:inputType="textPassword"
         android:maxLength="12"
-        android:paddingLeft="40dp"
-        android:paddingRight="40dp"
+        android:paddingLeft="@dimen/x40"
+        android:paddingRight="@dimen/x40"
         android:textColor="@color/color_666666"
         android:textColorHint="@color/color_cecece"
         android:textCursorDrawable="@drawable/bg_common_cursor"
@@ -35,8 +35,8 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_gravity="center_vertical"
-            android:paddingLeft="15dp"
-            android:paddingRight="7dp"
+            android:paddingLeft="@dimen/x15"
+            android:paddingRight="@dimen/x7"
             android:src="@drawable/btn_login_clear_text"
             android:visibility="gone" />
 
@@ -48,7 +48,7 @@
             android:background="@drawable/icon_common_show_pwd_selector"
             android:button="@null"
             android:checked="false"
-            android:paddingLeft="7dp" />
+            android:paddingLeft="@dimen/x7" />
 
 
     </LinearLayout>
@@ -56,7 +56,7 @@
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="1dp"
+        android:layout_height="@dimen/y1"
         android:layout_gravity="bottom"
         android:background="@color/color_f2f2f2" />
 

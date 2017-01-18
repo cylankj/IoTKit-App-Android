@@ -25,15 +25,15 @@
 
     <com.cylan.jiafeigou.support.galleryfinal.widget.GFImageView
         android:id="@+id/iv_cover"
-        android:layout_width="68dp"
-        android:layout_height="68dp"
-        android:layout_margin="8dp"
+        android:layout_width="@dimen/x68"
+        android:layout_height="@dimen/y68"
+        android:layout_margin="@dimen/x8"
         android:scaleType="centerCrop"
         android:src="@drawable/ic_gf_default_photo"
         />
 
     <LinearLayout
-        android:layout_width="0dp"
+        android:layout_width="@dimen/x0"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:gravity="center_vertical"
@@ -52,7 +52,7 @@
             android:id="@+id/tv_photo_count"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
+            android:layout_marginTop="@dimen/y4"
             android:textColor="#d2d2d7"
             android:textSize="14sp"
             />
@@ -62,8 +62,8 @@
         android:id="@+id/iv_folder_check"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
+        android:layout_marginLeft="@dimen/x8"
+        android:layout_marginRight="@dimen/x8"
         android:src="@drawable/ic_gf_done"
         />
 

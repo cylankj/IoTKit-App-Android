@@ -11,7 +11,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_margin="22dp"
+        android:layout_margin="@dimen/x22"
         android:orientation="vertical">
 
         <TextView
@@ -28,31 +28,31 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="6dp"
+            android:layout_marginTop="@dimen/y6"
             android:text="06:30 am"
             android:textColor="@color/color_6C7A92"
             android:textSize="15sp" />
 
         <View
-            android:layout_width="40dp"
-            android:layout_height="1dp"
+            android:layout_width="@dimen/x40"
+            android:layout_height="@dimen/y1"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="12dp"
+            android:layout_marginTop="@dimen/y12"
             android:background="@color/color_EFEFEF" />
 
         <com.cylan.jiafeigou.widget.ImageViewTip
             android:id="@+id/imgv_bell_call_item_thumbnail"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
+            android:layout_width="@dimen/x80"
+            android:layout_height="@dimen/y80"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="17dp"
+            android:layout_marginTop="@dimen/y17"
             android:src="@drawable/icon_home_doorbell_online"
             hunt:t_border_color="@color/color_white"
-            hunt:t_border_width="1dp"
+            hunt:t_border_width="@dimen/x1"
             hunt:t_enable_border="true"
             hunt:t_ignore="true"
             hunt:t_point_color="@color/color_red_dot_f43531"
-            hunt:t_radius="4dp"
+            hunt:t_radius="@dimen/x4"
             hunt:t_round_image="true"
             hunt:t_show_point="true" />
 
@@ -62,9 +62,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginTop="22dp"
+            android:layout_marginTop="@dimen/y22"
             android:drawableLeft="@drawable/icon_bell_answer"
-            android:drawablePadding="10dp"
+            android:drawablePadding="@dimen/x10"
             android:text="已通话"
             android:textColor="@color/color_CBCFD0"
             android:textSize="13sp" />
@@ -81,7 +81,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end"
-            android:padding="10dp"
+            android:padding="@dimen/x10"
             android:src="@drawable/icon_check" />
     </FrameLayout>
 </android.support.v7.widget.CardView>

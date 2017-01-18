@@ -19,10 +19,10 @@
             <TextView
                 android:id="@+id/imgV_top_bar_center"
                 android:layout_width="wrap_content"
-                android:layout_height="48dp"
+                android:layout_height="@dimen/y48"
                 android:drawableLeft="@drawable/icon_nav_back_white"
-                android:drawablePadding="15dp"
-                android:padding="15dp"
+                android:drawablePadding="@dimen/x15"
+                android:padding="@dimen/x15"
                 android:text="@string/EFAMILY_RELEVANCE_DOOR"
                 android:textColor="@color/color_white"
                 android:textSize="16sp" />
@@ -41,15 +41,15 @@
 
             <TextView
                 android:id="@+id/tv_relative_door_bell"
-                android:layout_marginLeft="15dp"
-                android:layout_marginTop="19dp"
+                android:layout_marginLeft="@dimen/x15"
+                android:layout_marginTop="@dimen/y19"
                 android:text="@string/Tap1_iHome_Associated"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 
             <android.support.v7.widget.RecyclerView
-                android:layout_marginTop="8dp"
-                android:layout_marginLeft="15dp"
+                android:layout_marginTop="@dimen/y8"
+                android:layout_marginLeft="@dimen/x15"
                 android:id="@+id/rcy_has_correlation"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
@@ -57,15 +57,15 @@
 
             <TextView
                 android:id="@+id/tv_unrelative_door_bell"
-                android:layout_marginTop="19dp"
-                android:layout_marginLeft="15dp"
+                android:layout_marginTop="@dimen/y19"
+                android:layout_marginLeft="@dimen/x15"
                 android:text="@string/Tap1_iHome_NotAssociated"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 
             <android.support.v7.widget.RecyclerView
-                android:layout_marginTop="8dp"
-                android:layout_marginLeft="15dp"
+                android:layout_marginTop="@dimen/y8"
+                android:layout_marginLeft="@dimen/x15"
                 android:id="@+id/rcy_uncorrelation"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">

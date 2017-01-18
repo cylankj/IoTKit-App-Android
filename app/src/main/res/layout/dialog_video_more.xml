@@ -13,38 +13,38 @@
         <TextView
             android:id="@+id/dialog_media_video_delete"
             android:layout_width="match_parent"
-            android:layout_height="48dp"
+            android:layout_height="@dimen/y48"
             android:clickable="true"
             android:drawableLeft="@drawable/icon_wonderful_view_picture_delete"
-            android:drawablePadding="20dp"
+            android:drawablePadding="@dimen/x20"
             android:gravity="center_vertical"
-            android:paddingLeft="20dp"
-            android:paddingRight="20dp"
+            android:paddingLeft="@dimen/x20"
+            android:paddingRight="@dimen/x20"
             android:text="删除"/>
 
 
         <TextView
             android:id="@+id/dialog_media_video_download"
             android:layout_width="match_parent"
-            android:layout_height="48dp"
+            android:layout_height="@dimen/y48"
             android:clickable="true"
             android:drawableLeft="@drawable/icon_wonderful_view_picture_down"
-            android:drawablePadding="20dp"
+            android:drawablePadding="@dimen/x20"
             android:gravity="center_vertical"
-            android:paddingLeft="20dp"
-            android:paddingRight="20dp"
+            android:paddingLeft="@dimen/x20"
+            android:paddingRight="@dimen/x20"
             android:text="下载"/>
 
         <TextView
             android:id="@+id/dialog_media_video_share"
             android:layout_width="match_parent"
-            android:layout_height="48dp"
+            android:layout_height="@dimen/y48"
             android:clickable="true"
             android:drawableLeft="@drawable/icon_wonderful_view_picture_share"
-            android:drawablePadding="20dp"
+            android:drawablePadding="@dimen/x20"
             android:gravity="center_vertical"
-            android:paddingLeft="20dp"
-            android:paddingRight="20dp"
+            android:paddingLeft="@dimen/x20"
+            android:paddingRight="@dimen/x20"
             android:text="分享"/>
     </LinearLayout>
 </android.support.v7.widget.CardView>

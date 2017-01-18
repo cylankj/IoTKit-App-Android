@@ -11,40 +11,40 @@
         android:layout_height="wrap_content" />
 
     <RelativeLayout
-        android:layout_marginTop="9dp"
+        android:layout_marginTop="@dimen/y9"
         android:layout_below="@id/tv_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
 
         <ImageView
-            android:layout_marginRight="10dp"
+            android:layout_marginRight="@dimen/x10"
             android:id="@+id/iv_user_icon"
             android:layout_alignParentRight="true"
             android:src="@drawable/img_dialogue_head_default"
-            android:layout_width="40dp"
-            android:layout_height="40dp" />
+            android:layout_width="@dimen/x40"
+            android:layout_height="@dimen/y40" />
 
         <LinearLayout
-            android:layout_marginRight="7dp"
+            android:layout_marginRight="@dimen/x7"
             android:id="@+id/ll_voice_container"
             android:layout_toLeftOf="@id/iv_user_icon"
             android:background="@drawable/pic_container_blue"
             android:orientation="horizontal"
             android:layout_width="wrap_content"
-            android:layout_height="38dp">
+            android:layout_height="@dimen/y38">
 
             <TextView
                 android:textColor="@color/color_white"
                 android:id="@+id/tv_voice_length"
-                android:layout_marginLeft="15dp"
+                android:layout_marginLeft="@dimen/x15"
                 android:layout_gravity="center_vertical"
                 android:text="15''"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 
             <ImageView
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="20dp"
+                android:layout_marginLeft="@dimen/x10"
+                android:layout_marginRight="@dimen/x20"
                 android:id="@+id/iv_voice_play"
                 android:layout_gravity="center_vertical"
                 android:background="@drawable/play_voice_record"
@@ -54,7 +54,7 @@
 
         <TextView
             android:id="@+id/tv_is_read"
-            android:layout_marginRight="10dp"
+            android:layout_marginRight="@dimen/x10"
             android:layout_toLeftOf="@id/ll_voice_container"
             android:layout_centerVertical="true"
             android:text="@string/EFAMILY_READ_ALREADY"

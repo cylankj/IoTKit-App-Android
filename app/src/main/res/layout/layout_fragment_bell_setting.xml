@@ -20,10 +20,10 @@
             <TextView
                 android:id="@+id/imgV_top_bar_center"
                 android:layout_width="wrap_content"
-                android:layout_height="48dp"
+                android:layout_height="@dimen/y48"
                 android:drawableLeft="@drawable/icon_nav_back_white"
-                android:drawablePadding="15dp"
-                android:padding="15dp"
+                android:drawablePadding="@dimen/x15"
+                android:padding="@dimen/x15"
                 android:text="功能设置"
                 android:textColor="@color/color_white"
                 android:textSize="16sp" />
@@ -38,15 +38,15 @@
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="10dp"
+            android:layout_height="@dimen/y10"
             android:background="@drawable/little_shape" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginLeft="@dimen/x20"
+            android:layout_marginRight="@dimen/x20"
+            android:layout_marginTop="@dimen/y10"
             android:text="设备"
             android:textColor="@color/color_4b9fd5"
             android:textSize="15sp" />
@@ -54,9 +54,9 @@
         <com.cylan.jiafeigou.widget.SettingItemView0
             android:id="@+id/sv_setting_device_detail"
             android:layout_width="match_parent"
-            android:layout_height="72dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
+            android:layout_height="@dimen/y72"
+            android:layout_marginLeft="@dimen/x20"
+            android:layout_marginRight="@dimen/x20"
             hunt:sv_image_src="@drawable/icon_setting_information"
             hunt:sv_sub_title="@string/EQUIPMENT_INFO"
             hunt:sv_title="@string/EQUIPMENT_INFO"
@@ -65,9 +65,9 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginLeft="@dimen/x20"
+            android:layout_marginRight="@dimen/x20"
+            android:layout_marginTop="@dimen/y10"
             android:text="@string/NETWORK"
             android:textColor="@color/color_4b9fd5"
             android:textSize="15sp" />
@@ -75,9 +75,9 @@
         <com.cylan.jiafeigou.widget.SettingItemView0
             android:id="@+id/sv_setting_device_wifi"
             android:layout_width="match_parent"
-            android:layout_height="72dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
+            android:layout_height="@dimen/y72"
+            android:layout_marginLeft="@dimen/x20"
+            android:layout_marginRight="@dimen/x20"
             hunt:sv_image_src="@drawable/icon_setting_information"
             hunt:sv_title="@string/WIFI"
             hunt:sv_v_divider="true" />
@@ -86,10 +86,10 @@
         <TextView
             android:id="@+id/tv_setting_clear_"
             android:layout_width="match_parent"
-            android:layout_height="52dp"
+            android:layout_height="@dimen/y52"
             android:gravity="center_vertical"
-            android:paddingLeft="20dp"
-            android:paddingRight="20dp"
+            android:paddingLeft="@dimen/x20"
+            android:paddingRight="@dimen/x20"
             android:text="@string/DOOR_CLEAR_REOCRD"
             android:textColor="@color/color_black"
             android:textSize="16sp" />
@@ -98,17 +98,17 @@
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
             android:layout_gravity="bottom"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
+            android:layout_marginLeft="@dimen/x20"
+            android:layout_marginRight="@dimen/x20"
             android:background="@color/color_e8e8e8" />
 
         <TextView
             android:id="@+id/tv_setting_unbind"
             android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:layout_marginTop="10dp"
+            android:layout_height="@dimen/y48"
+            android:layout_marginLeft="@dimen/x20"
+            android:layout_marginRight="@dimen/x20"
+            android:layout_marginTop="@dimen/y10"
             android:background="@color/color_f2f2f2"
             android:gravity="center"
             android:text="@string/DELETE_CID"

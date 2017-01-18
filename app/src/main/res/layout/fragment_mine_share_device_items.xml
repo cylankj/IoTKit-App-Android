@@ -5,9 +5,9 @@
     android:layout_height="wrap_content">
 
     <RelativeLayout
-        android:layout_marginLeft="15dp"
+        android:layout_marginLeft="@dimen/x15"
         android:layout_width="match_parent"
-        android:layout_height="67dp">
+        android:layout_height="@dimen/y67">
 
         <ImageView
             android:layout_centerVertical="true"
@@ -19,9 +19,9 @@
         <RelativeLayout
             android:gravity="center_vertical"
             android:layout_toRightOf="@id/iv_share_device_icon"
-            android:paddingLeft="15dp"
+            android:paddingLeft="@dimen/x15"
             android:layout_width="match_parent"
-            android:layout_height="67dp"
+            android:layout_height="@dimen/y67"
             >
             <TextView
                 android:id="@+id/tv_share_device_name"
@@ -34,7 +34,7 @@
 
             <TextView
                 android:id="@+id/tv_has_share_num"
-                android:paddingTop="7dp"
+                android:paddingTop="@dimen/y7"
                 android:layout_below="@id/tv_share_device_name"
                 android:textSize="12sp"
                 android:textColor="@color/color_8c8c8c"
@@ -43,15 +43,15 @@
                 android:layout_height="wrap_content" />
         </RelativeLayout>
         <View
-            android:layout_marginLeft="48dp"
+            android:layout_marginLeft="@dimen/x48"
             android:layout_alignParentBottom="true"
             android:background="@color/color_f2f2f2"
             android:layout_width="match_parent"
-            android:layout_height="1dp"/>
+            android:layout_height="@dimen/y1"/>
 
         <TextView
             android:id="@+id/tv_share_device_btn"
-            android:layout_marginRight="15dp"
+            android:layout_marginRight="@dimen/x15"
             android:gravity="center"
             android:layout_centerVertical="true"
             android:layout_alignParentRight="true"

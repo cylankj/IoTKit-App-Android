@@ -15,7 +15,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/fLayout_top_bar"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="@dimen/y20"
         android:text="系统设置->WiFI列表，\n选择DOG-xxxxxx，密码8个1"
         android:textColor="@color/color_333333"
         android:textSize="14sp" />
@@ -26,7 +26,7 @@
         android:layout_height="wrap_content"
         android:layout_alignStart="@+id/tv_guide_main_content"
         android:layout_below="@+id/tv_guide_main_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="@dimen/y20"
         android:text="回到加菲狗"
         android:textColor="@color/color_333333"
         android:textSize="14sp" />
@@ -38,12 +38,12 @@
         android:layout_height="match_parent"
         android:layout_above="@+id/tv_bind_guide_next"
         android:layout_below="@+id/tv_guide_sub_content"
-        android:layout_marginBottom="49dp"
-        android:layout_marginTop="42dp" />
+        android:layout_marginBottom="@dimen/y49"
+        android:layout_marginTop="@dimen/y42" />
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="1dp"
+        android:layout_height="@dimen/y1"
         android:layout_alignTop="@+id/tv_bind_guide_next"
         android:background="@color/color_d8d8d8" />
 
@@ -51,7 +51,7 @@
         android:id="@+id/tv_bind_guide_next"
         style="@style/ripple_background"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="@dimen/y50"
         android:layout_alignParentBottom="true"
         android:gravity="center"
         android:text="前往设置"

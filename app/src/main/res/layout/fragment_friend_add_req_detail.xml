@@ -8,7 +8,7 @@
     <RelativeLayout
         android:id="@+id/rl_title_bar"
         android:layout_width="match_parent"
-        android:layout_height="73dp"
+        android:layout_height="@dimen/y73"
         android:background="@color/color_0ba8cf">
 
         <ImageView
@@ -17,13 +17,13 @@
             android:layout_alignParentBottom="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="15dp"
+            android:padding="@dimen/x15"
             android:src="@drawable/icon_nav_back_white" />
 
         <TextView
-            android:layout_marginBottom="12dp"
+            android:layout_marginBottom="@dimen/y12"
             android:layout_alignParentBottom="true"
-            android:layout_marginLeft="48dp"
+            android:layout_marginLeft="@dimen/x48"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/Tap3_Friends_Details"
@@ -44,15 +44,15 @@
 
             <ImageView
                 android:id="@+id/iv_detail_user_head"
-                android:layout_marginTop="42dp"
+                android:layout_marginTop="@dimen/y42"
                 android:layout_gravity="center_horizontal"
                 android:src="@drawable/icon_mine_head_normal"
-                android:layout_width="80dp"
-                android:layout_height="80dp" />
+                android:layout_width="@dimen/x80"
+                android:layout_height="@dimen/y80" />
 
             <TextView
                 android:id="@+id/tv_relative_and_friend_name"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="@dimen/y8"
                 android:layout_gravity="center_horizontal"
                 android:textColor="@color/color_333333"
                 android:textSize="16sp"
@@ -61,7 +61,7 @@
 
             <TextView
                 android:id="@+id/tv_relative_and_friend_account"
-                android:layout_marginTop="3dp"
+                android:layout_marginTop="@dimen/y3"
                 android:layout_gravity="center_horizontal"
                 android:textColor="@color/color_777777"
                 android:textSize="14sp"
@@ -71,13 +71,13 @@
 
             <RelativeLayout
                 android:id="@+id/rl_add_request_mesg"
-                android:layout_marginTop="60dp"
+                android:layout_marginTop="@dimen/y60"
                 android:layout_width="match_parent"
-                android:layout_height="54dp">
+                android:layout_height="@dimen/y54">
 
                 <TextView
                     android:id="@+id/tv_mesg"
-                    android:layout_marginLeft="15dp"
+                    android:layout_marginLeft="@dimen/x15"
                     android:gravity="center_vertical"
                     android:text="@string/Tap3_FriendsAdd_Content"
                     android:textSize="15sp"
@@ -87,8 +87,8 @@
 
                 <TextView
                     android:id="@+id/tv_add_request_mesg"
-                    android:layout_marginTop="6dp"
-                    android:layout_marginLeft="15dp"
+                    android:layout_marginTop="@dimen/y6"
+                    android:layout_marginLeft="@dimen/x15"
                     android:layout_below="@id/tv_mesg"
                     android:background="@null"
                     android:clickable="false"
@@ -96,12 +96,12 @@
                     android:layout_height="wrap_content" />
 
                 <View
-                    android:layout_marginLeft="15dp"
-                    android:layout_marginRight="15dp"
+                    android:layout_marginLeft="@dimen/x15"
+                    android:layout_marginRight="@dimen/x15"
                     android:layout_alignParentBottom="true"
                     android:background="@color/color_f2f2f2"
                     android:layout_width="match_parent"
-                    android:layout_height="1dp"/>
+                    android:layout_height="@dimen/y1"/>
 
             </RelativeLayout>
 
@@ -109,14 +109,14 @@
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="10dp"
+            android:layout_height="@dimen/y10"
             android:background="@drawable/little_shape" />
 
     </FrameLayout>
     
     <TextView
         android:id="@+id/tv_add_as_relative_and_friend"
-        android:layout_marginBottom="28dp"
+        android:layout_marginBottom="@dimen/y28"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:gravity="center"
@@ -125,7 +125,7 @@
         android:textSize="15sp"
         android:clickable="true"
         android:textColor="@color/color_white"
-        android:layout_width="268dp"
-        android:layout_height="42dp" />
+        android:layout_width="@dimen/x268"
+        android:layout_height="@dimen/y42" />
 
 </RelativeLayout>

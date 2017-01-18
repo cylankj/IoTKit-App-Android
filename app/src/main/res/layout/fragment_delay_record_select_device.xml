@@ -14,7 +14,7 @@
             android:id="@+id/header_delay_record_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="15dp">
+            android:padding="@dimen/x15">
 
             <ImageView
                 android:id="@+id/header_delay_record_back"
@@ -61,7 +61,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="@dimen/y20"
                 android:text="暂无设备"
                 android:textColor="@color/color_33333"
                 android:textSize="16sp"/>
@@ -70,7 +70,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginTop="13dp"
+                android:layout_marginTop="@dimen/y13"
                 android:text="仅支持3G摄像头"
                 android:textColor="@color/color_888888"
                 android:textSize="14sp"/>

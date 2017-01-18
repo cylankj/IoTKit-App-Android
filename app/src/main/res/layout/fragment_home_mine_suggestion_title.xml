@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/rl_home_mine_suggestion"
     android:layout_width="match_parent"
-    android:layout_height="73dp"
+    android:layout_height="@dimen/y73"
     android:background="#0BA8CF">
 
     <ImageView
@@ -10,15 +10,15 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:padding="15dp"
+        android:padding="@dimen/x15"
         android:src="@drawable/icon_nav_back_white" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="12dp"
-        android:layout_marginLeft="48dp"
+        android:layout_marginBottom="@dimen/y12"
+        android:layout_marginLeft="@dimen/x48"
         android:text="@string/Tap3_Feedback"
         android:textColor="@color/color_white"
         android:textSize="18sp" />
@@ -30,7 +30,7 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         android:clickable="true"
-        android:padding="15dp"
+        android:padding="@dimen/x15"
         android:text="@string/CLEAR"
         android:textColor="@color/color_white"
         android:textSize="14sp" />

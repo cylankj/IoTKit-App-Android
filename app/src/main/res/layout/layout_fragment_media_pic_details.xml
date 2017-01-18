@@ -24,8 +24,8 @@
             android:id="@+id/imgV_big_pic_download"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="25dp"
-            android:padding="15dp"
+            android:layout_margin="@dimen/x25"
+            android:padding="@dimen/x15"
             android:src="@drawable/icon_download" />
 
         <ImageView
@@ -33,8 +33,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_margin="25dp"
-            android:padding="15dp"
+            android:layout_margin="@dimen/x25"
+            android:padding="@dimen/x15"
             android:src="@drawable/icon_share" />
 
         <ImageView
@@ -42,8 +42,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end"
-            android:layout_margin="25dp"
-            android:padding="15dp"
+            android:layout_margin="@dimen/x25"
+            android:padding="@dimen/x15"
             android:src="@drawable/icon_collection" />
     </FrameLayout>
 </FrameLayout>

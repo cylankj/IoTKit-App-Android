@@ -14,7 +14,7 @@
         android:id="@+id/vs_show_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="20dp">
+        android:layout_marginTop="@dimen/y20">
 
         <include
             android:id="@+id/fragment_config_ap_pre"

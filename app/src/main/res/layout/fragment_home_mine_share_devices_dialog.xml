@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:paddingTop="12dp"
-    android:paddingBottom="12dp"
-    android:paddingLeft="16dp"
+    android:paddingTop="@dimen/y12"
+    android:paddingBottom="@dimen/y12"
+    android:paddingLeft="@dimen/x16"
     android:layout_height="wrap_content">
 
     <TextView
         android:id="@+id/tv_share_to_timeline"
-        android:drawablePadding="25dp"
+        android:drawablePadding="@dimen/x25"
         android:gravity="center_vertical"
         android:drawableLeft="@drawable/me_icon_friends_"
         android:text="@string/Tap3_Friends"
@@ -19,8 +19,8 @@
 
     <TextView
         android:id="@+id/tv_share_to_contract"
-        android:layout_marginTop="22dp"
-        android:drawablePadding="25dp"
+        android:layout_marginTop="@dimen/y22"
+        android:drawablePadding="@dimen/x25"
         android:gravity="center_vertical"
         android:drawableLeft="@drawable/me_icon_tongxunlu_"
         android:text="@string/contacts_auth"

@@ -10,7 +10,7 @@
         style="@style/progressBar_style"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="@dimen/y10"
         android:maxHeight="20dip"
         android:minHeight="20dip" />
 
@@ -25,7 +25,7 @@
         android:id="@+id/btn_update_cancel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
+        android:layout_marginTop="@dimen/y5"
         android:text="@string/CANCEL"
         android:textColor="#5c5c5c"
         android:textSize="16sp" />

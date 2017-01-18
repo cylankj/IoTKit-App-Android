@@ -6,8 +6,8 @@
 
     <TextView
         android:id="@+id/tv_mag_information_name"
-        android:layout_marginTop="24dp"
-        android:layout_marginLeft="26dp"
+        android:layout_marginTop="@dimen/y24"
+        android:layout_marginLeft="@dimen/x26"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/EQUIPMENT_NAME"
@@ -18,11 +18,11 @@
         android:text="客厅摄像头"
         android:textColor="#666"
         android:id="@+id/et_mag_information_edit_name"
-        android:layout_marginBottom="24dp"
-        android:layout_marginRight="24dp"
-        android:layout_marginLeft="24dp"
-        android:layout_marginTop="52dp"
-        android:layout_width="232dp"
+        android:layout_marginBottom="@dimen/y24"
+        android:layout_marginRight="@dimen/x24"
+        android:layout_marginLeft="@dimen/x24"
+        android:layout_marginTop="@dimen/y52"
+        android:layout_width="@dimen/x232"
         android:layout_height="wrap_content"
         android:textSize="14sp"
         android:maxLength="12" />
@@ -30,7 +30,7 @@
     <TextView
         android:visibility="invisible"
         android:id="@+id/tv_mag_information_show_state"
-        android:layout_marginTop="37dp"
+        android:layout_marginTop="@dimen/y37"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/RET_EALIAS_EXIST"
@@ -41,18 +41,18 @@
         android:layout_alignStart="@+id/tv_information_name" />
 
     <LinearLayout
-        android:layout_marginLeft="141dp"
-        android:layout_marginBottom="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginTop="113dp"
+        android:layout_marginLeft="@dimen/x141"
+        android:layout_marginBottom="@dimen/y16"
+        android:layout_marginRight="@dimen/x16"
+        android:layout_marginTop="@dimen/y113"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
         <Button
             android:id="@+id/btn_mag_information_ensure"
-            android:layout_width="58dp"
-            android:layout_height="36dp"
+            android:layout_width="@dimen/x58"
+            android:layout_height="@dimen/y36"
             android:text="@string/OK"
             android:textSize="14sp"
             android:textColor="#4B9FD5"
@@ -60,8 +60,8 @@
 
         <Button
             android:id="@+id/btn_mag_information_cancel"
-            android:layout_width="58dp"
-            android:layout_height="36dp"
+            android:layout_width="@dimen/x58"
+            android:layout_height="@dimen/y36"
             android:text="@string/CANCEL"
             android:textSize="14sp"
             android:textColor="#4B9FD5"

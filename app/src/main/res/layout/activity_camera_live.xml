@@ -24,13 +24,13 @@
             style="@style/ripple_background"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="15dp"
+            android:padding="@dimen/x15"
             android:src="@drawable/icon_nav_back_white" />
 
         <com.cylan.jiafeigou.widget.indicator.PagerSlidingTabStrip
             android:id="@+id/v_indicator"
             android:layout_width="wrap_content"
-            android:layout_height="48dp"
+            android:layout_height="@dimen/y48"
             android:layout_toRightOf="@+id/imgV_nav_back"
             app:pstsTabPaddingLeftRight="14dip" />
 
@@ -39,7 +39,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:padding="14dp"
+            android:padding="@dimen/x14"
             android:src="@drawable/icon_setting" />
     </RelativeLayout>
 

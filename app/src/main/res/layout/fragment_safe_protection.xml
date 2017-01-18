@@ -13,14 +13,14 @@
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="10dp"
+        android:layout_height="@dimen/y10"
         android:background="@drawable/little_shape" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
+        android:layout_marginLeft="@dimen/x20"
+        android:layout_marginRight="@dimen/x20"
         android:text="基本设置"
         android:textColor="@color/color_4b9fd5"
         android:textSize="15sp" />
@@ -28,18 +28,18 @@
     <com.cylan.jiafeigou.widget.SettingItemView1
         android:id="@+id/sw_motion_detection"
         android:layout_width="match_parent"
-        android:layout_height="54dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
+        android:layout_height="@dimen/y54"
+        android:layout_marginLeft="@dimen/x20"
+        android:layout_marginRight="@dimen/x20"
         hunt:sv_title="@string/SECURE_TYPE" />
 
 
     <FrameLayout
         android:id="@+id/fLayout_protection_sensitivity"
         android:layout_width="match_parent"
-        android:layout_height="54dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp">
+        android:layout_height="@dimen/y54"
+        android:layout_marginLeft="@dimen/x20"
+        android:layout_marginRight="@dimen/x20">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -64,7 +64,7 @@
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="1dp"
+            android:layout_height="@dimen/y1"
             android:layout_gravity="bottom"
             android:background="@color/color_e8e8e8" />
     </FrameLayout>
@@ -73,9 +73,9 @@
     <FrameLayout
         android:id="@+id/fLayout_protection_warn_effect"
         android:layout_width="match_parent"
-        android:layout_height="54dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp">
+        android:layout_height="@dimen/y54"
+        android:layout_marginLeft="@dimen/x20"
+        android:layout_marginRight="@dimen/x20">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -101,7 +101,7 @@
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="1dp"
+            android:layout_height="@dimen/y1"
             android:layout_gravity="bottom"
             android:background="@color/color_e8e8e8" />
     </FrameLayout>
@@ -114,9 +114,9 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:layout_marginTop="20dp"
+            android:layout_marginLeft="@dimen/x20"
+            android:layout_marginRight="@dimen/x20"
+            android:layout_marginTop="@dimen/y20"
             android:text="@string/TIME"
             android:textColor="@color/color_4b9fd5"
             android:textSize="15sp" />
@@ -125,9 +125,9 @@
     <FrameLayout
         android:id="@+id/fLayout_protection_start_time"
         android:layout_width="match_parent"
-        android:layout_height="54dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp">
+        android:layout_height="@dimen/y54"
+        android:layout_marginLeft="@dimen/x20"
+        android:layout_marginRight="@dimen/x20">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -152,7 +152,7 @@
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="1dp"
+            android:layout_height="@dimen/y1"
             android:layout_gravity="bottom"
             android:background="@color/color_e8e8e8" />
     </FrameLayout>
@@ -161,9 +161,9 @@
     <FrameLayout
         android:id="@+id/fLayout_protection_end_time"
         android:layout_width="match_parent"
-        android:layout_height="54dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp">
+        android:layout_height="@dimen/y54"
+        android:layout_marginLeft="@dimen/x20"
+        android:layout_marginRight="@dimen/x20">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -188,7 +188,7 @@
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="1dp"
+            android:layout_height="@dimen/y1"
             android:layout_gravity="bottom"
             android:background="@color/color_e8e8e8" />
     </FrameLayout>
@@ -197,9 +197,9 @@
     <FrameLayout
         android:id="@+id/fLayout_protection_repeat_period"
         android:layout_width="match_parent"
-        android:layout_height="54dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp">
+        android:layout_height="@dimen/y54"
+        android:layout_marginLeft="@dimen/x20"
+        android:layout_marginRight="@dimen/x20">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -225,7 +225,7 @@
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="1dp"
+            android:layout_height="@dimen/y1"
             android:layout_gravity="bottom"
             android:background="@color/color_e8e8e8" />
     </FrameLayout>

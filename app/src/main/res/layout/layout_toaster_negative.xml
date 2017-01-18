@@ -4,10 +4,10 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:background="@drawable/toaster_bg"
-    android:drawablePadding="12dp"
+    android:drawablePadding="@dimen/x12"
     android:gravity="center"
-    android:paddingBottom="23dp"
-    android:paddingTop="23dp"
+    android:paddingBottom="@dimen/y23"
+    android:paddingTop="@dimen/y23"
     android:drawableTop="@drawable/icon_toaster_negative"
     android:textColor="#fff"
     android:textSize="14sp" />

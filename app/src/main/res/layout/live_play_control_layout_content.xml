@@ -21,9 +21,9 @@
             android:id="@+id/sp_control_loading"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="5dp"
-            hunt:progress_point_radius="2dp"
-            hunt:progress_radius="20dp"
+            android:padding="@dimen/x5"
+            hunt:progress_point_radius="@dimen/x2"
+            hunt:progress_radius="@dimen/x20"
             hunt:progress_stroke_color="@color/color_white"
             hunt:progress_swipe_degree="310" />
     </FrameLayout>
@@ -33,7 +33,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="@dimen/y10"
         android:textColor="@color/color_DDDDDD"
         android:textSize="14sp" />
 </merge>

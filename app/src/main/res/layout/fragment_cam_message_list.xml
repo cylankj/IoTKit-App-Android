@@ -10,7 +10,7 @@
     <FrameLayout
         android:id="@+id/rLayout_cam_message_list_top"
         android:layout_width="match_parent"
-        android:layout_height="42dp"
+        android:layout_height="@dimen/y42"
         android:visibility="gone">
 
         <TextView
@@ -19,7 +19,7 @@
             android:layout_height="match_parent"
             android:layout_gravity="center"
             android:drawableEnd="@drawable/icon_date_downtag_wonderful"
-            android:drawablePadding="10dp"
+            android:drawablePadding="@dimen/x10"
             android:gravity="center_vertical" />
 
         <TextView
@@ -28,14 +28,14 @@
             android:layout_height="match_parent"
             android:layout_gravity="end|center_vertical"
             android:gravity="center_vertical"
-            android:paddingLeft="15dp"
-            android:paddingRight="15dp"
+            android:paddingLeft="@dimen/x15"
+            android:paddingRight="@dimen/x15"
             android:text="@string/EDIT_THEME"
             android:textColor="@color/common_btn_color_state" />
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="1dp"
+            android:layout_height="@dimen/y1"
             android:layout_gravity="bottom"
             android:background="@color/color_d2d2d2" />
     </FrameLayout>
@@ -56,7 +56,7 @@
         android:id="@+id/lLayout_no_message"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="147dp"
+        android:layout_marginTop="@dimen/y147"
         android:orientation="vertical">
 
         <ImageView
@@ -69,7 +69,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="@dimen/y16"
             android:text="@string/NO_CONTENTS_1"
             android:textColor="#aaaaaa"
             android:textSize="15sp" />
@@ -78,7 +78,7 @@
     <RelativeLayout
         android:id="@+id/fLayout_cam_message_list_timeline"
         android:layout_width="match_parent"
-        android:layout_height="80dp"
+        android:layout_height="@dimen/y80"
         android:layout_alignParentBottom="true"
         android:visibility="invisible">
 
@@ -98,27 +98,27 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_below="@+id/tv_time_line_pop"
-            android:layout_marginTop="5dp"
+            android:layout_marginTop="@dimen/y5"
             android:background="@color/color_f6f9fa">
 
             <View
                 android:id="@+id/v_simple_38line"
                 android:layout_width="match_parent"
-                android:layout_height="1dp"
+                android:layout_height="@dimen/y1"
                 android:background="@color/color_d2d2d2" />
 
 
             <com.cylan.jiafeigou.widget.wheel.WheelView
                 android:id="@+id/wv_wonderful_timeline"
                 android:layout_width="match_parent"
-                android:layout_height="55dp"
+                android:layout_height="@dimen/y55"
                 android:layout_alignParentBottom="true"
                 android:layout_below="@+id/v_simple_38line"
-                android:layout_marginTop="5dp" />
+                android:layout_marginTop="@dimen/y5" />
 
             <View
-                android:layout_width="3dp"
-                android:layout_height="35dp"
+                android:layout_width="@dimen/x3"
+                android:layout_height="@dimen/y35"
                 android:layout_alignParentBottom="true"
                 android:layout_centerHorizontal="true"
                 android:background="@color/color_36BDFF" />
@@ -129,14 +129,14 @@
     <FrameLayout
         android:id="@+id/fLayout_cam_msg_edit_bar"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
+        android:layout_height="@dimen/y48"
         android:layout_alignParentBottom="true"
         android:background="@color/color_f6f9fa"
         android:visibility="invisible">
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="1dp"
+            android:layout_height="@dimen/y1"
             android:background="@color/color_d2d2d2" />
 
         <TextView
@@ -144,8 +144,8 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:gravity="center_vertical"
-            android:paddingEnd="28dp"
-            android:paddingStart="28dp"
+            android:paddingEnd="@dimen/x28"
+            android:paddingStart="@dimen/x28"
             android:text="@string/SELECT_ALL"
             android:textColor="@color/color_4b9fd5" />
 
@@ -155,8 +155,8 @@
             android:layout_height="match_parent"
             android:layout_gravity="end"
             android:gravity="center_vertical"
-            android:paddingEnd="28dp"
-            android:paddingStart="28dp"
+            android:paddingEnd="@dimen/x28"
+            android:paddingStart="@dimen/x28"
             android:text="@string/DELETE"
             android:textColor="@color/color_4b9fd5" />
     </FrameLayout>

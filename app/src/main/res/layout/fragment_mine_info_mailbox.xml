@@ -9,7 +9,7 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="73dp"
+        android:layout_height="@dimen/y73"
         android:background="@color/color_0ba8cf">
 
         <ImageView
@@ -18,7 +18,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:clickable="true"
-            android:padding="15dp"
+            android:padding="@dimen/x15"
             android:src="@drawable/icon_nav_back_white" />
 
         <TextView
@@ -26,8 +26,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:layout_marginBottom="12dp"
-            android:layout_marginLeft="48dp"
+            android:layout_marginBottom="@dimen/y12"
+            android:layout_marginLeft="@dimen/x48"
             android:text="@string/Tap0_BindEmail"
             android:textColor="@color/color_white"
             android:textSize="18sp" />
@@ -38,9 +38,9 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_alignParentRight="true"
-            android:layout_marginBottom="2dp"
+            android:layout_marginBottom="@dimen/y2"
             android:clickable="true"
-            android:padding="15dp"
+            android:padding="@dimen/x15"
             android:src="@drawable/icon_finish"
             android:visibility="visible" />
 
@@ -50,9 +50,9 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_alignParentRight="true"
-            android:layout_marginBottom="2dp"
+            android:layout_marginBottom="@dimen/y2"
             android:clickable="true"
-            android:padding="15dp"
+            android:padding="@dimen/x15"
             android:src="@drawable/icon_finish_disable"
             android:visibility="gone" />
     </RelativeLayout>
@@ -63,16 +63,16 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="54dp"
-            android:layout_marginTop="8dp">
+            android:layout_height="@dimen/y54"
+            android:layout_marginTop="@dimen/y8">
 
             <EditText
                 android:id="@+id/et_mine_personal_information_mailbox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
+                android:layout_marginLeft="@dimen/x20"
+                android:layout_marginRight="@dimen/x20"
                 android:background="@null"
                 android:hint="@string/EMAIL_1"
                 android:maxLength="65"
@@ -82,11 +82,11 @@
             <View
                 android:id="@+id/view_mine_personal_information_mailbox"
                 android:layout_width="match_parent"
-                android:layout_height="1dp"
+                android:layout_height="@dimen/y1"
                 android:layout_alignParentBottom="true"
-                android:layout_marginBottom="8dp"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
+                android:layout_marginBottom="@dimen/y8"
+                android:layout_marginLeft="@dimen/x20"
+                android:layout_marginRight="@dimen/x20"
                 android:background="@color/color_f2f2f2" />
 
             <ImageView
@@ -95,14 +95,14 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
-                android:layout_marginRight="20dp"
+                android:layout_marginRight="@dimen/x20"
                 android:src="@drawable/btn_login_clear_text"
                 android:visibility="gone" />
         </RelativeLayout>
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="10dp"
+            android:layout_height="@dimen/y10"
             android:background="@drawable/little_shape" />
     </FrameLayout>
 

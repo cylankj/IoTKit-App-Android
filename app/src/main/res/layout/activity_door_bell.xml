@@ -25,8 +25,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:drawableLeft="@drawable/icon_nav_back_white"
-                android:drawablePadding="15dp"
-                android:padding="15dp"
+                android:drawablePadding="@dimen/x15"
+                android:padding="@dimen/x15"
                 android:text="智能门铃"
                 android:textColor="@color/color_white"
                 android:textSize="16sp" />
@@ -36,7 +36,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
-                android:padding="14dp"
+                android:padding="@dimen/x14"
                 android:src="@drawable/icon_setting" />
         </FrameLayout>
     </FrameLayout>
@@ -55,7 +55,7 @@
         <FrameLayout
             android:id="@+id/fLayout_bell_home_list_edition"
             android:layout_width="match_parent"
-            android:layout_height="52dp"
+            android:layout_height="@dimen/y52"
             android:layout_gravity="bottom"
             android:background="@color/color_F7F8FA"
             android:orientation="horizontal"
@@ -63,7 +63,7 @@
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="1dp"
+                android:layout_height="@dimen/y1"
                 android:background="@color/color_f2f2f2" />
 
             <TextView
@@ -71,8 +71,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:gravity="center"
-                android:paddingLeft="30dp"
-                android:paddingRight="30dp"
+                android:paddingLeft="@dimen/x30"
+                android:paddingRight="@dimen/x30"
                 android:text="取消" />
 
             <TextView
@@ -81,8 +81,8 @@
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
                 android:gravity="center"
-                android:paddingLeft="30dp"
-                android:paddingRight="30dp"
+                android:paddingLeft="@dimen/x30"
+                android:paddingRight="@dimen/x30"
                 android:text="@string/SELECT_ALL"
                 android:textColor="@color/color_4b9fd5" />
 
@@ -92,8 +92,8 @@
                 android:layout_height="match_parent"
                 android:layout_gravity="end"
                 android:gravity="center"
-                android:paddingLeft="30dp"
-                android:paddingRight="30dp"
+                android:paddingLeft="@dimen/x30"
+                android:paddingRight="@dimen/x30"
                 android:text="删除"
                 android:textColor="@color/color_4b9fd5" />
         </FrameLayout>

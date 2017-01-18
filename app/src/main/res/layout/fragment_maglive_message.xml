@@ -7,14 +7,14 @@
 
     <!-- 顶部栏 -->
     <RelativeLayout
-        android:paddingTop="10dp"
+        android:paddingTop="@dimen/y10"
         android:layout_width="match_parent"
-        android:layout_height="78dp"
+        android:layout_height="@dimen/y78"
         android:background="#0BA8CF">
 
         <ImageView
             android:layout_centerVertical="true"
-            android:padding="14dp"
+            android:padding="@dimen/x14"
             android:layout_alignParentBottom="true"
             android:id="@+id/iv_msglive_back"
             android:layout_width="wrap_content"
@@ -23,8 +23,8 @@
 
         <TextView
             android:layout_centerVertical="true"
-            android:layout_marginLeft="48dp"
-            android:layout_marginBottom="12dp"
+            android:layout_marginLeft="@dimen/x48"
+            android:layout_marginBottom="@dimen/y12"
             android:id="@+id/tv_msglive_set"
             android:layout_alignParentBottom="true"
             android:layout_width="wrap_content"
@@ -46,7 +46,7 @@
             android:layout_height="wrap_content">
 
             <TextView
-                android:layout_marginTop="12dp"
+                android:layout_marginTop="@dimen/y12"
                 style="@style/information_item"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -58,24 +58,24 @@
                 style="@style/information_item"
                 android:id="@+id/lLayout_home_mag_information"
                 android:layout_width="match_parent"
-                android:layout_height="72dp"
+                android:layout_height="@dimen/y72"
                 android:orientation="horizontal">
 
                 <ImageView
-                    android:layout_marginTop="28dp"
+                    android:layout_marginTop="@dimen/y28"
                     android:layout_toLeftOf="@id/tv_device_alias"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:src="@drawable/icon_setting_information" />
 
                 <LinearLayout
-                    android:layout_marginLeft="10dp"
+                    android:layout_marginLeft="@dimen/x10"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="vertical">
 
                     <TextView
-                        android:layout_marginTop="18dp"
+                        android:layout_marginTop="@dimen/y18"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/EQUIPMENT_INFO"
@@ -83,7 +83,7 @@
                         android:textSize="16sp" />
 
                     <TextView
-                        android:layout_marginTop="6dp"
+                        android:layout_marginTop="@dimen/y6"
                         android:id="@+id/tv_device_alias"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -105,12 +105,12 @@
         <RelativeLayout
             android:id="@+id/rLayout_mag_live"
             android:layout_width="match_parent"
-            android:layout_height="54dp">
+            android:layout_height="@dimen/y54">
 
             <ImageView
                 android:id="@+id/rl_iv_icon"
                 android:layout_centerVertical="true"
-                android:layout_marginLeft="16dp"
+                android:layout_marginLeft="@dimen/x16"
                 android:layout_alignParentLeft="true"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -119,7 +119,7 @@
             <TextView
                 android:textColor="#000000"
                 android:textSize="16sp"
-                android:layout_marginLeft="10dp"
+                android:layout_marginLeft="@dimen/x10"
                 android:layout_centerVertical="true"
                 android:layout_toRightOf="@id/rl_iv_icon"
                 android:layout_width="wrap_content"
@@ -128,7 +128,7 @@
 
             <!-- 开关的切换 -->
             <com.kyleduo.switchbutton.SwitchButton
-                android:layout_marginRight="26dp"
+                android:layout_marginRight="@dimen/x26"
                 style="@style/SwitchButtonStyleMD"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
@@ -147,7 +147,7 @@
 
         <TextView
             android:id="@+id/tv_clear_mag_open_record"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="@dimen/y20"
             style="@style/information_item"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

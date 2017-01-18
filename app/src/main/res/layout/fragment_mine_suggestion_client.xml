@@ -5,7 +5,7 @@
     android:layout_height="wrap_content">
 
     <TextView
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="@dimen/y20"
         android:id="@+id/tv_mine_suggestion_client_time"
         android:textColor="@color/color_adadad"
         android:textSize="13sp"
@@ -21,22 +21,22 @@
         <ImageView
             android:id="@+id/iv_mine_suggestion_client"
             android:layout_alignParentRight="true"
-            android:layout_marginRight="10dp"
-            android:layout_marginTop="14dp"
+            android:layout_marginRight="@dimen/x10"
+            android:layout_marginTop="@dimen/y14"
             android:src="@drawable/img_head"
-            android:layout_marginLeft="3dp"
-            android:layout_width="40dp"
-            android:layout_height="40dp" />
+            android:layout_marginLeft="@dimen/x3"
+            android:layout_width="@dimen/x40"
+            android:layout_height="@dimen/y40" />
 
         <LinearLayout
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="@dimen/y24"
             android:layout_toLeftOf="@id/iv_mine_suggestion_client"
             android:orientation="horizontal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
 
             <ImageView
-                android:padding="10dp"
+                android:padding="@dimen/x10"
                 android:layout_gravity="center_vertical"
                 android:id="@+id/iv_send_pro"
                 android:src="@drawable/listview_loading"
@@ -48,13 +48,13 @@
                 android:background="@drawable/pic_container_blue"
                 android:textColor="@color/color_white"
                 android:textSize="14sp"
-                android:layout_marginRight="3dp"
-                android:paddingLeft="12dp"
-                android:paddingRight="12dp"
-                android:paddingBottom="10dp"
-                android:paddingTop="10dp"
+                android:layout_marginRight="@dimen/x3"
+                android:paddingLeft="@dimen/x12"
+                android:paddingRight="@dimen/x12"
+                android:paddingBottom="@dimen/y10"
+                android:paddingTop="@dimen/y10"
                 android:text="希望你们会做视频下载功能，非常实用呢"
-                android:layout_width="230dp"
+                android:layout_width="@dimen/x230"
                 android:layout_height="wrap_content" />
         </LinearLayout>
 

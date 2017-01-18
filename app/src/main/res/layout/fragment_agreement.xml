@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginTop="10dp"
+    android:layout_marginTop="@dimen/y10"
     android:background="@color/color_white"
     android:clickable="true"
     android:orientation="vertical">
@@ -10,8 +10,8 @@
     <include
         layout="@layout/layout_top_bar_item"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:layout_marginTop="60dp" />
+        android:layout_height="@dimen/y48"
+        android:layout_marginTop="@dimen/y60" />
 
     <WebView
         android:id="@+id/webView"

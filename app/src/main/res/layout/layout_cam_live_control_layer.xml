@@ -10,7 +10,7 @@
     <com.cylan.jiafeigou.n.view.cam.CamLiveLandTopBar
         android:id="@+id/fLayout_cam_live_land_top_bar"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
+        android:layout_height="@dimen/y48"
         android:background="#4C000000"
         android:visibility="gone" />
 
@@ -26,20 +26,20 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginBottom="10dp"
+            android:layout_marginBottom="@dimen/y10"
             android:visibility="gone" />
 
         <LinearLayout
             android:id="@+id/lLayout_cam_history_wheel"
             android:layout_width="match_parent"
-            android:layout_height="52dp">
+            android:layout_height="@dimen/y52">
 
             <ImageView
                 android:id="@+id/imgV_cam_live_land_play"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:paddingLeft="38dp"
-                android:paddingRight="38dp"
+                android:paddingLeft="@dimen/x38"
+                android:paddingRight="@dimen/x38"
                 android:src="@drawable/icon_landscape_stop"
                 android:visibility="gone" />
 
@@ -64,28 +64,28 @@
 
                 <View
                     android:id="@+id/v_flag"
-                    android:layout_width="3dp"
+                    android:layout_width="@dimen/x3"
                     android:layout_height="match_parent"
                     android:layout_centerVertical="true"
-                    android:layout_marginBottom="5dp"
-                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="@dimen/y5"
+                    android:layout_marginTop="@dimen/y5"
                     android:layout_toStartOf="@+id/tv_cam_live_port_live"
                     android:background="@drawable/little_shape_horizontal" />
 
                 <TextView
                     android:id="@+id/tv_cam_live_port_live"
                     android:layout_width="wrap_content"
-                    android:layout_height="52dp"
+                    android:layout_height="@dimen/y52"
                     android:layout_toStartOf="@+id/v_divider"
                     android:gravity="center"
-                    android:paddingLeft="10dp"
-                    android:paddingRight="10dp"
+                    android:paddingLeft="@dimen/x10"
+                    android:paddingRight="@dimen/x10"
                     android:text="@string/Tap1_Camera_VideoLive"
                     android:textColor="@color/color_4b9fd5" />
 
                 <View
                     android:id="@+id/v_divider"
-                    android:layout_width="2dp"
+                    android:layout_width="@dimen/x2"
                     android:layout_height="match_parent"
                     android:layout_toStartOf="@+id/lLayout_protection"
                     android:background="@color/color_adadad"
@@ -95,15 +95,15 @@
                     android:id="@+id/lLayout_protection"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:layout_marginEnd="5dp"
-                    android:layout_marginStart="5dp"
+                    android:layout_marginEnd="@dimen/x5"
+                    android:layout_marginStart="@dimen/x5"
                     android:layout_toStartOf="@+id/v_right"
                     android:visibility="gone" />
 
                 <View
                     android:id="@+id/v_right"
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
+                    android:layout_width="@dimen/x0"
+                    android:layout_height="@dimen/y0"
                     android:layout_alignParentEnd="true" />
             </RelativeLayout>
         </LinearLayout>
@@ -111,7 +111,7 @@
 
     <FrameLayout
         android:id="@+id/fLayout_land_date_container"
-        android:layout_width="230dp"
+        android:layout_width="@dimen/x230"
         android:layout_height="match_parent"
         android:layout_gravity="end"
         android:background="@color/color_4C000000"
@@ -119,7 +119,7 @@
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rv_land_date_list"
-            android:layout_width="180dp"
+            android:layout_width="@dimen/x180"
             android:layout_height="match_parent"
             android:layout_gravity="center" />
     </FrameLayout>

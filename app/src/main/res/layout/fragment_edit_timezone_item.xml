@@ -2,7 +2,7 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/lLayout_timezone_item"
     android:layout_width="match_parent"
-    android:layout_height="54dp">
+    android:layout_height="@dimen/y54">
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -24,7 +24,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:layout_marginStart="10dp"
+            android:layout_marginStart="@dimen/x10"
             android:gravity="center_vertical"
             android:textColor="@color/color_666666" />
     </LinearLayout>
@@ -34,12 +34,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end|center_vertical"
-        android:layout_marginEnd="10dp"
+        android:layout_marginEnd="@dimen/x10"
         android:src="@drawable/icon_check" />
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="1dp"
+        android:layout_height="@dimen/y1"
         android:layout_gravity="bottom"
         android:background="@color/color_f2f2f2" />
 

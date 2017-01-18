@@ -11,7 +11,7 @@
         android:layout_gravity="center"
         android:background="@drawable/flow_bg"
         android:gravity="center_vertical"
-        android:padding="5dp"
+        android:padding="@dimen/x5"
         android:text="text"
         android:textColor="@color/color_white"
         android:textSize="11sp" />

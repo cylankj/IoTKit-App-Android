@@ -16,7 +16,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center|bottom"
-            android:layout_marginBottom="24dp"
+            android:layout_marginBottom="@dimen/y24"
             android:src="@drawable/bell_home_online_icon" />
 
         <TextView
@@ -41,7 +41,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:drawablePadding="12dp"
+            android:drawablePadding="@dimen/x12"
             android:drawableTop="@drawable/bg_bell_home_offline_icon"
             android:text="@string/OFFLINE_ERR_1"
             android:textColor="@color/color_white"

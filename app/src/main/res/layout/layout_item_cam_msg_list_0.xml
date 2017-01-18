@@ -6,8 +6,8 @@
     android:background="@color/color_white"
     android:clickable="true"
     android:orientation="horizontal"
-    android:paddingLeft="10dp"
-    android:paddingRight="10dp">
+    android:paddingLeft="@dimen/x10"
+    android:paddingRight="@dimen/x10">
 
     <FrameLayout
         android:layout_width="wrap_content"
@@ -18,16 +18,16 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_gravity="center_horizontal"
-            android:paddingLeft="2dp"
-            android:paddingRight="2dp"
+            android:paddingLeft="@dimen/x2"
+            android:paddingRight="@dimen/x2"
             hunt:dashLineColor="@color/color_e8e8e8"
-            hunt:dashLineWidth="2dp"
+            hunt:dashLineWidth="@dimen/x2"
             hunt:innerCircleColor="@color/color_white"
-            hunt:innerCircleRadius="6dp"
+            hunt:innerCircleRadius="@dimen/x6"
             hunt:outerCircleColor="@color/color_e8e8e8"
-            hunt:outerCircleRadius="10dp"
-            hunt:outerCircleStrokeWidth="4dp"
-            hunt:outerCircleY="10dp" />
+            hunt:outerCircleRadius="@dimen/x10"
+            hunt:outerCircleStrokeWidth="@dimen/x4"
+            hunt:outerCircleY="@dimen/y10" />
 
         <RadioButton
             android:id="@+id/rbtn_item_check"
@@ -49,15 +49,15 @@
             android:id="@+id/rLayout_cam_message"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginEnd="4dp"
-            android:layout_marginStart="4dp"
-            android:layout_marginTop="5dp"
+            android:layout_marginEnd="@dimen/x4"
+            android:layout_marginStart="@dimen/x4"
+            android:layout_marginTop="@dimen/y5"
             android:orientation="vertical">
 
             <TextView
                 android:id="@+id/tv_cam_message_item_date"
                 android:layout_width="wrap_content"
-                android:layout_height="26dp"
+                android:layout_height="@dimen/y26"
                 android:gravity="center"
                 android:textColor="@color/color_666666"
                 android:textSize="13sp" />
@@ -73,7 +73,7 @@
             <FrameLayout
                 android:id="@+id/fLayout_cam_message_item_bottom"
                 android:layout_width="match_parent"
-                android:layout_height="48dp"
+                android:layout_height="@dimen/y48"
                 android:layout_gravity="bottom"
                 android:gravity="center_vertical">
 
@@ -82,7 +82,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:gravity="center"
-                    android:padding="10dp"
+                    android:padding="@dimen/x10"
                     android:text="@string/DELETE"
                     android:textColor="@color/color_4b9fd5"
                     android:textSize="11sp" />
@@ -90,7 +90,7 @@
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="1dp"
+                android:layout_height="@dimen/y1"
                 android:layout_gravity="bottom"
                 android:background="@color/color_e8e8e8" />
         </LinearLayout>

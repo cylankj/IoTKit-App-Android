@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="67dp">
+    android:layout_height="@dimen/y67">
 
     <TextView
         android:id="@+id/tv_door_bell_name"
-        android:layout_marginLeft="15dp"
+        android:layout_marginLeft="@dimen/x15"
         android:layout_centerVertical="true"
         android:textSize="16sp"
         android:textColor="@color/color_333333"
@@ -14,7 +14,7 @@
 
     <TextView
         android:id="@+id/tv_btn_relative"
-        android:layout_marginRight="15dp"
+        android:layout_marginRight="@dimen/x15"
         android:textSize="13sp"
         android:textColor="@color/color_4b9fd5"
         android:layout_centerVertical="true"

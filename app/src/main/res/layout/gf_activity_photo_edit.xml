@@ -42,7 +42,7 @@
 
         <TextView
             android:id="@+id/tv_title"
-            android:layout_width="0dp"
+            android:layout_width="@dimen/x0"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/EDIT_IMAGE"
@@ -54,7 +54,7 @@
             android:id="@+id/iv_preview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="6dp"
+            android:padding="@dimen/x6"
             android:scaleType="centerInside"
             android:src="@drawable/ic_gf_preview"
             android:visibility="gone"
@@ -64,7 +64,7 @@
             android:id="@+id/iv_crop"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="6dp"
+            android:padding="@dimen/x6"
             android:scaleType="centerInside"
             android:src="@drawable/ic_gf_crop"
             android:visibility="gone"
@@ -74,7 +74,7 @@
             android:id="@+id/iv_rotate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="6dp"
+            android:padding="@dimen/x6"
             android:scaleType="centerInside"
             android:src="@drawable/ic_gf_rotate"
             android:visibility="gone"
@@ -84,17 +84,17 @@
             android:id="@+id/iv_take_photo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="6dp"
+            android:padding="@dimen/x6"
             android:scaleType="centerInside"
             android:src="@drawable/ic_gf_camera"
             android:visibility="gone"
-            android:layout_marginRight="9dp"
+            android:layout_marginRight="@dimen/x9"
             />
     </LinearLayout>
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="@dimen/y0"
         android:layout_weight="1"
         >
 
@@ -141,13 +141,13 @@
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="1dp"
+            android:layout_height="@dimen/y1"
             android:background="#d2d2d7"
             />
         <com.cylan.jiafeigou.support.galleryfinal.widget.HorizontalListView
             android:id="@+id/lv_gallery"
             android:layout_width="match_parent"
-            android:layout_height="100dp"
+            android:layout_height="@dimen/y100"
             />
     </LinearLayout>
 

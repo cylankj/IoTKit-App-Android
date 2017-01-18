@@ -3,8 +3,8 @@
              android:id="@+id/fLayout_bell_after_live"
              android:layout_width="match_parent"
              android:layout_height="match_parent"
-             android:layout_marginLeft="51dp"
-             android:layout_marginRight="51dp"
+             android:layout_marginLeft="@dimen/x51"
+             android:layout_marginRight="@dimen/x51"
              android:visibility="gone">
 
     <ImageView

@@ -3,13 +3,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:padding="2dp"
+    android:padding="@dimen/x2"
     tools:context="com.cylan.jiafeigou.n.view.cam.CameraLiveFragment">
 
     <com.cylan.jiafeigou.widget.roundedimageview.RoundedImageView
         android:id="@+id/imv_capture_popup"
-        android:layout_width="40dp"
-        android:layout_height="30dp"
+        android:layout_width="@dimen/x40"
+        android:layout_height="@dimen/y30"
         hunt:riv_border_color="#36BDFF"
-        hunt:riv_border_width="2dp" />
+        hunt:riv_border_width="@dimen/x2" />
 </LinearLayout>

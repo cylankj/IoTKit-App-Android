@@ -10,20 +10,20 @@
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="10dp"
+        android:layout_height="@dimen/y10"
         android:background="@drawable/little_shape" />
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="12dp">
+        android:layout_marginEnd="@dimen/x16"
+        android:layout_marginStart="@dimen/x16"
+        android:layout_marginTop="@dimen/y12">
 
         <LinearLayout
             android:id="@+id/lLayout_mode_motion"
             android:layout_width="wrap_content"
-            android:layout_height="72dp"
+            android:layout_height="@dimen/y72"
             android:layout_toStartOf="@+id/rg_auto_record_mode"
             android:gravity="center_vertical"
             android:orientation="vertical">
@@ -45,7 +45,7 @@
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="1dp"
+            android:layout_height="@dimen/y1"
             android:layout_below="@+id/lLayout_mode_motion"
             android:layout_gravity="bottom"
             android:background="@color/color_e8e8e8" />
@@ -53,7 +53,7 @@
         <LinearLayout
             android:id="@+id/lLayout_mode_24_hours"
             android:layout_width="match_parent"
-            android:layout_height="72dp"
+            android:layout_height="@dimen/y72"
             android:layout_below="@+id/lLayout_mode_motion"
             android:layout_toStartOf="@+id/rg_auto_record_mode"
             android:gravity="center_vertical"
@@ -77,7 +77,7 @@
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="1dp"
+            android:layout_height="@dimen/y1"
             android:layout_below="@+id/lLayout_mode_24_hours"
             android:layout_gravity="bottom"
             android:background="@color/color_e8e8e8" />
@@ -85,7 +85,7 @@
         <LinearLayout
             android:id="@+id/lLayout_mode_never"
             android:layout_width="match_parent"
-            android:layout_height="72dp"
+            android:layout_height="@dimen/y72"
             android:layout_below="@+id/lLayout_mode_24_hours"
             android:layout_toStartOf="@+id/rg_auto_record_mode"
             android:gravity="center_vertical"
@@ -108,7 +108,7 @@
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="1dp"
+            android:layout_height="@dimen/y1"
             android:layout_below="@+id/lLayout_mode_never"
             android:layout_gravity="bottom"
             android:background="@color/color_e8e8e8" />
@@ -123,7 +123,7 @@
             <RadioButton
                 android:id="@+id/rb_motion"
                 android:layout_width="match_parent"
-                android:layout_height="72dp"
+                android:layout_height="@dimen/y72"
                 android:layout_gravity="end"
                 android:gravity="end|center_vertical"
                 android:textColor="@color/color_black"
@@ -132,7 +132,7 @@
             <RadioButton
                 android:id="@+id/rb_24_hours"
                 android:layout_width="wrap_content"
-                android:layout_height="72dp"
+                android:layout_height="@dimen/y72"
                 android:layout_gravity="end"
                 android:gravity="end|center_vertical"
                 android:textColor="@color/color_black"
@@ -141,7 +141,7 @@
             <RadioButton
                 android:id="@+id/rb_never"
                 android:layout_width="wrap_content"
-                android:layout_height="72dp"
+                android:layout_height="@dimen/y72"
                 android:layout_gravity="end"
                 android:gravity="end|center_vertical"
                 android:textSize="14sp" />

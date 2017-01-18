@@ -18,15 +18,15 @@
 
             <ImageView
                 android:id="@+id/iv_call_user_image_head"
-                android:layout_marginTop="54dp"
+                android:layout_marginTop="@dimen/y54"
                 android:layout_gravity="center_horizontal"
                 android:src="@drawable/pic_head"
-                android:layout_width="168dp"
-                android:layout_height="168dp" />
+                android:layout_width="@dimen/x168"
+                android:layout_height="@dimen/y168" />
 
             <TextView
                 android:textColor="#4f697d"
-                android:layout_marginTop="22dp"
+                android:layout_marginTop="@dimen/y22"
                 android:layout_gravity="center_horizontal"
                 android:text="@string/DOOR_MAGNET_NAME"
                 android:textSize="30sp"
@@ -35,7 +35,7 @@
 
             <TextView
                 android:layout_gravity="center_horizontal"
-                android:layout_marginTop="3dp"
+                android:layout_marginTop="@dimen/y3"
                 android:textSize="16sp"
                 android:text="@string/EFAMILY_VIDEOCALLING1"
                 android:textColor="#4f697d"
@@ -45,7 +45,7 @@
 
         <LinearLayout
             android:layout_centerHorizontal="true"
-            android:layout_marginBottom="102dp"
+            android:layout_marginBottom="@dimen/y102"
             android:layout_alignParentBottom="true"
             android:orientation="horizontal"
             android:layout_width="wrap_content"
@@ -57,19 +57,19 @@
                 android:textColor="#5a6a7d"
                 android:textSize="14sp"
                 android:text="@string/EFAMILY_IGNORE"
-                android:drawablePadding="4dp"
+                android:drawablePadding="@dimen/x4"
                 android:gravity="center_horizontal"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 
             <TextView
                 android:id="@+id/tv_accept_call"
-                android:layout_marginLeft="96dp"
+                android:layout_marginLeft="@dimen/x96"
                 android:drawableTop="@drawable/btn_listen"
                 android:textColor="#5a6a7d"
                 android:textSize="14sp"
                 android:text="@string/EFAMILY_CALL_ANSWER"
-                android:drawablePadding="4dp"
+                android:drawablePadding="@dimen/x4"
                 android:gravity="center_horizontal"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />

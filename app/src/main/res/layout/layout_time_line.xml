@@ -22,21 +22,21 @@
         <View
             android:id="@+id/v_simple_38line"
             android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginBottom="5dp"
-            android:layout_marginTop="5dp"
+            android:layout_height="@dimen/y1"
+            android:layout_marginBottom="@dimen/y5"
+            android:layout_marginTop="@dimen/y5"
             android:background="@color/color_d2d2d2" />
 
 
         <com.cylan.jiafeigou.widget.wheel.WheelView
             android:id="@+id/wv_wonderful_timeline"
             android:layout_width="match_parent"
-            android:layout_height="55dp"
+            android:layout_height="@dimen/y55"
             android:layout_alignParentBottom="true" />
 
         <View
-            android:layout_width="3dp"
-            android:layout_height="40dp"
+            android:layout_width="@dimen/x3"
+            android:layout_height="@dimen/y40"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true" />
 

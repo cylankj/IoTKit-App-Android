@@ -8,7 +8,7 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="73dp"
+        android:layout_height="@dimen/y73"
         android:background="@color/color_0ba8cf">
 
         <ImageView
@@ -17,14 +17,14 @@
             android:layout_alignParentBottom="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="15dp"
+            android:padding="@dimen/x15"
             android:src="@drawable/icon_nav_back_white" />
 
         <TextView
             android:id="@+id/tv_title"
-            android:layout_marginBottom="12dp"
+            android:layout_marginBottom="@dimen/y12"
             android:layout_alignParentBottom="true"
-            android:layout_marginLeft="48dp"
+            android:layout_marginLeft="@dimen/x48"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/Tap0_BindPhoneNo"
@@ -34,8 +34,8 @@
         <ImageView
             android:visibility="visible"
             android:id="@+id/iv_mine_info_bind_phone"
-            android:layout_marginBottom="2dp"
-            android:padding="15dp"
+            android:layout_marginBottom="@dimen/y2"
+            android:padding="@dimen/x15"
             android:layout_alignParentBottom="true"
             android:layout_alignParentRight="true"
             android:clickable="true"
@@ -54,9 +54,9 @@
             android:orientation="vertical">
 
             <RelativeLayout
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="@dimen/y8"
                 android:layout_width="match_parent"
-                android:layout_height="54dp">
+                android:layout_height="@dimen/y54">
 
                 <EditText
                     android:id="@+id/et_mine_bind_phone"
@@ -67,26 +67,26 @@
                     android:maxLength="11"
                     android:inputType="phone"
                     android:background="@null"
-                    android:layout_marginRight="20dp"
-                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="@dimen/x20"
+                    android:layout_marginLeft="@dimen/x20"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
 
                 <View
                     android:id="@+id/view_mine_personal_information_mailbox"
-                    android:layout_marginBottom="8dp"
+                    android:layout_marginBottom="@dimen/y8"
                     android:layout_alignParentBottom="true"
-                    android:layout_marginRight="20dp"
-                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="@dimen/x20"
+                    android:layout_marginLeft="@dimen/x20"
                     android:layout_width="match_parent"
-                    android:layout_height="1dp"
+                    android:layout_height="@dimen/y1"
                     android:background="@color/color_f2f2f2" />
 
                 <ImageView
                     android:id="@+id/iv_mine_bind_phone_clear"
                     android:visibility="gone"
                     android:layout_centerVertical="true"
-                    android:layout_marginRight="20dp"
+                    android:layout_marginRight="@dimen/x20"
                     android:layout_alignParentRight="true"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -96,22 +96,22 @@
             <FrameLayout
                 android:id="@+id/fLayout_verification_code_input_box"
                 android:layout_width="match_parent"
-                android:layout_height="54dp">
+                android:layout_height="@dimen/y54">
 
                 <EditText
                     android:id="@+id/et_verification_input"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginBottom="5dp"
-                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="@dimen/y5"
+                    android:layout_marginTop="@dimen/y5"
                     android:background="@null"
                     android:focusable="true"
                     android:focusableInTouchMode="true"
                     android:hint="@string/ENTER_CODE"
                     android:inputType="numberDecimal"
                     android:maxLength="6"
-                    android:paddingLeft="20dp"
-                    android:paddingRight="20dp"
+                    android:paddingLeft="@dimen/x20"
+                    android:paddingRight="@dimen/x20"
                     android:textCursorDrawable="@drawable/bg_common_cursor"
                     android:textColor="@color/color_333333"
                     android:textSize="16sp" />
@@ -121,21 +121,21 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_gravity="end"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
+                    android:layout_marginLeft="@dimen/x10"
+                    android:layout_marginRight="@dimen/x10"
                     android:text="@string/GET_CODE"
                     android:enabled="false"
                     android:gravity="center"
-                    android:paddingLeft="10dp"
-                    android:paddingRight="10dp"
+                    android:paddingLeft="@dimen/x10"
+                    android:paddingRight="@dimen/x10"
                     android:textColor="@color/common_btn_color_state" />
 
                 <View
                     android:layout_width="match_parent"
-                    android:layout_height="1dp"
+                    android:layout_height="@dimen/y1"
                     android:layout_gravity="bottom"
-                    android:layout_marginLeft="20dp"
-                    android:layout_marginRight="20dp"
+                    android:layout_marginLeft="@dimen/x20"
+                    android:layout_marginRight="@dimen/x20"
                     android:background="@color/color_f2f2f2" />
             </FrameLayout>
 
@@ -143,7 +143,7 @@
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="10dp"
+            android:layout_height="@dimen/y10"
             android:background="@drawable/little_shape" />
     </FrameLayout>
 

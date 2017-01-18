@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="54dp"
+    android:layout_height="@dimen/y54"
     android:focusable="true"
     android:focusableInTouchMode="true"
     >
@@ -16,19 +16,19 @@
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="1dp"
+            android:layout_height="@dimen/y1"
             android:background="@color/color_e1e1e1"/>
 
         <EditText
             android:id="@+id/et_home_mine_suggestion"
-            android:layout_width="288dp"
-            android:layout_height="32dp"
+            android:layout_width="@dimen/x288"
+            android:layout_height="@dimen/y32"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="15dp"
+            android:layout_marginLeft="@dimen/x15"
             android:background="@drawable/home_mine_suggestion_shape"
             android:hint="@string/Tap3_Feedback_TextTips"
             android:maxLength="128"
-            android:paddingLeft="10dp"
+            android:paddingLeft="@dimen/x10"
             android:textColorHint="@color/color_cecece"
             android:textSize="13sp" />
 
@@ -38,8 +38,8 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:layout_marginRight="15dp"
-            android:layout_marginTop="19dp"
+            android:layout_marginRight="@dimen/x15"
+            android:layout_marginTop="@dimen/y19"
             android:clickable="true"
             android:contextClickable="true"
             android:text="@string/SEND"
