@@ -28,7 +28,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/ABOUT"
-            android:textSize="18sp"
+            android:textSize="@dimen/sp18"
             android:textColor="@color/color_white" />
 
     </RelativeLayout>
@@ -57,7 +57,7 @@
                 android:layout_centerHorizontal="true"
                 android:layout_below="@id/iv_logon"
                 android:textColor="@color/color_33333"
-                android:textSize="16sp"
+                android:textSize="@dimen/sp16"
                 android:text="加菲狗3.0"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
@@ -87,7 +87,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/WEB"
-                android:textSize="16sp"
+                android:textSize="@dimen/sp16"
                 android:textColor="@color/color_33333" />
 
             <TextView
@@ -97,7 +97,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="www.jfgou.com"
-                android:textSize="13sp"
+                android:textSize="@dimen/sp13"
                 android:textColor="@color/color_8c8c8c" />
         </LinearLayout>
 
@@ -128,7 +128,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/ABOUT_PHONE"
-                android:textSize="16sp"
+                android:textSize="@dimen/sp16"
                 android:textColor="@color/color_33333" />
 
             <TextView
@@ -139,7 +139,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="400-716-3232"
-                android:textSize="13sp"
+                android:textSize="@dimen/sp13"
                 android:textColor="@color/color_8c8c8c" />
         </LinearLayout>
 
@@ -155,7 +155,7 @@
     <TextView
         android:id="@+id/tv_user_agreement"
         android:textColor="@color/color_4b9fd5"
-        android:textSize="16sp"
+        android:textSize="@dimen/sp16"
         android:layout_gravity="center_horizontal"
         android:layout_alignParentBottom="true"
         android:text="@string/TERM_OF_USE"
@@ -164,7 +164,7 @@
 
         <TextView
             android:textColor="@color/color_adadad"
-            android:textSize="11sp"
+            android:textSize="@dimen/sp11"
             android:layout_gravity="center_horizontal"
             android:layout_alignParentBottom="true"
             android:text="@string/copyrightEn"

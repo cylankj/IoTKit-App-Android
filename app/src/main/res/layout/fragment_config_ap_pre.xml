@@ -11,7 +11,7 @@
         android:gravity="center"
         android:text="@string/choose_connect_wifi"
         android:textColor="@color/color_333333"
-        android:textSize="26sp" />
+        android:textSize="@dimen/sp26" />
 
     <TextView
         android:id="@+id/tv_config_ap_name"
@@ -24,7 +24,7 @@
         android:drawableRight="@drawable/ico_drop_down"
         android:gravity="center"
         android:textColor="@color/color_333333"
-        android:textSize="15sp" />
+        android:textSize="@dimen/sp15" />
 
     <View
         android:layout_width="match_parent"
@@ -59,7 +59,7 @@
             android:textColor="@color/color_666666"
             android:textColorHint="@color/color_cecece"
             android:textCursorDrawable="@drawable/bg_common_cursor"
-            android:textSize="15sp" />
+            android:textSize="@dimen/sp15" />
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -109,7 +109,7 @@
         android:layout_marginTop="@dimen/y15"
         android:text="@string/WIFI_SET_5GTIPS"
         android:textColor="@color/color_4b9fd5"
-        android:textSize="13sp" />
+        android:textSize="@dimen/sp13" />
 
     <com.cylan.jiafeigou.widget.LoginButton
         android:id="@+id/tv_wifi_pwd_submit"
@@ -120,6 +120,6 @@
         android:gravity="center"
         android:text="@string/NEXT"
         android:textColor="@color/color_4b9fd5"
-        android:textSize="17sp"
+        android:textSize="@dimen/sp17"
         hunt:lb_stroke_color="@color/color_d8d8d8" />
 </LinearLayout>

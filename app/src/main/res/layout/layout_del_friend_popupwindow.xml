@@ -22,7 +22,7 @@
             android:padding="@dimen/x8"
             android:text="@string/Tips_SureDelete"
             android:textColor="@color/color_black"
-            android:textSize="16sp" />
+            android:textSize="@dimen/sp16" />
 
         <View
             android:layout_width="match_parent"
@@ -37,7 +37,7 @@
             android:padding="@dimen/x16"
             android:text="@string/DELETE"
             android:textColor="@color/color_red"
-            android:textSize="18sp" />
+            android:textSize="@dimen/sp18" />
     </LinearLayout>
 
     <LinearLayout
@@ -57,7 +57,7 @@
             android:padding="@dimen/x16"
             android:text="@string/CANCEL"
             android:textColor="@color/color_4b9fd5"
-            android:textSize="18sp"
+            android:textSize="@dimen/sp18"
             />
     </LinearLayout>
 

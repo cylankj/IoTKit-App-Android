@@ -29,7 +29,7 @@
             android:layout_toRightOf="@id/imgV_msg_title_top_back"
             android:text="@string/DOG_MAGNETISM_NAME"
             android:textColor="@color/color_white"
-            android:textSize="18sp" />
+            android:textSize="@dimen/sp18" />
 
         <ImageView
             android:id="@+id/imgV_msg_title_top_door"
@@ -81,7 +81,7 @@
                 android:layout_marginTop="@dimen/y16"
                 android:layout_gravity="center_horizontal"
                 android:text="@string/NO_CONTENTS_1"
-                android:textSize="15sp"
+                android:textSize="@dimen/sp15"
                 android:textColor="#aaaaaa"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />

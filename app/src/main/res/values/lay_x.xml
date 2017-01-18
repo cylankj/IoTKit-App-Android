@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <dimen name="x0">0.0px</dimen>
     <dimen name="x1">1.0px</dimen>
     <dimen name="x2">2.0px</dimen>
     <dimen name="x3">3.0px</dimen>
@@ -109,7 +110,7 @@
     <dimen name="x107">107.0px</dimen>
     <dimen name="x108">108.0px</dimen>
     <dimen name="x109">109.0px</dimen>
-    <dimen name="x110">55dp</dimen>
+    <dimen name="x110">110.0px</dimen>
     <dimen name="x111">111.0px</dimen>
     <dimen name="x112">112.0px</dimen>
     <dimen name="x113">113.0px</dimen>

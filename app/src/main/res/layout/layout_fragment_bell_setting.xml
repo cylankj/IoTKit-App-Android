@@ -26,7 +26,7 @@
                 android:padding="@dimen/x15"
                 android:text="功能设置"
                 android:textColor="@color/color_white"
-                android:textSize="16sp" />
+                android:textSize="@dimen/sp16" />
         </FrameLayout>
     </LinearLayout>
 
@@ -49,7 +49,7 @@
             android:layout_marginTop="@dimen/y10"
             android:text="设备"
             android:textColor="@color/color_4b9fd5"
-            android:textSize="15sp" />
+            android:textSize="@dimen/sp15" />
 
         <com.cylan.jiafeigou.widget.SettingItemView0
             android:id="@+id/sv_setting_device_detail"
@@ -70,7 +70,7 @@
             android:layout_marginTop="@dimen/y10"
             android:text="@string/NETWORK"
             android:textColor="@color/color_4b9fd5"
-            android:textSize="15sp" />
+            android:textSize="@dimen/sp15" />
 
         <com.cylan.jiafeigou.widget.SettingItemView0
             android:id="@+id/sv_setting_device_wifi"
@@ -92,7 +92,7 @@
             android:paddingRight="@dimen/x20"
             android:text="@string/DOOR_CLEAR_REOCRD"
             android:textColor="@color/color_black"
-            android:textSize="16sp" />
+            android:textSize="@dimen/sp16" />
 
         <View
             android:layout_width="match_parent"
@@ -113,6 +113,6 @@
             android:gravity="center"
             android:text="@string/DELETE_CID"
             android:textColor="@color/color_FF3D32"
-            android:textSize="16sp" />
+            android:textSize="@dimen/sp16" />
     </LinearLayout>
 </LinearLayout>

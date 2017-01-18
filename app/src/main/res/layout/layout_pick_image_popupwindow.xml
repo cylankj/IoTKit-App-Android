@@ -22,7 +22,7 @@
             android:padding="@dimen/x16"
             android:text="@string/CHOOSE_PHOTOS"
             android:textColor="@color/color_4b9fd5"
-            android:textSize="18sp" />
+            android:textSize="@dimen/sp18" />
 
         <View
             android:layout_width="match_parent"
@@ -37,7 +37,7 @@
             android:padding="@dimen/x16"
             android:text="@string/TAKE_PHOTO"
             android:textColor="@color/color_4b9fd5"
-            android:textSize="18sp" />
+            android:textSize="@dimen/sp18" />
     </LinearLayout>
 
     <LinearLayout
@@ -57,7 +57,7 @@
             android:padding="@dimen/x16"
             android:text="@string/CANCEL"
             android:textColor="@color/color_4b9fd5"
-            android:textSize="18sp"
+            android:textSize="@dimen/sp18"
             />
     </LinearLayout>
 

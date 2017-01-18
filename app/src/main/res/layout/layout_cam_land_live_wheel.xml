@@ -18,7 +18,7 @@
         android:paddingTop="@dimen/y5"
         android:text="历史| 5/16 12:30"
         android:textColor="@color/color_white"
-        android:textSize="11sp" />
+        android:textSize="@dimen/sp11" />
 
     <com.cylan.jiafeigou.widget.wheel.ex.SuperWheelExt
         android:id="@+id/sw_cam_live_wheel"

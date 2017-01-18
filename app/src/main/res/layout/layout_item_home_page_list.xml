@@ -41,7 +41,7 @@
         android:maxLength="8"
         android:maxLines="1"
         android:textColor="@color/color_333333"
-        android:textSize="16sp" />
+        android:textSize="@dimen/sp16" />
 
     <TextView
         android:id="@+id/tv_device_share_tag"
@@ -54,7 +54,7 @@
         android:padding="@dimen/x1"
         android:text="@string/Tap3_ShareDevice_Button"
         android:textColor="@color/color_47C6A7"
-        android:textSize="12sp"
+        android:textSize="@dimen/sp12"
         android:visibility="gone" />
 
     <TextView
@@ -70,7 +70,7 @@
         android:maxLength="8"
         android:maxLines="1"
         android:textColor="@color/color_777777"
-        android:textSize="14sp" />
+        android:textSize="@dimen/sp14" />
 
     <TextView
         android:id="@+id/tv_device_msg_time"
@@ -81,7 +81,7 @@
         android:layout_marginEnd="@dimen/x15"
         android:layout_marginTop="@dimen/y15"
         android:textColor="@color/color_adadad"
-        android:textSize="10sp" />
+        android:textSize="@dimen/sp10" />
 
     <LinearLayout
         android:layout_width="wrap_content"

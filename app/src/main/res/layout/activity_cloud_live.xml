@@ -23,7 +23,7 @@
             android:id="@+id/tv_device_name"
             android:layout_alignParentBottom="true"
             android:layout_marginBottom="@dimen/y12"
-            android:textSize="18sp"
+            android:textSize="@dimen/sp18"
             android:textColor="@color/color_white"
             android:layout_toRightOf="@id/imgV_nav_back"
             android:text="@string/DOOR_MAGNET_NAME"
@@ -107,7 +107,7 @@
                 android:layout_marginTop="@dimen/y16"
                 android:layout_gravity="center_horizontal"
                 android:text="@string/NO_CONTENTS_1"
-                android:textSize="15sp"
+                android:textSize="@dimen/sp15"
                 android:textColor="#aaaaaa"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />

@@ -12,7 +12,7 @@
         android:gravity="center"
         android:text="设备信息"
         android:textColor="@color/color_black"
-        android:textSize="16sp" />
+        android:textSize="@dimen/sp16" />
 
     <TextView
         android:id="@+id/tv_settings_item_sub_title"
@@ -26,5 +26,5 @@
         android:maxLines="1"
         android:text="xxxxx"
         android:textColor="@color/color_8C8C8C"
-        android:textSize="13sp" />
+        android:textSize="@dimen/sp13" />
 </merge>

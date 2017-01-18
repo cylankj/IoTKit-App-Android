@@ -33,14 +33,14 @@
                 android:layout_height="wrap_content"
                 android:text="@string/RECORD_MODE"
                 android:textColor="@color/color_black"
-                android:textSize="16sp" />
+                android:textSize="@dimen/sp16" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/RECORD_INFO_0"
                 android:textColor="@color/color_8c8c8c"
-                android:textSize="13sp" />
+                android:textSize="@dimen/sp13" />
         </LinearLayout>
 
         <View
@@ -64,14 +64,14 @@
                 android:layout_height="wrap_content"
                 android:text="@string/RECORD_MODE_1"
                 android:textColor="@color/color_black"
-                android:textSize="16sp" />
+                android:textSize="@dimen/sp16" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/RECORD_INFO_1"
                 android:textColor="@color/color_8c8c8c"
-                android:textSize="13sp" />
+                android:textSize="@dimen/sp13" />
 
         </LinearLayout>
 
@@ -96,14 +96,14 @@
                 android:layout_height="wrap_content"
                 android:text="@string/RECORD_MODE_2"
                 android:textColor="@color/color_black"
-                android:textSize="16sp" />
+                android:textSize="@dimen/sp16" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/RECORD_INFO_2"
                 android:textColor="@color/color_8c8c8c"
-                android:textSize="13sp" />
+                android:textSize="@dimen/sp13" />
         </LinearLayout>
 
         <View
@@ -127,7 +127,7 @@
                 android:layout_gravity="end"
                 android:gravity="end|center_vertical"
                 android:textColor="@color/color_black"
-                android:textSize="14sp" />
+                android:textSize="@dimen/sp14" />
 
             <RadioButton
                 android:id="@+id/rb_24_hours"
@@ -136,7 +136,7 @@
                 android:layout_gravity="end"
                 android:gravity="end|center_vertical"
                 android:textColor="@color/color_black"
-                android:textSize="14sp" />
+                android:textSize="@dimen/sp14" />
 
             <RadioButton
                 android:id="@+id/rb_never"
@@ -144,7 +144,7 @@
                 android:layout_height="@dimen/y72"
                 android:layout_gravity="end"
                 android:gravity="end|center_vertical"
-                android:textSize="14sp" />
+                android:textSize="@dimen/sp14" />
         </RadioGroup>
     </RelativeLayout>
 </LinearLayout>

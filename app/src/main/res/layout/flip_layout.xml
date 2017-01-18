@@ -27,5 +27,5 @@
         android:gravity="center_vertical"
         android:text="@string/SECURE"
         android:textColor="@color/color_white"
-        android:textSize="11sp" />
+        android:textSize="@dimen/sp11" />
 </merge>

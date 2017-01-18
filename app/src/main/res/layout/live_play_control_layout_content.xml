@@ -35,5 +35,5 @@
         android:layout_gravity="center"
         android:layout_marginTop="@dimen/y10"
         android:textColor="@color/color_DDDDDD"
-        android:textSize="14sp" />
+        android:textSize="@dimen/sp14" />
 </merge>

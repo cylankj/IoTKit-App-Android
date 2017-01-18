@@ -29,7 +29,7 @@
                 android:padding="@dimen/x15"
                 android:text="智能门铃"
                 android:textColor="@color/color_white"
-                android:textSize="16sp" />
+                android:textSize="@dimen/sp16" />
 
             <ImageView
                 android:id="@+id/imgv_toolbar_right"

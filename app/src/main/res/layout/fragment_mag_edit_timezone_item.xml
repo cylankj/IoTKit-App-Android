@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:text="MAC"
         android:textColor="#000000"
-        android:textSize="16sp" />
+        android:textSize="@dimen/sp16" />
 
     <View
         android:layout_marginTop="@dimen/y10"

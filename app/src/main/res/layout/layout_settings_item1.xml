@@ -12,7 +12,7 @@
         android:gravity="center"
         android:text="设备信息"
         android:textColor="@color/color_black"
-        android:textSize="16sp" />
+        android:textSize="@dimen/sp16" />
 
     <com.kyleduo.switchbutton.SwitchButton
         android:id="@+id/btn_item_switch"

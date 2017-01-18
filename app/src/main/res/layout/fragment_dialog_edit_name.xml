@@ -18,7 +18,7 @@
             android:layout_marginTop="@dimen/y24"
             android:text="@string/EQUIPMENT_NAME"
             android:textColor="@color/color_black"
-            android:textSize="16sp" />
+            android:textSize="@dimen/sp16" />
 
         <EditText
             android:id="@+id/et_input_box"
@@ -31,7 +31,7 @@
             android:maxLength="12"
             android:textColor="@color/color_666666"
             android:textColorHint="@color/color_666666"
-            android:textSize="14sp" />
+            android:textSize="@dimen/sp14" />
 
         <View
             android:layout_width="match_parent"
@@ -64,7 +64,7 @@
                     android:padding="@dimen/x5"
                     android:text="@string/OK"
                     android:textColor="@color/color_4b9fd5"
-                    android:textSize="14sp" />
+                    android:textSize="@dimen/sp14" />
 
                 <TextView
                     android:id="@+id/tv_cancel"
@@ -75,7 +75,7 @@
                     android:padding="@dimen/x5"
                     android:text="@string/CANCEL"
                     android:textColor="@color/color_4b9fd5"
-                    android:textSize="14sp" />
+                    android:textSize="@dimen/sp14" />
             </LinearLayout>
         </FrameLayout>
 

@@ -20,7 +20,7 @@
         android:layout_gravity="bottom"
         android:background="#99FFFFFF"
         android:textColor="#212121"
-        android:textSize="20sp"
+        android:textSize="@dimen/sp20"
         android:lines="1"
         android:gravity="center"/>
 

@@ -35,7 +35,7 @@
             android:textColorHint="#60ffffff"
             android:textCursorDrawable="@drawable/search_friend_cursor_color"
             android:background="@null"
-            android:textSize="18sp" />
+            android:textSize="@dimen/sp18" />
     </RelativeLayout>
 
     <FrameLayout
@@ -66,7 +66,7 @@
                 >
                 <TextView
                     android:id="@+id/tv_username"
-                    android:textSize="16sp"
+                    android:textSize="@dimen/sp16"
                     android:textColor="@color/color_333333"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
@@ -75,7 +75,7 @@
                     android:id="@+id/tv_user_phone"
                     android:paddingTop="@dimen/y8"
                     android:layout_below="@id/tv_username"
-                    android:textSize="12sp"
+                    android:textSize="@dimen/sp12"
                     android:textColor="@color/color_8c8c8c"
                     android:text="12345678901"
                     android:singleLine="true"
@@ -104,7 +104,7 @@
                 android:layout_marginTop="@dimen/y16"
                 android:layout_gravity="center_horizontal"
                 android:text="@string/Tap3_FriendsAdd_NoContent"
-                android:textSize="15sp"
+                android:textSize="@dimen/sp15"
                 android:textColor="#aaaaaa"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />

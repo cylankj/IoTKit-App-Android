@@ -13,5 +13,5 @@
         android:tag="contentView"
         android:text="2016-09-07"
         android:textColor="@android:color/white"
-        android:textSize="11sp"/>
+        android:textSize="@dimen/sp11"/>
 </RelativeLayout>

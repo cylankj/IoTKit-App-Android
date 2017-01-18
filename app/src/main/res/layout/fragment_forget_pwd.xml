@@ -59,7 +59,7 @@
                         android:textColor="@color/color_666666"
                         android:textColorHint="@color/color_cecece"
                         android:textCursorDrawable="@drawable/bg_common_cursor"
-                        android:textSize="15sp" />
+                        android:textSize="@dimen/sp15" />
 
                     <ImageView
                         android:id="@+id/iv_forget_clear_username"
@@ -103,7 +103,7 @@
                         android:textColor="@color/color_666666"
                         android:textColorHint="@color/color_cecece"
                         android:textCursorDrawable="@drawable/bg_common_cursor"
-                        android:textSize="15sp" />
+                        android:textSize="@dimen/sp15" />
 
 
                     <TextView

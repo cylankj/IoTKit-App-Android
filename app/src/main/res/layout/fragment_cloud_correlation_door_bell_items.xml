@@ -7,7 +7,7 @@
         android:id="@+id/tv_door_bell_name"
         android:layout_marginLeft="@dimen/x15"
         android:layout_centerVertical="true"
-        android:textSize="16sp"
+        android:textSize="@dimen/sp16"
         android:textColor="@color/color_333333"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
@@ -15,7 +15,7 @@
     <TextView
         android:id="@+id/tv_btn_relative"
         android:layout_marginRight="@dimen/x15"
-        android:textSize="13sp"
+        android:textSize="@dimen/sp13"
         android:textColor="@color/color_4b9fd5"
         android:layout_centerVertical="true"
         android:layout_alignParentRight="true"

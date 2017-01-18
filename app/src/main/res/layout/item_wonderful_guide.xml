@@ -15,7 +15,7 @@
         android:background="@drawable/btn_again_normal"
         android:text="@string/Tap2_Index_OpenTimelapse"
         android:textColor="@color/delay_record_start_now_color"
-        android:textSize="17sp"/>
+        android:textSize="@dimen/sp17"/>
 
 
 </LinearLayout>

@@ -12,7 +12,7 @@
         android:gravity="center_vertical"
         android:paddingLeft="@dimen/x38"
         android:text="@string/CANCEL"
-        android:textSize="17sp" />
+        android:textSize="@dimen/sp17" />
 
     <View
         android:layout_width="@dimen/x279"
@@ -26,6 +26,6 @@
         android:gravity="center_vertical"
         android:paddingLeft="@dimen/x38"
         android:text="@string/DELETE"
-        android:textSize="17sp" />
+        android:textSize="@dimen/sp17" />
 
 </LinearLayout>

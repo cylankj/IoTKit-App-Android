@@ -27,7 +27,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/SETTINGS"
-            android:textSize="18sp"
+            android:textSize="@dimen/sp18"
             android:textColor="@color/color_white" />
 
     </RelativeLayout>
@@ -54,7 +54,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/PUSH_MSG"
-                    android:textSize="16sp"
+                    android:textSize="@dimen/sp16"
                     android:textColor="@color/color_black" />
 
                 <com.kyleduo.switchbutton.SwitchButton
@@ -88,7 +88,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/IN_APP_SOUND"
-                    android:textSize="16sp"
+                    android:textSize="@dimen/sp16"
                     android:textColor="@color/color_black" />
 
                 <com.kyleduo.switchbutton.SwitchButton
@@ -122,7 +122,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/IN_APP_VIBRATE"
-                    android:textSize="16sp"
+                    android:textSize="@dimen/sp16"
                     android:textColor="@color/color_black" />
 
                 <com.kyleduo.switchbutton.SwitchButton
@@ -162,7 +162,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/CLEAR_DATA"
-                    android:textSize="16sp"
+                    android:textSize="@dimen/sp16"
                     android:textColor="@color/color_black" />
 
                 <FrameLayout
@@ -183,7 +183,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="2.3M"
-                        android:textSize="13sp"
+                        android:textSize="@dimen/sp13"
                         android:textColor="@color/color_8c8c8c" />
 
                 </FrameLayout>
@@ -211,7 +211,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/ABOUT"
-                    android:textSize="16sp"
+                    android:textSize="@dimen/sp16"
                     android:textColor="@color/color_black" />
 
             </RelativeLayout>

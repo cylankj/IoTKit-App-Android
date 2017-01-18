@@ -27,7 +27,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/Tap3_Friends_UserInfo_ModName"
-            android:textSize="18sp"
+            android:textSize="@dimen/sp18"
             android:textColor="@color/color_white" />
 
         <ImageView
@@ -55,7 +55,7 @@
             <EditText
                 android:id="@+id/et_mine_set_remarkname_new_name"
                 android:textColor="@color/color_333333"
-                android:textSize="16sp"
+                android:textSize="@dimen/sp16"
                 android:layout_centerVertical="true"
                 android:hint="@string/Tap3_Friends_UserInfo_Name"
                 android:maxLength="12"

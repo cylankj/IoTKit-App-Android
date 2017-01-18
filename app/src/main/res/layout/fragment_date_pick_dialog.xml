@@ -40,7 +40,7 @@
                 android:gravity="center"
                 android:text="@string/OK"
                 android:textColor="@color/color_4b9fd5"
-                android:textSize="14sp" />
+                android:textSize="@dimen/sp14" />
 
             <TextView
                 android:id="@+id/tv_dialog_btn_right"
@@ -49,7 +49,7 @@
                 android:gravity="center"
                 android:text="@string/CANCEL"
                 android:textColor="@color/color_4b9fd5"
-                android:textSize="14sp" />
+                android:textSize="@dimen/sp14" />
         </LinearLayout>
     </LinearLayout>
 </android.support.v7.widget.CardView>

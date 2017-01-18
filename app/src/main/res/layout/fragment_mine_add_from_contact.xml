@@ -28,7 +28,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="发送请求"
-            android:textSize="18sp"
+            android:textSize="@dimen/sp18"
             android:textColor="@color/color_white" />
 
         <ImageView
@@ -68,7 +68,7 @@
             <EditText
                 android:id="@+id/et_mine_add_contact_mesg"
                 android:textColor="@color/color_333333"
-                android:textSize="16sp"
+                android:textSize="@dimen/sp16"
                 android:layout_centerVertical="true"
                 android:hint="验证消息"
                 android:background="@null"

@@ -13,7 +13,7 @@
         android:gravity="center"
         android:lineSpacingExtra="@dimen/x10"
         android:textColor="@color/color_7c7c7c"
-        android:textSize="15sp" />
+        android:textSize="@dimen/sp15" />
 
     <TextView
         android:id="@+id/tv_email_confirm"

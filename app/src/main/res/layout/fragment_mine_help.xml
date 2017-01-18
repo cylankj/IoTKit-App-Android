@@ -32,7 +32,7 @@
             android:layout_marginLeft="@dimen/x48"
             android:text="@string/Tap3_Feedback"
             android:textColor="@color/color_white"
-            android:textSize="18sp" />
+            android:textSize="@dimen/sp18" />
 
 
         <TextView
@@ -45,7 +45,7 @@
             android:padding="@dimen/x15"
             android:text="@string/FEEDBACK"
             android:textColor="@color/color_white"
-            android:textSize="14sp" />
+            android:textSize="@dimen/sp14" />
     </RelativeLayout>
 
     <ProgressBar
@@ -70,7 +70,7 @@
             hunt:rightDrawable="@drawable/icon_mine_arrow_next"
             hunt:text="设备离线，或连接中"
             hunt:textColor="@color/color_333333"
-            hunt:textSize="16sp" />
+            hunt:textSize="@dimen/sp16" />
 
         <View
             android:layout_width="match_parent"
@@ -86,7 +86,7 @@
         hunt:rightDrawable="@drawable/icon_mine_arrow_next"
         hunt:text="添加设备，提示“找不到设备”"
         hunt:textColor="@color/color_333333"
-        hunt:textSize="16sp" />
+        hunt:textSize="@dimen/sp16" />
 
     <com.cylan.jiafeigou.widget.HomeMineItemView
         android:layout_width="match_parent"
@@ -95,7 +95,7 @@
         hunt:rightDrawable="@drawable/icon_mine_arrow_next"
         hunt:text="Android系统：连接设备的WiFi和密码是什么"
         hunt:textColor="@color/color_333333"
-        hunt:textSize="16sp" />
+        hunt:textSize="@dimen/sp16" />
 
     <com.cylan.jiafeigou.widget.HomeMineItemView
         android:layout_width="match_parent"
@@ -104,7 +104,7 @@
         hunt:rightDrawable="@drawable/icon_mine_arrow_next"
         hunt:text="一个设备可以在多个客户端上使用吗"
         hunt:textColor="@color/color_333333"
-        hunt:textSize="16sp" />
+        hunt:textSize="@dimen/sp16" />
 
     <com.cylan.jiafeigou.widget.HomeMineItemView
         android:layout_width="match_parent"
@@ -113,7 +113,7 @@
         hunt:rightDrawable="@drawable/icon_mine_arrow_next"
         hunt:text="查看直播，宽带最低需要多少"
         hunt:textColor="@color/color_333333"
-        hunt:textSize="16sp" />
+        hunt:textSize="@dimen/sp16" />
 
 
 

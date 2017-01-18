@@ -28,7 +28,7 @@
             android:layout_marginLeft="@dimen/x48"
             android:text="@string/Tap3_ShareDevice"
             android:textColor="@color/color_white"
-            android:textSize="18sp" />
+            android:textSize="@dimen/sp18" />
 
     </RelativeLayout>
 
@@ -62,7 +62,7 @@
                 android:layout_marginTop="@dimen/y16"
                 android:text="@string/Tap3_ShareDevice_NoDevice"
                 android:textColor="#aaaaaa"
-                android:textSize="15sp" />
+                android:textSize="@dimen/sp15" />
         </LinearLayout>
 
         <View

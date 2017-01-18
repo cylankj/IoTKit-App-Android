@@ -11,7 +11,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/EQUIPMENT_NAME"
-        android:textSize="16sp"
+        android:textSize="@dimen/sp16"
         android:textColor="#000" />
 
     <EditText
@@ -24,7 +24,7 @@
         android:layout_marginTop="@dimen/y52"
         android:layout_width="@dimen/x232"
         android:layout_height="wrap_content"
-        android:textSize="14sp"
+        android:textSize="@dimen/sp14"
         android:maxLength="12" />
 
     <TextView
@@ -34,7 +34,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/RET_EALIAS_EXIST"
-        android:textSize="10sp"
+        android:textSize="@dimen/sp10"
         android:textColor="#F26B6B"
         android:layout_alignTop="@+id/et_input_box"
         android:layout_alignLeft="@+id/tv_information_name"
@@ -54,7 +54,7 @@
             android:layout_width="@dimen/x58"
             android:layout_height="@dimen/y36"
             android:text="@string/OK"
-            android:textSize="14sp"
+            android:textSize="@dimen/sp14"
             android:textColor="#4B9FD5"
             android:background="#C5E6FC" />
 
@@ -63,7 +63,7 @@
             android:layout_width="@dimen/x58"
             android:layout_height="@dimen/y36"
             android:text="@string/CANCEL"
-            android:textSize="14sp"
+            android:textSize="@dimen/sp14"
             android:textColor="#4B9FD5"
             android:background="#C5E6FC" />
     </LinearLayout>

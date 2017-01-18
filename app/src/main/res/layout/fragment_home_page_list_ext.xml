@@ -42,7 +42,7 @@
                         android:gravity="center"
                         android:text="@string/app_name"
                         android:textColor="@android:color/white"
-                        android:textSize="20sp" />
+                        android:textSize="@dimen/sp20" />
 
                     <ImageView
                         android:id="@+id/imgV_add_devices"

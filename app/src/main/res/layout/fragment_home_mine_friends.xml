@@ -29,7 +29,7 @@
             android:layout_marginLeft="@dimen/x48"
             android:text="@string/Tap3_Friends"
             android:textColor="@color/color_white"
-            android:textSize="18sp" />
+            android:textSize="@dimen/sp18" />
 
         <TextView
             android:id="@+id/tv_home_mine_relativesandfriends_add"
@@ -41,7 +41,7 @@
             android:padding="@dimen/x15"
             android:text="@string/Tap3_FriendsAdd"
             android:textColor="@color/color_white"
-            android:textSize="14sp" />
+            android:textSize="@dimen/sp14" />
     </RelativeLayout>
 
     <FrameLayout
@@ -61,7 +61,7 @@
                 android:layout_marginLeft="@dimen/x15"
                 android:textColor="@color/color_4b9fd5"
                 android:text="@string/Tap3_FriendsAdd_Request"
-                android:textSize="14sp"
+                android:textSize="@dimen/sp14"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
@@ -79,7 +79,7 @@
                 android:layout_marginLeft="@dimen/x15"
                 android:textColor="@color/color_4b9fd5"
                 android:text="@string/Tap3_FriendsList"
-                android:textSize="14sp"
+                android:textSize="@dimen/sp14"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
@@ -110,7 +110,7 @@
                 android:layout_marginTop="@dimen/y16"
                 android:layout_gravity="center_horizontal"
                 android:text="@string/Tap3_ShareDevice_NoneFriends"
-                android:textSize="15sp"
+                android:textSize="@dimen/sp15"
                 android:textColor="#aaaaaa"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />

@@ -34,7 +34,7 @@
         android:maxLines="1"
         android:text="wohegohe"
         android:textColor="@color/color_333333"
-        android:textSize="16sp"/>
+        android:textSize="@dimen/sp16"/>
 
     <TextView
         android:id="@+id/item_device_open_state"
@@ -50,7 +50,7 @@
         android:maxLines="1"
         android:text="hgeogh"
         android:textColor="@color/color_777777"
-        android:textSize="14sp"/>
+        android:textSize="@dimen/sp14"/>
 
     <ImageView
         android:id="@+id/tv_device_msg_time"

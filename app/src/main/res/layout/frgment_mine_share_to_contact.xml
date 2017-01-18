@@ -33,7 +33,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/Tap3_ShareDevice_ToContacts"
                 android:textColor="@color/color_white"
-                android:textSize="18sp" />
+                android:textSize="@dimen/sp18" />
 
             <EditText
                 android:singleLine="true"
@@ -44,7 +44,7 @@
                 android:background="@null"
                 android:hint="@string/Search"
                 android:textCursorDrawable="@drawable/search_friend_cursor_color"
-                android:textSize="18sp"
+                android:textSize="@dimen/sp18"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
@@ -89,7 +89,7 @@
                 android:layout_marginTop="@dimen/y16"
                 android:text="暂无联系人"
                 android:textColor="#aaaaaa"
-                android:textSize="15sp"
+                android:textSize="@dimen/sp15"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
         </LinearLayout>

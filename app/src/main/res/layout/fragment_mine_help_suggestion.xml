@@ -20,7 +20,7 @@
             android:drawablePadding="@dimen/x15"
             android:padding="@dimen/x15"
             android:textColor="@color/color_white"
-            android:textSize="16sp" />
+            android:textSize="@dimen/sp16" />
 
         <TextView
             android:id="@+id/tv_mine_help_suggestion_clear"
@@ -31,7 +31,7 @@
             android:padding="@dimen/x15"
             android:text="@string/Tap3_Feedback_Clear"
             android:textColor="@color/color_white"
-            android:textSize="14sp" />
+            android:textSize="@dimen/sp14" />
 
     </FrameLayout>
 

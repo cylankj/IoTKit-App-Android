@@ -27,7 +27,7 @@
                 android:padding="@dimen/x15"
                 android:text="@string/SETTINGS_1"
                 android:textColor="@color/color_white"
-                android:textSize="16sp" />
+                android:textSize="@dimen/sp16" />
         </FrameLayout>
     </LinearLayout>
 
@@ -53,7 +53,7 @@
                 android:layout_marginTop="@dimen/y10"
                 android:text="@string/SETTINGS"
                 android:textColor="@color/color_4b9fd5"
-                android:textSize="15sp" />
+                android:textSize="@dimen/sp15" />
 
             <com.cylan.jiafeigou.widget.SettingItemView2
                 android:id="@+id/tv_bell_detail"
@@ -75,7 +75,7 @@
                 android:layout_marginTop="@dimen/y10"
                 android:text="@string/CALL_CAMERA_NAME"
                 android:textColor="@color/color_4b9fd5"
-                android:textSize="15sp" />
+                android:textSize="@dimen/sp15" />
 
             <com.cylan.jiafeigou.widget.SettingItemView2
                 android:id="@+id/tv_bell_detail2"
@@ -104,7 +104,7 @@
                 android:paddingRight="@dimen/x20"
                 android:text="@string/Tap1_iHome_ClearRecord"
                 android:textColor="@color/color_black"
-                android:textSize="16sp" />
+                android:textSize="@dimen/sp16" />
 
             <View
                 android:layout_marginTop="@dimen/y10"
@@ -123,7 +123,7 @@
                 android:gravity="center"
                 android:text="@string/DELETE_CID"
                 android:textColor="@color/color_FF3D32"
-                android:textSize="16sp" />
+                android:textSize="@dimen/sp16" />
 
             <View
                 android:layout_marginLeft="@dimen/x20"

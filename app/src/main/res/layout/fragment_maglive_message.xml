@@ -30,7 +30,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/SETTINGS_1"
-            android:textSize="18sp"
+            android:textSize="@dimen/sp18"
             android:textColor="#FFFFFF" />
     </RelativeLayout>
 
@@ -52,7 +52,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/SETTINGS"
                 android:textColor="#4B9FD5"
-                android:textSize="14sp" />
+                android:textSize="@dimen/sp14" />
 
             <LinearLayout
                 style="@style/information_item"
@@ -80,7 +80,7 @@
                         android:layout_height="wrap_content"
                         android:text="@string/EQUIPMENT_INFO"
                         android:textColor="#000000"
-                        android:textSize="16sp" />
+                        android:textSize="@dimen/sp16" />
 
                     <TextView
                         android:layout_marginTop="@dimen/y6"
@@ -89,7 +89,7 @@
                         android:layout_height="wrap_content"
                         android:text="大门口的门铃"
                         android:textColor="#8C8C8C"
-                        android:textSize="13sp" />
+                        android:textSize="@dimen/sp13" />
 
                 </LinearLayout>
 
@@ -118,7 +118,7 @@
 
             <TextView
                 android:textColor="#000000"
-                android:textSize="16sp"
+                android:textSize="@dimen/sp16"
                 android:layout_marginLeft="@dimen/x10"
                 android:layout_centerVertical="true"
                 android:layout_toRightOf="@id/rl_iv_icon"
@@ -152,7 +152,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/Tap1_Magnetism_ClearRecord"
-            android:textSize="16sp"
+            android:textSize="@dimen/sp16"
             android:textColor="@color/color_4b9fd5" />
 
     </LinearLayout>

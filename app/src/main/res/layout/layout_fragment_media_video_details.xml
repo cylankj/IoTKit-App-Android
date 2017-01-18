@@ -67,7 +67,7 @@
                 android:layout_marginRight="@dimen/x9"
                 android:text="00:16"
                 android:textColor="#CCCCCC"
-                android:textSize="11sp"/>
+                android:textSize="@dimen/sp11"/>
 
             <SeekBar
                 android:id="@+id/vv_seekbar"
@@ -82,7 +82,7 @@
                 android:layout_marginLeft="@dimen/x9"
                 android:text="00:16"
                 android:textColor="#CCCCCC"
-                android:textSize="11sp"/>
+                android:textSize="@dimen/sp11"/>
 
             <ImageView
                 android:id="@+id/vv_full_screen"

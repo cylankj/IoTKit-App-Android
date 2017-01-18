@@ -10,4 +10,4 @@
     android:paddingTop="@dimen/y23"
     android:drawableTop="@drawable/icon_toaster_positive"
     android:textColor="#fff"
-    android:textSize="14sp" />
+    android:textSize="@dimen/sp14" />

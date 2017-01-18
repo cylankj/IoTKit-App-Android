@@ -28,6 +28,6 @@
         android:layout_marginTop="@dimen/y5"
         android:text="@string/CANCEL"
         android:textColor="#5c5c5c"
-        android:textSize="16sp" />
+        android:textSize="@dimen/sp16" />
 
 </LinearLayout>

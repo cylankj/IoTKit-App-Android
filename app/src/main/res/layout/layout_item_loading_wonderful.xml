@@ -32,7 +32,7 @@
             android:layout_marginLeft="@dimen/x5"
             android:layout_marginRight="@dimen/x5"
             android:text="加载中..."
-            android:textSize="11sp"/>
+            android:textSize="@dimen/sp11"/>
     </LinearLayout>
 
 

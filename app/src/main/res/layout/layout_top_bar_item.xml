@@ -21,7 +21,7 @@
         android:layout_gravity="center"
         android:text="@string/LOGIN"
         android:textColor="@color/color_444444"
-        android:textSize="22sp" />
+        android:textSize="@dimen/sp22" />
 
     <TextView
         android:id="@+id/tv_top_bar_right"
@@ -33,7 +33,7 @@
         android:paddingRight="@dimen/x15"
         android:text="@string/Tap0_register"
         android:textColor="@color/color_4b9fd5"
-        android:textSize="14sp"
+        android:textSize="@dimen/sp14"
         android:visibility="gone" />
 
 </FrameLayout>

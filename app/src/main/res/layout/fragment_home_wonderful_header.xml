@@ -22,7 +22,7 @@
             android:layout_marginTop="@dimen/y18"
             android:text="每日精彩"
             android:textColor="@color/color_white"
-            android:textSize="22sp" />
+            android:textSize="@dimen/sp22" />
 
         <TextView
             android:id="@+id/tv_sec_title_head_wonder"
@@ -33,7 +33,7 @@
             android:layout_marginTop="@dimen/y8"
             android:text="每一天的生活，都值得被记录"
             android:textColor="@color/color_white"
-            android:textSize="15sp" />
+            android:textSize="@dimen/sp15" />
     </RelativeLayout>
 
     <ImageView
@@ -69,6 +69,6 @@
             android:gravity="center"
             android:text="2016.05.02"
             android:textColor="@color/color_788291"
-            android:textSize="14sp" />
+            android:textSize="@dimen/sp14" />
     </FrameLayout>
 </FrameLayout>

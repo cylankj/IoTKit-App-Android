@@ -37,7 +37,7 @@
             android:layout_height="wrap_content"
             android:text="设备电量较低 请及时充电"
             android:textColor="@color/color_333333"
-            android:textSize="15sp" />
+            android:textSize="@dimen/sp15" />
 
         <TextView
             android:id="@+id/tv_low_battery_content"
@@ -46,7 +46,7 @@
             android:layout_marginTop="@dimen/y17"
             android:text="@string/DOOR_LOW_BATTERY"
             android:textColor="@color/color_666666"
-            android:textSize="15sp" />
+            android:textSize="@dimen/sp15" />
 
         <View
             android:layout_width="match_parent"
@@ -64,7 +64,7 @@
             android:gravity="center"
             android:text="知道了"
             android:textColor="@color/color_4b9fd5"
-            android:textSize="15sp" />
+            android:textSize="@dimen/sp15" />
     </LinearLayout>
 
     <ImageView

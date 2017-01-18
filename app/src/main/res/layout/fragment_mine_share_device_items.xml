@@ -25,7 +25,7 @@
             >
             <TextView
                 android:id="@+id/tv_share_device_name"
-                android:textSize="16sp"
+                android:textSize="@dimen/sp16"
                 android:textColor="@color/color_333333"
                 android:text="云相框"
                 android:maxLength="14"
@@ -36,7 +36,7 @@
                 android:id="@+id/tv_has_share_num"
                 android:paddingTop="@dimen/y7"
                 android:layout_below="@id/tv_share_device_name"
-                android:textSize="12sp"
+                android:textSize="@dimen/sp12"
                 android:textColor="@color/color_8c8c8c"
                 android:text="5/5"
                 android:layout_width="wrap_content"
@@ -57,7 +57,7 @@
             android:layout_alignParentRight="true"
             android:background="@drawable/btn_accept_add_request_shape"
             android:text="@string/Tap3_ShareDevice_Button"
-            android:textSize="13sp"
+            android:textSize="@dimen/sp13"
             android:textColor="@color/color_4b9fd5"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />

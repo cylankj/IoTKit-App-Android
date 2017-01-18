@@ -30,7 +30,7 @@
             android:layout_marginLeft="@dimen/x48"
             android:text="@string/Tap3_Friends_UserInfo"
             android:textColor="@color/color_white"
-            android:textSize="18sp" />
+            android:textSize="@dimen/sp18" />
     </RelativeLayout>
 
     <FrameLayout
@@ -54,7 +54,7 @@
                     android:paddingTop="@dimen/y15"
                     android:text="@string/Tap3_Friends_Myaccount"
                     android:textColor="@color/color_8c8c8c"
-                    android:textSize="12sp" />
+                    android:textSize="@dimen/sp12" />
 
                 <TextView
                     android:id="@+id/tv_user_account"
@@ -66,7 +66,7 @@
                     android:singleLine="true"
                     android:text="15856562525"
                     android:textColor="@color/color_333333"
-                    android:textSize="16sp" />
+                    android:textSize="@dimen/sp16" />
 
                 <View
                     android:layout_width="match_parent"
@@ -91,7 +91,7 @@
                     android:layout_marginLeft="@dimen/x20"
                     android:text="@string/PROFILE_PHOTO"
                     android:textColor="@color/color_333333"
-                    android:textSize="16sp" />
+                    android:textSize="@dimen/sp16" />
 
                 <com.cylan.jiafeigou.widget.roundedimageview.RoundedImageView
                     android:id="@+id/user_ImageHead"
@@ -125,7 +125,7 @@
                     android:layout_marginLeft="@dimen/x20"
                     android:text="@string/Tap3_MyQRCode"
                     android:textColor="@color/color_333333"
-                    android:textSize="16sp" />
+                    android:textSize="@dimen/sp16" />
 
                 <View
                     android:layout_width="match_parent"
@@ -151,7 +151,7 @@
                     android:paddingTop="@dimen/y15"
                     android:text="@string/ALIAS"
                     android:textColor="@color/color_8c8c8c"
-                    android:textSize="12sp" />
+                    android:textSize="@dimen/sp12" />
 
                 <TextView
                     android:id="@+id/tv_user_name"
@@ -161,7 +161,7 @@
                     android:layout_marginLeft="@dimen/x20"
                     android:paddingTop="@dimen/y8"
                     android:textColor="@color/color_333333"
-                    android:textSize="16sp" />
+                    android:textSize="@dimen/sp16" />
 
                 <View
                     android:layout_width="match_parent"
@@ -187,7 +187,7 @@
                     android:paddingTop="@dimen/y15"
                     android:text="@string/EMAIL"
                     android:textColor="@color/color_8c8c8c"
-                    android:textSize="12sp" />
+                    android:textSize="@dimen/sp12" />
 
                 <TextView
                     android:id="@+id/tv_home_mine_personal_mailbox"
@@ -198,7 +198,7 @@
                     android:paddingTop="@dimen/y8"
                     android:text="@string/NO_SET"
                     android:textColor="@color/color_333333"
-                    android:textSize="16sp" />
+                    android:textSize="@dimen/sp16" />
 
                 <View
                     android:layout_width="match_parent"
@@ -222,7 +222,7 @@
                     android:paddingTop="@dimen/y15"
                     android:text="@string/PHONE_NUMBER"
                     android:textColor="@color/color_8c8c8c"
-                    android:textSize="12sp" />
+                    android:textSize="@dimen/sp12" />
 
                 <TextView
                     android:id="@+id/tv_home_mine_personal_phone"
@@ -233,7 +233,7 @@
                     android:paddingTop="@dimen/y8"
                     android:text="@string/NO_SET"
                     android:textColor="@color/color_333333"
-                    android:textSize="16sp" />
+                    android:textSize="@dimen/sp16" />
 
                 <View
                     android:layout_width="match_parent"
@@ -257,7 +257,7 @@
                     android:layout_marginLeft="@dimen/x20"
                     android:text="@string/CHANGE_PWD"
                     android:textColor="@color/color_333333"
-                    android:textSize="16sp" />
+                    android:textSize="@dimen/sp16" />
 
             </RelativeLayout>
 
@@ -274,7 +274,7 @@
                 android:layout_marginStart="@dimen/x30"
                 android:background="@drawable/long_btn_bg_shape_white"
                 android:textColor="@color/color_ff3b30"
-                android:textSize="16sp" />
+                android:textSize="@dimen/sp16" />
         </LinearLayout>
 
         <View

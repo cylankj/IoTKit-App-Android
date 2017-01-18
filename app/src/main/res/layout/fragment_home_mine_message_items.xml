@@ -9,7 +9,7 @@
         android:layout_gravity="center_horizontal"
         android:id="@+id/message_item_time"
         android:textColor="#adadad"
-        android:textSize="13sp"
+        android:textSize="@dimen/sp13"
         android:text="2016/04/01 12:00"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
@@ -58,7 +58,7 @@
                 android:layout_marginBottom="@dimen/y4"
                 android:layout_marginLeft="@dimen/x14"
                 android:text="加菲狗团队"
-                android:textSize="13sp"
+                android:textSize="@dimen/sp13"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 
@@ -73,7 +73,7 @@
                     android:layout_marginLeft="@dimen/x8"
                     android:text="平台升级维护"
                     android:textColor="@color/color_333333"
-                    android:textSize="14sp"
+                    android:textSize="@dimen/sp14"
                     android:layout_marginBottom="@dimen/y8"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
@@ -81,7 +81,7 @@
                 <TextView
                     android:layout_marginBottom="@dimen/y10"
                     android:textColor="#666666"
-                    android:textSize="14sp"
+                    android:textSize="@dimen/sp14"
                     android:id="@+id/message_item_msg"
                     android:text="亲爱的用户,客户端将进行系统维护升级,期间对设备正常使用将会造成一定影响，对您造成的不便之处敬请谅解。再次感谢您对加菲狗的支持！"
                     android:layout_marginLeft="@dimen/x8"

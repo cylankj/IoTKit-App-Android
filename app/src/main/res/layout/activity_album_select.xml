@@ -27,7 +27,7 @@
             android:layout_marginLeft="@dimen/x48"
             android:text="选择相册"
             android:textColor="#ffffff"
-            android:textSize="18sp" />
+            android:textSize="@dimen/sp18" />
     </RelativeLayout>
 
     <ProgressBar

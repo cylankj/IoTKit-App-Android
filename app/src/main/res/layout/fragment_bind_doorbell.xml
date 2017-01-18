@@ -19,7 +19,7 @@
         android:gravity="center"
         android:text="重新开机，长按WiFi键"
         android:textColor="@color/color_333333"
-        android:textSize="26sp" />
+        android:textSize="@dimen/sp26" />
 
     <TextView
         android:id="@+id/tv_bind_wait_msg"
@@ -31,7 +31,7 @@
         android:gravity="center"
         android:text="等待红灯常亮"
         android:textColor="@color/color_333333"
-        android:textSize="16sp" />
+        android:textSize="@dimen/sp16" />
 
     <FrameLayout
         android:id="@+id/fLayout_flip_layout"
@@ -118,7 +118,7 @@
         android:gravity="center"
         android:text="红灯已常亮"
         android:textColor="@color/color_4b9fd5"
-        android:textSize="16sp" />
+        android:textSize="@dimen/sp16" />
 
     <FrameLayout
         android:id="@+id/fLayout_bind_device_list_fragment_container"

@@ -17,7 +17,7 @@
             android:paddingTop="@dimen/y24"
             android:text="循环播放"
             android:textColor="#000000"
-            android:textSize="18sp"/>
+            android:textSize="@dimen/sp18"/>
 
         <com.cylan.jiafeigou.widget.pick.WheelPicker
             android:id="@+id/dialog_record_duration_picker"
@@ -52,7 +52,7 @@
                 android:paddingTop="@dimen/y20"
                 android:text="取消"
                 android:textColor="#4B9FD5"
-                android:textSize="14sp"/>
+                android:textSize="@dimen/sp14"/>
 
             <TextView
                 android:id="@+id/dialog_record_duration_ok"
@@ -64,7 +64,7 @@
                 android:paddingTop="@dimen/y20"
                 android:text="确定"
                 android:textColor="#4B9FD5"
-                android:textSize="14sp"/>
+                android:textSize="@dimen/sp14"/>
         </LinearLayout>
     </LinearLayout>
 

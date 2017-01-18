@@ -25,7 +25,7 @@
             >
             <TextView
                 android:id="@+id/tv_username"
-                android:textSize="16sp"
+                android:textSize="@dimen/sp16"
                 android:textColor="@color/color_333333"
                 android:text="小名"
                 android:layout_width="wrap_content"
@@ -35,7 +35,7 @@
                 android:id="@+id/tv_friend_account"
                 android:paddingTop="@dimen/y8"
                 android:layout_below="@id/tv_username"
-                android:textSize="12sp"
+                android:textSize="@dimen/sp12"
                 android:textColor="@color/color_8c8c8c"
                 android:text="我是小姨"
                 android:singleLine="true"
@@ -51,7 +51,7 @@
             android:layout_alignParentRight="true"
             android:text="@string/Tap3_ShareDevice_Delete"
             android:background="@drawable/btn_cancle_relative_doorbell_shape"
-            android:textSize="13sp"
+            android:textSize="@dimen/sp13"
             android:gravity="center"
             android:textColor="@color/color_4b9fd5"
             android:layout_width="wrap_content"

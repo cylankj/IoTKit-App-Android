@@ -54,7 +54,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/photo"
                 android:textColor="@android:color/white"
-                android:textSize="18sp"
+                android:textSize="@dimen/sp18"
                 />
         </LinearLayout>
 
@@ -74,7 +74,7 @@
                 android:padding="@dimen/x6"
                 android:layout_marginRight="@dimen/x9"
                 android:textColor="@android:color/white"
-                android:textSize="16sp"
+                android:textSize="@dimen/sp16"
                 android:visibility="gone"
                 />
         </LinearLayout>
@@ -105,7 +105,7 @@
             android:layout_gravity="center"
             android:text="string/waiting"
             android:textColor="@android:color/black"
-            android:textSize="16sp"
+            android:textSize="@dimen/sp16"
             />
     </FrameLayout>
 

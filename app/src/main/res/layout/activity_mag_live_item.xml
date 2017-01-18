@@ -17,7 +17,7 @@
             android:gravity="top|end"
             android:text="@string/DOOR_TODAY"
             android:textColor="@color/color_333333"
-            android:textSize="17sp" />
+            android:textSize="@dimen/sp17" />
 
         <LinearLayout
             android:layout_gravity="center_vertical"
@@ -51,6 +51,6 @@
         android:layout_marginLeft="@dimen/x11"
         android:text="15:05:20 打开"
         android:textColor="@color/color_333333"
-        android:textSize="16sp" />
+        android:textSize="@dimen/sp16" />
 
 </LinearLayout>

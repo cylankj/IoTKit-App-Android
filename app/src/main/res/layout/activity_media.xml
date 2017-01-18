@@ -31,7 +31,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
                 android:textColor="#FFFFFF"
-                android:textSize="18sp"/>
+                android:textSize="@dimen/sp18"/>
 
             <LinearLayout
                 android:id="@+id/act_media_header_opt_container"

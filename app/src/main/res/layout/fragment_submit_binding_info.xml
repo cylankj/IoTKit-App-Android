@@ -59,7 +59,7 @@
                 android:gravity="center"
                 android:text="@string/NO_NETWORK_2"
                 android:textColor="@color/color_333333"
-                android:textSize="16sp" />
+                android:textSize="@dimen/sp16" />
 
             <com.cylan.jiafeigou.widget.LoginButton
                 android:id="@+id/btn_bind_repeat"
@@ -69,7 +69,7 @@
                 android:gravity="center"
                 android:text="@string/TRY_AGAIN"
                 android:textColor="@color/color_4b9fd5"
-                android:textSize="17sp"
+                android:textSize="@dimen/sp17"
                 hunt:lb_stroke_color="@color/color_d8d8d8" />
         </RelativeLayout>
     </ViewSwitcher>

@@ -25,7 +25,7 @@
             >
             <TextView
                 android:id="@+id/tv_friend_name"
-                android:textSize="16sp"
+                android:textSize="@dimen/sp16"
                 android:textColor="@color/color_333333"
                 android:text="小名"
                 android:layout_width="wrap_content"
@@ -35,7 +35,7 @@
                 android:id="@+id/tv_friend_account"
                 android:paddingTop="@dimen/y8"
                 android:layout_below="@id/tv_friend_name"
-                android:textSize="12sp"
+                android:textSize="@dimen/sp12"
                 android:textColor="@color/color_8c8c8c"
                 android:text="我是小姨"
                 android:singleLine="true"

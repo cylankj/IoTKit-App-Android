@@ -28,7 +28,7 @@
             android:layout_marginLeft="@dimen/x48"
             android:text="@string/Tap3_ShareDevice_Friends"
             android:textColor="@color/color_white"
-            android:textSize="18sp" />
+            android:textSize="@dimen/sp18" />
 
         <TextView
             android:id="@+id/tv_mine_share_to_relative_friend_true"
@@ -40,7 +40,7 @@
             android:padding="@dimen/x15"
             android:text="确定（4/5）"
             android:textColor="@color/color_white"
-            android:textSize="14sp" />
+            android:textSize="@dimen/sp14" />
     </RelativeLayout>
 
     <FrameLayout
@@ -72,7 +72,7 @@
                 android:layout_marginTop="@dimen/y16"
                 android:layout_gravity="center_horizontal"
                 android:text="@string/Tap3_ShareDevice_NoneFriends"
-                android:textSize="15sp"
+                android:textSize="@dimen/sp15"
                 android:textColor="#aaaaaa"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />

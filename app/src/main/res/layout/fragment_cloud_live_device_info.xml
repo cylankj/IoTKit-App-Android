@@ -27,7 +27,7 @@
             android:layout_marginLeft="@dimen/x48"
             android:text="@string/SETTINGS_1"
             android:textColor="#FFFFFF"
-            android:textSize="18sp" />
+            android:textSize="@dimen/sp18" />
     </RelativeLayout>
 
     <ScrollView
@@ -50,7 +50,7 @@
                 android:layout_marginTop="@dimen/y12"
                 android:text="@string/SETTINGS"
                 android:textColor="#4B9FD5"
-                android:textSize="14sp" />
+                android:textSize="@dimen/sp14" />
 
             <LinearLayout
                 android:id="@+id/lLayout_information_facility_name"
@@ -65,7 +65,7 @@
                     android:layout_marginTop="@dimen/y15"
                     android:text="@string/EQUIPMENT_NAME"
                     android:textColor="#000000"
-                    android:textSize="16sp" />
+                    android:textSize="@dimen/sp16" />
 
                 <TextView
                     android:id="@+id/tv_device_alias"
@@ -73,7 +73,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/y3"
                     android:textColor="#8C8C8C"
-                    android:textSize="13sp" />
+                    android:textSize="@dimen/sp13" />
 
                 <View
                     android:layout_width="match_parent"
@@ -94,7 +94,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/MODEL"
                     android:textColor="#000000"
-                    android:textSize="16sp" />
+                    android:textSize="@dimen/sp16" />
 
                 <TextView
                     android:id="@+id/tv_device_sdcard_state"
@@ -103,7 +103,7 @@
                     android:layout_marginTop="@dimen/y3"
                     android:text="DOG_Home"
                     android:textColor="#8C8C8C"
-                    android:textSize="13sp" />
+                    android:textSize="@dimen/sp13" />
 
                 <View
                     android:layout_width="match_parent"
@@ -124,7 +124,7 @@
                     android:layout_height="wrap_content"
                     android:text="Wi-Fi"
                     android:textColor="#000000"
-                    android:textSize="16sp" />
+                    android:textSize="@dimen/sp16" />
 
                 <TextView
                     android:id="@+id/tv_device_wifi_state"
@@ -133,7 +133,7 @@
                     android:layout_marginTop="@dimen/y3"
                     android:text="未启用"
                     android:textColor="#8C8C8C"
-                    android:textSize="13sp" />
+                    android:textSize="@dimen/sp13" />
 
                 <View
                     android:layout_width="match_parent"
@@ -150,7 +150,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/EQUIPMENT_INFO"
                 android:textColor="#4B9FD5"
-                android:textSize="14sp" />
+                android:textSize="@dimen/sp14" />
 
             <LinearLayout
                 style="@style/information_item"
@@ -164,7 +164,7 @@
                     android:layout_marginTop="@dimen/y15"
                     android:text="@string/Tap1_Setting_Cid"
                     android:textColor="#000000"
-                    android:textSize="16sp" />
+                    android:textSize="@dimen/sp16" />
 
                 <TextView
                     android:id="@+id/tv_device_cid"
@@ -173,7 +173,7 @@
                     android:layout_marginTop="@dimen/y3"
                     android:text="16位的字符串，设备首次激活时生成"
                     android:textColor="#8C8C8C"
-                    android:textSize="13sp" />
+                    android:textSize="@dimen/sp13" />
 
                 <View
                     android:layout_width="match_parent"
@@ -195,7 +195,7 @@
                     android:layout_marginTop="@dimen/y15"
                     android:text="MAC"
                     android:textColor="#000000"
-                    android:textSize="16sp" />
+                    android:textSize="@dimen/sp16" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -204,7 +204,7 @@
                     android:layout_marginTop="@dimen/y3"
                     android:text="WiFi芯片写死的"
                     android:textColor="#8C8C8C"
-                    android:textSize="13sp" />
+                    android:textSize="@dimen/sp13" />
 
                 <View
                     android:layout_width="match_parent"
@@ -226,7 +226,7 @@
                     android:layout_marginTop="@dimen/y15"
                     android:text="@string/SYSTME_VERSION"
                     android:textColor="#000000"
-                    android:textSize="16sp" />
+                    android:textSize="@dimen/sp16" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -235,7 +235,7 @@
                     android:layout_marginTop="@dimen/y3"
                     android:text="JFG1.2"
                     android:textColor="#8C8C8C"
-                    android:textSize="13sp" />
+                    android:textSize="@dimen/sp13" />
 
                 <View
                     android:layout_width="match_parent"
@@ -257,7 +257,7 @@
                     android:layout_marginTop="@dimen/y15"
                     android:text="@string/SOFTWARE_VERSION"
                     android:textColor="#000000"
-                    android:textSize="16sp" />
+                    android:textSize="@dimen/sp16" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -266,7 +266,7 @@
                     android:id="@+id/tv_soft_version"
                     android:text="2.4.6.696"
                     android:textColor="#8C8C8C"
-                    android:textSize="13sp" />
+                    android:textSize="@dimen/sp13" />
 
                 <View
                     android:layout_width="match_parent"
@@ -288,7 +288,7 @@
                     android:layout_marginTop="@dimen/y15"
                     android:text="@string/VALID_STORAGE"
                     android:textColor="#000000"
-                    android:textSize="16sp" />
+                    android:textSize="@dimen/sp16" />
 
                 <TextView
                     android:id="@+id/tv_device_storage"
@@ -297,7 +297,7 @@
                     android:layout_marginTop="@dimen/y3"
                     android:text="1.5GB可用"
                     android:textColor="#8C8C8C"
-                    android:textSize="13sp" />
+                    android:textSize="@dimen/sp13" />
 
                 <View
                     android:layout_width="match_parent"

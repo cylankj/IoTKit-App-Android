@@ -14,7 +14,7 @@
         <TextView
             android:id="@+id/tv_contactname"
             android:text="小妹"
-            android:textSize="16sp"
+            android:textSize="@dimen/sp16"
             android:textColor="@color/color_33333"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
@@ -23,7 +23,7 @@
             android:id="@+id/tv_contactphone"
             android:layout_marginTop="@dimen/y8"
             android:text="138384393"
-            android:textSize="12sp"
+            android:textSize="@dimen/sp12"
             android:textColor="@color/color_8c8c8c"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
@@ -38,7 +38,7 @@
         android:text="@string/Button_Add"
         android:clickable="true"
         android:background="@drawable/btn_accept_add_request_shape"
-        android:textSize="13sp"
+        android:textSize="@dimen/sp13"
         android:textColor="@color/color_4b9fd5"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />

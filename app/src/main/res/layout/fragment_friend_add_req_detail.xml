@@ -27,7 +27,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/Tap3_Friends_Details"
-            android:textSize="18sp"
+            android:textSize="@dimen/sp18"
             android:textColor="@color/color_white" />
 
     </RelativeLayout>
@@ -55,7 +55,7 @@
                 android:layout_marginTop="@dimen/y8"
                 android:layout_gravity="center_horizontal"
                 android:textColor="@color/color_333333"
-                android:textSize="16sp"
+                android:textSize="@dimen/sp16"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 
@@ -64,7 +64,7 @@
                 android:layout_marginTop="@dimen/y3"
                 android:layout_gravity="center_horizontal"
                 android:textColor="@color/color_777777"
-                android:textSize="14sp"
+                android:textSize="@dimen/sp14"
                 android:text="188888888"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
@@ -80,7 +80,7 @@
                     android:layout_marginLeft="@dimen/x15"
                     android:gravity="center_vertical"
                     android:text="@string/Tap3_FriendsAdd_Content"
-                    android:textSize="15sp"
+                    android:textSize="@dimen/sp15"
                     android:textColor="@color/color_333333"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
@@ -122,7 +122,7 @@
         android:gravity="center"
         android:background="@drawable/share_device_btn_selector"
         android:text="@string/Tap3_Friends_UserInfo_Add"
-        android:textSize="15sp"
+        android:textSize="@dimen/sp15"
         android:clickable="true"
         android:textColor="@color/color_white"
         android:layout_width="@dimen/x268"

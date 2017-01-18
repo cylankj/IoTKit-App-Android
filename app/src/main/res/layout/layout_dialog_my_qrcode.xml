@@ -24,7 +24,7 @@
             android:layout_gravity="center_horizontal"
             android:textColor="@color/color_33333"
             android:text="多多"
-            android:textSize="16sp"
+            android:textSize="@dimen/sp16"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
         

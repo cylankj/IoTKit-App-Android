@@ -6,7 +6,7 @@
     <TextView
         android:id="@+id/chat_item_time"
         android:textColor="#ADADAD"
-        android:textSize="13sp"
+        android:textSize="@dimen/sp13"
         android:layout_centerHorizontal="true"
         android:text="2016/04/01 12:00"
         android:layout_width="wrap_content"
@@ -28,7 +28,7 @@
         android:layout_alignParentRight="true"
         android:background="@drawable/pic_container_blue"
         android:textColor="#fff"
-        android:textSize="14sp"
+        android:textSize="@dimen/sp14"
         android:paddingLeft="@dimen/x12"
         android:paddingBottom="@dimen/y10"
         android:paddingTop="@dimen/y10"

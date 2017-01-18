@@ -16,7 +16,7 @@
             android:padding="@dimen/x24"
             android:text="@string/choose_connect_wifi"
             android:textColor="@color/color_black"
-            android:textSize="16sp" />
+            android:textSize="@dimen/sp16" />
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rv_wifi_list"

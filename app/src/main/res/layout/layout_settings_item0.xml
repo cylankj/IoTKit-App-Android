@@ -28,7 +28,7 @@
             android:gravity="center"
             android:text="@string/EQUIPMENT_INFO"
             android:textColor="@color/color_black"
-            android:textSize="16sp" />
+            android:textSize="@dimen/sp16" />
 
         <TextView
             android:id="@+id/tv_settings_item_sub_title"
@@ -37,7 +37,7 @@
             android:layout_marginTop="@dimen/y3"
             android:gravity="center"
             android:textColor="@color/color_8C8C8C"
-            android:textSize="13sp" />
+            android:textSize="@dimen/sp13" />
     </LinearLayout>
 
     <com.kyleduo.switchbutton.SwitchButton

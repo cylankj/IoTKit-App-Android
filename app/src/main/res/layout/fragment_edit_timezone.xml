@@ -35,7 +35,7 @@
             android:text="@string/TIMEZONE_CHOOSE"
             android:textColor="@color/color_white"
             android:textColorHint="#B9DFED"
-            android:textSize="18sp" />
+            android:textSize="@dimen/sp18" />
 
         <ImageView
             android:id="@+id/iv_timezone_search"

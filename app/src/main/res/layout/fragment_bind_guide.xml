@@ -18,7 +18,7 @@
         android:layout_marginTop="@dimen/y20"
         android:text="系统设置->WiFI列表，\n选择DOG-xxxxxx，密码8个1"
         android:textColor="@color/color_333333"
-        android:textSize="14sp" />
+        android:textSize="@dimen/sp14" />
 
     <TextView
         android:id="@+id/tv_guide_sub_content"
@@ -29,7 +29,7 @@
         android:layout_marginTop="@dimen/y20"
         android:text="回到加菲狗"
         android:textColor="@color/color_333333"
-        android:textSize="14sp" />
+        android:textSize="@dimen/sp14" />
 
 
     <ImageView
@@ -56,5 +56,5 @@
         android:gravity="center"
         android:text="前往设置"
         android:textColor="@color/color_4b9fd5"
-        android:textSize="16sp" />
+        android:textSize="@dimen/sp16" />
 </RelativeLayout>

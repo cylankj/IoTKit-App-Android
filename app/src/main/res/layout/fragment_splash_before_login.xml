@@ -29,7 +29,7 @@
         android:text="@string/LOGIN"
         android:gravity="center"
         android:textColor="@color/color_white"
-        android:textSize="17sp" />
+        android:textSize="@dimen/sp17" />
 
     <TextView
         android:id="@+id/btn_to_register"
@@ -46,7 +46,7 @@
         android:gravity="center"
         android:text="@string/Tap0_register"
         android:textColor="@color/color_4b9fd5"
-        android:textSize="17sp" />
+        android:textSize="@dimen/sp17" />
 
     <TextView
         android:id="@+id/btn_look_around"
@@ -59,5 +59,5 @@
         android:padding="@dimen/x24"
         android:text="@string/Tap0_WelcomeTourist"
         android:textColor="#aaaaaa"
-        android:textSize="13sp" />
+        android:textSize="@dimen/sp13" />
 </RelativeLayout>

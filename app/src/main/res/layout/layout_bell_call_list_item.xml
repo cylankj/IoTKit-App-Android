@@ -21,7 +21,7 @@
             android:layout_gravity="center_horizontal"
             android:text="几天"
             android:textColor="@color/color_65CAE4"
-            android:textSize="15sp" />
+            android:textSize="@dimen/sp15" />
 
         <TextView
             android:id="@+id/tv_bell_list_item_time"
@@ -31,7 +31,7 @@
             android:layout_marginTop="@dimen/y6"
             android:text="06:30 am"
             android:textColor="@color/color_6C7A92"
-            android:textSize="15sp" />
+            android:textSize="@dimen/sp15" />
 
         <View
             android:layout_width="@dimen/x40"
@@ -67,7 +67,7 @@
             android:drawablePadding="@dimen/x10"
             android:text="已通话"
             android:textColor="@color/color_CBCFD0"
-            android:textSize="13sp" />
+            android:textSize="@dimen/sp13" />
     </LinearLayout>
 
     <FrameLayout

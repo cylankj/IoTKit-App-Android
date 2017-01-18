@@ -39,7 +39,7 @@
             android:paddingRight="@dimen/x8"
             android:paddingTop="@dimen/y5"
             android:textColor="@color/color_white"
-            android:textSize="13sp"
+            android:textSize="@dimen/sp13"
             android:visibility="invisible"/>
 
         <ImageView

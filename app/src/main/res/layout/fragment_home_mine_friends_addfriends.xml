@@ -34,7 +34,7 @@
                 android:layout_marginLeft="@dimen/x48"
                 android:text="@string/Tap3_FriendsAdd"
                 android:textColor="@color/color_white"
-                android:textSize="18sp" />
+                android:textSize="@dimen/sp18" />
         </RelativeLayout>
 
         <FrameLayout
@@ -54,7 +54,7 @@
                     android:layout_marginLeft="@dimen/x20"
                     android:layout_marginRight="@dimen/x20"
                     android:hint="@string/SHARE_ACCOUNT"
-                    android:textSize="16sp"
+                    android:textSize="@dimen/sp16"
                     android:inputType="phone"
                     android:background="@null"
                     android:textColorHint="@color/color_cecece"

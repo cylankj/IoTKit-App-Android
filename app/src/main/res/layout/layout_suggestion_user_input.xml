@@ -30,7 +30,7 @@
             android:maxLength="128"
             android:paddingLeft="@dimen/x10"
             android:textColorHint="@color/color_cecece"
-            android:textSize="13sp" />
+            android:textSize="@dimen/sp13" />
 
         <TextView
             android:id="@+id/tv_home_mine_suggestion"
@@ -44,7 +44,7 @@
             android:contextClickable="true"
             android:text="@string/SEND"
             android:textColor="@color/color_4b9fd5"
-            android:textSize="18sp" />
+            android:textSize="@dimen/sp18" />
     </RelativeLayout>
 
 </LinearLayout>

@@ -28,7 +28,7 @@
             android:gravity="center"
             android:text="查看"
             android:textColor="@color/color_788291"
-            android:textSize="14sp" />
+            android:textSize="@dimen/sp14" />
     </FrameLayout>
 
     <FrameLayout
@@ -45,6 +45,6 @@
             android:drawableTop="@drawable/bg_bell_home_offline_icon"
             android:text="@string/OFFLINE_ERR_1"
             android:textColor="@color/color_white"
-            android:textSize="14sp" />
+            android:textSize="@dimen/sp14" />
     </FrameLayout>
 </ViewSwitcher>

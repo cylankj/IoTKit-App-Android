@@ -37,7 +37,7 @@
                 android:layout_marginTop="@dimen/y30"
                 android:text="全景摄像机即将推出"
                 android:textColor="@color/color_5e97df"
-                android:textSize="17sp" />
+                android:textSize="@dimen/sp17" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -47,7 +47,7 @@
                 android:layout_marginTop="@dimen/y3"
                 android:text="结合VR产品，前所未有的视觉体验"
                 android:textColor="@color/color_84bcfb"
-                android:textSize="14sp" />
+                android:textSize="@dimen/sp14" />
         </LinearLayout>
     </android.support.v7.widget.CardView>
 
@@ -79,7 +79,7 @@
                 android:layout_marginTop="@dimen/y30"
                 android:text="记录生活的每日精彩"
                 android:textColor="@color/color_5e97df"
-                android:textSize="17sp" />
+                android:textSize="@dimen/sp17" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -89,7 +89,7 @@
                 android:layout_marginTop="@dimen/y3"
                 android:text="新增每日精彩，制作生活微视频"
                 android:textColor="@color/color_84bcfb"
-                android:textSize="14sp" />
+                android:textSize="@dimen/sp14" />
         </LinearLayout>
     </android.support.v7.widget.CardView>
 
@@ -119,7 +119,7 @@
                 android:layout_marginTop="@dimen/y30"
                 android:text="全新设计"
                 android:textColor="@color/color_5e97df"
-                android:textSize="17sp" />
+                android:textSize="@dimen/sp17" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -129,7 +129,7 @@
                 android:layout_marginTop="@dimen/y3"
                 android:text="更简洁的设计，更好的体验"
                 android:textColor="@color/color_84bcfb"
-                android:textSize="14sp" />
+                android:textSize="@dimen/sp14" />
         </LinearLayout>
     </android.support.v7.widget.CardView>
 </com.cylan.jiafeigou.widget.GreatDragView>

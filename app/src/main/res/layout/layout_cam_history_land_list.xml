@@ -6,4 +6,4 @@
     android:clickable="true"
     android:gravity="center"
     android:textColor="@android:color/white"
-    android:textSize="17sp" />
+    android:textSize="@dimen/sp17" />

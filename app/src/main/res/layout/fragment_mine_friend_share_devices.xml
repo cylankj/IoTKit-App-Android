@@ -31,7 +31,7 @@
                 android:singleLine="true"
                 android:ellipsize="end"
                 android:paddingBottom="@dimen/y12"
-                android:textSize="18sp"
+                android:textSize="@dimen/sp18"
                 android:textColor="@color/color_white" />
 
             <ImageView
@@ -60,7 +60,7 @@
                 android:layout_marginTop="@dimen/y19"
                 android:layout_marginBottom="@dimen/y8"
                 android:text="@string/Tap3_Friends_UserInfo_ShareDevice_Select"
-                android:textSize="14sp"
+                android:textSize="@dimen/sp14"
                 android:visibility="invisible"
                 android:textColor="@color/color_4b9fd5"
                 android:layout_width="wrap_content"
@@ -94,7 +94,7 @@
                 android:layout_marginTop="@dimen/y16"
                 android:text="@string/Tap3_Friends_UserInfo_ShareDevice_Fail"
                 android:textColor="#aaaaaa"
-                android:textSize="15sp" />
+                android:textSize="@dimen/sp15" />
         </LinearLayout>
 
         <View

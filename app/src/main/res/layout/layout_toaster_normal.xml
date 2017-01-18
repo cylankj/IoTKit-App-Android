@@ -9,4 +9,4 @@
     android:paddingBottom="@dimen/y23"
     android:paddingTop="@dimen/y23"
     android:textColor="#fff"
-    android:textSize="14sp" />
+    android:textSize="@dimen/sp14" />

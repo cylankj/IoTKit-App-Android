@@ -38,7 +38,7 @@
             android:gravity="center"
             android:text="Hi~"
             android:textColor="@color/color_666666"
-            android:textSize="13sp"/>
+            android:textSize="@dimen/sp13"/>
 
         <com.cylan.jiafeigou.widget.ShadowFrameLayout
             android:id="@+id/ccccc"
@@ -86,7 +86,7 @@
                     android:paddingRight="@dimen/x10"
                     android:text="@string/DELETE"
                     android:textColor="@color/color_4b9fd5"
-                    android:textSize="11sp"/>
+                    android:textSize="@dimen/sp11"/>
 
                 <View
                     android:layout_width="@dimen/x1"
@@ -104,7 +104,7 @@
                     android:paddingRight="@dimen/x10"
                     android:text="@string/Tap2_Index_DemoVideo"
                     android:textColor="@color/color_909090"
-                    android:textSize="11sp"/>
+                    android:textSize="@dimen/sp11"/>
             </LinearLayout>
 
             <TextView
@@ -120,7 +120,7 @@
                 android:gravity="center"
                 android:text="@string/Tap3_ShareDevice_Button"
                 android:textColor="@color/color_909090"
-                android:textSize="11sp"/>
+                android:textSize="@dimen/sp11"/>
 
         </RelativeLayout>
 

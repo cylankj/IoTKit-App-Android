@@ -23,7 +23,7 @@
         android:paddingLeft="@dimen/x48"
         android:paddingRight="@dimen/x48"
         android:textColor="@color/color_666666"
-        android:textSize="16sp" />
+        android:textSize="@dimen/sp16" />
 
     <View
         android:layout_width="match_parent"

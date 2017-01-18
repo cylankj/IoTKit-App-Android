@@ -16,7 +16,7 @@
             android:layout_margin="@dimen/x24"
             android:text="重复"
             android:textColor="@color/color_black"
-            android:textSize="16sp" />
+            android:textSize="@dimen/sp16" />
 
         <LinearLayout
             android:id="@+id/lLayout_week"
@@ -37,7 +37,7 @@
                 android:gravity="center"
                 android:text="一"
                 android:textColor="@color/week_pick_button_color_state"
-                android:textSize="15sp" />
+                android:textSize="@dimen/sp15" />
 
             <CheckBox
                 android:id="@+id/cb_capture_tue"
@@ -50,7 +50,7 @@
                 android:gravity="center"
                 android:text="二"
                 android:textColor="@color/week_pick_button_color_state"
-                android:textSize="15sp" />
+                android:textSize="@dimen/sp15" />
 
             <CheckBox
                 android:id="@+id/cb_capture_wed"
@@ -63,7 +63,7 @@
                 android:gravity="center"
                 android:text="三"
                 android:textColor="@color/week_pick_button_color_state"
-                android:textSize="15sp" />
+                android:textSize="@dimen/sp15" />
 
             <CheckBox
                 android:id="@+id/cb_capture_thur"
@@ -76,7 +76,7 @@
                 android:gravity="center"
                 android:text="四"
                 android:textColor="@color/week_pick_button_color_state"
-                android:textSize="15sp" />
+                android:textSize="@dimen/sp15" />
 
             <CheckBox
                 android:id="@+id/cb_capture_fri"
@@ -89,7 +89,7 @@
                 android:gravity="center"
                 android:text="五"
                 android:textColor="@color/week_pick_button_color_state"
-                android:textSize="15sp" />
+                android:textSize="@dimen/sp15" />
 
             <CheckBox
                 android:id="@+id/cb_capture_sat"
@@ -102,7 +102,7 @@
                 android:gravity="center"
                 android:text="六"
                 android:textColor="@color/week_pick_button_color_state"
-                android:textSize="15sp" />
+                android:textSize="@dimen/sp15" />
 
             <CheckBox
                 android:id="@+id/cb_capture_sun"
@@ -115,7 +115,7 @@
                 android:gravity="center"
                 android:text="日"
                 android:textColor="@color/week_pick_button_color_state"
-                android:textSize="15sp" />
+                android:textSize="@dimen/sp15" />
         </LinearLayout>
     </LinearLayout>
 </android.support.v7.widget.CardView>

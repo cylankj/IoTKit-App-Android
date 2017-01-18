@@ -12,7 +12,7 @@
         android:gravity="center_vertical"
         android:drawableLeft="@drawable/me_icon_friends_"
         android:text="@string/Tap3_Friends"
-        android:textSize="16sp"
+        android:textSize="@dimen/sp16"
         android:textColor="@color/color_black"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
@@ -24,7 +24,7 @@
         android:gravity="center_vertical"
         android:drawableLeft="@drawable/me_icon_tongxunlu_"
         android:text="@string/contacts_auth"
-        android:textSize="16sp"
+        android:textSize="@dimen/sp16"
         android:textColor="@color/color_black"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />

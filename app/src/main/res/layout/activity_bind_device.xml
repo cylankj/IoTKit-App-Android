@@ -37,7 +37,7 @@
                     android:layout_gravity="center"
                     android:text="@string/DEVICES_TITLE"
                     android:textColor="@color/color_white"
-                    android:textSize="16sp" />
+                    android:textSize="@dimen/sp16" />
             </FrameLayout>
 
             <View
@@ -55,7 +55,7 @@
             hunt:rightDrawable="@drawable/icon_mine_arrow_next"
             hunt:text="扫一扫添加"
             hunt:textColor="@color/color_383838"
-            hunt:textSize="16sp" />
+            hunt:textSize="@dimen/sp16" />
 
         <com.cylan.jiafeigou.widget.HomeMineItemView
             android:id="@+id/v_to_bind_camera"
@@ -67,7 +67,7 @@
             hunt:rightDrawable="@drawable/icon_mine_arrow_next"
             hunt:text="智能摄像头"
             hunt:textColor="@color/color_383838"
-            hunt:textSize="16sp" />
+            hunt:textSize="@dimen/sp16" />
 
         <com.cylan.jiafeigou.widget.HomeMineItemView
             android:id="@+id/v_to_bind_doorbell"
@@ -78,7 +78,7 @@
             hunt:rightDrawable="@drawable/icon_mine_arrow_next"
             hunt:text="智能门铃"
             hunt:textColor="@color/color_383838"
-            hunt:textSize="16sp" />
+            hunt:textSize="@dimen/sp16" />
 
         <com.cylan.jiafeigou.widget.HomeMineItemView
             android:id="@+id/v_to_bind_cloud_album"
@@ -89,7 +89,7 @@
             hunt:rightDrawable="@drawable/icon_mine_arrow_next"
             hunt:text="云相框"
             hunt:textColor="@color/color_383838"
-            hunt:textSize="16sp" />
+            hunt:textSize="@dimen/sp16" />
     </LinearLayout>
 
     <FrameLayout

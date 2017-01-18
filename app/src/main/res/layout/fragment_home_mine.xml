@@ -3,8 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:clickable="true"
-    android:background="@color/color_white">
+    android:background="@color/color_white"
+    android:clickable="true">
 
     <FrameLayout
         android:id="@+id/rLayout_home_mine_top"
@@ -28,15 +28,15 @@
                 android:id="@+id/shadow_layout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/y16"
                 android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/y16"
                 hunt:sl_cornerRadius="@dimen/x56"
                 hunt:sl_dx="0dp"
                 hunt:sl_dy="@dimen/y2"
                 hunt:sl_shadowColor="#88000000"
                 hunt:sl_shadowRadius="@dimen/x2">
 
-            <com.cylan.jiafeigou.widget.roundedimageview.RoundedImageView
+                <com.cylan.jiafeigou.widget.roundedimageview.RoundedImageView
                     android:id="@+id/iv_home_mine_portrait"
                     android:layout_width="@dimen/x76"
                     android:layout_height="@dimen/y76"
@@ -52,11 +52,11 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginTop="@dimen/y13"
-                android:text="@string/Tap3_LogIn"
-                android:maxLength="8"
                 android:ellipsize="end"
+                android:maxLength="8"
+                android:text="@string/Tap3_LogIn"
                 android:textColor="@color/color_white"
-                android:textSize="19sp"
+                android:textSize="@dimen/sp19"
                 tools:ignore="HardcodedText" />
         </LinearLayout>
 
@@ -67,12 +67,12 @@
             android:layout_gravity="end|top"
             android:layout_marginEnd="@dimen/x13"
             android:layout_marginTop="@dimen/y17"
-            android:padding="@dimen/x5"
             android:clickable="true"
+            android:padding="@dimen/x5"
             android:src="@drawable/icon_mine_message"
             hunt:mb_circleColor="@color/color_red_dot_f43531"
             hunt:mb_textColor="@color/color_white"
-            hunt:mb_textSize="10sp" />
+            hunt:mb_textSize="@dimen/sp10" />
 
     </FrameLayout>
 
@@ -91,7 +91,7 @@
             hunt:rightDrawable="@drawable/list_icon_next"
             hunt:text="@string/Tap3_Friends"
             hunt:textColor="@color/color_333333"
-            hunt:textSize="16sp" />
+            hunt:textSize="@dimen/sp16" />
 
         <com.cylan.jiafeigou.widget.HomeMineItemView
             android:id="@+id/home_mine_item_share"
@@ -101,7 +101,7 @@
             hunt:rightDrawable="@drawable/list_icon_next"
             hunt:text="@string/Tap3_ShareDevice"
             hunt:textColor="@color/color_333333"
-            hunt:textSize="16sp" />
+            hunt:textSize="@dimen/sp16" />
 
         <com.cylan.jiafeigou.widget.HomeMineItemView
             android:id="@+id/home_mine_item_help"
@@ -111,7 +111,7 @@
             hunt:rightDrawable="@drawable/list_icon_next"
             hunt:text="@string/Tap3_Feedback"
             hunt:textColor="@color/color_333333"
-            hunt:textSize="16sp" />
+            hunt:textSize="@dimen/sp16" />
 
         <com.cylan.jiafeigou.widget.HomeMineItemView
             android:id="@+id/home_mine_item_settings"
@@ -121,7 +121,7 @@
             hunt:rightDrawable="@drawable/list_icon_next"
             hunt:text="@string/SETTINGS"
             hunt:textColor="@color/color_333333"
-            hunt:textSize="16sp" />
+            hunt:textSize="@dimen/sp16" />
     </LinearLayout>
 
 </RelativeLayout>

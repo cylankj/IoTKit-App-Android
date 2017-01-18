@@ -27,7 +27,7 @@
             android:layout_marginTop="@dimen/y20"
             android:textColor="@color/color_white"
             android:format="%s"
-            android:textSize="18sp"
+            android:textSize="@dimen/sp18"
             android:text="02:22"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
@@ -36,7 +36,7 @@
                 android:layout_centerInParent="true"
                 android:id="@+id/tv_connet_text"
                 android:textColor="@color/color_white"
-                android:textSize="18sp"
+                android:textSize="@dimen/sp18"
                 android:text="@string/DOOR_ANSWERING"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
@@ -46,7 +46,7 @@
                 android:layout_centerVertical="true"
                 android:id="@+id/tv_loading"
                 android:textColor="@color/color_white"
-                android:textSize="18sp"
+                android:textSize="@dimen/sp18"
                 android:text="..."
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />

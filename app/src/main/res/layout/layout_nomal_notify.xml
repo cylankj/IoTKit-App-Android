@@ -23,7 +23,7 @@
             android:layout_height="wrap_content"
             android:text="@string/app_name"
             android:textAppearance="@style/status_bar_text_title"
-            android:textSize="16sp" />
+            android:textSize="@dimen/sp16" />
 
         <TextView
             android:id="@+id/tv_notify_sub_content"
@@ -32,7 +32,7 @@
             android:text="@string/Slogan"
             android:textAppearance="@style/status_bar_text_content"
             android:textColor="@color/color_818181"
-            android:textSize="14sp" />
+            android:textSize="@dimen/sp14" />
     </LinearLayout>
 
     <LinearLayout
@@ -46,7 +46,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="end"
             android:textAppearance="@style/status_bar_text_time"
-            android:textSize="13sp" />
+            android:textSize="@dimen/sp13" />
 
     </LinearLayout>
 </LinearLayout>

@@ -24,7 +24,7 @@
         <TextView
             android:id="@+id/tv_show_mesg"
             android:layout_centerInParent="true"
-            android:textSize="15sp"
+            android:textSize="@dimen/sp15"
             android:textColor="#f26b6b"
             android:text="松手，取消发送"
             android:layout_width="wrap_content"

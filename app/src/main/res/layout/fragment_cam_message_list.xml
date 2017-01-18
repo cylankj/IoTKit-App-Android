@@ -72,7 +72,7 @@
             android:layout_marginTop="@dimen/y16"
             android:text="@string/NO_CONTENTS_1"
             android:textColor="#aaaaaa"
-            android:textSize="15sp" />
+            android:textSize="@dimen/sp15" />
     </LinearLayout>
 
     <RelativeLayout
@@ -90,7 +90,7 @@
             android:background="@drawable/time_line_pop"
             android:gravity="center"
             android:textColor="@android:color/white"
-            android:textSize="11sp" />
+            android:textSize="@dimen/sp11" />
 
 
         <RelativeLayout

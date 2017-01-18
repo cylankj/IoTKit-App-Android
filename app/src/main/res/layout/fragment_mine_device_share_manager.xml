@@ -28,7 +28,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/EQUIPMENT_NAME"
-            android:textSize="18sp"
+            android:textSize="@dimen/sp18"
             android:textColor="@color/color_white" />
 
     </RelativeLayout>
@@ -48,7 +48,7 @@
                 android:layout_marginTop="@dimen/y19"
                 android:layout_marginLeft="@dimen/x15"
                 android:text="@string/Tap3_ShareDevice_Shared"
-                android:textSize="13sp"
+                android:textSize="@dimen/sp13"
                 android:textColor="@color/color_4b9fd5"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
@@ -80,7 +80,7 @@
             <TextView
                 android:layout_marginTop="@dimen/y16"
                 android:textColor="#aaaaaa"
-                android:textSize="15sp"
+                android:textSize="@dimen/sp15"
                 android:text="@string/Tap3_ShareDevice_NoShare"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />

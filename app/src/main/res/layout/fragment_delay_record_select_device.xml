@@ -29,7 +29,7 @@
                 android:fontFamily="SourceHanSansCN"
                 android:text="@string/Tap2_Timelapse_title"
                 android:textColor="#FFFFFF"
-                android:textSize="18sp"/>
+                android:textSize="@dimen/sp18"/>
         </RelativeLayout>
     </FrameLayout>
 
@@ -64,7 +64,7 @@
                 android:layout_marginTop="@dimen/y20"
                 android:text="暂无设备"
                 android:textColor="@color/color_33333"
-                android:textSize="16sp"/>
+                android:textSize="@dimen/sp16"/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -73,7 +73,7 @@
                 android:layout_marginTop="@dimen/y13"
                 android:text="仅支持3G摄像头"
                 android:textColor="@color/color_888888"
-                android:textSize="14sp"/>
+                android:textSize="@dimen/sp14"/>
         </LinearLayout>
 
     </FrameLayout>
