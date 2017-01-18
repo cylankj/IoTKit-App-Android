@@ -19,7 +19,7 @@ public interface MineFriendScanAddContract {
 
         void onStartScan();
 
-        void showQrCode(Bitmap bitmap);
+        void showQrCode(String account);
 
         /**
          * 跳转到添加人详情页
@@ -53,10 +53,6 @@ public interface MineFriendScanAddContract {
     }
 
     interface Presenter extends BasePresenter {
-
-        Bitmap encodeAsBitmap(String contents, int dimension);      //生成二维码
-
-        int getDimension();
 
         /**
          * 检测扫描结果

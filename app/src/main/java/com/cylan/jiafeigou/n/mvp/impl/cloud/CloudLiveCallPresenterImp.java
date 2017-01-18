@@ -50,6 +50,7 @@ public class CloudLiveCallPresenterImp extends AbstractPresenter<CloudLiveCallCo
     private CompositeSubscription subscription;
     private DbManager base_db;
     private String userIcon;
+    private Subscription delaySub;
 
     public CloudLiveCallPresenterImp(CloudLiveCallContract.View view, String uuid) {
         super(view);
@@ -76,6 +77,10 @@ public class CloudLiveCallPresenterImp extends AbstractPresenter<CloudLiveCallCo
         super.stop();
         if (subscription != null && !subscription.isUnsubscribed()) {
             subscription.unsubscribe();
+        }
+
+        if (delaySub != null && !delaySub.isUnsubscribed()){
+            delaySub.unsubscribe();
         }
     }
 
@@ -219,7 +224,7 @@ public class CloudLiveCallPresenterImp extends AbstractPresenter<CloudLiveCallCo
      */
     @Override
     public void countTime() {
-        rx.Observable.just(null)
+        delaySub = Observable.just(null)
                 .subscribeOn(Schedulers.newThread())
                 .delay(30000, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())

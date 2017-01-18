@@ -1,11 +1,13 @@
 package com.cylan.jiafeigou.n.mvp.model;
 
+import java.io.Serializable;
+
 /**
  * 作者：zsl
  * 创建时间：2016/10/8
  * 描述：
  */
-public class CloudLiveBaseBean {
+public class CloudLiveBaseBean implements Serializable{
 
     public void setType(int type) {
         this.type = type;
