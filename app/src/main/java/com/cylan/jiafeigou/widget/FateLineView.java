@@ -125,6 +125,13 @@ public class FateLineView extends View {
         } else {
             result = isWidth ? (int) (innerCircleRadius * 2) : getSuggestedMinimumHeight();
             result += padding + 0.5;
+//            if (isWidth) {
+//                int minw = getSuggestedMinimumWidth();
+//                return Math.max(minw, MeasureSpec.getSize(measureSpec));
+//            } else {
+//                int minh = this.getSuggestedMinimumHeight();
+//                return Math.max(minh, MeasureSpec.getSize(measureSpec));
+//            }
         }
         return result;
     }

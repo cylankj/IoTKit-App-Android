@@ -3,7 +3,6 @@ package com.cylan.jiafeigou.n.mvp.impl.home;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.util.Log;
 
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.entity.jniCall.JFGDevice;
@@ -45,6 +44,7 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
     public HomePageListPresenterImpl(HomePageListContract.View view) {
         super(view);
         view.setPresenter(this);
+        registerWorker();
     }
 
     @Override
@@ -106,7 +106,7 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
                     //18:00 pm-5:59 am
                     if (getView() != null) {
                         getView().onTimeTick(JFGRules.getTimeRule());
-
+                        AppLogger.i("time tick");
                     }
                 });
 
@@ -194,7 +194,7 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
                     if (aBoolean) {
                         JfgCmdInsurance.getCmd().getShareList(getView().getUuidList());
                     }
-                    AppLogger.i("fetchDeviceList: "+aBoolean);
+                    AppLogger.i("fetchDeviceList: " + aBoolean);
                     return null;
                 })
                 .delay(2000, TimeUnit.MILLISECONDS)

@@ -22,8 +22,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.DecodeFormat;
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.jiafeigou.R;
@@ -95,8 +93,10 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
 //    CollapsingToolbarLayout collapsingToolbar;
     @BindView(R.id.fLayout_empty_view_container)
     FrameLayout fLayoutEmptyViewContainer;
-    @BindView(R.id.img_home_page_header_bg)
-    ImageView imgHomePageHeaderBg;
+    //    @BindView(R.id.img_home_page_header_bg)
+//    ImageView imgHomePageHeaderBg;
+    @BindView(R.id.fLayout_header_bg)
+    FrameLayout fLayoutHeaderBg;
     private HomePageListAdapter homePageListAdapter;
 
     private EmptyViewState emptyViewState;
@@ -325,25 +325,28 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
     @Override
     public void onTimeTick(final int dayTime) {
         //需要优化
-        int drawableId = dayTime == JFGRules.RULE_DAY_TIME
-                ? R.drawable.bg_home_title_daytime : R.drawable.bg_home_title_night;
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-//            imgHomePageHeaderBg.setBackground(getResources().getDrawable(drawableId, null));
-//        } else {
-//            imgHomePageHeaderBg.setBackground(getResources().getDrawable(drawableId));
-//        }
-        Glide.with(this)
-                .load(drawableId)
-                .asBitmap()
-                .format(DecodeFormat.PREFER_ARGB_8888)
-                .into(imgHomePageHeaderBg);
+        boolean day = dayTime == JFGRules.RULE_DAY_TIME;
+        int count = fLayoutHeaderBg.getChildCount();
+        if (count == 1) {
+            if (day && fLayoutHeaderBg.getChildAt(0).getId() == R.id.rLayout_home_header_night_bg) {
+                fLayoutHeaderBg.removeViewAt(0);
+                View v = LayoutInflater.from(getContext()).inflate(R.layout.layout_home_head_day, null, false);
+                fLayoutHeaderBg.addView(v);
+            }
+            if (!day && fLayoutHeaderBg.getChildAt(0).getId() == R.id.rLayout_home_header_day_bg) {
+                fLayoutHeaderBg.removeViewAt(0);
+                View v = LayoutInflater.from(getContext()).inflate(R.layout.layout_home_head_night, null, false);
+                fLayoutHeaderBg.addView(v);
+            }
+        }
+        AppLogger.i("time tick: " + day + " " + (count == 1));
     }
 
     @Override
     public void onLoginState(boolean state) {
         if (!state) {
             onRefreshFinish();
-            Toast.makeText(getContext(), "还没登陆", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(getContext(), "还没登陆", Toast.LENGTH_SHORT).show();
         } else {
             //setDevice online view
         }
