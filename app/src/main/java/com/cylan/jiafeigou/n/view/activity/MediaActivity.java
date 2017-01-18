@@ -414,7 +414,7 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
         mVideoFullScreen.setLayoutParams(params);
 
         mVideoFullScreen.setImageResource(R.drawable.landscape_icon_screen);
-        mHeaderBack.setImageResource(R.drawable.icon_arrow_back);
+        mHeaderBack.setImageResource(R.drawable.icon_nav_back_white);
         mVideoMore.setVisibility(View.GONE);
         mMediaPager.setLocked(true);
         updatePlayState();

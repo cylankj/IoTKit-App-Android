@@ -31,15 +31,15 @@
             android:id="@+id/v_indicator"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/y48"
-            android:layout_toRightOf="@+id/imgV_nav_back"
+            android:layout_toEndOf="@+id/imgV_nav_back"
             app:pstsTabPaddingLeftRight="14dip" />
 
         <ImageView
             android:id="@+id/imgV_camera_title_top_setting"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:padding="@dimen/x14"
+            android:layout_alignParentEnd="true"
+            android:padding="@dimen/y14"
             android:src="@drawable/icon_setting" />
     </RelativeLayout>
 

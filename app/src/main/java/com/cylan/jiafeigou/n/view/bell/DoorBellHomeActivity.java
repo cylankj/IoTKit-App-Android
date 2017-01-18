@@ -323,7 +323,7 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
         Glide.with(this)
                 .load(new JFGGlideURL(JfgEnum.JFG_URL.WARNING, item.type, item.timeInLong / 1000 + ".jpg", mUUID))
                 .asBitmap()
-                .placeholder(R.drawable.icon_bell_call_place_holder)
+                .placeholder(R.drawable.pic_head_normal240px)
                 .centerCrop()
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(new BitmapImageViewTarget(imageView) {
