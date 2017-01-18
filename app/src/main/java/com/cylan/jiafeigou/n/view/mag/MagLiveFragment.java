@@ -8,6 +8,7 @@ import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
@@ -43,6 +44,8 @@ public class MagLiveFragment extends Fragment implements HomeMagLiveContract.Vie
     SwitchButton btnSwitch;
     @BindView(R.id.tv_clear_mag_open_record)
     TextView tvClearMagOpenRecord;
+    @BindView(R.id.iv_msglive_back)
+    ImageView ivMsgliveBack;
 
     private WeakReference<MagLiveInformationFragment> informationWeakReference;
     private HomeMagLiveContract.Presenter presenter;
