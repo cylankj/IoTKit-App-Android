@@ -21,7 +21,7 @@
                 android:id="@+id/imgV_top_bar_center"
                 android:layout_width="wrap_content"
                 android:layout_height="48dp"
-                android:drawableLeft="@drawable/icon_nav_back_white"
+                android:drawableLeft="@drawable/nav_tab_back_selector"
                 android:drawablePadding="15dp"
                 android:padding="15dp"
                 android:text="@string/EQUIPMENT_INFO"
