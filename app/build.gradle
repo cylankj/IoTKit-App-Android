@@ -171,7 +171,7 @@ android {
                 shrinkResources true
                 minifyEnabled true
                 zipAlignEnabled true
-                proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+//                proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
                 signingConfig signingConfigs.release
                 applicationVariants.all { variant ->
                     //调整包名
@@ -202,11 +202,11 @@ android {
 
 
     productFlavors {
-        _test {
-            applicationIdSuffix ".test"
-            manifestPlaceholders = [NICELY_VALUE       : "test.jfgou.com:443",
-                                    MAT_VALUE          : getMtaAppKey("test"),
-                                    AUTHORITY          : ".test",
+        _test1 {
+            applicationIdSuffix ".test1"
+            manifestPlaceholders = [NICELY_VALUE       : "test1.jfgou.com:443",
+                                    MAT_VALUE          : getMtaAppKey("test1"),
+                                    AUTHORITY          : ".test1",
                                     QQ_APP_KEY         : "xxx",
                                     weChat_APP_ID      : "xxx",
                                     VKEY               : "kjSle3yL8XPYlobnG4GstpeI8rwNKGj9",

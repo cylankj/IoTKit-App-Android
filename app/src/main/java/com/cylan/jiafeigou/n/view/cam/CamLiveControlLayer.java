@@ -153,4 +153,16 @@ public class CamLiveControlLayer extends FrameLayout {
     public void setTopBarAction(CamLiveLandTopBar.TopBarAction topBarAction) {
         fLayoutCamLiveLandTopBar.setTopBarAction(topBarAction);
     }
+
+    public void showHistoryWheel(boolean port) {
+        if (port) {
+//            lLayoutCamHistoryWheel.set
+            liveTimeLayout.setVisibility(GONE);
+            imgVCamLiveLandPlay.setVisibility(GONE);
+            lLayoutProtection.setVisibility(GONE);
+            fLayoutCamLiveLandBottomBar.setVisibility(VISIBLE);
+            fLayoutCamLiveLandBottomBar.setTop(0);
+            fLayoutCamLiveLandBottomBar.setTranslationY(0);
+        }
+    }
 }

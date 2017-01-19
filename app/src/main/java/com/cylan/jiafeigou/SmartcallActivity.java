@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
@@ -28,6 +29,10 @@ import com.cylan.jiafeigou.n.view.splash.GuideFragment;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.IMEUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -45,8 +50,11 @@ import permissions.dispatcher.RuntimePermissions;
 public class SmartcallActivity extends NeedLoginActivity
         implements SplashContract.View {
 
+    private static final String COPY_RIGHT = "Copyright @ 2005-%s Cylan.All Rights Reserved";
     @BindView(R.id.fLayout_splash)
     FrameLayout fLayoutSplash;
+    @BindView(R.id.tv_copy_right)
+    TextView tvCopyRight;
     @Nullable
     private SplashContract.Presenter presenter;
 
@@ -83,9 +91,12 @@ public class SmartcallActivity extends NeedLoginActivity
         SmartcallActivityPermissionsDispatcher.showWriteStoragePermissionsWithCheck(this);
     }
 
+    private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy", Locale.getDefault());
+
     @Override
     protected void onResume() {
         super.onResume();
+        tvCopyRight.setText(String.format(COPY_RIGHT, simpleDateFormat.format(new Date(System.currentTimeMillis()))));
     }
 
     @Override
@@ -193,7 +204,7 @@ public class SmartcallActivity extends NeedLoginActivity
     public void onWriteStoragePermissionsDenied() {
         // NOTE: Perform action that requires the permission.
         // If this is run by PermissionsDispatcher, the permission will have been granted
-        Toast.makeText(this, "请你开启SD卡读写权限,应用才能正常工作", Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this, "请你开启SD卡读写权限,应用才能正常工作", Toast.LENGTH_SHORT).show();
         if (presenter != null) presenter.finishAppDelay();
         AppLogger.d(JConstant.LOG_TAG.PERMISSION + "onWriteSdCardDenied");
     }

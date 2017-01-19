@@ -19,12 +19,12 @@
             android:src="@mipmap/ic_launcher" />
 
         <TextView
+            android:id="@+id/tv_copy_right"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|center_horizontal"
             android:layout_marginBottom="@dimen/y20"
             android:gravity="center"
-            android:text="Copyright @ 2005-2016 Cylan.All Rights Reserved"
             android:textSize="@dimen/sp9" />
     </FrameLayout>
 </merge>

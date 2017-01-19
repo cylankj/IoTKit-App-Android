@@ -19,6 +19,7 @@ import android.view.ViewStub;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -63,8 +64,8 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
         implements CamLandLiveAction, CamLiveContract.View, View.OnClickListener {
 
 
-    @BindView(R.id.fLayout_live_view_container)
-    FrameLayout fLayoutLiveViewContainer;
+    //    @BindView(R.id.fLayout_live_view_container)
+//    FrameLayout fLayoutLiveViewContainer;
     @BindView(R.id.vs_progress)
     ViewStub vs_control;//中间loading那个view
     @BindView(R.id.imgV_cam_switch_speaker)
@@ -223,7 +224,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
         camLiveController.setLoadingState(ILiveControl.STATE_IDLE, null);
         showFloatFlowView(false, null);
         //进入待机模式
-        View v = fLayoutLiveViewContainer.findViewById("showSceneView".hashCode());
+        View v = fLayoutCamLiveView.findViewById("showSceneView".hashCode());
         if (v == null && !flag) {
             return;
         }
@@ -234,7 +235,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
                 v.setId("showSceneView".hashCode());
                 viewStandbyRef = new WeakReference<>(v);
                 Log.d("showSceneView", "showSceneView: " + (System.currentTimeMillis() - time));
-                fLayoutLiveViewContainer.addView(v);
+                fLayoutCamLiveView.addView(v, 0);//最底
             } else v = viewStandbyRef.get();
         }
         v.setVisibility(flag ? View.VISIBLE : View.GONE);
@@ -268,12 +269,10 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
             // 加入横屏要处理的代码
             fLayoutLiveBottomHandleBar.setVisibility(View.GONE);
             fLayoutCamLiveMenu.setVisibility(View.GONE);
-//            ViewUtils.updateViewMatchScreenHeight(fLayoutCamLiveView);
         } else if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
             // 加入竖屏要处理的代码
             fLayoutCamLiveMenu.setVisibility(View.VISIBLE);
             fLayoutLiveBottomHandleBar.setVisibility(View.VISIBLE);
-//            ViewUtils.updateViewHeight(fLayoutCamLiveView, 0.75f);
         }
         camLiveController.notifyOrientationChange(this.getResources().getConfiguration().orientation);
         AppLogger.i("onConfigurationChanged");
@@ -284,7 +283,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
      * 初始化流量
      */
     private void showFloatFlowView(boolean show, String content) {
-        View v = fLayoutLiveViewContainer.findViewById("flow".hashCode());
+        View v = fLayoutCamLiveView.findViewById("flow".hashCode());
         if (!show && v == null)
             return;
         if (!show && v.isShown()) {
@@ -305,7 +304,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
                         Gravity.END);
                 textView.setGravity(Gravity.CENTER);
                 lp.setMargins(10, DensityUtils.px2dip(14), DensityUtils.px2dip(14), 10);
-                fLayoutLiveViewContainer.addView(textView, lp);
+                fLayoutCamLiveView.addView(textView, lp);
                 tvFlowRef = new WeakReference<>(textView);
             }
             v = tvFlowRef.get();
@@ -354,27 +353,27 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
      * @param resolution
      */
     private void updateVideoViewLayoutParameters(JFGMsgVideoResolution resolution) {
-        if (resolution != null) fLayoutLiveViewContainer.setTag(resolution);
+        if (resolution != null) fLayoutCamLiveView.setTag(resolution);
         if (resolution == null) {
-            Object o = fLayoutLiveViewContainer.getTag();
+            Object o = fLayoutCamLiveView.getTag();
             if (o != null && o instanceof JFGMsgVideoResolution) {
                 resolution = (JFGMsgVideoResolution) o;
             } else return;//要是resolution为空,就没必要设置了.
         }
         int height = getResources().getConfiguration().orientation == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
                 ? ViewGroup.LayoutParams.MATCH_PARENT : (int) (Resources.getSystem().getDisplayMetrics().widthPixels * resolution.height / (float) resolution.width);
-        FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(
+        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, height);
-        fLayoutLiveViewContainer.setLayoutParams(lp);
-        View view = fLayoutLiveViewContainer.findViewById("IVideoView".hashCode());
+        fLayoutCamLiveView.setLayoutParams(lp);
+        View view = fLayoutCamLiveView.findViewById("IVideoView".hashCode());
         if (view == null) {
-            fLayoutLiveViewContainer.addView((View) videoView, 0, lp);
+            fLayoutCamLiveView.addView((View) videoView, 0, lp);
         } else {
-            view.setLayoutParams(lp);
+            FrameLayout.LayoutParams fLP = (FrameLayout.LayoutParams) view.getLayoutParams();
+            fLP.width = ViewGroup.LayoutParams.MATCH_PARENT;
+            fLP.height = height;
+            view.setLayoutParams(fLP);
         }
-        ViewGroup.LayoutParams camContainerLp = fLayoutCamLiveView.getLayoutParams();
-        camContainerLp.height = ViewGroup.LayoutParams.WRAP_CONTENT;
-        fLayoutCamLiveView.setLayoutParams(camContainerLp);
         AppLogger.i("updateVideoViewLayoutParameters:" + (view == null));
     }
 

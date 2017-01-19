@@ -72,9 +72,10 @@ public class SplashPresenterImpl extends AbstractPresenter<SplashContract.View>
 
     @Override
     public void start() {
+        super.start();
         splashSubscription = Observable.just(null)
                 .subscribeOn(Schedulers.newThread())
-                .delay(1000, TimeUnit.MILLISECONDS)
+                .delay(2000, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<Object>() {
                     @Override
@@ -86,6 +87,7 @@ public class SplashPresenterImpl extends AbstractPresenter<SplashContract.View>
 
     @Override
     public void stop() {
+        super.stop();
         unSubscribe(splashSubscription);
     }
 }

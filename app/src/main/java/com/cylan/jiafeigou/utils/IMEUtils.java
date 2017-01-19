@@ -85,8 +85,6 @@ public class IMEUtils {
             try {
                 Object lock = mHField.get(inputMethodManager);
                 // This is highly dependent on the InputMethodManager implementation.
-                if (lock == null)
-                    return;
                 synchronized (lock) {
                     View servedView = (View) mServedViewField.get(inputMethodManager);
                     if (servedView != null) {
@@ -94,7 +92,7 @@ public class IMEUtils {
                         boolean servedViewAttached = servedView.getWindowVisibility() != View.GONE;
 
                         if (servedViewAttached) {
-                            // The view held by the IMM was replaced without activity_cloud_live_mesg_call_out_item global focus change. Let's make
+                            // The view held by the IMM was replaced without a global focus change. Let's make
                             // sure we get notified when that view detaches.
 
                             // Avoid double registration.
@@ -118,10 +116,8 @@ public class IMEUtils {
                         }
                     }
                 }
-            } catch (IllegalAccessException unexpected) {
+            } catch (IllegalAccessException | InvocationTargetException unexpected) {
                 Log.e("IMMLeaks", "Unexpected reflection exception", unexpected);
-            } catch (InvocationTargetException e) {
-
             }
         }
 
@@ -147,18 +143,18 @@ public class IMEUtils {
 
     /**
      * Fix for https://code.google.com/p/android/issues/detail?id=171190 .
-     * <p/>
-     * When activity_cloud_live_mesg_call_out_item view that has focus gets detached, we wait for the main thread to be idle and then
-     * check if the InputMethodManager is leaking activity_cloud_live_mesg_call_out_item view. If yes, we tell it that the decor view got
+     * <p>
+     * When a view that has focus gets detached, we wait for the main thread to be idle and then
+     * check if the InputMethodManager is leaking a view. If yes, we tell it that the decor view got
      * focus, which is what happens if you press home and come back from recent apps. This replaces
-     * the reference to the detached view with activity_cloud_live_mesg_call_out_item reference to the decor view.
-     * <p/>
+     * the reference to the detached view with a reference to the decor view.
+     * <p>
      * Should be called from {@link Activity#onCreate(android.os.Bundle)} )}.
      */
     public static void fixFocusedViewLeak(Application application) {
 
         // Don't know about other versions yet.
-        if (SDK_INT < KITKAT || SDK_INT > 22) {
+        if (SDK_INT < KITKAT || SDK_INT > 23) {
             return;
         }
 
@@ -172,29 +168,28 @@ public class IMEUtils {
         try {
             mServedViewField = InputMethodManager.class.getDeclaredField("mServedView");
             mServedViewField.setAccessible(true);
-            mHField = InputMethodManager.class.getDeclaredField("mH");
+            mHField = InputMethodManager.class.getDeclaredField("mServedView");
             mHField.setAccessible(true);
             finishInputLockedMethod = InputMethodManager.class.getDeclaredMethod("finishInputLocked");
             finishInputLockedMethod.setAccessible(true);
             focusInMethod = InputMethodManager.class.getDeclaredMethod("focusIn", View.class);
             focusInMethod.setAccessible(true);
-            application.registerActivityLifecycleCallbacks(new LifecycleCallbacksAdapter() {
-                @Override
-                public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
-                    ReferenceCleaner cleaner =
-                            new ReferenceCleaner(inputMethodManager, mHField, mServedViewField,
-                                    finishInputLockedMethod);
-                    View rootView = activity.getWindow().getDecorView().getRootView();
-                    ViewTreeObserver viewTreeObserver = rootView.getViewTreeObserver();
-                    viewTreeObserver.addOnGlobalFocusChangeListener(cleaner);
-                }
-            });
-        } catch (NoSuchMethodException unexpected) {
+        } catch (NoSuchMethodException | NoSuchFieldException unexpected) {
             Log.e("IMMLeaks", "Unexpected reflection exception", unexpected);
             return;
-        } catch (NoSuchFieldException ex) {
-
         }
+
+        application.registerActivityLifecycleCallbacks(new LifecycleCallbacksAdapter() {
+            @Override
+            public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
+                ReferenceCleaner cleaner =
+                        new ReferenceCleaner(inputMethodManager, mHField, mServedViewField,
+                                finishInputLockedMethod);
+                View rootView = activity.getWindow().getDecorView().getRootView();
+                ViewTreeObserver viewTreeObserver = rootView.getViewTreeObserver();
+                viewTreeObserver.addOnGlobalFocusChangeListener(cleaner);
+            }
+        });
     }
 
     private static class LifecycleCallbacksAdapter implements Application.ActivityLifecycleCallbacks {

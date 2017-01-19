@@ -1,9 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    /opt/Javab/jdk1.8/bin/java -Didea.launcher.port=7536
-    -Didea.launcher.bin.path=/home/cylan-hunt/Editors/idea-IC/bin -Dfile.encoding=UTF-8 -classpath
-    /opt/Javab/jdk1.8/jre/lib/charsets.jar:/opt/Javab/jdk1.8/jre/lib/deploy.jar:/opt/Javab/jdk1.8/jre/lib/ext/cldrdata.jar:/opt/Javab/jdk1.8/jre/lib/ext/dnsns.jar:/opt/Javab/jdk1.8/jre/lib/ext/jfxrt.jar:/opt/Javab/jdk1.8/jre/lib/ext/localedata.jar:/opt/Javab/jdk1.8/jre/lib/ext/nashorn.jar:/opt/Javab/jdk1.8/jre/lib/ext/sunec.jar:/opt/Javab/jdk1.8/jre/lib/ext/sunjce_provider.jar:/opt/Javab/jdk1.8/jre/lib/ext/sunpkcs11.jar:/opt/Javab/jdk1.8/jre/lib/ext/zipfs.jar:/opt/Javab/jdk1.8/jre/lib/javaws.jar:/opt/Javab/jdk1.8/jre/lib/jce.jar:/opt/Javab/jdk1.8/jre/lib/jfr.jar:/opt/Javab/jdk1.8/jre/lib/jfxswt.jar:/opt/Javab/jdk1.8/jre/lib/jsse.jar:/opt/Javab/jdk1.8/jre/lib/management-agent.jar:/opt/Javab/jdk1.8/jre/lib/plugin.jar:/opt/Javab/jdk1.8/jre/lib/resources.jar:/opt/Javab/jdk1.8/jre/lib/rt.jar:/home/cylan-hunt/IdeaProjects/Datapoint/out/production/Datapoint:/home/cylan-hunt/Editors/idea-IC/lib/idea_rt.jar
-    com.intellij.rt.execution.application.AppMain MakeXml
     <dimen name="sp0">0sp</dimen>
     <dimen name="sp1">1sp</dimen>
     <dimen name="sp2">2sp</dimen>

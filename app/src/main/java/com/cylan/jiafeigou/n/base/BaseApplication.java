@@ -23,6 +23,7 @@ import com.cylan.jiafeigou.support.block.impl.BlockCanaryContext;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.stat.BugMonitor;
 import com.cylan.jiafeigou.utils.ContextUtils;
+import com.cylan.jiafeigou.utils.IMEUtils;
 import com.cylan.jiafeigou.utils.PathGetter;
 import com.cylan.jiafeigou.utils.SuperSpUtils;
 import com.cylan.utils.HandlerThreadUtils;

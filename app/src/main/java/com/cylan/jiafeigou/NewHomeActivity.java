@@ -49,6 +49,7 @@ public class NewHomeActivity extends NeedLoginActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        IMEUtils.fixFocusedViewLeak(getApplication());
         setContentView(R.layout.activity_new_home);
         ButterKnife.bind(this);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -73,7 +74,6 @@ public class NewHomeActivity extends NeedLoginActivity implements
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        IMEUtils.fixFocusedViewLeak(getApplication());
     }
 
     protected int[] getOverridePendingTransition() {

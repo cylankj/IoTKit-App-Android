@@ -1,4 +1,4 @@
-<?yml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="y0">0.0dp</dimen>
     <dimen name="y1">1.6666666dp</dimen>

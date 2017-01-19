@@ -10,10 +10,10 @@
         android:layout_height="@dimen/y100"
         android:background="@drawable/default_cam_preview">
 
-        <FrameLayout
-            android:id="@+id/fLayout_live_view_container"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+        <!--<FrameLayout-->
+            <!--android:id="@+id/fLayout_live_view_container"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent" />-->
 
         <ViewStub
             android:id="@+id/vs_progress"

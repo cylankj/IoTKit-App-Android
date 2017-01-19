@@ -227,9 +227,10 @@ public class CamLiveController implements
             iSafeStateSetterLand.setFlipped(!safe);
         }//显示或者隐藏
         if (liveTimeSetterLand != null) liveTimeSetterLand.setVisibility(land);
-        if (iSafeStateSetterLand != null) iSafeStateSetterLand.setVisibility(land);
-        if (liveTimeSetterPort != null && presenterRef.get().getPlayState() == PLAY_STATE_PLAYING)
+        if (liveTimeSetterPort != null && presenterRef.get().getPlayState() == PLAY_STATE_PLAYING) {
             liveTimeSetterPort.setVisibility(!land);
+        }
+        if (iSafeStateSetterLand != null) iSafeStateSetterLand.setVisibility(land);
         if (iSafeStateSetterPort != null) iSafeStateSetterPort.setVisibility(!land);
         if (!land) camLiveControlLayer.getLandDateContainer().setVisibility(View.GONE);
         AppLogger.i("orientation: " + orientation);
@@ -267,8 +268,10 @@ public class CamLiveController implements
                 slideLandDatePickView();
             } else {
                 //某些限制条件,不需要显示
+                int loadingVisibility = ((View) iLiveActionViewRef.get()).getVisibility();
                 if (presenterRef.get().needShowHistoryWheelView()) {
-                    camLiveControlLayer.setVisibility(!camLiveControlLayer.isShown() ? View.VISIBLE : View.INVISIBLE);
+                    camLiveControlLayer.setVisibility(loadingVisibility != View.VISIBLE ? View.VISIBLE : View.INVISIBLE);
+                    camLiveControlLayer.showHistoryWheel(true);
                 }
                 int playState = presenterRef.get().getPlayState();
                 if (playState == PLAY_STATE_PLAYING)

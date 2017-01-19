@@ -53,7 +53,7 @@
 
             <TextView
                 android:id="@+id/tv_ignore_call"
-                android:drawableTop="@drawable/btn_hulue"
+                android:drawableTop="@drawable/btn_dismiss"
                 android:textColor="#5a6a7d"
                 android:textSize="@dimen/sp14"
                 android:text="@string/EFAMILY_IGNORE"
