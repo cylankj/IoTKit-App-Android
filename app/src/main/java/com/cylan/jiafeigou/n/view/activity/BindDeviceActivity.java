@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
@@ -29,7 +30,7 @@ public class BindDeviceActivity extends BaseFullScreenFragmentActivity implement
     @BindView(R.id.imgV_top_bar_center)
     TextView tvTopBarCenter;
     @BindView(R.id.fLayout_top_bar_container)
-    FrameLayout fLayoutTopBarContainer;
+    RelativeLayout fLayoutTopBarContainer;
     private WeakReference<SimpleDialogFragment> simpleDialogFragmentWeakReference;
 
     @Override

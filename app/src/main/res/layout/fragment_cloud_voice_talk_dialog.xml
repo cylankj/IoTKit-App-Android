@@ -14,7 +14,7 @@
             android:paddingLeft="@dimen/x15"
             android:id="@+id/iv_cancle"
             android:layout_centerVertical="true"
-            android:src="@drawable/login_btn_close"
+            android:src="@drawable/nav_icon_close_gary"
             android:paddingTop="@dimen/y10"
             android:paddingBottom="@dimen/y10"
             android:paddingRight="@dimen/x15"

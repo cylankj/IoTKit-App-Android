@@ -106,7 +106,7 @@
         <TextView
             android:id="@+id/tv_setting_unbind"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/y48"
+            android:layout_height="@dimen/y42"
             android:layout_marginLeft="@dimen/x20"
             android:layout_marginRight="@dimen/x20"
             android:layout_marginTop="@dimen/y10"

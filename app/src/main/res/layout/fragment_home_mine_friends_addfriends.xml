@@ -11,31 +11,35 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <RelativeLayout
+        <FrameLayout
+            android:background="#0BA8CF"
             android:id="@+id/rl_home_mine_relativesandfriends"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/y73"
-            android:background="#0BA8CF">
+            android:layout_height="wrap_content">
 
-            <ImageView
-                android:id="@+id/iv_home_mine_relativesandfriends_add_back"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:padding="@dimen/x15"
-                android:clickable="true"
-                android:src="@drawable/nav_tab_back_selector" />
-
-            <TextView
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:layout_marginBottom="@dimen/y12"
-                android:layout_marginLeft="@dimen/x48"
-                android:text="@string/Tap3_FriendsAdd"
-                android:textColor="@color/color_white"
-                android:textSize="@dimen/sp18" />
-        </RelativeLayout>
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:layout_centerVertical="true"
+                    android:id="@+id/iv_home_mine_relativesandfriends_add_back"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/x15"
+                    android:clickable="true"
+                    android:src="@drawable/nav_tab_back_selector" />
+
+                <TextView
+                    android:gravity="center_vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/y48"
+                    android:layout_marginLeft="@dimen/x48"
+                    android:text="@string/Tap3_FriendsAdd"
+                    android:textColor="@color/color_white"
+                    android:textSize="@dimen/sp18" />
+            </RelativeLayout>
+        </FrameLayout>
 
         <FrameLayout
             android:layout_width="match_parent"

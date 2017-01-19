@@ -12,8 +12,10 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineShareDeviceContract;
@@ -24,7 +26,6 @@ import com.cylan.jiafeigou.n.view.adapter.MineShareDeviceAdapter;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
-import com.cylan.jiafeigou.widget.LoadingDialog;
 import com.cylan.superadapter.OnItemClickListener;
 import com.cylan.superadapter.internal.SuperViewHolder;
 
@@ -47,6 +48,8 @@ public class MineShareDeviceFragment extends Fragment implements MineShareDevice
     ImageView ivHomeMineSharedevicesBack;
     @BindView(R.id.ll_no_device)
     LinearLayout llNoDevice;
+    @BindView(R.id.rl_home_mine_suggestion)
+    FrameLayout rlHomeMineSuggestion;
 
     private MineShareDeviceContract.Presenter presenter;
     private MineDevicesShareManagerFragment mineDevicesShareManagerFragment;
@@ -79,6 +82,12 @@ public class MineShareDeviceFragment extends Fragment implements MineShareDevice
                 getFragmentManager().popBackStack();
                 break;
         }
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        ViewUtils.setViewPaddingStatusBar(rlHomeMineSuggestion);
     }
 
     @Override

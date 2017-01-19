@@ -49,9 +49,9 @@ public class ActivityUtils {
         fragmentManager
                 .beginTransaction()
                 .setCustomAnimations(R.anim.slide_down_in,
-                        R.anim.slide_out_left,
-                        R.anim.slide_in_left,
-                        R.anim.slide_out_left)
+                        R.anim.slide_down_out,
+                        R.anim.slide_down_in,
+                        R.anim.slide_down_out)
                 .add(containerId, fragment, fragment.getClass().getSimpleName())
                 .addToBackStack(fragment.getClass().getSimpleName())
                 .commit();

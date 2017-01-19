@@ -32,6 +32,7 @@ public interface ForgetPwdContract {
          * @param code
          */
         void resetPwdResult(int code);
+
     }
 
     interface Presenter extends BasePresenter {
@@ -69,6 +70,7 @@ public interface ForgetPwdContract {
          * @return
          */
         Subscription resetPwdBack();
+
     }
 }
 

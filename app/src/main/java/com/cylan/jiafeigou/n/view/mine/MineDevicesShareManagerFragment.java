@@ -11,8 +11,10 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
@@ -24,6 +26,7 @@ import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
 import com.cylan.jiafeigou.n.view.adapter.MineHasShareAdapter;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.utils.ToastUtil;
+import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.LoadingDialog;
 
 import java.util.ArrayList;
@@ -49,6 +52,8 @@ public class MineDevicesShareManagerFragment extends Fragment implements MineDev
     TextView tvHasShareTitle;
     @BindView(R.id.ll_no_share_friend)
     LinearLayout llNoShareFriend;
+    @BindView(R.id.rl_tab_bar_container)
+    FrameLayout rlTabBarContainer;
 
     private MineDevicesShareManagerContract.Presenter presenter;
     private MineHasShareAdapter hasShareAdapter;
@@ -82,6 +87,12 @@ public class MineDevicesShareManagerFragment extends Fragment implements MineDev
         getIntentData();
         initPresenter();
         return view;
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        ViewUtils.setViewPaddingStatusBar(rlTabBarContainer);
     }
 
     @Override

@@ -6,45 +6,48 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <RelativeLayout
+    <FrameLayout
+        android:background="@color/color_0ba8cf"
+        android:id="@+id/rl_tab_bar_container"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/y73"
-        android:background="@color/color_0ba8cf">
+        android:layout_height="wrap_content">
 
-        <ImageView
-            android:id="@+id/iv_mine_friends_share_devices_back"
-            android:clickable="true"
-            android:layout_alignParentBottom="true"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="@dimen/x15"
-            android:src="@drawable/nav_tab_back_selector" />
-
-            <TextView
-                android:layout_toRightOf="@id/iv_mine_friends_share_devices_back"
-                android:id="@+id/tv_share_to"
-                android:layout_alignParentBottom="true"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="分享设备给多多"
-                android:maxLength="14"
-                android:singleLine="true"
-                android:ellipsize="end"
-                android:paddingBottom="@dimen/y12"
-                android:textSize="@dimen/sp18"
-                android:textColor="@color/color_white" />
-
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
             <ImageView
-                android:id="@+id/iv_mine_friends_share_devices_ok"
-                android:layout_marginBottom="@dimen/y2"
-                android:padding="@dimen/x15"
-                android:clickable="false"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentBottom="true"
+                android:id="@+id/iv_mine_friends_share_devices_back"
+                android:clickable="true"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/icon_finish_disable" />
-        </RelativeLayout>
+                android:padding="@dimen/x15"
+                android:layout_centerVertical="true"
+                android:src="@drawable/nav_tab_back_selector" />
+
+                <TextView
+                    android:layout_toRightOf="@id/iv_mine_friends_share_devices_back"
+                    android:id="@+id/tv_share_to"
+                    android:gravity="center_vertical"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/y48"
+                    android:text="分享设备给多多"
+                    android:maxLength="14"
+                    android:singleLine="true"
+                    android:ellipsize="end"
+                    android:textSize="@dimen/sp18"
+                    android:textColor="@color/color_white" />
+
+                <ImageView
+                    android:id="@+id/iv_mine_friends_share_devices_ok"
+                    android:padding="@dimen/x15"
+                    android:clickable="false"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/icon_finish_disable" />
+            </RelativeLayout>
+    </FrameLayout>
 
     <FrameLayout
         android:layout_width="match_parent"

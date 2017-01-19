@@ -12,6 +12,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -22,6 +23,7 @@ import com.cylan.jiafeigou.n.view.login.AgreementFragment;
 import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.IMEUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
+import com.cylan.jiafeigou.utils.ViewUtils;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -44,6 +46,8 @@ public class HomeSettingAboutFragment extends Fragment implements HomeSettingAbo
     TextView tvUserAgreement;
     @BindView(R.id.rLayout_home_setting_website)
     RelativeLayout rl_website;
+    @BindView(R.id.rl_home_mine_setting_title)
+    FrameLayout rlHomeMineSettingTitle;
 
     private HomeSettingAboutContract.Presenter presenter;
     private Intent intent;
@@ -58,6 +62,12 @@ public class HomeSettingAboutFragment extends Fragment implements HomeSettingAbo
         View view = inflater.inflate(R.layout.fragment_home_mine_setting_about, container, false);
         ButterKnife.bind(this, view);
         return view;
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        ViewUtils.setViewPaddingStatusBar(rlHomeMineSettingTitle);
     }
 
     @Override

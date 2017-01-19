@@ -28,7 +28,6 @@ public class ForgetPwdPresenterImpl extends AbstractPresenter<ForgetPwdContract.
 
     private Subscription subscription;
     private CompositeSubscription compositeSubscription;
-    private boolean isRegister;
 
     public ForgetPwdPresenterImpl(ForgetPwdContract.View view) {
         super(view);

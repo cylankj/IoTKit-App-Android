@@ -10,8 +10,10 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
@@ -63,6 +65,8 @@ public class MineFriendsFragment extends Fragment implements MineFriendsContract
     TextView tvFriendListTitle;
     @BindView(R.id.btn_add_relative_and_friend)
     TextView btnAddRelativeAndFriend;
+    @BindView(R.id.rl_home_mine_relativesandfriends)
+    FrameLayout rlHomeMineRelativesandfriends;
 
     private MineFriendsContract.Presenter presenter;
 
@@ -95,6 +99,7 @@ public class MineFriendsFragment extends Fragment implements MineFriendsContract
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        ViewUtils.setViewPaddingStatusBar(rlHomeMineRelativesandfriends);
 //        showLoadingDialog();
     }
 
@@ -118,6 +123,13 @@ public class MineFriendsFragment extends Fragment implements MineFriendsContract
                 .add(android.R.id.content, addReqDetailFragment, "addReqDetailFragment")
                 .addToBackStack("mineHelpFragment")
                 .commit();
+
+        addReqDetailFragment.setOnAcceptAddListener(new MineFriendAddReqDetailFragment.OnAcceptAddListener() {
+            @Override
+            public void onAccept(MineAddReqBean backbean) {
+                addReqDeleteItem(backbean);
+            }
+        });
     }
 
     /**

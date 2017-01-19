@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
@@ -42,6 +43,8 @@ public class MineFriendScanAddFragment extends Fragment implements ZXingScannerV
     ImageView ivErweima;
     @BindView(R.id.rl_send_pro_hint)
     RelativeLayout rlSendProHint;
+    @BindView(R.id.rl_home_mine_relativesandfriends_scan_add)
+    FrameLayout rlHomeMineRelativesandfriendsScanAdd;
     private MineFriendScanAddContract.Presenter presenter;
 
     public static MineFriendScanAddFragment newInstance() {
@@ -61,6 +64,12 @@ public class MineFriendScanAddFragment extends Fragment implements ZXingScannerV
         ButterKnife.bind(this, view);
 //        initView();
         return view;
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        ViewUtils.setViewPaddingStatusBar(rlHomeMineRelativesandfriendsScanAdd);
     }
 
     private void initView() {       //控制显示的宽和高
@@ -100,7 +109,7 @@ public class MineFriendScanAddFragment extends Fragment implements ZXingScannerV
 
     @Override
     public void showQrCode(String account) {
-        ivErweima.setImageBitmap(Qrcode.createQRImage(account, ViewUtils.dp2px(78),ViewUtils.dp2px(78),null));
+        ivErweima.setImageBitmap(Qrcode.createQRImage(account, ViewUtils.dp2px(78), ViewUtils.dp2px(78), null));
     }
 
     /**
