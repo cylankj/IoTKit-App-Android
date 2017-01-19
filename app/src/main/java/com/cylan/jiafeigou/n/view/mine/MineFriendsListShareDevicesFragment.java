@@ -204,7 +204,7 @@ public class MineFriendsListShareDevicesFragment extends Fragment implements Min
     @Override
     public void showFinishBtn() {
         ivMineFriendsShareDevicesOk.setClickable(true);
-        ivMineFriendsShareDevicesOk.setImageDrawable(getResources().getDrawable(R.drawable.icon_finish));
+        ivMineFriendsShareDevicesOk.setImageDrawable(getResources().getDrawable(R.drawable.me_icon_finish_normal));
     }
 
     /**

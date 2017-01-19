@@ -37,7 +37,7 @@
                 android:id="@+id/iv_call_out_icon"
                 android:layout_marginLeft="@dimen/x15"
                 android:layout_gravity="center_vertical"
-                android:src="@drawable/icon_call"
+                android:src="@drawable/album_icon_call"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 

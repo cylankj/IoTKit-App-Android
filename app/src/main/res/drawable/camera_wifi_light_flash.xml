@@ -3,9 +3,9 @@
     android:oneshot="false"
     android:startOffset="1000">
     <item
-        android:drawable="@drawable/ico_bind_camera_anim_flash_0"
+        android:drawable="@drawable/add_image_wifi_light1"
         android:duration="300" />
     <item
-        android:drawable="@drawable/ico_bind_camera_anim_flash_1"
+        android:drawable="@drawable/add_image_wifilight"
         android:duration="300" />
 </animation-list>

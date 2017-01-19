@@ -68,7 +68,7 @@ public class HomePageListAdapter extends SuperAdapter<String> {
         //1 已分享的设备,此设备分享给别的账号.
         if (GlobalDataProxy.getInstance().isDeviceShared(uuid)) {
             holder.setVisibility(R.id.img_device_state_1, VISIBLE);
-            holder.setImageResource(R.id.img_device_state_1, R.drawable.icon_home_share);
+            holder.setImageResource(R.id.img_device_state_1, R.drawable.home_icon_net_link);
         } else {
             holder.setVisibility(R.id.img_device_state_1, GONE);
         }
@@ -83,14 +83,14 @@ public class HomePageListAdapter extends SuperAdapter<String> {
         boolean safe = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_501_CAMERA_ALARM_FLAG, false);
         if (!standby && safe && JFGRules.isCamera(pid)) {
             holder.setVisibility(R.id.img_device_state_3, VISIBLE);
-            holder.setImageResource(R.id.img_device_state_3, R.drawable.icon_home_security);
+            holder.setImageResource(R.id.img_device_state_3, R.drawable.home_icon_net_security);
         } else {
             holder.setVisibility(R.id.img_device_state_3, GONE);
         }
         //5 安全待机
         if (standby) {
             holder.setVisibility(R.id.img_device_state_4, GONE);
-            holder.setImageResource(R.id.img_device_state_4, R.drawable.icon_home_standby);
+            holder.setImageResource(R.id.img_device_state_4, R.drawable.home_icon_net_standby);
         } else holder.setVisibility(R.id.img_device_state_4, GONE);
 
     }

@@ -50,7 +50,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:background="@drawable/ico_bind_camera_anim_flash_1" />
+            android:background="@drawable/add_image_wifilight" />
 
         <ImageView
             android:id="@+id/imgV_camera_red_dot"
@@ -59,7 +59,7 @@
             android:layout_below="@+id/imgV_camera_wifi_light_flash"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="@dimen/y20"
-            android:src="@drawable/image_red_dot"
+            android:src="@drawable/add_image_red_dot"
             android:visibility="invisible" />
 
         <ImageView

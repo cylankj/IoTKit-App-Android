@@ -2,6 +2,6 @@
 
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item android:drawable="@drawable/camera_icon_mic_disabled" android:state_enabled="false" />
-    <item android:drawable="@drawable/camera_icon_mic_pressed" />
+    <item android:drawable="@drawable/camera_icon_talk_disabled" android:state_enabled="false" />
+    <item android:drawable="@drawable/camera_icon_talk_pressed" />
 </selector>

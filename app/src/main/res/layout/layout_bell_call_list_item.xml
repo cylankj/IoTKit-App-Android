@@ -63,7 +63,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="@dimen/y22"
-            android:drawableLeft="@drawable/icon_bell_answer"
+            android:drawableLeft="@drawable/doorbell_icon_connect"
             android:drawablePadding="@dimen/x10"
             android:text="已通话"
             android:textColor="@color/color_CBCFD0"
@@ -82,6 +82,6 @@
             android:layout_height="wrap_content"
             android:layout_gravity="end"
             android:padding="@dimen/x10"
-            android:src="@drawable/icon_check" />
+            android:src="@drawable/doorbell_icon_check" />
     </FrameLayout>
 </android.support.v7.widget.CardView>

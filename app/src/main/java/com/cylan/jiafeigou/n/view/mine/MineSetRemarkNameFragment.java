@@ -101,7 +101,7 @@ public class MineSetRemarkNameFragment extends Fragment implements MineSetRemark
             ivMineSetRemarknameBind.setEnabled(false);
             ivMinePersonalSetRemarknameClear.setVisibility(View.GONE);
         } else {
-            ivMineSetRemarknameBind.setImageDrawable(getResources().getDrawable(R.drawable.icon_finish));
+            ivMineSetRemarknameBind.setImageDrawable(getResources().getDrawable(R.drawable.me_icon_finish_normal));
             ivMineSetRemarknameBind.setEnabled(true);
             ivMinePersonalSetRemarknameClear.setVisibility(View.VISIBLE);
         }
@@ -193,7 +193,7 @@ public class MineSetRemarkNameFragment extends Fragment implements MineSetRemark
             ivMineSetRemarknameBind.setEnabled(false);
             ivMinePersonalSetRemarknameClear.setVisibility(View.GONE);
         } else {
-            ivMineSetRemarknameBind.setImageDrawable(getResources().getDrawable(R.drawable.icon_finish));
+            ivMineSetRemarknameBind.setImageDrawable(getResources().getDrawable(R.drawable.me_icon_finish_normal));
             ivMineSetRemarknameBind.setEnabled(true);
             ivMinePersonalSetRemarknameClear.setVisibility(View.VISIBLE);
         }

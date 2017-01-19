@@ -2,7 +2,7 @@
 
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item android:drawable="@drawable/camera_icon_landscape_no_speaker_disable" android:state_enabled="false" />
-    <item android:drawable="@drawable/camera_icon_landscape_no_speaker_pressed" android:state_pressed="true" />
-    <item android:drawable="@drawable/camera_icon_landscape_no_speaker_normal" />
+    <item android:drawable="@drawable/camera_icon_landscape_no_voice_disable" android:state_enabled="false" />
+    <item android:drawable="@drawable/camera_icon_landscape_no_voice_pressed" android:state_pressed="true" />
+    <item android:drawable="@drawable/camera_icon_landscape_no_voice_normal" />
 </selector>

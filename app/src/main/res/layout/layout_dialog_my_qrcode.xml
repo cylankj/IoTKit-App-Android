@@ -44,6 +44,6 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="@dimen/y36"
-        android:src="@drawable/btn_close_dialog" />
+        android:src="@drawable/popup_btn_close" />
 
 </LinearLayout>

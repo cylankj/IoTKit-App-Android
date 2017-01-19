@@ -51,7 +51,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/y67"
             android:background="@color/color_white"
-            hunt:leftDrawable="@drawable/ico_scan_qrcode"
+            hunt:leftDrawable="@drawable/icon_scan_code"
             hunt:rightDrawable="@drawable/icon_mine_arrow_next"
             hunt:text="扫一扫添加"
             hunt:textColor="@color/color_383838"

@@ -79,7 +79,7 @@ public class MineInfoBindPhoneFragment extends Fragment implements MineBindPhone
             ivMineInfoBindPhone.setImageDrawable(getResources().getDrawable(R.drawable.icon_finish_disable));
             ivMineInfoBindPhone.setEnabled(false);
         } else {
-            ivMineInfoBindPhone.setImageDrawable(getResources().getDrawable(R.drawable.icon_finish));
+            ivMineInfoBindPhone.setImageDrawable(getResources().getDrawable(R.drawable.me_icon_finish_normal));
             ivMineInfoBindPhone.setEnabled(true);
         }
     }

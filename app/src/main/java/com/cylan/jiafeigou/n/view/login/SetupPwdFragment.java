@@ -101,7 +101,7 @@ public class SetupPwdFragment extends Fragment implements SetupPwdContract.View 
         layout.findViewById(R.id.tv_top_bar_right).setVisibility(android.view.View.GONE);
         TextView tvTitle = (TextView) layout.findViewById(R.id.tv_top_bar_center);
         tvTitle.setText(getString(R.string.PASSWORD));
-        ivLoginTopLeft.setImageResource(R.drawable.icon_nav_back_gray);
+        ivLoginTopLeft.setImageResource(R.drawable.nav_icon_back_gary);
         initNavigateBack();
     }
 

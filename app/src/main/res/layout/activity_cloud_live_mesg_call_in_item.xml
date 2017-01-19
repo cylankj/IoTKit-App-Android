@@ -36,7 +36,7 @@
                 android:id="@+id/iv_call_in_icon"
                 android:layout_marginLeft="@dimen/x15"
                 android:layout_gravity="center_vertical"
-                android:src="@drawable/icon_missed_call"
+                android:src="@drawable/album_icon_missed_call"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 

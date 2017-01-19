@@ -2,6 +2,6 @@
 
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item android:drawable="@drawable/icon_mic_off" android:state_pressed="true" />
-    <item android:drawable="@drawable/icon_mic_on" />
+    <item android:drawable="@drawable/doorbell_icon_no_talk" android:state_pressed="true" />
+    <item android:drawable="@drawable/doorbell_icon_talk" />
 </selector>

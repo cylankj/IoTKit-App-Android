@@ -111,11 +111,11 @@ public class MagLiveActivity extends BaseFullScreenFragmentActivity implements M
      */
     private void initDoorState(boolean isOpen) {
         if (isOpen) {
-            imgVTopDoor.setImageDrawable(getResources().getDrawable(R.drawable.icon_magnetometer_top_open));
-            rLayoutMsgLiveTopBar.setBackground(getResources().getDrawable(R.drawable.bg_magnetometer_top_open));
+            imgVTopDoor.setImageDrawable(getResources().getDrawable(R.drawable.magnetometer_icon_top_open));
+            rLayoutMsgLiveTopBar.setBackground(getResources().getDrawable(R.drawable.magnetometer_bg_top_open));
         } else {
-            imgVTopDoor.setImageDrawable(getResources().getDrawable(R.drawable.icon_magnetometer_top_close));
-            rLayoutMsgLiveTopBar.setBackground(getResources().getDrawable(R.drawable.bg_magnetometer_top_close));
+            imgVTopDoor.setImageDrawable(getResources().getDrawable(R.drawable.magnetometer_icon_top_close));
+            rLayoutMsgLiveTopBar.setBackground(getResources().getDrawable(R.drawable.magnetometer_bg_top_close));
         }
     }
 

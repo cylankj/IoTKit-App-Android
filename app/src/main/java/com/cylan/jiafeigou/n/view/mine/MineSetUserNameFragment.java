@@ -94,7 +94,7 @@ public class MineSetUserNameFragment extends Fragment implements MineInfoSetName
             ivMinePersonalSetnameBind.setImageDrawable(getResources().getDrawable(R.drawable.icon_finish_disable));
             ivMinePersonalSetnameBind.setEnabled(false);
         } else {
-            ivMinePersonalSetnameBind.setImageDrawable(getResources().getDrawable(R.drawable.icon_finish));
+            ivMinePersonalSetnameBind.setImageDrawable(getResources().getDrawable(R.drawable.me_icon_finish_normal));
             ivMinePersonalSetnameBind.setEnabled(true);
         }
     }
@@ -184,7 +184,7 @@ public class MineSetUserNameFragment extends Fragment implements MineInfoSetName
             ivMinePersonalSetnameBind.setImageDrawable(getResources().getDrawable(R.drawable.icon_finish_disable));
             ivMinePersonalSetnameBind.setEnabled(false);
         } else {
-            ivMinePersonalSetnameBind.setImageDrawable(getResources().getDrawable(R.drawable.icon_finish));
+            ivMinePersonalSetnameBind.setImageDrawable(getResources().getDrawable(R.drawable.me_icon_finish_normal));
             ivMinePersonalSetnameBind.setEnabled(true);
         }
     }

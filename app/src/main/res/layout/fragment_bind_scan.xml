@@ -26,7 +26,7 @@
             android:layout_marginRight="@dimen/x5"
             android:layout_marginTop="@dimen/y5"
             android:padding="@dimen/x10"
-            android:src="@drawable/icon_nav_back_white" />
+            android:src="@drawable/nav_icon_back_white" />
 
         <TextView
             android:textColor="@color/color_white"

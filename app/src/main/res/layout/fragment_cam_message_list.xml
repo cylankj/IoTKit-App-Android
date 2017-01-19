@@ -18,7 +18,7 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_gravity="center"
-            android:drawableEnd="@drawable/icon_date_downtag_wonderful"
+            android:drawableEnd="@drawable/wonderful_arrow_down"
             android:drawablePadding="@dimen/x10"
             android:gravity="center_vertical" />
 
@@ -63,7 +63,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:src="@drawable/icon_no_message" />
+            android:src="@drawable/pic_no_message" />
 
         <TextView
             android:layout_width="wrap_content"

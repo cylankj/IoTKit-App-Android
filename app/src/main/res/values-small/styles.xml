@@ -9,7 +9,7 @@
         <item name="android:textColorHint">#c2c2c2</item>
         <item name="android:textColor">#555555</item>
         <item name="android:paddingLeft">10dip</item>
-        <item name="android:background">@drawable/icon_mine_hlep</item>
+        <item name="android:background">@drawable/me_icon_hlep</item>
     </style>
 
     <style name="submit_button">

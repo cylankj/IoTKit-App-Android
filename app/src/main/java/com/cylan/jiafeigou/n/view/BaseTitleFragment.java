@@ -48,7 +48,7 @@ public abstract class BaseTitleFragment<P extends BasePresenter> extends IBaseFr
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         initTitleBarAction();
-        updateNavBackIcon(R.drawable.icon_nav_back_gray);
+        updateNavBackIcon(R.drawable.nav_icon_back_gary);
     }
 
     protected abstract int getSubContentViewId();

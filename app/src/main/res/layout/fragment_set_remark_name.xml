@@ -40,7 +40,7 @@
             android:clickable="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/icon_finish" />
+            android:src="@drawable/me_icon_finish_normal" />
     </RelativeLayout>
 
     <FrameLayout
@@ -83,7 +83,7 @@
                 android:layout_alignParentRight="true"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/btn_login_clear_text" />
+                android:src="@drawable/icon_clear_text" />
 
         </RelativeLayout>
 

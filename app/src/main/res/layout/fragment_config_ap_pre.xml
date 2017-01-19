@@ -21,7 +21,7 @@
         android:layout_marginLeft="@dimen/x20"
         android:layout_marginRight="@dimen/x20"
         android:layout_marginTop="@dimen/y55"
-        android:drawableRight="@drawable/ico_drop_down"
+        android:drawableRight="@drawable/add_icon_drop_down"
         android:gravity="center"
         android:textColor="@color/color_333333"
         android:textSize="@dimen/sp15" />
@@ -74,7 +74,7 @@
                 android:layout_gravity="center_vertical"
                 android:paddingLeft="@dimen/x15"
                 android:paddingRight="@dimen/x7"
-                android:src="@drawable/btn_login_clear_text"
+                android:src="@drawable/icon_clear_text"
                 android:visibility="gone" />
 
             <CheckBox

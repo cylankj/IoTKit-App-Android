@@ -92,7 +92,7 @@
                     android:layout_height="wrap_content"
                     android:padding="@dimen/x10"
                     android:layout_gravity="center_vertical"
-                    android:src="@drawable/btn_login_clear_text" />
+                    android:src="@drawable/icon_clear_text" />
 
                 <CheckBox
                     android:id="@+id/cb_new_pwd_show"

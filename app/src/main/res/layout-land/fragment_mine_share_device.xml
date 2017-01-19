@@ -18,7 +18,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:padding="15dp"
-            android:src="@drawable/icon_nav_back_white" />
+            android:src="@drawable/nav_icon_back_white" />
 
         <TextView
             android:layout_width="match_parent"
@@ -54,7 +54,7 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/icon_no_devices" />
+                android:src="@drawable/pic_none_equipment" />
 
             <TextView
                 android:layout_width="wrap_content"

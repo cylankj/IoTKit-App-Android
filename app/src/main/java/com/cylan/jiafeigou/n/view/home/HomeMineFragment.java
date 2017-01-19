@@ -108,7 +108,7 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
     public void onStart() {
         if (!GlobalDataProxy.getInstance().isOnline()) {
             //访客状态
-            Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.bg_mine_top_default);
+            Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.me_bg_top_image);
             basePresenter.portraitBlur(bm);
             setAliasName(getString(R.string.Tap3_LogIn));
         }
@@ -276,7 +276,7 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
                     @Override
                     public void onLoadFailed(Exception e, Drawable errorDrawable) {
                         super.onLoadFailed(e, errorDrawable);
-                        rLayoutHomeMineTop.setBackground(getResources().getDrawable(R.drawable.bg_mine_top_default));
+                        rLayoutHomeMineTop.setBackground(getResources().getDrawable(R.drawable.me_bg_top_image));
                     }
 
                 });
