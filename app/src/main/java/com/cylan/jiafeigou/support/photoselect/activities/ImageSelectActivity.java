@@ -98,7 +98,7 @@ public class ImageSelectActivity extends HelperActivity {
                     case Constants.FETCH_COMPLETED: {
                         /*
                         If adapter is null, this implies that the loaded images will be shown
-                        for the first time, hence send FETCH_COMPLETED message.
+                        for the first startTime, hence send FETCH_COMPLETED message.
                         However, if adapter has been initialised, this thread was run either
                         due to the activity being restarted or content being changed.
                          */
@@ -270,7 +270,7 @@ public class ImageSelectActivity extends HelperActivity {
         public void run() {
             Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
             /*
-            If the adapter is null, this is first time this activity's view is
+            If the adapter is null, this is first startTime this activity's view is
             being shown, hence send FETCH_STARTED message to show progress bar
             while images are loaded from phone
              */

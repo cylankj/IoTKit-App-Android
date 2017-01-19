@@ -69,7 +69,7 @@ public abstract class BasePresenter<V extends JFGView> implements JFGPresenter {
 
     @CallSuper
     protected void onRegisterSubscription() {
-        registerSubscription(getDeviceSyncSub(), getLoginStateSub(), getQueryDataRspSub());
+        registerSubscription(getDeviceSyncSub(), getLoginStateSub(), getQueryDataRspSub(), getParseResponseCompletedSub());
     }
 
     @CallSuper
@@ -156,6 +156,18 @@ public abstract class BasePresenter<V extends JFGView> implements JFGPresenter {
                         , Throwable::printStackTrace);
     }
 
+    private Subscription getParseResponseCompletedSub() {
+        return RxBus.getCacheInstance().toObservable(RxEvent.ParseResponseCompleted.class)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(parseResponseCompleted -> {
+                    onParseResponseCompleted(parseResponseCompleted.seq);
+                }, Throwable::printStackTrace);
+    }
+
+    protected void onParseResponseCompleted(long seq) {
+
+    }
 
     public boolean hasReadyForExit() {
         return true;
@@ -244,15 +256,20 @@ public abstract class BasePresenter<V extends JFGView> implements JFGPresenter {
     /**
      * 不在主线程中请求数据,因为可能卡住
      */
-    protected void robotGetData(String peer, ArrayList<JFGDPMsg> queryDps, int limit, boolean asc, int timeoutMs) {
+    protected void robotGetData(String peer, ArrayList<JFGDPMsg> queryDps, int limit, boolean asc, int timeoutMs, long[] rs) {
         post(() -> {
             try {
                 long seq = JfgCmdInsurance.getCmd().robotGetData(peer, queryDps, limit, asc, timeoutMs);
                 mRequestSeqs.add(seq);
+                if (rs != null) rs[0] = seq;
             } catch (JfgException e) {
                 e.printStackTrace();
             }
         });
+    }
+
+    protected void robotGetData(String peer, ArrayList<JFGDPMsg> queryDps, int limit, boolean asc, int timeoutMs) {
+        robotGetData(peer, queryDps, limit, asc, timeoutMs, null);
     }
 
     protected void robotDelData(String peer, ArrayList<JFGDPMsg> dps, int timeoutMs) {

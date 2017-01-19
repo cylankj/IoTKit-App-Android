@@ -173,11 +173,11 @@ public class CpuSampler extends Sampler {
         }
 
         /*
-         * utime  Amount of time that this process has been scheduled in user mode
-         * stime  Amount of time that this process has been scheduled in kernel mode
-         * cutime Amount of time that this process's waited-for children have been scheduled in user mode
-         * cstime Amount of time that this process's waited-for children have been scheduled in kernel mode
-         * processCpuTime = utime + stime + cutime + cstime, which includes all its threads' cpu time
+         * utime  Amount of startTime that this process has been scheduled in user mode
+         * stime  Amount of startTime that this process has been scheduled in kernel mode
+         * cutime Amount of startTime that this process's waited-for children have been scheduled in user mode
+         * cstime Amount of startTime that this process's waited-for children have been scheduled in kernel mode
+         * processCpuTime = utime + stime + cutime + cstime, which includes all its threads' cpu startTime
          */
         long appCpuTime = Long.parseLong(pidCpuInfos[13]) + Long.parseLong(pidCpuInfos[14])
                 + Long.parseLong(pidCpuInfos[15]) + Long.parseLong(pidCpuInfos[16]);

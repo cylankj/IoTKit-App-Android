@@ -834,4 +834,6 @@
     <string name="Tips_New_Call_Come_Listen">有新的朋友 $1%s:来访,是否接听?</string>
     <string name="listen">接听</string>
     <string name="ignore">忽略</string>
+    <string name="loading">加载中</string>
+    <string name="nomore">没有更多了</string>
 </resources>

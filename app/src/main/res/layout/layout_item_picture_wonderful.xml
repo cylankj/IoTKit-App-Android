@@ -1,36 +1,38 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:hunt="http://schemas.android.com/apk/res-auto"
-              android:id="@+id/lLayout_item_wonderful"
-              android:layout_width="match_parent"
-              android:layout_height="250dp"
-
-              android:clickable="true"
-              android:orientation="horizontal"
-              android:paddingLeft="10dp"
-              android:paddingRight="10dp">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:hunt="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/lLayout_item_wonderful"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:orientation="horizontal"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp">
 
     <com.cylan.jiafeigou.widget.FateLineView
         android:id="@+id/fl_wonderful_item_time_line"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/rLayout_wonderful_item_wonder"
+        android:layout_alignTop="@+id/rLayout_wonderful_item_wonder"
         android:layout_marginLeft="8dp"
         android:paddingRight="2dp"
         hunt:dashLineColor="@color/color_e8e8e8"
-        hunt:dashLineWidth="2dp"
+        hunt:dashLineWidth="1dp"
         hunt:innerCircleColor="@color/color_white"
-        hunt:innerCircleRadius="6dp"
+        hunt:innerCircleRadius="3dp"
         hunt:outerCircleColor="@color/color_e8e8e8"
-        hunt:outerCircleRadius="10dp"
-        hunt:outerCircleStrokeWidth="4dp"
-        hunt:outerCircleY="16dp"/>
+        hunt:outerCircleRadius="5dp"
+        hunt:outerCircleStrokeWidth="3dp"
+        hunt:outerCircleY="17dp"/>
 
     <RelativeLayout
         android:id="@+id/rLayout_wonderful_item_wonder"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginLeft="4dp"
-        android:layout_marginTop="5dp"
-        android:orientation="vertical">
+        android:layout_toRightOf="@+id/fl_wonderful_item_time_line"
+        android:orientation="vertical"
+        android:paddingBottom="8dp">
 
         <TextView
             android:id="@+id/tv_wonderful_item_date"
@@ -44,15 +46,15 @@
             android:textSize="13sp"/>
 
         <com.cylan.jiafeigou.widget.ShadowFrameLayout
+            android:id="@+id/sf_picture_container"
             android:layout_width="162dp"
             android:layout_height="120dp"
-            android:layout_above="@+id/fLayout_wonderful_item_bottom"
             android:layout_below="@+id/tv_wonderful_item_date">
 
             <ImageView
                 android:id="@+id/iv_wonderful_item_content"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_width="162dp"
+                android:layout_height="120dp"
                 android:minWidth="200dp"
                 android:scaleType="fitXY"
                 android:transitionName="picDetailsFragment"/>
@@ -62,13 +64,14 @@
         <RelativeLayout
             android:id="@+id/fLayout_wonderful_item_bottom"
             android:layout_width="match_parent"
-            android:layout_height="36dp"
-            android:layout_alignParentBottom="true"
-            android:layout_gravity="bottom">
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/sf_picture_container"
+            android:paddingBottom="22dp"
+            android:paddingTop="19dp">
 
             <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:orientation="horizontal">
 
@@ -76,8 +79,7 @@
                 <TextView
                     android:id="@+id/tv_wonderful_item_delete"
                     android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:gravity="center_vertical"
+                    android:layout_height="wrap_content"
                     android:paddingLeft="12dp"
                     android:paddingRight="10dp"
                     android:text="删除"
@@ -92,40 +94,54 @@
 
                 <TextView
                     android:id="@+id/tv_wonderful_item_device_name"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:gravity="center_vertical"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
                     android:maxLength="8"
                     android:paddingLeft="10dp"
                     android:paddingRight="10dp"
                     android:text="摄像头水电费三点多"
                     android:textColor="@color/color_909090"
                     android:textSize="11sp"/>
+
+                <TextView
+                    android:id="@+id/tv_wonderful_item_share"
+                    style="@style/ripple_background_borderless"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+
+                    android:layout_marginRight="12dp"
+                    android:drawableLeft="@drawable/icon_share_item_wonderful_selector"
+                    android:drawablePadding="4dp"
+                    android:drawableStart="@drawable/icon_share_item_wonderful_selector"
+                    android:gravity="center"
+                    android:text="分享"
+                    android:textColor="@color/color_909090"
+                    android:textSize="11sp"/>
             </LinearLayout>
 
-            <TextView
-                android:id="@+id/tv_wonderful_item_share"
-                style="@style/ripple_background_borderless"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_alignParentRight="true"
-                android:layout_gravity="end|center_vertical"
-                android:layout_marginRight="12dp"
-                android:drawableLeft="@drawable/icon_share_item_wonderful_selector"
-                android:drawablePadding="4dp"
-                android:drawableStart="@drawable/icon_share_item_wonderful_selector"
-                android:gravity="center"
-                android:text="分享"
-                android:textColor="@color/color_909090"
-                android:textSize="11sp"/>
 
         </RelativeLayout>
 
         <View
+            android:id="@+id/view_wonder_bottom_line"
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:layout_alignParentBottom="true"
-            android:layout_gravity="bottom"
+            android:layout_below="@+id/fLayout_wonderful_item_bottom"
             android:background="@color/color_e8e8e8"/>
     </RelativeLayout>
-</LinearLayout>
+
+
+    <TextView
+        android:id="@+id/tv_wonderful_item_footer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/rLayout_wonderful_item_wonder"
+        android:layout_centerHorizontal="true"
+        android:background="@android:color/white"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+        android:text="这是底线"
+        android:textColor="#333333"
+        android:textSize="14sp"/>
+</RelativeLayout>

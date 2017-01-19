@@ -416,7 +416,7 @@ public class IOUtils {
      * <ul>
      * <li>Source InputStream is slow.</li>
      * <li>It has network resources associated, so we cannot keep it open for
-     * long time.</li>
+     * long startTime.</li>
      * <li>It has network timeout associated.</li>
      * </ul>
      * It can be used in favor of {@link #toByteArray(InputStream)}, since it

@@ -273,7 +273,7 @@ public class ByteArrayOutputStream extends OutputStream {
      * <ul>
      * <li>Source InputStream is slow.</li>
      * <li>It has network resources associated, so we cannot keep it open for
-     * long time.</li>
+     * long startTime.</li>
      * <li>It has network timeout associated.</li>
      * </ul>
      * It can be used in favor of {@link #toByteArray()}, since it
@@ -296,7 +296,7 @@ public class ByteArrayOutputStream extends OutputStream {
     /**
      * Gets the current contents of this byte stream as a Input Stream. The
      * returned stream is backed by buffers of <code>this</code> stream,
-     * avoiding memory allocation and copy, thus saving space and time.<br>
+     * avoiding memory allocation and copy, thus saving space and startTime.<br>
      *
      * @return the current contents of this output stream.
      * @see java.io.ByteArrayOutputStream#toByteArray()

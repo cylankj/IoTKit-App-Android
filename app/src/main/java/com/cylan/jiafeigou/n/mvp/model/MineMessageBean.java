@@ -20,7 +20,7 @@ public class MineMessageBean implements Parcelable {
     public String content;
     @Column(name = "type")
     public int type;
-    @Column(name = "time")
+    @Column(name = "startTime")
     public String time;
     @Column(name = "name")
     public String name;

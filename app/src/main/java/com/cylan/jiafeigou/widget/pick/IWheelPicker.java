@@ -114,7 +114,7 @@ public interface IWheelPicker {
      * example, you call this method after scroll the WheelPicker and set selected item position
      * with a new value, WheelPicker will clear the related parameters last scroll set and reset
      * series of data, and make the position 3 as a new starting point of WheelPicker, this behavior
-     * maybe influenced some attribute you set last time, such as parameters of method in
+     * maybe influenced some attribute you set last startTime, such as parameters of method in
      * {@link WheelPicker.OnWheelChangeListener} and
      * {@link WheelPicker.OnItemSelectedListener}, so you must always
      * consider the influence when you call this method set a new value
@@ -179,10 +179,10 @@ public interface IWheelPicker {
      * <p>
      * Set items of WheelPicker if has same width
      * WheelPicker will traverse the data source to calculate each data text width to find out the
-     * maximum text width for the final view width, this process maybe spends a lot of time and
+     * maximum text width for the final view width, this process maybe spends a lot of startTime and
      * reduce efficiency when data source has large amount data, in most large amount data case,
      * data text always has same width, you can call this method tell to WheelPicker your data
-     * source has same width to save time and improve efficiency.
+     * source has same width to save startTime and improve efficiency.
      * Sometimes the data source you set is positively has different text width, but maybe you know
      * the maximum width text's position in data source, then you can call
      * {@link #setMaximumWidthTextPosition(int)} tell to WheelPicker where is the maximum width text

@@ -13,7 +13,6 @@ import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
-import com.squareup.javapoet.TypeVariableName;
 
 import java.util.List;
 
@@ -55,12 +54,16 @@ public class JFGDeviceInstanceGenerator implements Generator {
                 dpMessage = property.getAnnotation(DPMessage.class);
                 dpType = dpMessage.dpType();
                 try {
-                    dpMessage.primaryType();
+                    dpMessage.type();
                 } catch (MirroredTypeException e) {
                     primaryType = e.getTypeMirror();
                 }
                 fieldType = getFieldType(dpType, primaryType);
-                FieldSpec.Builder builder = FieldSpec.builder(fieldType, dpMessage.name(), Modifier.PUBLIC);
+                String name = dpMessage.name();
+                if ("".equals(name)) {
+                    name = property.getSimpleName().toString().toLowerCase();
+                }
+                FieldSpec.Builder builder = FieldSpec.builder(fieldType, name, Modifier.PUBLIC);
                 builder.addAnnotation(AnnotationSpec.builder(DPProperty.class).
                         addMember("msgId", "$L", ((VariableElement) property).getConstantValue()).build()).build();
                 classBuilder.addField(builder.build());
@@ -80,9 +83,11 @@ public class JFGDeviceInstanceGenerator implements Generator {
 
     protected TypeSpec.Builder getClassBuilder(String clazzName, String parentName) {
         String pkgName = "DataPoint".equals(parentName) ? TYPE_DEFINE_PACKAGE : MODULE_PACKAGE;
-        return TypeSpec.classBuilder(clazzName)
-                .superclass(ClassName.get(pkgName, parentName))
-                .addModifiers(Modifier.PUBLIC);
+        TypeSpec.Builder builder = TypeSpec.classBuilder(clazzName).addModifiers(Modifier.PUBLIC);
+        if (!clazzName.equals(parentName)) {
+            builder.superclass(ClassName.get(pkgName, parentName));
+        }
+        return builder;
     }
 
 

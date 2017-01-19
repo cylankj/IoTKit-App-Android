@@ -598,7 +598,7 @@ public class GLTextureView extends TextureView
          * be lost when the Android device awakes after going to sleep.
          * <p>
          * Since this method is called at the beginning of rendering, as well as
-         * every time the EGL context is lost, this method is a convenient place to put
+         * every startTime the EGL context is lost, this method is a convenient place to put
          * code to create resources that need to be created when the rendering
          * starts, and that need to be recreated when the EGL context is lost.
          * Textures are an example of a resource that you might want to create
@@ -1633,7 +1633,7 @@ public class GLTextureView extends TextureView
         private EglHelper eglHelper;
 
         /**
-         * Set once at thread construction time, nulled out when the parent view is garbage
+         * Set once at thread construction startTime, nulled out when the parent view is garbage
          * called. This weak reference allows the GLTextureView to be garbage collected while
          * the GLThread is still alive.
          */

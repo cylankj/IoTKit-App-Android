@@ -77,7 +77,7 @@ public abstract class SuperAdapter<T> extends BaseSuperAdapter<T> implements CRU
     }
 
     @Override
-    public final void addAll(List<T> items) {
+    public void addAll(List<T> items) {
         if (items == null || items.size() == 0) {
             Log.i(TAG, "The list you added is null or empty.");
             return;
@@ -96,7 +96,7 @@ public abstract class SuperAdapter<T> extends BaseSuperAdapter<T> implements CRU
             Log.i(TAG, "The list you added is null or empty.");
             return;
         }
-        mList.addAll(items);
+        mList.addAll(location, items);
         if (hasHeaderView())
             location++;
         notifyItemRangeInserted(location, items.size());

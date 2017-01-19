@@ -96,7 +96,7 @@ public class BindScanFragment extends IBaseFragment<ScanContract.Presenter> impl
     public void handleResult(Result rawResult) {// Note:
         // * Wait 2 seconds to resume the preview.
         // * On older devices continuously stopping and resuming camera preview can result in freezing the app.
-        // * I don't know why this is the case but I don't have the time to figure out.
+        // * I don't know why this is the case but I don't have the startTime to figure out.
         if (EFAMILY_QR_CODE_REG.matcher(rawResult.getText().replace(JConstant.EFAMILY_URL_PREFIX, "")).find()) {
             try {
                 String tmp = rawResult.getText().replace(EFAMILY_URL_PREFIX, "").replace("&", "");

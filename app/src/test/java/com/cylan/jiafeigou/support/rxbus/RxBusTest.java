@@ -96,7 +96,7 @@ public class RxBusTest {
                         .map(new Func1<String, String>() {
                             @Override
                             public String call(String s) {
-                                System.out.println("time out? " + s);
+                                System.out.println("startTime out? " + s);
                                 return null;
                             }
                         }))

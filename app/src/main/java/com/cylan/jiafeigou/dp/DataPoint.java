@@ -67,7 +67,7 @@ public abstract class DataPoint implements Parcelable, Comparable<DataPoint> {
     public boolean equals(Object o) {
         if (this == o) return true;
         DataPoint value = (DataPoint) o;
-        return version == value.version && seq == value.seq;
+        return version == value.version && id == value.id;
 
     }
 
@@ -80,7 +80,7 @@ public abstract class DataPoint implements Parcelable, Comparable<DataPoint> {
 
     @Override
     public int compareTo(DataPoint another) {
-        return version > another.version ? -1 : 1;//降序
+        return version == another.version ? 0 : version > another.version ? -1 : 1;//降序
     }
 
     @Override
@@ -241,6 +241,7 @@ public abstract class DataPoint implements Parcelable, Comparable<DataPoint> {
                 value.version = msg.version;
                 value.id = msg.id;
                 value.seq = seq;
+                setValue.value.remove(value);
                 boolean add = setValue.value.add(value);
                 DataPoint first = setValue.value.first();
                 setValue.version = first.version;

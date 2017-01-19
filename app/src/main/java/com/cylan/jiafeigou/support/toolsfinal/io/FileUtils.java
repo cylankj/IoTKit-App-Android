@@ -421,7 +421,7 @@ public class FileUtils {
     /**
      * Implements the same behaviour as the "touch" utility on Unix. It creates
      * a new file with size 0 or, if the file exists already, it is opened and
-     * closed without modifying it, but updating the file date and time.
+     * closed without modifying it, but updating the file date and startTime.
      * <p/>
      * NOTE: As from v1.3, this method throws an IOException if the last
      * modified date of the file cannot be set. Also, as from v1.3 this method
@@ -437,7 +437,7 @@ public class FileUtils {
         }
         boolean success = file.setLastModified(System.currentTimeMillis());
         if (!success) {
-            throw new IOException("Unable to set the last modification time for " + file);
+            throw new IOException("Unable to set the last modification startTime for " + file);
         }
     }
 
@@ -1372,10 +1372,10 @@ public class FileUtils {
      * Waits for NFS to propagate a file creation, imposing a timeout.
      * <p/>
      * This method repeatedly tests {@link File#exists()} until it returns
-     * true up to the maximum time specified in seconds.
+     * true up to the maximum startTime specified in seconds.
      *
      * @param file    the file to check, must not be {@code null}
-     * @param seconds the maximum time in seconds to wait
+     * @param seconds the maximum startTime in seconds to wait
      * @return true if file exists
      * @throws NullPointerException if the file is {@code null}
      */
@@ -2223,14 +2223,14 @@ public class FileUtils {
 
     /**
      * Tests if the specified <code>File</code> is newer than the specified
-     * time reference.
+     * startTime reference.
      *
      * @param file       the <code>File</code> of which the modification date must
      *                   be compared, must not be {@code null}
-     * @param timeMillis the time reference measured in milliseconds since the
+     * @param timeMillis the startTime reference measured in milliseconds since the
      *                   epoch (00:00:00 GMT, January 1, 1970)
      * @return true if the <code>File</code> exists and has been modified after
-     * the given time reference.
+     * the given startTime reference.
      * @throws IllegalArgumentException if the file is {@code null}
      */
     public static boolean isFileNewer(File file, long timeMillis) {
@@ -2291,14 +2291,14 @@ public class FileUtils {
 
     /**
      * Tests if the specified <code>File</code> is older than the specified
-     * time reference.
+     * startTime reference.
      *
      * @param file       the <code>File</code> of which the modification date must
      *                   be compared, must not be {@code null}
-     * @param timeMillis the time reference measured in milliseconds since the
+     * @param timeMillis the startTime reference measured in milliseconds since the
      *                   epoch (00:00:00 GMT, January 1, 1970)
      * @return true if the <code>File</code> exists and has been modified before
-     * the given time reference.
+     * the given startTime reference.
      * @throws IllegalArgumentException if the file is {@code null}
      */
     public static boolean isFileOlder(File file, long timeMillis) {
