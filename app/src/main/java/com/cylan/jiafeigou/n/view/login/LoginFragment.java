@@ -464,6 +464,7 @@ public class LoginFragment extends android.support.v4.app.Fragment
         if (presenter != null) {
             if (NetUtils.getNetType(ContextUtils.getContext()) != -1) {
                 presenter.executeLogin(login);
+                presenter.loginCountTime();
             } else {
                 new Handler().postDelayed(new Runnable() {
                     @Override
@@ -556,6 +557,8 @@ public class LoginFragment extends android.support.v4.app.Fragment
                 ToastUtil.showNegativeToast(getString(R.string.RET_ELOGIN_ERROR));
             } else if (code == 162) {
                 ToastUtil.showNegativeToast("登录失败：accend_token_error");
+            } else if (code == JError.ErrorConnect ){
+                ToastUtil.showNegativeToast("登录超时");
             }
         }
     }
@@ -717,17 +720,22 @@ public class LoginFragment extends android.support.v4.app.Fragment
      * @param callback
      */
     @Override
-    public void checkAccountResult(RxEvent.CheckAccountCallback callback) {
-        if (callback.i != 0 && TextUtils.isEmpty(callback.s)){
+    public void checkAccountResult(RxEvent.CheckRegsiterBack callback) {
+        if (callback.jfgResult.code != 0 ){
             presenter.getCodeByPhone(ViewUtils.getTextViewContent(etRegisterInputBox));
+            //显示验证码输入框
+            Toast.makeText(getActivity(), getString(R.string.GET_CODE), Toast.LENGTH_SHORT).show();
+            handleVerificationCodeBox(true);
+            tvRegisterSubmit.setText(getString(R.string.CARRY_ON));
+            tvRegisterSubmit.setEnabled(false);
+            lLayoutAgreement.setVisibility(View.GONE);
         }else {
-            ToastUtil.showToast("账号已注册");
+            ToastUtil.showToast(getString(R.string.RET_EREGISTER_PHONE_EXIST));
         }
     }
 
     /**
      * 验证码输入框
-     *
      * @param show
      */
     private void handleVerificationCodeBox(boolean show) {
@@ -763,17 +771,12 @@ public class LoginFragment extends android.support.v4.app.Fragment
             if (verificationCodeLogic == null)
                 verificationCodeLogic = new VerificationCodeLogic(tvMeterGetCode);
             verificationCodeLogic.start();
-            Toast.makeText(getActivity(), getString(R.string.GET_CODE), Toast.LENGTH_SHORT).show();
+
             IMEUtils.hide(getActivity());
             //获取验证码
             if (presenter != null)
-//                presenter.getCodeByPhone(ViewUtils.getTextViewContent(etRegisterInputBox));
             presenter.checkAccountIsReg(ViewUtils.getTextViewContent(etRegisterInputBox));
-            //显示验证码输入框
-//            handleVerificationCodeBox(true);
-//            tvRegisterSubmit.setText(getString(R.string.CARRY_ON));
-//            tvRegisterSubmit.setEnabled(false);
-//            lLayoutAgreement.setVisibility(View.GONE);
+
         } else {
             final boolean isValidEmail = Patterns.EMAIL_ADDRESS.matcher(ViewUtils.getTextViewContent(etRegisterInputBox)).find();
             if (!isValidEmail) {

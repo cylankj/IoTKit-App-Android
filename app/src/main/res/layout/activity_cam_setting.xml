@@ -25,7 +25,6 @@
                 android:layout_height="@dimen/y48"
                 android:drawableLeft="@drawable/nav_tab_back_selector"
                 android:drawablePadding="@dimen/x15"
-                android:drawableStart="@drawable/icon_nav_back_white"
                 android:gravity="center_vertical"
                 android:paddingLeft="@dimen/x15"
                 android:text="@string/SETTINGS_1"

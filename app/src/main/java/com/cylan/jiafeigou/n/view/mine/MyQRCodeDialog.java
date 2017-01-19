@@ -41,9 +41,6 @@ public class MyQRCodeDialog extends BaseDialog {
     ImageView ivCloseDialog;
     private JFGAccount jfgaccount;
 
-    private static final int WHITE = 0xFFFFFFFF;
-    private static final int BLACK = 0xFF000000;
-
     public static MyQRCodeDialog newInstance(Bundle bundle) {
         MyQRCodeDialog dialog = new MyQRCodeDialog();
         dialog.setArguments(bundle);

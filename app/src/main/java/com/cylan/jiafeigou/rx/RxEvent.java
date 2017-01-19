@@ -638,6 +638,17 @@ public class RxEvent {
         }
     }
 
+    /**
+     * 检测是否已注册回调
+     */
+    public static final class CheckRegsiterBack{
+        public JFGResult jfgResult;
+
+        public CheckRegsiterBack(JFGResult jfgResult) {
+            this.jfgResult = jfgResult;
+        }
+    }
+
     public static class AppHideEvent {
     }
 
