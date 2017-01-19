@@ -10,7 +10,7 @@
         android:id="@+id/rLayout_home_mine_top"
         android:layout_width="match_parent"
         android:layout_height="@dimen/y238"
-        android:background="@drawable/me_bg_top_image">
+        android:background="@drawable/bg_mine_top_default">
 
         <View
             android:layout_width="match_parent"

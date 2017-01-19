@@ -108,7 +108,7 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
     public void onStart() {
         if (!GlobalDataProxy.getInstance().isOnline()) {
             //访客状态
-            Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.me_bg_top_image);
+            Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.bg_mine_top_default);
             basePresenter.portraitBlur(bm);
             setAliasName(getString(R.string.Tap3_LogIn));
         }
