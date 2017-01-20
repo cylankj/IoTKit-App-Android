@@ -1,5 +1,6 @@
 package com.cylan.jiafeigou.n.view.mine;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -111,10 +112,12 @@ public class MineSetRemarkNameFragment extends Fragment implements MineSetRemark
             ivMineSetRemarknameBind.setImageDrawable(getResources().getDrawable(R.drawable.icon_finish_disable));
             ivMineSetRemarknameBind.setEnabled(false);
             ivMinePersonalSetRemarknameClear.setVisibility(View.GONE);
+            viewMinePersonalSetRemarknameNewNameLine.setBackgroundColor(Color.parseColor("#f2f2f2"));
         } else {
             ivMineSetRemarknameBind.setImageDrawable(getResources().getDrawable(R.drawable.icon_finish));
             ivMineSetRemarknameBind.setEnabled(true);
             ivMinePersonalSetRemarknameClear.setVisibility(View.VISIBLE);
+            viewMinePersonalSetRemarknameNewNameLine.setBackgroundColor(Color.parseColor("#36bdff"));
         }
     }
 

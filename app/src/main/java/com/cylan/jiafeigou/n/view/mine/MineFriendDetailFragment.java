@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
+import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -125,8 +126,14 @@ public class MineFriendDetailFragment extends Fragment implements MineFriendDeta
     private void initData() {
         Bundle bundle = getArguments();
         frienditembean = (RelAndFriendBean) bundle.getParcelable("frienditembean");
-        tvRelativeAndFriendName.setText(frienditembean.markName);
-        tvRelativeAndFriendLikeName.setText(frienditembean.alias);
+        if (TextUtils.isEmpty(frienditembean.markName)){
+            tvRelativeAndFriendName.setVisibility(View.GONE);
+        }else {
+            tvRelativeAndFriendName.setVisibility(View.VISIBLE);
+            tvRelativeAndFriendName.setText(frienditembean.markName);
+        }
+
+        tvRelativeAndFriendLikeName.setText(getString(R.string.ALIAS)+": "+frienditembean.alias);
         //头像显示
         Glide.with(getContext()).load(frienditembean.iconUrl)
                 .asBitmap()

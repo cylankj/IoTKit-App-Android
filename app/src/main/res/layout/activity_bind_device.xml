@@ -33,7 +33,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:padding="@dimen/x15"
-                        android:src="@drawable/nav_tab_back_selector" />
+                        android:src="@drawable/nav_icon_close_white" />
 
                     <TextView
                         android:layout_width="wrap_content"

@@ -90,6 +90,7 @@ public class BellSettingFragment extends BaseFragment<BellSettingContract.Presen
             R.id.tv_setting_clear_,
             R.id.tv_setting_unbind})
     public void onClick(View view) {
+        ViewUtils.deBounceClick(view);//防重复点击
         switch (view.getId()) {
             case R.id.sv_setting_device_detail: {
                 BellDetailFragment fragment = BellDetailFragment.newInstance(null);

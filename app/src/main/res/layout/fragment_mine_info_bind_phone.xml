@@ -135,9 +135,11 @@
                     android:textColor="@color/common_btn_color_state" />
 
                 <View
+                    android:id="@+id/vertify_code_line"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/y1"
                     android:layout_gravity="bottom"
+                    android:layout_marginBottom="@dimen/y8"
                     android:layout_marginLeft="@dimen/x20"
                     android:layout_marginRight="@dimen/x20"
                     android:background="@color/color_f2f2f2" />

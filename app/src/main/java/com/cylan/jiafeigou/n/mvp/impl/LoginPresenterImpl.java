@@ -235,7 +235,6 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
                 });
     }
 
-
     @Override
     public void getQQAuthorize(Activity activity) {
         tencentInstance = new TencentInstance();

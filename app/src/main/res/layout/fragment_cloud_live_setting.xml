@@ -107,16 +107,8 @@
                 android:textColor="@color/color_black"
                 android:textSize="@dimen/sp16" />
 
-            <View
-                android:layout_marginTop="@dimen/y10"
-                android:layout_marginLeft="@dimen/x20"
-                android:layout_marginRight="@dimen/x20"
-                android:background="@color/color_f2f2f2"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/y1"/>
-
             <TextView
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="@dimen/y61"
                 android:id="@+id/tv_setting_unbind"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/y42"

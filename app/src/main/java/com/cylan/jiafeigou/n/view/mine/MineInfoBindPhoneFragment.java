@@ -1,6 +1,7 @@
 package com.cylan.jiafeigou.n.view.mine;
 
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.annotation.Nullable;
@@ -13,7 +14,6 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.cylan.entity.jniCall.JFGAccount;
@@ -58,6 +58,10 @@ public class MineInfoBindPhoneFragment extends Fragment implements MineBindPhone
     FrameLayout fLayoutVerificationCodeInputBox;
     @BindView(R.id.rl_tab_bar_container)
     FrameLayout rlTabBarContainer;
+    @BindView(R.id.view_mine_personal_information_mailbox)
+    View viewMinePersonalInformationMailbox;
+    @BindView(R.id.vertify_code_line)
+    View vertifyCodeLine;
     private JFGAccount userinfo;
     private boolean isBindOrChange;
     private MineBindPhoneContract.Presenter presenter;
@@ -88,9 +92,11 @@ public class MineInfoBindPhoneFragment extends Fragment implements MineBindPhone
         if (TextUtils.isEmpty(s)) {
             ivMineInfoBindPhone.setImageDrawable(getResources().getDrawable(R.drawable.icon_finish_disable));
             ivMineInfoBindPhone.setEnabled(false);
+            vertifyCodeLine.setBackgroundColor(Color.parseColor("#f2f2f2"));
         } else {
             ivMineInfoBindPhone.setImageDrawable(getResources().getDrawable(R.drawable.icon_finish));
             ivMineInfoBindPhone.setEnabled(true);
+            vertifyCodeLine.setBackgroundColor(Color.parseColor("#36bdff"));
         }
     }
 
@@ -118,9 +124,11 @@ public class MineInfoBindPhoneFragment extends Fragment implements MineBindPhone
         if (s.length() == 0) {
             tvMeterGetCode.setEnabled(false);
             ivMineBindPhoneClear.setVisibility(View.INVISIBLE);
+            viewMinePersonalInformationMailbox.setBackgroundColor(Color.parseColor("#f2f2f2"));
         } else {
             tvMeterGetCode.setEnabled(true);
             ivMineBindPhoneClear.setVisibility(View.VISIBLE);
+            viewMinePersonalInformationMailbox.setBackgroundColor(Color.parseColor("#36bdff"));
         }
     }
 

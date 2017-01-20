@@ -1,5 +1,6 @@
 package com.cylan.jiafeigou.n.view.mine;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -104,9 +105,13 @@ public class MineSetUserNameFragment extends Fragment implements MineInfoSetName
         if (isEmpty) {
             ivMinePersonalSetnameBind.setImageDrawable(getResources().getDrawable(R.drawable.icon_finish_disable));
             ivMinePersonalSetnameBind.setEnabled(false);
+            viewMinePersonalInformationNewNameLine.setBackgroundColor(Color.parseColor("#f2f2f2"));
+            ivMinePersonalInformationNewNameClear.setVisibility(View.GONE);
         } else {
             ivMinePersonalSetnameBind.setImageDrawable(getResources().getDrawable(R.drawable.icon_finish));
             ivMinePersonalSetnameBind.setEnabled(true);
+            viewMinePersonalInformationNewNameLine.setBackgroundColor(Color.parseColor("#36bdff"));
+            ivMinePersonalInformationNewNameClear.setVisibility(View.VISIBLE);
         }
     }
 

@@ -71,6 +71,7 @@
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/recyclerview_request_add"
+                android:overScrollMode="never"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
             </android.support.v7.widget.RecyclerView>
@@ -90,6 +91,7 @@
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/recyclerview_relativesandfriends_list"
                 android:scrollbars="vertical"
+                android:overScrollMode="never"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
             </android.support.v7.widget.RecyclerView>

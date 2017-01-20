@@ -50,7 +50,7 @@
                     android:textCursorDrawable="@drawable/search_friend_cursor_color"
                     android:textSize="@dimen/sp18"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="@dimen/y48" />
 
             </FrameLayout>
 
@@ -72,6 +72,7 @@
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rcy_mine_share_to_contact_list"
+            android:overScrollMode="never"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
         </android.support.v7.widget.RecyclerView>

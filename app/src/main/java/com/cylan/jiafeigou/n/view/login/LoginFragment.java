@@ -150,7 +150,6 @@ public class LoginFragment extends android.support.v4.app.Fragment
         return fragment;
     }
 
-
     @Nullable
     @Override
     public android.view.View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
